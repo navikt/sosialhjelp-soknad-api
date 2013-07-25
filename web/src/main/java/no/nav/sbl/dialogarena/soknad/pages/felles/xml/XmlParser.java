@@ -1,5 +1,8 @@
 package no.nav.sbl.dialogarena.soknad.pages.felles.xml;
 
+import no.nav.modig.core.exception.ApplicationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -11,6 +14,7 @@ import java.util.List;
 
 public class XmlParser {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(XmlParser.class);
     private static final String SOKNAD_TAG = "soknadId";
     private static final String INPUT_FIELD_TAG = "inputField";
     private Element xml;
@@ -23,7 +27,8 @@ public class XmlParser {
             xml = xmlDoc.getDocumentElement();
             xml.normalize();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Kunne ikke opprette JSON-objekt", e);
+            throw new ApplicationException("Kunne ikke bygge søknaden", e);
         }
     }
 

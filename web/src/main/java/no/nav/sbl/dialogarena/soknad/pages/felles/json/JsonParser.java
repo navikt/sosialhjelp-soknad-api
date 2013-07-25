@@ -1,20 +1,25 @@
 package no.nav.sbl.dialogarena.soknad.pages.felles.json;
 
+import no.nav.modig.core.exception.ApplicationException;
 import org.apache.wicket.ajax.json.JSONException;
 import org.apache.wicket.ajax.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class JsonParser {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(JsonParser.class);
     private JSONObject json;
 
     public JsonParser(String jsonString) {
         try {
             json = new JSONObject(jsonString).getJSONObject("soknad");
         } catch (JSONException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            LOGGER.error("Kunne ikke opprette JSON-objekt", e);
+            throw new ApplicationException("Kunne ikke bygge søknaden", e);
         }
     }
 
