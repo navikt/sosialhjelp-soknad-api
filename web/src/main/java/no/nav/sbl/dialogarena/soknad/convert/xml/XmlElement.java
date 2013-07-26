@@ -1,44 +1,44 @@
 package no.nav.sbl.dialogarena.soknad.convert.xml;
 
+import no.nav.modig.core.exception.ApplicationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class XmlElement implements Serializable {
 
-    private static final String KEY_TAG = "key";
-    private static final String VALUE_TAG = "value";
-    private static final String VISIBLE_TAG = "visible";
-    private static final String MODIFIABLE_TAG = "modifiable";
-
-    private Element elem;
+    private static final Logger LOGGER = LoggerFactory.getLogger(XmlElement.class);
+    protected Element xml;
 
     public XmlElement(Node node) {
-        elem = (Element) node;
+        xml = (Element) node;
     }
 
-    public String getKey() {
-        return getTextValue(KEY_TAG);
+    public XmlElement(String xmlString) {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document xmlDoc = builder.parse(new ByteArrayInputStream(xmlString.getBytes()));
+            xml = xmlDoc.getDocumentElement();
+            xml.normalize();
+        } catch (Exception e) {
+            LOGGER.error("Kunne ikke opprette JSON-objekt", e);
+            throw new ApplicationException("Kunne ikke bygge søknaden", e);
+        }
     }
 
-    public String getValue() {
-        return getTextValue(VALUE_TAG);
-    }
-
-    public Boolean isVisible() {
-        return getBooleanValue(VISIBLE_TAG);
-    }
-
-    public Boolean isModifiable() {
-        return getBooleanValue(MODIFIABLE_TAG);
-    }
-
-    private Boolean getBooleanValue(String tag) {
-        String value = getTextValue(tag);
+    protected Boolean getBoolean(String tag) {
+        String value = getString(tag);
 
         if (isNotBlank(value) && value.equalsIgnoreCase("true")) {
             return true;
@@ -46,11 +46,11 @@ public class XmlElement implements Serializable {
         return false;
     }
 
-    private String getTextValue(String tag) {
-        NodeList nodeList = elem.getElementsByTagName(tag);
+    protected String getString(String tag) {
+        NodeList nodeList = xml.getElementsByTagName(tag);
 
         if (nodeList.getLength() > 0 && nodeList.item(0).hasChildNodes()) {
-            return nodeList.item(0).getTextContent();
+            return nodeList.item(0).getTextContent().trim();
         }
         return "";
     }

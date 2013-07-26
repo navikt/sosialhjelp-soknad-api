@@ -8,15 +8,15 @@ import java.util.List;
 
 public class XmlUtil {
 
-    public static List<XmlElement> list(final NodeList list) {
-        return new AbstractList<XmlElement>() {
+    public static List<XmlInputElement> toList(final NodeList list) {
+        return new AbstractList<XmlInputElement>() {
             @Override
-            public XmlElement get(int index) {
+            public XmlInputElement get(int index) {
                 Element element = (Element) list.item(index);
                 if (element == null) {
                     throw new IndexOutOfBoundsException();
                 }
-                return new XmlElement(element);
+                return new XmlInputElement(element);
             }
 
             @Override

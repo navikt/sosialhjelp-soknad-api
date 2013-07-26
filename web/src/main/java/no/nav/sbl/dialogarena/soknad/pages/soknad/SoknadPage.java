@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.soknad.pages.soknad;
 
-import no.nav.sbl.dialogarena.soknad.pages.basepage.BasePage;
 import no.nav.sbl.dialogarena.soknad.convert.json.JsonInputElement;
 import no.nav.sbl.dialogarena.soknad.convert.json.JsonSoknad;
-import no.nav.sbl.dialogarena.soknad.convert.xml.XmlElement;
-import no.nav.sbl.dialogarena.soknad.convert.xml.XmlParser;
+import no.nav.sbl.dialogarena.soknad.convert.xml.XmlInputElement;
+import no.nav.sbl.dialogarena.soknad.convert.xml.XmlSoknad;
+import no.nav.sbl.dialogarena.soknad.pages.basepage.BasePage;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -19,28 +19,28 @@ import java.util.List;
 
 public class SoknadPage extends BasePage {
 
-    public SoknadPage(XmlParser xmlParser) {
+    public SoknadPage(XmlSoknad xmlSoknad) {
         setDefaultModel(new CompoundPropertyModel<>(new LoadableDetachableModel<SoknadViewModel>() {
             @Override
             protected SoknadViewModel load() {
                 return new SoknadViewModel("Søknad");
             }
         }));
-        add(new Label("soknadId", xmlParser.getSoknadId()));
+        add(new Label("soknadId", xmlSoknad.getSoknadId()));
         Form form = new Form("form");
-        form.add(new XmlInputListe("inputList", xmlParser.getInputNodes()));
+        form.add(new XmlInputListe("inputList", xmlSoknad.getInputNodes()));
         add(form);
     }
 
-    private static class XmlInputListe extends ListView<XmlElement> {
+    private static class XmlInputListe extends ListView<XmlInputElement> {
 
-        public XmlInputListe(String id, List<XmlElement> xmlInputElements) {
+        public XmlInputListe(String id, List<XmlInputElement> xmlInputElements) {
             super(id, xmlInputElements);
         }
 
         @Override
-        protected void populateItem(ListItem<XmlElement> item) {
-            XmlElement element = item.getModelObject();
+        protected void populateItem(ListItem<XmlInputElement> item) {
+            XmlInputElement element = item.getModelObject();
             TextField<String> textField = new TextField<>("input", Model.of(element.getValue()));
             textField.setVisible(element.isVisible());
             textField.setEnabled(element.isModifiable());
@@ -55,16 +55,16 @@ public class SoknadPage extends BasePage {
     }
 
 
-    public SoknadPage(JsonSoknad jsonParser) {
+    public SoknadPage(JsonSoknad jsonSoknad) {
         setDefaultModel(new CompoundPropertyModel<>(new LoadableDetachableModel<SoknadViewModel>() {
             @Override
             protected SoknadViewModel load() {
                 return new SoknadViewModel("Søknad");
             }
         }));
-        add(new Label("soknadId", jsonParser.getSoknadId()));
+        add(new Label("soknadId", jsonSoknad.getSoknadId()));
         Form form = new Form("form");
-        form.add(new JsonInputListe("inputList", jsonParser.getInputNodes()));
+        form.add(new JsonInputListe("inputList", jsonSoknad.getInputNodes()));
         add(form);
     }
 
