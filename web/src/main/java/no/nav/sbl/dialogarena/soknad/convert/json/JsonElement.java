@@ -16,26 +16,23 @@ public class JsonElement {
     }
 
     protected String getString(String key) {
-        try {
+        if (json.has(key)) {
             return json.get(key).getAsString();
-        } catch (NullPointerException e) {
-            return "";
         }
+        return "";
     }
 
     protected Boolean getBoolean(String key) {
-        try {
+        if (json.has(key)) {
             return json.get(key).getAsBoolean();
-        } catch (NullPointerException e) {
-            return false;
         }
+        return false;
     }
 
     protected JsonObject getJsonObject(String key) {
-        try {
+        if (json.has(key)) {
             return json.get(key).getAsJsonObject();
-        } catch (NullPointerException e) {
-            return new JsonObject();
         }
+        return new JsonObject();
     }
 }
