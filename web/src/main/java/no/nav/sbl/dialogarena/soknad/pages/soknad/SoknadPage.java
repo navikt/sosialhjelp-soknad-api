@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.soknad.pages.soknad;
 
 import no.nav.sbl.dialogarena.soknad.pages.basepage.BasePage;
-import no.nav.sbl.dialogarena.soknad.pages.felles.json.JsonElement;
-import no.nav.sbl.dialogarena.soknad.pages.felles.json.JsonParser;
-import no.nav.sbl.dialogarena.soknad.pages.felles.xml.XmlElement;
-import no.nav.sbl.dialogarena.soknad.pages.felles.xml.XmlParser;
+import no.nav.sbl.dialogarena.soknad.convert.json.JsonInputElement;
+import no.nav.sbl.dialogarena.soknad.convert.json.JsonSoknad;
+import no.nav.sbl.dialogarena.soknad.convert.xml.XmlElement;
+import no.nav.sbl.dialogarena.soknad.convert.xml.XmlParser;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -55,7 +55,7 @@ public class SoknadPage extends BasePage {
     }
 
 
-    public SoknadPage(JsonParser jsonParser) {
+    public SoknadPage(JsonSoknad jsonParser) {
         setDefaultModel(new CompoundPropertyModel<>(new LoadableDetachableModel<SoknadViewModel>() {
             @Override
             protected SoknadViewModel load() {
@@ -68,15 +68,15 @@ public class SoknadPage extends BasePage {
         add(form);
     }
 
-    private static class JsonInputListe extends ListView<JsonElement> {
+    private static class JsonInputListe extends ListView<JsonInputElement> {
 
-        public JsonInputListe(String id, List<JsonElement> jsonInputElements) {
+        public JsonInputListe(String id, List<JsonInputElement> jsonInputElements) {
             super(id, jsonInputElements);
         }
 
         @Override
-        protected void populateItem(ListItem<JsonElement> item) {
-            JsonElement element = item.getModelObject();
+        protected void populateItem(ListItem<JsonInputElement> item) {
+            JsonInputElement element = item.getModelObject();
             TextField<String> textField = new TextField<>("input", Model.of(element.getValue()));
             textField.setVisible(element.isVisible());
             textField.setEnabled(element.isModifiable());

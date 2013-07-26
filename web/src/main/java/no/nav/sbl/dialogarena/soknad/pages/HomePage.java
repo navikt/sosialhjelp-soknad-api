@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.soknad.pages;
 
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.soknad.pages.felles.json.JsonParser;
-import no.nav.sbl.dialogarena.soknad.pages.felles.xml.XmlParser;
+import no.nav.sbl.dialogarena.soknad.convert.json.JsonSoknad;
+import no.nav.sbl.dialogarena.soknad.convert.xml.XmlParser;
 import no.nav.sbl.dialogarena.soknad.pages.soknad.SoknadPage;
 import org.apache.wicket.markup.html.TransparentWebMarkupContainer;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -57,10 +57,10 @@ public class HomePage extends WebPage {
         return new XmlParser(xmlString);
     }
 
-    private JsonParser getJsonParser(String filename) throws URISyntaxException, IOException {
+    private JsonSoknad getJsonParser(String filename) throws URISyntaxException, IOException {
         String path = "/no/nav/sbl/dialogarena/soknad/json/";
         File file = new File(getClass().getResource(path + filename).toURI());
         String jsonString = file.readString();
-        return new JsonParser(jsonString);
+        return new JsonSoknad(jsonString);
     }
 }

@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknad.pages.felles.xml;
+package no.nav.sbl.dialogarena.soknad.convert.xml;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

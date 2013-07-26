@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknad.pages.felles.xml;
+package no.nav.sbl.dialogarena.soknad.convert.xml;
 
 import no.nav.modig.core.exception.ApplicationException;
 import org.slf4j.Logger;
