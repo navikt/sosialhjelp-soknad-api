@@ -31,7 +31,7 @@ public class HomePage extends WebPage {
             @Override
             public void onClick() {
                 try {
-                    setResponsePage(new SoknadPage(getXmlParser("testsoknad.xml")));
+                    setResponsePage(new SoknadPage(getXmlParser()));
                 } catch (URISyntaxException | IOException e) {
                     throw new ApplicationException("Kunne ikke bygge opp søknaden", e);
                 }
@@ -42,7 +42,7 @@ public class HomePage extends WebPage {
             @Override
             public void onClick() {
                 try {
-                    setResponsePage(new SoknadPage(getJsonParser("testsoknad.json")));
+                    setResponsePage(new SoknadPage(getJsonParser()));
                 } catch (URISyntaxException | IOException e) {
                     throw new ApplicationException("Kunne ikke bygge opp søknaden", e);
                 }
@@ -54,17 +54,11 @@ public class HomePage extends WebPage {
         return body;
     }
 
-    private XmlSoknad getXmlParser(String filename) throws URISyntaxException, IOException {
-//        String path = "/no/nav/sbl/dialogarena/soknad/xml/";
-//        File file = new File(getClass().getResource(path + filename).toURI());
-//        String xmlString = file.readString();
+    private XmlSoknad getXmlParser() throws URISyntaxException, IOException {
         return new XmlSoknad(soknadService.hentSoknad(1L));
     }
 
-    private JsonSoknad getJsonParser(String filename) throws URISyntaxException, IOException {
-//        String path = "/no/nav/sbl/dialogarena/soknad/json/";
-//        File file = new File(getClass().getResource(path + filename).toURI());
-//        String jsonString = file.readString();
+    private JsonSoknad getJsonParser() throws URISyntaxException, IOException {
         return new JsonSoknad(soknadService.hentSoknad(2L));
     }
 }

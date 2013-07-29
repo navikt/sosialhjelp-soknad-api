@@ -19,7 +19,7 @@ import java.util.Map;
 @Import(value = {ConsumerConfig.SendSoknadWSConfig.class})
 @ImportResource({"classpath:META-INF/cxf/cxf.xml", "classpath:META-INF/cxf/cxf-servlet.xml"})
 public class ConsumerConfig {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConsumerConfig.class);
+//    private static final Logger LOGGER = LoggerFactory.getLogger(ConsumerConfig.class);
 
 
     @Configuration

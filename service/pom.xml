@@ -18,12 +18,6 @@
             <artifactId>spring-web</artifactId>
             <scope>runtime</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-jaxws</artifactId>
-            <scope>runtime</scope>
-        </dependency>
         
         <dependency>
             <groupId>org.apache.cxf</groupId>
