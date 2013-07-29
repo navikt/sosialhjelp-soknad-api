@@ -23,13 +23,18 @@
         <modig-security.version>1.0.1</modig-security.version>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-        <sonar.skippedModules>dokumentinnsending-consumer</sonar.skippedModules>
+        <sonar.skippedModules>soknad-consumer</sonar.skippedModules>
+        <henvendelse.tjenestespesifikasjon.version.1>1.1.2-SNAPSHOT</henvendelse.tjenestespesifikasjon.version.1>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <!-- Avhengigheter med scope compile -->
-
+            <dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>sendsoknad-jaxws</artifactId>
+                <version>${henvendelse.tjenestespesifikasjon.version.1}</version>
+            </dependency>
             <dependency>
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
@@ -733,7 +738,7 @@
     </profiles>
   <modules>
     <module>config</module>
-    <module>consumer-ws</module>
+    <module>consumer</module>
     <module>service</module>
     <module>web</module>
     <module>jee</module>

@@ -19,6 +19,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>soknad-consumer</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.wicket</groupId>
             <artifactId>wicket-core</artifactId>
         </dependency>
