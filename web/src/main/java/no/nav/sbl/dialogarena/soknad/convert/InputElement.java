@@ -2,11 +2,13 @@ package no.nav.sbl.dialogarena.soknad.convert;
 
 public interface InputElement {
 
-    public abstract String getKey();
+    String getKey();
 
-    public abstract String getValue();
+    String getValue();
 
-    public abstract Boolean isVisible();
+    String getType();
 
-    public abstract Boolean isModifiable();
+    Boolean isVisible();
+
+    Boolean isModifiable();
 }

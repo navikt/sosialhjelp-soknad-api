@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface Soknad {
 
-    public String getSoknadId();
+    String getSoknadId();
 
-    public List<InputElement> getInputNodes();
+    List<InputElement> getInputNodes();
 }

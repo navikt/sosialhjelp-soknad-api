@@ -20,6 +20,8 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import javax.inject.Inject;
 
+import static no.nav.sbl.dialogarena.soknad.behaviors.UtilBehaviors.hasType;
+
 public class SoknadPage extends BasePage {
 
     @Inject
@@ -59,12 +61,13 @@ public class SoknadPage extends BasePage {
         protected void populateItem(ListItem<InputElement> item) {
             InputElement element = item.getModelObject();
             TextField<String> textField = new TextField<>("input", Model.of(element.getValue()));
+            textField.add(hasType(element.getType()));
             textField.setVisible(element.isVisible());
             textField.setEnabled(element.isModifiable());
             textField.setOutputMarkupId(true);
             item.add(textField);
 
-            Label label = new Label("label", element.getKey());
+            Label label = new Label("label", Model.of(element.getKey()));
             label.add(new AttributeAppender("for", textField.getMarkupId()));
             label.setVisible(element.isVisible());
             item.add(label);
