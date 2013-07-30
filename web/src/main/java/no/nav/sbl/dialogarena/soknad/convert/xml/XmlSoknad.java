@@ -1,8 +1,11 @@
 package no.nav.sbl.dialogarena.soknad.convert.xml;
 
+import no.nav.sbl.dialogarena.soknad.convert.InputElement;
+import no.nav.sbl.dialogarena.soknad.convert.Soknad;
+
 import java.util.List;
 
-public class XmlSoknad extends XmlElement {
+public class XmlSoknad extends XmlElement implements Soknad {
 
 
     private static final String SOKNAD_TAG = "soknadId";
@@ -16,7 +19,7 @@ public class XmlSoknad extends XmlElement {
         return getString(SOKNAD_TAG);
     }
 
-    public List<XmlInputElement> getInputNodes() {
+    public List<InputElement> getInputNodes() {
         return XmlUtil.toList(xml.getElementsByTagName(INPUT_FIELD_TAG));
     }
 }

@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknad.convert.json;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.soknad.convert.InputElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,8 +16,8 @@ import static java.util.Map.Entry;
 public class JsonUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonUtil.class);
 
-    public static List<JsonInputElement> toList(final JsonObject jsonObject) {
-        return new AbstractList<JsonInputElement>() {
+    public static List<InputElement> toList(final JsonObject jsonObject) {
+        return new AbstractList<InputElement>() {
             @Override
             public JsonInputElement get(int index) {
                 Iterator<Entry<String,JsonElement>> iterator = jsonObject.entrySet().iterator();

@@ -1,8 +1,9 @@
 package no.nav.sbl.dialogarena.soknad.convert.json;
 
 import com.google.gson.JsonObject;
+import no.nav.sbl.dialogarena.soknad.convert.InputElement;
 
-public class JsonInputElement extends JsonElement {
+public class JsonInputElement extends JsonElement implements InputElement{
 
     private static final String VALUE_KEY = "value";
     private static final String VISIBLE_KEY = "visible";

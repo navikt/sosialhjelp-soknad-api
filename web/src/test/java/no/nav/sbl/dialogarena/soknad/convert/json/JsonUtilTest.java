@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknad.convert.json;
 
 import com.google.gson.JsonObject;
+import no.nav.sbl.dialogarena.soknad.convert.InputElement;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,14 +25,14 @@ public class JsonUtilTest {
         jsonObject.addProperty("2", "2");
         jsonObject.addProperty("3", "3");
 
-        List<JsonInputElement> list = JsonUtil.toList(jsonObject);
+        List<InputElement> list = JsonUtil.toList(jsonObject);
 
         assertThat(list.size(), is(3));
     }
 
     @Test
     public void skalKonverterteTomtJsonObjektTilTomListe() {
-        List<JsonInputElement> list = JsonUtil.toList(jsonObject);
+        List<InputElement> list = JsonUtil.toList(jsonObject);
 
         assertThat(list.size(), is(0));
     }

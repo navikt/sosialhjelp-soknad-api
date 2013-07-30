@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknad.convert.json;
 
+import no.nav.sbl.dialogarena.soknad.convert.InputElement;
 import org.apache.wicket.util.file.File;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +44,7 @@ public class JsonSoknadTest {
         JsonSoknad jsonSoknad = new JsonSoknad(jsonString);
 
         assertThat(jsonSoknad, notNullValue());
-        List<JsonInputElement> inputElementList = jsonSoknad.getInputNodes();
+        List<InputElement> inputElementList = jsonSoknad.getInputNodes();
         assertThat(inputElementList, notNullValue());
         assertThat(inputElementList.size(), is(4));
     }

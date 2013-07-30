@@ -1,8 +1,9 @@
 package no.nav.sbl.dialogarena.soknad.convert.xml;
 
+import no.nav.sbl.dialogarena.soknad.convert.InputElement;
 import org.w3c.dom.Node;
 
-public class XmlInputElement extends XmlElement {
+public class XmlInputElement extends XmlElement implements InputElement {
 
     private static final String KEY_TAG = "key";
     private static final String VALUE_TAG = "value";

@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknad.convert.xml;
 
+import no.nav.sbl.dialogarena.soknad.convert.InputElement;
 import org.apache.wicket.util.file.File;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class XmlSoknadTest {
 
     @Test
     public void skalKunneHenteAlleInputNoder() {
-        List<XmlInputElement> inputNodes = xml.getInputNodes();
+        List<InputElement> inputNodes = xml.getInputNodes();
         assertThat(inputNodes, notNullValue());
         assertThat(inputNodes.size(), is(4));
     }
