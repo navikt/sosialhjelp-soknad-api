@@ -9,9 +9,11 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-    <artifactId>soknad-config</artifactId>
+    <!-- Must be "no.nav.leren" in order to locate the artifact in Maven repository -->
+    <groupId>no.nav.leren</groupId>
+    <artifactId>soknad</artifactId>
     <packaging>jar</packaging>
-    <name>${project.artifactId} metadata artifact</name>
+    <name>soknad-config</name>
     
     <build>
         <resources>
