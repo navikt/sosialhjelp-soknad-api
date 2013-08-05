@@ -329,7 +329,7 @@
                                 <arguments>
                                     <argument>-cp</argument>
                                     <classpath />
-                                    <argument>no.nav.sbl.dialogarena.dokumentinnsending.FitNesseMain</argument>
+                                    <argument>no.nav.sbl.dialogarena.soknad.FitNesseMain</argument>
                                     <argument>-restart-server</argument>
                                     <argument>-port</argument>
                                     <argument>${fitnesse.port}</argument>
