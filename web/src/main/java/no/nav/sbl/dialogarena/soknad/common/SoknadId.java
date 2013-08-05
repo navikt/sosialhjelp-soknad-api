@@ -5,7 +5,7 @@ import org.apache.wicket.request.mapper.parameter.INamedParameters;
 
 public class SoknadId implements Transformer<INamedParameters, Long> {
     @Override
-    public Long transform(INamedParameters iNamedParameters) {
+    public final Long transform(INamedParameters iNamedParameters) {
         return iNamedParameters.get("soknadId").toLong();
     }
 
