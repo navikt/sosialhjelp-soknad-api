@@ -60,7 +60,7 @@ public class BasePage extends WebPage {
         add(new FooterPanel("footer", footerLinks, getInnloggetIsTrueModel(), FALSE, cmsContentRetriever));
     }
 
-    public WebMarkupContainer getBody() {
+    public final WebMarkupContainer getBody() {
         return body;
     }
 
