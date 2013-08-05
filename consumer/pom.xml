@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>sendsoknad-jaxws</artifactId>
+            <artifactId>sendsoknad-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

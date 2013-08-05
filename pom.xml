@@ -24,16 +24,17 @@
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.skippedModules>soknad-consumer</sonar.skippedModules>
         <henvendelse.tjenestespesifikasjon.version.1>1.1.2-SNAPSHOT</henvendelse.tjenestespesifikasjon.version.1>
+		<sendsoknad.tjenestespec.version>0.0.2-SNAPSHOT</sendsoknad.tjenestespec.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <!-- Avhengigheter med scope compile -->
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>sendsoknad-jaxws</artifactId>
-                <version>${henvendelse.tjenestespesifikasjon.version.1}</version>
-            </dependency>
+			<dependency>
+				<groupId>no.nav.sbl.dialogarena</groupId>
+				<artifactId>sendsoknad-tjenestespesifikasjon</artifactId>
+				<version>${sendsoknad.tjenestespec.version}</version>
+			</dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-frontend-wicket</artifactId>
