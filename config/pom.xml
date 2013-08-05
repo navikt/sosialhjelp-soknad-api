@@ -41,7 +41,7 @@
                     <envConfigUrl>https://envconfig.adeo.no/conf</envConfigUrl>
                     <username>admin</username>
                     <password>admin</password>
-                    <apps>dokumentinnsending:${project.version}</apps>
+                    <apps>soknad:${project.version}</apps>
                 </configuration>
             </plugin>
         </plugins>
