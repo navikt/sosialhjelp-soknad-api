@@ -70,7 +70,7 @@ public class HomePage extends WebPage {
         body.add(form);
     }
 
-    public WebMarkupContainer getBody() {
+    public final WebMarkupContainer getBody() {
         return body;
     }
 
