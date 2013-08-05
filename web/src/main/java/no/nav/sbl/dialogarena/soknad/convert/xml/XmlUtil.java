@@ -1,28 +1,31 @@
 package no.nav.sbl.dialogarena.soknad.convert.xml;
 
-import no.nav.sbl.dialogarena.soknad.convert.InputElement;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import java.util.AbstractList;
-import java.util.List;
+import java.io.Serializable;
+import java.util.AbstractMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-public class XmlUtil {
+public class XmlUtil implements Serializable {
 
-    public static List<InputElement> toList(final NodeList list) {
-        return new AbstractList<InputElement>() {
+    public static Map<String, String> toMap(final NodeList list) {
+        return new AbstractMap<String, String>() {
+
             @Override
-            public InputElement get(int index) {
-                Element element = (Element) list.item(index);
-                if (element == null) {
-                    throw new IndexOutOfBoundsException();
+            public Set<Entry<String, String>> entrySet() {
+                Set<Entry<String, String>> set = new HashSet<>();
+
+                for (int i = 0; i < list.getLength(); i++) {
+                    Element element = (Element) list.item(i);
+                    XmlInputElement xmlInputElement = new XmlInputElement(element);
+                    Entry<String, String> entry = new SimpleEntry<String, String>(xmlInputElement.getKey(), xmlInputElement.getValue());
+                    set.add(entry);
                 }
-                return new XmlInputElement(element);
-            }
 
-            @Override
-            public int size() {
-                return list.getLength();
+                return set;
             }
         };
     }

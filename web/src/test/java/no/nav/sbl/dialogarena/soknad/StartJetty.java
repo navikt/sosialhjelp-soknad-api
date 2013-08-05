@@ -13,7 +13,7 @@ import static no.nav.sbl.dialogarena.common.jetty.Jetty.usingWar;
 
 public final class StartJetty {
 
-    public static final int PORT = 8181;
+    public static final int PORT = 8191;
 
     public static void main(String[] args) throws IOException {
         SystemProperties.setFrom("jetty-env.properties");

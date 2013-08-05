@@ -49,6 +49,22 @@
         </dependency>
         <dependency>
             <groupId>no.nav.modig</groupId>
+            <artifactId>modig-content</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>sbl-webkomponent-footer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>sbl-webkomponent-innstillinger</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>sbl-webkomponent-navigasjon</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.modig</groupId>
             <artifactId>modig-core</artifactId>
         </dependency>
         <dependency>
@@ -86,10 +102,6 @@
         <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
         </dependency>
 
         <!-- Avhengigheter med scope runtime -->

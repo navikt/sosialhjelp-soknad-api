@@ -37,6 +37,20 @@ public class XmlElement implements Serializable {
         }
     }
 
+    protected Long getLong(String tag) {
+        String value = getString(tag);
+
+        if (isNotBlank(value)) {
+            try {
+                return Long.parseLong(value);
+            } catch (NumberFormatException e) {
+                LOGGER.error("Kunne ikke parse {} til en long", value);
+                throw new ApplicationException("Feil i søknadsstrukturen", e);
+            }
+        }
+        return 0L;
+    }
+
     protected Boolean getBoolean(String tag) {
         String value = getString(tag);
 

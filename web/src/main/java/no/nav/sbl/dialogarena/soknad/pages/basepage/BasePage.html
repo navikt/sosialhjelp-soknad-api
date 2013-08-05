@@ -4,6 +4,24 @@
         <title wicket:id="tabTittel"/>
     </head>
     <body wicket:id="body">
-        <wicket:child/>
+        <div class="omslag">
+            <wicket:container wicket:id="innstillinger">Replaced by wicket</wicket:container>
+            <wicket:container wicket:id="navigasjon"/>
+            <div class="rad">
+                <div class="begrensning">
+                    <section class="sak-hel">
+                        <div class="panel-standard-belyst">
+                            <form class="skjema" wicket:id="form">
+                                <h1 class="diger" wicket:id="tittel"/>
+                                <wicket:child/>
+                                <input class="knapp-hoved" type="submit"/>
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <div class="fyllut"></div>
+        </div>
+        <wicket:container wicket:id="footer"/>
     </body>
 </html>

@@ -1,0 +1,53 @@
+package no.nav.sbl.dialogarena.soknad.common;
+
+import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.soknad.convert.xml.XmlSoknad;
+import no.nav.sbl.dialogarena.soknad.pages.basepage.BasePage;
+import no.nav.sbl.dialogarena.soknad.pages.soknad.SoknadPage;
+import org.apache.wicket.Page;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.InvocationTargetException;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
+public enum PageEnum {
+    TEST_SOKNAD(SoknadPage.class, "1");
+
+    private static final Logger logger = LoggerFactory.getLogger(PageEnum.class);
+    private final String navSoknadId;
+    private final Class<? extends BasePage> pageClass;
+
+    PageEnum(Class<? extends BasePage> pageClass, String navSoknadId) {
+        this.pageClass = pageClass;
+        this.navSoknadId = navSoknadId;
+    }
+
+    public boolean erSide(String side) {
+        return navSoknadId.equals(side);
+    }
+
+    public static Page getPage(XmlSoknad xmlSoknad) {
+        String soknadGosysId = xmlSoknad.getSoknadGosysId();
+        if (isBlank(soknadGosysId)) {
+            logger.error("Kan ikke åpne side med tom søknads-ID");
+            throw new ApplicationException("Kan ikke åpne side med tom søknads-ID");
+        }
+
+        for (PageEnum page : values()) {
+            if (page.erSide(soknadGosysId)) {
+                try {
+                    return page.pageClass.getConstructor(XmlSoknad.class).newInstance(xmlSoknad);
+                } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
+                    logger.error("Kunne ikke opprette ny side");
+                    throw new ApplicationException("Kunne ikke åpne søknad", e);
+                }
+            }
+        }
+
+        logger.error("Fant ikke side knyttet til søknad med ID {}", soknadGosysId);
+        throw new ApplicationException("Kunne ikke åpne søknaden");
+    }
+
+}

@@ -1,11 +1,11 @@
-package no.nav.sbl.dialogarena.soknad.behaviors;
+package no.nav.sbl.dialogarena.soknad.behaviors.util;
 
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 
-public class ConditionalTextFieldType extends AttributeAppender {
-    public ConditionalTextFieldType(final String value) {
-        super("type", new AbstractReadOnlyModel<String>() {
+public class LabelFor extends AttributeAppender {
+    public LabelFor(final String value) {
+        super("for", new AbstractReadOnlyModel<String>() {
             @Override
             public String getObject() {
                 return value;

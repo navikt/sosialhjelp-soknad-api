@@ -6,6 +6,7 @@ import no.nav.modig.frontend.MetaTag;
 import no.nav.modig.wicket.configuration.ApplicationSettingsConfig;
 import no.nav.sbl.dialogarena.soknad.pages.HomePage;
 import no.nav.sbl.dialogarena.soknad.selftest.SelfTestPage;
+import no.nav.sbl.dialogarena.webkomponent.innstillinger.InnstillingerPanel;
 import org.apache.wicket.Application;
 import org.apache.wicket.Page;
 import org.apache.wicket.core.util.crypt.KeyInSessionSunJceCryptFactory;
@@ -38,6 +39,14 @@ public class WicketApplication extends WebApplication {
 
         FrontendConfigurator configurator = new FrontendConfigurator();
 
+        for (LessResources resource : LessResources.values()) {
+            configurator.addLess(resource.getResource());
+        }
+
+        for (JsResources js : JsResources.values()) {
+            configurator.addScripts(js.getResource());
+        }
+
         configurator
                 .addMetas(
                         MetaTag.CHARSET_UTF8,
@@ -47,6 +56,8 @@ public class WicketApplication extends WebApplication {
                         FrontendModules.UNDERSCORE,
                         FrontendModules.EKSTERNFLATE
                 )
+                .addLess(InnstillingerPanel.INNSTILLINGER_LESS)
+                .addScripts(InnstillingerPanel.INNSTILLINGER_JS)
                 .withResourcePacking(this.usesDeploymentConfig())
                 .configure(this);
 
