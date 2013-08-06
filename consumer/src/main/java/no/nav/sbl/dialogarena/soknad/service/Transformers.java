@@ -21,7 +21,7 @@ public class Transformers {
         };
     }
 
-    public static Transformer<WSSoknadDataOppsummering, Long> TIL_SOKNADID = new Transformer<WSSoknadDataOppsummering, Long>() {
+    public static final Transformer<WSSoknadDataOppsummering, Long> TIL_SOKNADID = new Transformer<WSSoknadDataOppsummering, Long>() {
         @Override
         public Long transform(WSSoknadDataOppsummering wsSoknadDataOppsummering) {
             return wsSoknadDataOppsummering.getSoknadId();

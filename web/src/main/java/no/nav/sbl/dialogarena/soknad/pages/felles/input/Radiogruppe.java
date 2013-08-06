@@ -42,7 +42,7 @@ public class Radiogruppe extends Panel {
 
     }
 
-    private class ValgListe extends ListView<FaktumViewModel> {
+    private static class ValgListe extends ListView<FaktumViewModel> {
 
         public ValgListe(String id, IModel <List<FaktumViewModel>> model) {
             super(id, model);
