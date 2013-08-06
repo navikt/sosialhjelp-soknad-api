@@ -23,7 +23,7 @@ public class ConsumerConfig {
     @Configuration
     public static class SendSoknadWSConfig {
 
-        @Value("${soknad.webservice.henvendelse.soknadservice.url}")
+        @Value("${soknad.webservice.henvendelse.sendsoknadservice.url}")
         private URL soknadServiceEndpoint;
 
         @Bean
