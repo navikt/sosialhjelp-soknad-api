@@ -24,6 +24,7 @@
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.skippedModules>soknad-consumer</sonar.skippedModules>
         <henvendelse.tjenestespesifikasjon.version.1>1.1.2-SNAPSHOT</henvendelse.tjenestespesifikasjon.version.1>
+		<sendsoknad.tjenestespec.version>0.0.3</sendsoknad.tjenestespec.version>
         <dialogarena.webkomponent.footer>1.0.4</dialogarena.webkomponent.footer>
         <dialogarena.webkomponent.navigasjon>1.0.3</dialogarena.webkomponent.navigasjon>
         <dialogarena.webkomponent.innstillinger>1.0.10</dialogarena.webkomponent.innstillinger>
@@ -658,7 +659,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--TODO: Lagt inn forelÃ¸pig for Ã¥ unngÃ¥ at bygget feiler nÃ¥ som vi har tom kodebase-->
+            <!--TODO: Lagt inn foreløpig for å unngå at bygget feiler nå som vi har tom kodebase-->
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.7</version>
