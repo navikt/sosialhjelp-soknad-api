@@ -6,13 +6,21 @@
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>soknad</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-
     </parent>
 
     <artifactId>soknad-consumer</artifactId>
     <name>${project.artifactId}</name>
 
     <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>soknad-business</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.modig</groupId>
+            <artifactId>modig-lang</artifactId>
+        </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>sendsoknad-tjenestespesifikasjon</artifactId>
@@ -44,6 +52,10 @@
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxws</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.collections</groupId>
+            <artifactId>collections-generic</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

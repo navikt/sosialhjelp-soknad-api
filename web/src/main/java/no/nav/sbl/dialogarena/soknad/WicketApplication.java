@@ -5,6 +5,7 @@ import no.nav.modig.frontend.FrontendModules;
 import no.nav.modig.frontend.MetaTag;
 import no.nav.modig.wicket.configuration.ApplicationSettingsConfig;
 import no.nav.sbl.dialogarena.soknad.pages.HomePage;
+import no.nav.sbl.dialogarena.soknad.pages.soknad.SoknadPage;
 import no.nav.sbl.dialogarena.soknad.selftest.SelfTestPage;
 import no.nav.sbl.dialogarena.webkomponent.innstillinger.InnstillingerPanel;
 import org.apache.wicket.Application;
@@ -74,6 +75,9 @@ public class WicketApplication extends WebApplication {
 
 
         Application.get().getRequestLoggerSettings().setRequestLoggerEnabled(true);
+
+
+        mountPage("soknad/${soknadId}", SoknadPage.class);
 
         mountPage("internal/selftest", SelfTestPage.class);
 

@@ -1,6 +1,5 @@
-package no.nav.sbl.dialogarena.soknad.pages.felles.input;
+package no.nav.sbl.dialogarena.soknad.pages.felles.input.inputkomponenter;
 
-import no.nav.sbl.dialogarena.soknad.behaviors.SaveInputBehavior;
 import no.nav.sbl.dialogarena.soknad.service.SoknadService;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.basic.Label;
@@ -15,9 +14,9 @@ import static no.nav.sbl.dialogarena.soknad.behaviors.util.UtilBehaviors.labelFo
 public abstract class BaseInput extends Panel {
 
     @Inject
-    private SoknadService soknadService;
+    protected SoknadService soknadService;
 
-    public BaseInput(String id, IModel<String> labelModel, IModel inputModel, IModel soknadModel) {
+    public BaseInput(String id, IModel<String> labelModel, IModel inputModel) {
         super(id);
 
         add(cssClass("input"));
@@ -29,8 +28,6 @@ public abstract class BaseInput extends Panel {
         label.add(labelFor(input.getMarkupId()));
 
         add(label, input);
-
-        input.add(new SaveInputBehavior(soknadService, soknadModel, id));
     }
 
     protected abstract Component addInputField(IModel inputModel);

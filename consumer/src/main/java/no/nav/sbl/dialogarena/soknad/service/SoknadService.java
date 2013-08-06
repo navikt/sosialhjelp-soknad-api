@@ -1,14 +1,19 @@
 package no.nav.sbl.dialogarena.soknad.service;
 
 import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.soknad.domain.Faktum;
+import no.nav.sbl.dialogarena.soknad.domain.Soknad;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSSoknadData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.xml.ws.soap.SOAPFaultException;
-import java.util.ArrayList;
 import java.util.List;
+
+import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.sbl.dialogarena.soknad.service.Transformers.TIL_SOKNADID;
 
 public class SoknadService {
 
@@ -26,9 +31,10 @@ public class SoknadService {
         }
     }
 
-    public String hentSoknad(long soknadId) {
+    public Soknad hentSoknad(long soknadId) {
         try {
-            return sendsoknadPortType.hentSoknadData(soknadId);
+            WSSoknadData soknadData = sendsoknadPortType.hentSoknad(soknadId);
+            return convertToSoknad(soknadData);
         } catch (SOAPFaultException e) {
             logger.error("Feil ved henting av søknadsstruktur for søknad med ID {}", soknadId, e);
             throw new ApplicationException("SoapFaultException", e);
@@ -54,12 +60,26 @@ public class SoknadService {
     }
 
     public List<Long> hentMineSoknader(String aktorId) {
-        List<Long> list = new ArrayList<>();
-        list.add(1L);
-        list.add(2L);
-        list.add(3L);
-        list.add(4L);
-        list.add(5L);
-        return list;
+        try {
+            return on(sendsoknadPortType.hentSoknadListe(aktorId))
+                    .map(TIL_SOKNADID)
+                    .collect();
+        } catch (SOAPFaultException e) {
+            logger.error("Feil ved sending av søknader for aktør med ID {}", aktorId, e);
+            throw new ApplicationException("Feil ved henting av søknader", e);
+        }
+    }
+
+    private Soknad convertToSoknad(WSSoknadData wsSoknad) {
+        List<Faktum> fakta = on(wsSoknad.getFaktum())
+                .map(Transformers.tilFaktum(Long.parseLong(wsSoknad.getSoknadId())))
+                .collect();
+
+        Soknad soknad = new Soknad();
+        soknad.soknadId = Long.parseLong(wsSoknad.getSoknadId());
+        soknad.gosysId = wsSoknad.getGosysId();
+        soknad.leggTilFakta(fakta);
+
+        return soknad;
     }
 }

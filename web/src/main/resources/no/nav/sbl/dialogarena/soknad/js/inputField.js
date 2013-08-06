@@ -1,8 +1,8 @@
-function saveInputOnFocusOut(json) {
-    var component = $('#' +  json.componentId);
+function saveInputOnChange(json) {
+    var component = $('#' + json.selector);
 
     component.change(function() {
-        Wicket.Ajax.post({u: json.callbackUrl, ep: {'value': getValue()}});
+        saveInput(json.callbackUrl, getValue());
     });
 
     function getValue() {
@@ -12,4 +12,20 @@ function saveInputOnFocusOut(json) {
             return component.val();
         }
     }
+}
+
+
+function saveInputOnRadiobuttonChange(json) {
+    var components = $('#' + json.selector + " input");
+
+    components.change(function() {
+        if ($(this).is(':checked')) {
+            var value = $(this).siblings('label').children('span').text().toLowerCase();
+            saveInput(json.callbackUrl, value);
+        }
+    });
+}
+
+function saveInput(callbackUrl, value) {
+    Wicket.Ajax.post({u: callbackUrl, ep: {'value': value}});
 }

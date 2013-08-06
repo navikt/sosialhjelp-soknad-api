@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknad.common;
 
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.soknad.convert.xml.XmlSoknad;
+import no.nav.sbl.dialogarena.soknad.domain.Soknad;
 import no.nav.sbl.dialogarena.soknad.pages.basepage.BasePage;
 import no.nav.sbl.dialogarena.soknad.pages.soknad.SoknadPage;
 import org.apache.wicket.Page;
@@ -28,17 +28,16 @@ public enum PageEnum {
         return navSoknadId.equals(side);
     }
 
-    public static Page getPage(XmlSoknad xmlSoknad) {
-        String soknadGosysId = xmlSoknad.getSoknadGosysId();
-        if (isBlank(soknadGosysId)) {
+    public static Page getPage(Soknad soknad) {
+        if (isBlank(soknad.gosysId)) {
             logger.error("Kan ikke åpne side med tom søknads-ID");
             throw new ApplicationException("Kan ikke åpne side med tom søknads-ID");
         }
 
         for (PageEnum page : values()) {
-            if (page.erSide(soknadGosysId)) {
+            if (page.erSide(soknad.gosysId)) {
                 try {
-                    return page.pageClass.getConstructor(XmlSoknad.class).newInstance(xmlSoknad);
+                    return page.pageClass.getConstructor(Soknad.class).newInstance(soknad);
                 } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
                     logger.error("Kunne ikke opprette ny side");
                     throw new ApplicationException("Kunne ikke åpne søknad", e);
@@ -46,7 +45,7 @@ public enum PageEnum {
             }
         }
 
-        logger.error("Fant ikke side knyttet til søknad med ID {}", soknadGosysId);
+        logger.error("Fant ikke side knyttet til søknad med ID {}", soknad.gosysId);
         throw new ApplicationException("Kunne ikke åpne søknaden");
     }
 

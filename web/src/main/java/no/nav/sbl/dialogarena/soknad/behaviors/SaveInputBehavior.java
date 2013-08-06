@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknad.behaviors;
 
-import no.nav.sbl.dialogarena.soknad.convert.xml.XmlSoknad;
+import no.nav.sbl.dialogarena.soknad.domain.Soknad;
 import no.nav.sbl.dialogarena.soknad.service.SoknadService;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
@@ -16,41 +16,50 @@ import org.slf4j.LoggerFactory;
 
 public class SaveInputBehavior extends AbstractDefaultAjaxBehavior {
 
+    public static final String SAVE_ON_CHANGE = "saveInputOnChange";
+    public static final String SAVE_ON_RADIOBUTTON_CHANGE = "saveInputOnRadiobuttonChange";
+
     private static final Logger logger = LoggerFactory.getLogger(SaveInputBehavior.class);
     private SoknadService soknadService;
-    private IModel<XmlSoknad> soknad;
-    private String key;
+    private IModel<Soknad> soknad;
+    private String jsFunctionName;
 
-    public SaveInputBehavior(SoknadService soknadService, IModel<XmlSoknad> soknad, String key) {
+    public SaveInputBehavior(SoknadService soknadService, IModel<Soknad> soknad) {
+        this(soknadService, soknad, SAVE_ON_CHANGE);
+    }
+
+    public SaveInputBehavior(SoknadService soknadService, IModel<Soknad> soknad, String jsFunctionName) {
         this.soknadService = soknadService;
         this.soknad = soknad;
-        this.key = key;
+        this.jsFunctionName = jsFunctionName;
     }
 
     @Override
     public void renderHead(Component component, IHeaderResponse response) {
-        response.render(OnLoadHeaderItem.forScript(String.format("saveInputOnFocusOut(%s)", getJsonAsString())));
+        response.render(OnLoadHeaderItem.forScript(String.format(jsFunctionName + "(%s)", getJsonAsString())));
         super.renderHead(component, response);
     }
 
     @Override
     protected void respond(AjaxRequestTarget target) {
-        if (key != null) {
-            String value = RequestCycle.get().getRequest().getRequestParameters().getParameterValue("value").toString();
-            soknadService.lagreSoknadsFelt(soknad.getObject().getSoknadId(), key, value);
-        } else {
-            logger.error("Prøver å sette brukerdata med nøkkel som er lik null");
-        }
+        onAjaxCallback(target);
+        String value = RequestCycle.get().getRequest().getRequestParameters().getParameterValue("value").toString();
+        soknadService.lagreSoknadsFelt(soknad.getObject().soknadId, getComponent().getId(), value);
     }
 
     private String getJsonAsString() {
         JSONObject json = new JSONObject();
         try {
-            json.put("componentId", getComponent().getMarkupId());
+            json.put("selector", getComponent().getMarkupId());
             json.put("callbackUrl", getCallbackUrl());
         } catch (JSONException e) {
             logger.error("Kunne ikke opprette JSON objekt for timeoutboks");
         }
         return json.toString();
+    }
+
+
+    public void onAjaxCallback(AjaxRequestTarget target) {
+
     }
 }

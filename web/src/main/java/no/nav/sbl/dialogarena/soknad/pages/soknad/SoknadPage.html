@@ -1,12 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:wicket="http://wicket.apache.org" lang="no">
     <wicket:extend>
-        <div wicket:id="navn"/>
+        <div class="navn">
+            <div wicket:id="fornavn"/>
+            <div wicket:id="etternavn"/>
+        </div>
+
+        <div wicket:id="fnr"/>
         <div wicket:id="adresse"/>
+        <div wicket:id="postnr"/>
+        <div wicket:id="poststed"/>
+
         <div wicket:id="telefon"/>
-        <div wicket:id="epost"/>
-        <div wicket:id="inntekt"/>
-        <div wicket:id="arbeidsgiver"/>
-        <div wicket:id="penger"/>
+        <div wicket:id="bokommune"/>
+
+        <div wicket:id="statsborger" role="radiogroup"/>
+        <div wicket:id="nasjonalitet"/>
+
     </wicket:extend>
 </html>

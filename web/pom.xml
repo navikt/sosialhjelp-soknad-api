@@ -19,6 +19,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>soknad-business</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>soknad-consumer</artifactId>
             <version>${project.version}</version>

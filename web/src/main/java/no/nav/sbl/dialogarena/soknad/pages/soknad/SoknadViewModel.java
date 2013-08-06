@@ -1,35 +1,31 @@
 package no.nav.sbl.dialogarena.soknad.pages.soknad;
 
-import no.nav.sbl.dialogarena.soknad.convert.xml.XmlSoknad;
+import no.nav.sbl.dialogarena.soknad.domain.Soknad;
 import no.nav.sbl.dialogarena.soknad.pages.basepage.BaseViewModel;
 
 public class SoknadViewModel extends BaseViewModel {
 
-    public SoknadViewModel(String tabTittel, XmlSoknad soknad) {
+    public SoknadViewModel(String tabTittel, Soknad soknad) {
         super(tabTittel, soknad);
     }
 
-//    public List<InputElement> getInputList() {
-//        return soknad.getInputNodes();
-//    }
-
     public String getNavn() {
-        return soknad.getValue("navn");
+        return "";
     }
 
     public String getAdresse() {
-        return soknad.getValue("adresse");
+        return "";
     }
 
     public String getEpost() {
-        return soknad.getValue("epost");
+        return "";
     }
 
     public String getInntekt() {
-        return soknad.getValue("inntekt");
+        return "";
     }
 
     public String getArbeidsgiver() {
-        return soknad.getValue("arbeidsgiver");
+        return "";
     }
 }

@@ -33,7 +33,7 @@ public class HomePage extends WebPage {
 
     public HomePage() {
 
-        String aktorId = "1234";
+        String aktorId = "1";
 
         body = new TransparentWebMarkupContainer("body");
         body.setOutputMarkupId(true);
@@ -41,7 +41,7 @@ public class HomePage extends WebPage {
 
         body.add(new Label("aktorId", aktorId));
 
-        add(new ListView<Long>("eksisterendeSoknadListe", hentSoknadIder(aktorId)) {
+        body.add(new ListView<Long>("eksisterendeSoknadListe", hentSoknadIder(aktorId)) {
             @Override
             protected void populateItem(final ListItem<Long> item) {
                 Link link = new Link("eksisterendeSoknadLink") {
@@ -50,7 +50,7 @@ public class HomePage extends WebPage {
                         setResponsePage(OpenSoknadPage.class, new PageParameters().set("soknadId", item.getModelObject()));
                     }
                 };
-                link.add(new Label("eksisterendeSoknadText", item.getModel()));
+                link.add(new Label("eksisterendeSoknadText", item.getModelObject()));
                 item.add(link);
             }
         });

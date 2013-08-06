@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.soknad.pages.opensoknad;
 
 import no.nav.sbl.dialogarena.soknad.common.PageEnum;
 import no.nav.sbl.dialogarena.soknad.common.SoknadId;
-import no.nav.sbl.dialogarena.soknad.convert.xml.XmlSoknad;
+import no.nav.sbl.dialogarena.soknad.domain.Soknad;
 import no.nav.sbl.dialogarena.soknad.service.SoknadService;
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.WebPage;
@@ -18,8 +18,8 @@ public class OpenSoknadPage extends WebPage {
     public OpenSoknadPage(PageParameters parameters) {
         super(parameters);
         Long soknadId = SoknadId.get(parameters);
-        XmlSoknad xmlSoknad = new XmlSoknad(soknadService.hentSoknad(soknadId));
-        Page page = PageEnum.getPage(xmlSoknad);
+        Soknad soknad = soknadService.hentSoknad(soknadId);
+        Page page = PageEnum.getPage(soknad);
         setResponsePage(page);
     }
 }
