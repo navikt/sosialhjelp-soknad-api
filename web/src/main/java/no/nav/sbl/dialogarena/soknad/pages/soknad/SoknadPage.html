@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:wicket="http://wicket.apache.org" lang="no">
+<html xmlns:wicket="http://wicket.apache.org">
     <wicket:extend>
-        <div class="navn">
-            <div wicket:id="fornavn"/>
-            <div wicket:id="etternavn"/>
-        </div>
+        <form wicket:id="form">
+            <div class="navn">
+                <div wicket:id="fornavn"/>
+                <div wicket:id="etternavn"/>
+            </div>
 
-        <div wicket:id="fnr"/>
-        <div wicket:id="adresse"/>
-        <div wicket:id="postnr"/>
-        <div wicket:id="poststed"/>
+            <div wicket:id="fnr"/>
+            <div wicket:id="adresse"/>
+            <div wicket:id="postnr"/>
+            <div wicket:id="poststed"/>
 
-        <div wicket:id="telefon"/>
-        <div wicket:id="bokommune"/>
+            <div wicket:id="telefon"/>
+            <div wicket:id="bokommune"/>
 
-        <div wicket:id="statsborger" role="radiogroup"/>
-        <div wicket:id="nasjonalitet"/>
-
+            <div wicket:id="statsborger" role="radiogroup"/>
+            <div wicket:id="nasjonalitet"/>
+            <input class="knapp-hoved" type="submit"/>
+        </form>
     </wicket:extend>
 </html>

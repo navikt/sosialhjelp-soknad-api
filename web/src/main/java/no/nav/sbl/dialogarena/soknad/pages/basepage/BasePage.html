@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:wicket="http://wicket.apache.org" lang="no">
-    <head>
+<html xmlns:wicket="http://wicket.apache.org">
+    <wicket:head>
         <title wicket:id="tabTittel"/>
-    </head>
+    </wicket:head>
     <body wicket:id="body">
         <div class="omslag">
             <wicket:container wicket:id="innstillinger">Replaced by wicket</wicket:container>
@@ -10,12 +10,9 @@
             <div class="rad">
                 <div class="begrensning">
                     <section class="sak-hel">
-                        <div class="panel-standard-belyst">
-                            <form class="skjema" wicket:id="form">
-                                <h1 class="diger" wicket:id="tittel"/>
-                                <wicket:child/>
-                                <input class="knapp-hoved" type="submit"/>
-                            </form>
+                        <div class="panel-standard-belyst skjema">
+                            <h1 class="diger" wicket:id="tittel"/>
+                            <wicket:child/>
                         </div>
                     </section>
                 </div>

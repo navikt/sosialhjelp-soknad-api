@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknad.pages.basepage;
 
 import no.nav.modig.content.CmsContentRetriever;
-import no.nav.sbl.dialogarena.soknad.service.SoknadService;
 import no.nav.sbl.dialogarena.webkomponent.footer.FooterPanel;
 import no.nav.sbl.dialogarena.webkomponent.innstillinger.InnstillingerPanel;
 import no.nav.sbl.dialogarena.webkomponent.navigasjon.NavigasjonPanel;
@@ -9,7 +8,6 @@ import org.apache.wicket.markup.html.TransparentWebMarkupContainer;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
@@ -19,9 +17,6 @@ import java.util.Map;
 
 
 public class BasePage extends WebPage {
-
-    @Inject
-    private SoknadService soknadService;
 
     @Inject
     protected CmsContentRetriever cmsContentRetriever;
@@ -41,22 +36,14 @@ public class BasePage extends WebPage {
         body = new TransparentWebMarkupContainer("body");
         body.setOutputMarkupId(true);
         add(body);
-
-        Form form = new Form("form") {
-            @Override
-            protected void onSubmit() {
-                super.onSubmit();
-                Long soknadId = ((BaseViewModel) getPage().getDefaultModelObject()).getSoknadId();
-                soknadService.sendSoknad(soknadId);
-            }
-        };
-        body.add(form);
-
         add(new Label("tabTittel"));
-        add(new Label("tittel"));
-        add(new InnstillingerPanel("innstillinger", getInnloggetIsTrueModel(), cmsContentRetriever));
-        add(new NavigasjonPanel("navigasjon", navigasjonsLink));
-        add(new FooterPanel("footer", footerLinks, getInnloggetIsTrueModel(), FALSE, cmsContentRetriever));
+
+
+        body.add(new Label("tittel"));
+
+        body.add(new InnstillingerPanel("innstillinger", getInnloggetIsTrueModel(), cmsContentRetriever));
+        body.add(new NavigasjonPanel("navigasjon", navigasjonsLink));
+        body.add(new FooterPanel("footer", footerLinks, getInnloggetIsTrueModel(), FALSE, cmsContentRetriever));
     }
 
     public final WebMarkupContainer getBody() {
