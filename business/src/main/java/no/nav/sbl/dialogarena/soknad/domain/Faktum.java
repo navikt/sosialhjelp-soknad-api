@@ -10,4 +10,8 @@ public class Faktum implements Serializable {
     public String key;
     public String value;
     public DateTime sistEndret;
+
+    public String getValue() {
+        return value;
+    }
 }

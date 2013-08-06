@@ -4,16 +4,20 @@ import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.soknad.domain.Faktum;
 import no.nav.sbl.dialogarena.soknad.domain.Soknad;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSBrukerData;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSSoknadData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.xml.ws.soap.SOAPFaultException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.soknad.service.Transformers.TIL_SOKNADID;
+import static no.nav.sbl.dialogarena.soknad.service.Transformers.tilFaktum;
 
 public class SoknadService {
 
@@ -71,12 +75,14 @@ public class SoknadService {
     }
 
     private Soknad convertToSoknad(WSSoknadData wsSoknad) {
-        List<Faktum> fakta = on(wsSoknad.getFaktum())
-                .map(Transformers.tilFaktum(Long.parseLong(wsSoknad.getSoknadId())))
-                .collect();
+        Long soknadId = Long.parseLong(wsSoknad.getSoknadId());
+        Map<String, Faktum> fakta = new LinkedHashMap<>();
+        for (WSBrukerData wsBrukerData : wsSoknad.getFaktum()) {
+            fakta.put(wsBrukerData.getNokkel(), tilFaktum(soknadId).transform(wsBrukerData));
+        }
 
         Soknad soknad = new Soknad();
-        soknad.soknadId = Long.parseLong(wsSoknad.getSoknadId());
+        soknad.soknadId = soknadId;
         soknad.gosysId = wsSoknad.getGosysId();
         soknad.leggTilFakta(fakta);
 

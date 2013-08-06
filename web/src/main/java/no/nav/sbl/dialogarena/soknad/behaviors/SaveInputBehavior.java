@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknad.behaviors;
 
-import no.nav.sbl.dialogarena.soknad.domain.Soknad;
+import no.nav.sbl.dialogarena.soknad.domain.Faktum;
 import no.nav.sbl.dialogarena.soknad.service.SoknadService;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
@@ -21,16 +21,16 @@ public class SaveInputBehavior extends AbstractDefaultAjaxBehavior {
 
     private static final Logger logger = LoggerFactory.getLogger(SaveInputBehavior.class);
     private SoknadService soknadService;
-    private IModel<Soknad> soknad;
+    private IModel<Faktum> faktum;
     private String jsFunctionName;
 
-    public SaveInputBehavior(SoknadService soknadService, IModel<Soknad> soknad) {
-        this(soknadService, soknad, SAVE_ON_CHANGE);
+    public SaveInputBehavior(SoknadService soknadService, IModel<Faktum> faktum) {
+        this(soknadService, faktum, SAVE_ON_CHANGE);
     }
 
-    public SaveInputBehavior(SoknadService soknadService, IModel<Soknad> soknad, String jsFunctionName) {
+    public SaveInputBehavior(SoknadService soknadService, IModel<Faktum> faktum, String jsFunctionName) {
         this.soknadService = soknadService;
-        this.soknad = soknad;
+        this.faktum = faktum;
         this.jsFunctionName = jsFunctionName;
     }
 
@@ -44,7 +44,7 @@ public class SaveInputBehavior extends AbstractDefaultAjaxBehavior {
     protected void respond(AjaxRequestTarget target) {
         onAjaxCallback(target);
         String value = RequestCycle.get().getRequest().getRequestParameters().getParameterValue("value").toString();
-        soknadService.lagreSoknadsFelt(soknad.getObject().soknadId, getComponent().getId(), value);
+        soknadService.lagreSoknadsFelt(faktum.getObject().soknadId, faktum.getObject().key, value);
     }
 
     private String getJsonAsString() {

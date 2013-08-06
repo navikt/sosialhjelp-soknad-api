@@ -1,9 +1,11 @@
 package no.nav.sbl.dialogarena.soknad.pages.felles.input.inputkomponenter;
 
+import no.nav.sbl.dialogarena.soknad.pages.felles.input.FaktumViewModel;
 import no.nav.sbl.dialogarena.soknad.service.SoknadService;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
 import javax.inject.Inject;
@@ -16,23 +18,23 @@ public abstract class BaseInput extends Panel {
     @Inject
     protected SoknadService soknadService;
 
-    public BaseInput(String id, IModel<String> labelModel, IModel inputModel) {
+    public BaseInput(String id, IModel<FaktumViewModel> model) {
         super(id);
-
+        setDefaultModel(new CompoundPropertyModel<>(model));
         add(cssClass("input"));
         add(cssClass(id));
 
-        Component label = addLabel(labelModel);
+        Component label = addLabel();
 
-        Component input = addInputField(inputModel);
+        Component input = addInputField();
         label.add(labelFor(input.getMarkupId()));
 
         add(label, input);
     }
 
-    protected abstract Component addInputField(IModel inputModel);
+    protected abstract Component addInputField();
 
-    protected Component addLabel(IModel labelModel) {
-        return new Label("label", labelModel);
+    protected Component addLabel() {
+        return new Label("label");
     }
 }

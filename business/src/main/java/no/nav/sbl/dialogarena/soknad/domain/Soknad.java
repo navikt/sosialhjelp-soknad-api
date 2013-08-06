@@ -4,8 +4,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -13,13 +13,13 @@ public class Soknad implements Serializable {
 
     public Long soknadId;
     public String gosysId;
-    public List<Faktum> fakta;
+    public Map<String, Faktum> fakta;
 
     public Soknad() {
-        fakta = new ArrayList<>();
+        fakta = new LinkedHashMap<>();
     }
 
-    public void leggTilFakta(List<Faktum> fakta) {
-        this.fakta.addAll(fakta);
+    public void leggTilFakta(Map<String, Faktum> fakta) {
+        this.fakta.putAll(fakta);
     }
 }
