@@ -35,7 +35,6 @@ public class BasePage extends WebPage {
     private Map<String, String> footerLinks;
 
     private final WebMarkupContainer body;
-    private final Form form;
 
     public BasePage() {
         super();
@@ -43,7 +42,7 @@ public class BasePage extends WebPage {
         body.setOutputMarkupId(true);
         add(body);
 
-        form = new Form("form") {
+        Form form = new Form("form") {
             @Override
             protected void onSubmit() {
                 super.onSubmit();
