@@ -14,12 +14,12 @@
     <packaging>pom</packaging>
 
     <properties>
-        <modig.frontend>1.0.5</modig.frontend>
+        <modig.frontend>1.0.9</modig.frontend>
         <wicket.version>6.9.1</wicket.version>
         <spring.version>3.2.3.RELEASE</spring.version>
         <nav.sbl.commons.version>3.30</nav.sbl.commons.version>
         <cxf.version>2.7.6</cxf.version>
-        <modig-security.version>1.0.1</modig-security.version>
+        <modig-security.version>1.0.7</modig-security.version>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.skippedModules>soknad-consumer</sonar.skippedModules>
@@ -135,7 +135,7 @@
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-test</artifactId>
-                <version>1.0.13</version>
+                <version>1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.hamcrest</groupId>
@@ -400,7 +400,7 @@
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-core</artifactId>
-                <version>1.0.0</version>
+                <version>1.0.1</version>
             </dependency>
             <dependency>
                 <groupId>com.55minutes</groupId>
@@ -410,7 +410,7 @@
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-web</artifactId>
-                <version>1.1.0</version>
+                <version>1.1.1</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
@@ -592,7 +592,7 @@
             <dependency>
                 <groupId>args4j</groupId>
                 <artifactId>args4j</artifactId>
-                <version>2.0.23</version>
+                <version>2.0.25</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
