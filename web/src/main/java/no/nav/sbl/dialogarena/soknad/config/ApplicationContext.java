@@ -12,10 +12,10 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 @Import({ConsumerConfig.class, FooterConfig.class, ContentConfig.class})
 public class ApplicationContext {
 
-    @Value("${navigasjonslink.url}")
+    @Value("${soknad.navigasjonslink.url}")
     private String navigasjonslink;
 
-    @Value("${logoutURL.url}")
+    @Value("${soknad.logoutURL.url}")
     private String logoutURL;
 
     @Bean
