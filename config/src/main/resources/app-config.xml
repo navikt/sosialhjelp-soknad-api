@@ -22,7 +22,9 @@
         <baseUrl alias="footer.nettstedskart" mapToProperty="footer.nettstedskart"/>
         <baseUrl alias="soknad.navigasjonslink" mapToProperty="soknad.navigasjonslink"/>
         <baseUrl alias="soknad.logoutURL" mapToProperty="soknad.logoutURL"/>
+        <baseUrl alias="dialogarena.cms" mapToProperty="dialogarena.cms"/>
         <applicationCertificate alias="srvSoknad"/>
+
     </resources>
     <security serviceUserResourceAlias="srvSoknad">
         <logins>

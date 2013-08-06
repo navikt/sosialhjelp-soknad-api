@@ -21,7 +21,7 @@ public class ContentConfig {
 
 
     //@Value("http://e32apvl026.oera-t.local:8080")
-    @Value("${cms.url}")
+    @Value("${dialogarena.cms.url}")
     private String cmsBaseUrl;
 
     private static final String DEFAULT_LOCALE = "nb";
