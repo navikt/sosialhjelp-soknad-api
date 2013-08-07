@@ -19,27 +19,27 @@ public class Soknad implements Serializable {
         fakta = new LinkedHashMap<>();
     }
 
-    public Long getSoknadId() {
+    public final Long getSoknadId() {
         return soknadId;
     }
 
-    public void setSoknadId(Long soknadId) {
+    public final void setSoknadId(Long soknadId) {
         this.soknadId = soknadId;
     }
 
-    public String getGosysId() {
+    public final String getGosysId() {
         return gosysId;
     }
 
-    public void setGosysId(String gosysId) {
+    public final void setGosysId(String gosysId) {
         this.gosysId = gosysId;
     }
 
-    public Map<String, Faktum> getFakta() {
+    public final Map<String, Faktum> getFakta() {
         return fakta;
     }
 
-    public void leggTilFakta(Map<String, Faktum> fakta) {
+    public final void leggTilFakta(Map<String, Faktum> fakta) {
         this.fakta.putAll(fakta);
     }
 }
