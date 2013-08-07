@@ -44,7 +44,7 @@ public class SaveInputBehavior extends AbstractDefaultAjaxBehavior {
     protected void respond(AjaxRequestTarget target) {
         onAjaxCallback(target);
         String value = RequestCycle.get().getRequest().getRequestParameters().getParameterValue("value").toString();
-        soknadService.lagreSoknadsFelt(faktum.getObject().soknadId, faktum.getObject().key, value);
+        soknadService.lagreSoknadsFelt(faktum.getObject().getSoknadId(), faktum.getObject().getKey(), value);
     }
 
     private String getJsonAsString() {

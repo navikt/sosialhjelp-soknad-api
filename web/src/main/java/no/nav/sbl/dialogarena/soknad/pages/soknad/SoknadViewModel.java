@@ -121,8 +121,8 @@ public class SoknadViewModel extends BaseViewModel {
             return soknad.fakta.get(key);
         }
         Faktum faktum = new Faktum();
-        faktum.key = key;
-        faktum.soknadId = soknad.soknadId;
+        faktum.setKey(key);
+        faktum.setSoknadId(soknad.soknadId);
         return faktum;
     }
 }

@@ -12,10 +12,10 @@ public class Transformers {
             @Override
             public Faktum transform(WSBrukerData wsBrukerData) {
                 Faktum faktum = new Faktum();
-                faktum.soknadId = soknadId;
-                faktum.key = wsBrukerData.getNokkel();
-                faktum.value = wsBrukerData.getVerdi();
-                faktum.sistEndret = wsBrukerData.getSistendret();
+                faktum.setSoknadId(soknadId);
+                faktum.setKey(wsBrukerData.getNokkel());
+                faktum.setValue(wsBrukerData.getVerdi());
+                faktum.setSistEndret(wsBrukerData.getSistendret());
                 return faktum;
             }
         };
