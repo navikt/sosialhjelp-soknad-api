@@ -7,11 +7,15 @@ import java.io.Serializable;
 public class BaseViewModel implements Serializable {
 
     private String tabTittel;
-    protected Soknad soknad;
+    private Soknad soknad;
 
     public BaseViewModel(String tabTittel, Soknad soknad) {
         this.tabTittel = tabTittel;
         this.soknad = soknad;
+    }
+
+    public Soknad getSoknad() {
+        return soknad;
     }
 
     public String getTabTittel() {
