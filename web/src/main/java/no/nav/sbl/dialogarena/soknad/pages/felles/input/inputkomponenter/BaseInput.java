@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknad.pages.felles.input.inputkomponenter;
 import no.nav.sbl.dialogarena.soknad.pages.felles.input.FaktumViewModel;
 import no.nav.sbl.dialogarena.soknad.service.SoknadService;
 import org.apache.wicket.Component;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -38,7 +37,5 @@ public abstract class BaseInput extends Panel {
 
     protected abstract Component addInputField();
 
-    protected Component addLabel() {
-        return new Label("label");
-    }
+    protected abstract Component addLabel();
 }

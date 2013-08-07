@@ -4,6 +4,7 @@ import no.nav.sbl.dialogarena.soknad.behaviors.SaveInputBehavior;
 import no.nav.sbl.dialogarena.soknad.domain.Faktum;
 import no.nav.sbl.dialogarena.soknad.pages.felles.input.FaktumViewModel;
 import org.apache.wicket.Component;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
@@ -22,5 +23,10 @@ public class TekstFelt extends BaseInput {
         TextField<String> input = new TextField<>("value");
         input.add(new SaveInputBehavior(getSoknadService(), new PropertyModel<Faktum>(getDefaultModel(), "faktum")));
         return input;
+    }
+
+    @Override
+    protected Component addLabel() {
+        return new Label("label");
     }
 }
