@@ -19,7 +19,7 @@ import java.util.List;
 public class Radiogruppe extends Panel {
 
     @Inject
-    protected SoknadService soknadService;
+    private SoknadService soknadService;
 
     public Radiogruppe(String id, IModel<FaktumViewModel> model, IModel<List<FaktumViewModel>> statsborgerskapValg) {
         super(id, model);
