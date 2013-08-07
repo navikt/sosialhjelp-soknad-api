@@ -11,12 +11,32 @@ import java.util.Map;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Soknad implements Serializable {
 
-    public Long soknadId;
-    public String gosysId;
-    public Map<String, Faktum> fakta;
+    private Long soknadId;
+    private String gosysId;
+    private Map<String, Faktum> fakta;
 
     public Soknad() {
         fakta = new LinkedHashMap<>();
+    }
+
+    public Long getSoknadId() {
+        return soknadId;
+    }
+
+    public void setSoknadId(Long soknadId) {
+        this.soknadId = soknadId;
+    }
+
+    public String getGosysId() {
+        return gosysId;
+    }
+
+    public void setGosysId(String gosysId) {
+        this.gosysId = gosysId;
+    }
+
+    public Map<String, Faktum> getFakta() {
+        return fakta;
     }
 
     public void leggTilFakta(Map<String, Faktum> fakta) {

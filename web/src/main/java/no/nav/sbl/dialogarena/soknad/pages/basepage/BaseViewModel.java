@@ -23,6 +23,6 @@ public class BaseViewModel implements Serializable {
     }
 
     public Long getSoknadId() {
-        return soknad.soknadId;
+        return soknad.getSoknadId();
     }
 }

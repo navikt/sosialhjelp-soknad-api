@@ -29,13 +29,13 @@ public enum PageEnum {
     }
 
     public static Page getPage(Soknad soknad) {
-        if (isBlank(soknad.gosysId)) {
+        if (isBlank(soknad.getGosysId())) {
             logger.error("Kan ikke åpne side med tom søknads-ID");
             throw new ApplicationException("Kan ikke åpne side med tom søknads-ID");
         }
 
         for (PageEnum page : values()) {
-            if (page.erSide(soknad.gosysId)) {
+            if (page.erSide(soknad.getGosysId())) {
                 try {
                     return page.pageClass.getConstructor(Soknad.class).newInstance(soknad);
                 } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
@@ -45,8 +45,7 @@ public enum PageEnum {
             }
         }
 
-        logger.error("Fant ikke side knyttet til søknad med ID {}", soknad.gosysId);
+        logger.error("Fant ikke side knyttet til søknad med ID {}", soknad.getGosysId());
         throw new ApplicationException("Kunne ikke åpne søknaden");
     }
-
 }

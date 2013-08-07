@@ -19,8 +19,7 @@ public class Radioknapp extends BaseInput {
 
     @Override
     protected Component addInputField() {
-        Radio input = new Radio("value", Model.of(false));
-        return input;
+        return new Radio("value", Model.of(false));
     }
 
     @Override

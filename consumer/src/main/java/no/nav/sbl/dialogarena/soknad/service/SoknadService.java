@@ -82,8 +82,8 @@ public class SoknadService {
         }
 
         Soknad soknad = new Soknad();
-        soknad.soknadId = soknadId;
-        soknad.gosysId = wsSoknad.getGosysId();
+        soknad.setSoknadId(soknadId);
+        soknad.setGosysId(wsSoknad.getGosysId());
         soknad.leggTilFakta(fakta);
 
         return soknad;

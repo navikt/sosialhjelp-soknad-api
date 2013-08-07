@@ -117,12 +117,12 @@ public class SoknadViewModel extends BaseViewModel {
     }
 
     private Faktum getFaktum(String key) {
-        if (soknad.fakta.containsKey(key)) {
-            return soknad.fakta.get(key);
+        if (soknad.getFakta().containsKey(key)) {
+            return soknad.getFakta().get(key);
         }
         Faktum faktum = new Faktum();
         faktum.setKey(key);
-        faktum.setSoknadId(soknad.soknadId);
+        faktum.setSoknadId(soknad.getSoknadId());
         return faktum;
     }
 }

@@ -1,6 +1,9 @@
 package no.nav.sbl.dialogarena.soknad.behaviors.util;
 
-public class UtilBehaviors {
+public final class UtilBehaviors {
+
+    private UtilBehaviors() {}
+
     public static InputType hasType(String type) {
         return new InputType(type);
     }
