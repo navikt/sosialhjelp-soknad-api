@@ -20,7 +20,7 @@ function saveInputOnRadiobuttonChange(json) {
 
     components.change(function() {
         if ($(this).is(':checked')) {
-            var value = $(this).siblings('label').children('span').text().toLowerCase();
+            var value = $(this).next('label').children('span').text().toLowerCase();
             saveInput(json.callbackUrl, value);
         }
     });

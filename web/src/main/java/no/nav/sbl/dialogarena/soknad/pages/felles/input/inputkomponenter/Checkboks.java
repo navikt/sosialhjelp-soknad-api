@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.soknad.pages.felles.input.inputkomponenter;
 
 import no.nav.sbl.dialogarena.soknad.behaviors.SaveInputBehavior;
 import no.nav.sbl.dialogarena.soknad.domain.Faktum;
-import no.nav.sbl.dialogarena.soknad.pages.felles.input.FaktumViewModel;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -13,9 +12,9 @@ import org.apache.wicket.model.PropertyModel;
 
 import static no.nav.modig.wicket.shortcuts.Shortcuts.cssClass;
 
-public class Checkboks extends BaseInput{
+public class Checkboks extends BaseInput {
 
-    public Checkboks(String id, IModel<FaktumViewModel> model) {
+    public Checkboks(String id, IModel model) {
         super(id, model);
         add(cssClass("checkboks"));
     }
@@ -23,7 +22,7 @@ public class Checkboks extends BaseInput{
     @Override
     protected final Component addInputField() {
         CheckBox input = new CheckBox("value");
-        SaveInputBehavior saveInputBehavior = new SaveInputBehavior(getSoknadService(), new PropertyModel<Faktum>(getDefaultModel(), "faktum")) {
+        SaveInputBehavior saveInputBehavior = new SaveInputBehavior(soknadService, new PropertyModel<Faktum>(getDefaultModel(), "faktum")) {
             @Override
             public void onAjaxCallback(AjaxRequestTarget target) {
                 onToggle(target);
@@ -41,4 +40,8 @@ public class Checkboks extends BaseInput{
     }
 
     public void onToggle(AjaxRequestTarget target) {}
+
+    public IModel<Boolean> isChecked() {
+        return new PropertyModel(getDefaultModel(), "value");
+    }
 }

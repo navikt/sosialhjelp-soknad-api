@@ -20,6 +20,7 @@ public class SaveInputBehavior extends AbstractDefaultAjaxBehavior {
     public static final String SAVE_ON_RADIOBUTTON_CHANGE = "saveInputOnRadiobuttonChange";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SaveInputBehavior.class);
+
     private SoknadService soknadService;
     private IModel<Faktum> faktum;
     private String jsFunctionName;
@@ -44,6 +45,7 @@ public class SaveInputBehavior extends AbstractDefaultAjaxBehavior {
     protected final void respond(AjaxRequestTarget target) {
         onAjaxCallback(target);
         String value = RequestCycle.get().getRequest().getRequestParameters().getParameterValue("value").toString();
+        faktum.getObject().setValue(value);
         soknadService.lagreSoknadsFelt(faktum.getObject().getSoknadId(), faktum.getObject().getKey(), value);
     }
 
@@ -59,7 +61,5 @@ public class SaveInputBehavior extends AbstractDefaultAjaxBehavior {
     }
 
 
-    public void onAjaxCallback(AjaxRequestTarget target) {
-
-    }
+    public void onAjaxCallback(AjaxRequestTarget target) {}
 }

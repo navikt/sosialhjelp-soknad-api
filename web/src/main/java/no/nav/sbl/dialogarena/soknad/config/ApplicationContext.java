@@ -24,22 +24,22 @@ public class ApplicationContext {
     }
 
     @Bean
-    public final WicketApplication soknadApplication() {
+    public WicketApplication soknadApplication() {
         return new WicketApplication();
     }
 
     @Bean
-    public final SoknadService soknadService() {
+    public SoknadService soknadService() {
         return new SoknadService();
     }
 
     @Bean
-    public final String navigasjonslink() {
+    public String navigasjonslink() {
         return navigasjonslink;
     }
 
     @Bean
-    public final String logoutURL() {
+    public String logoutURL() {
         return logoutURL;
     }
 }

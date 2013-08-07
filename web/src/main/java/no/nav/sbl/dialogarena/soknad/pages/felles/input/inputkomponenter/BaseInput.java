@@ -6,6 +6,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
 
 import javax.inject.Inject;
 
@@ -15,11 +16,11 @@ import static no.nav.sbl.dialogarena.soknad.behaviors.util.UtilBehaviors.labelFo
 public abstract class BaseInput extends Panel {
 
     @Inject
-    private SoknadService soknadService;
+    protected SoknadService soknadService;
 
-    public BaseInput(String id, IModel<FaktumViewModel> model) {
+    public BaseInput(String id, IModel model) {
         super(id);
-        setDefaultModel(new CompoundPropertyModel<>(model));
+        setDefaultModel(new CompoundPropertyModel<FaktumViewModel>(new PropertyModel(model, id)));
         add(cssClass("input"));
         add(cssClass(id));
 
