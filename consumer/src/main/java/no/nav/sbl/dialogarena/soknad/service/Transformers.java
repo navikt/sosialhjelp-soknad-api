@@ -15,7 +15,7 @@ public class Transformers {
                 faktum.setSoknadId(soknadId);
                 faktum.setKey(wsBrukerData.getNokkel());
                 faktum.setValue(wsBrukerData.getVerdi());
-                faktum.setSistEndret(wsBrukerData.getSistendret());
+                //faktum.setSistEndret(wsBrukerData.getSistendret());
                 return faktum;
             }
         };
