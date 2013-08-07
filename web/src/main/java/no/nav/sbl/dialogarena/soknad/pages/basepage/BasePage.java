@@ -19,7 +19,7 @@ import java.util.Map;
 public class BasePage extends WebPage {
 
     @Inject
-    protected CmsContentRetriever cmsContentRetriever;
+    private CmsContentRetriever cmsContentRetriever;
 
     @Inject
     @Named("navigasjonslink")
