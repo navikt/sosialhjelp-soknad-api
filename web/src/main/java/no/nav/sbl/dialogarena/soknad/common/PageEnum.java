@@ -15,7 +15,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public enum PageEnum {
     TEST_SOKNAD(SoknadPage.class, "1");
 
-    private static final Logger logger = LoggerFactory.getLogger(PageEnum.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PageEnum.class);
     private final String navSoknadId;
     private final Class<? extends BasePage> pageClass;
 
@@ -30,7 +30,7 @@ public enum PageEnum {
 
     public static Page getPage(Soknad soknad) {
         if (isBlank(soknad.getGosysId())) {
-            logger.error("Kan ikke åpne side med tom søknads-ID");
+            LOGGER.error("Kan ikke åpne side med tom søknads-ID");
             throw new ApplicationException("Kan ikke åpne side med tom søknads-ID");
         }
 
@@ -39,13 +39,13 @@ public enum PageEnum {
                 try {
                     return page.pageClass.getConstructor(Soknad.class).newInstance(soknad);
                 } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
-                    logger.error("Kunne ikke opprette ny side");
+                    LOGGER.error("Kunne ikke opprette ny side");
                     throw new ApplicationException("Kunne ikke åpne søknad", e);
                 }
             }
         }
 
-        logger.error("Fant ikke side knyttet til søknad med ID {}", soknad.getGosysId());
+        LOGGER.error("Fant ikke side knyttet til søknad med ID {}", soknad.getGosysId());
         throw new ApplicationException("Kunne ikke åpne søknaden");
     }
 }
