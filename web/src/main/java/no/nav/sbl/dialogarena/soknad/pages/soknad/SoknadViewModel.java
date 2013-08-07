@@ -11,7 +11,7 @@ import java.util.List;
 
 public class SoknadViewModel extends BaseViewModel {
 
-    private static final List<String> STATSBORGERSKAP_VALG = Arrays.asList(new String[]{"Norsk", "Flyktning", "Utenlandsk"});
+    private static final List<String> STATSBORGERSKAP_VALG = Arrays.asList("Norsk", "Flyktning", "Utenlandsk");
 
     private static final String FORNAVN_KEY = "fornavn";
     private static final String FORNAVN_LABEL = "Fornavn";
@@ -52,55 +52,55 @@ public class SoknadViewModel extends BaseViewModel {
         super(tabTittel, soknad);
     }
 
-    public FaktumViewModel getFornavn() {
+    public final FaktumViewModel getFornavn() {
         return getFakumViewModel(FORNAVN_KEY, FORNAVN_LABEL);
     }
 
-    public FaktumViewModel getEtternavn() {
+    public final FaktumViewModel getEtternavn() {
         return getFakumViewModel(ETTERNAVN_KEY, ETTERNAVN_LABEL);
     }
 
-    public FaktumViewModel getFnr() {
+    public final FaktumViewModel getFnr() {
         return getFakumViewModel(FNR_KEY, FNR_LABEL);
     }
 
-    public FaktumViewModel getAdresse() {
+    public final FaktumViewModel getAdresse() {
         return getFakumViewModel(ADRESSE_KEY, ADRESSE_LABEL);
     }
 
-    public FaktumViewModel getPostnr() {
+    public final FaktumViewModel getPostnr() {
         return getFakumViewModel(POSTNR_KEY, POSTNR_LABEL);
     }
 
-    public FaktumViewModel getPoststed() {
+    public final FaktumViewModel getPoststed() {
         return getFakumViewModel(POSTSTED_KEY, POSTSTED_LABEL);
     }
 
-    public FaktumViewModel getTelefon() {
+    public final FaktumViewModel getTelefon() {
         return getFakumViewModel(TELEFON_KEY, TELEFON_LABEL);
     }
 
-    public FaktumViewModel getBokommune() {
+    public final FaktumViewModel getBokommune() {
         return getFakumViewModel(BOKOMMUNE_KEY, BOKOMMUNE_LABEL);
     }
 
-    public FaktumViewModel getNasjonalitet() {
+    public final FaktumViewModel getNasjonalitet() {
         return getFakumViewModel(NASJONALITET_KEY, NASJONALITET_LABEL);
     }
 
-    public FaktumViewModel getPenger() {
+    public final FaktumViewModel getPenger() {
         return getFakumViewModel(PENGER_KEY, PENGER_LABEL);
     }
 
-    public FaktumViewModel getSum() {
+    public final FaktumViewModel getSum() {
         return getFakumViewModel(SUM_KEY, SUM_LABEL);
     }
 
-    public FaktumViewModel getStatsborger() {
+    public final FaktumViewModel getStatsborger() {
         return getFakumViewModel(STATSBORGER_KEY, "");
     }
 
-    public List<FaktumViewModel> getStatsborgerListe() {
+    public final List<FaktumViewModel> getStatsborgerListe() {
         List<FaktumViewModel> valgListe = new ArrayList<>();
 
         for (String valg : STATSBORGERSKAP_VALG) {
