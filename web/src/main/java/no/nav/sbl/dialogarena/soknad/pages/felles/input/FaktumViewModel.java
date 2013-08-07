@@ -13,15 +13,15 @@ public class FaktumViewModel implements Serializable {
         this.label = label;
     }
 
-    public String getValue() {
+    public final String getValue() {
         return faktum.getValue();
     }
 
-    public String getLabel() {
+    public final String getLabel() {
         return label;
     }
 
-    public Faktum getFaktum() {
+    public final Faktum getFaktum() {
         return faktum;
     }
 }

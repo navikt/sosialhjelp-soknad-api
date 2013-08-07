@@ -21,7 +21,7 @@ public class Checkboks extends BaseInput{
     }
 
     @Override
-    protected Component addInputField() {
+    protected final Component addInputField() {
         CheckBox input = new CheckBox("value");
         SaveInputBehavior saveInputBehavior = new SaveInputBehavior(getSoknadService(), new PropertyModel<Faktum>(getDefaultModel(), "faktum")) {
             @Override
@@ -34,7 +34,7 @@ public class Checkboks extends BaseInput{
     }
 
     @Override
-    protected Component addLabel() {
+    protected final Component addLabel() {
         WebMarkupContainer label = new WebMarkupContainer("labelContainer");
         label.add(new Label("label"));
         return label;

@@ -19,14 +19,14 @@ public class TekstFelt extends BaseInput {
     }
 
     @Override
-    protected Component addInputField() {
+    protected final Component addInputField() {
         TextField<String> input = new TextField<>("value");
         input.add(new SaveInputBehavior(getSoknadService(), new PropertyModel<Faktum>(getDefaultModel(), "faktum")));
         return input;
     }
 
     @Override
-    protected Component addLabel() {
+    protected final Component addLabel() {
         return new Label("label");
     }
 }

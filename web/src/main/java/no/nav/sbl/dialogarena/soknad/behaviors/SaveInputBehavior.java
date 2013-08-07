@@ -35,13 +35,13 @@ public class SaveInputBehavior extends AbstractDefaultAjaxBehavior {
     }
 
     @Override
-    public void renderHead(Component component, IHeaderResponse response) {
+    public final void renderHead(Component component, IHeaderResponse response) {
         response.render(OnLoadHeaderItem.forScript(String.format(jsFunctionName + "(%s)", getJsonAsString())));
         super.renderHead(component, response);
     }
 
     @Override
-    protected void respond(AjaxRequestTarget target) {
+    protected final void respond(AjaxRequestTarget target) {
         onAjaxCallback(target);
         String value = RequestCycle.get().getRequest().getRequestParameters().getParameterValue("value").toString();
         soknadService.lagreSoknadsFelt(faktum.getObject().getSoknadId(), faktum.getObject().getKey(), value);

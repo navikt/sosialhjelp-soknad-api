@@ -31,7 +31,7 @@ public abstract class BaseInput extends Panel {
         add(label, input);
     }
 
-    public SoknadService getSoknadService() {
+    public final SoknadService getSoknadService() {
         return soknadService;
     }
 

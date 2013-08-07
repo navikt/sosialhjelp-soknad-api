@@ -18,12 +18,12 @@ public class Radioknapp extends BaseInput {
     }
 
     @Override
-    protected Component addInputField() {
+    protected final Component addInputField() {
         return new Radio("value", Model.of(false));
     }
 
     @Override
-    protected Component addLabel() {
+    protected final Component addLabel() {
         WebMarkupContainer label = new WebMarkupContainer("labelContainer");
         label.add(new Label("label"));
         return label;

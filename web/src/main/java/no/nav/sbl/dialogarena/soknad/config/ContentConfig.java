@@ -30,7 +30,7 @@ public class ContentConfig {
 
 
     @Bean
-    public ValueRetriever siteContentRetriever() throws URISyntaxException {
+    public final ValueRetriever siteContentRetriever() throws URISyntaxException {
         Map<String, List<URI>> uris = new HashMap<>();
         uris.put(DEFAULT_LOCALE,
                 Arrays.asList(
@@ -42,17 +42,16 @@ public class ContentConfig {
     }
 
     @Bean
-    public ContentRetriever enonicContentRetriever() {
+    public final ContentRetriever enonicContentRetriever() {
         return new HttpContentRetriever();
     }
 
     @Bean
-    public CmsContentRetriever cmsContentRetriever() throws URISyntaxException {
+    public final CmsContentRetriever cmsContentRetriever() throws URISyntaxException {
         CmsContentRetriever cmsContentRetriever = new CmsContentRetriever();
         cmsContentRetriever.setDefaultLocale(DEFAULT_LOCALE);
         cmsContentRetriever.setTeksterRetriever(siteContentRetriever());
         cmsContentRetriever.setArtikkelRetriever(siteContentRetriever());
         return cmsContentRetriever;
     }
-
 }
