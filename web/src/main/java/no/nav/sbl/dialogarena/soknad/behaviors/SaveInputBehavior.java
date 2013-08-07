@@ -19,7 +19,7 @@ public class SaveInputBehavior extends AbstractDefaultAjaxBehavior {
     public static final String SAVE_ON_CHANGE = "saveInputOnChange";
     public static final String SAVE_ON_RADIOBUTTON_CHANGE = "saveInputOnRadiobuttonChange";
 
-    private static final Logger logger = LoggerFactory.getLogger(SaveInputBehavior.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SaveInputBehavior.class);
     private SoknadService soknadService;
     private IModel<Faktum> faktum;
     private String jsFunctionName;
@@ -53,7 +53,7 @@ public class SaveInputBehavior extends AbstractDefaultAjaxBehavior {
             json.put("selector", getComponent().getMarkupId());
             json.put("callbackUrl", getCallbackUrl());
         } catch (JSONException e) {
-            logger.error("Kunne ikke opprette JSON objekt for timeoutboks");
+            LOGGER.error("Kunne ikke opprette JSON objekt for timeoutboks");
         }
         return json.toString();
     }
