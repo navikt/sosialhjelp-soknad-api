@@ -75,7 +75,7 @@ public class SoknadService {
     }
 
     private Soknad convertToSoknad(WSSoknadData wsSoknad) {
-        Long soknadId = Long.parseLong(wsSoknad.getSoknadId());
+        Long soknadId = wsSoknad.getSoknadId();
         Map<String, Faktum> fakta = new LinkedHashMap<>();
         for (WSBrukerData wsBrukerData : wsSoknad.getFaktum()) {
             fakta.put(wsBrukerData.getNokkel(), tilFaktum(soknadId).transform(wsBrukerData));
