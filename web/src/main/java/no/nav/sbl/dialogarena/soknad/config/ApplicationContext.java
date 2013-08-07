@@ -39,7 +39,7 @@ public class ApplicationContext {
     }
 
     @Bean
-    public finalString logoutURL() {
+    public final String logoutURL() {
         return logoutURL;
     }
 }
