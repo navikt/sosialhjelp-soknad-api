@@ -29,12 +29,12 @@ public class WicketApplication extends WebApplication {
     }
 
     @Override
-    public Class<? extends Page> getHomePage() {
+    public final Class<? extends Page> getHomePage() {
         return HomePage.class;
     }
 
     @Override
-    protected void init() {
+    protected final void init() {
         super.init();
 
         FrontendConfigurator configurator = new FrontendConfigurator();
@@ -70,7 +70,8 @@ public class WicketApplication extends WebApplication {
 
         Application.get().getComponentPostOnBeforeRenderListeners().add(new StatelessChecker());
 
-        get().getStoreSettings().setMaxSizePerSession(Bytes.kilobytes(500));
+        final int kilobytes = 500;
+        get().getStoreSettings().setMaxSizePerSession(Bytes.kilobytes(kilobytes));
 
 
         Application.get().getRequestLoggerSettings().setRequestLoggerEnabled(true);
@@ -87,7 +88,7 @@ public class WicketApplication extends WebApplication {
         setSpringComponentInjector();
     }
 
-    protected void setSpringComponentInjector() {
+    protected final void setSpringComponentInjector() {
         getComponentInstantiationListeners().add(new SpringComponentInjector(this, applicationContext));
     }
 }
