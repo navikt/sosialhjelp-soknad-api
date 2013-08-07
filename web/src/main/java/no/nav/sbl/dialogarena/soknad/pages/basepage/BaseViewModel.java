@@ -14,19 +14,19 @@ public class BaseViewModel implements Serializable {
         this.soknad = soknad;
     }
 
-    public Soknad getSoknad() {
+    public final Soknad getSoknad() {
         return soknad;
     }
 
-    public String getTabTittel() {
+    public final String getTabTittel() {
         return tabTittel;
     }
 
-    public String getTittel() {
+    public final String getTittel() {
         return "Tittel!";
     }
 
-    public Long getSoknadId() {
+    public final Long getSoknadId() {
         return soknad.getSoknadId();
     }
 }
