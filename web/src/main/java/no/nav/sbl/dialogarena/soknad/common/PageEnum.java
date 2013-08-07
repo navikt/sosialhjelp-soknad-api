@@ -13,14 +13,13 @@ import java.lang.reflect.InvocationTargetException;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public enum PageEnum {
-    TEST_SOKNAD(SoknadPage.class, "1");
+    TEST_SOKNAD("1");
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PageEnum.class);
     private final String navSoknadId;
-    private final Class<? extends BasePage> pageClass;
+    private final Class<? extends BasePage> pageClass = SoknadPage.class;
 
-    PageEnum(Class<? extends BasePage> pageClass, String navSoknadId) {
-        this.pageClass = pageClass;
+    PageEnum(String navSoknadId) {
         this.navSoknadId = navSoknadId;
     }
 
