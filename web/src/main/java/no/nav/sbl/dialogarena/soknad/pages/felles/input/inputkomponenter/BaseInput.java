@@ -16,7 +16,7 @@ import static no.nav.sbl.dialogarena.soknad.behaviors.util.UtilBehaviors.labelFo
 public abstract class BaseInput extends Panel {
 
     @Inject
-    protected SoknadService soknadService;
+    private SoknadService soknadService;
 
     public BaseInput(String id, IModel<FaktumViewModel> model) {
         super(id);
@@ -30,6 +30,10 @@ public abstract class BaseInput extends Panel {
         label.add(labelFor(input.getMarkupId()));
 
         add(label, input);
+    }
+
+    public SoknadService getSoknadService() {
+        return soknadService;
     }
 
     protected abstract Component addInputField();

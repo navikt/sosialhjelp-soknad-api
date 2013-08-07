@@ -23,7 +23,7 @@ public class Checkboks extends BaseInput{
     @Override
     protected Component addInputField() {
         CheckBox input = new CheckBox("value");
-        SaveInputBehavior saveInputBehavior = new SaveInputBehavior(soknadService, new PropertyModel<Faktum>(getDefaultModel(), "faktum")) {
+        SaveInputBehavior saveInputBehavior = new SaveInputBehavior(getSoknadService(), new PropertyModel<Faktum>(getDefaultModel(), "faktum")) {
             @Override
             public void onAjaxCallback(AjaxRequestTarget target) {
                 onToggle(target);

@@ -20,7 +20,7 @@ public class TekstFelt extends BaseInput {
     @Override
     protected Component addInputField() {
         TextField<String> input = new TextField<>("value");
-        input.add(new SaveInputBehavior(soknadService, new PropertyModel<Faktum>(getDefaultModel(), "faktum")));
+        input.add(new SaveInputBehavior(getSoknadService(), new PropertyModel<Faktum>(getDefaultModel(), "faktum")));
         return input;
     }
 }
