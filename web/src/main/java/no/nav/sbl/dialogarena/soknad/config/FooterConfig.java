@@ -32,7 +32,7 @@ public class FooterConfig {
     private String nettstedskartUrl;
 
     @Bean
-    public final Map<String, String> footerLinks() {
+    public Map<String, String> footerLinks() {
         Map<String, String> footerLinks = new HashMap<>();
         footerLinks.put(FOOTER_KONTAKT_URL, kontaktUrl);
         footerLinks.put(FOOTER_PERSONVERN_URL, personvernUrl);
