@@ -17,6 +17,10 @@ public class FaktumViewModel implements Serializable {
         faktum.setValue(value);
     }
 
+    public void setValue(Object object) {
+        faktum.setValue(object.toString());
+    }
+
     public Object getValue() {
         return faktum.getValue();
     }
