@@ -4,7 +4,6 @@ import no.nav.sbl.dialogarena.soknad.domain.Soknad;
 import no.nav.sbl.dialogarena.soknad.pages.basepage.BasePage;
 import no.nav.sbl.dialogarena.soknad.pages.felles.input.FaktumViewModel;
 import no.nav.sbl.dialogarena.soknad.pages.felles.input.Radiogruppe;
-import no.nav.sbl.dialogarena.soknad.pages.felles.input.inputkomponenter.Checkboks;
 import no.nav.sbl.dialogarena.soknad.pages.felles.input.inputkomponenter.TekstFelt;
 import no.nav.sbl.dialogarena.soknad.service.SoknadService;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -71,7 +70,7 @@ public class SoknadPage extends BasePage {
 
         form.add(statsborger, nasjonalitet);
 
-        final TekstFelt sum = new TekstFelt("sum", pageModel);
+        /*final TekstFelt sum = new TekstFelt("sum", pageModel);
         sum.setOutputMarkupPlaceholderTag(true);
 
         Checkboks penger = new Checkboks("penger", pageModel) {
@@ -82,6 +81,6 @@ public class SoknadPage extends BasePage {
         };
         sum.add(visibleIf(penger.isChecked()));
 
-        form.add(sum, penger);
+        form.add(sum, penger);*/
     }
 }
