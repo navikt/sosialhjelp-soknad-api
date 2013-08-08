@@ -14,7 +14,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <modig.frontend>1.0.11</modig.frontend>
+        <modig.frontend>1.0.10</modig.frontend>
         <wicket.version>6.9.1</wicket.version>
         <spring.version>3.2.4.RELEASE</spring.version>
         <nav.sbl.commons.version>3.30</nav.sbl.commons.version>
