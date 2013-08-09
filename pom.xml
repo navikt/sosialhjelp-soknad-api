@@ -10,7 +10,7 @@
 
     <name>Dialogarena - soknad</name>
     <artifactId>soknad</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -682,9 +682,9 @@
         </plugins>
     </build>
     <scm>
-        <developerConnection>scm:svn:https://versjonskontroll.adeo.no/svn/nav-sbl/dialogarena/soknad/tags/soknad-1.0.0
+        <developerConnection>scm:svn:https://versjonskontroll.adeo.no/svn/nav-sbl/dialogarena/soknad/trunk
         </developerConnection>
-        <url>https://versjonskontroll.adeo.no/wsvn/nav-sbl/dialogarena/soknad/tags/soknad-1.0.0</url>
+        <url>https://versjonskontroll.adeo.no/wsvn/nav-sbl/dialogarena/soknad/trunk</url>
     </scm>
 
     <profiles>

@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>no.nav.sbl.dialogarena</groupId>
 		<artifactId>soknad</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1-SNAPSHOT</version>
 	</parent>
 
     <artifactId>soknad-jee</artifactId>
@@ -17,7 +17,7 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>soknad-web</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1-SNAPSHOT</version>
             <type>war</type>
 			<scope>runtime</scope>
 		</dependency>
