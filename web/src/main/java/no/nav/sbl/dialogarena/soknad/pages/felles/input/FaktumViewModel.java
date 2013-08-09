@@ -17,11 +17,16 @@ public class FaktumViewModel implements Serializable {
         faktum.setValue(value);
     }
 
-    public void setValue(Object object) {
-        faktum.setValue(object.toString());
+    public Boolean getBooleanValue() {
+        String value = getValue();
+        if (value == null || value.equalsIgnoreCase("false")) {
+            return false;
+        }
+
+        return true;
     }
 
-    public Object getValue() {
+    public String getValue() {
         return faktum.getValue();
     }
 

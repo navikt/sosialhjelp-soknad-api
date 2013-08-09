@@ -4,8 +4,8 @@ import no.nav.sbl.dialogarena.soknad.domain.Faktum;
 import no.nav.sbl.dialogarena.soknad.domain.Soknad;
 import no.nav.sbl.dialogarena.soknad.pages.basepage.BaseViewModel;
 import no.nav.sbl.dialogarena.soknad.pages.felles.input.FaktumViewModel;
+import no.nav.sbl.dialogarena.soknad.pages.felles.input.radiogruppe.RadiogruppeViewModel;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -73,25 +73,19 @@ public class SoknadViewModel extends BaseViewModel {
         return getFakumViewModel(SUM_KEY);
     }
 
-    public final FaktumViewModel getStatsborger() {
-        return getFakumViewModel(STATSBORGER_KEY);
-    }
-
-    public final List<FaktumViewModel> getStatsborgerListe() {
-        List<FaktumViewModel> valgListe = new ArrayList<>();
-
-        for (String valg : STATSBORGERSKAP_VALG) {
-            Faktum faktum = new Faktum();
-            FaktumViewModel fvm = new FaktumViewModel(faktum, valg);
-            valgListe.add(fvm);
-        }
-        return valgListe;
+    public final RadiogruppeViewModel getStatsborger() {
+        return getRadiogruppeViewModel(STATSBORGER_KEY, STATSBORGERSKAP_VALG);
     }
 
     private FaktumViewModel getFakumViewModel(String key) {
         Faktum faktum = getFaktum(key);
         String label = getApplicationProperty("tullesoknad." + key);
         return new FaktumViewModel(faktum, label);
+    }
+
+    private RadiogruppeViewModel getRadiogruppeViewModel(String key, List<String> valgliste) {
+        Faktum faktum = getFaktum(key);
+        return new RadiogruppeViewModel(faktum, valgliste);
     }
 
     private Faktum getFaktum(String key) {

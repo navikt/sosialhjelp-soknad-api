@@ -9,7 +9,9 @@ import org.apache.wicket.ajax.json.JSONException;
 import org.apache.wicket.ajax.json.JSONObject;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnLoadHeaderItem;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,16 +24,14 @@ public class SaveInputBehavior extends AbstractDefaultAjaxBehavior {
     private static final Logger LOGGER = LoggerFactory.getLogger(SaveInputBehavior.class);
 
     private SoknadService soknadService;
-    private IModel<Faktum> faktum;
     private String jsFunctionName;
 
-    public SaveInputBehavior(SoknadService soknadService, IModel<Faktum> faktum) {
-        this(soknadService, faktum, SAVE_ON_CHANGE);
+    public SaveInputBehavior(SoknadService soknadService) {
+        this(soknadService, SAVE_ON_CHANGE);
     }
 
-    public SaveInputBehavior(SoknadService soknadService, IModel<Faktum> faktum, String jsFunctionName) {
+    public SaveInputBehavior(SoknadService soknadService, String jsFunctionName) {
         this.soknadService = soknadService;
-        this.faktum = faktum;
         this.jsFunctionName = jsFunctionName;
     }
 
@@ -45,8 +45,9 @@ public class SaveInputBehavior extends AbstractDefaultAjaxBehavior {
     protected final void respond(AjaxRequestTarget target) {
         onAjaxCallback(target);
         String value = RequestCycle.get().getRequest().getRequestParameters().getParameterValue("value").toString();
-        faktum.getObject().setValue(value);
-        soknadService.lagreSoknadsFelt(faktum.getObject().getSoknadId(), faktum.getObject().getKey(), value);
+        IModel<Faktum> model = getFaktumModel();
+        model.getObject().setValue(value);
+        soknadService.lagreSoknadsFelt(model.getObject().getSoknadId(), model.getObject().getKey(), value);
     }
 
     private String getJsonAsString() {
@@ -62,4 +63,14 @@ public class SaveInputBehavior extends AbstractDefaultAjaxBehavior {
 
 
     public void onAjaxCallback(AjaxRequestTarget target) {}
+
+    private IModel<Faktum> getFaktumModel() {
+        IModel model = getComponent().getDefaultModel();
+
+        if (!(model instanceof CompoundPropertyModel)) {
+            model = getComponent().getParent().getDefaultModel();
+        }
+
+        return new PropertyModel(model, "faktum");
+    }
 }

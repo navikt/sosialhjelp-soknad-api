@@ -8,31 +8,23 @@ public class Faktum implements Serializable {
     private String key;
     private String value;
 
-    public Object getValue() {
-        if (value == null) {
-            return null;
-        }
-        if (value.equalsIgnoreCase("true")) {
-            return true;
-        } else if (value.equalsIgnoreCase("false")) {
-            return false;
-        }
+    public String getValue() {
         return value;
     }
     
-    public final Long getSoknadId() {
+    public Long getSoknadId() {
         return soknadId;
     }
 
-    public final void setSoknadId(Long soknadId) {
+    public void setSoknadId(Long soknadId) {
         this.soknadId = soknadId;
     }
 
-    public final String getKey() {
+    public String getKey() {
         return key;
     }
 
-    public final void setKey(String key) {
+    public void setKey(String key) {
         this.key = key;
     }
 
