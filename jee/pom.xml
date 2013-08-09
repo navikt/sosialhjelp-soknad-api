@@ -21,13 +21,6 @@
             <type>war</type>
 			<scope>runtime</scope>
 		</dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>soknad-wsmock-web</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-            <type>war</type>
-            <scope>runtime</scope>
-        </dependency>        
 	</dependencies>
 
     <build>
@@ -42,17 +35,10 @@
                             <artifactId>soknad-web</artifactId>
                             <contextRoot>/soknad</contextRoot>
                         </webModule>
-                        <webModule>
-                            <groupId>${project.groupId}</groupId>
-                            <artifactId>soknad-wsmock-web</artifactId>
-                            <contextRoot>/soknad-mock</contextRoot>
-                        </webModule>                        
                     </modules>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
-
 </project>
