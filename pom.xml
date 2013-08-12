@@ -23,7 +23,7 @@
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.skippedModules>soknad-consumer</sonar.skippedModules>
-        <sendsoknad.tjenestespec.version>0.0.5</sendsoknad.tjenestespec.version>
+        <sendsoknad.tjenestespec.version>0.0.6-SNAPSHOT</sendsoknad.tjenestespec.version>
         <dialogarena.webkomponent.footer>1.0.4</dialogarena.webkomponent.footer>
         <dialogarena.webkomponent.navigasjon>1.0.3</dialogarena.webkomponent.navigasjon>
         <dialogarena.webkomponent.innstillinger>1.0.10</dialogarena.webkomponent.innstillinger>

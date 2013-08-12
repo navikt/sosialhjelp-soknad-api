@@ -16,7 +16,10 @@ import java.util.List;
 import java.util.Map;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.modig.lang.collections.PredicateUtils.equalToIgnoreCase;
+import static no.nav.modig.lang.collections.PredicateUtils.where;
 import static no.nav.sbl.dialogarena.soknad.service.Transformers.TIL_SOKNADID;
+import static no.nav.sbl.dialogarena.soknad.service.Transformers.TIL_STATUS;
 import static no.nav.sbl.dialogarena.soknad.service.Transformers.tilFaktum;
 
 public class SoknadService {
@@ -65,12 +68,23 @@ public class SoknadService {
 
     public List<Long> hentMineSoknader(String aktorId) {
         try {
+            // TODO: Endre status til å ikke være string når vi får rett status fra henvendelse
             return on(sendsoknadPortType.hentSoknadListe(aktorId))
+                    .filter(where(TIL_STATUS, equalToIgnoreCase("under_arbeid")))
                     .map(TIL_SOKNADID)
                     .collect();
         } catch (SOAPFaultException e) {
             logger.error("Feil ved sending av søknader for aktør med ID {}", aktorId, e);
             throw new ApplicationException("Feil ved henting av søknader", e);
+        }
+    }
+
+    public void avbrytSoknad(Long soknadId) {
+        try {
+            sendsoknadPortType.avbrytSoknad(soknadId);
+        } catch (SOAPFaultException e) {
+            logger.error("Kunne ikke avbryte søknad med ID {}", soknadId, e);
+            throw new ApplicationException("Feil ved avbryting av søknad", e);
         }
     }
 

@@ -8,8 +8,10 @@ import no.nav.sbl.dialogarena.soknad.pages.felles.input.radiogruppe.Radiogruppe;
 import no.nav.sbl.dialogarena.soknad.service.SoknadService;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
 
 import javax.inject.Inject;
 
@@ -79,5 +81,17 @@ public class SoknadPage extends BasePage {
         sum.add(visibleIf(penger.isChecked()));
 
         form.add(sum, penger);
+
+        Link avbryt = new Link("avbryt") {
+            @Override
+            public void onClick() {
+                Long soknadId = ((SoknadViewModel) getPage().getDefaultModelObject()).getSoknadId();
+                soknadService.avbrytSoknad(soknadId);
+            }
+        };
+
+        avbryt.setBody(Model.of("Avbryt"));
+
+        form.add(avbryt);
     }
 }

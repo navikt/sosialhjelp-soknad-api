@@ -16,7 +16,11 @@ public class RadiogruppeViewModel implements Serializable {
     }
 
     public String getRadiogruppe() {
-        return faktum.getValue();
+        String value = faktum.getValue();
+        if (value == null) {
+            return "";
+        }
+        return value;
     }
 
     public List<String> getValgliste() {

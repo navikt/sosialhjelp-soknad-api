@@ -27,4 +27,11 @@ public class Transformers {
             return wsSoknadDataOppsummering.getSoknadId();
         }
     };
+
+    public static final Transformer<WSSoknadDataOppsummering, String> TIL_STATUS = new Transformer<WSSoknadDataOppsummering, String>() {
+        @Override
+        public String transform(WSSoknadDataOppsummering wsSoknadDataOppsummering) {
+            return wsSoknadDataOppsummering.getStatus();
+        }
+    };
 }

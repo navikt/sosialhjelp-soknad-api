@@ -27,7 +27,11 @@ public class FaktumViewModel implements Serializable {
     }
 
     public String getValue() {
-        return faktum.getValue();
+        String value = faktum.getValue();
+        if (value == null) {
+            return "";
+        }
+        return value;
     }
 
     public String getLabel() {
