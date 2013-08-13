@@ -22,6 +22,7 @@ public class Radiogruppe extends BaseInput {
 
         RadioGroup radiogruppe = new RadioGroup("radiogruppe");
         radiogruppe.add(new ValgListe("valgliste"));
+        radiogruppe.setRequired(true);
         add(radiogruppe);
 
         SaveInputBehavior saveInputBehavior = new SaveInputBehavior(soknadService, SaveInputBehavior.SAVE_ON_RADIOBUTTON_CHANGE) {

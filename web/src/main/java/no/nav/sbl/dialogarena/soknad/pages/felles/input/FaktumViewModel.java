@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknad.pages.felles.input;
 
 import no.nav.sbl.dialogarena.soknad.domain.Faktum;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 
@@ -19,7 +20,7 @@ public class FaktumViewModel implements Serializable {
 
     public Boolean getBooleanValue() {
         String value = getValue();
-        if (value == null || value.equalsIgnoreCase("false")) {
+        if (StringUtils.isBlank(value) || value.equalsIgnoreCase("false")) {
             return false;
         }
 

@@ -42,6 +42,11 @@ public class SoknadPage extends BasePage {
                 Long soknadId = ((SoknadViewModel) getPage().getDefaultModelObject()).getSoknadId();
                 soknadService.sendSoknad(soknadId);
             }
+
+            @Override
+            protected void onError() {
+                super.onError();
+            }
         };
         add(form);
 
