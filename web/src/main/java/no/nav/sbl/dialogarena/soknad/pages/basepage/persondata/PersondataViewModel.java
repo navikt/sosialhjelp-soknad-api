@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknad.pages.basepage.persondata;
 
-import no.nav.sbl.dialogarena.soknad.domain.Faktum;
 import no.nav.sbl.dialogarena.soknad.domain.Soknad;
 import no.nav.sbl.dialogarena.soknad.pages.basepage.BaseViewModel;
 
@@ -17,6 +16,22 @@ public class PersondataViewModel extends BaseViewModel {
         return getFaktum("etternavn").getValue();
     }
 
+    public String getFnr() {
+        return getFaktum("fnr").getValue();
+    }
+
+    public String getAdresse() {
+        return getFaktum("adresse").getValue();
+    }
+
+    public String getPostnr() {
+        return getFaktum("postnr").getValue();
+    }
+
+    public String getPoststed() {
+        return getFaktum("poststed").getValue();
+    }
+
     public String getNavnLabel() {
         return "Navn";
     }
@@ -27,23 +42,5 @@ public class PersondataViewModel extends BaseViewModel {
 
     public String getAdresseLabel() {
         return "Adresse";
-    }
-
-    public String getFnr() {
-        Faktum fnr = getFaktum("fnr");
-        return fnr.getValue();
-    }
-
-    public String getAdresse() {
-        Faktum adresse = getFaktum("adresse");
-        return adresse.getValue();
-    }
-
-    public String getPostnr() {
-        return getFaktum("postnr").getValue();
-    }
-
-    public String getPoststed() {
-        return getFaktum("poststed").getValue();
     }
 }
