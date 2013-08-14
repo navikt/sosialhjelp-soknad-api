@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.soknad.common;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.soknad.domain.Soknad;
 import no.nav.sbl.dialogarena.soknad.pages.basepage.BasePage;
-import no.nav.sbl.dialogarena.soknad.pages.soknad.SoknadPage;
+import no.nav.sbl.dialogarena.soknad.pages.tullesoknad.persondata.TullesoknadPersondataPage;
 import org.apache.wicket.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ public enum PageEnum {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PageEnum.class);
     private final String navSoknadId;
-    private final Class<? extends BasePage> pageClass = SoknadPage.class;
+    private final Class<? extends BasePage> pageClass = TullesoknadPersondataPage.class;
 
     PageEnum(String navSoknadId) {
         this.navSoknadId = navSoknadId;

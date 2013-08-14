@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknad.pages.soknad;
+package no.nav.sbl.dialogarena.soknad.pages.tullesoknad;
 
 import no.nav.sbl.dialogarena.soknad.domain.Soknad;
 import no.nav.sbl.dialogarena.soknad.pages.basepage.BasePage;
@@ -46,15 +46,6 @@ public class SoknadPage extends BasePage {
             }
         };
         add(form);
-
-        form.add(new TekstFelt("fornavn"));
-        form.add(new TekstFelt("etternavn"));
-
-        form.add(new TekstFelt("fnr"));
-
-        form.add(new TekstFelt("adresse"));
-        form.add(new TekstFelt("postnr"));
-        form.add(new TekstFelt("poststed"));
 
         form.add(new TekstFelt("telefon"));
         form.add(new TekstFelt("bokommune"));

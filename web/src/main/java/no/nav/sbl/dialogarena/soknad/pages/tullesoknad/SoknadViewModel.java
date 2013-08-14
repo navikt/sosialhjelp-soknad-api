@@ -1,20 +1,15 @@
-package no.nav.sbl.dialogarena.soknad.pages.soknad;
+package no.nav.sbl.dialogarena.soknad.pages.tullesoknad;
 
-import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.soknad.domain.Faktum;
 import no.nav.sbl.dialogarena.soknad.domain.Soknad;
 import no.nav.sbl.dialogarena.soknad.pages.basepage.BaseViewModel;
 import no.nav.sbl.dialogarena.soknad.pages.felles.input.FaktumViewModel;
 import no.nav.sbl.dialogarena.soknad.pages.felles.input.radiogruppe.RadiogruppeViewModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class SoknadViewModel extends BaseViewModel {
-
-    private static final Logger logger = LoggerFactory.getLogger(SoknadViewModel.class);
 
     private static final List<String> STATSBORGERSKAP_VALG = Arrays.asList("Norsk", "Flyktning", "Utenlandsk");
     private static final String FORNAVN_KEY = "fornavn";
@@ -91,13 +86,5 @@ public class SoknadViewModel extends BaseViewModel {
     private RadiogruppeViewModel getRadiogruppeViewModel(String key, List<String> valgliste) {
         Faktum faktum = getFaktum(key);
         return new RadiogruppeViewModel(faktum, valgliste);
-    }
-
-    private Faktum getFaktum(String key) {
-        if (getSoknad().getFakta().containsKey(key)) {
-            return getSoknad().getFakta().get(key);
-        }
-        logger.error("Fant ikke nøkkel {} i søknadsstrukturen", key);
-        throw new ApplicationException("Fant ikke nøkkelen i søknadsstrukturen");
     }
 }

@@ -5,7 +5,7 @@ import no.nav.modig.frontend.FrontendModules;
 import no.nav.modig.frontend.MetaTag;
 import no.nav.modig.wicket.configuration.ApplicationSettingsConfig;
 import no.nav.sbl.dialogarena.soknad.pages.HomePage;
-import no.nav.sbl.dialogarena.soknad.pages.soknad.SoknadPage;
+import no.nav.sbl.dialogarena.soknad.pages.tullesoknad.SoknadPage;
 import no.nav.sbl.dialogarena.soknad.selftest.SelfTestPage;
 import no.nav.sbl.dialogarena.webkomponent.innstillinger.InnstillingerPanel;
 import org.apache.wicket.Application;
