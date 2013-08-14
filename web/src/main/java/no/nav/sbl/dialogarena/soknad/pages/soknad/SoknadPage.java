@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.soknad.pages.basepage.BasePage;
 import no.nav.sbl.dialogarena.soknad.pages.felles.input.inputkomponenter.Checkboks;
 import no.nav.sbl.dialogarena.soknad.pages.felles.input.inputkomponenter.TekstFelt;
 import no.nav.sbl.dialogarena.soknad.pages.felles.input.radiogruppe.Radiogruppe;
+import no.nav.sbl.dialogarena.soknad.pages.kvittering.KvitteringPage;
 import no.nav.sbl.dialogarena.soknad.service.SoknadService;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
@@ -41,6 +42,7 @@ public class SoknadPage extends BasePage {
                 super.onSubmit();
                 Long soknadId = ((SoknadViewModel) getPage().getDefaultModelObject()).getSoknadId();
                 soknadService.sendSoknad(soknadId);
+                setResponsePage(new KvitteringPage(soknad));
             }
         };
         add(form);
