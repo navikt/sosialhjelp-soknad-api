@@ -74,7 +74,6 @@ public class WicketApplication extends WebApplication {
         final int kilobytes = 500;
         get().getStoreSettings().setMaxSizePerSession(Bytes.kilobytes(kilobytes));
 
-
         Application.get().getRequestLoggerSettings().setRequestLoggerEnabled(true);
 
 
