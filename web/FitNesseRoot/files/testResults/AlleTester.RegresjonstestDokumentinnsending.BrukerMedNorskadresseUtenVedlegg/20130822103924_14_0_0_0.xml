@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<testResults>
+  <FitNesseVersion>***REMOVED***20</FitNesseVersion>
+  <rootPath>BrukerMedNorskadresseUtenVedlegg</rootPath>
+    <result>
+    <counts>
+      <right>14</right>
+      <wrong>0</wrong>
+      <ignores>0</ignores>
+      <exceptions>0</exceptions>
+    </counts>
+    <runTimeInMillis>67126</runTimeInMillis>
+    <content><![CDATA[<div class="collapsible closed"><ul><li><a href='#' class='expandall'>Expand All</a></li><li><a href='#' class='collapseall'>Collapse All</a></li></ul>
+	<p class="title">Oppsett</p>
+	<div><br/><span class="meta">variable defined: TEST_RUNNER=fitlibrary.suite.FitLibraryServer</span>
+<br/><table>
+	<tr>
+		<td>no.nav.sbl.dialogarena.dokumentinnsending.fixture.regresjon.BrukerMedNorskAdresseUtenVedleggFixture</td>
+	</tr>
+</table>
+</div>
+</div>
+<br/><br/><b>Scenarie: </b><br/><h4>GITT AT en bruker med norsk adresse, sender elektronisk inn en søknad (Last ned/Last opp)</h4>
+<h4>NÅR bruker kommer til bekreftelsessiden</h4>
+<h4>SÅ skal dokumentstatus vises</h4>
+<h4>OG bruker bekrefter og sender</h4>
+<h4>SÅ skal innsendingen være fullført og bruker får en kvittering på at innsendingen er OK</h4>
+<br/><br/><br/><b>Opprett datagrunnlag</b><br/><br/><table>
+	<tr>
+		<td class="pass">Opprett brukerbehandling og identifiser aktor med fodselsnummer</td>
+		<td>71125449977</td>
+		<td class="pass">og med norsk adresse</td>
+		<td>Ja</td>
+		<td class="pass">og behandlingsId</td>
+		<td>b1</td>
+		<td class="pass">og skjemanummer</td>
+		<td>NAV 04-01.03</td>
+		<td class="pass">med dokumentstatus</td>
+		<td>Lastet opp</td>
+	</tr>
+</table>
+<br/><b>Scenarie: </b><br/><br/><table>
+	<tr>
+		<td class="pass">Bruker går til bekreftelsessiden med behandlingsId</td>
+		<td>b1</td>
+	</tr>
+</table>
+<br/><table>
+	<tr>
+		<td class="pass">Dokumentet med skjemaId</td>
+		<td>NAV 04-01.03</td>
+		<td class="pass">med tittel</td>
+		<td>Krav om dagpenger</td>
+		<td class="pass">og dokumentstatus</td>
+		<td>Lastet opp</td>
+		<td class="pass">skal vises</td>
+	</tr>
+</table>
+<br/><table>
+	<tr>
+		<td class="pass">Bruker bekrefter og går til kvitteringssiden med behandlingsId</td>
+		<td>b1</td>
+	</tr>
+</table>
+<br/><table>
+	<tr>
+		<td class="pass">Innsendingen ferdig og kvittering vises med behandlingsId</td>
+		<td>b1</td>
+		<td class="pass">og dokument sendt er</td>
+		<td>Krav om dagpenger</td>
+		<td class="pass">og dokumentstatus er</td>
+		<td>Lastet opp</td>
+	</tr>
+</table>
+]]></content>
+    <relativePageName>BrukerMedNorskadresseUtenVedlegg</relativePageName>
+        <tags>godkjent</tags>
+    
+    
+    
+  </result>
+  
+    <finalCounts>
+    <right>0</right>
+    <wrong>0</wrong>
+    <ignores>0</ignores>
+    <exceptions>0</exceptions>
+  </finalCounts>
+  <totalRunTimeInMillis>0</totalRunTimeInMillis>
+  
+</testResults>
+

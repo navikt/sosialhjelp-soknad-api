@@ -1,0 +1,643 @@
+<?xml version="1.0"?>
+<testResults>
+  <FitNesseVersion>***REMOVED***20</FitNesseVersion>
+  <rootPath>BrukerMedFastUtenlanskAdresseEttersenderNavVedleggEgetVedlegg</rootPath>
+    <result>
+    <counts>
+      <right>9</right>
+      <wrong>0</wrong>
+      <ignores>0</ignores>
+      <exceptions>0</exceptions>
+    </counts>
+    <runTimeInMillis>81067</runTimeInMillis>
+    <content><![CDATA[<div class="collapsible closed"><ul><li><a href='#' class='expandall'>Expand All</a></li><li><a href='#' class='collapseall'>Collapse All</a></li></ul>
+	<p class="title">Precompiled Libraries</p>
+	<div><br/></div>
+</div>
+<div class="collapsible closed"><ul><li><a href='#' class='expandall'>Expand All</a></li><li><a href='#' class='collapseall'>Collapse All</a></li></ul>
+	<p class="title">Oppsett</p>
+	<div><br/><span class="meta">variable defined: TEST_SYSTEM=slim</span>
+<br/><table _TABLENUMBER=30433***REMOVED***971>
+	<tr>
+		<td>import</td>
+	</tr>
+	<tr>
+		<td>no.nav.sbl.dialogarena.dokumentinnsending.fixture.regresjon</td>
+	</tr>
+</table>
+<br/></div>
+</div>
+<br/><b>Scenarie:</b><br/><br/><b>GITT AT en bruker med fast utenlansk adresse, ettersender elektronisk inn et NAV vedlegg(Sendes ikke)  </b><br/><br/><b>OG et eget vedlegg(Lastet opp) </b><br/><br/><b>NÅR bruker kommer til bekreftelsessiden </b><br/><br/><b>SÅ skal dokumentstatus vises</b><br/><br/><b>OG bruker går tilbake til forrige side </b><br/><br/><b>OG bruker endrer tittel på eget vedlegg </b><br/><br/><b>OG bruker fortsetter til bekreftelsessiden  </b><br/><br/><b>OG bruker fyller inn valg for utenlansk adresse (alternativ C)  </b><br/><br/><b>OG bekrefter og sender SÅ skal innsendingen være fullført  </b><br/><br/><b>OG bruker får en kvittering på at innsendingen er OK</b><br/><br/><b>OG Behandlingen er i henvendelses databasen med status journalførende enhet 2101</b><br/><br/><table _TABLENUMBER=4549596267408902923>
+	<tr>
+		<td>Script</td>
+		<td><span class="pass">slim driver</span></td>
+		<td>R4</td>
+		<td colspan="3">S7</td>
+	</tr>
+	<tr>
+		<td>gitt at bruker med foedselsnr</td>
+		<td>***REMOVED***</td>
+		<td>har adresse</td>
+		<td colspan="3">postadresse utland</td>
+	</tr>
+	<tr>
+		<td><span class="pass">ettersender skjema med id</span></td>
+		<td>R4</td>
+		<td>og med tittel</td>
+		<td>Krav om dagpenger</td>
+		<td>og med innsendingsvalg</td>
+		<td>Lastet opp</td>
+	</tr>
+	<tr>
+		<td colspan="6">og</td>
+	</tr>
+	<tr>
+		<td><span class="pass">ettersender eget vedlegg med tittel</span></td>
+		<td>S7</td>
+		<td>og med innsendingsvalg</td>
+		<td colspan="3">Sendes ikke</td>
+	</tr>
+	<tr>
+		<td colspan="6"><span class="pass">naar bruker kommer til bekreftelsessiden</span></td>
+	</tr>
+	<tr>
+		<td colspan="6">saa skal</td>
+	</tr>
+	<tr>
+		<td><span class="pass">dokument</span></td>
+		<td>R4</td>
+		<td>vise status</td>
+		<td colspan="3">Lastet opp</td>
+	</tr>
+	<tr>
+		<td colspan="6">og</td>
+	</tr>
+	<tr>
+		<td><span class="pass">dokument</span></td>
+		<td>S7</td>
+		<td>vise status</td>
+		<td colspan="3">Sendes ikke</td>
+	</tr>
+	<tr>
+		<td colspan="6">og</td>
+	</tr>
+	<tr>
+		<td colspan="6"><span class="pass">informasjon om utenlandsadresse vises</span></td>
+	</tr>
+	<tr>
+		<td colspan="6">og</td>
+	</tr>
+	<tr>
+		<td><span class="pass">naar bruker velger alternativ</span></td>
+		<td colspan="5">valg3</td>
+	</tr>
+	<tr>
+		<td colspan="6">saa skal</td>
+	</tr>
+	<tr>
+		<td colspan="6"><span class="pass">innsendingskvitteringen vises</span></td>
+	</tr>
+	<tr>
+		<td colspan="6">og</td>
+	</tr>
+	<tr>
+		<td><span class="pass">journalfoerende navenhet</span></td>
+		<td>2101</td>
+		<td colspan="4">sendes</td>
+	</tr>
+</table>
+]]></content>
+    <relativePageName>BrukerMedFastUtenlanskAdresseEttersenderNavVedleggEgetVedlegg</relativePageName>
+        <tags>godkjent</tags>
+    
+        <tables>
+            <table>
+        <name>import_0</name>
+                <row>
+                    <col><![CDATA[import]]></col>
+          
+        </row>
+                <row>
+                    <col><![CDATA[no.nav.sbl.dialogarena.dokumentinnsending.fixture.regresjon]]></col>
+          
+        </row>
+        
+      </table>
+            <table>
+        <name>scriptTable_1</name>
+                <row>
+                    <col><![CDATA[Script]]></col>
+                    <col><![CDATA[pass(slim driver)]]></col>
+                    <col><![CDATA[R4]]></col>
+                    <col><![CDATA[S7]]></col>
+          
+        </row>
+                <row>
+                    <col><![CDATA[gitt at bruker med foedselsnr]]></col>
+                    <col><![CDATA[***REMOVED***]]></col>
+                    <col><![CDATA[har adresse]]></col>
+                    <col><![CDATA[postadresse utland]]></col>
+          
+        </row>
+                <row>
+                    <col><![CDATA[pass(ettersender skjema med id)]]></col>
+                    <col><![CDATA[R4]]></col>
+                    <col><![CDATA[og med tittel]]></col>
+                    <col><![CDATA[Krav om dagpenger]]></col>
+                    <col><![CDATA[og med innsendingsvalg]]></col>
+                    <col><![CDATA[Lastet opp]]></col>
+          
+        </row>
+                <row>
+                    <col><![CDATA[og]]></col>
+          
+        </row>
+                <row>
+                    <col><![CDATA[pass(ettersender eget vedlegg med tittel)]]></col>
+                    <col><![CDATA[S7]]></col>
+                    <col><![CDATA[og med innsendingsvalg]]></col>
+                    <col><![CDATA[Sendes ikke]]></col>
+          
+        </row>
+                <row>
+                    <col><![CDATA[pass(naar bruker kommer til bekreftelsessiden)]]></col>
+          
+        </row>
+                <row>
+                    <col><![CDATA[saa skal]]></col>
+          
+        </row>
+                <row>
+                    <col><![CDATA[pass(dokument)]]></col>
+                    <col><![CDATA[R4]]></col>
+                    <col><![CDATA[vise status]]></col>
+                    <col><![CDATA[Lastet opp]]></col>
+          
+        </row>
+                <row>
+                    <col><![CDATA[og]]></col>
+          
+        </row>
+                <row>
+                    <col><![CDATA[pass(dokument)]]></col>
+                    <col><![CDATA[S7]]></col>
+                    <col><![CDATA[vise status]]></col>
+                    <col><![CDATA[Sendes ikke]]></col>
+          
+        </row>
+                <row>
+                    <col><![CDATA[og]]></col>
+          
+        </row>
+                <row>
+                    <col><![CDATA[pass(informasjon om utenlandsadresse vises)]]></col>
+          
+        </row>
+                <row>
+                    <col><![CDATA[og]]></col>
+          
+        </row>
+                <row>
+                    <col><![CDATA[pass(naar bruker velger alternativ)]]></col>
+                    <col><![CDATA[valg3]]></col>
+          
+        </row>
+                <row>
+                    <col><![CDATA[saa skal]]></col>
+          
+        </row>
+                <row>
+                    <col><![CDATA[pass(innsendingskvitteringen vises)]]></col>
+          
+        </row>
+                <row>
+                    <col><![CDATA[og]]></col>
+          
+        </row>
+                <row>
+                    <col><![CDATA[pass(journalfoerende navenhet)]]></col>
+                    <col><![CDATA[2101]]></col>
+                    <col><![CDATA[sendes]]></col>
+          
+        </row>
+        
+      </table>
+      
+    </tables>
+    
+    
+    <instructions>
+            <instructionResult>
+        <instruction><![CDATA[[import_0_0, import, no.nav.sbl.dialogarena.dokumentinnsending.fixture.regresjon]]]></instruction>
+        <slimResult><![CDATA[OK]]></slimResult>
+        
+      </instructionResult>
+            <instructionResult>
+        <instruction><![CDATA[[scriptTable_1_0, make, scriptTableActor, SlimDriver, R4, S7]]]></instruction>
+        <slimResult><![CDATA[OK]]></slimResult>
+                <expectation>
+          <status>right</status>
+          <instructionId>scriptTable_1_0</instructionId>
+          <col>1</col>
+          <row>0</row>
+          <type>ConstructionExpectation</type>
+                    <actual><![CDATA[OK]]></actual>
+                              <expected><![CDATA[slim driver]]></expected>
+                              <evaluationMessage><![CDATA[pass(slim driver)]]></evaluationMessage>
+                  </expectation>
+        
+      </instructionResult>
+            <instructionResult>
+        <instruction><![CDATA[[scriptTable_1_1, call, scriptTableActor, gittAtBrukerMedFoedselsnrHarAdresse, ***REMOVED***, postadresse utland]]]></instruction>
+        <slimResult><![CDATA[/__VOID__/]]></slimResult>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_1</instructionId>
+          <col>2</col>
+          <row>0</row>
+          <type>VoidReturnExpectation</type>
+                    <actual><![CDATA[/__VOID__/]]></actual>
+                              <expected><![CDATA[R4]]></expected>
+                              <evaluationMessage><![CDATA[R4]]></evaluationMessage>
+                  </expectation>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_1</instructionId>
+          <col>3</col>
+          <row>0</row>
+          <type>VoidReturnExpectation</type>
+                    <actual><![CDATA[/__VOID__/]]></actual>
+                              <expected><![CDATA[S7]]></expected>
+                              <evaluationMessage><![CDATA[S7]]></evaluationMessage>
+                  </expectation>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_1</instructionId>
+          <col>1</col>
+          <row>1</row>
+          <type>ArgumentExpectation</type>
+                                        <evaluationMessage><![CDATA[]]></evaluationMessage>
+                  </expectation>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_1</instructionId>
+          <col>3</col>
+          <row>1</row>
+          <type>ArgumentExpectation</type>
+                                        <evaluationMessage><![CDATA[]]></evaluationMessage>
+                  </expectation>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_1</instructionId>
+          <col>0</col>
+          <row>1</row>
+          <type>ScriptActionExpectation</type>
+                    <actual><![CDATA[/__VOID__/]]></actual>
+                              <expected><![CDATA[gitt at bruker med foedselsnr]]></expected>
+                              <evaluationMessage><![CDATA[gitt at bruker med foedselsnr]]></evaluationMessage>
+                  </expectation>
+        
+      </instructionResult>
+            <instructionResult>
+        <instruction><![CDATA[[scriptTable_1_2, call, scriptTableActor, ettersenderSkjemaMedIdOgMedTittelOgMedInnsendingsvalg, R4, Krav om dagpenger, Lastet opp]]]></instruction>
+        <slimResult><![CDATA[true]]></slimResult>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_2</instructionId>
+          <col>1</col>
+          <row>2</row>
+          <type>ArgumentExpectation</type>
+                                        <evaluationMessage><![CDATA[]]></evaluationMessage>
+                  </expectation>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_2</instructionId>
+          <col>3</col>
+          <row>2</row>
+          <type>ArgumentExpectation</type>
+                                        <evaluationMessage><![CDATA[]]></evaluationMessage>
+                  </expectation>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_2</instructionId>
+          <col>5</col>
+          <row>2</row>
+          <type>ArgumentExpectation</type>
+                                        <evaluationMessage><![CDATA[]]></evaluationMessage>
+                  </expectation>
+                <expectation>
+          <status>right</status>
+          <instructionId>scriptTable_1_2</instructionId>
+          <col>0</col>
+          <row>2</row>
+          <type>ScriptActionExpectation</type>
+                    <actual><![CDATA[true]]></actual>
+                              <expected><![CDATA[ettersender skjema med id]]></expected>
+                              <evaluationMessage><![CDATA[pass(ettersender skjema med id)]]></evaluationMessage>
+                  </expectation>
+        
+      </instructionResult>
+            <instructionResult>
+        <instruction><![CDATA[[scriptTable_1_3, call, scriptTableActor, og]]]></instruction>
+        <slimResult><![CDATA[/__VOID__/]]></slimResult>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_3</instructionId>
+          <col>0</col>
+          <row>3</row>
+          <type>ScriptActionExpectation</type>
+                    <actual><![CDATA[/__VOID__/]]></actual>
+                              <expected><![CDATA[og]]></expected>
+                              <evaluationMessage><![CDATA[og]]></evaluationMessage>
+                  </expectation>
+        
+      </instructionResult>
+            <instructionResult>
+        <instruction><![CDATA[[scriptTable_1_4, call, scriptTableActor, ettersenderEgetVedleggMedTittelOgMedInnsendingsvalg, S7, Sendes ikke]]]></instruction>
+        <slimResult><![CDATA[true]]></slimResult>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_4</instructionId>
+          <col>1</col>
+          <row>4</row>
+          <type>ArgumentExpectation</type>
+                                        <evaluationMessage><![CDATA[]]></evaluationMessage>
+                  </expectation>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_4</instructionId>
+          <col>3</col>
+          <row>4</row>
+          <type>ArgumentExpectation</type>
+                                        <evaluationMessage><![CDATA[]]></evaluationMessage>
+                  </expectation>
+                <expectation>
+          <status>right</status>
+          <instructionId>scriptTable_1_4</instructionId>
+          <col>0</col>
+          <row>4</row>
+          <type>ScriptActionExpectation</type>
+                    <actual><![CDATA[true]]></actual>
+                              <expected><![CDATA[ettersender eget vedlegg med tittel]]></expected>
+                              <evaluationMessage><![CDATA[pass(ettersender eget vedlegg med tittel)]]></evaluationMessage>
+                  </expectation>
+        
+      </instructionResult>
+            <instructionResult>
+        <instruction><![CDATA[[scriptTable_1_5, call, scriptTableActor, naarBrukerKommerTilBekreftelsessiden]]]></instruction>
+        <slimResult><![CDATA[true]]></slimResult>
+                <expectation>
+          <status>right</status>
+          <instructionId>scriptTable_1_5</instructionId>
+          <col>0</col>
+          <row>5</row>
+          <type>ScriptActionExpectation</type>
+                    <actual><![CDATA[true]]></actual>
+                              <expected><![CDATA[naar bruker kommer til bekreftelsessiden]]></expected>
+                              <evaluationMessage><![CDATA[pass(naar bruker kommer til bekreftelsessiden)]]></evaluationMessage>
+                  </expectation>
+        
+      </instructionResult>
+            <instructionResult>
+        <instruction><![CDATA[[scriptTable_1_6, call, scriptTableActor, saaSkal]]]></instruction>
+        <slimResult><![CDATA[/__VOID__/]]></slimResult>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_6</instructionId>
+          <col>0</col>
+          <row>6</row>
+          <type>ScriptActionExpectation</type>
+                    <actual><![CDATA[/__VOID__/]]></actual>
+                              <expected><![CDATA[saa skal]]></expected>
+                              <evaluationMessage><![CDATA[saa skal]]></evaluationMessage>
+                  </expectation>
+        
+      </instructionResult>
+            <instructionResult>
+        <instruction><![CDATA[[scriptTable_1_7, call, scriptTableActor, dokumentViseStatus, R4, Lastet opp]]]></instruction>
+        <slimResult><![CDATA[true]]></slimResult>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_7</instructionId>
+          <col>1</col>
+          <row>7</row>
+          <type>ArgumentExpectation</type>
+                                        <evaluationMessage><![CDATA[]]></evaluationMessage>
+                  </expectation>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_7</instructionId>
+          <col>3</col>
+          <row>7</row>
+          <type>ArgumentExpectation</type>
+                                        <evaluationMessage><![CDATA[]]></evaluationMessage>
+                  </expectation>
+                <expectation>
+          <status>right</status>
+          <instructionId>scriptTable_1_7</instructionId>
+          <col>0</col>
+          <row>7</row>
+          <type>ScriptActionExpectation</type>
+                    <actual><![CDATA[true]]></actual>
+                              <expected><![CDATA[dokument]]></expected>
+                              <evaluationMessage><![CDATA[pass(dokument)]]></evaluationMessage>
+                  </expectation>
+        
+      </instructionResult>
+            <instructionResult>
+        <instruction><![CDATA[[scriptTable_1_8, call, scriptTableActor, og]]]></instruction>
+        <slimResult><![CDATA[/__VOID__/]]></slimResult>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_8</instructionId>
+          <col>0</col>
+          <row>8</row>
+          <type>ScriptActionExpectation</type>
+                    <actual><![CDATA[/__VOID__/]]></actual>
+                              <expected><![CDATA[og]]></expected>
+                              <evaluationMessage><![CDATA[og]]></evaluationMessage>
+                  </expectation>
+        
+      </instructionResult>
+            <instructionResult>
+        <instruction><![CDATA[[scriptTable_1_9, call, scriptTableActor, dokumentViseStatus, S7, Sendes ikke]]]></instruction>
+        <slimResult><![CDATA[true]]></slimResult>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_9</instructionId>
+          <col>1</col>
+          <row>9</row>
+          <type>ArgumentExpectation</type>
+                                        <evaluationMessage><![CDATA[]]></evaluationMessage>
+                  </expectation>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_9</instructionId>
+          <col>3</col>
+          <row>9</row>
+          <type>ArgumentExpectation</type>
+                                        <evaluationMessage><![CDATA[]]></evaluationMessage>
+                  </expectation>
+                <expectation>
+          <status>right</status>
+          <instructionId>scriptTable_1_9</instructionId>
+          <col>0</col>
+          <row>9</row>
+          <type>ScriptActionExpectation</type>
+                    <actual><![CDATA[true]]></actual>
+                              <expected><![CDATA[dokument]]></expected>
+                              <evaluationMessage><![CDATA[pass(dokument)]]></evaluationMessage>
+                  </expectation>
+        
+      </instructionResult>
+            <instructionResult>
+        <instruction><![CDATA[[scriptTable_1_10, call, scriptTableActor, og]]]></instruction>
+        <slimResult><![CDATA[/__VOID__/]]></slimResult>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_10</instructionId>
+          <col>0</col>
+          <row>10</row>
+          <type>ScriptActionExpectation</type>
+                    <actual><![CDATA[/__VOID__/]]></actual>
+                              <expected><![CDATA[og]]></expected>
+                              <evaluationMessage><![CDATA[og]]></evaluationMessage>
+                  </expectation>
+        
+      </instructionResult>
+            <instructionResult>
+        <instruction><![CDATA[[scriptTable_1_11, call, scriptTableActor, informasjonOmUtenlandsadresseVises]]]></instruction>
+        <slimResult><![CDATA[true]]></slimResult>
+                <expectation>
+          <status>right</status>
+          <instructionId>scriptTable_1_11</instructionId>
+          <col>0</col>
+          <row>11</row>
+          <type>ScriptActionExpectation</type>
+                    <actual><![CDATA[true]]></actual>
+                              <expected><![CDATA[informasjon om utenlandsadresse vises]]></expected>
+                              <evaluationMessage><![CDATA[pass(informasjon om utenlandsadresse vises)]]></evaluationMessage>
+                  </expectation>
+        
+      </instructionResult>
+            <instructionResult>
+        <instruction><![CDATA[[scriptTable_1_12, call, scriptTableActor, og]]]></instruction>
+        <slimResult><![CDATA[/__VOID__/]]></slimResult>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_12</instructionId>
+          <col>0</col>
+          <row>12</row>
+          <type>ScriptActionExpectation</type>
+                    <actual><![CDATA[/__VOID__/]]></actual>
+                              <expected><![CDATA[og]]></expected>
+                              <evaluationMessage><![CDATA[og]]></evaluationMessage>
+                  </expectation>
+        
+      </instructionResult>
+            <instructionResult>
+        <instruction><![CDATA[[scriptTable_1_13, call, scriptTableActor, naarBrukerVelgerAlternativ, valg3]]]></instruction>
+        <slimResult><![CDATA[true]]></slimResult>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_13</instructionId>
+          <col>1</col>
+          <row>13</row>
+          <type>ArgumentExpectation</type>
+                                        <evaluationMessage><![CDATA[]]></evaluationMessage>
+                  </expectation>
+                <expectation>
+          <status>right</status>
+          <instructionId>scriptTable_1_13</instructionId>
+          <col>0</col>
+          <row>13</row>
+          <type>ScriptActionExpectation</type>
+                    <actual><![CDATA[true]]></actual>
+                              <expected><![CDATA[naar bruker velger alternativ]]></expected>
+                              <evaluationMessage><![CDATA[pass(naar bruker velger alternativ)]]></evaluationMessage>
+                  </expectation>
+        
+      </instructionResult>
+            <instructionResult>
+        <instruction><![CDATA[[scriptTable_1_14, call, scriptTableActor, saaSkal]]]></instruction>
+        <slimResult><![CDATA[/__VOID__/]]></slimResult>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_14</instructionId>
+          <col>0</col>
+          <row>14</row>
+          <type>ScriptActionExpectation</type>
+                    <actual><![CDATA[/__VOID__/]]></actual>
+                              <expected><![CDATA[saa skal]]></expected>
+                              <evaluationMessage><![CDATA[saa skal]]></evaluationMessage>
+                  </expectation>
+        
+      </instructionResult>
+            <instructionResult>
+        <instruction><![CDATA[[scriptTable_1_15, call, scriptTableActor, innsendingskvitteringenVises]]]></instruction>
+        <slimResult><![CDATA[true]]></slimResult>
+                <expectation>
+          <status>right</status>
+          <instructionId>scriptTable_1_15</instructionId>
+          <col>0</col>
+          <row>15</row>
+          <type>ScriptActionExpectation</type>
+                    <actual><![CDATA[true]]></actual>
+                              <expected><![CDATA[innsendingskvitteringen vises]]></expected>
+                              <evaluationMessage><![CDATA[pass(innsendingskvitteringen vises)]]></evaluationMessage>
+                  </expectation>
+        
+      </instructionResult>
+            <instructionResult>
+        <instruction><![CDATA[[scriptTable_1_16, call, scriptTableActor, og]]]></instruction>
+        <slimResult><![CDATA[/__VOID__/]]></slimResult>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_16</instructionId>
+          <col>0</col>
+          <row>16</row>
+          <type>ScriptActionExpectation</type>
+                    <actual><![CDATA[/__VOID__/]]></actual>
+                              <expected><![CDATA[og]]></expected>
+                              <evaluationMessage><![CDATA[og]]></evaluationMessage>
+                  </expectation>
+        
+      </instructionResult>
+            <instructionResult>
+        <instruction><![CDATA[[scriptTable_1_17, call, scriptTableActor, journalfoerendeNavenhetSendes, 2101]]]></instruction>
+        <slimResult><![CDATA[true]]></slimResult>
+                <expectation>
+          <status>ignored</status>
+          <instructionId>scriptTable_1_17</instructionId>
+          <col>1</col>
+          <row>17</row>
+          <type>ArgumentExpectation</type>
+                                        <evaluationMessage><![CDATA[]]></evaluationMessage>
+                  </expectation>
+                <expectation>
+          <status>right</status>
+          <instructionId>scriptTable_1_17</instructionId>
+          <col>0</col>
+          <row>17</row>
+          <type>ScriptActionExpectation</type>
+                    <actual><![CDATA[true]]></actual>
+                              <expected><![CDATA[journalfoerende navenhet]]></expected>
+                              <evaluationMessage><![CDATA[pass(journalfoerende navenhet)]]></evaluationMessage>
+                  </expectation>
+        
+      </instructionResult>
+      
+    </instructions>
+    
+  </result>
+  
+    <finalCounts>
+    <right>0</right>
+    <wrong>0</wrong>
+    <ignores>0</ignores>
+    <exceptions>0</exceptions>
+  </finalCounts>
+  <totalRunTimeInMillis>0</totalRunTimeInMillis>
+  
+</testResults>
+

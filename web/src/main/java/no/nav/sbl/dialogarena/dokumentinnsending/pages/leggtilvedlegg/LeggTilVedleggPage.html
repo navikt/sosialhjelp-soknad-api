@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org" lang="no">
+    <wicket:extend>
+        <div class="legg-til-vedlegg">
+            <h1 class="stor">
+                <span wicket:id ="tittel"/>
+            </h1>
+            <div class="opprettVedlegg">
+                <p>
+                    <span wicket:id="beskrivelse"/>
+                </p>
+                <form class="vertikal beskrivelseForm" id="vedleggForm" wicket:id="vedleggForm" role="form">
+                    <div class="form-linje">
+                        <label for="tekstfelt">
+                            <span wicket:id="beskrivelseLabel"/>
+                        </label>
+                        <input class="beskrivelse" id="tekstfelt" type="text" wicket:id="beskrivelse" role="textbox"/>
+                        <span class="melding"/>
+                    </div>
+                    <footer>
+                        <input class="knapp-hoved-liten" id="submitButton" type="submit" wicket:id="bekreft" role="button"/>
+                    </footer>
+                </form>
+            </div>
+        </div>
+    </wicket:extend>
+</html>

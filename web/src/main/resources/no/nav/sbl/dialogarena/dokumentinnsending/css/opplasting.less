@@ -1,0 +1,154 @@
+.opplasting {
+    text-align: center;
+
+    .start-opplasting {
+        h1 {
+            padding-bottom: 2rem;
+        }
+
+        .steg {
+            background: url(../img/26x26_graa.png) no-repeat center top;
+            text-align: center;
+            color: #fff;
+            display: block;
+            line-height: 7px;
+            padding-top: 10px;
+            font-size: 0.9rem;
+            height: 26px;
+        }
+
+        .opplasting-beskrivelse {
+            display: inline-block;
+            padding: 0 10px 45px;
+            width: 46%;
+            vertical-align: top;
+            position: relative;
+
+            ul {
+                text-align: left;
+            }
+
+            .button-container {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+
+                form {
+                    margin: 0;
+                }
+            }
+        }
+
+        .startOpplastingContainer {
+            FORM {
+                overflow: hidden;
+                text-align: center;
+            }
+        }
+    }
+
+    .hoved-opplasting {
+        footer {
+            &>a {
+                margin-left: 20px;
+            }
+
+            &>.loadingIndicator {
+                margin-left: 20px !important;
+            }
+
+            input {
+                display: inline-block;
+            }
+
+            span {
+                display: block;
+                padding-top: 15px;
+                padding-bottom: 20px;
+            }
+        }
+
+        .selectUploadButtonContainer {
+            text-align: center;
+            padding-top: 20px;
+            display: inline-block;
+
+            FORM {
+                text-align: center;
+            }
+        }
+
+        .tilbakemelding-opplasting {
+            .feilmeldingPanel {
+                margin-bottom: 0;
+            }
+        }
+
+        .uploadPreviewContainer {
+            padding: 10px;
+            margin: 20px 10px 0;
+            background-color: #e0ded8;
+            border: 1px solid #b7b1a9;
+            display: block;
+
+            .uploadPreview {
+                .forhandsvisning-bilde {
+                    width: 135px;
+                    height: 190px;
+                    margin: 0 auto;
+
+                    .ferdig IMG {
+                        margin: 0;
+                        width: 100%;
+                    }
+                }
+
+                .previewImage {
+                    padding: 9%;
+                    background-color: #1b2426;
+
+                    .filinfo {
+                        padding-top: 10px;
+                        color: #aea9ae;
+                    }
+                }
+
+                .header {
+                    text-align: left;
+                    padding-bottom: 0.5rem;
+                    .filnavn {
+                        font-weight: 700;
+                        font-size: 0.8rem;
+                        display: inline-block;
+                        width: 70%;
+                        white-space: nowrap;
+                    }
+                }
+            }
+        }
+
+        .ferdig img {
+            max-height: 100%;
+        }
+    }
+
+
+
+    INPUT {
+        text-transform: uppercase;
+    }
+
+    .fakeUpload {
+        margin-right: 0;
+        margin-left: 0;
+    }
+
+    .uploadFormButtons {
+        position: relative;
+
+        .loadingIndicator {
+            display: inline-block;
+        }
+    }
+}

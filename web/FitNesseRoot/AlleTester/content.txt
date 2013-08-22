@@ -1,0 +1,4 @@
+!1 [[Kjør godkjente tester][?suite&suiteFilter=godkjent]]
+!1 [[Kjør alle godkjente integrasjonstester][?suite&suiteFilter=godkjent-integrasjon]]
+
+!contents -R2 -g -p -f -h

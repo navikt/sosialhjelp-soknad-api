@@ -1,0 +1,21 @@
+<html xmlns:wicket="http://wicket.apache.org">
+
+<wicket:panel>
+    <div class="hoved-opplasting">
+        <h1 class="stor" wicket:id="tittel"/>
+        <div class="tilbakemelding-opplasting" wicket:id="tilbakemelding"/>
+        <p>
+            <span wicket:id="opplasting.beskrivelse"/>
+        </p>
+        <div class="uploadPreviewContainer sak-tredel" wicket:id="fileListContainer">
+            <div wicket:id="fileList" class="uploadPreview panel-dus">
+                <wicket:container wicket:id="preview"/>
+            </div>
+        </div>
+        <footer>
+            <div class="selectUploadButtonContainer" wicket:id="uploadForm"/>
+            <a href="#" class="knapp-hoved-liten" id="lastOpp" wicket:id="lastOpp" role="button"><strong wicket:id="opplasting.lastopp"/></a>
+        </footer>
+    </div>
+</wicket:panel>
+</html>

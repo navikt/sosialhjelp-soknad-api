@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org" lang="no">
+    <wicket:extend>
+        <div class="kvittering-innsending">
+            <div class="rad">
+                <div class="begrensning">
+                    <wicket:container wicket:id="stegIndikator"/>
+                </div>
+            </div>
+
+            <div class="rad">
+                <div class="begrensning">
+                    <section class="sak-totredel">
+                        <div class="panel-standard-belyst">
+                            <wicket:container wicket:id="dokumenterAlert"/>
+                            <span class="innsendt-dato" wicket:id="innsendtDato"/>
+                            <h2 class="stor" wicket:id="sideTittel"/>
+
+                            <p class="border-bottom" wicket:id="kvitteringTekst"/>
+
+                            <div class="dokumenter border-bottom">
+                                <wicket:container wicket:id="innsendteDokumenter"/>
+                            </div>
+                            <div class="dokumenter ikke-sendt">
+                                <wicket:container wicket:id="ikkeSendteDokumenter"/>
+                            </div>
+                            <p class="border-bottom">
+                                <span wicket:id="beskrivelse.ettersending.gaaTilLenke"/>
+                                <a href="#" id="skjema" wicket:id="skjema" role="link"/>
+                                <span wicket:id="beskrivelse.ettersending.tekst"/>
+                            </p>
+                            <div class="skriv-ut">
+                                <input type="button" class="knapp-liten knapp-link"
+                                       id="skrivut"
+                                       onclick="window.print()"
+                                       wicket:message="value:kvittering.innsendt.skrivUt" role="button"/>
+
+                                <div>
+                                    <span wicket:id="kvittering.innsendt.gaaTilDittNAV"/>
+                                    <a href="#" id="dittNav" wicket:id="dittNav" role="link"/>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </wicket:extend>
+</html>

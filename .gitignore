@@ -1,0 +1,22 @@
+# /
+/.idea
+*.iml
+*.log
+*.log.*
+*.ipr
+*.iws
+/projectFilesBackup/
+rebel.xml
+target
+
+consumer/*.pdf
+test.pdf
+
+# /web/FitNesseRoot/
+/web/FitNesseRoot/ErrorLogs
+/web/FitNesseRoot/properties
+/web/FitNesseRoot/updateDoNotCopyOverList
+/web/FitNesseRoot/updateList
+/web/FitNesseRoot/files
+/web/FitNesseRoot/RecentChanges
+/web/FitNesseRoot/FitNesse

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="http://appconfig.aura.nav.no"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://appconfig.aura.nav.no
+             http://maven.adeo.no/xsd/appconfig.xsd ">
+
+    <name>dokumentinnsending</name>
+
+    <selftestPagePath>dokumentinnsending/internal/selftest?status</selftestPagePath>
+
+    <artifacts>
+        <ear groupId="no.nav.sbl.dialogarena" artifactId="dokumentinnsending-jee"/>
+    </artifacts>
+
+    <resources>
+        <webservice alias="virksomhet:Brukerprofil_v1"
+                    mapToProperty="dokumentinnsending.webservice.brukerprofil"/>
+        <webservice alias="domene.Brukerdialog:henvendelsesbehandlingservice_v1"
+                    mapToProperty="dokumentinnsending.webservice.henvendelse.henvendelsesbehandlingservice"/>
+        <webservice alias="domene.Brukerdialog:oppdaterehenvendelsesbehandlingservice_v1"
+                    mapToProperty="dokumentinnsending.webservice.henvendelse.oppdaterehenvendelsesbehandlingservice"/>
+        <baseUrl alias="dokumentinnsending.skjemaveileder" mapToProperty="dokumentinnsending.skjemaveileder"/>
+        <baseUrl alias="innlogging.navnetjeneste" mapToProperty="innlogging.navnetjeneste"/>
+        <baseUrl alias="minehenvendelser.link" mapToProperty="minehenvendelser.link"/>
+        <baseUrl alias="dokumentinnsending.cms" mapToProperty="dokumentinnsending.cms"/>
+        <baseUrl alias="dokumentinnsending.skjemaveileder" mapToProperty="dialogarena.cms"/>
+        <smtpServer alias="dokumentinnsending.smtpServer" mapToProperty="dokumentinnsending.smtpServer"/>
+        <baseUrl alias="footer.kontakt" mapToProperty="footer.kontakt"/>
+        <baseUrl alias="footer.personvern" mapToProperty="footer.personvern"/>
+        <baseUrl alias="footer.feilOgMangler" mapToProperty="footer.feilOgMangler"/>
+        <baseUrl alias="footer.tilgjengelighet" mapToProperty="footer.tilgjengelighet"/>
+        <baseUrl alias="footer.nettstedskart" mapToProperty="footer.nettstedskart"/>
+        <baseUrl alias="dokumentinnsending.navigasjonslink" mapToProperty="dokumentinnsending.navigasjonslink"/>
+        <baseUrl alias="dokumentinnsending.logoutURL" mapToProperty="dokumentinnsending.logoutURL"/>
+        <applicationCertificate alias="srvDokumentinnsending"/>
+    </resources>
+    <security serviceUserResourceAlias="srvDokumentinnsending">
+        <logins>
+            <openAm>
+                <contextRoot>dokumentinnsending</contextRoot>
+            </openAm>
+        </logins>
+    </security>
+</application>
