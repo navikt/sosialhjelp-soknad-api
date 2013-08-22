@@ -1,0 +1,21 @@
+<html xmlns:wicket="http://wicket.apache.org">
+
+<wicket:panel>
+    <div class="forhandsvisning">
+        <div class="forhandsvisning-bilde" wicket:id="forhandsvisning"/>
+        <div class="sideVelger" wicket:id="sidevelger">
+            <a href="#" class="symbol-pil-venstre" wicket:id="forrige" role="button"/>
+            <a href="#" class="symbol-pil-hoyre" wicket:id="neste" role="button"/>
+        </div>
+        <div class="filinfo mini">
+            <div>
+                <span wicket:id="side"/>
+                <span wicket:id="sideNummer"/>
+                <span wicket:id="av"/>
+                <span wicket:id="antallSider"/>
+            </div>
+            <div class="filesize" wicket:id="filesize"/>
+        </div>
+    </div>
+</wicket:panel>
+</html>

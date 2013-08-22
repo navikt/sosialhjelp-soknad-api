@@ -1,0 +1,25 @@
+<html xmlns:wicket="http://wicket.apache.org">
+
+<wicket:panel>
+    <h1 class="robust" wicket:id="dokumentNavn"/>
+
+    <h1 class="robust" wicket:id="dokumentNavnEkstra"/>
+    <p wicket:id="beskrivelse"/>
+
+    <div class="footer">
+        <a href="#" class="knapp-liten" wicket:id="lastOppLink" role="button">
+            <span wicket:id="lastOppLinkTekst"></span>
+        </a>
+
+        <form class="valglinje" wicket:id="checkboxContainer">
+            <input type="checkbox" wicket:id="ikkeSendCheckbox" role="checkbox"/>
+            <label wicket:id="label">
+              <span class="mini" wicket:id="innsendingside.ikkeSend"/>
+            </label>
+            <div class="ikke-send-tooltip">
+                <span class="infoikon" data-trigger="click" data-placement="right"/>
+            </div>
+        </form>
+    </div>
+</wicket:panel>
+</html>

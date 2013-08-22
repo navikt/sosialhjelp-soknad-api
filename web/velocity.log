@@ -1,0 +1,348 @@
+2013-08-22 10:39:11,756 - Log4JLogChute initialized using file 'velocity.log'
+2013-08-22 10:39:11,757 - Initializing Velocity, Calling init()...
+2013-08-22 10:39:11,757 - Starting Apache Velocity v1.7 (compiled: 2010-11-19 12:14:37)
+2013-08-22 10:39:11,757 - Default Properties File: org\apache\velocity\runtime\defaults\velocity.properties
+2013-08-22 10:39:11,757 - Trying to use logger class org.apache.velocity.runtime.log.AvalonLogChute
+2013-08-22 10:39:11,757 - Target log system for org.apache.velocity.runtime.log.AvalonLogChute is not available (java.lang.NoClassDefFoundError: org/apache/log/format/Formatter).  Falling back to next log system...
+2013-08-22 10:39:11,757 - Trying to use logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-22 10:39:11,757 - Using logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-22 10:39:11,776 - ResourceLoader instantiated: org.apache.velocity.runtime.resource.loader.FileResourceLoader
+2013-08-22 10:39:11,780 - Do unicode file recognition:  false
+2013-08-22 10:39:11,780 - FileResourceLoader : adding path 'C:\src\dialogarena\sendsoknad\trunk\web/FitNesseRoot/files/fitnesse/templates'
+2013-08-22 10:39:11,781 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:39:11,782 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:39:11,832 - ResourceCache: initialized (class org.apache.velocity.runtime.resource.ResourceCacheImpl) with class java.util.Collections$SynchronizedMap cache map.
+2013-08-22 10:39:11,836 - Loaded System Directive: org.apache.velocity.runtime.directive.Stop
+2013-08-22 10:39:11,837 - Loaded System Directive: org.apache.velocity.runtime.directive.Define
+2013-08-22 10:39:11,839 - Loaded System Directive: org.apache.velocity.runtime.directive.Break
+2013-08-22 10:39:11,841 - Loaded System Directive: org.apache.velocity.runtime.directive.Evaluate
+2013-08-22 10:39:11,847 - Loaded System Directive: org.apache.velocity.runtime.directive.Literal
+2013-08-22 10:39:11,849 - Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+2013-08-22 10:39:11,852 - Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+2013-08-22 10:39:11,855 - Loaded System Directive: org.apache.velocity.runtime.directive.Include
+2013-08-22 10:39:11,857 - Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+2013-08-22 10:39:11,938 - Created '20' parsers.
+2013-08-22 10:39:11,952 - Velocimacro : "velocimacro.library" is not set.  Trying default library: VM_global_library.vm
+2013-08-22 10:39:11,954 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/fitnesse_straight/templates/VM_global_library.vm
+2013-08-22 10:39:11,955 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/templates/VM_global_library.vm
+2013-08-22 10:39:11,955 - Velocimacro : Default library not found.
+2013-08-22 10:39:11,955 - Velocimacro : allowInline = true : VMs can be defined inline in templates
+2013-08-22 10:39:11,955 - Velocimacro : allowInlineToOverride = false : VMs defined inline may NOT replace previous VM definitions
+2013-08-22 10:39:11,955 - Velocimacro : allowInlineLocal = false : VMs defined inline will be global in scope if allowed.
+2013-08-22 10:39:11,955 - Velocimacro : autoload off : VM system will not automatically reload global library macros
+2013-08-22 10:40:32,109 - ResourceManager : found testResults.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:41:55,919 - ResourceManager : found testResults.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:42:48,816 - ResourceManager : found testResults.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:43:31,902 - ResourceManager : found testResults.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:44:15,166 - ResourceManager : found testResults.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:45:00,813 - ResourceManager : found testResults.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:45:52,463 - ResourceManager : found testResults.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:46:39,159 - ResourceManager : found testResults.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:46:39,729 - ResourceManager : found suiteXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:46:39,943 - ResourceManager : found suiteHistoryXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:48:53,080 - Log4JLogChute initialized using file 'velocity.log'
+2013-08-22 10:48:53,080 - Initializing Velocity, Calling init()...
+2013-08-22 10:48:53,080 - Starting Apache Velocity v1.7 (compiled: 2010-11-19 12:14:37)
+2013-08-22 10:48:53,080 - Default Properties File: org\apache\velocity\runtime\defaults\velocity.properties
+2013-08-22 10:48:53,080 - Trying to use logger class org.apache.velocity.runtime.log.AvalonLogChute
+2013-08-22 10:48:53,080 - Target log system for org.apache.velocity.runtime.log.AvalonLogChute is not available (java.lang.NoClassDefFoundError: org/apache/log/format/Formatter).  Falling back to next log system...
+2013-08-22 10:48:53,080 - Trying to use logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-22 10:48:53,080 - Using logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-22 10:48:53,087 - ResourceLoader instantiated: org.apache.velocity.runtime.resource.loader.FileResourceLoader
+2013-08-22 10:48:53,089 - Do unicode file recognition:  false
+2013-08-22 10:48:53,089 - FileResourceLoader : adding path 'C:\src\dialogarena\sendsoknad\trunk\web/FitNesseRoot/files/fitnesse/templates'
+2013-08-22 10:48:53,089 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:48:53,089 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:48:53,109 - ResourceCache: initialized (class org.apache.velocity.runtime.resource.ResourceCacheImpl) with class java.util.Collections$SynchronizedMap cache map.
+2013-08-22 10:48:53,112 - Loaded System Directive: org.apache.velocity.runtime.directive.Stop
+2013-08-22 10:48:53,115 - Loaded System Directive: org.apache.velocity.runtime.directive.Define
+2013-08-22 10:48:53,117 - Loaded System Directive: org.apache.velocity.runtime.directive.Break
+2013-08-22 10:48:53,118 - Loaded System Directive: org.apache.velocity.runtime.directive.Evaluate
+2013-08-22 10:48:53,119 - Loaded System Directive: org.apache.velocity.runtime.directive.Literal
+2013-08-22 10:48:53,121 - Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+2013-08-22 10:48:53,123 - Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+2013-08-22 10:48:53,125 - Loaded System Directive: org.apache.velocity.runtime.directive.Include
+2013-08-22 10:48:53,126 - Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+2013-08-22 10:48:53,173 - Created '20' parsers.
+2013-08-22 10:48:53,188 - Velocimacro : "velocimacro.library" is not set.  Trying default library: VM_global_library.vm
+2013-08-22 10:48:53,190 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/fitnesse_straight/templates/VM_global_library.vm
+2013-08-22 10:48:53,204 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/templates/VM_global_library.vm
+2013-08-22 10:48:53,204 - Velocimacro : Default library not found.
+2013-08-22 10:48:53,204 - Velocimacro : allowInline = true : VMs can be defined inline in templates
+2013-08-22 10:48:53,204 - Velocimacro : allowInlineToOverride = false : VMs defined inline may NOT replace previous VM definitions
+2013-08-22 10:48:53,204 - Velocimacro : allowInlineLocal = false : VMs defined inline will be global in scope if allowed.
+2013-08-22 10:48:53,204 - Velocimacro : autoload off : VM system will not automatically reload global library macros
+2013-08-22 10:48:53,470 - ResourceManager : found suiteXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:48:53,514 - ResourceManager : found suiteHistoryXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:50:11,499 - Log4JLogChute initialized using file 'velocity.log'
+2013-08-22 10:50:11,500 - Initializing Velocity, Calling init()...
+2013-08-22 10:50:11,500 - Starting Apache Velocity v1.7 (compiled: 2010-11-19 12:14:37)
+2013-08-22 10:50:11,500 - Default Properties File: org\apache\velocity\runtime\defaults\velocity.properties
+2013-08-22 10:50:11,500 - Trying to use logger class org.apache.velocity.runtime.log.AvalonLogChute
+2013-08-22 10:50:11,500 - Target log system for org.apache.velocity.runtime.log.AvalonLogChute is not available (java.lang.NoClassDefFoundError: org/apache/log/format/Formatter).  Falling back to next log system...
+2013-08-22 10:50:11,500 - Trying to use logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-22 10:50:11,500 - Using logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-22 10:50:11,512 - ResourceLoader instantiated: org.apache.velocity.runtime.resource.loader.FileResourceLoader
+2013-08-22 10:50:11,514 - Do unicode file recognition:  false
+2013-08-22 10:50:11,514 - FileResourceLoader : adding path 'C:\src\dialogarena\sendsoknad\trunk\web/FitNesseRoot/files/fitnesse/templates'
+2013-08-22 10:50:11,514 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:50:11,515 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:50:11,545 - ResourceCache: initialized (class org.apache.velocity.runtime.resource.ResourceCacheImpl) with class java.util.Collections$SynchronizedMap cache map.
+2013-08-22 10:50:11,551 - Loaded System Directive: org.apache.velocity.runtime.directive.Stop
+2013-08-22 10:50:11,557 - Loaded System Directive: org.apache.velocity.runtime.directive.Define
+2013-08-22 10:50:11,560 - Loaded System Directive: org.apache.velocity.runtime.directive.Break
+2013-08-22 10:50:11,563 - Loaded System Directive: org.apache.velocity.runtime.directive.Evaluate
+2013-08-22 10:50:11,564 - Loaded System Directive: org.apache.velocity.runtime.directive.Literal
+2013-08-22 10:50:11,567 - Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+2013-08-22 10:50:11,573 - Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+2013-08-22 10:50:11,577 - Loaded System Directive: org.apache.velocity.runtime.directive.Include
+2013-08-22 10:50:11,580 - Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+2013-08-22 10:50:11,690 - Created '20' parsers.
+2013-08-22 10:50:11,721 - Velocimacro : "velocimacro.library" is not set.  Trying default library: VM_global_library.vm
+2013-08-22 10:50:11,726 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/fitnesse_straight/templates/VM_global_library.vm
+2013-08-22 10:50:11,729 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/templates/VM_global_library.vm
+2013-08-22 10:50:11,729 - Velocimacro : Default library not found.
+2013-08-22 10:50:11,730 - Velocimacro : allowInline = true : VMs can be defined inline in templates
+2013-08-22 10:50:11,730 - Velocimacro : allowInlineToOverride = false : VMs defined inline may NOT replace previous VM definitions
+2013-08-22 10:50:11,730 - Velocimacro : allowInlineLocal = false : VMs defined inline will be global in scope if allowed.
+2013-08-22 10:50:11,730 - Velocimacro : autoload off : VM system will not automatically reload global library macros
+2013-08-22 10:50:12,248 - ResourceManager : found suiteXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:50:12,317 - ResourceManager : found suiteHistoryXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:51:57,417 - Log4JLogChute initialized using file 'velocity.log'
+2013-08-22 10:51:57,417 - Initializing Velocity, Calling init()...
+2013-08-22 10:51:57,417 - Starting Apache Velocity v1.7 (compiled: 2010-11-19 12:14:37)
+2013-08-22 10:51:57,417 - Default Properties File: org\apache\velocity\runtime\defaults\velocity.properties
+2013-08-22 10:51:57,418 - Trying to use logger class org.apache.velocity.runtime.log.AvalonLogChute
+2013-08-22 10:51:57,418 - Target log system for org.apache.velocity.runtime.log.AvalonLogChute is not available (java.lang.NoClassDefFoundError: org/apache/log/format/Formatter).  Falling back to next log system...
+2013-08-22 10:51:57,418 - Trying to use logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-22 10:51:57,418 - Using logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-22 10:51:57,426 - ResourceLoader instantiated: org.apache.velocity.runtime.resource.loader.FileResourceLoader
+2013-08-22 10:51:57,429 - Do unicode file recognition:  false
+2013-08-22 10:51:57,429 - FileResourceLoader : adding path 'C:\src\dialogarena\sendsoknad\trunk\web/FitNesseRoot/files/fitnesse/templates'
+2013-08-22 10:51:57,429 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:51:57,430 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:51:57,450 - ResourceCache: initialized (class org.apache.velocity.runtime.resource.ResourceCacheImpl) with class java.util.Collections$SynchronizedMap cache map.
+2013-08-22 10:51:57,453 - Loaded System Directive: org.apache.velocity.runtime.directive.Stop
+2013-08-22 10:51:57,455 - Loaded System Directive: org.apache.velocity.runtime.directive.Define
+2013-08-22 10:51:57,456 - Loaded System Directive: org.apache.velocity.runtime.directive.Break
+2013-08-22 10:51:57,458 - Loaded System Directive: org.apache.velocity.runtime.directive.Evaluate
+2013-08-22 10:51:57,459 - Loaded System Directive: org.apache.velocity.runtime.directive.Literal
+2013-08-22 10:51:57,461 - Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+2013-08-22 10:51:57,464 - Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+2013-08-22 10:51:57,466 - Loaded System Directive: org.apache.velocity.runtime.directive.Include
+2013-08-22 10:51:57,467 - Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+2013-08-22 10:51:57,511 - Created '20' parsers.
+2013-08-22 10:51:57,522 - Velocimacro : "velocimacro.library" is not set.  Trying default library: VM_global_library.vm
+2013-08-22 10:51:57,526 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/fitnesse_straight/templates/VM_global_library.vm
+2013-08-22 10:51:57,527 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/templates/VM_global_library.vm
+2013-08-22 10:51:57,527 - Velocimacro : Default library not found.
+2013-08-22 10:51:57,528 - Velocimacro : allowInline = true : VMs can be defined inline in templates
+2013-08-22 10:51:57,528 - Velocimacro : allowInlineToOverride = false : VMs defined inline may NOT replace previous VM definitions
+2013-08-22 10:51:57,528 - Velocimacro : allowInlineLocal = false : VMs defined inline will be global in scope if allowed.
+2013-08-22 10:51:57,528 - Velocimacro : autoload off : VM system will not automatically reload global library macros
+2013-08-22 10:51:57,788 - ResourceManager : found suiteXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 10:51:57,820 - ResourceManager : found suiteHistoryXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 11:01:31,682 - Log4JLogChute initialized using file 'velocity.log'
+2013-08-22 11:01:31,682 - Initializing Velocity, Calling init()...
+2013-08-22 11:01:31,683 - Starting Apache Velocity v1.7 (compiled: 2010-11-19 12:14:37)
+2013-08-22 11:01:31,683 - Default Properties File: org\apache\velocity\runtime\defaults\velocity.properties
+2013-08-22 11:01:31,683 - Trying to use logger class org.apache.velocity.runtime.log.AvalonLogChute
+2013-08-22 11:01:31,683 - Target log system for org.apache.velocity.runtime.log.AvalonLogChute is not available (java.lang.NoClassDefFoundError: org/apache/log/format/Formatter).  Falling back to next log system...
+2013-08-22 11:01:31,683 - Trying to use logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-22 11:01:31,684 - Using logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-22 11:01:31,698 - ResourceLoader instantiated: org.apache.velocity.runtime.resource.loader.FileResourceLoader
+2013-08-22 11:01:31,702 - Do unicode file recognition:  false
+2013-08-22 11:01:31,702 - FileResourceLoader : adding path 'C:\src\dialogarena\sendsoknad\trunk\web/FitNesseRoot/files/fitnesse/templates'
+2013-08-22 11:01:31,703 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 11:01:31,703 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 11:01:31,727 - ResourceCache: initialized (class org.apache.velocity.runtime.resource.ResourceCacheImpl) with class java.util.Collections$SynchronizedMap cache map.
+2013-08-22 11:01:31,730 - Loaded System Directive: org.apache.velocity.runtime.directive.Stop
+2013-08-22 11:01:31,732 - Loaded System Directive: org.apache.velocity.runtime.directive.Define
+2013-08-22 11:01:31,733 - Loaded System Directive: org.apache.velocity.runtime.directive.Break
+2013-08-22 11:01:31,735 - Loaded System Directive: org.apache.velocity.runtime.directive.Evaluate
+2013-08-22 11:01:31,736 - Loaded System Directive: org.apache.velocity.runtime.directive.Literal
+2013-08-22 11:01:31,739 - Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+2013-08-22 11:01:31,741 - Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+2013-08-22 11:01:31,744 - Loaded System Directive: org.apache.velocity.runtime.directive.Include
+2013-08-22 11:01:31,745 - Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+2013-08-22 11:01:31,807 - Created '20' parsers.
+2013-08-22 11:01:31,826 - Velocimacro : "velocimacro.library" is not set.  Trying default library: VM_global_library.vm
+2013-08-22 11:01:31,829 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/fitnesse_straight/templates/VM_global_library.vm
+2013-08-22 11:01:31,832 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/templates/VM_global_library.vm
+2013-08-22 11:01:31,832 - Velocimacro : Default library not found.
+2013-08-22 11:01:31,832 - Velocimacro : allowInline = true : VMs can be defined inline in templates
+2013-08-22 11:01:31,832 - Velocimacro : allowInlineToOverride = false : VMs defined inline may NOT replace previous VM definitions
+2013-08-22 11:01:31,833 - Velocimacro : allowInlineLocal = false : VMs defined inline will be global in scope if allowed.
+2013-08-22 11:01:31,833 - Velocimacro : autoload off : VM system will not automatically reload global library macros
+2013-08-22 11:01:32,121 - ResourceManager : found suiteXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 11:01:32,181 - ResourceManager : found suiteHistoryXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 11:53:50,716 - Log4JLogChute initialized using file 'velocity.log'
+2013-08-22 11:53:50,718 - Initializing Velocity, Calling init()...
+2013-08-22 11:53:50,718 - Starting Apache Velocity v1.7 (compiled: 2010-11-19 12:14:37)
+2013-08-22 11:53:50,718 - Default Properties File: org\apache\velocity\runtime\defaults\velocity.properties
+2013-08-22 11:53:50,719 - Trying to use logger class org.apache.velocity.runtime.log.AvalonLogChute
+2013-08-22 11:53:50,719 - Target log system for org.apache.velocity.runtime.log.AvalonLogChute is not available (java.lang.NoClassDefFoundError: org/apache/log/format/Formatter).  Falling back to next log system...
+2013-08-22 11:53:50,719 - Trying to use logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-22 11:53:50,719 - Using logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-22 11:53:50,736 - ResourceLoader instantiated: org.apache.velocity.runtime.resource.loader.FileResourceLoader
+2013-08-22 11:53:50,741 - Do unicode file recognition:  false
+2013-08-22 11:53:50,741 - FileResourceLoader : adding path 'C:\src\dialogarena\sendsoknad\trunk\web/FitNesseRoot/files/fitnesse/templates'
+2013-08-22 11:53:50,742 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 11:53:50,743 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 11:53:50,782 - ResourceCache: initialized (class org.apache.velocity.runtime.resource.ResourceCacheImpl) with class java.util.Collections$SynchronizedMap cache map.
+2013-08-22 11:53:50,788 - Loaded System Directive: org.apache.velocity.runtime.directive.Stop
+2013-08-22 11:53:50,795 - Loaded System Directive: org.apache.velocity.runtime.directive.Define
+2013-08-22 11:53:50,799 - Loaded System Directive: org.apache.velocity.runtime.directive.Break
+2013-08-22 11:53:50,801 - Loaded System Directive: org.apache.velocity.runtime.directive.Evaluate
+2013-08-22 11:53:50,804 - Loaded System Directive: org.apache.velocity.runtime.directive.Literal
+2013-08-22 11:53:50,809 - Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+2013-08-22 11:53:50,815 - Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+2013-08-22 11:53:50,820 - Loaded System Directive: org.apache.velocity.runtime.directive.Include
+2013-08-22 11:53:50,824 - Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+2013-08-22 11:53:50,945 - Created '20' parsers.
+2013-08-22 11:53:50,977 - Velocimacro : "velocimacro.library" is not set.  Trying default library: VM_global_library.vm
+2013-08-22 11:53:50,984 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/fitnesse_straight/templates/VM_global_library.vm
+2013-08-22 11:53:50,996 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/templates/VM_global_library.vm
+2013-08-22 11:53:50,996 - Velocimacro : Default library not found.
+2013-08-22 11:53:50,996 - Velocimacro : allowInline = true : VMs can be defined inline in templates
+2013-08-22 11:53:50,996 - Velocimacro : allowInlineToOverride = false : VMs defined inline may NOT replace previous VM definitions
+2013-08-22 11:53:50,996 - Velocimacro : allowInlineLocal = false : VMs defined inline will be global in scope if allowed.
+2013-08-22 11:53:50,997 - Velocimacro : autoload off : VM system will not automatically reload global library macros
+2013-08-22 11:53:51,738 - ResourceManager : found suiteXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 11:53:51,836 - ResourceManager : found suiteHistoryXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 11:56:49,955 - Log4JLogChute initialized using file 'velocity.log'
+2013-08-22 11:56:49,955 - Initializing Velocity, Calling init()...
+2013-08-22 11:56:49,955 - Starting Apache Velocity v1.7 (compiled: 2010-11-19 12:14:37)
+2013-08-22 11:56:49,956 - Default Properties File: org\apache\velocity\runtime\defaults\velocity.properties
+2013-08-22 11:56:49,956 - Trying to use logger class org.apache.velocity.runtime.log.AvalonLogChute
+2013-08-22 11:56:49,956 - Target log system for org.apache.velocity.runtime.log.AvalonLogChute is not available (java.lang.NoClassDefFoundError: org/apache/log/format/Formatter).  Falling back to next log system...
+2013-08-22 11:56:49,956 - Trying to use logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-22 11:56:49,956 - Using logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-22 11:56:49,968 - ResourceLoader instantiated: org.apache.velocity.runtime.resource.loader.FileResourceLoader
+2013-08-22 11:56:49,970 - Do unicode file recognition:  false
+2013-08-22 11:56:49,970 - FileResourceLoader : adding path 'C:\src\dialogarena\sendsoknad\trunk\web/FitNesseRoot/files/fitnesse/templates'
+2013-08-22 11:56:49,972 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 11:56:49,972 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 11:56:50,003 - ResourceCache: initialized (class org.apache.velocity.runtime.resource.ResourceCacheImpl) with class java.util.Collections$SynchronizedMap cache map.
+2013-08-22 11:56:50,008 - Loaded System Directive: org.apache.velocity.runtime.directive.Stop
+2013-08-22 11:56:50,011 - Loaded System Directive: org.apache.velocity.runtime.directive.Define
+2013-08-22 11:56:50,013 - Loaded System Directive: org.apache.velocity.runtime.directive.Break
+2013-08-22 11:56:50,015 - Loaded System Directive: org.apache.velocity.runtime.directive.Evaluate
+2013-08-22 11:56:50,018 - Loaded System Directive: org.apache.velocity.runtime.directive.Literal
+2013-08-22 11:56:50,024 - Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+2013-08-22 11:56:50,030 - Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+2013-08-22 11:56:50,034 - Loaded System Directive: org.apache.velocity.runtime.directive.Include
+2013-08-22 11:56:50,038 - Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+2013-08-22 11:56:50,143 - Created '20' parsers.
+2013-08-22 11:56:50,183 - Velocimacro : "velocimacro.library" is not set.  Trying default library: VM_global_library.vm
+2013-08-22 11:56:50,188 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/fitnesse_straight/templates/VM_global_library.vm
+2013-08-22 11:56:50,192 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/templates/VM_global_library.vm
+2013-08-22 11:56:50,192 - Velocimacro : Default library not found.
+2013-08-22 11:56:50,192 - Velocimacro : allowInline = true : VMs can be defined inline in templates
+2013-08-22 11:56:50,192 - Velocimacro : allowInlineToOverride = false : VMs defined inline may NOT replace previous VM definitions
+2013-08-22 11:56:50,192 - Velocimacro : allowInlineLocal = false : VMs defined inline will be global in scope if allowed.
+2013-08-22 11:56:50,193 - Velocimacro : autoload off : VM system will not automatically reload global library macros
+2013-08-22 11:56:50,604 - ResourceManager : found suiteXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 11:56:50,665 - ResourceManager : found suiteHistoryXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 12:04:54,956 - Log4JLogChute initialized using file 'velocity.log'
+2013-08-22 12:04:54,956 - Initializing Velocity, Calling init()...
+2013-08-22 12:04:54,957 - Starting Apache Velocity v1.7 (compiled: 2010-11-19 12:14:37)
+2013-08-22 12:04:54,957 - Default Properties File: org\apache\velocity\runtime\defaults\velocity.properties
+2013-08-22 12:04:54,957 - Trying to use logger class org.apache.velocity.runtime.log.AvalonLogChute
+2013-08-22 12:04:54,957 - Target log system for org.apache.velocity.runtime.log.AvalonLogChute is not available (java.lang.NoClassDefFoundError: org/apache/log/format/Formatter).  Falling back to next log system...
+2013-08-22 12:04:54,957 - Trying to use logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-22 12:04:54,957 - Using logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-22 12:04:54,965 - ResourceLoader instantiated: org.apache.velocity.runtime.resource.loader.FileResourceLoader
+2013-08-22 12:04:54,968 - Do unicode file recognition:  false
+2013-08-22 12:04:54,968 - FileResourceLoader : adding path 'C:\src\dialogarena\sendsoknad\trunk\web/FitNesseRoot/files/fitnesse/templates'
+2013-08-22 12:04:54,968 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 12:04:54,969 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 12:04:54,993 - ResourceCache: initialized (class org.apache.velocity.runtime.resource.ResourceCacheImpl) with class java.util.Collections$SynchronizedMap cache map.
+2013-08-22 12:04:54,997 - Loaded System Directive: org.apache.velocity.runtime.directive.Stop
+2013-08-22 12:04:55,001 - Loaded System Directive: org.apache.velocity.runtime.directive.Define
+2013-08-22 12:04:55,002 - Loaded System Directive: org.apache.velocity.runtime.directive.Break
+2013-08-22 12:04:55,004 - Loaded System Directive: org.apache.velocity.runtime.directive.Evaluate
+2013-08-22 12:04:55,005 - Loaded System Directive: org.apache.velocity.runtime.directive.Literal
+2013-08-22 12:04:55,008 - Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+2013-08-22 12:04:55,010 - Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+2013-08-22 12:04:55,012 - Loaded System Directive: org.apache.velocity.runtime.directive.Include
+2013-08-22 12:04:55,013 - Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+2013-08-22 12:04:55,093 - Created '20' parsers.
+2013-08-22 12:04:55,128 - Velocimacro : "velocimacro.library" is not set.  Trying default library: VM_global_library.vm
+2013-08-22 12:04:55,133 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/fitnesse_straight/templates/VM_global_library.vm
+2013-08-22 12:04:55,136 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/templates/VM_global_library.vm
+2013-08-22 12:04:55,137 - Velocimacro : Default library not found.
+2013-08-22 12:04:55,137 - Velocimacro : allowInline = true : VMs can be defined inline in templates
+2013-08-22 12:04:55,137 - Velocimacro : allowInlineToOverride = false : VMs defined inline may NOT replace previous VM definitions
+2013-08-22 12:04:55,137 - Velocimacro : allowInlineLocal = false : VMs defined inline will be global in scope if allowed.
+2013-08-22 12:04:55,137 - Velocimacro : autoload off : VM system will not automatically reload global library macros
+2013-08-22 12:04:55,665 - ResourceManager : found suiteXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 12:04:55,726 - ResourceManager : found suiteHistoryXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 12:24:46,484 - Log4JLogChute initialized using file 'velocity.log'
+2013-08-22 12:24:46,485 - Initializing Velocity, Calling init()...
+2013-08-22 12:24:46,485 - Starting Apache Velocity v1.7 (compiled: 2010-11-19 12:14:37)
+2013-08-22 12:24:46,485 - Default Properties File: org\apache\velocity\runtime\defaults\velocity.properties
+2013-08-22 12:24:46,485 - Trying to use logger class org.apache.velocity.runtime.log.AvalonLogChute
+2013-08-22 12:24:46,485 - Target log system for org.apache.velocity.runtime.log.AvalonLogChute is not available (java.lang.NoClassDefFoundError: org/apache/log/format/Formatter).  Falling back to next log system...
+2013-08-22 12:24:46,485 - Trying to use logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-22 12:24:46,485 - Using logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-22 12:24:46,500 - ResourceLoader instantiated: org.apache.velocity.runtime.resource.loader.FileResourceLoader
+2013-08-22 12:24:46,504 - Do unicode file recognition:  false
+2013-08-22 12:24:46,504 - FileResourceLoader : adding path 'C:\src\dialogarena\sendsoknad\trunk\web/FitNesseRoot/files/fitnesse/templates'
+2013-08-22 12:24:46,505 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 12:24:46,505 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 12:24:46,544 - ResourceCache: initialized (class org.apache.velocity.runtime.resource.ResourceCacheImpl) with class java.util.Collections$SynchronizedMap cache map.
+2013-08-22 12:24:46,548 - Loaded System Directive: org.apache.velocity.runtime.directive.Stop
+2013-08-22 12:24:46,553 - Loaded System Directive: org.apache.velocity.runtime.directive.Define
+2013-08-22 12:24:46,556 - Loaded System Directive: org.apache.velocity.runtime.directive.Break
+2013-08-22 12:24:46,559 - Loaded System Directive: org.apache.velocity.runtime.directive.Evaluate
+2013-08-22 12:24:46,561 - Loaded System Directive: org.apache.velocity.runtime.directive.Literal
+2013-08-22 12:24:46,566 - Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+2013-08-22 12:24:46,571 - Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+2013-08-22 12:24:46,576 - Loaded System Directive: org.apache.velocity.runtime.directive.Include
+2013-08-22 12:24:46,580 - Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+2013-08-22 12:24:46,693 - Created '20' parsers.
+2013-08-22 12:24:46,726 - Velocimacro : "velocimacro.library" is not set.  Trying default library: VM_global_library.vm
+2013-08-22 12:24:46,730 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/fitnesse_straight/templates/VM_global_library.vm
+2013-08-22 12:24:46,733 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/templates/VM_global_library.vm
+2013-08-22 12:24:46,734 - Velocimacro : Default library not found.
+2013-08-22 12:24:46,734 - Velocimacro : allowInline = true : VMs can be defined inline in templates
+2013-08-22 12:24:46,734 - Velocimacro : allowInlineToOverride = false : VMs defined inline may NOT replace previous VM definitions
+2013-08-22 12:24:46,734 - Velocimacro : allowInlineLocal = false : VMs defined inline will be global in scope if allowed.
+2013-08-22 12:24:46,734 - Velocimacro : autoload off : VM system will not automatically reload global library macros
+2013-08-22 12:24:47,478 - ResourceManager : found suiteXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 12:24:47,625 - ResourceManager : found suiteHistoryXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 12:26:19,796 - Log4JLogChute initialized using file 'velocity.log'
+2013-08-22 12:26:19,797 - Initializing Velocity, Calling init()...
+2013-08-22 12:26:19,797 - Starting Apache Velocity v1.7 (compiled: 2010-11-19 12:14:37)
+2013-08-22 12:26:19,798 - Default Properties File: org\apache\velocity\runtime\defaults\velocity.properties
+2013-08-22 12:26:19,798 - Trying to use logger class org.apache.velocity.runtime.log.AvalonLogChute
+2013-08-22 12:26:19,798 - Target log system for org.apache.velocity.runtime.log.AvalonLogChute is not available (java.lang.NoClassDefFoundError: org/apache/log/format/Formatter).  Falling back to next log system...
+2013-08-22 12:26:19,798 - Trying to use logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-22 12:26:19,798 - Using logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-22 12:26:19,809 - ResourceLoader instantiated: org.apache.velocity.runtime.resource.loader.FileResourceLoader
+2013-08-22 12:26:19,811 - Do unicode file recognition:  false
+2013-08-22 12:26:19,811 - FileResourceLoader : adding path 'C:\src\dialogarena\sendsoknad\trunk\web/FitNesseRoot/files/fitnesse/templates'
+2013-08-22 12:26:19,811 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 12:26:19,811 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 12:26:19,829 - ResourceCache: initialized (class org.apache.velocity.runtime.resource.ResourceCacheImpl) with class java.util.Collections$SynchronizedMap cache map.
+2013-08-22 12:26:19,831 - Loaded System Directive: org.apache.velocity.runtime.directive.Stop
+2013-08-22 12:26:19,834 - Loaded System Directive: org.apache.velocity.runtime.directive.Define
+2013-08-22 12:26:19,835 - Loaded System Directive: org.apache.velocity.runtime.directive.Break
+2013-08-22 12:26:19,837 - Loaded System Directive: org.apache.velocity.runtime.directive.Evaluate
+2013-08-22 12:26:19,839 - Loaded System Directive: org.apache.velocity.runtime.directive.Literal
+2013-08-22 12:26:19,841 - Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+2013-08-22 12:26:19,843 - Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+2013-08-22 12:26:19,848 - Loaded System Directive: org.apache.velocity.runtime.directive.Include
+2013-08-22 12:26:19,852 - Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+2013-08-22 12:26:19,958 - Created '20' parsers.
+2013-08-22 12:26:19,991 - Velocimacro : "velocimacro.library" is not set.  Trying default library: VM_global_library.vm
+2013-08-22 12:26:19,995 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/fitnesse_straight/templates/VM_global_library.vm
+2013-08-22 12:26:20,000 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/templates/VM_global_library.vm
+2013-08-22 12:26:20,000 - Velocimacro : Default library not found.
+2013-08-22 12:26:20,000 - Velocimacro : allowInline = true : VMs can be defined inline in templates
+2013-08-22 12:26:20,000 - Velocimacro : allowInlineToOverride = false : VMs defined inline may NOT replace previous VM definitions
+2013-08-22 12:26:20,000 - Velocimacro : allowInlineLocal = false : VMs defined inline will be global in scope if allowed.
+2013-08-22 12:26:20,000 - Velocimacro : autoload off : VM system will not automatically reload global library macros
+2013-08-22 12:26:20,662 - ResourceManager : found suiteXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-22 12:26:20,818 - ResourceManager : found suiteHistoryXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader

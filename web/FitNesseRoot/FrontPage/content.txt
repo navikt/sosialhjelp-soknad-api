@@ -1,0 +1,8 @@
+!1 !-<span style="font-size: 2em">-! Dialogarena - Dokumentinnsending !projectversion !-</span>-!
+
+!2 [[Alle tester][AlleTester]]
+
+!2 Testsuiter
+
+    * [[Kjør alle godkjente tester][/AlleTester?suite&suiteFilter=godkjent]]
+    * [[Kjør alle godkjente integrasjonstester][/AlleTester?suite&suiteFilter=godkjent-integrasjon]]

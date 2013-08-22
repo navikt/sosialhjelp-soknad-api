@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org" lang="no">
+    <wicket:extend>
+        <div class="fortsettSenere">
+            <div class="rad">
+                <div class="begrensning">
+                    <section class="sak-totredel">
+                        <div class="panel-standard-belyst">
+                            <h2 class="stor" wicket:id="sideTittel"/>
+
+                            <p>
+                                <span wicket:id="fortsettSenere.beskrivelse"/>
+                            </p>
+
+                            <div class="send-epost" wicket:id="sendLink"></div>
+                            <div class="lenker-dot">
+                                <span>
+                                    <a href="#" id="tilOversikt" wicket:id="tilOversikt" role="link">
+                                        <span wicket:id="fortsettSenere.oversiktSide"/>
+                                    </a>
+                                </span>
+                                <span>
+                                    <a href="#" id="dittnav" wicket:id="dittnav" role="link"/>
+                                </span>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </wicket:extend>
+</html>

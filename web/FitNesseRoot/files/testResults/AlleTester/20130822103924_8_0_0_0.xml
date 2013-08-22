@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<suiteResults>
+  <FitNesseVersion>v20121220</FitNesseVersion>
+  <rootPath>AlleTester</rootPath>
+    <pageHistoryReference>
+    <name>AlleTester.RegresjonstestDokumentinnsending.BrukerMedNorskadresseUtenVedlegg</name>
+    <date>08/22/2013 10:39:24</date>
+    <pageHistoryLink>AlleTester.RegresjonstestDokumentinnsending.BrukerMedNorskadresseUtenVedlegg?pageHistory&amp;resultDate=20130822103924</pageHistoryLink>
+    <counts>
+      <right>14</right>
+      <wrong>0</wrong>
+      <ignores>0</ignores>
+      <exceptions>0</exceptions>
+    </counts>
+    <runTimeInMillis>67126</runTimeInMillis>
+  </pageHistoryReference>
+    <pageHistoryReference>
+    <name>AlleTester.RegresjonstestDokumentinnsending.BrukerMedFastUtenlanskAdresseEttersenderNavVedleggEgetVedlegg</name>
+    <date>08/22/2013 10:40:34</date>
+    <pageHistoryLink>AlleTester.RegresjonstestDokumentinnsending.BrukerMedFastUtenlanskAdresseEttersenderNavVedleggEgetVedlegg?pageHistory&amp;resultDate=20130822104034</pageHistoryLink>
+    <counts>
+      <right>9</right>
+      <wrong>0</wrong>
+      <ignores>0</ignores>
+      <exceptions>0</exceptions>
+    </counts>
+    <runTimeInMillis>81067</runTimeInMillis>
+  </pageHistoryReference>
+    <pageHistoryReference>
+    <name>AlleTester.RegresjonstestDokumentinnsending.BrukerMedFastUtenlanskAdresseMedAnnetVedlegg</name>
+    <date>08/22/2013 10:41:56</date>
+    <pageHistoryLink>AlleTester.RegresjonstestDokumentinnsending.BrukerMedFastUtenlanskAdresseMedAnnetVedlegg?pageHistory&amp;resultDate=20130822104156</pageHistoryLink>
+    <counts>
+      <right>8</right>
+      <wrong>0</wrong>
+      <ignores>0</ignores>
+      <exceptions>0</exceptions>
+    </counts>
+    <runTimeInMillis>52759</runTimeInMillis>
+  </pageHistoryReference>
+    <pageHistoryReference>
+    <name>AlleTester.RegresjonstestDokumentinnsending.BrukerMedMidlertidligUtenlanskAdresseEttetsenderNavVedleggEgetVedlegg</name>
+    <date>08/22/2013 10:42:48</date>
+    <pageHistoryLink>AlleTester.RegresjonstestDokumentinnsending.BrukerMedMidlertidligUtenlanskAdresseEttetsenderNavVedleggEgetVedlegg?pageHistory&amp;resultDate=20130822104248</pageHistoryLink>
+    <counts>
+      <right>10</right>
+      <wrong>0</wrong>
+      <ignores>0</ignores>
+      <exceptions>0</exceptions>
+    </counts>
+    <runTimeInMillis>42997</runTimeInMillis>
+  </pageHistoryReference>
+    <pageHistoryReference>
+    <name>AlleTester.RegresjonstestDokumentinnsending.BrukerMedMidlertidligUtenlanskAdresseMedEgetNavVedlegg</name>
+    <date>08/22/2013 10:43:31</date>
+    <pageHistoryLink>AlleTester.RegresjonstestDokumentinnsending.BrukerMedMidlertidligUtenlanskAdresseMedEgetNavVedlegg?pageHistory&amp;resultDate=20130822104331</pageHistoryLink>
+    <counts>
+      <right>9</right>
+      <wrong>0</wrong>
+      <ignores>0</ignores>
+      <exceptions>0</exceptions>
+    </counts>
+    <runTimeInMillis>43185</runTimeInMillis>
+  </pageHistoryReference>
+    <pageHistoryReference>
+    <name>AlleTester.RegresjonstestDokumentinnsending.BrukerMedMidlertidligUtenlanskAdresseMedEgneVedlegg</name>
+    <date>08/22/2013 10:44:15</date>
+    <pageHistoryLink>AlleTester.RegresjonstestDokumentinnsending.BrukerMedMidlertidligUtenlanskAdresseMedEgneVedlegg?pageHistory&amp;resultDate=20130822104415</pageHistoryLink>
+    <counts>
+      <right>11</right>
+      <wrong>0</wrong>
+      <ignores>0</ignores>
+      <exceptions>0</exceptions>
+    </counts>
+    <runTimeInMillis>45553</runTimeInMillis>
+  </pageHistoryReference>
+    <pageHistoryReference>
+    <name>AlleTester.RegresjonstestDokumentinnsending.BrukerMedNorskAdresseEpostadresseNavVedleggAnnetVedlegg</name>
+    <date>08/22/2013 10:45:00</date>
+    <pageHistoryLink>AlleTester.RegresjonstestDokumentinnsending.BrukerMedNorskAdresseEpostadresseNavVedleggAnnetVedlegg?pageHistory&amp;resultDate=20130822104500</pageHistoryLink>
+    <counts>
+      <right>8</right>
+      <wrong>0</wrong>
+      <ignores>0</ignores>
+      <exceptions>0</exceptions>
+    </counts>
+    <runTimeInMillis>51562</runTimeInMillis>
+  </pageHistoryReference>
+    <pageHistoryReference>
+    <name>AlleTester.RegresjonstestDokumentinnsending.BrukerMedNorskAdresseEttetsenderNavVedleggEgetVedleggAnnetVedlegg</name>
+    <date>08/22/2013 10:45:52</date>
+    <pageHistoryLink>AlleTester.RegresjonstestDokumentinnsending.BrukerMedNorskAdresseEttetsenderNavVedleggEgetVedleggAnnetVedlegg?pageHistory&amp;resultDate=20130822104552</pageHistoryLink>
+    <counts>
+      <right>10</right>
+      <wrong>0</wrong>
+      <ignores>0</ignores>
+      <exceptions>0</exceptions>
+    </counts>
+    <runTimeInMillis>46647</runTimeInMillis>
+  </pageHistoryReference>
+    <finalCounts>
+    <right>8</right>
+    <wrong>0</wrong>
+    <ignores>0</ignores>
+    <exceptions>0</exceptions>
+  </finalCounts>
+  <totalRunTimeInMillis>445450</totalRunTimeInMillis>
+
+</suiteResults>
+
