@@ -48,7 +48,7 @@ public class DefaultBrukerBehandlingServiceIntegration extends DefaultOpprettBru
     @Override
     public List<String> hentBrukerBehandlingIder(String aktorId) {
         try {
-            List<WSBrukerBehandlingOppsummering> brukerBehandlinger = henvendelsesBehandlingService.hentBrukerBehandlingListe(aktorId);
+            List<WSBrukerBehandlingOppsummering> brukerBehandlinger = henvendelsesBehandlingService.hentBrukerBehandlinger(aktorId);
             return on(brukerBehandlinger).map(BEHANDLINGSID).collect();
         } catch (SOAPFaultException e) {
             logger.error("Kunne ikke hente brukerbehandlinger for aktørId {}", aktorId, e);

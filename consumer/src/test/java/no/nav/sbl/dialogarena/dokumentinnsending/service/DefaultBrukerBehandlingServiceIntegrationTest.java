@@ -123,7 +123,7 @@ public class DefaultBrukerBehandlingServiceIntegrationTest {
 
     @Test(expected = ApplicationException.class)
     public void skalKasteApplicationExceptionPaaHentBrukerBehandlingIderDersomKallTilWebServiceKasterSOAPFaultException() {
-        doThrow(SOAPFaultException.class).when(henvendelsesBehandlingPortType).hentBrukerBehandlingListe(anyString());
+        doThrow(SOAPFaultException.class).when(henvendelsesBehandlingPortType).hentBrukerBehandlinger(anyString());
 
         brukerBehandlingServiceIntegration.hentBrukerBehandlingIder(anyString());
     }
@@ -131,7 +131,7 @@ public class DefaultBrukerBehandlingServiceIntegrationTest {
     @Test
     public void skalHenteBrukerBehandlingIder() {
         List<WSBrukerBehandlingOppsummering> brukerBehandlinger = lagBrukerBehandlinger();
-        when(henvendelsesBehandlingPortType.hentBrukerBehandlingListe(anyString())).thenReturn(brukerBehandlinger);
+        when(henvendelsesBehandlingPortType.hentBrukerBehandlinger(anyString())).thenReturn(brukerBehandlinger);
 
         List<String> behandlingsIder = brukerBehandlingServiceIntegration.hentBrukerBehandlingIder("***REMOVED***");
         assertEquals(asList("500", "600"), behandlingsIder);
