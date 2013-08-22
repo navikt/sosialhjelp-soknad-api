@@ -200,7 +200,7 @@ public class DokumentServiceMock implements OppdatereHenvendelsesBehandlingPortT
     }
 
     @Override
-    public List<WSDokumentForventning> hentDokumentForventningListe(String behandlingsId) {
+    public List<WSDokumentForventning> hentDokumentForventninger(String behandlingsId) {
         Optional<BrukerBehandling> behandling = on(behandlinger.values()).filter(where(BRUKERBEHANDLING_ID, equalTo(behandlingsId))).head();
         if (!behandling.isSome()) {
             throw new ApplicationException("Fant ikke brukerbehandling med ID " + behandlingsId, new Exception("Fant ikke behandling med gitt ID"));
@@ -252,7 +252,7 @@ public class DokumentServiceMock implements OppdatereHenvendelsesBehandlingPortT
     }
 
     @Override
-    public List<WSBrukerBehandlingOppsummering> hentBrukerBehandlingListe(String avsender) {
+    public List<WSBrukerBehandlingOppsummering> hentBrukerBehandlinger(String avsender) {
         return on(behandlinger.get(avsender)).map(TIL_WS_BRUKERBEHANDLING).map(TIL_WS_BRUKERBEHANDLINGOPPSUMMERING).collect();
     }
 

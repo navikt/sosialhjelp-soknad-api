@@ -33,13 +33,7 @@ public class SelfTestPage extends SelfTestBase {
             }
         }.addStatus(statusList);
 
-        new ServiceStatusHenter("OppdatereHenvendelsesBehandling") {
-            public void ping() {
-                oppdatereHenvendelsesBehandlingPortType.ping();
-            }
-        }.addStatus(statusList);
-
-        /*new ServiceStatusHenter("PersonService") {
+         /*new ServiceStatusHenter("PersonService") {
             public void ping() {
                 personServiceTPS.ping();
             }
