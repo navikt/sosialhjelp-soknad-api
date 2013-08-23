@@ -8,7 +8,10 @@ public enum JsResources {
     LOADING_INDICATOR("loadingIndicator"),
     VALIDATION("validation"),
     
-    INPUTFIELD("websoknad/inputfield");
+    INPUTFIELD("websoknad/inputfield"),
+    MUSTACHE("mustache/mustache"),
+//    JQUERY("jquery/jquery-1.10.2"),
+    SENDSOKNAD("sendsoknad");
 
     private static final String FOLDER = "js/";
     private static final String TYPE = ".js";
@@ -21,4 +24,5 @@ public enum JsResources {
     public JavaScriptResourceReference getResource() {
         return new JavaScriptResourceReference(this.getClass(), FOLDER + resourcePath + TYPE);
     }
+    
 }
