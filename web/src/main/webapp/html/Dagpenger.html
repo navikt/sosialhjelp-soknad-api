@@ -1,20 +1,33 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
 	<script type="text/html" id="tpl-greeting">
-		<dl>
-			<dt> Navn </dt>
-			<dd>{{navn}} </dd>
-		</dl>
-
-		<form>
-			<label>Etternavn: </label> <input type="text"/>
-			<label>Telefon: </label> <input type="text"/>
+		<h1 class"skjematittel">Dagpenger</h1>
+		<form action="mustacheServicePage" method="post">
+			<label><b>Navn:</b> </label> 
+			<label id="navn"/>
+			<br/>
+			<label><b>Fødselsnummer:</b> </label> 
+			<label id="fnr"/>
+			<br/>
+			<label><b>Adresse:</b> </label> 
+			<label id="adresse"/>
 			
+			<br/>
+			<br/>
+			<input type="hidden" id="soknadId" name="soknadId"/>
+			<label><b>E-post:</b> </label> 
+			
+			<input type="text" name="epost"/>
+			<br/>			
+			<label><b>Telefon:</b> </label> 
+			<input type="text" name="telefon"/>
+			<br/>
+			<input type="submit" id="submitDagpenger"/>
 		</form>
 
 	</script>
