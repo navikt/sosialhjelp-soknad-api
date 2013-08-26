@@ -1,9 +1,10 @@
 package no.nav.sbl.dialogarena.dokumentinnsending;
 
+import javax.inject.Inject;
+
 import no.nav.modig.frontend.FrontendConfigurator;
 import no.nav.modig.frontend.FrontendModules;
 import no.nav.modig.frontend.MetaTag;
-import no.nav.modig.pagelet.spi.ResourceReferences;
 import no.nav.modig.wicket.configuration.ApplicationSettingsConfig;
 import no.nav.sbl.dialogarena.dokumentinnsending.pages.HomePage;
 import no.nav.sbl.dialogarena.dokumentinnsending.pages.StartBehandlingPage;
@@ -31,15 +32,11 @@ import org.apache.wicket.devutils.stateless.StatelessChecker;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
-import org.apache.wicket.request.resource.JavaScriptResourceReference;
-import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.settings.IApplicationSettings;
 import org.apache.wicket.settings.IMarkupSettings;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.lang.Bytes;
 import org.springframework.context.ApplicationContext;
-
-import javax.inject.Inject;
 
 
 public class WicketApplication extends WebApplication {
