@@ -1,11 +1,13 @@
 package no.nav.sbl.dialogarena.websoknad.pages.mustachetest;
 
-import org.apache.wicket.markup.html.WebPage;
+import no.nav.sbl.dialogarena.websoknad.pages.basepage.BasePage;
 
-public class MustacheTestPage extends WebPage {
+public class MustacheTestPage extends BasePage {
 
 	public MustacheTestPage() {
-		
+	
 	}
+	
+	
 	
 }

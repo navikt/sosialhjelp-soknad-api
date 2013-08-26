@@ -1,25 +1,31 @@
-$(document).ready(function() {
+	var soknadid, fnr, adresse, navn;
+
+$(document).ready(function(){
+	$.ajax("mustacheServicePage")
+		.done(function(data,text,jqXHR) {
+			soknadid = jqXHR.getResponseHeader("SoknadId");
+			fnr = jqXHR.getResponseHeader("fnr");
+			adresse = jqXHR.getResponseHeader("adresse");
+			navn = jqXHR.getResponseHeader("navn");
+			lastInnSoknad('html/Dagpenger.html','');
+		});
 	
 });
 
-function eksempel3(htmlside){
-	var templateData = {
-			navn: "Ketil"
+function lastInnSoknad(urlTilSoknadsSkjema, templateData){
+	var jsonData;
+	if(templateData) {
+		jsonData = $.parseJSON(templateData);
 	}
 	
-	$.get(htmlside, function(templates){
+	$.get(urlTilSoknadsSkjema, function(templates){
 		var template = $(templates).filter("#tpl-greeting").html();
-		$("body").html(Mustache.render(template, templateData));
+		$(".skjema").html(Mustache.render(template, jsonData));
+		$("#soknadId").attr("value",soknadid);
+		$("#fnr").html(fnr);
+		$("#adresse").html(adresse);
+		$("#navn").html(navn);
+		
 	});
 }
-function eksempel1(){
-	console.log("asdasd");
-	var person = {
-		firstname:"Ketil",
-		lastname:"Velle"
-	};
 
-	var template = "<h1>{{firstname}} {{lastname}}</h1>";
-	var html= Mustache.to_html(template,person);
-	$("#sampleArea").html(html);
-}

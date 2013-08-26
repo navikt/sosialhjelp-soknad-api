@@ -22,6 +22,7 @@ import no.nav.sbl.dialogarena.dokumentinnsending.pages.slettinnsending.SlettInns
 import no.nav.sbl.dialogarena.dokumentinnsending.resource.DokumentForhandsvisningResourceReference;
 import no.nav.sbl.dialogarena.dokumentinnsending.selftest.SelfTestPage;
 import no.nav.sbl.dialogarena.webkomponent.innstillinger.InnstillingerPanel;
+import no.nav.sbl.dialogarena.websoknad.pages.mustachetest.MustacheServicePage;
 import no.nav.sbl.dialogarena.websoknad.pages.mustachetest.MustacheTestPage;
 
 import org.apache.wicket.Application;
@@ -124,6 +125,8 @@ public class WicketApplication extends WebApplication {
         mountPage("internal/selftest", SelfTestPage.class);
         
         mountPage("mustacheTest", MustacheTestPage.class);
+        mountPage("mustacheServicePage", MustacheServicePage.class);
+
 
         mountResource("preview/${size}/${dokumentId}/${side}/thumb.png", thumbnailRef);
 
