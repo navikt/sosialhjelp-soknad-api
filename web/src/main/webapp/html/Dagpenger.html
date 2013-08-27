@@ -6,60 +6,124 @@
 </head>
 <body>
 	<script type="text/html" id="soknad">
-		<h1 class"skjematittel">Dagpenger</h1>
-		<form action="sendSoknadService" method="post">
+		<h1 class="skjematittel">Krav om dagpenger ved arbeidsledighet</h1>
 			<input type="hidden" id="soknadId" name="soknadId"/>
+			<h4>Personopplysninger </h4>
+			<label><b>Fødselsnummer:</b> </label> 
+			<label id="fnr"/>		
+			<br/>
 			<label><b>Fornavn:</b> </label> 
 			<label id="fornavn"/>
+			<br/>
+			<label><b>Mellomnavn:</b> </label> 
+			<label id="mellomnavn"/>
 			<br/>
 			<label><b>Etternavn:</b> </label> 
 			<label id="etternavn"/>
 			<br/>
-			<label><b>Fødselsnummer:</b> </label> 
-			<label id="fnr"/>
-			<br/>
 			<label><b>Adresse:</b> </label> 
 			<label id="adresse"/>
-			
+			<br/>
+			<label><b>Postnummer:</b> </label> 
+			<label id="postnr"/>
+			<br/>
+			<label><b>Poststed:</b> </label> 
+			<label id="poststed"/>
 			<br/>
 			<br/>
-			<label><b>E-post:</b> </label> 
-			<input id="epost" type="text" name="epost"/>
-			<br/>			
-			<label><b>Telefon:</b> </label> 
-			<input id="telefon" type="text" name="telefon"/>
+			<h4>Sivilstatus</h4> 
+			<select name="sivilstatus">
+				<option value="ugift">Ugift</option>
+				<option value="samboer">Samboer</option>
+				<option value="enke/enkemann">Enke/Enkemann</option>
+			</select>
+			<br/>
+			<h4> Barn</h4><span> Egne barn (biologiske barn og adoptivbarn) under 18 år som er bosatt i Norge eller annet EØS-land og
+forsørges av søkeren. Den som betaler bidrag, anses også som forsørger.</span>		
+			<br/>	
+			<br/>	
+			<label><b>Navn:</b> </label> 
+			<input id="barnenavn" type="text" name="barnenavn"/>
+			<br/>
+			<label><b>Alder:</b> </label> 
+			<input id="barnealder" type="text" name="barnealder"/>
+			<br/>
+			<span>Har du lest brosjyren «Dagpenger» på <a href="http://www.nav.no/Dagpenger" target="_blank" >www.nav.no/Dagpenger </a> ? </span>
+			<label>Ja</label>
+			<input type="radio" id="ja" name="lestbrosjyre" value="ja"/>
+			<label>Nei</label>
+			<input type="radio" id="nei" name="lestbrosjyre" value="nei"/>
+			<h4> Førstegangstjeneste </h4>
+			<select name="forstegangstjeneste">
+				<option value="militaer">Militær</option>
+				<option value="siviltjeneste">Siviltjeneste</option>
+				<option value="fritak">Fritak</option>
+			</select>
+			<br/>
+			<label><b>Fra:</b> </label> 
+			<input id="fra" type="text" name="fra"/>
+			<br/>
+			<br/>
+			<label><b>Til:</b> </label> 
+			<input id="til" type="text" name="til"/>
 			<br/>
 			<input type="submit" value="Send" id="submitDagpenger"/>
-		</form>
 
 	</script>
-	
+
 	<script type="text/html" id="oppsumering">
-		<h1 class"skjematittel">Dagpenger oppsummering</h1>
+		<h1 class="skjematittel">Krav om dagpenger ved arbeidsledighet - oppsumering</h1>
+			<h4>Personopplysninger </h4>
 			<input type="hidden" id="soknadId" name="soknadId"/>
+			<label><b>Fødselsnummer:</b> </label> 
+			<label id="fnr"/>		
+			<br/>
 			<label><b>Fornavn:</b> </label> 
 			<label id="fornavn"/>
+			<br/>
+			<label><b>Mellomnavn:</b> </label> 
+			<label id="mellomnavn"/>
 			<br/>
 			<label><b>Etternavn:</b> </label> 
 			<label id="etternavn"/>
 			<br/>
-			<label><b>Fødselsnummer:</b> </label> 
-			<label id="fnr"/>
-			<br/>
 			<label><b>Adresse:</b> </label> 
 			<label id="adresse"/>
-			
+			<br/>
+			<label><b>Postnummer:</b> </label> 
+			<label id="postnr"/>
+			<br/>
+			<label><b>Poststed:</b> </label> 
+			<label id="poststed"/>
 			<br/>
 			<br/>
-			<label><b>E-post:</b> </label> 
-			<label id="epost" type="text" name="epost"/>
-			<br/>			
-			<label><b>Telefon:</b> </label> 
-			<label id="telefon" type="text" name="telefon"/>
+			<h4>Sivilstatus</h4> 
+			<label name="sivilstatus" id="sivilstatus"/>
+			<br/>
+			<h4> Barn under 18år </h4>			
+			<label><b>Navn:</b> </label> 
+			<label id="barnenavn" type="text" name="barnenavn"/>
+			<br/>
+			<label><b>Alder:</b> </label> 
+			<label id="barnealder" type="text" name="barnealder"/>
+			<br/>
+			<span>Har du lest brosjyren «Dagpenger» på <a href="http://www.nav.no/Dagpenger" target="_blank" >www.nav.no/Dagpenger </a> ? </span>
+			<label id="lestbrosjyre" name="lestbrosjyre"/>
+			<h4> Førstegangstjeneste </h4>
+			<label id="forstegangstjeneste" name="forstegangstjeneste"/>
+			<br/>
+			<label><b>Fra:</b> </label> 
+			<label id="fra" type="text" name="fra"/>
+			<br/>
+			<br/>
+			<label><b>Til:</b> </label> 
+			<label id="til" type="text" name="til"/>
+			<br/>
+			<label type="submit" value="Send" id="submitDagpenger"/>
 
 			<br/>
 			<input type="submit" value="Godkjenn og send"/>
 	</script>
-	
+
 </body>
 </html>

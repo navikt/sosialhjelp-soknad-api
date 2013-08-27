@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.websoknad.pages.sendsoknad;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -32,16 +33,15 @@ public class SendSoknadServicePage extends WebPage{
 			Long soknadId;
 			if(request.getParameter("soknadId") == null){
 				soknadId = soknadService.startSoknad("test");
-			}
-			else{
+			} else {
 				soknadId = Long.valueOf(request.getParameter("soknadId"));
 			}
 			WebSoknad soknad = soknadService.hentSoknad(soknadId);
 			response.setHeader("soknadId", soknadId.toString());
 			
 			Map<String, Faktum> fakta = soknad.getFakta();
-			for (String key : fakta.keySet()) {
-				response.setHeader(key, fakta.get(key).getValue());						
+			for (Entry<String, Faktum> entry : fakta.entrySet()) {
+				response.setHeader(entry.getKey(), entry.getValue().getValue());						
 			}
 						
 		} else if(request.getMethod().equalsIgnoreCase("POST")) {
@@ -52,10 +52,10 @@ public class SendSoknadServicePage extends WebPage{
 	private void haandterePost(HttpServletRequest request, HttpServletResponse response) {
 		Long soknadId = Long.valueOf(request.getParameter("soknadId"));
 		Map<String, String[]> parameterMap = request.getParameterMap();
-		for (String key : parameterMap.keySet()) {
-			String value = request.getParameter(key);
-			soknadService.lagreSoknadsFelt(soknadId, key, value);
-			log.debug("Soknadid: " + soknadId + " key: " + key + " value: " + value);
+		for (Entry<String, String[]> entry : parameterMap.entrySet()) {
+			String value = request.getParameter(entry.getKey());
+			soknadService.lagreSoknadsFelt(soknadId, entry.getKey(), value);
+			log.debug("Soknadid: " + soknadId + " key: " + entry + " value: " + value);
 		}
 		try {
 			response.sendRedirect("oppsumering?soknadId="+soknadId);
