@@ -5,11 +5,15 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<script type="text/html" id="tpl-greeting">
+	<script type="text/html" id="soknad">
 		<h1 class"skjematittel">Dagpenger</h1>
-		<form action="mustacheServicePage" method="post">
-			<label><b>Navn:</b> </label> 
-			<label id="navn"/>
+		<form action="sendSoknadService" method="post">
+			<input type="hidden" id="soknadId" name="soknadId"/>
+			<label><b>Fornavn:</b> </label> 
+			<label id="fornavn"/>
+			<br/>
+			<label><b>Etternavn:</b> </label> 
+			<label id="etternavn"/>
 			<br/>
 			<label><b>Fødselsnummer:</b> </label> 
 			<label id="fnr"/>
@@ -19,17 +23,42 @@
 			
 			<br/>
 			<br/>
-			<input type="hidden" id="soknadId" name="soknadId"/>
 			<label><b>E-post:</b> </label> 
-			
-			<input type="text" name="epost"/>
+			<input id="epost" type="text" name="epost"/>
 			<br/>			
 			<label><b>Telefon:</b> </label> 
-			<input type="text" name="telefon"/>
+			<input id="telefon" type="text" name="telefon"/>
 			<br/>
-			<input type="submit" id="submitDagpenger"/>
+			<input type="submit" value="Send" id="submitDagpenger"/>
 		</form>
 
+	</script>
+	
+	<script type="text/html" id="oppsumering">
+		<h1 class"skjematittel">Dagpenger oppsummering</h1>
+			<input type="hidden" id="soknadId" name="soknadId"/>
+			<label><b>Fornavn:</b> </label> 
+			<label id="fornavn"/>
+			<br/>
+			<label><b>Etternavn:</b> </label> 
+			<label id="etternavn"/>
+			<br/>
+			<label><b>Fødselsnummer:</b> </label> 
+			<label id="fnr"/>
+			<br/>
+			<label><b>Adresse:</b> </label> 
+			<label id="adresse"/>
+			
+			<br/>
+			<br/>
+			<label><b>E-post:</b> </label> 
+			<label id="epost" type="text" name="epost"/>
+			<br/>			
+			<label><b>Telefon:</b> </label> 
+			<label id="telefon" type="text" name="telefon"/>
+
+			<br/>
+			<input type="submit" value="Godkjenn og send"/>
 	</script>
 	
 </body>
