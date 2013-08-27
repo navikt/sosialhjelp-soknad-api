@@ -2,5 +2,12 @@
 <html xmlns:wicket="http://wicket.apache.org">
     <wicket:extend>
     
+    <script>
+    $(document).ready(function() {
+    	var soknadId = getURLParameter("soknadId");
+    	
+    	lastInnSoknad('html/Dagpenger.html','',soknadId);
+    });
+    </script>
     </wicket:extend>
 </html>
