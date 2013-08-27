@@ -29,7 +29,7 @@
         <cxf.version>2.7.6</cxf.version>
         <nav.sbl.commons.version>3.30</nav.sbl.commons.version>
         <modig-security.version>1.0.7</modig-security.version>
-        <sendsoknad.tjenestespec.version>0.0.6</sendsoknad.tjenestespec.version>
+        <sendsoknad.tjenestespec.version>0.0.7</sendsoknad.tjenestespec.version>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.skippedModules>sendsoknad-consumer</sonar.skippedModules>
