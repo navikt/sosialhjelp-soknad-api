@@ -24,6 +24,7 @@ import no.nav.sbl.dialogarena.dokumentinnsending.selftest.SelfTestPage;
 import no.nav.sbl.dialogarena.webkomponent.innstillinger.InnstillingerPanel;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SendSoknadServicePage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SendSoknadPage;
+import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.kvittering.KvitteringPage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.oppsummering.OppsumeringPage;
 
 import org.apache.wicket.Application;
@@ -128,6 +129,7 @@ public class WicketApplication extends WebApplication {
         mountPage("sendSoknad", SendSoknadPage.class);
         mountPage("sendSoknadService", SendSoknadServicePage.class);
         mountPage("oppsumering", OppsumeringPage.class);
+        mountPage("soknadKvittering", KvitteringPage.class);
 
 
         mountResource("preview/${size}/${dokumentId}/${side}/thumb.png", thumbnailRef);

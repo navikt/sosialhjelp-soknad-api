@@ -45,11 +45,30 @@ public class SendSoknadServicePage extends WebPage{
 			}
 						
 		} else if(request.getMethod().equalsIgnoreCase("POST")) {
-			haandterePost(request, response);
+			
+			
+			String bekreftetParameter = request.getParameter("bekreftet");
+			if(bekreftetParameter != null && bekreftetParameter.equals("ja")) {
+				haandtereKvitteringsPost(request,response);
+			} else {
+				haandtereOppsumeringsPost(request, response);
+			}
 		}
 	}
 
-	private void haandterePost(HttpServletRequest request, HttpServletResponse response) {
+	private void haandtereKvitteringsPost(HttpServletRequest request,
+			HttpServletResponse response) {	
+		Long soknadId = Long.valueOf(request.getParameter("soknadId"));
+		soknadService.sendSoknad(soknadId);
+		
+		try {
+			response.sendRedirect("soknadKvittering");
+		} catch (IOException e) {
+			log.info("Klarte ikke sende redirect til kvitteringssiden.");
+		}
+	}
+
+	private void haandtereOppsumeringsPost(HttpServletRequest request, HttpServletResponse response) {
 		Long soknadId = Long.valueOf(request.getParameter("soknadId"));
 		Map<String, String[]> parameterMap = request.getParameterMap();
 		for (Entry<String, String[]> entry : parameterMap.entrySet()) {
