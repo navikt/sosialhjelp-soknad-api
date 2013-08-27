@@ -43,19 +43,19 @@ public class MustacheServicePage extends WebPage{
 	private void haandterePost(HttpServletRequest request, HttpServletResponse response) {
 		Long soknadId = Long.valueOf(request.getParameter("soknadId"));
 		Map<String, String[]> parameterMap = request.getParameterMap();
-		String resultat = "";
+		StringBuffer resultat = new StringBuffer();
 		for (String key : parameterMap.keySet()) {
 			String value = request.getParameter(key);
 			soknadService.lagreSoknadsFelt(soknadId, key, value);
 			log.debug("Soknadid: " + soknadId + " key: " + key + " value: " + value);
-			resultat += "<p>" + key + ": " + value + "</p>";
+			resultat.append("<p>" + key + ": " + value + "</p>");
 		}
 		
-		resultat +="<p><span>Jeg samtykker i at overstående informasjon er riktig</span><input type='checkbox'/><p>";
-		resultat +="<p><input type='submit' value='Send inn'/><p>";
+		resultat.append("<p><span>Jeg samtykker i at overstående informasjon er riktig</span><input type='checkbox'/><p>");
+		resultat.append("<p><input type='submit' value='Send inn'/><p>");
 		try {
 			response.setContentType("text/html; charset=UTF-8");
-			response.getOutputStream().print("<h1>Oppsummering</h1>" + resultat);
+			response.getOutputStream().print("<h1>Oppsummering</h1>" + resultat.toString());
 		} catch (IOException e) {
 			log.info("Klarte ikke skrive oppsummering.");
 		}
