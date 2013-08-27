@@ -5,8 +5,6 @@ import no.nav.modig.wicket.test.FluentWicketTester;
 import no.nav.sbl.dialogarena.dokumentinnsending.WicketApplication;
 import no.nav.sbl.dialogarena.dokumentinnsending.convert.ThumbnailConverter;
 import no.nav.sbl.dialogarena.dokumentinnsending.convert.ThumbnailConverterImpl;
-import no.nav.sbl.dialogarena.dokumentinnsending.fixture.oversiktside.FortsettSenereFixture;
-import no.nav.sbl.dialogarena.dokumentinnsending.fixture.oversiktside.NavigasjonTestFixture;
 import no.nav.sbl.dialogarena.dokumentinnsending.repository.SoknadRepository;
 import no.nav.sbl.dialogarena.dokumentinnsending.resource.DokumentForhandsvisningResourceReference;
 import no.nav.sbl.dialogarena.dokumentinnsending.service.DokumentServiceMock;
@@ -47,16 +45,6 @@ public class
         FluentWicketTester<WicketApplication> wicketTester = new FluentWicketTester<>(application);
         wicketTester.tester.getSession().setLocale(new Locale("NO"));
         return wicketTester;
-    }
-
-    @Bean
-    public FortsettSenereFixture fortsettSenereFixture() {
-        return new FortsettSenereFixture();
-    }
-
-    @Bean
-    public NavigasjonTestFixture navigasjonTestFixture() {
-        return new NavigasjonTestFixture();
     }
 
     @Bean

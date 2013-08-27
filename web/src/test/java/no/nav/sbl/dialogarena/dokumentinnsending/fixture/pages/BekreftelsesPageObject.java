@@ -13,10 +13,20 @@ import no.nav.sbl.dialogarena.dokumentinnsending.WicketApplication;
 import no.nav.sbl.dialogarena.dokumentinnsending.domain.Dokument;
 import no.nav.sbl.dialogarena.dokumentinnsending.domain.InnsendingsValg;
 import no.nav.sbl.dialogarena.dokumentinnsending.fixture.utils.TestUtils;
+import no.nav.sbl.dialogarena.dokumentinnsending.pages.bekreft.BekreftelsesPage;
 import no.nav.sbl.dialogarena.dokumentinnsending.pages.oversikt.OversiktPage;
 
 public class BekreftelsesPageObject {
 
+
+	private FluentWicketTester<WicketApplication> fluentWicketTester;
+
+	public BekreftelsesPageObject(){}
+	public BekreftelsesPageObject(
+			FluentWicketTester<WicketApplication> wicketTester, String behandlingsId) {
+		this.fluentWicketTester = wicketTester;
+		fluentWicketTester.goTo(BekreftelsesPage.class, TestUtils.withBrukerBehandlingId(behandlingsId));
+	}
 
 	public void samtykkOgBekreft(FluentWicketTester<WicketApplication> fluentWicketTester) {
 		FluentFormTester fluentFormTester = new FluentFormTester(fluentWicketTester, "bekreftelsesForm");

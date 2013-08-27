@@ -5,32 +5,12 @@
     <title>Homepage</title>
 </head>
 <body wicket:id="body">
-<h1>Dokumentinnsending</h1>
-<h3>Liste over påbegynte behandlinger</h3>
-
-
-<div><span>Pålogget Bruker: </span><span wicket:id="aktorId"> </span> (<a href="http://e34apsl00227.devillo.no:8080/openam/UI/Login">Logg på annen bruker</a>)</div>
-<ul wicket:id="eksisterendeSoknadListe">
-    <a wicket:id="eksisterendeSoknadLink" href="#">
-        <span>ID Brukerbehandling: </span>
-        <span wicket:id="eksisterendeSoknadText"><!-- --></span>
-    </a>
-</ul>
-
-<h3>Opprett en ny behandling</h3>
-
-<form wicket:id="opprettSoknadForm">
-    <span wicket:id="bruker"/>
-    <select wicket:id="soknad"/>
-    <select wicket:id="soknadType"/>
-    <input type="submit" value="Opprett søknad" wicket:id="submit" style="display: block;"/>
-</form>
-
 
 <h1>Websøknad</h1>
 
 <h3>Liste over påbegynte behandlinger</h3>
 
+<div><span>Pålogget Bruker: </span><span wicket:id="aktorId"> </span> (<a href="http://e34apsl00227.devillo.no:8080/openam/UI/Login">Logg på annen bruker</a>)</div>
 <ul wicket:id="eksisterendeWebSoknadListe">
     <a wicket:id="eksisterendeWebSoknadLink" href="#">
         <span>ID soknad: </span>

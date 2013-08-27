@@ -346,3 +346,345 @@
 2013-08-22 12:26:20,000 - Velocimacro : autoload off : VM system will not automatically reload global library macros
 2013-08-22 12:26:20,662 - ResourceManager : found suiteXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
 2013-08-22 12:26:20,818 - ResourceManager : found suiteHistoryXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:45:10,743 - Log4JLogChute initialized using file 'velocity.log'
+2013-08-26 12:45:10,749 - Initializing Velocity, Calling init()...
+2013-08-26 12:45:10,749 - Starting Apache Velocity v1.7 (compiled: 2010-11-19 12:14:37)
+2013-08-26 12:45:10,749 - Default Properties File: org\apache\velocity\runtime\defaults\velocity.properties
+2013-08-26 12:45:10,749 - Trying to use logger class org.apache.velocity.runtime.log.AvalonLogChute
+2013-08-26 12:45:10,749 - Target log system for org.apache.velocity.runtime.log.AvalonLogChute is not available (java.lang.NoClassDefFoundError: org/apache/log/format/Formatter).  Falling back to next log system...
+2013-08-26 12:45:10,749 - Trying to use logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-26 12:45:10,749 - Using logger class org.apache.velocity.runtime.log.Log4JLogChute
+2013-08-26 12:45:10,755 - ResourceLoader instantiated: org.apache.velocity.runtime.resource.loader.FileResourceLoader
+2013-08-26 12:45:10,757 - Do unicode file recognition:  false
+2013-08-26 12:45:10,757 - FileResourceLoader : adding path 'C:\dev\sendsoknad\trunk\web/FitNesseRoot/files/fitnesse/templates'
+2013-08-26 12:45:10,757 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:45:10,757 - ResourceLoader instantiated: fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:45:10,771 - ResourceCache: initialized (class org.apache.velocity.runtime.resource.ResourceCacheImpl) with class java.util.Collections$SynchronizedMap cache map.
+2013-08-26 12:45:10,773 - Loaded System Directive: org.apache.velocity.runtime.directive.Stop
+2013-08-26 12:45:10,775 - Loaded System Directive: org.apache.velocity.runtime.directive.Define
+2013-08-26 12:45:10,776 - Loaded System Directive: org.apache.velocity.runtime.directive.Break
+2013-08-26 12:45:10,777 - Loaded System Directive: org.apache.velocity.runtime.directive.Evaluate
+2013-08-26 12:45:10,778 - Loaded System Directive: org.apache.velocity.runtime.directive.Literal
+2013-08-26 12:45:10,779 - Loaded System Directive: org.apache.velocity.runtime.directive.Macro
+2013-08-26 12:45:10,781 - Loaded System Directive: org.apache.velocity.runtime.directive.Parse
+2013-08-26 12:45:10,783 - Loaded System Directive: org.apache.velocity.runtime.directive.Include
+2013-08-26 12:45:10,784 - Loaded System Directive: org.apache.velocity.runtime.directive.Foreach
+2013-08-26 12:45:10,824 - Created '20' parsers.
+2013-08-26 12:45:10,836 - Velocimacro : "velocimacro.library" is not set.  Trying default library: VM_global_library.vm
+2013-08-26 12:45:10,838 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/fitnesse_straight/templates/VM_global_library.vm
+2013-08-26 12:45:10,839 - Could not load resource 'VM_global_library.vm' from ResourceLoader fitnesse.responders.templateUtilities.ClasspathResourceLoader: ClasspathResourceLoader Error: cannot find resource /fitnesse/resources/templates/VM_global_library.vm
+2013-08-26 12:45:10,839 - Velocimacro : Default library not found.
+2013-08-26 12:45:10,839 - Velocimacro : allowInline = true : VMs can be defined inline in templates
+2013-08-26 12:45:10,839 - Velocimacro : allowInlineToOverride = false : VMs defined inline may NOT replace previous VM definitions
+2013-08-26 12:45:10,839 - Velocimacro : allowInlineLocal = false : VMs defined inline will be global in scope if allowed.
+2013-08-26 12:45:10,839 - Velocimacro : autoload off : VM system will not automatically reload global library macros
+2013-08-26 12:45:10,866 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:45:10,876 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:45:10,898 - Velocimacro : added VM group: source=wikiNav.vm
+2013-08-26 12:45:10,898 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:45:10,910 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:45:11,051 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:46:09,060 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:46:09,063 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:46:09,073 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:46:09,073 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:46:09,078 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:46:09,103 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:46:39,850 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:46:39,853 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:46:39,853 - #parse(): null argument at skeleton.vm[line 42, column 4]
+2013-08-26 12:46:39,857 - ResourceManager : found editPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:10,719 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:10,721 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:10,727 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:47:10,727 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:10,732 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:10,742 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:13,289 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:13,292 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:13,298 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:47:13,298 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:13,304 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:13,309 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:19,481 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:19,483 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:19,483 - #parse(): null argument at skeleton.vm[line 42, column 4]
+2013-08-26 12:47:19,486 - ResourceManager : found editPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:24,376 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:24,378 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:24,384 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:47:24,384 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:24,389 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:24,401 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:25,796 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:25,798 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:25,805 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:47:25,805 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:25,811 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:25,818 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:27,223 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:27,225 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:27,226 - #parse(): null argument at skeleton.vm[line 42, column 4]
+2013-08-26 12:47:27,230 - ResourceManager : found editPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:39,906 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:39,909 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:39,915 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:47:39,915 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:39,920 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:39,926 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:43,589 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:43,592 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:43,592 - #parse(): null argument at skeleton.vm[line 42, column 4]
+2013-08-26 12:47:43,596 - ResourceManager : found editPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:49,752 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:49,755 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:47:49,755 - #parse(): null argument at skeleton.vm[line 42, column 4]
+2013-08-26 12:47:49,759 - ResourceManager : found editPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:06,660 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:06,663 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:06,669 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:48:06,669 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:06,677 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:06,686 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:08,265 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:08,268 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:08,268 - #parse(): null argument at skeleton.vm[line 42, column 4]
+2013-08-26 12:48:08,271 - ResourceManager : found editPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:11,520 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:11,522 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:11,526 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:48:11,527 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:11,530 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:11,541 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:14,120 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:14,122 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:14,127 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:48:14,127 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:14,133 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:14,138 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:15,277 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:15,279 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:15,279 - #parse(): null argument at skeleton.vm[line 42, column 4]
+2013-08-26 12:48:15,282 - ResourceManager : found editPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:28,033 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:28,035 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:28,036 - #parse(): null argument at skeleton.vm[line 42, column 4]
+2013-08-26 12:48:28,038 - ResourceManager : found editPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:33,758 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:33,761 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:33,761 - #parse(): null argument at skeleton.vm[line 42, column 4]
+2013-08-26 12:48:33,763 - ResourceManager : found editPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:38,294 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:38,296 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:48:38,296 - #parse(): null argument at skeleton.vm[line 42, column 4]
+2013-08-26 12:48:38,299 - ResourceManager : found editPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:51:30,354 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:51:30,357 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:51:30,361 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:51:30,361 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:51:30,366 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:51:30,376 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:51:36,467 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:51:36,469 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:51:36,473 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:51:36,473 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:51:36,478 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:51:36,488 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:51:37,922 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:51:37,924 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:51:37,925 - #parse(): null argument at skeleton.vm[line 42, column 4]
+2013-08-26 12:51:37,927 - ResourceManager : found editPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:51:51,888 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:51:51,889 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:51:51,938 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:51:51,939 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:51:51,944 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:51:51,952 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:52:44,575 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:52:44,577 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:52:44,578 - #parse(): null argument at skeleton.vm[line 42, column 4]
+2013-08-26 12:52:44,580 - ResourceManager : found editPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:08,008 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:08,011 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:08,014 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:55:08,015 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:08,041 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:08,047 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:23,263 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:23,267 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:23,271 - ResourceManager : found errorNavigator.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:23,275 - ResourceManager : found testNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:23,280 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:55:23,280 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:23,293 - ResourceManager : found suitePage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:23,523 - ResourceManager : found suiteHistoryXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:23,527 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:28,338 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:28,340 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:28,343 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:55:28,343 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:28,354 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:28,369 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:33,476 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:33,478 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:55:33,478 - #parse(): null argument at skeleton.vm[line 42, column 4]
+2013-08-26 12:55:33,481 - ResourceManager : found editPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:00,907 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:00,909 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:00,912 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:56:00,912 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:00,917 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:00,921 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:04,194 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:04,196 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:04,196 - #parse(): null argument at skeleton.vm[line 42, column 4]
+2013-08-26 12:56:04,199 - ResourceManager : found editPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:08,751 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:08,753 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:08,754 - #parse(): null argument at skeleton.vm[line 42, column 4]
+2013-08-26 12:56:08,756 - ResourceManager : found editPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:24,335 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:24,336 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:24,339 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:56:24,340 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:24,344 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:24,347 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:30,787 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:30,790 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:30,793 - ResourceManager : found errorNavigator.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:30,795 - ResourceManager : found testNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:30,799 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:56:30,799 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:30,809 - ResourceManager : found suitePage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:32,166 - ResourceManager : found testResults.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:32,281 - ResourceManager : found executionLog.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:32,312 - ResourceManager : found suiteHistoryXML.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:32,317 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:33,799 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:33,801 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:33,804 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:56:33,805 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:33,809 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:33,821 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:37,740 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:37,742 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:37,745 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:56:37,745 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:37,750 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:37,753 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:42,944 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:42,946 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:42,948 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:56:42,949 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:42,952 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:42,957 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:45,539 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:45,541 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:56:45,541 - #parse(): null argument at skeleton.vm[line 42, column 4]
+2013-08-26 12:56:45,543 - ResourceManager : found editPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:05,248 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:05,250 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:05,253 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:57:05,253 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:05,258 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:05,261 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:09,742 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:09,743 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:09,746 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:57:09,746 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:09,750 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:09,757 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:11,274 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:11,275 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:11,276 - #parse(): null argument at skeleton.vm[line 42, column 4]
+2013-08-26 12:57:11,278 - ResourceManager : found editPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:22,861 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:22,864 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:22,866 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:57:22,866 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:22,871 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:22,883 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:27,079 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:27,081 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:27,084 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:57:27,084 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:27,088 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:27,099 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:30,102 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:30,104 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:30,107 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:57:30,107 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:30,111 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:30,113 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:32,371 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:32,374 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:32,380 - ResourceManager : found errorNavigator.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:32,384 - ResourceManager : found testNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:32,392 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:57:32,392 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:32,402 - ResourceManager : found testPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:35,622 - ResourceManager : found testResults.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:35,729 - ResourceManager : found executionLog.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:35,769 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:50,641 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:50,642 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:50,643 - #parse(): null argument at skeleton.vm[line 42, column 4]
+2013-08-26 12:57:50,644 - ResourceManager : found editPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:58,015 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:58,017 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:58,020 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:57:58,020 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:58,023 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:58,026 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:59,362 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:59,369 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:59,372 - ResourceManager : found errorNavigator.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:59,374 - ResourceManager : found testNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:59,378 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 12:57:59,378 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:57:59,387 - ResourceManager : found testPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:58:02,621 - ResourceManager : found testResults.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:58:02,727 - ResourceManager : found executionLog.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 12:58:02,758 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:30,332 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:30,334 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:30,334 - #parse(): null argument at skeleton.vm[line 42, column 4]
+2013-08-26 13:15:30,337 - ResourceManager : found editPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:41,704 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:41,706 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:41,708 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 13:15:41,709 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:41,712 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:41,714 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:43,547 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:43,550 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:43,553 - ResourceManager : found errorNavigator.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:43,555 - ResourceManager : found testNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:43,558 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 13:15:43,558 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:43,566 - ResourceManager : found testPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:47,185 - ResourceManager : found testResults.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:47,292 - ResourceManager : found executionLog.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:47,321 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:51,039 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:51,041 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:51,043 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 13:15:51,043 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:51,048 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:15:51,062 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:16:07,094 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:16:07,098 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:16:07,105 - ResourceManager : found errorNavigator.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:16:07,107 - ResourceManager : found testNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:16:07,110 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 13:16:07,110 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:16:07,121 - ResourceManager : found testPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:16:10,286 - ResourceManager : found testResults.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:16:10,394 - ResourceManager : found executionLog.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:16:10,419 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:16:11,512 - ResourceManager : found skeleton.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:16:11,515 - ResourceManager : found header.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:16:11,517 - Velocimacro : VM addition rejected : group : inline not allowed to replace existing VM
+2013-08-26 13:16:11,517 - ResourceManager : found wikiNav.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:16:11,522 - ResourceManager : found wikiPage.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
+2013-08-26 13:16:11,529 - ResourceManager : found wikiFooter.vm with loader fitnesse.responders.templateUtilities.ClasspathResourceLoader
