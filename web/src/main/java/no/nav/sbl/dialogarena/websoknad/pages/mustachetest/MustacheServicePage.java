@@ -10,12 +10,19 @@ import javax.servlet.http.HttpServletResponse;
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
 
+
+
 import org.apache.wicket.markup.html.WebPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MustacheServicePage extends WebPage{
 	@Inject
 	private WebSoknadService soknadService;
 
+
+	Logger log = LoggerFactory.getLogger(MustacheServicePage.class);
+	
 	public MustacheServicePage() {
 		HttpServletRequest request = (HttpServletRequest) getRequest().getContainerRequest();
 		HttpServletResponse response = (HttpServletResponse) getResponse().getContainerResponse();
@@ -40,7 +47,7 @@ public class MustacheServicePage extends WebPage{
 		for (String key : parameterMap.keySet()) {
 			String value = request.getParameter(key);
 			soknadService.lagreSoknadsFelt(soknadId, key, value);
-			System.out.println("Soknadid: " + soknadId + " key: " + key + " value: " + value);
+			log.debug("Soknadid: " + soknadId + " key: " + key + " value: " + value);
 			resultat += "<p>" + key + ": " + value + "</p>";
 		}
 		
@@ -50,8 +57,7 @@ public class MustacheServicePage extends WebPage{
 			response.setContentType("text/html; charset=UTF-8");
 			response.getOutputStream().print("<h1>Oppsummering</h1>" + resultat);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.info("Klarte ikke skrive oppsummering.");
 		}
 	}
 
