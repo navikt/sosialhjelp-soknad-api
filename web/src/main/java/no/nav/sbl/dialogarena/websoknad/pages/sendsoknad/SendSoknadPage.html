@@ -5,8 +5,12 @@
     	</form>
     <script>
     $(document).ready(function() {
-    	lastInnSoknad('html/Dagpenger.html','',undefined);
-    });
+	   if(window.location.href.search("barneBidrag") > 0) {
+		   lastInnSoknad('html/Barnebidrag.html','',undefined);
+	   }else {
+		   lastInnSoknad('html/Dagpenger.html','',undefined);
+	   }
+	});	   
     </script>
     </wicket:extend>
     
