@@ -6,9 +6,9 @@ PUBLIC "-//OpenSSO Policy Administration DTD//EN"
 <!-- extracted from realm, / -->
 <Policies>
 	<Policy name="DokumentInnsending_001" referralPolicy="false" active="true" >
-		<Rule name="rule_DokumentInnsending__001_02">
+		<Rule name="rule_SendSoknad__001_02">
 			<ServiceName name="iPlanetAMWebAgentService" />
-			<ResourceName name="https://${DomainName}/dokumentinnsending/*?*" />
+			<ResourceName name="https://${DomainName}/sendsoknad/*?*" />
 			<AttributeValuePair>
 				<Attribute name="POST" />
 				<Value>allow</Value>
@@ -18,9 +18,9 @@ PUBLIC "-//OpenSSO Policy Administration DTD//EN"
 				<Value>allow</Value>
 			</AttributeValuePair>
 		</Rule>
-		<Rule name="rule_DokumentInnsending_001_01">
+		<Rule name="rule_SendSoknad_001_01">
 			<ServiceName name="iPlanetAMWebAgentService" />
-			<ResourceName name="https://${DomainName}/dokumentinnsending/*" />
+			<ResourceName name="https://${DomainName}/sendsoknad/*" />
 			<AttributeValuePair>
 				<Attribute name="POST" />
 				<Value>allow</Value>
@@ -30,9 +30,9 @@ PUBLIC "-//OpenSSO Policy Administration DTD//EN"
 				<Value>allow</Value>
 			</AttributeValuePair>
 		</Rule>
-		<Rule name="rule_DokumentInnsending_001_04">
+		<Rule name="rule_SendSoknad_001_04">
 			<ServiceName name="iPlanetAMWebAgentService" />
-			<ResourceName name="https://${DomainName}/dokumentinnsending/" />
+			<ResourceName name="https://${DomainName}/sendsoknad/" />
 			<AttributeValuePair>
 				<Attribute name="POST" />
 				<Value>allow</Value>
@@ -42,9 +42,9 @@ PUBLIC "-//OpenSSO Policy Administration DTD//EN"
 				<Value>allow</Value>
 			</AttributeValuePair>
 		</Rule>
-		<Rule name="rule_DokumentInnsending_001_03">
+		<Rule name="rule_SendSoknad_001_03">
 			<ServiceName name="iPlanetAMWebAgentService" />
-			<ResourceName name="https://${DomainName}/dokumentinnsending" />
+			<ResourceName name="https://${DomainName}/sendsoknad" />
 			<AttributeValuePair>
 				<Attribute name="POST" />
 				<Value>allow</Value>
@@ -55,11 +55,11 @@ PUBLIC "-//OpenSSO Policy Administration DTD//EN"
 			</AttributeValuePair>
 		</Rule>
 		<Subjects>
-			<Subject name="subject_Dokumentinnsending_001_01" type="AuthenticatedUsers" includeType="inclusive">
+			<Subject name="subject_SendSoknad_001_01" type="AuthenticatedUsers" includeType="inclusive">
 			</Subject>
 		</Subjects>
 		<Conditions>
-			<Condition name="condition_Dokumentinnsending_001_AuthenticationLevel" type="AuthLevelCondition">
+			<Condition name="condition_SendSoknad_001_AuthenticationLevel" type="AuthLevelCondition">
 				<AttributeValuePair>
 					<Attribute name="AuthLevel"/>
 					<Value>/:4</Value>

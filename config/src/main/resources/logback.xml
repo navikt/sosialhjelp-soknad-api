@@ -2,13 +2,13 @@
 <configuration scan="true" scanPeriod="30 seconds">
 
     <appender name="exceptionlog" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${APP_LOG_HOME}/dokumentinnsending_error.log</File>
+        <File>${APP_LOG_HOME}/sendsoknad_error.log</File>
         <encoder>
             <pattern>%date [%-5level] [%thread] %logger{5} - %m%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <maxIndex>10</maxIndex>
-            <FileNamePattern>${APP_LOG_HOME}/dokumentinnsending_error.log.%i</FileNamePattern>
+            <FileNamePattern>${APP_LOG_HOME}/dokumsendsoknad_error.log.%i</FileNamePattern>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
             <MaxFileSize>10MB</MaxFileSize>
@@ -16,13 +16,13 @@
     </appender>
 
     <appender name="infolog" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${APP_LOG_HOME}/dokumentinnsending.log</File>
+        <File>${APP_LOG_HOME}/sendsoknad.log</File>
         <encoder>
             <pattern>%date [%-5level] [%thread] %logger{5} - %m%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <maxIndex>10</maxIndex>
-            <FileNamePattern>${APP_LOG_HOME}/dokumentinnsending.log.%i</FileNamePattern>
+            <FileNamePattern>${APP_LOG_HOME}/sendsoknad.log.%i</FileNamePattern>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
             <MaxFileSize>10MB</MaxFileSize>
