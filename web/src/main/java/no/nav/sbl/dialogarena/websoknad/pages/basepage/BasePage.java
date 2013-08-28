@@ -27,7 +27,7 @@ public class BasePage extends WebPage {
 
     @Inject
     @Named("footerLinks")
-    private Map<String, String> footerLinks;
+	private Map<String, String> footerLinks;
 
     private final WebMarkupContainer body;
 

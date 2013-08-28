@@ -25,11 +25,7 @@
         <baseUrl alias="dokumentinnsending.cms" mapToProperty="dokumentinnsending.cms"/>
         <baseUrl alias="dokumentinnsending.skjemaveileder" mapToProperty="dialogarena.cms"/>
         <smtpServer alias="dokumentinnsending.smtpServer" mapToProperty="dokumentinnsending.smtpServer"/>
-        <baseUrl alias="footer.kontakt" mapToProperty="footer.kontakt"/>
-        <baseUrl alias="footer.personvern" mapToProperty="footer.personvern"/>
-        <baseUrl alias="footer.feilOgMangler" mapToProperty="footer.feilOgMangler"/>
-        <baseUrl alias="footer.tilgjengelighet" mapToProperty="footer.tilgjengelighet"/>
-        <baseUrl alias="footer.nettstedskart" mapToProperty="footer.nettstedskart"/>
+        <baseUrl alias="dialogarena.navnolink" mapToProperty="dialogarena.navnolink" />
         <baseUrl alias="dokumentinnsending.navigasjonslink" mapToProperty="dokumentinnsending.navigasjonslink"/>
         <baseUrl alias="dokumentinnsending.logoutURL" mapToProperty="dokumentinnsending.logoutURL"/>
         <applicationCertificate alias="srvDokumentinnsending"/>
