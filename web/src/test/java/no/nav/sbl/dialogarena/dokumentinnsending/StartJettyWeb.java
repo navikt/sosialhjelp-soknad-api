@@ -44,7 +44,7 @@ public final class StartJettyWeb {
         jaasLoginService.setLoginModuleName("openam");
 
         Jetty jetty = usingWar(WEBAPP_SOURCE)
-                .at("dokumentinnsending")
+                .at("sendsoknad")
                 .withLoginService(jaasLoginService)
                 .overrideWebXml(new File(TEST_RESOURCES, "override-web.xml"))
                 .sslPort(8500)

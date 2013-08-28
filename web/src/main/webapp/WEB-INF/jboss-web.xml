@@ -1,4 +1,4 @@
 <jboss-web>
-    <context-root>dokumentinnsending</context-root>
+    <context-root>sendsoknad</context-root>
     <security-domain>java:/jaas/NavOpenAM</security-domain>
 </jboss-web>
