@@ -8,7 +8,6 @@ public enum JsResources {
     LOADING_INDICATOR("loadingIndicator"),
     VALIDATION("validation"),
     
-    INPUTFIELD("websoknad/inputfield"),
     MUSTACHE("mustache/mustache"),
     SENDSOKNAD("sendsoknad");
 
