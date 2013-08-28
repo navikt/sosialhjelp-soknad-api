@@ -10,7 +10,6 @@ public enum JsResources {
     
     INPUTFIELD("websoknad/inputfield"),
     MUSTACHE("mustache/mustache"),
-//    JQUERY("jquery/jquery-1.10.2"),
     SENDSOKNAD("sendsoknad");
 
     private static final String FOLDER = "js/";
