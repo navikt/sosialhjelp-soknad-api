@@ -3,21 +3,20 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
-</head>
 <body>
-	<script type="text/html" id="tpl-greeting">
-		<dl>
-			<dt> Barn </dt>
-			<dd>{{navn}} </dd>
-		</dl>
-
-		<h1 class"skjematittel">Barnebidrag</h1>
-		<form>
+	<script type="text/html" id="soknad">
+		<form action="sendSoknadService?avbryt=ja" method="post">
+			<input type="hidden" id="soknadId" name="soknadId"/>	
+			<h1 class"skjematittel">Barnebidrag</h1>
 			<label>Foreldre: </label> <input type="text"/>
 			<label>Telefon: </label> <input type="text"/>
-			
+			<input type="submit" name="avbryt" value="Avbryt"/>
 		</form>
-
+	</script>
+	<script type="text/html" id="oppsummering">
+		<h1 class"skjematittel">Barnebidrag</h1>
+		<label>Foreldre: </label> <label type="text"/>
+		<label>Telefon: </label> <label type="text"/>
 	</script>
 </body>
 </html>
