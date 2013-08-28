@@ -3,6 +3,7 @@ var soknadid, fnr, adresse, navn;
 function lastInnSoknad(urlTilSoknadsSkjema, templateData, soknadId){
 	var mustacheServiceUrl="sendSoknadService";
 	var mustacheTemplate;
+	var formId;
 	if(soknadId) {
 		formId = "#oppsumeringsform";
 		mustacheTemplate = "#oppsumering";
@@ -13,20 +14,20 @@ function lastInnSoknad(urlTilSoknadsSkjema, templateData, soknadId){
 	}
 	$.ajax(mustacheServiceUrl)
 	.done(function(data,text,jqXHR) {
-		soknadid = jqXHR.getResponseHeader("soknadId");
-		fnr = jqXHR.getResponseHeader("fnr");
-		adresse = jqXHR.getResponseHeader("adresse");
-		fornavn = jqXHR.getResponseHeader("fornavn");
-		etternavn = jqXHR.getResponseHeader("etternavn");
-		barnealder = jqXHR.getResponseHeader("barnealder");
-		sivilstatus = jqXHR.getResponseHeader("sivilstatus");
-		postnr = jqXHR.getResponseHeader("postnr");
-		poststed = jqXHR.getResponseHeader("poststed");
-		barnenavn = jqXHR.getResponseHeader("barnenavn");
-		forstegangstjeneste= jqXHR.getResponseHeader("forstegangstjeneste");
-		fra= jqXHR.getResponseHeader("fra");
-		til = jqXHR.getResponseHeader("til");
-		lestbrosjyre = jqXHR.getResponseHeader("lestbrosjyre");
+		var soknadid = jqXHR.getResponseHeader("soknadId");
+		var fnr = jqXHR.getResponseHeader("fnr");
+		var adresse = jqXHR.getResponseHeader("adresse");
+		var fornavn = jqXHR.getResponseHeader("fornavn");
+		var etternavn = jqXHR.getResponseHeader("etternavn");
+		var barnealder = jqXHR.getResponseHeader("barnealder");
+		var sivilstatus = jqXHR.getResponseHeader("sivilstatus");
+		var postnr = jqXHR.getResponseHeader("postnr");
+		var poststed = jqXHR.getResponseHeader("poststed");
+		var barnenavn = jqXHR.getResponseHeader("barnenavn");
+		var forstegangstjeneste= jqXHR.getResponseHeader("forstegangstjeneste");
+		var fra= jqXHR.getResponseHeader("fra");
+		var til = jqXHR.getResponseHeader("til");
+		var lestbrosjyre = jqXHR.getResponseHeader("lestbrosjyre");
 
 		var jsonData;
 		if(templateData) {
@@ -57,8 +58,5 @@ function lastInnSoknad(urlTilSoknadsSkjema, templateData, soknadId){
 }
 
 function getURLParameter(name) {
-    return decodeURI(
-        (RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]
-    );
+    return decodeURI((RegExp(name + '=' + '(.+?)(&|$)').exec(location.search)||[,null])[1]);
 }
-
