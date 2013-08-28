@@ -26,6 +26,7 @@ import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SendSoknadServicePage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SendSoknadPage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.kvittering.KvitteringPage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.oppsummering.OppsumeringPage;
+import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.startside.StartSoknadPage;
 
 import org.apache.wicket.Application;
 import org.apache.wicket.Page;
@@ -125,7 +126,8 @@ public class WicketApplication extends WebApplication {
         mountPage("vedlegg/${brukerBehandlingId}", LeggTilVedleggPage.class);
         mountPage("opplasting/${brukerBehandlingId}/${dokumentId}", OpplastingPage.class);
         mountPage("internal/selftest", SelfTestPage.class);
-        
+     
+        mountPage("startSoknad", StartSoknadPage.class);
         mountPage("sendSoknad", SendSoknadPage.class);
         mountPage("sendSoknadService", SendSoknadServicePage.class);
         mountPage("oppsumering", OppsumeringPage.class);
