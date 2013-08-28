@@ -4,6 +4,7 @@ import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.modig.wicket.test.FluentWicketTester;
 import no.nav.sbl.dialogarena.dokumentinnsending.WicketApplication;
 import no.nav.sbl.dialogarena.dokumentinnsending.config.FitNesseApplicationConfig;
+import no.nav.sbl.dialogarena.websoknad.selftest.SelfTestPage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
