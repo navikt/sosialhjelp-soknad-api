@@ -19,21 +19,22 @@
                     mapToProperty="dokumentinnsending.webservice.henvendelse.henvendelsesbehandlingservice"/>
         <webservice alias="domene.Brukerdialog:oppdaterehenvendelsesbehandlingservice_v1"
                     mapToProperty="dokumentinnsending.webservice.henvendelse.oppdaterehenvendelsesbehandlingservice"/>
-        <baseUrl alias="dokumentinnsending.skjemaveileder" mapToProperty="dokumentinnsending.skjemaveileder"/>
+        <webservice alias="domene.Brukerdialog:sendsoknadservice_v1"
+                    mapToProperty="soknad.webservice.henvendelse.sendsoknadservice"/>
         <baseUrl alias="innlogging.navnetjeneste" mapToProperty="innlogging.navnetjeneste"/>
         <baseUrl alias="minehenvendelser.link" mapToProperty="minehenvendelser.link"/>
         <baseUrl alias="dokumentinnsending.cms" mapToProperty="dokumentinnsending.cms"/>
-        <baseUrl alias="dokumentinnsending.skjemaveileder" mapToProperty="dialogarena.cms"/>
-        <smtpServer alias="dokumentinnsending.smtpServer" mapToProperty="dokumentinnsending.smtpServer"/>
+        <baseUrl alias="dialogarena.cms" mapToProperty="dialogarena.cms"/>
+        <smtpServer alias="smtpServer" mapToProperty="dokumentinnsending.smtpServer"/>
         <baseUrl alias="dialogarena.navnolink" mapToProperty="dialogarena.navnolink" />
-        <baseUrl alias="dokumentinnsending.navigasjonslink" mapToProperty="dokumentinnsending.navigasjonslink"/>
         <baseUrl alias="dokumentinnsending.logoutURL" mapToProperty="dokumentinnsending.logoutURL"/>
+        <baseUrl alias="dokumentinnsending.navigasjonslink" mapToProperty="dokumentinnsending.navigasjonslink"/>
         <applicationCertificate alias="srvDokumentinnsending"/>
     </resources>
-    <security serviceUserResourceAlias="srvDokumentinnsending">
+    <security serviceUserResourceAlias="srvSendsoknad">
         <logins>
             <openAm>
-                <contextRoot>dokumentinnsending</contextRoot>
+                <contextRoot>sendsoknad</contextRoot>
             </openAm>
         </logins>
     </security>

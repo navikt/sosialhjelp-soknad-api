@@ -5,7 +5,7 @@ PUBLIC "-//OpenSSO Policy Administration DTD//EN"
 
 <!-- extracted from realm, / -->
 <Policies>
-	<Policy name="DokumentInnsending_001" referralPolicy="false" active="true" >
+	<Policy name="SendSoknad_001" referralPolicy="false" active="true" >
 		<Rule name="rule_SendSoknad__001_02">
 			<ServiceName name="iPlanetAMWebAgentService" />
 			<ResourceName name="https://${DomainName}/sendsoknad/*?*" />

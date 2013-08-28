@@ -9,7 +9,7 @@
             <module name="org.slf4j"/>
         </exclusions>
     </deployment>
-    <sub-deployment name="dokumentinnsending-web.war">
+    <sub-deployment name="sendsoknad-web.war">
         <dependencies>
             <module name="sun.jdk"/>
             <system>
@@ -18,11 +18,6 @@
                 </paths>
             </system>
         </dependencies>
-        <exclusions>
-            <module name="org.slf4j"/>
-        </exclusions>
-    </sub-deployment>
-    <sub-deployment name="dokumentinnsending-provider-ws.war">
         <exclusions>
             <module name="org.slf4j"/>
         </exclusions>

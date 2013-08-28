@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.dokumentinnsending.service.DefaultSoknadService;
 import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
 import no.nav.tjeneste.domene.brukerdialog.henvendelsesbehandling.v1.HenvendelsesBehandlingPortType;
 import no.nav.tjeneste.domene.brukerdialog.oppdaterehenvendelsesbehandling.v1.OppdatereHenvendelsesBehandlingPortType;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import org.apache.cxf.common.util.SOAPConstants;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
@@ -25,8 +26,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Profile;
 
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.net.URL;
@@ -43,7 +42,7 @@ import java.util.Map;
 @ImportResource({"classpath:META-INF/cxf/cxf.xml", "classpath:META-INF/cxf/cxf-servlet.xml"})
 public class ConsumerConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsumerConfig.class);
- 
+
     @Bean
     public KodeverkIntegrasjon kodeverkIntegrasjon() {
         return new KodeverkIntegrasjon();
@@ -57,7 +56,7 @@ public class ConsumerConfig {
         public DefaultSoknadService soknadService() {
             return new DefaultSoknadService();
         }
-        
+
         @Bean
         public WebSoknadService webSoknadService() {
             return new WebSoknadService();
@@ -68,7 +67,7 @@ public class ConsumerConfig {
             return new DefaultBrukerBehandlingServiceIntegration();
         }
     }
-    
+
     @Configuration
     public static class SendSoknadWSConfig {
 
@@ -99,15 +98,15 @@ public class ConsumerConfig {
 
         @Bean
         public HenvendelsesBehandlingPortType brukerBehandlingPortType() {
-        	return konfigurerMedHttps(henvendelsesBehandlingPortTypeFactory().create(HenvendelsesBehandlingPortType.class));
+            return konfigurerMedHttps(henvendelsesBehandlingPortTypeFactory().create(HenvendelsesBehandlingPortType.class));
         }
-       
+
     }
 
     @Configuration
     public static class OppdaterHenvendelseBehandlingWSConfig {
 
-    	@Value("${dokumentinnsending.webservice.henvendelse.oppdaterehenvendelsesbehandlingservice.url}")
+        @Value("${dokumentinnsending.webservice.henvendelse.oppdaterehenvendelsesbehandlingservice.url}")
         private URL henvendelserEndpoint;
 
         @Bean
@@ -119,9 +118,9 @@ public class ConsumerConfig {
         public OppdatereHenvendelsesBehandlingPortType oppdatereHenvendelsesBehandlingPortType() {
             return konfigurerMedHttps(oppdaterHenvendelsesBehandlingServicePortTypeFactory().create(OppdatereHenvendelsesBehandlingPortType.class));
         }
-        
+
     }
-    
+
     @Configuration
     public static class BrukerProfilWSConfig {
 
@@ -181,19 +180,20 @@ public class ConsumerConfig {
             STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(brukerprofilPortType));
         }
     }
-    
+
     private static <T> T konfigurerMedHttps(T portType) {
-    	Client client = ClientProxy.getClient(portType);
-    	HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
-    	
-    	if(System.getProperty("no.nav.sbl.dialogarena.dokumentinnsending.sslMock").equals("true")) {
-    		TLSClientParameters params = new TLSClientParameters();
+        Client client = ClientProxy.getClient(portType);
+        HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
+
+        String property = System.getProperty("no.nav.sbl.dialogarena.dokumentinnsending.sslMock");
+        if (property != null && property.equals("true")) {
+            TLSClientParameters params = new TLSClientParameters();
             params.setDisableCNCheck(true);
             httpConduit.setTlsClientParameters(params);
-    	} else {
-    		httpConduit.setTlsClientParameters(new TLSClientParameters());
-    	}
-    	return portType;
+        } else {
+            httpConduit.setTlsClientParameters(new TLSClientParameters());
+        }
+        return portType;
     }
 
     private static JaxWsProxyFactoryBean getJaxWsProxyFactoryBean(URL servicePath, Class<?> serviceClass, String wsdlURL) {
