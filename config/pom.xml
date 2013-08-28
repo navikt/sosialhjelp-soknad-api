@@ -11,7 +11,7 @@
 
     <!-- Must be "no.nav.leren" in order to locate the artifact in Maven repository -->
     <groupId>no.nav.leren</groupId>
-    <artifactId>sendsoknad-config</artifactId>
+    <artifactId>sendsoknad</artifactId>
     <packaging>jar</packaging>
     <name>sendsoknad-config</name>
 
