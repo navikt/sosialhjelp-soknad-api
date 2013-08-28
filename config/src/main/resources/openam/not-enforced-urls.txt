@@ -1,1 +1,1 @@
-https://${DomainName}/dokumentinnsending/internal/*
+https://${DomainName}/sendsoknad/internal/*

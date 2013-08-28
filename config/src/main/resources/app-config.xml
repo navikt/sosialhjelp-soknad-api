@@ -4,12 +4,12 @@
              xsi:schemaLocation="http://appconfig.aura.nav.no
              http://maven.adeo.no/xsd/appconfig.xsd ">
 
-    <name>dokumentinnsending</name>
+    <name>sendsoknad</name>
 
-    <selftestPagePath>dokumentinnsending/internal/selftest?status</selftestPagePath>
+    <selftestPagePath>sendsoknad/internal/selftest?status</selftestPagePath>
 
     <artifacts>
-        <ear groupId="no.nav.sbl.dialogarena" artifactId="dokumentinnsending-jee"/>
+        <ear groupId="no.nav.sbl.dialogarena" artifactId="sendsoknad-jee"/>
     </artifacts>
 
     <resources>
