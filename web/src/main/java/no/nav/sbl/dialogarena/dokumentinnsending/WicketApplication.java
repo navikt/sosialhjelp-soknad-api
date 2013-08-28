@@ -1,7 +1,5 @@
 package no.nav.sbl.dialogarena.dokumentinnsending;
 
-import javax.inject.Inject;
-
 import no.nav.modig.frontend.FrontendConfigurator;
 import no.nav.modig.frontend.FrontendModules;
 import no.nav.modig.frontend.MetaTag;
@@ -20,14 +18,13 @@ import no.nav.sbl.dialogarena.dokumentinnsending.pages.oversikt.OversiktPage;
 import no.nav.sbl.dialogarena.dokumentinnsending.pages.session.DokumentinnsendingSession;
 import no.nav.sbl.dialogarena.dokumentinnsending.pages.slettinnsending.SlettInnsendingPage;
 import no.nav.sbl.dialogarena.dokumentinnsending.resource.DokumentForhandsvisningResourceReference;
-import no.nav.sbl.dialogarena.dokumentinnsending.selftest.SelfTestPage;
 import no.nav.sbl.dialogarena.webkomponent.innstillinger.InnstillingerPanel;
-import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SendSoknadServicePage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SendSoknadPage;
+import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SendSoknadServicePage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.kvittering.KvitteringPage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.oppsummering.OppsumeringPage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.startside.StartSoknadPage;
-
+import no.nav.sbl.dialogarena.websoknad.selftest.SelfTestPage;
 import org.apache.wicket.Application;
 import org.apache.wicket.Page;
 import org.apache.wicket.Session;
@@ -41,6 +38,8 @@ import org.apache.wicket.settings.IMarkupSettings;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.lang.Bytes;
 import org.springframework.context.ApplicationContext;
+
+import javax.inject.Inject;
 
 
 public class WicketApplication extends WebApplication {
@@ -72,7 +71,7 @@ public class WicketApplication extends WebApplication {
         getRequestCycleSettings().setResponseRequestEncoding("UTF-8");
 
         FrontendConfigurator configurator = new FrontendConfigurator();
-       
+
         for (LessResources resource : LessResources.values()) {
             configurator.addLess(resource.getResource());
         }
@@ -84,7 +83,7 @@ public class WicketApplication extends WebApplication {
         for (ConditionalCssResources resource : ConditionalCssResources.values()) {
             configurator.addConditionalCss(resource.getResource(this));
         }
-        
+
         configurator
                 .addMetas(
                         MetaTag.XUA_IE_EDGE,
@@ -126,7 +125,7 @@ public class WicketApplication extends WebApplication {
         mountPage("vedlegg/${brukerBehandlingId}", LeggTilVedleggPage.class);
         mountPage("opplasting/${brukerBehandlingId}/${dokumentId}", OpplastingPage.class);
         mountPage("internal/selftest", SelfTestPage.class);
-     
+
         mountPage("startSoknad", StartSoknadPage.class);
         mountPage("sendSoknad", SendSoknadPage.class);
         mountPage("sendSoknadService", SendSoknadServicePage.class);
@@ -151,5 +150,4 @@ public class WicketApplication extends WebApplication {
     protected void setSpringComponentInjector() {
         getComponentInstantiationListeners().add(new SpringComponentInjector(this, applicationContext));
     }
-
 }
