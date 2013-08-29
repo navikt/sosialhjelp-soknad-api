@@ -99,6 +99,7 @@ public class WebSoknadService {
 
         WebSoknad soknad = new WebSoknad();
         soknad.setSoknadId(soknadId);
+        soknad.setBrukerBehandlingId(wsSoknad.getBrukerBehandlingId());
         soknad.setGosysId(wsSoknad.getGosysId());
         soknad.leggTilFakta(fakta);
 

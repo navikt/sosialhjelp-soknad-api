@@ -13,6 +13,7 @@ public class WebSoknad implements Serializable {
 
     private Long soknadId;
     private String gosysId;
+    private String brukerBehandlingId;
     private Map<String, Faktum> fakta;
 
     public WebSoknad() {
@@ -42,4 +43,12 @@ public class WebSoknad implements Serializable {
     public final void leggTilFakta(Map<String, Faktum> fakta) {
         this.fakta.putAll(fakta);
     }
+
+	public String getBrukerBehandlingId() {
+		return brukerBehandlingId;
+	}
+
+	public void setBrukerBehandlingId(String brukerBehandlingId) {
+		this.brukerBehandlingId = brukerBehandlingId;
+	}
 }
