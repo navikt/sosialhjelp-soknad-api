@@ -64,4 +64,8 @@ public class ContentConfig {
         return cmsContentRetriever;
     }
 
+    @Bean(name = "cmsBaseUrl")
+    public String cmsBaseUrl() {
+        return cmsBaseUrl;
+    }
 }

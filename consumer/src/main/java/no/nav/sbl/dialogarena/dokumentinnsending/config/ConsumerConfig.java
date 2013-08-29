@@ -17,6 +17,7 @@ import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
+import org.apache.cxf.ws.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,13 +33,17 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.apache.cxf.common.util.SOAPConstants.MTOM_ENABLED;
+import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
+
 @Configuration
 @Import(value = {KodeverkConfig.class,
         ConsumerConfig.ServicesConfig.class,
         ConsumerConfig.OppdaterHenvendelseBehandlingWSConfig.class,
         ConsumerConfig.BrukerBehandlingWSConfig.class,
         ConsumerConfig.BrukerProfilWSConfig.class,
-        ConsumerConfig.BrukerProfilMockWSConfig.class})
+        ConsumerConfig.BrukerProfilMockWSConfig.class,
+        ConsumerConfig.SendSoknadWSConfig.class})
 @ImportResource({"classpath:META-INF/cxf/cxf.xml", "classpath:META-INF/cxf/cxf-servlet.xml"})
 public class ConsumerConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsumerConfig.class);
@@ -70,7 +75,6 @@ public class ConsumerConfig {
 
     @Configuration
     public static class SendSoknadWSConfig {
-
         @Value("${soknad.webservice.henvendelse.sendsoknadservice.url}")
         private URL soknadServiceEndpoint;
 
@@ -163,6 +167,22 @@ public class ConsumerConfig {
         }
     }
 
+    @Configuration
+    public static class SelfTestStsConfig {
+        @Inject
+        private HenvendelsesBehandlingPortType henvendelsesBehandlingPortType;
+        @Inject
+        private BrukerprofilPortType brukerprofilPortType;
+        @Inject
+        private SendSoknadPortType sendSoknadPortType;
+
+        @PostConstruct
+        public void setupSts() {
+            STSConfigurationUtility.configureStsForSystemUser(ClientProxy.getClient(henvendelsesBehandlingPortType));
+            STSConfigurationUtility.configureStsForSystemUser(ClientProxy.getClient(brukerprofilPortType));
+            STSConfigurationUtility.configureStsForSystemUser(ClientProxy.getClient(sendSoknadPortType));
+        }
+    }
 
     @Configuration
     public static class ExternalStsConfig {
@@ -203,7 +223,8 @@ public class ConsumerConfig {
         proxyFactoryBean.getFeatures().add(new WSAddressingFeature());
         proxyFactoryBean.setWsdlLocation(wsdlURL);
         Map<String, Object> props = new HashMap<>();
-        props.put(SOAPConstants.MTOM_ENABLED, "true");
+        props.put(MTOM_ENABLED, "true");
+        props.put(MUST_UNDERSTAND, false);
         proxyFactoryBean.setProperties(props);
         return proxyFactoryBean;
     }
