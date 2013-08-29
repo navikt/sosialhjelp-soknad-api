@@ -192,12 +192,15 @@ public class ConsumerConfig {
         private HenvendelsesBehandlingPortType henvendelsesBehandlingPortType;
         @Inject
         private BrukerprofilPortType brukerprofilPortType;
+        @Inject
+        private SendSoknadPortType sendSoknadPortType;
 
         @PostConstruct
         public void setupSts() {
             STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(oppdatereHenvendelsesBehandlingPortType));
             STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(henvendelsesBehandlingPortType));
             STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(brukerprofilPortType));
+            STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(sendSoknadPortType));
         }
     }
 
