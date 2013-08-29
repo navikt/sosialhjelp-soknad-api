@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 public class SendSoknadServicePage extends WebPage {
 	@Inject
 	private WebSoknadService soknadService;
-
+	
 	Logger log = LoggerFactory.getLogger(SendSoknadServicePage.class);
 
 	public SendSoknadServicePage() {
@@ -32,13 +32,15 @@ public class SendSoknadServicePage extends WebPage {
 			Long soknadId;
 
 			if (request.getParameter("soknadId") == null) {
-				soknadId = soknadService.startSoknad("test");
+				soknadId = soknadService.startSoknad("NAV 04-01.03");
 			} else {
 				soknadId = Long.valueOf(request.getParameter("soknadId"));
 			}
 
 			WebSoknad soknad = soknadService.hentSoknad(soknadId);
+
 			response.setHeader("soknadId", soknadId.toString());
+			response.setHeader("brukerBehandlingId", soknad.getBrukerBehandlingId().toString());
 
 			Map<String, Faktum> fakta = soknad.getFakta();
 			for (Entry<String, Faktum> entry : fakta.entrySet()) {
