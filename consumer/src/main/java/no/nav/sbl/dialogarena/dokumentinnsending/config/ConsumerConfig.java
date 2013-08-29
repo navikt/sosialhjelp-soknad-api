@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.dokumentinnsending.config;
 
+
 import no.nav.modig.security.sts.utility.STSConfigurationUtility;
 import no.nav.sbl.dialogarena.common.kodeverk.config.KodeverkConfig;
 import no.nav.sbl.dialogarena.dokumentinnsending.kodeverk.KodeverkIntegrasjon;
@@ -10,14 +11,12 @@ import no.nav.tjeneste.domene.brukerdialog.henvendelsesbehandling.v1.Henvendelse
 import no.nav.tjeneste.domene.brukerdialog.oppdaterehenvendelsesbehandling.v1.OppdatereHenvendelsesBehandlingPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
-import org.apache.cxf.common.util.SOAPConstants;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
-import org.apache.cxf.ws.security.SecurityConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
