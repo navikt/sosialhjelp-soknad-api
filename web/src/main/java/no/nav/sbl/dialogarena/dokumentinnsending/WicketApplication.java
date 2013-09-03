@@ -12,6 +12,7 @@ import no.nav.sbl.dialogarena.dokumentinnsending.resource.DokumentForhandsvisnin
 import no.nav.sbl.dialogarena.webkomponent.innstillinger.InnstillingerPanel;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SendSoknadPage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SendSoknadServicePage;
+import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SoknadListePage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.kvittering.KvitteringPage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.oppsummering.OppsumeringPage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.startside.StartSoknadPage;
@@ -101,19 +102,6 @@ public class WicketApplication extends WebApplication {
 
 
         Application.get().getRequestLoggerSettings().setRequestLoggerEnabled(true);
-//
-//        mountPage("startBrukerbehandling/${brukerBehandlingId}", StartBehandlingPage.class);
-//        mountPage("oversikt/${brukerBehandlingId}", OversiktPage.class);
-//        mountPage("bekreft/${brukerBehandlingId}", BekreftelsesPage.class);
-//        mountPage("avbrutt/${brukerBehandlingId}", InnsendingSlettetPage.class);
-//        mountPage("kvittering/${brukerBehandlingId}", InnsendingKvitteringPage.class);
-//        mountPage("fortsettSenere/${brukerBehandlingId}", FortsettSenerePage.class);
-//        mountPage("kvitteringFortsettSenere/${brukerBehandlingId}", FortsettSenereKvitteringPage.class);
-//        mountPage("hjelp/${brukerBehandlingId}", HjelpPage.class);
-//        mountPage("slett/${brukerBehandlingId}", SlettInnsendingPage.class);
-//        mountPage("vedlegg/${brukerBehandlingId}", LeggTilVedleggPage.class);
-//        mountPage("opplasting/${brukerBehandlingId}/${dokumentId}", OpplastingPage.class);
-//        mountPage("internal/selftest", SelfTestPage.class);
 
         mountPage("startSoknad", StartSoknadPage.class);
         mountPage("sendSoknad", SendSoknadPage.class);
@@ -121,12 +109,13 @@ public class WicketApplication extends WebApplication {
         mountPage("oppsumering", OppsumeringPage.class);
         mountPage("soknadKvittering", KvitteringPage.class);
 
+        mountPage("soknadliste", SoknadListePage.class);
+        
 
         mountResource("preview/${size}/${dokumentId}/${side}/thumb.png", thumbnailRef);
 
         getSecuritySettings().setEnforceMounts(true);
         getSecuritySettings().setCryptFactory(new KeyInSessionSunJceCryptFactory());
-        //setRootRequestMapper(new ModigCryptoMapper(getRootRequestMapper(), this));
 
         setSpringComponentInjector();
     }
