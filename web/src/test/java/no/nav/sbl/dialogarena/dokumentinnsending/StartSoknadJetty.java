@@ -17,7 +17,7 @@ import static no.nav.modig.test.util.FilesAndDirs.TEST_RESOURCES;
 import static no.nav.modig.test.util.FilesAndDirs.WEBAPP_SOURCE;
 import static no.nav.sbl.dialogarena.common.jetty.Jetty.usingWar;
 
-public final class StartJettyWeb {
+public final class StartSoknadJetty {
 
     public static final int PORT = 8181;
 
@@ -44,7 +44,7 @@ public final class StartJettyWeb {
         jaasLoginService.setLoginModuleName("openam");
 
         Jetty jetty = usingWar(WEBAPP_SOURCE)
-                .at("sendsoknad")
+                .at("/sendsoknad")
                 .withLoginService(jaasLoginService)
                 .overrideWebXml(new File(TEST_RESOURCES, "override-web.xml"))
                 .sslPort(8500)
@@ -52,6 +52,6 @@ public final class StartJettyWeb {
         jetty.startAnd(first(waitFor(gotKeypress())).then(jetty.stop));
     }
 
-    private StartJettyWeb() {
+    private StartSoknadJetty() {
     }
 }

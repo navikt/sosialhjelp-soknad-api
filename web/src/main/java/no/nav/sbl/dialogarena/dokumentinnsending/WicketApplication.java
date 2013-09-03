@@ -1,32 +1,21 @@
 package no.nav.sbl.dialogarena.dokumentinnsending;
 
+import javax.inject.Inject;
+
 import no.nav.modig.frontend.FrontendConfigurator;
 import no.nav.modig.frontend.FrontendModules;
 import no.nav.modig.frontend.MetaTag;
 import no.nav.modig.wicket.configuration.ApplicationSettingsConfig;
 import no.nav.sbl.dialogarena.dokumentinnsending.pages.HomePage;
-import no.nav.sbl.dialogarena.dokumentinnsending.pages.StartBehandlingPage;
-import no.nav.sbl.dialogarena.dokumentinnsending.pages.bekreft.BekreftelsesPage;
-import no.nav.sbl.dialogarena.dokumentinnsending.pages.fortsettsenere.FortsettSenereKvitteringPage;
-import no.nav.sbl.dialogarena.dokumentinnsending.pages.fortsettsenere.FortsettSenerePage;
-import no.nav.sbl.dialogarena.dokumentinnsending.pages.hjelp.HjelpPage;
-import no.nav.sbl.dialogarena.dokumentinnsending.pages.innsendingkvittering.InnsendingKvitteringPage;
-import no.nav.sbl.dialogarena.dokumentinnsending.pages.innsendingslettet.InnsendingSlettetPage;
-import no.nav.sbl.dialogarena.dokumentinnsending.pages.leggtilvedlegg.LeggTilVedleggPage;
-import no.nav.sbl.dialogarena.dokumentinnsending.pages.opplasting.OpplastingPage;
-import no.nav.sbl.dialogarena.dokumentinnsending.pages.oversikt.OversiktPage;
 import no.nav.sbl.dialogarena.dokumentinnsending.pages.session.DokumentinnsendingSession;
-import no.nav.sbl.dialogarena.dokumentinnsending.pages.slettinnsending.SlettInnsendingPage;
 import no.nav.sbl.dialogarena.dokumentinnsending.resource.DokumentForhandsvisningResourceReference;
 import no.nav.sbl.dialogarena.webkomponent.innstillinger.InnstillingerPanel;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SendSoknadPage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SendSoknadServicePage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.kvittering.KvitteringPage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.oppsummering.OppsumeringPage;
-import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.startside.Barnebidrag;
-import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.startside.Dagpenger;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.startside.StartSoknadPage;
-import no.nav.sbl.dialogarena.websoknad.selftest.SelfTestPage;
+
 import org.apache.wicket.Application;
 import org.apache.wicket.Page;
 import org.apache.wicket.Session;
@@ -40,8 +29,6 @@ import org.apache.wicket.settings.IMarkupSettings;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.lang.Bytes;
 import org.springframework.context.ApplicationContext;
-
-import javax.inject.Inject;
 
 
 public class WicketApplication extends WebApplication {
