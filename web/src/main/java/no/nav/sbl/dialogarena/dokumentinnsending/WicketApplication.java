@@ -23,6 +23,8 @@ import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SendSoknadPage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SendSoknadServicePage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.kvittering.KvitteringPage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.oppsummering.OppsumeringPage;
+import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.startside.Barnebidrag;
+import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.startside.Dagpenger;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.startside.StartSoknadPage;
 import no.nav.sbl.dialogarena.websoknad.selftest.SelfTestPage;
 import org.apache.wicket.Application;
@@ -112,19 +114,19 @@ public class WicketApplication extends WebApplication {
 
 
         Application.get().getRequestLoggerSettings().setRequestLoggerEnabled(true);
-
-        mountPage("startBrukerbehandling/${brukerBehandlingId}", StartBehandlingPage.class);
-        mountPage("oversikt/${brukerBehandlingId}", OversiktPage.class);
-        mountPage("bekreft/${brukerBehandlingId}", BekreftelsesPage.class);
-        mountPage("avbrutt/${brukerBehandlingId}", InnsendingSlettetPage.class);
-        mountPage("kvittering/${brukerBehandlingId}", InnsendingKvitteringPage.class);
-        mountPage("fortsettSenere/${brukerBehandlingId}", FortsettSenerePage.class);
-        mountPage("kvitteringFortsettSenere/${brukerBehandlingId}", FortsettSenereKvitteringPage.class);
-        mountPage("hjelp/${brukerBehandlingId}", HjelpPage.class);
-        mountPage("slett/${brukerBehandlingId}", SlettInnsendingPage.class);
-        mountPage("vedlegg/${brukerBehandlingId}", LeggTilVedleggPage.class);
-        mountPage("opplasting/${brukerBehandlingId}/${dokumentId}", OpplastingPage.class);
-        mountPage("internal/selftest", SelfTestPage.class);
+//
+//        mountPage("startBrukerbehandling/${brukerBehandlingId}", StartBehandlingPage.class);
+//        mountPage("oversikt/${brukerBehandlingId}", OversiktPage.class);
+//        mountPage("bekreft/${brukerBehandlingId}", BekreftelsesPage.class);
+//        mountPage("avbrutt/${brukerBehandlingId}", InnsendingSlettetPage.class);
+//        mountPage("kvittering/${brukerBehandlingId}", InnsendingKvitteringPage.class);
+//        mountPage("fortsettSenere/${brukerBehandlingId}", FortsettSenerePage.class);
+//        mountPage("kvitteringFortsettSenere/${brukerBehandlingId}", FortsettSenereKvitteringPage.class);
+//        mountPage("hjelp/${brukerBehandlingId}", HjelpPage.class);
+//        mountPage("slett/${brukerBehandlingId}", SlettInnsendingPage.class);
+//        mountPage("vedlegg/${brukerBehandlingId}", LeggTilVedleggPage.class);
+//        mountPage("opplasting/${brukerBehandlingId}/${dokumentId}", OpplastingPage.class);
+//        mountPage("internal/selftest", SelfTestPage.class);
 
         mountPage("startSoknad", StartSoknadPage.class);
         mountPage("sendSoknad", SendSoknadPage.class);

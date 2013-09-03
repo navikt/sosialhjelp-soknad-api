@@ -9,6 +9,15 @@ public enum JsResources {
     VALIDATION("validation"),
     
     MUSTACHE("mustache/mustache"),
+    
+    //REQUIRE("require"),
+    //MAIN("app/main"),
+    ANGULAR("angular/angular"),
+    ANGULAR_ROUTE("angular/angular-route"),
+    ANGULAR_RESOURCE("angular/angular-resource"),
+    CONTROLLER("app/controllers"),
+    APP("app/app"),
+    //ANGULARRESOURCE("angular/angular-resource"),
     SENDSOKNAD("sendsoknad");
 
     private static final String FOLDER = "js/";
