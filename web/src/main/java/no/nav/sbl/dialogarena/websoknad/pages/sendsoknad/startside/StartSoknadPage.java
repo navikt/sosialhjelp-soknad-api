@@ -1,8 +1,9 @@
 package no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.startside;
 
-import no.nav.sbl.dialogarena.websoknad.pages.basepage.BasePage;
+import org.apache.wicket.markup.html.WebPage;
 
-public class StartSoknadPage extends BasePage {
+
+public class StartSoknadPage extends WebPage {
 
 	public StartSoknadPage() {
 	}
