@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
 import org.springframework.stereotype.Controller;
@@ -15,20 +16,22 @@ import javax.inject.Inject;
  * Klassen håndterer alle rest kall for å hente grunnlagsdata til applikasjonen.
  */
 @Controller
-public class SoknadGrunnlagsdata {
+@RequestMapping("/soknad/{soknadId}")
+public class SoknadDataController {
 
     @Inject
     private WebSoknadService soknadService;
 
-    @RequestMapping(value = "/soknadData/{soknadId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public WebSoknad hentSoknadData(@PathVariable Long soknadId) {
         return soknadService.hentSoknad(soknadId);
     }
 
-    @RequestMapping(value = "/soknadData/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
     public void lagreSoknad(@PathVariable Long soknadId, @RequestBody WebSoknad webSoknad) {
-        System.out.println("lagrer " + webSoknad);
+        for (Faktum faktum : webSoknad.getFakta().values()) {
+            soknadService.lagreSoknadsFelt(soknadId, faktum.getKey(), faktum.getValue());
+        }
     }
-
 }

@@ -22,7 +22,7 @@ public final class StartSoknadJetty {
     public static final int PORT = 8181;
 
     public static void main(String[] args) throws IOException {
-        System.setProperty("no.nav.modig.security.sts.url", "http://a34duvw22583.devillo.no:9080/SecurityTokenServiceProvider/");
+        System.setProperty("no.nav.modig.security.sts.url", "http://es-gw-t.test.internsone.local:9080/SecurityTokenServiceProvider/");
         // System.setProperty("no.nav.modig.security.sts.url", "http://A34DUVW22302.devillo.no:9080/SecurityTokenServiceProvider/");
         // Eirik Lokal System.setProperty("no.nav.modig.security.sts.url", "http://a34duvw22439.devillo.no:9081/SecurityTokenServiceProvider/");
         System.setProperty("no.nav.modig.security.systemuser.username", "BD05");
@@ -37,6 +37,7 @@ public final class StartSoknadJetty {
         // System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, SubjectHandler.class.getName());
         //SubjectHandlerUtils.setupJettySubjectHandler("***REMOVED***", "Ekstern-bruker", "BD05", "4");
 
+        //System.setProperty("java.security.auth.login.config", "web/src/test/resources/login.conf");
         System.setProperty("java.security.auth.login.config", "src/test/resources/login.conf");
         TestCertificates.setupKeyAndTrustStore();
 
