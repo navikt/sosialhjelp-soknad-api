@@ -175,7 +175,7 @@ public class ConsumerConfig {
         @Inject
         private SendSoknadPortType sendSoknadPortType;
 
-        @PostConstruct
+        //@PostConstruct
         public void setupSts() {
             STSConfigurationUtility.configureStsForSystemUser(ClientProxy.getClient(henvendelsesBehandlingPortType));
             STSConfigurationUtility.configureStsForSystemUser(ClientProxy.getClient(brukerprofilPortType));
