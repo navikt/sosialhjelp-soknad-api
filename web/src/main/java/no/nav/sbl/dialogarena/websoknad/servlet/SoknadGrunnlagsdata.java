@@ -1,0 +1,34 @@
+package no.nav.sbl.dialogarena.websoknad.servlet;
+
+import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.inject.Inject;
+
+/**
+ * Klassen håndterer alle rest kall for å hente grunnlagsdata til applikasjonen.
+ */
+@Controller
+public class SoknadGrunnlagsdata {
+
+    @Inject
+    private WebSoknadService soknadService;
+
+    @RequestMapping(value = "/soknadData/{soknadId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody()
+    public WebSoknad hentSoknadData(@PathVariable Long soknadId) {
+        return soknadService.hentSoknad(soknadId);
+    }
+
+    @RequestMapping(value = "/soknadData/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
+    public void lagreSoknad(@PathVariable Long soknadId, @RequestBody WebSoknad webSoknad) {
+        System.out.println("lagrer " + webSoknad);
+    }
+
+}
