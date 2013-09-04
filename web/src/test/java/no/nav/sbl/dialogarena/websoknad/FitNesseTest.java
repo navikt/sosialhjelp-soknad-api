@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.dokumentinnsending;
+package no.nav.sbl.dialogarena.websoknad;
 
 import org.junit.Assert;
 import org.junit.Test;

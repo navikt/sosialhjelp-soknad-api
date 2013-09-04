@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.dokumentinnsending;
+package no.nav.sbl.dialogarena.websoknad;
 
 import no.nav.modig.test.fitnesse.run.FitnesseTestRunner;
 import org.kohsuke.args4j.CmdLineException;
