@@ -38,8 +38,7 @@ public class SendSoknadServicePage extends WebPage {
 			}
 
 			WebSoknad soknad = soknadService.hentSoknad(soknadId);
-
-			response.setHeader("soknadId", soknadId.toString());
+            response.setHeader("soknadId", soknadId.toString());
 			response.setHeader("brukerBehandlingId", soknad.getBrukerBehandlingId().toString());
 
 			Map<String, Faktum> fakta = soknad.getFakta();

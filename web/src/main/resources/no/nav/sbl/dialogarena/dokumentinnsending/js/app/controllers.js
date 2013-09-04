@@ -2,14 +2,14 @@
 
 /* Controllers */
 
-function FaktaCtrl() {
-	this.fakta = 
-		[{nokkel: 'Fodselsnummer', verdi: '***REMOVED***'}, 
-		 {nokkel: 'Fornavn', verdi: 'Ketil'},
-		 {nokkel: 'Mellomnavn', verdi: 'J.'},
-		 {nokkel: 'Etternavn', verdi: 'Jensen'},
-		 {nokkel: 'Adresse', verdi: 'Waldemar Thranesgt 98b'},
-	     {nokkel: 'Postnummer', verdi: '0175'},
-	     {nokkel: 'Poststed', verdi: 'Oslo'},
-	     ];
+function PersonaliaCtrl($scope) {
+	$scope.personalia = PersonaliaService.query();
+
+}
+
+function SelectCtrl($scope){
+    $scope.items = [
+        {id:1, name: "Ja"},
+        {id:2, name: "Nei"},
+    ]
 }

@@ -17,9 +17,9 @@ public class OpenSoknadPage extends WebPage {
 
     public OpenSoknadPage(PageParameters parameters) {
         super(parameters);
-        Long soknadId = SoknadId.get(parameters);
-        WebSoknad soknad = soknadService.hentSoknad(soknadId);
-        Page page = PageEnum.getPage(soknad);
-        setResponsePage(page);
+        Long soknadId = parameters.get("soknadId").toLong();
+        String soknadType = parameters.get("soknadType").toString();
+
     }
+
 }

@@ -15,8 +15,9 @@ import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SendSoknadServicePage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SoknadListePage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.kvittering.KvitteringPage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.oppsummering.OppsumeringPage;
-import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.startside.StartSoknadPage;
+import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.StartSoknadPage;
 
+import no.nav.sbl.dialogarena.websoknad.pages.templates.Dagpenger;
 import org.apache.wicket.Application;
 import org.apache.wicket.Page;
 import org.apache.wicket.Session;
@@ -110,7 +111,8 @@ public class WicketApplication extends WebApplication {
         mountPage("soknadKvittering", KvitteringPage.class);
 
         mountPage("soknadliste", SoknadListePage.class);
-        
+        mountPage("dagpenger", Dagpenger.class);
+
 
         mountResource("preview/${size}/${dokumentId}/${side}/thumb.png", thumbnailRef);
 
