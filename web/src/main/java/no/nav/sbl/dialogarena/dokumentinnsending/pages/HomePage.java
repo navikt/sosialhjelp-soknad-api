@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.dokumentinnsending.pages;
 
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.dokumentinnsending.domain.Dokument;
-import no.nav.sbl.dialogarena.websoknad.pages.opensoknad.OpenSoknadPage;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.StartSoknadPage;
 import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
 
@@ -54,7 +53,6 @@ public class HomePage extends WebPage {
                 Link link = new Link("eksisterendeWebSoknadLink") {
                     @Override
                     public void onClick() {
-                        setResponsePage(OpenSoknadPage.class, new PageParameters().set("soknadId", item.getModelObject()));
                     }
                 };
                 link.add(new Label("eksisterendeWebSoknadText", item.getModelObject()));
