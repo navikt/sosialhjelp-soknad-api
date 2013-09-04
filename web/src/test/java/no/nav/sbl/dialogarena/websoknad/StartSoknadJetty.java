@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.dokumentinnsending;
+package no.nav.sbl.dialogarena.websoknad;
 
 import no.nav.modig.core.context.JettySubjectHandler;
 import no.nav.modig.core.context.SubjectHandler;
