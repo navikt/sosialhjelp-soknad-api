@@ -3,13 +3,17 @@
     <wicket:extend>
    
    <h1>Elektroniske søknadsskjema</h1>
-   <a href="startSoknad?soknad=dagpenger" style="text-decoration:none;">
+   <a href="dagpenger" style="text-decoration:none;">
    		<input class="knapp-dagpenger soknadKnapp" type="button" value="Søknad om dagpenger"/>
    </a>
    <br/>
-    <a href="startSoknad?soknad=barnebidrag">
+    <a href="startSoknad?soknadType=barnebidrag">
    		<input class="knapp-barnebidrag soknadKnapp" type="button" value="Søknad om barnebidrag"/>
    </a>
+   <br/>
+    <a href="startSoknad?soknadType=barnetrygd">
+        <input class="knapp-barnetrygd soknadKnapp" type="button" value="Søknad om barnetrygd"/>
+    </a>
    
     </wicket:extend>
 </html>
