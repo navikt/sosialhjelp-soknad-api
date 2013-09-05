@@ -19,7 +19,7 @@
     <name>Dialogarena - Send Søknad</name>
     <description>Innsending av elektronisk søknad.</description>
     <artifactId>sendsoknad</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -809,9 +809,9 @@
         </plugins>
     </build>
     <scm>
-        <developerConnection>scm:svn:https://versjonskontroll.adeo.no/svn/nav-sbl/dialogarena/sendsoknad/tags/sendsoknad-1.0.1
+        <developerConnection>scm:svn:https://versjonskontroll.adeo.no/svn/nav-sbl/dialogarena/sendsoknad/trunk
         </developerConnection>
-        <url>https://versjonskontroll.adeo.no/wsvn/nav-sbl/dialogarena/sendsoknad/tags/sendsoknad-1.0.1</url>
+        <url>https://versjonskontroll.adeo.no/wsvn/nav-sbl/dialogarena/sendsoknad/trunk</url>
     </scm>
 
     <profiles>
