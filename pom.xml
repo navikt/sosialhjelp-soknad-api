@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -20,7 +19,7 @@
     <name>Dialogarena - Send Søknad</name>
     <description>Innsending av elektronisk søknad.</description>
     <artifactId>sendsoknad</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -810,9 +809,9 @@
         </plugins>
     </build>
     <scm>
-        <developerConnection>scm:svn:https://versjonskontroll.adeo.no/svn/nav-sbl/dialogarena/sendsoknad/trunk
+        <developerConnection>scm:svn:https://versjonskontroll.adeo.no/svn/nav-sbl/dialogarena/sendsoknad/tags/sendsoknad-1.0.1
         </developerConnection>
-        <url>https://versjonskontroll.adeo.no/wsvn/nav-sbl/dialogarena/sendsoknad/trunk</url>
+        <url>https://versjonskontroll.adeo.no/wsvn/nav-sbl/dialogarena/sendsoknad/tags/sendsoknad-1.0.1</url>
     </scm>
 
     <profiles>
