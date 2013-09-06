@@ -23,20 +23,20 @@
     <packaging>pom</packaging>
 
     <properties>
-        <modig.frontend>1.0.23</modig.frontend>
+        <modig.frontend>1.0.27</modig.frontend>
         <wicket.version>6.10.0</wicket.version>
         <spring.version>3.2.4.RELEASE</spring.version>
         <cxf.version>2.7.6</cxf.version>
         <nav.sbl.commons.version>3.30</nav.sbl.commons.version>
-        <modig-security.version>1.0.11</modig-security.version>
+        <modig-security.version>1.0.13</modig-security.version>
         <sendsoknad.tjenestespec.version>0.0.7</sendsoknad.tjenestespec.version>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.skippedModules>sendsoknad-consumer</sonar.skippedModules>
         <henvendelse.tjenestespesifikasjon.version.1>2.0.0</henvendelse.tjenestespesifikasjon.version.1>
-        <dialogarena.webkomponent.footer>1.0.5</dialogarena.webkomponent.footer>
-        <dialogarena.webkomponent.navigasjon>1.0.3</dialogarena.webkomponent.navigasjon>
-        <dialogarena.webkomponent.innstillinger>1.0.12</dialogarena.webkomponent.innstillinger>
+        <dialogarena.webkomponent.footer>1.0.6</dialogarena.webkomponent.footer>
+        <dialogarena.webkomponent.navigasjon>1.0.4</dialogarena.webkomponent.navigasjon>
+        <dialogarena.webkomponent.innstillinger>1.0.14</dialogarena.webkomponent.innstillinger>
     </properties>
 
     <dependencyManagement>
@@ -52,7 +52,7 @@
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-lokalt-kodeverk</artifactId>
-                <version>1.0.26</version>
+                <version>1.0.33</version>
                 <exclusions>
                     <exclusion>
                         <groupId>cglib</groupId>
@@ -63,12 +63,12 @@
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-frontend-wicket</artifactId>
-                <version>${modig.frontend}</version>
+                <version>1.0.26</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-frontend-ressurser</artifactId>
-                <version>${modig.frontend}</version>
+                <version>1.0.27</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
@@ -113,7 +113,7 @@
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-wicket</artifactId>
-                <version>1.0.22</version>
+                <version>1.0.24</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.apache.httpcomponents</groupId>
@@ -691,7 +691,7 @@
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-jetty</artifactId>
-                <version>1.0.19</version>
+                <version>1.0.20</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

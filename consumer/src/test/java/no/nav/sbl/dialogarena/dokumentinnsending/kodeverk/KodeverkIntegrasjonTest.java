@@ -37,8 +37,8 @@ public class KodeverkIntegrasjonTest {
         assertEquals("196002", kodeverkSkjemaKravOmDagpenger.getGosysId());
         assertEquals("232553", kodeverkSkjemaKravOmDagpenger.getBeskrivelse());
         assertEquals("DAG", kodeverkSkjemaKravOmDagpenger.getTema());
-        assertEquals(" https://www-t8.nav.no:443/skjema/Skjemaer/Alle+skjemaer+JSON/_attachment/232535?_ts=135cd358820&download=true", kodeverkSkjemaKravOmDagpenger.getUrl());
-        assertEquals(" ", kodeverkSkjemaKravOmDagpenger.getUrlengelsk());
+        assertEquals("https://www.nav.no:443/Skjema/Skjemaer/Alle+skjemaer+JSON/_attachment/232535?_ts=135cd358820&download=true", kodeverkSkjemaKravOmDagpenger.getUrl());
+        assertEquals("", kodeverkSkjemaKravOmDagpenger.getUrlengelsk());
         assertEquals("NAV 04-01.03", kodeverkSkjemaKravOmDagpenger.getSkjemanummer());
         assertEquals("", kodeverkSkjemaKravOmDagpenger.getVedleggsid());
     }
