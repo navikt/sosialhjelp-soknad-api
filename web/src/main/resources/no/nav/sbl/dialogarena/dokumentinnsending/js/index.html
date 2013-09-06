@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" ng-app="sendsoknad">
+<head>
+  <meta charset="utf-8">
+  <title>Send soknad pure angular</title>
+  <script src="angular/angular.js"></script>
+  <script src="app/app.js"></script>
+  <script src="app/controllers.js"></script>
+  <script src="angular/angular-resource.js"></script>
+</head>
+<body>
+
+    <input type="text" ng-model="navn" />
+    <h1>Hei {{navn}}!</h1>
+    <div ng-view></div>
+
+
+<footer class="footer">
+
+<div class="begrensning">
+<p class="navn clearfix">
+NAV
+</p>
+<ul class="fotlenker">
+<li>
+<a href="https://www-u1.nav.no/site/2/Om+NAV/Kontakt+oss">Kontakt oss</a>
+</li><li>
+<a href="https://www-u1.nav.no/site/2/Om+NAV/Om+NAV/Personvernerkl%C3%A6ring+for+Arbeids-+og+velferdsetaten.285854.cms">Personvern og sikkerhet</a>
+</li><li>
+<a href="https://www-u1.nav.no/site/2/tilbakemelding/Klage%2C+ris+og+ros/Feil+og+mangler+nav.no">Feil og mangler i nav.no</a>
+</li><li>
+<a href="https://www-u1.nav.no/site/2/Om+NAV/Brukarst%C3%B8tte/Tilgjengelighet">Tilgjengelighet</a>
+</li>
+</ul>
+<p class="copy">
+© 2013 Arbeids- og velferdsetaten
+</p>
+</div>
+</footer>
+</body>
+</html>
