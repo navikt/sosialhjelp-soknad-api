@@ -9,14 +9,27 @@ function PersonaliaCtrl($scope){
     postnummer: '0123',
     poststed: 'Oslo',
     adresse: 'Majorstuen 1',
-    landskode:'+47'
+    landskode:'+47',
+    barnUtland:'',
+    barnUtlandNavn: '',
+    barnUtlandEtternavn: ''
 	};
+}
+
+function VilligCtrl($scope){
+  $scope.villig = {
+    jobb: '',
+    pendle: '',
+    deltid:'',
+    helse:'',
+    deltidProsent:''
+  }
 }
 
 function ValidationCtrl($scope){
   $scope.ePost ="";
   $scope.feilmeldinger = {
-    paakreves: 'Må fylles ut',
+    paakreves: '*',
     feil: 'Ikke gyldig'
   };
 }
