@@ -9,6 +9,10 @@
 rebel.xml
 target
 
+*.project
+*.settings
+*.classpath
+
 consumer/*.pdf
 test.pdf
 
