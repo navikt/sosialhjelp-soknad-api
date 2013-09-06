@@ -5,11 +5,19 @@
 var app = angular.module('sendsoknad', ['ngRoute'])
 
   app.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.
-  	  when('/soknadliste', {templateUrl: 'templates/soknadliste.html'}).
-  	  when('/dagpenger', {templateUrl: 'templates/dagpenger.html', controller: PersonaliaCtrl}).
-      otherwise({redirectTo: '/soknadliste'});
+  $routeProvider
+  	  .when('/soknadliste', {templateUrl: 'templates/soknadliste.html'})
+  	  .when('/dagpenger', {templateUrl: 'templates/dagpenger.html', controller: PersonaliaCtrl})
+      .when('/wiz', {templateUrl: 'templates/wizardtwo.html', controller: WizardCtrl})
+      .otherwise({redirectTo: '/soknadliste'});
 }]);
+
+  app.factory('soknadService', function($rootScope) {
+    var soknadService = {};
+    soknadService.ePost = "";
+    
+    return soknadService;
+  });
 
   var INTEGER_REGEX = /^\-?\d*$/;
 
