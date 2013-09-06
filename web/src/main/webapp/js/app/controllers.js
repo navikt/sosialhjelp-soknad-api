@@ -26,10 +26,24 @@ function VilligCtrl($scope){
   }
 }
 
-function ValidationCtrl($scope){
-  $scope.ePost ="";
+function ValidationCtrl($scope, soknadService, $location){
+  $scope.ePost = soknadService.ePost;
   $scope.feilmeldinger = {
     paakreves: '*',
     feil: 'Ikke gyldig'
-  };
+  }
+
+  $scope.saveState = function() {
+    soknadService.ePost = $scope.ePost;
+  }
+
+  $scope.setRoute = function(route) {
+      $scope.saveState();
+      $location.path(route);
+  }
+  
+}
+
+function WizardCtrl($scope, soknadService) {
+  $scope.ePost = soknadService.ePost;
 }

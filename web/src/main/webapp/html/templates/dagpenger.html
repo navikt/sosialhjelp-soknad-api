@@ -47,6 +47,9 @@
 	</div>
 
 	<a href="#/dagpenger2"><button ng-disabled="personaliaForm.epost.$invalid || personaliaForm.mobil.$invalid || personaliaForm.barnUtland.$invalid || (personalia.barnUtland == 'ja' && (personaliaForm.barnenavnUtland.$invalid || personaliaForm.barneetternavnUtland.$invalid))">NESTE</button></a>
-</form>
+				
+	<a id="neste" ng-click="setRoute('wiz')">neste</a>
+	<span>{{dummyString}}</span>
 
+</form>
 

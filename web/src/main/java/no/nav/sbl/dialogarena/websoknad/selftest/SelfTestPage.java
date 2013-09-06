@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.websoknad.selftest;
 import no.nav.modig.wicket.selftest.SelfTestBase;
 import no.nav.sbl.dialogarena.dokumentinnsending.config.ConsumerConfig;
 import no.nav.tjeneste.domene.brukerdialog.henvendelsesbehandling.v1.HenvendelsesBehandlingPortType;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.slf4j.Logger;
@@ -32,8 +33,8 @@ public class SelfTestPage extends SelfTestBase {
     @Inject
     private BrukerprofilPortType brukerprofilPortType;
 
-    /*@Inject
-    private SendSoknadPortType sendSoknadPortType;*/
+    @Inject
+    private SendSoknadPortType sendSoknadPortType;
 
     @Inject
     @Named(value = "cmsBaseUrl")
@@ -57,11 +58,11 @@ public class SelfTestPage extends SelfTestBase {
             }
         }.addStatus(statusList);
 
-        /*new ServiceStatusHenter("SENDSOKNAD") {
+        new ServiceStatusHenter("SENDSOKNAD") {
             public void ping() {
                 sendSoknadPortType.ping();
             }
-        }.addStatus(statusList);*/
+        }.addStatus(statusList);
 
         statusList.add(smtpStatus());
         statusList.add(cmsStatus());
