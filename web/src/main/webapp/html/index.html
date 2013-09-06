@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" ng-app="sendsoknad">
+<head>
+  <meta charset="utf-8">
+  <title>Send Soknad</title>
+  <link rel="stylesheet" href="../css/nav.css">
+
+  <script src="../js/lib/angular.js"></script>
+  <script src="../js/app/app.js"></script>
+  <script src="../js/app/controllers.js"></script>
+  <script src="../js/lib/angular-route.js"></script>
+
+</head>
+  <body>
+    <div class="innstillinger-innlogget">
+      <div class="begrensning">
+        <ul class="liste-vannrett" role="navigation">
+          <li class="hoykontrast" id="hoykontrast">
+            <a href="#">Høykontrast </a>
+          </li>
+          <li class="skriftstorrelse">
+            <a href="#" id="link-skriftstorrelse" rel="tooltip" title="" data-original-title="Hold Ctrl-tasten nede (Cmd-tasten på Mac).&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;Trykk på + for å forstørre eller - for å forminske.">Skriftstørrelse
+              <span class="smaller">A</span>
+              <span class="bigger">A</span>
+            </a>
+          </li>
+        </ul>
+        <span class="hide" id="navnetjenesteBaseUrl">https://tjenester-q8.nav.no</span>
+        <span class="hide" id="innloggetTekstNavn">Logget inn som</span>
+        <span class="hide" id="innloggetTekstUtenNavn">Logget inn</span>
+        <a href="./wicket/bookmarkable/no.nav.sbl.dialogarena.webkomponent.innstillinger.LogoutPage?url=https://e34jbsl00713.devillo.no:8443/openam/" class="knapp-liten loggut">Logg ut</a>
+        <span class="innloggetSom" style="">Logget inn</span>
+      </div>
+    </div>
+
+  <div class="rad-logo">
+    <a class="logo" href="http://nav.no"></a>
+  </div>
+
+  <div class="rad">
+    <div class="begrensning">
+      <section class="sak-hel">
+        <div class="panel-standard-belyst skjema" ng-view>
+          <h1 class="diger"></h1>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="begrensning">
+      <p class="navn clearfix">
+      NAV
+      </p>
+      <ul class="fotlenker">
+        <li><a href="https://www-u1.nav.no/site/2/Om+NAV/Kontakt+oss">Kontakt oss</a></li>
+        <li><a href="https://www-u1.nav.no/site/2/Om+NAV/Om+NAV/Personvernerkl%C3%A6ring+for+Arbeids-+og+velferdsetaten.285854.cms">Personvern og sikkerhet</a></li>
+        <li><a href="https://www-u1.nav.no/site/2/tilbakemelding/Klage%2C+ris+og+ros/Feil+og+mangler+nav.no">Feil og mangler i nav.no</a></li>
+        <li><a href="https://www-u1.nav.no/site/2/Om+NAV/Brukarst%C3%B8tte/Tilgjengelighet">Tilgjengelighet</a></li>
+    </ul>
+    <p class="copy">© 2013 Arbeids- og velferdsetaten</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -6,7 +6,7 @@ describe('Send soknad app', function() {
 			browser().navigateTo('../../js/index.html');
 	});
 
-	it('should be true', fuction() {
+	it('should be true', function() {
 			expect(true).toBe(true);
 	});
 
