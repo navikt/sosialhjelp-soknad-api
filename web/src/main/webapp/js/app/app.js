@@ -8,6 +8,9 @@ var app = angular.module('sendsoknad', ['ngRoute'])
   $routeProvider.
   	  when('/soknadliste', {templateUrl: 'templates/soknadliste.html'}).
   	  when('/dagpenger', {templateUrl: 'templates/dagpenger.html', controller: PersonaliaCtrl}).
+      when('/dagpenger2', {templateUrl: 'templates/dagpenger2.html', controller: PersonaliaCtrl}).
+      when('/ikkekvalifisert', {templateUrl: 'templates/ikkekvalifisert.html', controller: PersonaliaCtrl}).
+
       otherwise({redirectTo: '/soknadliste'});
 }]);
 

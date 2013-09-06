@@ -1,30 +1,52 @@
 
 <h1>Personalia</h1>
 
-	<label>NAVN</label>
-	{{personalia.fornavn}} {{personalia.mellomnavn}} {{personalia.etternavn}}<br/>
-	<br/>
-	<label>FØDSELSNUMMER</label>
-	{{personalia.fnr}}<br/>
-	<br/>
-	<label>ADRESSE</label>
-	{{personalia.adresse}}<br>
-	{{personalia.postnummer}} {{personalia.poststed}}
-	<br/>
+<label>NAVN</label><br/>
+{{personalia.fornavn}} {{personalia.mellomnavn}} {{personalia.etternavn}}<br/>
+<br/>
+<label>FØDSELSNUMMER</label><br/>
+{{personalia.fnr}}<br/>
+<br/>
+<label>ADRESSE</label><br/>
+{{personalia.adresse}}<br>
+{{personalia.postnummer}} {{personalia.poststed}}
+<br/>
+<br/>
+
+<form name="personaliaForm" data-ng-controller="ValidationCtrl" novalidate>
+	<label>MOBILNUMMER</label>
+	<input type="text" name="landskode" data-ng-model="personalia.landskode" landskodevalidering>
+	<input type="text" name="mobil" data-ng-model="mobil" data-mobilnummer required/>
+	<span class="error" data-ng-show="personaliaForm.mobil.$error.required">{{feilmeldinger.paakreves}}</span>
+
 	<br/>
 
-	<form name="personaliaForm" data-ng-controller="ValidationCtrl" novalidate>
-		<label>MOBILNUMMER</label>
-		<input type="text" name="landskode" data-ng-model="personalia.landskode" landskodevalidering>
-		
-		<input type="text" name="mobil" data-ng-model="mobil" data-mobilnummer/>
-		<br/>
-		<span  data-ng-show="personaliaForm.landskode.$error.feil">{{feilmeldinger.feil}} landskode</span>
-		<span  data-ng-show="personaliaForm.mobil.$error.feil">{{feilmeldinger.feil}} mobilnummer</span>
+	<span  data-ng-show="personaliaForm.landskode.$error.feil">{{feilmeldinger.feil}} landskode</span>
+	<span  data-ng-show="personaliaForm.mobil.$error.feil">{{feilmeldinger.feil}} mobilnummer</span>
 
-		<label>E-POST</label>
-		<input type="email" name="epost" data-ng-model="value" required>
-		<span class="error" data-ng-show="personaliaForm.epost.$error.required">{{feilmeldinger.paakreves}}</span>
-		<span class="error" data-ng-show="personaliaForm.epost.$error.email">{{feilmeldinger.feil}} epost</span>
-	</form>
+
+	<label>E-POST</label>
+	<input type="email" name="epost" data-ng-model="value" required>
+	<span class="error" data-ng-show="personaliaForm.epost.$error.required">{{feilmeldinger.paakreves}}</span>
+	<span class="error" data-ng-show="personaliaForm.epost.$error.email">{{feilmeldinger.feil}} epost</span>
+	
+	<br/>
+
+	<p> Har du barn under 18år som bor i utlandet som du har forsørgeransvar for? </p>
+	<input class="sendsoknad-radio"ng-model="personalia.barnUtland" type="radio" name="barnUtland" value="ja" required/> Ja 
+	<input class="sendsoknad-radio" ng-model="personalia.barnUtland" type="radio" name="barnUtland" value="nei" required /> Nei
+	<span class="error" data-ng-show="personaliaForm.barnUtland.$error.required">{{feilmeldinger.paakreves}}</span>
+
+	<br/><br/>
+
+	<div data-ng-model="personalia.barnUtland" ng-show="personalia.barnUtland == 'ja'" >	
+		<label>Navn</label>
+		<input type="text" name="barnenavnUtland" data-ng-model="personalia.barnUtlandNavn" required><br/>
+		<label>Etternavn</label>
+		<input type="text" name="barneetternavnUtland" data-ng-model="personalia.barnUtlandEtternavn" required> 
+	</div>
+
+	<a href="#/dagpenger2"><button ng-disabled="personaliaForm.epost.$invalid || personaliaForm.mobil.$invalid || personaliaForm.barnUtland.$invalid || (personalia.barnUtland == 'ja' && (personaliaForm.barnenavnUtland.$invalid || personaliaForm.barneetternavnUtland.$invalid))">NESTE</button></a>
+</form>
+
 
