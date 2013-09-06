@@ -11,8 +11,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      '../js/angular/angular-scenario.js',
-      '../test/e2e/**/*.js'
+      '../../js/lib/angular-scenario.js',
+      '../e2e/**/*.js'
     ],
 
 

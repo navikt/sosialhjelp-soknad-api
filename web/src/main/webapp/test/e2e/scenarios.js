@@ -3,7 +3,7 @@
 describe('Send soknad app', function() {
 
 	beforeEach(function() {
-			browser().navigateTo('../../js/index.html');
+			browser().navigateTo('../../html/index.html');
 	});
 
 	it('should be true', function() {
