@@ -6,4 +6,4 @@ echo ""
 echo "Starting Karma e2e test"
 echo "-------------------------------------------------------------------"
 
-karma start $BASE_DIR/../config/karma-e2e.conf.js $*
+karma start $BASE_DIR/../test/config/karma-e2e.conf.js $*
