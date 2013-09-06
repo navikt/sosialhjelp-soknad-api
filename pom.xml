@@ -809,9 +809,11 @@
         </plugins>
     </build>
     <scm>
-        <developerConnection>scm:svn:https://versjonskontroll.adeo.no/svn/nav-sbl/dialogarena/sendsoknad/trunk
+        <developerConnection>
+            scm:git:ssh://git@a34apvl029.devillo.no:7999/dial/sendsoknad.git
         </developerConnection>
-        <url>https://versjonskontroll.adeo.no/wsvn/nav-sbl/dialogarena/sendsoknad/trunk</url>
+        <url>http://a34apvl029.devillo.no:7990/scm/dial/sendsoknad.git</url>
+        <tag>HEAD</tag>
     </scm>
 
     <profiles>
