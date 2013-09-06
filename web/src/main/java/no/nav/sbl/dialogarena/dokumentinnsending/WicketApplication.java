@@ -1,7 +1,5 @@
 package no.nav.sbl.dialogarena.dokumentinnsending;
 
-import javax.inject.Inject;
-
 import no.nav.modig.frontend.FrontendConfigurator;
 import no.nav.modig.frontend.FrontendModules;
 import no.nav.modig.frontend.MetaTag;
@@ -15,8 +13,8 @@ import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SendSoknadServicePage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SoknadListePage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.kvittering.KvitteringPage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.oppsummering.OppsumeringPage;
+import no.nav.sbl.dialogarena.websoknad.pages.soknad.OpenSoknadPage;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.StartSoknadPage;
-
 import no.nav.sbl.dialogarena.websoknad.pages.templates.Dagpenger;
 import org.apache.wicket.Application;
 import org.apache.wicket.Page;
@@ -31,6 +29,8 @@ import org.apache.wicket.settings.IMarkupSettings;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.lang.Bytes;
 import org.springframework.context.ApplicationContext;
+
+import javax.inject.Inject;
 
 
 public class WicketApplication extends WebApplication {
@@ -105,6 +105,7 @@ public class WicketApplication extends WebApplication {
         Application.get().getRequestLoggerSettings().setRequestLoggerEnabled(true);
 
         mountPage("startSoknad", StartSoknadPage.class);
+        mountPage("apne/${soknadId}", OpenSoknadPage.class);
         mountPage("sendSoknad", SendSoknadPage.class);
         mountPage("sendSoknadService", SendSoknadServicePage.class);
         mountPage("oppsumering", OppsumeringPage.class);
