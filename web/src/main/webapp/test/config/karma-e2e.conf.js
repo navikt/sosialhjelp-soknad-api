@@ -11,7 +11,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      '../test/e2e/**/*.js'
+      '../test/e2e/**/*.js',
+      '../js/app/*.js',
     ],
 
 
@@ -45,7 +46,7 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['Chrome'],
+    browsers: ['Chrome', 'Firefox'],
 
     proxies: {
   		'/': 'http://localhost:8000/'
@@ -53,6 +54,7 @@ module.exports = function(config) {
 
 	plugins: [
 		'karma-chrome-launcher',
+        'karma-firefox-launcher',
 		'karma-jasmine',
         'karma-ng-scenario'
 	],

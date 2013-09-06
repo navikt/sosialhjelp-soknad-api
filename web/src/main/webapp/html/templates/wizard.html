@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html ng-app="SoknadApp" ng-controller="SoknadController">
+
+    <head>
+        <script type="text/javascript" src="../js/js/angular/angular.js"></script>
+        <script type="text/javascript" src="../js/js/angular/angular-resource.js"></script>
+        <script type="text/javascript" src="../js/js/angular/angular-route.js"></script>
+        <script type="text/javascript" src="../js/js/app.js"></script>
+        <script type="text/javascript" src="../js/js/controllers.js"></script>
+
+    </head>
+
+<body>
+ <div>
+    		<div ng-switch="getGjeldeneStep()">
+    			<div ng-switch-when="en">
+    				<h3>Personalia</h3>
+    				<label>Navn:</label>
+    				<input type="text" ng-model="soknad.navn"/>
+    				<label>Adresse:</label>
+    				<input type="text" ng-model="soknad.adresse"/>
+    			</div>
+    			<div ng-switch-when="to">
+    				<h3>Familieforhold</h3>
+    				<label>BarneNavn:</label>
+    				<input type="text" ng-model="soknad.barnenavn"/>
+    				<label>Alder:</label>
+    				<input type="text" ng-model="soknad.alder"/>
+    			</div>
+    			<div ng-switch-when="tre">
+    				<h3>Jobbforhold</h3>
+    				<label>Firma:</label>
+    				<input type="text" ng-model="soknad.firma"/>
+    				<label>Siden:</label>
+    				<input type="text" ng-model="soknad.siden"/>
+    			</div>
+    			
+    			<div ng-switch-when="oppsummering">
+    				<h3>Oppsummering</h3>
+    				<label>Navn: {{soknad.navn}}</label>
+    				<label>Adresse: {{soknad.adresse}}</label>
+    				
+    				<label>BarneNavn: {{soknad.barnenavn}}</label>
+    				<label>Alder: {{soknad.alder}}</label>
+    				<label>Firma: {{soknad.firma}}</label>
+    				<label>Siden: {{soknad.siden}}</label>
+    			</div>
+    			
+    			<div class="buttonGroup">
+		    		<button class="btn" ng-click="forrigeStep()" ng-show="!erFoersteStep()">Tilbake</button>
+		    		<button class="btn" ng-click="nesteStep()">{{getNesteLabel()}}</button>
+                    <a href="#/part2/">Kvittering</a>
+    			</div>	
+    		</div>
+    	</div>
+        </body>
+</html>
