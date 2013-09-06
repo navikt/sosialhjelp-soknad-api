@@ -3,7 +3,8 @@
 /* Controllers */
 
 function PersonaliaCtrl($scope) {
-	$scope.personalia = PersonaliaService.query();
+	$scope.personalia = {fornavn: 'Ingvild'};
+	//$scope.personalia = PersonaliaService.query();
 
 }
 

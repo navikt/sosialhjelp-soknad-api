@@ -1,13 +1,18 @@
-angular.module('sendsoknad', ['ngRoute', 'ngResource']).
-    config(function($routeProvider, $locationProvider) {
-		alert("wefwhef" + document.baseURI);
-		$routeProvider.when('sendSoknad/startSoknad/:soknadType', {templateUrl: "html/Dagpenger.html", controller: FaktaCtrl});
-		$routeProvider.when('/barnebidrag', {templateUrl: "html/Barnebidrag.html"});
-		$routeProvider.when('/barnetrygd', {templateUrl: "html/Barnetrygd.html"});
-		$routeProvider.otherwise({redirectTo: '/'});
-	});
+'use strict';
 
-	angular.module('sendsoknad', ['ngResource']).
-	    factory('PersonaliaService', function($resources){
-            return $resource('/soknad/:soknadId')
-	});
+/* App Module */
+
+angular.module('sendsoknad', ['ngResource']).
+  config(['$routeProvider', function($routeProvider) {
+  	alert("Test");
+  $routeProvider.
+  	  when('/soknadliste', {templateUrl: 'templates/soknadliste.html'}).
+  	  when('/dagpenger', {templateUrl: 'templates/dagpenger.html', controller: PersonaliaCtrl}).
+      otherwise({redirectTo: '/soknadliste'});
+}]);
+
+
+angular.module('sendsoknad', ['ngResource']).
+    factory('PersonaliaService', function($resources){
+        return $resource('/soknad/:soknadId')
+});
