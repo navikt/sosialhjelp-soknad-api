@@ -6,6 +6,8 @@ import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StreamUtils;
 
 import java.io.File;
@@ -21,9 +23,9 @@ import java.util.List;
  * Klasse som laster inn en html snutt fra en tempate inn i siden.
  */
 public class SoknadComponent extends WebComponent {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SoknadComponent.class);
     private final String soknadType;
     private static List<String> files;
-
 
     public SoknadComponent(String id, WebSoknad soknadType) {
         super(id);
@@ -42,7 +44,7 @@ public class SoknadComponent extends WebComponent {
                 }
                 SoknadComponent.files = files;
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOGGER.error(ex.getMessage());
             }
         }
     }
