@@ -7,8 +7,8 @@ describe('Send soknad app', function() {
 	});
 
 
-	it('skal redirigere index.html til index.html#/soknadiste', function(){
-		expect(browser().location().url()).toBe('/soknadliste');
+	it('skal redirigere index.html til index.html#/dagpenger', function(){
+		expect(browser().location().url()).toBe('/dagpenger');
 	});
 
 	it("skal kunne hente frem epost etter browser back", function() {
