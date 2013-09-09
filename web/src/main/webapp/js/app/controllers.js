@@ -43,7 +43,3 @@ function ValidationCtrl($scope, soknadService, $location){
       $location.path(route);
   }
 }
-
-function WizardCtrl($scope, soknadService) {
-  $scope.data = soknadService.data;
-}
