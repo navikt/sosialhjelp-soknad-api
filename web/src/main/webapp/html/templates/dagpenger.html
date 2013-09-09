@@ -13,23 +13,24 @@
 	<br/>
 	<br/>
 
-	<form name="personaliaForm" data-ng-controller="ValidationCtrl" novalidate>
+	<form id="personaliaForm" name="personaliaForm" data-ng-controller="ValidationCtrl" novalidate>
 		<label>MOBILNUMMER</label>
 		<input type="text" name="landskode" data-ng-model="personalia.landskode" landskodevalidering>
 		
-		<input type="text" name="mobil" data-ng-model="mobil" data-mobilnummer/>
+		<input type="text" name="mobil" data-ng-model="data.mobil" data-mobilnummer/>
 		<br/>
 		<span  data-ng-show="personaliaForm.landskode.$error.feil">{{feilmeldinger.feil}} landskode</span>
-		<span  data-ng-show="personaliaForm.mobil.$error.feil">{{feilmeldinger.feil}} mobilnummer</span>
+		<span data-ng-show="personaliaForm.mobil.$error.feil">{{feilmeldinger.feil}} mobilnummer</span>
 
 		<label>E-POST</label>
-		<input id="epost" type="email" name="epost" data-ng-model="ePost" required>
+		<input id="epost" type="email" name="epost" data-ng-model="data.ePost" required>
 		<span class="error" data-ng-show="personaliaForm.epost.$error.required">{{feilmeldinger.paakreves}}</span>
 		<span class="error" data-ng-show="personaliaForm.epost.$error.email">{{feilmeldinger.feil}} epost</span>
 
 		<br/>
 		<a id="neste" ng-click="setRoute('wiz')">neste</a>
-		<span>{{dummyString}}</span>
 
+		<br/>
+		
 	</form>
 

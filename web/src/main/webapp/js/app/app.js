@@ -14,8 +14,6 @@ var app = angular.module('sendsoknad', ['ngRoute'])
 
   app.factory('soknadService', function($rootScope) {
     var soknadService = {};
-    soknadService.ePost = "";
-    
     return soknadService;
   });
 
