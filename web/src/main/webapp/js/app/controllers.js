@@ -27,10 +27,6 @@ function VilligCtrl($scope){
 }
 
 function ValidationCtrl($scope, soknadService, $location){
-  //TODO: loop alle verdier i soknadService og sett de.
-  //$scope.ePost = soknadService.ePost;
-  //$scope.fields = soknadService;
-  
   $scope.data =  soknadService.data;
 
   $scope.feilmeldinger = {
@@ -40,7 +36,6 @@ function ValidationCtrl($scope, soknadService, $location){
 
   $scope.saveState = function() {
     soknadService.data = $scope.data;
-     //TODO: loop alle .skjemaElement og lagre det i soknadService
   }
 
   $scope.setRoute = function(route) {
