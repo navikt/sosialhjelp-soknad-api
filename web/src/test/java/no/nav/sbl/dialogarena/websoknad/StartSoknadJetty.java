@@ -37,7 +37,7 @@ public final class StartSoknadJetty {
         // System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, SubjectHandler.class.getName());
         //SubjectHandlerUtils.setupJettySubjectHandler("***REMOVED***", "Ekstern-bruker", "BD05", "4");
 
-        System.setProperty("java.security.auth.login.config", "web/src/test/resources/login.conf");
+        System.setProperty("java.security.auth.login.config", "src/test/resources/login.conf");
         //System.setProperty("java.security.auth.login.config", "src/test/resources/login.conf");
         TestCertificates.setupKeyAndTrustStore();
 
