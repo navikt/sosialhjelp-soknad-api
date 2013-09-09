@@ -12,10 +12,10 @@ describe('Send soknad app', function() {
 	});
 
 	it("skal kunne hente frem epost etter browser back", function() {
-		input("data.ePost").enter("ketil.velle@gmail.com");
+		input("data.epost").enter("ketil@mailprovider.com");
 		element("#neste").click();
 		browser().navigateTo('#/dagpenger');
-		expect(input("data.ePost").val()).toEqual("ketil.velle@gmail.com");
+		expect(input("data.epost").val()).toEqual("ketil@mailprovider.com");
 	});
 
 	it("skal kunne lagre mobil etter browser back", function() {
