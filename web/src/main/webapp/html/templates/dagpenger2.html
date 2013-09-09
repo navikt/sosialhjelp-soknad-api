@@ -34,5 +34,7 @@
 	</div>
 
 	<br/><br/>
+	<a ng-click="setRoute('dagpenger')"><button ng-disabled="villigForm.villigJobb.$invalid || villigForm.villigPendle.$invalid || villigForm.villigHelse.$invalid || villigForm.villigDeltid.$invalid || (data.deltid == 'nei' && villigForm.villigDeltidProsent.$invalid)">FORRIGE</button></a>
+
 	<a href="#/dagpenger2"><button ng-disabled="villigForm.villigJobb.$invalid || villigForm.villigPendle.$invalid || villigForm.villigHelse.$invalid || villigForm.villigDeltid.$invalid || (data.deltid == 'nei' && villigForm.villigDeltidProsent.$invalid)">NESTE</button></a>
 </form>
