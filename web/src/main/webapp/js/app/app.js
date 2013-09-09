@@ -5,12 +5,11 @@
 var app = angular.module('sendsoknad', ['ngRoute'])
 
   app.config(['$routeProvider', function($routeProvider) {
-	  alert("app.js");
     $routeProvider
   	  .when('/dagpenger', {templateUrl: '../html/templates/dagpenger.html', controller: PersonaliaCtrl})
       .when('/dagpenger2', {templateUrl: '../html/templates/dagpenger2.html', controller: PersonaliaCtrl})
-      .when('/wiz', {templateUrl: 'templates/wizardtwo.html', controller: WizardCtrl})
-      .otherwise({redirectTo: '../html/templates/dagpenger.html'});
+      .when('/wiz', {templateUrl: '../html/templates/wizardtwo.html', controller: WizardCtrl})
+      .otherwise({redirectTo: '/dagpenger'});
 }]);
 
   app.factory('soknadService', function($rootScope) {
