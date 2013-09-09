@@ -10,14 +10,11 @@ var app = angular.module('sendsoknad', ['ngRoute'])
   	  .when('/personalia', {templateUrl: 'templates/personalia.html', controller: PersonaliaCtrl})
       .when('/reell-arbeidssoker', {templateUrl: 'templates/reell-arbeidssoker.html', controller: PersonaliaCtrl})
       .when('/arbeidsforhold', {templateUrl: 'templates/arbeidsforhold.html', controller: PersonaliaCtrl})
-      .when('/wiz', {templateUrl: 'templates/wizardtwo.html', controller: WizardCtrl})
-      .otherwise({redirectTo: '/soknadliste'});
+      .otherwise({redirectTo: '/dagpenger'});
 }]);
 
   app.factory('soknadService', function($rootScope) {
     var soknadService = {};
-    soknadService.ePost = "";
-    
     return soknadService;
   });
 

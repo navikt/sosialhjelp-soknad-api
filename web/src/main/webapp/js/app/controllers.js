@@ -38,23 +38,19 @@ function VilligCtrl($scope){
 }
 
 function ValidationCtrl($scope, soknadService, $location){
-  $scope.ePost = soknadService.ePost;
+  $scope.data =  soknadService.data;
+
   $scope.feilmeldinger = {
     paakreves: '*',
     feil: 'Ikke gyldig'
   }
 
   $scope.saveState = function() {
-    soknadService.ePost = $scope.ePost;
+    soknadService.data = $scope.data;
   }
 
   $scope.setRoute = function(route) {
       $scope.saveState();
       $location.path(route);
   }
-  
-}
-
-function WizardCtrl($scope, soknadService) {
-  $scope.ePost = soknadService.ePost;
 }
