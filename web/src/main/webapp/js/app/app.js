@@ -9,7 +9,7 @@ var app = angular.module('sendsoknad', ['ngRoute'])
   	  .when('/soknadliste', {templateUrl: 'templates/soknadliste.html'})
   	  .when('/dagpenger', {templateUrl: 'templates/dagpenger.html', controller: PersonaliaCtrl})
       .when('/dagpenger2', {templateUrl: 'templates/dagpenger2.html', controller: PersonaliaCtrl})
-      .when('/wiz', {templateUrl: 'templates/wizardtwo.html', controller: WizardCtrl})
+      .when('/ikkekvalifisert', {templateUrl: 'templates/ikkekvalifisert.html'})
       .otherwise({redirectTo: '/soknadliste'});
 }]);
 
