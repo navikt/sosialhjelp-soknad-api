@@ -5,9 +5,10 @@
 var app = angular.module('sendsoknad', ['ngRoute'])
 
   app.config(['$routeProvider', function($routeProvider) {
-  $routeProvider
+    $routeProvider
   	  .when('/soknadliste', {templateUrl: 'templates/soknadliste.html'})
   	  .when('/dagpenger', {templateUrl: 'templates/dagpenger.html', controller: PersonaliaCtrl})
+      .when('/dagpenger2', {templateUrl: 'templates/dagpenger2.html', controller: PersonaliaCtrl})
       .when('/wiz', {templateUrl: 'templates/wizardtwo.html', controller: WizardCtrl})
       .otherwise({redirectTo: '/soknadliste'});
 }]);
