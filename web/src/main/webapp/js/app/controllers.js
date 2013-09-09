@@ -10,10 +10,21 @@ function PersonaliaCtrl($scope){
     poststed: 'Oslo',
     adresse: 'Majorstuen 1',
     landskode:'+47',
-    barnUtland:'',
-    barnUtlandNavn: '',
-    barnUtlandEtternavn: ''
+    barnUtland:''
 	};
+}
+
+function ungerUtlandCtrl($scope){
+  $scope.ungerUtland = [{
+    fornavn: '',
+    etternavn: ''
+  }];
+
+  $scope.nyUngeUtland = function($event){
+    $scope.ungerUtland.push( {fornavn: '', etternavn: ''});
+    $event.preventDefault();
+  }
+
 }
 
 function VilligCtrl($scope){

@@ -4,3 +4,24 @@
 	width: 	20px !important;
 	height: 20px !important;
 }
+
+li {
+list-style: none;
+}
+
+label {
+	display: block;
+	margin-top: 10px;
+}
+
+input, p {
+}
+
+
+li a {
+	margin-right: 10px;
+}
+
+button, #neste {
+	margin-top: 20px;
+}

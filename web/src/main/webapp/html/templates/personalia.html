@@ -1,0 +1,64 @@
+<h1>Personalia</h1>
+
+<label>NAVN</label>
+<p>{{personalia.fornavn}} {{personalia.mellomnavn}} {{personalia.etternavn}}</p>
+
+<label>FØDSELSNUMMER</label>
+<p>{{personalia.fnr}} </p>
+
+<label>ADRESSE</label>
+<p>{{personalia.adresse}} </p>
+<p>{{personalia.postnummer}} {{personalia.poststed}}</p>
+
+
+<form name="personaliaForm" data-ng-controller="ValidationCtrl" novalidate>
+	<label>MOBILNUMMER</label>
+	<input type="text" name="landskode" data-ng-model="personalia.landskode" landskodevalidering>
+	<input type="text" name="mobil" data-ng-model="data.mobil" data-mobilnummer required/>
+	<span class="error" data-ng-show="personaliaForm.mobil.$error.required">{{feilmeldinger.paakreves}}</span>
+
+
+	<span  data-ng-show="personaliaForm.landskode.$error.feil">{{feilmeldinger.feil}} landskode</span>
+	<span  data-ng-show="personaliaForm.mobil.$error.feil">{{feilmeldinger.feil}} mobilnummer</span>
+
+
+	<label>E-POST</label>
+	<input type="email" name="epost" data-ng-model="data.ePost" required>
+	<span class="error" data-ng-show="personaliaForm.epost.$error.required">{{feilmeldinger.paakreves}}</span>
+	<span class="error" data-ng-show="personaliaForm.epost.$error.email">{{feilmeldinger.feil}} epost</span>
+	
+	<br/>
+	<br/>
+
+	<p> Her skal vi hente ut evt registrerte barn under 18år med navn og etternavn </p>
+	<p>....</p>
+	<br/>
+
+	<p> Har du barn under 18år som bor i utlandet som du har forsørgeransvar for? </p>
+	<input class="sendsoknad-radio"ng-model="data.barnUtland" type="radio" name="barnUtland" value="ja" required/> Ja 
+	<input class="sendsoknad-radio" ng-model="data.barnUtland" type="radio" name="barnUtland" value="nei" required /> Nei
+	<span class="error" data-ng-show="personaliaForm.barnUtland.$error.required">{{feilmeldinger.paakreves}}</span>
+
+	<br/>
+
+	<div ng-controller="ungerUtlandCtrl" data-ng-show="personalia.barnUtland == 'ja'" >
+		<ul>
+			<li data-ng-repeat="unge in ungerUtland" data-ng-form="ungerUtlandForm" name="ungerUtlandForm">
+				<label>Navn</label>
+				<input type="text" placeholder="Fornavn" name="fornavn" data-ng-model="unge.fornavn" required>
+				<input type="text" placeholder="Etternavn" name="etternavn" data-ng-model="unge.etternavn" required>
+				<span class="error" data-ng-show="ungerUtlandForm.fornavn.$error.required || ungerUtlandForm.etternavn.$error.required">{{feilmeldinger.paakreves}}</span>
+			</li>
+			<li>
+				<br/>
+				<a href data-ng-click="ungerUtland.splice(ungerUtland.length-1, 1)"> Fjern</a>
+				<a href data-ng-click="nyUngeUtland($event)"> Legg til</a>
+			</li>
+	</div>
+
+
+	<a><button id="neste" ng-click="setRoute('reell-arbeidssoker')"  ng-disabled="personaliaForm.epost.$invalid || personaliaForm.mobil.$invalid || personaliaForm.barnUtland.$invalid || (personalia.barnUtland == 'ja' && personaliaForm.$invalid)">NESTE</button></a>
+			
+	<input type="text" data-ng-model="data.nyttfelt"/>
+
+</form>

@@ -6,9 +6,10 @@ var app = angular.module('sendsoknad', ['ngRoute'])
 
   app.config(['$routeProvider', function($routeProvider) {
     $routeProvider
-  	  .when('/dagpenger', {templateUrl: '../html/templates/dagpenger.html', controller: PersonaliaCtrl})
-      .when('/dagpenger2', {templateUrl: '../html/templates/dagpenger2.html', controller: PersonaliaCtrl})
-      .when('/ikkekvalifisert', {templateUrl: '../html/templates/ikkekvalifisert.html'})
+  	  .when('/soknadliste', {templateUrl: 'templates/soknadliste.html'})
+  	  .when('/personalia', {templateUrl: 'templates/personalia.html', controller: PersonaliaCtrl})
+      .when('/reell-arbeidssoker', {templateUrl: 'templates/reell-arbeidssoker.html', controller: PersonaliaCtrl})
+      .when('/arbeidsforhold', {templateUrl: 'templates/arbeidsforhold.html', controller: PersonaliaCtrl})
       .otherwise({redirectTo: '/dagpenger'});
 }]);
 
