@@ -1,38 +1,38 @@
-<form name="villigForm">
+<form name="villigForm" data-ng-controller="ValidationCtrl">
 	<p> Er du villig til å ta enhver type jobb?</p>
-	<input  class="sendsoknad-radio" data-ng-model="villig.jobb" type="radio" name="villigJobb" value="ja" required/> Ja 
-	<a href="#/ikkekvalifisert"><input  class="sendsoknad-radio" data-ng-model="villig.jobb" type="radio" name="villigJobb" value="nei" /> Nei </a>
+	<input  class="sendsoknad-radio" data-ng-model="data.jobb" type="radio" name="villigJobb" value="ja" required/> Ja 
+	<a href="#/ikkekvalifisert"><input  class="sendsoknad-radio" data-ng-model="data.jobb" type="radio" name="villigJobb" value="nei" /> Nei </a>
 	<br/><br/>
 
-	<div data-ng-model="villig.jobb" ng-show="villig.jobb == 'ja'"> 
+	<div data-ng-model="data.jobb" ng-show="data.jobb == 'ja'"> 
 		<p> Er du villig til å pendle eller flytte?</p>
-		<input  class="sendsoknad-radio" data-ng-model="villig.pendle" type="radio" name="villigPendle" value="ja" required/> Ja 
-		<a href="#/ikkekvalifisert"><input  class="sendsoknad-radio" data-ng-model="villig.pendle" type="radio" name="villigPendle" value="nei" /> Nei </a>
+		<input  class="sendsoknad-radio" data-ng-model="data.pendle" type="radio" name="villigPendle" value="ja" required/> Ja 
+		<a href="#/ikkekvalifisert"><input  class="sendsoknad-radio" data-ng-model="data.pendle" type="radio" name="villigPendle" value="nei" /> Nei </a>
 	</div>
 	<br/><br/>
 
-	<div data-ng-model="villig.pendle" ng-show="villig.pendle == 'ja'"> 
+	<div data-ng-model="data.pendle" ng-show="data.pendle == 'ja'"> 
 		<p> Er du villig til å søke både hel- og deltidsjobb?</p>
-		<input  class="sendsoknad-radio" data-ng-model="villig.deltid" type="radio" name="villigDeltid" value="ja" required/> Ja 
-		<input  class="sendsoknad-radio" data-ng-model="villig.deltid" type="radio" name="villigDeltid" value="nei" /> Nei
+		<input  class="sendsoknad-radio" data-ng-model="data.deltid" type="radio" name="villigDeltid" value="ja" required/> Ja 
+		<input  class="sendsoknad-radio" data-ng-model="data.deltid" type="radio" name="villigDeltid" value="nei" /> Nei
 	</div>
 
 	<br/><br/>
 
-	<div data-ng-model="villig.deltid" ng-show="villig.deltid == 'nei'"> 
+	<div data-ng-model="data.deltid" ng-show="data.deltid == 'nei'"> 
 		<p>Hvor mye kan du jobbe?</p>
-		<input  class="sendsoknad-radio" data-ng-model="villig.deltidProsent" type="radio" name="villigDeltidProsent" value="over" required/> Over 50%? 
-		<a href="#/ikkekvalifisert"><input  class="sendsoknad-radio" data-ng-model="villig.deltidProsent" type="radio" name="villigDeltidProsent" value="under" required/> Under  50%? </a>
+		<input  class="sendsoknad-radio" data-ng-model="data.deltidProsent" type="radio" name="villigDeltidProsent" value="over" required/> Over 50%? 
+		<a href="#/ikkekvalifisert"><input  class="sendsoknad-radio" data-ng-model="data.deltidProsent" type="radio" name="villigDeltidProsent" value="under" required/> Under  50%? </a>
 	</div>
 
 	<br/><br/>
 
-	<div data-ng-model="villig.deltid" ng-show="villig.deltid == 'ja' || villig.deltidProsent == 'over'"> 
+	<div data-ng-model="data.deltid" ng-show="data.deltid == 'ja' || data.deltidProsent == 'over'"> 
 		<p> Er det noe arbeid du av helsemessige årsaker ikke kan ta?</p>
-		<input  class="sendsoknad-radio" data-ng-model="villig.helse" type="radio" name="villigHelse" value="darlig" required/> Ja 
-		<input  class="sendsoknad-radio" data-ng-model="villig.helse" type="radio" name="villigHelse" value="god" required/> Nei
+		<input  class="sendsoknad-radio" data-ng-model="data.helse" type="radio" name="villigHelse" value="darlig" required/> Ja 
+		<input  class="sendsoknad-radio" data-ng-model="data.helse" type="radio" name="villigHelse" value="god" required/> Nei
 	</div>
 
 	<br/><br/>
-	<a href="#/dagpenger2"><button ng-disabled="villigForm.villigJobb.$invalid || villigForm.villigPendle.$invalid || villigForm.villigHelse.$invalid || villigForm.villigDeltid.$invalid || (villig.deltid == 'nei' && villigForm.villigDeltidProsent.$invalid)">NESTE</button></a>
+	<a href="#/dagpenger2"><button ng-disabled="villigForm.villigJobb.$invalid || villigForm.villigPendle.$invalid || villigForm.villigHelse.$invalid || villigForm.villigDeltid.$invalid || (data.deltid == 'nei' && villigForm.villigDeltidProsent.$invalid)">NESTE</button></a>
 </form>
