@@ -14,23 +14,28 @@ function PersonaliaCtrl($scope){
 }
 
 function ValidationCtrl($scope, soknadService, $location){
-  $scope.ePost = soknadService.ePost;
+  //TODO: loop alle verdier i soknadService og sett de.
+  //$scope.ePost = soknadService.ePost;
+  //$scope.fields = soknadService;
+  
+  $scope.data =  soknadService.data;
+
   $scope.feilmeldinger = {
     paakreves: 'Må fylles ut',
     feil: 'Ikke gyldig'
   }
 
   $scope.saveState = function() {
-    soknadService.ePost = $scope.ePost;
+    soknadService.data = $scope.data;
+     //TODO: loop alle .skjemaElement og lagre det i soknadService
   }
 
   $scope.setRoute = function(route) {
       $scope.saveState();
       $location.path(route);
   }
-  
 }
 
 function WizardCtrl($scope, soknadService) {
-  $scope.ePost = soknadService.ePost;
+  $scope.data = soknadService.data;
 }
