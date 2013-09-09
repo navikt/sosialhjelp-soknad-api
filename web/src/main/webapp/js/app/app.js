@@ -8,7 +8,7 @@ var app = angular.module('sendsoknad', ['ngRoute'])
     $routeProvider
   	  .when('/dagpenger', {templateUrl: '../html/templates/dagpenger.html', controller: PersonaliaCtrl})
       .when('/dagpenger2', {templateUrl: '../html/templates/dagpenger2.html', controller: PersonaliaCtrl})
-      .when('/wiz', {templateUrl: '../html/templates/wizardtwo.html', controller: WizardCtrl})
+      .when('/ikkekvalifisert', {templateUrl: '../html/templates/ikkekvalifisert.html'})
       .otherwise({redirectTo: '/dagpenger'});
 }]);
 
