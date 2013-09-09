@@ -7,8 +7,9 @@ var app = angular.module('sendsoknad', ['ngRoute'])
   app.config(['$routeProvider', function($routeProvider) {
     $routeProvider
   	  .when('/soknadliste', {templateUrl: 'templates/soknadliste.html'})
-  	  .when('/dagpenger', {templateUrl: 'templates/dagpenger.html', controller: PersonaliaCtrl})
-      .when('/dagpenger2', {templateUrl: 'templates/dagpenger2.html', controller: PersonaliaCtrl})
+  	  .when('/personalia', {templateUrl: 'templates/personalia.html', controller: PersonaliaCtrl})
+      .when('/reell-arbeidssoker', {templateUrl: 'templates/reell-arbeidssoker.html', controller: PersonaliaCtrl})
+      .when('/arbeidsforhold', {templateUrl: 'templates/arbeidsforhold.html', controller: PersonaliaCtrl})
       .when('/wiz', {templateUrl: 'templates/wizardtwo.html', controller: WizardCtrl})
       .otherwise({redirectTo: '/soknadliste'});
 }]);
