@@ -54,8 +54,9 @@ public class SoknadComponent extends WebComponent {
 
         String file = String.format("%s.html", soknadType);
         if (files.contains(file)) {
-            InputStream content = WebApplication.get().getServletContext().getResourceAsStream(String.format("/html/%s", file));
-            try {
+            
+            try (InputStream content = WebApplication.get().getServletContext().getResourceAsStream(String.format("/html/%s", file))){
+            	
                 replaceComponentTagBody(markupStream, openTag, StreamUtils.copyToString(content, Charset.forName("UTF-8")));
             } catch (IOException e) {
                 throw new ApplicationException("feilet under lasting av markup", e);
