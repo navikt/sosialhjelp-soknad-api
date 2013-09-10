@@ -23,5 +23,9 @@ li a {
 }
 
 button, #neste {
-	margin-top: 20px;
+	margin-top: 60px;
+}
+
+.landskode {
+	width: 40px;
 }
