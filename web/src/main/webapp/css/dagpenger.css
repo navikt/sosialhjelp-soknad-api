@@ -29,3 +29,22 @@ button, #neste {
 .landskode {
 	width: 40px;
 }
+.varighet {
+	display: inline-block;
+	float: left;
+	width: 100%;
+	clear: both;
+
+}
+
+.aarsak {
+float: left;
+margin-top: 20px;
+clear: both;
+width: 100%;
+
+}
+.nav-knapp button{
+float: left;
+margin-top: 60px;
+}

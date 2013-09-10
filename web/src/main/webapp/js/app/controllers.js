@@ -1,7 +1,7 @@
 'use strict';
 
 /* Controllers */
-function PersonaliaCtrl($scope, $location){
+function PersonaliaCtrl($scope, $location) {
 	$scope.minAlder=18;
   $scope.maxAlder=67;
 

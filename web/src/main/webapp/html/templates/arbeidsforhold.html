@@ -1,3 +1,35 @@
-<form data-ng-controller="ValidationCtrl" novalidate>
-	<a ng-click="setRoute('reell-arbeidssoker')"><button>FORRIGE</button></a>
+<form name="arbeidsforholdForm" data-ng-controller="ValidationCtrl" novalidate>
+	
+	<p> Finnes det aktuell arbeidsforhold i CV? (hentes fra Arena?) </p>
+
+	<p>NEI: </p>
+<div data-ng-controller="ArbeidsforholdCtrl" >
+	<label>Arbeidsgivers navn:</label>
+	<input type="text" name="arbeidsgivernavn" data-ng-model="arbeidsforhold.arbeidsgiverNavn" required />
+	<span class="error" data-ng-show="arbeidsforholdForm.arbeidsgivernavn.$error.required">{{feilmeldinger.paakreves}} </span>
+	<label>Varighet</label>
+	<div class="varighet">
+		<label class="label-sammelinje">Fra:</label>
+		<input type="text" name="varighetfra" data-ng-model="arbeidsforhold.varighetFra" required />
+		<span class="error" data-ng-show="arbeidsforholdForm.varighetfra.$error.required">{{feilmeldinger.paakreves}} </span>
+
+	</div>
+	<div class="varighet">
+		<label class="label-sammelinje">Til:</label>
+		<input type="text" name="varighettil" data-ng-model="arbeidsforhold.varighettil" required />
+		<span class="error" data-ng-show="arbeidsforholdForm.varighettil.$error.required">{{feilmeldinger.paakreves}} </span>
+
+	</div>
+
+	<div class="aarsak">
+		<label> Velg sluttårsak: </label>
+		<select name="aarsaknavn" data-ng-model="arbeidsforhold.sluttaarsaken" data-ng-options=" aarsak.navn for aarsak in sluttaarsak" required></select>
+		<span class="error" data-ng-show="arbeidsforholdForm.aarsaknavn.$error.required">{{feilmeldinger.paakreves}} </span>
+
+	</div>
+
+
+	<a ng-click="setRoute('reell-arbeidssoker')" class="nav-knapp"><button>FORRIGE</button></a>
+	<a ng-click="setRoute('arbeidsforhold')" class="nav-knapp"><button data-ng-disabled="arbeidsforholdForm.$invalid">NESTE</button></a>
+</div>
 </form>
