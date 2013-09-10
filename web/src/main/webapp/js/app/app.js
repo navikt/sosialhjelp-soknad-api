@@ -10,5 +10,5 @@ sendsoknad.config(function($routeProvider) {
       .when('/reell-arbeidssoker', {templateUrl: '../html/templates/reell-arbeidssoker.html', controller: PersonaliaCtrl})
       .when('/arbeidsforhold', {templateUrl: '../html/templates/arbeidsforhold.html', controller: PersonaliaCtrl})
       .when('/utslagskriterier', {templateUrl: '../html/templates/utslagskriterier.html', controller: PersonaliaCtrl})
-      .otherwise({redirectTo: '/dagpenger'});
+      .otherwise({redirectTo: '/utslagskriterier'});
 });

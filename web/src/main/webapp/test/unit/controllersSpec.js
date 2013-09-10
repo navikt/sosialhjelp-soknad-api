@@ -22,7 +22,7 @@ describe('Controllers', function() {
 		it('skal returnere false for gammel arbeidsøker', function() {
 			var scope = {};
 			var ctrl = new PersonaliaCtrl(scope);
-			scope.personalia.alder = 77;
+			scope.personalia.alder = 67;
 			expect(scope.isGyldigAlder()).toEqual(false);
 		});
 
