@@ -56,5 +56,33 @@ var app = angular.module('sendsoknad', ['ngRoute',])
 
   });
 
+    app.directive('dato', function(){
+    return {
+      require: 'ngModel',
+      link: function(scope, elm, attrs, ctrl){
+        ctrl.$parsers.unshift(function(viewValue){
+            var date = viewValue.split('.');
+            var y = date[2], m = date[1], d = date[0];
+
+            var antallDagerIMnd = [31,28,31,30,31,30,31,31,30,31,30,31];
+
+            if( (!(y%4) && y%100) || !(y % 400)){
+              antallDagerIMnd[1] = 29;
+            }
+
+            if( d <= antallDagerIMnd[--m] && y.length === 4) {
+              ctrl.$setValidity('feil', true);
+          } else {
+            ctrl.$setValidity('feil', false);
+          }
+        });
+      }
+    };
+
+  });
+
+
+
+
 
 

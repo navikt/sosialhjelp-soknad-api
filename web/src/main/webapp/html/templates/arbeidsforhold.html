@@ -7,17 +7,30 @@
 	<label>Arbeidsgivers navn:</label>
 	<input type="text" name="arbeidsgivernavn" data-ng-model="arbeidsforhold.arbeidsgiverNavn" required />
 	<span class="error" data-ng-show="arbeidsforholdForm.arbeidsgivernavn.$error.required">{{feilmeldinger.paakreves}} </span>
+	
 	<label>Varighet</label>
 	<div class="varighet">
 		<label class="label-sammelinje">Fra:</label>
-		<input type="text" name="varighetfra" data-ng-model="arbeidsforhold.varighetFra" required />
+		<input type="text" name="varighetfra" data-ng-model="arbeidsforhold.varighetFra" placeholder="dd.mm.åååå"  dato required />
+		
 		<span class="error" data-ng-show="arbeidsforholdForm.varighetfra.$error.required">{{feilmeldinger.paakreves}} </span>
+		<span class="error" data-ng-show="arbeidsforholdForm.varighetfra.$error.feil">{{feilmeldinger.dato}} </span>
+
 
 	</div>
 	<div class="varighet">
 		<label class="label-sammelinje">Til:</label>
-		<input type="text" name="varighettil" data-ng-model="arbeidsforhold.varighettil" required />
-		<span class="error" data-ng-show="arbeidsforholdForm.varighettil.$error.required">{{feilmeldinger.paakreves}} </span>
+		<input type="text" name="varighetTil" data-ng-model="arbeidsforhold.varighetTil" placeholder="dd.mm.åååå" dato required />
+		
+		<span class="error" data-ng-show="arbeidsforholdForm.varighetTil.$error.required">{{feilmeldinger.paakreves}} </span>
+		<span class="error" data-ng-show="arbeidsforholdForm.varighetTil.$error.feil">{{feilmeldinger.dato}} </span>
+		<span class="error" data-ng-show="arbeidsforholdForm.varighetTil.$error.mindre">test </span>
+
+	</div>
+
+	<div>
+		<label>Land</label>
+		<input type="text" name="land" data-ng-model="arbeidsforhold.land"/>
 
 	</div>
 
