@@ -2,7 +2,7 @@
 
 /* App Module */
 
-var app = angular.module('sendsoknad', ['ngRoute'])
+var app = angular.module('sendsoknad', ['ngRoute', 'ngResource'])
 
   app.config(['$routeProvider', function($routeProvider) {
     $routeProvider
