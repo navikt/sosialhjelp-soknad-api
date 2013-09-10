@@ -41,9 +41,9 @@ function ArbeidsforholdCtrl($scope){
     arbeidsgiverNavn: '',
     varighetFra: '',
     varighetTil:'',
-    land:'',
+    land:'Norge',
     sluttaarsaken: ''
-   };
+  };
 
    $scope.sluttaarsak = [
    {id: 1, navn:'Sagt opp selv'},
@@ -62,7 +62,8 @@ function ValidationCtrl($scope, soknadService, $location){
 
   $scope.feilmeldinger = {
     paakreves: '*',
-    feil: 'Ikke gyldig'
+    feil: 'Ikke gyldig',
+    dato: ' Dato må skrives på formen dd.mm.åååå'
   }
 
   $scope.saveState = function() {
