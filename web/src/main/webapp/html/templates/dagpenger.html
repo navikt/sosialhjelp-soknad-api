@@ -1,9 +1,9 @@
-<h1>Personalia</h1>
+﻿<h1>Personalia</h1>
 
 <label>NAVN</label><br/>
 {{personalia.fornavn}} {{personalia.mellomnavn}} {{personalia.etternavn}}<br/>
 <br/>
-<label>F�DSELSNUMMER</label><br/>
+<label>FØDSELSNUMMER</label><br/>
 {{personalia.fnr}}<br/>
 <br/>
 <label>ADRESSE</label><br/>
@@ -31,7 +31,7 @@
 	
 	<br/>
 
-	<p> Har du barn under 18 �r som bor i utlandet som du har forsørgeransvar for? </p>
+	<p> Har du barn under 18 år som bor i utlandet som du har forsørgeransvar for? </p>
 	<input class="sendsoknad-radio"ng-model="data.barnUtland" type="radio" name="barnUtland" value="ja" required/> Ja 
 	<input class="sendsoknad-radio" ng-model="data.barnUtland" type="radio" name="barnUtland" value="nei" required /> Nei
 	<span class="error" data-ng-show="personaliaForm.barnUtland.$error.required">{{feilmeldinger.paakreves}}</span>
@@ -45,9 +45,6 @@
 		<input type="text" name="barneetternavnUtland" data-ng-model="personalia.barnUtlandEtternavn" required> 
 	</div>
 
-	<a><button id="neste" ng-click="setRoute('dagpenger2')" ng-disabled="personaliaForm.epost.$invalid || personaliaForm.mobil.$invalid || personaliaForm.barnUtland.$invalid || (personalia.barnUtland == 'ja' && (personaliaForm.barnenavnUtland.$invalid || personaliaForm.barneetternavnUtland.$invalid))">NESTE</button></a>
-			
-<input type="text" data-ng-model="data.nyttfelt"/>
-
-
+	<a><button id="neste" ng-click="setRoute('reell-arbeidssoker')" ng-disabled="personaliaForm.epost.$invalid || personaliaForm.mobil.$invalid || personaliaForm.barnUtland.$invalid || (personalia.barnUtland == 'ja' && (personaliaForm.barnenavnUtland.$invalid || personaliaForm.barneetternavnUtland.$invalid))">NESTE</button></a>
+		
 </form>
