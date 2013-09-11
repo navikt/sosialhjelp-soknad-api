@@ -62,7 +62,7 @@ public class SoknadComponent extends WebComponent {
                 throw new ApplicationException("feilet under lasting av markup", e);
             }
         } else {
-            throw new ApplicationException("Fant ikke tempate " + file);
+            throw new ApplicationException("Fant ikke template " + file);
         }
     }
 }
