@@ -82,7 +82,8 @@ function ValidationCtrl($scope, soknadService, $location){
   $scope.feilmeldinger = {
     paakreves: '*',
     feil: 'Ikke gyldig',
-    dato: ' Dato må skrives på formen dd.mm.åååå'
+    dato: ' Dato må skrives på formen dd.mm.åååå',
+    fratil: 'Fra-dato må være før til-dato'
   }
 
   $scope.saveState = function() {

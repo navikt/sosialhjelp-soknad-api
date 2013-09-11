@@ -3,46 +3,48 @@
 	<p> Finnes det aktuell arbeidsforhold i CV? (hentes fra Arena?) </p>
 
 	<p>NEI: </p>
-<div data-ng-controller="ArbeidsforholdCtrl" >
-	<label>Arbeidsgivers navn:</label>
-	<input type="text" name="arbeidsgivernavn" data-ng-model="arbeidsforhold.arbeidsgiverNavn" required />
-	<span class="error" data-ng-show="arbeidsforholdForm.arbeidsgivernavn.$error.required">{{feilmeldinger.paakreves}} </span>
-	
-	<label>Varighet</label>
-	<div class="varighet">
-		<label class="label-sammelinje">Fra:</label>
-		<input type="text" name="varighetfra" data-ng-model="arbeidsforhold.varighetFra" placeholder="dd.mm.åååå"  dato required />
+	<div data-ng-controller="ArbeidsforholdCtrl">
+		<label>Arbeidsgivers navn:</label>
+		<input type="text" name="arbeidsgivernavn" data-ng-model="arbeidsforhold.arbeidsgiverNavn" required />
+		<span class="error" data-ng-show="arbeidsforholdForm.arbeidsgivernavn.$error.required">{{feilmeldinger.paakreves}} </span>
 		
-		<span class="error" data-ng-show="arbeidsforholdForm.varighetfra.$error.required">{{feilmeldinger.paakreves}} </span>
-		<span class="error" data-ng-show="arbeidsforholdForm.varighetfra.$error.feil">{{feilmeldinger.dato}} </span>
+		<label>Varighet</label>
+		<div class="varighet"  >
+			<label class="label-sammelinje">Fra:</label>
+			<input type="text" name="varighetfra" data-ng-model="arbeidsforhold.varighetFra" placeholder="dd.mm.åååå"  dato required />
+			
+			<span class="error" data-ng-show="arbeidsforholdForm.varighetfra.$error.required">{{feilmeldinger.paakreves}} </span>
+			<span class="error" data-ng-show="arbeidsforholdForm.varighetfra.$error.dato">{{feilmeldinger.dato}} </span>
 
 
-	</div>
-	<div class="varighet">
-		<label class="label-sammelinje">Til:</label>
-		<input type="text" name="varighetTil" data-ng-model="arbeidsforhold.varighetTil" placeholder="dd.mm.åååå" dato required />
+		</div>
+		<div class="varighet">
+			<label class="label-sammelinje">Til:</label>
+			<input type="text" name="varighetTil" data-ng-model="arbeidsforhold.varighetTil" placeholder="dd.mm.åååå"   datotil dato required  />
+
+			<span class="error" data-ng-show="arbeidsforholdForm.varighetTil.$error.required">{{feilmeldinger.paakreves}} </span>
+			<span class="error" data-ng-show="arbeidsforholdForm.varighetTil.$error.dato">{{feilmeldinger.dato}} </span>
+			<span class="error" data-ng-show="arbeidsforholdForm.varighetTil.$error.framindre">{{feilmeldinger.fratil}}</span>
+
+			
+
+		</div>
 		
-		<span class="error" data-ng-show="arbeidsforholdForm.varighetTil.$error.required">{{feilmeldinger.paakreves}} </span>
-		<span class="error" data-ng-show="arbeidsforholdForm.varighetTil.$error.feil">{{feilmeldinger.dato}} </span>
-		<span class="error" data-ng-show="arbeidsforholdForm.varighetTil.$error.mindre">test </span>
+		<div>
+			<label>Land</label>
+			<input type="text" name="land" data-ng-model="arbeidsforhold.land"/>
 
+		</div>
+
+		<div class="aarsak">
+			<label> Velg sluttårsak: </label>
+			<select name="aarsaknavn" data-ng-model="arbeidsforhold.sluttaarsaken" data-ng-options=" aarsak.navn for aarsak in sluttaarsak" required></select>
+			<span class="error" data-ng-show="arbeidsforholdForm.aarsaknavn.$error.required">{{feilmeldinger.paakreves}} </span>
+
+		</div>
+
+
+		<a ng-click="setRoute('reell-arbeidssoker')" class="nav-knapp"><button>FORRIGE</button></a>
+		<a ng-click="setRoute('arbeidsforhold')" class="nav-knapp"><button data-ng-disabled="arbeidsforholdForm.$invalid">NESTE</button></a>
 	</div>
-
-	<div>
-		<label>Land</label>
-		<input type="text" name="land" data-ng-model="arbeidsforhold.land"/>
-
-	</div>
-
-	<div class="aarsak">
-		<label> Velg sluttårsak: </label>
-		<select name="aarsaknavn" data-ng-model="arbeidsforhold.sluttaarsaken" data-ng-options=" aarsak.navn for aarsak in sluttaarsak" required></select>
-		<span class="error" data-ng-show="arbeidsforholdForm.aarsaknavn.$error.required">{{feilmeldinger.paakreves}} </span>
-
-	</div>
-
-
-	<a ng-click="setRoute('reell-arbeidssoker')" class="nav-knapp"><button>FORRIGE</button></a>
-	<a ng-click="setRoute('arbeidsforhold')" class="nav-knapp"><button data-ng-disabled="arbeidsforholdForm.$invalid">NESTE</button></a>
-</div>
 </form>
