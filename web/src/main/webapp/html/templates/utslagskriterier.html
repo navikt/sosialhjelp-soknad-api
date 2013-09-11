@@ -1,0 +1,22 @@
+<div data-ng-controller="PersonaliaCtrl">
+	{{checkUtslagskriterier()}}
+	<div data-ng-hide="isGyldigAlder()">
+		<span>Du oppfyller ikke kravene for å søke.</span>
+		<br/>
+		<span>Vi sjekker om du er over {{minAlder}}, og under {{maxAlder}} år.</span>
+		<br/>
+		<span>Din alder er {{personalia.alder}}.</span>
+		<br/>
+		<span>Du kan søke likevel, men svaret blir mest sannsynlig negativt.</span>
+		<br/>
+		<a href='#/dagpenger'>Fortsett likevel</a>
+	</div>
+
+	<br/>
+
+	<div data-ng-hide="arena.jobbsoker">
+		<span>Du er ikke registrert som jobbsøker, dette er en forutsettning for å søke om dagpenger</span>
+		<br/>
+		<a href="http://nav.no" target="_blank">Registrer deg nå</a>
+	</div>
+</div>

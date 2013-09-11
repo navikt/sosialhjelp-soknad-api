@@ -1,13 +1,21 @@
 <form name="villigForm" data-ng-controller="ValidationCtrl">
 	<p> Er du villig til å ta enhver type jobb?</p>
 	<input  class="sendsoknad-radio" data-ng-model="data.jobb" type="radio" name="villigJobb" value="ja" required/> Ja 
-	<a href="#/ikkekvalifisert"><input  class="sendsoknad-radio" data-ng-model="data.jobb" type="radio" name="villigJobb" value="nei" /> Nei </a>
+	<input  class="sendsoknad-radio" data-ng-model="data.jobb" type="radio" name="villigJobb" value="nei" /> Nei
+	<div ng-show="data.jobb == 'nei'">
+		<br/>
+		<span>Du har ikke rett til å søke om dagpenger om du ikke kan ta enhver type jobb. </span>
+	</div>
 	<br/><br/>
 
 	<div data-ng-model="data.jobb" ng-show="data.jobb == 'ja'"> 
 		<p> Er du villig til å pendle eller flytte?</p>
 		<input  class="sendsoknad-radio" data-ng-model="data.pendle" type="radio" name="villigPendle" value="ja" required/> Ja 
-		<a href="#/ikkekvalifisert"><input  class="sendsoknad-radio" data-ng-model="data.pendle" type="radio" name="villigPendle" value="nei" /> Nei </a>
+		<input  class="sendsoknad-radio" data-ng-model="data.pendle" type="radio" name="villigPendle" value="nei" /> Nei
+		<div ng-show="data.pendle == 'nei'">
+			<br/>
+			<span>Du har ikke rett til å søke om dagpenger om du ikke er villig til å pendle. </span>
+		</div>
 	</div>
 	<br/><br/>
 
@@ -22,7 +30,11 @@
 	<div data-ng-model="data.deltid" ng-show="data.deltid == 'nei'"> 
 		<p>Hvor mye kan du jobbe?</p>
 		<input  class="sendsoknad-radio" data-ng-model="data.deltidProsent" type="radio" name="villigDeltidProsent" value="over" required/> Over 50%? 
-		<a href="#/ikkekvalifisert"><input  class="sendsoknad-radio" data-ng-model="data.deltidProsent" type="radio" name="villigDeltidProsent" value="under" required/> Under  50%? </a>
+		<input  class="sendsoknad-radio" data-ng-model="data.deltidProsent" type="radio" name="villigDeltidProsent" value="under" required/> Under  50%?
+		<div ng-show="data.deltidProsent == 'under'">
+			<br/>
+			<span>Du har ikke rett til å søke om dagpenger om du ikke er villig til å jobbe minst 50% deltid. </span>
+		</div>
 	</div>
 
 	<br/><br/>
@@ -31,6 +43,10 @@
 		<p> Er det noe arbeid du av helsemessige årsaker ikke kan ta?</p>
 		<input  class="sendsoknad-radio" data-ng-model="data.helse" type="radio" name="villigHelse" value="darlig" required/> Ja 
 		<input  class="sendsoknad-radio" data-ng-model="data.helse" type="radio" name="villigHelse" value="god" required/> Nei
+		<div ng-show="data.helse == 'darlig'">
+			<br/>
+			<span>Årsak må dokumenters i form av et vedlegg mot slutten av søknadsprosessen. </span>
+		</div>
 	</div>
 
 	<br/><br/>

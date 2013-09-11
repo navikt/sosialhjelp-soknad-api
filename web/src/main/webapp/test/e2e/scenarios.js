@@ -7,11 +7,12 @@ describe('Send soknad app', function() {
 	});
 
 
-	it('skal redirigere index.html til index.html#/dagpenger', function(){
-		expect(browser().location().url()).toBe('/dagpenger');
+	it('skal redirigere index.html til index.html#/utslagskriterier', function(){
+		expect(browser().location().url()).toBe('/utslagskriterier');
 	});
 
 	it("skal kunne hente frem epost etter browser back", function() {
+		browser().navigateTo('#/dagpenger');
 		input("data.epost").enter("ketil@mailprovider.com");
 		element("#neste").click();
 		browser().navigateTo('#/dagpenger');
@@ -19,6 +20,7 @@ describe('Send soknad app', function() {
 	});
 
 	it("skal kunne lagre mobil etter browser back", function() {
+		browser().navigateTo('#/dagpenger');
 		input("data.mobil").enter("55555555");
 		element("#neste").click();
 		browser().navigateTo('#/dagpenger');
