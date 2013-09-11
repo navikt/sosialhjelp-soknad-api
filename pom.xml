@@ -28,7 +28,7 @@
         <spring.version>3.2.4.RELEASE</spring.version>
         <cxf.version>2.7.6</cxf.version>
         <nav.sbl.commons.version>3.30</nav.sbl.commons.version>
-        <modig-security.version>1.0.13</modig-security.version>
+        <modig-security.version>1.0.14</modig-security.version>
         <sendsoknad.tjenestespec.version>0.0.8</sendsoknad.tjenestespec.version>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -52,7 +52,7 @@
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-lokalt-kodeverk</artifactId>
-                <version>1.0.33</version>
+                <version>1.0.34</version>
                 <exclusions>
                     <exclusion>
                         <groupId>cglib</groupId>
@@ -63,12 +63,12 @@
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-frontend-wicket</artifactId>
-                <version>1.0.26</version>
+                <version>1.0.28</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-frontend-ressurser</artifactId>
-                <version>1.0.27</version>
+                <version>1.0.28</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
@@ -124,7 +124,7 @@
             <dependency>
                 <groupId>org.jvnet.jaxb2_commons</groupId>
                 <artifactId>jaxb2-basics-runtime</artifactId>
-                <version>0.6.4</version>
+                <version>0.6.5</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl.felles</groupId>
@@ -470,7 +470,7 @@
             <dependency>
                 <groupId>org.apache.ws.security</groupId>
                 <artifactId>wss4j</artifactId>
-                <version>1.6.11</version>
+                <version>1.6.12</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
