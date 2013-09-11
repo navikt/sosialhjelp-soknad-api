@@ -7,7 +7,7 @@
 		<label>Arbeidsgivers navn:</label>
 		<input type="text" name="arbeidsgivernavn" data-ng-model="arbeidsforhold.arbeidsgiverNavn" required />
 		<span class="error" data-ng-show="arbeidsforholdForm.arbeidsgivernavn.$error.required">{{feilmeldinger.paakreves}} </span>
-		
+
 		<label>Varighet</label>
 		<div class="varighet"  >
 			<label class="label-sammelinje">Fra:</label>
@@ -29,11 +29,10 @@
 			
 
 		</div>
-		
+
 		<div>
 			<label>Land</label>
-			<input type="text" name="land" data-ng-model="arbeidsforhold.land"/>
-
+			<select name="land" data-ng-model="arbeidsforhold.valgtLand" data-ng-options="valgtland.name as valgtland.name for valgtland in land"></select>
 		</div>
 
 		<div class="aarsak">
