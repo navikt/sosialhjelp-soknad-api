@@ -6,7 +6,7 @@
 }
 
 li {
-list-style: none;
+	list-style: none;
 }
 
 label {
@@ -38,13 +38,13 @@ button, #neste {
 }
 
 .aarsak {
-float: left;
-margin-top: 20px;
-clear: both;
-width: 100%;
+	float: left;
+	margin-top: 20px;
+	clear: both;
+	width: 100%;
 
 }
 .nav-knapp button{
-float: left;
-margin-top: 60px;
+	float: left;
+	margin-top: 60px;
 }
