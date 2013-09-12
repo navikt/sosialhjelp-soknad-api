@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.dokumentinnsending.pages.opplasting;
 
-import no.nav.sbl.dialogarena.dokumentinnsending.common.SpraakKode;
 import no.nav.sbl.dialogarena.dokumentinnsending.domain.Dokument;
+import no.nav.sbl.dialogarena.dokumentinnsending.kodeverk.Spraak;
 import no.nav.sbl.dialogarena.dokumentinnsending.pages.opplasting.komponenter.UploadFormPanel;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.model.AbstractReadOnlyModel;
@@ -14,7 +14,7 @@ public class StartOpplastingNavVedlegg extends StartOpplasting {
         IModel<String> link = new AbstractReadOnlyModel<String>() {
             @Override
             public String getObject() {
-                return dokument.getObject().getKodeverk().getUrl(SpraakKode.gjeldendeSpraak());
+                return dokument.getObject().getKodeverk().getUrl(Spraak.NB);
             }
         };
 

@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.dokumentinnsending.config;
+package no.nav.sbl.dialogarena.websoknad.config;
 
 import no.nav.modig.security.sts.utility.STSConfigurationUtility;
 import no.nav.tjeneste.domene.brukerdialog.henvendelsesbehandling.v1.HenvendelsesBehandlingPortType;
