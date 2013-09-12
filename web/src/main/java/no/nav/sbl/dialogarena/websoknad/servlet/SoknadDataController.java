@@ -29,7 +29,9 @@ public class SoknadDataController {
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
+    @ResponseBody()
     public void lagreSoknad(@PathVariable Long soknadId, @RequestBody WebSoknad webSoknad) {
+    	System.out.println("webSoknad " + webSoknad.getSoknadId());
         for (Faktum faktum : webSoknad.getFakta().values()) {
             soknadService.lagreSoknadsFelt(soknadId, faktum.getKey(), faktum.getValue());
         }
