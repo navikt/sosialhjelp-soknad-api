@@ -22,7 +22,7 @@ import static java.lang.System.getProperty;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.slf4j.LoggerFactory.getLogger;
 
-@Import({ConsumerConfig.SelfTestStsConfig.class})
+//@Import({ConsumerConfig.SelfTestStsConfig.class})
 public class SelfTestPage extends SelfTestBase {
     private static final Logger LOGGER = getLogger(SelfTestPage.class);
 
