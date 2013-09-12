@@ -31,6 +31,8 @@ describe('brukerdata domene', function(){
 		}));
 
 		it ('skal returnere soknaddata', function() {
+			scope.hentSoknadData(1);
+
 			$httpBackend.flush();
 			expect(scope.soknadData.soknadId).toEqual(1);
 			expect(scope.soknadData.fakta.fornavn.soknadId).toEqual(1)
@@ -39,9 +41,10 @@ describe('brukerdata domene', function(){
 
 		
 		it ('skal legge til en et nytt faktum i soknaddata', function() {
+			scope.hentSoknadData(1);
 			$httpBackend.flush();
 			$httpBackend.whenPOST('/sendsoknad/rest/soknad/1').respond('200');
-			scope.leggTil( 1,'telefon','97172278');
+			scope.leggTil(1,'telefon','97172278');
 			expect(scope.soknadData.fakta.telefon.value).toEqual('97172278');			
 		});
 	})
