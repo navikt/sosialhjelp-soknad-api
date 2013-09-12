@@ -1,5 +1,6 @@
 'use strict';
 
+
 /* Controllers */
 function PersonaliaCtrl($scope, $location) {
 	$scope.minAlder=18;
