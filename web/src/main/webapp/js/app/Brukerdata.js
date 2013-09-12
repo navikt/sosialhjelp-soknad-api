@@ -1,7 +1,10 @@
 angular.module('brukerdata', ['services'])
 
 .controller('SoknadDataCtrl', ['$scope', 'soknadService', function($scope, soknadService) {
-	$scope.soknadData = soknadService.get({id: 1});
+
+	$scope.hentSoknadData = function(soknadId) {
+		$scope.soknadData = soknadService.get({id: soknadId});
+	}
 
 	$scope.leggTil = function(soknadId, key, value) {
 		$scope.soknadData.fakta[key] = {"soknadId":soknadId,"key": key,"value": value};
