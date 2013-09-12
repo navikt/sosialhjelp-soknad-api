@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.selftest;
 
 import no.nav.modig.wicket.selftest.SelfTestBase;
-import no.nav.sbl.dialogarena.dokumentinnsending.config.ConsumerConfig;
+import no.nav.sbl.dialogarena.websoknad.config.ConsumerConfig;
 import no.nav.tjeneste.domene.brukerdialog.henvendelsesbehandling.v1.HenvendelsesBehandlingPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
@@ -23,7 +23,7 @@ import static java.lang.System.getProperty;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.slf4j.LoggerFactory.getLogger;
 
-@Import({ConsumerConfig.SelfTestStsConfig.class})
+//@Import({ConsumerConfig.SelfTestStsConfig.class})
 public class SelfTestPage extends SelfTestBase {
     private static final Logger LOGGER = getLogger(SelfTestPage.class);
 
