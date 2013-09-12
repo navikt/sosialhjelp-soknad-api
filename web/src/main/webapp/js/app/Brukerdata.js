@@ -1,5 +1,19 @@
 angular.module('brukerdata', ['services'])
 
+.controller('SoknadDataCtrl', ['$scope', 'soknadService', function($scope, soknadService) {
+	$scope.soknadData = soknadService.get({id: 1});
+
+	$scope.leggTil = function(soknadId, key, value) {
+		$scope.soknadData.fakta[key] = {"soknadId":soknadId,"key": key,"value": value};
+		var soknadData = $scope.soknadData;
+		soknadData.$save();
+	};
+}])
+
+/*
+Eksempel som viser en get ved bruk av $http. Kan brukes om man ønsker bedre kontroll
+*/
+/*
 function SoknadDataCtrl_http($scope, $http) {
 	$http({method: 'GET', url: '/sendsoknad/rest/soknad/' + 1}).
 		success(function (data, status) {
@@ -8,11 +22,5 @@ function SoknadDataCtrl_http($scope, $http) {
 		error(function(data, status){
 			alert("En feil skjedde");
 		});
-}
+}*/
 
-function SoknadDataCtrl($scope, soknadFactory) {
-	var soknadData = soknadFactory.get({id: 1}, function()  {
-		soknadData.gosysId = 'Ny gosysId';
-		soknadData.$save({id: 1});
-	});
-}

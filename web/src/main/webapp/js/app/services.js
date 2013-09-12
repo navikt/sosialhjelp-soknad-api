@@ -11,6 +11,6 @@ angular.module('services', ['ngResource'])
 * Service som henter en søknad fra henvendelse
 */
 
-.factory('soknadFactory', function($resource){
+.factory('soknadService', function($resource){
 	return $resource('/sendsoknad/rest/soknad/:id', {id: '@id'});
 })
