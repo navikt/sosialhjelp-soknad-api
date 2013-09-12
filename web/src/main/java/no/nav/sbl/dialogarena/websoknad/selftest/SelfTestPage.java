@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.selftest;
 
 import no.nav.modig.wicket.selftest.SelfTestBase;
-import no.nav.sbl.dialogarena.dokumentinnsending.config.ConsumerConfig;
+import no.nav.sbl.dialogarena.websoknad.config.ConsumerConfig;
 import no.nav.tjeneste.domene.brukerdialog.henvendelsesbehandling.v1.HenvendelsesBehandlingPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import org.apache.wicket.request.mapper.parameter.PageParameters;

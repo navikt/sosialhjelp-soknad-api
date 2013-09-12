@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.dokumentinnsending.pages.felles;
 
 import no.nav.modig.content.CmsContentRetriever;
 import no.nav.sbl.dialogarena.dokumentinnsending.domain.BrukerBehandlingType;
-import no.nav.sbl.dialogarena.dokumentinnsending.domain.DokumentSoknad;
+import no.nav.sbl.dialogarena.dokumentinnsending.domain.Soknad;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -21,7 +21,7 @@ public class BaseViewModel implements Serializable {
         this.tittel = tittel;
     }
 
-    public BaseViewModel(DokumentSoknad soknad, CmsContentRetriever cmsContentRetriever) {
+    public BaseViewModel(Soknad soknad, CmsContentRetriever cmsContentRetriever) {
         this.cmsContentRetriever = cmsContentRetriever;
         if (soknad.er(BrukerBehandlingType.DOKUMENT_ETTERSENDING)) {
             tittel = String.format("%s %s", cmsContentRetriever.hentTekst("ettersending.tittelPrefix"), soknad.soknadTittel.toLowerCase());
