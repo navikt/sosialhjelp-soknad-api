@@ -1,4 +1,4 @@
-.sendsoknad-radio {
+.sendsoknad-radio, .sendsoknad-check {
 	position: relative !important;
 	opacity: 1 !important;
 	width: 	20px !important;
@@ -34,6 +34,7 @@ button, #neste {
 	float: left;
 	width: 100%;
 	clear: both;
+	margin-bottom: 10px;
 
 }
 
@@ -44,7 +45,12 @@ button, #neste {
 	width: 100%;
 
 }
-.nav-knapp button{
+
+.sluttaarsak, .skjemanavigering {
+	margin: 10px 0px;
 	float: left;
-	margin-top: 60px;
+	clear: both;
+}
+.resultatSluttaarsak {
+	margin: 10px 10px;
 }

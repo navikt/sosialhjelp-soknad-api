@@ -3,11 +3,12 @@
 	<p> Finnes det aktuell arbeidsforhold i CV? (hentes fra Arena?) </p>
 
 	<p>NEI: </p>
-	<div data-ng-controller="ArbeidsforholdCtrl">
-		<label>Arbeidsgivers navn:</label>
-		<input type="text" name="arbeidsgivernavn" data-ng-model="arbeidsforhold.arbeidsgiverNavn" required />
-		<span class="error" data-ng-show="arbeidsforholdForm.arbeidsgivernavn.$error.required">{{feilmeldinger.paakreves}} </span>
 
+	<label>Arbeidsgivers navn:</label>
+	<input type="text" name="arbeidsgivernavn" data-ng-model="data.arbeidsgiverNavn" required />
+	<span class="error" data-ng-show="arbeidsforholdForm.arbeidsgivernavn.$error.required">{{feilmeldinger.paakreves}} </span>
+
+	<div data-ng-controller="ArbeidsforholdCtrl">
 		<label>Varighet</label>
 		<div class="varighet"  >
 			<label class="label-sammelinje">Fra:</label>
@@ -20,14 +21,11 @@
 		</div>
 		<div class="varighet">
 			<label class="label-sammelinje">Til:</label>
-			<input type="text" name="varighetTil" data-ng-model="arbeidsforhold.varighetTil" placeholder="dd.mm.åååå"   datotil dato required  />
+			<input type="text" name="varighetTil" data-ng-model="arbeidsforhold.varighetTil" placeholder="dd.mm.åååå"   dato required  datotil fra-dato="arbeidsforhold.varighetFra" fra-navn="arbeidsforhold.varighetFra"/>
 
 			<span class="error" data-ng-show="arbeidsforholdForm.varighetTil.$error.required">{{feilmeldinger.paakreves}} </span>
 			<span class="error" data-ng-show="arbeidsforholdForm.varighetTil.$error.dato">{{feilmeldinger.dato}} </span>
 			<span class="error" data-ng-show="arbeidsforholdForm.varighetTil.$error.framindre">{{feilmeldinger.fratil}}</span>
-
-			
-
 		</div>
 
 		<div>
@@ -43,7 +41,84 @@
 		</div>
 
 
+		<div class="sluttaarsak" data-ng-show="arbeidsforhold.sluttaarsaken.id === 1">
+			
+		</div>
+		<div class="sluttaarsak" data-ng-show="arbeidsforhold.sluttaarsaken.id === 2">
+			
+		</div>
+		<div  class="sluttaarsak" data-ng-show="arbeidsforhold.sluttaarsaken.id === 3">
+			
+		</div>
+		<div class="sluttaarsak" data-ng-show="arbeidsforhold.sluttaarsaken.id === 4">
+			
+		</div>
+		<div class="sluttaarsak" data-ng-show="arbeidsforhold.sluttaarsaken.id === 5">
+			<div class="resultatSluttaarsak">
+				<label>Permiteringsperiode:</label>
+
+				<div class="varighet">
+					<label class="label-sammelinje">Fra:</label>
+					<input type="text" name="permiteringFra" data-ng-model="arbeidsforhold.permiteringFra" placeholder="dd.mm.åååå"  dato required />
+
+					<span class="error" data-ng-show="arbeidsforholdForm.permiteringFra.$error.required">{{feilmeldinger.paakreves}} </span>
+					<span class="error" data-ng-show="arbeidsforholdForm.permiteringFra.$error.dato">{{feilmeldinger.dato}} </span>
+				</div>
+				<div class="varighet">
+
+					<label class="label-sammelinje">Til:</label>
+					<input type="text" name="permiteringTil" data-ng-model="arbeidsforhold.permiteringTil" placeholder="dd.mm.åååå"   dato required   datotil fra-dato="arbeidsforhold.permiteringFra" fra-navn="arbeidsforhold.permiteringFra" />
+
+					<span class="error" data-ng-show="arbeidsforholdForm.permiteringTil.$error.required">{{feilmeldinger.paakreves}} </span>
+					<span class="error" data-ng-show="arbeidsforholdForm.permiteringTil.$error.dato">{{feilmeldinger.dato}} </span>
+					<span class="error" data-ng-show="arbeidsforholdForm.permiteringTil.$error.framindre">{{feilmeldinger.fratil}}</span>
+				</div>
+
+				<input class="sendsoknad-check"type="checkbox" name="permiteringVetikke" value="vetikke" data-ng-model="arbeidsforhold.permiteringVetikke" required> Vet ikke
+
+
+			</div>
+		</div>
+		<div class="sluttaarsak" data-ng-show="arbeidsforhold.sluttaarsaken.id === 6">
+			<div class="resultatSluttaarsak">
+				<label>Bostyres navn:</label>
+				<input name="konkursBostyrersnavn" data-ng-model="arbeidsforhold.konkursBostyrersnavn" required/>
+				<span class="error" data-ng-show="arbeidsforholdForm.konkursBostyrersnavn.$error.required">{{feilmeldinger.paakreves}} </span>
+			</div>
+			<div class="resultatSluttaarsak">
+				<p>Har du søkt, eller skal du søke lønnsgarantiordningen?</p>
+				<input  class="sendsoknad-radio" data-ng-model="arbeidsforhold.konkursLonnsgarantiordning" type="radio" name="konkursLonnsgarantiordning" value="ja" required/> Ja 
+				<input  class="sendsoknad-radio" data-ng-model="arbeidsforhold.konkursLonnsgarantiordning" type="radio" name="konkursLonnsgarantiordning" value="nei" /> Nei
+				<span class="error" data-ng-show="arbeidsforholdForm.konkursLonnsgarantiordning.$error.required">{{feilmeldinger.paakreves}} </span>
+			</div>
+		</div>
+
+		<div class="sluttaarsak" data-ng-show="arbeidsforhold.sluttaarsaken.id === 7">
+			<div class="resultatSluttaarsak">
+				<p> Redusert arbeidstid fra dato: </p>
+				<input type="text" name="redusertarbeidstidFra" data-ng-model="arbeidsforhold.redusertarbeidstidFra" placeholder="dd.mm.åååå"  dato required />
+				<span class="error" data-ng-show="arbeidsforholdForm.redusertarbeidstidFra.$error.required">{{feilmeldinger.paakreves}} </span>
+				<span class="error" data-ng-show="arbeidsforholdForm.redusertarbeidstidFra.$error.dato">{{feilmeldinger.dato}} </span>
+			</div>
+
+			<div class="resultatSluttaarsak">
+				<p> Har du fått tilbud om å fortsette hos arbeidsgiver annet sted i Norge? </p>
+				<input  class="sendsoknad-radio" data-ng-model="arbeidsforhold.redusertarbeidstidTilbud" type="radio" name="redusertarbeidstidTilbud" value="ja" required/> Ja 
+				<input  class="sendsoknad-radio" data-ng-model="arbeidsforhold.redusertarbeidstidTilbud" type="radio" name="redusertarbeidstidTilbud" value="nei" /> Nei
+				<span class="error" data-ng-show="arbeidsforholdForm.redusertarbeidstidTilbud.$error.required">{{feilmeldinger.paakreves}} </span>
+			</div>
+			<div class="resultatSluttaarsak">
+				<p> Har du krav på lønn? </p>
+				<input  class="sendsoknad-radio" data-ng-model="arbeidsforhold.redusertarbeidstidLonn" type="radio" name="redusertarbeidstidLonn" value="ja" required/> Ja 
+				<input  class="sendsoknad-radio" data-ng-model="arbeidsforhold.redusertarbeidstidLonn" type="radio" name="redusertarbeidstidLonn" value="nei" /> Nei
+				<span class="error" data-ng-show="arbeidsforholdForm.redusertarbeidstidLonn.$error.required">{{feilmeldinger.paakreves}} </span>
+			</div>
+		</div>
+	</div>
+
+	<div class="skjemanavigering">
 		<a ng-click="setRoute('reell-arbeidssoker')" class="nav-knapp"><button>FORRIGE</button></a>
 		<a ng-click="setRoute('arbeidsforhold')" class="nav-knapp"><button data-ng-disabled="arbeidsforholdForm.$invalid">NESTE</button></a>
 	</div>
+
 </form>

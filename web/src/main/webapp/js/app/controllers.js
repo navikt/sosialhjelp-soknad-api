@@ -318,7 +318,15 @@ function ArbeidsforholdCtrl($scope){
     varighetFra: '',
     varighetTil:'',
     sluttaarsaken: '',
-    valgtLand: $scope.land[163].name
+    valgtLand: $scope.land[163].name,
+    redusertarbeidstidFra: '',
+    redusertarbeidstidTilbud:'',
+    redusertarbeidstidLonn:'',
+    konkursBostyrersnavn:'',
+    konkursLonnsgarantiordning:'',
+    permiteringFra: '',
+    permiteringTil:'',
+    permiteringVetikke:''
   };
 }
 
