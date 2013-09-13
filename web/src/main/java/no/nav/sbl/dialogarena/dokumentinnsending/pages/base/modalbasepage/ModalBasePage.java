@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.dokumentinnsending.pages.base.modalbasepage;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.dokumentinnsending.common.BrukerBehandlingId;
 import no.nav.sbl.dialogarena.dokumentinnsending.domain.SoknadStatus;
-import no.nav.sbl.dialogarena.dokumentinnsending.pages.oversikt.OversiktPage;
 import no.nav.sbl.dialogarena.dokumentinnsending.pages.base.BasePage;
 import no.nav.sbl.dialogarena.dokumentinnsending.pages.felles.OpenPageLink;
 import no.nav.sbl.dialogarena.dokumentinnsending.service.SoknadService;
@@ -23,7 +22,7 @@ public class ModalBasePage extends BasePage {
 
         behandlingsId = BrukerBehandlingId.get(parameters);
 
-        add(new OpenPageLink("close", OversiktPage.class, behandlingsId));
+        add(new OpenPageLink("close", null, behandlingsId));
     }
 
     @Override

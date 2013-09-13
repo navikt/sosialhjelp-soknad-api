@@ -5,7 +5,6 @@ import no.nav.modig.frontend.FrontendModules;
 import no.nav.modig.frontend.MetaTag;
 import no.nav.modig.wicket.configuration.ApplicationSettingsConfig;
 import no.nav.sbl.dialogarena.dokumentinnsending.pages.HomePage;
-import no.nav.sbl.dialogarena.dokumentinnsending.pages.session.DokumentinnsendingSession;
 import no.nav.sbl.dialogarena.dokumentinnsending.resource.DokumentForhandsvisningResourceReference;
 import no.nav.sbl.dialogarena.webkomponent.innstillinger.InnstillingerPanel;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SendSoknadPage;
@@ -18,12 +17,9 @@ import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.StartSoknadPage;
 import no.nav.sbl.dialogarena.websoknad.pages.templates.Dagpenger;
 import org.apache.wicket.Application;
 import org.apache.wicket.Page;
-import org.apache.wicket.Session;
 import org.apache.wicket.core.util.crypt.KeyInSessionSunJceCryptFactory;
 import org.apache.wicket.devutils.stateless.StatelessChecker;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.request.Request;
-import org.apache.wicket.request.Response;
 import org.apache.wicket.settings.IApplicationSettings;
 import org.apache.wicket.settings.IMarkupSettings;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
@@ -123,10 +119,6 @@ public class WicketApplication extends WebApplication {
         setSpringComponentInjector();
     }
 
-    @Override
-    public Session newSession(Request request, Response response) {
-        return new DokumentinnsendingSession(request);
-    }
 
     protected void setSpringComponentInjector() {
         getComponentInstantiationListeners().add(new SpringComponentInjector(this, applicationContext));

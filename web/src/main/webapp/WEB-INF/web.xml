@@ -38,7 +38,7 @@
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>no.nav.sbl.dialogarena.dokumentinnsending.config.ApplicationContext</param-value>
+        <param-value>no.nav.sbl.dialogarena.websoknad.config.ApplicationContext</param-value>
     </context-param>
 
 

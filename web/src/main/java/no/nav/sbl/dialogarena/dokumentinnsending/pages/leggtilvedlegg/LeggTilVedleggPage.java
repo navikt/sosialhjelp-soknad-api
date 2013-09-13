@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.dokumentinnsending.pages.leggtilvedlegg;
 
 import no.nav.sbl.dialogarena.dokumentinnsending.common.DokumentinnsendingParameters;
-import no.nav.sbl.dialogarena.dokumentinnsending.pages.oversikt.OversiktPage;
 import no.nav.sbl.dialogarena.dokumentinnsending.pages.base.modalbasepage.ModalBasePage;
 import no.nav.sbl.dialogarena.dokumentinnsending.pages.felles.behaviors.DefaultLoadingBehavior;
 import no.nav.sbl.dialogarena.dokumentinnsending.pages.felles.behaviors.TextValidationJSBehavior;
@@ -44,13 +43,13 @@ public class LeggTilVedleggPage extends ModalBasePage {
         beskrivelse.add(validationJSBehavior);
         form.add(beskrivelse);
 
-       Model bekreftModel = new Model(cmsContentRetriever.hentTekst("leggtilvedlegg.bekreftOpprettelse"));
+        Model bekreftModel = new Model(cmsContentRetriever.hentTekst("leggtilvedlegg.bekreftOpprettelse"));
 
         AjaxButton bekreft = new AjaxButton("bekreft", bekreftModel, form) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 Long dokumentForventingsId = soknadService.leggTilVedlegg(behandlingsId, beskrivelse.getModelObject());
-                setResponsePage(OversiktPage.class, new DokumentinnsendingParameters(behandlingsId).scrollTo(dokumentForventingsId));
+                setResponsePage(null, new DokumentinnsendingParameters(behandlingsId).scrollTo(dokumentForventingsId));
             }
 
             @Override
