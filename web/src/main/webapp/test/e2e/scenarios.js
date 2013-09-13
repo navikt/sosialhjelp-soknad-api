@@ -12,18 +12,18 @@ describe('Send soknad app', function() {
 	});
 
 	it("skal kunne hente frem epost etter browser back", function() {
-		browser().navigateTo('#/dagpenger');
-		input("data.epost").enter("ketil@mailprovider.com");
+		browser().navigateTo('#/personalia');
+		input("soknadData.fakta.epost.value").enter("ketil@mailprovider.com");
 		element("#neste").click();
-		browser().navigateTo('#/dagpenger');
-		expect(input("data.epost").val()).toEqual("ketil@mailprovider.com");
+		browser().navigateTo('#/personalia');
+		expect(input("soknadData.fakta.epost.value").val()).toEqual("ketil@mailprovider.com");
 	});
 
 	it("skal kunne lagre mobil etter browser back", function() {
-		browser().navigateTo('#/dagpenger');
-		input("data.mobil").enter("55555555");
+		browser().navigateTo('#/personalia');
+		input("soknadData.fakta.telefon.value").enter("55555555");
 		element("#neste").click();
-		browser().navigateTo('#/dagpenger');
-		expect(input("data.mobil").val()).toBe("55555555");
+		browser().navigateTo('#/personalia');
+		expect(input("soknadData.fakta.telefon.value").val()).toBe("55555555");
 	});
 });
