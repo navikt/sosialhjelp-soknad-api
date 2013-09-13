@@ -42,7 +42,7 @@ sendsoknad.directive('dato', function(){
     require: 'ngModel',
     link: function(scope, elm, attrs, ctrl){
       ctrl.$parsers.unshift(function(viewValue){
-        
+
         if(typeof viewValue === 'undefined') {
           ctrl.$setValidity('dato', false);
           return undefined;
@@ -77,29 +77,37 @@ sendsoknad.directive('dato', function(){
 });
 
 sendsoknad.directive('datotil', function(){
-
   return {
+    replace: true,
     require: 'ngModel',
+    
+    scope: {
+      fraDato: '=',
+      fraNavn: '@'
+    },
     link: function(scope, elm, attrs, ctrl){
       ctrl.$parsers.unshift(function(viewValue){
-        var sc = scope.arbeidsforhold;
-        if(typeof sc.varighetFra === 'undefined' || typeof viewValue === 'undefined'){
+        if(typeof scope.fraDato === 'undefined' || typeof viewValue === 'undefined'){
           ctrl.$setValidity('framindre', false);
           return undefined;
         }
-
-        var til = viewValue.split('.');
-        var fra = sc.varighetFra.split('.');
         
+
+        var navn = scope.fraNavn;
+        var til = viewValue.split('.');
+        var fra = scope.fraDato.split('.');
+
         if(fratil(fra, til)){
           ctrl.$setValidity('framindre', true);
           return viewValue;
         } 
         ctrl.$setValidity('framindre', false);
         return undefined;
+
       }); 
 
-      scope.$watch('arbeidsforhold.varighetFra', function(value) { 
+      scope.$watch('arbeidsforhold.permiteringFra', function(value) { 
+        debugger
         if(typeof value === 'undefined' || typeof ctrl.$viewValue === 'undefined') {
           ctrl.$setValidity('framindre', false);
           return undefined;
@@ -107,7 +115,7 @@ sendsoknad.directive('datotil', function(){
         var til = ctrl.$viewValue.split('.');
         var fra = value.split('.');
         ctrl.$setValidity('framindre', fratil(fra, til));
-      });
+      }, true);
     }
   };
 });
@@ -126,4 +134,10 @@ function fratil(fra, til){
   }
 }
 return gyldig;
-} 
+}
+
+sendsoknad.directive('sluttaarsakutfall', function(){
+  return {
+
+  }
+})
