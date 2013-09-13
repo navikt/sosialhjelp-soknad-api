@@ -44,8 +44,7 @@ describe('brukerdata domene', function(){
 			scope.hentSoknadData(1);
 			$httpBackend.flush();
 			$httpBackend.whenPOST('/sendsoknad/rest/soknad/1').respond('200');
-			scope.leggTil(1,'telefon','97172278');
-			expect(scope.soknadData.fakta.telefon.value).toEqual('97172278');			
+			scope.lagre();		
 		});
 	})
 });
