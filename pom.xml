@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -23,6 +23,7 @@
     <packaging>pom</packaging>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <modig.frontend>1.0.27</modig.frontend>
         <wicket.version>6.10.0</wicket.version>
         <spring.version>3.2.4.RELEASE</spring.version>
@@ -37,6 +38,7 @@
         <dialogarena.webkomponent.footer>1.0.6</dialogarena.webkomponent.footer>
         <dialogarena.webkomponent.navigasjon>1.0.4</dialogarena.webkomponent.navigasjon>
         <dialogarena.webkomponent.innstillinger>1.0.14</dialogarena.webkomponent.innstillinger>
+        <dialogarena.dokumentinnsending.version>2.0.0-SNAPSHOT</dialogarena.dokumentinnsending.version>
     </properties>
 
     <dependencyManagement>
@@ -99,6 +101,16 @@
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>sendsoknad-tjenestespesifikasjon</artifactId>
                 <version>${sendsoknad.tjenestespec.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>dokumentinnsending-consumer</artifactId>
+                <version>${dialogarena.dokumentinnsending.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>dokumentinnsending-business</artifactId>
+                <version>${dialogarena.dokumentinnsending.version}</version>
             </dependency>
             <dependency>
                 <groupId>joda-time</groupId>
@@ -466,6 +478,12 @@
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jaxrs</artifactId>
                 <version>2.3.5.Final</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.annotation</groupId>
+                        <artifactId>jsr250-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.ws.security</groupId>

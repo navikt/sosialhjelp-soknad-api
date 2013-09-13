@@ -11,7 +11,6 @@ import no.nav.sbl.dialogarena.dokumentinnsending.pages.felles.behaviors.DefaultL
 import no.nav.sbl.dialogarena.dokumentinnsending.pages.felles.forhandsvisning.ImagePreview;
 import no.nav.sbl.dialogarena.dokumentinnsending.pages.opplasting.komponenter.UploadFormPanel;
 import no.nav.sbl.dialogarena.dokumentinnsending.pages.opplasting.komponenter.UploadValidationUtil;
-import no.nav.sbl.dialogarena.dokumentinnsending.pages.oversikt.OversiktPage;
 import no.nav.sbl.dialogarena.dokumentinnsending.service.SoknadService;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -117,7 +116,7 @@ public class Opplasting extends Panel {
         try {
             target.appendJavaScript("trackEventGA('Opplasting', 'Lastet opp');");
             soknadService.oppdaterInnhold(dokument, innhold);
-            setResponsePage(OversiktPage.class, new DokumentinnsendingParameters()
+            setResponsePage(null, new DokumentinnsendingParameters()
                     .behandlingsId(dokument.getBehandlingsId())
                     .scrollTo(dokument.getDokumentForventningsId()));
         } catch (VirusException e) {
