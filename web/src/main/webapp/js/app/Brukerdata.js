@@ -2,8 +2,6 @@ angular.module('brukerdata', ['services'])
 
 .controller('SoknadDataCtrl', ['$scope', 'soknadService', '$location', function($scope, soknadService, $location) {
 	
-	$scope.soknadData = soknadService.get({id: 1});
-	
 	$scope.hentSoknadData = function(soknadId) {
 		$scope.soknadData = soknadService.get({id: soknadId});
 	}
