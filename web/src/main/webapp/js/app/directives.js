@@ -45,51 +45,28 @@ angular.module('app.directives', [])
 })
 
 
-.directive('dato', function(){
+.directive('dato', function(dateFilter){
   return {
     require: 'ngModel',
     link: function(scope, elm, attrs, ctrl){
       ctrl.$parsers.unshift(function(viewValue){
-
-        if(typeof viewValue === 'undefined') {
-          ctrl.$setValidity('dato', false);
-          return undefined;
-        }
-        var date = viewValue.split('.');
-        var y = date[2], m = date[1], d = date[0];
-
-        var antallDagerIMnd = [31,28,31,30,31,30,31,31,30,31,30,31];
-
-        if( (!(y%4) && y%100) || !(y % 400)){
-          antallDagerIMnd[1] = 29;
-        }
-
-        if(typeof y === 'undefined'){
-          ctrl.$setValidity('dato', false);
-          return undefined;
-        } else {
-          if( d <= antallDagerIMnd[--m] && y.length === 4){
-           ctrl.$setValidity('dato', true);
-           return viewValue;
-         } else {
-           ctrl.$setValidity('dato', false);
-           return undefined;
-         }
+        var datoListe = viewValue.split('.');
+        var dato = dateFilter(new Date(datoListe[2], datoListe[1]-1, datoListe[0]), 'dd.MM.yyyy');
+        if(viewValue === dato){  
+         ctrl.$setValidity('dato', true);
+         return dato;
+       } else {
+         ctrl.$setValidity('dato', false);
+         return undefined;
        }
-       ctrl.$setValidity('dato', false);
-       return undefined;
      });
-    }
+    },
   };
 
 })
 
-<<<<<<< HEAD
-sendsoknad.directive('datotil', function(){
-=======
-.directive('datotil', function(){
 
->>>>>>> 56431bd4de7a7c986cb786b057a222dbe2ac2dc6
+.directive('datotil', function(){
   return {
     replace: true,
     require: 'ngModel',
@@ -108,16 +85,11 @@ sendsoknad.directive('datotil', function(){
 
         var navn = scope.fraNavn;
         var til = viewValue.split('.');
-<<<<<<< HEAD
         var fra = scope.fraDato.split('.');
 
         if(fratil(fra, til)){
-=======
         var fra = sc.varighetFra.split('.');
-        
 
-        if(true){
->>>>>>> 56431bd4de7a7c986cb786b057a222dbe2ac2dc6
           ctrl.$setValidity('framindre', true);
           return viewValue;
         } 
@@ -127,7 +99,6 @@ sendsoknad.directive('datotil', function(){
       }); 
 
       scope.$watch('arbeidsforhold.permiteringFra', function(value) { 
-        debugger
         if(typeof value === 'undefined' || typeof ctrl.$viewValue === 'undefined') {
           ctrl.$setValidity('framindre', false);
           return undefined;
@@ -158,8 +129,4 @@ function fratil(fra, til){
 return gyldig;
 }
 
-sendsoknad.directive('sluttaarsakutfall', function(){
-  return {
 
-  }
-})
