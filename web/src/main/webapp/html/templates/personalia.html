@@ -12,7 +12,7 @@
 
 <form name="personaliaForm" novalidate>
 	<label>MOBILNUMMER</label>
-	<input type="text" class="landskode" name="landskode" data-ng-model="soknadData.fakta.landskode.value" landskodevalidering >
+	<input type="text" class="landskode" name="landskode" data-ng-model="data.landskode" landskodevalidering >
 	<input type="text" name="mobil" data-ng-model="soknadData.fakta.telefon.value" ng-blur="leggTil(1, 'telefon', this)"/>
 	<span class="error" data-ng-show="personaliaForm.mobil.$error.required">{{feilmeldinger.paakreves}}</span>
 
