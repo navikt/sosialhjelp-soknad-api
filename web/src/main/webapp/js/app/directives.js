@@ -1,11 +1,19 @@
-var INTEGER_REGEX = /^\-?\d*$/;
+'use strict';
+/**
+*  Module
+*
+* Description
+*/
+angular.module('app.directives', [])
 
 /*Hva med casene 1-242 osv */
-sendsoknad.directive('landskodevalidering', function(){
+
+.directive('landskodevalidering', function(){
   return {
     require: 'ngModel',
     link: function(scope, elm, attrs, ctrl){
       ctrl.$parsers.unshift(function(viewValue){
+        var INTEGER_REGEX = /^\-?\d*$/;
         var kode = viewValue.slice(1, viewValue.length);
         if(viewValue.charAt(0) === '+' && INTEGER_REGEX.test(kode)) {
           ctrl.$setValidity('feil', true);
@@ -16,9 +24,9 @@ sendsoknad.directive('landskodevalidering', function(){
     }
   };
 
-});
+})
 
-sendsoknad.directive('mobilnummer', function(){
+.directive('mobilnummer', function(){
 	return {
 		require: 'ngModel',
 		link: function(scope, elm, attrs, ctrl){
@@ -34,10 +42,10 @@ sendsoknad.directive('mobilnummer', function(){
 		}
 	};
 
-});
+})
 
 
-sendsoknad.directive('dato', function(){
+.directive('dato', function(){
   return {
     require: 'ngModel',
     link: function(scope, elm, attrs, ctrl){
@@ -74,9 +82,14 @@ sendsoknad.directive('dato', function(){
     }
   };
 
-});
+})
 
+<<<<<<< HEAD
 sendsoknad.directive('datotil', function(){
+=======
+.directive('datotil', function(){
+
+>>>>>>> 56431bd4de7a7c986cb786b057a222dbe2ac2dc6
   return {
     replace: true,
     require: 'ngModel',
@@ -95,9 +108,16 @@ sendsoknad.directive('datotil', function(){
 
         var navn = scope.fraNavn;
         var til = viewValue.split('.');
+<<<<<<< HEAD
         var fra = scope.fraDato.split('.');
 
         if(fratil(fra, til)){
+=======
+        var fra = sc.varighetFra.split('.');
+        
+
+        if(true){
+>>>>>>> 56431bd4de7a7c986cb786b057a222dbe2ac2dc6
           ctrl.$setValidity('framindre', true);
           return viewValue;
         } 
@@ -118,31 +138,9 @@ sendsoknad.directive('datotil', function(){
       }, true);
     }
   };
-});
+})
 
-sendsoknad.directive('mod-verdiendret', function(){
-  // Runs during compile
-  return {
-      restrict: 'A', 
-    // name: '',
-    // priority: 1,
-    // terminal: true,
-    // scope: {}, // {} = isolate, true = child, false/undefined = no change
-    // cont­rol­ler: function($scope, $element, $attrs, $transclue) {},
-    // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
-    // restrict: 'A', // E = Element, A = Attribute, C = Class, M = Comment
-    // template: '',
-    // templateUrl: '',
-    // replace: true,
-    // transclude: true,
-    // compile: function(tElement, tAttrs, function transclude(function(scope, cloneLinkingFn){ return function linking(scope, elm, attrs){}})),
-    link: function($scope, attrs) {
-      scope.$watch(attrs.ngModel, function (verdi ){
-        console.log('verdi endret seg' + verdi);
-      });
-    }
-  };
-});
+
 
 function fratil(fra, til){
   var gyldig = false;
