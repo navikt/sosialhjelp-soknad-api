@@ -1,4 +1,4 @@
-angular.module('brukerdata', ['services'])
+angular.module('app.brukerdata', ['app.services'])
 
 .controller('SoknadDataCtrl', ['$scope', 'soknadService', '$location', function($scope, soknadService, $location) {
 	
@@ -12,20 +12,6 @@ angular.module('brukerdata', ['services'])
 		$location.path(route);
 	}
 }])
-
-/*
-Eksempel som viser en get ved bruk av $http. Kan bukes om man ønsker bedre kontroll
-*/
-/*
-function SoknadDataCtrl_http($scope, $http) {
-	$http({method: 'GET', url: '/sendsoknad/rest/soknad/' + 1}).
-		success(function (data, status) {
-			$scope.soknadData = data
-		}).
-		error(function(data, status){
-			alert("En feil skjedde");
-		});
-}*/
 
 .controller('ValidationCtrl', ['$scope', 'soknad', '$location', function($scope, soknad, $location) {
   $scope.data =  soknad.data;

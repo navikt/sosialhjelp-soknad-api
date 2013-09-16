@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('services', ['ngResource'])
+angular.module('app.services',['ngResource'])
 
 .factory('soknad', function($rootScope) {
   var soknadService = {};
