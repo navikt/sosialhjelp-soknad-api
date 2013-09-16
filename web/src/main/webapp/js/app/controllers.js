@@ -1,8 +1,8 @@
 'use strict';
 
+angular.module('app.controllers', [])
 
-/* Controllers */
-function PersonaliaCtrl($scope, $location) {
+.controller('PersonaliaCtrl', ['$scope', '$location', function($scope, $location) {
 	$scope.minAlder=18;
   $scope.maxAlder=67;
 
@@ -31,9 +31,10 @@ function PersonaliaCtrl($scope, $location) {
   $scope.isGyldigAlder = function() {
     return ($scope.personalia.alder >= $scope.minAlder && $scope.personalia.alder < $scope.maxAlder);
   };
-}
+}])
 
-function ungerUtlandCtrl($scope){
+.controller('ungerUtlandCtrl', ['$scope', function($scope) {
+
   $scope.ungerUtland = [{
     fornavn: '',
     etternavn: ''
@@ -44,9 +45,9 @@ function ungerUtlandCtrl($scope){
     $event.preventDefault();
   }
 
-}
+}])
 
-function VilligCtrl($scope){
+.controller('VilligCtrl', ['$scope', function($scope) {
   $scope.villig = {
     jobb: '',
     pendle: '',
@@ -54,10 +55,9 @@ function VilligCtrl($scope){
     helse:'',
     deltidProsent:''
   }
-}
+}])
 
-function ArbeidsforholdCtrl($scope){
-
+.controller('ArbeidsforholdCtrl', ['$scope', function($scope) {
 
   $scope.sluttaarsak = [
   {id: 1, navn:'Sagt opp selv'},
@@ -69,6 +69,7 @@ function ArbeidsforholdCtrl($scope){
   {id: 7, navn:'Redusert arbeidstid med mer enn 50% (40% for fiskere)'}
   ];
 
+  
   $scope.land = [ 
   {name: "Afghanistan", code: "AF"}, 
   {name: "Åland Islands", code: "AX"}, 
@@ -314,6 +315,7 @@ function ArbeidsforholdCtrl($scope){
   {name: "Zambia", code: "ZM"}, 
   {name: "Zimbabwe", code: "ZW"} 
   ];
+
     $scope.arbeidsforhold = {
     arbeidsgiverNavn: '',
     varighetFra: '',
@@ -321,4 +323,4 @@ function ArbeidsforholdCtrl($scope){
     sluttaarsaken: '',
     valgtLand: $scope.land[163].name
   };
-}
+}])
