@@ -330,24 +330,3 @@ function ArbeidsforholdCtrl($scope){
     permiteringVetikke:''
   };
 }
-
-
-function ValidationCtrl($scope, soknadService, $location){
-  $scope.data =  soknadService.data;
-
-  $scope.feilmeldinger = {
-    paakreves: '*',
-    feil: 'Ikke gyldig',
-    dato: ' Dato må skrives på formen dd.mm.åååå',
-    fratil: 'Fra-dato må være før til-dato'
-  }
-
-  $scope.saveState = function() {
-    soknadService.data = $scope.data;
-  }
-
-  $scope.setRoute = function(route) {
-    $scope.saveState();
-    $location.path(route);
-  }
-}

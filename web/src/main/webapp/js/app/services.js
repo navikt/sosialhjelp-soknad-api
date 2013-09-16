@@ -2,7 +2,7 @@
 
 angular.module('services', ['ngResource'])
 
-.factory('soknadService', function($rootScope) {
+.factory('soknad', function($rootScope) {
   var soknadService = {};
   return soknadService;
 })
