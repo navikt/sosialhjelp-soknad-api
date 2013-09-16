@@ -49,7 +49,7 @@ module.exports = function(config) {
     browsers: ['Chrome', 'Firefox'],
 
     proxies: {
-  		'/': 'http://localhost:8181/'
+  		'/': 'http://a34duvw22389.devillo.no:8181/sendsoknad'
 	},
 
 	plugins: [

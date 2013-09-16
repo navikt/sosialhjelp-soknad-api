@@ -5,12 +5,12 @@ describe('brukerdata domene', function(){
 	var $httpBackend;
 
 	beforeEach(
-		module('services','brukerdata')
+		module('app.services','app.brukerdata')
 	);
 
 	describe('soknaddata controller', function () {
 
-		var scope, ctrl, $httpBackend;
+		var scope, ctrl, $httpBackend, routeParams;
 
 		beforeEach(inject(function(_$httpBackend_, $rootScope, $controller){
 			$httpBackend = _$httpBackend_;
@@ -26,22 +26,24 @@ describe('brukerdata domene', function(){
 						"poststed":{"soknadId":1,"key":"poststed","value":"Oslo"}
 					}
 				});
+			routeParams = {};
 			scope = $rootScope.$new();
-			ctrl = $controller('SoknadDataCtrl', {$scope: scope});
+			routeParams.soknadId = 1;
+			ctrl = $controller('SoknadDataCtrl', {
+				$scope: scope,
+				$routeParams: routeParams
+			});
 		}));
 
 		it ('skal returnere soknaddata', function() {
-			scope.hentSoknadData(1);
-
 			$httpBackend.flush();
 			expect(scope.soknadData.soknadId).toEqual(1);
-			expect(scope.soknadData.fakta.fornavn.soknadId).toEqual(1)
-			expect(scope.soknadData.fakta.fornavn.value).toEqual('Ola')
+			expect(scope.soknadData.fakta.fornavn.soknadId).toEqual(1);
+			expect(scope.soknadData.fakta.fornavn.value).toEqual('Ola');
 		});
 
 		
 		it ('skal legge til en et nytt faktum i soknaddata', function() {
-			scope.hentSoknadData(1);
 			$httpBackend.flush();
 			$httpBackend.whenPOST('/sendsoknad/rest/soknad/1').respond('200');
 			scope.lagre();		

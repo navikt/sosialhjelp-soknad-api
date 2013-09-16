@@ -1,19 +1,21 @@
 angular.module('app.brukerdata', ['app.services'])
 
-.controller('SoknadDataCtrl', ['$scope', 'soknadService', '$location', function($scope, soknadService, $location) {
-	
-	$scope.hentSoknadData = function(soknadId) {
+.controller('SoknadDataCtrl', function($scope, $routeParams, soknadService, $location) {
+	console.log($routeParams.soknadId);
+	$scope.soknadData = soknadService.get({id: $routeParams.soknadId});
+
+/*	$scope.hentSoknadData = function(soknadId) {
 		$scope.soknadData = soknadService.get({id: soknadId});
-	}
+	}*/
 
 	$scope.lagre = function(route) {
 		var soknadData = $scope.soknadData;
 		soknadData.$save({id: soknadData.soknadId});
 		$location.path(route);
 	}
-}])
+})
 
-.controller('ValidationCtrl', ['$scope', 'soknad', '$location', function($scope, soknad, $location) {
+.controller('ValidationCtrl', function($scope, soknad, $location) {
   $scope.data =  soknad.data;
 
   $scope.feilmeldinger = {
@@ -33,4 +35,4 @@ angular.module('app.brukerdata', ['app.services'])
     $location.path(route);
   }
   */
-}])
+})
