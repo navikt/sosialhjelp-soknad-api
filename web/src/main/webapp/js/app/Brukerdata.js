@@ -1,20 +1,20 @@
 angular.module('brukerdata', ['services'])
 
-.controller('SoknadDataCtrl', ['$scope', 'soknadService', function($scope, soknadService) {
-
+.controller('SoknadDataCtrl', ['$scope', 'soknadService', '$location', function($scope, soknadService, $location) {
+	
 	$scope.hentSoknadData = function(soknadId) {
 		$scope.soknadData = soknadService.get({id: soknadId});
 	}
 
-	$scope.leggTil = function(soknadId, key, value) {
-		$scope.soknadData.fakta[key] = {"soknadId":soknadId,"key": key,"value": value};
+	$scope.lagre = function(route) {
 		var soknadData = $scope.soknadData;
-		soknadData.$save();
-	};
+		soknadData.$save({id: soknadData.soknadId});
+		$location.path(route);
+	}
 }])
 
 /*
-Eksempel som viser en get ved bruk av $http. Kan brukes om man ønsker bedre kontroll
+Eksempel som viser en get ved bruk av $http. Kan bukes om man ønsker bedre kontroll
 */
 /*
 function SoknadDataCtrl_http($scope, $http) {
@@ -27,3 +27,24 @@ function SoknadDataCtrl_http($scope, $http) {
 		});
 }*/
 
+.controller('ValidationCtrl', ['$scope', 'soknad', '$location', function($scope, soknad, $location) {
+  $scope.data =  soknad.data;
+
+  $scope.feilmeldinger = {
+    paakreves: '*',
+    feil: 'Ikke gyldig',
+    dato: ' Dato må skrives på formen dd.mm.åååå',
+    fratil: 'Fra-dato må være før til-dato'
+  }
+
+  $scope.saveState = function() {
+    soknadService.data = $scope.data;
+  }
+
+  /*
+  $scope.setRoute = function(route) {
+    $scope.saveState();
+    $location.path(route);
+  }
+  */
+}])

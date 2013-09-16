@@ -120,6 +120,30 @@ sendsoknad.directive('datotil', function(){
   };
 });
 
+sendsoknad.directive('mod-verdiendret', function(){
+  // Runs during compile
+  return {
+      restrict: 'A', 
+    // name: '',
+    // priority: 1,
+    // terminal: true,
+    // scope: {}, // {} = isolate, true = child, false/undefined = no change
+    // cont­rol­ler: function($scope, $element, $attrs, $transclue) {},
+    // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
+    // restrict: 'A', // E = Element, A = Attribute, C = Class, M = Comment
+    // template: '',
+    // templateUrl: '',
+    // replace: true,
+    // transclude: true,
+    // compile: function(tElement, tAttrs, function transclude(function(scope, cloneLinkingFn){ return function linking(scope, elm, attrs){}})),
+    link: function($scope, attrs) {
+      scope.$watch(attrs.ngModel, function (verdi ){
+        console.log('verdi endret seg' + verdi);
+      });
+    }
+  };
+});
+
 function fratil(fra, til){
   var gyldig = false;
   if(parseInt(til[2]) > parseInt(fra[2])){
