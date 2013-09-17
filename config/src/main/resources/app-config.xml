@@ -29,7 +29,7 @@
         <baseUrl alias="dialogarena.navnolink" mapToProperty="dialogarena.navnolink" />
         <baseUrl alias="dokumentinnsending.logoutURL" mapToProperty="dokumentinnsending.logoutURL"/>
         <baseUrl alias="dokumentinnsending.navigasjonslink" mapToProperty="dokumentinnsending.navigasjonslink"/>
-        <applicationCertificate alias="srvDokumentinnsending"/>
+        <applicationCertificate alias="srvSendsoknad"/>
     </resources>
     <security serviceUserResourceAlias="srvSendsoknad">
         <logins>
