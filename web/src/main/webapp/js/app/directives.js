@@ -31,40 +31,38 @@ angular.module('app.directives', [])
 		require: 'ngModel',
 		link: function(scope, elm, attrs, ctrl){
 			ctrl.$parsers.unshift(function(viewValue){
-				if(INTEGER_REGEX.test(viewValue) && viewValue.length === 8) {
-					ctrl.$setValidity('feil', true);
-					return parseFloat(viewValue.replace(',', '.'));
-				} else {
-					ctrl.$setValidity('feil', false);
-					return undefined;
-				}
-			});
+        var INTEGER_REGEX = /^\-?\d*$/;
+        if(INTEGER_REGEX.test(viewValue) && viewValue.length === 8) {
+         ctrl.$setValidity('feil', true);
+         return parseFloat(viewValue.replace(',', '.'));
+       } else {
+         ctrl.$setValidity('feil', false);
+         return undefined;
+       }
+     });
 		}
 	};
 
 })
 
-
-.directive('dato', function(dateFilter){
+.directive('prosent', function(dateFilter){
   return {
     require: 'ngModel',
     link: function(scope, elm, attrs, ctrl){
+      var INTEGER_REGEX = /^\-?\d*$/;
       ctrl.$parsers.unshift(function(viewValue){
-        var datoListe = viewValue.split('.');
-        var dato = dateFilter(new Date(datoListe[2], datoListe[1]-1, datoListe[0]), 'dd.MM.yyyy');
-        if(viewValue === dato){  
-         ctrl.$setValidity('dato', true);
-         return dato;
-       } else {
-         ctrl.$setValidity('dato', false);
-         return undefined;
-       }
-     });
+        if(INTEGER_REGEX.test(viewValue) && viewValue <= 100) {
+       ctrl.$setValidity('prosent', true);
+       return viewValue;
+     } else {
+       ctrl.$setValidity('prosent', false);
+       return undefined;
+     }
+   });
     },
   };
 
 })
-
 
 .directive('datotil', function(){
   return {
@@ -81,9 +79,6 @@ angular.module('app.directives', [])
           return undefined;
         }        
 
-        
-        var test = $scope.fraDato;
-        var testing = $scope.fraNavn;
         if($scope.fraDato < viewValue){
           ctrl.$setValidity('framindre', true);
           return viewValue;

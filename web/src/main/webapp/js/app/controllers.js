@@ -322,15 +322,24 @@ angular.module('app.controllers', [])
     varighetTil: undefined,
     sluttaarsaken: '',
     valgtLand: $scope.land[163].name,
-    redusertarbeidstidFra: '',
+    redusertarbeidstidFra: undefined,
     redusertarbeidstidTilbud:'',
     redusertarbeidstidLonn:'',
     konkursBostyrersnavn:'',
-    konkursLonnsgarantiordning:'',
-    permiteringFra: '',
-    permiteringTil:'',
-    permiteringVetikke:''
-  };
+    konkursLonnsgarantiordning:''
+  },
+
+  $scope.permiteringProsent = '',
+  $scope.permiteringFerie = '',
+  $scope.permiteringFra = undefined,
+  $scope.permiteringTil = undefined,
+  $scope.permiteringVetikke = '',
+  $scope.vetIkke = function(){
+    if($scope.permiteringVetikke){
+      $scope.permiteringTil = undefined;
+      $scope.permiteringFra = undefined;
+    }
+  }
 
 
 }])
