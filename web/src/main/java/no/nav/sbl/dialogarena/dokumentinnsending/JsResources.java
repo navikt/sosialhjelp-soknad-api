@@ -7,14 +7,10 @@ public enum JsResources {
     PREVIEW_TOOLTIP("previewTooltip"),
     LOADING_INDICATOR("loadingIndicator"),
     VALIDATION("validation"),
-    
-    MUSTACHE("mustache/mustache"),
-    
-    //REQUIRE("require"),
-    //MAIN("app/main"),
-    ANGULAR("angular/angular"),
-    ANGULAR_ROUTE("angular/angular-route"),
-    ANGULAR_RESOURCE("angular/angular-resource"),
+  
+    ANGULAR("lib/angular"),
+    ANGULAR_ROUTE("lib/angular-route"),
+    ANGULAR_RESOURCE("lib/angular-resource"),
     CONTROLLER("app/controllers"),
     APP("app/app"),
     //ANGULARRESOURCE("angular/angular-resource"),

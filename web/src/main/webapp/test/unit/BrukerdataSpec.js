@@ -46,7 +46,7 @@ describe('brukerdata domene', function(){
 		it ('skal legge til en et nytt faktum i soknaddata', function() {
 			$httpBackend.flush();
 			$httpBackend.whenPOST('/sendsoknad/rest/soknad/1').respond('200');
-			scope.lagre();		
+			//cope.lagre();		
 		});
 	})
 });
