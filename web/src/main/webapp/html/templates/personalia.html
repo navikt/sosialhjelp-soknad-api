@@ -13,6 +13,7 @@
 <form name="personaliaForm" novalidate>
 	<label>MOBILNUMMER</label>
 	<input type="text" class="landskode" name="landskode" data-ng-model="data.landskode" landskodevalidering >
+	<input type="hidden" name="mobil" data-ng-model="soknadData.fakta.telefon.key" value="telefon"/>
 	<input type="text" name="mobil" data-ng-model="soknadData.fakta.telefon.value" ng-blur="leggTil(1, 'telefon', this)"/>
 	<span class="error" data-ng-show="personaliaForm.mobil.$error.required">{{feilmeldinger.paakreves}}</span>
 
@@ -54,7 +55,9 @@
 				<a href data-ng-click="nyUngeUtland($event)"> Legg til</a>
 			</li>
 	</div>
-
+	<div ng-controller="SistLagretCtrl">
+		<h3>Sist lagret: {{time.now}}
+	</div>
 
 	<a><button id="neste" ng-click="lagre('reell-arbeidssoker')">NESTE</button></a>
 </form>
