@@ -89,11 +89,6 @@
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
-                <version>1.8</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>henvendelse-jaxws</artifactId>
                 <version>${henvendelse.tjenestespesifikasjon.version.1}</version>
             </dependency>
