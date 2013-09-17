@@ -15,6 +15,8 @@ import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.oppsummering.Oppsumerin
 import no.nav.sbl.dialogarena.websoknad.pages.soknad.OpenSoknadPage;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.StartSoknadPage;
 import no.nav.sbl.dialogarena.websoknad.pages.templates.Dagpenger;
+import no.nav.sbl.dialogarena.websoknad.selftest.SelfTestPage;
+
 import org.apache.wicket.Application;
 import org.apache.wicket.Page;
 import org.apache.wicket.core.util.crypt.KeyInSessionSunJceCryptFactory;
@@ -107,6 +109,8 @@ public class WicketApplication extends WebApplication {
         mountPage("oppsumering", OppsumeringPage.class);
         mountPage("soknadKvittering", KvitteringPage.class);
 
+        mountPage("internal/selftest", SelfTestPage.class);
+        
         mountPage("soknadliste", SoknadListePage.class);
         mountPage("dagpenger", Dagpenger.class);
 

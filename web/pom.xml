@@ -35,10 +35,6 @@
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>sendsoknad-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
