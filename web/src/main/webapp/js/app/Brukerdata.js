@@ -1,18 +1,38 @@
 angular.module('app.brukerdata', ['app.services'])
 
-.controller('SoknadDataCtrl', function($scope, $routeParams, soknadService, $location) {
-	console.log($routeParams.soknadId);
+.controller('SoknadDataCtrl', function($scope, $routeParams, soknadService, $location, $timeout) {
 	$scope.soknadData = soknadService.get({id: $routeParams.soknadId});
+
 
 /*	$scope.hentSoknadData = function(soknadId) {
 		$scope.soknadData = soknadService.get({id: soknadId});
 	}*/
-
-	$scope.lagre = function(route) {
-		var soknadData = $scope.soknadData;
-		soknadData.$save({id: soknadData.soknadId});
-		$location.path(route);
+	function lagre() {
+		$timeout(function() {
+			var soknadData = $scope.soknadData;
+			soknadData.$save({id: soknadData.soknadId});
+			lagre();
+		}, 60000);
 	}
+
+	lagre();
+
+})
+
+.factory('time', function($timeout) {
+	var time = {};
+
+	(function tick() {
+		//var soknadData = $scope.soknadData;
+		//soknadData.$save({id: soknadData.soknadId});
+		time.now = new Date().toString();
+		$timeout(tick, 1000);
+	})();
+	return time;
+}) 
+
+.controller('SistLagretCtrl', function($scope, time) {
+	$scope.time = time;
 })
 
 .controller('ValidationCtrl', function($scope, soknad, $location) {
