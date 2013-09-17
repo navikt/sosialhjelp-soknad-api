@@ -22,11 +22,8 @@ li a {
 	margin-right: 10px;
 }
 
-button, #neste {
-	margin-top: 60px;
-}
 
-.landskode {
+.landskode, .prosent input {
 	width: 40px;
 }
 .varighet {

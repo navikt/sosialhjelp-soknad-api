@@ -22,7 +22,8 @@ angular.module('app.brukerdata', ['app.services'])
     paakreves: '*',
     feil: 'Ikke gyldig',
     dato: ' Dato må skrives på formen dd.mm.åååå',
-    fratil: 'Fra-dato må være før til-dato'
+    fratil: 'Fra-dato må være før til-dato',
+    prosent: 'Må være et tall mellom 0 og 100.'
   }
 
   $scope.saveState = function() {
