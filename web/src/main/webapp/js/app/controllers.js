@@ -316,10 +316,10 @@ angular.module('app.controllers', [])
   {name: "Zimbabwe", code: "ZW"} 
   ];
 
-    $scope.arbeidsforhold = {
+  $scope.arbeidsforhold = {
     arbeidsgiverNavn: '',
-    varighetFra: '',
-    varighetTil:'',
+    varighetFra: undefined,
+    varighetTil: undefined,
     sluttaarsaken: '',
     valgtLand: $scope.land[163].name,
     redusertarbeidstidFra: '',
@@ -331,4 +331,6 @@ angular.module('app.controllers', [])
     permiteringTil:'',
     permiteringVetikke:''
   };
+
+
 }])

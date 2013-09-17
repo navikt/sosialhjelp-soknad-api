@@ -12,20 +12,16 @@
 		<label>Varighet</label>
 		<div class="varighet"  >
 			<label class="label-sammelinje">Fra:</label>
-			<input type="text" name="varighetfra" data-ng-model="arbeidsforhold.varighetFra" placeholder="dd.mm.åååå"  dato required />
-			
-			<span class="error" data-ng-show="arbeidsforholdForm.varighetfra.$error.required">{{feilmeldinger.paakreves}} </span>
-			<span class="error" data-ng-show="arbeidsforholdForm.varighetfra.$error.dato">{{feilmeldinger.dato}} </span>
+			<input type="text" name="varighetFra" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="arbeidsforhold.varighetFra" required >
 
-
+			<span class="error" data-ng-show="arbeidsforholdForm.varighetFra.$error.required">{{feilmeldinger.paakreves}} </span>
+			{{testDatoFra | date:'d MMM yyyy'}}
 		</div>
-		<div class="varighet">
+		<div class="varighet">	
 			<label class="label-sammelinje">Til:</label>
-			<input type="text" name="varighetTil" data-ng-model="arbeidsforhold.varighetTil" placeholder="dd.mm.åååå"   dato required  datotil fra-dato="arbeidsforhold.varighetFra" fra-navn="arbeidsforhold.varighetFra"/>
-
-			<span class="error" data-ng-show="arbeidsforholdForm.varighetTil.$error.required">{{feilmeldinger.paakreves}} </span>
-			<span class="error" data-ng-show="arbeidsforholdForm.varighetTil.$error.dato">{{feilmeldinger.dato}} </span>
+			<input type="text" name="varighetTil" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="arbeidsforhold.varighetTil" datotil fra-dato="arbeidsforhold.varighetFra">
 			<span class="error" data-ng-show="arbeidsforholdForm.varighetTil.$error.framindre">{{feilmeldinger.fratil}}</span>
+			{{testDatoTil | date:'d MMM yyyy'}}
 		</div>
 
 		<div>
@@ -59,24 +55,20 @@
 
 				<div class="varighet">
 					<label class="label-sammelinje">Fra:</label>
-					<input type="text" name="permiteringFra" data-ng-model="arbeidsforhold.permiteringFra" placeholder="dd.mm.åååå"  dato required />
+					<input type="text" name="permiteringFra" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="arbeidsforhold.permiteringFra" required >
 
 					<span class="error" data-ng-show="arbeidsforholdForm.permiteringFra.$error.required">{{feilmeldinger.paakreves}} </span>
-					<span class="error" data-ng-show="arbeidsforholdForm.permiteringFra.$error.dato">{{feilmeldinger.dato}} </span>
+					{{testDatoFra | date:'d MMM yyyy'}}
 				</div>
 				<div class="varighet">
-
 					<label class="label-sammelinje">Til:</label>
-					<input type="text" name="permiteringTil" data-ng-model="arbeidsforhold.permiteringTil" placeholder="dd.mm.åååå"   dato required   datotil fra-dato="arbeidsforhold.permiteringFra" fra-navn="arbeidsforhold.permiteringFra" />
-
-					<span class="error" data-ng-show="arbeidsforholdForm.permiteringTil.$error.required">{{feilmeldinger.paakreves}} </span>
-					<span class="error" data-ng-show="arbeidsforholdForm.permiteringTil.$error.dato">{{feilmeldinger.dato}} </span>
+					<input type="text" name="permiteringTil" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="arbeidsforhold.permiteringTil" datotil fra-dato="arbeidsforhold.permiteringFra">
 					<span class="error" data-ng-show="arbeidsforholdForm.permiteringTil.$error.framindre">{{feilmeldinger.fratil}}</span>
+					{{testDatoTil | date:'d MMM yyyy'}}
+					
 				</div>
 
 				<input class="sendsoknad-check"type="checkbox" name="permiteringVetikke" value="vetikke" data-ng-model="arbeidsforhold.permiteringVetikke" required> Vet ikke
-
-
 			</div>
 		</div>
 		<div class="sluttaarsak" data-ng-show="arbeidsforhold.sluttaarsaken.id === 6">

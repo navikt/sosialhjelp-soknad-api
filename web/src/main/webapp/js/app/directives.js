@@ -72,61 +72,55 @@ angular.module('app.directives', [])
     require: 'ngModel',
     
     scope: {
-      fraDato: '=',
-      fraNavn: '@'
+      fraDato: '='
     },
-    link: function(scope, elm, attrs, ctrl){
+    link: function($scope, elm, attrs, ctrl){
       ctrl.$parsers.unshift(function(viewValue){
-        if(typeof scope.fraDato === 'undefined' || typeof viewValue === 'undefined'){
+        if(typeof $scope.fraDato === 'undefined' || typeof viewValue === 'undefined'){
           ctrl.$setValidity('framindre', false);
           return undefined;
-        }
+        }        
+
         
-
-        var navn = scope.fraNavn;
-        var til = viewValue.split('.');
-        var fra = scope.fraDato.split('.');
-
-        if(fratil(fra, til)){
-        var fra = sc.varighetFra.split('.');
-
+        var test = $scope.fraDato;
+        var testing = $scope.fraNavn;
+        if($scope.fraDato < viewValue){
           ctrl.$setValidity('framindre', true);
           return viewValue;
         } 
         ctrl.$setValidity('framindre', false);
         return undefined;
-
       }); 
 
-      scope.$watch('arbeidsforhold.permiteringFra', function(value) { 
+      $scope.$watch('fraDato', function(value) {   
         if(typeof value === 'undefined' || typeof ctrl.$viewValue === 'undefined') {
           ctrl.$setValidity('framindre', false);
           return undefined;
         }
-        var til = ctrl.$viewValue.split('.');
-        var fra = value.split('.');
-        ctrl.$setValidity('framindre', fratil(fra, til));
-      }, true);
+        var gyldig = false
+        if(value < ctrl.$viewValue) {
+          gyldig = true
+        }
+        ctrl.$setValidity('framindre', gyldig);
+      });
     }
   };
 })
 
 
-
-function fratil(fra, til){
+function fraFoertil(fra, til){
   var gyldig = false;
   if(parseInt(til[2]) > parseInt(fra[2])){
     gyldig = true;
   } else if (parseInt(til[2]) === parseInt(fra[2])) {
     if(parseInt(til[1]) > parseInt(fra[1])) {
-     gyldig = true;
-   } else if (parseInt(til[1]) === parseInt(fra[1])) {
-    if (parseInt(til[0]) > parseInt(fra[0])) {
       gyldig = true;
+    } else if (parseInt(til[1]) === parseInt(fra[1])) {
+      if (parseInt(til[0]) > parseInt(fra[0])) {
+        gyldig = true;
+      }
     }
   }
+  return gyldig;
 }
-return gyldig;
-}
-
 

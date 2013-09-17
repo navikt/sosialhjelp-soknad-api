@@ -1,1 +1,1 @@
-angular.module('sendsoknad',['app.routes','app.brukerdata','app.services','app.directives','app.controllers'])
+angular.module('sendsoknad',['app.routes','app.brukerdata','app.services','app.directives','app.controllers', 'app.date'])

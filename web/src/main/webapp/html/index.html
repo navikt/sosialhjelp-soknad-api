@@ -5,6 +5,10 @@
   <title>Send Soknad</title>
   <link rel="stylesheet" href="../css/nav.css">
   <link rel="stylesheet" href="../css/dagpenger.css">
+  <link rel="stylesheet" href="../js/jquery/jquery-ui-1.10.3/themes/base/jquery-ui.css">
+
+  <script src="../js/jquery/jquery-ui-1.10.3/jquery-1.9.1.js"></script>
+  <script src="../js/jquery/jquery-ui-1.10.3/ui/minified/jquery-ui.min.js"></script>
 
 
   <script src="../js/lib/angular.js"></script>
@@ -18,29 +22,29 @@
   <script src="../js/app/controllers.js"></script>
   <script src="../js/app/services.js"></script>
   <script src="../js/app/routes.js"></script>
-  
+  <script src="../js/app/date.js"></script>
 </head>
-  <body>
-    <div class="innstillinger-innlogget">
-      <div class="begrensning">
-        <ul class="liste-vannrett" role="navigation">
-          <li class="hoykontrast" id="hoykontrast">
-            <a href="#">Høykontrast </a>
-          </li>
-          <li class="skriftstorrelse">
-            <a href="#" id="link-skriftstorrelse" rel="tooltip" title="" data-original-title="Hold Ctrl-tasten nede (Cmd-tasten på Mac).&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;Trykk på + for å forstørre eller - for å forminske.">Skriftstørrelse
-              <span class="smaller">A</span>
-              <span class="bigger">A</span>
-            </a>
-          </li>
-        </ul>
-        <span class="hide" id="navnetjenesteBaseUrl">https://tjenester-q8.nav.no</span>
-        <span class="hide" id="innloggetTekstNavn">Logget inn som</span>
-        <span class="hide" id="innloggetTekstUtenNavn">Logget inn</span>
-        <a href="./wicket/bookmarkable/no.nav.sbl.dialogarena.webkomponent.innstillinger.LogoutPage?url=https://e34jbsl00713.devillo.no:8443/openam/" class="knapp-liten loggut">Logg ut</a>
-        <span class="innloggetSom" style="">Logget inn</span>
-      </div>
+<body>
+  <div class="innstillinger-innlogget">
+    <div class="begrensning">
+      <ul class="liste-vannrett" role="navigation">
+        <li class="hoykontrast" id="hoykontrast">
+          <a href="#">Høykontrast </a>
+        </li>
+        <li class="skriftstorrelse">
+          <a href="#" id="link-skriftstorrelse" rel="tooltip" title="" data-original-title="Hold Ctrl-tasten nede (Cmd-tasten på Mac).&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;&lt;br /&gt;Trykk på + for å forstørre eller - for å forminske.">Skriftstørrelse
+            <span class="smaller">A</span>
+            <span class="bigger">A</span>
+          </a>
+        </li>
+      </ul>
+      <span class="hide" id="navnetjenesteBaseUrl">https://tjenester-q8.nav.no</span>
+      <span class="hide" id="innloggetTekstNavn">Logget inn som</span>
+      <span class="hide" id="innloggetTekstUtenNavn">Logget inn</span>
+      <a href="./wicket/bookmarkable/no.nav.sbl.dialogarena.webkomponent.innstillinger.LogoutPage?url=https://e34jbsl00713.devillo.no:8443/openam/" class="knapp-liten loggut">Logg ut</a>
+      <span class="innloggetSom" style="">Logget inn</span>
     </div>
+  </div>
 
   <div class="rad-logo">
     <a class="logo" href="http://nav.no"></a>
@@ -59,15 +63,15 @@
   <footer class="footer">
     <div class="begrensning">
       <p class="navn clearfix">
-      NAV
+        NAV
       </p>
       <ul class="fotlenker">
         <li><a href="https://www-u1.nav.no/site/2/Om+NAV/Kontakt+oss">Kontakt oss</a></li>
         <li><a href="https://www-u1.nav.no/site/2/Om+NAV/Om+NAV/Personvernerkl%C3%A6ring+for+Arbeids-+og+velferdsetaten.285854.cms">Personvern og sikkerhet</a></li>
         <li><a href="https://www-u1.nav.no/site/2/tilbakemelding/Klage%2C+ris+og+ros/Feil+og+mangler+nav.no">Feil og mangler i nav.no</a></li>
         <li><a href="https://www-u1.nav.no/site/2/Om+NAV/Brukarst%C3%B8tte/Tilgjengelighet">Tilgjengelighet</a></li>
-    </ul>
-    <p class="copy">© 2013 Arbeids- og velferdsetaten</p>
+      </ul>
+      <p class="copy">© 2013 Arbeids- og velferdsetaten</p>
     </div>
   </footer>
 </body>
