@@ -102,6 +102,17 @@ angular.module('app.directives', [])
   };
 })
 
+.directive('modFaktum', function(){
+  return {
+      restrict: 'A',
+    link: function($scope, element, attrs) {
+      if($scope.soknadData.fakta) {
+        $scope.soknadData.fakta[attrs.name] = {"soknadId":$scope.soknadData.soknadId, "key":attrs.name,"value":element.val()};
+      }
+    }
+  };
+})
+
 
 function fraFoertil(fra, til){
   var gyldig = false;
@@ -118,4 +129,6 @@ function fraFoertil(fra, til){
   }
   return gyldig;
 }
+
+
 
