@@ -36,7 +36,19 @@ angular.module('app.brukerdata', ['app.services'])
 })
 
 .controller('ValidationCtrl', function($scope, soknad, $location) {
-  $scope.data =  soknad.data;
+  //$scope.data =  soknad.data;
+
+  $scope.soknadData = {"soknadId":1,"gosysId":"Dagpenger","brukerBehandlingId":"100000000",
+					"fakta":{
+						"fornavn":{"soknadId":1,"key":"fornavn","value":"Ola"},
+						"mellomnavn":{"soknadId":1,"key":"mellomnavn","value":"Johan"},
+						"etternavn":{"soknadId":1,"key":"etternavn","value":"Nordmann"},
+						"fnr":{"soknadId":1,"key":"fnr","value":"***REMOVED***"},
+						"adresse":{"soknadId":1,"key":"adresse","value":"Waldemar Thranes Gt. 98B"},
+						"postnr":{"soknadId":1,"key":"postnr","value":"0175"},
+						"poststed":{"soknadId":1,"key":"poststed","value":"Oslo"}
+					}
+				}
 
   $scope.feilmeldinger = {
     paakreves: '*',
