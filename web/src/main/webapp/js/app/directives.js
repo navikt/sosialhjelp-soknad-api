@@ -102,7 +102,7 @@ angular.module('app.directives', [])
   };
 })
 
-.directive('modFaktum', function(){
+.directive('modBrukerFaktum', function(){
   return {
       restrict: 'A',
     link: function($scope, element, attrs) {
