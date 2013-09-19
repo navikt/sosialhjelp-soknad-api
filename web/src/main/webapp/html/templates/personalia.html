@@ -1,14 +1,14 @@
 <h1>Personalia</h1>
 
-	<label>NAVN</label>
-	<p>{{soknadData.fakta.fornavn.value}} {{soknadData.fakta.mellomnavn.value}} {{soknadData.fakta.etternavn.value}}</p>
-	
-	<label>FØDSELSNUMMER</label>
-	<p>{{personalia.fnr}} </p>
-	
-	<label>ADRESSE</label>
-	<p>{{soknadData.fakta.adresse.value}} </p>
-	<p>{{soknadData.fakta.postnummer.value}} {{soknadData.fakta.poststed.value}}</p>
+<label>NAVN</label>
+<p>{{soknadData.fakta.fornavn.value}} {{soknadData.fakta.mellomnavn.value}} {{soknadData.fakta.etternavn.value}}</p>
+
+<label>FØDSELSNUMMER</label>
+<p>{{personalia.fnr}} </p>
+
+<label>ADRESSE</label>
+<p>{{soknadData.fakta.adresse.value}} </p>
+<p>{{soknadData.fakta.postnummer.value}} {{soknadData.fakta.poststed.value}}</p>
 
 <form name="personaliaForm" novalidate>
 	<label>MOBILNUMMER</label>
@@ -59,9 +59,10 @@
 				<a href data-ng-click="ungerUtland.splice(ungerUtland.length-1, 1)"> Fjern</a>
 				<a href data-ng-click="nyUngeUtland($event)"> Legg til</a>
 			</li>
+		</ul>
 	</div>
 	<div ng-controller="SistLagretCtrl">
-		<h3>Sist lagret: {{time.now}}
+		<h3>Sist lagret: {{time.now}} </h3>
 	</div>
 
 	<a><button id="neste" ng-click="lagre('reell-arbeidssoker')">NESTE</button></a>

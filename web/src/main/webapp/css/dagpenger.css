@@ -7,14 +7,12 @@
 
 li {
 	list-style: none;
+	margin-bottom: 60px;
 }
 
 label {
 	display: block;
 	margin-top: 10px;
-}
-
-input, p {
 }
 
 
@@ -37,11 +35,13 @@ li a {
 .varighet p, .resultatSluttaarsak p,  {
 	margin-top: 10px !important;
 	margin-bottom: 10px !important;
+	padding: 10px 0px;
 }
 
-.aarsak {
+.sluttaarsak {
 	float: left;
 	margin-top: 20px;
+	margin-bottom: 10px;
 	clear: both;
 	width: 100%;
 
