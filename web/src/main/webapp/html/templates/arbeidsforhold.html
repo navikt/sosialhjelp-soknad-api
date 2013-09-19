@@ -2,7 +2,7 @@
 
 
 
-<input mod-bruker-faktum type="text" name="telefon" data-ng-model="soknadData.fakta.telefon.value"/>
+	<input mod-bruker-faktum type="text" name="telefon" data-ng-model="soknadData.fakta.telefon.value"/>
 
 
 	
@@ -53,7 +53,13 @@
 			
 		</div>
 		<div class="sluttaarsak" data-ng-show="arbeidsforhold.sluttaarsaken.id === 4">
-			
+			<div class="resultatSluttaarsak">
+				<p>Fra nåt er du avskjediget?</p>
+				<input type="text" name="avskjedigetFra" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="avskjedigetFra" required >
+
+				<span class="error" data-ng-show="arbeidsforholdForm.permiteringFra.$error.required">{{feilmeldinger.paakreves}} </span>	
+			</div>
+
 		</div>
 		<div class="sluttaarsak" data-ng-show="arbeidsforhold.sluttaarsaken.id === 5">
 			<div class="resultatSluttaarsak">
@@ -61,21 +67,21 @@
 
 				<div class="varighet">
 					<label class="label-sammelinje">Fra:</label>
-					<input type="text" name="permiteringFra" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="permiteringFra" required >
+					<input type="text" name="permiteringFra" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="arbeidsforhold.permiteringFra" required >
 
 					<span class="error" data-ng-show="arbeidsforholdForm.permiteringFra.$error.required">{{feilmeldinger.paakreves}} </span>
-					{{permiteringFra | date:'d MMM yyyy'}}
+					{{arbeidsforhold.permiteringFra | date:'d MMM yyyy'}}
 				</div>
 				<div class="varighet">
 					<label class="label-sammelinje">Til:</label>
-					<input type="text" name="permiteringTil" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="$parent.permiteringTil" datotil fra-dato="permiteringFra" til-dato="$parent.permiteringTil">
+					<input type="text" name="permiteringTil" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="$parent.arbeidsforhold.permiteringTil" datotil fra-dato="arbeidsforhold.permiteringFra" til-dato="$parent.arbeidsforhold.permiteringTil">
 					<span class="error" data-ng-show="arbeidsforholdForm.permiteringTil.$error.framindre">{{feilmeldinger.fratil}}</span>
-					{{permiteringTil | date:'d MMM yyyy'}}
-					
+					{{$parent.arbeidsforhold.permiteringTil | date:'d MMM yyyy'}}
+
 				</div>
 
 				<div class="varighet">
-					<input class="sendsoknad-check"type="checkbox" name="permiteringVetikke" value="vetikke" data-ng-model="permiteringVetikke" ng-click="vetIkke()" > Vet ikke
+					<input class="sendsoknad-check"type="checkbox" name="permiteringVetikke" value="vetikke" data-ng-model="arbeidsforhold.permiteringVetikke" ng-click="vetIkke()" > Vet ikke
 				</div>
 
 
@@ -86,14 +92,14 @@
 					<span class="error" data-ng-show="arbeidsforholdForm.permitertProsent.$error.prosent">{{feilmeldinger.prosent}} </span> 
 
 					<div ng-show="arbeidsforhold.permitertProsent <= 50">
-						<span>Du har ikke rett til å søke om dagpenger hvis du ikke er permitert mer enn 50%. </span>
+						<p>Du har ikke rett til å søke om dagpenger hvis du ikke er permitert mer enn 50%. </p>
 					</div>
 
 					<div class="varigeht" ng-show="arbeidsforhold.permitertProsent > 50">
 						<p>Har du hatt ferie i permiteringsperioden?</p>
 						<input  class="sendsoknad-radio" data-ng-model="arbeidsforhold.permiteringFerie" type="radio" name="permiteringFerie" value="ja" required/> Ja 
 						<input  class="sendsoknad-radio" data-ng-model="arbeidsforhold.permiteringFerie" type="radio" name="permiteringFerie" value="nei" /> Nei
-						
+
 					</div>
 				</div>
 			</div>
