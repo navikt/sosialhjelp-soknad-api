@@ -34,9 +34,9 @@ li a {
 	margin-bottom: 10px;
 
 }
-p  {
-	margin-top: 10px;
-	margin-bottom: 10px;
+.varighet p, .resultatSluttaarsak p,  {
+	margin-top: 10px !important;
+	margin-bottom: 10px !important;
 }
 
 .aarsak {
