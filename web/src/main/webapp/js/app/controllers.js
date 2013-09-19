@@ -331,7 +331,17 @@ angular.module('app.controllers', [])
     permiteringTil: undefined,
     permiteringProsent: '',
     permiteringFerie: '',
-    permiteringVetikke:''
+    permiteringVetikke:'',
+    kontraktutgaattAvskjedighetFra: undefined,
+    kontraktutgaattLonn:'',
+    kontraktutgaattLonnFra: undefined,
+    kontraktutgaattLonnTil: undefined,
+    oppsigelseFra: undefined,
+    oppsigelseTil: undefined,
+    oppsigelseNyttTilbud: '',
+    oppsigelseLonn:'',
+    oppsigelseLonnFra: undefined,
+    oppsigelseLonnTil: undefined
   },
 
   $scope.vetIkke = function(){
