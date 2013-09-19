@@ -318,15 +318,15 @@ angular.module('app.controllers', [])
 
   $scope.arbeidsforhold = {
     arbeidsgiverNavn: '',
-    varighetFra: undefined,
-    varighetTil: undefined,
     sluttaarsaken: '',
     valgtLand: $scope.land[163].name,
     redusertarbeidstidFra: undefined,
     redusertarbeidstidTilbud:'',
     redusertarbeidstidLonn:'',
     konkursBostyrersnavn:'',
-    konkursLonnsgarantiordning:''
+    konkursLonnsgarantiordning:'',
+    varighetFra: undefined,
+    varighetTil: undefined,
   },
 
   $scope.permiteringProsent = '',

@@ -6,7 +6,7 @@
 */
 angular.module('app.directives', [])
 
-/*Hva med casene 1-242 osv */
+/*Hva med casene 1-242 osv? */
 
 .directive('landskodevalidering', function(){
   return {
@@ -47,18 +47,18 @@ angular.module('app.directives', [])
 
 .directive('prosent', function(dateFilter){
   return {
-    require: 'ngModel',
+    require: '^ngModel',
     link: function(scope, elm, attrs, ctrl){
       var INTEGER_REGEX = /^\-?\d*$/;
       ctrl.$parsers.unshift(function(viewValue){
-        if(INTEGER_REGEX.test(viewValue) && viewValue <= 100) {
-       ctrl.$setValidity('prosent', true);
-       return viewValue;
-     } else {
-       ctrl.$setValidity('prosent', false);
-       return undefined;
-     }
-   });
+        if(INTEGER_REGEX.test(viewValue) && viewValue <= 100 && viewValue >=0) {
+         ctrl.$setValidity('prosent', true);
+         return viewValue;
+       } else {
+         ctrl.$setValidity('prosent', false);
+         return undefined;
+       }
+     });
     },
   };
 
@@ -70,51 +70,57 @@ angular.module('app.directives', [])
     require: 'ngModel',
     
     scope: {
-      fraDato: '='
+      fraDato: '=',
+      tilDato: '='
     },
     link: function($scope, elm, attrs, ctrl){
       ctrl.$parsers.unshift(function(viewValue){
         if(typeof $scope.fraDato === 'undefined' || typeof viewValue === 'undefined'){
           ctrl.$setValidity('framindre', false);
+          $scope.tilDato = undefined;
           return undefined;
         }        
 
-        if($scope.fraDato < viewValue){
+        if(fraMindreEnnTil($scope.fraDato, viewValue)){
           ctrl.$setValidity('framindre', true);
+          $scope.tilDato = new Date(ctrl.$viewValue);
           return viewValue;
         } 
         ctrl.$setValidity('framindre', false);
+        $scope.tilDato = undefined;
         return undefined;
       }); 
 
-      $scope.$watch('fraDato', function(value) {   
-        if(typeof value === 'undefined' || typeof ctrl.$viewValue === 'undefined') {
+      $scope.$watch('fraDato', function(fraDatoValue) {  
+        var vw = ctrl.$viewValue;
+        if(typeof fraDatoValue === 'undefined' || typeof ctrl.$viewValue === 'undefined') {
           ctrl.$setValidity('framindre', false);
+        }
+
+        if(fraMindreEnnTil(fraDatoValue, ctrl.$viewValue)){
+          if(typeof $scope.tilDato === 'undefined') {
+            $scope.tilDato = new Date(ctrl.$viewValue);
+            ctrl.$setValidity('framindre', true);
+          } 
+          ctrl.$setValidity('framindre', true);
+        } else {
+          ctrl.$setValidity('framindre', false);
+          $scope.tilDato = undefined;
           return undefined;
+
+
         }
-        var gyldig = false
-        if(value < ctrl.$viewValue) {
-          gyldig = true
-        }
-        ctrl.$setValidity('framindre', gyldig);
+
       });
     }
   };
 })
 
 
-function fraFoertil(fra, til){
+function fraMindreEnnTil(fra, til){
   var gyldig = false;
-  if(parseInt(til[2]) > parseInt(fra[2])){
-    gyldig = true;
-  } else if (parseInt(til[2]) === parseInt(fra[2])) {
-    if(parseInt(til[1]) > parseInt(fra[1])) {
-      gyldig = true;
-    } else if (parseInt(til[1]) === parseInt(fra[1])) {
-      if (parseInt(til[0]) > parseInt(fra[0])) {
-        gyldig = true;
-      }
-    }
+  if(fra < til) {
+    gyldig = true
   }
   return gyldig;
 }
