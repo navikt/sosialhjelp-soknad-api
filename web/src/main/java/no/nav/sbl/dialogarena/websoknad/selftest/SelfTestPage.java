@@ -1,23 +1,21 @@
 package no.nav.sbl.dialogarena.websoknad.selftest;
 
-import static java.lang.String.format;
-import static java.lang.System.currentTimeMillis;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.slf4j.LoggerFactory.getLogger;
+import no.nav.modig.wicket.selftest.SelfTestBase;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.slf4j.Logger;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import no.nav.modig.wicket.selftest.SelfTestBase;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
-
-import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.slf4j.Logger;
+import static java.lang.String.format;
+import static java.lang.System.currentTimeMillis;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.slf4j.LoggerFactory.getLogger;
 
 //@Import({ConsumerConfig.SelfTestStsConfig.class})
 public class SelfTestPage extends SelfTestBase {

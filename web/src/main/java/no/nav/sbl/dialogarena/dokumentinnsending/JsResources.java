@@ -7,13 +7,7 @@ public enum JsResources {
     PREVIEW_TOOLTIP("previewTooltip"),
     LOADING_INDICATOR("loadingIndicator"),
     VALIDATION("validation"),
-  
-    ANGULAR("lib/angular"),
-    ANGULAR_ROUTE("lib/angular-route"),
-    ANGULAR_RESOURCE("lib/angular-resource"),
-    CONTROLLER("app/controllers"),
-    APP("app/app"),
-    //ANGULARRESOURCE("angular/angular-resource"),
+
     SENDSOKNAD("sendsoknad");
 
     private static final String FOLDER = "js/";
