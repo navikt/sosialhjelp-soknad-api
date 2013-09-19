@@ -116,6 +116,17 @@ angular.module('app.directives', [])
   };
 })
 
+.directive('modBrukerFaktum', function(){
+  return {
+      restrict: 'A',
+    link: function($scope, element, attrs) {
+      if($scope.soknadData.fakta) {
+        $scope.soknadData.fakta[attrs.name] = {"soknadId":$scope.soknadData.soknadId, "key":attrs.name,"value":element.val()};
+      }
+    }
+  };
+})
+
 
 function fraMindreEnnTil(fra, til){
   var gyldig = false;
@@ -124,4 +135,6 @@ function fraMindreEnnTil(fra, til){
   }
   return gyldig;
 }
+
+
 
