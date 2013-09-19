@@ -19,9 +19,9 @@
 		</div>
 		<div class="varighet">	
 			<label class="label-sammelinje">Til:</label>
-			<input type="text" name="varighetTil" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="arbeidsforhold.varighetTil" datotil fra-dato="arbeidsforhold.varighetFra">
+			<input type="text" name="varighetTil" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="$parent.arbeidsforhold.varighetTil" datotil fra-dato="arbeidsforhold.varighetFra" til-dato="$parent.arbeidsforhold.varighetTil">
 			<span class="error" data-ng-show="arbeidsforholdForm.varighetTil.$error.framindre">{{feilmeldinger.fratil}}</span>
-			{{varighetTil | date:'d MMM yyyy'}}
+			{{$parent.arbeidsforhold.varighetTil | date:'d MMM yyyy'}}
 		</div>
 
 		<div>
@@ -62,7 +62,7 @@
 				</div>
 				<div class="varighet">
 					<label class="label-sammelinje">Til:</label>
-					<input type="text" name="permiteringTil" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="$parent.permiteringTil" datotil fra-dato="permiteringFra">
+					<input type="text" name="permiteringTil" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="$parent.permiteringTil" datotil fra-dato="permiteringFra" til-dato="$parent.permiteringTil">
 					<span class="error" data-ng-show="arbeidsforholdForm.permiteringTil.$error.framindre">{{feilmeldinger.fratil}}</span>
 					{{permiteringTil | date:'d MMM yyyy'}}
 					
