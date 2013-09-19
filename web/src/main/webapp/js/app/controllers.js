@@ -59,18 +59,6 @@ angular.module('app.controllers', [])
 
 .controller('ArbeidsforholdCtrl', ['$scope', function($scope) {
 
-  $scope.sluttaarsak = [
-  {id: 1, navn:'Sagt opp selv'},
-  {id: 2, navn:'Sagt opp av arbeidsgiver'},
-  {id: 3, navn:'Avskjediget'},
-  {id: 4, navn:'Permitert'},
-  {id: 5, navn:'Konkurs'},
-  {id: 6, navn:'Redusert arbeidstid med mer enn 50% (40% for fiskere)'},
-  {id: 7, navn:'Kontrakt utgått'},
-
-  ];
-
-  
   $scope.land = [ 
   {name: "Afghanistan", code: "AF"}, 
   {name: "Åland Islands", code: "AX"}, 
@@ -317,7 +305,58 @@ angular.module('app.controllers', [])
   {name: "Zimbabwe", code: "ZW"} 
   ];
 
-  $scope.arbeidsforhold = {
+  $scope.nyttArbeidsforhold = function($event){
+    $scope.arbeidsforhold.push( {arbeidsgiverNavn: '',
+    sluttaarsaken: '',
+    oppsigelseSelvInnskranking:'',
+    oppsigelseSelvFra: undefined,
+    oppsigelseSelvTil: undefined,
+    oppsigelseSelvLonn:'',
+    oppsigelseSelvLonnFra: undefined,
+    oppsigelseSelvLonnTil: undefined,
+    oppsigelseFra: undefined,
+    oppsigelseTil: undefined,
+    oppsigelseNyttTilbud: '',
+    oppsigelseLonn:'',
+    oppsigelseLonnFra: undefined,
+    oppsigelseLonnTil: undefined,
+    avskjedighetFra: undefined,
+    avskjedighetLonn:'',
+    avskjedighetLonnFra: undefined,
+    avskjedighetLonnTil: undefined,
+    permiteringFra: undefined,
+    permiteringTil: undefined,
+    permiteringVetikke:'',
+    permiteringProsent: '',
+    permiteringFerie: '',
+    konkursBostyrersnavn:'',
+    konkursLonnsgarantiordning:'',
+    redusertarbeidstidFra: undefined,
+    redusertarbeidstidTilbud:'',
+    redusertarbeidstidLonn:'',
+    redusertarbeidstidLonnFra: undefined,
+    redusertarbeidstidLonnTil: undefined,
+    kontraktutgaattAvskjedighetFra: undefined,
+    kontraktutgaattLonn:'',
+    kontraktutgaattLonnFra: undefined,
+    kontraktutgaattLonnTil: undefined,
+    kontraktFra: undefined,
+    kontraktNy:'',
+    sluttaarsak: [
+    {id: 1, navn:'Sagt opp selv'},
+    {id: 2, navn:'Sagt opp av arbeidsgiver'},
+    {id: 3, navn:'Avskjediget'},
+    {id: 4, navn:'Permitert'},
+    {id: 5, navn:'Konkurs'},
+    {id: 6, navn:'Redusert arbeidstid med mer enn 50% (40% for fiskere)'},
+    {id: 7, navn:'Kontrakt utgått'},
+    {id: 8, navn:'Sluttet'},
+    ]
+  });
+    $event.preventDefault();
+  }
+
+  $scope.arbeidsforhold = [{
     arbeidsgiverNavn: '',
     varighetFra: undefined,
     varighetTil: undefined,
@@ -357,7 +396,18 @@ angular.module('app.controllers', [])
     kontraktutgaattLonnTil: undefined,
     kontraktFra: undefined,
     kontraktNy:'',
-  },
+    sluttaarsak: [
+    {id: 1, navn:'Sagt opp selv'},
+    {id: 2, navn:'Sagt opp av arbeidsgiver'},
+    {id: 3, navn:'Avskjediget'},
+    {id: 4, navn:'Permitert'},
+    {id: 5, navn:'Konkurs'},
+    {id: 6, navn:'Redusert arbeidstid med mer enn 50% (40% for fiskere)'},
+    {id: 7, navn:'Kontrakt utgått'},
+    {id: 8, navn:'Sluttet'},
+
+    ]
+  }];
 
   $scope.vetIkke = function(){
     if($scope.arbeidsforhold.permiteringVetikke){
