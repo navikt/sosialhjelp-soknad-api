@@ -20,31 +20,27 @@ import static no.nav.sbl.dialogarena.common.jetty.Jetty.usingWar;
 public final class StartSoknadJetty {
 
     public static final int PORT = 8181;
+    private final Env env;
 
-    public static void main(String[] args) throws IOException {
-    	//System.setProperty("no.nav.modig.security.sts.url", "http://localhost:8080/SecurityTokenServiceProvider/");
-        System.setProperty("no.nav.modig.security.sts.url", "http://es-gw-t.test.internsone.local:9080/SecurityTokenServiceProvider/");
-        // System.setProperty("no.nav.modig.security.sts.url", "http://A34DUVW22302.devillo.no:9080/SecurityTokenServiceProvider/");
-        // Eirik Lokal System.setProperty("no.nav.modig.security.sts.url", "http://a34duvw22439.devillo.no:9081/SecurityTokenServiceProvider/");
-        System.setProperty("no.nav.modig.security.systemuser.username", "BD05");
-        System.setProperty("no.nav.modig.security.systemuser.password", "test");
-        System.setProperty("org.apache.cxf.stax.allowInsecureParser", "true");
+    private enum Env {
+        Intellij("web/src/test/resources/login.conf"),
+        Eclipse("src/test/resources/login.conf");
+        private final String loginConf;
 
-        SystemProperties.setFrom("jetty-env.properties");
-        System.setProperty("spring.profiles.active", "mock");
-        System.setProperty("no.nav.sbl.dialogarena.dokumentinnsending.sslMock", "true");
+        Env(String loginConf) {
+            this.loginConf = loginConf;
+        }
+    }
 
-        System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, JettySubjectHandler.class.getName());
-        // System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, SubjectHandler.class.getName());
-        //SubjectHandlerUtils.setupJettySubjectHandler("***REMOVED***", "Ekstern-bruker", "BD05", "4");
-
-        System.setProperty("java.security.auth.login.config", "src/test/resources/login.conf");
-        //System.setProperty("java.security.auth.login.config", "src/test/resources/login.conf");
+    private StartSoknadJetty(Env env) throws Exception {
+        this.env = env;
+        configureSecurity();
+        configureLocalConfig();
+        System.setProperty("java.security.auth.login.config", env.loginConf);
         TestCertificates.setupKeyAndTrustStore();
 
         JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
         jaasLoginService.setLoginModuleName("openam");
-
         Jetty jetty = usingWar(WEBAPP_SOURCE)
                 .at("/sendsoknad")
                 .withLoginService(jaasLoginService)
@@ -54,6 +50,28 @@ public final class StartSoknadJetty {
         jetty.startAnd(first(waitFor(gotKeypress())).then(jetty.stop));
     }
 
-    private StartSoknadJetty() {
+    private void configureLocalConfig() throws IOException {
+        SystemProperties.setFrom("jetty-env.properties");
+        System.setProperty("spring.profiles.active", "mock");
+        System.setProperty("no.nav.sbl.dialogarena.dokumentinnsending.sslMock", "true");
+        System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, JettySubjectHandler.class.getName());
+    }
+
+    private void configureSecurity() {
+        System.setProperty("no.nav.modig.security.sts.url", "http://es-gw-t.test.internsone.local:9080/SecurityTokenServiceProvider/");
+        System.setProperty("no.nav.modig.security.systemuser.username", "BD05");
+        System.setProperty("no.nav.modig.security.systemuser.password", "test");
+        System.setProperty("org.apache.cxf.stax.allowInsecureParser", "true");
+    }
+
+    private static class Intellij{
+        public static void main(String[] args) throws Exception {
+            new StartSoknadJetty(Env.Intellij);
+        }
+    }
+    private static class Eclipse{
+        public static void main(String[] args) throws Exception {
+            new StartSoknadJetty(Env.Eclipse);
+        }
     }
 }
