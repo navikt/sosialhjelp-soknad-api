@@ -116,17 +116,14 @@ angular.module('app.directives', [])
   };
 })
 
-.directive('modFaktum', function(){
-  return {
-      restrict: 'A',
-    link: function($scope, element, attrs) {
-      $scope.$watch('soknadData.fakta'), function() {
-        $scope.soknadData.fakta[attrs.name] = {"soknadId":$scope.soknadData.soknadId, "key":attrs.name,"value":element.val()};
-      }
-    }
+.directive('modFaktum', function() {
+  return function( $scope, element, attrs ) {
+    element.bind('blur', function() {
+      $scope.soknadData.fakta[attrs.name] = {"soknadId":$scope.soknadData.soknadId,"key":attrs.name,"value":element.val()}; 
+      $scope.$apply(); 
+    });
   };
-})
-
+});
 
 function fraMindreEnnTil(fra, til){
   var gyldig = false;
@@ -135,6 +132,3 @@ function fraMindreEnnTil(fra, til){
   }
   return gyldig;
 }
-
-
-

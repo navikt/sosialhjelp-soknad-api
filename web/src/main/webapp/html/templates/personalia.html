@@ -12,23 +12,16 @@
 
 <form name="personaliaForm" novalidate>
 	<label>MOBILNUMMER</label>
-	<input type="text" class="landskode" name="landskode" data-ng-model="data.landskode" landskodevalidering >
+	<input mod-faktum type="text" class="landskode" name="landskode" data-ng-model="data.landskode" landskodevalidering >
 	<input mod-faktum type="text" name="telefon" data-ng-model="soknadData.fakta.telefon.value"/>
 	<span class="error" data-ng-show="personaliaForm.telefon.$error.required">{{feilmeldinger.paakreves}}</span>
 
-
-
-
-
-
-
-
-	<span  data-ng-show="personaliaForm.landskode.$error.feil">{{feilmeldinger.feil}} landskode</span>
-	<span  data-ng-show="personaliaForm.telefon.$error.feil">{{feilmeldinger.feil}} telefonnummer</span>
+	<span data-ng-show="personaliaForm.landskode.$error.feil">{{feilmeldinger.feil}} landskode</span>
+	<span data-ng-show="personaliaForm.telefon.$error.feil">{{feilmeldinger.feil}} telefonnummer</span>
 
 
 	<label>E-POST</label>
-	<input type="email" name="epost" data-ng-model="soknadData.fakta.epost.value" required>
+	<input mod-faktum type="email" name="epost" data-ng-model="soknadData.fakta.epost.value" required>
 	<span class="error" data-ng-show="personaliaForm.epost.$error.required">{{feilmeldinger.paakreves}}</span>
 	<span class="error" data-ng-show="personaliaForm.epost.$error.email">{{feilmeldinger.feil}} epost</span>
 	
@@ -40,7 +33,7 @@
 	<br/>
 
 	<p> Har du forsørgeransvar for barn under 18år som bor i utlandet? </p>
-	<input class="sendsoknad-radio"ng-model="data.barnUtland" type="radio" name="barnUtland" value="ja" required/> Ja 
+	<inputs class="sendsoknad-radio"ng-model="data.barnUtland" type="radio" name="barnUtland" value="ja" required/> Ja 
 	<input class="sendsoknad-radio" ng-model="data.barnUtland" type="radio" name="barnUtland" value="nei" required /> Nei
 	<span class="error" data-ng-show="personaliaForm.barnUtland.$error.required">{{feilmeldinger.paakreves}}</span>
 
