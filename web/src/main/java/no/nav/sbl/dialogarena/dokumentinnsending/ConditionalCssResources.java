@@ -4,8 +4,7 @@ import no.nav.modig.frontend.ConditionalCssResource;
 import org.apache.wicket.request.resource.PackageResourceReference;
 
 public enum ConditionalCssResources {
-    IE("doksend_ie", "screen", "IE"),
-    IE_8("ie8", "screen", "lt IE 9");
+    IE("ie", "screen", "IE");
 
     private static final String FOLDER = "css/";
     private static final String TYPE = ".css";
