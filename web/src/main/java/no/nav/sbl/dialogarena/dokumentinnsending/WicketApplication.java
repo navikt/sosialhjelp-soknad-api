@@ -5,7 +5,6 @@ import no.nav.modig.frontend.FrontendModules;
 import no.nav.modig.frontend.MetaTag;
 import no.nav.modig.wicket.configuration.ApplicationSettingsConfig;
 import no.nav.sbl.dialogarena.dokumentinnsending.pages.HomePage;
-import no.nav.sbl.dialogarena.dokumentinnsending.resource.DokumentForhandsvisningResourceReference;
 import no.nav.sbl.dialogarena.webkomponent.innstillinger.InnstillingerPanel;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SendSoknadPage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SendSoknadServicePage;
@@ -34,9 +33,6 @@ public class WicketApplication extends WebApplication {
 
     @Inject
     private ApplicationContext applicationContext;
-
-    @Inject
-    private DokumentForhandsvisningResourceReference thumbnailRef;
 
 
     public static WicketApplication get() {
@@ -111,9 +107,6 @@ public class WicketApplication extends WebApplication {
 
         mountPage("soknadliste", SoknadListePage.class);
         mountPage("dagpenger", Dagpenger.class);
-
-
-        mountResource("preview/${size}/${dokumentId}/${side}/thumb.png", thumbnailRef);
 
         getSecuritySettings().setEnforceMounts(true);
         getSecuritySettings().setCryptFactory(new KeyInSessionSunJceCryptFactory());

@@ -3,11 +3,6 @@ package no.nav.sbl.dialogarena.dokumentinnsending;
 import org.apache.wicket.request.resource.JavaScriptResourceReference;
 
 public enum JsResources {
-    LOCAL("dokumentinnsending"),
-    PREVIEW_TOOLTIP("previewTooltip"),
-    LOADING_INDICATOR("loadingIndicator"),
-    VALIDATION("validation"),
-
     SENDSOKNAD("sendsoknad");
 
     private static final String FOLDER = "js/";
