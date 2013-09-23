@@ -1,13 +1,14 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-	
-	<parent>
-		<groupId>no.nav.sbl.dialogarena</groupId>
-		<artifactId>sendsoknad</artifactId>
+
+    <parent>
+        <groupId>no.nav.sbl.dialogarena</groupId>
+        <artifactId>sendsoknad</artifactId>
         <version>1.0.2-SNAPSHOT</version>
-	</parent>
+    </parent>
 
     <!-- Must be "no.nav.leren" in order to locate the artifact in Maven repository -->
     <groupId>no.nav.leren</groupId>
@@ -48,4 +49,24 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>t11</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>no.nav.maven.plugins</groupId>
+                        <artifactId>jboss-maven-plugin</artifactId>
+                        <configuration>
+                            <envConfigUrl>https://envconfig.adeo.no/conf</envConfigUrl>
+                            <username>admin</username>
+                            <password>admin</password>
+                            <env>t11</env>
+                            <apps>sendsoknad:${project.version}</apps>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
