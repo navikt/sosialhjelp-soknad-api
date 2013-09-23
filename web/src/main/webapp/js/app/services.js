@@ -2,12 +2,6 @@
 
 angular.module('app.services',['ngResource'])
 
-.factory('soknad', function($rootScope) {
-  var soknadService = {};
-  
-  return soknadService;
-})
-
 /**
 * Service som henter en søknad fra henvendelse
 */

@@ -416,5 +416,4 @@ angular.module('app.controllers', [])
     }
   }
 
-
 }])
