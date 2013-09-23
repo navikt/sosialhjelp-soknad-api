@@ -49,4 +49,6 @@ public class SoknadDataController {
     public void hentFaktum(@PathVariable Long soknadId, @PathVariable Long faktumId) {
         throw new ApplicationException("Ikke implementert enda. ");
     }
+    
+    
 }
