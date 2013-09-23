@@ -51,6 +51,10 @@ angular.module('app.controllers', [])
   $scope.villig = {
     jobb: '',
     pendle: '',
+    ikkePendleBarn:'',
+    ikkePendleGammel:'',
+    ikkePendleHelse:'',
+    ikkePendleHelseTekst:'',
     deltid:'',
     helse:'',
     deltidProsent:''
