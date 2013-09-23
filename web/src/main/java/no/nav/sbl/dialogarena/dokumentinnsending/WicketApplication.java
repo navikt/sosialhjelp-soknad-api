@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.dokumentinnsending;
 
+import javax.inject.Inject;
+
 import no.nav.modig.frontend.FrontendConfigurator;
 import no.nav.modig.frontend.FrontendModules;
 import no.nav.modig.frontend.MetaTag;
@@ -15,6 +17,7 @@ import no.nav.sbl.dialogarena.websoknad.pages.soknad.OpenSoknadPage;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.StartSoknadPage;
 import no.nav.sbl.dialogarena.websoknad.pages.templates.Dagpenger;
 import no.nav.sbl.dialogarena.websoknad.selftest.SelfTestPage;
+
 import org.apache.wicket.Application;
 import org.apache.wicket.Page;
 import org.apache.wicket.core.util.crypt.KeyInSessionSunJceCryptFactory;
@@ -25,8 +28,6 @@ import org.apache.wicket.settings.IMarkupSettings;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.lang.Bytes;
 import org.springframework.context.ApplicationContext;
-
-import javax.inject.Inject;
 
 
 public class WicketApplication extends WebApplication {
@@ -58,10 +59,6 @@ public class WicketApplication extends WebApplication {
 
         for (LessResources resource : LessResources.values()) {
             configurator.addLess(resource.getResource());
-        }
-
-        for (JsResources js : JsResources.values()) {
-            configurator.addScripts(js.getResource());
         }
 
         for (ConditionalCssResources resource : ConditionalCssResources.values()) {
