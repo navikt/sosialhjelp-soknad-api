@@ -420,5 +420,4 @@ angular.module('app.controllers', [])
     }
   }
 
-
 }])
