@@ -36,8 +36,8 @@ public class SoknadComponent extends WebComponent {
     private void initLegalFilenames() {
         if (files == null) {
             try {
-                URL htmls = WebApplication.get().getServletContext().getResource("/html");
-                File folder = new File(htmls.toURI());
+                String htmls = WebApplication.get().getServletContext().getRealPath("/html");
+                File folder = new File(htmls);
                 List<String> files = new ArrayList<>();
                 for (File file : folder.listFiles()) {
                     files.add(file.getName());
