@@ -5,6 +5,7 @@ angular.module('app.brukerdata', ['app.services'])
 	$scope.soknadData = soknadService.get({id: soknadId});
 
 
+
 /*	$scope.hentSoknadData = function(soknadId) {
 		$scope.soknadData = soknadService.get({id: soknadId});
 	}*/
