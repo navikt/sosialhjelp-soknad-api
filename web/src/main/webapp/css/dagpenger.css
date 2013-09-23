@@ -1,8 +1,5 @@
 .sendsoknad-radio, .sendsoknad-check {
-	position: relative !important;
-	opacity: 1 !important;
-	width: 	20px !important;
-	height: 20px !important;
+	
 }
 
 li {
@@ -51,7 +48,4 @@ li a {
 	margin: 10px 0px;
 	float: left;
 	clear: both;
-}
-.resultatSluttaarsak {
-	margin: 10px 10px;
 }

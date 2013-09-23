@@ -107,8 +107,6 @@ angular.module('app.directives', [])
           ctrl.$setValidity('framindre', false);
           $scope.tilDato = undefined;
           return undefined;
-
-
         }
 
       });
@@ -123,7 +121,8 @@ angular.module('app.directives', [])
       $scope.$apply(); 
     });
   };
-});
+})
+
 
 function fraMindreEnnTil(fra, til){
   var gyldig = false;
