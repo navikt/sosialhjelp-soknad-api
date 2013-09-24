@@ -46,20 +46,6 @@ public class BasePage extends WebPage {
         body.add(new InnstillingerPanel("innstillinger", getInnloggetIsTrueModel(), cmsContentRetriever));
         body.add(new NavigasjonPanel("navigasjon", navigasjonsLink));
         body.add(new FooterPanel("footer", footerLinks, getInnloggetIsTrueModel(), FALSE, cmsContentRetriever));
-
-        body.add(new Link("avbrytInnsending") {
-            @Override
-            public void onClick() {
-
-            }
-        });
-
-        body.add(new Link("fortsettSenere") {
-            @Override
-            public void onClick() {
-
-            }
-        });
     }
 
     public final WebMarkupContainer getBody() {
