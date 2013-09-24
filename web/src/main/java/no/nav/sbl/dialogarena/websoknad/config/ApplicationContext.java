@@ -20,12 +20,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @ImportResource("classpath:net/bull/javamelody/monitoring-spring.xml")
 public class ApplicationContext {
 
-    @Value("${dokumentinnsending.navigasjonslink.url}")
+    @Value("${dialogarena.navnolink.url}")
     private String navigasjonslink;
-
-    @Value("${dokumentinnsending.logoutURL.url}")
-    private String logoutURL;
-    private boolean monitor = false;
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
@@ -35,11 +31,6 @@ public class ApplicationContext {
     @Bean
     public String navigasjonslink() {
         return navigasjonslink;
-    }
-
-    @Bean
-    public String logoutURL() {
-        return logoutURL;
     }
 
     @Bean

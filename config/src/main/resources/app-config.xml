@@ -14,19 +14,17 @@
 
     <resources>
         <webservice alias="virksomhet:Brukerprofil_v1"
-                    mapToProperty="websoknad.webservice.brukerprofil"/>
+                    mapToProperty="dokumentinnsending.webservice.brukerprofil"/>
         <webservice alias="domene.Brukerdialog:henvendelsesbehandlingservice_v1"
-                    mapToProperty="websoknad.webservice.henvendelse.henvendelsesbehandlingservice"/>
+                    mapToProperty="dokumentinnsending.webservice.henvendelse.henvendelsesbehandlingservice"/>
         <webservice alias="domene.Brukerdialog:oppdaterehenvendelsesbehandlingservice_v1"
-                    mapToProperty="websoknad.webservice.henvendelse.oppdaterehenvendelsesbehandlingservice"/>
+                    mapToProperty="dokumentinnsending.webservice.henvendelse.oppdaterehenvendelsesbehandlingservice"/>
         <webservice alias="domene.Brukerdialog:sendsoknadservice_v1"
                     mapToProperty="soknad.webservice.henvendelse.sendsoknadservice"/>
         <baseUrl alias="innlogging.navnetjeneste" mapToProperty="innlogging.navnetjeneste"/>
         <baseUrl alias="minehenvendelser.link" mapToProperty="minehenvendelser.link"/>
         <baseUrl alias="dialogarena.cms" mapToProperty="dialogarena.cms"/>
         <baseUrl alias="dialogarena.navnolink" mapToProperty="dialogarena.navnolink" />
-        <baseUrl alias="dokumentinnsending.logoutURL" mapToProperty="dokumentinnsending.logoutURL"/>
-        <baseUrl alias="dokumentinnsending.navigasjonslink" mapToProperty="dokumentinnsending.navigasjonslink"/>
         <applicationCertificate alias="srvSendsoknad"/>
     </resources>
     <security serviceUserResourceAlias="srvSendsoknad">
