@@ -80,7 +80,7 @@ public class ConsumerConfig {
         Client client = ClientProxy.getClient(portType);
         HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
 
-        String property = System.getProperty("no.nav.sbl.dialogarena.dokumentinnsending.sslMock");
+        String property = System.getProperty("no.nav.sbl.dialogarena.websoknad.sslMock");
         if (property != null && property.equals("true")) {
             TLSClientParameters params = new TLSClientParameters();
             params.setDisableCNCheck(true);
