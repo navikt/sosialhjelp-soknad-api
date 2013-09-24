@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad;
 
+import no.nav.modig.content.CmsContentRetriever;
 import no.nav.modig.frontend.FrontendConfigurator;
 import no.nav.modig.frontend.FrontendModules;
 import no.nav.modig.frontend.MetaTag;
@@ -28,6 +29,8 @@ public class WicketApplication extends WebApplication {
     @Inject
     private ApplicationContext applicationContext;
 
+    @Inject
+    private CmsContentRetriever cmsContentRetriever;
 
     public static WicketApplication get() {
         return (WicketApplication) Application.get();
@@ -78,7 +81,7 @@ public class WicketApplication extends WebApplication {
         applicationSettings.setUploadProgressUpdatesEnabled(true);
 
 
-        new ApplicationSettingsConfig().configure(this);
+        new ApplicationSettingsConfig().withExternalExceptionPages(null).configure(this);
 
         Application.get().getComponentPostOnBeforeRenderListeners().add(new StatelessChecker());
 
@@ -95,6 +98,7 @@ public class WicketApplication extends WebApplication {
 
         getSecuritySettings().setEnforceMounts(true);
         getSecuritySettings().setCryptFactory(new KeyInSessionSunJceCryptFactory());
+        getResourceSettings().getStringResourceLoaders().add(0, new EnonicResourceLoader(cmsContentRetriever));
 
         setSpringComponentInjector();
     }

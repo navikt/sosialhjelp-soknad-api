@@ -8,6 +8,7 @@ import org.apache.wicket.markup.html.TransparentWebMarkupContainer;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -45,6 +46,20 @@ public class BasePage extends WebPage {
         body.add(new InnstillingerPanel("innstillinger", getInnloggetIsTrueModel(), cmsContentRetriever));
         body.add(new NavigasjonPanel("navigasjon", navigasjonsLink));
         body.add(new FooterPanel("footer", footerLinks, getInnloggetIsTrueModel(), FALSE, cmsContentRetriever));
+
+        body.add(new Link("avbrytInnsending") {
+            @Override
+            public void onClick() {
+
+            }
+        });
+
+        body.add(new Link("fortsettSenere") {
+            @Override
+            public void onClick() {
+
+            }
+        });
     }
 
     public final WebMarkupContainer getBody() {
