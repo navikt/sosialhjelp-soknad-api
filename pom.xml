@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -781,21 +782,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>no.nav.maven.plugins</groupId>
-                <artifactId>modig-scm-plugin</artifactId>
-                <version>1.1.10</version>
-                <executions>
-                    <execution>
-                        <id>Check illegal or unwanted dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>failon-unwanted-dependencies</goal>
-                            <goal>report-unapproved-dependencies</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>2.2.1</version>
@@ -837,22 +823,4 @@
             </properties>
         </profile>
     </profiles>
-
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>no.nav.maven.plugins</groupId>
-                <artifactId>modig-scm-plugin</artifactId>
-                <version>1.1.10</version>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>generate-jira-changes</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-        </plugins>
-    </reporting>
 </project>
