@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.pages.startsoknad;
 
-import no.nav.sbl.dialogarena.dokumentinnsending.pages.base.mainbasepage.MainBasePage;
+import no.nav.sbl.dialogarena.websoknad.pages.basepage.BasePage;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SendSoknadServicePage;
 import no.nav.sbl.dialogarena.websoknad.pages.soknad.OpenSoknadPage;
 import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
-public class StartSoknadPage extends MainBasePage {
+public class StartSoknadPage extends BasePage {
 
     @Inject
     private WebSoknadService soknadService;
