@@ -9,4 +9,3 @@ angular.module('app.services',['ngResource'])
 
 	return $resource('/sendsoknad/rest/soknad/:id', {id: '@id'});
 })
-
