@@ -1,5 +1,4 @@
 'use strict';
-
 angular.module('app.controllers', ['app.services'])
 
 .controller('ungerUtlandCtrl', ['$scope', function($scope) {

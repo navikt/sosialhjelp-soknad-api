@@ -1,4 +1,6 @@
-angular.module('app.grunnlagsdata', ['ngResource'])
+'use strict';
+
+angular.module('app.grunnlagsdata', ['ngResource', 'app.services'])
 
 .controller('GrunnlagsdataCtrl', ['$scope', 'grunnlagsdataService', '$location', function($scope, grunnlagsdataService,$location) {
 	$scope.personalia = grunnlagsdataService.get({id: 12345612345});
