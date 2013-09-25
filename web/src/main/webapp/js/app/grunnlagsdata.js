@@ -1,7 +1,7 @@
-angular.module('app.grunnlagsdata', ['ngResource'])
+angular.module('app.grunnlagsdata', ['app.services'])
 
 .controller('GrunnlagsdataCtrl', function($scope, $routeParams, grunnlagsdataService) {
-	$scope.personalia = grunnlagsdataService.get({id: 12345612345});
+	$scope.personalia = grunnlagsdataService.get();
 
 	$scope.arena = {
 	    jobbsoker: false
@@ -16,9 +16,4 @@ angular.module('app.grunnlagsdata', ['ngResource'])
 	  $scope.isGyldigAlder = function() {
 	    return ($scope.personalia.alder >= $scope.minAlder && $scope.personalia.alder < $scope.maxAlder);
 	  };
-})
-
-
-.factory('grunnlagsdataService', function($resource){
-	return $resource('/sendsoknad/rest/grunnlagsdata/:id', {id: '@id'});
 })

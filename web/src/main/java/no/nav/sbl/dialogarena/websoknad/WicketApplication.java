@@ -7,7 +7,6 @@ import no.nav.modig.frontend.MetaTag;
 import no.nav.modig.wicket.configuration.ApplicationSettingsConfig;
 import no.nav.sbl.dialogarena.webkomponent.innstillinger.InnstillingerPanel;
 import no.nav.sbl.dialogarena.websoknad.pages.sendsoknad.SoknadListePage;
-import no.nav.sbl.dialogarena.websoknad.pages.soknad.OpenSoknadPage;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.StartSoknadPage;
 import no.nav.sbl.dialogarena.websoknad.selftest.SelfTestPage;
 import org.apache.wicket.Application;
@@ -90,9 +89,7 @@ public class WicketApplication extends WebApplication {
 
         Application.get().getRequestLoggerSettings().setRequestLoggerEnabled(true);
 
-        mountPage("apne/${soknadId}", OpenSoknadPage.class);
-
-        mountPage("startSoknad", StartSoknadPage.class);
+        mountPage("soknad/${soknadType}", StartSoknadPage.class);
         mountPage("internal/selftest", SelfTestPage.class);
         mountPage("soknadliste", SoknadListePage.class);
 

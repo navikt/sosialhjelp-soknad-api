@@ -1,14 +1,38 @@
 package no.nav.sbl.dialogarena.websoknad.pages.sendsoknad;
 
 import no.nav.sbl.dialogarena.websoknad.pages.basepage.BasePage;
-import org.apache.wicket.devutils.stateless.StatelessComponent;
+import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.StartSoknadPage;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
-@StatelessComponent
 public class SoknadListePage extends BasePage {
 
 	public SoknadListePage() {
         super(new PageParameters());
+
+        add(new Link("dagpenger") {
+            @Override
+            public void onClick() {
+                PageParameters parameters = new PageParameters().set("soknadType", "Dagpenger");
+                setResponsePage(StartSoknadPage.class, parameters);
+            }
+        });
+
+        add(new Link("barnebidrag") {
+            @Override
+            public void onClick() {
+                PageParameters parameters = new PageParameters().set("soknadType", "barnebidrag");
+                setResponsePage(StartSoknadPage.class, parameters);
+            }
+        });
+
+        add(new Link("barnetrygd") {
+            @Override
+            public void onClick() {
+                PageParameters parameters = new PageParameters().set("soknadType", "barnetrygd");
+                setResponsePage(StartSoknadPage.class, parameters);
+            }
+        });
 	}
 
 
