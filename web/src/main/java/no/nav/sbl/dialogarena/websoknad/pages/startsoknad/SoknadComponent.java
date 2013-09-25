@@ -1,7 +1,6 @@
-package no.nav.sbl.dialogarena.websoknad.pages.soknad;
+package no.nav.sbl.dialogarena.websoknad.pages.startsoknad;
 
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebComponent;
@@ -26,10 +25,10 @@ public class SoknadComponent extends WebComponent {
     private final String soknadType;
     private static List<String> files;
 
-    public SoknadComponent(String id, WebSoknad soknadType) {
+    public SoknadComponent(String id, String soknadType) {
         super(id);
         initLegalFilenames();
-        this.soknadType = soknadType.getGosysId();
+        this.soknadType = soknadType;
     }
 
     private void initLegalFilenames() {

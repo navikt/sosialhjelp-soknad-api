@@ -1,10 +1,9 @@
 package no.nav.sbl.dialogarena.websoknad.domain;
 
-import java.io.Serializable;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -18,7 +17,8 @@ public class Person implements Serializable{
 	private String poststed;
 	private String adresse;
 	private String email;
-	
+	private String fnr;
+
 	public static Person create() {
 		Person p = new Person();
 		p.fornavn = "Ola";
@@ -95,7 +95,12 @@ public class Person implements Serializable{
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
-	
 
+    public String getFnr() {
+        return fnr;
+    }
+
+    public void setFnr(String fnr) {
+        this.fnr = fnr;
+    }
 }
