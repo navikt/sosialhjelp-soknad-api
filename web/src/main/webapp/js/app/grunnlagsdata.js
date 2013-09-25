@@ -9,7 +9,7 @@ angular.module('app.grunnlagsdata', ['ngResource'])
 		gatenavn: 'Majorstuen 1',
 		postnummer: '0123',
 		poststed: 'Oslo',
-		land: 'norge'
+		land: 'england'
 	}
 
 	$scope.midlertidigAdresse = {
@@ -33,7 +33,7 @@ angular.module('app.grunnlagsdata', ['ngResource'])
 		return ($scope.personalia.alder >= $scope.minAlder && $scope.personalia.alder < $scope.maxAlder);
 	};
 	$scope.borIUtlandet = function() {
-		return ($scope.midlertidigAdresse.land != 'norge' || $scope.folkeregistrertAdresse.land != 'norge');
+		return ($scope.midlertidigAdresse.land != 'norge');
 	};
 
 	$scope.faarForskuddsvisUtbetalingPgaKonkurs = function() {
