@@ -1,4 +1,4 @@
-<div data-ng-controller="PersonaliaCtrl">
+<div data-ng-controller="GrunnlagsdataCtrl">
 {{checkUtslagskriterier()}}
 	<p>For å kunne få innvilget søknd om dagpenger må følgende kriterier oppfylles: </p>
 	<ul>
@@ -6,6 +6,7 @@
 		<li>Bo i Norge</li>
 		<li>Være registrert som jobbsøker</li>
 	</ul>
+
 
 	<div data-ng-hide="isGyldigAlder()">
 		<span>Din alder er {{personalia.alder}} år som er over alderskravet. Du oppfyller dermed ikke kravet for å søke.</span>

@@ -8,8 +8,10 @@ import org.apache.wicket.markup.html.TransparentWebMarkupContainer;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -31,7 +33,7 @@ public class BasePage extends WebPage {
 
     private final WebMarkupContainer body;
 
-    public BasePage() {
+    public BasePage(PageParameters parameters) {
         super();
         body = new TransparentWebMarkupContainer("body");
         body.setOutputMarkupId(true);

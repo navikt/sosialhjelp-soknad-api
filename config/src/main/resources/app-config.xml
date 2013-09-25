@@ -23,12 +23,8 @@
                     mapToProperty="soknad.webservice.henvendelse.sendsoknadservice"/>
         <baseUrl alias="innlogging.navnetjeneste" mapToProperty="innlogging.navnetjeneste"/>
         <baseUrl alias="minehenvendelser.link" mapToProperty="minehenvendelser.link"/>
-        <baseUrl alias="dokumentinnsending.cms" mapToProperty="dokumentinnsending.cms"/>
         <baseUrl alias="dialogarena.cms" mapToProperty="dialogarena.cms"/>
-        <smtpServer alias="smtpServer" mapToProperty="dokumentinnsending.smtpServer"/>
         <baseUrl alias="dialogarena.navnolink" mapToProperty="dialogarena.navnolink" />
-        <baseUrl alias="dokumentinnsending.logoutURL" mapToProperty="dokumentinnsending.logoutURL"/>
-        <baseUrl alias="dokumentinnsending.navigasjonslink" mapToProperty="dokumentinnsending.navigasjonslink"/>
         <applicationCertificate alias="srvSendsoknad"/>
     </resources>
     <security serviceUserResourceAlias="srvSendsoknad">
