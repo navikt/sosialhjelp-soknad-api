@@ -1,4 +1,4 @@
-angular.module('sendsoknad',['app.routes','app.brukerdata','app.services','app.directives','app.controllers', 'app.date', 'ngMockE2E'])
+angular.module('sendsoknad',['app.routes','app.brukerdata','app.services','app.directives','app.controllers', 'app.date', 'app.grunnlagsdata', 'ngMockE2E'])
 
 .run(function($httpBackend) {
 	soknadData = {"soknadId":1,"gosysId":"Dagpenger","brukerBehandlingId":"100000000",
@@ -12,6 +12,12 @@ angular.module('sendsoknad',['app.routes','app.brukerdata','app.services','app.d
 						"poststed":{"soknadId":1,"key":"poststed","value":"Oslo"}
 					}
 				};
+
+	pensjonist = {"fornavn":"Ola","etternavn":"Nordmann","mellomnavn":"J","alder":71,"postnummer":"0123","poststed":"Oslo","adresse":"Testveien 1","email":"ola@nordmann.no"};
+	arbeidssoker = {"fornavn":"Test","etternavn":"Testesen","mellomnavn":"","alder":31,"postnummer":"5001","poststed":"Bergen","adresse":"Kalfaret","email":"test@testesen.no"};
+	
+	$httpBackend.whenGET('/sendsoknad/rest/grunnlagsdata/912731247').respond(pensjonist);	
+	$httpBackend.whenGET('/sendsoknad/rest/grunnlagsdata/12345612345').respond(arbeidssoker);
 
 	$httpBackend.whenGET('/sendsoknad/rest/soknad').respond(soknadData);
 	//$httpBackend.whenGET('/sendsoknad/rest/soknad').passThrough();
