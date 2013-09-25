@@ -8,5 +8,7 @@ angular.module('app.routes',['ngRoute'])
 	.when('/arbeidsforhold', {templateUrl: '../html/templates/arbeidsforhold.html', controller: 'PersonaliaCtrl'})
 	.when('/utslagskriterier', {templateUrl: '../html/templates/utslagskriterier.html'})
 	.when('/informasjonsside', {templateUrl: '../html/templates/informasjonsside.html'})
+	.when('/avbryt', {templateUrl: '../html/templates/avbryt.html', controller: 'AvbrytCtrl'})
+	.when('/fortsettsenere', {templateUrl: '../html/templates/fortsettSenere.html', controller: 'SoknadDataCtrl'})
 	.otherwise({redirectTo: '/utslagskriterier'});
 })
