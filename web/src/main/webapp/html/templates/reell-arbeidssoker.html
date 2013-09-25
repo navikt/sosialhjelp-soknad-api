@@ -6,21 +6,42 @@
 		<div class="skjemainnhold">
 			<div class="spm-blokk" >
 				<p class="spm">Som hovedregel må du være villig til å ta enhver type arbeid for å ha rett på dagpenger</p>
-				<label class="svar-alt" ng-class="{'svaret': data.jobb == 'ja'}"><input  class="sendsoknad-radio" data-ng-model="data.jobb" type="radio" name="villigJobb" value="ja" />  Ja, jeg kan ta enhver type arbeid </label>
-				<label class="svar-alt" ng-class="{'svaret': data.jobb == 'nei'}" ><input class="sendsoknad-radio" data-ng-model="data.jobb" type="radio" name="villigJobb" value="nei" ng-class="{active:on}"/>  Nei, jeg kan ikke ta enhver type arbeid </label>
+				<label class="svar-alt" ng-class="{'svaret': data.jobb == 'ja'}">
+				<input  class="sendsoknad-radio" data-ng-model="data.jobb" type="radio" name="villigJobb" value="ja" required/>
+				Ja, jeg kan ta enhver type arbeid </label>
+				<label class="svar-alt" ng-class="{'svaret': data.jobb == 'nei'}" >
+				<input class="sendsoknad-radio" data-ng-model="data.jobb" type="radio" name="villigJobb" value="nei" required/>
+				<span class="error" data-ng-show="villigForm.villigJobb.$error.required">{{feilmeldinger.paakreves}} </span>
+				 Nei, jeg kan ikke ta enhver type arbeid </label>
 			</div>
 
 
 			<div class="spm-blokk">
 				<p class="spm"> Som hovedregel må du være villig til å pendle eller flytte for å ha rett på dagpenger</p>
-				<label class="svar-alt" ng-class="{'svaret': data.pendle == 'ja'}"><input class="sendsoknad-radio" data-ng-model="data.pendle" type="radio" name="villigPendle" value="ja" required/> Ja, jeg er villig til å flytte eller pendle</label>
-				<label class="svar-alt" ng-class="{'svaret': data.pendle == 'nei'}"><input  class="sendsoknad-radio" data-ng-model="data.pendle" type="radio" name="villigPendle" value="nei" />Nei, jeg har ikke mulighet til å flytte eller pendle</label>
+				<label class="svar-alt" ng-class="{'svaret': data.pendle == 'ja'}">
+				<input class="sendsoknad-radio" data-ng-model="data.pendle" type="radio" name="villigPendle" value="ja" required/>
+				Ja, jeg er villig til å flytte eller pendle</label>
+				<label class="svar-alt" ng-class="{'svaret': data.pendle == 'nei'}">
+				<input  class="sendsoknad-radio" data-ng-model="data.pendle" type="radio" name="villigPendle" value="nei" required/>
+				<span class="error" data-ng-show="villigForm.villigPendle.$error.required">{{feilmeldinger.paakreves}} </span>
+				Nei, jeg har ikke mulighet til å flytte eller pendle</label>
 
 				<div class="blokk-resultat" ng-show="data.pendle == 'nei'">
 					<p class="spm">Hvorfor har du ikke mulighet til å pendle eller flytte?</p>
-					<label class="svar-alt"><input class="sendsoknad-check" type="checkbox" name="ikkePendleBarn" data-ng-model="data.ikkePendleBarn"value="barn"> Omsorg for barn under 18år <a class="mer-info"  href="">Mer info</a></label>
-					<label class="svar-alt"><input class="sendsoknad-check" type="checkbox" name="ikkePendleGammel" data-ng-model="data.ikkePendleGammel" value="60"> Over 60 år </span><a class="mer-info"  href="">Mer info</a></label>
-					<label class="svar-alt"><input class="sendsoknad-check" type="checkbox" name="ikkePendleHelse" data-ng-model="data.ikkePendleHelse" value="helse"> Helsemessige årsaker <a class="mer-info" href="">Mer info</label>
+					<label class="svar-alt">
+					<input class="sendsoknad-check" type="checkbox" name="ikkePendleBarn" data-ng-model="data.ikkePendleBarn"value="barn" required>
+					<span class="error" data-ng-show="villigForm.ikkePendleHelse.$error.required">{{feilmeldinger.paakreves}} </span>
+					 Omsorg for barn under 18år <a class="mer-info"  href="">Mer info</a></label>
+					
+					<label class="svar-alt">
+					<input class="sendsoknad-check" type="checkbox" name="ikkePendleGammel" data-ng-model="data.ikkePendleGammel" value="60" required>
+					<span class="error" data-ng-show="villigForm.ikkePendleHelse.$error.required">{{feilmeldinger.paakreves}} </span>
+					Over 60 år </span><a class="mer-info"  href="">Mer info</a></label>
+					
+					<label class="svar-alt">
+					<input class="sendsoknad-check" type="checkbox" name="ikkePendleHelse" data-ng-model="data.ikkePendleHelse" value="helse" required>
+					<span class="error" data-ng-show="villigForm.ikkePendleHelse.$error.required">{{feilmeldinger.paakreves}} </span>
+					Helsemessige årsaker <a class="mer-info" href="">Mer info</label>
 
 					<div class="spm-blokk" data-ng-show="data.ikkePendleHelse == true">
 						<textarea data-ng-model="data.ikkePendleHelseTekst"></textarea>
@@ -33,18 +54,28 @@
 
 			<div class="spm-blokk">
 				<p class="spm"> Som hovedregel må du være villig til å ta arbeid både hel- og deltidsjobb for å ha rett på dagpenger </p>
-				<label class="svar-alt" ng-class="{'svaret': data.deltid == 'ja'}"><input class="sendsoknad-radio" data-ng-model="data.deltid" type="radio" name="villigDeltid" value="ja" required/> Ja, jeg er villig til å søke både hel- og deltidsjobb</label>
-				<label class="svar-alt" ng-class="{'svaret': data.deltid == 'nei'}"><input  class="sendsoknad-radio" data-ng-model="data.deltid" type="radio" name="villigDeltid" value="nei"/>Nei, jeg kan kun jobbe deltid</label>
+				<label class="svar-alt" ng-class="{'svaret': data.deltid == 'ja'}">
+				<input class="sendsoknad-radio" data-ng-model="data.deltid" type="radio" name="villigDeltid" value="ja" required/>
+				Ja, jeg er villig til å søke både hel- og deltidsjobb</label>
+
+				<label class="svar-alt" ng-class="{'svaret': data.deltid == 'nei'}">
+				<input  class="sendsoknad-radio" data-ng-model="data.deltid" type="radio" name="villigDeltid" value="nei" required/>
+				<span class="error" data-ng-show="villigForm.villigDeltid.$error.required">{{feilmeldinger.paakreves}} </span>
+				Nei, jeg kan kun jobbe deltid</label>
 			</div>
 
 			<div class="spm-blokk"> 
 				<p class="spm">Finnes det arbeid du av helsemessige årsaker ikke kan ta?</p>
-				<label class="svar-alt" ng-class="{'svaret': data.helse == 'god'}"><input  class="sendsoknad-radio" data-ng-model="data.helse" type="radio" name="villigHelse" value="god" required/> Nei </label>
-				<label class="svar-alt" ng-class="{'svaret': data.helse == 'darlig'}"><input  class="sendsoknad-radio" data-ng-model="data.helse" type="radio" name="villigHelse" value="darlig" required/> Ja </label>
+				<label class="svar-alt" ng-class="{'svaret': data.helse == 'god'}">
+				<input  class="sendsoknad-radio" data-ng-model="data.helse" type="radio" name="villigHelse" value="god" required/>
+				Nei </label>
+
+				<label class="svar-alt" ng-class="{'svaret': data.helse == 'darlig'}">
+				<input  class="sendsoknad-radio" data-ng-model="data.helse" type="radio" name="villigHelse" value="darlig" required/>
+				<span class="error" data-ng-show="villigForm.villigHelse.$error.required">{{feilmeldinger.paakreves}} </span>
+				Ja </label>
 			</div>
-
-			<a ng-click="setRoute('personalia')"><button>FORRIGE</button></a>
-
+			<a href="#/personalia"><button>FORRIGE</button></a>
 			<a href="#/arbeidsforhold"><button ng-disabled="villigForm.villigJobb.$invalid || villigForm.villigPendle.$invalid || villigForm.villigHelse.$invalid || villigForm.villigDeltid.$invalid || (data.deltid == 'nei' && villigForm.villigDeltidProsent.$invalid)">NESTE</button></a>
 		</div>
 	</form>

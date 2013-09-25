@@ -1,37 +1,5 @@
 'use strict';
-
 angular.module('app.controllers', ['app.services'])
-
-.controller('PersonaliaCtrl', ['$scope', '$location', function($scope, $location) {
-	$scope.minAlder=18;
-  $scope.maxAlder=67;
-
-  $scope.personalia = {
-    fornavn: 'Ingvild',
-    etternavn: 'Indrebø',
-    alder: 67,
-    fnr: '12345123456',
-    postnummer: '0123',
-    poststed: 'Oslo',
-    adresse: 'Majorstuen 1',
-    landskode:'+47',
-    barnUtland:''
-  };
-
-  $scope.arena = {
-    jobbsoker: false
-  }
-
-  $scope.checkUtslagskriterier = function() {
-    if($scope.isGyldigAlder() && $scope.arena.jobbsoker) {
-      $location.path("/dagpenger");
-    }
-  }
-
-  $scope.isGyldigAlder = function() {
-    return ($scope.personalia.alder >= $scope.minAlder && $scope.personalia.alder < $scope.maxAlder);
-  };
-}])
 
 .controller('ungerUtlandCtrl', ['$scope', function($scope) {
 
@@ -320,113 +288,113 @@ angular.module('app.controllers', ['app.services'])
 
   $scope.nyttArbeidsforhold = function($event){
     $scope.arbeidsforhold.push( {arbeidsgiverNavn: '',
-    sluttaarsaken: '',
-    oppsigelseSelvInnskranking:'',
-    oppsigelseSelvFra: undefined,
-    oppsigelseSelvTil: undefined,
-    oppsigelseSelvLonn:'',
-    oppsigelseSelvLonnFra: undefined,
-    oppsigelseSelvLonnTil: undefined,
-    oppsigelseFra: undefined,
-    oppsigelseTil: undefined,
-    oppsigelseNyttTilbud: '',
-    oppsigelseLonn:'',
-    oppsigelseLonnFra: undefined,
-    oppsigelseLonnTil: undefined,
-    avskjedighetFra: undefined,
-    avskjedighetLonn:'',
-    avskjedighetLonnFra: undefined,
-    avskjedighetLonnTil: undefined,
-    permiteringFra: undefined,
-    permiteringTil: undefined,
-    permiteringVetikke:'',
-    permiteringProsent: '',
-    permiteringFerie: '',
-    konkursBostyrersnavn:'',
-    konkursLonnsgarantiordning:'',
-    redusertarbeidstidFra: undefined,
-    redusertarbeidstidTilbud:'',
-    redusertarbeidstidLonn:'',
-    redusertarbeidstidLonnFra: undefined,
-    redusertarbeidstidLonnTil: undefined,
-    kontraktutgaattAvskjedighetFra: undefined,
-    kontraktutgaattLonn:'',
-    kontraktutgaattLonnFra: undefined,
-    kontraktutgaattLonnTil: undefined,
-    kontraktFra: undefined,
-    kontraktNy:'',
-    sluttaarsak: [
-    {id: 1, navn:'Sagt opp selv'},
-    {id: 2, navn:'Sagt opp av arbeidsgiver'},
-    {id: 3, navn:'Avskjediget'},
-    {id: 4, navn:'Permitert'},
-    {id: 5, navn:'Konkurs'},
-    {id: 6, navn:'Redusert arbeidstid med mer enn 50% (40% for fiskere)'},
-    {id: 7, navn:'Kontrakt utgått'},
-    {id: 8, navn:'Sluttet'},
-    ]
-  });
-    $event.preventDefault();
+      sluttaarsaken: '',
+      oppsigelseSelvInnskranking:'',
+      oppsigelseSelvFra: undefined,
+      oppsigelseSelvTil: undefined,
+      oppsigelseSelvLonn:'',
+      oppsigelseSelvLonnFra: undefined,
+      oppsigelseSelvLonnTil: undefined,
+      oppsigelseFra: undefined,
+      oppsigelseTil: undefined,
+      oppsigelseNyttTilbud: '',
+      oppsigelseLonn:'',
+      oppsigelseLonnFra: undefined,
+      oppsigelseLonnTil: undefined,
+      avskjedighetFra: undefined,
+      avskjedighetLonn:'',
+      avskjedighetLonnFra: undefined,
+      avskjedighetLonnTil: undefined,
+      permiteringFra: undefined,
+      permiteringTil: undefined,
+      permiteringVetikke:'',
+      permiteringProsent: '',
+      permiteringFerie: '',
+      konkursBostyrersnavn:'',
+      konkursLonnsgarantiordning:'',
+      redusertarbeidstidFra: undefined,
+      redusertarbeidstidTilbud:'',
+      redusertarbeidstidLonn:'',
+      redusertarbeidstidLonnFra: undefined,
+      redusertarbeidstidLonnTil: undefined,
+      kontraktutgaattAvskjedighetFra: undefined,
+      kontraktutgaattLonn:'',
+      kontraktutgaattLonnFra: undefined,
+      kontraktutgaattLonnTil: undefined,
+      kontraktFra: undefined,
+      kontraktNy:'',
+      sluttaarsak: [
+      {id: 1, navn:'Sagt opp selv'},
+      {id: 2, navn:'Sagt opp av arbeidsgiver'},
+      {id: 3, navn:'Avskjediget'},
+      {id: 4, navn:'Permitert'},
+      {id: 5, navn:'Konkurs'},
+      {id: 6, navn:'Redusert arbeidstid med mer enn 50% (40% for fiskere)'},
+      {id: 7, navn:'Kontrakt utgått'},
+      {id: 8, navn:'Sluttet'},
+      ]
+    });
+$event.preventDefault();
+}
+
+$scope.arbeidsforhold = [{
+  arbeidsgiverNavn: '',
+  varighetFra: undefined,
+  varighetTil: undefined,
+  valgtLand: $scope.land[163].name,
+  sluttaarsaken: '',
+  oppsigelseSelvInnskranking:'',
+  oppsigelseSelvFra: undefined,
+  oppsigelseSelvTil: undefined,
+  oppsigelseSelvLonn:'',
+  oppsigelseSelvLonnFra: undefined,
+  oppsigelseSelvLonnTil: undefined,
+  oppsigelseFra: undefined,
+  oppsigelseTil: undefined,
+  oppsigelseNyttTilbud: '',
+  oppsigelseLonn:'',
+  oppsigelseLonnFra: undefined,
+  oppsigelseLonnTil: undefined,
+  avskjedighetFra: undefined,
+  avskjedighetLonn:'',
+  avskjedighetLonnFra: undefined,
+  avskjedighetLonnTil: undefined,
+  permiteringFra: undefined,
+  permiteringTil: undefined,
+  permiteringVetikke:'',
+  permiteringProsent: '',
+  permiteringFerie: '',
+  konkursBostyrersnavn:'',
+  konkursLonnsgarantiordning:'',
+  redusertarbeidstidFra: undefined,
+  redusertarbeidstidTilbud:'',
+  redusertarbeidstidLonn:'',
+  redusertarbeidstidLonnFra: undefined,
+  redusertarbeidstidLonnTil: undefined,
+  kontraktutgaattAvskjedighetFra: undefined,
+  kontraktutgaattLonn:'',
+  kontraktutgaattLonnFra: undefined,
+  kontraktutgaattLonnTil: undefined,
+  kontraktFra: undefined,
+  kontraktNy:'',
+  sluttaarsak: [
+  {id: 1, navn:'Sagt opp selv'},
+  {id: 2, navn:'Sagt opp av arbeidsgiver'},
+  {id: 3, navn:'Avskjediget'},
+  {id: 4, navn:'Permitert'},
+  {id: 5, navn:'Konkurs'},
+  {id: 6, navn:'Redusert arbeidstid med mer enn 50% (40% for fiskere)'},
+  {id: 7, navn:'Kontrakt utgått'},
+  {id: 8, navn:'Sluttet'},
+
+  ]
+}];
+
+$scope.vetIkke = function(){
+  if($scope.arbeidsforhold.permiteringVetikke){
+    $scope.arbeidsforhold.permiteringTil = undefined; 
+    $scope.arbeidsforhold.permiteringFra = undefined;
   }
-
-  $scope.arbeidsforhold = [{
-    arbeidsgiverNavn: '',
-    varighetFra: undefined,
-    varighetTil: undefined,
-    valgtLand: $scope.land[163].name,
-    sluttaarsaken: '',
-    oppsigelseSelvInnskranking:'',
-    oppsigelseSelvFra: undefined,
-    oppsigelseSelvTil: undefined,
-    oppsigelseSelvLonn:'',
-    oppsigelseSelvLonnFra: undefined,
-    oppsigelseSelvLonnTil: undefined,
-    oppsigelseFra: undefined,
-    oppsigelseTil: undefined,
-    oppsigelseNyttTilbud: '',
-    oppsigelseLonn:'',
-    oppsigelseLonnFra: undefined,
-    oppsigelseLonnTil: undefined,
-    avskjedighetFra: undefined,
-    avskjedighetLonn:'',
-    avskjedighetLonnFra: undefined,
-    avskjedighetLonnTil: undefined,
-    permiteringFra: undefined,
-    permiteringTil: undefined,
-    permiteringVetikke:'',
-    permiteringProsent: '',
-    permiteringFerie: '',
-    konkursBostyrersnavn:'',
-    konkursLonnsgarantiordning:'',
-    redusertarbeidstidFra: undefined,
-    redusertarbeidstidTilbud:'',
-    redusertarbeidstidLonn:'',
-    redusertarbeidstidLonnFra: undefined,
-    redusertarbeidstidLonnTil: undefined,
-    kontraktutgaattAvskjedighetFra: undefined,
-    kontraktutgaattLonn:'',
-    kontraktutgaattLonnFra: undefined,
-    kontraktutgaattLonnTil: undefined,
-    kontraktFra: undefined,
-    kontraktNy:'',
-    sluttaarsak: [
-    {id: 1, navn:'Sagt opp selv'},
-    {id: 2, navn:'Sagt opp av arbeidsgiver'},
-    {id: 3, navn:'Avskjediget'},
-    {id: 4, navn:'Permitert'},
-    {id: 5, navn:'Konkurs'},
-    {id: 6, navn:'Redusert arbeidstid med mer enn 50% (40% for fiskere)'},
-    {id: 7, navn:'Kontrakt utgått'},
-    {id: 8, navn:'Sluttet'},
-
-    ]
-  }];
-
-  $scope.vetIkke = function(){
-    if($scope.arbeidsforhold.permiteringVetikke){
-      $scope.arbeidsforhold.permiteringTil = undefined; 
-      $scope.arbeidsforhold.permiteringFra = undefined;
-    }
-  }
+}
 
 }])

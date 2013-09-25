@@ -7,7 +7,7 @@ describe('Controllers', function() {
 	var $scope;
 	var $controller;
 
-	beforeEach(module('app.controllers'));
+	beforeEach(module('app.grunnlagsdata'));
 	
 	beforeEach(inject(function ($injector) {
 		$scope = $injector.get('$rootScope');
@@ -15,16 +15,16 @@ describe('Controllers', function() {
 		$controller = $injector.get('$controller');
 	}));
 
-	describe('PersonaliaCtrl', function() {
+	describe('GrunnlagsdataCtrl', function() {
 		var scope, ctrl;
 		beforeEach(function(){
 			scope = $scope;
-			ctrl = $controller('PersonaliaCtrl', {$scope: scope});
+			ctrl = $controller('GrunnlagsdataCtrl', {$scope: scope});
 		});
 
-		it('skal returnere personalia for bruker', function(){
-			expect(scope.personalia.fornavn).toEqual('Ingvild');
-		});
+		//it('skal returnere personalia for bruker', function(){
+		//	expect(scope.personalia.fornavn).toEqual('Test');
+		//});
 
 		
 		it('skal returnere false for ung arbeidsøker', function() {
@@ -46,6 +46,22 @@ describe('Controllers', function() {
 		it('skal returnere false for på grensen til for gammel arbeidsøker', function() {
 			scope.personalia.alder = 66;
 			expect(scope.isGyldigAlder()).toEqual(true);
+		});
+		it('skal returnere false med folkeregistrert adresse i norge og midlertidig adresse i norge', function() {
+			scope.folkeregistrertAdresse.land = 'norge';
+			scope.midlertidigAdresse.land = 'norge';
+			expect(scope.borIUtlandet()).toEqual(false);
+		});
+
+		it('skal returnere true med midlertidig adresse i utlandet og folkeregistrert adresse i utlandet', function() {
+			scope.folkeregistrertAdresse.land = 'norge';
+			scope.midlertidigAdresse.land = 'england';
+			expect(scope.borIUtlandet()).toEqual(true);
+		});
+		it('skal returnere true med midlertidig adresse i norge og folkeregistrert adresse i utlandet', function() {
+			scope.folkeregistrertAdresse.land = 'england';
+			scope.midlertidigAdresse.land = 'norge';
+			expect(scope.borIUtlandet()).toEqual(false);
 		});
 	});
 });
