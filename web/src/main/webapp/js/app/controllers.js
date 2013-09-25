@@ -2,51 +2,6 @@
 
 angular.module('app.controllers', [])
 
-.controller('PersonaliaCtrl', ['$scope', '$location', function($scope, $location) {
-	$scope.minAlder=18;
-  $scope.maxAlder=67;
-
-  $scope.personalia = {
-    fornavn: 'Ingvild',
-    etternavn: 'Indrebø',
-    alder: 67,
-    fnr: '12345123456',
-    landskode:'+47',
-    barnUtland:''
-  }
-
-  $scope.folkeregistrertAdresse = {
-    adresse: 'Majorstuen 1',
-    postnummer: '0123',
-    poststed: 'Oslo',
-    land: ''
-  }
-
-   $scope.midlertidigAdresse = {
-    adresse: 'Majorstuen 1',
-    postnummer: '0123',
-    poststed: 'Oslo',
-    land: ''
-  }
-
-  $scope.arena = {
-    jobbsoker: false
-  }
-
-  $scope.checkUtslagskriterier = function() {
-    if($scope.isGyldigAlder() && $scope.arena.jobbsoker && $scope.borIUtlandet()) {
-      $location.path("/dagpenger");
-    }
-  }
-
-  $scope.isGyldigAlder = function() {
-    return ($scope.personalia.alder >= $scope.minAlder && $scope.personalia.alder < $scope.maxAlder);
-  };
-   $scope.borIUtlandet = function() {
-    return ($scope.midlertidigAdresse.land != 'norge' || $scope.folkeregistrertAdresse.land != 'norge');
-  };
-}])
-
 .controller('ungerUtlandCtrl', ['$scope', function($scope) {
 
   $scope.ungerUtland = [{

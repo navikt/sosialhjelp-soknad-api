@@ -17,7 +17,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
  */
 @Configuration
 @Import({CacheConfig.class, FooterConfig.class, GAConfig.class, ConsumerConfig.class, ContentConfig.class})
-@ImportResource("classpath:net/bull/javamelody/monitoring-spring.xml")
 public class ApplicationContext {
 
     @Value("${dialogarena.navnolink.url}")
@@ -61,42 +60,4 @@ public class ApplicationContext {
         threadPoolTaskExecutor.setWaitForTasksToCompleteOnShutdown(true);
         return threadPoolTaskExecutor;
     }
-
-//    @Bean
-//    public DefaultPointcutAdvisor advisor() throws ClassNotFoundException {
-//        DefaultPointcutAdvisor advisor = new MonitoringSpringAdvisor();
-//        MonitoredWithInterfacePointcut pointcut = new MonitoredWithInterfacePointcut();
-//        pointcut.setInterfaceName("no.nav.sbl.dialogarena.websoknad.service.SoknadService");
-//        advisor.setPointcut(pointcut);
-//        return advisor;
-//    }
-
-//    @Bean
-//    public DefaultPointcutAdvisor advisor2() throws ClassNotFoundException {
-//        DefaultPointcutAdvisor advisor = new MonitoringSpringAdvisor();
-//        MonitoredWithInterfacePointcut pointcut = new MonitoredWithInterfacePointcut();
-//        pointcut.setInterfaceName("no.nav.sbl.dialogarena.websoknad.service.PersonService");
-//        advisor.setPointcut(pointcut);
-//        return advisor;
-//    }
-//
-//    @Bean
-//    public DefaultPointcutAdvisor advisor3() throws ClassNotFoundException {
-//        DefaultPointcutAdvisor advisor = new MonitoringSpringAdvisor();
-//        MonitoredWithInterfacePointcut pointcut = new MonitoredWithInterfacePointcut();
-//        pointcut.setInterfaceName("no.nav.sbl.dialogarena.websoknad.service.OpprettBrukerBehandlingService");
-//        advisor.setPointcut(pointcut);
-//        return advisor;
-//    }
-
-//    @Bean
-//    public DefaultPointcutAdvisor advisor4() throws ClassNotFoundException {
-//        DefaultPointcutAdvisor advisor = new MonitoringSpringAdvisor();
-//        MonitoredWithInterfacePointcut pointcut = new MonitoredWithInterfacePointcut();
-//        pointcut.setInterfaceName("no.nav.sbl.dialogarena.websoknad.service.BrukerBehandlingServiceIntegration");
-//        advisor.setPointcut(pointcut);
-//        return advisor;
-//    }
-
-
 }
