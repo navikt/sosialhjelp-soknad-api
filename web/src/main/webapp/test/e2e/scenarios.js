@@ -20,13 +20,17 @@
 
 		it('skal redirigere index.html til index.html#/utslagskriterier', function(){
 			expect(browser().location().path()).toBe('/utslagskriterier');
-		});
+		})
+	it('skal redirigere index.html til index.html#/dagpenger hvis bruker kommer videre fra utslagskriterier', function() {
+						expect(browser().location().path()).toBe('/utslagskriterier');
+
+		})
 
 		it('skal presentere personalia hvis bruker kommer videre fra utslagskriterier', function() {
 			element("#fortsett").click();
 			expect(browser().location().path()).toBe('#personalia');
 		})
-
+	
 		//Disse testene må refaktores. 
 
 		/*

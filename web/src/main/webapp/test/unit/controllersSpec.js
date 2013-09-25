@@ -47,6 +47,28 @@ describe('Controllers', function() {
 			scope.personalia.alder = 66;
 			expect(scope.isGyldigAlder()).toEqual(true);
 		});
+		it('skal returnere true med folkeregistrert adresse i utlandet', function() {
+			scope.folkeregistrertAdresse.land = 'england';
+			expect(scope.borIUtlandet()).toEqual(true);
+		});
+
+		it('skal returnere false med folkeregistrert adresse i norge', function() {
+			scope.folkeregistrertAdresse.land = 'norge';
+			scope.midlertidigAdresse.land = 'norge';
+
+			expect(scope.borIUtlandet()).toEqual(false);
+		});
+
+		it('skal returnere true med midlertidig adresse i utlandet', function() {
+			scope.folkeregistrertAdresse.land = 'norge';
+			scope.midlertidigAdresse.land = 'england';
+			expect(scope.borIUtlandet()).toEqual(true);
+		});
+		it('skal returnere false/true??? med midlertidig adresse i norge og folkeregistrert adresse i utlandet', function() {
+			scope.folkeregistrertAdresse.land = 'england';
+			scope.midlertidigAdresse.land = 'norge';
+			expect(scope.borIUtlandet()).toEqual(true);
+		});
 	});
 });
 
