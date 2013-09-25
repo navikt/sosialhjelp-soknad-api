@@ -37,6 +37,12 @@ public class SoknadDataController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.DELETE)
+    @ResponseBody()
+    public void slettSoknad(@PathVariable Long soknadId) {
+        soknadService.avbrytSoknad(soknadId);
+    }
+
     @RequestMapping(value = "/{faktum}", method = RequestMethod.POST)
     public void lagreFaktum(@PathVariable Long soknadId, @PathVariable Long faktumId, @RequestBody Faktum faktum) {
         if(!faktumId.equals(faktum.getKey())){

@@ -123,6 +123,17 @@ angular.module('app.directives', [])
   };
 })
 
+.directive('knapprad', function () {
+    return {
+        restrict: "E",
+        replace: true,
+        template: function() {
+            var rad = lagKnappeRad();
+            return rad.prop('outerHTML');
+        }
+    }
+})
+
 
 function fraMindreEnnTil(fra, til){
   var gyldig = false;

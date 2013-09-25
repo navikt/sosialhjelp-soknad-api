@@ -42,10 +42,6 @@
             <artifactId>modig-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-consumer</artifactId>
             <version>${project.version}</version>
@@ -53,10 +49,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>dokumentinnsending-consumer</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>dokumentinnsending-business</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -85,10 +77,6 @@
         </dependency>
         <dependency>
             <groupId>org.apache.wicket</groupId>
-            <artifactId>wicket-extensions</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.wicket</groupId>
             <artifactId>wicket-request</artifactId>
         </dependency>
         <dependency>
@@ -98,10 +86,6 @@
         <dependency>
             <groupId>org.apache.wicket</groupId>
             <artifactId>wicket-util</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nav.modig</groupId>
@@ -116,20 +100,12 @@
             <artifactId>modig-frontend-wicket</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-detect</artifactId>
-        </dependency>
-        <dependency>
             <groupId>net.sourceforge.collections</groupId>
             <artifactId>collections-generic</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -148,22 +124,9 @@
             <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-security-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-pdf</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-api</artifactId>
@@ -245,10 +208,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-expression</artifactId>
             <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -384,17 +343,6 @@
             <artifactId>mail</artifactId>
             <scope>test</scope>
         </dependency>
-
-
-        <!-- Monitoring -->
-
-        <dependency>
-            <groupId>net.bull.javamelody</groupId>
-            <artifactId>javamelody-core</artifactId>
-            <version>1.45.0</version>
-        </dependency>
-
-
     </dependencies>
 
     <build>

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('app.controllers', [])
+angular.module('app.controllers', ['app.services'])
 
 .controller('PersonaliaCtrl', ['$scope', '$location', function($scope, $location) {
 	$scope.minAlder=18;
@@ -46,6 +46,15 @@ angular.module('app.controllers', [])
   }
 
 }])
+
+.controller('AvbrytCtrl', function($scope, soknadService) {
+    var soknadId = window.location.pathname.split("/")[3];
+    $scope.soknadData = soknadService.get({id: soknadId});
+    $scope.submitForm = function() {
+        soknadService.delete({id: soknadId});
+//        $scope.soknadData.delete({id: soknadId});
+    }
+})
 
 .controller('VilligCtrl', ['$scope', function($scope) {
   $scope.villig = {
