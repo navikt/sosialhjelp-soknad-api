@@ -90,10 +90,10 @@ public class WicketApplication extends WebApplication {
 
         Application.get().getRequestLoggerSettings().setRequestLoggerEnabled(true);
 
-        mountPage("startSoknad", StartSoknadPage.class);
         mountPage("apne/${soknadId}", OpenSoknadPage.class);
-        mountPage("internal/selftest", SelfTestPage.class);
 
+        mountPage("startSoknad", StartSoknadPage.class);
+        mountPage("internal/selftest", SelfTestPage.class);
         mountPage("soknadliste", SoknadListePage.class);
 
         getSecuritySettings().setEnforceMounts(true);
