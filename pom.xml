@@ -38,7 +38,7 @@
         <henvendelse.tjenestespesifikasjon.version.1>2.0.0</henvendelse.tjenestespesifikasjon.version.1>
         <dialogarena.webkomponent.footer>1.0.6</dialogarena.webkomponent.footer>
         <dialogarena.webkomponent.navigasjon>1.0.4</dialogarena.webkomponent.navigasjon>
-        <dialogarena.webkomponent.innstillinger>1.0.14</dialogarena.webkomponent.innstillinger>
+        <dialogarena.webkomponent.innstillinger>1.0.18-SNAPSHOT</dialogarena.webkomponent.innstillinger>
         <dialogarena.dokumentinnsending.version>2.0.0-SNAPSHOT</dialogarena.dokumentinnsending.version>
     </properties>
 

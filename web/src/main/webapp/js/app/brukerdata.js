@@ -1,6 +1,6 @@
 angular.module('app.brukerdata', ['app.services'])
 
-.controller('SoknadDataCtrl', function($scope, $routeParams, soknadService, $location, $timeout) {
+.controller('SoknadDataCtrl', function($scope, soknadService, $location, $timeout) {
     var soknadId = window.location.pathname.split("/")[3];
 	$scope.soknadData = soknadService.get({id: soknadId});
 
