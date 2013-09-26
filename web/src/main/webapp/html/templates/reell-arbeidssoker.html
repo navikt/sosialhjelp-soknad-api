@@ -1,5 +1,5 @@
 <div class="skjemaramme">
-	<form name="villigForm" data-ng-controller="VilligCtrl">
+	<form name="villigForm" data-ng-controller="ValidationCtrl">
 		<div class="sideoversikt">
 			<h4>REELL ARBEIDSSØKER </h4>
 		</div>
@@ -11,8 +11,7 @@
 				Ja, jeg kan ta enhver type arbeid </label>
 				<label class="svar-alt" ng-class="{'svaret': data.jobb == 'nei'}" >
 				<input class="sendsoknad-radio" data-ng-model="data.jobb" type="radio" name="villigJobb" value="nei" required/>
-				<span class="error" data-ng-show="villigForm.villigJobb.$error.required">{{feilmeldinger.paakreves}} </span>
-				 Nei, jeg kan ikke ta enhver type arbeid </label>
+				 Nei, jeg kan ikke ta enhver type arbeid <span class="error" data-ng-show="villigForm.villigJobb.$error.required">{{feilmeldinger.paakreves}} </span></label>
 			</div>
 
 
@@ -23,8 +22,7 @@
 				Ja, jeg er villig til å flytte eller pendle</label>
 				<label class="svar-alt" ng-class="{'svaret': data.pendle == 'nei'}">
 				<input  class="sendsoknad-radio" data-ng-model="data.pendle" type="radio" name="villigPendle" value="nei" required/>
-				<span class="error" data-ng-show="villigForm.villigPendle.$error.required">{{feilmeldinger.paakreves}} </span>
-				Nei, jeg har ikke mulighet til å flytte eller pendle</label>
+				Nei, jeg har ikke mulighet til å flytte eller pendle <span class="error" data-ng-show="villigForm.villigPendle.$error.required">{{feilmeldinger.paakreves}} </span></label>
 
 				<div class="blokk-resultat" ng-show="data.pendle == 'nei'">
 					<p class="spm">Hvorfor har du ikke mulighet til å pendle eller flytte?</p>
@@ -35,13 +33,12 @@
 					
 					<label class="svar-alt">
 					<input class="sendsoknad-check" type="checkbox" name="ikkePendleGammel" data-ng-model="data.ikkePendleGammel" value="60" required>
-					<span class="error" data-ng-show="villigForm.ikkePendleHelse.$error.required">{{feilmeldinger.paakreves}} </span>
 					Over 60 år </span><a class="mer-info"  href="">Mer info</a></label>
 					
 					<label class="svar-alt">
 					<input class="sendsoknad-check" type="checkbox" name="ikkePendleHelse" data-ng-model="data.ikkePendleHelse" value="helse" required>
-					<span class="error" data-ng-show="villigForm.ikkePendleHelse.$error.required">{{feilmeldinger.paakreves}} </span>
-					Helsemessige årsaker <a class="mer-info" href="">Mer info</label>
+					Helsemessige årsaker <a class="mer-info" href="">Mer info
+					<span class="error" data-ng-show="villigForm.ikkePendleHelse.$error.required">{{feilmeldinger.paakreves}} </span></label>
 
 					<div class="spm-blokk" data-ng-show="data.ikkePendleHelse == true">
 						<textarea data-ng-model="data.ikkePendleHelseTekst"></textarea>
