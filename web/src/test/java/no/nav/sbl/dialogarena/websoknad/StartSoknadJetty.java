@@ -29,12 +29,16 @@ public final class StartSoknadJetty {
         Env(String loginConf) {
             this.loginConf = loginConf;
         }
+
+        String getLoginConf() {
+            return loginConf;
+        }
     }
 
     private StartSoknadJetty(Env env) throws Exception {
         configureSecurity();
         configureLocalConfig();
-        System.setProperty("java.security.auth.login.config", env.loginConf);
+        System.setProperty("java.security.auth.login.config", env.getLoginConf());
         TestCertificates.setupKeyAndTrustStore();
 
         JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
