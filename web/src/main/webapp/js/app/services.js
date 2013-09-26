@@ -9,6 +9,6 @@ angular.module('app.services',['ngResource'])
 	return $resource('/sendsoknad/rest/soknad/:id', {id: '@id'});
 })
 
-.factory('grunnlagsdataService', function($http){
+.factory('grunnlagsdataService', function($resource){
     return $resource('/sendsoknad/rest/grunnlagsdata');
 })
