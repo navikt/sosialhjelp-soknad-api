@@ -24,7 +24,7 @@ angular.module('app.controllers', ['app.services'])
     }
 })
 
-.controller('VilligCtrl', ['$scope', function($scope) {
+.controller('VilligCtrl', function($scope) {
   $scope.villig = {
     jobb: '',
     pendle: '',
@@ -36,7 +36,18 @@ angular.module('app.controllers', ['app.services'])
     helse:'',
     deltidProsent:''
   }
-}])
+})
+
+.controller('ValidationCtrl', function($scope) {
+
+  $scope.feilmeldinger = {
+    paakreves: '*',
+    feil: 'Ikke gyldig',
+    dato: ' Dato må skrives på formen dd.mm.åååå',
+    fratil: 'Fra-dato må være før til-dato',
+    prosent: 'Må være et tall mellom 0 og 100.'
+  }
+})
 
 .controller('ArbeidsforholdCtrl', ['$scope', function($scope) {
 

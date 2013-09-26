@@ -11,6 +11,12 @@ angular.module('app.brukerdata', ['app.services'])
 		console.log(soknadData);
 		soknadData.$save({id: soknadData.soknadId});
 	}
+	 $scope.startSoknad = function() {
+        var soknadType = window.location.pathname.split("/")[3];
+        var id = soknadService.create({param: soknadType}).$promise.then(function(result) {
+            console.log(result);
+        });
+	}
 	/*
 	function lagre() {
 		$timeout(function() {
@@ -48,14 +54,3 @@ angular.module('app.brukerdata', ['app.services'])
 	$scope.time = time;
 })
 
-.controller('ValidationCtrl', function($scope, soknad, $location) {
-  $scope.data =  soknad.data;
-
-  $scope.feilmeldinger = {
-    paakreves: '*',
-    feil: 'Ikke gyldig',
-    dato: ' Dato må skrives på formen dd.mm.åååå',
-    fratil: 'Fra-dato må være før til-dato',
-    prosent: 'Må være et tall mellom 0 og 100.'
-  }
-})
