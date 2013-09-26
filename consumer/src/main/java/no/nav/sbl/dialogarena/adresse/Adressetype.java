@@ -1,0 +1,5 @@
+package no.nav.sbl.dialogarena.adresse;
+
+public enum Adressetype {
+    BOSTEDSADRESSE, POSTADRESSE, GATEADRESSE, POSTBOKSADRESSE, OMRAADEADRESSE, UTENLANDSK_ADRESSE, UKJENT_ADRESSE
+}
