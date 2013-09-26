@@ -10,27 +10,35 @@
 //     	element("#Login.Submit").click();
 //     });
 
-	describe('Send soknad app', function() {
+describe('Send soknad app', function() {
 
-		beforeEach(function() {
-			browser().navigateTo('../../html/index.html');
+	beforeEach(function() {
+		browser().navigateTo('../../html/index.html');
 			//browser().navigateTo('http://a34duvw22389.devillo.no:8181/sendsoknad/soknadliste');
 		});
 
 
-		it('skal redirigere index.html til index.html#/utslagskriterier', function(){
-			expect(browser().location().path()).toBe('/utslagskriterier');
-		})
+	it('skal redirigere index.html til index.html#/utslagskriterier', function(){
+		expect(browser().location().path()).toBe('/utslagskriterier');
+	})
+	
 	it('skal redirigere index.html til index.html#/dagpenger hvis bruker kommer videre fra utslagskriterier', function() {
-						expect(browser().location().path()).toBe('/utslagskriterier');
+		expect(browser().location().path()).toBe('/utslagskriterier');
 
-		})
+	})
 
-		it('skal presentere personalia hvis bruker kommer videre fra utslagskriterier', function() {
-			element("#fortsett").click();
+	it('skal presentere personalia hvis bruker kommer videre fra utslagskriterier', function() {
+		element("#fortsett").click();
 			//expect(element("#soknadData.fakta.mellomnavn.value").val()).toEqual('Johan');
 		})
+
+	it('skal presentere reell-arbeidssøkersiden når man tykker på start-knappen på informasjonssiden', function(){
+		browser().navigateTo('../../html/index.html#/informasjonsside');
+		element("#start").click();
+		expect(browser().location().path()).toBe('/reell-arbeidssoker');
+	})
 	
+
 		//Disse testene må refaktores. 
 
 		/*
@@ -50,7 +58,7 @@
 			browser().navigateTo('#/personalia');
 			expect(input("soknadData.fakta.telefon.value").val()).toBe("55555555");
 		});
-	*/
-	});
+*/
+});
 
 //});
