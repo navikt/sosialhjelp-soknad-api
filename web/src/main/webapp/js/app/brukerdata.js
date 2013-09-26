@@ -1,22 +1,38 @@
 angular.module('app.brukerdata', ['app.services'])
 
-.controller('SoknadDataCtrl', function($scope, soknadService, $location, $timeout) {
-    var soknadId = window.location.pathname.split("/")[3];
-	$scope.soknadData = soknadService.get({id: soknadId});
+.controller('StartSoknadCtrl', function($scope, soknadService) {
+	$scope.soknad = {
+		id = ''
+	}
 
+	$scope.startSoknad = function() {
+		console.log("START SOKNAD");
+		var soknadType = window.location.pathname.split("/")[3];
+		
+		soknadService.create({param: soknadType}).$promise.then(function(result) {
+			$scope.soknad.id = result.id;
+			console.log($scope.soknad.id + "iiiiiiiiiiiid");
+			
+
+		});
+		console.log("var : " + $scope.soknad.id);
+		
+	}
+})
+
+.controller('SoknadDataCtrl', function($scope, soknadService, $location, $timeout) {
+
+	console.log('SoknadId: '+  $scope.soknad.id);
+	console.log("HENT SOKNAD");
+	$scope.soknadData = soknadService.get({id:  $scope.soknad.id});	
 
 	$scope.lagre = function() {
 
 		var soknadData = $scope.soknadData;
-		console.log(soknadData);
+		console.log("lagre: " + soknadData);
 		soknadData.$save({id: soknadData.soknadId});
 	}
-	 $scope.startSoknad = function() {
-        var soknadType = window.location.pathname.split("/")[3];
-        var id = soknadService.create({param: soknadType}).$promise.then(function(result) {
-            console.log(result);
-        });
-	}
+	
 	/*
 	function lagre() {
 		$timeout(function() {
@@ -31,13 +47,13 @@ angular.module('app.brukerdata', ['app.services'])
 })
 
 .directive('modFaktum', function() {
-  return function( $scope, element, attrs ) {
-    element.bind('blur', function() {
-      $scope.soknadData.fakta[attrs.name] = {"soknadId":$scope.soknadData.soknadId,"key":attrs.name,"value":element.val()}; 
-      $scope.$apply(); 
-      $scope.lagre();
-    });
-  };
+	return function( $scope, element, attrs ) {
+		element.bind('blur', function() {
+			$scope.soknadData.fakta[attrs.name] = {"soknadId":$scope.soknadData.soknadId,"key":attrs.name,"value":element.val()}; 
+			$scope.$apply(); 
+			$scope.lagre();
+		});
+	};
 })
 
 .factory('time', function($timeout) {
