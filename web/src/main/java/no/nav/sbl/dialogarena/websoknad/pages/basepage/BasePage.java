@@ -43,7 +43,7 @@ public class BasePage extends WebPage {
         body.add(new Label("tittel"));
 
         body.add(new InnstillingerPanel("innstillinger", getInnloggetIsTrueModel(), cmsContentRetriever));
-        body.add(new NavigasjonPanel("navigasjon", navigasjonsLink));
+        body.add(new NavigasjonPanel("navigasjon", navigasjonsLink, cmsContentRetriever));
         body.add(new FooterPanel("footer", footerLinks, getInnloggetIsTrueModel(), FALSE, cmsContentRetriever));
     }
 
