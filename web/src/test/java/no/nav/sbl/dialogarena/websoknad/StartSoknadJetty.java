@@ -20,7 +20,6 @@ import static no.nav.sbl.dialogarena.common.jetty.Jetty.usingWar;
 public final class StartSoknadJetty {
 
     public static final int PORT = 8181;
-    private final Env env;
 
     private enum Env {
         Intellij("web/src/test/resources/login.conf"),
@@ -33,7 +32,6 @@ public final class StartSoknadJetty {
     }
 
     private StartSoknadJetty(Env env) throws Exception {
-        this.env = env;
         configureSecurity();
         configureLocalConfig();
         System.setProperty("java.security.auth.login.config", env.loginConf);
@@ -64,12 +62,13 @@ public final class StartSoknadJetty {
         System.setProperty("org.apache.cxf.stax.allowInsecureParser", "true");
     }
 
-    private static class Intellij{
+    private static class Intellij {
         public static void main(String[] args) throws Exception {
             new StartSoknadJetty(Env.Intellij);
         }
     }
-    private static class Eclipse{
+
+    private static class Eclipse {
         public static void main(String[] args) throws Exception {
             new StartSoknadJetty(Env.Eclipse);
         }

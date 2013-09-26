@@ -1,34 +1,30 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
 
-import static org.apache.cxf.common.util.SOAPConstants.MTOM_ENABLED;
-import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
-
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-
 import no.nav.modig.security.sts.utility.STSConfigurationUtility;
 import no.nav.sbl.dialogarena.common.kodeverk.config.KodeverkConfig;
 import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
-
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.apache.cxf.common.util.SOAPConstants.MTOM_ENABLED;
+import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
 
 @Configuration
 @Import(value = {KodeverkConfig.class,
@@ -37,7 +33,6 @@ import org.springframework.context.annotation.ImportResource;
         ConsumerConfig.SendSoknadWSConfig.class})
 @ImportResource({"classpath:META-INF/cxf/cxf.xml", "classpath:META-INF/cxf/cxf-servlet.xml"})
 public class ConsumerConfig {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConsumerConfig.class);
 
     @Configuration
     public static class ServicesConfig {
@@ -62,7 +57,6 @@ public class ConsumerConfig {
             return konfigurerMedHttps(sendsoknadPortTypeFactory().create(SendSoknadPortType.class));
         }
     }
-
 
 
     @Configuration
