@@ -3,45 +3,41 @@
 		<div class="sideoversikt">
 			<h4>REELL ARBEIDSSØKER </h4>
 		</div>
-		<div class="skjemainnhold">
+		<div class="skjemainnhold" data-ng-controller="VilligCtrl">
 			<div class="spm-blokk" >
-				<p class="spm">Som hovedregel må du være villig til å ta enhver type arbeid for å ha rett på dagpenger</p>
+				<p class="spm">Som hovedregel må du være villig til å ta enhver type arbeid for å ha rett på dagpenger <span class="error" data-ng-show="villigForm.villigJobb.$error.required">{{feilmeldinger.paakreves}} </span></p>
 				<label class="svar-alt" ng-class="{'svaret': data.jobb == 'ja'}">
 				<input  class="sendsoknad-radio" data-ng-model="data.jobb" type="radio" name="villigJobb" value="ja" required/>
 				Ja, jeg kan ta enhver type arbeid </label>
 				<label class="svar-alt" ng-class="{'svaret': data.jobb == 'nei'}" >
 				<input class="sendsoknad-radio" data-ng-model="data.jobb" type="radio" name="villigJobb" value="nei" required/>
-				<span class="error" data-ng-show="villigForm.villigJobb.$error.required">{{feilmeldinger.paakreves}} </span>
 				 Nei, jeg kan ikke ta enhver type arbeid </label>
 			</div>
 
 
 			<div class="spm-blokk">
-				<p class="spm"> Som hovedregel må du være villig til å pendle eller flytte for å ha rett på dagpenger</p>
+				<p class="spm"> Som hovedregel må du være villig til å pendle eller flytte for å ha rett på dagpenger <span class="error" data-ng-show="villigForm.villigPendle.$error.required">{{feilmeldinger.paakreves}} </span></p>
 				<label class="svar-alt" ng-class="{'svaret': data.pendle == 'ja'}">
 				<input class="sendsoknad-radio" data-ng-model="data.pendle" type="radio" name="villigPendle" value="ja" required/>
 				Ja, jeg er villig til å flytte eller pendle</label>
 				<label class="svar-alt" ng-class="{'svaret': data.pendle == 'nei'}">
 				<input  class="sendsoknad-radio" data-ng-model="data.pendle" type="radio" name="villigPendle" value="nei" required/>
-				<span class="error" data-ng-show="villigForm.villigPendle.$error.required">{{feilmeldinger.paakreves}} </span>
-				Nei, jeg har ikke mulighet til å flytte eller pendle</label>
+				Nei, jeg har ikke mulighet til å flytte eller pendle </label>
 
 				<div class="blokk-resultat" ng-show="data.pendle == 'nei'">
-					<p class="spm">Hvorfor har du ikke mulighet til å pendle eller flytte?</p>
+					<p class="spm">Hvorfor har du ikke mulighet til å pendle eller flytte? <span class="error" data-ng-show="villigForm.ikkePendle.$error.required">{{feilmeldinger.paakreves}} </span></p>
 					<label class="svar-alt">
-					<input class="sendsoknad-check" type="checkbox" name="ikkePendleBarn" data-ng-model="data.ikkePendleBarn"value="barn" required>
-					<span class="error" data-ng-show="villigForm.ikkePendleHelse.$error.required">{{feilmeldinger.paakreves}} </span>
+					<input class="sendsoknad-check" type="checkbox" name="ikkePendle" data-ng-model="data.ikkePendleBarn"value="barn" required>
 					 Omsorg for barn under 18år <a class="mer-info"  href="">Mer info</a></label>
 					
 					<label class="svar-alt">
-					<input class="sendsoknad-check" type="checkbox" name="ikkePendleGammel" data-ng-model="data.ikkePendleGammel" value="60" required>
-					<span class="error" data-ng-show="villigForm.ikkePendleHelse.$error.required">{{feilmeldinger.paakreves}} </span>
+					<input class="sendsoknad-check" type="checkbox" name="ikkePendle" data-ng-model="data.ikkePendleGammel" value="60" required>
 					Over 60 år </span><a class="mer-info"  href="">Mer info</a></label>
 					
 					<label class="svar-alt">
-					<input class="sendsoknad-check" type="checkbox" name="ikkePendleHelse" data-ng-model="data.ikkePendleHelse" value="helse" required>
-					<span class="error" data-ng-show="villigForm.ikkePendleHelse.$error.required">{{feilmeldinger.paakreves}} </span>
-					Helsemessige årsaker <a class="mer-info" href="">Mer info</label>
+					<input class="sendsoknad-check" type="checkbox" name="ikkePendle" data-ng-model="data.ikkePendleHelse" value="helse" required>
+					Helsemessige årsaker <a class="mer-info" href="">Mer info
+					</label>
 
 					<div class="spm-blokk" data-ng-show="data.ikkePendleHelse == true">
 						<textarea data-ng-model="data.ikkePendleHelseTekst"></textarea>
