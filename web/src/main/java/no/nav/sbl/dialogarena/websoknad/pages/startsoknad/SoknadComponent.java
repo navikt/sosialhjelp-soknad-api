@@ -36,11 +36,11 @@ public class SoknadComponent extends WebComponent {
             try {
                 String htmls = WebApplication.get().getServletContext().getRealPath("/html");
                 File folder = new File(htmls);
-                List<String> files = new ArrayList<>();
+                List<String> filer = new ArrayList<>();
                 for (File file : folder.listFiles()) {
-                    files.add(file.getName());
+                    filer.add(file.getName());
                 }
-                SoknadComponent.files = files;
+                SoknadComponent.files = filer;
             } catch (Exception ex) {
                 LOGGER.error(ex.getMessage());
             }
