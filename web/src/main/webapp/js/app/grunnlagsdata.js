@@ -3,7 +3,7 @@
 angular.module('app.grunnlagsdata', ['app.services'])
 
 .controller('GrunnlagsdataCtrl', ['$scope', 'grunnlagsdataService', '$location', function($scope, grunnlagsdataService, $location) {
-    $scope.personalia = grunnlagsdataService.get();
+	$scope.personalia = grunnlagsdataService.get();
 	$scope.minAlder=18;
 	$scope.maxAlder=67;
 
@@ -21,17 +21,17 @@ angular.module('app.grunnlagsdata', ['app.services'])
 		land: 'norge'
 	}
 
-    $scope.startSoknad = function() {
+	$scope.startSoknad = function() {
 
-    }
+	}
 
 	$scope.arena = {
 		jobbsoker: true
 	}
 
 	$scope.checkUtslagskriterier = function() {
-		if($scope.isGyldigAlder() && $scope.arena.jobbsoker && !$scope.borIUtlandet() && $scope.fattDagpengerSisteAaret() === true) {
-			$location.path("/informasjonsside");
+		if($scope.isGyldigAlder() && !$scope.borIUtlandet() && $scope.kvalifisererForGjenopptak() === false && $scope.arena.jobbsoker) {
+			$location.path("#/informasjonsside");
 		}
 	}
 
@@ -42,8 +42,19 @@ angular.module('app.grunnlagsdata', ['app.services'])
 		return ($scope.midlertidigAdresse.land != 'norge');
 	};
 
+	$scope.fattDagpengerSisteAaret = function() {
+		var fattDagpenger = true;
+		if(!fattDagpenger) {
+			$scope.sokePaaNytt();
+		}
+		return fattDagpenger;
+	};
+
 	$scope.faarForskuddsvisUtbetalingPgaKonkurs = function() {
-		return true;
+		var faarForskuddsvisUtbetalingPgaKonkurs = true;
+		if(faarForskuddsvisUtbetalingPgaKonkurs){
+			return "*Forenklet søknad pga konkurs*";
+		}
 	};
 
 	$scope.hattPermitering = function() {
@@ -51,7 +62,7 @@ angular.module('app.grunnlagsdata', ['app.services'])
 	};
 
 	$scope.jobbetHosSammeArbeidsgiverMerEnnSeksUker = function() {
-		return true;
+		return false;
 	};
 
 	$scope.erFisker = function() {
@@ -59,44 +70,49 @@ angular.module('app.grunnlagsdata', ['app.services'])
 	};
 
 	$scope.jobetMerEnn26Uker = function() {
-		return true;
+		return false;
 	};
-$scope.avbruddPgaUtdanning = function() {
-		return true;
+	$scope.avbruddPgaUtdanning = function() {
+		return false;
 	};
-	$scope.sokePaaNytt = function() {
-//		if(tiltak) {
-//			return true
-//		}
-//		if(verneplikt) {
-//			return true
-//		}
-//		if(graviditesrelatertSykdom) {
-//			return true
-//		}
-//		if(graviditesrelatertSykdomMedForeldrepenger) {
-//			return true
-//		}
-}
-$scope.fattDagpengerSisteAaret = function() {
-	var fattDagpenger = true;
-	if(!fattDagpenger) {
-		$scope.sokePaaNytt();
-	}
 
-	if($scope.faarForskuddsvisUtbetalingPgaKonkurs()){
-		return "*Forenklet søknad pga konkurs*";
-	}
-	if(!$scope.hattPermitering()){
-		return "*Gjenopptak pga ikke hatt permitering*"
-	}
-	if(!$scope.jobbetHosSammeArbeidsgiverMerEnnSeksUker() || !($scope.erFisker() && $scope.jobetMerEnn26Uker())){
-		return "*Gjennopptak pga ikke hatt jobb hos samme arbeidsgiver vedkommende ble permitert fra i mer enn 6 uker eller fisker"
-	}
-	if(!$scope.avbruddPgaUtdanning()){
-		return "*Gjennopptak pga ikke avbrudd pga utdanning"
-	}
-	return true;
+	$scope.sokePaaNytt = function() {
+//		if(tidligere tiltak) {
+//			return "*Gjenopptak pga tidligere fått invilget tiltakspenger"
+//		}
+//		if(tidligere verneplikt) {
+//			return "*Gjenopptak pga tidligere fått invilget vernepliktspenger"
+//		}
+//		if(tidligere graviditesrelatertSykdom) {
+//			return "*Gjenopptak pga tidligere fått invilget graviditesrelatertSykdomspenger"
+//		}
+//		if(tidligere graviditesrelatertSykdomMedForeldrepenger) {
+//			return "*Gjenopptak pga tidligere fått invilget graviditesrelatertSykdomMedForeldrepenger"
+//		}
+return false;
 };
 
+
+$scope.kvalifisererForGjenopptak = function() {
+	if(fattDagpengerSisteAaret){
+		if(!$scope.hattPermitering()){
+			return "*Gjenopptak pga ikke hatt permitering*"
+		}
+		if(!$scope.jobbetHosSammeArbeidsgiverMerEnnSeksUker()){
+			return "*Gjennopptak pga ikke hatt jobb hos samme arbeidsgiver vedkommende ble permitert fra, i mer enn 6 uker"
+		}
+		if($scope.erFisker() && !$scope.jobetMerEnn26Uker()) {
+			return "*Gjennopptak pga fisker"
+		}
+		if(!$scope.avbruddPgaUtdanning()){
+			return"*Gjennopptak pga ikke avbrudd pga utdanning"
+		}
+	}
+	else {
+		if(sokePaaNytt() != false){
+			return sokePaaNytt();
+		}
+	}
+	return false;
+};
 }])

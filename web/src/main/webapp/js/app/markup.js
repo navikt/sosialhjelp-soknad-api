@@ -24,3 +24,4 @@ function lagKnappeRad() {
     begrensning.append($('<section/>').append(avbryt).append(fortsettSenere));
     return rad;
 }
+

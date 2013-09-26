@@ -24,7 +24,7 @@ angular.module('app.controllers', ['app.services'])
     }
 })
 
-.controller('VilligCtrl', ['$scope', function($scope) {
+.controller('VilligCtrl', function($scope) {
   $scope.villig = {
     jobb: '',
     pendle: '',
@@ -36,7 +36,7 @@ angular.module('app.controllers', ['app.services'])
     helse:'',
     deltidProsent:''
   }
-}])
+})
 
 .controller('ArbeidsforholdCtrl', ['$scope', function($scope) {
 
