@@ -2,7 +2,7 @@
 
 angular.module('app.grunnlagsdata', ['app.services'])
 
-.controller('GrunnlagsdataCtrl', ['$scope', 'grunnlagsdataService', '$location', function($scope, grunnlagsdataService, $location) {
+.controller('GrunnlagsdataCtrl', ['$scope', 'grunnlagsdataService', 'soknadService', '$location', '$q', function($scope, grunnlagsdataService, soknadService, $location, $q) {
     $scope.personalia = grunnlagsdataService.get();
 	$scope.minAlder=18;
 	$scope.maxAlder=67;
@@ -22,6 +22,10 @@ angular.module('app.grunnlagsdata', ['app.services'])
 	}
 
     $scope.startSoknad = function() {
+        var soknadType = window.location.pathname.split("/")[3];
+        var id = soknadService.create({param: soknadType}).$promise.then(function(result) {
+            console.log(result);
+        });
 
     }
 
