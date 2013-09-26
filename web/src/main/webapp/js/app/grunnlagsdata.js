@@ -2,8 +2,9 @@
 
 angular.module('app.grunnlagsdata', ['app.services'])
 
-.controller('GrunnlagsdataCtrl', ['$scope', 'grunnlagsdataService', '$location', function($scope, grunnlagsdataService, $location) {
-	$scope.personalia = grunnlagsdataService.get();
+
+.controller('GrunnlagsdataCtrl', ['$scope', 'grunnlagsdataService', 'soknadService', '$location', '$q', function($scope, grunnlagsdataService, soknadService, $location, $q) {
+    $scope.personalia = grunnlagsdataService.get();
 	$scope.minAlder=18;
 	$scope.maxAlder=67;
 
@@ -21,9 +22,8 @@ angular.module('app.grunnlagsdata', ['app.services'])
 		land: 'norge'
 	}
 
-	$scope.startSoknad = function() {
 
-	}
+   
 
 	$scope.arena = {
 		jobbsoker: true
