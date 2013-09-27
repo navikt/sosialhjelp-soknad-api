@@ -1,5 +1,13 @@
 package no.nav.sbl.dialogarena.person;
 
+import static no.nav.modig.lang.option.Optional.optional;
+import static no.nav.sbl.dialogarena.person.GjeldendeAdressetype.FOLKEREGISTRERT;
+import static no.nav.sbl.dialogarena.person.GjeldendeAdressetype.MIDLERTIDIG_NORGE;
+import static no.nav.sbl.dialogarena.person.GjeldendeAdressetype.UKJENT;
+
+import java.io.Serializable;
+import java.util.Objects;
+
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.adresse.Adresse;
@@ -9,19 +17,12 @@ import no.nav.sbl.dialogarena.common.TekstUtils;
 import no.nav.sbl.dialogarena.konto.UtenlandskKonto;
 import no.nav.sbl.dialogarena.telefonnummer.Telefonnummer;
 
-import java.io.Serializable;
-import java.util.Objects;
-
-import static no.nav.modig.lang.option.Optional.optional;
-import static no.nav.sbl.dialogarena.person.GjeldendeAdressetype.FOLKEREGISTRERT;
-import static no.nav.sbl.dialogarena.person.GjeldendeAdressetype.MIDLERTIDIG_NORGE;
-import static no.nav.sbl.dialogarena.person.GjeldendeAdressetype.UKJENT;
-
 public class Person implements Serializable {
 
     public final String ident;
     public final String navn;
-    public final Adresse folkeregistrertAdresse;
+    public Adresse folkeregistrertAdresse;
+    //public final Adresse folkeregistrertAdresse;
 
     private String kontonummer;
     private Telefonnummer hjemmetelefon;
@@ -33,6 +34,10 @@ public class Person implements Serializable {
     private GjeldendeAdressetype gjeldendeAdressetype;
     private UtenlandskKonto bankkontoUtland;
 
+    public Person(String ident, String navn) {
+    	this.ident = ident;
+    	this.navn = navn;
+    }
 
     public Person(String navn, String ident, Optional<? extends Adresse> folkeregistrertAdresse) {
         this.navn = navn;
@@ -144,6 +149,10 @@ public class Person implements Serializable {
         public KanIkkeVelgeAdresse(String ident, GjeldendeAdressetype type) {
             super("Type: " + type + ", ident: " + ident);
         }
+    }
+
+    public static Person identifisert(String fnr, String sammensattNavn) {
+        return new Person(fnr, sammensattNavn);
     }
 
 }
