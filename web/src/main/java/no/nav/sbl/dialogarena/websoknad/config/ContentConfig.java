@@ -19,7 +19,6 @@ import java.util.Map;
 @Configuration
 public class ContentConfig {
 
-
     //@Value("http://e32apvl026.oera-t.local:8080")
     @Value("${dialogarena.cms.url}")
     private String cmsBaseUrl;
@@ -53,5 +52,10 @@ public class ContentConfig {
         cmsContentRetriever.setTeksterRetriever(siteContentRetriever());
         cmsContentRetriever.setArtikkelRetriever(siteContentRetriever());
         return cmsContentRetriever;
+    }
+
+    @Bean(name = "cmsBaseUrl")
+    public String cmsBaseUrl() {
+        return cmsBaseUrl;
     }
 }
