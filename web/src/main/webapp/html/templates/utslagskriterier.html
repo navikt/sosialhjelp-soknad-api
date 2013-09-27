@@ -23,22 +23,21 @@
 		<p> Du må bo i Norge for å kunne søke om dagpenger.</p>
 		<p>Vi har registrert følgende adresse på deg: </p>
 		<p>Folkeregistrert adresse: </p>
-		<p>{{folkeregistrertAdresse.gatenavn}} </p>
-		<p>{{folkeregistrertAdresse.postnummer}} {{folkeregistrertAdresse.poststed}} </p>
-		<p>{{folkeregistrertAdresse.land}} </p>
+		<p>{{personalia.bostedsadresseGatenavn}} {{personalia.bostedsadresseHusnummer}} </p>
+		<p>{{personalia.bostedsadressePostnr}} {{personalia.bostedsadressePoststed}} </p>
+		<p>{{personalia.bostedsadresseLandkode}} </p>
 
 		<br/>
 		<p>Midlertidig adresse: </p>
-		<p>{{midlertidigAdresse.gatenavn}} </p>
-		<p>{{midlertidigAdresse.postnummer}} {{midlertidigAdresse.poststed}} </p>
-		<p>{{midlertidigAdresse.land}} </p>
-
-		<div data-ng-show="midlertidigAdresse.land != 'norge' && folkeregistrertAdresse.land == 'norge'"> 
+		<p>{{personalia.midlertidigadresseGatenavn}} {{personalia.midlertidigadresseHusnummer}}</p>
+		<p>{{personalia.midlertidigadressePostnr}} {{personalia.midlertidigadressePoststed}} </p>
+		<p>{{personalia.midlertidigadresseLandkode}} </p>
+		<div data-ng-show="personalia.midlertidigadresse-landkode != 'NOR' && personalia.midlertidigadresse-landkode == 'NOR'"> 
 
 			<p> Du må derfor endre din midlertidige adresse til en norsk adresse for å få dagpenger. </p>
 			<p>Dette kan gjøres enten her eller i din profil *uvisst*.</p>
 		</div>
-		<div data-ng-show="folkeregistrertAdresse.land != 'norge'"> 
+		<div data-ng-show="personalia.bostedsadresse-landkode != 'norge'"> 
 			<p> Du må derfor endre din folkeregistrerte adresse til en norsk adresse for å få dagpenger. </p>
 			<p>Dette kan gjøres på <a href="www.skatteetaten.no/Skjemaer/Flyttemelding-til-folkeregisteret"> www.skatteetaten.no</a></p>
 		</div>
@@ -49,8 +48,8 @@
 
 	<br/>
 
-	<div data-ng-show="fattDagpengerSisteAaret() != true" >
-		{{fattDagpengerSisteAaret()}}
+	<div data-ng-show="kvalifisererForGjenopptak() != false" >
+		{{kvalifisererForGjenopptak()}}
 	</div>
 
 	<div data-ng-hide="arena.jobbsoker">

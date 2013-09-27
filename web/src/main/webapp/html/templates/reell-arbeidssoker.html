@@ -1,7 +1,7 @@
 <div class="skjemaramme">
 	<form name="villigForm" data-ng-controller="ValidationCtrl">
 		<div class="sideoversikt">
-			<h4>REELL ARBEIDSSØKER </h4>
+			<h4>REELL ARBEIDSSØKER {{soknad.id}} </h4>
 		</div>
 		<div class="skjemainnhold" data-ng-controller="VilligCtrl">
 			<div class="spm-blokk" >
@@ -41,7 +41,7 @@
 
 					<div class="spm-blokk" data-ng-show="data.ikkePendleHelse == true">
 						<textarea  mod-faktum data-ng-model="soknadData.fakta.ikkePendleHelseTekst.value" name="ikkePendleHelseTekst"></textarea>
-						
+
 						<p>Må dokumenteres med legeatest </p>
 						<p>Kor beskrivelse av hva legeattesten skal inneholde</p>
 						<img src="">Du kan laste opp i neste steg eller <a href="">lagre og fortsette senere</a>	
