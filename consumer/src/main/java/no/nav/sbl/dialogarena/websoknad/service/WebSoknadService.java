@@ -1,5 +1,21 @@
 package no.nav.sbl.dialogarena.websoknad.service;
 
+import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSBrukerData;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSSoknadData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.xml.ws.soap.SOAPFaultException;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.equalToIgnoreCase;
 import static no.nav.modig.lang.collections.PredicateUtils.where;
@@ -7,28 +23,12 @@ import static no.nav.sbl.dialogarena.websoknad.service.Transformers.TIL_SOKNADID
 import static no.nav.sbl.dialogarena.websoknad.service.Transformers.TIL_STATUS;
 import static no.nav.sbl.dialogarena.websoknad.service.Transformers.tilFaktum;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.xml.ws.soap.SOAPFaultException;
-
-import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSBrukerData;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSSoknadData;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class WebSoknadService {
 
     private static final Logger logger = LoggerFactory.getLogger(WebSoknadService.class);
 
     @Inject
+    @Named("sendSoknadService")
     private SendSoknadPortType sendsoknadPortType;
 
     public Long startSoknad(String navSoknadId) {
