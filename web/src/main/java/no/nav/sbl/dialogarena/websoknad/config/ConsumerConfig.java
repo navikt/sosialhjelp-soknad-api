@@ -19,6 +19,7 @@ import org.springframework.context.annotation.ImportResource;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,15 +54,20 @@ public class ConsumerConfig {
         }
 
         @Bean
-        public SendSoknadPortType sendsoknadPortType() {
+        public SendSoknadPortType sendSoknadService() {
             return konfigurerMedHttps(sendsoknadPortTypeFactory().create(SendSoknadPortType.class));
         }
-    }
 
+        @Bean
+        public SendSoknadPortType sendSoknadSelftest() {
+            return sendsoknadPortTypeFactory().create(SendSoknadPortType.class);
+        }
+    }
 
     @Configuration
     public static class ExternalStsConfig {
         @Inject
+        @Named("sendSoknadService")
         private SendSoknadPortType sendSoknadPortType;
 
         @PostConstruct
