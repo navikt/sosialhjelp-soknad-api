@@ -5,25 +5,9 @@ angular.module('app.grunnlagsdata', ['app.services'])
 
 .controller('GrunnlagsdataCtrl', ['$scope', 'grunnlagsdataService', 'soknadService', '$location', '$q', function($scope, grunnlagsdataService, soknadService, $location, $q) {
     $scope.personalia = grunnlagsdataService.get();
+
 	$scope.minAlder=18;
 	$scope.maxAlder=67;
-
-	$scope.folkeregistrertAdresse = {
-		gatenavn: 'Majorstuen 1',
-		postnummer: '0123',
-		poststed: 'Oslo',
-		land: 'england'
-	}
-
-	$scope.midlertidigAdresse = {
-		gatenavn: 'Majorstuen 1',
-		postnummer: '0123',
-		poststed: 'Oslo',
-		land: 'norge'
-	}
-
-
-   
 
 	$scope.arena = {
 		jobbsoker: true
@@ -31,7 +15,7 @@ angular.module('app.grunnlagsdata', ['app.services'])
 
 	$scope.checkUtslagskriterier = function() {
 		if($scope.isGyldigAlder() && !$scope.borIUtlandet() && $scope.kvalifisererForGjenopptak() === false && $scope.arena.jobbsoker) {
-			$location.path("#/informasjonsside");
+			$location.path("informasjonsside");
 		}
 	}
 
@@ -39,7 +23,7 @@ angular.module('app.grunnlagsdata', ['app.services'])
 		return ($scope.personalia.alder >= $scope.minAlder && $scope.personalia.alder < $scope.maxAlder);
 	};
 	$scope.borIUtlandet = function() {
-		return ($scope.midlertidigAdresse.land != 'norge');
+		return ($scope.personalia.midlertidigadresseLandkode != 'NOR');
 	};
 
 	$scope.fattDagpengerSisteAaret = function() {
@@ -58,11 +42,11 @@ angular.module('app.grunnlagsdata', ['app.services'])
 	};
 
 	$scope.hattPermitering = function() {
-		return false;
+		return true;
 	};
 
 	$scope.jobbetHosSammeArbeidsgiverMerEnnSeksUker = function() {
-		return false;
+		return true;
 	};
 
 	$scope.erFisker = function() {
@@ -70,10 +54,10 @@ angular.module('app.grunnlagsdata', ['app.services'])
 	};
 
 	$scope.jobetMerEnn26Uker = function() {
-		return false;
+		return true;
 	};
 	$scope.avbruddPgaUtdanning = function() {
-		return false;
+		return true;
 	};
 
 	$scope.sokePaaNytt = function() {
@@ -94,18 +78,18 @@ return false;
 
 
 $scope.kvalifisererForGjenopptak = function() {
-	if(fattDagpengerSisteAaret){
+	if($scope.fattDagpengerSisteAaret()){
 		if(!$scope.hattPermitering()){
-			return "*Gjenopptak pga ikke hatt permitering*"
+			return "*Gjenopptak pga ikke hatt permitering, og fått dagpenger de siste 52 ukene.*"
 		}
 		if(!$scope.jobbetHosSammeArbeidsgiverMerEnnSeksUker()){
-			return "*Gjennopptak pga ikke hatt jobb hos samme arbeidsgiver vedkommende ble permitert fra, i mer enn 6 uker"
+			return "*Gjennopptak pga ikke hatt jobb hos samme arbeidsgiver vedkommende ble permitert fra, i mer enn 6 uker, og fått dagpenger de siste 52 ukene."
 		}
 		if($scope.erFisker() && !$scope.jobetMerEnn26Uker()) {
-			return "*Gjennopptak pga fisker"
+			return "*Gjennopptak pga fisker, og fått dagpenger de siste 52 ukene."
 		}
 		if(!$scope.avbruddPgaUtdanning()){
-			return"*Gjennopptak pga ikke avbrudd pga utdanning"
+			return"*Gjennopptak pga ikke avbrudd pga utdanning, og fått dagpenger de siste 52 ukene."
 		}
 	}
 	else {

@@ -2,7 +2,7 @@ angular.module('app.brukerdata', ['app.services'])
 
 .controller('StartSoknadCtrl', function($scope, soknadService) {
 	$scope.soknad = {
-		id = ''
+		id: ''
 	}
 
 	$scope.startSoknad = function() {

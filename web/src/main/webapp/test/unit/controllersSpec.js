@@ -46,20 +46,20 @@ describe('Controllers', function() {
 			scope.personalia.alder = 66;
 			expect(scope.isGyldigAlder()).toEqual(true);
 		});
-		it('skal returnere false med folkeregistrert adresse i norge og midlertidig adresse i norge', function() {
-			scope.folkeregistrertAdresse.land = 'norge';
-			scope.midlertidigAdresse.land = 'norge';
+		it('skal returnere false for bor i utland med folkeregistrert adresse i norge og midlertidig adresse i norge', function() {
+			scope.personalia.bostedsadresseLandkode = 'NOR';
+			scope.personalia.midlertidigadresseLandkode = 'NOR';
 			expect(scope.borIUtlandet()).toEqual(false);
 		});
 
-		it('skal returnere true med midlertidig adresse i utlandet og folkeregistrert adresse i utlandet', function() {
-			scope.folkeregistrertAdresse.land = 'norge';
-			scope.midlertidigAdresse.land = 'england';
+		it('skal returnere bor i utland med midlertidig adresse i utlandet og folkeregistrert adresse i utlandet', function() {
+			scope.personalia.bostedsadresseLandkode = 'ENG';
+			scope.personalia.midlertidigadresseLandkode = 'ENG';
 			expect(scope.borIUtlandet()).toEqual(true);
 		});
-		it('skal returnere true med midlertidig adresse i norge og folkeregistrert adresse i utlandet', function() {
-			scope.folkeregistrertAdresse.land = 'england';
-			scope.midlertidigAdresse.land = 'norge';
+		it('skal returnere false for bor i utland med midlertidig adresse i norge og folkeregistrert adresse i utlandet', function() {
+			scope.personalia.bostedsadresseLandkode = 'ENG';
+			scope.personalia.midlertidigadresseLandkode = 'NOR';
 			expect(scope.borIUtlandet()).toEqual(false);
 		});
 		it('skal kvalifisere for gjenopptak hvis bruker har fått dagpenger siste året og ikke har hatt permitering', function() {
