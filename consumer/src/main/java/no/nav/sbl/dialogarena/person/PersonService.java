@@ -13,9 +13,6 @@ public interface PersonService {
 
     Person hentPerson(String ident);
 
-    void oppdaterPerson(Person person);
-
-
     class Default implements PersonService {
 
         private final HentBrukerprofilConsumer hentConsumer;
@@ -35,11 +32,6 @@ public interface PersonService {
                 throw new SystemException("Ident returnert fra tjeneste er ikke den som ble forespurt.", null);
             }
             return person;
-        }
-
-        @Override
-        public void oppdaterPerson(Person person) {
-            oppdaterConsumer.oppdaterPerson(person);
         }
     }
 
