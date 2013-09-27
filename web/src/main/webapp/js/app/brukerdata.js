@@ -1,23 +1,28 @@
 angular.module('app.brukerdata', ['app.services'])
 
 .controller('StartSoknadCtrl', function($scope, soknadService) {
-	$scope.soknad = {
-		id: ''
-	}
-
 	$scope.startSoknad = function() {
 		console.log("START SOKNAD");
 		var soknadType = window.location.pathname.split("/")[3];
-		
-		soknadService.create({param: soknadType}).$promise.then(function(result) {
+		$scope.soknad = soknadService.create({param: soknadType}).$promise.then(function(result) {
 			$scope.soknad.id = result.id;
 			console.log($scope.soknad.id + "iiiiiiiiiiiid");
-			
-
 		});
 		console.log("var : " + $scope.soknad.id);
 		
 	}
+})
+
+.controller('HentSoknadDataCtrl', function($scope, soknadService){
+	var soknadType = window.location.pathname.split("/")[3];
+	$scope.soknad = soknadService.create({param: soknadType}).$promise.then(function(result) {
+		$scope.soknad.id = result.id;
+		console.log($scope.soknad.id + "iiiiiiiiiiiid");
+	});
+		$scope.soknadData = soknadService.get({id:  $scope.soknad.id});	
+debugger
+		var soknadData = $scope.soknadData;
+
 })
 
 .controller('SoknadDataCtrl', function($scope, soknadService, $location, $timeout) {

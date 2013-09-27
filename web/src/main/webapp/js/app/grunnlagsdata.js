@@ -8,7 +8,7 @@ angular.module('app.grunnlagsdata', ['app.services'])
 	$scope.maxAlder=67;
 
 	$scope.arena = {
-		jobbsoker: true
+		jobbsoker: false
 	}
 
 	$scope.checkUtslagskriterier = function() {
@@ -40,7 +40,7 @@ angular.module('app.grunnlagsdata', ['app.services'])
 	};
 
 	$scope.hattPermitering = function() {
-		return true;
+		return false;
 	};
 
 	$scope.jobbetHosSammeArbeidsgiverMerEnnSeksUker = function() {
