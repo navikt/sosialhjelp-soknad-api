@@ -13,7 +13,7 @@ function lagKnappeRad() {
 
     var avbryt = $('<a/>')
         .attr('id', 'avbryt')
-        .attr('href', '#/avbryt')
+        .attr('href', '')
         .text('Avbryt');
 
     var fortsettSenere = $('<a/>')
