@@ -24,22 +24,8 @@ angular.module('app.controllers', ['app.services'])
     }
 })
 
-.controller('SlettetSoknadDataCtrl'), function($scope) {
+.controller('SlettetSoknadDataCtrl', function($scope) {
 
-}
-
-.controller('VilligCtrl', function($scope) {
-  $scope.villig = {
-    jobb: '',
-    pendle: '',
-    ikkePendleBarn:'',
-    ikkePendleGammel:'',
-    ikkePendleHelse:'',
-    ikkePendleHelseTekst:'',
-    deltid:'',
-    helse:'',
-    deltidProsent:''
-  }
 })
 
 .controller('ValidationCtrl', function($scope) {

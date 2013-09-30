@@ -1,9 +1,11 @@
 <div class="skjemaramme">
-	<form name="villigForm" data-ng-controller="VilligCtrl">
+	<form name="villigForm">
 		<div class="sideoversikt">
 			<h4>REELL ARBEIDSSØKER </h4>
 		</div>
 		<div class="skjemainnhold">
+		
+		</select>
 			<div class="spm-blokk" >
 				<p class="spm">Som hovedregel må du være villig til å ta enhver type arbeid for å ha rett på dagpenger <span class="error" data-ng-show="villigForm.villigJobb.$error.required">{{feilmeldinger.paakreves}} </span></p>
 				<label class="svar-alt" ng-class="{'svaret': soknadData.fakta.villigJobb.value == 'ja'}">
