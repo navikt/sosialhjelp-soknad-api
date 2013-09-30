@@ -14,14 +14,7 @@ angular.module('app.brukerdata', ['app.services'])
 })
 
 .controller('HentSoknadDataCtrl', function($scope, soknadService){
-	var soknadType = window.location.pathname.split("/")[3];
-	$scope.soknad = soknadService.create({param: soknadType}).$promise.then(function(result) {
-		$scope.soknad.id = result.id;
-		console.log($scope.soknad.id + "iiiiiiiiiiiid");
-	});
-		$scope.soknadData = soknadService.get({id:  $scope.soknad.id});	
-debugger
-		var soknadData = $scope.soknadData;
+	
 
 })
 

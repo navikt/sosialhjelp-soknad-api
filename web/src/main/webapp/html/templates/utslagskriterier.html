@@ -18,7 +18,6 @@
 
 	<br/>
 
-
 	<div data-ng-show="borIUtlandet()">
 		<p> Du må bo i Norge for å kunne søke om dagpenger.</p>
 		<p>Vi har registrert følgende adresse på deg: </p>
@@ -44,13 +43,14 @@
 	</div>
 
 	<br/>
-
-
 	<br/>
 
 	<div data-ng-show="kvalifisererForGjenopptak() != false" >
 		{{kvalifisererForGjenopptak()}}
 	</div>
+
+	<br/>
+	<br/>
 
 	<div data-ng-hide="arena.jobbsoker">
 		<p>Du er ikke registrert som jobbsøker, dette er en forutsettning for å søke om dagpenger</p>
