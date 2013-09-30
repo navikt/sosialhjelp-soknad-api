@@ -10,6 +10,7 @@ angular.module('app.routes',['ngRoute'])
       .when('/utslagskriterier', {templateUrl: '../html/templates/utslagskriterier.html', controller: 'GrunnlagsdataCtrl'})
       .when('/avbryt', {templateUrl: '../html/templates/avbryt.html', controller: 'AvbrytCtrl'})
       .when('/fortsettsenere', {templateUrl: '../html/templates/fortsettSenere.html', controller: 'SoknadDataCtrl'})
+      .when('/slettet', {templateUrl: '../html/templates/soknadSlettet.html', controller: 'SlettetSoknadDataCtrl'})
       .otherwise({redirectTo: '/utslagskriterier'});
 
 //    $locationProvider.html5Mode(true);

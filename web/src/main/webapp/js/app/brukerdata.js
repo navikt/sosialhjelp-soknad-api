@@ -20,7 +20,6 @@ angular.module('app.brukerdata', ['app.services'])
 		console.log($scope.soknad.id + "iiiiiiiiiiiid");
 	});
 		$scope.soknadData = soknadService.get({id:  $scope.soknad.id});	
-debugger
 		var soknadData = $scope.soknadData;
 
 })

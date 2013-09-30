@@ -1,20 +1,18 @@
 package no.nav.sbl.dialogarena.websoknad.pages.sendsoknad;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.Map.Entry;
+import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
+import org.apache.wicket.markup.html.WebPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
-
-import org.apache.wicket.markup.html.WebPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class SendSoknadServicePage extends WebPage {
 	@Inject

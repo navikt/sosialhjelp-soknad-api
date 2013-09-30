@@ -4,7 +4,7 @@
 *
 * Description
 */
-angular.module('app.directives', [])
+angular.module('app.directives', ['app.services'])
 
 /*Hva med casene 1-242 osv? */
 
@@ -123,13 +123,30 @@ angular.module('app.directives', [])
   };
 })
 
-.directive('knapprad', function () {
+.directive('knapprad', function ($location) {
     return {
         restrict: "E",
         replace: true,
         template: function() {
             var rad = lagKnappeRad();
             return rad.prop('outerHTML');
+        },
+        link: function(scope, element) {
+            var avbryt = element.find('#avbryt');
+            avbryt.click(scope, function(e) {
+                var scope = e.data;
+
+                if (scope.soknadData.fakta === undefined) {
+                    scope.$apply(function() {
+                        $location.path('avbryt');
+                    });
+                } else {
+                    soknadService.delete({id: soknadId});
+                    scope.$apply(function() {
+                        $location.path('slettet');
+                    });
+                }
+            });
         }
     }
 })
