@@ -1,11 +1,10 @@
 'use strict';
 
 angular.module('app.grunnlagsdata', ['app.services'])
-.controller('GrunnlagsdataCtrl', ['$scope', 'grunnlagsdataService', 'soknadService', '$location', '$q', function($scope, grunnlagsdataService, soknadService, $location, $q) {
-    $scope.personalia = grunnlagsdataService.get();
-
-	$scope.minAlder=18;
-	$scope.maxAlder=67;
+.controller('GrunnlagsdataCtrl', ['$scope', 'grunnlagsdataService', 'hentAlderService', 'soknadService', '$location', '$q', function($scope, grunnlagsdataService, hentAlderService, soknadService, $location, $q) {
+	
+	$scope.personalia = grunnlagsdataService.get();
+	$scope.personaliaAlder =  hentAlderService.get();
 
 	$scope.arena = {
 		jobbsoker: false
@@ -17,8 +16,12 @@ angular.module('app.grunnlagsdata', ['app.services'])
 		}
 	}
 
+	$scope.setAlder = function(){
+		return $scope.personalia.alder;
+	}
+	
 	$scope.isGyldigAlder = function() {
-		return ($scope.personalia.alder >= $scope.minAlder && $scope.personalia.alder < $scope.maxAlder);
+		return ($scope.personaliaAlder.alder < $scope.maxAlder);
 	};
 	$scope.borIUtlandet = function() {
 		return ($scope.personalia.midlertidigadresseLandkode != 'NOR');

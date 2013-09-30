@@ -9,7 +9,7 @@
 
 
 	<div data-ng-hide="isGyldigAlder()">
-		<span>Din alder er {{personalia.alder}} år som er over alderskravet. Du oppfyller dermed ikke kravet for å søke.</span>
+		<span>Din alder er {{personaliaAlder.alder}} år som er over alderskravet. Du oppfyller dermed ikke kravet for å søke.</span>
 		<br/>
 
 		<span>Du kan søke likevel, men svaret blir mest sannsynlig negativt.</span>
@@ -54,7 +54,6 @@
 
 	<div data-ng-hide="arena.jobbsoker">
 		<p>Du er ikke registrert som jobbsøker, dette er en forutsettning for å søke om dagpenger</p>
-		<br/>
 		<a href="http://nav.no" target="_blank">Registrer deg nå</a>
 	</div>
 </div>
