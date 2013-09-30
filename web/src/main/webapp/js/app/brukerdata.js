@@ -1,34 +1,24 @@
 angular.module('app.brukerdata', ['app.services'])
 
-.controller('StartSoknadCtrl', function($scope, soknadService) {
+.controller('StartSoknadCtrl', function($scope, $location, soknadService) {
 	$scope.startSoknad = function() {
-		console.log("START SOKNAD");
 		var soknadType = window.location.pathname.split("/")[3];
 		$scope.soknad = soknadService.create({param: soknadType}).$promise.then(function(result) {
-			$scope.soknad.id = result.id;
-			console.log($scope.soknad.id + "iiiiiiiiiiiid");
+            $location.path('reell-arbeidssoker/' + result.id);
 		});
-		console.log("var : " + $scope.soknad.id);
-		
 	}
 })
 
-.controller('HentSoknadDataCtrl', function($scope, soknadService){
-	var soknadType = window.location.pathname.split("/")[3];
-	$scope.soknad = soknadService.create({param: soknadType}).$promise.then(function(result) {
-		$scope.soknad.id = result.id;
-		console.log($scope.soknad.id + "iiiiiiiiiiiid");
-	});
-		$scope.soknadData = soknadService.get({id:  $scope.soknad.id});	
-		var soknadData = $scope.soknadData;
-
+.controller('HentSoknadDataCtrl', function($scope, $routeParams, soknadService){
+    var soknadId = $routeParams.soknadId;
+    $scope.soknadData = soknadService.get({param:  soknadId});
 })
 
 .controller('SoknadDataCtrl', function($scope, soknadService, $location, $timeout) {
 
 	console.log('SoknadId: '+  $scope.soknad.id);
 	console.log("HENT SOKNAD");
-	$scope.soknadData = soknadService.get({id:  $scope.soknad.id});	
+	$scope.soknadData = soknadService.get({param:  $scope.soknad.id});
 
 	$scope.lagre = function() {
 

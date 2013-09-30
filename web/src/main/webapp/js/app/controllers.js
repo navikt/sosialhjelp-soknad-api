@@ -16,17 +16,16 @@ angular.module('app.controllers', ['app.services'])
 }])
 
 .controller('AvbrytCtrl', function($scope, $routeParams, $location, soknadService) {
-    var soknadId = window.location.pathname.split("/")[3];
-    $scope.soknadData = soknadService.get({id: soknadId});
     $scope.submitForm = function() {
-        soknadService.delete({id: soknadId});
-        $location.path('slettet');
+        soknadService.delete({param: $routeParams.soknadId}).$promise.then(function() {
+            $location.path('slettet');
+        });
     }
 })
 
-.controller('SlettetSoknadDataCtrl'), function($scope) {
+.controller('SlettetSoknadDataCtrl', function($scope) {
 
-}
+})
 
 .controller('VilligCtrl', function($scope) {
   $scope.villig = {
