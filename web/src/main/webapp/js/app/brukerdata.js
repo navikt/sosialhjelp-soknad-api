@@ -14,7 +14,6 @@ angular.module('app.brukerdata', ['app.services'])
 })
 
 .controller('HentSoknadDataCtrl', function($scope, soknadService){
-	
 
 })
 
