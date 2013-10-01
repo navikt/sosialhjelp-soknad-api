@@ -24,7 +24,7 @@ pensjonist = {"fornavn":"Ola","etternavn":"Nordmann","mellomnavn":"J","alder":50
 arbeidssoker = {"fornavn":"Test","etternavn":"Testesen","mellomnavn":"","alder":31,"postnummer":"5001","poststed":"Bergen","adresse":"Kalfaret","email":"test@testesen.no"};
 
 $httpBackend.whenGET('/sendsoknad/rest/grunnlagsdata').respond(pensjonist);	
-$httpBackend.whenGET('/sendsoknad/rest/alder').respond({"alder": 67});	
+$httpBackend.whenGET('/sendsoknad/rest/grunnlagsdata/alder').respond({"alder": 67});	
 
 
 $httpBackend.whenGET('/sendsoknad/rest/soknad').respond(soknadData);

@@ -19,5 +19,5 @@ angular.module('app.services',['ngResource'])
 })
 
 .factory('hentAlderService', function($resource){
-	return $resource('/sendsoknad/rest/alder');
+	return $resource('/sendsoknad/rest/grunnlagsdata/alder');
 })
