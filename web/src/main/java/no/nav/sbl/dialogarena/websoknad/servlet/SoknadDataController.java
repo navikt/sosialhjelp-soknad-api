@@ -29,6 +29,12 @@ public class SoknadDataController {
         return soknadService.hentSoknad(soknadId);
     }
 
+    @RequestMapping(value = "/{soknadId}/send", method = RequestMethod.POST, consumes = "application/json")
+    @ResponseBody()
+    public void sendSoknad(@PathVariable Long soknadId) {
+        soknadService.sendSoknad(soknadId);
+    }
+
     @RequestMapping(value = "/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody()
     public void lagreSoknad(@PathVariable Long soknadId, @RequestBody WebSoknad webSoknad) {

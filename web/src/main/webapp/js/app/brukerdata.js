@@ -9,6 +9,12 @@ angular.module('app.brukerdata', ['app.services'])
 	}
 })
 
+.controller('SendSoknadCtrl', function($scope, $routeParams, soknadService) {
+    $scope.sendSoknad = function() {
+        soknadService.send({param: soknadId, action: 'send'});
+    }
+})
+
 .controller('HentSoknadDataCtrl', function($scope, $rootScope, $routeParams, soknadService){
     var soknadId = $routeParams.soknadId;
     $rootScope.soknadData = soknadService.get({param:  soknadId}).$promise.then(function(result) {

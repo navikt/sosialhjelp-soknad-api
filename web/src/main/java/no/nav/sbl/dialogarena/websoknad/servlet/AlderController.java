@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping("/grunnlagsdata/alder")
-
 public class AlderController {
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
