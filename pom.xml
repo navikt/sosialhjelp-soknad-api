@@ -52,6 +52,11 @@
                 <version>0.5</version>
             </dependency>
             <dependency>
+                <groupId>joda-time</groupId>
+                <version>2.2</version>
+                <artifactId>joda-time</artifactId>
+            </dependency>
+            <dependency>
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
                 <version>3.2.1</version>

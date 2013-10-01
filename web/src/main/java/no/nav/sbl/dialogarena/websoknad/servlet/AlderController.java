@@ -1,8 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import no.nav.modig.core.context.SubjectHandler;
-import no.nav.sbl.dialogarena.websoknad.domain.Alder;
-import no.nav.sbl.dialogarena.websoknad.domain.Person;
+import no.nav.sbl.dialogarena.websoknad.domain.PersonAlder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,8 +20,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class AlderController {
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
-    public Alder hentAlder() {
-        Alder alder = new Alder(SubjectHandler.getSubjectHandler().getUid());
+    public PersonAlder hentAlder() {
+        PersonAlder alder = new PersonAlder(SubjectHandler.getSubjectHandler().getUid());
         return alder;
     }
  }

@@ -1,5 +1,8 @@
-import no.nav.sbl.dialogarena.websoknad.domain.Alder;
+import no.nav.sbl.dialogarena.websoknad.domain.PersonAlder;
 import static org.junit.Assert.assertEquals;
+
+import org.joda.time.DateTimeUtils;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -10,9 +13,36 @@ import org.junit.Test;
  * To change this template use File | Settings | File Templates.
  */
 public class AlderTest {
+
+    // 01.10.2013
+    private static final long IDAG = 1380625958979L;
+
+    @Before
+    public void init() {
+        DateTimeUtils.setCurrentMillisFixed(IDAG);
+    }
+
     @Test
-    public void alderSkalVaere24ForPersonMedFNR_08122413838() {
-        Alder alder = new Alder("08122413838");
-        assertEquals(24, alder.getAlder());
+    public void alderSkalVaere100ForPersonMedFNR_***REMOVED***() {
+        PersonAlder alder = new PersonAlder("***REMOVED***");
+        assertEquals(100, alder.getAlder());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void skalFaaExceptionDersomFnrErUgyldig() {
+        PersonAlder alder = new PersonAlder("***REMOVED***");
+        assertEquals(100, alder.getAlder());
+    }
+
+    @Test
+    public void alderSkalVaere105ForPersonMedFNR_***REMOVED***() {
+        PersonAlder alder = new PersonAlder("***REMOVED***");
+        assertEquals(105, alder.getAlder());
+    }
+
+    @Test
+    public void alderSkalVaere5ForPersonMedFNR_***REMOVED***() {
+        PersonAlder alder = new PersonAlder("***REMOVED***");
+        assertEquals(5, alder.getAlder());
     }
 }
