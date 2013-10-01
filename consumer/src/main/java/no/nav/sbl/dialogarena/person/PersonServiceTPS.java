@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.person;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import no.nav.sbl.dialogarena.person.consumer.transform.PersonTransform;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
@@ -20,24 +21,23 @@ public class PersonServiceTPS implements PersonService {
     private static final Logger logger = LoggerFactory.getLogger(PersonServiceTPS.class);
 
     @Inject
+    @Named("brukerProfilPortType")
     private BrukerprofilPortType brukerProfil;
 
     @Override
 //    @Cacheable(value = PERSON, key = "T(no.nav.sbl.dialogarena.dokumentinnsending.cache.UserKeyGenerator).generate(#ident)")
-    public Person hentPerson(String ident) {
+    public Person hentPerson(Long soknadId, String fodselsnummer) {
         XMLHentKontaktinformasjonOgPreferanserResponse response = null;
         try {
-            response = brukerProfil.hentKontaktinformasjonOgPreferanser(makeXMLRequest(ident));
+            response = brukerProfil.hentKontaktinformasjonOgPreferanser(makeXMLRequest(fodselsnummer));
         } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
             logger.error("Fant ikke bruker i TPS.", e);
-           // return Person.ikkeIdentifisert();
-            return null;
+            return new Person();
         } catch (Exception re) {
-            logger.error("Kunne ikke hente person med ID {} fra TPS", ident, re);
-           // return Person.ikkeIdentifisert();
-            return null;
+            logger.error("Kunne ikke hente person med ID {} fra TPS", fodselsnummer, re);
+            return new Person();
         }
-        return new PersonTransform().mapToPerson(response);
+        return new PersonTransform().mapToPerson(soknadId, response);
     }
 
     private XMLHentKontaktinformasjonOgPreferanserRequest makeXMLRequest(String ident) {
