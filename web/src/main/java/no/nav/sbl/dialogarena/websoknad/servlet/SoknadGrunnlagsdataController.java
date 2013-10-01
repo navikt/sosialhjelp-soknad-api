@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/grunnlagsdata")
 public class SoknadGrunnlagsdataController {
-    
-	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
+
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Person hentGrunnlagsdata() {
         Person person = Person.create();
