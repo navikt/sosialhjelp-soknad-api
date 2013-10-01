@@ -45,12 +45,14 @@ angular.module('app.directives', ['app.services'])
 
 })
 
-.directive('prosent', function(dateFilter){
+.directive('prosent', function(){
   return {
-    require: '^ngModel',
+    replace:true,
+    require: 'ngModel',
+
     link: function(scope, elm, attrs, ctrl){
-      var INTEGER_REGEX = /^\-?\d*$/;
       ctrl.$parsers.unshift(function(viewValue){
+        var INTEGER_REGEX = /^\-?\d*$/;
         if(INTEGER_REGEX.test(viewValue) && viewValue <= 100 && viewValue >=0) {
          ctrl.$setValidity('prosent', true);
          return viewValue;
@@ -61,7 +63,6 @@ angular.module('app.directives', ['app.services'])
      });
     },
   };
-
 })
 
 .directive('datotil', function(){
@@ -124,31 +125,31 @@ angular.module('app.directives', ['app.services'])
 })
 
 .directive('knapprad', function ($location) {
-    return {
-        restrict: "E",
-        replace: true,
-        template: function() {
-            var rad = lagKnappeRad();
-            return rad.prop('outerHTML');
-        },
-        link: function(scope, element) {
-            var avbryt = element.find('#avbryt');
-            avbryt.click(scope, function(e) {
-                var scope = e.data;
+  return {
+    restrict: "E",
+    replace: true,
+    template: function() {
+      var rad = lagKnappeRad();
+      return rad.prop('outerHTML');
+    },
+    link: function(scope, element) {
+      var avbryt = element.find('#avbryt');
+      avbryt.click(scope, function(e) {
+        var scope = e.data;
 
-                if (scope.soknadData.fakta === undefined) {
-                    scope.$apply(function() {
-                        $location.path('avbryt');
-                    });
-                } else {
-                    soknadService.delete({id: soknadId});
-                    scope.$apply(function() {
-                        $location.path('slettet');
-                    });
-                }
-            });
+        if (scope.soknadData.fakta === undefined) {
+          scope.$apply(function() {
+            $location.path('avbryt');
+          });
+        } else {
+          soknadService.delete({id: soknadId});
+          scope.$apply(function() {
+            $location.path('slettet');
+          });
         }
+      });
     }
+  }
 })
 
 
