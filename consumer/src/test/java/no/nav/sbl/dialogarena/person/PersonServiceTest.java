@@ -5,8 +5,6 @@ import static org.mockito.Mockito.when;
 import java.math.BigInteger;
 import java.util.List;
 
-import no.nav.sbl.dialogarena.adresse.Adressetype;
-import no.nav.sbl.dialogarena.adresse.StrukturertAdresse;
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;

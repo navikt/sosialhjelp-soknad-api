@@ -1,11 +1,8 @@
-package no.nav.sbl.dialogarena.person.consumer.transform;
+package no.nav.sbl.dialogarena.person;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.nav.sbl.dialogarena.adresse.Adressetype;
-import no.nav.sbl.dialogarena.person.Person;
-import no.nav.sbl.dialogarena.person.PersonAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBostedsadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGateadresse;

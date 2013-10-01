@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.person;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import no.nav.sbl.dialogarena.person.consumer.transform.PersonTransform;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
