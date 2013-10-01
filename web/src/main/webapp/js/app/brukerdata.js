@@ -1,27 +1,29 @@
 angular.module('app.brukerdata', ['app.services'])
 
-.controller('StartSoknadCtrl', function($scope, soknadService) {
+.controller('StartSoknadCtrl', function($scope, $location, soknadService) {
 	$scope.startSoknad = function() {
-		console.log("START SOKNAD");
 		var soknadType = window.location.pathname.split("/")[3];
 		$scope.soknad = soknadService.create({param: soknadType}).$promise.then(function(result) {
-			$scope.soknad.id = result.id;
-			console.log($scope.soknad.id + "iiiiiiiiiiiid");
+            $location.path('reell-arbeidssoker/' + result.id);
 		});
-		console.log("var : " + $scope.soknad.id);
-		
 	}
 })
 
-.controller('HentSoknadDataCtrl', function($scope, soknadService){
-
+.controller('HentSoknadDataCtrl', function($scope, $rootScope, $routeParams, soknadService){
+    var soknadId = $routeParams.soknadId;
+    $rootScope.soknadData = soknadService.get({param:  soknadId}).$promise.then(function(result) {
+        var fakta = $.map(result.fakta, function(element) {
+            return element.type;
+        });
+        $rootScope.soknadPaabegynt = $.inArray("BRUKERREGISTRERT", fakta) >= 0;
+    });
 })
 
 .controller('SoknadDataCtrl', function($scope, soknadService, $location, $timeout) {
 
 	console.log('SoknadId: '+  $scope.soknad.id);
 	console.log("HENT SOKNAD");
-	$scope.soknadData = soknadService.get({id:  $scope.soknad.id});	
+	$scope.soknadData = soknadService.get({param:  $scope.soknad.id});
 
 	$scope.lagre = function() {
 
@@ -41,6 +43,29 @@ angular.module('app.brukerdata', ['app.services'])
 	lagre();
 	*/
 
+})
+
+.controller('AvbrytCtrl', function($scope, $rootScope, $routeParams, $location, soknadService) {
+
+    $scope.data = {krevBekreftelse: $rootScope.soknadPaabegynt};
+
+    $scope.submitForm = function() {
+        var start = $.now();
+        soknadService.delete({param: $routeParams.soknadId}).$promise.then(function() {
+
+            // For å forhindre at lasteindikatoren forsvinner med en gang
+            var delay = 1500 - ($.now() - start);
+            setTimeout(function() {
+                $scope.$apply(function() {
+                    $location.path('slettet');
+                });
+            }, delay);
+        });
+    }
+
+    if (!$scope.data.krevBekreftelse) {
+        $scope.submitForm();
+    }
 })
 
 .directive('modFaktum', function() {

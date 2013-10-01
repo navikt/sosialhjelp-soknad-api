@@ -133,7 +133,6 @@ describe('directives', function() {
 		element.scope().$apply(); 
 	});
 
-
 	it('endringer på fra skal ikke påvirke tilTo', function(){
 		scope.arbeidsforhold.fra = new Date('10.10.2011');
 		element.scope().$apply(); 

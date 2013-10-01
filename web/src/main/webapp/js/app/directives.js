@@ -124,7 +124,8 @@ angular.module('app.directives', ['app.services'])
   };
 })
 
-.directive('knapprad', function ($location) {
+
+.directive('knapprad', function ($location, $routeParams) {
   return {
     restrict: "E",
     replace: true,
@@ -133,23 +134,13 @@ angular.module('app.directives', ['app.services'])
       return rad.prop('outerHTML');
     },
     link: function(scope, element) {
-      var avbryt = element.find('#avbryt');
-      avbryt.click(scope, function(e) {
-        var scope = e.data;
-
-        if (scope.soknadData.fakta === undefined) {
-          scope.$apply(function() {
-            $location.path('avbryt');
-          });
-        } else {
-          soknadService.delete({id: soknadId});
-          scope.$apply(function() {
-            $location.path('slettet');
-          });
-        }
-      });
+      element.find('#avbryt').click(function() {
+        scope.$apply(function() {
+          $location.path('avbryt/' + $routeParams.soknadId);
+        });
+      });;
     }
-  }
+  };
 })
 
 
