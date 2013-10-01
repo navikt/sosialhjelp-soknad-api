@@ -45,12 +45,14 @@ angular.module('app.directives', ['app.services'])
 
 })
 
-.directive('prosent', function(dateFilter){
+.directive('prosent', function(){
   return {
-    require: '^ngModel',
+    replace:true,
+    require: 'ngModel',
+
     link: function(scope, elm, attrs, ctrl){
-      var INTEGER_REGEX = /^\-?\d*$/;
       ctrl.$parsers.unshift(function(viewValue){
+        var INTEGER_REGEX = /^\-?\d*$/;
         if(INTEGER_REGEX.test(viewValue) && viewValue <= 100 && viewValue >=0) {
          ctrl.$setValidity('prosent', true);
          return viewValue;
@@ -61,7 +63,6 @@ angular.module('app.directives', ['app.services'])
      });
     },
   };
-
 })
 
 .directive('datotil', function(){
@@ -123,6 +124,7 @@ angular.module('app.directives', ['app.services'])
   };
 })
 
+
 .directive('knapprad', function ($location, $routeParams) {
     return {
         restrict: "E",
@@ -151,7 +153,7 @@ angular.module('app.directives', ['app.services'])
 
             return rad.prop('outerHTML');
         }
-    }
+    };
 })
 
 

@@ -34,7 +34,6 @@ angular.module('app.controllers', ['app.services'])
 })
 
 .controller('ValidationCtrl', function($scope) {
-
   $scope.feilmeldinger = {
     paakreves: '*',
     feil: 'Ikke gyldig',
