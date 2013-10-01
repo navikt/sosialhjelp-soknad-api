@@ -4,7 +4,7 @@ import no.nav.modig.core.context.JettySubjectHandler;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.testcertificates.TestCertificates;
 import no.nav.sbl.dialogarena.common.jetty.Jetty;
-import no.nav.sbl.dialogarena.dokumentinnsending.config.SystemProperties;
+import no.nav.sbl.dialogarena.websoknad.config.SystemProperties;
 import org.eclipse.jetty.jaas.JAASLoginService;
 
 import java.io.File;
