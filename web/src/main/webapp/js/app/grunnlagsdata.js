@@ -4,7 +4,9 @@ angular.module('app.grunnlagsdata', ['app.services'])
 .controller('GrunnlagsdataCtrl', ['$scope', 'grunnlagsdataService', 'hentAlderService', 'soknadService', '$location', '$q', function($scope, grunnlagsdataService, hentAlderService, soknadService, $location, $q) {
 	
 	$scope.personalia = grunnlagsdataService.get();
-	$scope.personaliaAlder =  hentAlderService.get();
+	$scope.personaliaAlder = hentAlderService.get();
+	$scope.maxAlder = 67;
+	$scope.minAlder = 18;
 
 	$scope.arena = {
 		jobbsoker: false
@@ -74,30 +76,30 @@ angular.module('app.grunnlagsdata', ['app.services'])
 //		if(tidligere graviditesrelatertSykdomMedForeldrepenger) {
 //			return "*Gjenopptak pga tidligere fått invilget graviditesrelatertSykdomMedForeldrepenger"
 //		}
-return false;
-};
-
-
-$scope.kvalifisererForGjenopptak = function() {
-	if($scope.fattDagpengerSisteAaret()){
-		if(!$scope.hattPermitering()){
-			return "*Gjenopptak pga ikke hatt permitering, og fått dagpenger de siste 52 ukene.*"
-		}
-		if(!$scope.jobbetHosSammeArbeidsgiverMerEnnSeksUker()){
-			return "*Gjennopptak pga ikke hatt jobb hos samme arbeidsgiver vedkommende ble permitert fra, i mer enn 6 uker, og fått dagpenger de siste 52 ukene."
-		}
-		if($scope.erFisker() && !$scope.jobetMerEnn26Uker()) {
-			return "*Gjennopptak pga fisker, og fått dagpenger de siste 52 ukene."
-		}
-		if(!$scope.avbruddPgaUtdanning()){
-			return"*Gjennopptak pga ikke avbrudd pga utdanning, og fått dagpenger de siste 52 ukene."
-		}
-	}
-	else {
-		if(sokePaaNytt() != false){
-			return sokePaaNytt();
-		}
-	}
 	return false;
-};
+	};
+
+
+	$scope.kvalifisererForGjenopptak = function() {
+		if($scope.fattDagpengerSisteAaret()){
+			if(!$scope.hattPermitering()){
+				return "*Gjenopptak pga ikke hatt permitering, og fått dagpenger de siste 52 ukene.*"
+			}
+			if(!$scope.jobbetHosSammeArbeidsgiverMerEnnSeksUker()){
+				return "*Gjennopptak pga ikke hatt jobb hos samme arbeidsgiver vedkommende ble permitert fra, i mer enn 6 uker, og fått dagpenger de siste 52 ukene."
+			}
+			if($scope.erFisker() && !$scope.jobetMerEnn26Uker()) {
+				return "*Gjennopptak pga fisker, og fått dagpenger de siste 52 ukene."
+			}
+			if(!$scope.avbruddPgaUtdanning()){
+				return"*Gjennopptak pga ikke avbrudd pga utdanning, og fått dagpenger de siste 52 ukene."
+			}
+		}
+		else {
+			if(sokePaaNytt() != false){
+				return sokePaaNytt();
+			}
+		}
+		return false;
+	};
 }])

@@ -1,13 +1,11 @@
 <div class="skjemaramme">
-	<form name="villigForm">
+	<form name="villigForm" data-ng-controller="ValidationCtrl">
 		<div class="sideoversikt">
 			<h4>REELL ARBEIDSSØKER </h4>
 		</div>
 		<div class="skjemainnhold">
-		
-		</select>
 			<div class="spm-blokk" >
-				<p class="spm">Som hovedregel må du være villig til å ta enhver type arbeid for å ha rett på dagpenger <span class="error" data-ng-show="villigForm.villigJobb.$error.required">{{feilmeldinger.paakreves}} </span></p>
+				<p class="spm">Som hovedregel må du være villig til å ta enhver type arbeid for å ha rett på dagpenger <span class="error" data-ng-show="villigForm.villigJobb.$error.required">{{feilmeldinger.paakreves}}</span></p>
 				<label class="svar-alt" ng-class="{'svaret': soknadData.fakta.villigJobb.value == 'ja'}">
 				<input class="sendsoknad-radio" data-ng-model="soknadData.fakta.villigJobb.value" type="radio" name="villigJobb" value="ja" required />
 				Ja, jeg kan ta enhver type arbeid </label>
@@ -44,7 +42,7 @@
 					<div class="spm-blokk" data-ng-show="soknadData.fakta.ikkePendleHelse.value == true">
 						<textarea  mod-faktum data-ng-model="soknadData.fakta.ikkePendleHelseTekst.value" name="ikkePendleHelseTekst"></textarea>
 
-						<p>Må dokumenteres med legeatest </p>
+						<p>Må dokumenteres med legeattest </p>
 						<p>Kor beskrivelse av hva legeattesten skal inneholde</p>
 						<img src="">Du kan laste opp i neste steg eller <a href="">lagre og fortsette senere</a>	
 					</div>
