@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.adresse;
+package no.nav.sbl.dialogarena.person;
 
 public enum Adressetype {
     BOSTEDSADRESSE, POSTADRESSE, GATEADRESSE, POSTBOKSADRESSE, OMRAADEADRESSE, UTENLANDSK_ADRESSE, UKJENT_ADRESSE, MIDLERTIDIG_ADRESSE_NORGE

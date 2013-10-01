@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.person;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import no.nav.sbl.dialogarena.adresse.Adressetype;
 
 @XmlRootElement
 public class PersonAdresse {
