@@ -123,7 +123,7 @@ angular.module('app.directives', ['app.services'])
   };
 })
 
-.directive('knapprad', function ($location, $routeParams, soknadService) {
+.directive('knapprad', function ($location, $routeParams) {
     return {
         restrict: "E",
         replace: true,
@@ -132,23 +132,11 @@ angular.module('app.directives', ['app.services'])
             return rad.prop('outerHTML');
         },
         link: function(scope, element) {
-            var avbryt = element.find('#avbryt');
-            avbryt.click(scope, function(e) {
-                var scope = e.data;
-
-                // Legge til en sjekk for om vi har lagret data eller ikke...
-                if (scope.soknadData.fakta === undefined) {
-                    scope.$apply(function() {
-                        soknadService.delete({param: $routeParams.soknadId}).$promise.then(function() {
-                            $location.path('slettet');
-                        });
-                    });
-                } else {
-                    scope.$apply(function() {
-                        $location.path('avbryt/' + $routeParams.soknadId);
-                    });
-                }
-            });
+            element.find('#avbryt').click(function() {
+                scope.$apply(function() {
+                    $location.path('avbryt/' + $routeParams.soknadId);
+                });
+            });;
         }
     }
 })

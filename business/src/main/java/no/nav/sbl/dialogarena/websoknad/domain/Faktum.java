@@ -7,6 +7,7 @@ public class Faktum implements Serializable {
     private Long soknadId;
     private String key;
     private String value;
+    private String type;
 
     public String getValue() {
         return value;
@@ -30,5 +31,13 @@ public class Faktum implements Serializable {
 
     public final void setValue(String value) {
         this.value = value;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
