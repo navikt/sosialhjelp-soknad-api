@@ -17,8 +17,6 @@ angular.module('app.brukerdata', ['app.services'])
         });
         $rootScope.soknadPaabegynt = $.inArray("BRUKERREGISTRERT", fakta) >= 0;
     });
-
-
 })
 
 .controller('SoknadDataCtrl', function($scope, soknadService, $location, $timeout) {
