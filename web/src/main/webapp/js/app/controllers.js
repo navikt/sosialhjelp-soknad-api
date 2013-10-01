@@ -15,14 +15,6 @@ angular.module('app.controllers', ['app.services'])
 
 }])
 
-.controller('AvbrytCtrl', function($scope, $routeParams, $location, soknadService) {
-    $scope.submitForm = function() {
-        soknadService.delete({param: $routeParams.soknadId}).$promise.then(function() {
-            $location.path('slettet');
-        });
-    }
-})
-
 .controller('SlettetSoknadDataCtrl', function($scope) {
 
 })

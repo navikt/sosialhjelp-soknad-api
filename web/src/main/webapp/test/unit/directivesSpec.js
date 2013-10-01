@@ -4,4 +4,4 @@ describe('Directives test', function() {
 
 	});
 
-}); 
+});
