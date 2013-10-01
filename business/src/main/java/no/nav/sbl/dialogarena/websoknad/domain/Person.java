@@ -3,12 +3,13 @@ package no.nav.sbl.dialogarena.websoknad.domain;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+
 import java.io.Serializable;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Person implements Serializable{
-	
+
 	private String fornavn;
 	private String etternavn;
 	private String mellomnavn;
