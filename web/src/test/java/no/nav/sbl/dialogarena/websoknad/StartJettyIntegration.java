@@ -4,7 +4,7 @@ import no.nav.modig.core.context.JettySubjectHandler;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.testcertificates.TestCertificates;
 import no.nav.sbl.dialogarena.common.jetty.Jetty;
-import no.nav.sbl.dialogarena.dokumentinnsending.config.SystemProperties;
+import no.nav.sbl.dialogarena.websoknad.config.SystemProperties;
 
 import java.io.File;
 import java.io.IOException;

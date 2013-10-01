@@ -126,21 +126,34 @@ angular.module('app.directives', ['app.services'])
 
 
 .directive('knapprad', function ($location, $routeParams) {
-  return {
-    restrict: "E",
-    replace: true,
-    template: function() {
-      var rad = lagKnappeRad();
-      return rad.prop('outerHTML');
-    },
-    link: function(scope, element) {
-      element.find('#avbryt').click(function() {
-        scope.$apply(function() {
-          $location.path('avbryt/' + $routeParams.soknadId);
-        });
-      });;
-    }
-  };
+    return {
+        restrict: "E",
+        replace: true,
+        template: function() {
+            var rad =  $('<div/>')
+                .addClass('rad');
+
+            var begrensning = $('<div/>').addClass('begrensning');
+            rad.append(begrensning);
+
+            var avbryt = $('<a/>')
+                .attr('id', 'avbryt')
+                .attr('href', '#/avbryt/' + $routeParams.soknadId)
+                .text('Avbryt');
+
+            var fortsettSenere = $('<a/>')
+                .attr('id', 'fortsettSenere')
+                .attr('href', '#/fortsettsenere')
+                .text('Fortsett senere');
+
+            begrensning
+                .append($('<section/>')
+                    .append(avbryt)
+                    .append(fortsettSenere));
+
+            return rad.prop('outerHTML');
+        }
+    };
 })
 
 
