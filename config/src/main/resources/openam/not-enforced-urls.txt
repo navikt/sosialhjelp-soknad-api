@@ -2,3 +2,4 @@ https://${DomainName}/sendsoknad/internal/selftest*
 https://${DomainName}/sendsoknad/css/*
 https://${DomainName}/sendsoknad/img/*
 https://${DomainName}/sendsoknad/js/*
+https://${DomainName}/sendsoknad/font/*

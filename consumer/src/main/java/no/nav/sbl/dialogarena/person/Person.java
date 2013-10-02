@@ -11,9 +11,12 @@ import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 
 @XmlRootElement
 public class Person implements Serializable {
-	private static final String FODSELSNUMMERKEY = "fnr";
-	private static final String SAMMENSATTNAVNKEY = "sammensattnavn";
-	private static final String ADRESSERKEY = "adresser";
+	private final String FODSELSNUMMERKEY = "fnr";
+	private final String FORNAVNKEY = "fornavn";
+	private final String MELLOMNAVNKEY = "mellomnavn";
+	private final String ETTERNAVNKEY = "etternavn";
+	private final String SAMMENSATTNAVNKEY = "sammensattnavn";
+	private final String ADRESSERKEY = "adresser";
 
 	private Map<String, Object> fakta;
 
@@ -21,16 +24,27 @@ public class Person implements Serializable {
 		fakta = new HashMap<>();
 	}
 
-    public Person(Long soknadId, String fnr, String sammensattNavn, List<PersonAdresse> adresser) {
+    public Person(Long soknadId, String fnr, String fornavn, String mellomnavn, String etternavn, List<Adresse> adresser) {
     	fakta = new HashMap<>();
 
     	fakta.put(FODSELSNUMMERKEY, genererFaktum(soknadId,FODSELSNUMMERKEY,fnr));
-    	fakta.put(SAMMENSATTNAVNKEY, genererFaktum(soknadId, SAMMENSATTNAVNKEY,sammensattNavn));
+    	fakta.put(FORNAVNKEY, genererFaktum(soknadId,FORNAVNKEY,fornavn));
+    	fakta.put(MELLOMNAVNKEY, genererFaktum(soknadId,MELLOMNAVNKEY,mellomnavn));
+    	fakta.put(ETTERNAVNKEY, genererFaktum(soknadId,ETTERNAVNKEY,etternavn));
+    	fakta.put(SAMMENSATTNAVNKEY, genererFaktum(soknadId, SAMMENSATTNAVNKEY, getSammenSattNavn(fornavn,mellomnavn, etternavn)));
     	
     	fakta.put(ADRESSERKEY, adresser);
 
     }
 
+	private String getSammenSattNavn(String fornavn, String mellomnavn,
+			String etternavn) {
+		if(mellomnavn.equals("")) {
+			return fornavn + " " + etternavn;
+		} else {
+			return fornavn +" " + mellomnavn + " " + etternavn;
+		}
+	}
 
 	private Faktum genererFaktum(Long soknadId, String key, String value) {
 		Faktum faktum = new Faktum();
@@ -39,8 +53,7 @@ public class Person implements Serializable {
 		faktum.setValue(value);
 		return faktum;
 	}
-
-
+	
 	public Map<String, Object> getFakta() {
 		return fakta;
 	}
