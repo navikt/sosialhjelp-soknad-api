@@ -31,7 +31,7 @@ angular.module('app.brukerdata', ['app.services'])
 		var soknadData = $scope.soknadData;
 		console.log("lagre: " + soknadData);
 		soknadData.$save({param: soknadData.soknadId});
-	}
+	};
 	
 	/*
 	function lagre() {
@@ -62,7 +62,7 @@ angular.module('app.brukerdata', ['app.services'])
                 });
             }, delay);
         });
-    }
+    };
 
     if (!$scope.data.krevBekreftelse) {
         $scope.submitForm();
@@ -92,5 +92,5 @@ angular.module('app.brukerdata', ['app.services'])
 
 .controller('SistLagretCtrl', function($scope, time) {
 	$scope.time = time;
-})
+});
 
