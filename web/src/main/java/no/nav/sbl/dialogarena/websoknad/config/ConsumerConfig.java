@@ -36,7 +36,8 @@ import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
         ConsumerConfig.ServicesConfig.class,
         no.nav.sbl.dialogarena.dokumentinnsending.config.ConsumerConfig.class,
         ConsumerConfig.SendSoknadWSConfig.class,
-        SelftestStsConfig.class})
+        ConsumerConfig.SelftestStsConfig.class,
+        ConsumerConfig.ExternalStsConfig.class})
 @ImportResource({"classpath:META-INF/cxf/cxf.xml", "classpath:META-INF/cxf/cxf-servlet.xml"})
 public class ConsumerConfig {
 
