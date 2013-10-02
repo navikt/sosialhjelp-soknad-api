@@ -21,9 +21,6 @@ angular.module('app.brukerdata', ['app.services'])
 })
 
 .controller('SoknadDataCtrl', function($scope, $routeParams, $location, $timeout, soknadService) {
-
-	console.log('SoknadId: '+  $routeParams.soknadId);
-	console.log("HENT SOKNAD");
 	$scope.soknadData = soknadService.get({param:  $routeParams.soknadId});
 
 	$scope.lagre = function() {
@@ -31,6 +28,10 @@ angular.module('app.brukerdata', ['app.services'])
 		var soknadData = $scope.soknadData;
 		console.log("lagre: " + soknadData);
 		soknadData.$save({param: soknadData.soknadId});
+	}
+
+	$scope.change = function() {
+        console.log("Hei");
 	}
 	
 	/*
@@ -70,15 +71,25 @@ angular.module('app.brukerdata', ['app.services'])
 })
 
 .directive('modFaktum', function() {
-	return function( $scope, element, attrs) {
+	return function($scope, element, attrs) {
+	    var eventType;
+	    switch(element.attr('type')) {
+            case "radio":
+            case "checkbox":
+                eventType = "change";
+                break;
+            default:
+                eventType = "blur";
+	    }
 
-		element.bind('blur', function() {
+		element.bind(eventType, function() {
 			$scope.soknadData.fakta[attrs.name] = {"soknadId": $scope.soknadData.soknadId, "key":attrs.name,"value":element.val()};
 			$scope.$apply();
 			$scope.lagre();
 		});
 	};
 })
+
 
 .factory('time', function($timeout) {
 	var time = {};

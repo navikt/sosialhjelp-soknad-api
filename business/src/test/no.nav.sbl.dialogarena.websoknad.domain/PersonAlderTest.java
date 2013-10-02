@@ -12,10 +12,10 @@ import org.junit.Test;
  * Time: 10:29
  * To change this template use File | Settings | File Templates.
  */
-public class AlderTest {
+public class PersonAlderTest {
 
-    // 01.10.2013
-    private static final long IDAG = 1380625958979L;
+    // 02.10.2013
+    private static final long IDAG = 1***REMOVED***2L;
 
     @Before
     public void init() {
@@ -44,5 +44,11 @@ public class AlderTest {
     public void alderSkalVaere5ForPersonMedFNR_***REMOVED***() {
         PersonAlder alder = new PersonAlder("***REMOVED***");
         assertEquals(5, alder.getAlder());
+    }
+
+    @Test
+    public void skalReturnere66AarForPersonSomFyller67AarDenneMaaneden() {
+        PersonAlder alder = new PersonAlder("***REMOVED***");
+        assertEquals(66, alder.getAlder());
     }
 }

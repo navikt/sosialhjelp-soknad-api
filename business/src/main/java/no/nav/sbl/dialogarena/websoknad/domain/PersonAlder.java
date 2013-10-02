@@ -16,7 +16,7 @@ public class PersonAlder implements Serializable{
     private LocalDate fodselsdato;
 
     public PersonAlder(String personnummer){
-        this.fodselsdato = LocalDate.parse(hentFodselsdatoFraFnr(personnummer));
+        this.fodselsdato = LocalDate.parse(hentFodselsdatoFraFnr(personnummer)).plusMonths(1);
     }
 	public int getAlder() {
         return Years.yearsBetween(fodselsdato, new LocalDate()).getYears();
@@ -24,11 +24,10 @@ public class PersonAlder implements Serializable{
 
     private String hentFodselsdatoFraFnr(String personnummer){
         Fodselsnummer fnr =  FodselsnummerValidator.getFodselsnummer(personnummer);
-        String dag = fnr.getDayInMonth();
         String maned = fnr.getMonth();
         String aar = fnr.getBirthYear();
 
-        return aar+"-"+maned +"-"+dag;
+        return aar+"-"+maned+"-01";
     }
 }
 

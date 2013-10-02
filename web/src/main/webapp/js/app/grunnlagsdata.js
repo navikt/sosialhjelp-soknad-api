@@ -1,10 +1,9 @@
 'use strict';
 
 angular.module('app.grunnlagsdata', ['app.services'])
-.controller('GrunnlagsdataCtrl', ['$scope', 'grunnlagsdataService', 'hentAlderService', 'soknadService', '$location', '$q', function($scope, grunnlagsdataService, hentAlderService, soknadService, $location, $q) {
+.controller('GrunnlagsdataCtrl', ['$scope', 'utslagskriterierService', 'soknadService', '$location', '$q', function($scope, utslagskriterierService, soknadService, $location, $q) {
 	
-	$scope.personalia = grunnlagsdataService.get();
-	$scope.personaliaAlder = hentAlderService.get();
+	$scope.personalia = utslagskriterierService.get();
 	$scope.maxAlder = 67;
 	$scope.minAlder = 18;
 
@@ -13,22 +12,11 @@ angular.module('app.grunnlagsdata', ['app.services'])
 	}
 
 	$scope.checkUtslagskriterier = function() {
-		if($scope.isGyldigAlder() && !$scope.borIUtlandet() && $scope.kvalifisererForGjenopptak() === false && $scope.arena.jobbsoker) {
+		if($scope.personalia.alder && !$scope.personalia.borIUtland) {
 			$location.path("informasjonsside");
 		}
 	}
-
-	$scope.setAlder = function(){
-		return $scope.personalia.alder;
-	}
 	
-	$scope.isGyldigAlder = function() {
-		return ($scope.personaliaAlder.alder < $scope.maxAlder);
-	};
-	$scope.borIUtlandet = function() {
-		return ($scope.personalia.midlertidigadresseLandkode != 'NOR');
-	};
-
 	$scope.fattDagpengerSisteAaret = function() {
 		var fattDagpenger = true;
 		if(!fattDagpenger) {
