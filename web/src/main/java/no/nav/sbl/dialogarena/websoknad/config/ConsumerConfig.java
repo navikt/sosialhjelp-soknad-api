@@ -35,7 +35,8 @@ import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
 @Import(value = {KodeverkConfig.class,
         ConsumerConfig.ServicesConfig.class,
         no.nav.sbl.dialogarena.dokumentinnsending.config.ConsumerConfig.class,
-        ConsumerConfig.SendSoknadWSConfig.class})
+        ConsumerConfig.SendSoknadWSConfig.class,
+        SelftestStsConfig.class})
 @ImportResource({"classpath:META-INF/cxf/cxf.xml", "classpath:META-INF/cxf/cxf-servlet.xml"})
 public class ConsumerConfig {
 
@@ -65,7 +66,7 @@ public class ConsumerConfig {
 
         @Bean
         public SendSoknadPortType sendSoknadService() {
-            return konfigurerMedHttps(sendsoknadPortTypeFactory().create(SendSoknadPortType.class));
+            return sendsoknadPortTypeFactory().create(SendSoknadPortType.class);
         }
 
         @Bean
@@ -81,6 +82,18 @@ public class ConsumerConfig {
         @Bean
         public SendSoknadPortType sendSoknadSelftest() {
             return sendsoknadPortTypeFactory().create(SendSoknadPortType.class);
+        }
+    }
+
+    @Configuration
+    public static class SelftestStsConfig {
+        @Inject
+        @Named("sendSoknadSelftest")
+        private SendSoknadPortType sendSoknadSelftest;
+
+        @PostConstruct
+        public void setupSts() {
+            STSConfigurationUtility.configureStsForSystemUser(ClientProxy.getClient(sendSoknadSelftest));
         }
     }
 
