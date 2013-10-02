@@ -37,7 +37,6 @@ public class Person implements Serializable {
 
     }
 
-
 	private Faktum genererFaktum(Long soknadId, String key, String value) {
 		Faktum faktum = new Faktum();
 		faktum.setSoknadId(soknadId);
@@ -45,8 +44,7 @@ public class Person implements Serializable {
 		faktum.setValue(value);
 		return faktum;
 	}
-
-
+	
 	public Map<String, Object> getFakta() {
 		return fakta;
 	}
