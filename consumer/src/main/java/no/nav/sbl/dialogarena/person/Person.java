@@ -11,9 +11,9 @@ import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 
 @XmlRootElement
 public class Person implements Serializable {
-	private final String FODSELSNUMMERKEY = "fnr";
-	private final String SAMMENSATTNAVNKEY = "sammensattnavn";
-	private final String ADRESSERKEY = "adresser";
+	private static final String FODSELSNUMMERKEY = "fnr";
+	private static final String SAMMENSATTNAVNKEY = "sammensattnavn";
+	private static final String ADRESSERKEY = "adresser";
 
 	private Map<String, Object> fakta;
 
