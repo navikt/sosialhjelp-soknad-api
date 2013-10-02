@@ -74,7 +74,7 @@ public class PersonServiceTest {
     	XMLHentKontaktinformasjonOgPreferanserRequest request = hentRequestMedGyldigIdent();
     	XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
     	
-    	XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn();
+    	XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
 		response.setPerson(xmlBruker);
 
 		when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenReturn(response);
@@ -93,12 +93,32 @@ public class PersonServiceTest {
 		Assert.assertEquals(ET_FORNAVN+" "+ET_MELLOMNAVN+" "+ET_ETTERNAVN, sammensattnavn.getValue());
     }
 
+    @Test
+	public void skalStottePersonerUtenMellomnavn() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+    	XMLHentKontaktinformasjonOgPreferanserRequest request = hentRequestMedGyldigIdent();
+    	XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
+    	
+    	XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(false);
+    	
+		response.setPerson(xmlBruker);
+
+		when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenReturn(response);
+        Person hentetPerson = service.hentPerson(2l,RIKTIG_IDENT);
+        Assert.assertNotNull(hentetPerson.getFakta());
+
+        Faktum mellomnavn = (Faktum) hentetPerson.getFakta().get("mellomnavn");
+        Faktum sammensattnavn = (Faktum) hentetPerson.getFakta().get("sammensattnavn");
+        Assert.assertEquals("", mellomnavn.getValue());
+		Assert.assertEquals(ET_FORNAVN+" "+ET_ETTERNAVN, sammensattnavn.getValue());
+
+	}
+    
 	@Test
     public void returnererPersonObjektMedAdresseInformasjon() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
     	XMLHentKontaktinformasjonOgPreferanserRequest request = hentRequestMedGyldigIdent();
     	XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
     	
-    	XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn();
+    	XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
     	
     	XMLBostedsadresse bostedsadresse = genererXMLFolkeregistrertAdresse();
 		xmlBruker.setBostedsadresse(bostedsadresse);
@@ -173,13 +193,18 @@ public class PersonServiceTest {
 	}
 
 
-    private XMLBruker genererXmlBrukerMedGyldigIdentOgNavn() {
+    private XMLBruker genererXmlBrukerMedGyldigIdentOgNavn(boolean medMellomnavn) {
     	XMLBruker xmlBruker = new XMLBruker();
     	XMLPersonnavn personNavn = new XMLPersonnavn();
     	personNavn.setFornavn(ET_FORNAVN);
-    	personNavn.setMellomnavn(ET_MELLOMNAVN);
+    	if(medMellomnavn) {
+    		personNavn.setMellomnavn(ET_MELLOMNAVN);
+    		personNavn.setSammensattNavn(ET_FORNAVN + " " + ET_MELLOMNAVN + " " +ET_ETTERNAVN);
+    	} else {
+    		personNavn.setMellomnavn("");
+    		personNavn.setSammensattNavn(ET_FORNAVN + " " +ET_ETTERNAVN);
+    	}
     	personNavn.setEtternavn(ET_ETTERNAVN);
-    	personNavn.setSammensattNavn(ET_FORNAVN + " " + ET_MELLOMNAVN + " " +ET_ETTERNAVN);
 		xmlBruker.setPersonnavn(personNavn);
     	XMLNorskIdent xmlNorskIdent = new XMLNorskIdent();
     	xmlNorskIdent.setIdent(RIKTIG_IDENT);
@@ -212,7 +237,7 @@ public class PersonServiceTest {
 		XMLHentKontaktinformasjonOgPreferanserRequest request = hentRequestMedGyldigIdent();
     	XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
     	
-    	XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn();
+    	XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
     	
     	XMLMidlertidigPostadresseNorge midlertidigPostboksAdresseNorge = generateMidlertidigPostboksAdresseNorge();
 		xmlBruker.setMidlertidigPostadresse(midlertidigPostboksAdresseNorge);
@@ -234,8 +259,9 @@ public class PersonServiceTest {
 	
 	@Ignore
 	@Test
-	public void skalStotteMidlertidigOmrodeAdresseNorge() {
+	public void skalStotteMidlertidigOmrodeAdresseNorge() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
 		//Not implemented - fritekst, postnummer og poststed
+		//Hva er dette egentlig?
 		Assert.assertTrue(false);
 	}
 	
@@ -246,12 +272,7 @@ public class PersonServiceTest {
 		Assert.assertTrue(false);
 	}
 	
-	@Ignore
-	@Test
-	public void skalStottePersonerUtenMellomnavn() {
-		//Not implemented - unngå masse mellomrom
-		Assert.assertTrue(false);
-	}
+	
 	
 	@Ignore
 	@Test
