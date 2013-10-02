@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import no.nav.modig.cxf.TimeoutFeature;
 import no.nav.modig.security.sts.utility.STSConfigurationUtility;
 import no.nav.sbl.dialogarena.common.kodeverk.config.KodeverkConfig;
 import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
@@ -37,6 +38,9 @@ import org.springframework.context.annotation.ImportResource;
         ConsumerConfig.SendSoknadWSConfig.class})
 @ImportResource({"classpath:META-INF/cxf/cxf.xml", "classpath:META-INF/cxf/cxf-servlet.xml"})
 public class ConsumerConfig {
+
+    private static final int RECEIVE_TIMEOUT = 30000;
+    private static final int CONNECTION_TIMEOUT = 10000;
 
     @Configuration
     public static class ServicesConfig {
@@ -112,6 +116,7 @@ public class ConsumerConfig {
         proxyFactoryBean.setAddress(servicePath.toString());
         proxyFactoryBean.setServiceClass(serviceClass);
         proxyFactoryBean.getFeatures().add(new WSAddressingFeature());
+        proxyFactoryBean.getFeatures().add(new TimeoutFeature(RECEIVE_TIMEOUT, CONNECTION_TIMEOUT));
         proxyFactoryBean.setWsdlLocation(wsdlURL);
         Map<String, Object> props = new HashMap<>();
         props.put(MTOM_ENABLED, "true");
@@ -119,5 +124,4 @@ public class ConsumerConfig {
         proxyFactoryBean.setProperties(props);
         return proxyFactoryBean;
     }
-
 }
