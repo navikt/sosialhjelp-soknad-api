@@ -12,6 +12,9 @@ import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 @XmlRootElement
 public class Person implements Serializable {
 	private final String FODSELSNUMMERKEY = "fnr";
+	private final String FORNAVNKEY = "fornavn";
+	private final String MELLOMNAVNKEY = "mellomnavn";
+	private final String ETTERNAVNKEY = "etternavn";
 	private final String SAMMENSATTNAVNKEY = "sammensattnavn";
 	private final String ADRESSERKEY = "adresser";
 
@@ -21,11 +24,14 @@ public class Person implements Serializable {
 		fakta = new HashMap<>();
 	}
 
-    public Person(Long soknadId, String fnr, String sammensattNavn, List<PersonAdresse> adresser) {
+    public Person(Long soknadId, String fnr, String fornavn, String mellomnavn, String etternavn, List<Adresse> adresser) {
     	fakta = new HashMap<>();
 
     	fakta.put(FODSELSNUMMERKEY, genererFaktum(soknadId,FODSELSNUMMERKEY,fnr));
-    	fakta.put(SAMMENSATTNAVNKEY, genererFaktum(soknadId, SAMMENSATTNAVNKEY,sammensattNavn));
+    	fakta.put(FORNAVNKEY, genererFaktum(soknadId,FORNAVNKEY,fornavn));
+    	fakta.put(MELLOMNAVNKEY, genererFaktum(soknadId,MELLOMNAVNKEY,mellomnavn));
+    	fakta.put(ETTERNAVNKEY, genererFaktum(soknadId,ETTERNAVNKEY,etternavn));
+    	fakta.put(SAMMENSATTNAVNKEY, genererFaktum(soknadId, SAMMENSATTNAVNKEY,fornavn +" " + mellomnavn + " " + etternavn));
     	
     	fakta.put(ADRESSERKEY, adresser);
 
