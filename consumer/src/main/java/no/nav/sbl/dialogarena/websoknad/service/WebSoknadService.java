@@ -32,6 +32,7 @@ public class WebSoknadService {
     private SendSoknadPortType sendSoknadService;
 
     public Long startSoknad(String navSoknadId) {
+        logger.info("Start søknad");
         try {
             return sendSoknadService.startSoknad(navSoknadId);
         } catch (SOAPFaultException e) {
@@ -41,6 +42,7 @@ public class WebSoknadService {
     }
 
     public WebSoknad hentSoknad(long soknadId) {
+        logger.info("Hent søknad");
         try {
             WSSoknadData soknadData = sendSoknadService.hentSoknad(soknadId);
             return convertToSoknad(soknadData);
