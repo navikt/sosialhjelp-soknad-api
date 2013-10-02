@@ -46,6 +46,12 @@
         <dependencies>
 
             <!-- Avhengigheter med scope compile -->
+
+            <dependency>
+                <groupId>no.nav.modig</groupId>
+                <artifactId>modig-cxf</artifactId>
+                <version>1.0.1</version>
+            </dependency>
             <dependency>
                 <groupId>no.bekk.bekkopen</groupId>
                 <artifactId>nocommons</artifactId>
