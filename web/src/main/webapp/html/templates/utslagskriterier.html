@@ -8,8 +8,8 @@
 	</ul>
 
 
-	<div data-ng-hide="isGyldigAlder()">
-		<span>Din alder er {{personaliaAlder.alder}} år som er over alderskravet. Du oppfyller dermed ikke kravet for å søke.</span>
+	<div data-ng-hide="personalia.alder">
+		<span>Din alder er over 67år som er alderskravet. Du oppfyller dermed ikke kravet for å søke.</span>
 		<br/>
 
 		<span>Du kan søke likevel, men svaret blir mest sannsynlig negativt.</span>
@@ -17,7 +17,7 @@
 
 	<br/>
 
-	<div data-ng-show="borIUtlandet()">
+	<div data-ng-show="personalia.borIUtland">
 		<p> Du må bo i Norge for å kunne søke om dagpenger.</p>
 		<p>Vi har registrert følgende adresse på deg: </p>
 		<p>Folkeregistrert adresse: </p>

@@ -15,10 +15,9 @@ angular.module('app.services',['ngResource'])
     );
 })
 
-.factory('grunnlagsdataService', function($resource){
-    return $resource('/sendsoknad/rest/grunnlagsdata');
+.factory('utslagskriterierService', function($resource){
+    return $resource('/sendsoknad/rest/utslagskriterier/:uid',
+        {uid: $.now()}
+    );
 })
 
-.factory('hentAlderService', function($resource){
-	return $resource('/sendsoknad/rest/grunnlagsdata/alder');
-})
