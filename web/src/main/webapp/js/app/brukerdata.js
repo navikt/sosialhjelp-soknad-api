@@ -17,23 +17,18 @@ angular.module('app.brukerdata', ['app.services'])
 
 .controller('HentSoknadDataCtrl', function($scope, $rootScope, $routeParams, soknadService){
     var soknadId = $routeParams.soknadId;
-    $rootScope.soknadData = soknadService.get({param:  soknadId});//.$promise.then(function(result) {
-//        var fakta = $.map(result.fakta, function(element) {
-//            return element.type;
-//        });
-//        $rootScope.soknadPaabegynt = $.inArray("BRUKERREGISTRERT", fakta) >= 0;
-//    });
+    $scope.soknadData = soknadService.get({param:  soknadId});
 })
 
-.controller('SoknadDataCtrl', function($scope, $rootScope, $routeParams, $location, $timeout, soknadService) {
+.controller('SoknadDataCtrl', function($scope, $routeParams, $location, $timeout, soknadService) {
 
 	console.log('SoknadId: '+  $routeParams.soknadId);
 	console.log("HENT SOKNAD");
-	$rootScope.soknadData = soknadService.get({param:  $routeParams.soknadId});
+	$scope.soknadData = soknadService.get({param:  $routeParams.soknadId});
 
 	$scope.lagre = function() {
 
-		var soknadData = $rootScope.soknadData;
+		var soknadData = $scope.soknadData;
 		console.log("lagre: " + soknadData);
 		soknadData.$save({param: soknadData.soknadId});
 	}
@@ -74,10 +69,11 @@ angular.module('app.brukerdata', ['app.services'])
     }
 })
 
-.directive('modFaktum', function($rootScope, $routeParams) {
-	return function( $scope, element, attrs ) {
+.directive('modFaktum', function() {
+	return function( $scope, element, attrs) {
+
 		element.bind('blur', function() {
-			$rootScope.soknadData.fakta[attrs.name] = {"soknadId": $routeParams.soknadId, "key":attrs.name,"value":element.val()};
+			$scope.soknadData.fakta[attrs.name] = {"soknadId": $scope.soknadData.soknadId, "key":attrs.name,"value":element.val()};
 			$scope.$apply();
 			$scope.lagre();
 		});
