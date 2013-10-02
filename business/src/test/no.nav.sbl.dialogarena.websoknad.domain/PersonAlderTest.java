@@ -2,16 +2,11 @@ import no.nav.sbl.dialogarena.websoknad.domain.PersonAlder;
 import static org.junit.Assert.assertEquals;
 
 import org.joda.time.DateTimeUtils;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * Created with IntelliJ IDEA.
- * User: I140481
- * Date: 01.10.13
- * Time: 10:29
- * To change this template use File | Settings | File Templates.
- */
 public class PersonAlderTest {
 
     // 02.10.2013
@@ -50,5 +45,14 @@ public class PersonAlderTest {
     public void skalReturnere66AarForPersonSomFyller67AarDenneMaaneden() {
         PersonAlder alder = new PersonAlder("02104635787");
         assertEquals(66, alder.getAlder());
+    }
+
+    @Test
+    public void skalReturnere67AarForPersonSomFylte67AarForrigeMaaneden() {
+        long nyIdag = 1383260400000L;
+        DateTimeUtils.setCurrentMillisFixed(nyIdag);
+
+        PersonAlder alder = new PersonAlder("02104635787");
+        assertEquals(67, alder.getAlder());
     }
 }
