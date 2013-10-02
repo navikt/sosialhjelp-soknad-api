@@ -2,8 +2,9 @@ package no.nav.sbl.dialogarena.websoknad.config;
 
 import no.nav.modig.cache.CacheConfig;
 import no.nav.sbl.dialogarena.dokumentinnsending.repository.SoknadRepository;
-import no.nav.sbl.dialogarena.dokumentinnsending.service.PersonServiceTPS;
+import no.nav.sbl.dialogarena.person.PersonServiceTPS;
 import no.nav.sbl.dialogarena.websoknad.WicketApplication;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

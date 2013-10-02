@@ -26,6 +26,10 @@
             <artifactId>common-lokalt-kodeverk</artifactId>
         </dependency>
         <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
+        </dependency>
+        <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-content</artifactId>
         </dependency>
@@ -37,6 +41,11 @@
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>no.nav.modig</groupId>
+            <artifactId>modig-security-core</artifactId>
+        </dependency>
+        
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-consumer</artifactId>
@@ -138,10 +147,6 @@
         <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-security-sts</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-security-core</artifactId>
         </dependency>
 
         <!-- Avhengigheter med scope runtime -->
