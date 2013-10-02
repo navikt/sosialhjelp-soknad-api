@@ -17,25 +17,25 @@ angular.module('app.brukerdata', ['app.services'])
 
 .controller('HentSoknadDataCtrl', function($scope, $rootScope, $routeParams, soknadService){
     var soknadId = $routeParams.soknadId;
-    $rootScope.soknadData = soknadService.get({param:  soknadId}).$promise.then(function(result) {
-        var fakta = $.map(result.fakta, function(element) {
-            return element.type;
-        });
-        $rootScope.soknadPaabegynt = $.inArray("BRUKERREGISTRERT", fakta) >= 0;
-    });
+    $rootScope.soknadData = soknadService.get({param:  soknadId});//.$promise.then(function(result) {
+//        var fakta = $.map(result.fakta, function(element) {
+//            return element.type;
+//        });
+//        $rootScope.soknadPaabegynt = $.inArray("BRUKERREGISTRERT", fakta) >= 0;
+//    });
 })
 
-.controller('SoknadDataCtrl', function($scope, soknadService, $location, $timeout) {
+.controller('SoknadDataCtrl', function($scope, $rootScope, $routeParams, $location, $timeout, soknadService) {
 
-	console.log('SoknadId: '+  $scope.soknad.id);
+	console.log('SoknadId: '+  $routeParams.soknadId);
 	console.log("HENT SOKNAD");
-	$scope.soknadData = soknadService.get({param:  $scope.soknad.id});
+	$rootScope.soknadData = soknadService.get({param:  $routeParams.soknadId});
 
 	$scope.lagre = function() {
 
-		var soknadData = $scope.soknadData;
+		var soknadData = $rootScope.soknadData;
 		console.log("lagre: " + soknadData);
-		soknadData.$save({id: soknadData.soknadId});
+		soknadData.$save({param: soknadData.soknadId});
 	}
 	
 	/*
@@ -74,11 +74,11 @@ angular.module('app.brukerdata', ['app.services'])
     }
 })
 
-.directive('modFaktum', function() {
+.directive('modFaktum', function($rootScope, $routeParams) {
 	return function( $scope, element, attrs ) {
 		element.bind('blur', function() {
-			$scope.soknadData.fakta[attrs.name] = {"soknadId":$scope.soknadData.soknadId,"key":attrs.name,"value":element.val()}; 
-			$scope.$apply(); 
+			$rootScope.soknadData.fakta[attrs.name] = {"soknadId": $routeParams.soknadId, "key":attrs.name,"value":element.val()};
+			$scope.$apply();
 			$scope.lagre();
 		});
 	};
