@@ -24,16 +24,11 @@ angular.module('app.brukerdata', ['app.services'])
 	$scope.soknadData = soknadService.get({param:  $routeParams.soknadId});
 
 	$scope.lagre = function() {
-
 		var soknadData = $scope.soknadData;
 		console.log("lagre: " + soknadData);
 		soknadData.$save({param: soknadData.soknadId});
-	}
+	};
 
-	$scope.change = function() {
-        console.log("Hei");
-	}
-	
 	/*
 	function lagre() {
 		$timeout(function() {
@@ -48,9 +43,7 @@ angular.module('app.brukerdata', ['app.services'])
 })
 
 .controller('AvbrytCtrl', function($scope, $rootScope, $routeParams, $location, soknadService) {
-
     $scope.data = {krevBekreftelse: $rootScope.soknadPaabegynt};
-
     $scope.submitForm = function() {
         var start = $.now();
         soknadService.delete({param: $routeParams.soknadId}).$promise.then(function() {
@@ -63,7 +56,7 @@ angular.module('app.brukerdata', ['app.services'])
                 });
             }, delay);
         });
-    }
+    };
 
     if (!$scope.data.krevBekreftelse) {
         $scope.submitForm();
@@ -103,5 +96,5 @@ angular.module('app.brukerdata', ['app.services'])
 
 .controller('SistLagretCtrl', function($scope, time) {
 	$scope.time = time;
-})
+});
 

@@ -8,7 +8,7 @@
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <maxIndex>10</maxIndex>
-            <FileNamePattern>${APP_LOG_HOME}/dokumsendsoknad_error.log.%i</FileNamePattern>
+            <FileNamePattern>${APP_LOG_HOME}/sendsoknad_error.log.%i</FileNamePattern>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
             <MaxFileSize>10MB</MaxFileSize>
