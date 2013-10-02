@@ -31,11 +31,20 @@ public class Person implements Serializable {
     	fakta.put(FORNAVNKEY, genererFaktum(soknadId,FORNAVNKEY,fornavn));
     	fakta.put(MELLOMNAVNKEY, genererFaktum(soknadId,MELLOMNAVNKEY,mellomnavn));
     	fakta.put(ETTERNAVNKEY, genererFaktum(soknadId,ETTERNAVNKEY,etternavn));
-    	fakta.put(SAMMENSATTNAVNKEY, genererFaktum(soknadId, SAMMENSATTNAVNKEY,fornavn +" " + mellomnavn + " " + etternavn));
+    	fakta.put(SAMMENSATTNAVNKEY, genererFaktum(soknadId, SAMMENSATTNAVNKEY, getSammenSattNavn(fornavn,mellomnavn, etternavn)));
     	
     	fakta.put(ADRESSERKEY, adresser);
 
     }
+
+	private String getSammenSattNavn(String fornavn, String mellomnavn,
+			String etternavn) {
+		if(mellomnavn.equals("")) {
+			return fornavn + " " + etternavn;
+		} else {
+			return fornavn +" " + mellomnavn + " " + etternavn;
+		}
+	}
 
 	private Faktum genererFaktum(Long soknadId, String key, String value) {
 		Faktum faktum = new Faktum();
