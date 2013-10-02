@@ -17,26 +17,21 @@ angular.module('app.brukerdata', ['app.services'])
 
 .controller('HentSoknadDataCtrl', function($scope, $rootScope, $routeParams, soknadService){
     var soknadId = $routeParams.soknadId;
-    $rootScope.soknadData = soknadService.get({param:  soknadId}).$promise.then(function(result) {
-        var fakta = $.map(result.fakta, function(element) {
-            return element.type;
-        });
-        $rootScope.soknadPaabegynt = $.inArray("BRUKERREGISTRERT", fakta) >= 0;
-    });
+    $scope.soknadData = soknadService.get({param:  soknadId});
 })
 
-.controller('SoknadDataCtrl', function($scope, soknadService, $location, $timeout) {
+.controller('SoknadDataCtrl', function($scope, $routeParams, $location, $timeout, soknadService) {
 
-	console.log('SoknadId: '+  $scope.soknad.id);
+	console.log('SoknadId: '+  $routeParams.soknadId);
 	console.log("HENT SOKNAD");
-	$scope.soknadData = soknadService.get({param:  $scope.soknad.id});
+	$scope.soknadData = soknadService.get({param:  $routeParams.soknadId});
 
 	$scope.lagre = function() {
 
 		var soknadData = $scope.soknadData;
 		console.log("lagre: " + soknadData);
-		soknadData.$save({id: soknadData.soknadId});
-	}
+		soknadData.$save({param: soknadData.soknadId});
+	};
 	
 	/*
 	function lagre() {
@@ -67,7 +62,7 @@ angular.module('app.brukerdata', ['app.services'])
                 });
             }, delay);
         });
-    }
+    };
 
     if (!$scope.data.krevBekreftelse) {
         $scope.submitForm();
@@ -75,10 +70,11 @@ angular.module('app.brukerdata', ['app.services'])
 })
 
 .directive('modFaktum', function() {
-	return function( $scope, element, attrs ) {
+	return function( $scope, element, attrs) {
+
 		element.bind('blur', function() {
-			$scope.soknadData.fakta[attrs.name] = {"soknadId":$scope.soknadData.soknadId,"key":attrs.name,"value":element.val()}; 
-			$scope.$apply(); 
+			$scope.soknadData.fakta[attrs.name] = {"soknadId": $scope.soknadData.soknadId, "key":attrs.name,"value":element.val()};
+			$scope.$apply();
 			$scope.lagre();
 		});
 	};
@@ -96,5 +92,5 @@ angular.module('app.brukerdata', ['app.services'])
 
 .controller('SistLagretCtrl', function($scope, time) {
 	$scope.time = time;
-})
+});
 

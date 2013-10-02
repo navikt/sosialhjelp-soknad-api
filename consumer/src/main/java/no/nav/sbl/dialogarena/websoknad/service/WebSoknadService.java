@@ -29,11 +29,11 @@ public class WebSoknadService {
 
     @Inject
     @Named("sendSoknadService")
-    private SendSoknadPortType sendsoknadPortType;
+    private SendSoknadPortType sendSoknadService;
 
     public Long startSoknad(String navSoknadId) {
         try {
-            return sendsoknadPortType.startSoknad(navSoknadId);
+            return sendSoknadService.startSoknad(navSoknadId);
         } catch (SOAPFaultException e) {
             logger.error("Feil ved oppretting av søknad med ID", navSoknadId, e);
             throw new ApplicationException("Kunne ikke opprette ny søknad", e);
@@ -42,7 +42,7 @@ public class WebSoknadService {
 
     public WebSoknad hentSoknad(long soknadId) {
         try {
-            WSSoknadData soknadData = sendsoknadPortType.hentSoknad(soknadId);
+            WSSoknadData soknadData = sendSoknadService.hentSoknad(soknadId);
             return convertToSoknad(soknadData);
         } catch (SOAPFaultException e) {
             logger.error("Feil ved henting av søknadsstruktur for søknad med ID {}", soknadId, e);
@@ -52,7 +52,7 @@ public class WebSoknadService {
 
     public void lagreSoknadsFelt(long soknadId, String key, String value) {
         try {
-            sendsoknadPortType.lagreBrukerData(soknadId, key, value);
+            sendSoknadService.lagreBrukerData(soknadId, key, value);
         } catch (SOAPFaultException e) {
             logger.error("Feil ved henting av søknadsstruktur for søknad med ID {}", soknadId, e);
             throw new ApplicationException("SoapFaultException", e);
@@ -61,7 +61,7 @@ public class WebSoknadService {
 
     public void sendSoknad(long soknadId) {
         try {
-            sendsoknadPortType.sendSoknad(soknadId);
+            sendSoknadService.sendSoknad(soknadId);
         } catch (SOAPFaultException e) {
             logger.error("Feil ved sending av søknad med ID {}", soknadId, e);
             throw new ApplicationException("Feil ved sending av søknad", e);
@@ -71,7 +71,7 @@ public class WebSoknadService {
     public List<Long> hentMineSoknader(String aktorId) {
         try {
             // TODO: Endre status til å ikke være string når vi får rett status fra henvendelse
-            return on(sendsoknadPortType.hentSoknadListe(aktorId))
+            return on(sendSoknadService.hentSoknadListe(aktorId))
                     .filter(where(TIL_STATUS, equalToIgnoreCase("under_arbeid")))
                     .map(TIL_SOKNADID)
                     .collect();
@@ -83,7 +83,7 @@ public class WebSoknadService {
 
     public void avbrytSoknad(Long soknadId) {
         try {
-            sendsoknadPortType.avbrytSoknad(soknadId);
+            sendSoknadService.avbrytSoknad(soknadId);
         } catch (SOAPFaultException e) {
             logger.error("Kunne ikke avbryte søknad med ID {}", soknadId, e);
             throw new ApplicationException("Feil ved avbryting av søknad", e);

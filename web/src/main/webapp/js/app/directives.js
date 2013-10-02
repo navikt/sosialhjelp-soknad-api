@@ -115,16 +115,6 @@ angular.module('app.directives', ['app.services'])
   };
 })
 
-.directive('modFaktum', function() {
-  return function( $scope, element, attrs ) {
-    element.bind('blur', function() {
-      $scope.soknadData.fakta[attrs.name] = {"soknadId":$scope.soknadData.soknadId,"key":attrs.name,"value":element.val()}; 
-      $scope.$apply(); 
-    });
-  };
-})
-
-
 .directive('knapprad', function ($location, $routeParams) {
     return {
         restrict: "E",
