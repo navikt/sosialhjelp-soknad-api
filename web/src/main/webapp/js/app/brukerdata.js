@@ -76,7 +76,12 @@ angular.module('app.brukerdata', ['app.services'])
 	    }
 
 		element.bind(eventType, function() {
-			$scope.soknadData.fakta[attrs.name] = {"soknadId": $scope.soknadData.soknadId, "key":attrs.name,"value":element.val()};
+		    var verdi = element.val();
+		    if (element.attr('type') === "checkbox") {
+		        verdi = element.is(':checked');
+		    }
+
+			$scope.soknadData.fakta[attrs.name] = {"soknadId": $scope.soknadData.soknadId, "key":attrs.name,"value": verdi};
 			$scope.$apply();
 			$scope.lagre();
 		});
