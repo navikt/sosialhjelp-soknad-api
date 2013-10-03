@@ -59,7 +59,7 @@ public class SelfTestPage extends SelfTestBase {
                 status = SelfTestBase.STATUS_OK;
             }
         } catch (IOException e) {
-            LOGGER.info("<<<<<<<<Error contacting CMS! " + e.getMessage());
+            LOGGER.info("<<<Error contacting CMS! " + e.getMessage());
         } finally {
             if (connection != null) {
                 connection.disconnect();
