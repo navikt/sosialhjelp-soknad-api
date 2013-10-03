@@ -28,22 +28,18 @@ angular.module('app.brukerdata', ['app.services'])
 		console.log("lagre: " + soknadData);
 		soknadData.$save({param: soknadData.soknadId});
 	};
-
-	/*
-	function lagre() {
-		$timeout(function() {
-			var soknadData = $scope.soknadData;
-			soknadData.$save({id: soknadData.soknadId});
-			lagre();
-		}, 60000);
-	}
-	lagre();
-	*/
-
 })
 
-.controller('AvbrytCtrl', function($scope, $rootScope, $routeParams, $location, soknadService) {
-    $scope.data = {krevBekreftelse: $rootScope.soknadPaabegynt};
+.controller('AvbrytCtrl', function($scope, $routeParams, $location, soknadService) {
+    $scope.data = {};
+    soknadService.get({param:  $routeParams.soknadId}).$promise.then(function(result) {
+        var fakta = $.map(result.fakta, function(element) {
+            return element.type;
+        });
+        $scope.data.krevBekreftelse = $.inArray("BRUKERREGISTRERT", fakta) >= 0;
+    });
+
+
     $scope.submitForm = function() {
         var start = $.now();
         soknadService.delete({param: $routeParams.soknadId}).$promise.then(function() {
@@ -63,6 +59,7 @@ angular.module('app.brukerdata', ['app.services'])
     }
 })
 
+
 .directive('modFaktum', function() {
 	return function($scope, element, attrs) {
 	    var eventType;
@@ -76,7 +73,12 @@ angular.module('app.brukerdata', ['app.services'])
 	    }
 
 		element.bind(eventType, function() {
-			$scope.soknadData.fakta[attrs.name] = {"soknadId": $scope.soknadData.soknadId, "key":attrs.name,"value":element.val()};
+		    var verdi = element.val();
+		    if (element.attr('type') === "checkbox") {
+		        verdi = element.is(':checked');
+		    }
+
+			$scope.soknadData.fakta[attrs.name] = {"soknadId": $scope.soknadData.soknadId, "key":attrs.name,"value": verdi};
 			$scope.$apply();
 			$scope.lagre();
 		});
