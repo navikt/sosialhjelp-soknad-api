@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
 import no.nav.modig.cache.CacheConfig;
-import no.nav.sbl.dialogarena.dokumentinnsending.repository.SoknadRepository;
 import no.nav.sbl.dialogarena.person.PersonServiceTPS;
 import no.nav.sbl.dialogarena.websoknad.WicketApplication;
 
@@ -16,7 +15,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
  * Applikasjonskontekst for ear-modulen.
  */
 @Configuration
-@Import({CacheConfig.class, FooterConfig.class, GAConfig.class, ConsumerConfig.class, ContentConfig.class})
+@Import({CacheConfig.class, FooterConfig.class, GAConfig.class, ConsumerConfig.class, ContentConfig.class, JaxWsFeatures.Integration.class, ServicesApplicationContext.class})
 public class ApplicationContext {
 
     @Value("${dialogarena.navnolink.url}")
@@ -35,11 +34,6 @@ public class ApplicationContext {
     @Bean
     public WicketApplication dokumentinnsendingApplication() {
         return new WicketApplication();
-    }
-
-    @Bean
-    public SoknadRepository soknadRepository() {
-        return new SoknadRepository();
     }
 
     @Bean
