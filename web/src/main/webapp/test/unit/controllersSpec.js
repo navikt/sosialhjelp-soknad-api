@@ -6,13 +6,19 @@ describe('Controllers', function() {
 
 	var $scope;
 	var $controller;
+    var $httpBackend;
 
 	beforeEach(module('app.grunnlagsdata'));
 	
-	beforeEach(inject(function ($injector) {
+	beforeEach(inject(function (_$httpBackend_, $injector) {
 		$scope = $injector.get('$rootScope');
 
 		$controller = $injector.get('$controller');
+
+        $httpBackend = _$httpBackend_;
+//        $httpBackend.expectGET('/sendsoknad/rest/utslagskriterier/1').
+//            respond({"alder":true, "borIUtland":true });
+        $httpBackend.whenGET('/sendsoknad/rest/enonic/utslagskriterier').respond({});
 	}));
 
 	describe('GrunnlagsdataCtrl', function() {
@@ -23,45 +29,6 @@ describe('Controllers', function() {
 
 		});
 
-		//it('skal returnere personalia for bruker', function(){
-		//	expect(scope.personalia.fornavn).toEqual('Test');
-		//});
-
-		
-		it('skal returnere false for ung arbeidsøker', function() {
-			//var vel ikke et nedre alderskrav
-		});
-	
-		it('skal returnere false for gammel arbeidsøker', function() {
-			scope.personaliaAlder.alder = 67;
-			expect(scope.isGyldigAlder()).toEqual(false);
-		});
-
-		it('skal returnere true for myndig arbeidsøker', function() {
-			scope.personaliaAlder.alder = 18;
-			expect(scope.isGyldigAlder()).toEqual(true);
-		});
-
-		it('skal returnere false for på grensen til for gammel arbeidsøker', function() {
-			scope.personaliaAlder.alder = 66;
-			expect(scope.isGyldigAlder()).toEqual(true);
-		});
-		it('skal returnere false for bor i utland med folkeregistrert adresse i norge og midlertidig adresse i norge', function() {
-			scope.personalia.bostedsadresseLandkode = 'NOR';
-			scope.personalia.midlertidigadresseLandkode = 'NOR';
-			expect(scope.borIUtlandet()).toEqual(false);
-		});
-
-		it('skal returnere bor i utland med midlertidig adresse i utlandet og folkeregistrert adresse i utlandet', function() {
-			scope.personalia.bostedsadresseLandkode = 'ENG';
-			scope.personalia.midlertidigadresseLandkode = 'ENG';
-			expect(scope.borIUtlandet()).toEqual(true);
-		});
-		it('skal returnere false for bor i utland med midlertidig adresse i norge og folkeregistrert adresse i utlandet', function() {
-			scope.personalia.bostedsadresseLandkode = 'ENG';
-			scope.personalia.midlertidigadresseLandkode = 'NOR';
-			expect(scope.borIUtlandet()).toEqual(false);
-		});
 		it('skal kvalifisere for gjenopptak hvis bruker har fått dagpenger siste året og ikke har hatt permitering', function() {
 			expect(scope.fattDagpengerSisteAaret()).toEqual(true);
 			expect(scope.hattPermitering()).toEqual(false);

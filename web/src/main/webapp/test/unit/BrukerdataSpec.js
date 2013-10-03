@@ -1,9 +1,5 @@
 describe('brukerdata domene', function(){
 
-	var $scope;
-	var $controller;
-	var $httpBackend;
-
 	beforeEach(
 		module('app.services','app.brukerdata')
 	);
@@ -13,8 +9,9 @@ describe('brukerdata domene', function(){
 		var scope, ctrl, $httpBackend, routeParams;
 
 		beforeEach(inject(function(_$httpBackend_, $rootScope, $controller){
+            routeParams = {};
 			$httpBackend = _$httpBackend_;
-			$httpBackend.expectGET('/sendsoknad/rest/soknad').
+			$httpBackend.expectGET('/sendsoknad/rest/soknad/1').
 				respond({"soknadId":1,"gosysId":"Dagpenger","brukerBehandlingId":"100000000",
 					"fakta":{
 						"fornavn":{"soknadId":1,"key":"fornavn","value":"Ola"},
@@ -26,7 +23,6 @@ describe('brukerdata domene', function(){
 						"poststed":{"soknadId":1,"key":"poststed","value":"Oslo"}
 					}
 				});
-			routeParams = {};
 			scope = $rootScope.$new();
 			routeParams.soknadId = 1;
 			ctrl = $controller('SoknadDataCtrl', {
