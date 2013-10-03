@@ -1,12 +1,24 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
 
+import static java.util.Arrays.asList;
+import static org.apache.cxf.common.util.SOAPConstants.MTOM_ENABLED;
+import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
+
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import no.nav.modig.cxf.TimeoutFeature;
 import no.nav.modig.security.sts.utility.STSConfigurationUtility;
-import no.nav.sbl.dialogarena.common.kodeverk.config.KodeverkConfig;
 import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
+
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.feature.LoggingFeature;
@@ -19,17 +31,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
-import static java.util.Arrays.asList;
-import static org.apache.cxf.common.util.SOAPConstants.MTOM_ENABLED;
-import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
 
 @Configuration
 @Import(value = {
