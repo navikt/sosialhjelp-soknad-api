@@ -24,6 +24,8 @@ public class ContentConfig {
     private String cmsBaseUrl;
 
     private static final String DEFAULT_LOCALE = "nb";
+    private static final String INNHOLDSTEKSTER_NB_NO_REMOTE = "/systemsider/Modernisering/sendsoknad/nb/tekster";
+    private static final String INNHOLDSTEKSTER_NB_NO_LOCAL = "content.innholdstekster";
     private static final String SBL_WEBKOMPONENTER_NB_NO_REMOTE = "/site/16/sbl-webkomponenter/nb/tekster";
     private static final String SBL_WEBKOMPONENTER_NB_NO_LOCAL = "content.sbl-webkomponenter";
 
@@ -33,10 +35,11 @@ public class ContentConfig {
         Map<String, List<URI>> uris = new HashMap<>();
         uris.put(DEFAULT_LOCALE,
                 Arrays.asList(
+                        new URI(cmsBaseUrl + INNHOLDSTEKSTER_NB_NO_REMOTE),
                         new URI(cmsBaseUrl + SBL_WEBKOMPONENTER_NB_NO_REMOTE)
                 ));
         return new ValuesFromContentWithResourceBundleFallback(
-                Arrays.asList(SBL_WEBKOMPONENTER_NB_NO_LOCAL), enonicContentRetriever(),
+                Arrays.asList(INNHOLDSTEKSTER_NB_NO_LOCAL, SBL_WEBKOMPONENTER_NB_NO_LOCAL), enonicContentRetriever(),
                 uris, DEFAULT_LOCALE);
     }
 

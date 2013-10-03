@@ -57,6 +57,40 @@ describe('directives', function() {
 });
 
 describe('directives', function() {
+    var scope, form, element, checkbox;
+
+    beforeEach(module('app.directives'));
+    beforeEach(inject(function($compile, $rootScope){
+        scope = $rootScope;
+        element = angular.element(
+            '<form name="form">' +
+                '<input type="checkbox" ng-model="checkboxValueModel" name="checkbox" boolean-verdi />' +
+                '</form>'
+        );
+        $compile(element)(scope);
+        scope.$digest();
+        form = scope.form;
+        checkbox = form.checkbox;
+        element.scope().$apply();
+
+    }));
+
+    describe('booleanVerdi', function(){
+        it('viewvalue skal være true når modellen er en string som sier "true"', function() {
+            scope.checkboxValueModel = 'true';
+            element.scope().$apply();
+            expect(checkbox.$viewValue).toEqual(true);
+        });
+        it('viewvalue skal være false når modellen er en string som sier "false"', function() {
+            scope.checkboxValueModel = 'false';
+            element.scope().$apply();
+            expect(checkbox.$viewValue).toEqual(false);
+        });
+    });
+});
+
+
+describe('directives', function() {
 	var scope, form, element;
 	beforeEach(module('app.directives'));
 	beforeEach(inject(function($compile, $rootScope){

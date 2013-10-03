@@ -22,8 +22,9 @@ angular.module('sendsoknad',['app.routes','app.brukerdata','app.services','app.d
 
 pensjonist = {"fornavn":"Ola","etternavn":"Nordmann","mellomnavn":"J","alder":50,"bostedsadresseLandkode":"NOR","bostedsadressePoststed":"Oslo", "bostedsadressePostnr":"0175", "bostedsadresseGatenavn":"Testveien", "bostedsadresseHusnummer":"1", "midlertidigadresseLandkode":"NOR","midlertidigadressePoststed":"Oslo", "midlertidigadressePostnr":"0175", "midlertidigadresseGatenavn":"Testveien", "midlertidigadresseHusnummer":"1", "email":"ola@nordmann.no"};
 arbeidssoker = {"fornavn":"Test","etternavn":"Testesen","mellomnavn":"","alder":31,"postnummer":"5001","poststed":"Bergen","adresse":"Kalfaret","email":"test@testesen.no"};
+utslagskriterier = {"alder":true, "borIUtland":true };
 
-$httpBackend.whenGET('/sendsoknad/rest/utslagskriterer/1').respond(pensjonist);
+$httpBackend.whenGET('/sendsoknad/rest/utslagskriterier/1').respond(utslagskriterier);
 
 
 $httpBackend.whenGET('/sendsoknad/rest/soknad').respond(soknadData);

@@ -115,6 +115,22 @@ angular.module('app.directives', ['app.services'])
   };
 })
 
+.directive('booleanVerdi', function(){
+return {
+    restrict: 'A',
+    require: 'ngModel',
+    link: function(scope, element, attr, ngModel){
+        function fraTekst(tekst) {
+            if(tekst === "true") {
+                return true;
+            }
+            return false;
+        }
+        ngModel.$formatters.push(fraTekst);
+    }
+};
+})
+
 .directive('knapprad', function ($location, $routeParams) {
     return {
         restrict: "E",
