@@ -49,6 +49,11 @@
 
             <dependency>
                 <groupId>no.nav.modig</groupId>
+                <artifactId>modig-log-filter</artifactId>
+                <version>1.1.2</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.modig</groupId>
                 <artifactId>modig-cxf</artifactId>
                 <version>1.0.1</version>
             </dependency>
