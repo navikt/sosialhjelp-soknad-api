@@ -3,8 +3,9 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joda.time.DateTime;
+import javax.inject.Inject;
 
+import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBostedsadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGateadresse;
@@ -16,14 +17,19 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostnummer;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLStrukturertAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
 
+import org.joda.time.DateTime;
+
 /**
  * Map from TPS data format to internal domain model
  *
  */
 public class PersonTransform {
 
-	public Person mapToPerson(Long soknadId, XMLHentKontaktinformasjonOgPreferanserResponse response) {
-        if (response == null) {
+	private Kodeverk kodeverk;
+	
+	public Person mapToPerson(Long soknadId, XMLHentKontaktinformasjonOgPreferanserResponse response, Kodeverk kodeverk) {
+		this.kodeverk = kodeverk;
+		if (response == null) {
         	return new Person(); 
         }
 		XMLBruker soapPerson = (XMLBruker) response.getPerson();
@@ -46,11 +52,13 @@ public class PersonTransform {
 				String husbokstavString = getHusbokstav(xmlGateAdresse);
 				
 				String postnummerString = getPostnummerString(xmlGateAdresse);
+				String poststed = kodeverk.getPoststed(postnummerString);
 				Adresse personAdresse = new Adresse(soknadId, Adressetype.valueOf(xmlAdressetype));
 				personAdresse.setGatenavn(xmlGateAdresse.getGatenavn());
 				personAdresse.setHusnummer(gatenummerString);
 				personAdresse.setHusbokstav(husbokstavString);
 				personAdresse.setPostnummer(postnummerString);
+				personAdresse.setPoststed(poststed);
 				
 				result.add(personAdresse);
 			}
@@ -145,7 +153,7 @@ public class PersonTransform {
 	}
 
 	private String finnForNavn(XMLBruker soapPerson) {
-		if(soapPerson.getPersonnavn() != null) {
+		if(soapPerson.getPersonnavn() != null && soapPerson.getPersonnavn().getFornavn() != null) {
 			return soapPerson.getPersonnavn().getFornavn();
 		} else {
 			return "";
@@ -153,7 +161,7 @@ public class PersonTransform {
     }
 
 	private String finnMellomNavn(XMLBruker soapPerson) {
-		if(soapPerson.getPersonnavn() != null) {
+		if(soapPerson.getPersonnavn() != null && soapPerson.getPersonnavn().getMellomnavn() != null) {
 			return soapPerson.getPersonnavn().getMellomnavn();
 		} else {
 			return "";
@@ -161,7 +169,7 @@ public class PersonTransform {
 	}
 
 	private String finnEtterNavn(XMLBruker soapPerson) {
-    	if(soapPerson.getPersonnavn() != null) {
+    	if(soapPerson.getPersonnavn() != null && soapPerson.getPersonnavn().getEtternavn() != null) {
 			return soapPerson.getPersonnavn().getEtternavn();
 		} else {
 			return "";

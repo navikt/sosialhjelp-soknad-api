@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.person;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
@@ -23,6 +24,9 @@ public class PersonServiceTPS implements PersonService {
     @Named("brukerProfilPortType")
     private BrukerprofilPortType brukerProfil;
 
+	@Inject
+	private Kodeverk kodeverk;
+    
     @Override
 //    @Cacheable(value = PERSON, key = "T(no.nav.sbl.dialogarena.dokumentinnsending.cache.UserKeyGenerator).generate(#ident)")
     public Person hentPerson(Long soknadId, String fodselsnummer) {
@@ -36,7 +40,7 @@ public class PersonServiceTPS implements PersonService {
             logger.error("Kunne ikke hente person med ID {} fra TPS", fodselsnummer, re);
             return new Person();
         }
-        return new PersonTransform().mapToPerson(soknadId, response);
+        return new PersonTransform().mapToPerson(soknadId, response, kodeverk);
     }
 
     private XMLHentKontaktinformasjonOgPreferanserRequest makeXMLRequest(String ident) {
