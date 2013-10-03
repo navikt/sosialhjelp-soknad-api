@@ -28,18 +28,6 @@ angular.module('app.brukerdata', ['app.services'])
 		console.log("lagre: " + soknadData);
 		soknadData.$save({param: soknadData.soknadId});
 	};
-
-	/*
-	function lagre() {
-		$timeout(function() {
-			var soknadData = $scope.soknadData;
-			soknadData.$save({id: soknadData.soknadId});
-			lagre();
-		}, 60000);
-	}
-	lagre();
-	*/
-
 })
 
 .controller('AvbrytCtrl', function($scope, $routeParams, $location, soknadService) {
@@ -70,6 +58,7 @@ angular.module('app.brukerdata', ['app.services'])
         $scope.submitForm();
     }
 })
+
 
 .directive('modFaktum', function() {
 	return function($scope, element, attrs) {
