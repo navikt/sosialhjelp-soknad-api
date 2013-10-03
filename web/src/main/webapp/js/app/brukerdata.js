@@ -42,8 +42,16 @@ angular.module('app.brukerdata', ['app.services'])
 
 })
 
-.controller('AvbrytCtrl', function($scope, $rootScope, $routeParams, $location, soknadService) {
-    $scope.data = {krevBekreftelse: $rootScope.soknadPaabegynt};
+.controller('AvbrytCtrl', function($scope, $routeParams, $location, soknadService) {
+    $scope.data = {};
+    soknadService.get({param:  $routeParams.soknadId}).$promise.then(function(result) {
+        var fakta = $.map(result.fakta, function(element) {
+            return element.type;
+        });
+        $scope.data.krevBekreftelse = $.inArray("BRUKERREGISTRERT", fakta) >= 0;
+    });
+
+
     $scope.submitForm = function() {
         var start = $.now();
         soknadService.delete({param: $routeParams.soknadId}).$promise.then(function() {
