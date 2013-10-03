@@ -15,9 +15,20 @@ angular.module('app.services',['ngResource'])
     );
 })
 
-.factory('utslagskriterierService', function($resource){
+.factory('utslagskriterierService', function($resource) {
     return $resource('/sendsoknad/rest/utslagskriterier/:uid',
         {uid: $.now()}
     );
 })
 
+// Husk språkstøtte...?
+.factory('enonicService', function($resource) {
+    return $resource('/sendsoknad/rest/enonic/:side',
+        {side: '@side'},
+        {
+            get: {
+                method: 'GET',
+                cache: true
+            }
+        });
+})

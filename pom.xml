@@ -758,13 +758,11 @@
                         <propertiesFilesRoot>${project.basedir}/web/src/main/resources/content</propertiesFilesRoot>
                         <propertiesFiler>
                             <nb>innholdstekster_nb.properties</nb>
-                            <nb>sbl-webkomponenter_nb.properties</nb>
-                            <!--nb>skjemabeskrivelser_nb.properties</nb-->
+                            <!--<nb>sbl-webkomponenter_nb.properties</nb>-->
                         </propertiesFiler>
                         <menyPunktPaths>
-                            <nb>/systemsider/dokumentinnsending/nb/tekster</nb>
-                            <nb>/systemsider/sbl-webkomponenter/nb/tekster</nb>
-                            <!--nb>/site/16/Skjemabeskrivelser/nb/skjemabeskrivelser</nb-->
+                            <nb>/site/2/systemsider/Modernisering/sendsoknad/nb/tekster</nb>
+                            <!--<nn>/site/2/systemsider/Modernisering/sbl-webkomponenter/nb/tekster</nn>-->
                         </menyPunktPaths>
                     </configuration>
                 </plugin>
