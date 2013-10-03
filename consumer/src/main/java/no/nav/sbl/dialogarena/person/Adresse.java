@@ -15,6 +15,7 @@ public class Adresse {
 	private String husnummer;
 	private String husbokstav;
 	private String postnummer;
+	private String poststed;
 	private String postboksnavn;
 	private String postboksnummer;
 	
@@ -85,6 +86,13 @@ public class Adresse {
 	}
 	public String getPostboksNummer() {
 		return postboksnummer;
+	}
+
+	public void setPoststed(String poststed) {
+		this.poststed = poststed;
+	}
+	public String getPoststed() {
+		return poststed;
 	}
 
 }

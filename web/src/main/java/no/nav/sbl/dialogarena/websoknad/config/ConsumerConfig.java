@@ -32,9 +32,8 @@ import static org.apache.cxf.common.util.SOAPConstants.MTOM_ENABLED;
 import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
 
 @Configuration
-@Import(value = {KodeverkConfig.class,
+@Import(value = {
         ConsumerConfig.ServicesConfig.class,
-        no.nav.sbl.dialogarena.dokumentinnsending.config.ConsumerConfig.class,
         ConsumerConfig.SendSoknadWSConfig.class,
         ConsumerConfig.SelftestStsConfig.class,
         ConsumerConfig.ExternalStsConfig.class})
