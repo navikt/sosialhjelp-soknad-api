@@ -63,13 +63,13 @@
 			<div class="spm-blokk">
 				<p class="spm"> Som hovedregel må du være villig til å ta arbeid både hel- og deltidsjobb for å ha rett på dagpenger <span class="error" data-ng-show="villigForm.villigDeltid.$error.required">{{feilmeldinger.paakreves}} </span> </p>
 
-				<input id="villigDeltidJa" class="sendsoknad-radio" data-ng-model="soknadData.fakta.deltid.value" type="radio" name="villigDeltid" value="ja" required/>
-				<label for="villigDeltidJa" class="svar-alt" ng-class="{'svaret': soknadData.fakta.deltid.value == 'ja'}">
+				<input id="villigDeltidJa" class="sendsoknad-radio" data-ng-model="soknadData.fakta.villigDeltid.value" type="radio" name="villigDeltid" value="ja" mod-faktum required/>
+				<label for="villigDeltidJa" class="svar-alt" ng-class="{'svaret': soknadData.fakta.villigDeltid.value == 'ja'}">
 					Ja, jeg er villig til å søke både hel- og deltidsjobb
 				</label>
 
-				<input id="villigDeltidNei" class="sendsoknad-radio" data-ng-model="soknadData.fakta.deltid.value" type="radio" name="villigDeltid" value="nei" required/>
-				<label for="villigDeltidNei" class="svar-alt" ng-class="{'svaret': soknadData.fakta.deltid.value == 'nei'}">
+				<input id="villigDeltidNei" class="sendsoknad-radio" data-ng-model="soknadData.fakta.villigDeltid.value" type="radio" name="villigDeltid" value="nei" mod-faktum required/>
+				<label for="villigDeltidNei" class="svar-alt" ng-class="{'svaret': soknadData.fakta.villigDeltid.value == 'nei'}">
 					Nei, jeg kan kun jobbe deltid
 				</label>
 			</div>
@@ -77,13 +77,13 @@
 			<div class="spm-blokk"> 
 				<p class="spm">Finnes det arbeid du av helsemessige årsaker ikke kan ta? <span class="error" data-ng-show="villigForm.villigHelse.$error.required">{{feilmeldinger.paakreves}} </span></p>
 
-				<input id="villigHelseJa"  class="sendsoknad-radio" data-ng-model="soknadData.fakta.helse.value" type="radio" name="villigHelse" value="god" required/>
-				<label for="villigHelseJa" class="svar-alt" ng-class="{'svaret': soknadData.fakta.helse.value == 'god'}">
+				<input id="villigHelseJa"  class="sendsoknad-radio" data-ng-model="soknadData.fakta.villigHelse.value" type="radio" name="villigHelse" value="god" mod-faktum required/>
+				<label for="villigHelseJa" class="svar-alt" ng-class="{'svaret': soknadData.fakta.villigHelse.value == 'god'}">
 					Ja
 				</label>
 
-				<input id="villigHelseNei" class="sendsoknad-radio" data-ng-model="soknadData.fakta.helse.value" type="radio" name="villigHelse" value="darlig" required/>
-				<label for="villigHelseNei" class="svar-alt" ng-class="{'svaret': soknadData.fakta.helse.value == 'darlig'}">
+				<input id="villigHelseNei" class="sendsoknad-radio" data-ng-model="soknadData.fakta.villigHelse.value" type="radio" name="villigHelse" value="darlig" mod-faktum required/>
+				<label for="villigHelseNei" class="svar-alt" ng-class="{'svaret': soknadData.fakta.villigHelse.value == 'darlig'}">
 					Nei
 				</label>
 
