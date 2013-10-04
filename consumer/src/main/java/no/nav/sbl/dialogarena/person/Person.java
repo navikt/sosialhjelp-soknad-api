@@ -38,7 +38,7 @@ public class Person implements Serializable {
 
 	private String getSammenSattNavn(String fornavn, String mellomnavn,
 			String etternavn) {
-		if(mellomnavn.equals("")) {
+		if("".equals(mellomnavn)) {
 			return fornavn + " " + etternavn;
 		} else {
 			return fornavn +" " + mellomnavn + " " + etternavn;
