@@ -1,10 +1,4 @@
 package no.nav.sbl.dialogarena.person;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBostedsadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
@@ -16,8 +10,11 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostboksadresse
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostnummer;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLStrukturertAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
-
 import org.joda.time.DateTime;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Map from TPS data format to internal domain model
@@ -143,7 +140,7 @@ public class PersonTransform {
 	private String getHusbokstav(XMLGateadresse xmlGateAdresse) {
 		String husbokstav = xmlGateAdresse.getHusbokstav();
 		if(husbokstav != null) {
-			return husbokstav.toString();
+			return husbokstav;
 		}
 		return "";
 	}
