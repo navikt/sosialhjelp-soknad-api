@@ -81,7 +81,7 @@ public class PersonTransform {
     				String husbokstavString = getHusbokstav(xmlGateAdresse);
     				String postnummerString = getPostnummerString(xmlGateAdresse);
     				
-    				Adresse midlertidigAdresse = new Adresse(soknadId, Adressetype.MIDLERTIDIG_ADRESSE_NORGE);
+    				Adresse midlertidigAdresse = new Adresse(soknadId, Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE);
     				midlertidigAdresse.setGyldigfra(gyldigFra);
     				midlertidigAdresse.setGyldigtil(gyldigTil);
     				midlertidigAdresse.setGatenavn(xmlGateAdresse.getGatenavn());
@@ -93,7 +93,7 @@ public class PersonTransform {
     			} else if (strukturertAdresse instanceof XMLPostboksadresseNorsk) {
     				XMLPostboksadresseNorsk xmlPostboksAdresse = (XMLPostboksadresseNorsk) strukturertAdresse;
     				    				
-    				Adresse midlertidigPostboksAdresse = new Adresse(soknadId, Adressetype.MIDLERTIDIG_ADRESSE_NORGE);
+    				Adresse midlertidigPostboksAdresse = new Adresse(soknadId, Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE);
     				midlertidigPostboksAdresse.setGyldigfra(gyldigFra);
     				midlertidigPostboksAdresse.setGyldigtil(gyldigTil);
     				
