@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 import java.math.BigInteger;
 import java.util.List;
 
+import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
@@ -51,6 +52,7 @@ public class PersonServiceTest {
 	private static final String EN_ANNEN_ADRESSE_HUSNUMMER ="44";
 	private static final String EN_ANNEN_ADRESSE_HUSBOKSTAV = "D";
 	private static final String EN_ANNEN_ADRESSE_POSTNUMMER = "0565";
+	private static final String EN_POSTBOKS_ADRESSEEIER = "Per Conradi";
 	private static final String EN_POSTBOKS_NAVN = "Postboksstativet";
 	private static final String EN_POSTBOKS_NUMMER = "66";
 
@@ -59,6 +61,9 @@ public class PersonServiceTest {
 
     @Mock
     private BrukerprofilPortType brukerprofilMock;
+    
+    @Mock
+    private Kodeverk kodeverk;
 
     @SuppressWarnings("unchecked")
 	@Test
@@ -114,7 +119,6 @@ public class PersonServiceTest {
 
 	}
     
-    @Ignore
 	@Test
     public void returnererPersonObjektMedAdresseInformasjon() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
     	XMLHentKontaktinformasjonOgPreferanserRequest request = hentRequestMedGyldigIdent();
@@ -134,6 +138,7 @@ public class PersonServiceTest {
 		response.setPerson(xmlBruker);
     	
     	when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenReturn(response);
+    	when(kodeverk.getPoststed(EN_ADRESSE_POSTNUMMER)).thenReturn(EN_ADRESSE_POSTSTED);
     	Person hentetPerson = service.hentPerson(3l, RIKTIG_IDENT);
     	
     	@SuppressWarnings("unchecked")
@@ -179,6 +184,9 @@ public class PersonServiceTest {
 		xmlMidlertidigPostboksNorge.setPostleveringsPeriode(xmlGyldighetsperiode);
 		
 		XMLPostboksadresseNorsk xmlpostboksadresse = new XMLPostboksadresseNorsk();
+		
+		xmlpostboksadresse.setTilleggsadresse(EN_POSTBOKS_ADRESSEEIER);
+		
 		xmlpostboksadresse.setPostboksanlegg(EN_POSTBOKS_NAVN);
 		xmlpostboksadresse.setPostboksnummer(EN_POSTBOKS_NUMMER);
 		XMLPostnummer xmlpostnummer = new XMLPostnummer();
@@ -253,6 +261,7 @@ public class PersonServiceTest {
     	@SuppressWarnings("unchecked")
     	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
     	Assert.assertNotNull(adresseliste);
+    	Assert.assertEquals(EN_POSTBOKS_ADRESSEEIER, adresseliste.get(0).getAdresseEier());
     	Assert.assertEquals(EN_POSTBOKS_NAVN, adresseliste.get(0).getPostboksNavn());
     	Assert.assertEquals(EN_POSTBOKS_NUMMER, adresseliste.get(0).getPostboksNummer());
     	Assert.assertEquals(EN_ANNEN_ADRESSE_POSTNUMMER, adresseliste.get(0).getPostnummer());
@@ -275,13 +284,4 @@ public class PersonServiceTest {
 		Assert.assertTrue(false);
 	}
 	
-	
-	
-	@Ignore
-	@Test
-	public void skalStottePoststed() {
-		//Not implemented
-		Assert.assertTrue(false);
-	}
-    
 }

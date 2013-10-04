@@ -4,10 +4,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.joda.time.DateTime;
 
-
 @XmlRootElement
 public class Adresse {
-	private Long soknadId;
+	
+    private Long soknadId;
 	private Adressetype type;
 	private DateTime gyldigfra;
 	private DateTime gyldigtil;
@@ -18,6 +18,7 @@ public class Adresse {
 	private String poststed;
 	private String postboksnavn;
 	private String postboksnummer;
+	private String adresseeier;
 	
 	public Adresse(long soknadId, Adressetype type) {
 		this.soknadId=soknadId;
@@ -93,6 +94,13 @@ public class Adresse {
 	}
 	public String getPoststed() {
 		return poststed;
+	}
+
+	public void setAdresseeier(String adresseeier) {
+		this.adresseeier = adresseeier;
+	}
+	public String getAdresseEier() {
+		return adresseeier;
 	}
 
 }
