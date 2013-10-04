@@ -51,24 +51,10 @@
             <artifactId>modig-security-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-timing</artifactId>
-        </dependency>
-         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-types</artifactId>
-        </dependency>
-        
-        
-        
-        
-
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-consumer</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-business</artifactId>
