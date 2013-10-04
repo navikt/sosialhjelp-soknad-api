@@ -1,24 +1,21 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
-import static no.nav.modig.lang.collections.TransformerUtils.appendPathname;
-import static no.nav.modig.lang.option.Optional.optional;
-import static no.nav.sbl.dialogarena.common.Spraak.NORSK_BOKMAAL;
-
-import java.io.File;
-
-import javax.inject.Inject;
-
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.kodeverk.StandardKodeverk;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
+
+import javax.inject.Inject;
+import java.io.File;
+
+import static no.nav.modig.lang.collections.TransformerUtils.appendPathname;
+import static no.nav.modig.lang.option.Optional.optional;
+import static no.nav.sbl.dialogarena.common.Spraak.NORSK_BOKMAAL;
 
 
 @Configuration
@@ -31,8 +28,6 @@ public class ServicesApplicationContext {
     @Inject
     private JaxWsContext jaxws;
 
-    @Inject
-    private Environment env;
 
     @Value("${sendsoknad.datadir}")
     private File brukerprofilDataDirectory;

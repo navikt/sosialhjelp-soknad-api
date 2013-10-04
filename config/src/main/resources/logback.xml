@@ -4,7 +4,7 @@
     <appender name="exceptionlog" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <File>${APP_LOG_HOME}/sendsoknad_error.log</File>
         <encoder>
-            <pattern>%date [%-5level] [%thread] %logger{5} - %m%n</pattern>
+            <pattern>%date [%-5level] [%thread] %logger{5} %replace(- [%X{consumerId}, %X{callId}, %X{userId}] ){'- \[, , \] ',''}- %m%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <maxIndex>10</maxIndex>
@@ -18,7 +18,7 @@
     <appender name="infolog" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <File>${APP_LOG_HOME}/sendsoknad.log</File>
         <encoder>
-            <pattern>%date [%-5level] [%thread] %logger{5} - %m%n</pattern>
+            <pattern>%date [%-5level] [%thread] %logger{5} %replace(- [%X{consumerId}, %X{callId}, %X{userId}] ){'- \[, , \] ',''}- %m%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <maxIndex>10</maxIndex>

@@ -1,22 +1,21 @@
 package no.nav.sbl.dialogarena.person;
 
+import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
+
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
-import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
-
 @XmlRootElement
 public class Person implements Serializable {
-	private final String FODSELSNUMMERKEY = "fnr";
-	private final String FORNAVNKEY = "fornavn";
-	private final String MELLOMNAVNKEY = "mellomnavn";
-	private final String ETTERNAVNKEY = "etternavn";
-	private final String SAMMENSATTNAVNKEY = "sammensattnavn";
-	private final String ADRESSERKEY = "adresser";
+	private static final String FODSELSNUMMERKEY = "fnr";
+	private static final String FORNAVNKEY = "fornavn";
+	private static final String MELLOMNAVNKEY = "mellomnavn";
+	private static final String ETTERNAVNKEY = "etternavn";
+	private static final String SAMMENSATTNAVNKEY = "sammensattnavn";
+	private static final String ADRESSERKEY = "adresser";
 
 	private Map<String, Object> fakta;
 
@@ -39,7 +38,7 @@ public class Person implements Serializable {
 
 	private String getSammenSattNavn(String fornavn, String mellomnavn,
 			String etternavn) {
-		if(mellomnavn.equals("")) {
+		if("".equals(mellomnavn)) {
 			return fornavn + " " + etternavn;
 		} else {
 			return fornavn +" " + mellomnavn + " " + etternavn;

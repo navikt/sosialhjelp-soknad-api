@@ -20,6 +20,10 @@ angular.module('app.brukerdata', ['app.services'])
     $scope.soknadData = soknadService.get({param:  soknadId});
 })
 
+.controller('PersonaliaCtrl', function ($scope, $routeParams, tpsService) {
+    $scope.personalia = tpsService.get({soknadId: $routeParams.soknadId});
+})
+
 .controller('SoknadDataCtrl', function($scope, $routeParams, $location, $timeout, soknadService) {
 	$scope.soknadData = soknadService.get({param:  $routeParams.soknadId});
 
