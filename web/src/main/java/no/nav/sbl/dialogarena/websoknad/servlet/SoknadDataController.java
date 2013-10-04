@@ -43,7 +43,7 @@ public class SoknadDataController {
         }
     }
 
-    @RequestMapping(value = "/{soknadType}", method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/{soknadType}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody()
     public WebSoknadId opprettSoknad(@PathVariable String soknadType) {
         Long id = soknadService.startSoknad(soknadType);
