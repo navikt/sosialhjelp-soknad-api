@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -61,6 +62,7 @@
         
         
         
+
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-consumer</artifactId>
@@ -164,9 +166,13 @@
         <!-- Avhengigheter med scope runtime -->
 
         <dependency>
+            <groupId>no.nav.modig</groupId>
+            <artifactId>modig-log-filter</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>woodstox-core-asl</artifactId>
-            <version>4.2.0</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -424,7 +430,7 @@
                                 <executable>java</executable>
                                 <arguments>
                                     <argument>-cp</argument>
-                                    <classpath />
+                                    <classpath/>
                                     <argument>no.nav.sbl.dialogarena.dokumentinnsending.FitNesseMain</argument>
                                     <argument>-restart-server</argument>
                                     <argument>-port</argument>
@@ -456,7 +462,7 @@
                                 <executable>java</executable>
                                 <arguments>
                                     <argument>-cp</argument>
-                                    <classpath />
+                                    <classpath/>
                                     <argument>no.nav.sbl.dialogarena.dokumentinnsending.StartJettyWeb</argument>
                                     <argument>-restart-server</argument>
                                     <argument>-port</argument>
