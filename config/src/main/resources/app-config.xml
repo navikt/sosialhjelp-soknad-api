@@ -30,6 +30,7 @@
         <baseUrl alias="minehenvendelser.link" mapToProperty="minehenvendelser.link"/>
         <baseUrl alias="dialogarena.cms" mapToProperty="dialogarena.cms"/>
         <baseUrl alias="dialogarena.navnolink" mapToProperty="dialogarena.navnolink" />
+        <localFiles name="sendsoknad" mapToProperty="sendsoknad.datadir"/>
         <applicationCertificate alias="srvSendsoknad"/>
     </resources>
     <security serviceUserResourceAlias="srvSendsoknad">
