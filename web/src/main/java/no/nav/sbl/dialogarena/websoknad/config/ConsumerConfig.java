@@ -88,7 +88,7 @@ public class ConsumerConfig {
 
         @Bean
         public JaxWsProxyFactoryBean brukerProfilPortTypeFactory() {
-            JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(brukerProfilEndpoint, BrukerprofilPortType.class, "classpath:Brukerprofil.wsdl");
+            JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(brukerProfilEndpoint, BrukerprofilPortType.class, "classpath:brukerprofil/no/nav/tjeneste/virksomhet/brukerprofil/v1/Brukerprofil.wsdl");
             jaxwsClient.getFeatures().add(new TimingFeature(BrukerprofilPortType.class.getSimpleName()));
 
             return jaxwsClient;
@@ -112,7 +112,7 @@ public class ConsumerConfig {
 
         @Bean
         public JaxWsProxyFactoryBean kodeverkPortTypeFactory() {
-            JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(kodeverkEndPoint, KodeverkPortType.class, "classpath:Kodeverk.wsdl");
+            JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(kodeverkEndPoint, KodeverkPortType.class, "classpath:kodeverk/no/nav/tjeneste/virksomhet/kodeverk/v2/Kodeverk.wsdl");
 
             jaxwsClient.getFeatures().add(new TimingFeature(KodeverkPortType.class.getSimpleName()));
 
