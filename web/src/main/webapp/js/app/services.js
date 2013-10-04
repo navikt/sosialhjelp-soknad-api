@@ -9,7 +9,7 @@ angular.module('app.services',['ngResource'])
 	return $resource('/sendsoknad/rest/soknad/:param/:action',
         {param: '@param'},
         {
-            create: { method: 'PUT' },
+            create: { method: 'POST' },
             send: {method: 'POST', params: {param: '@param', action: 'send'}}
         }
     );
@@ -35,4 +35,4 @@ angular.module('app.services',['ngResource'])
 
 .factory('tpsService', function($resource){
         return $resource('/sendsoknad/rest/soknad/:soknadId/personalia');
-    })
+    });
