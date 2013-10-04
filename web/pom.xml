@@ -24,10 +24,6 @@
 
         <dependency>
             <groupId>no.nav.modig</groupId>
-            <artifactId>modig-log-filter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.modig</groupId>
             <artifactId>modig-cxf</artifactId>
         </dependency>
         <dependency>
@@ -170,9 +166,13 @@
         <!-- Avhengigheter med scope runtime -->
 
         <dependency>
+            <groupId>no.nav.modig</groupId>
+            <artifactId>modig-log-filter</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>org.codehaus.woodstox</groupId>
             <artifactId>woodstox-core-asl</artifactId>
-            <version>4.2.0</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
