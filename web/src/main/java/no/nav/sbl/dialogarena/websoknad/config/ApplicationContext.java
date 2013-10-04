@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.websoknad.config;
 import no.nav.modig.cache.CacheConfig;
 import no.nav.sbl.dialogarena.person.PersonServiceTPS;
 import no.nav.sbl.dialogarena.websoknad.WicketApplication;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +14,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
  * Applikasjonskontekst for ear-modulen.
  */
 @Configuration
-@Import({CacheConfig.class, FooterConfig.class, GAConfig.class, ConsumerConfig.class, ContentConfig.class, JaxWsFeatures.Integration.class, ServicesApplicationContext.class})
+@Import({CacheConfig.class, FooterConfig.class, GAConfig.class, ConsumerConfig.class, ContentConfig.class, ServicesApplicationContext.class})
 public class ApplicationContext {
 
     @Value("${dialogarena.navnolink.url}")
