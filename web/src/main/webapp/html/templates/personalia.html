@@ -1,63 +1,76 @@
-<h1>Personalia</h1>
+<div data-ng-controller="PersonaliaCtrl">
+    <h1>Personalia</h1>
 
-<label>NAVN</label>
-<p>{{soknadData.fakta.fornavn.value}} {{soknadData.fakta.mellomnavn.value}} {{soknadData.fakta.etternavn.value}}</p>
+    <label>NAVN</label>
 
-<label>FØDSELSNUMMER</label>
-<p>{{personalia.fnr}} </p>
+    <p>{{personalia.fakta.fornavn.value}} {{personalia.fakta.mellomnavn.value}} {{personalia.fakta.etternavn.value}}</p>
 
-<label>ADRESSE</label>
-<p>{{soknadData.fakta.adresse.value}} </p>
-<p>{{soknadData.fakta.postnummer.value}} {{soknadData.fakta.poststed.value}}</p>
+    <label>FØDSELSNUMMER</label>
 
-<form name="personaliaForm" novalidate>
-	<label>MOBILNUMMER</label>
-	<input mod-faktum type="text" class="landskode" name="landskode" data-ng-model="data.landskode" landskodevalidering >
-	<input mod-faktum type="text" name="telefon" data-ng-model="soknadData.fakta.telefon.value"/>
-	<span class="error" data-ng-show="personaliaForm.telefon.$error.required">{{feilmeldinger.paakreves}}</span>
+    <p>{{personalia.fakta.fnr.value}} </p>
 
-	<span data-ng-show="personaliaForm.landskode.$error.feil">{{feilmeldinger.feil}} landskode</span>
-	<span data-ng-show="personaliaForm.telefon.$error.feil">{{feilmeldinger.feil}} telefonnummer</span>
+    <label>ADRESSE</label>
+
+    <p>{{personalia.adresse}} </p>
+
+    <p>{{personalia.adresse.postnummer}} {{personalia.adresse.poststed}}</p>
+
+    <form name="personaliaForm" novalidate>
+        <label>MOBILNUMMER</label>
+        <input mod-faktum type="text" class="landskode" name="landskode" data-ng-model="data.landskode"
+               landskodevalidering>
+        <input mod-faktum type="text" name="telefon" data-ng-model="soknadData.fakta.telefon.value"/>
+        <span class="error" data-ng-show="personaliaForm.telefon.$error.required">{{feilmeldinger.paakreves}}</span>
+
+        <span data-ng-show="personaliaForm.landskode.$error.feil">{{feilmeldinger.feil}} landskode</span>
+        <span data-ng-show="personaliaForm.telefon.$error.feil">{{feilmeldinger.feil}} telefonnummer</span>
 
 
-	<label>E-POST</label>
-	<input mod-faktum type="email" name="epost" data-ng-model="soknadData.fakta.epost.value" required>
-	<span class="error" data-ng-show="personaliaForm.epost.$error.required">{{feilmeldinger.paakreves}}</span>
-	<span class="error" data-ng-show="personaliaForm.epost.$error.email">{{feilmeldinger.feil}} epost</span>
-	
-	<br/>
-	<br/>
+        <label>E-POST</label>
+        <input mod-faktum type="email" name="epost" data-ng-model="soknadData.fakta.epost.value" required>
+        <span class="error" data-ng-show="personaliaForm.epost.$error.required">{{feilmeldinger.paakreves}}</span>
+        <span class="error" data-ng-show="personaliaForm.epost.$error.email">{{feilmeldinger.feil}} epost</span>
 
-	<p> Her skal vi hente ut evt registrerte barn under 18år med navn og etternavn </p>
-	<p>....</p>
-	<br/>
+        <br/>
+        <br/>
 
-	<p> Har du forsørgeransvar for barn under 18år som bor i utlandet? </p>
-	<inputs class="sendsoknad-radio"ng-model="data.barnUtland" type="radio" name="barnUtland" value="ja" required/> Ja 
-	<input class="sendsoknad-radio" ng-model="data.barnUtland" type="radio" name="barnUtland" value="nei" required /> Nei
-	<span class="error" data-ng-show="personaliaForm.barnUtland.$error.required">{{feilmeldinger.paakreves}}</span>
+        <p> Her skal vi hente ut evt registrerte barn under 18år med navn og etternavn </p>
 
-	<br/>
+        <p>....</p>
+        <br/>
 
-	<div ng-controller="ungerUtlandCtrl" data-ng-show="data.barnUtland == 'ja'" >
-		<ul>
-			<li data-ng-repeat="unge in ungerUtland" data-ng-form="ungerUtlandForm" name="ungerUtlandForm">
-				<label>Navn</label>
-				<input type="text" placeholder="Fornavn" name="fornavn" data-ng-model="unge.fornavn" required>
-				<input type="text" placeholder="Etternavn" name="etternavn" data-ng-model="unge.etternavn" required>
-				<span class="error" data-ng-show="ungerUtlandForm.fornavn.$error.required || ungerUtlandForm.etternavn.$error.required">{{feilmeldinger.paakreves}}</span>
-			</li>
-			<li>
-				<br/>
-				<a href data-ng-click="ungerUtland.splice(ungerUtland.length-1, 1)"> Fjern</a>
-				<a href data-ng-click="nyUngeUtland($event)"> Legg til</a>
-			</li>
-		</ul>
-	</div>
-	<div ng-controller="SistLagretCtrl">
-		<h3>Sist lagret: {{time.now}} </h3>
-	</div>
+        <p> Har du forsørgeransvar for barn under 18år som bor i utlandet? </p>
+        <inputs class="sendsoknad-radio" ng-model="data.barnUtland" type="radio" name="barnUtland" value="ja" required/>
+        Ja
+        <input class="sendsoknad-radio" ng-model="data.barnUtland" type="radio" name="barnUtland" value="nei" required/>
+        Nei
+        <span class="error" data-ng-show="personaliaForm.barnUtland.$error.required">{{feilmeldinger.paakreves}}</span>
 
-	<a><button id="neste" ng-click="lagre('reell-arbeidssoker')">NESTE</button></a>
-</form>
+        <br/>
+
+        <div ng-controller="ungerUtlandCtrl" data-ng-show="data.barnUtland == 'ja'">
+            <ul>
+                <li data-ng-repeat="unge in ungerUtland" data-ng-form="ungerUtlandForm" name="ungerUtlandForm">
+                    <label>Navn</label>
+                    <input type="text" placeholder="Fornavn" name="fornavn" data-ng-model="unge.fornavn" required>
+                    <input type="text" placeholder="Etternavn" name="etternavn" data-ng-model="unge.etternavn" required>
+                    <span class="error"
+                          data-ng-show="ungerUtlandForm.fornavn.$error.required || ungerUtlandForm.etternavn.$error.required">{{feilmeldinger.paakreves}}</span>
+                </li>
+                <li>
+                    <br/>
+                    <a href data-ng-click="ungerUtland.splice(ungerUtland.length-1, 1)"> Fjern</a>
+                    <a href data-ng-click="nyUngeUtland($event)"> Legg til</a>
+                </li>
+            </ul>
+        </div>
+        <div ng-controller="SistLagretCtrl">
+            <h3>Sist lagret: {{time.now}} </h3>
+        </div>
+
+        <a>
+            <button id="neste" ng-click="lagre('reell-arbeidssoker')">NESTE</button>
+        </a>
+    </form>
+</div>
 <knapprad></knapprad>
