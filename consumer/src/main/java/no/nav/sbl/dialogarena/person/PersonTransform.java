@@ -97,6 +97,7 @@ public class PersonTransform {
     				midlertidigPostboksAdresse.setGyldigfra(gyldigFra);
     				midlertidigPostboksAdresse.setGyldigtil(gyldigTil);
     				
+    				midlertidigPostboksAdresse.setAdresseeier(xmlPostboksAdresse.getTilleggsadresse());
     				midlertidigPostboksAdresse.setPostnummer(getPostnummerString(xmlPostboksAdresse));
     				midlertidigPostboksAdresse.setPostboksnavn(xmlPostboksAdresse.getPostboksanlegg());
     				midlertidigPostboksAdresse.setPostboksnummer(xmlPostboksAdresse.getPostboksnummer());
