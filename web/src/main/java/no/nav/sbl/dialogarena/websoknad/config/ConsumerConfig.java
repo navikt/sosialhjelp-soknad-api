@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.websoknad.config;
 
 import no.nav.modig.cxf.TimeoutFeature;
 import no.nav.modig.security.sts.utility.STSConfigurationUtility;
+import no.nav.sbl.dialogarena.common.timing.TimingFeature;
 import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
@@ -14,6 +15,7 @@ import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
+import org.apache.cxf.ws.security.SecurityConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -61,7 +63,10 @@ public class ConsumerConfig {
 
         @Bean
         public JaxWsProxyFactoryBean sendsoknadPortTypeFactory() {
-            return getJaxWsProxyFactoryBean(soknadServiceEndpoint, SendSoknadPortType.class, "classpath:SendSoknad.wsdl");
+            JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(soknadServiceEndpoint, SendSoknadPortType.class, "classpath:SendSoknad.wsdl");
+            jaxwsClient.getFeatures().add(new TimingFeature(SendSoknadPortType.class.getSimpleName()));
+
+            return jaxwsClient;
         }
 
         @Bean
@@ -83,7 +88,10 @@ public class ConsumerConfig {
 
         @Bean
         public JaxWsProxyFactoryBean brukerProfilPortTypeFactory() {
-            return getJaxWsProxyFactoryBean(brukerProfilEndpoint, BrukerprofilPortType.class, "classpath:Brukerprofil.wsdl");
+            JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(brukerProfilEndpoint, BrukerprofilPortType.class, "classpath:Brukerprofil.wsdl");
+            jaxwsClient.getFeatures().add(new TimingFeature(BrukerprofilPortType.class.getSimpleName()));
+
+            return jaxwsClient;
         }
 
         @Bean
@@ -104,7 +112,11 @@ public class ConsumerConfig {
 
         @Bean
         public JaxWsProxyFactoryBean kodeverkPortTypeFactory() {
-            return getJaxWsProxyFactoryBean(kodeverkEndPoint, KodeverkPortType.class, "classpath:Kodeverk.wsdl");
+            JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(kodeverkEndPoint, KodeverkPortType.class, "classpath:Kodeverk.wsdl");
+
+            jaxwsClient.getFeatures().add(new TimingFeature(KodeverkPortType.class.getSimpleName()));
+
+            return jaxwsClient;
         }
 
         @Bean
@@ -186,7 +198,15 @@ public class ConsumerConfig {
         Map<String, Object> props = new HashMap<>();
         props.put(MTOM_ENABLED, "true");
         props.put(MUST_UNDERSTAND, false);
+        // Denne må settes for å unngå at CXF instansierer EhCache med en non-default konfigurasjon. Denne sørger
+        // for at vår konfigurasjon faktisk blir lastet.
+        props.put(SecurityConstants.CACHE_CONFIG_FILE, "ehcache.xml");
         proxyFactoryBean.setProperties(props);
         return proxyFactoryBean;
+    }
+
+    //Må godta så store xml-payloads pga Kodeverk postnr
+    static {
+        System.setProperty("org.apache.cxf.staxutils.innerElementCountThreshold", "70000");
     }
 }
