@@ -1,0 +1,37 @@
+<div class="skjemaramme" ng-controller="VernepliktCtrl">
+    <form name="vernepliktigForm" data-ng-controller="ValidationCtrl" novalidate>
+
+        <div class="sideoversikt">
+            <h4>VERNEPLIKT </h4>
+        </div>
+        <div class="skjemainnhold" data-ng-controller="SoknadDataCtrl">
+
+            <radioknapp model="soknadData.fakta.vernepliktig.value"
+                        modus="data.redigeringsModus"
+                        sporsmal="tekster.vernepliktig_sporsmal"
+                        svar1="tekster.vernepliktig_svar_ja"
+                        svar2="tekster.vernepliktig_svar_nei"
+                        soknad-data="soknadData"
+                        lagre="lagre()"
+                        name="vernepliktig"/>
+
+            <input data-ng-show="data.redigeringsModus == true" type="button" value="Ferdig med verneplikt"
+                   class="knapp-hoved" data-ng-click="validateForm(vernepliktigForm.$invalid)">
+            <input data-ng-show="data.redigeringsModus == false" type="button" value="Endre" class="knapp-hoved"
+                   data-ng-click="gaTilRedigeringsmodus()">
+
+            <div data-ng-show="data.showErrorMessage == true">
+                Du må fylle inn alle feltene
+            </div>
+
+            <div data-ng-controller="SendSoknadCtrl">
+                <input type="button" class="knapp-hoved" data-ng-click="sendSoknad()" value="Send">
+            </div>
+            <div>
+                <input type="button" class="knapp-stor" data-ng-click="avbryt()" value="Avbryt">
+            </div>
+
+        </div>
+
+    </form>
+</div>
