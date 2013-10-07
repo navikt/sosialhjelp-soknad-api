@@ -16,6 +16,12 @@ public class PersonAlder implements Serializable{
     private LocalDate fodselsdato;
 
     public PersonAlder(String personnummer){
+        Integer dag = Integer.parseInt(personnummer.substring(0,1));
+        if (dag > 3) {
+            dag = dag - 4;
+            personnummer = dag.toString() + personnummer.substring(1);
+        }
+
         this.fodselsdato = LocalDate.parse(hentFodselsdatoFraFnr(personnummer)).plusMonths(1);
     }
 	public int getAlder() {

@@ -1,3 +1,11 @@
 vernepliktig_sporsmal
 vernepliktig_svar_ja
 vernepliktig_svar_nei
+vernepliktig_feilmelding
+vernepliktig_tittel
+vernepliktig_ferdig
+vernepliktig_opplasting
+
+send
+avbryt
+endre
