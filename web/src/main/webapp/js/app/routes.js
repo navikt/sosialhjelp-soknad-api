@@ -11,6 +11,7 @@ angular.module('app.routes',['ngRoute'])
       .when('/avbryt/:soknadId', {templateUrl: '../html/templates/avbryt.html', controller: 'AvbrytCtrl'})
       .when('/fortsettsenere', {templateUrl: '../html/templates/fortsettSenere.html', controller: 'SoknadDataCtrl'})
       .when('/slettet', {templateUrl: '../html/templates/soknadSlettet.html', controller: 'SlettetSoknadDataCtrl'})
+      .when('/kvittering', {templateUrl: '../html/templates/kvittering-innsendt.html'})
       .otherwise({redirectTo: '/utslagskriterier'});
 
 //    $locationProvider.html5Mode(true);

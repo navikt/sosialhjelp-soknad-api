@@ -9,9 +9,10 @@ angular.module('app.brukerdata', ['app.services'])
 	}
 })
 
-.controller('SendSoknadCtrl', function($scope, $routeParams, soknadService) {
+.controller('SendSoknadCtrl', function($scope, $location, $routeParams, soknadService) {
     $scope.sendSoknad = function() {
-        soknadService.send({param: soknadId, action: 'send'});
+        soknadService.send({param: $routeParams.soknadId, action: 'send'});
+        $location.path('kvittering');
     }
 })
 
@@ -20,8 +21,39 @@ angular.module('app.brukerdata', ['app.services'])
     $scope.soknadData = soknadService.get({param:  soknadId});
 })
 
-.controller('PersonaliaCtrl', function ($scope, $routeParams, tpsService) {
-    $scope.personalia = tpsService.get({soknadId: $routeParams.soknadId});
+
+.controller('ReellArbeidssokerCtrl', function ($scope, enonicService) {
+    $scope.tekster = enonicService.get({side:'reellArbeidssoker'});
+
+    $scope.data = {
+        showErrorMessage: false,
+        redigeringsModus: true
+    };
+
+    $scope.validateForm = function(invalid) {
+        $scope.data.showErrorMessage = invalid;
+        $scope.data.redigeringsModus = invalid;
+    }
+
+    $scope.gaTilRedigeringsmodus = function() {
+        $scope.data.redigeringsModus = true;
+    }
+})
+
+        .controller('PersonaliaCtrl', function ($scope, $routeParams, tpsService) {
+//    $scope.personalia = tpsService.get({soknadId: $routeParams.soknadId});
+    $scope.personalia = tpsService;
+    $scope.data = {};
+
+    $scope.personalia.fakta.adresser.forEach(function(data, i) {
+        if (data.type === "BOSTEDSADRESSE") {
+            $scope.data.bostedsAdresse = i;
+        } else if (data.type === "POSTADRESSE") {
+            $scope.data.postAdresse = i;
+        } else {
+            $scope.data.midlertidigAdresse = i;
+        }
+    });
 })
 
 .controller('SoknadDataCtrl', function($scope, $routeParams, $location, $timeout, soknadService) {
@@ -32,6 +64,10 @@ angular.module('app.brukerdata', ['app.services'])
 		console.log("lagre: " + soknadData);
 		soknadData.$save({param: soknadData.soknadId});
 	};
+
+    $scope.avbryt = function() {
+        $location.path('avbryt/' + $routeParams.soknadId);
+    }
 })
 
 .controller('AvbrytCtrl', function($scope, $routeParams, $location, soknadService) {
@@ -41,6 +77,10 @@ angular.module('app.brukerdata', ['app.services'])
             return element.type;
         });
         $scope.data.krevBekreftelse = $.inArray("BRUKERREGISTRERT", fakta) >= 0;
+
+        if (!$scope.data.krevBekreftelse) {
+            $scope.submitForm();
+        }
     });
 
 
@@ -57,10 +97,6 @@ angular.module('app.brukerdata', ['app.services'])
             }, delay);
         });
     };
-
-    if (!$scope.data.krevBekreftelse) {
-        $scope.submitForm();
-    }
 })
 
 
@@ -88,6 +124,24 @@ angular.module('app.brukerdata', ['app.services'])
 		});
 	};
 })
+
+    .filter('midlertidigAdresseType', function(){
+        return function(input) {
+            var tekst;
+            switch(input) {
+                case "MIDLERTIDIG_POSTADRESSE_NORGE":
+                    tekst = "MIDLERTIDIG ADRESSE NORGE";
+                    break;
+                case "MIDLERTIDIG_POSTADRESSE_UTLAND":
+                    tekst = "MIDLERTIDIG ADRESSE UTLAND"
+                    break;
+                default :
+                    //TODO: fix
+                    tekst="Du har ikke midlertidig adresse i norge eller utlandet";
+            }
+            return tekst;
+        }
+    })
 
 
 .factory('time', function($timeout) {

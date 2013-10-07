@@ -3,17 +3,65 @@
 
     <label>NAVN</label>
 
-    <p>{{personalia.fakta.fornavn.value}} {{personalia.fakta.mellomnavn.value}} {{personalia.fakta.etternavn.value}}</p>
+    <p>{{personalia.fakta.sammensattnavn.value}}</p>
 
     <label>FØDSELSNUMMER</label>
 
     <p>{{personalia.fakta.fnr.value}} </p>
 
-    <label>ADRESSE</label>
+    <div data-ng-show="data.folkeregistrertAdresse != undefined">
+        <label>BOSTEDSADRESSE</label>
+        <p>
+            {{ personalia.fakta.adresser[data.bostedsAdresse].gatenavn }}
+            {{ personalia.fakta.adresser[data.bostedsAdresse].husnummer }}
+            {{ personalia.fakta.adresser[data.bostedsAdresse].husbokstav }}
+        </p>
+        <p>
+            {{ personalia.fakta.adresser[data.bostedsAdresse].postnummer }}
+            {{ personalia.fakta.adresser[data.bostedsAdresse].poststed }}
+        </p>
+    </div>
 
-    <p>{{personalia.adresse}} </p>
+    <div data-ng-show="data.midlertidigAdresse != undefined">
+        <label>{{personalia.fakta.adresser[data.midlertidigAdresse].type | midlertidigAdresseType }}</label>
+        <p>
+            C/O: {{ personalia.fakta.adresser[data.midlertidigAdresse].adresseEier }}
+        </p>
 
-    <p>{{personalia.adresse.postnummer}} {{personalia.adresse.poststed}}</p>
+        <p data-ng-show='personalia.fakta.adresser[data.midlertidigAdresse].postboksNavn != undefined && personalia.fakta.adresser[data.midlertidigAdresse].postboksNummer != undefined'>
+            Postboks
+            {{ personalia.fakta.adresser[data.midlertidigAdresse].postboksNummer }}
+            {{ personalia.fakta.adresser[data.midlertidigAdresse].postboksNavn }}
+        </p>
+
+        <p data-ng-show='personalia.fakta.adresser[data.midlertidigAdresse].gatenavn != undefined && personalia.fakta.adresser[data.midlertidigAdresse].husnummer != undefined'>
+            {{ personalia.fakta.adresser[data.midlertidigAdresse].gatenavn }}
+            {{ personalia.fakta.adresser[data.midlertidigAdresse].husnummer }}
+            {{ personalia.fakta.adresser[data.midlertidigAdresse].husbokstav }}
+        </p>
+
+        <p>
+            {{ personalia.fakta.adresser[data.midlertidigAdresse].postnummer }}
+            {{ personalia.fakta.adresser[data.midlertidigAdresse].poststed }}
+        </p>
+        <p>
+            Gyldig til: {{ personalia.fakta.adresser[data.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy' }}
+        </p>
+    </div>
+    <!---->
+    <!--<div data-ng-repeat="adresse in personalia.fakta.adresser">-->
+        <!--<label>ADRESSE</label>-->
+        <!--&lt;!&ndash;{{ adresse.type }}&ndash;&gt;-->
+        <!--<p>-->
+            <!--{{ adresse.gatenavn }}-->
+            <!--{{ adresse.husnummer }}-->
+        <!--</p>-->
+        <!--<p>-->
+            <!--{{ adresse.postnummer }}-->
+            <!--{{ adresse.poststed }}-->
+        <!--</p>-->
+
+    <!--</div>-->
 
     <form name="personaliaForm" novalidate>
         <label>MOBILNUMMER</label>
