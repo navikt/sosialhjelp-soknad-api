@@ -55,7 +55,7 @@ public final class StartSoknadJetty {
     private void configureLocalConfig() throws IOException {
         SystemProperties.setFrom("jetty-env.properties");
         System.setProperty("spring.profiles.active", "mock");
-        System.setProperty("no.nav.sbl.dialogarena.dokumentinnsending.sslMock", "true");
+        System.setProperty("no.nav.sbl.dialogarena.sendsoknad.sslMock", "true");
         System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, JettySubjectHandler.class.getName());
     }
 
