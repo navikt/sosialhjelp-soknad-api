@@ -4,7 +4,7 @@ import no.nav.modig.wicket.selftest.SelfTestBase;
 import no.nav.sbl.dialogarena.websoknad.config.ConsumerConfig;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
-import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
+import no.nav.tjeneste.virksomhet.kodeverk.v1.KodeverkPortType;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Import;

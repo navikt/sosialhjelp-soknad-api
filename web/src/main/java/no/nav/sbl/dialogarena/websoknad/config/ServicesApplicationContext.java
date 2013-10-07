@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.websoknad.config;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.kodeverk.StandardKodeverk;
-import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
+import no.nav.tjeneste.virksomhet.kodeverk.v1.KodeverkPortType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
