@@ -178,7 +178,7 @@ return {
         },
         template: "<div class='spm-blokk'>" +
                 "<p class='spm'>{{ sporsmal }}</p>" +
-                "<div data-ng-show='modus==true'>" +
+                "<div class='redigeringsboks' data-ng-show='modus==true'>" +
                     "<input class='sendsoknad-radio' id='{{ svar1 }}' type='radio' data-ng-model='model' value='svar1' name='{{ name }}' mod-faktum required/>" +
                     "<label for='{{ svar1 }}' class='svar-alt' ng-class='{\"svaret\": model == \"svar1\"}'>" +
                         "{{ svar1 }}" +
@@ -188,7 +188,7 @@ return {
                          "{{ svar2 }}" +
                      "</label>" +
                 "</div>" +
-                "<div data-ng-show='modus==false'>" +
+                "<div class='oppsummeringsboks' data-ng-show='modus==false'>" +
                     "<span data-ng-show=\"model == 'svar1'\">"+
                         "{{svar1}}" +
                     "</span>" +
