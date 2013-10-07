@@ -3,6 +3,8 @@ package no.nav.sbl.dialogarena.websoknad.selftest;
 import no.nav.modig.wicket.selftest.SelfTestBase;
 import no.nav.sbl.dialogarena.websoknad.config.ConsumerConfig;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Import;
@@ -28,6 +30,14 @@ public class SelfTestPage extends SelfTestBase {
     private SendSoknadPortType sendSoknadSelftest;
 
     @Inject
+    @Named("kodeverkServiceSelftest")
+    private KodeverkPortType kodeverkServiceSelftest;
+
+    @Inject
+    @Named("brukerProfilService")
+    private BrukerprofilPortType brukerProfilService;
+
+    @Inject
     @Named(value = "cmsBaseUrl")
     private String cmsBaseUrl;
 
@@ -40,6 +50,18 @@ public class SelfTestPage extends SelfTestBase {
         new ServiceStatusHenter("SENDSOKNAD") {
             public void ping() {
                 sendSoknadSelftest.ping();
+            }
+        }.addStatus(statusList);
+
+        new ServiceStatusHenter("KODEVERK") {
+            public void ping() {
+                kodeverkServiceSelftest.ping();
+            }
+        }.addStatus(statusList);
+
+        new ServiceStatusHenter("BRUKERPROFIL") {
+            public void ping() {
+                brukerProfilService.ping();
             }
         }.addStatus(statusList);
 
