@@ -1,52 +1,87 @@
-<div class="skjemaramme">
+<div class="skjemaramme" data-ng-controller="ReellArbeidssokerCtrl">
 	<form name="villigForm" data-ng-controller="ValidationCtrl">
 		<div class="sideoversikt">
 			<h4>REELL ARBEIDSSØKER </h4>
 		</div>
 		<div class="skjemainnhold" data-ng-controller="SoknadDataCtrl">
-			<div class="spm-blokk" >
-				<p class="spm">Som hovedregel må du være villig til å ta enhver type arbeid for å ha rett på dagpenger <span class="error" data-ng-show="villigForm.villigJobb.$error.required">{{feilmeldinger.paakreves}}</span></p>
+            <radioknapp model="soknadData.fakta.villigDeltid.value"
+                        modus="data.redigeringsModus"
+                        sporsmal="tekster.reellarbeidssoker_villig_deltid_sporsmal"
+                        svar1="tekster.reellarbeidssoker_villig_deltid_svar_ja"
+                        svar2="tekster.reellarbeidssoker_villig_deltid_svar_nei"
+                        soknad-data="soknadData"
+                        lagre="lagre()"
+                        name="villigDeltid"/>
 
-				<input id="villigJobbJa" class="sendsoknad-radio" data-ng-model="soknadData.fakta.villigJobb.value" type="radio" name="villigJobb" value="ja" mod-faktum required />
-				<label for="villigJobbJa" class="svar-alt" ng-class="{'svaret': soknadData.fakta.villigJobb.value == 'ja'}">
-					Ja, jeg kan ta enhver type arbeid
-				</label>
+            <radioknapp model="soknadData.fakta.villigPendle.value"
+                        modus="data.redigeringsModus"
+                        sporsmal="tekster.reellarbeidssoker_villig_pendle_sporsmal"
+                        svar1="tekster.reellarbeidssoker_villig_pendle_svar_ja"
+                        svar2="tekster.reellarbeidssoker_villig_pendle_svar_nei"
+                        soknad-data="soknadData"
+                        lagre="lagre()"
+                        name="villigPendle"/>
 
-				<input id="villigJobbNei" class="sendsoknad-radio" data-ng-model="soknadData.fakta.villigJobb.value" type="radio" name="villigJobb" value="nei" mod-faktum required/>
-				<label for="villigJobbNei" class="svar-alt" ng-class="{'svaret': soknadData.fakta.villigJobb.value == 'nei'}" >
-					Nei, jeg kan ikke ta enhver type arbeid
-				</label>
-			</div>
+            <radioknapp model="soknadData.fakta.villigHelse.value"
+                        modus="data.redigeringsModus"
+                        sporsmal="tekster.reellarbeidssoker_helseaarsaker_sporsmal"
+                        svar1="tekster.reellarbeidssoker_helseaarsaker_svar_nei"
+                        svar2="tekster.reellarbeidssoker_helseaarsaker_svar_ja"
+                        soknad-data="soknadData"
+                        lagre="lagre()"
+                        name="villigHelse"/>
+
+            <radioknapp model="soknadData.fakta.villigJobb.value"
+                        modus="data.redigeringsModus"
+                        sporsmal="tekster.reellarbeidssoker_villig_jobb_sporsmal"
+                        svar1="tekster.reellarbeidssoker_villig_jobb_svar_ja"
+                        svar2="tekster.reellarbeidssoker_villig_jobb_svar_nei"
+                        soknad-data="soknadData"
+                        lagre="lagre()"
+                        name="villigJobb"/>
+
+            <input data-ng-show="data.redigeringsModus == true" type="button" value="Ferdig med reell arbeidssøker" class="knapp-hoved" data-ng-click="validateForm(villigForm.$invalid)">
+            <input data-ng-show="data.redigeringsModus == false" type="button" value="Endre" class="knapp-hoved" data-ng-click="gaTilRedigeringsmodus()">
+
+            <div data-ng-show="data.showErrorMessage == true">
+                Du må fylle inn alle feltene
+            </div>
+
+            <div data-ng-controller="SendSoknadCtrl">
+                <input type="button" class="knapp-hoved" data-ng-click="sendSoknad()" value="Send">
+            </div>
+            <div>
+                <input type="button" class="knapp-stor" data-ng-click="avbryt()" value="Avbryt">
+            </div>
+		</div>
+	</form>
+</div>
 
 
-			<div class="spm-blokk">
-				<p class="spm"> Som hovedregel må du være villig til å pendle eller flytte for å ha rett på dagpenger <span class="error" data-ng-show="villigForm.villigPendle.$error.required">{{feilmeldinger.paakreves}} </span></p>
-				<input id="villigPendleJa" class="sendsoknad-radio" data-ng-model="soknadData.fakta.villigPendle.value" type="radio" name="villigPendle" value="ja" mod-faktum required/>
-				<label for="villigPendleJa" class="svar-alt" ng-class="{'svaret': soknadData.fakta.villigPendle.value == 'ja'}">
-					Ja, jeg er villig til å flytte eller pendle
-				</label>
 
-				<input id="villigPendleNei" class="sendsoknad-radio" data-ng-model="soknadData.fakta.villigPendle.value" type="radio" name="villigPendle" value="nei" mod-faktum required/>
-				<label for="villigPendleNei" class="svar-alt" ng-class="{'svaret': soknadData.fakta.villigPendle.value == 'nei'}">
-					Nei, jeg har ikke mulighet til å flytte eller pendle
-				</label>
 
-				<div class="blokk-resultat" ng-show="soknadData.fakta.villigPendle.value == 'nei'">
-					<p class="spm">Hvorfor har du ikke mulighet til å pendle eller flytte? <span class="error" data-ng-show="villigForm.ikkePendleBarn.$error.required && villigForm.ikkePendleHelse.$error.required && villigForm.ikkePendleGammel.$error.required ">{{feilmeldinger.paakreves}} </span></p>
+
+
+
+
+<!--<knapprad></knapprad>-->
+<!--<div class="blokk-resultat" ng-show="soknadData.fakta.villigPendle.value == 'nei'">
+					<p class="spm">{{ tekster.reellarbeidssoker_ikkependle_sporsmal }}
+                        <span class="error" data-ng-show="villigForm.ikkePendleBarn.$error.required && villigForm.ikkePendleHelse.$error.required && villigForm.ikkePendleGammel.$error.required ">{{feilmeldinger.paakreves}} </span></p>
 
 					<input id="ikkePendleBarn" class="sendsoknad-check" type="checkbox" name="ikkePendleBarn" data-ng-model="soknadData.fakta.ikkePendleBarn.value" mod-faktum boolean-verdi required>
 					<label for="ikkePendleBarn" class="svar-alt">
-						Omsorg for barn under 18år <a class="mer-info"  href="">Mer info</a>
+                        {{ tekster.reellarbeidssoker_ikkependle_svar_barn }}<a class="mer-info"  href="">Mer info</a>
 					</label>
 
 					<input id="ikkePendleGammel" class="sendsoknad-check" type="checkbox" name="ikkePendleGammel" data-ng-model="soknadData.fakta.ikkePendleGammel.value" mod-faktum boolean-verdi required>
 					<label for="ikkePendleGammel" class="svar-alt">
-						Over 60 år </span><a class="mer-info"  href="">Mer info</a>
+                        {{ tekster.reellarbeidssoker_ikkependle_svar_over60 }}</span><a class="mer-info"  href="">Mer info</a>
 					</label>
 
 					<input id="helse" class="sendsoknad-check" type="checkbox" name="ikkePendleHelse" data-ng-model="soknadData.fakta.ikkePendleHelse.value" mod-faktum boolean-verdi required>
 					<label for="helse" class="svar-alt">
-						Helsemessige årsaker <a class="mer-info" href="">Mer info</a>
+                        {{ tekster.reellarbeidssoker_ikkependle_svar_helseaarsaker }} <a class="mer-info" href="">Mer info</a>
 					</label>
 
                     <div ng-show="soknadData.fakta.ikkePendleHelse.value == true || soknadData.fakta.ikkePendleHelse.value == 'true'" class="spm-blokk">
@@ -56,44 +91,5 @@
                         <p>Kor beskrivelse av hva legeattesten skal inneholde</p>
                         <img src="">Du kan laste opp i neste steg eller <a href="">lagre og fortsette senere</a>
                     </div>
-					
-				</div>
-			</div>
 
-			<div class="spm-blokk">
-				<p class="spm"> Som hovedregel må du være villig til å ta arbeid både hel- og deltidsjobb for å ha rett på dagpenger <span class="error" data-ng-show="villigForm.villigDeltid.$error.required">{{feilmeldinger.paakreves}} </span> </p>
-
-				<input id="villigDeltidJa" class="sendsoknad-radio" data-ng-model="soknadData.fakta.villigDeltid.value" type="radio" name="villigDeltid" value="ja" mod-faktum required/>
-				<label for="villigDeltidJa" class="svar-alt" ng-class="{'svaret': soknadData.fakta.villigDeltid.value == 'ja'}">
-					Ja, jeg er villig til å søke både hel- og deltidsjobb
-				</label>
-
-				<input id="villigDeltidNei" class="sendsoknad-radio" data-ng-model="soknadData.fakta.villigDeltid.value" type="radio" name="villigDeltid" value="nei" mod-faktum required/>
-				<label for="villigDeltidNei" class="svar-alt" ng-class="{'svaret': soknadData.fakta.villigDeltid.value == 'nei'}">
-					Nei, jeg kan kun jobbe deltid
-				</label>
-			</div>
-
-			<div class="spm-blokk"> 
-				<p class="spm">Finnes det arbeid du av helsemessige årsaker ikke kan ta? <span class="error" data-ng-show="villigForm.villigHelse.$error.required">{{feilmeldinger.paakreves}} </span></p>
-
-				<input id="villigHelseJa"  class="sendsoknad-radio" data-ng-model="soknadData.fakta.villigHelse.value" type="radio" name="villigHelse" value="god" mod-faktum required/>
-				<label for="villigHelseJa" class="svar-alt" ng-class="{'svaret': soknadData.fakta.villigHelse.value == 'god'}">
-					Ja
-				</label>
-
-				<input id="villigHelseNei" class="sendsoknad-radio" data-ng-model="soknadData.fakta.villigHelse.value" type="radio" name="villigHelse" value="darlig" mod-faktum required/>
-				<label for="villigHelseNei" class="svar-alt" ng-class="{'svaret': soknadData.fakta.villigHelse.value == 'darlig'}">
-					Nei
-				</label>
-
-
-			</div>
-			<div data-ng-controller="SendSoknadCtrl">
-				<a class="knapp-stor" href="#/personalia">FORRIGE</a>
-				<a class="knapp-hoved" href="#/arbeidsforhold" ng-disabled="villigForm.villigJobb.$invalid || villigForm.villigPendle.$invalid || villigForm.villigHelse.$invalid || villigForm.villigDeltid.$invalid || (soknadData.fakta.deltid.value == 'nei' && villigForm.villigDeltidProsent.$invalid)" data-ng-click="sendSoknad()">NESTE</a>
-			</div>
-		</div>
-	</form>
-</div>
-<knapprad></knapprad>
+				</div>-->

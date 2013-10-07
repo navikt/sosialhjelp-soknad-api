@@ -162,6 +162,44 @@ return {
     };
 })
 
+.directive('radioknapp', function() {
+    return {
+        restrict: "E",
+        replace: true,
+        scope: {
+            model: '=',
+            modus: '=',
+            sporsmal: '=',
+            svar1: '=',
+            svar2: '=',
+            name: '@',
+            soknadData: '=',
+            lagre: '&'
+        },
+        template: "<div class='spm-blokk'>" +
+                "<p class='spm'>{{ sporsmal }}</p>" +
+                "<div data-ng-show='modus==true'>" +
+                    "<input class='sendsoknad-radio' id='{{ svar1 }}' type='radio' data-ng-model='model' value='svar1' name='{{ name }}' mod-faktum required/>" +
+                    "<label for='{{ svar1 }}' class='svar-alt' ng-class='{\"svaret\": model == \"svar1\"}'>" +
+                        "{{ svar1 }}" +
+                    "</label>" +
+                     "<input class='sendsoknad-radio' id='{{ svar2 }}' type='radio' data-ng-model='model' value='svar2' name='{{ name }}' mod-faktum required/>" +
+                     "<label for='{{ svar2 }}' class='svar-alt' ng-class='{\"svaret\": model == \"svar2\"}'>" +
+                         "{{ svar2 }}" +
+                     "</label>" +
+                "</div>" +
+                "<div data-ng-show='modus==false'>" +
+                    "<span data-ng-show=\"model == 'svar1'\">"+
+                        "{{svar1}}" +
+                    "</span>" +
+                   "<span data-ng-show=\"model == 'svar2'\">" +
+                        "{{svar2}}" +
+                    "</span>" +
+                "</div>" +
+            "</div> "
+    }
+})
+
 
 function fraMindreEnnTil(fra, til){
   var gyldig = false;

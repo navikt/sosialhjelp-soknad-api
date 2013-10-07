@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.model.StringResourceModel;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +25,9 @@ public class EnonicController {
         List<String> nokler = NokkelHenter.hentNokler(side);
 
         for (String nokkel : nokler) {
-            tekster.put(nokkel, new StringResourceModel(nokkel, null).getString());
+            if (StringUtils.isNotBlank(nokkel)) {
+                tekster.put(nokkel, new StringResourceModel(nokkel, null).getString());
+            }
         }
 
         return tekster;

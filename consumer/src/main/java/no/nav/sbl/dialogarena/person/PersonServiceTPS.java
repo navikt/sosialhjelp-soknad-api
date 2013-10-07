@@ -1,16 +1,15 @@
 package no.nav.sbl.dialogarena.person;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Implementer {@link PersonService}. Denne implementasjonen henter data fra TPS
