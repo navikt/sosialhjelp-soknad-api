@@ -9,7 +9,7 @@
     <session-config>
         <session-timeout>30</session-timeout>
         <cookie-config>
-            <name>DOKUMENTINNSENDING_JSESSIONID</name>
+            <name>SENDSOKNAD_JSESSIONID</name>
             <http-only>true</http-only>
             <secure>true</secure>
         </cookie-config>
