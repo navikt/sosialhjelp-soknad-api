@@ -75,7 +75,7 @@ public class ConsumerConfig {
 
         @Bean
         public SendSoknadPortType sendSoknadService() {
-            return sendsoknadPortTypeFactory().create(SendSoknadPortType.class);
+            return konfigurerMedHttps(sendsoknadPortTypeFactory().create(SendSoknadPortType.class));
         }
 
         @Bean
