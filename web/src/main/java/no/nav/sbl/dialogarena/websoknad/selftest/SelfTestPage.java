@@ -59,7 +59,7 @@ public class SelfTestPage extends SelfTestBase {
             }
         }.addStatus(statusList);
 
-        new ServiceStatusHenter("BRUKERPROFIL") {
+        new ServiceStatusHenter("TPS_HENT_BRUKERPROFIL") {
             public void ping() {
                 brukerProfilService.ping();
             }

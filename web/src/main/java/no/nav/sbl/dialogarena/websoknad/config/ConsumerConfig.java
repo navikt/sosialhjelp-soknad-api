@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -34,6 +35,7 @@ import java.util.Map;
 import static java.util.Arrays.asList;
 import static org.apache.cxf.common.util.SOAPConstants.MTOM_ENABLED;
 import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
+import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 @Configuration
 @Import(value = {
@@ -64,6 +66,7 @@ public class ConsumerConfig {
         private URL soknadServiceEndpoint;
 
         @Bean
+        @Scope(SCOPE_PROTOTYPE)
         public JaxWsProxyFactoryBean sendsoknadPortTypeFactory() {
             JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(soknadServiceEndpoint, SendSoknadPortType.class, "classpath:SendSoknad.wsdl");
             jaxwsClient.getFeatures().add(new TimingFeature(SendSoknadPortType.class.getSimpleName()));
@@ -89,8 +92,9 @@ public class ConsumerConfig {
         private URL brukerProfilEndpoint;
 
         @Bean
+        @Scope(SCOPE_PROTOTYPE)
         public JaxWsProxyFactoryBean brukerProfilPortTypeFactory() {
-            JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(brukerProfilEndpoint, BrukerprofilPortType.class, "classpath:brukerprofil/no/nav/tjeneste/virksomhet/brukerprofil/v1/Brukerprofil.wsdl");
+            JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(brukerProfilEndpoint, BrukerprofilPortType.class, "classpath:brukerprofil/no/nav/tjeneste/virksomhet/brukerprofil/v1/Brukerprofil.wsd");
             jaxwsClient.getFeatures().add(new TimingFeature(BrukerprofilPortType.class.getSimpleName()));
 
             return jaxwsClient;
@@ -113,6 +117,7 @@ public class ConsumerConfig {
         private URL kodeverkEndPoint;
 
         @Bean
+        @Scope(SCOPE_PROTOTYPE)
         public JaxWsProxyFactoryBean kodeverkPortTypeFactory() {
             JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(kodeverkEndPoint, KodeverkPortType.class, "classpath:kodeverk/no/nav/tjeneste/virksomhet/kodeverk/v2/Kodeverk.wsdl");
 
@@ -180,7 +185,7 @@ public class ConsumerConfig {
         Client client = ClientProxy.getClient(portType);
         HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
 
-        String property = System.getProperty("no.nav.sbl.dialogarena.websoknad.sslMock");
+        String property = System.getProperty("no.nav.sbl.dialogarena.sendsoknad.sslMock");
         if (property != null && property.equals("true")) {
             TLSClientParameters params = new TLSClientParameters();
             params.setDisableCNCheck(true);
