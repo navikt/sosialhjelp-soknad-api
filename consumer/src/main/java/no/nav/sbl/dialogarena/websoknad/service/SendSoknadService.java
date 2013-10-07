@@ -6,17 +6,17 @@ import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
 
 public interface SendSoknadService {
 
-	public abstract Long startSoknad(String navSoknadId);
+	abstract Long startSoknad(String navSoknadId);
 
-	public abstract WebSoknad hentSoknad(long soknadId);
+	abstract WebSoknad hentSoknad(long soknadId);
 
-	public abstract void lagreSoknadsFelt(long soknadId, String key,
+	abstract void lagreSoknadsFelt(long soknadId, String key,
 			String value);
 
-	public abstract void sendSoknad(long soknadId);
+	abstract void sendSoknad(long soknadId);
 
-	public abstract List<Long> hentMineSoknader(String aktorId);
+	abstract List<Long> hentMineSoknader(String aktorId);
 
-	public abstract void avbrytSoknad(Long soknadId);
+	abstract void avbrytSoknad(Long soknadId);
 
 }
