@@ -32,7 +32,7 @@ public class WebSoknadService {
     private SendSoknadPortType sendSoknadService;
 
     public Long startSoknad(String navSoknadId) {
-        logger.info("Start søknad");
+        logger.debug("Start søknad");
         try {
             return sendSoknadService.startSoknad(navSoknadId);
         } catch (SOAPFaultException e) {
@@ -42,7 +42,7 @@ public class WebSoknadService {
     }
 
     public WebSoknad hentSoknad(long soknadId) {
-        logger.info("Hent søknad");
+        logger.debug("Hent søknad");
         try {
             WSSoknadData soknadData = sendSoknadService.hentSoknad(soknadId);
             return convertToSoknad(soknadData);
@@ -53,6 +53,7 @@ public class WebSoknadService {
     }
 
     public void lagreSoknadsFelt(long soknadId, String key, String value) {
+        logger.debug("Lagre søknad");
         try {
             sendSoknadService.lagreBrukerData(soknadId, key, value);
         } catch (SOAPFaultException e) {
@@ -62,6 +63,7 @@ public class WebSoknadService {
     }
 
     public void sendSoknad(long soknadId) {
+        logger.debug("Send søknad");
         try {
             sendSoknadService.sendSoknad(soknadId);
         } catch (SOAPFaultException e) {
@@ -71,6 +73,7 @@ public class WebSoknadService {
     }
 
     public List<Long> hentMineSoknader(String aktorId) {
+        logger.debug("Hent søknader");
         try {
             // TODO: Endre status til å ikke være string når vi får rett status fra henvendelse
             return on(sendSoknadService.hentSoknadListe(aktorId))
@@ -84,6 +87,7 @@ public class WebSoknadService {
     }
 
     public void avbrytSoknad(Long soknadId) {
+        logger.debug("Avbryt søknad");
         try {
             sendSoknadService.avbrytSoknad(soknadId);
         } catch (SOAPFaultException e) {

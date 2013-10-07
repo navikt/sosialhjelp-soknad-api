@@ -1,24 +1,13 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
 
-import static java.util.Arrays.asList;
-import static org.apache.cxf.common.util.SOAPConstants.MTOM_ENABLED;
-import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
-
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import no.nav.modig.cxf.TimeoutFeature;
 import no.nav.modig.security.sts.utility.STSConfigurationUtility;
+import no.nav.sbl.dialogarena.common.timing.TimingFeature;
 import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
-
+import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.feature.LoggingFeature;
@@ -26,18 +15,33 @@ import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
+import org.apache.cxf.ws.security.SecurityConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static org.apache.cxf.common.util.SOAPConstants.MTOM_ENABLED;
+import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
+
 @Configuration
 @Import(value = {
         ConsumerConfig.ServicesConfig.class,
         ConsumerConfig.SendSoknadWSConfig.class,
+        ConsumerConfig.KodeverkWSConfig.class,
+        ConsumerConfig.BrukerProfilWSConfig.class,
         ConsumerConfig.SelftestStsConfig.class,
-        ConsumerConfig.ExternalStsConfig.class})
+        ConsumerConfig.ExternalStsConfig.class
+})
 @ImportResource({"classpath:META-INF/cxf/cxf.xml", "classpath:META-INF/cxf/cxf-servlet.xml"})
 public class ConsumerConfig {
 
@@ -57,27 +61,17 @@ public class ConsumerConfig {
         @Value("${soknad.webservice.henvendelse.sendsoknadservice.url}")
         private URL soknadServiceEndpoint;
 
-        @Value("${soknad.webservice.brukerprofil.brukerprofilservice.url}")
-        private URL brukerProfilEndpoint;
-
         @Bean
         public JaxWsProxyFactoryBean sendsoknadPortTypeFactory() {
-            return getJaxWsProxyFactoryBean(soknadServiceEndpoint, SendSoknadPortType.class, "classpath:SendSoknad.wsdl");
+            JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(soknadServiceEndpoint, SendSoknadPortType.class, "classpath:SendSoknad.wsdl");
+            jaxwsClient.getFeatures().add(new TimingFeature(SendSoknadPortType.class.getSimpleName()));
+
+            return jaxwsClient;
         }
 
         @Bean
         public SendSoknadPortType sendSoknadService() {
             return sendsoknadPortTypeFactory().create(SendSoknadPortType.class);
-        }
-
-        @Bean
-        public JaxWsProxyFactoryBean brukerProfilPortTypeFactory() {
-            return getJaxWsProxyFactoryBean(brukerProfilEndpoint, BrukerprofilPortType.class, "classpath:Brukerprofil.wsdl");
-        }
-
-        @Bean
-        public BrukerprofilPortType brukerProfilPortType() {
-            return konfigurerMedHttps(brukerProfilPortTypeFactory().create(BrukerprofilPortType.class));
         }
 
         @Bean
@@ -87,14 +81,74 @@ public class ConsumerConfig {
     }
 
     @Configuration
+    public static class BrukerProfilWSConfig {
+
+        @Value("${soknad.webservice.brukerprofil.brukerprofilservice.url}")
+        private URL brukerProfilEndpoint;
+
+        @Bean
+        public JaxWsProxyFactoryBean brukerProfilPortTypeFactory() {
+            JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(brukerProfilEndpoint, BrukerprofilPortType.class, "classpath:brukerprofil/no/nav/tjeneste/virksomhet/brukerprofil/v1/Brukerprofil.wsdl");
+            jaxwsClient.getFeatures().add(new TimingFeature(BrukerprofilPortType.class.getSimpleName()));
+
+            return jaxwsClient;
+        }
+
+        @Bean
+        public BrukerprofilPortType brukerProfilService() {
+            return konfigurerMedHttps(brukerProfilPortTypeFactory().create(BrukerprofilPortType.class));
+        }
+
+        @Bean
+        public BrukerprofilPortType brukerProfilSelftest() {
+            return brukerProfilPortTypeFactory().create(BrukerprofilPortType.class);
+        }
+    }
+
+    @Configuration
+    public static class KodeverkWSConfig {
+        @Value("${sendsoknad.webservice.kodeverk.url}")
+        private URL kodeverkEndPoint;
+
+        @Bean
+        public JaxWsProxyFactoryBean kodeverkPortTypeFactory() {
+            JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(kodeverkEndPoint, KodeverkPortType.class, "classpath:kodeverk/no/nav/tjeneste/virksomhet/kodeverk/v2/Kodeverk.wsdl");
+
+            jaxwsClient.getFeatures().add(new TimingFeature(KodeverkPortType.class.getSimpleName()));
+
+            return jaxwsClient;
+        }
+
+        @Bean
+        public KodeverkPortType kodeverkService() {
+            return konfigurerMedHttps(kodeverkPortTypeFactory().create(KodeverkPortType.class));
+        }
+
+        @Bean
+        public KodeverkPortType kodeverkServiceSelftest() {
+            return kodeverkPortTypeFactory().create(KodeverkPortType.class);
+        }
+    }
+
+    @Configuration
     public static class SelftestStsConfig {
         @Inject
         @Named("sendSoknadSelftest")
         private SendSoknadPortType sendSoknadSelftest;
 
+        @Inject
+        @Named("kodeverkServiceSelftest")
+        private KodeverkPortType kodeverkServiceSelftest;
+
+        @Inject
+        @Named("brukerProfilSelftest")
+        private BrukerprofilPortType brukerProfilSelftest;
+
         @PostConstruct
         public void setupSts() {
             STSConfigurationUtility.configureStsForSystemUser(ClientProxy.getClient(sendSoknadSelftest));
+            STSConfigurationUtility.configureStsForSystemUser(ClientProxy.getClient(kodeverkServiceSelftest));
+            STSConfigurationUtility.configureStsForSystemUser(ClientProxy.getClient(brukerProfilSelftest));
         }
     }
 
@@ -104,9 +158,19 @@ public class ConsumerConfig {
         @Named("sendSoknadService")
         private SendSoknadPortType sendSoknadPortType;
 
+        @Inject
+        @Named("kodeverkService")
+        private KodeverkPortType kodeverkService;
+
+        @Inject
+        @Named("brukerProfilService")
+        private BrukerprofilPortType brukerProfilService;
+
         @PostConstruct
         public void setupSts() {
             STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(sendSoknadPortType));
+            STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(kodeverkService));
+            STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(brukerProfilService));
         }
     }
 
@@ -134,7 +198,15 @@ public class ConsumerConfig {
         Map<String, Object> props = new HashMap<>();
         props.put(MTOM_ENABLED, "true");
         props.put(MUST_UNDERSTAND, false);
+        // Denne må settes for å unngå at CXF instansierer EhCache med en non-default konfigurasjon. Denne sørger
+        // for at vår konfigurasjon faktisk blir lastet.
+        props.put(SecurityConstants.CACHE_CONFIG_FILE, "ehcache.xml");
         proxyFactoryBean.setProperties(props);
         return proxyFactoryBean;
+    }
+
+    //Må godta så store xml-payloads pga Kodeverk postnr
+    static {
+        System.setProperty("org.apache.cxf.staxutils.innerElementCountThreshold", "70000");
     }
 }

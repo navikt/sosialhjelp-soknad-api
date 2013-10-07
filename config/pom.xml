@@ -39,7 +39,7 @@
             <plugin>
                 <groupId>no.nav.maven.plugins</groupId>
                 <artifactId>jboss-maven-plugin</artifactId>
-                <version>3.3.4</version>
+                <version>3.4.0</version>
                 <configuration>
                     <envConfigUrl>https://envconfig.adeo.no/conf</envConfigUrl>
                     <username>admin</username>

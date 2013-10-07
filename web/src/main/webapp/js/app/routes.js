@@ -15,4 +15,4 @@ angular.module('app.routes',['ngRoute'])
       .otherwise({redirectTo: '/utslagskriterier'});
 
 //    $locationProvider.html5Mode(true);
-})
+});
