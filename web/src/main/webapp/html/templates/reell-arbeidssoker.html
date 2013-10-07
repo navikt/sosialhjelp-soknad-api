@@ -1,7 +1,7 @@
 <div class="skjemaramme" data-ng-controller="ReellArbeidssokerCtrl">
 	<form name="villigForm" data-ng-controller="ValidationCtrl">
 		<div class="sideoversikt">
-			<h4>REELL ARBEIDSSØKER </h4>
+			<h4>{{ tekster.reellarbeidssoker_tittel}}</h4>
 		</div>
 		<div class="skjemainnhold" data-ng-controller="SoknadDataCtrl">
             <radioknapp model="soknadData.fakta.villigDeltid.value"
@@ -40,18 +40,18 @@
                         lagre="lagre()"
                         name="villigJobb"/>
 
-            <input data-ng-show="data.redigeringsModus == true" type="button" value="Ferdig med reell arbeidssøker" class="knapp-hoved" data-ng-click="validateForm(villigForm.$invalid)">
-            <input data-ng-show="data.redigeringsModus == false" type="button" value="Endre" class="knapp-hoved" data-ng-click="gaTilRedigeringsmodus()">
+            <input data-ng-show="data.redigeringsModus == true" type="button" value="{{ tekster.reellarbeidssoker_ferdig }}" class="knapp-hoved" data-ng-click="validateForm(villigForm.$invalid)">
+            <input data-ng-show="data.redigeringsModus == false" type="button" value="{{ tekster.endre }}" class="knapp-hoved" data-ng-click="gaTilRedigeringsmodus()">
 
             <div data-ng-show="data.showErrorMessage == true">
-                Du må fylle inn alle feltene
+                {{ tekster.reellarbeidssoker_feilmelding }}
             </div>
 
             <div data-ng-controller="SendSoknadCtrl">
-                <input type="button" class="knapp-hoved" data-ng-click="sendSoknad()" value="Send">
+                <input type="button" class="knapp-hoved" data-ng-click="sendSoknad()" value="{{ tekster.send }}">
             </div>
             <div>
-                <input type="button" class="knapp-stor" data-ng-click="avbryt()" value="Avbryt">
+                <input type="button" class="knapp-stor" data-ng-click="avbryt()" value="{{ tekster.avbryt }}">
             </div>
 		</div>
 	</form>

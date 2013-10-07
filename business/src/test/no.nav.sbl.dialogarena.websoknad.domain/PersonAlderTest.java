@@ -1,11 +1,9 @@
 import no.nav.sbl.dialogarena.websoknad.domain.PersonAlder;
-import static org.junit.Assert.assertEquals;
-
 import org.joda.time.DateTimeUtils;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class PersonAlderTest {
 
@@ -55,4 +53,11 @@ public class PersonAlderTest {
         PersonAlder alder = new PersonAlder("***REMOVED***");
         assertEquals(67, alder.getAlder());
     }
+
+    @Test
+    public void alderSkalVaere100ForPersonMedDNummer_56051329123() {
+        PersonAlder alder = new PersonAlder("56051329132");
+        assertEquals(100, alder.getAlder());
+    }
+
 }
