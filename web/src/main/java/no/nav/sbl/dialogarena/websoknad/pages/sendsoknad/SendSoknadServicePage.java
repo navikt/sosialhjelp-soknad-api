@@ -2,7 +2,8 @@ package no.nav.sbl.dialogarena.websoknad.pages.sendsoknad;
 
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
+import no.nav.sbl.dialogarena.websoknad.service.SendSoknadService;
+
 import org.apache.wicket.markup.html.WebPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,7 @@ import java.util.Map.Entry;
 
 public class SendSoknadServicePage extends WebPage {
 	@Inject
-	private WebSoknadService soknadService;
+	private SendSoknadService soknadService;
 	
 	Logger log = LoggerFactory.getLogger(SendSoknadServicePage.class);
 
