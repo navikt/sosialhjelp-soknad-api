@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.websoknad.service.SendSoknadService;
-import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSBrukerData;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSSoknadData;
 
@@ -21,12 +20,13 @@ import org.slf4j.LoggerFactory;
 
 public class WebSoknadServiceMock implements SendSoknadService{
 	
+	private static final Logger logger = LoggerFactory.getLogger(WebSoknadServiceMock.class);
+	
 	@Inject
 	private SoknadInnsendingRepository repository;
 	
 	@Override
 	public WebSoknad hentSoknad(long soknadId) {
-		System.out.println("soknadId: " + soknadId);
 		return repository.hentSoknad(soknadId);
 	}
 
@@ -53,8 +53,7 @@ public class WebSoknadServiceMock implements SendSoknadService{
 		repository.slettSoknad(soknadId);
 	}
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(WebSoknadService.class);
+	
 
 	public Long startSoknad(String navSoknadId) {
 		return repository.startSoknad(navSoknadId);
