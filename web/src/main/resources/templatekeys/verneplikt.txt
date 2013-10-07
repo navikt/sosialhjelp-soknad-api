@@ -1,0 +1,3 @@
+vernepliktig_sporsmal
+vernepliktig_svar_ja
+vernepliktig_svar_nei
