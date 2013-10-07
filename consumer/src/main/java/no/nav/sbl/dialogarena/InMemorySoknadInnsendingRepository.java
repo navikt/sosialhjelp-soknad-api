@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.UUID;
 
-import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
 
 public class InMemorySoknadInnsendingRepository implements SoknadInnsendingRepository{
@@ -35,14 +34,11 @@ public class InMemorySoknadInnsendingRepository implements SoknadInnsendingRepos
 	
 	@Override
 	public void sendSoknad(long soknadId) {
-		System.out.println("Send søknad skal sette en søknad i rikig status");
 	}
 
 	@Override
 	public void slettSoknad(long soknadId) {
-		System.out.println("S før: " + soknader.size());
 		soknader.remove(soknadId);
-		System.out.println("S etter: " + soknader.size());
 	}
 
 	private long getNextId() {
