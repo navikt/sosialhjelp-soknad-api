@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.person;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.joda.time.DateTime;
@@ -19,6 +21,8 @@ public class Adresse {
 	private String postboksnavn;
 	private String postboksnummer;
 	private String adresseeier;
+	private List<String> adresseLinjer;
+	private String land;
 	
 	public Adresse(long soknadId, Adressetype type) {
 		this.soknadId=soknadId;
@@ -101,6 +105,20 @@ public class Adresse {
 	}
 	public String getAdresseEier() {
 		return adresseeier;
+	}
+
+	public void setUtenlandsadresse(List<String> utenlandsadresse) {
+		this.adresseLinjer = utenlandsadresse;
+	}
+	public List<String> getUtenlandsAdresse() {
+		return adresseLinjer;
+	}
+
+	public void setLand(String land) {
+		this.land = land;
+	}
+	public String getLand() {
+		return land;
 	}
 
 }

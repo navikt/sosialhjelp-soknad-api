@@ -1,16 +1,17 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import javax.inject.Inject;
+
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.person.Person;
 import no.nav.sbl.dialogarena.person.PersonService;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.inject.Inject;
 
 @Controller
 @RequestMapping("/soknad")
@@ -28,10 +29,17 @@ public class SoknadTpsDataController {
         return kodeverk.getPoststed(postnummer);
     }
 	
-    @RequestMapping(value = "/{soknadId}/personalia", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/{soknadId}/personalia/{fnr}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Person hentPerson(@PathVariable String soknadId) {
         String fnr = SubjectHandler.getSubjectHandler().getUid();
+    	return personService.hentPerson(new Long(soknadId), fnr);
+    }
+    
+    @RequestMapping(value = "/{soknadId}/personalia/fnr/{fnr}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody()
+    public Person hentEnPerson(@PathVariable String soknadId, @PathVariable String fnr) {
+  
     	return personService.hentPerson(new Long(soknadId), fnr);
     }
 }
