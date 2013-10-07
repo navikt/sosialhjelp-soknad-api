@@ -1,15 +1,13 @@
-<div data-ng-controller="PersonaliaCtrl">
+<div>
     <h1>Personalia</h1>
 
     <label>NAVN</label>
-
     <p>{{personalia.fakta.sammensattnavn.value}}</p>
 
     <label>FØDSELSNUMMER</label>
-
     <p>{{personalia.fakta.fnr.value}} </p>
 
-    <div data-ng-show="data.folkeregistrertAdresse != undefined">
+    <div data-ng-show="data.bostedsAdresse != undefined">
         <label>BOSTEDSADRESSE</label>
         <p>
             {{ personalia.fakta.adresser[data.bostedsAdresse].gatenavn }}
@@ -38,6 +36,13 @@
             {{ personalia.fakta.adresser[data.midlertidigAdresse].gatenavn }}
             {{ personalia.fakta.adresser[data.midlertidigAdresse].husnummer }}
             {{ personalia.fakta.adresser[data.midlertidigAdresse].husbokstav }}
+        </p>
+
+        <p data-ng-show='personalia.fakta.adresser[data.midlertidigAdresse].land != undefined && personalia.fakta.adresser[data.midlertidigAdresse].utenlandsAdresse.length > 0'>
+            <span data-ng-repeat="linje in personalia.fakta.adresser[data.midlertidigAdresse].utenlandsAdresse">
+                {{linje}}
+            </span>
+            {{personalia.fakta.adresser[data.midlertidigAdresse].land}}
         </p>
 
         <p>

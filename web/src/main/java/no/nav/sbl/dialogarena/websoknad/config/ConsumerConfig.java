@@ -171,8 +171,12 @@ public class ConsumerConfig {
         @PostConstruct
         public void setupSts() {
             STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(sendSoknadPortType));
-            STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(kodeverkService));
-            STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(brukerProfilService));
+
+            String property = System.getProperty("no.nav.sbl.dialogarena.websoknad.sslMock");
+            if (property != null && property.equals("true")) {
+	            STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(kodeverkService));
+	            STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(brukerProfilService));
+            }
         }
     }
 
