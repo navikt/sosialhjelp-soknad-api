@@ -3,7 +3,8 @@ package no.nav.sbl.dialogarena.websoknad.servlet;
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknadId;
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
+import no.nav.sbl.dialogarena.websoknad.service.SendSoknadService;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +22,7 @@ import javax.inject.Inject;
 public class SoknadDataController {
 
     @Inject
-    private WebSoknadService soknadService;
+    private SendSoknadService soknadService;
 
     @RequestMapping(value = "/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
@@ -39,6 +40,7 @@ public class SoknadDataController {
     @ResponseBody()
     public void lagreSoknad(@PathVariable Long soknadId, @RequestBody WebSoknad webSoknad) {
         for (Faktum faktum : webSoknad.getFakta().values()) {
+        	System.out.println("pifweif " + faktum.getKey() + ", " +  faktum.getValue());
             soknadService.lagreSoknadsFelt(soknadId, faktum.getKey(), faktum.getValue());
         }
     }

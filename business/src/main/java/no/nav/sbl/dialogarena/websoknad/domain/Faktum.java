@@ -4,12 +4,24 @@ import java.io.Serializable;
 
 public class Faktum implements Serializable {
 
-    private Long soknadId;
+	private Long soknadId;
     private String key;
     private String value;
     private String type;
 
-    public String getValue() {
+    public Faktum() {
+    	
+    }
+    
+    public Faktum(Long soknadId, String key, String value, String type) {
+		super();
+		this.soknadId = soknadId;
+		this.key = key;
+		this.value = value;
+		this.type = type;
+	}
+
+	public String getValue() {
         return value;
     }
     
@@ -40,4 +52,10 @@ public class Faktum implements Serializable {
     public void setType(String type) {
         this.type = type;
     }
+    
+    @Override
+   	public String toString() {
+   		return "Faktum [soknadId=" + soknadId + ", key=" + key + ", value="
+   				+ value + ", type=" + type + "]";
+   	}
 }
