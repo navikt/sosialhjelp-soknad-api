@@ -40,7 +40,6 @@ public class SoknadDataController {
     @ResponseBody()
     public void lagreSoknad(@PathVariable Long soknadId, @RequestBody WebSoknad webSoknad) {
         for (Faktum faktum : webSoknad.getFakta().values()) {
-        	System.out.println("pifweif " + faktum.getKey() + ", " +  faktum.getValue());
             soknadService.lagreSoknadsFelt(soknadId, faktum.getKey(), faktum.getValue());
         }
     }
