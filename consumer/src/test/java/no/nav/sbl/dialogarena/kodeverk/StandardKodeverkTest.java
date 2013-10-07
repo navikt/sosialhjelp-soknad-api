@@ -1,14 +1,13 @@
 package no.nav.sbl.dialogarena.kodeverk;
 
 import no.nav.modig.core.exception.SystemException;
-import no.nav.tjeneste.virksomhet.kodeverk.v2.HentKodeverkHentKodeverkKodeverkIkkeFunnet;
-import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
-import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLEnkeltKodeverk;
-import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKode;
-import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLTerm;
-import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkRequest;
-import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkResponse;
-
+import no.nav.tjeneste.virksomhet.kodeverk.v1.HentKodeverkKodeverkIkkeFunnet;
+import no.nav.tjeneste.virksomhet.kodeverk.v1.KodeverkPortType;
+import no.nav.tjeneste.virksomhet.kodeverk.v1.informasjon.kodeverk.XMLEnkeltKodeverk;
+import no.nav.tjeneste.virksomhet.kodeverk.v1.informasjon.kodeverk.XMLKode;
+import no.nav.tjeneste.virksomhet.kodeverk.v1.informasjon.kodeverk.XMLTerm;
+import no.nav.tjeneste.virksomhet.kodeverk.v1.meldinger.XMLHentKodeverkRequest;
+import no.nav.tjeneste.virksomhet.kodeverk.v1.meldinger.XMLHentKodeverkResponse;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,16 +45,16 @@ public class StandardKodeverkTest {
     }
 
     @Test
-    public void kanHentePoststedBasertPaaPostnummer() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
-    	XMLHentKodeverkResponse response = postnummerKodeverkResponse();
-		when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(response);
-    	
-		String poststed = kodeverk.getPoststed("0565");
-    	Assert.assertEquals("Oslo", poststed);
+    public void kanHentePoststedBasertPaaPostnummer() throws HentKodeverkKodeverkIkkeFunnet {
+        XMLHentKodeverkResponse response = postnummerKodeverkResponse();
+        when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(response);
+
+        String poststed = kodeverk.getPoststed("0565");
+        Assert.assertEquals("Oslo", poststed);
     }
 
-	@Test
-     public void landkodeKodeverkSkalSorteres() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
+    @Test
+    public void landkodeKodeverkSkalSorteres() throws HentKodeverkKodeverkIkkeFunnet {
         when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(landkodeKodeverkResponse());
 
         List<String> alleLandkoder = kodeverk.getAlleLandkoder();
@@ -63,7 +62,7 @@ public class StandardKodeverkTest {
     }
 
     @Test
-    public void norgeSkalIkkeFolgeMedRestenAvLandene() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
+    public void norgeSkalIkkeFolgeMedRestenAvLandene() throws HentKodeverkKodeverkIkkeFunnet {
         when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(landkodeKodeverkResponse());
 
         List<String> alleLandkoder = kodeverk.getAlleLandkoder();
@@ -71,7 +70,7 @@ public class StandardKodeverkTest {
     }
 
     @Test
-    public void skalKunneSlaaOppTermBasertPaaKodeOgOmvendt() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
+    public void skalKunneSlaaOppTermBasertPaaKodeOgOmvendt() throws HentKodeverkKodeverkIkkeFunnet {
         when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(landkodeKodeverkResponse());
 
         assertThat(kodeverk.getLand("NOR"), is("Norge"));
@@ -79,8 +78,8 @@ public class StandardKodeverkTest {
     }
 
     @Test(expected = SystemException.class)
-    public void ugyldigKodeverknavnGirSystemException() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
-        when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenThrow(new HentKodeverkHentKodeverkKodeverkIkkeFunnet());
+    public void ugyldigKodeverknavnGirSystemException() throws HentKodeverkKodeverkIkkeFunnet {
+        when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenThrow(new HentKodeverkKodeverkIkkeFunnet());
         kodeverk.lastInnNyeKodeverk();
     }
 
@@ -96,12 +95,12 @@ public class StandardKodeverkTest {
     }
 
     private XMLHentKodeverkResponse postnummerKodeverkResponse() {
-		XMLKode kode = new XMLKode().withNavn("0565").withTerm(new XMLTerm().withNavn("Oslo"));
-    	
-    	// TODO Auto-generated method stub
-		return new XMLHentKodeverkResponse().withKodeverk(new XMLEnkeltKodeverk().withNavn("Kommuner").withKode(kode));
-	}
-    
+        XMLKode kode = new XMLKode().withNavn("0565").withTerm(new XMLTerm().withNavn("Oslo"));
+
+        // TODO Auto-generated method stub
+        return new XMLHentKodeverkResponse().withKodeverk(new XMLEnkeltKodeverk().withNavn("Kommuner").withKode(kode));
+    }
+
     private static XMLHentKodeverkResponse landkodeKodeverkResponse() {
         XMLKode norge = new XMLKode().withNavn("NOR").withTerm(new XMLTerm().withNavn("Norge"));
         XMLKode sverige = new XMLKode().withNavn("SWE").withTerm(new XMLTerm().withNavn("Sverige"));

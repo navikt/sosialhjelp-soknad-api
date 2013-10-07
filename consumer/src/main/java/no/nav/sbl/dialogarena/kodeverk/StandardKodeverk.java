@@ -1,15 +1,14 @@
 package no.nav.sbl.dialogarena.kodeverk;
 
 import no.nav.modig.core.exception.SystemException;
-import no.nav.modig.lang.collections.IterUtils;
 import no.nav.modig.lang.option.Optional;
-import no.nav.tjeneste.virksomhet.kodeverk.v2.HentKodeverkHentKodeverkKodeverkIkkeFunnet;
-import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
-import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLEnkeltKodeverk;
-import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKode;
-import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKodeverk;
-import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLPeriode;
-import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkRequest;
+import no.nav.tjeneste.virksomhet.kodeverk.v1.HentKodeverkKodeverkIkkeFunnet;
+import no.nav.tjeneste.virksomhet.kodeverk.v1.KodeverkPortType;
+import no.nav.tjeneste.virksomhet.kodeverk.v1.informasjon.kodeverk.XMLEnkeltKodeverk;
+import no.nav.tjeneste.virksomhet.kodeverk.v1.informasjon.kodeverk.XMLKode;
+import no.nav.tjeneste.virksomhet.kodeverk.v1.informasjon.kodeverk.XMLKodeverk;
+import no.nav.tjeneste.virksomhet.kodeverk.v1.informasjon.kodeverk.XMLPeriode;
+import no.nav.tjeneste.virksomhet.kodeverk.v1.meldinger.XMLHentKodeverkRequest;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
@@ -21,7 +20,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -62,9 +60,8 @@ public class StandardKodeverk implements Kodeverk {
     private final Optional<File> dumpDirectory;
 
     /**
-     *
      * @param webservice
-     * @param locale Hvilket locale kodeverkoppslagene skal gjøres for.
+     * @param locale        Hvilket locale kodeverkoppslagene skal gjøres for.
      * @param dumpDirectory Katalog hvor kodverk lastet fra tjeneste vil bli dumpet til fil(er).
      *                      Her <em>må</em> applikasjonen ha full skrivetilgang (opprette, endre, slette kataloger og filer).
      *                      Ved å angi {@link Optional#none()} vil fallback til fildump være deaktivert.
@@ -98,7 +95,7 @@ public class StandardKodeverk implements Kodeverk {
 
     @Override
     public List<String> getAlleLandkoder() {
-        return IterUtils.on(hentAlleKodenavnFraKodeverk(LANDKODE)).filter(not(equalTo(Adressekodeverk.LANDKODE_NORGE))).collect();
+        return on(hentAlleKodenavnFraKodeverk(LANDKODE)).filter(not(equalTo(Adressekodeverk.LANDKODE_NORGE))).collect();
     }
 
     @Override
@@ -111,7 +108,7 @@ public class StandardKodeverk implements Kodeverk {
             List<XMLKode> gyldige = on(enkeltkodeverk.getKode()).filter(where(GYLDIGHETSPERIODER, exists(periodeMed(DateTime.now())))).collect();
             enkeltkodeverk.getKode().clear();
             enkeltkodeverk.getKode().addAll(gyldige);
-			oppdatertKodeverk.put(kodeverksnavn, enkeltkodeverk);
+            oppdatertKodeverk.put(kodeverksnavn, enkeltkodeverk);
         }
         this.kodeverk.clear();
         this.kodeverk.putAll(oppdatertKodeverk);
@@ -154,7 +151,7 @@ public class StandardKodeverk implements Kodeverk {
         Optional<RuntimeException> webserviceException = none();
         try {
             kodeverket = (XMLEnkeltKodeverk) webservice.hentKodeverk(new XMLHentKodeverkRequest().withNavn(navn).withSpraak(spraak)).getKodeverk();
-        } catch (HentKodeverkHentKodeverkKodeverkIkkeFunnet kodeverkIkkeFunnet) {
+        } catch (HentKodeverkKodeverkIkkeFunnet kodeverkIkkeFunnet) {
             throw new SystemException("Kodeverk '" + navn + "' (" + spraak + "): " + kodeverkIkkeFunnet.getMessage(), kodeverkIkkeFunnet);
         } catch (RuntimeException e) {
             webserviceException = optional(e);
@@ -189,10 +186,6 @@ public class StandardKodeverk implements Kodeverk {
     }
 
 
-
-
-
-
     private static final Transformer<XMLKode, String> KODENAVN = new Transformer<XMLKode, String>() {
         @Override
         public String transform(XMLKode xmlKode) {
@@ -224,9 +217,6 @@ public class StandardKodeverk implements Kodeverk {
     }
 
 
-
-
-
     private static final JAXBContext JAXB;
 
     static {
@@ -235,7 +225,7 @@ public class StandardKodeverk implements Kodeverk {
         } catch (JAXBException e) {
             throw new RuntimeException(
                     "Unable to load class " + StandardKodeverk.class.getName() +
-                    ", error creating JAXB context for " + XMLKodeverk.class.getName() + ": " + e.getMessage(), e);
+                            ", error creating JAXB context for " + XMLKodeverk.class.getName() + ": " + e.getMessage(), e);
         }
     }
 
@@ -255,12 +245,11 @@ public class StandardKodeverk implements Kodeverk {
     }
 
 
-
     private void dumpIfPossible(String dumpName, XMLKodeverk kodeverket) {
         for (File dumpFile : dumpDirectory.map(makeDirs()).map(appendPathname(dumpName + ".xml"))) {
             LOG.info("Dumper til filen '{}'", dumpFile);
             try (Writer out = new FileWriter(dumpFile)) {
-                JAXB.createMarshaller().marshal(new JAXBElement<XMLKodeverk> (
+                JAXB.createMarshaller().marshal(new JAXBElement<XMLKodeverk>(
                         new QName(StandardKodeverk.class.getName() + "." + dumpName, dumpName), XMLKodeverk.class, kodeverket), out);
             } catch (JAXBException | IOException e) {
                 LOG.error("Klarte ikke å dumpe '{}' til fil. {}\n{}", dumpName, e.getMessage(), e);
