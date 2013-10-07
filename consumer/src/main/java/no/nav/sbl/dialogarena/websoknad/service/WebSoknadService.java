@@ -23,7 +23,7 @@ import static no.nav.sbl.dialogarena.websoknad.service.Transformers.TIL_SOKNADID
 import static no.nav.sbl.dialogarena.websoknad.service.Transformers.TIL_STATUS;
 import static no.nav.sbl.dialogarena.websoknad.service.Transformers.tilFaktum;
 
-public class WebSoknadService {
+public class WebSoknadService implements SendSoknadService{
 
     private static final Logger logger = LoggerFactory.getLogger(WebSoknadService.class);
 
@@ -31,8 +31,14 @@ public class WebSoknadService {
     @Named("sendSoknadService")
     private SendSoknadPortType sendSoknadService;
 
-    public Long startSoknad(String navSoknadId) {
-        logger.debug("Start søknad");
+
+        
+    /* (non-Javadoc)
+	 * @see no.nav.sbl.dialogarena.websoknad.service.SendSoknadService#startSoknad(java.lang.String)
+	 */
+    @Override
+	public Long startSoknad(String navSoknadId) {
+    	logger.debug("Start søknad");
         try {
             return sendSoknadService.startSoknad(navSoknadId);
         } catch (SOAPFaultException e) {
@@ -41,6 +47,9 @@ public class WebSoknadService {
         }
     }
 
+    /* (non-Javadoc)
+	 * @see no.nav.sbl.dialogarena.websoknad.service.SendSoknadService#hentSoknad(long)
+	 */
     public WebSoknad hentSoknad(long soknadId) {
         logger.debug("Hent søknad");
         try {
@@ -52,8 +61,12 @@ public class WebSoknadService {
         }
     }
 
-    public void lagreSoknadsFelt(long soknadId, String key, String value) {
-        logger.debug("Lagre søknad");
+    /* (non-Javadoc)
+	 * @see no.nav.sbl.dialogarena.websoknad.service.SendSoknadService#lagreSoknadsFelt(long, java.lang.String, java.lang.String)
+	 */
+    @Override
+	public void lagreSoknadsFelt(long soknadId, String key, String value) {
+		logger.debug("Lagre søknad");
         try {
             sendSoknadService.lagreBrukerData(soknadId, key, value);
         } catch (SOAPFaultException e) {
@@ -62,8 +75,12 @@ public class WebSoknadService {
         }
     }
 
-    public void sendSoknad(long soknadId) {
-        logger.debug("Send søknad");
+    /* (non-Javadoc)
+	 * @see no.nav.sbl.dialogarena.websoknad.service.SendSoknadService#sendSoknad(long)
+	 */
+    @Override
+	public void sendSoknad(long soknadId) {
+    	logger.debug("Send søknad");
         try {
             sendSoknadService.sendSoknad(soknadId);
         } catch (SOAPFaultException e) {
@@ -72,8 +89,12 @@ public class WebSoknadService {
         }
     }
 
-    public List<Long> hentMineSoknader(String aktorId) {
-        logger.debug("Hent søknader");
+    /* (non-Javadoc)
+	 * @see no.nav.sbl.dialogarena.websoknad.service.SendSoknadService#hentMineSoknader(java.lang.String)
+	 */
+    @Override
+	public List<Long> hentMineSoknader(String aktorId) {
+	logger.debug("Hent søknader");
         try {
             // TODO: Endre status til å ikke være string når vi får rett status fra henvendelse
             return on(sendSoknadService.hentSoknadListe(aktorId))
@@ -86,9 +107,13 @@ public class WebSoknadService {
         }
     }
 
-    public void avbrytSoknad(Long soknadId) {
-        logger.debug("Avbryt søknad");
-        try {
+    /* (non-Javadoc)
+	 * @see no.nav.sbl.dialogarena.websoknad.service.SendSoknadService#avbrytSoknad(java.lang.Long)
+	 */
+    @Override
+	public void avbrytSoknad(Long soknadId) {
+    	logger.debug("Avbryt søknad");
+    	try {
             sendSoknadService.avbrytSoknad(soknadId);
         } catch (SOAPFaultException e) {
             logger.error("Kunne ikke avbryte søknad med ID {}", soknadId, e);
