@@ -62,7 +62,7 @@ angular.module('app.brukerdata', ['app.services'])
 	$scope.lagre = function() {
 		var soknadData = $scope.soknadData;
 		console.log("lagre: " + soknadData);
-		soknadData.$save({param: soknadData.soknadId});
+		soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
 	};
 
     $scope.avbryt = function() {
