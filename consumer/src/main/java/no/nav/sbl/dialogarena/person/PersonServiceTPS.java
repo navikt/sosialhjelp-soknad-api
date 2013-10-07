@@ -20,7 +20,7 @@ public class PersonServiceTPS implements PersonService {
     private static final Logger logger = LoggerFactory.getLogger(PersonServiceTPS.class);
 
     @Inject
-    @Named("brukerProfilPortType")
+    @Named("brukerProfilService")
     private BrukerprofilPortType brukerProfil;
 
 	@Inject
