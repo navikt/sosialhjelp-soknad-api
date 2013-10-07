@@ -1,0 +1,40 @@
+<div class="skjemaramme" ng-controller="VernepliktCtrl">
+    <form name="vernepliktigForm" data-ng-controller="ValidationCtrl" novalidate>
+
+        <div class="sideoversikt">
+            <h4>{{ tekster.vernepliktig_tittel }}</h4>
+        </div>
+        <div class="skjemainnhold" data-ng-controller="SoknadDataCtrl">
+
+            <radioknapp model="soknadData.fakta.vernepliktig.value"
+                        modus="data.redigeringsModus"
+                        sporsmal="tekster.vernepliktig_sporsmal"
+                        svar1="tekster.vernepliktig_svar_ja"
+                        svar2="tekster.vernepliktig_svar_nei"
+                        soknad-data="soknadData"
+                        lagre="lagre()"
+                        name="vernepliktig"/>
+            <p data-ng-show="soknadData.fakta.vernepliktig.value=='false'">
+                {{ tekster.vernepliktig_opplasting }}
+            </p>
+
+            <input data-ng-show="data.redigeringsModus == true" type="button" value="{{ tekster.vernepliktig_ferdig }}"
+                   class="knapp-hoved" data-ng-click="validateForm(vernepliktigForm.$invalid)">
+            <input data-ng-show="data.redigeringsModus == false" type="button" value="{{ tekster.endre }}" class="knapp-hoved"
+                   data-ng-click="gaTilRedigeringsmodus()">
+
+            <div data-ng-show="data.showErrorMessage == true">
+                {{ tekster.vernepliktig_feilmelding }}
+            </div>
+
+            <div data-ng-controller="SendSoknadCtrl">
+                <input type="button" class="knapp-hoved" data-ng-click="sendSoknad()" value="{{ tekster.send }}">
+            </div>
+            <div>
+                <input type="button" class="knapp-stor" data-ng-click="avbryt()" value="{{ tekster.avbryt }}">
+            </div>
+
+        </div>
+
+    </form>
+</div>

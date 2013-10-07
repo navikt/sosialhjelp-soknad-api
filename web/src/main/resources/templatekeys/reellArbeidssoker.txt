@@ -14,3 +14,11 @@ reellarbeidssoker_helseaarsaker_svar_ja
 reellarbeidssoker_villig_jobb_sporsmal
 reellarbeidssoker_villig_jobb_svar_ja
 reellarbeidssoker_villig_jobb_svar_nei
+
+reellarbeidssoker_feilmelding
+reellarbeidssoker_tittel
+reellarbeidssoker_ferdig
+
+send
+avbryt
+endre

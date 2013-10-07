@@ -4,14 +4,14 @@ import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
 
 public interface SoknadInnsendingRepository {
 
-	public void lagre(long soknadId, String nokkel, String verdi);
+	void lagre(long soknadId, String nokkel, String verdi);
 
-	public WebSoknad hentSoknad(long soknadId);
+	WebSoknad hentSoknad(long soknadId);
 	
-	public Long startSoknad(String type);
+	Long startSoknad(String type);
 	
-	public void slettSoknad(long soknadId);
+	void slettSoknad(long soknadId);
 	
-	public void sendSoknad(long soknadId);
+	void sendSoknad(long soknadId);
 	
 }

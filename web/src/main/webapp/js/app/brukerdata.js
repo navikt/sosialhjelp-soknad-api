@@ -67,7 +67,7 @@ angular.module('app.brukerdata', ['app.services'])
 	$scope.lagre = function() {
 		var soknadData = $scope.soknadData;
 		console.log("lagre: " + soknadData);
-		soknadData.$save({param: soknadData.soknadId});
+		soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
 	};
 
     $scope.avbryt = function() {
@@ -75,7 +75,25 @@ angular.module('app.brukerdata', ['app.services'])
     }
 })
 
-.controller('AvbrytCtrl', function($scope, $routeParams, $location, soknadService) {
+    .controller('VernepliktCtrl', function ($scope, $routeParams, enonicService) {
+        $scope.tekster = enonicService.get({side:'verneplikt'});
+
+        $scope.data = {
+            showErrorMessage: false,
+            redigeringsModus: true
+        };
+
+        $scope.validateForm = function(invalid) {
+            $scope.data.showErrorMessage = invalid;
+            $scope.data.redigeringsModus = invalid;
+        }
+
+        $scope.gaTilRedigeringsmodus = function() {
+            $scope.data.redigeringsModus = true;
+        }
+    })
+
+    .controller('AvbrytCtrl', function($scope, $routeParams, $location, soknadService) {
     $scope.data = {};
     soknadService.get({param:  $routeParams.soknadId}).$promise.then(function(result) {
         var fakta = $.map(result.fakta, function(element) {
