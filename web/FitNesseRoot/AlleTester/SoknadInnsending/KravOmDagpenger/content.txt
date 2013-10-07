@@ -1,0 +1,37 @@
+!***> Oppsett
+
+!define TEST_SYSTEM {slim}
+
+|import|
+|no.nav.sbl.dialogarena.websoknad.fixture|
+
+*!
+
+|Script|slim driver| ***REMOVED***|
+|$soknadId=|opprett ny soknad|dagpenger|
+|ensure|soknadOpprettet|
+|hent soknad|$soknadId|
+|check|antall faktum lagret|0|
+|lagre faktum|telefon|med verdi|99889988|
+|check|antall faktum lagret|1|
+|lagre faktum|email|med verdi|ketilj@gmail.com|
+|check|antall faktum lagret|2|
+|show|list fakta|
+
+|Script|slim driver| ***REMOVED***|
+|opprett ny soknad|dagpenger|
+|ensure|soknadOpprettet|
+|$soknadId=|hentSoknadId|
+|avbryt soknad|$soknadId|
+|check|er soknad slettet|$soknadId|true|
+
+|Script|slim driver| ***REMOVED***|
+|$soknadId=|opprett ny soknad|dagpenger|
+|hent soknad|$soknadId|
+|lagre faktum|telefon|med verdi|99889988|
+|lagre faktum|kanTaArbeidOveralt|med verdi|true|
+|lagre faktum|kanJobbeFulltid|med verdi|true|
+|lagre faktum|alleTyperArbeid|med verdi|true|
+|lagre faktum|driverEgentNæring|med verdi|false|
+|check|antall faktum lagret|5|
+|send soknad|$soknadId|

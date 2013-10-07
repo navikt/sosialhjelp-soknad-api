@@ -11,7 +11,9 @@ import java.util.Map;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class WebSoknad implements Serializable {
 
-    private Long soknadId;
+   
+
+	private Long soknadId;
     private String gosysId;
     private String brukerBehandlingId;
     private Map<String, Faktum> fakta;
@@ -43,6 +45,10 @@ public class WebSoknad implements Serializable {
     public final void leggTilFakta(Map<String, Faktum> fakta) {
         this.fakta.putAll(fakta);
     }
+    
+    public final void leggTilFaktum(String key, Faktum faktum) {
+    	this.fakta.put(key, faktum);
+    }
 
 	public String getBrukerBehandlingId() {
 		return brukerBehandlingId;
@@ -50,5 +56,22 @@ public class WebSoknad implements Serializable {
 
 	public void setBrukerBehandlingId(String brukerBehandlingId) {
 		this.brukerBehandlingId = brukerBehandlingId;
+	}
+
+	public long antallFakta() {
+		long antallFaktum = 0;
+		
+		if (fakta != null) {
+			antallFaktum = fakta.size();
+		}
+		
+		return antallFaktum;
+	}
+	
+	 @Override
+	public String toString() {
+		return "WebSoknad [soknadId=" + soknadId + ", gosysId=" + gosysId
+				+ ", brukerBehandlingId=" + brukerBehandlingId + ", fakta="
+				+ fakta + "]";
 	}
 }
