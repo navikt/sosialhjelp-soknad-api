@@ -19,19 +19,25 @@ angular.module('app.brukerdata', ['app.services'])
         }
     })
 
-    .controller('PersonaliaCtrl', function ($scope, $routeParams, tpsService) {
-//    $scope.personalia = tpsService.get({soknadId: $routeParams.soknadId});
-        $scope.personalia = tpsService;
-        $scope.data = {};
 
-        $scope.personalia.fakta.adresser.forEach(function (data, i) {
-            if (data.type === "BOSTEDSADRESSE") {
-                $scope.data.bostedsAdresse = i;
-            } else if (data.type === "POSTADRESSE") {
-                $scope.data.postAdresse = i;
-            } else {
-                $scope.data.midlertidigAdresse = i;
-            }
+    .controller('PersonaliaCtrl', function ($scope, $routeParams, tpsService) {
+        $scope.data = {};
+        tpsService.get({soknadId: $routeParams.soknadId}).$promise.then(function (result) {
+            $scope.personalia = result;
+
+            //TODO: For testing
+            //$scope.personalia.fakta.adresser.push({"soknadId":1,"type":"MIDLERTIDIG_POSTADRESSE_NORGE","gatenavn":"Kirkeveien","husnummer":"55","husbokstav":"D","postnummer":"7000","poststed":"Trondheim","land":null,"gyldigTil":1412373600000,"gyldigFra":1380895717011,"postboksNavn":null,"postboksNummer":null,"adresseEier":"Per P. Nilsen","utenlandsAdresse":null});
+            //$scope.personalia.fakta.adresser.push({"soknadId":1,"type":"MIDLERTIDIG_POSTADRESSE_UTLAND","gatenavn":null,"husnummer":null,"husbokstav":null,"postnummer":null,"poststed":null,"land":"SVERIGE","gyldigTil":1412373600000,"gyldigFra":1380895717011,"postboksNavn":null,"postboksNummer":null,"adresseEier":"Per P. Nilsen","utenlandsAdresse":["Öppnedvägen 22","1234, Udevalla"]});
+
+            $scope.personalia.fakta.adresser.forEach(function (data, i) {
+                if (data.type === "BOSTEDSADRESSE") {
+                    $scope.data.bostedsAdresse = i;
+                } else if (data.type === "POSTADRESSE") {
+                    $scope.data.postAdresse = i;
+                } else {
+                    $scope.data.midlertidigAdresse = i;
+                }
+            });
         });
     })
 

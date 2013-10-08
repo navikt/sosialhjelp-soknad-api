@@ -200,6 +200,7 @@ public class PersonTransform {
 
 	private String getHusnummer(XMLGateadresse xmlGateAdresse) {
 		BigInteger gatenummer = xmlGateAdresse.getHusnummer();
+		
 		if(gatenummer != null) {
 			return gatenummer.toString();
 		}

@@ -29,7 +29,7 @@ public class SoknadTpsDataController {
         return kodeverk.getPoststed(postnummer);
     }
 	
-    @RequestMapping(value = "/{soknadId}/personalia/{fnr}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/{soknadId}/personalia", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Person hentPerson(@PathVariable String soknadId) {
         String fnr = SubjectHandler.getSubjectHandler().getUid();
