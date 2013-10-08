@@ -761,11 +761,7 @@
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <configuration>
-                        <argLine>-Djava.net.preferIPv4Stack=true -Dfile.encoding=${project.build.sourceEncoding}
-                        </argLine>
-                        <environmentVariables>
-                            <JAVA_TOOL_OPTIONS>${jacoco.agent.argLine}</JAVA_TOOL_OPTIONS>
-                        </environmentVariables>
+                        <argLine>${jacoco.agent.argLine}</argLine>
                     </configuration>
                 </plugin>
                 <plugin>
