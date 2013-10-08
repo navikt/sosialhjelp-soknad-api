@@ -154,7 +154,7 @@ public class ConsumerConfig {
         public void setupSts() {
             STSConfigurationUtility.configureStsForSystemUser(ClientProxy.getClient(sendSoknadSelftest));
             STSConfigurationUtility.configureStsForSystemUser(ClientProxy.getClient(kodeverkServiceSelftest));
-            STSConfigurationUtility.configureStsForSystemUser(ClientProxy.getClient(brukerProfilSelftest));
+//            STSConfigurationUtility.configureStsForSystemUser(ClientProxy.getClient(brukerProfilSelftest));
         }
     }
 
@@ -176,7 +176,7 @@ public class ConsumerConfig {
         public void setupSts() {
             STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(sendSoknadPortType));
             STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(kodeverkService));
-            STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(brukerProfilService));
+//            STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(brukerProfilService));
 
         }
     }
