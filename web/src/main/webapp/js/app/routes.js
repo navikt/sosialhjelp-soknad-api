@@ -3,8 +3,8 @@ angular.module('app.routes',['ngRoute'])
 .config(function($routeProvider, $locationProvider) {
     $routeProvider
   	  .when('/soknadliste', {templateUrl: '../html/templates/soknadliste.html'})
-  	  .when('/personalia/:soknadId', {templateUrl: '../html/templates/personalia.html', controller: 'SoknadDataCtrl'})
       .when('/reell-arbeidssoker/:soknadId', {templateUrl: '../html/templates/reell-arbeidssoker.html', controller: 'SoknadDataCtrl'})
+  	  .when('/personalia/:soknadId', {templateUrl: '../html/templates/personalia.html', controller: 'PersonaliaCtrl'})
       .when('/arbeidsforhold', {templateUrl: '../html/templates/arbeidsforhold.html', controller: 'GrunnlagsdataCtrl'})
       .when('/informasjonsside', {templateUrl: '../html/templates/informasjonsside.html', controller: 'StartSoknadCtrl'})
       .when('/utslagskriterier', {templateUrl: '../html/templates/utslagskriterier.html', controller: 'GrunnlagsdataCtrl'})
