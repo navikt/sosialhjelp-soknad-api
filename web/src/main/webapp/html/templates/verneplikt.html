@@ -1,10 +1,10 @@
-<div class="skjemaramme" ng-controller="VernepliktCtrl">
+<div class="skjemaramme">
     <form name="vernepliktigForm" data-ng-controller="ValidationCtrl" novalidate>
 
         <div class="sideoversikt">
             <h4>{{ tekster.vernepliktig_tittel }}</h4>
         </div>
-        <div class="skjemainnhold" data-ng-controller="SoknadDataCtrl">
+        <div class="skjemainnhold" data-ng-controller="ModusCtrl">
 
             <radioknapp model="soknadData.fakta.vernepliktig.value"
                         modus="data.redigeringsModus"
@@ -14,24 +14,31 @@
                         soknad-data="soknadData"
                         lagre="lagre()"
                         name="vernepliktig"/>
+
             <p data-ng-show="soknadData.fakta.vernepliktig.value=='false'">
                 {{ tekster.vernepliktig_opplasting }}
             </p>
 
-            <input data-ng-show="data.redigeringsModus == true" type="button" value="{{ tekster.vernepliktig_ferdig }}"
-                   class="knapp-hoved" data-ng-click="validateForm(vernepliktigForm.$invalid)">
-            <input data-ng-show="data.redigeringsModus == false" type="button" value="{{ tekster.endre }}" class="knapp-hoved"
-                   data-ng-click="gaTilRedigeringsmodus()">
+            <button data-ng-show="data.redigeringsModus == true" class="knapp-hoved" data-ng-click="validateForm(vernepliktigForm.$invalid)">
+                {{ tekster.vernepliktig_ferdig }}
+            </button>
+            <button data-ng-show="data.redigeringsModus == false" class="knapp-hoved" data-ng-click="gaTilRedigeringsmodus()">
+                {{ tekster.endre }}
+            </button>
 
             <div data-ng-show="data.showErrorMessage == true">
                 {{ tekster.vernepliktig_feilmelding }}
             </div>
 
             <div data-ng-controller="SendSoknadCtrl">
-                <input type="button" class="knapp-hoved" data-ng-click="sendSoknad()" value="{{ tekster.send }}">
+                <button class="knapp-hoved" data-ng-click="sendSoknad()">
+                    {{ tekster.send }}
+                </button>
             </div>
             <div>
-                <input type="button" class="knapp-stor" data-ng-click="avbryt()" value="{{ tekster.avbryt }}">
+                <button class="knapp-stor" data-ng-click="avbryt()">
+                    {{ tekster.avbryt }}
+                </button>
             </div>
 
         </div>
