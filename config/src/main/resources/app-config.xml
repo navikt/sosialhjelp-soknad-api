@@ -15,10 +15,6 @@
     <resources>
         <webservice alias="virksomhet:Brukerprofil_v1"
                     mapToProperty="soknad.webservice.brukerprofil.brukerprofilservice"/>
-        <webservice alias="domene.Brukerdialog:henvendelsesbehandlingservice_v1"
-                    mapToProperty="dokumentinnsending.webservice.henvendelse.henvendelsesbehandlingservice"/>
-        <webservice alias="domene.Brukerdialog:oppdaterehenvendelsesbehandlingservice_v1"
-                    mapToProperty="dokumentinnsending.webservice.henvendelse.oppdaterehenvendelsesbehandlingservice"/>
         <webservice alias="domene.Brukerdialog:sendsoknadservice_v1"
                     mapToProperty="soknad.webservice.henvendelse.sendsoknadservice"/>
 		<webservice alias="virksomhet:Kodeverk_v2" mapToProperty="sendsoknad.webservice.kodeverk"/>
