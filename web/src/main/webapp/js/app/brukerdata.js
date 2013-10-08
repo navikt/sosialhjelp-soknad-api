@@ -26,8 +26,9 @@ angular.module('app.brukerdata', ['app.services'])
             $scope.personalia = result;
 
             //TODO: For testing
-            //$scope.personalia.fakta.adresser.push({"soknadId":1,"type":"MIDLERTIDIG_POSTADRESSE_NORGE","gatenavn":"Kirkeveien","husnummer":"55","husbokstav":"D","postnummer":"7000","poststed":"Trondheim","land":null,"gyldigTil":1412373600000,"gyldigFra":1380895717011,"postboksNavn":null,"postboksNummer":null,"adresseEier":"Per P. Nilsen","utenlandsAdresse":null});
-            //$scope.personalia.fakta.adresser.push({"soknadId":1,"type":"MIDLERTIDIG_POSTADRESSE_UTLAND","gatenavn":null,"husnummer":null,"husbokstav":null,"postnummer":null,"poststed":null,"land":"SVERIGE","gyldigTil":1412373600000,"gyldigFra":1380895717011,"postboksNavn":null,"postboksNummer":null,"adresseEier":"Per P. Nilsen","utenlandsAdresse":["Öppnedvägen 22","1234, Udevalla"]});
+//            $scope.personalia.fakta.adresser.push({"soknadId":1,"type":"MIDLERTIDIG_POSTADRESSE_NORGE","gatenavn":"Kirkeveien","husnummer":"55","husbokstav":"D","postnummer":"7000","poststed":"Trondheim","land":null,"gyldigTil":1412373600000,"gyldigFra":1380895717011,"postboksNavn":"POSTBOKS","postboksNummer":"1234","adresseEier":"Per P. Nilsen","utenlandsAdresse":null});
+//            $scope.personalia.fakta.adresser.push({"soknadId":1,"type":"MIDLERTIDIG_POSTADRESSE_NORGE","gatenavn":"Kirkeveien","husnummer":"55","husbokstav":"D","postnummer":"7000","poststed":"Trondheim","land":null,"gyldigTil":1412373600000,"gyldigFra":1380895717011,"postboksNavn":null,"postboksNummer":null,"adresseEier":"Per P. Nilsen","utenlandsAdresse":null});
+//            $scope.personalia.fakta.adresser.push({"soknadId":1,"type":"MIDLERTIDIG_POSTADRESSE_UTLAND","gatenavn":null,"husnummer":null,"husbokstav":null,"postnummer":null,"poststed":null,"land":"SVERIGE","gyldigTil":1412373600000,"gyldigFra":1380895717011,"postboksNavn":null,"postboksNummer":null,"adresseEier":"Per P. Nilsen","utenlandsAdresse":["Öppnedvägen 22","1234, Udevalla"]});
 
             $scope.personalia.fakta.adresser.forEach(function (data, i) {
                 if (data.type === "BOSTEDSADRESSE") {
@@ -38,6 +39,41 @@ angular.module('app.brukerdata', ['app.services'])
                     $scope.data.midlertidigAdresse = i;
                 }
             });
+
+            $scope.harBostedsAdresse = function () {
+                return $scope.data.bostedsAdresse != undefined;
+            }
+
+            $scope.harMidlertidigAdresse = function () {
+                return $scope.data.midlertidigAdresse != undefined;
+            }
+            $scope.harPostboksAdresse = function () {
+                return $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].postboksNavn != undefined && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].postboksNummer != undefined;
+            }
+            $scope.harGateAdresse = function () {
+                return $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].gatenavn != undefined && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].husnummer != undefined
+            }
+
+            $scope.harUtenlandskAdresse = function () {
+                return $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].land != undefined && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].utenlandsAdresse.length > 0
+            }
+
+            $scope.hentMidlertidigAdresseTittel = function() {
+                var tekst;
+                var type = $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].type;
+                switch (type) {
+                    case "MIDLERTIDIG_POSTADRESSE_NORGE":
+                        tekst = $scope.tekster.personalia_midlertidig_adresse_norge;
+                        break;
+                    case "MIDLERTIDIG_POSTADRESSE_UTLAND":
+                        tekst = $scope.tekster.personalia_midlertidig_adresse_utland;
+                        break;
+                    default :
+                        //TODO: fix
+                        tekst = "Du har ikke midlertidig adresse i norge eller utlandet";
+                }
+                return tekst;
+            }
         });
     })
 
@@ -81,7 +117,6 @@ angular.module('app.brukerdata', ['app.services'])
         $scope.hvisIkkeIRedigeringsmodus = function () {
             return !$scope.hvisIRedigeringsmodus();
         }
-
 
         $scope.hvisIkkeFormValiderer = function () {
             return $scope.data.showErrorMessage;
@@ -144,14 +179,15 @@ angular.module('app.brukerdata', ['app.services'])
     })
 
     .filter('midlertidigAdresseType', function () {
-        return function (input) {
+        return function (input, scope) {
             var tekst;
             switch (input) {
                 case "MIDLERTIDIG_POSTADRESSE_NORGE":
-                    tekst = "MIDLERTIDIG ADRESSE NORGE";
+
+                    tekst = "tekster.personalia_midlertidig_adresse_norge";
                     break;
                 case "MIDLERTIDIG_POSTADRESSE_UTLAND":
-                    tekst = "MIDLERTIDIG ADRESSE UTLAND"
+                    tekst = scope.tekster.personalia_midlertidig_adresse_utland;
                     break;
                 default :
                     //TODO: fix

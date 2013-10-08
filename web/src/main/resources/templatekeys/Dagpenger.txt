@@ -26,6 +26,15 @@ vernepliktig_tittel
 vernepliktig_ferdig
 vernepliktig_opplasting
 
+personalia_tittel
+personalia_navn
+personalia_fnr
+personalia_bostedsadresse
+personalia_co
+personalia_postboks
+personalia_midlertidig_adresse_utland
+personalia_midlertidig_adresse_norge
+
 send
 avbryt
 endre
