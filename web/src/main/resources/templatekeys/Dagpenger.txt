@@ -1,4 +1,3 @@
-
 reellarbeidssoker_villig_deltid_sporsmal
 reellarbeidssoker_villig_deltid_svar_ja
 reellarbeidssoker_villig_deltid_svar_nei
@@ -18,6 +17,14 @@ reellarbeidssoker_villig_jobb_svar_nei
 reellarbeidssoker_feilmelding
 reellarbeidssoker_tittel
 reellarbeidssoker_ferdig
+
+vernepliktig_sporsmal
+vernepliktig_svar_ja
+vernepliktig_svar_nei
+vernepliktig_feilmelding
+vernepliktig_tittel
+vernepliktig_ferdig
+vernepliktig_opplasting
 
 send
 avbryt

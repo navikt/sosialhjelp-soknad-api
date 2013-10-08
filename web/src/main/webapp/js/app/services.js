@@ -27,8 +27,8 @@ angular.module('app.services',['ngResource'])
         {side: '@side'},
         {
             get: {
-                method: 'GET'
-//                cache: true  Legg på caching senere???
+                method: 'GET',
+                cache: true  // Legg på caching senere???
             }
         });
 })

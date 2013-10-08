@@ -1,9 +1,9 @@
-<div class="skjemaramme" data-ng-controller="ReellArbeidssokerCtrl">
+<div class="skjemaramme">
 	<form name="villigForm" data-ng-controller="ValidationCtrl">
 		<div class="sideoversikt">
 			<h4>{{ tekster.reellarbeidssoker_tittel}}</h4>
 		</div>
-		<div class="skjemainnhold" data-ng-controller="SoknadDataCtrl">
+		<div class="skjemainnhold" data-ng-controller="ModusCtrl">
             <radioknapp model="soknadData.fakta.villigDeltid.value"
                         modus="data.redigeringsModus"
                         sporsmal="tekster.reellarbeidssoker_villig_deltid_sporsmal"
@@ -40,18 +40,26 @@
                         lagre="lagre()"
                         name="villigJobb"/>
 
-            <input data-ng-show="data.redigeringsModus == true" type="button" value="{{ tekster.reellarbeidssoker_ferdig }}" class="knapp-hoved" data-ng-click="validateForm(villigForm.$invalid)">
-            <input data-ng-show="data.redigeringsModus == false" type="button" value="{{ tekster.endre }}" class="knapp-hoved" data-ng-click="gaTilRedigeringsmodus()">
+            <button data-ng-show="data.redigeringsModus == true" class="knapp-hoved" data-ng-click="validateForm(villigForm.$invalid)">
+                {{ tekster.reellarbeidssoker_ferdig }}
+            </button>
+            <button data-ng-show="data.redigeringsModus == false" class="knapp-hoved" data-ng-click="gaTilRedigeringsmodus()">
+                {{ tekster.endre }}
+            </button>
 
             <div data-ng-show="data.showErrorMessage == true">
                 {{ tekster.reellarbeidssoker_feilmelding }}
             </div>
 
             <div data-ng-controller="SendSoknadCtrl">
-                <input type="button" class="knapp-hoved" data-ng-click="sendSoknad()" value="{{ tekster.send }}">
+                <button class="knapp-hoved" data-ng-click="sendSoknad()">
+                    {{ tekster.send }}
+                </button>
             </div>
             <div>
-                <input type="button" class="knapp-stor" data-ng-click="avbryt()" value="{{ tekster.avbryt }}">
+                <button class="knapp-stor" data-ng-click="avbryt()">
+                    {{ tekster.avbryt }}
+                </button>
             </div>
 		</div>
 	</form>
