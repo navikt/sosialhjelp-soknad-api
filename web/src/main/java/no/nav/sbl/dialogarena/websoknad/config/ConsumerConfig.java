@@ -154,7 +154,7 @@ public class ConsumerConfig {
         public void setupSts() {
             STSConfigurationUtility.configureStsForSystemUser(ClientProxy.getClient(sendSoknadSelftest));
             STSConfigurationUtility.configureStsForSystemUser(ClientProxy.getClient(kodeverkServiceSelftest));
-//            STSConfigurationUtility.configureStsForSystemUser(ClientProxy.getClient(brukerProfilSelftest));
+            STSConfigurationUtility.configureStsForSystemUser(ClientProxy.getClient(brukerProfilSelftest));
         }
     }
 
