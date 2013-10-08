@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 public class WebSoknadServiceMock implements SendSoknadService{
 	
+	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(WebSoknadServiceMock.class);
 	
 	@Inject

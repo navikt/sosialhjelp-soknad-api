@@ -10,7 +10,7 @@ public class SoknadListePage extends BasePage {
 	public SoknadListePage() {
         super(new PageParameters());
 
-        add(new Link("dagpenger") {
+        add(new Link<String>("dagpenger") {
             @Override
             public void onClick() {
                 PageParameters parameters = new PageParameters().set("soknadType", "Dagpenger");
@@ -18,7 +18,7 @@ public class SoknadListePage extends BasePage {
             }
         });
 
-        add(new Link("barnebidrag") {
+        add(new Link<String>("barnebidrag") {
             @Override
             public void onClick() {
                 PageParameters parameters = new PageParameters().set("soknadType", "barnebidrag");
@@ -26,7 +26,7 @@ public class SoknadListePage extends BasePage {
             }
         });
 
-        add(new Link("barnetrygd") {
+        add(new Link<String>("barnetrygd") {
             @Override
             public void onClick() {
                 PageParameters parameters = new PageParameters().set("soknadType", "barnetrygd");

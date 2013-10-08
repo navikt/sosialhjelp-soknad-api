@@ -1,18 +1,13 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static java.lang.String.format;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import static java.lang.String.format;
-
 public class NokkelHenter {
-    private static final Logger logger = LoggerFactory.getLogger(NokkelHenter.class);
-
     public static List<String> hentNokler(String side) {
         List<String> nokler = new ArrayList<>();
 
@@ -24,8 +19,6 @@ public class NokkelHenter {
             while (scanner.hasNextLine()) {
                 nokler.add(scanner.nextLine());
             }
-        } catch (NullPointerException e) {
-            logger.error(format("Fant ikke følgende fil: %s", filnavn));
         } finally {
             if (scanner != null) {
                 scanner.close();

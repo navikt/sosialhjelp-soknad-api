@@ -15,14 +15,15 @@ public class PersonAlder implements Serializable{
 
     private LocalDate fodselsdato;
 
-    public PersonAlder(String personnummer){
-        Integer dag = Integer.parseInt(personnummer.substring(0,1));
+    public PersonAlder(String dNummerEllerPersonnummer){
+    	Integer dag = Integer.parseInt(dNummerEllerPersonnummer.substring(0,1));
         if (dag > 3) {
             dag = dag - 4;
-            personnummer = dag.toString() + personnummer.substring(1);
+            String personnummer = dag.toString() + dNummerEllerPersonnummer.substring(1);
+            this.fodselsdato = LocalDate.parse(hentFodselsdatoFraFnr(personnummer)).plusMonths(1);
+        } else {
+        	this.fodselsdato = LocalDate.parse(hentFodselsdatoFraFnr(dNummerEllerPersonnummer)).plusMonths(1);
         }
-
-        this.fodselsdato = LocalDate.parse(hentFodselsdatoFraFnr(personnummer)).plusMonths(1);
     }
 	public int getAlder() {
         return Years.yearsBetween(fodselsdato, new LocalDate()).getYears();
