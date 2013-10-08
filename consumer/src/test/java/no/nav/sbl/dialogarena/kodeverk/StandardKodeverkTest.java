@@ -1,13 +1,13 @@
 package no.nav.sbl.dialogarena.kodeverk;
 
 import no.nav.modig.core.exception.SystemException;
-import no.nav.tjeneste.virksomhet.kodeverk.v1.HentKodeverkKodeverkIkkeFunnet;
-import no.nav.tjeneste.virksomhet.kodeverk.v1.KodeverkPortType;
-import no.nav.tjeneste.virksomhet.kodeverk.v1.informasjon.kodeverk.XMLEnkeltKodeverk;
-import no.nav.tjeneste.virksomhet.kodeverk.v1.informasjon.kodeverk.XMLKode;
-import no.nav.tjeneste.virksomhet.kodeverk.v1.informasjon.kodeverk.XMLTerm;
-import no.nav.tjeneste.virksomhet.kodeverk.v1.meldinger.XMLHentKodeverkRequest;
-import no.nav.tjeneste.virksomhet.kodeverk.v1.meldinger.XMLHentKodeverkResponse;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.HentKodeverkHentKodeverkKodeverkIkkeFunnet;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLEnkeltKodeverk;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKode;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLTerm;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkRequest;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkResponse;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class StandardKodeverkTest {
     }
 
     @Test
-    public void kanHentePoststedBasertPaaPostnummer() throws HentKodeverkKodeverkIkkeFunnet {
+    public void kanHentePoststedBasertPaaPostnummer() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
         XMLHentKodeverkResponse response = postnummerKodeverkResponse();
         when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(response);
 
@@ -54,7 +54,7 @@ public class StandardKodeverkTest {
     }
 
     @Test
-    public void landkodeKodeverkSkalSorteres() throws HentKodeverkKodeverkIkkeFunnet {
+    public void landkodeKodeverkSkalSorteres() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
         when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(landkodeKodeverkResponse());
 
         List<String> alleLandkoder = kodeverk.getAlleLandkoder();
@@ -62,7 +62,7 @@ public class StandardKodeverkTest {
     }
 
     @Test
-    public void norgeSkalIkkeFolgeMedRestenAvLandene() throws HentKodeverkKodeverkIkkeFunnet {
+    public void norgeSkalIkkeFolgeMedRestenAvLandene() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
         when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(landkodeKodeverkResponse());
 
         List<String> alleLandkoder = kodeverk.getAlleLandkoder();
@@ -70,7 +70,7 @@ public class StandardKodeverkTest {
     }
 
     @Test
-    public void skalKunneSlaaOppTermBasertPaaKodeOgOmvendt() throws HentKodeverkKodeverkIkkeFunnet {
+    public void skalKunneSlaaOppTermBasertPaaKodeOgOmvendt() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
         when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(landkodeKodeverkResponse());
 
         assertThat(kodeverk.getLand("NOR"), is("Norge"));
@@ -78,8 +78,8 @@ public class StandardKodeverkTest {
     }
 
     @Test(expected = SystemException.class)
-    public void ugyldigKodeverknavnGirSystemException() throws HentKodeverkKodeverkIkkeFunnet {
-        when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenThrow(new HentKodeverkKodeverkIkkeFunnet());
+    public void ugyldigKodeverknavnGirSystemException() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
+        when(ws.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenThrow(new HentKodeverkHentKodeverkKodeverkIkkeFunnet());
         kodeverk.lastInnNyeKodeverk();
     }
 

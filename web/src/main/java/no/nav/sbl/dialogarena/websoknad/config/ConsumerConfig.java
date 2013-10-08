@@ -1,19 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
 
-import static java.util.Arrays.asList;
-import static org.apache.cxf.common.util.SOAPConstants.MTOM_ENABLED;
-import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
-import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
-
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import no.nav.modig.cxf.TimeoutFeature;
 import no.nav.modig.security.sts.utility.STSConfigurationUtility;
 import no.nav.sbl.dialogarena.common.timing.TimingFeature;
@@ -21,8 +8,7 @@ import no.nav.sbl.dialogarena.websoknad.service.SendSoknadService;
 import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
-import no.nav.tjeneste.virksomhet.kodeverk.v1.KodeverkPortType;
-
+import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.feature.LoggingFeature;
@@ -37,6 +23,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Scope;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static org.apache.cxf.common.util.SOAPConstants.MTOM_ENABLED;
+import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
+import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 @Configuration
 @Import(value = {
@@ -177,12 +175,9 @@ public class ConsumerConfig {
         @PostConstruct
         public void setupSts() {
             STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(sendSoknadPortType));
+            STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(kodeverkService));
+            STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(brukerProfilService));
 
-            String property = System.getProperty("no.nav.sbl.dialogarena.websoknad.sslMock");
-            if (property != null && property.equals("true")) {
-	            STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(kodeverkService));
-	            STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(brukerProfilService));
-            }
         }
     }
 
