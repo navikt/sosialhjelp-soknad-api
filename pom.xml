@@ -785,6 +785,29 @@
                     <artifactId>jboss-as-maven-plugin</artifactId>
                     <version>7.4.Final</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.1</version>
+                    <executions>
+                        <execution>
+                            <id>PhantomJS Unit Testing</id>
+                            <phase>test</phase>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <executable>${phantomjs.exec}</executable>
+                        <workingDirectory>${project.basedir}/src/test/js</workingDirectory>
+                        <arguments>
+                            <argument>phantomjs_jasminexml_runner.js</argument>
+                            <argument>test_runner.html</argument>
+                            <argument>${project.build.directory}/surefire-reports</argument>
+                        </arguments>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -876,16 +899,29 @@
                 </property>
             </activation>
             <properties>
-                <jacoco.agent.argLine>-DdenneErIkkeIBruk=true</jacoco.agent.argLine>
+                <sonar.jacoco.excludes>*SelfTestPage.*</sonar.jacoco.excludes>
             </properties>
         </profile>
         <profile>
-            <id>dummy</id>
+            <id>win</id>
+            <activation>
+                <os><family>win</family></os>
+            </activation>
             <properties>
-                <jacoco.agent.argLine>-DdenneErIkkeIBruk=true</jacoco.agent.argLine>
+                <phantomjs.exec>${project.basedir}/src/test/resources/phantomjs.exe</phantomjs.exec>
+            </properties>
+        </profile>
+        <profile>
+            <id>nix</id>
+            <activation>
+                <os><family>unix</family></os>
+            </activation>
+            <properties>
+                <phantomjs.exec>${env.PHANTOMJS_HOME}/bin/phantomjs</phantomjs.exec>
             </properties>
         </profile>
     </profiles>
+
     <reporting>
         <plugins>
             <plugin>
