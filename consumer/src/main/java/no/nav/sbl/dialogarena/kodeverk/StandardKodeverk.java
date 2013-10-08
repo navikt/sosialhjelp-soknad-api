@@ -2,13 +2,13 @@ package no.nav.sbl.dialogarena.kodeverk;
 
 import no.nav.modig.core.exception.SystemException;
 import no.nav.modig.lang.option.Optional;
-import no.nav.tjeneste.virksomhet.kodeverk.v1.HentKodeverkKodeverkIkkeFunnet;
-import no.nav.tjeneste.virksomhet.kodeverk.v1.KodeverkPortType;
-import no.nav.tjeneste.virksomhet.kodeverk.v1.informasjon.kodeverk.XMLEnkeltKodeverk;
-import no.nav.tjeneste.virksomhet.kodeverk.v1.informasjon.kodeverk.XMLKode;
-import no.nav.tjeneste.virksomhet.kodeverk.v1.informasjon.kodeverk.XMLKodeverk;
-import no.nav.tjeneste.virksomhet.kodeverk.v1.informasjon.kodeverk.XMLPeriode;
-import no.nav.tjeneste.virksomhet.kodeverk.v1.meldinger.XMLHentKodeverkRequest;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.HentKodeverkHentKodeverkKodeverkIkkeFunnet;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLEnkeltKodeverk;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKode;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKodeverk;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLPeriode;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkRequest;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
@@ -151,7 +151,7 @@ public class StandardKodeverk implements Kodeverk {
         Optional<RuntimeException> webserviceException = none();
         try {
             kodeverket = (XMLEnkeltKodeverk) webservice.hentKodeverk(new XMLHentKodeverkRequest().withNavn(navn).withSpraak(spraak)).getKodeverk();
-        } catch (HentKodeverkKodeverkIkkeFunnet kodeverkIkkeFunnet) {
+        } catch (HentKodeverkHentKodeverkKodeverkIkkeFunnet kodeverkIkkeFunnet) {
             throw new SystemException("Kodeverk '" + navn + "' (" + spraak + "): " + kodeverkIkkeFunnet.getMessage(), kodeverkIkkeFunnet);
         } catch (RuntimeException e) {
             webserviceException = optional(e);
