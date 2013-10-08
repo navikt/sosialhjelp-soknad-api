@@ -52,10 +52,10 @@
                 {{ tekster.reellarbeidssoker_feilmelding }}
             </div>
 
-            <div data-ng-controller="SendSoknadCtrl">
-                <button class="knapp-hoved" data-ng-click="sendSoknad()">
-                    {{ tekster.send }}
-                </button>
+            <div>
+                <a class="knapp-hoved" href="#/verneplikt/{{ soknadData.soknadId }}">
+                    {{ tekster.neste }}
+                </a>
             </div>
             <div>
                 <button class="knapp-stor" data-ng-click="avbryt()">

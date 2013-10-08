@@ -31,9 +31,9 @@
             </div>
 
             <div data-ng-controller="SendSoknadCtrl">
-                <button class="knapp-hoved" data-ng-click="sendSoknad()">
-                    {{ tekster.send }}
-                </button>
+                <a class="knapp-hoved" href="#/personalia/{{ soknadData.soknadId }}">
+                    {{ tekster.neste }}
+                </a>
             </div>
             <div>
                 <button class="knapp-stor" data-ng-click="avbryt()">
