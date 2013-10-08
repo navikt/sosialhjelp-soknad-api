@@ -1,8 +1,9 @@
 <div class="skjemaramme">
-	<form name="villigForm" data-ng-controller="ValidationCtrl">
+	<form name="villigForm" data-ng-controller="ValidationCtrl" novalidate>
 		<div class="sideoversikt">
 			<h4>{{ tekster.reellarbeidssoker_tittel}}</h4>
 		</div>
+
 		<div class="skjemainnhold" data-ng-controller="ModusCtrl">
             <radioknapp model="soknadData.fakta.villigDeltid.value"
                         modus="data.redigeringsModus"
@@ -40,14 +41,14 @@
                         lagre="lagre()"
                         name="villigJobb"/>
 
-            <button data-ng-show="data.redigeringsModus == true" class="knapp-hoved" data-ng-click="validateForm(villigForm.$invalid)">
+            <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved" data-ng-click="validateForm(villigForm.$invalid)">
                 {{ tekster.reellarbeidssoker_ferdig }}
             </button>
-            <button data-ng-show="data.redigeringsModus == false" class="knapp-hoved" data-ng-click="gaTilRedigeringsmodus()">
+            <button data-ng-show="hvisIkkeIRedigeringsmodus()" class="knapp-hoved" data-ng-click="gaTilRedigeringsmodus()">
                 {{ tekster.endre }}
             </button>
 
-            <div data-ng-show="data.showErrorMessage == true">
+            <div data-ng-show="hvisIkkeFormValiderer()">
                 {{ tekster.reellarbeidssoker_feilmelding }}
             </div>
 

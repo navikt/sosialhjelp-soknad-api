@@ -176,23 +176,32 @@ return {
             soknadData: '=',
             lagre: '&'
         },
+        controller: function($scope) {
+            $scope.hvisIRedigeringsmodus = function() {
+                return $scope.modus;
+            }
+
+            $scope.hvisIkkeIRedigeringsmodus = function () {
+                return !$scope.hvisIRedigeringsmodus();
+            }
+        },
         template: "<div class='spm-blokk'>" +
                 "<p class='spm'>{{ sporsmal }}</p>" +
-                "<div class='redigeringsboks' data-ng-show='modus==true'>" +
+                "<div class='redigeringsboks' data-ng-show='hvisIRedigeringsmodus()'>" +
                     "<input class='sendsoknad-radio' id='{{ svar1 }}' type='radio' data-ng-model='model' value='true' name='{{ name }}' mod-faktum required/>" +
-                    "<label for='{{ svar1 }}' class='svar-alt' ng-class='{\"svaret\": model == \"true\"}'>" +
+                    "<label for='{{ svar1 }}' class='svar-alt'>" +
                         "{{ svar1 }}" +
                     "</label>" +
                      "<input class='sendsoknad-radio' id='{{ svar2 }}' type='radio' data-ng-model='model' value='false' name='{{ name }}' mod-faktum required/>" +
-                     "<label for='{{ svar2 }}' class='svar-alt' ng-class='{\"svaret\": model == \"false\"}'>" +
+                     "<label for='{{ svar2 }}' class='svar-alt'>" +
                          "{{ svar2 }}" +
                      "</label>" +
                 "</div>" +
-                "<div class='oppsummeringsboks' data-ng-show='modus==false'>" +
-                    "<span data-ng-show=\"model == 'true'\">"+
+                "<div class='oppsummeringsboks' data-ng-show='hvisIkkeIRedigeringsmodus()'>" +
+                    "<span data-ng-show='hvisModelErTrue()'>"+
                         "{{svar1}}" +
                     "</span>" +
-                   "<span data-ng-show=\"model == 'false'\">" +
+                   "<span data-ng-show='hvisModelErFalse()'>" +
                         "{{svar2}}" +
                     "</span>" +
                 "</div>" +

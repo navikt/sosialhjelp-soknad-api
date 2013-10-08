@@ -1,9 +1,9 @@
 <div class="skjemaramme">
     <form name="vernepliktigForm" data-ng-controller="ValidationCtrl" novalidate>
-
         <div class="sideoversikt">
             <h4>{{ tekster.vernepliktig_tittel }}</h4>
         </div>
+
         <div class="skjemainnhold" data-ng-controller="ModusCtrl">
 
             <radioknapp model="soknadData.fakta.vernepliktig.value"
@@ -19,14 +19,14 @@
                 {{ tekster.vernepliktig_opplasting }}
             </p>
 
-            <button data-ng-show="data.redigeringsModus == true" class="knapp-hoved" data-ng-click="validateForm(vernepliktigForm.$invalid)">
+            <button  data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved" data-ng-click="validateForm(vernepliktigForm.$invalid)">
                 {{ tekster.vernepliktig_ferdig }}
             </button>
-            <button data-ng-show="data.redigeringsModus == false" class="knapp-hoved" data-ng-click="gaTilRedigeringsmodus()">
+            <button data-ng-show="hvisIkkeIRedigeringsmodus()" class="knapp-hoved" data-ng-click="gaTilRedigeringsmodus()">
                 {{ tekster.endre }}
             </button>
 
-            <div data-ng-show="data.showErrorMessage == true">
+            <div data-ng-show="hvisIkkeFormValiderer()">
                 {{ tekster.vernepliktig_feilmelding }}
             </div>
 

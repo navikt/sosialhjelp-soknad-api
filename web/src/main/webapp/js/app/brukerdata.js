@@ -73,6 +73,19 @@ angular.module('app.brukerdata', ['app.services'])
         $scope.gaTilRedigeringsmodus = function () {
             $scope.data.redigeringsModus = true;
         }
+
+        $scope.hvisIRedigeringsmodus = function () {
+            return $scope.data.redigeringsModus;
+        }
+
+        $scope.hvisIkkeIRedigeringsmodus = function () {
+            return !$scope.hvisIRedigeringsmodus();
+        }
+
+
+        $scope.hvisIkkeFormValiderer = function () {
+            return $scope.data.showErrorMessage;
+        }
     })
 
     .controller('AvbrytCtrl', function ($scope, $routeParams, $location, soknadService) {
