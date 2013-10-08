@@ -181,8 +181,16 @@ return {
                 return $scope.modus;
             }
 
-            $scope.hvisIkkeIRedigeringsmodus = function () {
+            $scope.hvisIOppsummeringsmodus = function () {
                 return !$scope.hvisIRedigeringsmodus();
+            }
+
+            $scope.hvisModelErTrue = function() {
+                return $scope.model == 'true';
+            }
+
+            $scope.hvisModelErFalse = function() {
+                return !$scope.hvisModelErTrue();
             }
         },
         template: "<div class='spm-blokk'>" +
@@ -197,7 +205,7 @@ return {
                          "{{ svar2 }}" +
                      "</label>" +
                 "</div>" +
-                "<div class='oppsummeringsboks' data-ng-show='hvisIkkeIRedigeringsmodus()'>" +
+                "<div class='oppsummeringsboks' data-ng-show='hvisIOppsummeringsmodus()'>" +
                     "<span data-ng-show='hvisModelErTrue()'>"+
                         "{{svar1}}" +
                     "</span>" +
