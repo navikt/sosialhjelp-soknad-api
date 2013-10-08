@@ -96,8 +96,6 @@ public class StandardKodeverkTest {
 
     private XMLHentKodeverkResponse postnummerKodeverkResponse() {
         XMLKode kode = new XMLKode().withNavn("0565").withTerm(new XMLTerm().withNavn("Oslo"));
-
-        // TODO Auto-generated method stub
         return new XMLHentKodeverkResponse().withKodeverk(new XMLEnkeltKodeverk().withNavn("Kommuner").withKode(kode));
     }
 
@@ -108,16 +106,5 @@ public class StandardKodeverkTest {
         XMLKode danmark = new XMLKode().withNavn("DNK").withTerm(new XMLTerm().withNavn("Danmark"));
 
         return new XMLHentKodeverkResponse().withKodeverk(new XMLEnkeltKodeverk().withNavn("Landkoder").withKode(norge, sverige, albania, danmark));
-    }
-
-    private static XMLHentKodeverkResponse retningsnummerKodeverkResponse() {
-        XMLKode norge = new XMLKode().withNavn("+47").withTerm(new XMLTerm().withNavn("Norge"));
-        XMLKode sverige = new XMLKode().withNavn("+46").withTerm(new XMLTerm().withNavn("Sverige"));
-        XMLKode albania = new XMLKode().withNavn("+213").withTerm(new XMLTerm().withNavn("Albania"));
-        XMLKode uscanada = new XMLKode().withNavn("+1").withTerm(new XMLTerm().withNavn("Canada, USA"));
-        XMLKode saotome = new XMLKode().withNavn("+1456").withTerm(new XMLTerm().withNavn("Sao Tome og Principe"));
-        XMLKode danmark = new XMLKode().withNavn("+45").withTerm(new XMLTerm().withNavn("Danmark"));
-
-        return new XMLHentKodeverkResponse().withKodeverk(new XMLEnkeltKodeverk().withNavn("Retningsnumre").withKode(norge, sverige, albania, uscanada, saotome, danmark));
     }
 }
