@@ -48,17 +48,21 @@ angular.module('app.brukerdata', ['app.services'])
                 return $scope.data.midlertidigAdresse != undefined;
             }
             $scope.harPostboksAdresse = function () {
-                return $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].postboksNavn != undefined && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].postboksNummer != undefined;
+                return $scope.harMidlertidigAdresse() && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].postboksNavn != undefined && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].postboksNummer != undefined;
             }
             $scope.harGateAdresse = function () {
-                return $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].gatenavn != undefined && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].husnummer != undefined
+                return $scope.harMidlertidigAdresse() && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].gatenavn != undefined && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].husnummer != undefined
             }
 
             $scope.harUtenlandskAdresse = function () {
-                return $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].land != undefined && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].utenlandsAdresse.length > 0
+                return $scope.harMidlertidigAdresse() && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].land != undefined && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].utenlandsAdresse.length > 0
             }
 
             $scope.hentMidlertidigAdresseTittel = function() {
+                if (!$scope.harMidlertidigAdresse()) {
+                    return;
+                }
+
                 var tekst;
                 var type = $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].type;
                 switch (type) {
@@ -114,7 +118,7 @@ angular.module('app.brukerdata', ['app.services'])
             return $scope.data.redigeringsModus;
         }
 
-        $scope.hvisIkkeIRedigeringsmodus = function () {
+        $scope.hvisIOppsummeringsmodus = function () {
             return !$scope.hvisIRedigeringsmodus();
         }
 
