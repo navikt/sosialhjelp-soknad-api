@@ -34,7 +34,6 @@
         <sendsoknad.tjenestespec.version>0.0.8</sendsoknad.tjenestespec.version>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-        <sonar.skippedModules>sendsoknad-consumer</sonar.skippedModules>
         <henvendelse.tjenestespesifikasjon.version.1>2.0.0</henvendelse.tjenestespesifikasjon.version.1>
         <dialogarena.webkomponent.footer>1.0.6</dialogarena.webkomponent.footer>
         <dialogarena.webkomponent.navigasjon>1.0.5</dialogarena.webkomponent.navigasjon>
