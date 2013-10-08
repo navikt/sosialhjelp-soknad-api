@@ -1,35 +1,26 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static java.lang.String.format;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import static java.lang.String.format;
+import no.nav.modig.core.exception.ApplicationException;
 
 public class NokkelHenter {
-    private static final Logger logger = LoggerFactory.getLogger(NokkelHenter.class);
-
-    public static List<String> hentNokler(String side) {
+        public static List<String> hentNokler(String side) {
         List<String> nokler = new ArrayList<>();
 
         String filnavn = format("/templatekeys/%s.txt", side);
-        InputStream ressursStrom = NokkelHenter.class.getResourceAsStream(filnavn);
-        Scanner scanner = null;
-        try {
-            scanner = new Scanner(ressursStrom);
+        try(InputStream ressursStrom = NokkelHenter.class.getResourceAsStream(filnavn);
+        		Scanner scanner = new Scanner(ressursStrom);) {
             while (scanner.hasNextLine()) {
                 nokler.add(scanner.nextLine());
             }
-        } catch (NullPointerException e) {
-            logger.error(format("Fant ikke følgende fil: %s", filnavn));
-        } finally {
-            if (scanner != null) {
-                scanner.close();
-            }
+        } catch (Exception e) {
+			throw new ApplicationException("Fant ikke fil",e);
         }
         return nokler;
     }

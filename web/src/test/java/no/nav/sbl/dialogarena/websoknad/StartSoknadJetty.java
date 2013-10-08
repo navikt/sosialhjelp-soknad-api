@@ -66,12 +66,14 @@ public final class StartSoknadJetty {
         System.setProperty("org.apache.cxf.stax.allowInsecureParser", "true");
     }
 
-    private static class Intellij {
+    @SuppressWarnings("unused")
+	private static class Intellij {
         public static void main(String[] args) throws Exception {
             new StartSoknadJetty(Env.Intellij);
         }
     }
 
+    @SuppressWarnings("unused")
     private static class Eclipse {
         public static void main(String[] args) throws Exception {
             new StartSoknadJetty(Env.Eclipse);

@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import no.nav.modig.core.exception.ApplicationException;
+
 import org.junit.Test;
 import org.mockito.Mock;
 
@@ -30,7 +32,7 @@ public class NokkelHenterTest {
         assertThat("hadet", isIn(nokleListe));
     }
 
-    @Test
+    @Test(expected = ApplicationException.class)
     public void skalSendeInnEnFilSomIkkeEksisterer() {
         List<String> nokleListe = NokkelHenter.hentNokler("test");
         assertThat(nokleListe.size(), is(0));
