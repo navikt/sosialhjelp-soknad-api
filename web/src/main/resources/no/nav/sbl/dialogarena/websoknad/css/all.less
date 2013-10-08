@@ -1,8 +1,4 @@
 @svar-bakgrunnsfarge: #d1d1d1;
-.spmlabels {
-  text-transform: none !important;
-  font-size: 1rem !important;
-}
 
 .skjematittel {
   text-align: center;
@@ -38,19 +34,13 @@
       }
       .svar-alt {
         margin: 5px 0px;
-        display: inline-block;
-        padding: 0 7px;
         float: left;
         clear: both;
-        .spmlabels;
+        text-transform: none !important;
 
         .mer-info {
           margin-left: 5px;
         }
-      }
-      .svaret {
-        background-color: #d1d1d1;
-        border-radius: 25px;
       }
 
       textarea {
@@ -71,58 +61,4 @@
 
 .active {
   color: #333;
-}
-input[type="radio"],
-input[type="checkbox"] {
-  position: absolute;
-  height: 0;
-  width: 0;
-  opacity: 0;
-}
-
-input[type="radio"] + label {
-  background: url(../img/radio.svg) 0 0 no-repeat;
-}
-
-input[type="radio"]:checked + label {
-  background: url(../img/radio_valgt.svg) 0 0 no-repeat;
-}
-
-input[type="radio"]:disabled:checked + label {
-  background: url(../img/radio_inactive_valgt.svg) 0 0 no-repeat;
-}
-
-input[type="radio"]:disabled + label {
-  background: url(../img/radio_inactive.svg) 0 0 no-repeat;
-}
-
-input[type="checkbox"] + label {
-  background: url(../img/check.svg) 0 0 no-repeat;
-}
-
-input[type="checkbox"]:disabled + label {
-  background: url(../img/check_inactive.svg) 0 0 no-repeat;
-}
-
-input[type="checkbox"]:checked + label {
-  background: url(../img/check_valgt.svg) 0 0 no-repeat;
-}
-
-input[type="checkbox"]:disabled:checked + label {
-  background: url(../img/check_inactive_valgt.svg) 0 0 no-repeat;
-}
-
-input[type="radio"] + label,
-input[type="checkbox"] + label {
-  display: inline-block;
-  position: relative;
-  padding: 2px 0 0 27px;
-  height: 30px;
-  margin-right: 1rem;
-  font-size: 1rem !important;
-}
-
-input[type="radio"]:checked + label,
-input[type="checkbox"]:checked + label {
-  font-weight: bold;
 }
