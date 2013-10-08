@@ -21,7 +21,7 @@ public class SlimDriver extends SpringAwareDoFixture {
 
 	private WebSoknad webSoknad;
 	
-	public SlimDriver(String fnr) throws Exception{
+	public SlimDriver() throws Exception{
 		super.setUp();
 	}
 	

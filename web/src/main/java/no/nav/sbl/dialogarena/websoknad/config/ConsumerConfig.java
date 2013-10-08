@@ -118,7 +118,7 @@ public class ConsumerConfig {
         @Bean
         @Scope(SCOPE_PROTOTYPE)
         public JaxWsProxyFactoryBean kodeverkPortTypeFactory() {
-            JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(kodeverkEndPoint, KodeverkPortType.class, "classpath:kodeverk/no/nav/tjeneste/virksomhet/kodeverk/v1/Kodeverk.wsdl");
+            JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(kodeverkEndPoint, KodeverkPortType.class, "classpath:kodeverk/no/nav/tjeneste/virksomhet/kodeverk/v2/Kodeverk.wsdl");
 
             jaxwsClient.getFeatures().add(new TimingFeature(KodeverkPortType.class.getSimpleName()));
 
@@ -176,8 +176,7 @@ public class ConsumerConfig {
         public void setupSts() {
             STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(sendSoknadPortType));
             STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(kodeverkService));
-//            STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(brukerProfilService));
-
+            //STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(brukerProfilService));
         }
     }
 

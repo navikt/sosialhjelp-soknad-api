@@ -1,22 +1,16 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import no.nav.modig.core.exception.ApplicationException;
-
-import org.junit.Test;
-import org.mockito.Mock;
-
-import java.util.List;
-import java.util.Scanner;
-
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isIn;
 import static org.junit.Assert.assertThat;
 
+import java.util.List;
+
+import no.nav.modig.core.exception.ApplicationException;
+
+import org.junit.Test;
+
 public class NokkelHenterTest {
-
-    @Mock
-    private Scanner scanner;
-
     @Test
     public void skalHenteEnNokkel() {
         List<String> nokleListe = NokkelHenter.hentNokler("testfil1");
