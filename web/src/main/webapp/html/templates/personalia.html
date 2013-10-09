@@ -64,12 +64,10 @@
         <img src="../img/ajaxloader/hvit/loader_hvit_64.gif" alt="Fremdriftsindikator"/>
     </div>
 
-    <div data-ng-controller="SendSoknadCtrl">
-        <button class="knapp-hoved" data-ng-click="sendSoknad()">
-            {{ tekster.send }}
-        </button>
-        <button class="knapp-stor" data-ng-click="avbryt()">
-            {{ tekster.avbryt }}
-        </button>
-    </div>
+    <a class="knapp-hoved" href="#/oppsummering/{{ soknadData.soknadId }}">
+        {{ tekster.neste }}
+    </a>
+    <button class="knapp-stor" data-ng-click="avbryt()">
+        {{ tekster.avbryt }}
+    </button>
 </div>

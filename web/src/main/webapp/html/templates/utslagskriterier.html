@@ -19,42 +19,42 @@
 	<br/>
 
 	<div data-ng-show="personalia.borIUtland">
-		<p> Du må bo i Norge for å kunne søke om dagpenger.</p>
-		<p>Vi har registrert følgende adresse på deg: </p>
-		<p>Folkeregistrert adresse: </p>
-		<p>{{personalia.bostedsadresseGatenavn}} {{personalia.bostedsadresseHusnummer}} </p>
-		<p>{{personalia.bostedsadressePostnr}} {{personalia.bostedsadressePoststed}} </p>
-		<p>{{personalia.bostedsadresseLandkode}} </p>
+        Du er registrert med adresse i utlandet. Du må ha norsk adresse for å kunne motta dagpenger.
+		<!--<p> Du må bo i Norge for å kunne søke om dagpenger.</p>-->
+		<!--<p>Vi har registrert følgende adresse på deg: </p>-->
+		<!--<p>Folkeregistrert adresse: </p>-->
+		<!--<p>{{personalia.bostedsadresseGatenavn}} {{personalia.bostedsadresseHusnummer}} </p>-->
+		<!--<p>{{personalia.bostedsadressePostnr}} {{personalia.bostedsadressePoststed}} </p>-->
+		<!--<p>{{personalia.bostedsadresseLandkode}} </p>-->
 
-		<br/>
-		<p>Midlertidig adresse: </p>
-		<p>{{personalia.midlertidigadresseGatenavn}} {{personalia.midlertidigadresseHusnummer}}</p>
-		<p>{{personalia.midlertidigadressePostnr}} {{personalia.midlertidigadressePoststed}} </p>
-		<p>{{personalia.midlertidigadresseLandkode}} </p>
-		<div data-ng-show="personalia.midlertidigadresse-landkode != 'NOR' && personalia.midlertidigadresse-landkode == 'NOR'"> 
+		<!--<br/>-->
+		<!--<p>Midlertidig adresse: </p>-->
+		<!--<p>{{personalia.midlertidigadresseGatenavn}} {{personalia.midlertidigadresseHusnummer}}</p>-->
+		<!--<p>{{personalia.midlertidigadressePostnr}} {{personalia.midlertidigadressePoststed}} </p>-->
+		<!--<p>{{personalia.midlertidigadresseLandkode}} </p>-->
+		<!--<div data-ng-show="personalia.midlertidigadresse-landkode != 'NOR' && personalia.midlertidigadresse-landkode == 'NOR'"> -->
 
-			<p> Du må derfor endre din midlertidige adresse til en norsk adresse for å få dagpenger. </p>
-			<p>Dette kan gjøres enten her eller i din profil *uvisst*.</p>
-		</div>
-		<div data-ng-show="personalia.bostedsadresse-landkode != 'norge'"> 
-			<p> Du må derfor endre din folkeregistrerte adresse til en norsk adresse for å få dagpenger. </p>
-			<p>Dette kan gjøres på <a href="www.skatteetaten.no/Skjemaer/Flyttemelding-til-folkeregisteret"> www.skatteetaten.no</a></p>
-		</div>
+			<!--<p> Du må derfor endre din midlertidige adresse til en norsk adresse for å få dagpenger. </p>-->
+			<!--<p>Dette kan gjøres enten her eller i din profil *uvisst*.</p>-->
+		<!--</div>-->
+		<!--<div data-ng-show="personalia.bostedsadresse-landkode != 'norge'"> -->
+			<!--<p> Du må derfor endre din folkeregistrerte adresse til en norsk adresse for å få dagpenger. </p>-->
+			<!--<p>Dette kan gjøres på <a href="www.skatteetaten.no/Skjemaer/Flyttemelding-til-folkeregisteret"> www.skatteetaten.no</a></p>-->
+		<!--</div>-->
 	</div>
 
-	<br/>
-	<br/>
-
-	<div data-ng-show="kvalifisererForGjenopptak() != false" >
-		{{kvalifisererForGjenopptak()}}
-	</div>
+	<!--<div data-ng-show="kvalifisererForGjenopptak() != false" >-->
+		<!--{{kvalifisererForGjenopptak()}}-->
+	<!--</div>-->
 
 	<br/>
 	<br/>
 
 	<div data-ng-hide="arena.jobbsoker">
-		<p>Du er ikke registrert som jobbsøker, dette er en forutsettning for å søke om dagpenger</p>
-		<a href="http://nav.no" target="_blank">Registrer deg nå</a>
+		<p>Du er ikke registrert som jobbsøker, dette er en forutsettning for å søke om dagpenger. <a href="http://nav.no" target="_blank">Registrer deg nå</a></p>
 	</div>
+
+    <br/>
+
     <a id="fortsett" href='#/informasjonsside'>Fortsett likevel</a>
 </div>
