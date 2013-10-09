@@ -207,10 +207,10 @@ return {
                 "</div>" +
                 "<div class='oppsummeringsboks' data-ng-show='hvisIOppsummeringsmodus()'>" +
                     "<span data-ng-show='hvisModelErTrue()'>"+
-                        "{{svar1}}" +
+                        "{{ svar1 }}" +
                     "</span>" +
                    "<span data-ng-show='hvisModelErFalse()'>" +
-                        "{{svar2}}" +
+                        "{{ svar2 }}" +
                     "</span>" +
                 "</div>" +
             "</div> "
@@ -225,8 +225,7 @@ return {
             element.after(image);
             image.hide();
 
-            element.click(scope, function(e) {
-                scope = e.data;
+            element.click(function() {
                 image.show();
                 element.hide();
             });
