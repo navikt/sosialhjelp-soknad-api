@@ -176,7 +176,7 @@ public class ConsumerConfig {
         public void setupSts() {
             STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(sendSoknadPortType));
             STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(kodeverkService));
-            //STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(brukerProfilService));
+            STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(brukerProfilService));
         }
     }
 
