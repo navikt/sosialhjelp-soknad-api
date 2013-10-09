@@ -40,11 +40,6 @@ public class ApplicationContext {
         return new PersonServiceTPS();
     }
 
-    /*@Bean
-    public PersonServiceMock personService() {
-        return new PersonServiceMock();
-    }*/
-
     @Bean
     public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();

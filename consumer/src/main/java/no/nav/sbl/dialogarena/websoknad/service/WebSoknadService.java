@@ -30,8 +30,6 @@ public class WebSoknadService implements SendSoknadService{
     @Inject
     @Named("sendSoknadService")
     private SendSoknadPortType sendSoknadService;
-
-
         
     /* (non-Javadoc)
 	 * @see no.nav.sbl.dialogarena.websoknad.service.SendSoknadService#startSoknad(java.lang.String)
