@@ -218,6 +218,23 @@ return {
 })
 
 
+.directive('snurrepipp', function() {
+    return {
+        link: function(scope, element) {
+            var image = angular.element('<img src="../img/ajaxloader/hvit/loader_hvit_48.gif"/>');
+            element.after(image);
+            image.hide();
+
+            element.click(scope, function(e) {
+                scope = e.data;
+                image.show();
+                element.hide();
+            });
+        }
+    }
+})
+
+
 function fraMindreEnnTil(fra, til){
   var gyldig = false;
   if(fra < til) {

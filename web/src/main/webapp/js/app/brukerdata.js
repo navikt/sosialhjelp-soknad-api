@@ -3,9 +3,13 @@ angular.module('app.brukerdata', ['app.services'])
     .controller('StartSoknadCtrl', function ($scope, $location, soknadService, enonicService) {
         $scope.startSoknad = function () {
             var soknadType = window.location.pathname.split("/")[3];
+
             $scope.soknad = soknadService.create({param: soknadType}).$promise.then(function (result) {
                 $location.path('reell-arbeidssoker/' + result.id);
-            });
+            }).finally(function() {
+                $('#start').show();
+                $('#start').siblings('img').hide();
+            })
 
             // Pre-fetche alle tekster så det blir cachet i angular-land
             $scope.tekster = enonicService.get({side: 'Dagpenger'});
@@ -22,6 +26,7 @@ angular.module('app.brukerdata', ['app.services'])
 
     .controller('PersonaliaCtrl', function ($scope, $routeParams, tpsService) {
         $scope.data = {};
+
         tpsService.get({soknadId: $routeParams.soknadId}).$promise.then(function (result) {
             $scope.personalia = result;
 
@@ -79,6 +84,14 @@ angular.module('app.brukerdata', ['app.services'])
                 return tekst;
             }
         });
+
+        $scope.harHenterPersonalia = function() {
+            return $scope.personalia != undefined;
+        }
+
+        $scope.harIkkeHenterPersonalia = function() {
+            return !$scope.harHenterPersonalia();
+        }
     })
 
     .controller('SoknadDataCtrl', function ($scope, $routeParams, $location, $timeout, soknadService) {
