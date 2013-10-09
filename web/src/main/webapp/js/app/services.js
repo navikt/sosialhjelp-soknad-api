@@ -35,4 +35,4 @@ angular.module('app.services',['ngResource'])
 
 .factory('tpsService', function($resource){
         return $resource('/sendsoknad/rest/soknad/:soknadId/personalia');
-    });
+    })

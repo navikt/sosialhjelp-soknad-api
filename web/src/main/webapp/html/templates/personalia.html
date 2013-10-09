@@ -1,69 +1,73 @@
 <div data-ng-controller="PersonaliaCtrl">
-    <h1>{{ tekster.personalia_tittel }}</h1>
+    <div data-ng-show="harHenterPersonalia()">
+        <h1>{{ tekster.personalia_tittel }}</h1>
 
-    <label>{{ tekster.personalia_navn }}</label>
+        <label>{{ tekster.personalia_navn }}</label>
 
-    <p>{{personalia.fakta.sammensattnavn.value}}</p>
+        <p>{{personalia.fakta.sammensattnavn.value}}</p>
 
-    <label>{{ tekster.personalia_fnr }}</label>
+        <label>{{ tekster.personalia_fnr }}</label>
 
-    <p>{{personalia.fakta.fnr.value}} </p>
+        <p>{{personalia.fakta.fnr.value}} </p>
 
-    <div data-ng-show="harBostedsAdresse()">
-        <label>{{ tekster.personalia_bostedsadresse }}</label>
+        <div data-ng-show="harBostedsAdresse()">
+            <label>{{ tekster.personalia_bostedsadresse }}</label>
 
-        <p>
-            {{ personalia.fakta.adresser[data.bostedsAdresse].gatenavn }}
-            {{ personalia.fakta.adresser[data.bostedsAdresse].husnummer }}
-            {{ personalia.fakta.adresser[data.bostedsAdresse].husbokstav }}
-        </p>
+            <p>
+                {{ personalia.fakta.adresser[data.bostedsAdresse].gatenavn }}
+                {{ personalia.fakta.adresser[data.bostedsAdresse].husnummer }}
+                {{ personalia.fakta.adresser[data.bostedsAdresse].husbokstav }}
+            </p>
 
-        <p>
-            {{ personalia.fakta.adresser[data.bostedsAdresse].postnummer }}
-            {{ personalia.fakta.adresser[data.bostedsAdresse].poststed }}
-        </p>
-    </div>
-    <div data-ng-show="harMidlertidigAdresse()">
-        <h4>{{ hentMidlertidigAdresseTittel() }}</h4>
+            <p>
+                {{ personalia.fakta.adresser[data.bostedsAdresse].postnummer }}
+                {{ personalia.fakta.adresser[data.bostedsAdresse].poststed }}
+            </p>
+        </div>
+        <div data-ng-show="harMidlertidigAdresse()">
+            <h4>{{ hentMidlertidigAdresseTittel() }}</h4>
 
-        <p>
-            {{ tekster.personalia_co}} {{ personalia.fakta.adresser[data.midlertidigAdresse].adresseEier }}
-        </p>
+            <p>
+                {{ tekster.personalia_co}} {{ personalia.fakta.adresser[data.midlertidigAdresse].adresseEier }}
+            </p>
 
-        <p data-ng-show="harPostboksAdresse()">
-            <label>{{ tekster.personalia_postboks }}</label>
-            {{ personalia.fakta.adresser[data.midlertidigAdresse].postboksNummer }}
-            {{ personalia.fakta.adresser[data.midlertidigAdresse].postboksNavn }}
-        </p>
+            <p data-ng-show="harPostboksAdresse()">
+                <label>{{ tekster.personalia_postboks }}</label>
+                {{ personalia.fakta.adresser[data.midlertidigAdresse].postboksNummer }}
+                {{ personalia.fakta.adresser[data.midlertidigAdresse].postboksNavn }}
+            </p>
 
-        <p data-ng-show="harGateAdresse()">
-            {{ personalia.fakta.adresser[data.midlertidigAdresse].gatenavn }}
-            {{ personalia.fakta.adresser[data.midlertidigAdresse].husnummer }}
-            {{ personalia.fakta.adresser[data.midlertidigAdresse].husbokstav }}
-        </p>
+            <p data-ng-show="harGateAdresse()">
+                {{ personalia.fakta.adresser[data.midlertidigAdresse].gatenavn }}
+                {{ personalia.fakta.adresser[data.midlertidigAdresse].husnummer }}
+                {{ personalia.fakta.adresser[data.midlertidigAdresse].husbokstav }}
+            </p>
 
-        <p data-ng-show="harUtenlandskAdresse()">
+            <p data-ng-show="harUtenlandskAdresse()">
             <span data-ng-repeat="linje in personalia.fakta.adresser[data.midlertidigAdresse].utenlandsAdresse">
                 {{linje}}
             </span>
-            {{personalia.fakta.adresser[data.midlertidigAdresse].land}}
-        </p>
+                {{personalia.fakta.adresser[data.midlertidigAdresse].land}}
+            </p>
 
-        <p>
-            {{ personalia.fakta.adresser[data.midlertidigAdresse].postnummer }}
-            {{ personalia.fakta.adresser[data.midlertidigAdresse].poststed }}
-        </p>
+            <p>
+                {{ personalia.fakta.adresser[data.midlertidigAdresse].postnummer }}
+                {{ personalia.fakta.adresser[data.midlertidigAdresse].poststed }}
+            </p>
 
-        <p>
-            Gyldig til: {{ personalia.fakta.adresser[data.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy' }}
-        </p>
+            <p>
+                Gyldig til: {{ personalia.fakta.adresser[data.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy' }}
+            </p>
+        </div>
     </div>
+    <div ng-show="harIkkeHenterPersonalia()">
+        <img src="../img/ajaxloader/hvit/loader_hvit_64.gif" alt="Fremdriftsindikator"/>
+    </div>
+
     <div data-ng-controller="SendSoknadCtrl">
         <button class="knapp-hoved" data-ng-click="sendSoknad()">
             {{ tekster.send }}
         </button>
-    </div>
-    <div>
         <button class="knapp-stor" data-ng-click="avbryt()">
             {{ tekster.avbryt }}
         </button>
