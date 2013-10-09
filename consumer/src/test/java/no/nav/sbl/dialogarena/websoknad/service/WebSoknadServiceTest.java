@@ -26,7 +26,7 @@ public class WebSoknadServiceTest {
 	
 	@Mock
     @Named("sendSoknadService")
-    SendSoknadPortType sendSoknadService;
+    SendSoknadPortType webservice;
 	
 	@InjectMocks
 	WebSoknadService service;
@@ -39,7 +39,7 @@ public class WebSoknadServiceTest {
 		WSSoknadData wsSoknadData = new WSSoknadData();
 		wsSoknadData.setSoknadId(soknadId);
 		
-		when(sendSoknadService.hentSoknad(soknadId)).thenReturn(wsSoknadData);
+		when(webservice.hentSoknad(soknadId)).thenReturn(wsSoknadData);
 	}
 	
 	@Test
@@ -61,18 +61,18 @@ public class WebSoknadServiceTest {
 	@Test
 	public void skalKunneAvbryteSoknad() {
 		service.avbrytSoknad(soknadId);
-		verify(sendSoknadService, times(1)).avbrytSoknad(soknadId);
+		verify(webservice, times(1)).avbrytSoknad(soknadId);
 	}
 	
 	@Test
 	public void skalKunneSendeSoknad() {
 		service.sendSoknad(soknadId);
-		verify(sendSoknadService, times(1)).sendSoknad(soknadId);
+		verify(webservice, times(1)).sendSoknad(soknadId);
 	}
 	
 	@Test
 	public void skalKunneLagreFelt() {
 		service.lagreSoknadsFelt(soknadId, "enKey", "enValue");
-		verify(sendSoknadService, times(1)).lagreBrukerData(soknadId, "enKey", "enValue");
+		verify(webservice, times(1)).lagreBrukerData(soknadId, "enKey", "enValue");
 	}
 }
