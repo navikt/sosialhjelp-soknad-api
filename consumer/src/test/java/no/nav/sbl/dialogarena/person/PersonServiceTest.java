@@ -197,14 +197,6 @@ public class PersonServiceTest {
 		Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_TIL, adresseliste.get(0).getGyldigTil());
 	}
 	
-	@Ignore
-	@Test
-	public void skalStotteMidlertidigOmrodeAdresseNorge() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-		//Not implemented - fritekst, postnummer og poststed
-		//Hva er dette egentlig? Matrikkeladresse? Hvordan passer dette inn i midlertidig adresse?
-		Assert.assertTrue(false);
-	}
-	
 	@SuppressWarnings("unchecked")
 	@Test
 	public void skalStotteMidlertidigUtenlandskMidlertidigAdresse() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
