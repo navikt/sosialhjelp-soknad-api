@@ -32,7 +32,7 @@
         <nav.sbl.commons.version>3.30</nav.sbl.commons.version>
         <modig-security.version>1.0.19</modig-security.version>
         <sendsoknad.tjenestespec.version>0.0.8</sendsoknad.tjenestespec.version>
-        <sonar.exclusions>no/nav/sbl/dialogarena/config/**)</sonar.exclusions>
+        <sonar.exclusions>no/nav/sbl/dialogarena/websoknad/config/**</sonar.exclusions>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <henvendelse.tjenestespesifikasjon.version.1>2.0.0</henvendelse.tjenestespesifikasjon.version.1>
