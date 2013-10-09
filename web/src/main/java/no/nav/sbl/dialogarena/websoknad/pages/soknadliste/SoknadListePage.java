@@ -17,22 +17,6 @@ public class SoknadListePage extends BasePage {
                 setResponsePage(StartSoknadPage.class, parameters);
             }
         });
-
-        add(new Link<String>("barnebidrag") {
-            @Override
-            public void onClick() {
-                PageParameters parameters = new PageParameters().set("soknadType", "barnebidrag");
-                setResponsePage(StartSoknadPage.class, parameters);
-            }
-        });
-
-        add(new Link<String>("barnetrygd") {
-            @Override
-            public void onClick() {
-                PageParameters parameters = new PageParameters().set("soknadType", "barnetrygd");
-                setResponsePage(StartSoknadPage.class, parameters);
-            }
-        });
 	}
 
 

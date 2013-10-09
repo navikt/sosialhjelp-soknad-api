@@ -13,6 +13,7 @@ angular.module('app.routes',['ngRoute'])
       .when('/slettet', {templateUrl: '../html/templates/soknadSlettet.html', controller: 'SlettetSoknadDataCtrl'})
       .when('/kvittering', {templateUrl: '../html/templates/kvittering-innsendt.html'})
       .when('/verneplikt/:soknadId', {templateUrl: '../html/templates/verneplikt.html', controller: 'SoknadDataCtrl'})
+      .when('/oppsummering/:soknadId', {templateUrl: '../html/templates/oppsummering.html', controller: 'SoknadDataCtrl'})
       .otherwise({redirectTo: '/utslagskriterier'});
 
 //    $locationProvider.html5Mode(true);
