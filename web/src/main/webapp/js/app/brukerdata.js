@@ -154,6 +154,7 @@ angular.module('app.brukerdata', ['app.services'])
         });
 
 
+
         $scope.submitForm = function () {
             var start = $.now();
             soknadService.delete({param: $routeParams.soknadId}).$promise.then(function () {
@@ -165,7 +166,10 @@ angular.module('app.brukerdata', ['app.services'])
                         $location.path('slettet');
                     });
                 }, delay);
-            });
+            }).finally(function(){
+                $('.knapp-advarsel-liten').show();
+                $('.knapp-advarsel-liten').siblings("img").hide();
+            });;
         };
     })
 
