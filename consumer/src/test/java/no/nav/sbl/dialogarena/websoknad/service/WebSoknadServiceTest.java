@@ -4,6 +4,7 @@ package no.nav.sbl.dialogarena.websoknad.service;
 import static org.mockito.Mockito.*;
 
 import javax.inject.Named;
+import javax.xml.ws.soap.SOAPFaultException;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
@@ -21,9 +22,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.remoting.soap.SoapFaultException;
 
+
 @RunWith(value = MockitoJUnitRunner.class)
 public class WebSoknadServiceTest {
-	
 	@Mock
     @Named("sendSoknadService")
     SendSoknadPortType webservice;
@@ -46,6 +47,12 @@ public class WebSoknadServiceTest {
 	public void skalKunneStarteSoknad() {
 		Assert.assertNotNull(soknadId);
 	}
+
+	@Test(expected = ApplicationException.class)
+	public void skalFaaApplicationExceptionVedStartDersomNoeErFeil() {
+		when(webservice.startSoknad("-1")).thenThrow(SOAPFaultException.class);
+		service.startSoknad("-1");
+	}
 	
 	@Test
 	public void skalKunneLeggeTilFaktum() {
@@ -56,6 +63,12 @@ public class WebSoknadServiceTest {
 		
 		Assert.assertEquals(1, soknad.antallFakta());
 		Assert.assertEquals("enVerdi", soknad.getFakta().get("enKey").getValue());
+	}
+	
+	@Test(expected = ApplicationException.class)
+	public void skalFaaApplicationExceptionVedHentingDersomNoeErFeil() {
+		when(webservice.hentSoknad(-1l)).thenThrow(SOAPFaultException.class);
+		service.hentSoknad(-1l);
 	}
 	
 	@Test
