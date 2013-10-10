@@ -176,9 +176,7 @@ angular.module('app.brukerdata', ['app.services'])
             if (!$scope.data.krevBekreftelse) {
                 $scope.submitForm();
             }
-        });
-
-
+        })
 
         $scope.submitForm = function () {
             var start = $.now();
@@ -194,10 +192,56 @@ angular.module('app.brukerdata', ['app.services'])
             }).finally(function(){
                 $('.knapp-advarsel-liten').show();
                 $('.knapp-advarsel-liten').siblings("img").hide();
-            });;
+            });
         };
     })
 
+    .controller('ArbeidsforholdCtrl', function($scope){
+        $scope.arbeidsforhold = {};
+        $scope.nyttArbeidsforhold = function($event){
+            var key = 'arbeidsforhold' + Object.keys($scope.arbeidsforhold).length;
+            $scope.arbeidsforhold[key] = {};
+        }
+
+        $scope.$on("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", function(e) {
+            $scope.soknadData.fakta.arbeidsforhold = {"soknadId": $scope.soknadData.soknadId, "key": "arbeidsforhold", "value": JSON.stringify($scope.arbeidsforhold)};
+            var soknadData = $scope.soknadData;
+            soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
+            $scope.$apply();
+            console.log("lagre: " + soknadData.soknadId);
+        });
+    })
+
+    .directive('lagreArbeidsforhold', function() {
+        return function ($scope, element, attrs) {
+            var eventType;
+            switch (element.attr('type')) {
+                case "radio":
+                case "checkbox":
+                    eventType = "change";
+                    break;
+                default:
+                    eventType = "blur";
+            }
+
+            element.bind(eventType, function () {
+                var verdi = element.val();
+                if (element.attr('type') === "checkbox") {
+                    verdi = element.is(':checked');
+                }
+                $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD");
+            });
+        };
+    })
+
+    .directive('legg-til-arbeidsforhold', function() {
+        return function($scope, element, attrs) {
+            element.click(function () {
+
+            })
+        }
+
+    })
 
     .directive('modFaktum', function () {
         return function ($scope, element, attrs) {
@@ -239,7 +283,6 @@ angular.module('app.brukerdata', ['app.services'])
             return tekst;
         }
     })
-
 
     .factory('time', function ($timeout) {
         var time = {};
