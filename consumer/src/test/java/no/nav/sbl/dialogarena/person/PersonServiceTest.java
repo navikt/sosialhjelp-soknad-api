@@ -5,7 +5,10 @@ import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.*;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBostedsadresse;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseNorge;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPersonnavn;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
 import org.joda.time.DateTime;
@@ -125,7 +128,7 @@ public class PersonServiceTest {
     	XMLBostedsadresse bostedsadresse = genererXMLFolkeregistrertAdresse();
 		xmlBruker.setBostedsadresse(bostedsadresse);
 		
-		XMLMidlertidigPostadresseNorge xmlMidlertidigNorge = generateMidlertidigAdresseNorge();	
+		XMLMidlertidigPostadresseNorge xmlMidlertidigNorge = generateMidlertidigAdresseNorge();
 		xmlBruker.setMidlertidigPostadresse(xmlMidlertidigNorge);
     	
     	XMLPostadressetyper postadressetyper = new XMLPostadressetyper();
