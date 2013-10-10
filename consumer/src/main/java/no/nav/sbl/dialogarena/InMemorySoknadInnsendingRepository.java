@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.UUID;
-
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class InMemorySoknadInnsendingRepository implements SoknadInnsendingRepository{
 

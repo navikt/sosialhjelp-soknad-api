@@ -1,13 +1,12 @@
 package no.nav.sbl.dialogarena;
 
-import java.util.Map;
-
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Map;
 
 public class InMemorySoknadInnsendingRepositorytTest {
 	
@@ -16,7 +15,7 @@ public class InMemorySoknadInnsendingRepositorytTest {
 	Long soknadId;
 	
 	@Before
-	public void setUp( ){
+	public void setUp(){
 		 repo = new InMemorySoknadInnsendingRepository();
 		 soknadId = repo.startSoknad("Dagpenger");
 		 soknad = repo.hentSoknad(soknadId);
