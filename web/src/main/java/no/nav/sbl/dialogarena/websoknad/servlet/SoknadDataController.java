@@ -54,7 +54,7 @@ public class SoknadDataController {
         return soknadId;
     }
 
-    @RequestMapping(value = "/{soknadId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete/{soknadId}", method = RequestMethod.POST)
     @ResponseBody()
     public void slettSoknad(@PathVariable Long soknadId) {
         soknadService.avbrytSoknad(soknadId);
