@@ -89,6 +89,54 @@ describe('directives', function() {
     });
 });
 
+describe('directives', function() {
+    var scope, element;
+
+    beforeEach(module('app.directives'));
+    beforeEach(inject(function($compile, $rootScope){
+        scope = $rootScope;
+        scope.soknadData = {
+            fakta: {}
+        };
+
+        scope.data = {
+            redigeringsModus: true
+        };
+
+        scope.tekster = {
+            sporsmal: 'sporsmal',
+            svar_ja: 'svar_ja',
+            svar_nei: 'svar_nei'
+        }
+
+        element = angular.element(
+            '<radioknapp model="soknadData.fakta.testName.value"' +
+                        'modus="data.redigeringsModus"' +
+                        'sporsmal="tekster.sporsmal"' +
+                        'svar1="tekster.svar_ja"' +
+                        'svar2="tekster.svar_nei"' +
+                        'name="testName"/>'
+        );
+        $compile(element)(scope);
+        scope.$digest();
+        element.scope().$apply();
+
+    }));
+
+    describe('radioknapp', function(){
+        it('skal først vises i redigeringsmodus, så endre til oppsummeringsmodus', function() {
+            var redigering = element.children()[1];
+            var oppsummering = element.children()[2];
+            expect(redigering.className).toNotContain('ng-hide');
+            expect(oppsummering.className).toContain('ng-hide');
+            scope.data.redigeringsModus = false;
+            element.scope().$apply();
+            expect(redigering.className).toContain('ng-hide');
+            expect(oppsummering.className).toNotContain('ng-hide');
+        });
+    });
+});
+
 
 describe('directives', function() {
 	var scope, form, element;

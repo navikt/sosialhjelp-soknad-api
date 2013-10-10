@@ -6,10 +6,10 @@ angular.module('app.services',['ngResource'])
 * Service som henter en søknad fra henvendelse
 */
 .factory('soknadService', function($resource) {
-	return $resource('/sendsoknad/rest/soknad/:param/:action',
+	return $resource('/sendsoknad/rest/soknad/:action/:param',
         {param: '@param'},
         {
-            create: { method: 'POST' },
+            create: { method: 'POST', params: {param: '@param', action: 'opprett'} },
             send: {method: 'POST', params: {param: '@param', action: 'send'}}
         }
     );
@@ -27,12 +27,12 @@ angular.module('app.services',['ngResource'])
         {side: '@side'},
         {
             get: {
-                method: 'GET'
-//                cache: true  Legg på caching senere???
+                method: 'GET',
+                cache: true  // Legg på caching senere???
             }
         });
 })
 
 .factory('tpsService', function($resource){
         return $resource('/sendsoknad/rest/soknad/:soknadId/personalia');
-    });
+    })

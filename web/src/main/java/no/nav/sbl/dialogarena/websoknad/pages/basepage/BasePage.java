@@ -37,10 +37,7 @@ public class BasePage extends WebPage {
         body = new TransparentWebMarkupContainer("body");
         body.setOutputMarkupId(true);
         add(body);
-        add(new Label("tabTittel"));
-
-
-        body.add(new Label("tittel"));
+        body.add(new Label("tittel", "Søknad om dagpenger"));
 
         body.add(new InnstillingerPanel("innstillinger", getInnloggetIsTrueModel(), cmsContentRetriever));
         body.add(new NavigasjonPanel("navigasjon", navigasjonsLink, cmsContentRetriever));

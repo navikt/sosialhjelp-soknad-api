@@ -64,8 +64,8 @@ public class PersonTransform {
     		if(midlertidigPostadresse instanceof XMLMidlertidigPostadresseNorge) {
     			XMLMidlertidigPostadresseNorge xmlMidlPostAdrNorge = (XMLMidlertidigPostadresseNorge) midlertidigPostadresse;
     			
-    			DateTime gyldigFra = new DateTime();
-    			DateTime gyldigTil = new DateTime();
+    			DateTime gyldigFra = null;
+    			DateTime gyldigTil = null;
     			XMLGyldighetsperiode postleveringsPeriode = xmlMidlPostAdrNorge.getPostleveringsPeriode();
     			if(postleveringsPeriode != null) {
     				gyldigFra = postleveringsPeriode.getFom();
@@ -200,6 +200,7 @@ public class PersonTransform {
 
 	private String getHusnummer(XMLGateadresse xmlGateAdresse) {
 		BigInteger gatenummer = xmlGateAdresse.getHusnummer();
+		
 		if(gatenummer != null) {
 			return gatenummer.toString();
 		}

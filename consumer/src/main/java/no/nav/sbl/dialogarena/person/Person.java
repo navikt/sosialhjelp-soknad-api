@@ -40,7 +40,7 @@ public class Person implements Serializable {
 
 	private String getSammenSattNavn(String fornavn, String mellomnavn,
 			String etternavn) {
-		if("".equals(mellomnavn)) {
+		if("".equals(mellomnavn) || mellomnavn == null) {
 			return fornavn + " " + etternavn;
 		} else {
 			return fornavn +" " + mellomnavn + " " + etternavn;
