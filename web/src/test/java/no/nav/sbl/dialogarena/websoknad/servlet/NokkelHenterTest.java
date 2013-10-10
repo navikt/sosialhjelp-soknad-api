@@ -6,8 +6,6 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
-import no.nav.modig.core.exception.ApplicationException;
-
 import org.junit.Test;
 
 public class NokkelHenterTest {
@@ -24,11 +22,5 @@ public class NokkelHenterTest {
         assertThat(nokleListe.size(), is(2));
         assertThat("hallo", isIn(nokleListe));
         assertThat("hadet", isIn(nokleListe));
-    }
-
-    @Test(expected = ApplicationException.class)
-    public void skalSendeInnEnFilSomIkkeEksisterer() {
-        List<String> nokleListe = NokkelHenter.hentNokler("test");
-        assertThat(nokleListe.size(), is(0));
     }
 }

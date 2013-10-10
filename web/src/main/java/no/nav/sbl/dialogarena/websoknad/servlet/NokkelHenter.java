@@ -21,7 +21,7 @@ public class NokkelHenter {
                 nokler.add(scanner.nextLine());
             }
         } 
-        catch (NullPointerException | IOException e) {
+        catch (IOException e) {
 			throw new ApplicationException("Fant ikke fil",e);
         }
         return nokler;

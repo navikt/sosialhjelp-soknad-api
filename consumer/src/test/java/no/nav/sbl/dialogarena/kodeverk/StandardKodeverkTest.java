@@ -93,7 +93,8 @@ public class StandardKodeverkTest {
         wireUpKodeverk();
         kodeverk.lastInnNyeKodeverk();
     }
-
+    
+   
     private XMLHentKodeverkResponse postnummerKodeverkResponse() {
         XMLKode kode = new XMLKode().withNavn("0565").withTerm(new XMLTerm().withNavn("Oslo"));
         return new XMLHentKodeverkResponse().withKodeverk(new XMLEnkeltKodeverk().withNavn("Kommuner").withKode(kode));
