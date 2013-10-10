@@ -22,6 +22,7 @@ public class InMemorySoknadInnsendingRepositorytTest {
         repo = new InMemorySoknadInnsendingRepository();
         soknadId = repo.startSoknad("Dagpenger");
         soknad = repo.hentSoknad(soknadId);
+
     }
 
     @Test
