@@ -167,65 +167,65 @@ describe('directives', function() {
 		element.scope().$apply();
 	}));
 	it('skal returnere false når fra-dato endres fra mindre til større enn til-dato', function(){
-		scope.arbeidsforhold.fra = new Date('10.10.2012');
+		scope.arbeidsforhold.fra = new Date(2012, 10, 10);
 		element.scope().$apply();
-		expect(scope.arbeidsforhold.fra).toEqual(new Date('10.10.2012'));
+		expect(scope.arbeidsforhold.fra).toEqual(new Date(2012, 10, 10));
 		expect(form.fra.$invalid).toBe(false);
 		expect(scope.$parent.arbeidsforhold.til).toBeUndefined();
 		element.scope().$apply();
 	});
 
 	it('skal returnere true når fra-dato endres fra større til mindre enn til-dato', function(){
-		scope.arbeidsforhold.fra = new Date('10.10.2011');
+		scope.arbeidsforhold.fra = new Date(2011, 10, 10);
 		element.scope().$apply();
 
-		expect(scope.arbeidsforhold.fra).toEqual(new Date('10.10.2011'));
+		expect(scope.arbeidsforhold.fra).toEqual(new Date(2011, 10, 10));
 
 		expect(form.til.$valid).toBe(false);
 		expect(scope.$parent.arbeidsforhold.til).toBeUndefined();
 
-		scope.arbeidsforhold.fra = new Date('10.10.2010');
+		scope.arbeidsforhold.fra = new Date(2010, 10, 10);
 		element.scope().$apply();
-		expect(scope.arbeidsforhold.fra).toEqual(new Date('10.10.2010'));
-		expect(scope.arbeidsforhold.til).toEqual(new Date('10.10.2011'));
+		expect(scope.arbeidsforhold.fra).toEqual(new Date(2010, 10, 10));
+		expect(scope.arbeidsforhold.til).toEqual(new Date(2011, 10, 10));
 		expect(form.til.$valid).toBe(true);
-
 	});
+
 	it('skal returnere false når til-dato endres til mindre enn fra-dato',function(){
-		form.til.$setViewValue(new Date('10.10.2010'));
+		form.til.$setViewValue(new Date(2010, 10, 10));
 		element.scope().$apply();
 		expect(scope.$parent.arbeidsforhold.til).toBeUndefined();
 		expect(form.til.$valid).toBe(false);
-		expect(scope.arbeidsforhold.fra).toEqual(new Date('10.10.2010'));
+		expect(scope.arbeidsforhold.fra).toEqual(new Date(2010, 10, 10));
 	});
 
 	it('skal returnere true når til-dato endres til større enn fra-dato', function(){
-		scope.arbeidsforhold.fra = new Date('10.10.2011');
+		scope.arbeidsforhold.fra = new Date(2011, 10, 10);
 		element.scope().$apply();
 
 		expect(scope.$parent.arbeidsforhold.til).toBeUndefined();
 		expect(form.til.$valid).toBe(false);
-		expect(scope.arbeidsforhold.fra).toEqual(new Date('10.10.2011'));
+		expect(scope.arbeidsforhold.fra).toEqual(new Date(2011, 10, 10));
 
-		form.til.$setViewValue(new Date('10.10.2012'));
+		form.til.$setViewValue(new Date(2012, 10, 10));
 		element.scope().$apply();
-		expect(scope.$parent.arbeidsforhold.til).toEqual(new Date('10.10.2012'));
+		expect(scope.$parent.arbeidsforhold.til).toEqual(new Date(2012, 10, 10));
 		expect(form.til.$valid).toBe(true);
-		expect(scope.arbeidsforhold.fra).toEqual(new Date('10.10.2011'));
+		expect(scope.arbeidsforhold.fra).toEqual(new Date(2011, 10, 10));
 		element.scope().$apply();
 	});
 
 	it('endringer på fra skal ikke påvirke tilTo', function(){
-		scope.arbeidsforhold.fra = new Date('10.10.2011');
+		scope.arbeidsforhold.fra = new Date(2011, 10, 10);
 		element.scope().$apply();
-		expect(scope.arbeidsforhold.tilTo).toEqual(new Date('10.10.2011'));
+		expect(scope.arbeidsforhold.tilTo).toEqual(new Date(2011, 10, 10));
 		expect(form.tilTo.$valid).toBe(true);
 	});
 
 	it('endringer på fra2 skal ikke påvirke til', function(){
-		scope.arbeidsforhold.fraTo = new Date('10.10.2011');
+		scope.arbeidsforhold.fraTo = new Date(2011, 10, 10);
 		element.scope().$apply();
-		expect(scope.arbeidsforhold.til).toEqual(new Date('10.10.2011'));
+		expect(scope.arbeidsforhold.til).toEqual(new Date(2011, 10, 10));
 		expect(form.til.$valid).toBe(true);
 	});
 });
