@@ -129,7 +129,26 @@ public class PersonServiceTest {
         Faktum sammensattnavn = (Faktum) hentetPerson.getFakta().get("sammensattnavn");
         Assert.assertEquals("", mellomnavn.getValue());
 		Assert.assertEquals(ET_FORNAVN+" "+ET_ETTERNAVN, sammensattnavn.getValue());
+	}
+    
+    @Test
+	public void skalStottePersonerUtenNavn() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+    	XMLHentKontaktinformasjonOgPreferanserRequest request = hentRequestMedGyldigIdent();
+    	XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
+    	
+    	
+    	XMLBruker xmlBruker = new XMLBruker();
+    	XMLNorskIdent xmlNorskIdent = new XMLNorskIdent();
+    	xmlNorskIdent.setIdent(RIKTIG_IDENT);
+		xmlBruker.setIdent(xmlNorskIdent);
+    	response.setPerson(xmlBruker);
 
+		when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenReturn(response);
+        Person hentetPerson = service.hentPerson(2l,RIKTIG_IDENT);
+        Assert.assertNotNull(hentetPerson.getFakta());
+
+        Faktum sammensattnavn = (Faktum) hentetPerson.getFakta().get("sammensattnavn");        
+		Assert.assertEquals("", sammensattnavn.getValue());
 	}
     
     @SuppressWarnings("unchecked")
@@ -226,7 +245,21 @@ public class PersonServiceTest {
    		Assert.assertEquals(null, adresseliste.get(0).getGyldigFra());
    		Assert.assertEquals(null, adresseliste.get(0).getGyldigTil());
    	}
-	
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed0Linjer() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+
+		Person hentetPerson = skalStotteMidlertidigUtenlandskMidlertidigAdresser(0);
+    	
+    	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
+    	Assert.assertNotNull(adresseliste);
+    	Assert.assertEquals(Arrays.asList(), adresseliste.get(0).getUtenlandsAdresse());
+    	Assert.assertEquals(ET_LAND, adresseliste.get(0).getLand());
+		Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_FRA, adresseliste.get(0).getGyldigFra());
+		Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_TIL, adresseliste.get(0).getGyldigTil());
+	}
+    
 	@SuppressWarnings("unchecked")
 	@Test
 	public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed1Linje() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
@@ -449,6 +482,8 @@ public class PersonServiceTest {
 			int antallAdresseLinjer) {
 		XMLUstrukturertAdresse ustrukturertAdresse = new XMLUstrukturertAdresse();
 		switch (antallAdresseLinjer) {
+		case 0:
+			break;
 		case 1:
 			ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
 			break;

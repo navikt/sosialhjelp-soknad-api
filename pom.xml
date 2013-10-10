@@ -807,29 +807,29 @@
                     <artifactId>jboss-as-maven-plugin</artifactId>
                     <version>7.4.Final</version>
                 </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>exec-maven-plugin</artifactId>
-                    <version>1.1</version>
-                    <executions>
-                        <execution>
-                            <id>PhantomJS Unit Testing</id>
-                            <phase>test</phase>
-                            <goals>
-                                <goal>exec</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <executable>${phantomjs.exec}</executable>
-                        <workingDirectory>${project.basedir}/src/test/js</workingDirectory>
-                        <arguments>
-                            <argument>phantomjs_jasminexml_runner.js</argument>
-                            <argument>test_runner.html</argument>
-                            <argument>${project.build.directory}/surefire-reports</argument>
-                        </arguments>
-                    </configuration>
-                </plugin>
+                <!--<plugin>-->
+                    <!--<groupId>org.codehaus.mojo</groupId>-->
+                    <!--<artifactId>exec-maven-plugin</artifactId>-->
+                    <!--<version>1.1</version>-->
+                    <!--<executions>-->
+                        <!--<execution>-->
+                            <!--<id>PhantomJS Unit Testing</id>-->
+                            <!--<phase>test</phase>-->
+                            <!--<goals>-->
+                                <!--<goal>exec</goal>-->
+                            <!--</goals>-->
+                        <!--</execution>-->
+                    <!--</executions>-->
+                    <!--<configuration>-->
+                        <!--<executable>${phantomjs.exec}</executable>-->
+                        <!--<workingDirectory>${project.basedir}/src/test/js</workingDirectory>-->
+                        <!--<arguments>-->
+                            <!--<argument>phantomjs_jasminexml_runner.js</argument>-->
+                            <!--<argument>test_runner.html</argument>-->
+                            <!--<argument>${project.build.directory}/surefire-reports</argument>-->
+                        <!--</arguments>-->
+                    <!--</configuration>-->
+                <!--</plugin>-->
             </plugins>
         </pluginManagement>
         <plugins>
