@@ -40,6 +40,12 @@ utdanning_svar_under_utdanning
 utdanning_feilmelding
 utdanning_tittel
 utdanning_ferdig
+utdanning_svar_under_utdanning_kurs
+utdanning_svar_under_utdanning_kveld
+utdanning_svar_under_utdanning_fulltid
+utdanning_svar_under_utdanning_kortvarig
+utdanning_svar_under_utdanning_norsk
+utdanning_svar_under_utdanning_introduksjon
 
 personalia_tittel
 personalia_navn
@@ -49,6 +55,10 @@ personalia_co
 personalia_postboks
 personalia_midlertidig_adresse_utland
 personalia_midlertidig_adresse_norge
+
+arbeidsforhold_informasjon
+arbeidsforhold_knapp_legg_til
+arbeidsforhold_ikke_jobbet
 
 send
 avbryt
