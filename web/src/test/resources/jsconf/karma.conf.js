@@ -18,7 +18,8 @@ module.exports = function(config) {
       '../src/test/resources/jslib/angular-mocks.js',
       '../src/test/resources/jslib/angular-resource.js',
       '../src/main/webapp/js/app/*.js',
-      '../src/test/js/test/unit/*.js'
+      '../src/test/js/test/unit/BrukerdataSpec.js',
+      '../src/test/js/test/unit/controllersSpec.js'
     ],
 
 
