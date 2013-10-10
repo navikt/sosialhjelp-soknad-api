@@ -1,15 +1,12 @@
 package no.nav.sbl.dialogarena.websoknad.pages.soknadliste;
 
 import no.nav.modig.wicket.test.FluentWicketTester;
-import no.nav.modig.wicket.test.internal.Parameters;
 import no.nav.sbl.dialogarena.websoknad.WicketApplication;
 import no.nav.sbl.dialogarena.websoknad.config.FitNesseApplicationConfig;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.StartSoknadPage;
-import org.apache.wicket.protocol.http.WebApplication;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -18,7 +15,6 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.InputStream;
 
 import static no.nav.modig.wicket.test.matcher.ComponentMatchers.withId;
