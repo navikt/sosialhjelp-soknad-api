@@ -16,7 +16,7 @@ public class Faktum implements Serializable {
     private String type;
     private DateTime opprettetDato;
     
-    public Faktum() {
+	public Faktum() {
     	
     }
     
@@ -81,4 +81,9 @@ public class Faktum implements Serializable {
 	public long getFaktumId() {
 		return faktumId;
 	}
+	
+	public DateTime getOpprettetDato() {
+		return opprettetDato;
+	}
+
 }
