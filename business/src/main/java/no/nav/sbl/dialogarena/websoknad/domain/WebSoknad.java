@@ -3,21 +3,27 @@ package no.nav.sbl.dialogarena.websoknad.domain;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.joda.time.DateTime;
+
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class WebSoknad implements Serializable {
-
-   
-
+	
 	private Long soknadId;
     private String gosysId;
     private String brukerBehandlingId;
     private Map<String, Faktum> fakta;
-
+    private SoknadInnsendingStatus status;
+	private String aktorId;
+	private DateTime opprettet;
+    
     public WebSoknad() {
         fakta = new LinkedHashMap<>();
     }
@@ -67,6 +73,15 @@ public class WebSoknad implements Serializable {
 		
 		return antallFaktum;
 	}
+
+
+	public String getNavSoknadId() {
+		return gosysId;
+	}
+	
+	public String getAktoerId() {
+		return aktorId;
+	}
 	
 	 @Override
 	public String toString() {
@@ -74,4 +89,63 @@ public class WebSoknad implements Serializable {
 				+ ", brukerBehandlingId=" + brukerBehandlingId + ", fakta="
 				+ fakta + "]";
 	}
+
+	public SoknadInnsendingStatus getStatus() {
+		return status;	
+	}
+
+	public static WebSoknad startSoknad() {
+		// TODO Auto-generated method stub
+		return new WebSoknad();
+	}
+
+	public WebSoknad medAktorId(String aktorId) {
+		this.aktorId = aktorId;
+		return this;
+	}
+
+	public WebSoknad medGosysId(String gosysId) {
+		this.gosysId = gosysId;
+		return this;
+	}
+
+	public WebSoknad medBehandlingId(String behandlingsId) {
+		this.brukerBehandlingId = behandlingsId;
+		return this;
+	}
+	
+	public WebSoknad opprettetDato(DateTime opprettetDato) {
+		this.opprettet = opprettetDato;
+		return this;
+	}
+
+	public String getBrukerbehandlingId() {
+		// TODO Auto-generated method stub
+		return brukerBehandlingId;
+	}
+
+	public DateTime getOpprettetDato() {
+		return opprettet;
+	}
+
+	public WebSoknad medId(long id) {
+		this.soknadId = id;
+		return this;
+	}
+
+	public WebSoknad medStatus(SoknadInnsendingStatus status) {
+		this.status = status;
+		return this;
+	}
+
+	public WebSoknad medBrukerData(List<Faktum> hentAlleBrukerData) {
+		fakta = new HashMap<String, Faktum>();
+		for (Faktum faktum : hentAlleBrukerData) {
+			fakta.put(faktum.getKey(), faktum);
+		}
+		return this;
+				
+	}
+
+
 }
