@@ -1,19 +1,24 @@
 package no.nav.sbl.dialogarena.soknadinnsending.db.config;
 
-import javax.sql.DataSource;
-
-import no.nav.sbl.dialogarena.soknadinnsending.db.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.db.SoknadRepositoryJdbc;
-
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 
 @Configuration
 public class SoknadInnsendingDBConfig {
 
-	@Bean
-    public SoknadRepository soknadRepository(DataSource ds) {
-        return new SoknadRepositoryJdbc(ds);
-    }
-    
+//	@Bean
+//    public SoknadRepository soknadRepository(DataSource ds) {
+//        return new SoknadRepositoryJdbc(ds);
+//    }
+//	
+//	@Bean
+//	public DataSource dataSourceJndiLookup() throws NamingException {
+//		return new JndiTemplate().lookup("java:jboss/datasources/HenvendelseDS", DataSource.class);
+//	}
+//	
+//	@Bean
+//	public JdbcTemplate jdbcTemplate(DataSource ds) {
+//		return new JdbcTemplate(ds);
+//	}
+//    
 }

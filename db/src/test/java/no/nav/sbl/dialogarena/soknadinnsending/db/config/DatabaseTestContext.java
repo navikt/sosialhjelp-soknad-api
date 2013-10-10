@@ -64,10 +64,6 @@ public class DatabaseTestContext {
         return dataSource;
     }
 
-    private static Properties dbProperties() throws IOException {
-        return dbProperties("hsqldb.properties");
-    }
-
     private static Properties dbProperties(String propertyFileName) throws IOException {
         Properties env = new Properties();
         env.load(DatabaseTestContext.class.getResourceAsStream("/" + propertyFileName));

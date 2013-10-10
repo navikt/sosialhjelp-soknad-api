@@ -30,13 +30,13 @@ public class SoknadDataController {
         return soknadService.hentSoknad(soknadId);
     }
 
-    @RequestMapping(value = "/{soknadId}/send", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/send/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody()
     public void sendSoknad(@PathVariable Long soknadId) {
         soknadService.sendSoknad(soknadId);
     }
 
-    @RequestMapping(value = "/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/lagre/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody()
     public void lagreSoknad(@PathVariable Long soknadId, @RequestBody WebSoknad webSoknad) {
         for (Faktum faktum : webSoknad.getFakta().values()) {
@@ -44,7 +44,7 @@ public class SoknadDataController {
         }
     }
 
-    @RequestMapping(value = "/{soknadType}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/opprett/{soknadType}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody()
     public WebSoknadId opprettSoknad(@PathVariable String soknadType) {
         Long id = soknadService.startSoknad(soknadType);

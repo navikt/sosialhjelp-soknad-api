@@ -1,124 +1,73 @@
 <div data-ng-controller="PersonaliaCtrl">
-    <h1>Personalia</h1>
+    <div data-ng-show="harHenterPersonalia()">
+        <h1>{{ tekster.personalia_tittel }}</h1>
 
-    <label>NAVN</label>
+        <label>{{ tekster.personalia_navn }}</label>
 
-    <p>{{personalia.fakta.sammensattnavn.value}}</p>
+        <p>{{personalia.fakta.sammensattnavn.value}}</p>
 
-    <label>FØDSELSNUMMER</label>
+        <label>{{ tekster.personalia_fnr }}</label>
 
-    <p>{{personalia.fakta.fnr.value}} </p>
+        <p>{{personalia.fakta.fnr.value}} </p>
 
-    <div data-ng-show="data.folkeregistrertAdresse != undefined">
-        <label>BOSTEDSADRESSE</label>
-        <p>
-            {{ personalia.fakta.adresser[data.bostedsAdresse].gatenavn }}
-            {{ personalia.fakta.adresser[data.bostedsAdresse].husnummer }}
-            {{ personalia.fakta.adresser[data.bostedsAdresse].husbokstav }}
-        </p>
-        <p>
-            {{ personalia.fakta.adresser[data.bostedsAdresse].postnummer }}
-            {{ personalia.fakta.adresser[data.bostedsAdresse].poststed }}
-        </p>
+        <div data-ng-show="harBostedsAdresse()">
+            <label>{{ tekster.personalia_bostedsadresse }}</label>
+
+            <p>
+                {{ personalia.fakta.adresser[data.bostedsAdresse].gatenavn }}
+                {{ personalia.fakta.adresser[data.bostedsAdresse].husnummer }}
+                {{ personalia.fakta.adresser[data.bostedsAdresse].husbokstav }}
+            </p>
+
+            <p>
+                {{ personalia.fakta.adresser[data.bostedsAdresse].postnummer }}
+                {{ personalia.fakta.adresser[data.bostedsAdresse].poststed }}
+            </p>
+        </div>
+        <div data-ng-show="harMidlertidigAdresse()">
+            <h4>{{ hentMidlertidigAdresseTittel() }}</h4>
+
+            <p>
+                {{ tekster.personalia_co}} {{ personalia.fakta.adresser[data.midlertidigAdresse].adresseEier }}
+            </p>
+
+            <p data-ng-show="harPostboksAdresse()">
+                <label>{{ tekster.personalia_postboks }}</label>
+                {{ personalia.fakta.adresser[data.midlertidigAdresse].postboksNummer }}
+                {{ personalia.fakta.adresser[data.midlertidigAdresse].postboksNavn }}
+            </p>
+
+            <p data-ng-show="harGateAdresse()">
+                {{ personalia.fakta.adresser[data.midlertidigAdresse].gatenavn }}
+                {{ personalia.fakta.adresser[data.midlertidigAdresse].husnummer }}
+                {{ personalia.fakta.adresser[data.midlertidigAdresse].husbokstav }}
+            </p>
+
+            <p data-ng-show="harUtenlandskAdresse()">
+            <span data-ng-repeat="linje in personalia.fakta.adresser[data.midlertidigAdresse].utenlandsAdresse">
+                {{linje}}
+            </span>
+                {{personalia.fakta.adresser[data.midlertidigAdresse].land}}
+            </p>
+
+            <p>
+                {{ personalia.fakta.adresser[data.midlertidigAdresse].postnummer }}
+                {{ personalia.fakta.adresser[data.midlertidigAdresse].poststed }}
+            </p>
+
+            <p>
+                Gyldig til: {{ personalia.fakta.adresser[data.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy' }}
+            </p>
+        </div>
+    </div>
+    <div ng-show="harIkkeHenterPersonalia()">
+        <img src="../img/ajaxloader/hvit/loader_hvit_64.gif" alt="Fremdriftsindikator"/>
     </div>
 
-    <div data-ng-show="data.midlertidigAdresse != undefined">
-        <label>{{personalia.fakta.adresser[data.midlertidigAdresse].type | midlertidigAdresseType }}</label>
-        <p>
-            C/O: {{ personalia.fakta.adresser[data.midlertidigAdresse].adresseEier }}
-        </p>
-
-        <p data-ng-show='personalia.fakta.adresser[data.midlertidigAdresse].postboksNavn != undefined && personalia.fakta.adresser[data.midlertidigAdresse].postboksNummer != undefined'>
-            Postboks
-            {{ personalia.fakta.adresser[data.midlertidigAdresse].postboksNummer }}
-            {{ personalia.fakta.adresser[data.midlertidigAdresse].postboksNavn }}
-        </p>
-
-        <p data-ng-show='personalia.fakta.adresser[data.midlertidigAdresse].gatenavn != undefined && personalia.fakta.adresser[data.midlertidigAdresse].husnummer != undefined'>
-            {{ personalia.fakta.adresser[data.midlertidigAdresse].gatenavn }}
-            {{ personalia.fakta.adresser[data.midlertidigAdresse].husnummer }}
-            {{ personalia.fakta.adresser[data.midlertidigAdresse].husbokstav }}
-        </p>
-
-        <p>
-            {{ personalia.fakta.adresser[data.midlertidigAdresse].postnummer }}
-            {{ personalia.fakta.adresser[data.midlertidigAdresse].poststed }}
-        </p>
-        <p>
-            Gyldig til: {{ personalia.fakta.adresser[data.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy' }}
-        </p>
-    </div>
-    <!---->
-    <!--<div data-ng-repeat="adresse in personalia.fakta.adresser">-->
-        <!--<label>ADRESSE</label>-->
-        <!--&lt;!&ndash;{{ adresse.type }}&ndash;&gt;-->
-        <!--<p>-->
-            <!--{{ adresse.gatenavn }}-->
-            <!--{{ adresse.husnummer }}-->
-        <!--</p>-->
-        <!--<p>-->
-            <!--{{ adresse.postnummer }}-->
-            <!--{{ adresse.poststed }}-->
-        <!--</p>-->
-
-    <!--</div>-->
-
-    <form name="personaliaForm" novalidate>
-        <label>MOBILNUMMER</label>
-        <input mod-faktum type="text" class="landskode" name="landskode" data-ng-model="data.landskode"
-               landskodevalidering>
-        <input mod-faktum type="text" name="telefon" data-ng-model="soknadData.fakta.telefon.value"/>
-        <span class="error" data-ng-show="personaliaForm.telefon.$error.required">{{feilmeldinger.paakreves}}</span>
-
-        <span data-ng-show="personaliaForm.landskode.$error.feil">{{feilmeldinger.feil}} landskode</span>
-        <span data-ng-show="personaliaForm.telefon.$error.feil">{{feilmeldinger.feil}} telefonnummer</span>
-
-
-        <label>E-POST</label>
-        <input mod-faktum type="email" name="epost" data-ng-model="soknadData.fakta.epost.value" required>
-        <span class="error" data-ng-show="personaliaForm.epost.$error.required">{{feilmeldinger.paakreves}}</span>
-        <span class="error" data-ng-show="personaliaForm.epost.$error.email">{{feilmeldinger.feil}} epost</span>
-
-        <br/>
-        <br/>
-
-        <p> Her skal vi hente ut evt registrerte barn under 18år med navn og etternavn </p>
-
-        <p>....</p>
-        <br/>
-
-        <p> Har du forsørgeransvar for barn under 18år som bor i utlandet? </p>
-        <inputs class="sendsoknad-radio" ng-model="data.barnUtland" type="radio" name="barnUtland" value="ja" required/>
-        Ja
-        <input class="sendsoknad-radio" ng-model="data.barnUtland" type="radio" name="barnUtland" value="nei" required/>
-        Nei
-        <span class="error" data-ng-show="personaliaForm.barnUtland.$error.required">{{feilmeldinger.paakreves}}</span>
-
-        <br/>
-
-        <div ng-controller="ungerUtlandCtrl" data-ng-show="data.barnUtland == 'ja'">
-            <ul>
-                <li data-ng-repeat="unge in ungerUtland" data-ng-form="ungerUtlandForm" name="ungerUtlandForm">
-                    <label>Navn</label>
-                    <input type="text" placeholder="Fornavn" name="fornavn" data-ng-model="unge.fornavn" required>
-                    <input type="text" placeholder="Etternavn" name="etternavn" data-ng-model="unge.etternavn" required>
-                    <span class="error"
-                          data-ng-show="ungerUtlandForm.fornavn.$error.required || ungerUtlandForm.etternavn.$error.required">{{feilmeldinger.paakreves}}</span>
-                </li>
-                <li>
-                    <br/>
-                    <a href data-ng-click="ungerUtland.splice(ungerUtland.length-1, 1)"> Fjern</a>
-                    <a href data-ng-click="nyUngeUtland($event)"> Legg til</a>
-                </li>
-            </ul>
-        </div>
-        <div ng-controller="SistLagretCtrl">
-            <h3>Sist lagret: {{time.now}} </h3>
-        </div>
-
-        <a>
-            <button id="neste" ng-click="lagre('reell-arbeidssoker')">NESTE</button>
-        </a>
-    </form>
+    <a class="knapp-hoved" href="#/oppsummering/{{ soknadData.soknadId }}">
+        {{ tekster.neste }}
+    </a>
+    <button class="knapp-stor" data-ng-click="avbryt()">
+        {{ tekster.avbryt }}
+    </button>
 </div>
-<knapprad></knapprad>

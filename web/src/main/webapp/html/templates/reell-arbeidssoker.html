@@ -1,9 +1,10 @@
-<div class="skjemaramme" data-ng-controller="ReellArbeidssokerCtrl">
-	<form name="villigForm" data-ng-controller="ValidationCtrl">
+<div class="skjemaramme">
+	<form name="villigForm" data-ng-controller="ValidationCtrl" novalidate>
 		<div class="sideoversikt">
-			<h4>REELL ARBEIDSSØKER </h4>
+			<h4>{{ tekster.reellarbeidssoker_tittel}}</h4>
 		</div>
-		<div class="skjemainnhold" data-ng-controller="SoknadDataCtrl">
+
+		<div class="skjemainnhold" data-ng-controller="ModusCtrl">
             <radioknapp model="soknadData.fakta.villigDeltid.value"
                         modus="data.redigeringsModus"
                         sporsmal="tekster.reellarbeidssoker_villig_deltid_sporsmal"
@@ -40,18 +41,26 @@
                         lagre="lagre()"
                         name="villigJobb"/>
 
-            <input data-ng-show="data.redigeringsModus == true" type="button" value="Ferdig med reell arbeidssøker" class="knapp-hoved" data-ng-click="validateForm(villigForm.$invalid)">
-            <input data-ng-show="data.redigeringsModus == false" type="button" value="Endre" class="knapp-hoved" data-ng-click="gaTilRedigeringsmodus()">
+            <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved" data-ng-click="validateForm(villigForm.$invalid)">
+                {{ tekster.reellarbeidssoker_ferdig }}
+            </button>
+            <button data-ng-show="hvisIOppsummeringsmodus()" class="knapp-hoved" data-ng-click="gaTilRedigeringsmodus()">
+                {{ tekster.endre }}
+            </button>
 
-            <div data-ng-show="data.showErrorMessage == true">
-                Du må fylle inn alle feltene
+            <div data-ng-show="hvisIkkeFormValiderer()">
+                {{ tekster.reellarbeidssoker_feilmelding }}
             </div>
 
-            <div data-ng-controller="SendSoknadCtrl">
-                <input type="button" class="knapp-hoved" data-ng-click="sendSoknad()" value="Send">
+            <div>
+                <a class="knapp-hoved" href="#/verneplikt/{{ soknadData.soknadId }}">
+                    {{ tekster.neste }}
+                </a>
             </div>
             <div>
-                <input type="button" class="knapp-stor" data-ng-click="avbryt()" value="Avbryt">
+                <button class="knapp-stor" data-ng-click="avbryt()">
+                    {{ tekster.avbryt }}
+                </button>
             </div>
 		</div>
 	</form>

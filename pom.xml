@@ -33,9 +33,9 @@
         <nav.sbl.commons.version>3.30</nav.sbl.commons.version>
         <modig-security.version>1.0.19</modig-security.version>
         <sendsoknad.tjenestespec.version>0.0.8</sendsoknad.tjenestespec.version>
+        <sonar.exclusions>no/nav/sbl/dialogarena/websoknad/config/**</sonar.exclusions>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-        <sonar.skippedModules>sendsoknad-consumer</sonar.skippedModules>
         <henvendelse.tjenestespesifikasjon.version.1>2.0.0</henvendelse.tjenestespesifikasjon.version.1>
         <dialogarena.webkomponent.footer>1.0.6</dialogarena.webkomponent.footer>
         <dialogarena.webkomponent.navigasjon>1.0.5</dialogarena.webkomponent.navigasjon>
@@ -78,12 +78,12 @@
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-frontend-wicket</artifactId>
-                <version>1.0.33</version>
+                <version>1.1.0</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-frontend-ressurser</artifactId>
-                <version>1.0.33</version>
+                <version>1.1.0</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
@@ -114,7 +114,7 @@
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-types</artifactId>
-                <version>1.1</version>
+                <version>1.2</version>
             </dependency>
             <dependency>
 	            <groupId>no.nav.sbl.dialogarena</groupId>
@@ -155,10 +155,10 @@
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-wicket</artifactId>
-                <version>1.0.26</version>
+                <version>1.0.28</version>
                 <exclusions>
                     <exclusion>
-                        <groupId>org.apache.httpcomponents</groupId>
+                        <groupId>org.apache.httpmmon-typemponents</groupId>
                         <artifactId>httpcore</artifactId>
                     </exclusion>
                 </exclusions>
@@ -559,7 +559,7 @@
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-log-filter</artifactId>
-                <version>1.1.2</version>
+                <version>1.1.3</version>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
@@ -783,11 +783,7 @@
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <configuration>
-                        <argLine>-Djava.net.preferIPv4Stack=true -Dfile.encoding=${project.build.sourceEncoding}
-                        </argLine>
-                        <environmentVariables>
-                            <JAVA_TOOL_OPTIONS>${jacoco.agent.argLine}</JAVA_TOOL_OPTIONS>
-                        </environmentVariables>
+                        <argLine>${jacoco.agent.argLine}</argLine>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -810,6 +806,29 @@
                     <groupId>org.jboss.as.plugins</groupId>
                     <artifactId>jboss-as-maven-plugin</artifactId>
                     <version>7.4.Final</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.1</version>
+                    <executions>
+                        <execution>
+                            <id>PhantomJS Unit Testing</id>
+                            <phase>test</phase>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <executable>${phantomjs.exec}</executable>
+                        <workingDirectory>${project.basedir}/src/test/js</workingDirectory>
+                        <arguments>
+                            <argument>phantomjs_jasminexml_runner.js</argument>
+                            <argument>test_runner.html</argument>
+                            <argument>${project.build.directory}/surefire-reports</argument>
+                        </arguments>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -902,16 +921,29 @@
                 </property>
             </activation>
             <properties>
-                <jacoco.agent.argLine>-DdenneErIkkeIBruk=true</jacoco.agent.argLine>
+                <sonar.jacoco.excludes>*SelfTestPage.*</sonar.jacoco.excludes>
             </properties>
         </profile>
         <profile>
-            <id>dummy</id>
+            <id>win</id>
+            <activation>
+                <os><family>win</family></os>
+            </activation>
             <properties>
-                <jacoco.agent.argLine>-DdenneErIkkeIBruk=true</jacoco.agent.argLine>
+                <phantomjs.exec>${project.basedir}/src/test/resources/phantomjs.exe</phantomjs.exec>
+            </properties>
+        </profile>
+        <profile>
+            <id>nix</id>
+            <activation>
+                <os><family>unix</family></os>
+            </activation>
+            <properties>
+                <phantomjs.exec>${env.PHANTOMJS_HOME}/bin/phantomjs</phantomjs.exec>
             </properties>
         </profile>
     </profiles>
+
     <reporting>
         <plugins>
             <plugin>

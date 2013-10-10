@@ -176,27 +176,60 @@ return {
             soknadData: '=',
             lagre: '&'
         },
+        controller: function($scope) {
+            $scope.hvisIRedigeringsmodus = function() {
+                return $scope.modus;
+            }
+
+            $scope.hvisIOppsummeringsmodus = function () {
+                return !$scope.hvisIRedigeringsmodus();
+            }
+
+            $scope.hvisModelErTrue = function() {
+                return $scope.model == 'true';
+            }
+
+            $scope.hvisModelErFalse = function() {
+                return !$scope.hvisModelErTrue();
+            }
+        },
         template: "<div class='spm-blokk'>" +
                 "<p class='spm'>{{ sporsmal }}</p>" +
-                "<div data-ng-show='modus==true'>" +
-                    "<input class='sendsoknad-radio' id='{{ svar1 }}' type='radio' data-ng-model='model' value='svar1' name='{{ name }}' mod-faktum required/>" +
-                    "<label for='{{ svar1 }}' class='svar-alt' ng-class='{\"svaret\": model == \"svar1\"}'>" +
+                "<div class='redigeringsboks' data-ng-show='hvisIRedigeringsmodus()'>" +
+                    "<input class='sendsoknad-radio' id='{{ svar1 }}' type='radio' data-ng-model='model' value='true' name='{{ name }}' mod-faktum required/>" +
+                    "<label for='{{ svar1 }}' class='svar-alt'>" +
                         "{{ svar1 }}" +
                     "</label>" +
-                     "<input class='sendsoknad-radio' id='{{ svar2 }}' type='radio' data-ng-model='model' value='svar2' name='{{ name }}' mod-faktum required/>" +
-                     "<label for='{{ svar2 }}' class='svar-alt' ng-class='{\"svaret\": model == \"svar2\"}'>" +
+                     "<input class='sendsoknad-radio' id='{{ svar2 }}' type='radio' data-ng-model='model' value='false' name='{{ name }}' mod-faktum required/>" +
+                     "<label for='{{ svar2 }}' class='svar-alt'>" +
                          "{{ svar2 }}" +
                      "</label>" +
                 "</div>" +
-                "<div data-ng-show='modus==false'>" +
-                    "<span data-ng-show=\"model == 'svar1'\">"+
-                        "{{svar1}}" +
+                "<div class='oppsummeringsboks' data-ng-show='hvisIOppsummeringsmodus()'>" +
+                    "<span data-ng-show='hvisModelErTrue()'>"+
+                        "{{ svar1 }}" +
                     "</span>" +
-                   "<span data-ng-show=\"model == 'svar2'\">" +
-                        "{{svar2}}" +
+                   "<span data-ng-show='hvisModelErFalse()'>" +
+                        "{{ svar2 }}" +
                     "</span>" +
                 "</div>" +
             "</div> "
+    }
+})
+
+
+.directive('snurrepipp', function() {
+    return {
+        link: function(scope, element) {
+            var image = angular.element('<img src="../img/ajaxloader/hvit/loader_hvit_48.gif"/>');
+            element.after(image);
+            image.hide();
+
+            element.click(function() {
+                image.show();
+                element.hide();
+            });
+        }
     }
 })
 

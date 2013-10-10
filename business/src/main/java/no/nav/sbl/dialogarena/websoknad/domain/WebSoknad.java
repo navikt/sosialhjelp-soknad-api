@@ -15,7 +15,7 @@ import java.util.Map;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class WebSoknad implements Serializable {
-	
+
 	private Long soknadId;
     private String gosysId;
     private String brukerBehandlingId;

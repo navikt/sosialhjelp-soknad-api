@@ -11,7 +11,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.db.SoknadRepository;
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.websoknad.service.SendSoknadService;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -21,9 +20,6 @@ public class LocalDBSoknadService implements SendSoknadService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(LocalDBSoknadService.class);
 	
-	@Inject
-    @Named("sendSoknadService")
-    private SendSoknadPortType sendSoknadService;
 	
 	@Inject
 	@Named("soknadInnsendingRepository")
@@ -62,6 +58,7 @@ public class LocalDBSoknadService implements SendSoknadService{
 	
 
 	public Long startSoknad(String navSoknadId) {
+		logger.debug("Starter ny søknad");
 		//TODO: Sende et signal til Henvendelse om at søknaden er startet
         
         WebSoknad soknad = WebSoknad.startSoknad().medGosysId(navSoknadId).medAktorId(SubjectHandler.getSubjectHandler().getUid()).opprettetDato(DateTime.now());
