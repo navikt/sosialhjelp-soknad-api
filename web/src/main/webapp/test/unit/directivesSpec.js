@@ -113,8 +113,8 @@ describe('directives', function() {
             '<radioknapp model="soknadData.fakta.testName.value"' +
                         'modus="data.redigeringsModus"' +
                         'sporsmal="tekster.sporsmal"' +
-                        'svar1="tekster.svar_ja"' +
-                        'svar2="tekster.svar_nei"' +
+                        'svarAlternativ1="tekster.svar_ja"' +
+                        'svarAlternativ2="tekster.svar_nei"' +
                         'name="testName"/>'
         );
         $compile(element)(scope);

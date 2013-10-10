@@ -26,6 +26,21 @@ vernepliktig_tittel
 vernepliktig_ferdig
 vernepliktig_opplasting
 
+egennaering_sporsmal
+egennaering_svar_ja
+egennaering_svar_nei
+egennaering_feilmelding
+egennaering_tittel
+egennaering_ferdig
+
+utdanning_sporsmal
+utdanning_svar_ikke_utdanning
+utdanning_svar_avsluttet_utdanning
+utdanning_svar_under_utdanning
+utdanning_feilmelding
+utdanning_tittel
+utdanning_ferdig
+
 personalia_tittel
 personalia_navn
 personalia_fnr

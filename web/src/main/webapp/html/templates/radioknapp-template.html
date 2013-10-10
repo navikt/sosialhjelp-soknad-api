@@ -1,0 +1,24 @@
+<div class='spm-blokk'>
+    <p class='spm'>{{ sporsmal }}</p>
+
+    <div class='redigeringsboks' data-ng-show='hvisIRedigeringsmodus()'>
+        <input class='sendsoknad-radio' id='{{ svarAlternativ1 }}' type='radio' data-ng-model='model' value='true'
+               name='{{ name }}' mod-faktum required/>
+        <label for='{{ svarAlternativ1 }}' class='svar-alt'>
+            {{ svarAlternativ1 }}
+        </label>
+        <input class='sendsoknad-radio' id='{{ svarAlternativ2 }}' type='radio' data-ng-model='model' value='false'
+               name='{{ name }}' mod-faktum required/>
+        <label for='{{ svarAlternativ2 }}' class='svar-alt'>
+            {{ svarAlternativ2 }}
+        </label>
+    </div>
+    <div class='oppsummeringsboks' data-ng-show='hvisIOppsummeringsmodus()'>
+        <span data-ng-show='hvisModelErTrue()'>
+            {{ svarAlternativ1 }}
+        </span>
+        <span data-ng-show='hvisModelErFalse()'>
+            {{ svarAlternativ2 }}
+        </span>
+    </div>
+</div>
