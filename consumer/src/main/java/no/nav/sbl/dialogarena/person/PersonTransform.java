@@ -124,8 +124,8 @@ public class PersonTransform {
 				midlertidigAdresse.setLand(kodeverk.getLand(landkode));
 			}
 		}
-		DateTime gyldigFra = new DateTime();
-		DateTime gyldigTil = new DateTime();
+		DateTime gyldigFra = null;
+		DateTime gyldigTil = null;
 		XMLGyldighetsperiode postleveringsPeriode = xmlMidlAdrUtland.getPostleveringsPeriode();
 		if(postleveringsPeriode != null) {
 			gyldigFra = postleveringsPeriode.getFom();
