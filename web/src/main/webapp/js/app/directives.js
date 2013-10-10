@@ -170,11 +170,9 @@ return {
             model: '=',
             modus: '=',
             sporsmal: '=',
-            svar1: '=',
-            svar2: '=',
-            name: '@',
-            soknadData: '=',
-            lagre: '&'
+            svarAlternativ1: '=',
+            svarAlternativ2: '=',
+            name: '@'
         },
         controller: function($scope) {
             $scope.hvisIRedigeringsmodus = function() {
@@ -193,32 +191,11 @@ return {
                 return !$scope.hvisModelErTrue();
             }
         },
-        template: "<div class='spm-blokk'>" +
-                "<p class='spm'>{{ sporsmal }}</p>" +
-                "<div class='redigeringsboks' data-ng-show='hvisIRedigeringsmodus()'>" +
-                    "<input class='sendsoknad-radio' id='{{ svar1 }}' type='radio' data-ng-model='model' value='true' name='{{ name }}' mod-faktum required/>" +
-                    "<label for='{{ svar1 }}' class='svar-alt'>" +
-                        "{{ svar1 }}" +
-                    "</label>" +
-                     "<input class='sendsoknad-radio' id='{{ svar2 }}' type='radio' data-ng-model='model' value='false' name='{{ name }}' mod-faktum required/>" +
-                     "<label for='{{ svar2 }}' class='svar-alt'>" +
-                         "{{ svar2 }}" +
-                     "</label>" +
-                "</div>" +
-                "<div class='oppsummeringsboks' data-ng-show='hvisIOppsummeringsmodus()'>" +
-                    "<span data-ng-show='hvisModelErTrue()'>"+
-                        "{{ svar1 }}" +
-                    "</span>" +
-                   "<span data-ng-show='hvisModelErFalse()'>" +
-                        "{{ svar2 }}" +
-                    "</span>" +
-                "</div>" +
-            "</div> "
+        templateUrl: '../html/templates/radioknapp-template.html'
     }
 })
 
-
-.directive('snurrepipp', function() {
+.directive('fremdriftsindikator', function() {
     return {
         link: function(scope, element) {
             var image = angular.element('<img src="../img/ajaxloader/hvit/loader_hvit_48.gif"/>');

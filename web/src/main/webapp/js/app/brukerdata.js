@@ -1,6 +1,6 @@
 angular.module('app.brukerdata', ['app.services'])
 
-    .controller('StartSoknadCtrl', function ($scope, $location, soknadService, enonicService) {
+    .controller('StartSoknadCtrl', function ($scope, $location, soknadService, tekstService) {
         $scope.startSoknad = function () {
             var soknadType = window.location.pathname.split("/")[3];
 
@@ -12,7 +12,7 @@ angular.module('app.brukerdata', ['app.services'])
             })
 
             // Pre-fetche alle tekster så det blir cachet i angular-land
-            $scope.tekster = enonicService.get({side: 'Dagpenger'});
+            $scope.tekster = tekstService.get({side: 'Dagpenger'});
         }
     })
 
@@ -97,19 +97,21 @@ angular.module('app.brukerdata', ['app.services'])
     .controller('SoknadDataCtrl', function ($scope, $routeParams, $location, $timeout, soknadService) {
         $scope.soknadData = soknadService.get({param: $routeParams.soknadId});
 
-        $scope.lagre = function () {
+        $scope.$on("OPPDATER_OG_LAGRE", function(e, data) {
+            $scope.soknadData.fakta[data.key] = {"soknadId": $scope.soknadData.soknadId, "key": data.key, "value": data.value};
+            $scope.$apply();
             var soknadData = $scope.soknadData;
-            console.log("lagre: " + soknadData);
             soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
-        };
+            console.log("lagre: " + soknadData);
+        });
 
         $scope.avbryt = function () {
             $location.path('avbryt/' + $routeParams.soknadId);
         }
     })
 
-    .controller('TekstCtrl', function ($scope, enonicService) {
-        $scope.tekster = enonicService.get({side: 'Dagpenger'});
+    .controller('TekstCtrl', function ($scope, tekstService) {
+        $scope.tekster = tekstService.get({side: 'Dagpenger'});
     })
 
     .controller('ModusCtrl', function ($scope) {
@@ -137,6 +139,29 @@ angular.module('app.brukerdata', ['app.services'])
 
         $scope.hvisIkkeFormValiderer = function () {
             return $scope.data.showErrorMessage;
+        }
+    })
+
+    .controller('UtdanningCtrl', function ($scope) {
+        $scope.hvisIkkeUnderUtdanning = function() {
+            if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
+                return $scope.soknadData.fakta.utdanning.value == 'ikkeUtdanning';
+            }
+            return false;
+        }
+
+        $scope.hvisAvsluttetUtdanning = function() {
+            if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
+                return $scope.soknadData.fakta.utdanning.value == 'avsluttetUtdanning';
+            }
+            return false;
+        }
+
+        $scope.hvisUnderUtdanning = function() {
+            if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
+                return $scope.soknadData.fakta.utdanning.value == 'underUtdanning';
+            }
+            return false;
         }
     })
 
@@ -191,10 +216,7 @@ angular.module('app.brukerdata', ['app.services'])
                 if (element.attr('type') === "checkbox") {
                     verdi = element.is(':checked');
                 }
-
-                $scope.soknadData.fakta[attrs.name] = {"soknadId": $scope.soknadData.soknadId, "key": attrs.name, "value": verdi};
-                $scope.$apply();
-                $scope.lagre();
+                $scope.$emit("OPPDATER_OG_LAGRE", {key: attrs.name, value: verdi});
             });
         };
     })
@@ -227,9 +249,5 @@ angular.module('app.brukerdata', ['app.services'])
             $timeout(tick, 1000);
         })();
         return time;
-    })
-
-    .controller('SistLagretCtrl', function ($scope, time) {
-        $scope.time = time;
     });
 

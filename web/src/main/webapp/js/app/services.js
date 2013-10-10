@@ -22,13 +22,13 @@ angular.module('app.services',['ngResource'])
 })
 
 // Husk språkstøtte...?
-.factory('enonicService', function($resource) {
+.factory('tekstService', function($resource) {
     return $resource('/sendsoknad/rest/enonic/:side',
         {side: '@side'},
         {
             get: {
                 method: 'GET',
-                cache: true  // Legg på caching senere???
+                cache: true
             }
         });
 })

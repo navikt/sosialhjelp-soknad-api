@@ -14,6 +14,8 @@ angular.module('app.routes',['ngRoute'])
       .when('/kvittering', {templateUrl: '../html/templates/kvittering-innsendt.html'})
       .when('/verneplikt/:soknadId', {templateUrl: '../html/templates/verneplikt.html', controller: 'SoknadDataCtrl'})
       .when('/oppsummering/:soknadId', {templateUrl: '../html/templates/oppsummering.html', controller: 'SoknadDataCtrl'})
+      .when('/egennaering/:soknadId', {templateUrl: '../html/templates/egen-naering.html', controller: 'SoknadDataCtrl'})
+      .when('/utdanning/:soknadId', {templateUrl: '../html/templates/utdanning.html', controller: 'SoknadDataCtrl'})
       .otherwise({redirectTo: '/utslagskriterier'});
 
 //    $locationProvider.html5Mode(true);

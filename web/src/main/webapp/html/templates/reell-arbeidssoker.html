@@ -5,41 +5,38 @@
 		</div>
 
 		<div class="skjemainnhold" data-ng-controller="ModusCtrl">
+
             <radioknapp model="soknadData.fakta.villigDeltid.value"
                         modus="data.redigeringsModus"
                         sporsmal="tekster.reellarbeidssoker_villig_deltid_sporsmal"
-                        svar1="tekster.reellarbeidssoker_villig_deltid_svar_ja"
-                        svar2="tekster.reellarbeidssoker_villig_deltid_svar_nei"
-                        soknad-data="soknadData"
-                        lagre="lagre()"
+                        svar-alternativ1="tekster.reellarbeidssoker_villig_deltid_svar_ja"
+                        svar-alternativ2="tekster.reellarbeidssoker_villig_deltid_svar_nei"
                         name="villigDeltid"/>
 
             <radioknapp model="soknadData.fakta.villigPendle.value"
                         modus="data.redigeringsModus"
                         sporsmal="tekster.reellarbeidssoker_villig_pendle_sporsmal"
-                        svar1="tekster.reellarbeidssoker_villig_pendle_svar_ja"
-                        svar2="tekster.reellarbeidssoker_villig_pendle_svar_nei"
-                        soknad-data="soknadData"
-                        lagre="lagre()"
+                        svar-alternativ1="tekster.reellarbeidssoker_villig_pendle_svar_ja"
+                        svar-alternativ2="tekster.reellarbeidssoker_villig_pendle_svar_nei"
                         name="villigPendle"/>
 
             <radioknapp model="soknadData.fakta.villigHelse.value"
                         modus="data.redigeringsModus"
                         sporsmal="tekster.reellarbeidssoker_helseaarsaker_sporsmal"
-                        svar1="tekster.reellarbeidssoker_helseaarsaker_svar_nei"
-                        svar2="tekster.reellarbeidssoker_helseaarsaker_svar_ja"
-                        soknad-data="soknadData"
-                        lagre="lagre()"
+                        svar-alternativ1="tekster.reellarbeidssoker_helseaarsaker_svar_nei"
+                        svar-alternativ2="tekster.reellarbeidssoker_helseaarsaker_svar_ja"
                         name="villigHelse"/>
 
             <radioknapp model="soknadData.fakta.villigJobb.value"
                         modus="data.redigeringsModus"
                         sporsmal="tekster.reellarbeidssoker_villig_jobb_sporsmal"
-                        svar1="tekster.reellarbeidssoker_villig_jobb_svar_ja"
-                        svar2="tekster.reellarbeidssoker_villig_jobb_svar_nei"
-                        soknad-data="soknadData"
-                        lagre="lagre()"
+                        svar-alternativ1="tekster.reellarbeidssoker_villig_jobb_svar_ja"
+                        svar-alternativ2="tekster.reellarbeidssoker_villig_jobb_svar_nei"
                         name="villigJobb"/>
+
+            <div data-ng-show="hvisIkkeFormValiderer()">
+                {{ tekster.reellarbeidssoker_feilmelding }}
+            </div>
 
             <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved" data-ng-click="validateForm(villigForm.$invalid)">
                 {{ tekster.reellarbeidssoker_ferdig }}
@@ -48,12 +45,8 @@
                 {{ tekster.endre }}
             </button>
 
-            <div data-ng-show="hvisIkkeFormValiderer()">
-                {{ tekster.reellarbeidssoker_feilmelding }}
-            </div>
-
             <div>
-                <a class="knapp-hoved" href="#/verneplikt/{{ soknadData.soknadId }}">
+                <a class="knapp-hoved" href="#/egennaering/{{ soknadData.soknadId }}">
                     {{ tekster.neste }}
                 </a>
             </div>
@@ -65,11 +58,6 @@
 		</div>
 	</form>
 </div>
-
-
-
-
-
 
 
 
