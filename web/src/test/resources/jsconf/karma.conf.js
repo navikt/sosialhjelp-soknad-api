@@ -20,6 +20,7 @@ module.exports = function(config) {
       '../src/main/webapp/js/app/*.js',
       '../src/test/js/test/unit/BrukerdataSpec.js',
       '../src/test/js/test/unit/controllersSpec.js'
+//      '../src/test/js/test/unit/directivesSpec.js'
     ],
 
 
