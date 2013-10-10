@@ -1,21 +1,17 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
 
-import java.util.Locale;
-
-import javax.inject.Inject;
-
-import no.nav.modig.content.CmsContentRetriever;
 import no.nav.modig.wicket.test.FluentWicketTester;
 import no.nav.sbl.dialogarena.InMemorySoknadInnsendingRepository;
 import no.nav.sbl.dialogarena.SoknadInnsendingRepository;
 import no.nav.sbl.dialogarena.WebSoknadServiceMock;
 import no.nav.sbl.dialogarena.websoknad.WicketApplication;
 import no.nav.sbl.dialogarena.websoknad.servlet.SoknadDataController;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+
+import java.util.Locale;
 
 @Import({FooterConfig.class, GAConfig.class, ContentConfigTest.class})
 public class FitNesseApplicationConfig {
