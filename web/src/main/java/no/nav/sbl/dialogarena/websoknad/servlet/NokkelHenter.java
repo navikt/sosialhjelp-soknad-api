@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import static java.lang.String.format;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,8 @@ public class NokkelHenter {
             while (scanner.hasNextLine()) {
                 nokler.add(scanner.nextLine());
             }
-        } catch (Exception e) {
+        } 
+        catch (NullPointerException | IOException e) {
 			throw new ApplicationException("Fant ikke fil",e);
         }
         return nokler;
