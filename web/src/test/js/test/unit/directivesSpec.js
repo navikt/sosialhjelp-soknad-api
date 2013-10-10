@@ -107,7 +107,7 @@ describe('directives', function() {
             sporsmal: 'sporsmal',
             svar_ja: 'svar_ja',
             svar_nei: 'svar_nei'
-        }
+        };
 
         element = angular.element(
             '<radioknapp model="soknadData.fakta.testName.value"' +
