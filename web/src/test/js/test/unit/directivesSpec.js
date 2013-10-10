@@ -154,10 +154,10 @@ describe('directives', function() {
 			);
 
 		scope.arbeidsforhold = {
-			fra: new Date('10.10.2010'),
-			til: new Date('10.10.2011'),
-			fraTo: new Date('10.10.2010'),
-			tilTo: new Date('10.10.2011'),
+			fra: new Date(2010, 10, 10),
+			til: new Date(2011, 10, 10),
+			fraTo: new Date(2010, 10, 10),
+			tilTo: new Date(2011, 10, 10),
 			permiteringVetikke: true
 		};
 
