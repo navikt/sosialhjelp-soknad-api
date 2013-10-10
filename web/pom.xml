@@ -61,6 +61,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>sendsoknad-db</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-business</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -243,6 +248,11 @@
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-web</artifactId>
             <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+        	<groupId>joda-time</groupId>
+        	<artifactId>joda-time</artifactId> 
         </dependency>
 
         <!-- Avhengigheter med scope provided -->
