@@ -60,5 +60,20 @@ public class PersonAlderTest {
         PersonAlder alder = new PersonAlder("56051329132");
         assertEquals(100, alder.getAlder());
     }
+    
+    @Test
+    public void alderErGodkjentForPersonSomFylte67DenneMaaneden() {
+        PersonAlder alder = new PersonAlder("02104635787");
+    	assertEquals(true, alder.sjekkAlder());
+    }
+    
+    @Test
+    public void alderErIkkeGodkjentForPersonSomFylte67ForrigeMaaneden() {
+    	 long nyIdag = 1383260400000L;
+         DateTimeUtils.setCurrentMillisFixed(nyIdag);
+
+         PersonAlder alder = new PersonAlder("02104635787");
+         assertEquals(false, alder.sjekkAlder());
+    }
 
 }

@@ -9,7 +9,14 @@ import java.util.List;
 import org.junit.Test;
 
 public class NokkelHenterTest {
+
     @Test
+    public void skalHenteIngenNokklerVedTomFil() {
+        List<String> nokleListe = NokkelHenter.hentNokler("testfil0");
+        assertThat(nokleListe.size(), is(0));
+    }
+	
+	@Test
     public void skalHenteEnNokkel() {
         List<String> nokleListe = NokkelHenter.hentNokler("testfil1");
         assertThat(nokleListe.size(), is(1));
