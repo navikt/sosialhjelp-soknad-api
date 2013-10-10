@@ -42,8 +42,7 @@ public class Person implements Serializable {
 			String etternavn) {
 		if("".equals(fornavn) || fornavn == null) {
 			return etternavn;
-		}
-		else if("".equals(mellomnavn) || mellomnavn == null) {
+		} else if("".equals(mellomnavn) || mellomnavn == null) {
 			return fornavn + " " + etternavn;
 		} else {
 			return fornavn +" " + mellomnavn + " " + etternavn;
