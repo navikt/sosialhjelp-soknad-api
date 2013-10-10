@@ -415,7 +415,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
+           <!-- <plugin>
                 <groupId>com.kelveden</groupId>
                 <artifactId>maven-karma-plugin</artifactId>
                 <version>1.4</version>
@@ -430,11 +430,11 @@
                     <configFile>${basedir}/target/karma-coverage-html.conf.js</configFile>
                     <browsers>PhantomJS</browsers>
                     <reporters>dots</reporters>
-                    <!--<color>false</color>-->
+                    &lt;!&ndash;<color>false</color>&ndash;&gt;
                     <autoWatch>false</autoWatch>
                     <reporters>dots,coverage</reporters>
                 </configuration>
-            </plugin>
+            </plugin>-->
             <plugin>
                 <groupId>org.jboss.as.plugins</groupId>
                 <artifactId>jboss-as-maven-plugin</artifactId>
