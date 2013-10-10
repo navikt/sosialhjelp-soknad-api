@@ -408,6 +408,56 @@
         </testResources>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>karam-coverage-html.conf.js</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <copy file="${basedir}/src/test/resources/jsconf/karma.conf.js"
+                                      tofile="${basedir}/target/karma-coverage-html.conf.js"/>
+
+                                <replaceregexp byline="true"
+                                               file="${basedir}/target/karma-coverage-html.conf.js"
+                                               match="basePath\p{Blank}*=\p{Blank}*'';"
+                                               replace="basePath = '..';"/>
+
+                                <replaceregexp byline="true"
+                                               file="${basedir}/target/karma-coverage-html.conf.js"
+                                               match="//(\p{Blank}*'.'\p{Blank}*:\p{Blank}*'coverage'\p{Blank}*)"
+                                               replace="\1"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+           <!-- <plugin>
+                <groupId>com.kelveden</groupId>
+                <artifactId>maven-karma-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <configFile>${basedir}/target/karma-coverage-html.conf.js</configFile>
+                    <browsers>PhantomJS</browsers>
+                    <reporters>dots</reporters>
+                    &lt;!&ndash;<color>false</color>&ndash;&gt;
+                    <autoWatch>false</autoWatch>
+                    <reporters>dots,coverage</reporters>
+                </configuration>
+            </plugin>-->
+            <plugin>
                 <groupId>org.jboss.as.plugins</groupId>
                 <artifactId>jboss-as-maven-plugin</artifactId>
             </plugin>

@@ -19,17 +19,9 @@ public class UtslagskriterierController {
     @RequestMapping(value = "/{uid}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Map<String, Boolean> sjekkUtslagskriterier() {
-        utslagskriterierResultat.put("alder", sjekkAlder());
+    	PersonAlder alder = new PersonAlder(SubjectHandler.getSubjectHandler().getUid());
+    	utslagskriterierResultat.put("alder", alder.sjekkAlder());
         utslagskriterierResultat.put("borIUtland", true);
         return utslagskriterierResultat;
     }
-
-    private boolean sjekkAlder() {
-        PersonAlder alder = new PersonAlder(SubjectHandler.getSubjectHandler().getUid());
-        return alder.getAlder() < 67;
-    }
  }
-
-
-
-
