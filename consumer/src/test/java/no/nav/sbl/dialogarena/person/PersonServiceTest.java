@@ -1,11 +1,5 @@
 package no.nav.sbl.dialogarena.person;
 
-import static org.mockito.Mockito.when;
-
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.List;
-
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
@@ -26,15 +20,19 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostnummer;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLUstrukturertAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
-
 import org.joda.time.DateTime;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.Mockito.when;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class PersonServiceTest {
@@ -145,7 +143,7 @@ public class PersonServiceTest {
     	XMLBostedsadresse bostedsadresse = genererXMLFolkeregistrertAdresse();
 		xmlBruker.setBostedsadresse(bostedsadresse);
 		
-		XMLMidlertidigPostadresseNorge xmlMidlertidigNorge = generateMidlertidigAdresseNorge();	
+		XMLMidlertidigPostadresseNorge xmlMidlertidigNorge = generateMidlertidigAdresseNorge();
 		xmlBruker.setMidlertidigPostadresse(xmlMidlertidigNorge);
     	
     	XMLPostadressetyper postadressetyper = new XMLPostadressetyper();

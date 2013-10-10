@@ -1,49 +1,48 @@
 package no.nav.sbl.dialogarena;
 
-import java.util.Map;
-
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
-
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 public class InMemorySoknadInnsendingRepositorytTest {
-	
-	InMemorySoknadInnsendingRepository repo;
-	WebSoknad soknad; 
-	Long soknadId;
-	
-	@Before
-	public void setUp( ){
-		 repo = new InMemorySoknadInnsendingRepository();
-		 soknadId = repo.startSoknad("Dagpenger");
-		 soknad = repo.hentSoknad(soknadId);
-			
-	}
-	
-	@Test
-	public void skalKunneStarteOgHenteSoknad() {
-		Assert.assertEquals(soknadId, soknad.getSoknadId());
-		Assert.assertEquals(0, soknad.getFakta().size());
-	}
-	
-	@Test
-	public void skalKunneLeggeFaktaPaaSoknad() {
-		soknad.leggTilFaktum("testFakta", new Faktum(soknadId, "testFakta", "testValue", null));
-		
-		Map<String, Faktum> fakta = soknad.getFakta();
-		Assert.assertEquals(1, fakta.size());
-		Assert.assertEquals("testValue", fakta.get("testFakta").getValue());
-	}
-	
-	@Test
-	public void skalKunneSletteSoknad() {
-		repo.slettSoknad(soknadId);
-		soknad = repo.hentSoknad(soknadId);
-		
-		Assert.assertNull(soknad);
-	}
-	
+
+    private InMemorySoknadInnsendingRepository repo;
+    private WebSoknad soknad;
+    private Long soknadId;
+
+    @Before
+    public void setUp() {
+        repo = new InMemorySoknadInnsendingRepository();
+        soknadId = repo.startSoknad("Dagpenger");
+        soknad = repo.hentSoknad(soknadId);
+    }
+
+    @Test
+    public void skalKunneStarteOgHenteSoknad() {
+        assertEquals(soknadId, soknad.getSoknadId());
+        assertEquals(0, soknad.getFakta().size());
+    }
+
+    @Test
+    public void skalKunneLeggeFaktaPaaSoknad() {
+        soknad.leggTilFaktum("testFakta", new Faktum(soknadId, "testFakta", "testValue", null));
+
+        Map<String, Faktum> fakta = soknad.getFakta();
+        assertEquals(1, fakta.size());
+        assertEquals("testValue", fakta.get("testFakta").getValue());
+    }
+
+    @Test
+    public void skalKunneSletteSoknad() {
+        repo.slettSoknad(soknadId);
+        soknad = repo.hentSoknad(soknadId);
+
+        assertNull(soknad);
+    }
 }

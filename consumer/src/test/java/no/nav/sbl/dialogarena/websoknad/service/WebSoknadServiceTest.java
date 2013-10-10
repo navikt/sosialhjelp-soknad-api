@@ -1,26 +1,25 @@
 package no.nav.sbl.dialogarena.websoknad.service;
 
 
-import static org.mockito.Mockito.*;
-
-import javax.inject.Named;
-import javax.xml.ws.soap.SOAPFaultException;
-
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSSoknadData;
-
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.remoting.soap.SoapFaultException;
+
+import javax.inject.Named;
+import javax.xml.ws.soap.SOAPFaultException;
+
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @RunWith(value = MockitoJUnitRunner.class)
@@ -34,6 +33,7 @@ public class WebSoknadServiceTest {
 	
 	
 	Long soknadId;
+
 	@Before
 	public void setUp() {
 		soknadId = service.startSoknad("dagpenger");
@@ -56,8 +56,6 @@ public class WebSoknadServiceTest {
 	
 	@Test
 	public void skalKunneLeggeTilFaktum() {
-		Long soknadId = service.startSoknad("dagpenger");
-		
 		WebSoknad soknad = service.hentSoknad(soknadId);
 		soknad.leggTilFaktum("enKey", new Faktum(soknadId, "enKey", "enVerdi", null));
 		
