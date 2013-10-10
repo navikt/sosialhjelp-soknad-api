@@ -428,7 +428,7 @@
                 </executions>
                 <configuration>
                     <configFile>${basedir}/target/karma-coverage-html.conf.js</configFile>
-                    <browsers>PhantomJS</browsers>
+                    <browsers>Chrome</browsers>
                     <reporters>dots</reporters>
                     <!--<color>false</color>-->
                     <autoWatch>false</autoWatch>
