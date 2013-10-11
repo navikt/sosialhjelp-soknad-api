@@ -19,7 +19,7 @@
     <name>Dialogarena - Send Søknad</name>
     <description>Innsending av elektronisk søknad.</description>
     <artifactId>sendsoknad</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -887,7 +887,7 @@
             scm:git:ssh://git@a34apvl029.devillo.no:7999/dial/sendsoknad.git
         </developerConnection>
         <url>http://a34apvl029.devillo.no:7990/projects/DIAL/repos/sendsoknad/browse</url>
-        <tag>sendsoknad-1.0.2</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <profiles>
