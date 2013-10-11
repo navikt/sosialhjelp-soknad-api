@@ -885,9 +885,10 @@
     </build>
     <scm>
         <developerConnection>
-            scm:git:ssh://git@stash.devillo.no:7999/dial/sendsoknad.git
+            scm:git:ssh://git@a34apvl029.devillo.no:7999/dial/sendsoknad.git
         </developerConnection>
-        <url>http://stash.devillo.no:7990/scm/dial/sendsoknad.git</url>
+        <url>http://a34apvl029.devillo.no:7990/projects/DIAL/repos/sendsoknad/browse</url>
+        <tag>HEAD</tag>
     </scm>
 
     <profiles>
