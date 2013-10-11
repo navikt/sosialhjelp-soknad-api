@@ -4,7 +4,7 @@
 *
 * Description
 */
-angular.module('app.directives', ['app.services'])
+angular.module('app.directives', ['app.services', 'nav.booleanradio'])
 
 /*Hva med casene 1-242 osv? */
 
@@ -160,39 +160,6 @@ return {
             return rad.prop('outerHTML');
         }
     };
-})
-
-.directive('radioknapp', function() {
-    return {
-        restrict: "E",
-        replace: true,
-        scope: {
-            model: '=',
-            modus: '=',
-            sporsmal: '=',
-            svarAlternativ1: '=',
-            svarAlternativ2: '=',
-            name: '@'
-        },
-        controller: function($scope) {
-            $scope.hvisIRedigeringsmodus = function() {
-                return $scope.modus;
-            }
-
-            $scope.hvisIOppsummeringsmodus = function () {
-                return !$scope.hvisIRedigeringsmodus();
-            }
-
-            $scope.hvisModelErTrue = function() {
-                return $scope.model == 'true';
-            }
-
-            $scope.hvisModelErFalse = function() {
-                return !$scope.hvisModelErTrue();
-            }
-        },
-        templateUrl: '../html/templates/radioknapp-template.html'
-    }
 })
 
 .directive('fremdriftsindikator', function() {

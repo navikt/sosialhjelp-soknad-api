@@ -1,5 +1,6 @@
 <form name="arbeidsforholdForm" data-ng-controller="ValidationCtrl" novalidate>
     <div data-ng-controller="ArbeidsforholdCtrl">
+        <!-- Bruke liste og ikke objekt -->
         <ul>
             <li data-ng-repeat="af in arbeidsforhold">
                 <label for="arbeidsgiver{{ $index }}">Navn på arbeidsgiver</label>

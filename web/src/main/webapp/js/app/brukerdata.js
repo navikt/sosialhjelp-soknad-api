@@ -45,6 +45,7 @@ angular.module('app.brukerdata', ['app.services'])
                 }
             });
 
+            // Trenger kanskje ikkje != undefined
             $scope.harBostedsAdresse = function () {
                 return $scope.data.bostedsAdresse != undefined;
             }
@@ -203,8 +204,10 @@ angular.module('app.brukerdata', ['app.services'])
             $scope.arbeidsforhold[key] = {};
         }
 
+        // Lagre på ferdig-knappen per arbeidsforhold
         $scope.$on("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", function(e) {
-            $scope.soknadData.fakta.arbeidsforhold = {"soknadId": $scope.soknadData.soknadId, "key": "arbeidsforhold", "value": JSON.stringify($scope.arbeidsforhold)};
+            $scope.soknadData.fakta.arbeidsforhold = {"soknadId": $scope.soknadData.soknadId, "key": "arbeidsforhold",
+                "value": JSON.stringify($scope.arbeidsforhold)};
             var soknadData = $scope.soknadData;
             soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
             $scope.$apply();
