@@ -6,7 +6,7 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>dialogarena</artifactId>
-        <version>1.5.2</version>
+        <version>2.1</version>
     </parent>
 
     <modules>
@@ -21,7 +21,7 @@
     <name>Dialogarena - Send Søknad</name>
     <description>Innsending av elektronisk søknad.</description>
     <artifactId>sendsoknad</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.7-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -830,6 +830,21 @@
                         <!--</arguments>-->
                     <!--</configuration>-->
                 <!--</plugin>-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.4.1</version>
+                    <configuration>
+                        <tagNameFormat>@{project.version}-@{project.artifactId}</tagNameFormat>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-scm-plugin</artifactId>
+                            <version>1.9-SNAPSHOT</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -905,9 +920,7 @@
         </plugins>
     </build>
     <scm>
-        <developerConnection>
-            scm:git:ssh://git@a34apvl029.devillo.no:7999/dial/sendsoknad.git
-        </developerConnection>
+        <developerConnection>scm:git:ssh://git@a34apvl029.devillo.no:7999/dial/sendsoknad.git</developerConnection>
         <url>http://a34apvl029.devillo.no:7990/scm/dial/sendsoknad.git</url>
         <tag>HEAD</tag>
     </scm>
