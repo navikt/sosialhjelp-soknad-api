@@ -6,33 +6,39 @@
 
 		<div class="skjemainnhold" data-ng-controller="ModusCtrl">
 
-            <radioknapp model="soknadData.fakta.villigDeltid.value"
+            <booleanradio model="soknadData.fakta.villigDeltid.value"
                         modus="data.redigeringsModus"
                         sporsmal="tekster.reellarbeidssoker_villig_deltid_sporsmal"
                         svar-alternativ1="tekster.reellarbeidssoker_villig_deltid_svar_ja"
                         svar-alternativ2="tekster.reellarbeidssoker_villig_deltid_svar_nei"
                         name="villigDeltid"/>
 
-            <radioknapp model="soknadData.fakta.villigPendle.value"
+            <booleanradio model="soknadData.fakta.villigPendle.value"
                         modus="data.redigeringsModus"
                         sporsmal="tekster.reellarbeidssoker_villig_pendle_sporsmal"
                         svar-alternativ1="tekster.reellarbeidssoker_villig_pendle_svar_ja"
                         svar-alternativ2="tekster.reellarbeidssoker_villig_pendle_svar_nei"
                         name="villigPendle"/>
 
-            <radioknapp model="soknadData.fakta.villigHelse.value"
+            <booleanradio model="soknadData.fakta.villigHelse.value"
                         modus="data.redigeringsModus"
                         sporsmal="tekster.reellarbeidssoker_helseaarsaker_sporsmal"
                         svar-alternativ1="tekster.reellarbeidssoker_helseaarsaker_svar_nei"
                         svar-alternativ2="tekster.reellarbeidssoker_helseaarsaker_svar_ja"
                         name="villigHelse"/>
 
-            <radioknapp model="soknadData.fakta.villigJobb.value"
+            <booleanradio model="soknadData.fakta.villigJobb.value"
                         modus="data.redigeringsModus"
                         sporsmal="tekster.reellarbeidssoker_villig_jobb_sporsmal"
                         svar-alternativ1="tekster.reellarbeidssoker_villig_jobb_svar_ja"
                         svar-alternativ2="tekster.reellarbeidssoker_villig_jobb_svar_nei"
                         name="villigJobb"/>
+
+
+            <!-- Bruke direktiv isteden for modusctrl.
+                Transclude: true
+                Bruke samme konvensjon om tekster: reellarbeidssoker_key (...)
+                -->
 
             <div data-ng-show="hvisIkkeFormValiderer()">
                 {{ tekster.reellarbeidssoker_feilmelding }}
