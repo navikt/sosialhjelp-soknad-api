@@ -1,17 +1,19 @@
-angular.module('nav.booleanradio',[])
-    .directive('booleanradio', function() {
+angular.module('nav.booleanradio',['nav.cmstekster', 'nav.input'])
+    .directive('booleanradio', [function() {
         return {
             restrict: "E",
             replace: true,
             scope: {
                 model: '=',
                 modus: '=',
-                sporsmal: '=',
-                svarAlternativ1: '=',
-                svarAlternativ2: '=',
-                name: '@'
+                nokkel: '@'
             },
             controller: function($scope) {
+                $scope.sporsmal = $scope.nokkel + ".sporsmal";
+                $scope.trueLabel = $scope.nokkel + ".true";
+                $scope.falseLabel = $scope.nokkel + ".false";
+                $scope.name = $scope.nokkel.split('.').last();
+
                 $scope.hvisIRedigeringsmodus = function() {
                     return $scope.modus;
                 }
@@ -30,4 +32,4 @@ angular.module('nav.booleanradio',[])
             },
             templateUrl: '../js/app/directives/booleanradio/booleanradioTemplate.html'
         }
-    })
+    }]);

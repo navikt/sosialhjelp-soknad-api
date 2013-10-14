@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('app.grunnlagsdata', ['app.services'])
-.controller('GrunnlagsdataCtrl', ['$scope', 'utslagskriterierService', 'soknadService', 'tekstService', '$location', '$q', function($scope, utslagskriterierService, soknadService, tekstService, $location, $q) {
-
+.controller('GrunnlagsdataCtrl', ['$scope', 'utslagskriterierService', 'soknadService', '$location', 'data', function($scope, utslagskriterierService, soknadService, $location, data) {
 	$scope.personalia = utslagskriterierService.get();
-    $scope.utslagskritererTekster = tekstService.get({side:'utslagskriterier'});
+        $scope.tekster = data.tekster;
+//    $scope.utslagskritererTekster = tekstService.get({side:'utslagskriterier'});
 	$scope.maxAlder = 67;
 	$scope.minAlder = 18;
 

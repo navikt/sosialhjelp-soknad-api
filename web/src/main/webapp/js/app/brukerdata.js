@@ -1,6 +1,6 @@
 angular.module('app.brukerdata', ['app.services'])
 
-    .controller('StartSoknadCtrl', function ($scope, $location, soknadService, tekstService) {
+    .controller('StartSoknadCtrl', function ($scope, $location, soknadService) {
         $scope.startSoknad = function () {
             var soknadType = window.location.pathname.split("/")[3];
 
@@ -9,10 +9,7 @@ angular.module('app.brukerdata', ['app.services'])
             }).finally(function() {
                 $('#start').show();
                 $('#start').siblings('img').hide();
-            })
-
-            // Pre-fetche alle tekster så det blir cachet i angular-land
-            $scope.tekster = tekstService.get({side: 'Dagpenger'});
+            });
         }
     })
 
@@ -105,10 +102,6 @@ angular.module('app.brukerdata', ['app.services'])
             soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
             console.log("lagre: " + soknadData);
         });
-
-        $scope.avbryt = function () {
-            $location.path('avbryt/' + $routeParams.soknadId);
-        }
     })
 
     .controller('TekstCtrl', function ($scope, tekstService) {
