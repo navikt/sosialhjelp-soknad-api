@@ -1,70 +1,29 @@
 <div class="skjemaramme">
-	<form name="villigForm" data-ng-controller="ValidationCtrl" novalidate>
-		<div class="sideoversikt">
-			<h4>{{ tekster.reellarbeidssoker_tittel}}</h4>
-		</div>
-
-		<div class="skjemainnhold" data-ng-controller="ModusCtrl">
-
-            <booleanradio model="soknadData.fakta.villigDeltid.value"
-                        modus="data.redigeringsModus"
-                        sporsmal="tekster.reellarbeidssoker_villig_deltid_sporsmal"
-                        svar-alternativ1="tekster.reellarbeidssoker_villig_deltid_svar_ja"
-                        svar-alternativ2="tekster.reellarbeidssoker_villig_deltid_svar_nei"
-                        name="villigDeltid"/>
-
-            <booleanradio model="soknadData.fakta.villigPendle.value"
-                        modus="data.redigeringsModus"
-                        sporsmal="tekster.reellarbeidssoker_villig_pendle_sporsmal"
-                        svar-alternativ1="tekster.reellarbeidssoker_villig_pendle_svar_ja"
-                        svar-alternativ2="tekster.reellarbeidssoker_villig_pendle_svar_nei"
-                        name="villigPendle"/>
-
-            <booleanradio model="soknadData.fakta.villigHelse.value"
-                        modus="data.redigeringsModus"
-                        sporsmal="tekster.reellarbeidssoker_helseaarsaker_sporsmal"
-                        svar-alternativ1="tekster.reellarbeidssoker_helseaarsaker_svar_nei"
-                        svar-alternativ2="tekster.reellarbeidssoker_helseaarsaker_svar_ja"
-                        name="villigHelse"/>
-
-            <booleanradio model="soknadData.fakta.villigJobb.value"
-                        modus="data.redigeringsModus"
-                        sporsmal="tekster.reellarbeidssoker_villig_jobb_sporsmal"
-                        svar-alternativ1="tekster.reellarbeidssoker_villig_jobb_svar_ja"
-                        svar-alternativ2="tekster.reellarbeidssoker_villig_jobb_svar_nei"
-                        name="villigJobb"/>
+    <div class="sideoversikt">
+        <h4 cmstekster="reellarbeidssoker.tittel"/>
+    </div>
 
 
-            <!-- Bruke direktiv isteden for modusctrl.
-                Transclude: true
-                Bruke samme konvensjon om tekster: reellarbeidssoker_key (...)
-                -->
+    <form name="reellarbeidssokerForm" class="skjemainnhold" data-ng-controller="ModusCtrl" novalidate>
+        <booleanradio model="soknadData.fakta.villigdeltid.value"
+                      modus="data.redigeringsModus"
+                      nokkel="reellarbeidssoker.villigdeltid"/>
 
-            <div data-ng-show="hvisIkkeFormValiderer()">
-                {{ tekster.reellarbeidssoker_feilmelding }}
-            </div>
+        <booleanradio model="soknadData.fakta.villigpendle.value"
+                      modus="data.redigeringsModus"
+                      nokkel="reellarbeidssoker.villigpendle"/>
 
-            <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved" data-ng-click="validateForm(villigForm.$invalid)">
-                {{ tekster.reellarbeidssoker_ferdig }}
-            </button>
-            <button data-ng-show="hvisIOppsummeringsmodus()" class="knapp-hoved" data-ng-click="gaTilRedigeringsmodus()">
-                {{ tekster.endre }}
-            </button>
+        <booleanradio model="soknadData.fakta.villighelse.value"
+                      modus="data.redigeringsModus"
+                      nokkel="reellarbeidssoker.villighelse"/>
 
-            <div>
-                <a class="knapp-hoved" href="#/egennaering/{{ soknadData.soknadId }}">
-                    {{ tekster.neste }}
-                </a>
-            </div>
-            <div>
-                <button class="knapp-stor" data-ng-click="avbryt()">
-                    {{ tekster.avbryt }}
-                </button>
-            </div>
-		</div>
-	</form>
+        <booleanradio model="soknadData.fakta.villigjobb.value"
+                      modus="data.redigeringsModus"
+                      nokkel="reellarbeidssoker.villigjobb"/>
+
+        <sporsmalblokk nokkel="reellarbeidssoker" redigerings-modus="data.redigeringsModus" form="reellarbeidssokerForm" nesteside="egennaering"/>
+    </form>
 </div>
-
 
 
 <!--<knapprad></knapprad>-->
