@@ -13,7 +13,7 @@ if ( phantom.args.length !== 2 ) {
     resultdir = phantom.args[1];
     page = require("webpage").create();
     fs = require("fs");
-
+    
     // Echo the output of the tests to the Standard Output
     page.onConsoleMessage = function(msg, source, linenumber) {
         console.log(msg);
@@ -31,7 +31,7 @@ if ( phantom.args.length !== 2 ) {
                     suitesResults = page.evaluate(function(){
                     return jasmine.phantomjsXMLReporterResults;
                 });
-
+                
                 // Save the result of the tests in files
                 for ( i = 0, len = suitesResults.length; i < len; ++i ) {
                     try {
@@ -43,7 +43,7 @@ if ( phantom.args.length !== 2 ) {
                         console.log("phantomjs> Unable to save result of Suite '"+ suitesResults[i]["xmlfilename"] +"'");
                     }
                 }
-
+                
                 // Return the correct exit status. '0' only if all the tests passed
                 phantom.exit(page.evaluate(function(){
                     return jasmine.phantomjsXMLReporterPassed ? 0 : 1; //< exit(0) is success, exit(1) is failure

@@ -13,6 +13,9 @@
     </artifacts>
 
     <resources>
+    	<datasource alias="soknadInnsendingDataSource" jndi="java:/jboss/datasources/SoknadInnsendingDS">
+            <pool maxPoolSize="300" minPoolSize="0"/>
+        </datasource>
         <webservice alias="virksomhet:Brukerprofil_v1"
                     mapToProperty="soknad.webservice.brukerprofil.brukerprofilservice"/>
         <webservice alias="domene.Brukerdialog:sendsoknadservice_v1"

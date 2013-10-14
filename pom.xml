@@ -6,11 +6,12 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>dialogarena</artifactId>
-        <version>1.5.2</version>
+        <version>2.1</version>
     </parent>
 
     <modules>
         <module>config</module>
+		<module>db</module>
         <module>business</module>
         <module>consumer</module>
         <module>web</module>
@@ -20,7 +21,7 @@
     <name>Dialogarena - Send Søknad</name>
     <description>Innsending av elektronisk søknad.</description>
     <artifactId>sendsoknad</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.7-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -38,8 +39,9 @@
         <henvendelse.tjenestespesifikasjon.version.1>2.0.0</henvendelse.tjenestespesifikasjon.version.1>
         <dialogarena.webkomponent.footer>1.0.6</dialogarena.webkomponent.footer>
         <dialogarena.webkomponent.navigasjon>1.0.5</dialogarena.webkomponent.navigasjon>
-        <dialogarena.webkomponent.innstillinger>1.0.17</dialogarena.webkomponent.innstillinger>
-        <dialogarena.dokumentinnsending.version>2.0.0</dialogarena.dokumentinnsending.version>
+        <dialogarena.webkomponent.innstillinger>1.0.18-SNAPSHOT</dialogarena.webkomponent.innstillinger>
+        <dialogarena.dokumentinnsending.version>2.0.0-SNAPSHOT</dialogarena.dokumentinnsending.version>
+		<ojdbc.version>11.2.0.3</ojdbc.version>
     </properties>
 
     <dependencyManagement>
@@ -343,6 +345,11 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
+                <artifactId>spring-orm</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
                 <artifactId>spring-jdbc</artifactId>
                 <version>${spring.version}</version>
                 <exclusions>
@@ -351,6 +358,11 @@
                         <artifactId>spring-beans</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-entitymanager</artifactId>
+                <version>4.3.0.Beta3</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -532,7 +544,16 @@
                 <artifactId>logback-classic</artifactId>
                 <version>1.0.13</version>
             </dependency>
-
+			<dependency>
+                <groupId>org.hsqldb</groupId>
+                <artifactId>hsqldb</artifactId>
+                <version>2.2.9</version>
+            </dependency>
+			<dependency>
+                <groupId>com.oracle</groupId>
+                <artifactId>ojdbc6</artifactId>
+                <version>${ojdbc.version}</version>
+            </dependency>
             <!-- Avhengigheter med scope runtime -->
 
             <dependency>
@@ -787,27 +808,19 @@
                     <version>7.4.Final</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>exec-maven-plugin</artifactId>
-                    <version>1.1</version>
-                    <executions>
-                        <execution>
-                            <id>PhantomJS Unit Testing</id>
-                            <phase>test</phase>
-                            <goals>
-                                <goal>exec</goal>
-                            </goals>
-                        </execution>
-                    </executions>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.4.1</version>
                     <configuration>
-                        <executable>${phantomjs.exec}</executable>
-                        <workingDirectory>${project.basedir}/src/test/js</workingDirectory>
-                        <arguments>
-                            <argument>phantomjs_jasminexml_runner.js</argument>
-                            <argument>test_runner.html</argument>
-                            <argument>${project.build.directory}/surefire-reports</argument>
-                        </arguments>
+                        <tagNameFormat>@{project.version}-@{project.artifactId}</tagNameFormat>
                     </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-scm-plugin</artifactId>
+                            <version>1.9-SNAPSHOT</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -884,9 +897,7 @@
         </plugins>
     </build>
     <scm>
-        <developerConnection>
-            scm:git:ssh://git@a34apvl029.devillo.no:7999/dial/sendsoknad.git
-        </developerConnection>
+        <developerConnection>scm:git:ssh://git@a34apvl029.devillo.no:7999/dial/sendsoknad.git</developerConnection>
         <url>http://a34apvl029.devillo.no:7990/scm/dial/sendsoknad.git</url>
         <tag>HEAD</tag>
     </scm>

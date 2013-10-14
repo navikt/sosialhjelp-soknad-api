@@ -2,9 +2,10 @@ package no.nav.sbl.dialogarena.websoknad.config;
 
 
 import no.nav.modig.wicket.test.FluentWicketTester;
-import no.nav.sbl.dialogarena.InMemorySoknadInnsendingRepository;
-import no.nav.sbl.dialogarena.SoknadInnsendingRepository;
-import no.nav.sbl.dialogarena.WebSoknadServiceMock;
+import no.nav.sbl.dialogarena.soknadinnsending.db.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.db.SoknadRepositoryJdbc;
+import no.nav.sbl.dialogarena.soknadinnsending.db.config.DatabaseTestContext;
+import no.nav.sbl.dialogarena.websoknad.service.LocalDBSoknadService;
 import no.nav.sbl.dialogarena.websoknad.WicketApplication;
 import no.nav.sbl.dialogarena.websoknad.servlet.SoknadDataController;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +14,7 @@ import org.springframework.context.annotation.Import;
 
 import java.util.Locale;
 
-@Import({FooterConfig.class, GAConfig.class, ContentConfigTest.class})
+@Import({FooterConfig.class, GAConfig.class, ContentConfigTest.class, DatabaseTestContext.class})
 public class FitNesseApplicationConfig {
 
     @Value("${websoknad.navigasjonslink.url}")
@@ -36,18 +37,15 @@ public class FitNesseApplicationConfig {
     
 	@Bean
     public SoknadDataController soknadDataController() {
+		System.out.println("Soknaddata controller");
         return new SoknadDataController();
     }
 	 
 	@Bean
-	public WebSoknadServiceMock webSoknadService() {
-		return new WebSoknadServiceMock();
+	public LocalDBSoknadService webSoknadService() {
+		return new LocalDBSoknadService();
 	}
 	
-	@Bean
-	public SoknadInnsendingRepository soknadInnsendingRepository() {
-		return new InMemorySoknadInnsendingRepository();
-	}
 	
     @Bean
     public FluentWicketTester<WicketApplication> wicketTester(WicketApplication application) {
@@ -59,6 +57,12 @@ public class FitNesseApplicationConfig {
     @Bean
     public WicketApplication soknadsInnsendingApplication() {
         return new WicketApplication();
+    }
+    
+    @Bean
+    public SoknadRepository soknadInnsendingRepository() {
+    	return new SoknadRepositoryJdbc();
+	
     }
 
 }

@@ -2,23 +2,42 @@ package no.nav.sbl.dialogarena.websoknad.domain;
 
 import java.io.Serializable;
 
+import org.joda.time.DateTime;
+
+
 public class Faktum implements Serializable {
 
+	//public enum FaktumType { FAGREGISTER, BRUKERREGISTRERT; }
+	
+	private Long faktumId;
 	private Long soknadId;
     private String key;
     private String value;
     private String type;
-
-    public Faktum() {
+    private DateTime opprettetDato;
+    
+	public Faktum() {
     	
     }
     
+    public Faktum(Long faktumId, Long soknadId, String key, String value, String type, DateTime opprettetDato) {
+		this(soknadId, key, value);
+		this.faktumId = faktumId;
+		this.type = type;
+		this.opprettetDato = opprettetDato;
+    }
+
     public Faktum(Long soknadId, String key, String value, String type) {
-		super();
+		this(soknadId,key,value);
+		this.type = type;
+    }
+    
+
+
+	public Faktum(long soknadId, String key, String value) {
 		this.soknadId = soknadId;
 		this.key = key;
 		this.value = value;
-		this.type = type;
 	}
 
 	public String getValue() {
@@ -58,4 +77,13 @@ public class Faktum implements Serializable {
    		return "Faktum [soknadId=" + soknadId + ", key=" + key + ", value="
    				+ value + ", type=" + type + "]";
    	}
+
+	public long getFaktumId() {
+		return faktumId;
+	}
+	
+	public DateTime getOpprettetDato() {
+		return opprettetDato;
+	}
+
 }
