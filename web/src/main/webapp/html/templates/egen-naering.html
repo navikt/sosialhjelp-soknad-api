@@ -1,14 +1,15 @@
 <div class="skjemaramme">
-        <div class="sideoversikt">
-            <h4 cmstekster="egennaering.tittel"/>
-        </div>
+    <div class="sideoversikt">
+        <h4 cmstekster="egennaering.tittel"/>
+    </div>
 
-        <form name="egennaeringForm" class="skjemainnhold" data-ng-controller="ModusCtrl" novalidate>
+    <form name="egennaeringForm" class="skjemainnhold" data-ng-controller="ModusCtrl" novalidate>
 
-            <booleanradio model="soknadData.fakta.egennaering.value"
-                          modus="data.redigeringsModus"
-                          nokkel="egennaering"/>
+        <booleanradio model="soknadData.fakta.egennaering.value"
+                      modus="data.redigeringsModus"
+                      nokkel="egennaering"/>
 
-            <sporsmalblokk nokkel="egennaering" redigerings-modus="data.redigeringsModus" form="egennaeringForm" nesteside="verneplikt"/>
-        </form>
+        <sporsmalblokk nokkel="egennaering" redigerings-modus="data.redigeringsModus" form="egennaeringForm"
+                       nesteside="verneplikt"/>
+    </form>
 </div>
