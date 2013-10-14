@@ -54,33 +54,38 @@ describe('Controllers', function() {
 
 	describe('fraMindreEnnTil', function(){
 		it('skal returnere true for fra-dato 10.10.2010 og til-dato 10.10.2011', function(){
-			var fra = new Date('10.10.2010');
-			var til = new Date('10.10.2011');
+			var fra = new Date(2010, 10, 10);
+			var til = new Date(2011, 10, 10);
 			expect(fraMindreEnnTil(fra,til)).toEqual(true);
 		});
+
 		it('skal returnere false for fra-dato 10.10.2010 og til-dato 10.10.2010', function(){
-			var fra = new Date('10.10.2010');
-			var til = new Date('10.10.2010');
+			var fra = new Date(2010, 10, 10);
+			var til = new Date(2010, 10, 10);
 			expect(fraMindreEnnTil(fra,til)).toEqual(false);
 		});
+
 		it('skal returnere true for fra-dato 10.10.2010 og til-dato 10.11.2010', function(){
-			var fra = new Date('10.10.2010');
-			var til = new Date('10.11.2010');
+			var fra = new Date(2010, 10, 10);
+			var til = new Date(2011, 11, 10);
 			expect(fraMindreEnnTil(fra,til)).toEqual(true);
 		});
-		it('skal returnere false for fra-dato 10.11.2010 og til-dato 10.11.2010', function(){
-			var fra = new Date('10.11.2010');
-			var til = new Date('10.11.2010');
+
+        it('skal returnere false for fra-dato 10.11.2010 og til-dato 10.11.2010', function(){
+			var fra = new Date(2010, 11, 10);
+			var til = new Date(2010, 11, 10);
 			expect(fraMindreEnnTil(fra,til)).toEqual(false);
 		});
+
 		it('skal returnere true for fra-dato 10.10.2010 og til-dato 11.10.2010', function(){
-			var fra = new Date('10.10.2010');
-			var til = new Date('11.10.2010');
+			var fra = new Date(2010, 10, 10);
+			var til = new Date(2010, 10, 11);
 			expect(fraMindreEnnTil(fra,til)).toEqual(true);
 		});
+
 		it('skal returnere false for fra-dato 11.10.2010 og til-dato 11.10.2010', function(){
-			var fra = new Date('11.10.2010');
-			var til = new Date('11.10.2010');
+			var fra = new Date(2010, 10, 11);
+			var til = new Date(2010, 10, 11);
 			expect(fraMindreEnnTil(fra,til)).toEqual(false);
 		});
 	});

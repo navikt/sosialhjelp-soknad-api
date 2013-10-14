@@ -40,7 +40,7 @@ public class SoknadListePageTest {
     }
 
 	@Test
-	public void skalApneSoknadLisePage() {
+	public void skalApneSoknadListePage() {
 		wicketTester.goTo(SoknadListePage.class);
 	}
 
