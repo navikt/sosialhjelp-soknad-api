@@ -28,12 +28,12 @@ vernepliktig_tittel
 vernepliktig_ferdig
 vernepliktig_opplasting
 
-egennaering_sporsmal
-egennaering_svar_ja
-egennaering_svar_nei
-egennaering_feilmelding
-egennaering_tittel
-egennaering_ferdig
+egennaering.sporsmal
+egennaering.true
+egennaering.false
+egennaering.feilmelding
+egennaering.tittel
+egennaering.ferdig
 
 utdanning_sporsmal
 utdanning_svar_ikke_utdanning
