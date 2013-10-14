@@ -37,6 +37,7 @@ public class SoknadRepositoryJdbc implements SoknadRepository{
     @Override
     public String opprettBehandling() {
 		Long databasenokkel = db.queryForObject(SQLUtils.selectNextSequenceValue("BRUKERBEH_ID_SEQ"), Long.class);
+		System.out.println("db nokkel " + databasenokkel);
 		String behandlingsId = IdGenerator.lagBehandlingsId(databasenokkel);
 		db.update("insert into henvendelse (henvendelse_id, behandlingsid, type, opprettetdato) values (?, ?, ?, sysdate)", databasenokkel, behandlingsId,"SOKNADINNSENDING");
 		return behandlingsId;
@@ -45,6 +46,7 @@ public class SoknadRepositoryJdbc implements SoknadRepository{
  	@Override
     public Long opprettSoknad(WebSoknad soknad) {
         Long databasenokkel = db.queryForObject(SQLUtils.selectNextSequenceValue("SOKNAD_ID_SEQ"), Long.class);
+        System.out.println("db nokkel " + databasenokkel);
         db.update("insert into soknad (soknad_id, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status) values (?,?,?,?,?,?)", 
         		databasenokkel, soknad.getBrukerbehandlingId(), soknad.getNavSoknadId(), soknad.getAktoerId(), 
         		soknad.getOpprettetDato().toDate(), SoknadInnsendingStatus.UNDER_ARBEID.name());
@@ -100,6 +102,7 @@ public class SoknadRepositoryJdbc implements SoknadRepository{
         db.update("update soknad set status = ? where soknad_id = ?",status, soknad.getSoknadId()); 
     }
 
+    
     @Override
     public void avbryt(WebSoknad soknad) {
         LOG.debug("Setter status til søknad med id {} til avbrutt", soknad.getSoknadId());

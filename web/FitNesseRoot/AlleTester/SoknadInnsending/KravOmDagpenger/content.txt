@@ -7,7 +7,7 @@
 
 *!
 
-|Script|slim driver| 11019012345|
+|Script|soknad innsending driver| 11019012345|
 |$soknadId=|opprett ny soknad|dagpenger|
 |ensure|soknadOpprettet|
 |hent soknad|$soknadId|
@@ -17,15 +17,16 @@
 |lagre faktum|email|med verdi|ketilj@gmail.com|
 |check|antall faktum lagret|2|
 |show|list fakta|
+|check|soknad status|$soknadId|UNDER_ARBEID|
 
-|Script|slim driver| 11019012345|
+|Script|soknad innsending driver| 11019012345|
 |opprett ny soknad|dagpenger|
 |ensure|soknadOpprettet|
 |$soknadId=|hentSoknadId|
 |avbryt soknad|$soknadId|
-|check|er soknad slettet|$soknadId|true|
+|check|soknad status|$soknadId|AVBRUTT_AV_BRUKER|
 
-|Script|slim driver| 11019012345|
+|Script|soknad innsending driver| 11019012345|
 |$soknadId=|opprett ny soknad|dagpenger|
 |hent soknad|$soknadId|
 |lagre faktum|telefon|med verdi|99889988|
@@ -35,3 +36,4 @@
 |lagre faktum|driverEgentNæring|med verdi|false|
 |check|antall faktum lagret|5|
 |send soknad|$soknadId|
+|check|soknad status|$soknadId|FERDIG|

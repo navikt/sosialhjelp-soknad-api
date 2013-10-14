@@ -39,7 +39,7 @@ public class LocalDBSoknadService implements SendSoknadService{
 
 	@Override
 	public void sendSoknad(long soknadId) {
-		//repository.sendSoknad(soknadId);
+		repository.avslutt(new WebSoknad().medId(soknadId));
 		
 	}
 
@@ -51,16 +51,23 @@ public class LocalDBSoknadService implements SendSoknadService{
 
 	@Override
 	public void avbrytSoknad(Long soknadId) {
-		//repository.slettSoknad(soknadId);
+		//TODO: Refaktorerer. Trenger bare å sende id
+		repository.avbryt(new WebSoknad().medId(soknadId));
 	}
 
 	
 
 	public Long startSoknad(String navSoknadId) {
 		logger.debug("Starter ny søknad");
+		System.out.println("Stadrter ny søknad " + SubjectHandler.getSubjectHandler().getUid());
 		//TODO: Sende et signal til Henvendelse om at søknaden er startet
-        
-        WebSoknad soknad = WebSoknad.startSoknad().medGosysId(navSoknadId).medAktorId(SubjectHandler.getSubjectHandler().getUid()).opprettetDato(DateTime.now());
+        String behandlingsId = repository.opprettBehandling();
+        WebSoknad soknad = WebSoknad.startSoknad().
+        		medBehandlingId(behandlingsId).
+        		medGosysId(navSoknadId).
+        		medAktorId(SubjectHandler.getSubjectHandler().getUid()).
+        		opprettetDato(DateTime.now());
+        System.out.println("Websoknad " + soknad.toString());
 		return repository.opprettSoknad(soknad);
 	}
 }
