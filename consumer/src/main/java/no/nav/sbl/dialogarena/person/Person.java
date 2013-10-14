@@ -54,6 +54,7 @@ public class Person implements Serializable {
 		faktum.setSoknadId(soknadId);
 		faktum.setKey(key);
 		faktum.setValue(value);
+		faktum.setType("System");
 		return faktum;
 	}
 	
