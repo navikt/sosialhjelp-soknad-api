@@ -20,6 +20,16 @@ angular.module('app.routes', ['ngRoute'])
                     }
                 }
             })
+            .when('/egennaering/:soknadId', {
+                templateUrl: '../html/templates/egen-naering.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
+
             .when('/soknadliste', {templateUrl: '../html/templates/soknadliste.html'})
             .when('/personalia/:soknadId', {templateUrl: '../html/templates/personalia.html', controller: 'SoknadDataCtrl'})
             .when('/arbeidsforhold/:soknadId', {templateUrl: '../html/templates/arbeidsforhold.html', controller: 'SoknadDataCtrl'})
@@ -30,7 +40,7 @@ angular.module('app.routes', ['ngRoute'])
             .when('/kvittering', {templateUrl: '../html/templates/kvittering-innsendt.html'})
             .when('/verneplikt/:soknadId', {templateUrl: '../html/templates/verneplikt.html', controller: 'SoknadDataCtrl'})
             .when('/oppsummering/:soknadId', {templateUrl: '../html/templates/oppsummering.html', controller: 'SoknadDataCtrl'})
-            .when('/egennaering/:soknadId', {templateUrl: '../html/templates/egen-naering.html', controller: 'SoknadDataCtrl'})
+
             .when('/utdanning/:soknadId', {templateUrl: '../html/templates/utdanning.html', controller: 'SoknadDataCtrl'})
             .otherwise({redirectTo: '/utslagskriterier'});
 
