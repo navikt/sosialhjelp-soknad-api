@@ -2,6 +2,9 @@ package no.nav.sbl.dialogarena.websoknad.fixture;
 
 import javax.inject.Inject;
 
+import no.nav.modig.core.context.ModigSecurityConstants;
+import no.nav.modig.core.context.SubjectHandlerUtils;
+import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.modig.test.fitnesse.fixture.SpringAwareDoFixture;
 import no.nav.sbl.dialogarena.websoknad.config.FitNesseApplicationConfig;
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
@@ -12,17 +15,32 @@ import no.nav.sbl.dialogarena.websoknad.servlet.SoknadDataController;
 import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration(classes = FitNesseApplicationConfig.class)
-public class SlimDriver extends SpringAwareDoFixture {
+public class SoknadInnsendingDriver extends SpringAwareDoFixture {
 
+	static { 
+		System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
+		System.setProperty(ModigSecurityConstants.SYSTEMUSER_USERNAME, "BD05");
+	}
+	
 	@Inject
 	private SoknadDataController soknadDataController;
 
 	private WebSoknadId webSoknadId;
 
 	private WebSoknad webSoknad;
+
+	private String fnr;
 	
-	public SlimDriver() throws Exception{
+	
+	
+	public SoknadInnsendingDriver(String fnr) throws Exception{
 		super.setUp();
+		this.fnr = fnr;
+		SubjectHandlerUtils.setEksternBruker(fnr, 4, null);
+	}
+	
+	public String getFnr() {
+		return fnr;
 	}
 	
 	public long opprettNySoknad(String type)  {
@@ -50,9 +68,9 @@ public class SlimDriver extends SpringAwareDoFixture {
 		soknadDataController.sendSoknad(soknadId);
 	}
 	
-	public boolean erSoknadSlettet(long soknadId) {
+	public String soknadStatus(long soknadId) {
 		WebSoknad soknad = soknadDataController.hentSoknadData(soknadId);
-		return soknad == null;
+		return soknad.getStatus().name();
 		
 	}
 	public long antallFaktumLagret() {

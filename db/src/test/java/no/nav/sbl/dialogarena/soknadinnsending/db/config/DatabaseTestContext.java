@@ -75,6 +75,8 @@ public class DatabaseTestContext {
             st.execute("drop table HENVENDELSE if exists");
             st.execute("create table HENVENDELSE (henvendelse_id bigint, behandlingsid varchar(255), behandlingskjedeId varchar(255), traad varchar(255), type varchar(255), opprettetdato timestamp, " +
             		"lestdato timestamp, sistendretdato timestamp, tema varchar(255), aktor varchar(255), status varchar(255), behandlingsresultat varchar(2048), sensitiv integer)");
+            st.execute("drop sequence BRUKERBEH_ID_SEQ if exists");
+            st.execute("create sequence BRUKERBEH_ID_SEQ as integer start with 1 increment by 1");
             st.execute("drop table SOKNADBRUKERDATA if exists");
             st.execute("drop table SOKNAD if exists");
             st.execute("create table SOKNAD (soknad_id numeric not null, brukerbehandlingid varchar(255) not null, navsoknadid varchar(255) not null, " +

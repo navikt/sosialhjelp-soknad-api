@@ -37,6 +37,7 @@ public class FitNesseApplicationConfig {
     
 	@Bean
     public SoknadDataController soknadDataController() {
+		System.out.println("Soknaddata controller");
         return new SoknadDataController();
     }
 	 
