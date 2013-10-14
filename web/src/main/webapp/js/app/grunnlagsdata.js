@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('app.grunnlagsdata', ['app.services'])
-.controller('GrunnlagsdataCtrl', ['$scope', 'utslagskriterierService', 'soknadService', 'enonicService', '$location', '$q', function($scope, utslagskriterierService, soknadService, enonicService, $location, $q) {
+.controller('GrunnlagsdataCtrl', ['$scope', 'utslagskriterierService', 'soknadService', 'enonicService', '$location', '$q', 
+	function($scope, utslagskriterierService, soknadService, enonicService, $location, $q) {
 
 	$scope.personalia = utslagskriterierService.get();
     $scope.utslagskritererTekster = enonicService.get({side:'utslagskriterier'});
