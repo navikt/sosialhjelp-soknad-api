@@ -59,7 +59,6 @@ public class LocalDBSoknadService implements SendSoknadService{
 
 	public Long startSoknad(String navSoknadId) {
 		logger.debug("Starter ny søknad");
-		System.out.println("Stadrter ny søknad " + SubjectHandler.getSubjectHandler().getUid());
 		//TODO: Sende et signal til Henvendelse om at søknaden er startet
         String behandlingsId = repository.opprettBehandling();
         WebSoknad soknad = WebSoknad.startSoknad().
@@ -67,7 +66,6 @@ public class LocalDBSoknadService implements SendSoknadService{
         		medGosysId(navSoknadId).
         		medAktorId(SubjectHandler.getSubjectHandler().getUid()).
         		opprettetDato(DateTime.now());
-        System.out.println("Websoknad " + soknad.toString());
 		return repository.opprettSoknad(soknad);
 	}
 }
