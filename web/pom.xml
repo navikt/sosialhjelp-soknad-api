@@ -7,7 +7,7 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>sendsoknad</artifactId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.7-SNAPSHOT</version>
     </parent>
 
     <artifactId>sendsoknad-web</artifactId>
@@ -57,6 +57,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-consumer</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sendsoknad-db</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -244,6 +249,11 @@
             <artifactId>common-web</artifactId>
             <scope>runtime</scope>
         </dependency>
+        
+        <dependency>
+        	<groupId>joda-time</groupId>
+        	<artifactId>joda-time</artifactId> 
+        </dependency>
 
         <!-- Avhengigheter med scope provided -->
 
@@ -353,6 +363,18 @@
             <artifactId>mail</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sendsoknad-db</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -385,6 +407,79 @@
             </testResource>
         </testResources>
         <plugins>
+            <!--<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>karam-coverage-html.conf.js</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <copy file="${basedir}/src/test/resources/jsconf/karma.conf.js"
+                                      tofile="${basedir}/target/karma-coverage-html.conf.js"/>
+
+                                <replaceregexp byline="true"
+                                               file="${basedir}/target/karma-coverage-html.conf.js"
+                                               match="basePath\p{Blank}*=\p{Blank}*'';"
+                                               replace="basePath = '..';"/>
+
+                                <replaceregexp byline="true"
+                                               file="${basedir}/target/karma-coverage-html.conf.js"
+                                               match="//(\p{Blank}*'.'\p{Blank}*:\p{Blank}*'coverage'\p{Blank}*)"
+                                               replace="\1"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+           <!-- <plugin>
+                <groupId>com.kelveden</groupId>
+                <artifactId>maven-karma-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <configFile>${basedir}/target/karma-coverage-html.conf.js</configFile>
+                    <browsers>PhantomJS</browsers>
+                    <reporters>dots</reporters>
+                    &lt;!&ndash;<color>false</color>&ndash;&gt;
+                    <autoWatch>false</autoWatch>
+                    <reporters>dots,coverage</reporters>
+                </configuration>
+            </plugin>-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <id>PhantomJS Unit Testing</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>${phantomjs.exec}</executable>
+                    <workingDirectory>${project.basedir}/src/test/js</workingDirectory>
+                    <arguments>
+                        <argument>phantomjs_jasminexml_runner.js</argument>
+                        <argument>test_runner.html</argument>
+                        <argument>${project.build.directory}/surefire-reports</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.jboss.as.plugins</groupId>
                 <artifactId>jboss-as-maven-plugin</artifactId>

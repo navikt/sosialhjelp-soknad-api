@@ -21,6 +21,10 @@ public class PersonAlder implements Serializable{
 	public int getAlder() {
         return Years.yearsBetween(fodselsdato, new LocalDate()).getYears();
 	}
+	
+	public boolean sjekkAlder() {
+		return getAlder() < 67;
+	}
 
     private String hentFodselsdatoFraFnr(String personnummer){
         Fodselsnummer fnr =  FodselsnummerValidator.getFodselsnummer(personnummer);

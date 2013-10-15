@@ -69,7 +69,7 @@ angular.module('app.directives', ['app.services', 'nav.booleanradio', 'nav.cmste
   return {
     replace: true,
     require: 'ngModel',
-    
+
     scope: {
       fraDato: '=',
       tilDato: '='
@@ -80,19 +80,19 @@ angular.module('app.directives', ['app.services', 'nav.booleanradio', 'nav.cmste
           ctrl.$setValidity('framindre', false);
           $scope.tilDato = undefined;
           return undefined;
-        }        
+        }
 
         if(fraMindreEnnTil($scope.fraDato, viewValue)){
           ctrl.$setValidity('framindre', true);
           $scope.tilDato = new Date(ctrl.$viewValue);
           return viewValue;
-        } 
+        }
         ctrl.$setValidity('framindre', false);
         $scope.tilDato = undefined;
         return undefined;
-      }); 
+      });
 
-      $scope.$watch('fraDato', function(fraDatoValue) {  
+      $scope.$watch('fraDato', function(fraDatoValue) {
         var vw = ctrl.$viewValue;
         if(typeof fraDatoValue === 'undefined' || typeof ctrl.$viewValue === 'undefined') {
           ctrl.$setValidity('framindre', false);
@@ -102,7 +102,7 @@ angular.module('app.directives', ['app.services', 'nav.booleanradio', 'nav.cmste
           if(typeof $scope.tilDato === 'undefined') {
             $scope.tilDato = new Date(ctrl.$viewValue);
             ctrl.$setValidity('framindre', true);
-          } 
+          }
           ctrl.$setValidity('framindre', true);
         } else {
           ctrl.$setValidity('framindre', false);
@@ -175,13 +175,14 @@ return {
             });
         }
     }
-})
+});
 
 
 function fraMindreEnnTil(fra, til){
   var gyldig = false;
-  if(fra < til) {
+  if (fra.getTime() < til.getTime()) {
     gyldig = true
   }
+
   return gyldig;
 }

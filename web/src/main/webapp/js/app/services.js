@@ -10,7 +10,8 @@ angular.module('app.services',['ngResource'])
         {param: '@param'},
         {
             create: { method: 'POST', params: {param: '@param', action: 'opprett'} },
-            send: {method: 'POST', params: {param: '@param', action: 'send'}}
+            send: {method: 'POST', params: {param: '@param', action: 'send'}},
+            delete: {method: 'POST', params: {param: '@param', action: 'delete'}}
         }
     );
 })

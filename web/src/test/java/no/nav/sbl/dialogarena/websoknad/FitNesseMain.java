@@ -26,4 +26,4 @@ public final class FitNesseMain {
     private FitNesseMain() {
     }
 
-}
+}	
