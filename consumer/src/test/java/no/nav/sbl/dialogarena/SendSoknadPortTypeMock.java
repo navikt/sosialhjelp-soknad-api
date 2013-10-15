@@ -1,12 +1,16 @@
 package no.nav.sbl.dialogarena;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSBrukerData;
@@ -15,6 +19,8 @@ import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSSoknadDat
 
 public class SendSoknadPortTypeMock implements SendSoknadPortType {
 
+	private static final Logger logger = LoggerFactory.getLogger(SendSoknadPortTypeMock.class);
+	
 	@Override
 	@WebResult(name = "return", targetNamespace = "")
 	@RequestWrapper(localName = "ping", targetNamespace = "http://nav.no/tjeneste/domene/brukerdialog/sendsoknad/v1", className = "no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.PingRequest")
@@ -63,7 +69,7 @@ public class SendSoknadPortTypeMock implements SendSoknadPortType {
 	@ResponseWrapper(localName = "avbrytSoknadResponse", targetNamespace = "http://nav.no/tjeneste/domene/brukerdialog/sendsoknad/v1", className = "no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.AvbrytSoknadResponse")
 	public void avbrytSoknad(
 			@WebParam(name = "soknadId", targetNamespace = "") long soknadId) {
-		// TODO Auto-generated method stub
+		logger.info("Avbryter søknad med id: " + soknadId);
 
 	}
 
@@ -76,7 +82,6 @@ public class SendSoknadPortTypeMock implements SendSoknadPortType {
 			@WebParam(name = "nokkel", targetNamespace = "") String nokkel,
 			@WebParam(name = "verdi", targetNamespace = "") String verdi) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -110,6 +115,10 @@ public class SendSoknadPortTypeMock implements SendSoknadPortType {
 			@WebParam(name = "aktorId", targetNamespace = "") String aktorId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public String startBehandling(String gosysId) {
+		return UUID.randomUUID().toString();
 	}
 
 }
