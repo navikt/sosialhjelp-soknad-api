@@ -1,5 +1,6 @@
 angular.module('sendsoknad')
     .value('data', {})
+    .value('basepath', '../')
     .factory('TekstService', ['data', '$resource', '$q', '$route', function(data, $resource, $q, $route) {
         var promiseArray = [];
 
