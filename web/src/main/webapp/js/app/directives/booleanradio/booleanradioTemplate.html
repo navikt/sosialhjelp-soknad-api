@@ -1,0 +1,13 @@
+<div class='spm-blokk'>
+    <p class='spm' cmstekster="{{ sporsmal }}"/>
+
+    <div class='redigeringsboks' data-ng-show='hvisIRedigeringsmodus()'>
+        <navradio model='model' value='true' name='{{ name }}' label='{{ trueLabel }}'/>
+        <navradio model='model' value='false' name='{{ name }}' label='{{ falseLabel }}'/>
+    </div>
+
+    <div class='oppsummeringsboks' data-ng-show='hvisIOppsummeringsmodus()'>
+        <span data-ng-show='hvisModelErTrue()' cmstekster="{{ trueLabel }}"/>
+        <span data-ng-show='hvisModelErFalse()' cmstekster="{{ falseLabel }}"/>
+    </div>
+</div>

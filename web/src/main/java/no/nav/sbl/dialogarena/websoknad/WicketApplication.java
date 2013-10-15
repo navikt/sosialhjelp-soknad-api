@@ -60,6 +60,10 @@ public class WicketApplication extends WebApplication {
             configurator.addConditionalCss(resource.getResource(this));
         }
 
+        for (JsResources js : JsResources.values()) {
+            configurator.addScripts(js.getResource());
+        }
+
         configurator
                 .addMetas(
                         MetaTag.XUA_IE_EDGE,

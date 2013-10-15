@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import static java.lang.String.format;
+import no.nav.modig.core.exception.ApplicationException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import no.nav.modig.core.exception.ApplicationException;
+import static java.lang.String.format;
 
 public class NokkelHenter {
         public static List<String> hentNokler(String side) {
