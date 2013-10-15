@@ -32,7 +32,7 @@
         <cxf.version>2.7.7</cxf.version>
         <nav.sbl.commons.version>3.30</nav.sbl.commons.version>
         <modig-security.version>1.0.19</modig-security.version>
-        <sendsoknad.tjenestespec.version>0.0.8</sendsoknad.tjenestespec.version>
+        <sendsoknad.tjenestespec.version>0.0.9-SNAPSHOT</sendsoknad.tjenestespec.version>
         <sonar.exclusions>no/nav/sbl/dialogarena/websoknad/config/**</sonar.exclusions>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -822,6 +822,42 @@
                         </dependency>
                     </dependencies>
                 </plugin>
+                <plugin>
+                    <groupId>com.googlecode.flyway</groupId>
+                    <artifactId>flyway-maven-plugin</artifactId>
+                    <version>2.0.3</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.googlecode.flyway</groupId>
+                            <artifactId>flyway-core</artifactId>
+                            <version>2.0.3</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.hsqldb</groupId>
+                            <artifactId>hsqldb</artifactId>
+                            <version>2.3.0</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.oracle</groupId>
+                            <artifactId>ojdbc6</artifactId>
+                            <version>${ojdbc.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <driver>${flyway.placeholders.driver}</driver>
+                        <url>${flyway.placeholders.url}</url>
+                        <encoding>${flyway.placeholders.encoding}</encoding>
+                        <initOnMigrate>true</initOnMigrate>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>migrate</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -931,6 +967,27 @@
             <properties>
                 <phantomjs.exec>${env.PHANTOMJS_HOME}/bin/phantomjs</phantomjs.exec>
             </properties>
+        </profile>
+        <profile>
+        <id>u1</id>
+            <properties>
+                <flyway.user>sendsoknad</flyway.user>
+                <flyway.password>password</flyway.password>
+                <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
+                <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
+                <flyway.alias>henvendelseDS</flyway.alias>
+                <flyway.placeholders.url>jdbc:oracle:thin:@d32dbfl001.oera-t.local:1521:msbsu02
+                </flyway.placeholders.url>
+                <flyway.locations>db/migration/${flyway.alias}</flyway.locations>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.googlecode.flyway</groupId>
+                        <artifactId>flyway-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 
