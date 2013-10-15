@@ -52,8 +52,8 @@ public class PersonServiceTest {
     private static final String ET_ETTERNAVN = "Normann";
     private static final String FOLKEREGISTRERT_ADRESSE_VALUE = "BOSTEDSADRESSE";
     private static final String MIDLERTIDIG_POSTADRESSE_NORGE_VALUE = "MIDLERTIDIG_POSTADRESSE_NORGE";
-    private static final String EN_ADRESSE_GATE = "Engesetvegen";
-	private static final String EN_ADRESSE_HUSNUMMER = "13";
+    private static final String EN_ADRESSE_GATE = "Grepalida";
+	private static final String EN_ADRESSE_HUSNUMMER = "44";
 	private static final String EN_ADRESSE_HUSBOKSTAV = "B";
 	private static final String EN_ADRESSE_POSTNUMMER = "0560";
 	private static final String EN_ADRESSE_POSTSTED = "Oslo";
@@ -67,10 +67,16 @@ public class PersonServiceTest {
 	private static final String ET_POSTBOKS_NAVN = "Postboksstativet";
 	private static final String EN_POSTBOKS_NUMMER = "66";
 	private static final String EN_ADRESSELINJE = "Poitigatan 55";
-	private static final String EN_ANNEN_ADRESSELINJE = "1111 Helsinki";
-	private static final List<String> EN_ADRESSE_UTLANDET = Arrays.asList(EN_ADRESSELINJE, EN_ANNEN_ADRESSELINJE);
+	private static final String EN_ANNEN_ADRESSELINJE = "Nord-Poiti";
+	private static final String EN_TREDJE_ADRESSELINJE = "1111";
+	private static final String EN_FJERDE_ADRESSELINJE = "Helsinki";
+	private static final List<String> EN_ADRESSE_UTLANDET = Arrays.asList(EN_ADRESSELINJE);
+	private static final List<String> EN_ANNEN_ADRESSE_UTLANDET = Arrays.asList(EN_ADRESSELINJE, EN_ANNEN_ADRESSELINJE);
+	private static final List<String> EN_TREDJE_ADRESSE_UTLANDET = Arrays.asList(EN_ADRESSELINJE, EN_ANNEN_ADRESSELINJE, EN_TREDJE_ADRESSELINJE);
+	private static final List<String> EN_FJERDE_ADRESSE_UTLANDET = Arrays.asList(EN_ADRESSELINJE, EN_ANNEN_ADRESSELINJE, EN_TREDJE_ADRESSELINJE, EN_FJERDE_ADRESSELINJE);
 	private static final String ET_LAND = "Finland";
 	private static final String EN_LANDKODE = "FIN";
+
 
     @SuppressWarnings("unchecked")
 	@Test
@@ -123,7 +129,26 @@ public class PersonServiceTest {
         Faktum sammensattnavn = (Faktum) hentetPerson.getFakta().get("sammensattnavn");
         Assert.assertEquals("", mellomnavn.getValue());
 		Assert.assertEquals(ET_FORNAVN+" "+ET_ETTERNAVN, sammensattnavn.getValue());
+	}
+    
+    @Test
+	public void skalStottePersonerUtenNavn() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+    	XMLHentKontaktinformasjonOgPreferanserRequest request = hentRequestMedGyldigIdent();
+    	XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
+    	
+    	
+    	XMLBruker xmlBruker = new XMLBruker();
+    	XMLNorskIdent xmlNorskIdent = new XMLNorskIdent();
+    	xmlNorskIdent.setIdent(RIKTIG_IDENT);
+		xmlBruker.setIdent(xmlNorskIdent);
+    	response.setPerson(xmlBruker);
 
+		when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenReturn(response);
+        Person hentetPerson = service.hentPerson(2l,RIKTIG_IDENT);
+        Assert.assertNotNull(hentetPerson.getFakta());
+
+        Faktum sammensattnavn = (Faktum) hentetPerson.getFakta().get("sammensattnavn");        
+		Assert.assertEquals("", sammensattnavn.getValue());
 	}
     
     @SuppressWarnings("unchecked")
@@ -134,7 +159,7 @@ public class PersonServiceTest {
     	
     	XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
     	
-    	XMLBostedsadresse bostedsadresse = genererXMLFolkeregistrertAdresse();
+    	XMLBostedsadresse bostedsadresse = genererXMLFolkeregistrertAdresse(true);
 		xmlBruker.setBostedsadresse(bostedsadresse);
 		
 		XMLMidlertidigPostadresseNorge xmlMidlertidigNorge = generateMidlertidigAdresseNorge();
@@ -177,7 +202,7 @@ public class PersonServiceTest {
     	
     	XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
     	
-    	XMLMidlertidigPostadresseNorge midlertidigPostboksAdresseNorge = generateMidlertidigPostboksAdresseNorge();
+    	XMLMidlertidigPostadresseNorge midlertidigPostboksAdresseNorge = generateMidlertidigPostboksAdresseNorge(true);
 		xmlBruker.setMidlertidigPostadresse(midlertidigPostboksAdresseNorge);
 		
 		response.setPerson(xmlBruker);
@@ -194,27 +219,99 @@ public class PersonServiceTest {
 		Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_FRA, adresseliste.get(0).getGyldigFra());
 		Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_TIL, adresseliste.get(0).getGyldigTil());
 	}
-	
+    
+    @SuppressWarnings("unchecked")
+   	@Test
+   	public void skalStotteMidlertidigPostboksAdresseNorgeMedMangeManglendeFelter() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+   		XMLHentKontaktinformasjonOgPreferanserRequest request = hentRequestMedGyldigIdent();
+       	XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
+       	
+       	XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
+       	
+       	XMLMidlertidigPostadresseNorge midlertidigPostboksAdresseNorge = generateMidlertidigPostboksAdresseNorge(false);
+   		xmlBruker.setMidlertidigPostadresse(midlertidigPostboksAdresseNorge);
+   		
+   		response.setPerson(xmlBruker);
+       	
+       	when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenReturn(response);
+       	Person hentetPerson = service.hentPerson(4l, RIKTIG_IDENT);
+       	
+       	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
+       	Assert.assertNotNull(adresseliste);
+       	Assert.assertEquals(null, adresseliste.get(0).getAdresseEier());
+       	Assert.assertEquals(null, adresseliste.get(0).getPostboksNavn());
+       	Assert.assertEquals(null, adresseliste.get(0).getPostboksNummer());
+       	Assert.assertEquals(null, adresseliste.get(0).getPostnummer());
+   		Assert.assertEquals(null, adresseliste.get(0).getGyldigFra());
+   		Assert.assertEquals(null, adresseliste.get(0).getGyldigTil());
+   	}
+
 	@SuppressWarnings("unchecked")
 	@Test
-	public void skalStotteMidlertidigUtenlandskMidlertidigAdresse() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-		XMLHentKontaktinformasjonOgPreferanserRequest request = hentRequestMedGyldigIdent();
-    	XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
+	public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed0Linjer() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+
+		Person hentetPerson = skalStotteMidlertidigUtenlandskMidlertidigAdresser(0);
     	
-    	XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
-    	
-    	XMLMidlertidigPostadresseUtland midlertidigPostboksAdresseUtlandet = generateMidlertidigAdresseUtlandet();
-		xmlBruker.setMidlertidigPostadresse(midlertidigPostboksAdresseUtlandet);
-		
-		response.setPerson(xmlBruker);
-    	
-    	when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenReturn(response);
-    	when(kodeverkMock.getLand(EN_LANDKODE)).thenReturn(ET_LAND);
-    	Person hentetPerson = service.hentPerson(5l, RIKTIG_IDENT);
+    	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
+    	Assert.assertNotNull(adresseliste);
+    	Assert.assertEquals(Arrays.asList(), adresseliste.get(0).getUtenlandsAdresse());
+    	Assert.assertEquals(ET_LAND, adresseliste.get(0).getLand());
+		Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_FRA, adresseliste.get(0).getGyldigFra());
+		Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_TIL, adresseliste.get(0).getGyldigTil());
+	}
+    
+	@SuppressWarnings("unchecked")
+	@Test
+	public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed1Linje() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+
+		Person hentetPerson = skalStotteMidlertidigUtenlandskMidlertidigAdresser(1);
     	
     	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
     	Assert.assertNotNull(adresseliste);
     	Assert.assertEquals(EN_ADRESSE_UTLANDET, adresseliste.get(0).getUtenlandsAdresse());
+    	Assert.assertEquals(ET_LAND, adresseliste.get(0).getLand());
+		Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_FRA, adresseliste.get(0).getGyldigFra());
+		Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_TIL, adresseliste.get(0).getGyldigTil());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed2Linjer() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+		
+		Person hentetPerson = skalStotteMidlertidigUtenlandskMidlertidigAdresser(2);
+		
+		List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
+		Assert.assertNotNull(adresseliste);
+		Assert.assertEquals(EN_ANNEN_ADRESSE_UTLANDET, adresseliste.get(0).getUtenlandsAdresse());
+		Assert.assertEquals(ET_LAND, adresseliste.get(0).getLand());
+		Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_FRA, adresseliste.get(0).getGyldigFra());
+		Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_TIL, adresseliste.get(0).getGyldigTil());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed3Linjer() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+
+		Person hentetPerson = skalStotteMidlertidigUtenlandskMidlertidigAdresser(3);
+    	
+    	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
+    	Assert.assertNotNull(adresseliste);
+    	Assert.assertEquals(EN_TREDJE_ADRESSE_UTLANDET, adresseliste.get(0).getUtenlandsAdresse());
+    	Assert.assertEquals(ET_LAND, adresseliste.get(0).getLand());
+		Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_FRA, adresseliste.get(0).getGyldigFra());
+		Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_TIL, adresseliste.get(0).getGyldigTil());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed4Linjer() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+
+		Person hentetPerson = skalStotteMidlertidigUtenlandskMidlertidigAdresser(4);
+    	
+    	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
+    	Assert.assertNotNull(adresseliste);
+    	Assert.assertEquals(EN_FJERDE_ADRESSE_UTLANDET, adresseliste.get(0).getUtenlandsAdresse());
+    	
     	Assert.assertEquals(ET_LAND, adresseliste.get(0).getLand());
 		Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_FRA, adresseliste.get(0).getGyldigFra());
 		Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_TIL, adresseliste.get(0).getGyldigTil());
@@ -228,7 +325,7 @@ public class PersonServiceTest {
     	
     	XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
     	
-    	XMLBostedsadresse bostedsadresse = genererXMLFolkeregistrertAdresse();
+    	XMLBostedsadresse bostedsadresse = genererXMLFolkeregistrertAdresse(false);
 		xmlBruker.setBostedsadresse(bostedsadresse);
 		
 		XMLMidlertidigPostadresseNorge xmlMidlertidigNorge = generateMidlertidigAdresseNorge();	
@@ -249,11 +346,11 @@ public class PersonServiceTest {
     	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
     	Assert.assertNotNull(adresseliste);
     	Assert.assertEquals(FOLKEREGISTRERT_ADRESSE_VALUE, adresseliste.get(0).getType().toString());
-    	Assert.assertEquals(EN_ADRESSE_GATE, adresseliste.get(0).getGatenavn());
-    	Assert.assertEquals(EN_ADRESSE_HUSNUMMER, adresseliste.get(0).getHusnummer());
-    	Assert.assertEquals(EN_ADRESSE_HUSBOKSTAV, adresseliste.get(0).getHusbokstav());
-    	Assert.assertEquals(EN_ADRESSE_POSTNUMMER, adresseliste.get(0).getPostnummer());
-    	Assert.assertEquals(EN_ADRESSE_POSTSTED, adresseliste.get(0).getPoststed());
+    	Assert.assertEquals(null, adresseliste.get(0).getGatenavn());
+    	Assert.assertEquals("", adresseliste.get(0).getHusnummer());
+    	Assert.assertEquals("", adresseliste.get(0).getHusbokstav());
+    	Assert.assertEquals(null, adresseliste.get(0).getPostnummer());
+    	Assert.assertEquals(null, adresseliste.get(0).getPoststed());
     	Assert.assertTrue(adresseliste.size() > 1);
     	Assert.assertEquals(MIDLERTIDIG_POSTADRESSE_NORGE_VALUE , adresseliste.get(1).getType().toString());
     	Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_FRA, adresseliste.get(1).getGyldigFra());
@@ -282,17 +379,19 @@ public class PersonServiceTest {
 		return xmlMidlertidigNorge;
 	}
 	
-	private XMLMidlertidigPostadresseNorge generateMidlertidigPostboksAdresseNorge() {
+	private XMLMidlertidigPostadresseNorge generateMidlertidigPostboksAdresseNorge(boolean medData) {
 		XMLMidlertidigPostadresseNorge xmlMidlertidigPostboksNorge = new XMLMidlertidigPostadresseNorge();
-		XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode();
-		xmlMidlertidigPostboksNorge.setPostleveringsPeriode(xmlGyldighetsperiode);
 		
 		XMLPostboksadresseNorsk xmlpostboksadresse = new XMLPostboksadresseNorsk();
-		xmlpostboksadresse.setTilleggsadresse(EN_POSTBOKS_ADRESSEEIER);
-		xmlpostboksadresse.setPostboksanlegg(ET_POSTBOKS_NAVN);
-		xmlpostboksadresse.setPostboksnummer(EN_POSTBOKS_NUMMER);
 		XMLPostnummer xmlpostnummer = new XMLPostnummer();
-		xmlpostnummer.setValue(EN_ANNEN_ADRESSE_POSTNUMMER);
+		if(medData) {
+			XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode();
+			xmlMidlertidigPostboksNorge.setPostleveringsPeriode(xmlGyldighetsperiode);
+			xmlpostboksadresse.setTilleggsadresse(EN_POSTBOKS_ADRESSEEIER);
+			xmlpostboksadresse.setPostboksanlegg(ET_POSTBOKS_NAVN);
+			xmlpostboksadresse.setPostboksnummer(EN_POSTBOKS_NUMMER);
+			xmlpostnummer.setValue(EN_ANNEN_ADRESSE_POSTNUMMER);
+		}
 		xmlpostboksadresse.setPoststed(xmlpostnummer);
 		xmlMidlertidigPostboksNorge.setStrukturertAdresse(xmlpostboksadresse);
 		return xmlMidlertidigPostboksNorge;
@@ -325,14 +424,16 @@ public class PersonServiceTest {
 		return xmlBruker;
 	}
 
-	private XMLBostedsadresse genererXMLFolkeregistrertAdresse() {
+	private XMLBostedsadresse genererXMLFolkeregistrertAdresse(boolean medData) {
 		XMLBostedsadresse bostedsadresse = new XMLBostedsadresse();
     	XMLGateadresse gateadresse = new XMLGateadresse();
-    	gateadresse.setGatenavn(EN_ADRESSE_GATE);
-    	gateadresse.setHusnummer(new BigInteger(EN_ADRESSE_HUSNUMMER));
-    	gateadresse.setHusbokstav(EN_ADRESSE_HUSBOKSTAV);
-		XMLPostnummer xmlpostnummer = new XMLPostnummer();
-		xmlpostnummer.setValue(EN_ADRESSE_POSTNUMMER);
+    	XMLPostnummer xmlpostnummer = new XMLPostnummer();
+    	if(medData) {
+	    	gateadresse.setGatenavn(EN_ADRESSE_GATE);
+	    	gateadresse.setHusnummer(new BigInteger(EN_ADRESSE_HUSNUMMER));
+	    	gateadresse.setHusbokstav(EN_ADRESSE_HUSBOKSTAV);
+			xmlpostnummer.setValue(EN_ADRESSE_POSTNUMMER);
+    	}
 		gateadresse.setPoststed(xmlpostnummer);
 		bostedsadresse.setStrukturertAdresse(gateadresse);
 		return bostedsadresse;
@@ -344,19 +445,67 @@ public class PersonServiceTest {
 		return request;
 	}
 	
-	private XMLMidlertidigPostadresseUtland generateMidlertidigAdresseUtlandet() {
+	private Person skalStotteMidlertidigUtenlandskMidlertidigAdresser(int antallAdresseLinjer) throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+		XMLHentKontaktinformasjonOgPreferanserRequest request = hentRequestMedGyldigIdent();
+    	XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
+    	
+    	XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
+    	
+    	XMLMidlertidigPostadresseUtland midlertidigPostboksAdresseUtlandet = generateMidlertidigAdresseUtlandet(antallAdresseLinjer);
+		xmlBruker.setMidlertidigPostadresse(midlertidigPostboksAdresseUtlandet);
+		
+		response.setPerson(xmlBruker);
+    	
+    	when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenReturn(response);
+    	when(kodeverkMock.getLand(EN_LANDKODE)).thenReturn(ET_LAND);
+    	Person hentetPerson = service.hentPerson(5l, RIKTIG_IDENT);
+    
+    	return hentetPerson;
+	}
+	
+	private XMLMidlertidigPostadresseUtland generateMidlertidigAdresseUtlandet(int antallAdresseLinjer) {
 		XMLMidlertidigPostadresseUtland xmlMidlertidigAdresseUtland = new XMLMidlertidigPostadresseUtland();
 		XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode();
 		xmlMidlertidigAdresseUtland.setPostleveringsPeriode(xmlGyldighetsperiode);
 		
-		XMLUstrukturertAdresse ustrukturertAdresse = new XMLUstrukturertAdresse();
-		ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
-		ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
+		XMLUstrukturertAdresse ustrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(antallAdresseLinjer);
+		
 		XMLLandkoder xmlLandkode = new XMLLandkoder();
 		xmlLandkode.setValue(EN_LANDKODE);
 		ustrukturertAdresse.setLandkode(xmlLandkode);
 		xmlMidlertidigAdresseUtland.setUstrukturertAdresse(ustrukturertAdresse);
 
 		return xmlMidlertidigAdresseUtland;
+	}
+
+	private XMLUstrukturertAdresse generateUstrukturertAdresseMedXAntallAdersseLinjer(
+			int antallAdresseLinjer) {
+		XMLUstrukturertAdresse ustrukturertAdresse = new XMLUstrukturertAdresse();
+		switch (antallAdresseLinjer) {
+		case 0:
+			break;
+		case 1:
+			ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
+			break;
+		case 2:
+			ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
+			ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
+			break;
+		case 3:
+			ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
+			ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
+			ustrukturertAdresse.setAdresselinje3(EN_TREDJE_ADRESSELINJE);
+			break;
+		case 4:
+			ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
+			ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
+			ustrukturertAdresse.setAdresselinje3(EN_TREDJE_ADRESSELINJE);
+			ustrukturertAdresse.setAdresselinje4(EN_FJERDE_ADRESSELINJE);
+			break;
+		default:
+			break;
+		}
+		
+		return ustrukturertAdresse;
 	}
 }

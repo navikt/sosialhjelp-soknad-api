@@ -1,6 +1,7 @@
 'use strict';
 
 angular.module('app.grunnlagsdata', ['app.services'])
+
 .controller('GrunnlagsdataCtrl', ['$scope', 'utslagskriterierService', 'soknadService', '$location', 'data', function($scope, utslagskriterierService, soknadService, $location, data) {
 	$scope.personalia = utslagskriterierService.get();
         $scope.tekster = data.tekster;

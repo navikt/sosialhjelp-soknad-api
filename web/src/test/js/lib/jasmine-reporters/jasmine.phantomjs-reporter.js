@@ -45,7 +45,7 @@
     var PhantomJSReporter =  function(consolidate, useDotNotation) {
         this.consolidate = consolidate === jasmine.undefined ? true : consolidate;
         this.useDotNotation = useDotNotation === jasmine.undefined ? true : useDotNotation;
-    };
+    };  
 
     PhantomJSReporter.prototype = {
         reportRunnerStarting: function(runner) {
@@ -130,7 +130,7 @@
                 var suite = suites[i],
                     filename = 'TEST-' + this.getFullName(suite, true) + '.xml',
                     output = '<?xml version="1.0" encoding="UTF-8" ?>';
-
+                    
                 passed = !suite.statusPassed ? false : passed;
 
                 // if we are consolidating, only write out top-level suites
@@ -166,7 +166,7 @@
                 "xmlbody" : xmloutput
             });
         },
-
+        
         createTestFinishedContainer: function(passed) {
             jasmine.phantomjsXMLReporterPassed = passed
         },

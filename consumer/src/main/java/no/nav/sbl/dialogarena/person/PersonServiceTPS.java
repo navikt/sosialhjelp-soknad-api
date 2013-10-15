@@ -31,7 +31,7 @@ public class PersonServiceTPS implements PersonService {
     public Person hentPerson(Long soknadId, String fodselsnummer) {
         XMLHentKontaktinformasjonOgPreferanserResponse response = null;
         try {
-            response = brukerProfil.hentKontaktinformasjonOgPreferanser(makeXMLRequest(fodselsnummer));
+            response = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequest(fodselsnummer));
         } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
             logger.error("Fant ikke bruker i TPS.", e);
             return new Person();
@@ -42,7 +42,7 @@ public class PersonServiceTPS implements PersonService {
         return new PersonTransform().mapToPerson(soknadId, response, kodeverk);
     }
 
-    private XMLHentKontaktinformasjonOgPreferanserRequest makeXMLRequest(String ident) {
+    private XMLHentKontaktinformasjonOgPreferanserRequest lagXMLRequest(String ident) {
         return new XMLHentKontaktinformasjonOgPreferanserRequest().withIdent(ident);
     }
 }

@@ -4,21 +4,24 @@ import java.io.Serializable;
 
 public class Faktum implements Serializable {
 
+	//public enum FaktumType { FAGREGISTER, BRUKERREGISTRERT; }
 	private Long soknadId;
-    private String key;
+	private String key;
     private String value;
     private String type;
-
-    public Faktum() {
-    	
+    
+	public Faktum() {
+    }
+  
+    public Faktum(Long soknadId, String key, String value, String type) {
+		this(soknadId,key,value);
+		this.type = type;
     }
     
-    public Faktum(Long soknadId, String key, String value, String type) {
-		super();
+	public Faktum(long soknadId, String key, String value) {
 		this.soknadId = soknadId;
 		this.key = key;
 		this.value = value;
-		this.type = type;
 	}
 
 	public String getValue() {
@@ -58,4 +61,5 @@ public class Faktum implements Serializable {
    		return "Faktum [soknadId=" + soknadId + ", key=" + key + ", value="
    				+ value + ", type=" + type + "]";
    	}
+
 }
