@@ -4,6 +4,7 @@ package no.nav.sbl.dialogarena.websoknad.config;
 import no.nav.modig.cxf.TimeoutFeature;
 import no.nav.modig.security.sts.utility.STSConfigurationUtility;
 import no.nav.sbl.dialogarena.common.timing.TimingFeature;
+import no.nav.sbl.dialogarena.websoknad.service.LocalDBSoknadService;
 import no.nav.sbl.dialogarena.websoknad.service.SendSoknadService;
 import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
@@ -55,7 +56,7 @@ public class ConsumerConfig {
     public static class ServicesConfig {
         @Bean
         public SendSoknadService webSoknadService() {
-            return new WebSoknadService();
+            return new LocalDBSoknadService();
         }
     }
 
