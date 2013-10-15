@@ -130,9 +130,8 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     private final RowMapper<Faktum> rowMapper = new RowMapper<Faktum>() {
         public Faktum mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-            return new Faktum(rs.getLong("soknadbrukerdata_id"), rs.getLong("soknad_id"), rs.getString("key"), 
-            		rs.getString("value"), rs.getString("type"),
-                    new DateTime(rs.getTimestamp("sistendret").getTime()));
+            return new Faktum(rs.getLong("soknad_id"), rs.getString("key"), 
+            		rs.getString("value"), rs.getString("type"));
         }
     };
 }
