@@ -1,5 +1,5 @@
 angular.module('nav.input',['nav.cmstekster'])
-    .directive('navradio', function() {
+    .directive('navradio', [function() {
         return {
             restrict: "E",
             replace: true,
@@ -11,4 +11,4 @@ angular.module('nav.input',['nav.cmstekster'])
             },
             templateUrl: '../js/app/directives/navinput/navradioTemplate.html'
         }
-    });
+    }]);
