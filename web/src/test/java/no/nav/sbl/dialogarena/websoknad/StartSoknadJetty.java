@@ -56,6 +56,7 @@ public final class StartSoknadJetty {
         SystemProperties.setFrom("jetty-env.properties");
         System.setProperty("spring.profiles.active", "mock");
         System.setProperty("no.nav.sbl.dialogarena.sendsoknad.sslMock", "true");
+        System.setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "false");
         System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, JettySubjectHandler.class.getName());
     }
 

@@ -46,10 +46,18 @@ public class DatabaseTestContext {
 
     
     public static SingleConnectionDataSource buildDataSource() throws IOException {
-        return buildDataSource("hsqldb.properties");
+    	if (erInMemoryDatabase()) {
+    		return buildDataSource("oracledb.properties");
+    	} else {
+    		return buildDataSource("hsqldb.properties");
+    	}
     }
 
-    public static SingleConnectionDataSource buildDataSource(String propertyFileName) throws IOException {
+    private static boolean erInMemoryDatabase() {
+		return System.getProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb").equalsIgnoreCase("true");
+	}
+
+	public static SingleConnectionDataSource buildDataSource(String propertyFileName) throws IOException {
         SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
         dataSource.setSuppressClose(true);
         Properties env = dbProperties(propertyFileName);
@@ -57,7 +65,7 @@ public class DatabaseTestContext {
         dataSource.setUrl(env.getProperty("db.url"));
         dataSource.setUsername(env.getProperty("db.username"));
         dataSource.setPassword(env.getProperty("db.password"));
-        if (Boolean.parseBoolean(env.getProperty("db.erHsqldb", "true"))) {
+        if (System.getProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb").equalsIgnoreCase("true")) {
             System.setProperty(SQLUtils.DIALECT_PROPERTY, "hsqldb");
             createNonJpaTables(dataSource);
         }
