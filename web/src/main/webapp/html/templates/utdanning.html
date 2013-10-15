@@ -1,0 +1,119 @@
+<div class="skjemaramme">
+    <form name="utdanningForm" data-ng-controller="ValidationCtrl" novalidate>
+        <div class="sideoversikt">
+            <h4>{{ tekster.utdanning_tittel }}</h4>
+        </div>
+
+        <div class="skjemainnhold" data-ng-controller="ModusCtrl">
+            <div data-ng-controller="UtdanningCtrl">
+                <div class="spm-blokk">
+                    <p class='spm'>{{ tekster.utdanning_sporsmal }}</p>
+
+                    <div data-ng-show="hvisIRedigeringsmodus()">
+                        <input class='sendsoknad-radio' id='ikkeUtdanning' type='radio' value='ikkeUtdanning'
+                               data-ng-model='soknadData.fakta.utdanning.value' name='utdanning' mod-faktum required/>
+                        <label for='ikkeUtdanning' class='svar-alt'>
+                            {{ tekster.utdanning_svar_ikke_utdanning }}
+                        </label>
+
+                        <input class='sendsoknad-radio' id='avsluttetUtdanning' type='radio' value='avsluttetUtdanning'
+                               data-ng-model='soknadData.fakta.utdanning.value' name='utdanning' mod-faktum required/>
+                        <label for='avsluttetUtdanning' class='svar-alt'>
+                            {{ tekster.utdanning_svar_avsluttet_utdanning }}
+                        </label>
+                        <input class='sendsoknad-radio' id='underUtdanning' type='radio' value='underUtdanning'
+                               data-ng-model='soknadData.fakta.utdanning.value' name='utdanning' mod-faktum required/>
+                        <label for='underUtdanning' class='svar-alt'>
+                            {{ tekster.utdanning_svar_under_utdanning }}
+                        </label>
+
+                        <div data-ng-show="hvisUnderUtdanning()">
+                            <input id='underUtdanningKurs' type='checkbox'
+                                   data-ng-model='soknadData.fakta.underUtdanningKurs.value' name='underUtdanningKurs' mod-faktum boolean-verdi required/>
+                            <label for='underUtdanningKurs' class='svar-alt'>
+                                {{ tekster.utdanning_svar_under_utdanning_kurs }}
+                            </label>
+                            <utdanningsinformasjon></utdanningsinformasjon>
+
+                            <input id='underUtdanningKveld' type='checkbox'
+                                   data-ng-model='soknadData.fakta.underUtdanningKveld.value' name='underUtdanningKveld' mod-faktum boolean-verdi required/>
+                            <label for='underUtdanningKveld' class='svar-alt'>
+                                {{ tekster.utdanning_svar_under_utdanning_kveld }}
+                            </label>
+                            <utdanningsinformasjon></utdanningsinformasjon>
+
+                            <input id='underUtdanningFulltid' type='checkbox'
+                                   data-ng-model='soknadData.fakta.underUtdanningFulltid.value' name='underUtdanningFulltid' mod-faktum boolean-verdi required/>
+                            <label for='underUtdanningFulltid' class='svar-alt'>
+                                {{ tekster.utdanning_svar_under_utdanning_fulltid }}
+                            </label>
+                            <utdanningsinformasjon></utdanningsinformasjon>
+
+                            <input id='underUtdanningKortvarig' type='checkbox'
+                                   data-ng-model='soknadData.fakta.underUtdanningKortvarig.value' name='underUtdanningKortvarig' mod-faktum boolean-verdi required/>
+                            <label for='underUtdanningKortvarig' class='svar-alt'>
+                                {{ tekster.utdanning_svar_under_utdanning_kortvarig }}
+                            </label>
+                            <utdanningsinformasjon></utdanningsinformasjon>
+
+                            <input id='underUtdanningNorsk' type='checkbox'
+                                   data-ng-model='soknadData.fakta.underUtdanningNorsk.value' name='underUtdanningNorsk' mod-faktum boolean-verdi required/>
+                            <label for='underUtdanningNorsk' class='svar-alt'>
+                                {{ tekster.utdanning_svar_under_utdanning_norsk }}
+                            </label>
+                            <utdanningsinformasjon></utdanningsinformasjon>
+
+                            <input id='underUtdanningIntroduksjon' type='checkbox'
+                                   data-ng-model='soknadData.fakta.underUtdanningIntroduksjon.value' name='underUtdanningIntroduksjon' mod-faktum boolean-verdi required/>
+                            <label for='underUtdanningIntroduksjon' class='svar-alt'>
+                                {{ tekster.utdanning_svar_under_utdanning_introduksjon }}
+                            </label>
+                            <utdanningsinformasjon></utdanningsinformasjon>
+                        </div>
+                    </div>
+
+                    <div class='oppsummeringsboks' data-ng-show='hvisIOppsummeringsmodus()'>
+                        <span data-ng-show='hvisIkkeUnderUtdanning()'>
+                            {{ tekster.utdanning_svar_ikke_utdanning }}
+                        </span>
+
+                        <span data-ng-show='hvisAvsluttetUtdanning()'>
+                            {{ tekster.utdanning_svar_avsluttet_utdanning }}
+                        </span>
+
+                        <span data-ng-show='hvisUnderUtdanning()'>
+                            {{ tekster.utdanning_svar_under_utdanning }}
+                        </span>
+                    </div>
+
+                </div>
+
+                <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
+                        data-ng-click="validateForm(utdanningForm.$invalid)">
+                    {{ tekster.utdanning_ferdig }}
+                </button>
+                <button data-ng-show="hvisIOppsummeringsmodus()" class="knapp-hoved"
+                        data-ng-click="gaTilRedigeringsmodus()">
+                    {{ tekster.endre }}
+                </button>
+
+                <div data-ng-show="hvisIkkeFormValiderer()">
+                    {{ tekster.utdanning_feilmelding }}
+                </div>
+            </div>
+
+            <div data-ng-controller="SendSoknadCtrl">
+                <a class="knapp-hoved" href="#/personalia/{{ soknadData.soknadId }}">
+                    {{ tekster.neste }}
+                </a>
+            </div>
+            <div>
+                <button class="knapp-stor" data-ng-click="avbryt()">
+                    {{ tekster.avbryt }}
+                </button>
+            </div>
+
+        </div>
+
+    </form>
+</div>

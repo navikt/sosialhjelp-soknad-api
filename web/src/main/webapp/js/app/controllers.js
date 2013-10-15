@@ -43,7 +43,7 @@ angular.module('app.controllers', ['app.services'])
   }
 })
 
-.controller('ArbeidsforholdCtrl', ['$scope', function($scope) {
+.controller('ArbeidsforholdCtrlGammel', ['$scope', function($scope) {
 
   $scope.land = [ 
   {name: "Afghanistan", code: "AF"}, 

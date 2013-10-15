@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.websoknad.domain;
 
-import static org.junit.Assert.assertEquals;
-
 import org.joda.time.DateTimeUtils;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class PersonAlderTest {
 
@@ -56,9 +56,9 @@ public class PersonAlderTest {
     }
 
     @Test
-    public void alderSkalVaere100ForPersonMedDNummer_56051329123() {
-        PersonAlder alder = new PersonAlder("56051329132");
-        assertEquals(100, alder.getAlder());
+    public void alderSkalVaere100ForPersonMedDNummer_46071175367() {
+        PersonAlder alder = new PersonAlder("46071175367");
+        assertEquals(2, alder.getAlder());
     }
     
     @Test

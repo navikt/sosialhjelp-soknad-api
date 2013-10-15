@@ -4,7 +4,7 @@
 *
 * Description
 */
-angular.module('app.directives', ['app.services'])
+angular.module('app.directives', ['app.services', 'nav.booleanradio', 'nav.cmstekster', 'nav.input', 'nav.sporsmalblokk'])
 
 /*Hva med casene 1-242 osv? */
 
@@ -162,63 +162,7 @@ return {
     };
 })
 
-.directive('radioknapp', function() {
-    return {
-        restrict: "E",
-        replace: true,
-        scope: {
-            model: '=',
-            modus: '=',
-            sporsmal: '=',
-            svar1: '=',
-            svar2: '=',
-            name: '@',
-            soknadData: '=',
-            lagre: '&'
-        },
-        controller: function($scope) {
-            $scope.hvisIRedigeringsmodus = function() {
-                return $scope.modus;
-            }
-
-            $scope.hvisIOppsummeringsmodus = function () {
-                return !$scope.hvisIRedigeringsmodus();
-            }
-
-            $scope.hvisModelErTrue = function() {
-                return $scope.model == 'true';
-            }
-
-            $scope.hvisModelErFalse = function() {
-                return !$scope.hvisModelErTrue();
-            }
-        },
-        template: "<div class='spm-blokk'>" +
-                "<p class='spm'>{{ sporsmal }}</p>" +
-                "<div class='redigeringsboks' data-ng-show='hvisIRedigeringsmodus()'>" +
-                    "<input class='sendsoknad-radio' id='{{ svar1 }}' type='radio' data-ng-model='model' value='true' name='{{ name }}' mod-faktum required/>" +
-                    "<label for='{{ svar1 }}' class='svar-alt'>" +
-                        "{{ svar1 }}" +
-                    "</label>" +
-                     "<input class='sendsoknad-radio' id='{{ svar2 }}' type='radio' data-ng-model='model' value='false' name='{{ name }}' mod-faktum required/>" +
-                     "<label for='{{ svar2 }}' class='svar-alt'>" +
-                         "{{ svar2 }}" +
-                     "</label>" +
-                "</div>" +
-                "<div class='oppsummeringsboks' data-ng-show='hvisIOppsummeringsmodus()'>" +
-                    "<span data-ng-show='hvisModelErTrue()'>"+
-                        "{{ svar1 }}" +
-                    "</span>" +
-                   "<span data-ng-show='hvisModelErFalse()'>" +
-                        "{{ svar2 }}" +
-                    "</span>" +
-                "</div>" +
-            "</div> "
-    }
-})
-
-
-.directive('snurrepipp', function() {
+.directive('fremdriftsindikator', function() {
     return {
         link: function(scope, element) {
             var image = angular.element('<img src="../img/ajaxloader/hvit/loader_hvit_48.gif"/>');

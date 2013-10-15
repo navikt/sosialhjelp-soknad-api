@@ -1,0 +1,13 @@
+<div>
+    <div data-ng-show="hvisIkkeFormValiderer()" cmstekster="{{ nokkel }}.feilmelding"/>
+
+    <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved" data-ng-click="validateForm()" cmstekster="{{ nokkel }}.ferdig"/>
+    <button data-ng-show="hvisIOppsummeringsmodus()" class="knapp-hoved" data-ng-click="gaTilRedigeringsmodus()" cmstekster="endre"/>
+
+    <div>
+        <a class="knapp-hoved" href="#/{{ nesteside }}/{{ data.soknadId }}" cmstekster="neste"/>
+    </div>
+    <div>
+        <button class="knapp-stor" href="#/avbryt/{{ data.soknadId }}" cmstekster="avbryt"/>
+    </div>
+</div>
