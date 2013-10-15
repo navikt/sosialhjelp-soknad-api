@@ -11,4 +11,18 @@ angular.module('nav.input',['nav.cmstekster'])
             },
             templateUrl: '../js/app/directives/navinput/navradioTemplate.html'
         }
+    }])
+    .directive('navButtonSpinner', [function() {
+        return {
+            restrict: "E",
+            replace: true,
+            scope: {
+                laster: '=',
+                klasse: '@',
+                nokkel: '@',
+                type: '@',
+                click: '&'
+            },
+            templateUrl: '../js/app/directives/navinput/navbuttonspinnerTemplate.html'
+        }
     }]);
