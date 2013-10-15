@@ -22,7 +22,7 @@ describe('Controllers', function() {
 	}));
 
 
-	/* TODO: Kommenter inn igjen når testene kjører
+	
 	describe('GrunnlagsdataCtrl', function() {
 		var scope, ctrl;
 		beforeEach(function(){
@@ -54,8 +54,6 @@ describe('Controllers', function() {
 		});
 	});
 	
-	*/
-
 	describe('fraMindreEnnTil', function(){
 		it('skal returnere true for fra-dato 10.10.2010 og til-dato 10.10.2011', function(){
 			var fra = new Date(2010, 10, 10);
