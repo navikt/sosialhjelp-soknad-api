@@ -89,8 +89,8 @@ public class SoknadInnsendingRepositoryTest {
         assertThat(opprettetSoknad, notNullValue());
         assertThat(opprettetSoknad.getStatus(), is(SoknadInnsendingStatus.UNDER_ARBEID));
         assertThat(opprettetSoknad.getAktoerId(), is(aktorId));
-        assertThat(opprettetSoknad.getBrukerbehandlingId(), is(behandlingsId));
-        assertThat(opprettetSoknad.getNavSoknadId(), is(gosysId));
+        assertThat(opprettetSoknad.getBrukerBehandlingId(), is(behandlingsId));
+        assertThat(opprettetSoknad.getGosysId(), is(gosysId));
     }
 
     @Test
@@ -103,8 +103,8 @@ public class SoknadInnsendingRepositoryTest {
         assertThat(opprettetSoknad, notNullValue());
         assertThat(opprettetSoknad.getStatus(), is(SoknadInnsendingStatus.UNDER_ARBEID));
         assertThat(opprettetSoknad.getAktoerId(), is("aktor-3"));
-        assertThat(opprettetSoknad.getBrukerbehandlingId(), is(behId));
-        assertThat(opprettetSoknad.getNavSoknadId(), is(gosysId));
+        assertThat(opprettetSoknad.getBrukerBehandlingId(), is(behId));
+        assertThat(opprettetSoknad.getGosysId(), is(gosysId));
     }
 
 	@Test
