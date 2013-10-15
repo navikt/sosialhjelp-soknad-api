@@ -27,7 +27,8 @@ public class SoknadDataController {
     @RequestMapping(value = "/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public WebSoknad hentSoknadData(@PathVariable Long soknadId) {
-        return soknadService.hentSoknad(soknadId);
+    	WebSoknad soknad = soknadService.hentSoknad(soknadId);
+    	return soknad;
     }
 
     @RequestMapping(value = "/send/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
