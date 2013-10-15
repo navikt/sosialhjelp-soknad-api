@@ -21,8 +21,8 @@ public class WebSoknad implements Serializable {
     private String brukerBehandlingId;
     private Map<String, Faktum> fakta;
     private SoknadInnsendingStatus status;
-	private String aktorId;
-	private DateTime opprettet;
+	private String aktoerId;
+	private DateTime opprettetDato;
     
     public WebSoknad() {
         fakta = new LinkedHashMap<>();
@@ -74,16 +74,12 @@ public class WebSoknad implements Serializable {
 		return antallFaktum;
 	}
 
-
-	public String getNavSoknadId() {
-		return gosysId;
-	}
 	
 	public String getAktoerId() {
-		return aktorId;
+		return aktoerId;
 	}
 	
-	 @Override
+	@Override
 	public String toString() {
 		return "WebSoknad [soknadId=" + soknadId + ", gosysId=" + gosysId
 				+ ", brukerBehandlingId=" + brukerBehandlingId + ", fakta="
@@ -100,7 +96,7 @@ public class WebSoknad implements Serializable {
 	}
 
 	public WebSoknad medAktorId(String aktorId) {
-		this.aktorId = aktorId;
+		this.aktoerId = aktorId;
 		return this;
 	}
 
@@ -115,17 +111,12 @@ public class WebSoknad implements Serializable {
 	}
 	
 	public WebSoknad opprettetDato(DateTime opprettetDato) {
-		this.opprettet = opprettetDato;
+		this.opprettetDato = opprettetDato;
 		return this;
 	}
 
-	public String getBrukerbehandlingId() {
-		// TODO Auto-generated method stub
-		return brukerBehandlingId;
-	}
-
 	public DateTime getOpprettetDato() {
-		return opprettet;
+		return opprettetDato;
 	}
 
 	public WebSoknad medId(long id) {

@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Import;
 
 import java.util.Locale;
 
-@Import({FooterConfig.class, GAConfig.class, ContentConfigTest.class, DatabaseTestContext.class})
+@Import({FooterConfig.class, GAConfig.class, ContentConfigTest.class, DatabaseTestContext.class,ConsumerConfigTest.class})
 public class FitNesseApplicationConfig {
 
     @Value("${websoknad.navigasjonslink.url}")
