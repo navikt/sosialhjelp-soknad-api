@@ -1,30 +1,53 @@
-reellarbeidssoker_villig_deltid_sporsmal
-reellarbeidssoker_villig_deltid_svar_ja
-reellarbeidssoker_villig_deltid_svar_nei
+utslagskriterier_kriterie_intro
 
-reellarbeidssoker_villig_pendle_sporsmal
-reellarbeidssoker_villig_pendle_svar_ja
-reellarbeidssoker_villig_pendle_svar_nei
+reellarbeidssoker.villigdeltid.sporsmal
+reellarbeidssoker.villigdeltid.true
+reellarbeidssoker.villigdeltid.false
 
-reellarbeidssoker_helseaarsaker_sporsmal
-reellarbeidssoker_helseaarsaker_svar_nei
-reellarbeidssoker_helseaarsaker_svar_ja
+reellarbeidssoker.villigpendle.sporsmal
+reellarbeidssoker.villigpendle.true
+reellarbeidssoker.villigpendle.false
 
-reellarbeidssoker_villig_jobb_sporsmal
-reellarbeidssoker_villig_jobb_svar_ja
-reellarbeidssoker_villig_jobb_svar_nei
+reellarbeidssoker.villighelse.sporsmal
+reellarbeidssoker.villighelse.true
+reellarbeidssoker.villighelse.false
 
-reellarbeidssoker_feilmelding
-reellarbeidssoker_tittel
-reellarbeidssoker_ferdig
+reellarbeidssoker.villigjobb.sporsmal
+reellarbeidssoker.villigjobb.true
+reellarbeidssoker.villigjobb.false
 
-vernepliktig_sporsmal
-vernepliktig_svar_ja
-vernepliktig_svar_nei
-vernepliktig_feilmelding
-vernepliktig_tittel
-vernepliktig_ferdig
-vernepliktig_opplasting
+reellarbeidssoker.feilmelding
+reellarbeidssoker.tittel
+reellarbeidssoker.ferdig
+
+vernepliktig.sporsmal
+vernepliktig.true
+vernepliktig.false
+vernepliktig.feilmelding
+vernepliktig.tittel
+vernepliktig.ferdig
+vernepliktig.opplasting
+
+egennaering.sporsmal
+egennaering.true
+egennaering.false
+egennaering.feilmelding
+egennaering.tittel
+egennaering.ferdig
+
+utdanning_sporsmal
+utdanning_svar_ikke_utdanning
+utdanning_svar_avsluttet_utdanning
+utdanning_svar_under_utdanning
+utdanning_feilmelding
+utdanning_tittel
+utdanning_ferdig
+utdanning_svar_under_utdanning_kurs
+utdanning_svar_under_utdanning_kveld
+utdanning_svar_under_utdanning_fulltid
+utdanning_svar_under_utdanning_kortvarig
+utdanning_svar_under_utdanning_norsk
+utdanning_svar_under_utdanning_introduksjon
 
 personalia_tittel
 personalia_navn
@@ -34,6 +57,10 @@ personalia_co
 personalia_postboks
 personalia_midlertidig_adresse_utland
 personalia_midlertidig_adresse_norge
+
+arbeidsforhold_informasjon
+arbeidsforhold_knapp_legg_til
+arbeidsforhold_ikke_jobbet
 
 send
 avbryt

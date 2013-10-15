@@ -1,6 +1,6 @@
 angular.module('app.brukerdata', ['app.services'])
 
-    .controller('StartSoknadCtrl', function ($scope, $location, soknadService, enonicService) {
+    .controller('StartSoknadCtrl', function ($scope, $location, soknadService) {
         $scope.startSoknad = function () {
             var soknadType = window.location.pathname.split("/")[3];
 
@@ -9,10 +9,7 @@ angular.module('app.brukerdata', ['app.services'])
             }).finally(function() {
                 $('#start').show();
                 $('#start').siblings('img').hide();
-            })
-
-            // Pre-fetche alle tekster så det blir cachet i angular-land
-            $scope.tekster = enonicService.get({side: 'Dagpenger'});
+            });
         }
     })
 
@@ -45,6 +42,7 @@ angular.module('app.brukerdata', ['app.services'])
                 }
             });
 
+            // Trenger kanskje ikkje != undefined
             $scope.harBostedsAdresse = function () {
                 return $scope.data.bostedsAdresse != undefined;
             }
@@ -97,19 +95,17 @@ angular.module('app.brukerdata', ['app.services'])
     .controller('SoknadDataCtrl', function ($scope, $routeParams, $location, $timeout, soknadService) {
         $scope.soknadData = soknadService.get({param: $routeParams.soknadId});
 
-        $scope.lagre = function () {
+        $scope.$on("OPPDATER_OG_LAGRE", function(e, data) {
+            $scope.soknadData.fakta[data.key] = {"soknadId": $scope.soknadData.soknadId, "key": data.key, "value": data.value};
+            $scope.$apply();
             var soknadData = $scope.soknadData;
-            console.log("lagre: " + soknadData);
             soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
-        };
-
-        $scope.avbryt = function () {
-            $location.path('avbryt/' + $routeParams.soknadId);
-        }
+            console.log("lagre: " + soknadData);
+        });
     })
 
-    .controller('TekstCtrl', function ($scope, enonicService) {
-        $scope.tekster = enonicService.get({side: 'Dagpenger'});
+    .controller('TekstCtrl', function ($scope, tekstService) {
+        $scope.tekster = tekstService.get({side: 'Dagpenger'});
     })
 
     .controller('ModusCtrl', function ($scope) {
@@ -140,6 +136,29 @@ angular.module('app.brukerdata', ['app.services'])
         }
     })
 
+    .controller('UtdanningCtrl', function ($scope) {
+        $scope.hvisIkkeUnderUtdanning = function() {
+            if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
+                return $scope.soknadData.fakta.utdanning.value == 'ikkeUtdanning';
+            }
+            return false;
+        }
+
+        $scope.hvisAvsluttetUtdanning = function() {
+            if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
+                return $scope.soknadData.fakta.utdanning.value == 'avsluttetUtdanning';
+            }
+            return false;
+        }
+
+        $scope.hvisUnderUtdanning = function() {
+            if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
+                return $scope.soknadData.fakta.utdanning.value == 'underUtdanning';
+            }
+            return false;
+        }
+    })
+
     .controller('AvbrytCtrl', function ($scope, $routeParams, $location, soknadService) {
         $scope.data = {};
         soknadService.get({param: $routeParams.soknadId}).$promise.then(function (result) {
@@ -151,9 +170,7 @@ angular.module('app.brukerdata', ['app.services'])
             if (!$scope.data.krevBekreftelse) {
                 $scope.submitForm();
             }
-        });
-
-
+        })
 
         $scope.submitForm = function () {
             var start = $.now();
@@ -169,10 +186,58 @@ angular.module('app.brukerdata', ['app.services'])
             }).finally(function(){
                 $('.knapp-advarsel-liten').show();
                 $('.knapp-advarsel-liten').siblings("img").hide();
-            });;
+            });
         };
     })
 
+    .controller('ArbeidsforholdCtrl', function($scope){
+        $scope.arbeidsforhold = {};
+        $scope.nyttArbeidsforhold = function($event){
+            var key = 'arbeidsforhold' + Object.keys($scope.arbeidsforhold).length;
+            $scope.arbeidsforhold[key] = {};
+        }
+
+        // Lagre på ferdig-knappen per arbeidsforhold
+        $scope.$on("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", function(e) {
+            $scope.soknadData.fakta.arbeidsforhold = {"soknadId": $scope.soknadData.soknadId, "key": "arbeidsforhold",
+                "value": JSON.stringify($scope.arbeidsforhold)};
+            var soknadData = $scope.soknadData;
+            soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
+            $scope.$apply();
+            console.log("lagre: " + soknadData.soknadId);
+        });
+    })
+
+    .directive('lagreArbeidsforhold', function() {
+        return function ($scope, element, attrs) {
+            var eventType;
+            switch (element.attr('type')) {
+                case "radio":
+                case "checkbox":
+                    eventType = "change";
+                    break;
+                default:
+                    eventType = "blur";
+            }
+
+            element.bind(eventType, function () {
+                var verdi = element.val();
+                if (element.attr('type') === "checkbox") {
+                    verdi = element.is(':checked');
+                }
+                $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD");
+            });
+        };
+    })
+
+    .directive('legg-til-arbeidsforhold', function() {
+        return function($scope, element, attrs) {
+            element.click(function () {
+
+            })
+        }
+
+    })
 
     .directive('modFaktum', function () {
         return function ($scope, element, attrs) {
@@ -191,10 +256,7 @@ angular.module('app.brukerdata', ['app.services'])
                 if (element.attr('type') === "checkbox") {
                     verdi = element.is(':checked');
                 }
-
-                $scope.soknadData.fakta[attrs.name] = {"soknadId": $scope.soknadData.soknadId, "key": attrs.name, "value": verdi};
-                $scope.$apply();
-                $scope.lagre();
+                $scope.$emit("OPPDATER_OG_LAGRE", {key: attrs.name, value: verdi});
             });
         };
     })
@@ -218,7 +280,6 @@ angular.module('app.brukerdata', ['app.services'])
         }
     })
 
-
     .factory('time', function ($timeout) {
         var time = {};
 
@@ -227,9 +288,5 @@ angular.module('app.brukerdata', ['app.services'])
             $timeout(tick, 1000);
         })();
         return time;
-    })
-
-    .controller('SistLagretCtrl', function ($scope, time) {
-        $scope.time = time;
     });
 
