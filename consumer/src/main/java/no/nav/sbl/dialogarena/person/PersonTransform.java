@@ -52,9 +52,10 @@ public class PersonTransform {
     	if (bostedsadresse != null) {
 			XMLStrukturertAdresse strukturertAdresse = bostedsadresse.getStrukturertAdresse();
 			
+			
+			
 			if(strukturertAdresse instanceof XMLGateadresse) {
 				XMLGateadresse xmlGateAdresse = (XMLGateadresse)strukturertAdresse;
-				
 				Adresse personAdresse = hentBostedsAdresse(soknadId, xmlGateAdresse);
 				result.add(personAdresse);
 			}
@@ -180,7 +181,16 @@ public class PersonTransform {
 		personAdresse.setHusbokstav(husbokstavString);
 		personAdresse.setPostnummer(postnummerString);
 		personAdresse.setPoststed(poststed);
+		personAdresse.setLand(getLandkode(xmlGateAdresse));
 		return personAdresse;
+	}
+
+	private String getLandkode(XMLGateadresse xmlGateAdresse) {
+		if (xmlGateAdresse.getLandkode() != null) {
+			return xmlGateAdresse.getLandkode().getValue(); 
+		} else {
+			return "";
+		}
 	}
 
 	private String getPostnummerString(XMLGateadresse xmlGateAdresse) {
