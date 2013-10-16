@@ -1,15 +1,19 @@
 angular.module('app.brukerdata', ['app.services'])
 
     .controller('StartSoknadCtrl', function ($scope, $location, soknadService) {
+        $scope.data = {
+            laster: false
+        };
         $scope.startSoknad = function () {
             var soknadType = window.location.pathname.split("/")[3];
-
-            $scope.soknad = soknadService.create({param: soknadType}).$promise.then(function (result) {
-                $location.path('reell-arbeidssoker/' + result.id);
-            }).finally(function() {
-                $('#start').show();
-                $('#start').siblings('img').hide();
-            });
+            $scope.data.laster = true;
+            $scope.soknad = soknadService.create({param: soknadType},
+                function (result) {
+                    $location.path('reell-arbeidssoker/' + result.id);
+                    $scope.data.laster = false;
+                }, function () {
+                    $scope.data.laster = false;
+                });
         }
     })
 
@@ -109,7 +113,7 @@ angular.module('app.brukerdata', ['app.services'])
     .controller('SoknadDataCtrl', function ($scope, $routeParams, $location, $timeout, soknadService) {
         $scope.soknadData = soknadService.get({param: $routeParams.soknadId});
 
-        $scope.$on("OPPDATER_OG_LAGRE", function(e, data) {
+        $scope.$on("OPPDATER_OG_LAGRE", function (e, data) {
             $scope.soknadData.fakta[data.key] = {"soknadId": $scope.soknadData.soknadId, "key": data.key, "value": data.value};
             $scope.$apply();
             var soknadData = $scope.soknadData;
@@ -151,21 +155,21 @@ angular.module('app.brukerdata', ['app.services'])
     })
 
     .controller('UtdanningCtrl', function ($scope) {
-        $scope.hvisIkkeUnderUtdanning = function() {
+        $scope.hvisIkkeUnderUtdanning = function () {
             if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
                 return $scope.soknadData.fakta.utdanning.value == 'ikkeUtdanning';
             }
             return false;
         }
 
-        $scope.hvisAvsluttetUtdanning = function() {
+        $scope.hvisAvsluttetUtdanning = function () {
             if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
                 return $scope.soknadData.fakta.utdanning.value == 'avsluttetUtdanning';
             }
             return false;
         }
 
-        $scope.hvisUnderUtdanning = function() {
+        $scope.hvisUnderUtdanning = function () {
             if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
                 return $scope.soknadData.fakta.utdanning.value == 'underUtdanning';
             }
@@ -174,7 +178,9 @@ angular.module('app.brukerdata', ['app.services'])
     })
 
     .controller('AvbrytCtrl', function ($scope, $routeParams, $location, soknadService) {
-        $scope.data = {};
+        $scope.data = {
+            laster: false
+        };
         soknadService.get({param: $routeParams.soknadId}).$promise.then(function (result) {
             var fakta = $.map(result.fakta, function (element) {
                 return element.type;
@@ -188,31 +194,33 @@ angular.module('app.brukerdata', ['app.services'])
 
         $scope.submitForm = function () {
             var start = $.now();
-            soknadService.delete({param: $routeParams.soknadId}).$promise.then(function () {
-
-                // For å forhindre at lasteindikatoren forsvinner med en gang
-                var delay = 1500 - ($.now() - start);
-                setTimeout(function () {
-                    $scope.$apply(function () {
-                        $location.path('slettet');
-                    });
-                }, delay);
-            }).finally(function(){
-                $('.knapp-advarsel-liten').show();
-                $('.knapp-advarsel-liten').siblings("img").hide();
-            });
+            $scope.data.laster = true;
+            soknadService.delete({param: $routeParams.soknadId},
+                function () { // Success
+                    var delay = 1500 - ($.now() - start);
+                    setTimeout(function () {
+                        $scope.$apply(function () {
+                            $scope.data.laster = false;
+                            $location.path('slettet');
+                        });
+                    }, delay);
+                },
+                function () { // Error
+                    $scope.data.laster = false;
+                }
+            );
         };
     })
 
-    .controller('ArbeidsforholdCtrl', function($scope){
+    .controller('ArbeidsforholdCtrl', function ($scope) {
         $scope.arbeidsforhold = {};
-        $scope.nyttArbeidsforhold = function($event){
+        $scope.nyttArbeidsforhold = function ($event) {
             var key = 'arbeidsforhold' + Object.keys($scope.arbeidsforhold).length;
             $scope.arbeidsforhold[key] = {};
         }
 
         // Lagre på ferdig-knappen per arbeidsforhold
-        $scope.$on("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", function(e) {
+        $scope.$on("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", function (e) {
             $scope.soknadData.fakta.arbeidsforhold = {"soknadId": $scope.soknadData.soknadId, "key": "arbeidsforhold",
                 "value": JSON.stringify($scope.arbeidsforhold)};
             var soknadData = $scope.soknadData;
@@ -222,7 +230,7 @@ angular.module('app.brukerdata', ['app.services'])
         });
     })
 
-    .directive('lagreArbeidsforhold', function() {
+    .directive('lagreArbeidsforhold', function () {
         return function ($scope, element, attrs) {
             var eventType;
             switch (element.attr('type')) {
@@ -244,8 +252,8 @@ angular.module('app.brukerdata', ['app.services'])
         };
     })
 
-    .directive('legg-til-arbeidsforhold', function() {
-        return function($scope, element, attrs) {
+    .directive('legg-til-arbeidsforhold', function () {
+        return function ($scope, element, attrs) {
             element.click(function () {
 
             })
