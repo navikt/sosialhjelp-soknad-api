@@ -1,14 +1,12 @@
 package no.nav.sbl.dialogarena.websoknad.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.xml.ws.soap.SOAPFaultException;
-
 
 import no.nav.modig.core.context.SubjectHandler;
-import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.soknadinnsending.db.SoknadRepository;
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
@@ -36,8 +34,6 @@ public class LocalDBSoknadService implements SendSoknadService{
 	public WebSoknad hentSoknad(long soknadId) {
 		return repository.hentSoknadMedData(soknadId);
 	}
-
-
 
 	@Override
 	public void lagreSoknadsFelt(long soknadId, String key, String value) {
@@ -68,9 +64,10 @@ public class LocalDBSoknadService implements SendSoknadService{
 	public Long startSoknad(String navSoknadId) {
 		logger.debug("Starter ny søknad");
 		//TODO: Sende et signal til Henvendelse om at søknaden er startet
-        String behandlingsId = "1";
+        String behandlingsId = UUID.randomUUID().toString();
         logger.debug("Start søknad");
         
+        //TODO-KJ: Denne operasjonen er ikke klar enda.Vil kommenteres inn når den er
 //        try {
 //            behandlingsId = sendSoknadService.startBehandling(navSoknadId);
 //        } catch (SOAPFaultException e) {
