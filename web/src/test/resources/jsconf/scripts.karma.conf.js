@@ -57,7 +57,7 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['Chrome'],
+    browsers: ['PhantomJS', 'Chrome', 'Firefox', 'IE'],
 
     //plugins: ['karma-phantomjs-runner', 'karma-jasmine'],
 
@@ -69,6 +69,13 @@ module.exports = function(config) {
     // if true, it capture browsers, run tests and exit
     singleRun: false,
 
+    plugins: [
+    'karma-jasmine',
+    'karma-phantomjs-launcher',
+    'karma-chrome-launcher',
+    'karma-firefox-launcher',
+    'karma-ie-launcher'
+    ],
 
     preprocessors : {
   //    'js/*.js' : ['coverage']
