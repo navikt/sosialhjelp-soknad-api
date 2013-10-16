@@ -117,8 +117,4 @@ public class SendSoknadPortTypeMock implements SendSoknadPortType {
 		return null;
 	}
 	
-	public String startBehandling(String gosysId) {
-		return UUID.randomUUID().toString();
-	}
-
 }
