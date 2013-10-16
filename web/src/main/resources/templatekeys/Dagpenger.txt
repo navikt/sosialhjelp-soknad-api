@@ -62,7 +62,10 @@ arbeidsforhold_informasjon
 arbeidsforhold_knapp_legg_til
 arbeidsforhold_ikke_jobbet
 
+avbryt.slett
+
 send
 avbryt
 endre
 neste
+start
