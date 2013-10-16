@@ -1,0 +1,20 @@
+<div class="skjemaramme">
+    <div class="sideoversikt">
+        <h4 cmstekster="ytelser.tittel"/>
+    </div>
+    <form name="ytelserForm" class="skjemainnhold" data-ng-controller="ModusCtrl" novalidate>
+        <div class="spm-blokk">
+            <p cmstekster="ytelser.informasjon"/>
+            <p class='spm' cmstekster="ytelser.sporsmal"/>
+            <navcheckbox model='soknadData.fakta.stonadFisker.value' name='stonadFisker' label='ytelser.stonadFikser'/>
+            <navcheckbox model='soknadData.fakta.offentligTjenestepensjon.value' name='offentligTjenestepensjon' label='ytelser.offentligTjenestepensjon'/>
+            <navcheckbox model='soknadData.fakta.privatTjenestepensjon.value' name='privatTjenestepensjon' label='ytelser.privatTjenestepensjon'/>
+            <navcheckbox model='soknadData.fakta.vartpenger.value' name='vartpenger' label='ytelser.vartpenger'/>
+            <navcheckbox model='soknadData.fakta.ventelonn.value' name='ventelonn' label='ytelser.ventelonn'/>
+            <navcheckbox model='soknadData.fakta.dagpengerEOS.value' name='dagpengerEOS' label='ytelser.dagpengerEOS'/>
+            <navcheckbox model='soknadData.fakta.annenYtelse.value' name='annenYtelse' label='ytelser.annenYtelse'/>
+        </div>
+        <sporsmalblokk nokkel="ytelser" redigerings-modus="data.redigeringsModus" form="ytelserForm"
+                       nesteside="personalia"/>
+    </form>
+</div>

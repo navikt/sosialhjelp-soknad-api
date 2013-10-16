@@ -62,6 +62,19 @@ arbeidsforhold_informasjon
 arbeidsforhold_knapp_legg_til
 arbeidsforhold_ikke_jobbet
 
+ytelser.tittel
+ytelser.ferdig
+ytelser.stonadFikser
+ytelser.sporsmal
+ytelser.informasjon
+ytelser.feilmelding
+ytelser.offentligTjenestepensjon
+ytelser.privatTjenestepensjon
+ytelser.vartpenger
+ytelser.ventelonn
+ytelser.dagpengerEOS
+ytelser.annenYtelse
+
 avbryt.slett
 
 send
