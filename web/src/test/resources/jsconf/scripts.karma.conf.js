@@ -14,10 +14,11 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      '../jslib/angular.js',
+      '../../../main/webapp/js/lib/angular.js',
       '../jslib/angular-mocks.js',
       '../jslib/angular-resource.js',
-      '../../../../src/main/webapp/js/app/*.js',
+      '../../../main/webapp/js/app/*.js',
+      '../../../main/webapp/js/app/directives/**/*.js',
       '../../../test/js/test/unit/*.js'
  ],
 
@@ -58,6 +59,7 @@ module.exports = function(config) {
     // - IE (only Windows)
     browsers: ['Chrome'],
 
+    //plugins: ['karma-phantomjs-runner', 'karma-jasmine'],
 
     // If browser does not capture in given timeout [ms], kill it
     captureTimeout: 60000,
