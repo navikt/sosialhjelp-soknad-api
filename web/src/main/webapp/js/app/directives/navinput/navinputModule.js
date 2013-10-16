@@ -25,4 +25,15 @@ angular.module('nav.input',['nav.cmstekster'])
             },
             templateUrl: '../js/app/directives/navinput/navbuttonspinnerTemplate.html'
         }
+    }])
+
+    .directive('navcheckbox', [function(){
+        return {
+            restrict: 'E',
+            replace: true,
+            scope: {
+
+            },
+            templateUrl: '../js/app/directives/navinput/navcheckboxTemplate.html'
+        }
     }]);
