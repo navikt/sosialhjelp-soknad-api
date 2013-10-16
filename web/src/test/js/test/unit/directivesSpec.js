@@ -15,7 +15,7 @@ describe('directives', function() {
 		form = scope.form;
 		element.scope().$apply();
 
-	}));
+}));
 
 	describe('prosent', function(){
 		it('skal returnere true for prosenten 0', function(){
