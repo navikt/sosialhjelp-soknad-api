@@ -18,17 +18,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-@Named
+@Named("soknadInnsendingRepository")
 public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadRepository{
 	
 	private static final Logger LOG = LoggerFactory.getLogger(SoknadRepositoryJdbc.class);
-
-	
 	
 	public SoknadRepositoryJdbc() {}
-	
-	public SoknadRepositoryJdbc(DataSource ds) {
-	}
 	
 	@Inject
 	public void setDS(DataSource ds){
