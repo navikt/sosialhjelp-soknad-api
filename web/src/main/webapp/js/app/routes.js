@@ -48,6 +48,15 @@ angular.module('app.routes', ['ngRoute'])
                     }
                 }
             })
+            .when('/ytelser/:soknadId', {
+                templateUrl: '../js/app/controllers/ytelser/ytelser.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
 
             .when('/oppsummering/:soknadId', {
                 templateUrl: '../html/templates/oppsummering.html',
@@ -59,6 +68,16 @@ angular.module('app.routes', ['ngRoute'])
                 }
              })
 
+            .when('/utdanning/:soknadId', {
+                templateUrl: '../html/templates/utdanning.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
+
             .when('/soknadliste', {templateUrl: '../html/templates/soknadliste.html'})
             .when('/arbeidsforhold/:soknadId', {templateUrl: '../html/templates/arbeidsforhold.html', controller: 'SoknadDataCtrl'})
             .when('/informasjonsside', {templateUrl: '../html/templates/informasjonsside.html', controller: 'StartSoknadCtrl'})
@@ -69,7 +88,7 @@ angular.module('app.routes', ['ngRoute'])
 
          
 
-            .when('/utdanning/:soknadId', {templateUrl: '../html/templates/utdanning.html', controller: 'SoknadDataCtrl'})
+
             .otherwise({redirectTo: '/utslagskriterier'});
 
 //    $locationProvider.html5Mode(true);
