@@ -1,6 +1,9 @@
-<form name="arbeidsforholdForm" data-ng-controller="ValidationCtrl" novalidate>
+<div class="skjemaramme">
     <div data-ng-controller="ArbeidsforholdCtrl">
-        <!-- Bruke liste og ikke objekt -->
+        
+        <span cmstekster="arbeidsforhold.informasjon"></span>
+
+        <!--TODO Bruke liste og ikke objekt -->
         <ul>
             <li data-ng-repeat="af in arbeidsforhold">
                 <label for="arbeidsgiver{{ $index }}">Navn på arbeidsgiver</label>
@@ -8,15 +11,26 @@
             </li>
         </ul>
 
-        <p>{{ tekster.arbeidsforhold_informasjon }}</p>
-        <button class="knapp-hoved" legg-til-arbeidsforhold>
+        <!-- trengs denne? -->
+        <!--button class="knapp-hoved" legg-til-arbeidsforhold>
             {{ tekster.arbeidsforhold_knapp_legg_til }}
-        </button>
+        </button-->
+        <form name="arbeidsforholdForm" data-ng-controller="ModusCtrl" novalidate>
+	        <!--a href data-ng-click="nyttArbeidsforhold($event)"> Legg til nytt arbeidsforhold</a>
+	        <input id="harIkkeJobbet" type="checkbox" data-ng-model="soknadData.fakta.arbeidsforholdHarIkkeJobbet.value"
+	               name="arbeidsforholdHarIkkeJobbet" mod-faktum boolean-verdi/>
+	        <label for="harIkkeJobbet" cmstekster="arbeidsforhold.har_ikke_jobbet"></label-->
 
-        <a href data-ng-click="nyttArbeidsforhold($event)"> Legg til nytt arbeidsforhold</a>
-        <input id="ikkeJobbet" type="checkbox" data-ng-model="soknadData.fakta.arbeidsforholdIkkeJobbet.value"
-               name="arbeidsforholdIkkeJobbet" mod-faktum boolean-verdi/>
-        <label for="ikkeJobbet"> {{ tekster.arbeidsforhold_ikke_jobbet }}</label>
+
+
+		<checkbox model="soknadData.fakta.arbeidsforhold.value"
+                      modus="data.redigeringsModus"
+                      nokkel="arbeidsforhold"/>
+
+        <sporsmalblokk nokkel="arbeidsforhold" redigerings-modus="data.redigeringsModus" form="arbeidsforholdForm"
+                       nesteside="verneplikt"/>
+
+        </form>
     </div>
 
 <!--<div data-ng-controller="ArbeidsforholdCtrl">
@@ -328,4 +342,4 @@
 			</li>
 		</ul>
 	</div>-->
-</form>
+</div>

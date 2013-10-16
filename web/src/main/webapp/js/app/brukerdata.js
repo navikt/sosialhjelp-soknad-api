@@ -255,7 +255,7 @@ angular.module('app.brukerdata', ['app.services'])
     .directive('legg-til-arbeidsforhold', function () {
         return function ($scope, element, attrs) {
             element.click(function () {
-
+                
             })
         }
 
