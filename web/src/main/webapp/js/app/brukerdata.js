@@ -25,24 +25,26 @@ angular.module('app.brukerdata', ['app.services'])
     })
 
 
-    .controller('PersonaliaCtrl', function ($scope, $routeParams, tpsService) {
+    .controller('PersonaliaCtrl', ["$scope", "$routeParams", "tpsService", "data", function ($scope, $routeParams, tpsService, data) {
         $scope.data = {};
 
         tpsService.get({soknadId: $routeParams.soknadId}).$promise.then(function (result) {
             $scope.personalia = result;
 
-            //TODO: For testing
+              //TODO: For adresse-testing
 //            $scope.personalia.fakta.adresser.push({"soknadId":1,"type":"MIDLERTIDIG_POSTADRESSE_NORGE","gatenavn":"Kirkeveien","husnummer":"55","husbokstav":"D","postnummer":"7000","poststed":"Trondheim","land":null,"gyldigTil":1412373600000,"gyldigFra":1380895717011,"postboksNavn":"POSTBOKS","postboksNummer":"1234","adresseEier":"Per P. Nilsen","utenlandsAdresse":null});
 //            $scope.personalia.fakta.adresser.push({"soknadId":1,"type":"MIDLERTIDIG_POSTADRESSE_NORGE","gatenavn":"Kirkeveien","husnummer":"55","husbokstav":"D","postnummer":"7000","poststed":"Trondheim","land":null,"gyldigTil":1412373600000,"gyldigFra":1380895717011,"postboksNavn":null,"postboksNummer":null,"adresseEier":"Per P. Nilsen","utenlandsAdresse":null});
 //            $scope.personalia.fakta.adresser.push({"soknadId":1,"type":"MIDLERTIDIG_POSTADRESSE_UTLAND","gatenavn":null,"husnummer":null,"husbokstav":null,"postnummer":null,"poststed":null,"land":"SVERIGE","gyldigTil":1412373600000,"gyldigFra":1380895717011,"postboksNavn":null,"postboksNummer":null,"adresseEier":"Per P. Nilsen","utenlandsAdresse":["Öppnedvägen 22","1234, Udevalla"]});
+//            Mangler eksempel på mildertidig omrodeadresse
+//            $scope.personalia.fakta.adresser.push({"soknadId":1,"type":"BOSTEDSADRESSE","gatenavn":"Blåsbortveien","husnummer":"24","husbokstav":"","postnummer":"0368","poststed":"Malmö","land":"SVERIGE","gyldigFra":null,"gyldigTil":null,"utenlandsAdresse":null,"adresseEier":null,"postboksNummer":null,"postboksNavn":null});
 
-            $scope.personalia.fakta.adresser.forEach(function (data, i) {
+            $scope.personalia.fakta.adresser.forEach(function (data, index) {
                 if (data.type === "BOSTEDSADRESSE") {
-                    $scope.data.bostedsAdresse = i;
+                    $scope.data.bostedsAdresse = index;
                 } else if (data.type === "POSTADRESSE") {
-                    $scope.data.postAdresse = i;
+                    $scope.data.postAdresse = index;
                 } else {
-                    $scope.data.midlertidigAdresse = i;
+                    $scope.data.midlertidigAdresse = index;
                 }
             });
 
@@ -54,6 +56,11 @@ angular.module('app.brukerdata', ['app.services'])
             $scope.harMidlertidigAdresse = function () {
                 return $scope.data.midlertidigAdresse != undefined;
             }
+
+            $scope.harBostedsadresseOgIngenMidlertidigAdresse = function() {
+                return !$scope.harMidlertidigAdresse() && $scope.harBostedsAdresse();        
+            }
+
             $scope.harPostboksAdresse = function () {
                 return $scope.harMidlertidigAdresse() && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].postboksNavn != undefined && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].postboksNummer != undefined;
             }
@@ -61,11 +68,18 @@ angular.module('app.brukerdata', ['app.services'])
                 return $scope.harMidlertidigAdresse() && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].gatenavn != undefined && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].husnummer != undefined
             }
 
-            $scope.harUtenlandskAdresse = function () {
+            $scope.harMidlertidigUtenlandskAdresse = function () {
                 return $scope.harMidlertidigAdresse() && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].land != undefined && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].utenlandsAdresse.length > 0
             }
 
-            $scope.hentMidlertidigAdresseTittel = function () {
+            $scope.harUtenlandskFolkeregistrertAdresseOgMidlertidigNorskAdresse = function() {
+                return $scope.harMidlertidigAdresse() &&  $scope.harBostedsAdresse() && $scope.personalia.fakta.adresser[$scope.data.bostedsAdresse].land != undefined && $scope.personalia.fakta.adresser[$scope.data.bostedsAdresse].land != "";   
+            }
+
+            $scope.harUtenlandskAdresse = function() {
+                return $scope.harMidlertidigUtenlandskAdresse() || $scope.harUtenlandskFolkeregistrertAdresseOgMidlertidigNorskAdresse();
+            }
+            $scope.hentMidlertidigAdresseTittel = function() {
                 if (!$scope.harMidlertidigAdresse()) {
                     return;
                 }
@@ -74,10 +88,10 @@ angular.module('app.brukerdata', ['app.services'])
                 var type = $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].type;
                 switch (type) {
                     case "MIDLERTIDIG_POSTADRESSE_NORGE":
-                        tekst = $scope.tekster.personalia_midlertidig_adresse_norge;
+                        tekst = data.tekster["personalia.midlertidig_adresse_norge"];
                         break;
                     case "MIDLERTIDIG_POSTADRESSE_UTLAND":
-                        tekst = $scope.tekster.personalia_midlertidig_adresse_utland;
+                        tekst = data.tekster["personalia.midlertidig_adresse_utland"];
                         break;
                     default :
                         //TODO: fix
@@ -87,14 +101,14 @@ angular.module('app.brukerdata', ['app.services'])
             }
         });
 
-        $scope.harHenterPersonalia = function () {
+        $scope.harHentetPersonalia = function() {
             return $scope.personalia != undefined;
         }
 
-        $scope.harIkkeHenterPersonalia = function () {
-            return !$scope.harHenterPersonalia();
+        $scope.harIkkeHentetPersonalia = function() {
+            return !$scope.harHentetPersonalia();
         }
-    })
+    }])
 
     .controller('SoknadDataCtrl', function ($scope, $routeParams, $location, $timeout, soknadService) {
         $scope.soknadData = soknadService.get({param: $routeParams.soknadId});

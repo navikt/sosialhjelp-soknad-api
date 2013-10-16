@@ -56,6 +56,8 @@ describe('directives', function() {
 	});
 });
 
+
+
 describe('directives', function() {
     var scope, form, element, checkbox;
 
@@ -246,4 +248,5 @@ describe('directives', function() {
 		expect(scope.arbeidsforhold.til).toEqual(new Date(2011, 10, 10));
 		expect(form.til.$valid).toBe(true);
 	});
+
 });
