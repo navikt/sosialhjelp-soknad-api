@@ -1,38 +1,35 @@
 <div data-ng-controller="PersonaliaCtrl">
-    <div data-ng-show="harHenterPersonalia()">
-        <h1>{{ tekster.personalia_tittel }}</h1>
+    <div data-ng-show="harHentetPersonalia()">
+        <h1 cmstekster="personalia.tittel"></h1>
 
-        <label>{{ tekster.personalia_navn }}</label>
+        <label cmstekster="personalia.fnr"></label>
+        <p> {{personalia.fakta.fnr.value}} </p>
 
-        <p>{{personalia.fakta.sammensattnavn.value}}</p>
-
-        <label>{{ tekster.personalia_fnr }}</label>
-
-        <p>{{personalia.fakta.fnr.value}} </p>
-
-        <div data-ng-show="harBostedsAdresse()">
-            <label>{{ tekster.personalia_bostedsadresse }}</label>
-
+        <div data-ng-show="harBostedsadresseOgIngenMidlertidigAdresse()">
+            <label cmstekster="personalia.navn"></label>
+            <p> {{personalia.fakta.sammensattnavn.value}} </p>
+            
+            <label cmstekster="personalia.bostedsadresse"></label>
             <p>
                 {{ personalia.fakta.adresser[data.bostedsAdresse].gatenavn }}
                 {{ personalia.fakta.adresser[data.bostedsAdresse].husnummer }}
                 {{ personalia.fakta.adresser[data.bostedsAdresse].husbokstav }}
             </p>
-
             <p>
                 {{ personalia.fakta.adresser[data.bostedsAdresse].postnummer }}
                 {{ personalia.fakta.adresser[data.bostedsAdresse].poststed }}
             </p>
         </div>
         <div data-ng-show="harMidlertidigAdresse()">
-            <h4>{{ hentMidlertidigAdresseTittel() }}</h4>
+            <h4> {{ hentMidlertidigAdresseTittel() }}</h4>
 
             <p>
-                {{ tekster.personalia_co}} {{ personalia.fakta.adresser[data.midlertidigAdresse].adresseEier }}
+                <span cmstekster="personalia.co"></span>
+                <span> {{ personalia.fakta.adresser[data.midlertidigAdresse].adresseEier }}</span>
             </p>
 
             <p data-ng-show="harPostboksAdresse()">
-                <label>{{ tekster.personalia_postboks }}</label>
+                <label cmstekster="personalia.postboks"></label>
                 {{ personalia.fakta.adresser[data.midlertidigAdresse].postboksNummer }}
                 {{ personalia.fakta.adresser[data.midlertidigAdresse].postboksNavn }}
             </p>
@@ -43,7 +40,7 @@
                 {{ personalia.fakta.adresser[data.midlertidigAdresse].husbokstav }}
             </p>
 
-            <p data-ng-show="harUtenlandskAdresse()">
+            <p data-ng-show="harMidlertidigUtenlandskAdresse()">
             <span data-ng-repeat="linje in personalia.fakta.adresser[data.midlertidigAdresse].utenlandsAdresse">
                 {{linje}}
             </span>
@@ -58,16 +55,30 @@
             <p>
                 Gyldig til: {{ personalia.fakta.adresser[data.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy' }}
             </p>
+
+            <div data-ng-show="harUtenlandskAdresse()">
+                <h4> Folkeregistrert adresse </h4>
+                <p> {{personalia.fakta.sammensattnavn.value}} </p>
+                
+                <label cmstekster="personalia.bostedsadresse"></label>
+                <p>
+                    {{ personalia.fakta.adresser[data.bostedsAdresse].gatenavn }}
+                    {{ personalia.fakta.adresser[data.bostedsAdresse].husnummer }}
+                    {{ personalia.fakta.adresser[data.bostedsAdresse].husbokstav }}
+                </p>
+                <p>
+                    {{ personalia.fakta.adresser[data.bostedsAdresse].postnummer }}
+                    {{ personalia.fakta.adresser[data.bostedsAdresse].poststed }}
+                </p>
+            </div>
         </div>
     </div>
-    <div ng-show="harIkkeHenterPersonalia()">
+    <div ng-show="harIkkeHentetPersonalia()">
         <img src="../img/ajaxloader/hvit/loader_hvit_64.gif" alt="Fremdriftsindikator"/>
     </div>
 
-    <a class="knapp-hoved" href="#/oppsummering/{{ soknadData.soknadId }}">
-        {{ tekster.neste }}
+    <a class="knapp-hoved" href="#/oppsummering/{{ soknadData.soknadId }}" cmstekster="neste">
     </a>
-    <button class="knapp-stor" data-ng-click="avbryt()">
-        {{ tekster.avbryt }}
+    <button class="knapp-stor" data-ng-click="avbryt()" cmstekster="avbryt">
     </button>
 </div>
