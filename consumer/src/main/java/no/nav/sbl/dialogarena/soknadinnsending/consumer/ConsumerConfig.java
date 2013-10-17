@@ -72,7 +72,7 @@ public class ConsumerConfig {
         }
     }
 
-    private final static class CxfService<T> {
+    private static final class CxfService<T> {
         private final Services service;
         private final String endpointUrl;
         private final Type system;
