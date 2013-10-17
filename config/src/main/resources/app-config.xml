@@ -13,7 +13,7 @@
     </artifacts>
 
     <resources>
-    	<datasource alias="soknadInnsendingDataSource" jndi="java:/jboss/datasources/SoknadInnsendingDS">
+    	<datasource alias="soknadInnsendingDataSource" jndi="java:/comp/env/jdbc/SoknadInnsendingDS">
             <pool maxPoolSize="300" minPoolSize="0"/>
         </datasource>
         <webservice alias="virksomhet:Brukerprofil_v1"
@@ -21,7 +21,8 @@
         <webservice alias="domene.Brukerdialog:sendsoknadservice_v1"
                     mapToProperty="soknad.webservice.henvendelse.sendsoknadservice"/>
 		<webservice alias="virksomhet:Kodeverk_v2" mapToProperty="sendsoknad.webservice.kodeverk"/>
-        
+        <webservice alias="virksomhet:Aktoer_v1" mapToProperty="soknad.webservice.aktor.aktorservice"/>
+
         <baseUrl alias="innlogging.navnetjeneste" mapToProperty="innlogging.navnetjeneste"/>
         <baseUrl alias="minehenvendelser.link" mapToProperty="minehenvendelser.link"/>
         <baseUrl alias="dialogarena.cms" mapToProperty="dialogarena.cms"/>
