@@ -91,6 +91,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+
         <!-- Avhengigheter med scope test -->
 
         <dependency>
