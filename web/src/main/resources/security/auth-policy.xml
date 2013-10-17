@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PolicySet xmlns="urn:oasis:names:tc:xacml:2.0:policy:schema:os"
+           PolicySetId="urn:xacml:2.0:nav:henvendelse:policysetid:1"
+           PolicyCombiningAlgId="urn:oasis:names:tc:xacml:1.0:policy-combining-algorithm:only-one-applicable">
+    <Target />
+
+    <Policy PolicyId="urn:xacml:2.0:nav:henvendelse:policyid:1"
+            RuleCombiningAlgId="urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:first-applicable">
+
+        <Target/>
+
+        <Rule RuleId="urn:xacml:2.0:nav:henvendelse:ruleid:vanlig-bruker-kan-kun-benytte-egene-soknader" Effect="Permit">
+            <Condition>
+                <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                        <SubjectAttributeDesignator AttributeId="urn:nav:ikt:tilgangskontroll:xacml:subject:aktor-id"
+                                                    DataType="http://www.w3.org/2001/XMLSchema#string"/>
+                    </Apply>
+                    <!-- Hentes fra attributelocator -->
+                    <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:string-one-and-only">
+                        <ResourceAttributeDesignator  AttributeId="urn:nav:ikt:tilgangskontroll:xacml:resource:owner-id"
+                                                    DataType="http://www.w3.org/2001/XMLSchema#string"/>
+                    </Apply>
+                </Apply>
+            </Condition>
+        </Rule>
+        <Rule RuleId="alle-andre" Effect="Deny" />
+    </Policy>
+
+</PolicySet>
