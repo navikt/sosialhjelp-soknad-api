@@ -6,7 +6,6 @@ import no.nav.modig.security.sts.utility.STSConfigurationUtility;
 import no.nav.sbl.dialogarena.common.timing.TimingFeature;
 import no.nav.sbl.dialogarena.websoknad.service.LocalDBSoknadService;
 import no.nav.sbl.dialogarena.websoknad.service.SendSoknadService;
-import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;

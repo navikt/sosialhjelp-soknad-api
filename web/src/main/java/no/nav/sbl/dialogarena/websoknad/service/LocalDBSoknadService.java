@@ -1,30 +1,27 @@
 package no.nav.sbl.dialogarena.websoknad.service;
 
-import java.util.List;
-import java.util.UUID;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.db.SoknadRepository;
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
-
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ComponentScan;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.List;
+import java.util.UUID;
 
 @ComponentScan()
 public class LocalDBSoknadService implements SendSoknadService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(LocalDBSoknadService.class);
 	
-	@Inject
-    @Named("sendSoknadService")
-    private SendSoknadPortType sendSoknadService;
+//	@Inject
+//    @Named("sendSoknadService")
+//    private SendSoknadPortType sendSoknadService;
 	
 	@Inject
 	@Named("soknadInnsendingRepository")
