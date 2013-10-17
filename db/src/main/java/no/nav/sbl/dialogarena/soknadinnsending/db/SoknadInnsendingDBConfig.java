@@ -3,16 +3,17 @@ package no.nav.sbl.dialogarena.soknadinnsending.db;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jndi.JndiObjectFactoryBean;
+import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
+
+import javax.sql.DataSource;
 
 @Configuration
 @ComponentScan
 public class SoknadInnsendingDBConfig {
-	
-	@Bean
-    public JndiObjectFactoryBean dataSourceJndiLookup() {
-		JndiObjectFactoryBean bean = new JndiObjectFactoryBean();
-		bean.setJndiName("java:jboss/datasources/SoknadInnsendingDS");
-		return bean;
-	}
+    @Bean
+    public DataSource dataSource() {
+        JndiDataSourceLookup lookup = new JndiDataSourceLookup();
+        lookup.setResourceRef(false);
+        return lookup.getDataSource("java:comp/env/jdbc/SoknadInnsendingDS");
+    }
 }
