@@ -5,16 +5,79 @@
     <form name="ytelserForm" class="skjemainnhold" data-ng-controller="ModusCtrl" novalidate>
         <div class="spm-blokk">
             <p cmstekster="ytelser.informasjon"/>
+
             <p class='spm' cmstekster="ytelser.sporsmal"/>
-            <navcheckbox model='soknadData.fakta.stonadFisker.value' name='stonadFisker' label='ytelser.stonadFikser'/>
-            <navcheckbox model='soknadData.fakta.offentligTjenestepensjon.value' name='offentligTjenestepensjon' label='ytelser.offentligTjenestepensjon'/>
-            <navcheckbox model='soknadData.fakta.privatTjenestepensjon.value' name='privatTjenestepensjon' label='ytelser.privatTjenestepensjon'/>
-            <navcheckbox model='soknadData.fakta.vartpenger.value' name='vartpenger' label='ytelser.vartpenger'/>
-            <navcheckbox model='soknadData.fakta.ventelonn.value' name='ventelonn' label='ytelser.ventelonn'/>
-            <navcheckbox model='soknadData.fakta.dagpengerEOS.value' name='dagpengerEOS' label='ytelser.dagpengerEOS'/>
-            <navcheckbox model='soknadData.fakta.annenYtelse.value' name='annenYtelse' label='ytelser.annenYtelse'/>
+
+            <div id="harYtelser">
+                <navcheckbox data-ng-model='soknadData.fakta.stonadFisker.value' modus='data.redigeringsModus'
+                             name='stonadFisker' label='ytelser.stonadFikser'/>
+
+                <navcheckbox data-ng-model='soknadData.fakta.offentligTjenestepensjon.value'
+                             modus='data.redigeringsModus' name='offentligTjenestepensjon'
+                             label='ytelser.offentligTjenestepensjon'/>
+
+                <div data-ng-show="soknadData.fakta.offentligTjenestepensjon.value=='true'">
+                    <navtekst data-ng-model="soknadData.fakta.offentligTjenestepensjonUtbetaler.value"
+                              modus="data.redigeringsModus" name="offentligTjenestepensjonUtbetaler"
+                              label="ytelser.offentligTjenestepensjonUtbetaler"/>
+                </div>
+
+                <navcheckbox data-ng-model='soknadData.fakta.privatTjenestepensjon.value' modus='data.redigeringsModus'
+                             name='privatTjenestepensjon' label='ytelser.privatTjenestepensjon'/>
+
+                <div data-ng-show="soknadData.fakta.privatTjenestepensjon.value=='true'">
+                    <navtekst data-ng-model="soknadData.fakta.privatTjenestepensjonUtbetaler.value"
+                              modus="data.redigeringsModus" name="privatTjenestepensjonUtbetaler"
+                              label="ytelser.privatTjenestepensjonUtbetaler"/>
+                </div>
+
+                <navcheckbox data-ng-model='soknadData.fakta.vartpenger.value' modus='data.redigeringsModus'
+                             name='vartpenger' label='ytelser.vartpenger'/>
+
+                <div data-ng-show="soknadData.fakta.vartpenger.value=='true'">
+                    <navtekst data-ng-model="soknadData.fakta.vartpengerUtbetaler.value" modus="data.redigeringsModus"
+                              name="vartpengerUtbetaler" label="ytelser.vartpengerUtbetaler"/>
+                </div>
+
+                <navcheckbox data-ng-model='soknadData.fakta.ventelonn.value' modus='data.redigeringsModus'
+                             name='ventelonn' label='ytelser.ventelonn'/>
+
+                <div data-ng-show="soknadData.fakta.ventelonn.value=='true'">
+                    <navtekst data-ng-model="soknadData.fakta.ventelonnUtbetaler.value" modus="data.redigeringsModus"
+                              name="ventelonnUtbetaler" label="ytelser.ventelonnUtbetaler"/>
+                </div>
+
+                <navcheckbox data-ng-model='soknadData.fakta.dagpengerEOS.value' modus='data.redigeringsModus'
+                             name='dagpengerEOS' label='ytelser.dagpengerEOS'/>
+
+                <div data-ng-show="soknadData.fakta.dagpengerEOS.value=='true'">
+                    <navtekst data-ng-model="soknadData.fakta.dagpengerEOSUtbetaler.value" modus="data.redigeringsModus"
+                              name="dagpengerEOSUtbetaler" label="ytelser.dagpengerEOSUtbetaler"/>
+                </div>
+
+                <navcheckbox data-ng-model='soknadData.fakta.annenYtelse.value' modus='data.redigeringsModus'
+                             name='annenYtelse' label='ytelser.annenYtelse'/>
+
+                <div data-ng-show="soknadData.fakta.annenYtelse.value=='true'">
+                    <navtekst data-ng-model="soknadData.fakta.annenYtelseType.value" modus="data.redigeringsModus"
+                              name="annenYtelseType" label="ytelser.annenYtelseType"/>
+                    <navtekst data-ng-model="soknadData.fakta.annenYtelseUtbetaler.value" modus="data.redigeringsModus"
+                              name="annenYtelseUtbetaler" label="ytelser.annenYtelseUtbetaler"/>
+                </div>
+
+            </div>
+
+            <div>
+                <navcheckbox data-ng-model='soknadData.fakta.ingenYtelse.value' modus='data.redigeringsModus'
+                             name='ingenYtelse' label='ytelser.ingenYtelse' ikke-ytelser-validering/>
+                <span data-ng-show="ytelserForm.$error.harValgtYtelse" cmstekster="ytelser.harValgtYtelse.feilmelding"/>
+            </div>
+
         </div>
         <sporsmalblokk nokkel="ytelser" redigerings-modus="data.redigeringsModus" form="ytelserForm"
                        nesteside="personalia"/>
+        <div data-ng-show="ytelserForm.annenYtelse.$invalid ">
+            hei
+        </div>
     </form>
 </div>

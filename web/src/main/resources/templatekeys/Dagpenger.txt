@@ -74,6 +74,15 @@ ytelser.vartpenger
 ytelser.ventelonn
 ytelser.dagpengerEOS
 ytelser.annenYtelse
+ytelser.ingenYtelse
+ytelser.offentligTjenestepensjonUtbetaler
+ytelser.privatTjenestepensjonUtbetaler
+ytelser.vartpengerUtbetaler
+ytelser.ventelonnUtbetaler
+ytelser.dagpengerEOSUtbetaler
+ytelser.annenYtelseType
+ytelser.annenYtelseUtbetaler
+ytelser.harValgtYtelse.feilmelding
 
 avbryt.slett
 

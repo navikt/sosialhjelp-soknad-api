@@ -7,6 +7,9 @@
                       modus="data.redigeringsModus"
                       nokkel="vernepliktig"/>
 
+        <p data-ng-show="soknadData.fakta.vernepliktig.value=='false'" cmstekster="vernepliktig.opplasting"/>
+
         <sporsmalblokk nokkel="vernepliktig" redigerings-modus="data.redigeringsModus" form="vernepliktigForm" nesteside="utdanning"/>
+
     </form>
 </div>
