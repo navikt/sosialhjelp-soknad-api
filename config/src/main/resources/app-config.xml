@@ -21,7 +21,7 @@
         <webservice alias="domene.Brukerdialog:sendsoknadservice_v1"
                     mapToProperty="soknad.webservice.henvendelse.sendsoknadservice"/>
 		<webservice alias="virksomhet:Kodeverk_v2" mapToProperty="sendsoknad.webservice.kodeverk"/>
-        <webservice alias="virksomhet:Aktoer_v1" mapToProperty="soknad.webservice.aktor.aktorservice"/>
+        <webservice alias="Aktoer_v1" mapToProperty="soknad.webservice.aktor.aktorservice"/>
 
         <baseUrl alias="innlogging.navnetjeneste" mapToProperty="innlogging.navnetjeneste"/>
         <baseUrl alias="minehenvendelser.link" mapToProperty="minehenvendelser.link"/>
