@@ -16,14 +16,50 @@ angular.module('nav.input',['nav.cmstekster'])
         return {
             restrict: "E",
             replace: true,
+            require: 'ngModel',
             scope: {
-                model: '=',
+                model: '=ngModel',
+                modus: '=',
                 name: '@',
                 label: '@'
+            },
+            controller: function($scope) {
+                $scope.hvisIRedigeringsmodus = function() {
+                    return $scope.modus;
+                }
+
+                $scope.hvisIOppsummeringsmodusOgChecked = function () {
+                    return !$scope.hvisIRedigeringsmodus() && $scope.model.toString() == 'true';
+                }
             },
             templateUrl: '../js/app/directives/navinput/navcheckboxTemplate.html'
         }
     }])
+
+    .directive('navtekst', [function() {
+        return {
+            restrict: "E",
+            replace: true,
+            require: 'ngModel',
+            scope: {
+                model: '=ngModel',
+                modus: '=',
+                name: '@',
+                label: '@'
+            },
+            controller: function($scope) {
+                $scope.hvisIRedigeringsmodus = function() {
+                    return $scope.modus;
+                }
+
+                $scope.hvisIOppsummeringsmodusOgChecked = function () {
+                    return !$scope.hvisIRedigeringsmodus() && $scope.model.toString() == 'true';
+                }
+            },
+            templateUrl: '../js/app/directives/navinput/navtekstTemplate.html'
+        }
+    }])
+
     .directive('navButtonSpinner', [function() {
         return {
             restrict: "E",
@@ -50,7 +86,16 @@ angular.module('nav.input',['nav.cmstekster'])
                     }
                     return false;
                 }
+
+                function tilTekst(booleanVerdi) {
+                    if(booleanVerdi) {
+                        return "true";
+                    }
+                    return "false";
+                }
+
                 ngModel.$formatters.push(fraTekst);
+                ngModel.$parsers.push(tilTekst);
             }
         };
     }]);

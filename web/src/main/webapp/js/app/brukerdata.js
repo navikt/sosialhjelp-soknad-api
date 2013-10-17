@@ -115,9 +115,9 @@ angular.module('app.brukerdata', ['app.services'])
 
         $scope.$on("OPPDATER_OG_LAGRE", function (e, data) {
             $scope.soknadData.fakta[data.key] = {"soknadId": $scope.soknadData.soknadId, "key": data.key, "value": data.value};
-            $scope.$apply();
             var soknadData = $scope.soknadData;
             soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
+            $scope.$apply();
             console.log("lagre: " + soknadData);
         });
     })
