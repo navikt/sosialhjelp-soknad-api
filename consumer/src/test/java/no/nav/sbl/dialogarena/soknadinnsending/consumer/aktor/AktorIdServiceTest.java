@@ -59,12 +59,12 @@ public class AktorIdServiceTest {
     }
 
     @Test(expected = ApplicationException.class)
-    public void skalWrappeExceptionsPaSoapExceptionsPåPing() throws Exception {
+    public void skalWrappeExceptionsPaSoapExceptionsPaPing() throws Exception {
         doThrow(new SOAPFaultException(SOAPFactory.newInstance().createFault())).when(aktoerPortType).ping();
         aktorIdService.ping();
     }
 
-    private static ArgumentMatcher<HentAktoerIdForIdentRequest> HENT_AKTOR_MATCHER = new ArgumentMatcher<HentAktoerIdForIdentRequest>() {
+    private static final ArgumentMatcher<HentAktoerIdForIdentRequest> HENT_AKTOR_MATCHER = new ArgumentMatcher<HentAktoerIdForIdentRequest>() {
         @Override
         public boolean matches(Object item) {
             assertThat(((HentAktoerIdForIdentRequest) item).getIdent(), equalTo("123"));
