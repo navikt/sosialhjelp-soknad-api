@@ -36,19 +36,20 @@ public class ConsumerConfig {
     public class AktorConfig {
         @Bean
         public AktoerPortType aktorPortType() {
-            return new Service<>(Services.AKTOER, aktoerEndpointUrl, Type.USER, AktoerPortType.class).portType();
+            return new CxfService<>(Services.AKTOER, aktoerEndpointUrl, Type.USER, AktoerPortType.class).portType();
         }
 
         @Bean
         public AktoerPortType aktorSelftestPortType() {
-            return new Service<>(Services.AKTOER, aktoerEndpointUrl, Type.SYSTEM, AktoerPortType.class).portType();
+            return new CxfService<>(Services.AKTOER, aktoerEndpointUrl, Type.SYSTEM, AktoerPortType.class).portType();
         }
     }
 
+    @SuppressWarnings("PMD.SingularField")
     private enum Services {
-        AKTOER(
-                new QName("http://nav.no/tjeneste/virksomhet/aktoer/v1/", "AktoerPortType"),
+        AKTOER(new QName("http://nav.no/tjeneste/virksomhet/aktoer/v1/", "AktoerPortType"),
                 "classpath:wsdl/no/nav/tjeneste/virksomhet/aktoer/v1/Aktoer.wsdl");
+
         private final QName portType;
         private final String wsdl;
 
@@ -71,13 +72,13 @@ public class ConsumerConfig {
         }
     }
 
-    private class Service<T> {
+    private class CxfService<T> {
         private final Services service;
         private final String endpointUrl;
         private final Type system;
         private Class<T> resultClass;
 
-        private Service(Services service, String endpointUrl, Type system, Class<T> resultClass) {
+        private CxfService(Services service, String endpointUrl, Type system, Class<T> resultClass) {
             this.service = service;
             this.endpointUrl = endpointUrl;
             this.resultClass = resultClass;
