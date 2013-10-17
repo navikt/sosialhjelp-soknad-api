@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Import;
 public class SoknadInnsendingConfig {
 
     @Configurable
-    class SikkerhetsConfig {
+    static class SikkerhetsConfig {
         @Bean
         public Tilgangskontroll tilgangskontroll() {
             return new Tilgangskontroll();
