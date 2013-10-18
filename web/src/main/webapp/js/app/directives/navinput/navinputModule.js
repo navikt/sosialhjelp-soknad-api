@@ -20,7 +20,7 @@ angular.module('nav.input',['nav.cmstekster'])
             scope: {
                 model: '=ngModel',
                 modus: '=',
-                name: '@',
+                inputname: '@',
                 label: '@'
             },
             controller: function($scope) {
@@ -44,7 +44,7 @@ angular.module('nav.input',['nav.cmstekster'])
             scope: {
                 model: '=ngModel',
                 modus: '=',
-                name: '@',
+                inputname: '@',
                 label: '@'
             },
             controller: function($scope) {
