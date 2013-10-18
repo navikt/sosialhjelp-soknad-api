@@ -21,7 +21,8 @@ angular.module('nav.input',['nav.cmstekster'])
                 model: '=ngModel',
                 modus: '=',
                 inputname: '@',
-                label: '@'
+                label: '@',
+                endret: '&'
             },
             controller: function($scope) {
                 $scope.hvisIRedigeringsmodus = function() {

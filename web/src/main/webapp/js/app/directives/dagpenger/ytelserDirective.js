@@ -1,4 +1,4 @@
-angular.module('nav.ytelser',[])
+angular.module('nav.ytelser.directive',[])
     .directive('ikkeYtelserValidering', function(){
         return {
             require: 'ngModel',
@@ -28,4 +28,39 @@ angular.module('nav.ytelser',[])
             }
         };
 
+    })
+    .directive('validerYtelser', function(){
+        return {
+            link: function(scope, elm, attrs) {
+                console.log("Hallo");
+                console.log(scope);
+//                scope.test();
+            }
+        };
     });
+
+
+
+/*
+.directive('validerYtelser', function(){
+    return {
+        require: 'ngModel',
+        scope: {
+            model: '=ngModel',
+            validerYtelser: '='
+        },
+        link: function(scope, elm, attrs, ctrl) {
+            var checkboxes = elm.closest('form').find('input');
+
+            scope.$watch('model', function() {
+                var erNoenCheckboxerValgt = checkboxes.is(':checked');
+                if (erNoenCheckboxerValgt) {
+                    scope.validerYtelser.$setValidity('harTattValg', true);
+                } else {
+                    scope.validerYtelser.$setValidity('harTattValg', false);
+                }
+            });
+        }
+    };
+
+});*/
