@@ -60,12 +60,34 @@ personalia.midlertidig_adresse_norge
 
 arbeidsforhold.informasjon
 arbeidsforhold.knapp_legg_til
-arbeidsforhold.har_ikke_jobbet
+arbeidsforhold.harIkkeJobbet
 
 arbeidsforhold.sporsmal
 arbeidsforhold.feilmelding
 arbeidsforhold.tittel
 arbeidsforhold.ferdig
+
+ytelser.tittel
+ytelser.ferdig
+ytelser.stonadFikser
+ytelser.sporsmal
+ytelser.informasjon
+ytelser.feilmelding
+ytelser.offentligTjenestepensjon
+ytelser.privatTjenestepensjon
+ytelser.vartpenger
+ytelser.ventelonn
+ytelser.dagpengerEOS
+ytelser.annenYtelse
+ytelser.ingenYtelse
+ytelser.offentligTjenestepensjonUtbetaler
+ytelser.privatTjenestepensjonUtbetaler
+ytelser.vartpengerUtbetaler
+ytelser.ventelonnUtbetaler
+ytelser.dagpengerEOSUtbetaler
+ytelser.annenYtelseType
+ytelser.annenYtelseUtbetaler
+ytelser.harValgtYtelse.feilmelding
 
 avbryt.slett
 

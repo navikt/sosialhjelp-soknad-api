@@ -16,16 +16,11 @@
             {{ tekster.arbeidsforhold_knapp_legg_til }}
         </button-->
         <form name="arbeidsforholdForm" data-ng-controller="ModusCtrl" novalidate>
-	        <!--a href data-ng-click="nyttArbeidsforhold($event)"> Legg til nytt arbeidsforhold</a>
-	        <input id="harIkkeJobbet" type="checkbox" data-ng-model="soknadData.fakta.arbeidsforholdHarIkkeJobbet.value"
-	               name="arbeidsforholdHarIkkeJobbet" mod-faktum boolean-verdi/>
-	        <label for="harIkkeJobbet" cmstekster="arbeidsforhold.har_ikke_jobbet"></label-->
-
-
-
-		<checkbox model="soknadData.fakta.arbeidsforhold.value"
+	        <a href data-ng-click="nyttArbeidsforhold($event)"> Legg til nytt arbeidsforhold</a>
+ 
+		<navcheckbox data-ng-model="soknadData.fakta.arbeidsforhold.value"
                       modus="data.redigeringsModus"
-                      nokkel="arbeidsforhold"/>
+                      inputname="arbeidsforhold" label='arbeidsforhold.harIkkeJobbet'/>
 
         <sporsmalblokk nokkel="arbeidsforhold" redigerings-modus="data.redigeringsModus" form="arbeidsforholdForm"
                        nesteside="verneplikt"/>

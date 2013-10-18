@@ -56,6 +56,16 @@ angular.module('app.routes', ['ngRoute'])
                     }
                 }
             })
+            .when('/ytelser/:soknadId', {
+                templateUrl: '../js/app/controllers/ytelser/ytelser.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
+
             .when('/oppsummering/:soknadId', {
                 templateUrl: '../html/templates/oppsummering.html',
                 controller: 'SoknadDataCtrl',
@@ -66,6 +76,16 @@ angular.module('app.routes', ['ngRoute'])
                 }
              })
 
+            .when('/utdanning/:soknadId', {
+                templateUrl: '../html/templates/utdanning.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
+
             .when('/soknadliste', {templateUrl: '../html/templates/soknadliste.html'})
             
             .when('/informasjonsside', {templateUrl: '../html/templates/informasjonsside.html', controller: 'StartSoknadCtrl'})
@@ -73,8 +93,6 @@ angular.module('app.routes', ['ngRoute'])
             .when('/fortsettsenere', {templateUrl: '../html/templates/fortsettSenere.html', controller: 'SoknadDataCtrl'})
             .when('/slettet', {templateUrl: '../html/templates/soknadSlettet.html', controller: 'SlettetSoknadDataCtrl'})
             .when('/kvittering', {templateUrl: '../html/templates/kvittering-innsendt.html'})
-
-            .when('/utdanning/:soknadId', {templateUrl: '../html/templates/utdanning.html', controller: 'SoknadDataCtrl'})
             .otherwise({redirectTo: '/utslagskriterier'});
 
 //    $locationProvider.html5Mode(true);

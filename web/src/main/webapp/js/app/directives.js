@@ -4,7 +4,7 @@
 *
 * Description
 */
-angular.module('app.directives', ['app.services', 'nav.booleanradio', 'nav.cmstekster', 'nav.input', 'nav.sporsmalblokk'])
+angular.module('app.directives', ['app.services', 'nav.booleanradio', 'nav.cmstekster', 'nav.input', 'nav.sporsmalblokk', 'nav.ytelser'])
 
 /*Hva med casene 1-242 osv? */
 
@@ -113,22 +113,6 @@ angular.module('app.directives', ['app.services', 'nav.booleanradio', 'nav.cmste
       });
     }
   };
-})
-
-.directive('booleanVerdi', function(){
-return {
-    restrict: 'A',
-    require: 'ngModel',
-    link: function(scope, element, attr, ngModel){
-        function fraTekst(tekst) {
-            if(tekst === "true") {
-                return true;
-            }
-            return false;
-        }
-        ngModel.$formatters.push(fraTekst);
-    }
-};
 })
 
 .directive('knapprad', function ($location, $routeParams) {

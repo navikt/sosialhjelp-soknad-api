@@ -33,6 +33,7 @@ angular.module('nav.sporsmalblokk',['nav.cmstekster'])
                 }
 
                 scope.hvisIkkeFormValiderer = function () {
+                    console.log(scope.form.$error);
                     return scope.data.showErrorMessage;
                 }
             },
