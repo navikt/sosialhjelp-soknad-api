@@ -13,7 +13,7 @@
     </artifacts>
 
     <resources>
-    	<datasource alias="soknadInnsendingDataSource" jndi="java:jboss/datasources/SoknadInnsendingDS">
+    	<datasource alias="soknadInnsendingDataSource" jndi="java:/datasources/SoknadInnsendingDS">
             <pool maxPoolSize="300" minPoolSize="0"/>
         </datasource>
         <webservice alias="virksomhet:Brukerprofil_v1"
