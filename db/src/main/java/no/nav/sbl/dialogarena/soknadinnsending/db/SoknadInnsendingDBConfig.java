@@ -13,7 +13,6 @@ public class SoknadInnsendingDBConfig {
     @Bean
     public DataSource dataSource() {
         JndiDataSourceLookup lookup = new JndiDataSourceLookup();
-        lookup.setResourceRef(false);
         return lookup.getDataSource("jdbc/SoknadInnsendingDS");
     }
 }
