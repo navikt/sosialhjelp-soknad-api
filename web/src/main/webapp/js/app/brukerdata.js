@@ -213,10 +213,18 @@ angular.module('app.brukerdata', ['app.services'])
     })
 
     .controller('ArbeidsforholdCtrl', function ($scope) {
-        $scope.arbeidsforhold = {};
+        $scope.soknadData.arbeidsforhold = [];
+
+        $scope.lagreArbeidsForhold = function() {
+            //$scope.soknadData.arbeidsforhold.push($scope.arbeidsgiver.navn);
+
+            $scope.arbeidsforhold.aapen ="false";
+        }
+
         $scope.nyttArbeidsforhold = function ($event) {
-            var key = 'arbeidsforhold' + Object.keys($scope.arbeidsforhold).length;
-            $scope.arbeidsforhold[key] = {};
+            $scope.arbeidsforhold.aapen ="true";
+            /*var key = 'arbeidsforhold' + Object.keys($scope.arbeidsforhold).length;
+            $scope.arbeidsforhold.push(key);*/
         }
 
         // Lagre på ferdig-knappen per arbeidsforhold
