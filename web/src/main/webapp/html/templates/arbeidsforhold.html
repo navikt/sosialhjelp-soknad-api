@@ -6,10 +6,15 @@
         <!--TODO Bruke liste og ikke objekt -->
         <ul>
             <li data-ng-repeat="af in arbeidsforhold">
-                <label for="arbeidsgiver{{ $index }}">Navn på arbeidsgiver</label>
-                <input id="arbeidsgiver{{ $index }}" type="text" data-ng-model="af.arbeidsgiver.value" lagre-arbeidsforhold>
+                <label for="arbeidsgiver">Navn på arbeidsgiver</label>
+                <span id="arbeidsgiver" type="text" data-ng-model="af.arbeidsgiver.navn">
             </li>
-        </ul>
+        </ul> 
+
+        <form data-ng-show="arbeidsforhold.aapen" data-ng-submit="lagreArbeidsForhold()">
+	        <input id="arbeidsgiver" type="text" data-ng-model="arbeidsgiver.navn"/>
+	        <input type="submit" id="arbeidsgiverLagre" value="lagre"></input>
+        </form>
 
         <!-- trengs denne? -->
         <!--button class="knapp-hoved" legg-til-arbeidsforhold>
@@ -18,7 +23,7 @@
         <form name="arbeidsforholdForm" data-ng-controller="ModusCtrl" novalidate>
 	        <a href data-ng-click="nyttArbeidsforhold($event)"> Legg til nytt arbeidsforhold</a>
  
-		<navcheckbox data-ng-model="soknadData.fakta.arbeidsforhold.value"
+		<navcheckbox data-ng-model="soknadData.fakta.arbeidsforhold.harIkkeJobbet.value"
                       modus="data.redigeringsModus"
                       inputname="arbeidsforhold" label='arbeidsforhold.harIkkeJobbet'/>
 
