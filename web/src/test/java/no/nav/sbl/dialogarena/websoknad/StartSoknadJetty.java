@@ -4,6 +4,7 @@ import no.nav.modig.core.context.JettySubjectHandler;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.testcertificates.TestCertificates;
 import no.nav.sbl.dialogarena.common.jetty.Jetty;
+import no.nav.sbl.dialogarena.soknadinnsending.db.config.DatabaseTestContext;
 import no.nav.sbl.dialogarena.websoknad.config.SystemProperties;
 import org.eclipse.jetty.jaas.JAASLoginService;
 
@@ -48,6 +49,7 @@ public final class StartSoknadJetty {
                 .withLoginService(jaasLoginService)
                 .overrideWebXml(new File(TEST_RESOURCES, "override-web.xml"))
                 .sslPort(8500)
+                .addDatasource(DatabaseTestContext.buildDataSource(), "jdbc/SoknadInnsendingDS")
                 .port(PORT).buildJetty();
         jetty.startAnd(first(waitFor(gotKeypress())).then(jetty.stop));
     }
@@ -68,7 +70,7 @@ public final class StartSoknadJetty {
     }
 
     @SuppressWarnings("unused")
-	private static class Intellij {
+    private static class Intellij {
         public static void main(String[] args) throws Exception {
             new StartSoknadJetty(Env.Intellij);
         }

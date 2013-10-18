@@ -35,19 +35,19 @@ egennaering.feilmelding
 egennaering.tittel
 egennaering.ferdig
 
-utdanning_sporsmal
-utdanning_svar_ikke_utdanning
-utdanning_svar_avsluttet_utdanning
-utdanning_svar_under_utdanning
-utdanning_feilmelding
-utdanning_tittel
-utdanning_ferdig
-utdanning_svar_under_utdanning_kurs
-utdanning_svar_under_utdanning_kveld
-utdanning_svar_under_utdanning_fulltid
-utdanning_svar_under_utdanning_kortvarig
-utdanning_svar_under_utdanning_norsk
-utdanning_svar_under_utdanning_introduksjon
+utdanning.sporsmal
+utdanning.svar.ikkeUtdanning
+utdanning.svar.avsluttetUtdanning
+utdanning.svar.underUtdanning
+utdanning.feilmelding
+utdanning.tittel
+utdanning.ferdig
+utdanning.svar.under.utdanning.kurs
+utdanning.svar.under.utdanning.kveld
+utdanning.svar.under.utdanning.fulltid
+utdanning.svar.under.utdanning.kortvarig
+utdanning.svar.under.utdanning.norsk
+utdanning.svar.under.utdanning.introduksjon
 
 personalia.tittel
 personalia.navn

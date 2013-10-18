@@ -1,21 +1,18 @@
 package no.nav.sbl.dialogarena;
 
-import java.util.List;
-import java.util.UUID;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSBrukerData;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSSoknadData;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSSoknadDataOppsummering;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSBrukerData;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSSoknadData;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSSoknadDataOppsummering;
+import java.util.List;
 
 public class SendSoknadPortTypeMock implements SendSoknadPortType {
 
