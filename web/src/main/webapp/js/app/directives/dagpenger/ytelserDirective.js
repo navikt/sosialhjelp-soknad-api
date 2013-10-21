@@ -6,7 +6,7 @@ angular.module('nav.ytelser.directive',[])
                 model: '=ngModel',
                 form: '='
             },
-            link: function(scope, elm, attrs, ctrl) {
+            link: function(scope, elm, attrs) {
                 var checkboxes = elm.closest('form').find('#harYtelser').find('input');
                 checkboxes.change(function () {
                     if ($(this).is(':checked') && checkTrue(scope.model)) {

@@ -16,6 +16,7 @@ angular.module('nav.input',['nav.cmstekster'])
         return {
             restrict: "E",
             replace: true,
+            transclude: true,
             require: 'ngModel',
             scope: {
                 model: '=ngModel',
@@ -31,6 +32,10 @@ angular.module('nav.input',['nav.cmstekster'])
 
                 $scope.hvisIOppsummeringsmodusOgChecked = function () {
                     return !$scope.hvisIRedigeringsmodus() && checkTrue($scope.model);
+                }
+
+                $scope.hvisHuketAv = function() {
+                    return checkTrue($scope.model);
                 }
             },
             templateUrl: '../js/app/directives/navinput/navcheckboxTemplate.html'
@@ -48,13 +53,17 @@ angular.module('nav.input',['nav.cmstekster'])
                 inputname: '@',
                 label: '@'
             },
-            controller: function($scope) {
-                $scope.hvisIRedigeringsmodus = function() {
-                    return $scope.modus;
+            link: function(scope, element, attr) {
+                scope.hvisIRedigeringsmodus = function() {
+                    return scope.modus;
                 }
 
-                $scope.hvisIOppsummeringsmodusOgChecked = function () {
-                    return !$scope.hvisIRedigeringsmodus() && checkTrue($scope.model);
+                scope.hvisIOppsummeringsmodus = function () {
+                    return !scope.hvisIRedigeringsmodus();
+                }
+
+                scope.hvisSynlig = function() {
+                    return element.is(':visible');
                 }
             },
             templateUrl: '../js/app/directives/navinput/navtekstTemplate.html'
