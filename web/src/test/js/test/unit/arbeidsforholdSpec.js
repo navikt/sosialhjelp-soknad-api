@@ -23,6 +23,10 @@ describe('ArbeidsforholdCtrl', function() {
                 }
             });
 
+            // TODO: result her? kontra backend
+            $httpBackend.expectGET('/sendsoknad/rest/soknad/kodeverk/landliste').
+            respond({result:["AF","DK","CA","NF","PK","RO","ES","UK","SE","TW","TH","DE","US"]});
+
 			routeParams = {};
 			routeParams.soknadId = 1;
 

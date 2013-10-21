@@ -20,7 +20,7 @@
 	        <br/>
 	         <br/>
 	        <label for="arbeidsgiver_land">Land</label>
-	        <input id="arbeidsgiver_land" type="text" data-ng-model="arbeidsgiver.land"/>
+	        <select id="arbeidsgiver_land" data-ng-model="arbeidsgiver.land" ng-options="item as item for item in landService.result"/>
 	        <br/>
 	        <br/>
 	        <div class="varighet">
