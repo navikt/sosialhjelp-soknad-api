@@ -1,5 +1,5 @@
 angular.module('nav.arbeidsforhold.controller',[])
- .controller('ArbeidsforholdCtrl', function ($scope, soknadService, $routeParams) {
+ .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams) {
         $scope.arbeidsforhold = [];
 
         soknadService.get({param: $routeParams.soknadId}).$promise.then(function (result) {
@@ -46,5 +46,15 @@ angular.module('nav.arbeidsforhold.controller',[])
                 //skjønte ikke heeeelt hvordan dette henger sammen.... Men nå funka det ved første trykk på ikkeJobbet også.
                 return true;
         	}
+
+            landService.get().$promise.then(function (result) {
+                $scope.landService = result;
+            });
+
+
+
+
+
+
         });
     })
