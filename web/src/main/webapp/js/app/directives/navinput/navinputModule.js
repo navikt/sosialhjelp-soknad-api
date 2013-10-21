@@ -53,7 +53,7 @@ angular.module('nav.input',['nav.cmstekster'])
                 inputname: '@',
                 label: '@'
             },
-            link: function(scope, element, attr) {
+            link: function(scope, element, attr, ctrl) {
                 scope.hvisIRedigeringsmodus = function() {
                     return scope.modus;
                 }
@@ -64,7 +64,16 @@ angular.module('nav.input',['nav.cmstekster'])
 
                 scope.hvisSynlig = function() {
                     return element.is(':visible');
+
+                    // Potensiell stygg hack for å kunne hente ut hvilket inputfelt som gir feil... :|
+                    /*if (element.is(':visible') && (scope.model == undefined || scope.model == "")) {
+                        ctrl.$setValidity(scope.inputname, false);
+                    } else {
+                        ctrl.$setValidity(scope.inputname, true);
+                    }
+                    return false;*/
                 }
+
             },
             templateUrl: '../js/app/directives/navinput/navtekstTemplate.html'
         }
