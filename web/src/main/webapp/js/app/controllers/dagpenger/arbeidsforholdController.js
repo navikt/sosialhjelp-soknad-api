@@ -1,4 +1,5 @@
-/* .controller('ArbeidsforholdCtrl', function ($scope, soknadService, $routeParams) {
+angular.module('nav.arbeidsforhold.controller',[])
+ .controller('ArbeidsforholdCtrl', function ($scope, soknadService, $routeParams) {
         $scope.arbeidsforhold = [];
 
         soknadService.get({param: $routeParams.soknadId}).$promise.then(function (result) {
@@ -6,7 +7,6 @@
             if($scope.soknadData.fakta.arbeidsforhold) {
         		$scope.arbeidsforhold = angular.fromJson($scope.soknadData.fakta.arbeidsforhold.value);	
         	}
-        	console.log($scope.arbeidsforhold);
         	$scope.lagreArbeidsforhold = function() {
 	            $scope.arbeidsforhold.push({
                      navn: $scope.arbeidsgiver.navn,
@@ -47,4 +47,4 @@
                 return true;
         	}
         });
-    })*/
+    })
