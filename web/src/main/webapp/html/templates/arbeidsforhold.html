@@ -6,14 +6,18 @@
         <!--TODO Bruke liste og ikke objekt -->
         <ul>
             <li data-ng-repeat="af in arbeidsforhold">
-                <label for="arbeidsgiver">Navn på arbeidsgiver</label>
-                <span id="arbeidsgiver" type="text" data-ng-model="af.arbeidsgiver.navn">
+                {{ af.navn }}<br>
+                {{ af.land }}
             </li>
         </ul> 
 
-        <form data-ng-show="arbeidsforhold.aapen" data-ng-submit="lagreArbeidsForhold()">
-	        <input id="arbeidsgiver" type="text" data-ng-model="arbeidsgiver.navn"/>
+        <form data-ng-show="arbeidsforholdaapen" data-ng-submit="lagreArbeidsforhold()">
+        	<label for="arbeidsgiver_navn">Navn på arbeidsgiver</label>
+	        <input id="arbeidsgiver_navn" type="text" data-ng-model="arbeidsgiver.navn"/>
+	        <label for="arbeidsgiver_land">Land</label>
+	        <input id="arbeidsgiver_land" type="text" data-ng-model="arbeidsgiver.land"/>
 	        <input type="submit" id="arbeidsgiverLagre" value="lagre"></input>
+	        <button data-ng-click="avbrytArbeidsforhold()">Avbryt</button>
         </form>
 
         <!-- trengs denne? -->
@@ -23,9 +27,16 @@
         <form name="arbeidsforholdForm" data-ng-controller="ModusCtrl" novalidate>
 	        <a href data-ng-click="nyttArbeidsforhold($event)"> Legg til nytt arbeidsforhold</a>
  
-		<navcheckbox data-ng-model="soknadData.fakta.arbeidsforhold.harIkkeJobbet.value"
+	        <br/>
+	        <br/>
+	        <br/>
+	        <br/>
+	
+			<navcheckbox data-ng-model="soknadData.fakta.arbeidsforhold.harIkkeJobbet.value"
                       modus="data.redigeringsModus"
-                      inputname="arbeidsforhold" label='arbeidsforhold.harIkkeJobbet'/>
+                      inputname="arbeidsforhold" label='arbeidsforhold.harIkkeJobbet'
+                      data-ng-click="validateForm()"/>
+
 
         <sporsmalblokk nokkel="arbeidsforhold" redigerings-modus="data.redigeringsModus" form="arbeidsforholdForm"
                        nesteside="verneplikt"/>
