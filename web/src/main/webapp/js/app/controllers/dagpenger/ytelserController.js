@@ -13,7 +13,6 @@ angular.module('nav.ytelser.controller',[])
                     minstEnAvhuket = true;
                 }
             }
-            console.log("Minst en avhuket: " + minstEnAvhuket);
             form.$setValidity("minstEnAvhuket", minstEnAvhuket);
         };
     }]);

@@ -8,7 +8,6 @@ angular.module('nav.ytelser.directive',[])
             },
             link: function(scope, elm, attrs, ctrl) {
                 var checkboxes = elm.closest('form').find('#harYtelser').find('input');
-                console.log(scope.form);
                 checkboxes.change(function () {
                     if ($(this).is(':checked') && checkTrue(scope.model)) {
                         scope.model = false;
