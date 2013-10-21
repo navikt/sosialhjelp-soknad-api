@@ -14,10 +14,38 @@
         <form data-ng-show="arbeidsforholdaapen" data-ng-submit="lagreArbeidsforhold()">
         	<label for="arbeidsgiver_navn">Navn på arbeidsgiver</label>
 	        <input id="arbeidsgiver_navn" type="text" data-ng-model="arbeidsgiver.navn"/>
+	        <br/>
+	         <br/>
 	        <label for="arbeidsgiver_land">Land</label>
 	        <input id="arbeidsgiver_land" type="text" data-ng-model="arbeidsgiver.land"/>
-	        <input type="submit" id="arbeidsgiverLagre" value="lagre"></input>
-	        <button data-ng-click="avbrytArbeidsforhold()">Avbryt</button>
+	        <br/>
+	        <br/>
+	        <div class="varighet">
+                <label class="label-sammelinje">Fra:</label>
+                <input type="text" name="varighetFra" ui-date ng-model="arbeidsgiver.varighetFra" required >
+                <span class="error" data-ng-show="arbeidsforholdaapen.varighetFra.$error.required">{{feilmeldinger.paakreves}} </span>
+                <label class="label-sammelinje">Til:</label>
+                <input type="text" name="varighetTil" ui-date ng-model="arbeidsgiver.varighetTil" required >
+                <span class="error" data-ng-show="arbeidsforholdaapen.varighetTil.$error.required">{{feilmeldinger.paakreves}} </span>
+                <label for="arbeidsgiver_sluttaarsak">Sluttårsak</label>
+	        </div>
+	        <br/>
+	         <br/>
+	        <label class="label-sammelinje">Årsaken til at du sluttet i jobben</label>
+	        <br/>
+	        <select id="arbeidsgiver_sluttaarsak" type="text" data-ng-model="arbeidsgiver.sluttaarsak">
+	        	<option value="sagtOppSelv">Sagt opp selv</option>
+	        	<option value="sagtOppSelv">Sagt opp av arbeidsgiver</option>
+	        	<option value="sagtOppSelv">Permittert</option>
+	        	<option value="sagtOppSelv">Avskjediget</option>
+	        	<option value="sagtOppSelv">Konkurs</option>
+	        	<option value="sagtOppSelv">Kontrakt er gått utv</option>
+	        	<option value="sagtOppSelv">Redusert arbeidstid med mer enn 50% (40% for fiskere)</option>
+        	</select>
+	        <br/>
+	         <br/>
+	        <input cmstekster="arbeidsforhold.lagre" type="submit" id="arbeidsgiverLagre"></input>
+	        <button cmstekster="arbeidsforhold.avbryt" data-ng-click="avbrytArbeidsforhold()"></button>
         </form>
 
         <!-- trengs denne? -->
@@ -25,21 +53,21 @@
             {{ tekster.arbeidsforhold_knapp_legg_til }}
         </button-->
         <form name="arbeidsforholdForm" data-ng-controller="ModusCtrl" novalidate>
-	        <a href data-ng-click="nyttArbeidsforhold($event)"> Legg til nytt arbeidsforhold</a>
+	        <a href data-ng-show="data.redigeringsModus" data-ng-click="nyttArbeidsforhold($event)"> Legg til nytt arbeidsforhold</a>
  
 	        <br/>
 	        <br/>
 	        <br/>
 	        <br/>
 	
-			<navcheckbox data-ng-model="soknadData.fakta.arbeidsforhold.harIkkeJobbet.value"
+			<navcheckbox data-ng-model="soknadData.fakta.harIkkeJobbet.value"
                       modus="data.redigeringsModus"
-                      inputname="arbeidsforhold" label='arbeidsforhold.harIkkeJobbet'
-                      data-ng-click="validateForm()"/>
+                      inputname="harIkkeJobbet" label='arbeidsforhold.harIkkeJobbet'
+                      endret="toggleRedigeringsmodus()"/>
 
 
         <sporsmalblokk nokkel="arbeidsforhold" redigerings-modus="data.redigeringsModus" form="arbeidsforholdForm"
-                       nesteside="verneplikt"/>
+                       nesteside="egennaering"/>
 
         </form>
     </div>
@@ -50,8 +78,7 @@
             <label>Arbeidsgivers navn:</label>
             <input type="text" name="arbeidsgivernavn" data-ng-model="af.arbeidsgiverNavn" required />
             <span class="error" data-ng-show="arbeidsforholdForm.arbeidsgivernavn.$error.required">{{feilmeldinger.paakreves}} </span>
-            <label>Varighet</label>
-            <div class="varighet"  >
+          <div class="varighet"  >
                 <label class="label-sammelinje">Fra:</label>
                 <input type="text" name="varighetFra" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="af.varighetFra" required >
 
@@ -64,7 +91,6 @@
                 <span class="error" data-ng-show="arbeidsforholdForm.varighetTil.$error.framindre">{{feilmeldinger.fratil}}</span>
                 {{$parent.af.varighetTil | date:'d MMM yyyy'}}
             </div>
-
             <div>
                 <label>Land</label>
                 <select name="land" data-ng-model="af.valgtLand" data-ng-options="valgtland.name as valgtland.name for valgtland in land"></select>

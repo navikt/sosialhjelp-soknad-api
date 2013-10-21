@@ -7,7 +7,8 @@ angular.module('nav.sporsmalblokk',['nav.cmstekster'])
                 nokkel: '@',
                 form: '=',
                 redigeringsModus: '=',
-                nesteside: '@'
+                nesteside: '@',
+                validermetode: '&'
             },
             link: function(scope, element, attrs) {
                 scope.data = {
@@ -16,8 +17,12 @@ angular.module('nav.sporsmalblokk',['nav.cmstekster'])
                 }
 
                 scope.validateForm = function () {
+                    if (scope.validermetode) {
+                        scope.validermetode({form: scope.form});
+                    }
                     scope.data.showErrorMessage = scope.form.$invalid;
                     scope.redigeringsModus = scope.form.$invalid;
+
                 }
 
                 scope.gaTilRedigeringsmodus = function () {
@@ -33,7 +38,7 @@ angular.module('nav.sporsmalblokk',['nav.cmstekster'])
                 }
 
                 scope.hvisIkkeFormValiderer = function () {
-                    console.log(scope.form.$error);
+//                    console.log(scope.form.$error);
                     return scope.data.showErrorMessage;
                 }
             },
