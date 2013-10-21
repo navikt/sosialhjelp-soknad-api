@@ -234,10 +234,21 @@ angular.module('app.brukerdata', ['app.services'])
         	}
         	console.log($scope.arbeidsforhold);
         	$scope.lagreArbeidsforhold = function() {
-	            $scope.arbeidsforhold.push({navn: $scope.arbeidsgiver.navn, land: $scope.arbeidsgiver.land});
+	            $scope.arbeidsforhold.push({
+                     navn: $scope.arbeidsgiver.navn,
+                     land: $scope.arbeidsgiver.land,
+                     varighetFra: $scope.arbeidsgiver.varighetFra,
+                     varighetTil: $scope.arbeidsgiver.varighetTil,
+                     sluttaarsak: $scope.arbeidsgiver.sluttaarsak 
+                    });
 	            $scope.arbeidsforholdaapen = false;
 	            $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
 	        }
+
+            $scope.harIkkeLagretArbeidsforhold = function () {
+                return $scope.arbeidsforhold.length == 0;
+            }
+
 
 	        $scope.nyttArbeidsforhold = function () {
 	            $scope.arbeidsforholdaapen = true;
@@ -255,7 +266,11 @@ angular.module('app.brukerdata', ['app.services'])
         	}
 
         	function harIkkeJobbet12SisteMaaneder() {
-        		return $scope.soknadData.fakta.harIkkeJobbet.value == "false";
+                if($scope.soknadData.fakta && $scope.soknadData.fakta.harIkkeJobbet) {
+        		  return $scope.soknadData.fakta.harIkkeJobbet.value == "false";
+                }
+                //skjønte ikke heeeelt hvordan dette henger sammen.... Men nå funka det ved første trykk på ikkeJobbet også.
+                return true;
         	}
         });
 

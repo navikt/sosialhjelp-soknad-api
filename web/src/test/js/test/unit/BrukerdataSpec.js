@@ -146,6 +146,12 @@ describe('brukerdata domene', function () {
 	      		expect(scope.arbeidsforhold).toEqual([]);
 	      	});
 
+            it('skal vise checkbox når ingen arbeidsforhold er lagret', function() {
+                scope.arbeidsforhold = [];
+
+                expect(scope.harIkkeLagretArbeidsforhold()).toBe(true);
+            });
+
 	})
 });
 
