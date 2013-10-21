@@ -1,19 +1,19 @@
 angular.module('nav.ytelser.controller',[])
     .controller('YtelserCtrl', ['$scope', function ($scope) {
-        $scope.ytelser = {
-            minstEnAvhuket: false
-        }
-
         var nokler = ['ventelonn', 'stonadFisker', 'offentligTjenestepensjon', 'privatTjenestepensjon', 'vartpenger', 'dagpengerEOS', 'annenYtelse', 'ingenYtelse' ];
 
-        $scope.validerYtelser = function() {
-            $scope.minstEnAvhuket = false;
+        $scope.validerYtelser = function(form) {
+            // Fjerne feil som kan være satt dersom man prøver å huke av "nei" mens andre checkboxer er avhuket.
+            form.$setValidity('harValgtYtelse', true);
+
+            var minstEnAvhuket = false;
             for(var i= 0; i<nokler.length; i++) {
                 var nokkel = nokler[i];
-                if (checkTrue($scope.soknadData.fakta[nokkel].value)) {
-                    $scope.minstEnAvhuket = true;
+                if ($scope.soknadData.fakta[nokkel] && checkTrue($scope.soknadData.fakta[nokkel].value)) {
+                    minstEnAvhuket = true;
                 }
             }
-            console.log($scope.minstEnAvhuket);
+            console.log("Minst en avhuket: " + minstEnAvhuket);
+            form.$setValidity("minstEnAvhuket", minstEnAvhuket);
         };
     }]);
