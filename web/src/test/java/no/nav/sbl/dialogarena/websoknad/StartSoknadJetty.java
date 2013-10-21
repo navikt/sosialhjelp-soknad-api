@@ -1,22 +1,22 @@
 package no.nav.sbl.dialogarena.websoknad;
 
+import no.nav.modig.core.context.JettySubjectHandler;
+import no.nav.modig.core.context.SubjectHandler;
+import no.nav.modig.testcertificates.TestCertificates;
+import no.nav.sbl.dialogarena.common.jetty.Jetty;
+import no.nav.sbl.dialogarena.soknadinnsending.db.config.DatabaseTestContext;
+import no.nav.sbl.dialogarena.websoknad.config.SystemProperties;
+import org.eclipse.jetty.jaas.JAASLoginService;
+
+import java.io.File;
+import java.io.IOException;
+
 import static no.nav.modig.lang.collections.FactoryUtils.gotKeypress;
 import static no.nav.modig.lang.collections.RunnableUtils.first;
 import static no.nav.modig.lang.collections.RunnableUtils.waitFor;
 import static no.nav.modig.test.util.FilesAndDirs.TEST_RESOURCES;
 import static no.nav.modig.test.util.FilesAndDirs.WEBAPP_SOURCE;
 import static no.nav.sbl.dialogarena.common.jetty.Jetty.usingWar;
-
-import java.io.File;
-import java.io.IOException;
-
-import no.nav.modig.core.context.JettySubjectHandler;
-import no.nav.modig.core.context.SubjectHandler;
-import no.nav.modig.testcertificates.TestCertificates;
-import no.nav.sbl.dialogarena.common.jetty.Jetty;
-import no.nav.sbl.dialogarena.websoknad.config.SystemProperties;
-
-import org.eclipse.jetty.jaas.JAASLoginService;
 
 public final class StartSoknadJetty {
 
@@ -49,6 +49,7 @@ public final class StartSoknadJetty {
                 .withLoginService(jaasLoginService)
                 .overrideWebXml(new File(TEST_RESOURCES, "override-web.xml"))
                 .sslPort(8500)
+                .addDatasource(DatabaseTestContext.buildDataSource(), "jdbc/SoknadInnsendingDS")
                 .port(PORT).buildJetty();
         jetty.startAnd(first(waitFor(gotKeypress())).then(jetty.stop));
     }
@@ -69,7 +70,7 @@ public final class StartSoknadJetty {
     }
 
     @SuppressWarnings("unused")
-	private static class Intellij {
+    private static class Intellij {
         public static void main(String[] args) throws Exception {
             new StartSoknadJetty(Env.Intellij);
         }

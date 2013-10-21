@@ -1,67 +1,43 @@
 package no.nav.sbl.dialogarena.soknadinnsending.db.config;
 
+import no.nav.sbl.dialogarena.soknadinnsending.db.SQLUtils;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-
-import no.nav.sbl.dialogarena.soknadinnsending.db.SQLUtils;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
-import org.springframework.mock.jndi.SimpleNamingContextBuilder;
-
 @Configuration
 public class DatabaseTestContext {
 
+
     @Bean
-    public SimpleNamingContextBuilder setupJndiResources() throws IOException, NamingException {
-        SimpleNamingContextBuilder builder = SimpleNamingContextBuilder.getCurrentContextBuilder();
-        if (null == builder) {
-            builder = SimpleNamingContextBuilder.emptyActivatedContextBuilder();
+    public DataSource dataSource() throws IOException {
+        return buildDataSource();
+    }
+
+    public static DataSource buildDataSource() throws IOException {
+        if (erInMemoryDatabase()) {
+            return buildDataSource("hsqldb.properties");
+        } else {
+            return buildDataSource("oracledb.properties");
         }
-        builder.bind("java:jboss/datasources/SoknadInnsendingDS", buildDataSource());
-        return builder;
-    }
-
-    @Bean
-    public DataSource dataSource(SimpleNamingContextBuilder namingcontextbuilder) throws NamingException {
-        // Tvinger lasting av denne bønnen før vi prøver å slå opp
-        namingcontextbuilder.getClass();
-        InitialContext ctx = new InitialContext();
-        return (DataSource) ctx.lookup("java:jboss/datasources/SoknadInnsendingDS");
-    }
-
-    @Bean
-    public JdbcTemplate jdbcTemplate(DataSource ds) {
-        return new JdbcTemplate(ds);
-    }
-
-    
-    public static SingleConnectionDataSource buildDataSource() throws IOException {
-    	if (erInMemoryDatabase()) {
-    		return buildDataSource("hsqldb.properties");
-    	} else {
-    		return buildDataSource("oracledb.properties");
-    	}
     }
 
     private static boolean erInMemoryDatabase() {
-    	String dbProp = System.getProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "true");
-    	if (dbProp == null) {
-    		return true;
-    	}
-		return dbProp.equalsIgnoreCase("true"); 
-	}
+        String dbProp = System.getProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "true");
+        if (dbProp == null) {
+            return true;
+        }
+        return dbProp.equalsIgnoreCase("true");
+    }
 
-	public static SingleConnectionDataSource buildDataSource(String propertyFileName) throws IOException {
+    public static SingleConnectionDataSource buildDataSource(String propertyFileName) throws IOException {
         SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
         dataSource.setSuppressClose(true);
         Properties env = dbProperties(propertyFileName);
@@ -69,7 +45,7 @@ public class DatabaseTestContext {
         dataSource.setUrl(env.getProperty("db.url"));
         dataSource.setUsername(env.getProperty("db.username"));
         dataSource.setPassword(env.getProperty("db.password"));
-        if (erInMemoryDatabase()){
+        if (erInMemoryDatabase()) {
             System.setProperty(SQLUtils.DIALECT_PROPERTY, "hsqldb");
             createNonJpaTables(dataSource);
         }
@@ -81,12 +57,12 @@ public class DatabaseTestContext {
         env.load(DatabaseTestContext.class.getResourceAsStream("/" + propertyFileName));
         return env;
     }
-    
+
     private static void createNonJpaTables(DataSource dataSource) {
         try (Connection conn = dataSource.getConnection(); Statement st = conn.createStatement()) {
             st.execute("drop table HENVENDELSE if exists");
             st.execute("create table HENVENDELSE (henvendelse_id bigint, behandlingsid varchar(255), behandlingskjedeId varchar(255), traad varchar(255), type varchar(255), opprettetdato timestamp, " +
-            		"lestdato timestamp, sistendretdato timestamp, tema varchar(255), aktor varchar(255), status varchar(255), behandlingsresultat varchar(2048), sensitiv integer)");
+                    "lestdato timestamp, sistendretdato timestamp, tema varchar(255), aktor varchar(255), status varchar(255), behandlingsresultat varchar(2048), sensitiv integer)");
             st.execute("drop sequence BRUKERBEH_ID_SEQ if exists");
             st.execute("create sequence BRUKERBEH_ID_SEQ as integer start with 1 increment by 1");
             st.execute("drop table SOKNADBRUKERDATA if exists");
