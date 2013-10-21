@@ -104,7 +104,9 @@ describe('directives', function() {
     });
 });
 
-describe('directives123', function() {
+
+// Må løse problem med å hente templates i testene før vi kan teste direktiv som bruker templateUrl
+/*describe('directives', function() {
     var scope, element, form, radioknappen, $httpBackend;
 
     beforeEach(module('app.directives', function($provide) {
@@ -129,17 +131,6 @@ describe('directives123', function() {
             redigeringsModus: true
         };
 
-        $httpBackend.whenGET('../../main/webapp/js/app/directives/booleanradio/booleanradioTemplate.html').respond(function(method, url, data) {
-                console.log("##############################: " +url);
-                return "<div>Hallo</div>";
-            }
-        );
-        $httpBackend.whenGET('../../main/webapp/js/app/directives/navinput/navradioTemplate.html').respond(function(method, url, data) {
-                console.log("##############################: " +url);
-                return "<div>Hallo</div>";
-            }
-        );
-
         element = angular.element(
             '<form name="form">' +
                 '<booleanradio name="radioknappen" model="soknadData.fakta.nokkel.value" modus="data.redigeringsModus" nokkel="nokkel"/>' +
@@ -152,24 +143,44 @@ describe('directives123', function() {
         element.scope().$apply();
 
     }));
-    // WTF Funker ikke...
-    /*describe('booleanradio', function(){
-        it('skal først vises i redigeringsmodus, så endre til oppsummeringsmodus', function() {
-            var redigering = element.children()[1];
-            var oppsummering = element.children()[2];
-            console.log(redigering);
-            console.log(oppsummering);
-            expect(redigering.className).not.toContain('ng-hide');
-            expect(oppsummering.className).toContain('ng-hide');
-            scope.data.redigeringsModus = false;
-            element.scope().$apply();
-            expect(redigering.className).toContain('ng-hide');
-            expect(oppsummering.className).not.toContain('ng-hide');
-            console.log("###########################################################################################\n\n\n\n\n\n");
-        });
-    });*/
-});
+});*/
 
+// Må løse problem med å hente templates i testene før vi kan teste direktiv som bruker templateUrl
+/*describe('directives', function () {
+    var scope, element, form;
+
+    beforeEach(module('nav.ytelser.directive', function($provide) {
+        $provide.value("data", {
+            tekster: {
+                "nokkel.label": "Label"
+            }
+        });
+    }));
+
+    beforeEach(inject(function ($compile, $rootScope, $templateCache) {
+        scope = $rootScope;
+        scope.soknadData = {
+            fakta: {}
+        };
+
+        scope.data = {
+            redigeringsModus: true
+        };
+
+        element = angular.element(
+            '<form name="form">' +
+                '<div id="harYtelser">' +
+                    '<input type="checkbox" name="jaCheckbox">' +
+                '</div>' +
+                '<navcheckbox data-ng-model="soknadData.fakta.nokkel.value" modus="data.redigeringsModus" inputname="nokkel" label="nokkel.label" form="form" ikke-ytelser-validering />' +
+            '</form>'
+        );
+        $compile(element)(scope);
+        scope.$digest();
+        form = scope.form;
+        element.scope().$apply();
+    }));
+});*/
 
 describe('directives', function() {
 	var scope, form, element;
