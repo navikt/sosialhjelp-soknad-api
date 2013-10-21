@@ -30,7 +30,7 @@ angular.module('nav.input',['nav.cmstekster'])
                 }
 
                 $scope.hvisIOppsummeringsmodusOgChecked = function () {
-                    return !$scope.hvisIRedigeringsmodus() && $scope.model.toString() == 'true';
+                    return !$scope.hvisIRedigeringsmodus() && checkTrue($scope.model);
                 }
             },
             templateUrl: '../js/app/directives/navinput/navcheckboxTemplate.html'
@@ -54,7 +54,7 @@ angular.module('nav.input',['nav.cmstekster'])
                 }
 
                 $scope.hvisIOppsummeringsmodusOgChecked = function () {
-                    return !$scope.hvisIRedigeringsmodus() && $scope.model.toString() == 'true';
+                    return !$scope.hvisIRedigeringsmodus() && checkTrue($scope.model);
                 }
             },
             templateUrl: '../js/app/directives/navinput/navtekstTemplate.html'

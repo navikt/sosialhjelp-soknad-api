@@ -3,18 +3,19 @@ angular.module('nav.ytelser.directive',[])
         return {
             require: 'ngModel',
             scope: {
-                model: '=ngModel'
+                model: '=ngModel',
+                form: '='
             },
             link: function(scope, elm, attrs, ctrl) {
                 var checkboxes = elm.closest('form').find('#harYtelser').find('input');
-
+                console.log(scope.form);
                 checkboxes.change(function () {
                     if ($(this).is(':checked') && checkTrue(scope.model)) {
                         scope.model = false;
                     }
 
                     if (!checkboxes.is(':checked')){
-                        ctrl.$setValidity('harValgtYtelse', true);
+                        scope.form.$setValidity('harValgtYtelse', true);
                     }
                 });
 
@@ -22,45 +23,10 @@ angular.module('nav.ytelser.directive',[])
                     var erAndreCheckboxerAvhuket = checkboxes.is(':checked');
                     if (checkTrue(value) && erAndreCheckboxerAvhuket) {
                         scope.model = false;
-                        ctrl.$setValidity('harValgtYtelse', false);
+                        scope.form.$setValidity('harValgtYtelse', false);
                     }
                 });
             }
         };
 
-    })
-    .directive('validerYtelser', function(){
-        return {
-            link: function(scope, elm, attrs) {
-                console.log("Hallo");
-                console.log(scope);
-//                scope.test();
-            }
-        };
     });
-
-
-
-/*
-.directive('validerYtelser', function(){
-    return {
-        require: 'ngModel',
-        scope: {
-            model: '=ngModel',
-            validerYtelser: '='
-        },
-        link: function(scope, elm, attrs, ctrl) {
-            var checkboxes = elm.closest('form').find('input');
-
-            scope.$watch('model', function() {
-                var erNoenCheckboxerValgt = checkboxes.is(':checked');
-                if (erNoenCheckboxerValgt) {
-                    scope.validerYtelser.$setValidity('harTattValg', true);
-                } else {
-                    scope.validerYtelser.$setValidity('harTattValg', false);
-                }
-            });
-        }
-    };
-
-});*/
