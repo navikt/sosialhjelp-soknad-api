@@ -1,20 +1,21 @@
-angular.module('nav.ytelser',[])
+angular.module('nav.ytelser.directive',[])
     .directive('ikkeYtelserValidering', function(){
         return {
             require: 'ngModel',
             scope: {
-                model: '=ngModel'
+                model: '=ngModel',
+                form: '='
             },
             link: function(scope, elm, attrs, ctrl) {
                 var checkboxes = elm.closest('form').find('#harYtelser').find('input');
-
+                console.log(scope.form);
                 checkboxes.change(function () {
                     if ($(this).is(':checked') && checkTrue(scope.model)) {
                         scope.model = false;
                     }
 
                     if (!checkboxes.is(':checked')){
-                        ctrl.$setValidity('harValgtYtelse', true);
+                        scope.form.$setValidity('harValgtYtelse', true);
                     }
                 });
 
@@ -22,7 +23,7 @@ angular.module('nav.ytelser',[])
                     var erAndreCheckboxerAvhuket = checkboxes.is(':checked');
                     if (checkTrue(value) && erAndreCheckboxerAvhuket) {
                         scope.model = false;
-                        ctrl.$setValidity('harValgtYtelse', false);
+                        scope.form.$setValidity('harValgtYtelse', false);
                     }
                 });
             }

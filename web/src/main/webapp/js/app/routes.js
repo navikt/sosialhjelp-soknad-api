@@ -57,7 +57,7 @@ angular.module('app.routes', ['ngRoute'])
                 }
             })
             .when('/ytelser/:soknadId', {
-                templateUrl: '../js/app/controllers/ytelser/ytelser.html',
+                templateUrl: '../js/app/controllers/dagpenger/ytelser.html',
                 controller: 'SoknadDataCtrl',
                 resolve: {
                     notUsedButRequiredProperty: function (HentSoknadService) {

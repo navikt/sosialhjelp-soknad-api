@@ -144,6 +144,11 @@ angular.module('app.brukerdata', ['app.services'])
             $scope.data.redigeringsModus = invalid;
         }
 
+        $scope.$on("SETT_OPPSUMERINGSMODUS", function() {
+        	console.log("fikk event");
+        	$scope.validateForm();
+        });
+
         $scope.gaTilRedigeringsmodus = function () {
             $scope.data.redigeringsModus = true;
         }
@@ -234,10 +239,6 @@ angular.module('app.brukerdata', ['app.services'])
 	            $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
 	        }
 
-	        $scope.toggleRedigering = function() {
-	        	alert('VEKSLER');
-	        }
-
 	        $scope.nyttArbeidsforhold = function () {
 	            $scope.arbeidsforholdaapen = true;
 	            $scope.arbeidsgiver = {};
@@ -246,6 +247,16 @@ angular.module('app.brukerdata', ['app.services'])
 	        $scope.avbrytArbeidsforhold = function () {
 	        	$scope.arbeidsforholdaapen = false;
 	        }
+
+	        $scope.toggleRedigeringsmodus = function() {
+        		if(harIkkeJobbet12SisteMaaneder()) {
+        			$scope.$broadcast("SETT_OPPSUMERINGSMODUS");
+        		}
+        	}
+
+        	function harIkkeJobbet12SisteMaaneder() {
+        		return $scope.soknadData.fakta.harIkkeJobbet.value == "false";
+        	}
         });
 
         
