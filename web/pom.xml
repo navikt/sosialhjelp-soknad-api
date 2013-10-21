@@ -6,7 +6,7 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>sendsoknad</artifactId>
-        <version>1.0.7</version>
+        <version>1.0.8-SNAPSHOT</version>
     </parent>
 
     <artifactId>sendsoknad-web</artifactId>
@@ -447,12 +447,10 @@
                             <target>
                                 <copy file="${basedir}/src/test/resources/jsconf/karma.conf.js" tofile="${basedir}/target/karma-coverage-html.conf.js" />
 
-                                <replaceregexp byline="true" file="${basedir}/target/karma-coverage-html.conf.js"
-                                               match="basePath\p{Blank}*=\p{Blank}*'';"
+                                <replaceregexp byline="true" file="${basedir}/target/karma-coverage-html.conf.js" match="basePath\p{Blank}*=\p{Blank}*'';"
                                                replace="basePath = '..';" />
 
-                                <replaceregexp byline="true" file="${basedir}/target/karma-coverage-html.conf.js"
-                                               match="//(\p{Blank}*'.'\p{Blank}*:\p{Blank}*'coverage'\p{Blank}*)"
+                                <replaceregexp byline="true" file="${basedir}/target/karma-coverage-html.conf.js" match="//(\p{Blank}*'.'\p{Blank}*:\p{Blank}*'coverage'\p{Blank}*)"
                                                replace="\1" />
                             </target>
                         </configuration>
