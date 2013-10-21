@@ -1,4 +1,9 @@
 <jboss-web>
     <context-root>sendsoknad</context-root>
     <security-domain>java:/jaas/NavOpenAM</security-domain>
+    <resource-ref>
+        <res-ref-name>jdbc/SoknadInnsendingDS</res-ref-name>
+        <jndi-name>java:/datasources/SoknadInnsendingDS</jndi-name>
+        <res-type>javax.sql.DataSource</res-type>
+    </resource-ref>
 </jboss-web>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns:jbosspdp xmlns:ns="urn:jboss:xacml:2.0">
+    <ns:Policies>
+        <ns:PolicySet>
+            <!-- Peker til XACML fil med tilgangsregler -->
+            <ns:Location>security/auth-policy.xml</ns:Location>
+        </ns:PolicySet>
+    </ns:Policies>
+    <ns:Locators>
+        <!-- PDP bruker PolicyLocator for policies. Hvis et attributt som er nødvendig for avgjørelsen/decisions ikke er
+             en del av XACML-requesten, spør PDP Attribut Locators for informasjon om manglende attributt.
+             Default locator som er provided med JBossXACML er JBossPolicySetLocator og denne må oppgis -->
+        <ns:Locator Name="org.jboss.security.xacml.locators.JBossPolicySetLocator"/>
+    </ns:Locators>
+</ns:jbosspdp>
