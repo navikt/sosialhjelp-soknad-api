@@ -6,8 +6,11 @@
         <!--TODO Bruke liste og ikke objekt -->
         <ul>
             <li data-ng-repeat="af in arbeidsforhold">
-                {{ af.navn }}<br>
-                {{ af.land }}
+                {{ af.navn }}<br/>
+                {{ af.land }}<br/>
+                {{ af.varighetFra | date:'d.MM.yy'}}<br/>
+                {{ af.varighetTil | date:'d.MM.yy'}}<br/>
+                {{ af.sluttaarsak }}<br/>
             </li>
         </ul> 
 
@@ -35,12 +38,12 @@
 	        <br/>
 	        <select id="arbeidsgiver_sluttaarsak" type="text" data-ng-model="arbeidsgiver.sluttaarsak">
 	        	<option value="sagtOppSelv">Sagt opp selv</option>
-	        	<option value="sagtOppSelv">Sagt opp av arbeidsgiver</option>
-	        	<option value="sagtOppSelv">Permittert</option>
-	        	<option value="sagtOppSelv">Avskjediget</option>
-	        	<option value="sagtOppSelv">Konkurs</option>
-	        	<option value="sagtOppSelv">Kontrakt er gått utv</option>
-	        	<option value="sagtOppSelv">Redusert arbeidstid med mer enn 50% (40% for fiskere)</option>
+	        	<option value="sagtOppAvArbeidsgiver">Sagt opp av arbeidsgiver</option>
+	        	<option value="permitert">Permittert</option>
+	        	<option value="avskjediget">Avskjediget</option>
+	        	<option value="konkurs">Konkurs</option>
+	        	<option value="kontraktUtgaat">Kontrakt er gått ut</option>
+	        	<option value="redusertArbeidstid">Redusert arbeidstid med mer enn 50% (40% for fiskere)</option>
         	</select>
 	        <br/>
 	         <br/>
@@ -59,12 +62,13 @@
 	        <br/>
 	        <br/>
 	        <br/>
-	
-			<navcheckbox data-ng-model="soknadData.fakta.harIkkeJobbet.value"
+			
+			<div data-ng-show="harIkkeLagretArbeidsforhold()">
+				<navcheckbox data-ng-model="soknadData.fakta.harIkkeJobbet.value"
                       modus="data.redigeringsModus"
                       inputname="harIkkeJobbet" label='arbeidsforhold.harIkkeJobbet'
                       endret="toggleRedigeringsmodus()"/>
-
+            </div>
 
         <sporsmalblokk nokkel="arbeidsforhold" redigerings-modus="data.redigeringsModus" form="arbeidsforholdForm"
                        nesteside="egennaering"/>
