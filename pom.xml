@@ -1003,6 +1003,27 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+        <id>t11</id>
+            <properties>
+                <flyway.user>Sendsok_t11</flyway.user>
+                <flyway.password>wz3rlgl5</flyway.password>
+                <flyway.placeholders.driver>oracle.jdbc.OracleDriver</flyway.placeholders.driver>
+                <flyway.placeholders.encoding>ISO-8859-1</flyway.placeholders.encoding>
+                <flyway.alias>henvendelseDS</flyway.alias>
+                <flyway.placeholders.url>jdbc:oracle:thin:@d32dbfl001.oera-t.local:1521:DBa32er1
+                </flyway.placeholders.url>
+                <flyway.locations>db/migration/${flyway.alias}</flyway.locations>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.googlecode.flyway</groupId>
+                        <artifactId>flyway-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <reporting>
