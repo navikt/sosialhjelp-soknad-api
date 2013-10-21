@@ -117,8 +117,15 @@ angular.module('app.brukerdata', ['app.services'])
             $scope.soknadData.fakta[data.key] = {"soknadId": $scope.soknadData.soknadId, "key": data.key, "value": data.value};
             var soknadData = $scope.soknadData;
             soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
-            $scope.$apply();
             console.log("lagre: " + soknadData);
+        });
+
+        $scope.$on("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", function (e, data) {
+            $scope.soknadData.fakta.arbeidsforhold = {"soknadId": $scope.soknadData.soknadId, "key": data.key,
+                "value": angular.toJson(data.value)};
+            var soknadData = $scope.soknadData;
+            soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
+            console.log("lagre: " + soknadData.soknadId);
         });
     })
 
@@ -212,30 +219,37 @@ angular.module('app.brukerdata', ['app.services'])
         };
     })
 
-    .controller('ArbeidsforholdCtrl', function ($scope) {
-        $scope.soknadData.arbeidsforhold = [];
+    .controller('ArbeidsforholdCtrl', function ($scope, soknadService, $routeParams) {
+        $scope.arbeidsforhold = [];
 
-        $scope.lagreArbeidsForhold = function() {
-            //$scope.soknadData.arbeidsforhold.push($scope.arbeidsgiver.navn);
+        soknadService.get({param: $routeParams.soknadId}).$promise.then(function (result) {
+            $scope.soknadData = result;
+            if($scope.soknadData.fakta.arbeidsforhold) {
+        		$scope.arbeidsforhold = angular.fromJson($scope.soknadData.fakta.arbeidsforhold.value);	
+        	}
+        	console.log($scope.arbeidsforhold);
+        	$scope.lagreArbeidsforhold = function() {
+	            $scope.arbeidsforhold.push({navn: $scope.arbeidsgiver.navn, land: $scope.arbeidsgiver.land});
+	            $scope.arbeidsforholdaapen = false;
+	            $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
+	        }
 
-            $scope.arbeidsforhold.aapen ="false";
-        }
+	        $scope.toggleRedigering = function() {
+	        	alert('VEKSLER');
+	        }
 
-        $scope.nyttArbeidsforhold = function ($event) {
-            $scope.arbeidsforhold.aapen ="true";
-            /*var key = 'arbeidsforhold' + Object.keys($scope.arbeidsforhold).length;
-            $scope.arbeidsforhold.push(key);*/
-        }
+	        $scope.nyttArbeidsforhold = function () {
+	            $scope.arbeidsforholdaapen = true;
+	            $scope.arbeidsgiver = {};
+	        }
 
-        // Lagre på ferdig-knappen per arbeidsforhold
-        $scope.$on("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", function (e) {
-            $scope.soknadData.fakta.arbeidsforhold = {"soknadId": $scope.soknadData.soknadId, "key": "arbeidsforhold",
-                "value": JSON.stringify($scope.arbeidsforhold)};
-            var soknadData = $scope.soknadData;
-            soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
-            $scope.$apply();
-            console.log("lagre: " + soknadData.soknadId);
+	        $scope.avbrytArbeidsforhold = function () {
+	        	$scope.arbeidsforholdaapen = false;
+	        }
         });
+
+        
+
     })
 
     .directive('lagreArbeidsforhold', function () {

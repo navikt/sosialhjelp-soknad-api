@@ -59,34 +59,3 @@ describe('GrunnlagsdataController', function() {
 	});
 });
 
-describe('ArbeidsforholdCtrl', function() {
-
-	beforeEach(
-        module('app.brukerdata')
-    );
-
- 		var scope, ctrl;
-
-        beforeEach(inject(function ( $rootScope, $controller) {
-            scope = $rootScope.$new();
-            ctrl = $controller('ArbeidsforholdCtrl', {
-                // scope.soknadData: {"soknadId":1,"fakta":{}},
-                $scope: scope
-
-
-            });
-        }));
-
-        it('arbeidsforholdlisten skal være tom ved oppstart', function () {
-            expect(scope.arbeidsforhold).toEqual({});
-        });
-
-
-        it('arbeidsforholdlisten skal ha et element etter et kall til leggTilArbeidsforhold', function () {
-            scope.soknadData= {"soknadId":1,"fakta":{}};
-            var expected = ["navn: 'test'"];
-            scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD");
-            expect(scope.arbeidsforhold).toEqual(expected);
-        });
-
-});
