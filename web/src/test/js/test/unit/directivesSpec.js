@@ -78,6 +78,9 @@ describe('directives', function() {
     }));
 
     describe('booleanVerdi', function(){
+        it('viewvalue skal settes til false dersom det ikke er satt en verdi i modellen', function() {
+            expect(checkbox.$viewValue).toEqual(false);
+        });
         it('viewvalue skal være true når modellen er en string som sier "true"', function() {
             scope.checkboxValueModel = 'true';
             element.scope().$apply();
@@ -87,6 +90,16 @@ describe('directives', function() {
             scope.checkboxValueModel = 'false';
             element.scope().$apply();
             expect(checkbox.$viewValue).toEqual(false);
+        });
+        it('modellen skal lagres som string "true" når viewvalue (boolean) settes til true', function() {
+            checkbox.$setViewValue(true);
+            element.scope().$apply();
+            expect(scope.checkboxValueModel).toEqual('true');
+        });
+        it('modellen skal lagres som string "false" når viewvalue (boolean) settes til false', function() {
+            checkbox.$setViewValue(false);
+            element.scope().$apply();
+            expect(scope.checkboxValueModel).toEqual('false');
         });
     });
 });
