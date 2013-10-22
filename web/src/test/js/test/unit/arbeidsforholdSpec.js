@@ -76,5 +76,23 @@ describe('ArbeidsforholdCtrl', function() {
             expect(scope.harIkkeLagretArbeidsforhold()).toBe(true);
         });
 
+        it('skal slette første arbeidsforhold naar man klikker slett', function() {
+			var bekk = {"navn":"Bekk","land":"UK","varighetFra":"2013-10-14T22:00:00.000Z","varighetTil":"2013-10-17T22:00:00.000Z","sluttaarsak":"avskjediget"};
+			var computas = {"navn":"Computas","varighetFra":"2013-10-09T22:00:00.000Z","varighetTil":"2013-10-24T22:00:00.000Z"};
+			scope.arbeidsforhold = [bekk, computas];
+ 			scope.slettArbeidsforhold(bekk);
+
+ 			expect(scope.arbeidsforhold).toEqual([computas]);     	
+        });
+
+        it('skal slette andre arbeidsforhold naar man klikker slett', function() {
+			var bekk = {"navn":"Bekk","land":"UK","varighetFra":"2013-10-14T22:00:00.000Z","varighetTil":"2013-10-17T22:00:00.000Z","sluttaarsak":"avskjediget"};
+			var computas = {"navn":"Computas","varighetFra":"2013-10-09T22:00:00.000Z","varighetTil":"2013-10-24T22:00:00.000Z"};
+			scope.arbeidsforhold = [bekk, computas];
+ 			scope.slettArbeidsforhold(computas);
+
+ 			expect(scope.arbeidsforhold).toEqual([bekk]);     	
+        });
+
 })
 

@@ -4,42 +4,44 @@
         <span cmstekster="arbeidsforhold.informasjon"></span>
 
         <!--TODO Bruke liste og ikke objekt -->
-        <ul>
+        <ul data-ng-show="arbeidsforholdskjemaErIkkeAapent()">
             <li data-ng-repeat="af in arbeidsforhold">
                 {{ af.navn }}<br/>
                 {{ af.land }}<br/>
                 {{ af.varighetFra | date:'d.MM.yy'}}<br/>
                 {{ af.varighetTil | date:'d.MM.yy'}}<br/>
                 {{ af.sluttaarsak }}<br/>
+                <a href data-ng-click="slettArbeidsforhold(af)">Slett</a>
             </li>
         </ul> 
 
         <form data-ng-show="arbeidsforholdaapen" data-ng-submit="lagreArbeidsforhold()">
         	<label for="arbeidsgiver_navn">Navn på arbeidsgiver</label>
-	        <input id="arbeidsgiver_navn" type="text" data-ng-model="arbeidsgiver.navn"/>
+	        <input id="arbeidsgiver_navn" type="text" data-ng-model="arbeidsgiver.navn" required/>
 	        <br/>
 	         <br/>
 	        <label for="arbeidsgiver_land">Land</label>
-	        <select id="arbeidsgiver_land" data-ng-model="arbeidsgiver.land" ng-options="item as item for item in landService.result"/>
+	        <select id="arbeidsgiver_land" data-ng-model="arbeidsgiver.land" data-ng-options="item for item in landService.result" required>
+	        	<option value="">--Velg land--</option>
+	        </select>
 	        <br/>
 	        <br/>
 	        <div class="varighet">
                 <label class="label-sammelinje">Fra:</label>
                 <input type="text" name="varighetFra" ui-date ng-model="arbeidsgiver.varighetFra" required >
-                <span class="error" data-ng-show="arbeidsforholdaapen.varighetFra.$error.required">{{feilmeldinger.paakreves}} </span>
                 <label class="label-sammelinje">Til:</label>
                 <input type="text" name="varighetTil" ui-date ng-model="arbeidsgiver.varighetTil" required >
-                <span class="error" data-ng-show="arbeidsforholdaapen.varighetTil.$error.required">{{feilmeldinger.paakreves}} </span>
                 <label for="arbeidsgiver_sluttaarsak">Sluttårsak</label>
 	        </div>
 	        <br/>
 	         <br/>
 	        <label class="label-sammelinje">Årsaken til at du sluttet i jobben</label>
 	        <br/>
-	        <select id="arbeidsgiver_sluttaarsak" type="text" data-ng-model="arbeidsgiver.sluttaarsak">
+	        <select id="arbeidsgiver_sluttaarsak" type="text" data-ng-model="arbeidsgiver.sluttaarsak" required>
+	        	<option value="">--Velg sluttårsak--</option>
 	        	<option value="sagtOppSelv">Sagt opp selv</option>
 	        	<option value="sagtOppAvArbeidsgiver">Sagt opp av arbeidsgiver</option>
-	        	<option value="permitert">Permittert</option>
+	        	<option value="permitert">Permittert</option>s
 	        	<option value="avskjediget">Avskjediget</option>
 	        	<option value="konkurs">Konkurs</option>
 	        	<option value="kontraktUtgaat">Kontrakt er gått ut</option>
@@ -48,7 +50,7 @@
 	        <br/>
 	         <br/>
 	        <input cmstekster="arbeidsforhold.lagre" type="submit" id="arbeidsgiverLagre"></input>
-	        <button cmstekster="arbeidsforhold.avbryt" data-ng-click="avbrytArbeidsforhold()"></button>
+	        <input type="submit" cmstekster="arbeidsforhold.avbryt" data-ng-click="avbrytArbeidsforhold()"></button>
         </form>
 
         <!-- trengs denne? -->
@@ -56,7 +58,7 @@
             {{ tekster.arbeidsforhold_knapp_legg_til }}
         </button-->
         <form name="arbeidsforholdForm" data-ng-controller="ModusCtrl" novalidate>
-	        <a href data-ng-show="data.redigeringsModus" data-ng-click="nyttArbeidsforhold($event)"> Legg til nytt arbeidsforhold</a>
+	        <a href data-ng-show="kanLeggeTilArbeidsforhold()" data-ng-click="nyttArbeidsforhold($event)"> Legg til nytt arbeidsforhold</a>
  
 	        <br/>
 	        <br/>

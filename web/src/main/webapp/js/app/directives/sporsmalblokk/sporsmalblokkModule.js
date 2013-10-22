@@ -27,6 +27,7 @@ angular.module('nav.sporsmalblokk',['nav.cmstekster'])
 
                 scope.gaTilRedigeringsmodus = function () {
                     scope.redigeringsModus = true;
+                    scope.$emit("ENDRET_TIL_REDIGERINGS_MODUS")
                 }
 
                 scope.hvisIRedigeringsmodus = function () {
