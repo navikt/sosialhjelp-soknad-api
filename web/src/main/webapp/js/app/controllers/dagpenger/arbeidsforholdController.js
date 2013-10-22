@@ -1,7 +1,7 @@
 angular.module('nav.arbeidsforhold.controller',[])
  .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams) {
         $scope.arbeidsforhold = [];
-
+        $scope.erIRedigeringsmodus = -1;
 
         soknadService.get({param: $routeParams.soknadId}).$promise.then(function (result) {
             $scope.soknadData = result;
@@ -14,7 +14,7 @@ angular.module('nav.arbeidsforhold.controller',[])
             }
 
             $scope.kanLeggeTilArbeidsforhold = function() {
-                return $scope.arbeidsforholdskjemaErIkkeAapent() && $scope.harIkkeJobbetErIkkeSatt();
+                return $scope.harIkkeJobbetErIkkeSatt();
             }
 
             $scope.harIkkeJobbetErIkkeSatt = function() {
@@ -23,6 +23,11 @@ angular.module('nav.arbeidsforhold.controller',[])
                 } else {
                     return true;
                 }
+            }
+            
+            $scope.lagreEndretArbeidsforhold = function(af) {
+                $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
+                $scope.erIRedigeringsmodus = -1;
             }
 
         	$scope.lagreArbeidsforhold = function() {
@@ -34,7 +39,7 @@ angular.module('nav.arbeidsforhold.controller',[])
                      sluttaarsak: $scope.arbeidsgiver.sluttaarsak 
                     });
 	            $scope.arbeidsforholdaapen = false;
-	            $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
+	            $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsgiver});
 	        }
 
             $scope.harIkkeLagretArbeidsforhold = function () {
@@ -55,6 +60,10 @@ angular.module('nav.arbeidsforhold.controller',[])
                 var i = $scope.arbeidsforhold.indexOf(af);                
                 $scope.arbeidsforhold.splice(i,1);
                 $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
+            }
+
+            $scope.endreArbeidsforhold = function(index) {
+                $scope.erIRedigeringsmodus = index;
             }
 
             $scope.arbeidsforholdskjemaErIkkeAapent = function() {
