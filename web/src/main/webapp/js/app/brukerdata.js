@@ -117,7 +117,6 @@ angular.module('app.brukerdata', ['app.services'])
             $scope.soknadData.fakta[data.key] = {"soknadId": $scope.soknadData.soknadId, "key": data.key, "value": data.value};
             var soknadData = $scope.soknadData;
             soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
-            $scope.$apply();
             console.log("lagre: " + soknadData);
         });
     })
@@ -278,7 +277,10 @@ angular.module('app.brukerdata', ['app.services'])
                 if (element.attr('type') === "checkbox") {
                     verdi = element.is(':checked');
                 }
-                $scope.$emit("OPPDATER_OG_LAGRE", {key: attrs.name, value: verdi});
+
+                $scope.$apply(function() {
+                    $scope.$emit("OPPDATER_OG_LAGRE", {key: attrs.name, value: verdi});
+                });
             });
         };
     })
