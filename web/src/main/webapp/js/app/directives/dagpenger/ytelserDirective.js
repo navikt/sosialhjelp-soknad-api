@@ -1,31 +1,39 @@
-angular.module('nav.ytelser.directive',[])
-    .directive('ikkeYtelserValidering', function(){
+angular.module('nav.ytelser.directive', [])
+    .directive('ikkeYtelserValidering', ['$timeout', function ($timeout) {
         return {
             require: 'ngModel',
             scope: {
                 model: '=ngModel',
-                form: '='
+                formname: '='
             },
-            link: function(scope, elm, attrs) {
-                var checkboxes = elm.closest('form').find('#harYtelser').find('input');
-                checkboxes.change(function () {
-                    if ($(this).is(':checked') && checkTrue(scope.model)) {
-                        scope.model = false;
-                    }
+            link: function (scope, elm, attrs) {
+                $timeout(function () {
 
-                    if (!checkboxes.is(':checked')){
-                        scope.form.$setValidity('harValgtYtelse', true);
-                    }
-                });
+                    var checkboxes = elm.closest('form').find('#harYtelser').find('input[type="checkbox"]');
 
-                scope.$watch('model', function(value) {
-                    var erAndreCheckboxerAvhuket = checkboxes.is(':checked');
-                    if (checkTrue(value) && erAndreCheckboxerAvhuket) {
-                        scope.model = false;
-                        scope.form.$setValidity('harValgtYtelse', false);
-                    }
-                });
+                    console.log(checkboxes);
+                    checkboxes.change(function () {
+                        if ($(this).is(':checked') && checkTrue(scope.model)) {
+                            scope.model = false;
+                        }
+
+                        if (!checkboxes.is(':checked')) {
+                            scope.formname.$setValidity('harValgtYtelse', true);
+                        }
+                    });
+
+                    scope.$watch('model', function (value) {
+                        var erAndreCheckboxerAvhuket = checkboxes.is(':checked');
+                        console.log(checkTrue(value));
+                        console.log(erAndreCheckboxerAvhuket);
+                        if (checkTrue(value) && erAndreCheckboxerAvhuket) {
+                            scope.model = false;
+
+                            scope.formname.$setValidity('harValgtYtelse', false);
+                        }
+                    });
+                }, 100);
             }
         };
 
-    });
+    }]);

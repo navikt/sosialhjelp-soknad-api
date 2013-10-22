@@ -76,12 +76,19 @@ ytelser.dagpengerEOS
 ytelser.annenYtelse
 ytelser.ingenYtelse
 ytelser.offentligTjenestepensjonUtbetaler
+ytelser.offentligTjenestepensjonUtbetaler.feilmelding
 ytelser.privatTjenestepensjonUtbetaler
+ytelser.privatTjenestepensjonUtbetaler.feilmelding
 ytelser.vartpengerUtbetaler
+ytelser.vartpengerUtbetaler.feilmelding
 ytelser.ventelonnUtbetaler
+ytelser.ventelonnUtbetaler.feilmelding
 ytelser.dagpengerEOSUtbetaler
+ytelser.dagpengerEOSUtbetaler.feilmelding
 ytelser.annenYtelseType
+ytelser.annenYtelseType.feilmelding
 ytelser.annenYtelseUtbetaler
+ytelser.annenYtelseUtbetaler.feilmelding
 ytelser.harValgtYtelse.feilmelding
 
 avbryt.slett

@@ -63,15 +63,15 @@ angular.module('nav.input',['nav.cmstekster'])
                 }
 
                 scope.hvisSynlig = function() {
-                    return element.is(':visible');
+//                    return element.is(':visible');
 
                     // Potensiell stygg hack for å kunne hente ut hvilket inputfelt som gir feil... :|
-                    /*if (element.is(':visible') && (scope.model == undefined || scope.model == "")) {
+                    if (element.is(':visible') && (scope.model == undefined || scope.model == "")) {
                         ctrl.$setValidity(scope.inputname, false);
                     } else {
                         ctrl.$setValidity(scope.inputname, true);
                     }
-                    return false;*/
+                    return false;
                 }
 
             },
