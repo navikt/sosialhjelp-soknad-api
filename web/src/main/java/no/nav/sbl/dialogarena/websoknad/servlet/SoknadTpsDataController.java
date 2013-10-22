@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,14 @@ public class SoknadTpsDataController {
     @ResponseBody()
     public Map<String, List<String>> hentLandkodeListe() {
         HashMap<String, List<String>> hashMap = new HashMap<String, List<String>>();
-        hashMap.put("result", kodeverk.getAlleLandkoder());
+        ArrayList<String> mockLand = new ArrayList<>();
+        
+        mockLand.add("Norge");
+        mockLand.add("Sverige");
+        mockLand.add("Danmark");
+        
+        
+        hashMap.put("result", mockLand);
     	return hashMap;
     }
 	
