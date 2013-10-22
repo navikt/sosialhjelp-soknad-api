@@ -17,6 +17,7 @@
     <properties>
         <sonar.branch>JS</sonar.branch>
         <sonar.language>JS</sonar.language>
+        <sonar.exclusions>js/jquery/**,js/lib/**</sonar.exclusions>
     </properties>
     <build>
         <sourceDirectory>src/main/webapp</sourceDirectory>
