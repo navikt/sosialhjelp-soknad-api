@@ -25,7 +25,7 @@ describe('ArbeidsforholdCtrl', function() {
 
             // TODO: result her? kontra backend
             $httpBackend.expectGET('/sendsoknad/rest/soknad/kodeverk/landliste').
-            respond({result:["AF","DK","CA","NF","PK","RO","ES","UK","SE","TW","TH","DE","US"]});
+            respond({result:["Norge", "Sverige", "Danmark"]});
 
 			routeParams = {};
 			routeParams.soknadId = 1;
@@ -93,6 +93,31 @@ describe('ArbeidsforholdCtrl', function() {
 
  			expect(scope.arbeidsforhold).toEqual([bekk]);     	
         });
+
+        it('skal ikke vise LeggTil-link dersom man allerede har nytt arbeidsforhold-skjema aapent', function() {
+        	scope.arbeidsforholdaapen = true;
+        	scope.aktivRedigeringsIndex = -1;
+
+        	expect(scope.kanLeggeTilArbeidsforhold()).toBe(false);
+
+        });
+
+        it('skal ikke vise LeggTil-link dersom man allerede har endre arbeidsforhold-skjema aapent', function() {
+        	scope.aktivRedigeringsIndex = 1;
+        	scope.arbeidsforholdaapen = false;
+
+        	expect(scope.kanLeggeTilArbeidsforhold()).toBe(false);
+
+        });
+
+        it('skal vise LeggTil-link dersom man ikke har et skjema aapent', function() {
+        	scope.aktivRedigeringsIndex = -1;
+        	scope.arbeidsforholdaapen = false;
+
+        	expect(scope.kanLeggeTilArbeidsforhold()).toBe(true);
+
+        });
+
 
 })
 

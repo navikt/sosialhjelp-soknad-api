@@ -2,9 +2,13 @@
     <div data-ng-controller="ArbeidsforholdCtrl">
         <span cmstekster="arbeidsforhold.informasjon"></span>
 
-        <ul data-ng-show="arbeidsforholdskjemaErIkkeAapent()">
-            <li data-ng-repeat="af in arbeidsforhold">
-                <div data-ng-show="erIRedigeringsmodus != $index">
+        <style>
+        /*.oddArbeidsforhold{background-color: grey};*/
+        </style>
+
+        <ul>
+            <li ng-class-odd="'oddArbeidsforhold'" data-ng-repeat="af in arbeidsforhold">
+                <div data-ng-show="aktivRedigeringsIndex != $index">
 	                {{ af.navn }}<br/>
 	                {{ af.land }}<br/>
 	                {{ af.varighetFra | date:'d.MM.yy'}}<br/>
@@ -14,7 +18,7 @@
 	                <a href data-ng-click="endreArbeidsforhold($index)">Endre</a>
                 </div>
 
-                <div data-ng-show="erIRedigeringsmodus == $index">
+                <div data-ng-show="aktivRedigeringsIndex == $index">
                 <form name="endreArbeidsforholdForm" data-ng-submit="lagreEndretArbeidsforhold(af)">
 		        	<label for="arbeidsgiver_navn">Navn på arbeidsgiver</label>
 			        <input id="arbeidsgiver_navn" type="text" data-ng-model="af.navn" required/>
@@ -58,7 +62,7 @@
 			        <br/>
 			        
 			        <input cmstekster="arbeidsforhold.lagre" type="submit" id="arbeidsgiverLagre"></input>
-			        <a href cmstekster="arbeidsforhold.avbryt" data-ng-click="avbrytArbeidsforhold()"></a>
+			        <a href cmstekster="arbeidsforhold.avbryt" data-ng-click="avbrytEndringAvArbeidsforhold()"></a>
 		        </form>
                 </div>
             </li>
