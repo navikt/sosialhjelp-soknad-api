@@ -76,4 +76,7 @@ describe('brukerdata domene', function () {
             expect(scope.hvisIkkeFormValiderer()).toBe(true);
         });
     })
+
 });
+
+

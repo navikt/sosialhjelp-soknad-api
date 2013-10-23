@@ -115,10 +115,17 @@ angular.module('app.brukerdata', ['app.services'])
 
         $scope.$on("OPPDATER_OG_LAGRE", function (e, data) {
             $scope.soknadData.fakta[data.key] = {"soknadId": $scope.soknadData.soknadId, "key": data.key, "value": data.value};
-            $scope.$apply();
             var soknadData = $scope.soknadData;
             soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
             console.log("lagre: " + soknadData);
+        });
+
+        $scope.$on("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", function (e, data) {
+            $scope.soknadData.fakta.arbeidsforhold = {"soknadId": $scope.soknadData.soknadId, "key": data.key,
+                "value": angular.toJson(data.value)};
+            var soknadData = $scope.soknadData;
+            soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
+            console.log("lagre: " + soknadData.soknadId);
         });
     })
 
@@ -136,6 +143,10 @@ angular.module('app.brukerdata', ['app.services'])
             $scope.data.showErrorMessage = invalid;
             $scope.data.redigeringsModus = invalid;
         }
+
+        $scope.$on("SETT_OPPSUMERINGSMODUS", function() {
+        	$scope.validateForm();
+        });
 
         $scope.gaTilRedigeringsmodus = function () {
             $scope.data.redigeringsModus = true;
@@ -210,55 +221,6 @@ angular.module('app.brukerdata', ['app.services'])
                 }
             );
         };
-    })
-
-    .controller('ArbeidsforholdCtrl', function ($scope) {
-        $scope.arbeidsforhold = {};
-        $scope.nyttArbeidsforhold = function ($event) {
-            var key = 'arbeidsforhold' + Object.keys($scope.arbeidsforhold).length;
-            $scope.arbeidsforhold[key] = {};
-        }
-
-        // Lagre på ferdig-knappen per arbeidsforhold
-        $scope.$on("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", function (e) {
-            $scope.soknadData.fakta.arbeidsforhold = {"soknadId": $scope.soknadData.soknadId, "key": "arbeidsforhold",
-                "value": JSON.stringify($scope.arbeidsforhold)};
-            var soknadData = $scope.soknadData;
-            soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
-            $scope.$apply();
-            console.log("lagre: " + soknadData.soknadId);
-        });
-    })
-
-    .directive('lagreArbeidsforhold', function () {
-        return function ($scope, element, attrs) {
-            var eventType;
-            switch (element.attr('type')) {
-                case "radio":
-                case "checkbox":
-                    eventType = "change";
-                    break;
-                default:
-                    eventType = "blur";
-            }
-
-            element.bind(eventType, function () {
-                var verdi = element.val();
-                if (element.attr('type') === "checkbox") {
-                    verdi = element.is(':checked');
-                }
-                $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD");
-            });
-        };
-    })
-
-    .directive('legg-til-arbeidsforhold', function () {
-        return function ($scope, element, attrs) {
-            element.click(function () {
-
-            })
-        }
-
     })
 
     .directive('modFaktum', function () {

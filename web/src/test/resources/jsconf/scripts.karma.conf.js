@@ -19,6 +19,7 @@ module.exports = function(config) {
       '../jslib/angular-resource.js',
       '../../../main/webapp/js/app/*.js',
       '../../../main/webapp/js/app/directives/**/*.js',
+      '../../../main/webapp/js/app/controllers/**/*.js',
       '../../../test/js/test/unit/*.js'
  ],
 

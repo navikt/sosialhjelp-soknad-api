@@ -91,71 +91,57 @@ describe('directives', function() {
     });
 });
 
-describe('directives123', function() {
-    var scope, element, form, radioknappen, $httpBackend;
+// describe('directives123', function() {
+//     var scope, element, form, radioknappen, $httpBackend;
 
-    beforeEach(module('app.directives', function($provide) {
-        $provide.value("data", {
-            tekster: {
-                "nokkel.sporsmal": "Sporsmal",
-                "nokkel.true": "true",
-                "nokkel.false": "false"
-            }
-        });
-    }));
-    beforeEach(inject(function($compile, $rootScope, _$httpBackend_){
-        scope = $rootScope;
-        $httpBackend = _$httpBackend_;
-        scope.soknadData = {
-            fakta: {
-                nokkel: true
-            }
-        };
+//     beforeEach(module('app.directives', function($provide) {
+//         $provide.value("data", {
+//             tekster: {
+//                 "nokkel.sporsmal": "Sporsmal",
+//                 "nokkel.true": "true",
+//                 "nokkel.false": "false"
+//             }
+//         });
+//     }));
+//     beforeEach(inject(function($compile, $rootScope, _$httpBackend_){
+//         scope = $rootScope;
+//         $httpBackend = _$httpBackend_;
+//         scope.soknadData = {
+//             fakta: {
+//                 nokkel: true
+//             }
+//         };
 
-        scope.data = {
-            redigeringsModus: true
-        };
+//         scope.data = {
+//             redigeringsModus: true
+//         };
 
-        $httpBackend.whenGET('../../main/webapp/js/app/directives/booleanradio/booleanradioTemplate.html').respond(function(method, url, data) {
-                console.log("##############################: " +url);
-                return "<div>Hallo</div>";
-            }
-        );
-        $httpBackend.whenGET('../../main/webapp/js/app/directives/navinput/navradioTemplate.html').respond(function(method, url, data) {
-                console.log("##############################: " +url);
-                return "<div>Hallo</div>";
-            }
-        );
+//         element = angular.element(
+//             '<form name="form">' +
+//                 '<booleanradio name="radioknappen" model="soknadData.fakta.nokkel.value" modus="data.redigeringsModus" nokkel="nokkel"/>' +
+//             '</form>'
+//         );
+//         $compile(element)(scope);
+//         scope.$digest();
+//         form = scope.form;
+//         radioknappen = form.radioknappen;
+//         element.scope().$apply();
 
-        element = angular.element(
-            '<form name="form">' +
-                '<booleanradio name="radioknappen" model="soknadData.fakta.nokkel.value" modus="data.redigeringsModus" nokkel="nokkel"/>' +
-            '</form>'
-        );
-        $compile(element)(scope);
-        scope.$digest();
-        form = scope.form;
-        radioknappen = form.radioknappen;
-        element.scope().$apply();
-
-    }));
-    // WTF Funker ikke...
-    /*describe('booleanradio', function(){
-        it('skal først vises i redigeringsmodus, så endre til oppsummeringsmodus', function() {
-            var redigering = element.children()[1];
-            var oppsummering = element.children()[2];
-            console.log(redigering);
-            console.log(oppsummering);
-            expect(redigering.className).not.toContain('ng-hide');
-            expect(oppsummering.className).toContain('ng-hide');
-            scope.data.redigeringsModus = false;
-            element.scope().$apply();
-            expect(redigering.className).toContain('ng-hide');
-            expect(oppsummering.className).not.toContain('ng-hide');
-            console.log("###########################################################################################\n\n\n\n\n\n");
-        });
-    });*/
-});
+//     }));
+    
+//     describe('booleanradio', function(){
+//         it('skal først vises i redigeringsmodus, så endre til oppsummeringsmodus', function() {
+//             var redigering = element.children()[1];
+//             var oppsummering = element.children()[2];
+//             expect(redigering.className).not.toContain('ng-hide');
+//             expect(oppsummering.className).toContain('ng-hide');
+//             scope.data.redigeringsModus = false;
+//             element.scope().$apply();
+//             expect(redigering.className).toContain('ng-hide');
+//             expect(oppsummering.className).not.toContain('ng-hide');
+//         });
+//     });
+// });
 
 
 describe('directives', function() {

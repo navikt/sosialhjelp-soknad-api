@@ -69,7 +69,7 @@ public class DatabaseTestContext {
             st.execute("drop table SOKNAD if exists");
             st.execute("create table SOKNAD (soknad_id numeric not null, brukerbehandlingid varchar(255) not null, navsoknadid varchar(255) not null, " +
                     "aktorid varchar(255) not null, opprettetdato timestamp not null, status varchar(255) not null)");
-            st.execute("create table SOKNADBRUKERDATA (soknadbrukerdata_id numeric not null, soknad_id numeric not null, key varchar(255) not null, value varchar(255) not null, " +
+            st.execute("create table SOKNADBRUKERDATA (soknadbrukerdata_id numeric not null, soknad_id numeric not null, key varchar(255) not null, value varchar(2000) not null, " +
                     "type varchar(255), sistendret timestamp not null)");
             st.execute("drop sequence SOKNAD_ID_SEQ if exists");
             st.execute("create sequence SOKNAD_ID_SEQ as integer start with 1 increment by 1");

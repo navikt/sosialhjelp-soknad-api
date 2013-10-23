@@ -25,7 +25,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <modig.frontend>1.0.27</modig.frontend>
+        <modig.frontend>1.1.2-SNAPSHOT</modig.frontend>
         <wicket.version>6.11.0</wicket.version>
         <spring.version>3.2.4.RELEASE</spring.version>
         <cxf.version>2.7.7</cxf.version>
@@ -87,12 +87,12 @@
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-frontend-wicket</artifactId>
-                <version>1.1.0</version>
+                <version>${modig.frontend}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-frontend-ressurser</artifactId>
-                <version>1.1.0</version>
+                <version>${modig.frontend}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>

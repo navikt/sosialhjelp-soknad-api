@@ -3,3 +3,10 @@ if (!Array.prototype.last) {
         return this[this.length -1];
     }
 }
+
+function checkTrue(element) {
+    if (element == undefined) {
+        return false;
+    }
+    return element.toString() == 'true';
+}
