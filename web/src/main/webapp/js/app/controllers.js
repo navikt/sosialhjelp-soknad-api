@@ -1,5 +1,5 @@
 'use strict';
-angular.module('app.controllers', ['app.services'])
+angular.module('app.controllers', ['app.services', 'nav.reellarbeidssoker', 'nav.ytelser'])
 
 .controller('ungerUtlandCtrl', ['$scope', function($scope) {
 
