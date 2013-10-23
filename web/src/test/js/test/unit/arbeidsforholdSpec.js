@@ -96,14 +96,14 @@ describe('ArbeidsforholdCtrl', function() {
 
         it('skal ikke vise LeggTil-link dersom man allerede har nytt arbeidsforhold-skjema aapent', function() {
         	scope.arbeidsforholdaapen = true;
-        	scope.aktivRedigeringsIndex = -1;
+        	scope.posisjonForArbeidsforholdUnderRedigering = -1;
 
         	expect(scope.kanLeggeTilArbeidsforhold()).toBe(false);
 
         });
 
         it('skal ikke vise LeggTil-link dersom man allerede har endre arbeidsforhold-skjema aapent', function() {
-        	scope.aktivRedigeringsIndex = 1;
+        	scope.posisjonForArbeidsforholdUnderRedigering = 1;
         	scope.arbeidsforholdaapen = false;
 
         	expect(scope.kanLeggeTilArbeidsforhold()).toBe(false);
@@ -111,7 +111,7 @@ describe('ArbeidsforholdCtrl', function() {
         });
 
         it('skal vise LeggTil-link dersom man ikke har et skjema aapent', function() {
-        	scope.aktivRedigeringsIndex = -1;
+        	scope.posisjonForArbeidsforholdUnderRedigering = -1;
         	scope.arbeidsforholdaapen = false;
 
         	expect(scope.kanLeggeTilArbeidsforhold()).toBe(true);
