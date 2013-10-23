@@ -142,29 +142,6 @@ angular.module('app.brukerdata', ['app.services'])
         }
     })
 
-    .controller('UtdanningCtrl', function ($scope) {
-        $scope.hvisIkkeUnderUtdanning = function () {
-            if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
-                return $scope.soknadData.fakta.utdanning.value == 'ikkeUtdanning';
-            }
-            return false;
-        }
-
-        $scope.hvisAvsluttetUtdanning = function () {
-            if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
-                return $scope.soknadData.fakta.utdanning.value == 'avsluttetUtdanning';
-            }
-            return false;
-        }
-
-        $scope.hvisUnderUtdanning = function () {
-            if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
-                return $scope.soknadData.fakta.utdanning.value == 'underUtdanning';
-            }
-            return false;
-        }
-    })
-
     .controller('AvbrytCtrl', function ($scope, $routeParams, $location, soknadService) {
         $scope.data = {
             laster: false
