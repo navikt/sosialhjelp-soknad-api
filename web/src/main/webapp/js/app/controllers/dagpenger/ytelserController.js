@@ -13,15 +13,32 @@ angular.module('nav.ytelser.controller',[])
 
         };
 
-        $scope.hukAvIngenYtelser = function() {
-            var ytelserNokler = nokler.slice(0, nokler.length - 1);
+        $scope.endreYtelse = function(form) {
 
+            var ytelserNokler = nokler.slice(0, nokler.length - 1);
+            var harIkkeValgtYtelse = !$scope.erCheckboxerAvhuket(ytelserNokler);
+
+            if (harIkkeValgtYtelse) {
+                form.$setValidity('harValgtYtelse', true);
+            }
+
+            if ($scope.soknadData.fakta.ingenYtelse.value) {
+                $scope.soknadData.fakta.ingenYtelse.value = false;
+                $scope.$emit("OPPDATER_OG_LAGRE", {key: 'ingenYtelse', value: false});
+            }
+
+        }
+
+        $scope.endreIngenYtelse = function(form) {
+            var ytelserNokler = nokler.slice(0, nokler.length - 1);
             var harValgtYtelse = $scope.erCheckboxerAvhuket(ytelserNokler);
-            console.log($scope.soknadData.fakta.ingenYtelse.value);
+            var verdi = $scope.soknadData.fakta.ingenYtelse.value;
+
             if (harValgtYtelse) {
                 $scope.soknadData.fakta.ingenYtelse.value = false;
+                form.$setValidity('harValgtYtelse', false);
             } else {
-                $scope.$emit("OPPDATER_OG_LAGRE", {key: 'ingenYtelse', value: true});
+                $scope.$emit("OPPDATER_OG_LAGRE", {key: 'ingenYtelse', value: verdi});
             }
         }
 
