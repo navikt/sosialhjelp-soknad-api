@@ -27,7 +27,7 @@ reellarbeidssoker.ferdig
 vernepliktig.sporsmal
 vernepliktig.true
 vernepliktig.false
-vernepliktig.feilmelding
+vernepliktig.vernepliktig.feilmelding
 vernepliktig.tittel
 vernepliktig.ferdig
 vernepliktig.opplasting
@@ -35,7 +35,7 @@ vernepliktig.opplasting
 egennaering.sporsmal
 egennaering.true
 egennaering.false
-egennaering.feilmelding
+egennaering.egennaering.feilmelding
 egennaering.tittel
 egennaering.ferdig
 
@@ -43,7 +43,7 @@ utdanning.sporsmal
 utdanning.svar.ikkeUtdanning
 utdanning.svar.avsluttetUtdanning
 utdanning.svar.underUtdanning
-utdanning.feilmelding
+utdanning.utdanning.feilmelding
 utdanning.tittel
 utdanning.ferdig
 utdanning.svar.under.utdanning.kurs
