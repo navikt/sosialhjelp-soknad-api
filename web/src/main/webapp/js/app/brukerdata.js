@@ -137,6 +137,10 @@ angular.module('app.brukerdata', ['app.services'])
             return !$scope.hvisIRedigeringsmodus();
         }
 
+        $scope.visFeilmeldinger = function () {
+            $scope.data.showErrorMessage = true;
+        }
+
         $scope.hvisIkkeFormValiderer = function () {
             return $scope.data.showErrorMessage;
         }

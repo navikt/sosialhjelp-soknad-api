@@ -4,7 +4,7 @@
     </div>
     <form name="vernepliktigForm" class="skjemainnhold" data-ng-controller="ModusCtrl" novalidate>
         <div data-ng-controller="VernepliktCtrl">
-            <booleanradio model="soknadData.fakta.vernepliktig.value"
+            <booleanradio data-ng-model="soknadData.fakta.vernepliktig.value"
                           modus="data.redigeringsModus"
                           nokkel="vernepliktig"/>
 

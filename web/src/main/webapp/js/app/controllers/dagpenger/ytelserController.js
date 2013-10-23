@@ -10,7 +10,6 @@ angular.module('nav.ytelser',[])
             form.$setValidity('harValgtYtelse', true); // Fjerne feil som kan være satt dersom man prøver å huke av "nei" mens andre checkboxer er avhuket.
             form.$setValidity("minstEnAvhuket", minstEnAvhuket);
             $scope.validateForm(form.$invalid);
-
         };
 
         $scope.endreYtelse = function(form) {
@@ -20,9 +19,11 @@ angular.module('nav.ytelser',[])
 
             if (harIkkeValgtYtelse) {
                 form.$setValidity('harValgtYtelse', true);
+            } else {
+                form.$setValidity("minstEnAvhuket", true);
             }
 
-            if ($scope.soknadData.fakta.ingenYtelse.value) {
+            if ($scope.soknadData.fakta.ingenYtelse != undefined && $scope.soknadData.fakta.ingenYtelse.value) {
                 $scope.soknadData.fakta.ingenYtelse.value = false;
                 $scope.$emit("OPPDATER_OG_LAGRE", {key: 'ingenYtelse', value: false});
             }
@@ -35,9 +36,18 @@ angular.module('nav.ytelser',[])
             var verdi = $scope.soknadData.fakta.ingenYtelse.value;
 
             if (harValgtYtelse) {
+                if (Object.keys($scope.soknadData.fakta.ingenYtelse).length == 1) {
+                    $scope.$emit("OPPDATER_OG_LAGRE", {key: 'ingenYtelse', value: false});
+                }
                 $scope.soknadData.fakta.ingenYtelse.value = false;
+
                 form.$setValidity('harValgtYtelse', false);
+                $scope.visFeilmeldinger();
             } else {
+                if (verdi) {
+                    form.$setValidity("minstEnAvhuket", true);
+                }
+
                 $scope.$emit("OPPDATER_OG_LAGRE", {key: 'ingenYtelse', value: verdi});
             }
         }
