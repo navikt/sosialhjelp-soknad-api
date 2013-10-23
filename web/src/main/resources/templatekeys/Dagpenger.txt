@@ -3,18 +3,22 @@ utslagskriterier_kriterie_intro
 reellarbeidssoker.villigdeltid.sporsmal
 reellarbeidssoker.villigdeltid.true
 reellarbeidssoker.villigdeltid.false
+reellarbeidssoker.villigdeltid.feilmelding
 
 reellarbeidssoker.villigpendle.sporsmal
 reellarbeidssoker.villigpendle.true
 reellarbeidssoker.villigpendle.false
+reellarbeidssoker.villigpendle.feilmelding
 
 reellarbeidssoker.villighelse.sporsmal
 reellarbeidssoker.villighelse.true
 reellarbeidssoker.villighelse.false
+reellarbeidssoker.villighelse.feilmelding
 
 reellarbeidssoker.villigjobb.sporsmal
 reellarbeidssoker.villigjobb.true
 reellarbeidssoker.villigjobb.false
+reellarbeidssoker.villigjobb.feilmelding
 
 reellarbeidssoker.feilmelding
 reellarbeidssoker.tittel

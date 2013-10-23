@@ -3,11 +3,24 @@ angular.module('nav.input',['nav.cmstekster'])
         return {
             restrict: "E",
             replace: true,
+            require: 'ngModel',
             scope: {
-                model: '=',
+                model: '=ngModel',
                 value: '@',
-                name: '@',
+                inputname: '@',
                 label: '@'
+            },
+            link: function(scope, element, attr, ctrl) {
+                scope.hvisSynlig = function() {
+                    // Potensiell stygg hack for å kunne hente ut hvilket inputfelt som gir feil... :|
+                    if (element.is(':visible') && (scope.model == undefined)) {
+                        ctrl.$setValidity(scope.inputname, false);
+                    } else {
+                        ctrl.$setValidity(scope.inputname, true);
+                    }
+                    return false;
+                }
+
             },
             templateUrl: '../js/app/directives/navinput/navradioTemplate.html'
         }
@@ -63,8 +76,6 @@ angular.module('nav.input',['nav.cmstekster'])
                 }
 
                 scope.hvisSynlig = function() {
-//                    return element.is(':visible');
-
                     // Potensiell stygg hack for å kunne hente ut hvilket inputfelt som gir feil... :|
                     if (element.is(':visible') && (scope.model == undefined || scope.model == "")) {
                         ctrl.$setValidity(scope.inputname, false);

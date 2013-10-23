@@ -1,4 +1,4 @@
-angular.module('nav.ytelser.controller',[])
+angular.module('nav.ytelser',[])
     .controller('YtelserCtrl', ['$scope', function ($scope) {
         $scope.navigering = {nesteside: 'personalia'};
         $scope.sidedata = {navn: 'ytelser'};
