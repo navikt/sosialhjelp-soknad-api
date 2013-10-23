@@ -1,7 +1,7 @@
 angular.module('nav.arbeidsforhold.controller',[])
  .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams) {
         $scope.arbeidsforhold = [];
-        $scope.aktivRedigeringsIndex = -1;
+        $scope.posisjonForArbeidsforholdUnderRedigering = -1;
         $scope.arbeidsforholdaapen = false;
 
         soknadService.get({param: $routeParams.soknadId}).$promise.then(function (result) {
@@ -15,14 +15,14 @@ angular.module('nav.arbeidsforhold.controller',[])
             }
 
             $scope.kanLeggeTilArbeidsforhold = function() {
-                return $scope.harIkkeJobbetErIkkeSatt() && $scope.harIngenSkjemaAapne();
+                return $scope.harIkkeRelevanteArbeidsforhold() && $scope.harIngenSkjemaAapne();
             }
 
             $scope.harIngenSkjemaAapne = function() {
-                return $scope.aktivRedigeringsIndex == -1 && $scope.arbeidsforholdaapen == false;
+                return $scope.posisjonForArbeidsforholdUnderRedigering == -1 && $scope.arbeidsforholdaapen == false;
             }
 
-            $scope.harIkkeJobbetErIkkeSatt = function() {
+            $scope.harIkkeRelevanteArbeidsforhold = function() {
                 if($scope.soknadData.fakta && $scope.soknadData.fakta.harIkkeJobbet) {
                     return $scope.soknadData.fakta.harIkkeJobbet.value != "true";
                 } else {
@@ -32,7 +32,10 @@ angular.module('nav.arbeidsforhold.controller',[])
 
             $scope.lagreEndretArbeidsforhold = function(af) {
                 $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
-                $scope.aktivRedigeringsIndex = -1;
+                $scope.posisjonForArbeidsforholdUnderRedigering = -1;
+
+                //todo refaktorer
+                $scope.endreError = false;
             }
 
         	$scope.lagreArbeidsforhold = function() {
@@ -45,6 +48,9 @@ angular.module('nav.arbeidsforhold.controller',[])
                     });
 	            $scope.arbeidsforholdaapen = false;
 	            $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
+
+                //todo refaktorer
+                $scope.endreError = false;
 	        }
 
             $scope.harIkkeLagretArbeidsforhold = function () {
@@ -59,16 +65,22 @@ angular.module('nav.arbeidsforhold.controller',[])
 
 	        $scope.avbrytArbeidsforhold = function () {
 	        	$scope.arbeidsforholdaapen = false;
+                
+                //todo refaktorer
+                $scope.endreError = false;
 	        }
 
             $scope.avbrytEndringAvArbeidsforhold = function() {
-                  $scope.aktivRedigeringsIndex = -1;
+                  $scope.posisjonForArbeidsforholdUnderRedigering = -1;
                     soknadService.get({param: $routeParams.soknadId}).$promise.then(function (result) {
                         $scope.soknadData = result;
                         if($scope.soknadData.fakta.arbeidsforhold) {
                             $scope.arbeidsforhold = angular.fromJson($scope.soknadData.fakta.arbeidsforhold.value); 
                         }
                     });
+
+                    //todo refaktorer
+                    $scope.endreError = false;
             }
 
             $scope.slettArbeidsforhold = function(af) {
@@ -78,11 +90,15 @@ angular.module('nav.arbeidsforhold.controller',[])
             }
 
             $scope.endreArbeidsforhold = function(index) {
-                if($scope.aktivRedigeringsIndex == -1 && $scope.arbeidsforholdaapen == false) {
-                    $scope.aktivRedigeringsIndex = index;
+                if($scope.posisjonForArbeidsforholdUnderRedigering == -1 && $scope.arbeidsforholdaapen == false) {
+                    $scope.posisjonForArbeidsforholdUnderRedigering = index;
                     $scope.arbeidsforholdaapen = false;
+
+                    //todo refaktorer
+                    $scope.endreError = false;
                 } else {
-                    //legg ut en ikke lagret beskjed, må avbryte eller lagre
+                    //todo refaktorer
+                    $scope.endreError = true;
                 }
                 
             }
@@ -111,6 +127,32 @@ angular.module('nav.arbeidsforhold.controller',[])
         	}
 
 
+            $scope.$watch("arbeidsgiver.varighetFra", function(nyVerdi, gammelVerdi) {
+                if($scope.arbeidsgiver && ($scope.arbeidsgiver.varighetTil <= $scope.arbeidsgiver.varighetFra)) {
+                    $scope.arbeidsgiver.varighetTil = '';
+                    $scope.datoError = true;
+                } else {
+                    $scope.datoError = false;
+                }
+            });
+
+            $scope.$watch("arbeidsgiver.varighetTil", function(nyVerdi, gammelVerdi) {
+                if($scope.arbeidsgiver && ($scope.arbeidsgiver.varighetTil <= $scope.arbeidsgiver.varighetFra)) {
+                    $scope.arbeidsgiver.varighetTil = '';
+                    $scope.datoError = true;
+                } else {
+                    $scope.datoError = false;
+                }
+            });
+
+            $scope.validateTilFraDato = function(af) {
+                if(af && (af.varighetTil <= af.varighetFra)) {
+                   af.varighetTil = '';
+                    $scope.datoError = true;
+                } else {
+                    $scope.datoError = false;
+                }
+            }
 
             landService.get().$promise.then(function (result) {
                 $scope.landService = result;
