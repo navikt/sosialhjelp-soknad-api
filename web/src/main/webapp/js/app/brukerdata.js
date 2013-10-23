@@ -110,17 +110,6 @@ angular.module('app.brukerdata', ['app.services'])
         }
     }])
 
-    .controller('SoknadDataCtrl', function ($scope, $routeParams, $location, $timeout, soknadService) {
-        $scope.soknadData = soknadService.get({param: $routeParams.soknadId});
-
-        $scope.$on("OPPDATER_OG_LAGRE", function (e, data) {
-            $scope.soknadData.fakta[data.key] = {"soknadId": $scope.soknadData.soknadId, "key": data.key, "value": data.value};
-            var soknadData = $scope.soknadData;
-            soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
-            console.log("lagre: " + soknadData);
-        });
-    })
-
     .controller('TekstCtrl', function ($scope, tekstService) {
         $scope.tekster = tekstService.get({side: 'Dagpenger'});
     })
@@ -258,6 +247,17 @@ angular.module('app.brukerdata', ['app.services'])
             })
         }
 
+    })
+
+    .controller('SoknadDataCtrl', function ($scope, $routeParams, $location, $timeout, soknadService) {
+        $scope.soknadData = soknadService.get({param: $routeParams.soknadId});
+
+        $scope.$on("OPPDATER_OG_LAGRE", function (e, data) {
+            $scope.soknadData.fakta[data.key] = {"soknadId": $scope.soknadData.soknadId, "key": data.key, "value": data.value};
+            var soknadData = $scope.soknadData;
+            soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
+            console.log("lagre: " + soknadData);
+        });
     })
 
     .directive('modFaktum', function () {
