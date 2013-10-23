@@ -4,7 +4,6 @@ angular.module('nav.verneplikt',[])
         $scope.sidedata = {navn: 'vernepliktig'};
 
         $scope.validerVerneplikt = function(form) {
-            console.log(form.$error);
             $scope.validateForm(form.$invalid);
         }
     }]);

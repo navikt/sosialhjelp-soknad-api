@@ -4,7 +4,6 @@ angular.module('nav.utdanning',[])
         $scope.sidedata = {navn: 'utdanning'};
 
         $scope.validerUtdanning = function(form) {
-            console.log(form.$error);
             $scope.validateForm(form.$invalid);
         }
 

@@ -71,7 +71,6 @@ ytelser.ferdig
 ytelser.stonadFikser
 ytelser.sporsmal
 ytelser.informasjon
-ytelser.feilmelding
 ytelser.offentligTjenestepensjon
 ytelser.privatTjenestepensjon
 ytelser.vartpenger
@@ -94,6 +93,7 @@ ytelser.annenYtelseType.feilmelding
 ytelser.annenYtelseUtbetaler
 ytelser.annenYtelseUtbetaler.feilmelding
 ytelser.harValgtYtelse.feilmelding
+ytelser.minstEnAvhuket.feilmelding
 
 avbryt.slett
 
