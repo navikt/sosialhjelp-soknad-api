@@ -16,3 +16,4 @@ public interface Kodeverk extends Adressekodeverk {
 
     List<String> getAlleLandkoder();
 }
+	

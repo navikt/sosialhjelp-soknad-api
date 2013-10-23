@@ -2,7 +2,7 @@
 
 /** jasmine spec */
 
-describe('Controllers', function() {
+describe('GrunnlagsdataController', function() {
 
 	var $scope;
 	var $controller;
@@ -58,3 +58,4 @@ describe('Controllers', function() {
 		});
 	});
 });
+

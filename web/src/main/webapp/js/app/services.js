@@ -34,8 +34,12 @@ angular.module('app.services',['ngResource'])
 })
 
 .factory('tpsService', function($resource){
-        return $resource('/sendsoknad/rest/soknad/:soknadId/personalia');
-    })
+    return $resource('/sendsoknad/rest/soknad/:soknadId/personalia');
+})
+
+.factory('landService', function($resource) {
+    return $resource('/sendsoknad/rest/soknad/kodeverk/landliste');
+})
 
 
 .factory('StartSoknadService', ['data', '$resource', '$q', function(data, $resource, $q) {
