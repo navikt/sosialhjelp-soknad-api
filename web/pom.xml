@@ -72,11 +72,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>sendsoknad-db</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-business</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -178,6 +173,13 @@
             <artifactId>commons-lang3</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+        </dependency>
+
+        <!-- Avhengigheter med scope runtime -->
+
         <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-log-filter</artifactId>
@@ -387,7 +389,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>sendsoknad-db</artifactId>
+            <artifactId>sendsoknad-business</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
