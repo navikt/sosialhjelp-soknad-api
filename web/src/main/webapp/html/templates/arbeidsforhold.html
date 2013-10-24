@@ -1,331 +1,140 @@
-<form name="arbeidsforholdForm" data-ng-controller="ValidationCtrl" novalidate>
+<div class="skjemaramme" data-ng-controller="ModusCtrl">
     <div data-ng-controller="ArbeidsforholdCtrl">
-        <!-- Bruke liste og ikke objekt -->
+        <span cmstekster="arbeidsforhold.informasjon"></span>
+
+        <style>
+        /*.oddArbeidsforhold{background-color: grey};*/
+        </style>
+ 		<span data-ng-show="endreError" style="color:red">Du må lagre eller avbryte skjemaet du holder på med før du kan endre et annet</span>
         <ul>
-            <li data-ng-repeat="af in arbeidsforhold">
-                <label for="arbeidsgiver{{ $index }}">Navn på arbeidsgiver</label>
-                <input id="arbeidsgiver{{ $index }}" type="text" data-ng-model="af.arbeidsgiver.value" lagre-arbeidsforhold>
+            <li ng-class-odd="'oddArbeidsforhold'" data-ng-repeat="af in arbeidsforhold">
+                <div data-ng-show="posisjonForArbeidsforholdUnderRedigering != $index">
+	                {{ af.navn }}<br/>
+	                {{ af.land }}<br/>
+	                {{ af.varighetFra | date:'d.MM.yy'}}<br/>
+	                {{ af.varighetTil | date:'d.MM.yy'}}<br/>
+	                {{ af.sluttaarsak }}<br/>
+	                <a href data-ng-click="slettArbeidsforhold(af)">Slett</a>
+	                <a href data-ng-click="endreArbeidsforhold($index)">Endre</a>
+                </div>
+
+                <div data-ng-show="posisjonForArbeidsforholdUnderRedigering == $index">
+                <form name="endreArbeidsforholdForm" data-ng-submit="lagreEndretArbeidsforhold(af)">
+		        	<label for="arbeidsgiver_navn">Navn på arbeidsgiver</label>
+			        <input id="arbeidsgiver_navn" type="text" data-ng-model="af.navn" required/>
+			        
+			        <br/>
+			        <br/>
+			        
+			        <label for="arbeidsgiver_land">Land</label>
+			        <select id="arbeidsgiver_land" data-ng-model="af.land" data-ng-options="item for item in landService.result" required>
+			        	<option value="">--Velg land--</option>
+			        </select>
+			        
+			        <br/>
+			        <br/>
+			        
+			        <div class="varighet">
+		                <label>Fra:</label>
+		                <input type="text" name="varighetFra" ui-date ui-date-format ng-model="af.varighetFra" data-ng-change="validateTilFraDato(af)"  required >
+		                <label>Til:</label>
+		                <span data-ng-show="datoError" style="color:red">Tildato må være etter fradato</span>
+		                <input type="text" name="varighetTil" ui-date ui-date-format ng-model="af.varighetTil" data-ng-change="validateTilFraDato(af)" required >
+			        </div>
+			        
+			        <br/>
+			        <br/>
+			        
+			        <label>Årsaken til at du sluttet i jobben</label>
+			        <br/>
+			        <select id="arbeidsgiver_sluttaarsak" type="text" data-ng-model="af.sluttaarsak" required>
+			        	<option value="">--Velg sluttårsak--</option>
+			        	<option value="sagtOppSelv">Sagt opp selv</option>
+			        	<option value="sagtOppAvArbeidsgiver">Sagt opp av arbeidsgiver</option>
+			        	<option value="permitert">Permittert</option>s
+			        	<option value="avskjediget">Avskjediget</option>
+			        	<option value="konkurs">Konkurs</option>
+			        	<option value="kontraktUtgaat">Kontrakt er gått ut</option>
+			        	<option value="redusertArbeidstid">Redusert arbeidstid med mer enn 50% (40% for fiskere)</option>
+		        	</select>
+			        
+			        <br/>
+			        <br/>
+			        
+			        <input cmstekster="arbeidsforhold.lagre" type="submit" id="arbeidsgiverLagre"></input>
+			        <a href cmstekster="arbeidsforhold.avbryt" data-ng-click="avbrytEndringAvArbeidsforhold()"></a>
+		        </form>
+                </div>
             </li>
-        </ul>
+        </ul> 
 
-        <p>{{ tekster.arbeidsforhold_informasjon }}</p>
-        <button class="knapp-hoved" legg-til-arbeidsforhold>
-            {{ tekster.arbeidsforhold_knapp_legg_til }}
-        </button>
+        <form name="nyttArbeidsforholdForm" data-ng-show="arbeidsforholdaapen" data-ng-submit="lagreArbeidsforhold()">
+        	<label for="arbeidsgiver_navn">Navn på arbeidsgiver</label>
+	        <input id="arbeidsgiver_navn" type="text" data-ng-model="arbeidsgiver.navn" required/>
+	        
+	        <br/>
+	        <br/>
+	        
+	        <label for="arbeidsgiver_land">Land</label>
+	        <select id="arbeidsgiver_land" data-ng-model="arbeidsgiver.land" data-ng-options="item for item in landService.result" required>
+	        	<option value="">--Velg land--</option>
+	        </select>
+	        
+	        <br/>
+	        <br/>
+	        
+	        <div class="varighet">
+                <label>Fra:</label>
+                <input type="text" name="varighetFra" ui-date ui-date-format ng-model="arbeidsgiver.varighetFra" required >
+                <label>Til:</label> 
+                <span data-ng-show="datoError" style="color:red">Tildato må være etter fradato</span>
+                <input type="text" name="varighetTil" ui-date ui-date-format ng-model="arbeidsgiver.varighetTil" required >
+	        </div>
+	        
+	        <br/>
+	        <br/>
+	        
+	        <label>Årsaken til at du sluttet i jobben</label>
+	        <br/>
+	        <select id="arbeidsgiver_sluttaarsak" type="text" data-ng-model="arbeidsgiver.sluttaarsak" required>
+	        	<option value="">--Velg sluttårsak--</option>
+	        	<option value="sagtOppSelv">Sagt opp selv</option>
+	        	<option value="sagtOppAvArbeidsgiver">Sagt opp av arbeidsgiver</option>
+	        	<option value="permitert">Permittert</option>s
+	        	<option value="avskjediget">Avskjediget</option>
+	        	<option value="konkurs">Konkurs</option>
+	        	<option value="kontraktUtgaat">Kontrakt er gått ut</option>
+	        	<option value="redusertArbeidstid">Redusert arbeidstid med mer enn 50% (40% for fiskere)</option>
+        	</select>
+	       
+	        <br/>
+	        <br/>
+	       
+	        <input cmstekster="arbeidsforhold.lagre" type="submit" id="arbeidsgiverLagre"></input>
+	        <a href cmstekster="arbeidsforhold.avbryt" data-ng-click="avbrytArbeidsforhold()"></a>
+        </form>
 
-        <a href data-ng-click="nyttArbeidsforhold($event)"> Legg til nytt arbeidsforhold</a>
-        <input id="ikkeJobbet" type="checkbox" data-ng-model="soknadData.fakta.arbeidsforholdIkkeJobbet.value"
-               name="arbeidsforholdIkkeJobbet" mod-faktum boolean-verdi/>
-        <label for="ikkeJobbet"> {{ tekster.arbeidsforhold_ikke_jobbet }}</label>
+        <form name="arbeidsforholdForm" novalidate>
+	        <a href data-ng-show="kanLeggeTilArbeidsforhold()" data-ng-click="nyttArbeidsforhold($event)"> Legg til nytt arbeidsforhold</a>
+
+	        <br/>
+	        <br/>
+	        <br/>
+	        <br/>
+			
+			<div data-ng-show="harIkkeLagretArbeidsforhold()">
+				<navcheckbox data-ng-model="soknadData.fakta.harIkkeJobbet.value"
+                      modus="data.redigeringsModus"
+                      inputname="harIkkeJobbet" label='arbeidsforhold.harIkkeJobbet'
+                      endret="toggleRedigeringsmodus()"/>
+            </div>
+
+            <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
+                    data-ng-click="validerArbeidsforhold(arbeidsforholdForm)"
+                    cmstekster="arbeidsforhold.ferdig"/>
+
+	        <sporsmalblokk/>
+
+        </form>
     </div>
-
-<!--<div data-ng-controller="ArbeidsforholdCtrl">
-    <ul>
-        <li data-ng-repeat="af in arbeidsforhold" data-ng-form="arbeidsforholdsForm" name="arbeidsforholdsForm">
-            <label>Arbeidsgivers navn:</label>
-            <input type="text" name="arbeidsgivernavn" data-ng-model="af.arbeidsgiverNavn" required />
-            <span class="error" data-ng-show="arbeidsforholdForm.arbeidsgivernavn.$error.required">{{feilmeldinger.paakreves}} </span>
-            <label>Varighet</label>
-            <div class="varighet"  >
-                <label class="label-sammelinje">Fra:</label>
-                <input type="text" name="varighetFra" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="af.varighetFra" required >
-
-                <span class="error" data-ng-show="arbeidsforholdForm.varighetFra.$error.required">{{feilmeldinger.paakreves}} </span>
-                {{af.varighetFra | date:'d MMM yyyy'}}
-            </div>
-            <div class="varighet">
-                <label class="label-sammelinje">Til:</label>
-                <input type="text" name="varighetTil" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="$parent.af.varighetTil" datotil fra-dato="af.varighetFra" til-dato="$parent.af.varighetTil">
-                <span class="error" data-ng-show="arbeidsforholdForm.varighetTil.$error.framindre">{{feilmeldinger.fratil}}</span>
-                {{$parent.af.varighetTil | date:'d MMM yyyy'}}
-            </div>
-
-            <div>
-                <label>Land</label>
-                <select name="land" data-ng-model="af.valgtLand" data-ng-options="valgtland.name as valgtland.name for valgtland in land"></select>
-            </div>
-
-
-            <label> Velg sluttårsak: </label>
-            <select name="aarsaknavn" data-ng-model="af.sluttaarsaken" data-ng-options=" aarsak.navn for aarsak in af.sluttaarsak" required></select>
-            <span class="error" data-ng-show="arbeidsforholdForm.aarsaknavn.$error.required">{{feilmeldinger.paakreves}} </span>
-
-            <div class="sluttaarsak" data-ng-show="af.sluttaarsaken.id === 1">
-                &lt;!&ndash; Sagt opp selv&ndash;&gt;
-					<div class="resultatSluttaarsak">
-						<div class="varighet">
-							<p>Sa du opp som følge av innskrankinger? </p>
-							<input class="sendsoknad-radio" type="radio" name="oppsigelseSelvInnskranking" data-ng-model="af.oppsigelseSelvInnskranking" value="ja" required/> Ja
-							<input class="sendsoknad-radio" type="radio" name="oppsigelseSelvInnskranking" data-ng-model="af.oppsigelseSelvInnskranking" value="nei" required/> Nei
-							<span class="error" data-ng-show="arbeidsforholdForm.oppsigelseSelvInnskranking.$error.required"> {{feilmedlinger.paakreves}}</span>
-
-							<div data-ng-show="af.oppsigelseSelvInnskranking == 'ja'">
-								<p> Trenger dokumentasjon </p>
-							</div>
-							<div data-ng-show="af.oppsigelseSelvInnskranking == 'nei'">
-								<label>Oppsigelsestid</label>
-								<div class="varighet">
-									<label class="label-sammelinje">Fra:</label>
-
-									<input type="text" name="oppsigelseSelvFra" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="af.oppsigelseSelvFra" required >
-
-									<span class="error" data-ng-show="arbeidsforholdForm.oppsigelseSelvFra.$error.required">{{feilmeldinger.paakreves}} </span>
-									{{af.oppsigelseSelvFra | date:'d MMM yyyy'}}
-								</div>
-								<div class="varighet">
-									<label class="label-sammelinje">Til:</label>
-
-									<input type="text" name="oppsigelseSelvTil" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="$parent.af.oppsigelseSelvTil" datotil fra-dato="af.oppsigelseSelvFra" til-dato="$parent.af.oppsigelseSelvTil">
-									<span class="error" data-ng-show="arbeidsforholdForm.oppsigelseSelvTil.$error.framindre">{{feilmeldinger.fratil}}</span>
-									{{$parent.af.oppsigelseSelvTil | date:'d MMM yyyy'}}
-								</div>
-
-								<div class="varighet">
-									<p>Har du lønn eller krav på lønn?</p>
-									<input  class="sendsoknad-radio" data-ng-model="af.oppsigelseSelvLonn" type="radio" name="oppsigelseSelvLonn" value="ja" required/> Ja
-									<input  class="sendsoknad-radio" data-ng-model="af.oppsigelseSelvLonn" type="radio" name="oppsigelseSelvLonn" value="nei" /> Nei
-									<span class="error" data-ng-show="arbeidsforholdForm.oppsigelseSelvLonn.$error.required">{{feilmeldinger.paakreves}} </span>
-
-									<div class="varighet" data-ng-show="af.oppsigelseSelvLonn == 'ja'">
-										<div class="varighet">
-											<label>Fra hvilken dato har du krav på lønn?</label>
-											<label class="label-sammelinje">Fra:</label>
-											<input type="text" name="oppsigelseSelvLonnFra" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="af.oppsigelseSelvLonnFra" required >
-											<span class="error" data-ng-show="arbeidsforholdForm.oppsigelseSelvLonnFra.$error.required">{{feilmeldinger.paakreves}} </span>
-											{{af.oppsigelseSelvLonnFra | date:'d MMM yyyy'}}
-										</div>
-										<div class="varighet">
-											<label class="label-sammelinje">Til:</label>
-											<input type="text" name="oppsigelseSelvLonnTil" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="$parent.af.oppsigelseSelvLonnTil" datotil fra-dato="af.oppsigelseSelvLonnFra" til-dato="$parent.af.oppsigelseSelvLonnTil">
-											<span class="error" data-ng-show="arbeidsforholdForm.oppsigelseSelvLonnTil.$error.framindre">{{feilmeldinger.fratil}}</span>
-											{{$parent.af.oppsigelseSelvLonnTil | date:'d MMM yyyy'}}
-										</div>
-									</div>
-
-								</div>
-							</div>
-
-
-						</div>
-					</div>
-				</div>
-				<div class="sluttaarsak" data-ng-show="af.sluttaarsaken.id === 2">
-					&lt;!&ndash; Sagt opp arbeidsgiver &ndash;&gt;
-					<div class="resultatSluttaarsak">
-						<div class="varighet">
-							<label>Oppsigelsestid:</label>
-							<label class="label-sammelinje">Fra:</label>
-							<input type="text" name="oppsigelseFra" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="af.oppsigelseFra" required >
-
-							<span class="error" data-ng-show="arbeidsforholdForm.oppsigelseFra.$error.required">{{feilmeldinger.paakreves}} </span>
-							{{af.oppsigelseFra | date:'d MMM yyyy'}}
-						</div>
-						<div class="varighet">
-							<label class="label-sammelinje">Til:</label>
-							<input type="text" name="oppsigelseTil" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="$parent.af.oppsigelseTil" datotil fra-dato="af.oppsigelseFra" til-dato="$parent.af.oppsigelseTil">
-							<span class="error" data-ng-show="arbeidsforholdForm.oppsigelseTil.$error.framindre">{{feilmeldinger.fratil}}</span>
-							{{$parent.af.oppsigelseTil | date:'d MMM yyyy'}}
-						</div>
-						<div class="varighet">
-							<p>Har du fått tilbud om å fortsette hos arbeidsgiver et annet sted i Norge? </p>
-							<input  class="sendsoknad-radio" data-ng-model="af.oppsigelseNyttTilbud" type="radio" name="oppsigelseNyttTilbud" value="ja" required/> Ja
-							<input  class="sendsoknad-radio" data-ng-model="af.oppsigelseNyttTilbud" type="radio" name="oppsigelseNyttTilbud" value="nei" /> Nei
-							<span class="error" data-ng-show="arbeidsforholdForm.oppsigelseNyttTilbud.$error.required">{{feilmeldinger.paakreves}} </span>
-
-						</div>
-						<div class="varighet" data-ng-show="af.oppsigelseNyttTilbud == 'ja'">
-							<p>Informasjon om forlenget ventetid på 8 uker </p>
-						</div>
-
-						<div class="varighet" data-ng-show="af.oppsigelseNyttTilbud == 'nei' || af.oppsigelseNyttTilbud == 'ja'">
-							<p>Har du lønn eller krav på lønn?</p>
-							<input  class="sendsoknad-radio" data-ng-model="af.oppsigelseLonn" type="radio" name="oppsigelseLonn" value="ja" required/> Ja
-							<input  class="sendsoknad-radio" data-ng-model="af.oppsigelseLonn" type="radio" name="oppsigelseLonn" value="nei" /> Nei
-							<span class="error" data-ng-show="arbeidsforholdForm.oppsigelseLonn.$error.required">{{feilmeldinger.paakreves}} </span>
-
-							<div class="varighet" data-ng-show="af.oppsigelseLonn == 'ja'">
-								<div class="varighet">
-									<label>Fra hvilken dato har du krav på lønn?</label>
-									<label class="label-sammelinje">Fra:</label>
-									<input type="text" name="oppsigelseLonnFra" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="af.oppsigelseLonnFra" required >
-
-									<span class="error" data-ng-show="arbeidsforholdForm.oppsigelseLonnFra.$error.required">{{feilmeldinger.paakreves}} </span>
-									{{af.oppsigelseLonnFra | date:'d MMM yyyy'}}
-								</div>
-								<div class="varighet">
-									<label class="label-sammelinje">Til:</label>
-									<input type="text" name="oppsigelseLonnTil" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="$parent.af.oppsigelseLonnTil" datotil fra-dato="af.oppsigelseLonnFra" til-dato="$parent.af.oppsigelseLonnTil">
-									<span class="error" data-ng-show="arbeidsforholdForm.oppsigelseLonnTil.$error.framindre">{{feilmeldinger.fratil}}</span>
-									{{$parent.af.oppsigelseLonnTil | date:'d MMM yyyy'}}
-								</div>
-							</div>
-						</div>
-					</div>
-
-				</div>
-				<div class="sluttaarsak" data-ng-show="af.sluttaarsaken.id === 3">
-					&lt;!&ndash; Avskjediget&ndash;&gt;
-					<div class="resultatSluttaarsak">
-						<div class="varighet">
-							<p>Fra når er du avskjediget?</p>
-							<input type="text" name="avskjedighetFra" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="af.avskjedighetFra" required >
-							<span class="error" data-ng-show="arbeidsforholdForm.avskjedighetFra.$error.required">{{feilmeldinger.paakreves}} </span>
-						</div>
-
-						<div class="varighet">
-							<p>Har du lønn eller krav på lønn?</p>
-							<input  class="sendsoknad-radio" data-ng-model="af.avskjedighetLonn" type="radio" name="kontraktutgaattLonn" value="ja" required/> Ja
-							<input  class="sendsoknad-radio" data-ng-model="af.avskjedighetLonn" type="radio" name="avskjedighetLonn" value="nei" /> Nei
-							<span class="error" data-ng-show="arbeidsforholdForm.avskjedighetLonn.$error.required">{{feilmeldinger.paakreves}} </span>
-						</div>
-
-						<div class="varighet" data-ng-show="af.avskjedighetLonn == 'ja'">
-							<label>Dato:</label>
-							<div class="varighet"  >
-								<label class="label-sammelinje">Fra:</label>
-								<input type="text" name="avskjedighetLonnFra" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="af.avskjedighetLonnFra" required >
-
-								<span class="error" data-ng-show="arbeidsforholdForm.avskjedighetLonnFra.$error.required">{{feilmeldinger.paakreves}} </span>
-								{{af.avskjedighetLonnFra | date:'d MMM yyyy'}}
-							</div>
-							<div class="varighet">
-								<label class="label-sammelinje">Til:</label>
-								<input type="text" name="avskjedighetLonnTil" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="$parent.af.avskjedighetLonnTil" datotil fra-dato="af.avskjedighetLonnFra" til-dato="$parent.af.avskjedighetLonnTil">
-								<span class="error" data-ng-show="arbeidsforholdForm.avskjedighetLonnTil.$error.framindre">{{feilmeldinger.fratil}}</span>
-								{{$parent.af.avskjedighetLonnTil | date:'d MMM yyyy'}}
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="sluttaarsak" data-ng-show="af.sluttaarsaken.id === 4">
-					&lt;!&ndash; Permitert&ndash;&gt;
-					<div class="resultatSluttaarsak">
-						<label>Permiteringsperiode:</label>
-
-						<div class="varighet">
-							<label class="label-sammelinje">Fra:</label>
-							<input type="text" name="permiteringFra" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="af.permiteringFra" required >
-
-							<span class="error" data-ng-show="arbeidsforholdForm.permiteringFra.$error.required">{{feilmeldinger.paakreves}} </span>
-							{{af.permiteringFra | date:'d MMM yyyy'}}
-						</div>
-						<div class="varighet">
-							<label class="label-sammelinje">Til:</label>
-							<input type="text" name="permiteringTil" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="$parent.af.permiteringTil" datotil fra-dato="af.permiteringFra" til-dato="$parent.af.permiteringTil">
-							<span class="error" data-ng-show="arbeidsforholdForm.permiteringTil.$error.framindre">{{feilmeldinger.fratil}}</span>
-							{{$parent.af.permiteringTil | date:'d MMM yyyy'}}
-
-						</div>
-
-						<div class="varighet">
-							<input class="sendsoknad-check"type="checkbox" name="permiteringVetikke" value="vetikke" data-ng-model="af.permiteringVetikke" ng-click="vetIkke()" > Vet ikke
-						</div>
-						<div class="prosent varighet">
-							<p>I hvilken grad er du permitert?</p>
-							<input type="text" name="permiteringProsent" data-ng-model="af.permiteringProsent"  required prosent />
-							<span class="error" data-ng-show="arbeidsforholdForm.permiteringProsent.$error.required">{{feilmeldinger.paakreves}} </span> %
-							<span class="error" data-ng-show="arbeidsforholdForm.permiteringProsent.$error.prosent">{{feilmeldinger.prosent}} </span>
-
-							<div ng-show="af.permiteringProsent <= 50">
-								<p>Du har ikke rett til å søke om dagpenger hvis du ikke er permitert mer enn 50%. </p>
-							</div>
-
-							<div class="varigeht" ng-show="af.permiteringProsent > 50">
-								<p>Har du hatt ferie i permiteringsperioden?</p>
-								<input  class="sendsoknad-radio" data-ng-model="af.permiteringFerie" type="radio" name="permiteringFerie" value="ja" required/> Ja
-								<input  class="sendsoknad-radio" data-ng-model="af.permiteringFerie" type="radio" name="permiteringFerie" value="nei" /> Nei
-
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="sluttaarsak" data-ng-show="af.sluttaarsaken.id === 5">
-					&lt;!&ndash; Konkurs&ndash;&gt;
-					<div class="resultatSluttaarsak">
-						<div class="varighet">
-							<p>Hente org.nr på et vis </p>
-							<label>Bostyres navn:</label>
-							<input name="konkursBostyrersnavn" data-ng-model="af.konkursBostyrersnavn" required/>
-							<span class="error" data-ng-show="arbeidsforholdForm.konkursBostyrersnavn.$error.required">{{feilmeldinger.paakreves}} </span>
-						</div>
-
-						<div class="varighet">
-							<p>Har du søkt, eller skal du søke lønnsgarantiordningen?</p>
-							<input  class="sendsoknad-radio" data-ng-model="af.konkursLonnsgarantiordning" type="radio" name="konkursLonnsgarantiordning" value="ja" required/> Ja
-							<input  class="sendsoknad-radio" data-ng-model="af.konkursLonnsgarantiordning" type="radio" name="konkursLonnsgarantiordning" value="nei" /> Nei
-							<span class="error" data-ng-show="arbeidsforholdForm.konkursLonnsgarantiordning.$error.required">{{feilmeldinger.paakreves}} </span>
-						</div>
-					</div>
-				</div>
-
-				<div class="sluttaarsak" data-ng-show="af.sluttaarsaken.id === 6">
-					&lt;!&ndash; Redusert arbeidstid med mer enn 50% + fiskere&ndash;&gt;
-					<div class="resultatSluttaarsak">
-						<div class="varighet">
-							<p> Redusert arbeidstid fra dato: </p>
-							<input type="text" name="redusertarbeidstidFra" data-ng-model="af.redusertarbeidstidFra" ui-date="{dateFormat:'dd.mm.yy'}" required />
-							<span class="error" data-ng-show="arbeidsforholdForm.redusertarbeidstidFra.$error.required">{{feilmeldinger.paakreves}} </span>
-						</div>
-
-						<div class="varighet">
-							<p> Har du fått tilbud om å fortsette hos arbeidsgiver annet sted i Norge? </p>
-							<input  class="sendsoknad-radio" data-ng-model="af.redusertarbeidstidTilbud" type="radio" name="redusertarbeidstidTilbud" value="ja" required/> Ja
-							<input  class="sendsoknad-radio" data-ng-model="af.redusertarbeidstidTilbud" type="radio" name="redusertarbeidstidTilbud" value="nei" /> Nei
-							<span class="error" data-ng-show="arbeidsforholdForm.redusertarbeidstidTilbud.$error.required">{{feilmeldinger.paakreves}} </span>
-						</div>
-						<div class="varighet">
-							<p> Har du krav på lønn? </p>
-							<input  class="sendsoknad-radio" data-ng-model="af.redusertarbeidstidLonn" type="radio" name="redusertarbeidstidLonn" value="ja" required/> Ja
-							<input  class="sendsoknad-radio" data-ng-model="af.redusertarbeidstidLonn" type="radio" name="redusertarbeidstidLonn" value="nei" /> Nei
-							<span class="error" data-ng-show="arbeidsforholdForm.redusertarbeidstidLonn.$error.required">{{feilmeldinger.paakreves}} </span>
-
-							<div class="varighet" data-ng-show="af.redusertarbeidstidLonn == 'ja'">
-								<div class="varighet">
-									<label>Fra hvilken dato har du krav på lønn?</label>
-									<label class="label-sammelinje">Fra:</label>
-									<input type="text" name="redusertarbeidstidLonnFra" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="af.redusertarbeidstidLonnFra" required >
-									<span class="error" data-ng-show="arbeidsforholdForm.redusertarbeidstidLonnFra.$error.required">{{feilmeldinger.paakreves}} </span>
-									{{af.redusertarbeidstidLonnFra | date:'d MMM yyyy'}}
-								</div>
-								<div class="varighet">
-									<label class="label-sammelinje">Til:</label>
-									<input type="text" name="redusertarbeidstidLonnTil" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="$parent.af.redusertarbeidstidLonnTil" datotil fra-dato="af.redusertarbeidstidLonnFra" til-dato="$parent.af.redusertarbeidstidLonnTil">
-									<span class="error" data-ng-show="arbeidsforholdForm.redusertarbeidstidLonnTil.$error.framindre">{{feilmeldinger.fratil}}</span>
-									{{$parent.af.redusertarbeidstidLonnTil | date:'d MMM yyyy'}}
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="sluttaarsak" data-ng-show="af.sluttaarsaken.id === 7">
-					&lt;!&ndash; Kontrakt Utgått&ndash;&gt;
-					<div class="resultatSluttaarsak">
-						<div class="varighet">
-							<p> Når utgikk kontrakten? </p>
-							<input type="text" name="kontraktFra" ui-date="{dateFormat:'dd.mm.yy'}" ng-model="af.kontraktFra" required >
-
-							<span class="error" data-ng-show="arbeidsforholdForm.kontraktFra.$error.required">{{feilmeldinger.paakreves}} </span>
-							{{af.kontraktFra | date:'d MMM yyyy'}}
-						</div>
-						<div class="varighet">
-							<p>Har du fått tilbud om å fortsette på ny kontrakt eller annet arbeid hos arbeidsgiver? </p>
-							<input  class="sendsoknad-radio" data-ng-model="af.kontraktNy" type="radio" name="kontraktNy" value="ja" required/> Ja
-							<input  class="sendsoknad-radio" data-ng-model="af.kontraktNy" type="radio" name="kontraktNy" value="nei" /> Nei
-							<span class="error" data-ng-show="arbeidsforholdForm.kontraktNy.$error.required">{{feilmeldinger.paakreves}} </span>
-						</div>
-					</div>
-				</div>
-				<div class="sluttaarsak" data-ng-show="af.sluttaarsaken.id === 8">
-					<p> Hvordan skal denne håndteres? </p>
-				</div>
-			</li>
-			<li>
-				<br/>
-				<a href data-ng-click="arbeidsforhold.splice(arbeidsforhold.length-1, 1)"> Fjern</a>
-				<a href data-ng-click="nyttArbeidsforhold($event)"> Legg til nytt arbeidsforhold</a>
-			</li>
-		</ul>
-	</div>-->
-</form>
+</div>

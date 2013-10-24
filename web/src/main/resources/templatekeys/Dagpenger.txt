@@ -62,9 +62,16 @@ personalia.postboks
 personalia.midlertidig_adresse_utland
 personalia.midlertidig_adresse_norge
 
-arbeidsforhold_informasjon
-arbeidsforhold_knapp_legg_til
-arbeidsforhold_ikke_jobbet
+arbeidsforhold.informasjon
+arbeidsforhold.knapp_legg_til
+arbeidsforhold.harIkkeJobbet
+
+arbeidsforhold.sporsmal
+arbeidsforhold.feilmelding
+arbeidsforhold.tittel
+arbeidsforhold.ferdig
+arbeidsforhold.avbryt
+arbeidsforhold.lagre
 
 ytelser.tittel
 ytelser.ferdig

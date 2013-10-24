@@ -103,7 +103,6 @@ describe('directives', function () {
     });
 });
 
-
 // Må løse problem med å hente templates i testene før vi kan teste direktiv som bruker templateUrl
 /*describe('directives', function() {
  var scope, element, form, radioknappen, $httpBackend;

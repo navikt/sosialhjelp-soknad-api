@@ -22,7 +22,6 @@ module.exports = function (config) {
             '../../../main/webapp/js/app/directives/**/*.js',
             '../../../main/webapp/js/app/controllers/**/*.js',
             '../../../test/js/test/unit/*.js',
-
             '../../../main/webapp/js/app/directives/**/*.html'
         ],
 
