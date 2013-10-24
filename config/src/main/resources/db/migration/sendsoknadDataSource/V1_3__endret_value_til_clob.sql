@@ -1,0 +1,1 @@
+ALTER TABLE SoknadBrukerData MODIFY (VALUE CLOB);
