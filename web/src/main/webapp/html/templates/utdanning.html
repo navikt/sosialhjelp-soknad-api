@@ -9,11 +9,11 @@
                 <p class='spm' cmstekster="utdanning.sporsmal"/>
 
                 <div data-ng-show="hvisIRedigeringsmodus()">
-                    <navradio model='soknadData.fakta.utdanning.value' value='ikkeUtdanning' name='utdanning'
+                    <navradio data-ng-model='soknadData.fakta.utdanning.value' value='ikkeUtdanning' inputname='utdanning'
                               label='utdanning.svar.ikkeUtdanning'/>
-                    <navradio model='soknadData.fakta.utdanning.value' value='avsluttetUtdanning' name='utdanning'
+                    <navradio data-ng-model='soknadData.fakta.utdanning.value' value='avsluttetUtdanning' inputname='utdanning'
                               label='utdanning.svar.avsluttetUtdanning'/>
-                    <navradio model='soknadData.fakta.utdanning.value' value='underUtdanning' name='utdanning'
+                    <navradio data-ng-model='soknadData.fakta.utdanning.value' value='underUtdanning' inputname='utdanning'
                               label='utdanning.svar.underUtdanning'/>
 
 
@@ -74,9 +74,17 @@
                         <span data-ng-show='hvisUnderUtdanning()' cmstekster="utdanning.svar.underUtdanning"/>
                 </div>
 
+
             </div>
-            <sporsmalblokk nokkel="utdanning" redigerings-modus="data.redigeringsModus" form="utdanningForm"
-                           nesteside="ytelser"/>
+            <div data-ng-show="hvisIkkeFormValiderer()">
+                <feilmeldinger form="utdanningForm" nokkel="utdanning"/>
+            </div>
+
+            <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
+                    data-ng-click="validerUtdanning(utdanningForm)"
+                    cmstekster="utdanning.ferdig"/>
+
+            <sporsmalblokk/>
         </div>
     </form>
 </div>

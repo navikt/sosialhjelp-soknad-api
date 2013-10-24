@@ -1,5 +1,5 @@
 <div>
     <input class="sendsoknad-radio" id="{{ label }}" data-ng-model="model" type="radio" value="{{ value }}"
-           name="{{ name }}" mod-faktum required/>
+           name="{{ inputname }}" mod-faktum ng-required="hvisSynlig()"/>
     <label for='{{ label }}' class='svar-alt' cmstekster="{{ label }}"/>
 </div>

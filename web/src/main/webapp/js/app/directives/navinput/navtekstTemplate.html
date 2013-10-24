@@ -1,4 +1,14 @@
 <div>
-    <label for='{{ label }}' class='svar-alt' cmstekster="{{ label }}"/>
-    <input id="{{ label }}" data-ng-model="model" type="text" value="{{ value }}" name="{{ inputname }}" mod-faktum required/>
+    <div data-ng-show='hvisIRedigeringsmodus()'>
+        <label for='{{ label }}' class='svar-alt' cmstekster="{{ label }}"/>
+        <input id="{{ label }}" data-ng-model="model" type="text" value="{{ value }}" name="{{ inputname }}" mod-faktum data-ng-required="hvisSynlig()"/>
+    </div>
+
+    <div data-ng-show='hvisIOppsummeringsmodus()'>
+        <span cmstekster="{{ label }}"/>:
+        <span>
+            {{ model }}
+        </span>
+    </div>
+
 </div>
