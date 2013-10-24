@@ -18,7 +18,7 @@
     <logger name="no.nav.sbl" level="debug" />
 
     <logger name="org.apache.cxf" level="error" />
-    <logger name="org.apache.pdfbox" level="error" />
+    
 
     <root>
         <appender-ref ref="Console"/>
