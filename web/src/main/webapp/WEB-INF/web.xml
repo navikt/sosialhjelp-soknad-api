@@ -45,6 +45,7 @@
     <filter>
         <filter-name>MDCFilter</filter-name>
         <filter-class>no.nav.modig.presentation.logging.session.MDCFilter</filter-class>
+        <async-supported>true</async-supported>
     </filter>
     <filter-mapping>
         <filter-name>MDCFilter</filter-name>
@@ -55,6 +56,7 @@
     <filter>
         <filter-name>HttpSessionSecurityIntegrationFilter</filter-name>
         <filter-class>no.nav.modig.security.filter.OpenAMLoginFilter</filter-class>
+        <async-supported>true</async-supported>
     </filter>
     <filter-mapping>
         <filter-name>HttpSessionSecurityIntegrationFilter</filter-name>
@@ -64,6 +66,7 @@
     <filter>
         <filter-name>wicket</filter-name>
         <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
+        <async-supported>true</async-supported>
         <init-param>
             <param-name>applicationFactoryClassName</param-name>
             <param-value>org.apache.wicket.spring.SpringWebApplicationFactory</param-value>
@@ -76,8 +79,8 @@
 
     <filter>
         <filter-name>charEncodingFilter</filter-name>
-        <filter-class>org.springframework.web.filter.CharacterEncodingFilter
-        </filter-class>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <async-supported>true</async-supported>
         <init-param>
             <param-name>encoding</param-name>
             <param-value>UTF-8</param-value>
@@ -104,6 +107,7 @@
         <servlet-name>soknadBacking</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
+        <async-supported>true</async-supported>
     </servlet>
     <servlet-mapping>
         <servlet-name>soknadBacking</servlet-name>

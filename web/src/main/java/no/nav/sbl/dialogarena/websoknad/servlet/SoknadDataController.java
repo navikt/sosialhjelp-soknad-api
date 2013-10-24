@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.websoknad.domain.WebSoknadId;
-import no.nav.sbl.dialogarena.websoknad.service.SendSoknadService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +25,7 @@ import javax.xml.bind.Unmarshaller;
 public class SoknadDataController {
 
     @Inject
-    private SendSoknadService soknadService;
+    private SoknadService soknadService;
 
     @RequestMapping(value = "/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
@@ -78,6 +78,8 @@ public class SoknadDataController {
     public void slettSoknad(@PathVariable Long soknadId) {
         soknadService.avbrytSoknad(soknadId);
     }
+
+
 
 //    @RequestMapping(value = "/{soknadId}/{faktum}", method = RequestMethod.POST)
 //    public void lagreFaktum(@PathVariable Long soknadId, @PathVariable Long faktumId, @RequestBody Faktum faktum) {

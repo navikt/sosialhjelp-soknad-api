@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import no.nav.modig.core.context.SubjectHandler;
-import no.nav.sbl.dialogarena.websoknad.domain.PersonAlder;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
