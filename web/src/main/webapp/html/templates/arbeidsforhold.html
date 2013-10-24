@@ -1,4 +1,4 @@
-<div class="skjemaramme">
+<div class="skjemaramme" data-ng-controller="ModusCtrl">
     <div data-ng-controller="ArbeidsforholdCtrl">
         <span cmstekster="arbeidsforhold.informasjon"></span>
 
@@ -114,7 +114,7 @@
 	        <a href cmstekster="arbeidsforhold.avbryt" data-ng-click="avbrytArbeidsforhold()"></a>
         </form>
 
-        <form name="arbeidsforholdForm" data-ng-controller="ModusCtrl" novalidate>
+        <form name="arbeidsforholdForm" novalidate>
 	        <a href data-ng-show="kanLeggeTilArbeidsforhold()" data-ng-click="nyttArbeidsforhold($event)"> Legg til nytt arbeidsforhold</a>
 
 	        <br/>
@@ -129,8 +129,11 @@
                       endret="toggleRedigeringsmodus()"/>
             </div>
 
-	        <sporsmalblokk nokkel="arbeidsforhold" redigerings-modus="data.redigeringsModus" form="arbeidsforholdForm"
-                       nesteside="egennaering"/>
+            <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
+                    data-ng-click="validerArbeidsforhold(arbeidsforholdForm)"
+                    cmstekster="arbeidsforhold.ferdig"/>
+
+	        <sporsmalblokk/>
 
         </form>
     </div>
