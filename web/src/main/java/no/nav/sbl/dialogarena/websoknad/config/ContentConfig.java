@@ -44,6 +44,22 @@ public class ContentConfig {
     }
 
     @Bean
+    public NavMessageSource NavMessageSource() {
+        NavMessageSource messageSource = new NavMessageSource();
+        messageSource.setBasenames("classpath:content/innholdstekster", "classpath:content/innholdstekster");
+        messageSource.setDefaultEncoding("UTF-8");
+        Map<String, Map<String, String>> map = new HashMap<>();
+        Map<String, String> innerMap = new HashMap<>();
+        map.put(DEFAULT_LOCALE, innerMap);
+        innerMap.put("classpath:content/innholdstekster", INNHOLDSTEKSTER_NB_NO_REMOTE);
+        innerMap.put("classpath:content/sbl-webkomponenter", SBL_WEBKOMPONENTER_NB_NO_REMOTE);
+        messageSource.setEnonicMap(map);
+        messageSource.setEnableEnonic(false);
+        return messageSource;
+    }
+
+
+    @Bean
     public ContentRetriever enonicContentRetriever() {
         return new HttpContentRetriever();
     }
