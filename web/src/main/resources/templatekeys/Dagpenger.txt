@@ -3,18 +3,22 @@ utslagskriterier_kriterie_intro
 reellarbeidssoker.villigdeltid.sporsmal
 reellarbeidssoker.villigdeltid.true
 reellarbeidssoker.villigdeltid.false
+reellarbeidssoker.villigdeltid.feilmelding
 
 reellarbeidssoker.villigpendle.sporsmal
 reellarbeidssoker.villigpendle.true
 reellarbeidssoker.villigpendle.false
+reellarbeidssoker.villigpendle.feilmelding
 
 reellarbeidssoker.villighelse.sporsmal
 reellarbeidssoker.villighelse.true
 reellarbeidssoker.villighelse.false
+reellarbeidssoker.villighelse.feilmelding
 
 reellarbeidssoker.villigjobb.sporsmal
 reellarbeidssoker.villigjobb.true
 reellarbeidssoker.villigjobb.false
+reellarbeidssoker.villigjobb.feilmelding
 
 reellarbeidssoker.feilmelding
 reellarbeidssoker.tittel
@@ -23,7 +27,7 @@ reellarbeidssoker.ferdig
 vernepliktig.sporsmal
 vernepliktig.true
 vernepliktig.false
-vernepliktig.feilmelding
+vernepliktig.vernepliktig.feilmelding
 vernepliktig.tittel
 vernepliktig.ferdig
 vernepliktig.opplasting
@@ -31,7 +35,7 @@ vernepliktig.opplasting
 egennaering.sporsmal
 egennaering.true
 egennaering.false
-egennaering.feilmelding
+egennaering.egennaering.feilmelding
 egennaering.tittel
 egennaering.ferdig
 
@@ -39,7 +43,7 @@ utdanning.sporsmal
 utdanning.svar.ikkeUtdanning
 utdanning.svar.avsluttetUtdanning
 utdanning.svar.underUtdanning
-utdanning.feilmelding
+utdanning.utdanning.feilmelding
 utdanning.tittel
 utdanning.ferdig
 utdanning.svar.under.utdanning.kurs
@@ -74,7 +78,6 @@ ytelser.ferdig
 ytelser.stonadFikser
 ytelser.sporsmal
 ytelser.informasjon
-ytelser.feilmelding
 ytelser.offentligTjenestepensjon
 ytelser.privatTjenestepensjon
 ytelser.vartpenger
@@ -83,13 +86,21 @@ ytelser.dagpengerEOS
 ytelser.annenYtelse
 ytelser.ingenYtelse
 ytelser.offentligTjenestepensjonUtbetaler
+ytelser.offentligTjenestepensjonUtbetaler.feilmelding
 ytelser.privatTjenestepensjonUtbetaler
+ytelser.privatTjenestepensjonUtbetaler.feilmelding
 ytelser.vartpengerUtbetaler
+ytelser.vartpengerUtbetaler.feilmelding
 ytelser.ventelonnUtbetaler
+ytelser.ventelonnUtbetaler.feilmelding
 ytelser.dagpengerEOSUtbetaler
+ytelser.dagpengerEOSUtbetaler.feilmelding
 ytelser.annenYtelseType
+ytelser.annenYtelseType.feilmelding
 ytelser.annenYtelseUtbetaler
+ytelser.annenYtelseUtbetaler.feilmelding
 ytelser.harValgtYtelse.feilmelding
+ytelser.minstEnAvhuket.feilmelding
 
 avbryt.slett
 

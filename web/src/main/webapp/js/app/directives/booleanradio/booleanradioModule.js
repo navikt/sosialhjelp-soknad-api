@@ -3,8 +3,9 @@ angular.module('nav.booleanradio',['nav.cmstekster', 'nav.input'])
         return {
             restrict: "E",
             replace: true,
+            require: 'ngModel',
             scope: {
-                model: '=',
+                model: '=ngModel',
                 modus: '=',
                 nokkel: '@'
             },
@@ -12,7 +13,7 @@ angular.module('nav.booleanradio',['nav.cmstekster', 'nav.input'])
                 $scope.sporsmal = $scope.nokkel + ".sporsmal";
                 $scope.trueLabel = $scope.nokkel + ".true";
                 $scope.falseLabel = $scope.nokkel + ".false";
-                $scope.name = $scope.nokkel.split('.').last();
+                $scope.inputname = $scope.nokkel.split('.').last();
 
                 $scope.hvisIRedigeringsmodus = function() {
                     return $scope.modus;
