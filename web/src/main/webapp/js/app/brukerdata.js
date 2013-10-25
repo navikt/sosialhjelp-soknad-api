@@ -160,31 +160,12 @@ angular.module('app.brukerdata', ['app.services'])
             return !$scope.hvisIRedigeringsmodus();
         }
 
+        $scope.visFeilmeldinger = function () {
+            $scope.data.showErrorMessage = true;
+        }
+
         $scope.hvisIkkeFormValiderer = function () {
             return $scope.data.showErrorMessage;
-        }
-    })
-
-    .controller('UtdanningCtrl', function ($scope) {
-        $scope.hvisIkkeUnderUtdanning = function () {
-            if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
-                return $scope.soknadData.fakta.utdanning.value == 'ikkeUtdanning';
-            }
-            return false;
-        }
-
-        $scope.hvisAvsluttetUtdanning = function () {
-            if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
-                return $scope.soknadData.fakta.utdanning.value == 'avsluttetUtdanning';
-            }
-            return false;
-        }
-
-        $scope.hvisUnderUtdanning = function () {
-            if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
-                return $scope.soknadData.fakta.utdanning.value == 'underUtdanning';
-            }
-            return false;
         }
     })
 
@@ -240,7 +221,10 @@ angular.module('app.brukerdata', ['app.services'])
                 if (element.attr('type') === "checkbox") {
                     verdi = element.is(':checked');
                 }
-                $scope.$emit("OPPDATER_OG_LAGRE", {key: attrs.name, value: verdi});
+
+                $scope.$apply(function() {
+                    $scope.$emit("OPPDATER_OG_LAGRE", {key: attrs.name, value: verdi});
+                });
             });
         };
     })
