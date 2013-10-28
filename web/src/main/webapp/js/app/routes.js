@@ -65,15 +65,6 @@ angular.module('app.routes', ['ngRoute'])
                     }
                 }
             })
-            .when('/sluttaarsak-redusertarbeidstid/:soknadId', {
-                templateUrl: '../html/templates/redusertarbeidstid.html',
-                controller: 'SoknadDataCtrl',
-                resolve: {
-                    notUsedButRequiredProperty: function (HentSoknadService) {
-                        return HentSoknadService;
-                    }
-                }
-            })
             .when('/oppsummering/:soknadId', {
                 templateUrl: '../html/templates/oppsummering.html',
                 controller: 'SoknadDataCtrl',
