@@ -11,13 +11,15 @@ angular.module('nav.arbeidsforhold.controller',[])
             $scope.validateForm(form.$invalid);
         }
 
+        $scope.templates = [{navn: 'Kontrakt utgått', url: '../html/templates/arbeidsforhold/kontrakt_utgaatt.html'},
+                            {navn: 'Avskjediget', url: '../html/templates/arbeidsforhold/avskjediget.html'}];
+        $scope.template = $scope.templates[0];
 
         $scope.arbeidsforholdetErIkkeIRedigeringsModus = function(index) {
             return $scope.posisjonForArbeidsforholdUnderRedigering != index;
         }
 
-        $scope.templates = [{navn: 'Kontrakt utgått', url: '../html/templates/arbeidsforhold/kontrakt_utgaatt.html'}];
-        $scope.template = $scope.templates[0];
+
         soknadService.get({param: $routeParams.soknadId}).$promise.then(function (result) {
             $scope.soknadData = result;
             if($scope.soknadData.fakta.arbeidsforhold) {
@@ -111,9 +113,9 @@ angular.module('nav.arbeidsforhold.controller',[])
                 return !$scope.arbeidsforholdaapen;
             }
 
-	        $scope.toggleRedigeringsmodus = function() {
+	        $scope.toggleRedigeringsmodus = function(form) {
         		if(harIkkeJobbet12SisteMaaneder()) {
-                    $scope.validateForm();
+                    $scope.validateForm(form.$invalid);
         		}
         	}
 
