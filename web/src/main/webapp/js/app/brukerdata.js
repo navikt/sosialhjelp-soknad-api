@@ -144,12 +144,9 @@ angular.module('app.brukerdata', ['app.services'])
             $scope.data.redigeringsModus = invalid;
         }
 
-        $scope.$on("SETT_OPPSUMERINGSMODUS", function() {
-        	$scope.validateForm();
-        });
-
         $scope.gaTilRedigeringsmodus = function () {
             $scope.data.redigeringsModus = true;
+            $scope.$broadcast("ENDRET_TIL_REDIGERINGS_MODUS", {key: 'redigeringsmodus', value: true});
         }
 
         $scope.hvisIRedigeringsmodus = function () {
