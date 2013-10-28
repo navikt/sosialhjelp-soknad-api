@@ -10,8 +10,7 @@
 	                {{ af.land }}<br/>
 	                {{ af.varighetFra | date:'d.MM.yy'}}<br/>
 	                {{ af.varighetTil | date:'d.MM.yy'}}<br/>
-
-	                { af.sluttaarsak.navn }}<br/>
+	                {{ af.sluttaarsak.navn }}<br/>
 	                <a href data-ng-click="slettArbeidsforhold(af)" cmstekster="arbeidsforhold.slettarbeidsforhold"/>
 	                <a href data-ng-click="endreArbeidsforhold($index)" cmstekster="arbeidsforhold.endrearbeidsforhold"/>
                 </div>

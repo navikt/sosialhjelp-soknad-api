@@ -1,6 +1,15 @@
-<div data-ng-controller="ModusCtrl">
+<div>
 <h3>{{sluttaarsak.navn}}</h3>
 
-<p>Her kommer noe informasjonstekst</p>
+<p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.informasjon"/>
+
+<div class="varighet">
+    <label cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetFra"/>
+    <input type="text" name="varighetFra" ui-date ui-date-format ng-model="af.varighetFra" data-ng-change="validateTilFraDato(af)"  required >
+    <label cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetTil"/>
+    <span data-ng-show="datoError" style="color:red" cmstekster="arbeidsforhold.error.datoTilFra"/>
+    <input type="text" name="varighetTil" ui-date ui-date-format ng-model="af.varighetTil" data-ng-change="validateTilFraDato(af)" required >
+</div>
+
 
 </div>

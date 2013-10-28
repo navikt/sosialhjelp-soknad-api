@@ -12,7 +12,9 @@ angular.module('nav.arbeidsforhold.controller',[])
         }
 
         $scope.templates = [{navn: 'Kontrakt utgått', url: '../html/templates/arbeidsforhold/kontrakt_utgaatt.html'},
-                            {navn: 'Avskjediget', url: '../html/templates/arbeidsforhold/avskjediget.html'}];
+                            {navn: 'Avskjediget', url: '../html/templates/arbeidsforhold/avskjediget.html'},
+                            {navn: 'Sagt opp av arbeidsgiver', url: '../html/templates/arbeidsforhold/sagt_opp_av_arbeidsgiver.html'}
+                        ];
         $scope.template = $scope.templates[0];
 
         $scope.arbeidsforholdetErIkkeIRedigeringsModus = function(index) {
