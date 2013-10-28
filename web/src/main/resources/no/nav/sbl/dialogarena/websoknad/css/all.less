@@ -1,41 +1,71 @@
 @svar-bakgrunnsfarge: #d1d1d1;
 
+.nav,
+.pagination,
+.carousel a {
+  cursor: pointer;
+}
+
+.collapse {
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  -webkit-transition: height 0.35s ease;
+  -moz-transition: height 0.35s ease;
+  -o-transition: height 0.35s ease;
+  transition: height 0.35s ease;
+}
+
+.collapse.in {
+  height: auto;
+}
+
 .skjematittel {
   text-align: center;
 }
 
-.skjemaramme {
-  border-top: 1px solid #d1d1d1;
+[class*="panel-standard"].skjema {
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
 
+.spm-blokk {
+  padding-bottom: 40px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid #d1cfcf;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+}
+
+.skjemaramme {
   .skjemainnhold {
     width: 75%;
-//    float: left;
-    height: 100%;
+    margin: 0 auto;
 
-    .spm-blokk {
-//      float: left;
+    .spm {
       margin-top: 20px;
       margin-bottom: 10px;
-//      clear: both;
       width: 100%;
+
+      .spm-sporsmal {
+        font-weight: bold;
+      }
 
       .blokk-resultat  {
         margin: 10px 15px;
-//        float: left;
-//        clear: both;
         width: 100%;
 
         .checked {
           background-color: #333;
         }
       }
-      .spm {
-        font-weight: bold;
-      }
+
       .svar-alt {
         margin: 5px 0px;
-//        float: left;
-//        clear: both;
         text-transform: none !important;
 
         .mer-info {
@@ -53,7 +83,6 @@
 
 
 .sideoversikt {
-//  float: left;
   width: 20%;
   height: 100%;
 }
