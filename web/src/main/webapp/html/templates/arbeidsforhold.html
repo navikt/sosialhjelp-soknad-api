@@ -64,57 +64,7 @@
         </ul> 
  
        
-
-			        
-
-<!--
-        <form name="nyttArbeidsforholdForm" data-ng-show="arbeidsforholdaapen" data-ng-submit="lagreArbeidsforhold()">
-        	<label for="arbeidsgiver_navn">Navn på arbeidsgiver</label>
-	        <input id="arbeidsgiver_navn" type="text" data-ng-model="arbeidsgiver.navn" required/>
-	        
-	        <br/>
-	        <br/>
-	        
-	        <label for="arbeidsgiver_land">Land</label>
-	        <select id="arbeidsgiver_land" data-ng-model="arbeidsgiver.land" data-ng-options="item for item in landService.result" required>
-	        	<option value="">--Velg land--</option>
-	        </select>
-	        
-	        <br/>
-	        <br/>
-	        
-	        <div class="varighet">
-                <label>Fra:</label>
-                <input type="text" name="varighetFra" ui-date ui-date-format ng-model="arbeidsgiver.varighetFra" required >
-                <label>Til:</label> 
-                <span data-ng-show="datoError" style="color:red">Tildato må være etter fradato</span>
-                <input type="text" name="varighetTil" ui-date ui-date-format ng-model="arbeidsgiver.varighetTil" required >
-	        </div>
-	        
-	        <br/>
-	        <br/>
-	        
-	        <label>Årsaken til at du sluttet i jobben</label>
-	        <br/>
-	        <select id="arbeidsgiver_sluttaarsak" type="text" data-ng-model="arbeidsgiver.sluttaarsak" required>
-	        	<option value="">--Velg sluttårsak--</option>
-	        	<option value="sagtOppSelv">Sagt opp selv</option>
-	        	<option value="sagtOppAvArbeidsgiver">Sagt opp av arbeidsgiver</option>
-	        	<option value="permitert">Permittert</option>s
-	        	<option value="avskjediget">Avskjediget</option>
-	        	<option value="konkurs">Konkurs</option>
-	        	<option value="kontraktUtgaat">Kontrakt er gått ut</option>
-	        	<option value="redusertArbeidstid">Redusert arbeidstid med mer enn 50% (40% for fiskere)</option>
-        	</select>
-	       
-	        <br/>
-	        <br/>
-	       
-	        <input cmstekster="arbeidsforhold.lagre" type="submit" id="arbeidsgiverLagre"></input>
-	        <a href cmstekster="arbeidsforhold.avbryt" data-ng-click="avbrytArbeidsforhold()"></a>
-        </form>
--->
-        <form name="arbeidsforholdForm" data-ng-controller="ModusCtrl" novalidate>
+       <form name="arbeidsforholdForm" data-ng-controller="ModusCtrl" novalidate>
 	        <a href data-ng-show="kanLeggeTilArbeidsforhold()" data-ng-click="nyttArbeidsforhold($event)"> Legg til nytt arbeidsforhold</a>
 
 	        <br/>
