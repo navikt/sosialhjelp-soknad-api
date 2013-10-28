@@ -1,13 +1,12 @@
 <div class="skjemaramme">
-    <div class="sideoversikt">
-        <h4 cmstekster="ytelser.tittel"/>
-    </div>
+    <h2 class="stor -strek" cmstekster="ytelser.tittel"/>
+
     <form name="ytelserForm" class="skjemainnhold" data-ng-controller="ModusCtrl" novalidate>
         <div data-ng-controller="YtelserCtrl">
-            <div class="spm-blokk">
+            <div class="spm">
                 <p cmstekster="ytelser.informasjon"/>
 
-                <p class='spm' cmstekster="ytelser.sporsmal"/>
+                <p class="spm-sporsmal" cmstekster="ytelser.sporsmal"/>
 
                 <navcheckbox data-ng-model='soknadData.fakta.stonadFisker.value' modus='data.redigeringsModus'
                              inputname='stonadFisker' label='ytelser.stonadFikser' endret="endreYtelse(ytelserForm)"/>

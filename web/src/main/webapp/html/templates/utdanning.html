@@ -1,12 +1,10 @@
-<div class="skjemaramme">
-    <div class="sideoversikt">
-        <h4 cmstekster="utdanning.tittel"/>
-    </div>
+<div class="skjemaramme sak-hel">
+    <h2 class="stor -strek" cmstekster="utdanning.tittel"/>
 
     <form name="utdanningForm" class="skjemainnhold" data-ng-controller="ModusCtrl" novalidate>
         <div data-ng-controller="UtdanningCtrl">
-            <div class="spm-blokk">
-                <p class='spm' cmstekster="utdanning.sporsmal"/>
+            <div class="spm">
+                <p class="spm-sporsmal" cmstekster="utdanning.sporsmal"/>
 
                 <div data-ng-show="hvisIRedigeringsmodus()">
                     <navradio data-ng-model='soknadData.fakta.utdanning.value' value='ikkeUtdanning' inputname='utdanning'
