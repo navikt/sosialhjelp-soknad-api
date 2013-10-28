@@ -4,6 +4,13 @@ angular.module('nav.arbeidsforhold.controller',[])
         $scope.posisjonForArbeidsforholdUnderRedigering = -1;
         $scope.arbeidsforholdaapen = false;
 
+        $scope.navigering = {nesteside: 'egennaering'};
+        $scope.sidedata = {navn: 'arbeidsforhold'};
+
+        $scope.validerArbeidsforhold = function(form) {
+            $scope.validateForm(form.$invalid);
+        }
+
         $scope.templates = [{navn: 'Kontrakt utgått', url: '../html/templates/arbeidsforhold/kontrakt_utgaatt.html'}];
         $scope.template = $scope.templates[0];
         soknadService.get({param: $routeParams.soknadId}).$promise.then(function (result) {
@@ -101,13 +108,13 @@ angular.module('nav.arbeidsforhold.controller',[])
 
 	        $scope.toggleRedigeringsmodus = function() {
         		if(harIkkeJobbet12SisteMaaneder()) {
-        			$scope.$broadcast("SETT_OPPSUMERINGSMODUS");
+                    $scope.validateForm();
         		}
         	}
 
             $scope.$on("ENDRET_TIL_REDIGERINGS_MODUS", function() {
                 $scope.soknadData.fakta.harIkkeJobbet = false;
-                $scope.$emit("OPPDATER_OG_LAGRE", {key: 'harIkkeJobbet', value: false});
+                $scope.$broadcast("OPPDATER_OG_LAGRE", {key: 'harIkkeJobbet', value: false});
             });
 
         	function harIkkeJobbet12SisteMaaneder() {

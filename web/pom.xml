@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -167,13 +168,13 @@
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-security-sts</artifactId>
         </dependency>
+
+        <!-- Avhengigheter med scope runtime -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+            <scope>runtime</scope>
         </dependency>
-
-        <!-- Avhengigheter med scope runtime -->
-
         <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-log-filter</artifactId>
@@ -255,10 +256,10 @@
             <artifactId>common-web</artifactId>
             <scope>runtime</scope>
         </dependency>
-        
+
         <dependency>
-        	<groupId>joda-time</groupId>
-        	<artifactId>joda-time</artifactId> 
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
         </dependency>
 
         <!-- Avhengigheter med scope provided -->
@@ -457,26 +458,26 @@
                     </execution>
                 </executions>
             </plugin>-->
-           <!-- <plugin>
-                <groupId>com.kelveden</groupId>
-                <artifactId>maven-karma-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>start</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <configFile>${basedir}/target/karma-coverage-html.conf.js</configFile>
-                    <browsers>PhantomJS</browsers>
-                    <reporters>dots</reporters>
-                    &lt;!&ndash;<color>false</color>&ndash;&gt;
-                    <autoWatch>false</autoWatch>
-                    <reporters>dots,coverage</reporters>
-                </configuration>
-            </plugin>-->
+            <!-- <plugin>
+                 <groupId>com.kelveden</groupId>
+                 <artifactId>maven-karma-plugin</artifactId>
+                 <version>1.4</version>
+                 <executions>
+                     <execution>
+                         <goals>
+                             <goal>start</goal>
+                         </goals>
+                     </execution>
+                 </executions>
+                 <configuration>
+                     <configFile>${basedir}/target/karma-coverage-html.conf.js</configFile>
+                     <browsers>PhantomJS</browsers>
+                     <reporters>dots</reporters>
+                     &lt;!&ndash;<color>false</color>&ndash;&gt;
+                     <autoWatch>false</autoWatch>
+                     <reporters>dots,coverage</reporters>
+                 </configuration>
+             </plugin>-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -564,7 +565,7 @@
                                 <executable>java</executable>
                                 <arguments>
                                     <argument>-cp</argument>
-                                    <classpath />
+                                    <classpath/>
                                     <argument>no.nav.sbl.dialogarena.dokumentinnsending.FitNesseMain</argument>
                                     <argument>-restart-server</argument>
                                     <argument>-port</argument>
@@ -596,7 +597,7 @@
                                 <executable>java</executable>
                                 <arguments>
                                     <argument>-cp</argument>
-                                    <classpath />
+                                    <classpath/>
                                     <argument>no.nav.sbl.dialogarena.dokumentinnsending.StartJettyWeb</argument>
                                     <argument>-restart-server</argument>
                                     <argument>-port</argument>
