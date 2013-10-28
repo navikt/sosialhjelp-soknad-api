@@ -4,14 +4,27 @@ angular.module('nav.arbeidsforhold.controller',[])
         $scope.posisjonForArbeidsforholdUnderRedigering = -1;
         $scope.arbeidsforholdaapen = false;
 
+        $scope.templates = [{navn: 'Kontrakt utgått', url: '../html/templates/arbeidsforhold/kontrakt_utgaatt.html'}];
+        $scope.template = $scope.templates[0];
         soknadService.get({param: $routeParams.soknadId}).$promise.then(function (result) {
             $scope.soknadData = result;
             if($scope.soknadData.fakta.arbeidsforhold) {
         		$scope.arbeidsforhold = angular.fromJson($scope.soknadData.fakta.arbeidsforhold.value);	
         	}
 
+
+
             if($scope.soknadData.fakta.harIkkeJobbet && $scope.soknadData.fakta.harIkkeJobbet.value == "true") {
                 $scope.$broadcast("SETT_OPPSUMERINGSMODUS");
+            }
+
+            $scope.erSluttaarsakValgt = function() {
+                if ($scope.sluttaarsak && $scope.sluttaarsak.navn) {
+                    console.log("Sluttaarsak valgt");
+                    return true;
+                }else{
+                    return false;
+                }
             }
 
             $scope.kanLeggeTilArbeidsforhold = function() {
@@ -30,7 +43,7 @@ angular.module('nav.arbeidsforhold.controller',[])
                 }
             }
 
-            $scope.lagreEndretArbeidsforhold = function(af) {
+            $scope.lagreArbeidsforhold = function(af) {
                 $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
                 $scope.posisjonForArbeidsforholdUnderRedigering = -1;
 
@@ -38,39 +51,12 @@ angular.module('nav.arbeidsforhold.controller',[])
                 $scope.endreError = false;
             }
 
-        	$scope.lagreArbeidsforhold = function() {
-	            $scope.arbeidsforhold.push({
-                     navn: $scope.arbeidsgiver.navn,
-                     land: $scope.arbeidsgiver.land,
-                     varighetFra: $scope.arbeidsgiver.varighetFra,
-                     varighetTil: $scope.arbeidsgiver.varighetTil,
-                     sluttaarsak: $scope.arbeidsgiver.sluttaarsak 
-                    });
-	            $scope.arbeidsforholdaapen = false;
-	            $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
-
-                //todo refaktorer
-                $scope.endreError = false;
-	        }
 
             $scope.harIkkeLagretArbeidsforhold = function () {
                 return $scope.arbeidsforhold.length == 0 &&  $scope.arbeidsforholdskjemaErIkkeAapent();
             }
 
-
-	        $scope.nyttArbeidsforhold = function () {
-	            $scope.arbeidsforholdaapen = true;
-	            $scope.arbeidsgiver = {};
-	        }
-
-	        $scope.avbrytArbeidsforhold = function () {
-	        	$scope.arbeidsforholdaapen = false;
-                
-                //todo refaktorer
-                $scope.endreError = false;
-	        }
-
-            $scope.avbrytEndringAvArbeidsforhold = function() {
+            $scope.avbrytEndringAvArbeidsforhold = function(af) {
                   $scope.posisjonForArbeidsforholdUnderRedigering = -1;
                     soknadService.get({param: $routeParams.soknadId}).$promise.then(function (result) {
                         $scope.soknadData = result;
@@ -88,6 +74,12 @@ angular.module('nav.arbeidsforhold.controller',[])
                 $scope.arbeidsforhold.splice(i,1);
                 $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
             }
+
+
+            $scope.nyttArbeidsforhold = function () {
+	            $scope.arbeidsforhold.push({});
+                $scope.endreArbeidsforhold($scope.arbeidsforhold.length - 1);
+	        }
 
             $scope.endreArbeidsforhold = function(index) {
                 if($scope.posisjonForArbeidsforholdUnderRedigering == -1 && $scope.arbeidsforholdaapen == false) {
@@ -135,6 +127,9 @@ angular.module('nav.arbeidsforhold.controller',[])
                     $scope.datoError = false;
                 }
             });
+            $scope.resolvUrl = function (){
+                return "../html/templates/kontrakt_utgaatt.html"
+            }
 
             $scope.$watch("arbeidsgiver.varighetTil", function(nyVerdi, gammelVerdi) {
                 if($scope.arbeidsgiver && ($scope.arbeidsgiver.varighetTil <= $scope.arbeidsgiver.varighetFra)) {

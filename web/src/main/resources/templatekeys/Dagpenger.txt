@@ -98,3 +98,7 @@ avbryt
 endre
 neste
 start
+
+sluttaarsak.tilbudomaafortsette.sporsmal
+sluttaarsak.tilbudomaafortsette.true
+sluttaarsak.tilbudomaafortsette.false
