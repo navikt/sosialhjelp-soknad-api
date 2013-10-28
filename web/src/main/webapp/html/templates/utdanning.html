@@ -1,75 +1,76 @@
-<div class="skjemaramme sak-hel">
-    <h2 class="stor -strek" cmstekster="utdanning.tittel"/>
-
+<div class="skjemaramme">
     <form name="utdanningForm" class="skjemainnhold" data-ng-controller="ModusCtrl" novalidate>
         <div data-ng-controller="UtdanningCtrl">
             <div class="spm">
                 <p class="spm-sporsmal" cmstekster="utdanning.sporsmal"/>
 
                 <div data-ng-show="hvisIRedigeringsmodus()">
-                    <navradio data-ng-model='soknadData.fakta.utdanning.value' value='ikkeUtdanning' inputname='utdanning'
+                    <navradio data-ng-model='soknadData.fakta.utdanning.value' value='ikkeUtdanning'
+                              inputname='utdanning'
                               label='utdanning.svar.ikkeUtdanning'/>
-                    <navradio data-ng-model='soknadData.fakta.utdanning.value' value='avsluttetUtdanning' inputname='utdanning'
+                    <navradio data-ng-model='soknadData.fakta.utdanning.value' value='avsluttetUtdanning'
+                              inputname='utdanning'
                               label='utdanning.svar.avsluttetUtdanning'/>
-                    <navradio data-ng-model='soknadData.fakta.utdanning.value' value='underUtdanning' inputname='utdanning'
+                    <navradio data-ng-model='soknadData.fakta.utdanning.value' value='underUtdanning'
+                              inputname='utdanning'
                               label='utdanning.svar.underUtdanning'/>
 
 
                     <!--<div data-ng-show="hvisUnderUtdanning()">-->
-                        <!--<input id='underUtdanningKurs' type='checkbox'-->
-                               <!--data-ng-model='soknadData.fakta.underUtdanningKurs.value' name='underUtdanningKurs'-->
-                               <!--mod-faktum boolean-verdi required/>-->
-                        <!--<label for='underUtdanningKurs' class='svar-alt'>-->
-                            <!--{{ tekster.utdanning_svar_under_utdanning_kurs }}-->
-                        <!--</label>-->
-                        <!--<utdanningsinformasjon></utdanningsinformasjon>-->
+                    <!--<input id='underUtdanningKurs' type='checkbox'-->
+                    <!--data-ng-model='soknadData.fakta.underUtdanningKurs.value' name='underUtdanningKurs'-->
+                    <!--mod-faktum boolean-verdi required/>-->
+                    <!--<label for='underUtdanningKurs' class='svar-alt'>-->
+                    <!--{{ tekster.utdanning_svar_under_utdanning_kurs }}-->
+                    <!--</label>-->
+                    <!--<utdanningsinformasjon></utdanningsinformasjon>-->
 
-                        <!--<input id='underUtdanningKveld' type='checkbox'-->
-                               <!--data-ng-model='soknadData.fakta.underUtdanningKveld.value' name='underUtdanningKveld'-->
-                               <!--mod-faktum boolean-verdi required/>-->
-                        <!--<label for='underUtdanningKveld' class='svar-alt'>-->
-                            <!--{{ tekster.utdanning_svar_under_utdanning_kveld }}-->
-                        <!--</label>-->
-                        <!--<utdanningsinformasjon></utdanningsinformasjon>-->
+                    <!--<input id='underUtdanningKveld' type='checkbox'-->
+                    <!--data-ng-model='soknadData.fakta.underUtdanningKveld.value' name='underUtdanningKveld'-->
+                    <!--mod-faktum boolean-verdi required/>-->
+                    <!--<label for='underUtdanningKveld' class='svar-alt'>-->
+                    <!--{{ tekster.utdanning_svar_under_utdanning_kveld }}-->
+                    <!--</label>-->
+                    <!--<utdanningsinformasjon></utdanningsinformasjon>-->
 
-                        <!--<input id='underUtdanningFulltid' type='checkbox'-->
-                               <!--data-ng-model='soknadData.fakta.underUtdanningFulltid.value' name='underUtdanningFulltid'-->
-                               <!--mod-faktum boolean-verdi required/>-->
-                        <!--<label for='underUtdanningFulltid' class='svar-alt'>-->
-                            <!--{{ tekster.utdanning_svar_under_utdanning_fulltid }}-->
-                        <!--</label>-->
-                        <!--<utdanningsinformasjon></utdanningsinformasjon>-->
+                    <!--<input id='underUtdanningFulltid' type='checkbox'-->
+                    <!--data-ng-model='soknadData.fakta.underUtdanningFulltid.value' name='underUtdanningFulltid'-->
+                    <!--mod-faktum boolean-verdi required/>-->
+                    <!--<label for='underUtdanningFulltid' class='svar-alt'>-->
+                    <!--{{ tekster.utdanning_svar_under_utdanning_fulltid }}-->
+                    <!--</label>-->
+                    <!--<utdanningsinformasjon></utdanningsinformasjon>-->
 
-                        <!--<input id='underUtdanningKortvarig' type='checkbox'-->
-                               <!--data-ng-model='soknadData.fakta.underUtdanningKortvarig.value'-->
-                               <!--name='underUtdanningKortvarig' mod-faktum boolean-verdi required/>-->
-                        <!--<label for='underUtdanningKortvarig' class='svar-alt'>-->
-                            <!--{{ tekster.utdanning_svar_under_utdanning_kortvarig }}-->
-                        <!--</label>-->
-                        <!--<utdanningsinformasjon></utdanningsinformasjon>-->
+                    <!--<input id='underUtdanningKortvarig' type='checkbox'-->
+                    <!--data-ng-model='soknadData.fakta.underUtdanningKortvarig.value'-->
+                    <!--name='underUtdanningKortvarig' mod-faktum boolean-verdi required/>-->
+                    <!--<label for='underUtdanningKortvarig' class='svar-alt'>-->
+                    <!--{{ tekster.utdanning_svar_under_utdanning_kortvarig }}-->
+                    <!--</label>-->
+                    <!--<utdanningsinformasjon></utdanningsinformasjon>-->
 
-                        <!--<input id='underUtdanningNorsk' type='checkbox'-->
-                               <!--data-ng-model='soknadData.fakta.underUtdanningNorsk.value' name='underUtdanningNorsk'-->
-                               <!--mod-faktum boolean-verdi required/>-->
-                        <!--<label for='underUtdanningNorsk' class='svar-alt'>-->
-                            <!--{{ tekster.utdanning_svar_under_utdanning_norsk }}-->
-                        <!--</label>-->
-                        <!--<utdanningsinformasjon></utdanningsinformasjon>-->
+                    <!--<input id='underUtdanningNorsk' type='checkbox'-->
+                    <!--data-ng-model='soknadData.fakta.underUtdanningNorsk.value' name='underUtdanningNorsk'-->
+                    <!--mod-faktum boolean-verdi required/>-->
+                    <!--<label for='underUtdanningNorsk' class='svar-alt'>-->
+                    <!--{{ tekster.utdanning_svar_under_utdanning_norsk }}-->
+                    <!--</label>-->
+                    <!--<utdanningsinformasjon></utdanningsinformasjon>-->
 
-                        <!--<input id='underUtdanningIntroduksjon' type='checkbox'-->
-                               <!--data-ng-model='soknadData.fakta.underUtdanningIntroduksjon.value'-->
-                               <!--name='underUtdanningIntroduksjon' mod-faktum boolean-verdi required/>-->
-                        <!--<label for='underUtdanningIntroduksjon' class='svar-alt'>-->
-                            <!--{{ tekster.utdanning_svar_under_utdanning_introduksjon }}-->
-                        <!--</label>-->
-                        <!--<utdanningsinformasjon></utdanningsinformasjon>-->
+                    <!--<input id='underUtdanningIntroduksjon' type='checkbox'-->
+                    <!--data-ng-model='soknadData.fakta.underUtdanningIntroduksjon.value'-->
+                    <!--name='underUtdanningIntroduksjon' mod-faktum boolean-verdi required/>-->
+                    <!--<label for='underUtdanningIntroduksjon' class='svar-alt'>-->
+                    <!--{{ tekster.utdanning_svar_under_utdanning_introduksjon }}-->
+                    <!--</label>-->
+                    <!--<utdanningsinformasjon></utdanningsinformasjon>-->
                     <!--</div>-->
                 </div>
 
                 <div class='oppsummeringsboks' data-ng-show='hvisIOppsummeringsmodus()'>
-                        <span data-ng-show='hvisIkkeUnderUtdanning()'cmstekster="utdanning.svar.ikkeUtdanning"/>
-                        <span data-ng-show='hvisAvsluttetUtdanning()'cmstekster="utdanning.svar.avsluttetUtdanning"/>
-                        <span data-ng-show='hvisUnderUtdanning()' cmstekster="utdanning.svar.underUtdanning"/>
+                    <span data-ng-show='hvisIkkeUnderUtdanning()' cmstekster="utdanning.svar.ikkeUtdanning"/>
+                    <span data-ng-show='hvisAvsluttetUtdanning()' cmstekster="utdanning.svar.avsluttetUtdanning"/>
+                    <span data-ng-show='hvisUnderUtdanning()' cmstekster="utdanning.svar.underUtdanning"/>
                 </div>
 
 
