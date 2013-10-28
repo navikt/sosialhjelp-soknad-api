@@ -72,6 +72,8 @@ arbeidsforhold.tittel
 arbeidsforhold.ferdig
 arbeidsforhold.avbryt
 arbeidsforhold.lagre
+arbeidsforhold.sluttaarsak.avskjediget.informasjon
+arbeidsforhold.sluttaarsak.avskjediget.sporsmal
 
 ytelser.tittel
 ytelser.ferdig
