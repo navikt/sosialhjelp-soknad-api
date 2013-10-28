@@ -1,8 +1,4 @@
 <div class="skjemaramme">
-    <div class="sideoversikt">
-        <h4 cmstekster="reellarbeidssoker.tittel"/>
-    </div>
-
     <form name="reellarbeidssokerForm" class="skjemainnhold" data-ng-controller="ModusCtrl" novalidate>
         <div data-ng-controller="ReellarbeidssokerCtrl">
             <booleanradio data-ng-model="soknadData.fakta.villigdeltid.value"
@@ -33,34 +29,3 @@
         </div>
     </form>
 </div>
-
-
-<!--<knapprad></knapprad>-->
-<!--<div class="blokk-resultat" ng-show="soknadData.fakta.villigPendle.value == 'nei'">
-					<p class="spm">{{ tekster.reellarbeidssoker_ikkependle_sporsmal }}
-                        <span class="error" data-ng-show="villigForm.ikkePendleBarn.$error.required && villigForm.ikkePendleHelse.$error.required && villigForm.ikkePendleGammel.$error.required ">{{feilmeldinger.paakreves}} </span></p>
-
-					<input id="ikkePendleBarn" class="sendsoknad-check" type="checkbox" name="ikkePendleBarn" data-ng-model="soknadData.fakta.ikkePendleBarn.value" mod-faktum boolean-verdi required>
-					<label for="ikkePendleBarn" class="svar-alt">
-                        {{ tekster.reellarbeidssoker_ikkependle_svar_barn }}<a class="mer-info"  href="">Mer info</a>
-					</label>
-
-					<input id="ikkePendleGammel" class="sendsoknad-check" type="checkbox" name="ikkePendleGammel" data-ng-model="soknadData.fakta.ikkePendleGammel.value" mod-faktum boolean-verdi required>
-					<label for="ikkePendleGammel" class="svar-alt">
-                        {{ tekster.reellarbeidssoker_ikkependle_svar_over60 }}</span><a class="mer-info"  href="">Mer info</a>
-					</label>
-
-					<input id="helse" class="sendsoknad-check" type="checkbox" name="ikkePendleHelse" data-ng-model="soknadData.fakta.ikkePendleHelse.value" mod-faktum boolean-verdi required>
-					<label for="helse" class="svar-alt">
-                        {{ tekster.reellarbeidssoker_ikkependle_svar_helseaarsaker }} <a class="mer-info" href="">Mer info</a>
-					</label>
-
-                    <div ng-show="soknadData.fakta.ikkePendleHelse.value == true || soknadData.fakta.ikkePendleHelse.value == 'true'" class="spm-blokk">
-                        <textarea name="ikkePendleHelseTekst" data-ng-model="soknadData.fakta.ikkePendleHelseTekst.value" mod-faktum></textarea>
-
-                        <p>Må dokumenteres med legeattest </p>
-                        <p>Kor beskrivelse av hva legeattesten skal inneholde</p>
-                        <img src="">Du kan laste opp i neste steg eller <a href="">lagre og fortsette senere</a>
-                    </div>
-
-				</div>-->
