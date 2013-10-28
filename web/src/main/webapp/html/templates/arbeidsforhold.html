@@ -47,14 +47,10 @@
 			        <label cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsak"/>
 			        <br/>
 			        <select id="sluttaarsak_id" type="text" data-ng-model="af.sluttaarsak" data-ng-options="t.navn for t in templates" required>
-			        	<option value="">--Velg sluttårsak--</option>
+			        	<option value="" cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsakDefault"/>
 
 		        	</select>
 
-
-			        <label>Årsaken til at du sluttet i jobben</label>
-			        <br/>
-			       
 			        <br/>
 
 			        <div data-ng-show="af.sluttaarsak">
@@ -70,7 +66,7 @@
             </li>
         </ul> 
       
-       <form name="arbeidsforholdForm" data-ng-controller="ModusCtrl" novalidate>
+       <form name="arbeidsforholdForm" novalidate>
 	        <a href data-ng-show="kanLeggeTilArbeidsforhold()" data-ng-click="nyttArbeidsforhold($event)"  cmstekster="arbeidsforhold.nyttarbeidsforhold"/>
 
 	        <br/>
@@ -82,7 +78,7 @@
 				<navcheckbox data-ng-model="soknadData.fakta.harIkkeJobbet.value"
                       modus="data.redigeringsModus"
                       inputname="harIkkeJobbet" label='arbeidsforhold.harIkkeJobbet'
-                      endret="toggleRedigeringsmodus()"/>
+                      endret="toggleRedigeringsmodus(arbeidsforholdForm)"/>
             </div>
 
             <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"

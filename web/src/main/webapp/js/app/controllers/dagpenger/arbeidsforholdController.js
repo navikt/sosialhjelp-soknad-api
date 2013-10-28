@@ -111,9 +111,9 @@ angular.module('nav.arbeidsforhold.controller',[])
                 return !$scope.arbeidsforholdaapen;
             }
 
-	        $scope.toggleRedigeringsmodus = function() {
+	        $scope.toggleRedigeringsmodus = function(form) {
         		if(harIkkeJobbet12SisteMaaneder()) {
-                    $scope.validateForm();
+                    $scope.validateForm(form.$invalid);
         		}
         	}
 
