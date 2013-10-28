@@ -9,7 +9,7 @@ angular.module('app.brukerdata', ['app.services'])
             $scope.data.laster = true;
             $scope.soknad = soknadService.create({param: soknadType},
                 function (result) {
-                    $location.path('reell-arbeidssoker/' + result.id);
+                    $location.path('dagpenger/' + result.id);
                     $scope.data.laster = false;
                 }, function () {
                     $scope.data.laster = false;
@@ -107,6 +107,11 @@ angular.module('app.brukerdata', ['app.services'])
 
         $scope.harIkkeHentetPersonalia = function() {
             return !$scope.harHentetPersonalia();
+        }
+
+        $scope.validerPersonalia = function(form) {
+            // Har ikke form her ennå
+            $scope.validateForm(false);
         }
     }])
 

@@ -1,16 +1,14 @@
 <div class="skjemaramme">
-    <div class="sideoversikt">
-        <h4 cmstekster="ytelser.tittel"/>
-    </div>
     <form name="ytelserForm" class="skjemainnhold" data-ng-controller="ModusCtrl" novalidate>
         <div data-ng-controller="YtelserCtrl">
-            <div class="spm-blokk">
+            <div class="spm">
                 <p cmstekster="ytelser.informasjon"/>
 
-                <p class='spm' cmstekster="ytelser.sporsmal"/>
+                <p class="spm-sporsmal" cmstekster="ytelser.sporsmal"/>
 
                 <navcheckbox data-ng-model='soknadData.fakta.stonadFisker.value' modus='data.redigeringsModus'
-                             inputname='stonadFisker' label='ytelser.stonadFikser' endret="endreYtelse(ytelserForm)"/>
+                             inputname='stonadFisker' label='ytelser.stonadFikser'
+                             endret="endreYtelse(ytelserForm)"/>
 
                 <navcheckbox data-ng-model='soknadData.fakta.offentligTjenestepensjon.value'
                              modus='data.redigeringsModus' inputname='offentligTjenestepensjon'
@@ -48,7 +46,8 @@
                 </navcheckbox>
 
                 <navcheckbox data-ng-model='soknadData.fakta.dagpengerEOS.value' modus='data.redigeringsModus'
-                             inputname='dagpengerEOS' label='ytelser.dagpengerEOS' endret="endreYtelse(ytelserForm)">
+                             inputname='dagpengerEOS' label='ytelser.dagpengerEOS'
+                             endret="endreYtelse(ytelserForm)">
 
                     <navtekst data-ng-model="soknadData.fakta.dagpengerEOSUtbetaler.value"
                               modus="data.redigeringsModus"
@@ -76,7 +75,7 @@
 
                     <span data-ng-show='hvisIOppsummeringsmodusOgChecked()' cmstekster="ytelser.ingenYtelse"/>
                     <!--<span data-ng-show="ytelserForm.$error.harValgtYtelse"-->
-                          <!--cmstekster="ytelser.harValgtYtelse.feilmelding"/>-->
+                    <!--cmstekster="ytelser.harValgtYtelse.feilmelding"/>-->
                 </div>
 
             </div>
@@ -84,11 +83,13 @@
                 <feilmeldinger form="ytelserForm" nokkel="ytelser"/>
             </div>
 
-            <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
-                    data-ng-click="validerYtelser(ytelserForm)"
-                    cmstekster="ytelser.ferdig"/>
+            <div class="spm-knapper">
+                <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
+                        data-ng-click="validerYtelser(ytelserForm)"
+                        cmstekster="ytelser.ferdig"/>
 
-            <sporsmalblokk/>
+                <sporsmalblokk/>
+            </div>
         </div>
     </form>
 </div>
