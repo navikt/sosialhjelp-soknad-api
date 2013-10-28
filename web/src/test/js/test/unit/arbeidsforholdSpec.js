@@ -38,6 +38,7 @@ describe('ArbeidsforholdCtrl', function() {
             $httpBackend.flush();
         }));
 
+/*
 		it('arbeidsforhold skal skjules naar bruker velger aa avbryte', function() {
         	scope.avbrytArbeidsforhold();
         	expect(scope.arbeidsforholdaapen).toBe(false);
@@ -47,6 +48,7 @@ describe('ArbeidsforholdCtrl', function() {
         	scope.nyttArbeidsforhold();
         	expect(scope.arbeidsforholdaapen).toBe(true);
         });
+
 
 			it('arbeidsforhold skal inneholde et element og arbeidsforhold skal skjules naar bruker har lagret et arbeidsforhold', function(){
 				scope.arbeidsforhold = [];
@@ -59,16 +61,7 @@ describe('ArbeidsforholdCtrl', function() {
         	expect(scope.arbeidsforholdaapen).toBe(false)
         	expect(scope.arbeidsforhold).toEqual([{"navn": "Hei Sjef Pizza", "land": "Sannerland"}]);
         });
-
-      	it ('skal ikke lagre naar man avbryter', function() {
-      		scope.arbeidsforhold = [];
-      		scope.arbeidsgiver = {};
-
-      		scope.avbrytArbeidsforhold();
-
-      		expect(scope.arbeidsforholdaapen).toBe(false);
-      		expect(scope.arbeidsforhold).toEqual([]);
-      	});
+*/
 
         it('skal vise checkbox når ingen arbeidsforhold er lagret', function() {
             scope.arbeidsforhold = [];
@@ -117,7 +110,5 @@ describe('ArbeidsforholdCtrl', function() {
         	expect(scope.kanLeggeTilArbeidsforhold()).toBe(true);
 
         });
-
-
 })
 
