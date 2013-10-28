@@ -4,12 +4,20 @@
     </div>
 
     <form name="egennaeringForm" class="skjemainnhold" data-ng-controller="ModusCtrl" novalidate>
+        <div data-ng-controller="EgennaeringCtrl">
+            <booleanradio data-ng-model="soknadData.fakta.egennaering.value"
+                          modus="data.redigeringsModus"
+                          nokkel="egennaering"/>
 
-        <booleanradio model="soknadData.fakta.egennaering.value"
-                      modus="data.redigeringsModus"
-                      nokkel="egennaering"/>
+            <div data-ng-show="hvisIkkeFormValiderer()">
+                <feilmeldinger form="egennaeringForm" nokkel="egennaering"/>
+            </div>
 
-        <sporsmalblokk nokkel="egennaering" redigerings-modus="data.redigeringsModus" form="egennaeringForm"
-                       nesteside="verneplikt"/>
+            <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
+                    data-ng-click="validerEgennaering(egennaeringForm)"
+                    cmstekster="egennaering.ferdig"/>
+
+            <sporsmalblokk/>
+        </div>
     </form>
 </div>

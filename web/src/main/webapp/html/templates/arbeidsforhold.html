@@ -1,4 +1,4 @@
-<div class="skjemaramme">
+<div class="skjemaramme" data-ng-controller="ModusCtrl">
     <div data-ng-controller="ArbeidsforholdCtrl">
         <span cmstekster="arbeidsforhold.informasjon"></span>
 
@@ -129,8 +129,11 @@
                       endret="toggleRedigeringsmodus()"/>
             </div>
 
-	        <sporsmalblokk nokkel="arbeidsforhold" redigerings-modus="data.redigeringsModus" form="arbeidsforholdForm"
-                       nesteside="egennaering"/>
+            <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
+                    data-ng-click="validerArbeidsforhold(arbeidsforholdForm)"
+                    cmstekster="arbeidsforhold.ferdig"/>
+
+	        <sporsmalblokk/>
 
         </form>
     </div>
