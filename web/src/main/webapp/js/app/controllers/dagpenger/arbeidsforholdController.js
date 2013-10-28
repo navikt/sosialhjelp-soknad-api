@@ -18,7 +18,7 @@ angular.module('nav.arbeidsforhold.controller',[])
         	}
 
             if($scope.soknadData.fakta.harIkkeJobbet && $scope.soknadData.fakta.harIkkeJobbet.value == "true") {
-                $scope.$broadcast("SETT_OPPSUMERINGSMODUS");
+                $scope.validateForm();
             }
 
             $scope.kanLeggeTilArbeidsforhold = function() {
