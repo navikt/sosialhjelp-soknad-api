@@ -1,5 +1,6 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <div data-ng-controller="ArbeidsforholdCtrl">
+
+    <div class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl">
         <span cmstekster="arbeidsforhold.informasjon"></span>
 
  		<span data-ng-show="endreError" style="color:red" cmstekster="arbeidsforhold.error.endre"/>
@@ -16,7 +17,7 @@
                 </div>
 
                 <div data-ng-show="posisjonForArbeidsforholdUnderRedigering == $index">
-                <form name="endreArbeidsforholdForm" data-ng-submit="lagreEndretArbeidsforhold(af)">
+                <form name="endreArbeidsforholdForm" data-ng-submit="lagreArbeidsforhold(af)">
 		        	<label for="arbeidsgiver_navn" cmstekster="arbeidsforhold.arbeidsgiver.navn"/>
 			        <input id="arbeidsgiver_navn" type="text" data-ng-model="af.navn" required/>
 			        
@@ -84,8 +85,9 @@
                     data-ng-click="validerArbeidsforhold(arbeidsforholdForm)"
                     cmstekster="arbeidsforhold.ferdig"/>
 
-	        <sporsmalblokk/>
+            <sporsmalblokk/>
 
         </form>
     </div>
 </div>
+</accordion-group>
