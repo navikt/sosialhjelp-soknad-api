@@ -11,6 +11,10 @@ angular.module('nav.arbeidsforhold.controller',[])
             $scope.validateForm(form.$invalid);
         }
 
+        $scope.arbeidsforholdetErIkkeIRedigeringsModus = function(index) {
+            return $scope.posisjonForArbeidsforholdUnderRedigering != index;
+        }
+
         soknadService.get({param: $routeParams.soknadId}).$promise.then(function (result) {
             $scope.soknadData = result;
             if($scope.soknadData.fakta.arbeidsforhold) {
@@ -20,6 +24,7 @@ angular.module('nav.arbeidsforhold.controller',[])
             if($scope.soknadData.fakta.harIkkeJobbet && $scope.soknadData.fakta.harIkkeJobbet.value == "true") {
                 $scope.validateForm();
             }
+
 
             $scope.kanLeggeTilArbeidsforhold = function() {
                 return $scope.harIkkeRelevanteArbeidsforhold() && $scope.harIngenSkjemaAapne();
@@ -122,7 +127,7 @@ angular.module('nav.arbeidsforhold.controller',[])
 
             $scope.$on("ENDRET_TIL_REDIGERINGS_MODUS", function() {
                 $scope.soknadData.fakta.harIkkeJobbet = false;
-                $scope.$broadcast("OPPDATER_OG_LAGRE", {key: 'harIkkeJobbet', value: false});
+                $scope.$emit("OPPDATER_OG_LAGRE", {key: 'harIkkeJobbet', value: false});
             });
 
         	function harIkkeJobbet12SisteMaaneder() {
