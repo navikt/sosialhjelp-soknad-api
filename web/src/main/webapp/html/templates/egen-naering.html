@@ -1,8 +1,4 @@
 <div class="skjemaramme">
-    <div class="sideoversikt">
-        <h4 cmstekster="egennaering.tittel"/>
-    </div>
-
     <form name="egennaeringForm" class="skjemainnhold" data-ng-controller="ModusCtrl" novalidate>
         <div data-ng-controller="EgennaeringCtrl">
             <booleanradio data-ng-model="soknadData.fakta.egennaering.value"
@@ -13,11 +9,14 @@
                 <feilmeldinger form="egennaeringForm" nokkel="egennaering"/>
             </div>
 
-            <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
-                    data-ng-click="validerEgennaering(egennaeringForm)"
-                    cmstekster="egennaering.ferdig"/>
 
-            <sporsmalblokk/>
+            <div class="spm-knapper">
+                <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
+                        data-ng-click="validerEgennaering(egennaeringForm)"
+                        cmstekster="egennaering.ferdig"/>
+
+                <sporsmalblokk/>
+            </div>
         </div>
     </form>
 </div>

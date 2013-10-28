@@ -1,41 +1,166 @@
 @svar-bakgrunnsfarge: #d1d1d1;
 
+.nav,
+.pagination,
+.carousel a {
+  cursor: pointer;
+}
+
+.accordion-heading {
+  text-align: center;
+
+  h2 {
+
+    text-align: center;
+  }
+}
+
+.accordion-body {
+
+}
+
+.collapse {
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  -webkit-transition: height 0.35s ease;
+  -moz-transition: height 0.35s ease;
+  -o-transition: height 0.35s ease;
+  transition: height 0.35s ease;
+}
+
+.collapse.in {
+  height: auto;
+}
+
 .skjematittel {
   text-align: center;
 }
 
+[class*="panel-standard"].skjema {
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.spm-blokk {
+  padding-bottom: 40px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid #d1cfcf;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+}
+
+.lenker-dot {
+
+  span {
+    margin-left: 14px;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+
+  [class*="knapp"] {
+    margin-left: 30px;
+  }
+
+  input {
+    margin-left: 30px;
+  }
+
+  .loadingIndicator {
+    margin-left: 2rem !important;
+  }
+
+  span:not(:first-child) {
+    &:before {
+      padding-right: 14px;
+      content: "•";
+      color: #000;
+    }
+  }
+}
+
+.strek {
+  background-image: url(../img/under-dark.png);
+  background-repeat: no-repeat;
+
+}
+
+.strek-top {
+  .strek;
+  background-position: top center;
+  padding-top: 15px;
+  margin-top: 15px !important;
+}
+
+.strek-bottom {
+  .strek;
+  background-position: bottom center;
+  padding-bottom: 15px;
+  margin-bottom: 15px !important;
+}
+
 .skjemaramme {
-  border-top: 1px solid #d1d1d1;
+  .strek-top;
 
   .skjemainnhold {
     width: 75%;
-//    float: left;
-    height: 100%;
+    margin: 0 auto;
 
-    .spm-blokk {
-//      float: left;
+    .spm-knapper {
+      text-align: center;
+
+      .spm-navigering {
+        .strek-bottom;
+        margin-top: 1rem;
+
+        a, span {
+          margin-right: 10px;
+
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+      }
+
+      .spm-fortsett {
+        margin-top: 1rem;
+
+        span {
+          text-transform: uppercase;
+
+          a {
+            text-transform: none;
+          }
+        }
+      }
+    }
+
+    .spm {
       margin-top: 20px;
       margin-bottom: 10px;
-//      clear: both;
       width: 100%;
+
+      .spm-sporsmal {
+        font-weight: bold;
+      }
 
       .blokk-resultat  {
         margin: 10px 15px;
-//        float: left;
-//        clear: both;
         width: 100%;
 
         .checked {
           background-color: #333;
         }
       }
-      .spm {
-        font-weight: bold;
-      }
+
       .svar-alt {
         margin: 5px 0px;
-//        float: left;
-//        clear: both;
         text-transform: none !important;
 
         .mer-info {
@@ -53,7 +178,6 @@
 
 
 .sideoversikt {
-//  float: left;
   width: 20%;
   height: 100%;
 }
