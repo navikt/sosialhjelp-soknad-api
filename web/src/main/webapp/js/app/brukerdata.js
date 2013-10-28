@@ -108,6 +108,11 @@ angular.module('app.brukerdata', ['app.services'])
         $scope.harIkkeHentetPersonalia = function() {
             return !$scope.harHentetPersonalia();
         }
+
+        $scope.validerPersonalia = function(form) {
+            // Har ikke form her ennå
+            $scope.validateForm(false);
+        }
     }])
 
     .controller('SoknadDataCtrl', function ($scope, $routeParams, $location, $timeout, soknadService) {
