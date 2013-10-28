@@ -10,9 +10,9 @@
 	                {{ af.land }}<br/>
 	                {{ af.varighetFra | date:'d.MM.yy'}}<br/>
 	                {{ af.varighetTil | date:'d.MM.yy'}}<br/>
-	                { af.sluttaarsak.navn }}<br/>
+	                {{ af.sluttaarsak.navn }}<br/>
 
-                    <!--<div data-ng-include="af.sluttaarsak.url"></div>-->
+                    <div data-ng-include="af.sluttaarsak.oppsummeringsurl"></div>
 
 
                     <a href data-ng-click="slettArbeidsforhold(af)" cmstekster="arbeidsforhold.slettarbeidsforhold"/>
@@ -20,7 +20,7 @@
                 </div>
 
                 <div data-ng-show="posisjonForArbeidsforholdUnderRedigering == $index">
-                <form name="endreArbeidsforholdForm" data-ng-submit="lagreEndretArbeidsforhold(af)">
+                <form name="endreArbeidsforholdForm" data-ng-submit="lagreArbeidsforhold(af)">
 		        	<label for="arbeidsgiver_navn" cmstekster="arbeidsforhold.arbeidsgiver.navn"/>
 			        <input id="arbeidsgiver_navn" type="text" data-ng-model="af.navn" required/>
 
