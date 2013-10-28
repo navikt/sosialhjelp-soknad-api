@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.0rc1
+ * @license AngularJS v1.2.0-rc.3
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -11,25 +11,14 @@ var $sanitizeMinErr = angular.$$minErr('$sanitize');
  * @ngdoc overview
  * @name ngSanitize
  * @description
- * 
+ *
+ * # ngSanitize
+ *
  * The `ngSanitize` module provides functionality to sanitize HTML.
- * 
- * # Installation
- * As a separate module, it must be loaded after Angular core is loaded; otherwise, an 'Uncaught Error:
- * No module: ngSanitize' runtime error will occur.
  *
- * <pre>
- *   <script src="angular.js"></script>
- *   <script src="angular-sanitize.js"></script>
- * </pre>
+ * {@installModule sanitize}
  *
- * # Usage
- * To make sure the module is available to your application, declare it as a dependency of you application
- * module.
- *
- * <pre>
- *   angular.module('app', ['ngSanitize']);
- * </pre>
+ * See {@link ngSanitize.$sanitize `$sanitize`} for usage.
  */
 
 /*
@@ -151,6 +140,7 @@ var START_TAG_REGEXP = /^<\s*([\w:-]+)((?:\s+[\w:-]+(?:\s*=\s*(?:(?:"[^"]*")|(?:
   BEGIN_TAG_REGEXP = /^</,
   BEGING_END_TAGE_REGEXP = /^<\s*\//,
   COMMENT_REGEXP = /<!--(.*?)-->/g,
+  DOCTYPE_REGEXP = /<!DOCTYPE([^>]*?)>/i,
   CDATA_REGEXP = /<!\[CDATA\[(.*?)]]>/g,
   URI_REGEXP = /^((ftp|https?):\/\/|mailto:|tel:|#)/i,
   NON_ALPHANUMERIC_REGEXP = /([^\#-~| |!])/g; // Match everything outside of normal chars and " (quote character)
@@ -226,14 +216,22 @@ function htmlParser( html, handler ) {
 
       // Comment
       if ( html.indexOf("<!--") === 0 ) {
-        index = html.indexOf("-->");
+        // comments containing -- are not allowed unless they terminate the comment
+        index = html.indexOf("--", 4);
 
-        if ( index >= 0 ) {
+        if ( index >= 0 && html.lastIndexOf("-->", index) === index) {
           if (handler.comment) handler.comment( html.substring( 4, index ) );
           html = html.substring( index + 3 );
           chars = false;
         }
+      // DOCTYPE
+      } else if ( DOCTYPE_REGEXP.test(html) ) {
+        match = html.match( DOCTYPE_REGEXP );
 
+        if ( match ) {
+          html = html.replace( match[0] , '');
+          chars = false;
+        }
       // end tag
       } else if ( BEGING_END_TAGE_REGEXP.test(html) ) {
         match = html.match( END_TAG_REGEXP );
@@ -429,8 +427,10 @@ angular.module('ngSanitize', []).value('$sanitize', $sanitize);
  * @function
  *
  * @description
- *   Finds links in text input and turns them into html links. Supports http/https/ftp/mailto and
- *   plain email address links.
+ * Finds links in text input and turns them into html links. Supports http/https/ftp/mailto and
+ * plain email address links.
+ *
+ * Requires the {@link ngSanitize `ngSanitize`} module to be installed.
  *
  * @param {string} text Input text.
  * @param {string} target Window (_blank|_self|_parent|_top) or named frame to open links in.
