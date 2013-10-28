@@ -1,6 +1,4 @@
 <div class="skjemaramme">
-    <h2 class="stor -strek" cmstekster="ytelser.tittel"/>
-
     <form name="ytelserForm" class="skjemainnhold" data-ng-controller="ModusCtrl" novalidate>
         <div data-ng-controller="YtelserCtrl">
             <div class="spm">
@@ -9,7 +7,8 @@
                 <p class="spm-sporsmal" cmstekster="ytelser.sporsmal"/>
 
                 <navcheckbox data-ng-model='soknadData.fakta.stonadFisker.value' modus='data.redigeringsModus'
-                             inputname='stonadFisker' label='ytelser.stonadFikser' endret="endreYtelse(ytelserForm)"/>
+                             inputname='stonadFisker' label='ytelser.stonadFikser'
+                             endret="endreYtelse(ytelserForm)"/>
 
                 <navcheckbox data-ng-model='soknadData.fakta.offentligTjenestepensjon.value'
                              modus='data.redigeringsModus' inputname='offentligTjenestepensjon'
@@ -47,7 +46,8 @@
                 </navcheckbox>
 
                 <navcheckbox data-ng-model='soknadData.fakta.dagpengerEOS.value' modus='data.redigeringsModus'
-                             inputname='dagpengerEOS' label='ytelser.dagpengerEOS' endret="endreYtelse(ytelserForm)">
+                             inputname='dagpengerEOS' label='ytelser.dagpengerEOS'
+                             endret="endreYtelse(ytelserForm)">
 
                     <navtekst data-ng-model="soknadData.fakta.dagpengerEOSUtbetaler.value"
                               modus="data.redigeringsModus"
@@ -75,7 +75,7 @@
 
                     <span data-ng-show='hvisIOppsummeringsmodusOgChecked()' cmstekster="ytelser.ingenYtelse"/>
                     <!--<span data-ng-show="ytelserForm.$error.harValgtYtelse"-->
-                          <!--cmstekster="ytelser.harValgtYtelse.feilmelding"/>-->
+                    <!--cmstekster="ytelser.harValgtYtelse.feilmelding"/>-->
                 </div>
 
             </div>
