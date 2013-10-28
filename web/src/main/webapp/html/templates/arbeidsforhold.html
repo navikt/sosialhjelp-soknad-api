@@ -13,13 +13,13 @@
 	                {{ af.land }}<br/>
 	                {{ af.varighetFra | date:'d.MM.yy'}}<br/>
 	                {{ af.varighetTil | date:'d.MM.yy'}}<br/>
-	                {{ af.sluttaarsak }}<br/>
+	                {{ af.sluttaarsak.navn }}<br/>
 	                <a href data-ng-click="slettArbeidsforhold(af)">Slett</a>
 	                <a href data-ng-click="endreArbeidsforhold($index)">Endre</a>
                 </div>
 
                 <div data-ng-show="posisjonForArbeidsforholdUnderRedigering == $index">
-                <form name="endreArbeidsforholdForm" data-ng-submit="lagreEndretArbeidsforhold(af)">
+                <form name="endreArbeidsforholdForm" data-ng-submit="lagreArbeidsforhold(af)">
 		        	<label for="arbeidsgiver_navn">Navn på arbeidsgiver</label>
 			        <input id="arbeidsgiver_navn" type="text" data-ng-model="af.navn" required/>
 			        
@@ -41,80 +41,30 @@
 		                <span data-ng-show="datoError" style="color:red">Tildato må være etter fradato</span>
 		                <input type="text" name="varighetTil" ui-date ui-date-format ng-model="af.varighetTil" data-ng-change="validateTilFraDato(af)" required >
 			        </div>
-			        
-			        <br/>
-			        <br/>
-			        
+
 			        <label>Årsaken til at du sluttet i jobben</label>
 			        <br/>
-			        <select id="arbeidsgiver_sluttaarsak" type="text" data-ng-model="af.sluttaarsak" required>
+			        <select id="sluttaarsak_id" type="text" data-ng-model="af.sluttaarsak" data-ng-options="t.navn for t in templates" required>
 			        	<option value="">--Velg sluttårsak--</option>
-			        	<option value="sagtOppSelv">Sagt opp selv</option>
-			        	<option value="sagtOppAvArbeidsgiver">Sagt opp av arbeidsgiver</option>
-			        	<option value="permitert">Permittert</option>s
-			        	<option value="avskjediget">Avskjediget</option>
-			        	<option value="konkurs">Konkurs</option>
-			        	<option value="kontraktUtgaat">Kontrakt er gått ut</option>
-			        	<option value="redusertArbeidstid">Redusert arbeidstid med mer enn 50% (40% for fiskere)</option>
 		        	</select>
-			        
+
 			        <br/>
-			        <br/>
-			        
+
+			        <div data-ng-show="af.sluttaarsak">
+			        	<br/>
+			        	<div data-ng-include="af.sluttaarsak.url"></div>
+			        </div>
+
 			        <input cmstekster="arbeidsforhold.lagre" type="submit" id="arbeidsgiverLagre"></input>
-			        <a href cmstekster="arbeidsforhold.avbryt" data-ng-click="avbrytEndringAvArbeidsforhold()"></a>
+
+			        <a href cmstekster="arbeidsforhold.avbryt" data-ng-click="avbrytEndringAvArbeidsforhold(af)"></a>
 		        </form>
                 </div>
             </li>
         </ul> 
-
-        <form name="nyttArbeidsforholdForm" data-ng-show="arbeidsforholdaapen" data-ng-submit="lagreArbeidsforhold()">
-        	<label for="arbeidsgiver_navn">Navn på arbeidsgiver</label>
-	        <input id="arbeidsgiver_navn" type="text" data-ng-model="arbeidsgiver.navn" required/>
-	        
-	        <br/>
-	        <br/>
-	        
-	        <label for="arbeidsgiver_land">Land</label>
-	        <select id="arbeidsgiver_land" data-ng-model="arbeidsgiver.land" data-ng-options="item for item in landService.result" required>
-	        	<option value="">--Velg land--</option>
-	        </select>
-	        
-	        <br/>
-	        <br/>
-	        
-	        <div class="varighet">
-                <label>Fra:</label>
-                <input type="text" name="varighetFra" ui-date ui-date-format ng-model="arbeidsgiver.varighetFra" required >
-                <label>Til:</label> 
-                <span data-ng-show="datoError" style="color:red">Tildato må være etter fradato</span>
-                <input type="text" name="varighetTil" ui-date ui-date-format ng-model="arbeidsgiver.varighetTil" required >
-	        </div>
-	        
-	        <br/>
-	        <br/>
-	        
-	        <label>Årsaken til at du sluttet i jobben</label>
-	        <br/>
-	        <select id="arbeidsgiver_sluttaarsak" type="text" data-ng-model="arbeidsgiver.sluttaarsak" required>
-	        	<option value="">--Velg sluttårsak--</option>
-	        	<option value="sagtOppSelv">Sagt opp selv</option>
-	        	<option value="sagtOppAvArbeidsgiver">Sagt opp av arbeidsgiver</option>
-	        	<option value="permitert">Permittert</option>s
-	        	<option value="avskjediget">Avskjediget</option>
-	        	<option value="konkurs">Konkurs</option>
-	        	<option value="kontraktUtgaat">Kontrakt er gått ut</option>
-	        	<option value="redusertArbeidstid">Redusert arbeidstid med mer enn 50% (40% for fiskere)</option>
-        	</select>
-	       
-	        <br/>
-	        <br/>
-	       
-	        <input cmstekster="arbeidsforhold.lagre" type="submit" id="arbeidsgiverLagre"></input>
-	        <a href cmstekster="arbeidsforhold.avbryt" data-ng-click="avbrytArbeidsforhold()"></a>
-        </form>
-
-        <form name="arbeidsforholdForm" novalidate>
+ 
+       
+       <form name="arbeidsforholdForm" data-ng-controller="ModusCtrl" novalidate>
 	        <a href data-ng-show="kanLeggeTilArbeidsforhold()" data-ng-click="nyttArbeidsforhold($event)"> Legg til nytt arbeidsforhold</a>
 
 	        <br/>
