@@ -1,10 +1,18 @@
 <div>
     <button data-ng-show="hvisIOppsummeringsmodus()" class="knapp-hoved" data-ng-click="gaTilRedigeringsmodus()" cmstekster="endre"/>
 
-    <div>
-        <a class="knapp-hoved" href="#/{{ navigering.nesteside }}/{{ soknadData.soknadId }}" cmstekster="neste"/>
+    <div class="spm-navigering">
+        <a href="#/{{ navigering.nesteside }}/{{ soknadData.soknadId }}" cmstekster="forrige"/>
+        <a href="#/{{ navigering.nesteside }}/{{ soknadData.soknadId }}" cmstekster="neste"/>
     </div>
-    <div>
-        <a class="knapp-stor" href="#/avbryt/{{ data.soknadId }}" cmstekster="avbryt"/>
+
+    <div class="spm-fortsett lenker-dot">
+        <span>
+            <a href="#/fortsettsenere" cmstekster="fortsettSenere"/>
+        </span>
+        <span cmstekster="sistLagret"/>
     </div>
+    <!--<div>-->
+        <!--<a class="knapp-stor" href="#/avbryt/{{ data.soknadId }}" cmstekster="avbryt"/>-->
+    <!--</div>-->
 </div>

@@ -79,11 +79,13 @@
                 <feilmeldinger form="utdanningForm" nokkel="utdanning"/>
             </div>
 
-            <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
-                    data-ng-click="validerUtdanning(utdanningForm)"
-                    cmstekster="utdanning.ferdig"/>
+            <div class="spm-knapper">
+                <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
+                        data-ng-click="validerUtdanning(utdanningForm)"
+                        cmstekster="utdanning.ferdig"/>
 
-            <sporsmalblokk/>
+                <sporsmalblokk/>
+            </div>
         </div>
     </form>
 </div>
