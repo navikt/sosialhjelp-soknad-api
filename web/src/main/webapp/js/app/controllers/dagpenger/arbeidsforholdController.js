@@ -59,12 +59,14 @@ angular.module('nav.arbeidsforhold.controller',[])
                 }
             }
 
-            $scope.lagreArbeidsforhold = function(af) {
-                $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
-                $scope.posisjonForArbeidsforholdUnderRedigering = -1;
+            $scope.lagreArbeidsforhold = function(af, form) {
+                if(form.$valid) {
+                    $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
+                    $scope.posisjonForArbeidsforholdUnderRedigering = -1;
 
-                //todo refaktorer
-                $scope.endreError = false;
+                    //todo refaktorer
+                    $scope.endreError = false;
+                }
             }
 
 
@@ -130,7 +132,6 @@ angular.module('nav.arbeidsforhold.controller',[])
                 if($scope.soknadData.fakta && $scope.soknadData.fakta.harIkkeJobbet) {
         		  return $scope.soknadData.fakta.harIkkeJobbet.value == "false";
                 }
-                //skjønte ikke heeeelt hvordan dette henger sammen.... Men nå funka det ved første trykk på ikkeJobbet også.
                 return true;
         	}
 
@@ -162,6 +163,15 @@ angular.module('nav.arbeidsforhold.controller',[])
                     $scope.datoError = true;
                 } else {
                     $scope.datoError = false;
+                }
+            }
+
+            $scope.validateOppsigelsestidTilFraDato = function(af) {
+                if(af && (af.sluttaarsak.varighetTil <= af.sluttaarsak.varighetFra)) {
+                  af.sluttaarsak.varighetTil = '';
+                    $scope.oppsigelsestidDatoError = true;
+                } else {
+                    $scope.oppsigelsestidDatoError = false;
                 }
             }
 
