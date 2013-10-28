@@ -66,7 +66,7 @@ angular.module('app.routes', ['ngRoute'])
                 }
             })
             .when('/sluttaarsak-redusertarbeidstid/:soknadId', {
-                templateUrl: '../html/templates/sluttaarsak-redusertarbeidstid.html',
+                templateUrl: '../html/templates/redusertarbeidstid.html',
                 controller: 'SoknadDataCtrl',
                 resolve: {
                     notUsedButRequiredProperty: function (HentSoknadService) {

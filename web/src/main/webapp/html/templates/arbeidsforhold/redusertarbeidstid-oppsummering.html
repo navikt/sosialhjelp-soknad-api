@@ -1,0 +1,15 @@
+<div>
+    <p cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.informasjon"/>
+
+    <p class='spm' cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.sporsmal"/>
+    <p>{{af.sluttaarsak.redusertArbeidstid.fra}} </p>
+
+    <div data-ng-show="af.sluttaarsak.redusertArbeidstid.nyttTilbud">
+        <p cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.true"/>
+    </div>
+
+    <div data-ng-show="af.sluttaarsak.redusertArbeidstid.nyttTilbud == 'false'">
+        <p cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.false"/>
+    </div>
+
+</div>
