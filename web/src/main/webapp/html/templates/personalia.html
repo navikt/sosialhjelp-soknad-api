@@ -1,84 +1,93 @@
-<div data-ng-controller="PersonaliaCtrl">
-    <div data-ng-show="harHentetPersonalia()">
-        <h1 cmstekster="personalia.tittel"></h1>
+<div class="skjemaramme" data-ng-controller="PersonaliaCtrl">
+    <div class="skjemainnhold">
+        <div data-ng-show="harHentetPersonalia()">
 
-        <label cmstekster="personalia.fnr"></label>
-        <p> {{personalia.fakta.fnr.value}} </p>
+            <label cmstekster="personalia.fnr"></label>
 
-        <div data-ng-show="harBostedsadresseOgIngenMidlertidigAdresse()">
-            <label cmstekster="personalia.navn"></label>
-            <p> {{personalia.fakta.sammensattnavn.value}} </p>
-            
-            <label cmstekster="personalia.bostedsadresse"></label>
-            <p>
-                {{ personalia.fakta.adresser[data.bostedsAdresse].gatenavn }}
-                {{ personalia.fakta.adresser[data.bostedsAdresse].husnummer }}
-                {{ personalia.fakta.adresser[data.bostedsAdresse].husbokstav }}
-            </p>
-            <p>
-                {{ personalia.fakta.adresser[data.bostedsAdresse].postnummer }}
-                {{ personalia.fakta.adresser[data.bostedsAdresse].poststed }}
-            </p>
-        </div>
-        <div data-ng-show="harMidlertidigAdresse()">
-            <h4> {{ hentMidlertidigAdresseTittel() }}</h4>
+            <p> {{personalia.fakta.fnr.value}} </p>
 
-            <p>
-                <span cmstekster="personalia.co"></span>
-                <span> {{ personalia.fakta.adresser[data.midlertidigAdresse].adresseEier }}</span>
-            </p>
+            <div data-ng-show="harBostedsadresseOgIngenMidlertidigAdresse()">
+                <label cmstekster="personalia.navn"></label>
 
-            <p data-ng-show="harPostboksAdresse()">
-                <label cmstekster="personalia.postboks"></label>
-                {{ personalia.fakta.adresser[data.midlertidigAdresse].postboksNummer }}
-                {{ personalia.fakta.adresser[data.midlertidigAdresse].postboksNavn }}
-            </p>
-
-            <p data-ng-show="harGateAdresse()">
-                {{ personalia.fakta.adresser[data.midlertidigAdresse].gatenavn }}
-                {{ personalia.fakta.adresser[data.midlertidigAdresse].husnummer }}
-                {{ personalia.fakta.adresser[data.midlertidigAdresse].husbokstav }}
-            </p>
-
-            <p data-ng-show="harMidlertidigUtenlandskAdresse()">
-            <span data-ng-repeat="linje in personalia.fakta.adresser[data.midlertidigAdresse].utenlandsAdresse">
-                {{linje}}
-            </span>
-                {{personalia.fakta.adresser[data.midlertidigAdresse].land}}
-            </p>
-
-            <p>
-                {{ personalia.fakta.adresser[data.midlertidigAdresse].postnummer }}
-                {{ personalia.fakta.adresser[data.midlertidigAdresse].poststed }}
-            </p>
-
-            <p>
-                Gyldig til: {{ personalia.fakta.adresser[data.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy' }}
-            </p>
-
-            <div data-ng-show="harUtenlandskAdresse()">
-                <h4> Folkeregistrert adresse </h4>
                 <p> {{personalia.fakta.sammensattnavn.value}} </p>
-                
+
                 <label cmstekster="personalia.bostedsadresse"></label>
+
                 <p>
                     {{ personalia.fakta.adresser[data.bostedsAdresse].gatenavn }}
                     {{ personalia.fakta.adresser[data.bostedsAdresse].husnummer }}
                     {{ personalia.fakta.adresser[data.bostedsAdresse].husbokstav }}
                 </p>
+
                 <p>
                     {{ personalia.fakta.adresser[data.bostedsAdresse].postnummer }}
                     {{ personalia.fakta.adresser[data.bostedsAdresse].poststed }}
                 </p>
             </div>
-        </div>
-    </div>
-    <div ng-show="harIkkeHentetPersonalia()">
-        <img src="../img/ajaxloader/hvit/loader_hvit_64.gif" alt="Fremdriftsindikator"/>
-    </div>
+            <div data-ng-show="harMidlertidigAdresse()">
+                <h4> {{ hentMidlertidigAdresseTittel() }}</h4>
 
-    <a class="knapp-hoved" href="#/oppsummering/{{ soknadData.soknadId }}" cmstekster="neste">
-    </a>
-    <button class="knapp-stor" data-ng-click="avbryt()" cmstekster="avbryt">
-    </button>
+                <p>
+                    <span cmstekster="personalia.co"></span>
+                    <span> {{ personalia.fakta.adresser[data.midlertidigAdresse].adresseEier }}</span>
+                </p>
+
+                <p data-ng-show="harPostboksAdresse()">
+                    <label cmstekster="personalia.postboks"></label>
+                    {{ personalia.fakta.adresser[data.midlertidigAdresse].postboksNummer }}
+                    {{ personalia.fakta.adresser[data.midlertidigAdresse].postboksNavn }}
+                </p>
+
+                <p data-ng-show="harGateAdresse()">
+                    {{ personalia.fakta.adresser[data.midlertidigAdresse].gatenavn }}
+                    {{ personalia.fakta.adresser[data.midlertidigAdresse].husnummer }}
+                    {{ personalia.fakta.adresser[data.midlertidigAdresse].husbokstav }}
+                </p>
+
+                <p data-ng-show="harMidlertidigUtenlandskAdresse()">
+            <span data-ng-repeat="linje in personalia.fakta.adresser[data.midlertidigAdresse].utenlandsAdresse">
+                {{linje}}
+            </span>
+                    {{personalia.fakta.adresser[data.midlertidigAdresse].land}}
+                </p>
+
+                <p>
+                    {{ personalia.fakta.adresser[data.midlertidigAdresse].postnummer }}
+                    {{ personalia.fakta.adresser[data.midlertidigAdresse].poststed }}
+                </p>
+
+                <p>
+                    Gyldig til: {{ personalia.fakta.adresser[data.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
+                    }}
+                </p>
+
+                <div data-ng-show="harUtenlandskAdresse()">
+                    <h4> Folkeregistrert adresse </h4>
+
+                    <p> {{personalia.fakta.sammensattnavn.value}} </p>
+
+                    <label cmstekster="personalia.bostedsadresse"></label>
+
+                    <p>
+                        {{ personalia.fakta.adresser[data.bostedsAdresse].gatenavn }}
+                        {{ personalia.fakta.adresser[data.bostedsAdresse].husnummer }}
+                        {{ personalia.fakta.adresser[data.bostedsAdresse].husbokstav }}
+                    </p>
+
+                    <p>
+                        {{ personalia.fakta.adresser[data.bostedsAdresse].postnummer }}
+                        {{ personalia.fakta.adresser[data.bostedsAdresse].poststed }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div ng-show="harIkkeHentetPersonalia()">
+            <img src="../img/ajaxloader/hvit/loader_hvit_64.gif" alt="Fremdriftsindikator"/>
+        </div>
+
+        <a class="knapp-hoved" href="#/oppsummering/{{ soknadData.soknadId }}" cmstekster="neste">
+        </a>
+        <button class="knapp-stor" data-ng-click="avbryt()" cmstekster="avbryt">
+        </button>
+    </div>
 </div>
