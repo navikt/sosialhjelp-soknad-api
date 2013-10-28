@@ -11,13 +11,13 @@
 	                {{ af.varighetFra | date:'d.MM.yy'}}<br/>
 	                {{ af.varighetTil | date:'d.MM.yy'}}<br/>
 
-	                { af.sluttaarsak.navn }}<br/>
+	                {{ af.sluttaarsak.navn }}<br/>
 	                <a href data-ng-click="slettArbeidsforhold(af)" cmstekster="arbeidsforhold.slettarbeidsforhold"/>
 	                <a href data-ng-click="endreArbeidsforhold($index)" cmstekster="arbeidsforhold.endrearbeidsforhold"/>
                 </div>
 
                 <div data-ng-show="posisjonForArbeidsforholdUnderRedigering == $index">
-                <form name="endreArbeidsforholdForm" data-ng-submit="lagreEndretArbeidsforhold(af)">
+                <form name="endreArbeidsforholdForm" data-ng-submit="lagreArbeidsforhold(af)">
 		        	<label for="arbeidsgiver_navn" cmstekster="arbeidsforhold.arbeidsgiver.navn"/>
 			        <input id="arbeidsgiver_navn" type="text" data-ng-model="af.navn" required/>
 			        
