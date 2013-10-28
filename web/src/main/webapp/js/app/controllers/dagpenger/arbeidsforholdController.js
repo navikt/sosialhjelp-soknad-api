@@ -11,8 +11,15 @@ angular.module('nav.arbeidsforhold.controller',[])
             $scope.validateForm(form.$invalid);
         }
 
-        $scope.templates = [{navn: 'Kontrakt utgått', url: '../html/templates/arbeidsforhold/kontrakt_utgaatt.html'}];
+        $scope.templates = [{navn: 'Kontrakt utgått', url: '../html/templates/arbeidsforhold/kontrakt_utgaatt.html'},
+                            {navn: 'Avskjediget', url: '../html/templates/arbeidsforhold/avskjediget.html'}];
         $scope.template = $scope.templates[0];
+
+        $scope.arbeidsforholdetErIkkeIRedigeringsModus = function(index) {
+            return $scope.posisjonForArbeidsforholdUnderRedigering != index;
+        }
+
+
         soknadService.get({param: $routeParams.soknadId}).$promise.then(function (result) {
             $scope.soknadData = result;
             if($scope.soknadData.fakta.arbeidsforhold) {
@@ -22,7 +29,7 @@ angular.module('nav.arbeidsforhold.controller',[])
 
 
             if($scope.soknadData.fakta.harIkkeJobbet && $scope.soknadData.fakta.harIkkeJobbet.value == "true") {
-                $scope.$broadcast("SETT_OPPSUMERINGSMODUS");
+                $scope.validateForm();
             }
 
             $scope.erSluttaarsakValgt = function() {
@@ -106,15 +113,15 @@ angular.module('nav.arbeidsforhold.controller',[])
                 return !$scope.arbeidsforholdaapen;
             }
 
-	        $scope.toggleRedigeringsmodus = function() {
+	        $scope.toggleRedigeringsmodus = function(form) {
         		if(harIkkeJobbet12SisteMaaneder()) {
-                    $scope.validateForm();
+                    $scope.validateForm(form.$invalid);
         		}
         	}
 
             $scope.$on("ENDRET_TIL_REDIGERINGS_MODUS", function() {
                 $scope.soknadData.fakta.harIkkeJobbet = false;
-                $scope.$broadcast("OPPDATER_OG_LAGRE", {key: 'harIkkeJobbet', value: false});
+                $scope.$emit("OPPDATER_OG_LAGRE", {key: 'harIkkeJobbet', value: false});
             });
 
         	function harIkkeJobbet12SisteMaaneder() {
