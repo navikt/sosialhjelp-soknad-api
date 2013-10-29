@@ -4,6 +4,7 @@
 <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.informasjon"/>
 
 <div class="varighet">
+    <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.sporsmal"/>
     <label cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetFra"/>
     <input type="text" name="oppsigelsesTidVarighetFra" ui-date ui-date-format ng-model="af.ssagtOppAvArbeidsgiverVarighetFra" data-ng-change="validateOppsigelsestidTilFraDato(af)"  required >
     <label cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetTil"/>
@@ -16,15 +17,15 @@
 <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.sporsmal"/>
 
 <div>
-  <input class="sendsoknad-radio" id="oppsigelseslonnJa{{$index}}" data-ng-model="af.sagtOppAvArbeidsgiverOppsigelseslonn" type="radio" value="true"
-             name="oppsigelseslonn{{$index}}" required/>
-  <label for="oppsigelseslonnJa{{$index}}" class='svar-alt' cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.true"/>
+  <input class="sendsoknad-radio" id="oppsigelseslonnJa" data-ng-model="af.sagtOppAvArbeidsgiverOppsigelseslonn" type="radio" value="true"
+             name="oppsigelseslonn" error-messages="{required: 'Du må svare på spørsmål om du har krav på lønn i oppsigelsesperioden'}" required/>
+  <label for="oppsigelseslonnJa" class='svar-alt' cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.true"/>
 </div>
 
 <div>
-  <input class="sendsoknad-radio" id="oppsigelseslonnNei{{$index}}" data-ng-model="af.sagtOppAvArbeidsgiverOppsigelseslonn" type="radio" value="false"
-             name="oppsigelseslonn{{$index}}" required/>
-  <label for="oppsigelseslonnNei{{$index}}" class='svar-alt' cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.false"/>
+  <input class="sendsoknad-radio" id="oppsigelseslonnNei" data-ng-model="af.sagtOppAvArbeidsgiverOppsigelseslonn" type="radio" value="false"
+             name="oppsigelseslonn" error-messages="{required: 'Du må svare på spørsmål om du har krav på lønn i oppsigelsesperioden'}" required/>
+  <label for="oppsigelseslonnNei" class='svar-alt' cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.false"/>
 </div>
 </div>
 
