@@ -1,5 +1,8 @@
 angular.module('nav.arbeidsforhold.controller',[])
  .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams) {
+        
+        $scope.showErrors = false;
+ 
         $scope.arbeidsforhold = [];
         $scope.posisjonForArbeidsforholdUnderRedigering = -1;
         $scope.arbeidsforholdaapen = false;
@@ -13,6 +16,7 @@ angular.module('nav.arbeidsforhold.controller',[])
 
         $scope.templates = [{navn: 'Kontrakt utgått', url: '../html/templates/arbeidsforhold/kontrakt-utgaatt.html', oppsummeringsurl: '../html/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html'},
                             {navn: 'Avskjediget', url: '../html/templates/arbeidsforhold/avskjediget.html', oppsummeringsurl: '../html/templates/arbeidsforhold/avskjediget-oppsummering.html' },
+                            {navn: 'Sagt opp av arbeidsgiver', url: '../html/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html', oppsummeringsurl:'../html/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html' },
                             {navn: 'Redusert arbeidstid', url: '../html/templates/arbeidsforhold/redusertarbeidstid.html', oppsummeringsurl: '../html/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html' }
                             ];
 
@@ -60,12 +64,17 @@ angular.module('nav.arbeidsforhold.controller',[])
                 }
             }
 
-            $scope.lagreArbeidsforhold = function(af) {
-                $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
-                $scope.posisjonForArbeidsforholdUnderRedigering = -1;
+            $scope.lagreArbeidsforhold = function(af, form) {
 
-                //todo refaktorer
-                $scope.endreError = false;
+               $scope.showErrors = form.$invalid;
+               console.log($scope.showErrors);
+                if(form.$valid) {
+                    $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
+                    $scope.posisjonForArbeidsforholdUnderRedigering = -1;
+
+                    //todo refaktorer
+                    $scope.endreError = false;
+                }
             }
 
 
@@ -131,7 +140,6 @@ angular.module('nav.arbeidsforhold.controller',[])
                 if($scope.soknadData.fakta && $scope.soknadData.fakta.harIkkeJobbet) {
         		  return $scope.soknadData.fakta.harIkkeJobbet.value == "false";
                 }
-                //skjønte ikke heeeelt hvordan dette henger sammen.... Men nå funka det ved første trykk på ikkeJobbet også.
                 return true;
         	}
 
@@ -163,6 +171,15 @@ angular.module('nav.arbeidsforhold.controller',[])
                     $scope.datoError = true;
                 } else {
                     $scope.datoError = false;
+                }
+            }
+
+            $scope.validateOppsigelsestidTilFraDato = function(af) {
+                if(af && (af.sagtOppAvArbeidsgiverVarighetTil <= af.sagtOppAvArbeidsgiverVarighetFra)) {
+                  af.sagtOppAvArbeidsgiverVarighetTil = '';
+                    $scope.oppsigelsestidDatoError = true;
+                } else {
+                    $scope.oppsigelsestidDatoError = false;
                 }
             }
 
