@@ -1,5 +1,5 @@
-<div class="skjemaramme" data-ng-controller="PersonaliaCtrl">
-    <div class="skjemainnhold">
+<div class="skjemaramme" data-ng-controller="ModusCtrl">
+    <div class="skjemainnhold" data-ng-controller="PersonaliaCtrl">
         <div data-ng-show="harHentetPersonalia()">
 
             <label cmstekster="personalia.fnr"></label>
@@ -85,9 +85,12 @@
             <img src="../img/ajaxloader/hvit/loader_hvit_64.gif" alt="Fremdriftsindikator"/>
         </div>
 
-        <a class="knapp-hoved" href="#/oppsummering/{{ soknadData.soknadId }}" cmstekster="neste">
-        </a>
-        <button class="knapp-stor" data-ng-click="avbryt()" cmstekster="avbryt">
-        </button>
+        <div class="spm-knapper">
+            <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
+                    data-ng-click="validerPersonalia()"
+                    cmstekster="personalia.ferdig"/>
+
+            <sporsmalblokk/>
+        </div>
     </div>
 </div>

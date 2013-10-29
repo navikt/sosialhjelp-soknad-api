@@ -14,10 +14,12 @@ angular.module('nav.arbeidsforhold.controller',[])
             $scope.validateForm(form.$invalid);
         }
 
-        $scope.templates = [{navn: 'Kontrakt utgått', url: '../html/templates/arbeidsforhold/kontrakt_utgaatt.html'},
-                            {navn: 'Avskjediget', url: '../html/templates/arbeidsforhold/avskjediget.html'},
-                            {navn: 'Sagt opp av arbeidsgiver', url: '../html/templates/arbeidsforhold/sagt_opp_av_arbeidsgiver.html'}
-                        ];
+        $scope.templates = [{navn: 'Kontrakt utgått', url: '../html/templates/arbeidsforhold/kontrakt-utgaatt.html', oppsummeringsurl: '../html/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html'},
+                            {navn: 'Avskjediget', url: '../html/templates/arbeidsforhold/avskjediget.html', oppsummeringsurl: '../html/templates/arbeidsforhold/avskjediget-oppsummering.html' },
+                            {navn: 'Sagt opp av arbeidsgiver', url: '../html/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html', oppsummeringsurl:'../html/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html' },
+                            {navn: 'Redusert arbeidstid', url: '../html/templates/arbeidsforhold/redusertarbeidstid.html', oppsummeringsurl: '../html/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html' }
+                            ];
+
         $scope.template = $scope.templates[0];
 
         $scope.arbeidsforholdetErIkkeIRedigeringsModus = function(index) {
@@ -151,7 +153,7 @@ angular.module('nav.arbeidsforhold.controller',[])
                 }
             });
             $scope.resolvUrl = function (){
-                return "../html/templates/kontrakt_utgaatt.html"
+                return "../html/templates/kontrakt-utgaatt.html"
             }
 
             $scope.$watch("arbeidsgiver.varighetTil", function(nyVerdi, gammelVerdi) {

@@ -83,11 +83,13 @@
                 <feilmeldinger form="ytelserForm" nokkel="ytelser"/>
             </div>
 
-            <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
-                    data-ng-click="validerYtelser(ytelserForm)"
-                    cmstekster="ytelser.ferdig"/>
+            <div class="spm-knapper">
+                <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
+                        data-ng-click="validerYtelser(ytelserForm)"
+                        cmstekster="ytelser.ferdig"/>
 
-            <sporsmalblokk/>
+                <sporsmalblokk/>
+            </div>
         </div>
     </form>
 </div>

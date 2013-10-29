@@ -21,11 +21,13 @@
                 <feilmeldinger form="reellarbeidssokerForm" nokkel="reellarbeidssoker"/>
             </div>
 
-            <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
-                    data-ng-click="validerReellarbeidssoker(reellarbeidssokerForm)"
-                    cmstekster="reellarbeidssoker.ferdig"/>
+            <div class="spm-knapper">
+                <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
+                        data-ng-click="validerReellarbeidssoker(reellarbeidssokerForm)"
+                        cmstekster="reellarbeidssoker.ferdig"/>
 
-            <sporsmalblokk/>
+                <sporsmalblokk/>
+            </div>
         </div>
     </form>
 </div>
