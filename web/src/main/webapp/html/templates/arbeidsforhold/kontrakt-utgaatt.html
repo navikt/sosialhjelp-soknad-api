@@ -1,11 +1,8 @@
 <div data-ng-controller="ModusCtrl">
-<h3>{{sluttaarsak.navn}}</h3>
+<p cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.informasjon"/>
 
-<p>Her kommer noe informasjonstekst</p>
-
-<br/>
 <div>
-    <label>Når er din siste arbeidsdag før kontrakten utgår?</label>
+    <p cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.sistearbeidsdag.sporsmal"/>
     <input type="text" name="varighetFra" ui-date ui-date-format ng-model="af.sluttaarsak.sluttet" required >
 </div>
 
@@ -14,7 +11,7 @@
 <div>	
 	<booleanradio data-ng-model="af.sluttaarsak.tilbudomaafortsette"
  				modus="data.redigeringsModus"
-    			nokkel="sluttaarsak.tilbudomaafortsette"/>
+    			nokkel="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette"/>
 </div>
 
 </div>
