@@ -1,5 +1,8 @@
 angular.module('nav.arbeidsforhold.controller',[])
  .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams) {
+        
+        $scope.showErrors = false;
+ 
         $scope.arbeidsforhold = [];
         $scope.posisjonForArbeidsforholdUnderRedigering = -1;
         $scope.arbeidsforholdaapen = false;
@@ -60,6 +63,9 @@ angular.module('nav.arbeidsforhold.controller',[])
             }
 
             $scope.lagreArbeidsforhold = function(af, form) {
+
+               $scope.showErrors = form.$invalid;
+               console.log($scope.showErrors);
                 if(form.$valid) {
                     $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
                     $scope.posisjonForArbeidsforholdUnderRedigering = -1;
@@ -167,8 +173,8 @@ angular.module('nav.arbeidsforhold.controller',[])
             }
 
             $scope.validateOppsigelsestidTilFraDato = function(af) {
-                if(af && (af.sluttaarsak.varighetTil <= af.sluttaarsak.varighetFra)) {
-                  af.sluttaarsak.varighetTil = '';
+                if(af && (af.sagtOppAvArbeidsgiverVarighetTil <= af.sagtOppAvArbeidsgiverVarighetFra)) {
+                  af.sagtOppAvArbeidsgiverVarighetTil = '';
                     $scope.oppsigelsestidDatoError = true;
                 } else {
                     $scope.oppsigelsestidDatoError = false;
