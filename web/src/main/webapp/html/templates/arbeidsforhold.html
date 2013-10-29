@@ -5,8 +5,9 @@
 
         <span data-ng-show="endreError" style="color:red" cmstekster="arbeidsforhold.error.endre"/>
 
-        <div data-ng-repeat="af in arbeidsforhold">
-            <div class="sluttaarsak" data-ng-show="arbeidsforholdetErIkkeIRedigeringsModus($index)">
+        <div data-ng-repeat="af in arbeidsforhold" ng-form="endreArbeidsforholdForm" name="endreArbeidsforholdForm" data-ng-submit="lagreArbeidsforhold(af, endreArbeidsforholdForm)"
+                      novalidate>
+            <div class="sluttaarsak" data-ng-if="arbeidsforholdetErIkkeIRedigeringsModus($index)">
                 <p class="svar-oppsummering arbeidsforhold-dato">{{ af.varighetFra | date:'d MMMM yyyy'}} - {{
                     af.varighetTil | date:'d MMMM yyyy'}}</p>
 
@@ -29,10 +30,9 @@
             </div>
 
 
-            <div data-ng-show="posisjonForArbeidsforholdUnderRedigering == $index">
+            <div data-ng-if="posisjonForArbeidsforholdUnderRedigering == $index">
 
-                <form name="endreArbeidsforholdForm" data-ng-submit="lagreArbeidsforhold(af, endreArbeidsforholdForm)"
-                      novalidate>
+             
                     <label for="arbeidsgiver_navn" cmstekster="arbeidsforhold.arbeidsgiver.navn"></label>
                     <input id="arbeidsgiver_navn" type="text" data-ng-model="af.navn"></input>
 
@@ -80,7 +80,7 @@
                         <div data-ng-include="af.sluttaarsak.url"></div>
                     </div>
 
-                    <input name="lagre" cmstekster="arbeidsforhold.lagre" type="submit" id="arbeidsgiverLagre"></input>
+                    <input name="lagre" cmstekster="arbeidsforhold.lagre" type="submit" id="arbeidsgiverLagre" data-ng-click="lagreArbeidsforhold(af, endreArbeidsforholdForm)"></input>
 
                     <a class="arbeidsforhold-avbryt" href cmstekster="arbeidsforhold.avbryt"
                        data-ng-click="avbrytEndringAvArbeidsforhold(af)"></a>
@@ -88,8 +88,6 @@
 
                     <form-errors></form-errors>
 
-
-                </form>
             </div>
         </div>
         <form name="arbeidsforholdForm" data-ng-submit="validerArbeidsforhold(arbeidsforholdForm)" novalidate>
