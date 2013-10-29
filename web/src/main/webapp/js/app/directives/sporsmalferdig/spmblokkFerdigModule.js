@@ -30,10 +30,7 @@ angular.module('nav.sporsmalferdig', [])
 
                 scope.lukkOgGaaTilNeste = function () {
                     lukkTab(tab);
-
-                    $timeout(function () {
-                        scope.gaaTilNeste();
-                    }, 400);
+                    scope.gaaTilNeste();
                 }
 
                 scope.gaaTilNeste = function () {
@@ -46,11 +43,10 @@ angular.module('nav.sporsmalferdig', [])
 
                 function gaaTilTab(nyTab) {
                     if (nyTab.length > 0) {
-                        var delay = scrollToTab(nyTab);
-
+                        apneTab(nyTab);
                         $timeout(function () {
-                            apneTab(nyTab);
-                        }, delay);
+                            scrollToTab(nyTab);
+                        }, 200);
                     }
                 }
 
