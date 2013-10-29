@@ -1,5 +1,5 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <div class="skjemainnhold" data-ng-controller="PersonaliaCtrl">
+    <form name="personaliaForm" class="skjemainnhold" data-ng-controller="PersonaliaCtrl" data-ng-submit="validerPersonalia(personaliaForm)" novalidate>
         <div data-ng-show="harHentetPersonalia()">
 
             <label cmstekster="personalia.fnr"></label>
@@ -14,14 +14,14 @@
                 <label cmstekster="personalia.bostedsadresse"></label>
 
                 <p>
-                    {{ personalia.fakta.adresser[data.bostedsAdresse].gatenavn }}
-                    {{ personalia.fakta.adresser[data.bostedsAdresse].husnummer }}
-                    {{ personalia.fakta.adresser[data.bostedsAdresse].husbokstav }}
+                    {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].gatenavn }}
+                    {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].husnummer }}
+                    {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].husbokstav }}
                 </p>
 
                 <p>
-                    {{ personalia.fakta.adresser[data.bostedsAdresse].postnummer }}
-                    {{ personalia.fakta.adresser[data.bostedsAdresse].poststed }}
+                    {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].postnummer }}
+                    {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].poststed }}
                 </p>
             </div>
             <div data-ng-show="harMidlertidigAdresse()">
@@ -29,35 +29,35 @@
 
                 <p>
                     <span cmstekster="personalia.co"></span>
-                    <span> {{ personalia.fakta.adresser[data.midlertidigAdresse].adresseEier }}</span>
+                    <span> {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].adresseEier }}</span>
                 </p>
 
                 <p data-ng-show="harPostboksAdresse()">
                     <label cmstekster="personalia.postboks"></label>
-                    {{ personalia.fakta.adresser[data.midlertidigAdresse].postboksNummer }}
-                    {{ personalia.fakta.adresser[data.midlertidigAdresse].postboksNavn }}
+                    {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].postboksNummer }}
+                    {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].postboksNavn }}
                 </p>
 
                 <p data-ng-show="harGateAdresse()">
-                    {{ personalia.fakta.adresser[data.midlertidigAdresse].gatenavn }}
-                    {{ personalia.fakta.adresser[data.midlertidigAdresse].husnummer }}
-                    {{ personalia.fakta.adresser[data.midlertidigAdresse].husbokstav }}
+                    {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gatenavn }}
+                    {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].husnummer }}
+                    {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].husbokstav }}
                 </p>
 
                 <p data-ng-show="harMidlertidigUtenlandskAdresse()">
             <span data-ng-repeat="linje in personalia.fakta.adresser[data.midlertidigAdresse].utenlandsAdresse">
                 {{linje}}
             </span>
-                    {{personalia.fakta.adresser[data.midlertidigAdresse].land}}
+                    {{personalia.fakta.adresser[personaliaData.midlertidigAdresse].land}}
                 </p>
 
                 <p>
-                    {{ personalia.fakta.adresser[data.midlertidigAdresse].postnummer }}
-                    {{ personalia.fakta.adresser[data.midlertidigAdresse].poststed }}
+                    {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].postnummer }}
+                    {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].poststed }}
                 </p>
 
                 <p>
-                    Gyldig til: {{ personalia.fakta.adresser[data.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
+                    Gyldig til: {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
                     }}
                 </p>
 
@@ -69,14 +69,14 @@
                     <label cmstekster="personalia.bostedsadresse"></label>
 
                     <p>
-                        {{ personalia.fakta.adresser[data.bostedsAdresse].gatenavn }}
-                        {{ personalia.fakta.adresser[data.bostedsAdresse].husnummer }}
-                        {{ personalia.fakta.adresser[data.bostedsAdresse].husbokstav }}
+                        {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].gatenavn }}
+                        {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].husnummer }}
+                        {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].husbokstav }}
                     </p>
 
                     <p>
-                        {{ personalia.fakta.adresser[data.bostedsAdresse].postnummer }}
-                        {{ personalia.fakta.adresser[data.bostedsAdresse].poststed }}
+                        {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].postnummer }}
+                        {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].poststed }}
                     </p>
                 </div>
             </div>
@@ -85,12 +85,8 @@
             <img src="../img/ajaxloader/hvit/loader_hvit_64.gif" alt="Fremdriftsindikator"/>
         </div>
 
-        <div class="spm-knapper">
-            <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
-                    data-ng-click="validerPersonalia()"
-                    cmstekster="personalia.ferdig"/>
-
-            <sporsmalblokk/>
-        </div>
-    </div>
+        <spmblokkferdig
+                nokkel="personalia"
+                modus="data.redigeringsModus"/>
+    </form>
 </div>

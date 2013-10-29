@@ -4,7 +4,7 @@
 *
 * Description
 */
-angular.module('app.directives', ['app.services', 'nav.booleanradio', 'nav.cmstekster', 'nav.input', 'nav.sporsmalblokk', 'nav.feilmeldinger'])
+angular.module('app.directives', ['app.services', 'nav.booleanradio', 'nav.cmstekster', 'nav.input', 'nav.feilmeldinger', 'nav.sporsmalferdig'])
 
 /*Hva med casene 1-242 osv? */
 
