@@ -5,7 +5,7 @@
     <div>
 
         <label cmstekster="sluttaarsakkonkurs.bostyrersnavn"></label>
-        <input type="text" id="bostyrersnavn" name="bostyrersnavn" ng-minlength="5" ng-maxlength="50" minlength="5" maxlength="50" required />
+        <input type="text" id="bostyrersnavn" name="bostyrersnavn" ng-minlength="5" ng-maxlength="50" minlength="5" maxlength="50"  ng-model="af.sluttaarsak.sluttet" required />
         <p cmstekster="sluttaarsakkonkurs.lonnsgaranti"/>
         <booleanradio data-ng-model="sluttaarsakkonkurs.lonnsgaranti"
                       modus="data.redigeringsModus"
