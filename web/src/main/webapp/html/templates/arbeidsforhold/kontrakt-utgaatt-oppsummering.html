@@ -1,21 +1,21 @@
 <div data-ng-controller="ModusCtrl">
-    <h3>{{sluttaarsak.navn}}</h3>
 
-    <p>Her kommer noe informasjonstekst</p>
+    <p cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.informasjon"/>
 
     <br/>
 
-    <label>Når er din siste arbeidsdag før kontrakten utgår?</label>
+    <p cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.sistearbeidsdag.sporsmal"/>
     <p> {{af.sluttaarsak.sluttet}} </p>
 
     <br/>
 
+    <p cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.sporsmal"/>
     <div data-ng-show="af.sluttaarsak.tilbudomaafortsette">
-        <p cmstekster="arbeidsforhold.sluttaarsak.tilbudomaafortsette.true"/>
+        <p cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true"/>
     </div>
 
     <div data-ng-show="af.sluttaarsak.tilbudomaafortsette == 'false'">
-        <p cmstekster="arbeidsforhold.sluttaarsak.tilbudomaafortsette.false"/>
+        <p cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.false"/>
     </div>
 
 </div>
