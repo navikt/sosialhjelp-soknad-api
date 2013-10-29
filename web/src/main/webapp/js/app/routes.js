@@ -74,7 +74,6 @@ angular.module('app.routes', ['ngRoute'])
                     }
                 }
             })
-
             .when('/oppsummering/:soknadId', {
                 templateUrl: '../html/templates/oppsummering.html',
                 controller: 'SoknadDataCtrl',

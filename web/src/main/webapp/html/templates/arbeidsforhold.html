@@ -13,6 +13,9 @@
                     {{ af.varighetTil | date:'d.MM.yy'}}<br/>
 
                     {{ af.sluttaarsak.navn }}<br/>
+
+                    <div data-ng-include="af.sluttaarsak.oppsummeringsurl"></div>
+
                     <a href data-ng-click="slettArbeidsforhold(af)" cmstekster="arbeidsforhold.slettarbeidsforhold"/>
                     <a href data-ng-click="endreArbeidsforhold($index)"
                        cmstekster="arbeidsforhold.endrearbeidsforhold"/>
@@ -97,4 +100,3 @@
         </form>
     </div>
 </div>
-</accordion-group>
