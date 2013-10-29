@@ -1,6 +1,5 @@
-<div class="skjemaramme">
-    <form name="vernepliktigForm" class="skjemainnhold" data-ng-controller="ModusCtrl" novalidate>
-        <div data-ng-controller="VernepliktCtrl">
+<div class="skjemaramme" data-ng-controller="ModusCtrl">
+    <form name="vernepliktigForm" class="skjemainnhold" data-ng-controller="VernepliktCtrl"  data-ng-submit="validerVerneplikt(vernepliktigForm)" novalidate>
             <booleanradio data-ng-model="soknadData.fakta.vernepliktig.value"
                           modus="data.redigeringsModus"
                           nokkel="vernepliktig"/>
@@ -11,13 +10,8 @@
                 <feilmeldinger form="vernepliktigForm" nokkel="vernepliktig"/>
             </div>
 
-            <div class="spm-knapper">
-                <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
-                        data-ng-click="validerVerneplikt(vernepliktigForm)"
-                        cmstekster="vernepliktig.ferdig"/>
-
-                <sporsmalblokk/>
-            </div>
-        </div>
+            <spmblokkferdig
+                    nokkel="vernepliktig"
+                    modus="data.redigeringsModus"/>
     </form>
 </div>

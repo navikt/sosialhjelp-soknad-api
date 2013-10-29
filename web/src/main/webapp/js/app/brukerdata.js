@@ -26,7 +26,7 @@ angular.module('app.brukerdata', ['app.services'])
 
 
     .controller('PersonaliaCtrl', ["$scope", "$routeParams", "tpsService", "data", function ($scope, $routeParams, tpsService, data) {
-        $scope.data = {};
+        $scope.personaliaData = {};
 
         tpsService.get({soknadId: $routeParams.soknadId}).$promise.then(function (result) {
             $scope.personalia = result;
@@ -40,21 +40,21 @@ angular.module('app.brukerdata', ['app.services'])
 
             $scope.personalia.fakta.adresser.forEach(function (data, index) {
                 if (data.type === "BOSTEDSADRESSE") {
-                    $scope.data.bostedsAdresse = index;
+                    $scope.personaliaData.bostedsAdresse = index;
                 } else if (data.type === "POSTADRESSE") {
-                    $scope.data.postAdresse = index;
+                    $scope.personaliaData.postAdresse = index;
                 } else {
-                    $scope.data.midlertidigAdresse = index;
+                    $scope.personaliaData.midlertidigAdresse = index;
                 }
             });
 
             // Trenger kanskje ikkje != undefined
             $scope.harBostedsAdresse = function () {
-                return $scope.data.bostedsAdresse != undefined;
+                return $scope.personaliaData.bostedsAdresse != undefined;
             }
 
             $scope.harMidlertidigAdresse = function () {
-                return $scope.data.midlertidigAdresse != undefined;
+                return $scope.personaliaData.midlertidigAdresse != undefined;
             }
 
             $scope.harBostedsadresseOgIngenMidlertidigAdresse = function() {
@@ -62,18 +62,18 @@ angular.module('app.brukerdata', ['app.services'])
             }
 
             $scope.harPostboksAdresse = function () {
-                return $scope.harMidlertidigAdresse() && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].postboksNavn != undefined && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].postboksNummer != undefined;
+                return $scope.harMidlertidigAdresse() && $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].postboksNavn != undefined && $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].postboksNummer != undefined;
             }
             $scope.harGateAdresse = function () {
-                return $scope.harMidlertidigAdresse() && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].gatenavn != undefined && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].husnummer != undefined
+                return $scope.harMidlertidigAdresse() && $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].gatenavn != undefined && $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].husnummer != undefined
             }
 
             $scope.harMidlertidigUtenlandskAdresse = function () {
-                return $scope.harMidlertidigAdresse() && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].land != undefined && $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].utenlandsAdresse.length > 0
+                return $scope.harMidlertidigAdresse() && $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].land != undefined && $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].utenlandsAdresse.length > 0
             }
 
             $scope.harUtenlandskFolkeregistrertAdresseOgMidlertidigNorskAdresse = function() {
-                return $scope.harMidlertidigAdresse() &&  $scope.harBostedsAdresse() && $scope.personalia.fakta.adresser[$scope.data.bostedsAdresse].land != undefined && $scope.personalia.fakta.adresser[$scope.data.bostedsAdresse].land != "";   
+                return $scope.harMidlertidigAdresse() &&  $scope.harBostedsAdresse() && $scope.personalia.fakta.adresser[$scope.personaliaData.bostedsAdresse].land != undefined && $scope.personalia.fakta.adresser[$scope.personaliaData.bostedsAdresse].land != "";
             }
 
             $scope.harUtenlandskAdresse = function() {
