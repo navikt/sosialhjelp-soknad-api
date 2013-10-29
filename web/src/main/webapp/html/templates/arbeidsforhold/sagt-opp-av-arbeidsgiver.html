@@ -5,21 +5,21 @@
 
 <div class="varighet">
     <label cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetFra"/>
-    <input type="text" name="oppsigelsesTidVarighetFra" ui-date ui-date-format ng-model="af.sluttaarsak.varighetFra" data-ng-change="validateOppsigelsestidTilFraDato(af)"  required >
+    <input type="text" name="oppsigelsesTidVarighetFra" ui-date ui-date-format ng-model="af.sagtoppavarbeidsgiver.varighetFra" data-ng-change="validateOppsigelsestidTilFraDato(af)"  required >
     <label cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetTil"/>
     <span data-ng-show="oppsigelsestidDatoError" style="color:red" cmstekster="arbeidsforhold.error.sagtOppAvArbeidsgiver.datoTilFra"/>
-    <input type="text" name="oppsigelsesTidVarighetTil" ui-date ui-date-format ng-model="af.sluttaarsak.varighetTil" data-ng-change="validateOppsigelsestidTilFraDato(af)" required >
+    <input type="text" name="oppsigelsesTidVarighetTil" ui-date ui-date-format ng-model="af.sagtoppavarbeidsgiver.varighetTil" data-ng-change="validateOppsigelsestidTilFraDato(af)" required >
 </div>
 
-<booleanradio data-ng-model="af.sluttaarsak.oppsigelseslonn.value"
+<booleanradio data-ng-model="af.oppsigelseslonn"
                           modus="data.redigeringsModus"
                           nokkel="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn"/>
 
-<booleanradio data-ng-model="af.sluttaarsak.tilbudomjobbannetsted.value"
+<booleanradio data-ng-model="af.tilbudomjobbannetsted"
                           modus="data.redigeringsModus"
                           nokkel="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted"/>
 
-<booleanradio data-ng-model="af.sluttaarsak.avtaleomokonomiskytelse.value"
+<booleanradio data-ng-model="af.avtaleomokonomiskytelse"
                           modus="data.redigeringsModus"
                           nokkel="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse"/>
 
