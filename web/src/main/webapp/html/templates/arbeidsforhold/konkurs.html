@@ -1,0 +1,16 @@
+<div data-ng-controller="ModusCtrl">
+    <div>
+        <h4 cmstekster="sluttaarsakkonkurs.beskrivelse"></h4>
+    </div>
+    <div>
+
+        <label cmstekster="sluttaarsakkonkurs.bostyrersnavn"></label>
+        <input type="text" id="bostyrersnavn" name="bostyrersnavn" ng-minlength="5" ng-maxlength="50" minlength="5" maxlength="50" required />
+        <p cmstekster="sluttaarsakkonkurs.lonnsgaranti"/>
+        <booleanradio data-ng-model="sluttaarsakkonkurs.lonnsgaranti"
+                      modus="data.redigeringsModus"
+                      nokkel="sluttaarsakkonkurs.lonnsgaranti" required/>
+        <h4 cmstekster="sluttaarsakkonkurs.ikkesoktlonnsgaranti" ng-show="sluttaarsakkonkurs.lonnsgaranti == 'true'" />
+
+    </div>
+</div>
