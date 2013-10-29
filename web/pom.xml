@@ -478,6 +478,7 @@
                      <reporters>dots,coverage</reporters>
                  </configuration>
              </plugin>-->
+            <!--
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -500,7 +501,7 @@
                         <argument>${project.build.directory}/surefire-reports</argument>
                     </arguments>
                 </configuration>
-            </plugin>
+            </plugin>-->
             <plugin>
                 <groupId>org.jboss.as.plugins</groupId>
                 <artifactId>jboss-as-maven-plugin</artifactId>
