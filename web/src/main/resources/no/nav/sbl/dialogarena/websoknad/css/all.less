@@ -6,27 +6,19 @@
     cursor: pointer;
 }
 
-.accordion-heading {
-    text-align: center;
-
-    h2 {
-
-        text-align: center;
-    }
+.rad.tittel {
+    border-bottom: none;
 }
 
-.accordion-body {
-
+.rad.soknad {
+    padding: 0;
 }
 
 .collapse {
     position: relative;
     height: 0;
     overflow: hidden;
-    -webkit-transition: height 0.35s ease;
-    -moz-transition: height 0.35s ease;
-    -o-transition: height 0.35s ease;
-    transition: height 0.35s ease;
+    transition: height 0.2s ease;
 }
 
 .collapse.in {
@@ -38,8 +30,7 @@
 }
 
 [class*="panel-standard"].skjema {
-    padding-top: 40px;
-    padding-bottom: 40px;
+    padding: 0;
 }
 
 .lenker-dot {
@@ -82,8 +73,7 @@
 .strek-top {
     .strek;
     background-position: top center;
-    padding-top: 15px;
-    margin-top: 15px !important;
+    padding-top: 20px;
 }
 
 .strek-bottom {
@@ -94,30 +84,81 @@
 }
 
 .spm-blokk {
-    padding-bottom: 40px;
-    margin-bottom: 40px;
-    border-bottom: 1px solid #d1cfcf;
-    background-color: white; // TODO: Endre farge til grå etterhvert...
+    position:relative;
+    border-top: 1px solid #ddd;
+    background-color: #f1f1f1;
 
     &.open {
         background-color: white;
+
+        .flipp {
+            border-color: transparent transparent #a3a3a3 transparent;
+            &:before {
+                border-top: 30px solid #ccc;
+            }
+
+            span {
+                display: none;
+            }
+        }
     }
 
-    &:last-child {
-        border-bottom: none;
-        padding-bottom: 0;
-        margin-bottom: 0;
+    .flipp {
+        position: relative;
+        top: -3px;
+        width: 64px;
+        height: 0;
+        margin: 0 auto;
+        border-style: solid;
+        border-color: transparent transparent #0067c5 transparent;
+        border-width: 0 2px 3px 2px;
+
+        &:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            border-top: 30px solid #0ca9e1;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+        }
+
+        span {
+            color: white;
+            position: relative;
+            top: 3px;
+            left: 0;
+        }
     }
+
+    .accordion-heading {
+        text-align: center;
+
+        .accordion-toggle {
+            text-decoration: none;
+
+            h2 {
+                text-align: center;
+                margin: 0;
+                cursor: pointer;
+                padding-top: 40px;
+                padding-bottom: 40px;
+            }
+        }
+    }
+
 
     .skjemaramme {
+        padding-bottom: 40px;
         .strek-top;
 
         .skjemainnhold {
-            width: 75%;
+            width: 28%;
             margin: 0 auto;
 
             .spm-knapper {
-                margin-top: 1rem;
+                margin-top: 40px;
                 text-align: center;
 
                 .spm-blokk-ferdig {
@@ -126,7 +167,7 @@
                     }
 
                     button {
-                        margin: 0 auto;
+                        margin: 0 auto 15px;
                     }
                 }
 
