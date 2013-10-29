@@ -44,11 +44,10 @@ function scrollAndOpen(newTab, currentTab) {
 }
 
 function scrollToTab(newTab) {
-    var animationLength = 400;
+    var animationSpeed = 200;
     var offset = 100;
     var scrollPos = Math.max(newTab.offset().top - offset, 0);
     $('body').animate({
         scrollTop: scrollPos
-    }, animationLength);
-    return animationLength;
+    }, animationSpeed);
 }
