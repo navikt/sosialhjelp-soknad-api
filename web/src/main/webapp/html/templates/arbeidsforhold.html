@@ -94,7 +94,7 @@
             </div>
         </div>
 
-        <form name="arbeidsforholdForm" novalidate>
+        <form name="arbeidsforholdForm" data-ng-submit="validerArbeidsforhold(arbeidsforholdForm)" novalidate>
             <a href data-ng-show="kanLeggeTilArbeidsforhold()" data-ng-click="nyttArbeidsforhold($event)"
                cmstekster="arbeidsforhold.nyttarbeidsforhold"/>
 
@@ -110,14 +110,13 @@
                              endret="toggleRedigeringsmodus(arbeidsforholdForm)"/>
             </div>
 
-            <div class="spm-knapper">
-                <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
-                        data-ng-click="validerArbeidsforhold(arbeidsforholdForm)"
-                        cmstekster="arbeidsforhold.ferdig"/>
-
-                <sporsmalblokk/>
-            </div>
-
+            <spmblokkferdig
+                    nokkel="arbeidsforhold"
+                    modus="data.redigeringsModus"/>
         </form>
     </div>
+<<<<<<< .merge_file_kyhWFX
 </div>
+=======
+</div>
+>>>>>>> .merge_file_QUH63f
