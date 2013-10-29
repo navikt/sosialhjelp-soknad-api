@@ -25,3 +25,29 @@ function checkTrue(element) {
     }
     return element.toString() == 'true';
 }
+
+function scrollAndOpen(newTab, currentTab) {
+    if (currentTab) {
+        currentTab.find('.accordion-toggle').click();
+        setTimeout(function() {
+            scrollToTab(newTab);
+        }, 1000);
+    } else {
+        scrollToTab(newTab);
+    }
+
+    setTimeout(function() {
+        if (newTab.find('.accordion-body').height() == 0) {
+            newTab.find('.accordion-toggle').click();
+        }
+    },1000);
+}
+
+function scrollToTab(newTab) {
+    var animationSpeed = 200;
+    var offset = 100;
+    var scrollPos = Math.max(newTab.offset().top - offset, 0);
+    $('body').animate({
+        scrollTop: scrollPos
+    }, animationSpeed);
+}

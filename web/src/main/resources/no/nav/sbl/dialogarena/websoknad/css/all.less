@@ -26,186 +26,246 @@
 .nav,
 .pagination,
 .carousel a {
-  cursor: pointer;
+    cursor: pointer;
 }
 
-.accordion-heading {
-  text-align: center;
-
-  h2 {
-
-    text-align: center;
-  }
+.rad.tittel {
+    border-bottom: none;
 }
 
-.accordion-body {
-
+.rad.soknad {
+    padding: 0;
 }
 
 .collapse {
-  position: relative;
-  height: 0;
-  overflow: hidden;
-  -webkit-transition: height 0.35s ease;
-  -moz-transition: height 0.35s ease;
-  -o-transition: height 0.35s ease;
-  transition: height 0.35s ease;
+    position: relative;
+    height: 0;
+    overflow: hidden;
+    transition: height 0.2s ease;
 }
 
 .collapse.in {
-  height: auto;
+    height: auto;
 }
 
 .skjematittel {
-  text-align: center;
+    text-align: center;
 }
 
 [class*="panel-standard"].skjema {
-  padding-top: 40px;
-  padding-bottom: 40px;
-}
-
-.spm-blokk {
-  padding-bottom: 40px;
-  margin-bottom: 40px;
-  border-bottom: 1px solid #d1cfcf;
-
-  &:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-    margin-bottom: 0;
-  }
+    padding: 0;
 }
 
 .lenker-dot {
 
-  span {
-    margin-left: 14px;
+    span {
+        margin-left: 14px;
 
-    &:first-child {
-      margin-left: 0;
+        &:first-child {
+            margin-left: 0;
+        }
     }
-  }
 
-  [class*="knapp"] {
-    margin-left: 30px;
-  }
-
-  input {
-    margin-left: 30px;
-  }
-
-  .loadingIndicator {
-    margin-left: 2rem !important;
-  }
-
-  span:not(:first-child) {
-    &:before {
-      padding-right: 14px;
-      content: "•";
-      color: #000;
+    [class*="knapp"] {
+        margin-left: 30px;
     }
-  }
+
+    input {
+        margin-left: 30px;
+    }
+
+    .loadingIndicator {
+        margin-left: 2rem !important;
+    }
+
+    span:not(:first-child) {
+        &:before {
+            padding-right: 14px;
+            content: "•";
+            color: #000;
+        }
+    }
 }
 
 .strek {
-  background-image: url(../img/under-dark.png);
-  background-repeat: no-repeat;
+    background-image: url(../img/under-dark.png);
+    background-repeat: no-repeat;
 
 }
 
 .strek-top {
-  .strek;
-  background-position: top center;
-  padding-top: 15px;
-  margin-top: 15px !important;
+    .strek;
+    background-position: top center;
+    padding-top: 20px;
 }
 
 .strek-bottom {
-  .strek;
-  background-position: bottom center;
-  padding-bottom: 15px;
-  margin-bottom: 15px !important;
+    .strek;
+    background-position: bottom center;
+    padding-bottom: 15px;
+    margin-bottom: 15px !important;
 }
 
-.skjemaramme {
-  .strek-top;
+.spm-blokk {
+    position:relative;
+    border-top: 1px solid #ddd;
+    background-color: #f1f1f1;
 
-  .skjemainnhold {
-    width: 75%;
-    margin: 0 auto;
+    &.open {
+        background-color: white;
 
-    .spm-knapper {
-      text-align: center;
+        .flipp {
+            border-color: transparent transparent #a3a3a3 transparent;
+            &:before {
+                border-top: 30px solid #ccc;
+            }
 
-      .spm-navigering {
-        .strek-bottom;
-        margin-top: 1rem;
-
-        a, span {
-          margin-right: 10px;
-
-          &:last-child {
-            margin-right: 0;
-          }
+            span {
+                display: none;
+            }
         }
-      }
+    }
 
-      .spm-fortsett {
-        margin-top: 1rem;
+    .flipp {
+        position: relative;
+        top: -3px;
+        width: 64px;
+        height: 0;
+        margin: 0 auto;
+        border-style: solid;
+        border-color: transparent transparent #0067c5 transparent;
+        border-width: 0 2px 3px 2px;
+
+        &:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            border-top: 30px solid #0ca9e1;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+        }
 
         span {
-          text-transform: uppercase;
-
-          a {
-            text-transform: none;
-          }
+            color: white;
+            position: relative;
+            top: 3px;
+            left: 0;
         }
-      }
     }
 
-    .spm {
-      margin-top: 20px;
-      margin-bottom: 10px;
-      width: 100%;
+    .accordion-heading {
+        text-align: center;
 
-      .spm-sporsmal {
-        font-weight: bold;
-      }
+        .accordion-toggle {
+            text-decoration: none;
 
-      .blokk-resultat  {
-        margin: 10px 15px;
-        width: 100%;
-
-        .checked {
-          background-color: #333;
+            h2 {
+                text-align: center;
+                margin: 0;
+                cursor: pointer;
+                padding-top: 40px;
+                padding-bottom: 40px;
+            }
         }
-      }
-
-      .svar-alt {
-        margin: 5px 0px;
-        text-transform: none !important;
-
-        .mer-info {
-          margin-left: 5px;
-        }
-      }
-
-      textarea {
-        width: 40%;
-        margin: 10px 0px;
-      }
     }
-  }
+
+
+    .skjemaramme {
+        padding-bottom: 40px;
+        .strek-top;
+
+        .skjemainnhold {
+            width: 28%;
+            margin: 0 auto;
+
+            .spm-knapper {
+                margin-top: 40px;
+                text-align: center;
+
+                .spm-blokk-ferdig {
+                    button, a {
+                        display: block;
+                    }
+
+                    button {
+                        margin: 0 auto 15px;
+                    }
+                }
+
+                .spm-navigering {
+                    .strek-bottom;
+                    margin-top: 1rem;
+
+                    a {
+                        &.ikke-aktiv {
+                            color: #3e3832;
+                            text-decoration: none;
+                        }
+
+                        margin-right: 10px;
+
+                        &:last-child {
+                            margin-right: 0;
+                        }
+                    }
+                }
+
+                .spm-fortsett {
+                    margin-top: 1rem;
+
+                    span {
+                        text-transform: uppercase;
+
+                        a {
+                            text-transform: none;
+                        }
+                    }
+                }
+            }
+
+            .spm {
+                margin-top: 20px;
+                margin-bottom: 10px;
+                width: 100%;
+
+                .spm-sporsmal {
+                    font-weight: bold;
+                }
+
+                .blokk-resultat {
+                    margin: 10px 15px;
+                    width: 100%;
+
+                    .checked {
+                        background-color: #333;
+                    }
+                }
+
+                .svar-alt {
+                    margin: 5px 0px;
+                    text-transform: none !important;
+
+                    .mer-info {
+                        margin-left: 5px;
+                    }
+                }
+
+                textarea {
+                    width: 40%;
+                    margin: 10px 0px;
+                }
+            }
+        }
+    }
 }
-
 
 .sideoversikt {
-  width: 20%;
-  height: 100%;
+    width: 20%;
+    height: 100%;
 }
 
-
 .active {
-  color: #333;
+    color: #333;
 }
