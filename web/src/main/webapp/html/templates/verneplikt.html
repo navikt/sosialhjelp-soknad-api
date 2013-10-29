@@ -11,11 +11,13 @@
                 <feilmeldinger form="vernepliktigForm" nokkel="vernepliktig"/>
             </div>
 
-            <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
-                    data-ng-click="validerVerneplikt(vernepliktigForm)"
-                    cmstekster="vernepliktig.ferdig"/>
+            <div class="spm-knapper">
+                <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
+                        data-ng-click="validerVerneplikt(vernepliktigForm)"
+                        cmstekster="vernepliktig.ferdig"/>
 
-            <sporsmalblokk/>
+                <sporsmalblokk/>
+            </div>
         </div>
     </form>
 </div>

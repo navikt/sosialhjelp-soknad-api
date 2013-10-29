@@ -1,0 +1,49 @@
+<div>
+    <h3>{{sluttaarsak.navn}}</h3>
+
+    <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.informasjon"/>
+
+    <div class="varighet">
+        <label cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetFra"/>
+        <span>{{soknadData.fakta.sluttaarsak.varighetFra}}</span>
+        <label cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetTil"/>
+        <span>{{af.sluttaarsak.varighetTil}} </span>
+    </div>
+
+
+    <div class="sporsmaal">
+        <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.sporsmal"/>
+
+        <div data-ng-show="af.sluttaarsak.oppsigelseslonn">
+            <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.true"/>
+        </div>
+
+        <div data-ng-show="af.sluttaarsak.oppsigelseslonn == 'false'">
+            <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.false"/>
+        </div>
+    </div>
+    <div class="sporsmaal">
+        <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.sporsmal"/>
+
+        <div data-ng-show="af.sluttaarsak.tilbudomjobbannetsted">
+            <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true"/>
+        </div>
+
+        <div data-ng-show="af.sluttaarsak.tilbudomjobbannetsted == 'false'">
+            <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.false"/>
+        </div>
+    </div>
+
+
+    <div class="sporsmaal">
+        <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.sporsmal"/>
+
+        <div data-ng-show="af.sluttaarsak.avtaleomokonomiskytelse">
+            <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.true"/>
+        </div>
+
+        <div data-ng-show="af.sluttaarsak.avtaleomokonomiskytelse == 'false'">
+            <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.false"/>
+        </div>
+    </div>
+</div>

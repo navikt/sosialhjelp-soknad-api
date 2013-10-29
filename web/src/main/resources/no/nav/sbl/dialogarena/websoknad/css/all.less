@@ -8,6 +8,15 @@
 
 .accordion-heading {
   text-align: center;
+
+  h2 {
+
+    text-align: center;
+  }
+}
+
+.accordion-body {
+
 }
 
 .collapse {
@@ -45,10 +54,92 @@
   }
 }
 
+.lenker-dot {
+
+  span {
+    margin-left: 14px;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+
+  [class*="knapp"] {
+    margin-left: 30px;
+  }
+
+  input {
+    margin-left: 30px;
+  }
+
+  .loadingIndicator {
+    margin-left: 2rem !important;
+  }
+
+  span:not(:first-child) {
+    &:before {
+      padding-right: 14px;
+      content: "•";
+      color: #000;
+    }
+  }
+}
+
+.strek {
+  background-image: url(../img/under-dark.png);
+  background-repeat: no-repeat;
+
+}
+
+.strek-top {
+  .strek;
+  background-position: top center;
+  padding-top: 15px;
+  margin-top: 15px !important;
+}
+
+.strek-bottom {
+  .strek;
+  background-position: bottom center;
+  padding-bottom: 15px;
+  margin-bottom: 15px !important;
+}
+
 .skjemaramme {
+  .strek-top;
+
   .skjemainnhold {
     width: 75%;
     margin: 0 auto;
+
+    .spm-knapper {
+      text-align: center;
+
+      .spm-navigering {
+        .strek-bottom;
+        margin-top: 1rem;
+
+        a, span {
+          margin-right: 10px;
+
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+      }
+
+      .spm-fortsett {
+        margin-top: 1rem;
+
+        span {
+          text-transform: uppercase;
+
+          a {
+            text-transform: none;
+          }
+        }
+      }
+    }
 
     .spm {
       margin-top: 20px;
