@@ -7,6 +7,7 @@ angular.module('nav.input',['nav.cmstekster'])
             scope: {
                 model: '=ngModel',
                 value: '@',
+                modus: '=',
                 inputname: '@',
                 label: '@'
             },
@@ -19,6 +20,22 @@ angular.module('nav.input',['nav.cmstekster'])
                         ctrl.$setValidity(scope.inputname, true);
                     }
                     return false;
+                }
+
+                scope.hvisIRedigeringsmodus = function() {
+                    return scope.modus;
+                }
+
+                scope.hvisIOppsummeringsmodusOgRadioErValgt = function () {
+                    console.log("##############");
+                    console.log(scope.inputname);
+                    console.log("Model: " + scope.model);
+                    console.log("Value: " + scope.value);
+                    console.log(scope.model == scope.value.toString());
+                    console.log(scope.hvisIRedigeringsmodus());
+                    console.log(!scope.hvisIRedigeringsmodus() && scope.model == scope.value.toString());
+
+                    return !scope.hvisIRedigeringsmodus() && scope.model == scope.value.toString();
                 }
 
             },
