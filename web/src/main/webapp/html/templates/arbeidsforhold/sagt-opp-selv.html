@@ -16,16 +16,13 @@
 
     <div>
       <input class="sendsoknad-radio" id="innskrenkningerNei" data-ng-model="af.sagtOppSelvInnskrenkninger" type="radio" value="false"
-                 name="tilbudomjobbannetsted" error-messages="'arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.feilmelding'" required/>
+                 name="innskrenkninger" error-messages="'arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.feilmelding'" required/>
       <label for="innskrenkningerNei" class='svar-alt' cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.false"/>
     </div>
   </div>
   <br/>
   <div class="varighet">
       <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.sporsmal"/>
-      <label cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.varighetFra"/>
-      <input type="text" name="oppsigelsesTidVarighetFra" ui-date ui-date-format ng-model="af.sagtOppSelvVarighetFra" 
-      data-ng-change="validateOppsigelsestidTilFraDato(af)" error-messages="'arbeidsforhold.sluttaarsak.sagtoppselv.varighetFra.feilmelding'"  required >
       <label cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.varighetTil"/>
       <span data-ng-show="oppsigelsestidDatoError" style="color:red" cmstekster="arbeidsforhold.error.sagtOppSelv.datoTilFra"/>
       <input type="text" name="oppsigelsesTidVarighetTil" ui-date ui-date-format ng-model="af.sagtOppSelvVarighetTil" 
@@ -61,7 +58,10 @@
       <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.informasjon"/>
       <br/>
       <label for="okonomiskavtale-fritekst" cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.fritekst.sporsmal"/>
-      <input id="okonomiskavtale-fritekst" type="text" error-messages="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.feilmelding'" data-ng-minlength="5" data-ng-maxlength="50"/>
+      <input id="okonomiskavtale-fritekst" type="text" data-ng-model="af.sagtOppSelvAvtaleomOkonomiskytelseType" name="avtaleomokonomiskytelsetype" error-messages="{required: 'arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.type.feilmelding', 
+                        pattern: 'inneholder ugyldige tegn', minlength: 'er for kort.', maxlength: 'er for langt.'}"
+        ng-maxlength="50" ng-minlength="5" ng-pattern="/^[-a-zA-Z0-9æøåÆØÅ _+§%()]+$/"
+        ng-required="af.sagtOppSelvAvtaleomOkonomiskytelse == 'true'"/>
     </div>
 
     <div>
