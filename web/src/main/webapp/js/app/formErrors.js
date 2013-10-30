@@ -8,7 +8,7 @@
         require: '^form',
         template:
             '<ul class="form-errors" data-ng-show="showErrors">' +
-                '<li class="form-error" ng-repeat="error in errors">' +
+                '<li class="form-error" ng-repeat="error in errors track by $index">' +
                     '{{error}}' +
                 '</li>' +
             '</ul>',
@@ -57,7 +57,7 @@
                     if(data.tekster[reason] === undefined)
                         return defaultReason;
                     
-                    return data.tekster[reason];
+                    return data.tekster[reason]; // Henter fra cmstekster
                     
                     // return our nicely formatted message
                     
@@ -73,7 +73,9 @@
                     angular.forEach(props.$error, function(isInvalid, error) {
                         // don't need to even try and get a a message unless it's invalid
                         if(isInvalid) {
-                            scope.errors.push(errorMessage(name, error, props));
+                            try{
+                                scope.errors.push(errorMessage(name, error, props));
+                            }catch(e) {} //duplicate key... 
                         }
                     });
                 });
