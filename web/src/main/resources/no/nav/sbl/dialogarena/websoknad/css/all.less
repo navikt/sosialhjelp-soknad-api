@@ -150,6 +150,41 @@
     }
 }
 
+// TODO: Skal fjernes når dette blir fikset i fellesen. Skal egentlig kunne settes med klasse på forms...
+input {
+    display: block !important;
+}
+
+.ekstra-spm-boks {
+    position: relative;
+    background: #e0ded8;
+    border: 1px solid #aaa;
+    padding: 20px;
+    margin: 10px 0 30px;
+
+    &:after, &:before {
+        bottom: 100%;
+        border: solid transparent;
+        content: "";
+        height: 0;
+        width: 0;
+        position: absolute;
+        left: 8%;
+    }
+
+    &:after {
+        border-bottom-color: #e0ded8;
+        border-width: 12px;
+        margin-left: -12px;
+    }
+
+    &:before {
+        border-bottom-color: #aaa;
+        border-width: 13px;
+        margin-left: -13px;
+    }
+}
+
 .spm-blokk {
     position: relative;
     border-top: 1px solid #ddd;
