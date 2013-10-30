@@ -1,17 +1,35 @@
 <div data-ng-controller="ModusCtrl">
     <div>
-        <h4 cmstekster="sluttaarsakkonkurs.beskrivelse"></h4>
+        <h4 cmstekster="arbeidsforhold.sluttaarsak.konkurs.informasjon"></h4>
     </div>
     <div>
 
-        <label cmstekster="sluttaarsakkonkurs.bostyrersnavn"></label>
-        <input type="text" id="bostyrersnavn" name="bostyrersnavn" ng-minlength="5" ng-maxlength="50" ng-model="af.sluttaarsak.bostyrersnavn" data-ng-change="validateBostyrer(af)" error-messages="'sluttaarsakkonkurs.bostyrer.feilmelding'" required />
-        <span data-ng-show="bostyrerNavnError" style="color:red" cmstekster="arbeidsforhold.error.bostyrernavn"/>
-        <p cmstekster="sluttaarsakkonkurs.lonnsgaranti"/>
-        <booleanradio data-ng-model="af.sluttaarsakkonkurs.lonnsgaranti"
-                      modus="data.redigeringsModus"
-                      nokkel="sluttaarsakkonkurs.lonnsgaranti"/>
-        <h4 cmstekster="sluttaarsakkonkurs.ikkesoktlonnsgaranti" ng-show="af.sluttaarsakkonkurs.lonnsgaranti == 'true'" />
+        <label cmstekster="arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn"></label>
+        
+
+         <input type="text" id="bostyrersnavn" data-ng-model="af.sluttaarsak.bostyrersnavn" name="bostyrersnavn" 
+        error-messages="{required: 'arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.feilmelding', 
+                        pattern: 'inneholder ugyldige tegn', minlength: 'er for kort.', maxlength: 'er for langt.'}"
+        ng-maxlength="50" ng-minlength="5" ng-pattern="/^[-a-zA-Z0-9æøåÆØÅ _+§%()]+$/" required/>
+
+        <div class="sporsmaal">
+            <p cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.sporsmal"/>
+            <div>
+              <input class="sendsoknad-radio" id="lonnsgarantiJa" data-ng-model="af.sluttaarsak.lonnsgaranti" type="radio" value="true"
+                         name="lonnsgaranti" error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'" required/>
+              <label for="lonnsgarantiJa" class='svar-alt' cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.true"/>
+            </div>
+
+            <div>
+              <input class="sendsoknad-radio" id="lonnsgarantiNei" data-ng-model="af.sluttaarsak.lonnsgaranti" type="radio" value="false"
+                         name="lonnsgaranti" error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'" required/>
+              <label for="lonnsgarantiNei" class='svar-alt' cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.false"/>
+            </div>
+
+             <div data-ng-show="af.sluttaarsak.lonnsgaranti == 'false'">
+              <p cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.false.informasjon"/>
+             </div>
+          </div>
 
     </div>
 </div>
