@@ -34,7 +34,7 @@
                     <ng-include src="'../html/templates/egen-naering.html'"/>
                 </accordion-group>
 
-                <accordion-group class="spm-blokk" id="verneplikt"  ng-class="{open: isOpen}">
+                <accordion-group class="spm-blokk" id="verneplikt" ng-class="{open: isOpen}">
                     <accordion-heading>
                         <div class="flipp">
                             <span>+</span>
@@ -77,5 +77,15 @@
                 </accordion-group>
             </accordion>
         </div>
+
     </section>
+</div>
+
+<div class="rad ferdig-skjema">
+    <div class="begrensning">
+        <section class="sak-hel">
+            <a class="knapp-hoved" href="#/oppsummering/{{ soknadData.soknadId }}" cmstekster="skjema.ferdig"/>
+            <stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="1"></stegindikator>
+        </section>
+    </div>
 </div>
