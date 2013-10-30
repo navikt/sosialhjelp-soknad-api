@@ -1,22 +1,48 @@
 @svar-bakgrunnsfarge: #d1d1d1;
 
 .arbeidsforhold-dato {
-  text-transform: uppercase;
+    text-transform: uppercase;
 }
 
-.arbeidsforhold-avbryt, .arbeidsforhold-endre, .arbeidsforhold-slett {
-  margin-top: 10px;
-  margin-bottom: 20px;
-  display: inline-block;
+.oppsummering-arbeidsforhold-blokk-en {
+    clear: both;
+    .oppsummering-arbeidsforhold-landblokk {
+        float: left;
+        padding-right: 5px;
+        .arbeidsgiver-oppsummering-landdeler {
+            padding: 0 10px;
+        }
+    }
+    .arbeidsforhold-oppsummering-nesteblokk {
+        float: right;
+    }
+}
+
+.arbeidsgiver-oppsummering-sluttaarsaker {
+    clear: both;
+}
+
+.arbeidsforhold-avbryt {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    display: inline-block;
+}
+
+.arbeidsforhold-arbeidsgivernavn-overskrift {
+    font-size: 1.1em;
+    margin-bottom: 10px !important;
+    font-weight: bold;
+
 }
 
 .sluttaarsak {
 }
 
 .bolk-informasjonstekst {
-  margin: 10px 0px !important;
- font-size: 1.3em;
+    margin: 10px 0px !important;
+    font-size: 1.3em;
 }
+
 .nav,
 .pagination,
 .carousel a {
@@ -24,6 +50,7 @@
 }
 
 .rad.tittel {
+
     border-bottom: none;
 
     h1 {
@@ -110,7 +137,7 @@
 }
 
 .spm-blokk {
-    position:relative;
+    position: relative;
     border-top: 1px solid #ddd;
     background-color: #f1f1f1;
 
@@ -164,7 +191,6 @@
         .accordion-toggle {
             text-decoration: none;
 
-
             h2 {
                 text-align: center;
                 margin: 0;
@@ -174,7 +200,6 @@
             }
         }
     }
-
 
     .skjemaramme {
         padding-bottom: 40px;
@@ -244,40 +269,52 @@
                     }
                 }
             }
+        }
+    }
 
-            .spm {
-                margin-top: 20px;
-                margin-bottom: 10px;
-                width: 100%;
+    .spm-fortsett {
+        margin-top: 1rem;
 
-                .spm-sporsmal {
-                    font-weight: bold;
-                }
+        span {
+            text-transform: uppercase;
 
-                .blokk-resultat {
-                    margin: 10px 15px;
-                    width: 100%;
-
-                    .checked {
-                        background-color: #333;
-                    }
-                }
-
-                .svar-alt {
-                    margin: 5px 0px;
-                    text-transform: none !important;
-
-                    .mer-info {
-                        margin-left: 5px;
-                    }
-                }
-
-                textarea {
-                    width: 40%;
-                    margin: 10px 0px;
-                }
+            a {
+                text-transform: none;
             }
         }
+    }
+}
+
+.spm {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    width: 100%;
+
+    .spm-sporsmal {
+        font-weight: bold;
+    }
+
+    .blokk-resultat {
+        margin: 10px 15px;
+        width: 100%;
+
+        .checked {
+            background-color: #333;
+        }
+    }
+
+    .svar-alt {
+        margin: 5px 0px;
+        text-transform: none !important;
+
+        .mer-info {
+            margin-left: 5px;
+        }
+    }
+
+    textarea {
+        width: 40%;
+        margin: 10px 0px;
     }
 }
 

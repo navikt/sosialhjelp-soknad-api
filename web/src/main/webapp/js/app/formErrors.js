@@ -1,14 +1,14 @@
-﻿angular.module('FormErrors', [])
+﻿angular.module('FormErrors', ['app.services'])
 
 // just put <form-errors><form-errors> wherever you want form errors to be displayed!
-.directive('formErrors', [function () {
+.directive('formErrors', ['data', function (data) {
     return {
         // only works if embedded in a form or an ngForm (that's in a form). 
         // It does use its closest parent that is a form OR ngForm
         require: '^form',
         template:
             '<ul class="form-errors" data-ng-show="showErrors">' +
-                '<li class="form-error" ng-repeat="error in errors">' +
+                '<li class="form-error" ng-repeat="error in errors track by $index">' +
                     '{{error}}' +
                 '</li>' +
             '</ul>',
@@ -18,14 +18,14 @@
         link: function postLink(scope, elem, attrs, ctrl) {
             // list of some default error reasons
             var defaultErrorReasons = {
-                    required: 'is required.',
-                    minlength: 'is too short.',
-                    maxlength: 'is too long.',
-                    email: 'is not a valid email address.',
-                    pattern: 'does not match the expected pattern.',
-                    number: 'is not a number.',
+                    required: 'er påkverd.',
+                    minlength: 'er for kort.',
+                    maxlength: 'er for langt.',
+                    email: 'er ikke en gyldig e-postadresse.',
+                    pattern: 'stemmer ikke med forventet verdi.',
+                    number: 'er ikke et tall.',
 
-                    fallback: 'is invalid.'
+                    fallback: 'er ikke gyldig.'
                 },
                 // humanize words, turning:
                 //     camelCase  --> Camel Case
@@ -46,15 +46,21 @@
 
                     // get a reason from our default set
                     var reason = defaultErrorReasons[error] || defaultErrorReasons.fallback;
-
+                    
+                    var defaultReason = niceName + ' ' + reason;
                     // if they used the errorMessages directive, grab that message
                     if(typeof props.$errorMessages === 'object')
                         reason = props.$errorMessages[error];
                     else if(typeof props.$errorMessages === 'string')
                         reason = props.$errorMessages;
 
+                    if(data.tekster[reason] === undefined)
+                        return defaultReason;
+                    
+                    return data.tekster[reason]; // Henter fra cmstekster
+                    
                     // return our nicely formatted message
-                    return niceName + ' ' + reason;
+                    
                 };
 
             // only update the list of errors if there was actually a change in $error
@@ -67,7 +73,9 @@
                     angular.forEach(props.$error, function(isInvalid, error) {
                         // don't need to even try and get a a message unless it's invalid
                         if(isInvalid) {
-                            scope.errors.push(errorMessage(name, error, props));
+                            try{
+                                scope.errors.push(errorMessage(name, error, props));
+                            }catch(e) {} //duplicate key... 
                         }
                     });
                 });
