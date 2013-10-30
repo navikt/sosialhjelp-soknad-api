@@ -19,7 +19,7 @@ angular.module('nav.arbeidsforhold.controller',[])
                             {navn: 'Redusert arbeidstid', url: '../html/templates/arbeidsforhold/redusertarbeidstid.html', oppsummeringsurl: '../html/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html' },
                             {navn: 'Arbeidsgiver er konkurs', url: '../html/templates/arbeidsforhold/konkurs.html',  oppsummeringsurl: '../html/templates/arbeidsforhold/konkurs-oppsummering.html'},
                             {navn: 'Sagt opp av arbeidsgiver', url: '../html/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html', oppsummeringsurl:'../html/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html' },
-
+                            {navn: 'Sagt opp selv', url: '../html/templates/arbeidsforhold/sagt-opp-selv.html', oppsummeringsurl:'../html/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html' }
                             ];
 
         $scope.template = $scope.templates[0];
