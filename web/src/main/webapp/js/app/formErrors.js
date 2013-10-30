@@ -48,7 +48,6 @@
                     var reason = defaultErrorReasons[error] || defaultErrorReasons.fallback;
                     
                     var defaultReason = niceName + ' ' + reason;
-                    console.log(" xxx " + elem + reason);
                     // if they used the errorMessages directive, grab that message
                     if(typeof props.$errorMessages === 'object')
                         reason = props.$errorMessages[error];
