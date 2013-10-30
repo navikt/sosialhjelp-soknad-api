@@ -67,9 +67,7 @@ angular.module('nav.arbeidsforhold.controller',[])
             }
 
             $scope.lagreArbeidsforhold = function(af, form) {
-
-               $scope.showErrors = form.$invalid;
-               console.log($scope.showErrors);
+                $scope.showErrors = form.$invalid;
                 if(form.$valid) {
                     $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
                     $scope.posisjonForArbeidsforholdUnderRedigering = -1;

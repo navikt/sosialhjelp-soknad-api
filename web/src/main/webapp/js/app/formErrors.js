@@ -22,7 +22,7 @@
                     minlength: 'er for kort.',
                     maxlength: 'er for langt.',
                     email: 'er ikke en gyldig e-postadresse.',
-                    pattern: 'stemmer ikke med forventet verdi.',
+                    pattern: 'inneholder ugyldige tegn.',
                     number: 'er ikke et tall.',
 
                     fallback: 'er ikke gyldig.'
@@ -57,7 +57,7 @@
 
                     if(data.tekster[reason] === undefined)
                         return defaultReason;
-                    
+
                     return data.tekster[reason]; // Henter fra cmstekster
                     
                     // return our nicely formatted message
