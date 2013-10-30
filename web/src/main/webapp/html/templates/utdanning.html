@@ -6,12 +6,15 @@
 
             <div data-ng-show="hvisIRedigeringsmodus()">
                 <navradio data-ng-model='soknadData.fakta.utdanning.value' value='ikkeUtdanning'
+                          modus="data.redigeringsModus"
                           inputname='utdanning'
                           label='utdanning.svar.ikkeUtdanning'/>
                 <navradio data-ng-model='soknadData.fakta.utdanning.value' value='avsluttetUtdanning'
+                          modus="data.redigeringsModus"
                           inputname='utdanning'
                           label='utdanning.svar.avsluttetUtdanning'/>
                 <navradio data-ng-model='soknadData.fakta.utdanning.value' value='underUtdanning'
+                          modus="data.redigeringsModus"
                           inputname='utdanning'
                           label='utdanning.svar.underUtdanning'/>
 
