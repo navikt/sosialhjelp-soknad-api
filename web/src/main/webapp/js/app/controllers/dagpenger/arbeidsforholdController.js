@@ -10,6 +10,16 @@ angular.module('nav.arbeidsforhold.controller',[])
         $scope.navigering = {nesteside: 'egennaering'};
         $scope.sidedata = {navn: 'arbeidsforhold'};
 
+        $scope.hvisSynlig = function(element) {
+            // Potensiell stygg hack for å kunne hente ut hvilket inputfelt som gir feil... :|
+            if (element.is(':visible') && (scope.model == undefined)) {
+                ctrl.$setValidity(scope.inputname, false);
+            } else {
+                ctrl.$setValidity(scope.inputname, true);
+            }
+            return false;
+        }
+
         $scope.validerArbeidsforhold = function(form) {
             $scope.validateForm(form.$invalid);
         }
@@ -65,9 +75,7 @@ angular.module('nav.arbeidsforhold.controller',[])
             }
 
             $scope.lagreArbeidsforhold = function(af, form) {
-
-               $scope.showErrors = form.$invalid;
-               console.log($scope.showErrors);
+                $scope.showErrors = form.$invalid;
                 if(form.$valid) {
                     $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
                     $scope.posisjonForArbeidsforholdUnderRedigering = -1;

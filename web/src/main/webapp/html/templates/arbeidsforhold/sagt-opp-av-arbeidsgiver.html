@@ -6,7 +6,7 @@
   <div class="varighet">
       <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.sporsmal"/>
       <label cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetFra"/>
-      <input type="text" name="oppsigelsesTidVarighetFra" ui-date ui-date-format ng-model="af.ssagtOppAvArbeidsgiverVarighetFra" 
+      <input type="text" name="oppsigelsesTidVarighetFra" ui-date ui-date-format ng-model="af.sagtOppAvArbeidsgiverVarighetFra" 
       data-ng-change="validateOppsigelsestidTilFraDato(af)" error-messages="'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetFra.feilmelding'"  required >
       <label cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetTil"/>
       <span data-ng-show="oppsigelsestidDatoError" style="color:red" cmstekster="arbeidsforhold.error.sagtOppAvArbeidsgiver.datoTilFra"/>
@@ -60,6 +60,15 @@
       <input class="sendsoknad-radio" id="avtaleomokonomiskytelseNei" data-ng-model="af.sagtOppAvArbeidsgiverAvtaleomOkonomiskytelse" type="radio" value="false"
                  name="avtaleomokonomiskytelse" error-messages="'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.feilmelding'" required/>
       <label for="avtaleomokonomiskytelseNei" class='svar-alt' cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.false"/>
+    </div>
+
+    <div data-ng-show="af.sagtOppAvArbeidsgiverAvtaleomOkonomiskytelse == 'true'">
+      <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.informasjon"/>
+      <input type="text" id="avtaleomokonomiskytelsetype" data-ng-model="af.sagtOppAvArbeidsgiverAvtaleomOkonomiskytelseType" name="avtaleomokonomiskytelsetype" 
+        error-messages="{required: 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.type.feilmelding', 
+                        pattern: 'inneholder ugyldige tegn', minlength: 'er for kort.', maxlength: 'er for langt.'}"
+        ng-maxlength="50" ng-minlength="5" ng-pattern="/^[-a-zA-Z0-9æøåÆØÅ _+§%()]+$/"
+        ng-required="af.sagtOppAvArbeidsgiverAvtaleomOkonomiskytelse == 'true'">
     </div>
 
   </div>
