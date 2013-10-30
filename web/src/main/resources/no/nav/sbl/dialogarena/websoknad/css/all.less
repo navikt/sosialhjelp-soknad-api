@@ -1,45 +1,37 @@
 @svar-bakgrunnsfarge: #d1d1d1;
 
-.svar-oppsummering {
-  font-weight: bold;
-}
-
 .arbeidsforhold-dato {
-  text-transform: uppercase;
-}
-
-.svar-oppsummering-overskrift {
-  text-transform: uppercase;
+    text-transform: uppercase;
 }
 
 .oppsummering-arbeidsforhold-blokk-en {
-  clear:both;
-  .oppsummering-arbeidsforhold-landblokk {
-    float: left;
-    padding-right: 5px;
-    .arbeidsgiver-oppsummering-landdeler {
-      padding: 0 10px;
+    clear: both;
+    .oppsummering-arbeidsforhold-landblokk {
+        float: left;
+        padding-right: 5px;
+        .arbeidsgiver-oppsummering-landdeler {
+            padding: 0 10px;
+        }
     }
-  }
-  .arbeidsforhold-oppsummering-nesteblokk {
-    float: right;
-  }
+    .arbeidsforhold-oppsummering-nesteblokk {
+        float: right;
+    }
 }
 
 .arbeidsgiver-oppsummering-sluttaarsaker {
-  clear: both;
+    clear: both;
 }
 
 .arbeidsforhold-avbryt {
-  margin-top: 10px;
-  margin-bottom: 20px;
-  display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    display: inline-block;
 }
 
 .arbeidsforhold-arbeidsgivernavn-overskrift {
-  font-size: 1.1em;
-  margin-bottom: 10px !important;
-  font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 10px !important;
+    font-weight: bold;
 
 }
 
@@ -47,254 +39,306 @@
 }
 
 .bolk-informasjonstekst {
-  margin: 10px 0px !important;
-  font-size: 1.3em;
+    margin: 10px 0px !important;
+    font-size: 1.3em;
 }
 
 .nav,
 .pagination,
 .carousel a {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .rad.tittel {
-  border-bottom: none;
+
+    border-bottom: none;
+
+    h1 {
+        margin-top: 30px;
+        margin-bottom: 0;
+    }
 }
 
 .rad.soknad {
-  padding: 0;
+    padding: 0;
 }
 
 .collapse {
-  position: relative;
-  height: 0;
-  overflow: hidden;
-  transition: height 0.2s ease;
+    position: relative;
+    height: 0;
+    overflow: hidden;
+    transition: height 0.2s ease;
 }
 
 .collapse.in {
-  height: auto;
+    height: auto;
 }
 
 .skjematittel {
-  text-align: center;
+    text-align: center;
 }
 
 [class*="panel-standard"].skjema {
-  padding: 0;
+    padding: 0;
+}
+
+.stegindikator {
+    margin-bottom: 40px;
 }
 
 .lenker-dot {
 
-  span {
-    margin-left: 14px;
+    span {
+        margin-left: 14px;
 
-    &:first-child {
-      margin-left: 0;
+        &:first-child {
+            margin-left: 0;
+        }
     }
-  }
 
-  [class*="knapp"] {
-    margin-left: 30px;
-  }
-
-  input {
-    margin-left: 30px;
-  }
-
-  .loadingIndicator {
-    margin-left: 2rem !important;
-  }
-
-  span:not(:first-child) {
-    &:before {
-      padding-right: 14px;
-      content: "•";
-      color: #000;
+    [class*="knapp"] {
+        margin-left: 30px;
     }
-  }
+
+    input {
+        margin-left: 30px;
+    }
+
+    .loadingIndicator {
+        margin-left: 2rem !important;
+    }
+
+    span:not(:first-child) {
+        &:before {
+            padding-right: 14px;
+            content: "•";
+            color: #000;
+        }
+    }
 }
 
 .strek {
-  background-image: url(../img/under-dark.png);
-  background-repeat: no-repeat;
+    background-image: url(../img/under-dark.png);
+    background-repeat: no-repeat;
 
 }
 
 .strek-top {
-  .strek;
-  background-position: top center;
-  padding-top: 20px;
+    .strek;
+    background-position: top center;
+    padding-top: 20px;
 }
 
 .strek-bottom {
-  .strek;
-  background-position: bottom center;
-  padding-bottom: 15px;
-  margin-bottom: 15px !important;
+    .strek;
+    background-position: bottom center;
+    padding-bottom: 15px;
+    margin-bottom: 15px !important;
+}
+
+.ferdig-skjema {
+    border-bottom: none;
+    padding-bottom: 0;
+
+    a[class*="knapp-"] {
+        margin-top: 5rem;
+        margin-bottom: 5rem;
+    }
+
+    .stegindikator {
+        margin-bottom: 0;
+    }
 }
 
 .spm-blokk {
-  position: relative;
-  border-top: 1px solid #ddd;
-  background-color: #f1f1f1;
+    position: relative;
+    border-top: 1px solid #ddd;
+    background-color: #f1f1f1;
 
-  &.open {
-    background-color: white;
+    &.open {
+        background-color: white;
+
+        .flipp {
+            border-color: transparent transparent #a3a3a3 transparent;
+            &:before {
+                border-top: 30px solid #ccc;
+            }
+
+            span {
+                display: none;
+            }
+        }
+    }
 
     .flipp {
-      border-color: transparent transparent #a3a3a3 transparent
-    ;
-      &:before {
-        border-top: 30px solid #ccc;
-      }
+        position: relative;
+        top: -3px;
+        width: 64px;
+        height: 0;
+        margin: 0 auto;
+        border-style: solid;
+        border-color: transparent transparent #0067c5 transparent;
+        border-width: 0 2px 3px 2px;
 
-      span {
-        display: none;
-      }
-    }
-  }
+        &:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            border-top: 30px solid #0ca9e1;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+        }
 
-  .flipp {
-    position: relative;
-    top: -3px;
-    width: 64px;
-    height: 0;
-    margin: 0 auto;
-    border-style: solid;
-    border-color: transparent transparent #0067c5 transparent
-  ;
-    border-width: 0 2px 3px 2px;
-
-    &:before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 0;
-      border-top: 30px solid #0ca9e1;
-      border-left: 30px solid transparent;
-      border-right: 30px solid transparent;
+        span {
+            color: white;
+            position: relative;
+            top: 3px;
+            left: 0;
+        }
     }
 
-    span {
-      color: white;
-      position: relative;
-      top: 3px;
-      left: 0;
-    }
-  }
-
-  .accordion-heading {
-    text-align: center;
-
-    .accordion-toggle {
-      text-decoration: none;
-
-      h2 {
+    .accordion-heading {
         text-align: center;
-        margin: 0;
-        cursor: pointer;
-        padding-top: 40px;
+
+        .accordion-toggle {
+            text-decoration: none;
+
+            h2 {
+                text-align: center;
+                margin: 0;
+                cursor: pointer;
+                padding-top: 40px;
+                padding-bottom: 40px;
+            }
+        }
+    }
+
+    .skjemaramme {
         padding-bottom: 40px;
-      }
+        .strek-top;
+
+        .skjemainnhold {
+            width: 90%;
+            max-width: 550px;
+            margin: 0 auto;
+
+            .svar-oppsummering {
+                margin-top: 10px;
+                margin-bottom: 10px;
+
+                &:before {
+                    content: url(../img/hake.svg);
+                    position: relative;
+                    top: 1px;
+                    margin-right: 10px;
+                }
+            }
+
+            .svar-oppsummering-overskrift {
+                font-weight: bold;
+            }
+
+            .spm-knapper {
+                margin-top: 40px;
+                text-align: center;
+
+                .spm-blokk-ferdig {
+                    button, a {
+                        display: block;
+                    }
+
+                    button {
+                        margin: 0 auto 15px;
+                    }
+                }
+
+                .spm-navigering {
+                    .strek-bottom;
+                    margin-top: 1rem;
+
+                    a {
+                        &.ikke-aktiv {
+                            color: #3e3832;
+                            text-decoration: none;
+                        }
+
+                        margin-right: 10px;
+
+                        &:last-child {
+                            margin-right: 0;
+                        }
+                    }
+                }
+
+                .spm-fortsett {
+                    margin-top: 1rem;
+
+                    span {
+                        text-transform: uppercase;
+
+                        a {
+                            text-transform: none;
+                        }
+                    }
+                }
+            }
+        }
     }
-  }
 
-  .skjemaramme {
-    padding-bottom: 40px;
-    .strek-top;
+    .spm-fortsett {
+        margin-top: 1rem;
 
-    .skjemainnhold {
-      width: 28%;
-      margin: 0 auto;
-
-      .spm-knapper {
-        margin-top: 40px;
-        text-align: center;
-
-        .spm-blokk-ferdig {
-          button, a {
-            display: block;
-          }
-
-          button {
-            margin: 0 auto 15px;
-          }
-        }
-
-        .spm-navigering {
-          .strek-bottom;
-          margin-top: 1rem;
-
-          a {
-            &.ikke-aktiv {
-              color: #3e3832;
-              text-decoration: none;
-            }
-
-            margin-right: 10px;
-
-            &:last-child {
-              margin-right: 0;
-            }
-          }
-        }
-
-        .spm-fortsett {
-          margin-top: 1rem;
-
-          span {
+        span {
             text-transform: uppercase;
 
             a {
-              text-transform: none;
+                text-transform: none;
             }
-          }
         }
-      }
+    }
+}
 
-      .spm {
-        margin-top: 20px;
-        margin-bottom: 10px;
+.spm {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    width: 100%;
+
+    .spm-sporsmal {
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .blokk-resultat {
+        margin: 10px 15px;
         width: 100%;
 
-        .spm-sporsmal {
-          font-weight: bold;
-        }
-
-        .blokk-resultat {
-          margin: 10px 15px;
-          width: 100%;
-
-          .checked {
+        .checked {
             background-color: #333;
-          }
         }
-
-        .svar-alt {
-          margin: 5px 0px;
-          text-transform: none !important;
-
-          .mer-info {
-            margin-left: 5px;
-          }
-        }
-
-        textarea {
-          width: 40%;
-          margin: 10px 0px;
-        }
-      }
     }
-  }
+
+    .svar-alt {
+        margin: 5px 0px;
+        text-transform: none !important;
+
+        .mer-info {
+            margin-left: 5px;
+        }
+    }
+
+    textarea {
+        width: 40%;
+        margin: 10px 0px;
+    }
 }
 
 .sideoversikt {
-  width: 20%;
-  height: 100%;
+    width: 20%;
+    height: 100%;
 }
 
 .active {
-  color: #333;
+    color: #333;
 }
