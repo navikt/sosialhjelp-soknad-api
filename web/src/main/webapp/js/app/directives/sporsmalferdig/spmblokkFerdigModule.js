@@ -1,5 +1,5 @@
 angular.module('nav.sporsmalferdig', [])
-    .directive('spmblokkferdig', ['$anchorScroll', '$location', '$timeout', function ($anchorScroll, $location, $timeout) {
+    .directive('spmblokkferdig', ['$timeout', function ($timeout) {
         return {
             restrict: "E",
             replace: true,

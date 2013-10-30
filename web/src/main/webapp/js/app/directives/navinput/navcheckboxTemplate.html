@@ -4,7 +4,7 @@
         <label for='{{ label }}' class='svar-alt' cmstekster="{{ label }}"/>
     </span>
 
-    <span data-ng-show='hvisIOppsummeringsmodusOgChecked()' cmstekster="{{ label }}"/>
+    <p class="svar-oppsummering" data-ng-show='hvisIOppsummeringsmodusOgChecked()' cmstekster="{{ label }}"/>
 
     <div class="ng-transclude" data-ng-show="hvisHuketAv()"/>
 </div>
