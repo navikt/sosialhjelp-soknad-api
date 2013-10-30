@@ -1,13 +1,6 @@
 <div class='spm'>
     <p class="spm-sporsmal" cmstekster="{{ sporsmal }}"/>
 
-    <div class='redigeringsboks' data-ng-show='hvisIRedigeringsmodus()'>
-        <navradio data-ng-model='model' value='true' inputname='{{ inputname }}' label='{{ trueLabel }}'/>
-        <navradio data-ng-model='model' value='false' inputname='{{ inputname }}' label='{{ falseLabel }}'/>
-    </div>
-
-    <div class='oppsummeringsboks' data-ng-show='hvisIOppsummeringsmodus()'>
-        <span data-ng-show='hvisModelErTrue()' cmstekster="{{ trueLabel }}"/>
-        <span data-ng-show='hvisModelErFalse()' cmstekster="{{ falseLabel }}"/>
-    </div>
+    <navradio data-ng-model='model' modus='modus' value='true' inputname='{{ inputname }}' label='{{ trueLabel }}'/>
+    <navradio data-ng-model='model' modus='modus' value='false' inputname='{{ inputname }}' label='{{ falseLabel }}'/>
 </div>
