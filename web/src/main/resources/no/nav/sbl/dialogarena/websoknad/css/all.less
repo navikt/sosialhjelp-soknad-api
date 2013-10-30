@@ -151,8 +151,16 @@
 }
 
 // TODO: Skal fjernes når dette blir fikset i fellesen. Skal egentlig kunne settes med klasse på forms...
-input {
+input:not([type=submit]) {
     display: block !important;
+}
+
+.tekstfelt {
+    margin-bottom: 10px !important;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
 }
 
 .ekstra-spm-boks {
@@ -376,4 +384,106 @@ input {
 
 .active {
     color: #333;
+}
+
+
+// TODO: Skal legges inn i fellesen når den kommer tilbake til git...
+[ng-form], [data-ng-form] {
+    margin: 0;
+    text-align: left;
+    label {
+        font-size: 0.8rem !important;
+        text-transform: uppercase;
+        span {
+            font-size: 0.8rem !important;
+            text-transform: uppercase;
+        }
+    }
+    input[type="radio"],
+    input[type="checkbox"] {
+        position: absolute;
+        height: 0;
+        width: 0;
+        opacity: 0;
+    }
+
+    input[type="radio"] + label {
+        background: url(../img/radio.svg) 0 0 no-repeat;
+    }
+
+    input[type="radio"]:checked + label {
+        background: url(../img/radio_valgt.svg) 0 0 no-repeat;
+    }
+
+    input[type="radio"]:disabled:checked + label {
+        background: url(../img/radio_inactive_valgt.svg) 0 0 no-repeat;
+    }
+
+    input[type="radio"]:disabled + label {
+        background: url(../img/radio_inactive.svg) 0 0 no-repeat;
+    }
+
+    input[type="checkbox"] + label {
+        background: url(../img/check.svg) 0 0 no-repeat;
+    }
+
+    input[type="checkbox"]:disabled + label {
+        background: url(../img/check_inactive.svg) 0 0 no-repeat;
+    }
+
+    input[type="checkbox"]:checked + label {
+        background: url(../img/check_valgt.svg) 0 0 no-repeat;
+    }
+
+    input[type="checkbox"]:disabled:checked + label {
+        background: url(../img/check_inactive_valgt.svg) 0 0 no-repeat;
+    }
+
+    input[type="radio"] + label,
+    input[type="checkbox"] + label {
+        display: inline-block;
+        position: relative;
+        padding: 2px 0 0 27px;
+        height: 30px;
+        margin-right: 1rem;
+        font-family: @headingsFontFamily;
+        font-size: 1rem !important;
+    }
+
+    input[type="radio"]:checked + label,
+    input[type="checkbox"]:checked + label {
+        font-weight: bold;
+    }
+
+    .valggruppe {
+        span {
+            display: block;
+            font-size: 0.8rem !important;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+        label {
+            font-size: 1rem !important;
+            text-transform: none;
+        }
+        .vannrett {
+        }
+        .loddrett {
+            label {
+                display: block !important;
+            }
+        }
+        .kolonner-to {
+            .content-columns(2, 0.5rem);
+            label {
+                display: block !important;
+            }
+        }
+        .kolonner-tre {
+            .content-columns(3, 0.5rem);
+            label {
+                display: block !important;
+            }
+        }
+    }
 }
