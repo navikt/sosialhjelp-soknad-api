@@ -219,9 +219,9 @@ angular.module('app.brukerdata', ['app.services'])
             }
 
             element.bind(eventType, function () {
-                var verdi = element.val();
+                var verdi = element.val().toString();
                 if (element.attr('type') === "checkbox") {
-                    verdi = element.is(':checked');
+                    verdi = element.is(':checked').toString();
                 }
 
                 $scope.$apply(function() {
