@@ -27,6 +27,7 @@ angular.module('nav.input',['nav.cmstekster'])
                 }
 
                 scope.hvisIOppsummeringsmodusOgRadioErValgt = function () {
+
                     return !scope.hvisIRedigeringsmodus() && scope.model == scope.value.toString();
                 }
 
