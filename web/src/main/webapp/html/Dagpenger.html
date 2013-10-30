@@ -3,7 +3,8 @@
   <script src="../js/lib/angular-route.js"></script>
   <script src="../js/lib/angular-resource.js"></script>
   <script src="../js/lib/ui-bootstrap-0.6.0.js"></script>
-  <script src="../js/lib/ui-bootstrap-tpls-0.6.0.js"></script>
+  <script src="../js/lib/ui-bootstrap-tpls-0.6.0.js"></script> <!-- Har gjort endringer her, husk å ta de med dersom du skal oppdatere!! -->
+  <script src="../js/app/formErrors.js"></script>
   <script src="../js/app/app.js"></script>
   <script src="../js/app/routes.js"></script>
   <script src="../js/app/grunnlagsdata.js"></script>
@@ -27,15 +28,13 @@
   <script src="../js/app/controllers/dagpenger/arbeidsforholdController.js"></script>
   <script src="../js/app/controllers/dagpenger/arbeidsforholdModule.js"></script>
   <script src="../js/app/directives/dagpenger/arbeidsforholdDirective.js"></script>
+  <script src="../js/app/directives/sporsmalferdig/spmblokkFerdigModule.js"></script>
 
-
-  <div class="rad">
-      <div class="begrensning">
-          <section class="sak-hel">
-              <div class="panel-standard-belyst skjema">
-                  <div data-ng-view/>
-              </div>
-          </section>
-      </div>
-  </div>
+<div class="rad soknad">
+    <section class="sak-hel">
+        <div class="panel-standard-belyst skjema">
+            <div data-ng-view/>
+        </div>
+    </section>
+</div>
 
