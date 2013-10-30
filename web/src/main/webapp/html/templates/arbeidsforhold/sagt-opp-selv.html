@@ -58,8 +58,10 @@
     </div>
 
     <div data-ng-if="af.sagtOppSelvAvtaleomOkonomiskytelse=='true'">
-      <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.informasjon"/>
-      <input id="okonomiskavtale-fritekst" type="text" />
+      <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.informasjon"/>
+      <br/>
+      <label for="okonomiskavtale-fritekst" cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.fritekst.sporsmal"/>
+      <input id="okonomiskavtale-fritekst" type="text" error-messages="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.feilmelding'" data-ng-minlength="5" data-ng-maxlength="50"/>
     </div>
 
     <div>
