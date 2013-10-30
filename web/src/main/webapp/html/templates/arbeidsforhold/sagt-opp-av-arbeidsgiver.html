@@ -64,6 +64,8 @@
 
     <div data-ng-show="af.sagtOppAvArbeidsgiverAvtaleomOkonomiskytelse == 'true'">
       <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.informasjon"/>
+      
+      <label for="avtaleomokonomiskytelsetype" cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.type.sporsmal"></label>
       <input type="text" id="avtaleomokonomiskytelsetype" data-ng-model="af.sagtOppAvArbeidsgiverAvtaleomOkonomiskytelseType" name="avtaleomokonomiskytelsetype" 
         error-messages="{required: 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.type.feilmelding', 
                         pattern: 'inneholder ugyldige tegn', minlength: 'er for kort.', maxlength: 'er for langt.'}"
