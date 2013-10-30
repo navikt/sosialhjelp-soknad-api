@@ -5,34 +5,41 @@
 
         <span data-ng-show="endreError" style="color:red" cmstekster="arbeidsforhold.error.endre"/>
 
-        <div data-ng-repeat="af in arbeidsforhold">
+
+        <div data-ng-repeat="af in arbeidsforhold" ng-form="endreArbeidsforholdForm" name="endreArbeidsforholdForm" data-ng-submit="lagreArbeidsforhold(af, endreArbeidsforholdForm)"
+                      novalidate>
             <div class="sluttaarsak" data-ng-show="arbeidsforholdetErIkkeIRedigeringsModus($index)">
-                <p class="svar-oppsummering arbeidsforhold-dato">{{ af.varighetFra | date:'d MMMM yyyy'}} - {{
-                    af.varighetTil | date:'d MMMM yyyy'}}</p>
+                <p class="arbeidsforhold-dato">{{ af.varighetFra | date:'d. MMMM yyyy'}} - {{
+                    af.varighetTil | date:'d. MMMM yyyy'}}</p>
 
-                <p class="svar-oppsummering arbeidsforhold-arbeidsgivernavn">{{ af.navn }}</p>
+                <p class="svar-oppsummering arbeidsforhold-arbeidsgivernavn-overskrift">{{ af.navn }}</p>
 
-                <p class="svar-oppsummering-overskrift" cmstekster="arbeidsforhold.arbeidsgiver.land"/>
+                <div class="oppsummering-arbeidsforhold-blokk-en">
+                    <div class="oppsummering-arbeidsforhold-landblokk">
+                        <span class="svar-oppsummering-overskrift" cmstekster="arbeidsforhold.arbeidsgiver.land"/>
+                        <span class="svar-oppsummering">{{ af.land }}</span>
+                        <span class="arbeidsgiver-oppsummering-landdeler">|</span>
+                        <span class="svar-oppsummering-overskrift"
+                              cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsak"/>
+                        <span class="svar-oppsummering">{{ af.sluttaarsak.navn }}</span>
+                    </div>
+                    <div class="arbeidsforhold-oppsummering-nesteblokk lenker-dot">
+                        <span><a href data-ng-click="slettArbeidsforhold(af)"
+                           cmstekster="arbeidsforhold.slettarbeidsforhold"/></span>
+                        <span><a href data-ng-click="endreArbeidsforhold($index)"
+                           cmstekster="arbeidsforhold.endrearbeidsforhold"/></span>
+                    </div>
+                </div>
+                <div class="arbeidsgiver-oppsummering-sluttaarsaker">
+                    <div data-ng-include="af.sluttaarsak.oppsummeringsurl"></div>
+                </div>
 
-                <p class="svar-oppsummering">{{ af.land }}</p>
-
-                <p class="svar-oppsummering-overskrift" cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsak"/>
-
-                <p class="svar-oppsummering">{{ af.sluttaarsak.navn }}</p>
-
-                <div data-ng-include="af.sluttaarsak.oppsummeringsurl"></div>
-
-                <a class="arbeidsforhold-slett" href data-ng-click="slettArbeidsforhold(af)"
-                   cmstekster="arbeidsforhold.slettarbeidsforhold"/>
-                <a class="arbeidsforhold-endre" href data-ng-click="endreArbeidsforhold($index)"
-                   cmstekster="arbeidsforhold.endrearbeidsforhold"/>
             </div>
 
 
-            <div data-ng-show="posisjonForArbeidsforholdUnderRedigering == $index">
+            <div data-ng-if="posisjonForArbeidsforholdUnderRedigering == $index">
 
-                <form name="endreArbeidsforholdForm" data-ng-submit="lagreArbeidsforhold(af, endreArbeidsforholdForm)"
-                      novalidate>
+             
                     <label for="arbeidsgiver_navn" cmstekster="arbeidsforhold.arbeidsgiver.navn"></label>
                     <input id="arbeidsgiver_navn" type="text" data-ng-model="af.navn"></input>
 
@@ -80,7 +87,7 @@
                         <div data-ng-include="af.sluttaarsak.url"></div>
                     </div>
 
-                    <input name="lagre" cmstekster="arbeidsforhold.lagre" type="submit" id="arbeidsgiverLagre"></input>
+                    <input name="lagre" cmstekster="arbeidsforhold.lagre" type="submit" id="arbeidsgiverLagre" data-ng-click="lagreArbeidsforhold(af, endreArbeidsforholdForm)"></input>
 
                     <a class="arbeidsforhold-avbryt" href cmstekster="arbeidsforhold.avbryt"
                        data-ng-click="avbrytEndringAvArbeidsforhold(af)"></a>
@@ -88,8 +95,6 @@
 
                     <form-errors></form-errors>
 
-
-                </form>
             </div>
         </div>
         <form name="arbeidsforholdForm" data-ng-submit="validerArbeidsforhold(arbeidsforholdForm)" novalidate>
