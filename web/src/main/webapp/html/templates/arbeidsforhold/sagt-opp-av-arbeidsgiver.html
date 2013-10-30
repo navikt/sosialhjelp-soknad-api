@@ -6,11 +6,14 @@
   <div class="varighet">
       <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.sporsmal"/>
       <label cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetFra"/>
-      <input type="text" name="oppsigelsesTidVarighetFra" ui-date ui-date-format ng-model="af.ssagtOppAvArbeidsgiverVarighetFra" data-ng-change="validateOppsigelsestidTilFraDato(af)"  required >
+      <input type="text" name="oppsigelsesTidVarighetFra" ui-date ui-date-format ng-model="af.ssagtOppAvArbeidsgiverVarighetFra" 
+      data-ng-change="validateOppsigelsestidTilFraDato(af)" error-messages="'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetFra.feilmelding'"  required >
       <label cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetTil"/>
       <span data-ng-show="oppsigelsestidDatoError" style="color:red" cmstekster="arbeidsforhold.error.sagtOppAvArbeidsgiver.datoTilFra"/>
-      <input type="text" name="oppsigelsesTidVarighetTil" ui-date ui-date-format ng-model="af.sagtOppAvArbeidsgiverVarighetTil" data-ng-change="validateOppsigelsestidTilFraDato(af)" required >
+      <input type="text" name="oppsigelsesTidVarighetTil" ui-date ui-date-format ng-model="af.sagtOppAvArbeidsgiverVarighetTil" 
+      data-ng-change="validateOppsigelsestidTilFraDato(af)" error-messages="'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetTil.feilmelding'" required >
   </div>
+
 
 
   <div class="sporsmaal">
