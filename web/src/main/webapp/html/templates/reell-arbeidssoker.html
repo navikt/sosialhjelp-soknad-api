@@ -1,33 +1,27 @@
-<div class="skjemaramme">
-    <form name="reellarbeidssokerForm" class="skjemainnhold" data-ng-controller="ModusCtrl" novalidate>
-        <div data-ng-controller="ReellarbeidssokerCtrl">
-            <booleanradio data-ng-model="soknadData.fakta.villigdeltid.value"
-                          modus="data.redigeringsModus"
-                          nokkel="reellarbeidssoker.villigdeltid"/>
+<div class="skjemaramme" data-ng-controller="ModusCtrl">
+    <form name="reellarbeidssokerForm" class="skjemainnhold" data-ng-controller="ReellarbeidssokerCtrl"
+          data-ng-submit="validerReellarbeidssoker(reellarbeidssokerForm)" novalidate>
+        <booleanradio data-ng-model="soknadData.fakta.villigdeltid.value"
+                      modus="data.redigeringsModus"
+                      nokkel="reellarbeidssoker.villigdeltid"/>
 
-            <booleanradio data-ng-model="soknadData.fakta.villigpendle.value"
-                          modus="data.redigeringsModus"
-                          nokkel="reellarbeidssoker.villigpendle"/>
+        <booleanradio data-ng-model="soknadData.fakta.villigpendle.value"
+                      modus="data.redigeringsModus"
+                      nokkel="reellarbeidssoker.villigpendle"/>
 
-            <booleanradio data-ng-model="soknadData.fakta.villighelse.value"
-                          modus="data.redigeringsModus"
-                          nokkel="reellarbeidssoker.villighelse"/>
+        <booleanradio data-ng-model="soknadData.fakta.villighelse.value"
+                      modus="data.redigeringsModus"
+                      nokkel="reellarbeidssoker.villighelse"/>
 
-            <booleanradio data-ng-model="soknadData.fakta.villigjobb.value"
-                          modus="data.redigeringsModus"
-                          nokkel="reellarbeidssoker.villigjobb"/>
+        <booleanradio data-ng-model="soknadData.fakta.villigjobb.value"
+                      modus="data.redigeringsModus"
+                      nokkel="reellarbeidssoker.villigjobb"/>
 
-            <div data-ng-show="hvisIkkeFormValiderer()">
-                <feilmeldinger form="reellarbeidssokerForm" nokkel="reellarbeidssoker"/>
-            </div>
-
-            <div class="spm-knapper">
-                <button data-ng-show="hvisIRedigeringsmodus()" class="knapp-hoved"
-                        data-ng-click="validerReellarbeidssoker(reellarbeidssokerForm)"
-                        cmstekster="reellarbeidssoker.ferdig"/>
-
-                <sporsmalblokk/>
-            </div>
+        <div data-ng-show="hvisIkkeFormValiderer()">
+            <feilmeldinger form="reellarbeidssokerForm" nokkel="reellarbeidssoker"/>
         </div>
+        <spmblokkferdig
+                nokkel="reellarbeidssoker"
+                modus="data.redigeringsModus"/>
     </form>
 </div>
