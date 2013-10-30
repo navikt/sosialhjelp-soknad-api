@@ -21,5 +21,9 @@
 	  <input class="sendsoknad-radio" id="kontraktUtgaattTilbudomfortsetteNei" data-ng-model="af.kontraktUtgaattTilbudomfortsette" type="radio" value="false" name="kontraktUtgaattTilbudomfortsette" error-messages="'arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.feilmelding'" required/>
 	  <label for="kontraktUtgaattTilbudomfortsetteNei{{$index}}" class='svar-alt' cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.false"/>
 	</div>
+
+	<div data-ng-if="af.kontraktUtgaattTilbudomfortsette == 'true'">
+      <p cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true.informasjon"/>
+    </div>
 </div>
 
