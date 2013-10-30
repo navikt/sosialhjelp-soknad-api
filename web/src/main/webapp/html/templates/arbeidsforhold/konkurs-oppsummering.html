@@ -1,18 +1,14 @@
 <div data-ng-controller="ModusCtrl">
-
     <p cmstekster="sluttaarsakkonkurs.informasjon"/>
 
     <br/>
-    <p> {{af.sluttaarsak.sluttet}} </p>
-
-    <br/>
-
-    <p cmstekster="sluttaarsakkonkurs.lonnsgaranti.sporsmal"/>
-    <div data-ng-show="sluttaarsakkonkurs.lonnsgaranti == 'true'">
+    <p> {{af.sluttaarsak.bostyrersnavn}} </p>
+    <p class="svar-oppsummering-overskrift" cmstekster="sluttaarsakkonkurs.lonnsgaranti.sporsmal"/>
+    <div data-ng-show="af.sluttaarsakkonkurs.lonnsgaranti == 'true'">
         <p cmstekster="sluttaarsakkonkurs.lonnsgaranti.true"/>
     </div>
 
-    <div data-ng-show="sluttaarsakkonkurs.lonnsgaranti == 'false'">
+    <div data-ng-show="af.sluttaarsakkonkurs.lonnsgaranti == 'false'">
         <p cmstekster="sluttaarsakkonkurs.lonnsgaranti.false"/>
     </div>
 
