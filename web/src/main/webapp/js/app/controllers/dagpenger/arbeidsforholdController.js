@@ -183,15 +183,6 @@ angular.module('nav.arbeidsforhold.controller',[])
                 }
             }
 
-            $scope.validateBostyrer = function(af) {
-                if(af && (af.sluttaarsak.bostyrersnavn.length > 50 ) || (af.sluttaarsak.bostyrersnavn.length < 5)) {
-
-                    $scope.bostyrerNavnError = true;
-                } else {
-                    $scope.bostyrerNavnError = false;
-                }
-            }
-
             landService.get().$promise.then(function (result) {
                 $scope.landService = result;
             });
