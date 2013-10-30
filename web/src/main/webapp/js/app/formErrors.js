@@ -18,7 +18,7 @@
         link: function postLink(scope, elem, attrs, ctrl) {
             // list of some default error reasons
             var defaultErrorReasons = {
-                    required: 'er påkverd.',
+                    required: 'er påkrevd.',
                     minlength: 'er for kort.',
                     maxlength: 'er for langt.',
                     email: 'er ikke en gyldig e-postadresse.',
@@ -48,6 +48,7 @@
                     var reason = defaultErrorReasons[error] || defaultErrorReasons.fallback;
                     
                     var defaultReason = niceName + ' ' + reason;
+                    console.log(" xxx " + elem + reason);
                     // if they used the errorMessages directive, grab that message
                     if(typeof props.$errorMessages === 'object')
                         reason = props.$errorMessages[error];

@@ -5,12 +5,13 @@
     <div>
 
         <label cmstekster="sluttaarsakkonkurs.bostyrersnavn"></label>
-        <input type="text" id="bostyrersnavn" name="bostyrersnavn" ng-minlength="5" ng-maxlength="50" minlength="5" maxlength="50"  ng-model="af.sluttaarsak.sluttet" required />
+        <input type="text" id="bostyrersnavn" name="bostyrersnavn" ng-minlength="5" ng-maxlength="50" ng-model="af.sluttaarsak.bostyrersnavn" data-ng-change="validateBostyrer(af)" error-messages="'sluttaarsakkonkurs.bostyrer.feilmelding'" required />
+        <span data-ng-show="bostyrerNavnError" style="color:red" cmstekster="arbeidsforhold.error.bostyrernavn"/>
         <p cmstekster="sluttaarsakkonkurs.lonnsgaranti"/>
-        <booleanradio data-ng-model="sluttaarsakkonkurs.lonnsgaranti"
+        <booleanradio data-ng-model="af.sluttaarsakkonkurs.lonnsgaranti"
                       modus="data.redigeringsModus"
-                      nokkel="sluttaarsakkonkurs.lonnsgaranti" required/>
-        <h4 cmstekster="sluttaarsakkonkurs.ikkesoktlonnsgaranti" ng-show="sluttaarsakkonkurs.lonnsgaranti == 'true'" />
+                      nokkel="sluttaarsakkonkurs.lonnsgaranti"/>
+        <h4 cmstekster="sluttaarsakkonkurs.ikkesoktlonnsgaranti" ng-show="af.sluttaarsakkonkurs.lonnsgaranti == 'true'" />
 
     </div>
 </div>
