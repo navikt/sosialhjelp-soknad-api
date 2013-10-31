@@ -4,7 +4,6 @@
         <div class="spm">
             <p class="spm-sporsmal" cmstekster="utdanning.sporsmal"/>
 
-            <div data-ng-show="hvisIRedigeringsmodus()">
                 <navradio data-ng-model='soknadData.fakta.utdanning.value' value='ikkeUtdanning'
                           modus="data.redigeringsModus"
                           inputname='utdanning'
@@ -68,13 +67,6 @@
                 <!--</label>-->
                 <!--<utdanningsinformasjon></utdanningsinformasjon>-->
                 <!--</div>-->
-            </div>
-
-            <div class='oppsummeringsboks' data-ng-show='hvisIOppsummeringsmodus()'>
-                <span data-ng-show='hvisIkkeUnderUtdanning()' cmstekster="utdanning.svar.ikkeUtdanning"/>
-                <span data-ng-show='hvisAvsluttetUtdanning()' cmstekster="utdanning.svar.avsluttetUtdanning"/>
-                <span data-ng-show='hvisUnderUtdanning()' cmstekster="utdanning.svar.underUtdanning"/>
-            </div>
 
 
         </div>
