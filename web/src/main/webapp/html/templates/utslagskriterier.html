@@ -1,61 +1,25 @@
 <panelbelyst>
     {{checkUtslagskriterier()}}
 
-    <p cmstekster="utslagskriterier_kriterie_intro"/>
+    <p cmstekster="utslagskriterier.intro"/>
     <ul>
-        <li>Du må være under 67år</li>
-        <li>Bo i Norge</li>
-        <li>Være registrert som jobbsøker</li>
+        <li cmstekster="utslagskriterier.kriterie.alder.under67"/>
+        <li cmstekster="utslagskriterier.kriterie.bosted.norge"/>
+        <li cmstekster="utslagskriterier.kriterie.reellarbeidssoker"/>
     </ul>
 
+    <p cmstekster="utslagskriterier.utslag.alder">
 
-    <div data-ng-hide="personalia.alder">
-        <span>Du er 67 år eller eldre. Du oppfyller dermed ikke alderskravet for å søke.</span>
-        <br/>
+    <p cmstekster="utslagskriterier.utslag.bosted">
 
-        <span>Du kan søke likevel, men svaret blir mest sannsynlig negativt.</span>
-    </div>
-
+    <p>
+        <span cmstekster="utslagskriterier.utslag.reellarbeidssoker"/>
+        <a href cmslenketekster="utslagskriterier.utslag.reellarbeidssoker.registert.url"
+           cmstekster="utslagskriterier.utslag.reellarbeidssoker.registert"/>
+    </p>
     <br/>
 
-    <div data-ng-show="personalia.borIUtland">
-        Du er registrert med adresse i utlandet. Du må ha norsk adresse for å kunne motta dagpenger.
-        <!--<p> Du må bo i Norge for å kunne søke om dagpenger.</p>-->
-        <!--<p>Vi har registrert følgende adresse på deg: </p>-->
-        <!--<p>Folkeregistrert adresse: </p>-->
-        <!--<p>{{personalia.bostedsadresseGatenavn}} {{personalia.bostedsadresseHusnummer}} </p>-->
-        <!--<p>{{personalia.bostedsadressePostnr}} {{personalia.bostedsadressePoststed}} </p>-->
-        <!--<p>{{personalia.bostedsadresseLandkode}} </p>-->
-
-        <!--<br/>-->
-        <!--<p>Midlertidig adresse: </p>-->
-        <!--<p>{{personalia.midlertidigadresseGatenavn}} {{personalia.midlertidigadresseHusnummer}}</p>-->
-        <!--<p>{{personalia.midlertidigadressePostnr}} {{personalia.midlertidigadressePoststed}} </p>-->
-        <!--<p>{{personalia.midlertidigadresseLandkode}} </p>-->
-        <!--<div data-ng-show="personalia.midlertidigadresse-landkode != 'NOR' && personalia.midlertidigadresse-landkode == 'NOR'"> -->
-
-        <!--<p> Du må derfor endre din midlertidige adresse til en norsk adresse for å få dagpenger. </p>-->
-        <!--<p>Dette kan gjøres enten her eller i din profil *uvisst*.</p>-->
-        <!--</div>-->
-        <!--<div data-ng-show="personalia.bostedsadresse-landkode != 'norge'"> -->
-        <!--<p> Du må derfor endre din folkeregistrerte adresse til en norsk adresse for å få dagpenger. </p>-->
-        <!--<p>Dette kan gjøres på <a href="www.skatteetaten.no/Skjemaer/Flyttemelding-til-folkeregisteret"> www.skatteetaten.no</a></p>-->
-        <!--</div>-->
-    </div>
-
-    <!--<div data-ng-show="kvalifisererForGjenopptak() != false" >-->
-    <!--{{kvalifisererForGjenopptak()}}-->
-    <!--</div>-->
-
+    <p cmstekster="utslagskriterier.utslag.infoAvslag"/>
     <br/>
-    <br/>
-
-    <div data-ng-hide="arena.jobbsoker">
-        <p>Du er ikke registrert som jobbsøker, dette er en forutsetning for å søke om dagpenger. <a
-                href="http://nav.no" target="_blank">Registrer deg nå</a></p>
-    </div>
-
-    <br/>
-
-    <a id="fortsett" href='#/informasjonsside'>Fortsett likevel</a>
+    <a id="fortsett" href='#/informasjonsside' cmstekster="utslagskriterier.utslag.fortsett"/>
 </panelbelyst>

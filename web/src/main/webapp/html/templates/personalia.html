@@ -1,5 +1,10 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
     <form name="personaliaForm" class="skjemainnhold" data-ng-controller="PersonaliaCtrl" data-ng-submit="validerPersonalia(personaliaForm)" novalidate>
+        <div class="spm">
+            <p class="spm-sporsmal">
+                <span cmstekster="personalia.intro"/> <a cmstekster="personalia.intro.tekst" cmslenketekster="personalia.intro.url"/>
+            </p>
+        </div>
         <div data-ng-show="harHentetPersonalia()">
 
             <label cmstekster="personalia.fnr"></label>

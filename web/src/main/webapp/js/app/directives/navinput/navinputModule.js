@@ -48,17 +48,18 @@ angular.module('nav.input',['nav.cmstekster'])
                 label: '@',
                 endret: '&'
             },
-            controller: function($scope) {
-                $scope.hvisIRedigeringsmodus = function() {
-                    return $scope.modus;
+            link: function(scope, element, attrs) {
+                scope.hvisIRedigeringsmodus = function() {
+                    return scope.modus;
                 }
 
-                $scope.hvisIOppsummeringsmodusOgChecked = function () {
-                    return !$scope.hvisIRedigeringsmodus() && checkTrue($scope.model);
+                scope.hvisIOppsummeringsmodusOgChecked = function () {
+                    return !scope.hvisIRedigeringsmodus() && checkTrue(scope.model);
                 }
 
-                $scope.hvisHuketAv = function() {
-                    return checkTrue($scope.model);
+                scope.hvisHuketAv = function() {
+                    var transcludeElement = element.find('.ng-transclude');
+                    return checkTrue(scope.model) && transcludeElement.text().length > 0;
                 }
             },
             templateUrl: '../js/app/directives/navinput/navcheckboxTemplate.html'
