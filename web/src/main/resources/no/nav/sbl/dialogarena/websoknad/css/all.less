@@ -160,7 +160,7 @@
 }
 
 // TODO: Skal fjernes når dette blir fikset i fellesen. Skal egentlig kunne settes med klasse på forms...
-input[type="text"] {
+input[type="text"], select, textarea {
     display: block !important;
 }
 
@@ -172,13 +172,15 @@ input[type="text"] {
     }
 }
 
-.ekstra-spm-boks {
+[class*=spm-boks] {
     position: relative;
     background: #f1f1f1;
     border: 1px solid #ddd;
     padding: 20px;
     margin: 10px 0 30px;
+}
 
+.ekstra-spm-boks {
     &:after, &:before {
         bottom: 100%;
         border: solid transparent;

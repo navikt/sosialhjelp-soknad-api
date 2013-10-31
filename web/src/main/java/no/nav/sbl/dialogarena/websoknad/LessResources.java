@@ -3,7 +3,9 @@ package no.nav.sbl.dialogarena.websoknad;
 import org.apache.wicket.request.resource.PackageResourceReference;
 
 public enum LessResources {
-    ALL_LESS("all");
+    ALL_LESS("all"),
+    ARBEIDSFORHOLD_LESS("arbeidsforhold");
+
 
     private static final String FOLDER = "css/";
     private static final String TYPE = ".less";
