@@ -88,6 +88,8 @@ angular.module('nav.arbeidsforhold.controller',[])
                         $scope.soknadData = result;
                         if($scope.soknadData.fakta.arbeidsforhold) {
                             $scope.arbeidsforhold = angular.fromJson($scope.soknadData.fakta.arbeidsforhold.value); 
+                        } else if($scope.soknadData.fakta.arbeidsforhold == undefined) {
+                            $scope.arbeidsforhold = [];
                         }
                     });
 
