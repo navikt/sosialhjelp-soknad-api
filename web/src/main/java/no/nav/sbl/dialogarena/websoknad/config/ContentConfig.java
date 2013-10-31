@@ -44,7 +44,7 @@ public class ContentConfig {
     }
 
     @Bean
-    public NavMessageSource NavMessageSource() {
+    public NavMessageSource navMessageSource() {
         NavMessageSource messageSource = new NavMessageSource();
         messageSource.setBasenames("classpath:content/innholdstekster", "classpath:content/innholdstekster");
         messageSource.setDefaultEncoding("UTF-8");

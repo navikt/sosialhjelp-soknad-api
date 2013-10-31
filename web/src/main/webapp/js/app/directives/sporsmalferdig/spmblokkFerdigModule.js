@@ -26,6 +26,7 @@ angular.module('nav.sporsmalferdig', [])
 
                 scope.gaTilRedigeringsmodus = function () {
                     scope.modus = true;
+                    scope.$emit("ENDRET_TIL_REDIGERINGS_MODUS", {key: 'redigeringsmodus', value: true});
                 }
 
                 scope.lukkOgGaaTilNeste = function () {

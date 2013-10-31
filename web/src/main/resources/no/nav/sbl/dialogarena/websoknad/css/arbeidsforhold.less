@@ -1,7 +1,10 @@
 #arbeidsforhold {
     .arbeidsforhold-spm {
+        margin-bottom: 40px;
+
         input, select {
             width: 75%;
+            margin-bottom: 1rem;
 
             &#arbeidsgiver_navn {
                 width: 100%;
@@ -23,6 +26,10 @@
                 }
             }
         }
+
+        .sluttaarsak-informasjon {
+            margin-bottom: 1rem;
+        }
     }
 
     .knapper-arbeidsforhold {
@@ -36,8 +43,25 @@
             margin: 0 auto 1rem;
         }
     }
+
   .arbeidsforhold-oppsummering-nesteblokk {
     text-align: center;
     margin-bottom: 30px !important;
   }
+
+    .spm-knapper {
+        border-top: 1px solid #ddd;
+        padding-top: 40px;
+    }
+
+    [name="arbeidsforholdForm"] {
+        #legg-til {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        #har-ikke-jobbet {
+            margin-top: 40px;
+        }
+    }
 }
