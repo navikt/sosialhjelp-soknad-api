@@ -62,4 +62,13 @@ angular.module('nav.ytelser',[])
             }
             return minstEnAvhuket;
         }
+
+        $scope.ingenYtelserOppsummeringSkalVises = function() {
+//            if ($scope.soknadData.fakta.ingenYtelse != undefined && $scope.soknadData.fakta.ingenYtelse.value) {
+            if ($scope.soknadData != undefined && $scope.soknadData.fakta != undefined) {
+                return $scope.soknadData.fakta.ingenYtelse != undefined && $scope.soknadData.fakta.ingenYtelse.value && $scope.hvisIOppsummeringsmodus();
+            }
+            return false;
+
+        }
     }]);
