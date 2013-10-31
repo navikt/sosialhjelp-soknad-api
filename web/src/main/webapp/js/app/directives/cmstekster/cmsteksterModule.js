@@ -9,4 +9,12 @@ angular.module('nav.cmstekster',['app.services'])
                 element.text(data.tekster[nokkel]);
             }
         };
+    }])
+    .directive('cmslenketekster', ['data', function(data) {
+        return function ($scope, element, attrs) {
+            var nokkel = attrs['cmstekster'];
+            if (element.is('a')) {
+                element.attr('href', data.tekster[nokkel]);
+            }
+        };
     }]);
