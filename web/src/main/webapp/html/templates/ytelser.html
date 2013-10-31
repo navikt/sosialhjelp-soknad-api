@@ -2,9 +2,11 @@
     <form name="ytelserForm" class="skjemainnhold" data-ng-controller="YtelserCtrl"
           data-ng-submit="validerYtelser(ytelserForm)" novalidate>
         <div class="spm">
-            <p cmstekster="ytelser.informasjon"/>
-
-            <p class="spm-sporsmal" cmstekster="ytelser.sporsmal"/>
+            <div class="spm-sporsmal">
+              <p cmstekster="ytelser.informasjon"/>
+              <br/>
+              <p cmstekster="ytelser.sporsmal"/>
+            </div>
 
             <navcheckbox data-ng-model='soknadData.fakta.stonadFisker.value' modus='data.redigeringsModus'
                          inputname='stonadFisker' label='ytelser.stonadFikser'
@@ -73,9 +75,7 @@
                         <label for='ingenYtelseCheckbox' class='svar-alt' cmstekster="ytelser.ingenYtelse"/>
                     </span>
 
-                <span data-ng-show='hvisIOppsummeringsmodusOgChecked()' cmstekster="ytelser.ingenYtelse"/>
-                <!--<span data-ng-show="ytelserForm.$error.harValgtYtelse"-->
-                <!--cmstekster="ytelser.harValgtYtelse.feilmelding"/>-->
+                <p class="svar-oppsummering" data-ng-show='ingenYtelserOppsummeringSkalVises()' cmstekster="ytelser.ingenYtelse"/>
             </div>
 
         </div>
