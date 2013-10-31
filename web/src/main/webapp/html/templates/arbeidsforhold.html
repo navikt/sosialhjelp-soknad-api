@@ -9,27 +9,23 @@
         <div data-ng-repeat="af in arbeidsforhold" ng-form="endreArbeidsforholdForm" name="endreArbeidsforholdForm" data-ng-submit="lagreArbeidsforhold(af, endreArbeidsforholdForm)"
                       novalidate>
             <div class="sluttaarsak" data-ng-show="arbeidsforholdetErIkkeIRedigeringsModus($index)">
-                <p class="arbeidsforhold-dato">{{ af.varighetFra | date:'d. MMMM yyyy'}} - {{
-                    af.varighetTil | date:'d. MMMM yyyy'}}</p>
+                <p class="arbeidsforhold-dato">{{ af.varighetFra | date:'dd.MM.yyyy'}} - {{
+                    af.varighetTil | date:'dd.MM.yyyy'}}</p>
 
-                <p class="svar-oppsummering arbeidsforhold-arbeidsgivernavn-overskrift">{{ af.navn }}</p>
+                <p class="arbeidsforhold-arbeidsgivernavn-overskrift">{{ af.navn }}</p>
 
-                <div class="oppsummering-arbeidsforhold-blokk-en">
-                    <div class="oppsummering-arbeidsforhold-landblokk">
-                        <span class="svar-oppsummering-overskrift" cmstekster="arbeidsforhold.arbeidsgiver.land"/>
-                        <span class="svar-oppsummering">{{ af.land }}</span>
-                        <span class="arbeidsgiver-oppsummering-landdeler">|</span>
-                        <span class="svar-oppsummering-overskrift"
-                              cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsak"/>
-                        <span class="svar-oppsummering">{{ af.sluttaarsak.navn }}</span>
-                    </div>
-                    <div class="arbeidsforhold-oppsummering-nesteblokk lenker-dot">
-                        <span><a href data-ng-click="slettArbeidsforhold(af)"
-                           cmstekster="arbeidsforhold.slettarbeidsforhold"/></span>
-                        <span><a href data-ng-click="endreArbeidsforhold($index)"
-                           cmstekster="arbeidsforhold.endrearbeidsforhold"/></span>
-                    </div>
+                <p class="svar-oppsummering-label" cmstekster="arbeidsforhold.arbeidsgiver.land"/>
+                <p class="svar-oppsummering-label-svar">{{ af.land }}</p>
+                <p class="svar-oppsummering-label" cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsak"/>
+                <p class="svar-oppsummering-label-svar">{{ af.sluttaarsak.navn }}</p>
+
+                <div class="arbeidsforhold-oppsummering-nesteblokk lenker-dot">
+                    <span><a href data-ng-click="slettArbeidsforhold(af)"
+                       cmstekster="arbeidsforhold.slettarbeidsforhold"/></span>
+                    <span><a href data-ng-click="endreArbeidsforhold($index)"
+                       cmstekster="arbeidsforhold.endrearbeidsforhold"/></span>
                 </div>
+
                 <div class="arbeidsgiver-oppsummering-sluttaarsaker">
                     <div data-ng-include="af.sluttaarsak.oppsummeringsurl"></div>
                 </div>
