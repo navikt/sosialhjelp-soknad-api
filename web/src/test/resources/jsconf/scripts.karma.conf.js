@@ -14,6 +14,7 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
+            '../../../test/js/lib/TimeoutBoxMock.js',
             '../jslib/jquery-1.10.2.js',
             '../../../main/webapp/js/lib/angular.js',
             '../jslib/angular-mocks.js',
