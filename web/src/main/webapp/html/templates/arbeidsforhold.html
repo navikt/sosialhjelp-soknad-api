@@ -98,16 +98,11 @@
 
         </div>
         <form name="arbeidsforholdForm" data-ng-submit="validerArbeidsforhold(arbeidsforholdForm)" novalidate>
-            <a href class="knapp-leggtil-liten" data-ng-show="kanLeggeTilArbeidsforhold()"
-               data-ng-click="nyttArbeidsforhold($event)"
-               cmstekster="arbeidsforhold.nyttarbeidsforhold"/>
+            <div id="legg-til">
+                <a href class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event)" cmstekster="arbeidsforhold.nyttarbeidsforhold"/>
+            </div>
 
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-
-            <div data-ng-show="harIkkeLagretArbeidsforhold()">
+            <div id="har-ikke-jobbet" data-ng-show="harIkkeLagretArbeidsforhold()">
                 <navcheckbox data-ng-model="soknadData.fakta.harIkkeJobbet.value"
                              modus="data.redigeringsModus"
                              inputname="harIkkeJobbet" label='arbeidsforhold.harIkkeJobbet'
