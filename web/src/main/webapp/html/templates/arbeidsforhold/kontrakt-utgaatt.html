@@ -1,29 +1,39 @@
 <div data-ng-controller="ModusCtrl">
-<p cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.informasjon"/>
+    <p class="sluttaarsak-informasjon" cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.informasjon"/>
 
-<div>
-    <p cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.sistearbeidsdag.sporsmal"/>
-    <input type="text" name="varighetFra" ui-date ui-date-format ng-model="af.kontraktUtgaattSisteArbeidsdag" error-messages="'arbeidsforhold.sluttaarsak.kontraktutgaatt.sistearbeidsdag.feilmelding'" required >
-</div>
-
-<br/>
-
-<div class="sporsmaal">
-	<p cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.sporsmal"/>
-
-	<div>
-	  <input class="sendsoknad-radio" id="kontraktUtgaattTilbudomfortsetteJa" data-ng-model="af.kontraktUtgaattTilbudomfortsette" type="radio" value="true"
-	             name="kontraktUtgaattTilbudomfortsette" error-messages="'arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.feilmelding'" required/>
-	  <label for="kontraktUtgaattTilbudomfortsetteJa" class='svar-alt' cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true"/>
-	</div>
-
-	<div>
-	  <input class="sendsoknad-radio" id="kontraktUtgaattTilbudomfortsetteNei" data-ng-model="af.kontraktUtgaattTilbudomfortsette" type="radio" value="false" name="kontraktUtgaattTilbudomfortsette" error-messages="'arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.feilmelding'" required/>
-	  <label for="kontraktUtgaattTilbudomfortsetteNei" class='svar-alt' cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.false"/>
-	</div>
-
-	<div data-ng-if="af.kontraktUtgaattTilbudomfortsette == 'true'">
-      <p cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true.informasjon"/>
+    <div>
+        <p cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.sistearbeidsdag.sporsmal"/>
+        <input type="text" name="varighetFra" ui-date ui-date-format ng-model="af.kontraktUtgaattSisteArbeidsdag"
+               error-messages="'arbeidsforhold.sluttaarsak.kontraktutgaatt.sistearbeidsdag.feilmelding'" required>
     </div>
-</div>
+
+    <br/>
+
+    <div class="sporsmaal">
+        <p cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.sporsmal"/>
+
+        <div>
+            <input class="sendsoknad-radio" id="kontraktUtgaattTilbudomfortsetteJa"
+                   data-ng-model="af.kontraktUtgaattTilbudomfortsette" type="radio" value="true"
+                   name="kontraktUtgaattTilbudomfortsette"
+                   error-messages="'arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.feilmelding'"
+                   required/>
+            <label for="kontraktUtgaattTilbudomfortsetteJa" class='svar-alt'
+                   cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true"/>
+        </div>
+
+        <div>
+            <input class="sendsoknad-radio" id="kontraktUtgaattTilbudomfortsetteNei"
+                   data-ng-model="af.kontraktUtgaattTilbudomfortsette" type="radio" value="false"
+                   name="kontraktUtgaattTilbudomfortsette"
+                   error-messages="'arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.feilmelding'"
+                   required/>
+            <label for="kontraktUtgaattTilbudomfortsetteNei" class='svar-alt'
+                   cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.false"/>
+        </div>
+
+        <div data-ng-if="af.kontraktUtgaattTilbudomfortsette == 'true'">
+            <p cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true.informasjon"/>
+        </div>
+    </div>
 
