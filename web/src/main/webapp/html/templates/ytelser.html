@@ -75,9 +75,7 @@
                         <label for='ingenYtelseCheckbox' class='svar-alt' cmstekster="ytelser.ingenYtelse"/>
                     </span>
 
-                <span data-ng-show='hvisIOppsummeringsmodusOgChecked()' cmstekster="ytelser.ingenYtelse"/>
-                <!--<span data-ng-show="ytelserForm.$error.harValgtYtelse"-->
-                <!--cmstekster="ytelser.harValgtYtelse.feilmelding"/>-->
+                <p class="svar-oppsummering" data-ng-show='ingenYtelserOppsummeringSkalVises()' cmstekster="ytelser.ingenYtelse"/>
             </div>
 
         </div>
