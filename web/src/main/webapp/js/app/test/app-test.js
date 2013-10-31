@@ -1,5 +1,6 @@
 angular.module('sendsoknad',['app.routes','app.brukerdata','app.services','app.directives','app.controllers', 'app.date', 'app.grunnlagsdata', 'ngMockE2E'])
 
+
 .run(function($httpBackend) {
 	soknadData = {"soknadId":1,"gosysId":"Dagpenger","brukerBehandlingId":"100000000",
 	"fakta":{
