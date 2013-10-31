@@ -1,50 +1,49 @@
 <div>
-    <!--h3>{{sluttaarsak.navn}}</h3>
+    <p class="svar-oppsummering-informasjon" cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.informasjon"/>
 
-    <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.informasjon"/>
     <p class="svar-oppsummering-overskrift" cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.sporsmal"/>
 
-    <div class="varighet">
-        <p class="svar-oppsummering-overskrift" cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetFra"/>
-        <span>{{soknadData.fakta.varighetFra}}</span>
-        <p  class="svar-oppsummering-overskrift" cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetTil"/>
-        <span>{{af.varighetTil}} </span>
+    <span class="svar-oppsummering">{{af.varighetFra | date:'dd.MM.yyyy'}} - </span>
+    <span class="svar-oppsummering-uten-checkbox">{{af.varighetTil | date:'dd.MM.yyyy'}} </span>
+
+
+    <p class="svar-oppsummering-overskrift"
+       cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.sporsmal"/>
+
+    <div data-ng-show="af.oppsigelseslonn">
+        <p class="svar-oppsummering"
+           cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.true"/>
+    </div>
+
+    <div data-ng-show="af.oppsigelseslonn == 'false'">
+        <p class="svar-oppsummering"
+           cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.false"/>
+    </div>
+
+    <p class="svar-oppsummering-overskrift"
+       cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.sporsmal"/>
+
+    <div data-ng-show="af.tilbudomjobbannetsted">
+        <p class="svar-oppsummering"
+           cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true"/>
+    </div>
+
+    <div data-ng-show="af.tilbudomjobbannetsted == 'false'">
+        <p class="svar-oppsummering"
+           cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.false"/>
     </div>
 
 
-    <div class="sporsmaal">
-        <p class="svar-oppsummering-overskrift" cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.sporsmal"/>
+    <p class="svar-oppsummering-overskrift"
+       cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.sporsmal"/>
 
-        <div data-ng-show="af.oppsigelseslonn">
-            <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.true"/>
-        </div>
-
-        <div data-ng-show="af.oppsigelseslonn == 'false'">
-            <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.false"/>
-        </div>
-    </div>
-    <div class="sporsmaal">
-        <p class="svar-oppsummering-overskrift" cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.sporsmal"/>
-
-        <div data-ng-show="af.tilbudomjobbannetsted">
-            <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true"/>
-        </div>
-
-        <div data-ng-show="af.tilbudomjobbannetsted == 'false'">
-            <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.false"/>
-        </div>
+    <div data-ng-show="af.avtaleomokonomiskytelse">
+        <p class="svar-oppsummering"
+           cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.true"/>
     </div>
 
-
-    <div class="sporsmaal">
-        <p class="svar-oppsummering-overskrift" cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.sporsmal"/>
-
-        <div data-ng-show="af.avtaleomokonomiskytelse">
-            <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.true"/>
-        </div>
-
-        <div data-ng-show="af.avtaleomokonomiskytelse == 'false'">
-            <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.false"/>
-        </div>
-    </div-->
+    <div data-ng-show="af.avtaleomokonomiskytelse == 'false'">
+        <p class="svar-oppsummering"
+           cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.false"/>
+    </div>
 </div>

@@ -1,20 +1,21 @@
 <div data-ng-controller="ModusCtrl">
-    <!--p cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.informasjon"/>
+    <p class="svar-oppsummering-informasjon" cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.informasjon"/>
 
     <br/>
 
-    <p cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.sistearbeidsdag.sporsmal"/>
-    <p> {{af.kontraktUtgaattSisteArbeidsdag}} </p>
+    <p class="svar-oppsummering-overskrift" cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.sistearbeidsdag.sporsmal"/>
+    <p class="svar-oppsummering"> {{af.kontraktUtgaattSisteArbeidsdag  | date:'dd.MM.yyyy'}} </p>
 
     <br/>
 
-    <p cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.sporsmal"/>
+    <p class="svar-oppsummering-overskrift" cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.sporsmal"/>
     <div data-ng-if="af.kontraktUtgaattTilbudomfortsette">
-        <p cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true"/>
+        <p class="svar-oppsummering" cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true"/>
+        <p class="svar-oppsummering-uten-checkbox" cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true.informasjon"/>
     </div>
 
     <div data-ng-if="af.kontraktUtgaattTilbudomfortsette == 'false'">
-        <p cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.false"/>
-    </div-->
+        <p class="svar-oppsummering" cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.false"/>
+    </div>
 
 </div>
