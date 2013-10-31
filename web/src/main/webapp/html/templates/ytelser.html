@@ -2,9 +2,11 @@
     <form name="ytelserForm" class="skjemainnhold" data-ng-controller="YtelserCtrl"
           data-ng-submit="validerYtelser(ytelserForm)" novalidate>
         <div class="spm">
-            <p cmstekster="ytelser.informasjon"/>
-
-            <p class="spm-sporsmal" cmstekster="ytelser.sporsmal"/>
+            <div class="spm-sporsmal">
+              <p cmstekster="ytelser.informasjon"/>
+              <br/>
+              <p cmstekster="ytelser.sporsmal"/>
+            </div>
 
             <navcheckbox data-ng-model='soknadData.fakta.stonadFisker.value' modus='data.redigeringsModus'
                          inputname='stonadFisker' label='ytelser.stonadFikser'
