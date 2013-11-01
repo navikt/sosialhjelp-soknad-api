@@ -48,13 +48,16 @@ angular.module('app.brukerdata', ['app.services'])
                 }
             });
 
-            // Trenger kanskje ikkje != undefined
             $scope.harBostedsAdresse = function () {
                 return $scope.personaliaData.bostedsAdresse != undefined;
             }
 
             $scope.harMidlertidigAdresse = function () {
                 return $scope.personaliaData.midlertidigAdresse != undefined;
+            }
+
+            $scope.harMidlertidigAdresseEier = function () {
+                return $scope.personaliaData.midlertidigAdresse.adresseEier != undefined;
             }
 
             $scope.harBostedsadresseOgIngenMidlertidigAdresse = function() {
@@ -94,8 +97,7 @@ angular.module('app.brukerdata', ['app.services'])
                         tekst = data.tekster["personalia.midlertidig_adresse_utland"];
                         break;
                     default :
-                        //TODO: fix
-                        tekst = "Du har ikke midlertidig adresse i norge eller utlandet";
+                        tekst = data.tekster["personalia.ingenadresse"];
                 }
                 return tekst;
             }
