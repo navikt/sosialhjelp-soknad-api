@@ -11,7 +11,7 @@ describe('brukerdata domene', function () {
         beforeEach(inject(function (_$httpBackend_, $rootScope, $controller) {
             routeParams = {};
             $httpBackend = _$httpBackend_;
-            $httpBackend.expectGET('/sendsoknad/rest/soknad/1').
+            $httpBackend.whenGET(/sendsoknad\/.*/).
                 respond({"soknadId": 1, "gosysId": "Dagpenger", "brukerBehandlingId": "100000000",
                     "fakta": {
                         "fornavn": {"soknadId": 1, "key": "fornavn", "value": "Ola"},
