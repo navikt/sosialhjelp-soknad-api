@@ -10,11 +10,11 @@
             <label cmstekster="personalia.fnr"></label>
 
             <p> {{personalia.fakta.fnr.value}} </p>
+            <p> {{personalia.fakta.sammensattnavn.value}} </p>
 
             <div data-ng-show="harBostedsadresseOgIngenMidlertidigAdresse()">
                 <label cmstekster="personalia.navn"></label>
 
-                <p> {{personalia.fakta.sammensattnavn.value}} </p>
 
                 <label cmstekster="personalia.bostedsadresse"></label>
 
@@ -32,11 +32,13 @@
             <div data-ng-show="harMidlertidigAdresse()">
                 <h4> {{ hentMidlertidigAdresseTittel() }}</h4>
 
+                <div data-ng-show="harMidlertidigAdresseEier()">
                 <p>
                     <span cmstekster="personalia.co"></span>
                     <span> {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].adresseEier }}</span>
                 </p>
 
+                </div>
                 <p data-ng-show="harPostboksAdresse()">
                     <label cmstekster="personalia.postboks"></label>
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].postboksNummer }}
