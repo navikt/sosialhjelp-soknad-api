@@ -145,8 +145,10 @@ angular.module('app.brukerdata', ['app.services'])
             showErrorMessage: false,
             redigeringsModus: true
         };
+        $scope.showErrors = false;
 
         $scope.validateForm = function (invalid) {
+            $scope.showErrors = invalid;
             $scope.data.showErrorMessage = invalid;
             $scope.data.redigeringsModus = invalid;
         }

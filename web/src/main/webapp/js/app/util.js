@@ -34,3 +34,15 @@ function scrollToTab(newTab) {
         scrollTop: scrollPos
     }, animationSpeed);
 }
+
+function fiksNavn(element, navn, tmpNavn) {
+    var formCtrl = element.parent().controller('form');
+    var inputElement = element.find('input');
+    if (inputElement) {
+        inputElement.attr('name', navn);
+    }
+    var currentElementCtrl = formCtrl[tmpNavn];
+    formCtrl.$removeControl(currentElementCtrl);
+    currentElementCtrl.$name = navn;
+    formCtrl.$addControl(currentElementCtrl);
+}
