@@ -5,6 +5,9 @@ import org.apache.wicket.request.resource.PackageResourceReference;
 public enum LessResources {
     ALL_LESS("all"),
     INFORMASJONSSIDE_LESS("informasjonsside"),
+    OPPLASTING_LESS("opplasting"),
+    OPPSUMMERING_LESS("oppsummering"),
+    FORTSETT_SENERE_LESS("fortsettSenere"),
     ARBEIDSFORHOLD_LESS("arbeidsforhold");
 
 

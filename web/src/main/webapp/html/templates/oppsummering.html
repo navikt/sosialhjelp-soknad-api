@@ -1,11 +1,22 @@
-<panelbelyst>
-    <p>Her kommer oppsummering av det bruker har fylt ut i søknaden!</p>
+<stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="3"></stegindikator>
 
-    <div data-ng-controller="SendSoknadCtrl">
-        <button class="knapp-hoved" data-ng-click="sendSoknad()" cmstekster="send">
-        </button>
-        <button class="knapp-stor" data-ng-click="avbryt()" cmstekster="avbryt">
-        </button>
+<panelbelyst id="oppsummering">
+    <h2 class="stor" cmstekster="dagpenger.oppsummering.tittel"/>
+
+    <p cmstekster="dagpenger.oppsummering.info"/>
+
+    <div class="oppsummering">
+        <ul>
+            <li>
+                Punktliste
+            </li>
+        </ul>
+
+        <div class="oppsummering-knapper" data-ng-controller="SendSoknadCtrl">
+            <button class="knapp-hoved" data-ng-click="sendSoknad()" cmstekster="send">
+            </button>
+            <button class="knapp-stor" data-ng-click="avbryt()" cmstekster="avbryt">
+            </button>
+        </div>
     </div>
-
 </panelbelyst>
