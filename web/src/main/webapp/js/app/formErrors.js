@@ -7,7 +7,7 @@
         // It does use its closest parent that is a form OR ngForm
         require: '^form',
         template:
-            '<ul class="form-errors" data-ng-show="showErrors">' +
+            '<ul class="form-errors" data-ng-show="skalViseFeilmeldinger()">' +
                 '<li class="form-error" ng-repeat="error in errors track by $index">' +
                     '{{error}}' +
                 '</li>' +
@@ -80,6 +80,11 @@
                     });
                 });
             }, true);
+
+            scope.skalViseFeilmeldinger = function() {
+                var harListeElementer = elem.children().length;
+                return harListeElementer && scope.showErrors;
+            }
         }
     };
 }])
