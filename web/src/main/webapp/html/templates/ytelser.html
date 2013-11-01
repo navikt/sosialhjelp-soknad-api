@@ -56,6 +56,7 @@
                           inputname="dagpengerEOSUtbetaler" label="ytelser.dagpengerEOSUtbetaler"/>
             </navcheckbox>
 
+
             <navcheckbox data-ng-model='soknadData.fakta.annenYtelse.value' modus='data.redigeringsModus'
                          inputname='annenYtelse' label='ytelser.annenYtelse' endret="endreYtelse(ytelserForm)">
 
@@ -66,13 +67,14 @@
                           inputname="annenYtelseUtbetaler" label="ytelser.annenYtelseUtbetaler"/>
             </navcheckbox>
 
-
             <div>
                     <span data-ng-show='hvisIRedigeringsmodus()'>
+                          <div class="ytelser-nei">
                         <input id="ingenYtelseCheckbox" data-ng-model="soknadData.fakta.ingenYtelse.value"
                                type="checkbox" name="ingenYtelse" data-ng-change="endreIngenYtelse(ytelserForm)"
                                boolean-verdi/>
                         <label for='ingenYtelseCheckbox' class='svar-alt' cmstekster="ytelser.ingenYtelse"/>
+                              </div>
                     </span>
 
                 <p class="svar-oppsummering" data-ng-show='ingenYtelserOppsummeringSkalVises()' cmstekster="ytelser.ingenYtelse"/>
