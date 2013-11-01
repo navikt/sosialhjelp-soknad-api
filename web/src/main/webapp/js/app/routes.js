@@ -2,21 +2,21 @@ angular.module('app.routes', ['ngRoute'])
 
     .config(function ($routeProvider, $locationProvider) {
         $routeProvider
-            .when('/utslagskriterier', {
-                templateUrl: '../html/templates/utslagskriterier.html',
-                controller: 'GrunnlagsdataCtrl',
-                resolve: {
-                    notUsedButRequiredProperty: function (TekstService) {
-                        return TekstService;
-                    }
-                }
-            })
             .when('/informasjonsside', {
                 templateUrl: '../html/templates/informasjonsside.html',
                 controller: 'StartSoknadCtrl',
                 resolve: {
                     notUsedButRequiredProperty: function (TekstService) {
                         return TekstService;
+                    }
+                }
+            })
+            .when('/opplasting/:soknadId', {
+                templateUrl: '../html/templates/opplasting.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
                     }
                 }
             })
@@ -29,6 +29,16 @@ angular.module('app.routes', ['ngRoute'])
                     }
                 }
             })
+            .when('/fortsettsenere/:soknadId', {
+                templateUrl: '../html/templates/fortsettSenere.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
+
             .when('/reell-arbeidssoker/:soknadId', {
                 templateUrl: '../html/templates/reell-arbeidssoker.html',
                 controller: 'SoknadDataCtrl',
@@ -102,13 +112,20 @@ angular.module('app.routes', ['ngRoute'])
                     }
                 }
             })
+            .when('/kvittering', {
+                templateUrl: '../html/templates/kvittering-innsendt.html',
+                resolve: {
+                    notUsedButRequiredProperty: function (TekstService) {
+                        return TekstService;
+                    }
+                }
+            })
 
             .when('/soknadliste', {templateUrl: '../html/templates/soknadliste.html'})
             .when('/avbryt/:soknadId', {templateUrl: '../html/templates/avbryt.html', controller: 'AvbrytCtrl'})
-            .when('/fortsettsenere', {templateUrl: '../html/templates/fortsettSenere.html', controller: 'SoknadDataCtrl'})
             .when('/slettet', {templateUrl: '../html/templates/soknadSlettet.html', controller: 'SlettetSoknadDataCtrl'})
-            .when('/kvittering', {templateUrl: '../html/templates/kvittering-innsendt.html'})
-            .otherwise({redirectTo: '/utslagskriterier'});
+
+            .otherwise({redirectTo: '/informasjonsside'});
 
 //    $locationProvider.html5Mode(true);
     });
