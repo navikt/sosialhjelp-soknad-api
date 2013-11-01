@@ -1,21 +1,25 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
     <form name="utdanningForm" class="skjemainnhold" data-ng-controller="UtdanningCtrl"
           data-ng-submit="validerUtdanning(utdanningForm)" novalidate>
+        <form-errors></form-errors>
         <div class="spm">
             <p class="spm-sporsmal" cmstekster="utdanning.sporsmal"/>
 
                 <navradio data-ng-model='soknadData.fakta.utdanning.value' value='ikkeUtdanning'
                           modus="data.redigeringsModus"
                           inputname='utdanning'
-                          label='utdanning.svar.ikkeUtdanning'/>
+                          label='utdanning.svar.ikkeUtdanning'
+                          feilmelding='utdanning.utdanning.feilmelding'/>
                 <navradio data-ng-model='soknadData.fakta.utdanning.value' value='avsluttetUtdanning'
                           modus="data.redigeringsModus"
                           inputname='utdanning'
-                          label='utdanning.svar.avsluttetUtdanning'/>
+                          label='utdanning.svar.avsluttetUtdanning'
+                          feilmelding='utdanning.utdanning.feilmelding'/>
                 <navradio data-ng-model='soknadData.fakta.utdanning.value' value='underUtdanning'
                           modus="data.redigeringsModus"
                           inputname='utdanning'
-                          label='utdanning.svar.underUtdanning'/>
+                          label='utdanning.svar.underUtdanning'
+                          feilmelding='utdanning.utdanning.feilmelding'/>
 
 
                 <!--<div data-ng-show="hvisUnderUtdanning()">-->

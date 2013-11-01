@@ -13,6 +13,7 @@ angular.module('nav.booleanradio',['nav.cmstekster', 'nav.input'])
                 $scope.sporsmal = $scope.nokkel + ".sporsmal";
                 $scope.trueLabel = $scope.nokkel + ".true";
                 $scope.falseLabel = $scope.nokkel + ".false";
+                $scope.feilmelding = $scope.nokkel + ".feilmelding";
                 $scope.inputname = $scope.nokkel.split('.').last();
 
                 $scope.hvisIRedigeringsmodus = function() {

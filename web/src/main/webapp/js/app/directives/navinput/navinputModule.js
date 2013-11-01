@@ -47,8 +47,8 @@ angular.module('nav.input',['nav.cmstekster'])
                 endret: '&'
             },
             link: function(scope, element) {
-                var tmpElementName = 'tmpName';
-                fiksNavn(element, scope.inputname, tmpElementName);
+//                var tmpElementName = 'tmpName';
+//                fiksNavn(element, scope.inputname, tmpElementName);
 
                 scope.hvisIRedigeringsmodus = function() {
                     return scope.modus;
