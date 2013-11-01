@@ -1,5 +1,5 @@
 angular.module('nav.sporsmalferdig', [])
-    .directive('spmblokkferdig', ['$timeout', function ($timeout) {
+    .directive('spmblokkferdig', ['$timeout', 'data', function ($timeout, data) {
         return {
             restrict: "E",
             replace: true,
@@ -15,6 +15,7 @@ angular.module('nav.sporsmalferdig', [])
 
                 setOppLenke(forrigeTab, element, 'forrige');
                 setOppLenke(nesteTab, element, 'neste');
+                scope.soknadId = data.soknad.soknadId;
 
                 scope.hvisIRedigeringsmodus = function () {
                     return scope.modus;
