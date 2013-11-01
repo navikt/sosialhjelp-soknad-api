@@ -13,10 +13,14 @@
         </ul>
 
         <div class="oppsummering-knapper" data-ng-controller="SendSoknadCtrl">
-            <button class="knapp-hoved" data-ng-click="sendSoknad()" cmstekster="send">
-            </button>
-            <button class="knapp-stor" data-ng-click="avbryt()" cmstekster="avbryt">
-            </button>
+            <div>
+                <a class="knapp-hoved" data-ng-click="sendSoknad()" cmstekster="send"/>
+            </div>
+            <div>
+                <a href="#/opplasting/{{ soknadData.soknadId }}" cmstekster="tilbake"/>
+            </div>
+            <!--<button class="knapp-stor" data-ng-click="avbryt()" cmstekster="avbryt"/>-->
+
         </div>
     </div>
 </panelbelyst>

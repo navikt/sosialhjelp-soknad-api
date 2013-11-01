@@ -12,7 +12,13 @@
             </li>
         </ul>
         <div class="opplasting-knapper">
-            <a href="#/oppsummering/{{ soknadData.soknadId }}" class="knapp-hoved" cmstekster="dagpenger.opplasting.ferdig"/>
+            <div>
+                <a href="#/oppsummering/{{ soknadData.soknadId }}" class="knapp-hoved"
+                   cmstekster="dagpenger.opplasting.ferdig"/>
+            </div>
+            <div>
+                <a href="#/dagpenger/{{ soknadData.soknadId }}" cmstekster="tilbake"/>
+            </div>
         </div>
     </div>
 </panelbelyst>

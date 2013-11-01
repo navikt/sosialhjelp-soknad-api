@@ -8,6 +8,7 @@ public enum LessResources {
     OPPLASTING_LESS("opplasting"),
     OPPSUMMERING_LESS("oppsummering"),
     FORTSETT_SENERE_LESS("fortsettSenere"),
+    KVITTERING_LESS("kvittering"),
     ARBEIDSFORHOLD_LESS("arbeidsforhold");
 
 
