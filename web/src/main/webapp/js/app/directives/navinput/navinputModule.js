@@ -78,6 +78,9 @@ angular.module('nav.input',['nav.cmstekster'])
                 label: '@'
             },
             link: function(scope, element, attr, ctrl) {
+                var tmpElementName = 'tmpName';
+                fiksNavn(element, scope.inputname, tmpElementName);
+                
                 scope.hvisIRedigeringsmodus = function() {
                     return scope.modus;
                 }
