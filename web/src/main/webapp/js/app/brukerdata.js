@@ -229,7 +229,7 @@ angular.module('app.brukerdata', ['app.services'])
                 }
 
                 $scope.$apply(function() {
-                    $scope.$emit("OPPDATER_OG_LAGRE", {key: attrs.name, value: verdi});
+                    $scope.$emit("OPPDATER_OG_LAGRE", {key: element.attr('name'), value: verdi});
                 });
             });
         };
