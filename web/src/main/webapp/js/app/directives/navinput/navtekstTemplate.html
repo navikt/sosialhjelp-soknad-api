@@ -1,7 +1,7 @@
 ﻿<div class="tekstfelt">
     <div data-ng-show='hvisIRedigeringsmodus()'>
         <label for='{{ label }}' cmstekster="{{ label }}"/>
-        <input id="{{ label }}" data-ng-model="model" type="text" value="{{ value }}" name="{{ inputname }}" mod-faktum data-ng-required="hvisSynlig()"/>
+        <input id="{{ label }}" data-ng-model="model" type="text" value="{{ value }}" name="tmpName" data-ng-required="hvisSynlig()" error-messages="'{{ feilmelding }}'" mod-faktum/>
     </div>
 
     <div data-ng-show='hvisIOppsummeringsmodus()'>

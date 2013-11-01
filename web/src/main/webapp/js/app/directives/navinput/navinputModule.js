@@ -9,17 +9,15 @@ angular.module('nav.input',['nav.cmstekster'])
                 value: '@',
                 modus: '=',
                 inputname: '@',
-                label: '@'
+                label: '@',
+                feilmelding: '@'
             },
-            link: function(scope, element, attr, ctrl) {
+            link: function(scope, element) {
+                var tmpElementName = 'tmpName';
+                fiksNavn(element, scope.inputname, tmpElementName);
+
                 scope.hvisSynlig = function() {
-                    // Potensiell stygg hack for å kunne hente ut hvilket inputfelt som gir feil... :|
-                    if (element.is(':visible') && (scope.model == undefined)) {
-                        ctrl.$setValidity(scope.inputname, false);
-                    } else {
-                        ctrl.$setValidity(scope.inputname, true);
-                    }
-                    return false;
+                    return element.is(':visible');
                 }
 
                 scope.hvisIRedigeringsmodus = function() {
@@ -48,7 +46,10 @@ angular.module('nav.input',['nav.cmstekster'])
                 label: '@',
                 endret: '&'
             },
-            link: function(scope, element, attrs) {
+            link: function(scope, element) {
+                var tmpElementName = 'tmpName';
+                fiksNavn(element, scope.inputname, tmpElementName);
+
                 scope.hvisIRedigeringsmodus = function() {
                     return scope.modus;
                 }
@@ -75,12 +76,13 @@ angular.module('nav.input',['nav.cmstekster'])
                 model: '=ngModel',
                 modus: '=',
                 inputname: '@',
-                label: '@'
+                label: '@',
+                feilmelding: '@'
             },
             link: function(scope, element, attr, ctrl) {
                 var tmpElementName = 'tmpName';
                 fiksNavn(element, scope.inputname, tmpElementName);
-                
+
                 scope.hvisIRedigeringsmodus = function() {
                     return scope.modus;
                 }
@@ -90,13 +92,7 @@ angular.module('nav.input',['nav.cmstekster'])
                 }
 
                 scope.hvisSynlig = function() {
-                    // Potensiell stygg hack for å kunne hente ut hvilket inputfelt som gir feil... :|
-                    if (element.is(':visible') && (scope.model == undefined || scope.model == "")) {
-                        ctrl.$setValidity(scope.inputname, false);
-                    } else {
-                        ctrl.$setValidity(scope.inputname, true);
-                    }
-                    return false;
+                    return element.is(':visible');
                 }
 
             },

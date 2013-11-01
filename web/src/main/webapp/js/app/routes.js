@@ -11,6 +11,15 @@ angular.module('app.routes', ['ngRoute'])
                     }
                 }
             })
+            .when('/opplasting/:soknadId', {
+                templateUrl: '../html/templates/opplasting.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
             .when('/dagpenger/:soknadId', {
                 templateUrl: '../html/dagpenger-singlepage.html',
                 controller: 'SoknadDataCtrl',
@@ -20,6 +29,16 @@ angular.module('app.routes', ['ngRoute'])
                     }
                 }
             })
+            .when('/fortsettsenere/:soknadId', {
+                templateUrl: '../html/templates/fortsettSenere.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
+
             .when('/reell-arbeidssoker/:soknadId', {
                 templateUrl: '../html/templates/reell-arbeidssoker.html',
                 controller: 'SoknadDataCtrl',
@@ -96,7 +115,6 @@ angular.module('app.routes', ['ngRoute'])
 
             .when('/soknadliste', {templateUrl: '../html/templates/soknadliste.html'})
             .when('/avbryt/:soknadId', {templateUrl: '../html/templates/avbryt.html', controller: 'AvbrytCtrl'})
-            .when('/fortsettsenere', {templateUrl: '../html/templates/fortsettSenere.html', controller: 'SoknadDataCtrl'})
             .when('/slettet', {templateUrl: '../html/templates/soknadSlettet.html', controller: 'SlettetSoknadDataCtrl'})
             .when('/kvittering', {templateUrl: '../html/templates/kvittering-innsendt.html'})
             .otherwise({redirectTo: '/informasjonsside'});
