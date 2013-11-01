@@ -1,17 +1,13 @@
 <div data-ng-controller="ModusCtrl">
     <p class="svar-oppsummering-informasjon" cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.informasjon"/>
 
-    <br/>
-
-    <p class="svar-oppsummering-overskrift" cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.sistearbeidsdag.sporsmal"/>
+    <p class="svar-oppsummering-sporsmal" cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.sistearbeidsdag.sporsmal"/>
     <p class="svar-oppsummering"> {{af.kontraktUtgaattSisteArbeidsdag  | date:'dd.MM.yyyy'}} </p>
 
-    <br/>
-
-    <p class="svar-oppsummering-overskrift" cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.sporsmal"/>
+    <p class="svar-oppsummering-sporsmal" cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.sporsmal"/>
     <div data-ng-if="af.kontraktUtgaattTilbudomfortsette">
         <p class="svar-oppsummering" cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true"/>
-        <p class="svar-oppsummering-uten-checkbox" cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true.informasjon"/>
+        <p class="svar-oppsummering-informasjon" cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true.informasjon"/>
     </div>
 
     <div data-ng-if="af.kontraktUtgaattTilbudomfortsette == 'false'">
