@@ -112,11 +112,19 @@ angular.module('app.routes', ['ngRoute'])
                     }
                 }
             })
+            .when('/kvittering', {
+                templateUrl: '../html/templates/kvittering-innsendt.html',
+                resolve: {
+                    notUsedButRequiredProperty: function (TekstService) {
+                        return TekstService;
+                    }
+                }
+            })
 
             .when('/soknadliste', {templateUrl: '../html/templates/soknadliste.html'})
             .when('/avbryt/:soknadId', {templateUrl: '../html/templates/avbryt.html', controller: 'AvbrytCtrl'})
             .when('/slettet', {templateUrl: '../html/templates/soknadSlettet.html', controller: 'SlettetSoknadDataCtrl'})
-            .when('/kvittering', {templateUrl: '../html/templates/kvittering-innsendt.html'})
+
             .otherwise({redirectTo: '/informasjonsside'});
 
 //    $locationProvider.html5Mode(true);
