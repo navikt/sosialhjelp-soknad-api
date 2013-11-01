@@ -1,48 +1,5 @@
 @svar-bakgrunnsfarge: #d1d1d1;
 
-.arbeidsforhold-dato {
-    text-transform: uppercase;
-}
-
-.oppsummering-arbeidsforhold-blokk-en {
-    clear: both;
-    .oppsummering-arbeidsforhold-landblokk {
-        float: left;
-        padding-right: 5px;
-        .arbeidsgiver-oppsummering-landdeler {
-            padding: 0 10px;
-        }
-    }
-    .arbeidsforhold-oppsummering-nesteblokk {
-        float: right;
-    }
-}
-
-.arbeidsgiver-oppsummering-sluttaarsaker {
-    clear: both;
-}
-
-.arbeidsforhold-avbryt {
-    margin-top: 10px;
-    margin-bottom: 20px;
-    display: inline-block;
-}
-
-.arbeidsforhold-arbeidsgivernavn-overskrift {
-    font-size: 1.1em;
-    margin-bottom: 10px !important;
-    font-weight: bold;
-
-}
-
-.sluttaarsak {
-}
-
-.bolk-informasjonstekst {
-    margin: 10px 0px !important;
-    font-size: 1.3em;
-}
-
 .nav,
 .pagination,
 .carousel a {
@@ -160,7 +117,7 @@
 }
 
 // TODO: Skal fjernes når dette blir fikset i fellesen. Skal egentlig kunne settes med klasse på forms...
-input[type="text"] {
+input[type="text"], select, textarea {
     display: block !important;
 }
 
@@ -172,13 +129,15 @@ input[type="text"] {
     }
 }
 
-.ekstra-spm-boks {
+[class*=spm-boks] {
     position: relative;
     background: #f1f1f1;
     border: 1px solid #ddd;
     padding: 20px;
     margin: 10px 0 30px;
+}
 
+.ekstra-spm-boks {
     &:after, &:before {
         bottom: 100%;
         border: solid transparent;
@@ -288,7 +247,7 @@ input[type="text"] {
                 }
             }
 
-            .svar-oppsummering-overskrift {
+            .svar-oppsummering-sporsmal {
                 font-weight: bold;
             }
 
@@ -383,6 +342,21 @@ input[type="text"] {
     textarea {
         width: 40%;
         margin: 10px 0px;
+    }
+}
+
+.ytelser-nei {
+  margin-top: 20px;
+}
+.form-errors {
+    background-color: #c30000;
+    padding: 1rem;
+    padding-left: 3rem;
+    margin-bottom: 2rem;
+    text-align: left;
+
+    li {
+        color: #fff;
     }
 }
 
