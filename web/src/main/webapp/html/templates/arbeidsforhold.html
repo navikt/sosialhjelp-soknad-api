@@ -1,6 +1,6 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
     <div class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl">
-        <p class="bolk-informasjonstekst" cmstekster="arbeidsforhold.informasjon"/>
+        <p class="arbeidsforhold-informasjonstekst" cmstekster="arbeidsforhold.informasjon"/>
 
         <span data-ng-show="endreError" style="color:red" cmstekster="arbeidsforhold.error.endre"/>
 
@@ -11,31 +11,35 @@
 
             <form-errors></form-errors>
 
-            <div class="sluttaarsak" data-ng-show="arbeidsforholdetErIkkeIRedigeringsModus($index)">
-                <p class="arbeidsforhold-dato">
+            <div class="arbeidsforhold" data-ng-show="arbeidsforholdetErIkkeIRedigeringsModus($index)">
+                <p class="oppsummering-dato-land">
+                    <span class="arbeidsforhold-dato">
                     {{ af.varighetFra | date:'dd.MM.yyyy'}} - {{ af.varighetTil | date:'dd.MM.yyyy'}}
-                </p>
+                </span>
 
-                <p class="arbeidsforhold-arbeidsgivernavn-overskrift">
+                <span class="arbeidsforhold-arbeidsgivernavn">
                     {{ af.navn }}
+                </span>
                 </p>
 
-                <p class="svar-oppsummering-overskrift-label" cmstekster="arbeidsforhold.arbeidsgiver.land"/>
+                <p class="oppsummering-label">
+                    <span class="svar-oppsummering-label" cmstekster="arbeidsforhold.arbeidsgiver.land"/>
 
-                <p class="svar-oppsummering-uten-checkbox">{{ af.land }}</p>
+                    <span class="svar-oppsummering-uten-checkbox">{{ af.land }}</span>
+                </p>
 
-                <p class="svar-oppsummering-overskrift-label"
-                   cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsak"/>
+                <p class="oppsummering-label">
+                <span class="svar-oppsummering-label"
+                      cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsak"/>
 
-                <p class="svar-oppsummering-uten-checkbox">{{ af.sluttaarsak.navn }}</p>
+                    <span class="svar-oppsummering-uten-checkbox">{{ af.sluttaarsak.navn }}</span>
+                </p>
 
-
-
-                <div class="arbeidsgiver-oppsummering-sluttaarsaker">
+                <div class="sluttaarsak">
                     <div data-ng-include="af.sluttaarsak.oppsummeringsurl"/>
                 </div>
 
-                <div class="arbeidsforhold-oppsummering-nesteblokk lenker-dot">
+                <div class="arbeidsforhold-oppsummering-endre-slett lenker-dot">
                         <span><a href data-ng-click="slettArbeidsforhold(af)"
                                  cmstekster="arbeidsforhold.slettarbeidsforhold"/></span>
                         <span><a href data-ng-click="endreArbeidsforhold($index)"
@@ -99,7 +103,8 @@
         </div>
         <form name="arbeidsforholdForm" data-ng-submit="validerArbeidsforhold(arbeidsforholdForm)" novalidate>
             <div id="legg-til">
-                <a href class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event)" cmstekster="arbeidsforhold.nyttarbeidsforhold"/>
+                <a href class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event)"
+                   cmstekster="arbeidsforhold.nyttarbeidsforhold"/>
             </div>
 
             <div id="har-ikke-jobbet" data-ng-show="harIkkeLagretArbeidsforhold()">

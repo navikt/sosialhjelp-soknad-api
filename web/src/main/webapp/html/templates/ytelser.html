@@ -56,6 +56,7 @@
                           inputname="dagpengerEOSUtbetaler" label="ytelser.dagpengerEOSUtbetaler"/>
             </navcheckbox>
 
+            <div class="ytelser-nei">
             <navcheckbox data-ng-model='soknadData.fakta.annenYtelse.value' modus='data.redigeringsModus'
                          inputname='annenYtelse' label='ytelser.annenYtelse' endret="endreYtelse(ytelserForm)">
 
@@ -65,7 +66,7 @@
                           modus="data.redigeringsModus"
                           inputname="annenYtelseUtbetaler" label="ytelser.annenYtelseUtbetaler"/>
             </navcheckbox>
-
+            </div>
 
             <div>
                     <span data-ng-show='hvisIRedigeringsmodus()'>
