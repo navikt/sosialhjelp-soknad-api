@@ -126,14 +126,6 @@ angular.module('app.brukerdata', ['app.services'])
             soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
             console.log("lagre: " + soknadData);
         });
-
-        $scope.$on("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", function (e, data) {
-            $scope.soknadData.fakta.arbeidsforhold = {"soknadId": $scope.soknadData.soknadId, "key": data.key,
-                "value": angular.toJson(data.value)};
-            var soknadData = $scope.soknadData;
-            soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
-            console.log("lagre: " + soknadData.soknadId);
-        });
     })
 
     .controller('TekstCtrl', function ($scope, tekstService) {
@@ -145,8 +137,10 @@ angular.module('app.brukerdata', ['app.services'])
             showErrorMessage: false,
             redigeringsModus: true
         };
+        $scope.showErrors = false;
 
         $scope.validateForm = function (invalid) {
+            $scope.showErrors = invalid;
             $scope.data.showErrorMessage = invalid;
             $scope.data.redigeringsModus = invalid;
         }
@@ -227,7 +221,7 @@ angular.module('app.brukerdata', ['app.services'])
                 }
 
                 $scope.$apply(function() {
-                    $scope.$emit("OPPDATER_OG_LAGRE", {key: attrs.name, value: verdi});
+                    $scope.$emit("OPPDATER_OG_LAGRE", {key: element.attr('name'), value: verdi});
                 });
             });
         };

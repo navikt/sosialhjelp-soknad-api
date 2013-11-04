@@ -1,0 +1,24 @@
+<stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="2"></stegindikator>
+
+<panelbelyst id="opplasting">
+    <h2 class="stor" cmstekster="dagpenger.opplasting.tittel"/>
+
+    <p cmstekster="dagpenger.opplasting.info"/>
+
+    <div class="opplasting">
+        <ul>
+            <li>
+                Punktliste
+            </li>
+        </ul>
+        <div class="opplasting-knapper">
+            <div>
+                <a href="#/oppsummering/{{ soknadData.soknadId }}" class="knapp-hoved"
+                   cmstekster="dagpenger.opplasting.ferdig"/>
+            </div>
+            <div>
+                <a href="#/dagpenger/{{ soknadData.soknadId }}" cmstekster="tilbake"/>
+            </div>
+        </div>
+    </div>
+</panelbelyst>

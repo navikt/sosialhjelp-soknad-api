@@ -9,7 +9,7 @@ describe('directives', function () {
                 '<input type="text" ng-model="permiteringProsent" name="permiteringProsent" prosent />' +
                 '</form>'
         );
-        scope.permiteringProsent = ''
+        scope.permiteringProsent = '';
         $compile(element)(scope);
         scope.$digest();
         form = scope.form;

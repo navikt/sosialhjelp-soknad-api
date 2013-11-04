@@ -1,14 +1,15 @@
 <div data-ng-controller="ModusCtrl">
-    <!--p cmstekster="arbeidsforhold.sluttaarsak.konkurs.oppsumering.informasjon"/>
+    <p class="svar-oppsummering-informasjon" cmstekster="arbeidsforhold.sluttaarsak.konkurs.oppsumering.informasjon"/>
 
-    <br/>
-    <p> {{af.sluttaarsak.bostyrersnavn}} </p>
-    <p class="svar-oppsummering-overskrift" cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.sporsmal"/>
+    <p class="svar-oppsummering-sporsmal" cmstekster="arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn"/>
+    <p class="svar-oppsummering" > {{af.sluttaarsak.bostyrersnavn}} </p>
+
+    <p class="svar-oppsummering-sporsmal" cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.sporsmal"/>
     <div data-ng-show="af.sluttaarsak.lonnsgaranti == 'true'">
-        <p cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.true"/>
+        <p class="svar-oppsummering" cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.true"/>
     </div>
-
     <div data-ng-show="af.sluttaarsak.lonnsgaranti == 'false'">
-        <p cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.false"/>
-    </div-->
+        <p class="svar-oppsummering" cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.false"/>
+        <p class="svar-oppsummering-informasjon" cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.false.informasjon"/>
+    </div>
 </div>

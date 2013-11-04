@@ -1,7 +1,7 @@
 <div>
     <div data-ng-show="hvisIRedigeringsmodus()">
         <input class="sendsoknad-radio" id="{{ label }}" data-ng-model="model" type="radio" value="{{ value }}"
-               name="{{ inputname }}" mod-faktum ng-required="hvisSynlig()"/>
+               name="tmpName" data-ng-required="hvisSynlig()" error-messages="'{{ feilmelding }}'" mod-faktum/>
         <label for='{{ label }}' class='svar-alt' cmstekster="{{ label }}"/>
     </div>
 
