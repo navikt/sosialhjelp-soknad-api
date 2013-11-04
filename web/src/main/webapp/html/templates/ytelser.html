@@ -1,6 +1,5 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <form name="ytelserForm" class="skjemainnhold" data-ng-controller="YtelserCtrl"
-          data-ng-submit="validerYtelser(ytelserForm)" novalidate>
+    <div data-ng-form="ytelserForm" class="skjemainnhold" data-ng-controller="YtelserCtrl" novalidate>
         <form-errors></form-errors>
         <div class="spm">
             <div class="spm-sporsmal">
@@ -93,6 +92,7 @@
 
         <spmblokkferdig
                 nokkel="ytelser"
-                modus="data.redigeringsModus"/>
-    </form>
+                modus="data.redigeringsModus"
+                submit-method="validerYtelser(ytelserForm)"/>
+    </div>
 </div>
