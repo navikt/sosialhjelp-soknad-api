@@ -10,6 +10,7 @@ angular.module('nav.ytelser',[])
             form.$setValidity('ytelser.harValgtYtelse.feilmelding', true); // Fjerne feil som kan være satt dersom man prøver å huke av "nei" mens andre checkboxer er avhuket.
             form.$setValidity("ytelser.minstEnAvhuket.feilmelding", minstEnAvhuket);
             $scope.validateForm(form.$invalid);
+            $scope.runValidation();
         };
 
         $scope.endreYtelse = function(form) {
@@ -41,7 +42,7 @@ angular.module('nav.ytelser',[])
                 $scope.soknadData.fakta.ingenYtelse.value = 'false';
 
                 form.$setValidity('ytelser.harValgtYtelse.feilmelding', false);
-                $scope.visFeilmeldinger();
+                $scope.runValidation();
             } else {
                 if (verdi) {
                     form.$setValidity("ytelser.minstEnAvhuket.feilmelding", true);

@@ -43,10 +43,38 @@
                     return feilmelding;
                 };
 
-            // only update the list of errors if there was actually a change in $error
-            scope.$watch(function() { return ctrl.$error; }, function() {
-                // reset error array
+            scope.errors = [];
+            scope.runValidation = function() {
                 scope.errors = [];
+                console.log(ctrl);
+
+                var loopErrors = true;
+                angular.forEach(ctrl.$error, function(verdi, nokkel) {
+
+                    if (loopErrors) {
+                        angular.forEach(verdi, function(error) {
+                            var feilmeldingNokkel = nokkel;
+
+                            if (error) {
+                                feilmeldingNokkel = error.$errorMessages;
+                            } else {
+                                scope.errors = [errorMessage(feilmeldingNokkel, nokkel)];
+                                loopErrors = false;
+                            }
+
+                            var feilmelding = errorMessage(feilmeldingNokkel, nokkel);
+
+                            if ($.inArray(feilmelding, scope.errors) == -1) {
+                                scope.errors.push(feilmelding);
+                            }
+                        });
+                    }
+                });
+            }
+
+            // Watcher for å kunne fjerne feilmeldinger når de er fikset :)
+            scope.$watch(function() { return ctrl.$error; }, function() {
+                var errors = [];
                 angular.forEach(ctrl.$error, function(verdi, nokkel) {
                     angular.forEach(verdi, function(error) {
                         var feilmeldingNokkel = nokkel;
@@ -55,15 +83,20 @@
                         }
 
                         try{
-                            scope.errors.push(errorMessage(feilmeldingNokkel, nokkel));
+                            var feilmelding = errorMessage(feilmeldingNokkel, nokkel);
+
+                            if ($.inArray(feilmelding, scope.errors) > -1 && $.inArray(feilmelding, errors) == -1) {
+                                errors.push(feilmelding);
+                            }
                         } catch (e) {} //duplicate key...
                     });
                 });
+                scope.errors = errors;
             }, true);
 
             scope.skalViseFeilmeldinger = function() {
                 var harListeElementer = elem.children().length;
-                return harListeElementer && scope.showErrors;
+                return harListeElementer;
             }
         }
     };

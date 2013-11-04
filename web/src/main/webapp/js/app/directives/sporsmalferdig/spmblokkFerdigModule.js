@@ -1,6 +1,7 @@
 angular.module('nav.sporsmalferdig', [])
     .directive('spmblokkferdig', ['$timeout', 'data', function ($timeout, data) {
         return {
+            require: '^form',
             restrict: "E",
             replace: true,
             templateUrl: '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html',
@@ -9,6 +10,12 @@ angular.module('nav.sporsmalferdig', [])
                 modus: '='
             },
             link: function (scope, element) {
+                var form = element.closest('form, [ng-form], [data-ng-form]');
+
+                element.click(function() {
+                    form.trigger('submit');
+                });
+
                 var tab = element.closest('.accordion-group');
                 var nesteTab = tab.next();
                 var forrigeTab = tab.prev();
