@@ -101,7 +101,8 @@ angular.module('nav.arbeidsforhold.controller',[])
             $scope.slettArbeidsforhold = function(af) {
                 var i = $scope.arbeidsforhold.indexOf(af);                
                 $scope.arbeidsforhold.splice(i,1);
-                $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
+                var value = angular.toJson($scope.arbeidsforhold);
+                $scope.$emit("OPPDATER_OG_LAGRE", {key: 'arbeidsforhold', value: value});
             }
 
 
