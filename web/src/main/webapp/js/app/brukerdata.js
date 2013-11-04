@@ -30,7 +30,6 @@ angular.module('app.brukerdata', ['app.services'])
 
         tpsService.get({soknadId: $routeParams.soknadId}).$promise.then(function (result) {
             $scope.personalia = result;
-            console.log($scope.personalia.fakta.adresser); 
               //TODO: For adresse-testing
 //            $scope.personalia.fakta.adresser.push({"soknadId":1,"type":"MIDLERTIDIG_POSTADRESSE_NORGE","gatenavn":"Kirkeveien","husnummer":"55","husbokstav":"D","postnummer":"7000","poststed":"Trondheim","land":null,"gyldigTil":1412373600000,"gyldigFra":1380895717011,"postboksNavn":"POSTBOKS","postboksNummer":"1234","adresseEier":"Per P. Nilsen","utenlandsAdresse":null});
 //            $scope.personalia.fakta.adresser.push({"soknadId":1,"type":"MIDLERTIDIG_POSTADRESSE_NORGE","gatenavn":"Kirkeveien","husnummer":"55","husbokstav":"D","postnummer":"7000","poststed":"Trondheim","land":null,"gyldigTil":1412373600000,"gyldigFra":1380895717011,"postboksNavn":null,"postboksNummer":null,"adresseEier":"Per P. Nilsen","utenlandsAdresse":null});
@@ -124,7 +123,6 @@ angular.module('app.brukerdata', ['app.services'])
             $scope.soknadData.fakta[data.key] = {"soknadId": $scope.soknadData.soknadId, "key": data.key, "value": data.value};
             var soknadData = $scope.soknadData;
             soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
-            console.log("lagre: " + soknadData);
         });
     })
 
