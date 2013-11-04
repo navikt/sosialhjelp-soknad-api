@@ -6,11 +6,35 @@
     <p cmstekster="dagpenger.opplasting.info"/>
 
     <div class="opplasting">
-        <ul>
-            <li>
-                Punktliste
-            </li>
-        </ul>
+        <div id="vedleggOversikt" data-ng-controller="VedleggCtrl">
+            <ul class="vedleggListe">
+                <form>
+                <li data-ng-repeat="v in vedlegg" class="vedlegg spm-boks" ng-if="erFaktumLikKriterie(v)">
+                    <h3>Vedlegg {{v.gosysId}}</h3>
+
+                    <div>
+                        <h4>Vedlegget må bekrefte følgende opplysninger</h4>
+                        <ul>
+                            <li>Kriterie 1</li>
+                            <li>Kriterie 2</li>
+                            <li>Kriterie 3</li>
+                            <li>Kriterie 4</li>
+                        </ul>
+                    </div>
+                    <div class="forhandsvisning">preview</div>
+                    <div class="spm-knapper">
+
+                        <label for="opplasting{{v.gosysId}}" class="knapp-hoved-liten">Last opp</label>
+                        <input type="file" class="vekk " id="opplasting{{v.gosysId}}">
+                        <input type="checkbox" id="ettersend{{v.gosysId}}">
+                        <label for="ettersend{{v.gosysId}}">Ettersend (?)</label>
+                        <input type="checkbox" id="ikkesend{{v.gosysId}}">
+                        <label for="ikkesend{{v.gosysId}}">Ikke send (?)</label>
+                    </div>
+                </li>
+                </form>
+            </ul>
+        </div>
         <div class="opplasting-knapper">
             <div>
                 <a href="#/oppsummering/{{ soknadData.soknadId }}" class="knapp-hoved"
