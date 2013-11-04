@@ -8,93 +8,86 @@
         require: '^form',
         template:
             '<ul class="form-errors" data-ng-show="skalViseFeilmeldinger()">' +
-                '<li class="form-error" ng-repeat="error in errors track by $index">' +
-                    '{{error}}' +
+                '<li class="form-error" ng-repeat="feilmelding in feilmeldinger track by $index">' +
+                    '{{ feilmelding }}' +
                 '</li>' +
             '</ul>',
         replace: true,
         transclude: true,
         restrict: 'AE',
         link: function postLink(scope, elem, attrs, ctrl) {
-            // list of some default error reasons
-            var defaultErrorReasons = {
-                    required: 'er påkrevd.',
-                    minlength: 'er for kort.',
-                    maxlength: 'er for langt.',
-                    email: 'er ikke en gyldig e-postadresse.',
-                    pattern: 'inneholder ugyldige tegn.',
-                    number: 'er ikke et tall.',
 
-                    fallback: 'er ikke gyldig.'
-                },
-                // this is where we form our message
-                errorMessage = function (feilmeldingNokkel, nokkel) {
-                    // get the nice name if they used the niceName 
-                    // directive or humanize the name and call it good
-                    var defaultReason = defaultErrorReasons[nokkel] || defaultErrorReasons.fallback;
+            // Henter feilmelding fra CMS
+            var hentFeilmelding = function (feil, nokkel) {
 
-                    var feilmelding = data.tekster[feilmeldingNokkel]; // Henter fra cmstekster
+                // Dersom feil er undefined brukes nokkel som key for feilmeldingen
+                var feilmeldingNokkel = nokkel;
+                if (feil) {
+                    feilmeldingNokkel = feil.$errorMessages;
+                }
 
-                    if(feilmelding === undefined) {
-                        return defaultReason;
-                    }
+                var feilmelding = data.tekster[feilmeldingNokkel];
+                var fantIkkeFeilmelding = "Fant ikke feilmelding";
 
+                /*
+                 * Dersom feilmeldingen ikke ble funnet, gi en standard tekst
+                 * Skal ikke skje i produksjon, så mest for debugging
+                 */
+                if (feilmelding === undefined) {
+                    return fantIkkeFeilmelding;
+                }
 
-                    return feilmelding;
-                };
+                return feilmelding;
+            };
 
-            scope.errors = [];
-            scope.runValidation = function() {
-                scope.errors = [];
-                var loopErrors = true;
-                angular.forEach(ctrl.$error, function(verdi, nokkel) {
+            scope.runValidation = function () {
+                scope.feilmeldinger = [];
+                var fortsettLoop = true;
 
-                    if (loopErrors) {
-                        angular.forEach(verdi, function(error) {
-                            var feilmeldingNokkel = nokkel;
-
-                            if (error) {
-                                feilmeldingNokkel = error.$errorMessages;
-                            } else {
-                                scope.errors = [errorMessage(feilmeldingNokkel, nokkel)];
-                                loopErrors = false;
-                            }
-
-                            var feilmelding = errorMessage(feilmeldingNokkel, nokkel);
-
-                            if ($.inArray(feilmelding, scope.errors) == -1) {
-                                scope.errors.push(feilmelding);
-                            }
-                        });
+                angular.forEach(ctrl.$error, function (verdi, nokkel) {
+                    if (fortsettLoop) {
+                        leggerTilFeilmeldinger(verdi, nokkel);
                     }
                 });
             }
 
             // Watcher for å kunne fjerne feilmeldinger når de er fikset :)
             scope.$watch(function() { return ctrl.$error; }, function() {
-                var errors = [];
+                var fortsattFeilListe = [];
                 angular.forEach(ctrl.$error, function(verdi, nokkel) {
-                    angular.forEach(verdi, function(error) {
-                        var feilmeldingNokkel = nokkel;
-                        if (error) {
-                            feilmeldingNokkel = error.$errorMessages;
+                    angular.forEach(verdi, function(feil) {
+                        var feilmelding = hentFeilmelding(feil, nokkel);
+
+                        if (scope.feilmeldinger.contains(feilmelding) && !fortsattFeilListe.contains(feilmelding)) {
+                            fortsattFeilListe.push(feilmelding);
                         }
-
-                        try{
-                            var feilmelding = errorMessage(feilmeldingNokkel, nokkel);
-
-                            if ($.inArray(feilmelding, scope.errors) > -1 && $.inArray(feilmelding, errors) == -1) {
-                                errors.push(feilmelding);
-                            }
-                        } catch (e) {} //duplicate key...
                     });
                 });
-                scope.errors = errors;
+                scope.feilmeldinger = fortsattFeilListe;
             }, true);
 
             scope.skalViseFeilmeldinger = function() {
-                var harListeElementer = elem.children().length;
-                return harListeElementer;
+                return elem.children().length;
+            }
+
+            /*
+             * Dersom vi har en egendefinert feil skal vi bare vise denne. I det tilfellet fjernes alle andre feilmeldinger
+             * og vi skal ikke loope mer. Kan ikke breake en angular.forEach...
+             */
+            function leggerTilFeilmeldinger(verdi, nokkel) {
+                angular.forEach(verdi, function (feil) {
+                    var feilmelding = hentFeilmelding(feil, nokkel);
+
+                    if (feil === undefined) {
+                        // Egendefinert feilmelding
+                        scope.feilmeldinger = [feilmelding];
+                        fortsettLoop = false;
+                    }
+
+                    if (!scope.feilmeldinger.contains(feilmelding)){
+                        scope.feilmeldinger.push(feilmelding);
+                    }
+                });
             }
         }
     };
