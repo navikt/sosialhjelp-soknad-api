@@ -37,26 +37,40 @@ angular.module('app.brukerdata', ['app.services'])
 //            Mangler eksempel på mildertidig omrodeadresse
 //            $scope.personalia.fakta.adresser.push({"soknadId":1,"type":"BOSTEDSADRESSE","gatenavn":"Blåsbortveien","husnummer":"24","husbokstav":"","postnummer":"0368","poststed":"Malmö","land":"SVERIGE","gyldigFra":null,"gyldigTil":null,"utenlandsAdresse":null,"adresseEier":null,"postboksNummer":null,"postboksNavn":null});
 
-            $scope.personalia.fakta.adresser.forEach(function (data, index) {
-                if (data.type === "BOSTEDSADRESSE") {
-                    $scope.personaliaData.bostedsAdresse = index;
-                } else if (data.type === "POSTADRESSE") {
-                    $scope.personaliaData.postAdresse = index;
+            if ($scope.personalia.fakta.adresser != undefined) {
+                $scope.personalia.fakta.adresser.forEach(function (data, index) {
+                    if (data.type === "BOSTEDSADRESSE") {
+                        $scope.personaliaData.bostedsAdresse = index;
+                    } else if (data.type === "POSTADRESSE") {
+                        $scope.personaliaData.postAdresse = index;
+                    } else {
+                        $scope.personaliaData.midlertidigAdresse = index;
+                    }
+                });
+            } else {
+                $scope.personalia.fakta.adresser = [];
+            }
+
+            $scope.harAdresseRegistrert = function () {
+                console.log($scope.personalia.fakta.adresser);
+                if ($scope.personaliaData.bostedsAdresse == undefined && $scope.personaliaData.postAdresse == undefined && $scope.personaliaData.midlertidigAdresse == undefined ) {
+                    return false;
                 } else {
-                    $scope.personaliaData.midlertidigAdresse = index;
+                    return true;
                 }
-            });
+            }
 
             $scope.harBostedsAdresse = function () {
                 return $scope.personaliaData.bostedsAdresse != undefined;
             }
 
             $scope.harMidlertidigAdresse = function () {
+                console.log("harMidlertidigAdresse");
                 return $scope.personaliaData.midlertidigAdresse != undefined;
             }
 
             $scope.harMidlertidigAdresseEier = function () {
-                return $scope.personaliaData.midlertidigAdresse.adresseEier != undefined;
+                return $scope.personaliaData.midlertidigAdresse != undefined && $scope.personaliaData.midlertidigAdresse.adresseEier != undefined;
             }
 
             $scope.harBostedsadresseOgIngenMidlertidigAdresse = function() {
