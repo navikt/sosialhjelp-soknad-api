@@ -168,6 +168,7 @@ angular.module('app.brukerdata', ['app.services'])
 
         $scope.visFeilmeldinger = function () {
             $scope.data.showErrorMessage = true;
+            $scope.showErrors = true;
         }
 
         $scope.hvisIkkeFormValiderer = function () {

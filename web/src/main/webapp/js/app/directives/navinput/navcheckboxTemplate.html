@@ -1,6 +1,6 @@
 <div class="nav-checkbox">
     <span data-ng-show='hvisIRedigeringsmodus()'>
-        <input id="{{ label }}" data-ng-model="model" type="checkbox" name="{{ inputname }}" data-ng-change='endret(this)' mod-faktum boolean-verdi />
+        <input id="{{ label }}" data-ng-model="model" type="checkbox" name="{{ inputname }}" data-ng-click='endret()' mod-faktum boolean-verdi />
         <label for='{{ label }}' class='svar-alt' cmstekster="{{ label }}"/>
     </span>
 
