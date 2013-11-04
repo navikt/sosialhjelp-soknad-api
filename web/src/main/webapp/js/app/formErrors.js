@@ -27,56 +27,36 @@
 
                     fallback: 'er ikke gyldig.'
                 },
-                // humanize words, turning:
-                //     camelCase  --> Camel Case
-                //     dash-case  --> Dash Case
-                //     snake_case --> Snake Case
-                humanize = function (str) {
-                    return str.replace(/[-_+]/g, ' ') // turn _ and - into spaces
-                              .replace(/([A-Z])/g, ' $1') // put a splace before every capital letter
-                              .replace(/^([a-z])|\s+([a-z])/g, // capitalize the first letter of each word
-                                    function ($1) { return $1.toUpperCase(); }
-                    );
-                },
                 // this is where we form our message
-                errorMessage = function (name, error, props) {
+                errorMessage = function (feilmeldingNokkel, nokkel) {
                     // get the nice name if they used the niceName 
                     // directive or humanize the name and call it good
-                    var niceName = props.$niceName || humanize(name);
+                    var defaultReason = defaultErrorReasons[nokkel] || defaultErrorReasons.fallback;
 
-                    // get a reason from our default set
-                    var reason = defaultErrorReasons[error] || defaultErrorReasons.fallback;
-                    
-                    var defaultReason = niceName + ' ' + reason;
-                    // if they used the errorMessages directive, grab that message
-                    if(typeof props.$errorMessages === 'object')
-                        reason = props.$errorMessages[error];
-                    else if(typeof props.$errorMessages === 'string')
-                        reason = props.$errorMessages;
+                    var feilmelding = data.tekster[feilmeldingNokkel]; // Henter fra cmstekster
 
-                    if(data.tekster[reason] === undefined)
+                    if(feilmelding === undefined) {
                         return defaultReason;
+                    }
 
-                    return data.tekster[reason]; // Henter fra cmstekster
-                    
-                    // return our nicely formatted message
-                    
+
+                    return feilmelding;
                 };
 
             // only update the list of errors if there was actually a change in $error
             scope.$watch(function() { return ctrl.$error; }, function() {
                 // reset error array
                 scope.errors = [];
-                angular.forEach(ctrl, function(props, name) {
-                    // name has some internal properties we don't want to iterate over
-                    if(name[0] === '$') return;
-                    angular.forEach(props.$error, function(isInvalid, error) {
-                        // don't need to even try and get a a message unless it's invalid
-                        if(isInvalid) {
-                            try{
-                                scope.errors.push(errorMessage(name, error, props));
-                            }catch(e) {} //duplicate key... 
+                angular.forEach(ctrl.$error, function(verdi, nokkel) {
+                    angular.forEach(verdi, function(error) {
+                        var feilmeldingNokkel = nokkel;
+                        if (error) {
+                            feilmeldingNokkel = error.$errorMessages;
                         }
+
+                        try{
+                            scope.errors.push(errorMessage(feilmeldingNokkel, nokkel));
+                        } catch (e) {} //duplicate key...
                     });
                 });
             }, true);
@@ -85,16 +65,6 @@
                 var harListeElementer = elem.children().length;
                 return harListeElementer && scope.showErrors;
             }
-        }
-    };
-}])
-
-// set a nice name to $niceName on the ngModel ctrl for later use
-.directive('niceName', [function () {
-    return {
-        require: 'ngModel',
-        link: function(scope, elem, attrs, ctrl) {
-            ctrl.$niceName = attrs.niceName;
         }
     };
 }])
