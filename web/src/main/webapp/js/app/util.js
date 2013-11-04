@@ -4,6 +4,12 @@ if (!Array.prototype.last) {
     }
 }
 
+if (!Array.prototype.contains) {
+    Array.prototype.contains = function(val) {
+        return $.inArray(val, this) > -1;
+    }
+}
+
 (function($) {
     $.fn.changeElementType = function(newType) {
         var attrs = {};
@@ -46,3 +52,4 @@ function fiksNavn(element, navn, tmpNavn) {
     currentElementCtrl.$name = navn;
     formCtrl.$addControl(currentElementCtrl);
 }
+
