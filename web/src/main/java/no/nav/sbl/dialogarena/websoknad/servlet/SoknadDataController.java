@@ -40,7 +40,6 @@ public class SoknadDataController {
 
         WebSoknad webSoknad = soknadService.hentSoknad(soknadId);
         String type = webSoknad.getGosysId() + ".xml";
-        System.out.println(type);
         try {
             JAXBContext context = JAXBContext.newInstance(SoknadStruktur.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
