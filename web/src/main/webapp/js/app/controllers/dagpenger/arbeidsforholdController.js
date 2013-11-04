@@ -43,7 +43,6 @@ angular.module('nav.arbeidsforhold.controller',[])
 
             $scope.erSluttaarsakValgt = function() {
                 if ($scope.sluttaarsak && $scope.sluttaarsak.navn) {
-                    console.log("Sluttaarsak valgt");
                     return true;
                 }else{
                     return false;
