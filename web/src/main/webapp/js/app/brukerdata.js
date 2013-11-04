@@ -126,14 +126,6 @@ angular.module('app.brukerdata', ['app.services'])
             soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
             console.log("lagre: " + soknadData);
         });
-
-        $scope.$on("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", function (e, data) {
-            $scope.soknadData.fakta.arbeidsforhold = {"soknadId": $scope.soknadData.soknadId, "key": data.key,
-                "value": JSON.stringify(data.value)};
-            var soknadData = $scope.soknadData;
-            soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
-            console.log("lagre: " + soknadData.soknadId);
-        });
     })
 
     .controller('TekstCtrl', function ($scope, tekstService) {

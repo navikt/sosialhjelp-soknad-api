@@ -69,7 +69,8 @@ angular.module('nav.arbeidsforhold.controller',[])
             $scope.lagreArbeidsforhold = function(af, form) {
                 $scope.showErrors = form.$invalid;
                 if(form.$valid) {
-                    $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
+                    var value = angular.toJson($scope.arbeidsforhold);
+                    $scope.$emit("OPPDATER_OG_LAGRE", {key: 'arbeidsforhold', value: value});
                     $scope.posisjonForArbeidsforholdUnderRedigering = -1;
 
                     //todo refaktorer
