@@ -46,8 +46,6 @@
             scope.errors = [];
             scope.runValidation = function() {
                 scope.errors = [];
-                console.log(ctrl);
-
                 var loopErrors = true;
                 angular.forEach(ctrl.$error, function(verdi, nokkel) {
 

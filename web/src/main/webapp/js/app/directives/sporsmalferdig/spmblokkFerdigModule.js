@@ -7,15 +7,10 @@ angular.module('nav.sporsmalferdig', [])
             templateUrl: '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html',
             scope: {
                 nokkel: '@',
-                modus: '='
+                modus: '=',
+                submitMethod: '&'
             },
             link: function (scope, element) {
-                var form = element.closest('form, [ng-form], [data-ng-form]');
-
-                element.click(function() {
-                    form.trigger('submit');
-                });
-
                 var tab = element.closest('.accordion-group');
                 var nesteTab = tab.next();
                 var forrigeTab = tab.prev();
