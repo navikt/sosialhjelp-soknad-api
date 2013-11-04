@@ -121,4 +121,8 @@ public class Adresse {
 		return land;
 	}
 
+	public Object getOmrodeAdresse() {
+		return adresseLinjer;
+	}
+
 }
