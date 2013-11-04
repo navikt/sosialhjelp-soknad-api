@@ -59,15 +59,18 @@ public class PersonServiceTest {
 	private static final String EN_ADRESSE_HUSBOKSTAV = "B";
 	private static final String EN_ADRESSE_POSTNUMMER = "0560";
 	private static final String EN_ADRESSE_POSTSTED = "Oslo";
+	
 	private static final DateTime EN_ANNEN_ADRESSE_GYLDIG_FRA = new DateTime(2012, 10, 11, 14, 44);
 	private static final DateTime EN_ANNEN_ADRESSE_GYLDIG_TIL = new DateTime(2012, 11, 12, 15, 55);
 	private static final String EN_ANNEN_ADRESSE_GATE = "Vegvegen";
 	private static final String EN_ANNEN_ADRESSE_HUSNUMMER ="44";
 	private static final String EN_ANNEN_ADRESSE_HUSBOKSTAV = "D";
 	private static final String EN_ANNEN_ADRESSE_POSTNUMMER = "0565";
+	
 	private static final String EN_POSTBOKS_ADRESSEEIER = "Per Conradi";
 	private static final String ET_POSTBOKS_NAVN = "Postboksstativet";
 	private static final String EN_POSTBOKS_NUMMER = "66";
+	
 	private static final String EN_ADRESSELINJE = "Poitigatan 55";
 	private static final String EN_ANNEN_ADRESSELINJE = "Nord-Poiti";
 	private static final String EN_TREDJE_ADRESSELINJE = "1111";
@@ -78,7 +81,11 @@ public class PersonServiceTest {
 	private static final List<String> EN_FJERDE_ADRESSE_UTLANDET = Arrays.asList(EN_ADRESSELINJE, EN_ANNEN_ADRESSELINJE, EN_TREDJE_ADRESSELINJE, EN_FJERDE_ADRESSELINJE);
 	private static final String ET_LAND = "Finland";
 	private static final String EN_LANDKODE = "FIN";
-
+	
+	private static final String EN_OMRODEADRESSELINJE = "V/Patrik Patriksen";
+	private static final String EN_ANNEN_OMRODEADRESSELINJE = "VESLEÅSEN";
+	private static final String EN_TREDJE_OMRODEADRESSELINJE = "0123 ÅS";
+	private static final List<String> EN_OMRAADEADRESSE = Arrays.asList(EN_OMRODEADRESSELINJE, EN_ANNEN_OMRODEADRESSELINJE,EN_TREDJE_OMRODEADRESSELINJE);
 
     @SuppressWarnings("unchecked")
 	@Test
@@ -246,6 +253,37 @@ public class PersonServiceTest {
        	Assert.assertEquals(null, adresseliste.get(0).getPostnummer());
    		Assert.assertEquals(null, adresseliste.get(0).getGyldigFra());
    		Assert.assertEquals(null, adresseliste.get(0).getGyldigTil());
+   	}
+    
+    @SuppressWarnings("unchecked")
+   	@Test
+   	public void skalStotteMidlertidigOmrodeadresse() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+   		
+		XMLHentKontaktinformasjonOgPreferanserRequest request = hentRequestMedGyldigIdent();
+    	XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
+    	
+    	XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
+    	
+    	
+    	XMLPostadresse xmlPostadresse =  new XMLPostadresse();
+    	XMLUstrukturertAdresse ustrukturertAdresse = new XMLUstrukturertAdresse();
+		ustrukturertAdresse.setAdresselinje1(EN_OMRODEADRESSELINJE);
+		ustrukturertAdresse.setAdresselinje2(EN_ANNEN_OMRODEADRESSELINJE);
+		ustrukturertAdresse.setAdresselinje3(EN_TREDJE_OMRODEADRESSELINJE);
+		xmlPostadresse.setUstrukturertAdresse(ustrukturertAdresse);
+		
+		xmlBruker.setPostadresse(xmlPostadresse);
+    	
+		response.setPerson(xmlBruker);
+    	
+    	when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenReturn(response);
+    	Person hentetPerson = service.hentPerson(4l, RIKTIG_IDENT);
+    	
+    	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
+    	Assert.assertNotNull(adresseliste);
+    	
+    	
+    	Assert.assertEquals(EN_OMRAADEADRESSE, adresseliste.get(0).getOmrodeAdresse());
    	}
 
     @SuppressWarnings("unchecked")
