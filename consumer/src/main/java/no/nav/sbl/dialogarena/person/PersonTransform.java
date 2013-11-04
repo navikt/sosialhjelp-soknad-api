@@ -101,7 +101,6 @@ public class PersonTransform {
 
     private void finnPostAdresse(long soknadId, List<Adresse> result, XMLPostadresse postadresse) {
         if(postadresse != null) {
-            if(postadresse instanceof XMLPostadresse) {
                 XMLPostadresse xmlPostadresse = postadresse;
                 XMLUstrukturertAdresse ustrukturertAdresse = xmlPostadresse.getUstrukturertAdresse();
                 if(ustrukturertAdresse != null) {
@@ -117,7 +116,6 @@ public class PersonTransform {
                     }
                     result.add(folkeregistrertUtenlandskAdresse);
                 }
-            }
         }
     }
 
