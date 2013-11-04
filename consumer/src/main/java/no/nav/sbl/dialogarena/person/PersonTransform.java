@@ -105,7 +105,7 @@ public class PersonTransform {
                 XMLPostadresse xmlPostadresse = postadresse;
                 XMLUstrukturertAdresse ustrukturertAdresse = xmlPostadresse.getUstrukturertAdresse();
                 if(ustrukturertAdresse != null) {
-                    ArrayList<String> adresselinjer = hentAdresseLinjer(ustrukturertAdresse);
+                    List<String> adresselinjer = hentAdresseLinjer(ustrukturertAdresse);
 
                     Adresse folkeregistrertUtenlandskAdresse = new Adresse(soknadId, Adressetype.UTENLANDSK_ADRESSE);
 
@@ -126,7 +126,7 @@ public class PersonTransform {
 		XMLUstrukturertAdresse ustrukturertAdresse = xmlMidlAdrUtland.getUstrukturertAdresse();
 		
 		if (ustrukturertAdresse != null) {
-			ArrayList<String> adresselinjer = hentAdresseLinjer(ustrukturertAdresse);
+			List<String> adresselinjer = hentAdresseLinjer(ustrukturertAdresse);
 			
 			midlertidigAdresse.setUtenlandsadresse(adresselinjer);
 			XMLLandkoder xmlLandkode = ustrukturertAdresse.getLandkode();
@@ -146,9 +146,9 @@ public class PersonTransform {
 		midlertidigAdresse.setGyldigtil(gyldigTil);
 	}
 
-	private ArrayList<String> hentAdresseLinjer(
+	private List<String> hentAdresseLinjer(
 			XMLUstrukturertAdresse ustrukturertAdresse) {
-		ArrayList<String> adresselinjer = new ArrayList<String>();
+		List<String> adresselinjer = new ArrayList();
 		if(ustrukturertAdresse.getAdresselinje1() != null) {
 			adresselinjer.add(ustrukturertAdresse.getAdresselinje1());
 		}
