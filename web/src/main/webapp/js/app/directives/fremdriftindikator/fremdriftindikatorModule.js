@@ -3,10 +3,19 @@ angular.module('nav.fremdriftsindikator',[])
         return {
             restrict: 'A',
             link: function(scope, element) {
-                element.attr("data-ng-class", "{true: 'hide', false: 'show'}[laster]");
-                var spinner = angular.element('<img ng-class="{true: \'show\', false: \'hide\'}[laster]" src="../img/ajaxloader/hvit/loader_hvit_48.gif"/>');
+                var spinner = angular.element('<img src="../img/ajaxloader/hvit/loader_hvit_48.gif"/>');
                 spinner.insertAfter(element);
                 $compile(spinner)(scope);
+
+                scope.$watch('data.laster', function(value) {
+                    if (value) {
+                        element.hide();
+                        spinner.show();
+                    } else {
+                        element.show();
+                        spinner.hide();
+                    }
+                });
             }
         };
     }]);
