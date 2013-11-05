@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena;
+package no.nav.sbl.dialogarena.mock;
 
 import static no.nav.sbl.dialogarena.websoknad.service.Transformers.tilFaktum;
 
@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 
+import no.nav.sbl.dialogarena.SoknadInnsendingRepository;
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
 import no.nav.sbl.dialogarena.websoknad.service.SendSoknadService;
