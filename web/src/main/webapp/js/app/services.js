@@ -25,7 +25,8 @@ angular.module('app.services', ['ngResource'])
             {
                 'create': { method: 'POST', params: {param: '@param', action: 'opprett'} },
                 'send': {method: 'POST', params: {param: '@param', action: 'send'}},
-                'delete': {method: 'POST', params: {param: '@param', action: 'delete'}}
+                'delete': {method: 'POST', params: {param: '@param', action: 'delete'}},
+                'options': {method: 'GET', params: {param: '@param', action: 'options'}}
             }
         );
     })

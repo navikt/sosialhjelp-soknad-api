@@ -1,20 +1,55 @@
 #opplasting {
-    h2 {
-        text-align: center;
-    }
+  h2, p {
+    text-align: center;
+    padding-left: 100px;
+    padding-right: 100px;
+  }
 
-    .opplasting {
-        margin-top: 40px;
-
-        .opplasting-knapper {
-            margin-top: 40px;
-            margin-bottom: 40px;
-            text-align: center;
-
-            a {
-                display: inline-block;
-                margin-bottom: 10px;
-            }
+  .opplasting {
+    margin-top: 40px;
+    .vedleggListe {
+      list-style: none;
+      padding-left: 0;
+      .vedlegg {
+        box-sizing: border-box;
+        padding: 30px;
+        margin-top: 20px;
+        height: 19em;
+        background-color: #f1f1f1;
+        h3 {
+          text-transform: uppercase;
         }
+        ul {
+          list-style-type: disc;
+        }
+        .forhandsvisning {
+          background-color: #ffffff;
+          width: 150px;
+          height: 190px;
+          position: absolute;
+          right: 30px;
+          top: 30px;
+        }
+      }
+      .spm-knapper {
+        text-align: left;
+        position: absolute;
+        bottom: 10%;
+        label {
+          margin-left: 20px;
+        }
+      }
     }
+
+    .opplasting-knapper {
+      margin-top: 40px;
+      margin-bottom: 40px;
+      text-align: center;
+
+      a {
+        display: inline-block;
+        margin-bottom: 10px;
+      }
+    }
+  }
 }

@@ -50,10 +50,14 @@
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].husbokstav }}
                 </p>
 
+                 <p data-ng-show="harOmrodeAdresse()">
+                    {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].eiendomsnavn }}
+                </p>
+
                 <p data-ng-show="harMidlertidigUtenlandskAdresse()">
-            <span data-ng-repeat="linje in personalia.fakta.adresser[personaliaData.midlertidigAdresse].utenlandsAdresse">
-                {{linje}}
-            </span>
+                    <span data-ng-repeat="linje in personalia.fakta.adresser[personaliaData.midlertidigAdresse].utenlandsAdresse">
+                        {{linje}}
+                    </span>
                     {{personalia.fakta.adresser[personaliaData.midlertidigAdresse].land}}
                 </p>
 
