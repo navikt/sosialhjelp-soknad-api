@@ -4,6 +4,12 @@ if (!Array.prototype.last) {
     }
 }
 
+if (!Array.prototype.contains) {
+    Array.prototype.contains = function(val) {
+        return $.inArray(val, this) > -1;
+    }
+}
+
 (function($) {
     $.fn.changeElementType = function(newType) {
         var attrs = {};
@@ -26,10 +32,10 @@ function checkTrue(element) {
     return element.toString() == 'true';
 }
 
-function scrollToTab(newTab) {
+function scrollToElement(element) {
     var animationSpeed = 200;
     var offset = 100;
-    var scrollPos = Math.max(newTab.offset().top - offset, 0);
+    var scrollPos = Math.max(element.offset().top - offset, 0);
     $('body, html').animate({
         scrollTop: scrollPos
     }, animationSpeed);
@@ -46,3 +52,4 @@ function fiksNavn(element, navn, tmpNavn) {
     currentElementCtrl.$name = navn;
     formCtrl.$addControl(currentElementCtrl);
 }
+

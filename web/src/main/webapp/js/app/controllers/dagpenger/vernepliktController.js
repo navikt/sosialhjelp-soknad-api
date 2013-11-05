@@ -5,5 +5,6 @@ angular.module('nav.verneplikt',[])
 
         $scope.validerVerneplikt = function(form) {
             $scope.validateForm(form.$invalid);
+            $scope.runValidation();
         }
     }]);

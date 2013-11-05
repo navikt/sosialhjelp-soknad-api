@@ -1,5 +1,5 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <form name="personaliaForm" class="skjemainnhold" data-ng-controller="PersonaliaCtrl" data-ng-submit="validerPersonalia(personaliaForm)" novalidate>
+    <div data-ng-form="personaliaForm" class="skjemainnhold" data-ng-controller="PersonaliaCtrl"  novalidate>
         <div class="spm">
             <p class="spm-sporsmal">
                 <span cmstekster="personalia.intro"/> <a cmstekster="personalia.intro.tekst" cmslenketekster="personalia.intro.url"/>
@@ -50,10 +50,14 @@
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].husbokstav }}
                 </p>
 
+                 <p data-ng-show="harOmrodeAdresse()">
+                    {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].eiendomsnavn }}
+                </p>
+
                 <p data-ng-show="harMidlertidigUtenlandskAdresse()">
-            <span data-ng-repeat="linje in personalia.fakta.adresser[personaliaData.midlertidigAdresse].utenlandsAdresse">
-                {{linje}}
-            </span>
+                    <span data-ng-repeat="linje in personalia.fakta.adresser[personaliaData.midlertidigAdresse].utenlandsAdresse">
+                        {{linje}}
+                    </span>
                     {{personalia.fakta.adresser[personaliaData.midlertidigAdresse].land}}
                 </p>
 
@@ -87,6 +91,7 @@
 
         <spmblokkferdig
                 nokkel="personalia"
-                modus="data.redigeringsModus"/>
-    </form>
+                modus="data.redigeringsModus"
+                submit-method="validerPersonalia(personaliaForm)"/>
+    </div>
 </div>

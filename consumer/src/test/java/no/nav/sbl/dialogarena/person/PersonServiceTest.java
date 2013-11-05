@@ -16,6 +16,7 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGateadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGyldighetsperiode;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLLandkoder;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMatrikkeladresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseNorge;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLNorskIdent;
@@ -59,15 +60,18 @@ public class PersonServiceTest {
 	private static final String EN_ADRESSE_HUSBOKSTAV = "B";
 	private static final String EN_ADRESSE_POSTNUMMER = "0560";
 	private static final String EN_ADRESSE_POSTSTED = "Oslo";
+	
 	private static final DateTime EN_ANNEN_ADRESSE_GYLDIG_FRA = new DateTime(2012, 10, 11, 14, 44);
 	private static final DateTime EN_ANNEN_ADRESSE_GYLDIG_TIL = new DateTime(2012, 11, 12, 15, 55);
 	private static final String EN_ANNEN_ADRESSE_GATE = "Vegvegen";
 	private static final String EN_ANNEN_ADRESSE_HUSNUMMER ="44";
 	private static final String EN_ANNEN_ADRESSE_HUSBOKSTAV = "D";
 	private static final String EN_ANNEN_ADRESSE_POSTNUMMER = "0565";
+	
 	private static final String EN_POSTBOKS_ADRESSEEIER = "Per Conradi";
 	private static final String ET_POSTBOKS_NAVN = "Postboksstativet";
 	private static final String EN_POSTBOKS_NUMMER = "66";
+	
 	private static final String EN_ADRESSELINJE = "Poitigatan 55";
 	private static final String EN_ANNEN_ADRESSELINJE = "Nord-Poiti";
 	private static final String EN_TREDJE_ADRESSELINJE = "1111";
@@ -78,7 +82,7 @@ public class PersonServiceTest {
 	private static final List<String> EN_FJERDE_ADRESSE_UTLANDET = Arrays.asList(EN_ADRESSELINJE, EN_ANNEN_ADRESSELINJE, EN_TREDJE_ADRESSELINJE, EN_FJERDE_ADRESSELINJE);
 	private static final String ET_LAND = "Finland";
 	private static final String EN_LANDKODE = "FIN";
-
+	private static final String ET_EIEDOMSNAVN = "Villastrøket";
 
     @SuppressWarnings("unchecked")
 	@Test
@@ -195,8 +199,32 @@ public class PersonServiceTest {
     	Assert.assertEquals(EN_ANNEN_ADRESSE_POSTNUMMER, adresseliste.get(1).getPostnummer());
     	
     }
-
+    
     @SuppressWarnings("unchecked")
+   	@Test
+   	public void skalStotteMidlertidigOmrodeAdresseNorge() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+   		XMLHentKontaktinformasjonOgPreferanserRequest request = hentRequestMedGyldigIdent();
+       	XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
+       	
+       	XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
+       	
+       	XMLMidlertidigPostadresseNorge midlertidigOmrodeAdresseNorge = generateMidlertidigOmrodeAdresseNorge();
+   		xmlBruker.setMidlertidigPostadresse(midlertidigOmrodeAdresseNorge);
+   		
+   		response.setPerson(xmlBruker);
+       	
+       	when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenReturn(response);
+       	Person hentetPerson = service.hentPerson(4l, RIKTIG_IDENT);
+       	
+       	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
+       	Assert.assertNotNull(adresseliste);
+       	
+       	Assert.assertEquals(EN_ADRESSE_POSTNUMMER, adresseliste.get(0).getPostnummer());
+       	Assert.assertEquals(ET_EIEDOMSNAVN, adresseliste.get(0).getEiendomsnavn());
+       		
+   	}
+
+	@SuppressWarnings("unchecked")
 	@Test
 	public void skalStotteMidlertidigPostboksAdresseNorge() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
 		XMLHentKontaktinformasjonOgPreferanserRequest request = hentRequestMedGyldigIdent();
@@ -425,6 +453,24 @@ public class PersonServiceTest {
 		xmlpostboksadresse.setPoststed(xmlpostnummer);
 		xmlMidlertidigPostboksNorge.setStrukturertAdresse(xmlpostboksadresse);
 		return xmlMidlertidigPostboksNorge;
+		
+		
+	}
+	
+	private XMLMidlertidigPostadresseNorge generateMidlertidigOmrodeAdresseNorge() {
+		XMLMidlertidigPostadresseNorge xmlMidlertidigPostadresse = new XMLMidlertidigPostadresseNorge();
+		
+		XMLMatrikkeladresse xmlMatrikkelAdresse = new XMLMatrikkeladresse();
+		XMLPostnummer xmlpostnummer = new XMLPostnummer();
+		XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode();
+		xmlMidlertidigPostadresse.setPostleveringsPeriode(xmlGyldighetsperiode);
+		
+		xmlpostnummer.setValue(EN_ADRESSE_POSTNUMMER);
+		xmlMatrikkelAdresse.setPoststed(xmlpostnummer);
+		xmlMatrikkelAdresse.setEiendomsnavn(ET_EIEDOMSNAVN);
+		
+		xmlMidlertidigPostadresse.setStrukturertAdresse(xmlMatrikkelAdresse);
+		return xmlMidlertidigPostadresse;
 	}
 
 	private XMLGyldighetsperiode generateGyldighetsperiode() {

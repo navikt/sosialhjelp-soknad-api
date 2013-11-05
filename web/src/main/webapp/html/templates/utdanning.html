@@ -1,6 +1,5 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <form name="utdanningForm" class="skjemainnhold" data-ng-controller="UtdanningCtrl"
-          data-ng-submit="validerUtdanning(utdanningForm)" novalidate>
+    <div data-ng-form="utdanningForm" class="skjemainnhold" data-ng-controller="UtdanningCtrl" novalidate>
         <form-errors></form-errors>
         <div class="spm">
             <p class="spm-sporsmal" cmstekster="utdanning.sporsmal"/>
@@ -80,6 +79,7 @@
 
         <spmblokkferdig
                 nokkel="utdanning"
-                modus="data.redigeringsModus"/>
-    </form>
+                modus="data.redigeringsModus"
+                submit-method="validerUtdanning(utdanningForm)"/>
+    </div>
 </div>
