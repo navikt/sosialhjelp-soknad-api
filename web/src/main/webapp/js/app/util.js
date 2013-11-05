@@ -32,10 +32,10 @@ function checkTrue(element) {
     return element.toString() == 'true';
 }
 
-function scrollToTab(newTab) {
+function scrollToElement(element) {
     var animationSpeed = 200;
     var offset = 100;
-    var scrollPos = Math.max(newTab.offset().top - offset, 0);
+    var scrollPos = Math.max(element.offset().top - offset, 0);
     $('body, html').animate({
         scrollTop: scrollPos
     }, animationSpeed);
