@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import no.nav.sbl.dialogarena.websoknad.domain.WebSoknadId;
+import no.nav.sbl.dialogarena.soknadinnsending.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.websoknad.domain.WebSoknadId;
 import no.nav.sbl.dialogarena.websoknad.service.SendSoknadService;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 /**
  * Klassen håndterer alle rest kall for å hente grunnlagsdata til applikasjonen.
@@ -27,8 +30,23 @@ public class SoknadDataController {
     @RequestMapping(value = "/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public WebSoknad hentSoknadData(@PathVariable Long soknadId) {
-    	WebSoknad soknad = soknadService.hentSoknad(soknadId);
-    	return soknad;
+        WebSoknad soknad = soknadService.hentSoknad(soknadId);
+        return soknad;
+    }
+
+    @RequestMapping(value = "/options/{soknadId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody()
+    public SoknadStruktur hentSoknadStruktur(@PathVariable Long soknadId) {
+
+        WebSoknad webSoknad = soknadService.hentSoknad(soknadId);
+        String type = webSoknad.getGosysId() + ".xml";
+        try {
+            JAXBContext context = JAXBContext.newInstance(SoknadStruktur.class);
+            Unmarshaller unmarshaller = context.createUnmarshaller();
+            return (SoknadStruktur) unmarshaller.unmarshal(SoknadStruktur.class.getResourceAsStream(String.format("/soknader/%s", type)));
+        } catch (JAXBException e) {
+            throw new RuntimeException("Kunne ikke laste definisjoner. ", e);
+        }
     }
 
     @RequestMapping(value = "/send/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
