@@ -87,7 +87,9 @@ angular.module('app.brukerdata', ['app.services'])
             }
 
             $scope.harMidlertidigUtenlandskAdresse = function () {
-                return $scope.harMidlertidigAdresse() && $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].land != undefined && $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].utenlandsAdresse.length > 0
+                return $scope.harMidlertidigAdresse() && $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].land != undefined 
+                    && $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].utenlandsAdresse != undefined
+                    && $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].utenlandsAdresse.length > 0;
             }
 
             $scope.harUtenlandskFolkeregistrertAdresseOgMidlertidigNorskAdresse = function() {
@@ -95,7 +97,7 @@ angular.module('app.brukerdata', ['app.services'])
             }
 
             $scope.harUtenlandskAdresse = function() {
-                return $scope.harMidlertidigUtenlandskAdresse() || $scope.harUtenlandskFolkeregistrertAdresseOgMidlertidigNorskAdresse();
+                return $scope.harUtenlandskFolkeregistrertAdresseOgMidlertidigNorskAdresse();
             }
             $scope.hentMidlertidigAdresseTittel = function() {
                 if (!$scope.harMidlertidigAdresse()) {
