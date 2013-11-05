@@ -16,30 +16,7 @@
         transclude: true,
         restrict: 'AE',
         link: function postLink(scope, elem, attrs, ctrl) {
-
-            // Henter feilmelding fra CMS
-            var hentFeilmelding = function (feil, nokkel) {
-
-                // Dersom feil er undefined brukes nokkel som key for feilmeldingen
-                var feilmeldingNokkel = nokkel;
-                if (feil) {
-                    feilmeldingNokkel = feil.$errorMessages;
-                }
-
-                var feilmelding = data.tekster[feilmeldingNokkel];
-                var fantIkkeFeilmelding = "Fant ikke feilmelding";
-
-                /*
-                 * Dersom feilmeldingen ikke ble funnet, gi en standard tekst
-                 * Skal ikke skje i produksjon, så mest for debugging
-                 */
-                if (feilmelding === undefined) {
-                    return fantIkkeFeilmelding;
-                }
-
-                return feilmelding;
-            };
-
+            scope.feilmeldinger = [];
             scope.runValidation = function () {
                 scope.feilmeldinger = [];
                 var fortsettLoop = true;
@@ -106,6 +83,29 @@
                     liste.push(feilmelding);
                 }
             }
+
+            // Henter feilmelding fra CMS
+            function hentFeilmelding(feil, nokkel) {
+
+                // Dersom feil er undefined brukes nokkel som key for feilmeldingen
+                var feilmeldingNokkel = nokkel;
+                if (feil) {
+                    feilmeldingNokkel = feil.$errorMessages;
+                }
+
+                var feilmelding = data.tekster[feilmeldingNokkel];
+                var fantIkkeFeilmelding = "Fant ikke feilmelding med key " + feilmeldingNokkel;
+
+                /*
+                 * Dersom feilmeldingen ikke ble funnet, gi en standard tekst
+                 * Skal ikke skje i produksjon, så mest for debugging
+                 */
+                if (feilmelding === undefined) {
+                    return fantIkkeFeilmelding;
+                }
+
+                return feilmelding;
+            };
         }
     };
 }])
