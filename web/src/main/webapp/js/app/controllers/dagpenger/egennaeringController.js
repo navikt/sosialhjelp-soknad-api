@@ -5,5 +5,6 @@ angular.module('nav.egennaering',[])
 
         $scope.validerEgennaering = function(form) {
             $scope.validateForm(form.$invalid);
+            $scope.runValidation();
         }
     }]);
