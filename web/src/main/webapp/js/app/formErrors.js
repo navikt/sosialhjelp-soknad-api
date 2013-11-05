@@ -66,12 +66,6 @@
 
             scope.skalViseFeilmeldinger = function() {
                 var skalViseFeilmeldinger = elem.children().length;
-
-                // TODO: Må nok gjøre dette litt bedre. Trenger vi å scrolle dersom den allerede vises?
-                if (skalViseFeilmeldinger) {
-                    scrollToElement(elem);
-                }
-
                 return skalViseFeilmeldinger;
             }
 
