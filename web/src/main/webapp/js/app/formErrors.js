@@ -3,7 +3,7 @@
 // just put <form-errors><form-errors> wherever you want form errors to be displayed!
 .directive('formErrors', ['data', function (data) {
     return {
-        // only works if embedded in a form or an ngForm (that's in a form). 
+        // only works if embedded in a form or an ngForm (that's in a form).
         // It does use its closest parent that is a form OR ngForm
         require: '^form',
         template:
@@ -46,22 +46,20 @@
 
                 angular.forEach(ctrl.$error, function (verdi, nokkel) {
                     if (fortsettLoop) {
-                        leggerTilFeilmeldinger(verdi, nokkel);
+                        fortsettLoop = leggTilFeilmeldingerVedValidering(verdi, nokkel);
                     }
                 });
             }
 
-            // Watcher for å kunne fjerne feilmeldinger når de er fikset :)
+            /*
+             * Watcher på feilmeldinger for å oppdage endringer. Legger alle feilmeldinger som fortsatt gjelder OG som
+             * ligger i scope.feilmeldinger i en list som scope.feilmeldinger blir satt til. Er for å fjerne feil som blir
+             * fikset, men IKKE legge til nye feil i listen.
+             */
             scope.$watch(function() { return ctrl.$error; }, function() {
                 var fortsattFeilListe = [];
                 angular.forEach(ctrl.$error, function(verdi, nokkel) {
-                    angular.forEach(verdi, function(feil) {
-                        var feilmelding = hentFeilmelding(feil, nokkel);
-
-                        if (scope.feilmeldinger.contains(feilmelding) && !fortsattFeilListe.contains(feilmelding)) {
-                            fortsattFeilListe.push(feilmelding);
-                        }
-                    });
+                    fortsattFeilListe = leggTilFeilSomFortsattSkalVises(verdi, nokkel);
                 });
                 scope.feilmeldinger = fortsattFeilListe;
             }, true);
@@ -72,22 +70,40 @@
 
             /*
              * Dersom vi har en egendefinert feil skal vi bare vise denne. I det tilfellet fjernes alle andre feilmeldinger
-             * og vi skal ikke loope mer. Kan ikke breake en angular.forEach...
+             * og vi skal ikke loope mer. Return false dersom vi skal stoppe loopen, ellers true.
              */
-            function leggerTilFeilmeldinger(verdi, nokkel) {
+            function leggTilFeilmeldingerVedValidering(verdi, nokkel) {
                 angular.forEach(verdi, function (feil) {
                     var feilmelding = hentFeilmelding(feil, nokkel);
 
                     if (feil === undefined) {
                         // Egendefinert feilmelding
                         scope.feilmeldinger = [feilmelding];
-                        fortsettLoop = false;
+                        return false;
                     }
 
-                    if (!scope.feilmeldinger.contains(feilmelding)){
-                        scope.feilmeldinger.push(feilmelding);
+                    leggTilFeilmeldingHvisIkkeAlleredeLagtTil(scope.feilmeldinger, feilmelding);
+                });
+                return true;
+            }
+
+            function leggTilFeilSomFortsattSkalVises(verdi, nokkel) {
+                var fortsattFeilListe = [];
+                angular.forEach(verdi, function(feil) {
+                    var feilmelding = hentFeilmelding(feil, nokkel);
+
+                    // Legg bare til dersom feilmeldingen vises
+                    if (scope.feilmeldinger.contains(feilmelding)) {
+                        leggTilFeilmeldingHvisIkkeAlleredeLagtTil(fortsattFeilListe, feilmelding);
                     }
                 });
+                return fortsattFeilListe;
+            }
+
+            function leggTilFeilmeldingHvisIkkeAlleredeLagtTil(liste, feilmelding) {
+                if (!liste.contains(feilmelding)){
+                    liste.push(feilmelding);
+                }
             }
         }
     };
