@@ -1,15 +1,11 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <div class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl">
+    <div ng-form="arbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl" data-ng-submit="validerArbeidsforhold(arbeidsforholdForm)">
+        <form-errors></form-errors>
         <p class="arbeidsforhold-informasjonstekst" cmstekster="arbeidsforhold.informasjon"/>
 
         <span data-ng-show="endreError" style="color:red" cmstekster="arbeidsforhold.error.endre"/>
 
-        <div data-ng-repeat="af in arbeidsforhold" ng-form="endreArbeidsforholdForm"
-             name="endreArbeidsforholdForm"
-             data-ng-submit="lagreArbeidsforhold(af, endreArbeidsforholdForm)"
-             novalidate>
-
-            <form-errors></form-errors>
+        <div data-ng-repeat="af in arbeidsforhold" name="endreArbeidsforholdForm">
 
             <div class="arbeidsforhold" data-ng-show="arbeidsforholdetErIkkeIRedigeringsModus($index)">
                 <p class="oppsummering-dato-land">
@@ -90,10 +86,10 @@
                         <div data-ng-include="af.sluttaarsak.url"/>
                     </div>
                 </div>
-                <div class="knapper-arbeidsforhold">
+                <div class="knapper-opprett-arbeidsforhold">
                     <input class="knapp-hoved-liten" name="lagre" cmstekster="arbeidsforhold.lagre" type="submit"
                            id="arbeidsgiverLagre"
-                           data-ng-click="lagreArbeidsforhold(af, endreArbeidsforholdForm)">
+                           data-ng-click="lagreArbeidsforhold(af, arbeidsforholdForm)">
 
                     <a class="arbeidsforhold-avbryt" href cmstekster="arbeidsforhold.avbryt"
                        data-ng-click="avbrytEndringAvArbeidsforhold(af)"/>
@@ -101,7 +97,7 @@
             </div>
 
         </div>
-        <form name="arbeidsforholdForm" data-ng-submit="validerArbeidsforhold(arbeidsforholdForm)" novalidate>
+        <div class="knapper-arbeidsforhold">
             <div id="legg-til">
                 <a href class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event)"
                    cmstekster="arbeidsforhold.nyttarbeidsforhold"/>
@@ -116,8 +112,9 @@
 
             <spmblokkferdig
                     nokkel="arbeidsforhold"
-                    modus="data.redigeringsModus"/>
-        </form>
+                    modus="data.redigeringsModus"
+                    submit-method="validerArbeidsforhold(arbeidsforholdForm)"/>
+        </div>
     </div>
 </div>
 
