@@ -59,7 +59,7 @@
             scope.$watch(function() { return ctrl.$error; }, function() {
                 var fortsattFeilListe = [];
                 angular.forEach(ctrl.$error, function(verdi, nokkel) {
-                    fortsattFeilListe = leggTilFeilSomFortsattSkalVises(verdi, nokkel);
+                    fortsattFeilListe = fortsattFeilListe.concat(leggTilFeilSomFortsattSkalVises(verdi, nokkel));
                 });
                 scope.feilmeldinger = fortsattFeilListe;
             }, true);
