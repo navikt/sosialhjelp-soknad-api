@@ -1,12 +1,12 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <form name="ytelserForm" class="skjemainnhold" data-ng-controller="YtelserCtrl"
-          data-ng-submit="validerYtelser(ytelserForm)" novalidate>
+    <div data-ng-form="ytelserForm" class="skjemainnhold" data-ng-controller="YtelserCtrl" novalidate>
         <form-errors></form-errors>
         <div class="spm">
             <div class="spm-sporsmal">
-              <p cmstekster="ytelser.informasjon"/>
-              <br/>
-              <p cmstekster="ytelser.sporsmal"/>
+                <p cmstekster="ytelser.informasjon"/>
+                <br/>
+
+                <p cmstekster="ytelser.sporsmal"/>
             </div>
 
             <navcheckbox data-ng-model='soknadData.fakta.stonadFisker.value' modus='data.redigeringsModus'
@@ -19,7 +19,8 @@
 
                 <navtekst data-ng-model="soknadData.fakta.offentligTjenestepensjonUtbetaler.value"
                           modus="data.redigeringsModus" inputname="offentligTjenestepensjonUtbetaler"
-                          label="ytelser.offentligTjenestepensjonUtbetaler" feilmelding="ytelser.offentligTjenestepensjonUtbetaler.feilmelding"/>
+                          label="ytelser.offentligTjenestepensjonUtbetaler"
+                          feilmelding="ytelser.offentligTjenestepensjonUtbetaler.feilmelding"/>
             </navcheckbox>
 
             <navcheckbox data-ng-model='soknadData.fakta.privatTjenestepensjon.value'
@@ -29,7 +30,8 @@
 
                 <navtekst data-ng-model="soknadData.fakta.privatTjenestepensjonUtbetaler.value"
                           modus="data.redigeringsModus" inputname="privatTjenestepensjonUtbetaler"
-                          label="ytelser.privatTjenestepensjonUtbetaler" feilmelding="ytelser.privatTjenestepensjonUtbetaler.feilmelding"/>
+                          label="ytelser.privatTjenestepensjonUtbetaler"
+                          feilmelding="ytelser.privatTjenestepensjonUtbetaler.feilmelding"/>
             </navcheckbox>
 
             <navcheckbox data-ng-model='soknadData.fakta.vartpenger.value' modus='data.redigeringsModus'
@@ -37,7 +39,8 @@
 
                 <navtekst data-ng-model="soknadData.fakta.vartpengerUtbetaler.value"
                           modus="data.redigeringsModus"
-                          inputname="vartpengerUtbetaler" label="ytelser.vartpengerUtbetaler" feilmelding="ytelser.vartpengerUtbetaler.feilmelding"/>
+                          inputname="vartpengerUtbetaler" label="ytelser.vartpengerUtbetaler"
+                          feilmelding="ytelser.vartpengerUtbetaler.feilmelding"/>
             </navcheckbox>
 
             <navcheckbox data-ng-model='soknadData.fakta.ventelonn.value' modus='data.redigeringsModus'
@@ -45,7 +48,8 @@
 
                 <navtekst data-ng-model="soknadData.fakta.ventelonnUtbetaler.value"
                           modus="data.redigeringsModus"
-                          inputname="ventelonnUtbetaler" label="ytelser.ventelonnUtbetaler" feilmelding="ytelser.ventelonnUtbetaler.feilmelding"/>
+                          inputname="ventelonnUtbetaler" label="ytelser.ventelonnUtbetaler"
+                          feilmelding="ytelser.ventelonnUtbetaler.feilmelding"/>
             </navcheckbox>
 
             <navcheckbox data-ng-model='soknadData.fakta.dagpengerEOS.value' modus='data.redigeringsModus'
@@ -54,7 +58,8 @@
 
                 <navtekst data-ng-model="soknadData.fakta.dagpengerEOSUtbetaler.value"
                           modus="data.redigeringsModus"
-                          inputname="dagpengerEOSUtbetaler" label="ytelser.dagpengerEOSUtbetaler" feilmelding="ytelser.dagpengerEOSUtbetaler.feilmelding"/>
+                          inputname="dagpengerEOSUtbetaler" label="ytelser.dagpengerEOSUtbetaler"
+                          feilmelding="ytelser.dagpengerEOSUtbetaler.feilmelding"/>
             </navcheckbox>
 
 
@@ -62,29 +67,32 @@
                          inputname='annenYtelse' label='ytelser.annenYtelse' endret="endreYtelse(ytelserForm)">
 
                 <navtekst data-ng-model="soknadData.fakta.annenYtelseType.value" modus="data.redigeringsModus"
-                          inputname="annenYtelseType" label="ytelser.annenYtelseType" feilmelding="ytelser.annenYtelseType.feilmelding"/>
+                          inputname="annenYtelseType" label="ytelser.annenYtelseType"
+                          feilmelding="ytelser.annenYtelseType.feilmelding"/>
                 <navtekst data-ng-model="soknadData.fakta.annenYtelseUtbetaler.value"
                           modus="data.redigeringsModus"
-                          inputname="annenYtelseUtbetaler" label="ytelser.annenYtelseUtbetaler" feilmelding="ytelser.annenYtelseUtbetaler.feilmelding"/>
+                          inputname="annenYtelseUtbetaler" label="ytelser.annenYtelseUtbetaler"
+                          feilmelding="ytelser.annenYtelseUtbetaler.feilmelding"/>
             </navcheckbox>
-
             <div>
                     <span data-ng-show='hvisIRedigeringsmodus()'>
                           <div class="ytelser-nei">
-                        <input id="ingenYtelseCheckbox" data-ng-model="soknadData.fakta.ingenYtelse.value"
-                               type="checkbox" name="ingenYtelse" data-ng-change="endreIngenYtelse(ytelserForm)"
-                               boolean-verdi/>
-                        <label for='ingenYtelseCheckbox' class='svar-alt' cmstekster="ytelser.ingenYtelse"/>
-                              </div>
+                              <input id="ingenYtelseCheckbox" data-ng-model="soknadData.fakta.ingenYtelse.value"
+                                     type="checkbox" name="ingenYtelse" data-ng-change="endreIngenYtelse(ytelserForm)"
+                                     boolean-verdi/>
+                              <label for='ingenYtelseCheckbox' class='svar-alt' cmstekster="ytelser.ingenYtelse"/>
+                          </div>
                     </span>
 
-                <p class="svar-oppsummering" data-ng-show='ingenYtelserOppsummeringSkalVises()' cmstekster="ytelser.ingenYtelse"/>
+                <p class="svar-oppsummering" data-ng-show='ingenYtelserOppsummeringSkalVises()'
+                   cmstekster="ytelser.ingenYtelse"/>
             </div>
 
         </div>
 
         <spmblokkferdig
                 nokkel="ytelser"
-                modus="data.redigeringsModus"/>
-    </form>
+                modus="data.redigeringsModus"
+                submit-method="validerYtelser(ytelserForm)"/>
+    </div>
 </div>

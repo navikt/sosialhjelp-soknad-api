@@ -5,6 +5,7 @@ angular.module('nav.reellarbeidssoker',[])
 
         $scope.validerReellarbeidssoker = function(form) {
             $scope.validateForm(form.$invalid);
+            $scope.runValidation();
         }
 
         // For å åpne opp taben. Dataen som blir sendt med eventen er ID på accordion-group som skal åpnes
