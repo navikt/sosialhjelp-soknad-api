@@ -12,6 +12,7 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLLandkoder;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseNorge;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostboksadresseNorsk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostnummer;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLStrukturertAdresse;
@@ -51,8 +52,6 @@ public class PersonTransform {
     	XMLBostedsadresse bostedsadresse = soapPerson.getBostedsadresse();
     	if (bostedsadresse != null) {
 			XMLStrukturertAdresse strukturertAdresse = bostedsadresse.getStrukturertAdresse();
-			
-			
 			
 			if(strukturertAdresse instanceof XMLGateadresse) {
 				XMLGateadresse xmlGateAdresse = (XMLGateadresse)strukturertAdresse;
@@ -96,6 +95,26 @@ public class PersonTransform {
     			result.add(midlertidigAdresse);
     		}
     	}
+    	XMLPostadresse postadresse = soapPerson.getPostadresse();
+    	if(postadresse != null) {
+    		if(postadresse instanceof XMLPostadresse) {
+    			XMLPostadresse xmlPostadresse = (XMLPostadresse) postadresse;
+    			XMLUstrukturertAdresse ustrukturertAdresse = xmlPostadresse.getUstrukturertAdresse();
+    			if(ustrukturertAdresse != null) {
+    				ArrayList<String> adresselinjer = hentAdresseLinjer(ustrukturertAdresse);
+    				
+    				Adresse folkeregistrertUtenlandskAdresse = new Adresse(soknadId, Adressetype.UTENLANDSK_ADRESSE);
+    				
+    				folkeregistrertUtenlandskAdresse.setUtenlandsadresse(adresselinjer);
+    				XMLLandkoder xmlLandkode = ustrukturertAdresse.getLandkode();
+    				if(xmlLandkode != null) {
+    					String landkode = xmlLandkode.getValue();
+    					folkeregistrertUtenlandskAdresse.setLand(kodeverk.getLand(landkode));
+    				}
+    				result.add(folkeregistrertUtenlandskAdresse);
+    			}
+    		}
+    	}
 		return result;
 	}
 
@@ -104,19 +123,7 @@ public class PersonTransform {
 		XMLUstrukturertAdresse ustrukturertAdresse = xmlMidlAdrUtland.getUstrukturertAdresse();
 		
 		if (ustrukturertAdresse != null) {
-			ArrayList<String> adresselinjer = new ArrayList<String>();
-			if(ustrukturertAdresse.getAdresselinje1() != null) {
-				adresselinjer.add(ustrukturertAdresse.getAdresselinje1());
-			}
-			if(ustrukturertAdresse.getAdresselinje2() != null) {
-				adresselinjer.add(ustrukturertAdresse.getAdresselinje2());
-			}
-			if(ustrukturertAdresse.getAdresselinje3() != null) {
-				adresselinjer.add(ustrukturertAdresse.getAdresselinje3());
-			}
-			if(ustrukturertAdresse.getAdresselinje4() != null) {
-				adresselinjer.add(ustrukturertAdresse.getAdresselinje4());
-			}
+			ArrayList<String> adresselinjer = hentAdresseLinjer(ustrukturertAdresse);
 			
 			midlertidigAdresse.setUtenlandsadresse(adresselinjer);
 			XMLLandkoder xmlLandkode = ustrukturertAdresse.getLandkode();
@@ -134,6 +141,24 @@ public class PersonTransform {
 		}
 		midlertidigAdresse.setGyldigfra(gyldigFra);
 		midlertidigAdresse.setGyldigtil(gyldigTil);
+	}
+
+	private ArrayList<String> hentAdresseLinjer(
+			XMLUstrukturertAdresse ustrukturertAdresse) {
+		ArrayList<String> adresselinjer = new ArrayList<String>();
+		if(ustrukturertAdresse.getAdresselinje1() != null) {
+			adresselinjer.add(ustrukturertAdresse.getAdresselinje1());
+		}
+		if(ustrukturertAdresse.getAdresselinje2() != null) {
+			adresselinjer.add(ustrukturertAdresse.getAdresselinje2());
+		}
+		if(ustrukturertAdresse.getAdresselinje3() != null) {
+			adresselinjer.add(ustrukturertAdresse.getAdresselinje3());
+		}
+		if(ustrukturertAdresse.getAdresselinje4() != null) {
+			adresselinjer.add(ustrukturertAdresse.getAdresselinje4());
+		}
+		return adresselinjer;
 	}
 
 	private Adresse getMidlertidigPostboksadresseNorge(long soknadId,
