@@ -10,6 +10,13 @@ angular.module('nav.cmstekster',['app.services'])
             }
         };
     }])
+    .directive('cmshtml', ['data', function (data) {
+        return function ($scope, element, attrs) {
+            var nokkel = attrs['cmshtml'];
+            console.log(nokkel);
+            element.html(data.tekster[nokkel]);
+        };
+    }])
     .directive('cmslenketekster', ['data', function(data) {
         return function ($scope, element, attrs) {
             var nokkel = attrs['cmstekster'];
