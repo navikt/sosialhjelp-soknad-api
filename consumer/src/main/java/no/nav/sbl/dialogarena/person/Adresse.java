@@ -23,6 +23,7 @@ public class Adresse {
 	private String adresseeier;
 	private List<String> adresseLinjer;
 	private String land;
+	private String eiendomsnavn;
 	
 	public Adresse(long soknadId, Adressetype type) {
 		this.soknadId=soknadId;
@@ -107,8 +108,8 @@ public class Adresse {
 		return adresseeier;
 	}
 
-	public void setUtenlandsadresse(List<String> utenlandsadresse) {
-		this.adresseLinjer = utenlandsadresse;
+	public void setAdresselinjer(List<String> adresselinjer) {
+		this.adresseLinjer = adresselinjer;
 	}
 	public List<String> getUtenlandsAdresse() {
 		return adresseLinjer;
@@ -121,8 +122,10 @@ public class Adresse {
 		return land;
 	}
 
-	public Object getOmrodeAdresse() {
-		return adresseLinjer;
+	public void setEiendomsnavn(String eiendomsnavn) {
+		this.eiendomsnavn = eiendomsnavn;
 	}
-
+	public String getEiendomsnavn() {
+		return eiendomsnavn;
+	}
 }
