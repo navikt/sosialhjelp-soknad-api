@@ -106,21 +106,26 @@ public class PersonTransform {
 
     private void finnPostAdresse(long soknadId, List<Adresse> result, XMLPostadresse postadresse) {
         if(postadresse != null) {
-                XMLPostadresse xmlPostadresse = postadresse;
-                XMLUstrukturertAdresse ustrukturertAdresse = xmlPostadresse.getUstrukturertAdresse();
-                if(ustrukturertAdresse != null) {
-                    List<String> adresselinjer = hentAdresseLinjer(ustrukturertAdresse);
-
-                    Adresse folkeregistrertUtenlandskAdresse = new Adresse(soknadId, Adressetype.UTENLANDSK_ADRESSE);
-
-                    folkeregistrertUtenlandskAdresse.setAdresselinjer(adresselinjer);
-                    XMLLandkoder xmlLandkode = ustrukturertAdresse.getLandkode();
-                    if(xmlLandkode != null) {
-                        String landkode = xmlLandkode.getValue();
-                        folkeregistrertUtenlandskAdresse.setLand(kodeverk.getLand(landkode));
-                    }
-                    result.add(folkeregistrertUtenlandskAdresse);
+            XMLPostadresse xmlPostadresse = postadresse;
+            XMLUstrukturertAdresse ustrukturertAdresse = xmlPostadresse.getUstrukturertAdresse();
+            if(ustrukturertAdresse != null) {
+                List<String> adresselinjer = hentAdresseLinjer(ustrukturertAdresse);
+                
+                Adresse folkeregistrertUtenlandskAdresse;
+                if(ustrukturertAdresse.getLandkode() != null && ustrukturertAdresse.getLandkode().getValue().equals("NOR")) {
+                	folkeregistrertUtenlandskAdresse = new Adresse(soknadId, Adressetype.POSTADRESSE);
+                } else {
+                	folkeregistrertUtenlandskAdresse = new Adresse(soknadId, Adressetype.UTENLANDSK_ADRESSE);
                 }
+                
+                folkeregistrertUtenlandskAdresse.setAdresselinjer(adresselinjer);
+                XMLLandkoder xmlLandkode = ustrukturertAdresse.getLandkode();
+                if(xmlLandkode != null) {
+                    String landkode = xmlLandkode.getValue();
+                    folkeregistrertUtenlandskAdresse.setLand(kodeverk.getLand(landkode));
+                }
+                result.add(folkeregistrertUtenlandskAdresse);
+            }
         }
     }
 
