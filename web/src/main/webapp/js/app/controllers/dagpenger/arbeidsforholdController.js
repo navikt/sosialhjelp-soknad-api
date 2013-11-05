@@ -12,6 +12,7 @@ angular.module('nav.arbeidsforhold.controller',[])
 
         $scope.validerArbeidsforhold = function(form) {
             $scope.validateForm(form.$invalid);
+            $scope.runValidation();
         }
 
         $scope.templates = [{navn: 'Kontrakt utgått', url: '../html/templates/arbeidsforhold/kontrakt-utgaatt.html', oppsummeringsurl: '../html/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html'},
@@ -66,7 +67,6 @@ angular.module('nav.arbeidsforhold.controller',[])
             }
 
             $scope.lagreArbeidsforhold = function(af, form) {
-                $scope.showErrors = form.$invalid;
                 if(form.$valid) {
                     var value = angular.toJson($scope.arbeidsforhold);
                     $scope.$emit("OPPDATER_OG_LAGRE", {key: 'arbeidsforhold', value: value});
@@ -75,6 +75,7 @@ angular.module('nav.arbeidsforhold.controller',[])
                     //todo refaktorer
                     $scope.endreError = false;
                 }
+                $scope.runValidation();
             }
 
 
