@@ -30,7 +30,7 @@ angular.module('app.brukerdata', ['app.services'])
 
         tpsService.get({soknadId: $routeParams.soknadId}).$promise.then(function (result) {
             $scope.personalia = result;
-           
+
             if ($scope.personalia.fakta.adresser != undefined) {
                 $scope.personalia.fakta.adresser.forEach(function (data, index) {
                 if (data.type === "BOSTEDSADRESSE") {
@@ -54,13 +54,12 @@ angular.module('app.brukerdata', ['app.services'])
                     return true;
                 }
             }
-                
 
             $scope.harBostedsAdresse = function () {
                 return $scope.personaliaData.bostedsAdresse != undefined;
             }
 
-            $scope.c = function () {
+            $scope.harUtenlandskPostAdresse = function () {
                 return $scope.personaliaData.utenlandskAdresse != undefined;
             }
 
@@ -81,6 +80,10 @@ angular.module('app.brukerdata', ['app.services'])
             }
             $scope.harGateAdresse = function () {
                 return $scope.harMidlertidigAdresse() && $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].gatenavn != undefined && $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].husnummer != undefined
+            }
+
+            $scope.harOmrodeAdresse = function() {
+                return $scope.harMidlertidigAdresse() && $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].eiendomsnavn != undefined;  
             }
 
             $scope.harMidlertidigUtenlandskAdresse = function () {

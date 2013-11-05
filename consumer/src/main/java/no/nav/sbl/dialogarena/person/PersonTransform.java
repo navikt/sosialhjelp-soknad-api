@@ -5,6 +5,7 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGateadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGyldighetsperiode;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLLandkoder;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMatrikkeladresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseNorge;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland;
@@ -83,7 +84,11 @@ public class PersonTransform {
     				Adresse midlertidigPostboksAdresse = getMidlertidigPostboksadresseNorge(
 							soknadId, gyldigFra, gyldigTil, xmlPostboksAdresse);
     				result.add(midlertidigPostboksAdresse);
+    			} else if (strukturertAdresse instanceof XMLMatrikkeladresse) {
+    				XMLMatrikkeladresse xmlMatrikkelAdresse = (XMLMatrikkeladresse) strukturertAdresse;
     				
+    				Adresse midlertidigOmrodeAdresse = getMidlertidigOmrodeAdresse(soknadId,gyldigFra,gyldigTil,xmlMatrikkelAdresse);
+    				result.add(midlertidigOmrodeAdresse);
     			}
     		}
     		if(midlertidigPostadresse instanceof XMLMidlertidigPostadresseUtland) {
@@ -108,7 +113,7 @@ public class PersonTransform {
 
                     Adresse folkeregistrertUtenlandskAdresse = new Adresse(soknadId, Adressetype.UTENLANDSK_ADRESSE);
 
-                    folkeregistrertUtenlandskAdresse.setUtenlandsadresse(adresselinjer);
+                    folkeregistrertUtenlandskAdresse.setAdresselinjer(adresselinjer);
                     XMLLandkoder xmlLandkode = ustrukturertAdresse.getLandkode();
                     if(xmlLandkode != null) {
                         String landkode = xmlLandkode.getValue();
@@ -126,7 +131,7 @@ public class PersonTransform {
 		if (ustrukturertAdresse != null) {
 			List<String> adresselinjer = hentAdresseLinjer(ustrukturertAdresse);
 			
-			midlertidigAdresse.setUtenlandsadresse(adresselinjer);
+			midlertidigAdresse.setAdresselinjer(adresselinjer);
 			XMLLandkoder xmlLandkode = ustrukturertAdresse.getLandkode();
 			if(xmlLandkode != null) {
 				String landkode = xmlLandkode.getValue();
@@ -146,7 +151,9 @@ public class PersonTransform {
 
 	private List<String> hentAdresseLinjer(
 			XMLUstrukturertAdresse ustrukturertAdresse) {
-		List<String> adresselinjer = new ArrayList();
+
+		ArrayList<String> adresselinjer = new ArrayList<String>();
+
 		if(ustrukturertAdresse.getAdresselinje1() != null) {
 			adresselinjer.add(ustrukturertAdresse.getAdresselinje1());
 		}
@@ -168,12 +175,34 @@ public class PersonTransform {
 		Adresse midlertidigPostboksAdresse = new Adresse(soknadId, Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE);
 		midlertidigPostboksAdresse.setGyldigfra(gyldigFra);
 		midlertidigPostboksAdresse.setGyldigtil(gyldigTil);
+		String postnummerString = getPostnummerString(xmlPostboksAdresse);
+
+		String poststed = kodeverk.getPoststed(postnummerString);
 		
 		midlertidigPostboksAdresse.setAdresseeier(xmlPostboksAdresse.getTilleggsadresse());
-		midlertidigPostboksAdresse.setPostnummer(getPostnummerString(xmlPostboksAdresse));
+		midlertidigPostboksAdresse.setPostnummer(postnummerString);
+		midlertidigPostboksAdresse.setPoststed(poststed);
 		midlertidigPostboksAdresse.setPostboksnavn(xmlPostboksAdresse.getPostboksanlegg());
 		midlertidigPostboksAdresse.setPostboksnummer(xmlPostboksAdresse.getPostboksnummer());
 		return midlertidigPostboksAdresse;
+	}
+	
+   private Adresse getMidlertidigOmrodeAdresse(long soknadId,
+			DateTime gyldigFra, DateTime gyldigTil,
+			XMLMatrikkeladresse xmlMatrikkelAdresse) {
+
+	    Adresse midlertidigOmrodeAdresse = new Adresse(soknadId, Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE);
+		midlertidigOmrodeAdresse.setGyldigfra(gyldigFra);
+		midlertidigOmrodeAdresse.setGyldigtil(gyldigTil);
+		String postnummerString = getPostnummerString(xmlMatrikkelAdresse);
+		String poststed = kodeverk.getPoststed(postnummerString);
+		
+		midlertidigOmrodeAdresse.setPostnummer(postnummerString);
+		midlertidigOmrodeAdresse.setPoststed(poststed);
+		midlertidigOmrodeAdresse.setEiendomsnavn(xmlMatrikkelAdresse.getEiendomsnavn());
+		
+		return midlertidigOmrodeAdresse;
+	   
 	}
 
 	private Adresse getMidlertidigPostadresseNorge(long soknadId,
@@ -182,6 +211,7 @@ public class PersonTransform {
 		String gatenummerString = getHusnummer(xmlGateAdresse);
 		String husbokstavString = getHusbokstav(xmlGateAdresse);
 		String postnummerString = getPostnummerString(xmlGateAdresse);
+		String poststed = kodeverk.getPoststed(postnummerString);
 		
 		Adresse midlertidigAdresse = new Adresse(soknadId, Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE);
 		midlertidigAdresse.setGyldigfra(gyldigFra);
@@ -191,6 +221,8 @@ public class PersonTransform {
 		midlertidigAdresse.setHusnummer(gatenummerString);
 		midlertidigAdresse.setHusbokstav(husbokstavString);
 		midlertidigAdresse.setPostnummer(postnummerString);
+		midlertidigAdresse.setPoststed(poststed);
+		midlertidigAdresse.setLand(getLandkode(xmlGateAdresse));
 		return midlertidigAdresse;
 	}
 
@@ -228,6 +260,14 @@ public class PersonTransform {
 	}
 	private String getPostnummerString(XMLPostboksadresseNorsk xmlPostboksAdresse) {
 		XMLPostnummer postnummer = xmlPostboksAdresse.getPoststed();
+		if(postnummer != null) {
+			return  postnummer.getValue();
+		}
+		return "";
+	}
+	
+	private String getPostnummerString(XMLMatrikkeladresse xmlMatrikkelAdresse) {
+		XMLPostnummer postnummer = xmlMatrikkelAdresse.getPoststed();
 		if(postnummer != null) {
 			return  postnummer.getValue();
 		}
