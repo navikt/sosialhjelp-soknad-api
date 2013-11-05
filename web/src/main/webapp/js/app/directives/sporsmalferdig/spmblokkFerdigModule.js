@@ -49,7 +49,7 @@ angular.module('nav.sporsmalferdig', [])
                     if (nyTab.length > 0) {
                         apneTab(nyTab);
                         $timeout(function () {
-                            scrollToTab(nyTab);
+                            scrollToElement(nyTab);
                         }, 200);
                     }
                 }
