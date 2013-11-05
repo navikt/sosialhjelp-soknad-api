@@ -23,9 +23,9 @@ angular.module('app.services', ['ngResource'])
         return $resource('/sendsoknad/rest/soknad/:action/:param?rand=' + new Date().getTime(),
             {param: '@param'},
             {
-                create: { method: 'POST', params: {param: '@param', action: 'opprett'} },
-                send: {method: 'POST', params: {param: '@param', action: 'send'}},
-                delete: {method: 'POST', params: {param: '@param', action: 'delete'}}
+                'create': { method: 'POST', params: {param: '@param', action: 'opprett'} },
+                'send': {method: 'POST', params: {param: '@param', action: 'send'}},
+                'delete': {method: 'POST', params: {param: '@param', action: 'delete'}}
             }
         );
     })
@@ -41,7 +41,7 @@ angular.module('app.services', ['ngResource'])
         return $resource('/sendsoknad/rest/enonic/:side',
             {},
             {
-                get: {
+                'get': {
                     method: 'GET'
                 }
             });

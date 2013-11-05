@@ -1,81 +1,81 @@
-<stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="1"></stegindikator>
+<div stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="1"/>
 
 <div class="rad soknad">
     <section class="sak-hel">
         <div class="panel-standard-belyst skjema">
-            <accordion close-others="false">
-                <accordion-group class="spm-blokk" id="reell-arbeidssoker" ng-class="{open: isOpen}">
-                    <accordion-heading>
+            <div data-accordion data-close-others="false">
+                <div data-accordion-group class="spm-blokk" id="reell-arbeidssoker" data-ng-class="{open: isOpen}">
+                    <div data-accordion-heading>
                         <div class="flipp">
                             <span>+</span>
                         </div>
-                        <h2 class="stor" cmstekster="reellarbeidssoker.tittel"/>
-                    </accordion-heading>
-                    <ng-include src="'../html/templates/reell-arbeidssoker.html'"/>
-                </accordion-group>
+                        <h2 class="stor" data-cmstekster="reellarbeidssoker.tittel"/>
+                    </div>
+                    <div data-div data-ng-include data-src="'../html/templates/reell-arbeidssoker.html'"/>
+                </div>
 
-                <accordion-group class="spm-blokk" id="arbeidsforhold" ng-class="{open: isOpen}">
-                    <accordion-heading>
+                <div accordion-group class="spm-blokk" id="arbeidsforhold" ng-class="{open: isOpen}">
+                    <div accordion-heading>
                         <div class="flipp">
                             <span>+</span>
                         </div>
-                        <h2 class="stor" cmstekster="arbeidsforhold.tittel"/>
-                    </accordion-heading>
-                    <ng-include src="'../html/templates/arbeidsforhold.html'"/>
-                </accordion-group>
+                        <h2 class="stor" data-cmstekster="arbeidsforhold.tittel"/>
+                    </div>
+                    <div data-div data-ng-include src="'../html/templates/arbeidsforhold.html'"/>
+                </div>
 
-                <accordion-group class="spm-blokk" id="egen-naering" ng-class="{open: isOpen}">
-                    <accordion-heading>
+                <div accordion-group class="spm-blokk" id="egen-naering" ng-class="{open: isOpen}">
+                    <div accordion-heading>
                         <div class="flipp">
                             <span>+</span>
                         </div>
-                        <h2 class="stor" cmstekster="ikkeegennaering.tittel"/>
-                    </accordion-heading>
-                    <ng-include src="'../html/templates/egen-naering.html'"/>
-                </accordion-group>
+                        <h2 class="stor" data-cmstekster="ikkeegennaering.tittel"/>
+                    </div>
+                    <div data-ng-include src="'../html/templates/egen-naering.html'"/>
+                </div>
 
-                <accordion-group class="spm-blokk" id="verneplikt" ng-class="{open: isOpen}">
-                    <accordion-heading>
+                <div accordion-group class="spm-blokk" id="verneplikt" ng-class="{open: isOpen}">
+                    <div accordion-heading>
                         <div class="flipp">
                             <span>+</span>
                         </div>
-                        <h2 class="stor" cmstekster="ikkeavtjentverneplikt.tittel"/>
-                    </accordion-heading>
+                        <h2 class="stor" data-cmstekster="ikkeavtjentverneplikt.tittel"/>
+                    </div>
 
-                    <ng-include src="'../html/templates/verneplikt.html'"/>
-                </accordion-group>
+                    <div data-ng-include src="'../html/templates/verneplikt.html'"/>
+                </div>
 
-                <accordion-group class="spm-blokk" id="utdanning" ng-class="{open: isOpen}">
-                    <accordion-heading>
+                <div accordion-group class="spm-blokk" id="utdanning" ng-class="{open: isOpen}">
+                    <div accordion-heading>
                         <div class="flipp">
                             <span>+</span>
                         </div>
-                        <h2 class="stor" cmstekster="utdanning.tittel"/>
-                    </accordion-heading>
+                        <h2 class="stor" data-cmstekster="utdanning.tittel"/>
+                    </div>
 
-                    <ng-include src="'../html/templates/utdanning.html'"/>
-                </accordion-group>
+                    <div data-ng-include src="'../html/templates/utdanning.html'"/>
+                </div>
 
-                <accordion-group class="spm-blokk" id="ytelser" ng-class="{open: isOpen}">
-                    <accordion-heading>
+                <div accordion-group class="spm-blokk" id="ytelser" ng-class="{open: isOpen}">
+                    <div accordion-heading>
                         <div class="flipp">
                             <span>+</span>
                         </div>
-                        <h2 class="stor" cmstekster="ytelser.tittel"/>
-                    </accordion-heading>
-                    <ng-include src="'../html/templates/ytelser.html'"/>
-                </accordion-group>
+                        <h2 class="stor" data-cmstekster="ytelser.tittel"/>
+                    </div>
+                    <div data-ng-include src="'../html/templates/ytelser.html'"/>
+                </div>
 
-                <accordion-group class="spm-blokk" id="personalia" ng-class="{open: isOpen}">
-                    <accordion-heading>
+                <div accordion-group class="spm-blokk" id="personalia" ng-class="{open: isOpen}">
+                    <div accordion-heading>
                         <div class="flipp">
                             <span>+</span>
                         </div>
-                        <h2 class="stor" cmstekster="personalia.tittel"/>
-                    </accordion-heading>
-                    <ng-include src="'../html/templates/personalia.html'"/>
-                </accordion-group>
-            </accordion>
+                        <h2 class="stor" data-cmstekster="personalia.tittel"/>
+                    </div>
+                    <div data-ng-include src="'../html/templates/personalia.html'"/>
+                </div>
+            </div>
         </div>
 
     </section>
@@ -84,7 +84,7 @@
 <div class="rad ferdig-skjema">
     <div class="begrensning">
         <section class="sak-hel">
-            <a class="knapp-hoved" href="#/opplasting/{{ soknadData.soknadId }}" cmstekster="skjema.ferdig"/>
+            <a class="knapp-hoved" href="#/opplasting/{{ soknadData.soknadId }}" data-cmstekster="skjema.ferdig"/>
             <stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="1"></stegindikator>
         </section>
     </div>
