@@ -72,7 +72,7 @@ angular.module('app.brukerdata', ['app.services'])
 
             $scope.harMidlertidigAdresseEier = function () {
 
-                return $scope.personaliaData.midlertidigAdresse.adresseEier != undefined;
+                return $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].adresseEier != undefined;
             }
 
             $scope.harBostedsadresseOgIngenMidlertidigAdresse = function() {
