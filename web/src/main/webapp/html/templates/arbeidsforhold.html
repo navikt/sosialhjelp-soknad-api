@@ -4,8 +4,6 @@
         <form-errors></form-errors>
         <p class="arbeidsforhold-informasjonstekst" cmstekster="arbeidsforhold.informasjon"/>
 
-        <span data-ng-show="endreError" style="color:red" cmstekster="arbeidsforhold.error.endre"/>
-
         <div data-ng-repeat="af in arbeidsforhold" name="endreArbeidsforholdForm">
             <div class="arbeidsforhold" data-ng-show="arbeidsforholdetErIkkeIRedigeringsModus($index)">
                 <p class="arbeidsforhold-dato">{{ af.varighetFra | date:'dd.MM.yyyy'}} - {{
@@ -25,13 +23,12 @@
                     <div data-ng-include="af.sluttaarsak.oppsummeringsurl"></div>
                 </div>
 
-                <div class="arbeidsforhold-oppsummering-endre-slett lenker-dot">
-                    <span><a href data-ng-click="slettArbeidsforhold(af)"
-                             cmstekster="arbeidsforhold.slettarbeidsforhold"/></span>
-                    <span><a href data-ng-click="endreArbeidsforhold($index)"
-                             cmstekster="arbeidsforhold.endrearbeidsforhold"/></span>
-                </div>
-
+                <p class="arbeidsforhold-oppsummering-endre-slett lenker-dot">
+                        <span><a href data-ng-click="slettArbeidsforhold(af)"
+                                 cmstekster="arbeidsforhold.slettarbeidsforhold"/></span>
+                        <span><a href data-ng-click="endreArbeidsforhold($index, arbeidsforholdForm)"
+                                 cmstekster="arbeidsforhold.endrearbeidsforhold"/></span>
+                </p>
             </div>
 
             <div class="spm-boks" data-ng-if="posisjonForArbeidsforholdUnderRedigering == $index">
@@ -82,14 +79,14 @@
                            data-ng-click="lagreArbeidsforhold(af, arbeidsforholdForm)">
 
                     <a class="arbeidsforhold-avbryt" href cmstekster="arbeidsforhold.avbryt"
-                       data-ng-click="avbrytEndringAvArbeidsforhold(af)"/>
+                       data-ng-click="avbrytEndringAvArbeidsforhold(af, arbeidsforholdForm)"/>
                 </div>
             </div>
 
         </div>
         <div class="knapper-arbeidsforhold">
             <div id="legg-til">
-                <a href class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event)"
+                <a href class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event, arbeidsforholdForm)"
                    cmstekster="arbeidsforhold.nyttarbeidsforhold"/>
             </div>
 
