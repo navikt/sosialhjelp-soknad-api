@@ -1,11 +1,5 @@
 package no.nav.sbl.dialogarena.person;
 
-import static org.mockito.Mockito.when;
-
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.List;
-
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
@@ -28,7 +22,6 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostnummer;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLUstrukturertAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
-
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,10 +30,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.Mockito.when;
+
 @RunWith(value = MockitoJUnitRunner.class)
 public class PersonServiceTest {
 
-	@InjectMocks
+    public static final String ADRESSER = "adresser";
+    @InjectMocks
     private PersonServiceTPS service;
 
     @Mock
@@ -180,7 +180,7 @@ public class PersonServiceTest {
     	when(kodeverkMock.getPoststed(EN_ADRESSE_POSTNUMMER)).thenReturn(EN_ADRESSE_POSTSTED);
     	Person hentetPerson = service.hentPerson(3l, RIKTIG_IDENT);
     	
-    	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
+    	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get(ADRESSER);
     	Assert.assertNotNull(adresseliste);
     	Assert.assertEquals(EN_ADRESSE_GATE, adresseliste.get(0).getGatenavn());
     	Assert.assertEquals(EN_ADRESSE_HUSNUMMER, adresseliste.get(0).getHusnummer());
@@ -216,7 +216,7 @@ public class PersonServiceTest {
        	when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenReturn(response);
        	Person hentetPerson = service.hentPerson(4l, RIKTIG_IDENT);
        	
-       	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
+       	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get(ADRESSER);
        	Assert.assertNotNull(adresseliste);
        	
        	Assert.assertEquals(EN_ADRESSE_POSTNUMMER, adresseliste.get(0).getPostnummer());
@@ -240,7 +240,7 @@ public class PersonServiceTest {
     	when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenReturn(response);
     	Person hentetPerson = service.hentPerson(4l, RIKTIG_IDENT);
     	
-    	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
+    	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get(ADRESSER);
     	Assert.assertNotNull(adresseliste);
     	Assert.assertEquals(EN_POSTBOKS_ADRESSEEIER, adresseliste.get(0).getAdresseEier());
     	Assert.assertEquals(ET_POSTBOKS_NAVN, adresseliste.get(0).getPostboksNavn());
@@ -266,7 +266,7 @@ public class PersonServiceTest {
        	when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenReturn(response);
        	Person hentetPerson = service.hentPerson(4l, RIKTIG_IDENT);
        	
-       	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
+       	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get(ADRESSER);
        	Assert.assertNotNull(adresseliste);
        	Assert.assertEquals(null, adresseliste.get(0).getAdresseEier());
        	Assert.assertEquals(null, adresseliste.get(0).getPostboksNavn());
@@ -298,7 +298,7 @@ public class PersonServiceTest {
     	Person hentetPerson = service.hentPerson(5l, RIKTIG_IDENT);
     	
 		Assert.assertNotNull(hentetPerson.getFakta());
-		List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
+		List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get(ADRESSER);
     	Assert.assertNotNull(adresseliste);
     	Assert.assertEquals(EN_FJERDE_ADRESSE_UTLANDET, adresseliste.get(0).getUtenlandsAdresse());
     	Assert.assertEquals(ET_LAND, adresseliste.get(0).getLand());
@@ -310,7 +310,7 @@ public class PersonServiceTest {
 
 		Person hentetPerson = skalStotteMidlertidigUtenlandskMidlertidigAdresser(0);
     	
-    	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
+    	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get(ADRESSER);
     	Assert.assertNotNull(adresseliste);
     	Assert.assertEquals(Arrays.asList(), adresseliste.get(0).getUtenlandsAdresse());
     	Assert.assertEquals(ET_LAND, adresseliste.get(0).getLand());
@@ -324,7 +324,7 @@ public class PersonServiceTest {
 
 		Person hentetPerson = skalStotteMidlertidigUtenlandskMidlertidigAdresser(1);
     	
-    	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
+    	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get(ADRESSER);
     	Assert.assertNotNull(adresseliste);
     	Assert.assertEquals(EN_ADRESSE_UTLANDET, adresseliste.get(0).getUtenlandsAdresse());
     	Assert.assertEquals(ET_LAND, adresseliste.get(0).getLand());
@@ -338,7 +338,7 @@ public class PersonServiceTest {
 		
 		Person hentetPerson = skalStotteMidlertidigUtenlandskMidlertidigAdresser(2);
 		
-		List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
+		List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get(ADRESSER);
 		Assert.assertNotNull(adresseliste);
 		Assert.assertEquals(EN_ANNEN_ADRESSE_UTLANDET, adresseliste.get(0).getUtenlandsAdresse());
 		Assert.assertEquals(ET_LAND, adresseliste.get(0).getLand());
@@ -352,7 +352,7 @@ public class PersonServiceTest {
 
 		Person hentetPerson = skalStotteMidlertidigUtenlandskMidlertidigAdresser(3);
     	
-    	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
+    	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get(ADRESSER);
     	Assert.assertNotNull(adresseliste);
     	Assert.assertEquals(EN_TREDJE_ADRESSE_UTLANDET, adresseliste.get(0).getUtenlandsAdresse());
     	Assert.assertEquals(ET_LAND, adresseliste.get(0).getLand());
@@ -366,7 +366,7 @@ public class PersonServiceTest {
 
 		Person hentetPerson = skalStotteMidlertidigUtenlandskMidlertidigAdresser(4);
     	
-    	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
+    	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get(ADRESSER);
     	Assert.assertNotNull(adresseliste);
     	Assert.assertEquals(EN_FJERDE_ADRESSE_UTLANDET, adresseliste.get(0).getUtenlandsAdresse());
     	
@@ -401,7 +401,7 @@ public class PersonServiceTest {
     	Faktum gjeldendeAdresseType = (Faktum) hentetPerson.getFakta().get("gjeldendeAdresseType");
 		Assert.assertEquals(MIDLERTIDIG_POSTADRESSE_NORGE_VALUE, gjeldendeAdresseType.getValue());
     	
-    	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
+    	List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get(ADRESSER);
     	Assert.assertNotNull(adresseliste);
     	Assert.assertEquals(FOLKEREGISTRERT_ADRESSE_VALUE, adresseliste.get(0).getType().toString());
     	Assert.assertEquals(null, adresseliste.get(0).getGatenavn());
