@@ -31,12 +31,11 @@
             <div data-ng-if="harMidlertidigAdresse()">
                 <h4> {{ hentMidlertidigAdresseTittel() }}</h4>
 
-                <div data-ng-if="harMidlertidigAdresseEier()">
                 <p>
                     <span cmstekster="personalia.co"></span>
                     <span> {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].adresseEier }}</span>
                 </p>
-
+                <div data-ng-if="harMidlertidigAdresseEier()">
                 </div>
                 <p data-ng-show="harPostboksAdresse()">
                     <label cmstekster="personalia.postboks"></label>
