@@ -66,9 +66,13 @@ angular.module('app.brukerdata', ['app.services'])
                 return $scope.personaliaData.midlertidigAdresse != undefined;
             }
 
+            $scope.harNorskMidlertidigAdresse = function () {
+                return $scope.harPostboksAdresse() || $scope.harGateAdresse() || $scope.harOmrodeAdresse();
+            }
+
             $scope.harMidlertidigAdresseEier = function () {
 
-                return $scope.personaliaData.midlertidigAdresse.adresseEier != undefined;
+                return $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].adresseEier != undefined;
             }
 
             $scope.harBostedsadresseOgIngenMidlertidigAdresse = function() {
