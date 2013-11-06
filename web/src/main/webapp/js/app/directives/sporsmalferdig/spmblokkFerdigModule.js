@@ -2,7 +2,7 @@ angular.module('nav.sporsmalferdig', [])
     .directive('spmblokkferdig', ['$timeout', 'data', function ($timeout, data) {
         return {
             require: '^form',
-            restrict: "E",
+            restrict: "AE",
             replace: true,
             templateUrl: '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html',
             scope: {

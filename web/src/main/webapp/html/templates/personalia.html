@@ -53,7 +53,9 @@
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].eiendomsnavn }}
                 </p>
 
-                <p data-ng-show="harMidlertidigUtenlandskAdresse()">
+                <div data-ng-show="harMidlertidigUtenlandskAdresse()">
+                    Test
+                <p>
                     <span data-ng-repeat="linje in personalia.fakta.adresser[personaliaData.midlertidigAdresse].utenlandsAdresse">
                         {{linje}}
                     </span>
@@ -69,6 +71,20 @@
                     Gyldig til: {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
                     }}
                 </p>
+
+                <label cmstekster="personalia.bostedsadresse"></label>
+
+                <p>
+                    {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].gatenavn }}
+                    {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].husnummer }}
+                    {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].husbokstav }}
+                </p>
+
+                <p>
+                    {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].postnummer }}
+                    {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].poststed }}
+                </p>
+                </div>
 
                 <div data-ng-show="harUtenlandskAdresse()">
                     <h4> Folkeregistrert adresse </h4>
@@ -88,7 +104,7 @@
             <img src="../img/ajaxloader/hvit/loader_hvit_64.gif" alt="Fremdriftsindikator"/>
         </div>
 
-        <spmblokkferdig
+        <div spmblokkferdig
                 nokkel="personalia"
                 modus="data.redigeringsModus"
                 submit-method="validerPersonalia(personaliaForm)"/>

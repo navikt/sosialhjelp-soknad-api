@@ -1,7 +1,6 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <div ng-form="arbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl"
-         data-ng-submit="validerArbeidsforhold(arbeidsforholdForm)">
-        <form-errors></form-errors>
+    <div ng-form="arbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl" data-ng-submit="validerArbeidsforhold(arbeidsforholdForm)">
+        <div form-errors/>
         <p class="arbeidsforhold-informasjonstekst" cmstekster="arbeidsforhold.informasjon"/>
 
         <div data-ng-repeat="af in arbeidsforhold" name="endreArbeidsforholdForm">
@@ -91,13 +90,13 @@
             </div>
 
             <div id="har-ikke-jobbet" data-ng-show="harIkkeLagretArbeidsforhold()">
-                <navcheckbox data-ng-model="soknadData.fakta.harIkkeJobbet.value"
+                <div navcheckbox data-ng-model="soknadData.fakta.harIkkeJobbet.value"
                              modus="data.redigeringsModus"
                              inputname="harIkkeJobbet" label='arbeidsforhold.harIkkeJobbet'
                              endret="toggleRedigeringsmodus(arbeidsforholdForm)"/>
             </div>
 
-            <spmblokkferdig
+            <div spmblokkferdig
                     nokkel="arbeidsforhold"
                     modus="data.redigeringsModus"
                     submit-method="validerArbeidsforhold(arbeidsforholdForm)"/>

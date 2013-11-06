@@ -183,7 +183,7 @@ public class PersonTransform {
 		String postnummerString = getPostnummerString(xmlPostboksAdresse);
 
 		String poststed = kodeverk.getPoststed(postnummerString);
-		
+
 		midlertidigPostboksAdresse.setAdresseeier(xmlPostboksAdresse.getTilleggsadresse());
 		midlertidigPostboksAdresse.setPostnummer(postnummerString);
 		midlertidigPostboksAdresse.setPoststed(poststed);
@@ -201,7 +201,7 @@ public class PersonTransform {
 		midlertidigOmrodeAdresse.setGyldigtil(gyldigTil);
 		String postnummerString = getPostnummerString(xmlMatrikkelAdresse);
 		String poststed = kodeverk.getPoststed(postnummerString);
-		
+        midlertidigOmrodeAdresse.setAdresseeier(xmlMatrikkelAdresse.getTilleggsadresse());
 		midlertidigOmrodeAdresse.setPostnummer(postnummerString);
 		midlertidigOmrodeAdresse.setPoststed(poststed);
 		midlertidigOmrodeAdresse.setEiendomsnavn(xmlMatrikkelAdresse.getEiendomsnavn());
