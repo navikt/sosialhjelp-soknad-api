@@ -7,7 +7,7 @@ angular.module('nav.fremdriftsindikator',[])
                 spinner.insertAfter(element);
                 $compile(spinner)(scope);
 
-                scope.$watch('data.laster', function(value) {
+                scope.$watch('fremdriftsindikator.laster', function(value) {
                     if (value) {
                         element.hide();
                         spinner.show();
