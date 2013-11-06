@@ -57,10 +57,7 @@
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].poststed }}
                 </p>
 
-                <p>
-                    Gyldig til: {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
-                    }}
-                </p>
+
 
                 <div data-ng-show="harMidlertidigUtenlandskAdresse()">
                     Test
@@ -76,10 +73,6 @@
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].poststed }}
                 </p>
 
-                <p>
-                    Gyldig til: {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
-                    }}
-                </p>
 
                 <label cmstekster="personalia.bostedsadresse"></label>
 
@@ -95,6 +88,10 @@
                 </p>
                 </div>
 
+                <p>
+                    Gyldig til: {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
+                    }}
+                </p>
                 <div data-ng-show="harUtenlandskAdresse()">
                     <h4> Folkeregistrert adresse </h4>
 
