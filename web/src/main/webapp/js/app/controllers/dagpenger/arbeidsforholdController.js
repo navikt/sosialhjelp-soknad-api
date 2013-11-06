@@ -12,6 +12,9 @@ angular.module('nav.arbeidsforhold.controller', [])
         $scope.sidedata = {navn: 'arbeidsforhold'};
 
         $scope.validerArbeidsforhold = function (form) {
+            if($scope.harIkkeLagretArbeidsforhold() && harIkkeJobbet12SisteMaaneder()) {
+                form.$setValidity('arbeidsforhold.feilmelding', false);
+            }
             $scope.validateForm(form.$invalid);
             $scope.runValidation();
         }
@@ -123,6 +126,7 @@ angular.module('nav.arbeidsforhold.controller', [])
             }
 
             $scope.toggleRedigeringsmodus = function (form) {
+                form.$setValidity('arbeidsforhold.feilmelding', true);
                 if (harIkkeJobbet12SisteMaaneder()) {
                     $scope.validateForm(form.$invalid);
                 }
@@ -133,12 +137,6 @@ angular.module('nav.arbeidsforhold.controller', [])
                 $scope.$emit("OPPDATER_OG_LAGRE", {key: 'harIkkeJobbet', value: false});
             });
 
-            function harIkkeJobbet12SisteMaaneder() {
-                if ($scope.soknadData.fakta && $scope.soknadData.fakta.harIkkeJobbet) {
-                    return $scope.soknadData.fakta.harIkkeJobbet.value == "false";
-                }
-                return true;
-            }
 
 
             $scope.$watch("arbeidsgiver.varighetFra", function (nyVerdi, gammelVerdi) {
@@ -190,10 +188,18 @@ angular.module('nav.arbeidsforhold.controller', [])
 
 
         });
+        function harIkkeJobbet12SisteMaaneder() {
+            if ($scope.soknadData.fakta && $scope.soknadData.fakta.harIkkeJobbet) {
+                return $scope.soknadData.fakta.harIkkeJobbet.value == "false";
+            }
+            return true;
+        }
+
     })
 
     .controller('LeggTilArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams) {
         $scope.lagreArbeidsforhold = function (af, form) {
+            form.$setValidity('arbeidsforhold.feilmelding', true);
             form.$setValidity('arbeidsforhold.endrearbeidsforhold.feilmelding', true);
             form.$setValidity('arbeidsforhold.leggtilnyttarbeidsforhold.feilmelding', true);
             $scope.runValidation();

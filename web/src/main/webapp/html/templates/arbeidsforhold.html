@@ -33,7 +33,7 @@
                     <div data-ng-include="af.sluttaarsak.oppsummeringsurl"/>
                 </div>
 
-                <p class="arbeidsforhold-oppsummering-endre-slett lenker-dot">
+                <p class="arbeidsforhold-oppsummering-endre-slett lenker-dot" data-ng-show="hvisIRedigeringsmodus()">
                         <span><a href data-ng-click="slettArbeidsforhold(af)"
                                  cmstekster="arbeidsforhold.slettarbeidsforhold"/></span>
                         <span><a href data-ng-click="endreArbeidsforhold($index, arbeidsforholdForm)"
@@ -96,7 +96,7 @@
 
         </div>
         <div class="knapper-arbeidsforhold">
-            <div id="legg-til">
+            <div id="legg-til" data-ng-show="hvisIRedigeringsmodus()">
                 <a href class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event, arbeidsforholdForm)"
                    cmstekster="arbeidsforhold.nyttarbeidsforhold"/>
             </div>
