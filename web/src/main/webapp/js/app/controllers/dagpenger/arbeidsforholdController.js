@@ -67,36 +67,8 @@ angular.module('nav.arbeidsforhold.controller', [])
                 }
             }
 
-            $scope.lagreArbeidsforhold = function (af, form) {
-                form.$setValidity('arbeidsforhold.endrearbeidsforhold.feilmelding', true);
-                form.$setValidity('arbeidsforhold.leggtilnyttarbeidsforhold.feilmelding', true);
-                $scope.runValidation();
-                if (form.$valid) {
-                    var value = angular.toJson($scope.arbeidsforhold);
-
-                    $scope.$emit("OPPDATER_OG_LAGRE", {key: 'arbeidsforhold', value: value});
-                    $scope.posisjonForArbeidsforholdUnderRedigering = -1;
-                    $scope.endreArbeidsforholdKopi = '';
-                }
-            }
-
-
             $scope.harIkkeLagretArbeidsforhold = function () {
                 return $scope.arbeidsforhold.length == 0 && $scope.arbeidsforholdskjemaErIkkeAapent();
-            }
-
-            $scope.avbrytEndringAvArbeidsforhold = function (af, form) {
-                var index = $scope.posisjonForArbeidsforholdUnderRedigering;
-                if (Object.keys($scope.endreArbeidsforholdKopi).length == 0) {
-                    $scope.arbeidsforhold.splice(index, 1);
-                } else {
-                    $scope.arbeidsforhold[index] = $scope.endreArbeidsforholdKopi;
-                }
-                $scope.endreArbeidsforholdKopi = '';
-                $scope.posisjonForArbeidsforholdUnderRedigering = -1;
-                form.$setValidity('arbeidsforhold.leggtilnyttarbeidsforhold.feilmelding', true);
-                form.$setValidity('arbeidsforhold.endrearbeidsforhold.feilmelding', true);
-
             }
 
             $scope.slettArbeidsforhold = function (af) {
@@ -208,10 +180,43 @@ angular.module('nav.arbeidsforhold.controller', [])
                 }
             }
 
+            $scope.settRedigeringsIndex = function(nyIndex) {
+                $scope.posisjonForArbeidsforholdUnderRedigering = nyIndex;
+            }
+
             landService.get().$promise.then(function (result) {
                 $scope.landService = result;
             });
 
 
         });
+    })
+
+    .controller('LeggTilArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams) {
+        $scope.lagreArbeidsforhold = function (af, form) {
+            form.$setValidity('arbeidsforhold.endrearbeidsforhold.feilmelding', true);
+            form.$setValidity('arbeidsforhold.leggtilnyttarbeidsforhold.feilmelding', true);
+            $scope.runValidation();
+            if (form.$valid) {
+                var value = angular.toJson($scope.arbeidsforhold);
+
+                $scope.$emit("OPPDATER_OG_LAGRE", {key: 'arbeidsforhold', value: value});
+                $scope.settRedigeringsIndex(-1);
+                $scope.endreArbeidsforholdKopi = '';
+            }
+        }
+
+        $scope.avbrytEndringAvArbeidsforhold = function (af, form) {
+            var index = $scope.posisjonForArbeidsforholdUnderRedigering;
+            if (Object.keys($scope.endreArbeidsforholdKopi).length == 0) {
+                $scope.arbeidsforhold.splice(index, 1);
+            } else {
+                $scope.arbeidsforhold[index] = $scope.endreArbeidsforholdKopi;
+            }
+            $scope.endreArbeidsforholdKopi = '';
+            $scope.settRedigeringsIndex(-1);
+            form.$setValidity('arbeidsforhold.leggtilnyttarbeidsforhold.feilmelding', true);
+            form.$setValidity('arbeidsforhold.endrearbeidsforhold.feilmelding', true);
+
+        }
     })
