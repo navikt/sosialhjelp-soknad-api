@@ -41,12 +41,14 @@
                     <label cmstekster="personalia.postboks"></label>
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].postboksNummer }}
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].postboksNavn }}
+
                 </p>
 
                 <p data-ng-show="harGateAdresse()">
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gatenavn }}
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].husnummer }}
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].husbokstav }}
+
                 </p>
 
                  <p data-ng-show="harOmrodeAdresse()">
@@ -55,7 +57,13 @@
                 <p>
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].postnummer }}
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].poststed }}
+
                 </p>
+                <p data-ng-show="harNorskMidlertidigAdresse()">
+                    Gyldig til: {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
+                    }}
+                </p>
+
 
 
 
@@ -74,6 +82,10 @@
                 </p>
 
 
+                <p>
+                        Gyldig til: {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
+                        }}
+                </p>
                 <label cmstekster="personalia.bostedsadresse"></label>
 
                 <p>
@@ -88,10 +100,6 @@
                 </p>
                 </div>
 
-                <p>
-                    Gyldig til: {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
-                    }}
-                </p>
                 <div data-ng-show="harUtenlandskAdresse()">
                     <h4> Folkeregistrert adresse </h4>
 
