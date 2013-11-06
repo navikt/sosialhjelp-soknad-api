@@ -1,25 +1,24 @@
 angular.module('app.brukerdata', ['app.services'])
 
     .controller('StartSoknadCtrl', function ($scope, $location, soknadService) {
-        $scope.data = {
-            'laster': false
+        $scope.fremdriftsindikator = {
+            laster: false
         };
         $scope.startSoknad = function () {
             var soknadType = window.location.pathname.split("/")[3];
-            $scope.data.laster = true;
+            $scope.fremdriftsindikator.laster = true;
             $scope.soknad = soknadService.create({param: soknadType},
                 function (result) {
                     $location.path('dagpenger/' + result.id);
-                    $scope.data.laster = false;
                 }, function () {
-                    $scope.data.laster = false;
+                    $scope.fremdriftsindikator.laster = false;
                 });
         }
     })
 
     .controller('SendSoknadCtrl', function ($scope, $location, $routeParams, soknadService) {
         $scope.sendSoknad = function () {
-            soknadService.send({'param': $routeParams.soknadId, 'action': 'send'});
+            soknadService.send({param: $routeParams.soknadId, action: 'send'});
             $location.path('kvittering');
         }
     })
@@ -28,7 +27,7 @@ angular.module('app.brukerdata', ['app.services'])
     .controller('PersonaliaCtrl', ["$scope", "$routeParams", "tpsService", "data", function ($scope, $routeParams, tpsService, data) {
         $scope.personaliaData = {};
 
-        tpsService.get({'soknadId': $routeParams.soknadId}).$promise.then(function (result) {
+        tpsService.get({soknadId: $routeParams.soknadId}).$promise.then(function (result) {
             $scope.personalia = result;
 
             if ($scope.personalia.fakta.adresser != undefined) {
@@ -136,23 +135,23 @@ angular.module('app.brukerdata', ['app.services'])
     }])
 
     .controller('SoknadDataCtrl', function ($scope, $routeParams, $location, $timeout, soknadService) {
-        $scope.soknadData = soknadService.get({'param': $routeParams.soknadId});
+        $scope.soknadData = soknadService.get({param: $routeParams.soknadId});
 
         $scope.$on("OPPDATER_OG_LAGRE", function (e, data) {
-            $scope.soknadData.fakta[data.key] = {'soknadId': $scope.soknadData.soknadId, 'key': data.key, 'value': data.value};
+            $scope.soknadData.fakta[data.key] = {soknadId: $scope.soknadData.soknadId, key: data.key, value: data.value};
             var soknadData = $scope.soknadData;
-            soknadData.$save({'param': soknadData.soknadId, 'action': 'lagre'});
+            soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
         });
     })
 
     .controller('TekstCtrl', function ($scope, tekstService) {
-        $scope.tekster = tekstService.get({'side': 'Dagpenger'});
+        $scope.tekster = tekstService.get({side: 'Dagpenger'});
     })
 
     .controller('ModusCtrl', function ($scope) {
         $scope.data = {
-            'showErrorMessage': false,
-            'redigeringsModus': true
+            showErrorMessage: false,
+            redigeringsModus: true
         };
         $scope.showErrors = false;
 
@@ -164,7 +163,7 @@ angular.module('app.brukerdata', ['app.services'])
 
         $scope.gaTilRedigeringsmodus = function () {
             $scope.data.redigeringsModus = true;
-            $scope.$broadcast("ENDRET_TIL_REDIGERINGS_MODUS", {'key': 'redigeringsmodus', 'value': true});
+            $scope.$broadcast("ENDRET_TIL_REDIGERINGS_MODUS", {key: 'redigeringsmodus', value: true});
         }
 
         $scope.hvisIRedigeringsmodus = function () {
@@ -187,9 +186,9 @@ angular.module('app.brukerdata', ['app.services'])
 
     .controller('AvbrytCtrl', function ($scope, $routeParams, $location, soknadService) {
         $scope.data = {
-            'laster': false
+            laster: false
         };
-        soknadService.get({'param': $routeParams.soknadId}).$promise.then(function (result) {
+        soknadService.get({param: $routeParams.soknadId}).$promise.then(function (result) {
             var fakta = $.map(result.fakta, function (element) {
                 return element.type;
             });
@@ -202,21 +201,20 @@ angular.module('app.brukerdata', ['app.services'])
 
         $scope.submitForm = function () {
             var start = $.now();
-            $scope.data.laster = true;
-            /*soknadService.delete({'param': $routeParams.soknadId},
+            $scope.fremdriftsindikator.laster = true;
+            soknadService.remove({param: $routeParams.soknadId},
                 function () { // Success
                     var delay = 1500 - ($.now() - start);
                     setTimeout(function () {
                         $scope.$apply(function () {
-                            $scope.data.laster = false;
                             $location.path('slettet');
                         });
                     }, delay);
                 },
                 function () { // Error
-                    $scope.data.laster = false;
+                    $scope.fremdriftsindikator.laster = false;
                 }
-            );*/
+            );
         };
     })
 
@@ -239,7 +237,7 @@ angular.module('app.brukerdata', ['app.services'])
                 }
 
                 $scope.$apply(function() {
-                    $scope.$emit("OPPDATER_OG_LAGRE", {'key': element.attr('name'), 'value': verdi});
+                    $scope.$emit("OPPDATER_OG_LAGRE", {key: element.attr('name'), value: verdi});
                 });
             });
         };
