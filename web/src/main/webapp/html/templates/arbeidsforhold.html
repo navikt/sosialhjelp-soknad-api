@@ -41,7 +41,8 @@
                 </p>
             </div>
 
-            <div class="spm-boks" data-ng-if="posisjonForArbeidsforholdUnderRedigering == $index">
+            <div class="spm-boks" data-ng-if="posisjonForArbeidsforholdUnderRedigering == $index" data-ng-form="leggTilArbeidsforholdForm" data-ng-controller="LeggTilArbeidsforholdCtrl">
+                <div form-errors/>
                 <div class="arbeidsforhold-spm">
                     <label for="arbeidsgiver_navn" cmstekster="arbeidsforhold.arbeidsgiver.navn"/>
                     <input id="arbeidsgiver_navn" name="arbeidsgivernavn" required
