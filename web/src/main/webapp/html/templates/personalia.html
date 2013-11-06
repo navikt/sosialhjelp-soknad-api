@@ -32,6 +32,7 @@
                 <h4> {{ hentMidlertidigAdresseTittel() }}</h4>
 
                 <p>
+                    <span> {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse] }}</span>
                     <span cmstekster="personalia.co"></span>
                     <span> {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].adresseEier }}</span>
                 </p>
@@ -64,9 +65,6 @@
                     }}
                 </p>
 
-
-
-
                 <div data-ng-show="harMidlertidigUtenlandskAdresse()">
                     Test
                 <p>
@@ -86,7 +84,7 @@
                         Gyldig til: {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
                         }}
                 </p>
-                <label cmstekster="personalia.bostedsadresse"></label>
+                <h4 cmstekster="personalia.folkeregistrertadresse"></h4>
 
                 <p>
                     {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].gatenavn }}
