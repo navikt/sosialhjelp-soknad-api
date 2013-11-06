@@ -73,14 +73,17 @@
   }
 }
 
-.arbeidsforhold {
+[data-ng-repeat="af in arbeidsforhold"] {
   border-bottom: 1px solid #ddd;
   margin-bottom: 30px;
 
-  &:last-child {
+  &.last {
     border-bottom: none;
     margin-bottom: 0;
   }
+}
+
+.arbeidsforhold {
 
   .arbeidsforhold-dato {
     text-transform: uppercase;

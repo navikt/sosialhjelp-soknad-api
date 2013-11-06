@@ -3,7 +3,7 @@
         <div form-errors/>
         <p class="arbeidsforhold-informasjonstekst" cmstekster="arbeidsforhold.informasjon"/>
 
-        <div data-ng-repeat="af in arbeidsforhold" name="endreArbeidsforholdForm">
+        <div data-ng-repeat="af in arbeidsforhold" data-ng-class="{'last': $last}">
             <div class="arbeidsforhold" data-ng-show="arbeidsforholdetErIkkeIRedigeringsModus($index)">
                 <p class="arbeidsforhold-dato">{{ af.varighetFra | date:'dd.MM.yyyy'}} - {{
                     af.varighetTil | date:'dd.MM.yyyy'}}</p>
