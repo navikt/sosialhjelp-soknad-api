@@ -34,6 +34,7 @@
                 <p>
                     <span cmstekster="personalia.co"></span>
                     <span> {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse] }}</span>
+                    <span> {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].adresseEier }}</span>
                 </p>
                 <div data-ng-if="harMidlertidigAdresseEier()">
                 </div>
@@ -70,7 +71,6 @@
                     Gyldig til: {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
                     }}
                 </p>
-
 
                 <label cmstekster="personalia.bostedsadresse"></label>
 
