@@ -1,4 +1,4 @@
-﻿angular.module('FormErrors', ['app.services'])
+﻿angular.module('FormErrors', [])
 
 // just put <form-errors><form-errors> wherever you want form errors to be displayed!
 .directive('formErrors', ['data', function (data) {
