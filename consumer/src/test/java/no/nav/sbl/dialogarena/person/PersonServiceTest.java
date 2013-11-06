@@ -7,6 +7,9 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPrefer
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBostedsadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLEPost;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskAdresse;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskKommunikasjonskanal;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGateadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGyldighetsperiode;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLLandkoder;
@@ -83,6 +86,7 @@ public class PersonServiceTest {
 	private static final String ET_LAND = "Finland";
 	private static final String EN_LANDKODE = "FIN";
 	private static final String ET_EIEDOMSNAVN = "Villastrøket";
+	private static final String EN_EPOST = "test@epost.com";
 
     @SuppressWarnings("unchecked")
 	@Test
@@ -111,11 +115,13 @@ public class PersonServiceTest {
         Faktum mellomnavn = (Faktum) hentetPerson.getFakta().get("mellomnavn");
         Faktum etternavnavn = (Faktum) hentetPerson.getFakta().get("etternavn");
         Faktum sammensattnavn = (Faktum) hentetPerson.getFakta().get("sammensattnavn");
+        Faktum epost = (Faktum) hentetPerson.getFakta().get("epost");
         Assert.assertEquals(RIKTIG_IDENT, fnr.getValue());
         Assert.assertEquals(ET_FORNAVN, fornavn.getValue());
         Assert.assertEquals(ET_MELLOMNAVN, mellomnavn.getValue());
         Assert.assertEquals(ET_ETTERNAVN, etternavnavn.getValue());
 		Assert.assertEquals(ET_FORNAVN+" "+ET_MELLOMNAVN+" "+ET_ETTERNAVN, sammensattnavn.getValue());
+		Assert.assertEquals(EN_EPOST, epost.getValue());
     }
 
     @Test
@@ -482,7 +488,7 @@ public class PersonServiceTest {
 
 
     private XMLBruker genererXmlBrukerMedGyldigIdentOgNavn(boolean medMellomnavn) {
-    	XMLBruker xmlBruker = new XMLBruker();
+    	XMLBruker xmlBruker = new XMLBruker().withElektroniskKommunikasjonskanal(lagElektroniskKommunikasjonskanal());
     	XMLPersonnavn personNavn = new XMLPersonnavn();
     	personNavn.setFornavn(ET_FORNAVN);
     	if(medMellomnavn) {
@@ -497,7 +503,16 @@ public class PersonServiceTest {
     	XMLNorskIdent xmlNorskIdent = new XMLNorskIdent();
     	xmlNorskIdent.setIdent(RIKTIG_IDENT);
 		xmlBruker.setIdent(xmlNorskIdent);
+	
 		return xmlBruker;
+	}
+    
+    private static XMLElektroniskKommunikasjonskanal lagElektroniskKommunikasjonskanal() {
+		return new XMLElektroniskKommunikasjonskanal().withElektroniskAdresse(lagElektroniskAdresse());
+	}
+
+	private static XMLElektroniskAdresse lagElektroniskAdresse() {
+		return new XMLEPost().withIdentifikator(EN_EPOST);
 	}
 
 	private XMLBostedsadresse genererXMLFolkeregistrertAdresse(boolean medData) {

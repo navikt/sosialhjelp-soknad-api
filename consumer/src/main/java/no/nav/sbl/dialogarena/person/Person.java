@@ -17,6 +17,7 @@ public class Person implements Serializable {
 	private static final String SAMMENSATTNAVNKEY = "sammensattnavn";
 	private static final String ADRESSERKEY = "adresser";
 	private static final String GJELDENDEADRESSETYPE = "gjeldendeAdresseType";
+	private static final String EPOSTKEY = "epost";
 
 	private Map<String, Object> fakta;
 
@@ -24,13 +25,14 @@ public class Person implements Serializable {
 		fakta = new HashMap<>();
 	}
 
-    public Person(Long soknadId, String fnr, String fornavn, String mellomnavn, String etternavn, String gjeldendeAdresseType, List<Adresse> adresser) {
+    public Person(Long soknadId, String fnr, String fornavn, String mellomnavn, String etternavn, String epost, String gjeldendeAdresseType, List<Adresse> adresser) {
     	fakta = new HashMap<>();
 
     	fakta.put(FODSELSNUMMERKEY, genererFaktum(soknadId,FODSELSNUMMERKEY,fnr));
     	fakta.put(FORNAVNKEY, genererFaktum(soknadId,FORNAVNKEY,fornavn));
     	fakta.put(MELLOMNAVNKEY, genererFaktum(soknadId,MELLOMNAVNKEY,mellomnavn));
     	fakta.put(ETTERNAVNKEY, genererFaktum(soknadId,ETTERNAVNKEY,etternavn));
+    	fakta.put(EPOSTKEY, genererFaktum(soknadId, EPOSTKEY, epost));
     	fakta.put(GJELDENDEADRESSETYPE, genererFaktum(soknadId, GJELDENDEADRESSETYPE, gjeldendeAdresseType));
     	fakta.put(SAMMENSATTNAVNKEY, genererFaktum(soknadId, SAMMENSATTNAVNKEY, getSammenSattNavn(fornavn,mellomnavn, etternavn)));
     	
