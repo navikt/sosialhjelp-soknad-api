@@ -63,7 +63,7 @@ describe('DagpengerControllere', function() {
     var scope, ctrl, form;
 
     beforeEach(
-        module('app.services', 'app.controllers', 'FormErrors')
+        module('app.services', 'app.controllers', 'nav.feilmeldinger')
     );
 
      beforeEach(module(function($provide) {
