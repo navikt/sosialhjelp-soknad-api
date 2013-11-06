@@ -62,7 +62,6 @@ public class SoknadStruktur implements Serializable {
         JAXBContext context = JAXBContext.newInstance(SoknadStruktur.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
         SoknadStruktur unmarshal = (SoknadStruktur) unmarshaller.unmarshal(SoknadStruktur.class.getResourceAsStream("/soknader/Dagpenger.xml"));
-        System.out.println(unmarshal);
 
     }
 }
