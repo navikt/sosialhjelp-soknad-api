@@ -57,6 +57,11 @@
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].poststed }}
                 </p>
 
+                <p>
+                    Gyldig til: {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
+                    }}
+                </p>
+
                 <div data-ng-show="harMidlertidigUtenlandskAdresse()">
                     Test
                 <p>
