@@ -1,7 +1,7 @@
 angular.module('nav.input',['nav.cmstekster'])
     .directive('navradio', [function() {
         return {
-            restrict: "E",
+            restrict: "AE",
             replace: true,
             require: 'ngModel',
             scope: {
@@ -35,7 +35,7 @@ angular.module('nav.input',['nav.cmstekster'])
     }])
     .directive('navcheckbox', [function() {
         return {
-            restrict: "E",
+            restrict: "AE",
             replace: true,
             transclude: true,
             require: 'ngModel',
@@ -69,7 +69,7 @@ angular.module('nav.input',['nav.cmstekster'])
 
     .directive('navtekst', [function() {
         return {
-            restrict: "E",
+            restrict: "AE",
             replace: true,
             require: 'ngModel',
             scope: {
@@ -102,7 +102,7 @@ angular.module('nav.input',['nav.cmstekster'])
 
     .directive('navButtonSpinner', [function() {
         return {
-            restrict: "E",
+            restrict: "AE",
             replace: true,
             scope: {
                 laster: '=',
