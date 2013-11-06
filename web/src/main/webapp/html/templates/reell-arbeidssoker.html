@@ -1,25 +1,25 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
     <div data-ng-form="reellarbeidssokerForm" class="skjemainnhold" data-ng-controller="ReellarbeidssokerCtrl" novalidate>
 
-        <form-errors></form-errors>
+        <div data-form-errors></div>
 
-        <booleanradio data-ng-model="soknadData.fakta.villigdeltid.value"
+        <div booleanradio data-ng-model="soknadData.fakta.villigdeltid.value"
                       modus="data.redigeringsModus"
                       nokkel="reellarbeidssoker.villigdeltid"/>
 
-        <booleanradio data-ng-model="soknadData.fakta.villigpendle.value"
+        <div booleanradio data-ng-model="soknadData.fakta.villigpendle.value"
                       modus="data.redigeringsModus"
                       nokkel="reellarbeidssoker.villigpendle"/>
 
-        <booleanradio data-ng-model="soknadData.fakta.villighelse.value"
+        <div booleanradio data-ng-model="soknadData.fakta.villighelse.value"
                       modus="data.redigeringsModus"
                       nokkel="reellarbeidssoker.villighelse"/>
 
-        <booleanradio data-ng-model="soknadData.fakta.villigjobb.value"
+        <div booleanradio data-ng-model="soknadData.fakta.villigjobb.value"
                       modus="data.redigeringsModus"
                       nokkel="reellarbeidssoker.villigjobb"/>
 
-        <spmblokkferdig
+        <div spmblokkferdig
                 nokkel="reellarbeidssoker"
                 modus="data.redigeringsModus"
                 submit-method="validerReellarbeidssoker(reellarbeidssokerForm)"/>
