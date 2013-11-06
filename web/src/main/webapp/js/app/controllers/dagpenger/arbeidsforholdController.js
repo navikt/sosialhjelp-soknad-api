@@ -127,8 +127,8 @@ angular.module('nav.arbeidsforhold.controller', [])
             }
 
             $scope.endreArbeidsforhold = function (index, form) {
-                $scope.endreArbeidsforholdKopi = $.extend(true, [], $scope.arbeidsforhold)[index];
                 if ($scope.ikkeUnderRedigering()) {
+                    $scope.endreArbeidsforholdKopi = $.extend(true, [], $scope.arbeidsforhold)[index];
                     $scope.posisjonForArbeidsforholdUnderRedigering = index;
                     $scope.arbeidsforholdaapen = false;
 
