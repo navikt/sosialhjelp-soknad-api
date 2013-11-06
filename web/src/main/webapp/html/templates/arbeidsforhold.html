@@ -4,33 +4,22 @@
         <p class="arbeidsforhold-informasjonstekst" cmstekster="arbeidsforhold.informasjon"/>
 
         <div data-ng-repeat="af in arbeidsforhold" name="endreArbeidsforholdForm">
-
             <div class="arbeidsforhold" data-ng-show="arbeidsforholdetErIkkeIRedigeringsModus($index)">
-                <p class="oppsummering-dato-land">
-                    <span class="arbeidsforhold-dato">
-                    {{ af.varighetFra | date:'dd.MM.yyyy'}} - {{ af.varighetTil | date:'dd.MM.yyyy'}}
-                </span>
+                <p class="arbeidsforhold-dato">{{ af.varighetFra | date:'dd.MM.yyyy'}} - {{
+                    af.varighetTil | date:'dd.MM.yyyy'}}</p>
 
-                <span class="arbeidsforhold-arbeidsgivernavn">
-                    {{ af.navn }}
-                </span>
-                </p>
+                <p class="arbeidsforhold-arbeidsgivernavn-overskrift">{{ af.navn }}</p>
 
-                <p class="oppsummering-label">
+                <div class="arbeidsforhold-land-sluttaarsak-blokk">
                     <span class="svar-oppsummering-label" cmstekster="arbeidsforhold.arbeidsgiver.land"/>
+                    <span class="svar-oppsummering-label-svar">{{ af.land }}</span>
+                    <span class="svar-oppsummering-deler"> | </span>
+                    <span class="svar-oppsummering-label" cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsak"/>
+                    <span class="svar-oppsummering-label-svar">{{ af.sluttaarsak.navn }}</span>
+                </div>
 
-                    <span class="svar-oppsummering-uten-checkbox">{{ af.land }}</span>
-                </p>
-
-                <p class="oppsummering-label">
-                <span class="svar-oppsummering-label"
-                      cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsak"/>
-
-                    <span class="svar-oppsummering-uten-checkbox">{{ af.sluttaarsak.navn }}</span>
-                </p>
-
-                <div class="sluttaarsak">
-                    <div data-ng-include="af.sluttaarsak.oppsummeringsurl"/>
+                <div class="arbeidsgiver-oppsummering-sluttaarsaker">
+                    <div data-ng-include="af.sluttaarsak.oppsummeringsurl"></div>
                 </div>
 
                 <p class="arbeidsforhold-oppsummering-endre-slett lenker-dot" data-ng-show="hvisIRedigeringsmodus()">
