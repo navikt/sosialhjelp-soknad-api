@@ -53,3 +53,9 @@ function fiksNavn(element, navn, tmpNavn) {
     formCtrl.$addControl(currentElementCtrl);
 }
 
+function verdiErLagretISoknadData(scope, nokkel) {
+    if (scope.soknadData && scope.soknadData.fakta[nokkel]) {
+        return true;
+    }
+    return false;
+}
