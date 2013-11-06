@@ -138,12 +138,14 @@ angular.module('app.brukerdata', ['app.services'])
         }
     }])
 
-    .controller('SoknadDataCtrl', function ($scope, $routeParams, $location, $timeout, soknadService) {
+    .controller('SoknadDataCtrl', function ($scope, $routeParams, $location, $timeout, soknadService, data) {
         $scope.soknadData = soknadService.get({param: $routeParams.soknadId});
 
-        $scope.$on("OPPDATER_OG_LAGRE", function (e, data) {
-            $scope.soknadData.fakta[data.key] = {soknadId: $scope.soknadData.soknadId, key: data.key, value: data.value};
+        $scope.$on("OPPDATER_OG_LAGRE", function (e, faktumData) {
+            $scope.soknadData.fakta[faktumData.key] = {soknadId: $scope.soknadData.soknadId, key: faktumData.key, value: faktumData.value};
+            $scope.soknadData.fakta['sistLagret'] = {soknadId: $scope.soknadData.soknadId, key: 'sistLagret', value: new Date().getTime()};
             var soknadData = $scope.soknadData;
+            data.soknad = soknadData;
             soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
         });
     })
