@@ -1,8 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.oppsett;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -56,13 +53,5 @@ public class SoknadStruktur implements Serializable {
         sb.append(", vedlegg=").append(vedlegg);
         sb.append('}');
         return sb.toString();
-    }
-
-    public static void main(String[] args) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(SoknadStruktur.class);
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-        SoknadStruktur unmarshal = (SoknadStruktur) unmarshaller.unmarshal(SoknadStruktur.class.getResourceAsStream("/soknader/Dagpenger.xml"));
-        System.out.println(unmarshal);
-
     }
 }
