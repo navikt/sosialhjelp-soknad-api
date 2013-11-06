@@ -7,6 +7,10 @@ import org.apache.wicket.resource.loader.IStringResourceLoader;
 import java.util.Locale;
 import java.util.MissingResourceException;
 
+/**
+ * Metoder som henter ledetekster fra Enonic
+ *
+ */
 public class EnonicResourceLoader implements IStringResourceLoader {
 
     private CmsContentRetriever cmsContentRetriever;
