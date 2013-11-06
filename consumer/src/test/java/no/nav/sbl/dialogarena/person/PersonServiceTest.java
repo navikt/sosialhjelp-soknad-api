@@ -1,5 +1,11 @@
 package no.nav.sbl.dialogarena.person;
 
+import static org.mockito.Mockito.when;
+
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.List;
+
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
@@ -14,12 +20,14 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPost
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLNorskIdent;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPersonnavn;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadressetyper;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostboksadresseNorsk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostnummer;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLUstrukturertAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
+
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,12 +35,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.mockito.Mockito.when;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class PersonServiceTest {
@@ -246,6 +248,34 @@ public class PersonServiceTest {
    		Assert.assertEquals(null, adresseliste.get(0).getGyldigTil());
    	}
 
+    @SuppressWarnings("unchecked")
+	@Test
+	public void skalStotteFolkeregistretUtenlandskAdresse() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+    	XMLHentKontaktinformasjonOgPreferanserRequest request = hentRequestMedGyldigIdent();
+    	XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();  	
+    	XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
+    	XMLPostadresse xmlPostadresseUtland =  new XMLPostadresse();
+    	XMLUstrukturertAdresse utenlandskUstrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(4);
+    	
+    	XMLLandkoder xmlLandkode = new XMLLandkoder();
+		xmlLandkode.setValue(EN_LANDKODE);
+		utenlandskUstrukturertAdresse.setLandkode(xmlLandkode);
+    	
+    	xmlPostadresseUtland.setUstrukturertAdresse(utenlandskUstrukturertAdresse);
+    	xmlBruker.setPostadresse(xmlPostadresseUtland);
+    	response.setPerson(xmlBruker);
+  
+    	when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenReturn(response);
+    	when(kodeverkMock.getLand(EN_LANDKODE)).thenReturn(ET_LAND);
+    	Person hentetPerson = service.hentPerson(5l, RIKTIG_IDENT);
+    	
+		Assert.assertNotNull(hentetPerson.getFakta());
+		List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get("adresser");
+    	Assert.assertNotNull(adresseliste);
+    	Assert.assertEquals(EN_FJERDE_ADRESSE_UTLANDET, adresseliste.get(0).getUtenlandsAdresse());
+    	Assert.assertEquals(ET_LAND, adresseliste.get(0).getLand());
+	}
+    
 	@SuppressWarnings("unchecked")
 	@Test
 	public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed0Linjer() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {

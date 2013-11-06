@@ -1,12 +1,14 @@
 angular.module('nav.sporsmalferdig', [])
-    .directive('spmblokkferdig', ['$timeout', function ($timeout) {
+    .directive('spmblokkferdig', ['$timeout', 'data', function ($timeout, data) {
         return {
+            require: '^form',
             restrict: "E",
             replace: true,
             templateUrl: '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html',
             scope: {
                 nokkel: '@',
-                modus: '='
+                modus: '=',
+                submitMethod: '&'
             },
             link: function (scope, element) {
                 var tab = element.closest('.accordion-group');
@@ -15,6 +17,7 @@ angular.module('nav.sporsmalferdig', [])
 
                 setOppLenke(forrigeTab, element, 'forrige');
                 setOppLenke(nesteTab, element, 'neste');
+                scope.soknadId = data.soknad.soknadId;
 
                 scope.hvisIRedigeringsmodus = function () {
                     return scope.modus;
@@ -26,6 +29,7 @@ angular.module('nav.sporsmalferdig', [])
 
                 scope.gaTilRedigeringsmodus = function () {
                     scope.modus = true;
+                    scope.$emit("ENDRET_TIL_REDIGERINGS_MODUS", {key: 'redigeringsmodus', value: true});
                 }
 
                 scope.lukkOgGaaTilNeste = function () {
@@ -45,7 +49,7 @@ angular.module('nav.sporsmalferdig', [])
                     if (nyTab.length > 0) {
                         apneTab(nyTab);
                         $timeout(function () {
-                            scrollToTab(nyTab);
+                            scrollToElement(nyTab);
                         }, 200);
                     }
                 }

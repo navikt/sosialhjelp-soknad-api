@@ -1,8 +1,37 @@
-<panelbelyst>
-    <h1>Informasjon om dagpengesøknad</h1>
+<stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="0"></stegindikator>
 
-    <p>Her kommer informasjon til dagpengesøker.</p>
+<panelbelyst id="informasjonsside">
+    {{checkUtslagskriterier()}}
+    <h2 class="stor" cmstekster="dagpenger.informasjonsside.tittel"/>
 
-    <br/>
-    <nav-button-spinner type='button' laster='data.laster' klasse='knapp-hoved' nokkel='start' click='startSoknad()'/>
+    <p cmstekster="dagpenger.informasjonsside.info"/>
+
+    <div id="utslagskriterier">
+        <p cmstekster="utslagskriterier.intro"/>
+        <ul>
+            <li cmstekster="utslagskriterier.kriterie.alder.under67"/>
+            <li cmstekster="utslagskriterier.kriterie.bosted.norge"/>
+            <li cmstekster="utslagskriterier.kriterie.reellarbeidssoker"/>
+        </ul>
+
+        <p cmstekster="utslagskriterier.utslag.alder">
+
+        <p cmstekster="utslagskriterier.utslag.bosted">
+
+        <p>
+            <span cmstekster="utslagskriterier.utslag.reellarbeidssoker"/>
+            <a href cmslenketekster="utslagskriterier.utslag.reellarbeidssoker.registert.url"
+               cmstekster="utslagskriterier.utslag.reellarbeidssoker.registert"/>
+        </p>
+        <br/>
+
+        <p cmstekster="utslagskriterier.utslag.infoAvslag"/>
+        <br/>
+
+        <div class="utslagskriterier-knapper">
+            <nav-button-spinner type='button' laster='data.laster' klasse='knapp-hoved'
+                                nokkel='utslagskriterier.utslag.fortsett' click='startSoknad()'/>
+        </div>
+    </div>
+    <!--<a id="fortsett" href='#/informasjonsside' cmstekster="utslagskriterier.utslag.fortsett"/>-->
 </panelbelyst>
