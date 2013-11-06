@@ -30,23 +30,26 @@
             </div>
             <div data-ng-if="harMidlertidigAdresse()">
                 <h4> {{ hentMidlertidigAdresseTittel() }}</h4>
-
+                <div data-ng-show="harMidlertidigAdresseEier()">
                 <p>
+
                     <span cmstekster="personalia.co"></span>
                     <span> {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].adresseEier }}</span>
                 </p>
-                <div data-ng-if="harMidlertidigAdresseEier()">
+
                 </div>
                 <p data-ng-show="harPostboksAdresse()">
                     <label cmstekster="personalia.postboks"></label>
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].postboksNummer }}
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].postboksNavn }}
+
                 </p>
 
                 <p data-ng-show="harGateAdresse()">
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gatenavn }}
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].husnummer }}
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].husbokstav }}
+
                 </p>
 
                  <p data-ng-show="harOmrodeAdresse()">
@@ -55,9 +58,9 @@
                 <p>
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].postnummer }}
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].poststed }}
-                </p>
 
-                <p>
+                </p>
+                <p data-ng-show="harNorskMidlertidigAdresse()">
                     Gyldig til: {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
                     }}
                 </p>
@@ -76,12 +79,12 @@
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].poststed }}
                 </p>
 
-                <p>
-                    Gyldig til: {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
-                    }}
-                </p>
 
-                <label cmstekster="personalia.bostedsadresse"></label>
+                <p>
+                        Gyldig til: {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
+                        }}
+                </p>
+                <h4 cmstekster="personalia.folkeregistrertadresse"></h4>
 
                 <p>
                     {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].gatenavn }}
