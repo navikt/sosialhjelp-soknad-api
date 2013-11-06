@@ -21,9 +21,9 @@
                 scope.feilmeldinger = [];
                 var fortsettLoop = true;
 
-                angular.forEach(ctrl.$error, function (verdi, nokkel) {
+                angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
                     if (fortsettLoop) {
-                        fortsettLoop = leggTilFeilmeldingerVedValidering(verdi, nokkel);
+                        fortsettLoop = leggTilFeilmeldingerVedValidering(verdi, feilNokkel);
                     }
                 });
             }
@@ -35,8 +35,8 @@
              */
             scope.$watch(function() { return ctrl.$error; }, function() {
                 var fortsattFeilListe = [];
-                angular.forEach(ctrl.$error, function(verdi, nokkel) {
-                    fortsattFeilListe = fortsattFeilListe.concat(leggTilFeilSomFortsattSkalVises(verdi, nokkel));
+                angular.forEach(ctrl.$error, function(verdi, feilNokkel) {
+                    fortsattFeilListe = fortsattFeilListe.concat(leggTilFeilSomFortsattSkalVises(verdi, feilNokkel));
                 });
                 scope.feilmeldinger = fortsattFeilListe;
             }, true);
@@ -50,9 +50,9 @@
              * Dersom vi har en egendefinert feil skal vi bare vise denne. I det tilfellet fjernes alle andre feilmeldinger
              * og vi skal ikke loope mer. Return false dersom vi skal stoppe loopen, ellers true.
              */
-            function leggTilFeilmeldingerVedValidering(verdi, nokkel) {
+            function leggTilFeilmeldingerVedValidering(verdi, feilNokkel) {
                 angular.forEach(verdi, function (feil) {
-                    var feilmelding = hentFeilmelding(feil, nokkel);
+                    var feilmelding = hentFeilmelding(feil, feilNokkel);
 
                     if (feil === undefined) {
                         // Egendefinert feilmelding
@@ -65,10 +65,10 @@
                 return true;
             }
 
-            function leggTilFeilSomFortsattSkalVises(verdi, nokkel) {
+            function leggTilFeilSomFortsattSkalVises(verdi, feilNokkel) {
                 var fortsattFeilListe = [];
                 angular.forEach(verdi, function(feil) {
-                    var feilmelding = hentFeilmelding(feil, nokkel);
+                    var feilmelding = hentFeilmelding(feil, feilNokkel);
 
                     // Legg bare til dersom feilmeldingen vises
                     if (scope.feilmeldinger.contains(feilmelding)) {
@@ -85,12 +85,16 @@
             }
 
             // Henter feilmelding fra CMS
-            function hentFeilmelding(feil, nokkel) {
+            function hentFeilmelding(feil, feilNokkel) {
 
                 // Dersom feil er undefined brukes nokkel som key for feilmeldingen
-                var feilmeldingNokkel = nokkel;
+                var feilmeldingNokkel = feilNokkel;
                 if (feil) {
-                    feilmeldingNokkel = feil.$errorMessages;
+                    if(typeof feil.$errorMessages === 'object') {
+                        feilmeldingNokkel = feil.$errorMessages[feilNokkel];
+                    } else if(typeof feil.$errorMessages === 'string') {
+                        feilmeldingNokkel = feil.$errorMessages;
+                    }
                 }
 
                 var feilmelding = data.tekster[feilmeldingNokkel];
