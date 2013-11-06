@@ -6,7 +6,9 @@ angular.module('nav.feilmeldinger', [])
             // only works if embedded in a form or an ngForm (that's in a form).
             // It does use its closest parent that is a form OR ngForm
             require: '^form',
-            templateUrl: '../js/app/directives/feilmeldinger/feilmeldingerTemplate.html',
+//            templateUrl: '../js/app/directives/feilmeldinger/feilmeldingerTemplate.html',
+            // TODO: Når vi får karma på jenkins, bytt ut template med templateUrl
+            template: '<ul class="form-errors" data-ng-show="skalViseFeilmeldinger()"><li class="form-error" ng-repeat="feilmelding in feilmeldinger track by $index">{{ feilmelding }}</li></ul>',
             replace: true,
             transclude: true,
             restrict: 'AE',
