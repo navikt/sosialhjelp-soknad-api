@@ -201,7 +201,7 @@ public class PersonTransform {
 		midlertidigOmrodeAdresse.setGyldigtil(gyldigTil);
 		String postnummerString = getPostnummerString(xmlMatrikkelAdresse);
 		String poststed = kodeverk.getPoststed(postnummerString);
-        midlertidigOmrodeAdresse.setAdresseeier(xmlMatrikkelAdresse.getTilleggsadresse());
+        midlertidigOmrodeAdresse.setAdresseeier("CO:" + xmlMatrikkelAdresse.getTilleggsadresseType() + xmlMatrikkelAdresse.getTilleggsadresse());
 		midlertidigOmrodeAdresse.setPostnummer(postnummerString);
 		midlertidigOmrodeAdresse.setPoststed(poststed);
 		midlertidigOmrodeAdresse.setEiendomsnavn(xmlMatrikkelAdresse.getEiendomsnavn());
