@@ -90,6 +90,51 @@ describe('Personalia domene', function(){
             expect(scope.harPostboksAdresse()).toBe(true);
         })
 
+        it('skal ikke ha folkeregistrert adresse når man har midlertidig adresse i utlandet', function() {
+            $httpBackend.whenGET('/sendsoknad/rest/soknad/1/personalia').
+            respond(
+                {"fakta":{"fnr":{"soknadId":31952,"key":"fnr","value":"01010090276","type":"System"},
+                "sammensattnavn":{"soknadId":31952,"key":"sammensattnavn","value":"ASTRID ELISE MATHISEN","type":"System"},
+                "mellomnavn":{"soknadId":31952,"key":"mellomnavn","value":"","type":"System"},
+                "fornavn":{"soknadId":31952,"key":"fornavn","value":"ASTRID ELISE","type":"System"},
+                "gjeldendeAdresseType":{"soknadId":31952,"key":"gjeldendeAdresseType","value":"MIDLERTIDIG_POSTADRESSE_UTLAND","type":"System"},
+                "etternavn":{"soknadId":31952,"key":"etternavn","value":"MATHISEN","type":"System"},
+                "adresser":[
+                    {"soknadId":31952,"type":"BOSTEDSADRESSE","gatenavn":"PAUL RØSTADS VEG","husnummer":"76","husbokstav":"","postnummer":"7039","poststed":"TRONDHEIM",
+                        "land":"NOR","eiendomsnavn":null,"gyldigFra":null,"gyldigTil":null,"postboksNavn":null,"postboksNummer":null,"adresseEier":null,"utenlandsAdresse":null},
+                    {"soknadId":31952,"type":"MIDLERTIDIG_POSTADRESSE_UTLAND","gatenavn":null,"husnummer":null,"husbokstav":null,"postnummer":null,"poststed":null,
+                        "land":"STORBRITANNIA","eiendomsnavn":null,"gyldigFra":1383606000000,"gyldigTil":1415055600000,"postboksNavn":null,"postboksNummer":null,
+                        "adresseEier":null,"utenlandsAdresse":["29 STORNAWAY","CRESCENT SHEDDOCK"]}]}}
+            );
+            $httpBackend.flush();  
+
+            expect(scope.harBostedsadresseOgIngenMidlertidigAdresse()).toBe(false);
+            expect(scope.harUtenlandskAdresse()).toBe(false);
+        });
+
+        it('skal ikke ha folkeregistrert adresse når man har midlertidig omrodeadresse', function() {
+             $httpBackend.whenGET('/sendsoknad/rest/soknad/1/personalia').
+            respond(
+               {"fakta":{"fnr":{"soknadId":31952,"key":"fnr","value":"23054549733","type":"System"},
+                "sammensattnavn":{"soknadId":31952,"key":"sammensattnavn","value":"JAN ERIK LÔVAAS","type":"System"},
+                "mellomnavn":{"soknadId":31952,"key":"mellomnavn","value":"","type":"System"},
+                "fornavn":{"soknadId":31952,"key":"fornavn","value":"JAN ERIK","type":"System"},
+                "gjeldendeAdresseType":{"soknadId":31952,"key":"gjeldendeAdresseType","value":"MIDLERTIDIG_POSTADRESSE_NORGE","type":"System"},
+                "etternavn":{"soknadId":31952,"key":"etternavn","value":"LÔVAAS","type":"System"},
+                "adresser":[
+                    {"soknadId":31952,"type":"MIDLERTIDIG_POSTADRESSE_NORGE","gatenavn":null,"husnummer":null,"husbokstav":null,"postnummer":"0860","poststed":"OSLO",
+                    "land":null,"eiendomsnavn":"testveien","gyldigFra":1383519600000,"gyldigTil":1385766000000,"postboksNavn":null,"postboksNummer":null,"adresseEier":null,"utenlandsAdresse":null},
+                    {"soknadId":31952,"type":"POSTADRESSE","gatenavn":null,"husnummer":null,"husbokstav":null,"postnummer":null,"poststed":null,"land":"NORGE",
+                    "eiendomsnavn":null,"gyldigFra":null,"gyldigTil":null,"postboksNavn":null,"postboksNummer":null,"adresseEier":null,
+                    "utenlandsAdresse":["V/INGE-BRITT LØVAAS","FURUMOEN 1","1680 SKJÆRHALDEN"]}]}}
+            );
+            $httpBackend.flush();
+
+            expect(scope.harMidlertidigAdresse()).toBe(true);
+            expect(scope.harUtenlandskPostAdresse()).toBe(false);
+            expect(scope.harUtenlandskAdresse()).toBe(false);
+        })
+
            //TODO: For adresse-testing
 //            $scope.personalia.fakta.adresser.push({"soknadId":1,"type":"MIDLERTIDIG_POSTADRESSE_NORGE","gatenavn":"Kirkeveien","husnummer":"55","husbokstav":"D","postnummer":"7000","poststed":"Trondheim","land":null,"gyldigTil":1412373600000,"gyldigFra":1380895717011,"postboksNavn":"POSTBOKS","postboksNummer":"1234","adresseEier":"Per P. Nilsen","utenlandsAdresse":null});
 //            $scope.personalia.fakta.adresser.push({"soknadId":1,"type":"MIDLERTIDIG_POSTADRESSE_NORGE","gatenavn":"Kirkeveien","husnummer":"55","husbokstav":"D","postnummer":"7000","poststed":"Trondheim","land":null,"gyldigTil":1412373600000,"gyldigFra":1380895717011,"postboksNavn":null,"postboksNummer":null,"adresseEier":"Per P. Nilsen","utenlandsAdresse":null});

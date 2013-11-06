@@ -6,11 +6,41 @@
     <p cmstekster="dagpenger.opplasting.info"/>
 
     <div class="opplasting">
-        <ul>
-            <li>
-                Punktliste
-            </li>
-        </ul>
+        <div id="vedleggOversikt" data-ng-controller="VedleggCtrl">
+            <ul class="vedleggListe">
+                <form>
+                <li data-ng-repeat="v in vedlegg" class="vedlegg spm-boks" ng-if="erFaktumLikKriterie(v)">
+                    <h3 cmstekster="{{soknad.gosysId}}.vedlegg.{{v.gosysId}}.header"></h3>
+
+                    <div>
+                        <h4 cmstekster="opplasting.vedlegg.maabekrefte"></h4>
+                        <div cmshtml="{{soknad.gosysId}}.vedlegg.{{v.gosysId}}.bekrefte"></div>
+                    </div>
+                    <div class="forhandsvisning spm-boks">preview</div>
+                    <div class="spm-knapper" data-ng-if="!vedleggBehandlet(v)">
+
+                        <label for="opplasting{{v.gosysId}}" class="knapp-hoved-liten" cmstekster="lastopp"></label>
+                        <input type="file" class="vekk " id="opplasting{{v.gosysId}}">
+                        <input type="checkbox" id="ettersend{{v.gosysId}}" data-ng-model="v.sendSenere">
+                        <label for="ettersend{{v.gosysId}}" cmstekster="opplasting.vedlegg.ettersend"></label>
+                        <input type="checkbox" id="ikkesend{{v.gosysId}}" data-ng-model="v.ikkeSend">
+                        <label for="ikkesend{{v.gosysId}}" cmstekster="opplasting.vedlegg.ikkesend">></label>
+                    </div>
+                    <div class="spm-knapper" data-ng-if="v.ikkeSend">
+                        <input type="checkbox" id="ikkesend{{v.gosysId}}ferdig" data-ng-model="v.ikkeSend">
+                        <label for="ikkesend{{v.gosysId}}ferdig" cmstekster="opplasting.vedlegg.ikkesend">></label>
+                    </div>
+                    <div class="spm-knapper" data-ng-if="v.sendSenere">
+                        <input type="checkbox" id="ettersend{{v.gosysId}}ferdig" data-ng-model="v.sendSenere">
+                        <label for="ettersend{{v.gosysId}}ferdig" cmstekster="opplasting.vedlegg.ettersend"></label>
+                    </div>
+                    <div class="spm-knapper" data-ng-if="v.lastetOpp">
+                        Lastet opp
+                    </div>
+                </li>
+                </form>
+            </ul>
+        </div>
         <div class="opplasting-knapper">
             <div>
                 <a href="#/oppsummering/{{ soknadData.soknadId }}" class="knapp-hoved"
