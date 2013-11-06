@@ -1,22 +1,24 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <form name="utdanningForm" class="skjemainnhold" data-ng-controller="UtdanningCtrl"
-          data-ng-submit="validerUtdanning(utdanningForm)" novalidate>
+    <div data-ng-form="utdanningForm" class="skjemainnhold" data-ng-controller="UtdanningCtrl" novalidate>
+        <form-errors></form-errors>
         <div class="spm">
             <p class="spm-sporsmal" cmstekster="utdanning.sporsmal"/>
 
-            <div data-ng-show="hvisIRedigeringsmodus()">
                 <navradio data-ng-model='soknadData.fakta.utdanning.value' value='ikkeUtdanning'
                           modus="data.redigeringsModus"
                           inputname='utdanning'
-                          label='utdanning.svar.ikkeUtdanning'/>
+                          label='utdanning.svar.ikkeUtdanning'
+                          feilmelding='utdanning.utdanning.feilmelding'/>
                 <navradio data-ng-model='soknadData.fakta.utdanning.value' value='avsluttetUtdanning'
                           modus="data.redigeringsModus"
                           inputname='utdanning'
-                          label='utdanning.svar.avsluttetUtdanning'/>
+                          label='utdanning.svar.avsluttetUtdanning'
+                          feilmelding='utdanning.utdanning.feilmelding'/>
                 <navradio data-ng-model='soknadData.fakta.utdanning.value' value='underUtdanning'
                           modus="data.redigeringsModus"
                           inputname='utdanning'
-                          label='utdanning.svar.underUtdanning'/>
+                          label='utdanning.svar.underUtdanning'
+                          feilmelding='utdanning.utdanning.feilmelding'/>
 
 
                 <!--<div data-ng-show="hvisUnderUtdanning()">-->
@@ -68,13 +70,6 @@
                 <!--</label>-->
                 <!--<utdanningsinformasjon></utdanningsinformasjon>-->
                 <!--</div>-->
-            </div>
-
-            <div class='oppsummeringsboks' data-ng-show='hvisIOppsummeringsmodus()'>
-                <span data-ng-show='hvisIkkeUnderUtdanning()' cmstekster="utdanning.svar.ikkeUtdanning"/>
-                <span data-ng-show='hvisAvsluttetUtdanning()' cmstekster="utdanning.svar.avsluttetUtdanning"/>
-                <span data-ng-show='hvisUnderUtdanning()' cmstekster="utdanning.svar.underUtdanning"/>
-            </div>
 
 
         </div>
@@ -84,6 +79,7 @@
 
         <spmblokkferdig
                 nokkel="utdanning"
-                modus="data.redigeringsModus"/>
-    </form>
+                modus="data.redigeringsModus"
+                submit-method="validerUtdanning(utdanningForm)"/>
+    </div>
 </div>

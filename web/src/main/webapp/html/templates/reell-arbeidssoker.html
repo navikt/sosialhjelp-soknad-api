@@ -1,6 +1,5 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <form name="reellarbeidssokerForm" class="skjemainnhold" data-ng-controller="ReellarbeidssokerCtrl"
-          data-ng-submit="validerReellarbeidssoker(reellarbeidssokerForm)" novalidate>
+    <div data-ng-form="reellarbeidssokerForm" class="skjemainnhold" data-ng-controller="ReellarbeidssokerCtrl" novalidate>
 
         <form-errors></form-errors>
 
@@ -20,11 +19,9 @@
                       modus="data.redigeringsModus"
                       nokkel="reellarbeidssoker.villigjobb"/>
 
-        <!--<div data-ng-show="hvisIkkeFormValiderer()">-->
-            <!--<feilmeldinger form="reellarbeidssokerForm" nokkel="reellarbeidssoker"/>-->
-        <!--</div>-->
         <spmblokkferdig
                 nokkel="reellarbeidssoker"
-                modus="data.redigeringsModus"/>
-    </form>
+                modus="data.redigeringsModus"
+                submit-method="validerReellarbeidssoker(reellarbeidssokerForm)"/>
+    </div>
 </div>

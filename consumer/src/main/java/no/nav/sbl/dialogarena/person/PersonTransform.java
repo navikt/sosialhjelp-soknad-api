@@ -1,8 +1,4 @@
 package no.nav.sbl.dialogarena.person;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBostedsadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
@@ -12,13 +8,17 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLLandkoder;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseNorge;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostboksadresseNorsk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostnummer;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLStrukturertAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLUstrukturertAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
-
 import org.joda.time.DateTime;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Map from TPS data format to internal domain model
@@ -51,8 +51,6 @@ public class PersonTransform {
     	XMLBostedsadresse bostedsadresse = soapPerson.getBostedsadresse();
     	if (bostedsadresse != null) {
 			XMLStrukturertAdresse strukturertAdresse = bostedsadresse.getStrukturertAdresse();
-			
-			
 			
 			if(strukturertAdresse instanceof XMLGateadresse) {
 				XMLGateadresse xmlGateAdresse = (XMLGateadresse)strukturertAdresse;
@@ -96,27 +94,37 @@ public class PersonTransform {
     			result.add(midlertidigAdresse);
     		}
     	}
-		return result;
+    	XMLPostadresse postadresse = soapPerson.getPostadresse();
+        finnPostAdresse(soknadId, result, postadresse);
+        return result;
 	}
 
-	private void getMidlertidigPostadresseUtland(Adresse midlertidigAdresse,
+    private void finnPostAdresse(long soknadId, List<Adresse> result, XMLPostadresse postadresse) {
+        if(postadresse != null) {
+                XMLPostadresse xmlPostadresse = postadresse;
+                XMLUstrukturertAdresse ustrukturertAdresse = xmlPostadresse.getUstrukturertAdresse();
+                if(ustrukturertAdresse != null) {
+                    List<String> adresselinjer = hentAdresseLinjer(ustrukturertAdresse);
+
+                    Adresse folkeregistrertUtenlandskAdresse = new Adresse(soknadId, Adressetype.UTENLANDSK_ADRESSE);
+
+                    folkeregistrertUtenlandskAdresse.setUtenlandsadresse(adresselinjer);
+                    XMLLandkoder xmlLandkode = ustrukturertAdresse.getLandkode();
+                    if(xmlLandkode != null) {
+                        String landkode = xmlLandkode.getValue();
+                        folkeregistrertUtenlandskAdresse.setLand(kodeverk.getLand(landkode));
+                    }
+                    result.add(folkeregistrertUtenlandskAdresse);
+                }
+        }
+    }
+
+    private void getMidlertidigPostadresseUtland(Adresse midlertidigAdresse,
 			XMLMidlertidigPostadresseUtland xmlMidlAdrUtland) {
 		XMLUstrukturertAdresse ustrukturertAdresse = xmlMidlAdrUtland.getUstrukturertAdresse();
 		
 		if (ustrukturertAdresse != null) {
-			ArrayList<String> adresselinjer = new ArrayList<String>();
-			if(ustrukturertAdresse.getAdresselinje1() != null) {
-				adresselinjer.add(ustrukturertAdresse.getAdresselinje1());
-			}
-			if(ustrukturertAdresse.getAdresselinje2() != null) {
-				adresselinjer.add(ustrukturertAdresse.getAdresselinje2());
-			}
-			if(ustrukturertAdresse.getAdresselinje3() != null) {
-				adresselinjer.add(ustrukturertAdresse.getAdresselinje3());
-			}
-			if(ustrukturertAdresse.getAdresselinje4() != null) {
-				adresselinjer.add(ustrukturertAdresse.getAdresselinje4());
-			}
+			List<String> adresselinjer = hentAdresseLinjer(ustrukturertAdresse);
 			
 			midlertidigAdresse.setUtenlandsadresse(adresselinjer);
 			XMLLandkoder xmlLandkode = ustrukturertAdresse.getLandkode();
@@ -134,6 +142,24 @@ public class PersonTransform {
 		}
 		midlertidigAdresse.setGyldigfra(gyldigFra);
 		midlertidigAdresse.setGyldigtil(gyldigTil);
+	}
+
+	private List<String> hentAdresseLinjer(
+			XMLUstrukturertAdresse ustrukturertAdresse) {
+		List<String> adresselinjer = new ArrayList();
+		if(ustrukturertAdresse.getAdresselinje1() != null) {
+			adresselinjer.add(ustrukturertAdresse.getAdresselinje1());
+		}
+		if(ustrukturertAdresse.getAdresselinje2() != null) {
+			adresselinjer.add(ustrukturertAdresse.getAdresselinje2());
+		}
+		if(ustrukturertAdresse.getAdresselinje3() != null) {
+			adresselinjer.add(ustrukturertAdresse.getAdresselinje3());
+		}
+		if(ustrukturertAdresse.getAdresselinje4() != null) {
+			adresselinjer.add(ustrukturertAdresse.getAdresselinje4());
+		}
+		return adresselinjer;
 	}
 
 	private Adresse getMidlertidigPostboksadresseNorge(long soknadId,

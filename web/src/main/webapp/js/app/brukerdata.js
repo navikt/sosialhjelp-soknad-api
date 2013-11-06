@@ -30,31 +30,46 @@ angular.module('app.brukerdata', ['app.services'])
 
         tpsService.get({soknadId: $routeParams.soknadId}).$promise.then(function (result) {
             $scope.personalia = result;
-
-              //TODO: For adresse-testing
-//            $scope.personalia.fakta.adresser.push({"soknadId":1,"type":"MIDLERTIDIG_POSTADRESSE_NORGE","gatenavn":"Kirkeveien","husnummer":"55","husbokstav":"D","postnummer":"7000","poststed":"Trondheim","land":null,"gyldigTil":1412373600000,"gyldigFra":1380895717011,"postboksNavn":"POSTBOKS","postboksNummer":"1234","adresseEier":"Per P. Nilsen","utenlandsAdresse":null});
-//            $scope.personalia.fakta.adresser.push({"soknadId":1,"type":"MIDLERTIDIG_POSTADRESSE_NORGE","gatenavn":"Kirkeveien","husnummer":"55","husbokstav":"D","postnummer":"7000","poststed":"Trondheim","land":null,"gyldigTil":1412373600000,"gyldigFra":1380895717011,"postboksNavn":null,"postboksNummer":null,"adresseEier":"Per P. Nilsen","utenlandsAdresse":null});
-//            $scope.personalia.fakta.adresser.push({"soknadId":1,"type":"MIDLERTIDIG_POSTADRESSE_UTLAND","gatenavn":null,"husnummer":null,"husbokstav":null,"postnummer":null,"poststed":null,"land":"SVERIGE","gyldigTil":1412373600000,"gyldigFra":1380895717011,"postboksNavn":null,"postboksNummer":null,"adresseEier":"Per P. Nilsen","utenlandsAdresse":["Öppnedvägen 22","1234, Udevalla"]});
-//            Mangler eksempel på mildertidig omrodeadresse
-//            $scope.personalia.fakta.adresser.push({"soknadId":1,"type":"BOSTEDSADRESSE","gatenavn":"Blåsbortveien","husnummer":"24","husbokstav":"","postnummer":"0368","poststed":"Malmö","land":"SVERIGE","gyldigFra":null,"gyldigTil":null,"utenlandsAdresse":null,"adresseEier":null,"postboksNummer":null,"postboksNavn":null});
-
-            $scope.personalia.fakta.adresser.forEach(function (data, index) {
+           
+            if ($scope.personalia.fakta.adresser != undefined) {
+                $scope.personalia.fakta.adresser.forEach(function (data, index) {
                 if (data.type === "BOSTEDSADRESSE") {
                     $scope.personaliaData.bostedsAdresse = index;
                 } else if (data.type === "POSTADRESSE") {
                     $scope.personaliaData.postAdresse = index;
+                } else if (data.type === "UTENLANDSK_ADRESSE") {
+                    $scope.personaliaData.utenlandskAdresse = index; 
                 } else {
                     $scope.personaliaData.midlertidigAdresse = index;
                 }
-            });
+                });
+            } else {
+                $scope.personalia.fakta.adresser = [];
+            }
 
-            // Trenger kanskje ikkje != undefined
+            $scope.harAdresseRegistrert = function () {
+                if ($scope.personaliaData.bostedsAdresse == undefined && $scope.personaliaData.postAdresse == undefined && $scope.personaliaData.midlertidigAdresse == undefined ) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+                
+
             $scope.harBostedsAdresse = function () {
                 return $scope.personaliaData.bostedsAdresse != undefined;
             }
 
+            $scope.c = function () {
+                return $scope.personaliaData.utenlandskAdresse != undefined;
+            }
+
             $scope.harMidlertidigAdresse = function () {
                 return $scope.personaliaData.midlertidigAdresse != undefined;
+            }
+
+            $scope.harMidlertidigAdresseEier = function () {
+                return $scope.personaliaData.midlertidigAdresse != undefined && $scope.personaliaData.midlertidigAdresse.adresseEier != undefined;
             }
 
             $scope.harBostedsadresseOgIngenMidlertidigAdresse = function() {
@@ -62,7 +77,7 @@ angular.module('app.brukerdata', ['app.services'])
             }
 
             $scope.harPostboksAdresse = function () {
-                return $scope.harMidlertidigAdresse() && $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].postboksNavn != undefined && $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].postboksNummer != undefined;
+                return $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].postboksNavn != undefined || $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].postboksNummer != undefined;
             }
             $scope.harGateAdresse = function () {
                 return $scope.harMidlertidigAdresse() && $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].gatenavn != undefined && $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].husnummer != undefined
@@ -73,7 +88,7 @@ angular.module('app.brukerdata', ['app.services'])
             }
 
             $scope.harUtenlandskFolkeregistrertAdresseOgMidlertidigNorskAdresse = function() {
-                return $scope.harMidlertidigAdresse() &&  $scope.harBostedsAdresse() && $scope.personalia.fakta.adresser[$scope.personaliaData.bostedsAdresse].land != undefined && $scope.personalia.fakta.adresser[$scope.personaliaData.bostedsAdresse].land != "";
+                return $scope.harMidlertidigAdresse() &&  $scope.harUtenlandskPostAdresse() && $scope.personalia.fakta.adresser[$scope.personaliaData.utenlandskAdresse].land != undefined && $scope.personalia.fakta.adresser[$scope.personaliaData.utenlandskAdresse].land != "";
             }
 
             $scope.harUtenlandskAdresse = function() {
@@ -85,7 +100,7 @@ angular.module('app.brukerdata', ['app.services'])
                 }
 
                 var tekst;
-                var type = $scope.personalia.fakta.adresser[$scope.data.midlertidigAdresse].type;
+                var type = $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].type;
                 switch (type) {
                     case "MIDLERTIDIG_POSTADRESSE_NORGE":
                         tekst = data.tekster["personalia.midlertidig_adresse_norge"];
@@ -94,8 +109,7 @@ angular.module('app.brukerdata', ['app.services'])
                         tekst = data.tekster["personalia.midlertidig_adresse_utland"];
                         break;
                     default :
-                        //TODO: fix
-                        tekst = "Du har ikke midlertidig adresse i norge eller utlandet";
+                        tekst = data.tekster["personalia.ingenadresse"];
                 }
                 return tekst;
             }
@@ -122,15 +136,6 @@ angular.module('app.brukerdata', ['app.services'])
             $scope.soknadData.fakta[data.key] = {"soknadId": $scope.soknadData.soknadId, "key": data.key, "value": data.value};
             var soknadData = $scope.soknadData;
             soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
-            console.log("lagre: " + soknadData);
-        });
-
-        $scope.$on("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", function (e, data) {
-            $scope.soknadData.fakta.arbeidsforhold = {"soknadId": $scope.soknadData.soknadId, "key": data.key,
-                "value": angular.toJson(data.value)};
-            var soknadData = $scope.soknadData;
-            soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
-            console.log("lagre: " + soknadData.soknadId);
         });
     })
 
@@ -143,8 +148,10 @@ angular.module('app.brukerdata', ['app.services'])
             showErrorMessage: false,
             redigeringsModus: true
         };
+        $scope.showErrors = false;
 
         $scope.validateForm = function (invalid) {
+            $scope.showErrors = invalid;
             $scope.data.showErrorMessage = invalid;
             $scope.data.redigeringsModus = invalid;
         }
@@ -164,6 +171,7 @@ angular.module('app.brukerdata', ['app.services'])
 
         $scope.visFeilmeldinger = function () {
             $scope.data.showErrorMessage = true;
+            $scope.showErrors = true;
         }
 
         $scope.hvisIkkeFormValiderer = function () {
@@ -225,7 +233,7 @@ angular.module('app.brukerdata', ['app.services'])
                 }
 
                 $scope.$apply(function() {
-                    $scope.$emit("OPPDATER_OG_LAGRE", {key: attrs.name, value: verdi});
+                    $scope.$emit("OPPDATER_OG_LAGRE", {key: element.attr('name'), value: verdi});
                 });
             });
         };

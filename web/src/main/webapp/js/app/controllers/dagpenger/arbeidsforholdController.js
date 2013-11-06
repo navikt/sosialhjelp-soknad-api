@@ -12,6 +12,7 @@ angular.module('nav.arbeidsforhold.controller',[])
 
         $scope.validerArbeidsforhold = function(form) {
             $scope.validateForm(form.$invalid);
+            $scope.runValidation();
         }
 
         $scope.templates = [{navn: 'Kontrakt utgått', url: '../html/templates/arbeidsforhold/kontrakt-utgaatt.html', oppsummeringsurl: '../html/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html'},
@@ -43,7 +44,6 @@ angular.module('nav.arbeidsforhold.controller',[])
 
             $scope.erSluttaarsakValgt = function() {
                 if ($scope.sluttaarsak && $scope.sluttaarsak.navn) {
-                    console.log("Sluttaarsak valgt");
                     return true;
                 }else{
                     return false;
@@ -67,14 +67,15 @@ angular.module('nav.arbeidsforhold.controller',[])
             }
 
             $scope.lagreArbeidsforhold = function(af, form) {
-                $scope.showErrors = form.$invalid;
                 if(form.$valid) {
-                    $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
+                    var value = angular.toJson($scope.arbeidsforhold);
+                    $scope.$emit("OPPDATER_OG_LAGRE", {key: 'arbeidsforhold', value: value});
                     $scope.posisjonForArbeidsforholdUnderRedigering = -1;
 
                     //todo refaktorer
                     $scope.endreError = false;
                 }
+                $scope.runValidation();
             }
 
 
@@ -88,6 +89,8 @@ angular.module('nav.arbeidsforhold.controller',[])
                         $scope.soknadData = result;
                         if($scope.soknadData.fakta.arbeidsforhold) {
                             $scope.arbeidsforhold = angular.fromJson($scope.soknadData.fakta.arbeidsforhold.value); 
+                        } else if($scope.soknadData.fakta.arbeidsforhold == undefined) {
+                            $scope.arbeidsforhold = [];
                         }
                     });
 
@@ -98,7 +101,8 @@ angular.module('nav.arbeidsforhold.controller',[])
             $scope.slettArbeidsforhold = function(af) {
                 var i = $scope.arbeidsforhold.indexOf(af);                
                 $scope.arbeidsforhold.splice(i,1);
-                $scope.$emit("OPPDATER_OG_LAGRE_ARBEIDSFORHOLD", {key: 'arbeidsforhold', value: $scope.arbeidsforhold});
+                var value = angular.toJson($scope.arbeidsforhold);
+                $scope.$emit("OPPDATER_OG_LAGRE", {key: 'arbeidsforhold', value: value});
             }
 
 

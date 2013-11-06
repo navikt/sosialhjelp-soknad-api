@@ -1,17 +1,15 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <form name="vernepliktigForm" class="skjemainnhold" data-ng-controller="VernepliktCtrl"  data-ng-submit="validerVerneplikt(vernepliktigForm)" novalidate>
-            <booleanradio data-ng-model="soknadData.fakta.vernepliktig.value"
+    <div data-ng-form="vernepliktigForm" class="skjemainnhold" data-ng-controller="VernepliktCtrl" novalidate>
+        <form-errors></form-errors>
+        <booleanradio data-ng-model="soknadData.fakta.ikkeavtjentverneplikt.value"
                           modus="data.redigeringsModus"
-                          nokkel="vernepliktig"/>
+                          nokkel="ikkeavtjentverneplikt"/>
 
-            <p data-ng-show="soknadData.fakta.vernepliktig.value=='false'" cmstekster="vernepliktig.opplasting"/>
-
-            <div data-ng-show="hvisIkkeFormValiderer()">
-                <feilmeldinger form="vernepliktigForm" nokkel="vernepliktig"/>
-            </div>
+            <p data-ng-show="soknadData.fakta.ikkeavtjentverneplikt.value=='false'" cmstekster="ikkeavtjentverneplikt.opplasting"/>
 
             <spmblokkferdig
-                    nokkel="vernepliktig"
-                    modus="data.redigeringsModus"/>
-    </form>
+                    nokkel="ikkeavtjentverneplikt"
+                    modus="data.redigeringsModus"
+                    submit-method="validerVerneplikt(vernepliktigForm)"/>
+    </div>
 </div>

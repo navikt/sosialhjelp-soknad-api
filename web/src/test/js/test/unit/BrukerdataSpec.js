@@ -11,7 +11,7 @@ describe('brukerdata domene', function () {
         beforeEach(inject(function (_$httpBackend_, $rootScope, $controller) {
             routeParams = {};
             $httpBackend = _$httpBackend_;
-            $httpBackend.expectGET('/sendsoknad/rest/soknad/1').
+            $httpBackend.whenGET(/sendsoknad\/rest\/soknad\/.*/).
                 respond({"soknadId": 1, "gosysId": "Dagpenger", "brukerBehandlingId": "100000000",
                     "fakta": {
                         "fornavn": {"soknadId": 1, "key": "fornavn", "value": "Ola"},
@@ -42,7 +42,6 @@ describe('brukerdata domene', function () {
         it('skal legge til en et nytt faktum i soknaddata', function () {
             $httpBackend.flush();
             $httpBackend.whenPOST('/sendsoknad/rest/soknad').respond('200');
-            //cope.lagre();
         });
     })
 

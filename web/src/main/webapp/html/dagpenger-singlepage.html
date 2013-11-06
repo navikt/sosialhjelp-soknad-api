@@ -29,7 +29,7 @@
                         <div class="flipp">
                             <span>+</span>
                         </div>
-                        <h2 class="stor" cmstekster="egennaering.tittel"/>
+                        <h2 class="stor" cmstekster="ikkeegennaering.tittel"/>
                     </accordion-heading>
                     <ng-include src="'../html/templates/egen-naering.html'"/>
                 </accordion-group>
@@ -39,7 +39,7 @@
                         <div class="flipp">
                             <span>+</span>
                         </div>
-                        <h2 class="stor" cmstekster="vernepliktig.tittel"/>
+                        <h2 class="stor" cmstekster="ikkeavtjentverneplikt.tittel"/>
                     </accordion-heading>
 
                     <ng-include src="'../html/templates/verneplikt.html'"/>
@@ -84,7 +84,7 @@
 <div class="rad ferdig-skjema">
     <div class="begrensning">
         <section class="sak-hel">
-            <a class="knapp-hoved" href="#/oppsummering/{{ soknadData.soknadId }}" cmstekster="skjema.ferdig"/>
+            <a class="knapp-hoved" href="#/opplasting/{{ soknadData.soknadId }}" cmstekster="skjema.ferdig"/>
             <stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="1"></stegindikator>
         </section>
     </div>

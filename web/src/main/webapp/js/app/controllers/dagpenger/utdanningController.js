@@ -5,6 +5,7 @@ angular.module('nav.utdanning',[])
 
         $scope.validerUtdanning = function(form) {
             $scope.validateForm(form.$invalid);
+            $scope.runValidation();
         }
 
         $scope.hvisIkkeUnderUtdanning = function () {

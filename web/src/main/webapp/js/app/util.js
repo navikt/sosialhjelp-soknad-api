@@ -4,6 +4,12 @@ if (!Array.prototype.last) {
     }
 }
 
+if (!Array.prototype.contains) {
+    Array.prototype.contains = function(val) {
+        return $.inArray(val, this) > -1;
+    }
+}
+
 (function($) {
     $.fn.changeElementType = function(newType) {
         var attrs = {};
@@ -26,28 +32,24 @@ function checkTrue(element) {
     return element.toString() == 'true';
 }
 
-function scrollAndOpen(newTab, currentTab) {
-    if (currentTab) {
-        currentTab.find('.accordion-toggle').click();
-        setTimeout(function() {
-            scrollToTab(newTab);
-        }, 1000);
-    } else {
-        scrollToTab(newTab);
-    }
-
-    setTimeout(function() {
-        if (newTab.find('.accordion-body').height() == 0) {
-            newTab.find('.accordion-toggle').click();
-        }
-    },1000);
-}
-
-function scrollToTab(newTab) {
+function scrollToElement(element) {
     var animationSpeed = 200;
     var offset = 100;
-    var scrollPos = Math.max(newTab.offset().top - offset, 0);
-    $('body').animate({
+    var scrollPos = Math.max(element.offset().top - offset, 0);
+    $('body, html').animate({
         scrollTop: scrollPos
     }, animationSpeed);
 }
+
+function fiksNavn(element, navn, tmpNavn) {
+    var formCtrl = element.parent().controller('form');
+    var inputElement = element.find('input');
+    if (inputElement) {
+        inputElement.attr('name', navn);
+    }
+    var currentElementCtrl = formCtrl[tmpNavn];
+    formCtrl.$removeControl(currentElementCtrl);
+    currentElementCtrl.$name = navn;
+    formCtrl.$addControl(currentElementCtrl);
+}
+
