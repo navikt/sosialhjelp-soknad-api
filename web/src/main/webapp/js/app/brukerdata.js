@@ -1,18 +1,17 @@
 angular.module('app.brukerdata', ['app.services'])
 
     .controller('StartSoknadCtrl', function ($scope, $location, soknadService) {
-        $scope.data = {
+        $scope.fremdriftsindikator = {
             laster: false
         };
         $scope.startSoknad = function () {
             var soknadType = window.location.pathname.split("/")[3];
-            $scope.data.laster = true;
+            $scope.fremdriftsindikator.laster = true;
             $scope.soknad = soknadService.create({param: soknadType},
                 function (result) {
                     $location.path('dagpenger/' + result.id);
-                    $scope.data.laster = false;
                 }, function () {
-                    $scope.data.laster = false;
+                    $scope.fremdriftsindikator.laster = false;
                 });
         }
     })
@@ -139,7 +138,7 @@ angular.module('app.brukerdata', ['app.services'])
         $scope.soknadData = soknadService.get({param: $routeParams.soknadId});
 
         $scope.$on("OPPDATER_OG_LAGRE", function (e, data) {
-            $scope.soknadData.fakta[data.key] = {"soknadId": $scope.soknadData.soknadId, "key": data.key, "value": data.value};
+            $scope.soknadData.fakta[data.key] = {soknadId: $scope.soknadData.soknadId, key: data.key, value: data.value};
             var soknadData = $scope.soknadData;
             soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
         });
@@ -202,19 +201,18 @@ angular.module('app.brukerdata', ['app.services'])
 
         $scope.submitForm = function () {
             var start = $.now();
-            $scope.data.laster = true;
-            soknadService.delete({param: $routeParams.soknadId},
+            $scope.fremdriftsindikator.laster = true;
+            soknadService.remove({param: $routeParams.soknadId},
                 function () { // Success
                     var delay = 1500 - ($.now() - start);
                     setTimeout(function () {
                         $scope.$apply(function () {
-                            $scope.data.laster = false;
                             $location.path('slettet');
                         });
                     }, delay);
                 },
                 function () { // Error
-                    $scope.data.laster = false;
+                    $scope.fremdriftsindikator.laster = false;
                 }
             );
         };
@@ -262,15 +260,4 @@ angular.module('app.brukerdata', ['app.services'])
             }
             return tekst;
         }
-    })
-
-    .factory('time', function ($timeout) {
-        var time = {};
-
-        (function tick() {
-            time.now = new Date().toString();
-            $timeout(tick, 1000);
-        })();
-        return time;
     });
-
