@@ -1,0 +1,22 @@
+<div data-ng-controller="FortsettSenereCtrl">
+    <panelbelyst id="gjenoppta">
+        <!--h2 class="stor" cmstekster="dagpenger.fortsettSenere.tittel"/-->
+        <h2>Gjenoppta</h2>
+
+        <!--p cmstekster="dagpenger.fortsettSenere.info"/-->
+        <p> Her kommer infotekst </p>
+
+        <div data-ng-if="soknadData.status == 'UNDER_ARBEID'">
+            <br/>
+            <a href="#/dagpenger/{{soknadData.soknadId}}">Forsett på søknad</a>
+            <br/>
+            <br/>
+        </div>
+
+        <div class="lenker-dot">
+            <span>
+                <a href="https://tjenester-t8.nav.no/inngangsporten/innlogget" id="dittnav"  role="link" cmstekster="dagpenger.fortsettSenere.dittNav"/>
+            </span>
+        </div>
+    </panelbelyst>
+</div>
