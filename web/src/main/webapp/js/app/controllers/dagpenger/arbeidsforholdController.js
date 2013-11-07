@@ -169,6 +169,15 @@ angular.module('nav.arbeidsforhold.controller', [])
                 }
             }
 
+            $scope.validateRedusertArbeidstidDato = function (af) {
+                if (af && (af.redusertArbeidstid.fra <= af.varighetFra) || (af.redusertArbeidstid.fra >= af.varighetTil)) {
+                    af.redusertArbeidstid = '';
+                    $scope.redusertArbeidstidDatoError = true;
+                } else {
+                    $scope.redusertArbeidstidDatoError = false;
+                }
+            }
+
             $scope.validateOppsigelsestidTilFraDato = function (af) {
                 if (af && (af.sagtOppAvArbeidsgiverVarighetTil <= af.sagtOppAvArbeidsgiverVarighetFra)) {
                     af.sagtOppAvArbeidsgiverVarighetTil = '';
