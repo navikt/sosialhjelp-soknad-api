@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import no.nav.sbl.dialogarena.websoknad.domain.FortsettSenere;
 import no.nav.sbl.dialogarena.websoknad.service.EmailService;
@@ -28,11 +29,13 @@ public class FortsettSenereController {
 
 	    @RequestMapping(value = "/{soknadId}/fortsettsenere", method = RequestMethod.POST)
 	    @ResponseBody()
-	    public void sendEpost(@PathVariable Long soknadId, @RequestBody String epost) {
+	    public void sendEpost(HttpServletRequest request, @PathVariable Long soknadId, @RequestBody String epost) {
 	        String content = "http://a34duvw22583.devillo.no:8181/sendsoknad/soknad/Dagpenger#/dagpenger/" + soknadId;
-	    	
+	    	System.out.println(request.getServerName());
+	    	System.out.println(request.getServerPort());
 	        System.out.println("Sender mail til " + epost + " med content " + content);
 	        
 	    	emailService.sendFortsettSenereEPost(epost, "Lenke til påbegynt dagpengesøknad", content);
 	    }
 }
+

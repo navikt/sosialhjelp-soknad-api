@@ -12,6 +12,8 @@ angular.module('nav.forsettsenere',[])
 				type: "SYSTEM",
 				value: "ketil.s.velle@nav.no"
 			};
+
+			console.log($scope.soknadData);
         });
 
         $scope.forsettSenere = function() {
