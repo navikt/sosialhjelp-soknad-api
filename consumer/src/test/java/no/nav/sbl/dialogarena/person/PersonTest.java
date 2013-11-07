@@ -12,7 +12,7 @@ public class PersonTest {
 
 	@Test
 	public void skalSetteSammenForOgEtterNavnPaaRiktigMaateMedNull() {
-		Person person = new Person(1l, "11111112345", "Jan", null, "Larsen", "midlertidig", new ArrayList<Adresse>());
+		Person person = new Person(1l, "11111112345", "Jan", null, "Larsen", "epost@email.com", "midlertidig", new ArrayList<Adresse>());
 		
 		Map<String, Object> fakta = person.getFakta();
 		
@@ -22,7 +22,7 @@ public class PersonTest {
 
 	@Test
 	public void skalSetteSammenForOgEtterNavnPaaRiktigMaateMedMellomrom() {
-		Person person = new Person(1l, "11111112345", "Jan", "", "Larsen", "midlertidig", new ArrayList<Adresse>());
+		Person person = new Person(1l, "11111112345", "Jan", "", "Larsen", "epost@email.com", "midlertidig", new ArrayList<Adresse>());
 		
 		Map<String, Object> fakta = person.getFakta();
 		

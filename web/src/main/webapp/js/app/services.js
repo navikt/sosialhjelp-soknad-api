@@ -31,7 +31,7 @@ angular.module('app.services', ['ngResource'])
         );
     })
 
-    .factory('utslagskriterierService', function ($resource) {
+     .factory('utslagskriterierService', function ($resource) {
         return $resource('/sendsoknad/rest/utslagskriterier/:uid',
             {uid: new Date().getTime()}
         );
