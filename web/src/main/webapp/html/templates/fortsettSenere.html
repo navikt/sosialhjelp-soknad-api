@@ -4,13 +4,13 @@
 
         <p cmstekster="dagpenger.fortsettSenere.info"/>
 
-        <div class="send-epost">
+        <div class="send-epost" data-ng-form="forsettSenereForm">
             <form class="epost-input vertikal">
                 <div class="input-boks">
                     <div class="form-linje">
                         <label for="epostfelt" cmstekster="dagpenger.fortsettSenere.epost.label"/>
-                        <input id="epostfelt" type="email" role="textbox" value="{{soknadData.fakta.personalia.epost.value}}"/>
-                        <input type="submit" class="knapp-hoved-liten" cmstekster="dagpenger.fortsettSenere.epost.send" role="button"/>
+                        <input id="epostfelt" type="email" name="epost" role="textbox" value="{{soknadData.fakta.personalia.epost.value}}"/>
+                        <input type="submit" class="knapp-hoved-liten" cmstekster="dagpenger.fortsettSenere.epost.send" role="button" data-ng-click="forsettSenere()"/>
                         <span class="melding"/>
                     </div>
                 </div>
