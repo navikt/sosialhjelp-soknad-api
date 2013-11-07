@@ -8,14 +8,14 @@ angular.module('nav.textarea', [])
                 nokkel: '@',
                 maxlengde: '@'
             },
-            controller: function($scope) {
+            controller: function ($scope) {
                 $scope.sporsmal = $scope.nokkel + ".sporsmal";
                 $scope.feilmelding = $scope.nokkel + ".feilmelding";
                 $scope.tellertekst = $scope.nokkel + ".tellertekst";
                 $scope.counter = $scope.maxlengde;
                 $scope.fokus = false;
-                $scope.oppdaterTeller = function() {
-                    if($scope.model) {
+                $scope.oppdaterTeller = function () {
+                    if ($scope.model) {
                         $scope.counter = $scope.maxlengde - $scope.model.length;
                     } else {
                         $scope.counter = $scope.maxlengde;
@@ -30,14 +30,16 @@ angular.module('nav.textarea', [])
                 });
                 $(element).find('textarea').keyup();
 
-                element.find('textarea').bind('focus', function(){
+                element.find('textarea').bind('focus', function () {
                     $scope.fokus = true;
                     $scope.$apply(attrs.onFocus);
                 })
-                element.find('textarea').bind('blur', function() {
+                element.find('textarea').bind('blur', function () {
                     $scope.fokus = false;
                     $scope.$apply(attrs.onBlur)
                 })
+
+
             }
         };
     }]);
