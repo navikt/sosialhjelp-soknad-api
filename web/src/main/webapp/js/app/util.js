@@ -59,3 +59,7 @@ function verdiErLagretISoknadData(scope, nokkel) {
     }
     return false;
 }
+
+function deepClone(obj) {
+    return $.extend(true, {}, obj);
+}
