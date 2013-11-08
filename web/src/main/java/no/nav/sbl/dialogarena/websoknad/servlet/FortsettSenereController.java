@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.websoknad.servlet;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
-import no.nav.sbl.dialogarena.websoknad.domain.FortsettSenere;
 import no.nav.sbl.dialogarena.websoknad.service.EmailService;
 
 import org.slf4j.Logger;

@@ -6,9 +6,16 @@
         <!--p cmstekster="dagpenger.fortsettSenere.info"/-->
         <p> Her kommer infotekst </p>
 
-        <div data-ng-if="soknadData.status == 'UNDER_ARBEID'">
+        <div data-ng-if="soknadErUnderArbeid()">
             <br/>
             <a href="#/dagpenger/{{soknadData.soknadId}}">Forsett på søknad</a>
+            <br/>
+            <br/>
+        </div>
+
+        <div data-ng-if="soknadErFerdig()">
+            <br/>
+            <a href="#/dagpenger/{{soknadData.soknadId}}">Link til søknad</a>
             <br/>
             <br/>
         </div>
