@@ -34,12 +34,15 @@ angular.module('nav.forsettsenere',[])
 
         $scope.soknadErFerdig = function() {
             var status =  $scope.soknadData.status;
-            console.log("status " + status);
             if (status == 'FERDIG') {
                 return true;
             } else {
                 return false;
             }
+        }
+
+        $scope.soknadErValidert = function() {
+            return $scope.soknadData.status == 'VALIDERT';
         }
         
 }]);

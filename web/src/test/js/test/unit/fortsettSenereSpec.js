@@ -44,5 +44,10 @@ describe('FortsettSenereController', function() {
 			scope.soknadData.status = 'FERDIG';
 			expect(scope.soknadErFerdig()).toBe(true);
 		})
+
+		it('soknad er validert', function() {
+			scope.soknadData.status = "VALIDERT";
+			expect(scope.soknadErValidert()).toBe(true);
+		})
 	})
 })

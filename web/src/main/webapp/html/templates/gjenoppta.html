@@ -13,6 +13,13 @@
             <br/>
         </div>
 
+        <div data-ng-if="soknadErValidert()">
+            <br/>
+            <a href="#/dagpenger/{{soknadData.soknadId}}">Forsett på søknad</a> eller <a href="#/vedlegg/{{soknadData.soknadId">Last opp vedlegg</a>
+            <br/>
+            <br/>
+        </div>
+
         <div data-ng-if="soknadErFerdig()">
             <br/>
             <a href="#/dagpenger/{{soknadData.soknadId}}">Link til søknad</a>
