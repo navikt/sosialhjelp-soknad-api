@@ -6,9 +6,9 @@ angular.module('nav.feilmeldinger', [])
             // only works if embedded in a form or an ngForm (that's in a form).
             // It does use its closest parent that is a form OR ngForm
             require: '^form',
-//            templateUrl: '../js/app/directives/feilmeldinger/feilmeldingerTemplate.html',
+            templateUrl: '../js/app/directives/feilmeldinger/feilmeldingerTemplate.html',
             // TODO: Når vi får karma på jenkins, bytt ut template med templateUrl
-            template: '<ul class="form-errors" data-ng-show="skalViseFeilmeldinger()"><li class="form-error" ng-repeat="feilmelding in feilmeldinger track by $index">{{ feilmelding }}</li></ul>',
+//            template: '<ul class="form-errors" data-ng-show="skalViseFeilmeldinger()"><li class="form-error" ng-repeat="feilmelding in feilmeldinger track by $index">{{ feilmelding.feilmld }}</li></ul>',
             replace: true,
             transclude: true,
             restrict: 'AE',
@@ -17,18 +17,18 @@ angular.module('nav.feilmeldinger', [])
                 scope.runValidation = function () {
                     scope.feilmeldinger = [];
                     var fortsettLoop = true;
-
                     angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
                         if (fortsettLoop) {
                             fortsettLoop = leggTilFeilmeldingerVedValidering(verdi, feilNokkel);
                         }
                     });
-
                     if (scope.feilmeldinger.length > 0) {
                         $timeout(function() {
                             scrollToElement(elem);
                         }, 1);
                     }
+
+//                    elem.closest('[data-ng-form]').find('.form-linje:visible').has('.ng-invalid').addClass('feil');
                 }
 
                 /*
@@ -44,8 +44,17 @@ angular.module('nav.feilmeldinger', [])
                 }, true);
 
                 scope.skalViseFeilmeldinger = function() {
-                    var skalViseFeilmeldinger = elem.children().length;
-                    return skalViseFeilmeldinger;
+                    return scope.feilmeldinger.length > 0;
+                }
+
+                scope.scrollTilElementMedFeil = function(feilmelding) {
+                    if (scope.erKlikkbarFeil(feilmelding)) {
+                        scrollToElement(feilmelding.elem);
+                    }
+                }
+
+                scope.erKlikkbarFeil = function(feilmelding) {
+                    return feilmelding.elem.length > 0;
                 }
 
                 /*
@@ -73,7 +82,7 @@ angular.module('nav.feilmeldinger', [])
                         var feilmelding = finnFeilmelding(feil, feilNokkel);
 
                         // Legg bare til dersom feilmeldingen vises
-                        if (scope.feilmeldinger.contains(feilmelding)) {
+                        if (scope.feilmeldinger.containsObjectWithValue(feilmelding.feil)) {
                             leggTilFeilmeldingHvisIkkeAlleredeLagtTil(fortsattFeilListe, feilmelding);
                         }
                     });
@@ -81,7 +90,7 @@ angular.module('nav.feilmeldinger', [])
                 }
 
                 function leggTilFeilmeldingHvisIkkeAlleredeLagtTil(liste, feilmelding) {
-                    if (!liste.contains(feilmelding)){
+                    if (!liste.containsObjectWithValue(feilmelding.feil)){
                         liste.push(feilmelding);
                     }
                 }
@@ -99,7 +108,7 @@ angular.module('nav.feilmeldinger', [])
                         return "Fant ikke feilmelding med key " + feilmeldingNokkel;
                     }
 
-                    return feilmelding;
+                    return {feil: feilmelding, elem: finnTilhorendeElement(feil)};
                 };
 
                 function finnFeilmeldingsNokkel(feil, feilNokkel) {
@@ -112,6 +121,14 @@ angular.module('nav.feilmeldinger', [])
                         }
                     }
                     return feilmeldingNokkel;
+                }
+
+                function finnTilhorendeElement(feil) {
+                    var navn = '';
+                    if (feil) {
+                        navn = feil.$name;
+                    }
+                    return elem.closest('[data-ng-form]').find('[name=' + navn + ']');
                 }
             }
         };
