@@ -10,6 +10,19 @@ if (!Array.prototype.contains) {
     }
 }
 
+if (!Array.prototype.containsObjectWithValue) {
+    Array.prototype.containsObjectWithValue = function(val) {
+        return $.grep(this, function(obj) {
+            for (key in obj) {
+                if (obj[key] == val) {
+                    return true;
+                }
+            }
+            return false;
+        }).length > 0;
+    }
+}
+
 function checkTrue(element) {
     if (element == undefined) {
         return false;
@@ -45,6 +58,25 @@ function verdiErLagretISoknadData(scope, nokkel) {
     return false;
 }
 
+function verdiErIkkeTom(verdi) {
+    return verdi !== undefined && verdi !== null && verdi.length > 0;
+}
+
 function deepClone(obj) {
     return $.extend(true, {}, obj);
+}
+
+function harAttributt(objekt, attributt) {
+    var capitalizedAttr = capitalizeFirstLetter(attributt);
+    if (objekt.hasOwnProperty(attributt)) {
+        return objekt[attributt];
+    } else if (objekt.hasOwnProperty('ng' + capitalizedAttr)) {
+        return objekt['ng' + capitalizedAttr];
+    } else {
+        return false;
+    }
+}
+
+function capitalizeFirstLetter(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }

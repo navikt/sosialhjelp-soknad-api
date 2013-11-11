@@ -2,10 +2,13 @@ describe('utility funksjoner -', function () {
 
     describe('Array prototype:', function () {
 
-        var array;
+        var array, objArray;
 
-        beforeEach(function() {
-            array = [1,2,3];
+        beforeEach(function () {
+            array = [1, 2, 3];
+            objArray = [
+                {a: 1, 2: 'b'}
+            ];
         });
 
         it('skal returnere siste element i array', function () {
@@ -18,6 +21,18 @@ describe('utility funksjoner -', function () {
 
         it('skal returnere false når array ikke inneholder spesifisert element', function () {
             expect(array.contains(4)).toEqual(false);
+        });
+
+        it('skal returnere true dersom ett objekt i ett array har verdien 1', function () {
+            expect(objArray.containsObjectWithValue(1)).toBe(true);
+        });
+
+        it('skal returnere true dersom ett objekt i ett array har verdien b', function () {
+            expect(objArray.containsObjectWithValue('b')).toBe(true);
+        });
+
+        it('skal returnere false dersom ingen objekter i ett array har gitt verdi', function () {
+            expect(objArray.containsObjectWithValue(2)).toBe(false);
         });
     });
 
@@ -46,7 +61,7 @@ describe('utility funksjoner -', function () {
     describe('Sjekk deep clone av et objekt', function () {
         var obj;
 
-        beforeEach(function() {
+        beforeEach(function () {
             obj = {1: 'a'};
         });
 
@@ -65,6 +80,40 @@ describe('utility funksjoner -', function () {
             expect(Object.keys(objDeepClone)).not.toEqual(Object.keys(obj));
         });
     });
+
+    describe('Sjekk attributt av java-objekt', function () {
+        it('skal returnere true for objekt som inneholder attributt uten angular-prefix', function () {
+            var obj = {attributt: 1};
+
+            expect(harAttributt(obj, 'attributt')).toBe(1);
+        });
+
+        it('skal returnere false for objekt som ikke inneholder attributt uten angular-prefix', function () {
+            var obj = {attributt: 1};
+
+            expect(harAttributt(obj, 'blah')).toBe(false);
+        });
+
+        it('skal returnere true for objekt som inneholder attributt med angular-prefix men uten data-prefix', function () {
+            var obj = {'ngAttributt': 1};
+
+            expect(harAttributt(obj, 'attributt')).toBe(1);
+        });
+    });
+
+        describe('capitalize string', function () {
+            it('skal gjøre første bokstaven i en string stor', function () {
+                var str = "tekst";
+                var expectedStr = "Tekst";
+                expect(capitalizeFirstLetter(str)).toBe(expectedStr);
+            });
+
+            it('skal ikke endre tekst med stor forbokstav', function () {
+                var str = "Tekst";
+                var expectedStr = "Tekst";
+                expect(capitalizeFirstLetter(str)).toBe(expectedStr);
+            });
+        });
 });
 
 
