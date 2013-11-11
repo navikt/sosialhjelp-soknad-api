@@ -1,0 +1,31 @@
+<html>
+<head>
+    <title>Min tittel</title>
+
+    <style>
+        body {
+            color: #000000;
+            background-color: #cccccc;
+        }
+    </style>
+    <script type="text/javascript">
+        function changeTestElement() {
+            document.getElementById('testElement').innerHTML = "Dynamisk tekst";
+        }
+    </script>
+</head>
+
+<body>
+    <h3>Kvitteringsside</h3>
+
+    <p>
+        Dette er en test.
+    </p>
+    <p id="testElement">test</p>
+
+<script type="text/javascript">
+    changeTestElement();
+</script>
+
+</body>
+</html>
