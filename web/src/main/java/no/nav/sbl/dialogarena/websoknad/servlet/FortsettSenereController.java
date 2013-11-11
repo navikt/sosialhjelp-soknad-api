@@ -5,6 +5,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import no.nav.sbl.dialogarena.websoknad.service.EmailService;
 
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.util.value.ValueMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -29,12 +32,10 @@ public class FortsettSenereController {
 	    @RequestMapping(value = "/{soknadId}/fortsettsenere", method = RequestMethod.POST)
 	    @ResponseBody()
 	    public void sendEpost(HttpServletRequest request, @PathVariable Long soknadId, @RequestBody String epost) {
-	        String content = "http://a34duvw22583.devillo.no:8181/sendsoknad/soknad/Dagpenger#/dagpenger/" + soknadId;
-	    	System.out.println(request.getServerName());
-	    	System.out.println(request.getServerPort());
-	        System.out.println("Sender mail til " + epost + " med content " + content);
-	        
+	        String url = ServerUtils.getGjenopptaUrl(request.getRequestURL().toString(), soknadId);
+	        ValueMap map = new ValueMap();
+	        map.put("url", url);
+	        String content = new StringResourceModel("fortsettSenere.sendEpost.epostInnhold", Model.of(map)).getString();
 	    	emailService.sendFortsettSenereEPost(epost, "Lenke til påbegynt dagpengesøknad", content);
 	    }
 }
-
