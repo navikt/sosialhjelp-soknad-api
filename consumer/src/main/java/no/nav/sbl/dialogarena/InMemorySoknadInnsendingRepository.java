@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena;
 
-import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 
 import java.util.HashMap;
 import java.util.Map;
