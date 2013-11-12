@@ -171,6 +171,7 @@
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Avhengigheter med scope runtime -->
@@ -257,12 +258,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Avhengigheter med scope provided -->
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
+            <scope>runtime</scope>
         </dependency>
 
-        <!-- Avhengigheter med scope provided -->
 
         <dependency>
             <groupId>javax.servlet</groupId>
