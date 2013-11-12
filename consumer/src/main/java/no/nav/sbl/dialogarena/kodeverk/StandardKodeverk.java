@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static java.util.Collections.sort;
+import static javax.xml.bind.JAXBContext.newInstance;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
 import static no.nav.modig.lang.collections.PredicateUtils.exists;
@@ -41,6 +43,7 @@ import static no.nav.modig.lang.collections.TransformerUtils.makeDirs;
 import static no.nav.modig.lang.option.Optional.none;
 import static no.nav.modig.lang.option.Optional.optional;
 import static no.nav.sbl.dialogarena.common.Comparators.compareBy;
+import static org.joda.time.DateTime.now;
 
 /**
  * Tilbyr kodeverkoppslag. Implementasjonen laster hele kodeverk fra webservice on-demand,
@@ -105,7 +108,7 @@ public class StandardKodeverk implements Kodeverk {
 
         for (String kodeverksnavn : ALLE_KODEVERK) {
             XMLEnkeltKodeverk enkeltkodeverk = hentKodeverk(kodeverksnavn);
-            List<XMLKode> gyldige = on(enkeltkodeverk.getKode()).filter(where(GYLDIGHETSPERIODER, exists(periodeMed(DateTime.now())))).collect();
+            List<XMLKode> gyldige = on(enkeltkodeverk.getKode()).filter(where(GYLDIGHETSPERIODER, exists(periodeMed(now())))).collect();
             enkeltkodeverk.getKode().clear();
             enkeltkodeverk.getKode().addAll(gyldige);
             oppdatertKodeverk.put(kodeverksnavn, enkeltkodeverk);
@@ -157,7 +160,6 @@ public class StandardKodeverk implements Kodeverk {
             webserviceException = optional(e);
         }
 
-
         if (webserviceException.isSome()) {
             RuntimeException kodeverkfeil = webserviceException.get();
             if (kodeverk.containsKey(navn)) {
@@ -175,13 +177,9 @@ public class StandardKodeverk implements Kodeverk {
         } else {
             dumpIfPossible(navn, kodeverket);
         }
-
-
         if (!POSTNUMMER.equals(navn)) {
-            Collections.sort(kodeverket.getKode(), compareBy(TERMNAVN));
+            sort(kodeverket.getKode(), compareBy(TERMNAVN));
         }
-
-
         return kodeverket;
     }
 
@@ -216,12 +214,11 @@ public class StandardKodeverk implements Kodeverk {
         };
     }
 
-
     private static final JAXBContext JAXB;
 
     static {
         try {
-            JAXB = JAXBContext.newInstance(XMLKodeverk.class);
+            JAXB = newInstance(XMLKodeverk.class);
         } catch (JAXBException e) {
             throw new RuntimeException(
                     "Unable to load class " + StandardKodeverk.class.getName() +
