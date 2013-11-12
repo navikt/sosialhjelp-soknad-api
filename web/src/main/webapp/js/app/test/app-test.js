@@ -32,7 +32,6 @@ $httpBackend.whenGET('/sendsoknad/rest/soknad').respond(soknadData);
 	//$httpBackend.whenGET('/sendsoknad/rest/soknad').passThrough();
 	$httpBackend.whenPOST('/sendsoknad/rest/soknad/1').respond(function(method, url, data) {
 		soknadData.fakta.push(angular.fromJson(data));
-		console.log("SoknadData " + soknadData);
 		//soknadData.push(angular.fromJson(data));
 	});
 	//$httpBackend.whenPOST('/sendsoknad/rest/soknad').passThrough();

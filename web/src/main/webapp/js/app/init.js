@@ -24,7 +24,7 @@ angular.module('sendsoknad')
 
         return d;
     }])
-    .factory('HentSoknadService', ['data', '$resource', '$q', '$route', function(data, $resource, $q, $route) {
+    .factory('HentSoknadService', ['data', '$resource', '$q', '$route', 'soknadService', function(data, $resource, $q, $route, soknadService) {
         var soknadId = $route.current.params.soknadId;
         var promiseArray = [];
 
@@ -36,12 +36,16 @@ angular.module('sendsoknad')
         promiseArray.push(tekster.$promise);
 
         if (soknadId != undefined) {
-            var soknad = $resource('/sendsoknad/rest/soknad/' + soknadId).get(
+            var soknad = soknadService.get({param: soknadId},
                 function(result) { // Success
                     data.soknad = result;
                 }
             );
-            promiseArray.push(soknad.$promise);
+            var soknadOppsett = soknadService.options({param: soknadId},
+                function(result) { // Success
+                    data.soknadOppsett = result;
+                });
+            promiseArray.push(soknad.$promise, soknadOppsett.$promise);
         }
 
         var d = $q.all(promiseArray);

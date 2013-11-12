@@ -1,81 +1,89 @@
 #arbeidsforhold {
-    .arbeidsforhold-spm {
-        margin-bottom: 40px;
+  .arbeidsforhold-informasjonstekst {
+    margin-bottom: 30px !important;
+    margin-top: 10px !important;
+    font-size: 17px;
+    font-weight: 600;
+    font-family: Modus;
+  }
+  .arbeidsforhold-spm {
+    margin-bottom: 40px;
 
-        input, select {
-            width: 75%;
-            margin-bottom: 1rem;
+    input, select {
+      width: 75%;
+      margin-bottom: 1rem;
 
-            &#arbeidsgiver_navn {
-                width: 100%;
-            }
-        }
-
-        .varighet {
-            width: 75%;
-            > div {
-                display: inline-block;
-                width: 47.35%;
-
-                input {
-                    width: 100%;
-                }
-
-                &:last-child {
-                    margin-left: 4%;
-                }
-            }
-        }
-
-        .sluttaarsak-informasjon {
-            margin-bottom: 1rem;
-        }
+      &#arbeidsgiver_navn {
+        width: 100%;
+      }
     }
 
-    .knapper-arbeidsforhold {
-        border-top: 1px solid #ddd;
-        margin-top: 1rem;
-        padding-top: 2rem;
-        text-align: center;
+    .varighet {
+      width: 75%;
+      > div {
+        display: inline-block;
+        width: 47.35%;
 
-        input, a {
-            display: block;
-            margin: 0 auto 1rem;
+        input {
+          width: 100%;
         }
+
+        &:last-child {
+          margin-left: 4%;
+        }
+      }
     }
+
+    .sluttaarsak-informasjon {
+      margin-bottom: 1rem;
+    }
+  }
+
+  .knapper-opprett-arbeidsforhold {
+    border-top: 1px solid #ddd;
+    margin-top: 1rem;
+    padding-top: 2rem;
+    text-align: center;
+
+    input, a {
+      display: block;
+      margin: 0 auto 1rem;
+    }
+  }
 
   .arbeidsforhold-oppsummering-endre-slett {
     text-align: center;
     margin-bottom: 30px !important;
   }
 
-    .spm-knapper {
-        border-top: 1px solid #ddd;
-        padding-top: 40px;
+  .spm-knapper {
+    border-top: 1px solid #ddd;
+    padding-top: 40px;
+  }
+
+  .knapper-arbeidsforhold {
+    #legg-til {
+      text-align: center;
+      margin-top: 40px;
     }
 
-    [name="arbeidsforholdForm"] {
-        #legg-til {
-            text-align: center;
-            margin-top: 40px;
-        }
-
-        #har-ikke-jobbet {
-            margin-top: 40px;
-        }
+    #har-ikke-jobbet {
+      margin-top: 40px;
     }
+  }
 }
 
-.arbeidsforhold-informasjonstekst {
-  margin-bottom: 30px !important;
-  margin-top: 10px !important;
-  font-size: 17px;
-  font-weight: 600;
-  font-family: Modus;
-}
-.arbeidsforhold {
+[data-ng-repeat="af in arbeidsforhold"] {
   border-bottom: 1px solid #ddd;
   margin-bottom: 30px;
+
+  &.last {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+}
+
+.arbeidsforhold {
 
   .arbeidsforhold-dato {
     text-transform: uppercase;
@@ -84,21 +92,23 @@
   .arbeidsforhold-arbeidsgivernavn {
     font-weight: bold;
   }
-  .oppsummering-label {
+  .arbeidsforhold-arbeidsgivernavn-overskrift {
+    font-size: 17px;
+    font-family: modus;
+    font-weight: 600;
+    margin-bottom: 15px !important;
+  }
 
-    .svar-oppsummering-label {
-      text-transform: uppercase;
-      margin-right: 5px;
+  .arbeidsforhold-land-sluttaarsak-blokk {
+    margin-bottom: 15px;
 
+    .svar-oppsummering-deler {
+      margin: 0px 5px;
     }
   }
 
-  .svar-oppsummering-uten-checkbox {
-    margin-bottom: 10px !important;
-    font-weight: bold;
-  }
-  .svar-oppsummering-informasjon {
-    margin-bottom: 15px !important;
+  .arbeidsforhold-oppsummering-endre-slett {
+    text-align: center;
   }
 }
 
@@ -107,6 +117,7 @@
   margin-bottom: 20px;
   display: inline-block;
 }
-.sluttaarsak {
-  margin-top: 25px;
-}
+
+
+
+

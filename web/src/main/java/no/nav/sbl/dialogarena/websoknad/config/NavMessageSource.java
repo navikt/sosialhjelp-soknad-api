@@ -16,7 +16,6 @@ import static no.nav.modig.content.enonic.innholdstekst.Innholdstekst.KEY;
 
 public class NavMessageSource extends ReloadableResourceBundleMessageSource {
 
-
     @Inject
     private ContentRetriever contentRetriever;
 
@@ -31,10 +30,8 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
         enableEnonic = enable;
     }
 
-
     public Properties getBundleFor(String prefix, Locale locale) {
-        PropertiesHolder mergedProperties = getMergedProperties(locale);
-        return mergedProperties.getProperties();
+        return getMergedProperties(locale).getProperties();
     }
 
     @Override
@@ -57,4 +54,5 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
         }
         return holder;
     }
+
 }

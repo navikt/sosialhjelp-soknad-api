@@ -63,8 +63,12 @@ describe('DagpengerControllere', function() {
     var scope, ctrl, form;
 
     beforeEach(
-        module('app.services', 'app.controllers')
+        module('app.services', 'app.controllers', 'nav.feilmeldinger')
     );
+
+     beforeEach(module(function($provide) {
+         $provide.value("data", {});
+    }));
 
     beforeEach(inject(function ( $rootScope, $controller, $compile) {
         scope = $rootScope.$new();
@@ -78,7 +82,9 @@ describe('DagpengerControllere', function() {
         }
 
         form = angular.element(
-            '<form name="form"></form>'
+            '<form name="form">'
+          +      '<form-errors></form-errors>'
+          +  '</form>'
         );
         $compile(form)(scope);
         scope.$digest();

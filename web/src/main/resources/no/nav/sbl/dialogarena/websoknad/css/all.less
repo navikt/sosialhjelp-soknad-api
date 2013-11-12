@@ -45,7 +45,7 @@
 
 .lenker-dot {
 
-    span {
+    > span {
         margin-left: 14px;
 
         &:first-child {
@@ -65,7 +65,7 @@
         margin-left: 2rem !important;
     }
 
-    span:not(:first-child) {
+    > span:not(:first-child) {
         &:before {
             padding-right: 14px;
             content: "•";
@@ -97,9 +97,23 @@
     border-bottom: none;
     padding-bottom: 0;
 
+    #frivillig-textarea {
+        margin: 10px auto 0;
+
+        label {
+            text-transform: uppercase;
+        }
+        textarea {
+            overflow-y: hidden;
+            margin: 10px auto 0;
+            max-width: 50%;
+            min-width: 50%;
+            min-height: 40px;
+        }
+    }
     a[class*="knapp-"] {
-        margin-top: 5rem;
-        margin-bottom: 5rem;
+        margin-top: 40px;
+        margin-bottom: 40px;
     }
 
     .stegindikator {
@@ -114,11 +128,6 @@
         font-size: 18px;
         margin-right: 5px;
     }
-}
-
-// TODO: Skal fjernes når dette blir fikset i fellesen. Skal egentlig kunne settes med klasse på forms...
-input[type="text"], select, textarea {
-    display: block !important;
 }
 
 .tekstfelt {
@@ -170,6 +179,7 @@ input[type="text"], select, textarea {
         background-color: white;
 
         .flipp {
+            cursor: pointer;
             border-color: transparent transparent #a3a3a3 transparent;
             &:before {
                 border-top: 30px solid #ccc;
@@ -188,7 +198,8 @@ input[type="text"], select, textarea {
         height: 0;
         margin: 0 auto;
         border-style: solid;
-        border-color: transparent transparent #0067c5 transparent;
+        border-color: transparent transparent #0067c5 transparent
+    ;
         border-width: 0 2px 3px 2px;
 
         &:before {
@@ -247,6 +258,24 @@ input[type="text"], select, textarea {
                 }
             }
 
+            .svar-oppsummering-informasjon {
+                margin-bottom: 10px;
+            }
+
+            .svar-oppsummering-label {
+                text-transform: uppercase;
+                margin-right: 5px;
+            }
+
+            .svar-oppsummering-label-svar {
+                padding-bottom: 10px !important;
+            }
+
+            .svar-oppsummering-uten-checkbox {
+                margin-bottom: 10px !important;
+                font-weight: bold;
+            }
+
             .svar-oppsummering-sporsmal {
                 font-weight: bold;
             }
@@ -270,15 +299,17 @@ input[type="text"], select, textarea {
                     margin-top: 1rem;
 
                     a {
-                        &.ikke-aktiv {
-                            color: #3e3832;
-                            text-decoration: none;
-                        }
-
                         margin-right: 10px;
+                        cursor: pointer;
 
                         &:last-child {
                             margin-right: 0;
+                        }
+
+                        &.ikke-aktiv {
+                            cursor: default;
+                            color: #3e3832;
+                            text-decoration: none;
                         }
                     }
                 }
@@ -346,8 +377,9 @@ input[type="text"], select, textarea {
 }
 
 .ytelser-nei {
-  margin-top: 20px;
+    margin-top: 20px;
 }
+
 .form-errors {
     background-color: #c30000;
     padding: 1rem;
@@ -357,6 +389,10 @@ input[type="text"], select, textarea {
 
     li {
         color: #fff;
+
+        &.klikkbar {
+            cursor: pointer;
+        }
     }
 }
 
@@ -369,104 +405,20 @@ input[type="text"], select, textarea {
     color: #333;
 }
 
+.form-linje {
+    .melding {
+        display: none;
+    }
 
-// TODO: Skal legges inn i fellesen når den kommer tilbake til git...
-[ng-form], [data-ng-form] {
-    margin: 0;
-    text-align: left;
-    label {
-        font-size: 0.8rem !important;
-        text-transform: uppercase;
-        span {
-            font-size: 0.8rem !important;
-            text-transform: uppercase;
+    &.feil {
+        select {
+            border: 1px solid @pink;
+            border-top: 1px solid #ff0000;
+            background: @errorBackground;
         }
-    }
-    input[type="radio"],
-    input[type="checkbox"] {
-        position: absolute;
-        height: 0;
-        width: 0;
-        opacity: 0;
-    }
 
-    input[type="radio"] + label {
-        background: url(../img/radio.svg) 0 0 no-repeat;
-    }
-
-    input[type="radio"]:checked + label {
-        background: url(../img/radio_valgt.svg) 0 0 no-repeat;
-    }
-
-    input[type="radio"]:disabled:checked + label {
-        background: url(../img/radio_inactive_valgt.svg) 0 0 no-repeat;
-    }
-
-    input[type="radio"]:disabled + label {
-        background: url(../img/radio_inactive.svg) 0 0 no-repeat;
-    }
-
-    input[type="checkbox"] + label {
-        background: url(../img/check.svg) 0 0 no-repeat;
-    }
-
-    input[type="checkbox"]:disabled + label {
-        background: url(../img/check_inactive.svg) 0 0 no-repeat;
-    }
-
-    input[type="checkbox"]:checked + label {
-        background: url(../img/check_valgt.svg) 0 0 no-repeat;
-    }
-
-    input[type="checkbox"]:disabled:checked + label {
-        background: url(../img/check_inactive_valgt.svg) 0 0 no-repeat;
-    }
-
-    input[type="radio"] + label,
-    input[type="checkbox"] + label {
-        display: inline-block;
-        position: relative;
-        padding: 2px 0 0 27px;
-        height: 30px;
-        margin-right: 1rem;
-        font-family: @headingsFontFamily;
-        font-size: 1rem !important;
-    }
-
-    input[type="radio"]:checked + label,
-    input[type="checkbox"]:checked + label {
-        font-weight: bold;
-    }
-
-    .valggruppe {
-        span {
+        .melding {
             display: block;
-            font-size: 0.8rem !important;
-            text-transform: uppercase;
-            margin-bottom: 0.5rem;
-        }
-        label {
-            font-size: 1rem !important;
-            text-transform: none;
-        }
-        .vannrett {
-        }
-        .loddrett {
-            label {
-                display: block !important;
-            }
-        }
-        .kolonner-to {
-            .content-columns(2, 0.5rem);
-            label {
-                display: block !important;
-            }
-        }
-        .kolonner-tre {
-            .content-columns(3, 0.5rem);
-            label {
-                display: block !important;
-            }
         }
     }
 }
