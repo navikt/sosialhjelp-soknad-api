@@ -29,7 +29,7 @@ import java.util.List;
 @Named("soknadInnsendingRepository")
 //marker alle metoder som transactional. Alle operasjoner vil skje i en transactional write context. Read metoder kan overstyre dette om det trengs.
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
-public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadRepository {
+public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadRepository{
 
     private static final Logger LOG = LoggerFactory.getLogger(SoknadRepositoryJdbc.class);
     private DefaultLobHandler lobHandler;
