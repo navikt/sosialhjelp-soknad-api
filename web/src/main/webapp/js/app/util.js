@@ -43,7 +43,7 @@ function scrollToElement(element) {
 
 function fiksNavn(element, navn, tmpNavn) {
     var formCtrl = element.parent().controller('form');
-    var inputElement = element.find('input');
+    var inputElement = element.find('input, textarea');
     if (inputElement) {
         inputElement.attr('name', navn);
     }
