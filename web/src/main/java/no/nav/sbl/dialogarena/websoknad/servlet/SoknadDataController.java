@@ -1,17 +1,10 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import no.nav.modig.core.context.SubjectHandler;
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.person.Adresse;
-import no.nav.sbl.dialogarena.person.Person;
-import no.nav.sbl.dialogarena.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
@@ -25,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.gson.Gson;
-
 /**
  * Klassen håndterer alle rest kall for å hente grunnlagsdata til applikasjonen.
  */
@@ -34,12 +25,6 @@ import com.google.gson.Gson;
 @RequestMapping("/soknad")
 public class SoknadDataController {
 
-	@Inject
-	private PersonService personService;
-	
-	@Inject
-    private Kodeverk kodeverk;
-	
     @Inject
     private SendSoknadService soknadService;
 
@@ -50,26 +35,7 @@ public class SoknadDataController {
         return soknad;
     }
 
-    @RequestMapping(value = "/lagre/{soknadId}/persondata", method = RequestMethod.POST)
-    @ResponseBody()
-    public void leggPersonDataTilIStruktur(@PathVariable Long soknadId) {
-        String fnr = SubjectHandler.getSubjectHandler().getUid();
-    	Person person = personService.hentPerson(new Long(soknadId), fnr);
-    
-    	for (Object faktumObj : person.getFakta().values()) {
-    		if(faktumObj instanceof Faktum) {
-    			Faktum faktum = (Faktum) faktumObj;
-    			soknadService.lagreSoknadsFelt(soknadId, faktum.getKey(), faktum.getValue());
-    		} else if (faktumObj instanceof List<?>) {
-    			@SuppressWarnings("unchecked")
-				List<Adresse> adresseList = (List<Adresse>) faktumObj;
-    			String adresseJson = new Gson().toJson(adresseList);
-    			soknadService.lagreSoknadsFelt(soknadId, "adresser", adresseJson);
-    		}
-    	}
-	}
-
-	@RequestMapping(value = "/options/{soknadId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/options/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public SoknadStruktur hentSoknadStruktur(@PathVariable Long soknadId) {
 
