@@ -6,24 +6,23 @@ angular.module('nav.textarea', [])
             scope: {
                 model: '=ngModel',
                 nokkel: '@',
-                maxlengde: '@'
+                maxlengde: '@',
+                inputname: '@',
+                feilmelding: '@'
             },
             controller: function ($scope) {
                 $scope.sporsmal = $scope.nokkel + ".sporsmal";
                 $scope.feilmelding = $scope.nokkel + ".feilmelding";
                 $scope.tellertekst = $scope.nokkel + ".tellertekst";
-                $scope.counter = $scope.maxlengde;
-                $scope.fokus = false;
-                $scope.oppdaterTeller = function () {
-                    if ($scope.model) {
-                        $scope.counter = $scope.maxlengde - $scope.model.length;
-                    } else {
-                        $scope.counter = $scope.maxlengde;
-                    }
-                }
             },
-            templateUrl: '../js/app/directives/navtextarea/navtextareaTemplate.html',
-            link: function ($scope, element, attrs) {
+
+            link: function (scope, element, attrs, ctrl) {
+                scope.counter = scope.maxlengde;
+                scope.fokus = false;
+
+                var tmpElementName = 'tmpName';
+                fiksNavn(element, scope.inputname, tmpElementName);
+
                 $(element).on('keyup', 'textarea', function (e) {
                     $(this).css('height', '0px');
                     $(this).height(this.scrollHeight);
@@ -31,15 +30,44 @@ angular.module('nav.textarea', [])
                 $(element).find('textarea').keyup();
 
                 element.find('textarea').bind('focus', function () {
-                    $scope.fokus = true;
-                    $scope.$apply(attrs.onFocus);
+                    scope.fokus = true;
+                    scope.$apply(attrs.onFocus);
+
+                    $(this).css('height', '0px');
+                    $(this).height(this.scrollHeight);
+
                 })
                 element.find('textarea').bind('blur', function () {
-                    $scope.fokus = false;
-                    $scope.$apply(attrs.onBlur)
+                    scope.fokus = false;
+                    scope.$apply(attrs.onBlur)
+
+                    var verdi = element.find('textarea').val().toString();
+
+                    if (scope.counter > -1) {
+                        scope.$emit("OPPDATER_OG_LAGRE", {key: element.find('textarea').attr('name'), value: verdi});
+                    }
                 })
 
+                scope.oppdaterTeller = function () {
+                    if (scope.model) {
+                        scope.counter = scope.maxlengde - scope.model.length;
+                        validerAntallTegn();
+                     //   scope.runValidation();
+                    } else {
+                        scope.counter = scope.maxlengde;
+                    }
+                }
 
-            }
+                function validerAntallTegn() {
+                    if (scope.counter < 0) {
+                        ctrl.$setValidity(scope.nokkel, false);
+                    } else {
+                        ctrl.$setValidity(scope.nokkel, true);
+                    }
+                }
+
+                validerAntallTegn();
+            },
+            templateUrl: '../js/app/directives/navtextarea/navtextareaTemplate.html'
         };
     }]);
