@@ -16,7 +16,7 @@ public class VedleggRowMapper implements RowMapper<Vedlegg> {
         vedlegg.setId(rs.getLong("vedlegg_id"));
         vedlegg.setSoknadId(rs.getLong("soknad_id"));
         vedlegg.setNavn(rs.getString("navn"));
-        vedlegg.setFaktum(rs.getString("faktum"));
+        vedlegg.setFaktum(rs.getLong("faktum"));
         vedlegg.setStorrelse(rs.getInt("storrelse"));
         vedlegg.setInputStream(rs.getBinaryStream("data"));
         return vedlegg;

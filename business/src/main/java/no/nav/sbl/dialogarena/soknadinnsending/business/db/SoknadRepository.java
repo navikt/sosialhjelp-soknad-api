@@ -35,7 +35,7 @@ public interface SoknadRepository {
 
     void slettVedlegg(Long soknadId, Long vedleggId);
 
-    List<Vedlegg> hentVedleggForFaktum(Long soknadId, String faktum);
+    List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktum);
 
     InputStream hentVedlegg(Long soknadI, Long vedleggId);
 }

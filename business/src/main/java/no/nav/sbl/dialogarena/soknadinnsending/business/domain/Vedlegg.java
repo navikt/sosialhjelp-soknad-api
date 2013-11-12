@@ -10,7 +10,7 @@ public class Vedlegg {
     private Long soknadId;
     private String navn;
     private Long storrelse;
-    private String faktum;
+    private Long faktum;
     private InputStream inputStream;
 
     public Long getId() {
@@ -29,11 +29,11 @@ public class Vedlegg {
         this.soknadId = soknadId;
     }
 
-    public String getFaktum() {
+    public Long getFaktum() {
         return faktum;
     }
 
-    public void setFaktum(String faktum) {
+    public void setFaktum(Long faktum) {
         this.faktum = faktum;
     }
 

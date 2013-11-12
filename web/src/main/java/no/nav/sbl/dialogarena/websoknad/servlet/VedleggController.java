@@ -38,7 +38,7 @@ public class VedleggController {
 
     @RequestMapping(value = "", params = "faktumId", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
-    public List<VedleggOpplastingResultat> lastOppDokumentSoknad(@PathVariable Long soknadId, @RequestParam String faktumId, @RequestParam("files[]") ArrayList<MultipartFile> files) {
+    public List<VedleggOpplastingResultat> lastOppDokumentSoknad(@PathVariable Long soknadId, @RequestParam Long faktumId, @RequestParam("files[]") ArrayList<MultipartFile> files) {
         List<VedleggOpplastingResultat> res = new ArrayList<>();
         for (MultipartFile file : files) {
             Vedlegg vedlegg = new Vedlegg();
@@ -68,13 +68,6 @@ public class VedleggController {
         soknadService.slettVedlegg(soknadId, vedleggId);
     }
 
-    @RequestMapping(value = "/{vedleggId}/thumbnail2", method = RequestMethod.GET, produces = IMAGE_PNG_VALUE)
-    @ResponseBody()
-    public byte[] lagForhandsvisningForVedlegg2(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
-        return soknadService.lagForhandsvisning(soknadId, vedleggId);
-
-    }
-
     @RequestMapping(value = "/{vedleggId}/thumbnail", method = RequestMethod.GET, produces = IMAGE_PNG_VALUE)
     @ResponseBody()
     public Callable<byte[]> lagForhandsvisningForVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
@@ -87,9 +80,9 @@ public class VedleggController {
     }
 
 
-    @RequestMapping(value = "/{soknadId}/opplasting?faktumId={faktumId}", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/bekreft?faktumId={faktumId}", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
-    public Long bekreftFaktumVedlegg(@PathVariable Long soknadId, @RequestParam String faktumId) {
+    public Long bekreftFaktumVedlegg(@PathVariable Long soknadId, @RequestParam Long faktumId) {
         return 0L;
     }
 
