@@ -17,4 +17,5 @@ public class WebSoknadId implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
 }
