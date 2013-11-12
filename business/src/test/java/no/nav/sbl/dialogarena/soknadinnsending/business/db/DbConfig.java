@@ -18,7 +18,7 @@ public class DbConfig {
     private DataSource dataSource;
 
     @Bean
-    public SoknadRepository soknadRepository() {
+    public SoknadRepository soknadInnsendingRepository() {
         return new SoknadRepositoryJdbc();
     }
 
