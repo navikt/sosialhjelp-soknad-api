@@ -10,7 +10,6 @@
 
     <modules>
         <module>config</module>
-		<module>db</module>
         <module>business</module>
         <module>consumer</module>
         <module>web</module>
