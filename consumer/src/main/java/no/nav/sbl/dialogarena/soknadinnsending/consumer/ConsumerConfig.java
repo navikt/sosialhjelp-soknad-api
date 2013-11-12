@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
 import no.nav.modig.jaxws.handlers.MDCOutHandler;
-import no.nav.modig.security.sts.utility.STSConfigurationUtility;
 import no.nav.tjeneste.virksomhet.aktoer.v1.AktoerPortType;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.feature.LoggingFeature;
@@ -21,6 +20,9 @@ import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 import java.util.ArrayList;
 import java.util.List;
+
+import static no.nav.modig.security.sts.utility.STSConfigurationUtility.configureStsForExternalSSO;
+import static no.nav.modig.security.sts.utility.STSConfigurationUtility.configureStsForSystemUser;
 
 @Configurable
 @ComponentScan
@@ -47,9 +49,8 @@ public class ConsumerConfig {
 
     @SuppressWarnings("PMD.SingularField")
     private enum Services {
-        AKTOER(new QName("http://nav.no/tjeneste/virksomhet/aktoer/v1/", "AktoerPortType"),
+        AKTOER (new QName("http://nav.no/tjeneste/virksomhet/aktoer/v1/", "AktoerPortType"),
                 "classpath:wsdl/no/nav/tjeneste/virksomhet/aktoer/v1/Aktoer.wsdl");
-
         private final QName portType;
         private final String wsdl;
 
@@ -62,17 +63,17 @@ public class ConsumerConfig {
     private enum Type {
         SYSTEM, USER;
 
-
         public void configureSecurity(Client client) {
             if (SYSTEM.equals(this)) {
-                STSConfigurationUtility.configureStsForSystemUser(client);
+                configureStsForSystemUser(client);
             } else {
-                STSConfigurationUtility.configureStsForExternalSSO(client);
+                configureStsForExternalSSO(client);
             }
         }
     }
 
     private static final class CxfService<T> {
+
         private final Services service;
         private final String endpointUrl;
         private final Type system;
