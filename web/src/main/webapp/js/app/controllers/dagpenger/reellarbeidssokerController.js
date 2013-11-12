@@ -1,5 +1,7 @@
 angular.module('nav.reellarbeidssoker',[])
     .controller('ReellarbeidssokerCtrl', ['$scope', function ($scope) {
+        $('#123woot').select2();
+
         $scope.navigering = {nesteside: 'arbeidsforhold'};
         $scope.sidedata = {navn: 'reellarbeidssoker'};
 
