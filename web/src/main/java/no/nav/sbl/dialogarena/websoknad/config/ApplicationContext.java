@@ -27,7 +27,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
         ContentConfig.class,
         ServicesApplicationContext.class,
         SoknadInnsendingDBConfig.class})
-@Import({BusinessConfig.class, CacheConfig.class, FooterConfig.class, GAConfig.class, ConsumerConfig.class, ContentConfig.class, ServicesApplicationContext.class, SoknadInnsendingDBConfig.class})
 public class ApplicationContext {
 
     @Value("${dialogarena.navnolink.url}")
