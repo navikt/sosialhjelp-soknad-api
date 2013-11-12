@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.person.Person;
 import no.nav.sbl.dialogarena.person.PersonService;
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
+import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 
 @Controller
 @RequestMapping("/soknad")
@@ -49,14 +49,13 @@ public class SoknadTpsDataController {
     @RequestMapping(value = "/{soknadId}/personalia", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Person hentPerson(@PathVariable String soknadId) {
-        String fnr = SubjectHandler.getSubjectHandler().getUid();
-    	return personService.hentPerson(new Long(soknadId), fnr);
+        return personService.hentPerson(new Long(soknadId), getSubjectHandler().getUid());
     }
     
     @RequestMapping(value = "/{soknadId}/personalia/fnr/{fnr}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Person hentEnPerson(@PathVariable String soknadId, @PathVariable String fnr) {
-  
     	return personService.hentPerson(new Long(soknadId), fnr);
     }
+
 }

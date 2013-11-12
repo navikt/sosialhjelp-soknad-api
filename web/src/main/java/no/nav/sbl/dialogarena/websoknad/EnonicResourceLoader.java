@@ -36,4 +36,5 @@ public class EnonicResourceLoader implements IStringResourceLoader {
             return null;
         }
     }
+
 }
