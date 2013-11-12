@@ -1,18 +1,9 @@
 describe('brukerdata domene', function () {
 
     beforeEach(
-        module('app.services', 'app.brukerdata')
-    );
-
-    describe('soknaddata controller', function () {
-
-        var scope, ctrl, $httpBackend, routeParams;
-
-        beforeEach(inject(function (_$httpBackend_, $rootScope, $controller) {
-            routeParams = {};
-            $httpBackend = _$httpBackend_;
-            $httpBackend.whenGET(/sendsoknad\/rest\/soknad\/.*/).
-                respond({"soknadId": 1, "gosysId": "Dagpenger", "brukerBehandlingId": "100000000",
+        module('app.services', 'app.brukerdata', function ($provide) {
+            $provide.value("data", {
+                soknad: {"soknadId": 1, "gosysId": "Dagpenger", "brukerBehandlingId": "100000000",
                     "fakta": {
                         "fornavn": {"soknadId": 1, "key": "fornavn", "value": "Ola"},
                         "mellomnavn": {"soknadId": 1, "key": "mellomnavn", "value": "Johan"},
@@ -22,26 +13,25 @@ describe('brukerdata domene', function () {
                         "postnr": {"soknadId": 1, "key": "postnr", "value": "0175"},
                         "poststed": {"soknadId": 1, "key": "poststed", "value": "Oslo"}
                     }
-                });
+                }
+            });
+    }));
+
+    describe('soknaddata controller', function () {
+
+        var scope, ctrl;
+
+        beforeEach(inject(function ($rootScope, $controller) {
             scope = $rootScope.$new();
-            routeParams.soknadId = 1;
             ctrl = $controller('SoknadDataCtrl', {
-                $scope: scope,
-                $routeParams: routeParams
+                $scope: scope
             });
         }));
 
         it('skal returnere soknaddata', function () {
-            $httpBackend.flush();
             expect(scope.soknadData.soknadId).toEqual(1);
             expect(scope.soknadData.fakta.fornavn.soknadId).toEqual(1);
             expect(scope.soknadData.fakta.fornavn.value).toEqual('Ola');
-        });
-
-
-        it('skal legge til en et nytt faktum i soknaddata', function () {
-            $httpBackend.flush();
-            $httpBackend.whenPOST('/sendsoknad/rest/soknad').respond('200');
         });
     })
 
