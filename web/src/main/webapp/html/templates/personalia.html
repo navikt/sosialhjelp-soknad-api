@@ -1,5 +1,5 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <form name="personaliaForm" class="skjemainnhold" data-ng-controller="PersonaliaCtrl" data-ng-submit="validerPersonalia(personaliaForm)" novalidate>
+    <div data-ng-form="personaliaForm" class="skjemainnhold" data-ng-controller="PersonaliaCtrl"  novalidate>
         <div class="spm">
             <p class="spm-sporsmal">
                 <span cmstekster="personalia.intro"/> <a cmstekster="personalia.intro.tekst" cmslenketekster="personalia.intro.url"/>
@@ -10,12 +10,11 @@
             <label cmstekster="personalia.fnr"></label>
 
             <p> {{personalia.fakta.fnr.value}} </p>
+            <label cmstekster="personalia.navn"></label>
             <p> {{personalia.fakta.sammensattnavn.value}} </p>
 
             <div data-ng-show="harBostedsadresseOgIngenMidlertidigAdresse()">
-                <label cmstekster="personalia.navn"></label>
-
-
+                
                 <label cmstekster="personalia.bostedsadresse"></label>
 
                 <p>
@@ -29,11 +28,11 @@
                     {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].poststed }}
                 </p>
             </div>
-            <div data-ng-show="harMidlertidigAdresse()">
+            <div data-ng-if="harMidlertidigAdresse()">
                 <h4> {{ hentMidlertidigAdresseTittel() }}</h4>
-
                 <div data-ng-show="harMidlertidigAdresseEier()">
                 <p>
+
                     <span cmstekster="personalia.co"></span>
                     <span> {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].adresseEier }}</span>
                 </p>
@@ -43,18 +42,34 @@
                     <label cmstekster="personalia.postboks"></label>
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].postboksNummer }}
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].postboksNavn }}
+
                 </p>
 
                 <p data-ng-show="harGateAdresse()">
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gatenavn }}
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].husnummer }}
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].husbokstav }}
+
                 </p>
 
-                <p data-ng-show="harMidlertidigUtenlandskAdresse()">
-            <span data-ng-repeat="linje in personalia.fakta.adresser[data.midlertidigAdresse].utenlandsAdresse">
-                {{linje}}
-            </span>
+                 <p data-ng-show="harOmrodeAdresse()">
+                    {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].eiendomsnavn }}
+                </p>
+                <p>
+                    {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].postnummer }}
+                    {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].poststed }}
+
+                </p>
+                <p data-ng-show="harNorskMidlertidigAdresse()">
+                    Gyldig til: {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
+                    }}
+                </p>
+
+                <div data-ng-show="harMidlertidigUtenlandskAdresse()">
+                <p>
+                    <span data-ng-repeat="linje in personalia.fakta.adresser[personaliaData.midlertidigAdresse].utenlandsAdresse">
+                        {{linje}}
+                    </span>
                     {{personalia.fakta.adresser[personaliaData.midlertidigAdresse].land}}
                 </p>
 
@@ -63,27 +78,35 @@
                     {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].poststed }}
                 </p>
 
+
                 <p>
-                    Gyldig til: {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
-                    }}
+                        Gyldig til: {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
+                        }}
                 </p>
+                <h4 cmstekster="personalia.folkeregistrertadresse"></h4>
+
+                <p>
+                    {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].gatenavn }}
+                    {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].husnummer }}
+                    {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].husbokstav }}
+                </p>
+
+                <p>
+                    {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].postnummer }}
+                    {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].poststed }}
+                </p>
+                </div>
 
                 <div data-ng-show="harUtenlandskAdresse()">
                     <h4> Folkeregistrert adresse </h4>
 
                     <p> {{personalia.fakta.sammensattnavn.value}} </p>
 
-                    <label cmstekster="personalia.bostedsadresse"></label>
-
                     <p>
-                        {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].gatenavn }}
-                        {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].husnummer }}
-                        {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].husbokstav }}
-                    </p>
-
-                    <p>
-                        {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].postnummer }}
-                        {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].poststed }}
+                        <span data-ng-repeat="linje in personalia.fakta.adresser[personaliaData.utenlandskAdresse].utenlandsAdresse">
+                            {{linje}}
+                        </span>
+                        {{personalia.fakta.adresser[personaliaData.utenlandskAdresse].land}}
                     </p>
                 </div>
             </div>
@@ -92,8 +115,9 @@
             <img src="../img/ajaxloader/hvit/loader_hvit_64.gif" alt="Fremdriftsindikator"/>
         </div>
 
-        <spmblokkferdig
+        <div spmblokkferdig
                 nokkel="personalia"
-                modus="data.redigeringsModus"/>
-    </form>
+                modus="data.redigeringsModus"
+                submit-method="validerPersonalia(personaliaForm)"/>
+    </div>
 </div>

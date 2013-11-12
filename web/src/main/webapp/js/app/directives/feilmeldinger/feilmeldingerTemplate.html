@@ -1,3 +1,5 @@
-<div data-ng-repeat="feilmelding in errorliste">
-    <div cmstekster="{{ nokkel }}.{{feilmelding}}.feilmelding" />
-</div>
+<ul class="form-errors" data-ng-show="skalViseFeilmeldinger()">
+    <li class="form-error" ng-repeat="f in feilmeldinger" data-ng-click="scrollTilElementMedFeil(f)" data-ng-class="{klikkbar: erKlikkbarFeil(f)}">
+        {{ f.feil }}
+    </li>
+</ul>

@@ -2,7 +2,9 @@
 	<p class="sluttaarsak-informasjon" cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.informasjon"/>
 
 	<p class='spm' cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.sporsmal"/>
-	<input type="text" name="avskjedigetFraDato" ui-date ui-date-format data-ng-model="af.redusertArbeidstid.fra" 
+       <span data-ng-show="redusertArbeidstidDatoError" style="color:red"
+             cmstekster="arbeidsforhold.error.redusertArbeidstid.datoFra"/>
+	<input type="text" name="avskjedigetFraDato" ui-date ui-date-format data-ng-model="af.redusertArbeidstid.fra" data-ng-change="validateRedusertArbeidstidDato(af)"
 		error-messages="'arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.feilmelding'" required >
 
 	<div class="sporsmaal">

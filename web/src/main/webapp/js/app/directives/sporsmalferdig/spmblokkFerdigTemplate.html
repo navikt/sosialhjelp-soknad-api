@@ -1,6 +1,6 @@
 <div class="spm-knapper">
     <div data-ng-show="hvisIRedigeringsmodus()">
-        <input type="submit" class="knapp-hoved-liten"  cmstekster="{{ nokkel }}.ferdig"/>
+        <input type="button" class="knapp-hoved-liten"  cmstekster="{{ nokkel }}.ferdig" data-ng-click="submitMethod()"/>
 
         <div class="spm-navigering">
             <a class="forrige" cmstekster="forrige" data-ng-click="gaaTilForrige()"/>
@@ -10,7 +10,8 @@
             <span>
                 <a href="#/fortsettsenere/{{ soknadId }}" cmstekster="fortsettSenere"/>
             </span>
-            <span cmstekster="sistLagret"/>
+            <span sist-lagret/>
+
         </div>
     </div>
 

@@ -1,12 +1,14 @@
 angular.module('nav.sporsmalferdig', [])
     .directive('spmblokkferdig', ['$timeout', 'data', function ($timeout, data) {
         return {
-            restrict: "E",
+            require: '^form',
+            restrict: "AE",
             replace: true,
             templateUrl: '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html',
             scope: {
                 nokkel: '@',
-                modus: '='
+                modus: '=',
+                submitMethod: '&'
             },
             link: function (scope, element) {
                 var tab = element.closest('.accordion-group');
@@ -47,7 +49,7 @@ angular.module('nav.sporsmalferdig', [])
                     if (nyTab.length > 0) {
                         apneTab(nyTab);
                         $timeout(function () {
-                            scrollToTab(nyTab);
+                            scrollToElement(nyTab);
                         }, 200);
                     }
                 }
@@ -67,4 +69,24 @@ angular.module('nav.sporsmalferdig', [])
                 }
             }
         }
+    }])
+    .directive('sistLagret', ['data', function (data) {
+        return {
+            replace: true,
+            templateUrl: '../js/app/directives/sporsmalferdig/sistLagretTemplate.html',
+            link: function(scope) {
+                scope.hentSistLagretTid = function() {
+                    return data.soknad.fakta.sistLagret.value;
+                }
+
+                scope.soknadHarBlittLagret = function() {
+                    return data.soknad.fakta.sistLagret !== undefined;
+                }
+
+                scope.soknadHarAldriBlittLagret = function() {
+                    return !scope.soknadHarBlittLagret();
+                }
+            }
+        }
+
     }]);

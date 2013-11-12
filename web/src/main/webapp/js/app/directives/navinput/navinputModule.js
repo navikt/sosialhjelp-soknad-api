@@ -1,7 +1,7 @@
-angular.module('nav.input',['nav.cmstekster'])
-    .directive('navradio', [function() {
+angular.module('nav.input', ['nav.cmstekster'])
+    .directive('navradio', [function () {
         return {
-            restrict: "E",
+            restrict: "AE",
             replace: true,
             require: 'ngModel',
             scope: {
@@ -12,15 +12,15 @@ angular.module('nav.input',['nav.cmstekster'])
                 label: '@',
                 feilmelding: '@'
             },
-            link: function(scope, element) {
+            link: function (scope, element) {
                 var tmpElementName = 'tmpName';
                 fiksNavn(element, scope.inputname, tmpElementName);
 
-                scope.hvisSynlig = function() {
+                scope.hvisSynlig = function () {
                     return element.is(':visible');
                 }
 
-                scope.hvisIRedigeringsmodus = function() {
+                scope.hvisIRedigeringsmodus = function () {
                     return scope.modus;
                 }
 
@@ -33,9 +33,9 @@ angular.module('nav.input',['nav.cmstekster'])
             templateUrl: '../js/app/directives/navinput/navradioTemplate.html'
         }
     }])
-    .directive('navcheckbox', [function() {
+    .directive('navcheckbox', [function () {
         return {
-            restrict: "E",
+            restrict: "AE",
             replace: true,
             transclude: true,
             require: 'ngModel',
@@ -46,11 +46,11 @@ angular.module('nav.input',['nav.cmstekster'])
                 label: '@',
                 endret: '&'
             },
-            link: function(scope, element) {
+            link: function (scope, element) {
 //                var tmpElementName = 'tmpName';
 //                fiksNavn(element, scope.inputname, tmpElementName);
 
-                scope.hvisIRedigeringsmodus = function() {
+                scope.hvisIRedigeringsmodus = function () {
                     return scope.modus;
                 }
 
@@ -58,7 +58,7 @@ angular.module('nav.input',['nav.cmstekster'])
                     return !scope.hvisIRedigeringsmodus() && checkTrue(scope.model);
                 }
 
-                scope.hvisHuketAv = function() {
+                scope.hvisHuketAv = function () {
                     var transcludeElement = element.find('.ng-transclude');
                     return checkTrue(scope.model) && transcludeElement.text().length > 0;
                 }
@@ -67,9 +67,9 @@ angular.module('nav.input',['nav.cmstekster'])
         }
     }])
 
-    .directive('navtekst', [function() {
+    .directive('navtekst', [function () {
         return {
-            restrict: "E",
+            restrict: "AE",
             replace: true,
             require: 'ngModel',
             scope: {
@@ -79,11 +79,11 @@ angular.module('nav.input',['nav.cmstekster'])
                 label: '@',
                 feilmelding: '@'
             },
-            link: function(scope, element, attr, ctrl) {
+            link: function (scope, element) {
                 var tmpElementName = 'tmpName';
                 fiksNavn(element, scope.inputname, tmpElementName);
 
-                scope.hvisIRedigeringsmodus = function() {
+                scope.hvisIRedigeringsmodus = function () {
                     return scope.modus;
                 }
 
@@ -91,18 +91,17 @@ angular.module('nav.input',['nav.cmstekster'])
                     return !scope.hvisIRedigeringsmodus();
                 }
 
-                scope.hvisSynlig = function() {
+                scope.hvisSynlig = function () {
                     return element.is(':visible');
                 }
-
             },
             templateUrl: '../js/app/directives/navinput/navtekstTemplate.html'
         }
     }])
 
-    .directive('navButtonSpinner', [function() {
+    .directive('navButtonSpinner', [function () {
         return {
-            restrict: "E",
+            restrict: "AE",
             replace: true,
             scope: {
                 laster: '=',
@@ -115,20 +114,20 @@ angular.module('nav.input',['nav.cmstekster'])
         }
     }])
 
-    .directive('booleanVerdi', [function(){
+    .directive('booleanVerdi', [function () {
         return {
             restrict: 'A',
             require: 'ngModel',
-            link: function(scope, element, attr, ngModel){
+            link: function (scope, element, attr, ngModel) {
                 function fraTekst(tekst) {
-                    if(tekst === "true") {
+                    if (tekst === "true") {
                         return true;
                     }
                     return false;
                 }
 
                 function tilTekst(booleanVerdi) {
-                    if(booleanVerdi) {
+                    if (booleanVerdi) {
                         return "true";
                     }
                     return "false";

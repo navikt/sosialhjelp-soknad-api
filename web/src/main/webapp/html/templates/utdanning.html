@@ -1,21 +1,20 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <form name="utdanningForm" class="skjemainnhold" data-ng-controller="UtdanningCtrl"
-          data-ng-submit="validerUtdanning(utdanningForm)" novalidate>
-        <form-errors></form-errors>
+    <div data-ng-form="utdanningForm" class="skjemainnhold" data-ng-controller="UtdanningCtrl" novalidate>
+        <div form-errors/>
         <div class="spm">
             <p class="spm-sporsmal" cmstekster="utdanning.sporsmal"/>
 
-                <navradio data-ng-model='soknadData.fakta.utdanning.value' value='ikkeUtdanning'
+                <div navradio data-ng-model='soknadData.fakta.utdanning.value' value='ikkeUtdanning'
                           modus="data.redigeringsModus"
                           inputname='utdanning'
                           label='utdanning.svar.ikkeUtdanning'
                           feilmelding='utdanning.utdanning.feilmelding'/>
-                <navradio data-ng-model='soknadData.fakta.utdanning.value' value='avsluttetUtdanning'
+                <div navradio data-ng-model='soknadData.fakta.utdanning.value' value='avsluttetUtdanning'
                           modus="data.redigeringsModus"
                           inputname='utdanning'
                           label='utdanning.svar.avsluttetUtdanning'
                           feilmelding='utdanning.utdanning.feilmelding'/>
-                <navradio data-ng-model='soknadData.fakta.utdanning.value' value='underUtdanning'
+                <div navradio data-ng-model='soknadData.fakta.utdanning.value' value='underUtdanning'
                           modus="data.redigeringsModus"
                           inputname='utdanning'
                           label='utdanning.svar.underUtdanning'
@@ -74,12 +73,10 @@
 
 
         </div>
-        <div data-ng-show="hvisIkkeFormValiderer()">
-            <feilmeldinger form="utdanningForm" nokkel="utdanning"/>
-        </div>
 
-        <spmblokkferdig
+        <div spmblokkferdig
                 nokkel="utdanning"
-                modus="data.redigeringsModus"/>
-    </form>
+                modus="data.redigeringsModus"
+                submit-method="validerUtdanning(utdanningForm)"/>
+    </div>
 </div>

@@ -1,14 +1,14 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <form name="egennaeringForm" class="skjemainnhold" data-ng-controller="EgennaeringCtrl"
-          data-ng-submit="validerEgennaering(egennaeringForm)" novalidate>
-        <form-errors></form-errors>
-        <booleanradio data-ng-model="soknadData.fakta.ikkeegennaering.value"
+    <div data-ng-form="egennaeringForm" class="skjemainnhold" data-ng-controller="EgennaeringCtrl" novalidate>
+        <div form-errors/>
+        <div booleanradio data-ng-model="soknadData.fakta.ikkeegennaering.value"
                       modus="data.redigeringsModus"
                       nokkel="ikkeegennaering"/>
 
 
-        <spmblokkferdig
+        <div spmblokkferdig
                 nokkel="ikkeegennaering"
-                modus="data.redigeringsModus"/>
-    </form>
+                modus="data.redigeringsModus"
+                submit-method="validerEgennaering(egennaeringForm)"/>
+    </div>
 </div>
