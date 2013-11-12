@@ -2,20 +2,11 @@
     <div data-ng-show="hvisIRedigeringsmodus()">
         <input type="button" class="knapp-hoved-liten"  cmstekster="{{ nokkel }}.ferdig" data-ng-click="submitMethod()"/>
 
-        <div class="spm-navigering">
-            <a class="forrige" cmstekster="forrige" data-ng-click="gaaTilForrige()"/>
-            <a class="neste" cmstekster="neste" data-ng-click="gaaTilNeste()"/>
-        </div>
-        <div class="spm-fortsett lenker-dot">
-            <span>
-                <a href="#/fortsettsenere/{{ soknadId }}" cmstekster="fortsettSenere"/>
-            </span>
-            <span sist-lagret/>
+        <a href="#/fortsettsenere/{{ soknadId }}" cmstekster="fortsettSenere"/>
 
-        </div>
     </div>
 
-    <div class="spm-blokk-ferdig" data-ng-show="hvisIOppsummeringsmodus()">
+    <div data-ng-show="hvisIOppsummeringsmodus()">
         <button class="knapp-hoved-liten" cmstekster="neste" data-ng-click="lukkOgGaaTilNeste()"/>
         <a data-ng-click="gaTilRedigeringsmodus()" cmstekster="endre"/>
     </div>

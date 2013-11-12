@@ -13,10 +13,7 @@ angular.module('nav.sporsmalferdig', [])
             link: function (scope, element) {
                 var tab = element.closest('.accordion-group');
                 var nesteTab = tab.next();
-                var forrigeTab = tab.prev();
 
-                setOppLenke(forrigeTab, element, 'forrige');
-                setOppLenke(nesteTab, element, 'neste');
                 scope.soknadId = data.soknad.soknadId;
 
                 scope.hvisIRedigeringsmodus = function () {
@@ -34,15 +31,7 @@ angular.module('nav.sporsmalferdig', [])
 
                 scope.lukkOgGaaTilNeste = function () {
                     lukkTab(tab);
-                    scope.gaaTilNeste();
-                }
-
-                scope.gaaTilNeste = function () {
                     gaaTilTab(nesteTab);
-                }
-
-                scope.gaaTilForrige = function () {
-                    gaaTilTab(forrigeTab);
                 }
 
                 function gaaTilTab(nyTab) {
@@ -60,12 +49,6 @@ angular.module('nav.sporsmalferdig', [])
 
                 function lukkTab(lukkTab) {
                     scope.$emit("CLOSE_TAB", lukkTab.attr('id'));
-                }
-
-                function setOppLenke(gruppe, element, lenkeKlasse) {
-                    if (gruppe.length == 0) {
-                        element.find('.' + lenkeKlasse).addClass("ikke-aktiv");
-                    }
                 }
             }
         }
