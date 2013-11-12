@@ -193,8 +193,7 @@ public class SoknadRepositoryTest {
     public void skalKunneAvbryteEnSoknad() {
         opprettOgPersisterSoknad();
 
-        WebSoknad ikkeAvbruttSoknad = soknadRepository.hentSoknad(soknadId);
-        soknadRepository.avbryt(ikkeAvbruttSoknad);
+        soknadRepository.avbryt(soknadId);
 
         WebSoknad avbruttSoknad = soknadRepository.hentSoknad(soknadId);
         assertThat(avbruttSoknad, notNullValue());
@@ -211,7 +210,7 @@ public class SoknadRepositoryTest {
         assertThat(ikkeAvbruttSoknad, notNullValue());
         assertThat(ikkeAvbruttSoknad.getFakta(), notNullValue());
         assertThat(ikkeAvbruttSoknad.getFakta().size(), is(2));
-        soknadRepository.avbryt(ikkeAvbruttSoknad);
+        soknadRepository.avbryt(soknadId);
 
         WebSoknad avbruttSoknad = soknadRepository.hentSoknadMedData(soknadId);
         assertThat(avbruttSoknad, notNullValue());
@@ -228,7 +227,7 @@ public class SoknadRepositoryTest {
         byte[] bytes = {1, 2, 3};
         ByteArrayInputStream is = new ByteArrayInputStream(bytes);
         final Vedlegg v = new Vedlegg();
-        v.setFaktum("faktum");
+        v.setFaktum(1L);
         v.setNavn("navn");
         v.setSoknadId(1L);
         v.setStorrelse(bytes.length);

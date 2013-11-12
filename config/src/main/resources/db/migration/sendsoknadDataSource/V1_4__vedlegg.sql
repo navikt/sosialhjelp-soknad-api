@@ -1,11 +1,12 @@
 CREATE TABLE Vedlegg (
-  vedlegg_id     NUMBER(19, 0)             NOT NULL,
+  vedlegg_id     NUMBER(19, 0)            NOT NULL,
   soknad_id     NUMBER(19, 0)             NOT NULL,
-  navn VARCHAR(255 CHAR)    NOT NULL,
-  faktum  VARCHAR(255 CHAR)         NOT NULL,
-  storrelse  NUMBER(19, 0)         NOT NULL,
-  data  blob         NOT NULL,
+  faktum  number(10, 0)                   NOT NULL,
+  navn VARCHAR(255 CHAR)                  NOT NULL,
+  storrelse  NUMBER(19, 0)                NOT NULL,
+  data  blob                              NOT NULL,
   opprettetDato TIMESTAMP DEFAULT sysdate NOT NULL,
+
   CONSTRAINT vedlegg_pk PRIMARY KEY (vedlegg_id)
 );
 

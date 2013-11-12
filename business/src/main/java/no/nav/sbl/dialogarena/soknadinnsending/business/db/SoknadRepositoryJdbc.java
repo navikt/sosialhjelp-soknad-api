@@ -121,7 +121,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
 
 
     @Override
-    public List<Vedlegg> hentVedleggForFaktum(Long soknadId, String faktum) {
+    public List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktum) {
         return getJdbcTemplate().query("select * from Vedlegg where soknad_id = ? and faktum = ?", new Object[]{soknadId, faktum}, new VedleggRowMapper());
     }
 
@@ -136,7 +136,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
                     protected void setValues(PreparedStatement ps, LobCreator lobCreator) throws SQLException, DataAccessException {
                         ps.setLong(1, databasenokkel);
                         ps.setLong(2, vedlegg.getSoknadId());
-                        ps.setString(3, vedlegg.getFaktum());
+                        ps.setLong(3, vedlegg.getFaktum());
                         ps.setString(4, vedlegg.getNavn());
                         ps.setLong(5, vedlegg.getStorrelse());
                         lobCreator.setBlobAsBinaryStream(ps, 6, vedlegg.getInputStream(), vedlegg.getStorrelse().intValue());
