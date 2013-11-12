@@ -452,3 +452,21 @@
         }
     }
 }
+
+form, [ng-form], [data-ng-form] {
+    &.horisontal {
+        label {
+            .select2-container {
+                margin-left: 1rem;
+            }
+        }
+    }
+
+    &.vertikal {
+        label {
+            .select2-container {
+                display: block;
+            }
+        }
+    }
+}
