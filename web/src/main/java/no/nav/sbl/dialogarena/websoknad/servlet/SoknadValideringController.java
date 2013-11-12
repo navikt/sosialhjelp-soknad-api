@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
