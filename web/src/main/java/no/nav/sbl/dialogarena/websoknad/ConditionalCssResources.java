@@ -4,6 +4,7 @@ import no.nav.modig.frontend.ConditionalCssResource;
 import org.apache.wicket.request.resource.PackageResourceReference;
 
 public enum ConditionalCssResources {
+
     IE("ie", "screen", "IE");
 
     private static final String FOLDER = "css/";
@@ -11,7 +12,6 @@ public enum ConditionalCssResources {
     private String filename;
     private String media;
     private String condition;
-
 
     ConditionalCssResources(String filename, String media, String condition) {
         this.filename = filename;
@@ -24,4 +24,5 @@ public enum ConditionalCssResources {
         application.mountResource(resourceReference.getName(), resourceReference);
         return new ConditionalCssResource(resourceReference, media, condition);
     }
+
 }

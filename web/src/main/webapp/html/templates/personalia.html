@@ -30,12 +30,13 @@
             </div>
             <div data-ng-if="harMidlertidigAdresse()">
                 <h4> {{ hentMidlertidigAdresseTittel() }}</h4>
-
+                <div data-ng-show="harMidlertidigAdresseEier()">
                 <p>
+
                     <span cmstekster="personalia.co"></span>
                     <span> {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].adresseEier }}</span>
                 </p>
-                <div data-ng-if="harMidlertidigAdresseEier()">
+
                 </div>
                 <p data-ng-show="harPostboksAdresse()">
                     <label cmstekster="personalia.postboks"></label>
@@ -64,11 +65,7 @@
                     }}
                 </p>
 
-
-
-
                 <div data-ng-show="harMidlertidigUtenlandskAdresse()">
-                    Test
                 <p>
                     <span data-ng-repeat="linje in personalia.fakta.adresser[personaliaData.midlertidigAdresse].utenlandsAdresse">
                         {{linje}}
@@ -86,7 +83,7 @@
                         Gyldig til: {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
                         }}
                 </p>
-                <label cmstekster="personalia.bostedsadresse"></label>
+                <h4 cmstekster="personalia.folkeregistrertadresse"></h4>
 
                 <p>
                     {{ personalia.fakta.adresser[personaliaData.bostedsAdresse].gatenavn }}
