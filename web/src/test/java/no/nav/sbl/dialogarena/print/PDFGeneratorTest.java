@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.print;
 
 
-import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,6 +11,7 @@ import java.io.IOException;
 
 import static no.nav.sbl.dialogarena.print.PDFGenerator.createPDFFromImage;
 import static no.nav.sbl.dialogarena.print.PDFGenerator.renderHTMLToImage;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -29,9 +29,8 @@ public class PDFGeneratorTest {
     public void setUp() throws Exception {
         String page = "/html/TestSide.html";
         path = getClass().getResource(page).getPath();
-        pdfPath = "c:/dev/test/myPdf.pdf";
-        imagePath = "c:/dev/test/myPng.png";
-        System.out.println("path = " + path);
+        pdfPath = RUN_LOCAL ? "c:/test/myPdf.pdf" : "";
+        imagePath = "c:/test/myPng.png";
     }
 
     @Test
@@ -46,14 +45,19 @@ public class PDFGeneratorTest {
     @Test
     public void testImageToPdf() throws Exception {
         BufferedImage image = renderHTMLToImage(path);
-        String imgPath = "c:/dev/test/myPng1.png";
+        String imgPath = "c:/test/myPng1.png";
         saveImage(image, imgPath);
-        PDDocument pdf = createPDFFromImage(image);
 
-        pdf.save(pdfPath);
+        int marginLeft = 20;
+        int marginTop = 40;
+        createPDFFromImage(image, pdfPath, marginLeft, marginTop);
 
-        assertThat(pdf, is(notNullValue()));
-        assertThat(pdf.getNumberOfPages(), is(greaterThan(0)));
+        if(RUN_LOCAL) {
+            File pdf = new File(pdfPath);
+            assertThat(pdf, is(notNullValue()));
+            assertThat(pdf.canRead(), is(equalTo(true)));
+            assertThat(pdf.isFile(), is(equalTo(true)));
+        }
     }
 
     private void saveImage(BufferedImage image, String imgPath) throws IOException {
