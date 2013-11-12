@@ -27,6 +27,9 @@ angular.module('app.brukerdata', ['app.services'])
     .controller('PersonaliaCtrl', ["$scope", "$routeParams", "tpsService", "data", function ($scope, $routeParams, tpsService, data) {
         $scope.personaliaData = {};
 
+        //slå sammen disse på et vis?
+        var url = "/sendsoknad/rest/soknad/lagre/" + data.soknad.soknadId + "/persondata";
+        $.post(url, function() { });
         tpsService.get({soknadId: $routeParams.soknadId}).$promise.then(function (result) {
             $scope.personalia = result;
 
