@@ -84,10 +84,16 @@
 <div class="rad ferdig-skjema">
     <div class="begrensning">
         <section class="sak-hel">
-            <div id="frivillig-textarea">
-                <div navtextarea data-ng-model="soknadData.fakta.fritekst.value" nokkel="fritekst" maxlengde="500"></div>
+            <div data-ng-form="frivilligForm" class="textare-form" novalidate>
+                <div id="frivillig-textarea">
+                    <div form-errors/>
+                    <div navtextarea inputname="fritekst" data-ng-model="soknadData.fakta.fritekst.value"
+                         nokkel="fritekst" maxlengde="500" feilmelding="fritekst.feilmelding"></div>
+                    <span data-ng-show="frivilligForm.$invalid" data-cmstekster="fritekst.feilmelding"> 500 tegn</span>
+                </div>
             </div>
             <a class="knapp-hoved" href="#/opplasting/{{ soknadData.soknadId }}" data-cmstekster="skjema.ferdig"/>
+
             <div stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="1"/>
         </section>
     </div>
