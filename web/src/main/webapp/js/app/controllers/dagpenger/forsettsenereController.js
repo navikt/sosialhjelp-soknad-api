@@ -14,18 +14,29 @@ angular.module('nav.forsettsenere',['nav.cmstekster'])
 
     .directive('navGjenoppta', ['$compile','data', function($compile, data) {
         
-        var getTemplateUrl =  function(status) {
+        var getForDelsteg = function(delstegstatus) {
+            var t = '';
+            switch (delstegstatus){
+                case "UTFYLLING":
+                    console.log("utfylling");
+                    t = "../html/templates/gjenoppta/skjema-under-arbeid.html";
+                    break;
+                case "FERDIG":
+                    t = "../html/templates/gjenoppta/skjema-ferdig.html";
+                    break;
+            }
+            return t;
+        }
+
+        var getTemplateUrl =  function(status, delstegstatus) {
             var templateUrl = '';
             switch (status) {
                     case "UNDER_ARBEID":
-                        templateUrl =  "../html/templates/gjenoppta/skjema-under-arbeid.html";
+                        console.log("underarbeids " + delstegstatus);
+                        templateUrl = getForDelsteg(delstegstatus);
+                    case "SENDT":
                         break;
-                    case "FERDIG":
-                        templateUrl =  "../html/templates/gjenoppta/skjema-ferdig.html";
-                        break;
-                    case "VALIDERT":
-                        break;
-                    case "VALIDERT_VEDLEGG":
+                    case "AVBRUTT":
                         break;
                 }
                 return templateUrl;
@@ -33,7 +44,7 @@ angular.module('nav.forsettsenere',['nav.cmstekster'])
 
 
         var linker = function(scope,element, attrs){
-            return getTemplateUrl(data.soknad.status);
+            return getTemplateUrl(data.soknad.status, data.soknad.delstegstatus);
         }
 
         return{ 
