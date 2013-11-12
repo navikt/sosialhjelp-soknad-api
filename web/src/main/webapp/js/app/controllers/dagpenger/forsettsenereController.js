@@ -4,7 +4,7 @@ angular.module('nav.forsettsenere',['nav.cmstekster'])
 
         $scope.forsettSenere = function() {
             var soknadId = $routeParams.soknadId;
-			$http.post('/sendsoknad/rest/soknad/' + soknadId +'/fortsettsenere', $scope.soknadData.fakta.personalia.epost.value)
+			$http.post('/sendsoknad/rest/soknad/' + soknadId +'/fortsettsenere', $scope.soknadData.fakta.epost.value)
 				.success(function(data) {
                     $location.path('kvittering-fortsettsenere/' + soknadId);
 				});
@@ -15,26 +15,35 @@ angular.module('nav.forsettsenere',['nav.cmstekster'])
     .directive('navGjenoppta', ['$compile','data', function($compile, data) {
         
         var getForDelsteg = function(delstegstatus) {
-            var t = '';
+            var templateUrl = '';
             switch (delstegstatus){
                 case "UTFYLLING":
+                    templateUrl = "../html/templates/gjenoppta/skjema-under-arbeid.html";
                     console.log("utfylling");
-                    t = "../html/templates/gjenoppta/skjema-under-arbeid.html";
                     break;
                 case "FERDIG":
-                    t = "../html/templates/gjenoppta/skjema-ferdig.html";
+                    templateUrl = "../html/templates/gjenoppta/skjema-ferdig.html";
                     break;
+
+                case "VEDLEGG":
+                    templateUrl = "../html/templates/gjenoppta/skjema-validert";
+                    break;
+                default:
+                    templateUrl = "../html/templates/gjenoppta/skjema-sendt.html";
+
             }
-            return t;
+            return templateUrl;
         }
 
         var getTemplateUrl =  function(status, delstegstatus) {
             var templateUrl = '';
             switch (status) {
                     case "UNDER_ARBEID":
-                        console.log("underarbeids " + delstegstatus);
+                        console.log("under arbeid");
                         templateUrl = getForDelsteg(delstegstatus);
+                        break;
                     case "SENDT":
+                        templateUrl = "../html/templates/gjenoppta/skjema-sendt.html";
                         break;
                     case "AVBRUTT":
                         break;
