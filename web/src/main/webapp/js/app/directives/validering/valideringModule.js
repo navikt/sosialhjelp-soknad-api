@@ -3,26 +3,24 @@ angular.module('nav.validering', ['nav.cmstekster'])
         return {
             require: ['ngModel', '^form'],
             link: function (scope, element, attrs, ctrls) {
+                var feil, revaliderFeilMetode;
+
                 var ngModel = ctrls[0];
                 var form = ctrls[1];
                 var eventString = 'RUN_VALIDATION' + form.$name;
+                var valideringsMetoder = [];
+                var formElem = element.closest('.form-linje');
 
-                var feil;
                 try {
                     feil = scope.$eval(attrs.errorMessages);
                 } catch(e) {
                     feil = attrs.errorMessages;
                 }
 
-                var revaliderFeilMetode;
-                var valideringsMetoder = [];
-
                 // Rekkefølgen på setup-metodene bestemmer prioriteten på valideringsmetodene
                 RequiredValidator.init(attrs, valideringsMetoder);
                 PatternValidator.init(attrs, valideringsMetoder);
                 LengthValidator.init(attrs, valideringsMetoder);
-
-                var formElem = element.closest('.form-linje');
 
                 scope.$on(eventString, function() {
                     if (!sjekkOmInputErGyldig()) {
@@ -45,17 +43,16 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 });
 
                 function sjekkOmInputErGyldig() {
-                    var erGyldig = true;
                     for (var i = 0; i < valideringsMetoder.length; i++) {
-                        erGyldig = erGyldig && valideringsMetoder[i](ngModel.$viewValue);
+                        var valideringReturVerdi = valideringsMetoder[i](ngModel.$viewValue);
 
-                        if (erGyldig != true) {
+                        if (valideringReturVerdi != true) {
                             revaliderFeilMetode = valideringsMetoder[i];
-                            settFeilmeldingsTekst(erGyldig);
+                            settFeilmeldingsTekst(valideringReturVerdi);
                             return false;
                         }
                     }
-                    return erGyldig;
+                    return true;
                 }
 
                 function settFeilmeldingsTekst(feilNokkel) {
