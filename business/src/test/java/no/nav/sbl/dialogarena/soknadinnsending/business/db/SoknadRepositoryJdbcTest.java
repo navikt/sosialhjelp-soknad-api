@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +35,9 @@ public class SoknadRepositoryJdbcTest {
     @Inject
     private SoknadRepository soknadRepository;
 
+    @Inject
+    private RepositoryTestSupport soknadRepositoryTestSupport;
+
     private WebSoknad soknad;
 
     private Long soknadId;
@@ -45,7 +49,9 @@ public class SoknadRepositoryJdbcTest {
 
     @After
     public void cleanUp() {
-
+        soknadRepositoryTestSupport.getJdbcTemplate().update("delete from Vedlegg");
+        soknadRepositoryTestSupport.getJdbcTemplate().update("delete from soknadbrukerdata");
+        soknadRepositoryTestSupport.getJdbcTemplate().update("delete from Soknad");
     }
 
     @Test
@@ -239,13 +245,23 @@ public class SoknadRepositoryJdbcTest {
     public void skalKunneSletteVedlegg() {
         final Vedlegg v = getVedlegg();
         Long id = soknadRepository.lagreVedlegg(v);
-        List<Vedlegg> hentet = soknadRepository.hentVedleggForFaktum(v.getSoknadId(), id);
+        List<Vedlegg> hentet = soknadRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktum());
         assertThat(hentet, is(notNullValue()));
         assertThat(hentet.size(), is(1));
         soknadRepository.slettVedlegg(v.getSoknadId(), id);
-        hentet = soknadRepository.hentVedleggForFaktum(v.getSoknadId(), id);
+        hentet = soknadRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktum());
         assertThat(hentet, is(notNullValue()));
         assertThat(hentet.size(), is(0));
+    }
+
+    @Test
+    public void skalHenteInnhold() throws IOException {
+        byte[] lagret = new byte[]{1,2,3};
+        final Vedlegg v = getVedlegg(lagret);
+        Long id = soknadRepository.lagreVedlegg(v);
+        InputStream hentet = soknadRepository.hentVedlegg(v.getSoknadId(), id);
+        byte[] bytes = IOUtils.toByteArray(hentet);
+        assertThat(bytes, is(equalTo(lagret)));
     }
 
     private Vedlegg getVedlegg() {
@@ -255,9 +271,9 @@ public class SoknadRepositoryJdbcTest {
     private Vedlegg getVedlegg(byte[] bytes) {
         ByteArrayInputStream is = new ByteArrayInputStream(bytes);
         final Vedlegg v = new Vedlegg();
-        v.setFaktum(1L);
+        v.setFaktum(10L);
         v.setNavn("navn");
-        v.setSoknadId(1L);
+        v.setSoknadId(12L);
         v.setStorrelse(bytes.length);
         v.setInputStream(is);
         return v;
