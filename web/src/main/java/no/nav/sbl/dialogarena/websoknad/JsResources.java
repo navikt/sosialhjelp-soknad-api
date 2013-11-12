@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.websoknad;
 import org.apache.wicket.request.resource.JavaScriptResourceReference;
 
 public enum JsResources {
+
     ALL("all"),
     JQUERY_DATEPICKER("jquery-ui-1.10.3.custom");
 
@@ -17,4 +18,5 @@ public enum JsResources {
     public JavaScriptResourceReference getResource() {
         return new JavaScriptResourceReference(this.getClass(), FOLDER + resourcePath + TYPE);
     }
+
 }

@@ -34,14 +34,14 @@ public class BasePage extends WebPage {
 
     public BasePage(PageParameters parameters) {
         super(parameters);
-        body = new TransparentWebMarkupContainer("body");
-        body.setOutputMarkupId(true);
+        body = (WebMarkupContainer) new TransparentWebMarkupContainer("body").setOutputMarkupId(true);
         add(body);
-        body.add(new Label("tittel", "Søknad om dagpenger"));
-
-        body.add(new InnstillingerPanel("innstillinger", getInnloggetIsTrueModel(), cmsContentRetriever));
-        body.add(new NavigasjonPanel("navigasjon", navigasjonsLink, cmsContentRetriever));
-        body.add(new FooterPanel("footer", footerLinks, getInnloggetIsTrueModel(), FALSE, cmsContentRetriever));
+        body.add(
+                new Label("tittel", "Søknad om dagpenger"),
+                new InnstillingerPanel("innstillinger", getInnloggetIsTrueModel(), cmsContentRetriever),
+                new NavigasjonPanel("navigasjon", navigasjonsLink, cmsContentRetriever),
+                new FooterPanel("footer", footerLinks, getInnloggetIsTrueModel(), FALSE, cmsContentRetriever)
+        );
     }
 
     public final WebMarkupContainer getBody() {
@@ -63,4 +63,5 @@ public class BasePage extends WebPage {
             return false;
         }
     };
+
 }
