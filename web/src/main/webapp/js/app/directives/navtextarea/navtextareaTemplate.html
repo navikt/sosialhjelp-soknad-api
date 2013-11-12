@@ -1,5 +1,5 @@
 <label>
     <span cmstekster="{{sporsmal}}"/>
-    <textarea data-ng-model='model' data-ng-maxlength="{{maxlength}}" data-ng-change="oppdaterTeller()" modfaktum/>
+    <textarea id="tmpName" data-ng-model='model' name="tmpName" data-ng-change="oppdaterTeller()" error-messages="'{{ feilmelding }}'" />
     <p data-ng-show="fokus" ><span class="tellertekst" data-ng-class="{negativtekstteller: counter < 0 }"> {{counter}} </span> <span cmstekster="{{tellertekst}}" /></p>
 </label>
