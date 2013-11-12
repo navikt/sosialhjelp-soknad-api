@@ -39,10 +39,6 @@
     padding: 0;
 }
 
-.stegindikator {
-    margin-bottom: 40px;
-}
-
 .lenker-dot {
 
     > span {
@@ -175,12 +171,26 @@
     border-top: 1px solid #ddd;
     background-color: #f1f1f1;
 
+    &:hover {
+        background-color: #e6e6e6;
+
+        .flipp {
+            cursor: pointer;
+            border-color: transparent transparent #00468B transparent;
+
+            &:before {
+                border-top: 30px solid #0067c5;
+            }
+        }
+    }
+
     &.open {
         background-color: white;
 
         .flipp {
             cursor: pointer;
             border-color: transparent transparent #a3a3a3 transparent;
+
             &:before {
                 border-top: 30px solid #ccc;
             }
@@ -198,8 +208,7 @@
         height: 0;
         margin: 0 auto;
         border-style: solid;
-        border-color: transparent transparent #0067c5 transparent
-    ;
+        border-color: transparent transparent #0067c5 transparent;
         border-width: 0 2px 3px 2px;
 
         &:before {
@@ -425,6 +434,21 @@
 
         .melding {
             display: block;
+        }
+    }
+}
+
+.stegindikator {
+    margin-bottom: 50px;
+    li {
+        a {
+            font-family: Modus,Arial,Helvetica,sans-serif;;
+            font-weight: 600;
+        }
+
+        &.done a {
+            background: #e1e1e1;
+            color: #3e3832;
         }
     }
 }
