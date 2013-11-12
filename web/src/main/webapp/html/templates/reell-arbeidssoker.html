@@ -32,6 +32,24 @@
                       modus="data.redigeringsModus"
                       nokkel="reellarbeidssoker.villigpendle"/>
 
+        <div class="ekstra-spm-boks" data-ng-show="soknadData.fakta.villigpendle.value == 'false'">
+          <p cmstekster="reellarbeidssoker.villigpendle.false.informasjon"/>
+             <div navcheckbox data-ng-model='soknadData.fakta.pendlereduserthelse.value' modus='data.redigeringsModus'
+              inputname='pendlereduserthelse' label='reellarbeidssoker.pendlereduserthelse'/>
+             <div navcheckbox data-ng-model='soknadData.fakta.pendleomsorgbarnunder1aar.value' modus='data.redigeringsModus'
+               inputname='pendleomsorgbarnunder1aar' label='reellarbeidssoker.pendleomsorgbarnunder1aar'/>
+             <div navcheckbox data-ng-model='soknadData.fakta.pendleomsorgbarnopptil10.value' modus='data.redigeringsModus'
+              inputname='pendleomsorgbarnopptil10' label='reellarbeidssoker.pendleomsorgbarnopptil10'/>
+             <div navcheckbox data-ng-model='soknadData.fakta.pendleeneansvarbarnunder5skoleaar.value' modus='data.redigeringsModus'
+              inputname='pendleeneansvarbarnunder5skoleaar' label='reellarbeidssoker.pendleeneansvarbarnunder5skoleaar'/>
+             <div navcheckbox data-ng-model='soknadData.fakta.pendleeneansvarbarnopptil18aar.value' modus='data.redigeringsModus'
+               inputname='pendleeneansvarbarnopptil18aar' label='reellarbeidssoker.pendleeneansvarbarnopptil18aar'/>
+             <div navcheckbox data-ng-model='soknadData.fakta.pendleannensituasjon.value' modus='data.redigeringsModus'
+               inputname='pendleannensituasjon' label='reellarbeidssoker.pendleannensituasjon'/>
+             <div navcheckbox data-ng-model='soknadData.fakta.pendleomsorgansvar.value' modus='data.redigeringsModus'
+                inputname='pendleomsorgansvar' label='reellarbeidssoker.pendleomsorgansvar'/>
+        </div>
+
         <div booleanradio data-ng-model="soknadData.fakta.villighelse.value"
                       modus="data.redigeringsModus"
                       nokkel="reellarbeidssoker.villighelse"/>
@@ -46,3 +64,5 @@
                 submit-method="validerReellarbeidssoker(reellarbeidssokerForm)"/>
     </div>
 </div>
+
+
