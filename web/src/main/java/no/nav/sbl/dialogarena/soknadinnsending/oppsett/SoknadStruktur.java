@@ -10,10 +10,9 @@ import java.util.List;
 /**
  * Denne klassen fungerer som en oversikt over en søknad. Den Lister ut en søknad med tilhørende felter og avhengigheter.
  */
-
-
 @XmlRootElement(name = "soknad")
 public class SoknadStruktur implements Serializable {
+
     private String gosysId;
 
     private List<Faktum> fakta = new ArrayList<>();
@@ -47,11 +46,11 @@ public class SoknadStruktur implements Serializable {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("SoknadStruktur{");
-        sb.append("gosysId='").append(gosysId).append('\'');
-        sb.append(", fakta=").append(fakta);
-        sb.append(", vedlegg=").append(vedlegg);
-        sb.append('}');
-        return sb.toString();
+        return new StringBuilder("SoknadStruktur{")
+            .append("gosysId='").append(gosysId).append('\'')
+            .append(", fakta=").append(fakta)
+            .append(", vedlegg=").append(vedlegg)
+            .append('}')
+                .toString();
     }
 }
