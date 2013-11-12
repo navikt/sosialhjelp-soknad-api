@@ -27,11 +27,11 @@ public class MessageController {
         if (tvingNorsk) {
             loc = new Locale("nb", "NO");
         }
-
         return navMessageSource.getBundleFor(side, loc);
     }
 
     public void setTvingNorsk(boolean tvingNorsk) {
         this.tvingNorsk = tvingNorsk;
     }
+
 }
