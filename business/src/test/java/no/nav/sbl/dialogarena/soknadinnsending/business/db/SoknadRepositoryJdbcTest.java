@@ -28,8 +28,8 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { DbConfig.class})
-public class SoknadRepositoryTest {
+@ContextConfiguration(classes = {DbConfig.class})
+public class SoknadRepositoryJdbcTest {
 
     @Inject
     private SoknadRepository soknadRepository;
@@ -44,10 +44,10 @@ public class SoknadRepositoryTest {
 
 
     @After
-    public void cleanUp() { 
-    	
+    public void cleanUp() {
+
     }
-    
+
     @Test
     public void skalKunneOppretteSoknad() {
         opprettOgPersisterSoknad();
@@ -97,7 +97,7 @@ public class SoknadRepositoryTest {
 
     @Test
     public void skalKunneHenteOpprettetSoknadMedBehandlingsId() {
-    	String behId = UUID.randomUUID().toString();
+        String behId = UUID.randomUUID().toString();
         opprettOgPersisterSoknad(behId, "aktor-3");
 
         WebSoknad opprettetSoknad = soknadRepository.hentMedBehandlingsId(behId);
@@ -109,9 +109,9 @@ public class SoknadRepositoryTest {
         assertThat(opprettetSoknad.getGosysId(), is(gosysId));
     }
 
-	@Test
+    @Test
     public void skalKunneHenteListeMedSoknader() {
-    	String aId = "2";
+        String aId = "2";
         opprettOgPersisterSoknad(aId);
         opprettOgPersisterSoknad(aId);
         opprettOgPersisterSoknad(aId);
@@ -222,16 +222,11 @@ public class SoknadRepositoryTest {
         assertThat(soknadBrukerData, notNullValue());
         assertThat(soknadBrukerData, empty());
     }
+
     @Test
     public void skalLasteOppBlob() throws IOException {
         byte[] bytes = {1, 2, 3};
-        ByteArrayInputStream is = new ByteArrayInputStream(bytes);
-        final Vedlegg v = new Vedlegg();
-        v.setFaktum(1L);
-        v.setNavn("navn");
-        v.setSoknadId(1L);
-        v.setStorrelse(bytes.length);
-        v.setInputStream(is);
+        Vedlegg v = getVedlegg(bytes);
         soknadRepository.lagreVedlegg(v);
         List<Vedlegg> vedlegg = soknadRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktum());
         assertThat(vedlegg.size(), is(equalTo(1)));
@@ -240,23 +235,51 @@ public class SoknadRepositoryTest {
         assertThat(IOUtils.toByteArray(vedlegg.get(0).getInputStream()), is(equalTo(bytes)));
     }
 
+    @Test
+    public void skalKunneSletteVedlegg() {
+        final Vedlegg v = getVedlegg();
+        Long id = soknadRepository.lagreVedlegg(v);
+        List<Vedlegg> hentet = soknadRepository.hentVedleggForFaktum(v.getSoknadId(), id);
+        assertThat(hentet, is(notNullValue()));
+        assertThat(hentet.size(), is(1));
+        soknadRepository.slettVedlegg(v.getSoknadId(), id);
+        hentet = soknadRepository.hentVedleggForFaktum(v.getSoknadId(), id);
+        assertThat(hentet, is(notNullValue()));
+        assertThat(hentet.size(), is(0));
+    }
+
+    private Vedlegg getVedlegg() {
+        return getVedlegg(new byte[]{1, 2, 3});
+    }
+
+    private Vedlegg getVedlegg(byte[] bytes) {
+        ByteArrayInputStream is = new ByteArrayInputStream(bytes);
+        final Vedlegg v = new Vedlegg();
+        v.setFaktum(1L);
+        v.setNavn("navn");
+        v.setSoknadId(1L);
+        v.setStorrelse(bytes.length);
+        v.setInputStream(is);
+        return v;
+    }
+
     private void opprettOgPersisterSoknad() {
         opprettOgPersisterSoknad(behandlingsId, aktorId);
     }
-    
+
     private void opprettOgPersisterSoknad(String nyAktorId) {
-    	opprettOgPersisterSoknad(UUID.randomUUID().toString(), nyAktorId);
+        opprettOgPersisterSoknad(UUID.randomUUID().toString(), nyAktorId);
     }
-    
+
     private void opprettOgPersisterSoknad(String behId, String aktor) {
-    	soknad = WebSoknad.startSoknad()
+        soknad = WebSoknad.startSoknad()
                 .medAktorId(aktor)
                 .medBehandlingId(behId)
                 .medGosysId(gosysId).opprettetDato(DateTime.now());
 
         soknadId = soknadRepository.opprettSoknad(soknad);
         assertThat(soknadId, greaterThan(0L));
-	}
+    }
 
     private void lagreData(String key, String value) {
         soknadRepository.lagreFaktum(soknadId, new Faktum(soknadId, key, value, "BRUKERREGISTRERT"));
