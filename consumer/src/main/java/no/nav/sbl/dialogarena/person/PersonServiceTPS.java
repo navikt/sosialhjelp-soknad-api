@@ -6,10 +6,11 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPrefer
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Implementer {@link PersonService}. Denne implementasjonen henter data fra TPS
@@ -17,7 +18,7 @@ import javax.inject.Named;
  */
 public class PersonServiceTPS implements PersonService {
 
-    private static final Logger logger = LoggerFactory.getLogger(PersonServiceTPS.class);
+    private static final Logger logger = getLogger(PersonServiceTPS.class);
 
     @Inject
     @Named("brukerProfilService")
