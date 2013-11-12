@@ -72,7 +72,7 @@ angular.module('app.brukerdata', ['app.services'])
 
             $scope.harMidlertidigAdresseEier = function () {
 
-                return $scope.personaliaData.midlertidigAdresse.adresseEier != undefined;
+                return $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].adresseEier != undefined;
             }
 
             $scope.harBostedsadresseOgIngenMidlertidigAdresse = function() {
@@ -138,20 +138,25 @@ angular.module('app.brukerdata', ['app.services'])
         }
     }])
 
-    .controller('SoknadDataCtrl', function ($scope, $routeParams, $location, $timeout, soknadService) {
-        $scope.soknadData = soknadService.get({param: $routeParams.soknadId});
+    .controller('SoknadDataCtrl', ['$scope', 'data', function ($scope, data) {
+        $scope.soknadData = data.soknad;
 
-        $scope.$on("OPPDATER_OG_LAGRE", function (e, data) {
-            $scope.soknadData.fakta[data.key] = {soknadId: $scope.soknadData.soknadId, key: data.key, value: data.value};
-            var soknadData = $scope.soknadData;
-            soknadData.$save({param: soknadData.soknadId, action: 'lagre'});
+        $scope.$on("OPPDATER_OG_LAGRE", function (e, faktumData) {
+            $scope.soknadData.fakta[faktumData.key] = {soknadId: $scope.soknadData.soknadId, key: faktumData.key, value: faktumData.value};
+            data.soknad = $scope.soknadData;
+
+            var soknadData = deepClone($scope.soknadData);
+            soknadData.fakta['sistLagret'] = {soknadId: $scope.soknadData.soknadId, key: 'sistLagret', value: new Date().getTime()};
+
+            soknadData.$save({param: soknadData.soknadId, action: 'lagre'},
+                function() {
+                    // Success
+                    data.soknad = soknadData;
+                    $scope.soknadData = soknadData;
+                }
+            );
         });
-    })
-
-    .controller('TekstCtrl', function ($scope, tekstService) {
-        $scope.tekster = tekstService.get({side: 'Dagpenger'});
-    })
-
+    }])
     .controller('ModusCtrl', function ($scope) {
         $scope.data = {
             showErrorMessage: false,

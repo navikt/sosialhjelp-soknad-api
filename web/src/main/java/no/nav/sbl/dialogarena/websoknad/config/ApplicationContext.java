@@ -18,6 +18,15 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
  * Applikasjonskontekst for ear-modulen.
  */
 @Configuration
+@Import({
+        BusinessConfig.class,
+        CacheConfig.class,
+        FooterConfig.class,
+        GAConfig.class,
+        ConsumerConfig.class,
+        ContentConfig.class,
+        ServicesApplicationContext.class,
+        SoknadInnsendingDBConfig.class})
 @Import({BusinessConfig.class, CacheConfig.class, FooterConfig.class, GAConfig.class, ConsumerConfig.class, ContentConfig.class, ServicesApplicationContext.class, SoknadInnsendingDBConfig.class})
 public class ApplicationContext {
 

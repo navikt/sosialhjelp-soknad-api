@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +8,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 
 @Controller
 @RequestMapping("/utslagskriterier")
@@ -19,9 +20,10 @@ public class UtslagskriterierController {
     @RequestMapping(value = "/{uid}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Map<String, Boolean> sjekkUtslagskriterier() {
-    	PersonAlder alder = new PersonAlder(SubjectHandler.getSubjectHandler().getUid());
+    	PersonAlder alder = new PersonAlder(getSubjectHandler().getUid());
     	utslagskriterierResultat.put("alder", alder.sjekkAlder());
         utslagskriterierResultat.put("borIUtland", true);
         return utslagskriterierResultat;
     }
+
  }

@@ -21,4 +21,5 @@ public class SoknadValideringController {
     public ValideringsResultat validerFelt(@PathVariable Long soknadId, @RequestBody Faktum faktum) {
         return new ValideringsResultat();
     }
+
 }
