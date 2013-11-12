@@ -67,12 +67,12 @@ public class SoknadTpsDataController {
     	for (Object faktumObj : person.getFakta().values()) {
     		if(faktumObj instanceof Faktum) {
     			Faktum faktum = (Faktum) faktumObj;
-    			soknadService.lagreSoknadsFelt(new Long(soknadId), faktum.getKey(), faktum.getValue());
+    			soknadService.lagreSystemSoknadsFelt(new Long(soknadId), faktum.getKey(), faktum.getValue());
     		} else if (faktumObj instanceof List<?>) {
     			@SuppressWarnings("unchecked")
 				List<Adresse> adresseList = (List<Adresse>) faktumObj;
     			String adresseJson = new Gson().toJson(adresseList);
-    			soknadService.lagreSoknadsFelt(new Long(soknadId), "adresser", adresseJson);
+    			soknadService.lagreSystemSoknadsFelt(new Long(soknadId), "adresser", adresseJson);
     		}
     	}
         

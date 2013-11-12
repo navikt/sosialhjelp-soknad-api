@@ -11,6 +11,8 @@ public interface SendSoknadService {
 	WebSoknad hentSoknad(long soknadId);
 
 	void lagreSoknadsFelt(long soknadId, String key, String value);
+	
+	void lagreSystemSoknadsFelt(long soknadId, String key, String value);
 
 	void sendSoknad(long soknadId);
 
