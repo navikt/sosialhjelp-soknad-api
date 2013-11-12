@@ -30,8 +30,7 @@ public class InMemorySoknadInnsendingRepository implements SoknadInnsendingRepos
 		soknader.put(nextId, webSoknad);
 		return nextId;
 	}
-	
-	
+
 	@Override
 	public void sendSoknad(long soknadId) {
 	}
