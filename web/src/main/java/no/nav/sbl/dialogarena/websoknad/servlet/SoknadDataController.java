@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+
+import static java.lang.String.format;
+import static javax.xml.bind.JAXBContext.newInstance;
 
 /**
  * Klassen håndterer alle rest kall for å hente grunnlagsdata til applikasjonen.
@@ -37,13 +39,11 @@ public class SoknadDataController {
     @RequestMapping(value = "/options/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public SoknadStruktur hentSoknadStruktur(@PathVariable Long soknadId) {
-
         WebSoknad webSoknad = soknadService.hentSoknad(soknadId);
         String type = webSoknad.getGosysId() + ".xml";
         try {
-            JAXBContext context = JAXBContext.newInstance(SoknadStruktur.class);
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-            return (SoknadStruktur) unmarshaller.unmarshal(SoknadStruktur.class.getResourceAsStream(String.format("/soknader/%s", type)));
+            Unmarshaller unmarshaller = newInstance(SoknadStruktur.class).createUnmarshaller();
+            return (SoknadStruktur) unmarshaller.unmarshal(SoknadStruktur.class.getResourceAsStream(format("/soknader/%s", type)));
         } catch (JAXBException e) {
             throw new RuntimeException("Kunne ikke laste definisjoner. ", e);
         }
@@ -67,7 +67,6 @@ public class SoknadDataController {
     @ResponseBody()
     public WebSoknadId opprettSoknad(@PathVariable String soknadType) {
         Long id = soknadService.startSoknad(soknadType);
-
         WebSoknadId soknadId = new WebSoknadId();
         soknadId.setId(id);
         return soknadId;

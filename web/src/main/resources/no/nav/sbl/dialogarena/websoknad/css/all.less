@@ -3,115 +3,124 @@
 .nav,
 .pagination,
 .carousel a {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .rad.tittel {
 
-  border-bottom: none;
+    border-bottom: none;
 
-  h1 {
-    margin-top: 30px;
-    margin-bottom: 0;
-  }
+    h1 {
+        margin-top: 30px;
+        margin-bottom: 0;
+    }
 }
 
 .rad.soknad {
-  padding: 0;
+    padding: 0;
 }
 
 .collapse {
-  position: relative;
-  height: 0;
-  overflow: hidden;
-  transition: height 0.2s ease;
+    position: relative;
+    height: 0;
+    overflow: hidden;
+    transition: height 0.2s ease;
 }
 
 .collapse.in {
-  height: auto;
+    height: auto;
 }
 
 .skjematittel {
-  text-align: center;
+    text-align: center;
 }
 
 [class*="panel-standard"].skjema {
-  padding: 0;
+    padding: 0;
 }
 
 .stegindikator {
-  margin-bottom: 40px;
+    margin-bottom: 40px;
 }
 
 .lenker-dot {
 
-  span {
-    margin-left: 14px;
+    > span {
+        margin-left: 14px;
 
-    &:first-child {
-      margin-left: 0;
+        &:first-child {
+            margin-left: 0;
+        }
     }
-  }
 
-  [class*="knapp"] {
-    margin-left: 30px;
-  }
-
-  input {
-    margin-left: 30px;
-  }
-
-  .loadingIndicator {
-    margin-left: 2rem !important;
-  }
-
-  span:not(:first-child) {
-    &:before {
-      padding-right: 14px;
-      content: "•";
-      color: #000;
+    [class*="knapp"] {
+        margin-left: 30px;
     }
-  }
+
+    input {
+        margin-left: 30px;
+    }
+
+    .loadingIndicator {
+        margin-left: 2rem !important;
+    }
+
+    > span:not(:first-child) {
+        &:before {
+            padding-right: 14px;
+            content: "•";
+            color: #000;
+        }
+    }
 }
 
 .strek {
-  background-image: url(../img/under-dark.png);
-  background-repeat: no-repeat;
+    background-image: url(../img/under-dark.png);
+    background-repeat: no-repeat;
 
 }
 
 .strek-top {
-  .strek;
-  background-position: top center;
-  padding-top: 20px;
+    .strek;
+    background-position: top center;
+    padding-top: 20px;
 }
 
 .strek-bottom {
-  .strek;
-  background-position: bottom center;
-  padding-bottom: 15px;
-  margin-bottom: 15px !important;
+    .strek;
+    background-position: bottom center;
+    padding-bottom: 15px;
+    margin-bottom: 15px !important;
 }
 
 .ferdig-skjema {
-  border-bottom: none;
-  padding-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
 
-  .textare-form {
+  .textarea-form {
     text-align: center;
   }
   #frivillig-textarea {
     margin: 10px auto 0;
+    text-align: center;
 
-    label {
-      text-transform: uppercase;
+        p, span {
+          font-size: 14px !important;
+        }
+        label {
+            text-transform: uppercase;
+        }
+        textarea {
+            overflow-y: hidden;
+            margin: 10px auto 0;
+            max-width: 50%;
+            min-width: 50%;
+            min-height: 40px;
+        }
     }
-    textarea {
-      overflow-y: hidden;
-      margin: 10px auto 0;
-      max-width: 50%;
-      min-width: 50%;
-      min-height: 40px;
+    a[class*="knapp-"] {
+        margin-top: 40px;
+        margin-bottom: 40px;
     }
     .tellertekst {
       font-weight: bold;
@@ -125,392 +134,309 @@
     margin-bottom: 40px;
   }
 
-  .stegindikator {
-    margin-bottom: 0;
-  }
-}
+
+    .stegindikator {
+        margin-bottom: 0;
+    }
 
 // Kan ikke brukes på input-element
 [class*=knapp-][class*=-leggtil] {
-  &::before {
-    content: "+";
-    font-size: 18px;
-    margin-right: 5px;
-  }
-}
-
-// TODO: Skal fjernes når dette blir fikset i fellesen. Skal egentlig kunne settes med klasse på forms...
-input[type="text"], select, textarea {
-  display: block !important;
+    &::before {
+        content: "+";
+        font-size: 18px;
+        margin-right: 5px;
+    }
 }
 
 .tekstfelt {
-  margin-bottom: 10px !important;
+    margin-bottom: 10px !important;
 
-  &:last-child {
-    margin-bottom: 0;
-  }
+    &:last-child {
+        margin-bottom: 0;
+    }
 }
 
 [class*=spm-boks] {
-  position: relative;
-  background: #f1f1f1;
-  border: 1px solid #ddd;
-  padding: 20px;
-  margin: 10px 0 30px;
+    position: relative;
+    background: #f1f1f1;
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin: 10px 0 30px;
 }
 
 .ekstra-spm-boks {
-  &:after, &:before {
-    bottom: 100%;
-    border: solid transparent;
-    content: "";
-    height: 0;
-    width: 0;
-    position: absolute;
-    left: 8%;
-  }
+    &:after, &:before {
+        bottom: 100%;
+        border: solid transparent;
+        content: "";
+        height: 0;
+        width: 0;
+        position: absolute;
+        left: 8%;
+    }
 
-  &:after {
-    border-bottom-color: #f1f1f1;
-    border-width: 12px;
-    margin-left: -12px;
-  }
+    &:after {
+        border-bottom-color: #f1f1f1;
+        border-width: 12px;
+        margin-left: -12px;
+    }
 
-  &:before {
-    border-bottom-color: #ddd;
-    border-width: 13px;
-    margin-left: -13px;
-  }
+    &:before {
+        border-bottom-color: #ddd;
+        border-width: 13px;
+        margin-left: -13px;
+    }
 }
 
 .spm-blokk {
-  position: relative;
-  border-top: 1px solid #ddd;
-  background-color: #f1f1f1;
+    position: relative;
+    border-top: 1px solid #ddd;
+    background-color: #f1f1f1;
 
-  &.open {
-    background-color: white;
+    &.open {
+        background-color: white;
+
+        .flipp {
+            cursor: pointer;
+            border-color: transparent transparent #a3a3a3 transparent;
+            &:before {
+                border-top: 30px solid #ccc;
+            }
+
+            span {
+                display: none;
+            }
+        }
+    }
 
     .flipp {
-      border-color: transparent transparent #a3a3a3 transparent
+        position: relative;
+        top: -3px;
+        width: 64px;
+        height: 0;
+        margin: 0 auto;
+        border-style: solid;
+        border-color: transparent transparent #0067c5 transparent
     ;
-      &:before {
-        border-top: 30px solid #ccc;
-      }
-
-      span {
-        display: none;
-      }
-    }
-  }
-
-  .flipp {
-    position: relative;
-    top: -3px;
-    width: 64px;
-    height: 0;
-    margin: 0 auto;
-    border-style: solid;
-    border-color: transparent transparent #0067c5 transparent
-  ;
-    border-width: 0 2px 3px 2px;
-
-    &:before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 0;
-      border-top: 30px solid #0ca9e1;
-      border-left: 30px solid transparent;
-      border-right: 30px solid transparent;
-    }
-
-    span {
-      color: white;
-      position: relative;
-      top: 3px;
-      left: 0;
-    }
-  }
-
-  .accordion-heading {
-    text-align: center;
-
-    .accordion-toggle {
-      text-decoration: none;
-
-      h2 {
-        text-align: center;
-        margin: 0;
-        cursor: pointer;
-        padding-top: 40px;
-        padding-bottom: 40px;
-      }
-    }
-  }
-
-  .skjemaramme {
-    padding-bottom: 40px;
-    .strek-top;
-
-    .skjemainnhold {
-      width: 90%;
-      max-width: 550px;
-      margin: 0 auto;
-
-      .svar-oppsummering {
-        margin-top: 10px;
-        margin-bottom: 10px;
+        border-width: 0 2px 3px 2px;
 
         &:before {
-          content: url(../img/hake.svg);
-          position: relative;
-          top: 1px;
-          margin-right: 10px;
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            border-top: 30px solid #0ca9e1;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
         }
-      }
 
-      .svar-oppsummering-informasjon {
-        margin-bottom: 10px;
-      }
+        span {
+            color: white;
+            position: relative;
+            top: 3px;
+            left: 0;
+        }
+    }
 
-      .svar-oppsummering-label {
-        text-transform: uppercase;
-        margin-right: 5px;
-      }
-
-      .svar-oppsummering-label-svar {
-        padding-bottom: 10px !important;
-      }
-
-      .svar-oppsummering-uten-checkbox {
-        margin-bottom: 10px !important;
-        font-weight: bold;
-      }
-
-      .svar-oppsummering-sporsmal {
-        font-weight: bold;
-      }
-
-      .spm-knapper {
-        margin-top: 40px;
+    .accordion-heading {
         text-align: center;
 
-        .spm-blokk-ferdig {
-          button, a {
-            display: block;
-          }
+        .accordion-toggle {
+            text-decoration: none;
 
-          button {
-            margin: 0 auto 15px;
-          }
+            h2 {
+                text-align: center;
+                margin: 0;
+                cursor: pointer;
+                padding-top: 40px;
+                padding-bottom: 40px;
+            }
         }
+    }
 
-        .spm-navigering {
-          .strek-bottom;
-          margin-top: 1rem;
+    .skjemaramme {
+        padding-bottom: 40px;
+        .strek-top;
 
-          a {
-            &.ikke-aktiv {
-              color: #3e3832;
-              text-decoration: none;
+        .skjemainnhold {
+            width: 90%;
+            max-width: 550px;
+            margin: 0 auto;
+
+            .svar-oppsummering {
+                margin-top: 10px;
+                margin-bottom: 10px;
+
+                &:before {
+                    content: url(../img/hake.svg);
+                    position: relative;
+                    top: 1px;
+                    margin-right: 10px;
+                }
             }
 
-            margin-right: 10px;
-
-            &:last-child {
-              margin-right: 0;
+            .svar-oppsummering-informasjon {
+                margin-bottom: 10px;
             }
-          }
+
+            .svar-oppsummering-label {
+                text-transform: uppercase;
+                margin-right: 5px;
+            }
+
+            .svar-oppsummering-label-svar {
+                padding-bottom: 10px !important;
+            }
+
+            .svar-oppsummering-uten-checkbox {
+                margin-bottom: 10px !important;
+                font-weight: bold;
+            }
+
+            .svar-oppsummering-sporsmal {
+                font-weight: bold;
+            }
+
+            .spm-knapper {
+                margin-top: 40px;
+                text-align: center;
+
+                .spm-blokk-ferdig {
+                    button, a {
+                        display: block;
+                    }
+
+                    button {
+                        margin: 0 auto 15px;
+                    }
+                }
+
+                .spm-navigering {
+                    .strek-bottom;
+                    margin-top: 1rem;
+
+                    a {
+                        margin-right: 10px;
+                        cursor: pointer;
+
+                        &:last-child {
+                            margin-right: 0;
+                        }
+
+                        &.ikke-aktiv {
+                            cursor: default;
+                            color: #3e3832;
+                            text-decoration: none;
+                        }
+                    }
+                }
+
+                .spm-fortsett {
+                    margin-top: 1rem;
+
+                    span {
+                        text-transform: uppercase;
+
+                        a {
+                            text-transform: none;
+                        }
+                    }
+                }
+            }
         }
+    }
 
-        .spm-fortsett {
-          margin-top: 1rem;
+    .spm-fortsett {
+        margin-top: 1rem;
 
-          span {
+        span {
             text-transform: uppercase;
 
             a {
-              text-transform: none;
+                text-transform: none;
             }
-          }
         }
-      }
     }
-  }
-
-  .spm-fortsett {
-    margin-top: 1rem;
-
-    span {
-      text-transform: uppercase;
-
-      a {
-        text-transform: none;
-      }
-    }
-  }
 }
 
 .spm {
-  margin-top: 20px;
-  margin-bottom: 10px;
-  width: 100%;
-
-  .spm-sporsmal {
-    font-weight: bold;
-    margin-bottom: 1rem;
-  }
-
-  .blokk-resultat {
-    margin: 10px 15px;
+    margin-top: 20px;
+    margin-bottom: 10px;
     width: 100%;
 
-    .checked {
-      background-color: #333;
+    .spm-sporsmal {
+        font-weight: bold;
+        margin-bottom: 1rem;
     }
-  }
 
-  .svar-alt {
-    margin: 5px 0px;
-    text-transform: none !important;
+    .blokk-resultat {
+        margin: 10px 15px;
+        width: 100%;
 
-    .mer-info {
-      margin-left: 5px;
+        .checked {
+            background-color: #333;
+        }
     }
-  }
 
-  textarea {
-    width: 40%;
-    margin: 10px 0px;
-  }
+    .svar-alt {
+        margin: 5px 0px;
+        text-transform: none !important;
+
+        .mer-info {
+            margin-left: 5px;
+        }
+    }
+
+    textarea {
+        width: 40%;
+        margin: 10px 0px;
+    }
 }
 
 .ytelser-nei {
-  margin-top: 20px;
+    margin-top: 20px;
 }
 
 .form-errors {
-  background-color: #c30000;
-  padding: 1rem;
-  padding-left: 3rem;
-  margin-bottom: 2rem;
-  text-align: left;
+    background-color: #c30000;
+    padding: 1rem;
+    padding-left: 3rem;
+    margin-bottom: 2rem;
+    text-align: left;
 
-  li {
-    color: #fff;
-  }
+    li {
+        color: #fff;
+
+        &.klikkbar {
+            cursor: pointer;
+        }
+    }
 }
 
 .sideoversikt {
-  width: 20%;
-  height: 100%;
+    width: 20%;
+    height: 100%;
 }
 
 .active {
-  color: #333;
+    color: #333;
 }
 
-// TODO: Skal legges inn i fellesen når den kommer tilbake til git...
-[ng-form], [data-ng-form] {
-  margin: 0;
-  text-align: left;
-  label {
-    font-size: 0.8rem !important;
-    text-transform: uppercase;
-    span {
-      font-size: 0.8rem !important;
-      text-transform: uppercase;
+.form-linje {
+    .melding {
+        display: none;
     }
-  }
-  input[type="radio"],
-  input[type="checkbox"] {
-    position: absolute;
-    height: 0;
-    width: 0;
-    opacity: 0;
-  }
 
-  input[type="radio"] + label {
-    background: url(../img/radio.svg) 0 0 no-repeat;
-  }
+    &.feil {
+        select {
+            border: 1px solid @pink;
+            border-top: 1px solid #ff0000;
+            background: @errorBackground;
+        }
 
-  input[type="radio"]:checked + label {
-    background: url(../img/radio_valgt.svg) 0 0 no-repeat;
-  }
-
-  input[type="radio"]:disabled:checked + label {
-    background: url(../img/radio_inactive_valgt.svg) 0 0 no-repeat;
-  }
-
-  input[type="radio"]:disabled + label {
-    background: url(../img/radio_inactive.svg) 0 0 no-repeat;
-  }
-
-  input[type="checkbox"] + label {
-    background: url(../img/check.svg) 0 0 no-repeat;
-  }
-
-  input[type="checkbox"]:disabled + label {
-    background: url(../img/check_inactive.svg) 0 0 no-repeat;
-  }
-
-  input[type="checkbox"]:checked + label {
-    background: url(../img/check_valgt.svg) 0 0 no-repeat;
-  }
-
-  input[type="checkbox"]:disabled:checked + label {
-    background: url(../img/check_inactive_valgt.svg) 0 0 no-repeat;
-  }
-
-  input[type="radio"] + label,
-  input[type="checkbox"] + label {
-    display: inline-block;
-    position: relative;
-    padding: 2px 0 0 27px;
-    height: 30px;
-    margin-right: 1rem;
-    font-family: @headingsFontFamily;
-    font-size: 1rem !important;
-  }
-
-  input[type="radio"]:checked + label,
-  input[type="checkbox"]:checked + label {
-    font-weight: bold;
-  }
-
-  .valggruppe {
-    span {
-      display: block;
-      font-size: 0.8rem !important;
-      text-transform: uppercase;
-      margin-bottom: 0.5rem;
+        .melding {
+            display: block;
+        }
     }
-    label {
-      font-size: 1rem !important;
-      text-transform: none;
-    }
-    .vannrett {
-    }
-    .loddrett {
-      label {
-        display: block !important;
-      }
-    }
-    .kolonner-to {
-      .content-columns(2, 0.5rem);
-      label {
-        display: block !important;
-      }
-    }
-    .kolonner-tre {
-      .content-columns(3, 0.5rem);
-      label {
-        display: block !important;
-      }
-    }
-  }
 }
-

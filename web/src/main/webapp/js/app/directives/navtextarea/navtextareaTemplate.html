@@ -1,5 +1,12 @@
-<label>
-    <span cmstekster="{{sporsmal}}"/>
-    <textarea id="tmpName" data-ng-model='model' name="tmpName" data-ng-change="oppdaterTeller()" error-messages="'{{ feilmelding }}'" />
-    <p data-ng-show="fokus" ><span class="tellertekst" data-ng-class="{negativtekstteller: counter < 0 }"> {{counter}} </span> <span cmstekster="{{tellertekst}}" /></p>
-</label>
+<div class="form-linje" data-ng-class="{feil: feil}" >
+    <label>
+        <p cmstekster="{{sporsmal}}"/>
+        <textarea id="tmpName" data-ng-model='model' name="tmpName" data-ng-change="oppdaterTeller()"
+                  error-messages="'{{ feilmelding }}'"/>
+
+        <p data-ng-show="fokus || feil"><span class="tellertekst" data-ng-class="{negativtekstteller: counter < 0 }"> {{counter}} </span>
+            <span cmstekster="{{tellertekst}}"/></p>
+
+        <p class="melding" data-ng-show="feil"><span data-cmstekster="fritekst.feilmelding"/><span> {{maxlengde}} tegn </span></p>
+    </label>
+</div>
