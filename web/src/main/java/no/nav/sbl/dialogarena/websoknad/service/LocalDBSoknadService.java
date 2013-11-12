@@ -20,6 +20,7 @@ public class LocalDBSoknadService implements SendSoknadService{
 	private static final Logger logger = LoggerFactory.getLogger(LocalDBSoknadService.class);
 	
 	private static final String BRUKERREGISTRERT_FAKTUM = "BRUKERREGISTRERT";
+	private static final String SYSTEMREGISTRERT_FAKTUM = "SYSTEMREGISTRERT";
 	
 //	@Inject
 //    @Named("sendSoknadService")
@@ -38,6 +39,11 @@ public class LocalDBSoknadService implements SendSoknadService{
 	public void lagreSoknadsFelt(long soknadId, String key, String value) {
 		repository.lagreFaktum(soknadId, new Faktum(soknadId, key, value, BRUKERREGISTRERT_FAKTUM));
 		
+	}
+	
+	@Override
+	public void lagreSystemSoknadsFelt(long soknadId, String key, String value) {
+		repository.lagreFaktum(soknadId, new Faktum(soknadId, key, value, SYSTEMREGISTRERT_FAKTUM));
 	}
 
 	@Override
