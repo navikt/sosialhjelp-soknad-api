@@ -15,7 +15,14 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
  * Applikasjonskontekst for ear-modulen.
  */
 @Configuration
-@Import({CacheConfig.class, FooterConfig.class, GAConfig.class, ConsumerConfig.class, ContentConfig.class, ServicesApplicationContext.class, SoknadInnsendingDBConfig.class})
+@Import({
+        CacheConfig.class,
+        FooterConfig.class,
+        GAConfig.class,
+        ConsumerConfig.class,
+        ContentConfig.class,
+        ServicesApplicationContext.class,
+        SoknadInnsendingDBConfig.class})
 public class ApplicationContext {
 
     @Value("${dialogarena.navnolink.url}")

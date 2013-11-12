@@ -6,22 +6,25 @@ import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.StreamUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.String.format;
+import static java.nio.charset.Charset.forName;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.util.StreamUtils.copyToString;
 
 
 /**
  * Klasse som laster inn en html snutt fra en tempate inn i siden.
  */
 public class SoknadComponent extends WebComponent {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SoknadComponent.class);
+
+    private static final Logger LOGGER = getLogger(SoknadComponent.class);
     private final String soknadType;
     private static List<String> files;
 
@@ -49,13 +52,10 @@ public class SoknadComponent extends WebComponent {
 
     @Override
     public void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
-
-        String file = String.format("%s.html", soknadType);
+        String file = format("%s.html", soknadType);
         if (files.contains(file)) {
-            
-            try (InputStream content = WebApplication.get().getServletContext().getResourceAsStream(String.format("/html/%s", file))){
-            	
-                replaceComponentTagBody(markupStream, openTag, StreamUtils.copyToString(content, Charset.forName("UTF-8")));
+            try (InputStream content = WebApplication.get().getServletContext().getResourceAsStream(format("/html/%s", file))) {
+                replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
             } catch (IOException e) {
                 throw new ApplicationException("feilet under lasting av markup", e);
             }
@@ -63,4 +63,5 @@ public class SoknadComponent extends WebComponent {
             throw new ApplicationException("Fant ikke template " + file);
         }
     }
+
 }
