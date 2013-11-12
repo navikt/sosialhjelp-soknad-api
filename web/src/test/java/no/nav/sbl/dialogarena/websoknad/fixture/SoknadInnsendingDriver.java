@@ -1,18 +1,17 @@
 package no.nav.sbl.dialogarena.websoknad.fixture;
 
-import javax.inject.Inject;
-
 import no.nav.modig.core.context.ModigSecurityConstants;
 import no.nav.modig.core.context.SubjectHandlerUtils;
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
 import no.nav.modig.test.fitnesse.fixture.SpringAwareDoFixture;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
 import no.nav.sbl.dialogarena.websoknad.config.FitNesseApplicationConfig;
-import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.websoknad.domain.WebSoknadId;
 import no.nav.sbl.dialogarena.websoknad.servlet.SoknadDataController;
-
 import org.springframework.test.context.ContextConfiguration;
+
+import javax.inject.Inject;
 
 @ContextConfiguration(classes = FitNesseApplicationConfig.class)
 public class SoknadInnsendingDriver extends SpringAwareDoFixture {
