@@ -8,7 +8,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-
 import no.nav.sbl.dialogarena.SoknadInnsendingRepository;
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
@@ -76,6 +75,12 @@ public class WebSoknadServiceMock implements SendSoknadService{
 		soknad.leggTilFakta(fakta);
 
 		return soknad;
+	}
+
+	@Override
+	public void lagreSystemSoknadsFelt(long soknadId, String key, String value) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
