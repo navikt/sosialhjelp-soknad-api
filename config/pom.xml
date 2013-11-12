@@ -9,11 +9,9 @@
         <version>1.0.8-SNAPSHOT</version>
     </parent>
 
-    <!-- Must be "no.nav.leren" in order to locate the artifact in Maven repository -->
-    <groupId>no.nav.leren</groupId>
-    <artifactId>sendsoknad</artifactId>
+    <artifactId>sendsoknad-config</artifactId>
     <packaging>jar</packaging>
-    <name>sendsoknad-config</name>
+    <name>${project.artifactId}</name>
 
     <build>
         <resources>
