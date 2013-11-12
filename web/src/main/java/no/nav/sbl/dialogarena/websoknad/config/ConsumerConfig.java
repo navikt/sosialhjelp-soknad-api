@@ -4,8 +4,6 @@ package no.nav.sbl.dialogarena.websoknad.config;
 import no.nav.modig.cxf.TimeoutFeature;
 import no.nav.modig.security.sts.utility.STSConfigurationUtility;
 import no.nav.sbl.dialogarena.common.timing.TimingFeature;
-import no.nav.sbl.dialogarena.websoknad.service.LocalDBSoknadService;
-import no.nav.sbl.dialogarena.websoknad.service.SendSoknadService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
@@ -43,7 +41,6 @@ import static org.springframework.beans.factory.config.ConfigurableBeanFactory.S
 
 @Configuration
 @Import(value = {
-        ConsumerConfig.ServicesConfig.class,
         ConsumerConfig.SendSoknadWSConfig.class,
         ConsumerConfig.KodeverkWSConfig.class,
         ConsumerConfig.BrukerProfilWSConfig.class,
@@ -55,15 +52,6 @@ public class ConsumerConfig {
 
     private static final int RECEIVE_TIMEOUT = 30000;
     private static final int CONNECTION_TIMEOUT = 10000;
-
-    @Configuration
-    public static class ServicesConfig {
-        @Bean
-        public SendSoknadService webSoknadService() {
-            return new LocalDBSoknadService();
-//        	return new WebSoknadService();
-        }
-    }
 
     @Configuration
     public static class SendSoknadWSConfig {
