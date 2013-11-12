@@ -13,6 +13,8 @@ angular.module('nav.feilmeldinger', [])
             transclude: true,
             restrict: 'AE',
             link: function postLink(scope, elem, attrs, ctrl) {
+                var eventString = 'RUN_VALIDATION' + ctrl.$name;
+
                 scope.feilmeldinger = [];
                 scope.runValidation = function () {
                     scope.feilmeldinger = [];
@@ -22,12 +24,14 @@ angular.module('nav.feilmeldinger', [])
                             fortsettLoop = leggTilFeilmeldingerVedValidering(verdi, feilNokkel);
                         }
                     });
+
                     if (scope.feilmeldinger.length > 0) {
                         $timeout(function() {
                             scrollToElement(elem);
                         }, 1);
                     }
 
+                    scope.$broadcast(eventString);
 //                    elem.closest('[data-ng-form]').find('.form-linje:visible').has('.ng-invalid').addClass('feil');
                 }
 
