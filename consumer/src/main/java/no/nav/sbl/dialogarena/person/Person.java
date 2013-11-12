@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.person;
 
-import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
