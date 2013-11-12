@@ -19,6 +19,8 @@ angular.module('nav.textarea', [])
             link: function (scope, element, attrs, ctrl) {
                 scope.counter = scope.maxlengde;
                 scope.fokus = false;
+                scope.feil = false;
+
 
                 var tmpElementName = 'tmpName';
                 fiksNavn(element, scope.inputname, tmpElementName);
@@ -40,7 +42,7 @@ angular.module('nav.textarea', [])
                 element.find('textarea').bind('blur', function () {
                     scope.fokus = false;
                     scope.$apply(attrs.onBlur)
-
+                    validerAntallTegn();
                     var verdi = element.find('textarea').val().toString();
 
                     if (scope.counter > -1) {
@@ -52,7 +54,6 @@ angular.module('nav.textarea', [])
                     if (scope.model) {
                         scope.counter = scope.maxlengde - scope.model.length;
                         validerAntallTegn();
-                     //   scope.runValidation();
                     } else {
                         scope.counter = scope.maxlengde;
                     }
@@ -61,8 +62,10 @@ angular.module('nav.textarea', [])
                 function validerAntallTegn() {
                     if (scope.counter < 0) {
                         ctrl.$setValidity(scope.nokkel, false);
+                        scope.feil = true;
                     } else {
                         ctrl.$setValidity(scope.nokkel, true);
+                        scope.feil = false;
                     }
                 }
 

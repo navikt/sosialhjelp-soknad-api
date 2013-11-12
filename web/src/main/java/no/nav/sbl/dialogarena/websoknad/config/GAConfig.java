@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.String.format;
+
 @Configuration
 public class GAConfig {
 
@@ -36,7 +38,7 @@ public class GAConfig {
 
     @Bean
     public String fortsettSenereUtmKey() {
-        return String.format("utm_source=%s&utm_medium=%s&utm_campaign=%s", fortsettSenereUtmSource, fortsettSenereUtmMedium, fortsettSenereUtmCampaign);
+        return format("utm_source=%s&utm_medium=%s&utm_campaign=%s", fortsettSenereUtmSource, fortsettSenereUtmMedium, fortsettSenereUtmCampaign);
     }
 
     @Bean

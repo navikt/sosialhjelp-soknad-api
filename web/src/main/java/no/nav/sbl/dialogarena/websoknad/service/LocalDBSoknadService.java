@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ComponentScan;
 
 import javax.inject.Inject;
@@ -14,10 +13,12 @@ import javax.inject.Named;
 import java.util.List;
 import java.util.UUID;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @ComponentScan()
 public class LocalDBSoknadService implements SendSoknadService{
 	
-	private static final Logger logger = LoggerFactory.getLogger(LocalDBSoknadService.class);
+	private static final Logger logger = getLogger(LocalDBSoknadService.class);
 	
 	private static final String BRUKERREGISTRERT_FAKTUM = "BRUKERREGISTRERT";
 	
@@ -37,13 +38,11 @@ public class LocalDBSoknadService implements SendSoknadService{
 	@Override
 	public void lagreSoknadsFelt(long soknadId, String key, String value) {
 		repository.lagreFaktum(soknadId, new Faktum(soknadId, key, value, BRUKERREGISTRERT_FAKTUM));
-		
 	}
 
 	@Override
 	public void sendSoknad(long soknadId) {
 		repository.avslutt(new WebSoknad().medId(soknadId));
-		
 	}
 
 	@Override
@@ -81,4 +80,5 @@ public class LocalDBSoknadService implements SendSoknadService{
         		opprettetDato(DateTime.now());
 		return repository.opprettSoknad(soknad);
 	}
+
 }
