@@ -18,8 +18,6 @@ public final class TekstUtils {
         }
     }
 
-
-
     public static Transformer<String, String> utenSpesialtegn() {
         return new UtenSpesialtegn();
     }

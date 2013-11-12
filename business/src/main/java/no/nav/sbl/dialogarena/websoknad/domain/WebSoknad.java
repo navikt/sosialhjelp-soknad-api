@@ -1,11 +1,10 @@
 package no.nav.sbl.dialogarena.websoknad.domain;
 
+import org.joda.time.DateTime;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.joda.time.DateTime;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -66,15 +65,12 @@ public class WebSoknad implements Serializable {
 
 	public long antallFakta() {
 		long antallFaktum = 0;
-		
 		if (fakta != null) {
 			antallFaktum = fakta.size();
 		}
-		
 		return antallFaktum;
 	}
 
-	
 	public String getAktoerId() {
 		return aktoerId;
 	}
@@ -137,6 +133,5 @@ public class WebSoknad implements Serializable {
 		return this;
 				
 	}
-
 
 }
