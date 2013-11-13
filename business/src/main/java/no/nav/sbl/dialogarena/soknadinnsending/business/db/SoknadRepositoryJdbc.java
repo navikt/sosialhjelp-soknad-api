@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
@@ -55,9 +56,9 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     @Override
     public Long opprettSoknad(WebSoknad soknad) {
         Long databasenokkel = getJdbcTemplate().queryForObject(SQLUtils.selectNextSequenceValue("SOKNAD_ID_SEQ"), Long.class);
-        getJdbcTemplate().update("insert into soknad (soknad_id, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status) values (?,?,?,?,?,?)",
+        getJdbcTemplate().update("insert into soknad (soknad_id, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status, delstegstatus) values (?,?,?,?,?,?,?)",
                 databasenokkel, soknad.getBrukerBehandlingId(), soknad.getGosysId(), soknad.getAktoerId(),
-                soknad.getOpprettetDato().toDate(), SoknadInnsendingStatus.UNDER_ARBEID.name());
+                soknad.getOpprettetDato().toDate(), SoknadInnsendingStatus.UNDER_ARBEID.name(), DelstegStatus.OPPRETTET.name());
         return databasenokkel;
     }
 

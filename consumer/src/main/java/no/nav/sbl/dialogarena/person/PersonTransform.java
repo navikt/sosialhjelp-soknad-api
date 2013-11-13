@@ -2,6 +2,9 @@ package no.nav.sbl.dialogarena.person;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBostedsadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLEPost;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskAdresse;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskKommunikasjonskanal;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGateadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGyldighetsperiode;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLLandkoder;
@@ -39,9 +42,22 @@ public class PersonTransform {
 		XMLBruker soapPerson = (XMLBruker) response.getPerson();
 
         return new Person(soknadId, finnFnr(soapPerson), finnForNavn(soapPerson), finnMellomNavn(soapPerson), finnEtterNavn(soapPerson),
-        		finnGjeldendeAdressetype(soapPerson), finnAdresser(soknadId, soapPerson));
+        		finnEpost(soapPerson), finnGjeldendeAdressetype(soapPerson), finnAdresser(soknadId, soapPerson));
     }
 
+	private String finnEpost(XMLBruker soapPerson) {
+        String epost = null;
+        List<XMLElektroniskKommunikasjonskanal> elkanaler = soapPerson
+                .getElektroniskKommunikasjonskanal();
+        for (XMLElektroniskKommunikasjonskanal kanal : elkanaler) {
+            XMLElektroniskAdresse adr = kanal.getElektroniskAdresse();
+            if (adr instanceof XMLEPost) {
+                epost = ((XMLEPost) adr).getIdentifikator();
+            }
+        }
+        return epost;
+    }
+	
 	private String finnGjeldendeAdressetype(XMLBruker soapPerson) {
 		if (soapPerson.getGjeldendePostadresseType() != null) {
 			return soapPerson.getGjeldendePostadresseType().getValue();
