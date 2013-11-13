@@ -21,15 +21,15 @@ angular.module('nav.forsettsenere',['nav.cmstekster'])
                     templateUrl = "../html/templates/gjenoppta/skjema-under-arbeid.html";
                     console.log("utfylling");
                     break;
-                case "FERDIG":
+                case "VEDLEGG_VALIDERT":
                     templateUrl = "../html/templates/gjenoppta/skjema-ferdig.html";
                     break;
 
-                case "VEDLEGG":
+                case "SKJEMA_VALIDERT":
                     templateUrl = "../html/templates/gjenoppta/skjema-validert";
                     break;
                 default:
-                    templateUrl = "../html/templates/gjenoppta/skjema-sendt.html";
+                    templateUrl = "../html/templates/gjenoppta/skjema-under-arbeid.html";
 
             }
             return templateUrl;
@@ -42,7 +42,7 @@ angular.module('nav.forsettsenere',['nav.cmstekster'])
                         console.log("under arbeid");
                         templateUrl = getForDelsteg(delstegstatus);
                         break;
-                    case "SENDT":
+                    case "FERDIG":
                         templateUrl = "../html/templates/gjenoppta/skjema-sendt.html";
                         break;
                     case "AVBRUTT":

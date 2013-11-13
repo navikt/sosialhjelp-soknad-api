@@ -67,13 +67,13 @@ public class DatabaseTestContext {
         try (Connection conn = dataSource.getConnection(); Statement st = conn.createStatement()) {
             st.execute("drop table HENVENDELSE if exists");
             st.execute("create table HENVENDELSE (henvendelse_id bigint, behandlingsid varchar(255), behandlingskjedeId varchar(255), traad varchar(255), type varchar(255), opprettetdato timestamp, " +
-                    "lestdato timestamp, sistendretdato timestamp, tema varchar(255), aktor varchar(255), status varchar(255), behandlingsresultat varchar(2048), sensitiv integer, delstegstatus varchar(255)");
+                    "lestdato timestamp, sistendretdato timestamp, tema varchar(255), aktor varchar(255), status varchar(255), behandlingsresultat varchar(2048), sensitiv integer)");
             st.execute("drop sequence BRUKERBEH_ID_SEQ if exists");
             st.execute("create sequence BRUKERBEH_ID_SEQ as integer start with 1 increment by 1");
             st.execute("drop table SOKNADBRUKERDATA if exists");
             st.execute("drop table SOKNAD if exists");
             st.execute("create table SOKNAD (soknad_id numeric not null, brukerbehandlingid varchar(255) not null, navsoknadid varchar(255) not null, " +
-                    "aktorid varchar(255) not null, opprettetdato timestamp not null, status varchar(255) not null)");
+                    "aktorid varchar(255) not null, opprettetdato timestamp not null, status varchar(255) not null, delstegstatus varchar(255))");
             st.execute("drop table VEDLEGG if exists");
             st.execute("create table VEDLEGG (vedlegg_id bigint not null , soknad_id bigint not null, faktum bigint not null, navn varchar(255) not null, storrelse bigint not null, " +
                     " opprettetdato timestamp , data blob)");
