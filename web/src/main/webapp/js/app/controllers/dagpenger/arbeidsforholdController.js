@@ -25,7 +25,8 @@ angular.module('nav.arbeidsforhold.controller', [])
             {navn: 'Redusert arbeidstid', url: '../html/templates/arbeidsforhold/redusertarbeidstid.html', oppsummeringsurl: '../html/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html' },
             {navn: 'Arbeidsgiver er konkurs', url: '../html/templates/arbeidsforhold/konkurs.html', oppsummeringsurl: '../html/templates/arbeidsforhold/konkurs-oppsummering.html'},
             {navn: 'Sagt opp av arbeidsgiver', url: '../html/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html', oppsummeringsurl: '../html/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html' },
-            {navn: 'Sagt opp selv', url: '../html/templates/arbeidsforhold/sagt-opp-selv.html', oppsummeringsurl: '../html/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html' }
+            {navn: 'Sagt opp selv', url: '../html/templates/arbeidsforhold/sagt-opp-selv.html', oppsummeringsurl: '../html/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html' },
+            {navn: 'Permittert', url: '../html/templates/arbeidsforhold/permittert.html', oppsummeringsurl: '../html/templates/arbeidsforhold/permittert-oppsummering.html' }
         ];
 
         $scope.template = $scope.templates[0];
@@ -175,6 +176,15 @@ angular.module('nav.arbeidsforhold.controller', [])
                     $scope.redusertArbeidstidDatoError = true;
                 } else {
                     $scope.redusertArbeidstidDatoError = false;
+                }
+            }
+
+            $scope. validatePermittertDato = function (af) {
+                if (af && (af.permittertFraDato.fra < af.varighetFra) || (af.permittertFraDato.fra > af.varighetTil)) {
+                    af.permittertDato = '';
+                    $scope.permittertDatoError = true;
+                } else {
+                    $scope.permittertDatoError = false;
                 }
             }
 
