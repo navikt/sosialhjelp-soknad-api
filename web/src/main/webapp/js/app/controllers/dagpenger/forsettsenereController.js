@@ -25,7 +25,7 @@ angular.module('nav.forsettsenere',['nav.cmstekster'])
                     break;
 
                 case "SKJEMA_VALIDERT":
-                    templateUrl = "../html/templates/gjenoppta/skjema-validert";
+                    templateUrl = "../html/templates/gjenoppta/skjema-validert.html";
                     break;
                 default:
                     templateUrl = "../html/templates/gjenoppta/skjema-under-arbeid.html";
