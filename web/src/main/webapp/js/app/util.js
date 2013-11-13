@@ -80,3 +80,8 @@ function harAttributt(objekt, attributt) {
 function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+function stringContainsNotCaseSensitive(str, query) {
+    var re = new RegExp(query, "i");
+    return re.test(str);
+}
