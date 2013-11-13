@@ -179,9 +179,10 @@ angular.module('nav.arbeidsforhold.controller', [])
                 }
             }
 
-            $scope. validatePermittertDato = function (af) {
-                if (af && (af.permittertFraDato.fra < af.varighetFra) || (af.permittertFraDato.fra > af.varighetTil)) {
-                    af.permittertDato = '';
+            $scope.validatePermittertDato = function (af) {
+                if (af && (af.permittertFraDato < af.varighetFra) || (af.permittertFraDato > af.varighetTil) && (af.permittertFraDato > af.permittertTilDato)) {
+                    af.permittertFraDato = '';
+                    af.permittertTilDato = '';
                     $scope.permittertDatoError = true;
                 } else {
                     $scope.permittertDatoError = false;

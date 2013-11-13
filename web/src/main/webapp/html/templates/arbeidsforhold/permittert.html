@@ -3,26 +3,38 @@
     <p class="sluttaarsak-informasjon" cmstekster="arbeidsforhold.sluttaarsak.permittert.informasjon"/>
 
     <label cmstekster="arbeidsforhold.sluttaarsak.permittert.orgnr"></label>
-    <input type="text" id="orgnr" data-ng-model="af.sluttaarsak.permittert.orgnr" name="orgnr"
-           error-messages="{required: 'arbeidsforhold.sluttaarsak.permittert.orgnr.feilmelding',
-                        pattern: 'inneholder ugyldige tegn', minlength: 'arbeidsforhold.sluttaarsak.permittert.orgnr.lengde', maxlength: 'arbeidsforhold.sluttaarsak.permittert.orgnr.lengde.'}"
-           ng-maxlength="9" ng-minlength="9" ng-pattern="[0-9]" required/>
+    <input type="text" data-ng-model="af.sluttaarsak.permittert.orgnr" ng-maxlength="9" ng-pattern="[0-9]" ng-minlength="9" name="orgnr"
+           error-messages="'arbeidsforhold.sluttaarsak.permittert.orgnr.feilmelding'"
+           required/>
 
+    <br/>
     <span data-ng-show="permittertDatoError" style="color:red"
           cmstekster="arbeidsforhold.error.permittert.datoFra"/>
-    <input type="text" name="permittertFraDato" ui-date ui-date-format data-ng-model="af.permittert.fra" data-ng-change="validatePermittertDato(af)"
+    <label cmstekster="arbeidsforhold.sluttaarsak.permittert.fraDato"></label>
+    <input type="text" name="permittertFraDato" ui-date ui-date-format data-ng-model="af.permittertFraDato" data-ng-change="validatePermittertDato(af)"
            error-messages="'arbeidsforhold.sluttaarsak.permittert.fraDato.feilmelding'" required >
+    <br/>
+
+     <span data-ng-show="permittertDatoError" style="color:red"
+           cmstekster="arbeidsforhold.error.permittert.datoTil"/>
+    <label cmstekster="arbeidsforhold.sluttaarsak.permittert.tilDato"></label>
+    <input type="text" name="permittertTilDato" ui-date ui-date-format data-ng-model="af.permittertTilDato" data-ng-change="validatePermittertDato(af)"
+           error-messages="'arbeidsforhold.sluttaarsak.permittert.tilDato.feilmelding'" required >
+
 
     <label cmstekster="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad"></label>
     <br/>
-    <select id="permitteringsgrad" type="text" data-ng-model="permitteringsgrad" required>
+    <select id="permitteringProsent" type="text" data-ng-model="af.permitteringProsent" error-messages="'arbeidsforhold.sluttaarsak.permittert.grad.feilmelding'" required>
         <option value="">--Velg permitteringsgrad--</option>
+        <option value="1">1%</option>
+        <option value="10">10%</option>
+        <option value="20">20%</option>
         <option value="50">50%</option>
         <option value="75">75%</option>
         <option value="100">100%</option>
     </select>
 
-    <div data-ng-show="af.permitteringsgrad == 'false'">
+    <div data-ng-if="af.permitteringProsent < 20 ">
         <p cmstekster="arbeidsforhold.sluttaarsak.permittert.forlite"/>
     </div>
 </div>
