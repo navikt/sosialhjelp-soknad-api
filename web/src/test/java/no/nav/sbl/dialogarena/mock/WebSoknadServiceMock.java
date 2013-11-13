@@ -1,23 +1,20 @@
 package no.nav.sbl.dialogarena.mock;
 
-import static no.nav.sbl.dialogarena.websoknad.service.Transformers.tilFaktum;
+import no.nav.sbl.dialogarena.SoknadInnsendingRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSBrukerData;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSSoknadData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
-
-import no.nav.sbl.dialogarena.SoknadInnsendingRepository;
-import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
-import no.nav.sbl.dialogarena.websoknad.service.SendSoknadService;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSBrukerData;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSSoknadData;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static no.nav.sbl.dialogarena.websoknad.service.Transformers.tilFaktum;
 
 public class WebSoknadServiceMock implements SendSoknadService{
 	
@@ -76,6 +73,12 @@ public class WebSoknadServiceMock implements SendSoknadService{
 		soknad.leggTilFakta(fakta);
 
 		return soknad;
+	}
+
+	@Override
+	public void lagreSystemSoknadsFelt(long soknadId, String key, String value) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

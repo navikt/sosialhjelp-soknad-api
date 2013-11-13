@@ -1,33 +1,44 @@
 <div data-ng-controller="ModusCtrl">
-        <p class="sluttaarsak-informasjon" cmstekster="arbeidsforhold.sluttaarsak.konkurs.informasjon"/>
+    <p class="sluttaarsak-informasjon" cmstekster="arbeidsforhold.sluttaarsak.konkurs.informasjon"/>
+
     <div>
 
-        <label cmstekster="arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn"></label>
-        
-
-         <input type="text" id="bostyrersnavn" data-ng-model="af.sluttaarsak.bostyrersnavn" name="bostyrersnavn" 
-        error-messages="{required: 'arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.feilmelding', 
-                        pattern: 'inneholder ugyldige tegn', minlength: 'arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.forkort', maxlength: 'arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.forlangt.'}"
-        ng-maxlength="50" ng-minlength="5" ng-pattern="/^[-a-zA-Z0-9æøåÆØÅ _+§%()]+$/" required/>
+        <div class="form-linje">
+            <label>
+                <span cmstekster="arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn"/>
+                <input type="text" data-ng-model="af.sluttaarsak.bostyrersnavn" name="bostyrersnavn"
+                       error-messages="{required: 'arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.feilmelding',
+                        pattern: 'pattern.feilmelding', minlength: 'arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.forkort', maxlength: 'arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.forlangt'}"
+                       ng-maxlength="50" ng-minlength="5" data-ng-pattern="/^[-a-zA-Z0-9æøåÆØÅ _+§%()]*$/" required data-blur-validate/>
+                <span class="melding"/>
+            </label>
+        </div>
 
         <div class="sporsmaal">
             <p cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.sporsmal"/>
-            <div>
-              <input class="sendsoknad-radio" id="lonnsgarantiJa" data-ng-model="af.sluttaarsak.lonnsgaranti" type="radio" value="true"
-                         name="lonnsgaranti" error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'" required/>
-              <label for="lonnsgarantiJa" class='svar-alt' cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.true"/>
+
+            <div class="form-linje">
+                <input class="sendsoknad-radio" id="lonnsgarantiJa" data-ng-model="af.sluttaarsak.lonnsgaranti"
+                       type="radio" value="true"
+                       name="lonnsgaranti"
+                       error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'" required/>
+                <label for="lonnsgarantiJa" class='svar-alt'
+                       cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.true"/>
             </div>
 
-            <div>
-              <input class="sendsoknad-radio" id="lonnsgarantiNei" data-ng-model="af.sluttaarsak.lonnsgaranti" type="radio" value="false"
-                         name="lonnsgaranti" error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'" required/>
-              <label for="lonnsgarantiNei" class='svar-alt' cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.false"/>
+            <div class="form-linje">
+                <input class="sendsoknad-radio" id="lonnsgarantiNei" data-ng-model="af.sluttaarsak.lonnsgaranti"
+                       type="radio" value="false"
+                       name="lonnsgaranti"
+                       error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'" required/>
+                <label for="lonnsgarantiNei" class='svar-alt'
+                       cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.false"/>
             </div>
 
-             <div data-ng-show="af.sluttaarsak.lonnsgaranti == 'false'">
-              <p cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.false.informasjon"/>
-             </div>
-          </div>
+            <div data-ng-show="af.sluttaarsak.lonnsgaranti == 'false'">
+                <p cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.false.informasjon"/>
+            </div>
+        </div>
 
     </div>
 </div>

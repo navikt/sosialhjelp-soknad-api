@@ -1,0 +1,10 @@
+<span>
+    <span data-ng-if="soknadHarBlittLagret()">
+        <span data-cmstekster="sistLagret.lagret"/>
+        <span>
+            {{ hentSistLagretTid() | date:'short' }}
+        </span>
+    </span>
+
+    <span data-cmstekster="sistLagret.aldriLagret" data-ng-if="soknadHarAldriBlittLagret()"/>
+</span>

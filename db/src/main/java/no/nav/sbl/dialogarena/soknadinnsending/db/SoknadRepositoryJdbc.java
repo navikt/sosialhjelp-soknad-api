@@ -1,5 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.db;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.IdGenerator;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRowMapper;
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.websoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
@@ -17,7 +21,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Named("soknadInnsendingRepository")
-public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadRepository{
+public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadRepository {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(SoknadRepositoryJdbc.class);
 	
