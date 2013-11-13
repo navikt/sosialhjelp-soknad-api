@@ -66,11 +66,11 @@ public class SoknadDataController {
     @RequestMapping(value = "/opprett/{soknadType}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody()
     public WebSoknadId opprettSoknad(@PathVariable String soknadType) {
-        Long id = soknadService.startSoknad(soknadType);
 
-        WebSoknadId soknadId = new WebSoknadId();
-        soknadId.setId(id);
-        return soknadId;
+       Long id = soknadService.startSoknad(soknadType);
+       WebSoknadId soknadId = new WebSoknadId();
+       soknadId.setId(id);
+       return soknadId;
     }
 
     @RequestMapping(value = "/delete/{soknadId}", method = RequestMethod.POST)
