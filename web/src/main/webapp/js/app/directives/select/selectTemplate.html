@@ -1,0 +1,8 @@
+<div class="nav-select" data-ng-class="{open: selectOpen}">
+    <input type="text" data-ng-model="inputValue" data-ui-keyup="{up: 'navigateUp()', down: 'navigateDown()', enter: 'enter()', esc: 'escape()'}">
+    <ul data-ng-show="selectOpen">
+        <li data-ng-repeat="option in options | filterSearch: searchFilter" data-ng-class="{harFokus: fokusHack($last)}" data-ng-click="selectionChanged($event)" data-ng-mouseover="mouseover($event)" data-value="{{ option.value }}">
+            {{ option.text }}
+        </li>
+    </ul>
+</div>
