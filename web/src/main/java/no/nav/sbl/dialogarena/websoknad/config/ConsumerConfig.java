@@ -4,8 +4,6 @@ package no.nav.sbl.dialogarena.websoknad.config;
 import no.nav.modig.cxf.TimeoutFeature;
 import no.nav.modig.security.sts.utility.STSConfigurationUtility;
 import no.nav.sbl.dialogarena.common.timing.TimingFeature;
-import no.nav.sbl.dialogarena.websoknad.service.LocalDBSoknadService;
-import no.nav.sbl.dialogarena.websoknad.service.SendSoknadService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
@@ -31,14 +29,18 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.System.getProperty;
+import static java.lang.System.setProperty;
 import static java.util.Arrays.asList;
+import static no.nav.modig.security.sts.utility.STSConfigurationUtility.configureStsForExternalSSO;
+import static no.nav.modig.security.sts.utility.STSConfigurationUtility.configureStsForSystemUser;
 import static org.apache.cxf.common.util.SOAPConstants.MTOM_ENABLED;
+import static org.apache.cxf.frontend.ClientProxy.getClient;
 import static org.apache.cxf.ws.security.SecurityConstants.MUST_UNDERSTAND;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 @Configuration
 @Import(value = {
-        ConsumerConfig.ServicesConfig.class,
         ConsumerConfig.SendSoknadWSConfig.class,
         ConsumerConfig.KodeverkWSConfig.class,
         ConsumerConfig.BrukerProfilWSConfig.class,
@@ -50,15 +52,6 @@ public class ConsumerConfig {
 
     private static final int RECEIVE_TIMEOUT = 30000;
     private static final int CONNECTION_TIMEOUT = 10000;
-
-    @Configuration
-    public static class ServicesConfig {
-        @Bean
-        public SendSoknadService webSoknadService() {
-            return new LocalDBSoknadService();
-//        	return new WebSoknadService();
-        }
-    }
 
     @Configuration
     public static class SendSoknadWSConfig {
@@ -96,7 +89,6 @@ public class ConsumerConfig {
         public JaxWsProxyFactoryBean brukerProfilPortTypeFactory() {
             JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(brukerProfilEndpoint, BrukerprofilPortType.class, "classpath:brukerprofil/no/nav/tjeneste/virksomhet/brukerprofil/v1/Brukerprofil.wsdl");
             jaxwsClient.getFeatures().add(new TimingFeature(BrukerprofilPortType.class.getSimpleName()));
-
             return jaxwsClient;
         }
 
@@ -120,9 +112,7 @@ public class ConsumerConfig {
         @Scope(SCOPE_PROTOTYPE)
         public JaxWsProxyFactoryBean kodeverkPortTypeFactory() {
             JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(kodeverkEndPoint, KodeverkPortType.class, "classpath:kodeverk/no/nav/tjeneste/virksomhet/kodeverk/v2/Kodeverk.wsdl");
-
             jaxwsClient.getFeatures().add(new TimingFeature(KodeverkPortType.class.getSimpleName()));
-
             return jaxwsClient;
         }
 
@@ -153,9 +143,9 @@ public class ConsumerConfig {
 
         @PostConstruct
         public void setupSts() {
-            STSConfigurationUtility.configureStsForSystemUser(ClientProxy.getClient(sendSoknadSelftest));
-            STSConfigurationUtility.configureStsForSystemUser(ClientProxy.getClient(kodeverkServiceSelftest));
-            STSConfigurationUtility.configureStsForSystemUser(ClientProxy.getClient(brukerProfilSelftest));
+            configureStsForSystemUser(getClient(sendSoknadSelftest));
+            configureStsForSystemUser(getClient(kodeverkServiceSelftest));
+            configureStsForSystemUser(getClient(brukerProfilSelftest));
         }
     }
 
@@ -175,17 +165,16 @@ public class ConsumerConfig {
 
         @PostConstruct
         public void setupSts() {
-            STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(sendSoknadPortType));
-            STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(kodeverkService));
-            STSConfigurationUtility.configureStsForExternalSSO(ClientProxy.getClient(brukerProfilService));
+            configureStsForExternalSSO(getClient(sendSoknadPortType));
+            configureStsForExternalSSO(getClient(kodeverkService));
+            configureStsForExternalSSO(getClient(brukerProfilService));
         }
     }
 
     private static <T> T konfigurerMedHttps(T portType) {
-        Client client = ClientProxy.getClient(portType);
-        HTTPConduit httpConduit = (HTTPConduit) client.getConduit();
+        HTTPConduit httpConduit = (HTTPConduit) getClient(portType).getConduit();
 
-        String property = System.getProperty("no.nav.sbl.dialogarena.sendsoknad.sslMock");
+        String property = getProperty("no.nav.sbl.dialogarena.sendsoknad.sslMock");
         if (property != null && property.equals("true")) {
             TLSClientParameters params = new TLSClientParameters();
             params.setDisableCNCheck(true);
@@ -200,7 +189,10 @@ public class ConsumerConfig {
         JaxWsProxyFactoryBean proxyFactoryBean = new JaxWsProxyFactoryBean();
         proxyFactoryBean.setAddress(servicePath.toString());
         proxyFactoryBean.setServiceClass(serviceClass);
-        proxyFactoryBean.getFeatures().addAll(asList(new LoggingFeature(), new WSAddressingFeature(), new TimeoutFeature(RECEIVE_TIMEOUT, CONNECTION_TIMEOUT)));
+        proxyFactoryBean.getFeatures().addAll(asList(
+                new LoggingFeature(),
+                new WSAddressingFeature(),
+                new TimeoutFeature(RECEIVE_TIMEOUT, CONNECTION_TIMEOUT)));
         proxyFactoryBean.setWsdlLocation(wsdlURL);
         Map<String, Object> props = new HashMap<>();
         props.put(MTOM_ENABLED, "true");
@@ -214,6 +206,6 @@ public class ConsumerConfig {
 
     //Må godta så store xml-payloads pga Kodeverk postnr
     static {
-        System.setProperty("org.apache.cxf.staxutils.innerElementCountThreshold", "70000");
+        setProperty("org.apache.cxf.staxutils.innerElementCountThreshold", "70000");
     }
 }

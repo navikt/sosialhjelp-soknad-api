@@ -1,8 +1,9 @@
 package no.nav.sbl.dialogarena.websoknad.service;
 
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSBrukerData;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSSoknadData;

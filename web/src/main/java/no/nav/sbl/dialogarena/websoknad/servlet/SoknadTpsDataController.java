@@ -1,19 +1,12 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.person.Adresse;
 import no.nav.sbl.dialogarena.person.Person;
 import no.nav.sbl.dialogarena.person.PersonService;
-import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
-import no.nav.sbl.dialogarena.websoknad.service.SendSoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +15,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 
 @Controller
 @RequestMapping("/soknad")
@@ -46,13 +46,11 @@ public class SoknadTpsDataController {
     @ResponseBody()
     public Map<String, List<String>> hentLandkodeListe() {
         HashMap<String, List<String>> hashMap = new HashMap<String, List<String>>();
-        ArrayList<String> mockLand = new ArrayList<>();
-        
-        mockLand.add("Norge");
-        mockLand.add("Sverige");
-        mockLand.add("Danmark");
-        
-        
+        List<String> mockLand = asList(
+                "Norge",
+                "Sverige",
+                "Danmark"
+        );
         hashMap.put("result", mockLand);
     	return hashMap;
     }
@@ -82,7 +80,7 @@ public class SoknadTpsDataController {
     @RequestMapping(value = "/{soknadId}/personalia/fnr/{fnr}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Person hentEnPerson(@PathVariable String soknadId, @PathVariable String fnr) {
-  
     	return personService.hentPerson(new Long(soknadId), fnr);
     }
+
 }

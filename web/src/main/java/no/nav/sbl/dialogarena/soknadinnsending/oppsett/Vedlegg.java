@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import java.io.Serializable;
 
 public class Vedlegg implements Serializable {
+
     private Faktum faktum;
     private String onValue;
     private String gosysId;
@@ -36,11 +37,12 @@ public class Vedlegg implements Serializable {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Vedlegg{");
-        sb.append("faktum=").append(faktum);
-        sb.append(", onValue='").append(onValue).append('\'');
-        sb.append(", gosysId='").append(gosysId).append('\'');
-        sb.append('}');
-        return sb.toString();
+        return new StringBuilder("Vedlegg{")
+            .append("faktum=").append(faktum)
+            .append(", onValue='").append(onValue).append('\'')
+            .append(", gosysId='").append(gosysId).append('\'')
+            .append('}')
+                .toString();
     }
+
 }

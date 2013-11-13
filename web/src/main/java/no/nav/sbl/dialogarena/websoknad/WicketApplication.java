@@ -40,7 +40,6 @@ public class WicketApplication extends WebApplication {
         return SoknadListePage.class;
     }
 
-
     @Override
     protected void init() {
         super.init();
@@ -108,4 +107,5 @@ public class WicketApplication extends WebApplication {
     protected void setSpringComponentInjector() {
         getComponentInstantiationListeners().add(new SpringComponentInjector(this, applicationContext));
     }
+
 }
