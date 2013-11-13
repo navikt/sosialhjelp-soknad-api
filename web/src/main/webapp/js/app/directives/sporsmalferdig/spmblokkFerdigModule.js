@@ -2,7 +2,6 @@ angular.module('nav.sporsmalferdig', [])
     .directive('spmblokkferdig', ['$timeout', 'data', function ($timeout, data) {
         return {
             require: '^form',
-            restrict: "AE",
             replace: true,
             templateUrl: '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html',
             scope: {
@@ -52,24 +51,4 @@ angular.module('nav.sporsmalferdig', [])
                 }
             }
         }
-    }])
-    .directive('sistLagret', ['data', function (data) {
-        return {
-            replace: true,
-            templateUrl: '../js/app/directives/sporsmalferdig/sistLagretTemplate.html',
-            link: function(scope) {
-                scope.hentSistLagretTid = function() {
-                    return data.soknad.fakta.sistLagret.value;
-                }
-
-                scope.soknadHarBlittLagret = function() {
-                    return data.soknad.fakta.sistLagret !== undefined;
-                }
-
-                scope.soknadHarAldriBlittLagret = function() {
-                    return !scope.soknadHarBlittLagret();
-                }
-            }
-        }
-
     }]);
