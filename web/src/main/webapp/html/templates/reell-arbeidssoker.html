@@ -54,6 +54,12 @@
                       modus="data.redigeringsModus"
                       nokkel="reellarbeidssoker.villighelse"/>
 
+        <div class="ekstra-spm-boks" data-ng-show="soknadData.fakta.villighelse.value == 'false'">
+          <p cmstekster="reellarbeidssoker.villighelse.false.informasjon"/>
+          <input type="textarea" cols="100" rows="10" value="bytt til Ingvilds friktekstfelt når det er ferdig"/>
+          <p cmstekster="reellarbeidssoker.villighelse.false.vedlegginformasjon"/>
+        </div>
+
         <div booleanradio data-ng-model="soknadData.fakta.villigjobb.value"
                       modus="data.redigeringsModus"
                       nokkel="reellarbeidssoker.villigjobb"/>

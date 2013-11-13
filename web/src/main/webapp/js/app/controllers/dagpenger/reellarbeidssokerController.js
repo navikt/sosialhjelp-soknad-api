@@ -3,14 +3,23 @@ angular.module('nav.reellarbeidssoker',[])
         $scope.navigering = {nesteside: 'arbeidsforhold'};
         $scope.sidedata = {navn: 'reellarbeidssoker'};
         
-        var nokler = ['reduserthelse', 'omsorgbarnunder1aar', 'eneansvarbarnunder5skoleaar', 'eneansvarbarnopptil18aar', 'annensituasjon'];
+        var deltidnokler = ['reduserthelse', 'omsorgbarnunder1aar', 'eneansvarbarnunder5skoleaar', 'eneansvarbarnopptil18aar', 'annensituasjon'];
+        var pendlenokler = ['pendlereduserthelse', 'pendleomsorgbarnunder1aar', 'pendleomsorgbarnopptil10', 'pendleeneansvarbarnunder5skoleaar', 
+                            'pendleeneansvarbarnopptil18aar', 'pendleannensituasjon', 'pendleomsorgansvar' ];
 
         $scope.validerReellarbeidssoker = function(form) {
-            var minstEnAvhuket = $scope.erCheckboxerAvhuket(nokler);
+            var minstEnDeltidAvhuket = $scope.erCheckboxerAvhuket(deltidnokler);
             if($scope.soknadData.fakta.villigdeltid.value == 'false') {
-                form.$setValidity("reellarbeidssoker.villigdeltid.false.minstEnAvhuket.feilmelding", minstEnAvhuket);    
+                form.$setValidity("reellarbeidssoker.villigdeltid.false.minstEnAvhuket.feilmelding", minstEnDeltidAvhuket);    
             } else {
                 form.$setValidity("reellarbeidssoker.villigdeltid.false.minstEnAvhuket.feilmelding", true);    
+            }
+
+            var minstEnPendleAvhuket = $scope.erCheckboxerAvhuket(pendlenokler);
+            if($scope.soknadData.fakta.villigpendle.value == 'false') {
+                form.$setValidity("reellarbeidssoker.villigdpendle.false.minstEnAvhuket.feilmelding", minstEnPendleAvhuket);    
+            } else {
+                form.$setValidity("reellarbeidssoker.villigpendle.false.minstEnAvhuket.feilmelding", true);    
             }
             
 
