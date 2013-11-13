@@ -28,13 +28,12 @@ public class SoknadService implements SendSoknadService {
 
     private static final Logger logger = LoggerFactory.getLogger(SoknadService.class);
 
-    private static final String BRUKERREGISTRERT_FAKTUM = "BRUKERREGISTRERT";
     private BlockingQueue<Long> previewQueye = new LinkedBlockingQueue<>();
 
-//	@Inject
-//    @Named("sendSoknadService")
-//    private SendSoknadPortType sendSoknadService;
+    private static final String BRUKERREGISTRERT_FAKTUM = "BRUKERREGISTRERT";
+    private static final String SYSTEMREGISTRERT_FAKTUM = "SYSTEMREGISTRERT";
 
+    
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository repository;
@@ -50,6 +49,11 @@ public class SoknadService implements SendSoknadService {
 
     }
 
+    @Override
+    public void lagreSystemSoknadsFelt(long soknadId, String key, String value) {
+        repository.lagreFaktum(soknadId, new Faktum(soknadId, key, value, SYSTEMREGISTRERT_FAKTUM));
+    }
+    
     @Override
     public void sendSoknad(long soknadId) {
         repository.avslutt(new WebSoknad().medId(soknadId));
