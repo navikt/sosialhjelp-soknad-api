@@ -1,14 +1,15 @@
 package no.nav.sbl.dialogarena.kodeverk;
 
-import java.util.Arrays;
 import java.util.List;
+
+import static java.util.Arrays.asList;
 
 public interface Kodeverk extends Adressekodeverk {
 
     String  LANDKODE        = "Landkoder",
             POSTNUMMER      = "Postnummer";
             
-    List<String> ALLE_KODEVERK = Arrays.asList(LANDKODE, POSTNUMMER);
+    List<String> ALLE_KODEVERK = asList(LANDKODE, POSTNUMMER);
 
     void lastInnNyeKodeverk();
 

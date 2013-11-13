@@ -11,10 +11,11 @@ import org.springframework.context.annotation.Configuration;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Arrays.asList;
 
 @Configuration
 public class ContentConfig {
@@ -26,21 +27,22 @@ public class ContentConfig {
     private static final String DEFAULT_LOCALE = "nb";
     private static final String INNHOLDSTEKSTER_NB_NO_REMOTE = "/systemsider/Modernisering/sendsoknad/nb/tekster";
     private static final String INNHOLDSTEKSTER_NB_NO_LOCAL = "content.innholdstekster";
-    private static final String SBL_WEBKOMPONENTER_NB_NO_REMOTE = "/site/16/sbl-webkomponenter/nb/tekster";
+    private static final String SBL_WEBKOMPONENTER_NB_NO_REMOTE = "/systemsider/Modernisering/sbl-webkomponenter/nb/tekster";
     private static final String SBL_WEBKOMPONENTER_NB_NO_LOCAL = "content.sbl-webkomponenter";
-
 
     @Bean
     public ValueRetriever siteContentRetriever() throws URISyntaxException {
         Map<String, List<URI>> uris = new HashMap<>();
         uris.put(DEFAULT_LOCALE,
-                Arrays.asList(
+                asList(
                         new URI(cmsBaseUrl + INNHOLDSTEKSTER_NB_NO_REMOTE),
                         new URI(cmsBaseUrl + SBL_WEBKOMPONENTER_NB_NO_REMOTE)
                 ));
         return new ValuesFromContentWithResourceBundleFallback(
-                Arrays.asList(INNHOLDSTEKSTER_NB_NO_LOCAL, SBL_WEBKOMPONENTER_NB_NO_LOCAL), enonicContentRetriever(),
-                uris, DEFAULT_LOCALE);
+                asList(INNHOLDSTEKSTER_NB_NO_LOCAL, SBL_WEBKOMPONENTER_NB_NO_LOCAL),
+                enonicContentRetriever(),
+                uris,
+                DEFAULT_LOCALE);
     }
 
     @Bean
@@ -57,7 +59,6 @@ public class ContentConfig {
         messageSource.setEnableEnonic(false);
         return messageSource;
     }
-
 
     @Bean
     public ContentRetriever enonicContentRetriever() {
@@ -77,4 +78,5 @@ public class ContentConfig {
     public String cmsBaseUrl() {
         return cmsBaseUrl;
     }
+
 }
