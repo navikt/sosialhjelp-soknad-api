@@ -56,13 +56,19 @@
 
         <div class="ekstra-spm-boks" data-ng-show="soknadData.fakta.villighelse.value == 'false'">
           <p cmstekster="reellarbeidssoker.villighelse.false.informasjon"/>
-          <input type="textarea" cols="100" rows="10" value="bytt til Ingvilds friktekstfelt når det er ferdig"/>
+          
+          <div navtextarea inputname="helseFritekst" data-ng-model="soknadData.fakta.helseFritekst.value"
+                         nokkel="reellarbeidssoker.helsefritekst" maxlengde="500" feilmelding="reellarbeidssoker.helsefritekst.feilmelding" obligatorisk="true"></div>
           <p cmstekster="reellarbeidssoker.villighelse.false.vedlegginformasjon"/>
         </div>
 
         <div booleanradio data-ng-model="soknadData.fakta.villigjobb.value"
                       modus="data.redigeringsModus"
                       nokkel="reellarbeidssoker.villigjobb"/>
+
+        <div class="ekstra-spm-boks" data-ng-show="soknadData.fakta.villigjobb.value == 'false'">
+          <p cmstekster="reellarbeidssoker.villigjobb.false.informasjon"/>
+        </div>
 
         <div spmblokkferdig
                 nokkel="reellarbeidssoker"
