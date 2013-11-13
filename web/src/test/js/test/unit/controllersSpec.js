@@ -18,6 +18,7 @@ describe('GrunnlagsdataController', function() {
         $httpBackend = _$httpBackend_;
 //        $httpBackend.expectGET('/sendsoknad/rest/utslagskriterier/1').
 //            respond({"alder":true, "borIUtland":true });
+
 	}));
 
 	describe('fraMindreEnnTil', function(){
@@ -70,11 +71,17 @@ describe('DagpengerControllere', function() {
          $provide.value("data", {});
     }));
 
-    beforeEach(inject(function ( $rootScope, $controller, $compile) {
+    beforeEach(inject(function ( $rootScope, $controller, $compile, $httpBackend) {
+        $httpBackend.expectGET('../js/app/directives/feilmeldinger/feilmeldingerTemplate.html').
+            respond('');
+
         scope = $rootScope.$new();
         scope.validateFormFunctionBleKalt = false;
         scope.validateForm = function(form) {
             scope.validateFormFunctionBleKalt = true;
+        };
+        scope.runValidation = function(form) {
+           //expected call..
         };
 
         scope.soknadData = {
@@ -87,6 +94,8 @@ describe('DagpengerControllere', function() {
           +  '</form>'
         );
         $compile(form)(scope);
+
+        
         scope.$digest();
         form.scope().$apply();
     }));
