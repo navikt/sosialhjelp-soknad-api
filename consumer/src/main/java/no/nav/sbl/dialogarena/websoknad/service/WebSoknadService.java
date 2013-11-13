@@ -139,4 +139,10 @@ public class WebSoknadService implements SendSoknadService {
 
         return soknad;
     }
+
+    @Override
+    public void lagreSystemSoknadsFelt(long soknadId, String key, String value) {
+        // TODO Auto-generated method stub
+        
+    }
 }

@@ -23,7 +23,16 @@ public class WebSoknad implements Serializable {
     private SoknadInnsendingStatus status;
 	private String aktoerId;
 	private DateTime opprettetDato;
+    private DelstegStatus delstegStatus;
     
+    public DelstegStatus getDelstegStatus() {
+        return delstegStatus;
+    }
+
+    public void setDelstegStatus(DelstegStatus delstegStatus) {
+        this.delstegStatus = delstegStatus;
+    }
+
     public WebSoknad() {
         fakta = new LinkedHashMap<>();
     }
@@ -134,5 +143,10 @@ public class WebSoknad implements Serializable {
 		return this;
 				
 	}
+
+    public WebSoknad medDelstegStatus(DelstegStatus delstegStatus) {
+        this.delstegStatus = delstegStatus;
+        return this;
+    }
 
 }
