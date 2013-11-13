@@ -16,11 +16,15 @@ angular.module('nav.sistlagret', [])
                     return !scope.soknadHarBlittLagret();
                 }
 
+                angular.element($window).bind('scroll', function() {
+                    settStickySistLagret();
+                });
+
                 // Litt hacky måte å få smooth overgang mellom sticky og non-sticky...
                 var nonStickyHeightCompensation = 16;
                 var stickyHeightCompensation = 56;
                 var stickyHeight = nonStickyHeightCompensation;
-                angular.element($window).bind('scroll', function() {
+                function settStickySistLagret() {
                     var elementTop = element.find('#sist-lagret-anchor')[0].getBoundingClientRect().bottom + stickyHeight;
                     var windowTop = this.innerHeight;
 
@@ -31,7 +35,9 @@ angular.module('nav.sistlagret', [])
                         stickyHeight = nonStickyHeightCompensation;
                         element.find('.sist-lagret').removeClass('stick');
                     }
-                });
+                }
+
+                settStickySistLagret();
             }
         }
     }]);
