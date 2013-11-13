@@ -12,6 +12,8 @@ public interface SendSoknadService {
 
 	void lagreSoknadsFelt(long soknadId, String key, String value);
 
+	void lagreSystemSoknadsFelt(long soknadId, String key, String value);
+	
 	void sendSoknad(long soknadId);
 
 	List<Long> hentMineSoknader(String aktorId);
