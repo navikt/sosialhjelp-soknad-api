@@ -19,7 +19,6 @@ angular.module('nav.forsettsenere',['nav.cmstekster'])
             switch (delstegstatus){
                 case "UTFYLLING":
                     templateUrl = "../html/templates/gjenoppta/skjema-under-arbeid.html";
-                    console.log("utfylling");
                     break;
                 case "VEDLEGG_VALIDERT":
                     templateUrl = "../html/templates/gjenoppta/skjema-ferdig.html";
@@ -39,7 +38,6 @@ angular.module('nav.forsettsenere',['nav.cmstekster'])
             var templateUrl = '';
             switch (status) {
                     case "UNDER_ARBEID":
-                        console.log("under arbeid");
                         templateUrl = getForDelsteg(delstegstatus);
                         break;
                     case "FERDIG":
@@ -53,7 +51,7 @@ angular.module('nav.forsettsenere',['nav.cmstekster'])
 
 
         var linker = function(scope,element, attrs){
-            return getTemplateUrl(data.soknad.status, data.soknad.delstegstatus);
+            return getTemplateUrl(data.soknad.status, data.soknad.delstegStatus);
         }
 
         return{ 
