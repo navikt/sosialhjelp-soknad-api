@@ -103,6 +103,42 @@ describe('directives', function () {
     });
 });
 
+describe('directives', function () {
+    var scope, form, element;
+
+    beforeEach(module('nav.textarea'));
+
+    beforeEach(inject(['$compile', '$rootScope', '$templateCache', function ($c, $r, $templateCache) {
+        $templateCache.put("../js/app/directives/navtextarea/navtextareaTemplate.html", "<div>hello</div>");
+        $compile = $c;
+        $rootScope = $r
+        scope = $rootScope;
+
+        element = angular.element(
+            '<form name="form">' +
+                '<div navtextarea inputname="fritekst" data-ng-model="fritekst" nokkel="fritekst" maxlengde="500" feilmelding="fritekst.feilmelding"></div>' +
+            '</form>'
+        );
+
+        scope.counter = 500;
+        scope.feil = false;
+
+        $compile(element)(scope);
+        manualCompiledElement =angular.element($templateCache.get("../js/app/directives/navtextarea/navtextareaTemplate.html"));
+        scope.$digest();
+        form = scope.form;
+        element.scope().$apply();
+
+    }]));
+
+    it('###########################################################################################', function () {
+        scope.counter = -1;
+        validerAntallTegn();
+        expect(scope.feil).toEqual(true);
+
+    });
+});
+
 // Må løse problem med å hente templates i testene før vi kan teste direktiv som bruker templateUrl
 /*describe('directives', function() {
  var scope, element, form, radioknappen, $httpBackend;
