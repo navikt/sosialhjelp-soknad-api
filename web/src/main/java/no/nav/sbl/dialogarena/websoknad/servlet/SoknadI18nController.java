@@ -31,4 +31,5 @@ public class SoknadI18nController {
     public String forNokkel(@PathVariable String nokkel) {
         return "nokkel:" + nokkel;
     }
+
 }

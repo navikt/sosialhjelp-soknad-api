@@ -1,10 +1,9 @@
 package no.nav.sbl.dialogarena.person;
 
-import java.util.List;
+import org.joda.time.DateTime;
 
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.joda.time.DateTime;
+import java.util.List;
 
 @XmlRootElement
 public class Adresse {
@@ -26,8 +25,8 @@ public class Adresse {
 	private String eiendomsnavn;
 	
 	public Adresse(long soknadId, Adressetype type) {
-		this.soknadId=soknadId;
-		this.type=type;
+		this.soknadId = soknadId;
+		this.type = type;
 	}
 
 	public void setGatenavn(String gatenavn) {

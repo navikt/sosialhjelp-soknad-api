@@ -31,11 +31,6 @@
             <artifactId>modig-cxf</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-log-filter</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
         </dependency>
@@ -68,11 +63,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-consumer</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>sendsoknad-db</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -187,6 +177,14 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Avhengigheter med scope runtime -->
+
+        <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-log-filter</artifactId>
             <scope>runtime</scope>
@@ -268,12 +266,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Avhengigheter med scope provided -->
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
+            <scope>runtime</scope>
         </dependency>
 
-        <!-- Avhengigheter med scope provided -->
 
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -395,7 +394,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>sendsoknad-db</artifactId>
+            <artifactId>sendsoknad-business</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
