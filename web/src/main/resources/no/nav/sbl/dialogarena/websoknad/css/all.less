@@ -94,31 +94,52 @@
 }
 
 .ferdig-skjema {
-    border-bottom: none;
-    padding-bottom: 0;
+  border-bottom: none;
+  padding-bottom: 0;
 
-    #frivillig-textarea {
-        margin: 10px auto 0;
+  .textarea-form {
+      text-align: center;
 
-        label {
-            text-transform: uppercase;
-        }
-        textarea {
-            overflow-y: hidden;
-            margin: 10px auto 0;
-            max-width: 50%;
-            min-width: 50%;
-            min-height: 40px;
-        }
-    }
-    a[class*="knapp-"] {
-        margin-top: 40px;
-        margin-bottom: 40px;
-    }
+      .textarea-container {
+        margin-bottom: 35px;
+      }
+      p, span {
+        font-size: 14px !important;
+        margin: 10px 0;
+      }
 
-    .stegindikator {
-        margin-bottom: 0;
-    }
+      label {
+          text-transform: uppercase;
+      }
+
+      textarea {
+          margin: 10px auto 0;
+          overflow-y: hidden;
+          margin: 0 auto;
+          max-width: 50%;
+          min-width: 50%;
+          min-height: 40px;
+      }
+      .tellertekst {
+        font-weight: bold;
+      }
+      .negativtekstteller {
+        color: #c30000;
+      }
+  }
+
+  a[class*="knapp-"] {
+      margin-top: 40px;
+      margin-bottom: 40px;
+  }
+}
+
+a[class*="knapp-"] {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+.stegindikator {
+    margin-bottom: 0;
 }
 
 // Kan ikke brukes på input-element
