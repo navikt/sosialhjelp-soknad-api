@@ -61,7 +61,7 @@ angular.module('nav.feilmeldinger', [])
                 scope.giFokus = function(element) {
                     element.focus();
                 }
-                
+
                 scope.erKlikkbarFeil = function(feilmelding) {
                     return feilmelding.elem.length > 0;
                 }
