@@ -31,16 +31,17 @@ if (!Array.prototype.contains) {
     }
 }
 
-if (!Array.prototype.containsObjectWithValue) {
-    Array.prototype.containsObjectWithValue = function(val) {
-        return $.grep(this, function(obj) {
+// Returnerer index til ett objekt som inneholder value (ikke nødvendigvis første)
+if (!Array.prototype.indexByValue) {
+    Array.prototype.indexByValue = function(val) {
+        return this.indexOf($.grep(this, function(obj) {
             for (key in obj) {
                 if (obj[key] == val) {
-                    return true;
+                    return this;
                 }
             }
             return false;
-        }).length > 0;
+        })[0]);
     }
 }
 
@@ -101,8 +102,7 @@ function capitalizeFirstLetter(str) {
 }
 
 function stringContainsNotCaseSensitive(str, query) {
-    var re = new RegExp(query, "i");
-    return re.test(str);
+    return str.toLowerCase().indexOf(query.toLowerCase());
 }
 
 (function($) {
