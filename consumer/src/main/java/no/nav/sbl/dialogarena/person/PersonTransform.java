@@ -41,15 +41,17 @@ public class PersonTransform {
             return new Person();
         }
         XMLBruker soapPerson = (XMLBruker) response.getPerson();
-        return new Person(
+        Person person = new Person(
                 soknadId,
                 finnFnr(soapPerson),
                 finnForNavn(soapPerson),
                 finnMellomNavn(soapPerson),
                 finnEtterNavn(soapPerson),
-                finnEpost(soapPerson),
                 finnGjeldendeAdressetype(soapPerson),
                 finnAdresser(soknadId, soapPerson));
+        person.setEpost(soknadId,finnEpost(soapPerson));
+        
+        return person;
     }
 
     private String finnEpost(XMLBruker soapPerson) {
