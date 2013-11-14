@@ -24,7 +24,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
 
                 scope.$on(eventString, function () {
                     if (!sjekkOmInputErGyldig()) {
-                        formElem[0].addClass('feil');
+                        formElem.addClass('feil');
                     }
                 });
 
