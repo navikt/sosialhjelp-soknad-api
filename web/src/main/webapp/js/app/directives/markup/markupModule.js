@@ -1,1 +1,1 @@
-angular.module('nav.markup',['nav.markup.panelbelyst']);
+angular.module('nav.markup',['nav.markup.panelbelyst', 'nav.markup.navinfoboks']);
