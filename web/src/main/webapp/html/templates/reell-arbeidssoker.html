@@ -1,5 +1,5 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <div data-ng-form="reellarbeidssokerForm" class="skjemainnhold" data-ng-controller="ReellarbeidssokerCtrl" novalidate>
+    <div data-ng-form="reellarbeidssokerForm" class="skjemainnhold horisontal" data-ng-controller="ReellarbeidssokerCtrl" novalidate>
 
         <div data-form-errors></div>
 
@@ -8,7 +8,7 @@
                       nokkel="reellarbeidssoker.villigdeltid"/>
 
         <div class="ekstra-spm-boks" data-ng-show="soknadData.fakta.villigdeltid.value == 'false'">
-          <p cmstekster="reellarbeidssoker.villigdeltid.false.informasjon"/>
+          <div data-navinfoboks nokkel="reellarbeidssoker.villigdeltid.false.informasjon"/>
              <div navcheckbox data-ng-model='soknadData.fakta.reduserthelse.value' modus='data.redigeringsModus'
              inputname='reduserthelse' label='reellarbeidssoker.reduserthelse' hjelpetekst="reellarbeidssoker.reduserthelse.hjelpetekst"/>
              <div navcheckbox data-ng-model='soknadData.fakta.omsorgbarnunder1aar.value' modus='data.redigeringsModus'
@@ -33,7 +33,7 @@
                       nokkel="reellarbeidssoker.villigpendle"/>
 
         <div class="ekstra-spm-boks" data-ng-show="soknadData.fakta.villigpendle.value == 'false'">
-          <p cmstekster="reellarbeidssoker.villigpendle.false.informasjon"/>
+          <div data-navinfoboks nokkel="reellarbeidssoker.villigpendle.false.informasjon"/>
              <div navcheckbox data-ng-model='soknadData.fakta.pendlereduserthelse.value' modus='data.redigeringsModus'
               inputname='pendlereduserthelse' label='reellarbeidssoker.pendlereduserthelse' hjelpetekst="reellarbeidssoker.pendlereduserthelse.hjelpetekst"/>
              <div navcheckbox data-ng-model='soknadData.fakta.pendleomsorgbarnunder1aar.value' modus='data.redigeringsModus'
@@ -55,9 +55,7 @@
                       modus="data.redigeringsModus"
                       nokkel="reellarbeidssoker.villighelse"/>
 
-        <div class="ekstra-spm-boks" data-ng-show="soknadData.fakta.villighelse.value == 'false'">
-          <p cmstekster="reellarbeidssoker.villighelse.false.informasjon"/>
-          
+        <div class="ekstra-spm-boks" data-ng-show="soknadData.fakta.villighelse.value == 'false'">  
           <div navtextarea inputname="helseFritekst" data-ng-model="soknadData.fakta.helseFritekst.value"
                          nokkel="reellarbeidssoker.helsefritekst" maxlengde="500" feilmelding="reellarbeidssoker.helsefritekst.feilmelding" obligatorisk="true"></div>
           <p cmstekster="reellarbeidssoker.villighelse.false.vedlegginformasjon"/>
@@ -68,7 +66,7 @@
                       nokkel="reellarbeidssoker.villigjobb"/>
 
         <div class="ekstra-spm-boks" data-ng-show="soknadData.fakta.villigjobb.value == 'false'">
-          <p cmstekster="reellarbeidssoker.villigjobb.false.informasjon"/>
+          <div data-navinfoboks nokkel="reellarbeidssoker.villigjobb.false.informasjon"/>
         </div>
 
         <div spmblokkferdig
