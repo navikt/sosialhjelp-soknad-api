@@ -30,7 +30,7 @@ public interface SoknadRepository {
 
 	String opprettBehandling();
 
-    public Long lagreVedlegg(final Vedlegg vedlegg);
+    Long lagreVedlegg(final Vedlegg vedlegg);
 
 
     void slettVedlegg(Long soknadId, Long vedleggId);
