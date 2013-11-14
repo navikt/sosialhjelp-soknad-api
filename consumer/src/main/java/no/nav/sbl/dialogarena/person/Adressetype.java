@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.person;
 
 public enum Adressetype {
-
+	POSTADRESSE_UTLAND,
     BOSTEDSADRESSE, POSTADRESSE,
     GATEADRESSE, POSTBOKSADRESSE,
     OMRAADEADRESSE, UTENLANDSK_ADRESSE,

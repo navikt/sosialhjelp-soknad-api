@@ -61,4 +61,26 @@ public class Person implements Serializable {
 	public Map<String, Object> getFakta() {
 		return fakta;
 	}
+	
+	public boolean harUtenlandskAdresse() {
+		Object object = getFakta().get(GJELDENDEADRESSETYPE);
+		Faktum faktum = (Faktum) object;
+		if(ingenFaktumReturnert(faktum)) {
+			return false;
+		}
+		String adressetype = faktum.getValue();
+		if (adressetype.equals(Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND.toString()) || adressetype.equals(Adressetype.POSTADRESSE_UTLAND.toString())) {
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Dersom faktum er null tyder det på at baksystemet er nede, dermed skal man anta man har norsk adresse.
+	 * 
+	 */
+	private boolean ingenFaktumReturnert(Faktum faktum) {
+		return faktum == null;
+	}
 }
