@@ -54,9 +54,14 @@ angular.module('nav.feilmeldinger', [])
                 scope.scrollTilElementMedFeil = function(feilmelding) {
                     if (scope.erKlikkbarFeil(feilmelding)) {
                         scrollToElement(feilmelding.elem);
+                        scope.giFokus(feilmelding.elem);
                     }
                 }
 
+                scope.giFokus = function(element) {
+                    element.focus();
+                }
+                
                 scope.erKlikkbarFeil = function(feilmelding) {
                     return feilmelding.elem.length > 0;
                 }
