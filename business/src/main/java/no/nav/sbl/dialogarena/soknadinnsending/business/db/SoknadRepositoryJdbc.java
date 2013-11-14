@@ -95,7 +95,12 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         if (oppdaterBrukerData(soknadId, faktum) == 0) {
             getJdbcTemplate().update("insert into soknadbrukerdata (soknadbrukerdata_id, soknad_id, key, value, type, sistendret) values (?, ?, ?, ?, ?, sysdate)",
                     dbNokkel, soknadId, faktum.getKey(), faktum.getValue(), faktum.getType());
+            utfyllingStartet(soknadId);
         }
+    }
+
+    private int utfyllingStartet(long soknadId) {
+        return getJdbcTemplate().update("update soknad set DELSTEGSTATUS = ? where soknad_id = ?", DelstegStatus.UTFYLLING.name(), soknadId);   
     }
 
     @Override
