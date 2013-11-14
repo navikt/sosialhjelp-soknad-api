@@ -390,7 +390,7 @@ $scope.arbeidsforhold = [{
   {id: 5, navn:'Konkurs'},
   {id: 6, navn:'Redusert arbeidstid med mer enn 50% (40% for fiskere)'},
   {id: 7, navn:'Kontrakt utgått'},
-  {id: 8, navn:'Sluttet'},
+  {id: 8, navn:'Sluttet'}
 
   ]
 }];
