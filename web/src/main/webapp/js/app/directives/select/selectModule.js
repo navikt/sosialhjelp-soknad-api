@@ -1,4 +1,4 @@
-angular.module('nav.select', [])
+angular.module('nav.select', ['ngSanitize'])
     .directive('navSelect', ['$document', function ($document) {
         return {
             scope: {
@@ -260,7 +260,7 @@ angular.module('nav.select', [])
                 var input = angular.element(element.find('input'));
 
                 element.bind('click', function(event) {
-                    open();
+                    openIfClosed();
                     scope.$apply();
                     event.stopPropagation();
                 });
@@ -290,19 +290,15 @@ angular.module('nav.select', [])
                 }
 
                 scope.navigateUp = function() {
-                    open();
+                    openIfClosed();
                     var previous = scope.fokusElement.prev();
-                    if (previous.length > 0) {
-                        settFokusElement(angular.element(previous));
-                    }
+                    navigateTo(previous);
                 }
 
                 scope.navigateDown = function() {
-                    open();
+                    openIfClosed();
                     var next = scope.fokusElement.next();
-                    if (next.length > 0) {
-                        settFokusElement(angular.element(next));
-                    }
+                    navigateTo(next);
                 }
 
                 scope.$watch('inputValue', function() {
@@ -337,7 +333,7 @@ angular.module('nav.select', [])
                     close();
                 }
 
-                function open() {
+                function openIfClosed() {
                     if (!scope.selectOpen) {
                         scope.selectOpen = true;
                         scope.searchFilter = '';
@@ -352,6 +348,17 @@ angular.module('nav.select', [])
                     scope.inputValue = selectedItem().text().trim();
                 }
 
+                function navigateTo(elem) {
+                    if (elem.length > 0) {
+                        settFokusElement(angular.element(elem));
+                        var diff = isScrolledIntoView(elem, elem.parent());
+                        if (diff != 0) {
+                            diff = diff + 5*(diff/Math.abs(diff));
+                            elem.parent().scrollToPos(elem.parent().scrollTop() - diff);
+                        }
+                    }
+                }
+
                 function firstInList() {
                     return angular.element(element.find('li').first());
                 }
@@ -363,6 +370,25 @@ angular.module('nav.select', [])
                 function selectedItem() {
                     return angular.element(element.find('li[data-value=' + scope.selected + ']'));
                 }
+
+                function isScrolledIntoView(element, container) {
+                    var containerTop = container.offset().top;
+                    var containerBottom = containerTop + container.height();
+
+                    var elemTop = element.offset().top;
+                    var elemBottom = elemTop + element.height();
+
+                    var diffTop = containerTop - elemTop; // Hvis > 0, må scrolle ned
+                    var diffBottom = containerBottom - elemBottom; // Hvis < 0 må scrolle opp
+
+                    if (diffTop > 0) {
+                        return diffTop;
+                    } else if (diffBottom < 0) {
+                        return diffBottom;
+                    } else {
+                        return 0;
+                    }
+                }
             }
         }
     }])
@@ -371,6 +397,7 @@ angular.module('nav.select', [])
             var matchArray = [];
             for (var i = 0; i < input.length; i++) {
                 if (stringContainsNotCaseSensitive(input[i].text, query)) {
+                    input[i]['displayText'] = "<span>" + input[i].text + "</span>";
                     matchArray.push(input[i]);
                 }
             }
