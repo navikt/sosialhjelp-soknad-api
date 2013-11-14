@@ -4,6 +4,7 @@ angular.module('app.routes', ['ngRoute'])
         $routeProvider
             .when('/informasjonsside', {
                 templateUrl: '../html/templates/informasjonsside.html',
+                controller: 'InformasjonsSideCtrl',
                 resolve: {
                     notUsedButRequiredProperty: function (TekstService) {
                         return TekstService;
