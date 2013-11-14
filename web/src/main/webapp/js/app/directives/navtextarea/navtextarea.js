@@ -1,5 +1,12 @@
 angular.module('nav.textarea', [])
     .directive('navtextarea', [function () {
+        var linker = function(scope,element, attrs){
+            if(scope.attr("obligatorisk")) {
+                return '../js/app/directives/navtextarea/navtextareaObligatoriskTemplate.html';
+            } else {                
+                return '../js/app/directives/navtextarea/navtextareaTemplate.html';
+            }
+        }
         return {
             replace: true,
             require: 'ngModel',
@@ -8,7 +15,8 @@ angular.module('nav.textarea', [])
                 nokkel: '@',
                 maxlengde: '@',
                 inputname: '@',
-                feilmelding: '@'
+                feilmelding: '@',
+                obligatorisk: '@'
             },
             controller: function ($scope) {
                 $scope.sporsmal = $scope.nokkel + ".sporsmal";
@@ -24,8 +32,11 @@ angular.module('nav.textarea', [])
                 var tmpElementName = 'tmpName';
                 fiksNavn(element, scope.inputname, tmpElementName);
             },
-            templateUrl: '../js/app/directives/navtextarea/navtextareaTemplate.html'
+            templateUrl: linker
         };
+
+
+         
     }])
     .directive('validateTextarea', [function() {
         return {
