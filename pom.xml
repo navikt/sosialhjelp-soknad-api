@@ -41,6 +41,7 @@
         <dialogarena.webkomponent.innstillinger>1.0.18-SNAPSHOT</dialogarena.webkomponent.innstillinger>
         <dialogarena.dokumentinnsending.version>2.0.1</dialogarena.dokumentinnsending.version>
 		<ojdbc.version>11.2.0.3</ojdbc.version>
+        <flying.saucer.version>9.0.3</flying.saucer.version>
     </properties>
 
     <dependencyManagement>
@@ -212,7 +213,12 @@
             <dependency>
                 <groupId>org.xhtmlrenderer</groupId>
                 <artifactId>flying-saucer-core</artifactId>
-                <version>9.0.3</version>
+                <version>${flying.saucer.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.xhtmlrenderer</groupId>
+                <artifactId>flying-saucer-pdf</artifactId>
+                <version>${flying.saucer.version}</version>
             </dependency>
             <dependency>
                 <groupId>bouncycastle</groupId>
