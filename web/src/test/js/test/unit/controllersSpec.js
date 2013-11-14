@@ -84,6 +84,7 @@ describe('DagpengerControllere', function() {
            //expected call..
         };
 
+
         scope.soknadData = {
             fakta: {}
         }
@@ -93,6 +94,10 @@ describe('DagpengerControllere', function() {
           +      '<form-errors></form-errors>'
           +  '</form>'
         );
+
+        form.$setValidity = function(key, value) {
+            //expected call..
+        }
         $compile(form)(scope);
 
         
@@ -150,6 +155,8 @@ describe('DagpengerControllere', function() {
         }));
 
         it('skal kalle metode for å validere form', function() {
+            scope.soknadData.fakta.villigdeltid = true;
+            scope.soknadData.fakta.villigpendle = true;
             expect(scope.validateFormFunctionBleKalt).toEqual(false);
             scope.validerReellarbeidssoker(form);
             expect(scope.validateFormFunctionBleKalt).toEqual(true);
