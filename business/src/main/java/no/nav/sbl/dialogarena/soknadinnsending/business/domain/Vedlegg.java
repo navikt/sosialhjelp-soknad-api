@@ -63,16 +63,30 @@ public class Vedlegg {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Vedlegg vedlegg = (Vedlegg) o;
 
-        if (tomtFaktum(vedlegg)) return false;
-        if (tomId(vedlegg)) return false;
-        if (tomtNavn(vedlegg)) return false;
-        if (tomSoknadId(vedlegg)) return false;
-        if (tomStorrelse(vedlegg)) return false;
+        if (tomtFaktum(vedlegg)) {
+            return false;
+        }
+        if (tomId(vedlegg)) {
+            return false;
+        }
+        if (tomtNavn(vedlegg)) {
+            return false;
+        }
+        if (tomSoknadId(vedlegg)) {
+            return false;
+        }
+        if (tomStorrelse(vedlegg)) {
+            return false;
+        }
 
         return true;
     }
