@@ -1,55 +1,60 @@
 #opplasting {
-  h2, p {
+  margin-top: 40px;
+  h2 {
     text-align: center;
-    padding-left: 100px;
-    padding-right: 100px;
+  }
+  .sak-tredel {
+    width: 31.3333%;
+    margin: 0 auto;
+  }
+  .info {
+    font-weight: 600;
+    padding-bottom: 10px;
+  }
+  .oversikt {
+    text-align: center;
   }
 
-  .opplasting {
-    margin-top: 40px;
-    .vedleggListe {
-      list-style: none;
-      padding-left: 0;
-      .vedlegg {
-        box-sizing: border-box;
-        padding: 30px;
-        margin-top: 20px;
-        height: 19em;
-        background-color: #f1f1f1;
-        h3 {
-          text-transform: uppercase;
-        }
-        ul {
-          list-style-type: disc;
-        }
-        .forhandsvisning {
-          background-color: #ffffff;
-          width: 150px;
-          height: 190px;
-          position: absolute;
-          right: 30px;
-          top: 30px;
-        }
-      }
-      .spm-knapper {
-        text-align: left;
-        position: absolute;
-        bottom: 10%;
-        label {
-          margin-left: 20px;
-        }
+  .vedlegg {
+    h3 {
+      text-transform: uppercase;
+    }
+    .info-liste ul {
+      list-style-type: disc;
+      padding-left: 16px;
+    }
+    .forhandsvisning {
+      background-color: #ffffff;
+      width: 150px;
+      height: 190px;
+      position: absolute;
+      right: 30px;
+      top: 30px;
+    }
+    .valgboks {
+      display: block;
+      text-align: center;
+      width: 170px;
+      height: 170px;
+      padding: 20px;
+      background: #3e3832 url('../img/pc.svg') no-repeat center 15px;
+      span {
+        display: inline-block;
+        margin-top: 100px;
+        color: white;
+        text-transform: uppercase;
       }
     }
+  }
 
-    .opplasting-knapper {
-      margin-top: 40px;
-      margin-bottom: 40px;
-      text-align: center;
+  .opplasting-knapper {
+    margin-top: 40px;
+    margin-bottom: 40px;
+    text-align: center;
 
-      a {
-        display: inline-block;
-        margin-bottom: 10px;
-      }
+    a {
+      display: inline-block;
+      margin-bottom: 10px;
     }
   }
 }
