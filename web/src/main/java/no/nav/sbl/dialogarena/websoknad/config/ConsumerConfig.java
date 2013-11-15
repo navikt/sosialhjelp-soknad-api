@@ -1,16 +1,12 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
-
 import no.nav.modig.cxf.TimeoutFeature;
-import no.nav.modig.security.sts.utility.STSConfigurationUtility;
 import no.nav.sbl.dialogarena.common.timing.TimingFeature;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
-import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.feature.LoggingFeature;
-import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
