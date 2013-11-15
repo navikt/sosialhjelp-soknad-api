@@ -1,54 +1,66 @@
 <stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="2"></stegindikator>
 
-<panelbelyst id="opplasting">
-    <h2 class="stor" cmstekster="dagpenger.opplasting.tittel"/>
 
-    <p cmstekster="dagpenger.opplasting.info"/>
+<div id="opplasting" class="rad soknad">
+    <section class="sak-hel" data-ng-controller="VedleggCtrl">
+        <div class="panel-standard-belyst skjema">
+            <section class="skjemaramme sak-tredel oversikt">
+                <h1 class="stor stor-ikon-soknader-strek" data-cmstekster="dagpenger.opplasting.tittel"></h1>
 
-    <div class="opplasting">
-        <div id="vedleggOversikt" data-ng-controller="VedleggCtrl">
-            <ul class="vedleggListe">
-                <form>
-                <li data-ng-repeat="v in vedlegg" class="vedlegg spm-boks" ng-if="erFaktumLikKriterie(v)">
-                    <h3 cmstekster="{{soknad.gosysId}}.vedlegg.{{v.gosysId}}.header"></h3>
+                <p class="info" data-cmstekster="dagpenger.opplasting.info"></p>
 
-                    <div>
-                        <h4 cmstekster="opplasting.vedlegg.maabekrefte"></h4>
-                        <div cmshtml="{{soknad.gosysId}}.vedlegg.{{v.gosysId}}.bekrefte"></div>
-                    </div>
-                    <div class="forhandsvisning spm-boks">preview</div>
-                    <div class="spm-knapper" data-ng-if="!vedleggBehandlet(v)">
+                <p class="mini" data-cmstekster="dagpenger.opplasting.video.info"></p>
+                <a class="knapp-hoved" href="#video" data-cmstekster="dagpenger.opplasting.video.knapp"></a>
+            </section>
+            <div data-accordion data-close-others="false">
+                <section data-ng-repeat="v in vedlegg" ng-if="erFaktumLikKriterie(v)" class="vedlegg" data-ng-form>
+                    <div data-accordion-group class="spm-blokk open" data-is-open="true">
+                        <div data-accordion-heading>
+                            <div class="flipp">
+                                <span>+</span>
+                            </div>
+                            <h2 class="stor stor-strek" data-cmstekster="{{soknad.gosysId}}.vedlegg.{{v.gosysId}}.header"/>
+                        </div>
+                        <div data-div class="skjemaramme sak-tredel">
+                            <h4 cmstekster="dagpenger.opplasting.vedlegg.maabekrefte"></h4>
+                            <p class="info-liste" cmshtml="{{soknad.gosysId}}.vedlegg.{{v.gosysId}}.bekrefte"></p>
 
-                        <label for="opplasting{{v.gosysId}}" class="knapp-hoved-liten" cmstekster="lastopp"></label>
-                        <input type="file" class="vekk " id="opplasting{{v.gosysId}}">
-                        <input type="checkbox" id="ettersend{{v.gosysId}}" data-ng-model="v.sendSenere">
-                        <label for="ettersend{{v.gosysId}}" cmstekster="opplasting.vedlegg.ettersend"></label>
-                        <input type="checkbox" id="ikkesend{{v.gosysId}}" data-ng-model="v.ikkeSend">
-                        <label for="ikkesend{{v.gosysId}}" cmstekster="opplasting.vedlegg.ikkesend">></label>
+
+                            <div class="spm-knapper" data-ng-if="!vedleggBehandlet(v)">
+                                <a class="valgboks" href="#">
+                                    <span data-cmstekster="dagpenger.opplasting.vedlegg.lastopp.dennepc"></span></a>
+                                <input type="checkbox" id="ettersend{{v.gosysId}}" data-ng-model="v.sendSenere">
+                                <label for="ettersend{{v.gosysId}}" class="svar-alt" cmstekster="dagpenger.opplasting.vedlegg.ettersend"></label>
+                                <input type="checkbox" id="ikkesend{{v.gosysId}}" data-ng-model="v.ikkeSend">
+                                <label for="ikkesend{{v.gosysId}}" cmstekster="dagpenger.opplasting.vedlegg.ikkesend">></label>
+                            </div>
+                            <div class="spm-knapper" data-ng-if="v.ikkeSend">
+                                <input type="checkbox" id="ikkesend{{v.gosysId}}ferdig" data-ng-model="v.ikkeSend">
+                                <label for="ikkesend{{v.gosysId}}ferdig" cmstekster="dagpenger.opplasting.vedlegg.ikkesend">></label>
+                            </div>
+                            <div class="spm-knapper" data-ng-if="v.sendSenere">
+                                <input type="checkbox" id="ettersend{{v.gosysId}}ferdig" data-ng-model="v.sendSenere">
+                                <label for="ettersend{{v.gosysId}}ferdig" cmstekster="dagpenger.opplasting.vedlegg.ettersend"></label>
+                            </div>
+                            <div class="spm-knapper" data-ng-if="v.lastetOpp">
+                                Lastet opp
+                            </div>
+                        </div>
+
                     </div>
-                    <div class="spm-knapper" data-ng-if="v.ikkeSend">
-                        <input type="checkbox" id="ikkesend{{v.gosysId}}ferdig" data-ng-model="v.ikkeSend">
-                        <label for="ikkesend{{v.gosysId}}ferdig" cmstekster="opplasting.vedlegg.ikkesend">></label>
-                    </div>
-                    <div class="spm-knapper" data-ng-if="v.sendSenere">
-                        <input type="checkbox" id="ettersend{{v.gosysId}}ferdig" data-ng-model="v.sendSenere">
-                        <label for="ettersend{{v.gosysId}}ferdig" cmstekster="opplasting.vedlegg.ettersend"></label>
-                    </div>
-                    <div class="spm-knapper" data-ng-if="v.lastetOpp">
-                        Lastet opp
-                    </div>
-                </li>
-                </form>
-            </ul>
-        </div>
-        <div class="opplasting-knapper">
-            <div>
-                <a href="#/oppsummering/{{ soknadData.soknadId }}" class="knapp-hoved"
-                   cmstekster="dagpenger.opplasting.ferdig"/>
+                </section>
             </div>
-            <div>
-                <a href="#/dagpenger/{{ soknadData.soknadId }}" cmstekster="tilbake"/>
-            </div>
         </div>
+    </section>
+</div>
+
+
+<div class="opplasting-knapper">
+    <div>
+        <a href="#/oppsummering/{{ soknadData.soknadId }}" class="knapp-hoved"
+           cmstekster="dagpenger.opplasting.ferdig"/>
     </div>
-</panelbelyst>
+    <div>
+        <a href="#/dagpenger/{{ soknadData.soknadId }}" cmstekster="tilbake"/>
+    </div>
+</div>
