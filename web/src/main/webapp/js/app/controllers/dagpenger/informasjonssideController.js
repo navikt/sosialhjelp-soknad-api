@@ -1,15 +1,13 @@
 angular.module('nav.informasjonsside',['nav.cmstekster'])
-    .controller('InformasjonsSideCtrl', ['$scope', 'utslagskriterierService', '$routeParams', '$http', '$location', 
-        function ($scope, utslagskriterierService, $routeParams, $http,  $location) {
-            $scope.utslagskriterier = {};
-            utslagskriterierService.get().$promise.then(function (result) {
-                $scope.utslagskriterier = result;
-                //Inntil vi får arena-kobling
-                $scope.utslagskriterier.erRegistrertArbeidssoker = false;
-                //For testing uten TPS:
-                /* $scope.utslagskriterier.gyldigAlder = true;
-                $scope.utslagskriterier.bosattINorge = false;*/
-            });
+    .controller('InformasjonsSideCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', 
+        function ($scope, data, $routeParams, $http,  $location) {
+            $scope.utslagskriterier = data.utslagskriterier;
+            //Inntil vi får arena-kobling
+            $scope.utslagskriterier.erRegistrertArbeidssoker = true;
+            //For testing uten TPS:
+            /* $scope.utslagskriterier.gyldigAlder = true;
+            $scope.utslagskriterier.bosattINorge = false;*/
+            
 
         $scope.kravForDagpengerOppfylt = function() {
             return $scope.utslagskriterier.erRegistrertArbeidssoker && $scope.utslagskriterier.gyldigAlder && $scope.utslagskriterier.bosattINorge;
