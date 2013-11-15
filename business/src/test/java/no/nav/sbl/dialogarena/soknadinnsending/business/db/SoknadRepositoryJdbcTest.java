@@ -233,7 +233,7 @@ public class SoknadRepositoryJdbcTest {
     public void skalLasteOppBlob() throws IOException {
         byte[] bytes = {1, 2, 3};
         Vedlegg v = getVedlegg(bytes);
-        soknadRepository.lagreVedlegg(v);
+        soknadRepository.lagreVedlegg(v, bytes);
         List<Vedlegg> vedlegg = soknadRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktum());
         assertThat(vedlegg.size(), is(equalTo(1)));
         v.setId(vedlegg.get(0).getId());
@@ -244,7 +244,7 @@ public class SoknadRepositoryJdbcTest {
     @Test
     public void skalKunneSletteVedlegg() {
         final Vedlegg v = getVedlegg();
-        Long id = soknadRepository.lagreVedlegg(v);
+        Long id = soknadRepository.lagreVedlegg(v, new byte[0]);
         List<Vedlegg> hentet = soknadRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktum());
         assertThat(hentet, is(notNullValue()));
         assertThat(hentet.size(), is(1));
@@ -258,7 +258,7 @@ public class SoknadRepositoryJdbcTest {
     public void skalHenteInnhold() throws IOException {
         byte[] lagret = new byte[]{1,2,3};
         final Vedlegg v = getVedlegg(lagret);
-        Long id = soknadRepository.lagreVedlegg(v);
+        Long id = soknadRepository.lagreVedlegg(v, lagret);
         InputStream hentet = soknadRepository.hentVedlegg(v.getSoknadId(), id);
         byte[] bytes = IOUtils.toByteArray(hentet);
         assertThat(bytes, is(equalTo(lagret)));
