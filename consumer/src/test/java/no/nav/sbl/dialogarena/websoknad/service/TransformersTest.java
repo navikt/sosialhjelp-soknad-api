@@ -1,9 +1,8 @@
 package no.nav.sbl.dialogarena.websoknad.service;
 
-import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSBrukerData;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.informasjon.WSSoknadDataOppsummering;
-
 import org.junit.Assert;
 import org.junit.Test;
 

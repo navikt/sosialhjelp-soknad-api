@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.person;
 
-import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -10,6 +10,7 @@ import java.util.Map;
 
 @XmlRootElement
 public class Person implements Serializable {
+
 	private static final String FODSELSNUMMERKEY = "fnr";
 	private static final String FORNAVNKEY = "fornavn";
 	private static final String MELLOMNAVNKEY = "mellomnavn";
@@ -17,6 +18,7 @@ public class Person implements Serializable {
 	private static final String SAMMENSATTNAVNKEY = "sammensattnavn";
 	private static final String ADRESSERKEY = "adresser";
 	private static final String GJELDENDEADRESSETYPE = "gjeldendeAdresseType";
+	private static final String EPOSTKEY = "epost";
 
 	private Map<String, Object> fakta;
 
@@ -24,25 +26,23 @@ public class Person implements Serializable {
 		fakta = new HashMap<>();
 	}
 
-    public Person(Long soknadId, String fnr, String fornavn, String mellomnavn, String etternavn, String gjeldendeAdresseType, List<Adresse> adresser) {
+    public Person(Long soknadId, String fnr, String fornavn, String mellomnavn, String etternavn, String epost, String gjeldendeAdresseType, List<Adresse> adresser) {
     	fakta = new HashMap<>();
 
     	fakta.put(FODSELSNUMMERKEY, genererFaktum(soknadId,FODSELSNUMMERKEY,fnr));
     	fakta.put(FORNAVNKEY, genererFaktum(soknadId,FORNAVNKEY,fornavn));
     	fakta.put(MELLOMNAVNKEY, genererFaktum(soknadId,MELLOMNAVNKEY,mellomnavn));
     	fakta.put(ETTERNAVNKEY, genererFaktum(soknadId,ETTERNAVNKEY,etternavn));
+    	fakta.put(EPOSTKEY, genererFaktum(soknadId, EPOSTKEY, epost));
     	fakta.put(GJELDENDEADRESSETYPE, genererFaktum(soknadId, GJELDENDEADRESSETYPE, gjeldendeAdresseType));
     	fakta.put(SAMMENSATTNAVNKEY, genererFaktum(soknadId, SAMMENSATTNAVNKEY, getSammenSattNavn(fornavn,mellomnavn, etternavn)));
-    	
     	fakta.put(ADRESSERKEY, adresser);
-
     }
 
-	private String getSammenSattNavn(String fornavn, String mellomnavn,
-			String etternavn) {
-		if("".equals(fornavn) || fornavn == null) {
+	private String getSammenSattNavn(String fornavn, String mellomnavn, String etternavn) {
+		if ("".equals(fornavn) || fornavn == null) {
 			return etternavn;
-		} else if("".equals(mellomnavn) || mellomnavn == null) {
+		} else if ("".equals(mellomnavn) || mellomnavn == null) {
 			return fornavn + " " + etternavn;
 		} else {
 			return fornavn +" " + mellomnavn + " " + etternavn;
@@ -60,5 +60,27 @@ public class Person implements Serializable {
 	
 	public Map<String, Object> getFakta() {
 		return fakta;
+	}
+	
+	public boolean harUtenlandskAdresse() {
+		Object object = getFakta().get(GJELDENDEADRESSETYPE);
+		Faktum faktum = (Faktum) object;
+		if(ingenFaktumReturnert(faktum)) {
+			return false;
+		}
+		String adressetype = faktum.getValue();
+		if (adressetype.equals(Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND.toString()) || adressetype.equals(Adressetype.POSTADRESSE_UTLAND.toString())) {
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Dersom faktum er null tyder det på at baksystemet er nede, dermed skal man anta man har norsk adresse.
+	 * 
+	 */
+	private boolean ingenFaktumReturnert(Faktum faktum) {
+		return faktum == null;
 	}
 }

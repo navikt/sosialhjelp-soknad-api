@@ -18,6 +18,7 @@ describe('GrunnlagsdataController', function() {
         $httpBackend = _$httpBackend_;
 //        $httpBackend.expectGET('/sendsoknad/rest/utslagskriterier/1').
 //            respond({"alder":true, "borIUtland":true });
+
 	}));
 
 	describe('fraMindreEnnTil', function(){
@@ -70,12 +71,19 @@ describe('DagpengerControllere', function() {
          $provide.value("data", {});
     }));
 
-    beforeEach(inject(function ( $rootScope, $controller, $compile) {
+    beforeEach(inject(function ( $rootScope, $controller, $compile, $httpBackend) {
+        $httpBackend.expectGET('../js/app/directives/feilmeldinger/feilmeldingerTemplate.html').
+            respond('');
+
         scope = $rootScope.$new();
         scope.validateFormFunctionBleKalt = false;
         scope.validateForm = function(form) {
             scope.validateFormFunctionBleKalt = true;
         };
+        scope.runValidation = function(form) {
+           //expected call..
+        };
+
 
         scope.soknadData = {
             fakta: {}
@@ -86,7 +94,13 @@ describe('DagpengerControllere', function() {
           +      '<form-errors></form-errors>'
           +  '</form>'
         );
+
+        form.$setValidity = function(key, value) {
+            //expected call..
+        }
         $compile(form)(scope);
+
+        
         scope.$digest();
         form.scope().$apply();
     }));
@@ -141,6 +155,8 @@ describe('DagpengerControllere', function() {
         }));
 
         it('skal kalle metode for å validere form', function() {
+            scope.soknadData.fakta.villigdeltid = true;
+            scope.soknadData.fakta.villigpendle = true;
             expect(scope.validateFormFunctionBleKalt).toEqual(false);
             scope.validerReellarbeidssoker(form);
             expect(scope.validateFormFunctionBleKalt).toEqual(true);
