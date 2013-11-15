@@ -86,7 +86,8 @@ public class PersonTransform {
     private void addMidlertidigAdresse(long soknadId, List<Adresse> result, XMLMidlertidigPostadresse midlertidigPostadresse) {
         if (midlertidigPostadresse instanceof XMLMidlertidigPostadresseNorge) {
             XMLMidlertidigPostadresseNorge xmlMidlPostAdrNorge = (XMLMidlertidigPostadresseNorge) midlertidigPostadresse;
-            result.add(retrieveAdresse(soknadId, xmlMidlPostAdrNorge, xmlMidlPostAdrNorge.getStrukturertAdresse()));}
+            result.add(retrieveAdresse(soknadId, xmlMidlPostAdrNorge, xmlMidlPostAdrNorge.getStrukturertAdresse()));
+        }
         else if (midlertidigPostadresse instanceof XMLMidlertidigPostadresseUtland) {
             Adresse midlertidigAdresse = new Adresse(soknadId, MIDLERTIDIG_POSTADRESSE_UTLAND);
             setLandkodeOgGyldighetsDatoer(midlertidigAdresse, (XMLMidlertidigPostadresseUtland) midlertidigPostadresse);
