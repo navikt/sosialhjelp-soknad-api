@@ -2,8 +2,8 @@
     <label>
         <p cmstekster="{{sporsmal}}"/>
         
-        <textarea data-ng-model='model' name="tmpName" error-messages="'{{ feilmelding }}'" data-ng-trim='false' validate-textarea required/>
-
+        <textarea data-ng-model='model' name="tmpName" error-messages="'{{ feilmelding }}'" data-ng-trim='false' validate-textarea blur-validate required/>
+        <span class="melding"/>
 
         <p data-ng-show="fokus || feil">
             <span class="tellertekst" data-ng-class="{negativtekstteller: counter < 0 }"> {{counter}} </span>
