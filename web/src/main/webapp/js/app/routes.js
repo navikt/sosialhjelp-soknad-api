@@ -6,8 +6,8 @@ angular.module('app.routes', ['ngRoute'])
                 templateUrl: '../html/templates/informasjonsside.html',
                 controller: 'InformasjonsSideCtrl',
                 resolve: {
-                    notUsedButRequiredProperty: function (TekstService) {
-                        return TekstService;
+                    notUsedButRequiredProperty: function (InformasjonsSideResolver) {
+                        return InformasjonsSideResolver;
                     }
                 }
             })
