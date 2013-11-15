@@ -37,10 +37,10 @@ public class ApplicationContext {
     @Value("${dialogarena.navnolink.url}")
     private String navigasjonslink;
     
-    @Value("${dokumentinnsending.smtpServer.host}")
+    @Value("${tilbakemelding.smtp.host}")
     private String smtpServerHost;
 
-    @Value("${dokumentinnsending.smtpServer.port}")
+    @Value("${tilbakemelding.smtp.port}")
     private Integer smtpServerPort;
 
     @Bean
