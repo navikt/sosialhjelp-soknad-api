@@ -33,6 +33,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
         SoknadInnsendingDBConfig.class})
 public class ApplicationContext {
 
+
     @Value("${dialogarena.navnolink.url}")
     private String navigasjonslink;
     
