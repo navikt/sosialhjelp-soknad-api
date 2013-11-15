@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.BusinessConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadInnsendingDBConfig;
 import no.nav.sbl.dialogarena.websoknad.WicketApplication;
 import no.nav.sbl.dialogarena.websoknad.service.EmailService;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +16,8 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+
+import java.net.URL;
 
 /**
  * Applikasjonskontekst for ear-modulen.
@@ -37,11 +38,11 @@ public class ApplicationContext {
     @Value("${dialogarena.navnolink.url}")
     private String navigasjonslink;
     
-  //  @Value("${dokumentinnsending.smtpServer.host}")
-    private String smtpServerHost = "smtp.test.local";
+    @Value("${dokumentinnsending.smtpServer.host}")
+    private URL smtpServerHost;
 
-   // @Value("${dokumentinnsending.smtpServer.port}")
-    private Integer smtpServerPort =25;
+    @Value("${dokumentinnsending.smtpServer.port}")
+    private int smtpServerPort;
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
@@ -57,7 +58,7 @@ public class ApplicationContext {
     public MailSender mailSender() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setDefaultEncoding("UTF-8");
-        javaMailSender.setHost(smtpServerHost);
+        javaMailSender.setHost(smtpServerHost.getHost());
         javaMailSender.setPort(smtpServerPort);
         return javaMailSender;
     }
