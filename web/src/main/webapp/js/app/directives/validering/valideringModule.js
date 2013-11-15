@@ -68,7 +68,8 @@ angular.module('nav.validering', ['nav.cmstekster'])
             }
         }
     }])
-    .directive('radiobuttonValidate', ['data', function (data) {
+
+    .directive('clickValidate', ['data', function (data) {
         return {
             require: ['ngModel', '^form'],
             link: function (scope, element, attrs, ctrls) {
@@ -77,7 +78,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 var eventString = 'RUN_VALIDATION' + form.$name;
 
                 scope.$on(eventString, function () {
-                    if(sjekkOmFeltetErRequired() &&!sjekkOmFeltetErSvart() ) {
+                    if (sjekkOmFeltetErRequired() && !sjekkOmFeltetErSvart()) {
                         element.closest('.form-linje').addClass('feil');
                     }
                 });
@@ -96,17 +97,67 @@ angular.module('nav.validering', ['nav.cmstekster'])
 
                 function sjekkOmFeltetErSvart() {
                     if (!ngModel.$modelValue) {
-                            settFeilmeldingsTekst();
-                            return false;
-                        }
+                        settFeilmeldingsTekst();
+                        return false;
+                    }
                     return true;
                 }
 
                 function settFeilmeldingsTekst() {
                     var feilmeldingsNokkel = element[0].getAttribute('error-messages').toString();
                     //hack for å fjerne dobbeltfnuttene rundt feilmeldingsnokk
-                    var feilmeldingTekst = data.tekster[feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length-1)];
-                   element.closest('.form-linje').find('.melding').text(feilmeldingTekst);
+                    var feilmeldingTekst = data.tekster[feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1)];
+                    element.closest('.form-linje').find('.melding').text(feilmeldingTekst);
+                }
+            }
+        }
+    }])
+    .directive('dateValidate', ['data', function (data) {
+        return {
+            require: ['ngModel', '^form'],
+            link: function (scope, element, attrs, ctrls) {
+                var ngModel = ctrls[0];
+                var form = ctrls[1];
+                var eventString = 'RUN_VALIDATION' + form.$name;
+
+
+                scope.$on(eventString, function () {
+                    if (sjekkOmFeltetErRequired() && !sjekkOmFeltetErSvart ) {
+                        element.closest('.form-linje').addClass('feil');
+                    }
+                });
+
+                element.bind('blur', function () {
+                    if (!sjekkOmFeltetErSvart()) {
+                        element.closest('.form-linje').addClass('feil');
+                    }
+                });
+
+                scope.$watch(function () {
+                    return ngModel.$viewValue;
+                }, function () {
+                    if (ngModel.$viewValue) {
+                        element.closest('.form-linje').removeClass('feil');
+                    }
+                });
+
+                function sjekkOmFeltetErRequired() {
+                    return element[0].hasOwnProperty("required");
+                }
+
+                function sjekkOmFeltetErSvart() {
+                    if (!ngModel.$modelValue) {
+                        settFeilmeldingsTekst();
+                        return false;
+                    }
+                    return true;
+                }
+
+                function settFeilmeldingsTekst() {
+                    var feilmeldingsNokkel = element[0].getAttribute('error-messages').toString();
+                    //hack for å fjerne dobbeltfnuttene rundt feilmeldingsnokk
+                    var feilmeldingTekst = data.tekster[feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1)];
+                    element.closest('.form-linje').find('.melding').text('arbeidsforhold.arbeidsgiver.varighet.feilmelding');
                 }
             }
         }

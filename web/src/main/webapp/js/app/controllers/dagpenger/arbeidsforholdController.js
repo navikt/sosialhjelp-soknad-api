@@ -156,17 +156,19 @@ angular.module('nav.arbeidsforhold.controller', [])
                 if ($scope.arbeidsgiver && ($scope.arbeidsgiver.varighetTil <= $scope.arbeidsgiver.varighetFra)) {
                     $scope.arbeidsgiver.varighetTil = '';
                     $scope.datoError = true;
+
                 } else {
                     $scope.datoError = false;
+
                 }
             });
 
-            $scope.validateTilFraDato = function (af) {
+            $scope.validateTilFraDato = function (af, form) {
                 if (af && (af.varighetTil <= af.varighetFra)) {
                     af.varighetTil = '';
-                    $scope.datoError = true;
+                    form.$setValidity('arbeidsforhold.arbeidsgiver.varighet.feilmelding', false);
                 } else {
-                    $scope.datoError = false;
+                    form.$setValidity('arbeidsforhold.arbeidsgiver.varighet.feilmelding', true);
                 }
             }
 
@@ -230,6 +232,8 @@ angular.module('nav.arbeidsforhold.controller', [])
             form.$setValidity('arbeidsforhold.feilmelding', true);
             form.$setValidity('arbeidsforhold.endrearbeidsforhold.feilmelding', true);
             form.$setValidity('arbeidsforhold.leggtilnyttarbeidsforhold.feilmelding', true);
+            form.$setValidity('arbeidsforhold.arbeidsgiver.varighet.feilmelding', true);
+
             $scope.runValidation();
             if (form.$valid) {
                 var value = angular.toJson($scope.arbeidsforhold);
