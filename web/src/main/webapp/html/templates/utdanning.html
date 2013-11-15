@@ -21,7 +21,8 @@
                           feilmelding="utdanning.utdanning.feilmelding"/>
 
 
-                <div data-ng-show="hvisUnderUtdanning()" modus="data.redigeringsModus">
+                <div class="spm" data-ng-show="hvisUnderUtdanning()" modus="data.redigeringsModus">
+
 
                     <input id="underUtdanningKveld" type="checkbox" data-ng-model ="soknadData.fakta.underUtdanningKveld.value" name="underUtdanningKveld"/>
                     <label for="underUtdanningKveld" class="svar-alt" cmstekster="utdanning.svar.under.utdanning.kveld"/>
@@ -41,8 +42,71 @@
                     <input id="underUtdanningIntroduksjon" type="checkbox" data-ng-model ="soknadData.fakta.underUtdanningIntroduksjon.value" name="underUtdanningIntroduksjon"/>
                     <label for="underUtdanningIntroduksjon" class="svar-alt" cmstekster="utdanning.svar.under.utdanning.introduksjon"/>
 
+                    </div>
+
+
+         <div class="spm" data-ng-show="hvisUnderUtdanning()">
+
+                <label for="utdanningssted" cmstekster="utdanning.utdanningssted.navn"></label>
+                <input id="utdanningssted" type="text" data-ng-model="utdanningssted.navn" required/>
+
+                <div class="varighet">
+                    <label cmstekster="utdanning.utdanningssted.start"></label>
+                    <input type="text" name="varighetFra" ui-date ui-date-format ng-model="utdanning.varighetFra" data-ng-change="validateTilFraDato(utdanning)"  required >
+                   </div>
+             <div class="varighet">
+                    <label cmstekster="utdanning.utdanningssted.slutt"></label>
+                    <span data-ng-show="utdanningDatoError" style="color:red" cmstekster="utdanning.utdanningssted.error.datoTilFra"/>
+                    <input type="text" name="varighetTil" ui-date ui-date-format ng-model="utdanning.varighetTil" data-ng-change="validateTilFraDato(utdanning)" required >
                 </div>
 
+                <div class="sporsmaal">
+                    <p cmstekster="utdanning.utdanningssted.heltid.sporsmal"/>
+
+                    <div>
+                        <input class="sendsoknad-radio" id="heltid" data-ng-model="utdanning.heltid" type="radio" value="true"
+                               name="heltid" error-messages="'utdanning.error.heltiddeltid'" required/>
+                        <label for="heltid" class='svar-alt' cmstekster="utdanning.utdanningssted.heltid.true"/>
+                    </div>
+
+                    <div>
+                        <input class="sendsoknad-radio" id="deltid" data-ng-model="utdanning.heltid" type="radio" value="false"
+                               name="deltid" error-messages="'utdanning.error.heltiddeltid'" required/>
+                        <label for="deltid" class='svar-alt' cmstekster="utdanning.utdanningssted.heltid.false"/>
+                    </div>
+                </div>
+
+                <div data-ng-if="utdanning.heltid == 'false' ">
+                    <label cmstekster="utdanning.utdanningssted.deltid.prosent"></label>
+                    <br/>
+                    <select id="utdanningProsent" type="text" data-ng-model="utdanning.permitteringProsent" error-messages="'utdanning.deltid.grad.feilmelding'" ng-options="obj.id as obj.name for obj in utdanningsprosent" required>
+                        <option value="">--Velg deltidsprosent--</option>
+                    </select>
+                </div>
+
+                <div class="sporsmaal">
+                    <p cmstekster="utdanning.utdanningssted.avslutte.sporsmal"/>
+
+                    <div>
+                        <input class="sendsoknad-radio" id="avslutteJa" data-ng-model="utdanning.avslutte" type="radio" value="true"
+                               name="avslutteJa" error-messages="'utdanning.error.avslutte'" required/>
+                        <label for="avslutteJa" class='svar-alt' cmstekster="utdanning.utdanningssted.avslutte.true"/>
+                    </div>
+
+                    <div>
+                        <input class="sendsoknad-radio" id="avslutteNei" data-ng-model="utdanning.avslutte" type="radio" value="false"
+                               name="avslutteNei" error-messages="'utdanning.error.avslutte'" required/>
+                        <label for="avslutteNei" class='svar-alt' cmstekster="utdanning.utdanningssted.avslutte.false"/>
+                    </div>
+
+
+                </div>
+
+                <div data-ng-if="utdanning.avslutte == 'false' ">
+                    <p cmstekster="utdanning.utdanningsted.avslutte.konsekvenser"/>
+                </div>
+
+         </div>
 
 
 

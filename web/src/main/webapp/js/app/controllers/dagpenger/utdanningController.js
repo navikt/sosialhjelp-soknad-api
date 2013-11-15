@@ -7,7 +7,10 @@ angular.module('nav.utdanning',[])
 
     $scope.validerUtdanning = function(form) {
             var minstEnAvhuket = $scope.erCheckboxerAvhuket(nokler);
+        if ($scope.hvisUnderUtdanning)
+        {
             form.$setValidity("utdanning.minstEnAvhuket.feilmelding", minstEnAvhuket);
+        }
             $scope.validateForm(form.$invalid);
             $scope.runValidation();
         }
@@ -32,6 +35,15 @@ angular.module('nav.utdanning',[])
             }
             return false;
         }
+
+    $scope.validateTilFraDato = function (utdanning) {
+        if (utdanning && (utdanning.varighetTil <= utdanning.varighetFra)) {
+            utdanning.varighetTil = '';
+            $scope.utdanningDatoError = true;
+        } else {
+            $scope.utdanningDatoError = false;
+        }
+    }
 
     $scope.erCheckboxerAvhuket = function(checkboxNokler) {
         var minstEnAvhuket = false;
