@@ -37,13 +37,11 @@ public class ApplicationContext {
     @Value("${dialogarena.navnolink.url}")
     private String navigasjonslink;
     
-
-    @Value("${tilbakemelding.smtp.port}")
-    private Integer smtpServerPort;
-
-    @Value("${tilbakemelding.smtp.host}")
+    @Value("${dokumentinnsending.smtpServer.host}")
     private String smtpServerHost;
 
+    @Value("${dokumentinnsending.smtpServer.port}")
+    private Integer smtpServerPort;
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {

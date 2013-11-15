@@ -28,7 +28,7 @@
         <baseUrl alias="dialogarena.cms" mapToProperty="dialogarena.cms"/>
         <baseUrl alias="dialogarena.navnolink" mapToProperty="dialogarena.navnolink" />
 
-        <smtpServer alias="tilbakemelding.smtp" mapToProperty="tilbakemelding.smtp"/>
+        <smtpServer alias="dokumentinnsending.smtpServer" mapToProperty="dokumentinnsending.smtpServer"/>
         <localFiles name="sendsoknad" mapToProperty="sendsoknad.datadir"/>
         <applicationCertificate alias="srvSendsoknad"/>
     </resources>
