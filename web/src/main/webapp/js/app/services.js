@@ -31,9 +31,19 @@ angular.module('app.services', ['ngResource'])
         );
     })
 
+    .factory('forsettSenereService', function ($resource) {
+        return $resource('/sendsoknad/rest/soknad/:soknadId/fortsettsenere',
+          {soknadId: '@param'},
+            {
+                send: {method: 'POST'}
+            }
+        );
+    })
+
+
     .factory('utslagskriterierService', function ($resource) {
-        return $resource('/sendsoknad/rest/utslagskriterier/:uid',
-            {uid: new Date().getTime()}
+        return $resource('/sendsoknad/rest/utslagskriterier/',
+            {}
         );
     })
 

@@ -4,6 +4,7 @@ angular.module('app.routes', ['ngRoute'])
         $routeProvider
             .when('/informasjonsside', {
                 templateUrl: '../html/templates/informasjonsside.html',
+                controller: 'InformasjonsSideCtrl',
                 resolve: {
                     notUsedButRequiredProperty: function (TekstService) {
                         return TekstService;
@@ -30,6 +31,26 @@ angular.module('app.routes', ['ngRoute'])
             })
             .when('/fortsettsenere/:soknadId', {
                 templateUrl: '../html/templates/fortsettSenere.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
+
+            .when('/kvittering-fortsettsenere/:soknadId', {
+                templateUrl: '../html/templates/kvittering-fortsettsenere.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
+
+            .when('/gjenoppta/:soknadId', {
+                templateUrl: '../html/templates/gjenoppta.html',
                 controller: 'SoknadDataCtrl',
                 resolve: {
                     notUsedButRequiredProperty: function (HentSoknadService) {

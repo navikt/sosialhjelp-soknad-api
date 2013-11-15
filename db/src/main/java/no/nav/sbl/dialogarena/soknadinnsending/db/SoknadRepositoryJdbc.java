@@ -1,25 +1,27 @@
 package no.nav.sbl.dialogarena.soknadinnsending.db;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.sql.DataSource;
-
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.IdGenerator;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRowMapper;
 import no.nav.sbl.dialogarena.websoknad.domain.Faktum;
 import no.nav.sbl.dialogarena.websoknad.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.websoknad.domain.WebSoknad;
-
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
 @Named("soknadInnsendingRepository")
-public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadRepository{
+public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadRepository {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(SoknadRepositoryJdbc.class);
 	
@@ -41,9 +43,11 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     
  	@Override
     public Long opprettSoknad(WebSoknad soknad) {
+
         Long databasenokkel = getJdbcTemplate().queryForObject(SQLUtils.selectNextSequenceValue("SOKNAD_ID_SEQ"), Long.class);
-        getJdbcTemplate().update("insert into soknad (soknad_id, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status) values (?,?,?,?,?,?)", 
-        		databasenokkel, soknad.getBrukerBehandlingId(), soknad.getGosysId(), soknad.getAktoerId(), 
+         //TODO: FIX, fjern Test_Delete og sett inn soknad.getAktoerId()
+        getJdbcTemplate().update("insert into soknad (soknad_id, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status) values (?,?,?,?,?,?)",
+        		databasenokkel, soknad.getBrukerBehandlingId(), soknad.getGosysId(), "TEST_DELETE",
         		soknad.getOpprettetDato().toDate(), SoknadInnsendingStatus.UNDER_ARBEID.name());
         return databasenokkel;
     }

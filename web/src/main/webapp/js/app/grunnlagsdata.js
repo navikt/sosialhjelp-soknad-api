@@ -74,7 +74,7 @@ angular.module('app.grunnlagsdata', ['app.services'])
 				return "*Gjenopptak pga ikke hatt permitering, og fått dagpenger de siste 52 ukene.*"
 			}
 			if(!$scope.jobbetHosSammeArbeidsgiverMerEnnSeksUker()){
-				return "*Gjennopptak pga ikke hatt jobb hos samme arbeidsgiver vedkommende ble permitert fra, i mer enn 6 uker, og fått dagpenger de siste 52 ukene."
+				return "*Gjennopptak pga ikke hatt jobb hos samme arbeidsgiver vedkommende ble permittert fra, i mer enn 6 uker, og fått dagpenger de siste 52 ukene."
 			}
 			if($scope.erFisker() && !$scope.jobetMerEnn26Uker()) {
 				return "*Gjennopptak pga fisker, og fått dagpenger de siste 52 ukene."

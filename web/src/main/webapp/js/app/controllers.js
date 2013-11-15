@@ -1,5 +1,5 @@
 'use strict';
-angular.module('app.controllers', ['app.services', 'nav.reellarbeidssoker', 'nav.ytelser', 'nav.egennaering', 'nav.verneplikt', 'nav.utdanning', 'nav.vedlegg.controller'])
+angular.module('app.controllers', ['app.services', 'nav.reellarbeidssoker', 'nav.ytelser', 'nav.egennaering', 'nav.verneplikt', 'nav.utdanning', 'nav.vedlegg.controller', 'nav.forsettsenere'])
 
 .controller('ungerUtlandCtrl', ['$scope', function($scope) {
 
@@ -310,11 +310,11 @@ angular.module('app.controllers', ['app.services', 'nav.reellarbeidssoker', 'nav
       avskjedighetLonn:'',
       avskjedighetLonnFra: undefined,
       avskjedighetLonnTil: undefined,
-      permiteringFra: undefined,
-      permiteringTil: undefined,
-      permiteringVetikke:'',
-      permiteringProsent: '',
-      permiteringFerie: '',
+      permitteringFra: undefined,
+      permitteringTil: undefined,
+      permitteringVetikke:'',
+      permitteringProsent: '',
+      permitteringFerie: '',
       konkursBostyrersnavn:'',
       konkursLonnsgarantiordning:'',
       redusertarbeidstidFra: undefined,
@@ -332,7 +332,7 @@ angular.module('app.controllers', ['app.services', 'nav.reellarbeidssoker', 'nav
       {id: 1, navn:'Sagt opp selv'},
       {id: 2, navn:'Sagt opp av arbeidsgiver'},
       {id: 3, navn:'Avskjediget'},
-      {id: 4, navn:'Permitert'},
+      {id: 4, navn:'Permittert'},
       {id: 5, navn:'Konkurs'},
       {id: 6, navn:'Redusert arbeidstid med mer enn 50% (40% for fiskere)'},
       {id: 7, navn:'Kontrakt utgått'},
@@ -364,11 +364,11 @@ $scope.arbeidsforhold = [{
   avskjedighetLonn:'',
   avskjedighetLonnFra: undefined,
   avskjedighetLonnTil: undefined,
-  permiteringFra: undefined,
-  permiteringTil: undefined,
-  permiteringVetikke:'',
-  permiteringProsent: '',
-  permiteringFerie: '',
+  permitteringFra: undefined,
+  permitteringTil: undefined,
+  permitteringVetikke:'',
+  permitteringProsent: '',
+  permitteringFerie: '',
   konkursBostyrersnavn:'',
   konkursLonnsgarantiordning:'',
   redusertarbeidstidFra: undefined,
@@ -386,11 +386,11 @@ $scope.arbeidsforhold = [{
   {id: 1, navn:'Sagt opp selv'},
   {id: 2, navn:'Sagt opp av arbeidsgiver'},
   {id: 3, navn:'Avskjediget'},
-  {id: 4, navn:'Permitert'},
+  {id: 4, navn:'Permittert'},
   {id: 5, navn:'Konkurs'},
   {id: 6, navn:'Redusert arbeidstid med mer enn 50% (40% for fiskere)'},
   {id: 7, navn:'Kontrakt utgått'},
-  {id: 8, navn:'Sluttet'},
+  {id: 8, navn:'Sluttet'}
 
   ]
 }];
