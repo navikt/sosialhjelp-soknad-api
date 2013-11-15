@@ -134,7 +134,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
 
 
     @Override
-    public Long lagreVedlegg(final Vedlegg vedlegg) {
+    public Long lagreVedlegg(final Vedlegg vedlegg, final byte[] content) {
         final Long databasenokkel = getJdbcTemplate().queryForObject(SQLUtils.selectNextSequenceValue("VEDLEGG_ID_SEQ"), Long.class);
         getJdbcTemplate().execute("insert into vedlegg(vedlegg_id, soknad_id,faktum, navn, storrelse, data, opprettetdato) values (?, ?, ?, ?, ?, ?, sysdate)",
 
@@ -146,7 +146,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
                         ps.setLong(3, vedlegg.getFaktum());
                         ps.setString(4, vedlegg.getNavn());
                         ps.setLong(5, vedlegg.getStorrelse());
-                        lobCreator.setBlobAsBinaryStream(ps, 6, vedlegg.getInputStream(), vedlegg.getStorrelse().intValue());
+                        lobCreator.setBlobAsBytes(ps, 6, content);
                     }
                 });
         return databasenokkel;

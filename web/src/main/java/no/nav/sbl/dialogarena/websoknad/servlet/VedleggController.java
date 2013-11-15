@@ -51,7 +51,7 @@ public class VedleggController {
             } catch (IOException e) {
                 throw new RuntimeException("Kunne ikke lagre fil", e);
             }
-            Long id = soknadService.lagreVedlegg(vedlegg);
+            Long id = soknadService.lagreVedlegg(vedlegg, vedlegg.getInputStream());
 
             VedleggOpplastingResultat ut = new VedleggOpplastingResultat();
             ut.setName(vedlegg.getNavn());
@@ -63,7 +63,7 @@ public class VedleggController {
         return res;
     }
 
-    @RequestMapping(value = "/{vedlegg}/delete", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{vedleggId}/delete", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
     public void slettVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
         soknadService.slettVedlegg(soknadId, vedleggId);
     }
@@ -80,10 +80,16 @@ public class VedleggController {
     }
 
 
-    @RequestMapping(value = "/bekreft?faktumId={faktumId}", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/generer", params = "faktumId", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
-    public Long bekreftFaktumVedlegg(@PathVariable Long soknadId, @RequestParam Long faktumId) {
-        return 0L;
+    public Callable<VedleggOpplastingResultat> bekreftFaktumVedlegg(@PathVariable final Long soknadId, @RequestParam final Long faktumId) {
+        return new Callable<VedleggOpplastingResultat>() {
+            @Override
+            public VedleggOpplastingResultat call() throws Exception {
+                Long vedleggId = soknadService.genererVedleggFaktum(soknadId, faktumId);
+                return new VedleggOpplastingResultat();
+            }
+        };
     }
 
     private static Logger logger = LoggerFactory.getLogger(VedleggController.class);

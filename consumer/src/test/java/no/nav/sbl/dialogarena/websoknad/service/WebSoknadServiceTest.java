@@ -86,4 +86,11 @@ public class WebSoknadServiceTest {
 		service.lagreSoknadsFelt(soknadId, "enKey", "enValue");
 		verify(webservice, times(1)).lagreBrukerData(soknadId, "enKey", "enValue");
 	}
+
+    @Test
+    public void testTransform(){
+
+
+    }
+
 }
