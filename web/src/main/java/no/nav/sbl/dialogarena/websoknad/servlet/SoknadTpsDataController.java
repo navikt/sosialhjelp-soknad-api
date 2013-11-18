@@ -1,5 +1,13 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import static java.util.Arrays.asList;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.person.Adresse;
@@ -15,13 +23,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
-import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static java.util.Arrays.asList;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 
 @Controller
 @RequestMapping("/soknad")

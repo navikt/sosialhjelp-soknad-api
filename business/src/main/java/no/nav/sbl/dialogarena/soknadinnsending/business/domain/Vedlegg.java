@@ -63,19 +63,68 @@ public class Vedlegg {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Vedlegg vedlegg = (Vedlegg) o;
 
-        if (faktum != null ? !faktum.equals(vedlegg.faktum) : vedlegg.faktum != null) return false;
-        if (id != null ? !id.equals(vedlegg.id) : vedlegg.id != null) return false;
-        if (navn != null ? !navn.equals(vedlegg.navn) : vedlegg.navn != null) return false;
-        if (soknadId != null ? !soknadId.equals(vedlegg.soknadId) : vedlegg.soknadId != null) return false;
-        if (storrelse != null ? !storrelse.equals(vedlegg.storrelse) : vedlegg.storrelse != null) return false;
+        if (tomtFaktum(vedlegg)) {
+            return false;
+        }
+        if (tomId(vedlegg)) {
+            return false;
+        }
+        if (tomtNavn(vedlegg)) {
+            return false;
+        }
+        if (tomSoknadId(vedlegg)) {
+            return false;
+        }
+        if (tomStorrelse(vedlegg)) {
+            return false;
+        }
 
         return true;
     }
+
+	private boolean tomStorrelse(Vedlegg vedlegg) {
+		if(storrelse != null) {
+			return !storrelse.equals(vedlegg.storrelse);
+		} 
+		return vedlegg.storrelse != null;
+	}
+
+	private boolean tomSoknadId(Vedlegg vedlegg) {
+		if (soknadId != null)  {
+			return !soknadId.equals(vedlegg.soknadId);
+		}
+		return vedlegg.soknadId != null;
+	}
+
+	private boolean tomtNavn(Vedlegg vedlegg) {
+		if (navn != null) {
+			return !navn.equals(vedlegg.navn);
+		}
+		return vedlegg.navn != null;
+	}
+
+	private boolean tomId(Vedlegg vedlegg) {
+		if(id != null) {
+			return !id.equals(vedlegg.id);
+		}
+		return vedlegg.id != null;
+	}
+
+	private boolean tomtFaktum(Vedlegg vedlegg) {
+		if(faktum != null) {
+			return !faktum.equals(vedlegg.faktum);
+		}
+		return vedlegg.faktum != null;
+	}
 
     @Override
     public int hashCode() {
