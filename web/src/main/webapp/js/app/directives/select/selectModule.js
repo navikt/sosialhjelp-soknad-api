@@ -13,20 +13,16 @@ angular.module('nav.select', ['ngSanitize'])
             templateUrl: '../js/app/directives/select/selectTemplate.html',
             link: function (scope, element, attrs) {
                 scope.options = scope.$parent.$eval(attrs.options);
-                scope.selectOpen = false;
-
                 scope.defaultValue = data.tekster[attrs.defaultValue] ? data.tekster[attrs.defaultValue] : attrs.defaultValue;
-
                 scope.ngModel = (scope.defaultValue) ? scope.defaultValue : '';
-                scope.inputValue = hentValgtTekstBasertPaaValue();
-                scope.searchFilter = '';
+                scope.inputVerdi = hentValgtTekstBasertPaaValue();
+
+                scope.listeErApen = false;
+                scope.soketekst = '';
 
                 if (scope.ngRequired === undefined) {
                     scope.ngRequired = false;
                 }
-
-                var arrowNavigationTimestamp = new Date().getTime();
-                var input = angular.element(element.find('input'));
 
                 if (scope.requiredFeilmelding === undefined) {
                     scope.requiredFeilmelding = 'select.required.feilmelding';
@@ -36,41 +32,42 @@ angular.module('nav.select', ['ngSanitize'])
                     scope.ugyldigFeilmelding = 'select.ugyldig.feilmelding';
                 }
 
+                var sisteNavigasjonMedPiltaster = new Date().getTime();
+                var input = angular.element(element.find('input'));
+
                 $document.bind('click', function() {
                     avbryt();
                     scope.$apply();
                 });
 
                 scope.klikk = function(event) {
-                    console.log(event);
                     apne();
                     event.stopPropagation();
                 }
 
                 scope.selectionChanged = function(event) {
-                    console.log("Valgt nytt element");
-                    selectItem(angular.element(event.target));
+                    velgListeElement(angular.element(event.target));
                     event.stopPropagation();
                 }
 
                 scope.mouseover = function(event) {
-                    if (event.timeStamp - arrowNavigationTimestamp > 300) {
+                    if (event.timeStamp - sisteNavigasjonMedPiltaster > 300) {
                         settFokusElement(angular.element(event.target));
                     }
                 }
 
-                scope.enter = function(event) {
+                scope.enter = function() {
                     if (scope.fokusElement) {
-                        selectItem(scope.fokusElement);
+                        velgListeElement(scope.fokusElement);
                     }
 
-                    var focusable = $('input, a, select, button, textarea').filter(':visible');
-                    focusable.eq(focusable.index(input) + 1).focus();
+                    var fokuserbareElementer = $('input, a, select, button, textarea').filter(':visible');
+                    fokuserbareElementer.eq(fokuserbareElementer.index(input) + 1).focus();
                 }
 
                 scope.tab = function() {
                     if (scope.fokusElement) {
-                        selectItem(scope.fokusElement);
+                        velgListeElement(scope.fokusElement);
                     }
                 }
 
@@ -79,22 +76,18 @@ angular.module('nav.select', ['ngSanitize'])
                 }
 
                 scope.navigateUp = function() {
-                    apne();
-                    var previous = scope.fokusElement.prev();
-                    navigateTo(previous);
+                    scrollTil(scope.fokusElement.prev());
                 }
 
                 scope.navigateDown = function() {
-                    apne();
-                    var next = scope.fokusElement.next();
-                    navigateTo(next);
+                    scrollTil(scope.fokusElement.next());
                 }
 
-                scope.$watch('inputValue', function() {
-                    if (scope.inputValue) {
-                        scope.inputValue = scope.inputValue.trim();
+                scope.$watch('inputVerdi', function() {
+                    if (scope.inputVerdi) {
+                        scope.inputVerdi = scope.inputVerdi.trim();
                     }
-                    scope.searchFilter = scope.inputValue;
+                    scope.soketekst = scope.inputVerdi;
                 });
 
                 scope.keypress = function() {
@@ -102,14 +95,7 @@ angular.module('nav.select', ['ngSanitize'])
                 }
 
                 scope.skalViseListen = function() {
-                    var listeLengde = hentListeLengde();
-                    if (listeLengde == 0 && scope.inputValue) {
-                        element.addClass('feil');
-                        element.find('.melding').text(data.tekster[scope.ugyldigFeilmelding]);
-                    } else if (!scope.ngRequired || scope.inputValue) {
-                        element.removeClass('feil');
-                    }
-                    return listeLengde > 0 && scope.selectOpen;
+                    return hentListeLengde() > 0 && scope.listeErApen;
                 }
 
                 /*
@@ -118,28 +104,42 @@ angular.module('nav.select', ['ngSanitize'])
                  * til første element. Per nå løst med å bruke ng-class for å kjøre denne metoden...
                  */
                 scope.fokusHack = function(last) {
-                    if (last && fokusItem().length == 0) {
-                        settFokusElement(firstInList());
+                    if (last && elementMedFokus().length == 0) {
+                        settFokusElement(forsteIListen());
                     }
                 }
-                scope.filter = function(item) {
-                    var text = item.text;
 
-                    if (!scope.searchFilter) {
-                        item['displayText'] = text;
+                scope.filter = function(listeElement) {
+                    var tekst = listeElement.text;
+
+                    if (!scope.soketekst) {
+                        listeElement['displayText'] = tekst;
                         return true;
                     }
 
-                    var idx = stringContainsNotCaseSensitive(text, scope.searchFilter);
-                    if (idx == 0) {
-                        var endOfString = text.substring(idx + scope.searchFilter.length, text.length);
-                        var matchedString = text.substring(idx, idx + scope.searchFilter.length);
-                        var displayText = "<span>" + matchedString + "</span>" + endOfString;
-                        item['displayText'] = displayText;
+                    var indeks = stringContainsNotCaseSensitive(tekst, scope.soketekst);
+                    if (indeks == 0) {
+                        var ikkeMarkertTekst = tekst.substring(indeks + scope.soketekst.length, tekst.length);
+                        var markertTekst = tekst.substring(indeks, indeks + scope.soketekst.length);
+                        var vistTekst = "<span>" + markertTekst + "</span>" + ikkeMarkertTekst;
+
+                        listeElement['displayText'] = vistTekst;
                         return true;
                     }
 
                     return false;
+                }
+
+                scope.harRequiredFeil = function() {
+                    return scope.ngRequired && !scope.inputVerdi;
+                }
+
+                scope.inneholderIkkeSkrevetTekst = function() {
+                    return hentListeLengde() == 0 && scope.inputVerdi;
+                }
+
+                scope.harFeil = function() {
+                    return scope.harRequiredFeil() || scope.inneholderIkkeSkrevetTekst();
                 }
 
                 function hentListeLengde() {
@@ -158,65 +158,57 @@ angular.module('nav.select', ['ngSanitize'])
                     }
                 }
 
-                function selectItem(item) {
+                function velgListeElement(item) {
                     if (hentListeLengde() == 0) {
-                        scope.inputValue = '';
+                        scope.inputVerdi = '';
                         scope.ngModel = '';
                     } else {
                         scope.ngModel = item.attr('data-value');
-                        scope.inputValue = hentValgtTekstBasertPaaValue();
-                        console.log(scope.ngModel);
+                        scope.inputVerdi = hentValgtTekstBasertPaaValue();
                     }
 
                     lukk();
                 }
 
                 function apne() {
-                    if (!scope.selectOpen) {
-                        scope.selectOpen = true;
-                        scope.searchFilter = '';
-                        if (scope.fokusElement === undefined) {
-                            settFokusElement(firstInList());
+                    if (!scope.listeErApen) {
+                        scope.listeErApen = true;
+                        scope.soketekst = '';
+                        if (scope.fokusElement.hasClass('ng-hide')) {
+                            settFokusElement(forsteIListen());
                         }
-                        element.removeClass('feil');
                     }
                 }
 
                 function avbryt() {
-                    if (scope.selectOpen) {
-                        scope.inputValue = '';
+                    if (scope.listeErApen) {
+                        scope.inputVerdi = '';
                         scope.ngModel = '';
                         lukk();
                     }
                 }
 
                 function lukk() {
-                    scope.selectOpen = false;
-                    console.log(scope.selectOpen);
-
-                    if (scope.ngRequired && !scope.inputValue) {
-                        element.addClass('feil');
-                        element.find('.melding').text(data.tekster[scope.requiredFeilmelding]);
-                    }
+                    scope.listeErApen = false;
                 }
 
-                function navigateTo(elem) {
+                function scrollTil(elem) {
+                    apne();
                     if (elem.length > 0) {
                         settFokusElement(angular.element(elem));
-                        var diff = isScrolledIntoView(elem, elem.parent());
+                        var diff = visesHeleElementet(elem, elem.parent());
                         if (diff != 0) {
-                            diff = diff + 5*(diff/Math.abs(diff));
                             elem.parent().scrollToPos(elem.parent().scrollTop() - diff, 0);
-                            arrowNavigationTimestamp = new Date().getTime();
+                            sisteNavigasjonMedPiltaster = new Date().getTime();
                         }
                     }
                 }
 
-                function firstInList() {
+                function forsteIListen() {
                     return angular.element(element.find('li:not(.ng-hide)').first());
                 }
 
-                function fokusItem() {
+                function elementMedFokus() {
                     return angular.element(element.find('li.harFokus:not(.ng-hide)'));
                 }
 
@@ -229,20 +221,22 @@ angular.module('nav.select', ['ngSanitize'])
                     return '';
                 }
 
-                function isScrolledIntoView(element, container) {
+                function visesHeleElementet(element, container) {
+                    var ekstraOffset = 5;
+
                     var containerTop = container.offset().top;
                     var containerBottom = containerTop + container.height();
 
                     var elemTop = element.offset().top;
                     var elemBottom = elemTop + element.height();
 
-                    var diffTop = containerTop - elemTop; // Hvis > 0, må scrolle ned
-                    var diffBottom = containerBottom - elemBottom; // Hvis < 0 må scrolle opp
+                    var diffTop = containerTop - elemTop; // Hvis > 0, må scrolle opp
+                    var diffBottom = containerBottom - elemBottom; // Hvis < 0 må scrolle ned
 
                     if (diffTop > 0) {
-                        return diffTop;
+                        return diffTop + ekstraOffset; // Hvor langt som skal scrolles opp
                     } else if (diffBottom < 0) {
-                        return diffBottom;
+                        return diffBottom - ekstraOffset;  // Hvor langt som skal scrolles ned
                     } else {
                         return 0;
                     }
