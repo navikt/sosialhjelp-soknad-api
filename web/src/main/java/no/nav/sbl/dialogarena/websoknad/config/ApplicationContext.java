@@ -38,13 +38,10 @@ public class ApplicationContext {
 
     @Value("${dokumentinnsending.smtpServer.host}")
     private String smtpServerHost;
-    //= "smtp.test.local";
-
 
     @Value("${dokumentinnsending.smtpServer.port}")
     private Integer smtpServerPort;
-    //= 25;
-    
+
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
