@@ -40,7 +40,7 @@ public class ApplicationContext {
 
 
 
-    @Value("$dokumentinnsending.smtpServer.Port}")
+    @Value("{$dokumentinnsending.smtpServer.Port}")
     private Integer smtpServerPort;
     //= 25;
 
