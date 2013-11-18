@@ -1,14 +1,24 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
+import java.io.InputStream;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.sql.DataSource;
+
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.AbstractLobCreatingPreparedStatementCallback;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
@@ -17,15 +27,6 @@ import org.springframework.jdbc.support.lob.LobCreator;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.sql.DataSource;
-import java.io.InputStream;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
 
 @Named("soknadInnsendingRepository")
 //marker alle metoder som transactional. Alle operasjoner vil skje i en transactional write context. Read metoder kan overstyre dette om det trengs.
@@ -95,7 +96,12 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         if (oppdaterBrukerData(soknadId, faktum) == 0) {
             getJdbcTemplate().update("insert into soknadbrukerdata (soknadbrukerdata_id, soknad_id, key, value, type, sistendret) values (?, ?, ?, ?, ?, sysdate)",
                     dbNokkel, soknadId, faktum.getKey(), faktum.getValue(), faktum.getType());
+            utfyllingStartet(soknadId);
         }
+    }
+
+    private int utfyllingStartet(long soknadId) {
+        return getJdbcTemplate().update("update soknad set DELSTEGSTATUS = ? where soknad_id = ?", DelstegStatus.UTFYLLING.name(), soknadId);   
     }
 
     @Override
@@ -134,7 +140,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
 
                 new AbstractLobCreatingPreparedStatementCallback(lobHandler) {
                     @Override
-                    protected void setValues(PreparedStatement ps, LobCreator lobCreator) throws SQLException, DataAccessException {
+                    protected void setValues(PreparedStatement ps, LobCreator lobCreator) throws SQLException {
                         ps.setLong(1, databasenokkel);
                         ps.setLong(2, vedlegg.getSoknadId());
                         ps.setLong(3, vedlegg.getFaktum());
@@ -148,7 +154,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
 
     public InputStream hentVedlegg(Long soknadId, Long vedleggId) {
         List<InputStream> query = getJdbcTemplate().query("select data from Vedlegg where soknad_id = ? and vedlegg_id = ?", new VedleggDataRowMapper(), soknadId, vedleggId);
-        if (query.size() > 0) {
+        if (!query.isEmpty()) {
             return query.get(0);
         }
         return null;

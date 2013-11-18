@@ -1,14 +1,10 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import javax.inject.Inject;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
-import no.nav.sbl.dialogarena.soknadinnsending.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.oppsett.SoknadStruktur;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.inject.Inject;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 import static java.lang.String.format;
 import static javax.xml.bind.JAXBContext.newInstance;
@@ -67,6 +66,7 @@ public class SoknadDataController {
     @RequestMapping(value = "/opprett/{soknadType}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody()
     public WebSoknadId opprettSoknad(@PathVariable String soknadType) {
+
         Long id = soknadService.startSoknad(soknadType);
         WebSoknadId soknadId = new WebSoknadId();
         soknadId.setId(id);

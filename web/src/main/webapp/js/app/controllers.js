@@ -301,7 +301,6 @@ angular.module('app.controllers', ['app.services', 'nav.reellarbeidssoker', 'nav
     .filter('filterLand', [function () {
         return function (input, landkodeArray) {
             var matchArray = [];
-
             for (var i = 0; i < input.length; i++) {
                 var idx = landkodeArray.indexOf(input[i].value);
                 if (idx > -1) {
