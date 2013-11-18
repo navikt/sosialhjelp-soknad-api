@@ -51,7 +51,7 @@
                             <span cmstekster="arbeidsforhold.arbeidsgiver.land"/>
                             <select name="arbeidsgiverland" data-ng-model="af.land"
                                     data-ng-options="item for item in landService.result"
-                                    error-messages="'arbeidsforhold.arbeidsgiver.land.feilmelding'" required>
+                                    error-messages="'arbeidsforhold.arbeidsgiver.land.feilmelding'" data-required>
                                 <option value="" cmstekster="arbeidsforhold.arbeidsgiver.landDefault"/>
                             </select>
                             <span class="melding"/>
@@ -62,9 +62,10 @@
                     <div class="varighet">
                         <div class="form-linje fra">
                             <label cmstekster="arbeidsforhold.arbeidsgiver.varighetFra"/>
-                            <input type="text" name="varighetFra" ui-date ui-date-format ng-model="af.varighetFra"
+                            <input type="text" id="arbeidsforhold.arbeidsgiver.varighet.fra"
+                                   name="varighetFra" ui-date ui-date-format ng-model="af.varighetFra"
                                    data-ng-change="validateTilFraDato(af, leggTilArbeidsforholdForm)"
-                                   error-messages="'arbeidsforhold.arbeidsgiver.varighetFra.feilmelding'" required data-date-validate/>
+                                   error-messages="'arbeidsforhold.arbeidsgiver.varighetFra.feilmelding'" data-required data-date-validate/>
                             <span class="melding"/>
                         </div>
 
@@ -72,9 +73,10 @@
                             <label cmstekster="arbeidsforhold.arbeidsgiver.varighetTil"/>
                             <span data-ng-show="datoError" style="color:red"
                                   cmstekster="arbeidsforhold.error.datoTilFra"/>
-                            <input type="text" name="varighetTil" ui-date ui-date-format ng-model="af.varighetTil"
+                            <input type="text" id="arbeidsforhold.arbeidsgiver.varighet.til"
+                                   name="varighetTil" ui-date ui-date-format ng-model="af.varighetTil"
                                    data-ng-change="validateTilFraDato(af, leggTilArbeidsforholdForm)"
-                                   error-messages="'arbeidsforhold.arbeidsgiver.varighetTil.feilmelding'" required data-date-validate/>
+                                   error-messages="'arbeidsforhold.arbeidsgiver.varighetTil.feilmelding'" data-required data-date-validate/>
                             <span class="melding"/>
                         </div>
                     </div>
