@@ -1,8 +1,9 @@
-<div class="nav-select form-linje" data-ng-class="{open: selectOpen}">
+<div class="nav-select form-linje" data-ng-class="{open: selectOpen, feil: harFeil()}">
     <label>
         <span data-cmstekster="{{ label }}"/>
-        <input type="text" data-ng-model="inputValue" data-ui-keyup="{enter: 'enter($event)', esc: 'escape()'}" data-ui-keydown="{up: 'navigateUp()', down: 'navigateDown()', tab: 'tab()', backspace: 'keypress()'}" data-ng-keypress="keypress()" data-ng-required="ngRequired" data-error-messages="{'{{ requiredStandardFeilmelding }}'}" placeholder="{{ placeholder }}" data-ng-click="klikk($event)">
-        <span class="melding mini"/>
+        <input type="text" data-ng-model="inputVerdi" data-ui-keyup="{enter: 'enter($event)', esc: 'escape()'}" data-ui-keydown="{up: 'navigateUp()', down: 'navigateDown()', tab: 'tab()', backspace: 'keypress()'}" data-ng-keypress="keypress()" data-ng-required="ngRequired" data-error-messages="{'{{ requiredStandardFeilmelding }}'}" placeholder="{{ placeholder }}" data-ng-click="klikk($event)">
+        <span data-ng-if="harRequiredFeil()" class="melding mini" data-cmstekster="{{ requiredFeilmelding }}"/>
+        <span data-ng-if="inneholderIkkeSkrevetTekst()" class="melding mini" data-cmstekster="{{ ugyldigFeilmelding }}"/>
     </label>
     <ul data-ng-show="skalViseListen()">
         <li data-bindonce data-ng-repeat="option in options" data-ng-show="filter(option)" data-ng-class="{harFokus: fokusHack($last)}" data-ng-click="selectionChanged($event)" data-ng-mouseover="mouseover($event)" data-value="{{ option.value }}" data-ng-bind-html="option.displayText"/>
