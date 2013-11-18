@@ -17,6 +17,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
+import java.net.URL;
+
 /**
  * Applikasjonskontekst for ear-modulen.
  */
@@ -36,15 +38,15 @@ public class ApplicationContext {
     @Value("${dialogarena.navnolink.url}")
     private String navigasjonslink;
 
+    @Value("${dokumentinnsending.smtpServer.host}")
+    private URL smtpServerHost;
+    //= "smtp.test.local";
+
 
     @Value("$dokumentinnsending.smtpServer.port}")
-    private int smtpServerPort;
+    private Integer smtpServerPort;
     //= 25;
     
-    @Value("${dokumentinnsending.smtpServer.host}")
-    private String smtpServerHost;
-            //= "smtp.test.local";
-
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
@@ -60,7 +62,7 @@ public class ApplicationContext {
     public MailSender mailSender() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setDefaultEncoding("UTF-8");
-        javaMailSender.setHost(smtpServerHost);
+        javaMailSender.setHost(smtpServerHost.getHost());
         javaMailSender.setPort(smtpServerPort);
         return javaMailSender;
     }
