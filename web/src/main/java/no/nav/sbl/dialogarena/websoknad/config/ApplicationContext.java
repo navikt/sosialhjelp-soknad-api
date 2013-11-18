@@ -42,9 +42,8 @@ public class ApplicationContext {
     private String smtpServerPort;
     //= 25;
 
-    @Value("${dokumentinnsending.smtpServer.port}")
-    private String smtpServerHost;
-    //= "smtp.test.local";
+    //@Value("${dokumentinnsending.smtpServer.port}")
+    private String smtpServerHost = "smtp.test.local";
 
 
     @Bean
