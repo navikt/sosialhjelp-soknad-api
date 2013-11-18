@@ -166,10 +166,6 @@
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-security-sts</artifactId>
         </dependency>
-		<dependency>
-            <groupId>net.sourceforge.collections</groupId>
-            <artifactId>collections-generic</artifactId>
-        </dependency>
         <!-- Avhengigheter med scope runtime -->
         <dependency>
             <groupId>org.apache.commons</groupId>
