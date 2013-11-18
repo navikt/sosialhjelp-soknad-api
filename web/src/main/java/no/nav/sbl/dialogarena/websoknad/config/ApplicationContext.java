@@ -45,8 +45,9 @@ public class ApplicationContext {
     private String smtpServerPort;
     //= 25;
 
-    //@Value("${dokumentinnsending.smtpServer.port}")
-    private String smtpServerHost = "smtp.test.local";
+    @Value("${dokumentinnsending.smtpServer.host}")
+    private String smtpServerHost;
+    //= "smtp.test.local";
 
 
     @Bean
@@ -61,7 +62,7 @@ public class ApplicationContext {
 
     @Bean
     public MailSender mailSender() {
-        LOG.error("SMTPTEST" + smtpServerPort);
+        LOG.error("SMTPPORT" + smtpServerPort + "HOST" + smtpServerHost + "Link" + navigasjonslink);
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setDefaultEncoding("UTF-8");
         javaMailSender.setHost(smtpServerHost);
