@@ -182,17 +182,12 @@
             <artifactId>flying-saucer-pdf</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.lowagie</groupId>
+            <artifactId>itext</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
-        </dependency>
-        <!--<dependency>-->
-        <!--<groupId>pdfbox</groupId>-->
-        <!--<artifactId>pdfbox</artifactId>-->
-        <!--<version>0.7.4</version>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>bouncycastle</groupId>
-            <artifactId>bcprov-jdk14</artifactId>
         </dependency>
 
         <!-- Avhengigheter med scope runtime -->
