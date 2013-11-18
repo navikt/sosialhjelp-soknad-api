@@ -17,8 +17,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
-import java.net.URL;
-
 /**
  * Applikasjonskontekst for ear-modulen.
  */
@@ -45,7 +43,7 @@ public class ApplicationContext {
     //= 25;
 
     @Value("${dokumentinnsending.smtpServer.host}")
-    private URL smtpServerHost;
+    private String smtpServerHost;
     //= "smtp.test.local";
 
 
@@ -63,7 +61,7 @@ public class ApplicationContext {
     public MailSender mailSender() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setDefaultEncoding("UTF-8");
-        javaMailSender.setHost(smtpServerHost.getHost());
+        javaMailSender.setHost(smtpServerHost);
         javaMailSender.setPort(Integer.parseInt(smtpServerPort));
         return javaMailSender;
     }
