@@ -38,15 +38,16 @@ public class ApplicationContext {
     @Value("${dialogarena.navnolink.url}")
     private String navigasjonslink;
 
-    @Value("${dokumentinnsending.smtpServer.host}")
+
+
+    @Value("$dokumentinnsending.smtpServer.Port}")
+    private Integer smtpServerPort;
+    //= 25;
+
+    @Value("${dokumentinnsending.smtpServer.Hostname}")
     private URL smtpServerHost;
     //= "smtp.test.local";
 
-
-    @Value("$dokumentinnsending.smtpServer.port}")
-    private Integer smtpServerPort;
-    //= 25;
-    
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
