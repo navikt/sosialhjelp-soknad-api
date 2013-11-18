@@ -60,15 +60,15 @@
 
 
                     <div class="varighet">
-                        <div class="form-linje">
+                        <div class="form-linje fra">
                             <label cmstekster="arbeidsforhold.arbeidsgiver.varighetFra"/>
                             <input type="text" name="varighetFra" ui-date ui-date-format ng-model="af.varighetFra"
                                    data-ng-change="validateTilFraDato(af, leggTilArbeidsforholdForm)"
                                    error-messages="'arbeidsforhold.arbeidsgiver.varighetFra.feilmelding'" required data-date-validate/>
                             <span class="melding"/>
-
                         </div>
-                        <div class="form-linje">
+
+                        <div class="form-linje til">
                             <label cmstekster="arbeidsforhold.arbeidsgiver.varighetTil"/>
                             <span data-ng-show="datoError" style="color:red"
                                   cmstekster="arbeidsforhold.error.datoTilFra"/>

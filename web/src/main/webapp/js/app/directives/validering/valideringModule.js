@@ -122,15 +122,20 @@ angular.module('nav.validering', ['nav.cmstekster'])
 
 
                 scope.$on(eventString, function () {
-                    if (sjekkOmFeltetErRequired() && !sjekkOmFeltetErSvart ) {
+                    if (sjekkOmFeltetErRequired() && !sjekkOmFeltetErSvart() ) {
                         element.closest('.form-linje').addClass('feil');
                     }
                 });
 
                 element.bind('blur', function () {
-                    if (!sjekkOmFeltetErSvart()) {
-                        element.closest('.form-linje').addClass('feil');
-                    }
+                    angular.forEach(form.$error, function (verdi, feilNokkel) {
+                       if(feilNokkel.indexOf('varighet.feilmelding') !== -1 ) {
+                           settFraTilDatoFeilmeldingstekst(feilNokkel)
+
+                           //fjerner feilmelding om at fra må være før til, så ved lagring vil brukeren få beskjed om required-feilmeldingen i stedet
+                           form.$setValidity(feilNokkel, true);
+                       }
+                    })
                 });
 
                 scope.$watch(function () {
@@ -147,17 +152,23 @@ angular.module('nav.validering', ['nav.cmstekster'])
 
                 function sjekkOmFeltetErSvart() {
                     if (!ngModel.$modelValue) {
-                        settFeilmeldingsTekst();
+                        settRequiredFeilmeldingsTekst();
                         return false;
                     }
                     return true;
                 }
 
-                function settFeilmeldingsTekst() {
-                    var feilmeldingsNokkel = element[0].getAttribute('error-messages').toString();
+                function settRequiredFeilmeldingsTekst() {
+                    var  feilmeldingsNokkel = element[0].getAttribute('error-messages').toString();
                     //hack for å fjerne dobbeltfnuttene rundt feilmeldingsnokk
                     var feilmeldingTekst = data.tekster[feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1)];
-                    element.closest('.form-linje').find('.melding').text('arbeidsforhold.arbeidsgiver.varighet.feilmelding');
+                    element.closest('.form-linje').find('.melding').text(feilmeldingTekst);
+                }
+                function settFraTilDatoFeilmeldingstekst(feilNokkel) {
+                    var feilmeldingTekst = data.tekster[feilNokkel];
+                    var tilElement = element.closest('.varighet').find('.til');
+                    tilElement.find('.melding').text(feilmeldingTekst);
+                    tilElement.addClass('feil');
                 }
             }
         }
