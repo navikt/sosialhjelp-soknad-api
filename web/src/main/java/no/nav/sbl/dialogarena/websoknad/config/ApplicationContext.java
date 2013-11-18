@@ -44,7 +44,7 @@ public class ApplicationContext {
     private String smtpServerPort;
     //= 25;
 
-    @Value("${dokumentinnsending.smtpServer.hostname}")
+    @Value("${dokumentinnsending.smtpServer.host}")
     private URL smtpServerHost;
     //= "smtp.test.local";
 
