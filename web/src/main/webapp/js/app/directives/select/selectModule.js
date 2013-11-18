@@ -131,7 +131,7 @@ angular.module('nav.select', ['ngSanitize'])
                 }
 
                 scope.harRequiredFeil = function() {
-                    return scope.ngRequired && !scope.inputVerdi;
+                    return scope.ngRequired && !scope.inputVerdi && !scope.listeErApen;
                 }
 
                 scope.inneholderIkkeSkrevetTekst = function() {
