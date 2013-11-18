@@ -294,6 +294,8 @@ angular.module('app.controllers', ['app.services', 'nav.reellarbeidssoker', 'nav
         ];
 
         $scope.landFilterRekkefolge = ['NO', 'SE'];
+
+        $scope.testData = {};
     })
 
     .filter('filterLand', [function () {

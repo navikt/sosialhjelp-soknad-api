@@ -46,20 +46,26 @@
                         </label>
                     </div>
 
-                    <div class="form-linje">
-                        <label>
-                            <span cmstekster="arbeidsforhold.arbeidsgiver.land"/>
-                            <select name="arbeidsgiverland"
-                                    data-ng-model="af.land"
-                                    data-ui-select2="{ allowClear: false }"
-                                    error-messages="'arbeidsforhold.arbeidsgiver.land.feilmelding'"
-                                    data-ng-required="true"
-                                    data-placeholder="Velg land">
-                                <!--<option value="" cmstekster="arbeidsforhold.arbeidsgiver.landDefault"/>-->
-                                <option data-ng-repeat="item in landService.result" value="{{ item }}">{{ item }}</option>
-                            </select>
-                            <span class="melding"/>
-                        </label>
+                    <div>
+                            <div nav-select
+                                 name="arbeidsgiverland"
+                                 data-label="arbeidsforhold.arbeidsgiver.land"
+                                 data-ng-model="af.land"
+                                 data-options="landService.result"
+                                 data-default-value="arbeidsforhold.arbeidsgiver.landDefault"
+                                 data-ng-required="true"
+                                 data-required-feilmelding="arbeidsforhold.arbeidsgiver.land.feilmelding"
+                                 data-ugyldig-feilmelding="arbeidsforhold.arbeidsgiver.land.ugyldig.feilmelding"/>
+
+                            <!--<select name="arbeidsgiverland"-->
+                                    <!--data-ng-model="af.land"-->
+                                    <!--data-ui-select2="{ allowClear: false }"-->
+                                    <!--error-messages="'arbeidsforhold.arbeidsgiver.land.feilmelding'"-->
+                                    <!--data-ng-required="true"-->
+                                    <!--data-placeholder="Velg land">-->
+                                <!--&lt;!&ndash;<option value="" cmstekster="arbeidsforhold.arbeidsgiver.landDefault"/>&ndash;&gt;-->
+                                <!--<option data-ng-repeat="item in landService.result" value="{{ item }}">{{ item }}</option>-->
+                            <!--</select>-->
                     </div>
 
 

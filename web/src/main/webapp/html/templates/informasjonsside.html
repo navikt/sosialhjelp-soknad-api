@@ -2,7 +2,7 @@
 
 <div panelbelyst id="informasjonsside">
     <div data-ng-controller="TestLandCtrl">
-        <div nav-select data-options="options" data-default-value="NO" data-filters="filterLand: landFilterRekkefolge"/>
+        <div nav-select data-ng-model="testData.land" data-options="options | filterLand: landFilterRekkefolge" data-default-value="arbeidsforhold.arbeidsgiver.landDefault" data-ng-required="true" data-required-feilmelding="arbeidsforhold.arbeidsgiver.land.feilmelding" data-ugyldig-feilmelding="arbeidsforhold.arbeidsgiver.land.ugyldig.feilmelding"/>
     </div>
     <h2 class="stor" data-cmstekster="dagpenger.informasjonsside.tittel"/>
 

@@ -1,7 +1,10 @@
 <div class="nav-select form-linje" data-ng-class="{open: selectOpen}">
-    <input type="text" data-ng-model="inputValue" data-ui-keyup="{enter: 'enter($event)', esc: 'escape()'}" data-ui-keydown="{up: 'navigateUp()', down: 'navigateDown()', tab: 'tab()', backspace: 'keypress()'}" data-ng-keypress="keypress()">
-    <span class="melding mini"/>
+    <label>
+        <span data-cmstekster="{{ label }}"/>
+        <input type="text" data-ng-model="inputValue" data-ui-keyup="{enter: 'enter($event)', esc: 'escape()'}" data-ui-keydown="{up: 'navigateUp()', down: 'navigateDown()', tab: 'tab()', backspace: 'keypress()'}" data-ng-keypress="keypress()" data-ng-required="ngRequired" data-error-messages="{'{{ requiredStandardFeilmelding }}'}" placeholder="{{ placeholder }}" data-ng-click="klikk($event)">
+        <span class="melding mini"/>
+    </label>
     <ul data-ng-show="skalViseListen()">
-        <li data-ng-repeat="option in options | filterSearch: searchFilter" data-ng-class="{harFokus: fokusHack($last)}" data-ng-click="selectionChanged($event)" data-ng-mouseover="mouseover($event)" data-value="{{ option.value }}" data-ng-bind-html="option.displayText"/>
+        <li data-bindonce data-ng-repeat="option in options" data-ng-show="filter(option)" data-ng-class="{harFokus: fokusHack($last)}" data-ng-click="selectionChanged($event)" data-ng-mouseover="mouseover($event)" data-value="{{ option.value }}" data-ng-bind-html="option.displayText"/>
     </ul>
 </div>
