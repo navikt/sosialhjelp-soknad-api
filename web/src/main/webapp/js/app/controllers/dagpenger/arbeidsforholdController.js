@@ -138,44 +138,17 @@ angular.module('nav.arbeidsforhold.controller', [])
                 $scope.$emit("OPPDATER_OG_LAGRE", {key: 'harIkkeJobbet', value: false});
             });
 
-
-//
-//            $scope.$watch("arbeidsgiver.varighetFra", function (nyVerdi, gammelVerdi) {
-//                if ($scope.arbeidsgiver && ($scope.arbeidsgiver.varighetTil <= $scope.arbeidsgiver.varighetFra)) {
-//                    $scope.arbeidsgiver.varighetTil = '';
-//                    $scope.datoError = true;
-//                } else {
-//                    $scope.datoError = false;
-//                }
-//            });
-
-            $scope.resolvUrl = function () {
+               $scope.resolvUrl = function () {
                 return "../html/templates/kontrakt-utgaatt.html"
             }
 
-//            $scope.$watch("arbeidsgiver.varighetTil", function (nyVerdi, gammelVerdi) {
-//                if ($scope.arbeidsgiver && ($scope.arbeidsgiver.varighetTil <= $scope.arbeidsgiver.varighetFra)) {
-//                    $scope.arbeidsgiver.varighetTil = '';
-//                    $scope.datoError = true;
-//
-//                } else {
-//                    $scope.datoError = false;
-//
-//                }
-//            });
-
             $scope.validateTilFraDato = function (af, form) {
-                console.log("Change")
                 if (af && (af.varighetTil <= af.varighetFra)) {
                     af.varighetTil = '';
-
-
                     form.$setValidity('arbeidsforhold.arbeidsgiver.varighet.feilmelding', false);
                 } else {
                     form.$setValidity('arbeidsforhold.arbeidsgiver.varighet.feilmelding', true);
                 }
-                console.log("til: " + af.varighetTil);
-                console.log("Fra: " + af.varighetFra);
             }
 
             $scope.validateRedusertArbeidstidDato = function (af) {
@@ -205,12 +178,13 @@ angular.module('nav.arbeidsforhold.controller', [])
                 }
             }
 
-            $scope.validateOppsigelsestidTilFraDato = function (af) {
+            $scope.validateOppsigelsestidTilFraDato = function (af, form) {
                 if (af && (af.sagtOppAvArbeidsgiverVarighetTil <= af.sagtOppAvArbeidsgiverVarighetFra)) {
                     af.sagtOppAvArbeidsgiverVarighetTil = '';
-                    $scope.oppsigelsestidDatoError = true;
+
+                    form.$setValidity('arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighet.feilmelding', false);
                 } else {
-                    $scope.oppsigelsestidDatoError = false;
+                    form.$setValidity('arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighet.feilmelding', true);
                 }
             }
 
@@ -239,6 +213,8 @@ angular.module('nav.arbeidsforhold.controller', [])
             form.$setValidity('arbeidsforhold.endrearbeidsforhold.feilmelding', true);
             form.$setValidity('arbeidsforhold.leggtilnyttarbeidsforhold.feilmelding', true);
             form.$setValidity('arbeidsforhold.arbeidsgiver.varighet.feilmelding', true);
+            form.$setValidity('arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighet.feilmelding', true);
+
 
             $scope.runValidation();
             if (form.$valid) {

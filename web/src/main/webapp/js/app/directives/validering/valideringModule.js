@@ -129,12 +129,15 @@ angular.module('nav.validering', ['nav.cmstekster'])
 
                 element.bind('blur', function () {
                     angular.forEach(form.$error, function (verdi, feilNokkel) {
-                       if(feilNokkel.indexOf('varighet.feilmelding') !== -1 ) {
-                           settFraTilDatoFeilmeldingstekst(feilNokkel)
+                        var feilmeldignsnavn = attrs.id.substring(0, attrs.id.lastIndexOf('.'));
+                        angular.forEach(verdi, function (feil) {
+                           if(feil === undefined && feilNokkel.indexOf(feilmeldignsnavn) !== -1 ) {
+                               settFraTilDatoFeilmeldingstekst(feilNokkel)
 
                            //fjerner feilmelding om at fra må være før til, så ved lagring vil brukeren få beskjed om required-feilmeldingen i stedet
                            form.$setValidity(feilNokkel, true);
-                       }
+                           }
+                        })
                     })
                 });
 
@@ -142,7 +145,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
                     return ngModel.$viewValue;
                 }, function () {
                     if (ngModel.$viewValue) {
-                        element.closest('.form-linje').removeClass('feil');
+                       fjernFeilKlassen();
                     }
                 });
 
@@ -169,6 +172,10 @@ angular.module('nav.validering', ['nav.cmstekster'])
                     var tilElement = element.closest('.varighet').find('.til');
                     tilElement.find('.melding').text(feilmeldingTekst);
                     tilElement.addClass('feil');
+                }
+
+                function fjernFeilKlassen() {
+                    element.closest('.form-linje').removeClass('feil');
                 }
             }
         }
