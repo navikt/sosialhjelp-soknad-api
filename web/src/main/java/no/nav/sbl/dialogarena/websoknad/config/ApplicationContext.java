@@ -39,6 +39,8 @@ public class ApplicationContext {
     @Value("${dialogarena.navnolink.url}")
     private String navigasjonslink;
 
+    @Value("${dokumentinnsending.smtpServer}")
+    private String mailserver;
 
 
     //@Value("{$dokumentinnsending.smtpServer.port}")
@@ -60,7 +62,7 @@ public class ApplicationContext {
 
     @Bean
     public MailSender mailSender() {
-        LOG.error("SMTPPORT" + smtpServerPort + "HOST" + smtpServerHost + "Link" + navigasjonslink);
+        LOG.error("SMTPPORT" + smtpServerPort + "HOST" + smtpServerHost + "Link" + navigasjonslink + "SERVER" + mailserver);
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setDefaultEncoding("UTF-8");
         javaMailSender.setHost(smtpServerHost);
