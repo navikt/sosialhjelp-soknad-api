@@ -41,7 +41,7 @@ public class ApplicationContext {
 
 
     @Value("{$dokumentinnsending.smtpServer.port}")
-    private Integer smtpServerPort;
+    private String smtpServerPort;
     //= 25;
 
     @Value("${dokumentinnsending.smtpServer.hostname}")
@@ -64,7 +64,7 @@ public class ApplicationContext {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setDefaultEncoding("UTF-8");
         javaMailSender.setHost(smtpServerHost.getHost());
-        javaMailSender.setPort(smtpServerPort);
+        javaMailSender.setPort(Integer.parseInt(smtpServerPort));
         return javaMailSender;
     }
     
