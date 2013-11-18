@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.ProcessingInstruction;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -14,19 +13,12 @@ import javax.xml.parsers.ParserConfigurationException;
 public class XMLTestData {
     private static final Logger LOG = LoggerFactory.getLogger(XMLTestData.class);
 
-    public static Document createDocument(String cssFilePath) {
+    public static Document createDocument() {
         Document doc = null;
         try {
             doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
             Element rootElement = doc.createElement("people");
             doc.appendChild(rootElement);
-            if(cssFilePath != null && !cssFilePath.isEmpty()) {
-                doc.setXmlStandalone(true);
-                ProcessingInstruction pi = doc.createProcessingInstruction("xml-stylesheet", "type=\"text/css\" href=\"" + cssFilePath + "\"");
-                doc.insertBefore(pi, rootElement);
-                System.out.println("Add CSS..." + cssFilePath);
-                System.out.println("pi.getNodeValue() = " + pi.getNodeValue());
-            }
 
             createPerson(doc, rootElement, "1", "Harald Olsen", "32");
             createPerson(doc, rootElement, "2", "Trine Person", "30");
