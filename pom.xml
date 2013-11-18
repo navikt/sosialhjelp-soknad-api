@@ -221,9 +221,9 @@
                 <version>${flying.saucer.version}</version>
             </dependency>
             <dependency>
-                <groupId>bouncycastle</groupId>
-                <artifactId>bcprov-jdk14</artifactId>
-                <version>140</version>
+                <groupId>com.lowagie</groupId>
+                <artifactId>itext</artifactId>
+                <version>2.1.7</version>
             </dependency>
 
             <dependency>
