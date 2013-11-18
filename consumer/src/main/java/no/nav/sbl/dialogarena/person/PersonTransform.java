@@ -41,15 +41,17 @@ public class PersonTransform {
             return new Person();
         }
         XMLBruker soapPerson = (XMLBruker) response.getPerson();
-        return new Person(
+        Person person = new Person(
                 soknadId,
                 finnFnr(soapPerson),
                 finnForNavn(soapPerson),
                 finnMellomNavn(soapPerson),
                 finnEtterNavn(soapPerson),
-                finnEpost(soapPerson),
                 finnGjeldendeAdressetype(soapPerson),
                 finnAdresser(soknadId, soapPerson));
+        person.setEpost(soknadId,finnEpost(soapPerson));
+        
+        return person;
     }
 
     private String finnEpost(XMLBruker soapPerson) {
@@ -85,8 +87,7 @@ public class PersonTransform {
         if (midlertidigPostadresse instanceof XMLMidlertidigPostadresseNorge) {
             XMLMidlertidigPostadresseNorge xmlMidlPostAdrNorge = (XMLMidlertidigPostadresseNorge) midlertidigPostadresse;
             result.add(retrieveAdresse(soknadId, xmlMidlPostAdrNorge, xmlMidlPostAdrNorge.getStrukturertAdresse()));
-        }
-        else if (midlertidigPostadresse instanceof XMLMidlertidigPostadresseUtland) {
+        } else if (midlertidigPostadresse instanceof XMLMidlertidigPostadresseUtland) {
             Adresse midlertidigAdresse = new Adresse(soknadId, MIDLERTIDIG_POSTADRESSE_UTLAND);
             setLandkodeOgGyldighetsDatoer(midlertidigAdresse, (XMLMidlertidigPostadresseUtland) midlertidigPostadresse);
             result.add(midlertidigAdresse);
@@ -179,7 +180,7 @@ public class PersonTransform {
         return adresselinjer;
     }
 
-    private void addIfNotNull(ArrayList<String> adresselinjer, String adresselinje) {
+    private void addIfNotNull(List<String> adresselinjer, String adresselinje) {
         if (adresselinje != null) {
             adresselinjer.add(adresselinje);
         }

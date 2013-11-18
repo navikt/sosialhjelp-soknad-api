@@ -7,20 +7,20 @@ angular.module('nav.reellarbeidssoker', [])
         var pendlenokler = ['pendlereduserthelse', 'pendleomsorgbarnunder1aar', 'pendleomsorgbarnopptil10', 'pendleeneansvarbarnunder5skoleaar',
             'pendleeneansvarbarnopptil18aar', 'pendleannensituasjon', 'pendleomsorgansvar' ];
 
-        $scope.validerReellarbeidssoker = function (form) {
-            if ($scope.soknadData.fakta.villigdeltid) {
+        $scope.validerReellarbeidssoker = function(form) {
+            if($scope.soknadData.fakta.villigdeltid) {
                 var minstEnDeltidAvhuket = $scope.erCheckboxerAvhuket(deltidnokler);
-                if ($scope.soknadData.fakta.villigdeltid.value == 'false') {
-                    form.$setValidity("reellarbeidssoker.villigdeltid.false.minstEnAvhuket.feilmelding", minstEnDeltidAvhuket);
+                if($scope.soknadData.fakta.villigdeltid.value == 'false') {
+                    form.$setValidity("reellarbeidssoker.villigdeltid.false.minstEnAvhuket.feilmelding", minstEnDeltidAvhuket);    
                 } else {
-                    form.$setValidity("reellarbeidssoker.villigdeltid.false.minstEnAvhuket.feilmelding", true);
+                    form.$setValidity("reellarbeidssoker.villigdeltid.false.minstEnAvhuket.feilmelding", true);    
                 }
             }
 
-            if ($scope.soknadData.fakta.villigpendle) {
+            if($scope.soknadData.fakta.villigpendle) {
                 var minstEnPendleAvhuket = $scope.erCheckboxerAvhuket(pendlenokler);
-                if ($scope.soknadData.fakta.villigpendle.value == 'false') {
-                    form.$setValidity("reellarbeidssoker.villigdpendle.false.minstEnAvhuket.feilmelding", minstEnPendleAvhuket);
+                if($scope.soknadData.fakta.villigpendle.value == 'false') {
+                    form.$setValidity("reellarbeidssoker.villigdpendle.false.minstEnAvhuket.feilmelding", minstEnPendleAvhuket);    
                 } else {
                     form.$setValidity("reellarbeidssoker.villigpendle.false.minstEnAvhuket.feilmelding", true);
                 }
