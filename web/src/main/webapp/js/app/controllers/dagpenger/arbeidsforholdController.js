@@ -139,37 +139,43 @@ angular.module('nav.arbeidsforhold.controller', [])
             });
 
 
+//
+//            $scope.$watch("arbeidsgiver.varighetFra", function (nyVerdi, gammelVerdi) {
+//                if ($scope.arbeidsgiver && ($scope.arbeidsgiver.varighetTil <= $scope.arbeidsgiver.varighetFra)) {
+//                    $scope.arbeidsgiver.varighetTil = '';
+//                    $scope.datoError = true;
+//                } else {
+//                    $scope.datoError = false;
+//                }
+//            });
 
-            $scope.$watch("arbeidsgiver.varighetFra", function (nyVerdi, gammelVerdi) {
-                if ($scope.arbeidsgiver && ($scope.arbeidsgiver.varighetTil <= $scope.arbeidsgiver.varighetFra)) {
-                    $scope.arbeidsgiver.varighetTil = '';
-                    $scope.datoError = true;
-                } else {
-                    $scope.datoError = false;
-                }
-            });
             $scope.resolvUrl = function () {
                 return "../html/templates/kontrakt-utgaatt.html"
             }
 
-            $scope.$watch("arbeidsgiver.varighetTil", function (nyVerdi, gammelVerdi) {
-                if ($scope.arbeidsgiver && ($scope.arbeidsgiver.varighetTil <= $scope.arbeidsgiver.varighetFra)) {
-                    $scope.arbeidsgiver.varighetTil = '';
-                    $scope.datoError = true;
-
-                } else {
-                    $scope.datoError = false;
-
-                }
-            });
+//            $scope.$watch("arbeidsgiver.varighetTil", function (nyVerdi, gammelVerdi) {
+//                if ($scope.arbeidsgiver && ($scope.arbeidsgiver.varighetTil <= $scope.arbeidsgiver.varighetFra)) {
+//                    $scope.arbeidsgiver.varighetTil = '';
+//                    $scope.datoError = true;
+//
+//                } else {
+//                    $scope.datoError = false;
+//
+//                }
+//            });
 
             $scope.validateTilFraDato = function (af, form) {
+                console.log("Change")
                 if (af && (af.varighetTil <= af.varighetFra)) {
                     af.varighetTil = '';
+
+
                     form.$setValidity('arbeidsforhold.arbeidsgiver.varighet.feilmelding', false);
                 } else {
                     form.$setValidity('arbeidsforhold.arbeidsgiver.varighet.feilmelding', true);
                 }
+                console.log("til: " + af.varighetTil);
+                console.log("Fra: " + af.varighetFra);
             }
 
             $scope.validateRedusertArbeidstidDato = function (af) {
