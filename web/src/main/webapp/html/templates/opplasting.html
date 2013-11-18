@@ -1,4 +1,4 @@
-<div class="rad">
+<div class="rad nettotopp">
     <div class="begrensning sak-trekvart">
         <stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="2"></stegindikator>
     </div>
@@ -53,6 +53,17 @@
                                 Lastet opp
                             </div>
                         </div>
+                        <ul class="liste-vannrett">
+                            <li>
+                                <a href="#/dagpenger/{{ soknadData.soknadId }}" cmstekster="tilbake"/>
+                            </li>
+                            <li>
+                                <a href="#" cmstekster="dagpenger.opplasting.vedlegg.eksempel"/>
+                            </li>
+                            <li>
+                                <a href="#" cmstekster="dagpenger.opplasting.vedlegg.faq"/>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </section>
@@ -62,13 +73,6 @@
     <div class="rad uten-ramme">
         <div class="begrensning sak-totredel">
             <a href="#/oppsummering/{{ soknadData.soknadId }}" class="knapp-hoved" cmstekster="dagpenger.opplasting.ferdig"/>
-            <div>
-                <a href="#/dagpenger/{{ soknadData.soknadId }}" cmstekster="tilbake"/>
-            </div>
-        </div>
-    </div>
-    <div class="rad uten-ramme">
-        <div class="begrensning sak-trekvart">
             <stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="2"></stegindikator>
         </div>
     </div>
