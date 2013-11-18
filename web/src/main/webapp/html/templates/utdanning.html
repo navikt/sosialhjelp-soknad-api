@@ -21,7 +21,7 @@
                           feilmelding="utdanning.utdanning.feilmelding"/>
 
 
-                <div class="spm" data-ng-show="hvisUnderUtdanning()" modus="data.redigeringsModus">
+                <div class="spm" data-ng-show="hvisUnderUtdanning() && hvisIRedigeringsmodus()" modus="data.redigeringsModus">
 
 
                     <input id="underUtdanningKveld" type="checkbox" data-ng-model ="soknadData.fakta.underUtdanningKveld.value" name="underUtdanningKveld"/>
@@ -45,19 +45,19 @@
                     </div>
 
 
-         <div class="spm" data-ng-show="hvisUnderUtdanning()">
+         <div class="spm" data-ng-if="hvisUnderUtdanning() && hvisIRedigeringsmodus()">
 
                 <label for="utdanningssted" cmstekster="utdanning.utdanningssted.navn"></label>
-                <input id="utdanningssted" type="text" data-ng-model="utdanningssted.navn" required/>
+                <input id="utdanningssted" type="text" data-ng-model="utdanningssted.navn" error-messages="'utdanning.error.utdanningssted'" required/>
 
                 <div class="varighet">
                     <label cmstekster="utdanning.utdanningssted.start"></label>
-                    <input type="text" name="varighetFra" ui-date ui-date-format ng-model="utdanning.varighetFra" data-ng-change="validateTilFraDato(utdanning)"  required >
+                    <input type="text" name="varighetFra" ui-date ui-date-format ng-model="utdanning.varighetFra" error-messages="'utdanning.error.varighetfra'" data-ng-change="validateTilFraDato(utdanning)"  required >
                    </div>
              <div class="varighet">
                     <label cmstekster="utdanning.utdanningssted.slutt"></label>
                     <span data-ng-show="utdanningDatoError" style="color:red" cmstekster="utdanning.utdanningssted.error.datoTilFra"/>
-                    <input type="text" name="varighetTil" ui-date ui-date-format ng-model="utdanning.varighetTil" data-ng-change="validateTilFraDato(utdanning)" required >
+                    <input type="text" name="varighetTil" ui-date ui-date-format ng-model="utdanning.varighetTil" error-messages="'utdanning.error.varighettil'" data-ng-change="validateTilFraDato(utdanning)" required >
                 </div>
 
                 <div class="sporsmaal">
