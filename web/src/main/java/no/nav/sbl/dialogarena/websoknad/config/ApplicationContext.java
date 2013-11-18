@@ -37,11 +37,11 @@ public class ApplicationContext {
     private String navigasjonslink;
 
 
-    @Value("${dialogarena.navnolink.url}")
+    @Value("$dokumentinnsending.smtpServer.port}")
     private int smtpServerPort;
     //= 25;
     
-    @Value("${dialogarena.navnolink.url}")
+    @Value("${dokumentinnsending.smtpServer.host}")
     private String smtpServerHost;
             //= "smtp.test.local";
 
