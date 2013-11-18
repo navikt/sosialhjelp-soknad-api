@@ -13,7 +13,6 @@ import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.xml.bind.JAXBContext;
@@ -44,6 +43,7 @@ import static no.nav.modig.lang.option.Optional.none;
 import static no.nav.modig.lang.option.Optional.optional;
 import static no.nav.sbl.dialogarena.common.Comparators.compareBy;
 import static org.joda.time.DateTime.now;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Tilbyr kodeverkoppslag. Implementasjonen laster hele kodeverk fra webservice on-demand,
@@ -53,13 +53,11 @@ import static org.joda.time.DateTime.now;
  */
 public class StandardKodeverk implements Kodeverk {
 
-    private static final Logger LOG = LoggerFactory.getLogger(StandardKodeverk.class);
+    private static final Logger LOG = getLogger(StandardKodeverk.class);
 
     private final KodeverkPortType webservice;
-
     private final String spraak;
     private final Map<String, XMLEnkeltKodeverk> kodeverk;
-
     private final Optional<File> dumpDirectory;
 
     /**
@@ -105,16 +103,18 @@ public class StandardKodeverk implements Kodeverk {
     @Scheduled(cron = "0 15 04 * * *")
     public void lastInnNyeKodeverk() {
         Map<String, XMLEnkeltKodeverk> oppdatertKodeverk = new HashMap<>();
-
         for (String kodeverksnavn : ALLE_KODEVERK) {
             XMLEnkeltKodeverk enkeltkodeverk = hentKodeverk(kodeverksnavn);
-            List<XMLKode> gyldige = on(enkeltkodeverk.getKode()).filter(where(GYLDIGHETSPERIODER, exists(periodeMed(now())))).collect();
             enkeltkodeverk.getKode().clear();
-            enkeltkodeverk.getKode().addAll(gyldige);
+            enkeltkodeverk.getKode().addAll(getGyldigeKodeverk(enkeltkodeverk));
             oppdatertKodeverk.put(kodeverksnavn, enkeltkodeverk);
         }
         this.kodeverk.clear();
         this.kodeverk.putAll(oppdatertKodeverk);
+    }
+
+    private List<XMLKode> getGyldigeKodeverk(XMLEnkeltKodeverk enkeltkodeverk) {
+        return on(enkeltkodeverk.getKode()).filter(where(GYLDIGHETSPERIODER, exists(periodeMed(now())))).collect();
     }
 
     private XMLEnkeltKodeverk kodeverkMedNavn(String kodeverknavn) {
@@ -148,7 +148,6 @@ public class StandardKodeverk implements Kodeverk {
         return null;
     }
 
-
     private XMLEnkeltKodeverk hentKodeverk(String navn) {
         XMLEnkeltKodeverk kodeverket = null;
         Optional<RuntimeException> webserviceException = none();
@@ -159,7 +158,6 @@ public class StandardKodeverk implements Kodeverk {
         } catch (RuntimeException e) {
             webserviceException = optional(e);
         }
-
         if (webserviceException.isSome()) {
             RuntimeException kodeverkfeil = webserviceException.get();
             if (kodeverk.containsKey(navn)) {
@@ -182,7 +180,6 @@ public class StandardKodeverk implements Kodeverk {
         }
         return kodeverket;
     }
-
 
     private static final Transformer<XMLKode, String> KODENAVN = new Transformer<XMLKode, String>() {
         @Override
@@ -220,20 +217,19 @@ public class StandardKodeverk implements Kodeverk {
         try {
             JAXB = newInstance(XMLKodeverk.class);
         } catch (JAXBException e) {
-            throw new RuntimeException(
-                    "Unable to load class " + StandardKodeverk.class.getName() +
-                            ", error creating JAXB context for " + XMLKodeverk.class.getName() + ": " + e.getMessage(), e);
+            throw new RuntimeException(createErrorMessage(e), e);
         }
     }
 
+    private static String createErrorMessage(JAXBException e) {
+        return "Unable to load class " + StandardKodeverk.class.getName() +", error creating JAXB context for " + XMLKodeverk.class.getName() + ": " + e.getMessage();
+    }
 
     private XMLKodeverk readFromDump(String dumpName) {
         for (File dumpFile : dumpDirectory.map(fileExists(), appendPathname(dumpName + ".xml"))) {
             LOG.info("Leser dump fra fil '{}'", dumpFile);
             try {
-                @SuppressWarnings("unchecked")
-                JAXBElement<XMLKodeverk> jaxbElement = (JAXBElement<XMLKodeverk>) JAXB.createUnmarshaller().unmarshal(dumpFile);
-                return jaxbElement.getValue();
+                return ((JAXBElement<XMLKodeverk>) JAXB.createUnmarshaller().unmarshal(dumpFile)).getValue();
             } catch (JAXBException e) {
                 throw new RuntimeException("Feil ved innlasting av dump " + dumpFile + ": " + e.getMessage(), e);
             }
@@ -241,17 +237,23 @@ public class StandardKodeverk implements Kodeverk {
         throw new IllegalStateException("Forsøkte å laste fildump '" + dumpName + ".xml', men fant ikke filen");
     }
 
-
     private void dumpIfPossible(String dumpName, XMLKodeverk kodeverket) {
         for (File dumpFile : dumpDirectory.map(makeDirs()).map(appendPathname(dumpName + ".xml"))) {
             LOG.info("Dumper til filen '{}'", dumpFile);
             try (Writer out = new FileWriter(dumpFile)) {
-                JAXB.createMarshaller().marshal(new JAXBElement<XMLKodeverk>(
-                        new QName(StandardKodeverk.class.getName() + "." + dumpName, dumpName), XMLKodeverk.class, kodeverket), out);
+                JAXB.createMarshaller().marshal(createJAXBElement(dumpName, kodeverket), out);
             } catch (JAXBException | IOException e) {
                 LOG.error("Klarte ikke å dumpe '{}' til fil. {}\n{}", dumpName, e.getMessage(), e);
             }
         }
+    }
+
+    private JAXBElement<XMLKodeverk> createJAXBElement(String dumpName, XMLKodeverk kodeverket) {
+        return new JAXBElement<>(createQName(dumpName), XMLKodeverk.class, kodeverket);
+    }
+
+    private QName createQName(String dumpName) {
+        return new QName(StandardKodeverk.class.getName() + "." + dumpName, dumpName);
     }
 
 }

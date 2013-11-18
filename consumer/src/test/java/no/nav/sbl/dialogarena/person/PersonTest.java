@@ -11,7 +11,7 @@ public class PersonTest {
 
 	@Test
 	public void skalSetteSammenForOgEtterNavnPaaRiktigMaateMedNull() {
-		Person person = new Person(1l, "11111112345", "Jan", null, "Larsen", "epost@email.com", "midlertidig", new ArrayList<Adresse>());
+		Person person = new Person(1l, "11111112345", "Jan", null, "Larsen", "midlertidig", new ArrayList<Adresse>());
 		
 		Map<String, Object> fakta = person.getFakta();
 		
@@ -21,7 +21,7 @@ public class PersonTest {
 
 	@Test
 	public void skalSetteSammenForOgEtterNavnPaaRiktigMaateMedMellomrom() {
-		Person person = new Person(1l, "11111112345", "Jan", "", "Larsen", "epost@email.com", "midlertidig", new ArrayList<Adresse>());
+		Person person = new Person(1l, "11111112345", "Jan", "", "Larsen", "midlertidig", new ArrayList<Adresse>());
 		
 		Map<String, Object> fakta = person.getFakta();
 		
@@ -29,4 +29,31 @@ public class PersonTest {
 		Assert.assertEquals("Jan Larsen", sammensattnavn.getValue());
 	}
 	
+	@Test
+	public void skalReturnereTrueForPostadresseUtland() {
+		Person person = new Person(1l, "11111112345", "Jan", "", "Larsen", Adressetype.POSTADRESSE_UTLAND.toString(), new ArrayList<Adresse>());
+		
+		Assert.assertEquals(true, person.harUtenlandskAdresse());
+	}
+	
+	@Test
+	public void skalReturnereTrueForMidlertidigPostadresseUtland() {
+		Person person = new Person(1l, "11111112345", "Jan", "", "Larsen", Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND.toString(), new ArrayList<Adresse>());
+		
+		Assert.assertEquals(true, person.harUtenlandskAdresse());
+	}
+	
+	@Test
+	public void skalReturnereFalseForMidlertidigPostadresseNorge() {
+		Person person = new Person(1l, "11111112345", "Jan", "", "Larsen",  Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE.toString(), new ArrayList<Adresse>());
+		
+		Assert.assertEquals(false, person.harUtenlandskAdresse());
+	}
+	
+	@Test
+	public void skalReturnereFalseForFolkeregistrertAdresseNorge() {
+		Person person = new Person(1l, "11111112345", "Jan", "", "Larsen", Adressetype.BOSTEDSADRESSE.toString(), new ArrayList<Adresse>());
+		
+		Assert.assertEquals(false, person.harUtenlandskAdresse());
+	}
 }

@@ -13,6 +13,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
+import static java.lang.System.getProperty;
+
 @Configuration
 public class DatabaseTestContext {
 
@@ -35,7 +37,7 @@ public class DatabaseTestContext {
     }
 
     private static boolean erInMemoryDatabase() {
-        String dbProp = System.getProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "true");
+        String dbProp = getProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "true");
         if (dbProp == null) {
             return true;
         }

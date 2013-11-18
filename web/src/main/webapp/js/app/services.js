@@ -40,14 +40,7 @@ angular.module('app.services', ['ngResource'])
         );
     })
 
-
-    .factory('utslagskriterierService', function ($resource) {
-        return $resource('/sendsoknad/rest/utslagskriterier/:uid',
-            {uid: new Date().getTime()}
-        );
-    })
-
-// Husk språkstøtte...?
+    // Husk språkstøtte...?
     .factory('tekstService', function ($resource) {
         return $resource('/sendsoknad/rest/enonic/:side',
             {},

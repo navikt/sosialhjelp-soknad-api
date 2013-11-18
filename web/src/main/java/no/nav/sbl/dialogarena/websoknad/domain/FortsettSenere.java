@@ -21,6 +21,14 @@ public class FortsettSenere {
 		return epost;
 	}
 	
+	public String getAction() {
+		return action;
+	}
+	
+	public String getParam() {
+		return param;
+	}
+	
 	public void setAction(String action) {
 		this.action = action;
 	}

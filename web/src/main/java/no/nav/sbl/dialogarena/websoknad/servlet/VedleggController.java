@@ -38,7 +38,7 @@ public class VedleggController {
 
     @RequestMapping(value = "", params = "faktumId", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
-    public List<VedleggOpplastingResultat> lastOppDokumentSoknad(@PathVariable Long soknadId, @RequestParam Long faktumId, @RequestParam("files[]") ArrayList<MultipartFile> files) {
+    public List<VedleggOpplastingResultat> lastOppDokumentSoknad(@PathVariable Long soknadId, @RequestParam Long faktumId, @RequestParam("files[]") List<MultipartFile> files) {
         List<VedleggOpplastingResultat> res = new ArrayList<>();
         for (MultipartFile file : files) {
             Vedlegg vedlegg = new Vedlegg();
@@ -49,7 +49,7 @@ public class VedleggController {
             try {
                 vedlegg.setInputStream(file.getInputStream());
             } catch (IOException e) {
-                throw new RuntimeException("Kunne ikke lagre fil");
+                throw new RuntimeException("Kunne ikke lagre fil", e);
             }
             Long id = soknadService.lagreVedlegg(vedlegg);
 
