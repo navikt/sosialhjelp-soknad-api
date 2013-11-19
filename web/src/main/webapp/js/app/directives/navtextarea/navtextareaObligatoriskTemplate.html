@@ -7,8 +7,8 @@
 
         <p data-ng-show="fokus || feil">
             <span class="tellertekst" data-ng-class="{negativtekstteller: counter < 0 }"> {{counter}} </span>
-            <span cmstekster="{{tellertekst}}"/>
+            <span cmstekster="fritekst.tellertekst"/>
         </p>
     </label>
-    <p class="melding"><span cmstekster="fritekst.feilmelding"/><span> {{counter*-1}} tegn </span></p>
+    <p class="melding">{{counter*-1}} </p><span cmstekster="fritekst.feilmelding"/><span>
 </div>
