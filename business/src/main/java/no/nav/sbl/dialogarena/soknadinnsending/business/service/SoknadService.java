@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.awt.*;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
