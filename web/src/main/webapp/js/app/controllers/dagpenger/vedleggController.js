@@ -6,6 +6,9 @@ angular.module('nav.vedlegg.controller', [])
         $scope.sidedata = {navn: 'vedlegg'};
 
         $scope.vedlegg = data.soknadOppsett.vedlegg;
+        angular.forEach($scope.vedlegg, function(v){
+            v.valg = 'sendinn';
+        });
         $scope.soknad = data.soknad;
         $scope.erFaktumLikKriterie = function (vedlegg) {
             if (data.soknad.fakta[vedlegg.faktum.id]) {
