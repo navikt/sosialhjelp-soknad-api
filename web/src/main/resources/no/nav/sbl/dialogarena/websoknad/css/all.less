@@ -130,10 +130,6 @@
   }
 }
 
-a[class*="knapp-"] {
-  margin-top: 40px;
-  margin-bottom: 40px;
-}
 .stegindikator {
     margin-bottom: 0;
 }
@@ -487,9 +483,40 @@ form, [ng-form], [data-ng-form] {
         padding: 15px;
         background: #f1f1f1;
         border-top: 1px solid #ddd;
-        z-index: 1000;
+        z-index: 1035;
     }
 }
+
+
+.hjelpetekst {
+    background-color: #3e3832;
+    padding: 15px;
+    margin-bottom: 20px;
+    position: relative;
+
+    &:before {
+        content: "";
+        border: solid transparent;
+        border-top-color: #3e3832;
+        border-width: 13px;
+        position: absolute;
+        height: 0;
+        width: 0;
+        left: 8%;
+        top: 100%;
+    }
+
+    h3 {
+        color: #ccc !important;
+        text-align: center;
+    }
+
+    p {
+        color: white !important;
+    }
+}
+
+
 
 .nav-select {
     position: relative;
@@ -549,5 +576,15 @@ form, [ng-form], [data-ng-form] {
                 text-decoration: underline;
             }
         }
+    }
+}
+
+.definerer-hjelpetekst {
+    border-bottom: 1px #3875d7 dotted;
+    cursor: pointer;
+
+    &.open {
+        border-bottom: none;
+        color: #3875d7 !important;
     }
 }
