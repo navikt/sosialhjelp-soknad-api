@@ -1,12 +1,11 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
+import no.nav.sbl.dialogarena.websoknad.service.HenvendelseConnector;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,8 +33,8 @@ public class SoknadDataController {
     private SoknadService soknadService;
         
     @Inject
-    @Named("webSoknadService")
-    private WebSoknadService webSoknadService;
+    @Named("henvendelseConnector")
+    private HenvendelseConnector henvendelseConnector;
 
     @RequestMapping(value = "/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
@@ -74,7 +73,7 @@ public class SoknadDataController {
     @RequestMapping(value = "/opprett/{soknadType}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody()
     public WebSoknadId opprettSoknad(@PathVariable String soknadType) {
-        String behandlingsId = webSoknadService.startSoknad(SubjectHandler.getSubjectHandler().getUid(), null);
+        //String behandlingsId = henvendelseConnector.startSoknad(SubjectHandler.getSubjectHandler().getUid(), null);
         Long id = soknadService.startSoknad(soknadType);
         WebSoknadId soknadId = new WebSoknadId();
         soknadId.setId(id);
@@ -85,6 +84,7 @@ public class SoknadDataController {
     @ResponseBody()
     public void slettSoknad(@PathVariable Long soknadId) {
         soknadService.avbrytSoknad(soknadId);
+        henvendelseConnector.avbrytSoknad("12412412");
     }
 
 

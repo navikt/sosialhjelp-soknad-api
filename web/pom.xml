@@ -21,7 +21,10 @@
 
     <dependencies>
         <!-- Avhengigheter med scope compile -->
-
+		<dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>dialogarena-behandlingsinformasjon</artifactId>
+        </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-timing</artifactId>

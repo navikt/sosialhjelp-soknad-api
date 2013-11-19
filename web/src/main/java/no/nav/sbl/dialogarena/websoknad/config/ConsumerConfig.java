@@ -5,7 +5,7 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLFaktum;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLFaktumListe;
 import no.nav.modig.cxf.TimeoutFeature;
 import no.nav.sbl.dialogarena.common.timing.TimingFeature;
-import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
+import no.nav.sbl.dialogarena.websoknad.service.HenvendelseConnector;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
@@ -56,8 +56,8 @@ public class ConsumerConfig {
     private static final int CONNECTION_TIMEOUT = 10000;
 
     @Bean 
-    public WebSoknadService webSoknadService() {
-        return new WebSoknadService(); 
+    public HenvendelseConnector henvendelseConnector() {
+        return new HenvendelseConnector(); 
     }
     
     @Configuration
