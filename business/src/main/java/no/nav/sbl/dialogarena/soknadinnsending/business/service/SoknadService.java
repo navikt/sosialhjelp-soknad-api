@@ -83,12 +83,12 @@ public class SoknadService implements SendSoknadService {
 
         //TODO-KJ: Denne operasjonen er ikke klar enda.Vil kommenteres inn når den er
 //        try {
-//            behandlingsId = sendSoknadService.startBehandling(navSoknadId);
+//            behandlingsId = sendSoknadService.startBehandling(SubjectHandler.getSubjectHandler().getUid());
 //        } catch (SOAPFaultException e) {
 //            logger.error("Feil ved oppretting av søknad med ID", navSoknadId, e);
 //            throw new ApplicationException("Kunne ikke opprette ny søknad", e);
 //        }
-//
+
         WebSoknad soknad = WebSoknad.startSoknad().
                 medBehandlingId(behandlingsId).
                 medGosysId(navSoknadId).
