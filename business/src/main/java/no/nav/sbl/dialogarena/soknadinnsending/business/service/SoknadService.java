@@ -71,19 +71,8 @@ public class SoknadService implements SendSoknadService {
 
 
     public Long startSoknad(String navSoknadId) {
-        logger.debug("Starter ny søknad");
-        //TODO: Sende et signal til Henvendelse om at søknaden er startet
         String behandlingsId = UUID.randomUUID().toString();
-        logger.debug("Start søknad");
 
-        //TODO-KJ: Denne operasjonen er ikke klar enda.Vil kommenteres inn når den er
-//        try {
-//            behandlingsId = sendSoknadService.startBehandling(navSoknadId);
-//        } catch (SOAPFaultException e) {
-//            logger.error("Feil ved oppretting av søknad med ID", navSoknadId, e);
-//            throw new ApplicationException("Kunne ikke opprette ny søknad", e);
-//        }
-//
         WebSoknad soknad = WebSoknad.startSoknad().
                 medBehandlingId(behandlingsId).
                 medGosysId(navSoknadId).
