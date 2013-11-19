@@ -32,15 +32,13 @@ public class SoknadDataController {
     @RequestMapping(value = "/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public WebSoknad hentSoknadData(@PathVariable Long soknadId) {
-        WebSoknad soknad = soknadService.hentSoknad(soknadId);
-        return soknad;
+        return soknadService.hentSoknad(soknadId);
     }
 
     @RequestMapping(value = "/options/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public SoknadStruktur hentSoknadStruktur(@PathVariable Long soknadId) {
-        WebSoknad webSoknad = soknadService.hentSoknad(soknadId);
-        String type = webSoknad.getGosysId() + ".xml";
+        String type = soknadService.hentSoknad(soknadId).getGosysId() + ".xml";
         try {
             Unmarshaller unmarshaller = newInstance(SoknadStruktur.class).createUnmarshaller();
             return (SoknadStruktur) unmarshaller.unmarshal(SoknadStruktur.class.getResourceAsStream(format("/soknader/%s", type)));
@@ -66,7 +64,6 @@ public class SoknadDataController {
     @RequestMapping(value = "/opprett/{soknadType}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody()
     public WebSoknadId opprettSoknad(@PathVariable String soknadType) {
-
         Long id = soknadService.startSoknad(soknadType);
         WebSoknadId soknadId = new WebSoknadId();
         soknadId.setId(id);
