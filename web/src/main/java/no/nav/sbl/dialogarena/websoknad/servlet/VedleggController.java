@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import static java.lang.String.format;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
@@ -56,8 +57,8 @@ public class VedleggController {
             VedleggOpplastingResultat ut = new VedleggOpplastingResultat();
             ut.setName(vedlegg.getNavn());
             ut.setSize(vedlegg.getStorrelse().intValue());
-            ut.setThumbnailUrl(String.format(BASE_URL, soknadId, id, "thumbnail"));
-            ut.setDeleteUrl(String.format(BASE_URL, soknadId, id, "delete"));
+            ut.setThumbnailUrl(format(BASE_URL, soknadId, id, "thumbnail"));
+            ut.setDeleteUrl(format(BASE_URL, soknadId, id, "delete"));
             res.add(ut);
         }
         return res;

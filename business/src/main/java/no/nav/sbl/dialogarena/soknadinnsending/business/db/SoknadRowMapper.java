@@ -9,9 +9,12 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad.startSoknad;
+
 public class SoknadRowMapper implements RowMapper<WebSoknad> {
+
     public WebSoknad mapRow(ResultSet rs, int row) throws SQLException {
-        return WebSoknad.startSoknad()
+        return startSoknad()
         		.medId(rs.getLong("soknad_id"))
         		.medBehandlingId(rs.getString("brukerbehandlingid"))
         		.medGosysId(rs.getString("navsoknadid"))
@@ -20,4 +23,5 @@ public class SoknadRowMapper implements RowMapper<WebSoknad> {
                 .medDelstegStatus(DelstegStatus.valueOf(rs.getString("delstegstatus")))
         		.opprettetDato(new DateTime(rs.getTimestamp("opprettetdato").getTime()));
     }
+
 }
