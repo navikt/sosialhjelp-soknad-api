@@ -35,7 +35,6 @@ public class WebSoknadServiceTest {
 	@InjectMocks
 	WebSoknadService service;
 	
-	
 	Long soknadId;
 
 	@Before

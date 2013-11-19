@@ -1,10 +1,13 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
@@ -28,6 +32,10 @@ public class SoknadDataController {
 
     @Inject
     private SoknadService soknadService;
+        
+    @Inject
+    @Named("webSoknadService")
+    private WebSoknadService webSoknadService;
 
     @RequestMapping(value = "/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
@@ -66,7 +74,7 @@ public class SoknadDataController {
     @RequestMapping(value = "/opprett/{soknadType}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody()
     public WebSoknadId opprettSoknad(@PathVariable String soknadType) {
-
+        String behandlingsId = webSoknadService.startSoknad(SubjectHandler.getSubjectHandler().getUid(), null);
         Long id = soknadService.startSoknad(soknadType);
         WebSoknadId soknadId = new WebSoknadId();
         soknadId.setId(id);
