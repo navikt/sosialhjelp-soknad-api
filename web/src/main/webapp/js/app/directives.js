@@ -5,7 +5,7 @@
  * Description
  */
 
-angular.module('app.directives', ['app.services', 'nav.booleanradio', 'nav.cmstekster', 'nav.input', 'nav.feilmeldinger', 'nav.sporsmalferdig', 'nav.markup', 'nav.stegindikator', 'nav.textarea', 'nav.fremdriftsindikator', 'nav.validering', 'nav.sistlagret', 'nav.select'])
+angular.module('app.directives', ['app.services', 'nav.booleanradio', 'nav.cmstekster', 'nav.input', 'nav.feilmeldinger', 'nav.sporsmalferdig', 'nav.markup', 'nav.stegindikator', 'nav.textarea', 'nav.fremdriftsindikator', 'nav.validering', 'nav.sistlagret', 'nav.select', 'nav.hjelpetekst'])
     /*Hva med casene 1-242 osv? */
 
     .directive('landskodevalidering', function () {
