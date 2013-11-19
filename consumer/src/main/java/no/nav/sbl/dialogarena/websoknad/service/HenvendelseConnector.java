@@ -19,9 +19,9 @@ import javax.xml.ws.soap.SOAPFaultException;
 import java.util.List;
 
 @Component
-public class WebSoknadService{
+public class HenvendelseConnector{
 
-    private static final Logger logger = LoggerFactory.getLogger(WebSoknadService.class);
+    private static final Logger logger = LoggerFactory.getLogger(HenvendelseConnector.class);
 
     private static final String SOKNADINNSENDING = "SEND_SOKNAD";
 

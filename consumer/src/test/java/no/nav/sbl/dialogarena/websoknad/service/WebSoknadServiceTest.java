@@ -33,7 +33,7 @@ public class WebSoknadServiceTest {
     SendSoknadPortType webservice;
 	
 	@InjectMocks
-	WebSoknadService service;
+	HenvendelseConnector service;
 	
 	Long soknadId;
 
