@@ -32,7 +32,6 @@ public class HandleBarRunnerTest {
         String superDev = "SuperDev";
         String appliedToString = template.apply(superDev);
 
-        assertThat(appliedToString, containsString(superDev));
         assertThat(appliedToString, is(equalTo("Hello " + superDev + "!")));
     }
 
@@ -61,11 +60,11 @@ public class HandleBarRunnerTest {
 
         String baseUrl = "/c:/test/";
         String pdf = "c:/test/handlebar.pdf";
-        PDFCreator.createPDF(html, pdf, baseUrl);
+        PDFCreator.lagPdfFil(html, baseUrl, pdf);
 
         long start = new Date().getTime();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        PDFCreator.createPDF(html, baseUrl, out);
+        PDFCreator.lagPDFOutputStream(html, baseUrl, out);
         assertThat(out.size(), is(1155));
         out.close();
 
