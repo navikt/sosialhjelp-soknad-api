@@ -63,12 +63,10 @@ describe('GrunnlagsdataController', function() {
 describe('DagpengerControllere', function() {
     var scope, ctrl, form;
 
-    beforeEach(
-        module('app.services', 'app.controllers', 'nav.feilmeldinger')
-    );
+    beforeEach(module('app.services', 'app.controllers', 'nav.feilmeldinger'));
 
-     beforeEach(module(function($provide) {
-         $provide.value("data", {});
+    beforeEach(module(function($provide) {
+        $provide.value("data", {alder:{'alder':61}});
     }));
 
     beforeEach(inject(function ( $rootScope, $controller, $compile, $httpBackend) {
@@ -147,12 +145,30 @@ describe('DagpengerControllere', function() {
         });
     })
 
-    describe('ReellarbeidssokerCtrl', function() {
+    describe('ReellarbeidssokerCtrl', function() {        
         beforeEach(inject(function ($controller) {
             ctrl = $controller('ReellarbeidssokerCtrl', {
                 $scope: scope
             });
         }));
+
+        it('skal returnere true for person over 59 aar', function(){
+            expect(scope.erOver59Aar()).toBe(true);
+        });
+
+        it('skal returnere false for person som er 59 aar', function(){
+            scope.alder =59;
+            expect(scope.erOver59Aar()).toBe(false);
+        });
+
+        it('skal returnere true for person under 60 aar', function(){
+            scope.alder =59;
+            expect(scope.erUnder60Aar()).toBe(true);
+        });
+
+        it('skal returnere false for person over 60 aar', function(){
+            expect(scope.erUnder60Aar()).toBe(false);
+        });
 
         it('skal kalle metode for å validere form', function() {
             scope.soknadData.fakta.villigdeltid = true;
@@ -164,13 +180,13 @@ describe('DagpengerControllere', function() {
     })
 
     describe('YtelserCtrl', function() {
-        var nokler = ['nokkel1', 'nokkel2'];
-
         beforeEach(inject(function ($controller) {
             ctrl = $controller('YtelserCtrl', {
                 $scope: scope
             });
         }));
+
+        var nokler = ['nokkel1', 'nokkel2'];
 
         it('skal returnere false for avhukede checkbokser dersom ingen har en satt verdi i modellen', function() {
             expect(scope.erCheckboxerAvhuket(nokler)).toEqual(false);
