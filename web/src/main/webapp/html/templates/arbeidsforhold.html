@@ -1,7 +1,7 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
     <div ng-form="arbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl"
          data-ng-submit="validerArbeidsforhold(arbeidsforholdForm)">
-        <div form-errors/>
+        <div form-errors></div>
         <p class="arbeidsforhold-informasjonstekst" cmstekster="arbeidsforhold.informasjon"/>
 
         <div data-ng-repeat="af in arbeidsforhold" data-ng-class="{'last': $last}">
