@@ -21,7 +21,10 @@
 
     <dependencies>
         <!-- Avhengigheter med scope compile -->
-
+		<dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>dialogarena-behandlingsinformasjon</artifactId>
+        </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-timing</artifactId>
@@ -29,11 +32,6 @@
         <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-cxf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-log-filter</artifactId>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
@@ -72,11 +70,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>sendsoknad-db</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>sendsoknad-business</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -92,6 +85,10 @@
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>sbl-webkomponent-navigasjon</artifactId>
         </dependency>
+        <dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
         <dependency>
             <groupId>org.apache.wicket</groupId>
             <artifactId>wicket-core</artifactId>
@@ -127,6 +124,10 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -168,11 +169,6 @@
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-security-sts</artifactId>
         </dependency>
-		<dependency>
-            <groupId>net.sourceforge.collections</groupId>
-            <artifactId>collections-generic</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.xhtmlrenderer</groupId>
             <artifactId>flying-saucer-core</artifactId>
@@ -204,6 +200,14 @@
             <artifactId>commons-lang3</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Avhengigheter med scope runtime -->
+
         <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-log-filter</artifactId>
@@ -286,12 +290,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Avhengigheter med scope provided -->
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
+            <scope>runtime</scope>
         </dependency>
 
-        <!-- Avhengigheter med scope provided -->
 
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -413,7 +418,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>sendsoknad-db</artifactId>
+            <artifactId>sendsoknad-business</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>

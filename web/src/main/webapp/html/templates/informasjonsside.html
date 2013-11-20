@@ -5,7 +5,13 @@
 
     <p data-cmstekster="dagpenger.informasjonsside.info"/>
 
-    <div id="utslagskriterier">
+    <div class="utslagskriterier-knapper" data-ng-controller="StartSoknadCtrl" data-ng-if="kravForDagpengerOppfylt()">
+        <input type='button' class="knapp-hoved" data-cmstekster="utslagskriterier.utslag.fortsett" data-ng-click="startSoknad()" data-fremdriftsindikator/>
+    </div>
+
+    <div id="utslagskriterier" ng-if='kravForDagpengerIkkeOppfylt()'>
+
+
         <p data-cmstekster="utslagskriterier.intro"/>
         <ul>
             <li data-cmstekster="utslagskriterier.kriterie.alder.under67"/>
@@ -13,22 +19,25 @@
             <li data-cmstekster="utslagskriterier.kriterie.reellarbeidssoker"/>
         </ul>
 
-        <p data-cmstekster="utslagskriterier.utslag.alder">
+  
 
-        <p data-cmstekster="utslagskriterier.utslag.bosted">
-
-        <p>
-            <span data-cmstekster="utslagskriterier.utslag.reellarbeidssoker"/>
-            <a href data-cmslenketekster="utslagskriterier.utslag.reellarbeidssoker.registert.url"
-               data-cmstekster="utslagskriterier.utslag.reellarbeidssoker.registert"/>
-        </p>
+        <ol>
+            <li data-cmstekster="utslagskriterier.utslag.alder" data-ng-if="ikkeGyldigAlder()"/>
+            <li data-cmstekster="utslagskriterier.utslag.bosted" data-ng-if="ikkeBosattINorge()"/>
+            <li data-ng-if="ikkeRegistrertArbeidssoker()">
+                <span data-cmstekster="utslagskriterier.utslag.reellarbeidssoker"/>
+                <a href data-cmslenketekster="utslagskriterier.utslag.reellarbeidssoker.registert.url"
+                   data-cmstekster="utslagskriterier.utslag.reellarbeidssoker.registert"/>
+            </li>
+        </ol>
+        
         <br/>
 
         <p data-cmstekster="utslagskriterier.utslag.infoAvslag"/>
         <br/>
 
         <div class="utslagskriterier-knapper" data-ng-controller="StartSoknadCtrl">
-            <input type='button' class="knapp-hoved" data-cmstekster="utslagskriterier.utslag.fortsett" data-ng-click="startSoknad()" data-fremdriftsindikator/>
+            <input type='button' class="knapp-hoved" data-cmstekster="utslagskriterier.utslag.fortsettlikevel" data-ng-click="startSoknad()" data-fremdriftsindikator/>
             <!--<div data-nav-button-spinner data-type='button' data-laster='data.laster' data-klasse='knapp-hoved'-->
                                 <!--data-nokkel='utslagskriterier.utslag.fortsett' data-click='startSoknad()'/>-->
         </div>

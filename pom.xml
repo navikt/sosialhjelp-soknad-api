@@ -10,7 +10,6 @@
 
     <modules>
         <module>config</module>
-		<module>db</module>
         <module>business</module>
         <module>consumer</module>
         <module>web</module>
@@ -25,13 +24,13 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <modig.frontend>1.1.2</modig.frontend>
+        <modig.frontend>1.1.6-SNAPSHOT</modig.frontend>
         <wicket.version>6.11.0</wicket.version>
         <spring.version>3.2.4.RELEASE</spring.version>
         <cxf.version>2.7.7</cxf.version>
         <nav.sbl.commons.version>3.30</nav.sbl.commons.version>
         <modig-security.version>1.0.19</modig-security.version>
-        <sendsoknad.tjenestespec.version>0.0.8</sendsoknad.tjenestespec.version>
+        <sendsoknad.tjenestespec.version>0.0.11</sendsoknad.tjenestespec.version>
         <sonar.exclusions>no/nav/sbl/dialogarena/websoknad/config/**</sonar.exclusions>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -49,7 +48,11 @@
         <dependencies>
 
             <!-- Avhengigheter med scope compile -->
-
+            <dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>dialogarena-behandlingsinformasjon</artifactId>
+                <version>0.0.2-SNAPSHOT</version>
+            </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-cxf</artifactId>
@@ -58,11 +61,6 @@
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-log-jaxws</artifactId>
-                <version>1.1.3</version>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-log-filter</artifactId>
                 <version>1.1.3</version>
             </dependency>
             <dependency>
@@ -262,6 +260,11 @@
                 <artifactId>jcl-over-slf4j</artifactId>
                 <version>1.7.5</version>
             </dependency>
+            <dependency>
+				<groupId>com.google.code.gson</groupId>
+				<artifactId>gson</artifactId>
+				<version>2.2.4</version>
+			</dependency>
             <dependency>
                 <groupId>org.apache.wicket</groupId>
                 <artifactId>wicket-core</artifactId>

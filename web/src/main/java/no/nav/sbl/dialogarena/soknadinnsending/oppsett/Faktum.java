@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlID;
 import java.io.Serializable;
 
 public class Faktum implements Serializable {
+
     private String id;
     private String type;
 
@@ -27,10 +28,11 @@ public class Faktum implements Serializable {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Faktum{");
-        sb.append("id='").append(id).append('\'');
-        sb.append(", type='").append(type).append('\'');
-        sb.append('}');
-        return sb.toString();
+        return new StringBuilder("Faktum{")
+            .append("id='").append(id).append('\'')
+            .append(", type='").append(type).append('\'')
+            .append('}')
+                .toString();
     }
+
 }
