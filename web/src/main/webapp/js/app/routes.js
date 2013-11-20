@@ -11,7 +11,16 @@ angular.module('app.routes', ['ngRoute'])
                     }
                 }
             })
-            .when('/opplasting/:soknadId', {
+            .when('/vedlegg/:soknadId', {
+                templateUrl: '../html/templates/vedlegg.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
+            .when('/opplasting/:soknadId/:faktumId', {
                 templateUrl: '../html/templates/opplasting.html',
                 controller: 'SoknadDataCtrl',
                 resolve: {
