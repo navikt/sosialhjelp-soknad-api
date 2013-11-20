@@ -120,9 +120,8 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 var form = ctrls[1];
                 var eventString = 'RUN_VALIDATION' + form.$name;
 
-
                 scope.$on(eventString, function () {
-                    if (sjekkOmFeltetErRequired() && !sjekkOmFeltetErSvart() ) {
+                    if (sjekkOmFeltetErRequired() && !sjekkOmFeltetErSvart()) {
                         element.closest('.form-linje').addClass('feil');
                     }
                 });
@@ -131,12 +130,11 @@ angular.module('nav.validering', ['nav.cmstekster'])
                     angular.forEach(form.$error, function (verdi, feilNokkel) {
                         var feilmeldignsnavn = attrs.id.substring(0, attrs.id.lastIndexOf('.'));
                         angular.forEach(verdi, function (feil) {
-                           if(feil === undefined && feilNokkel.indexOf(feilmeldignsnavn) !== -1 ) {
-                               settFraTilDatoFeilmeldingstekst(feilNokkel)
-
-                           //fjerner feilmelding om at fra må være før til, så ved lagring vil brukeren få beskjed om required-feilmeldingen i stedet
-                           form.$setValidity(feilNokkel, true);
-                           }
+                            if (feil === undefined && feilNokkel.indexOf(feilmeldignsnavn) !== -1) {
+                                settFraTilDatoFeilmeldingstekst(feilNokkel)
+                                //fjerner feilmeldingen om at fra må være før til, så ved lagring vil brukeren få beskjed om required-feilmeldingen i stedet
+                                form.$setValidity(feilNokkel, true);
+                            }
                         })
                     })
                 });
@@ -145,7 +143,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
                     return ngModel.$viewValue;
                 }, function () {
                     if (ngModel.$viewValue) {
-                       fjernFeilKlassen();
+                        fjernFeilKlassen();
                     }
                 });
 
@@ -162,11 +160,12 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 }
 
                 function settRequiredFeilmeldingsTekst() {
-                    var  feilmeldingsNokkel = element[0].getAttribute('error-messages').toString();
+                    var feilmeldingsNokkel = element[0].getAttribute('error-messages').toString();
                     //hack for å fjerne dobbeltfnuttene rundt feilmeldingsnokk
                     var feilmeldingTekst = data.tekster[feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1)];
                     element.closest('.form-linje').find('.melding').text(feilmeldingTekst);
                 }
+
                 function settFraTilDatoFeilmeldingstekst(feilNokkel) {
                     var feilmeldingTekst = data.tekster[feilNokkel];
                     var tilElement = element.closest('.varighet').find('.til');
