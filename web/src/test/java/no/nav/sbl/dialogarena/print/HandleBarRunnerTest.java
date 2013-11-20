@@ -38,7 +38,7 @@ public class HandleBarRunnerTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void runMeWithJson() throws IOException {
+    public void createHashAndApplyTemplate() throws IOException {
         String json = getWebSoknadJson();
         Map<String, Object> result = new ObjectMapper().readValue(json, HashMap.class);
         String[] s = {"opprettetDato", "brukerBehandlingId", "status", "aktoerId", "gosysId", "delstegStatus", "fakta", "soknadId"};
