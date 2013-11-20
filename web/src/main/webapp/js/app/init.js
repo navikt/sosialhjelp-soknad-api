@@ -43,7 +43,6 @@ angular.module('sendsoknad')
         );
         promiseArray.push(tekster.$promise);
 
-
         var alder = $resource('/sendsoknad/rest/soknad/personalder').get(
             function(result) { // Success
                 data.alder = result;
