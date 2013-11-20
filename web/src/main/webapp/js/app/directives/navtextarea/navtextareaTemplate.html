@@ -4,11 +4,10 @@
         
         <textarea data-ng-model='model' name="tmpName" error-messages="'{{ feilmelding }}'" data-ng-trim='false' validate-textarea/>
 
-
         <p data-ng-show="fokus || feil">
             <span class="tellertekst" data-ng-class="{negativtekstteller: counter < 0 }"> {{counter}} </span>
-            <span cmstekster="{{tellertekst}}"/>
+            <span cmstekster="fritekst.tellertekst"/>
         </p>
     </label>
-    <p class="melding"><span cmstekster="fritekst.feilmelding"/><span> {{counter*-1}} tegn </span></p>
+    <p class="melding">{{counter*-1}} <span cmstekster="fritekst.feilmelding"></span></p>
 </div>
