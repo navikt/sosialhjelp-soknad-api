@@ -42,6 +42,7 @@
         <dialogarena.dokumentinnsending.version>2.0.1</dialogarena.dokumentinnsending.version>
 		<ojdbc.version>11.2.0.3</ojdbc.version>
         <flying.saucer.version>9.0.3</flying.saucer.version>
+        <handlebars.version>1.1.2</handlebars.version>
     </properties>
 
     <dependencyManagement>
@@ -219,6 +220,16 @@
                 <groupId>org.xhtmlrenderer</groupId>
                 <artifactId>flying-saucer-pdf</artifactId>
                 <version>${flying.saucer.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jknack</groupId>
+                <artifactId>handlebars</artifactId>
+                <version>${handlebars.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.1.4</version>
             </dependency>
             <dependency>
                 <groupId>com.lowagie</groupId>
