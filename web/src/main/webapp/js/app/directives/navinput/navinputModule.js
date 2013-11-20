@@ -52,7 +52,7 @@ angular.module('nav.input', ['nav.cmstekster'])
 //                fiksNavn(element, scope.inputname, tmpElementName);
 
                 scope.hvisHarHjelpetekst = function() {
-                    return scope.hjelpetekst != undefined;
+                    return scope.tittel && scope.tekst;
                 }
 
                 scope.hvisIRedigeringsmodus = function () {
