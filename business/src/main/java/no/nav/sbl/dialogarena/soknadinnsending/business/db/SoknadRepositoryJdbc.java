@@ -1,21 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
-import java.io.InputStream;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.sql.DataSource;
-
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,10 +17,19 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.sql.DataSource;
+import java.io.InputStream;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
 @Named("soknadInnsendingRepository")
 //marker alle metoder som transactional. Alle operasjoner vil skje i en transactional write context. Read metoder kan overstyre dette om det trengs.
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
-public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadRepository{
+public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(SoknadRepositoryJdbc.class);
     private DefaultLobHandler lobHandler;
@@ -101,7 +99,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     }
 
     private int utfyllingStartet(long soknadId) {
-        return getJdbcTemplate().update("update soknad set DELSTEGSTATUS = ? where soknad_id = ?", DelstegStatus.UTFYLLING.name(), soknadId);   
+        return getJdbcTemplate().update("update soknad set DELSTEGSTATUS = ? where soknad_id = ?", DelstegStatus.UTFYLLING.name(), soknadId);
     }
 
     @Override
@@ -184,8 +182,10 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     private final RowMapper<Faktum> rowMapper = new RowMapper<Faktum>() {
         public Faktum mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-            return new Faktum(rs.getLong("soknad_id"), rs.getString("key"),
+            Faktum faktum = new Faktum(rs.getLong("soknad_id"), rs.getString("key"),
                     rs.getString("value"), rs.getString("type"));
+            faktum.setId(rs.getLong("soknadbrukerdata_id"));
+            return faktum;
         }
     };
 }

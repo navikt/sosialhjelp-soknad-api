@@ -43,10 +43,10 @@
                                 <label for="{{$index}}sendInnFraPcRadio" data-cmstekster="dagpenger.opplasting.vedlegg.lastopp"></label>
 
                                 <div class="valgbokser">
-                                    <a class="valgboks-mobil" href="#/opplasting/{{ soknadData.soknadId }}/{{v.faktum.id}}" data-ng-if="v.valg == 'sendinn'">
+                                    <a class="valgboks-mobil" href="#/opplasting/{{ soknadData.soknadId }}/{{v.data.id}}" data-ng-if="v.valg == 'sendinn'">
                                         <span data-cmstekster="dagpenger.opplasting.vedlegg.lastopp.mobil"></span>
                                     </a>
-                                    <a class="valgboks-pc" href="#/opplasting/{{ soknadData.soknadId }}/{{v.faktum.id}}" data-ng-if="v.valg == 'sendinn'">
+                                    <a class="valgboks-pc" href="#/opplasting/{{ soknadData.soknadId }}/{{v.data.id}}" data-ng-if="v.valg == 'sendinn'">
                                         <span data-cmstekster="dagpenger.opplasting.vedlegg.lastopp.dennepc"></span>
                                     </a>
                                 </div>
