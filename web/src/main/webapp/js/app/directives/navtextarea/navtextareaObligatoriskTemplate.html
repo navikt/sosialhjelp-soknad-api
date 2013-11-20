@@ -3,12 +3,11 @@
         <p cmstekster="{{sporsmal}}"/>
         
         <textarea data-ng-model='model' name="tmpName" error-messages="'{{ feilmelding }}'" data-ng-trim='false' validate-textarea blur-validate required/>
-        <span class="melding"/>
 
         <p data-ng-show="fokus || feil">
             <span class="tellertekst" data-ng-class="{negativtekstteller: counter < 0 }"> {{counter}} </span>
             <span cmstekster="fritekst.tellertekst"/>
         </p>
     </label>
-    <p class="melding"><span cmstekster="fritekst.feilmelding"/></span></p>
+    <p class="melding">{{counter*-1}} <span class="melding inline" cmstekster="fritekst.feilmelding"></span></p>
 </div>
