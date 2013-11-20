@@ -1,4 +1,7 @@
 <div class="hjelpetekst animate" data-ng-show="vishjelp">
-    <h3 class="hjelpetekst-tittel-strek">{{ tittel }}</h3>
+    <div>
+        <h3 class="hjelpetekst-tittel-strek">{{ tittel }}</h3>
+        <a class="lukk" href="" data-cmstekster="lukk" data-ng-click="lukk()"></a>
+    </div>
     <p class="mini">{{ tekst }}</p>
 </div>

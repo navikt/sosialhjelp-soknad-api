@@ -490,7 +490,7 @@ form, [ng-form], [data-ng-form] {
 
 .hjelpetekst {
     background-color: #3e3832;
-    padding: 15px;
+    padding: 20px;
     margin-bottom: 20px;
     position: relative;
 
@@ -506,9 +506,24 @@ form, [ng-form], [data-ng-form] {
         top: 100%;
     }
 
-    h3 {
-        color: #ccc !important;
+    div {
         text-align: center;
+        max-width: 80%;
+        margin: 0 auto;
+
+        h3 {
+            display: inline-block;
+            color: #ccc !important;
+            text-align: center;
+        }
+        .lukk {
+            position: absolute;
+            top: 23px;
+            right: 20px;
+            color: #00a9e0;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
     }
 
     p {
@@ -587,4 +602,5 @@ form, [ng-form], [data-ng-form] {
         border-bottom: none;
         color: #3875d7 !important;
     }
+
 }
