@@ -1,5 +1,9 @@
 angular.module('nav.reellarbeidssoker',[])
-    .controller('ReellarbeidssokerCtrl', ['$scope', function ($scope) {
+    .controller('ReellarbeidssokerCtrl', ['$scope','data', function ($scope, data) {
+        $scope.alder = data.alder.alder;
+        //For testing av alder:
+        //$scope.alder =59;
+
         $scope.navigering = {nesteside: 'arbeidsforhold'};
         $scope.sidedata = {navn: 'reellarbeidssoker'};
         
@@ -8,7 +12,7 @@ angular.module('nav.reellarbeidssoker',[])
                             'pendleeneansvarbarnopptil18aar', 'pendleannensituasjon', 'pendleomsorgansvar' ];
 
         $scope.validerReellarbeidssoker = function(form) {
-            if($scope.soknadData.fakta.villigdeltid) {
+            if($scope.soknadData.fakta.villigdeltid && $scope.erUnder60Aar()) {
                 var minstEnDeltidAvhuket = $scope.erCheckboxerAvhuket(deltidnokler);
                 if($scope.soknadData.fakta.villigdeltid.value == 'false') {
                     form.$setValidity("reellarbeidssoker.villigdeltid.false.minstEnAvhuket.feilmelding", minstEnDeltidAvhuket);    
@@ -17,7 +21,7 @@ angular.module('nav.reellarbeidssoker',[])
                 }
             }
 
-            if($scope.soknadData.fakta.villigpendle) {
+            if($scope.soknadData.fakta.villigpendle && $scope.erUnder60Aar()) {
                 var minstEnPendleAvhuket = $scope.erCheckboxerAvhuket(pendlenokler);
                 if($scope.soknadData.fakta.villigpendle.value == 'false') {
                     form.$setValidity("reellarbeidssoker.villigdpendle.false.minstEnAvhuket.feilmelding", minstEnPendleAvhuket);    
@@ -43,5 +47,13 @@ angular.module('nav.reellarbeidssoker',[])
                 }
             }
             return minstEnAvhuket;
+        }
+
+        $scope.erUnder60Aar = function() {
+            return $scope.alder < 60;
+        }
+
+        $scope.erOver59Aar = function() {
+            return $scope.alder > 59;
         }
     }]);
