@@ -6,7 +6,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         $scope.options = {
             maxFileSize: 10000000,
             acceptFileTypes: /(\.|\/)(jpg|png|pdf|jpeg)$/i,
-            url: "/sendsoknad/rest/soknad/" + data.soknadId + "/vedlegg?faktumId=1"
+            url: "/sendsoknad/rest/soknad/" + data.soknadId + "/vedlegg?faktumId=" + $scope.data.faktumId
         };
         $scope.lastopp = function () {
             submit();

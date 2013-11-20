@@ -9,6 +9,7 @@ angular.module('nav.vedlegg.controller', [])
 
         angular.forEach($scope.vedlegg, function(v){
             v.valg = 'sendinn';
+            v.data = data.soknad.fakta[v.faktum.id];
         });
         $scope.soknad = data.soknad;
         $scope.erFaktumLikKriterie = function (vedlegg) {
