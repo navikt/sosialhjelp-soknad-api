@@ -6,6 +6,6 @@
         <span data-ng-if="inneholderIkkeSkrevetTekst()" class="melding mini" data-cmstekster="{{ ugyldigFeilmelding }}"/>
     </label>
     <ul data-ng-show="skalViseListen()">
-        <li data-bindonce data-ng-repeat="option in options" data-ng-show="filter(option)" data-ng-class="{harFokus: fokusHack($last)}" data-ng-click="selectionChanged($event)" data-ng-mouseover="mouseover($event)" data-value="{{ option.value }}" data-ng-bind-html="option.displayText"/>
+        <li data-bindonce data-ng-repeat="option in options" data-ng-show="filter(option)" data-ng-class="{harFokus: fokusHack($last)}" data-ng-click="selectionChanged($event)" data-value="{{ option.value }}" data-ng-bind-html="option.displayText"/>
     </ul>
 </div>
