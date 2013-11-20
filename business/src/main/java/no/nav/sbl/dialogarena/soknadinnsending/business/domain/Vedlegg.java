@@ -92,7 +92,7 @@ public class Vedlegg {
     }
 
 	private boolean tomStorrelse(Vedlegg vedlegg) {
-		if(storrelse != null) {
+		if (storrelse != null) {
 			return !storrelse.equals(vedlegg.storrelse);
 		} 
 		return vedlegg.storrelse != null;
@@ -113,14 +113,14 @@ public class Vedlegg {
 	}
 
 	private boolean tomId(Vedlegg vedlegg) {
-		if(id != null) {
+		if (id != null) {
 			return !id.equals(vedlegg.id);
 		}
 		return vedlegg.id != null;
 	}
 
 	private boolean tomtFaktum(Vedlegg vedlegg) {
-		if(faktum != null) {
+		if (faktum != null) {
 			return !faktum.equals(vedlegg.faktum);
 		}
 		return vedlegg.faktum != null;

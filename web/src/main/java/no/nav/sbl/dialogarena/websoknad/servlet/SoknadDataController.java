@@ -5,6 +5,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.websoknad.service.HenvendelseConnector;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
@@ -28,19 +31,21 @@ public class SoknadDataController {
 
     @Inject
     private SoknadService soknadService;
+        
+    @Inject
+    @Named("henvendelseConnector")
+    private HenvendelseConnector henvendelseConnector;
 
     @RequestMapping(value = "/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public WebSoknad hentSoknadData(@PathVariable Long soknadId) {
-        WebSoknad soknad = soknadService.hentSoknad(soknadId);
-        return soknad;
+        return soknadService.hentSoknad(soknadId);
     }
 
     @RequestMapping(value = "/options/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public SoknadStruktur hentSoknadStruktur(@PathVariable Long soknadId) {
-        WebSoknad webSoknad = soknadService.hentSoknad(soknadId);
-        String type = webSoknad.getGosysId() + ".xml";
+        String type = soknadService.hentSoknad(soknadId).getGosysId() + ".xml";
         try {
             Unmarshaller unmarshaller = newInstance(SoknadStruktur.class).createUnmarshaller();
             return (SoknadStruktur) unmarshaller.unmarshal(SoknadStruktur.class.getResourceAsStream(format("/soknader/%s", type)));
@@ -66,7 +71,7 @@ public class SoknadDataController {
     @RequestMapping(value = "/opprett/{soknadType}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody()
     public WebSoknadId opprettSoknad(@PathVariable String soknadType) {
-
+        //String behandlingsId = henvendelseConnector.startSoknad(SubjectHandler.getSubjectHandler().getUid(), null);
         Long id = soknadService.startSoknad(soknadType);
         WebSoknadId soknadId = new WebSoknadId();
         soknadId.setId(id);
@@ -77,6 +82,7 @@ public class SoknadDataController {
     @ResponseBody()
     public void slettSoknad(@PathVariable Long soknadId) {
         soknadService.avbrytSoknad(soknadId);
+        henvendelseConnector.avbrytSoknad("12412412");
     }
 
 

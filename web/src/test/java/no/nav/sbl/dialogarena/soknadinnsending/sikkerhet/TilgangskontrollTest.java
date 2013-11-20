@@ -4,7 +4,7 @@ import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.core.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.aktor.AktorIdService;
-import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
+import no.nav.sbl.dialogarena.websoknad.service.HenvendelseConnector;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -21,7 +21,7 @@ public class TilgangskontrollTest {
     @Mock
     private AktorIdService aktorIdService;
     @Mock
-    private WebSoknadService soknadService;
+    private HenvendelseConnector soknadService;
 
     @Test
     public void skalGiTilgangForBruker() {
