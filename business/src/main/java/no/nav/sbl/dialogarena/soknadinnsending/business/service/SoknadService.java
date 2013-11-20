@@ -6,12 +6,11 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.awt.Dimension;
+import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -19,12 +18,9 @@ import java.util.UUID;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.pdf.ImageScaler.ScaleMode.SCALE_TO_FIT_INSIDE_BOX;
 import static org.apache.commons.io.IOUtils.toByteArray;
-import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class SoknadService implements SendSoknadService {
-
-    private static final Logger logger = getLogger(SoknadService.class);
 
     private static final String BRUKERREGISTRERT_FAKTUM = "BRUKERREGISTRERT";
     private static final String SYSTEMREGISTRERT_FAKTUM = "SYSTEMREGISTRERT";
@@ -71,19 +67,8 @@ public class SoknadService implements SendSoknadService {
 
 
     public Long startSoknad(String navSoknadId) {
-        logger.debug("Starter ny søknad");
-        //TODO: Sende et signal til Henvendelse om at søknaden er startet
         String behandlingsId = UUID.randomUUID().toString();
-        logger.debug("Start søknad");
 
-        //TODO-KJ: Denne operasjonen er ikke klar enda.Vil kommenteres inn når den er
-//        try {
-//            behandlingsId = sendSoknadService.startBehandling(navSoknadId);
-//        } catch (SOAPFaultException e) {
-//            logger.error("Feil ved oppretting av søknad med ID", navSoknadId, e);
-//            throw new ApplicationException("Kunne ikke opprette ny søknad", e);
-//        }
-//
         WebSoknad soknad = WebSoknad.startSoknad().
                 medBehandlingId(behandlingsId).
                 medGosysId(navSoknadId).
