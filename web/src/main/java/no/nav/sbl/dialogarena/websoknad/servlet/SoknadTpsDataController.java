@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.person.Adresse;
 import no.nav.sbl.dialogarena.person.Person;
 import no.nav.sbl.dialogarena.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,6 +53,18 @@ public class SoknadTpsDataController {
         hashMap.put("result", mockLand);
     	return hashMap;
     }
+    
+    @RequestMapping(value = "/personalder", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody()
+    public Map<String, Integer> getAlder() {
+    	Map<String, Integer> result = new HashMap<String, Integer>();
+    	String uid = getSubjectHandler().getUid();
+    	PersonAlder personAlder = new PersonAlder(uid);
+    	
+    	result.put("alder", personAlder.getAlder());	
+    	return result;
+    }
+    
 	
     @RequestMapping(value = "/{soknadId}/personalia", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
