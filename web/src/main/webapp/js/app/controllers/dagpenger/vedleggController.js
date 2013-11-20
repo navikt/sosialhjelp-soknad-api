@@ -6,6 +6,7 @@ angular.module('nav.vedlegg.controller', [])
         $scope.sidedata = {navn: 'vedlegg'};
 
         $scope.vedlegg = data.soknadOppsett.vedlegg;
+
         angular.forEach($scope.vedlegg, function(v){
             v.valg = 'sendinn';
         });

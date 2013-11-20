@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import no.nav.sbl.dialogarena.soknadinnsending.VedleggOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.VedleggOpplastingResultat;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
@@ -38,7 +39,7 @@ public class VedleggController {
 
     @RequestMapping(value = "", params = "faktumId", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
-    public List<VedleggOpplastingResultat> lastOppDokumentSoknad(@PathVariable Long soknadId, @RequestParam Long faktumId, @RequestParam("files[]") List<MultipartFile> files) {
+    public VedleggOpplasting lastOppDokumentSoknad(@PathVariable Long soknadId, @RequestParam Long faktumId, @RequestParam("files[]") List<MultipartFile> files) {
         List<VedleggOpplastingResultat> res = new ArrayList<>();
         for (MultipartFile file : files) {
             Vedlegg vedlegg = new Vedlegg();
@@ -60,12 +61,20 @@ public class VedleggController {
             ut.setDeleteUrl(String.format(BASE_URL, soknadId, id, "delete"));
             res.add(ut);
         }
-        return res;
+        VedleggOpplasting vo = new VedleggOpplasting();
+        vo.setFiles(res);
+        return vo;
     }
 
     @RequestMapping(value = "/{vedleggId}/delete", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
+    @ResponseBody
     public void slettVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
+        try{
         soknadService.slettVedlegg(soknadId, vedleggId);
+        }catch(Exception ex){
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 
     @RequestMapping(value = "/{vedleggId}/thumbnail", method = RequestMethod.GET, produces = IMAGE_PNG_VALUE)
