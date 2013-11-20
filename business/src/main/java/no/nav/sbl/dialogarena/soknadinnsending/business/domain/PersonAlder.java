@@ -30,7 +30,7 @@ public class PersonAlder implements Serializable{
 	}
 
     private String hentFodselsdatoFraFnr(String personnummer){
-        Fodselsnummer fnr =  getFodselsnummer(personnummer);
+        Fodselsnummer fnr = getFodselsnummer(personnummer);
         return fnr.getBirthYear() + "-" + fnr.getMonth() + "-01";
     }
 

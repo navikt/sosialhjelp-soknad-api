@@ -1,21 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
-import java.io.InputStream;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.sql.DataSource;
-
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +15,24 @@ import org.springframework.jdbc.support.lob.LobCreator;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.sql.DataSource;
+import java.io.InputStream;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.IdGenerator.lagBehandlingsId;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.OPPRETTET;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.UTFYLLING;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.FERDIG;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad.startSoknad;
 
 @Named("soknadInnsendingRepository")
 //marker alle metoder som transactional. Alle operasjoner vil skje i en transactional write context. Read metoder kan overstyre dette om det trengs.
@@ -45,21 +51,20 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         super.setDataSource(ds);
     }
 
-
     @Override
     public String opprettBehandling() {
-        Long databasenokkel = getJdbcTemplate().queryForObject(SQLUtils.selectNextSequenceValue("BRUKERBEH_ID_SEQ"), Long.class);
-        String behandlingsId = IdGenerator.lagBehandlingsId(databasenokkel);
+        Long databasenokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("BRUKERBEH_ID_SEQ"), Long.class);
+        String behandlingsId = lagBehandlingsId(databasenokkel);
         getJdbcTemplate().update("insert into henvendelse (henvendelse_id, behandlingsid, type, opprettetdato) values (?, ?, ?, sysdate)", databasenokkel, behandlingsId, "SOKNADINNSENDING");
         return behandlingsId;
     }
 
     @Override
     public Long opprettSoknad(WebSoknad soknad) {
-        Long databasenokkel = getJdbcTemplate().queryForObject(SQLUtils.selectNextSequenceValue("SOKNAD_ID_SEQ"), Long.class);
+        Long databasenokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_ID_SEQ"), Long.class);
         getJdbcTemplate().update("insert into soknad (soknad_id, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status, delstegstatus) values (?,?,?,?,?,?,?)",
                 databasenokkel, soknad.getBrukerBehandlingId(), soknad.getGosysId(), soknad.getAktoerId(),
-                soknad.getOpprettetDato().toDate(), SoknadInnsendingStatus.UNDER_ARBEID.name(), DelstegStatus.OPPRETTET.name());
+                soknad.getOpprettetDato().toDate(), UNDER_ARBEID.name(), OPPRETTET.name());
         return databasenokkel;
     }
 
@@ -92,7 +97,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
 
     @Override
     public void lagreFaktum(long soknadId, Faktum faktum) {
-        Long dbNokkel = getJdbcTemplate().queryForObject(SQLUtils.selectNextSequenceValue("SOKNAD_BRUKER_DATA_ID_SEQ"), Long.class);
+        Long dbNokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_BRUKER_DATA_ID_SEQ"), Long.class);
         if (oppdaterBrukerData(soknadId, faktum) == 0) {
             getJdbcTemplate().update("insert into soknadbrukerdata (soknadbrukerdata_id, soknad_id, key, value, type, sistendret) values (?, ?, ?, ?, ?, sysdate)",
                     dbNokkel, soknadId, faktum.getKey(), faktum.getValue(), faktum.getType());
@@ -101,7 +106,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     }
 
     private int utfyllingStartet(long soknadId) {
-        return getJdbcTemplate().update("update soknad set DELSTEGSTATUS = ? where soknad_id = ?", DelstegStatus.UTFYLLING.name(), soknadId);   
+        return getJdbcTemplate().update("update soknad set DELSTEGSTATUS = ? where soknad_id = ?", UTFYLLING.name(), soknadId);
     }
 
     @Override
@@ -112,7 +117,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     @Override
     public void avslutt(WebSoknad soknad) {
         LOG.debug("Setter status til søknad med id {} til ferdig", soknad.getSoknadId());
-        String status = SoknadInnsendingStatus.FERDIG.name();
+        String status = FERDIG.name();
         getJdbcTemplate().update("update soknad set status = ? where soknad_id = ?", status, soknad.getSoknadId());
     }
 
@@ -120,7 +125,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     @Override
     public void avbryt(Long soknad) {
         LOG.debug("Setter status til søknad med id {} til avbrutt", soknad);
-        String status = SoknadInnsendingStatus.AVBRUTT_AV_BRUKER.name();
+        String status = AVBRUTT_AV_BRUKER.name();
         getJdbcTemplate().update("update soknad set status = ? where soknad_id = ?", status, soknad);
         getJdbcTemplate().update("delete from vedlegg where soknad_id = ?", soknad);
         getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ?", soknad);
@@ -135,7 +140,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
 
     @Override
     public Long lagreVedlegg(final Vedlegg vedlegg) {
-        final Long databasenokkel = getJdbcTemplate().queryForObject(SQLUtils.selectNextSequenceValue("VEDLEGG_ID_SEQ"), Long.class);
+        final Long databasenokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("VEDLEGG_ID_SEQ"), Long.class);
         getJdbcTemplate().execute("insert into vedlegg(vedlegg_id, soknad_id,faktum, navn, storrelse, data, opprettetdato) values (?, ?, ?, ?, ?, ?, sysdate)",
 
                 new AbstractLobCreatingPreparedStatementCallback(lobHandler) {
@@ -171,7 +176,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
 
     private static class SoknadMapper implements RowMapper<WebSoknad> {
         public WebSoknad mapRow(ResultSet rs, int row) throws SQLException {
-            return WebSoknad.startSoknad()
+            return startSoknad()
                     .medId(rs.getLong("soknad_id"))
                     .medBehandlingId(rs.getString("brukerbehandlingid"))
                     .medGosysId(rs.getString("navsoknadid"))

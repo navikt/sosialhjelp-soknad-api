@@ -136,7 +136,7 @@ public class WebSoknad implements Serializable {
 	}
 
 	public WebSoknad medBrukerData(List<Faktum> hentAlleBrukerData) {
-		fakta = new HashMap<String, Faktum>();
+		fakta = new HashMap<>();
 		for (Faktum faktum : hentAlleBrukerData) {
 			fakta.put(faktum.getKey(), faktum);
 		}
