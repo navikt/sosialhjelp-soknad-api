@@ -13,6 +13,7 @@ import java.util.Map;
 public class HandleBarRunner {
     private static final Logger LOG = LoggerFactory.getLogger(HandleBarRunner.class);
 
+    @SuppressWarnings("unchecked")
     public static String getHTML(String jsonSource, String html) {
         String out = "";
         try {
@@ -28,6 +29,7 @@ public class HandleBarRunner {
         return new Handlebars().compileInline(input).apply(hash);
     }
 
+    @SuppressWarnings("unchecked")
     public static String applyTemplate(String jsonSource, String htmlFile) {
         String out = "";
         try {

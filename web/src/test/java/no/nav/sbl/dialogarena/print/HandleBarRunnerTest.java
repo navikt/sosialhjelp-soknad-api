@@ -36,6 +36,7 @@ public class HandleBarRunnerTest {
         assertThat(appliedToString, is(equalTo("Hello " + superDev + "!")));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void runMeWithJson() throws IOException {
         String json = getWebSoknadJson();
