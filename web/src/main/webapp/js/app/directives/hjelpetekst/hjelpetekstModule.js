@@ -10,6 +10,11 @@ angular.module('nav.hjelpetekst', [])
             templateUrl: '../js/app/directives/hjelpetekst/hjelpetekstTemplate.html',
             link: function(scope, element) {
                 element.hide();
+
+                scope.lukk = function() {
+                    scope.vishjelp = false;
+                    element.parent().find('.definerer-hjelpetekst.open, [data-definerer-hjelpetekst].open').removeClass('open');
+                }
             }
         }
     }])
@@ -30,14 +35,17 @@ angular.module('nav.hjelpetekst', [])
 
                 element.bind('click', function() {
                     if (element.hasClass('open')) {
+                        console.log(1);
                         scope.visHjelpetekst = false;
                         element.removeClass('open');
                     } else if (scope.visHjelpetekst) {
+                        console.log(2);
                         scope.tittel = tittel;
                         scope.tekst = tekst;
                         element.addClass('open');
                         element.siblings('.definerer-hjelpetekst.open').removeClass('open');
                     } else {
+                        console.log(3);
                         scope.tittel = tittel;
                         scope.tekst = tekst;
                         element.addClass('open');
