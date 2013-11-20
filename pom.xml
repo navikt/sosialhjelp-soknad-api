@@ -211,11 +211,6 @@
             </dependency>
             <dependency>
                 <groupId>org.xhtmlrenderer</groupId>
-                <artifactId>flying-saucer-core</artifactId>
-                <version>${flying.saucer.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.xhtmlrenderer</groupId>
                 <artifactId>flying-saucer-pdf</artifactId>
                 <version>${flying.saucer.version}</version>
             </dependency>
