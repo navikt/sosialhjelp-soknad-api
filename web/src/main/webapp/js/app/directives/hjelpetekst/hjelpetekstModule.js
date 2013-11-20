@@ -13,32 +13,33 @@ angular.module('nav.hjelpetekst', [])
             }
         }
     }])
-    .directive('definererHjelpetekst', [function () {
+    .directive('definererHjelpetekst', ['data', function (data) {
         return {
             restrict: 'AC',
             scope: false,
             link: function(scope, element, attrs) {
+                var tittelNokkel = attrs['nokkel'] + ".hjelpetekst.tittel";
+                var tekstNokkel = attrs['nokkel'] + ".hjelpetekst.tekst";
+
+                var tittel = data.tekster[tittelNokkel];
+                var tekst = data.tekster[tekstNokkel];
+
                 scope.visHjelpetekst = false;
-
-                scope.tittel = attrs['tittel'];
-                scope.tekst = attrs['tekst'];
-
-                if (scope.tittel === undefined) {
-                    scope.tittel = "Hjælp";
-                }
-
-                if (scope.tekst === undefined) {
-                    scope.tekst = "Hjelp finner du hos nav.no";
-                }
+                scope.tittel = tittel;
+                scope.tekst = tekst;
 
                 element.bind('click', function() {
                     if (element.hasClass('open')) {
                         scope.visHjelpetekst = false;
                         element.removeClass('open');
                     } else if (scope.visHjelpetekst) {
+                        scope.tittel = tittel;
+                        scope.tekst = tekst;
                         element.addClass('open');
                         element.siblings('.definerer-hjelpetekst.open').removeClass('open');
                     } else {
+                        scope.tittel = tittel;
+                        scope.tekst = tekst;
                         element.addClass('open');
                         scope.visHjelpetekst = true;
                     }

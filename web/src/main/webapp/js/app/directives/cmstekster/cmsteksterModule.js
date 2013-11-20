@@ -6,6 +6,7 @@ angular.module('nav.cmstekster',['app.services'])
             link: function (scope, element, attrs) {
                 var nokkel = attrs['cmstekster'];
                 var cmstekst = data.tekster[nokkel];
+                var hjelpetekstTeller = 0;
 
                 if (cmstekst === undefined) {
                     return;
@@ -15,23 +16,30 @@ angular.module('nav.cmstekster',['app.services'])
 
                 if (element.is('input')) {
                     element.attr('value', cmstekst);
-                } else if (inneholderHjelpetekst > -1) {
+                } else if (inneholderHjelpetekst == -1) {
+                    element.text(cmstekst);
+
+                } else {
                     var tekstElement = $('<span/>');
                     var tekst = cmstekst;
+
                     while(tekst != -1) {
                         tekst = finnHjelpetekster(tekst, tekstElement);
                     }
                     element.append(tekstElement);
-                } else {
-                    element.text(cmstekst);
                 }
 
                 function finnHjelpetekster(tekst, tekstElement) {
                     var startIndex = tekst.indexOf('<span class="definerer-hjelpetekst">');
 
                     if (startIndex > -1) {
-                        var sluttIndex = tekst.indexOf('</span>') + 7;
+                        var sluttIndex = tekst.indexOf('</span>') + '</span>'.length;
                         var hjelpetekst = angular.element(tekst.substring(startIndex, sluttIndex));
+
+                        // For å finne rett cms-nøkkel til hjelpeteksten
+                        hjelpetekst.attr('data-nokkel', nokkel + "." + hjelpetekstTeller);
+                        hjelpetekstTeller++;
+
                         var startTekst = $('<span/>').text(tekst.substring(0, startIndex));
                         var sluttTekst = tekst.substring(sluttIndex, tekst.length);
 
