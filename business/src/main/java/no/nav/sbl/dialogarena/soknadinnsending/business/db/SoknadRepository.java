@@ -38,4 +38,7 @@ public interface SoknadRepository {
     List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktum);
 
     InputStream hentVedlegg(Long soknadI, Long vedleggId);
+
+    void knyttVedleggTilFaktum(Long soknadId, Long faktumId, Long opplastetDokument);
+
 }

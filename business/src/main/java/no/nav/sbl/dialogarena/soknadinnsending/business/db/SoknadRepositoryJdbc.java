@@ -159,6 +159,11 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     }
 
     @Override
+    public void knyttVedleggTilFaktum(Long soknadId, Long faktumId, Long opplastetDokument) {
+        getJdbcTemplate().update("update soknadbrukerdata set vedlegg_id = ? where soknadId = ? and soknadbrukerdata_id = ?", opplastetDokument, soknadId, faktumId);
+    }
+
+    @Override
     public void slettVedlegg(Long soknadId, Long vedleggId) {
         getJdbcTemplate().update("Delete from vedlegg where soknad_id=? and vedlegg_id=?", soknadId, vedleggId);
     }

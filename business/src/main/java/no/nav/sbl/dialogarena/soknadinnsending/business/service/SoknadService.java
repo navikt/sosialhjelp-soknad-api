@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.detect.IsPdf;
 import no.nav.sbl.dialogarena.pdf.ConvertToPng;
 import no.nav.sbl.dialogarena.pdf.ImageScaler;
 import no.nav.sbl.dialogarena.pdf.ImageToPdf;
+import no.nav.sbl.dialogarena.pdf.PdfMerger;
 import no.nav.sbl.dialogarena.pdf.PdfWatermarker;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -23,6 +24,7 @@ import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -138,6 +140,25 @@ public class SoknadService implements SendSoknadService {
     }
 
     public Long genererVedleggFaktum(Long soknadId, Long faktumId) {
-        return null;
+        List<Vedlegg> vedleggs = repository.hentVedleggForFaktum(soknadId, faktumId);
+        List<byte[]> bytes = new ArrayList();
+        for (Vedlegg vedlegg : vedleggs) {
+            InputStream inputStream = repository.hentVedlegg(soknadId, vedlegg.getId());
+            try {
+                bytes.add(IOUtils.toByteArray(inputStream));
+            } catch (IOException e) {
+                throw new RuntimeException("Kunne ikke merge filer", e);
+            }
+
+        }
+        byte[] doc = new PdfMerger().transform(bytes);
+        Vedlegg vedlegg = new Vedlegg();
+        vedlegg.setNavn("faktum.pdf");
+        vedlegg.setSoknadId(soknadId);
+        vedlegg.setFaktum(faktumId);
+        vedlegg.setStorrelse(doc.length);
+        Long opplastetDokument = repository.lagreVedlegg(vedlegg, doc);
+        repository.knyttVedleggTilFaktum(soknadId, faktumId, opplastetDokument);
+        return opplastetDokument;
     }
 }
