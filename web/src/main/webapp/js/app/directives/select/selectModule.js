@@ -32,7 +32,6 @@ angular.module('nav.select', ['ngSanitize'])
                     scope.ugyldigFeilmelding = 'select.ugyldig.feilmelding';
                 }
 
-                var sisteNavigasjonMedPiltaster = new Date().getTime();
                 var input = angular.element(element.find('input'));
 
                 $document.bind('click', function() {
@@ -40,40 +39,36 @@ angular.module('nav.select', ['ngSanitize'])
                     scope.$apply();
                 });
 
+                scope.escape = function() {
+                    avbryt();
+                }
+
                 scope.klikk = function(event) {
                     event.stopPropagation();
                 }
 
-                scope.selectionChanged = function(event) {
+                scope.valgtElement = function(event) {
                     velgListeElement(angular.element(event.target));
                     event.stopPropagation();
                 }
 
                 scope.enter = function() {
-                    if (scope.fokusElement) {
-                        velgListeElement(scope.fokusElement);
-                    }
-
-                    var fokuserbareElementer = $('input, a, select, button, textarea').filter(':visible');
-                    fokuserbareElementer.eq(fokuserbareElementer.index(input) + 1).focus();
+                    velgListeElement(scope.fokusElement);
+                    settFokusTilNesteElement();
                 }
 
-                scope.tab = function() {
-                    if (scope.fokusElement) {
-                        velgListeElement(scope.fokusElement);
-                    }
-                }
-
-                scope.escape = function() {
-                    avbryt();
+                scope.tab = function(event) {
+                    velgListeElement(scope.fokusElement);
+                    settFokusTilNesteElement();
+                    event.preventDefault();
                 }
 
                 scope.navigateUp = function() {
-                    scrollTil(scope.fokusElement.prev());
+                    scrollTil(scope.fokusElement.prevAll(':visible').first());
                 }
 
                 scope.navigateDown = function() {
-                    scrollTil(scope.fokusElement.next());
+                    scrollTil(scope.fokusElement.nextAll(':visible').first());
                 }
 
                 scope.$watch('inputVerdi', function() {
@@ -81,33 +76,24 @@ angular.module('nav.select', ['ngSanitize'])
                         scope.inputVerdi = scope.inputVerdi.trim();
                     }
                     scope.soketekst = scope.inputVerdi;
-                });
 
-                scope.keypress = function() {
-                    // Inputverdi er ikke oppdatert når vi kommer hit, så åpner ved minst 2 tegn.
-                    if (scope.inputVerdi && scope.inputVerdi.length > 0) {
+                    if (skalViseListeOverValg()) {
                         apne();
+                    } else {
+                        lukk();
                     }
-                }
+
+                    function skalViseListeOverValg() {
+                        return input.is(':focus') && scope.inputVerdi && scope.inputVerdi.length > 1;
+                    }
+                });
 
                 scope.skalViseListen = function() {
                     return hentListeLengde() > 0 && scope.listeErApen;
                 }
 
-                /*
-                 * TODO: Fiks stygg hack
-                 * Dersom ett element har fokus, men blir filtrert bort, må fokus settes
-                 * til første element. Per nå løst med å bruke ng-class for å kjøre denne metoden...
-                 */
-                scope.fokusHack = function(last) {
-                    if (last && elementMedFokus().length == 0) {
-                        settFokusElement(forsteIListen());
-                    }
-                }
-
-                scope.filter = function(listeElement) {
+                scope.filter = function(listeElement, erSisteElement) {
                     var tekst = listeElement.text;
-
                     if (!scope.soketekst) {
                         listeElement['displayText'] = tekst;
                         return true;
@@ -123,11 +109,20 @@ angular.module('nav.select', ['ngSanitize'])
                         return true;
                     }
 
+                    if (listeElement == scope.fokusElement) {
+                        nullstillFokusElement();
+                    }
+
+                    if (erSisteElement && scope.listeErApen && scope.fokusElement && scope.fokusElement.not(':visible')) {
+                        settFokusElement(forsteIListen());
+                        scrollTilFokusElementDersomDetIkkeVises();
+                    }
+
                     return false;
                 }
 
                 scope.harRequiredFeil = function() {
-                    return scope.ngRequired && !scope.inputVerdi && !scope.listeErApen;
+                    return scope.ngRequired && !scope.inputVerdi && !scope.listeErApen && !input.is(':focus');
                 }
 
                 scope.inneholderIkkeSkrevetTekst = function() {
@@ -138,14 +133,16 @@ angular.module('nav.select', ['ngSanitize'])
                     return scope.harRequiredFeil() || scope.inneholderIkkeSkrevetTekst();
                 }
 
+                function settFokusTilNesteElement() {
+                    var fokuserbareElementer = $('input, a, select, button, textarea').filter(':visible');
+                    fokuserbareElementer.eq(fokuserbareElementer.index(input) + 1).focus();
+                }
+
                 function hentListeLengde() {
                     return element.find('li:not(.ng-hide)').length;
                 }
 
                 function settFokusElement(nyttElement) {
-                    if (scope.fokusElement) {
-                        scope.fokusElement.removeClass('harFokus');
-                    }
                     scope.fokusElement = nyttElement;
                     scope.fokusElement.addClass('harFokus');
 
@@ -155,12 +152,12 @@ angular.module('nav.select', ['ngSanitize'])
                 }
 
                 function velgListeElement(item) {
-                    if (hentListeLengde() == 0) {
-                        scope.inputVerdi = '';
-                        scope.ngModel = '';
-                    } else {
+                    if (scope.fokusElement) {
                         scope.ngModel = item.attr('data-value');
                         scope.inputVerdi = hentValgtTekstBasertPaaValue();
+                    } else {
+                        scope.inputVerdi = '';
+                        scope.ngModel = '';
                     }
 
                     lukk();
@@ -169,8 +166,7 @@ angular.module('nav.select', ['ngSanitize'])
                 function apne() {
                     if (!scope.listeErApen) {
                         scope.listeErApen = true;
-                        scope.soketekst = '';
-                        if (scope.fokusElement.hasClass('ng-hide')) {
+                        if (scope.fokusElement && scope.fokusElement.hasClass('ng-hide')) {
                             settFokusElement(forsteIListen());
                         }
                     }
@@ -184,28 +180,43 @@ angular.module('nav.select', ['ngSanitize'])
                     }
                 }
 
+                function nullstillFokusElement() {
+                    scope.fokusElement.removeClass('harFokus');
+                    scope.fokusElement = undefined;
+                }
+
                 function lukk() {
                     scope.listeErApen = false;
+                    if (scope.fokusElement) {
+                        nullstillFokusElement();
+                    }
+                }
+
+                function scrollTilFokusElementDersomDetIkkeVises() {
+                    var diff = visesHeleElementet(scope.fokusElement, scope.fokusElement.parent());
+                    if (diff != 0) {
+                        scope.fokusElement.parent().scrollToPos(scope.fokusElement.parent().scrollTop() - diff, 0);
+                    }
+                }
+
+                function byttFokusElement(nyttElement) {
+                    if (scope.fokusElement) {
+                        scope.fokusElement.removeClass('harFokus');
+                    }
+                    settFokusElement(nyttElement);
                 }
 
                 function scrollTil(elem) {
                     apne();
+                    console.log(elem.text());
                     if (elem.length > 0) {
-                        settFokusElement(angular.element(elem));
-                        var diff = visesHeleElementet(elem, elem.parent());
-                        if (diff != 0) {
-                            elem.parent().scrollToPos(elem.parent().scrollTop() - diff, 0);
-                            sisteNavigasjonMedPiltaster = new Date().getTime();
-                        }
+                        byttFokusElement(angular.element(elem));
+                        scrollTilFokusElementDersomDetIkkeVises();
                     }
                 }
 
                 function forsteIListen() {
                     return angular.element(element.find('li:not(.ng-hide)').first());
-                }
-
-                function elementMedFokus() {
-                    return angular.element(element.find('li.harFokus:not(.ng-hide)'));
                 }
 
                 function hentValgtTekstBasertPaaValue() {
