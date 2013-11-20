@@ -41,19 +41,12 @@ angular.module('nav.select', ['ngSanitize'])
                 });
 
                 scope.klikk = function(event) {
-                    apne();
                     event.stopPropagation();
                 }
 
                 scope.selectionChanged = function(event) {
                     velgListeElement(angular.element(event.target));
                     event.stopPropagation();
-                }
-
-                scope.mouseover = function(event) {
-                    if (event.timeStamp - sisteNavigasjonMedPiltaster > 300) {
-                        settFokusElement(angular.element(event.target));
-                    }
                 }
 
                 scope.enter = function() {
@@ -91,7 +84,10 @@ angular.module('nav.select', ['ngSanitize'])
                 });
 
                 scope.keypress = function() {
-                    apne();
+                    // Inputverdi er ikke oppdatert når vi kommer hit, så åpner ved minst 2 tegn.
+                    if (scope.inputVerdi && scope.inputVerdi.length > 0) {
+                        apne();
+                    }
                 }
 
                 scope.skalViseListen = function() {
