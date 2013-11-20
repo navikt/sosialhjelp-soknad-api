@@ -40,7 +40,6 @@ public class ApplicationContext {
     private String navigasjonslink;
 
 
-
     //@Value("{$dokumentinnsending.smtpServer.port}")
     private String smtpServerPort = "25";
 

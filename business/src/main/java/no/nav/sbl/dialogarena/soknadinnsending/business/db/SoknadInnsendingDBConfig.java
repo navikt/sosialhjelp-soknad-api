@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 @Configuration
 @ComponentScan
 public class SoknadInnsendingDBConfig {
+
     @Bean
     public DataSource dataSource() {
         JndiDataSourceLookup lookup = new JndiDataSourceLookup();
@@ -22,4 +23,5 @@ public class SoknadInnsendingDBConfig {
     public PlatformTransactionManager transactionManager(){
         return new DataSourceTransactionManager(dataSource());
     }
+
 }
