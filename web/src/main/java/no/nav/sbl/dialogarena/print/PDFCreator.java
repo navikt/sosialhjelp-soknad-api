@@ -12,8 +12,11 @@ import java.net.MalformedURLException;
 
 public class PDFCreator {
 
-
-    public static void createPDF(String html, String pdf, String baseurl)
+    /**
+     * Lag en pdf fra en html-string. Baseurl er adressen til mappen hvor css ligger.
+     * PDFen skrives til en fil (adressen er i outputPdfPath).
+     */
+    public static void lagPdfFil(String html, String baseurl, String outputPdfPath)
             throws IOException, DocumentException {
         OutputStream os = null;
 
@@ -21,7 +24,7 @@ public class PDFCreator {
             baseurl = getBaseUrlString(baseurl);
         }
         try {
-            os = new FileOutputStream(pdf);
+            os = new FileOutputStream(outputPdfPath);
 
             ITextRenderer renderer = new ITextRenderer();
 
@@ -43,28 +46,26 @@ public class PDFCreator {
         }
     }
 
-    public static OutputStream createPDF(String html, String baseurl, OutputStream os)
+    /**
+     * Lag en pdf fra en html-string. Baseurl er adressen til mappen hvor css ligger.
+     * PDFen skrives til OutputStream.
+     */
+    public static OutputStream lagPDFOutputStream(String html, String baseurl, OutputStream output)
             throws IOException, DocumentException {
 
         baseurl = getBaseUrlString(baseurl);
-        try {
-            ITextRenderer renderer = new ITextRenderer();
+        ITextRenderer renderer = new ITextRenderer();
 
-            renderer.setDocumentFromString(html, baseurl);
-            renderer.layout();
-            renderer.createPDF(os);
-        } finally {
-            if (os != null) {
-                try {
-                    os.close();
-                } catch (IOException e) {
-                    // ignore
-                }
-            }
-        }
-        return os;
+        renderer.setDocumentFromString(html, baseurl);
+        renderer.layout();
+        renderer.createPDF(output);
+        return output;
     }
 
+    /**
+     * Gjør om en url i en string til en URL, hvis det er en fil.
+     *
+     */
     private static String getBaseUrlString(String baseurl) throws MalformedURLException {
         File f = new File(baseurl);
         if (f.exists()) {
