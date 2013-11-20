@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import com.google.gson.Gson;
-import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.person.Adresse;
 import no.nav.sbl.dialogarena.person.Person;
@@ -19,6 +18,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 
 @Controller
 @RequestMapping("/soknad")
@@ -67,12 +68,10 @@ public class SoknadTpsDataController {
     @RequestMapping(value = "/{soknadId}/personalia", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Person hentPerson(@PathVariable String soknadId) {
-        String fnr = SubjectHandler.getSubjectHandler().getUid();
-        
-    	Person person = personService.hentPerson(new Long(soknadId), fnr);
+        Person person = personService.hentPerson(new Long(soknadId), getSubjectHandler().getUid());
     
     	for (Object faktumObj : person.getFakta().values()) {
-    		if(faktumObj instanceof Faktum) {
+    		if (faktumObj instanceof Faktum) {
     			Faktum faktum = (Faktum) faktumObj;
     			soknadService.lagreSystemSoknadsFelt(new Long(soknadId), faktum.getKey(), faktum.getValue());
     		} else if (faktumObj instanceof List<?>) {
