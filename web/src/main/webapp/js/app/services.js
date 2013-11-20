@@ -31,13 +31,16 @@ angular.module('app.services', ['ngResource'])
         );
     })
 
-    .factory('utslagskriterierService', function ($resource) {
-        return $resource('/sendsoknad/rest/utslagskriterier/:uid',
-            {uid: new Date().getTime()}
+    .factory('forsettSenereService', function ($resource) {
+        return $resource('/sendsoknad/rest/soknad/:soknadId/fortsettsenere',
+          {soknadId: '@param'},
+            {
+                send: {method: 'POST'}
+            }
         );
     })
 
-// Husk språkstøtte...?
+    // Husk språkstøtte...?
     .factory('tekstService', function ($resource) {
         return $resource('/sendsoknad/rest/enonic/:side',
             {},

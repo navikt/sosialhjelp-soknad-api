@@ -1,5 +1,5 @@
 <ul class="form-errors" data-ng-show="skalViseFeilmeldinger()">
-    <li class="form-error" ng-repeat="feilmelding in feilmeldinger track by $index">
-        {{ feilmelding }}
+    <li class="form-error" data-ng-repeat="f in feilmeldinger" data-ng-click="scrollTilElementMedFeil(f)" data-ng-class="{klikkbar: erKlikkbarFeil(f)}">
+        {{ f.feil }}
     </li>
 </ul>

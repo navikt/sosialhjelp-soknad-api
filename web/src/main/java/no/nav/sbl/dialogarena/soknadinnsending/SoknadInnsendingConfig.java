@@ -19,4 +19,5 @@ public class SoknadInnsendingConfig {
             return new Tilgangskontroll();
         }
     }
+
 }

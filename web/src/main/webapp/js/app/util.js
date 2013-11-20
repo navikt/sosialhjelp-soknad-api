@@ -10,20 +10,18 @@ if (!Array.prototype.contains) {
     }
 }
 
-(function($) {
-    $.fn.changeElementType = function(newType) {
-        var attrs = {};
-
-        $.each(this[0].attributes, function(idx, attr) {
-            attrs[attr.nodeName] = attr.nodeValue;
-        });
-
-        this.replaceWith(function() {
-            return $('<' + newType + '>', attrs).append($(this).contents());
-        });
+if (!Array.prototype.containsObjectWithValue) {
+    Array.prototype.containsObjectWithValue = function(val) {
+        return $.grep(this, function(obj) {
+            for (key in obj) {
+                if (obj[key] == val) {
+                    return true;
+                }
+            }
+            return false;
+        }).length > 0;
     }
-})(jQuery);
-
+}
 
 function checkTrue(element) {
     if (element == undefined) {
@@ -43,7 +41,7 @@ function scrollToElement(element) {
 
 function fiksNavn(element, navn, tmpNavn) {
     var formCtrl = element.parent().controller('form');
-    var inputElement = element.find('input');
+    var inputElement = element.find('input, textarea');
     if (inputElement) {
         inputElement.attr('name', navn);
     }
@@ -53,3 +51,32 @@ function fiksNavn(element, navn, tmpNavn) {
     formCtrl.$addControl(currentElementCtrl);
 }
 
+function verdiErLagretISoknadData(scope, nokkel) {
+    if (scope.soknadData && scope.soknadData.fakta[nokkel]) {
+        return true;
+    }
+    return false;
+}
+
+function verdiErIkkeTom(verdi) {
+    return verdi !== undefined && verdi !== null && verdi.length > 0;
+}
+
+function deepClone(obj) {
+    return $.extend(true, {}, obj);
+}
+
+function harAttributt(objekt, attributt) {
+    var capitalizedAttr = capitalizeFirstLetter(attributt);
+    if (objekt.hasOwnProperty(attributt)) {
+        return objekt[attributt];
+    } else if (objekt.hasOwnProperty('ng' + capitalizedAttr)) {
+        return objekt['ng' + capitalizedAttr];
+    } else {
+        return false;
+    }
+}
+
+function capitalizeFirstLetter(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}

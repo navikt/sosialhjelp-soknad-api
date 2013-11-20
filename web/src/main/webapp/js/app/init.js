@@ -10,7 +10,7 @@ angular.module('sendsoknad')
     }])
     .value('data', {})
     .value('basepath', '../')
-    .factory('TekstService', ['data', '$resource', '$q', '$route', function(data, $resource, $q, $route) {
+    .factory('InformasjonsSideResolver', ['data', '$resource', '$q', '$route', function(data, $resource, $q, $route) {
         var promiseArray = [];
 
         var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
@@ -18,7 +18,15 @@ angular.module('sendsoknad')
                 data.tekster = result;
             }
         );
+
+        var utslagskriterier =  $resource('/sendsoknad/rest/utslagskriterier/').get(
+            function(result) {
+                data.utslagskriterier = result;
+            }
+        );
+    
         promiseArray.push(tekster.$promise);
+        promiseArray.push(utslagskriterier.$promise);
 
         var d = $q.all(promiseArray);
 
