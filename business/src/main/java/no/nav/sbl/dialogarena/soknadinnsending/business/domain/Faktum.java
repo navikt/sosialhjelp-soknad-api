@@ -7,6 +7,7 @@ public class Faktum implements Serializable {
 	//public enum FaktumType { FAGREGISTER, BRUKERREGISTRERT; }
 	private Long id;
 	private Long soknadId;
+    private Long vedleggId;
 	private String key;
     private String value;
     private String type;
@@ -31,6 +32,14 @@ public class Faktum implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getVedleggId() {
+        return vedleggId;
+    }
+
+    public void setVedleggId(Long vedleggId) {
+        this.vedleggId = vedleggId;
     }
 
     public String getValue() {
