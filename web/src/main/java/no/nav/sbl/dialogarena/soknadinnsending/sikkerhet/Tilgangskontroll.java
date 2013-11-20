@@ -11,7 +11,7 @@ import no.nav.modig.security.tilgangskontroll.policy.pep.PEPImpl;
 import no.nav.modig.security.tilgangskontroll.policy.request.attributes.SubjectAttribute;
 import no.nav.sbl.dialogarena.soknadinnsending.SoknadInnsendingConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.aktor.AktorIdService;
-import no.nav.sbl.dialogarena.websoknad.service.WebSoknadService;
+import no.nav.sbl.dialogarena.websoknad.service.HenvendelseConnector;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -30,7 +30,7 @@ import static no.nav.modig.security.tilgangskontroll.utils.RequestUtils.forReque
 public class Tilgangskontroll {
 
     @Inject
-    private WebSoknadService soknadService;
+    private HenvendelseConnector soknadService;
     @Inject
     private AktorIdService aktorIdService;
 
