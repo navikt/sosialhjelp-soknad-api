@@ -71,7 +71,8 @@ public class SoknadDataController {
     @RequestMapping(value = "/opprett/{soknadType}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody()
     public WebSoknadId opprettSoknad(@PathVariable String soknadType) {
-        //String behandlingsId = henvendelseConnector.startSoknad(SubjectHandler.getSubjectHandler().getUid(), null);
+        // Må legges til i forbindelse med kobling mot henvendelse.
+    	//String behandlingsId = henvendelseConnector.startSoknad(SubjectHandler.getSubjectHandler().getUid(), null);
         Long id = soknadService.startSoknad(soknadType);
         WebSoknadId soknadId = new WebSoknadId();
         soknadId.setId(id);
@@ -82,7 +83,8 @@ public class SoknadDataController {
     @ResponseBody()
     public void slettSoknad(@PathVariable Long soknadId) {
         soknadService.avbrytSoknad(soknadId);
-        henvendelseConnector.avbrytSoknad("12412412");
+        // Må legges til i forbindelse med kobling mot henvendelse.
+        //henvendelseConnector.avbrytSoknad("12412412");
     }
 
 
