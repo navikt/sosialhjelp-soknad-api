@@ -141,8 +141,18 @@ angular.module('app.routes', ['ngRoute'])
                 }
             })
 
+            .when('/avbryt/:soknadId', {
+                templateUrl: '../html/templates/avbryt.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                   notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+             })
+
             .when('/soknadliste', {templateUrl: '../html/templates/soknadliste.html'})
-            .when('/avbryt/:soknadId', {templateUrl: '../html/templates/avbryt.html', controller: 'AvbrytCtrl'})
+            
             .when('/slettet', {templateUrl: '../html/templates/soknadSlettet.html', controller: 'SlettetSoknadDataCtrl'})
 
             .otherwise({redirectTo: '/informasjonsside'});
