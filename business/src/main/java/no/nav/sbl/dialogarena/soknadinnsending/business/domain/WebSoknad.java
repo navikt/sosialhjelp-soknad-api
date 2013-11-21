@@ -121,8 +121,8 @@ public class WebSoknad implements Serializable {
 		return this;
 	}
 
-	public DateTime getOpprettetDato() {
-		return opprettetDato;
+	public Long getOpprettetDato() {
+		return opprettetDato.getMillis();
 	}
 
 	public WebSoknad medId(long id) {
