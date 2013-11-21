@@ -143,7 +143,6 @@ angular.module('nav.arbeidsforhold.controller', [])
             }
 
             $scope.validateTilFraDato = function (af, form) {
-                console.log("change");
                 if (af && (af.varighetTil <= af.varighetFra)) {
                     af.varighetTil = '';
                     form.$setValidity('arbeidsforhold.arbeidsgiver.varighet.feilmelding', false);

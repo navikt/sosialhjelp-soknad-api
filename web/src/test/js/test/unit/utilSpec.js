@@ -114,6 +114,59 @@ describe('utility funksjoner -', function () {
                 expect(capitalizeFirstLetter(str)).toBe(expectedStr);
             });
         });
+    describe('Egendefinerte errors', function () {
+        it('Skal opprette egendefinert feilmeldingobjekt på errors', function () {
+
+            var feilmelding = opprettEgendefinertFeilmelding();
+            expect(feilmelding).toBeDefined();
+        });
+
+        it('Skal opprette egendefinert feilmelding skal inneholde navn errors', function () {
+
+            var feilmelding = opprettEgendefinertFeilmelding("navn");
+            expect(feilmelding.$name).toBeDefined();
+        });
+
+        it('Skal kunne oppgi navn til egendefinert feilmelding', function () {
+            var navn = "Navn";
+            var feilmelding = opprettEgendefinertFeilmelding(navn);
+            expect(feilmelding.$name).toBe(navn);
+        });
+
+        it('Skal kunne oppgi error-message for egendefiner feilmelding', function () {
+            var navn = "Navn";
+            var errormessage = "Error";
+            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage);
+            expect(feilmelding.$errorMessages).toBe(errormessage);
+        });
+
+        it('Skal kunne oppgi valid for egendefiner feilmelding', function () {
+            var navn = "Navn";
+            var errormessage = "Error";
+            var valid = true;
+            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage, valid);
+            expect(feilmelding.$valid).toBe(valid);
+        });
+
+        it('Invalid skal bli satt automatisk til det motsatte av valid', function () {
+            var navn = "Navn";
+            var errormessage = "Error";
+            var valid = true;
+            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage, valid);
+            expect(feilmelding.$invalid).toBe(!valid);
+        });
+
+        it('Skal kunne sette om en feilmelding skal være den eneste som vises', function () {
+            var navn = "Navn";
+            var errormessage = "Error";
+            var valid = true;
+            var skalVisesAlene = true;
+
+            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage, valid, skalVisesAlene);
+            expect(feilmelding.$skalVisesAlene).toBe(skalVisesAlene);
+        });
+    });
+
 });
 
 
