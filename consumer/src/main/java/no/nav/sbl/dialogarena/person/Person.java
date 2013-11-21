@@ -74,6 +74,22 @@ public class Person implements Serializable {
 		String adressetype = faktum.getValue();
 		if (adressetype.equals(Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND.toString()) || adressetype.equals(Adressetype.POSTADRESSE_UTLAND.toString())) {
 			return true;
+		} else if(adressetype.equals(Adressetype.POSTADRESSE.toString())) {
+			return erUtenlandskFolkeregistrertAdresse();
+		}
+		return false;
+	}
+
+	private boolean erUtenlandskFolkeregistrertAdresse() {
+		Object adresserobject = getFakta().get(ADRESSERKEY);
+		List<Adresse> adresser = (List<Adresse>) adresserobject;
+		if(adresser.isEmpty()) {
+			return false;
+		}
+		for (Adresse adresse : adresser) {
+			if(adresse.getType().equals(Adressetype.UTENLANDSK_ADRESSE)) {
+				return true;
+			}
 		}
 		return false;
 	}
