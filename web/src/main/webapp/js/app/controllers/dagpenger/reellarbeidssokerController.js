@@ -8,24 +8,47 @@ angular.module('nav.reellarbeidssoker', [])
             'pendleeneansvarbarnopptil18aar', 'pendleannensituasjon', 'pendleomsorgansvar' ];
 
         $scope.validerReellarbeidssoker = function(form) {
+            form.$error['reellarbeidssoker'] = ([
+                {
+                    $name: "minstEnDeltidAvhuket",
+                    $errorMessages: "reellarbeidssoker.villigdeltid.false.minstEnAvhuket.feilmelding",
+                    $invalid: false,
+                    $valid: true,
+                    $skalVisesAlene: false
+
+                },
+                {
+                    $name: "minstEnPendleAvhuket",
+                    $errorMessages: "reellarbeidssoker.villigdpendle.false.minstEnAvhuket.feilmelding",
+                    $invalid: false,
+                    $valid: true,
+                    $skalVisesAlene: false
+
+                }])
+
             if($scope.soknadData.fakta.villigdeltid) {
                 var minstEnDeltidAvhuket = $scope.erCheckboxerAvhuket(deltidnokler);
                 if($scope.soknadData.fakta.villigdeltid.value == 'false') {
-                    form.$setValidity("reellarbeidssoker.villigdeltid.false.minstEnAvhuket.feilmelding", minstEnDeltidAvhuket);    
+                    form.$error['reellarbeidssoker'][0].$invalid = !minstEnDeltidAvhuket;
+                    form.$error['reellarbeidssoker'][0].$valid = minstEnDeltidAvhuket;
                 } else {
-                    form.$setValidity("reellarbeidssoker.villigdeltid.false.minstEnAvhuket.feilmelding", true);    
+                    form.$error['reellarbeidssoker'][0].$valid = true;
+                    form.$error['reellarbeidssoker'][0].$invalid = false;
                 }
             }
 
             if($scope.soknadData.fakta.villigpendle) {
                 var minstEnPendleAvhuket = $scope.erCheckboxerAvhuket(pendlenokler);
                 if($scope.soknadData.fakta.villigpendle.value == 'false') {
-                    form.$setValidity("reellarbeidssoker.villigdpendle.false.minstEnAvhuket.feilmelding", minstEnPendleAvhuket);    
+                    form.$error['reellarbeidssoker'][1].$invalid = !minstEnPendleAvhuket;
+                    form.$error['reellarbeidssoker'][1].$valid = minstEnPendleAvhuket;
                 } else {
-                    form.$setValidity("reellarbeidssoker.villigpendle.false.minstEnAvhuket.feilmelding", true);
+                    form.$error['reellarbeidssoker'][1].$invalid = false;
+                    form.$error['reellarbeidssoker'][1].$valid = true;
                 }
             }
-
+            console.log(form.$error['reellarbeidssoker'][0].$invalid);
+            console.log(form.$error['reellarbeidssoker'][1].$invalid);
             $scope.validateForm(form.$invalid);
             $scope.runValidation();
         }

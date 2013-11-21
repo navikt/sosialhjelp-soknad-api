@@ -35,6 +35,7 @@ angular.module('nav.feilmeldinger', [])
                 scope.runValidation = function () {
                     scope.feilmeldinger = [];
                     var skalViseFlereFeilmeldinger = true;
+
                     angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
                         if (skalViseFlereFeilmeldinger) {
                             skalViseFlereFeilmeldinger = leggTilFeilmeldingerVedValidering(verdi, feilNokkel);

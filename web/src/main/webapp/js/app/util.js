@@ -1,18 +1,18 @@
 if (!Array.prototype.last) {
-    Array.prototype.last = function() {
-        return this[this.length -1];
+    Array.prototype.last = function () {
+        return this[this.length - 1];
     }
 }
 
 if (!Array.prototype.contains) {
-    Array.prototype.contains = function(val) {
+    Array.prototype.contains = function (val) {
         return $.inArray(val, this) > -1;
     }
 }
 
 if (!Array.prototype.containsObjectWithValue) {
-    Array.prototype.containsObjectWithValue = function(val) {
-        return $.grep(this, function(obj) {
+    Array.prototype.containsObjectWithValue = function (val) {
+        return $.grep(this,function (obj) {
             for (key in obj) {
                 if (obj[key] == val) {
                     return true;
@@ -79,4 +79,28 @@ function harAttributt(objekt, attributt) {
 
 function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function opprettEgendefinertFeilmelding(navn, errorMessage, valid, skalVisesAlene) {
+    var feilmelding = new Object();
+    feilmelding.$name = navn;
+    feilmelding.$errorMessages = errorMessage;
+    feilmelding.$valid = valid;
+    feilmelding.$invalid = !valid;
+    feilmelding.$skalVisesAlene = skalVisesAlene;
+
+    return feilmelding;
+}
+
+if (!Array.prototype.indexByValue) {
+    Array.prototype.indexByValue = function (val) {
+        return this.indexOf($.grep(this, function (obj) {
+            for (key in obj) {
+                if (obj[key] == val) {
+                    return this;
+                }
+            }
+            return false;
+        })[0]);
+    }
 }
