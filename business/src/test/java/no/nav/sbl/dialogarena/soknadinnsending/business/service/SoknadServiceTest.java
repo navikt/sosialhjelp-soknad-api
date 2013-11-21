@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 
 import no.nav.sbl.dialogarena.detect.IsPdf;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import org.apache.commons.io.IOUtils;
 import org.junit.Ignore;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 public class SoknadServiceTest {
 
     @Mock
-    private SoknadRepository repository;
+    private VedleggRepository vedleggRepository;
     @InjectMocks
     private SoknadService soknadService;
 
@@ -39,7 +39,7 @@ public class SoknadServiceTest {
         ByteArrayInputStream bais = new ByteArrayInputStream(getBytesFromFile("/images/bilde.png"));
         Vedlegg vedlegg = new Vedlegg();
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
-        when(repository.lagreVedlegg(eq(vedlegg), captor.capture())).thenReturn(11L);
+        when(vedleggRepository.lagreVedlegg(eq(vedlegg), captor.capture())).thenReturn(11L);
         Long id = soknadService.lagreVedlegg(vedlegg, bais);
         assertThat(captor.getValue(), match(new IsPdf()));
         assertThat(id, is(equalTo(11L)));
@@ -50,7 +50,7 @@ public class SoknadServiceTest {
         ByteArrayInputStream bais = new ByteArrayInputStream(getBytesFromFile("/pdfs/navskjema.pdf"));
         Vedlegg vedlegg = new Vedlegg();
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
-        when(repository.lagreVedlegg(eq(vedlegg), captor.capture())).thenReturn(11L);
+        when(vedleggRepository.lagreVedlegg(eq(vedlegg), captor.capture())).thenReturn(11L);
         Long id = soknadService.lagreVedlegg(vedlegg, bais);
         assertThat(captor.getValue(), match(new IsPdf()));
         assertThat(id, is(equalTo(11L)));

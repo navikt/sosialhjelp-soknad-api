@@ -1,0 +1,88 @@
+package no.nav.sbl.dialogarena.soknadinnsending.business.db;
+
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import org.apache.commons.io.IOUtils;
+import org.junit.After;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {DbConfig.class})
+public class VedleggRepositoryJdbcTest {
+
+    @Inject
+    private VedleggRepository vedleggRepository;
+
+    @Inject
+    private RepositoryTestSupport soknadRepositoryTestSupport;
+
+    @After
+    public void cleanUp() {
+        soknadRepositoryTestSupport.getJdbcTemplate().update("delete from Vedlegg");
+    }
+
+    @Test
+    public void skalLasteOppBlob() throws IOException {
+        byte[] bytes = {1, 2, 3};
+        Vedlegg v = getVedlegg(bytes);
+        vedleggRepository.lagreVedlegg(v, bytes);
+        List<Vedlegg> vedlegg = vedleggRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktum());
+        assertThat(vedlegg.size(), is(equalTo(1)));
+        v.setId(vedlegg.get(0).getId());
+        assertThat(vedlegg.get(0), is(equalTo(v)));
+        assertThat(IOUtils.toByteArray(vedlegg.get(0).getInputStream()), is(equalTo(bytes)));
+    }
+
+    @Test
+    public void skalKunneSletteVedlegg() {
+        final Vedlegg v = getVedlegg();
+        Long id = vedleggRepository.lagreVedlegg(v, new byte[0]);
+        List<Vedlegg> hentet = vedleggRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktum());
+        assertThat(hentet, is(notNullValue()));
+        assertThat(hentet.size(), is(1));
+        vedleggRepository.slettVedlegg(v.getSoknadId(), id);
+        hentet = vedleggRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktum());
+        assertThat(hentet, is(notNullValue()));
+        assertThat(hentet.size(), is(0));
+    }
+
+    @Test
+    public void skalHenteInnhold() throws IOException {
+        byte[] lagret = new byte[]{1,2,3};
+        final Vedlegg v = getVedlegg(lagret);
+        Long id = vedleggRepository.lagreVedlegg(v, lagret);
+        InputStream hentet = vedleggRepository.hentVedlegg(v.getSoknadId(), id);
+        byte[] bytes = IOUtils.toByteArray(hentet);
+        assertThat(bytes, is(equalTo(lagret)));
+    }
+
+
+    private Vedlegg getVedlegg() {
+        return getVedlegg(new byte[]{1, 2, 3});
+    }
+
+    private Vedlegg getVedlegg(byte[] bytes) {
+        ByteArrayInputStream is = new ByteArrayInputStream(bytes);
+        final Vedlegg v = new Vedlegg();
+        v.setFaktum(10L);
+        v.setNavn("navn");
+        v.setSoknadId(12L);
+        v.setStorrelse(bytes.length);
+        v.setInputStream(is);
+        return v;
+    }
+
+}

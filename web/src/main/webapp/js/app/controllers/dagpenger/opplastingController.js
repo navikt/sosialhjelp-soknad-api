@@ -1,8 +1,12 @@
 angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
-    .controller('OpplastingCtrl', ['$scope', '$http', '$routeParams', 'data', function ($scope, $http, $routeParams, data) {
+    .controller('OpplastingCtrl', ['$scope', '$http', '$location', '$routeParams', 'data', function ($scope, $http, $location, $routeParams, data) {
+        $scope.fremdriftsindikator = {
+            laster: false
+        };
         $scope.data = {
             faktumId: $routeParams.faktumId
         };
+
         $scope.options = {
             maxFileSize: 10000000,
             acceptFileTypes: /(\.|\/)(jpg|png|pdf|jpeg)$/i,
@@ -11,6 +15,19 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         $scope.lastopp = function () {
             submit();
         };
+        $scope.leggVed = function () {
+            var soknadId = data.soknad.soknadId;
+            $scope.fremdriftsindikator.laster = true;
+            $http({
+                method: 'post',
+                url: '../rest/soknad/' + +soknadId + '/vedlegg/generer?faktumId=' + $scope.data.faktumId
+            }).success(function () {
+                    $scope.fremdriftsindikator.laster = false;
+                    $location.path('/vedlegg/' + soknadId);
+                }).error(function () {
+                    $scope.fremdriftsindikator.laster = false;
+                });
+        };
     }])
     .controller('SlettOpplastingCtrl', ['$scope', '$http', function ($scope, $http) {
         var file = $scope.file;
@@ -18,7 +35,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
             $http({
                 method: "post",
                 url: "../rest/" + file.deleteUrl
-            }).then(function () {
+            }).success(function () {
                     $scope.clear(file);
                 });
         }

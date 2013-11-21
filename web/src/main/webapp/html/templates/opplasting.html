@@ -3,14 +3,14 @@
         <stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="2"></stegindikator>
     </div>
 </div>
-<div id="opplasting" class="soknad rad-belyst">
+<div id="opplasting" class="soknad rad-belyst" data-ng-controller="OpplastingCtrl" >
     <div class="begrensning sak-halv">
         <section class="panel-mini uten-ramme">
             <h1 class="stor-strek-ikon-vedlegg">Last opp</h1>
         </section>
     </div>
     <div class="begrensning sak-trekvart">
-        <section data-ng-controller="OpplastingCtrl" class="panel-standard oversikt">
+        <section class="panel-standard oversikt">
             <form id="opplastingform" method="POST" enctype="multipart/form-data" data-file-upload="options">
                 <ul class="opplastingliste clearfix">
                     <li data-ng-repeat="file in queue" data-ng-class="{'lasteropp': file.$processing()}">
@@ -19,12 +19,19 @@
                     </li>
                     <li class="leggtil">
                         <input id="leggtil" type="file" name="files[]" class="vekk" data-last-opp-fil multiple>
-                        <label for="leggtil" class="robust">legg til</label>
+                        <label for="leggtil" class="robust" data-cmstekster="opplasting.leggtil"></label>
                     </li>
                 </ul>
             </form>
         </section>
     </div>
+    <div class="rad uten-ramme">
+        <div class="begrensning sak-totredel">
+            <a data-redirect="#/vedlegg/{{ soknad.soknadId }}" class="knapp-hoved" cmstekster="opplasting.ferdig" data-ng-click="leggVed()" data-fremdriftsindikator></a>
+            <a href="#/oppsummering/{{ soknad.soknadId }}" class="" cmstekster="opplasting.avbryt">Avbryt</a>
+        </div>
+    </div>
+
 </div>
 
 
