@@ -26,6 +26,11 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostboksadresse
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLStrukturertAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLUstrukturertAdresse;
 
+/**
+ * Hjelpeklasse for å hente adresser ut fra TPS-resultat
+ * @author V140448
+ *
+ */
 public class AdresseTransform {
 
 	private Kodeverk kodeverk;
