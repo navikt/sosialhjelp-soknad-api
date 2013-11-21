@@ -14,8 +14,8 @@
             <form id="opplastingform" method="POST" enctype="multipart/form-data" data-file-upload="options">
                 <ul class="opplastingliste clearfix">
                     <li data-ng-repeat="file in queue" data-ng-class="{'lasteropp': file.$processing()}">
-                        <a class="lukk" data-ng-if="!!file.deleteUrl" data-ng-click="file.$destroy()" data-ng-controller="SlettOpplastingCtrl"></a>
-                        <img data-async-image="../rest/{{file.thumbnailUrl}}" data-ng-if="!!file.thumbnailUrl">
+                        <a class="lukk" data-ng-if="!!file.sletteUrl" data-ng-click="file.$destroy()" data-ng-controller="SlettOpplastingCtrl"></a>
+                        <img data-async-image="../{{file.forhandsvisningUrl}}" data-ng-if="!!file.forhandsvisningUrl">
                     </li>
                     <li class="leggtil">
                         <input id="leggtil" type="file" name="files[]" class="vekk" data-last-opp-fil multiple>

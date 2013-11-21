@@ -9,7 +9,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -75,14 +74,7 @@ public class VedleggRepositoryJdbcTest {
     }
 
     private Vedlegg getVedlegg(byte[] bytes) {
-        ByteArrayInputStream is = new ByteArrayInputStream(bytes);
-        final Vedlegg v = new Vedlegg();
-        v.setFaktum(10L);
-        v.setNavn("navn");
-        v.setSoknadId(12L);
-        v.setStorrelse(bytes.length);
-        v.setInputStream(is);
-        return v;
+        return new Vedlegg(null, 12L, 10L, "navn", (long) bytes.length, bytes);
     }
 
 }

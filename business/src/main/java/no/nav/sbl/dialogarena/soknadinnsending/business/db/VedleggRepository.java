@@ -61,4 +61,13 @@ public interface VedleggRepository {
      * @param faktumId faktumet det skal slettes vedlegg for
      */
     void slettVedleggForFaktum(Long soknadId, Long faktumId);
+
+    /**
+     * Henter ett vedleg med innhold
+     * @param soknadId soknaden det skal hentes for
+     * @param vedleggId vedlegget som skal hentes
+     * @return vedlegget med innhold
+     */
+    Vedlegg hentVedleggMedInnhold(Long soknadId, Long vedleggId);
+
 }
