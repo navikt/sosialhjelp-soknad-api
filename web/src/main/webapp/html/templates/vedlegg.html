@@ -8,12 +8,12 @@
     <div class="rad-belyst">
         <div class="begrensning sak-totredel">
             <section class="panel-standard oversikt">
-                <h1 class="stor-ikon-vedlegg-strek" data-cmstekster="dagpenger.opplasting.tittel"></h1>
+                <h1 class="stor-ikon-vedlegg-strek" data-cmstekster="vedlegg.tittel"></h1>
 
-                <p class="info" data-cmstekster="dagpenger.opplasting.info"></p>
+                <p class="info" data-cmstekster="vedlegg.info"></p>
 
-                <p class="mini" data-cmstekster="dagpenger.opplasting.video.info"></p>
-                <a class="knapp-hoved" href="#video" data-cmstekster="dagpenger.opplasting.video.knapp"></a>
+                <p class="mini" data-cmstekster="vedlegg.video.info"></p>
+                <a class="knapp-hoved" href="#video" data-cmstekster="vedlegg.video.knapp"></a>
             </section>
         </div>
     </div>
@@ -27,35 +27,35 @@
                         </div>
                         <div class="begrensning sak-halv">
                             <div class="panel-mini nettobunn uten-ramme">
-                                <h2 class="stor" data-cmstekster="{{soknad.gosysId}}.vedlegg.{{v.gosysId}}.header" data-ng-class="{lastetopp: v.lastetOpp}"></h2>
+                                <h2 class="stor" data-cmstekster="{{soknad.gosysId}}.vedlegg.{{v.gosysId}}.header" data-ng-class="{lastetopp: v.lastetOpp()}"></h2>
                             </div>
                         </div>
                     </div>
                     <div data-div class="skjemaramme begrensning sak-halv">
                         <div class="panel-standard">
-                            <h4 cmstekster="dagpenger.opplasting.vedlegg.maabekrefte"></h4>
+                            <h4 cmstekster="vedlegg.faktum.maabekrefte"></h4>
 
                             <p class="info-liste" cmshtml="{{soknad.gosysId}}.vedlegg.{{v.gosysId}}.bekrefte"></p>
 
                             <div class="spm-knapper send-valg" data-ng-if="!vedleggBehandlet(v)">
 
                                 <input id="{{$index}}sendInnFraPcRadio" data-ng-model="v.valg" type="radio" value="sendinn">
-                                <label for="{{$index}}sendInnFraPcRadio" data-cmstekster="dagpenger.opplasting.vedlegg.lastopp"></label>
+                                <label for="{{$index}}sendInnFraPcRadio" data-cmstekster="vedlegg.faktum.lastopp"></label>
 
                                 <div class="valgbokser">
                                     <a class="valgboks-mobil" href="#/opplasting/{{ soknadData.soknadId }}/{{v.data.id}}" data-ng-if="v.valg == 'sendinn'">
-                                        <span data-cmstekster="dagpenger.opplasting.vedlegg.lastopp.mobil"></span>
+                                        <span data-cmstekster="vedlegg.faktum.lastopp.mobil"></span>
                                     </a>
                                     <a class="valgboks-pc" href="#/opplasting/{{ soknadData.soknadId }}/{{v.data.id}}" data-ng-if="v.valg == 'sendinn'">
-                                        <span data-cmstekster="dagpenger.opplasting.vedlegg.lastopp.dennepc"></span>
+                                        <span data-cmstekster="vedlegg.faktum.lastopp.dennepc"></span>
                                     </a>
                                 </div>
 
                                 <input id="{{$index}}ettersendRadio" data-ng-model="v.valg" type="radio" value="ettersend">
-                                <label for="{{$index}}ettersendRadio" cmstekster="dagpenger.opplasting.vedlegg.ettersend"></label>
+                                <label for="{{$index}}ettersendRadio" cmstekster="vedlegg.faktum.ettersend"></label>
 
                                 <input id="{{$index}}ikkesendRadio" data-ng-model="v.valg" type="radio" value="ikkesend">
-                                <label for="{{$index}}ikkesendRadio" cmstekster="dagpenger.opplasting.vedlegg.ikkesend"></label>
+                                <label for="{{$index}}ikkesendRadio" cmstekster="vedlegg.faktum.ikkesend"></label>
                             </div>
                             <div class="spm-knapper" data-ng-if="v.lastetOpp">
                                 Lastet opp
@@ -65,10 +65,10 @@
                                     <a href="#/dagpenger/{{ soknadData.soknadId }}" cmstekster="tilbake"/>
                                 </li>
                                 <li>
-                                    <a href="#" cmstekster="dagpenger.opplasting.vedlegg.eksempel"/>
+                                    <a href="#" cmstekster="vedlegg.faktum.eksempel"/>
                                 </li>
                                 <li>
-                                    <a href="#" cmstekster="dagpenger.opplasting.vedlegg.faq"/>
+                                    <a href="#" cmstekster="vedlegg.faktum.faq"/>
                                 </li>
                             </ul>
                         </div>
@@ -80,7 +80,7 @@
 
     <div class="rad uten-ramme">
         <div class="begrensning sak-totredel">
-            <a href="#/oppsummering/{{ soknadData.soknadId }}" class="knapp-hoved" cmstekster="dagpenger.opplasting.ferdig"/>
+            <a href="#/oppsummering/{{ soknadData.soknadId }}" class="knapp-hoved" cmstekster="vedlegg.ferdig"/>
             <stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="2"></stegindikator>
         </div>
     </div>

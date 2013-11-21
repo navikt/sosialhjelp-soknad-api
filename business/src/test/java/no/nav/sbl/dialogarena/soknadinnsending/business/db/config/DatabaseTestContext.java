@@ -80,7 +80,7 @@ public class DatabaseTestContext {
             st.execute("create table VEDLEGG (vedlegg_id bigint not null , soknad_id bigint not null, faktum bigint not null, navn varchar(255) not null, storrelse bigint not null, " +
                     " opprettetdato timestamp , data blob)");
             st.execute("create table SOKNADBRUKERDATA (soknadbrukerdata_id bigint not null, soknad_id bigint not null, key varchar(255) not null, value varchar(2000) not null, " +
-                    "type varchar(255), sistendret timestamp not null)");
+                    "type varchar(255), sistendret timestamp not null, vedlegg_id bigint)");
             st.execute("drop sequence SOKNAD_ID_SEQ if exists");
             st.execute("create sequence SOKNAD_ID_SEQ as integer start with 1 increment by 1");
             st.execute("drop sequence SOKNAD_BRUKER_DATA_ID_SEQ if exists");
