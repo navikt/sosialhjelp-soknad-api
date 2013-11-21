@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.IdGenerator.lagBehandlingsId;
@@ -64,7 +65,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         Long databasenokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_ID_SEQ"), Long.class);
         getJdbcTemplate().update("insert into soknad (soknad_id, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status, delstegstatus) values (?,?,?,?,?,?,?)",
                 databasenokkel, soknad.getBrukerBehandlingId(), soknad.getGosysId(), soknad.getAktoerId(),
-                soknad.getOpprettetDato().toDate(), UNDER_ARBEID.name(), OPPRETTET.name());
+                new Date(soknad.getOpprettetDato()), UNDER_ARBEID.name(), OPPRETTET.name());
         return databasenokkel;
     }
 

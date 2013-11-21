@@ -16,10 +16,16 @@
             <div>
                 <a class="knapp-hoved" data-ng-click="sendSoknad()" cmstekster="send"/>
             </div>
+            
+            <div>
+                <a class="knapp-advarsel" href="#/avbryt/{{ soknadData.soknadId }}" cmstekster="avbryt"/>
+            </div>
+
             <div>
                 <a href="#/opplasting/{{ soknadData.soknadId }}" cmstekster="tilbake"/>
             </div>
-            <!--<button class="knapp-stor" data-ng-click="avbryt()" cmstekster="avbryt"/>-->
+            
+            
 
         </div>
     </div>
