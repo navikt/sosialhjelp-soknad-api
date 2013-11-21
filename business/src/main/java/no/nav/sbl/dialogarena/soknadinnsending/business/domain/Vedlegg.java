@@ -11,7 +11,17 @@ public class Vedlegg {
     private String navn;
     private Long storrelse;
     private Long faktum;
+    private byte[] data;
     private InputStream inputStream;
+
+    public Vedlegg(Long vedleggId, Long soknadId, Long faktumId, String navn, Long storrelse, byte[] data) {
+        this.id = vedleggId;
+        this.soknadId = soknadId;
+        this.faktum = faktumId;
+        this.navn = navn;
+        this.storrelse = storrelse;
+        this.data = data;
+    }
 
     public Long getId() {
         return id;
@@ -147,5 +157,9 @@ public class Vedlegg {
         sb.append(", inputStream=").append(inputStream);
         sb.append('}');
         return sb.toString();
+    }
+
+    public byte[] getData() {
+        return data;
     }
 }

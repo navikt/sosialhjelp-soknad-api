@@ -130,6 +130,14 @@ public class SoknadService implements SendSoknadService {
         }
     }
 
+    public List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId) {
+        return vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
+    }
+
+    public Vedlegg hentVedleggMedInnhold(Long soknadId, Long vedleggId) {
+        return vedleggRepository.hentVedleggMedInnhold(soknadId, vedleggId);
+    }
+
     public void slettVedlegg(Long soknadId, Long vedleggId) {
         vedleggRepository.slettVedlegg(soknadId, vedleggId);
     }
@@ -156,11 +164,7 @@ public class SoknadService implements SendSoknadService {
 
         }
         byte[] doc = new PdfMerger().transform(bytes);
-        Vedlegg vedlegg = new Vedlegg();
-        vedlegg.setNavn("faktum.pdf");
-        vedlegg.setSoknadId(soknadId);
-        vedlegg.setFaktum(faktumId);
-        vedlegg.setStorrelse(doc.length);
+        Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, "faktum.pdf", Long.valueOf(doc.length), doc);
         vedleggRepository.slettVedleggForFaktum(soknadId, faktumId);
         Long opplastetDokument = vedleggRepository.lagreVedlegg(vedlegg, doc);
         vedleggRepository.knyttVedleggTilFaktum(soknadId, faktumId, opplastetDokument);

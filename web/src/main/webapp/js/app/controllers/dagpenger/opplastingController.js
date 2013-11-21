@@ -1,5 +1,5 @@
 angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
-    .controller('OpplastingCtrl', ['$scope', '$http', '$location', '$routeParams', 'data', function ($scope, $http, $location, $routeParams, data) {
+    .controller('OpplastingCtrl', ['$scope', '$http', '$location', '$routeParams', 'vedleggService', 'data', function ($scope, $http, $location, $routeParams, vedleggService, data) {
         $scope.fremdriftsindikator = {
             laster: false
         };
@@ -10,7 +10,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         $scope.options = {
             maxFileSize: 10000000,
             acceptFileTypes: /(\.|\/)(jpg|png|pdf|jpeg)$/i,
-            url: "/sendsoknad/rest/soknad/" + data.soknad.soknadId + "/vedlegg?faktumId=" + $scope.data.faktumId
+            url: "/sendsoknad/rest/soknad/" + data.soknad.soknadId + "/faktum/" + $scope.data.faktumId + "/vedlegg"
         };
         $scope.lastopp = function () {
             submit();
@@ -18,26 +18,27 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         $scope.leggVed = function () {
             var soknadId = data.soknad.soknadId;
             $scope.fremdriftsindikator.laster = true;
-            $http({
-                method: 'post',
-                url: '../rest/soknad/' + +soknadId + '/vedlegg/generer?faktumId=' + $scope.data.faktumId
-            }).success(function () {
-                    $scope.fremdriftsindikator.laster = false;
-                    $location.path('/vedlegg/' + soknadId);
-                }).error(function () {
-                    $scope.fremdriftsindikator.laster = false;
-                });
+            vedleggService.merge({
+                soknadId: soknadId,
+                faktumId: $scope.data.faktumId
+            }, function () {
+                $scope.fremdriftsindikator.laster = false;
+                $location.path('/vedlegg/' + soknadId);
+            }, function () {
+                $scope.fremdriftsindikator.laster = false;
+            });
         };
     }])
-    .controller('SlettOpplastingCtrl', ['$scope', '$http', function ($scope, $http) {
+    .controller('SlettOpplastingCtrl', ['$scope', 'vedleggService', 'data', function ($scope, vedleggService, data) {
         var file = $scope.file;
         file.$destroy = function () {
-            $http({
-                method: "post",
-                url: "../rest/" + file.deleteUrl
-            }).success(function () {
-                    $scope.clear(file);
-                });
+            vedleggService.remove({
+                soknadId: data.soknad.soknadId,
+                faktumId: $scope.data.faktumId,
+                vedleggId: $scope.file.id
+            }, function () {
+                $scope.clear(file);
+            });
         }
     }])
 

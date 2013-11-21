@@ -1,5 +1,5 @@
 angular.module('nav.vedlegg.controller', [])
-    .controller('VedleggCtrl', ['$scope', 'data', function ($scope, data) {
+    .controller('VedleggCtrl', ['$scope', 'data', 'vedleggService', function ($scope, data, vedleggService) {
 
         function cloneObject(object) {
             return $.extend({}, object);
@@ -9,7 +9,7 @@ angular.module('nav.vedlegg.controller', [])
             var vedlegg = cloneObject(vedleggMap[key]);
             vedlegg.data = data.soknad.fakta[key];
             vedlegg.valg = 'sendinn';
-            vedlegg.lastetOpp = function(){
+            vedlegg.lastetOpp = function () {
                 return vedlegg.data.vedleggId;
             }
             return vedlegg;
@@ -18,7 +18,8 @@ angular.module('nav.vedlegg.controller', [])
         function faktumMedVedlegg(key) {
             return vedleggMap[key] != undefined;
         }
-        function indekserVedlegg(vedlegg){
+
+        function indekserVedlegg(vedlegg) {
             var vedleggMap = {};
             vedlegg.forEach(function (vedlegg) {
                 var id = vedlegg.faktum.id;
@@ -37,6 +38,16 @@ angular.module('nav.vedlegg.controller', [])
                 return data.soknad.fakta[vedlegg.faktum.id].value === vedlegg.onValue;
             }
             return false;
+        }
+        $scope.slettVedlegg = function (vedlegg) {
+
+            vedleggService.remove({
+                soknadId: data.soknad.soknadId,
+                faktumId: vedlegg.data.id,
+                vedleggId: vedlegg.data.vedleggId}, function () {
+                    vedlegg.data.vedleggId = null;
+                });
+
         }
         $scope.vedleggBehandlet = function (vedlegg) {
             return vedlegg.valg === 'ikkeSend' || vedlegg.valg == 'sendSenere' || vedlegg.lastetOpp();

@@ -1,65 +1,44 @@
 package no.nav.sbl.dialogarena.soknadinnsending;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+
 import javax.xml.bind.annotation.XmlElement;
 
 /**
  * Klasse for å returnere et resultat av en opplasting
  */
 public class VedleggOpplastingResultat {
-    private String name;
-    private Integer size;
-    private String url;
-    private String thumbnailUrl;
-    private String deleteUrl;
-    private String deleteType;
+    private final Vedlegg vedlegg;
+    private Long id;
+
+    public VedleggOpplastingResultat(Vedlegg vedlegg) {
+        this.vedlegg = vedlegg;
+    }
 
     public String getName() {
-        return name;
+        return vedlegg.getNavn();
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getSize() {
-        return size;
-    }
-
-    public void setSize(Integer size) {
-        this.size = size;
+    public Long getSize() {
+        return vedlegg.getStorrelse();
     }
 
     public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
+        return String.format("rest/soknad/%d/faktum/%d/vedlegg/%d", vedlegg.getSoknadId(), vedlegg.getFaktum(), vedlegg.getId());
     }
 
     @XmlElement(name="thumbnail_url")
-    public String getThumbnailUrl() {
-        return thumbnailUrl;
-    }
-
-    public void setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnailUrl = thumbnailUrl;
+    public String getForhandsvisningUrl() {
+        return String.format("rest/soknad/%d/faktum/%d/vedlegg/%d/thumbnail", vedlegg.getSoknadId(), vedlegg.getFaktum(), vedlegg.getId());
     }
 
     @XmlElement(name="delete_url")
-    public String getDeleteUrl() {
-        return deleteUrl;
+    public String getSletteUrl() {
+        return String.format("rest/soknad/%d/faktum/%d/vedlegg/%d/delete", vedlegg.getSoknadId(), vedlegg.getFaktum(), vedlegg.getId());
     }
 
-    public void setDeleteUrl(String deleteUrl) {
-        this.deleteUrl = deleteUrl;
-    }
-
-    public String getDeleteType() {
-        return deleteType;
-    }
-
-    public void setDeleteType(String deleteType) {
-        this.deleteType = deleteType;
+    @XmlElement(name="delete_url")
+    public String getSlettVerb() {
+        return "POST";
     }
 }

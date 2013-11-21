@@ -1,10 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.AbstractLobCreatingPreparedStatementCallback;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.jdbc.support.lob.DefaultLobHandler;
@@ -18,7 +16,6 @@ import javax.inject.Named;
 import javax.sql.DataSource;
 import java.io.InputStream;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -42,7 +39,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
 
     @Override
     public List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktum) {
-        return getJdbcTemplate().query("select * from Vedlegg where soknad_id = ? and faktum = ?", new Object[]{soknadId, faktum}, new VedleggRowMapper());
+        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, navn, storrelse, opprettetdato from Vedlegg where soknad_id = ? and faktum = ?", new VedleggRowMapper(false), soknadId, faktum);
     }
 
 
@@ -85,16 +82,12 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
 
     @Override
     public void slettVedleggForFaktum(Long soknadId, Long faktumId) {
-        getJdbcTemplate().update("delete from vedlegg where soknad_id = ? and faktum_id = ?", soknadId, faktumId);
+        getJdbcTemplate().update("delete from vedlegg where soknad_id = ? and faktum = ?", soknadId, faktumId);
     }
 
-    private final RowMapper<Faktum> rowMapper = new RowMapper<Faktum>() {
-        public Faktum mapRow(ResultSet rs, int rowNum) throws SQLException {
+    @Override
+    public Vedlegg hentVedleggMedInnhold(Long soknadId, Long vedleggId) {
+        return getJdbcTemplate().queryForObject("select * from Vedlegg where soknad_Id = ? and vedlegg_Id = ?", new VedleggRowMapper(true), soknadId, vedleggId);
+    }
 
-            Faktum faktum = new Faktum(rs.getLong("soknad_id"), rs.getString("key"),
-                    rs.getString("value"), rs.getString("type"));
-            faktum.setId(rs.getLong("soknadbrukerdata_id"));
-            return faktum;
-        }
-    };
 }
