@@ -35,17 +35,14 @@ angular.module('nav.hjelpetekst', [])
 
                 element.bind('click', function() {
                     if (element.hasClass('open')) {
-                        console.log(1);
                         scope.visHjelpetekst = false;
                         element.removeClass('open');
                     } else if (scope.visHjelpetekst) {
-                        console.log(2);
                         scope.tittel = tittel;
                         scope.tekst = tekst;
                         element.addClass('open');
                         element.siblings('.definerer-hjelpetekst.open').removeClass('open');
                     } else {
-                        console.log(3);
                         scope.tittel = tittel;
                         scope.tekst = tekst;
                         element.addClass('open');
@@ -75,33 +72,3 @@ angular.module('nav.hjelpetekst', [])
             }
         }
     }]);
-
-//    .directive('navHjelpetekst', ['$http', '$templateCache', '$compile', function ($http, $templateCache, $compile) {
-//        return {
-//            require: '^form',
-//            scope: {
-//                tittel: '@',
-//                tekst: '@'
-//            },
-//            templateUrl: '../js/app/directives/hjelpetekst/hjelpetekstTemplate.html',
-//            link: function(scope, element, attrs, form) {
-////                console.log($('[data-ng-form=' + form.$name + ']'));
-//                angular.element($('[data-ng-form=' + form.$name + ']')).append(angular.element('<div>Hei</div>'));
-//                var hjelpeElement;
-//                var sporsmalbolk = element.closest('.skjemainnhold');
-//
-//                scope.visHjelpetekst = false;
-//
-//                element.bind('click', function() {
-//
-//                    scope.visHjelpetekst = !scope.visHjelpetekst;
-//                    var spmbolkWidth = sporsmalbolk.outerWidth()
-//                    var left = (sporsmalbolk.position().left + spmbolkWidth + 50) + "px";
-//                    var top = (element.position().top - 40) + "px";
-//
-//                    hjelpeElement.css({top: top, left: left});
-//                    scope.$apply();
-//                });
-//            }
-//        }
-//    }]);
