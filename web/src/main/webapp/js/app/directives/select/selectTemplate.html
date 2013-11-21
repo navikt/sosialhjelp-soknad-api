@@ -1,11 +1,11 @@
 <div class="nav-select form-linje" data-ng-class="{open: selectOpen, feil: harFeil()}">
     <label>
         <span data-cmstekster="{{ label }}"/>
-        <input type="text" data-ng-model="inputVerdi" data-ui-keyup="{enter: 'enter($event)', esc: 'escape()'}" data-ui-keydown="{up: 'navigateUp()', down: 'navigateDown()', tab: 'tab($event)'}" data-ng-required="ngRequired" data-error-messages="{'{{ requiredStandardFeilmelding }}'}" data-ng-click="klikk($event)">
+        <input type="text" data-ng-model="inputVerdi" data-ui-keyup="{enter: 'enter($event)', esc: 'escape()'}" data-ui-keydown="{up: 'navigateUp($event)', down: 'navigateDown($event)', tab: 'tab($event)'}" data-ng-required="ngRequired" data-error-messages="{'{{ requiredStandardFeilmelding }}'}" data-ng-click="klikk($event)">
         <span data-ng-if="harRequiredFeil()" class="melding mini" data-cmstekster="{{ requiredFeilmelding }}"/>
         <span data-ng-if="inneholderIkkeSkrevetTekst()" class="melding mini" data-cmstekster="{{ ugyldigFeilmelding }}"/>
     </label>
     <ul data-ng-show="skalViseListen()">
-        <li data-bindonce data-ng-repeat="option in options" data-ng-show="filter(option, $last)" data-ng-click="valgtElement($event)" data-value="{{ option.value }}" data-ng-bind-html="option.displayText"/>
+        <li data-bindonce data-ng-repeat="option in options" data-ng-show="[option] | filterElement: soketekst" data-ng-click="valgtElement($index)" data-value="{{ option.value }}" data-ng-bind-html="option.displayText" data-ng-class="{harFokus: harFokus(option, $index)}"/>
     </ul>
 </div>
