@@ -1,1 +1,1 @@
-angular.module('sendsoknad',['ui.bootstrap', 'ui.keypress', 'ui.select2', 'app.routes','app.brukerdata','app.grunnlagsdata','app.services','app.directives','app.controllers', 'app.date', 'nav.arbeidsforhold', 'nav.informasjonsside', 'pasvaz.bindonce', 'ngAnimate']);
+angular.module('sendsoknad',['ui.bootstrap', 'ui.keypress', 'app.routes','app.brukerdata','app.grunnlagsdata','app.services','app.directives','app.controllers', 'app.date', 'nav.arbeidsforhold', 'nav.informasjonsside', 'pasvaz.bindonce', 'ngAnimate']);
