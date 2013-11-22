@@ -1,5 +1,5 @@
 angular.module('nav.vedlegg.controller', [])
-    .controller('VedleggCtrl', ['$scope', 'data', 'vedleggService', function ($scope, data, vedleggService) {
+    .controller('VedleggCtrl', ['$scope', '$location', '$routeParams', '$anchorScroll', 'data', 'vedleggService', function ($scope, $location, $routeParams, $anchorScroll, data, vedleggService) {
 
         function cloneObject(object) {
             return $.extend({}, object);
@@ -45,8 +45,8 @@ angular.module('nav.vedlegg.controller', [])
                 soknadId: data.soknad.soknadId,
                 faktumId: vedlegg.data.id,
                 vedleggId: vedlegg.data.vedleggId}, function () {
-                    vedlegg.data.vedleggId = null;
-                });
+                vedlegg.data.vedleggId = null;
+            });
 
         }
         $scope.vedleggBehandlet = function (vedlegg) {

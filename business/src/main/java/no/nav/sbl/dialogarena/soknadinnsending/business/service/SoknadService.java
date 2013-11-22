@@ -134,8 +134,12 @@ public class SoknadService implements SendSoknadService {
         return vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
     }
 
-    public Vedlegg hentVedleggMedInnhold(Long soknadId, Long vedleggId) {
-        return vedleggRepository.hentVedleggMedInnhold(soknadId, vedleggId);
+    public Vedlegg hentVedlegg(Long soknadId, Long vedleggId, boolean medInnhold) {
+        if (medInnhold) {
+            return vedleggRepository.hentVedleggMedInnhold(soknadId, vedleggId);
+        } else {
+            return vedleggRepository.hentVedlegg(soknadId, vedleggId);
+        }
     }
 
     public void slettVedlegg(Long soknadId, Long vedleggId) {
@@ -145,7 +149,7 @@ public class SoknadService implements SendSoknadService {
     public byte[] lagForhandsvisning(Long soknadId, Long vedleggId) {
         try {
             return new ConvertToPng(new Dimension(600, 800), ImageScaler.ScaleMode.SCALE_TO_FIT_INSIDE_BOX)
-                    .transform(IOUtils.toByteArray(vedleggRepository.hentVedlegg(soknadId, vedleggId)));
+                    .transform(IOUtils.toByteArray(vedleggRepository.hentVedleggStream(soknadId, vedleggId)));
         } catch (IOException e) {
             throw new RuntimeException("Kunne ikke generere thumbnail " + e, e);
         }
@@ -155,7 +159,7 @@ public class SoknadService implements SendSoknadService {
         List<Vedlegg> vedleggs = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
         List<byte[]> bytes = new ArrayList();
         for (Vedlegg vedlegg : vedleggs) {
-            InputStream inputStream = vedleggRepository.hentVedlegg(soknadId, vedlegg.getId());
+            InputStream inputStream = vedleggRepository.hentVedleggStream(soknadId, vedlegg.getId());
             try {
                 bytes.add(IOUtils.toByteArray(inputStream));
             } catch (IOException e) {

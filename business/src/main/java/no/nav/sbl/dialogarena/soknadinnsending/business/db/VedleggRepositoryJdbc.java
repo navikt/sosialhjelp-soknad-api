@@ -62,7 +62,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
         return databasenokkel;
     }
 
-    public InputStream hentVedlegg(Long soknadId, Long vedleggId) {
+    public InputStream hentVedleggStream(Long soknadId, Long vedleggId) {
         List<InputStream> query = getJdbcTemplate().query("select data from Vedlegg where soknad_id = ? and vedlegg_id = ?", new VedleggDataRowMapper(), soknadId, vedleggId);
         if (!query.isEmpty()) {
             return query.get(0);
@@ -77,12 +77,18 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
 
     @Override
     public void slettVedlegg(Long soknadId, Long vedleggId) {
+        getJdbcTemplate().update("update soknadbrukerdata set vedlegg_id = null where soknad_id=? and vedlegg_id=?", soknadId, vedleggId);
         getJdbcTemplate().update("Delete from vedlegg where soknad_id=? and vedlegg_id=?", soknadId, vedleggId);
     }
 
     @Override
     public void slettVedleggForFaktum(Long soknadId, Long faktumId) {
         getJdbcTemplate().update("delete from vedlegg where soknad_id = ? and faktum = ?", soknadId, faktumId);
+    }
+
+    @Override
+    public Vedlegg hentVedlegg(Long soknadId, Long vedleggId) {
+        return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, navn, storrelse, opprettetdato from Vedlegg where soknad_id = ? and vedlegg_id = ?", new VedleggRowMapper(false), soknadId, vedleggId);
     }
 
     @Override

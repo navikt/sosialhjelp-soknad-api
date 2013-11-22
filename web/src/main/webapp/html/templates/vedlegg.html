@@ -19,7 +19,7 @@
     </div>
     <section data-ng-controller="VedleggCtrl">
         <div data-accordion data-close-others="false">
-            <section data-ng-repeat="v in vedlegg" ng-if="erFaktumLikKriterie(v)" class="vedlegg" data-ng-form>
+            <section data-ng-repeat="v in vedlegg" ng-if="erFaktumLikKriterie(v)" class="vedlegg" data-ng-form  id="faktum_{{v.data.id}}">
                 <div data-accordion-group class="spm-blokk" data-is-open="true" ng-class="{open: isOpen}">
                     <div data-accordion-heading>
                         <div class="flipp">
