@@ -1,6 +1,8 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
     <div data-ng-form="reellarbeidssokerForm" class="skjemainnhold horisontal" data-ng-controller="ReellarbeidssokerCtrl" novalidate>
-        <div data-form-errors></div>
+
+        <div data-form-errors/>
+        <div data-nav-hjelpetekst-element/>
 
         <div booleanradio data-ng-model="soknadData.fakta.villigdeltid.value"
                       modus="data.redigeringsModus"
@@ -11,22 +13,23 @@
             
              <div data-ng-if="erUnder60Aar()">
                 <div navcheckbox data-ng-model='soknadData.fakta.reduserthelse.value' modus='data.redigeringsModus'
-                inputname='reduserthelse' label='reellarbeidssoker.reduserthelse' hjelpetekst="reellarbeidssoker.reduserthelse.hjelpetekst"></div>
+                inputname='reduserthelse' label='reellarbeidssoker.reduserthelse'></div>
               
                 <div navcheckbox data-ng-model='soknadData.fakta.omsorgbarnunder1aar.value' modus='data.redigeringsModus'
-                inputname='omsorgbarnunder1aar' label='reellarbeidssoker.omsorgbarnunder1aar' hjelpetekst="reellarbeidssoker.omsorgbarnunder1aar.hjelpetekst"></div>
+                inputname='omsorgbarnunder1aar' label='reellarbeidssoker.omsorgbarnunder1aar'></div>
               
                 <div navcheckbox data-ng-model='soknadData.fakta.eneansvarbarnunder5skoleaar.value' modus='data.redigeringsModus'
-                inputname='eneansvarbarnunder5skoleaar' label='reellarbeidssoker.eneansvarbarnunder5skoleaar' hjelpetekst="reellarbeidssoker.eneansvarbarnunder5skoleaar.hjelpetekst"></div>
+                inputname='eneansvarbarnunder5skoleaar' label='reellarbeidssoker.eneansvarbarnunder5skoleaar'></div>
               
                 <div navcheckbox data-ng-model='soknadData.fakta.eneansvarbarnopptil18aar.value' modus='data.redigeringsModus'
-                inputname='eneansvarbarnopptil18aar' label='reellarbeidssoker.eneansvarbarnopptil18aar' hjelpetekst="reellarbeidssoker.eneansvarbarnopptil18aar.hjelpetekst"></div>
+                inputname='eneansvarbarnopptil18aar' label='reellarbeidssoker.eneansvarbarnopptil18aar'></div>
               
                 <div navcheckbox data-ng-model='soknadData.fakta.omsorgansvar.value' modus='data.redigeringsModus'
-                inputname='omsorgansvar' label='reellarbeidssoker.omsorgansvar' hjelpetekst="reellarbeidssoker.omsorgansvar.hjelpetekst"></div>
+                inputname='omsorgansvar' label='reellarbeidssoker.omsorgansvar'></div>
 
                 <div navcheckbox data-ng-model='soknadData.fakta.annensituasjon.value' modus='data.redigeringsModus'
-                inputname='annensituasjon' label='reellarbeidssoker.annensituasjon' hjelpetekst="reellarbeidssoker.annensituasjon.hjelpetekst"></div>
+                inputname='annensituasjon' label='reellarbeidssoker.annensituasjon'></div>
+
              </div> 
              <p cmstekster="reellarbeidssoker.villigdeltid.false.informasjon2"></p>
              <div navtekst data-ng-model="soknadData.fakta.maksimalarbeidstid.value"
@@ -44,33 +47,33 @@
           <div data-navinfoboks nokkel="reellarbeidssoker.villigpendle.false.informasjon"></div>
             <div data-ng-if="erUnder60Aar()">
               <div navcheckbox data-ng-model='soknadData.fakta.pendlereduserthelse.value' modus='data.redigeringsModus'
-              inputname='pendlereduserthelse' label='reellarbeidssoker.pendlereduserthelse' hjelpetekst="reellarbeidssoker.pendlereduserthelse.hjelpetekst"></div>
+              inputname='pendlereduserthelse' label='reellarbeidssoker.pendlereduserthelse'></div>
             
               <div navcheckbox data-ng-model='soknadData.fakta.pendleomsorgbarnunder1aar.value' modus='data.redigeringsModus'
-              inputname='pendleomsorgbarnunder1aar' label='reellarbeidssoker.pendleomsorgbarnunder1aar' hjelpetekst="reellarbeidssoker.pendleomsorgbarnunder1aar.hjelpetekst"></div>
+              inputname='pendleomsorgbarnunder1aar' label='reellarbeidssoker.pendleomsorgbarnunder1aar'></div>
             
               <div navcheckbox data-ng-model='soknadData.fakta.pendleomsorgbarnopptil10.value' modus='data.redigeringsModus'
-              inputname='pendleomsorgbarnopptil10' label='reellarbeidssoker.pendleomsorgbarnopptil10' hjelpetekst="reellarbeidssoker.pendleomsorgbarnopptil10.hjelpetekst"></div>
+              inputname='pendleomsorgbarnopptil10' label='reellarbeidssoker.pendleomsorgbarnopptil10'></div>
             
               <div navcheckbox data-ng-model='soknadData.fakta.pendleeneansvarbarnunder5skoleaar.value' modus='data.redigeringsModus'
-              inputname='pendleeneansvarbarnunder5skoleaar' label='reellarbeidssoker.pendleeneansvarbarnunder5skoleaar' 
-              hjelpetekst="reellarbeidssoker.pendleeneansvarbarnunder5skoleaar.hjelpetekst"></div>
+              inputname='pendleeneansvarbarnunder5skoleaar' label='reellarbeidssoker.pendleeneansvarbarnunder5skoleaar'></div>
             
               <div navcheckbox data-ng-model='soknadData.fakta.pendleeneansvarbarnopptil18aar.value' modus='data.redigeringsModus'
-              inputname='pendleeneansvarbarnopptil18aar' label='reellarbeidssoker.pendleeneansvarbarnopptil18aar' hjelpetekst="reellarbeidssoker.pendleeneansvarbarnopptil18aar.hjelpetekst"></div>
+              inputname='pendleeneansvarbarnopptil18aar' label='reellarbeidssoker.pendleeneansvarbarnopptil18aar'></div>
             
               <div navcheckbox data-ng-model='soknadData.fakta.pendleomsorgansvar.value' modus='data.redigeringsModus'
-              inputname='pendleomsorgansvar' label='reellarbeidssoker.pendleomsorgansvar' hjelpetekst="reellarbeidssoker.pendleomsorgansvar.hjelpetekst"></div>
+              inputname='pendleomsorgansvar' label='reellarbeidssoker.pendleomsorgansvar'></div>
 
               <div navcheckbox data-ng-model='soknadData.fakta.pendleannensituasjon.value' modus='data.redigeringsModus'
-              inputname='pendleannensituasjon' label='reellarbeidssoker.pendleannensituasjon' hjelpetekst="reellarbeidssoker.pendleannensituasjon.hjelpetekst"></div>
+              inputname='pendleannensituasjon' label='reellarbeidssoker.pendleannensituasjon'></div>
             
             </div>
         </div>
 
         <div booleanradio data-ng-model="soknadData.fakta.villighelse.value"
                       modus="data.redigeringsModus"
-                      nokkel="reellarbeidssoker.villighelse"></div>
+                      nokkel="reellarbeidssoker.villighelse"
+                      hjelpetekst></div>
 
         <div class="ekstra-spm-boks" data-ng-if="soknadData.fakta.villighelse.value == 'false'">  
           <div navtextarea inputname="helseFritekst" data-ng-model="soknadData.fakta.helseFritekst.value"
