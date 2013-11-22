@@ -92,6 +92,21 @@ function opprettEgendefinertFeilmelding(navn, errorMessage, valid, skalVisesAlen
     return feilmelding;
 }
 
+function leggTilFeilmeldingHvisDenIkkeFinnes(feilmeldingskategori, feilmeldingsnavn, form, feilmelding, valid, skalVisesAlene) {
+    var index = form.$error[feilmeldingskategori].indexByValue(feilmeldingsnavn);
+    if (index == -1) {
+        form.$error[feilmeldingskategori].push(opprettEgendefinertFeilmelding(feilmeldingsnavn, feilmelding, valid, skalVisesAlene ));
+    }
+}
+
+function settEgendefinertFeilmeldingsverdi(form, feilmeldingskategori, feilmeldingsnavn, valid) {
+    var index = form.$error[feilmeldingskategori].indexByValue(feilmeldingsnavn);
+    if (index > -1) {
+        form.$error[feilmeldingskategori][index].$valid = valid;
+        form.$error[feilmeldingskategori][index].$invalid = !valid;
+    }
+}
+
 if (!Array.prototype.indexByValue) {
     Array.prototype.indexByValue = function (val) {
         return this.indexOf($.grep(this, function (obj) {
