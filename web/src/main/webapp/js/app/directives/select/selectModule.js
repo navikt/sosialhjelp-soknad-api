@@ -56,10 +56,23 @@ angular.module('nav.select', ['ngSanitize'])
 
                 var input = angular.element(element.find('input'));
 
+                input.focusin(function() {
+                    element.addClass("fokus");
+                });
+
+                input.focusout(function() {
+                    element.removeClass("fokus");
+                })
+
                 $document.bind('click', function() {
                     avbryt();
                     scope.$apply();
                 });
+
+                scope.apneSelectboks = function(event) {
+                    apne();
+                    event.stopPropagation();
+                }
 
                 scope.escape = function() {
                     avbryt();
