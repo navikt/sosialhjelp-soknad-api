@@ -121,8 +121,8 @@ public class WebSoknad implements Serializable {
 		return this;
 	}
 
-	public DateTime getOpprettetDato() {
-		return opprettetDato;
+	public Long getOpprettetDato() {
+		return opprettetDato.getMillis();
 	}
 
 	public WebSoknad medId(long id) {
@@ -136,7 +136,7 @@ public class WebSoknad implements Serializable {
 	}
 
 	public WebSoknad medBrukerData(List<Faktum> hentAlleBrukerData) {
-		fakta = new HashMap<String, Faktum>();
+		fakta = new HashMap<>();
 		for (Faktum faktum : hentAlleBrukerData) {
 			fakta.put(faktum.getKey(), faktum);
 		}

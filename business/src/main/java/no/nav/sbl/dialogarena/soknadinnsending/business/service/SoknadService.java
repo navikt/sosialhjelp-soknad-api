@@ -29,11 +29,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static no.nav.sbl.dialogarena.pdf.ImageScaler.ScaleMode.SCALE_TO_FIT_INSIDE_BOX;
+import static org.apache.commons.io.IOUtils.toByteArray;
+
 
 @Component
 public class SoknadService implements SendSoknadService {
-
-    private static final Logger logger = LoggerFactory.getLogger(SoknadService.class);
 
     private static final String BRUKERREGISTRERT_FAKTUM = "BRUKERREGISTRERT";
     private static final String SYSTEMREGISTRERT_FAKTUM = "SYSTEMREGISTRERT";
@@ -54,7 +56,6 @@ public class SoknadService implements SendSoknadService {
     @Override
     public void lagreSoknadsFelt(long soknadId, String key, String value) {
         repository.lagreFaktum(soknadId, new Faktum(soknadId, key, value, BRUKERREGISTRERT_FAKTUM));
-
     }
 
     @Override
@@ -62,10 +63,10 @@ public class SoknadService implements SendSoknadService {
         repository.lagreFaktum(soknadId, new Faktum(soknadId, key, value, SYSTEMREGISTRERT_FAKTUM));
     }
 
+
     @Override
     public void sendSoknad(long soknadId) {
         repository.avslutt(new WebSoknad().medId(soknadId));
-
     }
 
     @Override
@@ -81,23 +82,12 @@ public class SoknadService implements SendSoknadService {
     }
 
     public Long startSoknad(String navSoknadId) {
-        logger.debug("Starter ny søknad");
-        //TODO: Sende et signal til Henvendelse om at søknaden er startet
         String behandlingsId = UUID.randomUUID().toString();
-        logger.debug("Start søknad");
 
-        //TODO-KJ: Denne operasjonen er ikke klar enda.Vil kommenteres inn når den er
-//        try {
-//            behandlingsId = sendSoknadService.startBehandling(navSoknadId);
-//        } catch (SOAPFaultException e) {
-//            logger.error("Feil ved oppretting av søknad med ID", navSoknadId, e);
-//            throw new ApplicationException("Kunne ikke opprette ny søknad", e);
-//        }
-//
         WebSoknad soknad = WebSoknad.startSoknad().
                 medBehandlingId(behandlingsId).
                 medGosysId(navSoknadId).
-                medAktorId(SubjectHandler.getSubjectHandler().getUid()).
+                medAktorId(getSubjectHandler().getUid()).
                 opprettetDato(DateTime.now());
         return repository.opprettSoknad(soknad);
     }
