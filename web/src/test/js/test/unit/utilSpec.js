@@ -101,28 +101,27 @@ describe('utility funksjoner -', function () {
         });
     });
 
-        describe('capitalize string', function () {
-            it('skal gjøre første bokstaven i en string stor', function () {
-                var str = "tekst";
-                var expectedStr = "Tekst";
-                expect(capitalizeFirstLetter(str)).toBe(expectedStr);
-            });
-
-            it('skal ikke endre tekst med stor forbokstav', function () {
-                var str = "Tekst";
-                var expectedStr = "Tekst";
-                expect(capitalizeFirstLetter(str)).toBe(expectedStr);
-            });
+    describe('capitalize string', function () {
+        it('skal gjøre første bokstaven i en string stor', function () {
+            var str = "tekst";
+            var expectedStr = "Tekst";
+            expect(capitalizeFirstLetter(str)).toBe(expectedStr);
         });
-    describe('Egendefinerte errors', function () {
-        it('Skal opprette egendefinert feilmeldingobjekt på errors', function () {
 
+        it('skal ikke endre tekst med stor forbokstav', function () {
+            var str = "Tekst";
+            var expectedStr = "Tekst";
+            expect(capitalizeFirstLetter(str)).toBe(expectedStr);
+        });
+    });
+
+    describe('opprettEgendefinertFeilmelding', function () {
+        it('Skal opprette egendefinert feilmeldingobjekt på errors', function () {
             var feilmelding = opprettEgendefinertFeilmelding();
             expect(feilmelding).toBeDefined();
         });
 
-        it('Skal opprette egendefinert feilmelding skal inneholde navn errors', function () {
-
+        it('Egendefinert feilmelding skal inneholde et navn', function () {
             var feilmelding = opprettEgendefinertFeilmelding("navn");
             expect(feilmelding.$name).toBeDefined();
         });
@@ -165,6 +164,58 @@ describe('utility funksjoner -', function () {
             var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage, valid, skalVisesAlene);
             expect(feilmelding.$skalVisesAlene).toBe(skalVisesAlene);
         });
+    });
+
+    describe('settEgendefinertFeilmeldingsverdi', function () {
+        var scope, form, element;
+
+        beforeEach(inject(function ($compile, $rootScope) {
+            scope = $rootScope;
+            element = angular.element(
+                '<form name="form"></form>'
+            );
+            scope.permiteringProsent = '';
+            $compile(element)(scope);
+            scope.$digest();
+            form = scope.form;
+            element.scope().$apply();
+        }));
+
+        it('Skal returnere true når feilmeldingsvaliditeten endres fra true til false', function () {
+            var valid = true;
+            form.$error['feilmeldingskategori'] = [];
+
+            form.$error['feilmeldingskategori'].push(opprettEgendefinertFeilmelding('navn', 'errormessage', valid));
+            settEgendefinertFeilmeldingsverdi(form, 'feilmeldingskategori', 'navn', false);
+
+            expect(form.$error['feilmeldingskategori'][0].$valid).toEqual(false);
+        });
+
+    });
+    describe('leggTilFeilmeldingHvisDenIkkeFinnes', function () {
+        var scope, form, element;
+
+        beforeEach(inject(function ($compile, $rootScope) {
+            scope = $rootScope;
+            element = angular.element(
+                '<form name="form"></form>'
+            );
+            scope.permiteringProsent = '';
+            $compile(element)(scope);
+            scope.$digest();
+            form = scope.form;
+            element.scope().$apply();
+        }));
+
+        it('Skal kunne legge til feilmelding hvis den ikke finnes ', function () {
+            var valid = true;
+            form.$error['feilmeldingskategori'] = [];
+
+            expect(form.$error['feilmeldingskategori'].length).toEqual(0);
+            leggTilFeilmeldingHvisDenIkkeFinnes('feilmeldingskategori', 'feilmeldingsnavn', form, 'feilmelding', true, false)
+            expect(form.$error['feilmeldingskategori'].length).toEqual(1);
+        });
+
     });
 
 });
