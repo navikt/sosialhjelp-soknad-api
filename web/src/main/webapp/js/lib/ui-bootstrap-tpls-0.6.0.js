@@ -209,6 +209,7 @@ angular.module('ui.bootstrap.accordion', ['ui.bootstrap.collapse'])
             }
         };
 
+        // TODO: Dette må vi flytte ut!
         // Lagt til for å kunne åpne en tab når vi vil
         // accordion-group-elementet må ha en ID som sendes med eventen
         var grupper = this.groups;
