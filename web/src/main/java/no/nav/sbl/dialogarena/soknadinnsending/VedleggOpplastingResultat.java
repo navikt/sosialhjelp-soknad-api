@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlElement;
  */
 public class VedleggOpplastingResultat {
     private final Vedlegg vedlegg;
-    private Long id;
 
     public VedleggOpplastingResultat(Vedlegg vedlegg) {
         this.vedlegg = vedlegg;
@@ -40,5 +39,9 @@ public class VedleggOpplastingResultat {
     @XmlElement(name="delete_url")
     public String getSlettVerb() {
         return "POST";
+    }
+
+    public Vedlegg getVedlegg() {
+        return vedlegg;
     }
 }

@@ -41,6 +41,7 @@ angular.module('app.services', ['ngResource'])
                 faktumId: '@faktumId',
                 vedleggId: '@vedleggId'},
             {
+                get: { method: 'GET', params: {} },
                 create: { method: 'POST', params: {} },
                 merge: { method: 'POST', params: {action: 'generer'} },
                 remove: {method: 'POST', params: {action: 'delete'}}

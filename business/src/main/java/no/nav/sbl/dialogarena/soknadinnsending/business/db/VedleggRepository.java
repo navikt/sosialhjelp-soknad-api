@@ -39,11 +39,19 @@ public interface VedleggRepository {
     /**
      * Henter innholdet til ett bestemt vedlegg
      *
-     * @param soknadI
-     * @param vedleggId
-     * @return
+     * @param soknadId soknaden det skal hentes for
+     * @param vedleggId vedlegget som skal hentes
+     * @return innholdet
      */
-    InputStream hentVedlegg(Long soknadI, Long vedleggId);
+    InputStream hentVedleggStream(Long soknadId, Long vedleggId);
+
+    /**
+     * Henter et spesifikt vedlegg uten data
+     * @param soknadId soknaden det skal hentes for
+     * @param vedleggId vedlegget som skal hentes
+     * @return vedlegget
+     */
+    Vedlegg hentVedlegg(Long soknadId, Long vedleggId);
 
     /**
      * Knytter et vedlegg til et faktum

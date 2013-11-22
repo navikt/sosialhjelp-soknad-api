@@ -42,7 +42,6 @@ public class VedleggRepositoryJdbcTest {
         assertThat(vedlegg.size(), is(equalTo(1)));
         v.setId(vedlegg.get(0).getId());
         assertThat(vedlegg.get(0), is(equalTo(v)));
-        assertThat(IOUtils.toByteArray(vedlegg.get(0).getInputStream()), is(equalTo(bytes)));
     }
 
     @Test
@@ -63,7 +62,7 @@ public class VedleggRepositoryJdbcTest {
         byte[] lagret = new byte[]{1,2,3};
         final Vedlegg v = getVedlegg(lagret);
         Long id = vedleggRepository.lagreVedlegg(v, lagret);
-        InputStream hentet = vedleggRepository.hentVedlegg(v.getSoknadId(), id);
+        InputStream hentet = vedleggRepository.hentVedleggStream(v.getSoknadId(), id);
         byte[] bytes = IOUtils.toByteArray(hentet);
         assertThat(bytes, is(equalTo(lagret)));
     }

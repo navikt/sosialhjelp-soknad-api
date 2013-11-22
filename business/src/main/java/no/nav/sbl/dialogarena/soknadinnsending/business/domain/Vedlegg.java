@@ -1,7 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
-import java.io.InputStream;
-
 /**
  * Domeneklasse som beskriver et vedlegg.
  */
@@ -12,7 +10,6 @@ public class Vedlegg {
     private Long storrelse;
     private Long faktum;
     private byte[] data;
-    private InputStream inputStream;
 
     public Vedlegg(Long vedleggId, Long soknadId, Long faktumId, String navn, Long storrelse, byte[] data) {
         this.id = vedleggId;
@@ -47,15 +44,7 @@ public class Vedlegg {
         this.faktum = faktum;
     }
 
-    public InputStream getInputStream() {
-        return inputStream;
-    }
-
-    public void setInputStream(InputStream inputStream) {
-        this.inputStream = inputStream;
-    }
-
-    public String getNavn() {
+     public String getNavn() {
         return navn;
     }
 
@@ -154,7 +143,6 @@ public class Vedlegg {
         sb.append(", navn='").append(navn).append('\'');
         sb.append(", storrelse=").append(storrelse);
         sb.append(", faktum='").append(faktum).append('\'');
-        sb.append(", inputStream=").append(inputStream);
         sb.append('}');
         return sb.toString();
     }

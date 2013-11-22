@@ -1,5 +1,5 @@
 angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
-    .controller('OpplastingCtrl', ['$scope', '$http', '$location', '$routeParams', 'vedleggService', 'data', function ($scope, $http, $location, $routeParams, vedleggService, data) {
+    .controller('OpplastingCtrl', ['$scope', '$http', '$location', '$routeParams', 'vedleggService', 'soknadService', 'data', function ($scope, $http, $location, $routeParams, vedleggService, soknadService, data) {
         $scope.fremdriftsindikator = {
             laster: false
         };
@@ -15,19 +15,39 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         $scope.lastopp = function () {
             submit();
         };
+        $scope.oppdaterSoknad = function () {
+            soknadService.get({param: data.soknad.soknadId},
+                function (result) { // Success
+                    data.soknad = result;
+                    $scope.fremdriftsindikator.laster = false;
+                    $location.url('/vedlegg/' + data.soknad.soknadId + "?scrollTo=faktum_" + $scope.data.faktumId).replace();
+                }
+            );
+        }
         $scope.leggVed = function () {
             var soknadId = data.soknad.soknadId;
+
             $scope.fremdriftsindikator.laster = true;
             vedleggService.merge({
                 soknadId: soknadId,
                 faktumId: $scope.data.faktumId
-            }, function () {
-                $scope.fremdriftsindikator.laster = false;
-                $location.path('/vedlegg/' + soknadId);
+            }, function (data) {
+                $scope.oppdaterSoknad();
             }, function () {
                 $scope.fremdriftsindikator.laster = false;
             });
         };
+
+
+        $scope.loadingFiles = true;
+        vedleggService.get({
+                soknadId: data.soknad.soknadId,
+                faktumId: $scope.data.faktumId
+            }, function (data) {
+                $scope.queue = data.files || [];
+                $scope.loadingFiles = false;
+            }
+        );
     }])
     .controller('SlettOpplastingCtrl', ['$scope', 'vedleggService', 'data', function ($scope, vedleggService, data) {
         var file = $scope.file;
@@ -35,7 +55,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
             vedleggService.remove({
                 soknadId: data.soknad.soknadId,
                 faktumId: $scope.data.faktumId,
-                vedleggId: $scope.file.id
+                vedleggId: file.vedlegg.id
             }, function () {
                 $scope.clear(file);
             });
