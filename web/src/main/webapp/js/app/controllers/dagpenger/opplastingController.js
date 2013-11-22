@@ -4,7 +4,8 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
             laster: false
         };
         $scope.data = {
-            faktumId: $routeParams.faktumId
+            faktumId: $routeParams.faktumId,
+            soknadId: data.soknad.soknadId
         };
 
         $scope.options = {
@@ -25,6 +26,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
             );
         }
         $scope.leggVed = function () {
+
             var soknadId = data.soknad.soknadId;
 
             $scope.fremdriftsindikator.laster = true;
