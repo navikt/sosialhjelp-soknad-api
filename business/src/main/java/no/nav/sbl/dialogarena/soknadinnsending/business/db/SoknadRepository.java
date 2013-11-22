@@ -2,10 +2,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 
-import java.io.InputStream;
 import java.util.List;
 
 public interface SoknadRepository {
@@ -30,12 +28,5 @@ public interface SoknadRepository {
 
 	String opprettBehandling();
 
-    Long lagreVedlegg(final Vedlegg vedlegg);
 
-
-    void slettVedlegg(Long soknadId, Long vedleggId);
-
-    List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktum);
-
-    InputStream hentVedlegg(Long soknadI, Long vedleggId);
 }

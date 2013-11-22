@@ -1,54 +1,34 @@
 <stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="2"></stegindikator>
 
-<panelbelyst id="opplasting">
-    <h2 class="stor" cmstekster="dagpenger.opplasting.tittel"/>
-
-    <p cmstekster="dagpenger.opplasting.info"/>
-
-    <div class="opplasting">
-        <div id="vedleggOversikt" data-ng-controller="VedleggCtrl">
-            <ul class="vedleggListe">
-                <form>
-                <li data-ng-repeat="v in vedlegg" class="vedlegg spm-boks" ng-if="erFaktumLikKriterie(v)">
-                    <h3 cmstekster="{{soknad.gosysId}}.vedlegg.{{v.gosysId}}.header"></h3>
-
-                    <div>
-                        <h4 cmstekster="opplasting.vedlegg.maabekrefte"></h4>
-                        <div cmshtml="{{soknad.gosysId}}.vedlegg.{{v.gosysId}}.bekrefte"></div>
-                    </div>
-                    <div class="forhandsvisning spm-boks">preview</div>
-                    <div class="spm-knapper" data-ng-if="!vedleggBehandlet(v)">
-
-                        <label for="opplasting{{v.gosysId}}" class="knapp-hoved-liten" cmstekster="lastopp"></label>
-                        <input type="file" class="vekk " id="opplasting{{v.gosysId}}">
-                        <input type="checkbox" id="ettersend{{v.gosysId}}" data-ng-model="v.sendSenere">
-                        <label for="ettersend{{v.gosysId}}" cmstekster="opplasting.vedlegg.ettersend"></label>
-                        <input type="checkbox" id="ikkesend{{v.gosysId}}" data-ng-model="v.ikkeSend">
-                        <label for="ikkesend{{v.gosysId}}" cmstekster="opplasting.vedlegg.ikkesend">></label>
-                    </div>
-                    <div class="spm-knapper" data-ng-if="v.ikkeSend">
-                        <input type="checkbox" id="ikkesend{{v.gosysId}}ferdig" data-ng-model="v.ikkeSend">
-                        <label for="ikkesend{{v.gosysId}}ferdig" cmstekster="opplasting.vedlegg.ikkesend">></label>
-                    </div>
-                    <div class="spm-knapper" data-ng-if="v.sendSenere">
-                        <input type="checkbox" id="ettersend{{v.gosysId}}ferdig" data-ng-model="v.sendSenere">
-                        <label for="ettersend{{v.gosysId}}ferdig" cmstekster="opplasting.vedlegg.ettersend"></label>
-                    </div>
-                    <div class="spm-knapper" data-ng-if="v.lastetOpp">
-                        Lastet opp
-                    </div>
-                </li>
-                </form>
-            </ul>
-        </div>
-        <div class="opplasting-knapper">
-            <div>
-                <a href="#/oppsummering/{{ soknadData.soknadId }}" class="knapp-hoved"
-                   cmstekster="dagpenger.opplasting.ferdig"/>
-            </div>
-            <div>
-                <a href="#/dagpenger/{{ soknadData.soknadId }}" cmstekster="tilbake"/>
-            </div>
-        </div>
+<div id="opplasting" class="soknad rad-belyst">
+    <div class="begrensning sak-halv">
+        <section class="panel-mini uten-ramme">
+            <h1 class="stor-strek-ikon-vedlegg">Last opp</h1>
+        </section>
     </div>
-</panelbelyst>
+    <form id="opplastingform" method="POST" enctype="multipart/form-data" data-file-upload="options" data-ng-controller="OpplastingCtrl">
+        <div class="begrensning sak-trekvart">
+            <section class="panel-standard oversikt">
+                <ul class="opplastingliste clearfix">
+                    <li data-ng-repeat="file in queue" data-ng-class="{'lasteropp': file.$processing()}">
+                        <a class="lukk" data-ng-if="!!file.sletteUrl" data-ng-click="file.$destroy()" data-ng-controller="SlettOpplastingCtrl"></a>
+                        <img data-async-image="../{{file.forhandsvisningUrl}}" data-ng-if="!!file.forhandsvisningUrl">
+                    </li>
+                    <li class="leggtil">
+                        <input id="leggtil" type="file" name="files[]" class="vekk" data-last-opp-fil multiple>
+                        <label for="leggtil" class="robust" data-cmstekster="opplasting.leggtil"></label>
+                    </li>
+                </ul>
+            </section>
+        </div>
+        <div class="rad uten-ramme">
+            <div class="begrensning sak-totredel">
+                <a data-redirect="#/vedlegg/{{ soknad.soknadId }}" class="knapp-hoved" cmstekster="opplasting.ferdig" data-ng-click="leggVed()" data-fremdriftsindikator></a>
+                <a href="#/oppsummering/{{ soknad.soknadId }}" class="" cmstekster="opplasting.avbryt">Avbryt</a>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+

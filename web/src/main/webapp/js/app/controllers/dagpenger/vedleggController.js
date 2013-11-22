@@ -1,11 +1,37 @@
 angular.module('nav.vedlegg.controller', [])
-    .controller('VedleggCtrl', ['$scope', 'data', function ($scope, data) {
+    .controller('VedleggCtrl', ['$scope', '$location', '$routeParams', '$anchorScroll', 'data', 'vedleggService', function ($scope, $location, $routeParams, $anchorScroll, data, vedleggService) {
 
-        $scope.showErrors = false;
+        function cloneObject(object) {
+            return $.extend({}, object);
+        }
 
+        function opprettVedleggMedFaktum(key) {
+            var vedlegg = cloneObject(vedleggMap[key]);
+            vedlegg.data = data.soknad.fakta[key];
+            vedlegg.valg = 'sendinn';
+            vedlegg.lastetOpp = function () {
+                return vedlegg.data.vedleggId;
+            }
+            return vedlegg;
+        }
+
+        function faktumMedVedlegg(key) {
+            return vedleggMap[key] != undefined;
+        }
+
+        function indekserVedlegg(vedlegg) {
+            var vedleggMap = {};
+            vedlegg.forEach(function (vedlegg) {
+                var id = vedlegg.faktum.id;
+                vedleggMap[id] = vedlegg;
+            });
+            return vedleggMap;
+        }
+
+
+        var vedleggMap = indekserVedlegg(data.soknadOppsett.vedlegg);
         $scope.sidedata = {navn: 'vedlegg'};
-
-        $scope.vedlegg = data.soknadOppsett.vedlegg;
+        $scope.vedlegg = Object.keys(data.soknad.fakta).filter(faktumMedVedlegg).map(opprettVedleggMedFaktum);
         $scope.soknad = data.soknad;
         $scope.erFaktumLikKriterie = function (vedlegg) {
             if (data.soknad.fakta[vedlegg.faktum.id]) {
@@ -13,7 +39,17 @@ angular.module('nav.vedlegg.controller', [])
             }
             return false;
         }
-        $scope.vedleggBehandlet = function(vedlegg){
-            return vedlegg.ikkeSend || vedlegg.sendSenere  || vedlegg.lastetOpp;
+        $scope.slettVedlegg = function (vedlegg) {
+
+            vedleggService.remove({
+                soknadId: data.soknad.soknadId,
+                faktumId: vedlegg.data.id,
+                vedleggId: vedlegg.data.vedleggId}, function () {
+                vedlegg.data.vedleggId = null;
+            });
+
+        }
+        $scope.vedleggBehandlet = function (vedlegg) {
+            return vedlegg.valg === 'ikkeSend' || vedlegg.valg == 'sendSenere' || vedlegg.lastetOpp();
         }
     }]);
