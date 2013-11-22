@@ -83,19 +83,22 @@ angular.module('nav.feilmeldinger', [])
                 }
 
                 /*
-                 * Dersom vi har en egendefinert feil skal vi bare vise denne. I det tilfellet fjernes alle andre feilmeldinger
+                 * Dersom vi har en egendefinert feil med der $skalVisesAlene er satt til true så skal kun denne feilmeldingen vises. I det tilfellet fjernes alle andre feilmeldinger
                  * og vi skal ikke loope mer. Return false dersom vi skal stoppe loopen, ellers true.
                  */
                 function leggTilFeilmeldingerVedValidering(verdi, feilNokkel) {
+                    var skalViseFlereFeilmeldinger = true;
                     angular.forEach(verdi, function (feil) {
                         var feilmelding = finnFeilmelding(feil, feilNokkel);
 
-                        if (feil === undefined) { // == Egendefinert feilmelding
+                        if (feil.$skalVisesAlene === true && skalViseFlereFeilmeldinger) { // == Egendefinert feilmelding
                             scope.feilmeldinger = [feilmelding];
+                            skalViseFlereFeilmeldinger = false;
                             return false;
+                        } else if (skalViseFlereFeilmeldinger) {
+                            leggTilFeilmeldingHvisIkkeAlleredeLagtTil(scope.feilmeldinger, feilmelding);
                         }
 
-                        leggTilFeilmeldingHvisIkkeAlleredeLagtTil(scope.feilmeldinger, feilmelding);
                     });
                     return true;
                 }

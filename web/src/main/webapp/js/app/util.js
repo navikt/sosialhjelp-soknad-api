@@ -94,16 +94,18 @@ function opprettEgendefinertFeilmelding(navn, errorMessage, valid, skalVisesAlen
 
 function leggTilFeilmeldingHvisDenIkkeFinnes(feilmeldingskategori, feilmeldingsnavn, form, feilmelding, valid, skalVisesAlene) {
     var index = form.$error[feilmeldingskategori].indexByValue(feilmeldingsnavn);
+
     if (index == -1) {
         form.$error[feilmeldingskategori].push(opprettEgendefinertFeilmelding(feilmeldingsnavn, feilmelding, valid, skalVisesAlene ));
     }
 }
 
-function settEgendefinertFeilmeldingsverdi(form, feilmeldingskategori, feilmeldingsnavn, valid) {
+function settEgendefinertFeilmeldingsverdi(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, valid, skalVisesAlene) {
     var index = form.$error[feilmeldingskategori].indexByValue(feilmeldingsnavn);
-    if (index > -1) {
-        form.$error[feilmeldingskategori][index].$valid = valid;
-        form.$error[feilmeldingskategori][index].$invalid = !valid;
+    if (index > -1 && valid) {
+        form.$error[feilmeldingskategori].splice(index, 1);
+    } else if (index == -1 && !valid) {
+        leggTilFeilmeldingHvisDenIkkeFinnes(feilmeldingskategori, feilmeldingsnavn, form, feilmelding, valid, skalVisesAlene)
     }
 }
 
