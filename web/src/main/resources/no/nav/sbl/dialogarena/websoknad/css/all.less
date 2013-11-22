@@ -90,44 +90,44 @@
 }
 
 .ferdig-skjema {
-  border-bottom: none;
-  padding-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
 
-  .textarea-form {
-      text-align: center;
+    .textarea-form {
+        text-align: center;
 
-      .textarea-container {
-        margin-bottom: 35px;
-      }
-      p, span {
-        font-size: 14px !important;
-        margin: 10px 0;
-      }
+        .textarea-container {
+            margin-bottom: 35px;
+        }
+        p, span {
+            font-size: 14px !important;
+            margin: 10px 0;
+        }
 
-      label {
-          text-transform: uppercase;
-      }
+        label {
+            text-transform: uppercase;
+        }
 
-      textarea {
-          margin: 10px auto 0;
-          overflow-y: hidden;
-          margin: 0 auto;
-          max-width: 50%;
-          min-width: 50%;
-          min-height: 40px;
-      }
-      .tellertekst {
-        font-weight: bold;
-      }
-      .negativtekstteller {
-        color: #c30000;
-      }
-  }
+        textarea {
+            margin: 10px auto 0;
+            overflow-y: hidden;
+            margin: 0 auto;
+            max-width: 50%;
+            min-width: 50%;
+            min-height: 40px;
+        }
+        .tellertekst {
+            font-weight: bold;
+        }
+        .negativtekstteller {
+            color: #c30000;
+        }
+    }
 
-  a[class*="knapp-"] {
-      margin-top: 40px;
-      margin-bottom: 40px;
-  }
+    a[class*="knapp-"] {
+        margin-top: 40px;
+        margin-bottom: 40px;
+    }
 }
 
 .stegindikator {
@@ -197,7 +197,8 @@
 
         .flipp {
             cursor: pointer;
-            border-color: transparent transparent #00468B transparent;
+            border-color: transparent transparent #00468B transparent
+        ;
 
             &:before {
                 border-top: 30px solid #0067c5;
@@ -210,7 +211,8 @@
 
         .flipp {
             cursor: pointer;
-            border-color: transparent transparent #a3a3a3 transparent;
+            border-color: transparent transparent #a3a3a3 transparent
+        ;
 
             &:before {
                 border-top: 30px solid #ccc;
@@ -229,7 +231,8 @@
         height: 0;
         margin: 0 auto;
         border-style: solid;
-        border-color: transparent transparent #0067c5 transparent;
+        border-color: transparent transparent #0067c5 transparent
+    ;
         border-width: 0 2px 3px 2px;
 
         &:before {
@@ -313,7 +316,6 @@
             .spm-knapper {
                 margin-top: 40px;
                 text-align: center;
-
 
                 input, button, a {
                     margin-bottom: 15px;
@@ -432,9 +434,9 @@
         .melding {
             display: block;
         }
-        
+
         .melding.inline {
-        	display: inline;
+            display: inline;
         }
     }
 }
@@ -443,7 +445,7 @@
     margin-bottom: 50px;
     li {
         a {
-            font-family: Modus,Arial,Helvetica,sans-serif;;
+            font-family: Modus, Arial, Helvetica, sans-serif;;
             font-weight: 600;
         }
 
@@ -491,7 +493,6 @@ form, [ng-form], [data-ng-form] {
     }
 }
 
-
 .hjelpetekst {
     background-color: #3e3832;
     padding: 20px;
@@ -535,29 +536,67 @@ form, [ng-form], [data-ng-form] {
     }
 }
 
-
-
 .nav-select {
     position: relative;
 
-    &.open {
-        input {
-            border-color: rgba(82, 168, 236, .8);
-            background-image: url(../img/pil-blaa-hover.png);
+    &.feil {
+        .select-input {
+            background-color: #fee6e6;
+            border: 1px solid #fca292;
+            border-top: 1px solid @red;
+        }
+
+        .melding {
+            display: inline-block !important;
         }
     }
 
-    input {
-        width: 100% !important;
-        margin-bottom: 0 !important;
-        padding-left: 30px;
-        background-image: url(../img/pil-blaa.png);
-        background-repeat: no-repeat;
-        background-position: 10px;
-        background-position: 12px;
+    &.fokus {
+        .select-input {
+            border-color: rgba(82, 168, 236, .8);
+        }
+    }
 
-        &:hover {
+    &.open {
+        .select-input {
+            border-color: rgba(82, 168, 236, .8);
+
+            div.pil {
                 background-image: url(../img/pil-blaa-hover.png);
+            }
+        }
+    }
+
+    .select-input {
+        position: relative;
+        height: 32px;
+        border: 1px solid #cccccc;
+        border-top: 1px solid #b7b1a9;
+        cursor: text;
+
+        input {
+            border: none !important;
+            position: absolute;
+            top: 7px;
+            left: 32px;
+            right: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            padding-left: 0;
+        }
+
+        div.pil {
+            float: left;
+            cursor: pointer;
+            height: 32px;
+            width: 32px;
+            background-image: url(../img/pil-blaa.png);
+            background-repeat: no-repeat;
+            background-position: 12px;
+
+            &:hover {
+                background-image: url(../img/pil-blaa-hover.png);
+            }
         }
     }
 
