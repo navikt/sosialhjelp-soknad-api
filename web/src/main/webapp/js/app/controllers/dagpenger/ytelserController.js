@@ -11,15 +11,12 @@ angular.module('nav.ytelser',[])
                 form.$error['ytelser'] = [];
             }
 
-            var idx = form.$error['ytelser'].indexByValue('harValgtYtelse');
-            if (idx == -1) {
-                form.$error['ytelser'].push(opprettEgendefinertFeilmelding("harValgtYtelse","ytelser.harValgtYtelse.feilmelding", minstEnAvhuket, false ));
-            }
+            leggTilFeilmeldingHvisDenIkkeFinnes('ytelser','harValgtYtelse', form ,"ytelser.harValgtYtelse.feilmelding", true, false);
+            leggTilFeilmeldingHvisDenIkkeFinnes('ytelser','minstEnAvhuket', form ,"ytelser.minstEnAvhuket.feilmelding", minstEnAvhuket, false);
 
-            form.$error['ytelser'].push(opprettEgendefinertFeilmelding("minstEnAvhuket","ytelser.minstEnAvhuket.feilmelding", true, false ));
-
-            console.log(form.$error['ytelser'][0].$valid);
-            console.log(form.$error['ytelser'][1].$valid);
+            console.log("valider ytelser")
+            console.log("valgt ytelser " + form.$error['ytelser'][0].$valid);
+            console.log("avhuket " + form.$error['ytelser'][1].$valid);
 
 //            form.$setValidity('ytelser.harValgtYtelse.feilmelding', true); // Fjerne feil som kan være satt dersom man prøver å huke av "nei" mens andre checkboxer er avhuket.
 //            form.$setValidity("ytelser.minstEnAvhuket.feilmelding", minstEnAvhuket);
@@ -31,21 +28,27 @@ angular.module('nav.ytelser',[])
             var ytelserNokler = nokler.slice(0, nokler.length - 1);
             var harIkkeValgtYtelse = !$scope.erCheckboxerAvhuket(ytelserNokler);
 
-            if (harIkkeValgtYtelse) {
-//                form.$setValidity('ytelser.harValgtYtelse.feilmelding', true);
-                form.$error['ytelser'][0].$invalid = true;
-                form.$error['ytelser'][0].$valid = false;
+            if (form.$error['ytelser'] === undefined) {
+                form.$error['ytelser'] = [];
+            }
 
+            leggTilFeilmeldingHvisDenIkkeFinnes('ytelser','harValgtYtelse', form ,"ytelser.harValgtYtelse.feilmelding", harIkkeValgtYtelse, false);
+            leggTilFeilmeldingHvisDenIkkeFinnes('ytelser','minstEnAvhuket', form,"ytelser.minstEnAvhuket.feilmelding", !harIkkeValgtYtelse, false);
+
+            if (harIkkeValgtYtelse) {
+                settEgendefinertFeilmeldingsverdi(form, 'ytelser','harValgtYtelse', true);
+                settEgendefinertFeilmeldingsverdi(form, 'ytelser','minstEnAvhuket', !harIkkeValgtYtelse);
             } else {
-//                form.$setValidity("ytelser.minstEnAvhuket.feilmelding", true);
-                form.$error['ytelser'][1].$invalid = false;
-                form.$error['ytelser'][1].$valid = true;
+                settEgendefinertFeilmeldingsverdi(form, 'ytelser','minstEnAvhuket', true);
             }
 
             if ($scope.soknadData.fakta.ingenYtelse != undefined && $scope.soknadData.fakta.ingenYtelse.value) {
                 $scope.soknadData.fakta.ingenYtelse.value = false;
                 $scope.$emit("OPPDATER_OG_LAGRE", {key: 'ingenYtelse', value: false});
             }
+            console.log("endre ytelser")
+            console.log("valgt ytelser" + form.$error['ytelser'][0].$valid);
+            console.log("avhuket" + form.$error['ytelser'][1].$valid);
 
         }
 
@@ -54,26 +57,35 @@ angular.module('nav.ytelser',[])
             var harValgtYtelse = $scope.erCheckboxerAvhuket(ytelserNokler);
             var verdi = $scope.soknadData.fakta.ingenYtelse.value;
 
+            //burde kunne trekkes ut?
+            if (form.$error['ytelser'] === undefined) {
+                form.$error['ytelser'] = [];
+            }
+            //litt usikker på hva veridene skal være her
+            leggTilFeilmeldingHvisDenIkkeFinnes('ytelser','harValgtYtelse', form ,"ytelser.harValgtYtelse.feilmelding", harValgtYtelse, false);
+            leggTilFeilmeldingHvisDenIkkeFinnes('ytelser','minstEnAvhuket', form,"ytelser.minstEnAvhuket.feilmelding", harValgtYtelse, false);
+
             if (harValgtYtelse) {
                 if (Object.keys($scope.soknadData.fakta.ingenYtelse).length == 1) {
                     $scope.$emit("OPPDATER_OG_LAGRE", {key: 'ingenYtelse', value: 'false'});
                 }
                 $scope.soknadData.fakta.ingenYtelse.value = 'false';
 
-//                form.$setValidity('ytelser.harValgtYtelse.feilmelding', false);
-                form.$error['ytelser'][0].$invalid = true;
-                form.$error['ytelser'][0].$valid = false;
+                settEgendefinertFeilmeldingsverdi(form, 'ytelser','harValgtYtelse', false);
+
                 $scope.runValidation();
             } else {
                 if (verdi) {
-                    form.$setValidity("ytelser.minstEnAvhuket.feilmelding", true);
-                    form.$error['ytelser'][1].$invalid = false;
-                    form.$error['ytelser'][1].$valid = true;
+                    settEgendefinertFeilmeldingsverdi(form, 'ytelser','minstEnAvhuket', true);
                 }
 
                 $scope.$emit("OPPDATER_OG_LAGRE", {key: 'ingenYtelse', value: verdi});
             }
+            console.log("endre ingenytelser");
+            console.log("valgt ytelser" + form.$error['ytelser'][0].$valid);
+            console.log("avhuket" + form.$error['ytelser'][1].$valid);
         }
+
 
         $scope.erCheckboxerAvhuket = function(checkboxNokler) {
             var minstEnAvhuket = false;
