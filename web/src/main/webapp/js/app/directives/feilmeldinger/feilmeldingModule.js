@@ -106,7 +106,7 @@ angular.module('nav.feilmeldinger', [])
                 }
 
                 function leggTilFeilmeldingHvisIkkeAlleredeLagtTil(fortsattFeilListe, feilmelding) {
-                    if (liste.indexByValue(feilmelding.feil) < 0){
+                    if (fortsattFeilListe.indexByValue(feilmelding.feil) < 0){
                         fortsattFeilListe.push(feilmelding);
                     }
                 }
