@@ -1,8 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.support.AbstractLobCreatingPreparedStatementCallback;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.jdbc.support.lob.DefaultLobHandler;
@@ -24,7 +22,6 @@ import java.util.List;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepository {
 
-    private static final Logger LOG = LoggerFactory.getLogger(VedleggRepositoryJdbc.class);
     private DefaultLobHandler lobHandler;
 
     public VedleggRepositoryJdbc() {

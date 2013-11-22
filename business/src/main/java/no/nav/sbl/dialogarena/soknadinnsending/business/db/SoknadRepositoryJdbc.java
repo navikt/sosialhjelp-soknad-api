@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
-import org.springframework.jdbc.support.lob.DefaultLobHandler;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,10 +35,8 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad.
 public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(SoknadRepositoryJdbc.class);
-    private DefaultLobHandler lobHandler;
 
     public SoknadRepositoryJdbc() {
-        lobHandler = new DefaultLobHandler();
     }
 
     @Inject

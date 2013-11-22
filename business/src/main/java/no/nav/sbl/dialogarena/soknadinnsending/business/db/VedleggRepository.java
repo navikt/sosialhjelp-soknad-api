@@ -17,7 +17,7 @@ public interface VedleggRepository {
      * @param content innholdet i vedlegget
      * @return
      */
-    public Long lagreVedlegg(final Vedlegg vedlegg, byte[] content);
+    Long lagreVedlegg(final Vedlegg vedlegg, byte[] content);
 
     /**
      * Sletter et bestemt vedlegg

@@ -23,7 +23,6 @@ public class ScriptRunner implements Callable<byte[]> {
     public static final int TIMEOUT_PAA_GENERERING = 20000;
     public static final File TMP_DIR = new File(System.getProperty("java.io.tmpdir"));
 
-    private static boolean enableGhostscript = true;
     public static final boolean GS_EXISTS = checkIfExists(decideGSCommand());
     public static final boolean IM_EXISTS = checkIfExists(decideIMCommand());
     private final Type command;
@@ -71,7 +70,6 @@ public class ScriptRunner implements Callable<byte[]> {
 
             executor.setStreamHandler(new PumpStreamHandler(out, System.err, inputStream));
             executor.setWatchdog(watchdog);
-            System.out.println(cmdLine.toString());
 
             executor.execute(cmdLine);
 
