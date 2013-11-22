@@ -1,8 +1,4 @@
-<div class="rad nettotopp">
-    <div class="begrensning sak-trekvart">
-        <stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="2"></stegindikator>
-    </div>
-</div>
+<stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="2"></stegindikator>
 
 <div id="vedlegg" class="soknad">
     <div class="rad-belyst">
@@ -19,7 +15,7 @@
     </div>
     <section data-ng-controller="VedleggCtrl">
         <div data-accordion data-close-others="false">
-            <section data-ng-repeat="v in vedlegg" ng-if="erFaktumLikKriterie(v)" class="vedlegg" data-ng-form  id="faktum_{{v.data.id}}">
+            <section data-ng-repeat="v in vedlegg" ng-if="erFaktumLikKriterie(v)" class="vedlegg" data-ng-form id="faktum_{{v.data.id}}">
                 <div data-accordion-group class="spm-blokk" data-is-open="true" ng-class="{open: isOpen}">
                     <div data-accordion-heading>
                         <div class="flipp">
@@ -82,10 +78,15 @@
         </div>
     </section>
 
-    <div class="rad uten-ramme">
-        <div class="begrensning sak-totredel">
-            <a href="#/oppsummering/{{ soknadData.soknadId }}" class="knapp-hoved" cmstekster="vedlegg.ferdig"/>
-            <stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="2"></stegindikator>
+
+    <div class="rad ferdig-skjema">
+        <div class="begrensning">
+            <section class="sak-hel">
+                <a href="#/oppsummering/{{ soknadData.soknadId }}" class="knapp-hoved" cmstekster="vedlegg.ferdig"/>
+            </section>
         </div>
     </div>
+    <div stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="2"/>
+
+    <div sist-lagret/>
 </div>

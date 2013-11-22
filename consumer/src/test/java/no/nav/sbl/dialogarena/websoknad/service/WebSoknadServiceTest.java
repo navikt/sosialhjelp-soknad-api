@@ -22,74 +22,35 @@ import static org.mockito.Mockito.when;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class WebSoknadServiceTest {
-    
+
     private static final String BEHANDLINGS_ID = "129187212";
-	@Mock
+    @Mock
     @Named("sendSoknadService")
     SendSoknadPortType webservice;
-	
-	@InjectMocks
-	HenvendelseConnector service;
-	
-	Long soknadId;
 
-	@Before
-	public void setUp() {
-		
-	}
-	
-	@Test
-	public void skalKunneStarteSoknad() {
-	    when(webservice.startSoknad(any(WSStartSoknadRequest.class))).thenReturn(lagResultatFraStartSoknad());
-		String behandlingsId = service.startSoknad("01019012345", lagTomFaktaListe());
-		assertThat(behandlingsId, equalTo(BEHANDLINGS_ID));
-	}
+    @InjectMocks
+    HenvendelseConnector service;
+
+    Long soknadId;
+
+    @Before
+    public void setUp() {
+
+    }
+
+    @Test
+    public void skalKunneStarteSoknad() {
+        when(webservice.startSoknad(any(WSStartSoknadRequest.class))).thenReturn(lagResultatFraStartSoknad());
+        String behandlingsId = service.startSoknad("01019012345", lagTomFaktaListe());
+        assertThat(behandlingsId, equalTo(BEHANDLINGS_ID));
+    }
 
     private WSBehandlingsId lagResultatFraStartSoknad() {
         return new WSBehandlingsId().withBehandlingsId(BEHANDLINGS_ID);
     }
-    
+
     private List<Faktum> lagTomFaktaListe() {
         return new ArrayList<Faktum>();
-    }
-	
-	@Test
-	public void skalKunneLeggeTilFaktum() {
-		WebSoknad soknad = service.hentSoknad(soknadId);
-		soknad.leggTilFaktum("enKey", new Faktum(soknadId, "enKey", "enVerdi", null));
-		
-		Assert.assertEquals(1, soknad.antallFakta());
-		Assert.assertEquals("enVerdi", soknad.getFakta().get("enKey").getValue());
-	}
-	
-	@Test(expected = ApplicationException.class)
-	public void skalFaaApplicationExceptionVedHentingDersomNoeErFeil() {
-		when(webservice.hentSoknad(-1l)).thenThrow(SOAPFaultException.class);
-		service.hentSoknad(-1l);
-	}
-	
-	@Test
-	public void skalKunneAvbryteSoknad() {
-		service.avbrytSoknad(soknadId);
-		verify(webservice, times(1)).avbrytSoknad(soknadId);
-	}
-	
-	@Test
-	public void skalKunneSendeSoknad() {
-		service.sendSoknad(soknadId);
-		verify(webservice, times(1)).sendSoknad(soknadId);
-	}
-	
-	@Test
-	public void skalKunneLagreFelt() {
-		service.lagreSoknadsFelt(soknadId, "enKey", "enValue");
-		verify(webservice, times(1)).lagreBrukerData(soknadId, "enKey", "enValue");
-	}
-
-    @Test
-    public void testTransform(){
-
-
     }
 
 }
