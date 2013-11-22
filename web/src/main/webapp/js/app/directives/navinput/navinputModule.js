@@ -50,21 +50,9 @@ angular.module('nav.input', ['nav.cmstekster'])
             link: function (scope, element) {
 //                var tmpElementName = 'tmpName';
 //                fiksNavn(element, scope.inputname, tmpElementName);
-                
+
                 scope.hvisHarHjelpetekst = function() {
-                    return scope.hjelpetekst != undefined;
-                }
-
-                scope.toggleHjelpetekst = function() {
-                    if(scope.visHjelpetekst == undefined) {
-                        scope.visHjelpetekst = true;
-                    } else {
-                        scope.visHjelpetekst = !scope.visHjelpetekst;
-                    }
-                }
-
-                scope.visHjelpeteksten = function() {
-                    return scope.visHjelpetekst;
+                    return scope.tittel && scope.tekst;
                 }
 
                 scope.hvisIRedigeringsmodus = function () {

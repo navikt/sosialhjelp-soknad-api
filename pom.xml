@@ -30,7 +30,7 @@
         <cxf.version>2.7.7</cxf.version>
         <nav.sbl.commons.version>3.30</nav.sbl.commons.version>
         <modig-security.version>1.0.19</modig-security.version>
-        <sendsoknad.tjenestespec.version>0.0.8</sendsoknad.tjenestespec.version>
+        <sendsoknad.tjenestespec.version>0.0.11</sendsoknad.tjenestespec.version>
         <sonar.exclusions>no/nav/sbl/dialogarena/websoknad/config/**</sonar.exclusions>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -40,13 +40,19 @@
         <dialogarena.webkomponent.innstillinger>1.1.0-SNAPSHOT</dialogarena.webkomponent.innstillinger>
         <dialogarena.dokumentinnsending.version>2.0.1</dialogarena.dokumentinnsending.version>
 		<ojdbc.version>11.2.0.3</ojdbc.version>
+        <flying.saucer.version>9.0.3</flying.saucer.version>
+        <handlebars.version>1.1.2</handlebars.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
 
             <!-- Avhengigheter med scope compile -->
-
+            <dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>dialogarena-behandlingsinformasjon</artifactId>
+                <version>0.0.2-SNAPSHOT</version>
+            </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-cxf</artifactId>
@@ -197,11 +203,33 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+
             <dependency>
                 <groupId>org.apache.pdfbox</groupId>
                 <artifactId>pdfbox</artifactId>
                 <version>1.8.2</version>
             </dependency>
+            <dependency>
+                <groupId>org.xhtmlrenderer</groupId>
+                <artifactId>flying-saucer-pdf</artifactId>
+                <version>${flying.saucer.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jknack</groupId>
+                <artifactId>handlebars</artifactId>
+                <version>${handlebars.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.1.4</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lowagie</groupId>
+                <artifactId>itext</artifactId>
+                <version>2.1.7</version>
+            </dependency>
+
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-test</artifactId>

@@ -64,7 +64,8 @@ public final class StartSoknadJetty {
     }
 
     private void configureSecurity() {
-        setProperty("no.nav.modig.security.sts.url", "http://es-gw-t.test.internsone.local:9080/SecurityTokenServiceProvider/");
+        //setProperty("no.nav.modig.security.sts.url", "http://es-gw-t.test.internsone.local:9080/SecurityTokenServiceProvider/");
+        setProperty("no.nav.modig.security.sts.url", "http://localhost:8080/SecurityTokenServiceProvider/");
         setProperty("no.nav.modig.security.systemuser.username", "BD05");
         setProperty("no.nav.modig.security.systemuser.password", "test");
         setProperty("org.apache.cxf.stax.allowInsecureParser", "true");

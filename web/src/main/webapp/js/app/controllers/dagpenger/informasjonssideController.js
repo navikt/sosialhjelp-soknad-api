@@ -5,7 +5,7 @@ angular.module('nav.informasjonsside',['nav.cmstekster'])
             //Inntil vi får arena-kobling
             $scope.utslagskriterier.erRegistrertArbeidssoker = true;
             //For testing uten TPS:
-            /* $scope.utslagskriterier.gyldigAlder = true;
+           /*  $scope.utslagskriterier.gyldigAlder = true;
             $scope.utslagskriterier.bosattINorge = false;*/
             
 
