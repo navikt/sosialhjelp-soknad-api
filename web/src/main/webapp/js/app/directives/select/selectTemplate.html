@@ -9,6 +9,6 @@
         <span data-ng-if="inneholderIkkeSkrevetTekst()" class="melding mini" data-cmstekster="{{ ugyldigFeilmelding }}"/>
     </label>
     <ul data-ng-show="skalViseListen()">
-        <li data-bindonce data-ng-repeat="option in options" data-ng-show="[option] | filterElement: soketekst" data-ng-click="valgtElement($index)" data-value="{{ option.value }}" data-ng-bind-html="option.displayText" data-ng-class="{harFokus: harFokus(option, $index)}"/>
+        <li data-bindonce data-ng-repeat="option in options | filterSearch: soketekst | limitTo: visAntallListeElement" data-ng-click="valgtElement($index)" data-value="{{ option.value }}" data-ng-bind-html="option.displayText" data-ng-class="{harFokus: harFokus(option, $index)}"/>
     </ul>
 </div>
