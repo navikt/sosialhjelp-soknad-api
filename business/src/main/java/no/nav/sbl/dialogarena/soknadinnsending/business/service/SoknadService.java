@@ -43,7 +43,7 @@ public class SoknadService implements SendSoknadService {
     public void lagreSystemSoknadsFelt(long soknadId, String key, String value) {
         repository.lagreFaktum(soknadId, new Faktum(soknadId, key, value, SYSTEMREGISTRERT_FAKTUM));
     }
-    
+
     @Override
     public void sendSoknad(long soknadId) {
         repository.avslutt(new WebSoknad().medId(soknadId));
