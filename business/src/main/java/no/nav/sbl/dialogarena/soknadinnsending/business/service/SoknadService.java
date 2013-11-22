@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.detect.IsImage;
 import no.nav.sbl.dialogarena.detect.IsPdf;
 import no.nav.sbl.dialogarena.pdf.ConvertToPng;
@@ -15,8 +14,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -30,8 +27,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
-import static no.nav.sbl.dialogarena.pdf.ImageScaler.ScaleMode.SCALE_TO_FIT_INSIDE_BOX;
-import static org.apache.commons.io.IOUtils.toByteArray;
 
 
 @Component

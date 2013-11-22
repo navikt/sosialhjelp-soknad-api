@@ -1,13 +1,12 @@
 package no.nav.sbl.dialogarena.person;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 public class PersonTest {
 
