@@ -1,15 +1,5 @@
 package no.nav.sbl.dialogarena.person;
 
-import static no.nav.sbl.dialogarena.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
-import static no.nav.sbl.dialogarena.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
-import static no.nav.sbl.dialogarena.person.Adressetype.POSTADRESSE;
-import static no.nav.sbl.dialogarena.person.Adressetype.UTENLANDSK_ADRESSE;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.joda.time.DateTime;
-
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBostedsadresse;
@@ -25,6 +15,15 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostboksadresseNorsk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLStrukturertAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLUstrukturertAdresse;
+import org.joda.time.DateTime;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static no.nav.sbl.dialogarena.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
+import static no.nav.sbl.dialogarena.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
+import static no.nav.sbl.dialogarena.person.Adressetype.POSTADRESSE;
+import static no.nav.sbl.dialogarena.person.Adressetype.UTENLANDSK_ADRESSE;
 
 /**
  * Hjelpeklasse for å hente adresser ut fra TPS-resultat
