@@ -70,7 +70,7 @@ public class SoknadTpsDataController {
     @RequestMapping(value = "/personalder", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Map<String, Integer> getAlder() {
-    	Map<String, Integer> result = new HashMap<String, Integer>();
+    	Map<String, Integer> result = new HashMap<>();
     	String uid = getSubjectHandler().getUid();
     	PersonAlder personAlder = new PersonAlder(uid);
     	

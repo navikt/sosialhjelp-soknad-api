@@ -1,0 +1,105 @@
+.sist-lagret {
+    text-align: center;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+
+    &.stick {
+        margin-bottom: 0;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 15px;
+        background: #f1f1f1;
+        border-top: 1px solid #ddd;
+        z-index: 1035;
+    }
+}
+
+.helsemessige-arsaker {
+    [data-avtextarea], [navtextarea] {
+        width: 100%;
+        margin-bottom: 10px;
+
+        textarea {
+            width: 100%;
+            max-width: 100%;
+        }
+    }
+}
+
+.henter-personalia {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+
+.ferdig-skjema {
+    border-bottom: none;
+    padding-bottom: 0;
+
+    .textarea-form {
+        text-align: center;
+
+        .textarea-container {
+            margin-bottom: 35px;
+        }
+        p, span {
+            font-size: 14px !important;
+            margin: 10px 0;
+        }
+
+        label {
+            text-transform: uppercase;
+        }
+
+        textarea {
+            margin: 10px auto 0;
+            overflow-y: hidden;
+            margin: 0 auto;
+            max-width: 50%;
+            min-width: 50%;
+            min-height: 40px;
+        }
+        .tellertekst {
+            font-weight: bold;
+        }
+        .negativtekstteller {
+            color: #c30000;
+        }
+    }
+
+    a[class*="knapp-"] {
+        margin-top: 40px;
+        margin-bottom: 40px;
+    }
+}
+
+.ekstra-spm-boks {
+    &:after, &:before {
+        bottom: 100%;
+        border: solid transparent;
+        content: "";
+        height: 0;
+        width: 0;
+        position: absolute;
+        left: 8%;
+    }
+
+    &:after {
+        border-bottom-color: #f1f1f1;
+        border-width: 12px;
+        margin-left: -12px;
+    }
+
+    &:before {
+        border-bottom-color: #ddd;
+        border-width: 13px;
+        margin-left: -13px;
+    }
+
+    .infoboks {
+        margin-bottom: 20px;
+    }
+}
