@@ -29,9 +29,11 @@ angular.module('nav.ytelser',[])
 
             } else {
                 settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, true, true);
+                form.$setValidity('ytelser.harValgtYtelse', true);
+
             }
 
-            if (checkTrue($scope.soknadData.fakta.ingenYtelse)) {
+            if (checkTrue($scope.soknadData.fakta.ingenYtelse.value)) {
                 $scope.soknadData.fakta.ingenYtelse.value = false;
                 $scope.$emit(lagreSoknadData, {key: 'ingenYtelse', value: false});
             }

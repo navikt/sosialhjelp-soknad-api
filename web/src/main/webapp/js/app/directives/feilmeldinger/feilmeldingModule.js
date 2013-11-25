@@ -38,7 +38,7 @@ angular.module('nav.feilmeldinger', [])
 
                     angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
                         if (skalViseFlereFeilmeldinger) {
-                            skalViseFlereFeilmeldinger = scope.leggTilFeilmeldingerVedValidering(verdi, feilNokkel);
+                            skalViseFlereFeilmeldinger = leggTilFeilmeldingerVedValidering(verdi, feilNokkel);
                         }
                     });
 
@@ -51,7 +51,6 @@ angular.module('nav.feilmeldinger', [])
                     if ( skalViseFlereFeilmeldinger) {
                         scope.$broadcast(eventString);
                     }
-
                 }
 
                 scope.$watch(function() { return ctrl.$error; }, function() {
@@ -82,19 +81,19 @@ angular.module('nav.feilmeldinger', [])
                 }
 
                 scope.erKlikkbarFeil = function(feilmelding) {
-                    return feilmelding.elem.length > 0;
+                    return feilmelding.elem && feilmelding.elem.length > 0;
                 }
 
                 /*
                  * Dersom vi har en egendefinert feil med der $skalVisesAlene er satt til true så skal kun denne feilmeldingen vises. I det tilfellet fjernes alle andre feilmeldinger
                  * og vi skal ikke loope mer. Return false dersom vi skal stoppe loopen, ellers true.
                  */
-                scope.leggTilFeilmeldingerVedValidering = function(verdi, feilNokkel) {
+                function leggTilFeilmeldingerVedValidering(verdi, feilNokkel) {
                     var skalViseFlereFeilmeldinger = true;
                     angular.forEach(verdi, function (feil) {
                         var feilmelding = finnFeilmelding(feil, feilNokkel);
 
-                        if (feil.$skalVisesAlene === true && skalViseFlereFeilmeldinger) { // == Egendefinert feilmelding
+                        if (feil && feil.$skalVisesAlene === true && skalViseFlereFeilmeldinger) { // == Egendefinert feilmelding
                             scope.feilmeldinger = [feilmelding];
                             skalViseFlereFeilmeldinger = false;
                         } else if (skalViseFlereFeilmeldinger) {
