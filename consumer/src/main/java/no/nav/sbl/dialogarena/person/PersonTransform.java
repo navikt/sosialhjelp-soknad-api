@@ -1,12 +1,12 @@
 package no.nav.sbl.dialogarena.person;
 
-import java.util.List;
-
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLEPost;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskKommunikasjonskanal;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
+
+import java.util.List;
 
 /**
  * Map from TPS data format to internal domain model

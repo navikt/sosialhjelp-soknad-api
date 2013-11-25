@@ -1,9 +1,5 @@
 package no.nav.sbl.dialogarena.websoknad.service;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import org.junit.Assert;
-import org.junit.Test;
-
 public class TransformersTest {
 
 //	@Test

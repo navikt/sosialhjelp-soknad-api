@@ -41,7 +41,6 @@ angular.module('nav.select', ['ngSanitize'])
 
                 scope.listeErApen = false;
                 scope.soketekst = '';
-                scope.visAntallListeElement = 30;
 
                 if (scope.ngRequired === undefined) {
                     scope.ngRequired = false;
@@ -57,27 +56,10 @@ angular.module('nav.select', ['ngSanitize'])
 
                 var input = angular.element(element.find('input'));
 
-                element.find('ul').bind('scroll', function() {
-                    erScrolletNestenHeltNed(this);
-                });
-
-                input.focusin(function() {
-                    element.addClass("fokus");
-                });
-
-                input.focusout(function() {
-                    element.removeClass("fokus");
-                })
-
                 $document.bind('click', function() {
                     avbryt();
                     scope.$apply();
                 });
-
-                scope.apneSelectboks = function(event) {
-                    apne();
-                    event.stopPropagation();
-                }
 
                 scope.escape = function() {
                     avbryt();
@@ -133,7 +115,7 @@ angular.module('nav.select', ['ngSanitize'])
                         scope.inputVerdi = scope.inputVerdi.trim();
                     }
                     scope.soketekst = scope.inputVerdi;
-                    scope.visAntallListeElement = 30;
+
                     if (skalViseListeOverValg()) {
                         apne();
                     } else {
@@ -262,16 +244,6 @@ angular.module('nav.select', ['ngSanitize'])
                         return 0;
                     }
                 }
-
-                function erScrolletNestenHeltNed(elem) {
-                    var scrolled = elem.scrollHeight - (elem.offsetHeight + elem.scrollTop);
-
-                    if (scrolled < 150) {
-                        scope.visAntallListeElement = Math.min(scope.options.length, scope.visAntallListeElement + 10);
-                        console.log(scope.visAntallListeElement);
-                        scope.$apply();
-                    }
-                };
             }
         }
     }])

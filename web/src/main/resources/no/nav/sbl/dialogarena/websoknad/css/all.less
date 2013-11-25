@@ -96,44 +96,44 @@
 }
 
 .ferdig-skjema {
-    border-bottom: none;
-    padding-bottom: 0;
+  border-bottom: none;
+  padding-bottom: 0;
 
-    .textarea-form {
-        text-align: center;
+  .textarea-form {
+      text-align: center;
 
-        .textarea-container {
-            margin-bottom: 35px;
-        }
-        p, span {
-            font-size: 14px !important;
-            margin: 10px 0;
-        }
+      .textarea-container {
+        margin-bottom: 35px;
+      }
+      p, span {
+        font-size: 14px !important;
+        margin: 10px 0;
+      }
 
-        label {
-            text-transform: uppercase;
-        }
+      label {
+          text-transform: uppercase;
+      }
 
-        textarea {
-            margin: 10px auto 0;
-            overflow-y: hidden;
-            margin: 0 auto;
-            max-width: 50%;
-            min-width: 50%;
-            min-height: 40px;
-        }
-        .tellertekst {
-            font-weight: bold;
-        }
-        .negativtekstteller {
-            color: #c30000;
-        }
-    }
+      textarea {
+          margin: 10px auto 0;
+          overflow-y: hidden;
+          margin: 0 auto;
+          max-width: 50%;
+          min-width: 50%;
+          min-height: 40px;
+      }
+      .tellertekst {
+        font-weight: bold;
+      }
+      .negativtekstteller {
+        color: #c30000;
+      }
+  }
 
-    a[class*="knapp-"] {
-        margin-top: 40px;
-        margin-bottom: 40px;
-    }
+  a[class*="knapp-"] {
+      margin-top: 40px;
+      margin-bottom: 40px;
+  }
 }
 
 // Kan ikke brukes på input-element
@@ -199,8 +199,7 @@
 
         .flipp {
             cursor: pointer;
-            border-color: transparent transparent #00468B transparent
-        ;
+            border-color: transparent transparent #00468B transparent;
 
             &:before {
                 border-top: 30px solid #0067c5;
@@ -213,8 +212,7 @@
 
         .flipp {
             cursor: pointer;
-            border-color: transparent transparent #a3a3a3 transparent
-        ;
+            border-color: transparent transparent #a3a3a3 transparent;
 
             &:before {
                 border-top: 30px solid #ccc;
@@ -233,8 +231,7 @@
         height: 0;
         margin: 0 auto;
         border-style: solid;
-        border-color: transparent transparent #0067c5 transparent
-    ;
+        border-color: transparent transparent #0067c5 transparent;
         border-width: 0 2px 3px 2px;
 
         &:before {
@@ -318,6 +315,7 @@
             .spm-knapper {
                 margin-top: 40px;
                 text-align: center;
+
 
                 input, button, a {
                     margin-bottom: 15px;
@@ -438,9 +436,9 @@
         .melding {
             display: block;
         }
-
+        
         .melding.inline {
-            display: inline;
+        	display: inline;
         }
     }
 }
@@ -456,7 +454,7 @@
         margin-right: 15px;
 
         a {
-            font-family: Modus, Arial, Helvetica, sans-serif;;
+            font-family: Modus,Arial,Helvetica,sans-serif;;
             font-weight: 600;
             padding: 10px 40px;
         }
@@ -505,6 +503,7 @@ form, [ng-form], [data-ng-form] {
     }
 }
 
+
 .hjelpetekst {
     background-color: #3e3832;
     padding: 20px;
@@ -548,34 +547,15 @@ form, [ng-form], [data-ng-form] {
     }
 }
 
+
+
 .nav-select {
     position: relative;
 
-    &.feil {
-        .select-input {
-            background-color: #fee6e6;
-            border: 1px solid #fca292;
-            border-top: 1px solid @red;
-        }
-
-        .melding {
-            display: inline-block !important;
-        }
-    }
-
-    &.fokus {
-        .select-input {
-            border-color: rgba(82, 168, 236, .8);
-        }
-    }
-
     &.open {
-        .select-input {
+        input {
             border-color: rgba(82, 168, 236, .8);
-
-            div.pil {
-                background-image: url(../img/pil-blaa-hover.png);
-            }
+            background-image: url(../img/pil-blaa-hover.png);
         }
     }
 
@@ -679,4 +659,8 @@ form, [ng-form], [data-ng-form] {
 .henter-personalia {
     text-align: center;
     margin-top: 3rem;
+}
+
+.liste-vannrett li:not([class*="dropdown"]):before {
+    color: #3e3832;
 }
