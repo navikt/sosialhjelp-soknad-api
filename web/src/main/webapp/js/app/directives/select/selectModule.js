@@ -20,7 +20,7 @@
  * ugyldig-feilmelding: Nøkkel til feilmelding som skal vises dersom man skriver inn noe som ikke finnes i listen. Dersom ikke oppgitt blir det en standard nøkkel.
  */
 angular.module('nav.select', ['ngSanitize'])
-    .directive('navSelect', ['$document', '$filter', 'data', function ($document, $filter, data) {
+    .directive('navSelect', ['$document', '$filter', 'data', '$timeout', function ($document, $filter, data, $timeout) {
         return {
             require: 'ngModel',
             scope: {
@@ -89,7 +89,12 @@ angular.module('nav.select', ['ngSanitize'])
                 });
 
                 scope.apneSelectboks = function(event) {
+                    scope.soketekst = '';
+                    filtrerListe();
                     apne();
+                    $timeout(function() {
+                        scrollSlikAtElementMedFokusErPaaToppenDersomDetIkkeVises();
+                    });
                     event.stopPropagation();
                 }
 
@@ -138,6 +143,11 @@ angular.module('nav.select', ['ngSanitize'])
                     event.preventDefault();
                 }
 
+                function filtrerListe() {
+                    scope.vistListe = filterListePaaSoketekst();
+                    scope.vistListeFiltrert = filterListeTilAntallElementerRundtValgtElement();
+                }
+
                 scope.$watch('inputVerdi', function() {
                     if (scope.inputVerdi) {
                         scope.inputVerdi = scope.inputVerdi.trim();
@@ -149,8 +159,11 @@ angular.module('nav.select', ['ngSanitize'])
                         lukk();
                     }
 
-                    scope.vistListe = filterListePaaSoketekst();
-                    scope.vistListeFiltrert = filterListeTilAntallElementerRundtValgtElement();
+                    filtrerListe();
+
+                    $timeout(function() {
+                        scrollSlikAtElementMedFokusErPaaToppenDersomDetIkkeVises();
+                    });
 
                     function skalViseListeOverValg() {
                         return scope.listeErApen || (input.is(':focus') && scope.inputVerdi && scope.inputVerdi.length > 1);
@@ -216,25 +229,30 @@ angular.module('nav.select', ['ngSanitize'])
 
                 function lukk() {
                     scope.listeErApen = false;
-                    scope.valgtElementVerdi = '';
                 }
 
                 function avbryt() {
                     if (scope.listeErApen) {
                         scope.inputVerdi = '';
                         scope.ngModel = '';
+                        scope.valgtElementVerdi = '';
                         lukk();
                     }
                 }
 
                 function scrollSlikAtElementMedFokusErPaaToppenDersomDetIkkeVises() {
+                    if (!scope.valgtElementVerdi) {
+                        return;
+                    }
+
                     var fokusElement = hentListeelementMedVerdi(scope.valgtElementVerdi);
                     var diff = visesHeleElementet(fokusElement, fokusElement.parent());
+                    var offset = 25; // Må trekkes fra for at elementet skal komme øverst.
 
                     if (diff > 0) {
                         fokusElement.parent().scrollToPos(fokusElement.parent().scrollTop() - diff, 0);
                     } else if (diff < 0) {
-                        fokusElement.parent().scrollToPos(fokusElement.parent().scrollTop() - diff + fokusElement.parent().height(), 0);
+                        fokusElement.parent().scrollToPos(fokusElement.parent().scrollTop() - diff + fokusElement.parent().height() - offset, 0);
                     }
                 }
 
@@ -340,7 +358,9 @@ angular.module('nav.select', ['ngSanitize'])
                 }
 
                 function filterListeTilAntallElementerRundtValgtElement() {
+                    console.log(scope.valgtElementVerdi);
                     var valgtIndeks = scope.vistListe.indexByValue(scope.valgtElementVerdi);
+                    console.log(valgtIndeks);
 
                     minimumIndeks = Math.max(0, valgtIndeks - antallElementerOverOgUnder);
                     maximumIndeks = valgtIndeks + antallElementerOverOgUnder + Math.max(0, antallElementerOverOgUnder - valgtIndeks);
