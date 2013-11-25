@@ -22,8 +22,9 @@
                             <span>+</span>
                         </div>
                         <div class="begrensning sak-halv">
-                            <div class="panel-mini nettobunn uten-ramme">
-                                <h2 class="stor" data-cmstekster="{{soknad.gosysId}}.vedlegg.{{v.gosysId}}.header" data-ng-class="{lastetopp: v.lastetOpp()}"></h2>
+                            <div class="panel-mini nettobunn uten-ramme" data-ng-class="{lastetopp: v.lastetOpp()}">
+                                <div class="mini" data-ng-if="v.lastetOpp()" data-cmstekster="vedlegg.faktum.lastet.opp"></div>
+                                <h2 class="stor" data-cmstekster="{{soknad.gosysId}}.vedlegg.{{v.gosysId}}.header"></h2>
                             </div>
                         </div>
                     </div>
