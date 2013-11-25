@@ -2,16 +2,12 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.support.AbstractLobCreatingPreparedStatementCallback;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
-import org.springframework.jdbc.support.lob.DefaultLobHandler;
-import org.springframework.jdbc.support.lob.LobCreator;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
-import java.io.InputStream;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -38,13 +32,11 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad.
 @Named("soknadInnsendingRepository")
 //marker alle metoder som transactional. Alle operasjoner vil skje i en transactional write context. Read metoder kan overstyre dette om det trengs.
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
-public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadRepository{
+public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(SoknadRepositoryJdbc.class);
-    private DefaultLobHandler lobHandler;
 
     public SoknadRepositoryJdbc() {
-        lobHandler = new DefaultLobHandler();
     }
 
     @Inject
@@ -132,45 +124,6 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ?", soknad);
     }
 
-
-    @Override
-    public List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktum) {
-        return getJdbcTemplate().query("select * from Vedlegg where soknad_id = ? and faktum = ?", new Object[]{soknadId, faktum}, new VedleggRowMapper());
-    }
-
-
-    @Override
-    public Long lagreVedlegg(final Vedlegg vedlegg) {
-        final Long databasenokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("VEDLEGG_ID_SEQ"), Long.class);
-        getJdbcTemplate().execute("insert into vedlegg(vedlegg_id, soknad_id,faktum, navn, storrelse, data, opprettetdato) values (?, ?, ?, ?, ?, ?, sysdate)",
-
-                new AbstractLobCreatingPreparedStatementCallback(lobHandler) {
-                    @Override
-                    protected void setValues(PreparedStatement ps, LobCreator lobCreator) throws SQLException {
-                        ps.setLong(1, databasenokkel);
-                        ps.setLong(2, vedlegg.getSoknadId());
-                        ps.setLong(3, vedlegg.getFaktum());
-                        ps.setString(4, vedlegg.getNavn());
-                        ps.setLong(5, vedlegg.getStorrelse());
-                        lobCreator.setBlobAsBinaryStream(ps, 6, vedlegg.getInputStream(), vedlegg.getStorrelse().intValue());
-                    }
-                });
-        return databasenokkel;
-    }
-
-    public InputStream hentVedlegg(Long soknadId, Long vedleggId) {
-        List<InputStream> query = getJdbcTemplate().query("select data from Vedlegg where soknad_id = ? and vedlegg_id = ?", new VedleggDataRowMapper(), soknadId, vedleggId);
-        if (!query.isEmpty()) {
-            return query.get(0);
-        }
-        return null;
-    }
-
-    @Override
-    public void slettVedlegg(Long soknadId, Long vedleggId) {
-        getJdbcTemplate().update("Delete from vedlegg where soknad_id=? and vedlegg_id=?", soknadId, vedleggId);
-    }
-
     private List<Faktum> select(String sql, Object... args) {
         return getJdbcTemplate().query(sql, args, rowMapper);
     }
@@ -190,8 +143,11 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     private final RowMapper<Faktum> rowMapper = new RowMapper<Faktum>() {
         public Faktum mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-            return new Faktum(rs.getLong("soknad_id"), rs.getString("key"),
+            Faktum faktum = new Faktum(rs.getLong("soknad_id"), rs.getString("key"),
                     rs.getString("value"), rs.getString("type"));
+            faktum.setId(rs.getLong("soknadbrukerdata_id"));
+            faktum.setVedleggId(rs.getLong("vedlegg_id"));
+            return faktum;
         }
     };
 }

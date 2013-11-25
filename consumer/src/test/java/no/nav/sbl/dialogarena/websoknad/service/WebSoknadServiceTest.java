@@ -22,35 +22,35 @@ import static org.mockito.Mockito.when;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class WebSoknadServiceTest {
-    
+
     private static final String BEHANDLINGS_ID = "129187212";
-	@Mock
+    @Mock
     @Named("sendSoknadService")
     SendSoknadPortType webservice;
-	
-	@InjectMocks
-	HenvendelseConnector service;
-	
-	Long soknadId;
 
-	@Before
-	public void setUp() {
-		
-	}
-	
-	@Test
-	public void skalKunneStarteSoknad() {
-	    when(webservice.startSoknad(any(WSStartSoknadRequest.class))).thenReturn(lagResultatFraStartSoknad());
-		String behandlingsId = service.startSoknad("01019012345", lagTomFaktaListe());
-		assertThat(behandlingsId, equalTo(BEHANDLINGS_ID));
-	}
+    @InjectMocks
+    HenvendelseConnector service;
+
+    Long soknadId;
+
+    @Before
+    public void setUp() {
+
+    }
+
+    @Test
+    public void skalKunneStarteSoknad() {
+        when(webservice.startSoknad(any(WSStartSoknadRequest.class))).thenReturn(lagResultatFraStartSoknad());
+        String behandlingsId = service.startSoknad("01019012345", lagTomFaktaListe());
+        assertThat(behandlingsId, equalTo(BEHANDLINGS_ID));
+    }
 
     private WSBehandlingsId lagResultatFraStartSoknad() {
         return new WSBehandlingsId().withBehandlingsId(BEHANDLINGS_ID);
     }
-    
+
     private List<Faktum> lagTomFaktaListe() {
         return new ArrayList<Faktum>();
     }
-	
+
 }
