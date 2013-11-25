@@ -12,6 +12,10 @@ angular.module('nav.forsettsenere',['nav.cmstekster'])
         
     }])
 
+$scope.validerEpostAdresse = function (emailAddress) {
+    return EMAIL_REGEXP.test(emailAddress);
+}
+
     .directive('navGjenoppta', ['$compile','data', function($compile, data) {
         
         var getForDelsteg = function(delstegstatus) {
