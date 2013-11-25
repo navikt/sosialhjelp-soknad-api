@@ -23,6 +23,11 @@ public class DbConfig {
     }
 
     @Bean
+    public VedleggRepository vedleggRepository() {
+        return new VedleggRepositoryJdbc();
+    }
+
+    @Bean
     public RepositoryTestSupport testSupport() {
         return new TestSupport(dataSource);
     }

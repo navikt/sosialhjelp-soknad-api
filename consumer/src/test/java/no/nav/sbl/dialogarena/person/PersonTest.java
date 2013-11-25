@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class PersonTest {
@@ -32,6 +33,16 @@ public class PersonTest {
 	@Test
 	public void skalReturnereTrueForPostadresseUtland() {
 		Person person = new Person(1l, "11111112345", "Jan", "", "Larsen", Adressetype.POSTADRESSE_UTLAND.toString(), new ArrayList<Adresse>());
+		
+		Assert.assertEquals(true, person.harUtenlandskAdresse());
+	}
+	
+	@Test
+	public void skalReturnereTrueForFolkeregistrertPostadresseUtland() {
+		List<Adresse> adresser = new ArrayList<Adresse>();
+		adresser.add(new Adresse(1l, Adressetype.UTENLANDSK_ADRESSE));
+		
+		Person person = new Person(1l, "11111112345", "Jan", "", "Larsen", Adressetype.POSTADRESSE.toString(), adresser);
 		
 		Assert.assertEquals(true, person.harUtenlandskAdresse());
 	}

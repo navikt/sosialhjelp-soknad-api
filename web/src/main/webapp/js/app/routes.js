@@ -11,7 +11,16 @@ angular.module('app.routes', ['ngRoute'])
                     }
                 }
             })
-            .when('/opplasting/:soknadId', {
+            .when('/vedlegg/:soknadId', {
+                templateUrl: '../html/templates/vedlegg.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
+            .when('/opplasting/:soknadId/:faktumId', {
                 templateUrl: '../html/templates/opplasting.html',
                 controller: 'SoknadDataCtrl',
                 resolve: {
@@ -87,14 +96,14 @@ angular.module('app.routes', ['ngRoute'])
                 }
             })
             .when('/personalia/:soknadId', {
-                templateUrl: '../html/templates/personalia.html', 
+                templateUrl: '../html/templates/personalia.html',
                 controller: 'SoknadDataCtrl',
                 resolve: {
                     notUsedButRequiredProperty: function (HentSoknadService) {
                         return HentSoknadService;
                     }
                 }
-             })
+            })
             .when('/arbeidsforhold/:soknadId', {
                 templateUrl: '../html/templates/arbeidsforhold.html',
                 controller: 'SoknadDataCtrl',
@@ -121,7 +130,7 @@ angular.module('app.routes', ['ngRoute'])
                         return HentSoknadService;
                     }
                 }
-             })
+            })
 
             .when('/utdanning/:soknadId', {
                 templateUrl: '../html/templates/utdanning.html',
@@ -141,11 +150,27 @@ angular.module('app.routes', ['ngRoute'])
                 }
             })
 
+            .when('/avbryt/:soknadId', {
+                templateUrl: '../html/templates/avbryt.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                   notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+             })
+
             .when('/soknadliste', {templateUrl: '../html/templates/soknadliste.html'})
-            .when('/avbryt/:soknadId', {templateUrl: '../html/templates/avbryt.html', controller: 'AvbrytCtrl'})
+            
             .when('/slettet', {templateUrl: '../html/templates/soknadSlettet.html', controller: 'SlettetSoknadDataCtrl'})
 
             .otherwise({redirectTo: '/informasjonsside'});
 
 //    $locationProvider.html5Mode(true);
+    }).run( function ($rootScope, $location, $anchorScroll, $routeParams) {
+        $rootScope.$on('$routeChangeSuccess', function (newRoute, oldRoute) {
+            $location.hash($routeParams.scrollTo);
+            $anchorScroll();
+        });
+
     });
