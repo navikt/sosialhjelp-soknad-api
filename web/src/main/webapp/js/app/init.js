@@ -8,6 +8,7 @@ angular.module('sendsoknad')
         $http.get('../html/templates/ytelser.html', {cache: $templateCache});
         $http.get('../html/templates/utdanning.html', {cache: $templateCache});
     }])
+    .constant('lagreSoknadData', "OPPDATER_OG_LAGRE")
     .value('data', {})
     .value('basepath', '../')
     .factory('InformasjonsSideResolver', ['data', '$resource', '$q', '$route', function(data, $resource, $q, $route) {
