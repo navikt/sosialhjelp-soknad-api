@@ -96,44 +96,44 @@
 }
 
 .ferdig-skjema {
-  border-bottom: none;
-  padding-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
 
-  .textarea-form {
-      text-align: center;
+    .textarea-form {
+        text-align: center;
 
-      .textarea-container {
-        margin-bottom: 35px;
-      }
-      p, span {
-        font-size: 14px !important;
-        margin: 10px 0;
-      }
+        .textarea-container {
+            margin-bottom: 35px;
+        }
+        p, span {
+            font-size: 14px !important;
+            margin: 10px 0;
+        }
 
-      label {
-          text-transform: uppercase;
-      }
+        label {
+            text-transform: uppercase;
+        }
 
-      textarea {
-          margin: 10px auto 0;
-          overflow-y: hidden;
-          margin: 0 auto;
-          max-width: 50%;
-          min-width: 50%;
-          min-height: 40px;
-      }
-      .tellertekst {
-        font-weight: bold;
-      }
-      .negativtekstteller {
-        color: #c30000;
-      }
-  }
+        textarea {
+            margin: 10px auto 0;
+            overflow-y: hidden;
+            margin: 0 auto;
+            max-width: 50%;
+            min-width: 50%;
+            min-height: 40px;
+        }
+        .tellertekst {
+            font-weight: bold;
+        }
+        .negativtekstteller {
+            color: #c30000;
+        }
+    }
 
-  a[class*="knapp-"] {
-      margin-top: 40px;
-      margin-bottom: 40px;
-  }
+    a[class*="knapp-"] {
+        margin-top: 40px;
+        margin-bottom: 40px;
+    }
 }
 
 // Kan ikke brukes på input-element
@@ -199,7 +199,8 @@
 
         .flipp {
             cursor: pointer;
-            border-color: transparent transparent #00468B transparent;
+            border-color: transparent transparent #00468B transparent
+        ;
 
             &:before {
                 border-top: 30px solid #0067c5;
@@ -212,7 +213,8 @@
 
         .flipp {
             cursor: pointer;
-            border-color: transparent transparent #a3a3a3 transparent;
+            border-color: transparent transparent #a3a3a3 transparent
+        ;
 
             &:before {
                 border-top: 30px solid #ccc;
@@ -231,7 +233,8 @@
         height: 0;
         margin: 0 auto;
         border-style: solid;
-        border-color: transparent transparent #0067c5 transparent;
+        border-color: transparent transparent #0067c5 transparent
+    ;
         border-width: 0 2px 3px 2px;
 
         &:before {
@@ -315,7 +318,6 @@
             .spm-knapper {
                 margin-top: 40px;
                 text-align: center;
-
 
                 input, button, a {
                     margin-bottom: 15px;
@@ -436,9 +438,9 @@
         .melding {
             display: block;
         }
-        
+
         .melding.inline {
-        	display: inline;
+            display: inline;
         }
     }
 }
@@ -454,7 +456,7 @@
         margin-right: 15px;
 
         a {
-            font-family: Modus,Arial,Helvetica,sans-serif;;
+            font-family: Modus, Arial, Helvetica, sans-serif;;
             font-weight: 600;
             padding: 10px 40px;
         }
@@ -503,7 +505,6 @@ form, [ng-form], [data-ng-form] {
     }
 }
 
-
 .hjelpetekst {
     background-color: #3e3832;
     padding: 20px;
@@ -544,93 +545,6 @@ form, [ng-form], [data-ng-form] {
 
     p {
         color: white !important;
-    }
-}
-
-
-
-.nav-select {
-    position: relative;
-
-    &.open {
-        input {
-            border-color: rgba(82, 168, 236, .8);
-            background-image: url(../img/pil-blaa-hover.png);
-        }
-    }
-
-    .select-input {
-        background-color: white;
-        position: relative;
-        height: 32px;
-        border: 1px solid #cccccc;
-        border-top: 1px solid #b7b1a9;
-        cursor: text;
-
-        input {
-            border: none !important;
-            position: absolute;
-            top: 7px;
-            left: 32px;
-            right: 0;
-            padding-top: 0;
-            padding-bottom: 0;
-            padding-left: 0;
-        }
-
-        div.pil {
-            float: left;
-            cursor: pointer;
-            height: 32px;
-            width: 32px;
-            background-image: url(../img/pil-blaa.png);
-            background-repeat: no-repeat;
-            background-position: 12px;
-
-            &:hover {
-                background-image: url(../img/pil-blaa-hover.png);
-            }
-        }
-    }
-
-    ul {
-        background: white;
-        list-style: none;
-        position: absolute;
-        margin: 0;
-        padding: 5px;
-        width: 100%;
-        border: 1px solid;
-        border-color: rgba(82, 168, 236, .8);
-        border-top: none;
-        overflow-y: auto;
-        min-height: 40px;
-        max-height: 300px;
-
-        li {
-            padding: 5px;
-
-            &:last-child {
-                border-bottom: none;
-            }
-
-            &:hover {
-                background-color: #f1f1f1;
-            }
-
-            &.harFokus {
-                background: #3875d7;
-                color: white;
-
-                span {
-                    color: white;
-                }
-            }
-
-            span {
-                text-decoration: underline;
-            }
-        }
     }
 }
 
