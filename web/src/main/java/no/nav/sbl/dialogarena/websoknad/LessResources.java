@@ -10,6 +10,9 @@ public enum LessResources {
     OPPSUMMERING_LESS("oppsummering"),
     FORTSETT_SENERE_LESS("fortsettSenere"),
     KVITTERING_LESS("kvittering"),
+    HJELPETEKST_LESS("hjelpetekst"),
+    SELECT_LESS("select"),
+    SKJEMA_LESS("skjema"),
     ARBEIDSFORHOLD_LESS("arbeidsforhold");
 
     private static final String FOLDER = "css/";

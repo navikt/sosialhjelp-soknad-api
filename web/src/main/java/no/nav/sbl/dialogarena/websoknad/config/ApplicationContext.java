@@ -46,7 +46,6 @@ public class ApplicationContext {
     //@Value("${dokumentinnsending.smtpServer.host}")
     private String smtpServerHost = "smtp.test.local";
 
-
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();

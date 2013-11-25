@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad;
 
-import no.nav.modig.core.context.JettySubjectHandler;
+import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.common.jetty.Jetty;
 import org.eclipse.jetty.jaas.JAASLoginService;
 
@@ -59,7 +59,8 @@ public final class StartSoknadJetty {
         setFrom("jetty-env.properties");
         setProperty("no.nav.sbl.dialogarena.sendsoknad.sslMock", "true");
         setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "false");
-        setProperty(SUBJECTHANDLER_KEY, JettySubjectHandler.class.getName());
+        //setProperty(SUBJECTHANDLER_KEY, JettySubjectHandler.class.getName());
+        setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
     }
 
     private void configureSecurity() {

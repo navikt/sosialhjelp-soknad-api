@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.websoknad.service.HenvendelseConnector;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -71,7 +70,8 @@ public class SoknadDataController {
     @RequestMapping(value = "/opprett/{soknadType}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody()
     public WebSoknadId opprettSoknad(@PathVariable String soknadType) {
-        //String behandlingsId = henvendelseConnector.startSoknad(SubjectHandler.getSubjectHandler().getUid(), null);
+        // Må legges til i forbindelse med kobling mot henvendelse.
+    	//String behandlingsId = henvendelseConnector.startSoknad(SubjectHandler.getSubjectHandler().getUid(), null);
         Long id = soknadService.startSoknad(soknadType);
         WebSoknadId soknadId = new WebSoknadId();
         soknadId.setId(id);
@@ -82,7 +82,8 @@ public class SoknadDataController {
     @ResponseBody()
     public void slettSoknad(@PathVariable Long soknadId) {
         soknadService.avbrytSoknad(soknadId);
-        henvendelseConnector.avbrytSoknad("12412412");
+        // Må legges til i forbindelse med kobling mot henvendelse.
+        //henvendelseConnector.avbrytSoknad("12412412");
     }
 
 

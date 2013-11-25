@@ -1,13 +1,13 @@
 package no.nav.sbl.dialogarena.websoknad.service;
 
-import java.util.List;
-
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLFakta;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLFaktumListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLSoknadfaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
+
+import java.util.List;
 
 public class Transformers {
 

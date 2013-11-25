@@ -2,13 +2,13 @@
 
 angular.module('app.services', ['ngResource'])
 
-    .config(function($httpProvider) {
+    .config(function ($httpProvider) {
         $httpProvider.responseInterceptors.push('resetTimeoutInterceptor');
     })
 
-    .factory('resetTimeoutInterceptor', function() {
-        return function(promise) {
-            return promise.then(function(response) {
+    .factory('resetTimeoutInterceptor', function () {
+        return function (promise) {
+            return promise.then(function (response) {
                 // Bare reset dersom kallet gikk gjennom
                 TimeoutBox.startTimeout();
                 return response;
@@ -16,9 +16,9 @@ angular.module('app.services', ['ngResource'])
         }
     })
 
-    /**
-     * Service som henter en søknad fra henvendelse
-     */
+/**
+ * Service som henter en søknad fra henvendelse
+ */
     .factory('soknadService', function ($resource) {
         return $resource('/sendsoknad/rest/soknad/:action/:param?rand=' + new Date().getTime(),
             {param: '@param'},
@@ -31,9 +31,27 @@ angular.module('app.services', ['ngResource'])
         );
     })
 
+/**
+ * Service som behandler vedlegg
+ */
+    .factory('vedleggService', function ($resource) {
+        return $resource('/sendsoknad/rest/soknad/:soknadId/faktum/:faktumId/vedlegg/:vedleggId/:action',
+            {
+                soknadId: '@soknadId',
+                faktumId: '@faktumId',
+                vedleggId: '@vedleggId'},
+            {
+                get: { method: 'GET', params: {} },
+                create: { method: 'POST', params: {} },
+                merge: { method: 'POST', params: {action: 'generer'} },
+                remove: {method: 'POST', params: {action: 'delete'}}
+            }
+        );
+    })
+
     .factory('forsettSenereService', function ($resource) {
         return $resource('/sendsoknad/rest/soknad/:soknadId/fortsettsenere',
-          {soknadId: '@param'},
+            {soknadId: '@param'},
             {
                 send: {method: 'POST'}
             }

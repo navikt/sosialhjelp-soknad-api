@@ -109,8 +109,7 @@ angular.module('nav.feilmeldinger', [])
                     var fortsattFeilListe = [];
                     angular.forEach(verdi, function(feil) {
                         var feilmelding = finnFeilmelding(feil, feilNokkel);
-
-                        if (scope.feilmeldinger.containsObjectWithValue(feilmelding.feil)) {
+                        if (scope.feilmeldinger.indexByValue(feilmelding.feil) > -1) {
                             leggTilFeilmeldingHvisIkkeAlleredeLagtTil(fortsattFeilListe, feilmelding);
                         }
                     });
@@ -118,7 +117,7 @@ angular.module('nav.feilmeldinger', [])
                 }
 
                 function leggTilFeilmeldingHvisIkkeAlleredeLagtTil(fortsattFeilListe, feilmelding) {
-                    if (!fortsattFeilListe.containsObjectWithValue(feilmelding.feil)){
+                    if (fortsattFeilListe.indexByValue(feilmelding.feil) < 0){
                         fortsattFeilListe.push(feilmelding);
                     }
                 }

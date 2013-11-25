@@ -194,9 +194,10 @@ angular.module('app.brukerdata', ['app.services'])
     })
 
     .controller('AvbrytCtrl', function ($scope, $routeParams, $location, soknadService) {
-        $scope.data = {
+        $scope.fremdriftsindikator = {
             laster: false
-        };
+        }
+        $scope.data = {}
         soknadService.get({param: $routeParams.soknadId}).$promise.then(function (result) {
             var fakta = $.map(result.fakta, function (element) {
                 return element.type;

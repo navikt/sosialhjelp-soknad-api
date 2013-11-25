@@ -1,32 +1,18 @@
-angular.module('nav.reellarbeidssoker', [])
-    .controller('ReellarbeidssokerCtrl', ['$scope', function ($scope) {
+angular.module('nav.reellarbeidssoker',[])
+    .controller('ReellarbeidssokerCtrl', ['$scope','data', function ($scope, data) {
+        $scope.alder = data.alder.alder;
+        //For testing av alder:
+        //$scope.alder =59;
+
         $scope.navigering = {nesteside: 'arbeidsforhold'};
         $scope.sidedata = {navn: 'reellarbeidssoker'};
-
-        var deltidnokler = ['reduserthelse', 'omsorgbarnunder1aar', 'eneansvarbarnunder5skoleaar', 'eneansvarbarnopptil18aar', 'annensituasjon'];
-        var pendlenokler = ['pendlereduserthelse', 'pendleomsorgbarnunder1aar', 'pendleomsorgbarnopptil10', 'pendleeneansvarbarnunder5skoleaar',
-            'pendleeneansvarbarnopptil18aar', 'pendleannensituasjon', 'pendleomsorgansvar' ];
+        
+        var deltidnokler = ['reduserthelse', 'omsorgbarnunder1aar', 'eneansvarbarnunder5skoleaar', 'eneansvarbarnopptil18aar', 'omsorgansvar', 'annensituasjon'];
+        var pendlenokler = ['pendlereduserthelse', 'pendleomsorgbarnunder1aar', 'pendleomsorgbarnopptil10', 'pendleeneansvarbarnunder5skoleaar', 
+                            'pendleeneansvarbarnopptil18aar', 'pendleannensituasjon', 'pendleomsorgansvar' ];
 
         $scope.validerReellarbeidssoker = function(form) {
-            form.$error['reellarbeidssoker'] = ([
-                {
-                    $name: "minstEnDeltidAvhuket",
-                    $errorMessages: "reellarbeidssoker.villigdeltid.false.minstEnAvhuket.feilmelding",
-                    $invalid: false,
-                    $valid: true,
-                    $skalVisesAlene: false
-
-                },
-                {
-                    $name: "minstEnPendleAvhuket",
-                    $errorMessages: "reellarbeidssoker.villigdpendle.false.minstEnAvhuket.feilmelding",
-                    $invalid: false,
-                    $valid: true,
-                    $skalVisesAlene: false
-
-                }])
-
-            if($scope.soknadData.fakta.villigdeltid) {
+            if($scope.soknadData.fakta.villigdeltid && $scope.erUnder60Aar()) {
                 var minstEnDeltidAvhuket = $scope.erCheckboxerAvhuket(deltidnokler);
                 if($scope.soknadData.fakta.villigdeltid.value == 'false') {
                     form.$error['reellarbeidssoker'][0].$invalid = !minstEnDeltidAvhuket;
@@ -37,7 +23,7 @@ angular.module('nav.reellarbeidssoker', [])
                 }
             }
 
-            if($scope.soknadData.fakta.villigpendle) {
+            if($scope.soknadData.fakta.villigpendle && $scope.erUnder60Aar()) {
                 var minstEnPendleAvhuket = $scope.erCheckboxerAvhuket(pendlenokler);
                 if($scope.soknadData.fakta.villigpendle.value == 'false') {
                     form.$error['reellarbeidssoker'][1].$invalid = !minstEnPendleAvhuket;
@@ -47,8 +33,6 @@ angular.module('nav.reellarbeidssoker', [])
                     form.$error['reellarbeidssoker'][1].$valid = true;
                 }
             }
-            console.log(form.$error['reellarbeidssoker'][0].$invalid);
-            console.log(form.$error['reellarbeidssoker'][1].$invalid);
             $scope.validateForm(form.$invalid);
             $scope.runValidation();
         }
@@ -65,5 +49,13 @@ angular.module('nav.reellarbeidssoker', [])
                 }
             }
             return minstEnAvhuket;
+        }
+
+        $scope.erUnder60Aar = function() {
+            return $scope.alder < 60;
+        }
+
+        $scope.erOver59Aar = function() {
+            return $scope.alder > 59;
         }
     }]);

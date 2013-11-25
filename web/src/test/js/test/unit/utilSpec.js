@@ -23,16 +23,16 @@ describe('utility funksjoner -', function () {
             expect(array.contains(4)).toEqual(false);
         });
 
-        it('skal returnere true dersom ett objekt i ett array har verdien 1', function () {
-            expect(objArray.containsObjectWithValue(1)).toBe(true);
+        it('skal returnere at indeksen i arrayet til objektet er 0', function () {
+            expect(objArray.indexByValue(1)).toBe(0);
         });
 
-        it('skal returnere true dersom ett objekt i ett array har verdien b', function () {
-            expect(objArray.containsObjectWithValue('b')).toBe(true);
+        it('skal returnere at indeksen i arrayet til objektet er 0', function () {
+            expect(objArray.indexByValue('b')).toBe(0);
         });
 
-        it('skal returnere false dersom ingen objekter i ett array har gitt verdi', function () {
-            expect(objArray.containsObjectWithValue(2)).toBe(false);
+        it('skal returnere -1 dersom ingen objekter i arrayet har gitt verdi', function () {
+            expect(objArray.indexByValue(2)).toBe(-1);
         });
     });
 

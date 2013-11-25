@@ -19,6 +19,7 @@ module.exports = function (config) {
             '../../../main/webapp/js/lib/angular.js',
             '../jslib/angular-mocks.js',
             '../jslib/angular-resource.js',
+            '../jslib/angular-sanitize.js',
             '../../../main/webapp/js/app/*.js',
             '../../../main/webapp/js/app/directives/**/*.js',
             '../../../main/webapp/js/app/controllers/**/*.js',

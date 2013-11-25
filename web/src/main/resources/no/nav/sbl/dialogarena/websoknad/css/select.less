@@ -1,0 +1,104 @@
+.nav-select {
+    position: relative;
+
+    &.feil {
+        .select-input {
+            background-color: #fee6e6;
+            border: 1px solid #fca292;
+            border-top: 1px solid @red;
+        }
+
+        .melding {
+            display: inline-block !important;
+        }
+    }
+
+    &.fokus {
+        .select-input {
+            border-color: rgba(82, 168, 236, .8);
+        }
+    }
+
+    &.open {
+        .select-input {
+            border-color: rgba(82, 168, 236, .8);
+
+            div.pil {
+                background-image: url(../img/pil-blaa-hover.png);
+            }
+        }
+    }
+
+    .select-input {
+        position: relative;
+        height: 32px;
+        border: 1px solid #cccccc;
+        border-top: 1px solid #b7b1a9;
+        cursor: text;
+
+        input {
+            border: none !important;
+            position: absolute;
+            top: 7px;
+            left: 32px;
+            right: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            padding-left: 0;
+        }
+
+        div.pil {
+            float: left;
+            cursor: pointer;
+            height: 32px;
+            width: 32px;
+            background-image: url(../img/pil-blaa.png);
+            background-repeat: no-repeat;
+            background-position: 12px;
+
+            &:hover {
+                background-image: url(../img/pil-blaa-hover.png);
+            }
+        }
+    }
+
+    ul {
+        background: white;
+        list-style: none;
+        position: absolute;
+        margin: 0;
+        padding: 5px !important;
+        width: 100%;
+        border: 1px solid;
+        border-color: rgba(82, 168, 236, .8);
+        border-top: none;
+        overflow-y: auto;
+        min-height: 40px;
+        max-height: 300px;
+
+        li {
+            padding: 5px;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            &:hover {
+                background-color: #f1f1f1;
+            }
+
+            &.harFokus {
+                background: #3875d7;
+                color: white;
+
+                span {
+                    color: white;
+                }
+            }
+
+            span {
+                text-decoration: underline;
+            }
+        }
+    }
+}
