@@ -23,7 +23,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 LengthValidator.init(attrs, valideringsMetoder);
 
                 scope.$on(eventString, function () {
-                    if (!sjekkOmInputErGyldig()) {
+                    if (!sjekkOmInputErGyldig() && element.is(':visible')) {
                         formElem.addClass('feil');
                     }
                 });
@@ -31,6 +31,14 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 element.bind('blur', function () {
                     if (!sjekkOmInputErGyldig()) {
                         formElem.addClass('feil');
+                    }
+                });
+
+                scope.$watch(function () {
+                    return element.is(':visible');
+                }, function (erSynlig) {
+                    if (!erSynlig) {
+                        formElem.removeClass('feil');
                     }
                 });
 
@@ -120,41 +128,41 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 var form = ctrls[1];
                 var eventString = 'RUN_VALIDATION' + form.$name;
 
-                scope.$on(eventString, function () {
-//                    angular.forEach(form.$error, function (verdi, feilNokkel) {
-//                        angular.forEach(verdi, function (feil) {
-//                        if (feilNokkel === 'required') {
+//                scope.$on(eventString, function () {
+////                    angular.forEach(form.$error, function (verdi, feilNokkel) {
+////                        angular.forEach(verdi, function (feil) {
+////                        if (feilNokkel === 'required') {
+////
+////
+////                            settFeilmeldingsTekst();
+////                            element.closest('.form-linje').addClass('feil');
+////                        }
+////                    })
+////                    })
+//                });
 //
+//                scope.$watch(function () {
+//                    return ngModel.$viewValue;
+//                }, function () {
+//                    if (ngModel.$viewValue) {
+//                        element.closest('.form-linje').removeClass('feil');
+//                    }
+//                });
 //
-//                            settFeilmeldingsTekst();
-//                            element.closest('.form-linje').addClass('feil');
-//                        }
-//                    })
-//                    })
-                });
-
-                scope.$watch(function () {
-                    return ngModel.$viewValue;
-                }, function () {
-                    if (ngModel.$viewValue) {
-                        element.closest('.form-linje').removeClass('feil');
-                    }
-                });
-
-                function sjekkOmFeltetErSvart() {
-                    if (!ngModel.$modelValue) {
-                        settFeilmeldingsTekst();
-                        return false;
-                    }
-                    return true;
-                }
-
-                function settFeilmeldingsTekst() {
-//                    var feilmeldingsNokkel = element[0].getAttribute('error-messages').toString();
-//                    //hack for å fjerne dobbeltfnuttene rundt feilmeldingsnokk
-//                    var feilmeldingTekst = data.tekster[feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1)];
-//                    element.closest('.form-linje').find('.melding').text(feilmeldingTekst);
-                }
+//                function sjekkOmFeltetErSvart() {
+//                    if (!ngModel.$modelValue) {
+//                        settFeilmeldingsTekst();
+//                        return false;
+//                    }
+//                    return true;
+//                }
+//
+//                function settFeilmeldingsTekst() {
+////                    var feilmeldingsNokkel = element[0].getAttribute('error-messages').toString();
+////                    //hack for å fjerne dobbeltfnuttene rundt feilmeldingsnokk
+////                    var feilmeldingTekst = data.tekster[feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1)];
+////                    element.closest('.form-linje').find('.melding').text(feilmeldingTekst);
+//                }
             }
         }
     }])

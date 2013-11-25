@@ -38,7 +38,7 @@ angular.module('nav.feilmeldinger', [])
 
                     angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
                         if (skalViseFlereFeilmeldinger) {
-                            skalViseFlereFeilmeldinger = leggTilFeilmeldingerVedValidering(verdi, feilNokkel);
+                            skalViseFlereFeilmeldinger = scope.leggTilFeilmeldingerVedValidering(verdi, feilNokkel);
                         }
                     });
 
@@ -48,14 +48,17 @@ angular.module('nav.feilmeldinger', [])
                         }, 1);
                     }
 
-                    scope.$broadcast(eventString);
+                    if ( skalViseFlereFeilmeldinger) {
+                        scope.$broadcast(eventString);
+                    }
+
                 }
 
                 scope.$watch(function() { return ctrl.$error; }, function() {
-                    fjernFeilmeldingerSomErFikset();
+                    scope.fjernFeilmeldingerSomErFikset();
                 }, true);
 
-                function fjernFeilmeldingerSomErFikset() {
+                scope.fjernFeilmeldingerSomErFikset = function() {
                     var fortsattFeilListe = [];
                     angular.forEach(ctrl.$error, function(verdi, feilNokkel) {
                         fortsattFeilListe = fortsattFeilListe.concat(leggTilFeilSomFortsattSkalVises(verdi, feilNokkel));
@@ -86,7 +89,7 @@ angular.module('nav.feilmeldinger', [])
                  * Dersom vi har en egendefinert feil med der $skalVisesAlene er satt til true så skal kun denne feilmeldingen vises. I det tilfellet fjernes alle andre feilmeldinger
                  * og vi skal ikke loope mer. Return false dersom vi skal stoppe loopen, ellers true.
                  */
-                function leggTilFeilmeldingerVedValidering(verdi, feilNokkel) {
+                scope.leggTilFeilmeldingerVedValidering = function(verdi, feilNokkel) {
                     var skalViseFlereFeilmeldinger = true;
                     angular.forEach(verdi, function (feil) {
                         var feilmelding = finnFeilmelding(feil, feilNokkel);
@@ -94,13 +97,12 @@ angular.module('nav.feilmeldinger', [])
                         if (feil.$skalVisesAlene === true && skalViseFlereFeilmeldinger) { // == Egendefinert feilmelding
                             scope.feilmeldinger = [feilmelding];
                             skalViseFlereFeilmeldinger = false;
-                            return false;
                         } else if (skalViseFlereFeilmeldinger) {
                             leggTilFeilmeldingHvisIkkeAlleredeLagtTil(scope.feilmeldinger, feilmelding);
                         }
 
                     });
-                    return true;
+                    return skalViseFlereFeilmeldinger;
                 }
 
                 function leggTilFeilSomFortsattSkalVises(verdi, feilNokkel) {

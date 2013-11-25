@@ -1,17 +1,16 @@
 angular.module('nav.ytelser',[])
     .controller('YtelserCtrl', ['$scope', function ($scope) {
         $scope.navigering = {nesteside: 'personalia'};
-        $scope.sidedata = {navn: 'ytelser'};
+        $scope.sidedata = {navn: 'ytelser', velgBortAlleYtelserForAHukeAvNei: false};
 
         var nokler = ['ventelonn', 'stonadFisker', 'offentligTjenestepensjon', 'privatTjenestepensjon', 'vartpenger', 'dagpengerEOS', 'annenYtelse', 'ingenYtelse' ];
 
 //      sjekker om formen er validert når bruker trykker ferdig med ytelser
         $scope.validerYtelser = function(form) {
             var minstEnAvhuket = $scope.erCheckboxerAvhuket(nokler);
-            if (form.$error['ytelser'] === undefined) {
-                form.$error['ytelser'] = [];
-            }
-
+            settEgendefinertFeilmeldingsverdi(form, 'ytelser','minstEnAvhuket', "ytelser.minstEnAvhuket.feilmelding", minstEnAvhuket, true);
+            console.log(form.$error);
+            console.log(form.$invalid);
             $scope.validateForm(form.$invalid);
             $scope.runValidation();
         };
@@ -26,8 +25,9 @@ angular.module('nav.ytelser',[])
             }
 
             if (harIkkeValgtYtelse) {
-                settEgendefinertFeilmeldingsverdi(form, 'ytelser','harValgtYtelse', "ytelser.harValgtYtelse.feilmelding", true, true );
+                $scope.sidedata.velgBortAlleYtelserForAHukeAvNei = false;
                 settEgendefinertFeilmeldingsverdi(form, 'ytelser','minstEnAvhuket', "ytelser.minstEnAvhuket.feilmelding", false, true);
+
             } else {
                 settEgendefinertFeilmeldingsverdi(form, 'ytelser','minstEnAvhuket', "ytelser.minstEnAvhuket.feilmelding", true, true);
             }
@@ -53,17 +53,18 @@ angular.module('nav.ytelser',[])
                 }
 
                 $scope.soknadData.fakta.ingenYtelse.value = 'false';
-                settEgendefinertFeilmeldingsverdi(form, 'ytelser','harValgtYtelse',"ytelser.harValgtYtelse.feilmelding", false, true);
-                $scope.runValidation();
+                $scope.sidedata.velgBortAlleYtelserForAHukeAvNei = true;
+//                settEgendefinertFeilmeldingsverdi(form, 'ytelser','harValgtYtelse',"ytelser.harValgtYtelse.feilmelding", false, true);
+//                var index = form.$error['ytelser'].indexByValue('harValgtYtelse');
+//                $scope.runValidation();
 
             } else {
                 if (verdi) {
+                    form.$setValidity('ytelser.harValgtYtelse', false);
                     settEgendefinertFeilmeldingsverdi(form, 'ytelser','minstEnAvhuket', "ytelser.minstEnAvhuket.feilmelding", true, true);
                 }
-
                 $scope.$emit("OPPDATER_OG_LAGRE", {key: 'ingenYtelse', value: verdi});
             }
-            console.log(form.$error);
         }
 
         $scope.erCheckboxerAvhuket = function(checkboxNokler) {

@@ -403,6 +403,16 @@ a[class*="knapp-"] {
 
 .ytelser-nei {
     margin-top: 20px;
+
+  &.form-linje.feil {
+    border: 1px solid #df4b78;
+    background: #fee6e6;
+
+    .melding {
+      margin-bottom: 10px;
+    }
+  }
+
 }
 
 .form-errors {
@@ -449,6 +459,10 @@ a[class*="knapp-"] {
         &.boolean {
           border: 1px solid @pink;
           background: #fee6e6;
+
+          .melding {
+            margin-bottom: 10px;
+          }
         }
 
         .melding.inline {
@@ -456,3 +470,4 @@ a[class*="knapp-"] {
         }
     }
 }
+

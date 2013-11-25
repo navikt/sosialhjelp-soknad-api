@@ -80,7 +80,7 @@ function harAttributt(objekt, attributt) {
 function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
-
+//Oppretter en egendefinert feilmelding
 function opprettEgendefinertFeilmelding(navn, errorMessage, valid, skalVisesAlene) {
     var feilmelding = new Object();
     feilmelding.$name = navn;
@@ -88,19 +88,27 @@ function opprettEgendefinertFeilmelding(navn, errorMessage, valid, skalVisesAlen
     feilmelding.$valid = valid;
     feilmelding.$invalid = !valid;
     feilmelding.$skalVisesAlene = skalVisesAlene;
+     
 
     return feilmelding;
 }
-
+//Legger til en feilmelding hvis den ikke finnes fra før.
 function leggTilFeilmeldingHvisDenIkkeFinnes(feilmeldingskategori, feilmeldingsnavn, form, feilmelding, valid, skalVisesAlene) {
     var index = form.$error[feilmeldingskategori].indexByValue(feilmeldingsnavn);
 
     if (index == -1) {
-        form.$error[feilmeldingskategori].push(opprettEgendefinertFeilmelding(feilmeldingsnavn, feilmelding, valid, skalVisesAlene ));
+        form.$error[feilmeldingskategori].push(opprettEgendefinertFeilmelding(feilmeldingsnavn, feilmelding, valid, skalVisesAlene));
     }
 }
-
+/**
+ * endrer validiteten på en feilmelding. Sjekker hvis feilmeldingen ikke skal vises lenger, så i stedet for å oppdatere feilmeldingen fjernes den heller fra listen.
+ Derfor trenger vi kun å legge til feilmeldinger som ikke finnes fra før og som er false.
+ */
 function settEgendefinertFeilmeldingsverdi(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, valid, skalVisesAlene) {
+    if (form.$error[feilmeldingskategori] === undefined) {
+        form.$error[feilmeldingskategori] = [];
+    }
+    form.$setValidity(feilmeldingsnavn, valid);
     var index = form.$error[feilmeldingskategori].indexByValue(feilmeldingsnavn);
     if (index > -1 && valid) {
         form.$error[feilmeldingskategori].splice(index, 1);
