@@ -329,7 +329,7 @@ angular.module('nav.select', ['ngSanitize'])
                 };
 
                 function filterListePaaSoketekst() {
-                    var input = scope.orginalListe;
+                    var input = angular.copy(scope.orginalListe);
                     var query = scope.soketekst;
 
                     if (query) {
@@ -358,9 +358,7 @@ angular.module('nav.select', ['ngSanitize'])
                 }
 
                 function filterListeTilAntallElementerRundtValgtElement() {
-                    console.log(scope.valgtElementVerdi);
                     var valgtIndeks = scope.vistListe.indexByValue(scope.valgtElementVerdi);
-                    console.log(valgtIndeks);
 
                     minimumIndeks = Math.max(0, valgtIndeks - antallElementerOverOgUnder);
                     maximumIndeks = valgtIndeks + antallElementerOverOgUnder + Math.max(0, antallElementerOverOgUnder - valgtIndeks);
