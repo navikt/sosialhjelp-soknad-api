@@ -1,121 +1,126 @@
 #arbeidsforhold {
-  .arbeidsforhold-informasjonstekst {
-    margin-bottom: 30px !important;
-    margin-top: 10px !important;
-    font-size: 17px;
-    font-weight: 600;
-    font-family: Modus;
-  }
-  .arbeidsforhold-spm {
-    margin-bottom: 40px;
-
-    input, select, .select2-container {
-      width: 75%;
-      margin-bottom: 1rem;
-
-      &#arbeidsgiver_navn {
-        width: 100%;
-      }
+    .skjemainnhold  {
+        padding-top: 20px;
     }
 
-    .varighet {
-      width: 75%;
-      > div {
-        display: inline-block;
-        width: 47.35%;
+    .arbeidsforhold-informasjonstekst {
+        font-size: 1.21rem;
+        font-weight: 600;
+        font-family: Modus, Arial, Helvetica, sans-serif;
+        margin-bottom: 30px;
+        line-height: 1.6rem;
+    }
+    .arbeidsforhold-spm {
+        margin-bottom: 40px;
 
-        input {
-          width: 100%;
+        input, select, .nav-select {
+            width: 75%;
+            margin-bottom: 1rem;
+
+            &#arbeidsgiver_navn {
+                width: 100%;
+            }
         }
 
-        &:last-child {
-          margin-left: 4%;
+        .varighet {
+            width: 75%;
+            > div {
+                display: inline-block;
+                width: 47.35%;
+
+                input {
+                    width: 100%;
+                }
+
+                &:last-child {
+                    margin-left: 4%;
+                }
+            }
         }
-      }
+
+        .sluttaarsak-informasjon {
+            .informasjonstekst;
+            margin-bottom: 1rem;
+        }
     }
 
-    .sluttaarsak-informasjon {
-      margin-bottom: 1rem;
-    }
-  }
+    .knapper-opprett-arbeidsforhold {
+        border-top: 1px solid #ddd;
+        margin-top: 1rem;
+        padding-top: 2rem;
+        text-align: center;
 
-  .knapper-opprett-arbeidsforhold {
-    border-top: 1px solid #ddd;
-    margin-top: 1rem;
-    padding-top: 2rem;
-    text-align: center;
-
-    input, a {
-      display: block;
-      margin: 0 auto 1rem;
-    }
-  }
-
-  .arbeidsforhold-oppsummering-endre-slett {
-    text-align: center;
-    margin-bottom: 30px !important;
-  }
-
-  .spm-knapper {
-    border-top: 1px solid #ddd;
-    padding-top: 40px;
-  }
-
-  .knapper-arbeidsforhold {
-    #legg-til {
-      text-align: center;
-      margin-top: 40px;
+        input, a {
+            display: block;
+            margin: 0 auto 1rem;
+        }
     }
 
-    #har-ikke-jobbet {
-      margin-top: 40px;
+    .arbeidsforhold-oppsummering-endre-slett {
+        text-align: center;
+        margin-bottom: 30px !important;
     }
-  }
+
+    .spm-knapper {
+        border-top: 1px solid #ddd;
+        padding-top: 40px;
+    }
+
+    .knapper-arbeidsforhold {
+        #legg-til {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        #har-ikke-jobbet {
+            margin-top: 40px;
+        }
+    }
 }
 
 [data-ng-repeat="af in arbeidsforhold"] {
-  border-bottom: 1px solid #ddd;
-  margin-bottom: 30px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 30px;
 
-  &.last {
-    border-bottom: none;
-    margin-bottom: 0;
-  }
+    &.last {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
 }
 
 .arbeidsforhold {
 
-  .arbeidsforhold-dato {
-    text-transform: uppercase;
-    margin-right: 5px;
-  }
-  .arbeidsforhold-arbeidsgivernavn {
-    font-weight: bold;
-  }
-  .arbeidsforhold-arbeidsgivernavn-overskrift {
-    font-size: 17px;
-    font-family: modus;
-    font-weight: 600;
-    margin-bottom: 15px !important;
-  }
-
-  .arbeidsforhold-land-sluttaarsak-blokk {
-    margin-bottom: 15px;
-
-    .svar-oppsummering-deler {
-      margin: 0px 5px;
+    .arbeidsforhold-dato {
+        text-transform: uppercase;
+        margin-right: 5px;
     }
-  }
+    .arbeidsforhold-arbeidsgivernavn {
+        font-weight: bold;
+    }
+    .arbeidsforhold-arbeidsgivernavn-overskrift {
+        font-size: 17px;
+        font-family: modus;
+        font-weight: 600;
+        margin-bottom: 15px !important;
+    }
 
-  .arbeidsforhold-oppsummering-endre-slett {
-    text-align: center;
-  }
+    .arbeidsforhold-land-sluttaarsak-blokk {
+        margin-bottom: 15px;
+
+        .svar-oppsummering-deler {
+            margin: 0px 5px;
+        }
+    }
+
+    .arbeidsforhold-oppsummering-endre-slett {
+        text-align: center;
+    }
 }
 
 .arbeidsforhold-avbryt {
-  margin-top: 10px;
-  margin-bottom: 20px;
-  display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    display: inline-block;
 }
 
 
