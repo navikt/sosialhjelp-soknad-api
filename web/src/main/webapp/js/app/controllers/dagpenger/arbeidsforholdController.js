@@ -100,6 +100,7 @@ angular.module('nav.arbeidsforhold.controller', [])
                     form.$setValidity('arbeidsforhold.leggtilnyttarbeidsforhold.feilmelding', false);
                     $scope.runValidation();
                 }
+                $scope.fixWidthForIe();
             }
 
             $scope.endreArbeidsforhold = function (index, form) {
@@ -115,7 +116,13 @@ angular.module('nav.arbeidsforhold.controller', [])
                     form.$setValidity('arbeidsforhold.endrearbeidsforhold.feilmelding', false);
                     $scope.runValidation();
                 }
+                $scope.fixWidthForIe();
+            }
 
+            $scope.fixWidthForIe = function() {
+                setTimeout(function() {
+                    $("#sluttaarsak_id").width($("#sluttaarsak_id").width());
+                }, 50);
             }
 
             $scope.ikkeUnderRedigering = function () {
