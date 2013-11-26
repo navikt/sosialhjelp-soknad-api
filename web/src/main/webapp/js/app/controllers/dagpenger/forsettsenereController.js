@@ -9,8 +9,6 @@ angular.module('nav.forsettsenere',['nav.cmstekster'])
                     $location.path('kvittering-fortsettsenere/' + soknadId);
 				});
         }
-
-
     }])
 
     .directive('navGjenoppta', ['$compile','data', function($compile, data) {
