@@ -101,7 +101,6 @@ function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-//Oppretter en egendefinert feilmelding
 function opprettEgendefinertFeilmelding(navn, errorMessage, valid, skalVisesAlene) {
     var feilmelding = new Object();
     feilmelding.$name = navn;
@@ -113,7 +112,6 @@ function opprettEgendefinertFeilmelding(navn, errorMessage, valid, skalVisesAlen
 
     return feilmelding;
 }
-//Legger til en feilmelding hvis den ikke finnes fra før.
 function leggTilFeilmeldingHvisDenIkkeFinnes(feilmeldingskategori, feilmeldingsnavn, form, feilmelding, valid, skalVisesAlene) {
     var index = form.$error[feilmeldingskategori].indexByValue(feilmeldingsnavn);
 
@@ -137,7 +135,6 @@ function settEgendefinertFeilmeldingsverdi(form, feilmeldingskategori, feilmeldi
         leggTilFeilmeldingHvisDenIkkeFinnes(feilmeldingskategori, feilmeldingsnavn, form, feilmelding, valid, skalVisesAlene)
     }
 }
-
 
 function stringContainsNotCaseSensitive(str, query) {
     return str.toLowerCase().indexOf(query.toLowerCase());
