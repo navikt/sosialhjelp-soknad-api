@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.xml.ws.WebServiceException;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -45,7 +46,10 @@ public class PersonServiceTPS implements PersonService {
         } catch (HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
         	logger.error("Kunne ikke hente bruker fra TPS.", e);
             return new Person();
-		} 
+		} catch(WebServiceException e) {
+			logger.error("Ingen kontakt med TPS.", e);
+            return new Person();
+		}
         return new PersonTransform().mapToPerson(soknadId, response, kodeverk);
     }
 

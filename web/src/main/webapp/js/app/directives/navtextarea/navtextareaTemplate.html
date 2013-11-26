@@ -1,13 +1,14 @@
 <div class="form-linje textarea-container" data-ng-class="{feil: feil}" >
     <label>
-        <p cmstekster="{{sporsmal}}"/>
+        <span cmstekster="{{sporsmal}}"></span>
         
         <textarea data-ng-model='model' name="tmpName" error-messages="'{{ feilmelding }}'" data-ng-trim='false' validate-textarea/>
 
-        <p data-ng-show="fokus || feil">
+        <span class="egen-linje" data-ng-show="fokus || feil">
             <span class="tellertekst" data-ng-class="{negativtekstteller: counter < 0 }"> {{counter}} </span>
-            <span cmstekster="fritekst.tellertekst"/>
-        </p>
+            <span cmstekster="fritekst.negativtellertekst" data-ng-show="counter < 0"> </span>
+            <span cmstekster="fritekst.tellertekst" data-ng-show="counter >= 0"> </span>
+        </span>
     </label>
-    <p class="melding">{{counter*-1}} <span cmstekster="fritekst.feilmelding"></span></p>
+    <p class="melding"><span cmstekster="fritekst.feilmelding"></span></p>
 </div>
