@@ -399,6 +399,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.webbitserver</groupId>
             <artifactId>webbit</artifactId>
             <scope>test</scope>
