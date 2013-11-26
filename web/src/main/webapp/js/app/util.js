@@ -51,6 +51,12 @@ function checkTrue(element) {
     }
     return element.toString() == 'true';
 }
+function checkFalse(element) {
+    if (element == undefined) {
+        return false;
+    }
+    return element.toString() == 'false';
+}
 
 function scrollToElement(element) {
     var animationSpeed = 200;
@@ -127,11 +133,12 @@ function settEgendefinertFeilmeldingsverdi(form, feilmeldingskategori, feilmeldi
     if (form.$error[feilmeldingskategori] === undefined) {
         form.$error[feilmeldingskategori] = [];
     }
-    form.$setValidity(feilmeldingsnavn, valid);
+
     var index = form.$error[feilmeldingskategori].indexByValue(feilmeldingsnavn);
     if (index > -1 && valid) {
         form.$error[feilmeldingskategori].splice(index, 1);
     } else if (index == -1 && !valid) {
+        form.$setValidity(feilmeldingsnavn, valid);
         leggTilFeilmeldingHvisDenIkkeFinnes(feilmeldingskategori, feilmeldingsnavn, form, feilmelding, valid, skalVisesAlene)
     }
 }
