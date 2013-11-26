@@ -26,7 +26,7 @@ public class UtslagskriterierController {
     public Map<String, Boolean> sjekkUtslagskriterier() {
     	String uid = getSubjectHandler().getUid();
         utslagskriterierResultat.put("gyldigAlder", new PersonAlder(uid).sjekkAlder());
-        utslagskriterierResultat.put("bosattINorge", harNorskAdresse(uid));
+ //       utslagskriterierResultat.put("bosattINorge", harNorskAdresse(uid));
         return utslagskriterierResultat;
     }
 
