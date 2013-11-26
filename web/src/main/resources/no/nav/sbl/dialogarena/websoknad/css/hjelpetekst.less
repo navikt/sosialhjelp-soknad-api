@@ -1,0 +1,53 @@
+.hjelpetekst {
+    background-color: #3e3832;
+    padding: 20px;
+    margin-bottom: 20px;
+    position: relative;
+
+    &:before {
+        content: "";
+        border: solid transparent;
+        border-top-color: #3e3832;
+        border-width: 13px;
+        position: absolute;
+        height: 0;
+        width: 0;
+        left: 8%;
+        top: 100%;
+    }
+
+    div {
+        text-align: center;
+        max-width: 80%;
+        margin: 0 auto;
+
+        h3 {
+            display: inline-block;
+            color: #ccc !important;
+            text-align: center;
+        }
+        .lukk {
+            position: absolute;
+            top: 23px;
+            right: 20px;
+            color: #00a9e0;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+    }
+
+    p {
+        color: white !important;
+    }
+}
+
+.definerer-hjelpetekst {
+    border-bottom: 1px #3875d7 dotted;
+    cursor: pointer;
+
+    &.open {
+        border-bottom: none;
+        color: #3875d7 !important;
+    }
+
+}

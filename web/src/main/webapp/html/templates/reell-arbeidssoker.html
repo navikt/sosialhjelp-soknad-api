@@ -1,5 +1,5 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <div data-ng-form="reellarbeidssokerForm" class="skjemainnhold horisontal" data-ng-controller="ReellarbeidssokerCtrl" novalidate>
+    <div data-ng-form="reellarbeidssokerForm" class="skjemainnhold vertikal" data-ng-controller="ReellarbeidssokerCtrl" novalidate>
 
         <div data-form-errors/>
         <div data-nav-hjelpetekst-element/>
@@ -31,7 +31,7 @@
                 inputname='annensituasjon' label='reellarbeidssoker.annensituasjon'></div>
 
              </div> 
-             <p cmstekster="reellarbeidssoker.villigdeltid.false.informasjon2"></p>
+             <p class="informasjonstekst" cmstekster="reellarbeidssoker.villigdeltid.false.informasjon2"></p>
              <div navtekst data-ng-model="soknadData.fakta.maksimalarbeidstid.value"
                           modus="data.redigeringsModus" inputname="maksimalarbeidstid"
                           label=" reellarbeidssoker.maksimalarbeidstid"
@@ -75,7 +75,7 @@
                       nokkel="reellarbeidssoker.villighelse"
                       hjelpetekst></div>
 
-        <div class="ekstra-spm-boks" data-ng-if="soknadData.fakta.villighelse.value == 'false'">  
+        <div class="helsemessige-arsaker ekstra-spm-boks" data-ng-if="soknadData.fakta.villighelse.value == 'false'">
           <div navtextarea inputname="helseFritekst" data-ng-model="soknadData.fakta.helseFritekst.value"
                          nokkel="reellarbeidssoker.helsefritekst" maxlengde="500" feilmelding="reellarbeidssoker.helsefritekst.feilmelding" obligatorisk="true"></div>
           <p cmstekster="reellarbeidssoker.villighelse.false.vedlegginformasjon"></p>

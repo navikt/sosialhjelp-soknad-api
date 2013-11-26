@@ -16,6 +16,12 @@
     }
 }
 
+.informasjonstekst {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 10px !important;
+}
+
 .rad.soknad {
     padding: 0;
 }
@@ -73,7 +79,6 @@
 .strek {
     background-image: url(../img/under-dark.png);
     background-repeat: no-repeat;
-
 }
 
 .strek-top {
@@ -87,51 +92,6 @@
     background-position: bottom center;
     padding-bottom: 15px;
     margin-bottom: 15px !important;
-}
-
-.ferdig-skjema {
-  border-bottom: none;
-  padding-bottom: 0;
-
-  .textarea-form {
-      text-align: center;
-
-      .textarea-container {
-        margin-bottom: 35px;
-      }
-      p, span {
-        font-size: 14px !important;
-        margin: 10px 0;
-      }
-
-      label {
-          text-transform: uppercase;
-      }
-
-      textarea {
-          margin: 10px auto 0;
-          overflow-y: hidden;
-          margin: 0 auto;
-          max-width: 50%;
-          min-width: 50%;
-          min-height: 40px;
-      }
-      .tellertekst {
-        font-weight: bold;
-      }
-      .negativtekstteller {
-        color: #c30000;
-      }
-  }
-
-  a[class*="knapp-"] {
-      margin-top: 40px;
-      margin-bottom: 40px;
-  }
-}
-
-.stegindikator {
-    margin-bottom: 0;
 }
 
 // Kan ikke brukes på input-element
@@ -159,34 +119,6 @@
     margin: 10px 0 30px;
 }
 
-.ekstra-spm-boks {
-    &:after, &:before {
-        bottom: 100%;
-        border: solid transparent;
-        content: "";
-        height: 0;
-        width: 0;
-        position: absolute;
-        left: 8%;
-    }
-
-    &:after {
-        border-bottom-color: #f1f1f1;
-        border-width: 12px;
-        margin-left: -12px;
-    }
-
-    &:before {
-        border-bottom-color: #ddd;
-        border-width: 13px;
-        margin-left: -13px;
-    }
-
-    .infoboks {
-        margin-bottom: 20px;
-    }
-}
-
 .spm-blokk {
     position: relative;
     border-top: 1px solid #ddd;
@@ -197,7 +129,8 @@
 
         .flipp {
             cursor: pointer;
-            border-color: transparent transparent #00468B transparent;
+            border-color: transparent transparent #00468B transparent
+        ;
 
             &:before {
                 border-top: 30px solid #0067c5;
@@ -210,7 +143,8 @@
 
         .flipp {
             cursor: pointer;
-            border-color: transparent transparent #a3a3a3 transparent;
+            border-color: transparent transparent #a3a3a3 transparent
+        ;
 
             &:before {
                 border-top: 30px solid #ccc;
@@ -229,7 +163,8 @@
         height: 0;
         margin: 0 auto;
         border-style: solid;
-        border-color: transparent transparent #0067c5 transparent;
+        border-color: transparent transparent #0067c5 transparent
+    ;
         border-width: 0 2px 3px 2px;
 
         &:before {
@@ -314,7 +249,6 @@
                 margin-top: 40px;
                 text-align: center;
 
-
                 input, button, a {
                     margin-bottom: 15px;
 
@@ -352,8 +286,11 @@
     width: 100%;
 
     .spm-sporsmal {
-        font-weight: bold;
-        margin-bottom: 1rem;
+        font-size: 1.21rem;
+        font-weight: 600;
+        font-family: Modus,Arial,Helvetica,sans-serif;
+        margin-bottom: 10px;
+        line-height: 1.6rem;
     }
 
     .blokk-resultat {
@@ -366,7 +303,6 @@
     }
 
     .svar-alt {
-        margin: 5px 0px;
         text-transform: none !important;
 
         .mer-info {
@@ -432,19 +368,27 @@
         .melding {
             display: block;
         }
-        
+
         .melding.inline {
-        	display: inline;
+            display: inline;
         }
     }
 }
 
+.rad[stegindikator], .rad[data-stegindikator] {
+    border-bottom: none;
+}
+
 .stegindikator {
-    margin-bottom: 50px;
+    margin-bottom: 20px;
     li {
+        width: 150px;
+        margin-right: 15px;
+
         a {
-            font-family: Modus,Arial,Helvetica,sans-serif;;
+            font-family: Modus, Arial, Helvetica, sans-serif;;
             font-weight: 600;
+            padding: 10px 40px;
         }
 
         &.done a {
@@ -470,147 +414,6 @@ form, [ng-form], [data-ng-form] {
             }
         }
     }
-}
-
-.sist-lagret {
-    text-align: center;
-    margin-top: 30px;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-
-    &.stick {
-        margin-top: 0;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 15px;
-        background: #f1f1f1;
-        border-top: 1px solid #ddd;
-        z-index: 1035;
-    }
-}
-
-
-.hjelpetekst {
-    background-color: #3e3832;
-    padding: 20px;
-    margin-bottom: 20px;
-    position: relative;
-
-    &:before {
-        content: "";
-        border: solid transparent;
-        border-top-color: #3e3832;
-        border-width: 13px;
-        position: absolute;
-        height: 0;
-        width: 0;
-        left: 8%;
-        top: 100%;
-    }
-
-    div {
-        text-align: center;
-        max-width: 80%;
-        margin: 0 auto;
-
-        h3 {
-            display: inline-block;
-            color: #ccc !important;
-            text-align: center;
-        }
-        .lukk {
-            position: absolute;
-            top: 23px;
-            right: 20px;
-            color: #00a9e0;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-    }
-
-    p {
-        color: white !important;
-    }
-}
-
-
-
-.nav-select {
-    position: relative;
-
-    &.open {
-        input {
-            border-color: rgba(82, 168, 236, .8);
-            background-image: url(../img/pil-blaa-hover.png);
-        }
-    }
-
-    input {
-        width: 100% !important;
-        margin-bottom: 0 !important;
-        padding-left: 30px;
-        background-image: url(../img/pil-blaa.png);
-        background-repeat: no-repeat;
-        background-position: 10px;
-        background-position: 12px;
-
-        &:hover {
-                background-image: url(../img/pil-blaa-hover.png);
-        }
-    }
-
-    ul {
-        background: white;
-        list-style: none;
-        position: absolute;
-        margin: 0;
-        padding: 5px;
-        width: 100%;
-        border: 1px solid;
-        border-color: rgba(82, 168, 236, .8);
-        border-top: none;
-        overflow-y: auto;
-        min-height: 40px;
-        max-height: 300px;
-
-        li {
-            padding: 5px;
-
-            &:last-child {
-                border-bottom: none;
-            }
-
-            &:hover {
-                background-color: #f1f1f1;
-            }
-
-            &.harFokus {
-                background: #3875d7;
-                color: white;
-
-                span {
-                    color: white;
-                }
-            }
-
-            span {
-                text-decoration: underline;
-            }
-        }
-    }
-}
-
-.definerer-hjelpetekst {
-    border-bottom: 1px #3875d7 dotted;
-    cursor: pointer;
-
-    &.open {
-        border-bottom: none;
-        color: #3875d7 !important;
-    }
-
 }
 
 .liste-vannrett li:not([class*="dropdown"]):before {
