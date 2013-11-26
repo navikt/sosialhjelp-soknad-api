@@ -4,6 +4,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class FortsettSenere {
@@ -16,6 +17,7 @@ public class FortsettSenere {
 		this.action = action;
 		this.epost = epost;
 	}
+
 	
 	public String getEpost() {
 		return epost;
@@ -40,4 +42,6 @@ public class FortsettSenere {
 	public void setParam(String param) {
 		this.param = param;
 	}
+
+
 }
