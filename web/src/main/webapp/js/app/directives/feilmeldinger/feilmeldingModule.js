@@ -96,7 +96,7 @@ angular.module('nav.feilmeldinger', [])
                         if (feil && feil.$skalVisesAlene === true && skalViseFlereFeilmeldinger) { // == Egendefinert feilmelding
                             scope.feilmeldinger = [feilmelding];
                             skalViseFlereFeilmeldinger = false;
-                        } else if (skalViseFlereFeilmeldinger) {
+                        } else if (skalViseFlereFeilmeldinger && feil) {
                             leggTilFeilmeldingHvisIkkeAlleredeLagtTil(scope.feilmeldinger, feilmelding);
                         }
 
@@ -108,27 +108,25 @@ angular.module('nav.feilmeldinger', [])
                     var fortsattFeilListe = [];
                     angular.forEach(verdi, function(feil) {
                         var feilmelding = finnFeilmelding(feil, feilNokkel);
-                        if (scope.feilmeldinger.indexByValue(feilmelding.feil) > -1) {
+                        if (scope.feilmeldinger.indexByValue(feilmelding.feil) > -1 && feil) {
                             leggTilFeilmeldingHvisIkkeAlleredeLagtTil(fortsattFeilListe, feilmelding);
                         }
                     });
                     return fortsattFeilListe;
                 }
 
-                function leggTilFeilmeldingHvisIkkeAlleredeLagtTil(fortsattFeilListe, feilmelding) {
-                    if (fortsattFeilListe.indexByValue(feilmelding.feil) < 0){
-                        fortsattFeilListe.push(feilmelding);
+                function leggTilFeilmeldingHvisIkkeAlleredeLagtTil(feilListe, feilmelding) {
+                    if (feilListe.indexByValue(feilmelding.feil) < 0){
+                        feilListe.push(feilmelding);
                     }
                 }
 
                 function finnFeilmelding(feil, feilNokkel) {
                     var feilmeldingNokkel = finnFeilmeldingsNokkel(feil, feilNokkel);
                     var feilmelding = data.tekster[feilmeldingNokkel];
-
                     if (feilmelding === undefined) {
-                        return "Fant ikke feilmelding med key " + feilmeldingNokkel;
+                        return {feil: "Fant ikke feilmelding med key " + feilmeldingNokkel, elem: finnTilhorendeElement(feil)};
                     }
-
                     return {feil: feilmelding, elem: finnTilhorendeElement(feil)};
                 }
 
