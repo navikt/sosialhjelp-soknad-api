@@ -42,8 +42,8 @@ angular.module('app.routes', ['ngRoute'])
                 templateUrl: '../html/templates/fortsettSenere.html',
                 controller: 'SoknadDataCtrl',
                 resolve: {
-                    notUsedButRequiredProperty: function (HentSoknadService) {
-                        return HentSoknadService;
+                    notUsedButRequiredProperty: function (EpostResolver) {
+                        return EpostResolver;
                     }
                 }
             })
