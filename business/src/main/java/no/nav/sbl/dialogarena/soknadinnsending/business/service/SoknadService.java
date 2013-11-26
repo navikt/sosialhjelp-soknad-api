@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.detect.IsImage;
 import no.nav.sbl.dialogarena.detect.IsPdf;
 import no.nav.sbl.dialogarena.pdf.ConvertToPng;
@@ -30,7 +31,7 @@ import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 
 
 @Component
-public class SoknadService implements SendSoknadService {
+public class SoknadService implements SendSoknadService, VedleggService {
 
     private static final String BRUKERREGISTRERT_FAKTUM = "BRUKERREGISTRERT";
     private static final String SYSTEMREGISTRERT_FAKTUM = "SYSTEMREGISTRERT";
@@ -89,10 +90,10 @@ public class SoknadService implements SendSoknadService {
 
     public static final String PDF_PDFA = "-dNOPAUSE -dBATCH -dSAFER -dPDFA -dNOGA -sDEVICE=pdfwrite -sOutputFile=%stdout%  -q -c \"30000000 setvmthreshold\" -_ -c quit";
     private static final String IMAGE_RESIZE = "- -units PixelsPerInch -density 150 -quality 50 -resize 1240x1754 jpeg:-";
-
     private static final String IMAGE_PDFA = "-  pdfa:-";
 
 
+    @Override
     public Long lagreVedlegg(Vedlegg vedlegg, InputStream inputStream) {
         try {
             byte[] bytes = IOUtils.toByteArray(inputStream);
@@ -108,17 +109,20 @@ public class SoknadService implements SendSoknadService {
                     bytes = new ScriptRunner(ScriptRunner.Type.GS, PDF_PDFA, null, new ByteArrayInputStream(bytes)).call();
                 }
             }
-            bytes = new PdfWatermarker().applyOn(bytes, "TEST-IDENT MOCK");
+            bytes = new PdfWatermarker().applyOn(bytes, SubjectHandler.getSubjectHandler().getUid());
             return vedleggRepository.lagreVedlegg(vedlegg, bytes);
-        } catch (Exception e) {
+        } catch (Throwable e) {
+
             throw new RuntimeException("Kunne ikke lagre vedlegg: " + e, e);
         }
     }
 
+    @Override
     public List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId) {
         return vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
     }
 
+    @Override
     public Vedlegg hentVedlegg(Long soknadId, Long vedleggId, boolean medInnhold) {
         if (medInnhold) {
             return vedleggRepository.hentVedleggMedInnhold(soknadId, vedleggId);
@@ -127,10 +131,12 @@ public class SoknadService implements SendSoknadService {
         }
     }
 
+    @Override
     public void slettVedlegg(Long soknadId, Long vedleggId) {
         vedleggRepository.slettVedlegg(soknadId, vedleggId);
     }
 
+    @Override
     public byte[] lagForhandsvisning(Long soknadId, Long vedleggId) {
         try {
             return new ConvertToPng(new Dimension(600, 800), ImageScaler.ScaleMode.SCALE_TO_FIT_INSIDE_BOX)
@@ -140,6 +146,7 @@ public class SoknadService implements SendSoknadService {
         }
     }
 
+    @Override
     public Long genererVedleggFaktum(Long soknadId, Long faktumId) {
         List<Vedlegg> vedleggs = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
         List<byte[]> bytes = new ArrayList();
