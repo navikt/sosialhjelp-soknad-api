@@ -130,7 +130,10 @@ angular.module('nav.validering', ['nav.cmstekster'])
 
 
                 scope.$on(eventString, function () {
-                    element.closest('.form-linje').addClass('feil');
+                    if (element.is(':visible')) {
+                        element.closest('.form-linje').addClass('feil');
+                    }
+
                     if (sjekkOmFeltetErSvart()) {
                         element.closest('.form-linje').removeClass('feil');
                     }
