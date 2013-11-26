@@ -68,15 +68,21 @@ public class Adresse {
 	public void setGyldigfra(DateTime gyldigfra) {
 		this.gyldigfra = gyldigfra;
 	}
-	public DateTime getGyldigFra() {
-		return gyldigfra;
+	public Long getGyldigFra() {
+		if(gyldigfra == null) {
+			return null;
+		}
+		return gyldigfra.getMillis();
 	}
 
 	public void setGyldigtil(DateTime gyldigtil) {
 		this.gyldigtil = gyldigtil;
 	}
-	public DateTime getGyldigTil() {
-		return gyldigtil;
+	public Long getGyldigTil() {
+		if(gyldigtil == null) {
+			return null;
+		}
+		return gyldigtil.getMillis();
 	}
 
 	public void setPostboksnavn(String postboksnavn) {
