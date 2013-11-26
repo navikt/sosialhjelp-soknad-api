@@ -9,6 +9,11 @@ angular.module('nav.forsettsenere',['nav.cmstekster'])
                     $location.path('kvittering-fortsettsenere/' + soknadId);
 				});
         }
+
+        $scope.validerEpostAdresse = function (emailAddress) {
+            return EMAIL_REGEXP.test(emailAddress);
+        }
+
         
     }])
 
