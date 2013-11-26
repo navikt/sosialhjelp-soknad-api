@@ -18,13 +18,13 @@ angular.module('nav.reellarbeidssoker', [])
             'pendleeneansvarbarnopptil18aar', 'pendleannensituasjon', 'pendleomsorgansvar' ];
 
         $scope.validerReellarbeidssoker = function (form) {
-            if (checkFalse($scope.soknadData.fakta.villigdeltid.value) && $scope.erUnder60Aar()) {
+            if (sjekkOmGittEgenskapTilObjektErFalse($scope.soknadData.fakta.villigdeltid) && $scope.erUnder60Aar()) {
                 var minstEnDeltidCheckboksAvhuket = $scope.erCheckboxerAvhuket(deltidnokler);
                 settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnVilligDeltidCheckboksErAvhuketFeilmeldingNavn, minstEnVilligDeltidCheckboksErAvhuketFeilmeldingNokkel, minstEnDeltidCheckboksAvhuket, false);
             } else {
                 settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnVilligDeltidCheckboksErAvhuketFeilmeldingNavn, minstEnVilligDeltidCheckboksErAvhuketFeilmeldingNokkel, true, false);
             }
-            if (checkFalse($scope.soknadData.fakta.villigpendle.value) && $scope.erUnder60Aar()) {
+            if (sjekkOmGittEgenskapTilObjektErFalse($scope.soknadData.fakta.villigpendle) && $scope.erUnder60Aar()) {
                 var minstEnPendleCheckboksAvhuket = $scope.erCheckboxerAvhuket(pendlenokler);
                 settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnVilligPendleCheckboksErAvhuketFeilmeldingNavn, minstEnVilligPendleCheckboksErAvhuketFeilmeldingNokkel, minstEnPendleCheckboksAvhuket, false);
             } else {

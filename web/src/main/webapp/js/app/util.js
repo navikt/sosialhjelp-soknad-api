@@ -45,6 +45,14 @@ if (!Array.prototype.indexByValue) {
     }
 }
 
+function sjekkOmGittEgenskapTilObjektErFalse(objekt) {
+    if (objekt) {
+        return checkFalse(objekt.value);
+    }
+
+    return false;
+}
+
 function checkTrue(element) {
     if (element == undefined) {
         return false;
