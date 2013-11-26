@@ -1,7 +1,7 @@
 angular.module('nav.ytelser',[])
     .controller('YtelserCtrl', ['$scope', 'lagreSoknadData', function ($scope, lagreSoknadData) {
         const minstEnCheckboksErAvhuketFeilmeldingNavn = 'minstEnCheckboksErAvhuket';
-        const minstEnCheckboksErAvhuketFeilmeldingNokkel = minstEnCheckboksErAvhuketFeilmeldingNokkel;
+        const minstEnCheckboksErAvhuketFeilmeldingNokkel = 'ytelser.minstEnCheckboksErAvhuket.feilmelding';
         const feilmeldingKategori = 'ytelser';
 
         $scope.ytelser = {skalViseFeilmeldingForIngenYtelser: false};
@@ -10,9 +10,11 @@ angular.module('nav.ytelser',[])
 
 //      sjekker om formen er validert når bruker trykker ferdig med ytelser
         $scope.validerYtelser = function(form) {
-            var minstEnCheckboksErAvhuket = erCheckboxerAvhuket(nokler);
+            form.$setValidity('ytelser.harValgtYtelse', true);
 
+            var minstEnCheckboksErAvhuket = erCheckboxerAvhuket(nokler);
             settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, minstEnCheckboksErAvhuket, true);
+
             $scope.validateForm(form.$invalid);
             $scope.runValidation();
         };
@@ -39,6 +41,7 @@ angular.module('nav.ytelser',[])
             }
         }
 
+        //      kjøres hver gang det skjer en endring på 'ingenYtelse'-checkboksen
         $scope.endreIngenYtelse = function(form) {
             // Sjekker om en ytelse er huket av (inkluderer IKKE siste checkboksen)
             var ytelserNokler = nokler.slice(0, nokler.length - 1);
