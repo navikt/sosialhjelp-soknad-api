@@ -9,8 +9,9 @@
     <form id="opplastingform" method="POST" enctype="multipart/form-data" data-file-upload="options" data-ng-controller="OpplastingCtrl">
         <div class="begrensning sak-trekvart">
             <section class="panel-standard oversikt">
+                <article id="opplastingFeilmelding" class="feil" data-ng-if="opplastingFeilet" data-ng-bind="opplastingFeilet"></article>
                 <ul class="opplastingliste clearfix">
-                    <li data-ng-repeat="file in queue" data-ng-class="{'lasteropp': file.$processing()}">
+                    <li data-ng-repeat="file in queue" data-ng-class="{'lasteropp': file.$processing()}" fil-feil>
                         <a class="lukk" data-ng-if="!!file.sletteUrl" data-ng-click="file.$destroy()" data-ng-controller="SlettOpplastingCtrl"></a>
                         <img data-async-image="../{{file.forhandsvisningUrl}}" data-ng-if="!!file.forhandsvisningUrl">
                     </li>
