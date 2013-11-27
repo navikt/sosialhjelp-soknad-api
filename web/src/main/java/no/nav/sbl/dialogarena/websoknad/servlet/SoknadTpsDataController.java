@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.websoknad.servlet;
 import com.google.gson.Gson;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.person.Adresse;
+import no.nav.sbl.dialogarena.person.FamilieRelasjonService;
 import no.nav.sbl.dialogarena.person.Person;
 import no.nav.sbl.dialogarena.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -35,6 +36,9 @@ public class SoknadTpsDataController {
 	
 	@Inject
 	private PersonService personService;
+	
+	@Inject
+	private FamilieRelasjonService familieRelasjonService;
 	
     @RequestMapping(value = "/kodeverk/{postnummer}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
@@ -98,6 +102,17 @@ public class SoknadTpsDataController {
         
     	return person;
     }
+    
+    @RequestMapping(value = "/{soknadId}/familierelasjoner", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody()
+    public Person hentFamilierelasjoner(@PathVariable String soknadId) {
+        System.out.println("#######skal hente familie#######");
+    	Person person =  familieRelasjonService.hentPerson(new Long(soknadId), getSubjectHandler().getUid());
+    	System.out.println("#######ferdig med familie#######");
+    	
+    	return person;
+    }
+    
     
     @RequestMapping(value = "/{soknadId}/personalia/fnr/{fnr}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
