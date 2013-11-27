@@ -353,7 +353,7 @@ form-linje.feil {
 }
 
 .form-linje {
-    padding: 0;
+    padding: 15px;
 
     .melding {
         display: none;
@@ -371,15 +371,21 @@ form-linje.feil {
         }
 
         &.boolean {
+            border: 1px solid @pink;
+            background: #fee6e6;
+
+            .melding {
+                margin-bottom: 10px;
+                font-size: 0.9rem;
+
+            }
+        }
+
+        &.checkbox {
           border: 1px solid @pink;
           background: #fee6e6;
-
-          .melding {
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-
-          }
         }
+
         .melding.inline {
             display: inline;
         }
