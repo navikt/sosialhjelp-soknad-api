@@ -35,7 +35,9 @@ angular.module('nav.feilmeldinger', [])
                 scope.runValidation = function () {
                     scope.feilmeldinger = [];
                     var skalViseFlereFeilmeldinger = true;
+
                     angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
+                        console.log("XFDFDD" + ctrl.$errorMessages);
                         if (skalViseFlereFeilmeldinger) {
                             skalViseFlereFeilmeldinger = leggTilFeilmeldingerVedValidering(verdi, feilNokkel);
                         }
@@ -56,9 +58,12 @@ angular.module('nav.feilmeldinger', [])
 
                 function fjernFeilmeldingerSomErFikset() {
                     var fortsattFeilListe = [];
+
                     angular.forEach(ctrl.$error, function(verdi, feilNokkel) {
+                        console.log("test" + ctrl.elem);
                         fortsattFeilListe = fortsattFeilListe.concat(leggTilFeilSomFortsattSkalVises(verdi, feilNokkel));
                     });
+                    console.log("tEst" + fortsattFeilListe);
                     scope.feilmeldinger = fortsattFeilListe;
                 }
 
@@ -73,7 +78,11 @@ angular.module('nav.feilmeldinger', [])
                 }
 
                 scope.erKlikkbarFeil = function(feilmelding) {
-                    return feilmelding.elem.length > 0;
+                    console.log("tEsEt" + feilmelding.elem);
+                    if (feilmelding.elem != undefined)
+                    {
+                            return feilmelding.elem.length > 0;
+                     }
                 }
 
                 /*
@@ -81,6 +90,7 @@ angular.module('nav.feilmeldinger', [])
                  * og vi skal ikke loope mer. Return false dersom vi skal stoppe loopen, ellers true.
                  */
                 function leggTilFeilmeldingerVedValidering(verdi, feilNokkel) {
+
                     angular.forEach(verdi, function (feil) {
                         var feilmelding = finnFeilmelding(feil, feilNokkel);
 
@@ -95,6 +105,7 @@ angular.module('nav.feilmeldinger', [])
                 }
 
                 function leggTilFeilSomFortsattSkalVises(verdi, feilNokkel) {
+                    console.log("tEsting" + verdi + "xx " + feilNokkel);
                     var fortsattFeilListe = [];
                     angular.forEach(verdi, function(feil) {
                         var feilmelding = finnFeilmelding(feil, feilNokkel);
@@ -113,6 +124,7 @@ angular.module('nav.feilmeldinger', [])
 
                 function finnFeilmelding(feil, feilNokkel) {
                     var feilmeldingNokkel = finnFeilmeldingsNokkel(feil, feilNokkel);
+
                     var feilmelding = data.tekster[feilmeldingNokkel];
 
                     if (feilmelding === undefined) {
@@ -123,7 +135,8 @@ angular.module('nav.feilmeldinger', [])
                 }
 
                 function finnFeilmeldingsNokkel(feil, feilNokkel) {
-                    if (feil) {
+
+                    if (feil.$errorMessages != undefined) {
                         if(typeof feil.$errorMessages === 'object') {
                            return feil.$errorMessages[feilNokkel];
                         } else if(typeof feil.$errorMessages === 'string') {
