@@ -5,7 +5,6 @@ import org.joda.time.DateTime;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -121,8 +120,8 @@ public class WebSoknad implements Serializable {
 		return this;
 	}
 
-	public DateTime getOpprettetDato() {
-		return opprettetDato;
+	public Long getOpprettetDato() {
+		return opprettetDato.getMillis();
 	}
 
 	public WebSoknad medId(long id) {
@@ -136,7 +135,7 @@ public class WebSoknad implements Serializable {
 	}
 
 	public WebSoknad medBrukerData(List<Faktum> hentAlleBrukerData) {
-		fakta = new HashMap<String, Faktum>();
+		fakta = new HashMap<>();
 		for (Faktum faktum : hentAlleBrukerData) {
 			fakta.put(faktum.getKey(), faktum);
 		}

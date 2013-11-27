@@ -3,8 +3,11 @@
 <script src="../js/lib/angular-locale_no.js"></script>
 <script src="../js/lib/angular-route.js"></script>
 <script src="../js/lib/angular-resource.js"></script>
+<script src="../js/lib/angular-sanitize.js"></script>
+<script src="../js/lib/angular-animate.js"></script>
 <script src="../js/lib/ui-bootstrap-0.6.0.js"></script>
-<script src="../js/lib/ui-bootstrap-tpls-0.6.0.js"></script> <!-- Har gjort endringer her, husk å ta de med dersom du skal oppdatere!! -->
+<script src="../js/lib/ui-bootstrap-tpls-0.6.0.js"></script> <!-- Har gjort endringer her, husk å ta de med dersom du skal oppdatere!! Søk etter // TODO: Dette må vi flytte ut! -->
+<script src="../js/lib/bindonce.js"></script>
 <script src="../js/app/app.js"></script>
 <script src="../js/app/routes.js"></script>
 <script src="../js/app/grunnlagsdata.js"></script>
@@ -16,6 +19,7 @@
 <script src="../js/app/init.js"></script>
 <script src="../js/app/util.js"></script>
 <script src="../js/app/valideringUtil.js"></script>
+<script src="../js/app/keypress.js"></script>
 <script src="../js/app/directives/booleanradio/booleanradioModule.js"></script>
 <script src="../js/app/directives/cmstekster/cmsteksterModule.js"></script>
 <script src="../js/app/directives/navinput/navinputModule.js"></script>
@@ -28,7 +32,9 @@
 <script src="../js/app/controllers/dagpenger/arbeidsforholdController.js"></script>
 <script src="../js/app/controllers/dagpenger/arbeidsforholdModule.js"></script>
 <script src="../js/app/controllers/dagpenger/vedleggController.js"></script>
+<script src="../js/app/controllers/dagpenger/opplastingController.js"></script>
 <script src="../js/app/controllers/dagpenger/forsettsenereController.js"></script>
+<script src="../js/app/controllers/dagpenger/informasjonssideController.js"></script>
 <script src="../js/app/directives/dagpenger/arbeidsforholdDirective.js"></script>
 <script src="../js/app/directives/sporsmalferdig/spmblokkFerdigModule.js"></script>
 <script src="../js/app/directives/stegindikator/stegIndikatorModule.js"></script>
@@ -38,8 +44,18 @@
 <script src="../js/app/directives/markup/panelStandardBelystDirective.js"></script>
 <script src="../js/app/directives/markup/navinfoboksDirective.js"></script>
 <script src="../js/app/directives/validering/valideringModule.js"></script>
+<script src="../js/app/directives/sistlagret/sistLagretModule.js"></script>
+<script src="../js/app/directives/select/selectModule.js"></script>
+<script src="../js/app/directives/hjelpetekst/hjelpetekstModule.js"></script>
 
 
-<div data-ng-view/>
+<script type="text/javascript" src="../js/jquery/jquery.iframe-transport.js"></script>
+<script type="text/javascript" src="../js/jquery/jquery.fileupload.js"></script>
+<script type="text/javascript" src="../js/jquery/jquery.fileupload-process.js"></script>
+<script type="text/javascript" src="../js/jquery/jquery.fileupload-validate.js"></script>
+<script type="text/javascript" src="../js/jquery/jquery.fileupload-angular.js"></script>
+
+
+<div data-ng-view></div>
 
 

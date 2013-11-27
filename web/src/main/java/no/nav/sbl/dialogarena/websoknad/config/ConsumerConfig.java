@@ -1,16 +1,18 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
-
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLFakta;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLFaktum;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLFaktumListe;
 import no.nav.modig.cxf.TimeoutFeature;
-import no.nav.modig.security.sts.utility.STSConfigurationUtility;
 import no.nav.sbl.dialogarena.common.timing.TimingFeature;
+import no.nav.sbl.dialogarena.websoknad.service.HenvendelseConnector;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
-import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.feature.LoggingFeature;
-import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
@@ -53,6 +55,11 @@ public class ConsumerConfig {
     private static final int RECEIVE_TIMEOUT = 30000;
     private static final int CONNECTION_TIMEOUT = 10000;
 
+    @Bean 
+    public HenvendelseConnector henvendelseConnector() {
+        return new HenvendelseConnector(); 
+    }
+    
     @Configuration
     public static class SendSoknadWSConfig {
         @Value("${soknad.webservice.henvendelse.sendsoknadservice.url}")
@@ -62,6 +69,8 @@ public class ConsumerConfig {
         @Scope(SCOPE_PROTOTYPE)
         public JaxWsProxyFactoryBean sendsoknadPortTypeFactory() {
             JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(soknadServiceEndpoint, SendSoknadPortType.class, "classpath:SendSoknad.wsdl");
+            jaxwsClient.getProperties().put("jaxb.additionalContextClasses", new Class[] { XMLFaktumListe.class, WSSoknadsdata.class, WSStartSoknadRequest.class, 
+                    XMLFaktum.class, XMLFakta.class});
             jaxwsClient.getFeatures().add(new TimingFeature(SendSoknadPortType.class.getSimpleName()));
 
             return jaxwsClient;

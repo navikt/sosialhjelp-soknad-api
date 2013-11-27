@@ -9,7 +9,9 @@
                 <div class="input-boks">
                     <div class="form-linje">
                         <label for="epostfelt" cmstekster="dagpenger.fortsettSenere.epost.label"/>
-                        <input id="epostfelt" type="email" name="epost" role="textbox" data-ng-model="soknadData.fakta.epost.value" error-messages="'dagpanger.fortsettSenere.epost.feilmelding'" required/>
+
+                        <input id="epostfelt" type="email" name="epost" role="textbox" data-ng-model="soknadData.fakta.epost.value" error-messages="'dagpenger.fortsettSenere.epost.feilmelding'" required/>
+
                         <input type="submit" class="knapp-hoved-liten" cmstekster="dagpenger.fortsettSenere.epost.send" role="button" data-ng-click="forsettSenere()"/>
                         <span class="melding"/>
                     </div>
@@ -17,12 +19,23 @@
             </form>
         </div>
 
+        <div>
+        <p cmstekster="dagpenger.fortsettSenere.info.frister">
+
+        </p>
+        <p cmstekster="dagpenger.fortsettSenere.info.konsekvenser">
+
+        </p>
+        </div>
+
         <div class="lenker-dot">
             <span>
                 <a href="#/dagpenger/{{ soknadData.soknadId }}" id="tilOversikt" role="link" cmstekster="dagpenger.fortsettSenere.tilbake"/>
             </span>
             <span>
-                <a href="https://tjenester-t8.nav.no/inngangsporten/innlogget" id="dittnav"  role="link" cmstekster="dagpenger.fortsettSenere.dittNav"/>
+
+                <a href="https://tjenester-t11.nav.no/inngangsporten/innlogget" id="dittnav"  role="link" cmstekster="dagpenger.fortsettSenere.dittNav"/>
+
             </span>
         </div>
     </panelbelyst>

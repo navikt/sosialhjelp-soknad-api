@@ -3,12 +3,14 @@ package no.nav.sbl.dialogarena.person;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.xml.ws.WebServiceException;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -27,8 +29,12 @@ public class PersonServiceTPS implements PersonService {
 	@Inject
 	private Kodeverk kodeverk;
     
+	/**
+	 * Forsøker å hente person fra TPS og transformere denne til vår Personmodell.
+	 * Dersom det feiler, logges feilen og det returneres et tomt Person objekt videre 
+	 * 
+	 */
     @Override
-//    @Cacheable(value = PERSON, key = "T(no.nav.sbl.dialogarena.dokumentinnsending.cache.UserKeyGenerator).generate(#ident)")
     public Person hentPerson(Long soknadId, String fodselsnummer) {
         XMLHentKontaktinformasjonOgPreferanserResponse response = null;
         try {
@@ -37,10 +43,13 @@ public class PersonServiceTPS implements PersonService {
         } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
             logger.error("Fant ikke bruker i TPS.", e);
             return new Person();
-        } catch (Exception re) {
-            logger.error("Kunne ikke hente person med ID {} fra TPS", fodselsnummer, re);
+        } catch (HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
+        	logger.error("Kunne ikke hente bruker fra TPS.", e);
             return new Person();
-        }
+		} catch(WebServiceException e) {
+			logger.error("Ingen kontakt med TPS.", e);
+            return new Person();
+		}
         return new PersonTransform().mapToPerson(soknadId, response, kodeverk);
     }
 

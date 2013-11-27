@@ -10,7 +10,7 @@ angular.module('sendsoknad')
     }])
     .value('data', {})
     .value('basepath', '../')
-    .factory('TekstService', ['data', '$resource', '$q', '$route', function(data, $resource, $q, $route) {
+    .factory('InformasjonsSideResolver', ['data', '$resource', '$q', '$route', function(data, $resource, $q, $route) {
         var promiseArray = [];
 
         var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
@@ -18,7 +18,15 @@ angular.module('sendsoknad')
                 data.tekster = result;
             }
         );
+
+        var utslagskriterier =  $resource('/sendsoknad/rest/utslagskriterier/').get(
+            function(result) {
+                data.utslagskriterier = result;
+            }
+        );
+    
         promiseArray.push(tekster.$promise);
+        promiseArray.push(utslagskriterier.$promise);
 
         var d = $q.all(promiseArray);
 
@@ -35,6 +43,13 @@ angular.module('sendsoknad')
         );
         promiseArray.push(tekster.$promise);
 
+        var alder = $resource('/sendsoknad/rest/soknad/personalder').get(
+            function(result) { // Success
+                data.alder = result;
+            }
+        );
+        promiseArray.push(alder.$promise); 
+
         if (soknadId != undefined) {
             var soknad = soknadService.get({param: soknadId},
                 function(result) { // Success
@@ -48,6 +63,34 @@ angular.module('sendsoknad')
             promiseArray.push(soknad.$promise, soknadOppsett.$promise);
         }
 
+        var d = $q.all(promiseArray);
+
+        return d;
+    }])
+    
+    //Lagt til for å tvinge ny lasting av fakta fra server. Da er vi sikker på at e-post kommer med til fortsett-senere siden.
+    .factory('EpostResolver', ['data', '$resource', '$q', '$route', 'soknadService', function(data, $resource, $q, $route, soknadService) {
+        var soknadId = $route.current.params.soknadId;
+        var promiseArray = [];
+
+        var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
+            function(result) { // Success
+                data.tekster = result;
+            }
+        );
+        promiseArray.push(tekster.$promise);
+
+        var soknad = soknadService.get({param: soknadId},
+            function(result) { // Success
+                data.soknad = result;
+            }
+        );
+        var soknadOppsett = soknadService.options({param: soknadId},
+            function(result) { // Success
+                data.soknadOppsett = result;
+            });
+        promiseArray.push(soknad.$promise, soknadOppsett.$promise);
+    
         var d = $q.all(promiseArray);
 
         return d;
