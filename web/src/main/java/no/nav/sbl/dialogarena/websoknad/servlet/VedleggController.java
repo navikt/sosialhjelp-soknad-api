@@ -8,6 +8,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.exception.OpplastingException;
 import no.nav.sbl.dialogarena.soknadinnsending.exception.UgyldigOpplastingTypeException;
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.Tika;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -22,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +42,7 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 @ControllerAdvice()
 @RequestMapping("/soknad/{soknadId}/faktum/{faktumId}/vedlegg")
 public class VedleggController {
-    public static final String BASE_URL = "soknad/%d/faktum/%d/vedlegg/%d/%s";
+    private static final Logger LOG = LoggerFactory.getLogger(VedleggController.class);
     private static final List<String> LEGAL_CONTENT_TYPES = Arrays.asList("application/pdf", "image/png", "image/jpeg");
     @Inject
     private VedleggService vedleggService;
@@ -56,7 +59,7 @@ public class VedleggController {
                 for (MultipartFile file : files) {
                     byte[] in = validateAndGetInput(file);
                     Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, file.getOriginalFilename(), file.getSize(), in);
-                    vedlegg.setId(vedleggService.lagreVedlegg(vedlegg, null));
+                    vedlegg.setId(vedleggService.lagreVedlegg(vedlegg, new ByteArrayInputStream(in)));
                     res.add(vedlegg);
                 }
                 return new VedleggOpplasting(res);
@@ -125,6 +128,8 @@ public class VedleggController {
     @ResponseBody
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     public VedleggFeil handterFeilType(UgyldigOpplastingTypeException ex) {
+        LOG.warn("Feilet opplasting med: " + ex, ex);
+
         return new VedleggFeil(ex.getId());
     }
 
@@ -132,6 +137,7 @@ public class VedleggController {
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     public VedleggFeil handterVedleggException(OpplastingException ex) {
+        LOG.warn("Feilet opplasting med: " + ex, ex);
         return new VedleggFeil(ex.getId());
     }
 
@@ -139,6 +145,7 @@ public class VedleggController {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handlerException(Exception ex) {
+        LOG.warn("Feilet opplasting med: " + ex, ex);
         return "Feilet med: " + ex + "  " + Arrays.toString(ex.getStackTrace());
     }
 

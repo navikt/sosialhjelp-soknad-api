@@ -3,18 +3,44 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         $scope.fremdriftsindikator = {
             laster: false
         };
+        $scope.opplastingFeilet = false;
         $scope.data = {
             faktumId: $routeParams.faktumId,
-            soknadId: data.soknad.soknadId
+            soknadId: data.soknad.soknadId,
+            autoUpload: true
         };
+        var fun = function (event, data) {
+            console.log(event)
+        };
+        $scope.$on('fileuploaddone', fun);
+        $scope.$on('fileuploadfail', fun);
+        $scope.$on('fileuploadalways', fun);
+        $scope.$on('fileuploadprocessfail', function (event, data) {
+            $.each(data.files, function (index, file) {
+                if (file.error) {
+                    $scope.opplastingFeilet = file.error;
+                    console.log(data.scope())
+                    data.scope().clear(file);
+                    $scope.clear(file);
+                }
+            })
+        });
+        $scope.$on('fileuploadprocessdone', fun);
+        $scope.$on('fileuploadprocessstop', fun);
+        $scope.$on('fileuploadprocessalways', fun);
+
 
         $scope.options = {
             maxFileSize: 10000000,
             acceptFileTypes: /(\.|\/)(jpg|png|pdf|jpeg)$/i,
             url: "/sendsoknad/rest/soknad/" + data.soknad.soknadId + "/faktum/" + $scope.data.faktumId + "/vedlegg"
         };
+        $scope.opplastingFeil = function (error) {
+            $scope.opplastingFeilet = error;
+        }
         $scope.lastopp = function () {
             submit();
+            $scope.submit()
         };
         $scope.oppdaterSoknad = function () {
             soknadService.get({param: data.soknad.soknadId},
@@ -63,6 +89,20 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
             });
         }
     }])
+    .directive('filFeil', function () {
+        'use strict';
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                scope.$watch('file.error', function (a1, a2, a3, a4) {
+                    if (a2) {
+                        console.log("fjerner fil");
+                        scope.clear(scope.file);
+                    }
+                })
+            }
+        }
+    })
 
     .directive('lastOppFil', function () {
         'use strict';

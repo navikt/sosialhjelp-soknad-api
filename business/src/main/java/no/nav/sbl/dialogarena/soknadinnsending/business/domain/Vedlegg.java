@@ -1,5 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.xml.bind.annotation.XmlTransient;
+
 /**
  * Domeneklasse som beskriver et vedlegg.
  */
@@ -9,6 +13,7 @@ public class Vedlegg {
     private String navn;
     private Long storrelse;
     private Long faktum;
+
     private byte[] data;
 
     public Vedlegg(Long vedleggId, Long soknadId, Long faktumId, String navn, Long storrelse, byte[] data) {
@@ -44,7 +49,7 @@ public class Vedlegg {
         this.faktum = faktum;
     }
 
-     public String getNavn() {
+    public String getNavn() {
         return navn;
     }
 
@@ -90,40 +95,40 @@ public class Vedlegg {
         return true;
     }
 
-	private boolean tomStorrelse(Vedlegg vedlegg) {
-		if (storrelse != null) {
-			return !storrelse.equals(vedlegg.storrelse);
-		} 
-		return vedlegg.storrelse != null;
-	}
+    private boolean tomStorrelse(Vedlegg vedlegg) {
+        if (storrelse != null) {
+            return !storrelse.equals(vedlegg.storrelse);
+        }
+        return vedlegg.storrelse != null;
+    }
 
-	private boolean tomSoknadId(Vedlegg vedlegg) {
-		if (soknadId != null)  {
-			return !soknadId.equals(vedlegg.soknadId);
-		}
-		return vedlegg.soknadId != null;
-	}
+    private boolean tomSoknadId(Vedlegg vedlegg) {
+        if (soknadId != null) {
+            return !soknadId.equals(vedlegg.soknadId);
+        }
+        return vedlegg.soknadId != null;
+    }
 
-	private boolean tomtNavn(Vedlegg vedlegg) {
-		if (navn != null) {
-			return !navn.equals(vedlegg.navn);
-		}
-		return vedlegg.navn != null;
-	}
+    private boolean tomtNavn(Vedlegg vedlegg) {
+        if (navn != null) {
+            return !navn.equals(vedlegg.navn);
+        }
+        return vedlegg.navn != null;
+    }
 
-	private boolean tomId(Vedlegg vedlegg) {
-		if (id != null) {
-			return !id.equals(vedlegg.id);
-		}
-		return vedlegg.id != null;
-	}
+    private boolean tomId(Vedlegg vedlegg) {
+        if (id != null) {
+            return !id.equals(vedlegg.id);
+        }
+        return vedlegg.id != null;
+    }
 
-	private boolean tomtFaktum(Vedlegg vedlegg) {
-		if (faktum != null) {
-			return !faktum.equals(vedlegg.faktum);
-		}
-		return vedlegg.faktum != null;
-	}
+    private boolean tomtFaktum(Vedlegg vedlegg) {
+        if (faktum != null) {
+            return !faktum.equals(vedlegg.faktum);
+        }
+        return vedlegg.faktum != null;
+    }
 
     @Override
     public int hashCode() {
@@ -147,6 +152,8 @@ public class Vedlegg {
         return sb.toString();
     }
 
+    @XmlTransient
+    @JsonIgnore
     public byte[] getData() {
         return data;
     }
