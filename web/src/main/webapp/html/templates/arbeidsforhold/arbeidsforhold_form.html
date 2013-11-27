@@ -1,18 +1,18 @@
 <form name="endreArbeidsforholdForm" data-ng-submit="aksjon()">
 	<label for="arbeidsgiver_navn">Navn på arbeidsgiver</label>
     <input id="arbeidsgiver_navn" type="text" data-ng-model="af.navn" required/>
-    
+
     <br/>
     <br/>
-    
+
     <label for="arbeidsgiver_land">Land</label>
-    <select id="arbeidsgiver_land" data-ng-model="af.land" data-ng-options="item for item in landService.result" required>
-    	<option value="">--Velg land--</option>
+    <select id="arbeidsgiver_land" data-ng-model="af.land" data-ng-options="item for item in landService.result">
+
     </select>
-    
+
     <br/>
     <br/>
-    
+
     <div class="varighet">
         <label>Fra:</label>
         <input type="text" name="varighetFra" ui-date ui-date-format ng-model="af.varighetFra" data-ng-change="validateTilFraDato(af)"  required >
