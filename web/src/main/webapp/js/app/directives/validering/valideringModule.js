@@ -121,6 +121,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
             }
         }
     }])
+//    direktivet skal brukes på div-en som ligger rundt en checkboksgruppe og som skal ha inlinevalidering
     .directive('checkboxValidate', ['data', function (data) {
         return {
             require: ['^form'],
