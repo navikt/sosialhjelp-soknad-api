@@ -3,6 +3,7 @@ angular.module('nav.ytelser', [])
         const minstEnCheckboksErAvhuketFeilmeldingNavn = 'minstEnCheckboksErAvhuket';
         const minstEnCheckboksErAvhuketFeilmeldingNokkel = 'ytelser.minstEnCheckboksErAvhuket.feilmelding';
         const feilmeldingKategori = 'ytelser';
+        const referanseTilFeilmeldingslinken = 'stonadFisker';
 
         $scope.ytelser = {skalViseFeilmeldingForIngenYtelser: false};
 
@@ -11,7 +12,7 @@ angular.module('nav.ytelser', [])
 //      sjekker om formen er validert når bruker trykker ferdig med ytelser
         $scope.validerYtelser = function (form) {
             var minstEnCheckboksErAvhuket = erCheckboxerAvhuket(nokler);
-            settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, minstEnCheckboksErAvhuket, true);
+            settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, minstEnCheckboksErAvhuket, true);
 
             $scope.validateForm(form.$invalid);
             $scope.runValidation();
@@ -25,10 +26,10 @@ angular.module('nav.ytelser', [])
 
             if (harIkkeValgtYtelse) {
                 $scope.ytelser.skalViseFeilmeldingForIngenYtelser = false;
-                settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, false, true);
+                settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, false, true);
 
             } else {
-                settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, true, true);
+                settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel,  referanseTilFeilmeldingslinken, true, true);
             }
 
             if (checkTrue($scope.soknadData.fakta.ingenYtelse.value)) {
@@ -56,7 +57,7 @@ angular.module('nav.ytelser', [])
             } else {
                 if (erCheckboksForIngenYtelseHuketAv) {
                     form.$setValidity(minstEnCheckboksErAvhuketFeilmeldingNavn, true);
-                    settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, true, true);
+                    settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, true, true);
                 }
                 $scope.$emit(lagreSoknadData, {key: 'ingenYtelse', value: erCheckboksForIngenYtelseHuketAv});
             }

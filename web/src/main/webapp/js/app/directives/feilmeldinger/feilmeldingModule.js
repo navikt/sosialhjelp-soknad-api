@@ -143,7 +143,11 @@ angular.module('nav.feilmeldinger', [])
 
                 function finnTilhorendeElement(feil) {
                     var navn = '';
-                    if (feil) {
+
+                    if(feil && feil.$linkId) {
+                        navn = feil.$linkId;
+                    }
+                    else if (feil) {
                         navn = feil.$name;
                     }
                     return elem.closest('[data-ng-form]').find('[name=' + navn + ']');

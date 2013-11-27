@@ -115,29 +115,30 @@ function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-function opprettEgendefinertFeilmelding(navn, errorMessage, valid, skalVisesAlene) {
+function opprettEgendefinertFeilmelding(navn, errorMessage, referanseTilFeilmeldingslinken, valid, skalVisesAlene ) {
     var feilmelding = new Object();
     feilmelding.$name = navn;
     feilmelding.$errorMessages = errorMessage;
+    feilmelding.$linkId = referanseTilFeilmeldingslinken;
     feilmelding.$valid = valid;
     feilmelding.$invalid = !valid;
-    feilmelding.$skalVisesAlene = skalVisesAlene;
+    feilmelding.$skalVisesAlene = skalVisesAlene
 
 
     return feilmelding;
 }
-function leggTilFeilmeldingHvisDenIkkeFinnes(feilmeldingskategori, feilmeldingsnavn, form, feilmelding, valid, skalVisesAlene) {
+function leggTilFeilmeldingHvisDenIkkeFinnes(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene ) {
     var index = form.$error[feilmeldingskategori].indexByValue(feilmeldingsnavn);
 
     if (index == -1) {
-        form.$error[feilmeldingskategori].push(opprettEgendefinertFeilmelding(feilmeldingsnavn, feilmelding, valid, skalVisesAlene));
+        form.$error[feilmeldingskategori].push(opprettEgendefinertFeilmelding(feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene ));
     }
 }
 /**
  * endrer validiteten på en feilmelding. Sjekker hvis feilmeldingen ikke skal vises lenger, så i stedet for å oppdatere feilmeldingen fjernes den heller fra listen.
  Derfor trenger vi kun å legge til feilmeldinger som ikke finnes fra før og som er false.
  */
-function settEgendefinertFeilmeldingsverdi(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, valid, skalVisesAlene) {
+function settEgendefinertFeilmeldingsverdi(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene ) {
     if (form.$error[feilmeldingskategori] === undefined) {
         form.$error[feilmeldingskategori] = [];
     }
@@ -147,7 +148,7 @@ function settEgendefinertFeilmeldingsverdi(form, feilmeldingskategori, feilmeldi
         form.$error[feilmeldingskategori].splice(index, 1);
     } else if (index == -1 && !valid) {
         form.$setValidity(feilmeldingsnavn, valid);
-        leggTilFeilmeldingHvisDenIkkeFinnes(feilmeldingskategori, feilmeldingsnavn, form, feilmelding, valid, skalVisesAlene)
+        leggTilFeilmeldingHvisDenIkkeFinnes(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene )
     }
 }
 
