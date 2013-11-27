@@ -48,9 +48,9 @@ angular.module('nav.feilmeldinger', [])
                         }, 1);
                     }
 
-                    if ( skalViseFlereFeilmeldinger) {
+//                    if (skalViseFlereFeilmeldinger) {
                         scope.$broadcast(eventString);
-                    }
+//                    }
                 }
 
                 scope.$watch(function() { return ctrl.$error; }, function() {
