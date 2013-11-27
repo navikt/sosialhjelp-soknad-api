@@ -11,6 +11,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 var valideringsMetoder = [];
                 var formElem = element.closest('.form-linje');
 
+
                 try {
                     feil = scope.$eval(attrs.errorMessages);
                 } catch (e) {
@@ -122,37 +123,25 @@ angular.module('nav.validering', ['nav.cmstekster'])
     }])
     .directive('checkboxValidate', ['data', function (data) {
         return {
-            require: ['ngModel', '^form'],
-            link: function (scope, element, attrs, ctrls) {
-                var ngModel = ctrls[0];
-                var form = ctrls[1];
-                var eventString = 'RUN_VALIDATION' + form.$name;
-
+            require: ['^form'],
+            link: function (scope, element, attrs, ctrl) {
+                var eventString = 'RUN_VALIDATION' + ctrl[0].$name;
 
                 scope.$on(eventString, function () {
-                    if (element.is(':visible')) {
-                        element.closest('.form-linje').addClass('feil');
-                    }
-
-                    if (sjekkOmFeltetErSvart()) {
+                    if(element.find("input:checked").length > 0) {
                         element.closest('.form-linje').removeClass('feil');
+                    } else if(element.find("input:checked").length == 0 && element.is(':visible')) {
+                        element.closest('.form-linje').addClass('feil');
                     }
                 })
 
                 scope.$watch(function () {
-                    return ngModel.$modelValue;
+                    return element.find("input:checked").length;
                 }, function () {
-                    if (ngModel.$modelValue) {
-                        element.closest('.form-linje').removeClass('feil');
-                    }
+                   if(element.find("input:checked").length >0) {
+                       element.closest('.form-linje').removeClass('feil');
+                   }
                 });
-
-                function sjekkOmFeltetErSvart() {
-                    if (ngModel.$modelValue == 'true' ) {
-                        return true;
-                    }
-                    return false;
-                }
             }
         }
     }])

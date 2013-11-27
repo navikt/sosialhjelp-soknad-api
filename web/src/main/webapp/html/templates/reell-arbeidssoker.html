@@ -12,7 +12,7 @@
         <div class="ekstra-spm-boks" data-ng-show="soknadData.fakta.villigdeltid.value == 'false'">
             <div data-navinfoboks nokkel="reellarbeidssoker.villigdeltid.false.informasjon"></div>
 
-            <div class="form-linje" data-ng-if="erUnder60Aar()">
+            <div class="form-linje" data-ng-if="erUnder60Aar()" data-checkbox-validate>
                 <div navcheckbox data-ng-model='soknadData.fakta.reduserthelse.value' modus='data.redigeringsModus'
                      inputname='reduserthelse' label='reellarbeidssoker.reduserthelse'
                      endret="endreDeltidsAarsaker(reellarbeidssokerForm)"></div>
@@ -40,7 +40,8 @@
                 <div navcheckbox data-ng-model='soknadData.fakta.annensituasjon.value' modus='data.redigeringsModus'
                      inputname='annensituasjon' label='reellarbeidssoker.annensituasjon'
                      endret="endreDeltidsAarsaker(reellarbeidssokerForm)"></div>
-                <span class="melding" data-cmstekster="reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding"></span>
+                <span class="melding"
+                      data-cmstekster="reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding"></span>
             </div>
 
             <p class="informasjonstekst" cmstekster="reellarbeidssoker.villigdeltid.false.informasjon2"></p>
@@ -49,7 +50,6 @@
                  modus="data.redigeringsModus" inputname="maksimalarbeidstid"
                  label=" reellarbeidssoker.maksimalarbeidstid"
                  feilmelding="reellarbeidssoker.maksimalarbeidstid.feilmelding"></div>
-
         </div>
 
         <div booleanradio data-ng-model="soknadData.fakta.villigpendle.value"
@@ -59,11 +59,11 @@
 
         <div class="ekstra-spm-boks" data-ng-show="soknadData.fakta.villigpendle.value == 'false'">
             <div data-navinfoboks nokkel="reellarbeidssoker.villigpendle.false.informasjon"></div>
-            <div class="form-linje" data-ng-if="erUnder60Aar()">
+            <div class="form-linje" data-ng-if="erUnder60Aar()" data-checkbox-validate>
                 <div navcheckbox data-ng-model='soknadData.fakta.pendlereduserthelse.value'
                      modus='data.redigeringsModus'
                      inputname='pendlereduserthelse' label='reellarbeidssoker.pendlereduserthelse'
-                     endret="endrePendleAarsaker(reellarbeidssokerForm)" ></div>
+                     endret="endrePendleAarsaker(reellarbeidssokerForm)"></div>
 
                 <div navcheckbox data-ng-model='soknadData.fakta.pendleomsorgbarnunder1aar.value'
                      modus='data.redigeringsModus'
@@ -95,7 +95,8 @@
                      modus='data.redigeringsModus'
                      inputname='pendleannensituasjon' label='reellarbeidssoker.pendleannensituasjon'
                      endret="endrePendleAarsaker(reellarbeidssokerForm)"></div>
-                <span class="melding" data-cmstekster="reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding"></span>
+                <span class="melding"
+                      data-cmstekster="reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding"></span>
             </div>
         </div>
 

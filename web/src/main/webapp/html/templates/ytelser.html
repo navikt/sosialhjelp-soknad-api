@@ -1,7 +1,7 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
     <div data-ng-form="ytelserForm" class="skjemainnhold vertikal" data-ng-controller="YtelserCtrl" novalidate>
         <div form-errors></div>
-        <div class="spm" class="form-linje">
+        <div class="spm form-linje" data-checkbox-validate>
             <div class="spm-sporsmal">
                 <p cmstekster="ytelser.informasjon"/>
                 <br/>
@@ -14,8 +14,9 @@
                  endret="endreYtelse(ytelserForm)"/>
 
             <div navcheckbox data-ng-model='soknadData.fakta.offentligTjenestepensjon.value'
-                 modus='data.redigeringsModus' inputname='offentligTjenestepensjon'
-                 label='ytelser.offentligTjenestepensjon' endret="endreYtelse(ytelserForm)" feilmelding="">
+                 modus='data.redigeringsModus'
+                 inputname='offentligTjenestepensjon' label='ytelser.offentligTjenestepensjon'
+                 endret="endreYtelse(ytelserForm)">
 
                 <div navtekst data-ng-model="soknadData.fakta.offentligTjenestepensjonUtbetaler.value"
                      modus="data.redigeringsModus" inputname="offentligTjenestepensjonUtbetaler"
@@ -34,8 +35,10 @@
                      feilmelding="ytelser.privatTjenestepensjonUtbetaler.feilmelding"/>
             </div>
 
-            <div navcheckbox data-ng-model='soknadData.fakta.vartpenger.value' modus='data.redigeringsModus'
-                 inputname='vartpenger' label='ytelser.vartpenger' endret="endreYtelse(ytelserForm)">
+            <div navcheckbox data-ng-model='soknadData.fakta.vartpenger.value'
+                 modus='data.redigeringsModus'
+                 inputname='vartpenger' label='ytelser.vartpenger'
+                 endret="endreYtelse(ytelserForm)">
 
                 <div navtekst data-ng-model="soknadData.fakta.vartpengerUtbetaler.value"
                      modus="data.redigeringsModus"
@@ -43,8 +46,10 @@
                      feilmelding="ytelser.vartpengerUtbetaler.feilmelding"/>
             </div>
 
-            <div navcheckbox data-ng-model='soknadData.fakta.ventelonn.value' modus='data.redigeringsModus'
-                 inputname='ventelonn' label='ytelser.ventelonn' endret="endreYtelse(ytelserForm)">
+            <div navcheckbox data-ng-model='soknadData.fakta.ventelonn.value'
+                 modus='data.redigeringsModus'
+                 inputname='ventelonn' label='ytelser.ventelonn'
+                 endret="endreYtelse(ytelserForm)">
 
                 <div navtekst data-ng-model="soknadData.fakta.ventelonnUtbetaler.value"
                      modus="data.redigeringsModus"
@@ -52,7 +57,8 @@
                      feilmelding="ytelser.ventelonnUtbetaler.feilmelding"/>
             </div>
 
-            <div navcheckbox data-ng-model='soknadData.fakta.dagpengerEOS.value' modus='data.redigeringsModus'
+            <div navcheckbox data-ng-model='soknadData.fakta.dagpengerEOS.value'
+                 modus='data.redigeringsModus'
                  inputname='dagpengerEOS' label='ytelser.dagpengerEOS'
                  endret="endreYtelse(ytelserForm)">
 
@@ -76,8 +82,9 @@
             </div>
             <div>
                 <div data-ng-show='hvisIRedigeringsmodus()'>
-                    <div class="ytelser-nei form-linje" data-ng-class="{feil: ytelser.skalViseFeilmeldingForIngenYtelser}">
-                        <span class="melding" data-cmstekster="ytelser.harValgtYtelse.feilmelding"></span>
+                    <div class="ytelser-nei form-linje"
+                         data-ng-class="{feil: ytelser.skalViseFeilmeldingForIngenYtelser}">
+                        <span class="ingen-ytelse-melding" data-cmstekster="ytelser.harValgtYtelse.feilmelding"></span>
                         <input id="ingenYtelseCheckbox" data-ng-model="soknadData.fakta.ingenYtelse.value"
                                type="checkbox" name="ingenYtelse" data-ng-change="endreIngenYtelse(ytelserForm)"
                                boolean-verdi/>
