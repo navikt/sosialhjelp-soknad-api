@@ -11,6 +11,8 @@ import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
+import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
+
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.feature.LoggingFeature;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
@@ -46,6 +48,7 @@ import static org.springframework.beans.factory.config.ConfigurableBeanFactory.S
         ConsumerConfig.SendSoknadWSConfig.class,
         ConsumerConfig.KodeverkWSConfig.class,
         ConsumerConfig.BrukerProfilWSConfig.class,
+        ConsumerConfig.PersonWSConfig.class,
         ConsumerConfig.SelftestStsConfig.class,
         ConsumerConfig.ExternalStsConfig.class
 })
@@ -111,6 +114,31 @@ public class ConsumerConfig {
             return brukerProfilPortTypeFactory().create(BrukerprofilPortType.class);
         }
     }
+    
+    @Configuration
+    public static class PersonWSConfig {
+
+        @Value("${soknad.webservice.person.personservice.url}")
+        private URL personEndpoint;
+
+        @Bean
+        @Scope(SCOPE_PROTOTYPE)
+        public JaxWsProxyFactoryBean personPortTypeFactory() {
+            JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(personEndpoint, PersonPortType.class, "classpath:/wsdl/no/nav/tjeneste/virksomhet/person/v1/Person.wsdl");
+            jaxwsClient.getFeatures().add(new TimingFeature(PersonPortType.class.getSimpleName()));
+            return jaxwsClient;																					
+        }
+
+        @Bean
+        public PersonPortType personService() {
+            return konfigurerMedHttps(personPortTypeFactory().create(PersonPortType.class));
+        }
+
+        @Bean
+        public PersonPortType personSelftest() {
+            return personPortTypeFactory().create(PersonPortType.class);
+        }
+    }
 
     @Configuration
     public static class KodeverkWSConfig {
@@ -150,11 +178,16 @@ public class ConsumerConfig {
         @Named("brukerProfilSelftest")
         private BrukerprofilPortType brukerProfilSelftest;
 
+        @Inject
+        @Named("personService")
+        private PersonPortType personService;
+        
         @PostConstruct
         public void setupSts() {
             configureStsForSystemUser(getClient(sendSoknadSelftest));
             configureStsForSystemUser(getClient(kodeverkServiceSelftest));
             configureStsForSystemUser(getClient(brukerProfilSelftest));
+            configureStsForExternalSSO(getClient(personService));
         }
     }
 
@@ -171,12 +204,17 @@ public class ConsumerConfig {
         @Inject
         @Named("brukerProfilService")
         private BrukerprofilPortType brukerProfilService;
+        
+        @Inject
+        @Named("personService")
+        private PersonPortType personService;
 
         @PostConstruct
         public void setupSts() {
             configureStsForExternalSSO(getClient(sendSoknadPortType));
             configureStsForExternalSSO(getClient(kodeverkService));
             configureStsForExternalSSO(getClient(brukerProfilService));
+            configureStsForExternalSSO(getClient(personService));
         }
     }
 
