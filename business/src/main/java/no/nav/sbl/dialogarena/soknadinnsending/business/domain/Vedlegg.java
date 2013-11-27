@@ -1,7 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
-import java.io.InputStream;
-
 /**
  * Domeneklasse som beskriver et vedlegg.
  */
@@ -11,7 +9,16 @@ public class Vedlegg {
     private String navn;
     private Long storrelse;
     private Long faktum;
-    private InputStream inputStream;
+    private byte[] data;
+
+    public Vedlegg(Long vedleggId, Long soknadId, Long faktumId, String navn, Long storrelse, byte[] data) {
+        this.id = vedleggId;
+        this.soknadId = soknadId;
+        this.faktum = faktumId;
+        this.navn = navn;
+        this.storrelse = storrelse;
+        this.data = data;
+    }
 
     public Long getId() {
         return id;
@@ -37,15 +44,7 @@ public class Vedlegg {
         this.faktum = faktum;
     }
 
-    public InputStream getInputStream() {
-        return inputStream;
-    }
-
-    public void setInputStream(InputStream inputStream) {
-        this.inputStream = inputStream;
-    }
-
-    public String getNavn() {
+     public String getNavn() {
         return navn;
     }
 
@@ -63,19 +62,68 @@ public class Vedlegg {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Vedlegg vedlegg = (Vedlegg) o;
 
-        if (faktum != null ? !faktum.equals(vedlegg.faktum) : vedlegg.faktum != null) return false;
-        if (id != null ? !id.equals(vedlegg.id) : vedlegg.id != null) return false;
-        if (navn != null ? !navn.equals(vedlegg.navn) : vedlegg.navn != null) return false;
-        if (soknadId != null ? !soknadId.equals(vedlegg.soknadId) : vedlegg.soknadId != null) return false;
-        if (storrelse != null ? !storrelse.equals(vedlegg.storrelse) : vedlegg.storrelse != null) return false;
+        if (tomtFaktum(vedlegg)) {
+            return false;
+        }
+        if (tomId(vedlegg)) {
+            return false;
+        }
+        if (tomtNavn(vedlegg)) {
+            return false;
+        }
+        if (tomSoknadId(vedlegg)) {
+            return false;
+        }
+        if (tomStorrelse(vedlegg)) {
+            return false;
+        }
 
         return true;
     }
+
+	private boolean tomStorrelse(Vedlegg vedlegg) {
+		if (storrelse != null) {
+			return !storrelse.equals(vedlegg.storrelse);
+		} 
+		return vedlegg.storrelse != null;
+	}
+
+	private boolean tomSoknadId(Vedlegg vedlegg) {
+		if (soknadId != null)  {
+			return !soknadId.equals(vedlegg.soknadId);
+		}
+		return vedlegg.soknadId != null;
+	}
+
+	private boolean tomtNavn(Vedlegg vedlegg) {
+		if (navn != null) {
+			return !navn.equals(vedlegg.navn);
+		}
+		return vedlegg.navn != null;
+	}
+
+	private boolean tomId(Vedlegg vedlegg) {
+		if (id != null) {
+			return !id.equals(vedlegg.id);
+		}
+		return vedlegg.id != null;
+	}
+
+	private boolean tomtFaktum(Vedlegg vedlegg) {
+		if (faktum != null) {
+			return !faktum.equals(vedlegg.faktum);
+		}
+		return vedlegg.faktum != null;
+	}
 
     @Override
     public int hashCode() {
@@ -95,8 +143,11 @@ public class Vedlegg {
         sb.append(", navn='").append(navn).append('\'');
         sb.append(", storrelse=").append(storrelse);
         sb.append(", faktum='").append(faktum).append('\'');
-        sb.append(", inputStream=").append(inputStream);
         sb.append('}');
         return sb.toString();
+    }
+
+    public byte[] getData() {
+        return data;
     }
 }

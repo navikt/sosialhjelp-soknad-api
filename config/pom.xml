@@ -56,8 +56,8 @@
                         <artifactId>jboss-maven-plugin</artifactId>
                         <configuration>
                             <envConfigUrl>https://envconfig.adeo.no/conf</envConfigUrl>
-                            <username>admin</username>
-                            <password>admin</password>
+                            <username>***REMOVED***</username>
+                            <password>xxxxxxx</password>
                             <env>t11</env>
                             <apps>sendsoknad:${project.version}</apps>
                         </configuration>
