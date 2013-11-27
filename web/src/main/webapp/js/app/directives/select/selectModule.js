@@ -53,10 +53,6 @@ angular.module('nav.select', ['ngSanitize'])
                 var minimumIndeks;
                 var maximumIndeks;
 
-                if (scope.ngRequired === undefined) {
-                    scope.ngRequired = false;
-                }
-
                 if (scope.requiredFeilmelding === undefined) {
                     scope.requiredFeilmelding = 'select.required.feilmelding';
                 }
