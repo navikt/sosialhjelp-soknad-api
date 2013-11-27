@@ -35,7 +35,6 @@ angular.module('nav.feilmeldinger', [])
                 scope.runValidation = function () {
                     scope.feilmeldinger = [];
                     var skalViseFlereFeilmeldinger = true;
-
                     angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
                         if (skalViseFlereFeilmeldinger) {
                             skalViseFlereFeilmeldinger = leggTilFeilmeldingerVedValidering(verdi, feilNokkel);
@@ -154,4 +153,22 @@ angular.module('nav.feilmeldinger', [])
                 }
             }
         };
-    }]);
+    }])
+    .filter('fiksRekkefolge', [function() {
+        return function(feilmeldinger) {
+            var sortertFeilmeldingerArray = [];
+
+            for (var i = 1; i < feilmeldinger.length-1; i++) {
+//              skal bruke tabIndex når det er på plass
+            }
+            return feilmeldinger;
+        }
+    }])
+
+    function erEtter() {
+
+    }
+
+    function erFor() {
+
+    }
