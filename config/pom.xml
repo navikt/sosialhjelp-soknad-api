@@ -57,7 +57,7 @@
                         <configuration>
                             <envConfigUrl>https://envconfig.adeo.no/conf</envConfigUrl>
                             <username>h116121</username>
-                            <password>xxxxxxx</password>
+                            <password>Hx21paanav</password>
                             <env>t11</env>
                             <apps>sendsoknad:${project.version}</apps>
                         </configuration>
