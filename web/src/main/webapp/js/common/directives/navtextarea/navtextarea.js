@@ -24,7 +24,7 @@ angular.module('nav.textarea', [])
                 $scope.tellertekst = $scope.nokkel + ".tellertekst";
             },
 
-            link: function (scope, element, attrs, ctrl) {
+            link: function (scope, element) {
                 scope.counter = scope.maxlengde;
                 scope.fokus = false;
                 scope.feil = false;

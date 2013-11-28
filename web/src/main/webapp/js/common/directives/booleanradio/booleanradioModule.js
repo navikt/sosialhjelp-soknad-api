@@ -1,7 +1,7 @@
 angular.module('nav.booleanradio',['nav.cmstekster', 'nav.input'])
     .directive('booleanradio', [function() {
         return {
-            restrict: "AE",
+            restrict: "A",
             replace: true,
             require: 'ngModel',
             scope: {
