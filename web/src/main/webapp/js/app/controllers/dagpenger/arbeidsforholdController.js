@@ -186,16 +186,7 @@ angular.module('nav.arbeidsforhold.controller', [])
                 }
             }
 
-            $scope.validatePermittertDatoFra = function (af) {
-                if (af && (af.permittertFraDato < af.varighetFra) || (af.permittertFraDato > af.varighetTil)) {
-                    af.permittertFraDato = '';
-                    $scope.permittertDatoErrorFra = true;
-                } else {
-                    $scope.permittertDatoErrorFra = false;
-                }
-            }
-
-            $scope.validatePermittertDatoTil = function (af) {
+            $scope.validatePermittertDatoFraTil = function (af) {
                 if (af && (af.permittertTilDato < af.varighetFra) || (af.permittertTilDato > af.varighetTil) || (af.permittertFraDato > af.permittertTilDato)) {
                       af.permittertTilDato = '';
                     $scope.permittertDatoErrorTil = true;
@@ -204,16 +195,7 @@ angular.module('nav.arbeidsforhold.controller', [])
                 }
             }
 
-            $scope.validatePermittertLonnspliktDatoFra = function (af) {
-                if (af && (af.permittertLonnspliktFraDato < af.varighetFra) || (af.permittertLonnspliktFraDato > af.varighetTil)) {
-                    af.permittertLonnspliktFraDato = '';
-                    $scope.permittertLonnspliktDatoErrorFra = true;
-                } else {
-                    $scope.permittertLonnspliktDatoErrorFra = false;
-                }
-            }
-
-            $scope.validatePermittertLonnspliktDatoTil = function (af) {
+            $scope.validatePermittertLonnspliktDatoFraTil = function (af) {
                 if (af && (af.permittertLonnspliktTilDato < af.varighetFra) || (af.permittertLonnspliktTilDato > af.varighetTil) || (af.permittertLonnspliktFraDato > af.permittertLonnspliktTilDato)) {
                     af.permittertLonnspliktTilDato = '';
                     $scope.permittertLonnspliktDatoErrorTil = true;
