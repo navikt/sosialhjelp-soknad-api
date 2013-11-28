@@ -7,10 +7,12 @@ angular.module('nav.forsettsenere',['nav.cmstekster'])
             $scope.runValidation();
             if(form.$valid) {
                 var soknadId = $routeParams.soknadId;
+                if($scope.soknadData.fakta.epost) {
     			$http.post('/sendsoknad/rest/soknad/' + soknadId +'/fortsettsenere', $scope.soknadData.fakta.epost.value)
     				.success(function(data) {
                         $location.path('kvittering-fortsettsenere/' + soknadId);
     				});
+                }
             }
         }
     }])
