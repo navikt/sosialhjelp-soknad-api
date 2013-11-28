@@ -5,7 +5,7 @@
  * Description
  */
 
-angular.module('app.directives', ['app.services', 'nav.booleanradio', 'nav.cmstekster', 'nav.input', 'nav.feilmeldinger', 'nav.sporsmalferdig', 'nav.markup', 'nav.stegindikator', 'nav.textarea', 'nav.fremdriftsindikator', 'nav.validering', 'nav.sistlagret', 'nav.select', 'nav.hjelpetekst'])
+angular.module('app.directives', ['app.services', 'nav.booleanradio', 'nav.cmstekster', 'nav.input', 'nav.feilmeldinger', 'nav.sporsmalferdig', 'nav.markup', 'nav.stegindikator', 'nav.textarea', 'nav.fremdriftsindikator', 'nav.validering', 'nav.sistlagret', 'nav.select', 'nav.hjelpetekst', 'nav.datepicker'])
     /*Hva med casene 1-242 osv? */
 
     .directive('landskodevalidering', function () {
@@ -60,56 +60,6 @@ angular.module('app.directives', ['app.services', 'nav.booleanradio', 'nav.cmste
                         ctrl.$setValidity('prosent', false);
                         return undefined;
                     }
-                });
-            }
-        };
-    })
-
-    .directive('datotil', function () {
-        return {
-            replace: true,
-            require: 'ngModel',
-
-            scope: {
-                fraDato: '=',
-                tilDato: '='
-            },
-            link: function ($scope, elm, attrs, ctrl) {
-                ctrl.$parsers.unshift(function (viewValue) {
-                    if (typeof $scope.fraDato === 'undefined' || typeof viewValue === 'undefined') {
-                        ctrl.$setValidity('framindre', false);
-                        $scope.tilDato = undefined;
-                        return undefined;
-                    }
-
-                    if (fraMindreEnnTil($scope.fraDato, viewValue)) {
-                        ctrl.$setValidity('framindre', true);
-                        $scope.tilDato = new Date(ctrl.$viewValue);
-                        return viewValue;
-                    }
-                    ctrl.$setValidity('framindre', false);
-                    $scope.tilDato = undefined;
-                    return undefined;
-                });
-
-                $scope.$watch('fraDato', function (fraDatoValue) {
-                    var vw = ctrl.$viewValue;
-                    if (typeof fraDatoValue === 'undefined' || typeof ctrl.$viewValue === 'undefined') {
-                        ctrl.$setValidity('framindre', false);
-                    }
-
-                    if (fraMindreEnnTil(fraDatoValue, ctrl.$viewValue)) {
-                        if (typeof $scope.tilDato === 'undefined') {
-                            $scope.tilDato = new Date(ctrl.$viewValue);
-                            ctrl.$setValidity('framindre', true);
-                        }
-                        ctrl.$setValidity('framindre', true);
-                    } else {
-                        ctrl.$setValidity('framindre', false);
-                        $scope.tilDato = undefined;
-                        return undefined;
-                    }
-
                 });
             }
         };
