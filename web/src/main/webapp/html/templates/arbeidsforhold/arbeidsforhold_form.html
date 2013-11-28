@@ -1,17 +1,4 @@
 <form name="endreArbeidsforholdForm" data-ng-submit="aksjon()">
-	<label for="arbeidsgiver_navn">Navn på arbeidsgiver</label>
-    <input id="arbeidsgiver_navn" type="text" data-ng-model="af.navn" required/>
-    
-    <br/>
-    <br/>
-    
-    <label for="arbeidsgiver_land">Land</label>
-    <select id="arbeidsgiver_land" data-ng-model="af.land" data-ng-options="item for item in landService.result" required>
-    	<option value="">--Velg land--</option>
-    </select>
-    
-    <br/>
-    <br/>
     
     <div class="varighet">
         <label>Fra:</label>
@@ -22,16 +9,6 @@
     </div>
     
     <br/>
-    <br/>
-    
-    <label>Årsaken til at du sluttet i jobben</label>
-    <br/>
-    <select id="sluttaarsak_id" type="text" data-ng-model="sluttaarsak" data-ng-options="t.navn for t in templates" required>
-    	<option value="">--Velg sluttårsak--</option>
-	</select>
-    <br/>
-    <br/>
-    <div data-ng-show="sluttaarsak.navn" data-ng-include data-src="sluttaarsak.url"></div>
     <br/>
     
     <input cmstekster="arbeidsforhold.lagre" type="submit" id="arbeidsgiverLagre"></input>
