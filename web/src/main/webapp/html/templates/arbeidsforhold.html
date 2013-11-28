@@ -47,7 +47,14 @@
                     </div>
 
                     <div>
-
+                            <div nav-select
+                                 name="arbeidsgiverland"
+                                 data-label="arbeidsforhold.arbeidsgiver.land"
+                                 data-ng-model="af.land"
+                                 data-options="landService.result"
+                                 data-default-value="arbeidsforhold.arbeidsgiver.landDefault"
+                                 data-required-feilmelding="arbeidsforhold.arbeidsgiver.land.feilmelding"
+                                 data-ugyldig-feilmelding="arbeidsforhold.arbeidsgiver.land.ugyldig.feilmelding"/>
 
                             <!--<select name="arbeidsgiverland"-->
                                     <!--data-ng-model="af.land"-->
