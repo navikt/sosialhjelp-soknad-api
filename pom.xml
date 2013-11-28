@@ -238,11 +238,7 @@
                 <version>2.1.7</version>
             </dependency>
 
-            <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>common-test</artifactId>
-                <version>1.2</version>
-            </dependency>
+
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-library</artifactId>
@@ -637,6 +633,12 @@
 
             <!-- Avhengigheter med scope test -->
 
+            <dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>common-test</artifactId>
+                <version>1.2</version>
+                <scope>test</scope>
+            </dependency>
         	<dependency>
 	            <groupId>no.nav.modig</groupId>
 	            <artifactId>modig-core-test</artifactId>
