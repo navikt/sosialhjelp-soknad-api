@@ -116,7 +116,8 @@
     background: #f1f1f1;
     border: 1px solid #ddd;
     padding: 20px;
-    margin: 10px 0 30px;
+    margin-left: 44px;
+    margin-right: 0px;
 }
 
 .spm-blokk {
@@ -163,8 +164,7 @@
         height: 0;
         margin: 0 auto;
         border-style: solid;
-        border-color: transparent transparent #0067c5 transparent
-    ;
+        border-color: transparent transparent #0067c5 transparent;
         border-width: 0 2px 3px 2px;
 
         &:before {
@@ -282,7 +282,6 @@
 
 .spm {
     margin-top: 20px;
-    margin-bottom: 10px;
     width: 100%;
 
     .spm-sporsmal {
@@ -355,13 +354,42 @@ form-linje.feil {
 .form-linje {
     padding: 15px;
 
+    .form-linje {
+        padding: 0px;
+
+        &.feil {
+            border: 1px solid #fca292;
+            background: #fee6e6;
+            margin-left: -15px;
+            padding: 15px;
+
+            &.tekstfelt {
+                border: none;
+                background: #f1f1f1;
+                margin-left: -15px;
+                padding: 0px 15px;
+
+                .melding {
+                    font-size: 0.9rem !important;
+                    margin-top: 7px;
+                }
+            }
+          .ingen-ytelse-melding {
+            display:block;
+            color: #c30000;
+            text-transform: none;
+            margin-bottom: 10px;
+          }
+        }
+    }
+
     .melding {
         display: none;
     }
 
     &.feil {
         select {
-            border: 1px solid @pink;
+            border: 1px solid #fca292;
             border-top: 1px solid #ff0000;
             background: @errorBackground;
         }
@@ -371,8 +399,9 @@ form-linje.feil {
         }
 
         &.boolean {
-            border: 1px solid @pink;
+            border: 1px solid #fca292;
             background: #fee6e6;
+            margin-bottom: 20px;
 
             .melding {
                 margin-bottom: 10px;
@@ -380,16 +409,23 @@ form-linje.feil {
 
             }
         }
-
-        &.checkbox {
-          border: 1px solid @pink;
-          background: #fee6e6;
-        }
-
-        .melding.inline {
-            display: inline;
-        }
+      .melding.inline {
+        display: inline;
+      }
     }
+
+  &.checkbox.feilstyling {
+      border: 1px solid #fca292;
+      background: #fee6e6;
+      padding: 14px !important;
+
+      .melding {
+          margin-bottom: 10px;
+          display: none;
+      }
+  }
+
+
 }
 
 .rad[stegindikator], .rad[data-stegindikator] {
