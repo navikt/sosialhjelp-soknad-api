@@ -27,7 +27,7 @@ angular.module('nav.select', ['ngSanitize'])
                 requiredFeilmelding: '@',
                 ugyldigFeilmelding: '@',
                 label: '@',
-                ngRequired: '=',
+                erRequired: '=',
                 ngModel: '='
             },
             replace: true,
@@ -52,10 +52,6 @@ angular.module('nav.select', ['ngSanitize'])
                 var antallElementerOverOgUnder = 30;
                 var minimumIndeks;
                 var maximumIndeks;
-
-                if (scope.ngRequired === undefined) {
-                    scope.ngRequired = false;
-                }
 
                 if (scope.requiredFeilmelding === undefined) {
                     scope.requiredFeilmelding = 'select.required.feilmelding';
@@ -175,7 +171,7 @@ angular.module('nav.select', ['ngSanitize'])
                 }
 
                 scope.harRequiredFeil = function() {
-                    return scope.ngRequired && !scope.inputVerdi && !scope.listeErApen && !input.is(':focus');
+                    return scope.erRequired && !scope.inputVerdi && !scope.listeErApen && !input.is(':focus');
                 }
 
                 scope.inneholderIkkeSkrevetTekst = function() {
