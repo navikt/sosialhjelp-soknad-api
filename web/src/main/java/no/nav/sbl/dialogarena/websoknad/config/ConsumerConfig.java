@@ -130,9 +130,13 @@ public class ConsumerConfig {
         }
 
         @Bean
-        @Named("personService")
         public PersonPortType personService() {
             return konfigurerMedHttps(personPortTypeFactory().create(PersonPortType.class));
+        }
+        
+        @Bean
+        public PersonPortType personServiceSelftest() {
+            return personPortTypeFactory().create(PersonPortType.class);
         }
 
     }
@@ -175,16 +179,16 @@ public class ConsumerConfig {
         @Named("brukerProfilSelftest")
         private BrukerprofilPortType brukerProfilSelftest;
 
-//        @Inject
-//        @Named("personService")
-//        private PersonPortType personService;
-//        
+        @Inject
+        @Named("personService")
+        private PersonPortType personService;
+        
         @PostConstruct
         public void setupSts() {
             configureStsForSystemUser(getClient(sendSoknadSelftest));
             configureStsForSystemUser(getClient(kodeverkServiceSelftest));
             configureStsForSystemUser(getClient(brukerProfilSelftest));
-//            configureStsForExternalSSO(getClient(personService));
+            configureStsForExternalSSO(getClient(personService));
         }
     }
 
@@ -202,16 +206,16 @@ public class ConsumerConfig {
         @Named("brukerProfilService")
         private BrukerprofilPortType brukerProfilService;
         
-//        @Inject
-//        @Named("personService")
-//        private PersonPortType personService;
+        @Inject
+        @Named("personService")
+        private PersonPortType personService;
 
         @PostConstruct
         public void setupSts() {
             configureStsForExternalSSO(getClient(sendSoknadPortType));
             configureStsForExternalSSO(getClient(kodeverkService));
             configureStsForExternalSSO(getClient(brukerProfilService));
-//            configureStsForExternalSSO(getClient(personService));
+            configureStsForExternalSSO(getClient(personService));
         }
     }
 

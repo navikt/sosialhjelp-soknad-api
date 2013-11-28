@@ -78,7 +78,7 @@ public class ApplicationContext {
     }
 
     @Bean
-    public PersonServiceTPS personService() {
+    public PersonServiceTPS personServiceTPS() {
         return new PersonServiceTPS();
     }
     
