@@ -20,7 +20,7 @@
  * ugyldig-feilmelding: Nøkkel til feilmelding som skal vises dersom man skriver inn noe som ikke finnes i listen. Dersom ikke oppgitt blir det en standard nøkkel.
  */
 angular.module('nav.select', ['ngSanitize'])
-    .directive('navSelect', ['$document', 'data', '$timeout', function ($document, data, $timeout) {
+    .directive('navSelect', ['$document', 'cms', '$timeout', function ($document, cms, $timeout) {
         return {
             require: 'ngModel',
             scope: {
@@ -41,7 +41,7 @@ angular.module('nav.select', ['ngSanitize'])
 
                 scope.vistListe = filterListePaaSoketekst();
                 scope.vistListeFiltrert = filterListeTilAntallElementerRundtValgtElement();
-                scope.defaultValue = data.tekster[attrs.defaultValue] ? data.tekster[attrs.defaultValue] : attrs.defaultValue;
+                scope.defaultValue = cms.tekster[attrs.defaultValue] ? cms.tekster[attrs.defaultValue] : attrs.defaultValue;
                 scope.ngModel = (scope.defaultValue) ? scope.defaultValue : '';
                 scope.inputVerdi = hentValgtTekstBasertPaaValue();
                 scope.valgtElementVerdi = scope.ngModel;
