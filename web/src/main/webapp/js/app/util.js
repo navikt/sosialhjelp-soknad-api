@@ -53,6 +53,14 @@ function sjekkOmGittEgenskapTilObjektErFalse(objekt) {
     return false;
 }
 
+function sjekkOmGittEgenskapTilObjektErTrue(objekt) {
+    if (objekt) {
+        return checkTrue(objekt.value);
+    }
+
+    return false;
+}
+
 function checkTrue(element) {
     if (element == undefined) {
         return false;
@@ -166,3 +174,23 @@ function stringContainsNotCaseSensitive(str, query) {
         }, speed);
     }
 })(jQuery);
+
+function fadeBakgrunnsfarge(element, melding, feilmeldingsklasse) {
+    var backgroundColour = [254, 230, 230].join(',') + ',';
+    var borderColour = [252, 162, 146].join(',') + ',';
+    var meldingColour = [195, 0, 0].join(',') + ',';
+    var transparency = 1;
+    var timeout = setInterval(function() {
+        if (transparency >= 0) {
+
+            element[0].style.backgroundColor = 'rgba(' + backgroundColour + (transparency -= 0.015) + ')';
+            element[0].style.borderColor = 'rgba(' + borderColour + (transparency -= 0.015) + ')';
+            melding[0].style.color = 'rgba(' + meldingColour + (transparency -= 0.015) + ')';
+        } else {
+            element.removeClass(feilmeldingsklasse);
+            element.removeAttr('style');
+            melding.removeAttr('style');
+            clearInterval(timeout);
+        }
+    }, 20);
+}
