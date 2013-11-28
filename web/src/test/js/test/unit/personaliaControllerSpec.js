@@ -15,12 +15,12 @@ describe('Personalia domene', function(){
             
             scope = $rootScope.$new();
             routeParams.soknadId = 1;
-            data = {};
+            var cms = {};
             //data.tekster.push("personalia.midlertidig_adresse_norge=")
             ctrl = $controller('PersonaliaCtrl', {
                 $scope: scope,
                 $routeParams: routeParams,
-                data: data
+                cms: cms
             });
         }));
         
