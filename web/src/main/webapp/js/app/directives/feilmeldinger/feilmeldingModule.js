@@ -37,7 +37,7 @@ angular.module('nav.feilmeldinger', [])
                     var skalViseFlereFeilmeldinger = true;
 
                     angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
-                        console.log("XFDFDD" + ctrl.$errorMessages);
+
                         if (skalViseFlereFeilmeldinger) {
                             skalViseFlereFeilmeldinger = leggTilFeilmeldingerVedValidering(verdi, feilNokkel);
                         }
@@ -58,12 +58,10 @@ angular.module('nav.feilmeldinger', [])
 
                 function fjernFeilmeldingerSomErFikset() {
                     var fortsattFeilListe = [];
-
                     angular.forEach(ctrl.$error, function(verdi, feilNokkel) {
-                        console.log("test" + ctrl.elem);
+
                         fortsattFeilListe = fortsattFeilListe.concat(leggTilFeilSomFortsattSkalVises(verdi, feilNokkel));
                     });
-                    console.log("tEst" + fortsattFeilListe);
                     scope.feilmeldinger = fortsattFeilListe;
                 }
 
@@ -78,7 +76,6 @@ angular.module('nav.feilmeldinger', [])
                 }
 
                 scope.erKlikkbarFeil = function(feilmelding) {
-                    console.log("tEsEt" + feilmelding.elem);
                     if (feilmelding.elem != undefined)
                     {
                             return feilmelding.elem.length > 0;
@@ -105,7 +102,7 @@ angular.module('nav.feilmeldinger', [])
                 }
 
                 function leggTilFeilSomFortsattSkalVises(verdi, feilNokkel) {
-                    console.log("tEsting" + verdi + "xx " + feilNokkel);
+
                     var fortsattFeilListe = [];
                     angular.forEach(verdi, function(feil) {
                         var feilmelding = finnFeilmelding(feil, feilNokkel);
