@@ -59,7 +59,9 @@ public class VedleggController {
                 for (MultipartFile file : files) {
                     byte[] in = validateAndGetInput(file);
                     Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, file.getOriginalFilename(), file.getSize(), in);
-                    vedlegg.setId(vedleggService.lagreVedlegg(vedlegg, new ByteArrayInputStream(in)));
+                    Long id = vedleggService.lagreVedlegg(vedlegg, new ByteArrayInputStream(in));
+                    vedlegg.setId(id);
+
                     res.add(vedlegg);
                 }
                 return new VedleggOpplasting(res);
@@ -102,11 +104,11 @@ public class VedleggController {
 
     @RequestMapping(value = "/{vedleggId}/thumbnail", method = RequestMethod.GET, produces = IMAGE_PNG_VALUE)
     @ResponseBody()
-    public Callable<byte[]> lagForhandsvisningForVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
+    public Callable<byte[]> lagForhandsvisningForVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestParam(value = "side", defaultValue = "0") final int side) {
         return new Callable<byte[]>() {
             @Override
             public byte[] call() throws Exception {
-                return vedleggService.lagForhandsvisning(soknadId, vedleggId);
+                return vedleggService.lagForhandsvisning(soknadId, vedleggId, side);
             }
         };
     }
