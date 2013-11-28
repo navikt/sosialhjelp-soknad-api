@@ -14,6 +14,7 @@ angular.module('nav.feilmeldinger', [])
                 } catch(e) {
                     ctrl.$errorMessages = attrs.errorMessages;
                 }
+                ctrl.$elementErrorAttr = attrs.errorMessages;
             }
         };
     }])
@@ -134,11 +135,7 @@ angular.module('nav.feilmeldinger', [])
                 }
 
                 function finnTilhorendeElement(feil) {
-                    var navn = '';
-                    if (feil) {
-                        navn = feil.$name;
-                    }
-                    return elem.closest('[data-ng-form]').find('[name=' + navn + ']');
+                    return elem.closest('[data-ng-form]').find("[data-error-messages=\"" + feil.$elementErrorAttr + "\"], [error-messages=\"" + feil.$elementErrorAttr + "\"]");
                 }
             }
         };
