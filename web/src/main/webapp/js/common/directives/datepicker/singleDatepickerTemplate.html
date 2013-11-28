@@ -4,10 +4,12 @@
         <input type="text"
                data-ui-keydown="{enter: 'enter()'}"
                data-ng-model="ngModel"
-               data-ng-required="ngRequired"
+               data-ng-required="erRequired"
                data-ng-blur="blur()"
                data-ng-focus="focus()"
-               data-dato-format>
+               data-dato-format
+               data-error-messages="'{{ requiredErrorMessage }}'"
+               data-name="w00t">
 
         <span class="melding" data-ng-if="harRequiredFeil()" data-cmstekster="{{ requiredErrorMessage }}"></span>
         <span class="melding" data-ng-if="harFormatteringsFeil()" data-cmstekster="dato.format.feilmelding"></span>

@@ -6,7 +6,7 @@
  *      - label: Nøkkel til CMS for å hente ut label-tekst
  *
  * Følgende attributter kan oppgis:
- *      - ngRequired: Expression som sier om feltet er påkrevd eller ikke
+ *      - erRequired: Expression som sier om feltet er påkrevd eller ikke
  *      - requiredErrorMessage: Nøkkel til CMS for å hente ut feilmeldingstekst for required-feil
  *
  * Følgende attributter brukes av det andre direktivet for å kjøre validering på datointervallet:
@@ -28,8 +28,8 @@
  *                  - datepicker.noe.fra.feilmelding=Required-feilmelding for sluttdato
  *
  * Følgende attributter kan oppgis:
- *      - ngRequired: Expression som sier om feltet er påkrevd eller ikke
- *      
+ *      - erRequired: Expression som sier om feltet er påkrevd eller ikke
+ *
  */
 
 angular.module('nav.datepicker', [])
@@ -44,7 +44,7 @@ angular.module('nav.datepicker', [])
             templateUrl: '../js/common/directives/datepicker/singleDatepickerTemplate.html',
             scope: {
                 ngModel: '=',
-                ngRequired:  '=',
+                erRequired:  '=',
                 tilDato: '=',
                 fraDato: '=',
                 tilDatoFeil: '=',
@@ -92,11 +92,11 @@ angular.module('nav.datepicker', [])
                 });
 
                 scope.harRequiredFeil = function() {
-                    return scope.ngRequired && !input.val() && !harFokus && harHattFokus && datepickerErLukket && !scope.tilDatoFeil;
+                    return scope.erRequired && !input.val() && !harFokus && harHattFokus && datepickerErLukket && !scope.tilDatoFeil;
                 }
 
                 scope.harTilDatoFeil = function() {
-                    return scope.ngRequired && !input.val() && !harFokus && harHattFokus && datepickerErLukket && scope.tilDatoFeil;
+                    return scope.erRequired && !input.val() && !harFokus && harHattFokus && datepickerErLukket && scope.tilDatoFeil;
                 }
 
                 scope.harFormatteringsFeil = function() {
@@ -151,7 +151,7 @@ angular.module('nav.datepicker', [])
             scope: {
                 fraDato: '=',
                 tilDato: '=',
-                ngRequired:  '=',
+                erRequired:  '=',
                 label: '@'
             },
             controller: function($scope) {
