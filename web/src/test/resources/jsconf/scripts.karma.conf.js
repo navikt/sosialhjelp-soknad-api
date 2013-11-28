@@ -14,26 +14,27 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-            '../../../test/js/lib/TimeoutBoxMock.js',
             '../jslib/jquery-1.10.2.js',
+            '../jslib/jquery-ui.js',
+            '../../../test/js/lib/TimeoutBoxMock.js',
             '../../../main/webapp/js/lib/angular.js',
             '../jslib/angular-mocks.js',
-            '../jslib/angular-resource.js',
-            '../jslib/angular-sanitize.js',
+            '../../../main/webapp/js/lib/angular-resource.js',
+            '../../../main/webapp/js/lib/angular-sanitize.js',
+            '../../../main/webapp/js/lib/bindonce.js',
+            '../../../main/webapp/js/lib/ui-bootstrap-0.6.0.js',
             '../../../main/webapp/js/app/*.js',
             '../../../main/webapp/js/app/directives/**/*.js',
             '../../../main/webapp/js/app/controllers/**/*.js',
-            '../../../test/js/test/unit/*.js',
-            '../../../main/webapp/js/app/directives/**/*.html'
+            '../../../main/webapp/js/common/directives/**/*.js',
+
+            '../../../main/webapp/js/jquery/jquery.iframe-transport.js',
+            '../../../main/webapp/js/jquery/jquery.fileupload.js',
+            '../../../main/webapp/js/jquery/jquery.fileupload-process.js',
+            '../../../main/webapp/js/jquery/jquery.fileupload-validate.js',
+            '../../../main/webapp/js/jquery/jquery.fileupload-angular.js',
+            '../../../test/js/test/unit/*.js'
         ],
-
-        ngHtml2JsPreprocessor: {
-//            stripPrefix: '..',
-//            prependPrefix: '../../../main/webapp'
-
-            prependPrefix: '../',
-            stripPrefix: '../../../main/webapp/'
-        },
 
         // list of files to exclude
         exclude: [
@@ -85,15 +86,10 @@ module.exports = function (config) {
         plugins: [
             'karma-jasmine',
             'karma-phantomjs-launcher',
-            'karma-ng-html2js-preprocessor',
             'karma-chrome-launcher',
             'karma-firefox-launcher',
             'karma-ie-launcher'
         ],
-
-        preprocessors: {
-            '../../../main/webapp/js/app/directives/**/*.html': ['ng-html2js']
-        },
 
         coverageReporter: {
             type: 'html',
