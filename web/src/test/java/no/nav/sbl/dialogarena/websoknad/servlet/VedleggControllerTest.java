@@ -91,12 +91,12 @@ public class VedleggControllerTest {
     @Test
     public void shouldGetPreview() throws Exception {
         byte[] preview = {1, 2, 3};
-        when(vedleggService.lagForhandsvisning(11L, 12L)).thenReturn(preview);
+        when(vedleggService.lagForhandsvisning(11L, 12L, 0)).thenReturn(preview);
         mockMvc.perform(get("/soknad/{soknadId}/faktum/{faktumId}/vedlegg/{vedleggId}/thumbnail", 11, 13, 12)
                 .accept(MediaType.ALL))
                 .andExpect(request().asyncStarted())
                 .andExpect(request().asyncResult(preview));
-        verify(vedleggService).lagForhandsvisning(11L, 12L);
+        verify(vedleggService).lagForhandsvisning(11L, 12L, 0);
     }
 
 

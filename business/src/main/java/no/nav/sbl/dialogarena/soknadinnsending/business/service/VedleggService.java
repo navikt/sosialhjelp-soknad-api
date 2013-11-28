@@ -17,7 +17,7 @@ public interface VedleggService {
 
     void slettVedlegg(Long soknadId, Long vedleggId);
 
-    byte[] lagForhandsvisning(Long soknadId, Long vedleggId);
+    byte[] lagForhandsvisning(Long soknadId, Long vedleggId, int side);
 
     Long genererVedleggFaktum(Long soknadId, Long faktumId);
 }

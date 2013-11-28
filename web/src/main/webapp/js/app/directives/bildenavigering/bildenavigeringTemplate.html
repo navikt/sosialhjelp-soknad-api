@@ -1,0 +1,9 @@
+<div class="bildenavigering">
+    <a class="pil-venstre"  data-ng-click="naviger(-1)">&nbsp;</a>
+
+    <div class="bilde">
+        <img id="test" data-ng-src="../rest/soknad/{{vedlegg.data.soknadId}}/faktum/{{vedlegg.data.id}}/vedlegg/{{vedlegg.data.vedleggId}}/thumbnail?side={{vedlegg.side}}" alt="Forhåndsvisning" data-ng-cloak>
+        <span>{{vedlegg.navn}} ({{vedlegg.side + 1}}/3)</span>
+    </div>
+    <a class="pil-hoyre" data-ng-click="naviger(1)">&nbsp;</a>
+</div>

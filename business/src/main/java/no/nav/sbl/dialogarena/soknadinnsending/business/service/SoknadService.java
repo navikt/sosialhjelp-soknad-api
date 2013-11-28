@@ -137,9 +137,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     @Override
-    public byte[] lagForhandsvisning(Long soknadId, Long vedleggId) {
+    public byte[] lagForhandsvisning(Long soknadId, Long vedleggId, int side) {
         try {
-            return new ConvertToPng(new Dimension(600, 800), ImageScaler.ScaleMode.SCALE_TO_FIT_INSIDE_BOX)
+            return new ConvertToPng(new Dimension(600, 800), ImageScaler.ScaleMode.SCALE_TO_FIT_INSIDE_BOX, side)
                     .transform(IOUtils.toByteArray(vedleggRepository.hentVedleggStream(soknadId, vedleggId)));
         } catch (IOException e) {
             throw new RuntimeException("Kunne ikke generere thumbnail " + e, e);

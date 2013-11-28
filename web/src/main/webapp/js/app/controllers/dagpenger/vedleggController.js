@@ -9,9 +9,15 @@ angular.module('nav.vedlegg.controller', [])
             var vedlegg = cloneObject(vedleggMap[key]);
             vedlegg.data = data.soknad.fakta[key];
             vedlegg.valg = 'sendinn';
+            vedlegg.side = 0;
             vedlegg.lastetOpp = function () {
                 return vedlegg.data.vedleggId;
             }
+            vedlegg.$naviger = function (antall) {
+                vedlegg.side = vedlegg.side + antall;
+                console.log("naviger " + vedlegg.side)
+            }
+
             return vedlegg;
         }
 
@@ -52,4 +58,12 @@ angular.module('nav.vedlegg.controller', [])
         $scope.vedleggBehandlet = function (vedlegg) {
             return vedlegg.valg === 'ikkeSend' || vedlegg.valg == 'sendSenere' || vedlegg.lastetOpp();
         }
+    }])
+    .directive('bildeNavigering', [function () {
+        return {
+            restrict: 'a',
+            replace:'true',
+            templateUrl:'../../'
+        }
+
     }]);

@@ -16,7 +16,7 @@
     <section data-ng-controller="VedleggCtrl">
         <div data-accordion data-close-others="false">
             <section data-ng-repeat="v in vedlegg" ng-if="erFaktumLikKriterie(v)" class="vedlegg" data-ng-form id="faktum_{{v.data.id}}">
-                <div data-accordion-group class="spm-blokk" data-is-open="true" ng-class="{open: isOpen}">
+                <div data-accordion-group class="spm-blokk" data-is-open="!v.lastetOpp()" ng-class="{open: isOpen}">
                     <div data-accordion-heading>
                         <div class="flipp">
                             <span>+</span>
@@ -55,8 +55,13 @@
                                 <label for="{{$index}}ikkesendRadio" cmstekster="vedlegg.faktum.ikkesend"></label>
                             </div>
                             <div data-ng-if="v.lastetOpp()">
-                                <a href="../rest/soknad/{{soknadData.soknadId}}/faktum/{{v.data.id}}/vedlegg/{{v.data.vedleggId}}" data-cmstekster="vedlegg.lastned">Last ned</a>
-                                <a data-cmstekster="vedlegg.slett" data-ng-click="slettVedlegg(v)">Slett</a>
+                                <div class="forhandsvisning">
+                                    <div data-bildenavigering data-vedlegg="v"></div>
+                                    <div class="knapper">
+                                        <a data-ng-href="../rest/soknad/{{soknadData.soknadId}}/faktum/{{v.data.id}}/vedlegg/{{v.data.vedleggId}}" data-cmstekster="vedlegg.lastned">Last ned</a>
+                                        <a data-cmstekster="vedlegg.slett" data-ng-click="slettVedlegg(v)">Slett</a>
+                                    </div>
+                                </div>
                             </div>
                             <div class="spm-knapper" data-ng-if="v.lastetOpp">
                                 Lastet opp
