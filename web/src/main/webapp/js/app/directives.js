@@ -64,13 +64,3 @@ angular.module('app.directives', ['app.services', 'nav.booleanradio', 'nav.cmste
             }
         };
     });
-
-
-function fraMindreEnnTil(fra, til) {
-    var gyldig = false;
-    if (fra.getTime() < til.getTime()) {
-        gyldig = true
-    }
-
-    return gyldig;
-}
