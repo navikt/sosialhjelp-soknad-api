@@ -2,12 +2,16 @@ angular.module('nav.forsettsenere',['nav.cmstekster'])
     .controller('FortsettSenereCtrl', ['$scope', '$routeParams', '$http', '$location', 
         function ($scope, $routeParams, $http,  $location) {
 
-        $scope.forsettSenere = function() {
-            var soknadId = $routeParams.soknadId;
-			$http.post('/sendsoknad/rest/soknad/' + soknadId +'/fortsettsenere', $scope.soknadData.fakta.epost.value)
-				.success(function(data) {
-                    $location.path('kvittering-fortsettsenere/' + soknadId);
-				});
+        $scope.forsettSenere = function(form) {
+            $scope.validateForm(form.$invalid);
+            $scope.runValidation();
+            if(form.$valid) {
+                var soknadId = $routeParams.soknadId;
+    			$http.post('/sendsoknad/rest/soknad/' + soknadId +'/fortsettsenere', $scope.soknadData.fakta.epost.value)
+    				.success(function(data) {
+                        $location.path('kvittering-fortsettsenere/' + soknadId);
+    				});
+            }
         }
     }])
 
