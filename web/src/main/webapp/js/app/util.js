@@ -182,7 +182,6 @@ function fadeBakgrunnsfarge(element, melding, feilmeldingsklasse) {
     var transparency = 1;
     var timeout = setInterval(function() {
         if (transparency >= 0) {
-
             element[0].style.backgroundColor = 'rgba(' + backgroundColour + (transparency -= 0.015) + ')';
             element[0].style.borderColor = 'rgba(' + borderColour + (transparency -= 0.015) + ')';
             melding[0].style.color = 'rgba(' + meldingColour + (transparency -= 0.015) + ')';

@@ -110,6 +110,9 @@
     &:last-child {
         margin-bottom: 0;
     }
+    .melding {
+      text-align: left !important;
+    }
 }
 
 [class*=spm-boks] {
@@ -352,11 +355,12 @@ form-linje.feil {
     color: #333;
 }
 
-[class*=-melding], .melding {
+[class*="panel-"][class*="-belyst"] [class*=-melding], [class*=-melding], [class*="panel-"][class*="-belyst"] .melding, .melding {
   font-size: 0.9rem !important;
-  color: #c30000 !important;
+  color: #c30000;
   text-transform: none;
   margin-top: 7px;
+  text-align: center;
 }
 
 .form-linje {
@@ -382,10 +386,10 @@ form-linje.feil {
                 margin-left: -15px;
                 padding: 0px 15px;
             }
-          .ingen-ytelse-melding {
-            display:block;
-            margin-bottom: 10px;
-          }
+            .ingen-ytelse-melding {
+                display:block;
+                margin-bottom: 10px;
+            }
         }
     }
 
@@ -412,6 +416,12 @@ form-linje.feil {
             .melding {
                 margin-bottom: 10px;
             }
+        }
+        textarea {
+            background-color: #fee6e6;
+        }
+        &.textarea-container .melding {
+          text-align: left !important;
         }
       .melding.inline {
         display: inline;

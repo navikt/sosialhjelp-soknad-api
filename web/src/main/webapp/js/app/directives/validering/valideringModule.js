@@ -95,7 +95,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 scope.$watch(function () {
                     return ngModel.$viewValue;
                 }, function () {
-                    if (ngModel.$viewValue && element.closest('.form-linje').hasClass('feil') ) {
+                    if (ngModel.$viewValue && element.closest('.form-linje').hasClass('feil')) {
                         fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil');
                     }
                 });
@@ -129,10 +129,10 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 var eventString = 'RUN_VALIDATION' + ctrl[0].$name;
 
                 scope.$on(eventString, function () {
-                    if(element.find("input:checked").length > 0) {
+                    if (element.find("input:checked").length > 0) {
                         element.closest('.form-linje').removeClass('feil');
-                    } else if(element.find("input:checked").length == 0 && element.is(':visible')) {
-                        if(element.closest('.form-linje').hasClass('checkbox')) {
+                    } else if (element.find("input:checked").length == 0 && element.is(':visible')) {
+                        if (element.closest('.form-linje').hasClass('checkbox')) {
                             element.closest('.form-linje').addClass('feilstyling');
                         } else {
                             element.closest('.form-linje').addClass('feil');
@@ -143,11 +143,11 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 scope.$watch(function () {
                     return element.find("input:checked").length;
                 }, function () {
-                   if(element.find("input:checked").length > 0 && element.closest('.form-linje').hasClass('feil') ) {
-                       fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil');
-                   } else if(element.find("input:checked").length > 0 && element.closest('.form-linje').hasClass('feilstyling') ) {
-                       fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feilstyling');
-                   }
+                    if (element.find("input:checked").length > 0 && element.closest('.form-linje').hasClass('feil')) {
+                        fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil');
+                    } else if (element.find("input:checked").length > 0 && element.closest('.form-linje').hasClass('feilstyling')) {
+                        fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feilstyling');
+                    }
                 });
             }
         }
