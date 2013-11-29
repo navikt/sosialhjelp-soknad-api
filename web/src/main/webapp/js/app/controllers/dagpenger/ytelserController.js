@@ -12,6 +12,7 @@ angular.module('nav.ytelser', [])
 //      sjekker om formen er validert når bruker trykker ferdig med ytelser
         $scope.validerYtelser = function (form) {
             var minstEnCheckboksErAvhuket = erCheckboxerAvhuket(nokler);
+            $scope.ytelser.skalViseFeilmeldingForIngenYtelser = false;
             settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, minstEnCheckboksErAvhuket, true);
 
             $scope.validateForm(form.$invalid);
