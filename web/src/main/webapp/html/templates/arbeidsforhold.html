@@ -41,7 +41,7 @@
                             <input name="arbeidsgivernavn" required
                                    error-messages="'arbeidsforhold.arbeidsgiver.navn.feilmelding'" type="text"
                                    data-ng-model="af.navn"
-                                   data-blur-validate>
+                                   data-blur-validate required>
                             <span class="melding"/>
                         </label>
                     </div>
@@ -53,7 +53,7 @@
                                  data-ng-model="af.land"
                                  data-options="landService.result"
                                  data-default-value="arbeidsforhold.arbeidsgiver.landDefault"
-                                 data-ng-required="true"
+                                 data-er-required="true"
                                  data-required-feilmelding="arbeidsforhold.arbeidsgiver.land.feilmelding"
                                  data-ugyldig-feilmelding="arbeidsforhold.arbeidsgiver.land.ugyldig.feilmelding"/>
 
@@ -70,19 +70,11 @@
 
 
                     <div class="varighet">
-                        <div>
-                            <label cmstekster="arbeidsforhold.arbeidsgiver.varighetFra"/>
-                            <input type="text" name="varighetFra" ui-date ui-date-format ng-model="af.varighetFra"
-                                   data-ng-change="validateTilFraDato(af)"
-                                   error-messages="'arbeidsforhold.arbeidsgiver.varighetFra.feilmelding'" required/>
-                        </div>
-                        <div>
-                            <label cmstekster="arbeidsforhold.arbeidsgiver.varighetTil"/>
-                            <span data-ng-show="datoError" style="color:red"
-                                  cmstekster="arbeidsforhold.error.datoTilFra"/>
-                            <input type="text" name="varighetTil" ui-date ui-date-format ng-model="af.varighetTil"
-                                   data-ng-change="validateTilFraDato(af)"
-                                   error-messages="'arbeidsforhold.arbeidsgiver.varighetTil.feilmelding'" required/>
+                        <div data-nav-dato-intervall
+                             data-fra-dato="af.varighetFra"
+                             data-til-dato="af.varighetTil"
+                             data-label="arbeidsforhold.arbeidsgiver.varighet"
+                             data-er-required="true">
                         </div>
                     </div>
 

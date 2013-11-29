@@ -185,6 +185,13 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
+
+        <!-- Avhengigheter med scope provided -->
+
 
         <!-- Avhengigheter med scope runtime -->
         <dependency>
@@ -276,12 +283,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Avhengigheter med scope provided -->
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <scope>runtime</scope>
-        </dependency>
 
 
         <dependency>

@@ -1,11 +1,11 @@
 angular.module('nav.cmstekster',['app.services'])
-    .directive('cmstekster', ['data', '$compile', function(data, $compile) {
+    .directive('cmstekster', ['cms', '$compile', function(cms, $compile) {
 
         return {
             scope: false,
             link: function (scope, element, attrs) {
                 var nokkel = attrs['cmstekster'];
-                var cmstekst = data.tekster[nokkel];
+                var cmstekst = cms.tekster[nokkel];
                 var hjelpetekstTeller = 0;
 
                 if (cmstekst === undefined) {
@@ -57,17 +57,17 @@ angular.module('nav.cmstekster',['app.services'])
             }
         };
     }])
-    .directive('cmshtml', ['data', function (data) {
+    .directive('cmshtml', ['cms', function (cms) {
         return function ($scope, element, attrs) {
             var nokkel = attrs['cmshtml'];
-            element.html(data.tekster[nokkel]);
+            element.html(cms.tekster[nokkel]);
         };
     }])
-    .directive('cmslenketekster', ['data', function(data) {
+    .directive('cmslenketekster', ['cms', function(cms) {
         return function ($scope, element, attrs) {
             var nokkel = attrs['cmstekster'];
             if (element.is('a')) {
-                element.attr('href', data.tekster[nokkel]);
+                element.attr('href', cms.tekster[nokkel]);
             }
         };
     }]);

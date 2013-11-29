@@ -115,3 +115,27 @@ function stringContainsNotCaseSensitive(str, query) {
         }, speed);
     }
 })(jQuery);
+
+function konverterStringFraNorskDatoformatTilDateObjekt(datoString) {
+    var re = new RegExp(/^\d\d\.\d\d\.\d\d\d\d$/);
+    if (re.test(datoString)) {
+        var datoKomponenter = datoString.split('.');
+
+        // Måned indekseres fra 0, så må trekke fra 1
+        return new Date(datoKomponenter[2], datoKomponenter[1] - 1, datoKomponenter[0]);
+    } else {
+        return "";
+    }
+}
+
+//var startAr = datoFormat.indexOf('y');
+//var lengdeAr = datoFormat.match(/y/g);
+//var ar = datoString.substring(startAr, startAr + lengdeAr);
+//
+//var startManed = datoFormat.indexOf('M');
+//var lengdeManed = datoFormat.match(/M/g);
+//var maned = datoString.substring(startManed, startManed + lengdeManed);
+//
+//var startDag = datoFormat.indexOf('d');
+//var lengdeDag = datoFormat.match(/d/g);
+//var dag = datoString.substring(startDag, startDag + lengdeDag);
