@@ -19,7 +19,8 @@
 .informasjonstekst {
     font-size: 1rem;
     font-weight: bold;
-    margin-bottom: 10px !important;
+    margin-top: 20px !important;
+    margin-left: 15px !important;
 }
 
 .rad.soknad {
@@ -351,8 +352,20 @@ form-linje.feil {
     color: #333;
 }
 
+[class*=-melding], .melding {
+  font-size: 0.9rem !important;
+  color: #c30000 !important;
+  text-transform: none;
+  margin-top: 7px;
+}
+
 .form-linje {
     padding: 15px;
+
+    a {
+      padding-left: 29px;
+      white-space: nowrap;
+    }
 
     .form-linje {
         padding: 0px;
@@ -368,16 +381,9 @@ form-linje.feil {
                 background: #f1f1f1;
                 margin-left: -15px;
                 padding: 0px 15px;
-
-                .melding {
-                    font-size: 0.9rem !important;
-                    margin-top: 7px;
-                }
             }
           .ingen-ytelse-melding {
             display:block;
-            color: #c30000;
-            text-transform: none;
             margin-bottom: 10px;
           }
         }
@@ -405,8 +411,6 @@ form-linje.feil {
 
             .melding {
                 margin-bottom: 10px;
-                font-size: 0.9rem;
-
             }
         }
       .melding.inline {
@@ -421,7 +425,7 @@ form-linje.feil {
 
       .melding {
           margin-bottom: 10px;
-          display: none;
+          display: block;
       }
   }
 
@@ -472,3 +476,4 @@ form, [ng-form], [data-ng-form] {
 .liste-vannrett li:not([class*="dropdown"]):before {
     color: #3e3832;
 }
+

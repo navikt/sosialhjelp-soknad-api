@@ -145,7 +145,9 @@ angular.module('nav.feilmeldinger', [])
                     if(feil && feil.$linkId) {
                         return elem.closest('[data-ng-form]').find('[name=' + feil.$linkId + ']');
                     }
-                    return elem.closest('[data-ng-form]').find("[data-error-messages=\"" + feil.$elementErrorAttr + "\"], [error-messages=\"" + feil.$elementErrorAttr + "\"]");
+                    if(feil && feil.$elementErrorAttr) {
+                        return elem.closest('[data-ng-form]').find("[data-error-messages=\"" + feil.$elementErrorAttr + "\"], [error-messages=\"" + feil.$elementErrorAttr + "\"]");
+                    }
                 }
             }
         };
