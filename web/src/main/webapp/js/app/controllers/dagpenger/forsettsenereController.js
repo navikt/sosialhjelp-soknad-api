@@ -1,6 +1,6 @@
 angular.module('nav.forsettsenere',['nav.cmstekster'])
-    .controller('FortsettSenereCtrl', ['$scope', 'soknadService', '$routeParams', '$http', '$location', 
-        function ($scope, soknadService, $routeParams, $http,  $location) {
+    .controller('FortsettSenereCtrl', ['$scope', '$routeParams', '$http', '$location', 
+        function ($scope, $routeParams, $http,  $location) {
 
         $scope.forsettSenere = function() {
             var soknadId = $routeParams.soknadId;
@@ -9,7 +9,6 @@ angular.module('nav.forsettsenere',['nav.cmstekster'])
                     $location.path('kvittering-fortsettsenere/' + soknadId);
 				});
         }
-        
     }])
 
     .directive('navGjenoppta', ['$compile','data', function($compile, data) {

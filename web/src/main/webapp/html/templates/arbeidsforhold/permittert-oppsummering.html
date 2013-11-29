@@ -1,7 +1,4 @@
-<div>
-
-    <p class="svar-oppsummering-sporsmal" cmstekster="arbeidsforhold.sluttaarsak.permittert.orgnr"/>
-    <p class="svar-oppsummering">{{af.sluttaarsak.permittert.orgnr}}</p>
+<div data-ng-controller="ModusCtrl">
 
     <p class="svar-oppsummering-sporsmal" cmstekster="arbeidsforhold.sluttaarsak.permittert.fraDato"/>
     <p class="svar-oppsummering">{{af.permittertFraDato | date:'dd.MM.yyyy'}}</p>
@@ -12,5 +9,8 @@
     <p class="svar-oppsummering-sporsmal" cmstekster="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad"/>
     <p class="svar-oppsummering">{{af.permitteringProsent}} %</p>
 
+    <div data-ng-if="permitteringProsent < 50">
+        <p  class="svar-oppsummering" cmstekster="arbeidsforhold.sluttaarsak.permittert.forlite"/>
+    </div>
 
 </div>

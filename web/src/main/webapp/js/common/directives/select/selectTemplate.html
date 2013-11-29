@@ -1,0 +1,21 @@
+<div class="nav-select form-linje" data-ng-class="{open: selectOpen, feil: harFeil()}">
+    <label>
+        <span data-cmstekster="{{ label }}"/>
+
+        <div class="select-input clearfix">
+            <div class="pil" data-ng-click="apneSelectboks($event)"></div>
+            <input type="text" data-ng-model="inputVerdi" data-ui-keyup="{enter: 'enter($event)', esc: 'escape()'}"
+                   data-ui-keydown="{up: 'navigateUp($event)', down: 'navigateDown($event)', tab: 'tab($event)'}"
+                   data-ng-required="erRequired" data-error-messages="{'{{ requiredStandardFeilmelding }}'}"
+                   data-ng-click="klikk($event)">
+        </div>
+        <span data-ng-if="harRequiredFeil()" class="melding mini" data-cmstekster="{{ requiredFeilmelding }}"/>
+        <span data-ng-if="inneholderIkkeSkrevetTekst()" class="melding mini"
+              data-cmstekster="{{ ugyldigFeilmelding }}"/>
+    </label>
+    <ul data-ng-show="skalViseListen()">
+        <li data-bindonce data-ng-repeat="option in vistListeFiltrert"
+            data-ng-click="valgtElement($event, option.value)" data-value="{{ option.value }}" data-ng-bind-html="option.displayText"
+            data-ng-class="{harFokus: harFokus(option.value)}"/>
+    </ul>
+</div>

@@ -1,7 +1,7 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
     <div ng-form="arbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl"
          data-ng-submit="validerArbeidsforhold(arbeidsforholdForm)">
-        <div form-errors/>
+        <div form-errors></div>
         <p class="arbeidsforhold-informasjonstekst" cmstekster="arbeidsforhold.informasjon"/>
 
         <div data-ng-repeat="af in arbeidsforhold" data-ng-class="{'last': $last}">
@@ -41,38 +41,40 @@
                             <input name="arbeidsgivernavn" required
                                    error-messages="'arbeidsforhold.arbeidsgiver.navn.feilmelding'" type="text"
                                    data-ng-model="af.navn"
-                                   data-blur-validate>
+                                   data-blur-validate required>
                             <span class="melding"/>
                         </label>
                     </div>
 
-                    <div class="form-linje">
-                        <label>
-                            <span cmstekster="arbeidsforhold.arbeidsgiver.land"/>
-                            <select name="arbeidsgiverland" data-ng-model="af.land"
-                                    data-ng-options="item for item in landService.result"
-                                    error-messages="'arbeidsforhold.arbeidsgiver.land.feilmelding'" required>
-                                <option value="" cmstekster="arbeidsforhold.arbeidsgiver.landDefault"/>
-                            </select>
-                            <span class="melding"/>
-                        </label>
+                    <div>
+                            <div nav-select
+                                 name="arbeidsgiverland"
+                                 data-label="arbeidsforhold.arbeidsgiver.land"
+                                 data-ng-model="af.land"
+                                 data-options="landService.result"
+                                 data-default-value="arbeidsforhold.arbeidsgiver.landDefault"
+                                 data-er-required="true"
+                                 data-required-feilmelding="arbeidsforhold.arbeidsgiver.land.feilmelding"
+                                 data-ugyldig-feilmelding="arbeidsforhold.arbeidsgiver.land.ugyldig.feilmelding"/>
+
+                            <!--<select name="arbeidsgiverland"-->
+                                    <!--data-ng-model="af.land"-->
+                                    <!--data-ui-select2="{ allowClear: false }"-->
+                                    <!--error-messages="'arbeidsforhold.arbeidsgiver.land.feilmelding'"-->
+                                    <!--data-ng-required="true"-->
+                                    <!--data-placeholder="Velg land">-->
+                                <!--&lt;!&ndash;<option value="" cmstekster="arbeidsforhold.arbeidsgiver.landDefault"/>&ndash;&gt;-->
+                                <!--<option data-ng-repeat="item in landService.result" value="{{ item }}">{{ item }}</option>-->
+                            <!--</select>-->
                     </div>
 
 
                     <div class="varighet">
-                        <div>
-                            <label cmstekster="arbeidsforhold.arbeidsgiver.varighetFra"/>
-                            <input type="text" name="varighetFra" ui-date ui-date-format ng-model="af.varighetFra"
-                                   data-ng-change="validateTilFraDato(af)"
-                                   error-messages="'arbeidsforhold.arbeidsgiver.varighetFra.feilmelding'" required/>
-                        </div>
-                        <div>
-                            <label cmstekster="arbeidsforhold.arbeidsgiver.varighetTil"/>
-                            <span data-ng-show="datoError" style="color:red"
-                                  cmstekster="arbeidsforhold.error.datoTilFra"/>
-                            <input type="text" name="varighetTil" ui-date ui-date-format ng-model="af.varighetTil"
-                                   data-ng-change="validateTilFraDato(af)"
-                                   error-messages="'arbeidsforhold.arbeidsgiver.varighetTil.feilmelding'" required/>
+                        <div data-nav-dato-intervall
+                             data-fra-dato="af.varighetFra"
+                             data-til-dato="af.varighetTil"
+                             data-label="arbeidsforhold.arbeidsgiver.varighet"
+                             data-er-required="true">
                         </div>
                     </div>
 

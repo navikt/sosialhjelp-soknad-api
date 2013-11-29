@@ -23,16 +23,16 @@ describe('utility funksjoner -', function () {
             expect(array.contains(4)).toEqual(false);
         });
 
-        it('skal returnere true dersom ett objekt i ett array har verdien 1', function () {
-            expect(objArray.containsObjectWithValue(1)).toBe(true);
+        it('skal returnere at indeksen i arrayet til objektet er 0', function () {
+            expect(objArray.indexByValue(1)).toBe(0);
         });
 
-        it('skal returnere true dersom ett objekt i ett array har verdien b', function () {
-            expect(objArray.containsObjectWithValue('b')).toBe(true);
+        it('skal returnere at indeksen i arrayet til objektet er 0', function () {
+            expect(objArray.indexByValue('b')).toBe(0);
         });
 
-        it('skal returnere false dersom ingen objekter i ett array har gitt verdi', function () {
-            expect(objArray.containsObjectWithValue(2)).toBe(false);
+        it('skal returnere -1 dersom ingen objekter i arrayet har gitt verdi', function () {
+            expect(objArray.indexByValue(2)).toBe(-1);
         });
     });
 
@@ -101,19 +101,64 @@ describe('utility funksjoner -', function () {
         });
     });
 
-        describe('capitalize string', function () {
-            it('skal gjøre første bokstaven i en string stor', function () {
-                var str = "tekst";
-                var expectedStr = "Tekst";
-                expect(capitalizeFirstLetter(str)).toBe(expectedStr);
-            });
-
-            it('skal ikke endre tekst med stor forbokstav', function () {
-                var str = "Tekst";
-                var expectedStr = "Tekst";
-                expect(capitalizeFirstLetter(str)).toBe(expectedStr);
-            });
+    describe('capitalize string', function () {
+        it('skal gjøre første bokstaven i en string stor', function () {
+            var str = "tekst";
+            var expectedStr = "Tekst";
+            expect(capitalizeFirstLetter(str)).toBe(expectedStr);
         });
+
+        it('skal ikke endre tekst med stor forbokstav', function () {
+            var str = "Tekst";
+            var expectedStr = "Tekst";
+            expect(capitalizeFirstLetter(str)).toBe(expectedStr);
+        });
+    });
+
+    describe('konverter dato representert som string til date-objekt', function () {
+        it('skal få returverdi', function () {
+            var dato = konverterStringFraNorskDatoformatTilDateObjekt("");
+            expect(dato).toBeDefined();
+        });
+
+        it('skal få tom string dersom datostringen er på galt format', function () {
+            var dato = konverterStringFraNorskDatoformatTilDateObjekt("");
+            expect(dato).toBe("");
+        });
+
+        it('skal få tilbake dato-objekt dersom datostringen er på rett format', function () {
+            var dato = konverterStringFraNorskDatoformatTilDateObjekt("01.01.2013");
+            expect(dato.getDate()).toBeDefined();
+        });
+
+        it('skal få tilbake dato-objekt med rett dag', function () {
+            var forventetDag = 1;
+            var dato = konverterStringFraNorskDatoformatTilDateObjekt("01.01.2013");
+            expect(dato.getDate()).toBe(forventetDag);
+        });
+
+        it('skal få tilbake dato-objekt med rett måned', function () {
+            var forventetManed = 0;
+            var dato = konverterStringFraNorskDatoformatTilDateObjekt("01.01.2013");
+            expect(dato.getMonth()).toBe(forventetManed);
+        });
+
+        it('skal få tilbake dato-objekt med rett år', function () {
+            var forventetAr = 2013;
+            var dato = konverterStringFraNorskDatoformatTilDateObjekt("01.01.2013");
+            expect(dato.getFullYear()).toBe(forventetAr);
+        });
+
+        it('skal få tilbake dato-objekt med rett dato satt', function () {
+            var forventetDag = 10;
+            var forventetManed = 4;
+            var forventetAr = 2011;
+            var dato = konverterStringFraNorskDatoformatTilDateObjekt("10.05.2011");
+            expect(dato.getDate()).toBe(forventetDag);
+            expect(dato.getMonth()).toBe(forventetManed);
+            expect(dato.getFullYear()).toBe(forventetAr);
+        });
+    });
 });
 
 

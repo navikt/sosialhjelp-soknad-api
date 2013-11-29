@@ -24,7 +24,7 @@ angular.module('app.brukerdata', ['app.services'])
     })
 
 
-    .controller('PersonaliaCtrl', ["$scope", "$routeParams", "tpsService", "data", function ($scope, $routeParams, tpsService, data) {
+    .controller('PersonaliaCtrl', ["$scope", "$routeParams", "tpsService", "cms", function ($scope, $routeParams, tpsService, cms) {
         $scope.personaliaData = {};
 
         tpsService.get({soknadId: $routeParams.soknadId}).$promise.then(function (result) {
@@ -112,13 +112,13 @@ angular.module('app.brukerdata', ['app.services'])
                 var type = $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].type;
                 switch (type) {
                     case "MIDLERTIDIG_POSTADRESSE_NORGE":
-                        tekst = data.tekster["personalia.midlertidig_adresse_norge"];
+                        tekst = cms.tekster["personalia.midlertidig_adresse_norge"];
                         break;
                     case "MIDLERTIDIG_POSTADRESSE_UTLAND":
-                        tekst = data.tekster["personalia.midlertidig_adresse_utland"];
+                        tekst = cms.tekster["personalia.midlertidig_adresse_utland"];
                         break;
                     default :
-                        tekst = data.tekster["personalia.ingenadresse"];
+                        tekst = cms.tekster["personalia.ingenadresse"];
                 }
                 return tekst;
             }
@@ -194,9 +194,10 @@ angular.module('app.brukerdata', ['app.services'])
     })
 
     .controller('AvbrytCtrl', function ($scope, $routeParams, $location, soknadService) {
-        $scope.data = {
+        $scope.fremdriftsindikator = {
             laster: false
-        };
+        }
+        $scope.data = {}
         soknadService.get({param: $routeParams.soknadId}).$promise.then(function (result) {
             var fakta = $.map(result.fakta, function (element) {
                 return element.type;

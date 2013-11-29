@@ -20,55 +20,16 @@ describe('GrunnlagsdataController', function() {
 //            respond({"alder":true, "borIUtland":true });
 
 	}));
-
-	describe('fraMindreEnnTil', function(){
-		it('skal returnere true for fra-dato 10.10.2010 og til-dato 10.10.2011', function(){
-			var fra = new Date(2010, 10, 10);
-			var til = new Date(2011, 10, 10);
-			expect(fraMindreEnnTil(fra,til)).toEqual(true);
-		});
-
-		it('skal returnere false for fra-dato 10.10.2010 og til-dato 10.10.2010', function(){
-			var fra = new Date(2010, 10, 10);
-			var til = new Date(2010, 10, 10);
-			expect(fraMindreEnnTil(fra,til)).toEqual(false);
-		});
-
-		it('skal returnere true for fra-dato 10.10.2010 og til-dato 10.11.2010', function(){
-			var fra = new Date(2010, 10, 10);
-			var til = new Date(2011, 11, 10);
-			expect(fraMindreEnnTil(fra,til)).toEqual(true);
-		});
-
-        it('skal returnere false for fra-dato 10.11.2010 og til-dato 10.11.2010', function(){
-			var fra = new Date(2010, 11, 10);
-			var til = new Date(2010, 11, 10);
-			expect(fraMindreEnnTil(fra,til)).toEqual(false);
-		});
-
-		it('skal returnere true for fra-dato 10.10.2010 og til-dato 11.10.2010', function(){
-			var fra = new Date(2010, 10, 10);
-			var til = new Date(2010, 10, 11);
-			expect(fraMindreEnnTil(fra,til)).toEqual(true);
-		});
-
-		it('skal returnere false for fra-dato 11.10.2010 og til-dato 11.10.2010', function(){
-			var fra = new Date(2010, 10, 11);
-			var til = new Date(2010, 10, 11);
-			expect(fraMindreEnnTil(fra,til)).toEqual(false);
-		});
-	});
 });
 
 describe('DagpengerControllere', function() {
     var scope, ctrl, form;
 
-    beforeEach(
-        module('app.services', 'app.controllers', 'nav.feilmeldinger')
-    );
+    beforeEach(module('app.services', 'app.controllers', 'nav.feilmeldinger'));
 
-     beforeEach(module(function($provide) {
-         $provide.value("data", {});
+    beforeEach(module(function($provide) {
+        $provide.value("data", {alder:{'alder':61}});
+        $provide.value("cms", {});
     }));
 
     beforeEach(inject(function ( $rootScope, $controller, $compile, $httpBackend) {
@@ -84,6 +45,7 @@ describe('DagpengerControllere', function() {
            //expected call..
         };
 
+
         scope.soknadData = {
             fakta: {}
         }
@@ -93,6 +55,10 @@ describe('DagpengerControllere', function() {
           +      '<form-errors></form-errors>'
           +  '</form>'
         );
+
+        form.$setValidity = function(key, value) {
+            //expected call..
+        }
         $compile(form)(scope);
 
         
@@ -142,14 +108,34 @@ describe('DagpengerControllere', function() {
         });
     })
 
-    describe('ReellarbeidssokerCtrl', function() {
+    describe('ReellarbeidssokerCtrl', function() {        
         beforeEach(inject(function ($controller) {
             ctrl = $controller('ReellarbeidssokerCtrl', {
                 $scope: scope
             });
         }));
 
+        it('skal returnere true for person over 59 aar', function(){
+            expect(scope.erOver59Aar()).toBe(true);
+        });
+
+        it('skal returnere false for person som er 59 aar', function(){
+            scope.alder =59;
+            expect(scope.erOver59Aar()).toBe(false);
+        });
+
+        it('skal returnere true for person under 60 aar', function(){
+            scope.alder =59;
+            expect(scope.erUnder60Aar()).toBe(true);
+        });
+
+        it('skal returnere false for person over 60 aar', function(){
+            expect(scope.erUnder60Aar()).toBe(false);
+        });
+
         it('skal kalle metode for å validere form', function() {
+            scope.soknadData.fakta.villigdeltid = true;
+            scope.soknadData.fakta.villigpendle = true;
             expect(scope.validateFormFunctionBleKalt).toEqual(false);
             scope.validerReellarbeidssoker(form);
             expect(scope.validateFormFunctionBleKalt).toEqual(true);
@@ -157,13 +143,13 @@ describe('DagpengerControllere', function() {
     })
 
     describe('YtelserCtrl', function() {
-        var nokler = ['nokkel1', 'nokkel2'];
-
         beforeEach(inject(function ($controller) {
             ctrl = $controller('YtelserCtrl', {
                 $scope: scope
             });
         }));
+
+        var nokler = ['nokkel1', 'nokkel2'];
 
         it('skal returnere false for avhukede checkbokser dersom ingen har en satt verdi i modellen', function() {
             expect(scope.erCheckboxerAvhuket(nokler)).toEqual(false);

@@ -1,321 +1,80 @@
 package no.nav.sbl.dialogarena.person;
+
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBostedsadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLEPost;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskKommunikasjonskanal;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGateadresse;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGyldighetsperiode;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLLandkoder;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMatrikkeladresse;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresse;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseNorge;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadresse;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostboksadresseNorsk;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostnummer;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLStrukturertAdresse;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLUstrukturertAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
-import org.joda.time.DateTime;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
-
-import static no.nav.sbl.dialogarena.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
 
 /**
  * Map from TPS data format to internal domain model
- *
  */
 public class PersonTransform {
 
-	private Kodeverk kodeverk;
-	
-	public Person mapToPerson(Long soknadId, XMLHentKontaktinformasjonOgPreferanserResponse response, Kodeverk kodeverk) {
-		this.kodeverk = kodeverk;
-		if (response == null) {
-        	return new Person(); 
+    public Person mapToPerson(Long soknadId, XMLHentKontaktinformasjonOgPreferanserResponse response, Kodeverk kodeverk) {
+        
+        if (response == null) {
+            return new Person();
         }
-		XMLBruker soapPerson = (XMLBruker) response.getPerson();
-
-        return new Person(soknadId, finnFnr(soapPerson), finnForNavn(soapPerson), finnMellomNavn(soapPerson), finnEtterNavn(soapPerson),
-        		finnEpost(soapPerson), finnGjeldendeAdressetype(soapPerson), finnAdresser(soknadId, soapPerson));
+        XMLBruker soapPerson = (XMLBruker) response.getPerson();
+        Person person = new Person(
+                soknadId,
+                finnFnr(soapPerson),
+                finnFornavn(soapPerson),
+                finnMellomNavn(soapPerson),
+                finnEtterNavn(soapPerson),
+                finnGjeldendeAdressetype(soapPerson),
+                finnAdresser(soknadId, soapPerson, kodeverk));
+        person.setEpost(soknadId, finnEpost(soapPerson));
+        
+        return person;
     }
 
-	private String finnEpost(XMLBruker soapPerson) {
-        String epost = null;
-        List<XMLElektroniskKommunikasjonskanal> elkanaler = soapPerson
-                .getElektroniskKommunikasjonskanal();
-        for (XMLElektroniskKommunikasjonskanal kanal : elkanaler) {
-            XMLElektroniskAdresse adr = kanal.getElektroniskAdresse();
-            if (adr instanceof XMLEPost) {
-                epost = ((XMLEPost) adr).getIdentifikator();
+    private String finnEpost(XMLBruker soapPerson) {
+        for (XMLElektroniskKommunikasjonskanal kanal : soapPerson.getElektroniskKommunikasjonskanal()) {
+            if (kanal.getElektroniskAdresse() instanceof XMLEPost) {
+                return ((XMLEPost) kanal.getElektroniskAdresse()).getIdentifikator();
             }
         }
-        return epost;
-    }
-	
-	private String finnGjeldendeAdressetype(XMLBruker soapPerson) {
-		if (soapPerson.getGjeldendePostadresseType() != null) {
-			return soapPerson.getGjeldendePostadresseType().getValue();
-		}
-		return "";
-	}
-
-	private List<Adresse> finnAdresser(long soknadId, XMLBruker soapPerson) {
-		List<Adresse> result = new ArrayList<Adresse>();
-    	XMLBostedsadresse bostedsadresse = soapPerson.getBostedsadresse();
-    	if (bostedsadresse != null) {
-			XMLStrukturertAdresse strukturertAdresse = bostedsadresse.getStrukturertAdresse();
-			
-			if(strukturertAdresse instanceof XMLGateadresse) {
-				XMLGateadresse xmlGateAdresse = (XMLGateadresse)strukturertAdresse;
-				Adresse personAdresse = hentBostedsAdresse(soknadId, xmlGateAdresse);
-				result.add(personAdresse);
-			}
-    	}
-    	XMLMidlertidigPostadresse midlertidigPostadresse = soapPerson.getMidlertidigPostadresse();
-    	if (midlertidigPostadresse != null) {
-    		if (midlertidigPostadresse instanceof XMLMidlertidigPostadresseNorge) {
-    			XMLMidlertidigPostadresseNorge xmlMidlPostAdrNorge = (XMLMidlertidigPostadresseNorge) midlertidigPostadresse;
-    			
-    			DateTime gyldigFra = null;
-    			DateTime gyldigTil = null;
-    			XMLGyldighetsperiode postleveringsPeriode = xmlMidlPostAdrNorge.getPostleveringsPeriode();
-    			if (postleveringsPeriode != null) {
-    				gyldigFra = postleveringsPeriode.getFom();
-    				gyldigTil = postleveringsPeriode.getTom();
-    			}
-    			
-    			XMLStrukturertAdresse strukturertAdresse = xmlMidlPostAdrNorge.getStrukturertAdresse();
-    			if (strukturertAdresse instanceof XMLGateadresse) {
-    				XMLGateadresse xmlGateAdresse = (XMLGateadresse) strukturertAdresse;
-    				
-    				Adresse midlertidigAdresse = getMidlertidigPostadresseNorge(soknadId, gyldigFra, gyldigTil, xmlGateAdresse);
-    				result.add(midlertidigAdresse);
-    			} else if (strukturertAdresse instanceof XMLPostboksadresseNorsk) {
-    				XMLPostboksadresseNorsk xmlPostboksAdresse = (XMLPostboksadresseNorsk) strukturertAdresse;
-    				Adresse midlertidigPostboksAdresse = getMidlertidigPostboksadresseNorge(soknadId, gyldigFra, gyldigTil, xmlPostboksAdresse);
-    				result.add(midlertidigPostboksAdresse);
-    			} else if (strukturertAdresse instanceof XMLMatrikkeladresse) {
-    				XMLMatrikkeladresse xmlMatrikkelAdresse = (XMLMatrikkeladresse) strukturertAdresse;
-    				Adresse midlertidigOmrodeAdresse = getMidlertidigOmrodeAdresse(soknadId,gyldigFra,gyldigTil,xmlMatrikkelAdresse);
-    				result.add(midlertidigOmrodeAdresse);
-    			}
-    		}
-    		if (midlertidigPostadresse instanceof XMLMidlertidigPostadresseUtland) {
-    			Adresse midlertidigAdresse = new Adresse(soknadId, Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND);
-    			XMLMidlertidigPostadresseUtland xmlMidlAdrUtland = (XMLMidlertidigPostadresseUtland) midlertidigPostadresse;
-    			getMidlertidigPostadresseUtland(midlertidigAdresse,	xmlMidlAdrUtland);
-    			result.add(midlertidigAdresse);
-    		}
-    	}
-    	XMLPostadresse postadresse = soapPerson.getPostadresse();
-        finnPostAdresse(soknadId, result, postadresse);
-        return result;
-	}
-
-    private void finnPostAdresse(long soknadId, List<Adresse> result, XMLPostadresse postadresse) {
-        if (postadresse != null) {
-            XMLPostadresse xmlPostadresse = postadresse;
-            XMLUstrukturertAdresse ustrukturertAdresse = xmlPostadresse.getUstrukturertAdresse();
-            if (ustrukturertAdresse != null) {
-                List<String> adresselinjer = hentAdresseLinjer(ustrukturertAdresse);
-                
-                Adresse folkeregistrertUtenlandskAdresse;
-                if (ustrukturertAdresse.getLandkode() != null && ustrukturertAdresse.getLandkode().getValue().equals("NOR")) {
-                	folkeregistrertUtenlandskAdresse = new Adresse(soknadId, Adressetype.POSTADRESSE);
-                } else {
-                	folkeregistrertUtenlandskAdresse = new Adresse(soknadId, Adressetype.UTENLANDSK_ADRESSE);
-                }
-                folkeregistrertUtenlandskAdresse.setAdresselinjer(adresselinjer);
-                XMLLandkoder xmlLandkode = ustrukturertAdresse.getLandkode();
-                if (xmlLandkode != null) {
-                    String landkode = xmlLandkode.getValue();
-                    folkeregistrertUtenlandskAdresse.setLand(kodeverk.getLand(landkode));
-                }
-                result.add(folkeregistrertUtenlandskAdresse);
-            }
-        }
+        return null;
     }
 
-    private void getMidlertidigPostadresseUtland(Adresse midlertidigAdresse,
-			XMLMidlertidigPostadresseUtland xmlMidlAdrUtland) {
-		XMLUstrukturertAdresse ustrukturertAdresse = xmlMidlAdrUtland.getUstrukturertAdresse();
-		if (ustrukturertAdresse != null) {
-			List<String> adresselinjer = hentAdresseLinjer(ustrukturertAdresse);
-			midlertidigAdresse.setAdresselinjer(adresselinjer);
-			XMLLandkoder xmlLandkode = ustrukturertAdresse.getLandkode();
-			if(xmlLandkode != null) {
-				String landkode = xmlLandkode.getValue();
-				midlertidigAdresse.setLand(kodeverk.getLand(landkode));
-			}
-		}
-		DateTime gyldigFra = null;
-		DateTime gyldigTil = null;
-		XMLGyldighetsperiode postleveringsPeriode = xmlMidlAdrUtland.getPostleveringsPeriode();
-		if (postleveringsPeriode != null) {
-			gyldigFra = postleveringsPeriode.getFom();
-			gyldigTil = postleveringsPeriode.getTom();
-		}
-		midlertidigAdresse.setGyldigfra(gyldigFra);
-		midlertidigAdresse.setGyldigtil(gyldigTil);
-	}
-
-	private List<String> hentAdresseLinjer(XMLUstrukturertAdresse ustrukturertAdresse) {
-		ArrayList<String> adresselinjer = new ArrayList<String>();
-		if (ustrukturertAdresse.getAdresselinje1() != null) {
-			adresselinjer.add(ustrukturertAdresse.getAdresselinje1());
-		}
-		if (ustrukturertAdresse.getAdresselinje2() != null) {
-			adresselinjer.add(ustrukturertAdresse.getAdresselinje2());
-		}
-		if (ustrukturertAdresse.getAdresselinje3() != null) {
-			adresselinjer.add(ustrukturertAdresse.getAdresselinje3());
-		}
-		if (ustrukturertAdresse.getAdresselinje4() != null) {
-			adresselinjer.add(ustrukturertAdresse.getAdresselinje4());
-		}
-		return adresselinjer;
-	}
-
-	private Adresse getMidlertidigPostboksadresseNorge(long soknadId, DateTime gyldigFra, DateTime gyldigTil, XMLPostboksadresseNorsk xmlPostboksAdresse) {
-		Adresse midlertidigPostboksAdresse = new Adresse(soknadId, MIDLERTIDIG_POSTADRESSE_NORGE);
-		midlertidigPostboksAdresse.setGyldigfra(gyldigFra);
-		midlertidigPostboksAdresse.setGyldigtil(gyldigTil);
-		String postnummerString = getPostnummerString(xmlPostboksAdresse);
-		String poststed = kodeverk.getPoststed(postnummerString);
-		midlertidigPostboksAdresse.setAdresseeier(xmlPostboksAdresse.getTilleggsadresse());
-		midlertidigPostboksAdresse.setPostnummer(postnummerString);
-		midlertidigPostboksAdresse.setPoststed(poststed);
-		midlertidigPostboksAdresse.setPostboksnavn(xmlPostboksAdresse.getPostboksanlegg());
-		midlertidigPostboksAdresse.setPostboksnummer(xmlPostboksAdresse.getPostboksnummer());
-		return midlertidigPostboksAdresse;
-	}
-	
-   private Adresse getMidlertidigOmrodeAdresse(long soknadId, DateTime gyldigFra, DateTime gyldigTil, XMLMatrikkeladresse xmlMatrikkelAdresse) {
-	    Adresse midlertidigOmrodeAdresse = new Adresse(soknadId, MIDLERTIDIG_POSTADRESSE_NORGE);
-		midlertidigOmrodeAdresse.setGyldigfra(gyldigFra);
-		midlertidigOmrodeAdresse.setGyldigtil(gyldigTil);
-		String postnummerString = getPostnummerString(xmlMatrikkelAdresse);
-		String poststed = kodeverk.getPoststed(postnummerString);
-        midlertidigOmrodeAdresse.setAdresseeier(xmlMatrikkelAdresse.getTilleggsadresse());
-		midlertidigOmrodeAdresse.setPostnummer(postnummerString);
-		midlertidigOmrodeAdresse.setPoststed(poststed);
-		midlertidigOmrodeAdresse.setEiendomsnavn(xmlMatrikkelAdresse.getEiendomsnavn());
-		return midlertidigOmrodeAdresse;
-	}
-
-	private Adresse getMidlertidigPostadresseNorge(long soknadId, DateTime gyldigFra, DateTime gyldigTil, XMLGateadresse xmlGateAdresse) {
-		String gatenummerString = getHusnummer(xmlGateAdresse);
-		String husbokstavString = getHusbokstav(xmlGateAdresse);
-		String postnummerString = getPostnummerString(xmlGateAdresse);
-		String poststed = kodeverk.getPoststed(postnummerString);
-		Adresse midlertidigAdresse = new Adresse(soknadId, MIDLERTIDIG_POSTADRESSE_NORGE);
-		midlertidigAdresse.setGyldigfra(gyldigFra);
-		midlertidigAdresse.setGyldigtil(gyldigTil);
-		midlertidigAdresse.setAdresseeier(xmlGateAdresse.getTilleggsadresse());
-		midlertidigAdresse.setGatenavn(xmlGateAdresse.getGatenavn());
-		midlertidigAdresse.setHusnummer(gatenummerString);
-		midlertidigAdresse.setHusbokstav(husbokstavString);
-		midlertidigAdresse.setPostnummer(postnummerString);
-		midlertidigAdresse.setPoststed(poststed);
-		midlertidigAdresse.setLand(getLandkode(xmlGateAdresse));
-		return midlertidigAdresse;
-	}
-
-	private Adresse hentBostedsAdresse(long soknadId, XMLGateadresse xmlGateAdresse) {
-		String gatenummerString = getHusnummer(xmlGateAdresse);
-		String husbokstavString = getHusbokstav(xmlGateAdresse);
-		
-		String postnummerString = getPostnummerString(xmlGateAdresse);
-		String poststed = kodeverk.getPoststed(postnummerString);
-		Adresse personAdresse = new Adresse(soknadId, Adressetype.BOSTEDSADRESSE);
-		personAdresse.setGatenavn(xmlGateAdresse.getGatenavn());
-		personAdresse.setHusnummer(gatenummerString);
-		personAdresse.setHusbokstav(husbokstavString);
-		personAdresse.setPostnummer(postnummerString);
-		personAdresse.setPoststed(poststed);
-		personAdresse.setLand(getLandkode(xmlGateAdresse));
-		return personAdresse;
-	}
-
-	private String getLandkode(XMLGateadresse xmlGateAdresse) {
-		if (xmlGateAdresse.getLandkode() != null) {
-			return xmlGateAdresse.getLandkode().getValue(); 
-		} else {
-			return "";
-		}
-	}
-
-	private String getPostnummerString(XMLGateadresse xmlGateAdresse) {
-		XMLPostnummer postnummer = xmlGateAdresse.getPoststed();
-		if (postnummer != null) {
-			return  postnummer.getValue();
-		}
-		return "";
-	}
-	private String getPostnummerString(XMLPostboksadresseNorsk xmlPostboksAdresse) {
-		XMLPostnummer postnummer = xmlPostboksAdresse.getPoststed();
-		if (postnummer != null) {
-			return  postnummer.getValue();
-		}
-		return "";
-	}
-	
-	private String getPostnummerString(XMLMatrikkeladresse xmlMatrikkelAdresse) {
-		XMLPostnummer postnummer = xmlMatrikkelAdresse.getPoststed();
-		if (postnummer != null) {
-			return  postnummer.getValue();
-		}
-		return "";
-	}
-
-	private String getHusnummer(XMLGateadresse xmlGateAdresse) {
-		BigInteger gatenummer = xmlGateAdresse.getHusnummer();
-		if (gatenummer != null) {
-			return gatenummer.toString();
-		}
-		return "";
-	}
-
-	private String getHusbokstav(XMLGateadresse xmlGateAdresse) {
-		String husbokstav = xmlGateAdresse.getHusbokstav();
-		if (husbokstav != null) {
-			return husbokstav;
-		}
-		return "";
-	}
-	
-	private String finnFnr(XMLBruker soapPerson) {
-    	return soapPerson.getIdent().getIdent();
-	}
-
-	private String finnForNavn(XMLBruker soapPerson) {
-		if (soapPerson.getPersonnavn() != null && soapPerson.getPersonnavn().getFornavn() != null) {
-			return soapPerson.getPersonnavn().getFornavn();
-		} else {
-			return "";
-		}
+    private String finnGjeldendeAdressetype(XMLBruker soapPerson) {
+        return soapPerson.getGjeldendePostadresseType() != null ? soapPerson.getGjeldendePostadresseType().getValue() : "";
     }
 
-	private String finnMellomNavn(XMLBruker soapPerson) {
-		if (soapPerson.getPersonnavn() != null && soapPerson.getPersonnavn().getMellomnavn() != null) {
-			return soapPerson.getPersonnavn().getMellomnavn();
-		} else {
-			return "";
-		}
-	}
+    private List<Adresse> finnAdresser(long soknadId, XMLBruker soapPerson, Kodeverk kodeverk) {
+        return new AdresseTransform().mapAdresser(soknadId, soapPerson, kodeverk);
+    }
 
-	private String finnEtterNavn(XMLBruker soapPerson) {
-    	if (soapPerson.getPersonnavn() != null && soapPerson.getPersonnavn().getEtternavn() != null) {
-			return soapPerson.getPersonnavn().getEtternavn();
-		} else {
-			return "";
-		}
-	}
+    private String finnFnr(XMLBruker soapPerson) {
+        return soapPerson.getIdent().getIdent();
+    }
+
+    private String finnFornavn(XMLBruker soapPerson) {
+        return fornavnExists(soapPerson) ? soapPerson.getPersonnavn().getFornavn() : "";
+    }
+
+    private boolean fornavnExists(XMLBruker soapPerson) {
+        return soapPerson.getPersonnavn() != null && soapPerson.getPersonnavn().getFornavn() != null;
+    }
+
+    private String finnMellomNavn(XMLBruker soapPerson) {
+        return mellomnavnExists(soapPerson) ? soapPerson.getPersonnavn().getMellomnavn() : "";
+    }
+
+    private boolean mellomnavnExists(XMLBruker soapPerson) {
+        return soapPerson.getPersonnavn() != null && soapPerson.getPersonnavn().getMellomnavn() != null;
+    }
+
+    private String finnEtterNavn(XMLBruker soapPerson) {
+        return etternavnExists(soapPerson) ? soapPerson.getPersonnavn().getEtternavn() : "";
+    }
+
+    private boolean etternavnExists(XMLBruker soapPerson) {
+        return soapPerson.getPersonnavn() != null && soapPerson.getPersonnavn().getEtternavn() != null;
+    }
 
 }
