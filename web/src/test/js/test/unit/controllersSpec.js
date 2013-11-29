@@ -20,44 +20,6 @@ describe('GrunnlagsdataController', function() {
 //            respond({"alder":true, "borIUtland":true });
 
 	}));
-
-	describe('fraMindreEnnTil', function(){
-		it('skal returnere true for fra-dato 10.10.2010 og til-dato 10.10.2011', function(){
-			var fra = new Date(2010, 10, 10);
-			var til = new Date(2011, 10, 10);
-			expect(fraMindreEnnTil(fra,til)).toEqual(true);
-		});
-
-		it('skal returnere false for fra-dato 10.10.2010 og til-dato 10.10.2010', function(){
-			var fra = new Date(2010, 10, 10);
-			var til = new Date(2010, 10, 10);
-			expect(fraMindreEnnTil(fra,til)).toEqual(false);
-		});
-
-		it('skal returnere true for fra-dato 10.10.2010 og til-dato 10.11.2010', function(){
-			var fra = new Date(2010, 10, 10);
-			var til = new Date(2011, 11, 10);
-			expect(fraMindreEnnTil(fra,til)).toEqual(true);
-		});
-
-        it('skal returnere false for fra-dato 10.11.2010 og til-dato 10.11.2010', function(){
-			var fra = new Date(2010, 11, 10);
-			var til = new Date(2010, 11, 10);
-			expect(fraMindreEnnTil(fra,til)).toEqual(false);
-		});
-
-		it('skal returnere true for fra-dato 10.10.2010 og til-dato 11.10.2010', function(){
-			var fra = new Date(2010, 10, 10);
-			var til = new Date(2010, 10, 11);
-			expect(fraMindreEnnTil(fra,til)).toEqual(true);
-		});
-
-		it('skal returnere false for fra-dato 11.10.2010 og til-dato 11.10.2010', function(){
-			var fra = new Date(2010, 10, 11);
-			var til = new Date(2010, 10, 11);
-			expect(fraMindreEnnTil(fra,til)).toEqual(false);
-		});
-	});
 });
 
 describe('DagpengerControllere', function() {
@@ -67,6 +29,7 @@ describe('DagpengerControllere', function() {
 
     beforeEach(module(function($provide) {
         $provide.value("data", {alder:{'alder':61}});
+        $provide.value("cms", {});
     }));
 
     beforeEach(inject(function ( $rootScope, $controller, $compile, $httpBackend) {
