@@ -4,7 +4,7 @@ angular.module('nav.forsettsenere',['nav.cmstekster'])
 
         $scope.forsettSenere = function(form) {
             $scope.validateForm(form.$invalid);
-            $scope.runValidation();
+            $scope.$broadcast("RUN_VALIDATION"+form.$name);
             if(form.$valid) {
                 var soknadId = $routeParams.soknadId;
                 if($scope.soknadData.fakta.epost) {
