@@ -202,8 +202,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Avhengigheter med scope runtime -->
-
         <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-log-filter</artifactId>
@@ -287,7 +285,6 @@
         </dependency>
 
         <!-- Avhengigheter med scope provided -->
-        
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
