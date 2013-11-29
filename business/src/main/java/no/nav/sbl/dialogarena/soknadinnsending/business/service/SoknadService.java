@@ -57,8 +57,9 @@ public class SoknadService implements SendSoknadService {
     }
 
     @Override
-    public Faktum lagreSystemSoknadsFelt(Long soknadId, Faktum faktum) {
-    	Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, faktum.getFaktumId(), faktum.getKey(), faktum.getValue(), SYSTEMREGISTRERT_FAKTUM));
+    public Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value) {
+    	Faktum faktum = repository.hentSystemFaktum(soknadId, key, SYSTEMREGISTRERT_FAKTUM);
+    	Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, faktum.getFaktumId(), key, value, SYSTEMREGISTRERT_FAKTUM));
     	return repository.hentFaktum(soknadId, faktumId);
     }
 

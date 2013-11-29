@@ -107,6 +107,22 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
 		String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and soknadbrukerdata_id = ?";
 		return getJdbcTemplate().queryForObject(sql, soknadDataRowMapper, soknadId, faktumId);
 	}
+	
+	/**
+	 * Brukes for å se om systemfaktumet er lagret tidligere. 
+	 * Returnerer faktumet dersom det eksisterer, Dersom ikke returneres et tomt faktum.
+	 */
+	@Override
+	public Faktum hentSystemFaktum(Long soknadId, String key, String type) {
+		String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and key = ? and type= ?";
+		List<Faktum> faktum = getJdbcTemplate().query(sql, soknadDataRowMapper, soknadId, key, type);
+		
+		if(faktum.size() > 0)  {
+			return faktum.get(0);
+		} else {
+			return new Faktum();
+		}
+	}
 
 	@Override
 	public Long lagreFaktum(long soknadId, Faktum faktum) {

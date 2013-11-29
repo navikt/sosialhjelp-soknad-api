@@ -30,5 +30,8 @@ public interface SoknadRepository {
 
 	Faktum hentFaktum(Long soknadId, Long faktumId);
 
+	Faktum hentSystemFaktum(Long soknadId, String key,
+			String systemregistrertFaktum);
+
 
 }

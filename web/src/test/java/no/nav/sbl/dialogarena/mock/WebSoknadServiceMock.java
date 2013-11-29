@@ -53,8 +53,9 @@ public class WebSoknadServiceMock implements SendSoknadService{
 		return repository.startSoknad(navSoknadId);
 	}
 
+
 	@Override
-	public Faktum lagreSystemSoknadsFelt(Long soknadId, Faktum faktum) {
+	public Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value) {
 		// TODO Auto-generated method stub
 		return null;
 	}
