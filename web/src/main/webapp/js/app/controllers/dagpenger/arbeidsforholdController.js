@@ -167,7 +167,7 @@ angular.module('nav.arbeidsforhold.controller', [])
                 }
             }
 
-            $scope.validateOppsigelsestidTilFraDato = function (af) {
+            $scope.validateOppsigelsestidTilFraDato = function (af,form) {
                 if (af && (af.sagtOppAvArbeidsgiverVarighetTil <= af.sagtOppAvArbeidsgiverVarighetFra)) {
                     af.sagtOppAvArbeidsgiverVarighetTil = '';
 
