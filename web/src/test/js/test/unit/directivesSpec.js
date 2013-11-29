@@ -107,7 +107,7 @@ describe('cmstekster-direktiv', function () {
     var scope, element;
 
     beforeEach(module('nav.cmstekster', function ($provide) {
-        $provide.value("data", {
+        $provide.value("cms", {
             tekster: {
                 "nokkel.label": "Label",
                 "nokkel.input": "Inputlabel"
