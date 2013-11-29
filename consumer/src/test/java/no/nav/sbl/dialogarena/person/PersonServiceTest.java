@@ -1,5 +1,11 @@
 package no.nav.sbl.dialogarena.person;
 
+import static org.mockito.Mockito.when;
+
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.List;
+
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
@@ -25,6 +31,7 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostnummer;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLUstrukturertAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
+
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,12 +39,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.mockito.Mockito.when;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class PersonServiceTest {
@@ -64,8 +65,8 @@ public class PersonServiceTest {
 	private static final String EN_ADRESSE_POSTNUMMER = "0560";
 	private static final String EN_ADRESSE_POSTSTED = "Oslo";
 	
-	private static final DateTime EN_ANNEN_ADRESSE_GYLDIG_FRA = new DateTime(2012, 10, 11, 14, 44);
-	private static final DateTime EN_ANNEN_ADRESSE_GYLDIG_TIL = new DateTime(2012, 11, 12, 15, 55);
+	private static final Long EN_ANNEN_ADRESSE_GYLDIG_FRA = new DateTime(2012, 10, 11, 14, 44).getMillis();
+	private static final Long EN_ANNEN_ADRESSE_GYLDIG_TIL = new DateTime(2012, 11, 12, 15, 55).getMillis();
 	private static final String EN_ANNEN_ADRESSE_GATE = "Vegvegen";
 	private static final String EN_ANNEN_ADRESSE_HUSNUMMER ="44";
 	private static final String EN_ANNEN_ADRESSE_HUSBOKSTAV = "D";
@@ -279,7 +280,7 @@ public class PersonServiceTest {
        	Assert.assertEquals(null, adresseliste.get(0).getPostboksNummer());
        	Assert.assertEquals(null, adresseliste.get(0).getPostnummer());
    		Assert.assertEquals(null, adresseliste.get(0).getGyldigFra());
-   		Assert.assertEquals(null, adresseliste.get(0).getGyldigTil());
+   		Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_TIL, adresseliste.get(0).getGyldigTil());
    	}
 
     @SuppressWarnings("unchecked")
@@ -323,7 +324,7 @@ public class PersonServiceTest {
 		Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_FRA, adresseliste.get(0).getGyldigFra());
 		Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_TIL, adresseliste.get(0).getGyldigTil());
 	}
-    
+	
 	@SuppressWarnings("unchecked")
 	@Test
 	public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed1Linje() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
@@ -429,7 +430,7 @@ public class PersonServiceTest {
 
 	private XMLMidlertidigPostadresseNorge generateMidlertidigAdresseNorge() {
 		XMLMidlertidigPostadresseNorge xmlMidlertidigNorge = new XMLMidlertidigPostadresseNorge();
-		XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode();
+		XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode(true);
 		xmlMidlertidigNorge.setPostleveringsPeriode(xmlGyldighetsperiode);
 		XMLGateadresse xmlgateadresse = new XMLGateadresse();
 		xmlgateadresse.setTilleggsadresse(EN_POSTBOKS_ADRESSEEIER);
@@ -448,9 +449,9 @@ public class PersonServiceTest {
 		
 		XMLPostboksadresseNorsk xmlpostboksadresse = new XMLPostboksadresseNorsk();
 		XMLPostnummer xmlpostnummer = new XMLPostnummer();
+		XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode(medData);
+		xmlMidlertidigPostboksNorge.setPostleveringsPeriode(xmlGyldighetsperiode);
 		if(medData) {
-			XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode();
-			xmlMidlertidigPostboksNorge.setPostleveringsPeriode(xmlGyldighetsperiode);
 			xmlpostboksadresse.setTilleggsadresse(EN_POSTBOKS_ADRESSEEIER);
 			xmlpostboksadresse.setPostboksanlegg(ET_POSTBOKS_NAVN);
 			xmlpostboksadresse.setPostboksnummer(EN_POSTBOKS_NUMMER);
@@ -468,7 +469,7 @@ public class PersonServiceTest {
 		
 		XMLMatrikkeladresse xmlMatrikkelAdresse = new XMLMatrikkeladresse();
 		XMLPostnummer xmlpostnummer = new XMLPostnummer();
-		XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode();
+		XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode(true);
 		xmlMidlertidigPostadresse.setPostleveringsPeriode(xmlGyldighetsperiode);
 		
 		xmlpostnummer.setValue(EN_ADRESSE_POSTNUMMER);
@@ -479,10 +480,12 @@ public class PersonServiceTest {
 		return xmlMidlertidigPostadresse;
 	}
 
-	private XMLGyldighetsperiode generateGyldighetsperiode() {
+	private XMLGyldighetsperiode generateGyldighetsperiode(boolean harFraDato) {
 		XMLGyldighetsperiode xmlGyldighetsperiode = new XMLGyldighetsperiode();
-		xmlGyldighetsperiode.setFom(EN_ANNEN_ADRESSE_GYLDIG_FRA);
-		xmlGyldighetsperiode.setTom(EN_ANNEN_ADRESSE_GYLDIG_TIL);
+		if(harFraDato) {
+			xmlGyldighetsperiode.setFom(new DateTime(EN_ANNEN_ADRESSE_GYLDIG_FRA));
+		}
+		xmlGyldighetsperiode.setTom(new DateTime(EN_ANNEN_ADRESSE_GYLDIG_TIL));
 		return xmlGyldighetsperiode;
 	}
 
@@ -556,7 +559,7 @@ public class PersonServiceTest {
 	
 	private XMLMidlertidigPostadresseUtland generateMidlertidigAdresseUtlandet(int antallAdresseLinjer) {
 		XMLMidlertidigPostadresseUtland xmlMidlertidigAdresseUtland = new XMLMidlertidigPostadresseUtland();
-		XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode();
+		XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode(true);
 		xmlMidlertidigAdresseUtland.setPostleveringsPeriode(xmlGyldighetsperiode);
 		
 		XMLUstrukturertAdresse ustrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(antallAdresseLinjer);

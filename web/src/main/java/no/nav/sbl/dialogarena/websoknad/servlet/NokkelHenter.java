@@ -16,7 +16,7 @@ public class NokkelHenter {
         List<String> nokler = new ArrayList<>();
 
         String filnavn = format("/templatekeys/%s.txt", side);
-        try (   InputStream ressursStrom = NokkelHenter.class.getResourceAsStream(filnavn);
+        try (InputStream ressursStrom = NokkelHenter.class.getResourceAsStream(filnavn);
                 Scanner scanner = new Scanner(ressursStrom);) {
             while (scanner.hasNextLine()) {
                 nokler.add(scanner.nextLine());

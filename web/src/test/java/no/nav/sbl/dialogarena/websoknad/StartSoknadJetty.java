@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad;
 
-import no.nav.modig.core.context.JettySubjectHandler;
+import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.common.jetty.Jetty;
 import org.eclipse.jetty.jaas.JAASLoginService;
 
@@ -59,11 +59,13 @@ public final class StartSoknadJetty {
         setFrom("jetty-env.properties");
         setProperty("no.nav.sbl.dialogarena.sendsoknad.sslMock", "true");
         setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "false");
-        setProperty(SUBJECTHANDLER_KEY, JettySubjectHandler.class.getName());
+        //setProperty(SUBJECTHANDLER_KEY, JettySubjectHandler.class.getName());
+        setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
     }
 
     private void configureSecurity() {
-        setProperty("no.nav.modig.security.sts.url", "http://es-gw-t.test.internsone.local:9080/SecurityTokenServiceProvider/");
+        //setProperty("no.nav.modig.security.sts.url", "http://es-gw-t.test.internsone.local:9080/SecurityTokenServiceProvider/");
+        setProperty("no.nav.modig.security.sts.url", "http://localhost:8080/SecurityTokenServiceProvider/");
         setProperty("no.nav.modig.security.systemuser.username", "BD05");
         setProperty("no.nav.modig.security.systemuser.password", "test");
         setProperty("org.apache.cxf.stax.allowInsecureParser", "true");

@@ -1,6 +1,8 @@
 <p class="sluttaarsak-informasjon" cmstekster="arbeidsforhold.sluttaarsak.avskjediget.informasjon"/>
-<p class='spm' cmstekster="arbeidsforhold.sluttaarsak.avskjediget.sporsmal"/>
 
-<input type="text" name="avskjedigetFraDato" ui-date ui-date-format data-ng-model="af.avskjedigetFraDato" error-messages="'arbeidsforhold.sluttaarsak.avskjediget.feilmelding'"  required >
-
+<div data-nav-dato data-ng-model="af.avskjedigetFraDato"
+     data-label="arbeidsforhold.sluttaarsak.avskjediget.sporsmal"
+     data-er-required="true"
+     data-required-error-message="arbeidsforhold.sluttaarsak.avskjediget.feilmelding">
+</div>
 
