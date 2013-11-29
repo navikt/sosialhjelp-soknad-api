@@ -1,5 +1,5 @@
 angular.module('nav.validering', ['nav.cmstekster'])
-    .directive('blurValidate', ['data', function (data) {
+    .directive('blurValidate', ['cms', function (cms) {
         return {
             require: ['ngModel', '^form'],
             link: function (scope, element, attrs, ctrls) {
@@ -62,7 +62,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
                         feilmeldingsNokkel = feil[feilNokkel];
                     }
 
-                    var feilmeldingTekst = data.tekster[feilmeldingsNokkel];
+                    var feilmeldingTekst = cms.tekster[feilmeldingsNokkel];
                     formElem.find('.melding').text(feilmeldingTekst);
                 }
             }

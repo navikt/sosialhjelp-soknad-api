@@ -190,7 +190,7 @@
             <artifactId>joda-time</artifactId>
         </dependency>
 
-        <!-- Avhengigheter med scope runtime -->
+     <!-- Avhengigheter med scope runtime -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -283,8 +283,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Avhengigheter med scope provided -->
-
+		<!-- Avhengigheter med scope provided -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
