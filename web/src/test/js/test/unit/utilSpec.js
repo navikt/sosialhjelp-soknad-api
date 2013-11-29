@@ -139,11 +139,20 @@ describe('utility funksjoner -', function () {
             expect(feilmelding.$errorMessages).toBe(errormessage);
         });
 
+        it('Skal kunne oppgi string for å referere til ett element', function () {
+            var navn = "Navn";
+            var errormessage = "Error";
+            var referanse = "Ref";
+            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage, referanse);
+            expect(feilmelding.$linkId).toBe(referanse);
+        });
+
         it('Skal kunne oppgi valid for egendefiner feilmelding', function () {
             var navn = "Navn";
             var errormessage = "Error";
             var valid = true;
-            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage, valid);
+            var referanse = "Ref";
+            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage, referanse, valid);
             expect(feilmelding.$valid).toBe(valid);
         });
 
@@ -151,7 +160,8 @@ describe('utility funksjoner -', function () {
             var navn = "Navn";
             var errormessage = "Error";
             var valid = true;
-            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage, valid);
+            var referanse = "Ref";
+            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage, referanse, valid);
             expect(feilmelding.$invalid).toBe(!valid);
         });
 
@@ -159,9 +169,10 @@ describe('utility funksjoner -', function () {
             var navn = "Navn";
             var errormessage = "Error";
             var valid = true;
+            var referanse = "Ref";
             var skalVisesAlene = true;
 
-            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage, valid, skalVisesAlene);
+            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage, referanse, valid, skalVisesAlene);
             expect(feilmelding.$skalVisesAlene).toBe(skalVisesAlene);
         });
     });
@@ -181,14 +192,23 @@ describe('utility funksjoner -', function () {
             element.scope().$apply();
         }));
 
-        it('Skal returnere true når feilmeldingsvaliditeten endres fra true til false', function () {
-            var valid = true;
-            form.$error['feilmeldingskategori'] = [];
+        it('Skal kunne legge til feilmelding', function () {
+            var valid = false;
 
-            form.$error['feilmeldingskategori'].push(opprettEgendefinertFeilmelding('navn', 'errormessage', valid));
-            settEgendefinertFeilmeldingsverdi(form, 'feilmeldingskategori', 'navn', false);
-
+            settEgendefinertFeilmeldingsverdi(form, 'feilmeldingskategori', 'navn', 'errormessage', 'referanseTilElement', valid, false);
+            expect(form.$error['feilmeldingskategori'].length).toEqual(1);
             expect(form.$error['feilmeldingskategori'][0].$valid).toEqual(false);
+        });
+
+        it('Feilmelding skal fjernes dersom den endres til valid', function () {
+            var valid = false;
+
+            settEgendefinertFeilmeldingsverdi(form, 'feilmeldingskategori', 'navn', 'errormessage', 'referanseTilElement', valid, false);
+            expect(form.$error['feilmeldingskategori'].length).toEqual(1);
+            expect(form.$error['feilmeldingskategori'][0].$valid).toEqual(false);
+
+            settEgendefinertFeilmeldingsverdi(form, 'feilmeldingskategori', 'navn', 'errormessage', 'referanseTilElement', true, false);
+            expect(form.$error['feilmeldingskategori'].length).toEqual(0);
         });
 
     });
@@ -208,11 +228,9 @@ describe('utility funksjoner -', function () {
         }));
 
         it('Skal kunne legge til feilmelding hvis den ikke finnes ', function () {
-            var valid = true;
             form.$error['feilmeldingskategori'] = [];
-
             expect(form.$error['feilmeldingskategori'].length).toEqual(0);
-            leggTilFeilmeldingHvisDenIkkeFinnes('feilmeldingskategori', 'feilmeldingsnavn', form, 'feilmelding', true, false)
+            leggTilFeilmeldingHvisDenIkkeFinnes(form, 'feilmeldingskategori', 'feilmeldingsnavn', 'feilmelding', 'feilmeldingElementNavn', true, false)
             expect(form.$error['feilmeldingskategori'].length).toEqual(1);
         });
 

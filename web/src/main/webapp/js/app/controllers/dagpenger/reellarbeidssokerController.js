@@ -1,14 +1,14 @@
 angular.module('nav.reellarbeidssoker', [])
     .controller('ReellarbeidssokerCtrl', ['$scope', 'data', function ($scope, data) {
-        const minstEnVilligDeltidCheckboksErAvhuketFeilmeldingNavn = 'minstEnCheckboksErAvhuketForDeltid';
-        const minstEnVilligDeltidCheckboksErAvhuketFeilmeldingNokkel = 'reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding';
-        const referanseTilFeilmeldingslinkenDeltid = 'reduserthelse';
+        var minstEnVilligDeltidCheckboksErAvhuketFeilmeldingNavn = 'minstEnCheckboksErAvhuketForDeltid';
+        var minstEnVilligDeltidCheckboksErAvhuketFeilmeldingNokkel = 'reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding';
+        var referanseTilFeilmeldingslinkenDeltid = 'reduserthelse';
 
-        const minstEnVilligPendleCheckboksErAvhuketFeilmeldingNavn = 'minstEnCheckboksErAvhuketForPendle';
-        const minstEnVilligPendleCheckboksErAvhuketFeilmeldingNokkel = 'reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding';
-        const referanseTilFeilmeldingslinkenPendle = 'pendlereduserthelse';
+        var minstEnVilligPendleCheckboksErAvhuketFeilmeldingNavn = 'minstEnCheckboksErAvhuketForPendle';
+        var minstEnVilligPendleCheckboksErAvhuketFeilmeldingNokkel = 'reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding';
+        var referanseTilFeilmeldingslinkenPendle = 'pendlereduserthelse';
 
-        const feilmeldingKategori = 'reellarbeidssoker';
+        var feilmeldingKategori = 'reellarbeidssoker';
 
 //        $scope.alder = data.alder.alder;
 //        For testing av alder:

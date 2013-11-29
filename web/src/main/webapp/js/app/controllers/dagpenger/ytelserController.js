@@ -1,9 +1,9 @@
 angular.module('nav.ytelser', [])
     .controller('YtelserCtrl', ['$scope', 'lagreSoknadData', function ($scope, lagreSoknadData) {
-        const minstEnCheckboksErAvhuketFeilmeldingNavn = 'minstEnCheckboksErAvhuket';
-        const minstEnCheckboksErAvhuketFeilmeldingNokkel = 'ytelser.minstEnCheckboksErAvhuket.feilmelding';
-        const feilmeldingKategori = 'ytelser';
-        const referanseTilFeilmeldingslinken = 'stonadFisker';
+        var minstEnCheckboksErAvhuketFeilmeldingNavn = 'minstEnCheckboksErAvhuket';
+        var minstEnCheckboksErAvhuketFeilmeldingNokkel = 'ytelser.minstEnCheckboksErAvhuket.feilmelding';
+        var feilmeldingKategori = 'ytelser';
+        var referanseTilFeilmeldingslinken = 'stonadFisker';
 
         $scope.ytelser = {skalViseFeilmeldingForIngenYtelser: false};
 
