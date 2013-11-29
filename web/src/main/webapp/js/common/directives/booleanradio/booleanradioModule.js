@@ -1,7 +1,7 @@
 angular.module('nav.booleanradio',['nav.cmstekster', 'nav.input'])
     .directive('booleanradio', [function() {
         return {
-            restrict: "AE",
+            restrict: "A",
             replace: true,
             require: 'ngModel',
             scope: {
@@ -32,7 +32,7 @@ angular.module('nav.booleanradio',['nav.cmstekster', 'nav.input'])
                     return !$scope.hvisModelErTrue();
                 }
             },
-            templateUrl: '../js/app/directives/booleanradio/booleanradioTemplate.html'
+            templateUrl: '../js/common/directives/booleanradio/booleanradioTemplate.html'
 
 
         }

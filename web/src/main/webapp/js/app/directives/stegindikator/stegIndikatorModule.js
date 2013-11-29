@@ -1,7 +1,7 @@
 angular.module('nav.stegindikator', ['nav.cmstekster'])
     .directive('stegindikator', [function () {
         return {
-            restrict: "EA",
+            restrict: "A",
             replace: true,
             templateUrl: '../js/app/directives/stegindikator/stegIndikatorTemplate.html',
             scope: {
