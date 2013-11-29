@@ -7,7 +7,7 @@ angular.module('nav.hjelpetekst', [])
                 tekst: '=',
                 vishjelp: '='
             },
-            templateUrl: '../js/app/directives/hjelpetekst/hjelpetekstTemplate.html',
+            templateUrl: '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html',
             link: function(scope, element) {
                 element.hide();
 

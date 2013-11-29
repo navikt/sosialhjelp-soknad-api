@@ -2,9 +2,9 @@ angular.module('nav.textarea', [])
     .directive('navtextarea', [function () {
         var linker = function(scope,element, attrs){
             if(scope.attr("obligatorisk")) {
-                return '../js/app/directives/navtextarea/navtextareaObligatoriskTemplate.html';
+                return '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html';
             } else {                
-                return '../js/app/directives/navtextarea/navtextareaTemplate.html';
+                return '../js/common/directives/navtextarea/navtextareaTemplate.html';
             }
         }
         return {
