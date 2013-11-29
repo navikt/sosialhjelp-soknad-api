@@ -10,9 +10,9 @@ angular.module('nav.reellarbeidssoker', [])
 
         const feilmeldingKategori = 'reellarbeidssoker';
 
-//        $scope.alder = data.alder.alder;
+        $scope.alder = data.alder.alder;
 //        For testing av alder:
-        $scope.alder = 59;
+//        $scope.alder = 59;
 
         $scope.navigering = {nesteside: 'arbeidsforhold'};
         $scope.sidedata = {navn: 'reellarbeidssoker'};
