@@ -67,6 +67,7 @@ describe('DagpengerControllere', function() {
 
     beforeEach(module(function($provide) {
         $provide.value("data", {alder:{'alder':61}});
+        $provide.value("cms", {});
     }));
 
     beforeEach(inject(function ( $rootScope, $controller, $compile, $httpBackend) {

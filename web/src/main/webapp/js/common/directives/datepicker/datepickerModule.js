@@ -36,7 +36,7 @@ angular.module('nav.datepicker', [])
     .constant('datepickerConfig', {
         altFormat: 'dd.MM.yyyy'
     })
-    .directive('navDato', ['data', 'datepickerConfig', function (data, datepickerConfig) {
+    .directive('navDato', ['datepickerConfig', function (datepickerConfig) {
         return {
             restrict: "A",
             require: ['^form'],
