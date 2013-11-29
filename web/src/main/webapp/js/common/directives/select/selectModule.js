@@ -31,7 +31,7 @@ angular.module('nav.select', ['ngSanitize'])
                 ngModel: '='
             },
             replace: true,
-            templateUrl: '../js/app/directives/select/selectTemplate.html',
+            templateUrl: '../js/common/directives/select/selectTemplate.html',
             link: function (scope, element, attrs) {
                 scope.orginalListe = scope.$parent.$eval(attrs.options);
 
