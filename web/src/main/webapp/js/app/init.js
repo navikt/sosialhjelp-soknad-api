@@ -9,13 +9,14 @@ angular.module('sendsoknad')
         $http.get('../html/templates/utdanning.html', {cache: $templateCache});
     }])
     .value('data', {})
+    .value('cms', {})
     .value('basepath', '../')
-    .factory('InformasjonsSideResolver', ['data', '$resource', '$q', '$route', function(data, $resource, $q, $route) {
+    .factory('InformasjonsSideResolver', ['data', 'cms', '$resource', '$q', '$route', function(data, cms, $resource, $q, $route) {
         var promiseArray = [];
 
         var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
             function(result) { // Success
-                data.tekster = result;
+                cms.tekster = result;
             }
         );
 
@@ -32,13 +33,13 @@ angular.module('sendsoknad')
 
         return d;
     }])
-    .factory('HentSoknadService', ['data', '$resource', '$q', '$route', 'soknadService', function(data, $resource, $q, $route, soknadService) {
+    .factory('HentSoknadService', ['data', 'cms', '$resource', '$q', '$route', 'soknadService', function(data, cms, $resource, $q, $route, soknadService) {
         var soknadId = $route.current.params.soknadId;
         var promiseArray = [];
 
         var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
             function(result) { // Success
-                data.tekster = result;
+                cms.tekster = result;
             }
         );
         promiseArray.push(tekster.$promise);
@@ -69,13 +70,13 @@ angular.module('sendsoknad')
     }])
     
     //Lagt til for å tvinge ny lasting av fakta fra server. Da er vi sikker på at e-post kommer med til fortsett-senere siden.
-    .factory('EpostResolver', ['data', '$resource', '$q', '$route', 'soknadService', function(data, $resource, $q, $route, soknadService) {
+    .factory('EpostResolver', ['data', 'cms', '$resource', '$q', '$route', 'soknadService', function(data, cms, $resource, $q, $route, soknadService) {
         var soknadId = $route.current.params.soknadId;
         var promiseArray = [];
 
         var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
             function(result) { // Success
-                data.tekster = result;
+                cms.tekster = result;
             }
         );
         promiseArray.push(tekster.$promise);

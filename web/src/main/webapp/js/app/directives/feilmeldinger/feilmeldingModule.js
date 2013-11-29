@@ -14,12 +14,13 @@ angular.module('nav.feilmeldinger', [])
                 } catch(e) {
                     ctrl.$errorMessages = attrs.errorMessages;
                 }
+                ctrl.$elementErrorAttr = attrs.errorMessages;
             }
         };
     }])
 
     // For å bruke, legg til <div form-errors></div>
-    .directive('formErrors', ['data', '$timeout', function (data, $timeout) {
+    .directive('formErrors', ['cms', '$timeout', function (cms, $timeout) {
         return {
             // only works if embedded in a form or an ngForm (that's in a form).
             // It does use its closest parent that is a form OR ngForm
@@ -113,7 +114,7 @@ angular.module('nav.feilmeldinger', [])
 
                 function finnFeilmelding(feil, feilNokkel) {
                     var feilmeldingNokkel = finnFeilmeldingsNokkel(feil, feilNokkel);
-                    var feilmelding = data.tekster[feilmeldingNokkel];
+                    var feilmelding = cms.tekster[feilmeldingNokkel];
 
                     if (feilmelding === undefined) {
                         return "Fant ikke feilmelding med key " + feilmeldingNokkel;
@@ -134,11 +135,7 @@ angular.module('nav.feilmeldinger', [])
                 }
 
                 function finnTilhorendeElement(feil) {
-                    var navn = '';
-                    if (feil) {
-                        navn = feil.$name;
-                    }
-                    return elem.closest('[data-ng-form]').find('[name=' + navn + ']');
+                    return elem.closest('[data-ng-form]').find("[data-error-messages=\"" + feil.$elementErrorAttr + "\"], [error-messages=\"" + feil.$elementErrorAttr + "\"]");
                 }
             }
         };

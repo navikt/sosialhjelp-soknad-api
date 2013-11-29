@@ -20,18 +20,18 @@
  * ugyldig-feilmelding: Nøkkel til feilmelding som skal vises dersom man skriver inn noe som ikke finnes i listen. Dersom ikke oppgitt blir det en standard nøkkel.
  */
 angular.module('nav.select', ['ngSanitize'])
-    .directive('navSelect', ['$document', 'data', '$timeout', function ($document, data, $timeout) {
+    .directive('navSelect', ['$document', 'cms', '$timeout', function ($document, cms, $timeout) {
         return {
             require: 'ngModel',
             scope: {
                 requiredFeilmelding: '@',
                 ugyldigFeilmelding: '@',
                 label: '@',
-                ngRequired: '=',
+                erRequired: '=',
                 ngModel: '='
             },
             replace: true,
-            templateUrl: '../js/app/directives/select/selectTemplate.html',
+            templateUrl: '../js/common/directives/select/selectTemplate.html',
             link: function (scope, element, attrs) {
                 scope.orginalListe = scope.$parent.$eval(attrs.options);
 
@@ -41,7 +41,7 @@ angular.module('nav.select', ['ngSanitize'])
 
                 scope.vistListe = filterListePaaSoketekst();
                 scope.vistListeFiltrert = filterListeTilAntallElementerRundtValgtElement();
-                scope.defaultValue = data.tekster[attrs.defaultValue] ? data.tekster[attrs.defaultValue] : attrs.defaultValue;
+                scope.defaultValue = cms.tekster[attrs.defaultValue] ? cms.tekster[attrs.defaultValue] : attrs.defaultValue;
                 scope.ngModel = (scope.defaultValue) ? scope.defaultValue : '';
                 scope.inputVerdi = hentValgtTekstBasertPaaValue();
                 scope.valgtElementVerdi = scope.ngModel;
@@ -52,10 +52,6 @@ angular.module('nav.select', ['ngSanitize'])
                 var antallElementerOverOgUnder = 30;
                 var minimumIndeks;
                 var maximumIndeks;
-
-                if (scope.ngRequired === undefined) {
-                    scope.ngRequired = false;
-                }
 
                 if (scope.requiredFeilmelding === undefined) {
                     scope.requiredFeilmelding = 'select.required.feilmelding';
@@ -175,7 +171,7 @@ angular.module('nav.select', ['ngSanitize'])
                 }
 
                 scope.harRequiredFeil = function() {
-                    return scope.ngRequired && !scope.inputVerdi && !scope.listeErApen && !input.is(':focus');
+                    return scope.erRequired && !scope.inputVerdi && !scope.listeErApen && !input.is(':focus');
                 }
 
                 scope.inneholderIkkeSkrevetTekst = function() {

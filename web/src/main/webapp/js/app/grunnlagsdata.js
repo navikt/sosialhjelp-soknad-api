@@ -2,7 +2,7 @@
 
 angular.module('app.grunnlagsdata', ['app.services'])
 
-.controller('GrunnlagsdataCtrl', ['$scope', 'utslagskriterierService', 'soknadService', '$location', 'data', function($scope, utslagskriterierService, soknadService, $location, data) {
+.controller('GrunnlagsdataCtrl', ['$scope', 'utslagskriterierService', 'soknadService', '$location', function($scope, utslagskriterierService, soknadService, $location) {
 	$scope.personalia = utslagskriterierService.get();
 	$scope.maxAlder = 67;
 	$scope.minAlder = 18;
