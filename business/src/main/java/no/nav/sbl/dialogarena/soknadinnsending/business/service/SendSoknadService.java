@@ -1,8 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-
 import java.util.List;
+
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 
 public interface SendSoknadService {
 
@@ -10,9 +11,9 @@ public interface SendSoknadService {
 
 	WebSoknad hentSoknad(long soknadId);
 
-	void lagreSoknadsFelt(long soknadId, String key, String value);
+	Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum);
 
-	void lagreSystemSoknadsFelt(long soknadId, String key, String value);
+	Faktum lagreSystemSoknadsFelt(Long soknadId, Faktum faktum);
 	
 	void sendSoknad(long soknadId);
 
