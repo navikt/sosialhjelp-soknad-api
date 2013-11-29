@@ -3,29 +3,27 @@
     <p class="sluttaarsak-informasjon" cmstekster="arbeidsforhold.sluttaarsak.permittert.informasjon"/>
 
     <div class="varighet">
-        <div data-nav-dato-intervall
-             data-fra-dato="af.permittertFraDato"
-             data-til-dato="af.permittertTilDato"
-             data-label="arbeidsforhold.permittert.varighet">
-
-
-           <span data-ng-show="permittertDatoErrorFra" style="color:red"
-                 cmstekster="arbeidsforhold.error.permittert.fraDato"/>
-
-        <input type="text" name="permittertFra" ui-date ui-date-format ng-model="af.permittertFraDato" data-ng-change="validatePermittertDatoFraTil(af)">
-
-         <span data-ng-show="permittertDatoErrorTil" style="color:red"
-               cmstekster="arbeidsforhold.error.permittert.tilDato"/>
-        <input type="text" name="permittertTil" ui-date ui-date-format ng-model="af.permittertTilDato" data-ng-change="validatePermittertDatoFraTil(af)">
+        <p cmstekster="arbeidsforhold.arbeidsgiver.permittert.varighet"></p>
+        <div nav-dato
+         data-ng-model="af.permittertFraDato"
+         data-label="arbeidsforhold.arbeidsgiver.permittert.varighet.fra"
+         data-required-error-message="arbeidsforhold.arbeidsgiver.varighet.fra.feilmelding"
+         data-er-required="true">
         </div>
+
+        <div nav-dato
+         data-ng-model="af.permittertTilDato"
+         data-label="arbeidsforhold.arbeidsgiver.permittert.varighet.til">
         </div>
+    </div>
 
     <div class="varighet">
+        <p cmstekster="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet"></p>
         <div data-nav-dato-intervall
              data-fra-dato="af.permittertLonnspliktFraDato"
              data-til-dato="af.permittertLonnspliktTilDato"
              data-er-required="true"
-             data-label="arbeidsforhold.permittert.lonnsplikt.varighet">
+             data-label="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet">
 
 
          <span data-ng-show="permittertLonnspliktErrorFra" style="color:red"

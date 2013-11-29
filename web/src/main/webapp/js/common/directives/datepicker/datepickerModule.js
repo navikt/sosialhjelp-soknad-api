@@ -6,8 +6,8 @@
  *      - label: Nøkkel til CMS for å hente ut label-tekst
  *
  * Følgende attributter kan oppgis:
- *      - erRequired: Expression som sier om feltet er påkrevd eller ikke
- *      - requiredErrorMessage: Nøkkel til CMS for å hente ut feilmeldingstekst for required-feil
+ *      - er-required: Expression som sier om feltet er påkrevd eller ikke
+ *      - required-error-message: Nøkkel til CMS for å hente ut feilmeldingstekst for required-feil
  *
  * Følgende attributter brukes av det andre direktivet for å kjøre validering på datointervallet:
  *      - fraDato: Startdato i intervallet
