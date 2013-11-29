@@ -23,20 +23,21 @@ describe('GrunnlagsdataController', function() {
 });
 
 describe('DagpengerControllere', function() {
-    var scope, ctrl, form;
+    var scope, ctrl, form, element;
 
     beforeEach(module('app.services', 'app.controllers', 'nav.feilmeldinger'));
 
     beforeEach(module(function($provide) {
         $provide.value("data", {alder:{'alder':61}});
         $provide.value("cms", {});
+        $provide.constant('lagreSoknadData', "OPPDATER_OG_LAGRE");
     }));
 
     beforeEach(inject(function ( $rootScope, $controller, $compile, $httpBackend) {
         $httpBackend.expectGET('../js/app/directives/feilmeldinger/feilmeldingerTemplate.html').
             respond('');
 
-        scope = $rootScope.$new();
+        scope = $rootScope;
         scope.validateFormFunctionBleKalt = false;
         scope.validateForm = function(form) {
             scope.validateFormFunctionBleKalt = true;
@@ -50,20 +51,18 @@ describe('DagpengerControllere', function() {
             fakta: {}
         }
 
-        form = angular.element(
+        element = angular.element(
             '<form name="form">'
-          +      '<form-errors></form-errors>'
+          +      '<div form-errors></div>'
           +  '</form>'
         );
 
-        form.$setValidity = function(key, value) {
-            //expected call..
-        }
-        $compile(form)(scope);
-
-        
+        $compile(element)(scope);
         scope.$digest();
-        form.scope().$apply();
+        form = scope.form;
+        element.scope().$apply();
+
+
     }));
 
     describe('egennaeringCtrl', function() {
@@ -78,7 +77,7 @@ describe('DagpengerControllere', function() {
             scope.validerEgennaering(form);
             expect(scope.validateFormFunctionBleKalt).toEqual(true);
         });
-    })
+    });
 
     describe('vernepliktCtrl', function() {
         beforeEach(inject(function ($controller) {
@@ -92,7 +91,7 @@ describe('DagpengerControllere', function() {
             scope.validerVerneplikt(form);
             expect(scope.validateFormFunctionBleKalt).toEqual(true);
         });
-    })
+    });
 
     describe('UtdanningCtrl', function() {
         beforeEach(inject(function ($controller) {
@@ -106,7 +105,7 @@ describe('DagpengerControllere', function() {
             scope.validerUtdanning(form);
             expect(scope.validateFormFunctionBleKalt).toEqual(true);
         });
-    })
+    });
 
     describe('ReellarbeidssokerCtrl', function() {        
         beforeEach(inject(function ($controller) {
@@ -116,6 +115,7 @@ describe('DagpengerControllere', function() {
         }));
 
         it('skal returnere true for person over 59 aar', function(){
+            scope.alder =60;
             expect(scope.erOver59Aar()).toBe(true);
         });
 
@@ -130,6 +130,7 @@ describe('DagpengerControllere', function() {
         });
 
         it('skal returnere false for person over 60 aar', function(){
+            scope.alder =62;
             expect(scope.erUnder60Aar()).toBe(false);
         });
 
@@ -140,42 +141,5 @@ describe('DagpengerControllere', function() {
             scope.validerReellarbeidssoker(form);
             expect(scope.validateFormFunctionBleKalt).toEqual(true);
         });
-    })
-
-    describe('YtelserCtrl', function() {
-        beforeEach(inject(function ($controller) {
-            ctrl = $controller('YtelserCtrl', {
-                $scope: scope
-            });
-        }));
-
-        var nokler = ['nokkel1', 'nokkel2'];
-
-        it('skal returnere false for avhukede checkbokser dersom ingen har en satt verdi i modellen', function() {
-            expect(scope.erCheckboxerAvhuket(nokler)).toEqual(false);
-        });
-
-        it('skal returnere false for avhukede checkbokser dersom alle verdiene for nøklene er satt til false i modellen', function() {
-            scope.soknadData.fakta.nokkel1 = {value: false};
-            scope.soknadData.fakta.nokkel2 = {value: false};
-            expect(scope.erCheckboxerAvhuket(nokler)).toEqual(false);
-        });
-
-        it('skal returnere true for avhukede checkbokser dersom alle verdiene for nøklene er satt til true i modellen', function() {
-            scope.soknadData.fakta.nokkel1 = {value: true};
-            scope.soknadData.fakta.nokkel2 = {value: true};
-            expect(scope.erCheckboxerAvhuket(nokler)).toEqual(true);
-        });
-
-        it('skal returnere true for avhukede checkbokser dersom en av verdiene for nøklene er satt til true i modellen, mens de andre er satt til false', function() {
-            scope.soknadData.fakta.nokkel1 = {value: true};
-            scope.soknadData.fakta.nokkel2 = {value: false};
-            expect(scope.erCheckboxerAvhuket(nokler)).toEqual(true);
-        });
-
-        it('skal returnere true for avhukede checkbokser dersom en av verdiene for nøklene er satt til true i modellen, mens de andre ikke er satt', function() {
-            scope.soknadData.fakta.nokkel1 = {value: true};
-            expect(scope.erCheckboxerAvhuket(nokler)).toEqual(true);
-        });
-    })
-})
+    });
+});

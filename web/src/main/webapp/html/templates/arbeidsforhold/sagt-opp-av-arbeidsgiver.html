@@ -9,20 +9,29 @@
 
     <div class="varighet">
         <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.sporsmal"/>
-        <label cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetFra"/>
-        <input type="text" name="oppsigelsesTidVarighetFra" ui-date ui-date-format
-               ng-model="af.sagtOppAvArbeidsgiverVarighetFra"
-               data-ng-change="validateOppsigelsestidTilFraDato(af)"
-               error-messages="'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetFra.feilmelding'" required>
-        <label cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetTil"/>
-        <span data-ng-show="oppsigelsestidDatoError" style="color:red"
-              cmstekster="arbeidsforhold.error.sagtOppAvArbeidsgiver.datoTilFra"/>
-        <input type="text" name="oppsigelsesTidVarighetTil" ui-date ui-date-format
-               ng-model="af.sagtOppAvArbeidsgiverVarighetTil"
-               data-ng-change="validateOppsigelsestidTilFraDato(af)"
-               error-messages="'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetTil.feilmelding'" required>
-    </div>
 
+        <div class="form-linje fra">
+            <label cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetFra"/>
+            <input type="text" id="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetFra"
+                   name="oppsigelsesTidVarighetFra"  ui-date ui-date-format
+                   ng-model="af.sagtOppAvArbeidsgiverVarighetFra"
+                   data-ng-change="validateOppsigelsestidTilFraDato(af, leggTilArbeidsforholdForm)"
+                   error-messages="'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetFra.feilmelding'"
+                   data-required data-date-validate/>
+            <span class="melding"/>
+        </div>
+
+        <div class="form-linje til">
+            <label cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetTil"/>
+            <input type="text" id="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetTil"
+                   name="oppsigelsesTidVarighetTil" ui-date ui-date-format
+                   ng-model="af.sagtOppAvArbeidsgiverVarighetTil"
+                   data-ng-change="validateOppsigelsestidTilFraDato(af, leggTilArbeidsforholdForm)"
+                   error-messages="'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighetTil.feilmelding'"
+                   data-required data-date-validate/>
+            <span class="melding"/>
+        </div>
+    </div>
 
     <div class="sporsmaal">
         <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.sporsmal"/>
