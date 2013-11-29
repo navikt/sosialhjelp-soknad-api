@@ -186,24 +186,7 @@ angular.module('nav.arbeidsforhold.controller', [])
                 }
             }
 
-            $scope.validatePermittertDatoFraTil = function (af) {
-                if (af && (af.permittertTilDato < af.varighetFra) || (af.permittertTilDato > af.varighetTil) || (af.permittertFraDato > af.permittertTilDato)) {
-                      af.permittertTilDato = '';
-                    $scope.permittertDatoErrorTil = true;
-                } else {
-                    $scope.permittertDatoErrorTil = false;
-                }
-            }
-
-            $scope.validatePermittertLonnspliktDatoFraTil = function (af) {
-                if (af && (af.permittertLonnspliktTilDato < af.varighetFra) || (af.permittertLonnspliktTilDato > af.varighetTil) || (af.permittertLonnspliktFraDato > af.permittertLonnspliktTilDato)) {
-                    af.permittertLonnspliktTilDato = '';
-                    $scope.permittertLonnspliktDatoErrorTil = true;
-                } else {
-                    $scope.permittertLonnspliktDatoErrorTil = false;
-                }
-            }
-
+            
             $scope.validateOppsigelsestidTilFraDato = function (af) {
                 if (af && (af.sagtOppAvArbeidsgiverVarighetTil <= af.sagtOppAvArbeidsgiverVarighetFra)) {
                     af.sagtOppAvArbeidsgiverVarighetTil = '';
