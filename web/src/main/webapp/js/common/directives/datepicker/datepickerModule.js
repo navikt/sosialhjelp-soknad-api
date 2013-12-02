@@ -28,8 +28,10 @@
  *                  - datepicker.noe.fra.feilmelding=Required-feilmelding for sluttdato
  *
  * Følgende attributter kan oppgis:
- *      - erRequired: Expression som sier om feltet er påkrevd eller ikke
- *
+ *      - er-tildato-required: Expression som sier om til-dato er påkrevd. Er false dersom ikke oppgitt
+ *      - er-fradato-required: Expression som sier om fra-dato er påkrevd. Er false dersom ikke oppgitt
+ *      - er-begge-required: Expression som sier om både til- og fra-dato er påkrevd. Er false dersom ikke oppgitt.
+ *                           Denne setter både er-fradato-required og er-tildato-required.
  */
 
 angular.module('nav.datepicker', [])
@@ -151,7 +153,9 @@ angular.module('nav.datepicker', [])
             scope: {
                 fraDato: '=',
                 tilDato: '=',
-                erRequired:  '=',
+                erFradatoRequired:  '=',
+                erTildatoRequired:  '=',
+                erBeggeRequired:  '=',
                 label: '@'
             },
             controller: function($scope) {
@@ -160,6 +164,21 @@ angular.module('nav.datepicker', [])
                 $scope.fraFeilmelding = $scope.fraLabel + ".feilmelding";
                 $scope.tilFeilmelding = $scope.tilLabel + ".feilmelding";
                 $scope.tilDatoFeil = false;
+
+                if ($scope.erBeggeRequired) {
+                    $scope.$watch('erBeggeRequired', function() {
+                        $scope.fradatoRequired = $scope.erBeggeRequired;
+                        $scope.tildatoRequired = $scope.erBeggeRequired;
+                    });
+                } else {
+                    $scope.$watch('erFradatoRequired', function() {
+                        $scope.fradatoRequired = $scope.erFradatoRequired;
+                    });
+
+                    $scope.$watch('erTildatoRequired', function() {
+                        $scope.tildatoRequired = $scope.erTildatoRequired;
+                    });
+                }
             }
         }
     }])

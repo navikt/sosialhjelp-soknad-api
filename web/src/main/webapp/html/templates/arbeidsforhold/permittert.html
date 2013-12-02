@@ -4,17 +4,12 @@
 
     <div class="varighet">
         <p cmstekster="arbeidsforhold.arbeidsgiver.permittert.varighet"></p>
-        <div nav-dato
-         data-ng-model="af.permittertFraDato"
-         data-label="arbeidsforhold.arbeidsgiver.permittert.varighet.fra"
-         data-required-error-message="arbeidsforhold.arbeidsgiver.varighet.fra.feilmelding"
-         data-er-required="true">
-        </div>
 
-        <div nav-dato
-         data-ng-model="af.permittertTilDato"
-         data-label="arbeidsforhold.arbeidsgiver.permittert.varighet.til">
-        </div>
+        <div data-nav-dato-intervall
+             data-fra-dato="af.permittertFraDato"
+             data-til-dato="af.permittertTilDato"
+             data-er-fradato-required="true"
+             data-label="arbeidsforhold.arbeidsgiver.permittert.varighet">
     </div>
 
     <div class="varighet">
@@ -22,7 +17,7 @@
         <div data-nav-dato-intervall
              data-fra-dato="af.permittertLonnspliktFraDato"
              data-til-dato="af.permittertLonnspliktTilDato"
-             data-er-required="true"
+             data-er-begge-required="true"
              data-label="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet">
 
 
