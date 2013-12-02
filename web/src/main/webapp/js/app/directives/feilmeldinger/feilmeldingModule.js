@@ -49,9 +49,7 @@ angular.module('nav.feilmeldinger', [])
                             scrollToElement(elem);
                         }, 1);
                     }
-//                    if (skalViseFlereFeilmeldinger) {
-                        scope.$broadcast(eventString);
-//                    }
+                    scope.$broadcast(eventString);
                 }
 
                 scope.$watch(function() { return ctrl.$error; }, function() {
