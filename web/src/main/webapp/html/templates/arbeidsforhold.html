@@ -53,6 +53,7 @@
                              data-ng-model="af.land"
                              data-options="landService.result"
                              data-er-required="true"
+                             data-default-value="arbeidsforhold.arbeidsgiver.landDefault"
                              data-required-feilmelding="arbeidsforhold.arbeidsgiver.land.feilmelding"
                              data-ugyldig-feilmelding="arbeidsforhold.arbeidsgiver.land.ugyldig.feilmelding"/>
                     </div>
@@ -68,10 +69,14 @@
 
                     <div class="form-linje">
                         <label>
-                            <span cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsak"/>
-                            <select id="sluttaarsak_id" type="text" name="sluttaarsak" data-ng-model="af.sluttaarsak"
+                            <span data-cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsak"/>
+                            <select id="sluttaarsak_id"
+                                    type="text"
+                                    data-name="sluttaarsak"
+                                    data-ng-model="af.sluttaarsak"
                                     data-ng-options="t.navn for t in templates"
-                                    error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'" required>
+                                    data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'"
+                                    data-ng-required="true">
                                 <option value="" cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsakDefault"/>
                             </select>
                             <span class="melding"/>
