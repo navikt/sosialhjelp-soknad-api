@@ -1,5 +1,5 @@
 if (!Array.prototype.indexOf) {
-    Array.prototype.indexOf = function(elt) {
+    Array.prototype.indexOf = function (elt) {
         var len = this.length >>> 0;
 
         var from = Number(arguments[1]) || 0;
@@ -10,7 +10,7 @@ if (!Array.prototype.indexOf) {
             from += len;
         }
 
-        for(; from < len; from++) {
+        for (; from < len; from++) {
             if (from in this && this[from] === elt) {
                 return from;
             }
@@ -20,21 +20,21 @@ if (!Array.prototype.indexOf) {
 }
 
 if (!Array.prototype.last) {
-    Array.prototype.last = function() {
-        return this[this.length -1];
+    Array.prototype.last = function () {
+        return this[this.length - 1];
     }
 }
 
 if (!Array.prototype.contains) {
-    Array.prototype.contains = function(val) {
+    Array.prototype.contains = function (val) {
         return $.inArray(val, this) > -1;
     }
 }
 
 // Returnerer index til ett objekt som inneholder value (ikke nødvendigvis første)
 if (!Array.prototype.indexByValue) {
-    Array.prototype.indexByValue = function(val) {
-        return this.indexOf($.grep(this, function(obj) {
+    Array.prototype.indexByValue = function (val) {
+        return this.indexOf($.grep(this, function (obj) {
             for (key in obj) {
                 if (obj[key] == val) {
                     return this;
@@ -45,11 +45,33 @@ if (!Array.prototype.indexByValue) {
     }
 }
 
+function sjekkOmGittEgenskapTilObjektErFalse(objekt) {
+    if (objekt) {
+        return checkFalse(objekt.value);
+    }
+
+    return false;
+}
+
+function sjekkOmGittEgenskapTilObjektErTrue(objekt) {
+    if (objekt) {
+        return checkTrue(objekt.value);
+    }
+
+    return false;
+}
+
 function checkTrue(element) {
     if (element == undefined) {
         return false;
     }
     return element.toString() == 'true';
+}
+function checkFalse(element) {
+    if (element == undefined) {
+        return false;
+    }
+    return element.toString() == 'false';
 }
 
 function scrollToElement(element) {
@@ -101,12 +123,49 @@ function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+function opprettEgendefinertFeilmelding(navn, errorMessage, referanseTilFeilmeldingslinken, valid, skalVisesAlene ) {
+    var feilmelding = new Object();
+    feilmelding.$name = navn;
+    feilmelding.$errorMessages = errorMessage;
+    feilmelding.$linkId = referanseTilFeilmeldingslinken;
+    feilmelding.$valid = valid;
+    feilmelding.$invalid = !valid;
+    feilmelding.$skalVisesAlene = skalVisesAlene
+
+
+    return feilmelding;
+}
+function leggTilFeilmeldingHvisDenIkkeFinnes(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene ) {
+    var index = form.$error[feilmeldingskategori].indexByValue(feilmeldingsnavn);
+
+    if (index == -1) {
+        form.$error[feilmeldingskategori].push(opprettEgendefinertFeilmelding(feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene ));
+    }
+}
+/**
+ * endrer validiteten på en feilmelding. Sjekker hvis feilmeldingen ikke skal vises lenger, så i stedet for å oppdatere feilmeldingen fjernes den heller fra listen.
+ Derfor trenger vi kun å legge til feilmeldinger som ikke finnes fra før og som er false.
+ */
+function settEgendefinertFeilmeldingsverdi(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene ) {
+    if (form.$error[feilmeldingskategori] === undefined) {
+        form.$error[feilmeldingskategori] = [];
+    }
+
+    var index = form.$error[feilmeldingskategori].indexByValue(feilmeldingsnavn);
+    if (index > -1 && valid) {
+        form.$error[feilmeldingskategori].splice(index, 1);
+    } else if (index == -1 && !valid) {
+        form.$setValidity(feilmeldingsnavn, valid);
+        leggTilFeilmeldingHvisDenIkkeFinnes(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene )
+    }
+}
+
 function stringContainsNotCaseSensitive(str, query) {
     return str.toLowerCase().indexOf(query.toLowerCase());
 }
 
-(function($) {
-    $.fn.scrollToPos = function(position, speed) {
+(function ($) {
+    $.fn.scrollToPos = function (position, speed) {
         if (speed === undefined) {
             speed = 'fast';
         }
@@ -116,6 +175,24 @@ function stringContainsNotCaseSensitive(str, query) {
     }
 })(jQuery);
 
+function fadeBakgrunnsfarge(element, melding, feilmeldingsklasse) {
+    var backgroundColour = [254, 230, 230].join(',') + ',';
+    var borderColour = [252, 162, 146].join(',') + ',';
+    var meldingColour = [195, 0, 0].join(',') + ',';
+    var transparency = 1;
+    var timeout = setInterval(function() {
+        if (transparency >= 0) {
+            element[0].style.backgroundColor = 'rgba(' + backgroundColour + (transparency -= 0.015) + ')';
+            element[0].style.borderColor = 'rgba(' + borderColour + (transparency -= 0.015) + ')';
+            melding[0].style.color = 'rgba(' + meldingColour + (transparency -= 0.015) + ')';
+        } else {
+            element.removeClass(feilmeldingsklasse);
+            element.removeAttr('style');
+            melding.removeAttr('style');
+            clearInterval(timeout);
+        }
+    }, 20);
+}
 function konverterStringFraNorskDatoformatTilDateObjekt(datoString) {
     var re = new RegExp(/^\d\d\.\d\d\.\d\d\d\d$/);
     if (re.test(datoString)) {
@@ -127,15 +204,3 @@ function konverterStringFraNorskDatoformatTilDateObjekt(datoString) {
         return "";
     }
 }
-
-//var startAr = datoFormat.indexOf('y');
-//var lengdeAr = datoFormat.match(/y/g);
-//var ar = datoString.substring(startAr, startAr + lengdeAr);
-//
-//var startManed = datoFormat.indexOf('M');
-//var lengdeManed = datoFormat.match(/M/g);
-//var maned = datoString.substring(startManed, startManed + lengdeManed);
-//
-//var startDag = datoFormat.indexOf('d');
-//var lengdeDag = datoFormat.match(/d/g);
-//var dag = datoString.substring(startDag, startDag + lengdeDag);
