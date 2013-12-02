@@ -57,7 +57,7 @@
                         <configuration>
                             <envConfigUrl>https://envconfig.adeo.no/conf</envConfigUrl>
                             <username>***REMOVED***</username>
-                            <password>xxxxxxx</password>
+                            <password>xxxxxxxx</password>
                             <env>t11</env>
                             <apps>sendsoknad:${project.version}</apps>
                         </configuration>

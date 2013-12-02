@@ -40,6 +40,7 @@ public class ApplicationContext {
     private String navigasjonslink;
 
 
+    //TODO Dette er utkommentert kode frem til vi kan deploye kode for smtpServer som Fasit aksepterer
     //@Value("{$dokumentinnsending.smtpServer.port}")
     private String smtpServerPort = "25";
 
