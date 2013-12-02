@@ -1,7 +1,7 @@
 angular.module('nav.markup.navinfoboks', [])
     .directive('navinfoboks', [function () {
         return {
-            restrict: 'EA',
+            restrict: 'A',
             scope: {
             	nokkel: '@'
             },
