@@ -50,6 +50,7 @@ angular.module('nav.datepicker', [])
                 tilDato: '=',
                 fraDato: '=',
                 tilDatoFeil: '=',
+                endret: '&',
                 label: '@',
                 requiredErrorMessage: '@'
             },
@@ -108,6 +109,12 @@ angular.module('nav.datepicker', [])
                 scope.harFeil = function() {
                     return scope.harRequiredFeil() || scope.harFormatteringsFeil() || scope.harTilDatoFeil();
                 }
+
+                scope.$watch('ngModel', function(newVal, oldVal) {
+                    if (newVal != oldVal && scope.endret) {
+                        scope.endret();
+                    }
+                });
 
                 function datepickerOptions() {
                     return angular.extend({}, datepickerConfig, scope.options);
