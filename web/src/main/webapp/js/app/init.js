@@ -8,6 +8,7 @@ angular.module('sendsoknad')
         $http.get('../html/templates/ytelser.html', {cache: $templateCache});
         $http.get('../html/templates/utdanning.html', {cache: $templateCache});
     }])
+    .constant('lagreSoknadData', "OPPDATER_OG_LAGRE")
     .value('data', {})
     .value('cms', {})
     .value('basepath', '../')
