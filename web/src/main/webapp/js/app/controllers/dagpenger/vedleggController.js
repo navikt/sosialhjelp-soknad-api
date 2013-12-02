@@ -17,6 +17,14 @@ angular.module('nav.vedlegg.controller', [])
                 vedlegg.side = vedlegg.side + antall;
                 console.log("naviger " + vedlegg.side)
             }
+            if (vedlegg.lastetOpp()) {
+                console.log("lastet opp: " + vedlegg.data.id);
+                vedlegg.vedlegg = vedleggService.get({
+                    soknadId: vedlegg.data.soknadId,
+                    faktumId: vedlegg.data.id,
+                    vedleggId: vedlegg.data.vedleggId
+                })
+            }
 
             return vedlegg;
         }
@@ -62,8 +70,8 @@ angular.module('nav.vedlegg.controller', [])
     .directive('bildeNavigering', [function () {
         return {
             restrict: 'a',
-            replace:'true',
-            templateUrl:'../../'
+            replace: 'true',
+            templateUrl: '../../'
         }
 
     }]);

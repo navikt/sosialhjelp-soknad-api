@@ -58,7 +58,7 @@ public class VedleggController {
                 List<Vedlegg> res = new ArrayList<>();
                 for (MultipartFile file : files) {
                     byte[] in = validateAndGetInput(file);
-                    Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, file.getOriginalFilename(), file.getSize(), in);
+                    Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, file.getOriginalFilename(), file.getSize(), 1, in);
                     Long id = vedleggService.lagreVedlegg(vedlegg, new ByteArrayInputStream(in));
                     vedlegg.setId(id);
 
@@ -87,9 +87,15 @@ public class VedleggController {
         vedleggService.slettVedlegg(soknadId, vedleggId);
     }
 
-    @RequestMapping(value = "/{vedleggId}", method = RequestMethod.GET, produces = APPLICATION_OCTET_STREAM_VALUE)
+    @RequestMapping(value = "/{vedleggId}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
-    public byte[] hentVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, HttpServletResponse response) {
+    public Vedlegg hentVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
+        return vedleggService.hentVedlegg(soknadId, vedleggId, false);
+    }
+
+    @RequestMapping(value = "/{vedleggId}/data", method = RequestMethod.GET, produces = APPLICATION_OCTET_STREAM_VALUE)
+    @ResponseBody()
+    public byte[] hentVedleggData(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, HttpServletResponse response) {
         Vedlegg vedlegg = vedleggService.hentVedlegg(soknadId, vedleggId, true);
         response.setHeader("Content-Disposition", "attachment; filename=\"" + vedlegg.getId() + ".pdf\"");
         return vedlegg.getData();
