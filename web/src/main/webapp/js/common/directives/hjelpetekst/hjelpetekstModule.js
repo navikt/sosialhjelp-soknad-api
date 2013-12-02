@@ -1,4 +1,4 @@
-angular.module('nav.hjelpetekst', [])
+angular.module('nav.hjelpetekst', ['nav.animation'])
     .directive('navHjelpetekstelement', [function () {
         return {
             replace: true,
@@ -50,25 +50,6 @@ angular.module('nav.hjelpetekst', [])
                     }
                     scope.$apply();
                 });
-            }
-        }
-    }])
-    .animation('.animate', [function() {
-        return {
-            addClass: function(element, className, done) {
-                if (className == 'ng-hide') {
-                    element.slideUp();
-                } else {
-                    done();
-                }
-            },
-            removeClass: function(element, className, done) {
-                if (className == 'ng-hide') {
-                    element.removeClass('ng-hide');
-                    element.slideDown();
-                } else {
-                    done();
-                }
             }
         }
     }]);
