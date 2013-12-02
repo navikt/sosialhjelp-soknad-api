@@ -110,7 +110,7 @@ public class VedleggControllerTest {
 
     @Test
     public void skalGenereFerdigPdf() throws Exception {
-        Vedlegg v = new Vedlegg(1L, 11L, 1L, "", 3L, null);
+        Vedlegg v = new Vedlegg(1L, 11L, 1L, "", 3L, 1, null);
         when(vedleggService.genererVedleggFaktum(11L, 14L)).thenReturn(2L);
         when(vedleggService.hentVedlegg(11L, 2L, false)).thenReturn(v);
         MvcResult mvcResult = mockMvc.perform(post("/soknad/{soknadId}/faktum/{faktumId}/vedlegg/generer", 11L, 14L))
