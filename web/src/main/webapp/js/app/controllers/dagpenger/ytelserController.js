@@ -9,6 +9,10 @@ angular.module('nav.ytelser', [])
 
         var nokler = ['ventelonn', 'stonadFisker', 'offentligTjenestepensjon', 'privatTjenestepensjon', 'vartpenger', 'dagpengerEOS', 'annenYtelse', 'ingenYtelse' ];
 
+        $scope.$on('VALIDER_YTELSER', function (scope, form) {
+            $scope.validerYtelser(form);
+        });
+
 //      sjekker om formen er validert når bruker trykker ferdig med ytelser
         $scope.validerYtelser = function (form) {
             var minstEnCheckboksErAvhuket = erCheckboxerAvhuket(nokler);
