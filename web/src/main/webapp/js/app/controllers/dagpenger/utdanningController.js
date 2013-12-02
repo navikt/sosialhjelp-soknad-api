@@ -36,6 +36,57 @@ angular.module('nav.utdanning',[])
             return false;
         }
 
+    $scope.hvisUtdanningKveld = function () {
+        if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.underUtdanningKveld != undefined) {
+            return $scope.soknadData.fakta.underUtdanningKveld.value;
+        }
+        return false;
+
+    }
+
+
+    $scope.hvisUtdanningKortvarig = function () {
+        if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.underUtdanningKortvarig != undefined) {
+            return $scope.soknadData.fakta.underUtdanningKortvarig.value;
+        }
+        return false;
+
+    }
+
+    $scope.hvisUtdanningKortvarigFlere = function () {
+        if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.underUtdanningKortvarigFlere != undefined) {
+            return $scope.soknadData.fakta.underUtdanningKortvarigFlere.value;
+        }
+        return false;
+
+    }
+
+    $scope.hvisUtdanningNorsk = function () {
+        if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.underUtdanningNorsk != undefined) {
+            return $scope.soknadData.fakta.underUtdanningNorsk.value;
+        }
+        return false;
+
+    }
+
+    $scope.hvisManIkkeVilAvslutteUtdanningen = function () {
+        if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning.avslutte != undefined) {
+            return !$scope.soknadData.fakta.utdanning.avslutte.value;
+        }
+        return true;
+
+    }
+
+    $scope.hvisStudieProgresjonOver50 = function () {
+        console.log("test" + $scope.soknadData.fakta.utdanning.progresjonunder50);
+        if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning.progresjonunder50 != undefined) {
+
+            return $scope.soknadData.fakta.utdanning.progresjonunder50.value;
+        }
+        return false;
+
+    }
+
     $scope.validateTilFraDato = function (utdanning) {
         if (utdanning && (utdanning.varighetTil <= utdanning.varighetFra)) {
             utdanning.varighetTil = '';
