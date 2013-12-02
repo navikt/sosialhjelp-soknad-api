@@ -78,7 +78,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
         }
     }])
 
-    .directive('clickValidate', ['$timeout', 'data', function ($timeout, data) {
+    .directive('clickValidate', ['$timeout', 'cms', function ($timeout, cms) {
         return {
             require: ['ngModel', '^form'],
             link: function (scope, element, attrs, ctrls) {
@@ -115,14 +115,14 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 function settFeilmeldingsTekst() {
                     var feilmeldingsNokkel = element[0].getAttribute('error-messages').toString();
                     //hack for å fjerne dobbeltfnuttene rundt feilmeldingsnokk
-                    var feilmeldingTekst = data.tekster[feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1)];
+                    var feilmeldingTekst = cms.tekster[feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1)];
                     element.closest('.form-linje').find('.melding').text(feilmeldingTekst);
                 }
             }
         }
     }])
 //    direktivet skal brukes på div-en som ligger rundt en checkboksgruppe og som skal ha inlinevalidering
-    .directive('checkboxValidate', ['data', function (data) {
+    .directive('checkboxValidate', ['cms', function (cms) {
         return {
             require: ['^form'],
             link: function (scope, element, attrs, ctrl) {
@@ -152,7 +152,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
             }
         }
     }])
-    .directive('dateValidate', ['data', function (data) {
+    .directive('dateValidate', ['cms', function (cms) {
         return {
             require: ['ngModel', '^form'],
             link: function (scope, element, attrs, ctrls) {
@@ -202,12 +202,12 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 function settRequiredFeilmeldingsTekst() {
                     var feilmeldingsNokkel = element[0].getAttribute('error-messages').toString();
                     //hack for å fjerne dobbeltfnuttene rundt feilmeldingsnokk
-                    var feilmeldingTekst = data.tekster[feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1)];
+                    var feilmeldingTekst = cms.tekster[feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1)];
                     element.closest('.form-linje').find('.melding').text(feilmeldingTekst);
                 }
 
                 function settFraTilDatoFeilmeldingstekst(feilNokkel) {
-                    var feilmeldingTekst = data.tekster[feilNokkel];
+                    var feilmeldingTekst = cms.tekster[feilNokkel];
                     var tilElement = element.closest('.varighet').find('.til');
                     tilElement.find('.melding').text(feilmeldingTekst);
                     tilElement.addClass('feil');
