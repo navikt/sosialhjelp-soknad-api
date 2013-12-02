@@ -1,78 +1,26 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
     <div data-ng-form="barnetilleggForm" class="skjemainnhold" data-ng-controller="BarnetilleggCtrl" novalidate>
         <div form-errors></div>
-      
-      
-<style>
-
-.barn .barnealder, .barn .barnealder span {
-    display: block;
-    float: left;
-    height: 100%;
-    width: 50px;
-    font-size: 1.5em;
-}
-
-.barn.gutt .barnealder, .barn.gutt .barnealder span {
-    color: #0ca9e1 !important;
-}
-
-.barn.jente .barnealder, .barn.jente .barnealder span {
-    color: #ec288d !important;
-}
-
-.barn .barnealder .barnealderlabel {
-    font-size: 0.6em;
-    padding-left:12px;
-}
-
-.barn .barnbosted {
-    padding-bottom: 20px;
-}
-
-.barn .barneinfo {
-    padding-left: 50px;
-}
-
-.barn {
-    border-bottom: 1px solid #ddd;
-    padding-top: 30px;
-    padding-bottom: 30px;
-}
-
-.barneinformasjon {
-    font-size: 1.21rem;
-    font-weight: 600;
-    font-family: Modus, Arial, Helvetica, sans-serif;
-    margin-bottom: 30px;
-    line-height: 1.6rem;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 30px;
-}
-
-
-</style>
-
-
-        <p class="barneinformasjon" cmstekster="barnetillegg.informasjon"></p>
-      
-        <div class="barn gutt robust">
-            <div class="barnealder">
-                <span class="barnealderlabel">ÅR</span>
-                <span data-ng-bind="barn.alder"></span>
-            </div>
-            <div class="barneinfo">
-                <div class="robust" data-ng-bind="barn.sammensattnavn"></div>
-                <div class="robust" data-ng-bind="barn.fnr"></div>
-                <div class="barnbosted">
-                    <span class="kursiv">bosted: </span>
-                    <span class="robust">Norge</span>
+        <p class="informasjonstekst" cmstekster="barnetillegg.informasjon"></p>
+        
+        <div data-ng-repeat="b in barn.valuelist">
+            <div data-ng-class="{gutt: erGutt(b), jente:erJente(b)}" class="barn">
+                <div class="barnealder">
+                    <span> ÅR</span>
+                    <span class="alder robust" data-ng-bind="b.alder"></span>
                 </div>
-                <div navcheckbox data-ng-model='barn.barnetillegg' modus='data.redigeringsModus'
-                inputname='barnetillegg' label='barnetillegg.barnetilegg.spormsal'></div>
+                <div class="barneinfo">
+                    <div data-ng-bind="b.sammensattnavn"></div>
+                    <div data-ng-bind="b.fnr"></div>
+                    <div class="barnbosted">
+                        <span class="bosted">bosted: </span>
+                        <span>Norge</span>
+                    </div>
+                    <div data-navcheckbox data-ng-model='b.barnetillegg' data-modus='data.redigeringsModus'
+                    data-inputname='barnetillegg' data-label='barnetillegg.barnetilegg.spormsal'></div>
+                </div>
             </div>
         </div>
-
 
         <div spmblokkferdig
                 nokkel="barnetillegg"

@@ -1,45 +1,40 @@
 angular.module('nav.barnetillegg',[])
     .controller('BarnetilleggCtrl', ['$scope', function ($scope) {
-        $scope.barn = {
-            sammensattnavn: "Jens August Aker Hansen",
-            fnr: 01015245464,
-            alder: 11,
-            barnetillegg: false
-        }
-
-        //ønskelig struktur
-        /*var myJson= {
-            barn: 
-            {
-                id: 18706,
-                soknadId: 275,
-                vedleggId: 0,
-                key: "barn",
-                type: "BRUKERREGISTRERT",
-                value: {
+        $scope.barn =
+        {
+            id: 18706,
+            soknadId: 275,
+            key: "barn",
+            type: "BRUKERREGISTRERT",
+            valuelist: [
+                {
+                    id: 18707,
+                    vedleggId: 0,
                     sammensattnavn: "Jens August Aker Hansen",
                     fnr: 01015245464,
+                    kjonn: "gutt",
                     alder: 7,
                     barnetillegg: false
-                }
-            },
-            barn:
-            {
-                id: 18707,
-                soknadId: 275,
-                vedleggId: 0,
-                key: "barn",
-                type: "BRUKERREGISTRERT",
-                value: {
+                },
+                {
+                    id: 18708,
+                    vedleggId: 0,
                     sammensattnavn: "Lisa Kristin Normann Olsen",
                     fnr: 12129623623,
+                    kjonn: "jente",
                     alder: 11,
                     barnetillegg: false
                 }
-            }
-        };
-        $scope.barn = angular.fromJson(myJson);*/
+            ]
+        }
         
+        $scope.erGutt = function(barn) {
+            return barn.kjonn == "gutt";
+        }
+
+        $scope.erJente = function(barn) {
+            return barn.kjonn == "jente";
+        }
 
         $scope.validerBarnetillegg = function(form) {
             $scope.validateForm(form.$invalid);
