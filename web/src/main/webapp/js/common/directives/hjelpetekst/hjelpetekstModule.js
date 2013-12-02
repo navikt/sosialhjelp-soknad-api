@@ -1,5 +1,5 @@
 angular.module('nav.hjelpetekst', [])
-    .directive('navHjelpetekstelement', ['$timeout', function ($timeout) {
+    .directive('navHjelpetekstelement', [function () {
         return {
             replace: true,
             scope: {
@@ -7,7 +7,7 @@ angular.module('nav.hjelpetekst', [])
                 tekst: '=',
                 vishjelp: '='
             },
-            templateUrl: '../js/app/directives/hjelpetekst/hjelpetekstTemplate.html',
+            templateUrl: '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html',
             link: function(scope, element) {
                 element.hide();
 
@@ -18,7 +18,7 @@ angular.module('nav.hjelpetekst', [])
             }
         }
     }])
-    .directive('definererHjelpetekst', ['data', function (data) {
+    .directive('definererHjelpetekst', ['cms', function (cms) {
         return {
             restrict: 'AC',
             scope: false,
@@ -26,8 +26,8 @@ angular.module('nav.hjelpetekst', [])
                 var tittelNokkel = attrs['nokkel'] + ".hjelpetekst.tittel";
                 var tekstNokkel = attrs['nokkel'] + ".hjelpetekst.tekst";
 
-                var tittel = data.tekster[tittelNokkel];
-                var tekst = data.tekster[tekstNokkel];
+                var tittel = cms.tekster[tittelNokkel];
+                var tekst = cms.tekster[tekstNokkel];
 
                 scope.visHjelpetekst = false;
                 scope.tittel = tittel;
