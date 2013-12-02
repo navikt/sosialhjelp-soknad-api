@@ -41,7 +41,7 @@ angular.module('nav.datepicker', [])
     .directive('navDato', ['datepickerConfig', function (datepickerConfig) {
         return {
             restrict: "A",
-            require: ['^form'],
+            require: '^form',
             replace: true,
             templateUrl: '../js/common/directives/datepicker/singleDatepickerTemplate.html',
             scope: {
