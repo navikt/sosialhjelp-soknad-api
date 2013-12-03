@@ -1,14 +1,14 @@
 ﻿<div class="tekstfelt form-linje">
-    <div data-ng-show='hvisIRedigeringsmodus()'>
+    <div data-ng-show="hvisIRedigeringsmodus()">
         <label>
-            <span cmstekster="{{ label }}"/>
-            <input data-ng-model="model" type="text" value="{{ value }}" name="tmpName" data-ng-required="hvisSynlig()" error-messages="'{{ feilmelding }}'" data-blur-validate mod-faktum/>
-            <span class="melding"/>
+            <span data-cmstekster="{{ label }}"></span>
+            <input data-ng-model="model" type="text" value="{{ value }}" name="tmpName" data-ng-required="hvisSynlig()" data-error-messages="'{{ feilmelding }}'" data-blur-validate data-mod-faktum/>
+            <span class="melding"></span>
         </label>
     </div>
 
-    <div data-ng-show='hvisIOppsummeringsmodus()'>
-        <span cmstekster="{{ label }}"/>:
+    <div data-ng-show="hvisIOppsummeringsmodus()">
+        <span data-cmstekster="{{ label }}"></span>:
         <span>
             {{ model }}
         </span>
