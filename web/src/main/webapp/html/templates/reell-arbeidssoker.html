@@ -1,94 +1,132 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-	<div data-ng-form="reellarbeidssokerForm" class="skjemainnhold vertikal" data-ng-controller="ReellarbeidssokerCtrl" data-novalidate>
-		<div data-form-errors></div>
-		<div data-nav-hjelpetekst-element></div>
-		<div data-booleanradio data-ng-model="soknadData.fakta.villigdeltid.value" data-modus="data.redigeringsModus" data-nokkel="reellarbeidssoker.villigdeltid"></div>
+    <div data-ng-form="reellarbeidssokerForm" class="skjemainnhold vertikal" data-ng-controller="ReellarbeidssokerCtrl"
+         novalidate>
 
-		<div class="ekstra-spm-boks" data-ng-show="soknadData.fakta.villigdeltid.value == 'false'">
-			<div data-navinfoboks data-nokkel="reellarbeidssoker.villigdeltid.false.informasjon"></div>
-			<div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
+        <div data-form-errors></div>
+        <div data-nav-hjelpetekst-element></div>
 
-				<div data-navcheckbox data-ng-model="soknadData.fakta.reduserthelse.value"
-						data-modus="data.redigeringsModus"
-						data-inputname="reduserthelse" data-label="reellarbeidssoker.reduserthelse"
-						data-endret="endreDeltidsAarsaker(reellarbeidssokerForm)"></div>
+        <div data-booleanradio
+             data-ng-model="soknadData.fakta.villigdeltid.value"
+             data-modus="data.redigeringsModus"
+             data-nokkel="reellarbeidssoker.villigdeltid"></div>
 
-				<div data-navcheckbox data-ng-model="soknadData.fakta.omsorgbarnunder1aar.value"
-						data-modus="data.redigeringsModus"
-						data-inputname="omsorgbarnunder1aar" data-label="reellarbeidssoker.omsorgbarnunder1aar"
-						data-endret="endreDeltidsAarsaker(reellarbeidssokerForm)"></div>
+        <div class="ekstra-spm-boks animate-slide-show" data-ng-show="soknadData.fakta.villigdeltid.value == 'false'">
+            <div data-navinfoboks
+                 data-nokkel="reellarbeidssoker.villigdeltid.false.informasjon"></div>
 
-				<div data-navcheckbox data-ng-model="soknadData.fakta.eneansvarbarnunder5skoleaar.value"
-						data-modus="data.redigeringsModus"
-						data-inputname="eneansvarbarnunder5skoleaar" data-label="reellarbeidssoker.eneansvarbarnunder5skoleaar"
-						data-endret="endreDeltidsAarsaker(reellarbeidssokerForm)"></div>
+            <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
 
-				<div data-navcheckbox data-ng-model="soknadData.fakta.eneansvarbarnopptil18aar.value"
-						data-modus="data.redigeringsModus"
-						data-inputname="eneansvarbarnopptil18aar" data-label="reellarbeidssoker.eneansvarbarnopptil18aar"
-						data-endret="endreDeltidsAarsaker(reellarbeidssokerForm)"></div>
+                <div data-navcheckbox
+                     data-ng-model='soknadData.fakta.reduserthelse.value'
+                     data-modus='data.redigeringsModus'
+                     data-inputname='reduserthelse'
+                     data-label='reellarbeidssoker.reduserthelse'
+                     data-endret="endreDeltidsAarsaker(reellarbeidssokerForm)"></div>
 
-				<div data-navcheckbox data-ng-model="soknadData.fakta.omsorgansvar.value"
-						data-modus="data.redigeringsModus"
-						data-inputname="omsorgansvar" data-label="reellarbeidssoker.omsorgansvar"
-						data-endret="endreDeltidsAarsaker(reellarbeidssokerForm)"></div>
+                <div data-navcheckbox
+                     data-ng-model='soknadData.fakta.omsorgbarnunder1aar.value'
+                     data-modus='data.redigeringsModus'
+                     data-inputname='omsorgbarnunder1aar'
+                     data-label='reellarbeidssoker.omsorgbarnunder1aar'
+                     data-endret="endreDeltidsAarsaker(reellarbeidssokerForm)"></div>
 
-				<div data-navcheckbox data-ng-model="soknadData.fakta.annensituasjon.value"
-						data-modus="data.redigeringsModus"
-						data-inputname="annensituasjon" data-label="reellarbeidssoker.annensituasjon"
-						data-endret="endreDeltidsAarsaker(reellarbeidssokerForm)"></div>
-                <span class="melding" data-cmstekster="reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding"></span>
-			</div>
+                <div data-navcheckbox
+                     data-ng-model='soknadData.fakta.eneansvarbarnunder5skoleaar.value'
+                     data-modus='data.redigeringsModus'
+                     data-inputname='eneansvarbarnunder5skoleaar'
+                     data-label='reellarbeidssoker.eneansvarbarnunder5skoleaar'
+                     data-endret="endreDeltidsAarsaker(reellarbeidssokerForm)"></div>
 
-			<p class="informasjonstekst" data-cmstekster="reellarbeidssoker.villigdeltid.false.informasjon2"></p>
+                <div data-navcheckbox
+                     data-ng-model='soknadData.fakta.eneansvarbarnopptil18aar.value'
+                     data-modus='data.redigeringsModus'
+                     data-inputname='eneansvarbarnopptil18aar'
+                     data-label='reellarbeidssoker.eneansvarbarnopptil18aar'
+                     data-endret="endreDeltidsAarsaker(reellarbeidssokerForm)"></div>
 
-			<div data-navtekst data-ng-model="soknadData.fakta.maksimalarbeidstid.value"
-					data-modus="data.redigeringsModus" data-inputname="maksimalarbeidstid"
-					data-label=" reellarbeidssoker.maksimalarbeidstid"
-					data-feilmelding="reellarbeidssoker.maksimalarbeidstid.feilmelding"></div>
-		</div>
+                <div data-navcheckbox
+                     data-ng-model='soknadData.fakta.omsorgansvar.value'
+                     data-modus='data.redigeringsModus'
+                     data-inputname='omsorgansvar'
+                     data-label='reellarbeidssoker.omsorgansvar'
+                     data-endret="endreDeltidsAarsaker(reellarbeidssokerForm)"></div>
 
-		<div data-booleanradio data-ng-model="soknadData.fakta.villigpendle.value"
-				data-modus="data.redigeringsModus"
-				data-nokkel="reellarbeidssoker.villigpendle"></div>
+                <div data-navcheckbox
+                     data-ng-model='soknadData.fakta.annensituasjon.value'
+                     data-modus='data.redigeringsModus'
+                     data-inputname='annensituasjon'
+                     data-label='reellarbeidssoker.annensituasjon'
+                     data-endret="endreDeltidsAarsaker(reellarbeidssokerForm)"></div>
+                <span class="melding"
+                      data-cmstekster="reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding"></span>
+            </div>
 
-		<div class="ekstra-spm-boks" data-ng-show="soknadData.fakta.villigpendle.value == 'false'">
-			<div data-navinfoboks data-nokkel="reellarbeidssoker.villigpendle.false.informasjon"></div>
-			<div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
-				<div data-navcheckbox data-ng-model="soknadData.fakta.pendlereduserthelse.value"
-						data-modus="data.redigeringsModus"
-						data-inputname="pendlereduserthelse" data-label="reellarbeidssoker.pendlereduserthelse"
-						data-endret="endrePendleAarsaker(reellarbeidssokerForm)"></div>
+            <p class="informasjonstekst" data-cmstekster="reellarbeidssoker.villigdeltid.false.informasjon2"></p>
 
-				<div data-navcheckbox data-ng-model="soknadData.fakta.pendleomsorgbarnunder1aar.value"
-						data-modus="data.redigeringsModus"
-						data-inputname="pendleomsorgbarnunder1aar" data-label="reellarbeidssoker.pendleomsorgbarnunder1aar"
-						data-endret="endrePendleAarsaker(reellarbeidssokerForm)"></div>
+            <div data-navtekst
+                 data-ng-model="soknadData.fakta.maksimalarbeidstid.value"
+                 data-modus="data.redigeringsModus"
+                 data-inputname="maksimalarbeidstid"
+                 data-label=" reellarbeidssoker.maksimalarbeidstid"
+                 data-feilmelding="reellarbeidssoker.maksimalarbeidstid.feilmelding"></div>
+        </div>
 
-				<div data-navcheckbox data-ng-model="soknadData.fakta.pendleomsorgbarnopptil10.value"
-						data-modus="data.redigeringsModus"
-						data-inputname="pendleomsorgbarnopptil10" data-label="reellarbeidssoker.pendleomsorgbarnopptil10"
-						data-endret="endrePendleAarsaker(reellarbeidssokerForm)"></div>
+        <div data-booleanradio
+             data-ng-model="soknadData.fakta.villigpendle.value"
+             data-modus="data.redigeringsModus"
+             data-nokkel="reellarbeidssoker.villigpendle"></div>
 
-				<div data-navcheckbox data-ng-model="soknadData.fakta.pendleeneansvarbarnunder5skoleaar.value"
-						data-modus="data.redigeringsModus"
-						data-inputname="pendleeneansvarbarnunder5skoleaar" data-label="reellarbeidssoker.pendleeneansvarbarnunder5skoleaar"
-						data-endret="endrePendleAarsaker(reellarbeidssokerForm)"></div>
+        <div class="ekstra-spm-boks" data-ng-show="soknadData.fakta.villigpendle.value == 'false'">
+            <div data-navinfoboks data-nokkel="reellarbeidssoker.villigpendle.false.informasjon"></div>
+            <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
+                <div data-navcheckbox
+                     data-ng-model='soknadData.fakta.pendlereduserthelse.value'
+                     data-modus='data.redigeringsModus'
+                     data-inputname='pendlereduserthelse'
+                     data-label='reellarbeidssoker.pendlereduserthelse'
+                     data-endret="endrePendleAarsaker(reellarbeidssokerForm)"></div>
 
-				<div data-navcheckbox data-ng-model="soknadData.fakta.pendleeneansvarbarnopptil18aar.value"
-						data-modus="data.redigeringsModus"
-						data-inputname="pendleeneansvarbarnopptil18aar" data-label="reellarbeidssoker.pendleeneansvarbarnopptil18aar"
-						data-endret="endrePendleAarsaker(reellarbeidssokerForm)"></div>
+                <div data-navcheckbox
+                     data-ng-model='soknadData.fakta.pendleomsorgbarnunder1aar.value'
+                     data-modus='data.redigeringsModus'
+                     data-inputname='pendleomsorgbarnunder1aar'
+                     data-label='reellarbeidssoker.pendleomsorgbarnunder1aar'
+                     data-endret="endrePendleAarsaker(reellarbeidssokerForm)"></div>
 
-				<div data-navcheckbox data-ng-model="soknadData.fakta.pendleomsorgansvar.value"
-						data-modus="data.redigeringsModus"
-						data-inputname="pendleomsorgansvar" data-label="reellarbeidssoker.pendleomsorgansvar"
-						data-endret="endrePendleAarsaker(reellarbeidssokerForm)"></div>
+                <div data-navcheckbox
+                     data-ng-model='soknadData.fakta.pendleomsorgbarnopptil10.value'
+                     data-modus='data.redigeringsModus'
+                     data-inputname='pendleomsorgbarnopptil10'
+                     data-label='reellarbeidssoker.pendleomsorgbarnopptil10'
+                     data-endret="endrePendleAarsaker(reellarbeidssokerForm)"></div>
 
-				<div data-navcheckbox data-ng-model="soknadData.fakta.pendleannensituasjon.value"
-						data-modus="data.redigeringsModus"
-						data-inputname="pendleannensituasjon" data-label="reellarbeidssoker.pendleannensituasjon"
-						data-endret="endrePendleAarsaker(reellarbeidssokerForm)"></div>
+                <div data-navcheckbox
+                     data-ng-model='soknadData.fakta.pendleeneansvarbarnunder5skoleaar.value'
+                     data-modus='data.redigeringsModus'
+                     data-inputname='pendleeneansvarbarnunder5skoleaar'
+                     data-label='reellarbeidssoker.pendleeneansvarbarnunder5skoleaar'
+                     data-endret="endrePendleAarsaker(reellarbeidssokerForm)"></div>
+
+                <div data-navcheckbox
+                     data-ng-model='soknadData.fakta.pendleeneansvarbarnopptil18aar.value'
+                     data-modus='data.redigeringsModus'
+                     data-inputname='pendleeneansvarbarnopptil18aar'
+                     data-label='reellarbeidssoker.pendleeneansvarbarnopptil18aar'
+                     data-endret="endrePendleAarsaker(reellarbeidssokerForm)"></div>
+
+                <div data-navcheckbox
+                     data-ng-model='soknadData.fakta.pendleomsorgansvar.value'
+                     data-modus='data.redigeringsModus'
+                     data-inputname='pendleomsorgansvar'
+                     data-label='reellarbeidssoker.pendleomsorgansvar'
+                     data-endret="endrePendleAarsaker(reellarbeidssokerForm)"></div>
+
+                <div data-navcheckbox
+                     data-ng-model='soknadData.fakta.pendleannensituasjon.value'
+                     data-modus='data.redigeringsModus'
+                     data-inputname='pendleannensituasjon'
+                     data-label='reellarbeidssoker.pendleannensituasjon'
+                     data-endret="endrePendleAarsaker(reellarbeidssokerForm)"></div>
 
                 <span class="melding"
 		                data-cmstekster="reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding"></span>
@@ -107,9 +145,10 @@
 			<p data-cmstekster="reellarbeidssoker.villighelse.false.vedlegginformasjon"></p>
 		</div>
 
-		<div data-booleanradio data-ng-model="soknadData.fakta.villigjobb.value"
-				data-modus="data.redigeringsModus"
-				data-nokkel="reellarbeidssoker.villigjobb"></div>
+		<div data-booleanradio
+             data-ng-model="soknadData.fakta.villigjobb.value"
+             data-modus="data.redigeringsModus"
+             data-nokkel="reellarbeidssoker.villigjobb"></div>
 
 		<div class="ekstra-spm-boks" data-ng-show="soknadData.fakta.villigjobb.value == 'false'">
 			<div data-navinfoboks data-nokkel="reellarbeidssoker.villigjobb.false.informasjon"></div>
