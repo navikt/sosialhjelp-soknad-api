@@ -2,20 +2,25 @@ package no.nav.sbl.dialogarena.person;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.WebServiceException;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
+import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 
 import org.slf4j.Logger;
 
+import com.google.gson.Gson;
+
 /**
- * Implementer {@link PersonService}. Denne implementasjonen henter data fra TPS
+ * Implementer {@link PersonService}. Denne implementasjonen henter data fra TPS, og lagrer som systemfaktum i databasen
  *
  */
 public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
@@ -26,6 +31,9 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
     @Named("personService")
     private PersonPortType person;
 
+    @Inject
+    private SendSoknadService soknadService;
+    
 	/**
 	 * Forsøker å hente person fra TPS og transformere denne til vår Personmodell.
 	 * Dersom det feiler, logges feilen og det returneres et tomt Person objekt videre 
@@ -48,10 +56,23 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
             return new Person();
 		}
     
-        return new FamilieRelasjonTransform().mapFamilierelasjonTilPerson(soknadId, response);
+       Person person = new FamilieRelasjonTransform().mapFamilierelasjonTilPerson(soknadId, response);
+       
+       lagreSystemFaktum(soknadId, person);
+       
+       return person;
     }
 
-    private HentKjerneinformasjonRequest lagXMLRequest(String ident) {
+    private void lagreSystemFaktum(Long soknadId, Person person) {
+    	List<Person> barneliste = (List<Person>) person.getFakta().get("barn");
+    	if(barneliste != null) {
+	    	for (Person barn : barneliste) {
+				soknadService.lagreSystemSoknadsFelt(soknadId, "barn", new Gson().toJson(barn.getFakta()));
+			}
+    	}
+	}
+
+	private HentKjerneinformasjonRequest lagXMLRequest(String ident) {
     	HentKjerneinformasjonRequest request = new HentKjerneinformasjonRequest();
     	request.setIdent(ident);
         return request;

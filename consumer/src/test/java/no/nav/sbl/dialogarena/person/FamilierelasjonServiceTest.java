@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
@@ -27,6 +28,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.google.gson.Gson;
+
 @RunWith(value = MockitoJUnitRunner.class)
 public class FamilierelasjonServiceTest {
 
@@ -44,6 +47,9 @@ public class FamilierelasjonServiceTest {
 
 	    @Mock
 	    private PersonPortType personMock;
+	    
+	    @Mock
+	    private SoknadService soknadServiceMock;
 	    
 	    @SuppressWarnings("unchecked")
 		@Test
@@ -130,7 +136,7 @@ public class FamilierelasjonServiceTest {
 		    Assert.assertEquals(BARN_ETTERNAVN, barnEtternavn.getValue());
 		    Assert.assertEquals(BARN_SAMMENSATTNAVN, barnSammensattnavn.getValue());
 		    
-	    	
+	    	System.out.println(new Gson().toJson(b1.getFakta()));
 	    	
 	    }
 	    
