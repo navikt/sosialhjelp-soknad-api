@@ -18,11 +18,11 @@ angular.module('nav.input', ['nav.cmstekster'])
 
                 scope.hvisSynlig = function () {
                     return element.is(':visible');
-                }
+                };
 
                 scope.hvisIRedigeringsmodus = function () {
                     return scope.modus;
-                }
+                };
 
                 scope.hvisIOppsummeringsmodusOgRadioErValgt = function () {
 

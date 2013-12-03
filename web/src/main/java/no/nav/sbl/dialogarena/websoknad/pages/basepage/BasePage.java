@@ -4,8 +4,6 @@ import no.nav.modig.content.CmsContentRetriever;
 import no.nav.sbl.dialogarena.webkomponent.footer.FooterPanel;
 import no.nav.sbl.dialogarena.webkomponent.innstillinger.InnstillingerPanel;
 import no.nav.sbl.dialogarena.webkomponent.navigasjon.NavigasjonPanel;
-import org.apache.wicket.markup.html.TransparentWebMarkupContainer;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.AbstractReadOnlyModel;
@@ -30,22 +28,15 @@ public class BasePage extends WebPage {
     @Named("footerLinks")
 	private Map<String, String> footerLinks;
 
-    private final WebMarkupContainer body;
 
     public BasePage(PageParameters parameters) {
         super(parameters);
-        body = (WebMarkupContainer) new TransparentWebMarkupContainer("body").setOutputMarkupId(true);
-        add(body);
-        body.add(
+        add(
                 new Label("tittel", "Søknad om dagpenger"),
                 new InnstillingerPanel("innstillinger", getInnloggetIsTrueModel(), cmsContentRetriever),
                 new NavigasjonPanel("navigasjon", navigasjonsLink, cmsContentRetriever),
                 new FooterPanel("footer", footerLinks, getInnloggetIsTrueModel(), FALSE, cmsContentRetriever)
         );
-    }
-
-    public final WebMarkupContainer getBody() {
-        return body;
     }
 
     private AbstractReadOnlyModel<Boolean> getInnloggetIsTrueModel() {
@@ -63,5 +54,4 @@ public class BasePage extends WebPage {
             return false;
         }
     };
-
 }

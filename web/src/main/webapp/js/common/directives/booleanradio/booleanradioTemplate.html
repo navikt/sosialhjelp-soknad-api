@@ -1,11 +1,28 @@
 <div class='spm form-linje boolean'>
-    <div nav-hjelpetekstelement data-vishjelp="visHjelpetekst" data-tittel="tittel" data-tekst="tekst"/>
+    <div data-nav-hjelpetekstelement
+         data-vishjelp="visHjelpetekst"
+         data-tittel="tittel"
+         data-tekst="tekst">
+    </div>
 
-    <p class="spm-sporsmal" cmstekster="{{ sporsmal }}"/>
+    <p class="spm-sporsmal" data-cmstekster="{{ sporsmal }}"></p>
 
-    <div data-navradio data-ng-model='model' modus='modus' value='true' inputname='{{ inputname }}'
-         label='{{ trueLabel }}' feilmelding='{{ feilmelding }}'/>
-    <div data-navradio data-ng-model='model' modus='modus' value='false' inputname='{{ inputname }}'
-         label='{{ falseLabel }}' feilmelding='{{ feilmelding }}'/>
-    <span class="melding"/>
+    <div data-navradio
+         data-ng-model='model'
+         data-modus='modus'
+         data-value='true'
+         data-inputname='{{ inputname }}'
+         data-label='{{ trueLabel }}'
+         data-feilmelding='{{ feilmelding }}'>
+     </div>
+
+    <div data-navradio
+         data-ng-model='model'
+         data-modus='modus'
+         data-value='false'
+         data-inputname='{{ inputname }}'
+         data-label='{{ falseLabel }}'
+         data-feilmelding='{{ feilmelding }}'>
+     </div>
+    <span class="melding"></span>
 </div>

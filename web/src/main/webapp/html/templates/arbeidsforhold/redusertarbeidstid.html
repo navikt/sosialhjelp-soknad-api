@@ -1,33 +1,48 @@
-<div>
-	<p class="sluttaarsak-informasjon" cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.informasjon"/>
+<p class="sluttaarsak-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.informasjon"/>
 
-	<p class='spm' cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.sporsmal"/>
-       <span data-ng-show="redusertArbeidstidDatoError" style="color:red"
-             cmstekster="arbeidsforhold.error.redusertArbeidstid.datoFra"/>
-	<input type="text" name="avskjedigetFraDato" ui-date ui-date-format data-ng-model="af.redusertArbeidstid.fra" data-ng-change="validateRedusertArbeidstidDato(af)"
-		error-messages="'arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.feilmelding'" required >
+<div data-nav-dato data-ng-model="af.redusertArbeidstid.fra"
+     data-label="arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.sporsmal"
+     data-er-required="true"
+     data-endret="validateRedusertArbeidstidDato(af)"
+     data-required-error-message="arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.feilmelding">
+</div>
 
-	<div class="sporsmaal">
-	    <p cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.sporsmal"/>
+<div class="sporsmaal form-linje boolean">
+    <p data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.sporsmal"/>
 
-	    <div>
-	      <input class="sendsoknad-radio" id="nyttTilbudJa" data-ng-model="af.redusertArbeidstid.nyttTilbud" type="radio" value="true"
-	                 name="nyttTilbud" error-messages="'arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.feilmelding'" required/>
-	      <label for="nyttTilbudJa" class='svar-alt' cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.true"/>
-	    </div>
+    <div>
+        <input class="sendsoknad-radio"
+               id="nyttTilbudJa"
+               type="radio"
+               value="true"
+               data-ng-model="af.redusertArbeidstid.nyttTilbud"
+               data-name="nyttTilbud"
+               data-error-messages="'arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.feilmelding'"
+               data-ng-required="true"
+               data-click-validate/>
 
-	    <div>
-	      <input class="sendsoknad-radio" id="nyttTilbudNei" data-ng-model="af.redusertArbeidstid.nyttTilbud" type="radio" value="false"
-	                 name="nyttTilbud" error-messages="'arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.feilmelding'" required/>
-	      <label for="nyttTilbudNei" class='svar-alt' cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.false"/>
-	    </div>
+        <label for="nyttTilbudJa" class='svar-alt'
+               data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.true"/>
+    </div>
 
-	    <div data-ng-show="af.redusertArbeidstid.nyttTilbud == 'true'">
-      		<p cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.informasjon"/>
-      	</div>
-	</div>
+    <div>
+        <input class="sendsoknad-radio"
+               id="nyttTilbudNei"
+               type="radio"
+               value="false"
+               data-ng-model="af.redusertArbeidstid.nyttTilbud"
+               data-name="nyttTilbud"
+               data-error-messages="'arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.feilmelding'"
+               data-ng-required="true"
+               data-click-validate/>
 
-    <!--booleanradio data-ng-model="af.redusertArbeidstid.nyttTilbud"
-                  modus="data.redigeringsModus"
-                  nokkel="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud"/-->
+        <label for="nyttTilbudNei" class='svar-alt'
+               data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.false"/>
+    </div>
+    <span class="melding"
+          data-cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.feilmelding"></span>
+
+    <div data-ng-show="af.redusertArbeidstid.nyttTilbud == 'true'">
+        <p data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.informasjon"/>
+    </div>
 </div>

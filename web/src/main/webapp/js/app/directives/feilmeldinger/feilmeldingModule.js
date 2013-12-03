@@ -136,6 +136,7 @@ angular.module('nav.feilmeldinger', [])
                         if (typeof feil.$errorMessages === 'object') {
                             return feil.$errorMessages[feilNokkel];
                         } else if (typeof feil.$errorMessages === 'string') {
+
                             return feil.$errorMessages;
                         }
                     }

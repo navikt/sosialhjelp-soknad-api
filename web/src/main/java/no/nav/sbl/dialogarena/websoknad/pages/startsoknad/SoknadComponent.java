@@ -63,5 +63,4 @@ public class SoknadComponent extends WebComponent {
             throw new ApplicationException("Fant ikke template " + file);
         }
     }
-
 }
