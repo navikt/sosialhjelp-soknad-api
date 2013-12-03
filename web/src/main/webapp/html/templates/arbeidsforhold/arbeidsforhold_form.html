@@ -1,16 +1,13 @@
 <form name="endreArbeidsforholdForm" data-ng-submit="aksjon()">
 
-    <div class="varighet">
-        <label>Fra:</label>
-        <input type="text" name="varighetFra" ui-date ui-date-format ng-model="af.varighetFra" data-ng-change="validateTilFraDato(af)"  required >
-        <label>Til:</label>
-        <span data-ng-show="datoError" style="color:red">Tildato må være etter fradato</span>
-        <input type="text" name="varighetTil" ui-date ui-date-format ng-model="af.varighetTil" data-ng-change="validateTilFraDato(af)" required >
-    </div>
-    
-    <br/>
-    <br/>
-    
-    <input cmstekster="arbeidsforhold.lagre" type="submit" id="arbeidsgiverLagre"></input>
-    <a href cmstekster="arbeidsforhold.avbryt" data-ng-click="avbrytEndringAvArbeidsforhold()"></a>
+	<div class="varighet">
+		<label>Fra:</label>
+		<input type="text" name="varighetFra" data-ui-date data-ui-date-format ng-model="af.varighetFra" data-ng-change="validateTilFraDato(af)" required>
+		<label>Til:</label>
+		<span data-ng-show="datoError" style="color:red">Tildato må være etter fradato</span>
+		<input type="text" name="varighetTil" data-ui-date data-ui-date-format ng-model="af.varighetTil" data-ng-change="validateTilFraDato(af)" required>
+	</div>
+
+	<input data-cmstekster="arbeidsforhold.lagre" type="submit" id="arbeidsgiverLagre"/>
+	<a href data-cmstekster="arbeidsforhold.avbryt" data-ng-click="avbrytEndringAvArbeidsforhold()"></a>
 </form>
