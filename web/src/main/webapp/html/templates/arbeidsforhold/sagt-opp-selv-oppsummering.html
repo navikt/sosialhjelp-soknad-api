@@ -1,44 +1,35 @@
-<div>
-    <p class="svar-oppsummering-informasjon" cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.informasjon"/>
+<p class="svar-oppsummering-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.informasjon"></p>
 
-    <p class="svar-oppsummering-sporsmal"
-       cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.sporsmal"/>
+<p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.sporsmal"></p>
 
-    <div data-ng-show="af.sagtOppSelvInnskrenkninger">
-        <p class="svar-oppsummering" cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.true"/>
+<div data-ng-show="af.sagtOppSelvInnskrenkninger">
+	<p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.true"></p>
+	<p class="svar-oppsummering-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.informasjon"></p>
+</div>
 
-        <p class="svar-oppsummering-informasjon"
-           cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.informasjon"/>
-    </div>
+<div data-ng-show="af.sagtOppSelvInnskrenkninger == 'false'">
+	<p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.false"></p>
+</div>
 
-    <div data-ng-show="af.sagtOppSelvInnskrenkninger == 'false'">
-        <p class="svar-oppsummering" cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.false"/>
-    </div>
+<p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.sporsmal"></p>
+<p class="svar-oppsummering">{{af.sagtOppSelvVarighetTil | date:'dd.MM.yyyy'}}</p>
 
+<p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.sporsmal"></p>
 
-    <p class="svar-oppsummering-sporsmal" cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.sporsmal"/>
-    <p class="svar-oppsummering">{{af.sagtOppSelvVarighetTil | date:'dd.MM.yyyy'}} </p>
+<div data-ng-show="af.sagtOppSelvOppsigelseslonn">
+	<p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.true"></p>
+</div>
 
-    <p class="svar-oppsummering-sporsmal"
-       cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.sporsmal"/>
+<div data-ng-show="af.sagtOppSelvOppsigelseslonn == 'false'">
+	<p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.false"></p>
+</div>
 
-    <div data-ng-show="af.sagtOppSelvOppsigelseslonn">
-        <p class="svar-oppsummering" cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.true"/>
-    </div>
+<p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.sporsmal"></p>
 
-    <div data-ng-show="af.sagtOppSelvOppsigelseslonn == 'false'">
-        <p class="svar-oppsummering" cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.false"/>
-    </div>
+<div data-ng-show="af.sagtOppSelvAvtaleomOkonomiskytelse">
+	<p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.true"></p>
+</div>
 
-
-    <p class="svar-oppsummering-sporsmal"
-       cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.sporsmal"/>
-
-    <div data-ng-show="af.sagtOppSelvAvtaleomOkonomiskytelse">
-        <p class="svar-oppsummering" cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.true"/>
-    </div>
-
-    <div data-ng-show="af.sagtOppSelvAvtaleomOkonomiskytelse == 'false'">
-        <p class="svar-oppsummering" cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.false"/>
-    </div>
+<div data-ng-show="af.sagtOppSelvAvtaleomOkonomiskytelse == 'false'">
+	<p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.false"></p>
 </div>

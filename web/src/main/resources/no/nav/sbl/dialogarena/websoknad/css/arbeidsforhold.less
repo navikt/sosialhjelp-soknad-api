@@ -1,5 +1,5 @@
 #arbeidsforhold {
-    .skjemainnhold  {
+    .skjemainnhold {
         padding-top: 20px;
     }
 
@@ -13,28 +13,19 @@
     .arbeidsforhold-spm {
         margin-bottom: 40px;
 
-        input, select, .nav-select {
+        input, select, .nav-select, .datepicker-intervall {
             width: 75%;
-            margin-bottom: 1rem;
 
             &#arbeidsgiver_navn {
                 width: 100%;
             }
         }
 
-        .varighet {
-            width: 75%;
-            > div {
-                display: inline-block;
-                width: 47.35%;
+        .varighet, .land {
+            padding: 15px;
 
-                input {
-                    width: 100%;
-                }
-
-                &:last-child {
-                    margin-left: 4%;
-                }
+            .datepicker, .nav-select {
+                padding: 0;
             }
         }
 

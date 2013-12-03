@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:wicket="http://wicket.apache.org">
-    <body wicket:id="body">
+	<head>
+		<title><wicket:message key="sidetittel.start"/></title>
+	</head>
+    <body>
         <div class="omslag">
-            <wicket:container wicket:id="innstillinger">Replaced by wicket</wicket:container>
+            <wicket:container wicket:id="innstillinger"/>
             <wicket:container wicket:id="navigasjon"/>
             <div class="rad tittel">
                 <div class="begrensning">
-                    <h1 class="diger hoved-tittel" wicket:id="tittel"/>
+                    <h1 class="diger hoved-tittel" wicket:id="tittel">[]</h1>
                 </div>
             </div>
             <wicket:child/>
