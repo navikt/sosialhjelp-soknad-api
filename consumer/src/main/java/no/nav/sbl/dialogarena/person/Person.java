@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.person;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -20,6 +21,8 @@ public class Person implements Serializable {
 	private static final String GJELDENDEADRESSETYPE = "gjeldendeAdresseType";
 	private static final String EPOSTKEY = "epost";
 	private static final String BARNKEY = "barn";
+	private static final String KJONNKEY = "kjonn";
+	private static final String ALDERKEY = "alder";
 
 	private Map<String, Object> fakta;
 
@@ -40,7 +43,7 @@ public class Person implements Serializable {
     }
     
     public Person(Long soknadId, String fnr, String fornavn,
-			String mellomnavn, String etternavn, List<Person> barn) {
+			String mellomnavn, String etternavn, List<Barn> barn) {
     	fakta = new HashMap<>();
     	
     	fakta.put(FODSELSNUMMERKEY, genererFaktum(soknadId,FODSELSNUMMERKEY,fnr));
@@ -115,4 +118,5 @@ public class Person implements Serializable {
 	private boolean ingenFaktumReturnert(Faktum faktum) {
 		return faktum == null;
 	}
+
 }

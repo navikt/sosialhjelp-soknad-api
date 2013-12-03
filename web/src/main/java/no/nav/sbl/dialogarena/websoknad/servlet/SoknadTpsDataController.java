@@ -116,10 +116,7 @@ public class SoknadTpsDataController {
     @ResponseBody()
     public Person hentFamilierelasjoner(@PathVariable String soknadId) {
         System.out.println("#######skal hente familie#######");
-    	Person person =  familieRelasjonService.hentPerson(new Long(soknadId), getSubjectHandler().getUid());
-    	
-    	// lagre systemfaktum
-    	
+    	Person person =  familieRelasjonService.hentPerson(new Long(soknadId), getSubjectHandler().getUid());    	
     	System.out.println("#######ferdig med familie#######");
     	
     	return person;

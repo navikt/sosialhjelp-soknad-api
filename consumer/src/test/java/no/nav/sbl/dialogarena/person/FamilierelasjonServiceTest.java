@@ -1,25 +1,22 @@
 package no.nav.sbl.dialogarena.person;
 
-import java.util.Arrays;
+import static org.mockito.Mockito.when;
+
 import java.util.List;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.NorskIdent;
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
-import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
-import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegrensning;
-import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
-import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
-
-
-
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
+import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
+import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 
-import static org.mockito.Mockito.when;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,12 +29,11 @@ import com.google.gson.Gson;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class FamilierelasjonServiceTest {
-
-	    private static final String GYLDIG_IDENT = "12345";
+	    private static final String GYLDIG_IDENT = "56128349974";
 		private static final String ET_FORNAVN = "Per";
 		private static final String ET_ETTERNAVN = "Persen";
-		private static final String FEIL_IDENT = "99999";
-		private static final String BARN_IDENT = "55555";
+		private static final String FEIL_IDENT = "99999999999";
+		private static final String BARN_IDENT = "14057132842";
 		private static final String BARN_FORNAVN = "Bjarne";
 		private static final String BARN_ETTERNAVN = "Barnet";
 		private static final Object BARN_SAMMENSATTNAVN = BARN_FORNAVN + " " + BARN_ETTERNAVN;
@@ -117,7 +113,7 @@ public class FamilierelasjonServiceTest {
 	    	Faktum fornavn = (Faktum) familieRelasjonPerson.getFakta().get("fornavn");
 	        Faktum etternavnavn = (Faktum) familieRelasjonPerson.getFakta().get("etternavn");
 	        Faktum sammensattnavn = (Faktum) familieRelasjonPerson.getFakta().get("sammensattnavn");
-	        List<no.nav.sbl.dialogarena.person.Person> barn = (List<no.nav.sbl.dialogarena.person.Person>) familieRelasjonPerson.getFakta().get("barn");
+	        List<Barn> barn = (List<Barn>) familieRelasjonPerson.getFakta().get("barn");
 	        
 	    	Assert.assertEquals(GYLDIG_IDENT, fnr.getValue());
 		    Assert.assertEquals(ET_FORNAVN, fornavn.getValue());
@@ -125,18 +121,14 @@ public class FamilierelasjonServiceTest {
 		    Assert.assertEquals(ET_FORNAVN+" "+ET_ETTERNAVN, sammensattnavn.getValue());
 		    
 		    Assert.assertEquals(1, barn.size());
-		    no.nav.sbl.dialogarena.person.Person b1 = barn.get(0);
-		    Faktum barnFnr = (Faktum) b1.getFakta().get("fnr");
-	    	Faktum barnFornavn = (Faktum) b1.getFakta().get("fornavn");
-	        Faktum barnEtternavn = (Faktum) b1.getFakta().get("etternavn");
-	        Faktum barnSammensattnavn = (Faktum) b1.getFakta().get("sammensattnavn");
+		    Barn b1 = barn.get(0);
 		    
-		    Assert.assertEquals(BARN_IDENT, barnFnr.getValue());
-		    Assert.assertEquals(BARN_FORNAVN, barnFornavn.getValue());
-		    Assert.assertEquals(BARN_ETTERNAVN, barnEtternavn.getValue());
-		    Assert.assertEquals(BARN_SAMMENSATTNAVN, barnSammensattnavn.getValue());
+		    Assert.assertEquals(BARN_IDENT, b1.getFnr());
+		    Assert.assertEquals(BARN_FORNAVN, b1.getFornavn());
+		    Assert.assertEquals(BARN_ETTERNAVN, b1.getEtternavn());
+		    Assert.assertEquals(BARN_SAMMENSATTNAVN, b1.getSammensattnavn());
 		    
-	    	System.out.println(new Gson().toJson(b1.getFakta()));
+	    	System.out.println(new Gson().toJson(b1));
 	    	
 	    }
 	    

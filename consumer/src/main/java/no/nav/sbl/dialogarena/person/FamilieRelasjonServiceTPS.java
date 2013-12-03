@@ -58,16 +58,16 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
     
        Person person = new FamilieRelasjonTransform().mapFamilierelasjonTilPerson(soknadId, response);
        
-       lagreSystemFaktum(soknadId, person);
+       lagreBarn(soknadId, person);
        
        return person;
     }
 
-    private void lagreSystemFaktum(Long soknadId, Person person) {
-    	List<Person> barneliste = (List<Person>) person.getFakta().get("barn");
+    private void lagreBarn(Long soknadId, Person person) {
+    	List<Barn> barneliste = (List<Barn>) person.getFakta().get("barn");
     	if(barneliste != null) {
-	    	for (Person barn : barneliste) {
-				soknadService.lagreSystemSoknadsFelt(soknadId, "barn", new Gson().toJson(barn.getFakta()));
+	    	for (Barn barn : barneliste) {
+				soknadService.lagreSystemSoknadsFelt(soknadId, "barn", new Gson().toJson(barn));
 			}
     	}
 	}
