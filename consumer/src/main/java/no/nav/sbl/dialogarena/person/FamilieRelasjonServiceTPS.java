@@ -38,18 +38,17 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
             response = person.hentKjerneinformasjon(lagXMLRequest(fodselsnummer));
             logger.warn("Fullstendig XML fra Person-servicen:" + response);
         } catch (HentKjerneinformasjonPersonIkkeFunnet e) {
-            logger.error("Fant ikke bruker i TPS.", e);
+            logger.error("Fant ikke bruker i TPS (Person-servicen).", e);
             return new Person();
         } catch (HentKjerneinformasjonSikkerhetsbegrensning e) {
-        	logger.error("Kunne ikke hente bruker fra TPS.", e);
+        	logger.error("Kunne ikke hente bruker fra TPS (Person-servicen).", e);
             return new Person();
 		} catch(WebServiceException e) {
-			logger.error("Ingen kontakt med TPS.", e);
+			logger.error("Ingen kontakt med TPS (Person-servicen).", e);
             return new Person();
 		}
-        
-        return new Person();
-        //return new PersonTransform().mapToPerson(soknadId, response);
+    
+        return new FamilieRelasjonTransform().mapFamilierelasjonTilPerson(soknadId, response);
     }
 
     private HentKjerneinformasjonRequest lagXMLRequest(String ident) {
