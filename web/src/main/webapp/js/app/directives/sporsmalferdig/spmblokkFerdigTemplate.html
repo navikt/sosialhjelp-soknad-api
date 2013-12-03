@@ -1,14 +1,10 @@
 <div class="spm-knapper">
     <div data-ng-show="hvisIRedigeringsmodus()">
-        <input type="button" class="knapp-hoved-liten"  cmstekster="{{ nokkel }}.ferdig" data-ng-click="submitMethod()"/>
-
-        <a href="#/fortsettsenere/{{ soknadId }}" cmstekster="fortsettSenere"/>
-
+        <input type="button" class="knapp-hoved-liten" data-cmstekster="{{ nokkel }}.ferdig" data-ng-click="submitMethod()"/>
+        <a href="#/fortsettsenere/{{ soknadId }}" data-cmstekster="fortsettSenere"></a>
     </div>
-
     <div data-ng-show="hvisIOppsummeringsmodus()">
-        <button class="knapp-hoved-liten" cmstekster="neste" data-ng-click="lukkOgGaaTilNeste()"/>
-        <a data-ng-click="gaTilRedigeringsmodus()" cmstekster="endre"/>
+        <button class="knapp-hoved-liten" data-cmstekster="neste" data-ng-click="lukkOgGaaTilNeste()"></button>
+        <a data-ng-click="gaTilRedigeringsmodus()" data-cmstekster="endre"></a>
     </div>
-
 </div>
