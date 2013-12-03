@@ -1,7 +1,7 @@
 angular.module('nav.input', ['nav.cmstekster'])
     .directive('navradio', [function () {
         return {
-            restrict: "AE",
+            restrict: "A",
             replace: true,
             require: 'ngModel',
             scope: {
@@ -30,12 +30,12 @@ angular.module('nav.input', ['nav.cmstekster'])
                 }
 
             },
-            templateUrl: '../js/app/directives/navinput/navradioTemplate.html'
+            templateUrl: '../js/common/directives/navinput/navradioTemplate.html'
         }
     }])
     .directive('navcheckbox', [function () {
         return {
-            restrict: "AE",
+            restrict: "A",
             replace: true,
             transclude: true,
             require: 'ngModel',
@@ -68,13 +68,13 @@ angular.module('nav.input', ['nav.cmstekster'])
                     return checkTrue(scope.model) && transcludeElement.text().length > 0;
                 }
             },
-            templateUrl: '../js/app/directives/navinput/navcheckboxTemplate.html'
+            templateUrl: '../js/common/directives/navinput/navcheckboxTemplate.html'
         }
     }])
 
     .directive('navtekst', [function () {
         return {
-            restrict: "AE",
+            restrict: "A",
             replace: true,
             require: 'ngModel',
             scope: {
@@ -100,13 +100,13 @@ angular.module('nav.input', ['nav.cmstekster'])
                     return element.is(':visible');
                 }
             },
-            templateUrl: '../js/app/directives/navinput/navtekstTemplate.html'
+            templateUrl: '../js/common/directives/navinput/navtekstTemplate.html'
         }
     }])
 
     .directive('navButtonSpinner', [function () {
         return {
-            restrict: "AE",
+            restrict: "A",
             replace: true,
             scope: {
                 laster: '=',
@@ -115,7 +115,7 @@ angular.module('nav.input', ['nav.cmstekster'])
                 type: '@',
                 click: '&'
             },
-            templateUrl: '../js/app/directives/navinput/navbuttonspinnerTemplate.html'
+            templateUrl: '../js/common/directives/navinput/navbuttonspinnerTemplate.html'
         }
     }])
 
