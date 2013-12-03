@@ -1,39 +1,32 @@
 <div data-panelbelyst id="fortsett-senere">
-    <div class="skjemaramme" data-ng-controller="ModusCtrl">
-        <div data-ng-controller="FortsettSenereCtrl" data-ng-form="epostForm" novalidate class="epost-input vertikal">
-                <h2 class="stor" cmstekster="dagpenger.fortsettSenere.tittel"/>
+	<div class="skjemaramme" data-ng-controller="ModusCtrl">
+		<div data-ng-controller="FortsettSenereCtrl" data-ng-form="epostForm" data-novalidate class="epost-input vertikal">
+			<h2 class="stor" data-cmstekster="dagpenger.fortsettSenere.tittel"></h2>
+			<p data-cmstekster="dagpenger.fortsettSenere.info"></p>
+			<div class="send-epost">
+				<div class="input-boks">
+					<div class="form-linje">
+						<label>
+							<span data-cmstekster="dagpenger.fortsettSenere.epost.label"> </span>
+							<input type="email" name="epost" role="textbox" data-ng-model="soknadData.fakta.epost.value"
+									data-error-messages="{required: 'dagpenger.fortsettSenere.epost.required.feilmelding', pattern: 'dagpenger.fortsettSenere.epost.pattern.feilmelding' }"
+									data-ng-required="true" data-ng-pattern="/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}$/" data-blur-validate/>
+						</label>
+						<input type="submit" class="knapp-hoved-liten" data-cmstekster="dagpenger.fortsettSenere.epost.send" role="button" data-ng-click="forsettSenere(epostForm)"/>
+						<span class="melding"></span>
+					</div>
+				</div>
+			</div>
 
-                <p cmstekster="dagpenger.fortsettSenere.info"/>
+			<div>
+				<p data-cmstekster="dagpenger.fortsettSenere.info.frister"></p>
+				<p data-cmstekster="dagpenger.fortsettSenere.info.konsekvenser"></p>
+			</div>
 
-                <div class="send-epost">
-                    <div class="input-boks">
-                        <div class="form-linje">
-                            <label>
-                                <span cmstekster="dagpenger.fortsettSenere.epost.label"> </span>
-                                <input type="email" name="epost" role="textbox" data-ng-model="soknadData.fakta.epost.value"
-                                 data-error-messages="{required: 'dagpenger.fortsettSenere.epost.required.feilmelding', pattern: 'dagpenger.fortsettSenere.epost.pattern.feilmelding' }" 
-                                data-ng-required="true" data-ng-pattern="/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}$/" data-blur-validate />
-                            </label>
-                            <input type="submit" class="knapp-hoved-liten" cmstekster="dagpenger.fortsettSenere.epost.send" role="button" data-ng-click="forsettSenere(epostForm)"/>
-                            <span class="melding"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <p cmstekster="dagpenger.fortsettSenere.info.frister"></p>
-                    <p cmstekster="dagpenger.fortsettSenere.info.konsekvenser"></p>
-                </div>
-
-                <div class="lenker-dot">
-                    <span>
-                        <a href="#/dagpenger/{{ soknadData.soknadId }}" id="tilOversikt" role="link" cmstekster="dagpenger.fortsettSenere.tilbake"/>
-                    </span>
-                    <span>
-
-                        <a href="https://tjenester-t11.nav.no/inngangsporten/innlogget" id="dittnav"  role="link" cmstekster="dagpenger.fortsettSenere.dittNav"/>
-                    </span>
-                </div>
-        </div>
-    </div>
+			<div class="lenker-dot">
+				<a href="#/dagpenger/{{ soknadData.soknadId }}" id="tilOversikt" role="link" data-cmstekster="dagpenger.fortsettSenere.tilbake"></a>
+				<a href="https://tjenester-t11.nav.no/inngangsporten/innlogget" id="dittnav" role="link" data-cmstekster="dagpenger.fortsettSenere.dittNav"></a>
+			</div>
+		</div>
+	</div>
 </div>
