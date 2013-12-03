@@ -1,8 +1,8 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <div data-ng-form="utdanningForm" class="skjemainnhold" data-ng-controller="UtdanningCtrl" novalidate>
-        <div form-errors></div>
+    <div data-ng-form="utdanningForm" class="skjemainnhold" data-ng-controller="UtdanningCtrl" data-novalidate>
+        <div data-form-errors></div>
         <div class="spm">
-            <p class="spm-sporsmal" cmstekster="utdanning.sporsmal"/>
+            <p class="spm-sporsmal" data-cmstekster="utdanning.sporsmal"></p>
 
 
                 <div navradio data-ng-model="soknadData.fakta.utdanning.value" value="ikkeUtdanning"
@@ -187,9 +187,10 @@
             </div>
 
         </div>
-                    <div spmblokkferdig
-             nokkel="utdanning"
-             modus="data.redigeringsModus"
-             submit-method="validerUtdanning(utdanningForm)"/>
+
+
+        </div>
+        <div data-spmblokkferdig data-nokkel="utdanning" data-modus="data.redigeringsModus" data-submit-method="validerUtdanning(utdanningForm)"></div>
+
     </div>
 </div>

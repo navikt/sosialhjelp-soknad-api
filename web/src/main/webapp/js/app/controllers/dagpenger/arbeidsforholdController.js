@@ -167,25 +167,7 @@ angular.module('nav.arbeidsforhold.controller', [])
                 }
             }
 
-            $scope.validatePermittertDatoFra = function (af) {
-                if (af && (af.permittertFraDato < af.varighetFra) || (af.permittertFraDato > af.varighetTil)) {
-                    af.permittertFraDato = '';
-                    $scope.permittertDatoErrorFra = true;
-                } else {
-                    $scope.permittertDatoErrorFra = false;
-                }
-            }
-
-            $scope.validatePermittertDatoTil = function (af) {
-                if (af && (af.permittertTilDato < af.varighetFra) || (af.permittertTilDato > af.varighetTil) || (af.permittertFraDato > af.permittertTilDato)) {
-                      af.permittertTilDato = '';
-                    $scope.permittertDatoErrorTil = true;
-                } else {
-                    $scope.permittertDatoErrorTil = false;
-                }
-            }
-
-            $scope.validateOppsigelsestidTilFraDato = function (af, form) {
+            $scope.validateOppsigelsestidTilFraDato = function (af,form) {
                 if (af && (af.sagtOppAvArbeidsgiverVarighetTil <= af.sagtOppAvArbeidsgiverVarighetFra)) {
                     af.sagtOppAvArbeidsgiverVarighetTil = '';
 
