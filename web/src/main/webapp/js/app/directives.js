@@ -1,2 +1,2 @@
 'use strict';
-angular.module('app.directives', ['app.services', 'nav.booleanradio', 'nav.cmstekster', 'nav.input', 'nav.feilmeldinger', 'nav.sporsmalferdig', 'nav.markup', 'nav.stegindikator', 'nav.textarea', 'nav.fremdriftsindikator', 'nav.validering', 'nav.sistlagret', 'nav.select', 'nav.hjelpetekst', 'nav.datepicker', 'nav.prosent', 'nav.ingenytelser']);
+angular.module('app.directives', ['app.services', 'nav.booleanradio', 'nav.cmstekster', 'nav.input', 'nav.feilmeldinger', 'nav.sporsmalferdig', 'nav.markup', 'nav.stegindikator', 'nav.textarea', 'nav.fremdriftsindikator', 'nav.validering', 'nav.sistlagret', 'nav.select', 'nav.hjelpetekst', 'nav.datepicker', 'nav.prosent', 'nav.ingenytelser', 'nav.sidetittel']);
