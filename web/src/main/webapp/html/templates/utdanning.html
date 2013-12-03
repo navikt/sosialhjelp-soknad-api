@@ -45,9 +45,6 @@
 
                         <p cmstekster="utdanning.svar.under.utdanning.kveld.undervisning.forenlig"/>
 
-                        <p cmstekster="utdanning.svar.under.utdanning.kveld.undervisning.progresjon"/>
-
-
                         <div>
                             <input class="sendsoknad-radio" id="progresjonunder50" data-ng-model="soknadData.fakta.utdanning.progresjonunder50" type="radio" value="true"
                                    name="progresjonunder50" error-messages="'utdanning.error.progresjon'" required/>
@@ -57,6 +54,10 @@
                         <div>
                             <input class="sendsoknad-radio" id="progresjonover50" data-ng-model="soknadData.fakta.utdanning.progresjonunder50" type="radio" value="false"/>
                             <label for="progresjonover50" class='svar-alt' cmstekster="utdanning.progresjon.false"/>
+                        </div>
+
+                        <div data-ng-if="hvisStudieProgresjonOver50()">
+                            <p cmstekster="utdanning.svar.under.utdanning.kveld.undervisning.progresjon"/>
                         </div>
 
 
