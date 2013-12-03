@@ -27,6 +27,7 @@ module.exports = function (config) {
             '../../../main/webapp/js/app/directives/**/*.js',
             '../../../main/webapp/js/app/controllers/**/*.js',
             '../../../main/webapp/js/common/directives/**/*.js',
+            '../../../main/webapp/js/common/animation/*.js',
 
             '../../../main/webapp/js/jquery/jquery.iframe-transport.js',
             '../../../main/webapp/js/jquery/jquery.fileupload.js',
