@@ -22,7 +22,7 @@
 angular.module('nav.select', ['ngSanitize'])
     .directive('navSelect', ['$document', 'cms', '$timeout', function ($document, cms, $timeout) {
         return {
-            require: 'ngModel',
+            require: ['ngModel', '^form'],
             scope: {
                 requiredFeilmelding: '@',
                 ugyldigFeilmelding: '@',
@@ -32,7 +32,8 @@ angular.module('nav.select', ['ngSanitize'])
             },
             replace: true,
             templateUrl: '../js/common/directives/select/selectTemplate.html',
-            link: function (scope, element, attrs) {
+            link: function (scope, element, attrs, ctrls) {
+                var eventForAValidereHeleFormen = 'RUN_VALIDATION' + ctrls[1].$name;
                 scope.orginalListe = scope.$parent.$eval(attrs.options);
 
                 for (var i = 0; i < scope.orginalListe.length; i++) {
@@ -42,7 +43,11 @@ angular.module('nav.select', ['ngSanitize'])
                 scope.vistListe = filterListePaaSoketekst();
                 scope.vistListeFiltrert = filterListeTilAntallElementerRundtValgtElement();
                 scope.defaultValue = cms.tekster[attrs.defaultValue] ? cms.tekster[attrs.defaultValue] : attrs.defaultValue;
-                scope.ngModel = (scope.defaultValue) ? scope.defaultValue : '';
+
+                if (scope.ngModel == undefined) {
+                    scope.ngModel = (scope.defaultValue) ? scope.defaultValue : '';
+                }
+
                 scope.inputVerdi = hentValgtTekstBasertPaaValue();
                 scope.valgtElementVerdi = scope.ngModel;
 
@@ -52,6 +57,8 @@ angular.module('nav.select', ['ngSanitize'])
                 var antallElementerOverOgUnder = 30;
                 var minimumIndeks;
                 var maximumIndeks;
+                var harHattFokus = false;
+                var harFokus = false;
 
                 if (scope.requiredFeilmelding === undefined) {
                     scope.requiredFeilmelding = 'select.required.feilmelding';
@@ -61,27 +68,42 @@ angular.module('nav.select', ['ngSanitize'])
                     scope.ugyldigFeilmelding = 'select.ugyldig.feilmelding';
                 }
 
-                var input = angular.element(element.find('input'));
                 var liste = angular.element(element.find('ul'));
 
                 element.find('ul').bind('scroll', _.throttle(leggTilElementVedScroll, 200));
 
                 function leggTilElementVedScroll() {
+                    console.log("woot");
                     erScrolletNestenHeltOpp();
                     erScrolletNestenHeltNed();
                 }
 
-                input.focusin(function() {
+                $document.bind('click', function() {
+                    $timeout(function() {
+                        avbryt();
+                    });
+                });
+
+                scope.blur = function() {
+                    harHattFokus = true;
+                    harFokus = false;
+                    element.removeClass("fokus");
+                }
+
+                // Burde bruke data-ng-focus og metoden under, men får JS-feil når man
+                // trykker på feilmeldingen etter validering...
+                element.find('input').bind('focus', function() {
+                    harFokus = true;
                     element.addClass("fokus");
                 });
 
-                input.focusout(function() {
-                    element.removeClass("fokus");
-                })
+//                scope.focus = function() {
+//                    harFokus = true;
+//                    element.addClass("fokus");
+//                }
 
-                $document.bind('click', function() {
-                    avbryt();
-                    scope.$apply();
+                scope.$on(eventForAValidereHeleFormen, function() {
+                    harHattFokus = true;
                 });
 
                 scope.apneSelectboks = function(event) {
@@ -162,7 +184,7 @@ angular.module('nav.select', ['ngSanitize'])
                     });
 
                     function skalViseListeOverValg() {
-                        return scope.listeErApen || (input.is(':focus') && scope.inputVerdi && scope.inputVerdi.length > 1);
+                        return scope.listeErApen || (harFokus && scope.inputVerdi && scope.inputVerdi.length > 1);
                     }
                 });
 
@@ -171,7 +193,7 @@ angular.module('nav.select', ['ngSanitize'])
                 }
 
                 scope.harRequiredFeil = function() {
-                    return scope.erRequired && !scope.inputVerdi && !scope.listeErApen && !input.is(':focus');
+                    return scope.erRequired && !scope.inputVerdi && !scope.listeErApen && !harFokus && harHattFokus;
                 }
 
                 scope.inneholderIkkeSkrevetTekst = function() {
@@ -197,6 +219,7 @@ angular.module('nav.select', ['ngSanitize'])
 
                 function settFokusTilNesteElement() {
                     var fokuserbareElementer = $('input, a, select, button, textarea').filter(':visible');
+                    var input = angular.element(element.find('input'));
                     fokuserbareElementer.eq(fokuserbareElementer.index(input) + 1).focus();
                 }
 

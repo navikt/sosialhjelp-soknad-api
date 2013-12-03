@@ -115,6 +115,127 @@ describe('utility funksjoner -', function () {
         });
     });
 
+    describe('opprettEgendefinertFeilmelding', function () {
+        it('Skal opprette egendefinert feilmeldingobjekt på errors', function () {
+            var feilmelding = opprettEgendefinertFeilmelding();
+            expect(feilmelding).toBeDefined();
+        });
+
+        it('Egendefinert feilmelding skal inneholde et navn', function () {
+            var feilmelding = opprettEgendefinertFeilmelding("navn");
+            expect(feilmelding.$name).toBeDefined();
+        });
+
+        it('Skal kunne oppgi navn til egendefinert feilmelding', function () {
+            var navn = "Navn";
+            var feilmelding = opprettEgendefinertFeilmelding(navn);
+            expect(feilmelding.$name).toBe(navn);
+        });
+
+        it('Skal kunne oppgi error-message for egendefiner feilmelding', function () {
+            var navn = "Navn";
+            var errormessage = "Error";
+            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage);
+            expect(feilmelding.$errorMessages).toBe(errormessage);
+        });
+
+        it('Skal kunne oppgi string for å referere til ett element', function () {
+            var navn = "Navn";
+            var errormessage = "Error";
+            var referanse = "Ref";
+            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage, referanse);
+            expect(feilmelding.$linkId).toBe(referanse);
+        });
+
+        it('Skal kunne oppgi valid for egendefiner feilmelding', function () {
+            var navn = "Navn";
+            var errormessage = "Error";
+            var valid = true;
+            var referanse = "Ref";
+            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage, referanse, valid);
+            expect(feilmelding.$valid).toBe(valid);
+        });
+
+        it('Invalid skal bli satt automatisk til det motsatte av valid', function () {
+            var navn = "Navn";
+            var errormessage = "Error";
+            var valid = true;
+            var referanse = "Ref";
+            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage, referanse, valid);
+            expect(feilmelding.$invalid).toBe(!valid);
+        });
+
+        it('Skal kunne sette om en feilmelding skal være den eneste som vises', function () {
+            var navn = "Navn";
+            var errormessage = "Error";
+            var valid = true;
+            var referanse = "Ref";
+            var skalVisesAlene = true;
+
+            var feilmelding = opprettEgendefinertFeilmelding(navn, errormessage, referanse, valid, skalVisesAlene);
+            expect(feilmelding.$skalVisesAlene).toBe(skalVisesAlene);
+        });
+    });
+
+    describe('settEgendefinertFeilmeldingsverdi', function () {
+        var scope, form, element;
+
+        beforeEach(inject(function ($compile, $rootScope) {
+            scope = $rootScope;
+            element = angular.element(
+                '<form name="form"></form>'
+            );
+            scope.permiteringProsent = '';
+            $compile(element)(scope);
+            scope.$digest();
+            form = scope.form;
+            element.scope().$apply();
+        }));
+
+        it('Skal kunne legge til feilmelding', function () {
+            var valid = false;
+
+            settEgendefinertFeilmeldingsverdi(form, 'feilmeldingskategori', 'navn', 'errormessage', 'referanseTilElement', valid, false);
+            expect(form.$error['feilmeldingskategori'].length).toEqual(1);
+            expect(form.$error['feilmeldingskategori'][0].$valid).toEqual(false);
+        });
+
+        it('Feilmelding skal fjernes dersom den endres til valid', function () {
+            var valid = false;
+
+            settEgendefinertFeilmeldingsverdi(form, 'feilmeldingskategori', 'navn', 'errormessage', 'referanseTilElement', valid, false);
+            expect(form.$error['feilmeldingskategori'].length).toEqual(1);
+            expect(form.$error['feilmeldingskategori'][0].$valid).toEqual(false);
+
+            settEgendefinertFeilmeldingsverdi(form, 'feilmeldingskategori', 'navn', 'errormessage', 'referanseTilElement', true, false);
+            expect(form.$error['feilmeldingskategori'].length).toEqual(0);
+        });
+
+    });
+    describe('leggTilFeilmeldingHvisDenIkkeFinnes', function () {
+        var scope, form, element;
+
+        beforeEach(inject(function ($compile, $rootScope) {
+            scope = $rootScope;
+            element = angular.element(
+                '<form name="form"></form>'
+            );
+            scope.permiteringProsent = '';
+            $compile(element)(scope);
+            scope.$digest();
+            form = scope.form;
+            element.scope().$apply();
+        }));
+
+        it('Skal kunne legge til feilmelding hvis den ikke finnes ', function () {
+            form.$error['feilmeldingskategori'] = [];
+            expect(form.$error['feilmeldingskategori'].length).toEqual(0);
+            leggTilFeilmeldingHvisDenIkkeFinnes(form, 'feilmeldingskategori', 'feilmeldingsnavn', 'feilmelding', 'feilmeldingElementNavn', true, false)
+            expect(form.$error['feilmeldingskategori'].length).toEqual(1);
+        });
+
+    });
+
     describe('konverter dato representert som string til date-objekt', function () {
         it('skal få returverdi', function () {
             var dato = konverterStringFraNorskDatoformatTilDateObjekt("");

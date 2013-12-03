@@ -1,37 +1,19 @@
-#fortsett-senere {
+	#fortsett-senere {
     .send-epost {
         margin: 2rem 0;
         border-bottom: 1px solid #d1cfcf;
 
-        a span {
-            color: #0067C5;
+        input[type=email] {
+            width: 23rem;
+            margin-right: 0.6rem;
+            margin-bottom:10px;
+            display: inline;
         }
-        .epost-input {
-
-            LABEL {
-                display: block;
-            }
-
-            #epostfelt {
-                width: 23rem;
-                text-align: left;
-                margin-right: 0.6rem;
-                line-height: inherit;
-            }
-
-            .input-boks {
-                margin-top: 1rem;
-                margin-bottom: 2rem;
-                display: block;
-
-                .feil {
-                    .melding {
-                        display: block;
-                        margin: 5px auto 0;
-                    }
-                }
-            }
+        
+        input[type=submit] {
+            margin-top:-5px;
         }
+
 
         .informasjon {
             text-align: left;
@@ -42,14 +24,10 @@
     .lenker-dot {
         margin-bottom: 40px;
         text-align: center;
-    }
-
-    .lenker-dot a  {
-        content: "•";
-    }
-
-    .lenker-dot a span {
-        text-align: center;
-        color: #0067C5;
+	    a  {
+	        content: "•";
+		    text-align: center;
+            color: #0067c5;
+	    }
     }
 }

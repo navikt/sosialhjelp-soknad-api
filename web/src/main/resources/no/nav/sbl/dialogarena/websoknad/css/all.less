@@ -19,7 +19,8 @@
 .informasjonstekst {
     font-size: 1rem;
     font-weight: bold;
-    margin-bottom: 10px !important;
+    margin-top: 20px !important;
+    margin-left: 15px !important;
 }
 
 .rad.soknad {
@@ -109,6 +110,9 @@
     &:last-child {
         margin-bottom: 0;
     }
+    .melding {
+        text-align: left !important;
+    }
 }
 
 [class*=spm-boks] {
@@ -116,7 +120,8 @@
     background: #f1f1f1;
     border: 1px solid #ddd;
     padding: 20px;
-    margin: 10px 0 30px;
+    margin-left: 44px;
+    margin-right: 0px;
 }
 
 .spm-blokk {
@@ -282,13 +287,12 @@
 
 .spm {
     margin-top: 20px;
-    margin-bottom: 10px;
     width: 100%;
 
     .spm-sporsmal {
         font-size: 1.21rem;
         font-weight: 600;
-        font-family: Modus,Arial,Helvetica,sans-serif;
+        font-family: Modus, Arial, Helvetica, sans-serif;
         margin-bottom: 10px;
         line-height: 1.6rem;
     }
@@ -316,8 +320,9 @@
     }
 }
 
-.ytelser-nei {
-    margin-top: 20px;
+form-linje.feil {
+    border: 1px solid #df4b78;
+    background: #fee6e6;
 }
 
 .form-errors {
@@ -351,8 +356,43 @@
     color: #333;
 }
 
+[class*="panel-"][class*="-belyst"] [class*=-melding], [class*=-melding], [class*="panel-"][class*="-belyst"] .melding, .melding {
+    font-size: 0.9rem !important;
+    color: #c30000;
+    text-transform: none;
+    margin-top: 7px;
+    text-align: left;
+}
+
 .form-linje {
-    padding: 0;
+    padding: 15px;
+
+    a {
+        padding-left: 29px;
+        white-space: nowrap;
+    }
+
+    .form-linje {
+        padding: 0px;
+
+        &.feil {
+            border: 1px solid #fca292;
+            background: #fee6e6;
+            margin-left: -15px;
+            padding: 15px;
+
+            &.tekstfelt {
+                border: none;
+                background: #f1f1f1;
+                margin-left: -15px;
+                padding: 0px 15px;
+            }
+            .ingen-ytelse-melding {
+                display: block;
+                margin-bottom: 10px;
+            }
+        }
+    }
 
     .melding {
         display: none;
@@ -360,7 +400,7 @@
 
     &.feil {
         select {
-            border: 1px solid @pink;
+            border: 1px solid #fca292;
             border-top: 1px solid #ff0000;
             background: @errorBackground;
         }
@@ -369,10 +409,38 @@
             display: block;
         }
 
+        &.boolean {
+            border: 1px solid #fca292;
+            background: #fee6e6;
+            margin-bottom: 20px;
+
+            .melding {
+                margin-bottom: 10px;
+                text-align: center !important;
+            }
+        }
+
+        textarea {
+            background-color: #fee6e6;
+        }
+
         .melding.inline {
             display: inline;
         }
     }
+
+    &.checkbox.feilstyling {
+        border: 1px solid #fca292;
+        background: #fee6e6;
+        padding: 14px !important;
+
+        .melding {
+            margin-bottom: 10px;
+            display: block;
+            text-align: center !important;
+        }
+    }
+
 }
 
 .rad[stegindikator], .rad[data-stegindikator] {
@@ -419,3 +487,4 @@ form, [ng-form], [data-ng-form] {
 .liste-vannrett li:not([class*="dropdown"]):before {
     color: #3e3832;
 }
+
