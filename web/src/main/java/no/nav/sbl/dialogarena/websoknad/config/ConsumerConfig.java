@@ -188,7 +188,7 @@ public class ConsumerConfig {
             configureStsForSystemUser(getClient(sendSoknadSelftest));
             configureStsForSystemUser(getClient(kodeverkServiceSelftest));
             configureStsForSystemUser(getClient(brukerProfilSelftest));
-            configureStsForExternalSSO(getClient(personService));
+            configureStsForSystemUser(getClient(personService));
         }
     }
 
