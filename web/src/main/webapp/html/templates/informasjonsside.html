@@ -1,39 +1,34 @@
 <div data-stegindikator data-steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="0"></div>
 
 <div id="informasjonsside">
-    <div panelbelyst>
-        <h2 class="stor strek-ikon-info" data-cmstekster="dagpenger.informasjonsside.tittel"></h2>
+	<div data-panelbelyst>
+		<h2 class="stor strek-ikon-info" data-cmstekster="dagpenger.informasjonsside.tittel"></h2>
+		<p class="medium" data-cmstekster="dagpenger.informasjonsside.info"></p>
+		<div id="utslagskriterier" ng-if='kravForDagpengerIkkeOppfylt()'>
+			<p class="liten" data-cmstekster="utslagskriterier.intro"></p>
+			<ul>
+				<li data-cmstekster="utslagskriterier.kriterie.alder.under67"></li>
+				<li data-cmstekster="utslagskriterier.kriterie.bosted.norge"></li>
+				<li data-cmstekster="utslagskriterier.kriterie.reellarbeidssoker"></li>
+			</ul>
+			<ol>
+				<li data-cmstekster="utslagskriterier.utslag.alder" data-ng-if="ikkeGyldigAlder()"></li>
+				<li data-cmstekster="utslagskriterier.utslag.bosted" data-ng-if="ikkeBosattINorge()"></li>
+				<li data-ng-if="ikkeRegistrertArbeidssoker()">
+					<span data-cmstekster="utslagskriterier.utslag.reellarbeidssoker"></span>
+					<a href data-cmslenketekster="utslagskriterier.utslag.reellarbeidssoker.registert.url"
+							data-cmstekster="utslagskriterier.utslag.reellarbeidssoker.registert"></a>
+				</li>
+			</ol>
+			<p class="liten" data-cmstekster="utslagskriterier.utslag.infoAvslag"></p>
+		</div>
 
-        <p class="medium" data-cmstekster="dagpenger.informasjonsside.info"></p>
+		<div class="utslagskriterier-knapper" data-ng-controller="StartSoknadCtrl" data-ng-if="kravForDagpengerOppfylt()">
+			<input type='button' class="knapp-hoved" data-cmstekster="utslagskriterier.utslag.fortsett" data-ng-click="startSoknad()" data-fremdriftsindikator/>
+		</div>
 
-        <div id="utslagskriterier" ng-if='kravForDagpengerIkkeOppfylt()'>
-            <p class="liten" data-cmstekster="utslagskriterier.intro"></p>
-            <ul>
-                <li data-cmstekster="utslagskriterier.kriterie.alder.under67"></li>
-                <li data-cmstekster="utslagskriterier.kriterie.bosted.norge"></li>
-                <li data-cmstekster="utslagskriterier.kriterie.reellarbeidssoker"></li>
-            </ul>
-
-            <ol>
-                <li data-cmstekster="utslagskriterier.utslag.alder" data-ng-if="ikkeGyldigAlder()"></li>
-                <li data-cmstekster="utslagskriterier.utslag.bosted" data-ng-if="ikkeBosattINorge()"></li>
-                <li data-ng-if="ikkeRegistrertArbeidssoker()">
-                    <span data-cmstekster="utslagskriterier.utslag.reellarbeidssoker"></span>
-                    <a href data-cmslenketekster="utslagskriterier.utslag.reellarbeidssoker.registert.url"
-                       data-cmstekster="utslagskriterier.utslag.reellarbeidssoker.registert"></a>
-                </li>
-            </ol>
-            
-            <p class="liten" data-cmstekster="utslagskriterier.utslag.infoAvslag"></p>
-        </div>
-
-        <div class="utslagskriterier-knapper" data-ng-controller="StartSoknadCtrl" data-ng-if="kravForDagpengerOppfylt()">
-            <input type='button' class="knapp-hoved" data-cmstekster="utslagskriterier.utslag.fortsett" data-ng-click="startSoknad()" data-fremdriftsindikator></input>
-        </div>
-
-        <div class="utslagskriterier-knapper" data-ng-controller="StartSoknadCtrl" data-ng-if="kravForDagpengerIkkeOppfylt()">
-            <input type='button' class="knapp-hoved" data-cmstekster="utslagskriterier.utslag.fortsettlikevel" data-ng-click="startSoknad()" data-fremdriftsindikator></input>
-        </div>
-    </div>
-
+		<div class="utslagskriterier-knapper" data-ng-controller="StartSoknadCtrl" data-ng-if="kravForDagpengerIkkeOppfylt()">
+			<input type='button' class="knapp-hoved" data-cmstekster="utslagskriterier.utslag.fortsettlikevel" data-ng-click="startSoknad()" data-fremdriftsindikator/>
+		</div>
+	</div>
 </div>

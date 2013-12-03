@@ -1,0 +1,17 @@
+<div class="form-linje" data-ng-class="{feil: harFeil()}">
+    <label>
+        <span data-cmstekster="{{ label }}"></span>
+        <input type="text"
+               data-ui-keydown="{enter: 'enter()'}"
+               data-ng-model="ngModel"
+               data-ng-required="erRequired"
+               data-ng-blur="blur()"
+               data-ng-focus="focus()"
+               data-dato-format
+               data-error-messages="'{{ requiredErrorMessage }}'">
+
+        <span class="melding" data-ng-if="harRequiredFeil()" data-cmstekster="{{ requiredErrorMessage }}"></span>
+        <span class="melding" data-ng-if="harFormatteringsFeil()" data-cmstekster="dato.format.feilmelding"></span>
+        <span class="melding" data-ng-if="harTilDatoFeil()" data-cmstekster="dato.tilDato.feilmelding"></span>
+    </label>
+</div>

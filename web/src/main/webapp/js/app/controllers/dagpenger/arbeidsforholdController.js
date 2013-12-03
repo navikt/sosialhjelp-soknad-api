@@ -145,35 +145,16 @@ angular.module('nav.arbeidsforhold.controller', [])
                 $scope.$emit("OPPDATER_OG_LAGRE", {key: 'harIkkeJobbet', value: false});
             });
 
-
-
-            $scope.$watch("arbeidsgiver.varighetFra", function (nyVerdi, gammelVerdi) {
-                if ($scope.arbeidsgiver && ($scope.arbeidsgiver.varighetTil <= $scope.arbeidsgiver.varighetFra)) {
-                    $scope.arbeidsgiver.varighetTil = '';
-                    $scope.datoError = true;
-                } else {
-                    $scope.datoError = false;
-                }
-            });
-            $scope.resolvUrl = function () {
+               $scope.resolvUrl = function () {
                 return "../html/templates/kontrakt-utgaatt.html"
             }
 
-            $scope.$watch("arbeidsgiver.varighetTil", function (nyVerdi, gammelVerdi) {
-                if ($scope.arbeidsgiver && ($scope.arbeidsgiver.varighetTil <= $scope.arbeidsgiver.varighetFra)) {
-                    $scope.arbeidsgiver.varighetTil = '';
-                    $scope.datoError = true;
-                } else {
-                    $scope.datoError = false;
-                }
-            });
-
-            $scope.validateTilFraDato = function (af) {
+            $scope.validateTilFraDato = function (af, form) {
                 if (af && (af.varighetTil <= af.varighetFra)) {
                     af.varighetTil = '';
-                    $scope.datoError = true;
+                    form.$setValidity('arbeidsforhold.arbeidsgiver.varighet.feilmelding', false);
                 } else {
-                    $scope.datoError = false;
+                    form.$setValidity('arbeidsforhold.arbeidsgiver.varighet.feilmelding', true);
                 }
             }
 
@@ -186,30 +167,13 @@ angular.module('nav.arbeidsforhold.controller', [])
                 }
             }
 
-            $scope.validatePermittertDatoFra = function (af) {
-                if (af && (af.permittertFraDato < af.varighetFra) || (af.permittertFraDato > af.varighetTil)) {
-                    af.permittertFraDato = '';
-                    $scope.permittertDatoErrorFra = true;
-                } else {
-                    $scope.permittertDatoErrorFra = false;
-                }
-            }
-
-            $scope.validatePermittertDatoTil = function (af) {
-                if (af && (af.permittertTilDato < af.varighetFra) || (af.permittertTilDato > af.varighetTil) || (af.permittertFraDato > af.permittertTilDato)) {
-                      af.permittertTilDato = '';
-                    $scope.permittertDatoErrorTil = true;
-                } else {
-                    $scope.permittertDatoErrorTil = false;
-                }
-            }
-
-            $scope.validateOppsigelsestidTilFraDato = function (af) {
+            $scope.validateOppsigelsestidTilFraDato = function (af,form) {
                 if (af && (af.sagtOppAvArbeidsgiverVarighetTil <= af.sagtOppAvArbeidsgiverVarighetFra)) {
                     af.sagtOppAvArbeidsgiverVarighetTil = '';
-                    $scope.oppsigelsestidDatoError = true;
+
+                    form.$setValidity('arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighet.feilmelding', false);
                 } else {
-                    $scope.oppsigelsestidDatoError = false;
+                    form.$setValidity('arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighet.feilmelding', true);
                 }
             }
 
@@ -237,6 +201,10 @@ angular.module('nav.arbeidsforhold.controller', [])
             form.$setValidity('arbeidsforhold.feilmelding', true);
             form.$setValidity('arbeidsforhold.endrearbeidsforhold.feilmelding', true);
             form.$setValidity('arbeidsforhold.leggtilnyttarbeidsforhold.feilmelding', true);
+            form.$setValidity('arbeidsforhold.arbeidsgiver.varighet.feilmelding', true);
+            form.$setValidity('arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighet.feilmelding', true);
+
+
             $scope.runValidation();
             if (form.$valid) {
                 var value = angular.toJson($scope.arbeidsforhold);

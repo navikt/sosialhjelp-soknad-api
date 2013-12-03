@@ -1,6 +1,15 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import com.google.gson.Gson;
+import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.person.Adresse;
 import no.nav.sbl.dialogarena.person.FamilieRelasjonService;
@@ -9,20 +18,16 @@ import no.nav.sbl.dialogarena.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
+import no.nav.sbl.dialogarena.websoknad.util.DateTimeSerializer;
+
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import com.google.gson.GsonBuilder;
 
 @Controller
 @RequestMapping("/soknad")
@@ -95,7 +100,11 @@ public class SoknadTpsDataController {
     		} else if (faktumObj instanceof List<?>) {
     			@SuppressWarnings("unchecked")
 				List<Adresse> adresseList = (List<Adresse>) faktumObj;
-    			String adresseJson = new Gson().toJson(adresseList);
+    			
+    			GsonBuilder gson = new GsonBuilder();
+    			gson.registerTypeAdapter(DateTime.class, new DateTimeSerializer());
+    			
+    			String adresseJson = gson.create().toJson(adresseList);
     			soknadService.lagreSystemSoknadsFelt(new Long(soknadId), "adresser", adresseJson);
     		}
     	}
