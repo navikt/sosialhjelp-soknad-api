@@ -1,9 +1,18 @@
 <div>
     <div data-ng-show="hvisIRedigeringsmodus()">
-        <input class="sendsoknad-radio" id="{{ label }}" data-ng-model="model" type="radio" value="{{ value }}"
-               name="tmpName" data-ng-required="hvisSynlig()" error-messages="'{{ feilmelding }}'" mod-faktum data-click-validate/>
-        <label for='{{ label }}' class='svar-alt' cmstekster="{{ label }}"/>
+        <input class="sendsoknad-radio"
+               id="{{ label }}"
+               type="radio"
+               value="{{ value }}"
+               data-ng-model="model"
+               data-name="tmpName"
+               data-ng-required="hvisSynlig()"
+               data-error-messages="'{{ feilmelding }}'"
+               data-mod-faktum
+               data-click-validate>
+
+        <label for='{{ label }}' class='svar-alt' data-cmstekster="{{ label }}"></label>
     </div>
 
-    <p class="svar-oppsummering" data-ng-show='hvisIOppsummeringsmodusOgRadioErValgt()' cmstekster="{{ label }}"/>
+    <p class="svar-oppsummering" data-ng-show='hvisIOppsummeringsmodusOgRadioErValgt()' data-cmstekster="{{ label }}"></p>
 </div>

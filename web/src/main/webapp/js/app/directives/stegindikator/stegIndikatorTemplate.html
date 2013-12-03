@@ -1,9 +1,8 @@
-
 <div class="rad nettotopp">
 	<div class="begrensning">
 		<ul class="stegindikator">
 		    <li data-ng-repeat="steg in data.liste" ng-class="{aktiv: $index == {{ aktivIndex }}, done: $index < {{ aktivIndex }}}">
-		        <a cmstekster="stegindikator.{{ steg }}"></a>
+		        <a data-cmstekster="stegindikator.{{ steg }}"></a>
 		    </li>
 		</ul>
 	</div>

@@ -39,7 +39,7 @@ public class HandleBarKjoererTest {
     public void createHashAndApplyTemplate() throws IOException {
         String json = hentWebSoknadJson();
         Map<String, Object> resultat = new ObjectMapper().readValue(json, Map.class);
-        String[] s = {"opprettetDato", "brukerBehandlingId", "status", "aktoerId", "gosysId", "delstegStatus", "fakta", "soknadId"};
+        String[] s = {"soknadId", "gosysId", "brukerBehandlingId", "fakta", "status", "aktoerId", "opprettetDato", "delstegStatus"};
 
         assertThat(resultat.keySet(), contains(s));
         assertThat((String) resultat.get("gosysId"), is(equalTo("Dagpenger")));

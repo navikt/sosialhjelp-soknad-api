@@ -127,7 +127,7 @@
         margin-bottom: 0;
     }
     .melding {
-      text-align: left !important;
+        text-align: left !important;
     }
 }
 
@@ -184,7 +184,8 @@
         height: 0;
         margin: 0 auto;
         border-style: solid;
-        border-color: transparent transparent #0067c5 transparent;
+        border-color: transparent transparent #0067c5 transparent
+    ;
         border-width: 0 2px 3px 2px;
 
         &:before {
@@ -307,7 +308,7 @@
     .spm-sporsmal {
         font-size: 1.21rem;
         font-weight: 600;
-        font-family: Modus,Arial,Helvetica,sans-serif;
+        font-family: Modus, Arial, Helvetica, sans-serif;
         margin-bottom: 10px;
         line-height: 1.6rem;
     }
@@ -336,8 +337,8 @@
 }
 
 form-linje.feil {
-  border: 1px solid #df4b78;
-  background: #fee6e6;
+    border: 1px solid #df4b78;
+    background: #fee6e6;
 }
 
 .form-errors {
@@ -372,19 +373,19 @@ form-linje.feil {
 }
 
 [class*="panel-"][class*="-belyst"] [class*=-melding], [class*=-melding], [class*="panel-"][class*="-belyst"] .melding, .melding {
-  font-size: 0.9rem !important;
-  color: #c30000;
-  text-transform: none;
-  margin-top: 7px;
-  text-align: center;
+    font-size: 0.9rem !important;
+    color: #c30000;
+    text-transform: none;
+    margin-top: 7px;
+    text-align: left;
 }
 
 .form-linje {
     padding: 15px;
 
     a {
-      padding-left: 29px;
-      white-space: nowrap;
+        padding-left: 29px;
+        white-space: nowrap;
     }
 
     .form-linje {
@@ -403,7 +404,7 @@ form-linje.feil {
                 padding: 0px 15px;
             }
             .ingen-ytelse-melding {
-                display:block;
+                display: block;
                 margin-bottom: 10px;
             }
         }
@@ -431,30 +432,30 @@ form-linje.feil {
 
             .melding {
                 margin-bottom: 10px;
+                text-align: center !important;
             }
         }
+
         textarea {
             background-color: #fee6e6;
         }
-        &.textarea-container .melding {
-          text-align: left !important;
+
+        .melding.inline {
+            display: inline;
         }
-      .melding.inline {
-        display: inline;
-      }
     }
 
-  &.checkbox.feilstyling {
-      border: 1px solid #fca292;
-      background: #fee6e6;
-      padding: 14px !important;
+    &.checkbox.feilstyling {
+        border: 1px solid #fca292;
+        background: #fee6e6;
+        padding: 14px !important;
 
-      .melding {
-          margin-bottom: 10px;
-          display: block;
-      }
-  }
-
+        .melding {
+            margin-bottom: 10px;
+            display: block;
+            text-align: center !important;
+        }
+    }
 
 }
 

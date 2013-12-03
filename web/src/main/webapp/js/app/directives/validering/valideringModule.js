@@ -113,7 +113,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 }
 
                 function settFeilmeldingsTekst() {
-                    var feilmeldingsNokkel = element[0].getAttribute('error-messages').toString();
+                    var feilmeldingsNokkel = element[0].getAttribute('data-error-messages').toString();
                     //hack for å fjerne dobbeltfnuttene rundt feilmeldingsnokk
                     var feilmeldingTekst = cms.tekster[feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1)];
                     element.closest('.form-linje').find('.melding').text(feilmeldingTekst);
