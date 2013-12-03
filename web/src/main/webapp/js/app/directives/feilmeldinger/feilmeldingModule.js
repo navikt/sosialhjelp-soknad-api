@@ -53,6 +53,7 @@ angular.module('nav.feilmeldinger', [])
                                     skalViseFlereFeilmeldinger = leggTilFeilmeldingerVedValidering(verdi, feilNokkel);
                                 }
                             }
+
                         }
                     })
 
@@ -73,7 +74,8 @@ angular.module('nav.feilmeldinger', [])
 
                 scope.fjernFeilmeldingerSomErFikset = function () {
                     var fortsattFeilListe = [];
-                    angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
+
+                    angular.forEach(ctrl.$error, function(verdi, feilNokkel) {
                         fortsattFeilListe = fortsattFeilListe.concat(leggTilFeilSomFortsattSkalVises(verdi, feilNokkel));
                     });
                     scope.feilmeldinger = fortsattFeilListe;
@@ -103,6 +105,7 @@ angular.module('nav.feilmeldinger', [])
                  * og vi skal ikke loope mer. Return false dersom vi skal stoppe loopen, ellers true.
                  */
                 function leggTilFeilmeldingerVedValidering(verdi, feilNokkel) {
+
                     var skalViseFlereFeilmeldinger = true;
                     angular.forEach(verdi, function (feil) {
                         var feilmelding = finnFeilmelding(feil, feilNokkel);
@@ -120,6 +123,7 @@ angular.module('nav.feilmeldinger', [])
 
 
                 function leggTilFeilSomFortsattSkalVises(verdi, feilNokkel) {
+
                     var fortsattFeilListe = [];
                     angular.forEach(verdi, function (feil) {
                         var feilmelding = finnFeilmelding(feil, feilNokkel);
@@ -146,10 +150,12 @@ angular.module('nav.feilmeldinger', [])
                 }
 
                 function finnFeilmeldingsNokkel(feil, feilNokkel) {
-                    if (feil) {
-                        if (typeof feil.$errorMessages === 'object') {
-                            return feil.$errorMessages[feilNokkel];
-                        } else if (typeof feil.$errorMessages === 'string') {
+
+
+                    if (feil.$errorMessages != undefined) {
+                        if(typeof feil.$errorMessages === 'object') {
+                           return feil.$errorMessages[feilNokkel];
+                        } else if(typeof feil.$errorMessages === 'string') {
                             return feil.$errorMessages;
                         }
                     }

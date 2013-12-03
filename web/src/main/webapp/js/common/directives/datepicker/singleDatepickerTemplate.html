@@ -8,8 +8,7 @@
                data-ng-blur="blur()"
                data-ng-focus="focus()"
                data-dato-format
-               data-error-messages="'{{ requiredErrorMessage }}'"
-               data-name="w00t">
+               data-error-messages="'{{ requiredErrorMessage }}'">
 
         <span class="melding" data-ng-if="harRequiredFeil()" data-cmstekster="{{ requiredErrorMessage }}"></span>
         <span class="melding" data-ng-if="harFormatteringsFeil()" data-cmstekster="dato.format.feilmelding"></span>

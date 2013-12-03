@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -22,7 +21,7 @@ public class HandleBarKjoerer {
     public static String hentHTML(String json, String html) {
         String ut = "";
         try {
-            Map<String, Object> hashMap = new ObjectMapper().readValue(json, HashMap.class);
+            Map<String, Object> hashMap = new ObjectMapper().readValue(json, Map.class);
             ut = fyllHtmlStringMedInnhold(html, hashMap);
         } catch (IOException e) {
             LOGG.info("Kunne ikke legge json inn i mal", e);
@@ -49,7 +48,7 @@ public class HandleBarKjoerer {
     public static String fyllHtmlMalMedInnhold(String json, String hbsFil) {
         String ut = "";
         try {
-            Map<String, Object> map = new ObjectMapper().readValue(json, HashMap.class);
+            Map<String, Object> map = new ObjectMapper().readValue(json, Map.class);
             ut = fyllHtmlMalMedInnhold(hbsFil, map);
         } catch (IOException e) {
             LOGG.info("Kunne ikke legge json inn i mal", e);

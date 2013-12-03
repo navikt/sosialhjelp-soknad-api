@@ -10,7 +10,6 @@ import org.junit.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import static no.nav.sbl.dialogarena.print.helper.JsonTestData.hentWebSoknadHtml;
@@ -39,7 +38,7 @@ public class HandleBarKjoererTest {
     @Test
     public void createHashAndApplyTemplate() throws IOException {
         String json = hentWebSoknadJson();
-        Map<String, Object> resultat = new ObjectMapper().readValue(json, HashMap.class);
+        Map<String, Object> resultat = new ObjectMapper().readValue(json, Map.class);
         String[] s = {"opprettetDato", "brukerBehandlingId", "status", "aktoerId", "gosysId", "delstegStatus", "fakta", "soknadId"};
 
         assertThat(resultat.keySet(), contains(s));
