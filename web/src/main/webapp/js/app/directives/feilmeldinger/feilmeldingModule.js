@@ -49,10 +49,7 @@ angular.module('nav.feilmeldinger', [])
                             scrollToElement(elem);
                         }, 1);
                     }
-
-//                    if (skalViseFlereFeilmeldinger) {
-                        scope.$broadcast(eventString);
-//                    }
+                    scope.$broadcast(eventString);
                 }
 
                 scope.$watch(function() { return ctrl.$error; }, function() {
@@ -137,7 +134,7 @@ angular.module('nav.feilmeldinger', [])
 
                 function finnFeilmeldingsNokkel(feil, feilNokkel) {
 
-                    if (feil.$errorMessages != undefined) {
+                    if (feil && feil.$errorMessages != undefined) {
                         if(typeof feil.$errorMessages === 'object') {
                            return feil.$errorMessages[feilNokkel];
                         } else if(typeof feil.$errorMessages === 'string') {
