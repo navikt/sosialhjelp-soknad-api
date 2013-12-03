@@ -134,7 +134,7 @@ angular.module('nav.feilmeldinger', [])
 
                 function finnFeilmeldingsNokkel(feil, feilNokkel) {
 
-                    if (feil.$errorMessages != undefined) {
+                    if (feil && feil.$errorMessages != undefined) {
                         if(typeof feil.$errorMessages === 'object') {
                            return feil.$errorMessages[feilNokkel];
                         } else if(typeof feil.$errorMessages === 'string') {
