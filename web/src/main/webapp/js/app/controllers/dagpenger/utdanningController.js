@@ -70,20 +70,19 @@ angular.module('nav.utdanning',[])
     }
 
     $scope.hvisManIkkeVilAvslutteUtdanningen = function () {
-        if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning.avslutte != undefined) {
-            return !$scope.soknadData.fakta.utdanning.avslutte.value;
+        if ($scope.soknadData.fakta == undefined || $scope.soknadData.fakta.utdanning.avslutte == undefined) {
+            return false;
         }
-        return true;
+        if ($scope.soknadData.fakta.utdanning.avslutte == 'false') return true;
+
 
     }
 
     $scope.hvisStudieProgresjonOver50 = function () {
-        console.log("test" + $scope.soknadData.fakta.utdanning.progresjonunder50);
-        if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning.progresjonunder50 != undefined) {
-
-            return $scope.soknadData.fakta.utdanning.progresjonunder50.value;
+        if ($scope.soknadData.fakta == undefined && $scope.soknadData.fakta.utdanning.progresjonunder50 == undefined) {
+            return false;
         }
-        return false;
+        if ($scope.soknadData.fakta.utdanning.progresjonunder50 == 'false') return true;
 
     }
 
