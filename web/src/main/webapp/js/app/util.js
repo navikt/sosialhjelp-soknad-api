@@ -175,7 +175,7 @@ function stringContainsNotCaseSensitive(str, query) {
     }
 })(jQuery);
 
-function fadeBakgrunnsfarge(element, melding, feilmeldingsklasse) {
+function fadeBakgrunnsfarge(element, melding, feilmeldingsklasse, scope) {
     var backgroundColour = [254, 230, 230].join(',') + ',';
     var borderColour = [252, 162, 146].join(',') + ',';
     var meldingColour = [195, 0, 0].join(',') + ',';
@@ -190,6 +190,7 @@ function fadeBakgrunnsfarge(element, melding, feilmeldingsklasse) {
             element.removeAttr('style');
             melding.removeAttr('style');
             clearInterval(timeout);
+            scope.$apply();
         }
     }, 20);
 }

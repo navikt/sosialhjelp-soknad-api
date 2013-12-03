@@ -3,6 +3,10 @@ angular.module('nav.utdanning',[])
         $scope.navigering = {nesteside: 'ytelser'};
         $scope.sidedata = {navn: 'utdanning'};
 
+        $scope.$on('VALIDER_UTDANNING', function (scope, form) {
+            $scope.validerUtdanning(form);
+        });
+
         $scope.validerUtdanning = function(form) {
             $scope.validateForm(form.$invalid);
             $scope.runValidation();

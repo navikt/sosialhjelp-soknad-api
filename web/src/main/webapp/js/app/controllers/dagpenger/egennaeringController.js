@@ -3,6 +3,10 @@ angular.module('nav.egennaering',[])
         $scope.navigering = {nesteside: 'verneplikt'};
         $scope.sidedata = {navn: 'egennaering'};
 
+        $scope.$on('VALIDER_EGENNAERING', function (scope, form) {
+            $scope.validerEgennaering(form);
+        });
+
         $scope.validerEgennaering = function(form) {
             $scope.validateForm(form.$invalid);
             $scope.runValidation();
