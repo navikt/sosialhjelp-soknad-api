@@ -4,7 +4,7 @@
 	<div data-panelbelyst>
 		<h2 class="stor strek-ikon-info" data-cmstekster="dagpenger.informasjonsside.tittel"></h2>
 		<p class="medium" data-cmstekster="dagpenger.informasjonsside.info"></p>
-		<div id="utslagskriterier" ng-if='kravForDagpengerIkkeOppfylt()'>
+		<div id="utslagskriterier" ng-if="kravForDagpengerIkkeOppfylt()">
 			<p class="liten" data-cmstekster="utslagskriterier.intro"></p>
 			<ul>
 				<li data-cmstekster="utslagskriterier.kriterie.alder.under67"></li>
@@ -24,11 +24,11 @@
 		</div>
 
 		<div class="utslagskriterier-knapper" data-ng-controller="StartSoknadCtrl" data-ng-if="kravForDagpengerOppfylt()">
-			<input type='button' class="knapp-hoved" data-cmstekster="utslagskriterier.utslag.fortsett" data-ng-click="startSoknad()" data-fremdriftsindikator/>
+			<input type="button" class="knapp-hoved" data-cmstekster="utslagskriterier.utslag.fortsett" data-ng-click="startSoknad()" data-fremdriftsindikator/>
 		</div>
 
 		<div class="utslagskriterier-knapper" data-ng-controller="StartSoknadCtrl" data-ng-if="kravForDagpengerIkkeOppfylt()">
-			<input type='button' class="knapp-hoved" data-cmstekster="utslagskriterier.utslag.fortsettlikevel" data-ng-click="startSoknad()" data-fremdriftsindikator/>
+			<input type="button" class="knapp-hoved" data-cmstekster="utslagskriterier.utslag.fortsettlikevel" data-ng-click="startSoknad()" data-fremdriftsindikator/>
 		</div>
 	</div>
 </div>
