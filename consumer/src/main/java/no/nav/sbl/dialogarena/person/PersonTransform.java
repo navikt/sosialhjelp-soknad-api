@@ -5,6 +5,7 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLEPost;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskKommunikasjonskanal;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
+import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 
 import java.util.List;
 
@@ -76,5 +77,4 @@ public class PersonTransform {
     private boolean etternavnExists(XMLBruker soapPerson) {
         return soapPerson.getPersonnavn() != null && soapPerson.getPersonnavn().getEtternavn() != null;
     }
-
 }
