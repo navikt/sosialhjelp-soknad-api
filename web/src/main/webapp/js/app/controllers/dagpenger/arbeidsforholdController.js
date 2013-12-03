@@ -11,6 +11,9 @@ angular.module('nav.arbeidsforhold.controller', [])
         $scope.navigering = {nesteside: 'egennaering'};
         $scope.sidedata = {navn: 'arbeidsforhold'};
 
+        $scope.$on('VALIDER_ARBEIDSFORHOLD', function (scope, form) {
+            $scope.validerArbeidsforhold(form);
+        });
         $scope.validerArbeidsforhold = function (form) {
             if($scope.harIkkeLagretArbeidsforhold() && harIkkeJobbet12SisteMaaneder()) {
                 form.$setValidity('arbeidsforhold.feilmelding', false);

@@ -96,7 +96,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
                     return ngModel.$viewValue;
                 }, function () {
                     if (ngModel.$viewValue && element.closest('.form-linje').hasClass('feil')) {
-                        fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil');
+                        fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil', scope);
                     }
                 });
 
@@ -144,9 +144,9 @@ angular.module('nav.validering', ['nav.cmstekster'])
                     return element.find("input:checked").length;
                 }, function () {
                     if (element.find("input:checked").length > 0 && element.closest('.form-linje').hasClass('feil')) {
-                        fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil');
+                        fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil', scope);
                     } else if (element.find("input:checked").length > 0 && element.closest('.form-linje').hasClass('feilstyling')) {
-                        fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feilstyling');
+                        fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feilstyling', scope);
                     }
                 });
             }
