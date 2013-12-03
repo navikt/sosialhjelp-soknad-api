@@ -67,4 +67,32 @@ public class PersonTest {
 		
 		Assert.assertEquals(false, person.harUtenlandskAdresse());
 	}
+	
+	@Test
+	public void skalReturneGuttVedGuttePersonNummer() {
+		String dato = "220480";
+		String individisfferEnOgTo ="43";
+		String kjonnSiffer = "7";
+		String kontrollsiffer = "12";
+		
+		String fnr = dato + individisfferEnOgTo + kjonnSiffer + kontrollsiffer;
+		Barn barn = new Barn(1l, fnr, "Jan", "", "Larsen");
+		
+		Assert.assertEquals("gutt", barn.getKjonn());
+		
+	}
+	
+	@Test
+	public void skalReturneJenteVedJentePersonNummer() {
+		String dato = "110470";
+		String individisfferEnOgTo ="43";
+		String kjonnSiffer = "6";
+		String kontrollsiffer = "45";
+		
+		String fnr = dato + individisfferEnOgTo + kjonnSiffer + kontrollsiffer;
+		Barn barn = new Barn(1l, fnr, "Janne", "", "Larsen");
+		
+		Assert.assertEquals("jente", barn.getKjonn());
+		
+	}
 }

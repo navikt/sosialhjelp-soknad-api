@@ -27,9 +27,9 @@ public class FamilieRelasjonTransform {
 	    return person;
 	}
 	
-    private List<Person> finnBarn(
+    private List<Barn> finnBarn(
 			no.nav.tjeneste.virksomhet.person.v1.informasjon.Person xmlperson, Long soknadId) {
-		List<Person> result = new ArrayList<Person>();
+		List<Barn> result = new ArrayList<Barn>();
 		
 		List<Familierelasjon> familierelasjoner = xmlperson.getHarFraRolleI();
 		if(familierelasjoner.size() == 0) {
@@ -42,7 +42,7 @@ public class FamilieRelasjonTransform {
 			//TODO: Kodeverk
 			if (familierelasjonType.getValue().equals("forelder")) {
 				no.nav.tjeneste.virksomhet.person.v1.informasjon.Person tilPerson = familierelasjon.getTilPerson();
-				Person barn = mapXmlPersonToPerson(tilPerson, soknadId);
+				Barn barn = mapXmlPersonToPerson(tilPerson, soknadId);
 				result.add(barn);
 			}
 		}
@@ -50,16 +50,15 @@ public class FamilieRelasjonTransform {
 		return result;
 	}
 
-	private Person mapXmlPersonToPerson(
+	private Barn mapXmlPersonToPerson(
 			no.nav.tjeneste.virksomhet.person.v1.informasjon.Person xmlperson, Long soknadId) {
-		Person person = new Person(
-                soknadId,
+		Barn barn = new Barn(
+				soknadId,
                 finnFnr(xmlperson),
                 finnFornavn(xmlperson),
                 finnMellomNavn(xmlperson),
-                finnEtterNavn(xmlperson),
-                finnBarn(xmlperson, soknadId));
-		return person;
+                finnEtterNavn(xmlperson));
+		return barn;
 	}
 
 	private String finnFornavn(no.nav.tjeneste.virksomhet.person.v1.informasjon.Person soapPerson) {
