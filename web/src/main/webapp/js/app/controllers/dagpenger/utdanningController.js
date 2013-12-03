@@ -3,12 +3,13 @@ angular.module('nav.utdanning',[])
         $scope.navigering = {nesteside: 'ytelser'};
         $scope.sidedata = {navn: 'utdanning'};
 
-    var nokler = ['underUtdanningKveld', 'underUtdanningKveldPaabegynt', 'underUtdanningFulltid', 'underUtdanningKortvarig', 'underUtdanningNorsk', 'ingenYtelse' ];
+    var nokler = ['underUtdanningKveld', 'underUtdanningKortvarig', 'underUtdanningKortvarigFlere', 'underUtdanningNorsk', '.underUtdanningIntroduksjon', '.underUtdanningAnnet' ];
 
     $scope.validerUtdanning = function(form) {
             var minstEnAvhuket = $scope.erCheckboxerAvhuket(nokler);
-        if ($scope.hvisUnderUtdanning == true)
+        if ($scope.hvisUnderUtdanning)
         {
+            console.log("underutdanning" + $scope.soknadData.fakta.utdanning.value);
             form.$setValidity("utdanning.minstEnAvhuket.feilmelding", minstEnAvhuket);
         }
             $scope.validateForm(form.$invalid);
@@ -99,7 +100,7 @@ angular.module('nav.utdanning',[])
         var minstEnAvhuket = false;
         for(var i= 0; i < checkboxNokler.length; i++) {
             var nokkel = checkboxNokler[i];
-            if ($scope.soknadData.fakta[nokkel] && checkTrue($scope.soknadData.fakta[nokkel].value)) {
+            if ($scope.soknadData.fakta.underUtdanning[nokkel] && checkTrue($scope.soknadData.fakta.underUtdanning[nokkel].value)) {
                 minstEnAvhuket = true;
             }
         }
