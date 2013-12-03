@@ -1,4 +1,11 @@
 angular.module('nav.vedlegg.controller', [])
+    .controller('VisVedleggCtrl', ['$scope', '$routeParams', 'vedleggService', function ($scope, $routeParams, vedleggService) {
+        $scope.vedlegg = vedleggService.get({
+            soknadId: $routeParams.soknadId,
+            faktumId: $routeParams.faktumId,
+            vedleggId: $routeParams.vedleggId
+        });
+    }])
     .controller('VedleggCtrl', ['$scope', '$location', '$routeParams', '$anchorScroll', 'data', 'vedleggService', function ($scope, $location, $routeParams, $anchorScroll, data, vedleggService) {
 
         function cloneObject(object) {

@@ -29,6 +29,15 @@ angular.module('app.routes', ['ngRoute'])
                     }
                 }
             })
+            .when('/visVedlegg/:soknadId/:faktumId/:vedleggId', {
+                templateUrl: '../html/templates/visvedlegg.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
             .when('/dagpenger/:soknadId', {
                 templateUrl: '../html/dagpenger-singlepage.html',
                 controller: 'SoknadDataCtrl',

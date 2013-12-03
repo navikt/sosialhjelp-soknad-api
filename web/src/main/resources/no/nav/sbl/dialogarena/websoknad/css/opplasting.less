@@ -57,65 +57,6 @@
             background-image: url('../img/mobil.svg'), url('../img/under-dark.png');
             background-position: center 20px, center 155px;
         }
-        .forhandsvisning {
-            width: 100%;
-            margin: 0 auto;
-            text-align: center;
-            color: #0CA9E0;
-
-            .bilde {
-                position: relative;
-                width: 220px;
-                height: 311px;
-                padding: 10px;
-                padding-bottom: 40px;
-                background-image: url('../img/ajaxloader/svart/loader_svart_128.gif');
-                background-repeat: no-repeat;
-                background-position: center;
-                background-color: #333333;
-                display: inline-block;
-                vertical-align: middle;
-                span {
-                    position: absolute;
-                    bottom: 10px;
-                    left: 0;
-                    width: 100%;
-                    text-align: center;
-                }
-            }
-            [class^='pil-'] {
-                display: inline-block;
-                height: 56px;
-                width: 56px;
-                background-image: url('../img/rund-pil-venstre.svg');
-                background-position: center;
-                background-repeat: no-repeat;
-                text-decoration: none;
-                margin-top: 25%;
-            }
-            .pil-venstre {
-                float: left;
-                margin-left: 30px;
-                background-image: url('../img/rund-pil-venstre.svg');
-            }
-            .pil-venstre:hover {
-                background-image: url('../img/rund-pil-venstre-hover.svg');
-            }
-            .pil-hoyre {
-                float: right;
-                margin-right: 30px;
-                background-image: url('../img/rund-pil-hoyre.svg');
-            }
-            .pil-hoyre:hover {
-                background-image: url('../img/rund-pil-hoyre-hover.svg');
-            }
-            .knapper {
-                width: 100%;
-                text-align: center;
-                margin-top: 20px;
-            }
-        }
-
         .send-valg {
             label {
                 display: block;
@@ -145,6 +86,85 @@
     }
     .accordion {
         border-bottom: 1px solid #d1d1d1;
+    }
+
+    .forhandsvisning {
+        width: 100%;
+        margin: 0 auto;
+        text-align: center;
+        color: #0CA9E0;
+    }
+}
+
+.bildenavigering {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    color: #0CA9E0;
+
+    .bilde {
+        position: relative;
+        width: 220px;
+        height: 311px;
+        padding: 10px;
+        padding-bottom: 40px;
+        background-image: url('../img/ajaxloader/svart/loader_svart_128.gif');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-color: #333333;
+        display: inline-block;
+        vertical-align: middle;
+        span {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+        }
+    }
+    [class^='pil-'] {
+        display: inline-block;
+        height: 56px;
+        width: 56px;
+        background-image: url('../img/rund-pil-venstre.svg');
+        background-position: center;
+        background-repeat: no-repeat;
+        text-decoration: none;
+        margin-top: 25%;
+    }
+    .pil-venstre {
+        float: left;
+        margin-left: 30px;
+        background-image: url('../img/rund-pil-venstre.svg');
+    }
+    .pil-venstre:hover {
+        background-image: url('../img/rund-pil-venstre-hover.svg');
+    }
+    .pil-hoyre {
+        float: right;
+        margin-right: 30px;
+        background-image: url('../img/rund-pil-hoyre.svg');
+    }
+    .pil-hoyre:hover {
+        background-image: url('../img/rund-pil-hoyre-hover.svg');
+    }
+    .knapper {
+        width: 100%;
+        text-align: center;
+        margin-top: 20px;
+    }
+}
+#visvedlegg {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    color: #0CA9E0;
+    .bildenavigering {
+        .bilde {
+            with: 100%;
+            htight: 100%
+        }
+
     }
 }
 
