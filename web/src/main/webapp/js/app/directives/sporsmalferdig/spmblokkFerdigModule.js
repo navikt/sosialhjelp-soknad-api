@@ -43,11 +43,11 @@ angular.module('nav.sporsmalferdig', [])
                 }
 
                 function apneTab(apneTab) {
-                    scope.$emit("OPEN_TAB", apneTab.attr('id'));
+                    scope.$emit("OPEN_TAB", [apneTab.attr('id')]);
                 }
 
                 function lukkTab(lukkTab) {
-                    scope.$emit("CLOSE_TAB", lukkTab.attr('id'));
+                    scope.$emit("CLOSE_TAB", [lukkTab.attr('id')]);
                 }
             }
         }

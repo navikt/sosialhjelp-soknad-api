@@ -43,7 +43,7 @@ angular.module('nav.reellarbeidssoker', [])
         }
 
         // For å åpne opp taben. Dataen som blir sendt med eventen er ID på accordion-group som skal åpnes
-        $scope.$emit("OPEN_TAB", 'reell-arbeidssoker');
+        $scope.$emit("OPEN_TAB", ['reell-arbeidssoker']);
 
         $scope.erCheckboxerAvhuket = function (checkboxNokler) {
             var minstEnAvhuket = false;
