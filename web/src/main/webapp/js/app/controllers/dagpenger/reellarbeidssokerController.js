@@ -22,10 +22,10 @@ angular.module('nav.reellarbeidssoker', [])
             'pendleeneansvarbarnopptil18aar', 'pendleannensituasjon', 'pendleomsorgansvar' ];
 
         $scope.$on('VALIDER_REELLARBEIDSSOKER', function (scope, form) {
-            $scope.validerReellarbeidssoker(form);
+            $scope.validerReellarbeidssoker(form, false);
         });
 
-        $scope.validerReellarbeidssoker = function (form) {
+        $scope.validerReellarbeidssoker = function (form, skalScrolle) {
             if (sjekkOmGittEgenskapTilObjektErFalse($scope.soknadData.fakta.villigdeltid) && $scope.erUnder60Aar()) {
                 var minstEnDeltidCheckboksAvhuket = $scope.erCheckboxerAvhuket(deltidnokler);
                 settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnVilligDeltidCheckboksErAvhuketFeilmeldingNavn, minstEnVilligDeltidCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinkenDeltid, minstEnDeltidCheckboksAvhuket, false);
@@ -39,7 +39,8 @@ angular.module('nav.reellarbeidssoker', [])
                 settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnVilligPendleCheckboksErAvhuketFeilmeldingNavn, minstEnVilligPendleCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinkenPendle, true, false);
             }
             $scope.validateForm(form.$invalid);
-            $scope.runValidation();
+            $scope.runValidation(skalScrolle);
+
         }
 
         // For å åpne opp taben. Dataen som blir sendt med eventen er ID på accordion-group som skal åpnes

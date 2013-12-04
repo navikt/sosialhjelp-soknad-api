@@ -1,1 +1,7 @@
-<div class="sticky-feilmelding" data-ng-class="{visStickyfeilmelding: skalVises()}"> {{feil.antallFeil + feil.antallFeilStyling}}</div>
+<div class="sticky-feilmelding" data-ng-class="{visStickyfeilmelding: skalVises()}">
+   <div>
+    <span>{{feil.antallFeil + feil.antallFeilStyling}}</span>
+    <span><a  data-cmstekster="skjema.feilmelding.gaatil.forrige" data-ng-click="forrige()"> Forrige </a></span>
+    <span><a data-cmstekster="skjema.feilmelding.gaatil.neste" data-ng-click="neste()"> Neste </a></span>
+   </div>
+</div>

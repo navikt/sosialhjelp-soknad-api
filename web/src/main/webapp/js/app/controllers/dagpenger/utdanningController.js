@@ -4,12 +4,13 @@ angular.module('nav.utdanning',[])
         $scope.sidedata = {navn: 'utdanning'};
 
         $scope.$on('VALIDER_UTDANNING', function (scope, form) {
-            $scope.validerUtdanning(form);
+            $scope.validerUtdanning(form, false);
         });
 
-        $scope.validerUtdanning = function(form) {
+        $scope.validerUtdanning = function(form, skalScrolle) {
             $scope.validateForm(form.$invalid);
-            $scope.runValidation();
+            $scope.runValidation(skalScrolle);
+
         }
 
         $scope.hvisIkkeUnderUtdanning = function () {

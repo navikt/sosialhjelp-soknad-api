@@ -33,17 +33,17 @@ angular.module('nav.feilmeldinger', [])
                 var eventString = 'RUN_VALIDATION' + ctrl.$name;
 
                 scope.feilmeldinger = [];
-                scope.runValidation = function () {
+                scope.runValidation = function (skalScrolle) {
                     scope.feilmeldinger = [];
                     var skalViseFlereFeilmeldinger = true;
                     var skalViseFlereBarneFeilmeldinger = true;
                     angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
-                            if (skalViseFlereFeilmeldinger) {
-                                skalViseFlereFeilmeldinger = leggTilFeilmeldingerVedValidering(verdi, feilNokkel);
-                            }
-                        });
+                        if (skalViseFlereFeilmeldinger) {
+                            skalViseFlereFeilmeldinger = leggTilFeilmeldingerVedValidering(verdi, feilNokkel);
+                        }
+                    });
 
-                        if (scope.feilmeldinger.length > 0) {
+                    if (scope.feilmeldinger.length > 0 && skalScrolle) {
                         $timeout(function () {
                             scrollToElement(elem);
                         }, 1);
