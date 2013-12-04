@@ -1,6 +1,14 @@
 angular.module('nav.barnetillegg',[])
     .controller('BarnetilleggCtrl', ['$scope', function ($scope) {
-        $scope.barn =
+        
+        if ($scope.soknadData.fakta.barn) {
+                $scope.barn = [];
+                angular.forEach($scope.soknadData.fakta.barn.valuelist, function(value) { 
+                    $scope.barn.push(angular.fromJson(value));
+                });
+                
+            }
+        /*$scope.barn =
         {
             id: 18706,
             soknadId: 275,
@@ -26,7 +34,7 @@ angular.module('nav.barnetillegg',[])
                     barnetillegg: false
                 }
             ]
-        }
+        }*/
         
         $scope.erGutt = function(barn) {
             return barn.kjonn == "gutt";
