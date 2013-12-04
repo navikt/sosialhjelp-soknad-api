@@ -209,27 +209,6 @@ angular.module('ui.bootstrap.accordion', ['ui.bootstrap.collapse'])
             }
         };
 
-        // TODO: Dette må vi flytte ut!
-        // Lagt til for å kunne åpne en tab når vi vil
-        // accordion-group-elementet må ha en ID som sendes med eventen
-        var grupper = this.groups;
-        $scope.$on("OPEN_TAB", function (e, id) {
-            angular.forEach(grupper, function (group) {
-                if (group.id === id) {
-                    group.isOpen = true;
-                }
-            });
-        });
-
-        // Lagt til for å kunne lukke en tab når vi vil
-        $scope.$on("CLOSE_TAB", function (e, id) {
-            angular.forEach(grupper, function (group) {
-                if (group.id === id) {
-                    group.isOpen = false;
-                }
-            });
-        });
-
         // This is called from the accordion-group directive to add itself to the accordion
         this.addGroup = function (groupScope) {
             var that = this;
