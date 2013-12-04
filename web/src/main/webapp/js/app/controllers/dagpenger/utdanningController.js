@@ -9,7 +9,7 @@ angular.module('nav.utdanning',[])
             var minstEnAvhuket = $scope.erCheckboxerAvhuket(nokler);
         if ($scope.hvisUnderUtdanning)
         {
-            console.log("underutdanning" + $scope.soknadData.fakta.utdanning.value);
+            console.log("minsten" + minstEnAvhuket);
             form.$setValidity("utdanning.minstEnAvhuket.feilmelding", minstEnAvhuket);
         }
             $scope.validateForm(form.$invalid);
@@ -100,9 +100,10 @@ angular.module('nav.utdanning',[])
         var minstEnAvhuket = false;
         for(var i= 0; i < checkboxNokler.length; i++) {
             var nokkel = checkboxNokler[i];
-            if ($scope.soknadData.fakta.underUtdanning[nokkel] && checkTrue($scope.soknadData.fakta.underUtdanning[nokkel].value)) {
-                minstEnAvhuket = true;
-            }
+            console.log("nokkel " + nokkel);
+       //     if ($scope.soknadData.fakta.underUtdanning[nokkel] && checkTrue($scope.soknadData.fakta.underUtdanning[nokkel].value)) {
+        //        minstEnAvhuket = true;
+         //   }
         }
         return minstEnAvhuket;
     }
