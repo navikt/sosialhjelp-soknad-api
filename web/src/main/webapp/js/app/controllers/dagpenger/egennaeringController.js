@@ -4,11 +4,12 @@ angular.module('nav.egennaering',[])
         $scope.sidedata = {navn: 'egennaering'};
 
         $scope.$on('VALIDER_EGENNAERING', function (scope, form) {
-            $scope.validerEgennaering(form);
+            $scope.validerEgennaering(form, false);
         });
 
-        $scope.validerEgennaering = function(form) {
+        $scope.validerEgennaering = function(form, skalScrolle) {
             $scope.validateForm(form.$invalid);
-            $scope.runValidation();
+            $scope.runValidation(skalScrolle);
+
         }
     }]);
