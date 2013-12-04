@@ -1,15 +1,17 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
-import org.joda.time.DateTime;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.joda.time.DateTime;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -134,17 +136,35 @@ public class WebSoknad implements Serializable {
 		return this;
 	}
 
-	public WebSoknad medBrukerData(List<Faktum> hentAlleBrukerData) {
-		
-		//TODO: if(key=barn) bruk liste
-		
-		
+	public WebSoknad medBrukerData(List<Faktum> brukerData) {
 		fakta = new HashMap<>();
-		for (Faktum faktum : hentAlleBrukerData) {
+		
+		for (Faktum faktum : brukerData) {
+			if(faktum.getKey().equals("barn")) {
+				faktum = leggBarnTilIValueList(faktum);
+			}
 			fakta.put(faktum.getKey(), faktum);
 		}
 		return this;
 				
+	}
+
+	private Faktum leggBarnTilIValueList(Faktum faktum) {
+		String barn = faktum.getValue();
+		
+		if(fakta.containsKey("barn")) {
+			Faktum barneFaktum = fakta.get("barn");
+			List<String> valueList = barneFaktum.getValuelist();
+			valueList.add(barn);
+			barneFaktum.setValuelist(valueList);
+			return barneFaktum;
+		} else {
+			List<String> barneliste = new ArrayList<>();
+			barneliste.add(barn);
+			faktum.setValuelist(barneliste);
+			faktum.setValue(null);
+			return faktum;
+		}
 	}
 
     public WebSoknad medDelstegStatus(DelstegStatus delstegStatus) {

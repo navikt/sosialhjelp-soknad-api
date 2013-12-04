@@ -63,7 +63,8 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
        return person;
     }
 
-    private void lagreBarn(Long soknadId, Person person) {
+    @SuppressWarnings("unchecked")
+	private void lagreBarn(Long soknadId, Person person) {
     	List<Barn> barneliste = (List<Barn>) person.getFakta().get("barn");
     	if(barneliste != null) {
 	    	for (Barn barn : barneliste) {

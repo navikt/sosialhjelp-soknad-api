@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Faktum implements Serializable {
 
@@ -10,6 +11,7 @@ public class Faktum implements Serializable {
     private Long vedleggId;
 	private String key;
     private String value;
+    private List<String> valuelist;
     private String type;
     
 	public Faktum() {
@@ -79,5 +81,13 @@ public class Faktum implements Serializable {
    		return "Faktum [soknadId=" + soknadId + ", key=" + key + ", value="
    				+ value + ", type=" + type + "]";
    	}
+
+	public List<String> getValuelist() {
+		return valuelist;
+	}
+
+	public void setValuelist(List<String> valueList) {
+		this.valuelist = valueList;
+	}
 
 }

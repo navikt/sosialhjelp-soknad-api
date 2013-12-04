@@ -70,10 +70,10 @@ public class PersonTest {
 	
 	@Test
 	public void skalReturneGuttVedGuttePersonNummer() {
-		String dato = "220480";
-		String individisfferEnOgTo ="43";
-		String kjonnSiffer = "7";
-		String kontrollsiffer = "12";
+		String dato = "060258";
+		String individisfferEnOgTo ="00";
+		String kjonnSiffer = "1";
+		String kontrollsiffer = "74";
 		
 		String fnr = dato + individisfferEnOgTo + kjonnSiffer + kontrollsiffer;
 		Barn barn = new Barn(1l, fnr, "Jan", "", "Larsen");
@@ -84,10 +84,10 @@ public class PersonTest {
 	
 	@Test
 	public void skalReturneJenteVedJentePersonNummer() {
-		String dato = "110470";
-		String individisfferEnOgTo ="43";
-		String kjonnSiffer = "6";
-		String kontrollsiffer = "45";
+		String dato = "140571";
+		String individisfferEnOgTo ="32";
+		String kjonnSiffer = "8";
+		String kontrollsiffer = "42";
 		
 		String fnr = dato + individisfferEnOgTo + kjonnSiffer + kontrollsiffer;
 		Barn barn = new Barn(1l, fnr, "Janne", "", "Larsen");
