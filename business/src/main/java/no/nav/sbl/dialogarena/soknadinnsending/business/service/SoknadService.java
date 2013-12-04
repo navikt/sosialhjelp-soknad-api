@@ -142,7 +142,7 @@ public class SoknadService implements SendSoknadService {
 
     public Long genererVedleggFaktum(Long soknadId, Long faktumId) {
         List<Vedlegg> vedleggs = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
-        List<byte[]> bytes = new ArrayList();
+        List<byte[]> bytes = new ArrayList<byte[]>();
         for (Vedlegg vedlegg : vedleggs) {
             InputStream inputStream = vedleggRepository.hentVedleggStream(soknadId, vedlegg.getId());
             try {

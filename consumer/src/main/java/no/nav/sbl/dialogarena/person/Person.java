@@ -1,13 +1,13 @@
 package no.nav.sbl.dialogarena.person;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
-
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.bind.annotation.XmlRootElement;
+
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 
 @XmlRootElement
 public class Person implements Serializable {
@@ -21,8 +21,6 @@ public class Person implements Serializable {
 	private static final String GJELDENDEADRESSETYPE = "gjeldendeAdresseType";
 	private static final String EPOSTKEY = "epost";
 	private static final String BARNKEY = "barn";
-	private static final String KJONNKEY = "kjonn";
-	private static final String ALDERKEY = "alder";
 
 	private Map<String, Object> fakta;
 
@@ -96,6 +94,7 @@ public class Person implements Serializable {
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	private boolean erUtenlandskFolkeregistrertAdresse() {
 		Object adresserobject = getFakta().get(ADRESSERKEY);
 		List<Adresse> adresser = (List<Adresse>) adresserobject;

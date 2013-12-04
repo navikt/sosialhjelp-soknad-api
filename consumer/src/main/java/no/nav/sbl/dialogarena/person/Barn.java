@@ -6,7 +6,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
 
 @XmlRootElement
 public class Barn {
-
+	private Long soknadId;
 	private String fnr;
 	private String fornavn;
 	private String mellomnavn;
@@ -17,6 +17,7 @@ public class Barn {
 	
 	public Barn(Long soknadId, String fnr, String fornavn, String mellomnavn,
 			String etternavn) {
+		this.soknadId = soknadId;
 		this.fnr = fnr;
 		this.fornavn = fornavn;
 		this.mellomnavn = mellomnavn;
@@ -81,5 +82,9 @@ public class Barn {
 
 	public String getSammensattnavn() {
 		return sammensattnavn;
+	}
+
+	public Long getSoknadId() {
+		return soknadId;
 	}
 }

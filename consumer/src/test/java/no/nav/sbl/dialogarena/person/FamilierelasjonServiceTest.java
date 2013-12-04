@@ -148,10 +148,4 @@ public class FamilierelasjonServiceTest {
 			
 			return xmlPerson;
 		}
-
-		private HentKjerneinformasjonRequest hentRequestMedGyldigIdent() {
-			HentKjerneinformasjonRequest request = new HentKjerneinformasjonRequest();
-			request.setIdent(GYLDIG_IDENT);
-			return request;
-		}
 }
