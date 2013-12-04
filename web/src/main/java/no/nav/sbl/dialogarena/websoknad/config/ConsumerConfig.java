@@ -29,6 +29,8 @@ import org.springframework.context.annotation.Scope;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -118,15 +120,28 @@ public class ConsumerConfig {
     @Configuration
     public static class PersonWSConfig {
 
-        @Value("${soknad.webservice.person.personservice.url}")
-        private URL personEndpoint;
+    	//TODO: Hardkodet intill envconfig fungerer igjen
+        //@Value("${soknad.webservice.person.personservice.url}")
+        //private URL personEndpoint;
+    	
 
         @Bean
         @Scope(SCOPE_PROTOTYPE)
         public JaxWsProxyFactoryBean personPortTypeFactory() {
-            JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(personEndpoint, PersonPortType.class, "classpath:/wsdl/no/nav/tjeneste/virksomhet/person/v1/Person.wsdl");
-            jaxwsClient.getFeatures().add(new TimingFeature(PersonPortType.class.getSimpleName()));
-            return jaxwsClient;																					
+        	//TODO Bort med alt try catch når envconfig funker igjen
+        	URL personEndpoint;
+			try {
+				personEndpoint = new URL("https://wasapp-t11.adeo.no/tpsws/Person_v1");
+				JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(personEndpoint, PersonPortType.class, "classpath:/wsdl/no/nav/tjeneste/virksomhet/person/v1/Person.wsdl");
+	            jaxwsClient.getFeatures().add(new TimingFeature(PersonPortType.class.getSimpleName()));
+	            return jaxwsClient;										
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+			//END
+            											
         }
 
         @Bean
