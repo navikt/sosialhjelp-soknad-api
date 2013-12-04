@@ -54,8 +54,7 @@ public class WebSoknadServiceMock implements SendSoknadService{
 
 	@Override
 	public void lagreSystemSoknadsFelt(long soknadId, String key, String value) {
-		// TODO Auto-generated method stub
-		
+		repository.lagre(soknadId, key, value);
 	}
 
 }

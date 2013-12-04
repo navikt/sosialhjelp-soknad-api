@@ -72,7 +72,6 @@ public class SoknadService implements SendSoknadService {
 
     @Override
     public void avbrytSoknad(Long soknadId) {
-        //TODO: Refaktorerer. Trenger bare å sende id
         repository.avbryt(soknadId);
     }
 

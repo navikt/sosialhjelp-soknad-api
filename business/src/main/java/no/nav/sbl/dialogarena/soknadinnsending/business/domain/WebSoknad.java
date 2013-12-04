@@ -98,7 +98,6 @@ public class WebSoknad implements Serializable {
 	}
 
 	public static WebSoknad startSoknad() {
-		// TODO Auto-generated method stub
 		return new WebSoknad();
 	}
 
