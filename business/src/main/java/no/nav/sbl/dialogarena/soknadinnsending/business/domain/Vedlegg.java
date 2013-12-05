@@ -1,5 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.xml.bind.annotation.XmlTransient;
+
 /**
  * Domeneklasse som beskriver et vedlegg.
  */
@@ -8,16 +12,19 @@ public class Vedlegg {
     private Long soknadId;
     private String navn;
     private Long storrelse;
-    private Long faktum;
+    private Long faktumId;
+    private Integer antallSider;
+
     private byte[] data;
 
-    public Vedlegg(Long vedleggId, Long soknadId, Long faktumId, String navn, Long storrelse, byte[] data) {
+    public Vedlegg(Long vedleggId, Long soknadId, Long faktumId, String navn, Long storrelse, Integer antallSider, byte[] data) {
         this.id = vedleggId;
         this.soknadId = soknadId;
-        this.faktum = faktumId;
+        this.faktumId = faktumId;
         this.navn = navn;
         this.storrelse = storrelse;
         this.data = data;
+        this.antallSider = antallSider;
     }
 
     public Long getId() {
@@ -32,32 +39,20 @@ public class Vedlegg {
         return soknadId;
     }
 
-    public void setSoknadId(Long soknadId) {
-        this.soknadId = soknadId;
+    public Long getFaktumId() {
+        return faktumId;
     }
 
-    public Long getFaktum() {
-        return faktum;
-    }
-
-    public void setFaktum(Long faktum) {
-        this.faktum = faktum;
-    }
-
-     public String getNavn() {
+    public String getNavn() {
         return navn;
-    }
-
-    public void setNavn(String navn) {
-        this.navn = navn;
     }
 
     public Long getStorrelse() {
         return storrelse;
     }
 
-    public void setStorrelse(long storrelse) {
-        this.storrelse = storrelse;
+    public Integer getAntallSider() {
+        return antallSider;
     }
 
     @Override
@@ -90,40 +85,40 @@ public class Vedlegg {
         return true;
     }
 
-	private boolean tomStorrelse(Vedlegg vedlegg) {
-		if (storrelse != null) {
-			return !storrelse.equals(vedlegg.storrelse);
-		} 
-		return vedlegg.storrelse != null;
-	}
+    private boolean tomStorrelse(Vedlegg vedlegg) {
+        if (storrelse != null) {
+            return !storrelse.equals(vedlegg.storrelse);
+        }
+        return vedlegg.storrelse != null;
+    }
 
-	private boolean tomSoknadId(Vedlegg vedlegg) {
-		if (soknadId != null)  {
-			return !soknadId.equals(vedlegg.soknadId);
-		}
-		return vedlegg.soknadId != null;
-	}
+    private boolean tomSoknadId(Vedlegg vedlegg) {
+        if (soknadId != null) {
+            return !soknadId.equals(vedlegg.soknadId);
+        }
+        return vedlegg.soknadId != null;
+    }
 
-	private boolean tomtNavn(Vedlegg vedlegg) {
-		if (navn != null) {
-			return !navn.equals(vedlegg.navn);
-		}
-		return vedlegg.navn != null;
-	}
+    private boolean tomtNavn(Vedlegg vedlegg) {
+        if (navn != null) {
+            return !navn.equals(vedlegg.navn);
+        }
+        return vedlegg.navn != null;
+    }
 
-	private boolean tomId(Vedlegg vedlegg) {
-		if (id != null) {
-			return !id.equals(vedlegg.id);
-		}
-		return vedlegg.id != null;
-	}
+    private boolean tomId(Vedlegg vedlegg) {
+        if (id != null) {
+            return !id.equals(vedlegg.id);
+        }
+        return vedlegg.id != null;
+    }
 
-	private boolean tomtFaktum(Vedlegg vedlegg) {
-		if (faktum != null) {
-			return !faktum.equals(vedlegg.faktum);
-		}
-		return vedlegg.faktum != null;
-	}
+    private boolean tomtFaktum(Vedlegg vedlegg) {
+        if (faktumId != null) {
+            return !faktumId.equals(vedlegg.faktumId);
+        }
+        return vedlegg.faktumId != null;
+    }
 
     @Override
     public int hashCode() {
@@ -131,7 +126,7 @@ public class Vedlegg {
         result = 31 * result + (soknadId != null ? soknadId.hashCode() : 0);
         result = 31 * result + (navn != null ? navn.hashCode() : 0);
         result = 31 * result + (storrelse != null ? storrelse.hashCode() : 0);
-        result = 31 * result + (faktum != null ? faktum.hashCode() : 0);
+        result = 31 * result + (faktumId != null ? faktumId.hashCode() : 0);
         return result;
     }
 
@@ -142,11 +137,13 @@ public class Vedlegg {
         sb.append(", soknadId=").append(soknadId);
         sb.append(", navn='").append(navn).append('\'');
         sb.append(", storrelse=").append(storrelse);
-        sb.append(", faktum='").append(faktum).append('\'');
+        sb.append(", faktumId='").append(faktumId).append('\'');
         sb.append('}');
         return sb.toString();
     }
 
+    @XmlTransient
+    @JsonIgnore
     public byte[] getData() {
         return data;
     }
