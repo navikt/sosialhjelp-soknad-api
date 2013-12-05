@@ -22,10 +22,8 @@ angular.module('nav.vedlegg.controller', [])
             }
             vedlegg.$naviger = function (antall) {
                 vedlegg.side = vedlegg.side + antall;
-                console.log("naviger " + vedlegg.side)
             }
             if (vedlegg.lastetOpp()) {
-                console.log("lastet opp: " + vedlegg.data.id);
                 vedlegg.vedlegg = vedleggService.get({
                     soknadId: vedlegg.data.soknadId,
                     faktumId: vedlegg.data.vedleggId,
