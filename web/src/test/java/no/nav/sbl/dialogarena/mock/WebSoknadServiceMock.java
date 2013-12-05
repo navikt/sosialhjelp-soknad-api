@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.mock;
 
 import no.nav.sbl.dialogarena.SoknadInnsendingRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import org.slf4j.Logger;
@@ -23,8 +24,9 @@ public class WebSoknadServiceMock implements SendSoknadService{
 	}
 
 	@Override
-	public void lagreSoknadsFelt(long soknadId, String key, String value) {
-		repository.lagre(soknadId, key, value);
+	public Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum) {
+		Long faktumId = repository.lagre(soknadId, faktum.getKey(), faktum.getValue());
+		return repository.hentFaktum(soknadId, faktumId);
 		
 	}
 
@@ -53,8 +55,9 @@ public class WebSoknadServiceMock implements SendSoknadService{
 
 
 	@Override
-	public void lagreSystemSoknadsFelt(long soknadId, String key, String value) {
-		repository.lagre(soknadId, key, value);
+	public Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
