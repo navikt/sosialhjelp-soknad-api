@@ -1,9 +1,0 @@
-<div class="bildenavigering" data-ng-cloak >
-    <a class="pil-venstre"  data-ng-click="naviger(-1)">&nbsp;</a>
-
-    <a class="bilde" alt="Forstørr" data-ng-href="#visVedlegg/{{vedlegg.soknadId}}/{{vedlegg.faktumId}}/{{vedlegg.id}}">
-        <img id="test" data-ng-src="../rest/soknad/{{vedlegg.soknadId}}/faktum/{{vedlegg.faktumId}}/vedlegg/{{vedlegg.id}}/thumbnail?side={{side}}" alt="Forhåndsvisning" data-ng-if="vedlegg.id">
-        <span>{{vedlegg.navn}} ({{side + 1}}/{{vedlegg.antallSider}})</span>
-    </a>
-    <a class="pil-hoyre" data-ng-click="naviger(1)">&nbsp;</a>
-</div>

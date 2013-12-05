@@ -56,7 +56,7 @@
                             </div>
                             <div data-ng-if="v.lastetOpp()">
                                 <div class="forhandsvisning">
-                                    <div data-bildenavigering data-vedlegg="v.vedlegg"></div>
+                                    <div data-bildenavigering data-vedlegg="v.vedlegg" data-nav-template="bildenavigeringTemplateLiten.html"></div>
                                     <div class="knapper">
                                         <a data-ng-href="../rest/soknad/{{soknadData.soknadId}}/faktum/{{v.data.id}}/vedlegg/{{v.data.vedleggId}}" data-cmstekster="vedlegg.lastned">Last ned</a>
                                         <a data-cmstekster="vedlegg.slett" data-ng-click="slettVedlegg(v)">Slett</a>
