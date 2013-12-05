@@ -93,6 +93,12 @@
         margin: 0 auto;
         text-align: center;
         color: #0CA9E0;
+        .bildenavigering {
+            .bilde {
+                width: 220px;
+                height: 311px;
+            }
+        }
     }
 }
 
@@ -104,8 +110,6 @@
 
     .bilde {
         position: relative;
-        width: 220px;
-        height: 311px;
         padding: 10px;
         padding-bottom: 40px;
         background-image: url('../img/ajaxloader/svart/loader_svart_128.gif');
@@ -122,31 +126,47 @@
             text-align: center;
         }
     }
-    [class^='pil-'] {
+    [class*='pil-'] {
         display: inline-block;
         height: 56px;
         width: 56px;
-        background-image: url('../img/rund-pil-venstre.svg');
         background-position: center;
         background-repeat: no-repeat;
+        background-size: 56px 56px;
         text-decoration: none;
-        margin-top: 25%;
+        margin-top: 21%;
     }
-    .pil-venstre {
+    [class*='pil-venstre'] {
         float: left;
         margin-left: 30px;
-        background-image: url('../img/rund-pil-venstre.svg');
     }
-    .pil-venstre:hover {
-        background-image: url('../img/rund-pil-venstre-hover.svg');
-    }
-    .pil-hoyre {
+    [class*='pil-hoyre'] {
         float: right;
         margin-right: 30px;
-        background-image: url('../img/rund-pil-hoyre.svg');
     }
-    .pil-hoyre:hover {
-        background-image: url('../img/rund-pil-hoyre-hover.svg');
+    .pil-venstre-hvit {
+        background-image: url('../img/rund-pil-hvit-venstre.svg');
+    }
+    .pil-venstre-hvit:hover {
+        background-image: url('../img/rund-pil-hvit-venstre-hover.svg');
+    }
+    .pil-hoyre-hvit {
+        background-image: url('../img/rund-pil-hvit-hoyre.svg');
+    }
+    .pil-hoyre-hvit:hover {
+        background-image: url('../img/rund-pil-hvit-hoyre-hover.svg');
+    }
+    .pil-venstre-sort {
+        background-image: url('../img/rund-pil-sort-venstre.svg');
+    }
+    .pil-venstre-sort:hover {
+        background-image: url('../img/rund-pil-sort-venstre-hover.svg');
+    }
+    .pil-hoyre-sort {
+        background-image: url('../img/rund-pil-sort-hoyre.svg');
+    }
+    .pil-hoyre-sort:hover {
+        background-image: url('../img/rund-pil-sort-hoyre-hover.svg');
     }
     .knapper {
         width: 100%;
@@ -154,15 +174,58 @@
         margin-top: 20px;
     }
 }
+
 #visvedlegg {
+    position: fixed;
     width: 100%;
+    height: 100%;
+    z-index: 10;
+    left: 0;
+    top: 0;
     margin: 0 auto;
     text-align: center;
     color: #0CA9E0;
+    background-color: #333333;
+    .header {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 40px;
+        width: 100%;
+        box-shadow: 0 1px 4px #000000;
+        color: #d1d1d1;
+        padding-top: 13px;
+    }
     .bildenavigering {
+        width: 66%;
+        height: 100%;
+        [class*='pil-'] {
+            float: none;
+        }
+        .tilbake {
+            position: absolute;
+            left: 0px;
+            top: 5px;
+            padding-top: 6px;
+            border: 1px groove #d1d1d1;
+            width: 150px;
+            color: #d1d1d1;
+            height: 30px;
+            display:block;
+            z-index: 11;
+        }
+        .nav {
+            height: 100%;
+            img {
+                margin-top: 30px;
+            }
+        }
         .bilde {
-            with: 100%;
-            htight: 100%
+            display: inline-block;
+            width: 50%;
+            height: 90%;
+            img {
+            }
         }
 
     }
