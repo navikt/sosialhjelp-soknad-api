@@ -16,8 +16,12 @@
                         <span class="bosted">bosted: </span>
                         <span>Norge</span>
                     </div>
-                    <div data-navcheckbox data-ng-model='b.barnetillegg' data-modus='data.redigeringsModus'
-                    data-inputname='barnetillegg' data-label='barnetillegg.barnetilegg.spormsal'></div>
+                    <div class="barnecheckbox">
+                        <input id="barnetilegg{{$index}}" data-ng-click="lagreBarnetilegg(b, $event)" data-ng-model="model" type="checkbox" name="barnetilegg{{$sindex}}"/>
+                        <label for="barnetilegg{{$index}}" class="svar-alt" data-cmstekster="barnetillegg.barnetilegg.spormsal"></label>
+                    </div>
+                    <!--div data-barnetilegg-checkbox data-fnr="b.fnr" data-ng-model='soknadData.fakta.barnetilegg' data-modus='data.redigeringsModus'
+                    data-inputname='barnetillegg' data-label='barnetillegg.barnetilegg.spormsal'></div-->
                 </div>
             </div>
         </div>

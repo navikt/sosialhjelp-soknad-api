@@ -1,6 +1,8 @@
 angular.module('nav.barnetillegg',[])
     .controller('BarnetilleggCtrl', ['$scope', function ($scope) {
         
+        $scope.soknadData.fakta.barnetilegg = {};
+
         if ($scope.soknadData.fakta.barn) {
                 $scope.barn = [];
                 angular.forEach($scope.soknadData.fakta.barn.valuelist, function(value) { 
@@ -36,6 +38,19 @@ angular.module('nav.barnetillegg',[])
             ]
         }*/
         
+        $scope.lagreBarnetilegg = function(barn, event) {
+            var result = {};
+            result["fnr"] = barn.fnr;
+            result["valgt"] = event.target.checked;
+
+            console.log(result);
+
+            $scope.soknadData.fakta.barnetilegg[barn.fnr] = result;
+
+            console.log($scope.soknadData.fakta.barnetilegg);
+
+        }
+
         $scope.erGutt = function(barn) {
             return barn.kjonn == "gutt";
         }
