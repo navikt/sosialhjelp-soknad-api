@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class Faktum implements Serializable {
 
 	//public enum FaktumType { FAGREGISTER, BRUKERREGISTRERT; }
-	private Long id;
+	private Long faktumId;
 	private Long soknadId;
     private Long vedleggId;
 	private String key;
@@ -15,23 +15,24 @@ public class Faktum implements Serializable {
 	public Faktum() {
     }
   
-    public Faktum(Long soknadId, String key, String value, String type) {
-		this(soknadId,key,value);
+    public Faktum(Long soknadId, Long faktumId, String key, String value, String type) {
+		this(soknadId, faktumId, key,value);
 		this.type = type;
     }
     
-	public Faktum(long soknadId, String key, String value) {
+	public Faktum(Long soknadId, Long faktumId, String key, String value) {
 		this.soknadId = soknadId;
+		this.faktumId = faktumId;
 		this.key = key;
 		this.value = value;
 	}
 
-    public Long getId() {
-        return id;
+    public Long getFaktumId() {
+        return faktumId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setFaktumId(Long faktumId) {
+        this.faktumId = faktumId;
     }
 
     public Long getVedleggId() {

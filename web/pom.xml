@@ -201,6 +201,7 @@
             <artifactId>commons-fileupload</artifactId>
             <scope>runtime</scope>
         </dependency>
+
         <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-log-filter</artifactId>
