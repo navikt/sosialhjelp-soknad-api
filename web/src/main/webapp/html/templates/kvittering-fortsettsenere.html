@@ -1,17 +1,12 @@
-<panelbelyst id="kvittering">
-    <h2 class="stor" cmstekster="dagpenger.fortsettSenere.kvittering.tittel"/>
-
-    <p cmstekster="dagpenger.fortsettSenere.kvittering.tekst"/> {{soknadData.fakta.epost.value}}
-
-    <a href="#/fortsettsenere/{{soknadData.soknadId}}" cmstekster="dagpenger.fortsettSenere.kvittering.sendpaanyttlink"/>
-    <p cmstekster="dagpenger.fortsettSenere.kvittering.frist"/>
-
-    <p cmstekster="dagpenger.fortsettSenere.kvittering.konsekvens-vente"/>
-
-    <a href="#/dagpenger/{{soknadData.soknadId}}" cmstekster="dagpenger.fortsettSenere.fortsettlink"/>
-
-    <a href="#" cmstekster="dagpenger.fortsettSenere.kvittering.inngangsportenlink"/>
-</panelbelyst>
+<div data-panelbelyst id="kvittering">
+	<h2 class="stor" data-cmstekster="dagpenger.fortsettSenere.kvittering.tittel"></h2>
+	<p data-cmstekster="dagpenger.fortsettSenere.kvittering.tekst"></p>
+	<span> {{soknadData.fakta.epost.value}}</span>
+	<a href="#/fortsettsenere/{{soknadData.soknadId}}" data-cmstekster="dagpenger.fortsettSenere.kvittering.sendpaanyttlink"></a>
+	<p data-cmstekster="dagpenger.fortsettSenere.kvittering.frist"></p>
+	<p data-cmstekster="dagpenger.fortsettSenere.kvittering.konsekvens-vente"></p>
+	<a href="#/dagpenger/{{soknadData.soknadId}}" data-cmstekster="dagpenger.fortsettSenere.fortsettlink"></a>
+	<a href="https://tjenester-t11.nav.no/inngangsporten/innlogget" id="dittnav" role="link" data-cmstekster="dagpenger.fortsettSenere.dittNav"></a>
+</div>
 
 
-    

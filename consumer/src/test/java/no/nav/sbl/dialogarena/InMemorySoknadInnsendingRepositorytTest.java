@@ -33,7 +33,7 @@ public class InMemorySoknadInnsendingRepositorytTest {
 
     @Test
     public void skalKunneLeggeFaktaPaaSoknad() {
-        soknad.leggTilFaktum("testFakta", new Faktum(soknadId, "testFakta", "testValue", null));
+        soknad.leggTilFaktum("testFakta", new Faktum(soknadId, null, "testFakta", "testValue", null));
 
         Map<String, Faktum> fakta = soknad.getFakta();
         assertEquals(1, fakta.size());

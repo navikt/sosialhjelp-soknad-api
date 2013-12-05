@@ -1,10 +1,11 @@
 package no.nav.sbl.dialogarena;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 
 public interface SoknadInnsendingRepository {
 
-	void lagre(long soknadId, String nokkel, String verdi);
+	Long lagre(long soknadId, String nokkel, String verdi);
 
 	WebSoknad hentSoknad(long soknadId);
 	
@@ -13,5 +14,7 @@ public interface SoknadInnsendingRepository {
 	void slettSoknad(long soknadId);
 	
 	void sendSoknad(long soknadId);
+	
+	Faktum hentFaktum(Long soknadId, Long faktumId);
 	
 }

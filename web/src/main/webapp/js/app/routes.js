@@ -181,5 +181,4 @@ angular.module('app.routes', ['ngRoute'])
             $location.hash($routeParams.scrollTo);
             $anchorScroll();
         });
-
     });
