@@ -1,5 +1,18 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+
+import java.awt.Dimension;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import no.nav.sbl.dialogarena.detect.IsImage;
 import no.nav.sbl.dialogarena.detect.IsPdf;
 import no.nav.sbl.dialogarena.pdf.ConvertToPng;
@@ -12,21 +25,10 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.awt.Dimension;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 
 
 @Component
@@ -49,13 +51,16 @@ public class SoknadService implements SendSoknadService {
     }
 
     @Override
-    public void lagreSoknadsFelt(long soknadId, String key, String value) {
-        repository.lagreFaktum(soknadId, new Faktum(soknadId, key, value, BRUKERREGISTRERT_FAKTUM));
+    public Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum) {
+        Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, faktum.getFaktumId(), faktum.getKey(), faktum.getValue(), BRUKERREGISTRERT_FAKTUM));
+        return repository.hentFaktum(soknadId, faktumId);
     }
 
     @Override
-    public void lagreSystemSoknadsFelt(long soknadId, String key, String value) {
-        repository.lagreFaktum(soknadId, new Faktum(soknadId, key, value, SYSTEMREGISTRERT_FAKTUM));
+    public Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value) {
+    	Faktum faktum = repository.hentSystemFaktum(soknadId, key, SYSTEMREGISTRERT_FAKTUM);
+    	Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, faktum.getFaktumId(), key, value, SYSTEMREGISTRERT_FAKTUM));
+    	return repository.hentFaktum(soknadId, faktumId);
     }
 
 
@@ -142,7 +147,7 @@ public class SoknadService implements SendSoknadService {
 
     public Long genererVedleggFaktum(Long soknadId, Long faktumId) {
         List<Vedlegg> vedleggs = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
-        List<byte[]> bytes = new ArrayList();
+        List<byte[]> bytes = new ArrayList<byte[]>();
         for (Vedlegg vedlegg : vedleggs) {
             InputStream inputStream = vedleggRepository.hentVedleggStream(soknadId, vedlegg.getId());
             try {

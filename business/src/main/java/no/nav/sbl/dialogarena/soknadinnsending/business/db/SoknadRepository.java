@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 
+import java.util.List;
+
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-
-import java.util.List;
 
 public interface SoknadRepository {
 	
@@ -22,11 +22,16 @@ public interface SoknadRepository {
 
 	List<WebSoknad> hentListe(String aktorId);
 
-	void lagreFaktum(long soknadId, Faktum faktum);
+	Long lagreFaktum(long soknadId, Faktum faktum);
 
 	WebSoknad hentMedBehandlingsId(String behandlingsId);
 
 	String opprettBehandling();
+
+	Faktum hentFaktum(Long soknadId, Long faktumId);
+
+	Faktum hentSystemFaktum(Long soknadId, String key,
+			String systemregistrertFaktum);
 
 
 }
