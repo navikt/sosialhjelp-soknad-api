@@ -17,7 +17,6 @@ angular.module('nav.bildenavigering', [])
                     return r;
                 }
                 scope.sideErSynlig = function (index) {
-                    console.log("synlig" + index + ":" + scope.side + ": " + (index == scope.side))
                     return index == scope.side;
                 }
                 scope.naviger = function (retning) {
@@ -32,12 +31,9 @@ angular.module('nav.bildenavigering', [])
 
             },
             templateUrl: function (element, attr) {
-                console.log('\'' + attr.selvstendig + '\'' + (attr.selvstendig)?'ja':'nei')
                 if (attr.selvstendig) {
-                    console.log('stor')
                     return '../js/app/directives/bildenavigering/bildenavigeringTemplateStor.html';
                 } else {
-                    console.log('liten')
                     return '../js/app/directives/bildenavigering/bildenavigeringTemplateLiten.html';
                 }
             }
