@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 
-import java.util.List;
-
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+
+import java.util.List;
 
 public interface SoknadRepository {
 	
