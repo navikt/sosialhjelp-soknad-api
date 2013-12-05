@@ -10,5 +10,15 @@
     <mvc:annotation-driven>
         <mvc:async-support default-timeout="20000" task-executor="thumbnailExecutor"/>
     </mvc:annotation-driven>
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**/thumbnail*"/>
+            <bean class="org.springframework.web.servlet.mvc.WebContentInterceptor">
+                <property name="useCacheControlNoStore" value="false"/>
+                <property name="useCacheControlHeader" value="false"/>
+                <property name="cacheSeconds" value="99999999"/>
+            </bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
 </beans>

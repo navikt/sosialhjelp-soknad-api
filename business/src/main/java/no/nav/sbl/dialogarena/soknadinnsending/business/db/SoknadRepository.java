@@ -22,11 +22,16 @@ public interface SoknadRepository {
 
 	List<WebSoknad> hentListe(String aktorId);
 
-	void lagreFaktum(long soknadId, Faktum faktum);
+	Long lagreFaktum(long soknadId, Faktum faktum);
 
 	WebSoknad hentMedBehandlingsId(String behandlingsId);
 
 	String opprettBehandling();
+
+	Faktum hentFaktum(Long soknadId, Long faktumId);
+
+	Faktum hentSystemFaktum(Long soknadId, String key,
+			String systemregistrertFaktum);
 
 
 }
