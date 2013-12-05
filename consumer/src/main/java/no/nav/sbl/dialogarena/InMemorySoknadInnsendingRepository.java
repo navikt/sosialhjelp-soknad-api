@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 
 import java.util.HashMap;
@@ -11,8 +12,8 @@ public class InMemorySoknadInnsendingRepository implements SoknadInnsendingRepos
 	private Map<Long, WebSoknad> soknader = new HashMap<Long, WebSoknad>();
 	
 	@Override
-	public void lagre(long soknadId, String nokkel, String verdi) {
-
+	public Long lagre(long soknadId, String nokkel, String verdi) {
+		return 0l;
 	}
 
 	@Override
@@ -46,6 +47,12 @@ public class InMemorySoknadInnsendingRepository implements SoknadInnsendingRepos
 		} else {
 			return soknader.size() + 1;
 		}
+	}
+
+	@Override
+	public Faktum hentFaktum(Long soknadId, Long faktumId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

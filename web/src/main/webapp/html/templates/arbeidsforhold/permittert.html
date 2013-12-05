@@ -1,45 +1,41 @@
-<div data-ng-controller="ModusCtrl">
+<p class="sluttaarsak-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.permittert.informasjon"/>
 
-    <p class="sluttaarsak-informasjon" cmstekster="arbeidsforhold.sluttaarsak.permittert.informasjon"/>
+<div class="varighet">
+    <p data-cmstekster="arbeidsforhold.arbeidsgiver.permittert.varighet"></p>
 
-
-
-    <span data-ng-show="permittertDatoErrorFra" style="color:red"
-          cmstekster="arbeidsforhold.error.permittert.fraDato"/>
-
-
-    <div class="sporsmaal form-linje">
-        <label cmstekster="arbeidsforhold.sluttaarsak.permittert.fraDato"></label>
-        <input type="text" name="permittertFraDato" ui-date ui-date-format data-ng-model="af.permittertFraDato"
-               data-ng-change="validatePermittertDatoFra(af)"
-               error-messages="'arbeidsforhold.sluttaarsak.permittert.fraDato.feilmelding'" data-required>
-        <span class="melding" />
+    <div data-nav-dato-intervall
+         data-fra-dato="af.permittertFraDato"
+         data-til-dato="af.permittertTilDato"
+         data-er-fradato-required="true"
+         data-label="arbeidsforhold.arbeidsgiver.permittert.varighet">
     </div>
 
-     <span data-ng-show="permittertDatoErrorTil" style="color:red"
-           cmstekster="arbeidsforhold.error.permittert.tilDato"/>
-
-    <div class="sporsmaal form-linje">
-        <label cmstekster="arbeidsforhold.sluttaarsak.permittert.tilDato"></label>
-        <input type="text" name="permittertTilDato" ui-date ui-date-format data-ng-model="af.permittertTilDato"
-               data-ng-change="validatePermittertDatoTil(af)"
-               error-messages="'arbeidsforhold.sluttaarsak.permittert.tilDato.feilmelding'" data-required>
-        <span class="melding" />
+    <p data-cmstekster="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet"></p>
+    <div data-nav-dato-intervall
+         data-fra-dato="af.permittertLonnspliktFraDato"
+         data-til-dato="af.permittertLonnspliktTilDato"
+         data-er-begge-required="true"
+         data-label="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet">
     </div>
 
-    <div class="sporsmaal form-linje">
-        <label cmstekster="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad"></label>
+</div>
 
-        <select id="permitteringProsent" type="text" data-ng-model="af.permitteringProsent"
-                error-messages="'arbeidsforhold.sluttaarsak.permittert.grad.feilmelding'"
-                ng-options="obj.id as obj.name for obj in permitteringsgrad" data-required data-blur-validate="">
-            <option value="">--Velg permitteringsgrad--</option>
+<div class="sporsmaal form-linje">
+    <label>
+        <span data-cmstekster="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad"></span>
+        <select id="permitteringProsent"
+                type="text"
+                data-ng-model="af.permitteringProsent"
+                data-error-messages="'arbeidsforhold.sluttaarsak.permittert.grad.feilmelding'"
+                data-ng-options="obj.id as obj.name for obj in permitteringsgrad"
+                data-required
+                data-blur-validate>
+            <option value="" data-cmstekster="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.placeholder"></option>
         </select>
-        <span class="melding" />
-
-    </div>
-
+        <span class="melding"></span>
+    </label>
     <div data-ng-if="af.permitteringProsent < 50 ">
-        <p cmstekster="arbeidsforhold.sluttaarsak.permittert.forlite"/>
+        <p data-cmstekster="arbeidsforhold.sluttaarsak.permittert.forlite"/>
     </div>
 </div>
+

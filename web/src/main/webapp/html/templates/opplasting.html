@@ -1,6 +1,6 @@
 <stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="2"></stegindikator>
 
-<div id="opplasting" class="soknad rad-belyst">
+<div id="opplasting" class="soknad rad-belyst" data-sidetittel="sidetittel.opplasting">
     <div class="begrensning sak-halv">
         <section class="panel-mini uten-ramme">
             <h1 class="stor-strek-ikon-vedlegg">Last opp</h1>
@@ -11,7 +11,7 @@
             <section class="panel-standard oversikt">
                 <article id="opplastingFeilmelding" class="feil" data-ng-if="opplastingFeilet" data-ng-bind="opplastingFeilet"></article>
                 <ul class="opplastingliste clearfix">
-                    <li data-ng-repeat="file in queue" data-ng-class="{'lasteropp': file.$processing()}" fil-feil>
+                    <li data-ng-repeat="file in queue" data-ng-class="{'lasteropp': file.$processing()}" data-fil-feil>
                         <a class="lukk" data-ng-if="!!file.sletteUrl" data-ng-click="file.$destroy()" data-ng-controller="SlettOpplastingCtrl"></a>
                         <img data-async-image="../{{file.forhandsvisningUrl}}" data-ng-if="!!file.forhandsvisningUrl">
                     </li>
@@ -24,12 +24,11 @@
         </div>
         <div class="rad uten-ramme">
             <div class="begrensning sak-totredel">
-                <a data-redirect="#/vedlegg/{{ soknadId }}" class="knapp-hoved" cmstekster="opplasting.ferdig" data-ng-click="leggVed()" data-fremdriftsindikator></a>
-                <a data-ng-href="#/vedlegg/{{ data.soknadId }}" class="avbryt" cmstekster="opplasting.avbryt">Avbryt</a>
+                <a data-redirect="#/vedlegg/{{ soknadId }}" class="knapp-hoved" data-cmstekster="opplasting.ferdig" data-ng-click="leggVed()" data-fremdriftsindikator></a>
+                <a data-ng-href="#/vedlegg/{{ data.soknadId }}" class="avbryt" data-cmstekster="opplasting.avbryt">Avbryt</a>
             </div>
         </div>
     </form>
-
 </div>
 
 
