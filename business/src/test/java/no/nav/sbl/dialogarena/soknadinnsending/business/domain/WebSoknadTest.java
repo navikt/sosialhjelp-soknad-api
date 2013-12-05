@@ -8,10 +8,12 @@ public class WebSoknadTest {
 
 	WebSoknad soknad;
 	Long soknadId;
+	Long faktumId;
 	
 	@Before
 	public void setUp() {
 		soknadId = 2l;
+		faktumId = 33l;
 		soknad = new WebSoknad();
 		soknad.setSoknadId(soknadId);
 	}
@@ -23,7 +25,7 @@ public class WebSoknadTest {
 	
 	@Test
 	public void skalKunneLeggeTilFakta() {
-		soknad.leggTilFaktum("enKey", new Faktum(soknadId, "enKey", "enValue", null));
+		soknad.leggTilFaktum("enKey", new Faktum(soknadId, faktumId, "enKey", "enValue", null));
 		Assert.assertEquals(1,soknad.antallFakta());
 	}
 }
