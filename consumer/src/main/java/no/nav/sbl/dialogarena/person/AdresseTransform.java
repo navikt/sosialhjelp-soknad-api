@@ -1,5 +1,11 @@
 package no.nav.sbl.dialogarena.person;
 
+import static no.nav.sbl.dialogarena.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
+import static no.nav.sbl.dialogarena.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
+import static no.nav.sbl.dialogarena.person.Adressetype.POSTADRESSE;
+import static no.nav.sbl.dialogarena.person.Adressetype.UTENLANDSK_ADRESSE;
+import static org.slf4j.LoggerFactory.getLogger;
+
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBostedsadresse;
@@ -15,15 +21,12 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostboksadresseNorsk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLStrukturertAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLUstrukturertAdresse;
+
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static no.nav.sbl.dialogarena.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
-import static no.nav.sbl.dialogarena.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
-import static no.nav.sbl.dialogarena.person.Adressetype.POSTADRESSE;
-import static no.nav.sbl.dialogarena.person.Adressetype.UTENLANDSK_ADRESSE;
 
 /**
  * Hjelpeklasse for å hente adresser ut fra TPS-resultat
@@ -33,6 +36,8 @@ import static no.nav.sbl.dialogarena.person.Adressetype.UTENLANDSK_ADRESSE;
 public class AdresseTransform {
 
 	private Kodeverk kodeverk;
+	
+	private static final Logger logger = getLogger(AdresseTransform.class);
 	
 	public List<Adresse> mapAdresser(long soknadId, XMLBruker soapPerson, Kodeverk kodeverk) {
 		this.kodeverk = kodeverk;
@@ -108,7 +113,16 @@ public class AdresseTransform {
 	    }
 
 	    private String getLand(XMLLandkoder landkode) {
-	        return landkode != null ? kodeverk.getLand(landkode.getValue()) : null;
+	        if(landkode != null) {
+	        	String land = kodeverk.getLand(landkode.getValue());
+	        	if(land == null) {
+	        		logger.warn("Kodeverk - Fant ikke land for kode: " + landkode.getValue() + " . Sjekk om kodeverk svarer.");
+	        		return landkode.getValue();
+	        	} else {
+	        		return land;
+	        	}
+	        }
+	        return null;
 	    }
 
 	    private Adresse retrieveFolkeregistrertUtenlandskAdresse(long soknadId, XMLUstrukturertAdresse ustrukturertAdresse) {
