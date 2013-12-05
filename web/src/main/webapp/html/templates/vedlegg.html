@@ -6,8 +6,6 @@
             <section class="panel-standard oversikt">
                 <h1 class="stor-ikon-vedlegg-strek" data-cmstekster="vedlegg.tittel"></h1>
                 <p class="info" data-cmstekster="vedlegg.info"></p>
-                <p class="mini" data-cmstekster="vedlegg.video.info"></p>
-                <a class="knapp-link" href="#video" data-cmstekster="vedlegg.video.knapp"></a>
             </section>
         </div>
     </div>
@@ -36,10 +34,10 @@
                                 <label for="{{$index}}sendInnFraPcRadio" data-cmstekster="vedlegg.faktum.lastopp"></label>
 
                                 <div class="valgbokser">
-                                    <a class="valgboks-mobil" href="#/opplasting/{{ soknadData.soknadId }}/{{v.data.id}}" data-ng-if="v.valg == 'sendinn'">
+                                    <a class="valgboks-mobil" href="#/opplasting/{{ soknadData.soknadId }}/{{v.data.faktumId}}" data-ng-if="v.valg == 'sendinn'">
                                         <span data-cmstekster="vedlegg.faktum.lastopp.mobil"></span>
                                     </a>
-                                    <a class="valgboks-pc" href="#/opplasting/{{ soknadData.soknadId }}/{{v.data.id}}" data-ng-if="v.valg == 'sendinn'">
+                                    <a class="valgboks-pc" href="#/opplasting/{{ soknadData.soknadId }}/{{v.data.faktumId}}" data-ng-if="v.valg == 'sendinn'">
                                         <span data-cmstekster="vedlegg.faktum.lastopp.dennepc"></span>
                                     </a>
                                 </div>
@@ -54,8 +52,8 @@
                                 <div class="forhandsvisning">
                                     <div data-bildenavigering data-vedlegg="v.vedlegg" data-nav-template="bildenavigeringTemplateLiten.html"></div>
                                     <div class="knapper">
-                                        <a data-ng-href="../rest/soknad/{{soknadData.soknadId}}/faktum/{{v.data.id}}/vedlegg/{{v.data.vedleggId}}" data-cmstekster="vedlegg.lastned">Last ned</a>
-                                        <a data-cmstekster="vedlegg.slett" data-ng-click="slettVedlegg(v)">Slett</a>
+                                        <a data-ng-href="../rest/soknad/{{soknadData.soknadId}}/faktum/{{v.data.id}}/vedlegg/{{v.data.vedleggId}}" data-cmstekster="vedlegg.lastned"></a>
+                                        <a data-cmstekster="vedlegg.slett" data-ng-click="slettVedlegg(v)" data-cmshtml="vedlegg.slettvedlegg"></a>
                                     </div>
                                 </div>
                             </div>

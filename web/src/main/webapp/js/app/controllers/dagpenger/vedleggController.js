@@ -28,7 +28,7 @@ angular.module('nav.vedlegg.controller', [])
                 console.log("lastet opp: " + vedlegg.data.id);
                 vedlegg.vedlegg = vedleggService.get({
                     soknadId: vedlegg.data.soknadId,
-                    faktumId: vedlegg.data.id,
+                    faktumId: vedlegg.data.vedleggId,
                     vedleggId: vedlegg.data.vedleggId
                 })
             }
@@ -64,7 +64,7 @@ angular.module('nav.vedlegg.controller', [])
 
             vedleggService.remove({
                 soknadId: data.soknad.soknadId,
-                faktumId: vedlegg.data.id,
+                faktumId: vedlegg.data.faktumId,
                 vedleggId: vedlegg.data.vedleggId}, function () {
                 vedlegg.data.vedleggId = null;
             });

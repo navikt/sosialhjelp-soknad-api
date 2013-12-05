@@ -3,7 +3,7 @@
 <div id="opplasting" class="soknad rad-belyst" data-sidetittel="sidetittel.opplasting">
     <div class="begrensning sak-halv">
         <section class="panel-mini uten-ramme">
-            <h1 class="stor-strek-ikon-vedlegg">Last opp</h1>
+            <h1 class="stor-strek-ikon-vedlegg" data-cmstekster="opplasting.lastopp"></h1>
         </section>
     </div>
     <form id="opplastingform" method="POST" enctype="multipart/form-data" data-file-upload="options" data-ng-controller="OpplastingCtrl">
@@ -25,7 +25,7 @@
         <div class="rad uten-ramme">
             <div class="begrensning sak-totredel">
                 <a data-redirect="#/vedlegg/{{ soknadId }}" class="knapp-hoved" data-cmstekster="opplasting.ferdig" data-ng-click="leggVed()" data-fremdriftsindikator></a>
-                <a data-ng-href="#/vedlegg/{{ data.soknadId }}" class="avbryt" data-cmstekster="opplasting.avbryt">Avbryt</a>
+                <a data-ng-href="#/vedlegg/{{ data.soknadId }}" class="avbryt" data-cmstekster="opplasting.avbryt"></a>
             </div>
         </div>
     </form>
