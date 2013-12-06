@@ -8,6 +8,7 @@ angular.module('nav.utdanning',[])
     var minstEnCheckboksErAvhuketFeilmeldingNavn = 'minstEnCheckboksErAvhuket';
     var minstEnCheckboksErAvhuketFeilmeldingNokkel = 'utdanning.minstEnAvhuket.feilmelding';
     var referanseTilFeilmeldingslinken = 'underUtdanningAnnet';
+    $scope.utdanning = {skalViseFeilmeldingForUtdanningAnnet: false};
 
     $scope.validerUtdanning = function(form) {
         if ($scope.hvisUnderUtdanning())
@@ -127,7 +128,7 @@ angular.module('nav.utdanning',[])
     $scope.endreUtdanning = function (form) {
         // Sjekker om en utdanning er huket av (inkluderer IKKE siste checkboksen)
         var utdanningNokler = nokler.slice(0, nokler.length - 1);
-        var harIkkeValgtUtdanning = !erCheckboxerAvhuket(utdanningNokler);
+        var harIkkeValgtUtdanning = ! $scope.erCheckboxerAvhuket(utdanningNokler);
 
         if (harIkkeValgtUtdanning) {
             $scope.utdanning.skalViseFeilmeldingForIngenUtdanning = false;
