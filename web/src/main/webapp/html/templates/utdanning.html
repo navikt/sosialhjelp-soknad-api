@@ -22,11 +22,11 @@
                           feilmelding="utdanning.utdanning.feilmelding"/>
 
 
-                <div class="spm" data-ng-show="hvisUnderUtdanning() && hvisIRedigeringsmodus()" modus="data.redigeringsModus">
+                <div class="spm" data-ng-if="hvisUnderUtdanning() && hvisIRedigeringsmodus()" modus="data.redigeringsModus">
 
 
-                    <input id="underUtdanningKveld" type="checkbox" data-ng-model ="soknadData.fakta.underUtdanningKveld.value" name="underUtdanningKveld"/>
-                    <label for="underUtdanningKveld" class="svar-alt" cmstekster="utdanning.svar.under.utdanning.kveld"/>
+                    <div data-label="utdanning.svar.under.utdanning.kveld" data-navcheckbox id="underUtdanningKveld" data-modus="data.redigeringsModus" data-ng-model ="soknadData.fakta.underUtdanningKveld.value" data-inputname="underUtdanningKveld" data-endret="endreUtdanning(utdanningForm)"/>
+
 
                     <div class="spm" data-ng-if="hvisUtdanningKveld()">
 
@@ -96,11 +96,9 @@
                         <p cmstekster="utdanning.svar.under.utdanning.dokumentasjon"/>
                     </div>
 
+                    <div data-label="utdanning.svar.under.utdanning.kortvarig" data-navcheckbox data-modus="data.redigeringsModus" data-ng-model ="soknadData.fakta.underUtdanningKortvarig.value" data-inputname="underUtdanningKortvarig" data-endret="endreUtdanning(utdanningForm)"/>
 
-                    <input id="underUtdanningKortvarig" type="checkbox" data-ng-model ="soknadData.fakta.underUtdanningKortvarig.value" name="underUtdanningKortvarig"/>
-                    <label for="underUtdanningKortvarig" class="svar-alt" cmstekster="utdanning.svar.under.utdanning.kortvarig"/>
-
-            <div class="spm" data-ng-if="hvisUtdanningKortvarig()">
+                    <div class="spm" data-ng-if="hvisUtdanningKortvarig()">
 
                 <p cmstekster="utdanning.svar.under.utdanning.kortvarig.informasjon"/>
 
@@ -119,15 +117,14 @@
                 <p cmstekster="utdanning.svar.under.utdanning.dokumentasjon"/>
                 </div>
 
-                    <input id="underUtdanningKortvarigFlere" type="checkbox" data-ng-model ="soknadData.fakta.underUtdanningKortvarigFlere.value" name="underUtdanningKortvarigFlere"/>
-                    <label for ="underUtdanningKortvarigFlere" class="svar-alt" cmstekster="utdanning.svar.under.utdanning.kortvarigflere"/>
-
-            <div class="spm" data-ng-if="hvisUtdanningKortvarigFlere()">
+                    <div data-label="utdanning.svar.under.utdanning.kortvarigflere" data-navcheckbox data-modus="data.redigeringsModus" data-ng-model ="soknadData.fakta.underUtdanningKortvarigFlere.value" data-inputname="underUtdanningKortvarigFlere" data-endret="endreUtdanning(utdanningForm)"/>
+                    <div data-label="utdanning.svar.under.utdanning.kortvarigflere" data-navcheckbox data-modus="data.redigeringsModus" data-ng-model ="soknadData.fakta.underUtdanningKortvarigFlere.value" data-inputname="underUtdanningKortvarigFlere" data-endret="endreUtdanning(utdanningForm)"/>
+                    <div class="spm" data-ng-if="hvisUtdanningKortvarigFlere()">
 
                 <p cmstekster="utdanning.svar.under.utdanning.kortvarigflere.informasjon"/>
 
-                <label for="utdanningsstedKortvarigFlere" cmstekster="utdanning.utdanningssted.navn"></label>
-                <input id="utdanningsstedKortvarigFlere" type="text" data-ng-model="soknadData.fakta.utdanningssted.kortvarigFlere.navn" error-messages="'utdanning.error.utdanningssted'" required/>
+                <label for="utdanningsstedKortvarigFlereNavn" cmstekster="utdanning.utdanningssted.navn"></label>
+                <input id="utdanningsstedKortvarigFlereNavn" type="text" data-ng-model="soknadData.fakta.utdanningssted.kortvarigFlere.navn" error-messages="'utdanning.error.utdanningssted'" required/>
 
                 <div class="varighet">
                     <div data-nav-dato-intervall
@@ -141,11 +138,10 @@
                 <p cmstekster="utdanning.svar.under.utdanning.dokumentasjon"/>
             </div>
 
-                    <input id="underUtdanningNorsk" type="checkbox" data-ng-model ="soknadData.fakta.underUtdanningNorsk.value" name="underUtdanningNorsk"/>
-                    <label for="underUtdanningNorsk" class="svar-alt" cmstekster="utdanning.svar.under.utdanning.norsk"/>
+                    <div data-label="utdanning.svar.under.utdanning.norsk" data-navcheckbox data-modus="data.redigeringsModus" data-ng-model ="soknadData.fakta.underUtdanningNorsk.value" data-inputname="underUtdanningNorsk" data-endret="endreUtdanning(utdanningForm)"/>
 
 
-            <div  class="spm" data-ng-if="hvisUtdanningNorsk()">
+                    <div  class="spm" data-ng-if="hvisUtdanningNorsk()">
 
                     <label for="utdanningssted" cmstekster="utdanning.utdanningssted.navn"></label>
                     <input id="utdanningssted" type="text" data-ng-model="soknadData.fakta.utdanningssted.norsk.navn" error-messages="'utdanning.error.utdanningssted'" required/>
@@ -183,12 +179,12 @@
                 <p cmstekster="utdanning.svar.under.utdanning.dokumentasjon"/>
             </div>
 
-                    <input id="underUtdanningIntroduksjon" type="checkbox" data-ng-model ="soknadData.fakta.underUtdanningIntroduksjon.value" name="underUtdanningIntroduksjon"/>
-                    <label for="underUtdanningIntroduksjon" class="svar-alt" cmstekster="utdanning.svar.under.utdanning.introduksjon"/>
+                    <div data-label="utdanning.svar.under.utdanning.introduksjon" data-navcheckbox data-modus="data.redigeringsModus" data-ng-model ="soknadData.fakta.underUtdanningIntroduksjon.value" data-inputname="underUtdanningIntroduksjon" data-endret="endreUtdanning(utdanningForm)"/>
 
-                    <input id="underUtdanningAnnet" type="checkbox" data-ng-model ="soknadData.fakta.underUtdanningAnnet.value" name="underUtdanningAnnet"/>
-                    <label for="underUtdanningAnnet" class="svar-alt" cmstekster=" utdanning.svar.under.utdanning.annet"/>
 
+                    <div data-label="utdanning.svar.under.utdanning.annet" data-navcheckbox data-modus="data.redigeringsModus" data-ng-model ="soknadData.fakta.underUtdanningAnnet.value" data-inputname="underUtdanningAnnet" data-endret="endreUtdannelseAnnet(utdanningForm)"/>
+
+                    <span class="ingen-utdanning-melding" data-cmstekster="utdanning.harValgtUtdanning.feilmelding"></span>
                     <div data-ng-if="hvisIngenUnntakGjelder()">
                         <p cmstekster="utdanning.unntak"/>
                     </div>
