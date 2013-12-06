@@ -1,17 +1,17 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
+import org.joda.time.DateTime;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.joda.time.DateTime;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -140,7 +140,9 @@ public class WebSoknad implements Serializable {
 		
 		for (Faktum faktum : brukerData) {
 			if(faktum.getKey().equals("barn")) {
-				faktum = leggBarnTilIValueList(faktum);
+				faktum = leggBarnTilIValueList(faktum, "barn");
+			}else if(faktum.getKey().equals("barnetillegg")) {
+				faktum = leggBarnTilIValueList(faktum, "barnetillegg");
 			}
 			fakta.put(faktum.getKey(), faktum);
 		}
@@ -148,11 +150,15 @@ public class WebSoknad implements Serializable {
 				
 	}
 
-	private Faktum leggBarnTilIValueList(Faktum faktum) {
-		String barn = faktum.getValue();
+	private Faktum leggBarnTilIValueList(Faktum faktum, String key) {
+		String barn = hentBarnJsonMedFaktumId(faktum);
 		
-		if(fakta.containsKey("barn")) {
-			Faktum barneFaktum = fakta.get("barn");
+		
+		
+		//TODO: Her må faktumID med i value slik at vi får den med til DOM'en
+		
+		if(fakta.containsKey(key)) {
+			Faktum barneFaktum = fakta.get(key);
 			List<String> valueList = barneFaktum.getValuelist();
 			valueList.add(barn);
 			barneFaktum.setValuelist(valueList);
@@ -166,7 +172,23 @@ public class WebSoknad implements Serializable {
 		}
 	}
 
-    public WebSoknad medDelstegStatus(DelstegStatus delstegStatus) {
+	/**
+	 * Småhacky metode for å legge faktumId til i Json-stringen.
+	 * 
+	 * @param faktum
+	 * @return
+	 */
+    public String hentBarnJsonMedFaktumId(Faktum faktum) {
+		String value = faktum.getValue();
+		if(value.contains("\"faktumId\"")) {
+			return value;
+		}
+		String aapenJsonString = value.substring(0, value.length()-1);
+		String result = aapenJsonString.concat(", \"faktumId\": " + faktum.getFaktumId() + "}");
+		return result;
+	}
+
+	public WebSoknad medDelstegStatus(DelstegStatus delstegStatus) {
         this.delstegStatus = delstegStatus;
         return this;
     }
