@@ -45,7 +45,7 @@ angular.module('nav.feilmeldinger', [])
 
                     if (scope.feilmeldinger.length > 0 && skalScrolle) {
                         $timeout(function () {
-                            scrollToElement(elem);
+                            scrollToElement(elem, 100);
                         }, 1);
                     }
                     scope.$broadcast(eventString);
@@ -72,7 +72,7 @@ angular.module('nav.feilmeldinger', [])
 
                 scope.scrollTilElementMedFeil = function (feilmelding) {
                     if (scope.erKlikkbarFeil(feilmelding)) {
-                        scrollToElement(feilmelding.elem);
+                        scrollToElement(feilmelding.elem, 300);
                         scope.giFokus(feilmelding.elem);
                     }
                 }

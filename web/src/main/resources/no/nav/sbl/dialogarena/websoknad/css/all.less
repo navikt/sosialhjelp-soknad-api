@@ -25,33 +25,46 @@
 
 
 .sticky-feilmelding {
-  position: fixed;
-  background-color: black;
-  color: #c30000;
-  padding: 15px;
-  top: 0;
-  width: 100%;
-  z-index: 1035;
-  display: none;
-  text-align: center;
+    position: fixed;
+    background-color: black;
+    color: #ff6e64;
+    padding: 15px;
+    top: 0;
+    width: 100%;
+    z-index: 1035;
+    display: none;
+    text-align: center;
 
-  div {
-      max-width: 660px;
-      margin: 0 auto;
+    div {
+        max-width: 660px;
+        margin: 0 auto;
 
-      span:first-child {
-        float: left;
-      }
-      span a {
-        color: white;
-        border: 1px solid white;
-        padding: 5px 15px;
-        float: none;
-      }
-  }
-}
-.visStickyfeilmelding {
-  display: block !important;
+        span:first-child {
+            float: left;
+        }
+        .antall-feil {
+            float: left;
+        }
+
+        span a {
+            color: white;
+            border: 1px solid #5f5e5d;
+            padding: 5px 15px;
+            float: none;
+        }
+        span a:hover {
+            cursor: pointer;
+            background-color: #5f5e5d;
+        }
+
+        .deaktiverFeilmelding {
+            background-color: #5f5e5d;
+            color: #000;
+        }
+        .deaktiverFeilmelding:hover {
+            text-decoration: none;
+        }
+    }
 }
 
 .rad.soknad {
@@ -422,6 +435,14 @@ form-linje.feil {
                 display: block;
                 margin-bottom: 10px;
             }
+            &.aktiv-feilmelding.tekstfelt   {
+                border: 1px solid #c30000;
+                background-color: #FAD6D6;
+
+                .melding {
+                  color: #A00404;
+                }
+            }
         }
     }
 
@@ -431,7 +452,7 @@ form-linje.feil {
 
     &.feil {
         select {
-            border: 1px solid #fca292;
+            border: 1px solid #fee6e6;
             border-top: 1px solid #ff0000;
             background: @errorBackground;
         }
@@ -441,7 +462,7 @@ form-linje.feil {
         }
 
         &.boolean {
-            border: 1px solid #fca292;
+            border: 1px solid #fee6e6;
             background: #fee6e6;
             margin-bottom: 20px;
 
@@ -458,6 +479,31 @@ form-linje.feil {
         .melding.inline {
             display: inline;
         }
+
+        &.aktiv-feilmelding, &.aktiv-feilmelding.boolean  {
+            border: 1px solid #c30000;
+            background-color: #FAD6D6;
+
+            .melding {
+                color: #A00404;
+            }
+        }
+        &.aktiv-feilmelding.tekstfelt input {
+            border: 1px solid #c30000;
+            background-color: #FAD6D6;
+
+            .melding {
+              color: #A00404;
+            }
+        }
+    }
+    &.aktiv-feilmelding.checkbox.feilstyling  {
+       border: 1px solid #c30000;
+       background-color: #FAD6D6;
+
+       .melding {
+          color: #A00404;
+       }
     }
 
     &.checkbox.feilstyling {
