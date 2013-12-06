@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.detect.IsImage;
 import no.nav.sbl.dialogarena.detect.IsPdf;
 import no.nav.sbl.dialogarena.pdf.ConvertToPng;
@@ -30,7 +31,7 @@ import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 
 
 @Component
-public class SoknadService implements SendSoknadService {
+public class SoknadService implements SendSoknadService, VedleggService {
 
     private static final String BRUKERREGISTRERT_FAKTUM = "BRUKERREGISTRERT";
     private static final String SYSTEMREGISTRERT_FAKTUM = "SYSTEMREGISTRERT";
@@ -49,13 +50,16 @@ public class SoknadService implements SendSoknadService {
     }
 
     @Override
-    public void lagreSoknadsFelt(long soknadId, String key, String value) {
-        repository.lagreFaktum(soknadId, new Faktum(soknadId, key, value, BRUKERREGISTRERT_FAKTUM));
+    public Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum) {
+        Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, faktum.getFaktumId(), faktum.getKey(), faktum.getValue(), BRUKERREGISTRERT_FAKTUM));
+        return repository.hentFaktum(soknadId, faktumId);
     }
 
     @Override
-    public void lagreSystemSoknadsFelt(long soknadId, String key, String value) {
-        repository.lagreFaktum(soknadId, new Faktum(soknadId, key, value, SYSTEMREGISTRERT_FAKTUM));
+    public Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value) {
+    	Faktum faktum = repository.hentSystemFaktum(soknadId, key, SYSTEMREGISTRERT_FAKTUM);
+    	Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, faktum.getFaktumId(), key, value, SYSTEMREGISTRERT_FAKTUM));
+    	return repository.hentFaktum(soknadId, faktumId);
     }
 
 
@@ -89,10 +93,10 @@ public class SoknadService implements SendSoknadService {
 
     public static final String PDF_PDFA = "-dNOPAUSE -dBATCH -dSAFER -dPDFA -dNOGA -sDEVICE=pdfwrite -sOutputFile=%stdout%  -q -c \"30000000 setvmthreshold\" -_ -c quit";
     private static final String IMAGE_RESIZE = "- -units PixelsPerInch -density 150 -quality 50 -resize 1240x1754 jpeg:-";
-
     private static final String IMAGE_PDFA = "-  pdfa:-";
 
 
+    @Override
     public Long lagreVedlegg(Vedlegg vedlegg, InputStream inputStream) {
         try {
             byte[] bytes = IOUtils.toByteArray(inputStream);
@@ -108,17 +112,20 @@ public class SoknadService implements SendSoknadService {
                     bytes = new ScriptRunner(ScriptRunner.Type.GS, PDF_PDFA, null, new ByteArrayInputStream(bytes)).call();
                 }
             }
-            bytes = new PdfWatermarker().applyOn(bytes, "TEST-IDENT MOCK");
+            bytes = new PdfWatermarker().applyOn(bytes, SubjectHandler.getSubjectHandler().getUid());
             return vedleggRepository.lagreVedlegg(vedlegg, bytes);
-        } catch (Exception e) {
+        } catch (Throwable e) {
+
             throw new RuntimeException("Kunne ikke lagre vedlegg: " + e, e);
         }
     }
 
+    @Override
     public List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId) {
         return vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
     }
 
+    @Override
     public Vedlegg hentVedlegg(Long soknadId, Long vedleggId, boolean medInnhold) {
         if (medInnhold) {
             return vedleggRepository.hentVedleggMedInnhold(soknadId, vedleggId);
@@ -127,22 +134,25 @@ public class SoknadService implements SendSoknadService {
         }
     }
 
+    @Override
     public void slettVedlegg(Long soknadId, Long vedleggId) {
         vedleggRepository.slettVedlegg(soknadId, vedleggId);
     }
 
-    public byte[] lagForhandsvisning(Long soknadId, Long vedleggId) {
+    @Override
+    public byte[] lagForhandsvisning(Long soknadId, Long vedleggId, int side) {
         try {
-            return new ConvertToPng(new Dimension(600, 800), ImageScaler.ScaleMode.SCALE_TO_FIT_INSIDE_BOX)
+            return new ConvertToPng(new Dimension(600, 800), ImageScaler.ScaleMode.SCALE_TO_FIT_INSIDE_BOX, side)
                     .transform(IOUtils.toByteArray(vedleggRepository.hentVedleggStream(soknadId, vedleggId)));
         } catch (IOException e) {
             throw new RuntimeException("Kunne ikke generere thumbnail " + e, e);
         }
     }
 
+    @Override
     public Long genererVedleggFaktum(Long soknadId, Long faktumId) {
         List<Vedlegg> vedleggs = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
-        List<byte[]> bytes = new ArrayList();
+        List<byte[]> bytes = new ArrayList<>();
         for (Vedlegg vedlegg : vedleggs) {
             InputStream inputStream = vedleggRepository.hentVedleggStream(soknadId, vedlegg.getId());
             try {
@@ -153,7 +163,7 @@ public class SoknadService implements SendSoknadService {
 
         }
         byte[] doc = new PdfMerger().transform(bytes);
-        Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, "faktum.pdf", Long.valueOf(doc.length), doc);
+        Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, "faktum.pdf", Long.valueOf(doc.length), vedleggs.size(), doc);
         vedleggRepository.slettVedleggForFaktum(soknadId, faktumId);
         Long opplastetDokument = vedleggRepository.lagreVedlegg(vedlegg, doc);
         vedleggRepository.knyttVedleggTilFaktum(soknadId, faktumId, opplastetDokument);

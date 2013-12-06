@@ -128,15 +128,15 @@ public class SoknadRepositoryJdbcTest {
         String value = "Value";
 
         opprettOgPersisterSoknad();
-        lagreData(key, value);
+        lagreData(key, null, value);
     }
 
     @Test
     public void skalKunneHenteLagretBrukerData() {
         opprettOgPersisterSoknad();
-        lagreData("key1", "value1");
-        lagreData("key2", "value2");
-        lagreData("key3", "value3");
+        lagreData("key1", null, "value1");
+        lagreData("key2", null, "value2");
+        lagreData("key3", null, "value3");
 
         List<Faktum> soknadBrukerData = soknadRepository.hentAlleBrukerData(soknadId);
 
@@ -151,13 +151,15 @@ public class SoknadRepositoryJdbcTest {
         String oppdatertValue = "oppdatert";
 
         opprettOgPersisterSoknad();
-        lagreData(key, value);
+        Long faktumId = lagreData(key, null, value);
 
         Faktum ikkeOppdaterData = soknadRepository.hentAlleBrukerData(soknadId).get(0);
         assertThat(ikkeOppdaterData, notNullValue());
         assertThat(ikkeOppdaterData.getValue(), is(value));
 
-        lagreData(key, oppdatertValue);
+
+
+        lagreData(key, faktumId, oppdatertValue);
         Faktum oppdaterData = soknadRepository.hentAlleBrukerData(soknadId).get(0);
         assertThat(oppdaterData, notNullValue());
         assertThat(oppdaterData.getValue(), is(oppdatertValue));
@@ -166,9 +168,9 @@ public class SoknadRepositoryJdbcTest {
     @Test
     public void skalKunneHenteSoknadMedBrukerData() {
         opprettOgPersisterSoknad();
-        lagreData("key1", "value1");
-        lagreData("key2", "value2");
-        lagreData("key3", "value3");
+        lagreData("key1", null, "value1");
+        lagreData("key2", null, "value2");
+        lagreData("key3", null, "value3");
 
         WebSoknad soknadMedData = soknadRepository.hentSoknadMedData(soknadId);
 
@@ -203,8 +205,8 @@ public class SoknadRepositoryJdbcTest {
     @Test
     public void skalSletteAllBrukerDataNaarEnSoknadAvbrytes() {
         opprettOgPersisterSoknad();
-        lagreData("key1", "value1");
-        lagreData("key2", "value2");
+        lagreData("key1", null, "value1");
+        lagreData("key2", null, "value2");
 
         WebSoknad ikkeAvbruttSoknad = soknadRepository.hentSoknadMedData(soknadId);
         assertThat(ikkeAvbruttSoknad, notNullValue());
@@ -242,7 +244,7 @@ public class SoknadRepositoryJdbcTest {
         assertThat(soknadId, greaterThan(0L));
     }
 
-    private void lagreData(String key, String value) {
-        soknadRepository.lagreFaktum(soknadId, new Faktum(soknadId, key, value, "BRUKERREGISTRERT"));
+    private Long lagreData(String key, Long faktumId, String value) {
+        return soknadRepository.lagreFaktum(soknadId, new Faktum(soknadId, faktumId, key, value, "BRUKERREGISTRERT"));
     }
 }
