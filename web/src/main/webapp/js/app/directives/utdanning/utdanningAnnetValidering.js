@@ -1,10 +1,10 @@
 angular.module('nav.utdanningAnnet', [])
-    .directive('validerUtdanningANnet', ['data', function (data) {
+    .directive('validerUtdanningAnnet', ['data', function (data) {
     return {
+
         require: ['^form'],
         link: function (scope, element, attrs, ctrl) {
             var eventString = 'RUN_VALIDATION' + ctrl[0].$name;
-
             scope.$on(eventString, function () {
                 fadeBakgrunnsfarge(element, element.find('.utdanning-annet-melding'), 'feil');
             })

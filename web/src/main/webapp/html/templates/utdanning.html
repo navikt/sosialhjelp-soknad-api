@@ -118,7 +118,6 @@
                 </div>
 
                     <div data-label="utdanning.svar.under.utdanning.kortvarigflere" data-navcheckbox data-modus="data.redigeringsModus" data-ng-model ="soknadData.fakta.underUtdanningKortvarigFlere.value" data-inputname="underUtdanningKortvarigFlere" data-endret="endreUtdanning(utdanningForm)"/>
-                    <div data-label="utdanning.svar.under.utdanning.kortvarigflere" data-navcheckbox data-modus="data.redigeringsModus" data-ng-model ="soknadData.fakta.underUtdanningKortvarigFlere.value" data-inputname="underUtdanningKortvarigFlere" data-endret="endreUtdanning(utdanningForm)"/>
                     <div class="spm" data-ng-if="hvisUtdanningKortvarigFlere()">
 
                 <p cmstekster="utdanning.svar.under.utdanning.kortvarigflere.informasjon"/>
@@ -184,7 +183,9 @@
 
                     <div data-label="utdanning.svar.under.utdanning.annet" data-navcheckbox data-modus="data.redigeringsModus" data-ng-model ="soknadData.fakta.underUtdanningAnnet.value" data-inputname="underUtdanningAnnet" data-endret="endreUtdannelseAnnet(utdanningForm)"/>
 
-                    <span class="ingen-utdanning-melding" data-cmstekster="utdanning.harValgtUtdanning.feilmelding"></span>
+                    <div class="annetvalg-nei form-linje">
+                    <span class="utdanning-annet-melding" data-cmstekster="utdanning.harValgtUtdanning.feilmelding"></span>
+                    </div>
                     <div data-ng-if="hvisIngenUnntakGjelder()">
                         <p cmstekster="utdanning.unntak"/>
                     </div>
