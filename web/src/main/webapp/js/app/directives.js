@@ -17,5 +17,6 @@ angular.module('app.directives', [
 	'nav.datepicker',
 	'nav.prosent',
 	'nav.ingenytelser',
-	'nav.sidetittel'
+	'nav.sidetittel',
+    'ui.mask'
 ]);

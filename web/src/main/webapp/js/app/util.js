@@ -195,7 +195,7 @@ function fadeBakgrunnsfarge(element, melding, feilmeldingsklasse) {
 }
 function konverterStringFraNorskDatoformatTilDateObjekt(datoString) {
     var re = new RegExp(/^\d\d\.\d\d\.\d\d\d\d$/);
-    if (re.test(datoString)) {
+    if (re.test(datoString) && erGyldigDato(datoString)) {
         var datoKomponenter = datoString.split('.');
 
         // Måned indekseres fra 0, så må trekke fra 1
@@ -203,4 +203,21 @@ function konverterStringFraNorskDatoformatTilDateObjekt(datoString) {
     } else {
         return "";
     }
+}
+
+// stackoverflow.com/questions/5812220/test-if-date-is-valid
+function erGyldigDato(datoString) {
+    var bits = datoString.split('.');
+    var aar = bits[2];
+    var maaned = bits[1];
+    var dag = bits[0];
+
+    var dagerIMaaned = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+    // Skuddår
+    if ((!(aar % 4) && aar % 100) || !(aar % 400)) {
+        dagerIMaaned[1] = 29;
+    }
+
+    return dag <= dagerIMaaned[--maaned];
 }

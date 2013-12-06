@@ -1,44 +1,42 @@
 .datepicker {
-    .datepicker-input {
-        display: inline-block;
-        position: relative;
-        height: 32px;
-        border: 1px solid #cccccc;
-        border-top: 1px solid #b7b1a9;
-        background-color: white;
+    width: 165px;
+    vertical-align: top;
 
+    .caretPosition {
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: inline !important;
+        visibility: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .mask {
+        background: transparent;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        position: absolute;
+        color: #ccc !important;
+        font-size: 14px !important;
+        cursor: text;
+        text-transform: none;
+    }
+
+    label {
         span {
-            position: absolute;
-            bottom: 5px;
-            background-color: transparent;
-            cursor: text;
-        }
+            display: block;
 
-        input {
-            border: none !important;
+            &.maskedInput {
+                position: relative;
+                display: inline-block;
 
-            &.dag {
-                width: 24px;
-                padding-right: 0;
-
-                + span {
-                    left: 23px;
+                input {
+                    width: 100px;
+                    position: relative;
                 }
-            }
-
-            &.maned {
-                width: 16px;
-                padding-left: 0;
-                padding-right: 0;
-
-                + span {
-                    left: 44px;
-                }
-            }
-
-            &.ar {
-                width: 42px;
-                padding-left: 0;
             }
         }
     }
@@ -57,35 +55,18 @@
 
 
     &.feil {
-        .datepicker-input {
-            background-color: #fee6e6;
-            border: 1px solid #fca292;
-            border-top: 1px solid @red;
-        }
-
         .knapp-liten {
             border-left: 1px solid #fca292;
         }
 
         .melding {
-            display: inline-block !important;
-        }
-    }
-
-    &.fokus {
-        .datepicker-input {
-            border-color: rgba(82, 168, 236, .8);
+            display: block !important;
         }
     }
 }
 
 .datepicker-intervall {
     .datepicker {
-        width: 47%;
         display: inline-block;
-
-        &:last-child {
-            margin-left: 4.5%;
-        }
     }
 }
