@@ -74,9 +74,8 @@ function checkFalse(element) {
     return element.toString() == 'false';
 }
 
-function scrollToElement(element) {
+function scrollToElement(element, offset) {
     var animationSpeed = 200;
-    var offset = 100;
     var scrollPos = Math.max(element.offset().top - offset, 0);
     $('body, html').scrollToPos(scrollPos, animationSpeed);
 }

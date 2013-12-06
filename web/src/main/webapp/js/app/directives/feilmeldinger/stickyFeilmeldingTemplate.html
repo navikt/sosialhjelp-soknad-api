@@ -1,7 +1,8 @@
-<div class="sticky-feilmelding" data-ng-class="{visStickyfeilmelding: skalVises()}">
-   <div>
-    <span>{{feil.antallFeil + feil.antallFeilStyling}}</span>
-    <span><a  data-cmstekster="skjema.feilmelding.gaatil.forrige" data-ng-click="forrige()"> Forrige </a></span>
-    <span><a data-cmstekster="skjema.feilmelding.gaatil.neste" data-ng-click="neste()"> Neste </a></span>
-   </div>
+<div class="sticky-feilmelding" data-ng-show="skalVises()">
+    <div>
+        <span data-cmstekster="skjema.feilmelding.antall.feilmeldinger"></span>
+        <span class="antall-feil"> {{feil.antallFeil + feil.antallFeilStyling}}</span>
+        <span><a class="forrige" data-cmstekster="skjema.feilmelding.gaatil.forrige" data-ng-click="forrige()" data-ng-class="{deaktiverFeilmelding: skalDeaktivereForrigeKnapp()}"> Forrige </a></span>
+        <span><a class="neste" data-cmstekster="skjema.feilmelding.gaatil.neste" data-ng-click="neste()" data-ng-class="{deaktiverFeilmelding: skalDeaktivereNesteKnapp()}"> Neste </a></span>
+    </div>
 </div>

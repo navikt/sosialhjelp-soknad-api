@@ -17,8 +17,8 @@ angular.module('nav.dagpenger', [])
                 if(form.$valid) {
                     $location.path("/vedlegg/" + $scope.soknadData.soknadId);
                 } else {
-                    scrollToElement($('.accordion-group.open').first());
+                    scrollToElement($('.accordion-group').has('.form-linje.feil, .form-linje.feilstyling').first(), 70);
                 }
-            }, 500);
+            }, 400);
         }
     }])

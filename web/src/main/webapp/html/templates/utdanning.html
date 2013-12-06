@@ -1,10 +1,8 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
     <div data-ng-form="utdanningForm" class="skjemainnhold" data-ng-controller="UtdanningCtrl" data-novalidate>
         <div data-form-errors></div>
-        <div class="spm">
+        <div class="spm form-linje boolean">
             <p class="spm-sporsmal" data-cmstekster="utdanning.sporsmal"></p>
-
-            <div class="form-linje boolean">
                 <div data-navradio data-ng-model="soknadData.fakta.utdanning.value" data-value="ikkeUtdanning"
 		                data-modus="data.redigeringsModus"
 		                data-inputname="utdanning"
@@ -24,7 +22,6 @@
 		                data-feilmelding="utdanning.utdanning.feilmelding"></div>
 
                 <span class="melding"></span>
-            </div>
 
             <!--<div data-ng-show="hvisUnderUtdanning()">-->
             <!--<input id="underUtdanningKurs" type="checkbox"-->
@@ -75,7 +72,6 @@
             <!--</label>-->
             <!--<utdanningsinformasjon></utdanningsinformasjon>-->
             <!--</div>-->
-
 
         </div>
         <div data-spmblokkferdig data-nokkel="utdanning" data-modus="data.redigeringsModus" data-submit-method="validerUtdanning(utdanningForm, true)"></div>
