@@ -1,57 +1,20 @@
 <div class="form-linje datepicker" data-ng-class="{feil: harFeil()}">
-    <label for="{{ label }}dag"  data-cmstekster="{{ label }}"></label>
-    <div>
-        <span class="datepicker-input">
-            <label>
-                <!--TODO: Skjult span med labeltekst-->
-                <input id="{{ label }}dag"
-                       class="dag"
-                       type="text"
-                       maxlength="2"
-                       data-ng-model="dag"
-                       data-tall
-                       data-ng-blur="dagBlur()"
-                       data-ng-focus="focus()">
-                <span>.</span>
-            </label>
-            <label>
-                <!--TODO: Skjult span med labeltekst-->
-                <input class="maned"
-                       type="text"
-                       maxlength="2"
-                       data-ng-model="maned"
-                       data-tall
-                       data-ng-blur="manedBlur()"
-                       data-ng-focus="focus()">
-                <span>.</span>
-            </label>
-            <label>
-                <!--TODO: Skjult span med labeltekst-->
-                <input class="ar"
-                       type="text"
-                       maxlength="4"
-                       data-ng-model="aar"
-                       data-tall data-ng-blur="sjekkDato()"
-                       data-ng-focus="focus()">
-            </label>
+    <span class="caretPosition"></span>
+    <label>
+        <!-- TODO: Skjult span med datoformat -->
+        <span data-cmstekster="{{ label }}"></span>
+            <span class="maskedInput">
+                <input type="text"
+                       data-ng-model="ngModel" data-ng-blur="blur()" data-ng-focus="focus()" data-ng-required="erRequired" data-error-messages="'{{ requiredErrorMessage }}'"
+                       data-dato-mask>
+                <span class="mask"></span>
+            </span>
+    </label>
+    <input type="hidden" data-ng-model="ngModel">
+    <span class="knapp-liten" data-ng-click="toggleDatepicker()"></span>
 
-        </span>
-        <input type="hidden" data-ng-model="ngModel">
-        <span class="knapp-liten" data-ng-click="toggleDatepicker()"></span>
-    </div>
-        <!--<input type="text"-->
-               <!--data-ui-keydown="{enter: 'enter()'}"-->
-               <!--data-ng-model="ngModel"-->
-               <!--data-ng-required="erRequired"-->
-               <!--data-ng-blur="blur()"-->
-               <!--data-ng-focus="focus()"-->
-               <!--data-dato-format-->
-               <!--data-error-messages="'{{ requiredErrorMessage }}'">-->
-
-        <span class="melding" data-ng-if="harRequiredFeil()" data-cmstekster="{{ requiredErrorMessage }}"></span>
-        <span class="melding" data-ng-if="harFormatteringsFeil()" data-cmstekster="dato.format.feilmelding"></span>
-        <span class="melding" data-ng-if="harIkkeFyltInnDag()" data-cmstekster="dato.dag.feilmelding"></span>
-        <span class="melding" data-ng-if="harIkkeFyltInnManed()" data-cmstekster="dato.maned.feilmelding"></span>
-        <span class="melding" data-ng-if="harIkkeFyltInnAar()" data-cmstekster="dato.aar.feilmelding"></span>
-        <!--<span class="melding" data-ng-if="harTilDatoFeil()" data-cmstekster="dato.tilDato.feilmelding"></span>-->
+    <span class="melding" data-ng-if="harRequiredFeil()" data-cmstekster="{{ requiredErrorMessage }}"></span>
+    <span class="melding" data-ng-if="harFormatteringsFeil()" data-cmstekster="dato.format.feilmelding"></span>
+    <span class="melding" data-ng-if="harTilDatoFeil()" data-cmstekster="dato.tilDato.feilmelding"></span>
+    <span class="melding" data-ng-if="erIkkeGyldigDato()" data-cmstekster="dato.ikkeGyldigDato.feilmelding"></span>
 </div>
