@@ -17,7 +17,7 @@
                         <span>Norge</span>
                     </div>
                     <div class="barnecheckbox">
-                        <input id="barnetilegg{{$index}}" data-ng-click="lagreBarnetilegg(b, $index, $event)" data-ng-model="barnetillegg[$index]" type="checkbox" name="barnetilegg{{$index}}"/>
+                        <input id="barnetilegg{{$index}}" data-ng-click="lagreBarnetilegg(b, $index, $event)" data-ng-model="barnetillegg[b.fnr]" type="checkbox" name="barnetilegg{{$index}}"/>
                         <label for="barnetilegg{{$index}}" class="svar-alt" data-cmstekster="barnetillegg.barnetilegg.spormsal"></label>
                     </div>
                     <!--div data-barnetilegg-checkbox data-fnr="b.fnr" data-ng-model='soknadData.fakta.barnetilegg' data-modus='data.redigeringsModus'
