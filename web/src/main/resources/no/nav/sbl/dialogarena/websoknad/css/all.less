@@ -38,12 +38,11 @@
     div {
         max-width: 660px;
         margin: 0 auto;
+        position: relative;
 
-        span:first-child {
-            float: left;
-        }
-        .antall-feil {
-            float: left;
+        .antall-feil-innholder {
+            position: absolute;
+            left: 0;
         }
 
         span a {
@@ -416,8 +415,12 @@ form-linje.feil {
         white-space: nowrap;
     }
 
-    .form-linje {
+    &.checkbox.feilstyling .form-linje, .form-linje {
         padding: 0px;
+
+        .melding {
+          display: none;
+        }
 
         &.feil {
             border: 1px solid #fca292;
@@ -435,13 +438,12 @@ form-linje.feil {
                 display: block;
                 margin-bottom: 10px;
             }
-            &.aktiv-feilmelding.tekstfelt   {
+            &.aktiv-feilmelding.tekstfelt input  {
                 border: 1px solid #c30000;
                 background-color: #FAD6D6;
-
-                .melding {
-                  color: #A00404;
-                }
+            }
+            .melding {
+              color: #A00404;
             }
         }
     }
@@ -468,7 +470,6 @@ form-linje.feil {
 
             .melding {
                 margin-bottom: 10px;
-                text-align: center !important;
             }
         }
 
@@ -480,7 +481,7 @@ form-linje.feil {
             display: inline;
         }
 
-        &.aktiv-feilmelding, &.aktiv-feilmelding.boolean  {
+        &.aktiv-feilmelding.boolean  {
             border: 1px solid #c30000;
             background-color: #FAD6D6;
 
@@ -514,7 +515,6 @@ form-linje.feil {
         .melding {
             margin-bottom: 10px;
             display: block;
-            text-align: center !important;
         }
     }
 

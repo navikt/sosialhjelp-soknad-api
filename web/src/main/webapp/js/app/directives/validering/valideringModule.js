@@ -143,10 +143,11 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 scope.$watch(function () {
                     return element.find("input:checked").length;
                 }, function () {
+                    console.log()
                     if (element.find("input:checked").length > 0 && element.closest('.form-linje').hasClass('feil')) {
                         fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil', scope);
                     } else if (element.find("input:checked").length > 0 && element.closest('.form-linje').hasClass('feilstyling')) {
-                        fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feilstyling', scope);
+                        fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje.feilstyling').children('.melding'), 'feilstyling', scope);
                     }
                 });
             }
