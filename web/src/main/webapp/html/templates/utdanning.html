@@ -78,9 +78,13 @@
                         </div>
 
                         <label for="utdanningsstedKveld" cmstekster="utdanning.utdanningssted.navn"></label>
-                        <input id="utdanningsstedKveld" type="text" data-ng-model="soknadData.fakta.utdanningssted.kveld.navn" error-messages="'utdanning.error.utdanningssted'" required/>
+                        <input id="utdanningsstedKveld" type="text" data-ng-model="soknadData.fakta.utdannings.kveld.navn" error-messages="'utdanning.error.utdanningsnavn'" required/>
+
+                         <label for="utdanningsNavnKveld" cmstekster="utdanning.utdanning.navn"></label>
+                         <input id="utdanningsNavnKveld" type="text" data-ng-model="soknadData.fakta.utdanning.kveld.navn" error-messages="'utdanning.error.utdanningsnavn'" required/>
 
                         <div class="varighet">
+
                             <div data-nav-dato-intervall
                                  data-fra-dato="utdanning.kveld.varighetFra"
                                  data-til-dato="utdanning.kveld.varighetTil"
@@ -109,8 +113,12 @@
 
                 <label for="utdanningsstedKortvarig" cmstekster="utdanning.utdanningssted.navn"></label>
                 <input id="utdanningsstedKortvarig" type="text" data-ng-model="soknadData.fakta.utdanningssted.kortvarig.navn" error-messages="'utdanning.error.utdanningssted'" required/>
+             <label for="utdanningsNavnKortvarig" cmstekster="utdanning.utdanning.navn"></label>
+             <input id="utdanningsNavnKortvarig" type="text" data-ng-model="soknadData.fakta.utdanning.kortvarig.navn" error-messages="'utdanning.error.utdanningsnavn'" required/>
 
-                <div class="varighet">
+
+
+                     <div class="varighet">
                     <div data-nav-dato-intervall
                          data-fra-dato="utdanning.kortvarig.varighetFra"
                          data-til-dato="utdanning.kortvarig.varighetTil"
@@ -129,8 +137,9 @@
 
                 <label for="utdanningsstedKortvarigFlereNavn" cmstekster="utdanning.utdanningssted.navn"></label>
                 <input id="utdanningsstedKortvarigFlereNavn" type="text" data-ng-model="soknadData.fakta.utdanningssted.kortvarigFlere.navn" error-messages="'utdanning.error.utdanningssted'" required/>
-
-                <div class="varighet">
+                  <label for="utdanningsNavnKortvarigFlere" cmstekster="utdanning.utdanning.navn"></label>
+                  <input id="utdanningsNavnKortvarigFlere" type="text" data-ng-model="soknadData.fakta.utdanning.kortvarigflere.navn" error-messages="'utdanning.error.utdanningsnavn'" required/>
+                                                                                                                                                                                div class="varighet">
                     <div data-nav-dato-intervall
                          data-fra-dato="utdanning.kortvarigFlere.varighetFra"
                          data-til-dato="utdanning.kortvarigFlere.varighetTil"
