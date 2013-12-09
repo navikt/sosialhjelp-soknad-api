@@ -18,6 +18,8 @@ angular.module('nav.stickyFeilmelding', [])
                 var bolker = $('[data-accordion-group]');
 
                 scope.$on('VALIDER_DAGPENGER', function (eventscope, form) {
+                    elem = element.next();
+                    bolker = $('[data-accordion-group]');
                     for(var i = 0; i <  elem.find('.form-linje.feil, .form-linje.feilstyling').length; i++) {
                         scope.test.push({id: i+1, element : angular.element(elem.find('.form-linje.feil, .form-linje.feilstyling')[i])})
                     }
@@ -52,20 +54,20 @@ angular.module('nav.stickyFeilmelding', [])
                 scope.forrige = function () {
                     var bolk = bolker.find('.form-linje.feil, .form-linje.feilstyling');
                     if (scope.feil.navaerende > 0) {
-                        leggTilMarkeringAvFeilmelding(bolk, -1)
+                        leggTilMarkeringAvFeilmelding( -1)
                     } else if (scope.feil.navaerende === 0 ) {
-                        leggTilMarkeringAvFeilmelding(bolk, 0)
+                        leggTilMarkeringAvFeilmelding( 0)
                     }
                 }
 
                 scope.neste = function () {
-                    var bolk = bolker.find('.form-linje.feil, .form-linje.feilstyling');
+
                     if(scope.feil.navaerende < (totalAntalLFeil() -1)) {
-                        leggTilMarkeringAvFeilmelding(bolk, 1);
+                        leggTilMarkeringAvFeilmelding( 1);
                     } else if (scope.feil.navaerende < totalAntalLFeil()) {
-                        leggTilMarkeringAvFeilmelding(bolk, 0)
+                        leggTilMarkeringAvFeilmelding( 0)
                     } else if (scope.feil.navaerende === totalAntalLFeil()) {
-                        leggTilMarkeringAvFeilmelding(bolk, -1)
+                        leggTilMarkeringAvFeilmelding(-1)
 
                     }
                 }
@@ -92,12 +94,14 @@ angular.module('nav.stickyFeilmelding', [])
                     return scope.feil.antallFeil + scope.feil.antallFeilStyling > 0;
                 }
 
-                function leggTilMarkeringAvFeilmelding(element, verdi) {
-                    $(element[scope.feil.navaerende]).removeClass('aktiv-feilmelding');
+                function leggTilMarkeringAvFeilmelding(verdi) {
+                    bolker = $('[data-accordion-group]');
+                    var bolk = bolker.find('.form-linje.feil, .form-linje.feilstyling');
+                    $(bolk[scope.feil.navaerende]).removeClass('aktiv-feilmelding');
                     scope.feil.navaerende = scope.feil.navaerende + verdi;
-                    $(element[scope.feil.navaerende]).addClass('aktiv-feilmelding');
-                    scrollToElement($(element[scope.feil.navaerende]), 300);
-                    giFokus(element);
+                    $(bolk[scope.feil.navaerende]).addClass('aktiv-feilmelding');
+                    scrollToElement($(bolk[scope.feil.navaerende]), 300);
+                    giFokus(bolk);
                 }
 
                 function giFokus(element) {
