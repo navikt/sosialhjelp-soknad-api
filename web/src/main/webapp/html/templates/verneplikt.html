@@ -1,8 +1,9 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
 	<div data-ng-form="vernepliktigForm" class="skjemainnhold" data-ng-controller="VernepliktCtrl" data-novalidate>
 		<div data-form-errors></div>
-		<div data-booleanradio data-ng-model="soknadData.fakta.ikkeavtjentverneplikt.value" data-modus="data.redigeringsModus" data-nokkel="ikkeavtjentverneplikt"></div>
-		<p data-ng-show="soknadData.fakta.ikkeavtjentverneplikt.value=='false'" data-cmstekster="ikkeavtjentverneplikt.opplasting"></p>
+		<div data-booleanradio data-ng-model="soknadData.fakta.ikkeavtjentverneplikt.value" data-modus="data.redigeringsModus" data-nokkel="ikkeavtjentverneplikt">
+            <div data-navinfoboks data-nokkel="ikkeavtjentverneplikt.opplasting"></div>
+		</div>
 		<div data-spmblokkferdig data-nokkel="ikkeavtjentverneplikt" data-modus="data.redigeringsModus" data-submit-method="validerVerneplikt(vernepliktigForm)"></div>
 	</div>
 </div>

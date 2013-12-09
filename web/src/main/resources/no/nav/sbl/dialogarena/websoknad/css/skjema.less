@@ -1,3 +1,30 @@
+.informasjonstekst {
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0 15px;
+}
+
+.radio-knapp, .nav-radio-knapp {
+    border-bottom: none;
+}
+
+.nav-checkbox, .nav-radio-knapp {
+    .checkboks, .radio-knapp {
+        margin-left: 32px;
+        margin-bottom: 8px;
+
+        label {
+            margin-left: -32px;
+            height: auto !important;
+            min-height: 22px;
+        }
+
+        a {
+            white-space: nowrap;
+        }
+    }
+}
+
 .sist-lagret {
     text-align: center;
     margin-bottom: 40px;
@@ -12,8 +39,9 @@
         right: 0;
         padding: 15px;
         background: #f1f1f1;
-        border-top: 1px solid #ddd;
+        border-top: 1px solid #dcdcdc;
         z-index: 1035;
+        box-shadow: 0 0 10px #ccc;
     }
 }
 
@@ -34,6 +62,9 @@
     margin-top: 3rem;
 }
 
+.ng-transclude {
+    margin-top: 15px;
+}
 
 .ferdig-skjema {
     border-bottom: none;
@@ -100,23 +131,54 @@
         margin-left: -13px;
     }
 
+    *:last-child {
+        padding-bottom: 15px !important;
+        margin-bottom: 0 !important;
+    }
+
     .infoboks {
         margin-bottom: 20px;
+        padding-right: 4%;
+        padding-left: 4%;
     }
 
     .form-linje {
        padding: 15px;
     }
+
+    .textarea-container{
+
+        &:last-child {
+            span {
+                padding-bottom: 0 !important;
+            }
+        }
+
+        textarea {
+            width: 100%;
+            max-width: 100%;
+        }
+    }
+
+    input {
+        width: 100%;
+    }
+
+    .melding:last-child {
+        padding-bottom: 0 !important;
+    }
 }
 
 .egen-linje {
 	display:block;
+    margin-top: 10px;
+    text-align: center;
 }
 
 .nav-checkbox {
     .ekstra-spm-boks {
-        margin-left: 27px;
-        margin-top: 10px;
+        margin-left: 32px;
+        margin-top: 20px;
         margin-bottom: 20px;
 
         .tekstfelt {

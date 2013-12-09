@@ -4,6 +4,7 @@ angular.module('nav.booleanradio',['nav.cmstekster', 'nav.input'])
             restrict: "A",
             replace: true,
             require: 'ngModel',
+            transclude: true,
             scope: {
                 model: '=ngModel',
                 modus: '=',
@@ -15,21 +16,27 @@ angular.module('nav.booleanradio',['nav.cmstekster', 'nav.input'])
                 $scope.falseLabel = $scope.nokkel + ".false";
                 $scope.feilmelding = $scope.nokkel + ".feilmelding";
                 $scope.inputname = $scope.nokkel.split('.').last();
-
-                $scope.hvisIRedigeringsmodus = function() {
-                    return $scope.modus;
+            },
+            link: function(scope, element) {
+                scope.hvisIRedigeringsmodus = function() {
+                    return scope.modus;
                 }
 
-                $scope.hvisIOppsummeringsmodus = function () {
-                    return !$scope.hvisIRedigeringsmodus();
+                scope.hvisIOppsummeringsmodus = function () {
+                    return !scope.hvisIRedigeringsmodus();
                 }
 
-                $scope.hvisModelErTrue = function() {
-                    return $scope.model == 'true';
+                scope.hvisModelErTrue = function() {
+                    return scope.model == 'true';
                 }
 
-                $scope.hvisModelErFalse = function() {
-                    return !$scope.hvisModelErTrue();
+                scope.hvisModelErFalse = function() {
+                    return !scope.hvisModelErTrue();
+                }
+
+                scope.skalViseTranscludedInnhold = function () {
+                    var transcludeElement = element.find('.ng-transclude');
+                    return scope.hvisModelErFalse() && transcludeElement.text().length > 0;
                 }
             },
             templateUrl: '../js/common/directives/booleanradio/booleanradioTemplate.html'
