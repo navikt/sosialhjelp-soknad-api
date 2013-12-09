@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.VedleggFeil;
 import no.nav.sbl.dialogarena.soknadinnsending.VedleggOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
@@ -48,15 +47,14 @@ public class VedleggController {
     @Inject
     private VedleggService vedleggService;
 
-    @RequestMapping(value = "", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
+    @RequestMapping(value = "", method = RequestMethod.POST, produces = "text/html; charset=utf-8")
     @ResponseBody()
     @ResponseStatus(HttpStatus.CREATED)
-    //Returnerer text i stede for json for at det skal fungerer i IE.
-    public Callable<String> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam("files[]") final List<MultipartFile> files, final HttpServletResponse response) {
-        return new Callable<String>() {
+    public Callable<VedleggOpplasting> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam("files[]") final List<MultipartFile> files) {
+        return new Callable<VedleggOpplasting>() {
 
             @Override
-            public String call() throws Exception {
+            public VedleggOpplasting call() throws Exception {
                 List<Vedlegg> res = new ArrayList<>();
                 for (MultipartFile file : files) {
                     byte[] in = validateAndGetInput(file);
@@ -65,9 +63,7 @@ public class VedleggController {
                     vedlegg.setId(id);
                     res.add(vedlegg);
                 }
-                System.out.println("alt ok. returnerer " + res);
-                response.setContentType("text/html");
-                return new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(new VedleggOpplasting(res));
+                return new VedleggOpplasting(res);
             }
         };
     }
