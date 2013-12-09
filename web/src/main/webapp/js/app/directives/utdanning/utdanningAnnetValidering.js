@@ -5,6 +5,7 @@ angular.module('nav.utdanningAnnet', [])
         require: ['^form'],
         link: function (scope, element, attrs, ctrl) {
             var eventString = 'RUN_VALIDATION' + ctrl[0].$name;
+            console.log("nne i utdanning_validering");
             scope.$on(eventString, function () {
                 fadeBakgrunnsfarge(element, element.find('.utdanning-annet-melding'), 'feil');
             })

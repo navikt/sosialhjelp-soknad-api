@@ -3,6 +3,7 @@ angular.module('nav.ingenytelser', [])
         return {
             require: ['^form'],
             link: function (scope, element, attrs, ctrl) {
+                console.log("Ytelser");
                 var eventString = 'RUN_VALIDATION' + ctrl[0].$name;
 
                 scope.$on(eventString, function () {

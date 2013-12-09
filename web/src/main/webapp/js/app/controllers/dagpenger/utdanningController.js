@@ -158,10 +158,8 @@ angular.module('nav.utdanning',[])
                 console.log("Checkbox er huket av, og annen utdanning skal settes lik false her" +  $scope.soknadData.fakta.underUtdanningAnnet.value);
                 form.$setValidity(minstEnCheckboksErAvhuketFeilmeldingNavn, true);
                 settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, true, true);
-
-
             console.log("Annen utdanning skal settes lik false her" +  $scope.soknadData.fakta.underUtdanningAnnet.value);
-            $scope.$emit(lagreSoknadData, {key: 'underUtdanningAnnet', value: erCheckboksForUtdanningAnnetHuketAv});
+
             }
         }
         }
