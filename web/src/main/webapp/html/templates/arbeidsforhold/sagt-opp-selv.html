@@ -3,7 +3,7 @@
     <p class="sluttaarsak-informasjon" cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.informasjon"></p>
 
     <div class="sporsmaal form-linje boolean">
-        <p data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.sporsmal"></p>
+        <h4 data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.sporsmal"></h4>
 
         <input class="sendsoknad-radio"
                id="innskrenkningerJa"
@@ -32,11 +32,9 @@
         <label for="innskrenkningerNei" class='svar-alt'
                data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.false"></label>
 
-        <span class="melding"
-              data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.feilmelding"></span>
+        <span class="melding" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.feilmelding"></span>
 
-        <span data-ng-show="af.sagtOppSelvInnskrenkninger=='true'"
-           cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.informasjon"></span>
+        <span data-ng-show="af.sagtOppSelvInnskrenkninger=='true'" cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.informasjon"></span>
     </div>
 
     <div data-nav-dato
@@ -47,7 +45,7 @@
     </div>
 
     <div class="sporsmaal form-linje boolean">
-        <p data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.sporsmal"/>
+        <h4 data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.sporsmal"></h4>
 
         <input class="sendsoknad-radio"
                id="oppsigelseslonnJa"
@@ -60,7 +58,7 @@
                data-click-validate>
 
         <label for="oppsigelseslonnJa" class='svar-alt'
-               cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.true"/>
+               cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.true"></label>
 
         <input class="sendsoknad-radio"
                id="oppsigelseslonnNei"
@@ -72,8 +70,7 @@
                data-ng-required="true"
                data-click-validate>
 
-        <label for="oppsigelseslonnNei" class='svar-alt'
-               cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.false"/>
+        <label for="oppsigelseslonnNei" class="svar-alt" cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.false"></label>
 
         <span class="melding"
               data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.feilmelding"></span>
@@ -81,7 +78,7 @@
     <br/>
 
     <div class="sporsmaal form-linje boolean">
-        <p data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.sporsmal"/>
+        <h4 data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.sporsmal"></h4>
 
         <input class="sendsoknad-radio"
                id="avtaleomokonomiskytelseJa"
@@ -93,8 +90,7 @@
                data-ng-required="true"
                data-click-validate>
 
-        <label for="avtaleomokonomiskytelseJa" class='svar-alt'
-               data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.true"/>
+        <label for="avtaleomokonomiskytelseJa" class="svar-alt" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.true"></label>
 
         <input class="sendsoknad-radio"
                id="avtaleomokonomiskytelseNei"
@@ -106,14 +102,13 @@
                data-ng-required="true"
                data-click-validate>
 
-        <label for="avtaleomokonomiskytelseNei" class='svar-alt'
-               data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.false"/>
+        <label for="avtaleomokonomiskytelseNei" class="svar-alt" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.false"></label>
 
         <span class="melding"
               data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.feilmelding"></span>
 
         <div data-ng-if="af.sagtOppSelvAvtaleomOkonomiskytelse=='true'">
-            <p data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.informasjon"/>
+            <p data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.informasjon"></p>
 
             <label>
                 <span data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.fritekst.sporsmal"></span>
