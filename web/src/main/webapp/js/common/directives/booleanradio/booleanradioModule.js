@@ -31,7 +31,7 @@ angular.module('nav.booleanradio',['nav.cmstekster', 'nav.input'])
                 }
 
                 scope.hvisModelErFalse = function() {
-                    return !scope.hvisModelErTrue();
+                    return scope.model && !scope.hvisModelErTrue();
                 }
 
                 scope.skalViseTranscludedInnhold = function () {
