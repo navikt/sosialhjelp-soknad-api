@@ -139,10 +139,10 @@
 				data-hjelpetekst></div>
 
 		<div class="helsemessige-arsaker ekstra-spm-boks" data-ng-if="soknadData.fakta.villighelse.value == 'false'">
+            <div data-navinfoboks data-nokkel="reellarbeidssoker.villighelse.false.vedlegginformasjon"></div>
 			<div data-navtextarea data-inputname="helseFritekst" data-ng-model="soknadData.fakta.helseFritekst.value"
 					data-nokkel="reellarbeidssoker.helsefritekst" data-maxlengde="500"
 					data-feilmelding="reellarbeidssoker.helsefritekst.feilmelding" data-obligatorisk="true"></div>
-			<p data-cmstekster="reellarbeidssoker.villighelse.false.vedlegginformasjon"></p>
 		</div>
 
 		<div data-booleanradio
@@ -152,8 +152,8 @@
 
 		<div class="ekstra-spm-boks" data-ng-show="soknadData.fakta.villigjobb.value == 'false'">
 			<div data-navinfoboks data-nokkel="reellarbeidssoker.villigjobb.false.informasjon"></div>
-			<div class="spm-knapper">
-				<a class="knapp-advarsel" href="#/avbryt/{{ soknadData.soknadId }}" data-cmstekster="avbryt"></a>
+			<div class="sentrert">
+				<a href="#/avbryt/{{ soknadData.soknadId }}" data-cmstekster="reellarbeidssoker.villigjobb.false.avbryt"></a>
 			</div>
 		</div>
 
