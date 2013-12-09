@@ -40,13 +40,11 @@ public class ApplicationContext {
     private String navigasjonslink;
 
 
-    @Value("{$dokumentinnsending.smtpServer.port}")
-    private String smtpServerPort;
-            //= "25";
-
-    @Value("${dokumentinnsending.smtpServer.host}")
-    private String smtpServerHost;
-            //= "smtp.test.local";
+    //TODO Når enconfig funker må dette fikses
+   // @Value("${dokumentinnsending.smtpServer.host}")
+    private String smtpServerHost = "smtp.test.local";
+    //Value("${dokumentinnsending.smtpServer.port}")
+    private int smtpServerPort = 25;
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
@@ -64,7 +62,7 @@ public class ApplicationContext {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setDefaultEncoding("UTF-8");
         javaMailSender.setHost(smtpServerHost);
-        javaMailSender.setPort(Integer.parseInt(smtpServerPort));
+        javaMailSender.setPort(smtpServerPort);
         return javaMailSender;
     }
     
