@@ -31,6 +31,25 @@ angular.module('app.services', ['ngResource'])
         );
     })
 
+    /**
+    * Service for å lagre brukerdata
+    */
+    .factory('BrukerData', function($resource) {
+         var url = '/sendsoknad/rest/soknad/:soknadId/faktum' + '?rand=' + new Date().getTime();
+         return $resource(url,
+         {soknadId: '@soknadId'},
+         {
+            create: { method: 'POST', params: {}, transformRequest: function(data, headersGetter) {
+                var d = deepClone(data);
+                d.value = JSON.stringify(data.value);
+                d = JSON.stringify(d);
+                return d;
+            }},
+         }
+
+         )
+     })
+
 /**
  * Service som behandler vedlegg
  */

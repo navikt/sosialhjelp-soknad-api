@@ -1,4 +1,11 @@
 angular.module('nav.vedlegg.controller', [])
+    .controller('VisVedleggCtrl', ['$scope', '$routeParams', 'vedleggService', function ($scope, $routeParams, vedleggService) {
+        $scope.vedlegg = vedleggService.get({
+            soknadId: $routeParams.soknadId,
+            faktumId: $routeParams.faktumId,
+            vedleggId: $routeParams.vedleggId
+        });
+    }])
     .controller('VedleggCtrl', ['$scope', '$location', '$routeParams', '$anchorScroll', 'data', 'vedleggService', function ($scope, $location, $routeParams, $anchorScroll, data, vedleggService) {
 
         function cloneObject(object) {
@@ -9,9 +16,21 @@ angular.module('nav.vedlegg.controller', [])
             var vedlegg = cloneObject(vedleggMap[key]);
             vedlegg.data = data.soknad.fakta[key];
             vedlegg.valg = 'sendinn';
+            vedlegg.side = 0;
             vedlegg.lastetOpp = function () {
                 return vedlegg.data.vedleggId;
             }
+            vedlegg.$naviger = function (antall) {
+                vedlegg.side = vedlegg.side + antall;
+            }
+            if (vedlegg.lastetOpp()) {
+                vedlegg.vedlegg = vedleggService.get({
+                    soknadId: vedlegg.data.soknadId,
+                    faktumId: vedlegg.data.vedleggId,
+                    vedleggId: vedlegg.data.vedleggId
+                })
+            }
+
             return vedlegg;
         }
 
@@ -43,7 +62,7 @@ angular.module('nav.vedlegg.controller', [])
 
             vedleggService.remove({
                 soknadId: data.soknad.soknadId,
-                faktumId: vedlegg.data.id,
+                faktumId: vedlegg.data.faktumId,
                 vedleggId: vedlegg.data.vedleggId}, function () {
                 vedlegg.data.vedleggId = null;
             });
@@ -52,4 +71,12 @@ angular.module('nav.vedlegg.controller', [])
         $scope.vedleggBehandlet = function (vedlegg) {
             return vedlegg.valg === 'ikkeSend' || vedlegg.valg == 'sendSenere' || vedlegg.lastetOpp();
         }
+    }])
+    .directive('bildeNavigering', [function () {
+        return {
+            restrict: 'a',
+            replace: 'true',
+            templateUrl: '../../'
+        }
+
     }]);

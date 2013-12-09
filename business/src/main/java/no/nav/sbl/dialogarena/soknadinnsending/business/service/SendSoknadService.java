@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import java.util.List;
-
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+
+import java.util.List;
 
 public interface SendSoknadService {
 
