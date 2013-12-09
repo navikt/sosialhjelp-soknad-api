@@ -16,13 +16,6 @@
     }
 }
 
-.informasjonstekst {
-    font-size: 1rem;
-    font-weight: bold;
-    margin-top: 20px !important;
-    margin-left: 15px !important;
-}
-
 .rad.soknad {
     padding: 0;
 }
@@ -38,12 +31,13 @@
     height: auto;
 }
 
-.skjematittel {
+.skjematittel, .sentrert {
     text-align: center;
 }
 
 [class*="panel-standard"].skjema {
     padding: 0;
+    display: block;
 }
 
 .lenker-dot {
@@ -122,6 +116,7 @@
     padding: 20px;
     margin-left: 44px;
     margin-right: 0px;
+    margin-bottom: 30px;
 }
 
 .spm-blokk {
@@ -251,7 +246,7 @@
             }
 
             .spm-knapper {
-                margin-top: 40px;
+                margin-top: 15px;
                 text-align: center;
 
                 input, button, a {
@@ -286,7 +281,6 @@
 }
 
 .spm {
-    margin-top: 20px;
     width: 100%;
 
     .spm-sporsmal {
@@ -366,11 +360,6 @@ form-linje.feil {
 
 .form-linje {
     padding: 15px;
-
-    a {
-        padding-left: 29px;
-        white-space: nowrap;
-    }
 
     .form-linje {
         padding: 0px;
