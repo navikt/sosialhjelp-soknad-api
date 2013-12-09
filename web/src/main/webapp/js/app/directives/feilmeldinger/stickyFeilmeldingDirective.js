@@ -9,36 +9,31 @@ angular.module('nav.stickyFeilmelding', [])
             restrict: 'A',
             link: function (scope, element, attrs, ctrl) {
                 scope.feil = [];
-                scope.feil.antallFeil = 0;
-                scope.feil.antallFeilStyling = 0;
-                scope.test = [];
+                scope.feil.antallFeilMedKlasseFeil = 0;
+                scope.feil.antallFeilMedKlasseFeilstyling = 0;
+                scope.feil.skalViseStickyFeilmeldinger = false;
                 scope.feil.navaerende = -1;
 
                 var elem = element.next();
                 var bolker = $('[data-accordion-group]');
+                var skalDeaktivereForrigeKnapp = true;
+                var feilHarBlittRettet = false;
 
                 scope.$on('VALIDER_DAGPENGER', function (eventscope, form) {
                     elem = element.next();
                     bolker = $('[data-accordion-group]');
-                    for(var i = 0; i <  elem.find('.form-linje.feil, .form-linje.feilstyling').length; i++) {
-                        scope.test.push({id: i+1, element : angular.element(elem.find('.form-linje.feil, .form-linje.feilstyling')[i])})
-                    }
-                    scope.feil.antallFeil = elem.find('.form-linje.feil').length;
-                    scope.feil.antallFeilStyling = elem.find('.form-linje.feilstyling').length;
 
-                    var idBolkerMedFeil = []
-                    var idBolkerUtenFeil = []
-                    var idAlleBolker = []
+                    scope.feil.skalViseStickyFeilmeldinger = true;
+                    scope.feil.antallFeilMedKlasseFeil = elem.find('.form-linje.feil').length;
+                    scope.feil.antallFeilMedKlasseFeilstyling = elem.find('.form-linje.feilstyling').length;
+
+                    var idBolkerMedFeil = [];
+                    var idAlleBolker = [];
 
                     var bolkerMedFeil = bolker.has('.form-linje.feil, .form-linje.feilstyling');
-                    var bolkerUtenFeil = bolker.not(bolkerMedFeil);
 
                     bolkerMedFeil.each(function () {
                         idBolkerMedFeil.push(this.id);
-                    });
-
-                    bolkerUtenFeil.each(function () {
-                        idBolkerUtenFeil.push(this.id);
                     });
 
                     bolker.each(function () {
@@ -46,9 +41,7 @@ angular.module('nav.stickyFeilmelding', [])
                     });
 
                     scope.$broadcast('OPEN_TAB', idBolkerMedFeil, 800);
-//                    $scope.$broadcast('CLOSE_TAB', idBolkerUtenFeil, 0);
                     scope.$broadcast('CLOSE_TAB', idAlleBolker, 0);
-
                 });
 
                 scope.forrige = function () {
@@ -56,59 +49,52 @@ angular.module('nav.stickyFeilmelding', [])
                     if (scope.feil.navaerende > 0) {
                         leggTilMarkeringAvFeilmelding( -1)
                     } else if (scope.feil.navaerende === 0 ) {
+                        skalDeaktivereForrigeKnapp = true;
                         leggTilMarkeringAvFeilmelding( 0)
                     }
                 }
 
                 scope.neste = function () {
-
+                    if(feilHarBlittRettet) {
+                        scope.feil.navaerende = scope.feil.navaerende -1;
+                    }
                     if(scope.feil.navaerende < (totalAntalLFeil() -1)) {
                         leggTilMarkeringAvFeilmelding( 1);
                     } else if (scope.feil.navaerende < totalAntalLFeil()) {
                         leggTilMarkeringAvFeilmelding( 0)
                     } else if (scope.feil.navaerende === totalAntalLFeil()) {
                         leggTilMarkeringAvFeilmelding(-1)
-
                     }
                 }
 
                 scope.$watch(function () {
-                    return elem.find('.form-linje.feil').length;
+                    return antallFeilMedKlasse('.feil');
                 }, function () {
-                    if(elem.find('.form-linje.feil').length < scope.feil.antallFeil) {
+                    if(feilMedKlasseFeilHarBlittRettet()) {
                         scope.feil.navaerende = scope.feil.navaerende - 1;
+                        skalDeaktivereForrigeKnapp = false;
                     }
-                    scope.feil.antallFeil = elem.find('.form-linje.feil').length;
+                    if(totalAntalLFeil() == 0) {
+                        scope.feil.skalViseStickyFeilmeldinger = false;
+                    }
+                    scope.feil.antallFeilMedKlasseFeil = antallFeilMedKlasse('.feil');
+                    console.log(scope.feil.navaerende)
                 });
 
                 scope.$watch(function () {
-                    return elem.find('.form-linje.feilstyling').length;
+                    return antallFeilMedKlasse('.feilstyling');
                 }, function () {
-                    if(elem.find('.form-linje.feilstyling').length < scope.feil.antallFeilStyling) {
-                        scope.feil.navaerende = scope.feil.navaerende - 1;
+                    if(feilMedKlasseFeilstylingHarBlittRettet()) {
+                        feilHarBlittRettet = true;
                     }
-                    scope.feil.antallFeilStyling = elem.find('.form-linje.feilstyling').length;
+                    if(totalAntalLFeil() == 0) {
+                        scope.feil.skalViseStickyFeilmeldinger = false;
+                    }
+                    scope.feil.antallFeilMedKlasseFeilstyling = antallFeilMedKlasse('.feilstyling');
                 });
 
                 scope.skalVises = function () {
-                    return scope.feil.antallFeil + scope.feil.antallFeilStyling > 0;
-                }
-
-                function leggTilMarkeringAvFeilmelding(verdi) {
-                    bolker = $('[data-accordion-group]');
-                    var bolk = bolker.find('.form-linje.feil, .form-linje.feilstyling');
-                    $(bolk[scope.feil.navaerende]).removeClass('aktiv-feilmelding');
-                    scope.feil.navaerende = scope.feil.navaerende + verdi;
-                    $(bolk[scope.feil.navaerende]).addClass('aktiv-feilmelding');
-                    scrollToElement($(bolk[scope.feil.navaerende]), 300);
-                    giFokus(bolk);
-                }
-
-                function giFokus(element) {
-                    $(element[scope.feil.navaerende]).find(':input').focus();
-                }
-                function totalAntalLFeil () {
-                    return scope.feil.antallFeil + scope.feil.antallFeilStyling;
+                    return scope.feil.antallFeilMedKlasseFeil + scope.feil.antallFeilMedKlasseFeilstyling > 0 && scope.feil.skalViseStickyFeilmeldinger;
                 }
 
                 scope.skalDeaktivereNesteKnapp = function () {
@@ -116,7 +102,39 @@ angular.module('nav.stickyFeilmelding', [])
                 }
 
                 scope.skalDeaktivereForrigeKnapp = function () {
-                    return scope.feil.navaerende < 1;
+                    return scope.feil.navaerende < 1 && skalDeaktivereForrigeKnapp;
+                }
+
+                function leggTilMarkeringAvFeilmelding(verdi) {
+                    bolker = $('[data-accordion-group]');
+                    var bolk = bolker.find('.form-linje.feil, .form-linje.feilstyling');
+                    $(bolk[scope.feil.navaerende]).removeClass('aktiv-feilmelding');
+
+                    scope.feil.navaerende = scope.feil.navaerende + verdi;
+                    $(bolk[scope.feil.navaerende]).addClass('aktiv-feilmelding');
+
+                    scrollToElement($(bolk[scope.feil.navaerende]), 300);
+                    giFokus(bolk);
+                }
+
+                function giFokus(element) {
+                    $(element[scope.feil.navaerende]).find(':input').focus();
+                }
+
+                function totalAntalLFeil () {
+                    return scope.feil.antallFeilMedKlasseFeil + scope.feil.antallFeilMedKlasseFeilstyling;
+                }
+
+                function feilMedKlasseFeilHarBlittRettet() {
+                    return elem.find('.form-linje.feil').length < scope.feil.antallFeilMedKlasseFeil;
+                }
+
+                function feilMedKlasseFeilstylingHarBlittRettet() {
+                    return elem.find('.form-linje.feilstyling').length < scope.feil.antallFeilMedKlasseFeilstyling;
+                }
+
+                function antallFeilMedKlasse(klasse) {
+                    return elem.find('.form-linje' + klasse).length;
                 }
             }
         }
