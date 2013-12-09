@@ -3,11 +3,11 @@ angular.module('nav.barnetillegg',[])
         if ($scope.soknadData.fakta.barn) {
                 $scope.barn = [];
                 angular.forEach($scope.soknadData.fakta.barn.valuelist, function(value) { 
-                    $scope.barn.push(angular.fromJson(value));
+                    value.value = angular.fromJson(value.value);
                 });
             }
 
-        if ($scope.soknadData.fakta.barnetillegg) {
+        /*if ($scope.soknadData.fakta.barnetillegg) {
             $scope.barnetillegg = {};
             angular.forEach($scope.soknadData.fakta.barnetillegg.valuelist, function(value) { 
                 $scope.barnetillegg[angular.fromJson(value).fnr] = angular.fromJson(value).valgt;
@@ -16,7 +16,7 @@ angular.module('nav.barnetillegg',[])
             $scope.soknadData.fakta.barnetillegg = {};
              $scope.barnetillegg = {};
         }
-        
+        */
         $scope.lagreBarnetilegg = function(barn, index , event) {
             var result = {};
             result["fnr"] = barn.fnr;
@@ -35,11 +35,11 @@ angular.module('nav.barnetillegg',[])
         }
 
         $scope.erGutt = function(barn) {
-            return barn.kjonn == "gutt";
+            return barn.value.kjonn == "gutt";
         }
 
         $scope.erJente = function(barn) {
-            return barn.kjonn == "jente";
+            return barn.value.kjonn == "jente";
         }
 
         $scope.validerBarnetillegg = function(form) {

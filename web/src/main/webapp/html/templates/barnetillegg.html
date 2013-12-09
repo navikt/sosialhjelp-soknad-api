@@ -3,21 +3,24 @@
         <div form-errors></div>
         <p class="informasjonstekst" cmstekster="barnetillegg.informasjon"></p>
         
-        <div data-ng-repeat="b in barn">
+
+
+        <div data-ng-repeat="b in soknadData.fakta.barn.valuelist">
             <div data-ng-class="{gutt: erGutt(b), jente:erJente(b)}" class="barn">
                 <div class="barnealder">
                     <span> ÅR</span>
-                    <span class="alder robust" data-ng-bind="b.alder"></span>
+                    <span class="alder robust" data-ng-bind="b.value.alder"></span>
                 </div>
                 <div class="barneinfo">
-                    <div data-ng-bind="b.sammensattnavn"></div>
-                    <div data-ng-bind="b.fnr"></div>
+                    <div data-ng-bind="b.value.sammensattnavn"></div>
+                    <div data-ng-bind="b.value.fnr"></div>
                     <div class="barnbosted">
                         <span class="bosted">bosted: </span>
                         <span>Norge</span>
                     </div>
-                    <div class="barnecheckbox">
-                        <input id="barnetilegg{{$index}}" data-ng-click="lagreBarnetilegg(b, $index, $event)" data-ng-model="barnetillegg[b.fnr]" type="checkbox" name="barnetilegg{{$index}}"/>
+                    <div class="barnecheckbox" data-ng-controller="BarnetilleggFaktumCtrl">
+                       
+                        <input data-ng-model="barnetillegg.value.avsjekket" name="barnetilegg{{$index}}" id="barnetilegg{{$index}}" type="checkbox">
                         <label for="barnetilegg{{$index}}" class="svar-alt" data-cmstekster="barnetillegg.barnetilegg.spormsal"></label>
                     </div>
                     <!--div data-barnetilegg-checkbox data-fnr="b.fnr" data-ng-model='soknadData.fakta.barnetilegg' data-modus='data.redigeringsModus'

@@ -29,21 +29,4 @@ public class WebSoknadTest {
 		Assert.assertEquals(1,soknad.antallFakta());
 	}
 	
-	@Test
-	public void skalKunneLeggeTilFaktumId() {
-		Faktum faktum = new Faktum(1l, 5l, "barneliste", "{\"fnr\":\"06025800174\", \"valgt\":true}");
-		String result = soknad.hentBarnJsonMedFaktumId(faktum);
-		Assert.assertEquals("{\"fnr\":\"06025800174\", \"valgt\":true, \"faktumId\": 5}", result);
-	}
-	
-	@Test
-	public void skalIkkeLeggeTilFaktumId2Ganger() {
-		Faktum faktum = new Faktum(1l, 5l, "barneliste", "{\"fnr\":\"06025800174\", \"valgt\":true}");
-		String runde1 = soknad.hentBarnJsonMedFaktumId(faktum);
-		faktum.setValue(runde1);
-		
-		String runde2 = soknad.hentBarnJsonMedFaktumId(faktum);
-		Assert.assertEquals("{\"fnr\":\"06025800174\", \"valgt\":true, \"faktumId\": 5}", runde2);
-	}
-	
 }
