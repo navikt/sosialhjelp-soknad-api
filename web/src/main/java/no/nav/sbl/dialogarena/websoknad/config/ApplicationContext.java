@@ -40,11 +40,15 @@ public class ApplicationContext {
     private String navigasjonslink;
 
 
-    //TODO Når enconfig funker må dette fikses
-   // @Value("${dokumentinnsending.smtpServer.host}")
+
+    //TODO Når FASIT funker må dette fikses
+
+
+//    @Value("{$dokumentinnsending.smtpServer.port}")
+    private String smtpServerPort = "25";
+
+//    @Value("${dokumentinnsending.smtpServer.host}")
     private String smtpServerHost = "smtp.test.local";
-    //Value("${dokumentinnsending.smtpServer.port}")
-    private int smtpServerPort = 25;
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
