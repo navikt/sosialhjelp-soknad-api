@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.sbl.dialogarena.soknadinnsending.VedleggFeil;
 import no.nav.sbl.dialogarena.soknadinnsending.VedleggOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
@@ -47,24 +48,26 @@ public class VedleggController {
     @Inject
     private VedleggService vedleggService;
 
-    @RequestMapping(value = "", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
     @ResponseBody()
     @ResponseStatus(HttpStatus.CREATED)
-    public Callable<VedleggOpplasting> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam("files[]") final List<MultipartFile> files) {
-        return new Callable<VedleggOpplasting>() {
+    //Returnerer text i stede for json for at det skal fungerer i IE.
+    public Callable<String> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam("files[]") final List<MultipartFile> files, final HttpServletResponse response) {
+        return new Callable<String>() {
 
             @Override
-            public VedleggOpplasting call() throws Exception {
+            public String call() throws Exception {
                 List<Vedlegg> res = new ArrayList<>();
                 for (MultipartFile file : files) {
                     byte[] in = validateAndGetInput(file);
                     Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, file.getOriginalFilename(), file.getSize(), 1, in);
                     Long id = vedleggService.lagreVedlegg(vedlegg, new ByteArrayInputStream(in));
                     vedlegg.setId(id);
-
                     res.add(vedlegg);
                 }
-                return new VedleggOpplasting(res);
+                System.out.println("alt ok. returnerer " + res);
+                response.setContentType("text/html");
+                return new ObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(new VedleggOpplasting(res));
             }
         };
     }
@@ -137,6 +140,7 @@ public class VedleggController {
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     public VedleggFeil handterFeilType(UgyldigOpplastingTypeException ex) {
         LOG.warn("Feilet opplasting med: " + ex, ex);
+        System.out.println("feil: " + ex);
 
         return new VedleggFeil(ex.getId());
     }
