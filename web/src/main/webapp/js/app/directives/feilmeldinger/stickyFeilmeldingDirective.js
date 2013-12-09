@@ -1,6 +1,6 @@
 angular.module('nav.stickyFeilmelding', [])
 
-    .directive('stickyFeilmelding',  ['$timeout', function ($timeout) {
+    .directive('stickyFeilmelding', ['$timeout', function ($timeout) {
         return {
             require: '^form',
             templateUrl: '../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html',
@@ -17,6 +17,7 @@ angular.module('nav.stickyFeilmelding', [])
                 var elem = element.next();
                 var bolker = $('[data-accordion-group]');
                 var skalDeaktivereForrigeKnapp = true;
+                var skalDeaktivereNesteKnapp = false;
                 var feilHarBlittRettet = false;
 
                 scope.$on('VALIDER_DAGPENGER', function (eventscope, form) {
@@ -45,49 +46,65 @@ angular.module('nav.stickyFeilmelding', [])
                 });
 
                 scope.forrige = function () {
-                    var bolk = bolker.find('.form-linje.feil, .form-linje.feilstyling');
-                    if (scope.feil.navaerende > 0) {
-                        leggTilMarkeringAvFeilmelding( -1)
-                    } else if (scope.feil.navaerende === 0 ) {
-                        skalDeaktivereForrigeKnapp = true;
-                        leggTilMarkeringAvFeilmelding( 0)
+                    if (!(feilHarBlittRettet && scope.feil.navaerende < 1)) {
+                        if (scope.feil.navaerende > 0) {
+                            leggTilMarkeringAvFeilmelding(-1)
+                            feilHarBlittRettet = false;
+                        } else if (scope.feil.navaerende === 0) {
+                            skalDeaktivereForrigeKnapp = true;
+                            feilHarBlittRettet = false;
+                            leggTilMarkeringAvFeilmelding(0)
+                        }
                     }
+                    skalDeaktivereNesteKnapp = false;
                 }
 
                 scope.neste = function () {
-                    if(feilHarBlittRettet) {
-                        scope.feil.navaerende = scope.feil.navaerende -1;
-                    }
-                    if(scope.feil.navaerende < (totalAntalLFeil() -1)) {
-                        leggTilMarkeringAvFeilmelding( 1);
-                    } else if (scope.feil.navaerende < totalAntalLFeil()) {
-                        leggTilMarkeringAvFeilmelding( 0)
-                    } else if (scope.feil.navaerende === totalAntalLFeil()) {
-                        leggTilMarkeringAvFeilmelding(-1)
+                    if (!(feilHarBlittRettet && scope.feil.navaerende == totalAntalLFeil())) {
+                        if (feilHarBlittRettet && scope.feil.navaerende > -1) {
+                            scope.feil.navaerende = scope.feil.navaerende - 1;
+                        }
+
+                        if (scope.feil.navaerende < (totalAntalLFeil() - 1)) {
+                            leggTilMarkeringAvFeilmelding(1);
+                        } else if (scope.feil.navaerende < totalAntalLFeil()) {
+                            leggTilMarkeringAvFeilmelding(0)
+                        } else if (scope.feil.navaerende === totalAntalLFeil()) {
+                            leggTilMarkeringAvFeilmelding(-1)
+                        }
+                        feilHarBlittRettet = false;
                     }
                 }
 
                 scope.$watch(function () {
                     return antallFeilMedKlasse('.feil');
                 }, function () {
-                    if(feilMedKlasseFeilHarBlittRettet()) {
-                        scope.feil.navaerende = scope.feil.navaerende - 1;
-                        skalDeaktivereForrigeKnapp = false;
+                    if (feilMedKlasseFeilHarBlittRettet()) {
+                        feilHarBlittRettet = true;
+                        if (scope.feil.navaerende == 0) {
+                            skalDeaktivereForrigeKnapp = true;
+                        } else if(scope.feil.navaerende == totalAntalLFeil() -1) {
+                            skalDeaktivereNesteKnapp = true
+                        }
                     }
-                    if(totalAntalLFeil() == 0) {
+                    if (totalAntalLFeil() == 0) {
                         scope.feil.skalViseStickyFeilmeldinger = false;
                     }
                     scope.feil.antallFeilMedKlasseFeil = antallFeilMedKlasse('.feil');
-                    console.log(scope.feil.navaerende)
                 });
 
                 scope.$watch(function () {
                     return antallFeilMedKlasse('.feilstyling');
                 }, function () {
-                    if(feilMedKlasseFeilstylingHarBlittRettet()) {
+                    if (feilMedKlasseFeilstylingHarBlittRettet()) {
                         feilHarBlittRettet = true;
+                        if (scope.feil.navaerende == 0) {
+                            skalDeaktivereForrigeKnapp = true;
+                        } else if(scope.feil.navaerende == totalAntalLFeil() -1) {
+                            skalDeaktivereNesteKnapp = true
+                        }
                     }
-                    if(totalAntalLFeil() == 0) {
+                    if (totalAntalLFeil() == 0) {
                         scope.feil.skalViseStickyFeilmeldinger = false;
                     }
                     scope.feil.antallFeilMedKlasseFeilstyling = antallFeilMedKlasse('.feilstyling');
@@ -98,7 +115,7 @@ angular.module('nav.stickyFeilmelding', [])
                 }
 
                 scope.skalDeaktivereNesteKnapp = function () {
-                    return scope.feil.navaerende === totalAntalLFeil()-1;
+                    return scope.feil.navaerende === totalAntalLFeil() - 1 || skalDeaktivereNesteKnapp;
                 }
 
                 scope.skalDeaktivereForrigeKnapp = function () {
@@ -106,6 +123,7 @@ angular.module('nav.stickyFeilmelding', [])
                 }
 
                 function leggTilMarkeringAvFeilmelding(verdi) {
+                    console.log("leggTil" + verdi);
                     bolker = $('[data-accordion-group]');
                     var bolk = bolker.find('.form-linje.feil, .form-linje.feilstyling');
                     $(bolk[scope.feil.navaerende]).removeClass('aktiv-feilmelding');
@@ -121,7 +139,7 @@ angular.module('nav.stickyFeilmelding', [])
                     $(element[scope.feil.navaerende]).find(':input').focus();
                 }
 
-                function totalAntalLFeil () {
+                function totalAntalLFeil() {
                     return scope.feil.antallFeilMedKlasseFeil + scope.feil.antallFeilMedKlasseFeilstyling;
                 }
 
@@ -139,18 +157,18 @@ angular.module('nav.stickyFeilmelding', [])
             }
         }
     }])
-    .animation('.sticky-feilmelding', ['$timeout', function($timeout) {
+    .animation('.sticky-feilmelding', ['$timeout', function ($timeout) {
         return {
-            addClass: function(element, className, done) {
+            addClass: function (element, className, done) {
                 if (className == 'ng-hide') {
                     element.slideUp();
                 } else {
                     done();
                 }
             },
-            removeClass: function(element, className, done) {
+            removeClass: function (element, className, done) {
                 if (className == 'ng-hide') {
-                    $timeout(function() {
+                    $timeout(function () {
                         element.removeClass('ng-hide');
                         element.slideDown();
                     }, 1500);
