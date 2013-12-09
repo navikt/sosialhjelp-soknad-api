@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,6 +26,7 @@ public class WebSoknad implements Serializable {
 	private String aktoerId;
 	private DateTime opprettetDato;
     private DelstegStatus delstegStatus;
+    private static final List<String> LIST_FAKTUM = Arrays.asList("barn", "barnetillegg");
     
     public DelstegStatus getDelstegStatus() {
         return delstegStatus;
@@ -139,10 +141,8 @@ public class WebSoknad implements Serializable {
 		fakta = new HashMap<>();
 		
 		for (Faktum faktum : brukerData) {
-			if(faktum.getKey().equals("barn")) {
-				faktum = leggBarnTilIValueList(faktum, "barn");
-			}else if(faktum.getKey().equals("barnetillegg")) {
-				faktum = leggBarnTilIValueList(faktum, "barnetillegg");
+			if(LIST_FAKTUM.contains(faktum.getKey())) {
+				faktum = wrapFaktumIFaktumListeObjekt(faktum, fakta);
 			}
 			fakta.put(faktum.getKey(), faktum);
 		}
@@ -150,43 +150,22 @@ public class WebSoknad implements Serializable {
 				
 	}
 
-	private Faktum leggBarnTilIValueList(Faktum faktum, String key) {
-		String barn = hentBarnJsonMedFaktumId(faktum);
-		
-		
-		
-		//TODO: Her må faktumID med i value slik at vi får den med til DOM'en
-		
-		if(fakta.containsKey(key)) {
-			Faktum barneFaktum = fakta.get(key);
-			List<String> valueList = barneFaktum.getValuelist();
-			valueList.add(barn);
-			barneFaktum.setValuelist(valueList);
-			return barneFaktum;
+	private Faktum wrapFaktumIFaktumListeObjekt(Faktum faktum, Map<String, Faktum> fakta) {
+		if(fakta.containsKey(faktum.getKey())) {
+			Faktum eksisterendeFaktum = fakta.get(faktum.getKey());
+			List<Faktum> valueList = eksisterendeFaktum.getValuelist();
+			valueList.add(faktum);
+			eksisterendeFaktum.setValuelist(valueList);
+			return eksisterendeFaktum;
 		} else {
-			List<String> barneliste = new ArrayList<>();
-			barneliste.add(barn);
-			faktum.setValuelist(barneliste);
-			faktum.setValue(null);
-			return faktum;
+			Faktum nyttFaktum = faktum.cloneFaktum();
+			List<Faktum> valuelist = new ArrayList<>();
+			valuelist.add(faktum);
+			nyttFaktum.setValuelist(valuelist);
+			return nyttFaktum;
 		}
 	}
 
-	/**
-	 * Småhacky metode for å legge faktumId til i Json-stringen.
-	 * 
-	 * @param faktum
-	 * @return
-	 */
-    public String hentBarnJsonMedFaktumId(Faktum faktum) {
-		String value = faktum.getValue();
-		if(value.contains("\"faktumId\"")) {
-			return value;
-		}
-		String aapenJsonString = value.substring(0, value.length()-1);
-		String result = aapenJsonString.concat(", \"faktumId\": " + faktum.getFaktumId() + "}");
-		return result;
-	}
 
 	public WebSoknad medDelstegStatus(DelstegStatus delstegStatus) {
         this.delstegStatus = delstegStatus;
