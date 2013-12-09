@@ -7,7 +7,7 @@ angular.module('nav.barnetilleggfaktum',['app.services'])
     			'avsjekket': false
     		}
     	};
-    	 if ($scope.soknadData.fakta.barnetillegg) {
+    	if ($scope.soknadData.fakta.barnetillegg) {
             angular.forEach($scope.soknadData.fakta.barnetillegg.valuelist, function(value) { 
                 if(angular.fromJson(value.value).fnr == $scope.b.value.fnr) {
                 	barnetilleggsData = value;
