@@ -30,6 +30,7 @@ angular.module('nav.feilmeldinger', [])
             transclude: true,
             restrict: 'A',
             link: function postLink(scope, elem, attrs, ctrl) {
+
                 var eventString = 'RUN_VALIDATION' + ctrl.$name;
 
                 scope.feilmeldinger = [];

@@ -150,7 +150,6 @@ function settEgendefinertFeilmeldingsverdi(form, feilmeldingskategori, feilmeldi
     if (form.$error[feilmeldingskategori] === undefined) {
         form.$error[feilmeldingskategori] = [];
     }
-
     var index = form.$error[feilmeldingskategori].indexByValue(feilmeldingsnavn);
     if (index > -1 && valid) {
         form.$error[feilmeldingskategori].splice(index, 1);
