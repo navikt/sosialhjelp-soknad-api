@@ -40,13 +40,13 @@ public class ApplicationContext {
     @Value("${dialogarena.navnolink.url}")
     private String navigasjonslink;
 
+    @Value("{$dokumentinnsending.smtpServer.port}")
+    private int smtpServerPort;
+            //= "25";
 
-    //TODO Dette er utkommentert kode frem til vi kan deploye kode for smtpServer som Fasit aksepterer
-    //@Value("{$dokumentinnsending.smtpServer.port}")
-    private String smtpServerPort = "25";
-
-    //@Value("${dokumentinnsending.smtpServer.host}")
-    private String smtpServerHost = "smtp.test.local";
+    @Value("${dokumentinnsending.smtpServer.host}")
+    private String smtpServerHost;
+            //= "smtp.test.local";
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
@@ -64,7 +64,7 @@ public class ApplicationContext {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setDefaultEncoding("UTF-8");
         javaMailSender.setHost(smtpServerHost);
-        javaMailSender.setPort(Integer.parseInt(smtpServerPort));
+        javaMailSender.setPort(smtpServerPort);
         return javaMailSender;
     }
     
