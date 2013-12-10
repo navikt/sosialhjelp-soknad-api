@@ -26,8 +26,8 @@
 
 .sticky-feilmelding {
     position: fixed;
-    background-color: black;
-    color: #ff6e64;
+    background-color: #333;
+    color: #c30000;
     padding: 15px;
     top: 0;
     width: 100%;
@@ -43,25 +43,37 @@
         .antall-feil-innholder {
             position: absolute;
             left: 0;
+            display: inline-block;
+            padding: 5px 0px;
         }
 
         span a {
-            color: white;
+            color: #000;
             border: 1px solid #5f5e5d;
-            padding: 5px 15px;
+            background-color: #5f5e5d;
+            padding: 5px 10px;
             float: none;
+            margin: 0 10px;
+            width: 80px;
+            display: inline-block;
         }
         span a:hover {
             cursor: pointer;
-            background-color: #5f5e5d;
+            background-color: #0ca9e1;
+            border: 1px solid #0ca9e1;
+            text-decoration: none;
         }
 
         .deaktiverFeilmelding {
-            background-color: #5f5e5d;
+            background-color: #4b4b4b;
             color: #000;
+            border: 1px solid #4b4b4b;
+
         }
         .deaktiverFeilmelding:hover {
             text-decoration: none;
+            background-color: #4b4b4b;
+            border: 1px solid #4b4b4b;
         }
     }
 }

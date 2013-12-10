@@ -123,13 +123,16 @@ angular.module('nav.stickyFeilmelding', [])
                 }
 
                 function leggTilMarkeringAvFeilmelding(verdi) {
-                    console.log("leggTil" + verdi);
                     bolker = $('[data-accordion-group]');
                     var bolk = bolker.find('.form-linje.feil, .form-linje.feilstyling');
-                    $(bolk[scope.feil.navaerende]).removeClass('aktiv-feilmelding');
 
+                    $(bolk[scope.feil.navaerende]).removeClass('aktiv-feilmelding');
                     scope.feil.navaerende = scope.feil.navaerende + verdi;
                     $(bolk[scope.feil.navaerende]).addClass('aktiv-feilmelding');
+
+                    if (!($(bolk[scope.feil.navaerende]).closest('.accordion-group').hasClass('open'))) {
+                        scope.$broadcast('OPEN_TAB', [$(bolk[scope.feil.navaerende]).closest('.accordion-group').attr('id')], 0);
+                    }
 
                     scrollToElement($(bolk[scope.feil.navaerende]), 300);
                     giFokus(bolk);
