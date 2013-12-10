@@ -7,11 +7,11 @@ angular.module('nav.stickybunn', [])
                 scope.soknadId = data.soknad.soknadId;
 
                 scope.hentSistLagretTid = function() {
-                    return data.soknad.fakta.sistLagret.value;
+                    return data.soknad.sistLagret;
                 }
 
                 scope.soknadHarBlittLagret = function() {
-                    return data.soknad.fakta.sistLagret !== undefined;
+                    return data.soknad.sistLagret != null;
                 }
 
                 scope.soknadHarAldriBlittLagret = function() {

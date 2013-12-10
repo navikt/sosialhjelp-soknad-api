@@ -150,6 +150,13 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
 				UTFYLLING.name(), soknadId);
 	}
 
+    @Override
+    public void settSistLagretTidspunkt(Long soknadId) {
+        getJdbcTemplate()
+                .update("update soknad set sistlagret=? where soknad_id = ?",
+                        new Date(), soknadId);
+    }
+
 	@Override
 	public List<Faktum> hentAlleBrukerData(Long soknadId) {
 		return select("select * from SOKNADBRUKERDATA where soknad_id = ?",
