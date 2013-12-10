@@ -3,8 +3,13 @@ angular.module('nav.verneplikt',[])
         $scope.navigering = {nesteside: 'utdanning'};
         $scope.sidedata = {navn: 'vernepliktig'};
 
-        $scope.validerVerneplikt = function(form) {
+        $scope.$on('VALIDER_VERNEPLIKT', function (scope, form) {
+            $scope.validerVerneplikt(form, false);
+        });
+
+        $scope.validerVerneplikt = function(form, skalScrolle ) {
             $scope.validateForm(form.$invalid);
-            $scope.runValidation();
+            $scope.runValidation(skalScrolle);
+
         }
     }]);
