@@ -33,5 +33,5 @@ public interface SoknadRepository {
 	Faktum hentSystemFaktum(Long soknadId, String key,
 			String systemregistrertFaktum);
 
-
+    void settSistLagretTidspunkt(Long soknadId);
 }

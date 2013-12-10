@@ -11,7 +11,7 @@ angular.module('nav.stickybunn', [])
                 }
 
                 scope.soknadHarBlittLagret = function() {
-                    return data.soknad.sistLagret !== undefined;
+                    return data.soknad.sistLagret != null;
                 }
 
                 scope.soknadHarAldriBlittLagret = function() {
