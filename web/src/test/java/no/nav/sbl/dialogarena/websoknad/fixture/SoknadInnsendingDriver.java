@@ -88,7 +88,7 @@ public class SoknadInnsendingDriver extends SpringAwareDoFixture {
 	}
 	
 	public void lagreFaktumMedVerdi(String faktum, String verdi) {
-		webSoknad.getFakta().put(faktum, new Faktum(webSoknad.getSoknadId(), faktum, verdi, "BRUKER"));
+		webSoknad.getFakta().put(faktum, new Faktum(webSoknad.getSoknadId(), null, faktum, verdi, "BRUKER"));
 		soknadDataController.lagreSoknad(webSoknadId.getId(),webSoknad);
 	}
 	

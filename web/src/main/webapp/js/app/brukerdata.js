@@ -138,23 +138,24 @@ angular.module('app.brukerdata', ['app.services'])
         }
     }])
 
-    .controller('SoknadDataCtrl', ['$scope', 'data', function ($scope, data) {
+    .controller('SoknadDataCtrl', ['$scope', 'data','$http', function ($scope, data, $http) {
         $scope.soknadData = data.soknad;
 
         $scope.$on("OPPDATER_OG_LAGRE", function (e, faktumData) {
-            $scope.soknadData.fakta[faktumData.key] = {soknadId: $scope.soknadData.soknadId, key: faktumData.key, value: faktumData.value};
-            data.soknad = $scope.soknadData;
+            if ($scope.soknadData.fakta[faktumData.key] == undefined) {
+                 $scope.soknadData.fakta[faktumData.key] = {};
+            }
+            $scope.soknadData.fakta[faktumData.key].value=faktumData.value;
+            $scope.soknadData.fakta[faktumData.key].key=faktumData.key;
 
-            var soknadData = deepClone($scope.soknadData);
-            soknadData.fakta['sistLagret'] = {soknadId: $scope.soknadData.soknadId, key: 'sistLagret', value: new Date().getTime()};
-
-            soknadData.$save({param: soknadData.soknadId, action: 'lagre'},
-                function() {
-                    // Success
-                    data.soknad = soknadData;
-                    $scope.soknadData = soknadData;
-                }
-            );
+            var url = '/sendsoknad/rest/soknad/' + $scope.soknadData.soknadId + '/faktum' + '?rand=' + new Date().getTime();
+            $http({method:'POST', url:url, data: $scope.soknadData.fakta[faktumData.key]})
+                .success(function(data, status) {
+                    $scope.soknadData.fakta[faktumData.key] = data;
+                })
+                .error(function(data, status) {
+                    
+                });
         });
     }])
     .controller('ModusCtrl', function ($scope) {
