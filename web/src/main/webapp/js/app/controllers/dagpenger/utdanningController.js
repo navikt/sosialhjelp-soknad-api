@@ -151,7 +151,7 @@ angular.module('nav.utdanning',[])
         if (harValgtUtdanning) {
 
             $scope.soknadData.fakta.underUtdanningAnnet.value = 'false';
-            $scope.soknadData.fakta.utdanning.skalViseFeilmeldingForIngenUtdanning = true;
+            $scope.utdanning.skalViseFeilmeldingForIngenUtdanning = true;
             if (erCheckboksForUtdanningAnnetHuketAv) {
 
                 $scope.soknadData.fakta.underUtdanningAnnet.value = 'false';

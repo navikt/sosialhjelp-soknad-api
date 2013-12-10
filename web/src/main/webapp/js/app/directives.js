@@ -19,5 +19,5 @@ angular.module('app.directives', [
 	'nav.ingenytelser',
 	'nav.sidetittel',
     'nav.bildenavigering',
-    'nav.utdanningAnnet'
+    'nav.utdanningannet'
 ]);
