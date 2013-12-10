@@ -1,0 +1,1 @@
+ALTER TABLE SoknadBrukerData ADD (innsendingsvalg varchar(20));
