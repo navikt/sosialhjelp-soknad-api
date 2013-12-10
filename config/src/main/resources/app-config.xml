@@ -9,7 +9,7 @@
     <selftestPagePath>sendsoknad/internal/selftest?status</selftestPagePath>
 
     <artifacts>
-        <ear groupId="no.nav.leren" artifactId="sendsoknad-jee"/>
+        <ear groupId="no.nav.sbl.dialogarena" artifactId="sendsoknad-jee"/>
     </artifacts>
 
     <resources>
