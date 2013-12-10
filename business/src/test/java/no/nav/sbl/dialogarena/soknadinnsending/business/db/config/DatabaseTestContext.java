@@ -23,6 +23,7 @@ public class DatabaseTestContext {
     public DataSource dataSource() throws IOException {
         return buildDataSource();
     }
+
     @Bean
     public DataSourceTransactionManager transactionManager() throws IOException {
         return new DataSourceTransactionManager(dataSource());
@@ -75,7 +76,7 @@ public class DatabaseTestContext {
             st.execute("drop table SOKNADBRUKERDATA if exists");
             st.execute("drop table SOKNAD if exists");
             st.execute("create table SOKNAD (soknad_id numeric not null, brukerbehandlingid varchar(255) not null, navsoknadid varchar(255) not null, " +
-                    "aktorid varchar(255) not null, opprettetdato timestamp not null, status varchar(255) not null, delstegstatus varchar(255))");
+                    "aktorid varchar(255) not null, opprettetdato timestamp not null, status varchar(255) not null, delstegstatus varchar(255), sistlagret timestamp)");
             st.execute("drop table VEDLEGG if exists");
             st.execute("create table VEDLEGG (vedlegg_id bigint not null , soknad_id bigint not null, faktum bigint not null, navn varchar(255) not null, antallsider bigint, storrelse bigint not null, " +
                     " opprettetdato timestamp , data blob)");
