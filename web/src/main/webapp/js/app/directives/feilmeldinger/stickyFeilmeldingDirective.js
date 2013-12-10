@@ -115,11 +115,11 @@ angular.module('nav.stickyFeilmelding', [])
                 }
 
                 scope.skalDeaktivereNesteKnapp = function () {
-                    return scope.feil.navaerende === totalAntalLFeil() - 1 || skalDeaktivereNesteKnapp;
+                    return harKommetTilEndenAvFeilmeldinger();
                 }
 
                 scope.skalDeaktivereForrigeKnapp = function () {
-                    return scope.feil.navaerende < 1 && skalDeaktivereForrigeKnapp;
+                    return erPaaStartenAvFeilmeldingene();
                 }
 
                 function leggTilMarkeringAvFeilmelding(verdi) {
@@ -130,8 +130,8 @@ angular.module('nav.stickyFeilmelding', [])
                     scope.feil.navaerende = scope.feil.navaerende + verdi;
                     $(bolk[scope.feil.navaerende]).addClass('aktiv-feilmelding');
 
-                    if (!($(bolk[scope.feil.navaerende]).closest('.accordion-group').hasClass('open'))) {
-                        scope.$broadcast('OPEN_TAB', [$(bolk[scope.feil.navaerende]).closest('.accordion-group').attr('id')], 0);
+                    if (bolkMedNesteFeilErLukket(bolk)) {
+                        apneBolk(bolk)
                     }
 
                     scrollToElement($(bolk[scope.feil.navaerende]), 300);
@@ -156,6 +156,22 @@ angular.module('nav.stickyFeilmelding', [])
 
                 function antallFeilMedKlasse(klasse) {
                     return elem.find('.form-linje' + klasse).length;
+                }
+
+                function harKommetTilEndenAvFeilmeldinger() {
+                    return scope.feil.navaerende === totalAntalLFeil() - 1 || skalDeaktivereNesteKnapp;
+                }
+
+                function erPaaStartenAvFeilmeldingene() {
+                    return  scope.feil.navaerende < 1 && skalDeaktivereForrigeKnapp;
+                }
+
+                function bolkMedNesteFeilErLukket (bolk) {
+                    return !($(bolk[scope.feil.navaerende]).closest('.accordion-group').hasClass('open'));
+                }
+
+                function apneBolk(bolk) {
+                    scope.$broadcast('OPEN_TAB', [$(bolk[scope.feil.navaerende]).closest('.accordion-group').attr('id')], 0);
                 }
             }
         }
