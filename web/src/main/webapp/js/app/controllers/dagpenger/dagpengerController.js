@@ -1,6 +1,5 @@
 angular.module('nav.dagpenger', [])
     .controller('DagpengerCtrl', ['$scope', '$location', '$timeout', function ($scope, $location, $timeout) {
-
         $scope.validerDagpenger = function(form) {
             $scope.$broadcast('VALIDER_YTELSER', form.ytelserForm);
             $scope.$broadcast('VALIDER_UTDANNING', form.utdanningForm);
@@ -11,6 +10,7 @@ angular.module('nav.dagpenger', [])
 //            $scope.$broadcast('VALIDER_PERSONALIA', form.personaliaForm);
             $scope.$broadcast('VALIDER_REELLARBEIDSSOKER', form.reellarbeidssokerForm);
             $scope.$broadcast('VALIDER_DAGPENGER', form);
+
 
             $timeout(function() {
                 $scope.validateForm(form.$invalid);
