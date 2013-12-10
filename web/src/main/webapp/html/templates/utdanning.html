@@ -2,26 +2,28 @@
     <div data-ng-form="utdanningForm" class="skjemainnhold" data-ng-controller="UtdanningCtrl" data-novalidate>
         <div data-form-errors></div>
         <div class="spm form-linje boolean">
-            <p class="spm-sporsmal" data-cmstekster="utdanning.sporsmal"></p>
-                <div data-navradio data-ng-model="soknadData.fakta.utdanning.value" data-value="ikkeUtdanning"
-		                data-modus="data.redigeringsModus"
-		                data-inputname="utdanning"
-		                data-label="utdanning.svar.ikkeUtdanning"
-		                data-feilmelding="utdanning.utdanning.feilmelding"></div>
 
-                <div data-navradio data-ng-model="soknadData.fakta.utdanning.value" data-value="avsluttetUtdanning"
-		                data-modus="data.redigeringsModus"
-		                data-inputname="utdanning"
-		                data-label="utdanning.svar.avsluttetUtdanning"
-		                data-feilmelding="utdanning.utdanning.feilmelding"></div>
+            <h4 class="spm-sporsmal" data-cmstekster="utdanning.sporsmal"></h4>
 
-                <div data-navradio data-ng-model="soknadData.fakta.utdanning.value" data-value="underUtdanning"
-		                data-modus="data.redigeringsModus"
-		                data-inputname="utdanning"
-		                data-label="utdanning.svar.underUtdanning"
-		                data-feilmelding="utdanning.utdanning.feilmelding"></div>
+            <div data-navradio data-ng-model="soknadData.fakta.utdanning.value" data-value="ikkeUtdanning"
+                    data-modus="data.redigeringsModus"
+                    data-inputname="utdanning"
+                    data-label="utdanning.svar.ikkeUtdanning"
+                    data-feilmelding="utdanning.utdanning.feilmelding"></div>
 
-                <span class="melding"></span>
+            <div data-navradio data-ng-model="soknadData.fakta.utdanning.value" data-value="avsluttetUtdanning"
+                    data-modus="data.redigeringsModus"
+                    data-inputname="utdanning"
+                    data-label="utdanning.svar.avsluttetUtdanning"
+                    data-feilmelding="utdanning.utdanning.feilmelding"></div>
+
+            <div data-navradio data-ng-model="soknadData.fakta.utdanning.value" data-value="underUtdanning"
+                    data-modus="data.redigeringsModus"
+                    data-inputname="utdanning"
+                    data-label="utdanning.svar.underUtdanning"
+                    data-feilmelding="utdanning.utdanning.feilmelding"></div>
+
+            <span class="melding"></span>
 
             <!--<div data-ng-show="hvisUnderUtdanning()">-->
             <!--<input id="underUtdanningKurs" type="checkbox"-->

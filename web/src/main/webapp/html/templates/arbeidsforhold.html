@@ -45,8 +45,8 @@
                     </div>
 
                     <div class="land">
-                        <div nav-select
-                             name="arbeidsgiverland"
+                        <div data-nav-select
+                             data-name="arbeidsgiverland"
                              data-label="arbeidsforhold.arbeidsgiver.land"
                              data-ng-model="af.land"
                              data-options="landService.result"
@@ -70,7 +70,6 @@
                         <label>
                             <span data-cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsak"></span>
                             <select id="sluttaarsak_id"
-                                    type="text"
                                     data-name="sluttaarsak"
                                     data-ng-model="af.sluttaarsak"
                                     data-ng-options="t.navn for t in templates"
@@ -97,8 +96,8 @@
         </div>
         <div class="knapper-arbeidsforhold">
             <div id="legg-til" data-ng-show="hvisIRedigeringsmodus()">
-                <a href class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event, arbeidsforholdForm)"
-		                data-cmstekster="arbeidsforhold.nyttarbeidsforhold"></a>
+                <button class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event, arbeidsforholdForm)"
+		                data-cmstekster="arbeidsforhold.nyttarbeidsforhold" role="button"></button>
             </div>
 
             <div id="har-ikke-jobbet" data-ng-show="harIkkeLagretArbeidsforhold()">

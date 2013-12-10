@@ -12,12 +12,14 @@ angular.module('app.directives', [
 	'nav.textarea',
 	'nav.fremdriftsindikator',
 	'nav.validering',
-	'nav.sistlagret',
+    'nav.stickybunn',
 	'nav.select',
 	'nav.hjelpetekst',
 	'nav.datepicker',
 	'nav.prosent',
 	'nav.ingenytelser',
 	'nav.sidetittel',
-    'nav.apneaccordion'
+    'nav.apneaccordion',
+    'nav.bildenavigering',
+    'nav.accordion'
 ]);

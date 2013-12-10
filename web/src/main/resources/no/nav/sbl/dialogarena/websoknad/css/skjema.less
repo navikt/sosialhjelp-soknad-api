@@ -1,8 +1,33 @@
-.sist-lagret {
+.informasjonstekst {
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0 15px;
+}
+
+.radio-knapp, .nav-radio-knapp {
+    border-bottom: none;
+}
+
+.nav-checkbox, .nav-radio-knapp {
+    .checkboks, .radio-knapp {
+        margin-left: 32px;
+        margin-bottom: 8px;
+
+        label {
+            margin-left: -32px;
+            height: auto !important;
+            min-height: 22px;
+        }
+
+        a {
+            white-space: nowrap;
+        }
+    }
+}
+
+.sticky-bunn {
     text-align: center;
     margin-bottom: 40px;
-    text-transform: uppercase;
-    font-size: 0.85rem;
 
     &.stick {
         margin-bottom: 0;
@@ -12,8 +37,17 @@
         right: 0;
         padding: 15px;
         background: #f1f1f1;
-        border-top: 1px solid #ddd;
+        border-top: 1px solid #dcdcdc;
         z-index: 1035;
+        box-shadow: 0 0 10px #ccc;
+    }
+
+    .liste-vannrett li {
+        margin-top: 0;
+
+        a, span {
+            font-size: 0.85rem;
+        }
     }
 }
 
@@ -34,6 +68,9 @@
     margin-top: 3rem;
 }
 
+.ng-transclude {
+    margin-top: 15px;
+}
 
 .ferdig-skjema {
     border-bottom: none;
@@ -43,36 +80,12 @@
         text-align: center;
 
         .textarea-container {
-            margin-bottom: 35px;
-
-        }
-        p, span {
-            font-size: 14px !important;
-            margin: 10px 0;
-        }
-
-        label {
-            text-transform: uppercase;
-        }
-
-        textarea {
-            margin: 10px auto 0;
-            overflow-y: hidden;
-            margin: 0 auto;
-            max-width: 50%;
-            min-width: 50%;
-            min-height: 40px;
-        }
-        .tellertekst {
-            font-weight: bold;
-        }
-        .negativtekstteller {
-            color: #c30000;
+            margin: 0 auto 35px;
+            width: 50%;
         }
     }
 
     a[class*="knapp-"] {
-        margin-top: 40px;
         margin-bottom: 40px;
     }
 }
@@ -100,23 +113,54 @@
         margin-left: -13px;
     }
 
+    *:last-child {
+        padding-bottom: 15px !important;
+        margin-bottom: 0 !important;
+    }
+
     .infoboks {
         margin-bottom: 20px;
+        padding-right: 4%;
+        padding-left: 4%;
     }
 
     .form-linje {
        padding: 15px;
     }
+
+    .textarea-container{
+
+        &:last-child {
+            span {
+                padding-bottom: 0 !important;
+            }
+        }
+
+        textarea {
+            width: 100%;
+            max-width: 100%;
+        }
+    }
+
+    input {
+        width: 100%;
+    }
+
+    .melding:last-child {
+        padding-bottom: 0 !important;
+    }
 }
 
 .egen-linje {
 	display:block;
+    margin-top: 10px;
+    text-align: center;
 }
 
 .nav-checkbox {
     .ekstra-spm-boks {
-        margin-left: 27px;
-        margin-top: 10px;
+        margin-left: 32px;
+        margin-top: 20px;
         margin-bottom: 20px;
 
         .tekstfelt {

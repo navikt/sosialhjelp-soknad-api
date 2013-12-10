@@ -4,6 +4,8 @@ angular.module('app.services', ['ngResource'])
 
     .config(function ($httpProvider) {
         $httpProvider.responseInterceptors.push('resetTimeoutInterceptor');
+        $httpProvider.defaults.headers.common['Accept'] = 'application/json';
+        $httpProvider.defaults.headers.post['Accept'] = 'application/json';
     })
 
     .factory('resetTimeoutInterceptor', function () {
@@ -35,7 +37,7 @@ angular.module('app.services', ['ngResource'])
  * Service som behandler vedlegg
  */
     .factory('vedleggService', function ($resource) {
-        return $resource('/sendsoknad/rest/soknad/:soknadId/faktum/:faktumId/vedlegg/:vedleggId/:action',
+        return $resource('/sendsoknad/rest/soknad/:soknadId/faktum/:faktumId/vedlegg/:vedleggId/:action?rand=' + new Date().getTime(),
             {
                 soknadId: '@soknadId',
                 faktumId: '@faktumId',
