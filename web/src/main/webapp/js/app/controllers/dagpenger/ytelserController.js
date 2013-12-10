@@ -9,14 +9,18 @@ angular.module('nav.ytelser', [])
 
         var nokler = ['ventelonn', 'stonadFisker', 'offentligTjenestepensjon', 'privatTjenestepensjon', 'vartpenger', 'dagpengerEOS', 'annenYtelse', 'ingenYtelse' ];
 
+        $scope.$on('VALIDER_YTELSER', function (scope, form) {
+            $scope.validerYtelser(form, false);
+        });
+
 //      sjekker om formen er validert når bruker trykker ferdig med ytelser
-        $scope.validerYtelser = function (form) {
+        $scope.validerYtelser = function (form, skalScrolle) {
             var minstEnCheckboksErAvhuket = erCheckboxerAvhuket(nokler);
             $scope.ytelser.skalViseFeilmeldingForIngenYtelser = false;
             settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, minstEnCheckboksErAvhuket, true);
 
             $scope.validateForm(form.$invalid);
-            $scope.runValidation();
+            $scope.runValidation(skalScrolle);
         };
 
 //      kjøres hver gang det skjer en endring på checkboksene

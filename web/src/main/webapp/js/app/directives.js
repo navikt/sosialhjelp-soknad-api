@@ -5,6 +5,7 @@ angular.module('app.directives', [
 	'nav.cmstekster',
 	'nav.input',
 	'nav.feilmeldinger',
+	'nav.stickyFeilmelding',
 	'nav.sporsmalferdig',
 	'nav.markup',
 	'nav.stegindikator',

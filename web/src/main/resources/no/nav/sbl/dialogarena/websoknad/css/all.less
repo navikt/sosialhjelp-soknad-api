@@ -16,6 +16,77 @@
     }
 }
 
+<<<<<<< HEAD
+<<<<<<< .merge_file_AllXk4
+<<<<<<< .merge_file_UqViCn
+.informasjonstekst {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-top: 20px !important;
+    margin-left: 15px !important;
+}
+
+
+.sticky-feilmelding {
+    position: fixed;
+    background-color: #333;
+    color: #FF696E;
+    padding: 15px;
+    top: 0;
+    width: 100%;
+    z-index: 1035;
+    display: none;
+    text-align: center;
+
+    div {
+        max-width: 660px;
+        margin: 0 auto;
+        position: relative;
+
+        .antall-feil-innholder {
+            position: absolute;
+            left: 0;
+            display: inline-block;
+            padding: 5px 0px;
+        }
+
+        span a {
+            color: #000;
+            border: 1px solid #5f5e5d;
+            background-color: #5f5e5d;
+            padding: 5px 10px;
+            float: none;
+            margin: 0 10px;
+            width: 80px;
+            display: inline-block;
+        }
+        span a:hover {
+            cursor: pointer;
+            background-color: #0ca9e1;
+            border: 1px solid #0ca9e1;
+            text-decoration: none;
+        }
+
+        .deaktiverFeilmelding {
+            background-color: #988F86;
+            color: #000;
+            border: 1px solid #988F86;
+
+        }
+        .deaktiverFeilmelding:hover {
+            text-decoration: none;
+            background-color: #988F86;
+            border: 1px solid #988F86;
+        }
+    }
+}
+
+=======
+>>>>>>> .merge_file_QPoXH8
+=======
+>>>>>>> .merge_file_qUQa9S
+=======
+>>>>>>> FETCH_HEAD
 .rad.soknad {
     padding: 0;
 }
@@ -360,9 +431,17 @@ form-linje.feil {
 
 .form-linje {
     padding: 15px;
+    a {
+        padding-left: 29px;
+        white-space: nowrap;
+    }
 
-    .form-linje {
+    &.checkbox.feilstyling .form-linje, .form-linje {
         padding: 0px;
+
+        .melding {
+          display: none;
+        }
 
         &.feil {
             border: 1px solid #fca292;
@@ -380,6 +459,13 @@ form-linje.feil {
                 display: block;
                 margin-bottom: 10px;
             }
+            &.aktiv-feilmelding.tekstfelt input  {
+                border: 1px solid #c30000;
+                background-color: #FAD6D6;
+            }
+            .melding {
+              color: #A00404;
+            }
         }
     }
 
@@ -389,7 +475,7 @@ form-linje.feil {
 
     &.feil {
         select {
-            border: 1px solid #fca292;
+            border: 1px solid #fee6e6;
             border-top: 1px solid #ff0000;
             background: @errorBackground;
         }
@@ -399,13 +485,12 @@ form-linje.feil {
         }
 
         &.boolean {
-            border: 1px solid #fca292;
+            border: 1px solid #fee6e6;
             background: #fee6e6;
             margin-bottom: 20px;
 
             .melding {
                 margin-bottom: 10px;
-                text-align: center !important;
             }
         }
 
@@ -416,6 +501,31 @@ form-linje.feil {
         .melding.inline {
             display: inline;
         }
+
+        &.aktiv-feilmelding.boolean  {
+            border: 1px solid #c30000;
+            background-color: #FAD6D6;
+
+            .melding {
+                color: #A00404;
+            }
+        }
+        &.aktiv-feilmelding.tekstfelt input {
+            border: 1px solid #c30000;
+            background-color: #FAD6D6;
+
+            .melding {
+              color: #A00404;
+            }
+        }
+    }
+    &.aktiv-feilmelding.checkbox.feilstyling  {
+       border: 1px solid #c30000;
+       background-color: #FAD6D6;
+
+       .melding {
+          color: #A00404;
+       }
     }
 
     &.checkbox.feilstyling {
@@ -426,7 +536,6 @@ form-linje.feil {
         .melding {
             margin-bottom: 10px;
             display: block;
-            text-align: center !important;
         }
     }
 
