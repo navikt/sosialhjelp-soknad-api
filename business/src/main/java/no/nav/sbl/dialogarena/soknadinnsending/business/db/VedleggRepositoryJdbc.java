@@ -36,24 +36,25 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
 
     @Override
     public List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktum) {
-        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, navn, storrelse, opprettetdato from Vedlegg where soknad_id = ? and faktum = ?", new VedleggRowMapper(false), soknadId, faktum);
+        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, navn, storrelse, opprettetdato, antallsider from Vedlegg where soknad_id = ? and faktum = ?", new VedleggRowMapper(false), soknadId, faktum);
     }
 
 
     @Override
     public Long lagreVedlegg(final Vedlegg vedlegg, final byte[] content) {
         final Long databasenokkel = getJdbcTemplate().queryForObject(SQLUtils.selectNextSequenceValue("VEDLEGG_ID_SEQ"), Long.class);
-        getJdbcTemplate().execute("insert into vedlegg(vedlegg_id, soknad_id,faktum, navn, storrelse, data, opprettetdato) values (?, ?, ?, ?, ?, ?, sysdate)",
+        getJdbcTemplate().execute("insert into vedlegg(vedlegg_id, soknad_id,faktum, navn, storrelse, antallsider, data, opprettetdato) values (?, ?, ?, ?, ?, ?, ?, sysdate)",
 
                 new AbstractLobCreatingPreparedStatementCallback(lobHandler) {
                     @Override
                     protected void setValues(PreparedStatement ps, LobCreator lobCreator) throws SQLException {
                         ps.setLong(1, databasenokkel);
                         ps.setLong(2, vedlegg.getSoknadId());
-                        ps.setLong(3, vedlegg.getFaktum());
+                        ps.setLong(3, vedlegg.getFaktumId());
                         ps.setString(4, vedlegg.getNavn());
                         ps.setLong(5, vedlegg.getStorrelse());
-                        lobCreator.setBlobAsBytes(ps, 6, content);
+                        ps.setLong(6, vedlegg.getAntallSider());
+                        lobCreator.setBlobAsBytes(ps, 7, content);
                     }
                 });
         return databasenokkel;
@@ -85,7 +86,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
 
     @Override
     public Vedlegg hentVedlegg(Long soknadId, Long vedleggId) {
-        return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, navn, storrelse, opprettetdato from Vedlegg where soknad_id = ? and vedlegg_id = ?", new VedleggRowMapper(false), soknadId, vedleggId);
+        return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, navn, storrelse, antallsider, opprettetdato from Vedlegg where soknad_id = ? and vedlegg_id = ?", new VedleggRowMapper(false), soknadId, vedleggId);
     }
 
     @Override

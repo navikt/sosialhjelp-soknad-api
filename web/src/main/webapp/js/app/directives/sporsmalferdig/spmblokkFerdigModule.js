@@ -1,5 +1,5 @@
 angular.module('nav.sporsmalferdig', [])
-    .directive('spmblokkferdig', ['$timeout', 'data', function ($timeout, data) {
+    .directive('spmblokkferdig', ['$timeout', function ($timeout) {
         return {
             require: '^form',
             replace: true,
@@ -9,11 +9,9 @@ angular.module('nav.sporsmalferdig', [])
                 modus: '=',
                 submitMethod: '&'
             },
-            link: function (scope, element) {
+            link: function (scope, element, attrs, form) {
                 var tab = element.closest('.accordion-group');
                 var nesteTab = tab.next();
-
-                scope.soknadId = data.soknad.soknadId;
 
                 scope.hvisIRedigeringsmodus = function () {
                     return scope.modus;
@@ -28,9 +26,13 @@ angular.module('nav.sporsmalferdig', [])
                     scope.$emit("ENDRET_TIL_REDIGERINGS_MODUS", {key: 'redigeringsmodus', value: true});
                 }
 
-                scope.lukkOgGaaTilNeste = function () {
-                    lukkTab(tab);
-                    gaaTilTab(nesteTab);
+                scope.validerOgGaaTilNeste = function () {
+                    scope.submitMethod();
+
+                    if (form.$valid) {
+                        lukkTab(tab);
+                        gaaTilTab(nesteTab);
+                    }
                 }
 
                 function gaaTilTab(nyTab) {

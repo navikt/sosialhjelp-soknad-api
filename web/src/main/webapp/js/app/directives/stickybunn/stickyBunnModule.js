@@ -1,9 +1,11 @@
-angular.module('nav.sistlagret', [])
+angular.module('nav.stickybunn', [])
     .directive('sistLagret', ['data', '$window', function (data, $window) {
         return {
             replace: true,
-            templateUrl: '../js/app/directives/sistlagret/sistLagretTemplate.html',
+            templateUrl: '../js/app/directives/stickybunn/stickyBunnTemplate.html',
             link: function(scope, element) {
+                scope.soknadId = data.soknad.soknadId;
+
                 scope.hentSistLagretTid = function() {
                     return data.soknad.fakta.sistLagret.value;
                 }
@@ -25,15 +27,15 @@ angular.module('nav.sistlagret', [])
                 var stickyHeightCompensation = 56;
                 var stickyHeight = nonStickyHeightCompensation;
                 function settStickySistLagret() {
-                    var elementTop = element.find('#sist-lagret-anchor')[0].getBoundingClientRect().bottom + stickyHeight;
+                    var elementTop = element.find('#sticky-bunn-anchor')[0].getBoundingClientRect().bottom + stickyHeight;
                     var windowTop = this.innerHeight;
 
                     if (elementTop > windowTop) {
                         stickyHeight = stickyHeightCompensation;
-                        element.find('.sist-lagret').addClass('stick');
+                        element.find('.sticky-bunn').addClass('stick');
                     } else {
                         stickyHeight = nonStickyHeightCompensation;
-                        element.find('.sist-lagret').removeClass('stick');
+                        element.find('.sticky-bunn').removeClass('stick');
                     }
                 }
 
