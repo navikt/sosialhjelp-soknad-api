@@ -11,7 +11,7 @@ angular.module('app.directives', [
 	'nav.textarea',
 	'nav.fremdriftsindikator',
 	'nav.validering',
-	'nav.sistlagret',
+    'nav.stickybunn',
 	'nav.select',
 	'nav.hjelpetekst',
 	'nav.datepicker',
