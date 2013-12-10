@@ -18,5 +18,7 @@ angular.module('app.directives', [
 	'nav.prosent',
 	'nav.ingenytelser',
 	'nav.sidetittel',
-    'ui.mask'
+    'ui.mask',
+    'nav.bildenavigering',
+    'nav.accordion'
 ]);

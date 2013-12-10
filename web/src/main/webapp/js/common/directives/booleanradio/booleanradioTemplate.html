@@ -5,7 +5,7 @@
          data-tekst="tekst">
     </div>
 
-    <p class="spm-sporsmal" data-cmstekster="{{ sporsmal }}"></p>
+    <h4 class="spm-sporsmal" data-cmstekster="{{ sporsmal }}"></h4>
 
     <div data-navradio
          data-ng-model='model'
@@ -25,4 +25,6 @@
          data-feilmelding='{{ feilmelding }}'>
      </div>
     <span class="melding"></span>
+
+    <div class="ng-transclude" data-ng-show="skalViseTranscludedInnhold()"></div>
 </div>
