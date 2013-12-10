@@ -178,7 +178,6 @@ angular.module('nav.accordion', [])
             var closeOthers = angular.isDefined($attrs.closeOthers) ? $scope.$eval($attrs.closeOthers) : accordionConfig.closeOthers;
             if ( closeOthers ) {
                 angular.forEach(groups, function (group) {
-
                     if ( group !== openGroup ) {
                         group.isOpen = false;
                     }
@@ -220,7 +219,6 @@ angular.module('nav.accordion', [])
                 group.setOpen(skalApne, ider);
             });
         }
-
     }])
 
 // The accordion directive simply sets up the directive controller

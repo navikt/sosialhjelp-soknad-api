@@ -52,7 +52,9 @@ public class ApplicationContext {
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
+        PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
+        propertySourcesPlaceholderConfigurer.setLocalOverride(true);
+        return propertySourcesPlaceholderConfigurer;
     }
 
     @Bean
@@ -69,7 +71,7 @@ public class ApplicationContext {
         javaMailSender.setPort(Integer.parseInt(smtpServerPort));
         return javaMailSender;
     }
-    
+
     @Bean
     public String navigasjonslink() {
         return navigasjonslink;
