@@ -324,6 +324,26 @@ describe('utility funksjoner -', function () {
             expect(erGyldig).toBe(true);
         });
     });
+
+    describe('tall med 2 siffer', function () {
+        it('skal få returverdi', function () {
+            var tall = 1;
+
+            expect(konverterTallTilStringMedToSiffer(tall)).toBeDefined();
+        });
+
+        it('skal legge til 0 dersom ett tall bare har ett siffer', function () {
+            var tall = 1;
+
+            expect(konverterTallTilStringMedToSiffer(tall)).toBe("0" + tall);
+        });
+
+        it('skal ikke legge til 0 dersom ett tall har 2 siffer', function () {
+            var tall = 10;
+
+            expect(konverterTallTilStringMedToSiffer(tall)).toBe("10");
+        });
+    });
 });
 
 

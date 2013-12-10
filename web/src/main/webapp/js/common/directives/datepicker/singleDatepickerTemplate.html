@@ -1,16 +1,51 @@
-<div class="form-linje datepicker" data-ng-class="{feil: harFeil()}">
+<div class="form-linje datepicker" data-ng-class="{feil: harFeil(), fokus: harFokus()}">
     <span class="caretPosition"></span>
-    <label>
-        <!-- TODO: Skjult span med datoformat -->
+
+    <label class="dato-label">
         <span data-cmstekster="{{ label }}"></span>
-            <span class="maskedInput">
+        <!-- TODO: Skjult span med datoformat -->
+    </label>
+    <div class="datepicker-input">
+        <label>
+            <!--TODO: Skjult label-tekst-->
+            <span class="maskedInput dag">
                 <input type="text"
-                       data-ng-model="ngModel" data-ng-blur="blur()" data-ng-focus="focus()" data-ng-required="erRequired" data-error-messages="'{{ requiredErrorMessage }}'"
-                       data-dato-mask>
+                       maxlength="2"
+                       data-ng-model="dag"
+                       data-ng-blur="blur()"
+                       data-ng-focus="focus()"
+                       data-dato-mask="dd">
+                <span class="mask"></span>
+                <span class="punktum graa">.</span>
+            </span>
+        </label>
+        <label>
+            <!--TODO: Skjult label-tekst-->
+            <span class="maskedInput maaned">
+                <input type="text"
+                       maxlength="2"
+                       data-ng-model="maaned"
+                       data-ng-blur="blur()"
+                       data-ng-focus="focus()"
+                       data-dato-mask="mm">
+                <span class="mask"></span>
+                <span class="punktum graa">.</span>
+            </span>
+        </label>
+        <label>
+            <!--TODO: Skjult label-tekst-->
+            <span class="maskedInput aar">
+                <input type="text"
+                       maxlength="4"
+                       data-ng-model="aar"
+                       data-ng-blur="blur()"
+                       data-ng-focus="focus()"
+                       data-dato-mask="åååå">
                 <span class="mask"></span>
             </span>
-    </label>
-    <input type="hidden" data-ng-model="ngModel">
+        </label>
+    </div>
+    <input type="hidden" data-ng-model="ngModel" data-ng-required="erRequired" data-error-messages="'{{ requiredErrorMessage }}'">
     <span class="knapp-liten" data-ng-click="toggleDatepicker()"></span>
 
     <span class="melding" data-ng-if="harRequiredFeil()" data-cmstekster="{{ requiredErrorMessage }}"></span>
