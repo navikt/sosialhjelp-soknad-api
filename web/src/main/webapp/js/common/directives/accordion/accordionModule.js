@@ -170,7 +170,6 @@ angular.module('nav.accordion', [])
 
         // This array keeps track of the accordion groups
         var groups = [];
-
         // Keep reference to user's scope to properly assign `is-open`
         this.scope = $scope;
 
@@ -179,6 +178,7 @@ angular.module('nav.accordion', [])
             var closeOthers = angular.isDefined($attrs.closeOthers) ? $scope.$eval($attrs.closeOthers) : accordionConfig.closeOthers;
             if ( closeOthers ) {
                 angular.forEach(groups, function (group) {
+
                     if ( group !== openGroup ) {
                         group.isOpen = false;
                     }
@@ -190,7 +190,6 @@ angular.module('nav.accordion', [])
         this.addGroup = function(groupScope) {
             var that = this;
             groups.push(groupScope);
-
             groupScope.$on('$destroy', function (event) {
                 that.removeGroup(groupScope);
             });
@@ -221,6 +220,7 @@ angular.module('nav.accordion', [])
                 group.setOpen(skalApne, ider);
             });
         }
+
     }])
 
 // The accordion directive simply sets up the directive controller
@@ -253,6 +253,9 @@ angular.module('nav.accordion', [])
                 var getIsOpen, setIsOpen;
 
                 accordionCtrl.addGroup(scope);
+
+                // Lagt til for å kunne vite hvilken tab som skal lukkes.
+                scope.id = attrs.id;
 
                 scope.isOpen = false;
 
