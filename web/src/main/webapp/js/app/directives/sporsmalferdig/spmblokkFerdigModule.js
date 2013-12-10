@@ -13,8 +13,12 @@ angular.module('nav.sporsmalferdig', [])
                 var tab = element.closest('.accordion-group');
                 var nesteTab = tab.next();
 
+                scope.hvisIRedigeringsmodus = function () {
+                    return scope.modus;
+                }
+
                 scope.hvisIOppsummeringsmodus = function () {
-                    return !scope.modus;
+                    return !scope.hvisIRedigeringsmodus();
                 }
 
                 scope.gaTilRedigeringsmodus = function () {
