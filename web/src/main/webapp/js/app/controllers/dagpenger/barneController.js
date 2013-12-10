@@ -5,18 +5,27 @@ angular.module('nav.barn',['app.services'])
             value: {
                     "fodselsnummer":undefined,
                     "fornavn":undefined,
-                    "mellomnavn":undefined,
                     "etternavn":undefined,
                     "sammensattnavn":undefined,
                     "alder": undefined
                 }
         };
 
+        $scope.formAapent = false;
 		$scope.barn = new BrukerData(barneData);
 
 	 	landService.get().$promise.then(function (result) {
             $scope.landService = result;
         });
+
+	 	$scope.nyttBarn = function() {
+	 		$scope.formAapent = true;
+	 	}
+
+	 	$scope.avbrytBarn = function() {
+			$scope.barn = new BrukerData(barneData);
+			$scope.formAapent = false;
+	 	}
 
         $scope.lagreBarn = function (form) {
             $scope.runValidation();
@@ -34,16 +43,13 @@ angular.module('nav.barn',['app.services'])
 
 					}
 					$scope.barn = new BrukerData(barneData);
+					$scope.formAapent = false;
 	    		});
         	}
         }
 
         function finnSammensattNavn() {
-        	if($scope.barn.value.mellomnavn) {
-        		return $scope.barn.value.fornavn + " " + $scope.barn.value.mellomnavn + " " + $scope.barn.value.etternavn;
-        	} else {
-        		return $scope.barn.value.fornavn + " " + $scope.barn.value.etternavn;
-        	}
+        	return $scope.barn.value.fornavn + " " + $scope.barn.value.etternavn;
         }
 
         //TODO: FIX Tester
