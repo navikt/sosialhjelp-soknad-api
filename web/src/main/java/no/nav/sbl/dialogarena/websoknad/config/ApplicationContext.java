@@ -42,17 +42,18 @@ public class ApplicationContext {
 
 
     //TODO Når FASIT funker må dette fikses
-
-
 //    @Value("{$dokumentinnsending.smtpServer.port}")
     private String smtpServerPort = "25";
 
 //    @Value("${dokumentinnsending.smtpServer.host}")
     private String smtpServerHost = "smtp.test.local";
 
+
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
+        PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
+        propertySourcesPlaceholderConfigurer.setLocalOverride(true);
+        return propertySourcesPlaceholderConfigurer;
     }
 
     @Bean
@@ -69,7 +70,7 @@ public class ApplicationContext {
         javaMailSender.setPort(Integer.parseInt(smtpServerPort));
         return javaMailSender;
     }
-    
+
     @Bean
     public String navigasjonslink() {
         return navigasjonslink;
