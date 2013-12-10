@@ -157,22 +157,6 @@ angular.module('app.brukerdata', ['app.services'])
                     
                 });
         });
-
-        $scope.$on("LAGRE_BARNETILLEGG", function(e, value) {
-            if ($scope.soknadData.fakta.barnetillegg[angular.fromJson(value.value).fnr] == undefined) {
-                $scope.soknadData.fakta.barnetillegg[angular.fromJson(value.value).fnr] = {};
-            }
-            $scope.soknadData.fakta.barnetillegg[angular.fromJson(value.value).fnr].value=value.value;
-            $scope.soknadData.fakta.barnetillegg[angular.fromJson(value.value).fnr].key='barnetillegg';
-            $scope.soknadData.fakta.barnetillegg[angular.fromJson(value.value).fnr].faktumId = angular.fromJson(value.value).faktumId; 
-
-            
-            var url = '/sendsoknad/rest/soknad/' + $scope.soknadData.soknadId + '/faktum' + '?rand=' + new Date().getTime();
-            $http({method:'POST', url:url, data: $scope.soknadData.fakta.barnetillegg[angular.fromJson(value.value).fnr]})
-                .success(function(data, status) {
-                    $scope.soknadData.fakta.barnetillegg[angular.fromJson(data.value).fnr] = data;
-            });
-        });
     }])
     .controller('ModusCtrl', function ($scope) {
         $scope.data = {
