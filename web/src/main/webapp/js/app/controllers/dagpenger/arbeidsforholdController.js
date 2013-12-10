@@ -198,6 +198,7 @@ angular.module('nav.arbeidsforhold.controller', [])
 
     .controller('LeggTilArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams) {
         $scope.lagreArbeidsforhold = function (af, form) {
+            //Todo: ????
             form.$setValidity('arbeidsforhold.feilmelding', true);
             form.$setValidity('arbeidsforhold.endrearbeidsforhold.feilmelding', true);
             form.$setValidity('arbeidsforhold.leggtilnyttarbeidsforhold.feilmelding', true);
