@@ -1,10 +1,10 @@
-package no.nav.sbl.dialogarena.soknadinnsending.oppsett;
+package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 
 
 import javax.xml.bind.annotation.XmlID;
 import java.io.Serializable;
 
-public class Faktum implements Serializable {
+public class SoknadFaktum implements Serializable {
 
     private String id;
     private String type;
@@ -28,7 +28,7 @@ public class Faktum implements Serializable {
 
     @Override
     public String toString() {
-        return new StringBuilder("Faktum{")
+        return new StringBuilder("SoknadFaktum{")
             .append("id='").append(id).append('\'')
             .append(", type='").append(type).append('\'')
             .append('}')
