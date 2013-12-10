@@ -221,3 +221,32 @@ function erGyldigDato(datoString) {
 
     return dag <= dagerIMaaned[--maaned];
 }
+
+function konverterTallTilStringMedToSiffer(tall) {
+    var tallMedToSiffer = "0" + tall;
+    return tallMedToSiffer.slice(-2);
+}
+
+function caretPosisjon(element) {
+    var domElement = element[0];
+    var posisjon = 0;
+
+    if (document.selection) {
+        domElement.focus();
+
+        var oSel = document.selection.createRange();
+
+        oSel.moveStart('character', -domElement.value.length);
+
+        posisjon = oSel.text.length;
+    } else if (domElement.selectionStart || domElement.selectionStart == '0') {
+        posisjon = domElement.selectionStart;
+    }
+
+    return posisjon;
+}
+
+function settFokusTilNesteElement(inputElement) {
+    var fokuserbareElementer = $('input, a, select, button, textarea').filter(':visible');
+    fokuserbareElementer.eq(fokuserbareElementer.index(inputElement) + 1).focus();
+}

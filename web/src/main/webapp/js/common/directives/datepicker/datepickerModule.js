@@ -61,7 +61,6 @@ angular.module('nav.datepicker', [])
                 var eventForAValidereHeleFormen = 'RUN_VALIDATION' + form.$name;
                 var datoRegExp = new RegExp(/^\d\d\.\d\d\.\d\d\d\d$/);
 
-                var tekstInput = element.find('input').first();
                 var datepickerInput = element.find('input').last();
                 var harHattFokus = false;
                 var harFokus = false;
@@ -78,27 +77,30 @@ angular.module('nav.datepicker', [])
 
                 scope.blur = function() {
                     harFokus = false;
-
+                    scope.ngModel = konverterStringFraNorskDatoformatTilDateObjekt(byggOppDatoString());
                     if (new Date(scope.ngModel) < new Date(scope.fraDato)) {
                         scope.ngModel = '';
                         scope.tilDatoFeil = true;
                     } else if (new Date(scope.tilDato) < new Date(scope.ngModel)) {
                         scope.tilDato = '';
                         scope.tilDatoFeil = true;
+                    } else if (scope.tilDatoFeil != undefined) {
+                        scope.tilDatoFeil = false;
                     }
                 }
 
                 scope.focus = function () {
                     harFokus = true;
                     harHattFokus = true;
-                    if (scope.tilDatoFeil != undefined) {
-                        scope.tilDatoFeil = false;
-                    }
                 }
 
                 scope.$on(eventForAValidereHeleFormen, function () {
                     harHattFokus = true;
                 });
+
+                scope.harFokus = function() {
+                    return harFokus;
+                }
 
                 scope.harRequiredFeil = function () {
                     return scope.erRequired && !scope.ngModel && !harFokus && harHattFokus && datepickerErLukket && !scope.tilDatoFeil && !scope.harFormatteringsFeil() && !scope.erIkkeGyldigDato();
@@ -109,11 +111,11 @@ angular.module('nav.datepicker', [])
                 }
 
                 scope.harFormatteringsFeil = function () {
-                    return tekstInput.val() && !datoRegExp.test(tekstInput.val()) && !harFokus && harHattFokus;
+                    return harInputIEttAvFeltene() && !datoRegExp.test(byggOppDatoString()) && !harFokus && harHattFokus;
                 }
 
                 scope.erIkkeGyldigDato = function() {
-                    return !scope.ngModel && tekstInput.val() && datoRegExp.test(tekstInput.val()) && !erGyldigDato(tekstInput.val()) && !harFokus && harHattFokus;
+                    return !scope.ngModel && harInputIEttAvFeltene() && datoRegExp.test(byggOppDatoString()) && !erGyldigDato(byggOppDatoString()) && !harFokus && harHattFokus;
                 }
 
                 scope.harFeil = function () {
@@ -125,6 +127,13 @@ angular.module('nav.datepicker', [])
                         scope.endret();
                     }
 
+                    if (scope.ngModel) {
+                        var dato = new Date(scope.ngModel);
+                        scope.dag = konverterTallTilStringMedToSiffer(dato.getDate());
+                        scope.maaned = konverterTallTilStringMedToSiffer(dato.getMonth() + 1);
+                        scope.aar = dato.getFullYear().toString();
+                    }
+
                     if (new Date(scope.ngModel) < new Date(scope.fraDato)) {
                         scope.ngModel = '';
                         scope.tilDatoFeil = true;
@@ -133,6 +142,20 @@ angular.module('nav.datepicker', [])
                         scope.tilDatoFeil = true;
                     }
                 });
+
+                scope.$watch('tilDatoFeil', function() {
+                    if (!scope.ngModel && !scope.tilDatoFeil) {
+                        scope.ngModel = konverterStringFraNorskDatoformatTilDateObjekt(byggOppDatoString());
+                    }
+                });
+
+                function harInputIEttAvFeltene() {
+                    return scope.dag || scope.maaned || scope.aar;
+                }
+
+                function byggOppDatoString() {
+                    return scope.dag + '.' + scope.maaned + '.' + scope.aar;
+                }
 
                 function datepickerOptions() {
                     var defaultDate = scope.ngModel ? new Date(scope.ngModel) : new Date();
@@ -201,7 +224,7 @@ angular.module('nav.datepicker', [])
             }
         }
     }])
-    .directive('datoMask', ['$filter', function($filter) {
+    .directive('datoMask', [function() {
         return {
             restrict: 'A',
             require: 'ngModel',
@@ -210,23 +233,29 @@ angular.module('nav.datepicker', [])
                     return;
                 }
 
-                var datoMaskFormat = 'dd.mm.åååå';
+                var datoMaskFormat = attrs.datoMask;
 
+                var paddingLeft = element.css('padding-left');
+                paddingLeft = paddingLeft.substring(0, paddingLeft.length - 2);
                 var caretPosElem = element.closest('.datepicker').find('.caretPosition');
                 var maskElement = element.next();
-                var originalLeft = element.position().left + 8;
+                var originalLeft = element.position().left + parseInt(paddingLeft);
                 var top = element.position().top + 7
                 var left = originalLeft;
                 maskElement.css({top: top + "px", left: left + "px"});
                 maskElement.text(datoMaskFormat);
+                var punktum = maskElement.next();
 
                 caretPosElem.hide();
+
                 element.bind('blur', function() {
                     caretPosElem.hide();
+                    caretPosElem.text('');
                 });
 
                 element.bind('focus', function() {
                     caretPosElem.show();
+                    caretPosElem.text(ngModel.$viewValue);
                 });
 
                 maskElement.bind('click', function() {
@@ -237,32 +266,36 @@ angular.module('nav.datepicker', [])
                     if (event.keyCode == 32) {
                         return false;
                     }
+
+//                    if ((event.keyCode == 37 || event.keyCode == 39) && ngModel.$viewValue.length == datoMaskFormat.length && caretPosisjon(element)) {
+//                        ;
+//                    }
                 });
 
-                ngModel.$formatters.unshift(function(dato) {
-                    return $filter('date')(dato, "dd.MM.yyyy");
-                });
-
-                var gammelInputVerdi = '';
-                ngModel.$parsers.unshift(function (inputVerdi) {
-                    var datoInput = '';
-                    angular.forEach(inputVerdi.split(''), function(val, idx) {
-                        if (((datoMaskFormat[idx] == '.' && val == '.') || (!isNaN(val))) && idx < datoMaskFormat.length) {
-                            datoInput = datoInput + val;
-                        }
-                    });
-
-                    if (datoMaskFormat[datoInput.length] == '.' && gammelInputVerdi.length < inputVerdi.length) {
-                        datoInput = datoInput + '.';
-                    } else if (datoMaskFormat[datoInput.length] == '.' && gammelInputVerdi.length > inputVerdi.length) {
-                        datoInput = datoInput.substring(0, datoInput.length - 1);
+                // Hack for å unngå scope.$apply() i en annen scope.$apply()
+                var byttFokus = false;
+                element.keypress(function() {
+                    if (byttFokus) {
+//                        settFokusTilNesteElement(element);
+                        byttFokus = false;
                     }
+                });
 
-                    gammelInputVerdi = datoInput;
+                ngModel.$parsers.unshift(function (inputVerdi) {
+                    var datoInput =  inputVerdi.split('').filter(function (siffer) {
+                        return (!isNaN(siffer));
+                    }).join('');
+
+                    datoInput = datoInput.substring(0, datoMaskFormat.length);
+
                     ngModel.$viewValue = datoInput;
                     ngModel.$render();
 
-                    return konverterStringFraNorskDatoformatTilDateObjekt(datoInput);
+                    if (caretPosisjon(element) == datoMaskFormat.length) {
+                        byttFokus = true;
+                    }
+
+                    return datoInput;
                 });
 
                 scope.$watch(
@@ -277,6 +310,12 @@ angular.module('nav.datepicker', [])
                         var tekst = nyVerdi;
                         if (nyVerdi == undefined) {
                             tekst = '';
+                        }
+
+                        if (tekst.length == datoMaskFormat.length) {
+                            punktum.removeClass('graa');
+                        } else {
+                            punktum.addClass('graa');
                         }
 
                         caretPosElem.text(tekst);
