@@ -50,6 +50,7 @@ public class ApplicationContext {
     private String smtpServerHost;
             //= "smtp.test.local";
 
+
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
         PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
