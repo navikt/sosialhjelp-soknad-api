@@ -224,7 +224,7 @@ angular.module('nav.datepicker', [])
             }
         }
     }])
-    .directive('datoMask', [function() {
+    .directive('datoMask', ['$timeout', function($timeout) {
         return {
             restrict: 'A',
             require: 'ngModel',
@@ -272,15 +272,6 @@ angular.module('nav.datepicker', [])
 //                    }
                 });
 
-                // Hack for å unngå scope.$apply() i en annen scope.$apply()
-                var byttFokus = false;
-                element.keypress(function() {
-                    if (byttFokus) {
-//                        settFokusTilNesteElement(element);
-                        byttFokus = false;
-                    }
-                });
-
                 ngModel.$parsers.unshift(function (inputVerdi) {
                     var datoInput =  inputVerdi.split('').filter(function (siffer) {
                         return (!isNaN(siffer));
@@ -291,8 +282,10 @@ angular.module('nav.datepicker', [])
                     ngModel.$viewValue = datoInput;
                     ngModel.$render();
 
-                    if (caretPosisjon(element) == datoMaskFormat.length) {
-                        byttFokus = true;
+                    if (datoMaskFormat.length < 4 && caretPosisjon(element) == datoMaskFormat.length) {
+                        $timeout(function() {
+                            settFokusTilNesteElement(element);
+                        }, 0, false);
                     }
 
                     return datoInput;
