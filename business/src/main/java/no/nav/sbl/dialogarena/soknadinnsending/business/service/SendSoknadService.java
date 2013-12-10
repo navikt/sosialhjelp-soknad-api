@@ -21,4 +21,5 @@ public interface SendSoknadService {
 
 	void avbrytSoknad(Long soknadId);
 
+    void endreInnsendingsvalg(Long soknadId, Faktum faktum);
 }
