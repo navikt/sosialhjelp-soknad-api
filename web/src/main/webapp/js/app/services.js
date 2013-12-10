@@ -50,6 +50,27 @@ angular.module('app.services', ['ngResource'])
             }
         );
     })
+    /**
+     * Service som behandler vedlegg
+     */
+    .factory('VedleggForventning', function ($resource) {
+        return $resource('/sendsoknad/rest/soknad/:soknadId/forventning?rand=' + new Date().getTime(), {
+            soknadId: '@faktum.soknadId'
+        }, {
+            slettVedlegg: {
+                url: '/sendsoknad/rest/soknad/:soknadId/faktum/:faktumId/vedlegg/:vedleggId/delete',
+                method: 'POST',
+                params: {
+                    faktumId: '@faktum.faktumId',
+                    vedleggId: '@faktum.vedleggId'
+                }
+            },
+            endreValg: {
+                url: '/sendsoknad/rest/soknad/:soknadId/forventning/valg',
+                method: 'POST'
+            }
+        });
+    })
 
     .factory('forsettSenereService', function ($resource) {
         return $resource('/sendsoknad/rest/soknad/:soknadId/fortsettsenere',

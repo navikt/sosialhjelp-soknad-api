@@ -47,9 +47,13 @@ public class WebSoknadServiceMock implements SendSoknadService{
 		repository.slettSoknad(soknadId);
 	}
 
-	
+    @Override
+    public void endreInnsendingsvalg(Long soknadId, Faktum faktum) {
 
-	public Long startSoknad(String navSoknadId) {
+    }
+
+
+    public Long startSoknad(String navSoknadId) {
 		return repository.startSoknad(navSoknadId);
 	}
 

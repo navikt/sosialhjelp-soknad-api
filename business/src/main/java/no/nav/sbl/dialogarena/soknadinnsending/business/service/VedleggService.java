@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventning;
 
 import java.io.InputStream;
 import java.util.List;
@@ -20,4 +21,6 @@ public interface VedleggService {
     byte[] lagForhandsvisning(Long soknadId, Long vedleggId, int side);
 
     Long genererVedleggFaktum(Long soknadId, Long faktumId);
+
+    List<VedleggForventning> hentPaakrevdeVedlegg(Long soknadId);
 }
