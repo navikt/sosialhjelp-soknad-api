@@ -3,29 +3,41 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 import java.io.Serializable;
 
 public class Faktum implements Serializable {
+    public enum Status {
+        IkkeVedlegg,
+        VedleggKreves,
+        LastetOpp,
+        SendesSenere,
+        SendesIkke;
 
-	//public enum FaktumType { FAGREGISTER, BRUKERREGISTRERT; }
-	private Long faktumId;
-	private Long soknadId;
+        public boolean er(Status status) {
+            return this.equals(status);
+        }
+    }
+
+    //public enum FaktumType { FAGREGISTER, BRUKERREGISTRERT; }
+    private Long faktumId;
+    private Long soknadId;
     private Long vedleggId;
-	private String key;
+    private Status innsendingsvalg;
+    private String key;
     private String value;
     private String type;
-    
-	public Faktum() {
+
+    public Faktum() {
     }
-  
+
     public Faktum(Long soknadId, Long faktumId, String key, String value, String type) {
-		this(soknadId, faktumId, key,value);
-		this.type = type;
+        this(soknadId, faktumId, key, value);
+        this.type = type;
     }
-    
-	public Faktum(Long soknadId, Long faktumId, String key, String value) {
-		this.soknadId = soknadId;
-		this.faktumId = faktumId;
-		this.key = key;
-		this.value = value;
-	}
+
+    public Faktum(Long soknadId, Long faktumId, String key, String value) {
+        this.soknadId = soknadId;
+        this.faktumId = faktumId;
+        this.key = key;
+        this.value = value;
+    }
 
     public Long getFaktumId() {
         return faktumId;
@@ -46,7 +58,7 @@ public class Faktum implements Serializable {
     public String getValue() {
         return value;
     }
-    
+
     public Long getSoknadId() {
         return soknadId;
     }
@@ -74,11 +86,22 @@ public class Faktum implements Serializable {
     public void setType(String type) {
         this.type = type;
     }
-    
+
+    public Status getInnsendingsvalg() {
+        if (innsendingsvalg == null) {
+            innsendingsvalg = Status.IkkeVedlegg;
+        }
+        return innsendingsvalg;
+    }
+
+    public void setInnsendingsvalg(Status innsendingsvalg) {
+        this.innsendingsvalg = innsendingsvalg;
+    }
+
     @Override
-   	public String toString() {
-   		return "Faktum [soknadId=" + soknadId + ", key=" + key + ", value="
-   				+ value + ", type=" + type + "]";
-   	}
+    public String toString() {
+        return "Faktum [soknadId=" + soknadId + ", key=" + key + ", value="
+                + value + ", type=" + type + "]";
+    }
 
 }
