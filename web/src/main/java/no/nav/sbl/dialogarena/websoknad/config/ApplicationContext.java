@@ -41,12 +41,17 @@ public class ApplicationContext {
     private String navigasjonslink;
 
 
-    //TODO Dette er utkommentert kode frem til vi kan deploye kode for smtpServer som Fasit aksepterer
-    //@Value("{$dokumentinnsending.smtpServer.port}")
-    private String smtpServerPort = "25";
 
-    //@Value("${dokumentinnsending.smtpServer.host}")
-    private String smtpServerHost = "smtp.test.local";
+    //TODO Når FASIT funker må dette fikses
+
+
+    @Value("{$dokumentinnsending.smtpServer.port}")
+    private String smtpServerPort;
+            //= "25";
+
+    @Value("${dokumentinnsending.smtpServer.host}")
+    private String smtpServerHost;
+            //= "smtp.test.local";
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
