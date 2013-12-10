@@ -170,6 +170,7 @@ angular.module('nav.accordion', [])
 
         // This array keeps track of the accordion groups
         var groups = [];
+
         // Keep reference to user's scope to properly assign `is-open`
         this.scope = $scope;
 
