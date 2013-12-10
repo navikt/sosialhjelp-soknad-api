@@ -166,10 +166,10 @@ angular.module('nav.accordion', [])
     .constant('accordionConfig', {
         closeOthers: true
     })
-    .controller('AccordionController', ['$scope', '$attrs', 'accordionConfig', function ($scope, $attrs, accordionConfig) {
+    .controller('AccordionController', ['$scope', '$attrs', 'accordionConfig', '$timeout', function ($scope, $attrs, accordionConfig, $timeout) {
 
         // This array keeps track of the accordion groups
-        this.groups = [];
+        var groups = [];
 
         // Keep reference to user's scope to properly assign `is-open`
         this.scope = $scope;
@@ -178,7 +178,7 @@ angular.module('nav.accordion', [])
         this.closeOthers = function(openGroup) {
             var closeOthers = angular.isDefined($attrs.closeOthers) ? $scope.$eval($attrs.closeOthers) : accordionConfig.closeOthers;
             if ( closeOthers ) {
-                angular.forEach(this.groups, function (group) {
+                angular.forEach(groups, function (group) {
                     if ( group !== openGroup ) {
                         group.isOpen = false;
                     }
@@ -189,7 +189,7 @@ angular.module('nav.accordion', [])
         // This is called from the accordion-group directive to add itself to the accordion
         this.addGroup = function(groupScope) {
             var that = this;
-            this.groups.push(groupScope);
+            groups.push(groupScope);
 
             groupScope.$on('$destroy', function (event) {
                 that.removeGroup(groupScope);
@@ -198,32 +198,29 @@ angular.module('nav.accordion', [])
 
         // This is called from the accordion-group directive when to remove itself
         this.removeGroup = function(group) {
-            var index = this.groups.indexOf(group);
+            var index = groups.indexOf(group);
             if ( index !== -1 ) {
-                this.groups.splice(this.groups.indexOf(group), 1);
+                groups.splice(this.groups.indexOf(group), 1);
             }
         };
 
-        // TODO: Dette må vi flytte ut!
-        // Lagt til for å kunne åpne en tab når vi vil
-        // accordion-group-elementet må ha en ID som sendes med eventen
-        var grupper = this.groups;
-        $scope.$on("OPEN_TAB", function (e, id) {
-            angular.forEach(grupper, function (group) {
-                if (group.id === id) {
-                    group.isOpen = true;
-                }
-            });
+        $scope.$on("OPEN_TAB", function (e, ider, timeout) {
+            $timeout(function() {
+                endreAccordionVisning(true, ider)
+            }, timeout);
         });
 
-        // Lagt til for å kunne lukke en tab når vi vil
-        $scope.$on("CLOSE_TAB", function (e, id) {
-            angular.forEach(grupper, function (group) {
-                if (group.id === id) {
-                    group.isOpen = false;
-                }
-            });
+        $scope.$on("CLOSE_TAB", function (e, ider, timeout) {
+            $timeout(function() {
+                endreAccordionVisning(false, ider)
+            }, timeout);
         });
+
+        function endreAccordionVisning(skalApne, ider) {
+            angular.forEach(groups, function (group) {
+                group.setOpen(skalApne, ider);
+            });
+        }
     }])
 
 // The accordion directive simply sets up the directive controller
@@ -257,9 +254,6 @@ angular.module('nav.accordion', [])
 
                 accordionCtrl.addGroup(scope);
 
-                // Lagt til for å kunne vite hvilken tab som skal lukkes.
-                scope.id = attrs.id;
-
                 scope.isOpen = false;
 
                 if ( attrs.isOpen ) {
@@ -269,6 +263,12 @@ angular.module('nav.accordion', [])
                     accordionCtrl.scope.$watch(getIsOpen, function(value) {
                         scope.isOpen = !!value;
                     });
+                }
+
+                scope.setOpen = function(skalApne, ider) {
+                    if (ider.contains(attrs.id)) {
+                        scope.isOpen = skalApne;
+                    }
                 }
 
                 scope.$watch('isOpen', function(value) {
