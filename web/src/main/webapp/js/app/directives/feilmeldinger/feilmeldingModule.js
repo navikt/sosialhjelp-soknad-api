@@ -4,14 +4,14 @@ angular.module('nav.feilmeldinger', [])
     .directive('errorMessages', [function () {
         return {
             require: 'ngModel',
-            link: function(scope, elem, attrs, ctrl) {
+            link: function (scope, elem, attrs, ctrl) {
                 // attrs.errorMessages can be:
                 //    1) "must be filled out."
                 //    2) "'must be filled out.'"
                 //    3) "{ required: 'must be filled out.' }"
                 try {
                     ctrl.$errorMessages = scope.$eval(attrs.errorMessages);
-                } catch(e) {
+                } catch (e) {
                     ctrl.$errorMessages = attrs.errorMessages;
                 }
                 ctrl.$elementErrorAttr = attrs.errorMessages;
@@ -33,54 +33,55 @@ angular.module('nav.feilmeldinger', [])
                 var eventString = 'RUN_VALIDATION' + ctrl.$name;
 
                 scope.feilmeldinger = [];
-                scope.runValidation = function () {
+                scope.runValidation = function (skalScrolle) {
                     scope.feilmeldinger = [];
                     var skalViseFlereFeilmeldinger = true;
-
+                    var skalViseFlereBarneFeilmeldinger = true;
                     angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
-
                         if (skalViseFlereFeilmeldinger) {
                             skalViseFlereFeilmeldinger = leggTilFeilmeldingerVedValidering(verdi, feilNokkel);
                         }
                     });
 
-                    if (scope.feilmeldinger.length > 0) {
-                        $timeout(function() {
-                            scrollToElement(elem);
+                    if (scope.feilmeldinger.length > 0 && skalScrolle) {
+                        $timeout(function () {
+                            scrollToElement(elem, 100);
                         }, 1);
                     }
                     scope.$broadcast(eventString);
                 }
 
-                scope.$watch(function() { return ctrl.$error; }, function() {
+                scope.$watch(function () {
+                    return ctrl.$error;
+                }, function () {
                     scope.fjernFeilmeldingerSomErFikset();
                 }, true);
 
-                scope.fjernFeilmeldingerSomErFikset = function() {
+                scope.fjernFeilmeldingerSomErFikset = function () {
                     var fortsattFeilListe = [];
-                    angular.forEach(ctrl.$error, function(verdi, feilNokkel) {
 
+                    angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
                         fortsattFeilListe = fortsattFeilListe.concat(leggTilFeilSomFortsattSkalVises(verdi, feilNokkel));
                     });
                     scope.feilmeldinger = fortsattFeilListe;
                 }
 
-                scope.skalViseFeilmeldinger = function() {
+                scope.skalViseFeilmeldinger = function () {
                     return scope.feilmeldinger.length > 0;
                 }
 
-                scope.scrollTilElementMedFeil = function(feilmelding) {
+                scope.scrollTilElementMedFeil = function (feilmelding) {
                     if (scope.erKlikkbarFeil(feilmelding)) {
-                        scrollToElement(feilmelding.elem);
+                        scrollToElement(feilmelding.elem, 300);
                         scope.giFokus(feilmelding.elem);
                     }
                 }
 
-                scope.giFokus = function(element) {
+                scope.giFokus = function (element) {
                     element.focus();
                 }
 
-                scope.erKlikkbarFeil = function(feilmelding) {
+                scope.erKlikkbarFeil = function (feilmelding) {
                     return feilmelding.elem && feilmelding.elem.length > 0;
                 }
 
@@ -89,7 +90,6 @@ angular.module('nav.feilmeldinger', [])
                  * og vi skal ikke loope mer. Return false dersom vi skal stoppe loopen, ellers true.
                  */
                 function leggTilFeilmeldingerVedValidering(verdi, feilNokkel) {
-
                     var skalViseFlereFeilmeldinger = true;
                     angular.forEach(verdi, function (feil) {
                         var feilmelding = finnFeilmelding(feil, feilNokkel);
@@ -100,15 +100,14 @@ angular.module('nav.feilmeldinger', [])
                         } else if (skalViseFlereFeilmeldinger && feil) {
                             leggTilFeilmeldingHvisIkkeAlleredeLagtTil(scope.feilmeldinger, feilmelding);
                         }
-
                     });
                     return skalViseFlereFeilmeldinger;
                 }
 
                 function leggTilFeilSomFortsattSkalVises(verdi, feilNokkel) {
-
                     var fortsattFeilListe = [];
-                    angular.forEach(verdi, function(feil) {
+                    angular.forEach(verdi, function (feil) {
+
                         var feilmelding = finnFeilmelding(feil, feilNokkel);
                         if (scope.feilmeldinger.indexByValue(feilmelding.feil) > -1 && feil) {
                             leggTilFeilmeldingHvisIkkeAlleredeLagtTil(fortsattFeilListe, feilmelding);
@@ -118,7 +117,7 @@ angular.module('nav.feilmeldinger', [])
                 }
 
                 function leggTilFeilmeldingHvisIkkeAlleredeLagtTil(feilListe, feilmelding) {
-                    if (feilListe.indexByValue(feilmelding.feil) < 0){
+                    if (feilListe.indexByValue(feilmelding.feil) < 0) {
                         feilListe.push(feilmelding);
                     }
                 }
@@ -133,11 +132,11 @@ angular.module('nav.feilmeldinger', [])
                 }
 
                 function finnFeilmeldingsNokkel(feil, feilNokkel) {
-
                     if (feil && feil.$errorMessages != undefined) {
-                        if(typeof feil.$errorMessages === 'object') {
-                           return feil.$errorMessages[feilNokkel];
-                        } else if(typeof feil.$errorMessages === 'string') {
+                        if (typeof feil.$errorMessages === 'object') {
+                            return feil.$errorMessages[feilNokkel];
+                        } else if (typeof feil.$errorMessages === 'string') {
+
                             return feil.$errorMessages;
                         }
                     }
@@ -145,31 +144,26 @@ angular.module('nav.feilmeldinger', [])
                 }
 
                 function finnTilhorendeElement(feil) {
-                    if(feil && feil.$linkId) {
+                    if (feil && feil.$linkId) {
                         return elem.closest('[data-ng-form]').find('[name=' + feil.$linkId + ']');
                     }
-                    if(feil && feil.$elementErrorAttr) {
+                    if (feil && feil.$elementErrorAttr) {
                         return elem.closest('[data-ng-form]').find("[data-error-messages=\"" + feil.$elementErrorAttr + "\"], [error-messages=\"" + feil.$elementErrorAttr + "\"]");
                     }
                 }
             }
         };
-    }])
-    .filter('fiksRekkefolge', [function() {
-        return function(feilmeldinger) {
+    }
+    ])
+    .
+    filter('fiksRekkefolge', [function () {
+        return function (feilmeldinger) {
             var sortertFeilmeldingerArray = [];
 
-            for (var i = 1; i < feilmeldinger.length-1; i++) {
+            for (var i = 1; i < feilmeldinger.length - 1; i++) {
 //              skal bruke tabIndex når det er på plass
             }
             return feilmeldinger;
         }
     }])
 
-    function erEtter() {
-
-    }
-
-    function erFor() {
-
-    }
