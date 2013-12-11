@@ -128,7 +128,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
             }
             bytes = new PdfWatermarker().applyOn(bytes, SubjectHandler.getSubjectHandler().getUid());
             return vedleggRepository.lagreVedlegg(vedlegg, bytes);
-        } catch (Throwable e) {
+        } catch (Exception e) {
 
             throw new RuntimeException("Kunne ikke lagre vedlegg: " + e, e);
         }

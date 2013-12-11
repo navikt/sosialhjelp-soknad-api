@@ -117,7 +117,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
         String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and key = ? and type= ?";
         List<Faktum> faktum = getJdbcTemplate().query(sql, soknadDataRowMapper, soknadId, key, type);
 
-        if (faktum.size() > 0) {
+        if (!faktum.isEmpty()) {
             return faktum.get(0);
         } else {
             return new Faktum();

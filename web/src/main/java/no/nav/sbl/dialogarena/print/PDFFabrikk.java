@@ -19,16 +19,16 @@ public class PDFFabrikk {
     public static void lagPdfFil(String html, String baseurl, String outputPdfPath)
             throws IOException, DocumentException {
         OutputStream os = null;
-
+        String baseUrlString = baseurl;
         if (!baseurl.contains("://")) {
-            baseurl = getBaseUrlString(baseurl);
+            baseUrlString = getBaseUrlString(baseurl);
         }
         try {
             os = new FileOutputStream(outputPdfPath);
 
             ITextRenderer renderer = new ITextRenderer();
 
-            renderer.setDocumentFromString(html, baseurl);
+            renderer.setDocumentFromString(html, baseUrlString);
             renderer.layout();
             renderer.createPDF(os);
 
@@ -53,10 +53,10 @@ public class PDFFabrikk {
     public static OutputStream lagPDFOutputStream(String html, String baseurl, OutputStream output)
             throws IOException, DocumentException {
 
-        baseurl = getBaseUrlString(baseurl);
+        String baseUrlString = getBaseUrlString(baseurl);
         ITextRenderer renderer = new ITextRenderer();
 
-        renderer.setDocumentFromString(html, baseurl);
+        renderer.setDocumentFromString(html, baseUrlString);
         renderer.layout();
         renderer.createPDF(output);
         return output;
@@ -68,9 +68,10 @@ public class PDFFabrikk {
      */
     private static String getBaseUrlString(String baseurl) throws MalformedURLException {
         File f = new File(baseurl);
+        String baseUrlString = baseurl;
         if (f.exists()) {
             baseurl = f.toURI().toURL().toString();
         }
-        return baseurl;
+        return baseUrlString;
     }
 }
