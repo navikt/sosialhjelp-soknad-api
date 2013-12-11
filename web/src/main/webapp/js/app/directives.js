@@ -5,18 +5,21 @@ angular.module('app.directives', [
 	'nav.cmstekster',
 	'nav.input',
 	'nav.feilmeldinger',
+	'nav.stickyFeilmelding',
 	'nav.sporsmalferdig',
 	'nav.markup',
 	'nav.stegindikator',
 	'nav.textarea',
 	'nav.fremdriftsindikator',
 	'nav.validering',
-	'nav.sistlagret',
+    'nav.stickybunn',
 	'nav.select',
 	'nav.hjelpetekst',
 	'nav.datepicker',
 	'nav.prosent',
 	'nav.sidetittel',
     'nav.bildenavigering',
-    'nav.utdanningannet'
+    'nav.ingenytelser',
+    'nav.utdanningannet',
+    'nav.accordion'
 ]);

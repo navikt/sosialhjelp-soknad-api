@@ -3,6 +3,7 @@ angular.module('nav.utdanning',[])
         $scope.navigering = {nesteside: 'ytelser'};
         $scope.sidedata = {navn: 'utdanning'};
 
+
     var nokler = ['underUtdanningKveld', 'underUtdanningKortvarig', 'underUtdanningKortvarigFlere', 'underUtdanningNorsk', 'underUtdanningIntroduksjon', 'underUtdanningAnnet' ];
     var feilmeldingKategori = 'utdanning';
     var minstEnCheckboksErAvhuketFeilmeldingNavn = 'minstEnCheckboksErAvhuket';
@@ -10,17 +11,20 @@ angular.module('nav.utdanning',[])
     var referanseTilFeilmeldingslinken = 'underUtdanningAnnet';
     $scope.utdanning = {skalViseFeilmeldingForUtdanningAnnet: false};
 
-    $scope.validerUtdanning = function(form) {
+    $scope.validerUtdanning = function(form, skalScrolle) {
         if ($scope.hvisUnderUtdanning())
         {
             var minstEnAvhuket = $scope.erCheckboxerAvhuket(nokler);
             form.$setValidity("utdanning.minstEnAvhuket.feilmelding", minstEnAvhuket);
-
-        settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, minstEnAvhuket, true);
+            settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, minstEnAvhuket, true);
         }
         $scope.validateForm(form.$invalid);
-            $scope.runValidation();
-        }
+        $scope.runValidation();
+
+        $scope.$on('VALIDER_UTDANNING', function (scope, form) {
+            $scope.validerUtdanning(form, false);
+        });
+
 
         $scope.hvisIkkeUnderUtdanning = function () {
             if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
@@ -156,10 +160,10 @@ angular.module('nav.utdanning',[])
                 console.log("Checkbox er huket av, og annen utdanning skal settes lik false her" +  $scope.soknadData.fakta.underUtdanningAnnet.value);
                 form.$setValidity(minstEnCheckboksErAvhuketFeilmeldingNavn, true);
                 settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, true, true);
-            console.log("Annen utdanning skal settes lik false her" +  $scope.soknadData.fakta.underUtdanningAnnet.value);
+                console.log("Annen utdanning skal settes lik false her" +  $scope.soknadData.fakta.underUtdanningAnnet.value);
             }
         }
-        }
+        }}
 
 
     $scope.utdanningsprosent = [{

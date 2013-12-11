@@ -25,11 +25,9 @@
     }
 }
 
-.sist-lagret {
+.sticky-bunn {
     text-align: center;
     margin-bottom: 40px;
-    text-transform: uppercase;
-    font-size: 0.85rem;
 
     &.stick {
         margin-bottom: 0;
@@ -42,6 +40,14 @@
         border-top: 1px solid #dcdcdc;
         z-index: 1035;
         box-shadow: 0 0 10px #ccc;
+    }
+
+    .liste-vannrett li {
+        margin-top: 0;
+
+        a, span {
+            font-size: 0.85rem;
+        }
     }
 }
 
@@ -74,36 +80,12 @@
         text-align: center;
 
         .textarea-container {
-            margin-bottom: 35px;
-
-        }
-        p, span {
-            font-size: 14px !important;
-            margin: 10px 0;
-        }
-
-        label {
-            text-transform: uppercase;
-        }
-
-        textarea {
-            margin: 10px auto 0;
-            overflow-y: hidden;
-            margin: 0 auto;
-            max-width: 50%;
-            min-width: 50%;
-            min-height: 40px;
-        }
-        .tellertekst {
-            font-weight: bold;
-        }
-        .negativtekstteller {
-            color: #c30000;
+            margin: 0 auto 35px;
+            width: 50%;
         }
     }
 
     a[class*="knapp-"] {
-        margin-top: 40px;
         margin-bottom: 40px;
     }
 }

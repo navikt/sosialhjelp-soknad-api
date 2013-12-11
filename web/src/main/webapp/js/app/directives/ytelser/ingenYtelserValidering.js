@@ -7,7 +7,7 @@ angular.module('nav.ingenytelser', [])
                 var eventString = 'RUN_VALIDATION' + ctrl[0].$name;
 
                 scope.$on(eventString, function () {
-                    fadeBakgrunnsfarge(element, element.find('.ingen-ytelse-melding'), 'feil');
+                    fadeBakgrunnsfarge(element, element.find('.ingen-ytelse-melding'), 'feil', scope);
                 })
 
                 scope.$watch(function () {
@@ -19,7 +19,7 @@ angular.module('nav.ingenytelser', [])
                         element.addClass('feil');
                     } else {
                         console.log("Ytelser4");
-                        fadeBakgrunnsfarge(element, element.find('.ingen-ytelse-melding'), 'feil');
+                        fadeBakgrunnsfarge(element, element.find('.ingen-ytelse-melding'), 'feil', scope);
                     }
                 });
             }
