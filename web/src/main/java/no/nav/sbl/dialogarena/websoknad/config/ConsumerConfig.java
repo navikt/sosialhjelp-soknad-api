@@ -120,28 +120,17 @@ public class ConsumerConfig {
     @Configuration
     public static class PersonWSConfig {
 
-    	//TODO: Hardkodet intill envconfig fungerer igjen
-        //@Value("${soknad.webservice.person.personservice.url}")
-        //private URL personEndpoint;
+    	
+        @Value("${soknad.webservice.person.personservice.url}")
+        private URL personEndpoint;
     	
 
         @Bean
         @Scope(SCOPE_PROTOTYPE)
         public JaxWsProxyFactoryBean personPortTypeFactory() {
-        	//TODO Bort med alt try catch når envconfig funker igjen
-        	URL personEndpoint;
-			try {
-				personEndpoint = new URL("https://wasapp-t11.adeo.no/tpsws/Person_v1");
-				JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(personEndpoint, PersonPortType.class, "classpath:/wsdl/no/nav/tjeneste/virksomhet/person/v1/Person.wsdl");
-	            jaxwsClient.getFeatures().add(new TimingFeature(PersonPortType.class.getSimpleName()));
-	            return jaxwsClient;										
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return null;
-			}
-			//END
-            											
+    		JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(personEndpoint, PersonPortType.class, "classpath:/wsdl/no/nav/tjeneste/virksomhet/person/v1/Person.wsdl");
+            jaxwsClient.getFeatures().add(new TimingFeature(PersonPortType.class.getSimpleName()));
+            return jaxwsClient;																						
         }
 
         @Bean
