@@ -264,34 +264,34 @@ angular.module('nav.arbeidsforhold.controller', [])
                 id: '10',
                 name: '10%'},
             { id: '11',
-            name: '11%'},
-    {
-        id: '12',
-        name: '12%'},
-    {
-        id: '13',
-        name: '13%'},
-    {
-        id: '14',
-        name: '14%'},
-    {
-        id: '15',
-        name: '15%'},
-    {
-        id: '16',
-        name: '16%'},
-    {
-        id: '17',
-        name: '17%'},
-    {
-        id: '18',
-        name: '18%'},
-    {
-        id: '19',
-        name: '19%'},
-    {
-        id: '20',
-        name: '20%'},
+                name: '11%'},
+            {
+                id: '12',
+                name: '12%'},
+            {
+                id: '13',
+                name: '13%'},
+            {
+                id: '14',
+                name: '14%'},
+            {
+                id: '15',
+                name: '15%'},
+            {
+                id: '16',
+                name: '16%'},
+            {
+                id: '17',
+                name: '17%'},
+            {
+                id: '18',
+                name: '18%'},
+            {
+                id: '19',
+                name: '19%'},
+            {
+                id: '20',
+                name: '20%'},
             { id: '21',
                 name: '21%'},
             {
@@ -523,5 +523,13 @@ angular.module('nav.arbeidsforhold.controller', [])
                 name: '99%'},
             {
                 id: '100',
-                name: '100%'}];
-    })
+                name: '100%'}]
+
+
+
+
+
+          })
+
+
+
