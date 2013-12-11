@@ -1,12 +1,13 @@
 package no.nav.sbl.dialogarena.person;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.bind.annotation.XmlRootElement;
+
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 
 @XmlRootElement
 public class Person implements Serializable {
@@ -19,6 +20,7 @@ public class Person implements Serializable {
 	private static final String ADRESSERKEY = "adresser";
 	private static final String GJELDENDEADRESSETYPE = "gjeldendeAdresseType";
 	private static final String EPOSTKEY = "epost";
+	private static final String BARNKEY = "barn";
 
 	private Map<String, Object> fakta;
 
@@ -38,7 +40,19 @@ public class Person implements Serializable {
     	fakta.put(ADRESSERKEY, adresser);
     }
     
-    public void setEpost(Long soknadId, String epost) {
+    public Person(Long soknadId, String fnr, String fornavn,
+			String mellomnavn, String etternavn, List<Barn> barn) {
+    	fakta = new HashMap<>();
+    	
+    	fakta.put(FODSELSNUMMERKEY, genererFaktum(soknadId,FODSELSNUMMERKEY,fnr));
+    	fakta.put(FORNAVNKEY, genererFaktum(soknadId,FORNAVNKEY,fornavn));
+    	fakta.put(MELLOMNAVNKEY, genererFaktum(soknadId,MELLOMNAVNKEY,mellomnavn));
+    	fakta.put(ETTERNAVNKEY, genererFaktum(soknadId,ETTERNAVNKEY,etternavn));
+    	fakta.put(SAMMENSATTNAVNKEY, genererFaktum(soknadId, SAMMENSATTNAVNKEY, getSammenSattNavn(fornavn,mellomnavn, etternavn)));
+    	fakta.put(BARNKEY, barn);
+	}
+
+	public void setEpost(Long soknadId, String epost) {
     	fakta.put(EPOSTKEY, genererFaktum(soknadId, EPOSTKEY, epost));
     }
 
@@ -80,6 +94,7 @@ public class Person implements Serializable {
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	private boolean erUtenlandskFolkeregistrertAdresse() {
 		Object adresserobject = getFakta().get(ADRESSERKEY);
 		List<Adresse> adresser = (List<Adresse>) adresserobject;
@@ -102,4 +117,5 @@ public class Person implements Serializable {
 	private boolean ingenFaktumReturnert(Faktum faktum) {
 		return faktum == null;
 	}
+
 }
