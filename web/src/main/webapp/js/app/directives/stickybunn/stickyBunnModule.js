@@ -1,5 +1,5 @@
 angular.module('nav.stickybunn', [])
-    .directive('sistLagret', ['data', '$window', function (data, $window) {
+    .directive('sistLagret', ['data', '$window', '$timeout', function (data, $window, $timeout) {
         return {
             replace: true,
             templateUrl: '../js/app/directives/stickybunn/stickyBunnTemplate.html',
@@ -39,7 +39,9 @@ angular.module('nav.stickybunn', [])
                     }
                 }
 
-                settStickySistLagret();
+                $timeout(function() {
+                    settStickySistLagret();
+                });
             }
         }
     }]);
