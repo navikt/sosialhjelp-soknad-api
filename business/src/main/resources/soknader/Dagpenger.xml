@@ -169,6 +169,11 @@
         <panel>AndreYtelser</panel>
     </faktum>
 
+    <faktum>
+        <id>annetFaktum</id>
+        <type>java.lang.boolean</type>
+    </faktum>
+
 
     <vedlegg>
         <faktum>villigdeltid</faktum>
@@ -180,6 +185,12 @@
         <faktum>ikkeavtjentverneplikt</faktum>
         <onValue>false</onValue>
         <gosysId>NAV-123123</gosysId>
+    </vedlegg>
+
+    <vedlegg>
+        <faktum>annetfaktum</faktum>
+        <onValue>true</onValue>
+        <gosysId>L6</gosysId>
     </vedlegg>
 
 </soknad>
