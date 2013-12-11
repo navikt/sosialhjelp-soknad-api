@@ -152,6 +152,7 @@ function settEgendefinertFeilmeldingsverdi(form, feilmeldingskategori, feilmeldi
     var index = form.$error[feilmeldingskategori].indexByValue(feilmeldingsnavn);
     if (index > -1 && valid) {
         form.$error[feilmeldingskategori].splice(index, 1);
+        form.$setValidity(feilmeldingsnavn, valid);
     } else if (index == -1 && !valid) {
         form.$setValidity(feilmeldingsnavn, valid);
         leggTilFeilmeldingHvisDenIkkeFinnes(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene )
