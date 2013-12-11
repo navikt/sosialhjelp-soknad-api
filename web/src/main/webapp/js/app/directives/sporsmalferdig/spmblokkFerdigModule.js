@@ -30,26 +30,27 @@ angular.module('nav.sporsmalferdig', [])
                     scope.submitMethod();
 
                     if (form.$valid) {
+                        gaaTilTab(tab);
                         lukkTab(tab);
-                        gaaTilTab(nesteTab);
+                        apneTab(tab.next());
+
                     }
                 }
 
                 function gaaTilTab(nyTab) {
                     if (nyTab.length > 0) {
-                        apneTab(nyTab);
                         $timeout(function () {
-                            scrollToElement(nyTab, 100);
-                        }, 200);
+                            scrollToElement(nyTab, 0);
+                        }, 0);
                     }
                 }
 
                 function apneTab(apneTab) {
-                    scope.$emit("OPEN_TAB", [apneTab.attr('id')]);
+                    scope.$emit("OPEN_TAB", apneTab.attr('id'));
                 }
 
                 function lukkTab(lukkTab) {
-                    scope.$emit("CLOSE_TAB", [lukkTab.attr('id')]);
+                    scope.$emit("CLOSE_TAB", lukkTab.attr('id'));
                 }
             }
         }

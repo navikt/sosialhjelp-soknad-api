@@ -33,6 +33,8 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad.
 // marker alle metoder som transactional. Alle operasjoner vil skje i en
 // transactional write context. Read metoder kan overstyre dette om det trengs.
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
+
+
 public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
 		SoknadRepository {
 
