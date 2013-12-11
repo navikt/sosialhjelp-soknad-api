@@ -15,10 +15,11 @@
                     <div>{{ b.value.fodselsdato | date:'dd.MM.yyyy'}}</div>
                     <div class="barnbosted">
                         <span class="bosted">bosted: </span>
-                        <span>Norge</span>
+                        <span data-ng-show="!b.value.land">Norge</span>
+                        <span data-ng-bind="b.value.land"></span>
                     </div>
                     <div class="barnecheckbox" data-ng-controller="BarnetilleggFaktumCtrl">
-                        <input data-ng-model="barnetillegg.value.avsjekket" name="barnetilegg{{$index}}" id="barnetilegg{{$index}}" type="checkbox">
+                        <input data-ng-model="barnetillegg.value" name="barnetilegg{{$index}}" id="barnetilegg{{$index}}" type="checkbox" data-boolean-verdi>
                         <label for="barnetilegg{{$index}}" class="svar-alt" data-cmstekster="barnetillegg.barnetilegg.spormsal"></label>
                     </div>
                 </div>
@@ -89,9 +90,13 @@
                             <span class="melding"></span>
                         </label>
                     </div>
-                  
                     
-                     <div class="knapper-leggtil-barn">
+                    <div class="barnecheckbox">
+                        <input data-ng-model="nyttbarn.barnetillegg" name="barnetilleggnyttbarn" id="barnetilleggnyttbarn" type="checkbox" data-boolean-verdi>
+                        <label for="barnetilleggnyttbarn" class="svar-alt" data-cmstekster="barnetillegg.barnetilegg.spormsal"></label>
+                    </div>
+                     
+                    <div class="knapper-leggtil-barn">
                         <input class="knapp-hoved-liten" name="lagre" type="submit" data-cmstekster="barnetillegg.nyttbarn.lagre" data-ng-click="lagreBarn(nyttBarnForm);">
                         <a class="nyttbarn-avbryt" href data-cmstekster="barnetillegg.nyttbarn.avbryt"
                            data-ng-click="avbrytBarn()"></a>

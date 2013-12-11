@@ -10,6 +10,7 @@ angular.module('nav.barn',['app.services'])
                     "alder": undefined
                 }
         };
+        $scope.nyttbarn = {barnetillegg:false};
 
         $scope.formAapent = false;
 		$scope.barn = new BrukerData(barneData);
@@ -32,20 +33,46 @@ angular.module('nav.barn',['app.services'])
         	if (form.$valid) {
         		$scope.barn.value.alder = finnAlder();
         		$scope.barn.value.sammensattnavn = finnSammensattNavn();
-	        	$scope.barn.$create({soknadId: $scope.soknadData.soknadId}).then(function(data) {
-					$scope.barn = data;
-					$scope.barn.value = angular.fromJson(data.value);
-					if($scope.soknadData.fakta.barn && $scope.soknadData.fakta.barn.valuelist) {
-						$scope.soknadData.fakta.barn.valuelist.push($scope.barn);
-					} else {
-						$scope.soknadData.fakta.barn = {};
-						$scope.soknadData.fakta.barn.valuelist = [$scope.barn];
-
-					}
-					$scope.barn = new BrukerData(barneData);
-					$scope.formAapent = false;
-	    		});
+	        	
+	        	lagreBarnOgBarnetilleggFaktum();
         	}
+        }
+
+        function lagreBarnOgBarnetilleggFaktum() {
+			$scope.barn.$jsoncreate({soknadId: $scope.soknadData.soknadId}).then(function(barnData) {
+					$scope.barn = barnData;
+					$scope.barn.value = angular.fromJson(barnData.value);
+					
+					var barnetilleggsData = {
+			    		key: 'barnetillegg',
+			    		value: $scope.nyttbarn.barnetillegg,
+			    		parrentFaktum: barnData.faktumId
+    				};
+
+    				$scope.barnetillegg = new BrukerData(barnetilleggsData);
+    				$scope.barnetillegg.$create({soknadId: $scope.soknadData.soknadId}).then(function(data) {
+    						$scope.barnetillegg = data;
+
+    						if($scope.soknadData.fakta.barnetillegg && $scope.soknadData.fakta.barnetillegg.valuelist) {
+								$scope.soknadData.fakta.barnetillegg.valuelist.push($scope.barnetillegg);
+							} else {
+								$scope.soknadData.fakta.barnetillegg = {};
+								$scope.soknadData.fakta.barnetillegg.valuelist = [$scope.barnetillegg];
+							}
+
+							if($scope.soknadData.fakta.barn && $scope.soknadData.fakta.barn.valuelist) {
+								$scope.soknadData.fakta.barn.valuelist.push($scope.barn);
+							} else {
+								$scope.soknadData.fakta.barn = {};
+								$scope.soknadData.fakta.barn.valuelist = [$scope.barn];
+
+							}
+
+							$scope.barn = new BrukerData(barneData);
+							$scope.nyttbarn.barnetillegg = false;
+							$scope.formAapent = false;
+    				});
+	    		});
         }
 
         function finnSammensattNavn() {

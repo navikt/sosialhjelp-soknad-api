@@ -9,12 +9,19 @@ public class Faktum implements Serializable {
 	private Long faktumId;
 	private Long soknadId;
     private Long vedleggId;
+    private Long parrentFaktum;
 	private String key;
     private String value;
     private List<Faktum> valuelist;
     private String type;
     
-	public Faktum() {
+    public Faktum() {
+    	
+    }
+    
+	public Faktum(Long soknadId, Long faktumId, String key, String value, String type, Long parrentFaktum) {
+		this(soknadId, faktumId, key,value, type);
+		this.parrentFaktum = parrentFaktum;
     }
   
     public Faktum(Long soknadId, Long faktumId, String key, String value, String type) {
@@ -98,6 +105,14 @@ public class Faktum implements Serializable {
 
 	public Faktum cloneFaktum() {
 		return new Faktum(soknadId, key);
+	}
+
+	public Long getParrentFaktum() {
+		return parrentFaktum;
+	}
+
+	public void setParrentFaktum(Long parrentFaktum) {
+		this.parrentFaktum = parrentFaktum;
 	}
 
 }
