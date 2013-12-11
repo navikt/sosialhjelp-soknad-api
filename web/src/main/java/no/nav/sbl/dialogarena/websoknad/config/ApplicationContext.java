@@ -40,22 +40,19 @@ public class ApplicationContext {
     @Value("${dialogarena.navnolink.url}")
     private String navigasjonslink;
 
-
-
-    //TODO Når FASIT funker må dette fikses
-
-
-    @Value("{$dokumentinnsending.smtpServer.port}")
-    private String smtpServerPort;
-            //= "25";
-
     @Value("${dokumentinnsending.smtpServer.host}")
     private String smtpServerHost;
-            //= "smtp.test.local";
+    //= "smtp.test.local";
+
+   // @Value("{$dokumentinnsending.smtpServer.port}")
+    private int smtpServerPort;
+           //= "25";
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
+        PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
+        propertySourcesPlaceholderConfigurer.setLocalOverride(true);
+        return propertySourcesPlaceholderConfigurer;
     }
 
     @Bean
@@ -69,10 +66,10 @@ public class ApplicationContext {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setDefaultEncoding("UTF-8");
         javaMailSender.setHost(smtpServerHost);
-        javaMailSender.setPort(Integer.parseInt(smtpServerPort));
+        javaMailSender.setPort(smtpServerPort);
         return javaMailSender;
     }
-    
+
     @Bean
     public String navigasjonslink() {
         return navigasjonslink;

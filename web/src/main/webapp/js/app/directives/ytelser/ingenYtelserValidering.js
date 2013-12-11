@@ -6,7 +6,7 @@ angular.module('nav.ingenytelser', [])
                 var eventString = 'RUN_VALIDATION' + ctrl[0].$name;
 
                 scope.$on(eventString, function () {
-                    fadeBakgrunnsfarge(element, element.find('.ingen-ytelse-melding'), 'feil');
+                    fadeBakgrunnsfarge(element, element.find('.ingen-ytelse-melding'), 'feil', scope);
                 })
 
                 scope.$watch(function () {
@@ -15,7 +15,7 @@ angular.module('nav.ingenytelser', [])
                     if (scope.ytelser.skalViseFeilmeldingForIngenYtelser) {
                         element.addClass('feil');
                     } else {
-                        fadeBakgrunnsfarge(element, element.find('.ingen-ytelse-melding'), 'feil');
+                        fadeBakgrunnsfarge(element, element.find('.ingen-ytelse-melding'), 'feil', scope);
                     }
                 });
             }
