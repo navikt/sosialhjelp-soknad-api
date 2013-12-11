@@ -4,8 +4,6 @@ angular.module('app.services', ['ngResource'])
 
     .config(function ($httpProvider) {
         $httpProvider.responseInterceptors.push('resetTimeoutInterceptor');
-        $httpProvider.defaults.headers.common['Accept'] = 'application/json';
-        $httpProvider.defaults.headers.post['Accept'] = 'application/json';
     })
 
     .factory('resetTimeoutInterceptor', function () {
@@ -33,11 +31,32 @@ angular.module('app.services', ['ngResource'])
         );
     })
 
+    /**
+    * Service for å lagre brukerdata
+    */
+    .factory('BrukerData', function($resource) {
+         var url = '/sendsoknad/rest/soknad/:soknadId/faktum' + '?rand=' + new Date().getTime();
+         return $resource(url,
+         {soknadId: '@soknadId'},
+         {
+            create: { method: 'POST', params: {}},
+            jsoncreate: { method: 'POST', params: {}, transformRequest: function(data, headersGetter) {
+                var d = deepClone(data);
+                d.value = JSON.stringify(data.value);
+                d = JSON.stringify(d);
+                return d;
+                }
+            }
+         }
+
+         )
+     })
+
 /**
  * Service som behandler vedlegg
  */
     .factory('vedleggService', function ($resource) {
-        return $resource('/sendsoknad/rest/soknad/:soknadId/faktum/:faktumId/vedlegg/:vedleggId/:action?rand=' + new Date().getTime(),
+        return $resource('/sendsoknad/rest/soknad/:soknadId/faktum/:faktumId/vedlegg/:vedleggId/:action',
             {
                 soknadId: '@soknadId',
                 faktumId: '@faktumId',
@@ -49,6 +68,27 @@ angular.module('app.services', ['ngResource'])
                 remove: {method: 'POST', params: {action: 'delete'}}
             }
         );
+    })
+    /**
+     * Service som behandler vedlegg
+     */
+    .factory('VedleggForventning', function ($resource) {
+        return $resource('/sendsoknad/rest/soknad/:soknadId/forventning?rand=' + new Date().getTime(), {
+            soknadId: '@faktum.soknadId'
+        }, {
+            slettVedlegg: {
+                url: '/sendsoknad/rest/soknad/:soknadId/faktum/:faktumId/vedlegg/:vedleggId/delete',
+                method: 'POST',
+                params: {
+                    faktumId: '@faktum.faktumId',
+                    vedleggId: '@faktum.vedleggId'
+                }
+            },
+            endreValg: {
+                url: '/sendsoknad/rest/soknad/:soknadId/forventning/valg',
+                method: 'POST'
+            }
+        });
     })
 
     .factory('forsettSenereService', function ($resource) {

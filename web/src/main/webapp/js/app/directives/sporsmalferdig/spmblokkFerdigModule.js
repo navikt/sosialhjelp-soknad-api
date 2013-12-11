@@ -13,8 +13,12 @@ angular.module('nav.sporsmalferdig', [])
                 var tab = element.closest('.accordion-group');
                 var nesteTab = tab.next();
 
+                scope.hvisIRedigeringsmodus = function () {
+                    return scope.modus;
+                }
+
                 scope.hvisIOppsummeringsmodus = function () {
-                    return !scope.modus;
+                    return !scope.hvisIRedigeringsmodus();
                 }
 
                 scope.gaTilRedigeringsmodus = function () {
@@ -26,17 +30,18 @@ angular.module('nav.sporsmalferdig', [])
                     scope.submitMethod();
 
                     if (form.$valid) {
+                        gaaTilTab(tab);
                         lukkTab(tab);
-                        gaaTilTab(nesteTab);
+                        apneTab(tab.next());
+
                     }
                 }
 
                 function gaaTilTab(nyTab) {
                     if (nyTab.length > 0) {
-                        apneTab(nyTab);
                         $timeout(function () {
-                            scrollToElement(nyTab);
-                        }, 200);
+                            scrollToElement(nyTab, 0);
+                        }, 0);
                     }
                 }
 

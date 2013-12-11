@@ -31,6 +31,12 @@
             <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
         </dependency>
 
+		<dependency>
+			<groupId>no.nav.tjenester.fim</groupId>
+			<artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
+			<classifier>jaxws</classifier>
+		</dependency>
+
          <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>aktorid-jaxws</artifactId>
@@ -169,6 +175,10 @@
         	<groupId>org.apache.commons</groupId>
         	<artifactId>commons-lang3</artifactId>
         </dependency>
+        <dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
     </dependencies>
     <build>
         <plugins>

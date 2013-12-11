@@ -17,6 +17,9 @@ public class Vedlegg {
 
     private byte[] data;
 
+    public Vedlegg() {
+    }
+
     public Vedlegg(Long vedleggId, Long soknadId, Long faktumId, String navn, Long storrelse, Integer antallSider, byte[] data) {
         this.id = vedleggId;
         this.soknadId = soknadId;

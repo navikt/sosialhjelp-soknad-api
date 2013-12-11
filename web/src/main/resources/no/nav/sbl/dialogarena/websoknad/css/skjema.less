@@ -25,33 +25,6 @@
     }
 }
 
-.sticky-bunn {
-    text-align: center;
-    margin-bottom: 40px;
-    text-transform: uppercase;
-
-    &.stick {
-        margin-bottom: 0;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 15px;
-        background: #f1f1f1;
-        border-top: 1px solid #dcdcdc;
-        z-index: 1035;
-        box-shadow: 0 0 10px #ccc;
-    }
-
-    a {
-        margin-right: 10px;
-    }
-
-    a, span {
-        font-size: 0.85rem;
-    }
-}
-
 .helsemessige-arsaker {
     [data-avtextarea], [navtextarea] {
         width: 100%;
@@ -87,7 +60,6 @@
     }
 
     a[class*="knapp-"] {
-        margin-top: 40px;
         margin-bottom: 40px;
     }
 }
@@ -159,6 +131,74 @@
     text-align: center;
 }
 
+.barn {
+	border-top: 1px solid #ddd;
+    padding-top: 30px;
+    margin-top: 30px;
+
+	.barnealder {
+		display: inline-block;
+	    height: 100%;
+	    width: 50px;
+	    vertical-align: top;
+	    text-align: center;
+	    	
+		.alder {
+		    font-size: 3rem;
+		    font-weight: 800;
+		    font-family: Arial;
+		    position: relative;
+		    top: -6px;
+		}
+		
+		span {
+			display:block;
+		}
+	}
+	
+	.barnecheckbox {
+		margin-top: 20px;
+	}
+	
+	.barneinfo {
+		display: inline-block;
+		font-weight: 600;
+		font-family: Modus, Arial;
+		
+		div:not(.barnbosted) {
+			font-size: 1.2rem;
+		}
+		
+		.barnbosted {
+			span {
+				&.bosted {
+					text-transform: uppercase;
+					font-weight: 400;
+					font-size: 0.95rem;
+				}
+				
+			}
+		}
+	}
+	
+	&.gutt {
+		.barnealder {
+			color: #0ca9e1 !important;
+			span {
+				 color: #0ca9e1 !important;
+			}
+		}
+	}
+	&.jente {
+		.barnealder {
+			color: #ec288d !important;
+			span {
+				  color: #ec288d !important;
+			}
+		}
+	}
+}
+
 .nav-checkbox {
     .ekstra-spm-boks {
         margin-left: 32px;
@@ -174,6 +214,10 @@
 .ingen-ytelse-melding {
   display: none;
 }
-.ytelser-nei {
+.utdanning-annet-melding {
+    display: none;
+}
+.annetvalg-nei {
     margin-top: 20px;
 }
+
