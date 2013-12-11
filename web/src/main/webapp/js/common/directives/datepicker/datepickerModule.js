@@ -236,11 +236,14 @@ angular.module('nav.datepicker', [])
                 var datoMaskFormat = attrs.datoMask;
 
                 var paddingLeft = element.css('padding-left');
-                paddingLeft = paddingLeft.substring(0, paddingLeft.length - 2);
+                paddingLeft = parseInt(paddingLeft.substring(0, paddingLeft.length - 2));
+                var paddingRight = element.css('padding-right');
+                paddingRight = parseInt(paddingRight.substring(0, paddingRight.length - 2));
+
                 var caretPosElem = element.closest('.datepicker').find('.caretPosition');
                 var maskElement = element.next();
                 var originalLeft = element.position().left + parseInt(paddingLeft);
-                var top = element.position().top + 7
+                var top = element.position().top + 5
                 var left = originalLeft;
                 maskElement.css({top: top + "px", left: left + "px"});
                 maskElement.text(datoMaskFormat);
@@ -312,11 +315,23 @@ angular.module('nav.datepicker', [])
                         }
 
                         caretPosElem.text(tekst);
-                        left = originalLeft + caretPosElem.outerWidth();
-                        maskElement.css({top: top + "px", left: left + "px"});
                         maskElement.text(datoMaskFormat.substring(tekst.length, datoMaskFormat.length));
+
+                        setElementPositions();
                     }
                 )
+
+                function setElementPositions() {
+                    var textWidth = caretPosElem.outerWidth();
+                    left = originalLeft + textWidth;
+
+                    maskElement.css({top: top + "px", left: left + "px"});
+                    var maskWidth = maskElement.outerWidth();
+                    var width = textWidth + maskWidth + paddingRight + paddingLeft;
+                    element.css({width: width + "px"});
+                    punktum.css({left: left + maskWidth + "px"});
+                }
+                setElementPositions();
             }
         }
     }]);
