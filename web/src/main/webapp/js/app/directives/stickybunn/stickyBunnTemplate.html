@@ -1,21 +1,20 @@
 <div>
     <div class="sticky-bunn">
-        <ul class="liste-vannrett">
-            <li>
-                <a href="#/fortsettsenere/{{ soknadId }}" data-cmstekster="fortsettSenere"></a>
-            </li>
-            <li>
-                <a href="#/avbryt/{{ soknadId }}" data-cmstekster="avbryt.soknad"></a>
-            </li>
-
-            <li>
+        <div>
             <span data-ng-if="soknadHarBlittLagret()">
                 <span data-cmstekster="sistLagret.lagret"/>
                 <span>
                     {{ hentSistLagretTid() | date:'short' }}
                 </span>
             </span>
-                <span data-cmstekster="sistLagret.aldriLagret" data-ng-if="soknadHarAldriBlittLagret()"/>
+            <span data-cmstekster="sistLagret.aldriLagret" data-ng-if="soknadHarAldriBlittLagret()"/>
+        </div>
+        <ul class="liste-vannrett">
+            <li>
+                <a href="#/fortsettsenere/{{ soknadId }}" data-cmstekster="fortsettSenere"></a>
+            </li>
+            <li>
+                <a href="#/avbryt/{{ soknadId }}" data-cmstekster="avbryt.soknad"></a>
             </li>
         </ul>
     </div>
