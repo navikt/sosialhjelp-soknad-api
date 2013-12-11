@@ -138,6 +138,7 @@ angular.module('nav.utdanning',[])
             $scope.utdanning.skalViseFeilmeldingForIngenUtdanning = false;
             settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, false, true);
         } else {
+            $scope.utdanning.skalViseFeilmeldingForIngenUtdanning = true;
             settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, true, true);
         }
     }
