@@ -5,85 +5,17 @@
         <div class="rad soknad" data-sidetittel="sidetittel.skjema">
             <section class="sak-hel">
                 <div class="panel-standard-belyst skjema">
+
                     <div data-accordion data-close-others="false">
-                        <div data-accordion-group class="spm-blokk" id="reell-arbeidssoker">
+                        <div data-accordion-group data-ng-repeat="gruppe in grupper" class="spm-blokk" id="{{gruppe.id}}" data-is-open="gruppe.apen">
                             <div data-accordion-heading>
                                 <div class="flipp">
                                     <span>+</span>
                                 </div>
-                                <h2 class="stor" data-cmstekster="reellarbeidssoker.tittel"></h2>
+                                <h2 class="stor" data-cmstekster="{{gruppe.tittel}}"></h2>
                             </div>
-                            <div data-div data-ng-include data-src="'../html/templates/reell-arbeidssoker.html'"></div>
+                            <div data-div data-ng-include="gruppe.template"></div>
                         </div>
-
-                        <div data-accordion-group class="spm-blokk" id="arbeidsforhold">
-                            <div data-accordion-heading>
-                                <div class="flipp">
-                                    <span>+</span>
-                                </div>
-                                <h2 class="stor" data-cmstekster="arbeidsforhold.tittel"></h2>
-                            </div>
-                            <div data-div data-ng-include data-src="'../html/templates/arbeidsforhold.html'"></div>
-                        </div>
-
-                        <div data-accordion-group class="spm-blokk" id="egen-naering">
-                            <div data-accordion-heading>
-                                <div class="flipp">
-                                    <span>+</span>
-                                </div>
-                                <h2 class="stor" data-cmstekster="ikkeegennaering.tittel"></h2>
-                            </div>
-                            <div data-ng-include data-src="'../html/templates/egen-naering.html'"></div>
-                        </div>
-
-                        <div data-accordion-group class="spm-blokk" id="verneplikt">
-                            <div data-accordion-heading>
-                                <div class="flipp">
-                                    <span>+</span>
-                                </div>
-                                <h2 class="stor" data-cmstekster="ikkeavtjentverneplikt.tittel"></h2>
-                            </div>
-                            <div data-ng-include data-src="'../html/templates/verneplikt.html'"></div>
-                        </div>
-
-                        <div data-accordion-group class="spm-blokk" id="utdanning">
-                            <div data-accordion-heading>
-                                <div class="flipp">
-                                    <span>+</span>
-                                </div>
-                                <h2 class="stor" data-cmstekster="utdanning.tittel"></h2>
-                            </div>
-                            <div data-ng-include data-src="'../html/templates/utdanning.html'"></div>
-                        </div>
-
-                        <div data-accordion-group class="spm-blokk" id="ytelser">
-                            <div data-accordion-heading>
-                                <div class="flipp">
-                                    <span>+</span>
-                                </div>
-                                <h2 class="stor" data-cmstekster="ytelser.tittel"></h2>
-                            </div>
-                            <div data-ng-include data-src="'../html/templates/ytelser.html'"></div>
-                        </div>
-
-                        <div data-accordion-group class="spm-blokk" id="personalia">
-                            <div data-accordion-heading>
-                                <div class="flipp">
-                                    <span>+</span>
-                                </div>
-                                <h2 class="stor" data-cmstekster="personalia.tittel"></h2>
-                            </div>
-                            <div data-ng-include data-src="'../html/templates/personalia.html'"></div>
-                        </div>
-                        <div accordion-group class="spm-blokk" id="barnetillegg">
-		                    <div accordion-heading>
-		                        <div class="flipp">
-		                            <span>+</span>
-		                        </div>
-		                        <h2 class="stor" data-cmstekster="barnetillegg.tittel"/>
-		                    </div>
-		                    <div data-ng-include src="'../html/templates/barnetillegg.html'"/>
-                </div>
                     </div>
                 </div>
             </section>
