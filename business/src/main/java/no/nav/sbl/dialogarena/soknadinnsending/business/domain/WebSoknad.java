@@ -7,6 +7,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
+
+import java.sql.Timestamp;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,9 +28,24 @@ public class WebSoknad implements Serializable {
     private SoknadInnsendingStatus status;
 	private String aktoerId;
 	private DateTime opprettetDato;
+	private DateTime sistLagret;
     private DelstegStatus delstegStatus;
+
     private static final List<String> LIST_FAKTUM = Arrays.asList("barn", "barnetillegg");
     
+
+    public Long getSistLagret() {
+        if (sistLagret != null) {
+            return sistLagret.getMillis();
+        } else {
+            return null;
+        }
+    }
+
+    public void setSistLagret(DateTime sistLagret) {
+        this.sistLagret = sistLagret;
+    }
+
     public DelstegStatus getDelstegStatus() {
         return delstegStatus;
     }
@@ -122,6 +140,16 @@ public class WebSoknad implements Serializable {
 		this.opprettetDato = opprettetDato;
 		return this;
 	}
+
+    public WebSoknad sistLagret(Timestamp sistLagret) {
+        if (sistLagret != null) {
+            this.sistLagret = new DateTime(sistLagret.getTime());
+        } else {
+            this.sistLagret = null;
+        }
+
+        return this;
+    }
 
 	public Long getOpprettetDato() {
 		return opprettetDato.getMillis();
