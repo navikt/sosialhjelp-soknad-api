@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Faktum implements Serializable {
     public enum Status {
@@ -19,13 +20,22 @@ public class Faktum implements Serializable {
     private Long faktumId;
     private Long soknadId;
     private Long vedleggId;
+    private Long parrentFaktum;
     private Status innsendingsvalg;
     private String key;
     private String value;
+    private List<Faktum> valuelist;
     private String type;
 
+    
     public Faktum() {
+    	
     }
+    
+	public Faktum(Long soknadId, Long faktumId, String key, String value, String type, Long parrentFaktum) {
+		this(soknadId, faktumId, key,value, type);
+		this.parrentFaktum = parrentFaktum;
+	}
 
     public Faktum(Long soknadId, Long faktumId, String key, String value, String type) {
         this(soknadId, faktumId, key, value);
@@ -39,7 +49,12 @@ public class Faktum implements Serializable {
         this.value = value;
     }
 
-    public Long getFaktumId() {
+    public Faktum(Long soknadId, String key) {
+		this.soknadId = soknadId;
+		this.key = key;
+	}
+
+	public Long getFaktumId() {
         return faktumId;
     }
 
@@ -103,5 +118,25 @@ public class Faktum implements Serializable {
         return "Faktum [soknadId=" + soknadId + ", key=" + key + ", value="
                 + value + ", type=" + type + "]";
     }
+
+	public List<Faktum> getValuelist() {
+		return valuelist;
+	}
+
+	public void setValuelist(List<Faktum> valueList) {
+		this.valuelist = valueList;
+	}
+
+	public Faktum cloneFaktum() {
+		return new Faktum(soknadId, key);
+	}
+
+	public Long getParrentFaktum() {
+		return parrentFaktum;
+	}
+
+	public void setParrentFaktum(Long parrentFaktum) {
+		this.parrentFaktum = parrentFaktum;
+	}
 
 }

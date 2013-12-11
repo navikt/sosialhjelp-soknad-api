@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
 import no.nav.modig.cache.CacheConfig;
+import no.nav.sbl.dialogarena.person.FamilieRelasjonServiceTPS;
 import no.nav.sbl.dialogarena.person.PersonServiceTPS;
 import no.nav.sbl.dialogarena.soknadinnsending.business.BusinessConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadInnsendingDBConfig;
@@ -80,8 +81,13 @@ public class ApplicationContext {
     }
 
     @Bean
-    public PersonServiceTPS personService() {
+    public PersonServiceTPS personServiceTPS() {
         return new PersonServiceTPS();
+    }
+    
+    @Bean
+    public FamilieRelasjonServiceTPS familieReleasjonService() {
+        return new FamilieRelasjonServiceTPS();
     }
 
     @Bean
