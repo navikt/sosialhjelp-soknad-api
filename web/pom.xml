@@ -37,6 +37,11 @@
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
         </dependency>
+         <dependency>
+			<groupId>no.nav.tjenester.fim</groupId>
+			<artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
+			<classifier>jaxws</classifier>
+		</dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
@@ -322,6 +327,10 @@
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>common-jetty</artifactId>
             <scope>test</scope>
+        </dependency>
+         <dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>common-test</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
