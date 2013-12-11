@@ -249,3 +249,8 @@ function settFokusTilNesteElement(inputElement) {
     var fokuserbareElementer = $('input, a, select, button, textarea').filter(':visible');
     fokuserbareElementer.eq(fokuserbareElementer.index(inputElement) + 1).focus();
 }
+
+function settFokusTilForrigeElement(inputElement) {
+    var fokuserbareElementer = $('input, a, select, button, textarea').filter(':visible');
+    fokuserbareElementer.eq(fokuserbareElementer.index(inputElement) - 1).focus();
+}

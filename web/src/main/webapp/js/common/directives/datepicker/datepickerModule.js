@@ -268,11 +268,13 @@ angular.module('nav.datepicker', [])
                 element.bind('keydown', function(event) {
                     if (event.keyCode == 32) {
                         return false;
+                    } else if (event.keyCode == 37 && caretPosisjon(element) == 0) {
+                        settFokusTilForrigeElement(element);
+                        return false;
+                    } else if (datoMaskFormat.length < 4 && event.keyCode == 39 && ngModel.$viewValue.length == datoMaskFormat.length && caretPosisjon(element) == datoMaskFormat.length) {
+                        settFokusTilNesteElement(element);
+                        return false;
                     }
-
-//                    if ((event.keyCode == 37 || event.keyCode == 39) && ngModel.$viewValue.length == datoMaskFormat.length && caretPosisjon(element)) {
-//                        ;
-//                    }
                 });
 
                 ngModel.$parsers.unshift(function (inputVerdi) {
