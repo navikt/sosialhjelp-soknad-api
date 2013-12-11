@@ -11,14 +11,14 @@ angular.module('nav.ingenytelser', [])
                 })
 
                 scope.$watch(function () {
-                   // console.log("Ytelser2");
+                     console.log("Ytelser2");
                     return scope.ytelser.skalViseFeilmeldingForIngenYtelser;
                 }, function () {
                     if (scope.ytelser.skalViseFeilmeldingForIngenYtelser) {
-                     //   console.log("Ytelser3");
+                       console.log("Ytelser3");
                         element.addClass('feil');
                     } else {
-                       // console.log("Ytelser4");
+                       console.log("Ytelser4");
                         fadeBakgrunnsfarge(element, element.find('.ingen-ytelse-melding'), 'feil', scope);
                     }
                 });

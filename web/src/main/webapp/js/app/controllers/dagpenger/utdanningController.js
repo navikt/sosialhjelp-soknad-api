@@ -22,6 +22,7 @@ angular.module('nav.utdanning',[])
         $scope.runValidation();
 
         $scope.$on('VALIDER_UTDANNING', function (scope, form) {
+            console.log("VALIDER_UTDANNING");
             $scope.validerUtdanning(form, false);
         });
 
@@ -134,7 +135,6 @@ angular.module('nav.utdanning',[])
         var utdanningNokler = nokler.slice(0, nokler.length - 1);
         var harIkkeValgtUtdanning = ! $scope.erCheckboxerAvhuket(utdanningNokler);
         if (harIkkeValgtUtdanning) {
-            $scope.soknadData.fakta.underUtdanningAnnet.value = 'false';
             $scope.utdanning.skalViseFeilmeldingForIngenUtdanning = false;
             settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, false, true);
         } else {
@@ -157,10 +157,10 @@ angular.module('nav.utdanning',[])
 //            $scope.soknadData.fakta.underUtdanningAnnet.value = 'false';
             $scope.utdanning.skalViseFeilmeldingForIngenUtdanning = true;
             if (erCheckboksForUtdanningAnnetHuketAv) {
-                //console.log("Checkbox er huket av, og annen utdanning skal settes lik false her" +  $scope.soknadData.fakta.underUtdanningAnnet.value);
+                console.log("Checkbox er huket av, og annen utdanning skal settes lik false her" +  $scope.soknadData.fakta.underUtdanningAnnet.value);
                 form.$setValidity(minstEnCheckboksErAvhuketFeilmeldingNavn, true);
                 settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, true, true);
-                //console.log("Annen utdanning skal settes lik false her" +  $scope.soknadData.fakta.underUtdanningAnnet.value);
+                console.log("Annen utdanning skal settes lik false her" +  $scope.soknadData.fakta.underUtdanningAnnet.value);
             }
         }
         }
