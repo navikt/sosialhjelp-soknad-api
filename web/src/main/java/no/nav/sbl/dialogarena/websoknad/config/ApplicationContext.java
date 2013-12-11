@@ -44,7 +44,8 @@ public class ApplicationContext {
     //= "smtp.test.local";
 
    // @Value("{$dokumentinnsending.smtpServer.port}")
-    private String smtpServerPort = "25";
+    private int smtpServerPort;
+           //= "25";
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
@@ -64,7 +65,7 @@ public class ApplicationContext {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setDefaultEncoding("UTF-8");
         javaMailSender.setHost(smtpServerHost);
-        javaMailSender.setPort(Integer.parseInt(smtpServerPort));
+        javaMailSender.setPort(smtpServerPort);
         return javaMailSender;
     }
 

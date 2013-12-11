@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.websoknad.servlet;
 import no.nav.sbl.dialogarena.soknadinnsending.VedleggFeil;
 import no.nav.sbl.dialogarena.soknadinnsending.VedleggOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.exception.OpplastingException;
 import no.nav.sbl.dialogarena.soknadinnsending.exception.UgyldigOpplastingTypeException;
@@ -46,9 +47,9 @@ public class VedleggController {
     private static final List<String> LEGAL_CONTENT_TYPES = Arrays.asList("application/pdf", "image/png", "image/jpeg");
     @Inject
     private VedleggService vedleggService;
-    //TODO:ubrukt?
-    //@Inject
-    //private SoknadService soknadService;
+
+    @Inject
+    private SoknadService soknadService;
 
     @RequestMapping(value = "", method = RequestMethod.POST, produces = "text/html; charset=utf-8")
     @ResponseBody()

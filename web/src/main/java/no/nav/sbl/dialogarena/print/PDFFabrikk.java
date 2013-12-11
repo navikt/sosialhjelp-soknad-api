@@ -70,7 +70,7 @@ public class PDFFabrikk {
         File f = new File(baseurl);
         String baseUrlString = baseurl;
         if (f.exists()) {
-            baseurl = f.toURI().toURL().toString();
+            baseUrlString = f.toURI().toURL().toString();
         }
         return baseUrlString;
     }
