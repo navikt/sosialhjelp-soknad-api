@@ -74,9 +74,8 @@ function checkFalse(element) {
     return element.toString() == 'false';
 }
 
-function scrollToElement(element) {
+function scrollToElement(element, offset) {
     var animationSpeed = 200;
-    var offset = 100;
     var scrollPos = Math.max(element.offset().top - offset, 0);
     $('body, html').scrollToPos(scrollPos, animationSpeed);
 }
@@ -150,7 +149,6 @@ function settEgendefinertFeilmeldingsverdi(form, feilmeldingskategori, feilmeldi
     if (form.$error[feilmeldingskategori] === undefined) {
         form.$error[feilmeldingskategori] = [];
     }
-
     var index = form.$error[feilmeldingskategori].indexByValue(feilmeldingsnavn);
     if (index > -1 && valid) {
         form.$error[feilmeldingskategori].splice(index, 1);
@@ -175,7 +173,7 @@ function stringContainsNotCaseSensitive(str, query) {
     }
 })(jQuery);
 
-function fadeBakgrunnsfarge(element, melding, feilmeldingsklasse) {
+function fadeBakgrunnsfarge(element, melding, feilmeldingsklasse, scope) {
     var backgroundColour = [254, 230, 230].join(',') + ',';
     var borderColour = [252, 162, 146].join(',') + ',';
     var meldingColour = [195, 0, 0].join(',') + ',';
@@ -190,6 +188,7 @@ function fadeBakgrunnsfarge(element, melding, feilmeldingsklasse) {
             element.removeAttr('style');
             melding.removeAttr('style');
             clearInterval(timeout);
+            scope.$apply();
         }
     }, 20);
 }

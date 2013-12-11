@@ -1,4 +1,3 @@
-
 //Trukket ut fra angular-ui sin bootstrap-modul
 
 angular.module('nav.accordion', [])
@@ -11,15 +10,15 @@ angular.module('nav.accordion', [])
  *   - As a function, it represents a function to be called that will cause the transition to occur.
  * @return {Promise}  A promise that is resolved when the transition finishes.
  */
-    .factory('$transition', ['$q', '$timeout', '$rootScope', function($q, $timeout, $rootScope) {
+    .factory('$transition', ['$q', '$timeout', '$rootScope', function ($q, $timeout, $rootScope) {
 
-        var $transition = function(element, trigger, options) {
+        var $transition = function (element, trigger, options) {
             options = options || {};
             var deferred = $q.defer();
             var endEventName = $transition[options.animation ? "animationEndEventName" : "transitionEndEventName"];
 
-            var transitionEndHandler = function(event) {
-                $rootScope.$apply(function() {
+            var transitionEndHandler = function (event) {
+                $rootScope.$apply(function () {
                     element.unbind(endEventName, transitionEndHandler);
                     deferred.resolve(element);
                 });
@@ -30,16 +29,16 @@ angular.module('nav.accordion', [])
             }
 
             // Wrap in a timeout to allow the browser time to update the DOM before the transition is to occur
-            $timeout(function() {
-                if ( angular.isString(trigger) ) {
+            $timeout(function () {
+                if (angular.isString(trigger)) {
                     element.addClass(trigger);
-                } else if ( angular.isFunction(trigger) ) {
+                } else if (angular.isFunction(trigger)) {
                     trigger(element);
-                } else if ( angular.isObject(trigger) ) {
+                } else if (angular.isObject(trigger)) {
                     element.css(trigger);
                 }
                 //If browser does not support transitions, instantly resolve
-                if ( !endEventName ) {
+                if (!endEventName) {
                     deferred.resolve(element);
                 }
             });
@@ -47,8 +46,8 @@ angular.module('nav.accordion', [])
             // Add our custom cancel function to the promise that is returned
             // We can call this if we are about to run a new transition, which we know will prevent this transition from ending,
             // i.e. it will therefore never raise a transitionEnd event for that transition
-            deferred.promise.cancel = function() {
-                if ( endEventName ) {
+            deferred.promise.cancel = function () {
+                if (endEventName) {
                     element.unbind(endEventName, transitionEndHandler);
                 }
                 deferred.reject('Transition cancelled');
@@ -71,26 +70,28 @@ angular.module('nav.accordion', [])
             'OTransition': 'oAnimationEnd',
             'transition': 'animationend'
         };
+
         function findEndEventName(endEventNames) {
-            for (var name in endEventNames){
+            for (var name in endEventNames) {
                 if (transElement.style[name] !== undefined) {
                     return endEventNames[name];
                 }
             }
         }
+
         $transition.transitionEndEventName = findEndEventName(transitionEndEventNames);
         $transition.animationEndEventName = findEndEventName(animationEndEventNames);
         return $transition;
     }])
 
 // The collapsible directive indicates a block of html that will expand and collapse
-    .directive('collapse', ['$transition', function($transition) {
+    .directive('collapse', ['$transition', function ($transition) {
         // CSS transitions don't work with height: auto, so we have to manually change the height to a
         // specific value and then once the animation completes, we can reset the height to auto.
         // Unfortunately if you do this while the CSS transitions are specified (i.e. in the CSS class
         // "collapse") then you trigger a change to height 0 in between.
         // The fix is to remove the "collapse" CSS class while changing the height back to auto - phew!
-        var fixUpHeight = function(scope, element, height) {
+        var fixUpHeight = function (scope, element, height) {
             // We remove the collapse CSS class to prevent a transition when we change to height: auto
             element.removeClass('collapse');
             element.css({ height: height });
@@ -101,12 +102,12 @@ angular.module('nav.accordion', [])
         };
 
         return {
-            link: function(scope, element, attrs) {
+            link: function (scope, element, attrs) {
 
                 var isCollapsed;
                 var initialAnimSkip = true;
 
-                scope.$watch(attrs.collapse, function(value) {
+                scope.$watch(attrs.collapse, function (value) {
                     if (value) {
                         collapse();
                     } else {
@@ -116,31 +117,35 @@ angular.module('nav.accordion', [])
 
 
                 var currentTransition;
-                var doTransition = function(change) {
-                    if ( currentTransition ) {
+                var doTransition = function (change) {
+                    if (currentTransition) {
                         currentTransition.cancel();
                     }
-                    currentTransition = $transition(element,change);
+                    currentTransition = $transition(element, change);
                     currentTransition.then(
-                        function() { currentTransition = undefined; },
-                        function() { currentTransition = undefined; }
+                        function () {
+                            currentTransition = undefined;
+                        },
+                        function () {
+                            currentTransition = undefined;
+                        }
                     );
                     return currentTransition;
                 };
 
-                var expand = function() {
+                var expand = function () {
                     if (initialAnimSkip) {
                         initialAnimSkip = false;
-                        if ( !isCollapsed ) {
+                        if (!isCollapsed) {
                             fixUpHeight(scope, element, 'auto');
                             element.addClass('in');
                         }
                     } else {
-                        doTransition({ height : element[0].scrollHeight + 'px' })
-                            .then(function() {
+                        doTransition({ height: element[0].scrollHeight + 'px' })
+                            .then(function () {
                                 // This check ensures that we don't accidentally update the height if the user has closed
                                 // the group while the animation was still running
-                                if ( !isCollapsed ) {
+                                if (!isCollapsed) {
                                     fixUpHeight(scope, element, 'auto');
                                     element.addClass('in');
                                 }
@@ -149,7 +154,7 @@ angular.module('nav.accordion', [])
                     isCollapsed = false;
                 };
 
-                var collapse = function() {
+                var collapse = function () {
                     isCollapsed = true;
                     element.removeClass('in');
                     if (initialAnimSkip) {
@@ -157,7 +162,7 @@ angular.module('nav.accordion', [])
                         fixUpHeight(scope, element, 0);
                     } else {
                         fixUpHeight(scope, element, element[0].scrollHeight + 'px');
-                        doTransition({'height':'0'});
+                        doTransition({'height': '0'});
                     }
                 };
             }
@@ -166,20 +171,18 @@ angular.module('nav.accordion', [])
     .constant('accordionConfig', {
         closeOthers: true
     })
+
     .controller('AccordionController', ['$scope', '$attrs', 'accordionConfig', function ($scope, $attrs, accordionConfig) {
 
         // This array keeps track of the accordion groups
         this.groups = [];
 
-        // Keep reference to user's scope to properly assign `is-open`
-        this.scope = $scope;
-
         // Ensure that all the groups in this accordion are closed, unless close-others explicitly says not to
-        this.closeOthers = function(openGroup) {
+        this.closeOthers = function (openGroup) {
             var closeOthers = angular.isDefined($attrs.closeOthers) ? $scope.$eval($attrs.closeOthers) : accordionConfig.closeOthers;
-            if ( closeOthers ) {
+            if (closeOthers) {
                 angular.forEach(this.groups, function (group) {
-                    if ( group !== openGroup ) {
+                    if (group !== openGroup) {
                         group.isOpen = false;
                     }
                 });
@@ -187,7 +190,7 @@ angular.module('nav.accordion', [])
         };
 
         // This is called from the accordion-group directive to add itself to the accordion
-        this.addGroup = function(groupScope) {
+        this.addGroup = function (groupScope) {
             var that = this;
             this.groups.push(groupScope);
 
@@ -197,41 +200,21 @@ angular.module('nav.accordion', [])
         };
 
         // This is called from the accordion-group directive when to remove itself
-        this.removeGroup = function(group) {
+        this.removeGroup = function (group) {
             var index = this.groups.indexOf(group);
-            if ( index !== -1 ) {
+            if (index !== -1) {
                 this.groups.splice(this.groups.indexOf(group), 1);
             }
         };
 
-        // TODO: Dette må vi flytte ut!
-        // Lagt til for å kunne åpne en tab når vi vil
-        // accordion-group-elementet må ha en ID som sendes med eventen
-        var grupper = this.groups;
-        $scope.$on("OPEN_TAB", function (e, id) {
-            angular.forEach(grupper, function (group) {
-                if (group.id === id) {
-                    group.isOpen = true;
-                }
-            });
-        });
-
-        // Lagt til for å kunne lukke en tab når vi vil
-        $scope.$on("CLOSE_TAB", function (e, id) {
-            angular.forEach(grupper, function (group) {
-                if (group.id === id) {
-                    group.isOpen = false;
-                }
-            });
-        });
     }])
 
 // The accordion directive simply sets up the directive controller
 // and adds an accordion CSS class to itself element.
     .directive('accordion', function () {
         return {
-            restrict:'EA',
-            controller:'AccordionController',
+            restrict: 'EA',
+            controller: 'AccordionController',
             transclude: true,
             replace: false,
             templateUrl: '../js/common/directives/accordion/accordionTemplate.html'
@@ -239,44 +222,41 @@ angular.module('nav.accordion', [])
     })
 
 // The accordion-group directive indicates a block of html that will expand and collapse in an accordion
-    .directive('accordionGroup', ['$parse', '$transition', '$timeout', function($parse, $transition, $timeout) {
+    .directive('accordionGroup', ['$parse', function ($parse) {
         return {
-            require:'^accordion',         // We need this directive to be inside an accordion
-            restrict:'EA',
-            transclude:true,              // It transcludes the contents of the directive into the template
+            require: '^accordion',         // We need this directive to be inside an accordion
+            restrict: 'EA',
+            transclude: true,              // It transcludes the contents of the directive into the template
             replace: true,                // The element containing the directive will be replaced with the template
-            templateUrl:'../js/common/directives/accordion/accordionGroupTemplate.html',
-            scope:{ heading:'@' },        // Create an isolated scope and interpolate the heading attribute onto this scope
-            controller: ['$scope', function($scope) {
-                this.setHeading = function(element) {
+            templateUrl: '../js/common/directives/accordion/accordionGroupTemplate.html',
+            scope: { heading: '@' },        // Create an isolated scope and interpolate the heading attribute onto this scope
+            controller: function () {
+                this.setHeading = function (element) {
                     this.heading = element;
                 };
-            }],
-            link: function(scope, element, attrs, accordionCtrl) {
+            },
+            link: function (scope, element, attrs, accordionCtrl) {
                 var getIsOpen, setIsOpen;
 
                 accordionCtrl.addGroup(scope);
 
-                // Lagt til for å kunne vite hvilken tab som skal lukkes.
-                scope.id = attrs.id;
-
                 scope.isOpen = false;
 
-                if ( attrs.isOpen ) {
+                if (attrs.isOpen) {
                     getIsOpen = $parse(attrs.isOpen);
                     setIsOpen = getIsOpen.assign;
 
-                    accordionCtrl.scope.$watch(getIsOpen, function(value) {
+                    scope.$parent.$watch(getIsOpen, function (value) {
                         scope.isOpen = !!value;
                     });
                 }
 
-                scope.$watch('isOpen', function(value) {
-                    if ( value ) {
+                scope.$watch('isOpen', function (value) {
+                    if (value) {
                         accordionCtrl.closeOthers(scope);
                     }
-                    if ( setIsOpen ) {
-                        setIsOpen(accordionCtrl.scope, value);
+                    if (setIsOpen) {
+                        setIsOpen(scope.$parent, value);
                     }
                 });
             }
@@ -287,19 +267,20 @@ angular.module('nav.accordion', [])
 // <accordion-group>
 //   <accordion-heading>Heading containing HTML - <img src="..."></accordion-heading>
 // </accordion-group>
-    .directive('accordionHeading', function() {
+    .directive('accordionHeading', function () {
         return {
             restrict: 'EA',
             transclude: true,   // Grab the contents to be used as the heading
             template: '',       // In effect remove this element!
             replace: true,
             require: '^accordionGroup',
-            compile: function(element, attr, transclude) {
+            compile: function (element, attr, transclude) {
                 return function link(scope, element, attr, accordionGroupCtrl) {
                     // Pass the heading to the accordion-group controller
                     // so that it can be transcluded into the right place in the template
                     // [The second parameter to transclude causes the elements to be cloned so that they work in ng-repeat]
-                    accordionGroupCtrl.setHeading(transclude(scope, function() {}));
+                    accordionGroupCtrl.setHeading(transclude(scope, function () {
+                    }));
                 };
             }
         };
@@ -311,12 +292,14 @@ angular.module('nav.accordion', [])
 //   <div class="accordion-heading" ><a ... accordion-transclude="heading">...</a></div>
 //   ...
 // </div>
-    .directive('accordionTransclude', function() {
+    .directive('accordionTransclude', function () {
         return {
             require: '^accordionGroup',
-            link: function(scope, element, attr, controller) {
-                scope.$watch(function() { return controller[attr.accordionTransclude]; }, function(heading) {
-                    if ( heading ) {
+            link: function (scope, element, attr, controller) {
+                scope.$watch(function () {
+                    return controller[attr.accordionTransclude];
+                }, function (heading) {
+                    if (heading) {
                         element.html('');
                         element.append(heading);
                     }
@@ -324,3 +307,4 @@ angular.module('nav.accordion', [])
             }
         };
     });
+

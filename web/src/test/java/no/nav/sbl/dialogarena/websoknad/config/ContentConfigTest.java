@@ -27,7 +27,7 @@ public class ContentConfigTest {
 	    @Bean
 	    public ValueRetriever siteContentRetriever() throws URISyntaxException {
 	        Map<String, List<URI>> uris = new HashMap<>();
-	        uris.put(DEFAULT_LOCALE, new ArrayList());
+	        uris.put(DEFAULT_LOCALE, new ArrayList<URI>());
 	        //uris.put(DEFAULT_LOCALE, Arrays.asList(new URI(cmsBaseUrl + INNHOLDSTEKSTER_NB_NO_REMOTE), new URI(cmsBaseUrl + SBL_WEBKOMPONENTER_NB_NO_REMOTE),  new URI(cmsBaseUrl + SBL_SKJEMABESKRIVELSER_NB_NO_REMOTE)));
 
 	        return new ValuesFromContentWithResourceBundleFallback(
