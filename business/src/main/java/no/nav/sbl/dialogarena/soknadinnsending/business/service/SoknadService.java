@@ -12,13 +12,18 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventning;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -27,7 +32,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static java.lang.String.format;
+import static javax.xml.bind.JAXBContext.newInstance;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.LastetOpp;
 
 
 @Component
@@ -52,14 +60,15 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum) {
         Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, faktum.getFaktumId(), faktum.getKey(), faktum.getValue(), BRUKERREGISTRERT_FAKTUM));
+        repository.settSistLagretTidspunkt(soknadId);
         return repository.hentFaktum(soknadId, faktumId);
     }
 
     @Override
     public Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value) {
-    	Faktum faktum = repository.hentSystemFaktum(soknadId, key, SYSTEMREGISTRERT_FAKTUM);
-    	Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, faktum.getFaktumId(), key, value, SYSTEMREGISTRERT_FAKTUM));
-    	return repository.hentFaktum(soknadId, faktumId);
+        Faktum faktum = repository.hentSystemFaktum(soknadId, key, SYSTEMREGISTRERT_FAKTUM);
+        Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, faktum.getFaktumId(), key, value, SYSTEMREGISTRERT_FAKTUM));
+        return repository.hentFaktum(soknadId, faktumId);
     }
 
 
@@ -78,6 +87,11 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public void avbrytSoknad(Long soknadId) {
         //TODO: Refaktorerer. Trenger bare å sende id
         repository.avbryt(soknadId);
+    }
+
+    @Override
+    public void endreInnsendingsvalg(Long soknadId, Faktum faktum) {
+        repository.endreInnsendingsValg(soknadId, faktum.getFaktumId(), faktum.getInnsendingsvalg());
     }
 
     public Long startSoknad(String navSoknadId) {
@@ -114,7 +128,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
             }
             bytes = new PdfWatermarker().applyOn(bytes, SubjectHandler.getSubjectHandler().getUid());
             return vedleggRepository.lagreVedlegg(vedlegg, bytes);
-        } catch (Throwable e) {
+        } catch (Exception e) {
 
             throw new RuntimeException("Kunne ikke lagre vedlegg: " + e, e);
         }
@@ -168,5 +182,34 @@ public class SoknadService implements SendSoknadService, VedleggService {
         Long opplastetDokument = vedleggRepository.lagreVedlegg(vedlegg, doc);
         vedleggRepository.knyttVedleggTilFaktum(soknadId, faktumId, opplastetDokument);
         return opplastetDokument;
+    }
+
+    @Override
+    public List<VedleggForventning> hentPaakrevdeVedlegg(Long soknadId) {
+        List<VedleggForventning> forventninger = new ArrayList<>();
+        WebSoknad webSoknad = hentSoknad(soknadId);
+        SoknadStruktur struktur = hentStruktur(webSoknad.getGosysId());
+
+        for (Faktum faktum : webSoknad.getFakta().values()) {
+            SoknadVedlegg soknadVedlegg = struktur.vedleggFor(faktum.getKey());
+            if (soknadVedlegg != null && soknadVedlegg.trengerVedlegg(faktum.getValue())) {
+                Vedlegg vedlegg = faktum.getInnsendingsvalg().er(LastetOpp) ? vedleggRepository.hentVedlegg(soknadId, faktum.getVedleggId()) : null;
+                forventninger.add(new VedleggForventning(faktum, vedlegg, soknadVedlegg.getGosysId()));
+            }
+        }
+
+        return forventninger;
+    }
+
+    private SoknadStruktur hentStruktur(String skjema) {
+        String type = skjema + ".xml";
+        try {
+            Unmarshaller unmarshaller = newInstance(SoknadStruktur.class).createUnmarshaller();
+            return (SoknadStruktur) unmarshaller.unmarshal(SoknadStruktur.class
+                    .getResourceAsStream(format("/soknader/%s", type)));
+        } catch (JAXBException e) {
+            throw new RuntimeException("Kunne ikke laste definisjoner. ", e);
+        }
+
     }
 }

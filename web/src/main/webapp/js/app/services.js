@@ -4,6 +4,8 @@ angular.module('app.services', ['ngResource'])
 
     .config(function ($httpProvider) {
         $httpProvider.responseInterceptors.push('resetTimeoutInterceptor');
+        $httpProvider.defaults.headers.common['Accept'] = 'application/json';
+        $httpProvider.defaults.headers.post['Accept'] = 'application/json';
     })
 
     .factory('resetTimeoutInterceptor', function () {
@@ -35,7 +37,7 @@ angular.module('app.services', ['ngResource'])
  * Service som behandler vedlegg
  */
     .factory('vedleggService', function ($resource) {
-        return $resource('/sendsoknad/rest/soknad/:soknadId/faktum/:faktumId/vedlegg/:vedleggId/:action',
+        return $resource('/sendsoknad/rest/soknad/:soknadId/faktum/:faktumId/vedlegg/:vedleggId/:action?rand=' + new Date().getTime(),
             {
                 soknadId: '@soknadId',
                 faktumId: '@faktumId',
@@ -47,6 +49,27 @@ angular.module('app.services', ['ngResource'])
                 remove: {method: 'POST', params: {action: 'delete'}}
             }
         );
+    })
+    /**
+     * Service som behandler vedlegg
+     */
+    .factory('VedleggForventning', function ($resource) {
+        return $resource('/sendsoknad/rest/soknad/:soknadId/forventning?rand=' + new Date().getTime(), {
+            soknadId: '@faktum.soknadId'
+        }, {
+            slettVedlegg: {
+                url: '/sendsoknad/rest/soknad/:soknadId/faktum/:faktumId/vedlegg/:vedleggId/delete',
+                method: 'POST',
+                params: {
+                    faktumId: '@faktum.faktumId',
+                    vedleggId: '@faktum.vedleggId'
+                }
+            },
+            endreValg: {
+                url: '/sendsoknad/rest/soknad/:soknadId/forventning/valg',
+                method: 'POST'
+            }
+        });
     })
 
     .factory('forsettSenereService', function ($resource) {

@@ -22,7 +22,7 @@ module.exports = function (config) {
             '../../../main/webapp/js/lib/angular-resource.js',
             '../../../main/webapp/js/lib/angular-sanitize.js',
             '../../../main/webapp/js/lib/bindonce.js',
-            '../../../main/webapp/js/lib/ui-bootstrap-0.6.0.js',
+            '../../../main/webapp/js/lib/ui-bootstrap-tpls-0.7.0.js',
             '../../../main/webapp/js/app/*.js',
             '../../../main/webapp/js/app/directives/**/*.js',
             '../../../main/webapp/js/app/controllers/**/*.js',
