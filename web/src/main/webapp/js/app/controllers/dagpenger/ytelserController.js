@@ -62,7 +62,7 @@ angular.module('nav.ytelser', [])
             } else {
                 if (erCheckboksForIngenYtelseHuketAv) {
                     form.$setValidity(minstEnCheckboksErAvhuketFeilmeldingNavn, true);
-                    settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, true, true);
+                     settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, true, true);
                 }
                 $scope.$emit(lagreSoknadData, {key: 'ingenYtelse', value: erCheckboksForIngenYtelseHuketAv});
             }
@@ -85,4 +85,5 @@ angular.module('nav.ytelser', [])
             }
             return minstEnCheckboksErAvhuket;
         }
-    }]);
+
+}]);

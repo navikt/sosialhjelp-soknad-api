@@ -47,6 +47,7 @@ public class VedleggController {
     private static final List<String> LEGAL_CONTENT_TYPES = Arrays.asList("application/pdf", "image/png", "image/jpeg");
     @Inject
     private VedleggService vedleggService;
+
     @Inject
     private SoknadService soknadService;
 
@@ -139,8 +140,6 @@ public class VedleggController {
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     public VedleggFeil handterFeilType(UgyldigOpplastingTypeException ex) {
         LOG.warn("Feilet opplasting med: " + ex, ex);
-        System.out.println("feil: " + ex);
-
         return new VedleggFeil(ex.getId());
     }
 
