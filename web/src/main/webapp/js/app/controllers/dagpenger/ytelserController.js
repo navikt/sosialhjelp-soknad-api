@@ -10,6 +10,7 @@ angular.module('nav.ytelser', [])
         var nokler = ['ventelonn', 'stonadFisker', 'offentligTjenestepensjon', 'privatTjenestepensjon', 'vartpenger', 'dagpengerEOS', 'annenYtelse', 'ingenYtelse' ];
 
         $scope.$on('VALIDER_YTELSER', function (scope, form) {
+            console.log("validerYtelser");
             $scope.validerYtelser(form, false);
         });
 
