@@ -170,7 +170,7 @@
     </faktum>
 
     <faktum>
-        <id>annetFaktum</id>
+        <id>ekstraVedlegg</id>
         <type>java.lang.boolean</type>
     </faktum>
 
@@ -188,7 +188,7 @@
     </vedlegg>
 
     <vedlegg>
-        <faktum>annetfaktum</faktum>
+        <faktum>ekstraVedlegg</faktum>
         <onValue>true</onValue>
         <gosysId>L6</gosysId>
     </vedlegg>
