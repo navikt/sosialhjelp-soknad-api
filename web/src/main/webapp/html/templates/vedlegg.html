@@ -5,14 +5,15 @@
         <div class="begrensning sak-totredel">
             <section class="panel-standard oversikt">
                 <h1 class="stor-ikon-vedlegg-strek" data-cmstekster="vedlegg.tittel"></h1>
+
                 <p class="info" data-cmstekster="vedlegg.info"></p>
             </section>
         </div>
     </div>
     <section data-ng-controller="VedleggCtrl">
-        <div data-accordion data-close-others="false">
-            <section data-ng-repeat="forventning in forventninger" class="vedlegg" data-ng-form id="faktum_{{forventning.faktum.id}}">
-                <div data-accordion-group class="spm-blokk" data-is-open="!lastetOpp(forventning)">
+        <div data-accordion data-close-others="false" data-ng-if="forventninger != null">
+            <section class="vedlegg" data-ng-form>
+                <div data-accordion-group data-ng-repeat="forventning in forventninger" class="spm-blokk" data-is-open="!forventning.faktum.vedleggId" id="faktum_{{forventning.faktum.id}}">
                     <div data-accordion-heading>
                         <div class="flipp">
                             <span>+</span>
@@ -27,32 +28,38 @@
                     <div data-div class="skjemaramme begrensning sak-halv">
                         <div class="panel-standard">
                             <h4 data-cmstekster="vedlegg.faktum.maabekrefte"></h4>
+
                             <p class="info-liste" data-cmshtml="{{soknadData.gosysId}}.vedlegg.{{forventning.gosysId}}.bekrefte"></p>
+
                             <div class="spm-knapper send-valg" data-ng-if="!lastetOpp(forventning)">
 
-                                <input id="{{$index}}sendInnFraPcRadio" data-ng-model="forventning.faktum.innsendingsvalg" type="radio" value="VedleggKreves" data-ng-change="endreInnsendingsvalg(forventning)">
+                                <input id="{{$index}}sendInnFraPcRadio" data-ng-model="forventning.faktum.innsendingsvalg" type="radio" value="VedleggKreves"
+                                       data-ng-change="endreInnsendingsvalg(forventning)">
                                 <label for="{{$index}}sendInnFraPcRadio" data-cmstekster="vedlegg.faktum.lastopp"></label>
 
                                 <div class="valgbokser" data-ng-if="forventning.faktum.innsendingsvalg == 'VedleggKreves'">
                                     <a class="valgboks-mobil" data-ng-href="#/opplasting/{{ soknadData.soknadId }}/{{forventning.faktum.faktumId}}">
                                         <span data-cmstekster="vedlegg.faktum.lastopp.mobil"></span>
                                     </a>
-                                    <a class="valgboks-pc" data-ng-href="#/opplasting/{{ soknadData.soknadId }}/{{forventning.faktum.faktumId}}" >
+                                    <a class="valgboks-pc" data-ng-href="#/opplasting/{{ soknadData.soknadId }}/{{forventning.faktum.faktumId}}">
                                         <span data-cmstekster="vedlegg.faktum.lastopp.dennepc"></span>
                                     </a>
                                 </div>
 
-                                <input id="{{$index}}ettersendRadio" data-ng-model="forventning.faktum.innsendingsvalg" type="radio" value="SendesSenere" data-ng-change="endreInnsendingsvalg(forventning)">
+                                <input id="{{$index}}ettersendRadio" data-ng-model="forventning.faktum.innsendingsvalg" type="radio" value="SendesSenere"
+                                       data-ng-change="endreInnsendingsvalg(forventning)">
                                 <label for="{{$index}}ettersendRadio" data-cmstekster="vedlegg.faktum.ettersend"></label>
 
-                                <input id="{{$index}}ikkesendRadio" data-ng-model="forventning.faktum.innsendingsvalg" type="radio" value="SendesIkke" data-ng-change="endreInnsendingsvalg(forventning)">
+                                <input id="{{$index}}ikkesendRadio" data-ng-model="forventning.faktum.innsendingsvalg" type="radio" value="SendesIkke"
+                                       data-ng-change="endreInnsendingsvalg(forventning)">
                                 <label for="{{$index}}ikkesendRadio" data-cmstekster="vedlegg.faktum.ikkesend"></label>
                             </div>
                             <div data-ng-if="lastetOpp(forventning)">
                                 <div class="forhandsvisning">
                                     <div data-bildenavigering data-vedlegg="forventning.vedlegg" data-nav-template="bildenavigeringTemplateLiten.html"></div>
                                     <div class="knapper">
-                                        <a data-ng-href="../rest/soknad/{{soknadData.soknadId}}/faktum/{{forventning.faktum.faktumId}}/vedlegg/{{forventning.faktum.vedleggId}}/data" data-cmstekster="vedlegg.lastned"></a>
+                                        <a data-ng-href="../rest/soknad/{{soknadData.soknadId}}/faktum/{{forventning.faktum.faktumId}}/vedlegg/{{forventning.faktum.vedleggId}}/data"
+                                           data-cmstekster="vedlegg.lastned"></a>
                                         <a data-cmstekster="vedlegg.slett" data-ng-click="slettVedlegg(forventning)" data-cmshtml="vedlegg.slettvedlegg"></a>
                                     </div>
                                 </div>
