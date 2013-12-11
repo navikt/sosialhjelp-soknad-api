@@ -131,9 +131,9 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
 					selectNextSequenceValue("SOKNAD_BRUKER_DATA_ID_SEQ"),
 					Long.class);
 			getJdbcTemplate()
-					.update("insert into soknadbrukerdata (soknadbrukerdata_id, soknad_id, key, value, type, sistendret) values (?, ?, ?, ?, ?, sysdate)",
+					.update("insert into soknadbrukerdata (soknadbrukerdata_id, soknad_id, key, value, type, parrent_faktum, sistendret) values (?, ?, ?, ?, ?,?, sysdate)",
 							dbNokkel, soknadId, faktum.getKey(),
-							faktum.getValue(), faktum.getType());
+							faktum.getValue(), faktum.getType(), faktum.getParrentFaktum());
 			
 			utfyllingStartet(soknadId);
 			return dbNokkel;
@@ -205,7 +205,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
 			Faktum faktum = new Faktum(rs.getLong("soknad_id"),
 					rs.getLong("soknadbrukerdata_id"),
 					rs.getString("key"), rs.getString("value"),
-					rs.getString("type"));
+					rs.getString("type"), rs.getLong("parrent_faktum"));
 			faktum.setVedleggId(rs.getLong("vedlegg_id"));
 			return faktum;
 		}
