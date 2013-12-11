@@ -16,7 +16,6 @@ angular.module('app.directives', [
 	'nav.hjelpetekst',
 	'nav.datepicker',
 	'nav.prosent',
-	'nav.ingenytelser',
 	'nav.sidetittel',
     'nav.bildenavigering',
     'nav.utdanningannet'
