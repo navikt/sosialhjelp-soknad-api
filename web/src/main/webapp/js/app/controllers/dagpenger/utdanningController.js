@@ -25,7 +25,7 @@ angular.module('nav.utdanning',[])
             $scope.validerUtdanning(form, false);
         });
 
-
+    }
         $scope.hvisIkkeUnderUtdanning = function () {
             if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
                 return $scope.soknadData.fakta.utdanning.value == 'ikkeUtdanning';
@@ -163,7 +163,7 @@ angular.module('nav.utdanning',[])
                 console.log("Annen utdanning skal settes lik false her" +  $scope.soknadData.fakta.underUtdanningAnnet.value);
             }
         }
-        }}
+        }
 
 
     $scope.utdanningsprosent = [{
