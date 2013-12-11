@@ -8,7 +8,8 @@ angular.module('nav.dagpenger', [])
             {id: 'verneplikt', tittel: 'ikkeavtjentverneplikt.tittel', template: '../html/templates/verneplikt.html', apen: false},
             {id: 'utdanning', tittel: 'utdanning.tittel', template: '../html/templates/utdanning.html', apen: false},
             {id: 'ytelser', tittel: 'ytelser.tittel', template: '../html/templates/ytelser.html', apen: false},
-            {id: 'personalia', tittel: 'personalia.tittel', template: '../html/templates/personalia.html', apen: false}
+            {id: 'personalia', tittel: 'personalia.tittel', template: '../html/templates/personalia.html', apen: false},
+            {id: 'barnetillegg', tittel: 'barnetillegg.tittel', template: '../html/templates/barnetillegg.html', apen: false}
         ]
 
         $scope.validerDagpenger = function (form) {
@@ -31,23 +32,31 @@ angular.module('nav.dagpenger', [])
                 }
             }, 400);
         };
-        $scope.$on("OPEN_TAB", function (e, ider, timeout) {
-            $timeout(function () {
-                endreAccordionVisning(true, ider)
-            }, timeout);
+
+
+
+        $scope.$on("OPEN_TAB", function (e, ider) {
+            settApenStatusForAccordion(true, ider);
         });
 
-        $scope.$on("CLOSE_TAB", function (e, ider, timeout) {
-            $timeout(function () {
-                endreAccordionVisning(false, ider)
-            }, timeout);
+        $scope.$on("CLOSE_TAB", function (e, ider) {
+            settApenStatusForAccordion(false, ider);
         });
 
-        function endreAccordionVisning(skalApne, ider) {
-            angular.forEach($scope.grupper, function (group) {
-                if (ider.contains(group.id)) {
-                    group.apen = skalApne;
-                }
-            });
+        function settApenStatusForAccordion(apen, ider) {
+            if (ider instanceof Array) {
+                angular.forEach(ider, function (id) {
+                    settApenForId(apen, id);
+                });
+            } else {
+                settApenForId(apen, ider);
+            }
+        }
+
+        function settApenForId(apen, id) {
+            var idx = $scope.grupper.indexByValue(id);
+            if (idx > -1) {
+                $scope.grupper[idx].apen = apen;
+            }
         }
     }])
