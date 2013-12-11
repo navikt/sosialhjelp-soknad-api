@@ -2,7 +2,7 @@
     <div data-ng-form="utdanningForm" class="skjemainnhold" data-ng-controller="UtdanningCtrl" data-novalidate>
         <div data-form-errors></div>
         <div class="spm form-linje boolean">
-            <h4 class="spm-sporsmal" data-cmstekster="utdanning.sporsmal"></h4>
+
 
 
 
@@ -30,7 +30,7 @@
 
                 <div class="spm" data-ng-if="hvisUnderUtdanning() && hvisIRedigeringsmodus()" modus="data.redigeringsModus">
 
-
+                    <p cmstekster="utdanning.sporsmal"></p>
                     <div data-label="utdanning.svar.under.utdanning.kveld" data-navcheckbox id="underUtdanningKveld" data-modus="data.redigeringsModus" data-ng-model ="soknadData.fakta.underUtdanningKveld.value" data-inputname="underUtdanningKveld" data-endret="endreUtdanning(utdanningForm)"/>
 
 
