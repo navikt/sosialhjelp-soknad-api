@@ -1,7 +1,7 @@
 angular.module('nav.textarea', [])
     .directive('navtextarea', [function () {
         var linker = function(scope,element, attrs){
-            if(scope.attr("obligatorisk")) {
+            if(scope.attr("obligatorisk", true)) {
                 return '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html';
             } else {                
                 return '../js/common/directives/navtextarea/navtextareaTemplate.html';
@@ -12,6 +12,7 @@ angular.module('nav.textarea', [])
             require: 'ngModel',
             scope: {
                 model: '=ngModel',
+                modus: '=',
                 nokkel: '@',
                 maxlengde: '@',
                 inputname: '@',
@@ -31,6 +32,18 @@ angular.module('nav.textarea', [])
 
                 var tmpElementName = 'tmpName';
                 fiksNavn(element, scope.inputname, tmpElementName);
+
+                scope.hvisIRedigeringsmodus = function () {
+                    return scope.modus;
+                }
+
+                scope.hvisIOppsummeringsmodus = function () {
+                    return !scope.hvisIRedigeringsmodus();
+                }
+
+                scope.hvisSynlig = function () {
+                    return element.is(':visible');
+                }
             },
             templateUrl: linker
         };
