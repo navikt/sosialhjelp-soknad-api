@@ -225,7 +225,8 @@ public class StandardKodeverk implements Kodeverk {
         return "Unable to load class " + StandardKodeverk.class.getName() +", error creating JAXB context for " + XMLKodeverk.class.getName() + ": " + e.getMessage();
     }
 
-    private XMLKodeverk readFromDump(String dumpName) {
+    @SuppressWarnings("unchecked")
+	private XMLKodeverk readFromDump(String dumpName) {
         for (File dumpFile : dumpDirectory.map(fileExists(), appendPathname(dumpName + ".xml"))) {
             LOG.info("Leser dump fra fil '{}'", dumpFile);
             try {

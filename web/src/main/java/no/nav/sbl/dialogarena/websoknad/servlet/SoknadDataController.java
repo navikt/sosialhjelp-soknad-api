@@ -8,8 +8,11 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStr
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.websoknad.service.HenvendelseConnector;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +34,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  * Klassen håndterer alle rest kall for å hente grunnlagsdata til applikasjonen.
  */
 @Controller
+@ControllerAdvice()
 @RequestMapping("/soknad")
 public class SoknadDataController {
 
@@ -65,17 +69,18 @@ public class SoknadDataController {
 
     @RequestMapping(value = "{soknadId}/forventning", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
-    public List<VedleggForventning> hentPaakrevdeVedlegg(@PathVariable final Long soknadId) {
+    public List<VedleggForventning> hentPaakrevdeVedlegg(
+            @PathVariable final Long soknadId) {
         return vedleggService.hentPaakrevdeVedlegg(soknadId);
     }
 
     @RequestMapping(value = "{soknadId}/forventning/valg", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseBody()
     @ResponseStatus(HttpStatus.OK)
-    public void endreValg(@PathVariable final Long soknadId, @RequestBody VedleggForventning forventning) {
+    public void endreValg(@PathVariable final Long soknadId,
+            @RequestBody VedleggForventning forventning) {
         soknadService.endreInnsendingsvalg(soknadId, forventning.getFaktum());
     }
-
 
     @RequestMapping(value = "/send/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody()
@@ -86,7 +91,7 @@ public class SoknadDataController {
     @RequestMapping(value = "/lagre/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody()
     public void lagreSoknad(@PathVariable Long soknadId,
-                            @RequestBody WebSoknad webSoknad) {
+            @RequestBody WebSoknad webSoknad) {
         for (Faktum faktum : webSoknad.getFakta().values()) {
             soknadService.lagreSoknadsFelt(soknadId, faktum);
         }
@@ -94,7 +99,8 @@ public class SoknadDataController {
 
     @RequestMapping(value = "/{soknadId}/faktum", method = RequestMethod.POST)
     @ResponseBody()
-    public Faktum lagreFaktum(@PathVariable Long soknadId, @RequestBody Faktum faktum) {
+    public Faktum lagreFaktum(@PathVariable Long soknadId,
+            @RequestBody Faktum faktum) {
         return soknadService.lagreSoknadsFelt(soknadId, faktum);
     }
 

@@ -16,6 +16,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventnin
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
+
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+
 import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -36,7 +38,6 @@ import static java.lang.String.format;
 import static javax.xml.bind.JAXBContext.newInstance;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.LastetOpp;
-
 
 @Component
 public class SoknadService implements SendSoknadService, VedleggService {
@@ -59,8 +60,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum) {
-        Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, faktum.getFaktumId(), faktum.getKey(), faktum.getValue(), BRUKERREGISTRERT_FAKTUM));
+        Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, faktum.getFaktumId(), faktum.getKey(), faktum.getValue(), BRUKERREGISTRERT_FAKTUM, faktum.getParrentFaktum()));
         repository.settSistLagretTidspunkt(soknadId);
+
         return repository.hentFaktum(soknadId, faktumId);
     }
 
@@ -128,7 +130,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
             }
             bytes = new PdfWatermarker().applyOn(bytes, SubjectHandler.getSubjectHandler().getUid());
             return vedleggRepository.lagreVedlegg(vedlegg, bytes);
-        } catch (Throwable e) {
+        } catch (Exception e) {
 
             throw new RuntimeException("Kunne ikke lagre vedlegg: " + e, e);
         }

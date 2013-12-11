@@ -422,10 +422,6 @@ form-linje.feil {
 
 .form-linje {
     padding: 15px;
-    a {
-        padding-left: 29px;
-        white-space: nowrap;
-    }
 
     &.checkbox.feilstyling .form-linje, .form-linje {
         padding: 0px;
@@ -450,12 +446,18 @@ form-linje.feil {
                 display: block;
                 margin-bottom: 10px;
             }
+
+            .utdanning-annet-melding {
+                display: block;
+                margin-bottom: 10px;
+            }
             &.aktiv-feilmelding.tekstfelt input  {
                 border: 1px solid #c30000;
                 background-color: #FAD6D6;
             }
             .melding {
               color: #A00404;
+
             }
         }
     }
@@ -577,3 +579,35 @@ form, [ng-form], [data-ng-form] {
     color: #3e3832;
 }
 
+.sticky-bunn {
+    text-align: center;
+    margin-bottom: 40px;
+
+    &.stick {
+        margin-bottom: 0;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 10px;
+        background: #f1f1f1;
+        border-top: 1px solid #dcdcdc;
+        z-index: 1035;
+        box-shadow: 0 0 10px #ccc;
+    }
+
+
+
+    span {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+    }
+
+    .liste-vannrett li {
+        margin-top: 5px;
+
+        a {
+            font-size: 0.85rem;
+        }
+    }
+}
