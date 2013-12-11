@@ -41,8 +41,10 @@ angular.module('nav.stickyFeilmelding', [])
                         idAlleBolker.push(this.id);
                     });
 
-                    scope.$broadcast('OPEN_TAB', idBolkerMedFeil, 800);
-                    scope.$broadcast('CLOSE_TAB', idAlleBolker, 0);
+                    scope.$broadcast('CLOSE_TAB', idAlleBolker);
+                    $timeout(function() {
+                        scope.$broadcast('OPEN_TAB', idBolkerMedFeil, 800);
+                    }, 800);
                 });
 
                 scope.forrige = function () {
@@ -171,7 +173,7 @@ angular.module('nav.stickyFeilmelding', [])
                 }
 
                 function apneBolk(bolk) {
-                    scope.$broadcast('OPEN_TAB', [$(bolk[scope.feil.navaerende]).closest('.accordion-group').attr('id')], 0);
+                    scope.$broadcast('OPEN_TAB', $(bolk[scope.feil.navaerende]).closest('.accordion-group').attr('id'));
                 }
             }
         }

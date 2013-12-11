@@ -31,13 +31,13 @@
         </div>
 
         <div data-ng-controller="BarneCtrl">
-            <div id="legg-til" data-ng-show="hvisIRedigeringsmodus()">
+            <div id="legg-til-barn" data-ng-show="hvisIRedigeringsmodus()">
                 <a href class="knapp-leggtil-liten" data-ng-click="nyttBarn()" data-cmstekster="barnetillegg.nyttbarn"></a>
             </div>
 
-            <div data-ng-if="formAapent == true"data-ng-form="nyttBarnForm">
+            <div data-ng-if="formAapent == true" data-ng-form="nyttBarnForm" class="vertikal">
                 <div data-form-errors></div>
-                    <div class="barn-spm">
+                    <div class="barn-spm spm-boks">
                    
                     <div class="form-linje">
                         <label>
