@@ -101,6 +101,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 });
 
                 function sjekkOmFeltetErRequired() {
+//                    return element[0].hasOwnProperty("required");
                     return element[0].hasAttribute("required");
                 }
 
