@@ -99,9 +99,16 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
 	    }
 
 	    private int oppdaterBrukerData(long soknadId, Faktum faktum) {
-	        return getJdbcTemplate()
+	        Long parrentFaktumId = faktum.getParrentFaktum();
+	        if(parrentFaktumId != null && parrentFaktumId > 0) {
+	            return getJdbcTemplate()
 	                .update("update soknadbrukerdata set value=? where key = ? and soknad_id = ? and parrent_faktum = ?",
 	                        faktum.getValue(), faktum.getKey(), soknadId, faktum.getParrentFaktum());
+	        } else {
+	            return getJdbcTemplate()
+	                    .update("update soknadbrukerdata set value=? where key = ? and soknad_id = ?",
+	                            faktum.getValue(), faktum.getKey(), soknadId);
+	        }
 	    }
 
 	    @Override
