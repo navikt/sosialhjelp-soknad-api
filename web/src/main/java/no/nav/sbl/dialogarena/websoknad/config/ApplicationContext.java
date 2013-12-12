@@ -62,11 +62,19 @@ public class ApplicationContext {
 
     @Bean
     public MailSender mailSender() {
-        LOG.error("SMTPPORT" + smtpServerPort + "HOST" + smtpServerHost + "Link" + navigasjonslink);
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setDefaultEncoding("UTF-8");
         javaMailSender.setHost(smtpServerHost);
-        javaMailSender.setPort(Integer.parseInt(smtpServerPort));
+        //TODO: if/else er quickfix inntil vi får ApplicationContextTest til å lese mailserverport.
+        if (smtpServerHost.matches("-?\\d+"))
+        {
+            javaMailSender.setPort(Integer.parseInt(smtpServerPort));
+        }
+        else
+        {
+            javaMailSender.setPort(25);
+            LOG.error("Smtpport not set properly, using default port 25");
+        }
         return javaMailSender;
     }
 
