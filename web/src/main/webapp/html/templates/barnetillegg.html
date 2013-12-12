@@ -1,116 +1,170 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <div data-ng-form="barnetilleggForm" class="skjemainnhold" data-ng-controller="BarnetilleggCtrl" novalidate>
-        <div form-errors></div>
-        <p class="informasjonstekst" cmstekster="barnetillegg.informasjon"></p>
-      
-        <div data-ng-repeat="b in soknadData.fakta.barn.valuelist">
-            <div data-ng-class="{gutt: erGutt(b), jente:erJente(b)}" class="barn">
-                <div class="barnealder">
-                    <span> ÅR</span>
-                    <span class="alder robust" data-ng-bind="b.value.alder"></span>
-                </div>
-                <div class="barneinfo">
-                    <div data-ng-bind="b.value.sammensattnavn"></div>
-                    <div data-ng-bind="b.value.fnr"></div>
-                    <div>{{ b.value.fodselsdato | date:'dd.MM.yyyy'}}</div>
-                    <div class="barnbosted">
-                        <span class="bosted">bosted: </span>
-                        <span data-ng-show="!b.value.land">Norge</span>
-                        <span data-ng-bind="b.value.land"></span>
-                    </div>
-                    <div class="barnecheckbox" data-ng-controller="BarnetilleggFaktumCtrl">
-                        <input data-ng-model="barnetillegg.value" name="barnetilegg{{$index}}" id="barnetilegg{{$index}}" type="checkbox" data-boolean-verdi>
-                        <label for="barnetilegg{{$index}}" class="svar-alt" data-cmstekster="barnetillegg.barnetilegg.spormsal"></label>
-                    </div>
-                </div>
-                <div data-ng-show="b.type == 'BRUKERREGISTRERT'">
-                    <a>Endre</a>
-                    <a>Slett</a>
-                </div>
-            </div>
-        </div>
+	<div data-ng-form="barnetilleggForm" class="skjemainnhold" data-ng-controller="BarnetilleggCtrl" novalidate>
+		<div form-errors></div>
+		<p class="informasjonstekst" cmstekster="barnetillegg.informasjon"></p>
 
-        <div data-ng-controller="BarneCtrl">
-            <div id="legg-til-barn" data-ng-show="hvisIRedigeringsmodus()">
-                <a href class="knapp-leggtil-liten" data-ng-click="nyttBarn()" data-cmstekster="barnetillegg.nyttbarn"></a>
-            </div>
+		<div data-ng-repeat="b in soknadData.fakta.barn.valuelist">
+			<div data-ng-class="{gutt: erGutt(b), jente:erJente(b)}" class="barn">
+				<div class="barnealder">
+					<span> ÅR</span>
+					<span class="alder robust" data-ng-bind="b.value.alder"></span>
+				</div>
+				<div class="barneinfo">
+					<div data-ng-bind="b.value.sammensattnavn"></div>
+					<div data-ng-bind="b.value.fnr"></div>
+					<div>{{ b.value.fodselsdato | date:'dd.MM.yyyy'}}</div>
+					<div class="barnbosted">
+						<span class="bosted">bosted: </span>
+						<span data-ng-show="!b.value.land">Norge</span>
+						<span data-ng-bind="b.value.land"></span>
+					</div>
+					<div class="barnecheckbox" data-ng-controller="BarnetilleggFaktumCtrl">
+						<div data-ng-if="hvisIRedigeringsmodus()"> 
+							<input data-ng-model="barnetillegg.value" name="barnetilegg{{$index}}" id="barnetilegg{{$index}}" type="checkbox" data-boolean-verdi>
+							<label for="barnetilegg{{$index}}" class="svar-alt" data-cmstekster="barnetillegg.barnetilegg.sporsmal"></label>
+						</div>
+						<p class="svar-oppsummering" data-ng-if="hvisIOppsummeringsmodus()" data-cmstekster="barnetillegg.barnetilegg.sporsmal"> </p>
 
-            <div data-ng-if="formAapent == true" data-ng-form="nyttBarnForm" class="vertikal">
-                <div data-form-errors></div>
-                    <div class="barn-spm spm-boks">
-                   
-                    <div class="form-linje">
-                        <label>
-                            <span data-cmstekster="barnetillegg.nyttbarn.fornavn"></span>
-                            <input name="fornavn"
-                                   data-error-messages="'barnetillegg.nyttbarn.fornavn.feilmelding'" type="text"
-                                   data-ng-model="barn.value.fornavn"
-                                   data-blur-validate required>
-                            <span class="melding"></span>
-                        </label>
-                    </div>
-                    <div class="form-linje">
-                        <label>
-                            <span data-cmstekster="barnetillegg.nyttbarn.etternavn"></span>
-                            <input name="fnr"
-                                   data-error-messages="'barnetillegg.nyttbarn.etternavn.feilmelding'" type="text"
-                                   data-ng-model="barn.value.etternavn"
-                                   data-blur-validate required>
-                            <span class="melding"></span>
-                        </label>
-                    </div>
-                    
-                    <div data-nav-dato
-                         data-ng-model="barn.value.fodselsdato"
-                         data-label="barnetillegg.nyttbarn.fodselsdato"
-                         data-er-required="true"
-                         data-required-error-message="abarnetillegg.nyttbarn.fodselsdato.feilmelding">
-                    </div>
+						<div data-ng-if="barnetillegg.value == 'true'">
+							<p data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.sporsmal"></p>
+							<div class="nav-radio-knapp">
+								<div class="radio-knapp" data-ng-show="hvisIRedigeringsmodus()">
+									<input class="sendsoknad-radio"
+									id="ikkebarneinntekt{{$index}}"
+									type="radio"
+									value="true"
+									data-ng-model="ikkebarneinntekt.value"
+									name="ikkebarneinntekt{{$index}}"
+									data-ng-required="barnetillegg.value == 'true'"
+									data-error-messages="'barnetillegg.barnetilegg.ikkebarneinntekt.feilmelding'">
+									<label for='ikkebarneinntekt{{$index}}' class='svar-alt' data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.true"></label>
+								</div>
+								<div class="radio-knapp" data-ng-show="hvisIRedigeringsmodus()">
+									<input class="sendsoknad-radio"
+									id="ikkebarneinntektNei{{$index}}"
+									type="radio"
+									value="false"
+									data-ng-model="ikkebarneinntekt.value"
+									name="ikkebarneinntektNei{{$index}}"
+									data-ng-required="barnetillegg.value == 'true'"
+									data-error-messages="'barnetillegg.barnetilegg.ikkebarneinntekt.feilmelding'">
+									<label for='ikkebarneinntektNei{{$index}}' class='svar-alt' data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.false"></label>
+								</div>
+							</div>
+							<div data-ng-if="hvisIOppsummeringsmodus()">
+								<p class="svar-oppsummering" data-ng-if="barnetHarIkkeInntekt()" data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.true"></p>
+								<p class="svar-oppsummering" data-ng-if="barnetHarInntekt()" data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.false"></p>
+							</div>
 
-                    <div class="land">
-                        <div nav-select
-                             name="land"
-                             data-label="barnetillegg.nyttbarn.land"
-                             data-ng-model="barn.value.land"
-                             data-options="landService.result"
-                             data-er-required="true"
-                             data-default-value="barnetillegg.nyttbarn.landDefault"
-                             data-required-feilmelding="barnetillegg.nyttbarn.land.feilmelding"
-                             data-ugyldig-feilmelding="barnetillegg.nyttbarn.land.ugyldig.feilmelding">
-                         </div>
-                    </div>
+							<div data-ng-show="barnetHarInntekt()">
+								<div class="form-linje" data-ng-if="hvisIRedigeringsmodus()">
+									<label>
+										<span data-cmstekster="barnetillegg.barnetilegg.barneinntekttall.sporsmal"></span>
+										<input name="barneinntekttall{{$index}}"
+										data-error-messages="'barnetillegg.barnetilegg.barneinntekttall.feilmelding'" type="text"
+										data-ng-model="barneinntekttall.value"
+										data-blur-validate required="barnetHarInntekt()">
+										<span class="melding"></span>
+									</label>
+								</div>
+								<div data-ng-if="hvisIOppsummeringsmodus()">
+									<p class="svar-oppsummering" data-ng-if="barnetHarInntekt()" >
+										<span data-cmstekster="barnetillegg.barnetilegg.barneinntekttall.sporsmal"></span>
+										<span data-ng-bind="barneinntekttall.value | currency"></span>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div data-ng-show="b.type == 'BRUKERREGISTRERT'">
+					<a>Endre</a>
+					<a>Slett</a>
+				</div>
+			</div>
+		</div>
 
-                    <div class="form-linje">
-                        <label>
-                            <span data-cmstekster="barnetillegg.nyttbarn.inntekt"></span>
-                            <input name="inntekt"
-                                   data-error-messages="'barnetillegg.nyttbarn.inntekt.feilmelding'" type="text"
-                                   data-ng-model="barn.value.inntekt"
-                                   data-blur-validate required>
-                            <span class="melding"></span>
-                        </label>
-                    </div>
-                    
-                    <div class="barnecheckbox">
-                        <input data-ng-model="nyttbarn.barnetillegg" name="barnetilleggnyttbarn" id="barnetilleggnyttbarn" type="checkbox" data-boolean-verdi>
-                        <label for="barnetilleggnyttbarn" class="svar-alt" data-cmstekster="barnetillegg.barnetilegg.spormsal"></label>
-                    </div>
-                     
-                    <div class="knapper-leggtil-barn">
-                        <input class="knapp-hoved-liten" name="lagre" type="submit" data-cmstekster="barnetillegg.nyttbarn.lagre" data-ng-click="lagreBarn(nyttBarnForm);">
-                        <a class="nyttbarn-avbryt" href data-cmstekster="barnetillegg.nyttbarn.avbryt"
-                           data-ng-click="avbrytBarn()"></a>
-                    </div>
-                    
-                </div>
-            </div>
-        </div>
+		<div data-ng-controller="BarneCtrl">
+			<div id="legg-til-barn" data-ng-show="hvisIRedigeringsmodus()">
+				<a href class="knapp-leggtil-liten" data-ng-click="nyttBarn()" data-cmstekster="barnetillegg.nyttbarn"></a>
+			</div>
+
+			<div data-ng-if="formAapent == true" data-ng-form="nyttBarnForm" class="vertikal">
+				<div data-form-errors></div>
+				<div class="barn-spm spm-boks">
+
+					<div class="form-linje">
+						<label>
+							<span data-cmstekster="barnetillegg.nyttbarn.fornavn"></span>
+							<input name="fornavn"
+							data-error-messages="'barnetillegg.nyttbarn.fornavn.feilmelding'" type="text"
+							data-ng-model="barn.value.fornavn"
+							data-blur-validate required>
+							<span class="melding"></span>
+						</label>
+					</div>
+					<div class="form-linje">
+						<label>
+							<span data-cmstekster="barnetillegg.nyttbarn.etternavn"></span>
+							<input name="fnr"
+							data-error-messages="'barnetillegg.nyttbarn.etternavn.feilmelding'" type="text"
+							data-ng-model="barn.value.etternavn"
+							data-blur-validate required>
+							<span class="melding"></span>
+						</label>
+					</div>
+
+					<div data-nav-dato
+					data-ng-model="barn.value.fodselsdato"
+					data-label="barnetillegg.nyttbarn.fodselsdato"
+					data-er-required="true"
+					data-required-error-message="abarnetillegg.nyttbarn.fodselsdato.feilmelding">
+				</div>
+
+				<div class="land">
+					<div nav-select
+					name="land"
+					data-label="barnetillegg.nyttbarn.land"
+					data-ng-model="barn.value.land"
+					data-options="landService.result"
+					data-er-required="true"
+					data-default-value="barnetillegg.nyttbarn.landDefault"
+					data-required-feilmelding="barnetillegg.nyttbarn.land.feilmelding"
+					data-ugyldig-feilmelding="barnetillegg.nyttbarn.land.ugyldig.feilmelding">
+				</div>
+			</div>
+
+			<div class="form-linje">
+				<label>
+					<span data-cmstekster="barnetillegg.nyttbarn.inntekt"></span>
+					<input name="inntekt"
+					data-error-messages="'barnetillegg.nyttbarn.inntekt.feilmelding'" type="text"
+					data-ng-model="barn.value.inntekt"
+					data-blur-validate required>
+					<span class="melding"></span>
+				</label>
+			</div>
+
+			<div class="barnecheckbox">
+				<input data-ng-model="nyttbarn.barnetillegg" name="barnetilleggnyttbarn" id="barnetilleggnyttbarn" type="checkbox" data-boolean-verdi>
+				<label for="barnetilleggnyttbarn" class="svar-alt" data-cmstekster="barnetillegg.barnetilegg.spormsal"></label>
+			</div>
+
+			<div class="knapper-leggtil-barn">
+				<input class="knapp-hoved-liten" name="lagre" type="submit" data-cmstekster="barnetillegg.nyttbarn.lagre" data-ng-click="lagreBarn(nyttBarnForm);">
+				<a class="nyttbarn-avbryt" href data-cmstekster="barnetillegg.nyttbarn.avbryt"
+				data-ng-click="avbrytBarn()"></a>
+			</div>
+
+		</div>
+	</div>
+</div>
 
 
-        <div spmblokkferdig
-                nokkel="barnetillegg"
-                modus="data.redigeringsModus"
-                submit-method="validerBarnetillegg(barnetilleggForm)"> </div>
-    </div>
+<div spmblokkferdig
+nokkel="barnetillegg"
+modus="data.redigeringsModus"
+submit-method="validerBarnetillegg(barnetilleggForm)"> </div>
+</div>
 </div>
 

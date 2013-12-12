@@ -1,5 +1,6 @@
 angular.module('nav.barnetillegg',[])
     .controller('BarnetilleggCtrl', ['$scope', function ($scope) {
+
         if ($scope.soknadData.fakta.barn) {
                 angular.forEach($scope.soknadData.fakta.barn.valuelist, function(value) { 
                     value.value = angular.fromJson(value.value);
