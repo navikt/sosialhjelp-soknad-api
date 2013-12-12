@@ -99,7 +99,9 @@ angular.module('nav.utdanning',[])
     }
 
     $scope.hvisUtdanningPaabegyntUnder6mnd = function () {
-        if ($scope.soknadData.fakta == undefined || $scope.soknadData.fakta.utdanning.paabegyntunder6mnd == undefined) {
+
+        if ($scope.soknadData.fakta != undefined || $scope.soknadData.fakta.utdanning.paabegyntunder6mnd != undefined) {
+
             return $scope.soknadData.fakta.utdanning.paabegyntunder6mnd;
         }
        return false;
