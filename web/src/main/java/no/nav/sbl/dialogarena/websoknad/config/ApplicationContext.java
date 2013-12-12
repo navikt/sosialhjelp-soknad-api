@@ -45,6 +45,7 @@ public class ApplicationContext {
     //= "smtp.test.local";
 
     @Value("{$dokumentinnsending.smtpServer.port}")
+
     private String smtpServerPort;
            //= "25";
 
