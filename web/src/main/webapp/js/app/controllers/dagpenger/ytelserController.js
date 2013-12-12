@@ -18,7 +18,6 @@ angular.module('nav.ytelser', [])
             var minstEnCheckboksErAvhuket = erCheckboxerAvhuket(nokler);
             $scope.ytelser.skalViseFeilmeldingForIngenYtelser = false;
             settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, minstEnCheckboksErAvhuket, true);
-
             $scope.validateForm(form.$invalid);
             $scope.runValidation(skalScrolle);
         };
