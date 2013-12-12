@@ -30,7 +30,7 @@ public class FortsettSenereController {
 	@Inject
 	private EmailService emailService;
 
-	    @RequestMapping(value = "/{soknadId}/fortsettsenere", method = RequestMethod.POST)
+	    @RequestMapping(value = "/{soknadId}/fortsettsenere", method = RequestMethod.POST, consumes = "text/plain")
 	    @ResponseBody()
 	    public void sendEpost(HttpServletRequest request, @PathVariable Long soknadId, @RequestBody String epost) {
             ValueMap map = new ValueMap();
