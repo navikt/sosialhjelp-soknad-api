@@ -3,9 +3,6 @@
         <div data-form-errors></div>
         <div class="spm form-linje boolean">
 
-
-
-
             <div data-navradio data-ng-model="soknadData.fakta.utdanning.value" data-value="ikkeUtdanning"
                  data-modus="data.redigeringsModus"
                  data-inputname="utdanning"
@@ -36,7 +33,7 @@
 
                     <div class="ekstra-spm-boks" data-ng-if="hvisUtdanningKveld()">
 
-                        <p cmstekster="utdanning.svar.under.utdanning.kveld.informasjon"/>
+                        <div class="panel-mini-belyst infoboks" cmstekster="utdanning.svar.under.utdanning.kveld.informasjon"/>
 
                         <div>
                             <input class="sendsoknad-radio" id="undervisningfolges" data-ng-model="soknadData.fakta.utdanning.undervisningfolges" type="radio" value="true"
@@ -49,7 +46,7 @@
                             <label for="undervisningfolgesikke" class='svar-alt' cmstekster="utdanning.svar.under.utdanning.kveld.undervisning.folgesikke"/>
                         </div>
 
-                        <p cmstekster="utdanning.svar.under.utdanning.kveld.undervisning.forenlig"/>
+                        <div class="panel-mini-belyst infoboks" cmstekster="utdanning.svar.under.utdanning.kveld.undervisning.forenlig"/>
 
                         <div>
                             <input class="sendsoknad-radio" id="progresjonunder50" data-ng-model="soknadData.fakta.utdanning.progresjonunder50" type="radio" value="true"
