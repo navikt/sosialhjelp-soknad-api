@@ -12,7 +12,7 @@ angular.module('nav.stickyFeilmelding', [])
                 scope.feil.antallFeilMedKlasseFeil = 0;
                 scope.feil.antallFeilMedKlasseFeilstyling = 0;
                 scope.feil.skalViseStickyFeilmeldinger = false;
-                scope.feil.navaerende = -1;
+                scope.feil.navaerende = 0;
 
                 var elem = element.next();
                 var bolker = $('[data-accordion-group]');
@@ -36,7 +36,6 @@ angular.module('nav.stickyFeilmelding', [])
                     bolkerMedFeil.each(function () {
                         idBolkerMedFeil.push(this.id);
                     });
-
                     bolker.each(function () {
                         idAlleBolker.push(this.id);
                     });
