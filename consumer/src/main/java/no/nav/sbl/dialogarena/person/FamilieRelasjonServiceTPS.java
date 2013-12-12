@@ -1,23 +1,20 @@
 package no.nav.sbl.dialogarena.person;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.xml.ws.WebServiceException;
-
+import com.google.gson.Gson;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
-
 import org.slf4j.Logger;
 
-import com.google.gson.Gson;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.xml.ws.WebServiceException;
+import java.util.List;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Implementer {@link PersonService}. Denne implementasjonen henter data fra TPS, og lagrer som systemfaktum i databasen
@@ -44,7 +41,7 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
     	HentKjerneinformasjonResponse response = null;
         try {
             response = person.hentKjerneinformasjon(lagXMLRequest(fodselsnummer));
-            logger.warn("Fullstendig XML fra Person-servicen:" + response);
+            logger.warn("Fullstendig XML fra Person-servicen:" + response.getPerson());
         } catch (HentKjerneinformasjonPersonIkkeFunnet e) {
             logger.error("Fant ikke bruker i TPS (Person-servicen).", e);
             return new Person();

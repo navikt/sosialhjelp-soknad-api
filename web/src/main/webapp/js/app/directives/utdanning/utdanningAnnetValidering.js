@@ -11,7 +11,7 @@ angular.module('nav.utdanningannet', [])
             })
 
             scope.$watch(function () {
-                console.log("Utdanning2");
+                console.log("Utdanning2x" + scope.utdanning.skalViseFeilmeldingForUtdanningAnnet);
                 return scope.utdanning.skalViseFeilmeldingForUtdanningAnnet;
             }, function () {
                 if (scope.utdanning.skalViseFeilmeldingForUtdanningAnnet) {
