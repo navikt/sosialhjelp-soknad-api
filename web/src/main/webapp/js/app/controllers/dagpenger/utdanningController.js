@@ -36,8 +36,6 @@ angular.module('nav.utdanning',[])
 
         $scope.hvisAvsluttetUtdanning = function () {
             if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
-                console.log("TEST" + $scope.soknadData.fakta.utdanning.value);
-                console.log("TEST" + $scope.soknadData.fakta.utdanning.value == 'avsluttetUtdanning');
                 return $scope.soknadData.fakta.utdanning.value == 'avsluttetUtdanning';
             }
             return false;
@@ -98,6 +96,13 @@ angular.module('nav.utdanning',[])
         }
         if ($scope.soknadData.fakta.utdanning.progresjonunder50 == 'false') return true;
 
+    }
+
+    $scope.hvisUtdanningPaabegyntUnder6mnd = function () {
+        if ($scope.soknadData.fakta == undefined || $scope.soknadData.fakta.utdanning.paabegyntunder6mnd == undefined) {
+            return $scope.soknadData.fakta.utdanning.paabegyntunder6mnd;
+        }
+       return false;
     }
 
     $scope.validateTilFraDato = function (utdanning) {
