@@ -161,8 +161,6 @@ function settEgendefinertFeilmeldingsverdi(form, feilmeldingskategori, feilmeldi
             leggTilFeilmeldingHvisDenIkkeFinnes(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene)
         }
     }
-    console.log(form.$error)
-    console.log(form.$valid)
 }
 
 function stringContainsNotCaseSensitive(str, query) {
