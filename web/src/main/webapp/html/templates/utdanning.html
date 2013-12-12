@@ -35,46 +35,50 @@
 
                         <div class="panel-mini-belyst infoboks" cmstekster="utdanning.svar.under.utdanning.kveld.informasjon"/>
 
-                        <div>
-                            <input class="sendsoknad-radio" id="undervisningfolges" data-ng-model="soknadData.fakta.utdanning.undervisningfolges" type="radio" value="true"
-                                   name="undervisningfolges" error-messages="'utdanning.error.undervisningfolges'" required/>
-                            <label for="undervisningfolges" class='svar-alt' cmstekster="utdanning.svar.under.utdanning.kveld.undervisning.folges"/>
-                        </div>
+                        <div data-navradio data-ng-model="soknadData.fakta.utdanning.kveld.undervisningfolges" data-value="undervisningFolges"
+                             data-modus="data.redigeringsModus"
+                             data-inputname="undervisningfolges"
+                             data-label="utdanning.svar.under.utdanning.kveld.undervisning.folges"
+                             data-feilmelding="utdanning.error.undervisningfolges"></div>
 
-                        <div>
-                            <input class="sendsoknad-radio" id="undervisningfolgesikke" data-ng-model="soknadData.fakta.utdanning.undervisningfolges" type="radio" value="false"/>
-                            <label for="undervisningfolgesikke" class='svar-alt' cmstekster="utdanning.svar.under.utdanning.kveld.undervisning.folgesikke"/>
-                        </div>
+
+                        <div data-navradio data-ng-model="soknadData.fakta.utdanning.kveld.undervisningfolges" data-value="undervisningFolgesIkke"
+                             data-modus="data.redigeringsModus"
+                             data-inputname="undervisningfolgesikke"
+                             data-label="utdanning.svar.under.utdanning.kveld.undervisning.folgesikke"
+                             data-feilmelding="utdanning.error.undervisningfolges"></div>
+
 
                         <div class="panel-mini-belyst infoboks" cmstekster="utdanning.svar.under.utdanning.kveld.undervisning.forenlig"/>
 
-                        <div>
-                            <input class="sendsoknad-radio" id="progresjonunder50" data-ng-model="soknadData.fakta.utdanning.progresjonunder50" type="radio" value="true"
-                                   name="progresjonunder50" error-messages="'utdanning.error.progresjon'" required/>
-                            <label for="progresjonunder50" class='svar-alt' cmstekster="utdanning.progresjon.true"/>
-                        </div>
+                        <div data-navradio data-ng-model="soknadData.fakta.utdanning.progresjonunder50" data-value="true"
+                             data-modus="data.redigeringsModus"
+                             data-inputname="progresjonunder50"
+                             data-label="utdanning.progresjon.true"
+                             data-feilmelding="utdanning.error.progresjon"></div>
 
-                        <div>
-                            <input class="sendsoknad-radio" id="progresjonover50" data-ng-model="soknadData.fakta.utdanning.progresjonunder50" type="radio" value="false"/>
-                            <label for="progresjonover50" class='svar-alt' cmstekster="utdanning.progresjon.false"/>
-                        </div>
+                        <div data-navradio data-ng-model="soknadData.fakta.utdanning.progresjonunder50" data-value="false"
+                             data-modus="data.redigeringsModus"
+                             data-inputname="progresjonover50"
+                             data-label="utdanning.progresjon.false"
+                             data-feilmelding="utdanning.error.progresjon"></div>
+
 
                         <div data-ng-if="hvisStudieProgresjonOver50()">
                             <p cmstekster="utdanning.svar.under.utdanning.kveld.undervisning.progresjon"/>
                         </div>
 
+                        <div data-navradio data-ng-model="soknadData.fakta.utdanning.paabegyntunder6mnd" data-value="true"
+                             data-modus="data.redigeringsModus"
+                             data-inputname="paabegyntOver6mnd"
+                             data-label="utdanning.paabegyntUnder6mnd.true"
+                             data-feilmelding="utdanning.error.paabegynt"></div>
 
-                        <div>
-                            <input class="sendsoknad-radio" id="paabegyntUnder6mnd" data-ng-model="soknadData.fakta.utdanning.paabegyntunder6mnd" type="radio" value="true"
-                                   name="paabegyntUnder6mndprogresjonunder50" error-messages="'utdanning.error.paabegynt'" required/>
-                            <label for="paabegyntUnder6mnd" class='svar-alt' cmstekster="utdanning.paabegyntUnder6mnd.true"/>
-                        </div>
-
-                        <div>
-                            <input class="sendsoknad-radio" id="paabegyntOver6mnd" data-ng-model="soknadData.fakta.utdanning.paabegyntunder6mnd" type="radio" value="false"/>
-                            <label for="paabegyntOver6mnd" class='svar-alt' cmstekster="utdanning.paabegyntUnder6mnd.false"/>
-                        </div>
-
+                        <div data-navradio data-ng-model="soknadData.fakta.utdanning.paabegyntunder6mnd" data-value="false"
+                             data-modus="data.redigeringsModus"
+                             data-inputname="paabegyntOver6mnd"
+                             data-label="utdanning.paabegyntUnder6mnd.false"
+                             data-feilmelding="utdanning.error.paabegynt"></div>
 
                         <div data-navtekst data-modus="data.redigeringsModus" data-label="utdanning.utdanningssted.navn" data-ng-model="soknadData.fakta.utdanning.kveld.utdanningsstednavn" data-feilmelding="'utdanning.error.utdanningsstednavn'" required/>
 
@@ -168,17 +172,17 @@
                 <div class="sporsmaal">
                     <p cmstekster="utdanning.utdanningssted.avslutte.sporsmal"/>
 
-                    <div>
-                        <input class="sendsoknad-radio" id="avslutteJa" data-ng-model="soknadData.fakta.utdanning.avslutte" type="radio" value="true"
-                               name="avslutteJa" error-messages="'utdanning.error.avslutte'" required/>
-                        <label for="avslutteJa" class='svar-alt' cmstekster="utdanning.utdanningssted.avslutte.true"/>
-                    </div>
+                    <div data-navradio data-ng-model="soknadData.fakta.utdanning.avslutte" data-value="true"
+                         data-modus="data.redigeringsModus"
+                         data-inputname="avslutteJa"
+                         data-label="utdanning.utdanningssted.avslutte.true"
+                         data-feilmelding="utdanning.error.avslutte"></div>
 
-                    <div>
-                        <input class="sendsoknad-radio" id="avslutteNei" data-ng-model="soknadData.fakta.utdanning.avslutte" type="radio" value="false"
-                               name="avslutteNei" error-messages="'utdanning.error.avslutte'" required/>
-                        <label for="avslutteNei" class='svar-alt' cmstekster="utdanning.utdanningssted.avslutte.false"/>
-                    </div>
+                    <div data-navradio data-ng-model="soknadData.fakta.utdanning.avslutte" data-value="false"
+                         data-modus="data.redigeringsModus"
+                         data-inputname="avslutteNei"
+                         data-label="utdanning.utdanningssted.avslutte.false"
+                         data-feilmelding="utdanning.error.avslutte"></div>
 
                 </div>
 
