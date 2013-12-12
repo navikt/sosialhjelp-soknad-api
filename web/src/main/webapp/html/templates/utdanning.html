@@ -23,9 +23,12 @@
 
             <span class="melding"></span>
 
+            <div class="spm" data-ng-if="hvisAvsluttetUtdanning()" modus="data.redigeringsModus">
+            <p cmstekster="utdanning.svar.under.utdanning.avsluttet.dokumentere"/>
+            </div>
 
 
-                <div class="spm" data-ng-if="hvisUnderUtdanning()" modus="data.redigeringsModus">
+            <div class="spm" data-ng-if="hvisUnderUtdanning()" modus="data.redigeringsModus">
 
                     <p cmstekster="utdanning.sporsmal"></p>
                     <div data-label="utdanning.svar.under.utdanning.kveld" data-navcheckbox id="underUtdanningKveld" data-modus="data.redigeringsModus" data-ng-model ="soknadData.fakta.underUtdanningKveld.value" data-inputname="underUtdanningKveld" data-endret="endreUtdanning(utdanningForm)"/>

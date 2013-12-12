@@ -36,6 +36,8 @@ angular.module('nav.utdanning',[])
 
         $scope.hvisAvsluttetUtdanning = function () {
             if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
+                console.log("TEST" + $scope.soknadData.fakta.utdanning.value);
+                console.log("TEST" + $scope.soknadData.fakta.utdanning.value == 'avsluttetUtdanning');
                 return $scope.soknadData.fakta.utdanning.value == 'avsluttetUtdanning';
             }
             return false;
@@ -144,7 +146,7 @@ angular.module('nav.utdanning',[])
         if (sjekkOmGittEgenskapTilObjektErTrue($scope.soknadData.fakta.utdanningAnnet)) {
             $scope.soknadData.fakta.utdanningAnnet.value = false;
             console.log("Skrur av ingen utdanning");
-            $scope.$emit(lagreSoknadData, {key: 'utdanningAnnet', value: false});
+            $scope.$emit(lagreSoknadData, {key: 'underUtdanningAnnet', value: false});
         }
     }
 
@@ -159,7 +161,7 @@ angular.module('nav.utdanning',[])
             erCheckboksForUtdanningAnnetHuketAv = $scope.soknadData.fakta.underUtdanningAnnet.value;
         }
         if (harValgtUtdanning) {
-console.log("Annen utdanning huket av");
+
 //            $scope.soknadData.fakta.underUtdanningAnnet.value = 'false';
             $
             if (erCheckboksForUtdanningAnnetHuketAv) {
