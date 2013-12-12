@@ -15,6 +15,10 @@
                  data-label="utdanning.svar.avsluttetUtdanning"
                  data-feilmelding="utdanning.utdanning.feilmelding"></div>
 
+            <div class="spm" data-ng-if="hvisAvsluttetUtdanning()" modus="data.redigeringsModus">
+                <div  class="ekstra-spm-boks" cmstekster="utdanning.svar.under.utdanning.avsluttet.dokumentere"/>
+            </div>
+
             <div data-navradio data-ng-model="soknadData.fakta.utdanning.value" data-value="underUtdanning"
                  data-modus="data.redigeringsModus"
                  data-inputname="utdanning"
@@ -23,9 +27,7 @@
 
             <span class="melding"></span>
 
-            <div class="spm" data-ng-if="hvisAvsluttetUtdanning()" modus="data.redigeringsModus">
-            <p cmstekster="utdanning.svar.under.utdanning.avsluttet.dokumentere"/>
-            </div>
+
 
 
             <div class="spm" data-ng-if="hvisUnderUtdanning()" modus="data.redigeringsModus">
@@ -36,7 +38,7 @@
 
                     <div class="ekstra-spm-boks" data-ng-if="hvisUtdanningKveld()">
 
-                        <div class="panel-mini-belyst infoboks" cmstekster="utdanning.svar.under.utdanning.kveld.informasjon"/>
+                        <div cmstekster="utdanning.svar.under.utdanning.kveld.informasjon"/>
 
                         <div data-navradio data-ng-model="soknadData.fakta.utdanning.kveld.undervisningfolges" data-value="undervisningFolges"
                              data-modus="data.redigeringsModus"
@@ -52,7 +54,7 @@
                              data-feilmelding="utdanning.error.undervisningfolges"></div>
 
 
-                        <div class="panel-mini-belyst infoboks" cmstekster="utdanning.svar.under.utdanning.kveld.undervisning.forenlig"/>
+                        <div cmstekster="utdanning.svar.under.utdanning.kveld.undervisning.forenlig"/>
 
                         <div data-navradio data-ng-model="soknadData.fakta.utdanning.progresjonunder50" data-value="true"
                              data-modus="data.redigeringsModus"
@@ -73,7 +75,7 @@
 
                         <div data-navradio data-ng-model="soknadData.fakta.utdanning.paabegyntunder6mnd" data-value="true"
                              data-modus="data.redigeringsModus"
-                             data-inputname="paabegyntOver6mnd"
+                             data-inputname="paabegyntUnder6mnd"
                              data-label="utdanning.paabegyntUnder6mnd.true"
                              data-feilmelding="utdanning.error.paabegynt"></div>
 
@@ -82,6 +84,10 @@
                              data-inputname="paabegyntOver6mnd"
                              data-label="utdanning.paabegyntUnder6mnd.false"
                              data-feilmelding="utdanning.error.paabegynt"></div>
+
+                        <div data-ng-if="hvisUtdanningPaabegyntUnder6mnd()">
+                            <div cmstekster="utdanning.unntak.under6mnd"/>
+                        </div>
 
                         <div data-navtekst data-modus="data.redigeringsModus" data-label="utdanning.utdanningssted.navn" data-ng-model="soknadData.fakta.utdanning.kveld.utdanningsstednavn" data-feilmelding="'utdanning.error.utdanningsstednavn'" required/>
 
