@@ -11,6 +11,10 @@ angular.module('nav.utdanning',[])
     var referanseTilFeilmeldingslinken = 'underUtdanningAnnet';
     $scope.utdanning = {skalViseFeilmeldingForUtdanningAnnet: false};
 
+    $scope.$on('VALIDER_UTDANNING', function (scope, form) {
+        $scope.validerUtdanning(form, false);
+    });
+
     $scope.validerUtdanning = function(form, skalScrolle) {
         if ($scope.hvisUnderUtdanning())
         {
@@ -19,12 +23,7 @@ angular.module('nav.utdanning',[])
             settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, minstEnAvhuket, true);
         }
         $scope.validateForm(form.$invalid);
-        $scope.runValidation();
-
-        $scope.$on('VALIDER_UTDANNING', function (scope, form) {
-            $scope.validerUtdanning(form, false);
-        });
-
+        $scope.runValidation(skalScrolle);
     }
         $scope.hvisIkkeUnderUtdanning = function () {
             if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
