@@ -8,9 +8,9 @@ angular.module('nav.ingenytelser', [])
                     fadeBakgrunnsfarge(element, element.find('.ingen-ytelse-melding'), 'feil', scope);
                 })
                 scope.$watch(function () {
-                    console.log("ytelserXXX1");
                     return scope.ytelser.skalViseFeilmeldingForIngenYtelser;
                 }, function () {
+
                     if (scope.ytelser.skalViseFeilmeldingForIngenYtelser) {
                         element.addClass('feil');
                     } else {

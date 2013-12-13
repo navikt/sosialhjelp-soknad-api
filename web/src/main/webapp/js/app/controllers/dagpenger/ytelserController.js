@@ -28,7 +28,7 @@ angular.module('nav.ytelser', [])
 //      kjøres hver gang det skjer en endring på checkboksene
         $scope.endreYtelse = function (form) {
             // Sjekker om en ytelse er huket av (inkluderer IKKE siste checkboksen)
-            console.log("inne i blokka " +  $scope.ytelser.skalViseFeilmeldingForIngenYtelser);
+
             var ytelserNokler = nokler.slice(0, nokler.length - 1);
             var harIkkeValgtYtelse = !erCheckboxerAvhuket(ytelserNokler);
 
