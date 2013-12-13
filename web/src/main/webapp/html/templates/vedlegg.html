@@ -38,9 +38,9 @@
                                 <label for="{{$index}}sendInnFraPcRadio" data-cmstekster="vedlegg.faktum.lastopp"></label>
 
                                 <div class="valgbokser" data-ng-if="forventning.faktum.innsendingsvalg == 'VedleggKreves'">
-                                    <a class="valgboks-mobil" data-ng-href="#/opplasting/{{ soknadData.soknadId }}/{{forventning.faktum.faktumId}}">
+                                    <!--a class="valgboks-mobil" data-ng-href="#/opplasting/{{ soknadData.soknadId }}/{{forventning.faktum.faktumId}}">
                                         <span data-cmstekster="vedlegg.faktum.lastopp.mobil"></span>
-                                    </a>
+                                    </a-->
                                     <a class="valgboks-pc" data-ng-href="#/opplasting/{{ soknadData.soknadId }}/{{forventning.faktum.faktumId}}">
                                         <span data-cmstekster="vedlegg.faktum.lastopp.dennepc"></span>
                                     </a>
@@ -70,11 +70,19 @@
             </section>
         </div>
     </section>
+    <div class="rad-belyst">
+        <div class="begrensning sak-totredel">
+            <section class="panel-standard oversikt">
+                <div class="knapp-stor" data-cmstekster="vedlegg.leggtilekstravedlegg"></div>
+            </section>
+        </div>
+    </div>
 
-    <div class="rad ferdig-skjema">
-        <div class="begrensning">
-            <section class="sak-hel">
+    <div class="rad">
+        <div class="begrensning sak-totredel">
+            <section class="panel-standard oversikt">
                 <a href="#/oppsummering/{{ soknadData.soknadId }}" class="knapp-hoved" data-cmstekster="vedlegg.ferdig"></a>
+                <a href="#/dagpenger/{{ soknadData.soknadId }}" data-cmstekster="tilbake"></a>
             </section>
         </div>
     </div>

@@ -20,7 +20,7 @@ angular.module('app.directives', [
 	'nav.sidetittel',
     'ui.mask',
     'nav.bildenavigering',
-    'nav.ingenytelser',
     'nav.utdanningannet',
+    'nav.ingenytelser',
     'nav.accordion'
 ]);

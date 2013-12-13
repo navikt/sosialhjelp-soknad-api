@@ -129,37 +129,43 @@
                      data-endret="endrePendleAarsaker(reellarbeidssokerForm)"></div>
 
                 <span class="melding"
-		                data-cmstekster="reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding"></span>
-			</div>
-		</div>
+                      data-cmstekster="reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding"></span>
+            </div>
+        </div>
 
-		<div data-booleanradio data-ng-model="soknadData.fakta.villighelse.value"
-				data-modus="data.redigeringsModus"
-				data-nokkel="reellarbeidssoker.villighelse"
-				data-hjelpetekst></div>
+        <div data-booleanradio data-ng-model="soknadData.fakta.villighelse.value"
+             data-modus="data.redigeringsModus"
+             data-nokkel="reellarbeidssoker.villighelse"
+             data-hjelpetekst></div>
 
-		<div class="helsemessige-arsaker ekstra-spm-boks" data-ng-if="soknadData.fakta.villighelse.value == 'false'">
+        <div class="helsemessige-arsaker ekstra-spm-boks" data-ng-if="soknadData.fakta.villighelse.value == 'false'">
             <div data-navinfoboks data-nokkel="reellarbeidssoker.villighelse.false.vedlegginformasjon"></div>
-			<div data-navtextarea data-inputname="helseFritekst" data-ng-model="soknadData.fakta.helseFritekst.value"
-					data-nokkel="reellarbeidssoker.helsefritekst" data-maxlengde="500"
-					data-feilmelding="reellarbeidssoker.helsefritekst.feilmelding" data-obligatorisk="true"></div>
-		</div>
+            <div data-navtextarea
+                 data-inputname="helseFritekst"
+                 data-modus='data.redigeringsModus'
+                 data-ng-model="soknadData.fakta.helseFritekst.value"
+                 data-nokkel="reellarbeidssoker.helsefritekst"
+                 data-maxlengde="500"
+                 data-feilmelding="reellarbeidssoker.helsefritekst.feilmelding"
+                 data-obligatorisk="true"></div>
+        </div>
 
-		<div data-booleanradio
+        <div data-booleanradio
              data-ng-model="soknadData.fakta.villigjobb.value"
              data-modus="data.redigeringsModus"
              data-nokkel="reellarbeidssoker.villigjobb"></div>
 
-		<div class="ekstra-spm-boks" data-ng-show="soknadData.fakta.villigjobb.value == 'false'">
-			<div data-navinfoboks data-nokkel="reellarbeidssoker.villigjobb.false.informasjon"></div>
-			<div class="sentrert">
-				<a href="#/avbryt/{{ soknadData.soknadId }}" data-cmstekster="reellarbeidssoker.villigjobb.false.avbryt"></a>
-			</div>
-		</div>
+        <div class="ekstra-spm-boks" data-ng-show="soknadData.fakta.villigjobb.value == 'false'">
+            <div data-navinfoboks data-nokkel="reellarbeidssoker.villigjobb.false.informasjon"></div>
+            <div class="sentrert">
+                <a href="#/avbryt/{{ soknadData.soknadId }}"
+                   data-cmstekster="reellarbeidssoker.villigjobb.false.avbryt"></a>
+            </div>
+        </div>
 
-		<div data-spmblokkferdig data-nokkel="reellarbeidssoker" data-modus="data.redigeringsModus"
-				data-submit-method="validerReellarbeidssoker(reellarbeidssokerForm, true)"></div>
-	</div>
+        <div data-spmblokkferdig data-nokkel="reellarbeidssoker" data-modus="data.redigeringsModus"
+             data-submit-method="validerReellarbeidssoker(reellarbeidssokerForm, true)"></div>
+    </div>
 </div>
 
 
