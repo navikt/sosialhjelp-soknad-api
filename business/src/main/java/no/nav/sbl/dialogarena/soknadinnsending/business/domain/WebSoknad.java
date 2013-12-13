@@ -5,7 +5,13 @@ import org.joda.time.DateTime;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+
 import java.io.Serializable;
+
+import java.sql.Timestamp;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,8 +28,24 @@ public class WebSoknad implements Serializable {
     private SoknadInnsendingStatus status;
 	private String aktoerId;
 	private DateTime opprettetDato;
+	private DateTime sistLagret;
     private DelstegStatus delstegStatus;
+
+    private static final List<String> LIST_FAKTUM = Arrays.asList("barn", "barnetillegg");
     
+
+    public Long getSistLagret() {
+        if (sistLagret != null) {
+            return sistLagret.getMillis();
+        } else {
+            return null;
+        }
+    }
+
+    public void setSistLagret(DateTime sistLagret) {
+        this.sistLagret = sistLagret;
+    }
+
     public DelstegStatus getDelstegStatus() {
         return delstegStatus;
     }
@@ -96,7 +118,6 @@ public class WebSoknad implements Serializable {
 	}
 
 	public static WebSoknad startSoknad() {
-		// TODO Auto-generated method stub
 		return new WebSoknad();
 	}
 
@@ -120,6 +141,16 @@ public class WebSoknad implements Serializable {
 		return this;
 	}
 
+    public WebSoknad sistLagret(Timestamp sistLagret) {
+        if (sistLagret != null) {
+            this.sistLagret = new DateTime(sistLagret.getTime());
+        } else {
+            this.sistLagret = null;
+        }
+
+        return this;
+    }
+
 	public Long getOpprettetDato() {
 		return opprettetDato.getMillis();
 	}
@@ -134,16 +165,37 @@ public class WebSoknad implements Serializable {
 		return this;
 	}
 
-	public WebSoknad medBrukerData(List<Faktum> hentAlleBrukerData) {
+	public WebSoknad medBrukerData(List<Faktum> brukerData) {
 		fakta = new HashMap<>();
-		for (Faktum faktum : hentAlleBrukerData) {
+		
+		for (Faktum faktum : brukerData) {
+			if(LIST_FAKTUM.contains(faktum.getKey())) {
+				faktum = wrapFaktumIFaktumListeObjekt(faktum, fakta);
+			}
 			fakta.put(faktum.getKey(), faktum);
 		}
 		return this;
 				
 	}
 
-    public WebSoknad medDelstegStatus(DelstegStatus delstegStatus) {
+	private Faktum wrapFaktumIFaktumListeObjekt(Faktum faktum, Map<String, Faktum> fakta) {
+		if(fakta.containsKey(faktum.getKey())) {
+			Faktum eksisterendeFaktum = fakta.get(faktum.getKey());
+			List<Faktum> valueList = eksisterendeFaktum.getValuelist();
+			valueList.add(faktum);
+			eksisterendeFaktum.setValuelist(valueList);
+			return eksisterendeFaktum;
+		} else {
+			Faktum nyttFaktum = faktum.cloneFaktum();
+			List<Faktum> valuelist = new ArrayList<>();
+			valuelist.add(faktum);
+			nyttFaktum.setValuelist(valuelist);
+			return nyttFaktum;
+		}
+	}
+
+
+	public WebSoknad medDelstegStatus(DelstegStatus delstegStatus) {
         this.delstegStatus = delstegStatus;
         return this;
     }

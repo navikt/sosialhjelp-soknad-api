@@ -30,17 +30,18 @@ angular.module('nav.sporsmalferdig', [])
                     scope.submitMethod();
 
                     if (form.$valid) {
+                        gaaTilTab(tab);
                         lukkTab(tab);
-                        gaaTilTab(nesteTab);
+                        apneTab(tab.next());
+
                     }
                 }
 
                 function gaaTilTab(nyTab) {
                     if (nyTab.length > 0) {
-                        apneTab(nyTab);
                         $timeout(function () {
-                            scrollToElement(nyTab);
-                        }, 200);
+                            scrollToElement(nyTab, 0);
+                        }, 0);
                     }
                 }
 
