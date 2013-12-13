@@ -19,7 +19,7 @@ angular.module('app.directives', [
 	'nav.prosent',
 	'nav.sidetittel',
     'nav.bildenavigering',
-    'nav.ingenytelser',
     'nav.utdanningannet',
+    'nav.ingenytelser',
     'nav.accordion'
 ]);
