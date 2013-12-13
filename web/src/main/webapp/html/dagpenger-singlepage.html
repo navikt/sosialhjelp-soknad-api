@@ -1,5 +1,5 @@
 <div data-stegindikator data-steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="1"></div>
-<div data-ng-form="dagpengerForm" data-ng-controller="ModusCtrl">
+<div data-ng-form="dagpengerForm" data-ng-controller="ModusCtrl" data-ng-cloak>
     <div data-ng-controller="DagpengerCtrl">
         <div data-sticky-feilmelding></div>
         <div class="rad soknad" data-sidetittel="sidetittel.skjema">
@@ -33,8 +33,7 @@
                                  data-feilmelding="fritekst.feilmelding"></div>
                         </div>
                     </div>
-                    <a class="knapp-hoved" data-cmstekster="skjema.ferdig"
-                       data-ng-click="validerDagpenger(dagpengerForm)"/>
+                    <a href="#/vedlegg/{{soknadData.soknadId}}"  class="knapp-hoved" data-cmstekster="skjema.ferdig" data-ng-click="validerDagpenger(dagpengerForm)"></a>
                 </section>
             </div>
         </div>

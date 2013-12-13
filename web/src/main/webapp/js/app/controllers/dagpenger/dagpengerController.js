@@ -18,22 +18,22 @@ angular.module('nav.dagpenger', [])
             $scope.$broadcast('VALIDER_ARBEIDSFORHOLD', form.arbeidsforholdForm);
             $scope.$broadcast('VALIDER_EGENNAERING', form.egennaeringForm);
             $scope.$broadcast('VALIDER_VERNEPLIKT', form.vernepliktigForm);
-//            $scope.$broadcast('VALIDER_FRIVILLIG', form.frivilligForm);
-//            $scope.$broadcast('VALIDER_PERSONALIA', form.personaliaForm);
             $scope.$broadcast('VALIDER_REELLARBEIDSSOKER', form.reellarbeidssokerForm);
             $scope.$broadcast('VALIDER_DAGPENGER', form);
 
             $timeout(function () {
                 $scope.validateForm(form.$invalid);
+                var elementMedForsteFeil = $('.accordion-group').find('.form-linje.feil, .form-linje.feilstyling').first();
                 if (form.$valid) {
                     $location.path("/vedlegg/" + $scope.soknadData.soknadId);
                 } else {
-                    scrollToElement($('.accordion-group').has('.form-linje.feil, .form-linje.feilstyling').first(), 70);
+                    scrollToElement(elementMedForsteFeil, 200);
+                    giFokus(elementMedForsteFeil);
+                    setAktivFeilmeldingsklasse(elementMedForsteFeil);
+
                 }
             }, 400);
         };
-
-
 
         $scope.$on("OPEN_TAB", function (e, ider) {
             settApenStatusForAccordion(true, ider);
@@ -58,5 +58,13 @@ angular.module('nav.dagpenger', [])
             if (idx > -1) {
                 $scope.grupper[idx].apen = apen;
             }
+        }
+
+        function giFokus(element) {
+            element.find(':input').focus();
+        }
+
+        function setAktivFeilmeldingsklasse(element) {
+            element.addClass('aktiv-feilmelding');
         }
     }])
