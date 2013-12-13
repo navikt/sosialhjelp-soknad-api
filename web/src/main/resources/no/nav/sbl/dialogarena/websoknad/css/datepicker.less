@@ -1,5 +1,5 @@
 .datepicker {
-    width: 170px;
+    width: 165px;
     vertical-align: top;
 
     .caretPosition {
@@ -12,72 +12,30 @@
         top: 0;
         left: 0;
     }
-    label.dato-label {
-        display: block;
+
+    .mask {
+        background: transparent;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        position: absolute;
+        color: #ccc !important;
+        font-size: 14px !important;
+        cursor: text;
+        text-transform: none;
     }
-    .datepicker-input {
-        display: inline-block;
-        width: 102px;
-        height: 32px;
-        background-color: #fff;
-        border: 1px solid #cccccc;
-        border-top: 1px solid #b7b1a9;
 
-        label {
-            display: inline;
+    label {
+        span {
+            display: block;
 
-            .punktum {
-                cursor: text;
-                position: absolute;
-                bottom: 5px;
-
-                &.graa {
-                    color: #ccc !important;
-                }
-            }
-
-            .maskedInput {
+            &.maskedInput {
                 position: relative;
                 display: inline-block;
 
-                &.dag {
-                    input {
-                        max-width: 22px;
-                        padding-right: 0;
-                    }
-                }
-
-                &.maaned {
-                    input {
-                        max-width: 24px;
-                        padding-left: 0;
-                        padding-right: 0;
-                    }
-                }
-
-                &.aar {
-                    input {
-                        max-width: 39px;
-                        padding-left: 0;
-                    }
-                }
-
                 input {
+                    width: 100px;
                     position: relative;
-                    border: none !important;
-                    background-color: transparent !important;
-                }
-
-                .mask {
-                    background: transparent;
-                    border: none !important;
-                    padding: 0 !important;
-                    margin: 0 !important;
-                    position: absolute;
-                    color: #ccc !important;
-                    font-size: 14px !important;
-                    cursor: text;
-                    text-transform: none;
                 }
             }
         }
@@ -97,28 +55,12 @@
 
 
     &.feil {
-        .datepicker-input {
-            background-color: #fee6e6;
-            border: 1px solid #fca292;
-            border-top: 1px solid @red;
-        }
-
         .knapp-liten {
             border-left: 1px solid #fca292;
         }
 
         .melding {
             display: block !important;
-        }
-    }
-
-    &.fokus {
-        .datepicker-input {
-            border-color: #52A8EC;
-        }
-
-        .knapp-liten {
-            border-left: 1px solid #52A8EC;
         }
     }
 }
