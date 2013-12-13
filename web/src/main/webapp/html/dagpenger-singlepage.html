@@ -1,95 +1,42 @@
 <div data-stegindikator data-steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="1"></div>
+<div data-ng-form="dagpengerForm" data-ng-controller="ModusCtrl">
+    <div data-ng-controller="DagpengerCtrl">
+        <div data-sticky-feilmelding></div>
+        <div class="rad soknad" data-sidetittel="sidetittel.skjema">
+            <section class="sak-hel">
+                <div class="panel-standard-belyst skjema">
 
-<div class="rad soknad" data-sidetittel="sidetittel.skjema">
-    <section class="sak-hel">
-        <div class="panel-standard-belyst skjema">
-            <div data-accordion data-close-others="false">
-                <div data-accordion-group class="spm-blokk" id="reell-arbeidssoker">
-                    <div data-accordion-heading>
-                        <div class="flipp">
-                            <span>+</span>
+                    <div data-accordion data-close-others="false">
+                        <div data-accordion-group data-ng-repeat="gruppe in grupper" class="spm-blokk" id="{{gruppe.id}}" data-is-open="gruppe.apen">
+                            <div data-accordion-heading>
+                                <div class="flipp">
+                                    <span>+</span>
+                                </div>
+                                <h2 class="stor" data-cmstekster="{{gruppe.tittel}}"></h2>
+                            </div>
+                            <div data-div data-ng-include="gruppe.template"></div>
                         </div>
-                        <h2 class="stor" data-cmstekster="reellarbeidssoker.tittel"></h2>
                     </div>
-                    <div data-div data-ng-include data-src="'../html/templates/reell-arbeidssoker.html'"></div>
                 </div>
+            </section>
+        </div>
 
-                <div data-accordion-group class="spm-blokk" id="arbeidsforhold">
-                    <div data-accordion-heading>
-                        <div class="flipp">
-                            <span>+</span>
+        <div class="rad ferdig-skjema">
+            <div class="begrensning">
+                <section class="sak-hel">
+                    <div data-ng-form="frivilligForm" class="textarea-form" data-novalidate>
+                        <div id="frivillig-textarea">
+                            <div data-form-errors></div>
+                            <div data-navtextarea data-inputname="fritekst"
+                                 data-ng-model="soknadData.fakta.fritekst.value"
+                                 data-nokkel="fritekst" data-maxlengde="500"
+                                 data-feilmelding="fritekst.feilmelding"></div>
                         </div>
-                        <h2 class="stor" data-cmstekster="arbeidsforhold.tittel"></h2>
                     </div>
-                    <div data-div data-ng-include data-src="'../html/templates/arbeidsforhold.html'"></div>
-                </div>
-
-                <div data-accordion-group class="spm-blokk" id="egen-naering">
-                    <div data-accordion-heading>
-                        <div class="flipp">
-                            <span>+</span>
-                        </div>
-                        <h2 class="stor" data-cmstekster="ikkeegennaering.tittel"></h2>
-                    </div>
-                    <div data-ng-include data-src="'../html/templates/egen-naering.html'"></div>
-                </div>
-
-                <div data-accordion-group class="spm-blokk" id="verneplikt">
-                    <div data-accordion-heading>
-                        <div class="flipp">
-                            <span>+</span>
-                        </div>
-                        <h2 class="stor" data-cmstekster="ikkeavtjentverneplikt.tittel"></h2>
-                    </div>
-                    <div data-ng-include data-src="'../html/templates/verneplikt.html'"></div>
-                </div>
-
-                <div data-accordion-group class="spm-blokk" id="utdanning">
-                    <div data-accordion-heading>
-                        <div class="flipp">
-                            <span>+</span>
-                        </div>
-                        <h2 class="stor" data-cmstekster="utdanning.tittel"></h2>
-                    </div>
-                    <div data-ng-include data-src="'../html/templates/utdanning.html'"></div>
-                </div>
-
-                <div data-accordion-group class="spm-blokk" id="ytelser">
-                    <div data-accordion-heading>
-                        <div class="flipp">
-                            <span>+</span>
-                        </div>
-                        <h2 class="stor" data-cmstekster="ytelser.tittel"></h2>
-                    </div>
-                    <div data-ng-include data-src="'../html/templates/ytelser.html'"></div>
-                </div>
-
-                <div data-accordion-group class="spm-blokk" id="personalia">
-                    <div data-accordion-heading>
-                        <div class="flipp">
-                            <span>+</span>
-                        </div>
-                        <h2 class="stor" data-cmstekster="personalia.tittel"></h2>
-                    </div>
-                    <div data-ng-include data-src="'../html/templates/personalia.html'"></div>
-                </div>
+                    <a href="#" class="knapp-hoved" data-cmstekster="skjema.ferdig" data-ng-click="validerDagpenger(dagpengerForm)"></a>
+                </section>
             </div>
         </div>
-    </section>
-</div>
-
-<div class="rad ferdig-skjema">
-    <div class="begrensning">
-        <section class="sak-hel">
-            <div data-ng-form="frivilligForm" class="textarea-form" data-novalidate>
-                <div id="frivillig-textarea">
-                    <div data-form-errors></div>
-                    <div data-navtextarea data-inputname="fritekst" data-ng-model="soknadData.fakta.fritekst.value"
-		                    data-nokkel="fritekst" data-maxlengde="500" data-feilmelding="fritekst.feilmelding"></div>
-                </div>
-            </div>
-            <a class="knapp-hoved" href="#/vedlegg/{{ soknadData.soknadId }}" data-cmstekster="skjema.ferdig"></a>
-        </section>
     </div>
 </div>
 <div data-sist-lagret></div>

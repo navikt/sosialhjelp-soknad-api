@@ -1,5 +1,5 @@
 angular.module('nav.stickybunn', [])
-    .directive('sistLagret', ['data', '$window', function (data, $window) {
+    .directive('sistLagret', ['data', '$window', '$timeout', function (data, $window, $timeout) {
         return {
             replace: true,
             templateUrl: '../js/app/directives/stickybunn/stickyBunnTemplate.html',
@@ -7,11 +7,11 @@ angular.module('nav.stickybunn', [])
                 scope.soknadId = data.soknad.soknadId;
 
                 scope.hentSistLagretTid = function() {
-                    return data.soknad.fakta.sistLagret.value;
+                    return data.soknad.sistLagret;
                 }
 
                 scope.soknadHarBlittLagret = function() {
-                    return data.soknad.fakta.sistLagret !== undefined;
+                    return data.soknad.sistLagret != null;
                 }
 
                 scope.soknadHarAldriBlittLagret = function() {
@@ -39,7 +39,9 @@ angular.module('nav.stickybunn', [])
                     }
                 }
 
-                settStickySistLagret();
+                $timeout(function() {
+                    settStickySistLagret();
+                });
             }
         }
     }]);

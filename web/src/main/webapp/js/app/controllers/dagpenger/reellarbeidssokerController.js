@@ -12,7 +12,7 @@ angular.module('nav.reellarbeidssoker', [])
 
         $scope.alder = data.alder.alder;
 //        For testing av alder:
-//        $scope.alder = 59;
+        $scope.alder = 59;
 
         $scope.navigering = {nesteside: 'arbeidsforhold'};
         $scope.sidedata = {navn: 'reellarbeidssoker'};
@@ -21,7 +21,11 @@ angular.module('nav.reellarbeidssoker', [])
         var pendlenokler = ['pendlereduserthelse', 'pendleomsorgbarnunder1aar', 'pendleomsorgbarnopptil10', 'pendleeneansvarbarnunder5skoleaar',
             'pendleeneansvarbarnopptil18aar', 'pendleannensituasjon', 'pendleomsorgansvar' ];
 
-        $scope.validerReellarbeidssoker = function (form) {
+        $scope.$on('VALIDER_REELLARBEIDSSOKER', function (scope, form) {
+            $scope.validerReellarbeidssoker(form, false);
+        });
+
+        $scope.validerReellarbeidssoker = function (form, skalScrolle) {
             if (sjekkOmGittEgenskapTilObjektErFalse($scope.soknadData.fakta.villigdeltid) && $scope.erUnder60Aar()) {
                 var minstEnDeltidCheckboksAvhuket = $scope.erCheckboxerAvhuket(deltidnokler);
                 settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnVilligDeltidCheckboksErAvhuketFeilmeldingNavn, minstEnVilligDeltidCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinkenDeltid, minstEnDeltidCheckboksAvhuket, false);
@@ -35,11 +39,10 @@ angular.module('nav.reellarbeidssoker', [])
                 settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnVilligPendleCheckboksErAvhuketFeilmeldingNavn, minstEnVilligPendleCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinkenPendle, true, false);
             }
             $scope.validateForm(form.$invalid);
-            $scope.runValidation();
+            $scope.runValidation(skalScrolle);
+
         }
 
-        // For å åpne opp taben. Dataen som blir sendt med eventen er ID på accordion-group som skal åpnes
-        $scope.$emit("OPEN_TAB", 'reell-arbeidssoker');
 
         $scope.erCheckboxerAvhuket = function (checkboxNokler) {
             var minstEnAvhuket = false;

@@ -8,7 +8,7 @@ angular.module('nav.forsettsenere',['nav.cmstekster'])
             if(form.$valid) {
                 var soknadId = $routeParams.soknadId;
                 if($scope.soknadData.fakta.epost) {
-    			$http.post('/sendsoknad/rest/soknad/' + soknadId +'/fortsettsenere', $scope.soknadData.fakta.epost.value)
+    			$http.post('/sendsoknad/rest/soknad/' + soknadId +'/fortsettsenere', $scope.soknadData.fakta.epost.value, {"headers":{"Content-Type": "text/plain"}})
     				.success(function(data) {
                         $location.path('kvittering-fortsettsenere/' + soknadId);
     				});

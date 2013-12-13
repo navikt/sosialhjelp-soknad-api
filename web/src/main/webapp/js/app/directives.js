@@ -5,6 +5,7 @@ angular.module('app.directives', [
 	'nav.cmstekster',
 	'nav.input',
 	'nav.feilmeldinger',
+	'nav.stickyFeilmelding',
 	'nav.sporsmalferdig',
 	'nav.markup',
 	'nav.stegindikator',
@@ -16,8 +17,9 @@ angular.module('app.directives', [
 	'nav.hjelpetekst',
 	'nav.datepicker',
 	'nav.prosent',
-	'nav.ingenytelser',
 	'nav.sidetittel',
     'nav.bildenavigering',
+    'nav.utdanningannet',
+    'nav.ingenytelser',
     'nav.accordion'
 ]);
