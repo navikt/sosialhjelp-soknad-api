@@ -45,6 +45,10 @@ if (!Array.prototype.indexByValue) {
     }
 }
 
+String.prototype.splice = function(idx, rem, str) {
+    return (this.slice(0, idx) + str + this.slice(idx + Math.abs(rem)));
+}
+
 function sjekkOmGittEgenskapTilObjektErFalse(objekt) {
     if (objekt) {
         return checkFalse(objekt.value);
@@ -245,12 +249,22 @@ function caretPosisjon(element) {
     return posisjon;
 }
 
+function settCaretPosisjon(element, posisjon) {
+    var domElement = element[0];
+
+    if (document.selection) {
+        domElement.focus();
+
+        var oSel = document.selection.createRange();
+
+        oSel.moveStart('character', posisjon);
+    } else if (domElement.selectionStart || domElement.selectionStart == '0') {
+        domElement.selectionStart = posisjon;
+        domElement.selectionEnd = posisjon;
+    }
+}
+
 function settFokusTilNesteElement(inputElement) {
     var fokuserbareElementer = $('input, a, select, button, textarea').filter(':visible');
     fokuserbareElementer.eq(fokuserbareElementer.index(inputElement) + 1).focus();
-}
-
-function settFokusTilForrigeElement(inputElement) {
-    var fokuserbareElementer = $('input, a, select, button, textarea').filter(':visible');
-    fokuserbareElementer.eq(fokuserbareElementer.index(inputElement) - 1).focus();
 }
