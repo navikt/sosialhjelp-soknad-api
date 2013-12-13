@@ -37,6 +37,7 @@ angular.module('nav.dagpenger', [])
 
         $scope.$on("OPEN_TAB", function (e, ider) {
             settApenStatusForAccordion(true, ider);
+          
         });
 
         $scope.$on("CLOSE_TAB", function (e, ider) {
