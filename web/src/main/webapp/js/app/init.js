@@ -63,7 +63,6 @@ angular.module('sendsoknad')
 
         var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
             function(result) { // Success
-                console.log("Hentet tekst");
                 cms.tekster = result;
             }
         );
@@ -71,7 +70,6 @@ angular.module('sendsoknad')
 
         var alder = $resource('/sendsoknad/rest/soknad/personalder').get(
             function(result) { // Success
-                console.log("Hentet alder");
                 data.alder = result;
             }
         );
@@ -80,13 +78,11 @@ angular.module('sendsoknad')
         if (soknadId != undefined) {
             var soknad = soknadService.get({param: soknadId},
                 function(result) { // Success
-                    console.log("Hentet soknad");
                     data.soknad = result;
                 }
             );
             var soknadOppsett = soknadService.options({param: soknadId},
                 function(result) { // Success
-                    console.log("Hentet soknadoppsett");
                     data.soknadOppsett = result;
                 });
             promiseArray.push(soknad.$promise, soknadOppsett.$promise);
