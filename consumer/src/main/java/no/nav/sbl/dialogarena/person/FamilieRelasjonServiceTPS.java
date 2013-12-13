@@ -41,7 +41,10 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
     	HentKjerneinformasjonResponse response = null;
         try {
             response = person.hentKjerneinformasjon(lagXMLRequest(fodselsnummer));
+            if (response != null)
+            {
             logger.warn("Fullstendig XML fra Person-servicen:" + response.getPerson());
+            }
         } catch (HentKjerneinformasjonPersonIkkeFunnet e) {
             logger.error("Fant ikke bruker i TPS (Person-servicen).", e);
             return new Person();

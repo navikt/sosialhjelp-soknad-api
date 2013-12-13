@@ -1,5 +1,7 @@
 <div class="form-linje textarea-container">
-    <div data-ng-show="hvisIRedigeringsmodus()">
+    <!-- DEMO-hack for å få vist fritekstfeltet -->
+    <!--div data-ng-show="hvisIRedigeringsmodus()"-->
+        <div>
         <label>
             <span data-cmstekster="{{sporsmal}}"></span>
             <textarea data-ng-model="model" name="tmpName" data-error-messages="'{{ feilmelding }}'"
@@ -14,10 +16,10 @@
         </label>
         <span class="melding"></span>
     </div>
-    <div data-ng-show="hvisIOppsummeringsmodus()">
+    <!--div data-ng-show="hvisIOppsummeringsmodus()">
         <span data-cmstekster="{{ sporsmal }}">:</span>
         <span>
             {{ model }}
         </span>
-    </div>
+    </div-->
 </div>
