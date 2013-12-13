@@ -201,7 +201,7 @@ angular.module('nav.datepicker', [])
             }
         }
     }])
-    .directive('datoMask', ['$filter', function($filter) {
+    .directive('datoMask', ['$filter', 'cms', function($filter, cms) {
         return {
             restrict: 'A',
             require: 'ngModel',
@@ -210,23 +210,23 @@ angular.module('nav.datepicker', [])
                     return;
                 }
 
-                var datoMaskFormat = 'dd.mm.åååå';
+                var datoMask = cms.tekster['dato.format'];
 
-                var caretPosElem = element.closest('.datepicker').find('.caretPosition');
+                var caretPosisjonElement = element.closest('.datepicker').find('.caretPosition');
                 var maskElement = element.next();
-                var originalLeft = element.position().left + 8;
-                var top = element.position().top + 7
-                var left = originalLeft;
-                maskElement.css({top: top + "px", left: left + "px"});
-                maskElement.text(datoMaskFormat);
+                var inputElementVenstre = element.position().left + 8;
+                var topp = element.position().top + 7
+                var venstre = inputElementVenstre;
+                maskElement.css({top: topp + "px", left: venstre + "px"});
+                maskElement.text(datoMask);
+                caretPosisjonElement.hide();
 
-                caretPosElem.hide();
                 element.bind('blur', function() {
-                    caretPosElem.hide();
+                    caretPosisjonElement.hide();
                 });
 
                 element.bind('focus', function() {
-                    caretPosElem.show();
+                    caretPosisjonElement.show();
                 });
 
                 maskElement.bind('click', function() {
@@ -246,31 +246,31 @@ angular.module('nav.datepicker', [])
                 var gammelInputVerdi = '';
                 ngModel.$parsers.unshift(function (datoInput) {
                     var slettet = datoInput.length < gammelInputVerdi.length;
-                    var caretPos = caretPosisjon(element);
+                    var caretPosisjon = caretPosisjon(element);
                     if (!slettet) {
-                        var skrevetTegn = datoInput[caretPos - 1];
-                        if (isNaN(skrevetTegn) || datoInput.length > datoMaskFormat.length) {
-                            datoInput = datoInput.splice(caretPos - 1, 1, '');
-                            caretPos--;
+                        var skrevetTegn = datoInput[caretPosisjon - 1];
+                        if (isNaN(skrevetTegn) || datoInput.length > datoMask.length) {
+                            datoInput = datoInput.splice(caretPosisjon - 1, 1, '');
+                            caretPosisjon--;
                         }
                     }
 
-                    if (!slettet && (caretPos == 2 || caretPos == 5)) {
-                        if (datoInput.length < caretPos + 1) {
+                    if (!slettet && (caretPosisjon == 2 || caretPosisjon == 5)) {
+                        if (datoInput.length < caretPosisjon + 1) {
                             datoInput = datoInput + '.';
-                            caretPos++;
-                        } else if (datoInput[caretPos] == '.') {
-                            caretPos++;
+                            caretPosisjon++;
+                        } else if (datoInput[caretPosisjon] == '.') {
+                            caretPosisjon++;
                         } else if (datoInput.match(/\./g) == null || datoInput.match(/\./g).length < 2) {
-                            datoInput = datoInput.splice(caretPos,0,'.');
-                            caretPos++;
+                            datoInput = datoInput.splice(caretPosisjon,0,'.');
+                            caretPosisjon++;
                         }
                     }
 
                     gammelInputVerdi = datoInput;
                     ngModel.$viewValue = datoInput;
                     ngModel.$render();
-                    settCaretPosisjon(element, caretPos);
+                    settCaretPosisjon(element, caretPosisjon);
 
                     return konverterStringFraNorskDatoformatTilDateObjekt(datoInput);
                 });
@@ -289,27 +289,27 @@ angular.module('nav.datepicker', [])
                             tekst = '';
                         }
 
-                        caretPosElem.text(tekst);
-                        left = originalLeft + caretPosElem.outerWidth();
-                        maskElement.css({top: top + "px", left: left + "px"});
+                        caretPosisjonElement.text(tekst);
+                        venstre = inputElementVenstre + caretPosisjonElement.outerWidth();
+                        maskElement.css({top: topp + "px", left: venstre + "px"});
 
                         var antallPunktum = tekst.match(/\./g) == null ? 0 : tekst.match(/\./g).length;
 
                         var maskTekst = '';
                         if (antallPunktum == 0 && tekst.length < 3) {
-                            maskTekst = datoMaskFormat.substring(tekst.length, datoMaskFormat.length);
+                            maskTekst = datoMask.substring(tekst.length, datoMask.length);
                         } else if (antallPunktum == 1) {
                             var dagTekst = tekst.substring(0, tekst.indexOf('.'));
                             var maanedTekst = tekst.substring(tekst.indexOf('.'), tekst.length);
 
                             if (dagTekst.length < 3 && maanedTekst.length < 4) {
-                                maskTekst = datoMaskFormat.substring(2 + maanedTekst.length, datoMaskFormat.length);
+                                maskTekst = datoMask.substring(2 + maanedTekst.length, datoMask.length);
                             }
                         } else if (antallPunktum == 2) {
                             var dagOgMaanedTekst = tekst.substring(0, tekst.lastIndexOf('.'));
                             var aarTekst = tekst.substring(tekst.lastIndexOf('.'), tekst.length);
                             if (dagOgMaanedTekst.length < 6 && aarTekst.length < 5) {
-                                maskTekst = datoMaskFormat.substring(5 + aarTekst.length, datoMaskFormat.length);
+                                maskTekst = datoMask.substring(5 + aarTekst.length, datoMask.length);
                             }
                         }
                         maskElement.text(maskTekst);
