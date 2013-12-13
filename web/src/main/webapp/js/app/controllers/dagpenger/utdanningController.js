@@ -172,7 +172,7 @@ angular.module('nav.utdanning',[])
             if (erCheckboksForUtdanningAnnetHuketAv) {
                   form.$setValidity(minstEnCheckboksErAvhuketFeilmeldingNavn, true);
                 settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, true, true);
-                console.log("Verdi av feilmeldingen" +  $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet);
+                console.log("Annen utdanning er avhuket. Verdi av feilmeldingen" +  $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet);
 
                 $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet = true;
                 console.log("Verdi av feilmeldingen" +  $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet);
