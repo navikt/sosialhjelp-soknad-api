@@ -19,7 +19,7 @@
         <webservice alias="virksomhet:Brukerprofil_v1"
                     mapToProperty="soknad.webservice.brukerprofil.brukerprofilservice"/>
         <webservice alias="virksomhet:Person_v1"
-                    mapToProperty="soknad.webservice.person.personservice.url"/>            
+                    mapToProperty="soknad.webservice.person.personservice"/>
         <webservice alias="domene.Brukerdialog:sendsoknadservice_v1"
                     mapToProperty="soknad.webservice.henvendelse.sendsoknadservice"/>
 		<webservice alias="virksomhet:Kodeverk_v2" mapToProperty="sendsoknad.webservice.kodeverk"/>

@@ -1,7 +1,6 @@
 angular.module('nav.utdanningannet', [])
     .directive('validerUtdanningAnnet', ['data', function (data) {
     return {
-
         require: ['^form'],
         link: function (scope, element, attrs, ctrl) {
             var eventString = 'RUN_VALIDATION' + ctrl[0].$name;
@@ -12,10 +11,10 @@ angular.module('nav.utdanningannet', [])
             })
 
             scope.$watch(function () {
-                console.log("Utdanning2");
-                return scope.ytelser.skalViseFeilmeldingForUtdanningAnnet;
+                console.log("Utdanning2x" + scope.utdanning.skalViseFeilmeldingForUtdanningAnnet);
+                return scope.utdanning.skalViseFeilmeldingForUtdanningAnnet;
             }, function () {
-                if (scope.ytelser.skalViseFeilmeldingForUtdanningAnnet) {
+                if (scope.utdanning.skalViseFeilmeldingForUtdanningAnnet) {
                     console.log("Utdanning3");
                     element.addClass('feil');
                 } else {
