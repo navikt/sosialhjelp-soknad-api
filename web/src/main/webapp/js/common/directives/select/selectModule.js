@@ -73,7 +73,6 @@ angular.module('nav.select', ['ngSanitize'])
                 element.find('ul').bind('scroll', _.throttle(leggTilElementVedScroll, 200));
 
                 function leggTilElementVedScroll() {
-                    console.log("woot");
                     erScrolletNestenHeltOpp();
                     erScrolletNestenHeltNed();
                 }
