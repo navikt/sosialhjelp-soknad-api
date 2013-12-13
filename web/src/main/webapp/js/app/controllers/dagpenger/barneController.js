@@ -1,35 +1,89 @@
 angular.module('nav.barn',['app.services'])
-.controller('BarneCtrl', ['$scope', 'BrukerData', 'landService', function ($scope,BrukerData, landService) {
-	var barneData = {
-		key: 'barn',
-		value: {
-			"fodselsnummer":undefined,
-			"fornavn":undefined,
-			"etternavn":undefined,
-			"sammensattnavn":undefined,
-			"alder": undefined
+.controller('BarneCtrl', ['$scope', 'BrukerData','data', '$location', function ($scope,BrukerData,data,$location) {
+	
+	var url = $location.$$url;
+	var endreModus = url.indexOf("endrebarn") != -1;
+	$scope.nyttbarn = {barneinntekttall:undefined};	
+	var barnetilleggsData;
+	var ikkebarneinntekt;
+	var barneinntekttall;
+	if(endreModus) {
+		var faktumId = url.split("/").pop();
+		var b = {};
+		
+		
+		if ($scope.soknadData.fakta.barn) {
+			angular.forEach($scope.soknadData.fakta.barn.valuelist, function(value) { 
+				if(value.faktumId == faktumId) {
+					b = value;
+				}
+			});
 		}
-	};
-	$scope.nyttbarn = {barnetillegg:false};
 
-	$scope.formAapent = false;
+		if ($scope.soknadData.fakta.barnetillegg) {
+			angular.forEach($scope.soknadData.fakta.barnetillegg.valuelist, function(value) { 
+				if(value.parrentFaktum == faktumId) {
+					$scope.barnetillegg = value;
+					barnetilleggsData = value;
+				}
+			});
+		}
+		if ($scope.soknadData.fakta.ikkebarneinntekt) {
+			angular.forEach($scope.soknadData.fakta.ikkebarneinntekt.valuelist, function(value) { 
+				if(value.parrentFaktum == faktumId) {
+					$scope.ikkebarneinntekt = value;
+					ikkebarneinntekt = value;
+				}
+			});
+		}
+		if ($scope.soknadData.fakta.barneinntekttall) {
+			angular.forEach($scope.soknadData.fakta.barneinntekttall.valuelist, function(value) { 
+				if(value.parrentFaktum == faktumId) {
+					$scope.nyttbarn.barneinntekttall = value;
+					barneinntekttall = value;
+				}
+			});
+		}
+
+		var barnValue;
+		if(b.value) {
+			b.value = angular.fromJson(b.value)
+			b.value.fodselsdato = new Date(b.value.fodselsdato);
+		}
+	}
+
+	if(b) {
+		var barneData = b;
+	} else {
+		var barneData = {
+			key: 'barn',
+			value: {
+				"fodselsnummer":undefined,
+				"fornavn":undefined,
+				"etternavn":undefined,
+				"sammensattnavn":undefined,
+				"alder": undefined
+			}
+		};
+	}
+
 	$scope.barn = new BrukerData(barneData);
 
-	landService.get().$promise.then(function (result) {
-		$scope.landService = result;
-	});
+	$scope.land = data.land;
 
-	$scope.nyttBarn = function() {
-		$scope.formAapent = true;
-	}
-
-	$scope.slettBarn = function(barn) {
-
-	}
-
-	$scope.avbrytBarn = function() {
+	/*$scope.avbrytBarn = function() {
 		$scope.barn = new BrukerData(barneData);
-		$scope.formAapent = false;
+	}*/
+
+	$scope.barnetHarInntekt = function() {
+		if($scope.ikkebarneinntekt == undefined) {
+			return false;
+		}
+		return sjekkOmGittEgenskapTilObjektErFalse($scope.ikkebarneinntekt);
+	}
+
+	$scope.barnetHarIkkeInntekt = function() {
+		return !$scope.barnetHarInntekt();
 	}
 
 	$scope.lagreBarn = function (form) {
@@ -49,44 +103,92 @@ angular.module('nav.barn',['app.services'])
 			$scope.barn.$jsoncreate({soknadId: $scope.soknadData.soknadId}).then(function(barnData) {
 				$scope.barn = barnData;
 				$scope.barn.value = angular.fromJson(barnData.value);
+				oppdaterFaktumListe("barn");
 
-				var barnetilleggsData = {
-					key: 'barnetillegg',
-					value: $scope.nyttbarn.barnetillegg,
-					parrentFaktum: barnData.faktumId
-				};
+				if(barnetilleggsData == undefined) {
+					barnetilleggsData = {
+						key: 'barnetillegg',
+						value: true,
+						parrentFaktum: barnData.faktumId
+					};
+				}
 
 				$scope.barnetillegg = new BrukerData(barnetilleggsData);
 				$scope.barnetillegg.$create({soknadId: $scope.soknadData.soknadId}).then(function(data) {
 					$scope.barnetillegg = data;
-					oppdaterFaktumLister();
+					oppdaterFaktumListe("barnetillegg");
 
 					$scope.barn = new BrukerData(barneData);
-					$scope.nyttbarn.barnetillegg = false;
-					$scope.formAapent = false;
-				});
-			});
-		}
 
-		function oppdaterFaktumLister() {
-			if($scope.soknadData.fakta.barnetillegg && $scope.soknadData.fakta.barnetillegg.valuelist) {
-				$scope.soknadData.fakta.barnetillegg.valuelist.push($scope.barnetillegg);
-			} else {
-				$scope.soknadData.fakta.barnetillegg = {};
-				$scope.soknadData.fakta.barnetillegg.valuelist = [$scope.barnetillegg];
-			}
+					if(ikkebarneinntekt == undefined) {
+						ikkebarneinntekt = {
+							key: 'ikkebarneinntekt',
+							value: $scope.ikkebarneinntekt.value,
+							parrentFaktum: barnData.faktumId
+						};
+					}
 
-			if($scope.soknadData.fakta.barn && $scope.soknadData.fakta.barn.valuelist) {
-				$scope.soknadData.fakta.barn.valuelist.push($scope.barn);
-			} else {
-				$scope.soknadData.fakta.barn = {};
-				$scope.soknadData.fakta.barn.valuelist = [$scope.barn];
-			}
-		}
+					$scope.nyttBarnIkkeBarneInntekt =  new BrukerData(ikkebarneinntekt);
+					$scope.nyttBarnIkkeBarneInntekt.$create({soknadId: $scope.soknadData.soknadId}).then(function(data) {
+						$scope.ikkebarneinntekt = data;
+						oppdaterFaktumListe("ikkebarneinntekt");
+						
+						if($scope.barnetHarInntekt()) {
+							if(barneinntekttall == undefined) {
+								barneinntekttall = {
+									key: 'barneinntekttall',
+									value: $scope.nyttbarn.barneinntekttall.value,
+									parrentFaktum: barnData.faktumId
+								};
+							}
 
-		function finnSammensattNavn() {
-			return $scope.barn.value.fornavn + " " + $scope.barn.value.etternavn;
+							$scope.nyttBarnBarneInntektTall =  new BrukerData(barneinntekttall);
+							$scope.nyttBarnBarneInntektTall.$create({soknadId: $scope.soknadData.soknadId}).then(function(data) {
+								$scope.nyttbarn.barneinntekttall = data;
+								
+								if($scope.soknadData.fakta.barneinntekttall && $scope.soknadData.fakta.barneinntekttall) {
+									$scope.soknadData.fakta.barneinntekttall.valuelist.push($scope.nyttbarn.barneinntekttall);
+								} else {
+									$scope.soknadData.fakta.barneinntekttall = {};
+									$scope.soknadData.fakta.barneinntekttall.valuelist = [$scope.nyttbarn.barneinntekttall];
+								}
+
+								$scope.ikkebarneinntekt=false;
+								$location.path('dagpenger/' + $scope.soknadData.soknadId);
+							});
+						} else {
+							$scope.ikkebarneinntekt=false;
+							$location.path('dagpenger/' + $scope.soknadData.soknadId);
+						}
+
+					});
+
+
+});
+})
+}
+
+function oppdaterFaktumListe(type) {
+	if($scope.soknadData.fakta[type] && $scope.soknadData.fakta[type].valuelist) {
+		if(endreModus) {
+			angular.forEach($scope.soknadData.fakta[type].valuelist, function(value, index) {
+				if(value.faktumId = $scope[type].faktumId){ 
+					$scope.soknadData.fakta[type].valuelist[index] = $scope[type];
+				} 
+			})
+		} else {
+			$scope.soknadData.fakta[type].valuelist.push($scope[type]);
 		}
+		
+	} else {
+		$scope.soknadData.fakta[type] = {};
+		$scope.soknadData.fakta[type].valuelist = [$scope[type]];
+	}
+}
+
+function finnSammensattNavn() {
+	return $scope.barn.value.fornavn + " " + $scope.barn.value.etternavn;
+}
 
         //TODO: FIX Tester
         function finnAlder() {

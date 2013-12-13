@@ -96,4 +96,37 @@ angular.module('sendsoknad')
         var d = $q.all(promiseArray);
 
         return d;
+    }])
+
+    .factory('NyttBarnSideResolver', ['data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', function(data, cms, $resource, $q, $route, soknadService, landService) {
+        var soknadId = $route.current.params.soknadId;
+        var promiseArray = [];
+
+        var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
+            function(result) { // Success
+                cms.tekster = result;
+            }
+        );
+        promiseArray.push(tekster.$promise);
+
+        var soknad = soknadService.get({param: soknadId},
+            function(result) { // Success
+                data.soknad = result;
+            }
+        );
+        var soknadOppsett = soknadService.options({param: soknadId},
+            function(result) { // Success
+                data.soknadOppsett = result;
+            });
+        promiseArray.push(soknad.$promise, soknadOppsett.$promise);
+    
+        var land = landService.get( 
+        	function(result) { // Success
+                data.land = result;
+            }
+        );
+
+        var d = $q.all(promiseArray);
+
+        return d;
     }]);

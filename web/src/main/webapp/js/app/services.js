@@ -42,8 +42,8 @@ angular.module('app.services', ['ngResource'])
             create: { method: 'POST', params: {}},
             jsoncreate: { method: 'POST', params: {}, transformRequest: function(data, headersGetter) {
                 var d = deepClone(data);
-                d.value = JSON.stringify(data.value);
-                d = JSON.stringify(d);
+                d.value = angular.toJson(data.value);
+                d = angular.toJson(d);
                 return d;
                 }
             }
