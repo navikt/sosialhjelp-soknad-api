@@ -1,5 +1,5 @@
 angular.module('nav.barn',['app.services'])
-.controller('BarneCtrl', ['$scope', 'BrukerData','data', '$location', function ($scope,BrukerData,data,$location) {
+.controller('BarneCtrl', ['$scope', 'BrukerData','data', '$cookieStore', '$location', function ($scope,BrukerData,data,$cookieStore,$location) {
 	
 	var url = $location.$$url;
 	var endreModus = url.indexOf("endrebarn") != -1;

@@ -1,4 +1,4 @@
-<div class="skjemaramme" data-ng-controller="ModusCtrl">
+<div class="skjemaramme" data-ng-controller="ModusCtrl" barne-directive>
 	<div data-ng-form="barnetilleggForm" class="skjemainnhold" data-ng-controller="BarnetilleggCtrl" novalidate>
 		<div form-errors></div>
 		<p class="informasjonstekst" cmstekster="barnetillegg.informasjon"></p>
@@ -85,7 +85,7 @@
 		</div>
 
 		<div id="legg-til-barn" data-ng-show="hvisIRedigeringsmodus()">
-			<a class="knapp-leggtil-liten" href="#/nyttbarn/{{ soknadData.soknadId }}" data-cmstekster="barnetillegg.nyttbarn"></a>
+			<a class="knapp-leggtil-liten" href data-ng-click="leggTilBarn()" data-cmstekster="barnetillegg.nyttbarn"></a>
 		</div>
 		
 		<div spmblokkferdig
