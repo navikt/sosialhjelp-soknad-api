@@ -246,24 +246,25 @@ angular.module('nav.datepicker', [])
                 var gammelInputVerdi = '';
                 ngModel.$parsers.unshift(function (datoInput) {
                     var slettet = datoInput.length < gammelInputVerdi.length;
-                    var caretPosisjon = caretPosisjon(element);
+                    var caretPosisjon = hentCaretPosisjon(element);
+
                     if (!slettet) {
                         var skrevetTegn = datoInput[caretPosisjon - 1];
                         if (isNaN(skrevetTegn) || datoInput.length > datoMask.length) {
                             datoInput = datoInput.splice(caretPosisjon - 1, 1, '');
                             caretPosisjon--;
                         }
-                    }
 
-                    if (!slettet && (caretPosisjon == 2 || caretPosisjon == 5)) {
-                        if (datoInput.length < caretPosisjon + 1) {
-                            datoInput = datoInput + '.';
-                            caretPosisjon++;
-                        } else if (datoInput[caretPosisjon] == '.') {
-                            caretPosisjon++;
-                        } else if (datoInput.match(/\./g) == null || datoInput.match(/\./g).length < 2) {
-                            datoInput = datoInput.splice(caretPosisjon,0,'.');
-                            caretPosisjon++;
+                        if (caretPosisjon == 2 || caretPosisjon == 5) {
+                            if (datoInput.length < caretPosisjon + 1) {
+                                datoInput = datoInput + '.';
+                                caretPosisjon++;
+                            } else if (datoInput[caretPosisjon] == '.') {
+                                caretPosisjon++;
+                            } else if (datoInput.match(/\./g) == null || datoInput.match(/\./g).length < 2) {
+                                datoInput = datoInput.splice(caretPosisjon,0,'.');
+                                caretPosisjon++;
+                            }
                         }
                     }
 
@@ -296,23 +297,31 @@ angular.module('nav.datepicker', [])
                         var antallPunktum = tekst.match(/\./g) == null ? 0 : tekst.match(/\./g).length;
 
                         var maskTekst = '';
-                        if (antallPunktum == 0 && tekst.length < 3) {
-                            maskTekst = datoMask.substring(tekst.length, datoMask.length);
-                        } else if (antallPunktum == 1) {
-                            var dagTekst = tekst.substring(0, tekst.indexOf('.'));
-                            var maanedTekst = tekst.substring(tekst.indexOf('.'), tekst.length);
 
-                            if (dagTekst.length < 3 && maanedTekst.length < 4) {
-                                maskTekst = datoMask.substring(2 + maanedTekst.length, datoMask.length);
-                            }
-                        } else if (antallPunktum == 2) {
-                            var dagOgMaanedTekst = tekst.substring(0, tekst.lastIndexOf('.'));
-                            var aarTekst = tekst.substring(tekst.lastIndexOf('.'), tekst.length);
-                            if (dagOgMaanedTekst.length < 6 && aarTekst.length < 5) {
-                                maskTekst = datoMask.substring(5 + aarTekst.length, datoMask.length);
-                            }
+                        if (skalViseDatoFormatFraOgMedDag()) {
+                            maskTekst = datoMask.substring(tekst.length, datoMask.length);
+                        } else if (skalViseDatoFormatFraOgMedMaaned()) {
+                            maskTekst = datoMask.substring(2 + maanedTekst.length, datoMask.length);
+                        } else if (skalBareViseDatoFormatMedAar()) {
+                            maskTekst = datoMask.substring(5 + aarTekst.length, datoMask.length);
                         }
                         maskElement.text(maskTekst);
+
+                        function skalViseDatoFormatFraOgMedDag() {
+                            return antallPunktum == 0 && tekst.length < 3;
+                        }
+
+                        function skalViseDatoFormatFraOgMedMaaned() {
+                            var dagTekst = tekst.substring(0, tekst.indexOf('.'));
+                            var maanedTekst = tekst.substring(tekst.indexOf('.'), tekst.length);
+                            return antallPunktum == 1 && dagTekst.length < 3 && maanedTekst.length < 4;
+                        }
+
+                        function skalBareViseDatoFormatMedAar() {
+                            var dagOgMaanedTekst = tekst.substring(0, tekst.lastIndexOf('.'));
+                            var aarTekst = tekst.substring(tekst.lastIndexOf('.'), tekst.length);
+                            return antallPunktum == 2 && dagOgMaanedTekst.length < 6 && aarTekst.length < 5;
+                        }
                     }
                 )
             }

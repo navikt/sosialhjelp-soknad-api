@@ -235,7 +235,7 @@ function konverterTallTilStringMedToSiffer(tall) {
     return tallMedToSiffer.slice(-2);
 }
 
-function caretPosisjon(element) {
+function hentCaretPosisjon(element) {
     var domElement = element[0];
     var posisjon = 0;
 
