@@ -280,6 +280,70 @@ describe('utility funksjoner -', function () {
             expect(dato.getFullYear()).toBe(forventetAr);
         });
     });
+
+    describe('datovalidering', function() {
+        it('skal få resultat tilbake fra datovalidering', function() {
+            var datoString = "01.01.2010";
+            var erGyldig = erGyldigDato(datoString);
+
+            expect(erGyldig).toBeDefined();
+        });
+
+        it('skal få tilbake boolean fra datovalidering', function () {
+            var datoString = "01.01.2010";
+            var erGyldig = erGyldigDato(datoString);
+
+            expect(typeof erGyldig).toBe("boolean");
+        });
+
+        it('skal få true dersom en datostring er gyldig', function () {
+            var datoString = "01.01.2010";
+            var erGyldig = erGyldigDato(datoString);
+
+            expect(erGyldig).toBe(true);
+        });
+
+        it('skal få false dersom en datostring ikke er gyldig', function () {
+            var datoString = "40.01.2010";
+            var erGyldig = erGyldigDato(datoString);
+
+            expect(erGyldig).toBe(false);
+        });
+
+        it('skal få at 29. februar ikke er gyldig dato dersom det ikke er skuddår', function () {
+            var datoString = "29.02.2010";
+            var erGyldig = erGyldigDato(datoString);
+
+            expect(erGyldig).toBe(false);
+        });
+
+        it('skal få at 29. februar er gyldig dato dersom det er skuddår', function () {
+            var datoString = "29.02.2012";
+            var erGyldig = erGyldigDato(datoString);
+
+            expect(erGyldig).toBe(true);
+        });
+    });
+
+    describe('tall med 2 siffer', function () {
+        it('skal få returverdi', function () {
+            var tall = 1;
+
+            expect(konverterTallTilStringMedToSiffer(tall)).toBeDefined();
+        });
+
+        it('skal legge til 0 dersom ett tall bare har ett siffer', function () {
+            var tall = 1;
+
+            expect(konverterTallTilStringMedToSiffer(tall)).toBe("0" + tall);
+        });
+
+        it('skal ikke legge til 0 dersom ett tall har 2 siffer', function () {
+            var tall = 10;
+
+            expect(konverterTallTilStringMedToSiffer(tall)).toBe("10");
+        });
+    });
 });
 
 

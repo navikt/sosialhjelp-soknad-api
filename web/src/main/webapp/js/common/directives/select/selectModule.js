@@ -132,12 +132,12 @@ angular.module('nav.select', ['ngSanitize'])
 
                 scope.enter = function() {
                     velgElement();
-                    settFokusTilNesteElement();
+                    settFokusTilNesteElement(angular.element(element.find('input')));
                 }
 
                 scope.tab = function(event) {
                     velgElement();
-                    settFokusTilNesteElement();
+                    settFokusTilNesteElement(angular.element(element.find('input')));
                     event.preventDefault();
                 }
 
@@ -215,12 +215,6 @@ angular.module('nav.select', ['ngSanitize'])
                     } else {
                         return false;
                     }
-                }
-
-                function settFokusTilNesteElement() {
-                    var fokuserbareElementer = $('input, a, select, button, textarea').filter(':visible');
-                    var input = angular.element(element.find('input'));
-                    fokuserbareElementer.eq(fokuserbareElementer.index(input) + 1).focus();
                 }
 
                 function hentListeLengde() {

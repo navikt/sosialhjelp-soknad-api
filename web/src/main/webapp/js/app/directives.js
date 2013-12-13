@@ -18,6 +18,7 @@ angular.module('app.directives', [
 	'nav.datepicker',
 	'nav.prosent',
 	'nav.sidetittel',
+    'ui.mask',
     'nav.bildenavigering',
     'nav.utdanningannet',
     'nav.ingenytelser',
