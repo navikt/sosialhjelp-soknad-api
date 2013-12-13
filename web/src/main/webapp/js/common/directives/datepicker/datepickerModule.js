@@ -297,6 +297,9 @@ angular.module('nav.datepicker', [])
                         var antallPunktum = tekst.match(/\./g) == null ? 0 : tekst.match(/\./g).length;
 
                         var maskTekst = '';
+                        var maanedTekst = tekst.substring(tekst.indexOf('.'), tekst.length);
+
+                        var aarTekst = tekst.substring(tekst.lastIndexOf('.'), tekst.length);
 
                         if (skalViseDatoFormatFraOgMedDag()) {
                             maskTekst = datoMask.substring(tekst.length, datoMask.length);
@@ -313,13 +316,11 @@ angular.module('nav.datepicker', [])
 
                         function skalViseDatoFormatFraOgMedMaaned() {
                             var dagTekst = tekst.substring(0, tekst.indexOf('.'));
-                            var maanedTekst = tekst.substring(tekst.indexOf('.'), tekst.length);
                             return antallPunktum == 1 && dagTekst.length < 3 && maanedTekst.length < 4;
                         }
 
                         function skalBareViseDatoFormatMedAar() {
                             var dagOgMaanedTekst = tekst.substring(0, tekst.lastIndexOf('.'));
-                            var aarTekst = tekst.substring(tekst.lastIndexOf('.'), tekst.length);
                             return antallPunktum == 2 && dagOgMaanedTekst.length < 6 && aarTekst.length < 5;
                         }
                     }
