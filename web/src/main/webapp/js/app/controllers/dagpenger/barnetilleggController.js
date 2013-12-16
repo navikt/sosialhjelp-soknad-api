@@ -7,62 +7,63 @@ angular.module('nav.barnetillegg',[])
 				$scope.$emit("CLOSE_TAB", "reell-arbeidssoker");
 				$scope.$emit("OPEN_TAB", barneCookie.aapneTabs);
 				
-            	$timeout(
-            		function() {
-            				scrollToElement(angular.element("#barnetillegg"),0);
-            				console.log(new Date().getTime());
-            			}
-            		,600);
-            	$cookieStore.remove('barneCookie');
+				$timeout(
+					function() {
+						scrollToElement(angular.element("#barnetillegg"),0);
+						console.log(new Date().getTime());
+					}
+					,600);
+				$cookieStore.remove('barneCookie');
 			}
 		})
 	}
 
 }])
-.controller('BarnetilleggCtrl', ['$scope', '$cookieStore', '$location', '$timeout', function ($scope, $cookieStore, $location, $timeout) {
+.controller('BarnetilleggCtrl', ['$scope', '$cookieStore', '$location', '$timeout', 'barneService', function ($scope, $cookieStore, $location, $timeout, barneService) {
+	barneService.get({soknadId: $scope.soknadData.soknadId}).$promise.then(function (result) {
+		if ($scope.soknadData.fakta.barn) {
+			angular.forEach($scope.soknadData.fakta.barn.valuelist, function(value) { 
+				value.value = angular.fromJson(value.value);
+			});
+		}       
 
-	if ($scope.soknadData.fakta.barn) {
-		angular.forEach($scope.soknadData.fakta.barn.valuelist, function(value) { 
-			value.value = angular.fromJson(value.value);
-		});
-	}       
+		$scope.leggTilBarn = function() {
+			settBarnCookie();
+			$location.path('nyttbarn/' + $scope.soknadData.soknadId);
+		}
 
-	$scope.leggTilBarn = function() {
-		settBarnCookie();
-		$location.path('nyttbarn/' + $scope.soknadData.soknadId);
-	}
+		$scope.endreBarn = function(faktumId) {
+			settBarnCookie(faktumId);
+			$location.path('endrebarn/' + $scope.soknadData.soknadId + "/" + faktumId);
+		}
 
-	$scope.endreBarn = function(faktumId) {
-		settBarnCookie(faktumId);
-		$location.path('endrebarn/' + $scope.soknadData.soknadId + "/" + faktumId);
-	}
+		$scope.erGutt = function(barn) {
+			return barn.value.kjonn == "gutt";
+		}
 
-	$scope.erGutt = function(barn) {
-		return barn.value.kjonn == "gutt";
-	}
+		$scope.erJente = function(barn) {
+			return barn.value.kjonn == "jente";
+		}
 
-	$scope.erJente = function(barn) {
-		return barn.value.kjonn == "jente";
-	}
+		$scope.validerBarnetillegg = function(form) {
+			$scope.validateForm(form.$invalid);
+			$scope.runValidation();
+		}
 
-	$scope.validerBarnetillegg = function(form) {
-		$scope.validateForm(form.$invalid);
-		$scope.runValidation();
-	}
+		function settBarnCookie(faktumId) {
+			var aapneTabIds = [];
+			angular.forEach($scope.grupper, function(gruppe) {
+				if(gruppe.apen) { 
+					aapneTabIds.push(gruppe.id); 
+				}
+			});
 
-	function settBarnCookie(faktumId) {
-		var aapneTabIds = [];
-		angular.forEach($scope.grupper, function(gruppe) {
-			if(gruppe.apen) { 
-				aapneTabIds.push(gruppe.id); 
-			}
-		});
+			$cookieStore.put('barneCookie', {
+				aapneTabs: aapneTabIds,
+				gjeldendeTab:"#barnetillegg",
+				barneFaktumId: faktumId
+			})
+		}
+	})
 
-		$cookieStore.put('barneCookie', {
-			aapneTabs: aapneTabIds,
-			gjeldendeTab:"#barnetillegg",
-			barneFaktumId: faktumId
-		})
-	}
-
-    }]);
+}]);
