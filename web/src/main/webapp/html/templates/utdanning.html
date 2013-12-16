@@ -89,9 +89,9 @@
 
 
                         </div>
-                        <div data-navtekst data-modus="data.redigeringsModus" data-label="utdanning.utdanningssted.navn" data-ng-model="soknadData.fakta.utdanning.kveld.utdanningsstednavn" data-feilmelding="'utdanning.error.utdanningsstednavn'" required/>
+                        <div data-navtekst data-modus="data.redigeringsModus" data-label="utdanning.utdanningssted.navn" data-ng-model="soknadData.fakta.utdanning.kveld.utdanningsstednavn" data-feilmelding="utdanning.error.utdanningsstednavn" required/>
 
-                        <div data-navtekst data-modus="data.redigeringsModus" data-label="utdanning.utdanning.navn" data-ng-model="soknadData.fakta.utdanning.kveld.navn" data-feilmelding="'utdanning.error.utdanningsnavn'" required/>
+                        <div data-navtekst data-modus="data.redigeringsModus" data-label="utdanning.utdanning.navn" data-ng-model="soknadData.fakta.utdanning.kveld.navn" data-feilmelding="utdanning.error.utdanningsnavn" required/>
 
                         <div class="varighet">
 
@@ -99,7 +99,8 @@
                                  data-fra-dato="utdanning.kveld.varighetFra"
                                  data-til-dato="utdanning.kveld.varighetTil"
                                  data-label="utdanning.varighet"
-                                 data-er-required="true">
+                                 data-er-required="true"
+                                 data-required-error-message="utdanning.error.varighet.tilfra">
                             </div>
                         </div>
 
@@ -121,9 +122,9 @@
 
                 <div  class="infoboks"  cmstekster="utdanning.svar.under.utdanning.kortvarig.informasjon"/>
 
-                <div data-navtekst data-modus="data.redigeringsModus" data-label="utdanning.utdanningssted.navn" data-ng-model="soknadData.fakta.utdanning.kortvarig.utdanningsstednavn" data-feilmelding="'utdanning.error.utdanningsstednavn'" required/>
+                <div data-navtekst data-modus="data.redigeringsModus" data-label="utdanning.utdanningssted.navn" data-ng-model="soknadData.fakta.utdanning.kortvarig.utdanningsstednavn" data-feilmelding="utdanning.error.utdanningsstednavn" required/>
 
-                <div data-navtekst data-modus="data.redigeringsModus" data-label="utdanning.utdanning.navn" data-ng-model="soknadData.fakta.utdanning.kortvarig.navn" data-feilmelding="'utdanning.error.utdanningsnavn'" required/>
+                <div data-navtekst data-modus="data.redigeringsModus" data-label="utdanning.utdanning.navn" data-ng-model="soknadData.fakta.utdanning.kortvarig.navn" data-feilmelding="utdanning.error.utdanningsnavn" required/>
 
 
                 <div class="varighet">
@@ -131,7 +132,8 @@
                          data-fra-dato="utdanning.kortvarig.varighetFra"
                          data-til-dato="utdanning.kortvarig.varighetTil"
                          data-label="utdanning.varighet"
-                         data-er-required="true">
+                         data-er-required="true"
+                         data-required-error-message="utdanning.error.varighet.tilfra">
                     </div>
                 </div>
 
@@ -144,16 +146,17 @@
                 <div  class="infoboks"  cmstekster="utdanning.svar.under.utdanning.kortvarigflere.informasjon"/>
 
 
-                <div data-navtekst data-modus="data.redigeringsModus" data-label="utdanning.utdanningssted.navn" data-ng-model="soknadData.fakta.utdanning.kortvarigflere.utdanningsstednavn" data-feilmelding="'utdanning.error.utdanningsstednavn'" required/>
+                <div data-navtekst data-modus="data.redigeringsModus" data-label="utdanning.utdanningssted.navn" data-ng-model="soknadData.fakta.utdanning.kortvarigflere.utdanningsstednavn" data-feilmelding="utdanning.error.utdanningsstednavn" required/>
 
-                <div data-navtekst data-modus="data.redigeringsModus" data-label="utdanning.utdanning.navn" data-ng-model="soknadData.fakta.utdanning.kortvarigflere.navn" data-feilmelding="'utdanning.error.utdanningsnavn'" required/>
+                <div data-navtekst data-modus="data.redigeringsModus" data-label="utdanning.utdanning.navn" data-ng-model="soknadData.fakta.utdanning.kortvarigflere.navn" data-feilmelding="utdanning.error.utdanningsnavn" required/>
 
                    <div class="varighet">
                     <div data-nav-dato-intervall
                          data-fra-dato="utdanning.kortvarigFlere.varighetFra"
                          data-til-dato="utdanning.kortvarigFlere.varighetTil"
                          data-label="utdanning.varighet"
-                         data-er-required="true">
+                         data-er-required="true"
+                         data-required-error-message="utdanning.error.varighet.tilfra">
                     </div>
                 </div>
 
@@ -167,14 +170,15 @@
 
                     <div class="ekstra-spm-boks" data-ng-if="hvisUtdanningNorsk()">
 
-                        <div data-navtekst data-modus="data.redigeringsModus" data-label="utdanning.utdanningssted.navn" data-ng-model="soknadData.fakta.utdanning.norsk.utdanningsstednavn" data-feilmelding="'utdanning.error.utdanningsstednavn'" required/>
+                        <div data-navtekst data-modus="data.redigeringsModus" data-label="utdanning.utdanningssted.navn" data-ng-model="soknadData.fakta.utdanning.norsk.utdanningsstednavn" data-feilmelding="utdanning.error.utdanningsstednavn" required/>
 
                     <div class="varighet">
                         <div data-nav-dato-intervall
                              data-fra-dato="utdanning.norsk.varighetFra"
                              data-til-dato="utdanning.norsk.varighetTil"
                              data-label="utdanning.varighet"
-                             data-er-required="true">
+                             data-er-required="true"
+                             data-required-error-message="utdanning.error.varighet.tilfra">
                         </div>
                     </div>
 
