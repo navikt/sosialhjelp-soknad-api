@@ -1,7 +1,9 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-	<div data-ng-form="ytelserForm" class="skjemainnhold vertikal" data-ng-controller="YtelserCtrl" data-novalidate>
+	<div data-ng-form="ytelserForm" class="skjemainnhold vertikal" data-ng-controller="YtelserCtrl" data-novalidate data-ng-submit="settOppsummeringsModus()">
 		<div data-form-errors></div>
 		<div class="spm form-linje checkbox" data-checkbox-validate>
+            <input type="hidden" data-ng-model="harHuketAvCheckboks.value" data-ng-required="true"
+                   data-error-messages="'ytelser.minstEnCheckboksErAvhuket.feilmelding'">
 			<h4 class="spm-sporsmal">
 				<span data-cmstekster="ytelser.informasjon"></span>
 				<span data-cmstekster="ytelser.sporsmal"></span>
@@ -70,6 +72,7 @@
 			<div>
 				<div data-ng-show="hvisIRedigeringsmodus()">
 					<div class="annetvalg-nei form-linje" data-valider-ingen-ytelser>
+                        <!--<input type="text" data-ng-model="soknadData.fakta.ingenYtelse.value" data-error-messages="ytelser.harValgtYtelse.feilmelding" data-required />-->
 						<input id="ingenYtelseCheckbox" data-ng-model="soknadData.fakta.ingenYtelse.value" type="checkbox"
 								name="ingenYtelse" data-ng-change="endreIngenYtelse(ytelserForm)" data-boolean-verdi/>
 						<label for="ingenYtelseCheckbox" class="svar-alt" data-cmstekster="ytelser.ingenYtelse"></label>
@@ -82,6 +85,6 @@
 			<span class="melding" data-cmstekster="ytelser.minstEnCheckboksErAvhuket.feilmelding"></span>
 		</div>
 
-		<div data-spmblokkferdig data-nokkel="ytelser" data-modus="data.redigeringsModus" data-submit-method="validerYtelser(ytelserForm, true)"></div>
+		<div data-spmblokkferdig data-nokkel="ytelser" data-modus="data.redigeringsModus" data-submit-method="validerOgSettModusOppsummering(ytelserForm)"></div>
 	</div>
 </div>

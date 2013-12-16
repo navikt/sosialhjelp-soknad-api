@@ -1,8 +1,6 @@
 angular.module('nav.arbeidsforhold.controller', [])
     .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams) {
 
-        $scope.showErrors = false;
-
         $scope.arbeidsforhold = [];
         $scope.endreArbeidsforholdKopi = '';
         $scope.posisjonForArbeidsforholdUnderRedigering = -1;
