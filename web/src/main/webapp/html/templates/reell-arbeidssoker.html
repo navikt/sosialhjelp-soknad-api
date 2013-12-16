@@ -15,7 +15,8 @@
                  data-nokkel="reellarbeidssoker.villigdeltid.false.informasjon"></div>
 
             <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
-
+                <input type="hidden" data-ng-model="harHuketAvCheckboksDeltid.value" data-ng-required="true"
+                       data-error-messages="'reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding'"/>
                 <div data-navcheckbox
                      data-ng-model='soknadData.fakta.reduserthelse.value'
                      data-modus='data.redigeringsModus'
@@ -79,6 +80,8 @@
         <div class="ekstra-spm-boks" data-ng-show="soknadData.fakta.villigpendle.value == 'false'">
             <div data-navinfoboks data-nokkel="reellarbeidssoker.villigpendle.false.informasjon"></div>
             <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
+                <input type="hidden" data-ng-model="harHuketAvCheckboksPendle.value" data-ng-required="true"
+                       data-error-messages="'reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding'"/>
                 <div data-navcheckbox
                      data-ng-model='soknadData.fakta.pendlereduserthelse.value'
                      data-modus='data.redigeringsModus'
@@ -166,7 +169,7 @@
         </div>
 
         <div data-spmblokkferdig data-nokkel="reellarbeidssoker" data-modus="data.redigeringsModus"
-             data-submit-method="validerReellarbeidssoker(reellarbeidssokerForm, true)"></div>
+             data-submit-method="validerOgSettModusOppsummering(reellarbeidssokerForm, true)"></div>
     </div>
 </div>
 
