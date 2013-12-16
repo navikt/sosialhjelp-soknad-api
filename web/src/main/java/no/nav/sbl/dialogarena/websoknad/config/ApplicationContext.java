@@ -42,15 +42,15 @@ public class ApplicationContext {
 
     @Value("{$dokumentinnsending.smtpServer.port}")
     private String smtpServerPort;
-            //= "25";
 
     @Value("${dokumentinnsending.smtpServer.host}")
     private String smtpServerHost;
-            //= "smtp.test.local";
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
+        PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
+        propertySourcesPlaceholderConfigurer.setLocalOverride(true);
+        return propertySourcesPlaceholderConfigurer;
     }
 
     @Bean
@@ -60,14 +60,22 @@ public class ApplicationContext {
 
     @Bean
     public MailSender mailSender() {
-        LOG.error("SMTPPORT" + smtpServerPort + "HOST" + smtpServerHost + "Link" + navigasjonslink);
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setDefaultEncoding("UTF-8");
         javaMailSender.setHost(smtpServerHost);
-        javaMailSender.setPort(Integer.parseInt(smtpServerPort));
+        //TODO: if/else er quickfix inntil vi får ApplicationContextTest til å lese mailserverport.
+        if (smtpServerHost.matches("-?\\d+"))
+        {
+            javaMailSender.setPort(Integer.parseInt(smtpServerPort));
+        }
+        else
+        {
+            javaMailSender.setPort(25);
+            LOG.error("Smtpport not set properly, using default port 25");
+        }
         return javaMailSender;
     }
-    
+
     @Bean
     public String navigasjonslink() {
         return navigasjonslink;

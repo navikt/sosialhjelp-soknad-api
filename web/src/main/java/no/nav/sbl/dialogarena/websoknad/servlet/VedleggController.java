@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.websoknad.servlet;
 import no.nav.sbl.dialogarena.soknadinnsending.VedleggFeil;
 import no.nav.sbl.dialogarena.soknadinnsending.VedleggOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.exception.OpplastingException;
 import no.nav.sbl.dialogarena.soknadinnsending.exception.UgyldigOpplastingTypeException;
@@ -47,7 +48,10 @@ public class VedleggController {
     @Inject
     private VedleggService vedleggService;
 
-    @RequestMapping(value = "", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
+    @Inject
+    private SoknadService soknadService;
+
+    @RequestMapping(value = "", method = RequestMethod.POST, produces = "text/html; charset=utf-8")
     @ResponseBody()
     @ResponseStatus(HttpStatus.CREATED)
     public Callable<VedleggOpplasting> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam("files[]") final List<MultipartFile> files) {
@@ -61,7 +65,6 @@ public class VedleggController {
                     Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, file.getOriginalFilename(), file.getSize(), 1, in);
                     Long id = vedleggService.lagreVedlegg(vedlegg, new ByteArrayInputStream(in));
                     vedlegg.setId(id);
-
                     res.add(vedlegg);
                 }
                 return new VedleggOpplasting(res);
@@ -137,7 +140,6 @@ public class VedleggController {
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     public VedleggFeil handterFeilType(UgyldigOpplastingTypeException ex) {
         LOG.warn("Feilet opplasting med: " + ex, ex);
-
         return new VedleggFeil(ex.getId());
     }
 

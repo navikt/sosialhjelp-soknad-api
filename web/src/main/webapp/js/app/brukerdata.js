@@ -150,8 +150,10 @@ angular.module('app.brukerdata', ['app.services'])
 
             var url = '/sendsoknad/rest/soknad/' + $scope.soknadData.soknadId + '/faktum' + '?rand=' + new Date().getTime();
             $http({method:'POST', url:url, data: $scope.soknadData.fakta[faktumData.key]})
-                .success(function(data, status) {
-                    $scope.soknadData.fakta[faktumData.key] = data;
+                .success(function(dataFraServer, status) {
+                    $scope.soknadData.fakta[faktumData.key] = dataFraServer;
+                    $scope.soknadData.sistLagret = new Date().getTime();
+                    data.soknad = $scope.soknadData;
                 })
                 .error(function(data, status) {
                     

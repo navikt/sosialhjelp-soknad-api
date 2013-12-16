@@ -1,0 +1,12 @@
+<div class="accordion-group" data-ng-class="{open: isOpen}">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" href=""
+           data-ng-click="isOpen = !isOpen"
+           data-accordion-transclude="heading">
+            {{heading}}
+        </a>
+    </div>
+    <div class="accordion-body" data-collapse="!isOpen">
+        <div class="accordion-inner" data-ng-transclude></div>
+    </div>
+</div>

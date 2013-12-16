@@ -39,12 +39,14 @@ angular.module('app.services', ['ngResource'])
          return $resource(url,
          {soknadId: '@soknadId'},
          {
-            create: { method: 'POST', params: {}, transformRequest: function(data, headersGetter) {
+            create: { method: 'POST', params: {}},
+            jsoncreate: { method: 'POST', params: {}, transformRequest: function(data, headersGetter) {
                 var d = deepClone(data);
-                d.value = JSON.stringify(data.value);
-                d = JSON.stringify(d);
+                d.value = angular.toJson(data.value);
+                d = angular.toJson(d);
                 return d;
-            }},
+                }
+            }
          }
 
          )
@@ -66,6 +68,27 @@ angular.module('app.services', ['ngResource'])
                 remove: {method: 'POST', params: {action: 'delete'}}
             }
         );
+    })
+    /**
+     * Service som behandler vedlegg
+     */
+    .factory('VedleggForventning', function ($resource) {
+        return $resource('/sendsoknad/rest/soknad/:soknadId/forventning?rand=' + new Date().getTime(), {
+            soknadId: '@faktum.soknadId'
+        }, {
+            slettVedlegg: {
+                url: '/sendsoknad/rest/soknad/:soknadId/faktum/:faktumId/vedlegg/:vedleggId/delete',
+                method: 'POST',
+                params: {
+                    faktumId: '@faktum.faktumId',
+                    vedleggId: '@faktum.vedleggId'
+                }
+            },
+            endreValg: {
+                url: '/sendsoknad/rest/soknad/:soknadId/forventning/valg',
+                method: 'POST'
+            }
+        });
     })
 
     .factory('forsettSenereService', function ($resource) {
@@ -90,6 +113,10 @@ angular.module('app.services', ['ngResource'])
 
     .factory('tpsService', function ($resource) {
         return $resource('/sendsoknad/rest/soknad/:soknadId/personalia');
+    })
+
+    .factory('barneService', function ($resource) {
+        return $resource('/sendsoknad/rest/soknad/:soknadId/familierelasjoner');
     })
 
     .factory('landService', function ($resource) {

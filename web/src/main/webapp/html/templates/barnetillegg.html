@@ -1,32 +1,97 @@
-<div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <div data-ng-form="barnetilleggForm" class="skjemainnhold" data-ng-controller="BarnetilleggCtrl" novalidate>
-        <div form-errors></div>
-        <p class="informasjonstekst" cmstekster="barnetillegg.informasjon"></p>
-      
-        <div data-ng-repeat="b in soknadData.fakta.barn.valuelist">
-            <div data-ng-class="{gutt: erGutt(b), jente:erJente(b)}" class="barn">
-                <div class="barnealder">
-                    <span> ÅR</span>
-                    <span class="alder robust" data-ng-bind="b.value.alder"></span>
-                </div>
-                <div class="barneinfo">
-                    <div data-ng-bind="b.value.sammensattnavn"></div>
-                    <div data-ng-bind="b.value.fnr"></div>
-                    <div class="barnbosted">
-                        <span class="bosted">bosted: </span>
-                        <span>Norge</span>
-                    </div>
-                    <div class="barnecheckbox" data-ng-controller="BarnetilleggFaktumCtrl">
-                        <input data-ng-model="barnetillegg.value.avsjekket" name="barnetilegg{{$index}}" id="barnetilegg{{$index}}" type="checkbox">
-                        <label for="barnetilegg{{$index}}" class="svar-alt" data-cmstekster="barnetillegg.barnetilegg.spormsal"></label>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="skjemaramme" data-ng-controller="ModusCtrl" barne-directive>
+	<div data-ng-form="barnetilleggForm" class="skjemainnhold" data-ng-controller="BarnetilleggCtrl" novalidate>
+		<div form-errors></div>
+		<p class="informasjonstekst" cmstekster="barnetillegg.informasjon"></p>
 
-        <div spmblokkferdig
-                nokkel="barnetillegg"
-                modus="data.redigeringsModus"
-                submit-method="validerBarnetillegg(barnetilleggForm)"/>
-    </div>
+		<div data-ng-repeat="b in soknadData.fakta.barn.valuelist">
+			<div data-ng-class="{gutt: erGutt(b), jente:erJente(b)}" class="barn">
+				<div class="barnealder">
+					<span> ÅR</span>
+					<span class="alder robust" data-ng-bind="b.value.alder"></span>
+				</div>
+				<div class="barneinfo">
+					<div data-ng-bind="b.value.sammensattnavn"></div>
+					<div data-ng-bind="b.value.fnr"></div>
+					<div>{{ b.value.fodselsdato | date:'dd.MM.yyyy'}}</div>
+					<div class="barnbosted">
+						<span class="bosted">bosted: </span>
+						<span data-ng-show="!b.value.land">Norge</span>
+						<span data-ng-bind="b.value.land"></span>
+					</div>
+					<div class="barnecheckbox" data-ng-controller="BarnetilleggFaktumCtrl">
+						<div data-ng-if="hvisIRedigeringsmodus()"> 
+							<input data-ng-model="barnetillegg.value" name="barnetilegg{{$index}}" id="barnetilegg{{$index}}" type="checkbox" data-boolean-verdi>
+							<label for="barnetilegg{{$index}}" class="svar-alt" data-cmstekster="barnetillegg.barnetilegg.sporsmal"></label>
+						</div>
+						<p class="svar-oppsummering" data-ng-if="hvisIOppsummeringsmodus() && barnetillegg.value=='true'" data-cmstekster="barnetillegg.barnetilegg.sporsmal"> </p>
+
+						<div data-ng-if="barnetillegg.value == 'true'">
+							<p data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.sporsmal"></p>
+							<div class="nav-radio-knapp">
+								<div class="radio-knapp" data-ng-show="hvisIRedigeringsmodus()">
+									<input class="sendsoknad-radio"
+									id="ikkebarneinntekt{{$index}}"
+									type="radio"
+									value="true"
+									data-ng-model="ikkebarneinntekt.value"
+									name="ikkebarneinntekt{{$index}}"
+									data-ng-required="barnetillegg.value == 'true'"
+									data-error-messages="'barnetillegg.barnetilegg.ikkebarneinntekt.feilmelding'">
+									<label for='ikkebarneinntekt{{$index}}' class='svar-alt' data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.true"></label>
+								</div>
+								<div class="radio-knapp" data-ng-show="hvisIRedigeringsmodus()">
+									<input class="sendsoknad-radio"
+									id="ikkebarneinntektNei{{$index}}"
+									type="radio"
+									value="false"
+									data-ng-model="ikkebarneinntekt.value"
+									name="ikkebarneinntektNei{{$index}}"
+									data-ng-required="barnetillegg.value == 'true'"
+									data-error-messages="'barnetillegg.barnetilegg.ikkebarneinntekt.feilmelding'">
+									<label for='ikkebarneinntektNei{{$index}}' class='svar-alt' data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.false"></label>
+								</div>
+							</div>
+							<div data-ng-if="hvisIOppsummeringsmodus()">
+								<p class="svar-oppsummering" data-ng-if="barnetHarIkkeInntekt()" data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.true"></p>
+								<p class="svar-oppsummering" data-ng-if="barnetHarInntekt()" data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.false"></p>
+							</div>
+
+							<div data-ng-show="barnetHarInntekt()">
+								<div class="form-linje" data-ng-if="hvisIRedigeringsmodus()">
+									<label>
+										<span data-cmstekster="barnetillegg.barnetilegg.barneinntekttall.sporsmal"></span>
+										<input name="barneinntekttall{{$index}}"
+										data-error-messages="'barnetillegg.barnetilegg.barneinntekttall.feilmelding'" type="text"
+										data-ng-model="barneinntekttall.value"
+										data-blur-validate required="barnetHarInntekt()">
+										<span class="melding"></span>
+									</label>
+								</div>
+								<div data-ng-if="hvisIOppsummeringsmodus()">
+									<p class="svar-oppsummering" data-ng-if="barnetHarInntekt()" >
+										<span data-cmstekster="barnetillegg.barnetilegg.barneinntekttall.sporsmal"></span>
+										<span data-ng-bind="barneinntekttall.value | currency"></span>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div data-ng-show="b.type == 'BRUKERREGISTRERT'">
+					<a href data-ng-click="endreBarn(b.faktumId)" data-cmstekster="barnetillegg.endrebarn">Endre</a>
+					<a>Slett</a>
+				</div>
+			</div>
+		</div>
+
+		<div id="legg-til-barn" data-ng-show="hvisIRedigeringsmodus()">
+			<a class="knapp-leggtil-liten" href data-ng-click="leggTilBarn()" data-cmstekster="barnetillegg.nyttbarn"></a>
+		</div>
+		
+		<div spmblokkferdig
+		nokkel="barnetillegg"
+		modus="data.redigeringsModus"
+		submit-method="validerBarnetillegg(barnetilleggForm)"> </div>
+	</div>
 </div>
+

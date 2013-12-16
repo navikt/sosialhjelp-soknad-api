@@ -1,0 +1,1 @@
+ALTER TABLE Soknad ADD (sistlagret TIMESTAMP);

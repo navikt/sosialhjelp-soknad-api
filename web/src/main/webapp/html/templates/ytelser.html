@@ -2,10 +2,10 @@
 	<div data-ng-form="ytelserForm" class="skjemainnhold vertikal" data-ng-controller="YtelserCtrl" data-novalidate>
 		<div data-form-errors></div>
 		<div class="spm form-linje checkbox" data-checkbox-validate>
-			<p class="spm-sporsmal">
+			<h4 class="spm-sporsmal">
 				<span data-cmstekster="ytelser.informasjon"></span>
 				<span data-cmstekster="ytelser.sporsmal"></span>
-			</p>
+			</h4>
 
 			<div data-navcheckbox data-ng-model="soknadData.fakta.stonadFisker.value"
 					data-modus="data.redigeringsModus" data-inputname="stonadFisker"
@@ -69,7 +69,7 @@
 			</div>
 			<div>
 				<div data-ng-show="hvisIRedigeringsmodus()">
-					<div class="ytelser-nei form-linje" data-valider-ingen-ytelser>
+					<div class="annetvalg-nei form-linje" data-valider-ingen-ytelser>
 						<input id="ingenYtelseCheckbox" data-ng-model="soknadData.fakta.ingenYtelse.value" type="checkbox"
 								name="ingenYtelse" data-ng-change="endreIngenYtelse(ytelserForm)" data-boolean-verdi/>
 						<label for="ingenYtelseCheckbox" class="svar-alt" data-cmstekster="ytelser.ingenYtelse"></label>
@@ -79,9 +79,9 @@
 
 				<p class="svar-oppsummering" data-ng-show="ingenYtelserOppsummeringSkalVises()" data-cmstekster="ytelser.ingenYtelse"></p>
 			</div>
-			<span class="melding"></span>
+			<span class="melding" data-cmstekster="ytelser.minstEnCheckboksErAvhuket.feilmelding"></span>
 		</div>
 
-		<div data-spmblokkferdig data-nokkel="ytelser" data-modus="data.redigeringsModus" data-submit-method="validerYtelser(ytelserForm)"></div>
+		<div data-spmblokkferdig data-nokkel="ytelser" data-modus="data.redigeringsModus" data-submit-method="validerYtelser(ytelserForm, true)"></div>
 	</div>
 </div>
