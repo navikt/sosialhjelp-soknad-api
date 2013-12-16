@@ -7,6 +7,29 @@ angular.module('sendsoknad')
         $http.get('../html/templates/arbeidsforhold.html', {cache: $templateCache});
         $http.get('../html/templates/ytelser.html', {cache: $templateCache});
         $http.get('../html/templates/utdanning.html', {cache: $templateCache});
+        $http.get('../html/templates/barnetillegg.html', {cache: $templateCache});
+        $http.get('../html/dagpenger-singlepage.html', {cache: $templateCache});
+        $http.get('../js/common/directives/booleanradio/booleanradioTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/directives/accordion/accordionGroupTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/directives/accordion/accordionTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/directives/hjelpetekst/hjelpetekstTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/directives/datepicker/singleDatepickerTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/directives/datepicker/doubleDatepickerTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/directives/navinput/navbuttonspinnerTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/directives/navinput/navcheckboxTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/directives/navinput/navradioTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/directives/navinput/navtekstTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/directives/navtextarea/navtextareaTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/directives/select/selectTemplate.html', {cache: $templateCache});
+        $http.get('../js/app/directives/feilmeldinger/feilmeldingerTemplate.html', {cache: $templateCache});
+        $http.get('../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html', {cache: $templateCache});
+        $http.get('../js/app/directives/dagpenger/arbeidsforholdformTemplate.html', {cache: $templateCache});
+        $http.get('../js/app/directives/markup/navinfoboksTemplate.html', {cache: $templateCache});
+        $http.get('../js/app/directives/markup/panelStandardBelystTemplate.html', {cache: $templateCache});
+        $http.get('../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html', {cache: $templateCache});
+        $http.get('../js/app/directives/stegindikator/stegIndikatorTemplate.html', {cache: $templateCache});
+        $http.get('../js/app/directives/stickybunn/stickyBunnTemplate.html', {cache: $templateCache});
     }])
     .constant('lagreSoknadData', "OPPDATER_OG_LAGRE")
     .value('data', {})
