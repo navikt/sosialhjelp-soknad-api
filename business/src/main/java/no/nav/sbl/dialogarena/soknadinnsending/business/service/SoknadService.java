@@ -16,7 +16,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventnin
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
-
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
@@ -25,7 +24,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-
 import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -42,10 +40,11 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Sta
 @Component
 public class SoknadService implements SendSoknadService, VedleggService {
 
+    public static final String PDF_PDFA = "-dNOPAUSE -dBATCH -dSAFER -dPDFA -dNOGA -sDEVICE=pdfwrite -sOutputFile=%stdout%  -q -c \"30000000 setvmthreshold\" -_ -c quit";
     private static final String BRUKERREGISTRERT_FAKTUM = "BRUKERREGISTRERT";
     private static final String SYSTEMREGISTRERT_FAKTUM = "SYSTEMREGISTRERT";
-
-
+    private static final String IMAGE_RESIZE = "- -units PixelsPerInch -density 150 -quality 50 -resize 1240x1754 jpeg:-";
+    private static final String IMAGE_PDFA = "-  pdfa:-";
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository repository;
@@ -67,12 +66,16 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     @Override
+    public void slettBrukerFaktum(Long soknadId, Long faktumId) {
+        repository.slettBrukerFaktum(soknadId, faktumId);
+    }
+
+    @Override
     public Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value) {
         Faktum faktum = repository.hentSystemFaktum(soknadId, key, SYSTEMREGISTRERT_FAKTUM);
         Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, faktum.getFaktumId(), key, value, SYSTEMREGISTRERT_FAKTUM));
         return repository.hentFaktum(soknadId, faktumId);
     }
-
 
     @Override
     public void sendSoknad(long soknadId) {
@@ -87,7 +90,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public void avbrytSoknad(Long soknadId) {
-        //TODO: Refaktorerer. Trenger bare å sende id
         repository.avbryt(soknadId);
     }
 
@@ -96,6 +98,12 @@ public class SoknadService implements SendSoknadService, VedleggService {
         repository.endreInnsendingsValg(soknadId, faktum.getFaktumId(), faktum.getInnsendingsvalg());
     }
 
+    @Override
+    public List<Faktum> hentFakta(Long soknadId) {
+        return repository.hentAlleBrukerData(soknadId);
+    }
+
+    @Override
     public Long startSoknad(String navSoknadId) {
         String behandlingsId = UUID.randomUUID().toString();
 
@@ -106,11 +114,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 opprettetDato(DateTime.now());
         return repository.opprettSoknad(soknad);
     }
-
-    public static final String PDF_PDFA = "-dNOPAUSE -dBATCH -dSAFER -dPDFA -dNOGA -sDEVICE=pdfwrite -sOutputFile=%stdout%  -q -c \"30000000 setvmthreshold\" -_ -c quit";
-    private static final String IMAGE_RESIZE = "- -units PixelsPerInch -density 150 -quality 50 -resize 1240x1754 jpeg:-";
-    private static final String IMAGE_PDFA = "-  pdfa:-";
-
 
     @Override
     public Long lagreVedlegg(Vedlegg vedlegg, InputStream inputStream) {

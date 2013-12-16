@@ -7,7 +7,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import java.util.List;
 
 public interface SoknadRepository {
-	
+
     Long opprettSoknad(WebSoknad soknad);
 
     WebSoknad hentSoknad(Long id);
@@ -15,26 +15,28 @@ public interface SoknadRepository {
     WebSoknad hentSoknadMedData(Long id);
 
     List<Faktum> hentAlleBrukerData(Long soknadId);
-    
-	void avslutt(WebSoknad soknad);
 
-	void avbryt(Long soknad);
+    void avslutt(WebSoknad soknad);
 
-	List<WebSoknad> hentListe(String aktorId);
+    void avbryt(Long soknad);
 
-	Long lagreFaktum(long soknadId, Faktum faktum);
+    List<WebSoknad> hentListe(String aktorId);
 
-	WebSoknad hentMedBehandlingsId(String behandlingsId);
+    Long lagreFaktum(long soknadId, Faktum faktum);
 
-	String opprettBehandling();
+    WebSoknad hentMedBehandlingsId(String behandlingsId);
 
-	Faktum hentFaktum(Long soknadId, Long faktumId);
+    String opprettBehandling();
 
-	Faktum hentSystemFaktum(Long soknadId, String key,
-			String systemregistrertFaktum);
+    Faktum hentFaktum(Long soknadId, Long faktumId);
+
+    Faktum hentSystemFaktum(Long soknadId, String key,
+                            String systemregistrertFaktum);
 
 
     void endreInnsendingsValg(Long soknadId, Long faktumId, Faktum.Status innsendingsvalg);
-   
+
     void settSistLagretTidspunkt(Long soknadId);
+
+    void slettBrukerFaktum(Long soknadId, Long faktumId);
 }

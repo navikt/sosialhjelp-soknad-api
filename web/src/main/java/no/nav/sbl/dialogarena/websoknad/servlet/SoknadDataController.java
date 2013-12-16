@@ -5,10 +5,9 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventnin
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.websoknad.service.HenvendelseConnector;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -38,7 +37,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class SoknadDataController {
 
     @Inject
-    private SoknadService soknadService;
+    private SendSoknadService soknadService;
     @Inject
     private VedleggService vedleggService;
 
@@ -77,7 +76,7 @@ public class SoknadDataController {
     @ResponseBody()
     @ResponseStatus(HttpStatus.OK)
     public void endreValg(@PathVariable final Long soknadId,
-            @RequestBody VedleggForventning forventning) {
+                          @RequestBody VedleggForventning forventning) {
         soknadService.endreInnsendingsvalg(soknadId, forventning.getFaktum());
     }
 
@@ -90,7 +89,7 @@ public class SoknadDataController {
     @RequestMapping(value = "/lagre/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody()
     public void lagreSoknad(@PathVariable Long soknadId,
-            @RequestBody WebSoknad webSoknad) {
+                            @RequestBody WebSoknad webSoknad) {
         for (Faktum faktum : webSoknad.getFakta().values()) {
             soknadService.lagreSoknadsFelt(soknadId, faktum);
         }
@@ -99,7 +98,7 @@ public class SoknadDataController {
     @RequestMapping(value = "/{soknadId}/faktum", method = RequestMethod.POST)
     @ResponseBody()
     public Faktum lagreFaktum(@PathVariable Long soknadId,
-            @RequestBody Faktum faktum) {
+                              @RequestBody Faktum faktum) {
         return soknadService.lagreSoknadsFelt(soknadId, faktum);
     }
 
