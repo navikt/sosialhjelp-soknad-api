@@ -162,14 +162,12 @@ angular.module('app.brukerdata', ['app.services'])
     }])
     .controller('ModusCtrl', function ($scope) {
         $scope.data = {
-            showErrorMessage: false,
             redigeringsModus: true
         };
-        $scope.showErrors = false;
 
+
+        // TODO: Endre navn. Setter bare til redigerings-/oppsummerings-modus. Trenger vi denne?
         $scope.validateForm = function (invalid) {
-            $scope.showErrors = invalid;
-            $scope.data.showErrorMessage = invalid;
             $scope.data.redigeringsModus = invalid;
         }
 
@@ -184,15 +182,6 @@ angular.module('app.brukerdata', ['app.services'])
 
         $scope.hvisIOppsummeringsmodus = function () {
             return !$scope.hvisIRedigeringsmodus();
-        }
-
-        $scope.visFeilmeldinger = function () {
-            $scope.data.showErrorMessage = true;
-            $scope.showErrors = true;
-        }
-
-        $scope.hvisIkkeFormValiderer = function () {
-            return $scope.data.showErrorMessage;
         }
     })
 
