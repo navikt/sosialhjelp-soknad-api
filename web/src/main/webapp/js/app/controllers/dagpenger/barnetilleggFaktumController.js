@@ -2,28 +2,79 @@ angular.module('nav.barnetilleggfaktum',['app.services'])
     .controller('BarnetilleggFaktumCtrl', ['$scope', 'BrukerData', function ($scope,BrukerData) {
     	var barnetilleggsData = {
     		key: 'barnetillegg',
-    		value: {
-    			'fnr': $scope.b.value.fnr,
-    			'avsjekket': false
-    		}
+    		value: false,
+    		parrentFaktum: $scope.b.faktumId
     	};
+
+    	var ikkebarneinntekt = {
+    		key: 'ikkebarneinntekt',
+    		value: false,
+    		parrentFaktum: $scope.b.faktumId
+    	};
+
+    	var barneinntekttall = {
+    		key: 'barneinntekttall',
+    		value: undefined,
+    		parrentFaktum: $scope.b.faktumId
+    	};
+
     	if ($scope.soknadData.fakta.barnetillegg) {
             angular.forEach($scope.soknadData.fakta.barnetillegg.valuelist, function(value) { 
-                if(angular.fromJson(value.value).fnr == $scope.b.value.fnr) {
+                if(value.parrentFaktum == $scope.b.faktumId) {
                 	barnetilleggsData = value;
-                	barnetilleggsData.value = angular.fromJson(value.value);
+                }
+            });
+        }
+        if ($scope.soknadData.fakta.ikkebarneinntekt) {
+            angular.forEach($scope.soknadData.fakta.ikkebarneinntekt.valuelist, function(value) { 
+                if(value.parrentFaktum == $scope.b.faktumId) {
+                	ikkebarneinntekt = value;
+                }
+            });
+        }
+        if ($scope.soknadData.fakta.barneinntekttall) {
+            angular.forEach($scope.soknadData.fakta.barneinntekttall.valuelist, function(value) { 
+                if(value.parrentFaktum == $scope.b.faktumId) {
+                	barneinntekttall = value;
                 }
             });
         }
 
     	$scope.barnetillegg = new BrukerData(barnetilleggsData);
-
-    	$scope.$watch('barnetillegg.value.avsjekket', function(newValue, oldValue, scope) {
+    	$scope.$watch('barnetillegg.value', function(newValue, oldValue, scope) {
     		if(newValue != undefined && newValue !== oldValue) {
     			scope.barnetillegg.$create({soknadId: scope.soknadData.soknadId}).then(function(data) {
     				scope.barnetillegg = data;
-    				scope.barnetillegg.value = angular.fromJson(data.value);
     			});
     		}
     	});
+
+    	$scope.ikkebarneinntekt = new BrukerData(ikkebarneinntekt);
+    	$scope.$watch('ikkebarneinntekt.value', function(newValue, oldValue, scope) {
+    		if(newValue != undefined && newValue !== oldValue) {
+    			scope.ikkebarneinntekt.$create({soknadId: scope.soknadData.soknadId}).then(function(data) {
+    				scope.ikkebarneinntekt = data;
+    			});
+    		}
+    	});
+
+    	$scope.barneinntekttall = new BrukerData(barneinntekttall);
+    	$scope.$watch('barneinntekttall.value', function(newValue, oldValue, scope) {
+    		if(newValue != undefined && newValue !== oldValue) {
+    			scope.barneinntekttall.$create({soknadId: scope.soknadData.soknadId}).then(function(data) {
+    				scope.barneinntekttall = data;
+    			});
+    		}
+    	});
+
+    	$scope.barnetHarInntekt = function() {
+        	if($scope.ikkebarneinntekt == undefined) {
+        		return false;
+        	}
+        	return sjekkOmGittEgenskapTilObjektErFalse($scope.ikkebarneinntekt);
+        }
+
+        $scope.barnetHarIkkeInntekt = function() {
+        	return !$scope.barnetHarInntekt();
+        }
     }]);
