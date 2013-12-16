@@ -101,7 +101,7 @@ angular.module('nav.datepicker', [])
                 });
 
                 scope.harRequiredFeil = function () {
-                    return scope.erRequired && !scope.ngModel && !harFokus && harHattFokus && datepickerErLukket && !scope.tilDatoFeil && !scope.harFormatteringsFeil() && !scope.erIkkeGyldigDato();
+                    return scope.erRequired && !scope.ngModel && !harFokus && harHattFokus && datepickerErLukket && !scope.tilDatoFeil && !inputfeltHarTekstMenIkkeGyldigDatoFormat() && !erGyldigDato(tekstInput.val());
                 }
 
                 scope.harTilDatoFeil = function () {
@@ -109,11 +109,11 @@ angular.module('nav.datepicker', [])
                 }
 
                 scope.harFormatteringsFeil = function () {
-                    return tekstInput.val() && !datoRegExp.test(tekstInput.val()) && !harFokus && harHattFokus;
+                    return inputfeltHarTekstMenIkkeGyldigDatoFormat() && !harFokus && harHattFokus;
                 }
 
                 scope.erIkkeGyldigDato = function() {
-                    return !scope.ngModel && tekstInput.val() && datoRegExp.test(tekstInput.val()) && !erGyldigDato(tekstInput.val()) && !harFokus && harHattFokus;
+                    return !scope.ngModel && inputfeltHarTekstOgGyldigDatoFormat() && !erGyldigDato(tekstInput.val()) && !harFokus && harHattFokus;
                 }
 
                 scope.harFeil = function () {
@@ -121,6 +121,10 @@ angular.module('nav.datepicker', [])
                 }
 
                 scope.$watch('ngModel', function (newVal, oldVal) {
+                    if (newVal == oldVal) {
+                        return;
+                    }
+
                     if (newVal != oldVal && scope.endret) {
                         scope.endret();
                     }
@@ -134,9 +138,22 @@ angular.module('nav.datepicker', [])
                     }
                 });
 
+                function inputfeltHarTekstOgGyldigDatoFormat() {
+                    return tekstInput.val() && datoRegExp.test(tekstInput.val());
+                }
+
+                function inputfeltHarTekstMenIkkeGyldigDatoFormat() {
+                    return tekstInput.val() && !datoRegExp.test(tekstInput.val());
+                }
+
                 function datepickerOptions() {
+                    var currentDefaultDate = defaultDate;
                     var defaultDate = scope.ngModel ? new Date(scope.ngModel) : new Date();
-                    return angular.extend({defaultDate: defaultDate}, datepickerConfig, scope.options);
+
+                    if (currentDefaultDate != defaultDate) {
+                        scope.options = angular.extend({}, {defaultDate: defaultDate}, scope.options);
+                    }
+                    return angular.extend({}, datepickerConfig, scope.options);
                 };
 
                 function leggTilDatepicker() {
@@ -280,11 +297,7 @@ angular.module('nav.datepicker', [])
                     function() {
                         return ngModel.$viewValue;
                     },
-                    function(nyVerdi, gammelVerdi) {
-                        if (nyVerdi == gammelVerdi) {
-                            return;
-                        }
-
+                    function(nyVerdi) {
                         var tekst = nyVerdi;
                         if (nyVerdi == undefined) {
                             tekst = '';
