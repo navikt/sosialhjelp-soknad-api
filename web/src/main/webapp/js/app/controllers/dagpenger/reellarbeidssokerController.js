@@ -12,7 +12,7 @@ angular.module('nav.reellarbeidssoker', [])
 
         $scope.alder = data.alder.alder;
 //        For testing av alder:
-        $scope.alder = 59;
+//        $scope.alder = 59;
 
         $scope.navigering = {nesteside: 'arbeidsforhold'};
         $scope.sidedata = {navn: 'reellarbeidssoker'};
@@ -40,7 +40,6 @@ angular.module('nav.reellarbeidssoker', [])
             }
             $scope.validateForm(form.$invalid);
             $scope.runValidation(skalScrolle);
-
         }
 
 
