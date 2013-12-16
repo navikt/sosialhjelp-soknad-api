@@ -150,7 +150,6 @@ angular.module('nav.utdanning',[])
         }
         if (sjekkOmGittEgenskapTilObjektErTrue($scope.soknadData.fakta.utdanningAnnet)) {
             $scope.soknadData.fakta.utdanningAnnet.value = false;
-            console.log("Skrur av ingen utdanning");
             $scope.$emit(lagreSoknadData, {key: 'underUtdanningAnnet', value: false});
         }
     }
@@ -172,10 +171,7 @@ angular.module('nav.utdanning',[])
             if (erCheckboksForUtdanningAnnetHuketAv) {
                   form.$setValidity(minstEnCheckboksErAvhuketFeilmeldingNavn, true);
                 settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, true, true);
-                console.log("Annen utdanning er avhuket. Verdi av feilmeldingen" +  $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet);
-
                 $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet = true;
-                console.log("Verdi av feilmeldingen" +  $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet);
             }
         }
         }

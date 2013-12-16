@@ -45,6 +45,10 @@ if (!Array.prototype.indexByValue) {
     }
 }
 
+String.prototype.splice = function(idx, rem, str) {
+    return (this.slice(0, idx) + str + this.slice(idx + Math.abs(rem)));
+}
+
 function sjekkOmGittEgenskapTilObjektErFalse(objekt) {
     if (objekt) {
         return checkFalse(objekt.value);
@@ -200,7 +204,7 @@ function fadeBakgrunnsfarge(element, melding, feilmeldingsklasse, scope) {
 }
 function konverterStringFraNorskDatoformatTilDateObjekt(datoString) {
     var re = new RegExp(/^\d\d\.\d\d\.\d\d\d\d$/);
-    if (re.test(datoString)) {
+    if (re.test(datoString) && erGyldigDato(datoString)) {
         var datoKomponenter = datoString.split('.');
 
         // Måned indekseres fra 0, så må trekke fra 1
@@ -208,4 +212,65 @@ function konverterStringFraNorskDatoformatTilDateObjekt(datoString) {
     } else {
         return "";
     }
+}
+
+// stackoverflow.com/questions/5812220/test-if-date-is-valid
+function erGyldigDato(datoString) {
+    var bits = datoString.split('.');
+    var aar = bits[2];
+    var maaned = bits[1];
+    var dag = bits[0];
+
+    var dagerIMaaned = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+    // Skuddår
+    if ((!(aar % 4) && aar % 100) || !(aar % 400)) {
+        dagerIMaaned[1] = 29;
+    }
+
+    return dag <= dagerIMaaned[--maaned];
+}
+
+function konverterTallTilStringMedToSiffer(tall) {
+    var tallMedToSiffer = "0" + tall;
+    return tallMedToSiffer.slice(-2);
+}
+
+function hentCaretPosisjon(element) {
+    var domElement = element[0];
+    var posisjon = 0;
+
+    if (document.selection) {
+        domElement.focus();
+
+        var oSel = document.selection.createRange();
+
+        oSel.moveStart('character', -domElement.value.length);
+
+        posisjon = oSel.text.length;
+    } else if (domElement.selectionStart || domElement.selectionStart == '0') {
+        posisjon = domElement.selectionStart;
+    }
+
+    return posisjon;
+}
+
+function settCaretPosisjon(element, posisjon) {
+    var domElement = element[0];
+
+    if (document.selection) {
+        domElement.focus();
+
+        var oSel = document.selection.createRange();
+
+        oSel.moveStart('character', posisjon);
+    } else if (domElement.selectionStart || domElement.selectionStart == '0') {
+        domElement.selectionStart = posisjon;
+        domElement.selectionEnd = posisjon;
+    }
+}
+
+function settFokusTilNesteElement(inputElement) {
+    var fokuserbareElementer = $('input, a, select, button, textarea').filter(':visible');
+    fokuserbareElementer.eq(fokuserbareElementer.index(inputElement) + 1).focus();
 }

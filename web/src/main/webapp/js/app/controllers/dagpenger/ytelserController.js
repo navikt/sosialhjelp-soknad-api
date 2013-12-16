@@ -10,16 +10,13 @@ angular.module('nav.ytelser', [])
         var nokler = ['ventelonn', 'stonadFisker', 'offentligTjenestepensjon', 'privatTjenestepensjon', 'vartpenger', 'dagpengerEOS', 'annenYtelse', 'ingenYtelse' ];
 
         $scope.$on('VALIDER_YTELSER', function (scope, form) {
-            console.log("validerYtelser");
             $scope.validerYtelser(form, false);
         });
 
 //      sjekker om formen er validert når bruker trykker ferdig med ytelser
         $scope.validerYtelser = function (form, skalScrolle) {
-            console.log("validerer ytelser");
             var minstEnCheckboksErAvhuket = erCheckboxerAvhuket(nokler);
             $scope.ytelser.skalViseFeilmeldingForIngenYtelser = false;
-            console.log("skalviseFeilmeldingforingen");
             settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, minstEnCheckboksErAvhuket, true);
             $scope.validateForm(form.$invalid);
             $scope.runValidation(skalScrolle);
@@ -28,23 +25,19 @@ angular.module('nav.ytelser', [])
 //      kjøres hver gang det skjer en endring på checkboksene
         $scope.endreYtelse = function (form) {
             // Sjekker om en ytelse er huket av (inkluderer IKKE siste checkboksen)
-
             var ytelserNokler = nokler.slice(0, nokler.length - 1);
             var harIkkeValgtYtelse = !erCheckboxerAvhuket(ytelserNokler);
 
             if (harIkkeValgtYtelse) {
                 $scope.ytelser.skalViseFeilmeldingForIngenYtelser = false;
-                console.log("har Ikke valgt ytelse " +  $scope.ytelser.skalViseFeilmeldingForIngenYtelser);
                 settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, false, true);
 
             } else {
-                console.log("har valgt ytelse " +  $scope.ytelser.skalViseFeilmeldingForIngenYtelser);
                 settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, true, true);
             }
 
             if (sjekkOmGittEgenskapTilObjektErTrue($scope.soknadData.fakta.ingenYtelse)) {
                 $scope.soknadData.fakta.ingenYtelse.value = false;
-                console.log("Skrur av ingen ytelse");
                 $scope.$emit(lagreSoknadData, {key: 'ingenYtelse', value: false});
             }
         }
