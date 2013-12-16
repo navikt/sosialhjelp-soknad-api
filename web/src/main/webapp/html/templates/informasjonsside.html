@@ -2,7 +2,15 @@
 
 <div id="informasjonsside" data-sidetittel="sidetittel.informasjon">
 	<div data-panelbelyst>
-		<h2 class="stor strek-ikon-info" data-cmstekster="dagpenger.informasjonsside.tittel"></h2>
+            <form name="testform">
+            <!--{{ testFra }}-->
+                <!--<div data-nav-dato data-ng-model="testFra" data-label="arbeidsforhold.arbeidsgiver.permittert.varighet.fra" data-er-required="true" data-required-error-message="arbeidsforhold.arbeidsgiver.permittert.varighet.fra.feilmelding"></div>-->
+                <!--<div data-nav-dato data-ng-model="testFra" data-label="arbeidsforhold.arbeidsgiver.permittert.varighet.fra"></div>-->
+            <!--{{ testTil }}-->
+            <div nav-dato-intervall data-fra-dato="testFra" data-til-dato="testTil" data-label="arbeidsforhold.arbeidsgiver.permittert.varighet" data-er-begge-required="true"></div>
+        <form>
+
+        <h2 class="stor strek-ikon-info" data-cmstekster="dagpenger.informasjonsside.tittel"></h2>
 		<p class="medium" data-cmstekster="dagpenger.informasjonsside.info"></p>
 		<div id="utslagskriterier" ng-if="kravForDagpengerIkkeOppfylt()">
 			<p class="liten" data-cmstekster="utslagskriterier.intro"></p>
