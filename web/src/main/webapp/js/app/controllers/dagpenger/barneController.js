@@ -1,21 +1,21 @@
 angular.module('nav.barn',['app.services'])
 .controller('BarneCtrl', ['$scope', 'BrukerData','data', '$cookieStore', '$location', function ($scope,BrukerData,data,$cookieStore,$location) {
-	
 	var url = $location.$$url;
 	var endreModus = url.indexOf("endrebarn") != -1;
+
 	$scope.nyttbarn = {barneinntekttall:undefined};	
 	var barnetilleggsData;
 	var ikkebarneinntekt;
 	var barneinntekttall;
+	
 	if(endreModus) {
 		var faktumId = url.split("/").pop();
-		var b = {};
-		
+		var barnUnderEndring = {};
 		
 		if ($scope.soknadData.fakta.barn) {
 			angular.forEach($scope.soknadData.fakta.barn.valuelist, function(value) { 
 				if(value.faktumId == faktumId) {
-					b = value;
+					barnUnderEndring = value;
 				}
 			});
 		}
@@ -45,15 +45,14 @@ angular.module('nav.barn',['app.services'])
 			});
 		}
 
-		var barnValue;
-		if(b.value) {
-			b.value = angular.fromJson(b.value)
-			b.value.fodselsdato = new Date(b.value.fodselsdato);
+		if(barnUnderEndring.value) {
+			barnUnderEndring.value = angular.fromJson(barnUnderEndring.value)
+			barnUnderEndring.value.fodselsdato = new Date(barnUnderEndring.value.fodselsdato);
 		}
 	}
 
-	if(b) {
-		var barneData = b;
+	if(barnUnderEndring) {
+		var barneData = barnUnderEndring;
 	} else {
 		var barneData = {
 			key: 'barn',
@@ -172,7 +171,7 @@ function oppdaterFaktumListe(type) {
 	if($scope.soknadData.fakta[type] && $scope.soknadData.fakta[type].valuelist) {
 		if(endreModus) {
 			angular.forEach($scope.soknadData.fakta[type].valuelist, function(value, index) {
-				if(value.faktumId = $scope[type].faktumId){ 
+				if(value.faktumId == $scope[type].faktumId){ 
 					$scope.soknadData.fakta[type].valuelist[index] = $scope[type];
 				} 
 			})

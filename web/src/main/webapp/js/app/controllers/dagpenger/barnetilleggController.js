@@ -28,20 +28,13 @@ angular.module('nav.barnetillegg',[])
 	}       
 
 	$scope.leggTilBarn = function() {
-		var aapneTabIds = [];
-		angular.forEach($scope.grupper, function(gruppe) {
-			if(gruppe.apen) { 
-				aapneTabIds.push(gruppe.id); 
-			}
-		});
-
-		$cookieStore.put('barneCookie', {
-			aapneTabs: aapneTabIds,
-			gjeldendeTab:"#barnetillegg",
-			barneFaktumId: undefined
-
-		})
+		settBarnCookie();
 		$location.path('nyttbarn/' + $scope.soknadData.soknadId);
+	}
+
+	$scope.endreBarn = function(faktumId) {
+		settBarnCookie(faktumId);
+		$location.path('endrebarn/' + $scope.soknadData.soknadId + "/" + faktumId);
 	}
 
 	$scope.erGutt = function(barn) {
@@ -57,7 +50,19 @@ angular.module('nav.barnetillegg',[])
 		$scope.runValidation();
 	}
 
-        // For å åpne opp taben. Dataen som blir sendt med eventen er ID på accordion-group som skal åpnes
-        //$scope.$emit("OPEN_TAB", 'barnetillegg');
+	function settBarnCookie(faktumId) {
+		var aapneTabIds = [];
+		angular.forEach($scope.grupper, function(gruppe) {
+			if(gruppe.apen) { 
+				aapneTabIds.push(gruppe.id); 
+			}
+		});
+
+		$cookieStore.put('barneCookie', {
+			aapneTabs: aapneTabIds,
+			gjeldendeTab:"#barnetillegg",
+			barneFaktumId: faktumId
+		})
+	}
 
     }]);
