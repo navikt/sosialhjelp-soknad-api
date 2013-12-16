@@ -1,24 +1,4 @@
 angular.module('nav.barnetillegg',[])
-.directive('barneDirective', ['$cookieStore', '$timeout', function ($cookieStore, $timeout)  {
-	return function($scope) {
-		$timeout(function() {
-			var barneCookie = $cookieStore.get('barneCookie');
-			if(barneCookie) {
-				$scope.$emit("CLOSE_TAB", "reell-arbeidssoker");
-				$scope.$emit("OPEN_TAB", barneCookie.aapneTabs);
-				
-				$timeout(
-					function() {
-						scrollToElement(angular.element("#barnetillegg"),0);
-						console.log(new Date().getTime());
-					}
-					,600);
-				$cookieStore.remove('barneCookie');
-			}
-		})
-	}
-
-}])
 .controller('BarnetilleggCtrl', ['$scope', '$cookieStore', '$location', '$timeout', 'barneService', function ($scope, $cookieStore, $location, $timeout, barneService) {
 	barneService.get({soknadId: $scope.soknadData.soknadId}).$promise.then(function (result) {
 		if ($scope.soknadData.fakta.barn) {
