@@ -432,18 +432,19 @@ form-linje.feil {
         &.feil {
             border: 1px solid #fca292;
             background: #fee6e6;
-            margin-left: -15px;
             padding: 15px;
 
-            &.tekstfelt {
+            &.tekstfelt, &.textarea-container {
                 border: none;
                 background: #f1f1f1;
-                margin-left: -15px;
-                padding: 0px 15px;
             }
-            .ingen-ytelse-melding {
-                display: block;
-                margin-bottom: 10px;
+
+            &.annetvalg-nei {
+                margin-left: -15px;
+                .ingen-ytelse-melding {
+                    display: block;
+                    margin-bottom: 10px;
+                }
             }
 
             .utdanning-annet-melding {
@@ -526,7 +527,6 @@ form-linje.feil {
             display: block;
         }
     }
-
 }
 
 .rad[stegindikator], .rad[data-stegindikator] {

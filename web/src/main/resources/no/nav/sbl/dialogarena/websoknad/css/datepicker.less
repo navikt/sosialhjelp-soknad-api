@@ -1,6 +1,7 @@
 .datepicker {
-    width: 165px;
+    width: 135px;
     vertical-align: top;
+    padding: 0;
 
     .caretPosition {
         border: none !important;
@@ -34,7 +35,7 @@
                 display: inline-block;
 
                 input {
-                    width: 100px;
+                    width: 100px !important;
                     position: relative;
                 }
             }
@@ -49,8 +50,8 @@
         height: 32px;
         padding: 0;
         position: relative;
-        top: 1px;
-        left: -5px;
+        top: -1px;
+        left: -4px;
     }
 
 
@@ -68,5 +69,9 @@
 .datepicker-intervall {
     .datepicker {
         display: inline-block;
+
+        &:last-child {
+            float: right;
+        }
     }
 }
