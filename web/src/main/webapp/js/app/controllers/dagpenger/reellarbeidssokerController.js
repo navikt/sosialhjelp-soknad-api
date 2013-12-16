@@ -11,10 +11,10 @@ angular.module('nav.reellarbeidssoker', [])
         var pendlenokler = ['pendlereduserthelse', 'pendleomsorgbarnunder1aar', 'pendleomsorgbarnopptil10', 'pendleeneansvarbarnunder5skoleaar',
             'pendleeneansvarbarnopptil18aar', 'pendleannensituasjon', 'pendleomsorgansvar' ];
 
-        $scope.harHuketAvCheckboksDeltid = {value : ''};
-        $scope.harHuketAvCheckboksPendle = {value : ''};
+        $scope.harHuketAvCheckboksDeltid = {value: ''};
+        $scope.harHuketAvCheckboksPendle = {value: ''};
 
-        if (erCheckboxerAvhuket(deltidnokler)){
+        if (erCheckboxerAvhuket(deltidnokler)) {
             $scope.harHuketAvCheckboksDeltid.value = true;
         }
         if (erCheckboxerAvhuket(pendlenokler)) {
@@ -25,7 +25,7 @@ angular.module('nav.reellarbeidssoker', [])
             $scope.validerReellarbeidssoker(false);
         });
 
-        $scope.validerOgSettModusOppsummering = function(form) {
+        $scope.validerOgSettModusOppsummering = function (form) {
             $scope.validateForm(form.$invalid);
             $scope.validerReellarbeidssoker(true);
         }
@@ -42,18 +42,18 @@ angular.module('nav.reellarbeidssoker', [])
             return $scope.alder > 59;
         }
 
-        $scope.endreDeltidsAarsaker = function (form) {
+        $scope.endreDeltidsAarsaker = function () {
             var minstEnDeltidCheckboksAvhuket = erCheckboxerAvhuket(deltidnokler);
-            if(minstEnDeltidCheckboksAvhuket) {
+            if (minstEnDeltidCheckboksAvhuket) {
                 $scope.harHuketAvCheckboksDeltid.value = true;
             } else {
                 $scope.harHuketAvCheckboksDeltid.value = '';
             }
         }
 
-        $scope.endrePendleAarsaker = function (form) {
+        $scope.endrePendleAarsaker = function () {
             var minstEnPendleCheckboksAvhuket = erCheckboxerAvhuket(pendlenokler);
-            if(minstEnPendleCheckboksAvhuket) {
+            if (minstEnPendleCheckboksAvhuket) {
                 $scope.harHuketAvCheckboksPendle.value = true;
             } else {
                 $scope.harHuketAvCheckboksPendle.value = '';
@@ -62,12 +62,20 @@ angular.module('nav.reellarbeidssoker', [])
 
         function erCheckboxerAvhuket(checkboxNokler) {
             var minstEnAvhuket = false;
+            var fakta = {};
+            data.fakta.forEach(function (faktum) {
+                if (checkboxNokler.indexOf(faktum.key >= 0)) {
+                    fakta[faktum.key] = faktum;
+                }
+            });
+
             for (var i = 0; i < checkboxNokler.length; i++) {
                 var nokkel = checkboxNokler[i];
-                if ($scope.soknadData.fakta[nokkel] && checkTrue($scope.soknadData.fakta[nokkel].value)) {
+                if (fakta[nokkel] && checkTrue(fakta[nokkel].value)) {
                     minstEnAvhuket = true;
                 }
             }
+            console.log("minst en: " + minstEnAvhuket)
             return minstEnAvhuket;
         }
     }]);

@@ -7,19 +7,23 @@ import java.util.List;
 
 public interface SendSoknadService {
 
-	Long startSoknad(String navSoknadId);
+    Long startSoknad(String navSoknadId);
 
-	WebSoknad hentSoknad(long soknadId);
+    WebSoknad hentSoknad(long soknadId);
 
-	Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum);
+    Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum);
 
-	Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value);
-	
-	void sendSoknad(long soknadId);
+    Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value);
 
-	List<Long> hentMineSoknader(String aktorId);
+    void sendSoknad(long soknadId);
 
-	void avbrytSoknad(Long soknadId);
+    List<Long> hentMineSoknader(String aktorId);
+
+    void avbrytSoknad(Long soknadId);
 
     void endreInnsendingsvalg(Long soknadId, Faktum faktum);
+
+    List<Faktum> hentFakta(Long soknadId);
+
+    void slettBrukerFaktum(Long soknadId, Long faktumId);
 }

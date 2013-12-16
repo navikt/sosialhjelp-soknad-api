@@ -31,26 +31,43 @@ angular.module('app.services', ['ngResource'])
         );
     })
 
-    /**
-    * Service for å lagre brukerdata
-    */
-    .factory('BrukerData', function($resource) {
-         var url = '/sendsoknad/rest/soknad/:soknadId/faktum' + '?rand=' + new Date().getTime();
-         return $resource(url,
-         {soknadId: '@soknadId'},
-         {
-            create: { method: 'POST', params: {}},
-            jsoncreate: { method: 'POST', params: {}, transformRequest: function(data, headersGetter) {
-                var d = deepClone(data);
-                d.value = JSON.stringify(data.value);
-                d = JSON.stringify(d);
-                return d;
+/**
+ * Service for å lagre brukerdata
+ */
+    .factory('BrukerData', function ($resource) {
+        var url = '/sendsoknad/rest/soknad/:soknadId/faktum' + '?rand=' + new Date().getTime();
+        return $resource(url,
+            {soknadId: '@soknadId'},
+            {
+                create: { method: 'POST', params: {}},
+                jsoncreate: { method: 'POST', params: {}, transformRequest: function (data, headersGetter) {
+                    var d = deepClone(data);
+                    d.value = JSON.stringify(data.value);
+                    d = JSON.stringify(d);
+                    return d;
+                }
                 }
             }
-         }
 
-         )
-     })
+        )
+    })
+    .factory('Faktum', function ($resource) {
+        var url = '/sendsoknad/rest/soknad/:soknadId/fakta/:faktumId';
+        return $resource(url,
+            {soknadId: '@soknadId', faktumId: '@faktumId'},
+            {
+                create: { method: 'POST', params: {}},
+                jsoncreate: { method: 'POST', params: {}, transformRequest: function (data, headersGetter) {
+                    var d = deepClone(data);
+                    d.value = JSON.stringify(data.value);
+                    d = JSON.stringify(d);
+                    return d;
+                }
+                }
+            }
+
+        )
+    })
 
 /**
  * Service som behandler vedlegg
@@ -69,9 +86,9 @@ angular.module('app.services', ['ngResource'])
             }
         );
     })
-    /**
-     * Service som behandler vedlegg
-     */
+/**
+ * Service som behandler vedlegg
+ */
     .factory('VedleggForventning', function ($resource) {
         return $resource('/sendsoknad/rest/soknad/:soknadId/forventning?rand=' + new Date().getTime(), {
             soknadId: '@faktum.soknadId'
