@@ -12,7 +12,10 @@ angular.module('nav.dagpenger', [])
             {id: 'barnetillegg', tittel: 'barnetillegg.tittel', template: '../html/templates/barnetillegg.html', apen: false}
         ]
 
-        $scope.validerDagpenger = function (form) {
+        $scope.validerDagpenger = function (form, event) {
+            //burde refaktoreres, bruke noe annet en events?
+            event.preventDefault();
+
             $scope.$broadcast('VALIDER_YTELSER', form.ytelserForm);
             $scope.$broadcast('VALIDER_UTDANNING', form.utdanningForm);
             $scope.$broadcast('VALIDER_ARBEIDSFORHOLD', form.arbeidsforholdForm);
@@ -26,11 +29,11 @@ angular.module('nav.dagpenger', [])
                 var elementMedForsteFeil = $('.accordion-group').find('.form-linje.feil, .form-linje.feilstyling').first();
                 if (form.$valid) {
                     $location.path("/vedlegg/" + $scope.soknadData.soknadId);
+
                 } else {
                     scrollToElement(elementMedForsteFeil, 200);
                     giFokus(elementMedForsteFeil);
                     setAktivFeilmeldingsklasse(elementMedForsteFeil);
-
                 }
             }, 400);
         };
