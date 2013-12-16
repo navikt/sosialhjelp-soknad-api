@@ -133,12 +133,13 @@
             </div>
         </div>
 
-        <div data-booleanradio data-ng-model="soknadData.fakta.villighelse.value"
+        <div class="helse"
+             data-booleanradio
+             data-ng-model="soknadData.fakta.villighelse.value"
              data-modus="data.redigeringsModus"
              data-nokkel="reellarbeidssoker.villighelse"
-             data-hjelpetekst></div>
+             data-hjelpetekst>
 
-        <div class="helsemessige-arsaker ekstra-spm-boks" data-ng-if="soknadData.fakta.villighelse.value == 'false'">
             <div data-navinfoboks data-nokkel="reellarbeidssoker.villighelse.false.vedlegginformasjon"></div>
             <div data-navtextarea
                  data-inputname="helseFritekst"
@@ -148,7 +149,8 @@
                  data-maxlengde="500"
                  data-feilmelding="reellarbeidssoker.helsefritekst.feilmelding"
                  data-obligatorisk="true"></div>
-        </div>
+         </div>
+
 
         <div data-booleanradio
              data-ng-model="soknadData.fakta.villigjobb.value"

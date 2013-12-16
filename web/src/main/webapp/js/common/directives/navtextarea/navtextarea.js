@@ -8,6 +8,7 @@ angular.module('nav.textarea', [])
             }
         }
         return {
+            restrict: "A",
             replace: true,
             require: 'ngModel',
             scope: {
