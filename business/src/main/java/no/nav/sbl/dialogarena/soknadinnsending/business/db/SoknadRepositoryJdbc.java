@@ -102,12 +102,12 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
 	        Long parrentFaktumId = faktum.getParrentFaktum();
 	        if(parrentFaktumId != null && parrentFaktumId > 0) {
 	            return getJdbcTemplate()
-	                .update("update soknadbrukerdata set value=? where key = ? and soknad_id = ? and parrent_faktum = ?",
-	                        faktum.getValue(), faktum.getKey(), soknadId, faktum.getParrentFaktum());
+	                .update("update soknadbrukerdata set value=? where key = ? and soknad_id = ? and soknadbrukerdata_id=? and parrent_faktum = ?",
+	                        faktum.getValue(), faktum.getKey(), soknadId, faktum.getFaktumId(), faktum.getParrentFaktum());
 	        } else {
 	            return getJdbcTemplate()
-	                    .update("update soknadbrukerdata set value=? where key = ? and soknad_id = ?",
-	                            faktum.getValue(), faktum.getKey(), soknadId);
+	                    .update("update soknadbrukerdata set value=? where key = ? and soknad_id = ? and soknadbrukerdata_id=?",
+	                            faktum.getValue(), faktum.getKey(), soknadId, faktum.getFaktumId());
 	        }
 	    }
 

@@ -78,7 +78,7 @@
 					</div>
 				</div>
 				<div data-ng-show="b.type == 'BRUKERREGISTRERT'">
-					<a href="#/endrebarn/{{ soknadData.soknadId }}/{{b.faktumId}}" data-cmstekster="barnetillegg.endrebarn">Endre</a>
+					<a href data-ng-click="endreBarn(b.faktumId)" data-cmstekster="barnetillegg.endrebarn">Endre</a>
 					<a>Slett</a>
 				</div>
 			</div>
