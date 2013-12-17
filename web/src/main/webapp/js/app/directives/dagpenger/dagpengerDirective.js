@@ -24,11 +24,7 @@ angular.module('nav.dagpengerdirective', [])
 
                         scope.$broadcast('OPEN_TAB', hentIdFraForm(formMedFeil));
                         var fokusElement = element.find("#" + hentIdFraForm(formMedFeil)).find('input');
-                        if (fokusElement.is('[type=hidden]')) {
-                            fokusElement = element.find("#" + hentIdFraForm(formMedFeil)).find('input[type=checkbox]').first();
-                        }
                         scrollToElement(fokusElement, 400);
-                        setFokus(fokusElement);
                     }
                 }, 800);
 
@@ -46,9 +42,6 @@ angular.module('nav.dagpengerdirective', [])
                 function lukkAlleTaber() {
                     var bolker = $('[data-accordion-group]');
                     scope.$broadcast('CLOSE_TAB', bolker);
-                }
-                function setFokus(elem) {
-                    elem.focus();
                 }
             }
         }

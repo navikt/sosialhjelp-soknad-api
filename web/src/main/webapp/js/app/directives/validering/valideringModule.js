@@ -95,6 +95,8 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 scope.$watch(function () {
                     return ngModel.$viewValue;
                 }, function () {
+                    console.log(form.$valid)
+                    console.log(form.$error)
                     if (ngModel.$viewValue && element.closest('.form-linje').hasClass('feil')) {
                         fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil', scope);
                     }
