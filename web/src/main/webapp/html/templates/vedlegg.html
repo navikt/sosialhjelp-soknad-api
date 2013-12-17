@@ -1,7 +1,7 @@
 <div data-stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="2"></div>
 
 <div id="vedlegg" class="soknad" data-sidetittel="sidetittel.opplasting">
-    <div class="rad-belyst">
+    <div class="rad-belyst inforad">
         <div class="begrensning sak-totredel">
             <section class="panel-standard oversikt">
                 <h1 class="stor-ikon-vedlegg-strek" data-cmstekster="vedlegg.tittel"></h1>
@@ -31,20 +31,25 @@
 
                             <p class="info-liste" data-cmshtml="{{soknadData.gosysId}}.vedlegg.{{forventning.gosysId}}.bekrefte"></p>
 
-                            <div class="spm-knapper send-valg" data-ng-if="!lastetOpp(forventning)">
+                            <div class="spm-knapper send-valg checkboxAsRadio" data-ng-if="!lastetOpp(forventning)">
 
-                                <input id="{{$index}}sendInnFraPcRadio" data-ng-model="forventning.faktum.innsendingsvalg" type="radio" value="VedleggKreves"
-                                       data-ng-change="endreInnsendingsvalg(forventning)">
-                                <label for="{{$index}}sendInnFraPcRadio" data-cmstekster="vedlegg.faktum.lastopp"></label>
+                                <!-- input id="{{$index}}sendInnFraPcRadio" data-ng-model="forventning.faktum.innsendingsvalg" type="radio" value="VedleggKreves"
+                                       data-ng-change="endreInnsendingsvalg(forventning)" data-ng-show="false">
+                                <label for="{{$index}}sendInnFraPcRadio" data-cmstekster="vedlegg.faktum.lastopp"></label-->
 
-                                <div class="valgbokser" data-ng-if="forventning.faktum.innsendingsvalg == 'VedleggKreves'">
+                                <div class="valgbokser" data-ng-if="forventning.faktum.innsendingsvalg == 'VedleggKreves'" data-ng-show="false">
                                     <!--a class="valgboks-mobil" data-ng-href="#/opplasting/{{ soknadData.soknadId }}/{{forventning.faktum.faktumId}}">
                                         <span data-cmstekster="vedlegg.faktum.lastopp.mobil"></span>
                                     </a-->
-                                    <a class="valgboks-pc" data-ng-href="#/opplasting/{{ soknadData.soknadId }}/{{forventning.faktum.faktumId}}">
+                                    <!--a class="valgboks-pc" data-ng-href="#/opplasting/{{ soknadData.soknadId }}/{{forventning.faktum.faktumId}}">
                                         <span data-cmstekster="vedlegg.faktum.lastopp.dennepc"></span>
-                                    </a>
+                                    </a-->
                                 </div>
+                                <div class="lastOpp">
+                                    <a data-ng-href="#/opplasting/{{ soknadData.soknadId }}/{{forventning.faktum.faktumId}}" class="knapp-link"
+                                       data-ng-click="forventning.faktum.innsendingsvalg = 'VedleggKreves'; endreInnsendingsvalg(forventning);">Last opp vedlegget</a>
+                                </div>
+                                <h4 data-cmstekster="vedlegg.faktum.andreInnsendingsvalg">Hvis du ikke har dette vedlegget tilgjengelig nå, kan du: </h4>
 
                                 <input id="{{$index}}ettersendRadio" data-ng-model="forventning.faktum.innsendingsvalg" type="radio" value="SendesSenere"
                                        data-ng-change="endreInnsendingsvalg(forventning)">
@@ -58,8 +63,8 @@
                                 <div class="forhandsvisning">
                                     <div data-bildenavigering data-vedlegg="forventning.vedlegg" data-nav-template="bildenavigeringTemplateLiten.html"></div>
                                     <div class="knapper">
-                                        <a data-ng-href="../rest/soknad/{{soknadData.soknadId}}/faktum/{{forventning.faktum.faktumId}}/vedlegg/{{forventning.faktum.vedleggId}}/data"
-                                           data-cmstekster="vedlegg.lastned"></a>
+                                        <!--a data-ng-href="../rest/soknad/{{soknadData.soknadId}}/faktum/{{forventning.faktum.faktumId}}/vedlegg/{{forventning.faktum.vedleggId}}/data"
+                                           data-cmstekster="vedlegg.lastned"></a-->
                                         <a data-cmstekster="vedlegg.slett" data-ng-click="slettVedlegg(forventning)" data-cmshtml="vedlegg.slettvedlegg"></a>
                                     </div>
                                 </div>
@@ -70,7 +75,7 @@
             </section>
         </div>
     </section>
-    <div class="rad-belyst">
+    <div class="rad-belyst leggtilekstra">
         <div class="begrensning sak-totredel">
             <section class="panel-standard oversikt">
                 <div class="knapp-stor" data-cmstekster="vedlegg.leggtilekstravedlegg"></div>
@@ -78,11 +83,10 @@
         </div>
     </div>
 
-    <div class="rad">
+    <div class="rad ferdig-skjema">
         <div class="begrensning sak-totredel">
             <section class="panel-standard oversikt">
                 <a href="#/oppsummering/{{ soknadData.soknadId }}" class="knapp-hoved" data-cmstekster="vedlegg.ferdig"></a>
-                <a href="#/dagpenger/{{ soknadData.soknadId }}" data-cmstekster="tilbake"></a>
             </section>
         </div>
     </div>
