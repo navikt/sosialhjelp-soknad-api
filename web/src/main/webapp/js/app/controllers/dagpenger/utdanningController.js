@@ -8,7 +8,7 @@ angular.module('nav.utdanning', [])
 
         $scope.harHuketAvCheckboks = {value: ''};
 
-        if (erCheckboxerAvhuket(nokler) || $scope.soknadData.fakta.utdanning.value == 'ikkeUtdanning' || $scope.soknadData.fakta.utdanning.value == 'avsluttetUtdanning') {
+        if (erCheckboxerAvhuket(nokler)) {
             $scope.harHuketAvCheckboks.value = true;
         }
 
