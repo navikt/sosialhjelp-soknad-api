@@ -1,24 +1,27 @@
 angular.module('nav.ytelser', [])
     .controller('YtelserCtrl', ['$scope', 'lagreSoknadData', function ($scope, lagreSoknadData) {
-        var minstEnCheckboksErAvhuketFeilmeldingNavn = 'minstEnCheckboksErAvhuket';
-        var minstEnCheckboksErAvhuketFeilmeldingNokkel = 'ytelser.minstEnCheckboksErAvhuket.feilmelding';
-        var feilmeldingKategori = 'ytelser';
-        var referanseTilFeilmeldingslinken = 'stonadFisker';
-
         $scope.ytelser = {skalViseFeilmeldingForIngenYtelser: false};
 
         var nokler = ['ventelonn', 'stonadFisker', 'offentligTjenestepensjon', 'privatTjenestepensjon', 'vartpenger', 'dagpengerEOS', 'annenYtelse', 'ingenYtelse' ];
 
-        $scope.$on('VALIDER_YTELSER', function (scope, form) {
-            $scope.validerYtelser(form, false);
+        $scope.harHuketAvCheckboks = {value : ''};
+
+        if (erCheckboxerAvhuket(nokler)){
+            $scope.harHuketAvCheckboks.value = true;
+        }
+
+        $scope.$on('VALIDER_YTELSER', function () {
+            $scope.validerYtelser(false);
         });
 
-//      sjekker om formen er validert når bruker trykker ferdig med ytelser
-        $scope.validerYtelser = function (form, skalScrolle) {
-            var minstEnCheckboksErAvhuket = erCheckboxerAvhuket(nokler);
-            $scope.ytelser.skalViseFeilmeldingForIngenYtelser = false;
-            settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, minstEnCheckboksErAvhuket, true);
+        $scope.validerOgSettModusOppsummering = function(form) {
             $scope.validateForm(form.$invalid);
+            $scope.validerYtelser(true);
+        }
+
+//      sjekker om formen er validert når bruker trykker ferdig med ytelser
+        $scope.validerYtelser = function (skalScrolle) {
+            $scope.ytelser.skalViseFeilmeldingForIngenYtelser = false;
             $scope.runValidation(skalScrolle);
         };
 
@@ -30,10 +33,12 @@ angular.module('nav.ytelser', [])
 
             if (harIkkeValgtYtelse) {
                 $scope.ytelser.skalViseFeilmeldingForIngenYtelser = false;
-                settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, false, true);
+                $scope.harHuketAvCheckboks.value = '';
 
             } else {
-               settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, true, true);
+
+                $scope.harHuketAvCheckboks.value = true;
+
             }
 
             if (sjekkOmGittEgenskapTilObjektErTrue($scope.soknadData.fakta.ingenYtelse)) {
@@ -63,8 +68,7 @@ angular.module('nav.ytelser', [])
 
             } else {
                 if (erCheckboksForIngenYtelseHuketAv) {
-                    form.$setValidity(minstEnCheckboksErAvhuketFeilmeldingNavn, true);
-                     settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, true, true);
+                    $scope.harHuketAvCheckboks.value = 'true';
                 }
                 $scope.$emit(lagreSoknadData, {key: 'ingenYtelse', value: erCheckboksForIngenYtelseHuketAv});
             }

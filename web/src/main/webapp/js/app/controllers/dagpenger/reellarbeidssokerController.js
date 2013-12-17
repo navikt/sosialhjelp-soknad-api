@@ -1,18 +1,8 @@
 angular.module('nav.reellarbeidssoker', [])
     .controller('ReellarbeidssokerCtrl', ['$scope', 'data', function ($scope, data) {
-        var minstEnVilligDeltidCheckboksErAvhuketFeilmeldingNavn = 'minstEnCheckboksErAvhuketForDeltid';
-        var minstEnVilligDeltidCheckboksErAvhuketFeilmeldingNokkel = 'reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding';
-        var referanseTilFeilmeldingslinkenDeltid = 'reduserthelse';
-
-        var minstEnVilligPendleCheckboksErAvhuketFeilmeldingNavn = 'minstEnCheckboksErAvhuketForPendle';
-        var minstEnVilligPendleCheckboksErAvhuketFeilmeldingNokkel = 'reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding';
-        var referanseTilFeilmeldingslinkenPendle = 'pendlereduserthelse';
-
-        var feilmeldingKategori = 'reellarbeidssoker';
-
         $scope.alder = data.alder.alder;
 //        For testing av alder:
-//        $scope.alder = 59;
+        $scope.alder = 59;
 
         $scope.navigering = {nesteside: 'arbeidsforhold'};
         $scope.sidedata = {navn: 'reellarbeidssoker'};
@@ -21,38 +11,28 @@ angular.module('nav.reellarbeidssoker', [])
         var pendlenokler = ['pendlereduserthelse', 'pendleomsorgbarnunder1aar', 'pendleomsorgbarnopptil10', 'pendleeneansvarbarnunder5skoleaar',
             'pendleeneansvarbarnopptil18aar', 'pendleannensituasjon', 'pendleomsorgansvar' ];
 
-        $scope.$on('VALIDER_REELLARBEIDSSOKER', function (scope, form) {
-            $scope.validerReellarbeidssoker(form, false);
+        $scope.harHuketAvCheckboksDeltid = {value : ''};
+        $scope.harHuketAvCheckboksPendle = {value : ''};
+
+        if (erCheckboxerAvhuket(deltidnokler)){
+            $scope.harHuketAvCheckboksDeltid.value = true;
+        }
+        if (erCheckboxerAvhuket(pendlenokler)) {
+            $scope.harHuketAvCheckboksPendle.value = true;
+        }
+
+        $scope.$on('VALIDER_REELLARBEIDSSOKER', function () {
+            $scope.validerReellarbeidssoker(false);
         });
 
-        $scope.validerReellarbeidssoker = function (form, skalScrolle) {
-            if (sjekkOmGittEgenskapTilObjektErFalse($scope.soknadData.fakta.villigdeltid) && $scope.erUnder60Aar()) {
-                var minstEnDeltidCheckboksAvhuket = $scope.erCheckboxerAvhuket(deltidnokler);
-                settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnVilligDeltidCheckboksErAvhuketFeilmeldingNavn, minstEnVilligDeltidCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinkenDeltid, minstEnDeltidCheckboksAvhuket, false);
-            } else {
-                settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnVilligDeltidCheckboksErAvhuketFeilmeldingNavn, minstEnVilligDeltidCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinkenDeltid, true, false);
-            }
-            if (sjekkOmGittEgenskapTilObjektErFalse($scope.soknadData.fakta.villigpendle) && $scope.erUnder60Aar()) {
-                var minstEnPendleCheckboksAvhuket = $scope.erCheckboxerAvhuket(pendlenokler);
-                settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnVilligPendleCheckboksErAvhuketFeilmeldingNavn, minstEnVilligPendleCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinkenPendle, minstEnPendleCheckboksAvhuket, false);
-            } else {
-                settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnVilligPendleCheckboksErAvhuketFeilmeldingNavn, minstEnVilligPendleCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinkenPendle, true, false);
-            }
+        $scope.validerOgSettModusOppsummering = function(form) {
             $scope.validateForm(form.$invalid);
+            $scope.validerReellarbeidssoker(true);
+        }
+
+        $scope.validerReellarbeidssoker = function (skalScrolle) {
             $scope.runValidation(skalScrolle);
-        }
-
-
-        $scope.erCheckboxerAvhuket = function (checkboxNokler) {
-            var minstEnAvhuket = false;
-            for (var i = 0; i < checkboxNokler.length; i++) {
-                var nokkel = checkboxNokler[i];
-                if ($scope.soknadData.fakta[nokkel] && checkTrue($scope.soknadData.fakta[nokkel].value)) {
-                    minstEnAvhuket = true;
-                }
-            }
-            return minstEnAvhuket;
-        }
+        };
 
         $scope.erUnder60Aar = function () {
             return $scope.alder < 60;
@@ -63,12 +43,31 @@ angular.module('nav.reellarbeidssoker', [])
         }
 
         $scope.endreDeltidsAarsaker = function (form) {
-            var minstEnDeltidCheckboksAvhuket = $scope.erCheckboxerAvhuket(deltidnokler);
-            settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnVilligDeltidCheckboksErAvhuketFeilmeldingNavn, minstEnVilligDeltidCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinkenDeltid, minstEnDeltidCheckboksAvhuket, false);
+            var minstEnDeltidCheckboksAvhuket = erCheckboxerAvhuket(deltidnokler);
+            if(minstEnDeltidCheckboksAvhuket) {
+                $scope.harHuketAvCheckboksDeltid.value = true;
+            } else {
+                $scope.harHuketAvCheckboksDeltid.value = '';
+            }
         }
 
         $scope.endrePendleAarsaker = function (form) {
-            var minstEnPendleCheckboksAvhuket = $scope.erCheckboxerAvhuket(pendlenokler);
-            settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnVilligPendleCheckboksErAvhuketFeilmeldingNavn, minstEnVilligPendleCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinkenPendle, minstEnPendleCheckboksAvhuket, false);
+            var minstEnPendleCheckboksAvhuket = erCheckboxerAvhuket(pendlenokler);
+            if(minstEnPendleCheckboksAvhuket) {
+                $scope.harHuketAvCheckboksPendle.value = true;
+            } else {
+                $scope.harHuketAvCheckboksPendle.value = '';
+            }
+        }
+
+        function erCheckboxerAvhuket(checkboxNokler) {
+            var minstEnAvhuket = false;
+            for (var i = 0; i < checkboxNokler.length; i++) {
+                var nokkel = checkboxNokler[i];
+                if ($scope.soknadData.fakta[nokkel] && checkTrue($scope.soknadData.fakta[nokkel].value)) {
+                    minstEnAvhuket = true;
+                }
+            }
+            return minstEnAvhuket;
         }
     }]);
