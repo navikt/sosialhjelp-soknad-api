@@ -606,3 +606,40 @@ form, [ng-form], [data-ng-form] {
         }
     }
 }
+
+.ps-container {
+    position: relative;
+
+    &:hover {
+        [class*="ps-scrollbar"] {
+            opacity: 0.6;
+        }
+    }
+
+    [class*="ps-scrollbar"] {
+        position: absolute;
+        background-color: #aaa;
+        border-radius: 4px;
+        opacity: 0;
+        transition: opacity .2s linear;
+
+        &:hover {
+            opacity: 0.9;
+            cursor: default;
+        }
+
+        &.in-scrolling {
+            opacity: 0.9;
+        }
+    }
+
+    .ps-scrollbar-x {
+        bottom: 3px;
+        height: 8px;
+    }
+
+    .ps-scrollbar-y {
+        right: 3px;
+        width: 8px;
+    }
+}

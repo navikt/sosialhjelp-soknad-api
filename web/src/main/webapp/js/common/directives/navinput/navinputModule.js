@@ -33,7 +33,7 @@ angular.module('nav.input', ['nav.cmstekster'])
             templateUrl: '../js/common/directives/navinput/navradioTemplate.html'
         }
     }])
-    .directive('navcheckbox', [function () {
+    .directive('navcheckbox', ['cms', function (cms) {
         return {
             restrict: "A",
             replace: true,
@@ -44,28 +44,33 @@ angular.module('nav.input', ['nav.cmstekster'])
                 modus: '=',
                 inputname: '@',
                 label: '@',
-                hjelpetekst: '@',
                 endret: '&'
             },
-            link: function (scope, element) {
-//                var tmpElementName = 'tmpName';
-//                fiksNavn(element, scope.inputname, tmpElementName);
+            link: {
+                pre: function(scope) {
+                    scope.hjelpetekst = {
+                        tittel: cms.tekster[scope.label + '.hjelpetekst.tittel'],
+                        tekst: cms.tekster[scope.label + '.hjelpetekst.tekst']
+                    }
 
-                scope.hvisHarHjelpetekst = function() {
-                    return scope.tittel && scope.tekst;
-                }
+                },
+                post: function (scope, element) {
+                    scope.hvisHarHjelpetekst = function () {
+                        return scope.hjelpetekst.tittel && scope.hjelpetekst.tekst;
+                    }
 
-                scope.hvisIRedigeringsmodus = function () {
-                    return scope.modus;
-                }
+                    scope.hvisIRedigeringsmodus = function () {
+                        return scope.modus;
+                    }
 
-                scope.hvisIOppsummeringsmodusOgChecked = function () {
-                    return !scope.hvisIRedigeringsmodus() && checkTrue(scope.model);
-                }
+                    scope.hvisIOppsummeringsmodusOgChecked = function () {
+                        return !scope.hvisIRedigeringsmodus() && checkTrue(scope.model);
+                    }
 
-                scope.hvisHuketAv = function () {
-                    var transcludeElement = element.find('.ng-transclude');
-                    return checkTrue(scope.model) && transcludeElement.text().length > 0;
+                    scope.hvisHuketAv = function () {
+                        var transcludeElement = element.find('.ng-transclude');
+                        return checkTrue(scope.model) && transcludeElement.text().length > 0;
+                    }
                 }
             },
             templateUrl: '../js/common/directives/navinput/navcheckboxTemplate.html'
