@@ -14,8 +14,12 @@ angular.module('nav.barnetillegg',[])
             return barn.value.kjonn == "jente";
         }
 
-        $scope.validerBarnetillegg = function(form) {
+        $scope.validerOgSettModusOppsummering = function(form) {
             $scope.validateForm(form.$invalid);
+            $scope.validerBarnetillegg(true);
+        }
+
+        $scope.validerBarnetillegg = function() {
             $scope.runValidation();
         }
 
