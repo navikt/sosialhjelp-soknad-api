@@ -3,6 +3,8 @@
 		<div data-form-errors></div>
 		<div class="barn-spm spm-boks">
 
+			<h2 data-cmstekster="barnetillegg.nyttbarn.tittel"> </h2>
+
 			<div class="form-linje">
 				<label>
 					<span data-cmstekster="barnetillegg.nyttbarn.fornavn"></span>
@@ -76,7 +78,8 @@
 				<label>
 					<span data-cmstekster="barnetillegg.barnetilegg.barneinntekttall.sporsmal"></span>
 					<input name="barneinntekttall"
-					data-error-messages="'barnetillegg.barnetilegg.barneinntekttall.feilmelding'" type="text"
+					data-error-messages="{required:'barnetillegg.barnetilegg.barneinntekttall.feilmelding', pattern:'barnetillegg.barnetilegg.barneinntekttall.ugyldig.feilmelding'}" type="text"
+					data-ng-pattern="/\d+/"
 					data-ng-model="nyttbarn.barneinntekttall.value"
 					data-blur-validate required="barnetHarInntekt()">
 					<span class="melding"></span>
