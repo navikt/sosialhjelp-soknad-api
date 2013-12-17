@@ -64,4 +64,10 @@ public class WebSoknadServiceMock implements SendSoknadService{
 		return null;
 	}
 
+    @Override
+    public void slettSoknadsFelt(Long soknadId, Long faktumId) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

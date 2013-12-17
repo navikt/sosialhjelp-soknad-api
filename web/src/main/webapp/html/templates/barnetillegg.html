@@ -1,10 +1,15 @@
-<div class="skjemaramme" data-ng-controller="ModusCtrl" barne-directive>
+<div class="skjemaramme" data-ng-controller="ModusCtrl" data-barne-directive>
+	<style>
+		.ny {background-color: grey;}
+	</style>
 	<div data-ng-form="barnetilleggForm" class="skjemainnhold" data-ng-controller="BarnetilleggCtrl" novalidate>
 		<div form-errors></div>
 		<p class="informasjonstekst" cmstekster="barnetillegg.informasjon"></p>
 
 		<div data-ng-repeat="b in soknadData.fakta.barn.valuelist">
-			<div data-ng-class="{gutt: erGutt(b), jente:erJente(b)}" class="barn">
+			
+			<div data-ng-class="{gutt: erGutt(b), jente:erJente(b)}" id="barn{{b.faktumId}}" class="barn">
+
 				<div class="barnealder">
 					<span> ÅR</span>
 					<span class="alder robust" data-ng-bind="b.value.alder"></span>
@@ -79,7 +84,8 @@
 				</div>
 				<div data-ng-show="b.type == 'BRUKERREGISTRERT'">
 					<a href data-ng-click="endreBarn(b.faktumId)" data-cmstekster="barnetillegg.endrebarn">Endre</a>
-					<a>Slett</a>
+					<!-- TODO cmstekst -->
+					<a href data-ng-click="slettBarn(b, $index)">Slett</a>
 				</div>
 			</div>
 		</div>

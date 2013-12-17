@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.person;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
+
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import org.junit.Assert;
 import org.junit.Test;

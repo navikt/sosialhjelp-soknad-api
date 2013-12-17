@@ -68,11 +68,18 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value) {
+        //TODO: her blir barn overskrevet. Hent ut fnr osv.
         Faktum faktum = repository.hentSystemFaktum(soknadId, key, SYSTEMREGISTRERT_FAKTUM);
+        
         Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, faktum.getFaktumId(), key, value, SYSTEMREGISTRERT_FAKTUM));
         return repository.hentFaktum(soknadId, faktumId);
     }
+ 
+    public void slettSoknadsFelt(Long soknadId, Long faktumId) {
+       // slett faktum med denne faktumId-en som parrent (løses kanskje enklere etter refactorering)
 
+        repository.slettSoknadsFelt(soknadId, faktumId);
+    }
 
     @Override
     public void sendSoknad(long soknadId) {
@@ -214,4 +221,5 @@ public class SoknadService implements SendSoknadService, VedleggService {
         }
 
     }
+
 }
