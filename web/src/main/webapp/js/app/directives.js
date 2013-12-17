@@ -22,5 +22,6 @@ angular.module('app.directives', [
     'nav.utdanningannet',
     'nav.ingenytelser',
     'nav.accordion',
+    'nav.scrollbar',
     'nav.dagpengerdirective'
 ]);
