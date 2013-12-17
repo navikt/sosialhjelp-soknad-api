@@ -2,7 +2,7 @@
 	<div data-ng-show="hvisIRedigeringsmodus()" class="checkboks">
 		<input id="{{ label }}" data-ng-model="model" type="checkbox" name="{{ inputname }}" data-ng-click="endret()" data-mod-faktum data-boolean-verdi/>
 		<label for="{{ label }}" class="svar-alt" data-cmstekster="{{ label }}"></label>
-        <div data-nav-hjelpetekstelement data-ng-if="hvisHarHjelpetekst()" data-tittel="hjelpetekst.tittel" data-tekst="hjelpetekst.tekst"></div>
+        <div data-nav-hjelpetekstelement data-ng-if="hvisHarHjelpetekst()" data-tittel="{{ hjelpetekst.tittel }}" data-tekst="{{ hjelpetekst.tekst }}"></div>
 	</div>
 	<p class="svar-oppsummering" data-ng-show="hvisIOppsummeringsmodusOgChecked()" data-cmstekster="{{ label }}"></p>
 	<div class="ng-transclude ekstra-spm-boks" data-ng-show="hvisHuketAv()"></div>

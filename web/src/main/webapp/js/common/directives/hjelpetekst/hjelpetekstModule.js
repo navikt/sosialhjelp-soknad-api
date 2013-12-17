@@ -3,8 +3,8 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
         return {
             replace: true,
             scope: {
-                tittel: '=',
-                tekst: '='
+                tittel: '@',
+                tekst: '@'
             },
             templateUrl: '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html',
             link: function (scope) {
