@@ -74,7 +74,7 @@ describe('DagpengerControllere', function() {
 
         it('skal kalle metode for å validere form', function() {
             expect(scope.validateFormFunctionBleKalt).toEqual(false);
-            scope.validerEgennaering(form);
+            scope.validerOgSettModusOppsummering(form);
             expect(scope.validateFormFunctionBleKalt).toEqual(true);
         });
     });
@@ -88,7 +88,7 @@ describe('DagpengerControllere', function() {
 
         it('skal kalle metode for å validere form', function() {
             expect(scope.validateFormFunctionBleKalt).toEqual(false);
-            scope.validerVerneplikt(form);
+            scope.validerOgSettModusOppsummering(form);
             expect(scope.validateFormFunctionBleKalt).toEqual(true);
         });
     });
@@ -102,7 +102,7 @@ describe('DagpengerControllere', function() {
 
         it('skal kalle metode for å validere form', function() {
             expect(scope.validateFormFunctionBleKalt).toEqual(false);
-            scope.validerUtdanning(form);
+            scope.validerOgSettModusOppsummering(form);
             expect(scope.validateFormFunctionBleKalt).toEqual(true);
         });
     });
@@ -138,7 +138,7 @@ describe('DagpengerControllere', function() {
             scope.soknadData.fakta.villigdeltid = true;
             scope.soknadData.fakta.villigpendle = true;
             expect(scope.validateFormFunctionBleKalt).toEqual(false);
-            scope.validerReellarbeidssoker(form);
+            scope.validerOgSettModusOppsummering(form);
             expect(scope.validateFormFunctionBleKalt).toEqual(true);
         });
     });
