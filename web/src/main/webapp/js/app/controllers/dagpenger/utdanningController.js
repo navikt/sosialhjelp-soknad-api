@@ -3,17 +3,12 @@ angular.module('nav.utdanning', [])
         $scope.navigering = {nesteside: 'ytelser'};
         $scope.sidedata = {navn: 'utdanning'};
 
-
         var nokler = ['underUtdanningKveld', 'underUtdanningKortvarig', 'underUtdanningKortvarigFlere', 'underUtdanningNorsk', 'underUtdanningIntroduksjon', 'underUtdanningAnnet' ];
-//        var feilmeldingKategori = 'utdanning';
-//        var minstEnCheckboksErAvhuketFeilmeldingNavn = 'minstEnCheckboksErAvhuket';
-//        var minstEnCheckboksErAvhuketFeilmeldingNokkel = 'utdanning.minstEnAvhuket.feilmelding';
-//        var referanseTilFeilmeldingslinken = 'underUtdanningAnnet';
         $scope.utdanning = {skalViseFeilmeldingForUtdanningAnnet: false};
 
         $scope.harHuketAvCheckboks = {value: ''};
 
-        if (erCheckboxerAvhuket(nokler)) {
+        if (erCheckboxerAvhuket(nokler) || $scope.soknadData.fakta.utdanning.value == 'ikkeUtdanning' || $scope.soknadData.fakta.utdanning.value == 'avsluttetUtdanning') {
             $scope.harHuketAvCheckboks.value = true;
         }
 
@@ -29,8 +24,6 @@ angular.module('nav.utdanning', [])
         $scope.validerUtdanning = function (skalScrolle) {
             if ($scope.hvisUnderUtdanning()) {
                 var minstEnAvhuket = erCheckboxerAvhuket(nokler);
-//                form.$setValidity("utdanning.minstEnAvhuket.feilmelding", minstEnAvhuket);
-//                settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, minstEnAvhuket, true);
             }
             $scope.runValidation(skalScrolle);
         }
@@ -143,8 +136,6 @@ angular.module('nav.utdanning', [])
                 $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet = false;
                 $scope.harHuketAvCheckboks.value = '';
             } else {
-//                $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet = true;
-//                settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, true, true);
                 $scope.harHuketAvCheckboks.value = true;
             }
             if (sjekkOmGittEgenskapTilObjektErTrue($scope.soknadData.fakta.utdanningAnnet)) {
@@ -163,13 +154,7 @@ angular.module('nav.utdanning', [])
                 erCheckboksForUtdanningAnnetHuketAv = $scope.soknadData.fakta.underUtdanningAnnet.value;
             }
             if (harValgtUtdanning) {
-
-//            $scope.soknadData.fakta.underUtdanningAnnet.value = 'false';
-                $
                 if (erCheckboksForUtdanningAnnetHuketAv) {
-//                    form.$setValidity(minstEnCheckboksErAvhuketFeilmeldingNavn, true);
-//                    settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, true, true);
-
                     $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet = true;
                 }
             } else {
@@ -178,7 +163,6 @@ angular.module('nav.utdanning', [])
                 }
             }
         }
-
 
         $scope.utdanningsprosent = [
             {
