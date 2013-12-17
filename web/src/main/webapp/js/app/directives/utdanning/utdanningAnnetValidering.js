@@ -4,6 +4,9 @@ angular.module('nav.utdanningannet', [])
         require: ['^form'],
         link: function (scope, element, attrs, ctrl) {
             var eventString = 'RUN_VALIDATION' + ctrl[0].$name;
+            scope.$on(eventString, function () {
+                fadeBakgrunnsfarge(element, element.find('.utdanning-annen-melding'), 'feil', scope);
+            })
             scope.$watch(function () {
                 return scope.utdanning.skalViseFeilmeldingForUtdanningAnnet;
             }, function () {

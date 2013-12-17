@@ -10,7 +10,6 @@ angular.module('nav.ingenytelser', [])
                 scope.$watch(function () {
                     return scope.ytelser.skalViseFeilmeldingForIngenYtelser;
                 }, function () {
-
                     if (scope.ytelser.skalViseFeilmeldingForIngenYtelser) {
                         element.addClass('feil');
                     } else {
