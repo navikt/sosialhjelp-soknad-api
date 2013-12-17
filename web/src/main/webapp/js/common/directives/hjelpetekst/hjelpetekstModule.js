@@ -1,5 +1,5 @@
 angular.module('nav.hjelpetekst', ['nav.animation'])
-    .directive('navHjelpetekstelement', [function () {
+    .directive('navHjelpetekstelement', ['$document', function ($document) {
         return {
             replace: true,
             scope: {
@@ -16,6 +16,14 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
                 scope.lukk = function () {
                     scope.visHjelp = false;
                 }
+
+                scope.stoppKlikk = function(event) {
+                    event.stopPropagation();
+                }
+
+                $document.bind('click', function() {
+                    scope.visHjelp = false;
+                });
             }
         }
     }])
@@ -29,4 +37,4 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
                 element.css({top: topp + "px", left: venstre + "px"});
             });
         }
-    }])
+    }]);
