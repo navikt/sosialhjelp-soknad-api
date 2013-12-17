@@ -58,7 +58,6 @@ function sjekkOmGittEgenskapTilObjektErFalse(objekt) {
 }
 
 function sjekkOmGittEgenskapTilObjektErTrue(objekt) {
-    console.log("Sjekker egenskap");
     if (objekt) {
         return checkTrue(objekt.value);
     }
