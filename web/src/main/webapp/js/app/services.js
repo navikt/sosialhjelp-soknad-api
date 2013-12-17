@@ -35,18 +35,19 @@ angular.module('app.services', ['ngResource'])
     * Service for å lagre brukerdata
     */
     .factory('BrukerData', function($resource) {
-         var url = '/sendsoknad/rest/soknad/:soknadId/faktum' + '?rand=' + new Date().getTime();
+         var url = '/sendsoknad/rest/soknad/:soknadId/faktum/:mode' + '?rand=' + new Date().getTime();
          return $resource(url,
          {soknadId: '@soknadId'},
          {
-            create: { method: 'POST', params: {}},
-            jsoncreate: { method: 'POST', params: {}, transformRequest: function(data, headersGetter) {
+            create: { method: 'POST',params: {mode:''}},
+            jsoncreate: { method: 'POST', params: {mode:''}, transformRequest: function(data, headersGetter) {
                 var d = deepClone(data);
                 d.value = angular.toJson(data.value);
                 d = angular.toJson(d);
                 return d;
                 }
-            }
+            },
+            delete: { method: 'POST', params:{mode:'delete'}}
          }
 
          )

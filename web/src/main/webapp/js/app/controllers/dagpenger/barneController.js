@@ -93,6 +93,15 @@ angular.module('nav.barn',['app.services'])
 			lagreBarnOgBarnetilleggFaktum();
 		}
 	}
+	function oppdaterCookieValue(faktumId) {
+		var barneCookie = $cookieStore.get('barneCookie');
+
+		$cookieStore.put('barneCookie', {
+			aapneTabs: barneCookie.aapneTabs,
+			gjeldendeTab: barneCookie.gjeldendeTab,
+			barneFaktumId: faktumId
+		});
+	}
 
         /**
 		* Lagrer barnefaktum, tar vare på faktumId-en man får tilbake for så å lagre barnetilleggsfaktum basert på returnerte faktumID.
@@ -103,6 +112,7 @@ angular.module('nav.barn',['app.services'])
 				$scope.barn = barnData;
 				$scope.barn.value = angular.fromJson(barnData.value);
 				oppdaterFaktumListe("barn");
+				oppdaterCookieValue(barnData.faktumId);
 
 				if(barnetilleggsData == undefined) {
 					barnetilleggsData = {

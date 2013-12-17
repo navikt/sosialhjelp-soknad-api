@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.person;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
+
 import com.google.gson.Gson;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;

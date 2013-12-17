@@ -96,7 +96,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
                     return ngModel.$viewValue;
                 }, function () {
                     if (ngModel.$viewValue && element.closest('.form-linje').hasClass('feil')) {
-                        fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil', scope);
+                        fadeFeilmelding(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil', scope);
                     }
                 });
 

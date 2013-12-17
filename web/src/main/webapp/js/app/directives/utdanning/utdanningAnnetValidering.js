@@ -6,7 +6,7 @@ angular.module('nav.utdanningannet', [])
             var eventString = 'RUN_VALIDATION' + ctrl[0].$name;
 
             scope.$on(eventString, function () {
-                fadeBakgrunnsfarge(element, element.find('.utdanning-annet-melding'), 'feil');
+                fadeFeilmelding(element, element.find('.utdanning-annet-melding'), 'feil');
             })
 
             scope.$watch(function () {
@@ -15,7 +15,7 @@ angular.module('nav.utdanningannet', [])
                 if (scope.utdanning.skalViseFeilmeldingForUtdanningAnnet) {
                     element.addClass('feil');
                 } else {
-                    fadeBakgrunnsfarge(element, element.find('.utdanning-annet-melding'), 'feil');
+                    fadeFeilmelding(element, element.find('.utdanning-annet-melding'), 'feil');
                 }
             });
         }
