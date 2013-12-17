@@ -1,4 +1,27 @@
 angular.module('nav.barnetillegg',[])
+.directive('barneDirective', ['$cookieStore', '$timeout', function ($cookieStore, $timeout)  {
+	return function($scope) {
+		$timeout(function() {
+			var barneCookie = $cookieStore.get('barneCookie');
+			if(barneCookie) {
+				$scope.$emit("CLOSE_TAB", "reell-arbeidssoker");
+				$scope.$emit("OPEN_TAB", barneCookie.aapneTabs);
+
+				var faktumId = barneCookie.barneFaktumId;
+				
+				$timeout(
+					function() {
+						var element = angular.element("#barn"+faktumId);
+						scrollToElement(element,0);
+						fadeBakgrunnsfarge(element.parent(), $scope, 255,255,255);
+					}
+					,600);
+				$cookieStore.remove('barneCookie');
+			}
+		})
+	}
+
+}])
 .controller('BarnetilleggCtrl', ['$scope', '$cookieStore', '$location', '$timeout', 'barneService','BrukerData', function ($scope, $cookieStore, $location, $timeout, barneService, BrukerData) {
 	barneService.get({soknadId: $scope.soknadData.soknadId}).$promise.then(function (result) {
 		if ($scope.soknadData.fakta.barn) {

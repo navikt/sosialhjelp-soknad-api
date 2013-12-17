@@ -35,6 +35,7 @@ angular.module('nav.feilmeldinger', [])
 
                 scope.feilmeldinger = [];
                 scope.runValidation = function (skalScrolle) {
+                	console.log(ctrl.$error);
                     scope.feilmeldinger = [];
                     var skalViseFlereFeilmeldinger = true;
                     var skalViseFlereBarneFeilmeldinger = true;

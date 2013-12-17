@@ -1,13 +1,10 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl" data-barne-directive>
-	<style>
-		.ny {background-color: grey;}
-	</style>
-	<div data-ng-form="barnetilleggForm" class="skjemainnhold" data-ng-controller="BarnetilleggCtrl" novalidate>
+	<div id="barnetilleggForm" data-ng-form="barnetilleggForm" class="skjemainnhold" data-ng-controller="BarnetilleggCtrl" novalidate>
 		<div form-errors></div>
 		<p class="informasjonstekst" cmstekster="barnetillegg.informasjon"></p>
 
-		<div data-ng-repeat="b in soknadData.fakta.barn.valuelist">
-			
+		<div class="spm-boks vertikal" data-ng-repeat="b in soknadData.fakta.barn.valuelist">
+			 
 			<div data-ng-class="{gutt: erGutt(b), jente:erJente(b)}" id="barn{{b.faktumId}}" class="barn">
 
 				<div class="barnealder">
@@ -23,6 +20,8 @@
 						<span data-ng-show="!b.value.land">Norge</span>
 						<span data-ng-bind="b.value.land"></span>
 					</div>
+				</div>
+				<div>
 					<div class="barnecheckbox" data-ng-controller="BarnetilleggFaktumCtrl">
 						<div data-ng-if="hvisIRedigeringsmodus()"> 
 							<input data-ng-model="barnetillegg.value" name="barnetilegg{{$index}}" id="barnetilegg{{$index}}" type="checkbox" data-boolean-verdi>
@@ -61,12 +60,14 @@
 								<p class="svar-oppsummering" data-ng-if="barnetHarInntekt()" data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.false"></p>
 							</div>
 
+							<!-- TODO tall validering -->
 							<div data-ng-show="barnetHarInntekt()">
 								<div class="form-linje" data-ng-if="hvisIRedigeringsmodus()">
 									<label>
 										<span data-cmstekster="barnetillegg.barnetilegg.barneinntekttall.sporsmal"></span>
 										<input name="barneinntekttall{{$index}}"
-										data-error-messages="'barnetillegg.barnetilegg.barneinntekttall.feilmelding'" type="text"
+										data-error-messages="{required:'barnetillegg.barnetilegg.barneinntekttall.feilmelding', pattern:'barnetillegg.barnetilegg.barneinntekttall.ugyldig.feilmelding'}" type="text"
+										data-ng-pattern="/\d+/"
 										data-ng-model="barneinntekttall.value"
 										data-blur-validate required="barnetHarInntekt()">
 										<span class="melding"></span>
@@ -83,14 +84,14 @@
 					</div>
 				</div>
 				<div data-ng-show="b.type == 'BRUKERREGISTRERT'">
-					<a href data-ng-click="endreBarn(b.faktumId)" data-cmstekster="barnetillegg.endrebarn">Endre</a>
-					<!-- TODO cmstekst -->
-					<a href data-ng-click="slettBarn(b, $index)">Slett</a>
+					<a href data-ng-click="endreBarn(b.faktumId)" data-cmstekster="barnetillegg.endrebarn"></a>
+					<a href data-ng-click="slettBarn(b, $index)" data-cmstekster="barnetillegg.slettbarn"></a>
 				</div>
 			</div>
 		</div>
 
 		<div id="legg-til-barn" data-ng-show="hvisIRedigeringsmodus()">
+		<p data-cmstekster="barnetillegg.nyttbarn.informasjon"> </p>
 			<a class="knapp-leggtil-liten" href data-ng-click="leggTilBarn()" data-cmstekster="barnetillegg.nyttbarn"></a>
 		</div>
 		
