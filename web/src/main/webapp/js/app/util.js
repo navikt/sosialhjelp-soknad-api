@@ -25,7 +25,7 @@ if (!Array.prototype.last) {
     }
 }
 
-if (!Array.prototype.contains) {
+    if (!Array.prototype.contains) {
     Array.prototype.contains = function (val) {
         return $.inArray(val, this) > -1;
     }
