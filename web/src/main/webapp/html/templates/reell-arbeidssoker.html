@@ -15,7 +15,7 @@
                  data-nokkel="reellarbeidssoker.villigdeltid.false.informasjon"></div>
 
             <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
-                <input type="hidden" data-ng-model="harHuketAvCheckboksDeltid.value" data-ng-required="true"
+                <input type="hidden" data-ng-model="harHuketAvCheckboksDeltid.value" data-ng-required="soknadData.fakta.villigdeltid.value == 'false' && erUnder60Aar()"
                        data-error-messages="'reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding'"/>
                 <div data-navcheckbox
                      data-ng-model='soknadData.fakta.reduserthelse.value'
@@ -80,7 +80,7 @@
         <div class="ekstra-spm-boks" data-ng-show="soknadData.fakta.villigpendle.value == 'false'">
             <div data-navinfoboks data-nokkel="reellarbeidssoker.villigpendle.false.informasjon"></div>
             <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
-                <input type="hidden" data-ng-model="harHuketAvCheckboksPendle.value" data-ng-required="true"
+                <input type="hidden" data-ng-model="harHuketAvCheckboksPendle.value" data-ng-required="soknadData.fakta.villigpendle.value == 'false' && erUnder60Aar()"
                        data-error-messages="'reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding'"/>
                 <div data-navcheckbox
                      data-ng-model='soknadData.fakta.pendlereduserthelse.value'
