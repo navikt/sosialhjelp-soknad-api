@@ -30,6 +30,8 @@
 
             <span class="melding"></span>
             <div class="spm" data-ng-if="hvisUnderUtdanning()" modus="data.redigeringsModus">
+
+
                 <h4 class="spm-sporsmal" cmstekster="utdanning.sporsmal"></h4>
                     <div data-label="utdanning.svar.under.utdanning.kveld" data-navcheckbox id="underUtdanningKveld" data-modus="data.redigeringsModus" data-ng-model ="soknadData.fakta.underUtdanningKveld.value" data-inputname="underUtdanningKveld" data-endret="endreUtdanning(utdanningForm)"/>
 
@@ -108,18 +110,15 @@
                                  data-er-required="true"
                                  data-feilmelding="utdanning.error.varighet.tilfra">
                             </div>
-                        </div>
 
-        <div data-ng-if="hvisStudieProgresjonOver50()">
-            <div class="infoboks" cmstekster="utdanning.avslutning.semester"/>
-            <div data-nav-dato data-ng-model="soknadData.fakta.utdanning.avslutning.semester"
-                 data-label="utdanning.avslutning.semester"
-                 data-er-required="true"
-                 data-required-error-message="utdanning.avslutning.semester.feilmelding">
-            </div>
+                <div data-nav-dato data-ng-model="soknadData.fakta.utdanning.avslutning.semester"
+                     data-label="utdanning.avslutning.semester"
+                     data-er-required="true"
+                     data-required-error-message="utdanning.avslutning.semester.feilmelding">
+                </div>
+                <div class="infoboks" cmstekster="utdanning.svar.under.utdanning.dokumentasjon"/>
 
-        </div>
-        <div class="infoboks" cmstekster="utdanning.svar.under.utdanning.dokumentasjon"/>
+
     </div>
 
     <div data-label="utdanning.svar.under.utdanning.kortvarig" data-navcheckbox data-modus="data.redigeringsModus"
@@ -146,7 +145,7 @@
                 </div>
 
         <div class="infoboks" cmstekster="utdanning.svar.under.utdanning.dokumentasjon"/>
-    </div>
+</div>
 
     <div data-label="utdanning.svar.under.utdanning.kortvarigflere" data-navcheckbox data-modus="data.redigeringsModus"
          data-ng-model="soknadData.fakta.underUtdanningKortvarigFlere.value"
@@ -160,15 +159,6 @@
 
                 <div data-navtekst data-modus="data.redigeringsModus" data-label="utdanning.utdanning.navn" data-ng-model="soknadData.fakta.utdanning.kortvarigflere.navn" data-feilmelding="utdanning.error.utdanningsnavn"  data-ng-required="true"/>
 
-                   <div class="varighet">
-                    <div data-nav-dato-intervall
-                         data-fra-dato="utdanning.kortvarigFlere.varighetFra"
-                         data-til-dato="utdanning.kortvarigFlere.varighetTil"
-                         data-label="utdanning.varighet"
-                         data-er-required="true"
-                         data-feilmelding="utdanning.error.varighet.tilfra">
-                    </div>
-                </div>
 
         <div class="varighet">
             <div data-nav-dato-intervall
@@ -203,28 +193,6 @@
             </div>
         </div>
 
-        <div class="sporsmaal">
-            <div class="infoboks" cmstekster="utdanning.utdanningssted.avslutte.sporsmal"/>
-
-            <div data-navradio data-ng-model="soknadData.fakta.utdanning.avslutte" data-value="true"
-                 data-modus="data.redigeringsModus"
-                 data-inputname="avslutteJa"
-                 data-label="utdanning.utdanningssted.avslutte.true"
-                 data-feilmelding="utdanning.error.avslutte"></div>
-
-            <div data-navradio data-ng-model="soknadData.fakta.utdanning.avslutte" data-value="false"
-                 data-modus="data.redigeringsModus"
-                 data-inputname="avslutteNei"
-                 data-label="utdanning.utdanningssted.avslutte.false"
-                 data-feilmelding="utdanning.error.avslutte"></div>
-
-        </div>
-
-
-        <div data-ng-if="hvisManIkkeVilAvslutteUtdanningen()">
-            <div class="infoboks" cmstekster="utdanning.utdanningsted.avslutte.konsekvenser"/>
-        </div>
-
         <div class="infoboks" cmstekster="utdanning.svar.under.utdanning.dokumentasjon"/>
     </div>
 
@@ -244,10 +212,7 @@
     <div data-ng-if="hvisIngenUnntakGjelder()">
         <div class="ekstra-spm-boks" cmstekster="utdanning.unntak"/>
     </div>
-
-                    </div>
-
-                    </div>
+    </div>
                 <div data-ng-if="hvisIngenUnntakGjelder()">
                     <div class="ekstra-spm-boks" cmstekster="utdanning.unntak"/>
                 </div>
@@ -255,9 +220,9 @@
                  data-submit-method="validerOgSettModusOppsummering(utdanningForm)"></div>
 
         </div>
-
     </div>
-
+        </div>
+</div>
 
 
 </div>
