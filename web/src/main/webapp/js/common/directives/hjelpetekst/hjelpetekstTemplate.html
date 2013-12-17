@@ -1,7 +1,13 @@
-<div class="hjelpetekst animate-slide-show" data-ng-show="vishjelp">
-    <div>
-        <h3 class="hjelpetekst-tittel-strek">{{ tittel }}</h3>
-        <a class="lukk" href="" data-cmstekster="lukk" data-ng-click="lukk()"></a>
+<div class="hjelpetekst">
+    <span class="infoikon" data-ng-click="toggleHjelpetekst()"></span>
+    <div class="hjelpetekst-tooltip" data-ng-if="visHjelp" data-nav-hjelpetekst-tooltip>
+        <div class="tittel">
+            <h3 class="liten-strek">{{ tittel }}</h3>
+            <a class="lukk liten" href="javascript:void(0)" data-cmstekster="lukk" data-ng-click="lukk()"></a>
+        </div>
+
+        <div class="tekst" data-nav-scroll>
+            <p class="mini">{{ tekst }}</p>
+        </div>
     </div>
-    <p class="mini">{{ tekst }}</p>
 </div>
