@@ -2,7 +2,7 @@ angular.module('nav.reellarbeidssoker', [])
     .controller('ReellarbeidssokerCtrl', ['$scope', 'data', function ($scope, data) {
         $scope.alder = data.alder.alder;
 //        For testing av alder:
-        $scope.alder = 59;
+//        $scope.alder = 59;
 
         $scope.navigering = {nesteside: 'arbeidsforhold'};
         $scope.sidedata = {navn: 'reellarbeidssoker'};
@@ -14,10 +14,10 @@ angular.module('nav.reellarbeidssoker', [])
         $scope.harHuketAvCheckboksDeltid = {value : ''};
         $scope.harHuketAvCheckboksPendle = {value : ''};
 
-        if (erCheckboxerAvhuket(deltidnokler) || $scope.soknadData.fakta.villigdeltid.value == 'true'){
+        if (erCheckboxerAvhuket(deltidnokler)){
             $scope.harHuketAvCheckboksDeltid.value = true;
         }
-        if (erCheckboxerAvhuket(pendlenokler) || $scope.soknadData.fakta.villigpendle.value == 'true'){
+        if (erCheckboxerAvhuket(pendlenokler)) {
             $scope.harHuketAvCheckboksPendle.value = true;
         }
 
@@ -31,7 +31,6 @@ angular.module('nav.reellarbeidssoker', [])
         }
 
         $scope.validerReellarbeidssoker = function (skalScrolle) {
-            console.log($scope.harHuketAvCheckboksPendle.value)
             $scope.runValidation(skalScrolle);
         };
 

@@ -38,6 +38,8 @@
 
 
     <div class="ekstra-spm-boks" data-ng-if="hvisUtdanningKveld()">
+        <input type="hidden" data-ng-model="harHuketAvCheckboks.value" data-ng-required=" $scope.soknadData.fakta.utdanning.value == 'underUtdanning'"
+               data-error-messages="'utdanning.minstEnAvhuket.feilmelding'">
 
         <div class="infoboks" cmstekster="utdanning.svar.under.utdanning.kveld.informasjon"/>
 
@@ -121,8 +123,6 @@
         </div>
         <div class="infoboks" cmstekster="utdanning.svar.under.utdanning.dokumentasjon"/>
     </div>
-    <input type="hidden" data-ng-model="harHuketAvCheckboks.value" data-ng-required="true"
-           data-error-messages="'utdanning.minstEnAvhuket.feilmelding'">
 
     <div data-label="utdanning.svar.under.utdanning.kortvarig" data-navcheckbox data-modus="data.redigeringsModus"
          data-ng-model="soknadData.fakta.underUtdanningKortvarig.value" data-inputname="underUtdanningKortvarig"
