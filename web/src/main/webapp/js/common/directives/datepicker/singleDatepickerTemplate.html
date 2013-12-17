@@ -1,17 +1,21 @@
-<div class="form-linje datepicker" data-ng-class="{feil: harFeil()}">
+<div class="form-linje datepicker" data-ng-class="{feil: harFeil(), fokus: harFokus}">
     <span class="caretPosition"></span>
     <label>
         <span data-cmstekster="{{ label }}"></span>
         <span class="vekk" data-cmstekster="dato.format"></span>
-            <span class="maskedInput">
-                <input type="text"
-                       data-ng-model="ngModel" data-ng-blur="blur()" data-ng-focus="focus()" data-ng-required="erRequired" data-error-messages="'{{ requiredErrorMessage }}'"
-                       data-dato-mask>
-                <span class="mask"></span>
-            </span>
-        </label>
-    <input type="hidden" data-ng-model="ngModel">
-    <span class="knapp-liten" data-ng-click="toggleDatepicker()"></span>
+        <span class="datepicker-input">
+            <input type="text"
+                   data-ng-model="ngModel"
+                   data-ng-blur="blur()"
+                   data-ng-focus="focus()"
+                   data-ng-required="erRequired"
+                   data-error-messages="'{{ requiredErrorMessage }}'"
+                   data-dato-mask>
+            <span class="mask"></span>
+            <input type="hidden" data-ng-model="ngModel">
+            <span class="apne-datepicker" data-ng-click="toggleDatepicker()"></span>
+        </span>
+    </label>
 
     <span class="melding" data-ng-if="harRequiredFeil()" data-cmstekster="{{ requiredErrorMessage }}"></span>
     <span class="melding" data-ng-if="harFormatteringsFeil()" data-cmstekster="dato.format.feilmelding"></span>

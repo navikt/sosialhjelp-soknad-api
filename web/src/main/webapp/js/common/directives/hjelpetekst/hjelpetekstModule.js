@@ -1,55 +1,40 @@
 angular.module('nav.hjelpetekst', ['nav.animation'])
-    .directive('navHjelpetekstelement', [function () {
+    .directive('navHjelpetekstelement', ['$document', function ($document) {
         return {
             replace: true,
             scope: {
-                tittel: '=',
-                tekst: '=',
-                vishjelp: '='
+                tittel: '@',
+                tekst: '@'
             },
             templateUrl: '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html',
-            link: function(scope, element) {
-                element.hide();
-
-                scope.lukk = function() {
-                    scope.vishjelp = false;
-                    element.parent().find('.definerer-hjelpetekst.open, [data-definerer-hjelpetekst].open').removeClass('open');
+            link: function (scope) {
+                scope.visHjelp = false;
+                scope.toggleHjelpetekst = function() {
+                    scope.visHjelp = !scope.visHjelp;
                 }
+
+                scope.lukk = function () {
+                    scope.visHjelp = false;
+                }
+
+                scope.stoppKlikk = function(event) {
+                    event.stopPropagation();
+                }
+
+                $document.bind('click', function() {
+                    scope.visHjelp = false;
+                });
             }
         }
     }])
-    .directive('definererHjelpetekst', ['cms', function (cms) {
-        return {
-            restrict: 'AC',
-            scope: false,
-            link: function(scope, element, attrs) {
-                var tittelNokkel = attrs['nokkel'] + ".hjelpetekst.tittel";
-                var tekstNokkel = attrs['nokkel'] + ".hjelpetekst.tekst";
+    .directive('navHjelpetekstTooltip', ['$timeout', function ($timeout) {
+        return function (scope, element) {
+            $timeout(function() {
+                var posisjon = element.prev().position();
 
-                var tittel = cms.tekster[tittelNokkel];
-                var tekst = cms.tekster[tekstNokkel];
-
-                scope.visHjelpetekst = false;
-                scope.tittel = tittel;
-                scope.tekst = tekst;
-
-                element.bind('click', function() {
-                    if (element.hasClass('open')) {
-                        scope.visHjelpetekst = false;
-                        element.removeClass('open');
-                    } else if (scope.visHjelpetekst) {
-                        scope.tittel = tittel;
-                        scope.tekst = tekst;
-                        element.addClass('open');
-                        element.siblings('.definerer-hjelpetekst.open').removeClass('open');
-                    } else {
-                        scope.tittel = tittel;
-                        scope.tekst = tekst;
-                        element.addClass('open');
-                        scope.visHjelpetekst = true;
-                    }
-                    scope.$apply();
-                });
-            }
+                var topp = posisjon.top - element.outerHeight() - 15;
+                var venstre = posisjon.left - 20;
+                element.css({top: topp + "px", left: venstre + "px"});
+            });
         }
     }]);
