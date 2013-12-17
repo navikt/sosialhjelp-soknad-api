@@ -140,9 +140,7 @@ angular.module('nav.utdanning', [])
 
             $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet = false;
 
-            settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, false, true);
-        } else {
-            settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, true, true);
+            } else {
 
         }
         if (sjekkOmGittEgenskapTilObjektErTrue($scope.soknadData.fakta.underUtdanningAnnet)) {
@@ -167,8 +165,7 @@ angular.module('nav.utdanning', [])
         else {
                 if (erCheckboksForUtdanningAnnetHuketAv) {
 
-                    form.$setValidity(minstEnCheckboksErAvhuketFeilmeldingNavn, true);
-                    settEgendefinertFeilmeldingsverdi(form, feilmeldingKategori, minstEnCheckboksErAvhuketFeilmeldingNavn, minstEnCheckboksErAvhuketFeilmeldingNokkel, referanseTilFeilmeldingslinken, true, true);
+
                 }
                 $scope.$emit(lagreSoknadData, {key: 'underUtdanningAnnet', value: erCheckboksForUtdanningAnnetHuketAv});
 
