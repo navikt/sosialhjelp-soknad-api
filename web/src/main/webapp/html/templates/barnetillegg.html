@@ -33,13 +33,12 @@
 							<div data-ng-if="barnetillegg.value == 'true'">						
 								<p class="svar-oppsummering" data-cmstekster="barnetillegg.barnetilegg.sporsmal"> </p>
 								<p class="svar-oppsummering" data-ng-if="barnetHarIkkeInntekt()" data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.true"></p>
-								<p class="svar-oppsummering" data-ng-if="barnetHarInntekt()" data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.false"></p>
-								<div data-ng-show="barnetHarInntekt()">
-									<p class="svar-oppsummering" data-ng-if="barnetHarInntekt()" >
-										<span data-cmstekster="barnetillegg.barnetilegg.barneinntekttall.sporsmal"></span>
-										<span data-ng-bind="barneinntekttall.value | currency"></span>
-									</p>
-								</div>
+								<p class="svar-oppsummering" data-ng-if="barnetHarInntekt()">
+									<span data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.false"> </span>
+									<span>.</span>
+									<span data-cmstekster="barnetillegg.barnetilegg.barneinntekttall.sporsmal"></span>
+									<span data-ng-bind="barneinntekttall.value | currency"></span>
+								</p>
 							</div>
 					</div>
 				</div>
