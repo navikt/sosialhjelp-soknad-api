@@ -140,6 +140,15 @@ angular.module('app.routes', ['ngRoute'])
                     }
                 }
             })
+            .when('/sokbarnetillegg/:soknadId/:faktumId', {
+                templateUrl: '../html/templates/barnetillegg-nyttbarn.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (NyttBarnSideResolver) {
+                        return NyttBarnSideResolver;
+                    }
+                }
+            })
             .when('/arbeidsforhold/:soknadId', {
                 templateUrl: '../html/templates/arbeidsforhold.html',
                 controller: 'SoknadDataCtrl',

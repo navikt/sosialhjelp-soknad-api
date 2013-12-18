@@ -145,9 +145,9 @@ angular.module('nav.validering', ['nav.cmstekster'])
                     return element.find("input:checked").length;
                 }, function () {
                     if (element.find("input:checked").length > 0 && element.closest('.form-linje').hasClass('feil')) {
-                        fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil', scope);
+                        fadeFeilmelding(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil', scope);
                     } else if (element.find("input:checked").length > 0 && element.closest('.form-linje').hasClass('feilstyling')) {
-                        fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje.feilstyling').children('.melding'), 'feilstyling', scope);
+                        fadeFeilmelding(element.closest('.form-linje'), element.closest('.form-linje.feilstyling').children('.melding'), 'feilstyling', scope);
                     }
                 });
             }
