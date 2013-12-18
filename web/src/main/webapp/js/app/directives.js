@@ -24,5 +24,6 @@ angular.module('app.directives', [
     'nav.ingennavytelser',
     'nav.accordion',
     'nav.scrollbar',
-    'nav.dagpengerdirective'
+    'nav.dagpengerdirective',
+    'nav.aria'
 ]);
