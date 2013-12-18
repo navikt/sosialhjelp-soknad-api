@@ -107,21 +107,17 @@ angular.module('nav.ytelser', [])
     //      kjøres hver gang det skjer en endring på 'ingenNAVYtelse'-checkboksen
     $scope.endreIngenNavYtelse = function (form) {
         // Sjekker om en ytelse er huket av (inkluderer IKKE siste checkboksen)
-        var ytelserNokler = undernokler.slice(0, nokler.length - 1);
+        var ytelserNokler = undernokler.slice(0, undernokler.length - 1);
         var harValgtNavYtelse = erCheckboxerAvhuket(ytelserNokler);
-        var erCheckboksForIngenNavYtelseHuketAv = $scope.soknadData.fakta.ingenNavYtelse.value;
-        console.log("Test");
+        var erCheckboksForIngenNavYtelseHuketAv = $scope.soknadData.fakta.ingennavytelser.value;
         if (harValgtNavYtelse) {
-            console.log("Ytelsersjekket av");
-            if (Object.keys($scope.soknadData.fakta.ingenNavYtelse).length == 1) {
-                $scope.$emit(lagreSoknadData, {key: 'ingenNavYtelse', value: 'false'});
+            if (Object.keys($scope.soknadData.fakta.ingennavytelser).length == 1) {
+                $scope.$emit(lagreSoknadData, {key: 'ingennavytelser', value: 'false'});
             }
-
             //Fjerner krysset for andre ytelser
-            $scope.soknadData.fakta.ingenYtelse.value = 'false';
+            $scope.soknadData.fakta.ingennavytelser.value = 'false';
             //Viser feilmelding
-            $scope.ytelser.skalViseFeilmeldingForIngenYtelser = true;
-            console.log("Fjernet");
+            $scope.ytelser.skalViseFeilmeldingForIngenNavYtelser = true;
 
         } else {
             if (erCheckboksForIngenNavYtelseHuketAv) {
