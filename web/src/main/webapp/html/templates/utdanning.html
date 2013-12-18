@@ -95,12 +95,12 @@
         </div>
         <div data-navtekst data-modus="data.redigeringsModus" data-label="utdanning.utdanningssted.navn"
              data-ng-model="soknadData.fakta.utdanning.kveld.utdanningsstednavn"
-             data-feilmelding="'utdanning.error.utdanningsstednavn'" required/>
+             data-feilmelding="utdanning.error.utdanningsstednavn" data-ng-required="true"/>
 
 
         <div data-navtekst data-modus="data.redigeringsModus" data-label="utdanning.utdanning.navn"
-             data-ng-model="soknadData.fakta.utdanning.kveld.navn" data-feilmelding="'utdanning.error.utdanningsnavn'"
-             required/>
+             data-ng-model="soknadData.fakta.utdanning.kveld.navn" data-feilmelding="utdanning.error.utdanningsnavn"
+             data-ng-required="true"/>
 
 
                             <div data-nav-dato-intervall
@@ -182,7 +182,7 @@
 
         <div data-navtekst data-modus="data.redigeringsModus" data-label="utdanning.utdanningssted.navn"
              data-ng-model="soknadData.fakta.utdanning.norsk.utdanningsstednavn"
-             data-feilmelding="'utdanning.error.utdanningsstednavn'" required/>
+             data-feilmelding="'utdanning.error.utdanningsstednavn'"  data-ng-required="true"/>
 
         <div class="varighet">
             <div data-nav-dato-intervall
@@ -200,22 +200,20 @@
          data-ng-model="soknadData.fakta.underUtdanningIntroduksjon.value" data-inputname="underUtdanningIntroduksjon"
          data-endret="endreUtdanning(utdanningForm)"/>
 
+
                 <div data-ng-show="hvisIRedigeringsmodus()">
-
-    <div data-label="utdanning.svar.under.utdanning.annet" data-navcheckbox data-modus="data.redigeringsModus"
-         data-ng-model="soknadData.fakta.underUtdanningAnnet.value" data-inputname="underUtdanningAnnet"
-         data-endret="endreUtdannelseAnnet(utdanningForm)" data-valider-utdanning-annet/>
-
-    <div class="annetvalg-nei form-linje">
+    <div class="annetvalg-nei form-linje" data-valider-utdanning-annet>
+        <input id="underUtdanningAnnetCheckbox" data-ng-model="soknadData.fakta.underUtdanningAnnet.value" type="checkbox"
+               name="underUtdanningAnnet" data-ng-change="endreUtdannelseAnnet(utdanningForm)" data-valider-utdanning-annet data-boolean-verdi/>
+        <label for="underUtdanningAnnetCheckbox" class="svar-alt" data-cmstekster="utdanning.svar.under.utdanning.annet"></label>
         <span class="utdanning-annet-melding" data-cmstekster="utdanning.harValgtUtdanning.feilmelding"></span>
     </div>
+</div>
+
     <div data-ng-if="hvisIngenUnntakGjelder()">
         <div class="ekstra-spm-boks" cmstekster="utdanning.unntak"/>
     </div>
-    </div>
-                <div data-ng-if="hvisIngenUnntakGjelder()">
-                    <div class="ekstra-spm-boks" cmstekster="utdanning.unntak"/>
-                </div>
+
             <div data-spmblokkferdig data-nokkel="utdanning" data-modus="data.redigeringsModus"
                  data-submit-method="validerOgSettModusOppsummering(utdanningForm)"></div>
 
