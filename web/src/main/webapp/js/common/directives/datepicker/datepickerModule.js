@@ -270,6 +270,7 @@ angular.module('nav.datepicker', [])
                         var start = caretPosisjon - (datoInput.length - gammelInputVerdi.length);
                         var slutt = caretPosisjon;
 
+
                         for(var i = start; i < slutt && i < datoInput.length; i++) {
                             var skrevetTegn = datoInput[i];
 
