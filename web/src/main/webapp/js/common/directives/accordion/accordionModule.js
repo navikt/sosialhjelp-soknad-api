@@ -235,30 +235,35 @@ angular.module('nav.accordion', [])
                     this.heading = element;
                 };
             },
-            link: function (scope, element, attrs, accordionCtrl) {
-                var getIsOpen, setIsOpen;
+            link:{
+                pre: function (scope, element, attrs) {
+                    scope.id = attrs.id;
+                },
+                post: function (scope, element, attrs, accordionCtrl) {
+                    var getIsOpen, setIsOpen;
 
-                accordionCtrl.addGroup(scope);
+                    accordionCtrl.addGroup(scope);
 
-                scope.isOpen = false;
+                    scope.isOpen = false;
 
-                if (attrs.isOpen) {
-                    getIsOpen = $parse(attrs.isOpen);
-                    setIsOpen = getIsOpen.assign;
+                    if (attrs.isOpen) {
+                        getIsOpen = $parse(attrs.isOpen);
+                        setIsOpen = getIsOpen.assign;
 
-                    scope.$parent.$watch(getIsOpen, function (value) {
-                        scope.isOpen = !!value;
+                        scope.$parent.$watch(getIsOpen, function (value) {
+                            scope.isOpen = !!value;
+                        });
+                    }
+
+                    scope.$watch('isOpen', function (value) {
+                        if (value) {
+                            accordionCtrl.closeOthers(scope);
+                        }
+                        if (setIsOpen) {
+                            setIsOpen(scope.$parent, value);
+                        }
                     });
                 }
-
-                scope.$watch('isOpen', function (value) {
-                    if (value) {
-                        accordionCtrl.closeOthers(scope);
-                    }
-                    if (setIsOpen) {
-                        setIsOpen(scope.$parent, value);
-                    }
-                });
             }
         };
     }])
