@@ -10,45 +10,9 @@
     <div data-nav-dato-intervall
          data-fra-dato="af.sagtOppAvArbeidsgiverVarighetFra"
          data-til-dato="af.sagtOppAvArbeidsgiverVarighetTil"
-         data-er-fradato-required="true"
+         data-er-begge-required="true"
          data-label="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighet">
     </div>
-</div>
-
-
-<div class="sporsmaal form-linje boolean">
-    <h4 data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.sporsmal"></h4>
-
-    <div>
-        <input class="sendsoknad-radio"
-               id="oppsigelseslonnJa"
-               type="radio"
-               value="true"
-               data-ng-model="af.sagtOppAvArbeidsgiverOppsigelseslonn"
-               data-name="oppsigelseslonn"
-               data-error-messages="'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.feilmelding'"
-               data-ng-required="true"
-               data-click-validate/>
-
-        <label for="oppsigelseslonnJa" class='svar-alt'
-               data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.true"></label>
-    </div>
-
-    <div>
-        <input class="sendsoknad-radio"
-               id="oppsigelseslonnNei"
-               type="radio"
-               value="false"
-               data-ng-model="af.sagtOppAvArbeidsgiverOppsigelseslonn"
-               data-name="oppsigelseslonn"
-               data-error-messages="'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.feilmelding'"
-               data-ng-required="true"
-               data-click-validate/>
-
-        <label for="oppsigelseslonnNei" class='svar-alt'
-               data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.false"></label>
-    </div>
-    <span class="melding" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.feilmelding"></span>
 </div>
 
 <div class="sporsmaal form-linje boolean">
@@ -67,6 +31,11 @@
 
         <label for="tilbudomjobbannetstedJa" class='svar-alt'
                data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true"></label>
+
+        <div data-ng-show="af.sagtOppAvArbeidsgiverTilbudomjobbannetsted == 'true'">
+            <p class=""
+               data-cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true.informasjon"></p>
+        </div>
     </div>
 
     <div>
@@ -87,60 +56,4 @@
           data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.feilmelding"></span>
 </div>
 
-<div class="sporsmaal form-linje boolean">
-    <h4 data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.sporsmal"></h4>
 
-    <div>
-        <input class="sendsoknad-radio"
-               id="avtaleomokonomiskytelseJa"
-               type="radio"
-               value="true"
-               data-ng-model="af.sagtOppAvArbeidsgiverAvtaleomOkonomiskytelse"
-               data-name="avtaleomokonomiskytelse"
-               data-error-messages="'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.feilmelding'"
-               data-ng-required="true"
-               data-click-validate/>
-
-        <label for="avtaleomokonomiskytelseJa" class='svar-alt'
-               data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.true"></label>
-    </div>
-
-    <div>
-        <input class="sendsoknad-radio"
-               id="avtaleomokonomiskytelseNei"
-               type="radio"
-               value="false"
-               data-ng-model="af.sagtOppAvArbeidsgiverAvtaleomOkonomiskytelse"
-               data-name="avtaleomokonomiskytelse"
-               data-error-messages="'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.feilmelding'"
-               data-ng-required="true"
-               data-click-validate/>
-
-        <label for="avtaleomokonomiskytelseNei" class='svar-alt'
-               data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.false"></label>
-    </div>
-    <span class="melding" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.feilmelding"></span>
-</div>
-
-<div data-ng-show="af.sagtOppAvArbeidsgiverAvtaleomOkonomiskytelse == 'true'">
-    <p class="sluttaarsak-informasjon"
-       data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.informasjon"></p>
-
-    <div class="form-linje">
-        <label>
-            <span data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.type.sporsmal"></span>
-            <input type="text"
-                   id="avtaleomokonomiskytelsetype"
-                   data-ng-model="af.sagtOppAvArbeidsgiverAvtaleomOkonomiskytelseType"
-                   data-name="avtaleomokonomiskytelsetype"
-                   data-error-messages="{required: 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.type.feilmelding',
-                            pattern: 'pattern.feilmelding', minlength: 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.forkort', maxlength: 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.forlangt'}"
-                   data-ng-maxlength="50"
-                   data-ng-minlength="3"
-                   data-ng-pattern="/^[-a-zA-Z0-9æøåÆØÅ _+§%()]+$/"
-                   data-ng-required="af.sagtOppAvArbeidsgiverAvtaleomOkonomiskytelse == 'true'"
-                   data-blur-validate/>
-            <span class="melding"></span>
-        </label>
-    </div>
-</div>
