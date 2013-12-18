@@ -53,7 +53,7 @@ angular.module('nav.textarea', [])
 
          
     }])
-    .directive('validateTextarea', [function() {
+    .directive('validateTextarea',['cms', function (cms) {
         return {
             require: 'ngModel',
             link: function(scope, element, attrs, ctrl) {
@@ -72,9 +72,13 @@ angular.module('nav.textarea', [])
                     if (scope.counter < 0) {
                         ctrl.$setValidity(scope.nokkel, false);
                         scope.feil = true;
+                        element.closest('.form-linje').addClass('feil');
+                        settFeilmeldingsTekst();
+
                     } else {
                         ctrl.$setValidity(scope.nokkel, true);
                         scope.feil = false;
+                        element.closest('.form-linje').removeClass('feil');
                     }
                 }
 
@@ -88,8 +92,22 @@ angular.module('nav.textarea', [])
                     scope.$apply(attrs.onBlur)
                     validerAntallTegn();
                     var verdi = element.val().toString();
+                    if(ctrl.$viewValue == undefined || ctrl.$viewValue.length == 0) {
+                        settFeilmeldingsTekst();
+                        element.closest('.form-linje').addClass('feil');
+                    }
                     scope.$emit("OPPDATER_OG_LAGRE", {key: element.attr('name'), value: verdi});
                 })
+
+                function settFeilmeldingsTekst() {
+                    var feilmeldingTekst = cms.tekster['textarea.feilmleding'];
+                    if(scope.counter > -1) {
+                       var feilmeldingsNokkel = element[0].getAttribute('data-error-messages').toString();
+                        //hack for å fjerne dobbeltfnuttene rundt feilmeldingsnokk
+                        feilmeldingTekst = cms.tekster[feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1)];
+                    }
+                    element.closest('.form-linje').find('.melding').text(feilmeldingTekst);
+                }
             }
         }
     }]);
