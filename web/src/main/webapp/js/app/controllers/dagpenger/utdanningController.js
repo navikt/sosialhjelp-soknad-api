@@ -89,6 +89,7 @@ angular.module('nav.utdanning', [])
                 return false;
             }
             if ($scope.soknadData.fakta.utdanning.progresjonunder50 == 'false') return true;
+
         }
 
         $scope.hvisUtdanningPaabegyntUnder6mnd = function () {
@@ -123,11 +124,12 @@ angular.module('nav.utdanning', [])
         for(var i= 0; i < checkboxNokler.length; i++) {
             var nokkel = checkboxNokler[i];
            if ($scope.soknadData.fakta[nokkel] && checkTrue($scope.soknadData.fakta[nokkel].value)) {
-                    minstEnAvhuket = true;
-                }
-            }
-            return minstEnAvhuket;
+
+                minstEnAvhuket = true;
+           }
         }
+        return minstEnAvhuket;
+    }
 
     //kjøres hver gang det skjer en endring på checkboksene (gjelder ikke den siste)
     $scope.endreUtdanning = function (form) {
@@ -158,6 +160,7 @@ angular.module('nav.utdanning', [])
 
             $scope.soknadData.fakta.underUtdanningAnnet.value = 'false';
             $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet = true;
+
         }
         else {
                 if (erCheckboksForUtdanningAnnetHuketAv) {
@@ -170,8 +173,5 @@ angular.module('nav.utdanning', [])
     }
     }
 
-        }
-    }
-    }
 
     }]);
