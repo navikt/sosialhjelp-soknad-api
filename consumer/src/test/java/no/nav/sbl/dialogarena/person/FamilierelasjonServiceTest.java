@@ -96,7 +96,6 @@ public class FamilierelasjonServiceTest {
         familierelasjon.setTilPerson(barn1);
         Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
 
-        //TODO: kodeverk
         familieRelasjonRolle.setValue("FARA");
         familierelasjon.setTilRolle(familieRelasjonRolle);
 

@@ -5,7 +5,10 @@
 				<div class="barn-spm spm-boks panel-standard-belyst">
 
 					<!-- TODO: cmstekst + hente barnenavn -->
-					<h2 data-ng-if="endrerSystemregistrertBarn()">Søker barnetilegg for ... </h2>
+					<h2 data-ng-if="endrerSystemregistrertBarn()">
+					<span data-cmstekster="barnetillegg.sokerbarnetillegg.tittel"></span>
+					<span data-ng-bind="barnenavn"></span>
+					</h2>
 
 					<div data-ng-if="leggerTilNyttBarnEllerEndrerBarn()">
 						<h2 data-cmstekster="barnetillegg.nyttbarn.tittel"> </h2>

@@ -63,6 +63,11 @@ angular.module('nav.barn',['app.services'])
 		$scope.barn = new BrukerData(barneData);
 		$scope.land = data.land;
 	} else if(barnetilleggModus) {
+		angular.forEach($scope.soknadData.fakta.barn.valuelist, function(value) { 
+				if(value.faktumId == faktumId) {
+					$scope.barnenavn = angular.fromJson(value.value).sammensattnavn;
+				}
+			});
 	} else {
 		var barneData = {
 			key: 'barn',
