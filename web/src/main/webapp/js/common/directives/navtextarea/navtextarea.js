@@ -57,6 +57,8 @@ angular.module('nav.textarea', [])
         return {
             require: 'ngModel',
             link: function(scope, element, attrs, ctrl) {
+                var eventString = 'RUN_VALIDATION' + ctrl.$name;
+
                 scope.$watch(function() {
                     return ctrl.$viewValue;
                 }, function() {
@@ -99,6 +101,10 @@ angular.module('nav.textarea', [])
                     scope.$emit("OPPDATER_OG_LAGRE", {key: element.attr('name'), value: verdi});
                 })
 
+                scope.$on(eventString, function () {
+                    validerAntallTegn();
+                })
+                
                 function settFeilmeldingsTekst() {
                     var feilmeldingTekst = cms.tekster['textarea.feilmleding'];
                     if(scope.counter > -1) {
