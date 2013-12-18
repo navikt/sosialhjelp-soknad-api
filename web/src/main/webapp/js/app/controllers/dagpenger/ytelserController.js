@@ -40,8 +40,8 @@ angular.module('nav.ytelser', [])
             }
 
             if (sjekkOmGittEgenskapTilObjektErTrue($scope.soknadData.fakta.ingenYtelse)) {
-                $scope.soknadData.fakta.ingenYtelse.value = false;
-                $scope.$emit(lagreSoknadData, {key: 'ingenYtelse', value: false});
+               $scope.soknadData.fakta.ingenYtelse.value = false;
+               $scope.$emit(lagreSoknadData, {key: 'ingenYtelse', value: false});
             }
         }
 
@@ -54,12 +54,15 @@ angular.module('nav.ytelser', [])
             var erCheckboksForIngenYtelseHuketAv = $scope.soknadData.fakta.ingenYtelse.value;
 
             if (harValgtYtelse) {
+
                 if (Object.keys($scope.soknadData.fakta.ingenYtelse).length == 1) {
                     $scope.$emit(lagreSoknadData, {key: 'ingenYtelse', value: 'false'});
                 }
 
-                $scope.soknadData.fakta.ingenYtelse.value = 'false';
-                $scope.ytelser.skalViseFeilmeldingForIngenYtelser = true;
+              //Fjerner krysset for andre ytelser
+              $scope.soknadData.fakta.ingenYtelse.value = 'false';
+              //Viser feilmelding
+              $scope.ytelser.skalViseFeilmeldingForIngenYtelser = true;
 
             } else {
                 if (erCheckboksForIngenYtelseHuketAv) {

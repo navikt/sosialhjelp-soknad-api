@@ -1,12 +1,23 @@
-<div class="accordion-group" data-ng-class="{open: isOpen}">
+<section class="accordion-group" data-ng-class="{open: isOpen}">
     <div class="accordion-heading">
-        <a class="accordion-toggle" href=""
+        <a class="accordion-toggle"
+           id="{{ id }}-heading"
+           aria-owns="{{ id }}-body"
+           aria-controls="{{ id }}-body"
+           href=""
            data-ng-click="isOpen = !isOpen"
+           data-nav-aria-expanded="isOpen"
            data-accordion-transclude="heading">
             {{heading}}
         </a>
     </div>
-    <div class="accordion-body" data-collapse="!isOpen">
+    <div class="accordion-body"
+         id="{{ id }}-body"
+         role="group"
+         aria-labelledby="{{ id }}-heading"
+         data-nav-aria-hidden="!isOpen"
+         data-nav-aria-expanded="isOpen"
+         data-collapse="!isOpen">
         <div class="accordion-inner" data-ng-transclude></div>
     </div>
-</div>
+</section>

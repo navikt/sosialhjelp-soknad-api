@@ -1,11 +1,10 @@
 <div data-stegindikator data-steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="1"></div>
-<div data-ng-form="dagpengerForm" data-ng-controller="ModusCtrl" data-ng-cloak>
+<div data-ng-form="dagpengerForm" data-ng-controller="ModusCtrl" data-ng-cloak data-apne-bolker>
     <div data-ng-controller="DagpengerCtrl">
         <div data-sticky-feilmelding></div>
         <div class="rad soknad" data-sidetittel="sidetittel.skjema">
             <section class="sak-hel">
                 <div class="panel-standard-belyst skjema">
-
                     <div data-accordion data-close-others="false">
                         <div data-accordion-group data-ng-repeat="gruppe in grupper" class="spm-blokk" id="{{gruppe.id}}" data-is-open="gruppe.apen">
                             <div data-accordion-heading>

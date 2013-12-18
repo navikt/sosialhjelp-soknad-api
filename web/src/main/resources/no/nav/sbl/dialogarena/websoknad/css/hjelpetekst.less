@@ -1,53 +1,104 @@
 .hjelpetekst {
-    background-color: #3e3832;
-    padding: 20px;
-    margin-bottom: 20px;
+    display: inline-block;
     position: relative;
 
-    &:before {
-        content: "";
-        border: solid transparent;
-        border-top-color: #3e3832;
-        border-width: 13px;
+    span.infoikon {
+        display: inline-block;
+        margin-left: 0.2rem;
+        position: relative;
+        cursor: pointer;
+        height: 20px;
+        width: 20px;
+        background: url(../img/sporsmaal.png) no-repeat 0;
+        top: 5px;
+    }
+
+    .hjelpetekst-tooltip {
+        background-color: #3e3832;
+        padding-bottom: 20px;
         position: absolute;
-        height: 0;
-        width: 0;
-        left: 8%;
-        top: 100%;
-    }
+        z-index: 1030;
+        width: 250px;
 
-    div {
-        text-align: center;
-        max-width: 80%;
-        margin: 0 auto;
-
-        h3 {
-            display: inline-block;
-            color: #ccc !important;
+        .tittel {
+            padding: 20px 20px 0;
             text-align: center;
+            max-width: 65%;
+            margin: 0 auto;
+
+            h3 {
+                display: inline-block;
+                color: #ccc;
+                text-align: center;
+            }
+
+            .lukk {
+                position: absolute;
+                top: 21px;
+                right: 20px;
+                color: #00a9e0;
+                font-weight: 600;
+                text-transform: uppercase;
+            }
         }
-        .lukk {
+
+        .tekst {
+            padding: 0 15px;
+            margin: 0 5px;
+            max-height: 150px;
+            overflow-y: hidden;
+
+            p {
+                color: #fff;
+            }
+        }
+
+        .ps-container {
+            &:hover {
+                [class*="ps-scrollbar"] {
+                    opacity: 1;
+                }
+            }
+
+            [class*="ps-scrollbar"] {
+                position: absolute;
+                background-color: #00a9e0;
+                border-radius: 4px;
+                opacity: 0.6;
+                transition: opacity .2s linear;
+
+                &:hover {
+                    opacity: 1;
+                    cursor: default;
+                }
+
+                &.in-scrolling {
+                    opacity: 1;
+                }
+            }
+
+            .ps-scrollbar-x {
+                bottom: 3px;
+                height: 8px;
+            }
+
+            .ps-scrollbar-y {
+                right: 3px;
+                width: 8px;
+            }
+        }
+
+        &:before {
+            content: "";
+            border: solid transparent;
+            border-top-color: #3e3832;
+            border-width: 10px;
             position: absolute;
-            top: 23px;
-            right: 20px;
-            color: #00a9e0;
-            font-weight: 600;
-            text-transform: uppercase;
+            height: 0;
+            width: 0;
+            left: 8%;
+            top: 100%;
         }
     }
-
-    p {
-        color: white !important;
-    }
 }
 
-.definerer-hjelpetekst {
-    border-bottom: 1px #3875d7 dotted;
-    cursor: pointer;
-
-    &.open {
-        border-bottom: none;
-        color: #3875d7 !important;
-    }
-
-}
