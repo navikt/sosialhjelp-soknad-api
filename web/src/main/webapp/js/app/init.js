@@ -76,16 +76,25 @@ angular.module('sendsoknad')
         promiseArray.push(alder.$promise); 
 
         if (soknadId != undefined) {
-            var soknad = soknadService.get({param: soknadId},
+            // Barn må hentes før man henter søknadsdataene.
+            var soknadDeferer = $q.defer();
+            var barn = $resource('/sendsoknad/rest/soknad/:soknadId/familierelasjoner').get(
+                {soknadId: soknadId},
                 function(result) { // Success
-                    data.soknad = result;
+                    var soknad = soknadService.get({param: soknadId},
+                        function(result) { // Success
+                            data.soknad = result;
+                            soknadDeferer.resolve();
+                        }
+                    );
                 }
             );
+            
             var soknadOppsett = soknadService.options({param: soknadId},
                 function(result) { // Success
                     data.soknadOppsett = result;
                 });
-            promiseArray.push(soknad.$promise, soknadOppsett.$promise);
+            promiseArray.push(barn.$promise, soknadOppsett.$promise, soknadDeferer.promise);
         }
 
         var d = $q.all(promiseArray);

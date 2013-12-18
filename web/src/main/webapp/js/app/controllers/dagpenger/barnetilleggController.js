@@ -1,6 +1,5 @@
 angular.module('nav.barnetillegg',[])
-.controller('BarnetilleggCtrl', ['$scope', '$cookieStore', '$location', '$timeout', 'barneService','BrukerData', function ($scope, $cookieStore, $location, $timeout, barneService, BrukerData) {
-	barneService.get({soknadId: $scope.soknadData.soknadId}).$promise.then(function (result) {
+.controller('BarnetilleggCtrl', ['$scope', '$cookieStore', '$location', '$timeout','BrukerData', function ($scope, $cookieStore, $location, $timeout, BrukerData) {
 		if ($scope.soknadData.fakta.barn) {
 			angular.forEach($scope.soknadData.fakta.barn.valuelist, function(value) { 
 				value.value = angular.fromJson(value.value);
@@ -32,9 +31,10 @@ angular.module('nav.barnetillegg',[])
 			});
 		}
 
+		
 		$scope.erGutt = function(barn) {
 			return barn.value.kjonn == "gutt";
-		}
+		}	
 
 		$scope.erJente = function(barn) {
 			return barn.value.kjonn == "jente";
@@ -59,6 +59,5 @@ angular.module('nav.barnetillegg',[])
 				barneFaktumId: faktumId
 			})
 		}
-	})
 
 }]);

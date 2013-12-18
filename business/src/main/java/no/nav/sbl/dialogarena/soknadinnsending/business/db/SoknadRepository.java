@@ -39,4 +39,6 @@ public interface SoknadRepository {
     void settSistLagretTidspunkt(Long soknadId);
 
     void slettSoknadsFelt(Long soknadId, Long faktumId);
+
+    void slettBarnSoknadsFelt(Long soknadId);
 }
