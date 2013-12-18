@@ -59,11 +59,6 @@ describe('brukerdata domene', function () {
             scope.gaTilRedigeringsmodus();
             expect(scope.hvisIRedigeringsmodus()).toBe(true);
         });
-
-        it('skal returnere true dersom form ikke validerer', function () {
-            scope.validateForm(true);
-            expect(scope.hvisIkkeFormValiderer()).toBe(true);
-        });
     })
 
 });

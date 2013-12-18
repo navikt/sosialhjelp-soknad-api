@@ -1,11 +1,10 @@
 <div data-stegindikator data-steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="1"></div>
-<div data-ng-form="dagpengerForm" data-ng-controller="ModusCtrl">
+<div data-ng-form="dagpengerForm" data-ng-controller="ModusCtrl" data-ng-cloak data-apne-bolker>
     <div data-ng-controller="DagpengerCtrl">
         <div data-sticky-feilmelding></div>
         <div class="rad soknad" data-sidetittel="sidetittel.skjema">
             <section class="sak-hel">
                 <div class="panel-standard-belyst skjema">
-
                     <div data-accordion data-close-others="false">
                         <div data-accordion-group data-ng-repeat="gruppe in grupper" class="spm-blokk" id="{{gruppe.id}}" data-is-open="gruppe.apen">
                             <div data-accordion-heading>
@@ -29,11 +28,12 @@
                             <div data-form-errors></div>
                             <div data-navtextarea data-inputname="fritekst"
                                  data-ng-model="soknadData.fakta.fritekst.value"
-                                 data-nokkel="fritekst" data-maxlengde="500"
+                                 data-nokkel="fritekst"
+                                 data-maxlengde="500"
                                  data-feilmelding="fritekst.feilmelding"></div>
                         </div>
                     </div>
-                    <a href="#" class="knapp-hoved" data-cmstekster="skjema.ferdig" data-ng-click="validerDagpenger(dagpengerForm)"></a>
+                    <a href="#/vedlegg/{{soknadData.soknadId}}"  class="knapp-hoved" data-cmstekster="skjema.ferdig" data-ng-click="validerDagpenger(dagpengerForm, $event)"></a>
                 </section>
             </div>
         </div>

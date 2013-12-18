@@ -18,9 +18,11 @@ angular.module('app.directives', [
 	'nav.datepicker',
 	'nav.prosent',
 	'nav.sidetittel',
-    'ui.mask',
     'nav.bildenavigering',
     'nav.utdanningannet',
     'nav.ingenytelser',
-    'nav.accordion'
+    'nav.accordion',
+    'nav.scrollbar',
+    'nav.dagpengerdirective',
+    'nav.aria'
 ]);

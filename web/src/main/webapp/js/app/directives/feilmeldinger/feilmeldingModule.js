@@ -30,7 +30,6 @@ angular.module('nav.feilmeldinger', [])
             transclude: true,
             restrict: 'A',
             link: function postLink(scope, elem, attrs, ctrl) {
-
                 var eventString = 'RUN_VALIDATION' + ctrl.$name;
 
                 scope.feilmeldinger = [];
@@ -73,8 +72,15 @@ angular.module('nav.feilmeldinger', [])
 
                 scope.scrollTilElementMedFeil = function (feilmelding) {
                     if (scope.erKlikkbarFeil(feilmelding)) {
-                        scrollToElement(feilmelding.elem, 300);
-                        scope.giFokus(feilmelding.elem);
+                        var formLinje = feilmelding.elem.closest('.form-linje');
+                        scrollToElement(formLinje, 200);
+
+                        if (feilmelding.elem.is('[type=hidden]')) {
+                            scope.giFokus(formLinje.find('input[type=checkbox]').first());
+                        } else {
+                            scope.giFokus(feilmelding.elem);
+                        }
+
                     }
                 }
 
