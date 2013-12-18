@@ -14,6 +14,8 @@ import org.slf4j.Logger;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.WebServiceException;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -55,6 +57,8 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
             return new Person();
 		} catch(WebServiceException e) {
 			logger.error("Ingen kontakt med TPS (Person-servicen).", e);
+			//TODO TEMP
+			lagreBarn(soknadId, new Person());
             return new Person();
 		}
     
@@ -67,10 +71,20 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
 
     @SuppressWarnings("unchecked")
 	private void lagreBarn(Long soknadId, Person person) {
-    	List<Barn> barneliste = (List<Barn>) person.getFakta().get("barn");
+    	//TODO temp U2 utkommentert
+        //List<Barn> barneliste = (List<Barn>) person.getFakta().get("barn");
+    	
+    	//TODO temp U2
+        List<Barn> barneliste = new ArrayList<>();
+    	barneliste = new ArrayList<Barn>();
+    	barneliste.add(new Barn(soknadId, "06025800174", "Bjarne" , "B.", "Barnet"));
+    	barneliste.add(new Barn(soknadId, "04111100115", "Bjørne" , "B.", "Barnet"));
+    	
     	if(barneliste != null) {
+    	    soknadService.slettBarnSoknadsFelt(soknadId);
 	    	for (Barn barn : barneliste) {
-				soknadService.lagreSystemSoknadsFelt(soknadId, "barn", new Gson().toJson(barn));
+	    	    String fnr = barn.getFnr();
+				soknadService.lagreBarnSystemSoknadsFelt(soknadId, "barn", fnr, new Gson().toJson(barn));
 			}
     	}
 	}

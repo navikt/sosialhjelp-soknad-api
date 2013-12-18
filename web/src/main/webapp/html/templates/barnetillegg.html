@@ -26,7 +26,7 @@
 							<div data-ng-if="hvisIRedigeringsmodus()"> 
 								<div data-ng-show="b.type == 'SYSTEMREGISTRERT'">
 									<a href data-ng-click="sokbarnetillegg(b.faktumId)" data-cmstekster="barnetillegg.barnetilegg.sporsmal" data-ng-if="barnetillegg.value != 'true'"></a>
-									<a data-ng-if="barnetillegg.value == 'true'">Fjern barnetillegg</a>
+									<a href="#" data-ng-if="barnetillegg.value == 'true'" data-ng-click="slettBarnetillegg(b.faktumId, $index, $event)">Fjern barnetillegg</a>
 								</div>
 							</div>
 

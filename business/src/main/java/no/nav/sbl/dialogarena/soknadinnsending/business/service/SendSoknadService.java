@@ -17,6 +17,8 @@ public interface SendSoknadService {
 
 	Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value);
 	
+	Faktum lagreBarnSystemSoknadsFelt(Long soknadId, String string, String fnr, String json);
+	
 	void sendSoknad(long soknadId);
 
 	List<Long> hentMineSoknader(String aktorId);
@@ -24,4 +26,8 @@ public interface SendSoknadService {
 	void avbrytSoknad(Long soknadId);
 
     void endreInnsendingsvalg(Long soknadId, Faktum faktum);
+
+    void slettBarnSoknadsFelt(Long soknadId);
+
+    
 }

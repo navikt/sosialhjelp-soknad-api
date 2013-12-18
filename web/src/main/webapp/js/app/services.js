@@ -116,11 +116,7 @@ angular.module('app.services', ['ngResource'])
         return $resource('/sendsoknad/rest/soknad/:soknadId/personalia');
     })
 
-    .factory('barneService', function ($resource) {
-        return $resource('/sendsoknad/rest/soknad/:soknadId/familierelasjoner');
-    })
-
-    .factory('landService', function ($resource) {
+   .factory('landService', function ($resource) {
         return $resource('/sendsoknad/rest/soknad/kodeverk/landliste');
     })
 

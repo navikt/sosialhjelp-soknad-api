@@ -163,6 +163,13 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
         int rowsDeleted = getJdbcTemplate().update(sql, soknadId, faktumId);
 
     }
+    
+    //TODO: Midlertidig metode, slett etter ny struktur
+    @Override
+    public void slettBarnSoknadsFelt(Long soknadId) {
+        String sql = "delete from SOKNADBRUKERDATA where soknad_id=? and key=? and type=?";
+        int rowsDeleted = getJdbcTemplate().update(sql, soknadId, "barn", "SYSTEMREGISTRERT");
+    }
 
     private int utfyllingStartet(long soknadId) {
         return getJdbcTemplate().update(
@@ -251,5 +258,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
             return faktum;
         }
     };
+
+   
 
 }

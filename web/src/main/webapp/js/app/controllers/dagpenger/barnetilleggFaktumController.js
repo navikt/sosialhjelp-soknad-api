@@ -77,4 +77,22 @@ angular.module('nav.barnetilleggfaktum',['app.services'])
         $scope.barnetHarIkkeInntekt = function() {
         	return !$scope.barnetHarInntekt();
         }
+
+        $scope.slettBarnetillegg = function(faktumId, index, $event) {
+            $event.preventDefault();
+            var barnetilleggsData;
+            angular.forEach($scope.soknadData.fakta.barnetillegg.valuelist, function(value) { 
+                if(value.parrentFaktum == faktumId) {
+                    barnetilleggsData = value;
+                }
+            });
+
+            $scope.barnetilleggSomSkalSlettes = new BrukerData(barnetilleggsData);
+
+            $scope.barnetilleggSomSkalSlettes.$delete({soknadId: $scope.soknadData.soknadId}).then(function() {
+                $scope.barnetillegg.value="false";
+                $scope.soknadData.fakta.barnetillegg.valuelist.splice(index, 1);
+            });
+        }
+
     }]);
