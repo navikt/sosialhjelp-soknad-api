@@ -17,7 +17,8 @@ angular.module('nav.reellarbeidssoker', [])
         if (erCheckboxerAvhuket(deltidnokler)){
             $scope.harHuketAvCheckboksDeltid.value = true;
         }
-        if (erCheckboxerAvhuket(pendlenokler)){
+
+        if (erCheckboxerAvhuket(pendlenokler)) {
             $scope.harHuketAvCheckboksPendle.value = true;
         }
 

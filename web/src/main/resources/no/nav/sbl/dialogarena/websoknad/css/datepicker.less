@@ -24,36 +24,48 @@
         font-size: 14px !important;
         cursor: text;
         text-transform: none;
+        z-index: 1000;
     }
 
     label {
-        span {
+        .datepicker-input {
+            position: relative;
+            min-width: 135px;
             display: block;
+            height: 32px;
+            border: 1px solid #cccccc;
+            border-top: 1px solid #b7b1a9;
+            cursor: text;
+            background-color: white;
 
-            &.maskedInput {
-                position: relative;
-                display: inline-block;
+            input {
+                border: none !important;
+                border: none !important;
+                position: absolute;
+                top: 7px;
+                left: 7px;
+                right: 32px;
+                padding: 0;
+                width: auto;
+            }
 
-                input {
-                    width: 100px !important;
-                    position: relative;
+            .apne-datepicker {
+                display: block;
+                float: right;
+                cursor: pointer;
+                height: 32px;
+                width: 32px;
+                background-image: url(../img/kalender.svg);
+                background-repeat: no-repeat;
+                background-position: center;
+                z-index: 1010;
+
+                &:hover {
+                    background-image: url(../img/kalender_hover.svg);
                 }
             }
         }
     }
-
-    .knapp-liten {
-        background-image: url(../img/kalender_hover.svg);
-        background-repeat: no-repeat;
-        background-position: center;
-        width: 32px;
-        height: 32px;
-        padding: 0;
-        position: relative;
-        top: -1px;
-        left: -4px;
-    }
-
 
     &.feil {
         .knapp-liten {
@@ -62,6 +74,18 @@
 
         .melding {
             display: block !important;
+        }
+
+        .datepicker-input {
+            background-color: #fee6e6;
+            border: 1px solid #fca292;
+            border-top: 1px solid @red;
+        }
+    }
+
+    &.fokus {
+        .datepicker-input {
+            border-color: rgba(82, 168, 236, .8);
         }
     }
 }
