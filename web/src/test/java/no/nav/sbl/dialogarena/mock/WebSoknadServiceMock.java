@@ -70,4 +70,17 @@ public class WebSoknadServiceMock implements SendSoknadService{
         
     }
 
+    @Override
+    public Faktum lagreBarnSystemSoknadsFelt(Long soknadId, String string,
+            String fnr, String json) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void slettBarnSoknadsFelt(Long soknadId) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }
