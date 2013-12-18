@@ -32,7 +32,6 @@ public class BasePage extends WebPage {
     public BasePage(PageParameters parameters) {
         super(parameters);
         add(
-                new Label("tittel", "Søknad om dagpenger"),
                 new InnstillingerPanel("innstillinger", getInnloggetIsTrueModel(), cmsContentRetriever),
                 new NavigasjonPanel("navigasjon", navigasjonsLink, cmsContentRetriever),
                 new FooterPanel("footer", footerLinks, getInnloggetIsTrueModel(), FALSE, cmsContentRetriever)
