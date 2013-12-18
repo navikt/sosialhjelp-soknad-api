@@ -23,5 +23,6 @@ angular.module('app.directives', [
     'nav.ingenytelser',
     'nav.accordion',
     'nav.scrollbar',
-    'nav.dagpengerdirective'
+    'nav.dagpengerdirective',
+    'nav.skjematittel'
 ]);
