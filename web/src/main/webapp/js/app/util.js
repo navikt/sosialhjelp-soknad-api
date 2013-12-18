@@ -25,7 +25,7 @@ if (!Array.prototype.last) {
     }
 }
 
-if (!Array.prototype.contains) {
+    if (!Array.prototype.contains) {
     Array.prototype.contains = function (val) {
         return $.inArray(val, this) > -1;
     }
@@ -160,9 +160,10 @@ function settEgendefinertFeilmeldingsverdi(form, feilmeldingskategori, feilmeldi
         if (index > -1 && valid) {
             form.$error[feilmeldingskategori].splice(index, 1);
             form.$setValidity(feilmeldingsnavn, valid);
+
         } else if (index == -1 && !valid) {
             form.$setValidity(feilmeldingsnavn, valid);
-            leggTilFeilmeldingHvisDenIkkeFinnes(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene)
+            leggTilFeilmeldingHvisDenIkkeFinnes(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene);
         }
     }
 }

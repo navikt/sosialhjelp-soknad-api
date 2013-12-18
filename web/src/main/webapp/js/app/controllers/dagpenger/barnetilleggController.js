@@ -14,11 +14,12 @@ angular.module('nav.barnetillegg',[])
             return barn.value.kjonn == "jente";
         }
 
-        $scope.validerBarnetillegg = function(form) {
+        $scope.validerOgSettModusOppsummering = function(form) {
             $scope.validateForm(form.$invalid);
-            $scope.runValidation();
+            $scope.validerBarnetillegg(true);
         }
 
-        // For å åpne opp taben. Dataen som blir sendt med eventen er ID på accordion-group som skal åpnes
-        $scope.$emit("OPEN_TAB", 'barnetillegg');
+        $scope.validerBarnetillegg = function() {
+            $scope.runValidation();
+        }
     }]);
