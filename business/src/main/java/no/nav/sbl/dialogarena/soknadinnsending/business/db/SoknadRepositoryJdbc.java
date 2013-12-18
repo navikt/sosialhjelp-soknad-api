@@ -156,9 +156,10 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
 
     }
 
+    //TODO: Fiks slik at underfaktum blir slettet etter å ha fått ny faktum-struktur
     @Override
     public void slettSoknadsFelt(Long soknadId, Long faktumId) {
-        String sql = "delete from SOKNADBRUKERDATA where soknad_id=? soknadbrukerdata_id=?";
+        String sql = "delete from SOKNADBRUKERDATA where soknad_id=? and soknadbrukerdata_id=?";
         int rowsDeleted = getJdbcTemplate().update(sql, soknadId, faktumId);
 
     }
