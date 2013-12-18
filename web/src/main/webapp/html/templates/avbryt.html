@@ -1,14 +1,28 @@
-<div data-ng-controller="AvbrytCtrl">
-    <div ng-show="data.krevBekreftelse == true">
-        <h1 class="stor">Slett søknaden</h1>
-        <p>Bekreft at du vil slette søknaden. Alt du har lastet opp vil bli slettet, og søknaden sendes ikke til NAV.</p>
-        <form novalidate>
-            <input type="button" class="knapp-advarsel" data-ng-click="submitForm()" data-cmstekster="avbryt.slett" data-fremdriftsindikator>
-        </form>
-    </div>
+<div id="slett" class="soknad" data-sidetittel="sidetittel.slett">
+    <div class="rad-belyst inforad">
+        <div class="begrensning sak-totredel">
+            <section class="panel-standard oversikt" data-ng-controller="AvbrytCtrl">
+                <div ng-show="data.krevBekreftelse == true">
+                    <h1 class="stor-ikon-slett-strek" data-cmstekster="slett.tittel"></h1>
 
-    <div ng-show="data.krevBekreftelse == false">
-        <img src="../img/ajaxloader/hvit/loader_hvit_64.gif" alt="Fremdriftsindikator"/>
+                    <p class="info" data-cmstekster="slett.informasjon"></p>
+
+                </div>
+                <div class="slett-soknad-stor">
+                    <form novalidate>
+                        <input type="button" class="knapp-advarsel" data-ng-click="submitForm()"
+                               data-cmstekster="avbryt.slett"
+                               data-fremdriftsindikator>
+                    </form>
+                    <div ng-show="data.krevBekreftelse == false">
+                        <img src="../img/ajaxloader/hvit/loader_hvit_64.gif" alt="Fremdriftsindikator"/>
+                    </div>
+                    <div>
+                        <a href="#/dagpenger/{{soknadData.soknadId}}" data-cmstekster="slett.tilbake"></a>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
 </div>
 

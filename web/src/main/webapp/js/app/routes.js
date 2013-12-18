@@ -171,7 +171,7 @@ angular.module('app.routes', ['ngRoute'])
 
             .when('/soknadliste', {templateUrl: '../html/templates/soknadliste.html'})
             
-            .when('/slettet', {templateUrl: '../html/templates/soknadSlettet.html', controller: 'SlettetSoknadDataCtrl'})
+            .when('/slettet', {templateUrl: '../html/templates/soknadSlettet.html', controller: 'SoknadDataCtrl'})
 
             .otherwise({redirectTo: '/informasjonsside'});
 
