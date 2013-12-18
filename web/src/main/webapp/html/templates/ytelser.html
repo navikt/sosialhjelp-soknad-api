@@ -2,8 +2,10 @@
 	<div data-ng-form="ytelserForm" class="skjemainnhold vertikal" data-ng-controller="YtelserCtrl" data-novalidate data-ng-submit="settOppsummeringsModus()">
 		<div data-form-errors></div>
 		<div class="spm form-linje checkbox" data-checkbox-validate>
-            <input type="hidden" data-ng-model="harHuketAvCheckboks.value" data-ng-required="true"
+            <input type="hidden" data-ng-model="harHuketAvCheckboksYtelser.value" data-ng-required="true"
                    data-error-messages="'ytelser.minstEnCheckboksErAvhuket.feilmelding'">
+            <input type="hidden" data-ng-model="harHuketAvCheckboksNavYtelser.value" data-ng-required="true"
+                   data-error-messages="'ytelser.minstEnCheckboksErAvhuket.navYtelserfeilmelding'">
 			<h4 class="spm-sporsmal">
 				<span data-cmstekster="ytelser.informasjon"></span>
 				<span data-cmstekster="ytelser.sporsmal"></span>
@@ -147,24 +149,23 @@
 
         </h4>
 
-        <div data-navradio data-ng-model="soknadData.fakta.ytelser.avtale.value" data-value="ikkeAvtale"
+        <div data-navradio data-ng-model="soknadData.fakta.avtale.value" data-value="ikkeAvtale"
              data-modus="data.redigeringsModus"
              data-inputname="utdanning"
              data-label="ytelser.goder.nei"
              data-ng-required="true"
              data-feilmelding="ytelser.goder.feilmelding"></div>
 
-        <div data-navradio data-ng-model="soknadData.fakta.ytelser.avtale.value" data-value="avtale"
+        <div data-navradio data-ng-model="soknadData.fakta.avtale.value" data-value="avtale"
              data-modus="data.redigeringsModus"
              data-inputname="utdanning"
              data-label="ytelser.goder.ja"
              data-ng-required="true"
              data-feilmelding="ytelser.goder.feilmelding"></div>
 
-        <div data-navtekst data-ng-if="hvisAvtaleInngaatt()" data-ng-model="soknadData.fakta.ytelser.avtale.beskrivelse"
+        <div data-navtekst data-ng-if="hvisAvtaleInngaatt()" data-ng-model="soknadData.fakta.avtale.beskrivelse"
              data-ng-maxlength="50"
              data-ng-minlength="5"
-             data-ng-required="true"
              data-ng-pattern="/^[-a-zA-Z0-9æøåÆØÅ _+§%()]*$/"
              data-modus="data.redigeringsModus" data-inputname="ytelserAvtale"
              data-label="ytelser.goder.hvaslagsavtale" data-feilmelding="ytelser.goder.avtale.feilmelding"></div>

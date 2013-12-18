@@ -4,7 +4,7 @@ angular.module('nav.ytelser', [])
         $scope.ytelserNAV = {skalViseFeilmeldingForIngenNavYtelser: false};
 
     var nokler = ['stonadFisker', 'offentligTjenestepensjon', 'privatTjenestepensjon', 'vartpenger', 'etterlonn', 'garantilott', 'dagpengerEOS', 'annenYtelse', 'ingenYtelse' ];
-    var undernokler = ['sykepenger', 'aap', 'uforetrygd', 'svangerskapspenger', 'foreldrepenger', 'ventelonn',  'ingenNAVYtelse' ];
+    var undernokler = ['sykepenger', 'aap', 'uforetrygd', 'svangerskapspenger', 'foreldrepenger', 'ventelonn',  'ingennavytelser' ];
 
     $scope.harHuketAvCheckboksYtelse = {value : ''};
     $scope.harHuketAvCheckboksNavYtelse = {value : ''};
@@ -24,8 +24,8 @@ angular.module('nav.ytelser', [])
         }
 
        $scope.hvisAvtaleInngaatt = function () {
-        if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.ytelser.avtale != undefined) {
-            return $scope.soknadData.fakta.ytelser.avtale.value == 'avtale';
+        if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.avtale != undefined ) {
+            return $scope.soknadData.fakta.avtale.value == 'avtale';
         }
         return false;
     }
@@ -34,6 +34,7 @@ angular.module('nav.ytelser', [])
         $scope.validerYtelser = function (skalScrolle) {
             $scope.ytelser.skalViseFeilmeldingForIngenYtelser = false;
             $scope.ytelser.skalViseFeilmeldingForIngenNavYtelser = false;
+            $scope.ytelser.skalViseFeilmeldingForAvtale = false;
             $scope.runValidation(skalScrolle);
         };
 
@@ -109,8 +110,9 @@ angular.module('nav.ytelser', [])
         var ytelserNokler = undernokler.slice(0, nokler.length - 1);
         var harValgtNavYtelse = erCheckboxerAvhuket(ytelserNokler);
         var erCheckboksForIngenNavYtelseHuketAv = $scope.soknadData.fakta.ingenNavYtelse.value;
+        console.log("Test");
         if (harValgtNavYtelse) {
-
+            console.log("Ytelsersjekket av");
             if (Object.keys($scope.soknadData.fakta.ingenNavYtelse).length == 1) {
                 $scope.$emit(lagreSoknadData, {key: 'ingenNavYtelse', value: 'false'});
             }
@@ -119,12 +121,13 @@ angular.module('nav.ytelser', [])
             $scope.soknadData.fakta.ingenYtelse.value = 'false';
             //Viser feilmelding
             $scope.ytelser.skalViseFeilmeldingForIngenYtelser = true;
+            console.log("Fjernet");
 
         } else {
             if (erCheckboksForIngenNavYtelseHuketAv) {
                 $scope.harHuketAvCheckboksNavYtelse.value = 'true';
             }
-            $scope.$emit(lagreSoknadData, {key: 'ingenNavYtelse', value: erCheckboksForIngenNavYtelseHuketAv});
+            $scope.$emit(lagreSoknadData, {key: 'ingennavytelser', value: erCheckboksForIngenNavYtelseHuketAv});
         }
     }
 
