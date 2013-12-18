@@ -55,30 +55,32 @@ angular.module('nav.textarea', [])
     }])
     .directive('validateTextarea',['cms', function (cms) {
         return {
-            require: 'ngModel',
-            link: function(scope, element, attrs, ctrl) {
-                var eventString = 'RUN_VALIDATION' + ctrl.$name;
+            require: ['ngModel', '^form'],
+            link: function(scope, element, attrs, ctrls) {
+                var ngModel = ctrls[0];
+                var form = ctrls[1];
+                var eventString = 'RUN_VALIDATION' + form.$name;
 
                 scope.$watch(function() {
-                    return ctrl.$viewValue;
+                    return ngModel.$viewValue;
                 }, function() {
-                    if (ctrl.$viewValue != undefined) {
+                    if (ngModel.$viewValue != undefined) {
                         element.css('height', '0px');
                         element.height(element[0].scrollHeight);
-                        scope.counter = scope.maxlengde - ctrl.$viewValue.length;
+                        scope.counter = scope.maxlengde - ngModel.$viewValue.length;
                         validerAntallTegn();
                     }
                 });
 
                 function validerAntallTegn() {
                     if (scope.counter < 0) {
-                        ctrl.$setValidity(scope.nokkel, false);
+                        ngModel.$setValidity(scope.nokkel, false);
                         scope.feil = true;
                         element.closest('.form-linje').addClass('feil');
                         settFeilmeldingsTekst();
 
                     } else {
-                        ctrl.$setValidity(scope.nokkel, true);
+                        ngModel.$setValidity(scope.nokkel, true);
                         scope.feil = false;
                         element.closest('.form-linje').removeClass('feil');
                     }
@@ -94,7 +96,7 @@ angular.module('nav.textarea', [])
                     scope.$apply(attrs.onBlur)
                     validerAntallTegn();
                     var verdi = element.val().toString();
-                    if(ctrl.$viewValue == undefined || ctrl.$viewValue.length == 0) {
+                    if(ngModel.$viewValue == undefined || ngModel.$viewValue.length == 0) {
                         settFeilmeldingsTekst();
                         element.closest('.form-linje').addClass('feil');
                     }
@@ -103,8 +105,12 @@ angular.module('nav.textarea', [])
 
                 scope.$on(eventString, function () {
                     validerAntallTegn();
+                    if(ngModel.$viewValue == undefined || ngModel.$viewValue.length == 0) {
+                        settFeilmeldingsTekst();
+                        element.closest('.form-linje').addClass('feil');
+                    }
                 })
-                
+
                 function settFeilmeldingsTekst() {
                     var feilmeldingTekst = cms.tekster['textarea.feilmleding'];
                     if(scope.counter > -1) {
