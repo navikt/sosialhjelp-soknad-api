@@ -158,7 +158,6 @@ angular.module('nav.utdanning', [])
 
             $scope.soknadData.fakta.underUtdanningAnnet.value = 'false';
             $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet = true;
-
         }
         else {
                 if (erCheckboksForUtdanningAnnetHuketAv) {
@@ -166,6 +165,10 @@ angular.module('nav.utdanning', [])
 
                 }
                 $scope.$emit(lagreSoknadData, {key: 'underUtdanningAnnet', value: erCheckboksForUtdanningAnnetHuketAv});
+
+        }
+    }
+    }
 
         }
     }

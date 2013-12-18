@@ -36,7 +36,7 @@ angular.module('nav.ytelser', [])
                 $scope.harHuketAvCheckboks.value = '';
 
             } else {
-                $scope.harHuketAvCheckboks.value = true;
+                 $scope.harHuketAvCheckboks.value = true;
             }
 
             if (sjekkOmGittEgenskapTilObjektErTrue($scope.soknadData.fakta.ingenYtelse)) {
