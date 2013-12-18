@@ -40,7 +40,6 @@ public class FamilieRelasjonTransform {
         for (Familierelasjon familierelasjon : familierelasjoner) {
             Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
 
-            //TODO: Kodeverk
             if (familierelasjonType.getValue().equals("FARA") || familierelasjonType.getValue().equals("MORA")) {
                 no.nav.tjeneste.virksomhet.person.v1.informasjon.Person tilPerson = familierelasjon.getTilPerson();
                 Barn barn = mapXmlPersonToPerson(tilPerson, soknadId);
