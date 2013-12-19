@@ -141,7 +141,6 @@ angular.module('nav.arbeidsforhold.controller', [])
             $scope.toggleRedigeringsmodus = function (form) {
                 form.$setValidity('arbeidsforhold.feilmelding', true);
                 if (harIkkeJobbet12SisteMaaneder()) {
-                    console.log("hahaha")
                     $scope.validerOgSettModusOppsummering(form);
                 }
             }
@@ -202,11 +201,9 @@ angular.module('nav.arbeidsforhold.controller', [])
             var res = false;
             data.fakta.forEach(function (faktum) {
                 if (faktum.key === 'harIkkeJobbet') {
-                    console.log("har ikke jobbet" + (faktum.value == "true"))
                     res = (faktum.value == "true");
                 }
             });
-            console.log("retur: " + res)
             return res;
         }
 

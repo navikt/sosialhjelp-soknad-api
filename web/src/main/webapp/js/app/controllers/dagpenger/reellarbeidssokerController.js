@@ -76,7 +76,6 @@ angular.module('nav.reellarbeidssoker', [])
                     minstEnAvhuket = true;
                 }
             }
-            console.log("minst en: " + minstEnAvhuket)
             return minstEnAvhuket;
         }
     }]);

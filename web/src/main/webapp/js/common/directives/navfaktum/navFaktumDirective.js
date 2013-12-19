@@ -28,7 +28,6 @@ angular.module('nav.navfaktum', [])
                     props.forEach(function (prop) {
                         var val = $scope.faktum.properties[prop];
                         if (val && val.match(/\d\d\d\d\.\d\d\.\d\d/)) {
-                            console.log("matched")
                             val = new Date(val);
                         }
                         $scope.navproperties[prop] = val;
@@ -38,7 +37,6 @@ angular.module('nav.navfaktum', [])
                 $scope.lagreFaktum = function () {
                     if (props) {
                         props.forEach(function (prop) {
-                            console.log($scope.navproperties)
                             var value = $scope.navproperties[prop];
                             if (value != undefined) {
                                 if (angular.isDate(value)) {

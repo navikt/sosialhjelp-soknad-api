@@ -239,7 +239,6 @@ angular.module('app.brukerdata', ['app.services'])
                 }
 
                 if ($scope.faktum) {
-                    console.log("lagrer: " + $scope.faktum);
                     $scope.faktum.$save();
                 } else {
                     $scope.$apply(function () {

@@ -141,7 +141,6 @@ angular.module('nav.ytelser', [])
                     minstEnAvhuket = true;
                 }
             }
-            console.log("minst en: " + minstEnAvhuket)
             return minstEnAvhuket;
         }
 

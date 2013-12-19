@@ -11,7 +11,6 @@ angular.module('nav.utdanningannet', [])
                     return scope.utdanning.skalViseFeilmeldingForUtdanningAnnet;
                 }, function () {
                     if (scope.utdanning.skalViseFeilmeldingForUtdanningAnnet) {
-                        console.log("skalvisefeil");
                         element.addClass('feil');
                     } else {
                         fadeBakgrunnsfarge(element, element.find('.utdanning-annet-melding'), 'feil', scope);
