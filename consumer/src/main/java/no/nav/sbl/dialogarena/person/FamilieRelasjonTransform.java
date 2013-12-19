@@ -43,7 +43,9 @@ public class FamilieRelasjonTransform {
             if (familierelasjonType.getValue().equals("FARA") || familierelasjonType.getValue().equals("MORA")) {
                 no.nav.tjeneste.virksomhet.person.v1.informasjon.Person tilPerson = familierelasjon.getTilPerson();
                 Barn barn = mapXmlPersonToPerson(tilPerson, soknadId);
-                result.add(barn);
+                if(barn.getAlder() < 18) {
+                    result.add(barn);
+                }
             }
         }
 

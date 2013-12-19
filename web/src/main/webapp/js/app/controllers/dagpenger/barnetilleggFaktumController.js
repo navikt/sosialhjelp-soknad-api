@@ -67,6 +67,15 @@ angular.module('nav.barnetilleggfaktum',['app.services'])
     		}
     	});
 
+        $scope.barnetilleggErRegistrert = function() {
+            return $scope.barnetillegg.value == 'true';
+        }
+
+        $scope.barnetilleggIkkeRegistrert = function() {
+            return !$scope.barnetilleggErRegistrert();
+        }
+
+
     	$scope.barnetHarInntekt = function() {
         	if($scope.ikkebarneinntekt == undefined) {
         		return false;

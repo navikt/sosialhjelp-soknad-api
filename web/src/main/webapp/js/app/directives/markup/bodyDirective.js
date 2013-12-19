@@ -1,4 +1,4 @@
-angular.module('nav.markup.modalsidehelper', [])
+angular.module('nav.markup.bodydirective', [])
 /**
 * Legges på toppnoden til angular data-ng-view. Sjekker om den finner .modalboks, dersom den finnes settes custom stylesheet.
 **/
