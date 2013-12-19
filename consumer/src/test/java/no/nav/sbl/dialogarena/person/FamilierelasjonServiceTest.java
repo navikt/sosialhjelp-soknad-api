@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.person;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
-
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
@@ -143,5 +142,5 @@ public class FamilierelasjonServiceTest {
 
         return xmlPerson;
     }
-    
+
 }

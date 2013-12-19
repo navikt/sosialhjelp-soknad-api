@@ -31,24 +31,24 @@ angular.module('app.services', ['ngResource'])
         );
     })
 
-    /**
-    * Service for å lagre brukerdata
-    */
-    .factory('BrukerData', function($resource) {
-         var url = '/sendsoknad/rest/soknad/:soknadId/faktum/:mode' + '?rand=' + new Date().getTime();
-         return $resource(url,
-         {soknadId: '@soknadId'},
-         {
-            create: { method: 'POST',params: {mode:''}},
-            jsoncreate: { method: 'POST', params: {mode:''}, transformRequest: function(data, headersGetter) {
-                var d = deepClone(data);
-                d.value = angular.toJson(data.value);
-                d = angular.toJson(d);
-                return d;
+/**
+ * Service for å lagre brukerdata
+ */
+    .factory('BrukerData', function ($resource) {
+        var url = '/sendsoknad/rest/soknad/:soknadId/faktum/:mode' + '?rand=' + new Date().getTime();
+        return $resource(url,
+            {soknadId: '@soknadId'},
+            {
+                create: { method: 'POST', params: {mode: ''}},
+                jsoncreate: { method: 'POST', params: {mode: ''}, transformRequest: function (data, headersGetter) {
+                    var d = deepClone(data);
+                    d.value = angular.toJson(data.value);
+                    d = angular.toJson(d);
+                    return d;
                 }
-            },
-            delete: { method: 'POST', params:{mode:'delete'}}
-         }
+                },
+                delete: { method: 'POST', params: {mode: 'delete'}}
+            }
 
         )
     })
@@ -133,7 +133,7 @@ angular.module('app.services', ['ngResource'])
         return $resource('/sendsoknad/rest/soknad/:soknadId/personalia');
     })
 
-   .factory('landService', function ($resource) {
+    .factory('landService', function ($resource) {
         return $resource('/sendsoknad/rest/soknad/kodeverk/landliste');
     })
 

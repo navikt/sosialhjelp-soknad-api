@@ -12,11 +12,12 @@ public interface SendSoknadService {
     WebSoknad hentSoknad(long soknadId);
 
     Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum);
+
     void slettSoknadsFelt(Long soknadId, Long faktumId);
 
     Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value);
-	
-	Faktum lagreBarnSystemSoknadsFelt(Long soknadId, String string, String fnr, String json);
+
+    Faktum lagreBarnSystemSoknadsFelt(Long soknadId, String string, String fnr, String json);
 
     void sendSoknad(long soknadId);
 
@@ -32,5 +33,5 @@ public interface SendSoknadService {
 
     void slettBarnSoknadsFelt(Long soknadId);
 
-    
+
 }
