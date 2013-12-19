@@ -1,5 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import static java.lang.String.format;
+import static javax.xml.bind.JAXBContext.newInstance;
+import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.LastetOpp;
+
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.detect.IsImage;
 import no.nav.sbl.dialogarena.detect.IsPdf;
@@ -10,6 +15,7 @@ import no.nav.sbl.dialogarena.pdf.PdfMerger;
 import no.nav.sbl.dialogarena.pdf.PdfWatermarker;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventning;
@@ -29,13 +35,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-
-import static java.lang.String.format;
-import static javax.xml.bind.JAXBContext.newInstance;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.LastetOpp;
 
 @Component
 public class SoknadService implements SendSoknadService, VedleggService {
@@ -73,9 +75,30 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value) {
+        //TODO: her blir barn overskrevet. Hent ut fnr osv.
         Faktum faktum = repository.hentSystemFaktum(soknadId, key, SYSTEMREGISTRERT_FAKTUM);
+        
         Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, faktum.getFaktumId(), key, value, SYSTEMREGISTRERT_FAKTUM));
         return repository.hentFaktum(soknadId, faktumId);
+    }
+    
+    //TODO: Kan sikkert slettes etter ny faktum-lagrings-modell
+    @Override
+    public Faktum lagreBarnSystemSoknadsFelt(Long soknadId, String key, String fnr, String json) {
+       
+        Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, null, key, json, SYSTEMREGISTRERT_FAKTUM));
+        return repository.hentFaktum(soknadId, faktumId);
+    }
+ 
+    public void slettSoknadsFelt(Long soknadId, Long faktumId) {
+       //TODO slett faktum med denne faktumId-en som parrent (løses kanskje enklere etter refactorering)
+
+        repository.slettSoknadsFelt(soknadId, faktumId);
+    }
+    
+    //TODO: Midlertidig funksjon, slett etter ny struktur.
+    public void slettBarnSoknadsFelt(Long soknadId) {
+        repository.slettBarnSoknadsFelt(soknadId);
     }
 
     @Override
@@ -218,4 +241,5 @@ public class SoknadService implements SendSoknadService, VedleggService {
         }
 
     }
+
 }

@@ -196,10 +196,21 @@ function stringContainsNotCaseSensitive(str, query) {
     }
 })(jQuery);
 
-function fadeBakgrunnsfarge(element, melding, feilmeldingsklasse, scope) {
-    console.log(feilmeldingsklasse)
-    console.log(element)
-    console.log(scope)
+function fadeBakgrunnsfarge(element, scope, rgb1, rgb2, rgb3) {
+    var backgroundColour = [rgb1, rgb2, rgb3].join(',') + ',';
+    var transparency = 1;
+    var timeout = setInterval(function () {
+        if (transparency >= 0) {
+            element[0].style.backgroundColor = 'rgba(' + backgroundColour + (transparency -= 0.015) + ')';
+        } else {
+            element.removeAttr('style');
+            clearInterval(timeout);
+            scope.$apply();
+        }
+    }, 20);
+}
+
+function fadeFeilmelding(element, melding, feilmeldingsklasse, scope) {
     var backgroundColour = [254, 230, 230].join(',') + ',';
     var borderColour = [252, 162, 146].join(',') + ',';
     var meldingColour = [195, 0, 0].join(',') + ',';

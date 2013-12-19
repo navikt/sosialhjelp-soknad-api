@@ -5,7 +5,7 @@ angular.module('nav.ingenytelser', [])
             link: function (scope, element, attrs, ctrl) {
                 var eventString = 'RUN_VALIDATION' + ctrl[0].$name;
                 scope.$on(eventString, function () {
-                    fadeBakgrunnsfarge(element, element.find('.ingen-ytelse-melding'), 'feil', scope);
+                    fadeFeilmelding(element, element.find('.ingen-ytelse-melding'), 'feil', scope);
                 })
                 scope.$watch(function () {
                     return scope.ytelser.skalViseFeilmeldingForIngenYtelser;
@@ -13,7 +13,7 @@ angular.module('nav.ingenytelser', [])
                     if (scope.ytelser.skalViseFeilmeldingForIngenYtelser) {
                         element.addClass('feil');
                     } else {
-                        fadeBakgrunnsfarge(element, element.find('.ingen-ytelse-melding'), 'feil', scope);
+                        fadeFeilmelding(element, element.find('.ingen-ytelse-melding'), 'feil', scope);
                     }
                 });
             }

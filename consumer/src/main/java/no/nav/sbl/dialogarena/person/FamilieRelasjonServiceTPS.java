@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.person;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
+
 import com.google.gson.Gson;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
@@ -12,6 +14,8 @@ import org.slf4j.Logger;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.WebServiceException;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -41,9 +45,8 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
     	HentKjerneinformasjonResponse response = null;
         try {
             response = person.hentKjerneinformasjon(lagXMLRequest(fodselsnummer));
-            if (response != null)
-            {
-            logger.warn("Fullstendig XML fra Person-servicen:" + response.getPerson());
+            if (response != null) {
+                logger.warn("Fullstendig XML fra Person-servicen:" + response.getPerson());
             }
         } catch (HentKjerneinformasjonPersonIkkeFunnet e) {
             logger.error("Fant ikke bruker i TPS (Person-servicen).", e);
@@ -55,7 +58,7 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
 			logger.error("Ingen kontakt med TPS (Person-servicen).", e);
             return new Person();
 		}
-    
+        
        Person person = new FamilieRelasjonTransform().mapFamilierelasjonTilPerson(soknadId, response);
        
        lagreBarn(soknadId, person);
@@ -65,10 +68,14 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
 
     @SuppressWarnings("unchecked")
 	private void lagreBarn(Long soknadId, Person person) {
-    	List<Barn> barneliste = (List<Barn>) person.getFakta().get("barn");
+        List<Barn> barneliste = (List<Barn>) person.getFakta().get("barn");
+    	
     	if(barneliste != null) {
+    	    //TODO må fikses på etter ny faktum-lagrings-modell.
+    	    soknadService.slettBarnSoknadsFelt(soknadId);
 	    	for (Barn barn : barneliste) {
-				soknadService.lagreSystemSoknadsFelt(soknadId, "barn", new Gson().toJson(barn));
+	    	    String fnr = barn.getFnr();
+				soknadService.lagreBarnSystemSoknadsFelt(soknadId, "barn", fnr, new Gson().toJson(barn));
 			}
     	}
 	}
