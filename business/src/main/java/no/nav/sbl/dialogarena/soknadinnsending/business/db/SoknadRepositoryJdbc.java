@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
@@ -40,8 +39,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad.
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 
 
-public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
-        SoknadRepository {
+public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadRepository {
 
     private static final Logger LOG = LoggerFactory
             .getLogger(SoknadRepositoryJdbc.class);
@@ -131,8 +129,8 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
 
     private void oppdaterBrukerData(long soknadId, Faktum faktum) {
         getJdbcTemplate()
-                .update("update soknadbrukerdata set value=? where key = ? and soknad_id = ?",
-                        faktum.getValue(), faktum.getKey(), soknadId);
+                .update("update soknadbrukerdata set value=? where soknadbrukerdata_id = ? and soknad_id = ?",
+                        faktum.getValue(), faktum.getFaktumId(), soknadId);
         lagreAlleEgenskaper(soknadId, faktum);
     }
 
@@ -187,6 +185,21 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
         }
     }
 
+    //TODO: Fiks slik at underfaktum blir slettet etter å ha fått ny faktum-struktur
+    @Override
+    public void slettSoknadsFelt(Long soknadId, Long faktumId) {
+        String sql = "delete from SOKNADBRUKERDATA where soknad_id=? and soknadbrukerdata_id=?";
+        int rowsDeleted = getJdbcTemplate().update(sql, soknadId, faktumId);
+
+    }
+
+    //TODO: Midlertidig metode, slett etter ny struktur
+    @Override
+    public void slettBarnSoknadsFelt(Long soknadId) {
+        String sql = "delete from SOKNADBRUKERDATA where soknad_id=? and key=? and type=?";
+        int rowsDeleted = getJdbcTemplate().update(sql, soknadId, "barn", "SYSTEMREGISTRERT");
+    }
+
     private int utfyllingStartet(long soknadId) {
         return getJdbcTemplate().update(
                 "update soknad set DELSTEGSTATUS = ? where soknad_id = ?",
@@ -197,6 +210,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
     public void slettBrukerFaktum(Long soknadId, Long faktumId) {
         getJdbcTemplate().update("delete from soknadbrukerdata where soknadId = ? and faktumId = ? and type = 'BRUKERREGISTRERT'", soknadId, faktumId);
     }
+
 
     @Override
     public void settSistLagretTidspunkt(Long soknadId) {
@@ -211,7 +225,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
         List<FaktumEgenskap> egenskaper = select("select * from FAKTUMEGENSKAP where soknad_id = ?", faktumEgenskapRowMapper, soknadId);
         Map<Long, Faktum> faktaMap = Maps.uniqueIndex(fakta, new Function<Faktum, Long>() {
             @Override
-            public Long apply(@Nullable Faktum input) {
+            public Long apply(Faktum input) {
                 return input.getFaktumId();
             }
         });
