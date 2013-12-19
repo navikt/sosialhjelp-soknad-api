@@ -4,10 +4,10 @@ angular.module('nav.ytelser', [])
         $scope.ytelserNAV = {skalViseFeilmeldingForIngenNavYtelser: false};
 
         var nokler = ['stonadFisker', 'offentligTjenestepensjon', 'privatTjenestepensjon', 'vartpenger', 'etterlonn', 'garantilott', 'dagpengerEOS', 'annenYtelse', 'ingenYtelse' ];
-        var undernokler = ['sykepenger', 'aap', 'uforetrygd', 'svangerskapspenger', 'foreldrepenger', 'ventelonn',  'ingennavytelser' ];
+        var undernokler = ['sykepenger', 'aap', 'uforetrygd', 'svangerskapspenger', 'foreldrepenger', 'ventelonn', 'ingennavytelser' ];
 
-        $scope.harHuketAvCheckboksYtelse = {value : ''};
-        $scope.harHuketAvCheckboksNavYtelse = {value : ''};
+        $scope.harHuketAvCheckboksYtelse = {value: ''};
+        $scope.harHuketAvCheckboksNavYtelse = {value: ''};
 
         if (erCheckboxerAvhuket(nokler)) {
             $scope.harHuketAvCheckboksYtelse.value = true;
@@ -23,9 +23,9 @@ angular.module('nav.ytelser', [])
             $scope.validerYtelser(true);
         }
 
-       $scope.hvisAvtaleInngaatt = function () {
+        $scope.hvisAvtaleInngaatt = function () {
             var faktum = data.finnFaktum('avtale');
-            if (faktum != undefined && faktum.value != undefined ) {
+            if (faktum != undefined && faktum.value != undefined) {
                 return faktum.value == 'avtale';
             }
             return false;
@@ -83,49 +83,45 @@ angular.module('nav.ytelser', [])
             }
         }
 
-    //      kjøres hver gang det skjer en endring på checkboksene for Nav Ytelser
-    $scope.endreNavYtelse = function (form) {
-        // Sjekker om en navytelse er huket av (inkluderer IKKE siste checkboksen)
-        var ytelserNokler = undernokler.slice(0, nokler.length - 1);
-        var harIkkeValgtYtelse = !erCheckboxerAvhuket(ytelserNokler);
-        if (harIkkeValgtYtelse) {
-            $scope.ytelser.skalViseFeilmeldingForIngenNavYtelser = false;
-            $scope.harHuketAvCheckboksNavYtelse.value = '';
-        } else {
-            $scope.harHuketAvCheckboksNavYtelse.value = true;
-        }
-        if (sjekkOmGittEgenskapTilObjektErTrue($scope.soknadData.fakta.ingenYtelse)) {
-            $scope.soknadData.fakta.ingenYtelse.value = false;
-            $scope.$emit(lagreSoknadData, {key: 'ingenNavYtelse', value: false});
-        }
-    }
-
-    //      kjøres hver gang det skjer en endring på 'ingenNAVYtelse'-checkboksen
-    $scope.endreIngenNavYtelse = function (form) {
-        // Sjekker om en ytelse er huket av (inkluderer IKKE siste checkboksen)
-        var ytelserNokler = undernokler.slice(0, undernokler.length - 1);
-        var harValgtNavYtelse = erCheckboxerAvhuket(ytelserNokler);
-        var erCheckboksForIngenNavYtelseHuketAv = $scope.soknadData.fakta.ingennavytelser.value;
-        if (harValgtNavYtelse) {
-            if (Object.keys($scope.soknadData.fakta.ingennavytelser).length == 1) {
-                $scope.$emit(lagreSoknadData, {key: 'ingennavytelser', value: 'false'});
+        //      kjøres hver gang det skjer en endring på checkboksene for Nav Ytelser
+        $scope.endreNavYtelse = function (form) {
+            // Sjekker om en navytelse er huket av (inkluderer IKKE siste checkboksen)
+            var ytelserNokler = undernokler.slice(0, nokler.length - 1);
+            var harIkkeValgtYtelse = !erCheckboxerAvhuket(ytelserNokler);
+            if (harIkkeValgtYtelse) {
+                $scope.ytelser.skalViseFeilmeldingForIngenNavYtelser = false;
+                $scope.harHuketAvCheckboksNavYtelse.value = '';
+            } else {
+                $scope.harHuketAvCheckboksNavYtelse.value = true;
             }
-            //Fjerner krysset for andre ytelser
-            $scope.soknadData.fakta.ingennavytelser.value = 'false';
-            //Viser feilmelding
-            $scope.ytelser.skalViseFeilmeldingForIngenNavYtelser = true;
-
-        } else {
-            if (erCheckboksForIngenNavYtelseHuketAv) {
-                $scope.harHuketAvCheckboksNavYtelse.value = 'true';
+            var faktum = data.finnFaktum('ingenYtelse');
+            if (sjekkOmGittEgenskapTilObjektErTrue(faktum)) {
+                faktum.value = false;
+                faktum.$save();
             }
-            $scope.$emit(lagreSoknadData, {key: 'ingennavytelser', value: erCheckboksForIngenNavYtelseHuketAv});
         }
-    }
+
+        //      kjøres hver gang det skjer en endring på 'ingenNAVYtelse'-checkboksen
+        $scope.endreIngenNavYtelse = function (form) {
+            var ingenNavYtelser = data.finnFaktum("ingennavytelser");
+            // Sjekker om en ytelse er huket av (inkluderer IKKE siste checkboksen)
+            var ytelserNokler = undernokler.slice(0, undernokler.length - 1);
+            var harValgtNavYtelse = erCheckboxerAvhuket(ytelserNokler);
+            var erCheckboksForIngenNavYtelseHuketAv = sjekkOmGittEgenskapTilObjektErTrue(ingenNavYtelser);
+            if (harValgtNavYtelse) {
+                ingenNavYtelser.value = 'false';
+                $scope.ytelser.skalViseFeilmeldingForIngenNavYtelser = true;
+
+            } else {
+                if (erCheckboksForIngenNavYtelseHuketAv) {
+                    $scope.harHuketAvCheckboksNavYtelse.value = 'true';
+                }
+                ingenNavYtelser.$save();
+            }
+        }
 
 
-
-    $scope.ingenYtelserOppsummeringSkalVises = function () {
+        $scope.ingenYtelserOppsummeringSkalVises = function () {
             if ($scope.soknadData && $scope.soknadData.fakta) {
                 return $scope.soknadData.fakta.ingenYtelse && checkTrue($scope.soknadData.fakta.ingenYtelse.value) && $scope.hvisIOppsummeringsmodus();
             }

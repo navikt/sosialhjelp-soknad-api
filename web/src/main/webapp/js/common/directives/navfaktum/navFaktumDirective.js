@@ -3,7 +3,8 @@ angular.module('nav.navfaktum', [])
         return {
             replace: false,
             scope: true,
-            controller: ['$scope', '$attrs', 'data', 'Faktum', function ($scope, $attrs, data, Faktum) {
+            controller: ['$scope', '$attrs', '$filter', 'data', 'Faktum', function ($scope, $attrs, $filter, data, Faktum) {
+                var props = $scope.$eval($attrs.navProperty);
                 var satt = false;
                 data.fakta.forEach(function (faktum) {
                     if (faktum.key === $attrs.navFaktum) {
@@ -15,20 +16,39 @@ angular.module('nav.navfaktum', [])
                     $scope.faktum = new Faktum({
                             key: $attrs.navFaktum,
                             soknadId: data.soknad.soknadId,
-                            properties: { varighetFra: '', varighetTil: ''}
+                            properties: {}
                         }
                     );
-                    $scope.faktum.properties.varighetFra = '01.01.2013';
                     data.fakta.push($scope.faktum);
                 }
                 $scope.parentFaktum = $scope.faktum;
-                if ($attrs.navProperty) {
-                    $scope.faktum = {key: $attrs.navProperty, value: $scope.parentFaktum.properties[$attrs.navProperty]};
+
+                if (props) {
+                    $scope.navproperties = {}
+                    props.forEach(function (prop) {
+                        var val = $scope.faktum.properties[prop];
+                        if (val && val.match(/\d\d\d\d\.\d\d\.\d\d/)) {
+                            console.log("matched")
+                            val = new Date(val);
+                        }
+                        $scope.navproperties[prop] = val;
+                    });
                 }
 
                 $scope.lagreFaktum = function () {
-                    if (!$scope.faktum.soknadId) {
-                        //$scope.parentFaktum.properties[$scope.faktum.key] = $scope.faktum.value;
+                    if (props) {
+                        props.forEach(function (prop) {
+                            console.log($scope.navproperties)
+                            var value = $scope.navproperties[prop];
+                            if (value != undefined) {
+                                if (angular.isDate(value)) {
+                                    value = $filter('date')(value, 'yyyy.MM.dd')
+                                } else {
+                                    value = value.toString();
+                                }
+                            }
+                            $scope.parentFaktum.properties[prop] = value;
+                        })
                     }
                     $scope.parentFaktum.$save();
                 }
