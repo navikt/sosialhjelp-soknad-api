@@ -37,4 +37,8 @@ public interface SoknadRepository {
     void endreInnsendingsValg(Long soknadId, Long faktumId, Faktum.Status innsendingsvalg);
    
     void settSistLagretTidspunkt(Long soknadId);
+
+    void slettSoknadsFelt(Long soknadId, Long faktumId);
+
+    void slettBarnSoknadsFelt(Long soknadId);
 }
