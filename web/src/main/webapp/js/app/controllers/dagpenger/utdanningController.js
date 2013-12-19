@@ -30,7 +30,6 @@ angular.module('nav.utdanning', [])
         }
 
         $scope.hvis = function (faktumKey, verdi) {
-            console.log('hvis: ' + faktumKey + ' ' + verdi);
             var faktum = data.finnFaktum(faktumKey);
             if (verdi) {
                 return sjekkOmGittEgenskapTilObjektErVerdi(faktum, verdi);
@@ -76,7 +75,6 @@ angular.module('nav.utdanning', [])
                     minstEnAvhuket = true;
                 }
             }
-            console.log("minst en: " + minstEnAvhuket)
             return minstEnAvhuket;
         }
 
