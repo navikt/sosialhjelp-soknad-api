@@ -77,6 +77,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         return repository.hentFaktum(soknadId, faktumId);
     }
     
+    //TODO: Kan sikkert slettes etter ny faktum-lagrings-modell
     @Override
     public Faktum lagreBarnSystemSoknadsFelt(Long soknadId, String key, String fnr, String json) {
        
