@@ -22,6 +22,7 @@ angular.module('app.directives', [
     'nav.utdanningannet',
     'nav.navfaktum',
     'nav.ingenytelser',
+    'nav.ingennavytelser',
     'nav.accordion',
     'nav.scrollbar',
     'nav.dagpengerdirective',
