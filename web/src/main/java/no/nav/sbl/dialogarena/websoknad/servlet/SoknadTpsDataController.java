@@ -113,11 +113,7 @@ public class SoknadTpsDataController {
     @RequestMapping(value = "/{soknadId}/familierelasjoner", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Person hentFamilierelasjoner(@PathVariable String soknadId) {
-        System.out.println("#######skal hente familie#######");
-    	Person person =  familieRelasjonService.hentPerson(new Long(soknadId), getSubjectHandler().getUid());    	
-    	System.out.println("#######ferdig med familie#######");
-    	
-    	return person;
+    	return familieRelasjonService.hentPerson(new Long(soknadId), getSubjectHandler().getUid());
     }
     
     

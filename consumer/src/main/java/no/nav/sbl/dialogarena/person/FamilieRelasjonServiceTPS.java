@@ -45,9 +45,8 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
     	HentKjerneinformasjonResponse response = null;
         try {
             response = person.hentKjerneinformasjon(lagXMLRequest(fodselsnummer));
-            if (response != null)
-            {
-            logger.warn("Fullstendig XML fra Person-servicen:" + response.getPerson());
+            if (response != null) {
+                logger.warn("Fullstendig XML fra Person-servicen:" + response.getPerson());
             }
         } catch (HentKjerneinformasjonPersonIkkeFunnet e) {
             logger.error("Fant ikke bruker i TPS (Person-servicen).", e);
@@ -59,7 +58,7 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
 			logger.error("Ingen kontakt med TPS (Person-servicen).", e);
             return new Person();
 		}
-    
+        
        Person person = new FamilieRelasjonTransform().mapFamilierelasjonTilPerson(soknadId, response);
        
        lagreBarn(soknadId, person);
@@ -72,6 +71,7 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
         List<Barn> barneliste = (List<Barn>) person.getFakta().get("barn");
     	
     	if(barneliste != null) {
+    	    //TODO må fikses på etter ny faktum-lagrings-modell.
     	    soknadService.slettBarnSoknadsFelt(soknadId);
 	    	for (Barn barn : barneliste) {
 	    	    String fnr = barn.getFnr();
