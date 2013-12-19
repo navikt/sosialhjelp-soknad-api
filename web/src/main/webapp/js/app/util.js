@@ -25,7 +25,7 @@ if (!Array.prototype.last) {
     }
 }
 
-    if (!Array.prototype.contains) {
+if (!Array.prototype.contains) {
     Array.prototype.contains = function (val) {
         return $.inArray(val, this) > -1;
     }
@@ -45,7 +45,7 @@ if (!Array.prototype.indexByValue) {
     }
 }
 
-String.prototype.splice = function(idx, rem, str) {
+String.prototype.splice = function (idx, rem, str) {
     return (this.slice(0, idx) + str + this.slice(idx + Math.abs(rem)));
 }
 
@@ -64,7 +64,20 @@ function sjekkOmGittEgenskapTilObjektErTrue(objekt) {
 
     return false;
 }
+function sjekkOmGittEgenskapTilObjektErVerdi(objekt, verdi) {
+    if (objekt) {
+        return checkThat(objekt.value, verdi);
+    }
 
+    return false;
+}
+
+function checkThat(element, verdi) {
+    if (element == undefined) {
+        return false;
+    }
+    return element.toString() == verdi;
+}
 function checkTrue(element) {
     if (element == undefined) {
         return false;

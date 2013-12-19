@@ -24,8 +24,8 @@
                 </div>
 
                 <p class="arbeidsforhold-oppsummering-endre-slett lenker-dot" data-ng-show="hvisIRedigeringsmodus()">
-	                <a href data-ng-click="slettArbeidsforhold(af)" data-cmstekster="arbeidsforhold.slettarbeidsforhold"></a>
-	                <a href data-ng-click="endreArbeidsforhold($index, arbeidsforholdForm)" data-cmstekster="arbeidsforhold.endrearbeidsforhold"></a>
+                    <a href data-ng-click="slettArbeidsforhold(af)" data-cmstekster="arbeidsforhold.slettarbeidsforhold"></a>
+                    <a href data-ng-click="endreArbeidsforhold($index, arbeidsforholdForm)" data-cmstekster="arbeidsforhold.endrearbeidsforhold"></a>
                 </p>
             </div>
 
@@ -55,7 +55,7 @@
                              data-default-value="arbeidsforhold.arbeidsgiver.landDefault"
                              data-required-feilmelding="arbeidsforhold.arbeidsgiver.land.feilmelding"
                              data-ugyldig-feilmelding="arbeidsforhold.arbeidsgiver.land.ugyldig.feilmelding">
-                         </div>
+                        </div>
 
                     </div>
 
@@ -99,19 +99,21 @@
         <div class="knapper-arbeidsforhold">
             <div id="legg-til" data-ng-show="hvisIRedigeringsmodus()">
                 <button class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event, arbeidsforholdForm)"
-		                data-cmstekster="arbeidsforhold.nyttarbeidsforhold" role="button"></button>
+                        data-cmstekster="arbeidsforhold.nyttarbeidsforhold" role="button"></button>
             </div>
 
             <div id="har-ikke-jobbet" data-ng-show="harIkkeLagretArbeidsforhold()">
-                <div data-navcheckbox data-ng-model="soknadData.fakta.harIkkeJobbet.value" data-modus="data.redigeringsModus"
-		                data-inputname="harIkkeJobbet" data-label="arbeidsforhold.harIkkeJobbet"
-		                data-endret="toggleRedigeringsmodus(arbeidsforholdForm)"></div>
+                <div data-navcheckbox
+                     data-navconfig
+                     data-nav-faktum="harIkkeJobbet"
+                     data-navlabel="arbeidsforhold.harIkkeJobbet"
+                     data-navendret="toggleRedigeringsmodus(arbeidsforholdForm)"></div>
             </div>
 
             <div data-spmblokkferdig
-		            data-nokkel="arbeidsforhold"
-		            data-modus="data.redigeringsModus"
-		            data-submit-method="validerArbeidsforhold(arbeidsforholdForm, true)"></div>
+                 data-nokkel="arbeidsforhold"
+                 data-modus="data.redigeringsModus"
+                 data-submit-method="validerOgSettModusOppsummering(arbeidsforholdForm, true)"></div>
         </div>
     </div>
 </div>

@@ -1,8 +1,7 @@
 package no.nav.sbl.dialogarena.person;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
-
 import com.google.gson.Gson;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegrensning;
@@ -14,15 +13,12 @@ import org.slf4j.Logger;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.WebServiceException;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Implementer {@link PersonService}. Denne implementasjonen henter data fra TPS, og lagrer som systemfaktum i databasen
- *
  */
 public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
 
@@ -34,15 +30,14 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
 
     @Inject
     private SendSoknadService soknadService;
-    
-	/**
-	 * Forsøker å hente person fra TPS og transformere denne til vår Personmodell.
-	 * Dersom det feiler, logges feilen og det returneres et tomt Person objekt videre 
-	 * 
-	 */
+
+    /**
+     * Forsøker å hente person fra TPS og transformere denne til vår Personmodell.
+     * Dersom det feiler, logges feilen og det returneres et tomt Person objekt videre
+     */
     @Override
     public Person hentPerson(Long soknadId, String fodselsnummer) {
-    	HentKjerneinformasjonResponse response = null;
+        HentKjerneinformasjonResponse response = null;
         try {
             response = person.hentKjerneinformasjon(lagXMLRequest(fodselsnummer));
             if (response != null) {
@@ -52,37 +47,37 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
             logger.error("Fant ikke bruker i TPS (Person-servicen).", e);
             return new Person();
         } catch (HentKjerneinformasjonSikkerhetsbegrensning e) {
-        	logger.error("Kunne ikke hente bruker fra TPS (Person-servicen).", e);
+            logger.error("Kunne ikke hente bruker fra TPS (Person-servicen).", e);
             return new Person();
-		} catch(WebServiceException e) {
-			logger.error("Ingen kontakt med TPS (Person-servicen).", e);
+        } catch (WebServiceException e) {
+            logger.error("Ingen kontakt med TPS (Person-servicen).", e);
             return new Person();
-		}
-        
-       Person person = new FamilieRelasjonTransform().mapFamilierelasjonTilPerson(soknadId, response);
-       
-       lagreBarn(soknadId, person);
-       
-       return person;
+        }
+
+        Person person = new FamilieRelasjonTransform().mapFamilierelasjonTilPerson(soknadId, response);
+
+        lagreBarn(soknadId, person);
+
+        return person;
     }
 
     @SuppressWarnings("unchecked")
-	private void lagreBarn(Long soknadId, Person person) {
+    private void lagreBarn(Long soknadId, Person person) {
         List<Barn> barneliste = (List<Barn>) person.getFakta().get("barn");
-    	
-    	if(barneliste != null) {
-    	    //TODO må fikses på etter ny faktum-lagrings-modell.
-    	    soknadService.slettBarnSoknadsFelt(soknadId);
-	    	for (Barn barn : barneliste) {
-	    	    String fnr = barn.getFnr();
-				soknadService.lagreBarnSystemSoknadsFelt(soknadId, "barn", fnr, new Gson().toJson(barn));
-			}
-    	}
-	}
 
-	private HentKjerneinformasjonRequest lagXMLRequest(String ident) {
-    	HentKjerneinformasjonRequest request = new HentKjerneinformasjonRequest();
-    	request.setIdent(ident);
+        if (barneliste != null) {
+            //TODO må fikses på etter ny faktum-lagrings-modell.
+            soknadService.slettBarnSoknadsFelt(soknadId);
+            for (Barn barn : barneliste) {
+                String fnr = barn.getFnr();
+                soknadService.lagreBarnSystemSoknadsFelt(soknadId, "barn", fnr, new Gson().toJson(barn));
+            }
+        }
+    }
+
+    private HentKjerneinformasjonRequest lagXMLRequest(String ident) {
+        HentKjerneinformasjonRequest request = new HentKjerneinformasjonRequest();
+        request.setIdent(ident);
         return request;
     }
 }

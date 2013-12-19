@@ -30,24 +30,24 @@ import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 @RequestMapping("/soknad")
 public class SoknadTpsDataController {
 
-	@Inject
+    @Inject
     private SendSoknadService soknadService;
-	
-	@Inject
+
+    @Inject
     private Kodeverk kodeverk;
-	
-	@Inject
-	private PersonService personService;
-	
-	@Inject
-	private FamilieRelasjonService familieRelasjonService;
-	
+
+    @Inject
+    private PersonService personService;
+
+    @Inject
+    private FamilieRelasjonService familieRelasjonService;
+
     @RequestMapping(value = "/kodeverk/{postnummer}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public String hentPoststed(@PathVariable String postnummer) {
         return kodeverk.getPoststed(postnummer);
     }
-    
+
     @RequestMapping(value = "/kodeverk/landliste", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Map<String, List<Map<String, String>>> hentLandkodeListe() {
@@ -70,57 +70,57 @@ public class SoknadTpsDataController {
 
         Map<String, List<Map<String, String>>> hashMap = new LinkedHashMap<>();
         hashMap.put("result", mockLand);
-    	return hashMap;
+        return hashMap;
     }
-    
+
     @RequestMapping(value = "/personalder", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Map<String, Integer> getAlder() {
-    	Map<String, Integer> result = new HashMap<>();
-    	String uid = getSubjectHandler().getUid();
-    	PersonAlder personAlder = new PersonAlder(uid);
-    	
-    	result.put("alder", personAlder.getAlder());	
-    	return result;
+        Map<String, Integer> result = new HashMap<>();
+        String uid = getSubjectHandler().getUid();
+        PersonAlder personAlder = new PersonAlder(uid);
+
+        result.put("alder", personAlder.getAlder());
+        return result;
     }
-    
-	
+
+
     @RequestMapping(value = "/{soknadId}/personalia", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Person hentPerson(@PathVariable String soknadId) {
         Person person = personService.hentPerson(new Long(soknadId), getSubjectHandler().getUid());
-    
-    	for (Object faktumObj : person.getFakta().values()) {
-    		if (faktumObj instanceof Faktum) {
-    			Faktum faktum = (Faktum) faktumObj;
-    			soknadService.lagreSystemSoknadsFelt(new Long(soknadId),faktum.getKey(),faktum.getValue());
-    		} else if (faktumObj instanceof List<?>) {
-    			@SuppressWarnings("unchecked")
-				List<Adresse> adresseList = (List<Adresse>) faktumObj;
-    			
-    			GsonBuilder gson = new GsonBuilder();
-    			gson.registerTypeAdapter(DateTime.class, new DateTimeSerializer());
-    			
-    			String adresseJson = gson.create().toJson(adresseList);
-    			
-    			soknadService.lagreSystemSoknadsFelt(new Long(soknadId), "adresser", adresseJson);
-    		}
-    	}
-        
-    	return person;
+
+        for (Object faktumObj : person.getFakta().values()) {
+            if (faktumObj instanceof Faktum) {
+                Faktum faktum = (Faktum) faktumObj;
+                soknadService.lagreSystemSoknadsFelt(new Long(soknadId), faktum.getKey(), faktum.getValue());
+            } else if (faktumObj instanceof List<?>) {
+                @SuppressWarnings("unchecked")
+                List<Adresse> adresseList = (List<Adresse>) faktumObj;
+
+                GsonBuilder gson = new GsonBuilder();
+                gson.registerTypeAdapter(DateTime.class, new DateTimeSerializer());
+
+                String adresseJson = gson.create().toJson(adresseList);
+
+                soknadService.lagreSystemSoknadsFelt(new Long(soknadId), "adresser", adresseJson);
+            }
+        }
+
+        return person;
     }
-    
+
     @RequestMapping(value = "/{soknadId}/familierelasjoner", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Person hentFamilierelasjoner(@PathVariable String soknadId) {
-    	return familieRelasjonService.hentPerson(new Long(soknadId), getSubjectHandler().getUid());
+        return familieRelasjonService.hentPerson(new Long(soknadId), getSubjectHandler().getUid());
     }
-    
-    
+
+
     @RequestMapping(value = "/{soknadId}/personalia/fnr/{fnr}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Person hentEnPerson(@PathVariable String soknadId, @PathVariable String fnr) {
-    	return personService.hentPerson(new Long(soknadId), fnr);
+        return personService.hentPerson(new Long(soknadId), fnr);
     }
 
 }
