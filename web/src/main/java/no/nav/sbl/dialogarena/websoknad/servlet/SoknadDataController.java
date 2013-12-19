@@ -101,11 +101,11 @@ public class SoknadDataController {
                               @RequestBody Faktum faktum) {
         return soknadService.lagreSoknadsFelt(soknadId, faktum);
     }
-    
+
     @RequestMapping(value = "/{soknadId}/faktum/delete", method = RequestMethod.POST)
     @ResponseBody()
     public void slettFaktum(@PathVariable Long soknadId,
-            @RequestBody Faktum faktum) {
+                            @RequestBody Faktum faktum) {
         soknadService.slettSoknadsFelt(soknadId, faktum.getFaktumId());
     }
 

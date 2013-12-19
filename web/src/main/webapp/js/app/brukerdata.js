@@ -149,8 +149,8 @@ angular.module('app.brukerdata', ['app.services'])
             $scope.soknadData.fakta[faktumData.key].key = faktumData.key;
 
             var url = '/sendsoknad/rest/soknad/' + $scope.soknadData.soknadId + '/faktum/' + '?rand=' + new Date().getTime();
-            $http({method:'POST', url:url, data: $scope.soknadData.fakta[faktumData.key]})
-                .success(function(dataFraServer, status) {
+            $http({method: 'POST', url: url, data: $scope.soknadData.fakta[faktumData.key]})
+                .success(function (dataFraServer, status) {
                     $scope.soknadData.fakta[faktumData.key] = dataFraServer;
                     $scope.soknadData.sistLagret = new Date().getTime();
                     data.soknad = $scope.soknadData;
