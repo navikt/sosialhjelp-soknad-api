@@ -5,7 +5,7 @@ angular.module('nav.ingennavytelser', [])
             link: function (scope, element, attrs, ctrl) {
                 var eventString = 'RUN_VALIDATION' + ctrl[0].$name;
                 scope.$on(eventString, function () {
-                    fadeBakgrunnsfarge(element, element.find('.ingen-navytelse-melding'), 'feil', scope);
+                    fadeFeilmelding(element, element.find('.ingen-navytelse-melding'), 'feil', scope);
                 })
                 scope.$watch(function () {
                     return scope.ytelser.skalViseFeilmeldingForIngenNavYtelser;
@@ -14,7 +14,7 @@ angular.module('nav.ingennavytelser', [])
                         console.log("Legger til feil");
                         element.addClass('feil');
                     } else {
-                        fadeBakgrunnsfarge(element, element.find('.ingen-navytelse-melding'), 'feil', scope);
+                        fadeFeilmelding(element, element.find('.ingen-navytelse-melding'), 'feil', scope);
                     }
                 });
             }
