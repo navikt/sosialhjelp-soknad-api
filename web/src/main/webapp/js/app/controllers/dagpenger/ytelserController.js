@@ -50,9 +50,7 @@ angular.module('nav.ytelser', [])
                 $scope.harHuketAvCheckboksYtelse.value = '';
 
             } else {
-
                 $scope.harHuketAvCheckboksYtelse.value = true;
-
             }
 
             var ingenYtelse = data.finnFaktum("ingenYtelse");
