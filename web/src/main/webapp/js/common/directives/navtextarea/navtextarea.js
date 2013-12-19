@@ -45,11 +45,11 @@ angular.module('nav.textarea', [])
     }])
     .directive('validateTextarea', ['$timeout', 'cms', function ($timeout, cms) {
         return {
-            require:['ngModel', '^form'],
+            require: ['ngModel', '^form'],
             link: function (scope, element, attrs, ctrls) {
                 var ngModel = ctrls[0];
                 var form = ctrls[1];
-                
+
                 var settStorrelse = function () {
                     element.css('height', '0px');
                     element.height(element[0].scrollHeight);
@@ -59,8 +59,15 @@ angular.module('nav.textarea', [])
                     if (viewValue != undefined) {
                         settStorrelse();
                         scope.counter = scope.maxlengde - viewValue.length;
-                        validerAntallTegn();
-                        validerTom(viewValue)
+                        var valid = validerAntallTegn();
+                        valid = valid && validerTom(viewValue);
+                        if (valid) {
+                            ngModel.$setValidity(scope.nokkel, true);
+                        } else {
+                            ngModel.$setValidity(scope.nokkel, false);
+                        }
+                    } else {
+                        scope.counter = scope.maxlengde;
                     }
 
                 }
@@ -77,26 +84,30 @@ angular.module('nav.textarea', [])
 
                 function validerAntallTegn() {
                     if (scope.counter < 0) {
-                        ngModel.$setValidity(scope.nokkel, false);
                         scope.feil = true;
-                        element.closest('.form-linje').addClass('feil');
                         settFeilmeldingsTekst();
+                        return false;
 
                     } else {
-                        ngModel.$setValidity(scope.nokkel, true);
                         scope.feil = false;
                         element.closest('.form-linje').removeClass('feil');
+                        return true;
                     }
                 }
-                function validerTom(viewValue){
-                    if(viewValue == undefined || viewValue.length == 0) {
+
+                function validerTom(viewValue) {
+                    if (viewValue == undefined || viewValue.length == 0) {
+                        ngModel.$setValidity(scope.nokkel, true);
                         settFeilmeldingsTekst();
                         element.closest('.form-linje').addClass('feil');
+                        return false;
                     }
+                    return true;
                 }
+
                 function settFeilmeldingsTekst() {
                     var feilmeldingTekst = cms.tekster['textarea.feilmleding'];
-                    if(scope.counter > -1) {
+                    if (scope.counter > -1) {
                         var feilmeldingsNokkel = element[0].getAttribute('data-error-messages').toString();
                         //hack for å fjerne dobbeltfnuttene rundt feilmeldingsnokk
                         feilmeldingTekst = cms.tekster[feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1)];
@@ -104,6 +115,16 @@ angular.module('nav.textarea', [])
                     element.closest('.form-linje').find('.melding').text(feilmeldingTekst);
                 }
 
+                var eventString = 'RUN_VALIDATION' + form.$name;
+                scope.$on(eventString, function () {
+                    validerAntallTegn();
+                    validerTom(ngModel.$viewValue);
+                    if (ngModel.$invalid) {
+                        element.closest('.form-linje').addClass('feil');
+                    } else {
+                        element.closest('.form-linje').removeClass('feil');
+                    }
+                })
 
                 scope.tattFokus = function () {
                     scope.fokus = true;
@@ -111,6 +132,12 @@ angular.module('nav.textarea', [])
                 scope.mistetFokus = function () {
                     scope.fokus = false;
                     validerAntallTegn();
+                    validerTom(ngModel.$viewValue);
+                    if (ngModel.$invalid) {
+                        element.closest('.form-linje').addClass('feil');
+                    } else {
+                        element.closest('.form-linje').removeClass('feil');
+                    }
                     scope.lagreFaktum();
 
                 };
