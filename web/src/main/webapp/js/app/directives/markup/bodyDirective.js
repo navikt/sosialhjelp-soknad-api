@@ -24,5 +24,3 @@ angular.module('nav.markup.bodydirective', [])
             });
         }
     });
-
-

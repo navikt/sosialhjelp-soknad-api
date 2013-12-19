@@ -96,11 +96,18 @@ public class SoknadDataController {
         }
     }
 
-    @RequestMapping(value = "/{soknadId}/faktum", method = RequestMethod.POST)
+    @RequestMapping(value = "/{soknadId}/faktum/", method = RequestMethod.POST)
     @ResponseBody()
     public Faktum lagreFaktum(@PathVariable Long soknadId,
             @RequestBody Faktum faktum) {
         return soknadService.lagreSoknadsFelt(soknadId, faktum);
+    }
+    
+    @RequestMapping(value = "/{soknadId}/faktum/delete", method = RequestMethod.POST)
+    @ResponseBody()
+    public void slettFaktum(@PathVariable Long soknadId,
+            @RequestBody Faktum faktum) {
+        soknadService.slettSoknadsFelt(soknadId, faktum.getFaktumId());
     }
 
     @RequestMapping(value = "/opprett/{soknadType}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")

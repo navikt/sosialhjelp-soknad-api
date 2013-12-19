@@ -31,7 +31,7 @@ public class WebSoknad implements Serializable {
 	private DateTime sistLagret;
     private DelstegStatus delstegStatus;
 
-    private static final List<String> LIST_FAKTUM = Arrays.asList("barn", "barnetillegg");
+    private static final List<String> LIST_FAKTUM = Arrays.asList("barn", "barnetillegg","ikkebarneinntekt","barneinntekttall");
     
 
     public Long getSistLagret() {

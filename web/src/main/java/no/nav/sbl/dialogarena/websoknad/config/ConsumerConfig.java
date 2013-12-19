@@ -117,7 +117,7 @@ public class ConsumerConfig {
     @Configuration
     public static class PersonWSConfig {
 
-    	
+
         @Value("${soknad.webservice.person.personservice.url}")
         private URL personEndpoint;
     	
@@ -127,7 +127,7 @@ public class ConsumerConfig {
         public JaxWsProxyFactoryBean personPortTypeFactory() {
     		JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(personEndpoint, PersonPortType.class, "classpath:/wsdl/no/nav/tjeneste/virksomhet/person/v1/Person.wsdl");
             jaxwsClient.getFeatures().add(new TimingFeature(PersonPortType.class.getSimpleName()));
-            return jaxwsClient;																						
+            return jaxwsClient;
         }
 
         @Bean

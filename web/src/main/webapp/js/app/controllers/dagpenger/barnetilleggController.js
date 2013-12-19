@@ -1,25 +1,78 @@
 angular.module('nav.barnetillegg',[])
-    .controller('BarnetilleggCtrl', ['$scope', function ($scope) {
-        if ($scope.soknadData.fakta.barn) {
-                angular.forEach($scope.soknadData.fakta.barn.valuelist, function(value) { 
-                    value.value = angular.fromJson(value.value);
-                });
-            }       
+.controller('BarnetilleggCtrl', ['$scope', '$cookieStore', '$location', '$timeout','BrukerData', function ($scope, $cookieStore, $location, $timeout, BrukerData) {
+		if ($scope.soknadData.fakta.barn) {
+			angular.forEach($scope.soknadData.fakta.barn.valuelist, function(value) { 
+				value.value = angular.fromJson(value.value);
+			});
+		}
 
-        $scope.erGutt = function(barn) {
-            return barn.value.kjonn == "gutt";
-        }
+		$scope.erBrukerregistrert = function(barn) {
+			return barn.type == 'BRUKERREGISTRERT';
+		}
 
-        $scope.erJente = function(barn) {
-            return barn.value.kjonn == "jente";
-        }
+		$scope.erSystemRegistrert = function(barn) {
+			return  barn.type == 'SYSTEMREGISTRERT';
+		}
 
-        $scope.validerOgSettModusOppsummering = function(form) {
-            $scope.validateForm(form.$invalid);
-            $scope.validerBarnetillegg(true);
-        }
+		$scope.ingenLandRegistrert = function(barn) {
+			return !barn.value.land;
+		}
 
-        $scope.validerBarnetillegg = function() {
-            $scope.runValidation();
-        }
-    }]);
+		$scope.leggTilBarn = function($event) {
+			$event.preventDefault();
+			settBarnCookie();
+			$location.path('nyttbarn/' + $scope.soknadData.soknadId);
+		}
+
+		$scope.endreBarn = function(faktumId, $event) {
+			$event.preventDefault();
+			settBarnCookie(faktumId);
+			$location.path('endrebarn/' + $scope.soknadData.soknadId + "/" + faktumId);
+		}
+
+		$scope.sokbarnetillegg = function(faktumId, $event) {
+			$event.preventDefault();
+			settBarnCookie(faktumId);
+			$location.path('sokbarnetillegg/' + $scope.soknadData.soknadId + "/" + faktumId);
+		}
+
+		$scope.slettBarn = function(b, index, $event) {
+			$event.preventDefault();
+			b.value = angular.toJson(b.value);
+			$scope.barnSomSkalSlettes = new BrukerData(b);
+
+			$scope.barnSomSkalSlettes.$delete({soknadId: $scope.soknadData.soknadId}).then(function() {
+				$scope.soknadData.fakta.barn.valuelist.splice(index, 1);
+			});
+		}
+
+		
+		$scope.erGutt = function(barn) {
+			return barn.value.kjonn == "gutt";
+		}	
+
+		$scope.erJente = function(barn) {
+			return barn.value.kjonn == "jente";
+		}
+
+		$scope.validerBarnetillegg = function(form) {
+			$scope.validateForm(form.$invalid);
+			$scope.runValidation();
+		}
+
+		function settBarnCookie(faktumId) {
+			var aapneTabIds = [];
+			angular.forEach($scope.grupper, function(gruppe) {
+				if(gruppe.apen) { 
+					aapneTabIds.push(gruppe.id); 
+				}
+			});
+
+			$cookieStore.put('barneCookie', {
+				aapneTabs: aapneTabIds,
+				gjeldendeTab:"#barnetillegg",
+				barneFaktumId: faktumId
+			})
+		}
+
+}]);
