@@ -54,7 +54,7 @@ angular.module('nav.utdanning', [])
 
         $scope.hvisIngenUnntakGjelder = function (utdanning) {
             if ($scope.soknadData && $scope.soknadData.fakta) {
-                return $scope.soknadData.fakta.underUtdanningAnnet && checkTrue($scope.soknadData.fakta.underUtdanningAnnet.value) && $scope.hvisIOppsummeringsmodus();
+                return $scope.soknadData.fakta.underUtdanningAnnet && checkTrue($scope.soknadData.fakta.underUtdanningAnnet.value);
             }
             return false;
         }
@@ -111,8 +111,7 @@ angular.module('nav.utdanning', [])
                 }
                 else {
                     if (erCheckboksForUtdanningAnnetHuketAv) {
-
-
+                        $scope.harHuketAvCheckboks.value = 'true';
                     }
                     $scope.$emit(lagreSoknadData, {key: 'underUtdanningAnnet', value: erCheckboksForUtdanningAnnetHuketAv});
 
