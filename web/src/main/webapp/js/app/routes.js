@@ -199,20 +199,29 @@ angular.module('app.routes', ['ngRoute'])
                 templateUrl: '../html/templates/avbryt.html',
                 controller: 'SoknadDataCtrl',
                 resolve: {
-                   notUsedButRequiredProperty: function (HentSoknadService) {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
                         return HentSoknadService;
                     }
                 }
-             })
+            })
+
+            .when('/slettet', {
+                templateUrl: '../html/templates/soknadSlettet.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
 
             .when('/soknadliste', {templateUrl: '../html/templates/soknadliste.html'})
-            
-            .when('/slettet', {templateUrl: '../html/templates/soknadSlettet.html', controller: 'SlettetSoknadDataCtrl'})
+
 
             .otherwise({redirectTo: '/informasjonsside'});
 
 //    $locationProvider.html5Mode(true);
-    }).run( function ($rootScope, $location, $anchorScroll, $routeParams) {
+    }).run(function ($rootScope, $location, $anchorScroll, $routeParams) {
         $rootScope.$on('$routeChangeSuccess', function (newRoute, oldRoute) {
             $location.hash($routeParams.scrollTo);
             $anchorScroll();
