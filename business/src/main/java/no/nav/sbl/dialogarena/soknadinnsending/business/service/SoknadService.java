@@ -1,10 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import static java.lang.String.format;
-import static javax.xml.bind.JAXBContext.newInstance;
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.LastetOpp;
-
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.detect.IsImage;
 import no.nav.sbl.dialogarena.detect.IsPdf;
@@ -15,14 +10,12 @@ import no.nav.sbl.dialogarena.pdf.PdfMerger;
 import no.nav.sbl.dialogarena.pdf.PdfWatermarker;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventning;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
-
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
@@ -31,23 +24,27 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-
 import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
+import static java.lang.String.format;
+import static javax.xml.bind.JAXBContext.newInstance;
+import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.LastetOpp;
 
 @Component
 public class SoknadService implements SendSoknadService, VedleggService {
 
+    public static final String PDF_PDFA = "-dNOPAUSE -dBATCH -dSAFER -dPDFA -dNOGA -sDEVICE=pdfwrite -sOutputFile=%stdout%  -q -c \"30000000 setvmthreshold\" -_ -c quit";
     private static final String BRUKERREGISTRERT_FAKTUM = "BRUKERREGISTRERT";
     private static final String SYSTEMREGISTRERT_FAKTUM = "SYSTEMREGISTRERT";
-
-
+    private static final String IMAGE_RESIZE = "- -units PixelsPerInch -density 150 -quality 50 -resize 1240x1754 jpeg:-";
+    private static final String IMAGE_PDFA = "-  pdfa:-";
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository repository;
@@ -62,35 +59,41 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum) {
-        Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, faktum.getFaktumId(), faktum.getKey(), faktum.getValue(), BRUKERREGISTRERT_FAKTUM, faktum.getParrentFaktum()));
+        faktum.setType(BRUKERREGISTRERT_FAKTUM);
+        Long faktumId = repository.lagreFaktum(soknadId, faktum);
         repository.settSistLagretTidspunkt(soknadId);
 
         return repository.hentFaktum(soknadId, faktumId);
     }
 
     @Override
+    public void slettBrukerFaktum(Long soknadId, Long faktumId) {
+        repository.slettBrukerFaktum(soknadId, faktumId);
+    }
+
+    @Override
     public Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value) {
         //TODO: her blir barn overskrevet. Hent ut fnr osv.
         Faktum faktum = repository.hentSystemFaktum(soknadId, key, SYSTEMREGISTRERT_FAKTUM);
-        
+
         Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, faktum.getFaktumId(), key, value, SYSTEMREGISTRERT_FAKTUM));
         return repository.hentFaktum(soknadId, faktumId);
     }
-    
+
     //TODO: Kan sikkert slettes etter ny faktum-lagrings-modell
     @Override
     public Faktum lagreBarnSystemSoknadsFelt(Long soknadId, String key, String fnr, String json) {
-       
+
         Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, null, key, json, SYSTEMREGISTRERT_FAKTUM));
         return repository.hentFaktum(soknadId, faktumId);
     }
- 
+
     public void slettSoknadsFelt(Long soknadId, Long faktumId) {
-       //TODO slett faktum med denne faktumId-en som parrent (løses kanskje enklere etter refactorering)
+        //TODO slett faktum med denne faktumId-en som parrent (løses kanskje enklere etter refactorering)
 
         repository.slettSoknadsFelt(soknadId, faktumId);
     }
-    
+
     //TODO: Midlertidig funksjon, slett etter ny struktur.
     public void slettBarnSoknadsFelt(Long soknadId) {
         repository.slettBarnSoknadsFelt(soknadId);
@@ -109,7 +112,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public void avbrytSoknad(Long soknadId) {
-        //TODO: Refaktorerer. Trenger bare å sende id
         repository.avbryt(soknadId);
     }
 
@@ -118,6 +120,12 @@ public class SoknadService implements SendSoknadService, VedleggService {
         repository.endreInnsendingsValg(soknadId, faktum.getFaktumId(), faktum.getInnsendingsvalg());
     }
 
+    @Override
+    public List<Faktum> hentFakta(Long soknadId) {
+        return repository.hentAlleBrukerData(soknadId);
+    }
+
+    @Override
     public Long startSoknad(String navSoknadId) {
         String behandlingsId = UUID.randomUUID().toString();
 
@@ -128,11 +136,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 opprettetDato(DateTime.now());
         return repository.opprettSoknad(soknad);
     }
-
-    public static final String PDF_PDFA = "-dNOPAUSE -dBATCH -dSAFER -dPDFA -dNOGA -sDEVICE=pdfwrite -sOutputFile=%stdout%  -q -c \"30000000 setvmthreshold\" -_ -c quit";
-    private static final String IMAGE_RESIZE = "- -units PixelsPerInch -density 150 -quality 50 -resize 1240x1754 jpeg:-";
-    private static final String IMAGE_PDFA = "-  pdfa:-";
-
 
     @Override
     public Long lagreVedlegg(Vedlegg vedlegg, InputStream inputStream) {

@@ -1,62 +1,65 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl" data-barnetillegg-scroll-directive>
-	<div id="barnetilleggForm" data-ng-form="barnetilleggForm" class="skjemainnhold" data-ng-controller="BarnetilleggCtrl" novalidate>
-		<div form-errors></div>
-		<p class="informasjonstekst" cmstekster="barnetillegg.informasjon"></p>
+    <div id="barnetilleggForm" data-ng-form="barnetilleggForm" class="skjemainnhold" data-ng-controller="BarnetilleggCtrl" novalidate>
+        <div form-errors></div>
+        <p class="informasjonstekst" cmstekster="barnetillegg.informasjon"></p>
 
-		<div class="spm-boks vertikal" data-ng-repeat="b in soknadData.fakta.barn.valuelist">
-			<div data-ng-class="{gutt: erGutt(b), jente:erJente(b)}" id="barn{{b.faktumId}}" class="barn">
-				<a href="#" class="lukk" data-ng-show="erBrukerregistrert(b)" data-ng-click="slettBarn(b, $index, $event)"> </a>
-				<div class="barnealder">
-					<span> ÅR</span>
-					<span class="alder robust" data-ng-bind="b.value.alder"></span>
-				</div>
-				<div class="barneinfo">
-					<div data-ng-bind="b.value.sammensattnavn"></div>
-					<div data-ng-bind="b.value.fnr"></div>
-					<div>{{ b.value.fodselsdato | date:'dd.MM.yyyy'}}</div>
-					<div class="barnbosted">
-						<span class="bosted">bosted: </span>
-						<span data-ng-show="ingenLandRegistrert(b)">Norge</span>
-						<span data-ng-bind="b.value.land"></span>
-					</div>
-				</div>
-				<div>
-					<div class="barnecheckbox" data-ng-controller="BarnetilleggFaktumCtrl">
-							<div data-ng-if="hvisIRedigeringsmodus()"> 
-								<div data-ng-show="erSystemRegistrert(b)">
-									<a href data-ng-click="sokbarnetillegg(b.faktumId, $event)" data-cmstekster="barnetillegg.barnetilegg.sporsmal" data-ng-if="barnetilleggIkkeRegistrert()"></a>
-									<a href="#" data-ng-if="barnetilleggErRegistrert()" data-ng-click="slettBarnetillegg(b.faktumId, $index, $event)">Fjern barnetillegg</a>
-								</div>
-							</div>
+        <div class="spm-boks vertikal" data-ng-repeat="b in soknadData.fakta.barn.valuelist">
+            <div data-ng-class="{gutt: erGutt(b), jente:erJente(b)}" id="barn{{b.faktumId}}" class="barn">
+                <a href="#" class="lukk" data-ng-show="erBrukerregistrert(b)" data-ng-click="slettBarn(b, $index, $event)"> </a>
 
-							<div data-ng-if="barnetilleggErRegistrert()">						
-								<p class="svar-oppsummering" data-cmstekster="barnetillegg.barnetilegg.sporsmal"> </p>
-								<p class="svar-oppsummering" data-ng-if="barnetHarIkkeInntekt()" data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.true"></p>
-								<p class="svar-oppsummering" data-ng-if="barnetHarInntekt()">
-									<span data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.false"> </span>
-									<span>.</span>
-									<span data-cmstekster="barnetillegg.barnetilegg.barneinntekttall.sporsmal"></span>
-									<span data-ng-bind="barneinntekttall.value | currency"></span>
-								</p>
-							</div>
-					</div>
-				</div>
-				<div class="lenker-dot" data-ng-show="erBrukerregistrert(b)">
-					<a href="#" data-ng-click="slettBarn(b, $index, $event)" data-cmstekster="barnetillegg.slettbarn"></a>
-					<a href="#" data-ng-click="endreBarn(b.faktumId, $event)" data-cmstekster="barnetillegg.endrebarn"></a>
-				</div>
-			</div>
-		</div>
+                <div class="barnealder">
+                    <span> ÅR</span>
+                    <span class="alder robust" data-ng-bind="b.value.alder"></span>
+                </div>
+                <div class="barneinfo">
+                    <div data-ng-bind="b.value.sammensattnavn"></div>
+                    <div data-ng-bind="b.value.fnr"></div>
+                    <div>{{ b.value.fodselsdato | date:'dd.MM.yyyy'}}</div>
+                    <div class="barnbosted">
+                        <span class="bosted">bosted: </span>
+                        <span data-ng-show="ingenLandRegistrert(b)">Norge</span>
+                        <span data-ng-bind="b.value.land"></span>
+                    </div>
+                </div>
+                <div>
+                    <div class="barnecheckbox" data-ng-controller="BarnetilleggFaktumCtrl">
+                        <div data-ng-if="hvisIRedigeringsmodus()">
+                            <div data-ng-show="erSystemRegistrert(b)">
+                                <a href data-ng-click="sokbarnetillegg(b.faktumId, $event)" data-cmstekster="barnetillegg.barnetilegg.sporsmal" data-ng-if="barnetilleggIkkeRegistrert()"></a>
+                                <a href="#" data-ng-if="barnetilleggErRegistrert()" data-ng-click="slettBarnetillegg(b.faktumId, $index, $event)">Fjern barnetillegg</a>
+                            </div>
+                        </div>
 
-		<div class="knapper-opprett" id="legg-til-barn" data-ng-show="hvisIRedigeringsmodus()">
-			<p class="informasjonstekst" data-cmstekster="barnetillegg.nyttbarn.informasjon"> </p>
-			<a class="knapp-leggtil-liten" href="#/nyttbarn/{{ soknadData.soknadId }}" data-ng-click="leggTilBarn($event)" data-cmstekster="barnetillegg.nyttbarn"></a>
-		</div>
-		
-		<div spmblokkferdig
-		nokkel="barnetillegg"
-		modus="data.redigeringsModus"
-		submit-method="validerOgSettModusOppsummering(barnetilleggForm)"> </div>
-	</div>
+                        <div data-ng-if="barnetilleggErRegistrert()">
+                            <p class="svar-oppsummering" data-cmstekster="barnetillegg.barnetilegg.sporsmal"></p>
+
+                            <p class="svar-oppsummering" data-ng-if="barnetHarIkkeInntekt()" data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.true"></p>
+
+                            <p class="svar-oppsummering" data-ng-if="barnetHarInntekt()">
+                                <span data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.false"> </span>
+                                <span>.</span>
+                                <span data-cmstekster="barnetillegg.barnetilegg.barneinntekttall.sporsmal"></span>
+                                <span data-ng-bind="barneinntekttall.value | currency"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="lenker-dot" data-ng-show="erBrukerregistrert(b)">
+                    <a href="#" data-ng-click="slettBarn(b, $index, $event)" data-cmstekster="barnetillegg.slettbarn"></a>
+                    <a href="#" data-ng-click="endreBarn(b.faktumId, $event)" data-cmstekster="barnetillegg.endrebarn"></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="knapper-opprett" id="legg-til-barn" data-ng-show="hvisIRedigeringsmodus()">
+            <p class="informasjonstekst" data-cmstekster="barnetillegg.nyttbarn.informasjon"></p>
+            <a class="knapp-leggtil-liten" href="#/nyttbarn/{{ soknadData.soknadId }}" data-ng-click="leggTilBarn($event)" data-cmstekster="barnetillegg.nyttbarn"></a>
+        </div>
+
+        <div spmblokkferdig
+             nokkel="barnetillegg"
+             modus="data.redigeringsModus"
+             submit-method="validerOgSettModusOppsummering(barnetilleggForm)"></div>
+    </div>
 </div>
 

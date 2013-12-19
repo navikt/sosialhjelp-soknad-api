@@ -31,27 +31,44 @@ angular.module('app.services', ['ngResource'])
         );
     })
 
-    /**
-    * Service for å lagre brukerdata
-    */
-    .factory('BrukerData', function($resource) {
-         var url = '/sendsoknad/rest/soknad/:soknadId/faktum/:mode' + '?rand=' + new Date().getTime();
-         return $resource(url,
-         {soknadId: '@soknadId'},
-         {
-            create: { method: 'POST',params: {mode:''}},
-            jsoncreate: { method: 'POST', params: {mode:''}, transformRequest: function(data, headersGetter) {
-                var d = deepClone(data);
-                d.value = angular.toJson(data.value);
-                d = angular.toJson(d);
-                return d;
+/**
+ * Service for å lagre brukerdata
+ */
+    .factory('BrukerData', function ($resource) {
+        var url = '/sendsoknad/rest/soknad/:soknadId/faktum/:mode' + '?rand=' + new Date().getTime();
+        return $resource(url,
+            {soknadId: '@soknadId'},
+            {
+                create: { method: 'POST', params: {mode: ''}},
+                jsoncreate: { method: 'POST', params: {mode: ''}, transformRequest: function (data, headersGetter) {
+                    var d = deepClone(data);
+                    d.value = angular.toJson(data.value);
+                    d = angular.toJson(d);
+                    return d;
                 }
-            },
-            delete: { method: 'POST', params:{mode:'delete'}}
-         }
+                },
+                delete: { method: 'POST', params: {mode: 'delete'}}
+            }
 
-         )
-     })
+        )
+    })
+    .factory('Faktum', function ($resource) {
+        var url = '/sendsoknad/rest/soknad/:soknadId/fakta/:faktumId';
+        return $resource(url,
+            {soknadId: '@soknadId', faktumId: '@faktumId'},
+            {
+                create: { method: 'POST', params: {}},
+                jsoncreate: { method: 'POST', params: {}, transformRequest: function (data, headersGetter) {
+                    var d = deepClone(data);
+                    d.value = JSON.stringify(data.value);
+                    d = JSON.stringify(d);
+                    return d;
+                }
+                }
+            }
+
+        )
+    })
 
 /**
  * Service som behandler vedlegg
@@ -70,9 +87,9 @@ angular.module('app.services', ['ngResource'])
             }
         );
     })
-    /**
-     * Service som behandler vedlegg
-     */
+/**
+ * Service som behandler vedlegg
+ */
     .factory('VedleggForventning', function ($resource) {
         return $resource('/sendsoknad/rest/soknad/:soknadId/forventning?rand=' + new Date().getTime(), {
             soknadId: '@faktum.soknadId'
@@ -116,7 +133,7 @@ angular.module('app.services', ['ngResource'])
         return $resource('/sendsoknad/rest/soknad/:soknadId/personalia');
     })
 
-   .factory('landService', function ($resource) {
+    .factory('landService', function ($resource) {
         return $resource('/sendsoknad/rest/soknad/kodeverk/landliste');
     })
 

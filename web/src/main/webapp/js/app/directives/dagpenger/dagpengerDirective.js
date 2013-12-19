@@ -13,7 +13,7 @@ angular.module('nav.dagpengerdirective', [])
                         var index = bolkerIRiktigRekkefolge.length;
                         angular.forEach(ctrl.$error, function (verdi) {
                             for (var i = 0; i < verdi.length; i++) {
-                                if(bolkenFinnes(verdi[i])) {
+                                if (bolkenFinnes(verdi[i])) {
                                     if (bolkenErUferdigOgKommerForTidligereBolk(verdi[i], index)) {
                                         formMedFeil = verdi[i].$name;
                                         index = bolkerIRiktigRekkefolge.indexOf(verdi[i].$name);
@@ -35,6 +35,7 @@ angular.module('nav.dagpengerdirective', [])
                 function bolkenFinnes(bolk) {
                     return bolkerIRiktigRekkefolge.indexOf(bolk.$name) > -1;
                 }
+
                 function hentIdFraForm(formNavn) {
                     return formNavn.split('Form')[0];
                 }
