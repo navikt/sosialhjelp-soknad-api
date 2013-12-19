@@ -77,13 +77,6 @@ angular.module('nav.utdanning', [])
             return $scope.soknadData.fakta.underUtdanningNorsk.value;
         }
 
-        $scope.hvisManIkkeVilAvslutteUtdanningen = function () {
-            if ($scope.soknadData.fakta == undefined || $scope.soknadData.fakta.utdanning.avslutte == undefined) {
-                return false;
-            }
-            if ($scope.soknadData.fakta.utdanning.avslutte == 'false') return true;
-        }
-
         $scope.hvisStudieProgresjonOver50 = function () {
             if ($scope.soknadData.fakta == undefined || $scope.soknadData.fakta.utdanning.progresjonunder50 == undefined) {
                 return false;
@@ -109,10 +102,9 @@ angular.module('nav.utdanning', [])
         }
 
 
-
     $scope.hvisIngenUnntakGjelder = function (utdanning) {
         if ($scope.soknadData && $scope.soknadData.fakta) {
-            return $scope.soknadData.fakta.underUtdanningAnnet && checkTrue($scope.soknadData.fakta.underUtdanningAnnet.value) && $scope.hvisIOppsummeringsmodus();
+            return $scope.soknadData.fakta.underUtdanningAnnet && checkTrue($scope.soknadData.fakta.underUtdanningAnnet.value);
         }
         return false;
     }
@@ -140,9 +132,7 @@ angular.module('nav.utdanning', [])
 
             $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet = false;
 
-            } else {
-
-        }
+            }
         if (sjekkOmGittEgenskapTilObjektErTrue($scope.soknadData.fakta.underUtdanningAnnet)) {
             $scope.soknadData.fakta.underUtdanningAnnet.value = false;
             $scope.$emit(lagreSoknadData, {key: 'underUtdanningAnnet', value: false});
@@ -157,15 +147,12 @@ angular.module('nav.utdanning', [])
         var erCheckboksForUtdanningAnnetHuketAv = $scope.soknadData.fakta.underUtdanningAnnet.value;
 
         if (harValgtUtdanning) {
-
-            $scope.soknadData.fakta.underUtdanningAnnet.value = 'false';
-            $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet = true;
-
+           $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet = true;
+           $scope.soknadData.fakta.underUtdanningAnnet.value = 'false';
         }
         else {
                 if (erCheckboksForUtdanningAnnetHuketAv) {
-
-
+                    $scope.harHuketAvCheckboks.value = 'true';
                 }
                 $scope.$emit(lagreSoknadData, {key: 'underUtdanningAnnet', value: erCheckboksForUtdanningAnnetHuketAv});
 
