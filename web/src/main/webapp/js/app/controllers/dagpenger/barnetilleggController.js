@@ -4,7 +4,19 @@ angular.module('nav.barnetillegg',[])
 			angular.forEach($scope.soknadData.fakta.barn.valuelist, function(value) { 
 				value.value = angular.fromJson(value.value);
 			});
-		}       
+		}
+
+		$scope.erBrukerregistrert = function(barn) {
+			return barn.type == 'BRUKERREGISTRERT';
+		}
+
+		$scope.erSystemRegistrert = function(barn) {
+			return  barn.type == 'SYSTEMREGISTRERT';
+		}
+
+		$scope.ingenLandRegistrert = function(barn) {
+			return !barn.value.land;
+		}
 
 		$scope.leggTilBarn = function($event) {
 			$event.preventDefault();
@@ -12,17 +24,20 @@ angular.module('nav.barnetillegg',[])
 			$location.path('nyttbarn/' + $scope.soknadData.soknadId);
 		}
 
-		$scope.endreBarn = function(faktumId) {
+		$scope.endreBarn = function(faktumId, $event) {
+			$event.preventDefault();
 			settBarnCookie(faktumId);
 			$location.path('endrebarn/' + $scope.soknadData.soknadId + "/" + faktumId);
 		}
 
-		$scope.sokbarnetillegg = function(faktumId) {
+		$scope.sokbarnetillegg = function(faktumId, $event) {
+			$event.preventDefault();
 			settBarnCookie(faktumId);
 			$location.path('sokbarnetillegg/' + $scope.soknadData.soknadId + "/" + faktumId);
 		}
 
-		$scope.slettBarn = function(b, index) {
+		$scope.slettBarn = function(b, index, $event) {
+			$event.preventDefault();
 			b.value = angular.toJson(b.value);
 			$scope.barnSomSkalSlettes = new BrukerData(b);
 

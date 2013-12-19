@@ -1,7 +1,6 @@
 angular.module('nav.barn',['app.services'])
 
 .controller('BarneCtrl', ['$scope', 'BrukerData','data', '$cookieStore', '$location', function ($scope,BrukerData,data,$cookieStore,$location) {
-	$scope.requiredcheckbox = "";
 	var url = $location.$$url;
 	var endreModus = url.indexOf("endrebarn") != -1;
 	var barnetilleggModus = url.indexOf("sokbarnetillegg") != -1;
@@ -82,6 +81,10 @@ angular.module('nav.barn',['app.services'])
 		$scope.barn = new BrukerData(barneData);
 		$scope.land = data.land;
 	}
+
+	$scope.barnetilleggErRegistrert = function() {
+        return $scope.barnetillegg.value == 'true';
+    }
 
 	$scope.barnetHarInntekt = function() {
 		if($scope.ikkebarneinntekt == undefined) {

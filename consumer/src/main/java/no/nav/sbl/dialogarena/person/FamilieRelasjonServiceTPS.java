@@ -57,8 +57,6 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
             return new Person();
 		} catch(WebServiceException e) {
 			logger.error("Ingen kontakt med TPS (Person-servicen).", e);
-			//TODO TEMP
-			lagreBarn(soknadId, new Person());
             return new Person();
 		}
     
@@ -71,14 +69,7 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
 
     @SuppressWarnings("unchecked")
 	private void lagreBarn(Long soknadId, Person person) {
-    	//TODO temp U2 utkommentert
-        //List<Barn> barneliste = (List<Barn>) person.getFakta().get("barn");
-    	
-    	//TODO temp U2
-        List<Barn> barneliste = new ArrayList<>();
-    	barneliste = new ArrayList<Barn>();
-    	barneliste.add(new Barn(soknadId, "06025800174", "Bjarne" , "B.", "Barnet"));
-    	barneliste.add(new Barn(soknadId, "04111100115", "Bjørne" , "B.", "Barnet"));
+        List<Barn> barneliste = (List<Barn>) person.getFakta().get("barn");
     	
     	if(barneliste != null) {
     	    soknadService.slettBarnSoknadsFelt(soknadId);
