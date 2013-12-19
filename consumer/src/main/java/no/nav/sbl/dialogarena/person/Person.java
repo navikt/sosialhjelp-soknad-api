@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.person;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;

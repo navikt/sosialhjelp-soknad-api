@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.person;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
+
 import com.google.gson.Gson;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
@@ -12,6 +14,8 @@ import org.slf4j.Logger;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.WebServiceException;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -65,10 +69,13 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
 
     @SuppressWarnings("unchecked")
 	private void lagreBarn(Long soknadId, Person person) {
-    	List<Barn> barneliste = (List<Barn>) person.getFakta().get("barn");
+        List<Barn> barneliste = (List<Barn>) person.getFakta().get("barn");
+    	
     	if(barneliste != null) {
+    	    soknadService.slettBarnSoknadsFelt(soknadId);
 	    	for (Barn barn : barneliste) {
-				soknadService.lagreSystemSoknadsFelt(soknadId, "barn", new Gson().toJson(barn));
+	    	    String fnr = barn.getFnr();
+				soknadService.lagreBarnSystemSoknadsFelt(soknadId, "barn", fnr, new Gson().toJson(barn));
 			}
     	}
 	}

@@ -145,6 +145,7 @@ angular.module('nav.datepicker', [])
                 function inputfeltHarTekstMenIkkeGyldigDatoFormat() {
                     return tekstInput.val() && !datoRegExp.test(tekstInput.val());
                 }
+
                 var defaultDate = new Date();
                 function datepickerOptions() {
                     var currentDefaultDate = defaultDate;
@@ -268,6 +269,7 @@ angular.module('nav.datepicker', [])
                     if (!slettet) {
                         var start = caretPosisjon - (datoInput.length - gammelInputVerdi.length);
                         var slutt = caretPosisjon;
+
 
                         for(var i = start; i < slutt && i < datoInput.length; i++) {
                             var skrevetTegn = datoInput[i];
