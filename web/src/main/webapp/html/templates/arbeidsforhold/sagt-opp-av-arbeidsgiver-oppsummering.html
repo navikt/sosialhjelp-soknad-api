@@ -1,39 +1,23 @@
-<p class="svar-oppsummering-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.informasjon"></p>
+<p class="svar-oppsummering-informasjon"
+   data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.informasjon"></p>
+<p  class="svar-oppsummering-informasjon" cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.informasjon.oppsigelsestid"></p>
 
 <p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.sporsmal"></p>
-
 <p class="svar-oppsummering">
-	<span>{{af.varighetFra | date:'dd.MM.yyyy'}} - </span>
-	<span>{{af.varighetTil | date:'dd.MM.yyyy'}} </span>
+    <span>{{af.varighetFra | date:'dd.MM.yyyy'}} - </span>
+    <span>{{af.varighetTil | date:'dd.MM.yyyy'}} </span>
 </p>
 
-<p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.sporsmal"></p>
-
-<div data-ng-show="af.sagtOppAvArbeidsgiverOppsigelseslonn">
-	<p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.true"></p>
-</div>
-
-<div data-ng-show="af.sagtOppAvArbeidsgiverOppsigelseslonn == 'false'">
-	<p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.oppsigelseslonn.false"></p>
-</div>
-
-<p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.sporsmal"></p>
+<p class="svar-oppsummering-sporsmal"
+   data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.sporsmal"></p>
 
 <div data-ng-show="af.sagtOppAvArbeidsgiverTilbudomjobbannetsted">
-	<p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true"></p>
-</div>
+    <p class="svar-oppsummering"
+       data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true"></p>
+    <p class="svar-oppsummering-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true.informasjon"></p>
 
+</div>
 <div data-ng-show="af.sagtOppAvArbeidsgiverTilbudomjobbannetsted == 'false'">
-	<p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.false"></p>
-</div>
-
-
-<p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.sporsmal"></p>
-
-<div data-ng-show="af.sagtOppAvArbeidsgiverAvtaleomOkonomiskytelse">
-	<p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.true"></p>
-</div>
-
-<div data-ng-show="af.sagtOppAvArbeidsgiverAvtaleomOkonomiskytelse == 'false'">
-	<p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.avtaleomokonomiskytelse.false"></p>
+    <p class="svar-oppsummering"
+       data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.false"></p>
 </div>

@@ -1,128 +1,22 @@
 <div>
-
     <p class="sluttaarsak-informasjon" cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.informasjon"></p>
 
-    <div class="sporsmaal form-linje boolean">
-        <h4 data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.sporsmal"></h4>
-
-        <input class="sendsoknad-radio"
-               id="innskrenkningerJa"
-               type="radio"
-               value="true"
-               data-ng-model="af.sagtOppSelvInnskrenkninger"
-               data-name="innskrenkninger"
-               data-error-messages="'arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.feilmelding'"
-               data-ng-required="true"
-               data-click-validate>
-
-        <label for="innskrenkningerJa" class='svar-alt'
-               data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.true"></label>
-
-
-        <input class="sendsoknad-radio"
-               id="innskrenkningerNei"
-               type="radio"
-               value="false"
-               data-ng-model="af.sagtOppSelvInnskrenkninger"
-               data-name="innskrenkninger"
-               data-error-messages="'arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.feilmelding'"
-               data-ng-required="true"
-               data-click-validate>
-
-        <label for="innskrenkningerNei" class='svar-alt'
-               data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.false"></label>
-
-        <span class="melding" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.feilmelding"></span>
-
-        <span data-ng-show="af.sagtOppSelvInnskrenkninger=='true'" cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.informasjon"></span>
-    </div>
-
-    <div data-nav-dato
-         data-ng-model="af.sagtOppSelvVarighetTil"
-         data-label="arbeidsforhold.sluttaarsak.sagtoppselv.sporsmal"
-         data-er-required="true"
-         data-required-error-message="arbeidsforhold.sluttaarsak.sagtoppselv.varighetTil.feilmelding">
-    </div>
-
-    <div class="sporsmaal form-linje boolean">
-        <h4 data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.sporsmal"></h4>
-
-        <input class="sendsoknad-radio"
-               id="oppsigelseslonnJa"
-               type="radio"
-               value="true"
-               data-ng-model="af.sagtOppSelvOppsigelseslonn"
-               data-name="oppsigelseslonn"
-               data-error-messages="'arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.feilmelding'"
-               data-ng-required="true"
-               data-click-validate>
-
-        <label for="oppsigelseslonnJa" class='svar-alt'
-               cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.true"></label>
-
-        <input class="sendsoknad-radio"
-               id="oppsigelseslonnNei"
-               type="radio"
-               value="false"
-               data-ng-model="af.sagtOppSelvOppsigelseslonn"
-               data-name="oppsigelseslonn"
-               data-error-messages="'arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.feilmelding'"
-               data-ng-required="true"
-               data-click-validate>
-
-        <label for="oppsigelseslonnNei" class="svar-alt" cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.false"></label>
-
-        <span class="melding"
-              data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.feilmelding"></span>
-    </div>
-    <br/>
-
-    <div class="sporsmaal form-linje boolean">
-        <h4 data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.sporsmal"></h4>
-
-        <input class="sendsoknad-radio"
-               id="avtaleomokonomiskytelseJa"
-               type="radio"
-               value="true"
-               data-ng-model="af.sagtOppSelvAvtaleomOkonomiskytelse"
-               data-name="avtaleomokonomiskytelse"
-               data-error-messages="'arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.feilmelding'"
-               data-ng-required="true"
-               data-click-validate>
-
-        <label for="avtaleomokonomiskytelseJa" class="svar-alt" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.true"></label>
-
-        <input class="sendsoknad-radio"
-               id="avtaleomokonomiskytelseNei"
-               type="radio"
-               value="false"
-               data-ng-model="af.sagtOppSelvAvtaleomOkonomiskytelse"
-               data-name="avtaleomokonomiskytelse"
-               data-error-messages="'arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.feilmelding'"
-               data-ng-required="true"
-               data-click-validate>
-
-        <label for="avtaleomokonomiskytelseNei" class="svar-alt" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.false"></label>
-
-        <span class="melding"
-              data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.feilmelding"></span>
-
-        <div data-ng-if="af.sagtOppSelvAvtaleomOkonomiskytelse=='true'">
-            <p data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.informasjon"></p>
-
-            <label>
-                <span data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.fritekst.sporsmal"></span>
-                <input type="text"
-                       data-ng-model="af.sagtOppSelvAvtaleomOkonomiskytelseType"
-                       data-name="avtaleomokonomiskytelsetype"
-                       data-error-messages="{required: 'arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.type.feilmelding',
-                        pattern: 'pattern.feilmelding', minlength: 'arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.forkort', maxlength: 'arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.forlangt'}"
-                       data-ng-maxlength="50"
-                       data-ng-minlength="5"
-                       data-ng-pattern="/^[-a-zA-Z0-9æøåÆØÅ _+§%()]+$/"
-                       data-ng-required="af.sagtOppSelvAvtaleomOkonomiskytelse == 'true'">
-                <span class="melding"></span>
-            </label>
+    <div class="varighet">
+        <div data-nav-dato
+             data-ng-model="af.sagtOppSelvVarighetTil"
+             data-label="arbeidsforhold.sluttaarsak.sagtoppselv.sporsmal"
+             data-er-required="true"
+             data-required-error-message="arbeidsforhold.sluttaarsak.sagtoppselv.varighetTil.feilmelding">
         </div>
     </div>
+
+    <div data-navtextarea
+         data-inputname="arbeidsforhold.sluttaarsak.sagtoppselv.aarsak.sporsmal"
+         data-modus='data.redigeringsModus'
+         data-ng-model="af.sagtoppselvAarsak"
+         data-nokkel="arbeidsforhold.sluttaarsak.sagtoppselv.aarsak"
+         data-maxlengde="500"
+         data-feilmelding="arbeidsforhold.sluttaarsak.sagtoppselv.aarsak.feilmelding"
+         data-obligatorisk="true"></div>
+    <p class="sluttaarsak-tilleggsinformasjon" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.aarsak.informasjon"></p>
 </div>
