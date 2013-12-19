@@ -1,6 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.FaktumEgenskap;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.joda.time.DateTime;
@@ -12,6 +15,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
@@ -19,6 +23,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.IdGenerator.lagBehandlingsId;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
@@ -52,6 +57,17 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
             if (innsendingsvalg != null) {
                 faktum.setInnsendingsvalg(Faktum.Status.valueOf(innsendingsvalg));
             }
+            return faktum;
+        }
+    };
+    private final RowMapper<FaktumEgenskap> faktumEgenskapRowMapper = new RowMapper<FaktumEgenskap>() {
+        public FaktumEgenskap mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+            FaktumEgenskap faktum = new FaktumEgenskap(
+                    rs.getLong("soknad_id"),
+                    rs.getLong("faktum_id"),
+                    rs.getString("key"),
+                    rs.getString("value"));
             return faktum;
         }
     };
@@ -113,10 +129,11 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
                 behandlingsId);
     }
 
-    private int oppdaterBrukerData(long soknadId, Faktum faktum) {
-        return getJdbcTemplate()
+    private void oppdaterBrukerData(long soknadId, Faktum faktum) {
+        getJdbcTemplate()
                 .update("update soknadbrukerdata set value=? where key = ? and soknad_id = ?",
                         faktum.getValue(), faktum.getKey(), soknadId);
+        lagreAlleEgenskaper(soknadId, faktum);
     }
 
     @Override
@@ -151,6 +168,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
                     .update("insert into soknadbrukerdata (soknadbrukerdata_id, soknad_id, key, value, type, parrent_faktum, sistendret) values (?, ?, ?, ?, ?,?, sysdate)",
                             dbNokkel, soknadId, faktum.getKey(),
                             faktum.getValue(), faktum.getType(), faktum.getParrentFaktum());
+            lagreAlleEgenskaper(soknadId, faktum);
 
             utfyllingStartet(soknadId);
             return dbNokkel;
@@ -159,6 +177,14 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
             return faktum.getFaktumId();
         }
 
+    }
+
+    private void lagreAlleEgenskaper(Long soknadId, Faktum faktum) {
+        getJdbcTemplate().update("delete from faktumegenskap where soknad_Id = ? and faktum_id=?", soknadId, faktum.getFaktumId());
+        for (String key : faktum.getProperties().keySet()) {
+            getJdbcTemplate().update("insert into faktumegenskap (soknad_id, faktum_id, key, value) values (?, ?, ?, ?)",
+                    soknadId, faktum.getFaktumId(), key, faktum.getProperties().get(key));
+        }
     }
 
     private int utfyllingStartet(long soknadId) {
@@ -181,7 +207,20 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
 
     @Override
     public List<Faktum> hentAlleBrukerData(Long soknadId) {
-        return select("select * from SOKNADBRUKERDATA where soknad_id = ?", soknadId);
+        List<Faktum> fakta = select("select * from SOKNADBRUKERDATA where soknad_id = ?", soknadDataRowMapper, soknadId);
+        List<FaktumEgenskap> egenskaper = select("select * from FAKTUMEGENSKAP where soknad_id = ?", faktumEgenskapRowMapper, soknadId);
+        Map<Long, Faktum> faktaMap = Maps.uniqueIndex(fakta, new Function<Faktum, Long>() {
+            @Override
+            public Long apply(@Nullable Faktum input) {
+                return input.getFaktumId();
+            }
+        });
+        for (FaktumEgenskap faktumEgenskap : egenskaper) {
+            if (faktaMap.containsKey(faktumEgenskap.getFaktumId())) {
+                faktaMap.get(faktumEgenskap.getFaktumId()).getProperties().put(faktumEgenskap.getKey(), faktumEgenskap.getValue());
+            }
+        }
+        return fakta;
     }
 
     @Override
@@ -207,8 +246,8 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements
         getJdbcTemplate().update("update soknadbrukerdata set innsendingsvalg = ? where soknad_id = ? and soknadbrukerdata_id = ?", innsendingsvalg.toString(), soknadId, faktumId);
     }
 
-    private List<Faktum> select(String sql, Object... args) {
-        return getJdbcTemplate().query(sql, args, soknadDataRowMapper);
+    private <T> List<T> select(String sql, RowMapper<T> rowMapper, Object... args) {
+        return getJdbcTemplate().query(sql, args, rowMapper);
     }
 
     private static class SoknadMapper implements RowMapper<WebSoknad> {

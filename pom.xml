@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -40,7 +41,7 @@
         <dialogarena.webkomponent.navigasjon>1.0.5</dialogarena.webkomponent.navigasjon>
         <dialogarena.webkomponent.innstillinger>1.1.0-SNAPSHOT</dialogarena.webkomponent.innstillinger>
         <dialogarena.dokumentinnsending.version>2.0.1</dialogarena.dokumentinnsending.version>
-		<ojdbc.version>11.2.0.3</ojdbc.version>
+        <ojdbc.version>11.2.0.3</ojdbc.version>
         <flying.saucer.version>9.0.3</flying.saucer.version>
         <handlebars.version>1.1.2</handlebars.version>
     </properties>
@@ -116,34 +117,34 @@
                 <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
                 <version>1.8</version>
             </dependency>
-            
-			<dependency>
-			  <groupId>no.nav.tjenester.fim</groupId>
-			  <artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
-			  <version>1.0.4</version>
-			  <classifier>jaxws</classifier>
-			</dependency>
-            
+
+            <dependency>
+                <groupId>no.nav.tjenester.fim</groupId>
+                <artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
+                <version>1.0.4</version>
+                <classifier>jaxws</classifier>
+            </dependency>
+
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>aktorid-jaxws</artifactId>
                 <version>1.0</version>
             </dependency>
             <dependency>
-               <groupId>no.nav.sbl.dialogarena</groupId>
-               <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
-               <version>2.0.0</version>
-        	</dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
+                <version>2.0.0</version>
+            </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-types</artifactId>
                 <version>1.2</version>
             </dependency>
             <dependency>
-	            <groupId>no.nav.sbl.dialogarena</groupId>
-	            <artifactId>common-timing</artifactId>
-	            <version>0.0.1</version>
-        	</dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>common-timing</artifactId>
+                <version>0.0.1</version>
+            </dependency>
 
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
@@ -271,10 +272,10 @@
                 <version>1.7.5</version>
             </dependency>
             <dependency>
-				<groupId>com.google.code.gson</groupId>
-				<artifactId>gson</artifactId>
-				<version>2.2.4</version>
-			</dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>2.2.4</version>
+            </dependency>
             <dependency>
                 <groupId>org.apache.wicket</groupId>
                 <artifactId>wicket-core</artifactId>
@@ -600,16 +601,22 @@
                 <artifactId>logback-classic</artifactId>
                 <version>1.0.13</version>
             </dependency>
-			<dependency>
+            <dependency>
                 <groupId>org.hsqldb</groupId>
                 <artifactId>hsqldb</artifactId>
                 <version>2.2.9</version>
             </dependency>
-			<dependency>
+            <dependency>
                 <groupId>com.oracle</groupId>
                 <artifactId>ojdbc6</artifactId>
                 <version>${ojdbc.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>11.0.2</version>
+            </dependency>
+
             <!-- Avhengigheter med scope runtime -->
 
             <dependency>
@@ -632,7 +639,6 @@
             </dependency>
 
 
-
             <!-- Avhengigheter med provided scope -->
 
             <dependency>
@@ -650,12 +656,12 @@
                 <version>1.2</version>
                 <scope>test</scope>
             </dependency>
-        	<dependency>
-	            <groupId>no.nav.modig</groupId>
-	            <artifactId>modig-core-test</artifactId>
-	            <scope>test</scope>
-	            <version>1.0.0</version>
-        	</dependency>
+            <dependency>
+                <groupId>no.nav.modig</groupId>
+                <artifactId>modig-core-test</artifactId>
+                <scope>test</scope>
+                <version>1.0.0</version>
+            </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-security-filter</artifactId>
@@ -923,36 +929,36 @@
                 </plugin>
                 <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
                 <plugin>
-                	<groupId>org.eclipse.m2e</groupId>
-                	<artifactId>lifecycle-mapping</artifactId>
-                	<version>1.0.0</version>
-                	<configuration>
-                		<lifecycleMappingMetadata>
-                			<pluginExecutions>
-                				<pluginExecution>
-                					<pluginExecutionFilter>
-                						<groupId>
-                							org.apache.maven.plugins
-                						</groupId>
-                						<artifactId>
-                							maven-ear-plugin
-                						</artifactId>
-                						<versionRange>
-                							[2.8,)
-                						</versionRange>
-                						<goals>
-                							<goal>
-                								generate-application-xml
-                							</goal>
-                						</goals>
-                					</pluginExecutionFilter>
-                					<action>
-                						<ignore></ignore>
-                					</action>
-                				</pluginExecution>
-                			</pluginExecutions>
-                		</lifecycleMappingMetadata>
-                	</configuration>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            org.apache.maven.plugins
+                                        </groupId>
+                                        <artifactId>
+                                            maven-ear-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [2.8,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>
+                                                generate-application-xml
+                                            </goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -1049,7 +1055,9 @@
         <profile>
             <id>win</id>
             <activation>
-                <os><family>win</family></os>
+                <os>
+                    <family>win</family>
+                </os>
             </activation>
             <properties>
                 <phantomjs.exec>${project.basedir}/src/test/resources/phantomjs.exe</phantomjs.exec>
@@ -1058,14 +1066,16 @@
         <profile>
             <id>nix</id>
             <activation>
-                <os><family>unix</family></os>
+                <os>
+                    <family>unix</family>
+                </os>
             </activation>
             <properties>
                 <phantomjs.exec>${env.PHANTOMJS_HOME}/bin/phantomjs</phantomjs.exec>
             </properties>
         </profile>
         <profile>
-        <id>u1</id>
+            <id>u1</id>
             <properties>
                 <flyway.user>sendsoknad</flyway.user>
                 <flyway.password>password</flyway.password>
@@ -1086,7 +1096,7 @@
             </build>
         </profile>
         <profile>
-        <id>t11</id>
+            <id>t11</id>
             <properties>
                 <flyway.user>Sendsok_t11</flyway.user>
                 <flyway.password>wz3rlgl5</flyway.password>

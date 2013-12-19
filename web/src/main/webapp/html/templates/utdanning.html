@@ -33,7 +33,7 @@
 
 <span class="melding"></span>
 
-<div class="spm" data-ng-show="hvis('utdanning', 'underUtdanning')">
+<div class="spm form-linje checkbox" data-ng-show="hvis('utdanning', 'underUtdanning')" data-checkbox-validate>
 
 <h4 class="spm-sporsmal" data-cmstekster="utdanning.sporsmal"></h4>
 
@@ -77,8 +77,8 @@
          data-nav-faktum="utdanning.kveld.progresjonUnder50"
          data-value="true"
          data-navlabel="utdanning.progresjon.true"
-         data-navfeilmelding="utdanning.error.progresjon"></div>
 
+         data-navfeilmelding="utdanning.error.progresjon"></div>
     <div data-navradio
          data-navconfig
          data-nav-faktum="utdanning.kveld.progresjonUnder50"
@@ -125,24 +125,25 @@
          data-ng-required></div>
 
 
-    <div data-nav-faktum="utdanning.kveld.varighet">
+    <div data-nav-faktum="utdanning.kveld.varighet" data-nav-property="['varighetFra', 'varighetTil']">
         <div data-nav-dato-intervall
-             data-fra-dato="faktum.properties.varighetFra"
-             data-til-dato="faktum.properties.varighetTil"
+             data-fra-dato="navproperties.varighetFra"
+             data-til-dato="navproperties.varighetTil"
              data-label="utdanning.varighet"
              data-er-required="true"
              data-feilmelding="utdanning.error.varighet.tilfra"
-             data-endret2="lagreFaktum()">
+             data-lagre="lagreFaktum()">
         </div>
     </div>
 
-    <div data-nav-dato
-         data-nav-faktum="utdanning.kveld.avslutning"
-         data-ng-model="faktum.value"
-         data-label="utdanning.avslutning.semester"
-         data-er-required="true"
-         data-required-error-message="utdanning.avslutning.semester.feilmelding"
-         data-endret="lagreFaktum()">
+    <div data-nav-faktum="utdanning.kveld.avslutning">
+        <div data-nav-dato
+             data-ng-model="faktum.value"
+             data-label="utdanning.avslutning.semester"
+             data-er-required="true"
+             data-required-error-message="utdanning.avslutning.semester.feilmelding"
+             data-lagre="lagreFaktum()">
+        </div>
     </div>
     <div class="infoboks" data-cmstekster="utdanning.svar.under.utdanning.dokumentasjon"></div>
 
@@ -174,15 +175,14 @@
 
     <div class="infoboks" data-cmstekster="utdanning.svar.under.utdanning.kortvarig.informasjon"></div>
 
-    <div class="varighet">
+    <div class="varighet" data-nav-faktum="utdanning.kortvarig.varighet" data-nav-property="['varighetFra', 'varighetTil']">
         <div data-nav-dato-intervall
-             data-nav-faktum="utdanning.kortvarig.varighet"
-             data-fra-dato="faktum.properties.varighetFra"
-             data-til-dato="faktum.properties.varighetFra"
+             data-fra-dato="navproperties.varighetFra"
+             data-til-dato="navproperties.varighetFra"
              data-navlabel="utdanning.varighet"
              data-er-required="true"
              data-navfeilmelding="utdanning.error.varighet.tilfra"
-             data-endret2="lagreFaktum()">
+             data-lagre="lagreFaktum()">
         </div>
     </div>
 
@@ -200,6 +200,7 @@
     <div class="infoboks" data-cmstekster="utdanning.svar.under.utdanning.kortvarigflere.informasjon"></div>
 
     <div data-navtekst
+         data-navconfig
          data-nav-faktum="utdanning.kortvarigflere.sted"
          data-navlabel="utdanning.utdanningssted.navn"
          data-navfeilmelding="utdanning.error.utdanningsstednavn"
@@ -213,14 +214,13 @@
          data-ng-required="true"></div>
 
 
-    <div class="varighet">
+    <div class="varighet" data-nav-faktum="utdanning.kortvarigflere.varighet" data-nav-property="['varighetFra', 'varighetTil']">
         <div data-nav-dato-intervall
-             data-nav-faktum="utdanning.kortvarigflere.varighet"
-             data-fra-dato="faktum.properties.varighetFra"
-             data-til-dato="faktum.properties.varighetTil"
+             data-fra-dato="navproperties.varighetFra"
+             data-til-dato="navproperties.varighetTil"
              data-label="utdanning.varighet"
              data-er-required="true"
-             data-endret2="lagreFaktum()">
+             data-lagre="lagreFaktum()">
         </div>
     </div>
 
@@ -244,14 +244,13 @@
          data-navfeilmelding="'utdanning.error.utdanningsstednavn'"
          data-ng-required></div>
 
-    <div class="varighet">
+    <div class="varighet" data-nav-faktum="utdanning.norsk.varighet" data-nav-property="['varighetFra', 'varighetTil']">
         <div data-nav-dato-intervall
-             data-nav-faktum="utdanning.norsk.varighet"
-             data-fra-dato="faktum.properties.varighetFra"
-             data-til-dato="faktum.properties.varighetTil"
+             data-fra-dato="navproperties.varighetFra"
+             data-til-dato="navproperties.varighetTil"
              data-label="utdanning.varighet"
              data-er-required="true"
-             data-endre2t="lagreFaktum()">
+             data-lagre="lagreFaktum()">
         </div>
     </div>
 
@@ -264,29 +263,25 @@
      data-navlabel="utdanning.svar.under.utdanning.introduksjon"
      data-navendret="endreUtdanning(utdanningForm)"></div>
 
+
 <div data-ng-show="hvisIRedigeringsmodus()">
-
-    <div data-navcheckbox
-         data-navconfig
-         data-nav-faktum="underUtdanningAnnet"
-         data-navlabel="utdanning.svar.under.utdanning.annet"
-         data-navendret="endreUtdannelseAnnet(utdanningForm)"
-         data-valider-utdanning-annet></div>
-
-    <div class="annetvalg-nei form-linje">
-        <span class="utdanning-annet-melding" data-cmstekster="utdanning.harValgtUtdanning.feilmelding"></span>
-    </div>
-    <div data-ng-if="hvisIngenUnntakGjelder()">
-        <div class="ekstra-spm-boks" data-cmstekster="utdanning.unntak"></div>
+    <div class="annetvalg-nei form-linje" data-nav-faktum="underUtdanningAnnet">
+        <input id="underUtdanningAnnetCheckbox" data-ng-model="faktum.value" type="checkbox"
+               name="ingennavytelser" data-ng-change="endreUtdannelseAnnet(utdanningForm)" data-boolean-verdi/>
+        <label for="underUtdanningAnnetCheckbox" class="svar-alt" data-cmstekster="utdanning.svar.under.utdanning.annet"></label>
+        <span class="ingen-navytelse-melding" data-cmstekster="utdanning.harValgtUtdanning.feilmelding"></span>
     </div>
 </div>
-<div data-ng-if="hvisIngenUnntakGjelder()">
-    <div class="ekstra-spm-boks" data-cmstekster="utdanning.unntak"></div>
+<div class="annetvalg-nei form-linje" data-ng-class="{feil:utdanning.skalViseFeilmeldingForUtdanningAnnet}">
+    <span class="utdanning-annet-melding" data-cmstekster="utdanning.harValgtUtdanning.feilmelding"></span>
+</div>
+<span class="melding" data-cmstekster="utdanning.minstEnCheckboksErAvhuket.feilmelding"></span>
+
+{{harHuketAvCheckboks}}
 </div>
 <div data-spmblokkferdig data-nokkel="utdanning"
+     data-modus="data.redigeringsModus"
      data-submit-method="validerOgSettModusOppsummering(utdanningForm)"></div>
-
-</div>
 </div>
 </div>
 <!-- form -->
