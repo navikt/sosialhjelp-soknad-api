@@ -127,10 +127,97 @@ h4 {
 	margin: 20px 45px;
 }
 
-.barn {
+#barnetilleggForm {
+	.informasjonstekst {
+		margin-bottom: 30px;
+	}
+	.knapper-opprett {
+        //border-top: 1px solid #ddd;
+        margin-top: 1rem;
+        //padding-top: 2rem;
+        text-align: center;
+
+        input, a {
+            //display: block;
+            margin: 0 auto 1rem;
+        }
+    }	
+}
+
+#barnetillegg .spm-knapper {
 	border-top: 1px solid #ddd;
-    padding-top: 30px;
-    margin-top: 30px;
+	padding-top: 40px;
+}
+
+.modalBoks {
+	margin-top: 100px;
+	
+	h2 {
+		margin-top:20px;
+		margin-bottom:20px;
+	}
+	
+	.lukk {
+		position: absolute;
+	    top: 5px;
+	    right: 5px;
+	    width: 32px;
+	    height: 32px;
+	    background: url("../img/kryss.svg");
+	    background-color: transparent;
+  		background-repeat: no-repeat;
+	}
+	
+	.datepicker {
+		padding:15px;
+	}
+	
+	p {
+		margin: 15px;
+	}
+	
+	.knapper-opprett {
+        border-top: 1px solid #ddd;
+        margin-top: 1rem;
+        padding-top: 2rem;
+        text-align: center;
+
+        input, a {
+            display: block;
+            margin: 0 auto 1rem;
+        }
+    }
+}
+
+
+.barn {
+	.lukk {
+		position: absolute;
+	    top: 5px;
+	    right: 5px;
+	    width: 32px;
+	    height: 32px;
+	    background: url("../img/kryss.svg");
+	    background-color: transparent;
+  		background-repeat: no-repeat;
+	}
+
+	//TODO Andreas fiks.
+	.lenker-dot {
+		margin-bottom: 40px;
+		text-align: center;
+	}
+	/*.lenker-dot a:not(:first-child):before {
+		content: "•";
+		text-align: center;
+		color: #0067c5;
+	}*/
+	.lenker-dot > a {
+		margin-left: 14px;
+	}
+	.lenker-dot > a:first-child {
+		margin-left: 0;
+	}
 
 	.barnealder {
 		display: inline-block;

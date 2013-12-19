@@ -1,6 +1,5 @@
-package no.nav.sbl.dialogarena.person;
+package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

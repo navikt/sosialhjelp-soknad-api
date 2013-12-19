@@ -113,6 +113,42 @@ angular.module('app.routes', ['ngRoute'])
                     }
                 }
             })
+            .when('/barnetillegg/:soknadId', {
+                templateUrl: '../html/templates/barnetillegg.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
+            .when('/nyttbarn/:soknadId', {
+                templateUrl: '../html/templates/barnetillegg-nyttbarn.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (NyttBarnSideResolver) {
+                        return NyttBarnSideResolver;
+                    }
+                }
+            })
+            .when('/endrebarn/:soknadId/:faktumId', {
+                templateUrl: '../html/templates/barnetillegg-nyttbarn.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (NyttBarnSideResolver) {
+                        return NyttBarnSideResolver;
+                    }
+                }
+            })
+            .when('/sokbarnetillegg/:soknadId/:faktumId', {
+                templateUrl: '../html/templates/barnetillegg-nyttbarn.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (NyttBarnSideResolver) {
+                        return NyttBarnSideResolver;
+                    }
+                }
+            })
             .when('/arbeidsforhold/:soknadId', {
                 templateUrl: '../html/templates/arbeidsforhold.html',
                 controller: 'SoknadDataCtrl',
