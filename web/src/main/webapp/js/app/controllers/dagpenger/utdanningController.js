@@ -1,9 +1,9 @@
 angular.module('nav.utdanning', [])
-    .controller('UtdanningCtrl', ['$scope', 'lagreSoknadData', function ($scope, lagreSoknadData) {
+    .controller('UtdanningCtrl', ['$scope', 'lagreSoknadData', 'data', function ($scope, lagreSoknadData, data) {
         $scope.navigering = {nesteside: 'ytelser'};
         $scope.sidedata = {navn: 'utdanning'};
 
-        var nokler = ['underUtdanningKveld', 'underUtdanningKortvarig', 'underUtdanningKortvarigFlere', 'underUtdanningNorsk', 'underUtdanningIntroduksjon', 'underUtdanningAnnet' ];
+        var nokler = ['utdanning.kveld', 'utdanning.kortvarig', 'utdanning.kortvarigflere', 'utdanning.norsk', 'utdanning.introduksjon', 'underUtdanningAnnet' ];
         $scope.utdanning = {skalViseFeilmeldingForUtdanningAnnet: false};
 
         $scope.harHuketAvCheckboks = {value: ''};
@@ -22,75 +22,25 @@ angular.module('nav.utdanning', [])
         }
 
         $scope.validerUtdanning = function (skalScrolle) {
-            if ($scope.hvisUnderUtdanning()) {
+            if ($scope.hvis('utdanning', 'underUtdanning')) {
                 var minstEnAvhuket = erCheckboxerAvhuket(nokler);
             }
             $scope.runValidation(skalScrolle);
 
         }
-        $scope.hvisIkkeUnderUtdanning = function () {
-            if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
-                return $scope.soknadData.fakta.utdanning.value == 'ikkeUtdanning';
+
+        $scope.hvis = function (faktumKey, verdi) {
+            var faktum = data.finnFaktum(faktumKey);
+            if (verdi) {
+                return sjekkOmGittEgenskapTilObjektErVerdi(faktum, verdi);
+            } else {
+                return sjekkOmGittEgenskapTilObjektErTrue(faktum);
             }
-            return false;
+        }
+        $scope.hvisIkke = function (faktumKey) {
+            return sjekkOmGittEgenskapTilObjektErFalse(data.finnFaktum(faktumKey));
         }
 
-        $scope.hvisAvsluttetUtdanning = function () {
-            if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
-                return $scope.soknadData.fakta.utdanning.value == 'avsluttetUtdanning';
-            }
-            return false;
-        }
-
-        $scope.hvisUnderUtdanning = function () {
-            if ($scope.soknadData.fakta != undefined && $scope.soknadData.fakta.utdanning != undefined) {
-                return $scope.soknadData.fakta.utdanning.value == 'underUtdanning';
-            }
-            return false;
-        }
-
-        $scope.hvisUtdanningKveld = function () {
-            if ($scope.soknadData.fakta == undefined || $scope.soknadData.fakta.underUtdanningKveld == undefined) {
-                return false;
-            }
-            return $scope.soknadData.fakta.underUtdanningKveld.value;
-        }
-
-        $scope.hvisUtdanningKortvarig = function () {
-            if ($scope.soknadData.fakta == undefined || $scope.soknadData.fakta.underUtdanningKortvarig == undefined) {
-                return false;
-            }
-            return $scope.soknadData.fakta.underUtdanningKortvarig.value;
-        }
-
-        $scope.hvisUtdanningKortvarigFlere = function () {
-            if ($scope.soknadData.fakta == undefined || $scope.soknadData.fakta.underUtdanningKortvarigFlere == undefined) {
-                return false;
-            }
-            return $scope.soknadData.fakta.underUtdanningKortvarigFlere.value;
-        }
-
-        $scope.hvisUtdanningNorsk = function () {
-            if ($scope.soknadData.fakta == undefined || $scope.soknadData.fakta.underUtdanningNorsk == undefined) {
-                return false;
-            }
-            return $scope.soknadData.fakta.underUtdanningNorsk.value;
-        }
-
-        $scope.hvisStudieProgresjonOver50 = function () {
-            if ($scope.soknadData.fakta == undefined || $scope.soknadData.fakta.utdanning.progresjonunder50 == undefined) {
-                return false;
-            }
-            if ($scope.soknadData.fakta.utdanning.progresjonunder50 == 'false') return true;
-
-        }
-
-        $scope.hvisUtdanningPaabegyntUnder6mnd = function () {
-            if ($scope.soknadData.fakta != undefined || $scope.soknadData.fakta.utdanning.paabegyntunder6mnd != undefined) {
-                return $scope.soknadData.fakta.utdanning.paabegyntunder6mnd;
-            }
-            return false;
-        }
 
         $scope.validateTilFraDato = function (utdanning) {
             if (utdanning && (utdanning.varighetTil <= utdanning.varighetFra)) {
@@ -102,63 +52,71 @@ angular.module('nav.utdanning', [])
         }
 
 
-    $scope.hvisIngenUnntakGjelder = function (utdanning) {
-        if ($scope.soknadData && $scope.soknadData.fakta) {
-            return $scope.soknadData.fakta.underUtdanningAnnet && checkTrue($scope.soknadData.fakta.underUtdanningAnnet.value);
-        }
-        return false;
-    }
+        $scope.hvisIngenUnntakGjelder = function (utdanning) {
 
-
-
-     function erCheckboxerAvhuket(checkboxNokler) {
-        var minstEnAvhuket = false;
-        for(var i= 0; i < checkboxNokler.length; i++) {
-            var nokkel = checkboxNokler[i];
-           if ($scope.soknadData.fakta[nokkel] && checkTrue($scope.soknadData.fakta[nokkel].value)) {
-
-                minstEnAvhuket = true;
-           }
-        }
-        return minstEnAvhuket;
-    }
-
-    //kjøres hver gang det skjer en endring på checkboksene (gjelder ikke den siste)
-    $scope.endreUtdanning = function (form) {
-        // Sjekker om en utdanning er huket av (inkluderer IKKE siste checkboksen)
-        var utdanningNokler = nokler.slice(0, nokler.length - 1);
-        var harIkkeValgtUtdanning =  !erCheckboxerAvhuket(utdanningNokler);
-        if (harIkkeValgtUtdanning) {
-
-            $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet = false;
-
+            if ($scope.soknadData && $scope.soknadData.fakta) {
+                return $scope.soknadData.fakta.underUtdanningAnnet && checkTrue($scope.soknadData.fakta.underUtdanningAnnet.value);
             }
-        if (sjekkOmGittEgenskapTilObjektErTrue($scope.soknadData.fakta.underUtdanningAnnet)) {
-            $scope.soknadData.fakta.underUtdanningAnnet.value = false;
-            $scope.$emit(lagreSoknadData, {key: 'underUtdanningAnnet', value: false});
-
+            return false;
         }
 
-    //      kjøres hver gang det skjer en endring på 'utdanningAnnet'-checkboksen
-    $scope.endreUtdannelseAnnet = function (form) {
-        // Sjekker om en utdanninger huket av (inkluderer IKKE siste checkboksen)
-        var utdanningNokler = nokler.slice(0, nokler.length - 1);
-        var harValgtUtdanning = erCheckboxerAvhuket(utdanningNokler);
-        var erCheckboksForUtdanningAnnetHuketAv = $scope.soknadData.fakta.underUtdanningAnnet.value;
 
-        if (harValgtUtdanning) {
-           $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet = true;
-           $scope.soknadData.fakta.underUtdanningAnnet.value = 'false';
+        function erCheckboxerAvhuket(checkboxNokler) {
+            var minstEnAvhuket = false;
+            var fakta = {};
+            data.fakta.forEach(function (faktum) {
+                if (checkboxNokler.indexOf(faktum.key >= 0)) {
+                    fakta[faktum.key] = faktum;
+                }
+            });
+
+            for (var i = 0; i < checkboxNokler.length; i++) {
+                var nokkel = checkboxNokler[i];
+                if (fakta[nokkel] && checkTrue(fakta[nokkel].value)) {
+                    minstEnAvhuket = true;
+                }
+            }
+            return minstEnAvhuket;
         }
-        else {
+
+        //kjøres hver gang det skjer en endring på checkboksene (gjelder ikke den siste)
+        $scope.endreUtdanning = function (form) {
+            // Sjekker om en utdanning er huket av (inkluderer IKKE siste checkboksen)
+            var utdanningNokler = nokler.slice(0, nokler.length - 1);
+            var harIkkeValgtUtdanning = !erCheckboxerAvhuket(utdanningNokler);
+            var faktum = data.finnFaktum("underUtdanningAnnet")
+            if (harIkkeValgtUtdanning) {
+                $scope.harHuketAvCheckboks.value = ''
+                $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet = false;
+            } else {
+                $scope.harHuketAvCheckboks.value = true;
+            }
+            if (sjekkOmGittEgenskapTilObjektErTrue(faktum)) {
+                faktum.value = "false";
+                faktum.$save();
+            }
+        }
+
+        //      kjøres hver gang det skjer en endring på 'utdanningAnnet'-checkboksen
+        $scope.endreUtdannelseAnnet = function (form) {
+            // Sjekker om en utdanninger huket av (inkluderer IKKE siste checkboksen)
+            var utdanningNokler = nokler.slice(0, nokler.length - 1);
+            var harValgtUtdanning = erCheckboxerAvhuket(utdanningNokler);
+            var faktum = data.finnFaktum("underUtdanningAnnet");
+            var erCheckboksForUtdanningAnnetHuketAv = sjekkOmGittEgenskapTilObjektErTrue(faktum);
+
+            if (harValgtUtdanning) {
+                faktum.value = 'false';
+                $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet = true;
+            }
+            else {
                 if (erCheckboksForUtdanningAnnetHuketAv) {
                     $scope.harHuketAvCheckboks.value = 'true';
+                } else {
+                    $scope.harHuketAvCheckboks.value = ''
                 }
-                $scope.$emit(lagreSoknadData, {key: 'underUtdanningAnnet', value: erCheckboksForUtdanningAnnetHuketAv});
-
+                faktum.$save();
+            }
         }
-    }
-    }
-
-
-    }]);
+    }])
+;

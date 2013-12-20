@@ -11,7 +11,6 @@ angular.module('nav.ingennavytelser', [])
                     return scope.ytelser.skalViseFeilmeldingForIngenNavYtelser;
                 }, function () {
                     if (scope.ytelser.skalViseFeilmeldingForIngenNavYtelser) {
-                        console.log("Legger til feil");
                         element.addClass('feil');
                     } else {
                         fadeFeilmelding(element, element.find('.ingen-navytelse-melding'), 'feil', scope);

@@ -57,11 +57,11 @@ public class ConsumerConfig {
     private static final int RECEIVE_TIMEOUT = 30000;
     private static final int CONNECTION_TIMEOUT = 10000;
 
-    @Bean 
+    @Bean
     public HenvendelseConnector henvendelseConnector() {
-        return new HenvendelseConnector(); 
+        return new HenvendelseConnector();
     }
-    
+
     @Configuration
     public static class SendSoknadWSConfig {
         @Value("${soknad.webservice.henvendelse.sendsoknadservice.url}")
@@ -71,7 +71,7 @@ public class ConsumerConfig {
         @Scope(SCOPE_PROTOTYPE)
         public JaxWsProxyFactoryBean sendsoknadPortTypeFactory() {
             JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(soknadServiceEndpoint, SendSoknadPortType.class, "classpath:SendSoknad.wsdl");
-            jaxwsClient.getProperties().put("jaxb.additionalContextClasses", new Class[] { XMLFaktumListe.class, WSSoknadsdata.class, WSStartSoknadRequest.class, 
+            jaxwsClient.getProperties().put("jaxb.additionalContextClasses", new Class[]{XMLFaktumListe.class, WSSoknadsdata.class, WSStartSoknadRequest.class,
                     XMLFaktum.class, XMLFakta.class});
             jaxwsClient.getFeatures().add(new TimingFeature(SendSoknadPortType.class.getSimpleName()));
 
@@ -113,19 +113,19 @@ public class ConsumerConfig {
             return brukerProfilPortTypeFactory().create(BrukerprofilPortType.class);
         }
     }
-    
+
     @Configuration
     public static class PersonWSConfig {
 
 
         @Value("${soknad.webservice.person.personservice.url}")
         private URL personEndpoint;
-    	
+
 
         @Bean
         @Scope(SCOPE_PROTOTYPE)
         public JaxWsProxyFactoryBean personPortTypeFactory() {
-    		JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(personEndpoint, PersonPortType.class, "classpath:/wsdl/no/nav/tjeneste/virksomhet/person/v1/Person.wsdl");
+            JaxWsProxyFactoryBean jaxwsClient = getJaxWsProxyFactoryBean(personEndpoint, PersonPortType.class, "classpath:/wsdl/no/nav/tjeneste/virksomhet/person/v1/Person.wsdl");
             jaxwsClient.getFeatures().add(new TimingFeature(PersonPortType.class.getSimpleName()));
             return jaxwsClient;
         }
@@ -134,7 +134,7 @@ public class ConsumerConfig {
         public PersonPortType personService() {
             return konfigurerMedHttps(personPortTypeFactory().create(PersonPortType.class));
         }
-        
+
         @Bean
         public PersonPortType personServiceSelftest() {
             return personPortTypeFactory().create(PersonPortType.class);
@@ -183,7 +183,7 @@ public class ConsumerConfig {
         @Inject
         @Named("personService")
         private PersonPortType personService;
-        
+
         @PostConstruct
         public void setupSts() {
             configureStsForSystemUser(getClient(sendSoknadSelftest));
@@ -206,7 +206,7 @@ public class ConsumerConfig {
         @Inject
         @Named("brukerProfilService")
         private BrukerprofilPortType brukerProfilService;
-        
+
         @Inject
         @Named("personService")
         private PersonPortType personService;

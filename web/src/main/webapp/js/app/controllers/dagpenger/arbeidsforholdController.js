@@ -1,5 +1,5 @@
 angular.module('nav.arbeidsforhold.controller', [])
-    .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams) {
+    .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams, data) {
 
         $scope.arbeidsforhold = [];
         $scope.endreArbeidsforholdKopi = '';
@@ -13,7 +13,7 @@ angular.module('nav.arbeidsforhold.controller', [])
             $scope.validerArbeidsforhold(form, false);
         });
         $scope.validerArbeidsforhold = function (form, skalScrolle) {
-            if($scope.harIkkeLagretArbeidsforhold() && harIkkeJobbet12SisteMaaneder()) {
+            if ($scope.harIkkeLagretArbeidsforhold() && harIkkeJobbet12SisteMaaneder()) {
                 form.$setValidity('arbeidsforhold.feilmelding', false);
             }
             $scope.validateForm(form.$invalid);
@@ -120,8 +120,8 @@ angular.module('nav.arbeidsforhold.controller', [])
                 $scope.settBreddeSlikAtDetFungererIIE();
             }
 
-            $scope.settBreddeSlikAtDetFungererIIE = function() {
-                setTimeout(function() {
+            $scope.settBreddeSlikAtDetFungererIIE = function () {
+                setTimeout(function () {
                     $("#sluttaarsak_id").width($("#sluttaarsak_id").width());
                 }, 50);
             }
@@ -133,20 +133,29 @@ angular.module('nav.arbeidsforhold.controller', [])
             $scope.arbeidsforholdskjemaErIkkeAapent = function () {
                 return !$scope.arbeidsforholdaapen;
             }
+            $scope.validerOgSettModusOppsummering = function (form) {
+                $scope.validateForm(form.$invalid);
+                $scope.validerArbeidsforhold(form, true);
+            }
 
             $scope.toggleRedigeringsmodus = function (form) {
                 form.$setValidity('arbeidsforhold.feilmelding', true);
                 if (harIkkeJobbet12SisteMaaneder()) {
-                    $scope.validateForm(form.$invalid);
+                    $scope.validerOgSettModusOppsummering(form);
                 }
             }
 
             $scope.$on("ENDRET_TIL_REDIGERINGS_MODUS", function () {
                 $scope.soknadData.fakta.harIkkeJobbet = false;
-                $scope.$emit("OPPDATER_OG_LAGRE", {key: 'harIkkeJobbet', value: false});
+                data.fakta.forEach(function (faktum) {
+                    if (faktum.key === 'harIkkeJobbet') {
+                        faktum.value = "false";
+                        faktum.$save();
+                    }
+                });
             });
 
-               $scope.resolvUrl = function () {
+            $scope.resolvUrl = function () {
                 return "../html/templates/kontrakt-utgaatt.html"
             }
 
@@ -168,7 +177,7 @@ angular.module('nav.arbeidsforhold.controller', [])
                 }
             }
 
-            $scope.validateOppsigelsestidTilFraDato = function (af,form) {
+            $scope.validateOppsigelsestidTilFraDato = function (af, form) {
                 if (af && (af.sagtOppAvArbeidsgiverVarighetTil <= af.sagtOppAvArbeidsgiverVarighetFra)) {
                     af.sagtOppAvArbeidsgiverVarighetTil = '';
 
@@ -178,7 +187,7 @@ angular.module('nav.arbeidsforhold.controller', [])
                 }
             }
 
-            $scope.settRedigeringsIndex = function(nyIndex) {
+            $scope.settRedigeringsIndex = function (nyIndex) {
                 $scope.posisjonForArbeidsforholdUnderRedigering = nyIndex;
             }
 
@@ -189,10 +198,13 @@ angular.module('nav.arbeidsforhold.controller', [])
 
         });
         function harIkkeJobbet12SisteMaaneder() {
-            if ($scope.soknadData.fakta && $scope.soknadData.fakta.harIkkeJobbet) {
-                return $scope.soknadData.fakta.harIkkeJobbet.value == "false";
-            }
-            return true;
+            var res = false;
+            data.fakta.forEach(function (faktum) {
+                if (faktum.key === 'harIkkeJobbet') {
+                    res = (faktum.value == "true");
+                }
+            });
+            return res;
         }
 
     })
@@ -231,9 +243,10 @@ angular.module('nav.arbeidsforhold.controller', [])
 
         }
 
-        $scope.permitteringsgrad = [{
-            id: '1',
-            name: '1%'},
+        $scope.permitteringsgrad = [
+            {
+                id: '1',
+                name: '1%'},
             {
                 id: '2',
                 name: '2%'},
@@ -521,13 +534,11 @@ angular.module('nav.arbeidsforhold.controller', [])
                 name: '99%'},
             {
                 id: '100',
-                name: '100%'}]
+                name: '100%'}
+        ]
 
 
-
-
-
-          })
+    })
 
 
 
