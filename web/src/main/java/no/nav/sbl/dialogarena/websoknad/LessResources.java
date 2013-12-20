@@ -16,6 +16,7 @@ public enum LessResources {
     DATEPICKER_LESS("datepicker"),
     TEXTAREA_LESS("textarea"),
     ARBEIDSFORHOLD_LESS("arbeidsforhold"),
+    BARNETILLEGG_LESS("barnetillegg"),
     SLETT_LESS("slett"),
     MODALSIDE("modalside");
 
