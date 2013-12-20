@@ -32,7 +32,7 @@ public class FamilierelasjonServiceTest {
     private static final String ET_FORNAVN = "Per";
     private static final String ET_ETTERNAVN = "Persen";
     private static final String FEIL_IDENT = "99999999999";
-    private static final String BARN_IDENT = "14057132842";
+    private static final String BARN_IDENT = "***REMOVED***";
     private static final String BARN_FORNAVN = "Bjarne";
     private static final String BARN_ETTERNAVN = "Barnet";
     private static final Object BARN_SAMMENSATTNAVN = BARN_FORNAVN + " " + BARN_ETTERNAVN;
@@ -84,7 +84,6 @@ public class FamilierelasjonServiceTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    @Ignore
     public void skalHenteBarn() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
         HentKjerneinformasjonResponse response = new HentKjerneinformasjonResponse();
 

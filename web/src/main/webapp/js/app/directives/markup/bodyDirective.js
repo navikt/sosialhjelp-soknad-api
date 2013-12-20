@@ -6,9 +6,9 @@ angular.module('nav.markup.bodydirective', [])
         return function (scope, element) {
             $timeout(function () {
                 if (element.find(".modalBoks").length > 0) {
-                    $("body").attr("id", "modalside");
+                    $("body").addClass("modalside");
                 } else {
-                    $("body").attr("id", "");
+                    $("body").removeClass("modalside");
                 }
             });
         }
