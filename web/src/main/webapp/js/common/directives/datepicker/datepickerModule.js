@@ -8,6 +8,7 @@
  * Følgende attributter kan oppgis:
  *      - er-required: Expression som sier om feltet er påkrevd eller ikke
  *      - required-error-message: Nøkkel til CMS for å hente ut feilmeldingstekst for required-feil
+ *      - er-fremtidigdato-tilatt: Expression som sier om det er lovelig å sette datoen frem i tid.
  *
  * Følgende attributter brukes av det andre direktivet for å kjøre validering på datointervallet:
  *      - fraDato: Startdato i intervallet
@@ -32,6 +33,7 @@
  *      - er-fradato-required: Expression som sier om fra-dato er påkrevd. Er false dersom ikke oppgitt
  *      - er-begge-required: Expression som sier om både til- og fra-dato er påkrevd. Er false dersom ikke oppgitt.
  *                           Denne setter både er-fradato-required og er-tildato-required.
+ *      - er-fremtidigdato-tilatt: Expression som sier om det er lovelig å sette datoen frem i tid.
  */
 
 angular.module('nav.datepicker', [])
@@ -54,6 +56,7 @@ angular.module('nav.datepicker', [])
                 tilDato: '=',
                 fraDato: '=',
                 tilDatoFeil: '=',
+                erFremtidigdatoTilatt: '=',
                 endret: '&',
                 lagre: '&',
                 label: '@',
@@ -160,7 +163,14 @@ angular.module('nav.datepicker', [])
                     if (currentDefaultDate.getTime() != defaultDate.getTime()) {
                         scope.options = angular.extend({}, {defaultDate: defaultDate}, scope.options);
                     }
-                    return angular.extend({}, datepickerConfig, scope.options);
+
+                    if(scope.erFremtidigdatoTilatt) {
+                        var config = deepClone(datepickerConfig);
+                        config["maxDate"] = undefined;
+                        return angular.extend({}, config, scope.options);
+                    } else {
+                        return angular.extend({}, datepickerConfig, scope.options);
+                    }
                 };
 
                 function leggTilDatepicker() {
@@ -199,8 +209,9 @@ angular.module('nav.datepicker', [])
                 erFradatoRequired: '=',
                 erTildatoRequired: '=',
                 erBeggeRequired: '=',
-                label: '@',
-                lagre: '&'
+                erFremtidigdatoTilatt: '=',
+                label: '@'
+
             },
             controller: function ($scope) {
                 $scope.fraLabel = $scope.label + ".fra";

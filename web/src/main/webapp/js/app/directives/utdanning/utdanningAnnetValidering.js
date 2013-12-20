@@ -17,5 +17,6 @@ angular.module('nav.utdanningannet', [])
                     }
                 });
             }
+
         }
-    }])
+    }]);
