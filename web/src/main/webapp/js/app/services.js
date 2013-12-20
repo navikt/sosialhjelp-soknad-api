@@ -40,13 +40,13 @@ angular.module('app.services', ['ngResource'])
             {soknadId: '@soknadId'},
             {
                 create: { method: 'POST', params: {mode: ''}},
-                jsoncreate: { method: 'POST', params: {mode: ''}, transformRequest: function (data, headersGetter) {
+               /* jsoncreate: { method: 'POST', params: {mode: ''}, transformRequest: function (data, headersGetter) {
                     var d = deepClone(data);
                     d.value = angular.toJson(data.value);
                     d = angular.toJson(d);
                     return d;
                 }
-                },
+                },*/
                 delete: { method: 'POST', params: {mode: 'delete'}}
             }
 
