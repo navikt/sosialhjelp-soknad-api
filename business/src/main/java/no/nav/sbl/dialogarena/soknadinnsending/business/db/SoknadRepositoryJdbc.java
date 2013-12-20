@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
+
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -20,6 +22,7 @@ import javax.inject.Named;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -155,7 +158,33 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
             return new Faktum();
         }
     }
-
+    
+    //todo remove string
+    @Override
+    public List<Faktum> hentSystemFaktumList(Long soknadId, String key, String string) {
+        String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and key = ? and type= ?";
+        List<Faktum> fakta = getJdbcTemplate().query(sql, soknadDataRowMapper, soknadId, key, FaktumType.SYSTEMREGISTRERT.toString());
+        
+        List<FaktumEgenskap> egenskaper = select("select * from FAKTUMEGENSKAP where soknad_id = ?", faktumEgenskapRowMapper, soknadId);
+        Map<Long, Faktum> faktaMap = Maps.uniqueIndex(fakta, new Function<Faktum, Long>() {
+            @Override
+            public Long apply(Faktum input) {
+                return input.getFaktumId();
+            }
+        });
+        for (FaktumEgenskap faktumEgenskap : egenskaper) {
+            if (faktaMap.containsKey(faktumEgenskap.getFaktumId())) {
+                faktaMap.get(faktumEgenskap.getFaktumId()).getProperties().put(faktumEgenskap.getKey(), faktumEgenskap.getValue());
+            }
+        }
+        
+        if (!fakta.isEmpty()) {
+            return fakta;
+        } else {
+            return new ArrayList<>();
+        }
+    }
+   
     @Override
     public Long lagreFaktum(long soknadId, Faktum faktum) {
         if (faktum.getFaktumId() == null) {
@@ -166,6 +195,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
                     .update("insert into soknadbrukerdata (soknadbrukerdata_id, soknad_id, key, value, type, parrent_faktum, sistendret) values (?, ?, ?, ?, ?,?, sysdate)",
                             dbNokkel, soknadId, faktum.getKey(),
                             faktum.getValue(), faktum.getType(), faktum.getParrentFaktum());
+            faktum.setFaktumId(dbNokkel);
             lagreAlleEgenskaper(soknadId, faktum);
 
             utfyllingStartet(soknadId);
@@ -279,5 +309,4 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
                                     .getString("status")));
         }
     }
-
 }

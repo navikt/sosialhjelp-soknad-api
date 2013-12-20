@@ -23,10 +23,10 @@ angular.module('nav.barn', ['app.services'])
                 });
             }
 
-            if (barnUnderEndring.value) {
+            /*if (barnUnderEndring.value) {
                 barnUnderEndring.value = angular.fromJson(barnUnderEndring.value)
                 barnUnderEndring.value.fodselsdato = new Date(barnUnderEndring.value.fodselsdato);
-            }
+            }*/
         }
 
         if (endreModus || barnetilleggModus) {
@@ -64,14 +64,14 @@ angular.module('nav.barn', ['app.services'])
         } else if (barnetilleggModus) {
             angular.forEach($scope.soknadData.fakta.barn.valuelist, function (value) {
                 if (value.faktumId == faktumId) {
-                    $scope.barnenavn = angular.fromJson(value.value).sammensattnavn;
+                    $scope.barnenavn = value.properties.sammensattnavn;
                 }
             });
         } else {
             var barneData = {
                 key: 'barn',
-                value: {
-                    "fodselsnummer": undefined,
+                properties: {
+                    "fnr": undefined,
                     "fornavn": undefined,
                     "etternavn": undefined,
                     "sammensattnavn": undefined,
@@ -101,8 +101,8 @@ angular.module('nav.barn', ['app.services'])
             var eventString = 'RUN_VALIDATION' + form.$name;
             $scope.$broadcast(eventString);
             if (form.$valid) {
-                $scope.barn.value.alder = finnAlder();
-                $scope.barn.value.sammensattnavn = finnSammensattNavn();
+                $scope.barn.properties.alder = finnAlder();
+                $scope.barn.properties.sammensattnavn = finnSammensattNavn();
                 lagreBarnOgBarnetilleggFaktum();
             }
         }
@@ -139,9 +139,9 @@ angular.module('nav.barn', ['app.services'])
          * Til slutt legges de to faktumene inn i sine respektive lister for at de skal vises i "oppsummeringsmodus"
          **/
         function lagreBarnOgBarnetilleggFaktum() {
-            $scope.barn.$jsoncreate({soknadId: $scope.soknadData.soknadId}).then(function (barnData) {
+            $scope.barn.$create({soknadId: $scope.soknadData.soknadId}).then(function (barnData) {
                 $scope.barn = barnData;
-                $scope.barn.value = angular.fromJson(barnData.value);
+                /*$scope.barn.value = angular.fromJson(barnData.value);*/
                 oppdaterFaktumListe("barn");
                 oppdaterCookieValue(barnData.faktumId);
 
@@ -233,15 +233,15 @@ angular.module('nav.barn', ['app.services'])
         }
 
         function finnSammensattNavn() {
-            return $scope.barn.value.fornavn + " " + $scope.barn.value.etternavn;
+            return $scope.barn.properties.fornavn + " " + $scope.barn.properties.etternavn;
         }
 
         //TODO: FIX Tester
         function finnAlder() {
-            if ($scope.barn.value.fodselsdato) {
-                var year = $scope.barn.value.fodselsdato.getFullYear();
-                var maaned = $scope.barn.value.fodselsdato.getMonth();
-                var dag = $scope.barn.value.fodselsdato.getDate()
+            if ($scope.barn.properties.fodselsdato) {
+                var year = $scope.barn.properties.fodselsdato.getFullYear();
+                var maaned = $scope.barn.properties.fodselsdato.getMonth();
+                var dag = $scope.barn.properties.fodselsdato.getDate()
                 var dagensDato = new Date();
 
                 var result = dagensDato.getFullYear() - year;

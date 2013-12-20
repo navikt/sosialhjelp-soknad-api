@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
+
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.detect.IsImage;
 import no.nav.sbl.dialogarena.detect.IsPdf;
@@ -69,6 +71,22 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public void slettBrukerFaktum(Long soknadId, Long faktumId) {
         repository.slettBrukerFaktum(soknadId, faktumId);
+    }
+    
+    @Override
+    public Long lagreSystemFaktum(Long soknadId, Faktum f, String uniqueProperty) {
+        List<Faktum> fakta = repository.hentSystemFaktumList(soknadId, f.getKey(), FaktumType.SYSTEMREGISTRERT.toString());
+        
+        if(!uniqueProperty.isEmpty()) {
+            for (Faktum faktum : fakta) {
+                if(faktum.getProperties().get(uniqueProperty).equals(f.getProperties().get(uniqueProperty))) {
+                    f.setFaktumId(faktum.getFaktumId());
+                    return repository.lagreFaktum(soknadId, f);
+                    
+                }
+            }
+        }
+        return repository.lagreFaktum(soknadId, f);
     }
 
     @Override
@@ -239,5 +257,4 @@ public class SoknadService implements SendSoknadService, VedleggService {
         }
 
     }
-
 }
