@@ -44,7 +44,4 @@ public interface SoknadRepository {
 
     void slettSoknadsFelt(Long soknadId, Long faktumId);
 
-    void slettBarnSoknadsFelt(Long soknadId);
-
-
 }

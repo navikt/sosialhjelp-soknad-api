@@ -107,14 +107,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     public void slettSoknadsFelt(Long soknadId, Long faktumId) {
-        //TODO slett faktum med denne faktumId-en som parrent (løses kanskje enklere etter refactorering)
-
+        //TODO: kan fjernes om man får brukt ny Faktum-struktur
         repository.slettSoknadsFelt(soknadId, faktumId);
-    }
-
-    //TODO: Midlertidig funksjon, slett etter ny struktur.
-    public void slettBarnSoknadsFelt(Long soknadId) {
-        repository.slettBarnSoknadsFelt(soknadId);
     }
 
     @Override
