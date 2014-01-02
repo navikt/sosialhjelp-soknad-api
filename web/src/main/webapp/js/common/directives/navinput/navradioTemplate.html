@@ -1,17 +1,13 @@
 <div class="nav-radio-knapp">
-    <div class="radio-knapp" data-ng-show="hvisIRedigeringsmodus()">
-        <input class="sendsoknad-radio"
-               id="{{ navlabel }}"
-               type="radio"
-               value="{{ value }}"
-               data-ng-model="faktum.value"
-               data-ng-required="hvisSynlig()"
-               data-error-messages="'{{ navfeilmelding }}'"
-               data-ng-change="lagreFaktum()"
-               data-click-validate>
+    <input class="sendsoknad-radio"
+           id="{{ navlabel }}"
+           type="radio"
+           value="{{ value }}"
+           data-ng-model="faktum.value"
+           data-ng-required="hvisSynlig()"
+           data-error-messages="'{{ navfeilmelding }}'"
+           data-ng-change="lagreFaktum()"
+           data-click-validate>
 
-        <label for='{{ navlabel }}' class='svar-alt' data-cmstekster="{{ navlabel }}"></label>
-    </div>
-
-    <p class="svar-oppsummering" data-ng-show='hvisIOppsummeringsmodusOgRadioErValgt()' data-cmstekster="{{ navlabel }}"></p>
+    <label for='{{ navlabel }}' class='svar-alt' data-cmstekster="{{ navlabel }}"></label>
 </div>

@@ -121,13 +121,6 @@ angular.module('nav.ytelser', [])
         }
 
 
-        $scope.ingenYtelserOppsummeringSkalVises = function () {
-            if ($scope.soknadData && $scope.soknadData.fakta) {
-                return $scope.soknadData.fakta.ingenYtelse && checkTrue($scope.soknadData.fakta.ingenYtelse.value) && $scope.hvisIOppsummeringsmodus();
-            }
-            return false;
-        }
-
         function erCheckboxerAvhuket(checkboxNokler) {
             var minstEnAvhuket = false;
             var fakta = {};
