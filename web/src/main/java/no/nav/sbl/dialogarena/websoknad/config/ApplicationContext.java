@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
 import no.nav.modig.cache.CacheConfig;
-import no.nav.sbl.dialogarena.person.FamilieRelasjonServiceTPS;
-import no.nav.sbl.dialogarena.person.PersonServiceTPS;
+import no.nav.sbl.dialogarena.person.person.FamilieRelasjonServiceTPS;
+import no.nav.sbl.dialogarena.person.person.PersonServiceTPS;
 import no.nav.sbl.dialogarena.soknadinnsending.business.BusinessConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadInnsendingDBConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;

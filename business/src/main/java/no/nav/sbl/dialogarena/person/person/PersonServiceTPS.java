@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.person;
+package no.nav.sbl.dialogarena.person.person;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
@@ -16,7 +16,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Implementer {@link PersonService}. Denne implementasjonen henter data fra TPS
- *
  */
 public class PersonServiceTPS implements PersonService {
 
@@ -26,14 +25,13 @@ public class PersonServiceTPS implements PersonService {
     @Named("brukerProfilService")
     private BrukerprofilPortType brukerProfil;
 
-	@Inject
-	private Kodeverk kodeverk;
-    
-	/**
-	 * Forsøker å hente person fra TPS og transformere denne til vår Personmodell.
-	 * Dersom det feiler, logges feilen og det returneres et tomt Person objekt videre 
-	 * 
-	 */
+    @Inject
+    private Kodeverk kodeverk;
+
+    /**
+     * Forsøker å hente person fra TPS og transformere denne til vår Personmodell.
+     * Dersom det feiler, logges feilen og det returneres et tomt Person objekt videre
+     */
     @Override
     public Person hentPerson(Long soknadId, String fodselsnummer) {
         XMLHentKontaktinformasjonOgPreferanserResponse response = null;
@@ -44,12 +42,12 @@ public class PersonServiceTPS implements PersonService {
             logger.error("Fant ikke bruker i TPS.", e);
             return new Person();
         } catch (HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
-        	logger.error("Kunne ikke hente bruker fra TPS.", e);
+            logger.error("Kunne ikke hente bruker fra TPS.", e);
             return new Person();
-		} catch(WebServiceException e) {
-			logger.error("Ingen kontakt med TPS.", e);
+        } catch (WebServiceException e) {
+            logger.error("Ingen kontakt med TPS.", e);
             return new Person();
-		}
+        }
         return new PersonTransform().mapToPerson(soknadId, response, kodeverk);
     }
 

@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.person;
+package no.nav.sbl.dialogarena.person.person;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;

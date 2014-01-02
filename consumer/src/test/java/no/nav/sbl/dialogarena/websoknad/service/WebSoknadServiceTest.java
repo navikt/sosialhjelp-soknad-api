@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.websoknad.service;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
@@ -13,8 +12,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -28,11 +25,8 @@ public class WebSoknadServiceTest {
     @Mock
     @Named("sendSoknadService")
     SendSoknadPortType webservice;
-
     @InjectMocks
     HenvendelseConnector service;
-
-    Long soknadId;
 
     @Before
     public void setUp() {
@@ -50,8 +44,5 @@ public class WebSoknadServiceTest {
         return new WSBehandlingsId().withBehandlingsId(BEHANDLINGS_ID);
     }
 
-    private List<Faktum> lagTomFaktaListe() {
-        return new ArrayList<Faktum>();
-    }
 
 }
