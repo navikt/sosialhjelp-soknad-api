@@ -26,14 +26,6 @@ angular.module('nav.textarea', [])
                     scope.fokus = false;
                     scope.feil = false;
 
-                    scope.hvisIRedigeringsmodus = function () {
-                        return scope.data.redigeringsModus;
-                    }
-
-                    scope.hvisIOppsummeringsmodus = function () {
-                        return !scope.data.redigeringsModus;
-                    }
-
                     scope.hvisSynlig = function () {
                         return element.is(':visible');
                     }
@@ -139,7 +131,6 @@ angular.module('nav.textarea', [])
                         element.closest('.form-linje').removeClass('feil');
                     }
                     scope.lagreFaktum();
-
                 };
             }
         }
