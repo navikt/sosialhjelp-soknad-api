@@ -147,12 +147,7 @@ angular.module('nav.arbeidsforhold.controller', [])
 
             $scope.$on("ENDRET_TIL_REDIGERINGS_MODUS", function () {
                 $scope.soknadData.fakta.harIkkeJobbet = false;
-                data.fakta.forEach(function (faktum) {
-                    if (faktum.key === 'harIkkeJobbet') {
-                        faktum.value = "false";
-                        faktum.$save();
-                    }
-                });
+                $scope.$emit("OPPDATER_OG_LAGRE", {key: 'harIkkeJobbet', value: false});
             });
 
             $scope.resolvUrl = function () {

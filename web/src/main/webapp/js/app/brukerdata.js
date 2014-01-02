@@ -160,11 +160,12 @@ angular.module('app.brukerdata', ['app.services'])
                 });
         });
     }])
+
+    //Blir kun brukt av arbeidsforhold
     .controller('ModusCtrl', function ($scope) {
         $scope.data = {
             redigeringsModus: true
         };
-
 
         // TODO: Endre navn. Setter bare til redigerings-/oppsummerings-modus. Trenger vi denne?
         $scope.validateForm = function (invalid) {
