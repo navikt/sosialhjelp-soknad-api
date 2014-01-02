@@ -1,6 +1,6 @@
 angular.module('nav.barn', ['app.services'])
 
-    .controller('BarneCtrl', ['$scope', 'BrukerData', 'data', '$cookieStore', '$location', function ($scope, BrukerData, data, $cookieStore, $location) {
+    .controller('BarneCtrl', ['$scope', 'Faktum', 'data', '$cookieStore', '$location', function ($scope, Faktum, data, $cookieStore, $location) {
         var url = $location.$$url;
         var endreModus = url.indexOf("endrebarn") != -1;
         var barnetilleggModus = url.indexOf("sokbarnetillegg") != -1;
@@ -57,7 +57,7 @@ angular.module('nav.barn', ['app.services'])
 
         if (barnUnderEndring) {
             var barneData = barnUnderEndring;
-            $scope.barn = new BrukerData(barneData);
+            $scope.barn = new Faktum(barneData);
             $scope.land = data.land;
         } else if (barnetilleggModus) {
             angular.forEach($scope.soknadData.fakta.barn.valuelist, function (value) {
@@ -76,7 +76,7 @@ angular.module('nav.barn', ['app.services'])
                     "alder": undefined
                 }
             };
-            $scope.barn = new BrukerData(barneData);
+            $scope.barn = new Faktum(barneData);
             $scope.land = data.land;
         }
 
@@ -137,7 +137,7 @@ angular.module('nav.barn', ['app.services'])
          * Til slutt legges de to faktumene inn i sine respektive lister for at de skal vises i "oppsummeringsmodus"
          **/
         function lagreBarnOgBarnetilleggFaktum() {
-            $scope.barn.$create({soknadId: $scope.soknadData.soknadId}).then(function (barnData) {
+            $scope.barn.$save({soknadId: $scope.soknadData.soknadId}).then(function (barnData) {
                 $scope.barn = barnData;
                 oppdaterFaktumListe("barn");
                 oppdaterCookieValue(barnData.faktumId);
@@ -155,12 +155,12 @@ angular.module('nav.barn', ['app.services'])
                 };
             }
 
-            $scope.barnetillegg = new BrukerData(barnetilleggsData);
-            $scope.barnetillegg.$create({soknadId: $scope.soknadData.soknadId}).then(function (data) {
+            $scope.barnetillegg = new Faktum(barnetilleggsData);
+            $scope.barnetillegg.$save({soknadId: $scope.soknadData.soknadId}).then(function (data) {
                 $scope.barnetillegg = data;
                 oppdaterFaktumListe("barnetillegg");
 
-                $scope.barn = new BrukerData(barneData);
+                $scope.barn = new Faktum(barneData);
 
                 if (ikkebarneinntekt == undefined) {
                     ikkebarneinntekt = {
@@ -170,8 +170,8 @@ angular.module('nav.barn', ['app.services'])
                     };
                 }
 
-                $scope.nyttBarnIkkeBarneInntekt = new BrukerData(ikkebarneinntekt);
-                $scope.nyttBarnIkkeBarneInntekt.$create({soknadId: $scope.soknadData.soknadId}).then(function (data) {
+                $scope.nyttBarnIkkeBarneInntekt = new Faktum(ikkebarneinntekt);
+                $scope.nyttBarnIkkeBarneInntekt.$save({soknadId: $scope.soknadData.soknadId}).then(function (data) {
                     $scope.ikkebarneinntekt = data;
                     oppdaterFaktumListe("ikkebarneinntekt");
 
@@ -184,8 +184,8 @@ angular.module('nav.barn', ['app.services'])
                             };
                         }
 
-                        $scope.nyttBarnBarneInntektTall = new BrukerData(barneinntekttall);
-                        $scope.nyttBarnBarneInntektTall.$create({soknadId: $scope.soknadData.soknadId}).then(function (data) {
+                        $scope.nyttBarnBarneInntektTall = new Faktum(barneinntekttall);
+                        $scope.nyttBarnBarneInntektTall.$save({soknadId: $scope.soknadData.soknadId}).then(function (data) {
                             $scope.nyttbarn.barneinntekttall = data;
 
                             if ($scope.soknadData.fakta.barneinntekttall && $scope.soknadData.fakta.barneinntekttall) {

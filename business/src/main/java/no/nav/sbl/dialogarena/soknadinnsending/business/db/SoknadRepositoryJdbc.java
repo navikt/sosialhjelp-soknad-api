@@ -223,15 +223,6 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         }
     }
 
-    //TODO: kan fjernes om man får brukt ny Faktum-struktur
-    @Override
-    public void slettSoknadsFelt(Long soknadId, Long faktumId) {
-        String sql = "delete from SOKNADBRUKERDATA where soknad_id=? and soknadbrukerdata_id=?";
-        getJdbcTemplate().update(sql, soknadId, faktumId);
-        String underFaktumSql = "delete from SOKNADBRUKERDATA where soknad_id=? and parrent_faktum=?";
-        getJdbcTemplate().update(underFaktumSql, soknadId, faktumId);
-    }
-
     private int utfyllingStartet(long soknadId) {
         return getJdbcTemplate().update(
                 "update soknad set DELSTEGSTATUS = ? where soknad_id = ?",
@@ -240,7 +231,8 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
 
     @Override
     public void slettBrukerFaktum(Long soknadId, Long faktumId) {
-        getJdbcTemplate().update("delete from soknadbrukerdata where soknadId = ? and faktumId = ? and type = 'BRUKERREGISTRERT'", soknadId, faktumId);
+        getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ? and soknadbrukerdata_id = ? and type = 'BRUKERREGISTRERT'", soknadId, faktumId);
+        getJdbcTemplate().update("delete from SOKNADBRUKERDATA where soknad_id=? and parrent_faktum=?", soknadId, faktumId);
     }
 
 
