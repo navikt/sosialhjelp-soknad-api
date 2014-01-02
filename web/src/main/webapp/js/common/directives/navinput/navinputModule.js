@@ -72,7 +72,7 @@ angular.module('nav.input', ['nav.cmstekster'])
 
                     scope.hvisHuketAv = function () {
                         var transcludeElement = element.find('.ng-transclude');
-                        return checkTrue(scope.model) && transcludeElement.text().length > 0;
+                        return checkTrue(scope.faktum.value) && transcludeElement.text().length > 0;
                     }
                     scope.endret = function () {
                         scope.$eval(scope.navendret);
