@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.detect.IsImage;
 import no.nav.sbl.dialogarena.detect.IsPdf;
@@ -16,6 +17,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventnin
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
@@ -51,6 +54,10 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Inject
     @Named("vedleggRepository")
     private VedleggRepository vedleggRepository;
+    @Inject
+    private HenvendelseConnector henvendelseConnector;
+    @Inject
+    private FillagerConnector fillagerConnector;
 
     @Override
     public WebSoknad hentSoknad(long soknadId) {
@@ -101,7 +108,11 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public void sendSoknad(long soknadId) {
-        repository.avslutt(new WebSoknad().medId(soknadId));
+        WebSoknad soknad = repository.hentSoknadMedData(soknadId);
+        List<VedleggForventning> vedleggForventnings = hentPaakrevdeVedlegg(soknadId);
+        henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(), new XMLHovedskjema(), Transformers.convertToXmlVedleggListe(vedleggForventnings));
+        repository.avslutt(soknad);
+
     }
 
     @Override
@@ -112,7 +123,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public void avbrytSoknad(Long soknadId) {
+        WebSoknad soknad = repository.hentSoknad(soknadId);
         repository.avbryt(soknadId);
+        henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
     }
 
     @Override
@@ -127,7 +140,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Long startSoknad(String navSoknadId) {
-        String behandlingsId = UUID.randomUUID().toString();
+        String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid(), navSoknadId);
 
         WebSoknad soknad = WebSoknad.startSoknad().
                 medBehandlingId(behandlingsId).
@@ -154,11 +167,16 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 }
             }
             bytes = new PdfWatermarker().applyOn(bytes, SubjectHandler.getSubjectHandler().getUid());
+            vedlegg.setFillagerReferanse(UUID.randomUUID().toString());
+            fillagerConnector.lagreFil(vedlegg.getFillagerReferanse(), new ByteArrayInputStream(bytes));
             return vedleggRepository.lagreVedlegg(vedlegg, bytes);
         } catch (Exception e) {
-
             throw new RuntimeException("Kunne ikke lagre vedlegg: " + e, e);
         }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(UUID.randomUUID().toString().length());
     }
 
     @Override

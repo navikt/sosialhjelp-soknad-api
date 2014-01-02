@@ -1,15 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse;
 
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLFaktumListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.websoknad.service.Transformers;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSEmpty;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
 import org.slf4j.Logger;
@@ -20,7 +16,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.soap.SOAPFaultException;
 import java.util.Arrays;
-import java.util.List;
 
 @Component
 public class HenvendelseConnector {
@@ -50,9 +45,11 @@ public class HenvendelseConnector {
         }
     }
 
-    public void avsluttSoknad(String behandlingsId, XMLHovedskjema hovedskjema, XMLVedlegg vedlegg) {
+    public void avsluttSoknad(String behandlingsId, XMLHovedskjema hovedskjema, XMLVedlegg... vedlegg) {
         try {
-            WSSoknadsdata parameters = new WSSoknadsdata().withBehandlingsId(behandlingsId).withAny(new XMLFaktumListe().withFaktum(hovedskjema, vedlegg));
+            WSSoknadsdata parameters = new WSSoknadsdata().withBehandlingsId(behandlingsId).withAny(new XMLMetadataListe()
+                    .withMetadata(hovedskjema)
+                    .withMetadata(vedlegg));
             sendSoknadService.sendSoknad(parameters);
         } catch (SOAPFaultException e) {
             logger.error("Feil ved innsending av søknad: " + e, e);
@@ -60,28 +57,8 @@ public class HenvendelseConnector {
         }
     }
 
-    public void lagreSoknad(List<Faktum> fakta) {
-        WSSoknadsdata soknadsdata = new WSSoknadsdata();
-        soknadsdata.setAny(Transformers.convertToFaktumListe(fakta));
-        sendSoknadService.mellomlagreSoknad(soknadsdata);
-    }
-
-    /* (non-Javadoc)
-     * @see no.nav.sbl.dialogarena.websoknad.service.SendSoknadService#hentSoknad(long)
-     */
-    public WebSoknad hentSoknad(String behandlingsId) {
-        logger.debug("Hent søknad");
-        try {
-            WSSoknadsdata soknadData = sendSoknadService.hentSoknad(new WSBehandlingsId().withBehandlingsId(behandlingsId));
-            return Transformers.convertToSoknad(soknadData);
-        } catch (SOAPFaultException e) {
-            logger.error("Feil ved henting av søknadsstruktur for søknad med ID {}", behandlingsId, e);
-            throw new ApplicationException("SoapFaultException", e);
-        }
-    }
-
     public no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSEmpty sendSoknad(WSSoknadsdata soknadsData) {
-        return new WSEmpty();
+        return sendSoknadService.sendSoknad(soknadsData);
     }
 
     public void avbrytSoknad(String behandlingsId) {

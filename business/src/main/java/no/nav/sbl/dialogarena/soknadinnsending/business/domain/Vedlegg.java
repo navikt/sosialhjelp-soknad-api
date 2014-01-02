@@ -14,8 +14,8 @@ public class Vedlegg {
     private Long storrelse;
     private Long faktumId;
     private Integer antallSider;
-
     private byte[] data;
+    private String fillagerReferanse;
 
     public Vedlegg() {
     }
@@ -123,6 +123,20 @@ public class Vedlegg {
         return vedlegg.faktumId != null;
     }
 
+    public String getFillagerReferanse() {
+        return fillagerReferanse;
+    }
+
+    public void setFillagerReferanse(String fillagerReferanse) {
+        this.fillagerReferanse = fillagerReferanse;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public byte[] getData() {
+        return data;
+    }
+
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
@@ -143,11 +157,5 @@ public class Vedlegg {
         sb.append(", faktumId='").append(faktumId).append('\'');
         sb.append('}');
         return sb.toString();
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public byte[] getData() {
-        return data;
     }
 }

@@ -1,8 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLFakta;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLFaktum;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLFaktumListe;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
+import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
@@ -33,11 +35,12 @@ public class ConsumerConfig {
 
     @Configuration
     @Import({
-            ConsumerConfig.AktorWsConfig.class,
-            ConsumerConfig.SendSoknadWSConfig.class,
-            ConsumerConfig.BrukerProfilWSConfig.class,
-            ConsumerConfig.KodeverkWSConfig.class,
-            ConsumerConfig.PersonWSConfig.class})
+            AktorWsConfig.class,
+            SendSoknadWSConfig.class,
+            FilLagerWSConfig.class,
+            BrukerProfilWSConfig.class,
+            KodeverkWSConfig.class,
+            PersonWSConfig.class})
     public static class WsServices {
 
     }
@@ -53,7 +56,7 @@ public class ConsumerConfig {
                     .withAddress(soknadServiceEndpoint)
                     .withWsdl("classpath:SendSoknad.wsdl")
                             //.withServiceName(new QName("http://nav.no/tjeneste/domene/brukerdialog/sendsoknad/v1", "SendSoknadPortType"))
-                    .withExtraClasses(new Class[]{XMLFaktumListe.class, WSSoknadsdata.class, WSStartSoknadRequest.class, XMLFaktum.class, XMLFakta.class})
+                    .withExtraClasses(new Class[]{XMLMetadataListe.class, WSSoknadsdata.class, WSStartSoknadRequest.class, XMLMetadata.class, XMLVedlegg.class, XMLHovedskjema.class})
                     .build()
                     .withHttpsMock()
                     .withMDC();
@@ -66,6 +69,32 @@ public class ConsumerConfig {
 
         @Bean
         public SendSoknadPortType sendSoknadSelftest() {
+            return factory().withSystemSecurity().get();
+        }
+    }
+
+    @Configuration
+    public static class FilLagerWSConfig {
+        @Value("${soknad.webservice.henvendelse.fillager.url}")
+        private String serviceEndpoint;
+
+        private ServiceBuilder<FilLagerPortType>.PortTypeBuilder<FilLagerPortType> factory() {
+            return new ServiceBuilder<>(FilLagerPortType.class)
+                    .asStandardService()
+                    .withAddress(serviceEndpoint)
+                    .withWsdl("classpath:FilLager.wsdl")
+                    .build()
+                    .withHttpsMock()
+                    .withMDC();
+        }
+
+        @Bean
+        public FilLagerPortType fillagerService() {
+            return factory().withUserSecurity().get();
+        }
+
+        @Bean
+        public FilLagerPortType fillagerServiceSelftest() {
             return factory().withSystemSecurity().get();
         }
     }
