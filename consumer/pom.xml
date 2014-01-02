@@ -27,11 +27,6 @@
             <artifactId>sendsoknad-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>sendsoknad-business</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
         </dependency>
