@@ -1,9 +1,11 @@
 <div class="nav-checkbox">
-    <div data-ng-show="hvisIRedigeringsmodus()" class="checkboks">
-        <input id="{{ navlabel }}" data-ng-model="faktum.value" type="checkbox" data-boolean-verdi data-ng-change="lagreFaktum(); endret()"/>
+    <div class="checkboks">
+        <input id="{{ navlabel }}" data-ng-model="faktum.value" type="checkbox" data-boolean-verdi
+               data-ng-change="lagreFaktum(); endret()"/>
         <label for="{{ navlabel }}" class="svar-alt" data-cmstekster="{{ navlabel }}"></label>
-        <div data-nav-hjelpetekstelement data-ng-if="hvisHarHjelpetekst()" data-tittel="{{ hjelpetekst.tittel }}" data-tekst="{{ hjelpetekst.tekst }}"></div>
+
+        <div data-nav-hjelpetekstelement data-ng-if="hvisHarHjelpetekst()" data-tittel="{{ hjelpetekst.tittel }}"
+             data-tekst="{{ hjelpetekst.tekst }}"></div>
     </div>
-    <p class="svar-oppsummering" data-ng-show="hvisIOppsummeringsmodusOgChecked()" data-cmstekster="{{ navlabel }}"></p>
     <div class="ng-transclude ekstra-spm-boks" data-ng-show="hvisHuketAv()"></div>
 </div>
