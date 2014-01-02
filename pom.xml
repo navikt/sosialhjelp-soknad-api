@@ -56,6 +56,11 @@
                 <version>0.0.2-SNAPSHOT</version>
             </dependency>
             <dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>dialogarena-fillager</artifactId>
+                <version>0.0.1</version>
+            </dependency>
+            <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-cxf</artifactId>
                 <version>1.0.1</version>

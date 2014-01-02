@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.person.FamilieRelasjonServiceTPS;
 import no.nav.sbl.dialogarena.person.PersonServiceTPS;
 import no.nav.sbl.dialogarena.soknadinnsending.business.BusinessConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadInnsendingDBConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
 import no.nav.sbl.dialogarena.websoknad.WicketApplication;
 import no.nav.sbl.dialogarena.websoknad.service.EmailService;
 import org.slf4j.Logger;
@@ -39,10 +40,8 @@ public class ApplicationContext {
     private static final Logger LOG = getLogger(ApplicationContext.class);
     @Value("${dialogarena.navnolink.url}")
     private String navigasjonslink;
-
     @Value("{$dokumentinnsending.smtpServer.port}")
     private String smtpServerPort;
-
     @Value("${dokumentinnsending.smtpServer.host}")
     private String smtpServerHost;
 
