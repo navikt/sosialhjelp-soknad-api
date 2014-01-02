@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Faktum implements Serializable {
-    //public enum FaktumType { FAGREGISTER, BRUKERREGISTRERT; }
+    public enum FaktumType { SYSTEMREGISTRERT, BRUKERREGISTRERT; }
     private Long faktumId;
     private Long soknadId;
     private Long vedleggId;

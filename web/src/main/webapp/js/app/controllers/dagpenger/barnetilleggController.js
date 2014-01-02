@@ -1,11 +1,5 @@
 angular.module('nav.barnetillegg', [])
-    .controller('BarnetilleggCtrl', ['$scope', '$cookieStore', '$location', '$timeout', 'BrukerData', function ($scope, $cookieStore, $location, $timeout, BrukerData) {
-        if ($scope.soknadData.fakta.barn) {
-            angular.forEach($scope.soknadData.fakta.barn.valuelist, function (value) {
-                value.value = angular.fromJson(value.value);
-            });
-        }
-
+    .controller('BarnetilleggCtrl', ['$scope', '$cookieStore', '$location', '$timeout', 'Faktum', function ($scope, $cookieStore, $location, $timeout, Faktum) {
         $scope.erBrukerregistrert = function (barn) {
             return barn.type == 'BRUKERREGISTRERT';
         }
@@ -15,7 +9,7 @@ angular.module('nav.barnetillegg', [])
         }
 
         $scope.ingenLandRegistrert = function (barn) {
-            return !barn.value.land;
+            return !barn.properties.land
         }
 
         $scope.leggTilBarn = function ($event) {
@@ -38,8 +32,7 @@ angular.module('nav.barnetillegg', [])
 
         $scope.slettBarn = function (b, index, $event) {
             $event.preventDefault();
-            b.value = angular.toJson(b.value);
-            $scope.barnSomSkalSlettes = new BrukerData(b);
+            $scope.barnSomSkalSlettes = new Faktum(b);
 
             $scope.barnSomSkalSlettes.$delete({soknadId: $scope.soknadData.soknadId}).then(function () {
                 $scope.soknadData.fakta.barn.valuelist.splice(index, 1);
@@ -48,11 +41,11 @@ angular.module('nav.barnetillegg', [])
 
 
         $scope.erGutt = function (barn) {
-            return barn.value.kjonn == "gutt";
+            return barn.properties.kjonn == "gutt";
         }
 
         $scope.erJente = function (barn) {
-            return barn.value.kjonn == "jente";
+            return barn.properties.kjonn == "jente";
         }
 
         $scope.validerBarnetillegg = function (form) {

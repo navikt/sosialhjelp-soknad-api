@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
+
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.detect.IsImage;
 import no.nav.sbl.dialogarena.detect.IsPdf;
@@ -70,6 +72,22 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public void slettBrukerFaktum(Long soknadId, Long faktumId) {
         repository.slettBrukerFaktum(soknadId, faktumId);
     }
+    
+    @Override
+    public Long lagreSystemFaktum(Long soknadId, Faktum f, String uniqueProperty) {
+        List<Faktum> fakta = repository.hentSystemFaktumList(soknadId, f.getKey(), FaktumType.SYSTEMREGISTRERT.toString());
+        
+        if(!uniqueProperty.isEmpty()) {
+            for (Faktum faktum : fakta) {
+                if(faktum.getProperties().get(uniqueProperty).equals(f.getProperties().get(uniqueProperty))) {
+                    f.setFaktumId(faktum.getFaktumId());
+                    return repository.lagreFaktum(soknadId, f);
+                    
+                }
+            }
+        }
+        return repository.lagreFaktum(soknadId, f);
+    }
 
     @Override
     public Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value) {
@@ -86,17 +104,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
         Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, null, key, json, SYSTEMREGISTRERT_FAKTUM));
         return repository.hentFaktum(soknadId, faktumId);
-    }
-
-    public void slettSoknadsFelt(Long soknadId, Long faktumId) {
-        //TODO slett faktum med denne faktumId-en som parrent (løses kanskje enklere etter refactorering)
-
-        repository.slettSoknadsFelt(soknadId, faktumId);
-    }
-
-    //TODO: Midlertidig funksjon, slett etter ny struktur.
-    public void slettBarnSoknadsFelt(Long soknadId) {
-        repository.slettBarnSoknadsFelt(soknadId);
     }
 
     @Override
@@ -239,5 +246,4 @@ public class SoknadService implements SendSoknadService, VedleggService {
         }
 
     }
-
 }

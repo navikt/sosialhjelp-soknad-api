@@ -32,41 +32,16 @@ angular.module('app.services', ['ngResource'])
     })
 
 /**
- * Service for å lagre brukerdata
+ * Service for å lagre Faktum
  */
-    .factory('BrukerData', function ($resource) {
-        var url = '/sendsoknad/rest/soknad/:soknadId/faktum/:mode' + '?rand=' + new Date().getTime();
+    .factory('Faktum', function ($resource) {
+        var url = '/sendsoknad/rest/soknad/:soknadId/fakta/:faktumId/:mode';
         return $resource(url,
-            {soknadId: '@soknadId'},
+            {soknadId: '@soknadId', faktumId: '@faktumId', mode: '@mode'},
             {
-                create: { method: 'POST', params: {mode: ''}},
-                jsoncreate: { method: 'POST', params: {mode: ''}, transformRequest: function (data, headersGetter) {
-                    var d = deepClone(data);
-                    d.value = angular.toJson(data.value);
-                    d = angular.toJson(d);
-                    return d;
-                }
-                },
+                save: { method: 'POST', params: {mode:''}},
                 delete: { method: 'POST', params: {mode: 'delete'}}
             }
-
-        )
-    })
-    .factory('Faktum', function ($resource) {
-        var url = '/sendsoknad/rest/soknad/:soknadId/fakta/:faktumId';
-        return $resource(url,
-            {soknadId: '@soknadId', faktumId: '@faktumId'},
-            {
-                create: { method: 'POST', params: {}},
-                jsoncreate: { method: 'POST', params: {}, transformRequest: function (data, headersGetter) {
-                    var d = deepClone(data);
-                    d.value = JSON.stringify(data.value);
-                    d = JSON.stringify(d);
-                    return d;
-                }
-                }
-            }
-
         )
     })
 

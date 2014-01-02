@@ -142,7 +142,7 @@ angular.module('sendsoknad')
         return d;
     }])
 
-    .factory('NyttBarnSideResolver', ['data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', function (data, cms, $resource, $q, $route, soknadService, landService) {
+    .factory('NyttBarnSideResolver', ['data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', function (data, cms, $resource, $q, $route, soknadService, landService, Faktum) {
         var soknadId = $route.current.params.soknadId;
         var promiseArray = [];
 
@@ -169,6 +169,20 @@ angular.module('sendsoknad')
                 data.land = result;
             }
         );
+
+        var fakta = Faktum.query({soknadId: soknadId}, function (result) {
+                data.fakta = result;
+                data.finnFaktum = function (key) {
+                    var res = null;
+                    data.fakta.forEach(function (item) {
+                        if (item.key == key) {
+                            res = item;
+                        }
+                    });
+                    return res;
+                }
+            });
+        promiseArray.push(fakta.$promise)
 
         var d = $q.all(promiseArray);
 
