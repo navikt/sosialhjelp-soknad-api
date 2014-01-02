@@ -77,7 +77,7 @@ angular.module('nav.ytelser', [])
                 if (erCheckboksForIngenYtelseHuketAv) {
                     $scope.harHuketAvCheckboksYtelse.value = 'true';
                 }
-                faktum.$save()
+                faktum.$save();
             }
         }
 
@@ -92,7 +92,7 @@ angular.module('nav.ytelser', [])
             } else {
                 $scope.harHuketAvCheckboksNavYtelse.value = true;
             }
-            var faktum = data.finnFaktum('ingenYtelse');
+            var faktum = data.finnFaktum('ingennavytelser');
             if (sjekkOmGittEgenskapTilObjektErTrue(faktum)) {
                 faktum.value = false;
                 faktum.$save();
@@ -101,30 +101,25 @@ angular.module('nav.ytelser', [])
 
         //      kjøres hver gang det skjer en endring på 'ingenNAVYtelse'-checkboksen
         $scope.endreIngenNavYtelse = function (form) {
-            var ingenNavYtelser = data.finnFaktum("ingennavytelser");
+            var faktum = data.finnFaktum("ingennavytelser");
+
             // Sjekker om en ytelse er huket av (inkluderer IKKE siste checkboksen)
             var ytelserNokler = undernokler.slice(0, undernokler.length - 1);
             var harValgtNavYtelse = erCheckboxerAvhuket(ytelserNokler);
-            var erCheckboksForIngenNavYtelseHuketAv = sjekkOmGittEgenskapTilObjektErTrue(ingenNavYtelser);
+            var erCheckboksForIngenNavYtelseHuketAv = faktum.value == 'true';
+
             if (harValgtNavYtelse) {
-                ingenNavYtelser.value = 'false';
+                faktum.value = 'false';
                 $scope.ytelser.skalViseFeilmeldingForIngenNavYtelser = true;
 
             } else {
                 if (erCheckboksForIngenNavYtelseHuketAv) {
                     $scope.harHuketAvCheckboksNavYtelse.value = 'true';
                 }
-                ingenNavYtelser.$save();
+                    faktum.$save();
             }
         }
 
-
-        $scope.ingenYtelserOppsummeringSkalVises = function () {
-            if ($scope.soknadData && $scope.soknadData.fakta) {
-                return $scope.soknadData.fakta.ingenYtelse && checkTrue($scope.soknadData.fakta.ingenYtelse.value) && $scope.hvisIOppsummeringsmodus();
-            }
-            return false;
-        }
 
         function erCheckboxerAvhuket(checkboxNokler) {
             var minstEnAvhuket = false;
