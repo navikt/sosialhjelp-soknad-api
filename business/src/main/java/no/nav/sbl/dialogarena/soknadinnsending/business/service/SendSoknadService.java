@@ -12,9 +12,7 @@ public interface SendSoknadService {
     WebSoknad hentSoknad(long soknadId);
 
     Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum);
-
-    void slettSoknadsFelt(Long soknadId, Long faktumId);
-
+    
     Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value);
     
     Long lagreSystemFaktum(Long soknadId, Faktum faktum, String uniqueProperty);

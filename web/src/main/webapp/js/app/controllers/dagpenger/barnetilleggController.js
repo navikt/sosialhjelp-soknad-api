@@ -1,5 +1,5 @@
 angular.module('nav.barnetillegg', [])
-    .controller('BarnetilleggCtrl', ['$scope', '$cookieStore', '$location', '$timeout', 'BrukerData', function ($scope, $cookieStore, $location, $timeout, BrukerData) {
+    .controller('BarnetilleggCtrl', ['$scope', '$cookieStore', '$location', '$timeout', 'Faktum', function ($scope, $cookieStore, $location, $timeout, Faktum) {
         $scope.erBrukerregistrert = function (barn) {
             return barn.type == 'BRUKERREGISTRERT';
         }
@@ -32,7 +32,7 @@ angular.module('nav.barnetillegg', [])
 
         $scope.slettBarn = function (b, index, $event) {
             $event.preventDefault();
-            $scope.barnSomSkalSlettes = new BrukerData(b);
+            $scope.barnSomSkalSlettes = new Faktum(b);
 
             $scope.barnSomSkalSlettes.$delete({soknadId: $scope.soknadData.soknadId}).then(function () {
                 $scope.soknadData.fakta.barn.valuelist.splice(index, 1);

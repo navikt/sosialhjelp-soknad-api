@@ -106,11 +106,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
         return repository.hentFaktum(soknadId, faktumId);
     }
 
-    public void slettSoknadsFelt(Long soknadId, Long faktumId) {
-        //TODO: kan fjernes om man får brukt ny Faktum-struktur
-        repository.slettSoknadsFelt(soknadId, faktumId);
-    }
-
     @Override
     public void sendSoknad(long soknadId) {
         repository.avslutt(new WebSoknad().medId(soknadId));
