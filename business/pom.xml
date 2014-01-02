@@ -61,6 +61,7 @@
     </build>
 
     <dependencies>
+
         <!-- Avhengigheter med scope compile -->
         <dependency>
             <groupId>no.nav.modig</groupId>

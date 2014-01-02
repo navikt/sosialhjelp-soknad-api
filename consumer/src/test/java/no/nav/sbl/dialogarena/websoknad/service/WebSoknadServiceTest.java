@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.service;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
@@ -41,7 +42,7 @@ public class WebSoknadServiceTest {
     @Test
     public void skalKunneStarteSoknad() {
         when(webservice.startSoknad(any(WSStartSoknadRequest.class))).thenReturn(lagResultatFraStartSoknad());
-        String behandlingsId = service.startSoknad("***REMOVED***", lagTomFaktaListe());
+        String behandlingsId = service.startSoknad("***REMOVED***", "");
         assertThat(behandlingsId, equalTo(BEHANDLINGS_ID));
     }
 
