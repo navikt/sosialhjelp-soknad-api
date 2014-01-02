@@ -29,7 +29,7 @@ describe('DagpengerControllere', function () {
 
     beforeEach(module(function ($provide) {
         $provide.value("data", {alder: {'alder': 61},
-            fakta: []});
+            fakta: [], finnFaktum: function(faktumKey) {}});
         $provide.value("cms", {});
         $provide.constant('lagreSoknadData', "OPPDATER_OG_LAGRE");
     }));

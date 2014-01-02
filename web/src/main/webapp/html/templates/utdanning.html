@@ -130,7 +130,8 @@
              data-fra-dato="navproperties.varighetFra"
              data-til-dato="navproperties.varighetTil"
              data-label="utdanning.varighet"
-             data-er-required="true"
+             data-ng-required
+             data-er-fremtidigdato-tillatt="true"
              data-feilmelding="utdanning.error.varighet.tilfra"
              data-lagre="lagreFaktum()">
         </div>
@@ -140,7 +141,8 @@
         <div data-nav-dato
              data-ng-model="faktum.value"
              data-label="utdanning.avslutning.semester"
-             data-er-required="true"
+             data-ng-required
+             data-er-fremtidigdato-tillatt="true"
              data-required-error-message="utdanning.avslutning.semester.feilmelding"
              data-lagre="lagreFaktum()">
         </div>
@@ -277,7 +279,6 @@
 </div>
 <span class="melding" data-cmstekster="utdanning.minstEnCheckboksErAvhuket.feilmelding"></span>
 
-{{harHuketAvCheckboks}}
 </div>
 <div data-spmblokkferdig data-nokkel="utdanning"
      data-modus="data.redigeringsModus"
