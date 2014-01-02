@@ -9,16 +9,16 @@
 
                 <div class="barnealder">
                     <span> ÅR</span>
-                    <span class="alder robust" data-ng-bind="b.value.alder"></span>
+                    <span class="alder robust" data-ng-bind="b.properties.alder"></span>
                 </div>
                 <div class="barneinfo">
-                    <div data-ng-bind="b.value.sammensattnavn"></div>
-                    <div data-ng-bind="b.value.fnr"></div>
-                    <div>{{ b.value.fodselsdato | date:'dd.MM.yyyy'}}</div>
+                    <div data-ng-bind="b.properties.sammensattnavn"></div>
+                    <div data-ng-bind="b.properties.fnr"></div>
+                    <div>{{ b.properties.fodselsdato | date:'dd.MM.yyyy'}}</div>
                     <div class="barnbosted">
                         <span class="bosted">bosted: </span>
                         <span data-ng-show="ingenLandRegistrert(b)">Norge</span>
-                        <span data-ng-bind="b.value.land"></span>
+                        <span data-ng-bind="b.properties.land"></span>
                     </div>
                 </div>
                 <div>

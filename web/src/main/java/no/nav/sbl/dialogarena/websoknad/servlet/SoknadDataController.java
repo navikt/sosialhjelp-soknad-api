@@ -102,13 +102,6 @@ public class SoknadDataController {
         return soknadService.lagreSoknadsFelt(soknadId, faktum);
     }
 
-    @RequestMapping(value = "/{soknadId}/faktum/delete", method = RequestMethod.POST)
-    @ResponseBody()
-    public void slettFaktum(@PathVariable Long soknadId,
-                            @RequestBody Faktum faktum) {
-        soknadService.slettSoknadsFelt(soknadId, faktum.getFaktumId());
-    }
-
     @RequestMapping(value = "/opprett/{soknadType}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody()
     public WebSoknadId opprettSoknad(@PathVariable String soknadType) {
