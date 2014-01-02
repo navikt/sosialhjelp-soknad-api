@@ -168,7 +168,6 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         }
     }
     
-    //todo remove string
     @Override
     public List<Faktum> hentSystemFaktumList(Long soknadId, String key, String string) {
         String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and key = ? and type= ?";
@@ -224,19 +223,13 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         }
     }
 
-    //TODO: Fiks slik at underfaktum blir slettet etter å ha fått ny faktum-struktur
+    //TODO: kan fjernes om man får brukt ny Faktum-struktur
     @Override
     public void slettSoknadsFelt(Long soknadId, Long faktumId) {
         String sql = "delete from SOKNADBRUKERDATA where soknad_id=? and soknadbrukerdata_id=?";
-        int rowsDeleted = getJdbcTemplate().update(sql, soknadId, faktumId);
-
-    }
-
-    //TODO: Midlertidig metode, slett etter ny struktur
-    @Override
-    public void slettBarnSoknadsFelt(Long soknadId) {
-        String sql = "delete from SOKNADBRUKERDATA where soknad_id=? and key=? and type=?";
-        int rowsDeleted = getJdbcTemplate().update(sql, soknadId, "barn", "SYSTEMREGISTRERT");
+        getJdbcTemplate().update(sql, soknadId, faktumId);
+        String underFaktumSql = "delete from SOKNADBRUKERDATA where soknad_id=? and parrent_faktum=?";
+        getJdbcTemplate().update(underFaktumSql, soknadId, faktumId);
     }
 
     private int utfyllingStartet(long soknadId) {

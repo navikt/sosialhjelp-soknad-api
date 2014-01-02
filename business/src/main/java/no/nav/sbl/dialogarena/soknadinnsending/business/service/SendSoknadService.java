@@ -32,8 +32,4 @@ public interface SendSoknadService {
     List<Faktum> hentFakta(Long soknadId);
 
     void slettBrukerFaktum(Long soknadId, Long faktumId);
-
-    void slettBarnSoknadsFelt(Long soknadId);
-
-
 }
