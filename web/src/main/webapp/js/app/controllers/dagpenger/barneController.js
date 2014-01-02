@@ -22,7 +22,6 @@ angular.module('nav.barn', ['app.services'])
                     }
                 });
             }
-
             if(barnUnderEndring.properties) {
                 barnUnderEndring.properties.fodselsdato = new Date(barnUnderEndring.properties.fodselsdato);
             }
@@ -140,14 +139,11 @@ angular.module('nav.barn', ['app.services'])
         function lagreBarnOgBarnetilleggFaktum() {
             $scope.barn.$create({soknadId: $scope.soknadData.soknadId}).then(function (barnData) {
                 $scope.barn = barnData;
-                /*$scope.barn.value = angular.fromJson(barnData.value);*/
                 oppdaterFaktumListe("barn");
                 oppdaterCookieValue(barnData.faktumId);
 
                 lagreTilleggsFaktum(barnData.faktumId);
-
             });
-
         }
 
         function lagreTilleggsFaktum(parrentFaktumId) {
@@ -209,8 +205,6 @@ angular.module('nav.barn', ['app.services'])
 
                 });
             });
-
-
         }
 
         function oppdaterFaktumListe(type) {
@@ -256,6 +250,4 @@ angular.module('nav.barn', ['app.services'])
                 return result;
             }
         }
-
-
     }]);

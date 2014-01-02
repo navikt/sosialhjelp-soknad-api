@@ -1,11 +1,5 @@
 angular.module('nav.barnetillegg', [])
     .controller('BarnetilleggCtrl', ['$scope', '$cookieStore', '$location', '$timeout', 'BrukerData', function ($scope, $cookieStore, $location, $timeout, BrukerData) {
-        if ($scope.soknadData.fakta.barn) {
-            /*angular.forEach($scope.soknadData.fakta.barn.valuelist, function (value) {
-                value.value = angular.fromJson(value.value);
-            });*/
-        }
-
         $scope.erBrukerregistrert = function (barn) {
             return barn.type == 'BRUKERREGISTRERT';
         }
