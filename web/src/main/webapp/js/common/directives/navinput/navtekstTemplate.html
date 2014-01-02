@@ -2,7 +2,8 @@
     <div data-ng-show="hvisIRedigeringsmodus()">
         <label>
             <span data-cmstekster="{{ navlabel }}"></span>
-            <input data-ng-model="faktum.value" type="text" value="{{ value }}" data-ng-required="hvisSynlig()" data-error-messages="'{{ navfeilmelding }}'" data-blur-validate
+            <input data-ng-model="faktum.value" type="text" value="{{ value }}" data-ng-required="hvisSynlig()"
+                   data-error-messages="'{{ navfeilmelding }}'" data-blur-validate
                    data-ng-blur="lagreFaktum()"/>
             <span class="melding"></span>
         </label>
