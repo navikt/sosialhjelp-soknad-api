@@ -56,7 +56,7 @@ angular.module('nav.datepicker', [])
                 tilDato: '=',
                 fraDato: '=',
                 tilDatoFeil: '=',
-                erFremtidigdatoTilatt: '=',
+                erFremtidigdatoTillatt: '=',
                 endret: '&',
                 lagre: '&',
                 label: '@',
@@ -164,7 +164,7 @@ angular.module('nav.datepicker', [])
                         scope.options = angular.extend({}, {defaultDate: defaultDate}, scope.options);
                     }
 
-                    if(scope.erFremtidigdatoTilatt) {
+                    if(scope.erFremtidigdatoTillatt) {
                         var config = deepClone(datepickerConfig);
                         config["maxDate"] = undefined;
                         return angular.extend({}, config, scope.options);
@@ -209,7 +209,7 @@ angular.module('nav.datepicker', [])
                 erFradatoRequired: '=',
                 erTildatoRequired: '=',
                 erBeggeRequired: '=',
-                erFremtidigdatoTilatt: '=',
+                erFremtidigdatoTillatt: '=',
                 label: '@'
 
             },
