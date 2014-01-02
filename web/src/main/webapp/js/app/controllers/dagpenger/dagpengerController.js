@@ -14,7 +14,7 @@
             $scope.validerDagpenger = function (form, event) {
                 //burde refaktoreres, bruke noe annet en events?
                 event.preventDefault();
-
+                console.log(form.$error)
                 $scope.$broadcast('VALIDER_YTELSER', form.ytelserForm);
                 $scope.$broadcast('VALIDER_UTDANNING', form.utdanningForm);
                 $scope.$broadcast('VALIDER_ARBEIDSFORHOLD', form.arbeidsforholdForm);
