@@ -140,7 +140,16 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     @Override
     public Faktum hentFaktum(Long soknadId, Long faktumId) {
         String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and soknadbrukerdata_id = ?";
-        return getJdbcTemplate().queryForObject(sql, soknadDataRowMapper, soknadId, faktumId);
+        String propertiesSql = "select * from FAKTUMEGENSKAP where soknad_id = ? and faktum_id=?";
+        
+        Faktum result = getJdbcTemplate().queryForObject(sql, soknadDataRowMapper, soknadId, faktumId);
+        
+        List<FaktumEgenskap> properties = getJdbcTemplate().query(propertiesSql, faktumEgenskapRowMapper, soknadId, result.getFaktumId());
+        for (FaktumEgenskap faktumEgenskap : properties) {
+                result.getProperties().put(faktumEgenskap.getKey(), faktumEgenskap.getValue());
+        }
+        
+        return result;
     }
 
     /**
