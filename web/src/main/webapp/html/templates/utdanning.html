@@ -1,4 +1,4 @@
-<div class="skjemaramme" data-ng-controller="ModusCtrl">
+<div class="skjemaramme">
 <div data-ng-form="utdanningForm" class="skjemainnhold" data-ng-controller="UtdanningCtrl" data-novalidate>
 <div data-form-errors></div>
 <h4 class="spm-sporsmal">
@@ -177,7 +177,8 @@
 
     <div class="infoboks" data-cmstekster="utdanning.svar.under.utdanning.kortvarig.informasjon"></div>
 
-    <div class="varighet" data-nav-faktum="utdanning.kortvarig.varighet" data-nav-property="['varighetFra', 'varighetTil']">
+    <div class="varighet" data-nav-faktum="utdanning.kortvarig.varighet"
+         data-nav-property="['varighetFra', 'varighetTil']">
         <div data-nav-dato-intervall
              data-fra-dato="navproperties.varighetFra"
              data-til-dato="navproperties.varighetFra"
@@ -216,7 +217,8 @@
          data-ng-required="true"></div>
 
 
-    <div class="varighet" data-nav-faktum="utdanning.kortvarigflere.varighet" data-nav-property="['varighetFra', 'varighetTil']">
+    <div class="varighet" data-nav-faktum="utdanning.kortvarigflere.varighet"
+         data-nav-property="['varighetFra', 'varighetTil']">
         <div data-nav-dato-intervall
              data-fra-dato="navproperties.varighetFra"
              data-til-dato="navproperties.varighetTil"
@@ -266,14 +268,13 @@
      data-navendret="endreUtdanning(utdanningForm)"></div>
 
 
-<div data-ng-show="hvisIRedigeringsmodus()">
     <div class="annetvalg-nei form-linje" data-nav-faktum="underUtdanningAnnet">
         <input id="underUtdanningAnnetCheckbox" data-ng-model="faktum.value" type="checkbox"
                name="ingennavytelser" data-ng-change="endreUtdannelseAnnet(utdanningForm)" data-boolean-verdi/>
-        <label for="underUtdanningAnnetCheckbox" class="svar-alt" data-cmstekster="utdanning.svar.under.utdanning.annet"></label>
+        <label for="underUtdanningAnnetCheckbox" class="svar-alt"
+               data-cmstekster="utdanning.svar.under.utdanning.annet"></label>
         <span class="ingen-navytelse-melding" data-cmstekster="utdanning.harValgtUtdanning.feilmelding"></span>
     </div>
-</div>
 <div class="annetvalg-nei form-linje" data-ng-class="{feil:utdanning.skalViseFeilmeldingForUtdanningAnnet}">
     <span class="utdanning-annet-melding" data-cmstekster="utdanning.harValgtUtdanning.feilmelding"></span>
 </div>
@@ -281,7 +282,6 @@
 
 </div>
 <div data-spmblokkferdig data-nokkel="utdanning"
-     data-modus="data.redigeringsModus"
      data-submit-method="validerOgSettModusOppsummering(utdanningForm)"></div>
 </div>
 </div>

@@ -1,26 +1,15 @@
 <div class="form-linje textarea-container">
-    <div data-ng-show="hvisIRedigeringsmodus()">
-        <div>
-            <label>
-                <span data-cmstekster="{{sporsmal}}"></span>
-                <textarea data-ng-name="faktum.key" data-ng-model="faktum.value" data-error-messages="'{{ feilmelding }}'"
-                          data-ng-required="hvisSynlig()" data-ng-trim="false" aria-controls="{{sporsmal}}"
-                          data-validate-textarea data-ng-blur="mistetFokus()" data-ng-focus="tattFokus()"></textarea>
+    <label>
+        <span data-cmstekster="{{sporsmal}}"></span>
+        <textarea data-ng-name="faktum.key" data-ng-model="faktum.value" data-error-messages="'{{ feilmelding }}'"
+                  data-ng-required="hvisSynlig()" data-ng-trim="false" aria-controls="{{sporsmal}}"
+                  data-validate-textarea data-ng-blur="mistetFokus()" data-ng-focus="tattFokus()"></textarea>
                 <span class="egen-linje" data-ng-show="fokus || feil">
                     <span class="tellertekst" data-ng-class="{negativtekstteller: counter < 0 }" aria-live="polite"
                           id="{{sporsmal}}"> {{counter}} </span>
                     <span data-cmstekster="fritekst.negativtellertekst" data-ng-if="counter < 0"></span>
                     <span data-cmstekster="fritekst.tellertekst" data-ng-if="counter >= 0"></span>
                 </span>
-            </label>
-            <span class="melding"></span>
-        </div>
-    </div>
-
-    <div data-ng-show="hvisIOppsummeringsmodus()">
-        <span data-cmstekster="{{ sporsmal }}">:</span>
-        <span>
-            {{ model }}
-        </span>
-    </div>
+    </label>
+    <span class="melding"></span>
 </div>

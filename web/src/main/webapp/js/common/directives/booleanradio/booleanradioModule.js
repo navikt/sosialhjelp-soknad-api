@@ -16,14 +16,6 @@ angular.module('nav.booleanradio', ['nav.cmstekster', 'nav.input'])
                     scope.navfeilmelding = src + ".feilmelding";
                 },
                 post: function (scope, element) {
-                    scope.hvisIRedigeringsmodus = function () {
-                        return scope.data.redigeringsModus;
-                    }
-
-                    scope.hvisIOppsummeringsmodus = function () {
-                        return !scope.hvisIRedigeringsmodus();
-                    }
-
                     scope.hvisModelErTrue = function () {
                         return scope.faktum.value == 'true';
                     }
