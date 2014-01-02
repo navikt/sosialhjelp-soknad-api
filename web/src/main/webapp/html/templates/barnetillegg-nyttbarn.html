@@ -10,6 +10,11 @@
                         <span data-ng-bind="barnenavn"></span>
                     </h2>
 
+                    <div data-nav-faktum="barn"
+                         data-navconfig
+                         data-nav-property="['fornavn', 'etternavn', 'fodselsdato', 'land']"
+                         data-nokkel="barn"></div>
+
                     <div data-ng-if="leggerTilNyttBarnEllerEndrerBarn()">
                         <h2 class="stor-strek" data-cmstekster="barnetillegg.nyttbarn.tittel"></h2>
 
@@ -18,7 +23,7 @@
                                 <span data-cmstekster="barnetillegg.nyttbarn.fornavn"></span>
                                 <input name="fornavn"
                                        data-error-messages="'barnetillegg.nyttbarn.fornavn.feilmelding'" type="text"
-                                       data-ng-model="barn.value.fornavn"
+                                       data-ng-model="barn.properties.fornavn"
                                        data-blur-validate required>
                                 <span class="melding"></span>
                             </label>
@@ -28,14 +33,14 @@
                                 <span data-cmstekster="barnetillegg.nyttbarn.etternavn"></span>
                                 <input name="fnr"
                                        data-error-messages="'barnetillegg.nyttbarn.etternavn.feilmelding'" type="text"
-                                       data-ng-model="barn.value.etternavn"
+                                       data-ng-model="barn.properties.etternavn"
                                        data-blur-validate required>
                                 <span class="melding"></span>
                             </label>
                         </div>
 
                         <div data-nav-dato
-                             data-ng-model="barn.value.fodselsdato"
+                             data-ng-model="barn.properties.fodselsdato"
                              data-label="barnetillegg.nyttbarn.fodselsdato"
                              data-er-required="true"
                              data-required-error-message="barnetillegg.nyttbarn.fodselsdato.feilmelding">
@@ -45,7 +50,7 @@
                             <div nav-select
                                  name="land"
                                  data-label="barnetillegg.nyttbarn.land"
-                                 data-ng-model="barn.value.land"
+                                 data-ng-model="barn.properties.land"
                                  data-options="land.result"
                                  data-er-required="true"
                                  data-default-value="barnetillegg.nyttbarn.landDefault"

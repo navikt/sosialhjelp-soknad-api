@@ -26,13 +26,6 @@ angular.module('nav.input', ['nav.cmstekster'])
                         return element.is(':visible');
                     };
 
-                    scope.hvisIRedigeringsmodus = function () {
-                        return scope.data.redigeringsModus;
-                    };
-                    scope.hvisIOppsummeringsmodusOgRadioErValgt = function () {
-
-                        return !scope.hvisIRedigeringsmodus() && scope.faktum.value == scope.value.toString();
-                    }
                     scope.endret = function () {
                         scope.$eval(attr.navendret);
                     }
@@ -62,17 +55,9 @@ angular.module('nav.input', ['nav.cmstekster'])
                         return scope.hjelpetekst.tittel && scope.hjelpetekst.tekst;
                     }
 
-                    scope.hvisIRedigeringsmodus = function () {
-                        return scope.data.redigeringsModus;
-                    }
-
-                    scope.hvisIOppsummeringsmodusOgChecked = function () {
-                        return !scope.hvisIRedigeringsmodus() && checkTrue(scope.faktum.value);
-                    }
-
                     scope.hvisHuketAv = function () {
                         var transcludeElement = element.find('.ng-transclude');
-                        return checkTrue(scope.model) && transcludeElement.text().length > 0;
+                        return checkTrue(scope.faktum.value) && transcludeElement.text().length > 0;
                     }
                     scope.endret = function () {
                         scope.$eval(scope.navendret);
@@ -89,14 +74,6 @@ angular.module('nav.input', ['nav.cmstekster'])
             replace: true,
             scope: true,
             link: function (scope, element) {
-                scope.hvisIRedigeringsmodus = function () {
-                    return scope.data.redigeringsModus;
-                }
-
-                scope.hvisIOppsummeringsmodus = function () {
-                    return !scope.hvisIRedigeringsmodus();
-                }
-
                 scope.hvisSynlig = function () {
                     return element.is(':visible');
                 }

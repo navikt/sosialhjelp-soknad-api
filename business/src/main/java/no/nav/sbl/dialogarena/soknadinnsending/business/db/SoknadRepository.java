@@ -34,13 +34,12 @@ public interface SoknadRepository {
                             String systemregistrertFaktum);
 
 
+    List<Faktum> hentSystemFaktumList(Long soknadId, String key, String string);
+    
     void endreInnsendingsValg(Long soknadId, Long faktumId, Faktum.Status innsendingsvalg);
 
     void settSistLagretTidspunkt(Long soknadId);
 
     void slettBrukerFaktum(Long soknadId, Long faktumId);
 
-    void slettSoknadsFelt(Long soknadId, Long faktumId);
-
-    void slettBarnSoknadsFelt(Long soknadId);
 }

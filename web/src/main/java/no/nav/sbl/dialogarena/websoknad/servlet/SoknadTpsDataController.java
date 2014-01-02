@@ -51,26 +51,24 @@ public class SoknadTpsDataController {
     @RequestMapping(value = "/kodeverk/landliste", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Map<String, List<Map<String, String>>> hentLandkodeListe() {
-        Map<String, String> norge = new LinkedHashMap<>();
-        norge.put("text", "Norge");
-        norge.put("value", "NO");
-
-        Map<String, String> sverige = new LinkedHashMap<>();
-        sverige.put("text", "Sverige");
-        sverige.put("value", "SE");
-
-        Map<String, String> danmark = new LinkedHashMap<>();
-        danmark.put("text", "Danmark");
-        danmark.put("value", "DK");
-
-        List<Map<String, String>> mockLand = new ArrayList<>();
-        mockLand.add(norge);
-        mockLand.add(sverige);
-        mockLand.add(danmark);
-
-        Map<String, List<Map<String, String>>> hashMap = new LinkedHashMap<>();
-        hashMap.put("result", mockLand);
-        return hashMap;
+       
+        List<Map<String, String>> landliste = new ArrayList<>();
+        List<String> landKoder = kodeverk.getAlleLandkoder();
+        for (String landkode : landKoder) {
+            Map<String, String> land = new LinkedHashMap<>();
+            land.put("text", kodeverk.getLand(landkode));
+            land.put("value", landkode);
+            landliste.add(land);
+        }
+        if(!landKoder.contains("NOR")) {
+            Map<String, String> norge = new LinkedHashMap<>();
+            norge.put("text", "Norge");
+            norge.put("value", "NOR");
+            landliste.add(norge);
+        }
+        Map<String, List<Map<String, String>>> resultMap = new LinkedHashMap<>();
+        resultMap.put("result", landliste);
+        return resultMap;
     }
 
     @RequestMapping(value = "/personalder", method = RequestMethod.GET, produces = "application/json")

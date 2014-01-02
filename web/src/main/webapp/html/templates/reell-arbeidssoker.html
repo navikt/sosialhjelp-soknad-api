@@ -1,5 +1,6 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <div data-ng-form="reellarbeidssokerForm" class="skjemainnhold vertikal" data-ng-controller="ReellarbeidssokerCtrl" novalidate>
+    <div data-ng-form="reellarbeidssokerForm" class="skjemainnhold vertikal" data-ng-controller="ReellarbeidssokerCtrl"
+         novalidate>
 
         <div data-form-errors></div>
         <div data-nav-hjelpetekst-element></div>
@@ -13,7 +14,8 @@
                  data-nokkel="reellarbeidssoker.villigdeltid.false.informasjon"></div>
 
             <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
-                <input type="hidden" data-ng-model="harHuketAvCheckboksDeltid.value" data-nav-faktum="villigdeltid" data-ng-required="faktum.value == 'false' && erUnder60Aar()"
+                <input type="hidden" data-ng-model="harHuketAvCheckboksDeltid.value" data-nav-faktum="villigdeltid"
+                       data-ng-required="faktum.value == 'false' && erUnder60Aar()"
                        data-error-messages="'reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding'">
 
                 <div data-navcheckbox
@@ -69,12 +71,12 @@
         <div data-booleanradio
              data-nav-faktum="villigpendle"
              data-ng-model="soknadData.fakta.villigpendle.value"
-             data-modus="data.redigeringsModus"
              data-nokkel="reellarbeidssoker.villigpendle">
 
             <div data-navinfoboks data-nokkel="reellarbeidssoker.villigpendle.false.informasjon"></div>
             <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
-                <input type="hidden" data-ng-model="harHuketAvCheckboksPendle.value" data-ng-required="faktum.value == 'false' && erUnder60Aar()"
+                <input type="hidden" data-ng-model="harHuketAvCheckboksPendle.value"
+                       data-ng-required="faktum.value == 'false' && erUnder60Aar()"
                        data-error-messages="'reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding'"/>
 
                 <div data-navcheckbox
@@ -157,7 +159,7 @@
         </div>
 
 
-        <div data-spmblokkferdig data-nokkel="reellarbeidssoker" data-modus="data.redigeringsModus"
+        <div data-spmblokkferdig data-nokkel="reellarbeidssoker"
              data-submit-method="validerOgSettModusOppsummering(reellarbeidssokerForm, true)"></div>
     </div>
 </div>
