@@ -1,0 +1,13 @@
+<div class="tekstfelt form-linje">
+        <label>
+            <span data-cmstekster="{{ navlabel }}"></span>
+            <input data-ng-model="faktum.value" type="text" value="{{ value }}" data-ng-required="hvisSynlig()"
+                   data-error-messages="'{{ navfeilmelding }}'" data-blur-validate
+                   data-ng-blur="lagreFaktum()" placeholder="123456789" orgnr-validate/>
+            <span class="melding"></span>
+            <span  data-ng-if="harFormatteringsFeil()" data-cmstekster="orgnaisasjonsnummer.format.feilmelding"></span>
+            <span  data-ng-if="forFaaTegn" data-cmstekster="orgnaisasjonsnummer.forfaatall.feilmelding"></span>
+
+        </label>
+
+</div>

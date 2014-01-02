@@ -82,6 +82,57 @@ angular.module('nav.input', ['nav.cmstekster'])
         }
     }])
 
+    .directive('navorganisasjonsnummerfelt', [function () {
+        return {
+            restrict: "A",
+            replace: true,
+            scope: true,
+            link: function (scope, element) {
+                scope.hvisSynlig = function () {
+                    return element.is(':visible');
+                }
+            },
+            templateUrl: '../js/common/directives/navinput/navorgnrfeltTemplate.html'
+        }
+    }]).directive('orgnrValidate', [function () {
+        return {
+            require: ['ngModel'],
+            link: function (scope, element, attrs, ctrls) {
+                var tallRegEx = new RegExp(/^-?\d+\.?\d*$/);
+                var ngModel = ctrls[0];
+
+                ngModel.$parsers.unshift(function (viewValue) {
+                    var verdi = viewValue
+                    if(verdi && verdi.length == 9 || scope.harFormatteringsFeil()) {
+                        scope.forFaaTegn = false;
+                    }
+                    if (verdi && verdi.length > 9) {
+                        verdi = viewValue.substring(0, 9);
+                        ngModel.$viewValue = verdi;
+                        ngModel.$render();
+                    }
+                    return verdi;
+                });
+
+                //hvis man skrive space så validerer den ikke til false før neste verdi blir skrevet inn
+                scope.harFormatteringsFeil = function () {
+                    if (ngModel.$viewValue == undefined || ngModel.$viewValue.length == 0) {
+                        return false;
+                    }
+                    return !tallRegEx.test(ngModel.$viewValue);
+                }
+
+                element.bind('blur', function(){
+                    scope.forFaaTegn = false;
+                    if (ngModel.$viewValue && ngModel.$viewValue.length < 9 && ngModel.$viewValue.length > 1) {
+                        scope.forFaaTegn = true;
+                    }
+                })
+
+            }
+        }
+    }])
+
     .directive('navButtonSpinner', [function () {
         return {
             restrict: "A",

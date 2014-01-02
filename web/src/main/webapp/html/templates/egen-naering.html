@@ -1,9 +1,24 @@
-<div class="skjemaramme">
+<div class="skjemaramme" data-ng-controller="ModusCtrl">
     <div data-ng-form="egennaeringForm" class="skjemainnhold" data-ng-controller="EgennaeringCtrl" data-novalidate>
         <div data-form-errors></div>
         <div data-nav-faktum="ikkeegennaering"
              data-navconfig
              data-booleanradio
+             data-nokkel="ikkeegennaering">
+
+            <div data-navinfoboks data-nokkel="ikkeegennaering.false.informasjon"></div>
+
+            <div data-navorganisasjonsnummerfelt
+                 data-nav-faktum="organisasjonsnummer"
+                 data-navconfig
+                 data-ng-pattern="/\d+/"
+                 data-navlabel="ikkeegennaering.false.organisasjonsnummer"
+                 data-navfeilmelding="ikkeegennaering.false.organisasjonsnummer.feilmelding"></div>
+        </div>
+
+
+        <div data-spmblokkferdig data-nokkel="ikkeegennaering"
+             data-submit-method="validerOgSettModusOppsummering(egennaeringForm)"></div>
              data-nokkel="ikkeegennaering"></div>
         <div data-spmblokkferdig data-nokkel="ikkeegennaering"
              data-submit-method="validerOgSettModusOppsummering(egennaeringForm)"></div>
