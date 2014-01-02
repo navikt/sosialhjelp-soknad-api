@@ -23,10 +23,9 @@ angular.module('nav.barn', ['app.services'])
                 });
             }
 
-            /*if (barnUnderEndring.value) {
-                barnUnderEndring.value = angular.fromJson(barnUnderEndring.value)
-                barnUnderEndring.value.fodselsdato = new Date(barnUnderEndring.value.fodselsdato);
-            }*/
+            if(barnUnderEndring.properties) {
+                barnUnderEndring.properties.fodselsdato = new Date(barnUnderEndring.properties.fodselsdato);
+            }
         }
 
         if (endreModus || barnetilleggModus) {
