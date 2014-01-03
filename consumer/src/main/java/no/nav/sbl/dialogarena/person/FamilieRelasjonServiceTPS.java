@@ -14,8 +14,6 @@ import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRespo
 
 import org.slf4j.Logger;
 
-import com.google.gson.Gson;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.WebServiceException;
