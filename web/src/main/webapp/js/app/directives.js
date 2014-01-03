@@ -19,7 +19,6 @@ angular.module('app.directives', [
     'nav.prosent',
     'nav.sidetittel',
     'nav.bildenavigering',
-    'nav.utdanningannet',
     'nav.navfaktum',
     'nav.accordion',
     'nav.barnetillegg.directive',
