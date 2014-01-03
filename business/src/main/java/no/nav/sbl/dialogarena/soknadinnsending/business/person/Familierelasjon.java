@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.person.person;
+package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

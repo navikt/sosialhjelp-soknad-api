@@ -1,18 +1,11 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
-import no.nav.modig.cache.CacheConfig;
-import no.nav.sbl.dialogarena.person.person.FamilieRelasjonServiceTPS;
-import no.nav.sbl.dialogarena.person.person.PersonServiceTPS;
-import no.nav.sbl.dialogarena.soknadinnsending.business.BusinessConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadInnsendingDBConfig;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
 import no.nav.sbl.dialogarena.websoknad.WicketApplication;
 import no.nav.sbl.dialogarena.websoknad.service.EmailService;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -26,15 +19,6 @@ import static org.slf4j.LoggerFactory.getLogger;
  * Applikasjonskontekst for ear-modulen.
  */
 @Configuration
-@Import({
-        BusinessConfig.class,
-        CacheConfig.class,
-        FooterConfig.class,
-        GAConfig.class,
-        ConsumerConfig.class,
-        ContentConfig.class,
-        ServicesApplicationContext.class,
-        SoknadInnsendingDBConfig.class})
 public class ApplicationContext {
 
     private static final Logger LOG = getLogger(ApplicationContext.class);
@@ -80,16 +64,6 @@ public class ApplicationContext {
     @Bean
     public WicketApplication dokumentinnsendingApplication() {
         return new WicketApplication();
-    }
-
-    @Bean
-    public PersonServiceTPS personServiceTPS() {
-        return new PersonServiceTPS();
-    }
-
-    @Bean
-    public FamilieRelasjonServiceTPS familieReleasjonService() {
-        return new FamilieRelasjonServiceTPS();
     }
 
     @Bean

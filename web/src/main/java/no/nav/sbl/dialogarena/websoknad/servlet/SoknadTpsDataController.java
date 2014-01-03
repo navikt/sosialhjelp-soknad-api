@@ -2,12 +2,12 @@ package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import com.google.gson.GsonBuilder;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.person.person.Adresse;
-import no.nav.sbl.dialogarena.person.person.FamilieRelasjonService;
-import no.nav.sbl.dialogarena.person.person.Person;
-import no.nav.sbl.dialogarena.person.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.FamilieRelasjonService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.Person;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.websoknad.util.DateTimeSerializer;
 import org.joda.time.DateTime;

@@ -1,11 +1,11 @@
-package no.nav.sbl.dialogarena.person.person;
+package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
 /**
- * Service for å hente person fra TPS
+ * Service for å hente person med familierelasjon fra TPS
  *
  * @author V140448
  */
-public interface PersonService {
+public interface FamilieRelasjonService {
     /**
      * Henter person fra TPS og mapper til vårt eget Person-objekt
      *

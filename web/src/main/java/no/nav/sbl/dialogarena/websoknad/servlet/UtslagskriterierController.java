@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import no.nav.sbl.dialogarena.person.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

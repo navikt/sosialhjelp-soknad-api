@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.websoknad.config;
+package no.nav.sbl.dialogarena.soknadinnsending.business;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.kodeverk.StandardKodeverk;
