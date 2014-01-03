@@ -20,7 +20,7 @@ public class Vedlegg {
     public Vedlegg() {
     }
 
-    public Vedlegg(Long vedleggId, Long soknadId, Long faktumId, String navn, Long storrelse, Integer antallSider, byte[] data) {
+    public Vedlegg(Long vedleggId, Long soknadId, Long faktumId, String navn, Long storrelse, Integer antallSider, String fillagerReferanse, byte[] data) {
         this.id = vedleggId;
         this.soknadId = soknadId;
         this.faktumId = faktumId;
@@ -28,6 +28,7 @@ public class Vedlegg {
         this.storrelse = storrelse;
         this.data = data;
         this.antallSider = antallSider;
+        this.fillagerReferanse = fillagerReferanse;
     }
 
     public Long getId() {
