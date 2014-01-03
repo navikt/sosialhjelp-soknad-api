@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.person.person;
+package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
@@ -21,10 +21,10 @@ import org.slf4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.person.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
-import static no.nav.sbl.dialogarena.person.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
-import static no.nav.sbl.dialogarena.person.person.Adressetype.POSTADRESSE;
-import static no.nav.sbl.dialogarena.person.person.Adressetype.UTENLANDSK_ADRESSE;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.POSTADRESSE;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**

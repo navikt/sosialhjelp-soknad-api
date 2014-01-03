@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.person.person;
+package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -10,6 +10,7 @@ import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -24,14 +25,13 @@ import static org.slf4j.LoggerFactory.getLogger;
 /**
  * Implementer {@link PersonService}. Denne implementasjonen henter data fra TPS, og lagrer som systemfaktum i databasen
  */
+@Service
 public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
 
     private static final Logger logger = getLogger(FamilieRelasjonServiceTPS.class);
-
     @Inject
     @Named("personService")
     private PersonPortType person;
-
     @Inject
     private SendSoknadService soknadService;
 

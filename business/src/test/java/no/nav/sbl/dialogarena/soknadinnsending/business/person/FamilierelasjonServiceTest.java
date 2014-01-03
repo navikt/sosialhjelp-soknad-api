@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.person.person;
+package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -51,7 +51,7 @@ public class FamilierelasjonServiceTest {
         HentKjerneinformasjonRequest request = new HentKjerneinformasjonRequest();
         request.setIdent(FEIL_IDENT);
         when(personMock.hentKjerneinformasjon(request)).thenThrow(HentKjerneinformasjonPersonIkkeFunnet.class);
-        no.nav.sbl.dialogarena.person.person.Person familieRelasjonPerson = service.hentPerson(1l, FEIL_IDENT);
+        no.nav.sbl.dialogarena.soknadinnsending.business.person.Person familieRelasjonPerson = service.hentPerson(1l, FEIL_IDENT);
         Assert.assertNotNull(familieRelasjonPerson);
     }
 
@@ -65,7 +65,7 @@ public class FamilierelasjonServiceTest {
 
         when(personMock.hentKjerneinformasjon(Mockito.any(HentKjerneinformasjonRequest.class))).thenReturn(response);
 
-        no.nav.sbl.dialogarena.person.person.Person familieRelasjonPerson = service.hentPerson(2l, GYLDIG_IDENT);
+        no.nav.sbl.dialogarena.soknadinnsending.business.person.Person familieRelasjonPerson = service.hentPerson(2l, GYLDIG_IDENT);
 
         Assert.assertNotNull(familieRelasjonPerson.getFakta());
 
@@ -104,7 +104,7 @@ public class FamilierelasjonServiceTest {
 
         when(personMock.hentKjerneinformasjon(Mockito.any(HentKjerneinformasjonRequest.class))).thenReturn(response);
 
-        no.nav.sbl.dialogarena.person.person.Person familieRelasjonPerson = service.hentPerson(2l, GYLDIG_IDENT);
+        no.nav.sbl.dialogarena.soknadinnsending.business.person.Person familieRelasjonPerson = service.hentPerson(2l, GYLDIG_IDENT);
 
         Faktum fnr = (Faktum) familieRelasjonPerson.getFakta().get("fnr");
         Faktum fornavn = (Faktum) familieRelasjonPerson.getFakta().get("fornavn");

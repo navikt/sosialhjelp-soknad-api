@@ -38,7 +38,7 @@
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>no.nav.sbl.dialogarena.websoknad.config.ApplicationContext</param-value>
+        <param-value>no.nav.sbl.dialogarena.websoknad.config.SoknadinnsendingContext</param-value>
     </context-param>
 
 
@@ -106,6 +106,14 @@
     <servlet>
         <servlet-name>soknadBacking</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextClass</param-name>
+            <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+        </init-param>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>no.nav.sbl.dialogarena.websoknad.servlet.ServletContext</param-value>
+        </init-param>
         <load-on-startup>1</load-on-startup>
         <async-supported>true</async-supported>
     </servlet>
