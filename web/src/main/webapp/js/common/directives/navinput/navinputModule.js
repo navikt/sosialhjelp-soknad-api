@@ -96,25 +96,32 @@ angular.module('nav.input', ['nav.cmstekster'])
         }
     }]).directive('orgnrValidate', [function () {
         return {
-            require: ['ngModel'],
-            link: function (scope, element, attrs, ctrls) {
+            require: 'ngModel',
+            link: function (scope, element, attrs, ctrl) {
                 var tallRegEx = new RegExp(/^-?\d+\.?\d*$/);
-                var ngModel = ctrls[0];
+                var ngModel = ctrl;
+                scope.forFaaTegn = false;
 
                 ngModel.$parsers.unshift(function (viewValue) {
-                    var verdi = viewValue
-                    if(verdi && verdi.length == 9 || scope.harFormatteringsFeil()) {
-                        scope.forFaaTegn = false;
-                    }
+                    var verdi = viewValue;
+                    endreForFaaTegnVerdi();
+
                     if (verdi && verdi.length > 9) {
                         verdi = viewValue.substring(0, 9);
                         ngModel.$viewValue = verdi;
                         ngModel.$render();
                     }
+
+                    ngModel.$setValidity('orgnr', !scope.harFeil());
+                    console.log(ngModel.$valid);
                     return verdi;
                 });
 
-                //hvis man skrive space så validerer den ikke til false før neste verdi blir skrevet inn
+                scope.harFeil = function () {
+                    return scope.forFaaTegn || scope.harFormatteringsFeil();
+                }
+
+                //hvis man skriver space så validerer den ikke til false før neste ikke-spaceverdi blir skrevet inn
                 scope.harFormatteringsFeil = function () {
                     if (ngModel.$viewValue == undefined || ngModel.$viewValue.length == 0) {
                         return false;
@@ -122,13 +129,20 @@ angular.module('nav.input', ['nav.cmstekster'])
                     return !tallRegEx.test(ngModel.$viewValue);
                 }
 
-                element.bind('blur', function(){
+                element.bind('blur', function () {
                     scope.forFaaTegn = false;
-                    if (ngModel.$viewValue && ngModel.$viewValue.length < 9 && ngModel.$viewValue.length > 1) {
+                    ngModel.$setValidity('orgnr', !scope.harFeil());
+                    if (ngModel.$viewValue && ngModel.$viewValue.length < 9 && ngModel.$viewValue.length > 0) {
                         scope.forFaaTegn = true;
+                        ngModel.$setValidity('orgnr', false);
                     }
                 })
 
+                function endreForFaaTegnVerdi(viewValue) {
+                    if (viewValue && viewValue.length == 9 || !scope.harFormatteringsFeil()) {
+                        scope.forFaaTegn = false;
+                    }
+                }
             }
         }
     }])
