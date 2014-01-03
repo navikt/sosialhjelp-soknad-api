@@ -24,9 +24,9 @@ angular.module('nav.ytelser', [])
         }
 
         $scope.hvisAvtaleInngaatt = function () {
-            var faktum = data.finnFaktum('avtale');
+            var faktum = data.finnFaktum('ikkeavtale');
             if (faktum != undefined && faktum.value != undefined) {
-                return faktum.value == 'avtale';
+                return faktum.value == 'false';
             }
             return false;
         }
@@ -69,6 +69,8 @@ angular.module('nav.ytelser', [])
 
             if (erCheckboksForIngenYtelseHuketAv) {
                 $scope.harHuketAvCheckboksYtelse.value = 'true';
+            } else {
+                $scope.harHuketAvCheckboksYtelse.value = '';
             }
             faktum.$save();
         }
@@ -101,6 +103,8 @@ angular.module('nav.ytelser', [])
       
             if (erCheckboksForIngenNavYtelseHuketAv) {
                 $scope.harHuketAvCheckboksNavYtelse.value = 'true';
+            } else {
+                $scope.harHuketAvCheckboksNavYtelse.value = '';
             }
             faktum.$save();
         }
