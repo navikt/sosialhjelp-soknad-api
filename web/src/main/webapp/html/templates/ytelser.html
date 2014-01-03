@@ -92,7 +92,7 @@
                      data-navfeilmelding="ytelser.annenYtelseUtbetaler.feilmelding"></div>
             </div>
             <div>
-                <div class="annetvalg-nei form-linje" data-valider-ingen-ytelser data-nav-faktum="ingenYtelse">
+                <div class="annetvalg-nei form-linje" data-nav-faktum="ingenYtelse">
                     <input id="ingenYtelseCheckbox" data-ng-model="faktum.value" type="checkbox"
                            name="ingenYtelse" data-ng-change="endreIngenYtelse()" data-boolean-verdi>
                     <label for="ingenYtelseCheckbox" class="svar-alt" data-cmstekster="ytelser.ingenYtelse"></label>
@@ -147,7 +147,7 @@
                  data-navendret="endreNavYtelse(ytelserForm)"></div>
 
 
-            <div class="annetvalg-nei form-linje" data-valider-nav-ytelser data-nav-faktum="ingennavytelser">
+            <div class="annetvalg-nei form-linje" data-nav-faktum="ingennavytelser">
                 <input id="ingennavytelserCheckbox" data-ng-model="faktum.value" type="checkbox"
                        name="ingennavytelser" data-ng-change="endreIngenNavYtelse(ytelserForm)" data-boolean-verdi/>
                 <label for="ingennavytelserCheckbox" class="svar-alt" data-cmstekster="ytelser.nav.ingen"></label>
@@ -164,22 +164,6 @@
             data-navconfig
             data-booleanradio
             data-nokkel="ytelser.ikkeavtale"></div>
-
-          <!--   <div data-navradio
-                 data-navconfig
-                 data-value="ikkeAvtale"
-                 data-nav-faktum="avtale"
-                 data-navlabel="ytelser.goder.nei"
-                 data-ng-required="true"
-                 data-navfeilmelding="ytelser.goder.feilmelding"></div>
-
-            <div data-navradio
-                 data-navconfig
-                 data-value="avtale"
-                 data-nav-faktum="avtale"
-                 data-navlabel="ytelser.goder.ja"
-                 data-ng-required="true"
-                 data-navfeilmelding="ytelser.goder.feilmelding"></div> -->
 
             <div data-navtekst
                  data-navconfig
