@@ -24,7 +24,6 @@ public class VedleggRepositoryJdbcTest {
 
     @Inject
     private VedleggRepository vedleggRepository;
-
     @Inject
     private RepositoryTestSupport soknadRepositoryTestSupport;
 
@@ -67,13 +66,12 @@ public class VedleggRepositoryJdbcTest {
         assertThat(bytes, is(equalTo(lagret)));
     }
 
-
     private Vedlegg getVedlegg() {
         return getVedlegg(new byte[]{1, 2, 3});
     }
 
     private Vedlegg getVedlegg(byte[] bytes) {
-        return new Vedlegg(null, 12L, 10L, "navn", (long) bytes.length, 1, bytes);
+        return new Vedlegg(null, 12L, 10L, "navn", (long) bytes.length, 1, null, bytes);
     }
 
 }

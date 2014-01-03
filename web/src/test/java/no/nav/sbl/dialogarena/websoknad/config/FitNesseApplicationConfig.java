@@ -4,6 +4,8 @@ package no.nav.sbl.dialogarena.websoknad.config;
 import no.nav.modig.wicket.test.FluentWicketTester;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfigTest;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import no.nav.sbl.dialogarena.websoknad.WicketApplication;
 import no.nav.sbl.dialogarena.websoknad.servlet.SoknadDataController;
@@ -47,6 +49,11 @@ public class FitNesseApplicationConfig {
     @Bean
     HenvendelseConnector henvendelseConnector() {
         return new HenvendelseConnector();
+    }
+
+    @Bean
+    FillagerConnector faillagerConnector() {
+        return new FillagerConnector();
     }
 
 

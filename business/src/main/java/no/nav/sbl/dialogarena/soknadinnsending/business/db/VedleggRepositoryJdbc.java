@@ -36,14 +36,14 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
 
     @Override
     public List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktum) {
-        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, navn, storrelse, opprettetdato, antallsider from Vedlegg where soknad_id = ? and faktum = ?", new VedleggRowMapper(false), soknadId, faktum);
+        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, navn, storrelse, opprettetdato, antallsider, fillagerReferanse from Vedlegg where soknad_id = ? and faktum = ?", new VedleggRowMapper(false), soknadId, faktum);
     }
 
 
     @Override
     public Long lagreVedlegg(final Vedlegg vedlegg, final byte[] content) {
         final Long databasenokkel = getJdbcTemplate().queryForObject(SQLUtils.selectNextSequenceValue("VEDLEGG_ID_SEQ"), Long.class);
-        getJdbcTemplate().execute("insert into vedlegg(vedlegg_id, soknad_id,faktum, navn, storrelse, antallsider, data, opprettetdato) values (?, ?, ?, ?, ?, ?, ?, sysdate)",
+        getJdbcTemplate().execute("insert into vedlegg(vedlegg_id, soknad_id,faktum, navn, storrelse, antallsider, fillagerReferanse, data, opprettetdato) values (?, ?, ?, ?, ?, ?, ?, ?, sysdate)",
 
                 new AbstractLobCreatingPreparedStatementCallback(lobHandler) {
                     @Override
@@ -54,7 +54,8 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
                         ps.setString(4, vedlegg.getNavn());
                         ps.setLong(5, vedlegg.getStorrelse());
                         ps.setLong(6, vedlegg.getAntallSider());
-                        lobCreator.setBlobAsBytes(ps, 7, content);
+                        ps.setString(7, vedlegg.getFillagerReferanse());
+                        lobCreator.setBlobAsBytes(ps, 8, content);
                     }
                 });
         return databasenokkel;
@@ -86,7 +87,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
 
     @Override
     public Vedlegg hentVedlegg(Long soknadId, Long vedleggId) {
-        return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, navn, storrelse, antallsider, opprettetdato from Vedlegg where soknad_id = ? and vedlegg_id = ?", new VedleggRowMapper(false), soknadId, vedleggId);
+        return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, navn, storrelse, antallsider, fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and vedlegg_id = ?", new VedleggRowMapper(false), soknadId, vedleggId);
     }
 
     @Override
