@@ -1,11 +1,11 @@
-package no.nav.sbl.dialogarena.person;
+package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegrensning;
-import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.NorskIdent;
@@ -14,7 +14,6 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -41,7 +40,7 @@ public class FamilierelasjonServiceTest {
     private FamilieRelasjonServiceTPS service;
 
     @Mock
-    private PersonPortType personMock;
+    private PersonConnector personMock;
 
     @Mock
     private SoknadService soknadServiceMock;
@@ -52,7 +51,7 @@ public class FamilierelasjonServiceTest {
         HentKjerneinformasjonRequest request = new HentKjerneinformasjonRequest();
         request.setIdent(FEIL_IDENT);
         when(personMock.hentKjerneinformasjon(request)).thenThrow(HentKjerneinformasjonPersonIkkeFunnet.class);
-        no.nav.sbl.dialogarena.person.Person familieRelasjonPerson = service.hentPerson(1l, FEIL_IDENT);
+        no.nav.sbl.dialogarena.soknadinnsending.business.person.Person familieRelasjonPerson = service.hentPerson(1l, FEIL_IDENT);
         Assert.assertNotNull(familieRelasjonPerson);
     }
 
@@ -66,7 +65,7 @@ public class FamilierelasjonServiceTest {
 
         when(personMock.hentKjerneinformasjon(Mockito.any(HentKjerneinformasjonRequest.class))).thenReturn(response);
 
-        no.nav.sbl.dialogarena.person.Person familieRelasjonPerson = service.hentPerson(2l, GYLDIG_IDENT);
+        no.nav.sbl.dialogarena.soknadinnsending.business.person.Person familieRelasjonPerson = service.hentPerson(2l, GYLDIG_IDENT);
 
         Assert.assertNotNull(familieRelasjonPerson.getFakta());
 
@@ -105,7 +104,7 @@ public class FamilierelasjonServiceTest {
 
         when(personMock.hentKjerneinformasjon(Mockito.any(HentKjerneinformasjonRequest.class))).thenReturn(response);
 
-        no.nav.sbl.dialogarena.person.Person familieRelasjonPerson = service.hentPerson(2l, GYLDIG_IDENT);
+        no.nav.sbl.dialogarena.soknadinnsending.business.person.Person familieRelasjonPerson = service.hentPerson(2l, GYLDIG_IDENT);
 
         Faktum fnr = (Faktum) familieRelasjonPerson.getFakta().get("fnr");
         Faktum fornavn = (Faktum) familieRelasjonPerson.getFakta().get("fornavn");

@@ -1,11 +1,11 @@
-package no.nav.sbl.dialogarena.websoknad.service;
+package no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse;
 
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSEmpty;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
 import org.slf4j.Logger;
@@ -15,15 +15,13 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.soap.SOAPFaultException;
-import java.util.List;
+import java.util.Arrays;
 
 @Component
-public class HenvendelseConnector{
+public class HenvendelseConnector {
 
     private static final Logger logger = LoggerFactory.getLogger(HenvendelseConnector.class);
-
     private static final String SOKNADINNSENDING = "SEND_SOKNAD";
-
     @Inject
     @Named("sendSoknadService")
     private SendSoknadPortType sendSoknadService;
@@ -32,13 +30,10 @@ public class HenvendelseConnector{
         return "";
     }
 
-    /* (non-Javadoc)
-     * @see no.nav.sbl.dialogarena.websoknad.service.SendSoknadService#startSoknad(java.lang.String)
-	 */
-    public String startSoknad(String fnr, List<Faktum> fakta) {
-        logger.debug("Start søknad");
+    public String startSoknad(String fnr, String hovedskjema) {
         try {
-            WSStartSoknadRequest request = new WSStartSoknadRequest().withFodselsnummer(fnr).withType(SOKNADINNSENDING).withAny(Transformers.convertToFaktumListe(fakta));
+            XMLHovedskjema skjema = new XMLHovedskjema().withSkjemanummer(hovedskjema);
+            WSStartSoknadRequest request = new WSStartSoknadRequest().withFodselsnummer(fnr).withType(SOKNADINNSENDING).withAny(Arrays.asList(skjema));
             WSBehandlingsId behandlingsId = sendSoknadService.startSoknad(request);
             return behandlingsId.getBehandlingsId();
         } catch (SOAPFaultException e) {
@@ -46,34 +41,23 @@ public class HenvendelseConnector{
             throw new ApplicationException("Kunne ikke opprette ny søknad", e);
         }
     }
-    
 
-    public void lagreSoknad(List<Faktum> fakta) {
-        WSSoknadsdata soknadsdata = new WSSoknadsdata();
-        soknadsdata.setAny(Transformers.convertToFaktumListe(fakta));
-        sendSoknadService.mellomlagreSoknad(soknadsdata);
-    }
-
-    
-    /* (non-Javadoc)
-     * @see no.nav.sbl.dialogarena.websoknad.service.SendSoknadService#hentSoknad(long)
-     */
-    public WebSoknad hentSoknad(String behandlingsId) {
-        logger.debug("Hent søknad");
+    public void avsluttSoknad(String behandlingsId, XMLHovedskjema hovedskjema, XMLVedlegg... vedlegg) {
         try {
-            WSSoknadsdata soknadData = sendSoknadService.hentSoknad(new WSBehandlingsId().withBehandlingsId(behandlingsId));
-            return Transformers.convertToSoknad(soknadData);
+            WSSoknadsdata parameters = new WSSoknadsdata().withBehandlingsId(behandlingsId).withAny(new XMLMetadataListe()
+                    .withMetadata(hovedskjema)
+                    .withMetadata(vedlegg));
+            sendSoknadService.sendSoknad(parameters);
         } catch (SOAPFaultException e) {
-            logger.error("Feil ved henting av søknadsstruktur for søknad med ID {}", behandlingsId, e);
-            throw new ApplicationException("SoapFaultException", e);
+            logger.error("Feil ved innsending av søknad: " + e, e);
+            throw new ApplicationException("Kunne ikke opprette ny søknad", e);
         }
     }
-    
-   
-    public no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSEmpty sendSoknad(WSSoknadsdata soknadsData){
-        return new WSEmpty();
+
+    public no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSEmpty sendSoknad(WSSoknadsdata soknadsData) {
+        return sendSoknadService.sendSoknad(soknadsData);
     }
-    
+
     public void avbrytSoknad(String behandlingsId) {
         logger.debug("Avbryt søknad");
         try {
@@ -83,5 +67,5 @@ public class HenvendelseConnector{
             throw new ApplicationException("Feil ved avbryting av søknad", e);
         }
     }
-   
+
 }
