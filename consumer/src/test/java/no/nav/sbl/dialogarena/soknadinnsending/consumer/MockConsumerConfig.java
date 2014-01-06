@@ -13,19 +13,32 @@ import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKode;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLTerm;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkRequest;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkResponse;
+import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.NorskIdent;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
+import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
+import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 import org.hamcrest.CustomMatcher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.context.annotation.ComponentScan.Filter;
 
 @Configuration
-@ComponentScan
+@ComponentScan(excludeFilters = @Filter(Configuration.class))
+
 public class MockConsumerConfig {
 
     @Configuration
@@ -34,6 +47,7 @@ public class MockConsumerConfig {
 
         @Bean
         public SendSoknadPortType sendSoknadService() {
+            System.out.println("\n\n\n\n\nsetter opp service \n\n\n\n");
             SendSoknadPortType mock = mock(SendSoknadPortType.class);
             when(mock.startSoknad(any(WSStartSoknadRequest.class))).thenReturn(new WSBehandlingsId().withBehandlingsId("ID" + id++));
             return mock;
@@ -63,14 +77,44 @@ public class MockConsumerConfig {
     public static class PersonWSConfig {
 
         @Bean
-        public PersonPortType personService() {
-            return mock(PersonPortType.class);
+        public PersonPortType personService() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
+            PersonPortType mock = mock(PersonPortType.class);
+            HentKjerneinformasjonResponse response = new HentKjerneinformasjonResponse();
+            Person person = genererPersonMedGyldigIdentOgNavn("02104635787", "person", "mock");
+            List<Familierelasjon> familieRelasjoner = person.getHarFraRolleI();
+            Familierelasjon familierelasjon = new Familierelasjon();
+            Person barn1 = genererPersonMedGyldigIdentOgNavn("01010091736", "Barn1", "mock");
+            familierelasjon.setTilPerson(barn1);
+            Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
+            familieRelasjonRolle.setValue("FARA");
+            familierelasjon.setTilRolle(familieRelasjonRolle);
+            familieRelasjoner.add(familierelasjon);
+            response.setPerson(person);
+            when(mock.hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class))).thenReturn(response);
+            return mock;
         }
 
         @Bean
-        public PersonPortType personServiceSelftest() {
+        public PersonPortType personServiceSelftest() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
             return personService();
         }
+
+        private Person genererPersonMedGyldigIdentOgNavn(String ident, String fornavn, String etternavn) {
+            Person xmlPerson = new Person();
+
+            Personnavn personnavn = new Personnavn();
+            personnavn.setFornavn(fornavn);
+            personnavn.setMellomnavn("");
+            personnavn.setEtternavn(etternavn);
+            xmlPerson.setPersonnavn(personnavn);
+
+            NorskIdent norskIdent = new NorskIdent();
+            norskIdent.setIdent(ident);
+            xmlPerson.setIdent(norskIdent);
+
+            return xmlPerson;
+        }
+
 
     }
 
@@ -102,6 +146,7 @@ public class MockConsumerConfig {
 
         @Bean
         public KodeverkPortType kodeverkService() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
+            System.out.println("Starter mock kodeverk");
             KodeverkPortType mock = mock(KodeverkPortType.class);
             when(mock.hentKodeverk(argThat(new CustomMatcher<XMLHentKodeverkRequest>("sjekk om kodeverk matcher") {
                 @Override

@@ -2,13 +2,11 @@ package no.nav.sbl.dialogarena.soknadinnsending.business;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.kodeverk.StandardKodeverk;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.inject.Inject;
@@ -22,7 +20,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 @Configuration
 @EnableScheduling
-@Import(ConsumerConfig.class)
 public class ServicesApplicationContext {
 
     private static final Logger LOG = getLogger(ServicesApplicationContext.class);

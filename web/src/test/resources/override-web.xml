@@ -18,4 +18,13 @@
         <tracking-mode>COOKIE</tracking-mode>
     </session-config>
 
+    <servlet>
+        <servlet-name>livebeans</servlet-name>
+        <servlet-class>org.springframework.web.context.support.LiveBeansViewServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>livebeans</servlet-name>
+        <url-pattern>/livebeans</url-pattern>
+    </servlet-mapping>
+
 </web-app>

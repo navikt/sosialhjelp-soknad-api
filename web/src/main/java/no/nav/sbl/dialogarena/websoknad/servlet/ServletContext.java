@@ -17,10 +17,12 @@ import org.springframework.web.servlet.mvc.WebContentInterceptor;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.springframework.context.annotation.ComponentScan.Filter;
+
 @Configuration
 @EnableWebMvc
 @EnableAsync
-@ComponentScan()
+@ComponentScan(excludeFilters = @Filter(Configuration.class))
 public class ServletContext extends WebMvcConfigurerAdapter {
     @Bean
     public TaskExecutor thumbnailExecutor() {
