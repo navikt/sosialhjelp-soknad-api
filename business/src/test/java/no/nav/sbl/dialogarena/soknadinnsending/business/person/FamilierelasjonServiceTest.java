@@ -3,9 +3,9 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegrensning;
-import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.NorskIdent;
@@ -40,7 +40,7 @@ public class FamilierelasjonServiceTest {
     private FamilieRelasjonServiceTPS service;
 
     @Mock
-    private PersonPortType personMock;
+    private PersonConnector personMock;
 
     @Mock
     private SoknadService soknadServiceMock;

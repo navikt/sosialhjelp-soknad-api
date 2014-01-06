@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.person;
 
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.SikkerhetsBegrensningException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.TjenesteUtilgjengeligException;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
@@ -29,7 +30,7 @@ public class PersonConnector {
             return person.hentKjerneinformasjon(request);
         } catch (HentKjerneinformasjonPersonIkkeFunnet e) {
             logger.error("Fant ikke bruker i TPS (Person-servicen).", e);
-            return null;
+            throw new IkkeFunnetException("fant ikke bruker: " + request.getIdent(), e);
         } catch (HentKjerneinformasjonSikkerhetsbegrensning e) {
             logger.error("Kunne ikke hente bruker fra TPS (Person-servicen).", e);
             throw new SikkerhetsBegrensningException("Kunne ikke hente bruker: " + request.getIdent(), e);
