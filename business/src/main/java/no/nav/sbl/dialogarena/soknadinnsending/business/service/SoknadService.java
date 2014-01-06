@@ -60,10 +60,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Inject
     private FillagerConnector fillagerConnector;
 
-    public static void main(String[] args) {
-        System.out.println(UUID.randomUUID().toString().length());
-    }
-
     @Override
     public WebSoknad hentSoknad(long soknadId) {
         return repository.hentSoknadMedData(soknadId);

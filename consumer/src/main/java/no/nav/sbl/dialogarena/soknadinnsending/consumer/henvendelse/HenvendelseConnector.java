@@ -30,9 +30,6 @@ public class HenvendelseConnector {
         return "";
     }
 
-    /* (non-Javadoc)
-     * @see no.nav.sbl.dialogarena.websoknad.service.SendSoknadService#startSoknad(java.lang.String)
-	 */
     public String startSoknad(String fnr, String hovedskjema) {
         try {
             XMLHovedskjema skjema = new XMLHovedskjema().withSkjemanummer(hovedskjema);
