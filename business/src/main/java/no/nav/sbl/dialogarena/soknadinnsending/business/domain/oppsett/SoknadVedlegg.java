@@ -9,6 +9,7 @@ public class SoknadVedlegg implements Serializable {
     private SoknadFaktum faktum;
     private String onValue;
     private String gosysId;
+    private String property;
 
     @XmlIDREF
     public SoknadFaktum getFaktum() {
@@ -35,6 +36,14 @@ public class SoknadVedlegg implements Serializable {
         this.gosysId = gosysId;
     }
 
+    public String getProperty() {
+        return property;
+    }
+
+    public void setProperty(String property) {
+        this.property = property;
+    }
+
     @Override
     public String toString() {
         return new StringBuilder("SoknadVedlegg{")
@@ -46,6 +55,6 @@ public class SoknadVedlegg implements Serializable {
     }
 
     public boolean trengerVedlegg(String value) {
-        return onValue.equalsIgnoreCase(value);
+        return onValue == null || onValue.equalsIgnoreCase(value);
     }
 }

@@ -30,7 +30,6 @@
     </faktum>
     <faktum>
         <id>arbeidsforhold</id>
-        <type>JSON</type>
         <panel>Arbeidsforhold</panel>
         <dependOn>harIkkeJobbet</dependOn>
         <dependOnValue>false</dependOnValue>
@@ -191,6 +190,11 @@
         <faktum>ekstraVedlegg</faktum>
         <onValue>true</onValue>
         <gosysId>L6</gosysId>
+    </vedlegg>
+    <vedlegg>
+        <faktum>arbeidsforhold</faktum>
+        <gosysId>T8</gosysId>
+        <property>navn</property>
     </vedlegg>
 
 </soknad>
