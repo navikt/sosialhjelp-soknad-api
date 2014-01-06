@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.person;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
@@ -38,11 +39,12 @@ public class FamilieRelasjonTransform {
         for (Familierelasjon familierelasjon : familierelasjoner) {
             Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
 
-            //TODO: Kodeverk
-            if (familierelasjonType.getValue().equals("forelder")) {
+            if (familierelasjonType.getValue().equals("FARA") || familierelasjonType.getValue().equals("MORA")) {
                 no.nav.tjeneste.virksomhet.person.v1.informasjon.Person tilPerson = familierelasjon.getTilPerson();
                 Barn barn = mapXmlPersonToPerson(tilPerson, soknadId);
-                result.add(barn);
+                if (barn.getAlder() < 18) {
+                    result.add(barn);
+                }
             }
         }
 

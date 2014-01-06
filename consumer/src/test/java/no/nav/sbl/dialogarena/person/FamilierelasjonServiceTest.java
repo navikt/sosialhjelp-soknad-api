@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.person;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
@@ -13,6 +14,7 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -30,7 +32,7 @@ public class FamilierelasjonServiceTest {
     private static final String ET_FORNAVN = "Per";
     private static final String ET_ETTERNAVN = "Persen";
     private static final String FEIL_IDENT = "99999999999";
-    private static final String BARN_IDENT = "14057132842";
+    private static final String BARN_IDENT = "***REMOVED***";
     private static final String BARN_FORNAVN = "Bjarne";
     private static final String BARN_ETTERNAVN = "Barnet";
     private static final Object BARN_SAMMENSATTNAVN = BARN_FORNAVN + " " + BARN_ETTERNAVN;
@@ -94,8 +96,7 @@ public class FamilierelasjonServiceTest {
         familierelasjon.setTilPerson(barn1);
         Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
 
-        //TODO: kodeverk
-        familieRelasjonRolle.setValue("forelder");
+        familieRelasjonRolle.setValue("FARA");
         familierelasjon.setTilRolle(familieRelasjonRolle);
 
         familieRelasjoner.add(familierelasjon);
@@ -142,4 +143,5 @@ public class FamilierelasjonServiceTest {
 
         return xmlPerson;
     }
+
 }
