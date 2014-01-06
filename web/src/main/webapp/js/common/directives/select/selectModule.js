@@ -19,21 +19,41 @@
  *
  * ugyldig-feilmelding: Nøkkel til feilmelding som skal vises dersom man skriver inn noe som ikke finnes i listen. Dersom ikke oppgitt blir det en standard nøkkel.
  */
-angular.module('nav.select', ['ngSanitize'])
-    .directive('navSelect', ['$document', 'cms', '$timeout', function ($document, cms, $timeout) {
-        return {
-            require: ['ngModel', '^form'],
-            scope: {
-                requiredFeilmelding: '@',
-                ugyldigFeilmelding: '@',
-                label: '@',
-                erRequired: '=',
-                ngModel: '='
+ angular.module('nav.select', ['ngSanitize'])
+ .directive('navSelect', ['$document', 'cms', '$timeout','Faktum', function ($document, cms, $timeout, Faktum) {
+    return {
+        require: '^form',
+        scope: true,
+        replace: true,
+        templateUrl: '../js/common/directives/select/selectTemplate.html',
+        link: {
+            pre: function(scope, element, attrs) {
+
+                scope.$watch(
+                    function() {
+                        return scope.$eval(attrs.erRequired);
+                    },
+                    function(verdi) {
+                        scope.erRequired = verdi;
+                    }
+                )
+                
+                scope.label = attrs.label;
+
+                if (attrs.requiredFeilmelding === undefined) {
+                    scope.requiredFeilmelding = 'select.required.feilmelding';
+                } else {
+                    scope.requiredFeilmelding = attrs.requiredFeilmelding;
+                }
+
+                if (attrs.ugyldigFeilmelding === undefined) {
+                    scope.ugyldigFeilmelding = 'select.ugyldig.feilmelding';
+                } else {
+                    scope.ugyldigFeilmelding = attrs.ugyldigFeilmelding;
+                }
             },
-            replace: true,
-            templateUrl: '../js/common/directives/select/selectTemplate.html',
-            link: function (scope, element, attrs, ctrls) {
-                var eventForAValidereHeleFormen = 'RUN_VALIDATION' + ctrls[1].$name;
+            post: function (scope, element, attrs, form) {
+                var eventForAValidereHeleFormen = 'RUN_VALIDATION' + form.$name;
                 scope.orginalListe = scope.$parent.$eval(attrs.options);
 
                 for (var i = 0; i < scope.orginalListe.length; i++) {
@@ -43,13 +63,18 @@ angular.module('nav.select', ['ngSanitize'])
                 scope.vistListe = filterListePaaSoketekst();
                 scope.vistListeFiltrert = filterListeTilAntallElementerRundtValgtElement();
                 scope.defaultValue = cms.tekster[attrs.defaultValue] ? cms.tekster[attrs.defaultValue] : attrs.defaultValue;
-
-                if (scope.ngModel == undefined) {
-                    scope.ngModel = (scope.defaultValue) ? scope.defaultValue : '';
+                
+                if (scope.faktum.value == undefined) {
+                    scope.faktum.value = (scope.defaultValue) ? scope.defaultValue : '';
                 }
 
                 scope.inputVerdi = hentValgtTekstBasertPaaValue();
-                scope.valgtElementVerdi = scope.ngModel;
+                scope.valgtElementVerdi = scope.faktum.value;
+                
+                scope.harvalgt = false;
+                if(scope.valgtElementVerdi) {
+                    scope.harvalgt = true;
+                }
 
                 scope.listeErApen = false;
                 scope.soketekst = '';
@@ -59,14 +84,6 @@ angular.module('nav.select', ['ngSanitize'])
                 var maximumIndeks;
                 var harHattFokus = false;
                 var harFokus = false;
-
-                if (scope.requiredFeilmelding === undefined) {
-                    scope.requiredFeilmelding = 'select.required.feilmelding';
-                }
-
-                if (scope.ugyldigFeilmelding === undefined) {
-                    scope.ugyldigFeilmelding = 'select.ugyldig.feilmelding';
-                }
 
                 var liste = angular.element(element.find('ul'));
 
@@ -83,11 +100,11 @@ angular.module('nav.select', ['ngSanitize'])
                     });
                 });
 
-                scope.blur = function() {
+                element.find('input').bind('blur', function() {
                     harHattFokus = true;
                     harFokus = false;
                     element.removeClass("fokus");
-                }
+                });
 
                 // Burde bruke data-ng-focus og metoden under, men får JS-feil når man
                 // trykker på feilmeldingen etter validering...
@@ -96,169 +113,173 @@ angular.module('nav.select', ['ngSanitize'])
                     element.addClass("fokus");
                 });
 
-//                scope.focus = function() {
-//                    harFokus = true;
-//                    element.addClass("fokus");
-//                }
+scope.$on(eventForAValidereHeleFormen, function() {
+    harHattFokus = true;
+});
 
-                scope.$on(eventForAValidereHeleFormen, function() {
-                    harHattFokus = true;
-                });
+scope.apneSelectboks = function(event) {
+    scope.soketekst = '';
+    filtrerListe();
+    apne();
+    $timeout(function() {
+        scrollSlikAtElementMedFokusErPaaToppenDersomDetIkkeVises();
+    });
+    event.stopPropagation();
+}
 
-                scope.apneSelectboks = function(event) {
-                    scope.soketekst = '';
-                    filtrerListe();
-                    apne();
-                    $timeout(function() {
-                        scrollSlikAtElementMedFokusErPaaToppenDersomDetIkkeVises();
-                    });
-                    event.stopPropagation();
-                }
+scope.escape = function() {
+    avbryt();
+}
 
-                scope.escape = function() {
-                    avbryt();
-                }
+scope.klikk = function(event) {
+    event.stopPropagation();
+}
 
-                scope.klikk = function(event) {
-                    event.stopPropagation();
-                }
+scope.valgtElement = function(event, verdi) {
+    scope.harvalgt = true;
+    scope.valgtElementVerdi = verdi;
+    velgElement();
+    event.stopPropagation();
+}
 
-                scope.valgtElement = function(event, verdi) {
-                    scope.valgtElementVerdi = verdi;
-                    velgElement();
-                    event.stopPropagation();
-                }
+scope.enter = function() {
+    scope.harvalgt = true;
+    settFokusTilNesteElement(angular.element(element.find('input')));
+    velgElement();
+}
 
-                scope.enter = function() {
-                    velgElement();
-                    settFokusTilNesteElement(angular.element(element.find('input')));
-                }
+scope.tab = function(event) {
+    scope.harvalgt = true;
+    velgElement();
+    settFokusTilNesteElement(angular.element(element.find('input')));
+    event.preventDefault();
+}
 
-                scope.tab = function(event) {
-                    velgElement();
-                    settFokusTilNesteElement(angular.element(element.find('input')));
-                    event.preventDefault();
-                }
+scope.navigateUp = function(event) {
+    apne();
+    var forrige = hentListeelementMedVerdi(scope.valgtElementVerdi).prevAll(':visible');
+    if (forrige.length > 0) {
+        scope.valgtElementVerdi = forrige.attr('data-value');
+        scrollTilElementMedFokus();
+    }
+    event.preventDefault();
+}
 
-                scope.navigateUp = function(event) {
-                    apne();
-                    var forrige = hentListeelementMedVerdi(scope.valgtElementVerdi).prevAll(':visible');
-                    if (forrige.length > 0) {
-                        scope.valgtElementVerdi = forrige.attr('data-value');
-                        scrollTilElementMedFokus();
-                    }
-                    event.preventDefault();
-                }
+scope.navigateDown = function(event) {
+    apne();
+    var neste = hentListeelementMedVerdi(scope.valgtElementVerdi).nextAll(':visible');
+    if (neste.length > 0) {
+        scope.valgtElementVerdi = neste.attr('data-value');
+        scrollTilElementMedFokus();
+    }
+    event.preventDefault();
+}
 
-                scope.navigateDown = function(event) {
-                    apne();
-                    var neste = hentListeelementMedVerdi(scope.valgtElementVerdi).nextAll(':visible');
-                    if (neste.length > 0) {
-                        scope.valgtElementVerdi = neste.attr('data-value');
-                        scrollTilElementMedFokus();
-                    }
-                    event.preventDefault();
-                }
+function filtrerListe() {
+    scope.vistListe = filterListePaaSoketekst();
+    scope.vistListeFiltrert = filterListeTilAntallElementerRundtValgtElement();
+}
 
-                function filtrerListe() {
-                    scope.vistListe = filterListePaaSoketekst();
-                    scope.vistListeFiltrert = filterListeTilAntallElementerRundtValgtElement();
-                }
+scope.$watch('inputVerdi', function() {
+    if (scope.inputVerdi) {
+        scope.inputVerdi = scope.inputVerdi.trim();
+    }
+    scope.soketekst = scope.inputVerdi;
+    if (skalViseListeOverValg()) {
+        apne();
+    } else {
+        lukk();
+        scope.harvalgt = false;
+    }
 
-                scope.$watch('inputVerdi', function() {
-                    if (scope.inputVerdi) {
-                        scope.inputVerdi = scope.inputVerdi.trim();
-                    }
-                    scope.soketekst = scope.inputVerdi;
-                    if (skalViseListeOverValg()) {
-                        apne();
-                    } else {
-                        lukk();
-                    }
+    filtrerListe();
 
-                    filtrerListe();
+    $timeout(function() {
+        scrollSlikAtElementMedFokusErPaaToppenDersomDetIkkeVises();
+    });
 
-                    $timeout(function() {
-                        scrollSlikAtElementMedFokusErPaaToppenDersomDetIkkeVises();
-                    });
+    function skalViseListeOverValg() {
+        return scope.listeErApen || (harFokus && scope.inputVerdi && scope.inputVerdi.length > 1 && !scope.harvalgt);
+    }
+});
 
-                    function skalViseListeOverValg() {
-                        return scope.listeErApen || (harFokus && scope.inputVerdi && scope.inputVerdi.length > 1);
-                    }
-                });
+scope.skalViseListen = function() {
+    return hentListeLengde() > 0 && scope.listeErApen;
+}
 
-                scope.skalViseListen = function() {
-                    return hentListeLengde() > 0 && scope.listeErApen;
-                }
+scope.harRequiredFeil = function() {
+    return scope.erRequired && !scope.inputVerdi && !scope.listeErApen && !harFokus && harHattFokus;
+}
 
-                scope.harRequiredFeil = function() {
-                    return scope.erRequired && !scope.inputVerdi && !scope.listeErApen && !harFokus && harHattFokus;
-                }
+scope.inneholderIkkeSkrevetTekst = function() {
+    return hentListeLengde() == 0 && scope.inputVerdi;
+}
 
-                scope.inneholderIkkeSkrevetTekst = function() {
-                    return hentListeLengde() == 0 && scope.inputVerdi;
-                }
+scope.harFeil = function() {
+    return scope.harRequiredFeil() || scope.inneholderIkkeSkrevetTekst();
+}
 
-                scope.harFeil = function() {
-                    return scope.harRequiredFeil() || scope.inneholderIkkeSkrevetTekst();
-                }
+scope.harFokus = function(verdi) {
+    var valgtElementErSynlig = scope.valgtElementVerdi && erListeelementMedGittVerdiSynlig(scope.valgtElementVerdi);
 
-                scope.harFokus = function(verdi) {
-                    var valgtElementErSynlig = scope.valgtElementVerdi && erListeelementMedGittVerdiSynlig(scope.valgtElementVerdi);
+    if (valgtElementErSynlig && scope.valgtElementVerdi == verdi) {
+        return true;
+    } else if (!valgtElementErSynlig && hentVerdiTilForsteSynligeListeelement() == verdi) {
+        scope.valgtElementVerdi = verdi;
+        return true
+    } else {
+        return false;
+    }
+}
 
-                    if (valgtElementErSynlig && scope.valgtElementVerdi == verdi) {
-                        return true;
-                    } else if (!valgtElementErSynlig && hentVerdiTilForsteSynligeListeelement() == verdi) {
-                        scope.valgtElementVerdi = verdi;
-                        return true
-                    } else {
-                        return false;
-                    }
-                }
+function hentListeLengde() {
+    return element.find('li:not(.ng-hide)').length;
+}
 
-                function hentListeLengde() {
-                    return element.find('li:not(.ng-hide)').length;
-                }
+function velgElement() {
+    if (scope.valgtElementVerdi.trim()) {
+        scope.faktum.value = scope.valgtElementVerdi;
+        scope.inputVerdi = hentValgtTekstBasertPaaValue();
 
-                function velgElement() {
-                    if (scope.valgtElementVerdi.trim()) {
-                        scope.ngModel = scope.valgtElementVerdi;
-                        scope.inputVerdi = hentValgtTekstBasertPaaValue();
-                    } else {
-                        scope.inputVerdi = '';
-                        scope.ngModel = '';
-                    }
+        scope.lagreFaktum();
+    } else {
+        scope.inputVerdi = '';
+        scope.faktum.value = '';
+    }
 
-                    lukk();
-                }
+    lukk();
+}
 
-                function apne() {
-                    if (!scope.listeErApen) {
-                        scope.valgtElementVerdi = scope.ngModel;
-                        scope.listeErApen = true;
-                    }
-                }
+function apne() {
+    if (!scope.listeErApen) {
+        scope.valgtElementVerdi = scope.faktum.value;
+        scope.listeErApen = true;
+    }
+}
 
-                function lukk() {
-                    scope.listeErApen = false;
-                }
+function lukk() {
+    scope.listeErApen = false;
+}
 
-                function avbryt() {
-                    if (scope.listeErApen) {
-                        scope.inputVerdi = '';
-                        scope.ngModel = '';
-                        scope.valgtElementVerdi = '';
-                        lukk();
-                    }
-                }
+function avbryt() {
+    if (scope.listeErApen) {
+        scope.inputVerdi = '';
+        scope.faktum.value = '';
+        scope.valgtElementVerdi = '';
+        lukk();
+    } else if (!scope.inputVerdi) {
+        scope.faktum.value = '';
+        scope.valgtElementVerdi = '';
+    }
+}
 
-                function scrollSlikAtElementMedFokusErPaaToppenDersomDetIkkeVises() {
-                    if (!scope.valgtElementVerdi) {
-                        return;
-                    }
+function scrollSlikAtElementMedFokusErPaaToppenDersomDetIkkeVises() {
+    if (!scope.valgtElementVerdi || !scope.skalViseListen()) {
+        return;
+    }
 
-                    var fokusElement = hentListeelementMedVerdi(scope.valgtElementVerdi);
-                    var diff = visesHeleElementet(fokusElement, fokusElement.parent());
+    var fokusElement = hentListeelementMedVerdi(scope.valgtElementVerdi);
+    var diff = visesHeleElementet(fokusElement, fokusElement.parent());
                     var offset = 25; // Må trekkes fra for at elementet skal komme øverst.
 
                     if (diff > 0) {
@@ -289,7 +310,7 @@ angular.module('nav.select', ['ngSanitize'])
                 }
 
                 function hentValgtTekstBasertPaaValue() {
-                    var idx = scope.orginalListe.indexByValue(scope.ngModel);
+                    var idx = scope.orginalListe.indexByValue(scope.faktum.value);
 
                     if (idx > -1) {
                         return scope.orginalListe[idx].text;
@@ -379,5 +400,5 @@ angular.module('nav.select', ['ngSanitize'])
                     return nyListe;
                 }
             }
-        }
+        }}
     }]);
