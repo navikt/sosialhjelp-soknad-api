@@ -2,8 +2,7 @@
     <label>
         <span data-cmstekster="{{ navlabel }}"></span>
         <input data-ng-model="faktum.value" type="text" value="{{ value }}" data-ng-required="hvisSynlig()"
-               data-error-messages="'{{ navfeilmelding }}'" data-blur-validate
-               data-ng-blur="lagreFaktum()"/>
+               data-error-messages="'{{ navfeilmelding }}'" data-blur-validate data-ng-blur="lagreFaktum()" data-minlength="{{navminlength}}" data-maxlength="{{navmaxlength}}" />
         <span class="melding"></span>
     </label>
 </div>
