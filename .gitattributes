@@ -1,0 +1,11 @@
+* text=auto
+
+*.java text
+*.js text
+*.properties text
+*.txt text
+*.xml text
+
+
+*.png binary
+*.jpg binary

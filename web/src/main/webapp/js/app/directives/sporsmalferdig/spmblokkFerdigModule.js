@@ -6,25 +6,11 @@ angular.module('nav.sporsmalferdig', [])
             templateUrl: '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html',
             scope: {
                 nokkel: '@',
-                modus: '=',
                 submitMethod: '&'
             },
             link: function (scope, element, attrs, form) {
                 var tab = element.closest('.accordion-group');
                 var nesteTab = tab.next();
-
-                scope.hvisIRedigeringsmodus = function () {
-                    return scope.modus;
-                }
-
-                scope.hvisIOppsummeringsmodus = function () {
-                    return !scope.hvisIRedigeringsmodus();
-                }
-
-                scope.gaTilRedigeringsmodus = function () {
-                    scope.modus = true;
-                    scope.$emit("ENDRET_TIL_REDIGERINGS_MODUS", {key: 'redigeringsmodus', value: true});
-                }
 
                 scope.validerOgGaaTilNeste = function () {
                     scope.submitMethod();

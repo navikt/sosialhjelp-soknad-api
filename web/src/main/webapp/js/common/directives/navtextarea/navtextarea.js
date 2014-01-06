@@ -1,9 +1,9 @@
 angular.module('nav.textarea', [])
     .directive('navtextarea', [function () {
-        var linker = function(scope,element, attrs){
-            if(scope.attr("data-obligatorisk")) {
+        var linker = function (scope, element, attrs) {
+            if (scope.attr("data-obligatorisk")) {
                 return '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html';
-            } else {                
+            } else {
                 return '../js/common/directives/navtextarea/navtextareaTemplate.html';
             }
         }
@@ -11,85 +11,127 @@ angular.module('nav.textarea', [])
         return {
             restrict: "A",
             replace: true,
-            require: 'ngModel',
-            scope: {
-                model: '=ngModel',
-                modus: '=',
-                nokkel: '@',
-                maxlengde: '@',
-                inputname: '@',
-                feilmelding: '@',
-                obligatorisk: '@'
-            },
-            controller: function ($scope) {
-                $scope.sporsmal = $scope.nokkel + ".sporsmal";
-                $scope.feilmelding = $scope.nokkel + ".feilmelding";
-                $scope.tellertekst = $scope.nokkel + ".tellertekst";
-            },
+            scope: true,
+            link: {
+                pre: function (scope, element, attr) {
+                    scope.nokkel = attr.nokkel;
+                    scope.sporsmal = attr.nokkel + ".sporsmal";
+                    scope.feilmelding = attr.nokkel + ".feilmelding";
+                    scope.tellertekst = attr.nokkel + ".tellertekst";
+                    scope.maxlengde = attr.maxlengde;
+                    scope.counter = attr.maxlengde;
 
-            link: function (scope, element) {
-                scope.counter = scope.maxlengde;
-                scope.fokus = false;
-                scope.feil = false;
+                },
+                post: function (scope, element) {
+                    scope.fokus = false;
+                    scope.feil = false;
 
-                var tmpElementName = 'tmpName';
-                fiksNavn(element, scope.inputname, tmpElementName);
-
-                scope.hvisIRedigeringsmodus = function () {
-                    return scope.modus;
-                }
-
-                scope.hvisIOppsummeringsmodus = function () {
-                    return !scope.hvisIRedigeringsmodus();
-                }
-
-                scope.hvisSynlig = function () {
-                    return element.is(':visible');
-                }
-            },
+                    scope.hvisSynlig = function () {
+                        return element.is(':visible');
+                    }
+                }},
             templateUrl: linker
         };
 
 
-         
     }])
-    .directive('validateTextarea', [function() {
+    .directive('validateTextarea', ['$timeout', 'cms', function ($timeout, cms) {
         return {
-            require: 'ngModel',
-            link: function(scope, element, attrs, ctrl) {
-                scope.$watch(function() {
-                    return ctrl.$viewValue;
-                }, function() {
-                    if (ctrl.$viewValue != undefined) {
-                        element.css('height', '0px');
-                        element.height(element[0].scrollHeight);
-                        scope.counter = scope.maxlengde - ctrl.$viewValue.length;
-                        validerAntallTegn();
+            require: ['ngModel', '^form'],
+            link: function (scope, element, attrs, ctrls) {
+                var ngModel = ctrls[0];
+                var form = ctrls[1];
+
+                var settStorrelse = function () {
+                    element.css('height', '0px');
+                    element.height(element[0].scrollHeight);
+
+                }
+                var validerOgOppdater = function (viewValue) {
+                    if (viewValue != undefined) {
+                        settStorrelse();
+                        scope.counter = scope.maxlengde - viewValue.length;
+                        var valid = validerAntallTegn();
+                        valid = valid && validerTom(viewValue);
+                        if (valid) {
+                            ngModel.$setValidity(scope.nokkel, true);
+                        } else {
+                            ngModel.$setValidity(scope.nokkel, false);
+                        }
+                    } else {
+                        scope.counter = scope.maxlengde;
                     }
+
+                }
+                scope.fokus = false;
+                ngModel.$formatters.push(function (viewValue) {
+                    validerOgOppdater(viewValue);
+                    return viewValue;
                 });
+                ngModel.$parsers.unshift(function (viewValue) {
+                    validerOgOppdater(viewValue);
+                    return viewValue;
+                });
+                $timeout(settStorrelse);
 
                 function validerAntallTegn() {
                     if (scope.counter < 0) {
-                        ctrl.$setValidity(scope.nokkel, false);
                         scope.feil = true;
+                        settFeilmeldingsTekst();
+                        return false;
+
                     } else {
-                        ctrl.$setValidity(scope.nokkel, true);
                         scope.feil = false;
+                        element.closest('.form-linje').removeClass('feil');
+                        return true;
                     }
                 }
 
-                element.bind('focus', function () {
-                    scope.fokus = true;
-                    scope.$apply(attrs.onFocus);
+                function validerTom(viewValue) {
+                    if (viewValue == undefined || viewValue.length == 0) {
+                        ngModel.$setValidity(scope.nokkel, true);
+                        settFeilmeldingsTekst();
+                        element.closest('.form-linje').addClass('feil');
+                        return false;
+                    }
+                    return true;
+                }
+
+                function settFeilmeldingsTekst() {
+                    var feilmeldingTekst = cms.tekster['textarea.feilmleding'];
+                    if (scope.counter > -1) {
+                        var feilmeldingsNokkel = element[0].getAttribute('data-error-messages').toString();
+                        //hack for å fjerne dobbeltfnuttene rundt feilmeldingsnokk
+                        feilmeldingTekst = cms.tekster[feilmeldingsNokkel.substring(1, feilmeldingsNokkel.length - 1)];
+                    }
+                    element.closest('.form-linje').find('.melding').text(feilmeldingTekst);
+                }
+
+                var eventString = 'RUN_VALIDATION' + form.$name;
+                scope.$on(eventString, function () {
+                    validerAntallTegn();
+                    validerTom(ngModel.$viewValue);
+                    if (ngModel.$invalid) {
+                        element.closest('.form-linje').addClass('feil');
+                    } else {
+                        element.closest('.form-linje').removeClass('feil');
+                    }
                 })
 
-                element.bind('blur', function () {
+                scope.tattFokus = function () {
+                    scope.fokus = true;
+                };
+                scope.mistetFokus = function () {
                     scope.fokus = false;
-                    scope.$apply(attrs.onBlur)
                     validerAntallTegn();
-                    var verdi = element.val().toString();
-                    scope.$emit("OPPDATER_OG_LAGRE", {key: element.attr('name'), value: verdi});
-                })
+                    validerTom(ngModel.$viewValue);
+                    if (ngModel.$invalid) {
+                        element.closest('.form-linje').addClass('feil');
+                    } else {
+                        element.closest('.form-linje').removeClass('feil');
+                    }
+                    scope.lagreFaktum();
+                };
             }
         }
     }]);

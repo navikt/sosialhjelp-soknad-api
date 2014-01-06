@@ -40,14 +40,11 @@ public class ApplicationContext {
     @Value("${dialogarena.navnolink.url}")
     private String navigasjonslink;
 
+    @Value("{$dokumentinnsending.smtpServer.port}")
+    private String smtpServerPort;
+
     @Value("${dokumentinnsending.smtpServer.host}")
     private String smtpServerHost;
-    //= "smtp.test.local";
-
-    @Value("{$dokumentinnsending.smtpServer.port}")
-
-    private String smtpServerPort;
-           //= "25";
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
@@ -67,12 +64,9 @@ public class ApplicationContext {
         javaMailSender.setDefaultEncoding("UTF-8");
         javaMailSender.setHost(smtpServerHost);
         //TODO: if/else er quickfix inntil vi får ApplicationContextTest til å lese mailserverport.
-        if (smtpServerHost.matches("-?\\d+"))
-        {
+        if (smtpServerHost.matches("-?\\d+")) {
             javaMailSender.setPort(Integer.parseInt(smtpServerPort));
-        }
-        else
-        {
+        } else {
             javaMailSender.setPort(25);
             LOG.error("Smtpport not set properly, using default port 25");
         }
@@ -93,7 +87,7 @@ public class ApplicationContext {
     public PersonServiceTPS personServiceTPS() {
         return new PersonServiceTPS();
     }
-    
+
     @Bean
     public FamilieRelasjonServiceTPS familieReleasjonService() {
         return new FamilieRelasjonServiceTPS();

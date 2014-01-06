@@ -8,6 +8,7 @@
  * Følgende attributter kan oppgis:
  *      - er-required: Expression som sier om feltet er påkrevd eller ikke
  *      - required-error-message: Nøkkel til CMS for å hente ut feilmeldingstekst for required-feil
+ *      - er-fremtidigdato-tilatt: Expression som sier om det er lovelig å sette datoen frem i tid.
  *
  * Følgende attributter brukes av det andre direktivet for å kjøre validering på datointervallet:
  *      - fraDato: Startdato i intervallet
@@ -32,16 +33,18 @@
  *      - er-fradato-required: Expression som sier om fra-dato er påkrevd. Er false dersom ikke oppgitt
  *      - er-begge-required: Expression som sier om både til- og fra-dato er påkrevd. Er false dersom ikke oppgitt.
  *                           Denne setter både er-fradato-required og er-tildato-required.
+ *      - er-fremtidigdato-tilatt: Expression som sier om det er lovelig å sette datoen frem i tid.
  */
 
 angular.module('nav.datepicker', [])
     .constant('datepickerConfig', {
         altFormat: 'dd.MM.yyyy',
+        dateFormat: 'dd.mm.yy',
         changeMonth: true,
         changeYear: true,
         maxDate: new Date()
     })
-    .directive('navDato', ['datepickerConfig', function (datepickerConfig) {
+    .directive('navDato', ['$timeout', 'datepickerConfig', function ($timeout, datepickerConfig) {
         return {
             restrict: "A",
             require: '^form',
@@ -53,7 +56,9 @@ angular.module('nav.datepicker', [])
                 tilDato: '=',
                 fraDato: '=',
                 tilDatoFeil: '=',
+                erFremtidigdatoTillatt: '=',
                 endret: '&',
+                lagre: '&',
                 label: '@',
                 requiredErrorMessage: '@'
             },
@@ -67,7 +72,7 @@ angular.module('nav.datepicker', [])
                 var datepickerErLukket = true;
                 scope.harFokus = false;
 
-                scope.toggleDatepicker = function() {
+                scope.toggleDatepicker = function () {
                     if ($('#ui-datepicker-div').is(':hidden')) {
                         datepickerInput.datepicker('show');
                         var pos = $('#ui-datepicker-div').position();
@@ -76,7 +81,7 @@ angular.module('nav.datepicker', [])
                     }
                 }
 
-                scope.blur = function() {
+                scope.blur = function () {
                     scope.harFokus = false;
 
                     if (new Date(scope.ngModel) < new Date(scope.fraDato)) {
@@ -85,6 +90,9 @@ angular.module('nav.datepicker', [])
                     } else if (new Date(scope.tilDato) < new Date(scope.ngModel)) {
                         scope.tilDato = '';
                         scope.tilDatoFeil = true;
+                    }
+                    if (scope.lagre) {
+                        $timeout(scope.lagre, 100);
                     }
                 }
 
@@ -112,7 +120,7 @@ angular.module('nav.datepicker', [])
                     return inputfeltHarTekstMenIkkeGyldigDatoFormat() && !scope.harFokus && harHattFokus;
                 }
 
-                scope.erIkkeGyldigDato = function() {
+                scope.erIkkeGyldigDato = function () {
                     return !scope.ngModel && inputfeltHarTekstOgGyldigDatoFormat() && !erGyldigDato(tekstInput.val()) && !scope.harFokus && harHattFokus;
                 }
 
@@ -145,7 +153,9 @@ angular.module('nav.datepicker', [])
                 function inputfeltHarTekstMenIkkeGyldigDatoFormat() {
                     return tekstInput.val() && !datoRegExp.test(tekstInput.val());
                 }
+
                 var defaultDate = new Date();
+
                 function datepickerOptions() {
                     var currentDefaultDate = defaultDate;
                     defaultDate = scope.ngModel ? new Date(scope.ngModel) : currentDefaultDate;
@@ -153,7 +163,14 @@ angular.module('nav.datepicker', [])
                     if (currentDefaultDate.getTime() != defaultDate.getTime()) {
                         scope.options = angular.extend({}, {defaultDate: defaultDate}, scope.options);
                     }
-                    return angular.extend({}, datepickerConfig, scope.options);
+
+                    if(scope.erFremtidigdatoTillatt) {
+                        var config = deepClone(datepickerConfig);
+                        config["maxDate"] = undefined;
+                        return angular.extend({}, config, scope.options);
+                    } else {
+                        return angular.extend({}, datepickerConfig, scope.options);
+                    }
                 };
 
                 function leggTilDatepicker() {
@@ -192,7 +209,9 @@ angular.module('nav.datepicker', [])
                 erFradatoRequired: '=',
                 erTildatoRequired: '=',
                 erBeggeRequired: '=',
+                erFremtidigdatoTillatt: '=',
                 label: '@'
+
             },
             controller: function ($scope) {
                 $scope.fraLabel = $scope.label + ".fra";
@@ -218,7 +237,7 @@ angular.module('nav.datepicker', [])
             }
         }
     }])
-    .directive('datoMask', ['$filter', 'cms', function($filter, cms) {
+    .directive('datoMask', ['$filter', 'cms', function ($filter, cms) {
         return {
             restrict: 'A',
             require: 'ngModel',
@@ -238,25 +257,25 @@ angular.module('nav.datepicker', [])
                 maskElement.text(datoMask);
                 caretPosisjonElement.hide();
 
-                element.bind('blur', function() {
+                element.bind('blur', function () {
                     caretPosisjonElement.hide();
                 });
 
-                element.bind('focus', function() {
+                element.bind('focus', function () {
                     caretPosisjonElement.show();
                 });
 
-                maskElement.bind('click', function() {
+                maskElement.bind('click', function () {
                     element.focus();
                 });
 
-                element.bind('keydown', function(event) {
+                element.bind('keydown', function (event) {
                     if (event.keyCode == 32) {
                         return false;
                     }
                 });
 
-                ngModel.$formatters.unshift(function(dato) {
+                ngModel.$formatters.unshift(function (dato) {
                     return $filter('date')(dato, "dd.MM.yyyy");
                 });
 
@@ -269,10 +288,10 @@ angular.module('nav.datepicker', [])
                         var start = caretPosisjon - (datoInput.length - gammelInputVerdi.length);
                         var slutt = caretPosisjon;
 
-                        for(var i = start; i < slutt && i < datoInput.length; i++) {
+                        for (var i = start; i < slutt && i < datoInput.length; i++) {
                             var skrevetTegn = datoInput[i];
 
-                            if (isNaN(skrevetTegn) || datoInput.substring(0,i).length > datoMask.length) {
+                            if (isNaN(skrevetTegn) || datoInput.substring(0, i + 1).length > datoMask.length) {
                                 datoInput = datoInput.splice(i, 1, '');
                                 caretPosisjon--;
                                 i--;
@@ -284,7 +303,7 @@ angular.module('nav.datepicker', [])
                                     caretPosisjon++;
                                     i++;
                                 } else {
-                                    datoInput = datoInput.splice(i + 1,0,'.');
+                                    datoInput = datoInput.splice(i + 1, 0, '.');
                                     caretPosisjon++;
                                     i++
                                     slutt++;
@@ -302,10 +321,10 @@ angular.module('nav.datepicker', [])
                 });
 
                 scope.$watch(
-                    function() {
+                    function () {
                         return ngModel.$viewValue;
                     },
-                    function(nyVerdi) {
+                    function (nyVerdi) {
                         var tekst = nyVerdi;
                         if (nyVerdi == undefined) {
                             tekst = '';

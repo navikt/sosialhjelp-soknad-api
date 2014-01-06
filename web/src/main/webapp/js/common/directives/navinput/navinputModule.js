@@ -1,34 +1,35 @@
 angular.module('nav.input', ['nav.cmstekster'])
+    .directive('navconfig', function ($parse) {
+        return {
+            link: {
+                pre: function (scope, element, attr) {
+                    for (key in attr) {
+                        if (key.indexOf('nav') == 0 && key != 'navconfig') {
+                            scope[key] = attr[key];
+                        }
+                    }
+                }}
+        }
+    })
     .directive('navradio', [function () {
         return {
             restrict: "A",
             replace: true,
-            require: 'ngModel',
-            scope: {
-                model: '=ngModel',
-                value: '@',
-                modus: '=',
-                inputname: '@',
-                label: '@',
-                feilmelding: '@'
-            },
-            link: function (scope, element) {
-                var tmpElementName = 'tmpName';
-                fiksNavn(element, scope.inputname, tmpElementName);
+            scope: true,
+            link: {
+                pre: function (scope, element, attr) {
+                    scope.value = attr.value;
+                    scope.label = attr.label;
+                },
+                post: function (scope, element, attr) {
+                    scope.hvisSynlig = function () {
+                        return element.is(':visible');
+                    };
 
-                scope.hvisSynlig = function () {
-                    return element.is(':visible');
-                };
-
-                scope.hvisIRedigeringsmodus = function () {
-                    return scope.modus;
-                };
-
-                scope.hvisIOppsummeringsmodusOgRadioErValgt = function () {
-
-                    return !scope.hvisIRedigeringsmodus() && scope.model == scope.value.toString();
+                    scope.endret = function () {
+                        scope.$eval(attr.navendret);
+                    }
                 }
-
             },
             templateUrl: '../js/common/directives/navinput/navradioTemplate.html'
         }
@@ -38,41 +39,31 @@ angular.module('nav.input', ['nav.cmstekster'])
             restrict: "A",
             replace: true,
             transclude: true,
-            require: 'ngModel',
-            scope: {
-                model: '=ngModel',
-                modus: '=',
-                inputname: '@',
-                label: '@',
-                endret: '&'
-            },
+            scope: true,
             link: {
-                pre: function(scope) {
+                pre: function (scope, elem, attr) {
                     scope.hjelpetekst = {
-                        tittel: cms.tekster[scope.label + '.hjelpetekst.tittel'],
-                        tekst: cms.tekster[scope.label + '.hjelpetekst.tekst']
+                        tittel: cms.tekster[attr.navlabel + '.hjelpetekst.tittel'],
+                        tekst: cms.tekster[attr.navlabel + '.hjelpetekst.tekst']
                     }
 
                 },
-                post: function (scope, element) {
+                post: function (scope, element, attr) {
+//                var tmpElementName = 'tmpName';
+//                fiksNavn(element, scope.inputname, tmpElementName);
                     scope.hvisHarHjelpetekst = function () {
                         return scope.hjelpetekst.tittel && scope.hjelpetekst.tekst;
                     }
 
-                    scope.hvisIRedigeringsmodus = function () {
-                        return scope.modus;
-                    }
-
-                    scope.hvisIOppsummeringsmodusOgChecked = function () {
-                        return !scope.hvisIRedigeringsmodus() && checkTrue(scope.model);
-                    }
-
                     scope.hvisHuketAv = function () {
                         var transcludeElement = element.find('.ng-transclude');
-                        return checkTrue(scope.model) && transcludeElement.text().length > 0;
+                        return checkTrue(scope.faktum.value) && transcludeElement.text().length > 0;
                     }
-                }
-            },
+                    scope.endret = function () {
+                        scope.$eval(scope.navendret);
+                    }
+
+                }},
             templateUrl: '../js/common/directives/navinput/navcheckboxTemplate.html'
         }
     }])
@@ -81,26 +72,8 @@ angular.module('nav.input', ['nav.cmstekster'])
         return {
             restrict: "A",
             replace: true,
-            require: 'ngModel',
-            scope: {
-                model: '=ngModel',
-                modus: '=',
-                inputname: '@',
-                label: '@',
-                feilmelding: '@'
-            },
+            scope: true,
             link: function (scope, element) {
-                var tmpElementName = 'tmpName';
-                fiksNavn(element, scope.inputname, tmpElementName);
-
-                scope.hvisIRedigeringsmodus = function () {
-                    return scope.modus;
-                }
-
-                scope.hvisIOppsummeringsmodus = function () {
-                    return !scope.hvisIRedigeringsmodus();
-                }
-
                 scope.hvisSynlig = function () {
                     return element.is(':visible');
                 }

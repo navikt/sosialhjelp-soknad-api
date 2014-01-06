@@ -428,6 +428,10 @@ form-linje.feil {
             display: none;
         }
 
+        label, .nav-checkbox {
+          margin-left: 0px;
+        }
+
         &.feil {
             border: 1px solid #fee6e6;
             background: #fee6e6;
@@ -441,6 +445,10 @@ form-linje.feil {
             &.annetvalg-nei {
                 margin-left: -15px;
                 .ingen-ytelse-melding {
+                    display: block;
+                    margin-bottom: 10px;
+                }
+                .ingen-navytelse-melding {
                     display: block;
                     margin-bottom: 10px;
                 }
@@ -520,6 +528,7 @@ form-linje.feil {
         border: 1px solid #fee6e6;
         background: #fee6e6;
         padding: 14px !important;
+        margin-bottom: 20px;
 
         .melding {
             margin-bottom: 10px;
