@@ -56,23 +56,21 @@ public class TestApplicationContext {
     }
 
     @Bean
-    public String brukerprofilServiceCreator() {
+    public Object brukerprofilServiceCreator() {
         if (mockBrukerprofil) {
-            new MockConsumerConfig.BrukerProfilWSConfig();
+            return new MockConsumerConfig.BrukerProfilWSConfig();
         } else {
-            new ConsumerConfig.BrukerProfilWSConfig();
+            return new ConsumerConfig.BrukerProfilWSConfig();
         }
-        return "brukerprofil";
     }
 
     @Bean
-    public String kodeverkServiceCreator() {
+    public Object kodeverkServiceCreator() {
         if (mockKodeverk) {
-            new MockConsumerConfig.KodeverkWSConfig();
+            return new MockConsumerConfig.KodeverkWSConfig();
         } else {
-            new ConsumerConfig.KodeverkWSConfig();
+            return new ConsumerConfig.KodeverkWSConfig();
         }
-        return "kodeverk";
     }
 
     @Bean
