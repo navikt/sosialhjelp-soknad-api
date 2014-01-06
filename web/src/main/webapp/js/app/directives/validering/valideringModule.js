@@ -96,12 +96,13 @@ angular.module('nav.validering', ['nav.cmstekster'])
                     return ngModel.$viewValue;
                 }, function () {
                     if (ngModel.$viewValue && element.closest('.form-linje').hasClass('feil')) {
-                        fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil');
+                        fadeFeilmelding(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil', scope);
                     }
                 });
 
                 function sjekkOmFeltetErRequired() {
-                    return element[0].hasOwnProperty("required");
+//                    return element[0].hasOwnProperty("required");
+                    return element[0].hasAttribute("required");
                 }
 
                 function sjekkOmFeltetErSvart() {
@@ -129,6 +130,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 var eventString = 'RUN_VALIDATION' + ctrl[0].$name;
 
                 scope.$on(eventString, function () {
+
                     if (element.find("input:checked").length > 0) {
                         element.closest('.form-linje').removeClass('feil');
                     } else if (element.find("input:checked").length == 0 && element.is(':visible')) {
@@ -144,9 +146,9 @@ angular.module('nav.validering', ['nav.cmstekster'])
                     return element.find("input:checked").length;
                 }, function () {
                     if (element.find("input:checked").length > 0 && element.closest('.form-linje').hasClass('feil')) {
-                        fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil');
+                        fadeFeilmelding(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil', scope);
                     } else if (element.find("input:checked").length > 0 && element.closest('.form-linje').hasClass('feilstyling')) {
-                        fadeBakgrunnsfarge(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feilstyling');
+                        fadeFeilmelding(element.closest('.form-linje'), element.closest('.form-linje.feilstyling').children('.melding'), 'feilstyling', scope);
                     }
                 });
             }

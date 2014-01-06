@@ -1,3 +1,4 @@
+<div data-nav-tittel="skjema.tittel"></div>
 <stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="3"></stegindikator>
 
 <div data-panelbelyst id="oppsummering" data-sidetittel="sidetittel.skjema">
@@ -11,8 +12,8 @@
 		</ul>
 		<div class="oppsummering-knapper" data-ng-controller="SendSoknadCtrl">
 			<a class="knapp-hoved" data-ng-click="sendSoknad()" data-cmstekster="send"></a>
-			<a class="knapp-advarsel" href="#/avbryt/{{ soknadData.soknadId }}" data-cmstekster="avbryt"></a>
-			<a href="#/opplasting/{{ soknadData.soknadId }}" data-cmstekster="tilbake"></a>
+			<a href="#/vedlegg/{{ soknadData.soknadId }}" data-cmstekster="tilbake"></a>
 		</div>
 	</div>
 </div>
+<div data-sist-lagret></div>

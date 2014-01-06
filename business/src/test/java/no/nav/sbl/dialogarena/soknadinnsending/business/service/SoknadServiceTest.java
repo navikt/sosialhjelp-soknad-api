@@ -57,7 +57,7 @@ public class SoknadServiceTest {
         assertThat(captor.getValue(), match(new IsPdf()));
         assertThat(id, is(equalTo(11L)));
         File file = new File("testoutput.pdf");
-        System.out.println(file.getAbsolutePath());
+        //System.out.println(file.getAbsolutePath());
         IOUtils.write(captor.getValue(), new FileOutputStream(file));
     }
 

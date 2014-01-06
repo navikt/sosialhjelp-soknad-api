@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
 import no.nav.modig.cache.CacheConfig;
+import no.nav.sbl.dialogarena.person.FamilieRelasjonServiceTPS;
 import no.nav.sbl.dialogarena.person.PersonServiceTPS;
 import no.nav.sbl.dialogarena.soknadinnsending.business.BusinessConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadInnsendingDBConfig;
@@ -39,20 +40,17 @@ public class ApplicationContext {
     @Value("${dialogarena.navnolink.url}")
     private String navigasjonslink;
 
+    @Value("{$dokumentinnsending.smtpServer.port}")
+    private String smtpServerPort;
 
-
-    //TODO Når FASIT funker må dette fikses
-
-
-//    @Value("{$dokumentinnsending.smtpServer.port}")
-    private String smtpServerPort = "25";
-
-//    @Value("${dokumentinnsending.smtpServer.host}")
-    private String smtpServerHost = "smtp.test.local";
+    @Value("${dokumentinnsending.smtpServer.host}")
+    private String smtpServerHost;
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
+        PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
+        propertySourcesPlaceholderConfigurer.setLocalOverride(true);
+        return propertySourcesPlaceholderConfigurer;
     }
 
     @Bean
@@ -62,14 +60,19 @@ public class ApplicationContext {
 
     @Bean
     public MailSender mailSender() {
-        LOG.error("SMTPPORT" + smtpServerPort + "HOST" + smtpServerHost + "Link" + navigasjonslink);
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setDefaultEncoding("UTF-8");
         javaMailSender.setHost(smtpServerHost);
-        javaMailSender.setPort(Integer.parseInt(smtpServerPort));
+        //TODO: if/else er quickfix inntil vi får ApplicationContextTest til å lese mailserverport.
+        if (smtpServerHost.matches("-?\\d+")) {
+            javaMailSender.setPort(Integer.parseInt(smtpServerPort));
+        } else {
+            javaMailSender.setPort(25);
+            LOG.error("Smtpport not set properly, using default port 25");
+        }
         return javaMailSender;
     }
-    
+
     @Bean
     public String navigasjonslink() {
         return navigasjonslink;
@@ -81,8 +84,13 @@ public class ApplicationContext {
     }
 
     @Bean
-    public PersonServiceTPS personService() {
+    public PersonServiceTPS personServiceTPS() {
         return new PersonServiceTPS();
+    }
+
+    @Bean
+    public FamilieRelasjonServiceTPS familieReleasjonService() {
+        return new FamilieRelasjonServiceTPS();
     }
 
     @Bean

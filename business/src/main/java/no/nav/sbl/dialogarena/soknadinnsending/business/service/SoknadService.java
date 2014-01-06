@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
+
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.detect.IsImage;
 import no.nav.sbl.dialogarena.detect.IsPdf;
@@ -12,13 +14,18 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventning;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -27,16 +34,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static java.lang.String.format;
+import static javax.xml.bind.JAXBContext.newInstance;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
-
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.LastetOpp;
 
 @Component
 public class SoknadService implements SendSoknadService, VedleggService {
 
+    public static final String PDF_PDFA = "-dNOPAUSE -dBATCH -dSAFER -dPDFA -dNOGA -sDEVICE=pdfwrite -sOutputFile=%stdout%  -q -c \"30000000 setvmthreshold\" -_ -c quit";
     private static final String BRUKERREGISTRERT_FAKTUM = "BRUKERREGISTRERT";
     private static final String SYSTEMREGISTRERT_FAKTUM = "SYSTEMREGISTRERT";
-
-
+    private static final String IMAGE_RESIZE = "- -units PixelsPerInch -density 150 -quality 50 -resize 1240x1754 jpeg:-";
+    private static final String IMAGE_PDFA = "-  pdfa:-";
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository repository;
@@ -51,17 +61,50 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum) {
-        Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, faktum.getFaktumId(), faktum.getKey(), faktum.getValue(), BRUKERREGISTRERT_FAKTUM));
+        faktum.setType(BRUKERREGISTRERT_FAKTUM);
+        Long faktumId = repository.lagreFaktum(soknadId, faktum);
+        repository.settSistLagretTidspunkt(soknadId);
+
         return repository.hentFaktum(soknadId, faktumId);
     }
 
     @Override
-    public Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value) {
-    	Faktum faktum = repository.hentSystemFaktum(soknadId, key, SYSTEMREGISTRERT_FAKTUM);
-    	Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, faktum.getFaktumId(), key, value, SYSTEMREGISTRERT_FAKTUM));
-    	return repository.hentFaktum(soknadId, faktumId);
+    public void slettBrukerFaktum(Long soknadId, Long faktumId) {
+        repository.slettBrukerFaktum(soknadId, faktumId);
+    }
+    
+    @Override
+    public Long lagreSystemFaktum(Long soknadId, Faktum f, String uniqueProperty) {
+        List<Faktum> fakta = repository.hentSystemFaktumList(soknadId, f.getKey(), FaktumType.SYSTEMREGISTRERT.toString());
+        
+        if(!uniqueProperty.isEmpty()) {
+            for (Faktum faktum : fakta) {
+                if(faktum.getProperties().get(uniqueProperty).equals(f.getProperties().get(uniqueProperty))) {
+                    f.setFaktumId(faktum.getFaktumId());
+                    return repository.lagreFaktum(soknadId, f);
+                    
+                }
+            }
+        }
+        return repository.lagreFaktum(soknadId, f);
     }
 
+    @Override
+    public Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value) {
+        //TODO: her blir barn overskrevet. Hent ut fnr osv.
+        Faktum faktum = repository.hentSystemFaktum(soknadId, key, SYSTEMREGISTRERT_FAKTUM);
+
+        Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, faktum.getFaktumId(), key, value, SYSTEMREGISTRERT_FAKTUM));
+        return repository.hentFaktum(soknadId, faktumId);
+    }
+
+    //TODO: Kan sikkert slettes etter ny faktum-lagrings-modell
+    @Override
+    public Faktum lagreBarnSystemSoknadsFelt(Long soknadId, String key, String fnr, String json) {
+
+        Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, null, key, json, SYSTEMREGISTRERT_FAKTUM));
+        return repository.hentFaktum(soknadId, faktumId);
+    }
 
     @Override
     public void sendSoknad(long soknadId) {
@@ -76,10 +119,20 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public void avbrytSoknad(Long soknadId) {
-        //TODO: Refaktorerer. Trenger bare å sende id
         repository.avbryt(soknadId);
     }
 
+    @Override
+    public void endreInnsendingsvalg(Long soknadId, Faktum faktum) {
+        repository.endreInnsendingsValg(soknadId, faktum.getFaktumId(), faktum.getInnsendingsvalg());
+    }
+
+    @Override
+    public List<Faktum> hentFakta(Long soknadId) {
+        return repository.hentAlleBrukerData(soknadId);
+    }
+
+    @Override
     public Long startSoknad(String navSoknadId) {
         String behandlingsId = UUID.randomUUID().toString();
 
@@ -90,11 +143,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 opprettetDato(DateTime.now());
         return repository.opprettSoknad(soknad);
     }
-
-    public static final String PDF_PDFA = "-dNOPAUSE -dBATCH -dSAFER -dPDFA -dNOGA -sDEVICE=pdfwrite -sOutputFile=%stdout%  -q -c \"30000000 setvmthreshold\" -_ -c quit";
-    private static final String IMAGE_RESIZE = "- -units PixelsPerInch -density 150 -quality 50 -resize 1240x1754 jpeg:-";
-    private static final String IMAGE_PDFA = "-  pdfa:-";
-
 
     @Override
     public Long lagreVedlegg(Vedlegg vedlegg, InputStream inputStream) {
@@ -114,7 +162,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
             }
             bytes = new PdfWatermarker().applyOn(bytes, SubjectHandler.getSubjectHandler().getUid());
             return vedleggRepository.lagreVedlegg(vedlegg, bytes);
-        } catch (Throwable e) {
+        } catch (Exception e) {
 
             throw new RuntimeException("Kunne ikke lagre vedlegg: " + e, e);
         }
@@ -168,5 +216,34 @@ public class SoknadService implements SendSoknadService, VedleggService {
         Long opplastetDokument = vedleggRepository.lagreVedlegg(vedlegg, doc);
         vedleggRepository.knyttVedleggTilFaktum(soknadId, faktumId, opplastetDokument);
         return opplastetDokument;
+    }
+
+    @Override
+    public List<VedleggForventning> hentPaakrevdeVedlegg(Long soknadId) {
+        List<VedleggForventning> forventninger = new ArrayList<>();
+        WebSoknad webSoknad = hentSoknad(soknadId);
+        SoknadStruktur struktur = hentStruktur(webSoknad.getGosysId());
+
+        for (Faktum faktum : webSoknad.getFakta().values()) {
+            SoknadVedlegg soknadVedlegg = struktur.vedleggFor(faktum.getKey());
+            if (soknadVedlegg != null && soknadVedlegg.trengerVedlegg(faktum.getValue())) {
+                Vedlegg vedlegg = faktum.getInnsendingsvalg().er(LastetOpp) ? vedleggRepository.hentVedlegg(soknadId, faktum.getVedleggId()) : null;
+                forventninger.add(new VedleggForventning(faktum, vedlegg, soknadVedlegg.getGosysId()));
+            }
+        }
+
+        return forventninger;
+    }
+
+    private SoknadStruktur hentStruktur(String skjema) {
+        String type = skjema + ".xml";
+        try {
+            Unmarshaller unmarshaller = newInstance(SoknadStruktur.class).createUnmarshaller();
+            return (SoknadStruktur) unmarshaller.unmarshal(SoknadStruktur.class
+                    .getResourceAsStream(format("/soknader/%s", type)));
+        } catch (JAXBException e) {
+            throw new RuntimeException("Kunne ikke laste definisjoner. ", e);
+        }
+
     }
 }

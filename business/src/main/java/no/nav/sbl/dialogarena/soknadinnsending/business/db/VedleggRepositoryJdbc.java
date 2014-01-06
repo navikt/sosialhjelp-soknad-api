@@ -70,12 +70,12 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
 
     @Override
     public void knyttVedleggTilFaktum(Long soknadId, Long faktumId, Long opplastetDokument) {
-        getJdbcTemplate().update("update soknadbrukerdata set vedlegg_id = ? where soknad_Id = ? and soknadbrukerdata_id = ?", opplastetDokument, soknadId, faktumId);
+        getJdbcTemplate().update("update soknadbrukerdata set vedlegg_id = ?, innsendingsvalg='LastetOpp' where soknad_Id = ? and soknadbrukerdata_id = ?", opplastetDokument, soknadId, faktumId);
     }
 
     @Override
     public void slettVedlegg(Long soknadId, Long vedleggId) {
-        getJdbcTemplate().update("update soknadbrukerdata set vedlegg_id = null where soknad_id=? and vedlegg_id=?", soknadId, vedleggId);
+        getJdbcTemplate().update("update soknadbrukerdata set vedlegg_id = null, innsendingsvalg = null where soknad_id=? and vedlegg_id=?", soknadId, vedleggId);
         getJdbcTemplate().update("Delete from vedlegg where soknad_id=? and vedlegg_id=?", soknadId, vedleggId);
     }
 

@@ -6,10 +6,15 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLSoknadfak
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class Transformers {
+
+    private static final Logger LOG = LoggerFactory
+            .getLogger(Transformers.class);
 
     public static XMLFakta convertToFaktumListe(List<Faktum> fakta) {
         XMLFaktumListe faktumListe = new XMLFaktumListe();
@@ -32,7 +37,7 @@ public class Transformers {
     }
 
     public static WebSoknad convertToSoknad(WSSoknadsdata soknadData) {
-        System.out.println("søknadsdata: " + soknadData.getAny());
+        LOG.warn("søknadsdata: " + soknadData.getAny());
         return null;
     }
 }

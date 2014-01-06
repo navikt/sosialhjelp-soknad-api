@@ -1,31 +1,101 @@
 .datepicker {
-    input {
-        min-width: 120px;
-        width: 100% !important;
-        padding-right: 30px;
-        background-image: url(../img/kalender.svg);
-        background-repeat: no-repeat;
-        background-position: center right;
+    width: 135px;
+    vertical-align: top;
+    padding: 0;
 
-        &:hover {
-            background-image: url(../img/kalender_hover.svg);
+    .caretPosition {
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: inline !important;
+        visibility: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .mask {
+        background: transparent;
+        border: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        position: absolute;
+        color: #ccc !important;
+        font-size: 14px !important;
+        cursor: text;
+        text-transform: none;
+        z-index: 1000;
+    }
+
+    label {
+        .datepicker-input {
+            position: relative;
+            min-width: 135px;
+            display: block;
+            height: 32px;
+            border: 1px solid #cccccc;
+            border-top: 1px solid #b7b1a9;
+            cursor: text;
+            background-color: white;
+
+            input {
+                border: none !important;
+                border: none !important;
+                position: absolute;
+                top: 7px;
+                left: 7px;
+                right: 32px;
+                padding: 0;
+                width: 100px;
+            }
+
+            .apne-datepicker {
+                display: block;
+                float: right;
+                cursor: pointer;
+                height: 32px;
+                width: 32px;
+                background-image: url(../img/kalender.svg);
+                background-repeat: no-repeat;
+                background-position: center;
+                z-index: 1010;
+
+                &:hover {
+                    background-image: url(../img/kalender_hover.svg);
+                }
+            }
         }
     }
 
     &.feil {
+        .knapp-liten {
+            border-left: 1px solid #fca292;
+        }
+
         .melding {
-            display: inline-block !important;
+            display: block !important;
+        }
+
+        .datepicker-input {
+            background-color: #fee6e6;
+            border: 1px solid #fca292;
+            border-top: 1px solid @red;
+        }
+    }
+
+    &.fokus {
+        .datepicker-input {
+            border-color: rgba(82, 168, 236, .8);
         }
     }
 }
 
 .datepicker-intervall {
     .datepicker {
-        width: 47%;
         display: inline-block;
 
         &:last-child {
-            margin-left: 4.5%;
+            float: right;
         }
     }
 }
