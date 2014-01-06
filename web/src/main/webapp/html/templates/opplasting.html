@@ -1,10 +1,11 @@
-<stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="2"></stegindikator>
+<div data-nav-tittel="skjema.tittel"></div>
+<div stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="2"></div>
 
 <div id="opplasting" class="soknad rad-belyst" data-sidetittel="sidetittel.opplasting">
     <div class="begrensning sak-halv">
-        <section class="panel-mini uten-ramme">
-            <h1 class="stor-strek-ikon-vedlegg" data-cmstekster="opplasting.lastopp"></h1>
-        </section>
+        <div class="panel uten-ramme">
+            <h1 class="stor-ikon-vedlegg-strek" data-cmstekster="opplasting.lastopp"></h1>
+        </div>
     </div>
     <form id="opplastingform" method="POST" enctype="multipart/form-data" data-file-upload="options" data-ng-controller="OpplastingCtrl">
         <div class="begrensning sak-trekvart">
@@ -16,7 +17,7 @@
                         <img data-async-image="../{{file.forhandsvisningUrl}}" data-ng-if="!!file.forhandsvisningUrl">
                     </li>
                     <li class="leggtil">
-                        <input id="leggtil" type="file" name="files[]" class="vekk" data-last-opp-fil multiple>
+                        <input id="leggtil" type="file" name="files[]" class="vekk" data-last-opp-fil multiple accept="image/jpeg,image/png,application/pdf">
                         <label for="leggtil" class="robust" data-cmstekster="opplasting.leggtil"></label>
                     </li>
                 </ul>

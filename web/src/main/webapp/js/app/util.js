@@ -45,6 +45,10 @@ if (!Array.prototype.indexByValue) {
     }
 }
 
+String.prototype.splice = function (idx, rem, str) {
+    return (this.slice(0, idx) + str + this.slice(idx + Math.abs(rem)));
+}
+
 function sjekkOmGittEgenskapTilObjektErFalse(objekt) {
     if (objekt) {
         return checkFalse(objekt.value);
@@ -60,7 +64,20 @@ function sjekkOmGittEgenskapTilObjektErTrue(objekt) {
 
     return false;
 }
+function sjekkOmGittEgenskapTilObjektErVerdi(objekt, verdi) {
+    if (objekt) {
+        return checkThat(objekt.value, verdi);
+    }
 
+    return false;
+}
+
+function checkThat(element, verdi) {
+    if (element == undefined) {
+        return false;
+    }
+    return element.toString() == verdi;
+}
 function checkTrue(element) {
     if (element == undefined) {
         return false;
@@ -74,9 +91,8 @@ function checkFalse(element) {
     return element.toString() == 'false';
 }
 
-function scrollToElement(element) {
+function scrollToElement(element, offset) {
     var animationSpeed = 200;
-    var offset = 100;
     var scrollPos = Math.max(element.offset().top - offset, 0);
     $('body, html').scrollToPos(scrollPos, animationSpeed);
 }
@@ -123,7 +139,7 @@ function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-function opprettEgendefinertFeilmelding(navn, errorMessage, referanseTilFeilmeldingslinken, valid, skalVisesAlene ) {
+function opprettEgendefinertFeilmelding(navn, errorMessage, referanseTilFeilmeldingslinken, valid, skalVisesAlene) {
     var feilmelding = new Object();
     feilmelding.$name = navn;
     feilmelding.$errorMessages = errorMessage;
@@ -135,28 +151,33 @@ function opprettEgendefinertFeilmelding(navn, errorMessage, referanseTilFeilmeld
 
     return feilmelding;
 }
-function leggTilFeilmeldingHvisDenIkkeFinnes(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene ) {
+function leggTilFeilmeldingHvisDenIkkeFinnes(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene) {
     var index = form.$error[feilmeldingskategori].indexByValue(feilmeldingsnavn);
 
     if (index == -1) {
-        form.$error[feilmeldingskategori].push(opprettEgendefinertFeilmelding(feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene ));
+        form.$error[feilmeldingskategori].push(opprettEgendefinertFeilmelding(feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene));
     }
 }
 /**
  * endrer validiteten på en feilmelding. Sjekker hvis feilmeldingen ikke skal vises lenger, så i stedet for å oppdatere feilmeldingen fjernes den heller fra listen.
  Derfor trenger vi kun å legge til feilmeldinger som ikke finnes fra før og som er false.
  */
-function settEgendefinertFeilmeldingsverdi(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene ) {
+function settEgendefinertFeilmeldingsverdi(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene) {
     if (form.$error[feilmeldingskategori] === undefined) {
         form.$error[feilmeldingskategori] = [];
     }
-
-    var index = form.$error[feilmeldingskategori].indexByValue(feilmeldingsnavn);
-    if (index > -1 && valid) {
-        form.$error[feilmeldingskategori].splice(index, 1);
-    } else if (index == -1 && !valid) {
+    if (typeof form.$error[feilmeldingskategori] === 'boolean') {
         form.$setValidity(feilmeldingsnavn, valid);
-        leggTilFeilmeldingHvisDenIkkeFinnes(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene )
+    } else {
+        var index = form.$error[feilmeldingskategori].indexByValue(feilmeldingsnavn);
+        if (index > -1 && valid) {
+            form.$error[feilmeldingskategori].splice(index, 1);
+            form.$setValidity(feilmeldingsnavn, valid);
+
+        } else if (index == -1 && !valid) {
+            form.$setValidity(feilmeldingsnavn, valid);
+            leggTilFeilmeldingHvisDenIkkeFinnes(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene);
+        }
     }
 }
 
@@ -175,12 +196,26 @@ function stringContainsNotCaseSensitive(str, query) {
     }
 })(jQuery);
 
-function fadeBakgrunnsfarge(element, melding, feilmeldingsklasse) {
+function fadeBakgrunnsfarge(element, scope, rgb1, rgb2, rgb3) {
+    var backgroundColour = [rgb1, rgb2, rgb3].join(',') + ',';
+    var transparency = 1;
+    var timeout = setInterval(function () {
+        if (transparency >= 0) {
+            element[0].style.backgroundColor = 'rgba(' + backgroundColour + (transparency -= 0.015) + ')';
+        } else {
+            element.removeAttr('style');
+            clearInterval(timeout);
+            scope.$apply();
+        }
+    }, 20);
+}
+
+function fadeFeilmelding(element, melding, feilmeldingsklasse, scope) {
     var backgroundColour = [254, 230, 230].join(',') + ',';
     var borderColour = [252, 162, 146].join(',') + ',';
     var meldingColour = [195, 0, 0].join(',') + ',';
     var transparency = 1;
-    var timeout = setInterval(function() {
+    var timeout = setInterval(function () {
         if (transparency >= 0) {
             element[0].style.backgroundColor = 'rgba(' + backgroundColour + (transparency -= 0.015) + ')';
             element[0].style.borderColor = 'rgba(' + borderColour + (transparency -= 0.015) + ')';
@@ -190,12 +225,13 @@ function fadeBakgrunnsfarge(element, melding, feilmeldingsklasse) {
             element.removeAttr('style');
             melding.removeAttr('style');
             clearInterval(timeout);
+            scope.$apply();
         }
     }, 20);
 }
 function konverterStringFraNorskDatoformatTilDateObjekt(datoString) {
     var re = new RegExp(/^\d\d\.\d\d\.\d\d\d\d$/);
-    if (re.test(datoString)) {
+    if (re.test(datoString) && erGyldigDato(datoString)) {
         var datoKomponenter = datoString.split('.');
 
         // Måned indekseres fra 0, så må trekke fra 1
@@ -203,4 +239,65 @@ function konverterStringFraNorskDatoformatTilDateObjekt(datoString) {
     } else {
         return "";
     }
+}
+
+// stackoverflow.com/questions/5812220/test-if-date-is-valid
+function erGyldigDato(datoString) {
+    var bits = datoString.split('.');
+    var aar = bits[2];
+    var maaned = bits[1];
+    var dag = bits[0];
+
+    var dagerIMaaned = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+    // Skuddår
+    if ((!(aar % 4) && aar % 100) || !(aar % 400)) {
+        dagerIMaaned[1] = 29;
+    }
+
+    return dag <= dagerIMaaned[--maaned];
+}
+
+function konverterTallTilStringMedToSiffer(tall) {
+    var tallMedToSiffer = "0" + tall;
+    return tallMedToSiffer.slice(-2);
+}
+
+function hentCaretPosisjon(element) {
+    var domElement = element[0];
+    var posisjon = 0;
+
+    if (document.selection) {
+        domElement.focus();
+
+        var oSel = document.selection.createRange();
+
+        oSel.moveStart('character', -domElement.value.length);
+
+        posisjon = oSel.text.length;
+    } else if (domElement.selectionStart || domElement.selectionStart == '0') {
+        posisjon = domElement.selectionStart;
+    }
+
+    return posisjon;
+}
+
+function settCaretPosisjon(element, posisjon) {
+    var domElement = element[0];
+
+    if (document.selection) {
+        domElement.focus();
+
+        var oSel = document.selection.createRange();
+
+        oSel.moveStart('character', posisjon);
+    } else if (domElement.selectionStart || domElement.selectionStart == '0') {
+        domElement.selectionStart = posisjon;
+        domElement.selectionEnd = posisjon;
+    }
+}
+
+function settFokusTilNesteElement(inputElement) {
+    var fokuserbareElementer = $('input, a, select, button, textarea').filter(':visible');
+    fokuserbareElementer.eq(fokuserbareElementer.index(inputElement) + 1).focus();
 }

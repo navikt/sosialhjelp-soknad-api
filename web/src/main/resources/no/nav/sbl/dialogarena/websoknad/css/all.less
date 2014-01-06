@@ -16,6 +16,66 @@
     }
 }
 
+.informasjonstekst {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-top: 20px !important;
+    margin-left: 15px !important;
+}
+
+.sticky-feilmelding {
+    position: fixed;
+    background-color: #333;
+    color: #FF696E;
+    padding: 15px;
+    top: 0;
+    width: 100%;
+    z-index: 1035;
+    display: none;
+    text-align: center;
+
+    div {
+        max-width: 660px;
+        margin: 0 auto;
+        position: relative;
+
+        .antall-feil-innholder {
+            position: absolute;
+            left: 0;
+            display: inline-block;
+            padding: 5px 0px;
+        }
+
+        span a {
+            color: #fff;
+            border: 1px solid #5f5e5d;
+            padding: 5px 10px;
+            float: none;
+            margin: 0 10px;
+            width: 80px;
+            display: inline-block;
+        }
+        span a:hover {
+            cursor: pointer;
+            background-color: #0ca9e1;
+            border: 1px solid #0ca9e1;
+            text-decoration: none;
+        }
+
+        .deaktiverFeilmelding {
+            background-color: #5f5e5d;
+            color: #000;
+            border: 1px solid #5f5e5d;
+
+        }
+        .deaktiverFeilmelding:hover {
+            text-decoration: none;
+            background-color: #5f5e5d;
+            border: 1px solid #5f5e5d;
+        }
+    }
+}
+
 .rad.soknad {
     padding: 0;
 }
@@ -361,24 +421,50 @@ form-linje.feil {
 .form-linje {
     padding: 15px;
 
-    .form-linje {
+    &.checkbox.feilstyling .form-linje, .form-linje {
         padding: 0px;
 
+        .melding {
+            display: none;
+        }
+
+        label, .nav-checkbox {
+          margin-left: 0px;
+        }
+
         &.feil {
-            border: 1px solid #fca292;
+            border: 1px solid #fee6e6;
             background: #fee6e6;
-            margin-left: -15px;
             padding: 15px;
 
-            &.tekstfelt {
+            &.tekstfelt, &.textarea-container {
                 border: none;
                 background: #f1f1f1;
-                margin-left: -15px;
-                padding: 0px 15px;
             }
-            .ingen-ytelse-melding {
+
+            &.annetvalg-nei {
+                margin-left: -15px;
+                .ingen-ytelse-melding {
+                    display: block;
+                    margin-bottom: 10px;
+                }
+                .ingen-navytelse-melding {
+                    display: block;
+                    margin-bottom: 10px;
+                }
+            }
+
+            .utdanning-annet-melding {
                 display: block;
                 margin-bottom: 10px;
+            }
+            &.aktiv-feilmelding.tekstfelt input {
+                border: 1px solid #c30000;
+                background-color: #FAD6D6;
+            }
+            .melding {
+                color: #A00404;
+
             }
         }
     }
@@ -389,7 +475,7 @@ form-linje.feil {
 
     &.feil {
         select {
-            border: 1px solid #fca292;
+            border: 1px solid #fee6e6;
             border-top: 1px solid #ff0000;
             background: @errorBackground;
         }
@@ -399,13 +485,12 @@ form-linje.feil {
         }
 
         &.boolean {
-            border: 1px solid #fca292;
+            border: 1px solid #fee6e6;
             background: #fee6e6;
             margin-bottom: 20px;
 
             .melding {
                 margin-bottom: 10px;
-                text-align: center !important;
             }
         }
 
@@ -413,23 +498,43 @@ form-linje.feil {
             background-color: #fee6e6;
         }
 
-        .melding.inline {
-            display: inline;
+        &.aktiv-feilmelding.boolean {
+            border: 1px solid #c30000;
+            background-color: #FAD6D6;
+
+            .melding {
+                color: #A00404;
+            }
+        }
+        &.aktiv-feilmelding.tekstfelt input {
+            border: 1px solid #c30000;
+            background-color: #FAD6D6;
+
+            .melding {
+                color: #A00404;
+            }
+        }
+    }
+    &.aktiv-feilmelding.checkbox.feilstyling {
+        border: 1px solid #c30000;
+        background-color: #FAD6D6;
+
+        .melding {
+            color: #A00404;
         }
     }
 
     &.checkbox.feilstyling {
-        border: 1px solid #fca292;
+        border: 1px solid #fee6e6;
         background: #fee6e6;
         padding: 14px !important;
+        margin-bottom: 20px;
 
         .melding {
             margin-bottom: 10px;
             display: block;
-            text-align: center !important;
         }
     }
-
 }
 
 .rad[stegindikator], .rad[data-stegindikator] {
@@ -477,3 +582,70 @@ form, [ng-form], [data-ng-form] {
     color: #3e3832;
 }
 
+.sticky-bunn {
+    text-align: center;
+    margin-bottom: 40px;
+
+    &.stick {
+        margin-bottom: 0;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 10px;
+        background: #f1f1f1;
+        border-top: 1px solid #dcdcdc;
+        z-index: 1035;
+        box-shadow: 0 0 10px #ccc;
+    }
+
+    span {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+    }
+
+    .liste-vannrett li {
+        margin-top: 5px;
+
+        a {
+            font-size: 1rem;
+        }
+    }
+}
+
+.ps-container {
+    position: relative;
+
+    &:hover {
+        [class*="ps-scrollbar"] {
+            opacity: 0.6;
+        }
+    }
+
+    [class*="ps-scrollbar"] {
+        position: absolute;
+        background-color: #aaa;
+        border-radius: 4px;
+        opacity: 0;
+        transition: opacity .2s linear;
+
+        &:hover {
+            opacity: 0.9;
+            cursor: default;
+        }
+
+        &.in-scrolling {
+            opacity: 0.9;
+        }
+    }
+
+    .ps-scrollbar-x {
+        bottom: 3px;
+        height: 8px;
+    }
+
+    .ps-scrollbar-y {
+        right: 3px;
+        width: 8px;
+    }
+}

@@ -7,7 +7,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import java.util.List;
 
 public interface SoknadRepository {
-	
+
     Long opprettSoknad(WebSoknad soknad);
 
     WebSoknad hentSoknad(Long id);
@@ -15,23 +15,31 @@ public interface SoknadRepository {
     WebSoknad hentSoknadMedData(Long id);
 
     List<Faktum> hentAlleBrukerData(Long soknadId);
+
+    void avslutt(WebSoknad soknad);
+
+    void avbryt(Long soknad);
+
+    List<WebSoknad> hentListe(String aktorId);
+
+    Long lagreFaktum(long soknadId, Faktum faktum);
+
+    WebSoknad hentMedBehandlingsId(String behandlingsId);
+
+    String opprettBehandling();
+
+    Faktum hentFaktum(Long soknadId, Long faktumId);
+
+    Faktum hentSystemFaktum(Long soknadId, String key,
+                            String systemregistrertFaktum);
+
+
+    List<Faktum> hentSystemFaktumList(Long soknadId, String key, String string);
     
-	void avslutt(WebSoknad soknad);
+    void endreInnsendingsValg(Long soknadId, Long faktumId, Faktum.Status innsendingsvalg);
 
-	void avbryt(Long soknad);
+    void settSistLagretTidspunkt(Long soknadId);
 
-	List<WebSoknad> hentListe(String aktorId);
-
-	Long lagreFaktum(long soknadId, Faktum faktum);
-
-	WebSoknad hentMedBehandlingsId(String behandlingsId);
-
-	String opprettBehandling();
-
-	Faktum hentFaktum(Long soknadId, Long faktumId);
-
-	Faktum hentSystemFaktum(Long soknadId, String key,
-			String systemregistrertFaktum);
-
+    void slettBrukerFaktum(Long soknadId, Long faktumId);
 
 }

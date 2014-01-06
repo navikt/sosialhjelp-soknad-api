@@ -6,70 +6,24 @@ angular.module('nav.vedlegg.controller', [])
             vedleggId: $routeParams.vedleggId
         });
     }])
-    .controller('VedleggCtrl', ['$scope', '$location', '$routeParams', '$anchorScroll', 'data', 'vedleggService', function ($scope, $location, $routeParams, $anchorScroll, data, vedleggService) {
+    .controller('VedleggCtrl', ['$scope', '$location', '$routeParams', '$anchorScroll', 'data', 'VedleggForventning', function ($scope, $location, $routeParams, $anchorScroll, data, VedleggForventning) {
 
-        function cloneObject(object) {
-            return $.extend({}, object);
-        }
-
-        function opprettVedleggMedFaktum(key) {
-            var vedlegg = cloneObject(vedleggMap[key]);
-            vedlegg.data = data.soknad.fakta[key];
-            vedlegg.valg = 'sendinn';
-            vedlegg.side = 0;
-            vedlegg.lastetOpp = function () {
-                return vedlegg.data.vedleggId;
-            }
-            vedlegg.$naviger = function (antall) {
-                vedlegg.side = vedlegg.side + antall;
-            }
-            if (vedlegg.lastetOpp()) {
-                vedlegg.vedlegg = vedleggService.get({
-                    soknadId: vedlegg.data.soknadId,
-                    faktumId: vedlegg.data.vedleggId,
-                    vedleggId: vedlegg.data.vedleggId
-                })
-            }
-
-            return vedlegg;
-        }
-
-        function faktumMedVedlegg(key) {
-            return vedleggMap[key] != undefined;
-        }
-
-        function indekserVedlegg(vedlegg) {
-            var vedleggMap = {};
-            vedlegg.forEach(function (vedlegg) {
-                var id = vedlegg.faktum.id;
-                vedleggMap[id] = vedlegg;
-            });
-            return vedleggMap;
-        }
-
-
-        var vedleggMap = indekserVedlegg(data.soknadOppsett.vedlegg);
+        $scope.forventninger = VedleggForventning.query({soknadId: data.soknad.soknadId});
         $scope.sidedata = {navn: 'vedlegg'};
-        $scope.vedlegg = Object.keys(data.soknad.fakta).filter(faktumMedVedlegg).map(opprettVedleggMedFaktum);
-        $scope.soknad = data.soknad;
-        $scope.erFaktumLikKriterie = function (vedlegg) {
-            if (data.soknad.fakta[vedlegg.faktum.id]) {
-                return data.soknad.fakta[vedlegg.faktum.id].value === vedlegg.onValue;
-            }
-            return false;
+        $scope.lastetOpp = function (forventning) {
+            return forventning.faktum.vedleggId;
         }
-        $scope.slettVedlegg = function (vedlegg) {
-
-            vedleggService.remove({
-                soknadId: data.soknad.soknadId,
-                faktumId: vedlegg.data.faktumId,
-                vedleggId: vedlegg.data.vedleggId}, function () {
-                vedlegg.data.vedleggId = null;
+        $scope.slettVedlegg = function (forventning) {
+            forventning.$slettVedlegg().then(function () {
+                forventning.faktum.innsendingsvalg = 'VedleggKreves';
+                forventning.faktum.vedleggId = null;
+                forventning.vedlegg = null;
             });
-
         }
-        $scope.vedleggBehandlet = function (vedlegg) {
-            return vedlegg.valg === 'ikkeSend' || vedlegg.valg == 'sendSenere' || vedlegg.lastetOpp();
+        $scope.endreInnsendingsvalg = function (forventning) {
+            forventning.$endreValg().then(function (data) {
+
+            });
         }
     }])
     .directive('bildeNavigering', [function () {
@@ -78,5 +32,4 @@ angular.module('nav.vedlegg.controller', [])
             replace: 'true',
             templateUrl: '../../'
         }
-
     }]);

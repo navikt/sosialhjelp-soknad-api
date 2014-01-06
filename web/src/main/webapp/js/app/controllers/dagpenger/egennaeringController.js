@@ -3,8 +3,17 @@ angular.module('nav.egennaering',[])
         $scope.navigering = {nesteside: 'verneplikt'};
         $scope.sidedata = {navn: 'egennaering'};
 
-        $scope.validerEgennaering = function(form) {
+        $scope.$on('VALIDER_EGENNAERING', function () {
+            $scope.validerEgennaering(false);
+        });
+
+        $scope.validerOgSettModusOppsummering = function(form) {
             $scope.validateForm(form.$invalid);
-            $scope.runValidation();
+            $scope.validerEgennaering(true);
+        }
+
+        $scope.validerEgennaering = function(skalScrolle) {
+            $scope.runValidation(skalScrolle);
+
         }
     }]);
