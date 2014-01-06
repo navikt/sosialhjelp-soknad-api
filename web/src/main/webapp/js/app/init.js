@@ -57,7 +57,7 @@ angular.module('sendsoknad')
 
         return d;
     }])
-    .factory('HentSoknadService', ['data', 'cms', '$resource', '$q', '$route', 'soknadService', 'Faktum', function (data, cms, $resource, $q, $route, soknadService, Faktum) {
+    .factory('HentSoknadService', ['data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', function (data, cms, $resource, $q, $route, soknadService, landService, Faktum) {
         var soknadId = $route.current.params.soknadId;
         var promiseArray = [];
 
@@ -90,6 +90,11 @@ angular.module('sendsoknad')
                 }
             );
 
+            var land = landService.get(
+                function (result) { // Success
+                    data.land = result;
+                }
+            );
             var soknadOppsett = soknadService.options({param: soknadId},
                 function (result) { // Success
                     data.soknadOppsett = result;
