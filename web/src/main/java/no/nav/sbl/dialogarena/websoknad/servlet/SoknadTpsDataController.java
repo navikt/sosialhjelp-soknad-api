@@ -2,12 +2,12 @@ package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import com.google.gson.GsonBuilder;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.person.Adresse;
-import no.nav.sbl.dialogarena.person.FamilieRelasjonService;
-import no.nav.sbl.dialogarena.person.Person;
-import no.nav.sbl.dialogarena.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.FamilieRelasjonService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.Person;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.websoknad.util.DateTimeSerializer;
 import org.joda.time.DateTime;
@@ -51,7 +51,7 @@ public class SoknadTpsDataController {
     @RequestMapping(value = "/kodeverk/landliste", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Map<String, List<Map<String, String>>> hentLandkodeListe() {
-       
+
         List<Map<String, String>> landliste = new ArrayList<>();
         List<String> landKoder = kodeverk.getAlleLandkoder();
         for (String landkode : landKoder) {
@@ -60,7 +60,7 @@ public class SoknadTpsDataController {
             land.put("value", landkode);
             landliste.add(land);
         }
-        if(!landKoder.contains("NOR")) {
+        if (!landKoder.contains("NOR")) {
             Map<String, String> norge = new LinkedHashMap<>();
             norge.put("text", "Norge");
             norge.put("value", "NOR");

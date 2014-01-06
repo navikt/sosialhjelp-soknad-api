@@ -47,7 +47,6 @@ public class VedleggController {
     private static final List<String> LEGAL_CONTENT_TYPES = Arrays.asList("application/pdf", "image/png", "image/jpeg");
     @Inject
     private VedleggService vedleggService;
-
     @Inject
     private SoknadService soknadService;
 
@@ -62,7 +61,7 @@ public class VedleggController {
                 List<Vedlegg> res = new ArrayList<>();
                 for (MultipartFile file : files) {
                     byte[] in = validateAndGetInput(file);
-                    Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, file.getOriginalFilename(), file.getSize(), 1, in);
+                    Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, file.getOriginalFilename(), file.getSize(), 1, null, in);
                     Long id = vedleggService.lagreVedlegg(vedlegg, new ByteArrayInputStream(in));
                     vedlegg.setId(id);
                     res.add(vedlegg);
@@ -121,7 +120,6 @@ public class VedleggController {
             }
         };
     }
-
 
     @RequestMapping(value = "/generer", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()

@@ -43,9 +43,6 @@ public class FaktaController {
     @RequestMapping(value = "/{faktumId}", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
     public Faktum lagreFaktum(@PathVariable Long soknadId, @RequestBody Faktum faktum) {
-        if (!faktum.getProperties().isEmpty()) {
-            System.out.println(faktum.getProperties());
-        }
         return soknadService.lagreSoknadsFelt(soknadId, faktum);
     }
 

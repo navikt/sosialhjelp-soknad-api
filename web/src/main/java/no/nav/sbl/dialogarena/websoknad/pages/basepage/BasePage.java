@@ -5,7 +5,6 @@ import no.nav.sbl.dialogarena.webkomponent.footer.FooterPanel;
 import no.nav.sbl.dialogarena.webkomponent.innstillinger.InnstillingerPanel;
 import no.nav.sbl.dialogarena.webkomponent.navigasjon.NavigasjonPanel;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -16,7 +15,6 @@ import java.util.Map;
 
 
 public class BasePage extends WebPage {
-
     @Inject
     private CmsContentRetriever cmsContentRetriever;
 
@@ -32,7 +30,6 @@ public class BasePage extends WebPage {
     public BasePage(PageParameters parameters) {
         super(parameters);
         add(
-                new Label("tittel", "Søknad om dagpenger"),
                 new InnstillingerPanel("innstillinger", getInnloggetIsTrueModel(), cmsContentRetriever),
                 new NavigasjonPanel("navigasjon", navigasjonsLink, cmsContentRetriever),
                 new FooterPanel("footer", footerLinks, getInnloggetIsTrueModel(), FALSE, cmsContentRetriever)
