@@ -24,5 +24,6 @@ angular.module('app.directives', [
     'nav.barnetillegg.directive',
     'nav.scrollbar',
     'nav.dagpengerdirective',
+    'nav.skjematittel',
     'nav.aria'
 ]);
