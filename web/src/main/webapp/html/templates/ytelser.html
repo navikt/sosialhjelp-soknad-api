@@ -4,8 +4,6 @@
         <div class="spm form-linje checkbox" data-checkbox-validate>
             <input type="hidden" data-ng-model="harHuketAvCheckboksYtelse.value" data-ng-required="true"
                    data-error-messages="'ytelser.minstEnCheckboksErAvhuket.feilmelding'">
-            <input type="hidden" data-ng-model="harHuketAvCheckboksNavYtelse.value" data-ng-required="true"
-                   data-error-messages="'ytelser.minstEnCheckboksErAvhuket.navYtelserfeilmelding'">
             <h4 class="spm-sporsmal">
                 <span data-cmstekster="ytelser.informasjon"></span>
                 <span data-cmstekster="ytelser.sporsmal"></span>
@@ -92,18 +90,17 @@
                      data-navfeilmelding="ytelser.annenYtelseUtbetaler.feilmelding"></div>
             </div>
             <div>
-                <div class="annetvalg-nei form-linje" data-valider-ingen-ytelser data-nav-faktum="ingenYtelse">
-                    <!--<input type="text" data-ng-model="soknadData.fakta.ingenYtelse.value" data-error-messages="ytelser.harValgtYtelse.feilmelding" data-required />-->
+                <div class="annetvalg-nei form-linje" data-nav-faktum="ingenYtelse">
                     <input id="ingenYtelseCheckbox" data-ng-model="faktum.value" type="checkbox"
                            name="ingenYtelse" data-ng-change="endreIngenYtelse()" data-boolean-verdi>
                     <label for="ingenYtelseCheckbox" class="svar-alt" data-cmstekster="ytelser.ingenYtelse"></label>
-                    <span class="ingen-ytelse-melding" data-cmstekster="ytelser.harValgtYtelse.feilmelding"></span>
                 </div>
-
             </div>
             <span class="melding" data-cmstekster="ytelser.minstEnCheckboksErAvhuket.feilmelding"></span>
         </div>
         <div class="spm form-linje checkbox" data-checkbox-validate>
+             <input type="hidden" data-ng-model="harHuketAvCheckboksNavYtelse.value" data-ng-required="true"
+                   data-error-messages="'ytelser.minstEnCheckboksErAvhuket.navYtelserfeilmelding'">
             <h4 class="spm-sporsmal">
                 <span data-cmstekster="ytelser.nav.informasjon"></span>
                 <span data-cmstekster="ytelser.nav.sporsmal"></span>
@@ -150,49 +147,39 @@
                  data-navendret="endreNavYtelse(ytelserForm)"></div>
 
 
-            <div class="annetvalg-nei form-linje" data-valider-nav-ytelser data-nav-faktum="ingennavytelser">
-                <!--<input type="text" data-ng-model="soknadData.fakta.ingenYtelse.value" data-error-messages="ytelser.harValgtYtelse.feilmelding" data-required />-->
+            <div class="annetvalg-nei form-linje" data-nav-faktum="ingennavytelser">
                 <input id="ingennavytelserCheckbox" data-ng-model="faktum.value" type="checkbox"
                        name="ingennavytelser" data-ng-change="endreIngenNavYtelse(ytelserForm)" data-boolean-verdi/>
                 <label for="ingennavytelserCheckbox" class="svar-alt" data-cmstekster="ytelser.nav.ingen"></label>
-                <span class="ingen-navytelse-melding" data-cmstekster="ytelser.harValgtYtelse.feilmelding"></span>
             </div>
             <span class="melding" data-cmstekster="ytelser.minstEnCheckboksErAvhuket.navYtelserfeilmelding"></span>
+        </div>
 
+        <div>
             <h4 class="spm-sporsmal">
                 <span data-cmstekster="ytelser.goder.info"></span>
-
             </h4>
 
-            <div data-navradio
-                 data-navconfig
-                 data-value="ikkeAvtale"
-                 data-nav-faktum="avtale"
-                 data-navlabel="ytelser.goder.nei"
-                 data-ng-required="true"
-                 data-navfeilmelding="ytelser.goder.feilmelding"></div>
-
-            <div data-navradio
-                 data-navconfig
-                 data-value="avtale"
-                 data-nav-faktum="avtale"
-                 data-navlabel="ytelser.goder.ja"
-                 data-ng-required="true"
-                 data-navfeilmelding="ytelser.goder.feilmelding"></div>
+            <div data-nav-faktum="ikkeavtale"
+            data-navconfig
+            data-booleanradio
+            data-nokkel="ytelser.ikkeavtale"></div>
 
             <div data-navtekst
                  data-navconfig
                  data-ng-if="hvisAvtaleInngaatt()"
                  data-nav-faktum="avtaleBeskrivelse"
-                 data-ng-maxlength="50"
-                 data-ng-minlength="5"
+                 data-maxlength="50"
+                 data-minlength="5"
                  data-ng-pattern="/^[-a-zA-Z0-9æøåÆØÅ _+§%()]*$/"
-                 data-navlabel="ytelser.goder.hvaslagsavtale"
-                 data-navfeilmelding="ytelser.goder.avtale.feilmelding"></div>
-            <div class="infoboks" data-ng-if="hvisAvtaleInngaatt()" cmstekster="ytelser.avtale.dokumentasjon"/>
+                 data-navlabel="ytelser.ikkeavtale.hvaslagsavtale"
+                 data-navfeilmelding="ytelser.ikkeavtale.avtale.feilmelding"></div>
+            <div class="infoboks" data-ng-if="hvisAvtaleInngaatt()" cmstekster="ytelser.avtale.dokumentasjon"> </div>
+
+            <!-- <span class="melding"></span> -->
         </div>
 
         <div data-spmblokkferdig data-nokkel="ytelser"
              data-submit-method="validerOgSettModusOppsummering(ytelserForm)"></div>
-    </div>
+    
 </div>
