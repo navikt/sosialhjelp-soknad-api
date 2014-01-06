@@ -31,7 +31,6 @@ public class ConsumerConfig {
     //Må godta så store xml-payloads pga Kodeverk postnr
     static {
         setProperty("org.apache.cxf.staxutils.innerElementCountThreshold", "70000");
-        System.out.println("starter consumerconfig");
     }
 
     @Configuration
