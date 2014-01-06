@@ -9,14 +9,16 @@ public class VedleggForventning {
     private Faktum faktum;
     private Vedlegg vedlegg;
     private String gosysId;
+    private String property;
 
     public VedleggForventning() {
     }
 
-    public VedleggForventning(Faktum faktum, Vedlegg vedlegg, String gosysId) {
+    public VedleggForventning(Faktum faktum, Vedlegg vedlegg, String gosysId, String property) {
         this.faktum = faktum;
         this.vedlegg = vedlegg;
         this.gosysId = gosysId;
+        this.property = property;
         if (faktum.getInnsendingsvalg() == null || faktum.getInnsendingsvalg().equals(Faktum.Status.IkkeVedlegg)) {
             faktum.setInnsendingsvalg(Faktum.Status.VedleggKreves);
         }
@@ -45,5 +47,13 @@ public class VedleggForventning {
 
     public void setGosysId(String gosysId) {
         this.gosysId = gosysId;
+    }
+
+    public String getProperty() {
+        return property;
+    }
+
+    public void setProperty(String property) {
+        this.property = property;
     }
 }

@@ -240,7 +240,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
             SoknadVedlegg soknadVedlegg = struktur.vedleggFor(faktum.getKey());
             if (soknadVedlegg != null && soknadVedlegg.trengerVedlegg(faktum.getValue())) {
                 Vedlegg vedlegg = faktum.getInnsendingsvalg().er(LastetOpp) ? vedleggRepository.hentVedlegg(soknadId, faktum.getVedleggId()) : null;
-                forventninger.add(new VedleggForventning(faktum, vedlegg, soknadVedlegg.getGosysId()));
+                forventninger.add(new VedleggForventning(faktum, vedlegg, soknadVedlegg.getGosysId(), soknadVedlegg.getProperty()));
             }
         }
 
