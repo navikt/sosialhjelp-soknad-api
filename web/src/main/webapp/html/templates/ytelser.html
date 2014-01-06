@@ -64,15 +64,22 @@
                      data-navfeilmelding="ytelser.garantilottUtbetaler.feilmelding"></div>
             </div>
             <div data-navcheckbox
-                 data-navconfig
-                 data-nav-faktum="dagpengerEOS"
-                 data-navlabel="ytelser.dagpengerEOS" data-navendret="endreYtelse(ytelserForm)">
+                data-navconfig
+                data-nav-faktum="dagpengerEOS"
+                data-navlabel="ytelser.dagpengerEOS" data-navendret="endreYtelse(ytelserForm)">
 
-                <div data-navtekst
+            <div class="land">
+                <div nav-select
+                     nav-faktum="dagpengerEOSUtbetalerLand"
                      data-navconfig
-                     data-nav-faktum="dagpengerEOSUtbetaler"
-                     data-navlabel="ytelser.dagpengerEOSUtbetaler"
-                     data-navfeilmelding="ytelser.dagpengerEOSUtbetaler.feilmelding"></div>
+                     data-label="ytelser.dagpengerEOSUtbetaler"
+                     data-options="land.result"
+                     data-er-required="hvisHarDagpengerEOS()"
+                     data-required-feilmelding="ytelser.dagpengerEOSUtbetaler.feilmelding"
+                     data-ugyldig-feilmelding="ytelser.dagpengerEOSUtbetaler.ugyldig.feilmelding">
+                </div>
+            </div>
+
             </div>
 
             <div data-navcheckbox
