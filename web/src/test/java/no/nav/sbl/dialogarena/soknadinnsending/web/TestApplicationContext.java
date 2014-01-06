@@ -68,10 +68,8 @@ public class TestApplicationContext {
     @Bean
     public String kodeverkServiceCreator() {
         if (mockKodeverk) {
-            System.out.println("Starter mock kodeverk");
             new MockConsumerConfig.KodeverkWSConfig();
         } else {
-            System.out.println("Starter realt kodeverk");
             new ConsumerConfig.KodeverkWSConfig();
         }
         return "kodeverk";

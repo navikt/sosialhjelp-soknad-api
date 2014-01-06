@@ -47,7 +47,6 @@ public class MockConsumerConfig {
 
         @Bean
         public SendSoknadPortType sendSoknadService() {
-            System.out.println("\n\n\n\n\nsetter opp service \n\n\n\n");
             SendSoknadPortType mock = mock(SendSoknadPortType.class);
             when(mock.startSoknad(any(WSStartSoknadRequest.class))).thenReturn(new WSBehandlingsId().withBehandlingsId("ID" + id++));
             return mock;
@@ -146,7 +145,6 @@ public class MockConsumerConfig {
 
         @Bean
         public KodeverkPortType kodeverkService() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
-            System.out.println("Starter mock kodeverk");
             KodeverkPortType mock = mock(KodeverkPortType.class);
             when(mock.hentKodeverk(argThat(new CustomMatcher<XMLHentKodeverkRequest>("sjekk om kodeverk matcher") {
                 @Override
