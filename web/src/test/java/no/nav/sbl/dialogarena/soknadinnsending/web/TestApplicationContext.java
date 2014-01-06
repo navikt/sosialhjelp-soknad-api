@@ -1,0 +1,100 @@
+package no.nav.sbl.dialogarena.soknadinnsending.web;
+
+import no.nav.modig.cache.CacheConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.BusinessConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.ServicesApplicationContext;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadInnsendingDBConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.MockConsumerConfig;
+import no.nav.sbl.dialogarena.websoknad.config.ApplicationContext;
+import no.nav.sbl.dialogarena.websoknad.config.ContentConfig;
+import no.nav.sbl.dialogarena.websoknad.config.FooterConfig;
+import no.nav.sbl.dialogarena.websoknad.config.GAConfig;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+
+import javax.inject.Inject;
+
+@Configuration
+@Import({
+        MockConsumerConfig.class,
+        ServicesApplicationContext.class,
+        ApplicationContext.class,
+        BusinessConfig.class,
+        CacheConfig.class,
+        FooterConfig.class,
+        GAConfig.class,
+        ContentConfig.class,
+        MockConsumerConfig.class,
+        SoknadInnsendingDBConfig.class})
+
+public class TestApplicationContext {
+    private boolean mockHenvendelse = true;
+    private boolean mockBrukerprofil = true;
+    private boolean mockTps = true;
+    private boolean mockKodeverk = true;
+    @Inject
+    private org.springframework.context.ApplicationContext context;
+
+    @Bean
+    public Object henvendelseServiceCreator() {
+        if (mockHenvendelse) {
+            return new MockConsumerConfig.SendSoknadWSConfig();
+        } else {
+            return new ConsumerConfig.SendSoknadWSConfig();
+        }
+    }
+
+    @Bean
+    public Object fillagerServiceCreator() {
+        if (mockHenvendelse) {
+            return new MockConsumerConfig.FilLagerWSConfig();
+        } else {
+            return new ConsumerConfig.FilLagerWSConfig();
+        }
+    }
+
+    @Bean
+    public String brukerprofilServiceCreator() {
+        if (mockBrukerprofil) {
+            new MockConsumerConfig.BrukerProfilWSConfig();
+        } else {
+            new ConsumerConfig.BrukerProfilWSConfig();
+        }
+        return "brukerprofil";
+    }
+
+    @Bean
+    public String kodeverkServiceCreator() {
+        if (mockKodeverk) {
+            System.out.println("Starter mock kodeverk");
+            new MockConsumerConfig.KodeverkWSConfig();
+        } else {
+            System.out.println("Starter realt kodeverk");
+            new ConsumerConfig.KodeverkWSConfig();
+        }
+        return "kodeverk";
+    }
+
+    @Bean
+    public Object personServiceCreator() {
+
+        if (mockTps) {
+            return new MockConsumerConfig.PersonWSConfig();
+        } else {
+            return new ConsumerConfig.PersonWSConfig();
+        }
+    }
+
+    @Bean
+    public Object aktorServiceCreator() {
+
+        if (mockTps) {
+            return new MockConsumerConfig.AktorWsConfig();
+        } else {
+            return new ConsumerConfig.AktorWsConfig();
+        }
+    }
+
+}

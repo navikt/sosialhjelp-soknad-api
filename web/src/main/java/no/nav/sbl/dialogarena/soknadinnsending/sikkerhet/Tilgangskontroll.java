@@ -11,7 +11,7 @@ import no.nav.modig.security.tilgangskontroll.policy.pep.PEPImpl;
 import no.nav.modig.security.tilgangskontroll.policy.request.attributes.SubjectAttribute;
 import no.nav.sbl.dialogarena.soknadinnsending.SoknadInnsendingConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.aktor.AktorIdService;
-import no.nav.sbl.dialogarena.websoknad.service.HenvendelseConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 
 import javax.inject.Inject;
 import javax.inject.Named;

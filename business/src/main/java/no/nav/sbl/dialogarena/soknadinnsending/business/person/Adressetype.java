@@ -1,7 +1,7 @@
-package no.nav.sbl.dialogarena.person;
+package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
 public enum Adressetype {
-	POSTADRESSE_UTLAND,
+    POSTADRESSE_UTLAND,
     BOSTEDSADRESSE, POSTADRESSE,
     GATEADRESSE, POSTBOKSADRESSE,
     OMRAADEADRESSE, UTENLANDSK_ADRESSE,
