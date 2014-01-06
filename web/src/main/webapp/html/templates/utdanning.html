@@ -270,15 +270,16 @@
 
     <div class="annetvalg-nei form-linje" data-nav-faktum="underUtdanningAnnet">
         <input id="underUtdanningAnnetCheckbox" data-ng-model="faktum.value" type="checkbox"
-               name="ingennavytelser" data-ng-change="endreUtdannelseAnnet(utdanningForm)" data-boolean-verdi/>
+               name="utdanningannet" data-ng-change="endreUtdannelseAnnet(utdanningForm)" data-boolean-verdi/>
         <label for="underUtdanningAnnetCheckbox" class="svar-alt"
                data-cmstekster="utdanning.svar.under.utdanning.annet"></label>
-        <span class="ingen-navytelse-melding" data-cmstekster="utdanning.harValgtUtdanning.feilmelding"></span>
+        <span class="utdanning-annet-melding" data-cmstekster="utdanning.harValgtUtdanning.feilmelding"></span>
     </div>
+<div data-navinfoboks  data-ng-show="hvis('underUtdanningAnnet')" data-nokkel="utdanning.unntak.informasjon"></div>
 <div class="annetvalg-nei form-linje" data-ng-class="{feil:utdanning.skalViseFeilmeldingForUtdanningAnnet}">
-    <span class="utdanning-annet-melding" data-cmstekster="utdanning.harValgtUtdanning.feilmelding"></span>
+
 </div>
-<span class="melding" data-cmstekster="utdanning.minstEnCheckboksErAvhuket.feilmelding"></span>
+<span class="melding" data-cmstekster="utdanning.minstEnAvhuket.feilmelding"></span>
 
 </div>
 <div data-spmblokkferdig data-nokkel="utdanning"

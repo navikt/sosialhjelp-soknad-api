@@ -19,13 +19,11 @@ angular.module('app.directives', [
     'nav.prosent',
     'nav.sidetittel',
     'nav.bildenavigering',
-    'nav.utdanningannet',
     'nav.navfaktum',
-    'nav.ingenytelser',
-    'nav.ingennavytelser',
     'nav.accordion',
     'nav.barnetillegg.directive',
     'nav.scrollbar',
     'nav.dagpengerdirective',
+    'nav.skjematittel',
     'nav.aria'
 ]);
