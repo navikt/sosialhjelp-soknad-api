@@ -21,40 +21,23 @@
 
     <dependencies>
         <!-- Avhengigheter med scope compile -->
-		<dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>dialogarena-behandlingsinformasjon</artifactId>
-        </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>common-timing</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-cxf</artifactId>
+            <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
             <artifactId>brukerprofil-tjenestespesifikasjon</artifactId>
         </dependency>
-         <dependency>
-			<groupId>no.nav.tjenester.fim</groupId>
-			<artifactId>nav-fim-person-v1-tjenestespesifikasjon</artifactId>
-			<classifier>jaxws</classifier>
-		</dependency>
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
+            <artifactId>sendsoknad-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-content</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>sendsoknad-tjenestespesifikasjon</artifactId>
-        </dependency>
         <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-core</artifactId>
@@ -91,9 +74,9 @@
             <artifactId>sbl-webkomponent-navigasjon</artifactId>
         </dependency>
         <dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-		</dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apache.wicket</groupId>
             <artifactId>wicket-core</artifactId>
@@ -155,26 +138,6 @@
             <artifactId>spring-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-jaxws</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-simple</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-security-sts</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.xhtmlrenderer</groupId>
             <artifactId>flying-saucer-pdf</artifactId>
         </dependency>
@@ -197,8 +160,6 @@
         </dependency>
 
 
-
-
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
@@ -209,7 +170,7 @@
             <artifactId>commons-io</artifactId>
         </dependency>
 
-     <!-- Avhengigheter med scope runtime -->
+        <!-- Avhengigheter med scope runtime -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -255,7 +216,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -297,7 +257,7 @@
             <scope>runtime</scope>
         </dependency>
 
-		<!-- Avhengigheter med scope provided -->
+        <!-- Avhengigheter med scope provided -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -328,9 +288,9 @@
             <artifactId>common-jetty</artifactId>
             <scope>test</scope>
         </dependency>
-         <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>common-test</artifactId>
+        <dependency>
+            <groupId>no.nav.sbl.dialogarena</groupId>
+            <artifactId>common-test</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
@@ -521,7 +481,7 @@
                      <reporters>dots,coverage</reporters>
                  </configuration>
              </plugin>-->
-            
+
             <!--<plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>

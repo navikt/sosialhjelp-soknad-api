@@ -35,10 +35,15 @@ public class SoknadServiceTest {
     @InjectMocks
     private SoknadService soknadService;
 
+    public static byte[] getBytesFromFile(String path) throws IOException {
+        InputStream resourceAsStream = SoknadServiceTest.class.getResourceAsStream(path);
+        return IOUtils.toByteArray(resourceAsStream);
+    }
+
     @Test
     public void skalKonvertereFilerVedOpplasting() throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(getBytesFromFile("/images/bilde.png"));
-        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L, "", 1L, 1, null);
+        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L, "", 1L, 1, null, null);
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
         when(vedleggRepository.lagreVedlegg(eq(vedlegg), captor.capture())).thenReturn(11L);
         Long id = soknadService.lagreVedlegg(vedlegg, bais);
@@ -50,7 +55,7 @@ public class SoknadServiceTest {
     @Ignore
     public void skalKonverterePdfVedOpplasting() throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(getBytesFromFile("/pdfs/navskjema.pdf"));
-        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L, "", 1L, 1, null);
+        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L, "", 1L, 1, null, null);
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
         when(vedleggRepository.lagreVedlegg(eq(vedlegg), captor.capture())).thenReturn(11L);
         Long id = soknadService.lagreVedlegg(vedlegg, bais);
@@ -59,11 +64,6 @@ public class SoknadServiceTest {
         File file = new File("testoutput.pdf");
         //System.out.println(file.getAbsolutePath());
         IOUtils.write(captor.getValue(), new FileOutputStream(file));
-    }
-
-    public static byte[] getBytesFromFile(String path) throws IOException {
-        InputStream resourceAsStream = SoknadServiceTest.class.getResourceAsStream(path);
-        return IOUtils.toByteArray(resourceAsStream);
     }
 
 
