@@ -18,7 +18,7 @@ public class Transformers {
     public static XMLVedlegg[] convertToXmlVedleggListe(List<VedleggForventning> vedleggForventnings) {
         List<XMLVedlegg> resultat = new ArrayList<>();
         for (VedleggForventning vedlegg : vedleggForventnings) {
-            if (vedlegg.getFaktum().getInnsendingsvalg().er(LastetOpp)) {
+            if (vedlegg.getFaktum().getInnsendingsvalg(vedlegg.getGosysId()).er(LastetOpp)) {
                 resultat.add(new XMLVedlegg()
                         .withFilnavn(vedlegg.getVedlegg().getNavn())
                         .withSideantall(vedlegg.getVedlegg().getAntallSider())
