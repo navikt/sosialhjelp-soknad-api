@@ -40,6 +40,7 @@ import static java.lang.String.format;
 import static javax.xml.bind.JAXBContext.newInstance;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.LastetOpp;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.VedleggKreves;
 
 @Component
 public class SoknadService implements SendSoknadService, VedleggService {
@@ -136,7 +137,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public void endreInnsendingsvalg(Long soknadId, Faktum faktum) {
-        repository.endreInnsendingsValg(soknadId, faktum.getFaktumId(), faktum.getInnsendingsvalg());
+        repository.endreInnsendingsValg(soknadId, faktum.getFaktumId(), null);
     }
 
     @Override
@@ -180,8 +181,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     @Override
-    public List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId) {
-        return vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
+    public List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId, String gosysId) {
+        return vedleggRepository.hentVedleggForFaktum(soknadId, faktumId, gosysId);
     }
 
     @Override
@@ -209,8 +210,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     @Override
-    public Long genererVedleggFaktum(Long soknadId, Long faktumId) {
-        List<Vedlegg> vedleggs = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
+    public Long genererVedleggFaktum(Long soknadId, Long faktumId, String gosysId) {
+        List<Vedlegg> vedleggs = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId, gosysId);
         List<byte[]> bytes = new ArrayList<>();
         for (Vedlegg vedlegg : vedleggs) {
             InputStream inputStream = vedleggRepository.hentVedleggStream(soknadId, vedlegg.getId());
@@ -222,11 +223,11 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
         }
         byte[] doc = new PdfMerger().transform(bytes);
-        Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, "faktum.pdf", (long) doc.length, vedleggs.size(), UUID.randomUUID().toString(), doc);
+        Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, gosysId, "faktum.pdf", (long) doc.length, vedleggs.size(), UUID.randomUUID().toString(), doc);
         fillagerConnector.lagreFil(vedlegg.getFillagerReferanse(), new ByteArrayInputStream(doc));
         vedleggRepository.slettVedleggForFaktum(soknadId, faktumId);
         Long opplastetDokument = vedleggRepository.lagreVedlegg(vedlegg, doc);
-        vedleggRepository.knyttVedleggTilFaktum(soknadId, faktumId, opplastetDokument);
+        vedleggRepository.settVedleggStatus(soknadId, faktumId, vedlegg.getGosysId());
         return opplastetDokument;
     }
 
@@ -237,10 +238,17 @@ public class SoknadService implements SendSoknadService, VedleggService {
         SoknadStruktur struktur = hentStruktur(webSoknad.getGosysId());
 
         for (Faktum faktum : webSoknad.getFakta().values()) {
-            SoknadVedlegg soknadVedlegg = struktur.vedleggFor(faktum.getKey());
-            if (soknadVedlegg != null && soknadVedlegg.trengerVedlegg(faktum.getValue())) {
-                Vedlegg vedlegg = faktum.getInnsendingsvalg().er(LastetOpp) ? vedleggRepository.hentVedlegg(soknadId, faktum.getVedleggId()) : null;
-                forventninger.add(new VedleggForventning(faktum, vedlegg, soknadVedlegg.getGosysId(), soknadVedlegg.getProperty()));
+            List<SoknadVedlegg> aktuelleVedlegg = struktur.vedleggFor(faktum.getKey());
+            if (!aktuelleVedlegg.isEmpty()) {
+                for (SoknadVedlegg soknadVedlegg : aktuelleVedlegg) {
+                    if (soknadVedlegg.trengerVedlegg(faktum.getValue())) {
+                        Vedlegg vedlegg = faktum.getInnsendingsvalg(soknadVedlegg.getGosysId()).er(LastetOpp) ? vedleggRepository.hentVedleggForGosysId(soknadId, faktum.getFaktumId(), soknadVedlegg.getGosysId()) : null;
+                        if (vedlegg == null && faktum.getInnsendingsvalg(soknadVedlegg.getGosysId()).er(LastetOpp)) {
+                            faktum.setInnsendingsvalg(soknadVedlegg.getGosysId(), VedleggKreves);
+                        }
+                        forventninger.add(new VedleggForventning(faktum, vedlegg, soknadVedlegg.getGosysId(), soknadVedlegg.getProperty()));
+                    }
+                }
             }
         }
 
