@@ -39,6 +39,33 @@
             </div>
         </div>
 
+        <div data-ng-repeat="af in soknadData.fakta.arbeidsforhold.valuelist" data-ng-class="{'last': $last}">
+            <div class="spm-boks vertikal"
+                <p class="arbeidsforhold-dato">{{ af.properties.datofra | date:'dd.MM.yyyy'}} - {{
+                    af.properties.datotil | date:'dd.MM.yyyy'}}</p>
+
+                <p class="arbeidsforhold-arbeidsgivernavn-overskrift">{{ af.properties.arbeidsgivernavn }}</p>
+
+                <!--div class="arbeidsforhold-land-sluttaarsak-blokk">
+                    <span class="svar-oppsummering-label" data-cmstekster="arbeidsforhold.arbeidsgiver.land"></span>
+                    <span class="svar-oppsummering-label-svar">{{ af.land }}</span>
+                    <span class="svar-oppsummering-deler"> | </span>
+                    <span class="svar-oppsummering-label" data-cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsak"></span>
+                    <span class="svar-oppsummering-label-svar">{{ af.sluttaarsak.navn }}</span>
+                </div>
+
+                <div class="arbeidsgiver-oppsummering-sluttaarsaker">
+                    <div data-ng-include="af.sluttaarsak.oppsummeringsurl"></div>
+                </div-->
+
+                <p class="arbeidsforhold-oppsummering-endre-slett lenker-dot">
+                    <a href data-ng-click="slettArbeidsforhold(af)" data-cmstekster="arbeidsforhold.slettarbeidsforhold"></a>
+                    <a href data-ng-click="endreArbeidsforhold($index, arbeidsforholdForm)" data-cmstekster="arbeidsforhold.endrearbeidsforhold"></a>
+                </p>
+            </div>
+        </div>
+
+
         <div data-ng-if="hvisHarJobbet()">
             <input type="hidden" 
                     data-ng-model="lagretArbeidsforhold" 
@@ -59,32 +86,9 @@
         </div>
 
         
-        <!--div data-ng-repeat="af in arbeidsforhold" data-ng-class="{'last': $last}">
-            <div class="arbeidsforhold" data-ng-show="arbeidsforholdetErIkkeIRedigeringsModus($index)">
-                <p class="arbeidsforhold-dato">{{ af.varighetFra | date:'dd.MM.yyyy'}} - {{
-                    af.varighetTil | date:'dd.MM.yyyy'}}</p>
+        
 
-                <p class="arbeidsforhold-arbeidsgivernavn-overskrift">{{ af.navn }}</p>
-
-                <div class="arbeidsforhold-land-sluttaarsak-blokk">
-                    <span class="svar-oppsummering-label" data-cmstekster="arbeidsforhold.arbeidsgiver.land"></span>
-                    <span class="svar-oppsummering-label-svar">{{ af.land }}</span>
-                    <span class="svar-oppsummering-deler"> | </span>
-                    <span class="svar-oppsummering-label" data-cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsak"></span>
-                    <span class="svar-oppsummering-label-svar">{{ af.sluttaarsak.navn }}</span>
-                </div>
-
-                <div class="arbeidsgiver-oppsummering-sluttaarsaker">
-                    <div data-ng-include="af.sluttaarsak.oppsummeringsurl"></div>
-                </div>
-
-                <p class="arbeidsforhold-oppsummering-endre-slett lenker-dot" data-ng-show="hvisIRedigeringsmodus()">
-                    <a href data-ng-click="slettArbeidsforhold(af)" data-cmstekster="arbeidsforhold.slettarbeidsforhold"></a>
-                    <a href data-ng-click="endreArbeidsforhold($index, arbeidsforholdForm)" data-cmstekster="arbeidsforhold.endrearbeidsforhold"></a>
-                </p>
-            </div>
-
-            <div class="spm-boks vertikal" data-ng-if="posisjonForArbeidsforholdUnderRedigering == $index"
+            <!--div class="spm-boks vertikal" data-ng-if="posisjonForArbeidsforholdUnderRedigering == $index"
                  data-ng-form="leggTilArbeidsforholdForm" data-ng-controller="LeggTilArbeidsforholdCtrl">
                 <div data-form-errors></div>
                 <div class="arbeidsforhold-spm">
