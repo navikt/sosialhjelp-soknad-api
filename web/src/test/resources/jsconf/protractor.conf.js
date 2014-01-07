@@ -1,6 +1,8 @@
 /*
  * npm install protractor -g --save-dev
  * npm install selenium -g --save-dev
+ * npm install selenium-webdriver -g --save-dev
+ * npm install selenium-chromedriver -g --save-dev
  */
 
 exports.config = {
