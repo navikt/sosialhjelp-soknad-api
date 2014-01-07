@@ -1,7 +1,5 @@
 angular.module('nav.arbeidsforhold.controller', [])
-    .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams, $location, data) {
-
-
+    .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams, $location, data, Faktum) {
         $scope.hvisHarJobbet = function() {
            var faktum = data.finnFaktum('arbeidstilstand');
 
@@ -31,7 +29,14 @@ angular.module('nav.arbeidsforhold.controller', [])
             $location.path('nyttarbeidsforhold/' + $scope.soknadData.soknadId);
         }
 
+        $scope.slettArbeidsforhold = function (af, index, $event) {
+            $event.preventDefault();
+            $scope.arbeidsforholdSomSkalSlettes = new Faktum(af);
 
+            $scope.arbeidsforholdSomSkalSlettes.$delete({soknadId: $scope.soknadData.soknadId}).then(function () {
+                $scope.soknadData.fakta.arbeidsforhold.valuelist.splice(index, 1);
+            });
+        }
 
 
 
@@ -112,6 +117,7 @@ angular.module('nav.arbeidsforhold.controller', [])
                 return $scope.arbeidsforhold.length == 0 && $scope.arbeidsforholdskjemaErIkkeAapent();
             }
 
+            /*
             $scope.slettArbeidsforhold = function (af) {
                 var i = $scope.arbeidsforhold.indexOf(af);
                 $scope.arbeidsforhold.splice(i, 1);
@@ -125,6 +131,7 @@ angular.module('nav.arbeidsforhold.controller', [])
                 var value = angular.toJson(arbeidsforholdKopi);
                 $scope.$emit("OPPDATER_OG_LAGRE", {key: 'arbeidsforhold', value: value});
             }
+            */
 
             /*
             $scope.nyttArbeidsforhold = function (event, form) {
