@@ -80,6 +80,11 @@ angular.module('nav.input', ['nav.cmstekster'])
                     } else {
                         scope.regexvalidering = "";
                     }
+                    if(attrs.inputfeltmaxlength) {
+                        scope.inputfeltmaxlength = attrs.inputfeltmaxlength;
+                    } else {
+                        scope.inputfeltmaxlength = undefined;
+                    }
                 },
                 post: function (scope, element, attrs, ctrl) {
                     scope.hvisSynlig = function () {
