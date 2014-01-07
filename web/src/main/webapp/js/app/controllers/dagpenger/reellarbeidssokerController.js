@@ -2,7 +2,7 @@ angular.module('nav.reellarbeidssoker', [])
     .controller('ReellarbeidssokerCtrl', ['$scope', 'data', function ($scope, data) {
         $scope.alder = data.alder.alder;
 //        For testing av alder:
-//        $scope.alder = 59;
+        $scope.alder = 59;
 
         $scope.navigering = {nesteside: 'arbeidsforhold'};
         $scope.sidedata = {navn: 'reellarbeidssoker'};
