@@ -19,17 +19,19 @@ angular.module('nav.egennaering', [])
         }
 
         $scope.slettOrg = function (org, index) {
-            if ($scope.orgnummer.length == 1) {
-                org.value = "";
-            } else {
+
                 org.$delete({soknadId: $scope.soknadData.soknadId}).then(function () {
                     $scope.orgnummer.splice(index, 1);
                 });
-            }
+
         }
 
-        $scope.erSynlig = function() {
-            return data.finnFaktum('gardsbruk').value == 'false';
+        $scope.skalViseSlettKnapp = function(index) {
+            return !(index == 0);
+        }
+
+        $scope.erSynlig = function(faktum) {
+            return data.finnFaktum(faktum).value == 'false';
         }
 
         $scope.$on('VALIDER_EGENNAERING', function () {
