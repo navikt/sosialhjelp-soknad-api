@@ -1,7 +1,7 @@
 <div class="nav-checkbox">
     <input id="{{ navlabel }}" data-ng-model="faktum.value" type="checkbox" data-boolean-verdi
            data-ng-change="lagreFaktum(); endret()"/>
-    <label for="{{ navlabel }}" class="svar-alt" data-cmstekster="{{ navlabel }}"></label>
+    <label for="{{ navlabel }}" data-cmstekster="{{ navlabel }}"></label>
 
     <div data-nav-hjelpetekstelement data-ng-if="hvisHarHjelpetekst()" data-tittel="{{ hjelpetekst.tittel }}"
          data-tekst="{{ hjelpetekst.tekst }}"></div>

@@ -16,7 +16,7 @@ h4 {
     margin-left: 32px;
     margin-bottom: 8px;
 
-    label {
+    > label {
         margin-left: -32px;
         height: auto !important;
         min-height: 22px;
@@ -54,84 +54,13 @@ h4 {
     }
 }
 
-.ekstra-spm-boks {
-    &:after, &:before {
-        bottom: 100%;
-        border: solid transparent;
-        content: "";
-        height: 0;
-        width: 0;
-        position: absolute;
-        left: 8%;
-    }
-
-    &:after {
-        border-bottom-color: #f1f1f1;
-        border-width: 12px;
-        margin-left: -12px;
-    }
-
-    &:before {
-        border-bottom-color: #ddd;
-        border-width: 13px;
-        margin-left: -13px;
-    }
-
-    > *:last-child {
-        padding-bottom: 15px !important;
-        margin-bottom: 0 !important;
-    }
-
-    .infoboks {
-        margin-bottom: 20px;
-        padding-right: 4%;
-        padding-left: 4%;
-    }
-
-    .form-linje {
-        padding: 15px;
-    }
-
-    .textarea-container {
-
-        &:last-child {
-            span {
-                padding-bottom: 0 !important;
-            }
-        }
-
-        textarea {
-            width: 100%;
-            max-width: 100%;
-        }
-    }
-
-    input {
-        width: 100%;
-    }
-
-    .melding:last-child {
-        padding-bottom: 0 !important;
-    }
-}
-
 .egen-linje {
     display: block;
     margin-top: 10px;
     text-align: center;
 }
 
-.nav-checkbox {
-    .ekstra-spm-boks {
-        margin-left: 32px;
-        margin-top: 20px;
-        margin-bottom: 20px;
 
-        .tekstfelt {
-            padding: 0px;
-        }
-    }
-}
 
 .ingen-ytelse-melding {
     display: none;
@@ -141,7 +70,7 @@ h4 {
     display: none;
 }
 
-.utdanning-annet-melding {
+.utdanning-nei-melding {
     display: none;
 }
 
@@ -149,3 +78,115 @@ h4 {
     margin-top: 20px;
 }
 
+.spm {
+    .spm-sporsmal {
+        font-size: 1.21rem;
+        font-weight: 600;
+        font-family: Modus, Arial, Helvetica, sans-serif;
+        margin-bottom: 10px;
+        line-height: 1.6rem;
+    }
+
+    .ekstra-info {
+        padding-left: 32px;
+
+        .spm-sporsmal {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+    }
+
+    .ekstra-spm-boks {
+        margin-top: 20px;
+        margin-bottom: 20px;
+
+        &:after, &:before {
+            bottom: 100%;
+            border: solid transparent;
+            content: "";
+            height: 0;
+            width: 0;
+            position: absolute;
+            left: 8%;
+        }
+
+        &:after {
+            border-bottom-color: #f1f1f1;
+            border-width: 12px;
+            margin-left: -12px;
+        }
+
+        &:before {
+            border-bottom-color: #ddd;
+            border-width: 13px;
+            margin-left: -13px;
+        }
+
+        > *:last-child {
+            padding-bottom: 15px !important;
+            margin-bottom: 0 !important;
+        }
+
+        .ekstra-spm-boks {
+            border: none;
+            padding: 0;
+            margin-top: 0;
+
+            &:after, &:before {
+                bottom: 0;
+                border-bottom-color: transparent;
+                border-width: 0;
+                margin-left: 0;
+                border: none;
+                content: "";
+                height: 0;
+                width: 0;
+                position: absolute;
+                left: 0;
+            }
+
+            > .form-linje {
+                margin-left: -15px;
+            }
+        }
+
+        .form-linje {
+            padding: 15px;
+        }
+
+        .textarea-container {
+
+            &:last-child {
+                span {
+                    padding-bottom: 0 !important;
+                }
+            }
+
+            textarea {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+
+        input {
+            width: 100%;
+        }
+
+        .melding:last-child {
+            padding-bottom: 0 !important;
+        }
+
+        &.nav-boolean {
+            margin-left: 32px;
+        }
+
+        .spm-sporsmal {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .nav-checkbox label {
+            margin-left: 0px;
+        }
+    }
+}
