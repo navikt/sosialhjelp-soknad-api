@@ -1,21 +1,29 @@
 <div>
     <p class="sluttaarsak-informasjon" cmstekster="arbeidsforhold.sluttaarsak.avskjediget.informasjon"/>
 
+    <div data-nav-faktum="sluttaarsak"
+                         data-navconfig
+                         data-nav-property="['type', 'avskjedigetFraDato', 'avskjedigetGrunn']"
+                         data-nokkel="arbeidsforhold.nyttarbeidsforhold"></div>
+
     <div class="varighet">
         <div data-nav-dato
-             data-ng-model="af.avskjedigetFraDato"
+             data-ng-model="sluttaarsak.properties.avskjedigetFraDato"
              data-label="arbeidsforhold.sluttaarsak.avskjediget.sporsmal"
              data-er-required="true"
+             data-ikke-auto-lagre="true"
              data-required-error-message="arbeidsforhold.sluttaarsak.avskjediget.feilmelding">
         </div>
     </div>
     <div data-navtextarea
-         data-inputname="arbeidsforhold.sluttaarsak.avskjedigetgrunn.sporsmal"
-         data-modus='data.redigeringsModus'
-         data-ng-model="af.avskjedigetGrunn"
+         data-navconfig
+         data-ikke-auto-lagre="true"
+         data-nav-faktum="sluttaarsak.properties.avskjedigetGrunn"
+         data-inputname="avskjedigetgrunn"
          data-nokkel="arbeidsforhold.sluttaarsak.avskjedigetgrunn"
          data-maxlengde="500"
          data-feilmelding="arbeidsforhold.sluttaarsak.avskjedigetgrunn.feilmelding"
          data-obligatorisk="true"></div>
+
     <p class="sluttaarsak-tilleggsinformasjon" data-cmstekster="arbeidsforhold.sluttaarsak.avskjediget.vedlegg"></p>
 </div>

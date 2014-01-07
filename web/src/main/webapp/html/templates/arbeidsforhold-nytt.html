@@ -1,24 +1,69 @@
-<div class="modalBoks" data-ng-controller="BarneCtrl">
-    <div data-ng-form="nyttBarnForm" class="vertikal">
+<div class="modalBoks" data-ng-controller="ArbeidsforholdNyttCtrl">
+    <div data-ng-form="nyttArbeidsforholdForm" class="vertikal">
         <div class="begrensning">
             <div class="sak-totredel">
                 <div class="barn-spm spm-boks panel-standard-belyst">
                     <a href="#/dagpenger/{{ soknadData.soknadId }}" class="lukk"> </a>
 
                     <h2 class="stor-strek">
-                        <span data-cmstekster="barnetillegg.sokerbarnetillegg.tittel"></span>
-                        <span data-ng-bind="barnenavn"></span>
+                        <span data-cmstekster="arbeidsforhold.nyttarbeidsforhold.tittel"></span>
                     </h2>
 
-                    <!--div data-nav-faktum="barn"
-                         data-navconfig
-                         data-nav-property="['fornavn', 'etternavn', 'fodselsdato', 'land']"
-                         data-nokkel="barn"></div-->
 
+                    <div data-nav-faktum="arbeidsforhold"
+                         data-navconfig
+                         data-nav-property="['arbeidsgivernavn', 'datofra', 'datotil']"
+                         data-nokkel="arbeidsforhold.nyttarbeidsforhold"></div>
+
+                    <!--div data-nav-faktum="arbeidsforhold"
+                         data-navconfig
+                         data-nav-property="['arbeidsgivernavn', 'datofra', 'datotil']"
+                         data-nokkel="arbeidsforhold.nyttarbeidsforhold"></div-->
+
+
+                    <div class="form-linje">
+                        <label>
+                            <span data-cmstekster="arbeidsforhold.arbeidsgiver.navn"></span>
+                            <input name="arbeidsgivernavn"
+                                   data-error-messages="'arbeidsforhold.arbeidsgiver.navn.feilmelding'" type="text"
+                                   data-ng-model="arbeidsforhold.properties.arbeidsgivernavn"
+                                   data-blur-validate required>
+                            <span class="melding"></span>
+                        </label>
+                    </div>
+
+                    <div class="varighet">
+                        <div data-nav-dato-intervall
+                             data-fra-dato="arbeidsforhold.properties.datofra"
+                             data-til-dato="arbeidsforhold.properties.datotil"
+                             data-label="arbeidsforhold.arbeidsgiver.varighet"
+                             data-er-begge-required="true">
+                        </div>
+                    </div>
+
+                    <div class="form-linje">
+                        <label>
+                            <span data-cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsak"></span>
+                            <select id="sluttaarsak_id"
+                                    data-name="sluttaarsakType"
+                                    data-ng-model="sluttaarsakType"
+                                    data-ng-options="t.navn for t in templates"
+                                    data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'"
+                                    data-ng-required="true">
+                                <option value="" cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsakDefault"></option>
+                            </select>
+                            <span class="melding"></span>
+                        </label>
+                    </div>
+
+                    <div data-ng-show="sluttaarsakType">
+                        <div data-ng-include="sluttaarsakType.url"></div>
+                    </div>
+                
                     <div class="knapper-opprett">
-                        <input class="knapp-hoved-liten" name="lagre" type="submit" data-cmstekster="barnetillegg.nyttbarn.lagre"
-                               data-ng-click="lagreBarn(nyttBarnForm);">
-                        <a href="#/dagpenger/{{ soknadData.soknadId }}" data-cmstekster="barnetillegg.nyttbarn.avbryt"></a>
+                        <input class="knapp-hoved-liten" name="lagre" type="submit" data-cmstekster="arbeidsforhold.nyttarbeidsforhold.lagre"
+                               data-ng-click="lagreArbeidsforhold(nyttArbeidsforholdForm);">
+                        <a href="#/dagpenger/{{ soknadData.soknadId }}" data-cmstekster="arbeidsforhold.nyttarbeidsforhold.avbryt"></a>
                     </div>
 
                 </div>
