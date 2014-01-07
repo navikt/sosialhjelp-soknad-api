@@ -19,8 +19,8 @@ public class VedleggForventning {
         this.vedlegg = vedlegg;
         this.gosysId = gosysId;
         this.property = property;
-        if (faktum.getInnsendingsvalg() == null || faktum.getInnsendingsvalg().equals(Faktum.Status.IkkeVedlegg)) {
-            faktum.setInnsendingsvalg(Faktum.Status.VedleggKreves);
+        if (faktum.getInnsendingsvalg(gosysId).equals(Faktum.Status.IkkeVedlegg)) {
+            faktum.setInnsendingsvalg(gosysId, Faktum.Status.VedleggKreves);
         }
     }
 

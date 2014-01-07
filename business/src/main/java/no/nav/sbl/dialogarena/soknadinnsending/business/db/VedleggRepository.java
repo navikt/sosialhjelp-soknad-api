@@ -32,14 +32,15 @@ public interface VedleggRepository {
      *
      * @param soknadId soknaden det skal hentes for
      * @param faktum   faktument det skal hentes for
+     * @param gosysId  hvilket vedlegg det skal hentes for
      * @return en liste med vedlegg
      */
-    List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktum);
+    List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktum, String gosysId);
 
     /**
      * Henter innholdet til ett bestemt vedlegg
      *
-     * @param soknadId soknaden det skal hentes for
+     * @param soknadId  soknaden det skal hentes for
      * @param vedleggId vedlegget som skal hentes
      * @return innholdet
      */
@@ -47,20 +48,31 @@ public interface VedleggRepository {
 
     /**
      * Henter et spesifikt vedlegg uten data
-     * @param soknadId soknaden det skal hentes for
+     *
+     * @param soknadId  soknaden det skal hentes for
      * @param vedleggId vedlegget som skal hentes
      * @return vedlegget
      */
     Vedlegg hentVedlegg(Long soknadId, Long vedleggId);
 
     /**
+     * Henter vedlegg for et faktum og gosysId
+     *
+     * @param soknadId soknaden det skal hentes for
+     * @param faktumId faktumet det skal hentes vedlegg for
+     * @param gosysId  gosysId til faktumet
+     * @return vedlegget
+     */
+    Vedlegg hentVedleggForGosysId(Long soknadId, Long faktumId, String gosysId);
+
+    /**
      * Knytter et vedlegg til et faktum
      *
-     * @param soknadId  soknaden det endres på
-     * @param faktumId  faktumet som skal få et vedlegg
-     * @param vedleggId vedlegget som skal knyttes til faktumet
+     * @param soknadId soknaden det endres på
+     * @param faktumId faktumet som skal få et vedlegg
+     * @param gosysId  hvilket vedlegg status skal endres for
      */
-    void knyttVedleggTilFaktum(Long soknadId, Long faktumId, Long vedleggId);
+    void settVedleggStatus(Long soknadId, Long faktumId, String gosysId);
 
     /**
      * Sletter alle vedlegg for et bestemt faktum
@@ -72,7 +84,8 @@ public interface VedleggRepository {
 
     /**
      * Henter ett vedleg med innhold
-     * @param soknadId soknaden det skal hentes for
+     *
+     * @param soknadId  soknaden det skal hentes for
      * @param vedleggId vedlegget som skal hentes
      * @return vedlegget med innhold
      */

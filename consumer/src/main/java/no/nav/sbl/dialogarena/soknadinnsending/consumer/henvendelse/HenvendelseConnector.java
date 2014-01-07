@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.soap.SOAPFaultException;
-import java.util.Arrays;
 
 @Component
 public class HenvendelseConnector {
@@ -33,7 +32,7 @@ public class HenvendelseConnector {
     public String startSoknad(String fnr, String hovedskjema) {
         try {
             XMLHovedskjema skjema = new XMLHovedskjema().withSkjemanummer(hovedskjema);
-            WSStartSoknadRequest request = new WSStartSoknadRequest().withFodselsnummer(fnr).withType(SOKNADINNSENDING).withAny(Arrays.asList(skjema));
+            WSStartSoknadRequest request = new WSStartSoknadRequest().withFodselsnummer(fnr).withType(SOKNADINNSENDING).withAny(new XMLMetadataListe().withMetadata(skjema));
             WSBehandlingsId behandlingsId = sendSoknadService.startSoknad(request);
             return behandlingsId.getBehandlingsId();
         } catch (SOAPFaultException e) {

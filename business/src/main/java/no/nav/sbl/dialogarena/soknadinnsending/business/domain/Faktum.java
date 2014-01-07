@@ -6,12 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 public class Faktum implements Serializable {
-    public enum FaktumType { SYSTEMREGISTRERT, BRUKERREGISTRERT; }
     private Long faktumId;
     private Long soknadId;
-    private Long vedleggId;
     private Long parrentFaktum;
-    private Status innsendingsvalg;
     private String key;
     private String value;
     private List<Faktum> valuelist;
@@ -22,11 +19,11 @@ public class Faktum implements Serializable {
 
     }
 
-
     public Faktum(Long soknadId, Long faktumId, String key, String value, String type, Long parrentFaktum) {
         this(soknadId, faktumId, key, value, type);
         this.parrentFaktum = parrentFaktum;
     }
+
 
     public Faktum(Long soknadId, Long faktumId, String key, String value, String type) {
         this(soknadId, faktumId, key, value);
@@ -51,14 +48,6 @@ public class Faktum implements Serializable {
 
     public void setFaktumId(Long faktumId) {
         this.faktumId = faktumId;
-    }
-
-    public Long getVedleggId() {
-        return vedleggId;
-    }
-
-    public void setVedleggId(Long vedleggId) {
-        this.vedleggId = vedleggId;
     }
 
     public String getValue() {
@@ -93,15 +82,19 @@ public class Faktum implements Serializable {
         this.type = type;
     }
 
-    public Status getInnsendingsvalg() {
-        if (innsendingsvalg == null) {
-            innsendingsvalg = Status.IkkeVedlegg;
+    public Status getInnsendingsvalg(String gosysId) {
+        if (!properties.containsKey("vedlegg_" + gosysId)) {
+            properties.put("vedlegg_" + gosysId, Status.IkkeVedlegg.toString());
         }
-        return innsendingsvalg;
+        return Status.valueOf(properties.get("vedlegg_" + gosysId));
     }
 
-    public void setInnsendingsvalg(Status innsendingsvalg) {
-        this.innsendingsvalg = innsendingsvalg;
+    private FaktumEgenskap finnEgenskap(String key) {
+        return null;
+    }
+
+    public void setInnsendingsvalg(String gosysId, Status innsendingsvalg) {
+        properties.put("vedlegg_" + gosysId, innsendingsvalg.toString());
     }
 
     public List<Faktum> getValuelist() {
@@ -137,6 +130,8 @@ public class Faktum implements Serializable {
         return "Faktum [soknadId=" + soknadId + ", key=" + key + ", value="
                 + value + ", type=" + type + "]";
     }
+
+    public enum FaktumType {SYSTEMREGISTRERT, BRUKERREGISTRERT;}
 
     public enum Status {
         IkkeVedlegg,
