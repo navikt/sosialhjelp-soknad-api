@@ -1,26 +1,115 @@
-<div class="skjemaramme" data-ng-controller="ModusCtrl">
+<div class="skjemaramme">
     <div data-ng-form="egennaeringForm" class="skjemainnhold" data-ng-controller="EgennaeringCtrl" data-novalidate>
         <div data-form-errors></div>
-        <div data-nav-faktum="ikkeegennaering"
+        <div data-nav-faktum="driveregennaering"
              data-navconfig
              data-booleanradio
-             data-nokkel="ikkeegennaering">
+             data-nokkel="egennaering.driveregennaering">
 
-            <div data-navinfoboks data-nokkel="ikkeegennaering.false.informasjon"></div>
+            <div data-navinfoboks data-nokkel="egennaering.driveregennaering.false.informasjon"></div>
 
-            <div data-navorganisasjonsnummerfelt
-                 data-nav-faktum="organisasjonsnummer"
+            <div data-ng-repeat="egennaering_orgnummer in orgnummer">
+                <div data-navorganisasjonsnummerfelt
+                     data-nav-faktum="egennaering_orgnummer"
+                     data-navconfig
+                     data-navlabel="egennaering.driveregennaering.false.organisasjonsnummer"
+                     data-navfeilmelding="egennaering.driveregennaering.false.organisasjonsnummer.feilmelding"></div>
+
+                <a data-ng-click="slettOrg(egennaering_orgnummer, $index)" data-cmstekster="barnetillegg.slettbarn"></a>
+
+            </div>
+            <div>
+                <a data-ng-click="leggTilOrgnr()">Legg til</a>
+            </div>
+            <div data-navtekst
+                 data-nav-faktum="arbeidsmengde"
                  data-navconfig
-                 data-ng-pattern="/\d+/"
-                 data-navlabel="ikkeegennaering.false.organisasjonsnummer"
-                 data-navfeilmelding="ikkeegennaering.false.organisasjonsnummer.feilmelding"></div>
+                 data-navlabel=" egennaering.driveregennaering.arbeidsmengde"
+                 data-navfeilmelding="egennaering.driveregennaering.arbeidsmengde.feilmelding"
+                 data-regexvalidering="/\d+/"></div>
         </div>
 
+        <div data-nav-faktum="gardsbruk"
+             data-navconfig
+             data-booleanradio
+             data-nokkel="egennaering.gardsbruk">
 
-        <div data-spmblokkferdig data-nokkel="ikkeegennaering"
-             data-submit-method="validerOgSettModusOppsummering(egennaeringForm)"></div>
-             data-nokkel="ikkeegennaering"></div>
+            <div data-navinfoboks data-nokkel="egennaering.gardsbruk.false.informasjon"></div>
+            <div data-navorganisasjonsnummerfelt
+                 data-nav-faktum="orgnrgardsbruk"
+                 data-navconfig
+                 data-navlabel="egennaering.gardsbruk.false.organisasjonsnummer"
+                 data-navfeilmelding="egennaering.gardsbruk.false.organisasjonsnummer.feilmelding"></div>
+
+            <div class="form-linje checkbox" data-checkbox-validate>
+                <h4 class="spm-sporsmal">
+                    <span data-cmstekster="egennaering.gardsbruk.false.type.sporsmal"></span>
+                </h4>
+
+                <input type="hidden" data-ng-model="harHuketAvTypeGardsbruk.value"
+                       data-ng-required="erSynlig()"
+                       data-error-messages="'egennaering.gardsbruk.false.type.feilmelding'">
+
+                <div data-navcheckbox
+                     data-navconfig
+                     data-nav-faktum="dyr"
+                     data-navlabel="egennaering.gardsbruk.false.type.dyr"
+                     data-navendret="endreTypeGardsbruk()"></div>
+
+                <div data-navcheckbox
+                     data-navconfig
+                     data-nav-faktum="jord"
+                     data-navlabel="egennaering.gardsbruk.false.type.jord"
+                     data-navendret="endreTypeGardsbruk()"></div>
+
+                <div data-navcheckbox
+                     data-navconfig
+                     data-nav-faktum="skog"
+                     data-navlabel="egennaering.gardsbruk.false.type.skog"
+                     data-navendret="endreTypeGardsbruk()"></div>
+
+                <div data-navcheckbox
+                     data-navconfig
+                     data-nav-faktum="annet"
+                     data-navlabel="egennaering.gardsbruk.false.type.annet"
+                     data-navendret="endreTypeGardsbruk()"></div>
+                <span class="melding" data-cmstekster="egennaering.gardsbruk.false.type.feilmelding"></span>
+            </div>
+            <div class="form-linje checkbox" data-checkbox-validate>
+                <h4 class="spm-sporsmal">
+                    <span data-cmstekster="egennaering.gardsbruk.false.eier.sporsmal"></span>
+                </h4>
+
+                <input type="hidden" data-ng-model="harHuketAvEierGardsbruk.value"
+                       data-ng-required="erSynlig()"
+                       data-error-messages="'egennaering.gardsbruk.false.eier.feilmelding'">
+
+                <div data-navcheckbox
+                     data-navconfig
+                     data-nav-faktum="jeg"
+                     data-navlabel="egennaering.gardsbruk.false.eier.jeg"
+                     data-navendret="endreEierGardsbruk()"></div>
+
+                <div data-navcheckbox
+                     data-navconfig
+                     data-nav-faktum="ektefelle"
+                     data-navlabel="egennaering.gardsbruk.false.eier.ektefelle"
+                     data-navendret="endreEierGardsbruk()"></div>
+
+                <div data-navcheckbox
+                     data-navconfig
+                     data-nav-faktum="annet"
+                     data-navlabel="egennaering.gardsbruk.false.eier.annet"
+                     data-navendret="endreEierGardsbruk()"></div>
+
+                <span class="melding" data-cmstekster="egennaering.gardsbruk.false.eier.feilmelding"></span>
+            </div>
+
+
+        </div>
+
         <div data-spmblokkferdig data-nokkel="ikkeegennaering"
              data-submit-method="validerOgSettModusOppsummering(egennaeringForm)"></div>
     </div>
+
 </div>

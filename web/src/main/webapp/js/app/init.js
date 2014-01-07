@@ -109,7 +109,16 @@ angular.module('sendsoknad')
                         }
                     });
                     return res;
-                }
+                };
+                data.finnFakta = function (key) {
+                    var res = [];
+                    data.fakta.forEach(function (item) {
+                        if (item.key == key) {
+                            res.push(item);
+                        }
+                    });
+                    return res;
+                };
             });
             promiseArray.push(barn.$promise, soknadOppsett.$promise, soknadDeferer.promise, fakta.$promise);
         }

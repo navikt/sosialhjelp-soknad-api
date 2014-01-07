@@ -73,12 +73,33 @@ angular.module('nav.input', ['nav.cmstekster'])
             restrict: "A",
             replace: true,
             scope: true,
-            link: function (scope, element) {
-                scope.hvisSynlig = function () {
-                    return element.is(':visible');
+            link: {
+                pre: function (scope, element, attrs) {
+                    if (attrs.regexvalidering) {
+                        scope.regexvalidering = attrs.regexvalidering.toString();
+                    } else {
+                        scope.regexvalidering = "";
+                    }
+                },
+                post: function (scope, element, attrs, ctrl) {
+                    scope.hvisSynlig = function () {
+                        return element.is(':visible');
+                    }
                 }
             },
             templateUrl: '../js/common/directives/navinput/navtekstTemplate.html'
+        }
+    }]).directive('tekstfeltPatternvalidering', ['$timeout', function ($timeout) {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attrs, ctrl) {
+
+                scope.lagre = function () {
+                    if (ctrl.$valid) {
+                        scope.lagreFaktum();
+                    }
+                }
+            }
         }
     }])
 
@@ -98,50 +119,18 @@ angular.module('nav.input', ['nav.cmstekster'])
         return {
             require: 'ngModel',
             link: function (scope, element, attrs, ctrl) {
-                var tallRegEx = new RegExp(/^-?\d+\.?\d*$/);
-                var ngModel = ctrl;
-                scope.forFaaTegn = false;
-
-                ngModel.$parsers.unshift(function (viewValue) {
-                    var verdi = viewValue;
-                    endreForFaaTegnVerdi();
-
-                    if (verdi && verdi.length > 9) {
-                        verdi = viewValue.substring(0, 9);
-                        ngModel.$viewValue = verdi;
-                        ngModel.$render();
+                scope.lagre = function () {
+                    if (ctrl.$valid) {
+                        scope.lagreFaktum();
                     }
-
-                    ngModel.$setValidity('orgnr', !scope.harFeil());
-                    console.log(ngModel.$valid);
-                    return verdi;
-                });
-
-                scope.harFeil = function () {
-                    return scope.forFaaTegn || scope.harFormatteringsFeil();
                 }
 
-                //hvis man skriver space så validerer den ikke til false før neste ikke-spaceverdi blir skrevet inn
-                scope.harFormatteringsFeil = function () {
-                    if (ngModel.$viewValue == undefined || ngModel.$viewValue.length == 0) {
-                        return false;
-                    }
-                    return !tallRegEx.test(ngModel.$viewValue);
+                scope.formateringsfeil = function () {
+                    return ctrl.$error.pattern;
                 }
 
-                element.bind('blur', function () {
-                    scope.forFaaTegn = false;
-                    ngModel.$setValidity('orgnr', !scope.harFeil());
-                    if (ngModel.$viewValue && ngModel.$viewValue.length < 9 && ngModel.$viewValue.length > 0) {
-                        scope.forFaaTegn = true;
-                        ngModel.$setValidity('orgnr', false);
-                    }
-                })
-
-                function endreForFaaTegnVerdi(viewValue) {
-                    if (viewValue && viewValue.length == 9 || !scope.harFormatteringsFeil()) {
-                        scope.forFaaTegn = false;
-                    }
+                scope.harRequiredFeil = function () {
+                    return ctrl.$error.required;
                 }
             }
         }
