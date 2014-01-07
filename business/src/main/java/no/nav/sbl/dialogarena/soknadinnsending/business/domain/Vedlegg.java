@@ -1,6 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -13,6 +16,7 @@ public class Vedlegg {
     private String navn;
     private Long storrelse;
     private Long faktumId;
+    private String gosysId;
     private Integer antallSider;
     private byte[] data;
     private String fillagerReferanse;
@@ -20,10 +24,11 @@ public class Vedlegg {
     public Vedlegg() {
     }
 
-    public Vedlegg(Long vedleggId, Long soknadId, Long faktumId, String navn, Long storrelse, Integer antallSider, String fillagerReferanse, byte[] data) {
+    public Vedlegg(Long vedleggId, Long soknadId, Long faktumId, String gosysId, String navn, Long storrelse, Integer antallSider, String fillagerReferanse, byte[] data) {
         this.id = vedleggId;
         this.soknadId = soknadId;
         this.faktumId = faktumId;
+        this.gosysId = gosysId;
         this.navn = navn;
         this.storrelse = storrelse;
         this.data = data;
@@ -59,69 +64,12 @@ public class Vedlegg {
         return antallSider;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        Vedlegg vedlegg = (Vedlegg) o;
-
-        if (tomtFaktum(vedlegg)) {
-            return false;
-        }
-        if (tomId(vedlegg)) {
-            return false;
-        }
-        if (tomtNavn(vedlegg)) {
-            return false;
-        }
-        if (tomSoknadId(vedlegg)) {
-            return false;
-        }
-        if (tomStorrelse(vedlegg)) {
-            return false;
-        }
-
-        return true;
+    public String getGosysId() {
+        return gosysId;
     }
 
-    private boolean tomStorrelse(Vedlegg vedlegg) {
-        if (storrelse != null) {
-            return !storrelse.equals(vedlegg.storrelse);
-        }
-        return vedlegg.storrelse != null;
-    }
-
-    private boolean tomSoknadId(Vedlegg vedlegg) {
-        if (soknadId != null) {
-            return !soknadId.equals(vedlegg.soknadId);
-        }
-        return vedlegg.soknadId != null;
-    }
-
-    private boolean tomtNavn(Vedlegg vedlegg) {
-        if (navn != null) {
-            return !navn.equals(vedlegg.navn);
-        }
-        return vedlegg.navn != null;
-    }
-
-    private boolean tomId(Vedlegg vedlegg) {
-        if (id != null) {
-            return !id.equals(vedlegg.id);
-        }
-        return vedlegg.id != null;
-    }
-
-    private boolean tomtFaktum(Vedlegg vedlegg) {
-        if (faktumId != null) {
-            return !faktumId.equals(vedlegg.faktumId);
-        }
-        return vedlegg.faktumId != null;
+    public void setGosysId(String gosysId) {
+        this.gosysId = gosysId;
     }
 
     public String getFillagerReferanse() {
@@ -139,24 +87,57 @@ public class Vedlegg {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        Vedlegg rhs = (Vedlegg) obj;
+        return new EqualsBuilder()
+                .append(this.id, rhs.id)
+                .append(this.soknadId, rhs.soknadId)
+                .append(this.navn, rhs.navn)
+                .append(this.storrelse, rhs.storrelse)
+                .append(this.faktumId, rhs.faktumId)
+                .append(this.gosysId, rhs.gosysId)
+                .append(this.antallSider, rhs.antallSider)
+                .append(this.data, rhs.data)
+                .append(this.fillagerReferanse, rhs.fillagerReferanse)
+                .isEquals();
+    }
+
+    @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (soknadId != null ? soknadId.hashCode() : 0);
-        result = 31 * result + (navn != null ? navn.hashCode() : 0);
-        result = 31 * result + (storrelse != null ? storrelse.hashCode() : 0);
-        result = 31 * result + (faktumId != null ? faktumId.hashCode() : 0);
-        return result;
+        return new HashCodeBuilder()
+                .append(id)
+                .append(soknadId)
+                .append(navn)
+                .append(storrelse)
+                .append(faktumId)
+                .append(gosysId)
+                .append(antallSider)
+                .append(data)
+                .append(fillagerReferanse)
+                .toHashCode();
     }
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Vedlegg{");
-        sb.append("id=").append(id);
-        sb.append(", soknadId=").append(soknadId);
-        sb.append(", navn='").append(navn).append('\'');
-        sb.append(", storrelse=").append(storrelse);
-        sb.append(", faktumId='").append(faktumId).append('\'');
-        sb.append('}');
-        return sb.toString();
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("soknadId", soknadId)
+                .append("navn", navn)
+                .append("storrelse", storrelse)
+                .append("faktumId", faktumId)
+                .append("gosysId", gosysId)
+                .append("antallSider", antallSider)
+                .append("data", data)
+                .append("fillagerReferanse", fillagerReferanse)
+                .toString();
     }
 }
