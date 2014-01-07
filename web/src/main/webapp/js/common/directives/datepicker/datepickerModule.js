@@ -250,8 +250,8 @@ angular.module('nav.datepicker', [])
 
                 var caretPosisjonElement = element.closest('.datepicker').find('.caretPosition');
                 var maskElement = element.next();
-                var inputElementVenstre = element.position().left;
-                var topp = element.position().top;
+                var inputElementVenstre = element.position().left + 7;
+                var topp = element.position().top + 6;
                 var venstre = inputElementVenstre;
                 maskElement.css({top: topp + "px", left: venstre + "px"});
                 maskElement.text(datoMask);
