@@ -1,0 +1,28 @@
+<div class="modalBoks" data-ng-controller="BarneCtrl">
+    <div data-ng-form="nyttBarnForm" class="vertikal">
+        <div class="begrensning">
+            <div class="sak-totredel">
+                <div class="barn-spm spm-boks panel-standard-belyst">
+                    <a href="#/dagpenger/{{ soknadData.soknadId }}" class="lukk"> </a>
+
+                    <h2 class="stor-strek">
+                        <span data-cmstekster="barnetillegg.sokerbarnetillegg.tittel"></span>
+                        <span data-ng-bind="barnenavn"></span>
+                    </h2>
+
+                    <!--div data-nav-faktum="barn"
+                         data-navconfig
+                         data-nav-property="['fornavn', 'etternavn', 'fodselsdato', 'land']"
+                         data-nokkel="barn"></div-->
+
+                    <div class="knapper-opprett">
+                        <input class="knapp-hoved-liten" name="lagre" type="submit" data-cmstekster="barnetillegg.nyttbarn.lagre"
+                               data-ng-click="lagreBarn(nyttBarnForm);">
+                        <a href="#/dagpenger/{{ soknadData.soknadId }}" data-cmstekster="barnetillegg.nyttbarn.avbryt"></a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,10 +1,65 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <div ng-form="arbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl"
-         data-ng-submit="validerArbeidsforhold(arbeidsforholdForm)">
+    <div ng-form="arbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl">
         <div data-form-errors></div>
         <p class="arbeidsforhold-informasjonstekst" data-cmstekster="arbeidsforhold.informasjon"></p>
 
-        <div data-ng-repeat="af in arbeidsforhold" data-ng-class="{'last': $last}">
+        <div data-navradio 
+            data-value="harIkkeJobbet"
+            data-navconfig 
+            data-nav-faktum="arbeidstilstand"
+            data-navlabel="arbeidsforhold.arbeidstilstand.harikkejobbet"
+            data-navfeilmelding="arbeidsforhold.arbeidstilstand.feilmelding">
+        </div>
+
+         <div data-navradio 
+            data-value="varierendeArbeidstid"
+            data-navconfig
+            data-nav-faktum="arbeidstilstand"
+            data-navlabel="arbeidsforhold.arbeidstilstand.varierendearbeidstid"
+            data-navfeilmelding="arbeidsforhold.arbeidstilstand.feilmelding">
+        </div>
+       
+
+         <div data-navradio 
+            data-value="fastArbeidstid"
+            data-navconfig
+            data-nav-faktum="arbeidstilstand"
+            data-navlabel="arbeidsforhold.arbeidstilstand.fastarbeidstid"
+            data-navfeilmelding="arbeidsforhold.arbeidstilstand.feilmelding">
+        </div>
+        
+        <div data-ng-show="hvisHarJobbetVarierende()">
+            <div data-navinfoboks
+                 data-nokkel="arbeidsforhold.arbeidstilstand.varierendearbeidstid.informasjonstekst">
+            </div>
+        </div>
+        <div data-ng-show="hvisHarJobbetFast()">
+            <div data-navinfoboks
+                 data-nokkel="arbeidsforhold.arbeidstilstand.fastarbeidstid.informasjonstekst">
+            </div>
+        </div>
+
+        <div data-ng-if="hvisHarJobbet()">
+            <input type="hidden" 
+                    data-ng-model="lagretArbeidsforhold" 
+                    data-nav-faktum="lagretArbeidsforhold"
+                    data-ng-required="true"
+                    data-error-messages="'arbeidsforhold.arbeidsforhold.required'">
+        </div>
+
+        <div class="knapper-arbeidsforhold">
+            <div id="legg-til" data-ng-show="hvisHarJobbet()">            
+                <button class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event, arbeidsforholdForm)"
+                        data-cmstekster="arbeidsforhold.nyttarbeidsforhold" role="button"></button>
+            </div>
+
+            <div data-spmblokkferdig
+                 data-nokkel="arbeidsforhold"
+                 data-submit-method="validerOgSettModusOppsummering(arbeidsforholdForm)"></div>
+        </div>
+
+        
+        <!--div data-ng-repeat="af in arbeidsforhold" data-ng-class="{'last': $last}">
             <div class="arbeidsforhold" data-ng-show="arbeidsforholdetErIkkeIRedigeringsModus($index)">
                 <p class="arbeidsforhold-dato">{{ af.varighetFra | date:'dd.MM.yyyy'}} - {{
                     af.varighetTil | date:'dd.MM.yyyy'}}</p>
@@ -95,25 +150,7 @@
                 </div>
             </div>
 
-        </div>
-        <div class="knapper-arbeidsforhold">
-            <div id="legg-til" data-ng-show="hvisIRedigeringsmodus()">
-                <button class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event, arbeidsforholdForm)"
-                        data-cmstekster="arbeidsforhold.nyttarbeidsforhold" role="button"></button>
-            </div>
-
-            <div id="har-ikke-jobbet" data-ng-show="harIkkeLagretArbeidsforhold()">
-                <div data-navcheckbox
-                     data-navconfig
-                     data-nav-faktum="harIkkeJobbet"
-                     data-navlabel="arbeidsforhold.harIkkeJobbet"
-                     data-navendret="toggleRedigeringsmodus(arbeidsforholdForm)"></div>
-            </div>
-
-            <div data-spmblokkferdig
-                 data-nokkel="arbeidsforhold"
-                 data-submit-method="validerOgSettModusOppsummering(arbeidsforholdForm, true)"></div>
-        </div>
+        </div-->
     </div>
 </div>
 

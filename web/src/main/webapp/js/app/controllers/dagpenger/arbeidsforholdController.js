@@ -1,5 +1,41 @@
 angular.module('nav.arbeidsforhold.controller', [])
-    .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams, data) {
+    .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams, $location, data) {
+
+
+        $scope.hvisHarJobbet = function() {
+           var faktum = data.finnFaktum('arbeidstilstand');
+
+           return faktum && faktum.value && faktum.value != 'harIkkeJobbet';
+        }
+
+        $scope.hvisHarJobbetVarierende = function() {
+            var faktum = data.finnFaktum('arbeidstilstand');
+
+            return faktum && faktum.value && faktum.value == 'varierendeArbeidstid';
+        }
+
+        $scope.hvisHarJobbetFast = function() {
+            var faktum = data.finnFaktum('arbeidstilstand');
+
+            return faktum && faktum.value && faktum.value == 'fastArbeidstid';
+        }
+
+        $scope.validerOgSettModusOppsummering = function (form) {
+            $scope.validateForm(form.$invalid);
+            $scope.runValidation(true);
+        }
+
+        $scope.nyttArbeidsforhold = function ($event) {
+            $event.preventDefault();
+            //TODO settArbeidsforholdCookie();
+            $location.path('nyttarbeidsforhold/' + $scope.soknadData.soknadId);
+        }
+
+
+
+
+
+
 
         $scope.arbeidsforhold = [];
         $scope.endreArbeidsforholdKopi = '';
@@ -90,7 +126,7 @@ angular.module('nav.arbeidsforhold.controller', [])
                 $scope.$emit("OPPDATER_OG_LAGRE", {key: 'arbeidsforhold', value: value});
             }
 
-
+            /*
             $scope.nyttArbeidsforhold = function (event, form) {
                 if ($scope.ikkeUnderRedigering() && form) {
                     $scope.arbeidsforhold.push({});
@@ -103,6 +139,7 @@ angular.module('nav.arbeidsforhold.controller', [])
                 }
                 $scope.settBreddeSlikAtDetFungererIIE();
             }
+            */
 
             $scope.endreArbeidsforhold = function (index, form) {
                 if ($scope.ikkeUnderRedigering()) {
@@ -133,10 +170,7 @@ angular.module('nav.arbeidsforhold.controller', [])
             $scope.arbeidsforholdskjemaErIkkeAapent = function () {
                 return !$scope.arbeidsforholdaapen;
             }
-            $scope.validerOgSettModusOppsummering = function (form) {
-                $scope.validateForm(form.$invalid);
-                $scope.validerArbeidsforhold(form, true);
-            }
+
 
             $scope.toggleRedigeringsmodus = function (form) {
                 form.$setValidity('arbeidsforhold.feilmelding', true);
