@@ -1,12 +1,11 @@
-<div class="tekstfelt form-linje" data-ng-class="{feil: harFeil()}">
+<div class="form-linje tekstfelt orgnummer" data-ng-class="{feil: harFeil()}">
         <label>
             <span data-cmstekster="{{ navlabel }}"></span>
             <input data-ng-model="faktum.value" type="text" value="{{ value }}" data-ng-required="hvisSynlig()"
                    data-error-messages="'{{ navfeilmelding }}'" data-blur-validate
-                   data-ng-blur="lagreFaktum()" placeholder="123456789" orgnr-validate/>
-            <!--<input type="text" data-ng-model="validertorgnr.value" data-ng-required="true">-->
+                   data-ng-blur="lagre()" placeholder="123456789" data-ng-pattern="/\d{9}/" maxlength="9" orgnr-validate>
+
         </label>
-        <span class="melding"></span>
-        <span  class="melding" data-ng-if="harFormatteringsFeil()" data-cmstekster="orgnaisasjonsnummer.format.feilmelding"></span>
-        <span  class="melding" data-ng-if="forFaaTegn" data-cmstekster="orgnaisasjonsnummer.forfaatall.feilmelding"></span>
+        <span class="melding" data-ng-if="harRequiredFeil()" data-cmstekster="{{ navfeilmelding }}"></span>
+        <span class="melding" data-ng-if="formateringsfeil()" data-cmstekster="orgnaisasjonsnummer.format.feilmelding"></span>
 </div>

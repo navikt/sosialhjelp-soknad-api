@@ -3,7 +3,7 @@
             $scope.grupper = [
                 {id: 'reellarbeidssoker', tittel: 'reellarbeidssoker.tittel', template: '../html/templates/reell-arbeidssoker.html', apen: false},
                 {id: 'arbeidsforhold', tittel: 'arbeidsforhold.tittel', template: '../html/templates/arbeidsforhold.html', apen: false},
-                {id: 'egennaering', tittel: 'ikkeegennaering.tittel', template: '../html/templates/egen-naering.html', apen: false},
+                {id: 'egennaering', tittel: 'egennaering.tittel', template: '../html/templates/egen-naering.html', apen: false},
                 {id: 'verneplikt', tittel: 'ikkeavtjentverneplikt.tittel', template: '../html/templates/verneplikt.html', apen: false},
                 {id: 'utdanning', tittel: 'utdanning.tittel', template: '../html/templates/utdanning.html', apen: false},
                 {id: 'ytelser', tittel: 'ytelser.tittel', template: '../html/templates/ytelser.html', apen: false},
@@ -26,6 +26,7 @@
                 $timeout(function () {
                     $scope.validateForm(form.$invalid);
                     var elementMedForsteFeil = $('.accordion-group').find('.form-linje.feil, .form-linje.feilstyling').first();
+                    console.log(elementMedForsteFeil)
                     if (form.$valid) {
                         $location.path("/vedlegg/" + $scope.soknadData.soknadId);
 

@@ -11,6 +11,7 @@ angular.module('nav.dagpengerdirective', [])
                     if (ctrl.$invalid) {
                         var formMedFeil = '';
                         var index = bolkerIRiktigRekkefolge.length;
+                        console.log(ctrl.$error)
                         angular.forEach(ctrl.$error, function (verdi) {
                             for (var i = 0; i < verdi.length; i++) {
                                 if (bolkenFinnes(verdi[i])) {
