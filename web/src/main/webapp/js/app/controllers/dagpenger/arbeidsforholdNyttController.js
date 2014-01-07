@@ -46,12 +46,23 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             });
         }
 
-        function lagreSluttaarsak(parrentFaktumId) {
+        function lagreSluttaarsak(parentFaktumId) {
+           $scope.sluttaarsak.parentFaktumId = parentFaktumId;
            $scope.sluttaarsak.$save({soknadId: $scope.soknadData.soknadId}).then(function (sluttaarsakData) {
                 $scope.sluttaarsak = sluttaarsakData;
                 $location.path('dagpenger/' + $scope.soknadData.soknadId);
            });
         }
+
+        
+
+
+
+
+
+
+
+
 
         function oppdaterFaktumListe(type) {
             if ($scope.soknadData.fakta[type] && $scope.soknadData.fakta[type].valuelist) {
