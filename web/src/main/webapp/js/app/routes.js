@@ -20,7 +20,7 @@ angular.module('app.routes', ['ngRoute'])
                     }
                 }
             })
-            .when('/opplasting/:soknadId/:faktumId', {
+            .when('/opplasting/:soknadId/:faktumId/:gosysId', {
                 templateUrl: '../html/templates/opplasting.html',
                 controller: 'SoknadDataCtrl',
                 resolve: {

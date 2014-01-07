@@ -1,10 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
-
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.FaktumEgenskap;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -49,16 +48,10 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     private final RowMapper<Faktum> soknadDataRowMapper = new RowMapper<Faktum>() {
         public Faktum mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-            Faktum faktum = new Faktum(rs.getLong("soknad_id"),
+            return new Faktum(rs.getLong("soknad_id"),
                     rs.getLong("soknadbrukerdata_id"),
                     rs.getString("key"), rs.getString("value"),
                     rs.getString("type"), rs.getLong("parrent_faktum"));
-            faktum.setVedleggId(rs.getLong("vedlegg_id"));
-            String innsendingsvalg = rs.getString("innsendingsvalg");
-            if (innsendingsvalg != null) {
-                faktum.setInnsendingsvalg(Faktum.Status.valueOf(innsendingsvalg));
-            }
-            return faktum;
         }
     };
     private final RowMapper<FaktumEgenskap> faktumEgenskapRowMapper = new RowMapper<FaktumEgenskap>() {
@@ -141,14 +134,14 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     public Faktum hentFaktum(Long soknadId, Long faktumId) {
         String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and soknadbrukerdata_id = ?";
         String propertiesSql = "select * from FAKTUMEGENSKAP where soknad_id = ? and faktum_id=?";
-        
+
         Faktum result = getJdbcTemplate().queryForObject(sql, soknadDataRowMapper, soknadId, faktumId);
-        
+
         List<FaktumEgenskap> properties = getJdbcTemplate().query(propertiesSql, faktumEgenskapRowMapper, soknadId, result.getFaktumId());
         for (FaktumEgenskap faktumEgenskap : properties) {
-                result.getProperties().put(faktumEgenskap.getKey(), faktumEgenskap.getValue());
+            result.getProperties().put(faktumEgenskap.getKey(), faktumEgenskap.getValue());
         }
-        
+
         return result;
     }
 
@@ -167,12 +160,12 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
             return new Faktum();
         }
     }
-    
+
     @Override
     public List<Faktum> hentSystemFaktumList(Long soknadId, String key, String string) {
         String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and key = ? and type= ?";
         List<Faktum> fakta = getJdbcTemplate().query(sql, soknadDataRowMapper, soknadId, key, FaktumType.SYSTEMREGISTRERT.toString());
-        
+
         List<FaktumEgenskap> egenskaper = select("select * from FAKTUMEGENSKAP where soknad_id = ?", faktumEgenskapRowMapper, soknadId);
         Map<Long, Faktum> faktaMap = Maps.uniqueIndex(fakta, new Function<Faktum, Long>() {
             @Override
@@ -185,14 +178,14 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
                 faktaMap.get(faktumEgenskap.getFaktumId()).getProperties().put(faktumEgenskap.getKey(), faktumEgenskap.getValue());
             }
         }
-        
+
         if (!fakta.isEmpty()) {
             return fakta;
         } else {
             return new ArrayList<>();
         }
     }
-   
+
     @Override
     public Long lagreFaktum(long soknadId, Faktum faktum) {
         if (faktum.getFaktumId() == null) {
@@ -234,7 +227,6 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ? and soknadbrukerdata_id = ? and type = 'BRUKERREGISTRERT'", soknadId, faktumId);
         getJdbcTemplate().update("delete from SOKNADBRUKERDATA where soknad_id=? and parrent_faktum=?", soknadId, faktumId);
     }
-
 
     @Override
     public void settSistLagretTidspunkt(Long soknadId) {
