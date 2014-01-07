@@ -22,11 +22,10 @@
                     mapToProperty="soknad.webservice.person.personservice"/>
         <webservice alias="domene.Brukerdialog:sendsoknadservice_v1"
                     mapToProperty="soknad.webservice.henvendelse.sendsoknadservice"/>
-        <webservice alias="domene.Brukerdialog:FilLagerService_v1"
-                    mapToProperty="soknad.webservice.henvendelse.fillager.url"/>
+        <webservice alias="domene.Brukerdialog:fillagerservice_v1"
+                    mapToProperty="soknad.webservice.henvendelse.fillager"/>
         <webservice alias="virksomhet:Kodeverk_v2" mapToProperty="sendsoknad.webservice.kodeverk"/>
         <webservice alias="Aktoer_v1" mapToProperty="soknad.webservice.aktor.aktorservice"/>
-
         <baseUrl alias="innlogging.navnetjeneste" mapToProperty="innlogging.navnetjeneste"/>
         <baseUrl alias="minehenvendelser.link" mapToProperty="minehenvendelser.link"/>
         <baseUrl alias="dialogarena.cms" mapToProperty="dialogarena.cms"/>
