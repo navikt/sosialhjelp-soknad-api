@@ -158,6 +158,24 @@ angular.module('app.routes', ['ngRoute'])
                     }
                 }
             })
+            .when('/nyttarbeidsforhold/:soknadId', {
+                templateUrl: '../html/templates/arbeidsforhold-nytt.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
+            .when('/endrearbeidsforhold/:soknadId/:faktumId', {
+                templateUrl: '../html/templates/barnetillegg-nytt.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
             .when('/ytelser/:soknadId', {
                 templateUrl: '../html/templates/ytelser.html',
                 controller: 'SoknadDataCtrl',
