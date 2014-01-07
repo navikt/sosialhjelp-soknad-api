@@ -2,13 +2,11 @@
     <p class="sluttaarsak-informasjon" cmstekster="arbeidsforhold.sluttaarsak.avskjediget.informasjon"/>
 
     <div data-nav-faktum="sluttaarsak"
-                         data-navconfig
-                         data-nav-property="['type', 'avskjedigetFraDato', 'avskjedigetGrunn']"
-                         data-nokkel="arbeidsforhold.nyttarbeidsforhold"></div>
+        data-ikke-auto-lagre="true">
 
-    <div class="varighet">
+    <div class="varighet" data-nav-faktum-property="avskjedigetFraDato">
         <div data-nav-dato
-             data-ng-model="sluttaarsak.properties.avskjedigetFraDato"
+             data-ng-model="faktum.value"
              data-label="arbeidsforhold.sluttaarsak.avskjediget.sporsmal"
              data-er-required="true"
              data-ikke-auto-lagre="true"
@@ -17,13 +15,12 @@
     </div>
     <div data-navtextarea
          data-navconfig
-         data-ikke-auto-lagre="true"
-         data-nav-faktum="sluttaarsak.properties.avskjedigetGrunn"
-         data-inputname="avskjedigetgrunn"
+         data-nav-faktum-property="avskjedigetGrunn"
          data-nokkel="arbeidsforhold.sluttaarsak.avskjedigetgrunn"
          data-maxlengde="500"
          data-feilmelding="arbeidsforhold.sluttaarsak.avskjedigetgrunn.feilmelding"
          data-obligatorisk="true"></div>
 
     <p class="sluttaarsak-tilleggsinformasjon" data-cmstekster="arbeidsforhold.sluttaarsak.avskjediget.vedlegg"></p>
+    </div>
 </div>
