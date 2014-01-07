@@ -6,24 +6,28 @@ angular.module('nav.vedlegg.controller', [])
             vedleggId: $routeParams.vedleggId
         });
     }])
-    .controller('VedleggCtrl', ['$scope', '$location', '$routeParams', '$anchorScroll', 'data', 'VedleggForventning', function ($scope, $location, $routeParams, $anchorScroll, data, VedleggForventning) {
+    .controller('VedleggCtrl', ['$scope', '$location', '$routeParams', '$anchorScroll', 'data', 'VedleggForventning', 'Faktum', function ($scope, $location, $routeParams, $anchorScroll, data, VedleggForventning, Faktum) {
 
         $scope.forventninger = VedleggForventning.query({soknadId: data.soknad.soknadId});
         $scope.sidedata = {navn: 'vedlegg'};
-        $scope.lastetOpp = function (forventning) {
-            return forventning.faktum.vedleggId;
+        $scope.vedleggEr = function (forventning, status) {
+            return forventning.faktum.properties['vedlegg_' + forventning.gosysId] == status;
         }
         $scope.slettVedlegg = function (forventning) {
             forventning.$slettVedlegg().then(function () {
-                forventning.faktum.innsendingsvalg = 'VedleggKreves';
-                forventning.faktum.vedleggId = null;
+                forventning.faktum.properties['vedlegg_' + forventning.gosysId] = 'VedleggKreves';
                 forventning.vedlegg = null;
             });
         }
-        $scope.endreInnsendingsvalg = function (forventning) {
-            forventning.$endreValg().then(function (data) {
-
-            });
+        $scope.key = function (forventning) {
+            return 'vedlegg_' + forventning.gosysId;
+        }
+        $scope.endreInnsendingsvalg = function (forventning, valg) {
+            console.log("jejeje")
+            if (valg != undefined) {
+                forventning.faktum.properties['vedlegg_' + forventning.gosysId] = valg;
+            }
+            new Faktum(forventning.faktum).$save();
         }
     }])
     .directive('bildeNavigering', [function () {
