@@ -7,7 +7,7 @@ angular.module('nav.booleanradio', ['nav.cmstekster', 'nav.input'])
             scope: true,
             require: ['navFaktum', '^form'],
             link: {
-                pre: function (scope, element, attrs, ctrls) {
+                pre: function (scope, element, attrs) {
                     var src = attrs.nokkel;
                     scope.navModel = attrs.navModel;
                     scope.sporsmal = src + ".sporsmal";
@@ -18,19 +18,20 @@ angular.module('nav.booleanradio', ['nav.cmstekster', 'nav.input'])
                 post: function (scope, element) {
                     scope.hvisModelErTrue = function () {
                         return scope.faktum.value == 'true';
-                    }
+                    };
 
                     scope.hvisModelErFalse = function () {
                         return scope.faktum.value && !scope.hvisModelErTrue();
-                    }
+                    };
 
                     scope.skalViseTranscludedInnhold = function () {
                         var transcludeElement = element.find('.ng-transclude');
                         return scope.hvisModelErFalse() && transcludeElement.text().length > 0;
-                    }
-                    scope.test = function () {
-                        scope.faktumChange();
-                    }
+                    };
+
+                    scope.hvisIkkeIEkstraSpmBoks = function() {
+                        return !element.parents().hasClass('ekstra-spm-boks');
+                    };
                 }
             },
             templateUrl: '../js/common/directives/booleanradio/booleanradioTemplate.html'
