@@ -2,14 +2,14 @@ angular.module('nav.reellarbeidssoker', [])
     .controller('ReellarbeidssokerCtrl', ['$scope', 'data', function ($scope, data) {
         $scope.alder = data.alder.alder;
 //        For testing av alder:
-        $scope.alder = 59;
+//        $scope.alder = 59;
 
         $scope.navigering = {nesteside: 'arbeidsforhold'};
         $scope.sidedata = {navn: 'reellarbeidssoker'};
 
         var deltidnokler = ['reduserthelse', 'omsorgbarnunder1aar', 'eneansvarbarnunder5skoleaar', 'eneansvarbarnopptil18aar', 'omsorgansvar', 'annensituasjon'];
         var pendlenokler = ['pendlereduserthelse', 'pendleomsorgbarnunder1aar', 'pendleomsorgbarnopptil10', 'pendleeneansvarbarnunder5skoleaar',
-            'pendleeneansvarbarnopptil18aar', 'pendleannensituasjon', 'pendleomsorgansvar' ];
+            'pendleeneansvarbarnopptil18aar', 'pendleomsorgansvar',  'pendleannensituasjon' ];
 
         $scope.harHuketAvCheckboksDeltid = {value: ''};
         $scope.harHuketAvCheckboksPendle = {value: ''};

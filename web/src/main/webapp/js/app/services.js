@@ -87,7 +87,7 @@ angular.module('app.services', ['ngResource'])
 
     .factory('forsettSenereService', function ($resource) {
         return $resource('/sendsoknad/rest/soknad/:soknadId/fortsettsenere',
-            {soknadId: '@param'},
+            {soknadId: '@soknadId'},
             {
                 send: {method: 'POST'}
             }
