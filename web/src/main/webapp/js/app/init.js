@@ -1,13 +1,13 @@
 angular.module('sendsoknad')
     .run(['$http', '$templateCache', function ($http, $templateCache) {
-        $http.get('../html/templates/reell-arbeidssoker.html', {cache: $templateCache});
+        $http.get('../html/templates/reellarbeidssoker/reell-arbeidssoker.html', {cache: $templateCache});
         $http.get('../html/templates/egen-naering.html', {cache: $templateCache});
         $http.get('../html/templates/verneplikt.html', {cache: $templateCache});
         $http.get('../html/templates/personalia.html', {cache: $templateCache});
         $http.get('../html/templates/arbeidsforhold.html', {cache: $templateCache});
         $http.get('../html/templates/ytelser.html', {cache: $templateCache});
-        $http.get('../html/templates/utdanning.html', {cache: $templateCache});
         $http.get('../html/templates/barnetillegg.html', {cache: $templateCache});
+        $http.get('../html/templates/utdanning/utdanning.html', {cache: $templateCache});
         $http.get('../html/templates/utdanning/utdanningKveldTemplate.html', {cache: $templateCache});
         $http.get('../html/templates/utdanning/utdanningKortvarigTemplate.html', {cache: $templateCache});
         $http.get('../html/templates/utdanning/utdanningKortvarigFlereTemplate.html', {cache: $templateCache});
