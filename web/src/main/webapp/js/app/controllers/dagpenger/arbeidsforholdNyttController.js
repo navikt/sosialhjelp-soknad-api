@@ -1,14 +1,14 @@
 angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
     .controller('ArbeidsforholdNyttCtrl', ['$scope', 'data', 'Faktum', '$location', '$cookieStore', function ($scope, data, Faktum, $location, $cookieStore) {
-        $scope.templates = [
-            {navn: 'Kontrakt utgått', url: '../html/templates/arbeidsforhold/kontrakt-utgaatt.html'},
-            {navn: 'Avskjediget', url: '../html/templates/arbeidsforhold/avskjediget.html'},
-            {navn: 'Redusert arbeidstid', url: '../html/templates/arbeidsforhold/redusertarbeidstid.html'},
-            {navn: 'Arbeidsgiver er konkurs', url: '../html/templates/arbeidsforhold/konkurs.html'},
-            {navn: 'Sagt opp av arbeidsgiver', url: '../html/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html'},
-            {navn: 'Sagt opp selv', url: '../html/templates/arbeidsforhold/sagt-opp-selv.html'},
-            {navn: 'Permittert', url: '../html/templates/arbeidsforhold/permittert.html'}
-        ];
+        $scope.templates = {
+            'Kontrakt utgått': {url: '../html/templates/arbeidsforhold/kontrakt-utgaatt.html'},
+            'Avskjediget': {url: '../html/templates/arbeidsforhold/avskjediget.html'},
+            'Redusert arbeidstid': {url: '../html/templates/arbeidsforhold/redusertarbeidstid.html'},
+            'Arbeidsgiver er konkurs': {url: '../html/templates/arbeidsforhold/konkurs.html'},
+            'Sagt opp av arbeidsgiver': {url: '../html/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html'},
+            'Sagt opp selv': {url: '../html/templates/arbeidsforhold/sagt-opp-selv.html'},
+            'Permittert': {url: '../html/templates/arbeidsforhold/permittert.html'}
+        };
         $scope.land = data.land;
 
         var url = $location.$$url;
@@ -31,9 +31,10 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                 }
             });
 
-            angular.forEach($scope.templates, function (template) {
-                if (sluttaarsakData.properties.type == template.navn) {
-                    $scope.sluttaarsakType = template;
+            angular.forEach($scope.templates, function (template,index) {
+                if (sluttaarsakData.properties.type == index) {
+                    $scope.sluttaarsakType = index;
+
                 }
             });
 
@@ -78,7 +79,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 
         function lagreSluttaarsak(parentFaktumId) {
            $scope.sluttaarsak.parrentFaktum = parentFaktumId;
-           $scope.sluttaarsak.properties.type = $scope.sluttaarsakType.navn;
+           $scope.sluttaarsak.properties.type = $scope.sluttaarsakType;
            $scope.sluttaarsak.$save({soknadId: $scope.soknadData.soknadId}).then(function (sluttaarsakData) {
                 $scope.sluttaarsak = sluttaarsakData;
                 oppdaterFaktumListe("sluttaarsak");
@@ -114,6 +115,4 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             }
         }
 
-
     }]);
-
