@@ -36,7 +36,7 @@ angular.module('nav.arbeidsforhold.controller', [])
 
         $scope.endreArbeidsforhold = function(af, $index, $event) {
             $event.preventDefault();
-
+            settArbeidsforholdCookie(af.faktumId);
             $location.path('endrearbeidsforhold/' + $scope.soknadData.soknadId + '/' + af.faktumId);   
         }
 
