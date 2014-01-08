@@ -14,14 +14,16 @@
     <section data-ng-controller="VedleggCtrl">
         <div data-accordion data-close-others="false" data-ng-if="forventninger != null">
             <section class="vedlegg" data-ng-form>
-                <div data-accordion-group data-ng-repeat="forventning in forventninger" class="spm-blokk" data-is-open="!lastetOpp(forventning)" id="faktum_{{forventning.faktum.id}}">
+                <div data-accordion-group data-ng-repeat="forventning in forventninger" class="spm-blokk" data-is-open="vedleggEr(forventning, 'VedleggKreves')" id="faktum_{{forventning.faktum.id}}">
                     <div data-accordion-heading>
                         <div class="flipp">
                             <span>+</span>
                         </div>
                         <div class="begrensning sak-halv">
-                            <div class="panel-mini nettobunn uten-ramme" data-ng-class="{lastetopp: !vedleggEr(forventning, 'VedleggKreves')}">
-                                <div class="mini" data-ng-if="vedleggEr(forventning, 'LastetOpp')" data-cmstekster="vedlegg.faktum.lastet.opp"></div>
+                            <div class="panel-mini nettobunn uten-ramme" data-ng-class="{behandlet: !vedleggEr(forventning, 'VedleggKreves'), lastetopp: vedleggEr(forventning, 'LastetOpp')}">
+                                <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'LastetOpp')" data-cmstekster="vedlegg.behandlet.lastetopp"></div>
+                                <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesSenere')" data-cmstekster="vedlegg.behandlet.sendessenere"></div>
+                                <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesIkke')" data-cmstekster="vedlegg.behandlet.sendesikke"></div>
                                 <h2 class="stor" data-cmsvedlegg data-cmstekster="{{soknadData.gosysId}}.vedlegg.{{forventning.gosysId}}.header"></h2>
                             </div>
                         </div>
