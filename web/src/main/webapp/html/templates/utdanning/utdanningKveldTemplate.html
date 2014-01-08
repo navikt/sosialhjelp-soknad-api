@@ -36,14 +36,13 @@
      data-navfeilmelding="utdanning.error.utdanningsnavn"
      data-ng-required></div>
 
-<div data-nav-faktum="utdanning.kveld.varighet"
-     data-nav-property="['varighetFra', 'varighetTil']">
+<div class="varighet"  data-nav-faktum="utdanning.kveld.varighet" data-nav-property="['varighetFra', 'varighetTil']">
     <div data-nav-dato-intervall
          data-fra-dato="navproperties.varighetFra"
          data-til-dato="navproperties.varighetTil"
          data-label="utdanning.varighet"
-         data-er-begge-required="true"
          data-er-fremtidigdato-tillatt="true"
+         data-er-required="true"
          data-lagre="lagreFaktum()">
     </div>
 </div>
