@@ -10,8 +10,9 @@
              data-navconfig
              data-booleanradio
              data-nokkel="reellarbeidssoker.villigdeltid">
-            <div data-navinfoboks
-                 data-nokkel="reellarbeidssoker.villigdeltid.false.informasjon"></div>
+            <div data-navinfoboks>
+                <span data-cmstekster="reellarbeidssoker.villigdeltid.false.informasjon"></span>
+            </div>
 
             <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
                 <input type="hidden" data-ng-model="harHuketAvCheckboksDeltid.value" data-nav-faktum="villigdeltid"
@@ -73,7 +74,9 @@
              data-ng-model="soknadData.fakta.villigpendle.value"
              data-nokkel="reellarbeidssoker.villigpendle">
 
-            <div data-navinfoboks data-nokkel="reellarbeidssoker.villigpendle.false.informasjon"></div>
+            <div data-navinfoboks>
+                <span data-cmstekster="reellarbeidssoker.villigpendle.false.informasjon"></span>
+            </div>
             <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
                 <input type="hidden" data-ng-model="harHuketAvCheckboksPendle.value"
                        data-ng-required="faktum.value == 'false' && erUnder60Aar()"
@@ -135,7 +138,9 @@
              data-nokkel="reellarbeidssoker.villighelse"
              data-hjelpetekst>
 
-            <div data-navinfoboks data-nokkel="reellarbeidssoker.villighelse.false.vedlegginformasjon"></div>
+            <div data-navinfoboks>
+                <span data-cmstekster="reellarbeidssoker.villighelse.false.vedlegginformasjon"></span>
+            </div>
             <div data-navtextarea
                  data-navconfig
                  data-nav-faktum="helseFritekst"
@@ -150,7 +155,10 @@
              data-navconfig
              data-nav-faktum="villigjobb"
              data-nokkel="reellarbeidssoker.villigjobb">
-            <div data-navinfoboks data-nokkel="reellarbeidssoker.villigjobb.false.informasjon"></div>
+
+            <div data-navinfoboks>
+                <span data-cmstekster="reellarbeidssoker.villigjobb.false.informasjon"></span>
+            </div>
             <div class="sentrert">
                 <a href="#/avbryt/{{ soknadData.soknadId }}"
                    data-cmstekster="reellarbeidssoker.villigjobb.false.avbryt"></a>
