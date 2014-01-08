@@ -168,7 +168,7 @@ angular.module('app.routes', ['ngRoute'])
                 }
             })
             .when('/endrearbeidsforhold/:soknadId/:faktumId', {
-                templateUrl: '../html/templates/barnetillegg-nytt.html',
+                templateUrl: '../html/templates/arbeidsforhold-nytt.html',
                 controller: 'SoknadDataCtrl',
                 resolve: {
                     notUsedButRequiredProperty: function (HentSoknadService) {

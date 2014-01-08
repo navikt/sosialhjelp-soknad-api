@@ -10,22 +10,50 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             {navn: 'Permittert', url: '../html/templates/arbeidsforhold/permittert.html'}
         ];
 
-        var arbeidsforholdData = {
-            key: 'arbeidsforhold',
-            properties: {
-                "arbeidsgivernavn": undefined,
-                "datofra": undefined,
-                "datotil": undefined
-            }
-        };
-        $scope.arbeidsforhold = new Faktum(arbeidsforholdData);
+        var url = $location.$$url;
+        var endreModus = url.indexOf("endrearbeidsforhold") != -1;
+        
+        var arbeidsforholdData;
+        var sluttaarsakData;
+        if(endreModus) {
+            var faktumId = url.split("/").pop();
+            
+            angular.forEach($scope.soknadData.fakta.arbeidsforhold.valuelist, function (value) {
+                if (value.faktumId == faktumId) {
+                    arbeidsforholdData = value;
+                }
+            });
 
-        var sluttaarsakData = {
-            key: 'sluttaarsak',
-            properties: {
-                "type": undefined
+            angular.forEach($scope.soknadData.fakta.sluttaarsak.valuelist, function (value) {
+                if (value.parrentFaktum == faktumId) {
+                    sluttaarsakData = value;
+                }
+            });
+
+            angular.forEach($scope.templates, function (template) {
+                if (sluttaarsakData.properties.type == template.navn) {
+                    $scope.sluttaarsakType = template;
+                }
+            });
+
+        } else { 
+            arbeidsforholdData = {
+                key: 'arbeidsforhold',
+                properties: {
+                    "arbeidsgivernavn": undefined,
+                    "datofra": undefined,
+                    "datotil": undefined
+                }
+            };
+
+            var sluttaarsakData = {
+                key: 'sluttaarsak',
+                properties: {
+                    "type": undefined
+               }
             }
         }
+        $scope.arbeidsforhold = new Faktum(arbeidsforholdData);
         $scope.sluttaarsak = new Faktum(sluttaarsakData);
 
         $scope.lagreArbeidsforhold = function(form) {
@@ -54,6 +82,6 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                 $location.path('dagpenger/' + $scope.soknadData.soknadId);
            });
         }
-        
+
     }]);
 
