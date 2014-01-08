@@ -61,10 +61,10 @@ angular.module('nav.barnetillegg', [])
                 }
             });
 
-            $cookieStore.put('barneCookie', {
+            $cookieStore.put('barn', {
                 aapneTabs: aapneTabIds,
                 gjeldendeTab: "#barnetillegg",
-                barneFaktumId: faktumId
+                faktumId: faktumId
             })
         }
 
