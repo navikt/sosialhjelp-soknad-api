@@ -18,33 +18,38 @@
                             data-navfeilmelding="arbeidsforhold.arbeidsgiver.navn.feilmelding"
                             data-ng-required></div>
                         </div>
-                        <div class="varighet">
-                            <div data-nav-dato-intervall
-                                 data-fra-dato="arbeidsforhold.properties.datofra"
-                                 data-til-dato="arbeidsforhold.properties.datotil"
-                                 data-label="arbeidsforhold.arbeidsgiver.varighet"
-                                 data-er-begge-required="true">
+
+                        <div class="land">
+                            <div data-nav-select
+                                 data-navconfig
+                                 data-nav-faktum-property="land"
+                                 data-label="arbeidsforhold.arbeidsgiver.land"
+                                 data-options="land.result"
+                                 data-er-required="true"
+                                 data-ikke-auto-lagre="true"
+                                 data-default-value="arbeidsforhold.arbeidsgiver.landDefault"
+                                 data-required-feilmelding="arbeidsforhold.arbeidsgiver.land.feilmelding"
+                                 data-ugyldig-feilmelding="arbeidsforhold.arbeidsgiver.land.ugyldig.feilmelding">
                             </div>
                         </div>
-
                     </div>
 
-                    <div class="form-linje">
-                        <p class="informasjonstekst" data-cms-tekster="arbeidsforhold.arbeidsgiver.sluttaarsak.informasjon"> </p>
+                <div class="form-linje">
+                    <p class="informasjonstekst" data-cms-tekster="arbeidsforhold.arbeidsgiver.sluttaarsak.informasjon"> </p>
 
-                        <label>
-                            <span data-cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsak"></span>
-                            <select id="sluttaarsak_id"
-                            data-name="sluttaarsakType"
-                            data-ng-model="sluttaarsakType"
-                            data-ng-options="t.navn for t in templates"
-                            data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'"
-                            data-ng-required="true">
-                                <option value="" cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsakDefault"></option>
-                            </select>
-                            <span class="melding"></span>
-                        </label>
-                </div>
+                    <label>
+                        <span data-cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsak"></span>
+                        <select id="sluttaarsak_id"
+                        data-name="sluttaarsakType"
+                        data-ng-model="sluttaarsakType"
+                        data-ng-options="t.navn for t in templates"
+                        data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'"
+                        data-ng-required="true">
+                            <option value="" cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsakDefault"></option>
+                        </select>
+                        <span class="melding"></span>
+                    </label>
+                 </div>
 
                 <div data-ng-show="sluttaarsakType">
                     <div data-ng-include="sluttaarsakType.url"></div>

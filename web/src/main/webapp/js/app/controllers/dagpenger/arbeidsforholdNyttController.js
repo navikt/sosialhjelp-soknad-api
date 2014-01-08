@@ -9,6 +9,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             {navn: 'Sagt opp selv', url: '../html/templates/arbeidsforhold/sagt-opp-selv.html'},
             {navn: 'Permittert', url: '../html/templates/arbeidsforhold/permittert.html'}
         ];
+        $scope.land = data.land;
 
         var url = $location.$$url;
         var endreModus = url.indexOf("endrearbeidsforhold") != -1;
@@ -68,7 +69,8 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             $scope.arbeidsforhold.$save({soknadId: $scope.soknadData.soknadId}).then(function (arbeidsforholdData) {
                 $scope.arbeidsforhold = arbeidsforholdData;
                 
-                //oppdaterCookieValue(barnData.faktumId);
+                oppdaterFaktumListe("arbeidsforhold");
+                oppdaterCookieValue(arbeidsforholdData.faktumId);
 
                 lagreSluttaarsak(arbeidsforholdData.faktumId);
             });
@@ -79,19 +81,38 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
            $scope.sluttaarsak.properties.type = $scope.sluttaarsakType.navn;
            $scope.sluttaarsak.$save({soknadId: $scope.soknadData.soknadId}).then(function (sluttaarsakData) {
                 $scope.sluttaarsak = sluttaarsakData;
+                oppdaterFaktumListe("sluttaarsak");
                 $location.path('dagpenger/' + $scope.soknadData.soknadId);
            });
         }
 
-       /* function oppdaterCookieValue(faktumId) {
-            var arbeidsforholdCookie = $cookieStore.get('arbeidsforholdCookie');
+        function oppdaterCookieValue(faktumId) {
+            var arbeidsforholdCookie = $cookieStore.get('arbeidsforhold');
 
-            $cookieStore.put('barneCookie', {
+            $cookieStore.put('arbeidsforhold', {
                 aapneTabs: arbeidsforholdCookie.aapneTabs,
                 gjeldendeTab: arbeidsforholdCookie.gjeldendeTab,
-                arbeidsforholdFaktumId: faktumId
+                faktumId: faktumId
             });
-        }*/
+        }
+
+         function oppdaterFaktumListe(type) {
+            if ($scope.soknadData.fakta[type] && $scope.soknadData.fakta[type].valuelist) {
+                if (endreModus) {
+                    angular.forEach($scope.soknadData.fakta[type].valuelist, function (value, index) {
+                        if (value.faktumId == $scope[type].faktumId) {
+                            $scope.soknadData.fakta[type].valuelist[index] = $scope[type];
+                        }
+                    })
+                } else {
+                    $scope.soknadData.fakta[type].valuelist.push($scope[type]);
+                }
+
+            } else {
+                $scope.soknadData.fakta[type] = {};
+                $scope.soknadData.fakta[type].valuelist = [$scope[type]];
+            }
+        }
 
 
     }]);

@@ -1,5 +1,10 @@
 angular.module('nav.arbeidsforhold.controller', [])
-    .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams, $location, data, Faktum) {
+    .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams, $cookieStore, $location, data, Faktum) {
+        
+        if($scope.soknadData.fakta.arbeidsforhold && $scope.soknadData.fakta.arbeidsforhold.valuelist) {
+            $scope.harLagretArbeidsforhold = true;            
+        }
+
         $scope.hvisHarJobbet = function() {
            var faktum = data.finnFaktum('arbeidstilstand');
 
@@ -25,7 +30,7 @@ angular.module('nav.arbeidsforhold.controller', [])
 
         $scope.nyttArbeidsforhold = function ($event) {
             $event.preventDefault();
-            //TODO settArbeidsforholdCookie();
+            settArbeidsforholdCookie();
             $location.path('nyttarbeidsforhold/' + $scope.soknadData.soknadId);
         }
 
@@ -41,9 +46,14 @@ angular.module('nav.arbeidsforhold.controller', [])
 
             $scope.arbeidsforholdSomSkalSlettes.$delete({soknadId: $scope.soknadData.soknadId}).then(function () {
                 $scope.soknadData.fakta.arbeidsforhold.valuelist.splice(index, 1);
+
+                if($scope.soknadData.fakta.arbeidsforhold.valuelist.length == 0) {
+                    $scope.harLagretArbeidsforhold = undefined;
+                }
             });
+
         }
-/*
+
         function settArbeidsforholdCookie(faktumId) {
             var aapneTabIds = [];
             angular.forEach($scope.grupper, function (gruppe) {
@@ -52,13 +62,13 @@ angular.module('nav.arbeidsforhold.controller', [])
                 }
             });
 
-            $cookieStore.put('barneCookie', {
+            $cookieStore.put('arbeidsforhold', {
                 aapneTabs: aapneTabIds,
-                gjeldendeTab: "#barnetillegg",
-                barneFaktumId: faktumId
+                gjeldendeTab: "#arbeidsforhold",
+                faktumId: faktumId
             })
         }
-*/
+
 
     })
     

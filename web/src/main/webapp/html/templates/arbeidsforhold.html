@@ -1,4 +1,4 @@
-<div class="skjemaramme" data-ng-controller="ModusCtrl">
+<div class="skjemaramme" data-ng-controller="ModusCtrl" data-scroll-tilbake-directive="arbeidsforhold">
     <div ng-form="arbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl">
         <div data-form-errors></div>
         <p class="arbeidsforhold-informasjonstekst" data-cmstekster="arbeidsforhold.informasjon"></p>
@@ -40,17 +40,11 @@
         </div>
 
         <div data-ng-repeat="af in soknadData.fakta.arbeidsforhold.valuelist" data-ng-class="{'last': $last}">
-            <div class="spm-boks vertikal"
-                <p class="arbeidsforhold-dato">{{ af.properties.datofra | date:'dd.MM.yyyy'}} - {{
-                    af.properties.datotil | date:'dd.MM.yyyy'}}</p>
-
-                <p class="arbeidsforhold-arbeidsgivernavn-overskrift">{{ af.properties.arbeidsgivernavn }}</p>
+            <div class="spm-boks vertikal" id="arbeidsforhold{{af.faktumId}}">
+                <span class="robust">{{ af.properties.arbeidsgivernavn }}</span>
 
                 <div class="arbeidsforhold-land-sluttaarsak-blokk" data-ng-controller="sluttaarsakCtrl">
-                    <span class="svar-oppsummering-label" data-cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsak"></span>
-                    <span class="svar-oppsummering-label-svar" data-ng-bind="gjeldendeSluttaarsak.properties.type"></span>
-
-                    <div class="arbeidsgiver-oppsummering-sluttaarsaker">
+                     <div class="arbeidsgiver-oppsummering-sluttaarsaker">
                         <div data-ng-include="gjeldendeSluttaarsakUrl"></div>
                     </div>
                 </div>
@@ -65,8 +59,8 @@
 
         <div data-ng-if="hvisHarJobbet()">
             <input type="hidden" 
-                    data-ng-model="lagretArbeidsforhold" 
-                    data-nav-faktum="lagretArbeidsforhold"
+                    data-ng-model="harLagretArbeidsforhold" 
+                    data-nav-faktum="harLagretArbeidsforhold"
                     data-ng-required="true"
                     data-error-messages="'arbeidsforhold.arbeidsforhold.required'">
         </div>
