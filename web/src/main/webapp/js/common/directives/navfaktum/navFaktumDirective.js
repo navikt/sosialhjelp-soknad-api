@@ -10,19 +10,19 @@ angular.module('nav.navfaktum', [])
                 }
 
                 $scope.faktum = {key: $attrs.navFaktumProperty, value:val};
-                $scope.$watch('faktum.value', function(newValue){
-                    if(newValue){
-                    var value = newValue;
-                    if (angular.isDate(value)) {
-                        value = $filter('date')(value, 'yyyy.MM.dd')
-                    } else {
-                        value = value.toString();
-                    }
-
-                    $scope.parentFaktum.properties[$attrs.navFaktumProperty] = value;
+                $scope.$watch('faktum.value', function(newValue) {
+                    if(newValue) {
+                        var value = newValue;
+                        if (angular.isDate(value)) {
+                            value = $filter('date')(value, 'yyyy.MM.dd');
+                        } else {
+                            value = value.toString();
+                        }
+                        $scope.parentFaktum.properties[$attrs.navFaktumProperty] = value;
                     }
                 });
-            }]}}])
+            }]}
+        }])
     .directive('navFaktum', [function () {
         return {
             replace: false,
@@ -31,8 +31,8 @@ angular.module('nav.navfaktum', [])
                 var props = $scope.$eval($attrs.navProperty);
                 $scope.ikkeAutoLagre = $attrs.ikkeAutoLagre;
                 var satt = false;
-                if($scope[$attrs.navFaktum]){
-                    console.log($attrs.navFaktum)
+                
+                if($scope[$attrs.navFaktum]) {
                     $scope.faktum = $scope[$attrs.navFaktum];
                     satt=true;
                 } else if(!$attrs.navNyttFaktum){
@@ -72,7 +72,7 @@ angular.module('nav.navfaktum', [])
                                 var value = $scope.navproperties[prop];
                                 if (value != undefined) {
                                     if (angular.isDate(value)) {
-                                        value = $filter('date')(value, 'yyyy.MM.dd')
+                                        value = $filter('date')(value, 'yyyy.MM.dd');
                                     } else {
                                         value = value.toString();
                                     }

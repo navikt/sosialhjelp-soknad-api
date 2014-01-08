@@ -1,4 +1,32 @@
 angular.module('nav.arbeidsforhold.controller', [])
+    .controller('sluttaarsakCtrl', function ($scope, soknadService, landService, $routeParams, $location, data, Faktum) {
+        $scope.templates = [
+            {navn: 'Kontrakt utgått', oppsummeringsurl: '../html/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html'},
+            {navn: 'Avskjediget', oppsummeringsurl: '../html/templates/arbeidsforhold/avskjediget-oppsummering.html' },
+            {navn: 'Redusert arbeidstid', oppsummeringsurl: '../html/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html' },
+            {navn: 'Arbeidsgiver er konkurs', oppsummeringsurl: '../html/templates/arbeidsforhold/konkurs-oppsummering.html'},
+            {navn: 'Sagt opp av arbeidsgiver', oppsummeringsurl: '../html/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html' },
+            {navn: 'Sagt opp selv', oppsummeringsurl: '../html/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html' },
+            {navn: 'Permittert', oppsummeringsurl: '../html/templates/arbeidsforhold/permittert-oppsummering.html' }
+        ];
+
+        var faktumId = $scope.af.faktumId;
+
+        if ($scope.soknadData.fakta.sluttaarsak) {
+            angular.forEach($scope.soknadData.fakta.sluttaarsak.valuelist, function (value) {
+                if (value.parrentFaktum == faktumId) {
+                    $scope.gjeldendeSluttaarsak = value;
+                }
+            });
+        }
+        if($scope.gjeldendeSluttaarsak) {
+            angular.forEach($scope.templates, function (template) {
+                if ($scope.gjeldendeSluttaarsak.properties.type == template.navn) {
+                    $scope.gjeldendeSluttaarsakUrl = template.oppsummeringsurl;
+                }
+            });
+        }
+    })
     .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams, $location, data, Faktum) {
         $scope.hvisHarJobbet = function() {
            var faktum = data.finnFaktum('arbeidstilstand');
@@ -38,6 +66,11 @@ angular.module('nav.arbeidsforhold.controller', [])
             });
         }
 
+    })
+
+
+
+        /*
 
 
 
@@ -117,7 +150,7 @@ angular.module('nav.arbeidsforhold.controller', [])
                 return $scope.arbeidsforhold.length == 0 && $scope.arbeidsforholdskjemaErIkkeAapent();
             }
 
-            /*
+            
             $scope.slettArbeidsforhold = function (af) {
                 var i = $scope.arbeidsforhold.indexOf(af);
                 $scope.arbeidsforhold.splice(i, 1);
@@ -131,9 +164,7 @@ angular.module('nav.arbeidsforhold.controller', [])
                 var value = angular.toJson(arbeidsforholdKopi);
                 $scope.$emit("OPPDATER_OG_LAGRE", {key: 'arbeidsforhold', value: value});
             }
-            */
-
-            /*
+            
             $scope.nyttArbeidsforhold = function (event, form) {
                 if ($scope.ikkeUnderRedigering() && form) {
                     $scope.arbeidsforhold.push({});
@@ -146,7 +177,7 @@ angular.module('nav.arbeidsforhold.controller', [])
                 }
                 $scope.settBreddeSlikAtDetFungererIIE();
             }
-            */
+     
 
             $scope.endreArbeidsforhold = function (index, form) {
                 if ($scope.ikkeUnderRedigering()) {
@@ -577,4 +608,4 @@ angular.module('nav.arbeidsforhold.controller', [])
     })
 
 
-
+*/
