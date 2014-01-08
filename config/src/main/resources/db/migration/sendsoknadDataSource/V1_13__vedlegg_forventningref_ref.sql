@@ -1,0 +1,1 @@
+ALTER TABLE Vedlegg ADD forventning_id VARCHAR(36);

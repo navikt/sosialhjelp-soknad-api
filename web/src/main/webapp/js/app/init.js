@@ -8,6 +8,10 @@ angular.module('sendsoknad')
         $http.get('../html/templates/ytelser.html', {cache: $templateCache});
         $http.get('../html/templates/utdanning.html', {cache: $templateCache});
         $http.get('../html/templates/barnetillegg.html', {cache: $templateCache});
+        $http.get('../html/templates/utdanning/utdanningKveldTemplate.html', {cache: $templateCache});
+        $http.get('../html/templates/utdanning/utdanningKortvarigTemplate.html', {cache: $templateCache});
+        $http.get('../html/templates/utdanning/utdanningKortvarigFlereTemplate.html', {cache: $templateCache});
+        $http.get('../html/templates/utdanning/utdanningNorskTemplate.html', {cache: $templateCache});
         $http.get('../html/dagpenger-singlepage.html', {cache: $templateCache});
         $http.get('../js/common/directives/booleanradio/booleanradioTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/accordion/accordionGroupTemplate.html', {cache: $templateCache});

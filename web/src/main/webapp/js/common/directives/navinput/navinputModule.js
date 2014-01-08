@@ -48,16 +48,14 @@ angular.module('nav.input', ['nav.cmstekster'])
                     }
 
                 },
-                post: function (scope, element, attr) {
-//                var tmpElementName = 'tmpName';
-//                fiksNavn(element, scope.inputname, tmpElementName);
+                post: function (scope, element) {
                     scope.hvisHarHjelpetekst = function () {
                         return scope.hjelpetekst.tittel && scope.hjelpetekst.tekst;
                     }
 
                     scope.hvisHuketAv = function () {
                         var transcludeElement = element.find('.ng-transclude');
-                        return checkTrue(scope.faktum.value) && transcludeElement.text().length > 0;
+                        return checkTrue(scope.faktum.value) && transcludeElement.text().trim().length > 0;
                     }
                     scope.endret = function () {
                         scope.$eval(scope.navendret);

@@ -6,11 +6,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Klasse for å returnere et resultat av en opplasting
  */
 @XmlRootElement
-public class VedleggFeil {
+public class RestFeil {
 
     private final String kode;
 
-    public VedleggFeil(String kode) {
+    public RestFeil(String kode) {
         this.kode = kode;
     }
 
