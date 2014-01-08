@@ -1,5 +1,5 @@
 angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
-    .controller('ArbeidsforholdNyttCtrl', ['$scope', 'data', 'Faktum', '$location', function ($scope, data, Faktum, $location) {
+    .controller('ArbeidsforholdNyttCtrl', ['$scope', 'data', 'Faktum', '$location', '$cookieStore', function ($scope, data, Faktum, $location, $cookieStore) {
         $scope.templates = [
             {navn: 'Kontrakt utgått', url: '../html/templates/arbeidsforhold/kontrakt-utgaatt.html'},
             {navn: 'Avskjediget', url: '../html/templates/arbeidsforhold/avskjediget.html'},
@@ -82,6 +82,17 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                 $location.path('dagpenger/' + $scope.soknadData.soknadId);
            });
         }
+
+       /* function oppdaterCookieValue(faktumId) {
+            var arbeidsforholdCookie = $cookieStore.get('arbeidsforholdCookie');
+
+            $cookieStore.put('barneCookie', {
+                aapneTabs: arbeidsforholdCookie.aapneTabs,
+                gjeldendeTab: arbeidsforholdCookie.gjeldendeTab,
+                arbeidsforholdFaktumId: faktumId
+            });
+        }*/
+
 
     }]);
 

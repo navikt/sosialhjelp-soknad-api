@@ -43,6 +43,22 @@ angular.module('nav.arbeidsforhold.controller', [])
                 $scope.soknadData.fakta.arbeidsforhold.valuelist.splice(index, 1);
             });
         }
+/*
+        function settArbeidsforholdCookie(faktumId) {
+            var aapneTabIds = [];
+            angular.forEach($scope.grupper, function (gruppe) {
+                if (gruppe.apen) {
+                    aapneTabIds.push(gruppe.id);
+                }
+            });
+
+            $cookieStore.put('barneCookie', {
+                aapneTabs: aapneTabIds,
+                gjeldendeTab: "#barnetillegg",
+                barneFaktumId: faktumId
+            })
+        }
+*/
 
     })
     
