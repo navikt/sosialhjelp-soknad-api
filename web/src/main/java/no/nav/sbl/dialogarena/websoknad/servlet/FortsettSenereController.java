@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import no.nav.sbl.dialogarena.websoknad.domain.FortsettSenere;
 import no.nav.sbl.dialogarena.websoknad.service.EmailService;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.value.ValueMap;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import static no.nav.sbl.dialogarena.websoknad.servlet.ServerUtils.getGjenopptaUrl;
 import static org.apache.wicket.model.Model.of;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * Klassen håndterer rest kall for å sende epost for at brukeren kan fortsette søknaden senere.
@@ -25,17 +27,16 @@ import static org.apache.wicket.model.Model.of;
 @RequestMapping("/soknad")
 public class FortsettSenereController {
 
-	Logger log = LoggerFactory.getLogger(FortsettSenereController.class);
-	
-	@Inject
-	private EmailService emailService;
+    Logger log = LoggerFactory.getLogger(FortsettSenereController.class);
+    @Inject
+    private EmailService emailService;
 
-	    @RequestMapping(value = "/{soknadId}/fortsettsenere", method = RequestMethod.POST, consumes = "text/plain")
-	    @ResponseBody()
-	    public void sendEpost(HttpServletRequest request, @PathVariable Long soknadId, @RequestBody String epost) {
-            ValueMap map = new ValueMap();
-	        map.put("url", getGjenopptaUrl(request.getRequestURL().toString(), soknadId));
-	        String content = new StringResourceModel("fortsettSenere.sendEpost.epostInnhold", of(map)).getString();
-	    	emailService.sendFortsettSenereEPost(epost, "Lenke til påbegynt dagpengesøknad", content);
-	    }
+    @RequestMapping(value = "/{soknadId}/fortsettsenere", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
+    @ResponseBody()
+    public void sendEpost(HttpServletRequest request, @PathVariable Long soknadId, @RequestBody FortsettSenere epost) {
+        ValueMap map = new ValueMap();
+        map.put("url", getGjenopptaUrl(request.getRequestURL().toString(), soknadId));
+        String content = new StringResourceModel("fortsettSenere.sendEpost.epostInnhold", of(map)).getString();
+        emailService.sendFortsettSenereEPost(epost.getEpost(), "Lenke til påbegynt dagpengesøknad", content);
+    }
 }
