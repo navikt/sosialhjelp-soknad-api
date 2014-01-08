@@ -33,14 +33,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.awt.Dimension;
+import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import static java.lang.String.format;
@@ -154,8 +153,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Long startSoknad(String navSoknadId) {
-        //String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid(), navSoknadId);
-        String behandlingsId = "MOCK" + new Random().nextInt(100000000);
+        String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid(), navSoknadId);
+       // String behandlingsId = "MOCK" + new Random().nextInt(100000000);
         WebSoknad soknad = WebSoknad.startSoknad().
                 medBehandlingId(behandlingsId).
                 medGosysId(navSoknadId).
