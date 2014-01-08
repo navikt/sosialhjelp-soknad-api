@@ -12,6 +12,8 @@ import java.util.List;
 public interface VedleggService {
     Long lagreVedlegg(Vedlegg vedlegg, InputStream inputStream);
 
+    List<Long> splitOgLagreVedlegg(Vedlegg vedlegg, InputStream inputStream);
+
     List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId, String gosysId);
 
     Vedlegg hentVedlegg(Long soknadId, Long vedleggId, boolean medInnhold);
