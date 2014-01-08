@@ -23,6 +23,18 @@
     margin-left: 15px !important;
 }
 
+.infoboks {
+    padding: 20px 5%;
+    margin-bottom: 20px;
+
+    .utrop-sirkel-ikon {
+        background-image: url(../img/utrop.svg);
+        background-position: center top;
+        background-repeat: no-repeat;
+        padding-top: 46px;
+    }
+}
+
 .sticky-feilmelding {
     position: fixed;
     background-color: #333;
@@ -174,8 +186,6 @@
     background: #f1f1f1;
     border: 1px solid #ddd;
     padding: 20px;
-    margin-left: 44px;
-    margin-right: 0px;
     margin-bottom: 30px;
 }
 
@@ -340,40 +350,6 @@
     }
 }
 
-.spm {
-    width: 100%;
-
-    .spm-sporsmal {
-        font-size: 1.21rem;
-        font-weight: 600;
-        font-family: Modus, Arial, Helvetica, sans-serif;
-        margin-bottom: 10px;
-        line-height: 1.6rem;
-    }
-
-    .blokk-resultat {
-        margin: 10px 15px;
-        width: 100%;
-
-        .checked {
-            background-color: #333;
-        }
-    }
-
-    .svar-alt {
-        text-transform: none !important;
-
-        .mer-info {
-            margin-left: 5px;
-        }
-    }
-
-    textarea {
-        width: 40%;
-        margin: 10px 0px;
-    }
-}
-
 form-linje.feil {
     border: 1px solid #df4b78;
     background: #fee6e6;
@@ -428,7 +404,7 @@ form-linje.feil {
             display: none;
         }
 
-        label, .nav-checkbox {
+        .nav-checkbox {
           margin-left: 0px;
         }
 
@@ -437,7 +413,7 @@ form-linje.feil {
             background: #fee6e6;
             padding: 15px;
 
-            &.tekstfelt, &.textarea-container {
+            &.tekstfelt, &.textarea-container, &.datepicker {
                 border: none;
                 background: #f1f1f1;
             }
@@ -454,7 +430,7 @@ form-linje.feil {
                 }
             }
 
-            .utdanning-annet-melding {
+            .utdanning-nei-melding {
                 display: block;
                 margin-bottom: 10px;
             }
@@ -551,11 +527,7 @@ form-linje.feil {
             font-family: Modus, Arial, Helvetica, sans-serif;;
             font-weight: 600;
             padding: 10px 40px;
-        }
-
-        &.done a {
             background: #f1f1f1;
-            color: #3e3832;
         }
     }
 }
