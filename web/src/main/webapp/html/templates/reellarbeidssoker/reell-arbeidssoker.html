@@ -69,19 +69,19 @@
                  data-navfeilmelding="reellarbeidssoker.maksimalarbeidstid.feilmelding"></div>
         </div>
 
-        <div data-booleanradio
-             data-nav-faktum="villigpendle"
-             data-ng-model="soknadData.fakta.villigpendle.value"
+
+        <div data-nav-faktum="villigpendle"
+             data-navconfig
+             data-booleanradio
              data-nokkel="reellarbeidssoker.villigpendle">
 
             <div data-navinfoboks>
                 <span data-cmstekster="reellarbeidssoker.villigpendle.false.informasjon"></span>
             </div>
             <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
-                <input type="hidden" data-ng-model="harHuketAvCheckboksPendle.value"
+                <input type="hidden" data-ng-model="harHuketAvCheckboksPendle.value" data-nav-faktum="villigpendle"
                        data-ng-required="faktum.value == 'false' && erUnder60Aar()"
                        data-error-messages="'reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding'"/>
-
                 <div data-navcheckbox
                      data-navconfig
                      data-nav-faktum="pendlereduserthelse"
