@@ -1,5 +1,5 @@
 angular.module('nav.arbeidsforhold.directive',[])
-	.directive('lagreArbeidsforhold', function () {
+	/*.directive('lagreArbeidsforhold', function () {
         return function ($scope, element, attrs) {
             var eventType;
             switch (element.attr('type')) {
@@ -28,4 +28,4 @@ angular.module('nav.arbeidsforhold.directive',[])
             })
         }
 
-    })
+    })*/

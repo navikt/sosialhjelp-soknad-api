@@ -19,13 +19,16 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
         if(endreModus) {
             var faktumId = url.split("/").pop();
             
-            angular.forEach($scope.soknadData.fakta.arbeidsforhold.valuelist, function (value) {
+            var arbeidsforhold = data.finnFakta("arbeidsforhold");
+            var sluttaarsak = data.finnFakta("sluttaarsak");
+            
+            angular.forEach(arbeidsforhold, function (value) {
                 if (value.faktumId == faktumId) {
                     arbeidsforholdData = value;
                 }
             });
 
-            angular.forEach($scope.soknadData.fakta.sluttaarsak.valuelist, function (value) {
+            angular.forEach(sluttaarsak, function (value) {
                 if (value.parrentFaktum == faktumId) {
                     sluttaarsakData = value;
                 }
@@ -34,7 +37,6 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             angular.forEach($scope.templates, function (template,index) {
                 if (sluttaarsakData.properties.type == index) {
                     $scope.sluttaarsakType = index;
-
                 }
             });
 
@@ -98,20 +100,8 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
         }
 
          function oppdaterFaktumListe(type) {
-            if ($scope.soknadData.fakta[type] && $scope.soknadData.fakta[type].valuelist) {
-                if (endreModus) {
-                    angular.forEach($scope.soknadData.fakta[type].valuelist, function (value, index) {
-                        if (value.faktumId == $scope[type].faktumId) {
-                            $scope.soknadData.fakta[type].valuelist[index] = $scope[type];
-                        }
-                    })
-                } else {
-                    $scope.soknadData.fakta[type].valuelist.push($scope[type]);
-                }
-
-            } else {
-                $scope.soknadData.fakta[type] = {};
-                $scope.soknadData.fakta[type].valuelist = [$scope[type]];
+            if (!endreModus) {
+                data.fakta.push($scope[type]);
             }
         }
 

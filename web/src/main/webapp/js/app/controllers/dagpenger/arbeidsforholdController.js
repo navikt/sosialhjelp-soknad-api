@@ -1,6 +1,41 @@
 angular.module('nav.arbeidsforhold.controller', [])
     .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams, $cookieStore, $location, data, Faktum) {
+        $scope.templates = {
+            'Kontrakt utgått': {oppsummeringsurl: '../html/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html'},
+            'Avskjediget': {oppsummeringsurl: '../html/templates/arbeidsforhold/avskjediget-oppsummering.html' },
+            'Redusert arbeidstid': {oppsummeringsurl: '../html/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html' },
+            'Arbeidsgiver er konkurs': {oppsummeringsurl: '../html/templates/arbeidsforhold/konkurs-oppsummering.html'},
+            'Sagt opp av arbeidsgiver': { oppsummeringsurl: '../html/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html' },
+            'Sagt opp selv': {oppsummeringsurl: '../html/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html' },
+            'Permittert': {oppsummeringsurl: '../html/templates/arbeidsforhold/permittert-oppsummering.html' }
+        };
+
+        var arbeidsforhold = data.finnFakta("arbeidsforhold");
+        var sluttaarsak = data.finnFakta("sluttaarsak");
+        $scope.arbeidsliste = [];
         
+
+        angular.forEach(arbeidsforhold, function (af) {
+            angular.forEach(sluttaarsak, function (s) {
+                if (s.parrentFaktum == af.faktumId) {
+                   $scope.arbeidsliste.push({"arbeidsforhold": af, "sluttaarsak": s});
+                }
+            });
+
+        });
+
+        function compareArbeidsforholdDate(a1, a2) {
+            if(a1.sluttaarsak.properties.datofra > a2.sluttaarsak.properties.datofra) {
+                return 1;
+            }
+            if(a1.sluttaarsak.properties.datofra < a2.sluttaarsak.properties.datofra) {
+                return -1;
+            }
+            return 0;
+        }
+
+        $scope.arbeidsliste.sort(compareArbeidsforholdDate);
+
         if($scope.soknadData.fakta.arbeidsforhold && $scope.soknadData.fakta.arbeidsforhold.valuelist) {
             $scope.harLagretArbeidsforhold = true;            
         }
@@ -36,18 +71,18 @@ angular.module('nav.arbeidsforhold.controller', [])
 
         $scope.endreArbeidsforhold = function(af, $index, $event) {
             $event.preventDefault();
-            settArbeidsforholdCookie(af.faktumId);
-            $location.path('endrearbeidsforhold/' + $scope.soknadData.soknadId + '/' + af.faktumId);   
+            settArbeidsforholdCookie(af.arbeidsforhold.faktumId);
+            $location.path('endrearbeidsforhold/' + $scope.soknadData.soknadId + '/' + af.arbeidsforhold.faktumId);   
         }
 
         $scope.slettArbeidsforhold = function (af, index, $event) {
             $event.preventDefault();
-            $scope.arbeidsforholdSomSkalSlettes = new Faktum(af);
+            $scope.arbeidsforholdSomSkalSlettes = new Faktum(af.arbeidsforhold);
 
             $scope.arbeidsforholdSomSkalSlettes.$delete({soknadId: $scope.soknadData.soknadId}).then(function () {
-                $scope.soknadData.fakta.arbeidsforhold.valuelist.splice(index, 1);
+                $scope.arbeidsliste.splice(index, 1);
 
-                if($scope.soknadData.fakta.arbeidsforhold.valuelist.length == 0) {
+                if($scope.arbeidsliste.length == 0) {
                     $scope.harLagretArbeidsforhold = undefined;
                 }
             });
@@ -72,6 +107,7 @@ angular.module('nav.arbeidsforhold.controller', [])
 
     })
     
+    /*
     .controller('sluttaarsakCtrl', function ($scope, soknadService, landService, $routeParams, $location, data, Faktum) {
         $scope.templates = [
             {navn: 'Kontrakt utgått', oppsummeringsurl: '../html/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html'},
@@ -101,6 +137,7 @@ angular.module('nav.arbeidsforhold.controller', [])
         }
     })
 
+    */
 
 
 
