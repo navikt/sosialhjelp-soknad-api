@@ -22,9 +22,6 @@ angular.module('nav.barn', ['app.services'])
                     }
                 });
             }
-            if(barnUnderEndring.properties) {
-                barnUnderEndring.properties.fodselsdato = new Date(barnUnderEndring.properties.fodselsdato);
-            }
         }
 
         if (endreModus || barnetilleggModus) {
@@ -232,9 +229,9 @@ angular.module('nav.barn', ['app.services'])
         //TODO: FIX Tester
         function finnAlder() {
             if ($scope.barn.properties.fodselsdato) {
-                var year = $scope.barn.properties.fodselsdato.getFullYear();
-                var maaned = $scope.barn.properties.fodselsdato.getMonth();
-                var dag = $scope.barn.properties.fodselsdato.getDate()
+                var year = $scope.barn.properties.fodselsdato.substring(0,4)
+                var maaned = $scope.barn.properties.fodselsdato.substring(5,7);
+                var dag = $scope.barn.properties.fodselsdato.substring(8,10);
                 var dagensDato = new Date();
 
                 var result = dagensDato.getFullYear() - year;
