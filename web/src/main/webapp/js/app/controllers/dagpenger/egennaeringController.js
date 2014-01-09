@@ -3,6 +3,7 @@ angular.module('nav.egennaering', [])
         $scope.navigering = {nesteside: 'verneplikt'};
         $scope.sidedata = {navn: 'egennaering'};
         $scope.orgnummer = data.finnFakta('egennaering_orgnummer');
+        $scope.aarstall = [];
 
         $scope.leggTilOrgnr = function () {
             $scope.orgnummer.push(new Faktum(
@@ -20,19 +21,36 @@ angular.module('nav.egennaering', [])
 
         $scope.slettOrg = function (org, index) {
 
-                org.$delete({soknadId: $scope.soknadData.soknadId}).then(function () {
-                    $scope.orgnummer.splice(index, 1);
-                });
+            org.$delete({soknadId: $scope.soknadData.soknadId}).then(function () {
+                $scope.orgnummer.splice(index, 1);
+            });
 
         }
 
-        $scope.skalViseSlettKnapp = function(index) {
+        $scope.skalViseSlettKnapp = function (index) {
             return !(index == 0);
         }
 
-        $scope.erSynlig = function(faktum) {
-            return data.finnFaktum(faktum).value == 'false';
+        $scope.erSynlig = function (faktum) {
+            return data.finnFaktum(faktum) && data.finnFaktum(faktum).value == 'false';
         }
+
+        $scope.gardseier = function (eier) {
+            return data.finnFaktum(eier).value == 'true' && $scope.erSynlig('gardsbruk');
+        }
+
+        $scope.svartPaHvemEierGardsbruket = function (fakta) {
+            if (!$scope.erSynlig('gardsbruk')) {
+                return false;
+            }
+            for (var i = 0; i < fakta.length; i++) {
+                if (data.finnFaktum(fakta[i]) && data.finnFaktum(fakta[i]).value == 'true') {
+                    return true;
+                }
+            }
+            return false;
+        }
+
 
         $scope.$on('VALIDER_EGENNAERING', function () {
             $scope.validerEgennaering(false);
@@ -44,14 +62,14 @@ angular.module('nav.egennaering', [])
         }
 
         $scope.validerEgennaering = function (skalScrolle) {
+            $scope.summererAndeleneTil100();
             $scope.runValidation(skalScrolle);
-
         }
 
-        var typeGardsbrukNokler = ['dyr', 'jord', 'skog', 'annet'];
-        var eierGardsbrukNokler = ['jeg', 'ektefelle', 'annet'];
+        var typeGardsbrukNokler = ['dyrGardsbruk', 'jordGardsbruk', 'skogGardsbruk', 'annetGardsbruk'];
+        var eierGardsbrukNokler = ['jegEierGardsbruk', 'ektefelleEierGardsbruk', 'annetEierGardsbruk'];
         $scope.harHuketAvTypeGardsbruk = {value: ''};
-        $scope.harHuketAvEierGardsbruk = {value:''};
+        $scope.harHuketAvEierGardsbruk = {value: ''};
 
         if (erCheckboxerAvhuket(typeGardsbrukNokler)) {
             $scope.harHuketAvTypeGardsbruk.value = true;
@@ -79,6 +97,43 @@ angular.module('nav.egennaering', [])
             }
         }
 
+        $scope.totalsumAndel = {
+            value: ''
+        }
+        var prosentFeil = false;
+
+        $scope.summererAndeleneTil100 = function () {
+
+            $scope.totalsumAndel.value = "";
+            prosentFeil = false;
+
+            var andel = "";
+            if ($scope.gardseier("jegEierGardsbruk")) {
+                andel = parseInt(data.finnFaktum("dinAndelGardsbruk").value);
+            }
+            if ($scope.gardseier("ektefelleEierGardsbruk")) {
+                andel += parseInt(data.finnFaktum("ektefelleAndelGardsbruk").value);
+            }
+            if ($scope.gardseier("annetEierGardsbruk")) {
+                andel += parseInt(data.finnFaktum("annetAndelGardsbruk").value);
+            }
+
+            if (isNaN(andel)) {
+                prosentFeil = false;
+            }
+            else if (andel == 100) {
+                $scope.totalsumAndel.value = "true";
+                prosentFeil = false;
+            } else {
+                $scope.totalsumAndel.value = "";
+                prosentFeil = true;
+            }
+        }
+
+        $scope.prosentFeil = function () {
+            return prosentFeil;
+        }
+
         function erCheckboxerAvhuket(checkboxNokler) {
             var minstEnAvhuket = false;
             var fakta = {};
@@ -97,5 +152,20 @@ angular.module('nav.egennaering', [])
             return minstEnAvhuket;
         }
 
+        $scope.forrigeAar = '';
+        genererAarstallListe();
 
-    }]);
+
+        function genererAarstallListe() {
+            var idag = new Date();
+            var iAar = idag.getFullYear();
+
+            $scope.forrigeAar = (iAar - 1).toString();
+
+            for (var i = 0; i < 5; i++) {
+                $scope.aarstall.push('' + (iAar - i));
+            }
+        }
+
+    }])
+;

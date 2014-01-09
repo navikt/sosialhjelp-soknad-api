@@ -33,6 +33,13 @@
         background-repeat: no-repeat;
         padding-top: 46px;
     }
+    p {
+      margin-bottom: 10px;
+    }
+}
+
+.informasjonstekst-normal {
+  padding: 15px;
 }
 
 .sticky-feilmelding {
@@ -490,6 +497,9 @@ form-linje.feil {
                 color: #A00404;
             }
         }
+        .form-linje.tekstfelt input {
+            background-color: #fff;
+        }
     }
     &.aktiv-feilmelding.checkbox.feilstyling {
         border: 1px solid #c30000;
@@ -513,10 +523,9 @@ form-linje.feil {
     }
 
     &.orgnummer input {
-        width: 100px;
+        width: 100px !important;
         display: block;
     }
-
 }
 
 .rad[stegindikator], .rad[data-stegindikator] {

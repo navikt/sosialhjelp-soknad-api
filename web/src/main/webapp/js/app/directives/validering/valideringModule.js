@@ -65,14 +65,21 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 }
 
                 function settFeilmeldingsTekst(feilNokkel) {
-                    var feilmeldingsNokkel = feil;
+                    if (meldingIkkeInneholderFeilmelding()) {
+                        var feilmeldingsNokkel = feil;
 
-                    if (typeof feil === 'object') {
-                        feilmeldingsNokkel = feil[feilNokkel];
+                        if (typeof feil === 'object') {
+                            feilmeldingsNokkel = feil[feilNokkel];
+                        }
+
+                        var feilmeldingTekst = cms.tekster[feilmeldingsNokkel];
+                        formElem.find('.melding').text(feilmeldingTekst);
                     }
 
-                    var feilmeldingTekst = cms.tekster[feilmeldingsNokkel];
-                    formElem.find('.melding').text(feilmeldingTekst);
+                }
+
+                function meldingIkkeInneholderFeilmelding() {
+                    return !(formElem.find('.melding')[0] && formElem.find('.melding')[0].hasAttribute('data-cmstekster'));
                 }
             }
         }
