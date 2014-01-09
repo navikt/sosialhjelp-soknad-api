@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.modig.core.context.SubjectHandler;
+import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.detect.IsImage;
 import no.nav.sbl.dialogarena.detect.IsPdf;
 import no.nav.sbl.dialogarena.pdf.ConvertToPng;
@@ -21,15 +21,20 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVed
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import org.apache.commons.io.IOUtils;
+import org.apache.pdfbox.exceptions.COSVisitorException;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.util.Splitter;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.awt.Dimension;
+import java.awt.*;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -118,7 +123,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public void sendSoknad(long soknadId) {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
         List<VedleggForventning> vedleggForventnings = hentPaakrevdeVedlegg(soknadId);
-        henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(), new XMLHovedskjema(), Transformers.convertToXmlVedleggListe(vedleggForventnings));
+     //   henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(), new XMLHovedskjema(), Transformers.convertToXmlVedleggListe(vedleggForventnings));
         repository.avslutt(soknad);
 
     }
@@ -133,7 +138,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public void avbrytSoknad(Long soknadId) {
         WebSoknad soknad = repository.hentSoknad(soknadId);
         repository.avbryt(soknadId);
-        henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
+     //   henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
     }
 
     @Override
@@ -149,7 +154,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public Long startSoknad(String navSoknadId) {
         //String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid(), navSoknadId);
-        String behandlingsId = "MOCK" + new Random().nextInt(100000000);
+       String behandlingsId = "MOCK" + new Random().nextInt(100000000);
         WebSoknad soknad = WebSoknad.startSoknad().
                 medBehandlingId(behandlingsId).
                 medGosysId(navSoknadId).
@@ -177,8 +182,32 @@ public class SoknadService implements SendSoknadService, VedleggService {
             bytes = new PdfWatermarker().applyOn(bytes, SubjectHandler.getSubjectHandler().getUid());
             return vedleggRepository.lagreVedlegg(vedlegg, bytes);
         } catch (Exception e) {
-            throw new RuntimeException("Kunne ikke lagre vedlegg: " + e, e);
+            throw new ApplicationException("Kunne ikke lagre vedlegg: " + e, e);
         }
+    }
+
+    @Override
+    @Transactional
+    public List<Long> splitOgLagreVedlegg(Vedlegg vedlegg, InputStream inputStream) {
+        List<Long> resultat = new ArrayList<>();
+
+        try {
+            byte[] bytes = IOUtils.toByteArray(inputStream);
+            if (new IsPdf().evaluate(bytes)) {
+                List<PDDocument> split = new Splitter().split(PDDocument.load(new ByteArrayInputStream(bytes)));
+                for (PDDocument pdDocument : split) {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    pdDocument.save(baos);
+                    Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(), vedlegg.getFaktumId(), vedlegg.getGosysId(), vedlegg.getNavn(), (long) baos.size(), 1, UUID.randomUUID().toString(), null);
+                    resultat.add(vedleggRepository.lagreVedlegg(sideVedlegg, baos.toByteArray()));
+                }
+            } else {
+                resultat.add(lagreVedlegg(vedlegg, inputStream));
+            }
+        } catch (IOException | COSVisitorException e) {
+            throw new ApplicationException("Kunne ikke lese innkommende dokument", e);
+        }
+        return resultat;
     }
 
     @Override
@@ -225,7 +254,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         }
         byte[] doc = new PdfMerger().transform(bytes);
         Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, gosysId, "faktum.pdf", (long) doc.length, vedleggs.size(), UUID.randomUUID().toString(), doc);
-        fillagerConnector.lagreFil(vedlegg.getFillagerReferanse(), new ByteArrayInputStream(doc));
+        //fillagerConnector.lagreFil(vedlegg.getFillagerReferanse(), new ByteArrayInputStream(doc));
         vedleggRepository.slettVedleggForFaktum(soknadId, faktumId);
         Long opplastetDokument = vedleggRepository.lagreVedlegg(vedlegg, doc);
         vedleggRepository.settVedleggStatus(soknadId, faktumId, vedlegg.getGosysId());
