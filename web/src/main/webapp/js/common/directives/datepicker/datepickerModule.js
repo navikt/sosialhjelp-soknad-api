@@ -302,7 +302,6 @@ angular.module('nav.datepicker', [])
                                 }
                             }
 
-                            console.log(i);
                             if (i == 1 || i == 4) {
                                 if (datoInput[i + 1] == '.') {
                                     caretPosisjon++;
