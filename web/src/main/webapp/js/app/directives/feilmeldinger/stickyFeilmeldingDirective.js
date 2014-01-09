@@ -28,6 +28,9 @@ angular.module('nav.stickyFeilmelding', [])
                     scope.feil.antallFeilMedKlasseFeil = elem.find('.form-linje.feil').length;
                     scope.feil.antallFeilMedKlasseFeilstyling = elem.find('.form-linje.feilstyling').length;
 
+                    console.log(scope.feil.antallFeilMedKlasseFeilstyling)
+                    console.log(scope.feil.antallFeilMedKlasseFeil)
+
                     var idBolkerMedFeil = [];
                     var idAlleBolker = [];
 

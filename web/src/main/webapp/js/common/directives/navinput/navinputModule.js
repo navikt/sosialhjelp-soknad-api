@@ -78,7 +78,7 @@ angular.module('nav.input', ['nav.cmstekster'])
                     } else {
                         scope.regexvalidering = "";
                     }
-                    if(attrs.inputfeltmaxlength) {
+                    if (attrs.inputfeltmaxlength) {
                         scope.inputfeltmaxlength = attrs.inputfeltmaxlength;
                     } else {
                         scope.inputfeltmaxlength = undefined;
@@ -97,11 +97,11 @@ angular.module('nav.input', ['nav.cmstekster'])
             require: 'ngModel',
             link: function (scope, element, attrs, ctrl) {
 
-                scope.lagre = function () {
+                element.bind('blur', function () {
                     if (ctrl.$valid) {
                         scope.lagreFaktum();
                     }
-                }
+                })
             }
         }
     }])
@@ -112,8 +112,9 @@ angular.module('nav.input', ['nav.cmstekster'])
             replace: true,
             scope: true,
             link: function (scope, element) {
-                scope.hvisSynlig = function () {
-                    return element.is(':visible');
+//              kun første element som skal være required
+                scope.erSynligOgForsteElement = function () {
+                    return element.is(':visible') && scope.navindex == 0;
                 }
             },
             templateUrl: '../js/common/directives/navinput/navorgnrfeltTemplate.html'
@@ -122,11 +123,11 @@ angular.module('nav.input', ['nav.cmstekster'])
         return {
             require: 'ngModel',
             link: function (scope, element, attrs, ctrl) {
-                scope.lagre = function () {
+                element.bind('blur', function () {
                     if (ctrl.$valid) {
                         scope.lagreFaktum();
                     }
-                }
+                })
 
                 scope.formateringsfeil = function () {
                     return ctrl.$error.pattern;

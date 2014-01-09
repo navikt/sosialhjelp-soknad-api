@@ -26,7 +26,6 @@
                 $timeout(function () {
                     $scope.validateForm(form.$invalid);
                     var elementMedForsteFeil = $('.accordion-group').find('.form-linje.feil, .form-linje.feilstyling').first();
-                    console.log(elementMedForsteFeil)
                     if (form.$valid) {
                         $location.path("/vedlegg/" + $scope.soknadData.soknadId);
 

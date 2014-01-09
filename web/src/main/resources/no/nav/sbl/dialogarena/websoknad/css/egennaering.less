@@ -3,7 +3,7 @@
   padding-bottom: 0px !important;
   float: left;
 
-  .melding {
+  &feil .melding {
     display: block;
   }
 }
@@ -22,9 +22,15 @@
   padding-top: 10px;
 }
 
-.arbeidsmengde {
+.test {
+  margin-bottom: 20px;
+}
+
+.arbeidsmengde-container {
   input {
-    width: 40px;
+    width: 50px !important;
+    float: left;
+    margin-right: 10px;
   }
 
   span {
@@ -32,45 +38,72 @@
   }
   .timer {
     font-weight: bold;
+    margin-top: 9px;
+    margin-left: 5px;
+    text-transform: none;
+    font-size: 1rem !important;
+  }
+  .melding {
+    clear: both;
   }
 }
 
-.andelsfordeling-spm {
-  margin: 0px 15px -5px 15px !important;
-}
+.andelsfordeling-container {
+  .andels-fordeling {
+    .form-linje {
+      width: 45%;
+      padding: 0px !important;
+      display: inline-block;
+      vertical-align: top;
 
-.andels-fordeling {
-  .form-linje {
-    float: left;
-    width: 45%;
+      input {
+        width: 40px !important;
+        float: left;
+        margin-right: 5px;
+        display: block;
+      }
 
-    input {
-      width: 40px;
-      display: block;
-    }
+      span:not(.melding) {
+        display: block;
+      }
+      .egennaering-prosent {
+        margin-top: 5px;
+        font-size: 1rem !important;
+      }
 
-    .melding {
-      display: block;
-    }
+      &.feil .melding {
+        display: block;
+        clear: both;
+      }
 
-    &:first-child {
-      width: 25%;
+      &:first-child {
+        width: 25%;
+      }
+      &:last-child {
+        width: 25%;
+      }
     }
-    &:last-child {
-      width: 25%;
-    }
+  }
+  &.feil .andels-fordeling .melding {
+    display: none;
+  }
+
+  .prosentmelding {
+    clear: both;
   }
 }
 
 .gardsbruk-timer {
   clear: both;
+  padding: 15px;
 
   .form-linje {
     float: left;
     width: 25%;
+    padding: 0px !important;
 
     input {
-      width: 70px;
+      width: 70px !important;
       display: block;
     }
   }
@@ -80,14 +113,7 @@
   clear: both;
 }
 
-.navradio-utenmargin {
-  border-bottom: none;
-  .nav-radio-knapp {
-    margin-left: 0px;
-  }
-}
-
 .fangstfiskeinntekt input {
-  width: 100px;
+  width: 120px !important;
   display: block;
 }
