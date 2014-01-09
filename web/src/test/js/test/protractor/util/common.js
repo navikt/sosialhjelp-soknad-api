@@ -16,6 +16,18 @@ module.exports = {
                 expect(radioGruppe[key].getAttribute('checked')).toBeFalsy();
             }
         });
+    },
+    sjekkAtIngenRadioknapperErHuketAvOgVelgJa: function(radioGruppe) {
+        Object.keys(radioGruppe).forEach(function(key) {
+            expect(radioGruppe[key].getAttribute('checked')).toBeFalsy();
+        });
+        this.sjekkOgHukAvRadioGruppe(radioGruppe, 'ja');
+    },
+    sjekkAtIngenRadioknapperErHuketAvOgVelgNei: function(radioGruppe) {
+        Object.keys(radioGruppe).forEach(function(key) {
+            expect(radioGruppe[key].getAttribute('checked')).toBeFalsy();
+        });
+        this.sjekkOgHukAvRadioGruppe(radioGruppe, 'nei');
     }
 
 };

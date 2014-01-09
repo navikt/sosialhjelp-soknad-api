@@ -7,16 +7,17 @@ module.exports = Page.create({
     open: {
         value: function() {
             this.go();
+            util.ventTilSideHarLastet('#informasjonsside');
         }
     },
     tittel: {
         get: function() {
-            return element(this.by.css('h2'));
+            return element(by.css('h2'));
         }
     },
     startknapp: {
         get: function() {
-            return element(this.by.css('input.knapp-hoved'));
+            return element(by.css('input.knapp-hoved'));
         }
     },
     startSoknad: {
@@ -27,12 +28,12 @@ module.exports = Page.create({
     },
     stegindikator: {
         get: function() {
-            return element(this.by.css('.stegindikator'));
+            return element(by.css('.stegindikator'));
         }
     },
     aktivtSteg: {
         get: function() {
-            return element.all(this.by.repeater('steg in data.liste')).get(0);
+            return element.all(by.repeater('steg in data.liste')).get(0);
         }
     }
 });
