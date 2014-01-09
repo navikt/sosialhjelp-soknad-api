@@ -176,7 +176,7 @@ angular.module('nav.datepicker', [])
 
                     opts.onSelect = function () {
                         var dato = datepickerInput.datepicker("getDate");
-                        scope.ngModel = $filter('date')(dato, "yyyy.MM.dd");
+                        scope.ngModel = $filter('date')(dato, "yyyy-MM-dd");
                     };
 
                     opts.beforeShow = function () {
@@ -191,7 +191,7 @@ angular.module('nav.datepicker', [])
                     datepickerInput.datepicker('destroy');
                     datepickerInput.datepicker(opts);
                 };
-
+                leggTilDatepicker();
                 // Legger til datepicker på nytt dersom options endrer seg
                 scope.$watch(datepickerOptions, leggTilDatepicker, true);
             }
@@ -302,7 +302,6 @@ angular.module('nav.datepicker', [])
                                 }
                             }
 
-                            console.log(i);
                             if (i == 1 || i == 4) {
                                 if (datoInput[i + 1] == '.') {
                                     caretPosisjon++;
