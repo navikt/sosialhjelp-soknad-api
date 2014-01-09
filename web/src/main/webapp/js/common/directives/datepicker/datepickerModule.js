@@ -191,7 +191,6 @@ angular.module('nav.datepicker', [])
                     datepickerInput.datepicker('destroy');
                     datepickerInput.datepicker(opts);
                 };
-                leggTilDatepicker();
                 // Legger til datepicker på nytt dersom options endrer seg
                 scope.$watch(datepickerOptions, leggTilDatepicker, true);
             }
