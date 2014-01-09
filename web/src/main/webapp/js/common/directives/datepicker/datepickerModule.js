@@ -148,6 +148,12 @@ angular.module('nav.datepicker', [])
                         scope.tilDato = '';
                         scope.tilDatoFeil = true;
                     }
+
+                    if (isNaN(new Date(scope.ngModel).getDate())) {
+                        datepickerInput.datepicker("setDate", new Date());
+                    } else {
+                        datepickerInput.datepicker("setDate", new Date(scope.ngModel));
+                    }
                 });
 
                 function inputfeltHarTekstOgGyldigDatoFormat() {
