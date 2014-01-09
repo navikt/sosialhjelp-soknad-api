@@ -103,31 +103,38 @@ angular.module('nav.egennaering', [])
         var prosentFeil = false;
 
         $scope.summererAndeleneTil100 = function () {
+            console.log(prosentFeil)
 
-            $scope.totalsumAndel.value = "";
-            prosentFeil = false;
-
-            var andel = "";
-            if ($scope.gardseier("jegEierGardsbruk")) {
-                andel = parseInt(data.finnFaktum("dinAndelGardsbruk").value);
-            }
-            if ($scope.gardseier("ektefelleEierGardsbruk")) {
-                andel += parseInt(data.finnFaktum("ektefelleAndelGardsbruk").value);
-            }
-            if ($scope.gardseier("annetEierGardsbruk")) {
-                andel += parseInt(data.finnFaktum("annetAndelGardsbruk").value);
-            }
-
-            if (isNaN(andel)) {
-                prosentFeil = false;
-            }
-            else if (andel == 100) {
-                $scope.totalsumAndel.value = "true";
-                prosentFeil = false;
-            } else {
+            if ($scope.erSynlig('gardsbruk')) {
                 $scope.totalsumAndel.value = "";
-                prosentFeil = true;
+                prosentFeil = false;
+
+                var andel = "";
+                if ($scope.gardseier("jegEierGardsbruk")) {
+                    andel = parseInt(data.finnFaktum("dinAndelGardsbruk").value);
+                }
+                if ($scope.gardseier("ektefelleEierGardsbruk")) {
+                    andel += parseInt(data.finnFaktum("ektefelleAndelGardsbruk").value);
+                }
+                if ($scope.gardseier("annetEierGardsbruk")) {
+                    andel += parseInt(data.finnFaktum("annetAndelGardsbruk").value);
+                }
+
+                if (isNaN(andel) || andel == '') {
+                    prosentFeil = false;
+                }
+                else if (andel == 100) {
+                    $scope.totalsumAndel.value = "true";
+                    prosentFeil = false;
+                } else {
+                    $scope.totalsumAndel.value = "";
+                    prosentFeil = true;
+                    console.log(andel)
+                }
+            } else {
+                prosentFeil = false;
             }
+            console.log(prosentFeil)
         }
 
         $scope.prosentFeil = function () {
