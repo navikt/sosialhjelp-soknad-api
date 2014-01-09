@@ -293,12 +293,16 @@ angular.module('nav.datepicker', [])
                             var skrevetTegn = datoInput[i];
 
                             if (isNaN(skrevetTegn) || datoInput.substring(0, i + 1).length > datoMask.length || datoInput.splice(i, 1, '').length == datoMask.length) {
-                                datoInput = datoInput.splice(i, 1, '');
-                                caretPosisjon--;
-                                i--;
-                                continue;
+                                if (skrevetTegn != '.' || (i != 3 && i != 5)) {
+                                    datoInput = datoInput.splice(i, 1, '');
+                                    caretPosisjon--;
+                                    i--;
+                                    slutt--;
+                                    continue;
+                                }
                             }
 
+                            console.log(i);
                             if (i == 1 || i == 4) {
                                 if (datoInput[i + 1] == '.') {
                                     caretPosisjon++;
