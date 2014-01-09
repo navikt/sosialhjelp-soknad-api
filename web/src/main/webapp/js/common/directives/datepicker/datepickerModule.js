@@ -33,7 +33,7 @@
  *      - er-fradato-required: Expression som sier om fra-dato er påkrevd. Er false dersom ikke oppgitt
  *      - er-begge-required: Expression som sier om både til- og fra-dato er påkrevd. Er false dersom ikke oppgitt.
  *                           Denne setter både er-fradato-required og er-tildato-required.
- *      - er-fremtidigdato-tilatt: Expression som sier om det er lovelig å sette datoen frem i tid.
+ *      - er-fremtidigdato-tillatt: Expression som sier om det er lovelig å sette datoen frem i tid.
  */
 
 angular.module('nav.datepicker', [])
@@ -162,8 +162,6 @@ angular.module('nav.datepicker', [])
 
                 function datepickerOptions() {
                     var currentDefaultDate = defaultDate;
-                    console.log(scope.ngModel);
-                    console.log(new Date(scope.ngModel));
                     defaultDate = scope.ngModel ? new Date(scope.ngModel) : currentDefaultDate;
 
                     if (currentDefaultDate.getTime() != defaultDate.getTime()) {
