@@ -101,9 +101,10 @@ public class VedleggController {
                 for (MultipartFile file : files) {
                     byte[] in = validateAndGetInput(file);
                     Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, gosysId, file.getOriginalFilename(), file.getSize(), 1, null, in);
-                    Long id = vedleggService.lagreVedlegg(vedlegg, new ByteArrayInputStream(in));
-                    vedlegg.setId(id);
-                    res.add(vedlegg);
+                    List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, new ByteArrayInputStream(in));
+                    for (Long id : ids) {
+                        res.add(vedleggService.hentVedlegg(soknadId, id, false));
+                    }
                 }
                 return new VedleggOpplasting(res);
             }

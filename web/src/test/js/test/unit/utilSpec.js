@@ -236,48 +236,26 @@ describe('utility funksjoner -', function () {
 
     });
 
-    describe('konverter dato representert som string til date-objekt', function () {
+    describe('reversere norsk datoformat (fra dd.MM.yyyy til yyyy.MM.dd', function () {
         it('skal få returverdi', function () {
-            var dato = konverterStringFraNorskDatoformatTilDateObjekt("");
+            var dato = reverserNorskDatoformat("");
             expect(dato).toBeDefined();
         });
 
         it('skal få tom string dersom datostringen er på galt format', function () {
-            var dato = konverterStringFraNorskDatoformatTilDateObjekt("");
+            var dato = reverserNorskDatoformat("");
             expect(dato).toBe("");
         });
 
-        it('skal få tilbake dato-objekt dersom datostringen er på rett format', function () {
-            var dato = konverterStringFraNorskDatoformatTilDateObjekt("01.01.2013");
-            expect(dato.getDate()).toBeDefined();
+        it('skal få tilbake string med innhold dersom datostringen er på rett format', function () {
+            var dato = reverserNorskDatoformat("01.01.2013");
+            expect(dato.length).toBeGreaterThan(0);
         });
 
-        it('skal få tilbake dato-objekt med rett dag', function () {
-            var forventetDag = 1;
-            var dato = konverterStringFraNorskDatoformatTilDateObjekt("01.01.2013");
-            expect(dato.getDate()).toBe(forventetDag);
-        });
-
-        it('skal få tilbake dato-objekt med rett måned', function () {
-            var forventetManed = 0;
-            var dato = konverterStringFraNorskDatoformatTilDateObjekt("01.01.2013");
-            expect(dato.getMonth()).toBe(forventetManed);
-        });
-
-        it('skal få tilbake dato-objekt med rett år', function () {
-            var forventetAr = 2013;
-            var dato = konverterStringFraNorskDatoformatTilDateObjekt("01.01.2013");
-            expect(dato.getFullYear()).toBe(forventetAr);
-        });
-
-        it('skal få tilbake dato-objekt med rett dato satt', function () {
-            var forventetDag = 10;
-            var forventetManed = 4;
-            var forventetAr = 2011;
-            var dato = konverterStringFraNorskDatoformatTilDateObjekt("10.05.2011");
-            expect(dato.getDate()).toBe(forventetDag);
-            expect(dato.getMonth()).toBe(forventetManed);
-            expect(dato.getFullYear()).toBe(forventetAr);
+        it('skal få tilbake dato på format yyyy.MM.dd', function () {
+            var forventetDatoFormattering = '2013.01.01';
+            var dato = reverserNorskDatoformat("01.01.2013");
+            expect(dato).toBe(forventetDatoFormattering);
         });
     });
 
