@@ -45,6 +45,7 @@ angular.module('nav.stickyFeilmelding', [])
 
                     scope.$broadcast('CLOSE_TAB', idAlleBolker);
                     $timeout(function() {
+                        console.log(elem.find('.form-linje.feil'));
                         scope.$broadcast('OPEN_TAB', idBolkerMedFeil, 800);
                     }, 800);
                 });
@@ -64,6 +65,8 @@ angular.module('nav.stickyFeilmelding', [])
                 }
 
                 scope.neste = function () {
+                    console.log(elem.find('.form-linje.feil'));
+
                     if (!(feilHarBlittRettet && scope.feil.navaerende == totalAntalLFeil())) {
                         if (feilHarBlittRettet && scope.feil.navaerende > -1) {
                             scope.feil.navaerende = scope.feil.navaerende - 1;
@@ -137,7 +140,6 @@ angular.module('nav.stickyFeilmelding', [])
                     if (bolkMedNesteFeilErLukket(bolk)) {
                         apneBolk(bolk)
                     }
-
                     scrollToElement($(bolk[scope.feil.navaerende]), 300);
                     giFokus(bolk);
                 }
