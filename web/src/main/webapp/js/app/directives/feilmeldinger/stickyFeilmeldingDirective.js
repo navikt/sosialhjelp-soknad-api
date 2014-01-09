@@ -134,7 +134,6 @@ angular.module('nav.stickyFeilmelding', [])
                     if (bolkMedNesteFeilErLukket(bolk)) {
                         apneBolk(bolk)
                     }
-
                     scrollToElement($(bolk[scope.feil.navaerende]), 300);
                     giFokus(bolk);
                 }
