@@ -264,10 +264,6 @@ angular.module('nav.datepicker', [])
                     caretPosisjonElement.show();
                 });
 
-                maskElement.bind('click', function () {
-                    element.focus();
-                });
-
                 element.bind('keydown', function (event) {
                     if (event.keyCode == 32) {
                         return false;
@@ -289,13 +285,14 @@ angular.module('nav.datepicker', [])
                     var caretPosisjon = hentCaretPosisjon(element);
 
                     if (!slettet) {
+
                         var start = caretPosisjon - (datoInput.length - gammelInputVerdi.length);
                         var slutt = caretPosisjon;
 
                         for (var i = start; i < slutt && i < datoInput.length; i++) {
                             var skrevetTegn = datoInput[i];
 
-                            if (isNaN(skrevetTegn) || datoInput.substring(0, i + 1).length > datoMask.length) {
+                            if (isNaN(skrevetTegn) || datoInput.substring(0, i + 1).length > datoMask.length || datoInput.splice(i, 1, '').length == datoMask.length) {
                                 datoInput = datoInput.splice(i, 1, '');
                                 caretPosisjon--;
                                 i--;
@@ -333,6 +330,8 @@ angular.module('nav.datepicker', [])
                         if (nyVerdi == undefined) {
                             tekst = '';
                         }
+
+                        gammelInputVerdi = tekst;
 
                         caretPosisjonElement.text(tekst);
                         venstre = inputElementVenstre + caretPosisjonElement.outerWidth();
