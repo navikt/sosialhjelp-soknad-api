@@ -1,16 +1,16 @@
 <div class="varighet">
-    <span data-ng-bind="gjeldendeSluttaarsak.properties.datofra | date:'dd.MM.yyyy'"></span>
-    <span data-ng-if="gjeldendeSluttaarsak.properties.datotil"> TIL </span>
-    <span data-ng-if="gjeldendeSluttaarsak.properties.datotil" data-ng-bind="gjeldendeSluttaarsak.properties.datotil | date:'dd.MM.yyyy'"></span>
+    <span data-ng-bind="af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy'"></span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil"> TIL </span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil" data-ng-bind="af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy'"></span>
 </div>
 
 <ul>
     <li>
-        <p data-ng-bind="gjeldendeSluttaarsak.properties.type"></p>
+        <p data-ng-bind="af.sluttaarsak.properties.type"></p>
     </li>
     <li>
         <span data-cmstekster="arbeidsforhold.sluttaarsak.avskjedigetgrunn.sporsmal"></span>
-        <p data-ng-bind="gjeldendeSluttaarsak.properties.avskjedigetGrunn"></p>
+        <p data-ng-bind="af.sluttaarsak.properties.avskjedigetGrunn"></p>
     </li>
 </ul>
 

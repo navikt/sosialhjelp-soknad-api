@@ -39,13 +39,13 @@
             </div>
         </div>
 
-        <div data-ng-repeat="af in soknadData.fakta.arbeidsforhold.valuelist" data-ng-class="{'last': $last}">
-            <div class="spm-boks vertikal" id="arbeidsforhold{{af.faktumId}}">
-                <span class="robust">{{ af.properties.arbeidsgivernavn }}</span>
+        <div data-ng-repeat="af in arbeidsliste" data-ng-class="{'last': $last}">
+            <div class="spm-boks vertikal" id="arbeidsforhold{{af.arbeidsforhold.faktumId}}">
+                <span class="robust">{{ af.arbeidsforhold.properties.arbeidsgivernavn }}</span>
 
-                <div class="arbeidsforhold-land-sluttaarsak-blokk" data-ng-controller="sluttaarsakCtrl">
+                <div class="arbeidsforhold-land-sluttaarsak-blokk">
                      <div class="arbeidsgiver-oppsummering-sluttaarsaker">
-                        <div data-ng-include="gjeldendeSluttaarsakUrl"></div>
+                        <div data-ng-include="templates[af.sluttaarsak.properties.type].oppsummeringsurl"></div>
                     </div>
                 </div>
 
