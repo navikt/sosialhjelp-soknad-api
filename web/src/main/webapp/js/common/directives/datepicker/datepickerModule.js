@@ -250,7 +250,7 @@ angular.module('nav.datepicker', [])
                 var caretPosisjonElement = element.closest('.datepicker').find('.caretPosition');
                 var maskElement = element.next();
                 var inputElementVenstre = element.position().left + 7;
-                var topp = element.position().top + 6;
+                var topp = getTopp();
                 var venstre = inputElementVenstre;
                 maskElement.css({top: topp + "px", left: venstre + "px"});
                 maskElement.text(datoMask);
@@ -338,7 +338,7 @@ angular.module('nav.datepicker', [])
 
                         caretPosisjonElement.text(tekst);
                         venstre = inputElementVenstre + caretPosisjonElement.outerWidth();
-                        maskElement.css({top: topp + "px", left: venstre + "px"});
+                        maskElement.css({top: getTopp() + "px", left: venstre + "px"});
 
                         var antallPunktum = tekst.match(/\./g) == null ? 0 : tekst.match(/\./g).length;
 
@@ -370,7 +370,11 @@ angular.module('nav.datepicker', [])
                             return antallPunktum == 2 && dagOgMaanedTekst.length < 6 && aarTekst.length < 5;
                         }
                     }
-                )
+                );
+
+                function getTopp() {
+                    return element.position().top + 6;
+                }
             }
         }
     }]);
