@@ -39,8 +39,8 @@
             </div>
         </div>
 
-        <div data-ng-repeat="af in arbeidsliste" data-ng-class="{'last': $last}">
-            <div class="spm-boks vertikal" id="arbeidsforhold{{af.arbeidsforhold.faktumId}}">
+        <div class="spm-boks vertikal" data-ng-repeat="af in arbeidsliste" data-ng-class="{'last': $last}">
+            <div id="arbeidsforhold{{af.arbeidsforhold.faktumId}}">
                 <span class="robust">{{ af.arbeidsforhold.properties.arbeidsgivernavn }}</span>
 
                 <div class="arbeidsforhold-land-sluttaarsak-blokk">
