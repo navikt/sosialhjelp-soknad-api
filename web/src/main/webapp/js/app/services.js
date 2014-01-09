@@ -67,7 +67,7 @@ angular.module('app.services', ['ngResource'])
  * Service som behandler vedlegg
  */
     .factory('VedleggForventning', function ($resource) {
-        return $resource('/sendsoknad/rest/soknad/:soknadId/forventning?rand=' + new Date().getTime(), {
+        return $resource('/sendsoknad/rest/soknad/:soknadId/:faktumId/forventning?rand=' + new Date().getTime(), {
             soknadId: '@faktum.soknadId'
         }, {
             slettVedlegg: {

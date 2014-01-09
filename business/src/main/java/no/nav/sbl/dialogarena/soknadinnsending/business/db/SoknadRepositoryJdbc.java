@@ -237,7 +237,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
 
     @Override
     public List<Faktum> hentAlleBrukerData(Long soknadId) {
-        List<Faktum> fakta = select("select * from SOKNADBRUKERDATA where soknad_id = ?", soknadDataRowMapper, soknadId);
+        List<Faktum> fakta = select("select * from SOKNADBRUKERDATA where soknad_id = ? order by soknadbrukerdata_id asc", soknadDataRowMapper, soknadId);
         List<FaktumEgenskap> egenskaper = select("select * from FAKTUMEGENSKAP where soknad_id = ?", faktumEgenskapRowMapper, soknadId);
         Map<Long, Faktum> faktaMap = Maps.uniqueIndex(fakta, new Function<Faktum, Long>() {
             @Override
