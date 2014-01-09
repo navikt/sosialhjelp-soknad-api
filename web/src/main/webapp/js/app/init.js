@@ -1,13 +1,17 @@
 angular.module('sendsoknad')
     .run(['$http', '$templateCache', function ($http, $templateCache) {
-        $http.get('../html/templates/reell-arbeidssoker.html', {cache: $templateCache});
+        $http.get('../html/templates/reellarbeidssoker/reell-arbeidssoker.html', {cache: $templateCache});
         $http.get('../html/templates/egen-naering.html', {cache: $templateCache});
         $http.get('../html/templates/verneplikt.html', {cache: $templateCache});
         $http.get('../html/templates/personalia.html', {cache: $templateCache});
         $http.get('../html/templates/arbeidsforhold.html', {cache: $templateCache});
         $http.get('../html/templates/ytelser.html', {cache: $templateCache});
-        $http.get('../html/templates/utdanning.html', {cache: $templateCache});
         $http.get('../html/templates/barnetillegg.html', {cache: $templateCache});
+        $http.get('../html/templates/utdanning/utdanning.html', {cache: $templateCache});
+        $http.get('../html/templates/utdanning/utdanningKveldTemplate.html', {cache: $templateCache});
+        $http.get('../html/templates/utdanning/utdanningKortvarigTemplate.html', {cache: $templateCache});
+        $http.get('../html/templates/utdanning/utdanningKortvarigFlereTemplate.html', {cache: $templateCache});
+        $http.get('../html/templates/utdanning/utdanningNorskTemplate.html', {cache: $templateCache});
         $http.get('../html/dagpenger-singlepage.html', {cache: $templateCache});
         $http.get('../js/common/directives/booleanradio/booleanradioTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/accordion/accordionGroupTemplate.html', {cache: $templateCache});
@@ -57,7 +61,7 @@ angular.module('sendsoknad')
 
         return d;
     }])
-    .factory('HentSoknadService', ['data', 'cms', '$resource', '$q', '$route', 'soknadService', 'Faktum', function (data, cms, $resource, $q, $route, soknadService, Faktum) {
+    .factory('HentSoknadService', ['data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', function (data, cms, $resource, $q, $route, soknadService, landService, Faktum) {
         var soknadId = $route.current.params.soknadId;
         var promiseArray = [];
 
@@ -90,6 +94,11 @@ angular.module('sendsoknad')
                 }
             );
 
+            var land = landService.get(
+                function (result) { // Success
+                    data.land = result;
+                }
+            );
             var soknadOppsett = soknadService.options({param: soknadId},
                 function (result) { // Success
                     data.soknadOppsett = result;

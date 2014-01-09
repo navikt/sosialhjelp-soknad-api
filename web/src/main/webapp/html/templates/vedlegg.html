@@ -14,15 +14,17 @@
     <section data-ng-controller="VedleggCtrl">
         <div data-accordion data-close-others="false" data-ng-if="forventninger != null">
             <section class="vedlegg" data-ng-form>
-                <div data-accordion-group data-ng-repeat="forventning in forventninger" class="spm-blokk" data-is-open="!forventning.faktum.vedleggId" id="faktum_{{forventning.faktum.id}}">
+                <div data-accordion-group data-ng-repeat="forventning in forventninger" class="spm-blokk" data-is-open="vedleggEr(forventning, 'VedleggKreves')" id="faktum_{{forventning.faktum.id}}">
                     <div data-accordion-heading>
                         <div class="flipp">
                             <span>+</span>
                         </div>
                         <div class="begrensning sak-halv">
-                            <div class="panel-mini nettobunn uten-ramme" data-ng-class="{lastetopp: lastetOpp(forventning)}">
-                                <div class="mini" data-ng-if="lastetOpp(forventning)" data-cmstekster="vedlegg.faktum.lastet.opp"></div>
-                                <h2 class="stor" data-cmstekster="{{soknadData.gosysId}}.vedlegg.{{forventning.gosysId}}.header"></h2>
+                            <div class="panel-mini nettobunn uten-ramme" data-ng-class="{behandlet: !vedleggEr(forventning, 'VedleggKreves'), lastetopp: vedleggEr(forventning, 'LastetOpp')}">
+                                <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'LastetOpp')" data-cmstekster="vedlegg.behandlet.lastetopp"></div>
+                                <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesSenere')" data-cmstekster="vedlegg.behandlet.sendessenere"></div>
+                                <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesIkke')" data-cmstekster="vedlegg.behandlet.sendesikke"></div>
+                                <h2 class="stor" data-cmsvedlegg data-cmstekster="{{soknadData.gosysId}}.vedlegg.{{forventning.gosysId}}.header"></h2>
                             </div>
                         </div>
                     </div>
@@ -32,14 +34,14 @@
 
                             <p class="info-liste" data-cmshtml="{{soknadData.gosysId}}.vedlegg.{{forventning.gosysId}}.bekrefte"></p>
 
-                            <div class="spm-knapper send-valg checkboxAsRadio" data-ng-if="!lastetOpp(forventning)">
+                            <div class="spm-knapper send-valg checkboxAsRadio" data-ng-if="!vedleggEr(forventning, 'LastetOpp')">
 
                                 <!-- input id="{{$index}}sendInnFraPcRadio" data-ng-model="forventning.faktum.innsendingsvalg" type="radio" value="VedleggKreves"
                                        data-ng-change="endreInnsendingsvalg(forventning)" data-ng-show="false">
                                 <label for="{{$index}}sendInnFraPcRadio" data-cmstekster="vedlegg.faktum.lastopp"></label-->
 
-                                <div class="valgbokser" data-ng-if="forventning.faktum.innsendingsvalg == 'VedleggKreves'" data-ng-show="false">
-                                    <!--a class="valgboks-mobil" data-ng-href="#/opplasting/{{ soknadData.soknadId }}/{{forventning.faktum.faktumId}}">
+                                <div class="valgbokser" data-ng-if="vedleggEr(forventning, 'VedleggKreves')" data-ng-show="false">
+                                <!--a class="valgboks-mobil" data-ng-href="#/opplasting/{{ soknadData.soknadId }}/{{forventning.faktum.faktumId}}">
                                         <span data-cmstekster="vedlegg.faktum.lastopp.mobil"></span>
                                     </a-->
                                     <!--a class="valgboks-pc" data-ng-href="#/opplasting/{{ soknadData.soknadId }}/{{forventning.faktum.faktumId}}">
@@ -47,21 +49,21 @@
                                     </a-->
                                 </div>
                                 <div class="lastOpp">
-                                    <a data-ng-href="#/opplasting/{{ soknadData.soknadId }}/{{forventning.faktum.faktumId}}" class="knapp-link"
-                                       data-ng-click="forventning.faktum.innsendingsvalg = 'VedleggKreves'; endreInnsendingsvalg(forventning);">Last opp vedlegget</a>
+                                    <a data-ng-href="#/opplasting/{{ soknadData.soknadId }}/{{forventning.faktum.faktumId}}/{{forventning.gosysId}}" class="knapp-link"
+                                       data-ng-click="endreInnsendingsvalg(forventning, 'VedleggKreves');">Last opp vedlegget</a>
                                 </div>
                                 <h4 data-cmstekster="vedlegg.faktum.andreInnsendingsvalg">Hvis du ikke har dette vedlegget tilgjengelig nå, kan du: </h4>
 
-                                <input id="{{$index}}ettersendRadio" data-ng-model="forventning.faktum.innsendingsvalg" type="radio" value="SendesSenere"
+                                <input id="{{$index}}ettersendRadio" data-ng-model="forventning.faktum.properties[key(forventning)]" type="radio" value="SendesSenere"
                                        data-ng-change="endreInnsendingsvalg(forventning)">
                                 <label for="{{$index}}ettersendRadio" data-cmstekster="vedlegg.faktum.ettersend"></label>
 
-                                <input id="{{$index}}ikkesendRadio" data-ng-model="forventning.faktum.innsendingsvalg" type="radio" value="SendesIkke"
+                                <input id="{{$index}}ikkesendRadio" data-ng-model="forventning.faktum.properties[key(forventning)]" type="radio" value="SendesIkke"
                                        data-ng-change="endreInnsendingsvalg(forventning)">
                                 <label for="{{$index}}ikkesendRadio" data-cmstekster="vedlegg.faktum.ikkesend"></label>
                             </div>
-                            <div data-ng-if="lastetOpp(forventning)">
-                                <div class="forhandsvisning">
+                            <div data-ng-if="vedleggEr(forventning, 'LastetOpp')">
+                            <div class="forhandsvisning">
                                     <div data-bildenavigering data-vedlegg="forventning.vedlegg" data-nav-template="bildenavigeringTemplateLiten.html"></div>
                                     <div class="knapper">
                                         <!--a data-ng-href="../rest/soknad/{{soknadData.soknadId}}/faktum/{{forventning.faktum.faktumId}}/vedlegg/{{forventning.faktum.vedleggId}}/data"

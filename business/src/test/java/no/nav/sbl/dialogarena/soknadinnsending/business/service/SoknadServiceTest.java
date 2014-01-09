@@ -1,10 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 
+import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.detect.IsPdf;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import org.apache.commons.io.IOUtils;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +21,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static java.lang.System.setProperty;
+import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.test.match.Matchers.match;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -35,10 +39,20 @@ public class SoknadServiceTest {
     @InjectMocks
     private SoknadService soknadService;
 
+    public static byte[] getBytesFromFile(String path) throws IOException {
+        InputStream resourceAsStream = SoknadServiceTest.class.getResourceAsStream(path);
+        return IOUtils.toByteArray(resourceAsStream);
+    }
+
+    @Before
+    public void before() {
+        setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
+    }
+
     @Test
     public void skalKonvertereFilerVedOpplasting() throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(getBytesFromFile("/images/bilde.png"));
-        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L, "", 1L, 1, null);
+        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L, "1", "", 1L, 1, null, null);
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
         when(vedleggRepository.lagreVedlegg(eq(vedlegg), captor.capture())).thenReturn(11L);
         Long id = soknadService.lagreVedlegg(vedlegg, bais);
@@ -50,7 +64,7 @@ public class SoknadServiceTest {
     @Ignore
     public void skalKonverterePdfVedOpplasting() throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(getBytesFromFile("/pdfs/navskjema.pdf"));
-        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L, "", 1L, 1, null);
+        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L, "1", "", 1L, 1, null, null);
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
         when(vedleggRepository.lagreVedlegg(eq(vedlegg), captor.capture())).thenReturn(11L);
         Long id = soknadService.lagreVedlegg(vedlegg, bais);
@@ -59,11 +73,6 @@ public class SoknadServiceTest {
         File file = new File("testoutput.pdf");
         //System.out.println(file.getAbsolutePath());
         IOUtils.write(captor.getValue(), new FileOutputStream(file));
-    }
-
-    public static byte[] getBytesFromFile(String path) throws IOException {
-        InputStream resourceAsStream = SoknadServiceTest.class.getResourceAsStream(path);
-        return IOUtils.toByteArray(resourceAsStream);
     }
 
 

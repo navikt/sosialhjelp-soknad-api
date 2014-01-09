@@ -1,5 +1,6 @@
 angular.module('nav.ytelser', [])
     .controller('YtelserCtrl', ['$scope', 'lagreSoknadData', 'data', function ($scope, lagreSoknadData, data) {
+        $scope.land = data.land;
         $scope.ytelser = {skalViseFeilmeldingForIngenYtelser: false};
         $scope.ytelserNAV = {skalViseFeilmeldingForIngenNavYtelser: false};
 
@@ -27,6 +28,14 @@ angular.module('nav.ytelser', [])
             var faktum = data.finnFaktum('ikkeavtale');
             if (faktum != undefined && faktum.value != undefined) {
                 return faktum.value == 'false';
+            }
+            return false;
+        }
+
+        $scope.hvisHarDagpengerEOS = function() {
+            var faktum = data.finnFaktum('dagpengerEOS');
+            if (faktum != undefined && faktum.value != undefined) {
+                return faktum.value == 'true';
             }
             return false;
         }

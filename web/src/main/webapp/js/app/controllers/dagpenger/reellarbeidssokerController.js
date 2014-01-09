@@ -9,7 +9,7 @@ angular.module('nav.reellarbeidssoker', [])
 
         var deltidnokler = ['reduserthelse', 'omsorgbarnunder1aar', 'eneansvarbarnunder5skoleaar', 'eneansvarbarnopptil18aar', 'omsorgansvar', 'annensituasjon'];
         var pendlenokler = ['pendlereduserthelse', 'pendleomsorgbarnunder1aar', 'pendleomsorgbarnopptil10', 'pendleeneansvarbarnunder5skoleaar',
-            'pendleeneansvarbarnopptil18aar', 'pendleannensituasjon', 'pendleomsorgansvar' ];
+            'pendleeneansvarbarnopptil18aar', 'pendleomsorgansvar',  'pendleannensituasjon' ];
 
         $scope.harHuketAvCheckboksDeltid = {value: ''};
         $scope.harHuketAvCheckboksPendle = {value: ''};

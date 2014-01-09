@@ -30,7 +30,6 @@
     </faktum>
     <faktum>
         <id>arbeidsforhold</id>
-        <type>JSON</type>
         <panel>Arbeidsforhold</panel>
         <dependOn>harIkkeJobbet</dependOn>
         <dependOnValue>false</dependOnValue>
@@ -176,21 +175,30 @@
 
 
     <vedlegg>
+        <id>1</id>
         <faktum>villigdeltid</faktum>
         <onValue>false</onValue>
         <gosysId>NAV-01010101</gosysId>
     </vedlegg>
 
     <vedlegg>
+        <id>2</id>
         <faktum>ikkeavtjentverneplikt</faktum>
         <onValue>false</onValue>
         <gosysId>NAV-123123</gosysId>
     </vedlegg>
 
     <vedlegg>
+        <id>3</id>
         <faktum>ekstraVedlegg</faktum>
         <onValue>true</onValue>
         <gosysId>L6</gosysId>
+    </vedlegg>
+    <vedlegg>
+        <id>4</id>
+        <faktum>arbeidsforhold</faktum>
+        <gosysId>T8</gosysId>
+        <property>navn</property>
     </vedlegg>
 
 </soknad>
