@@ -12,7 +12,9 @@ import java.util.List;
 public interface VedleggService {
     Long lagreVedlegg(Vedlegg vedlegg, InputStream inputStream);
 
-    List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId);
+    List<Long> splitOgLagreVedlegg(Vedlegg vedlegg, InputStream inputStream);
+
+    List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId, String gosysId);
 
     Vedlegg hentVedlegg(Long soknadId, Long vedleggId, boolean medInnhold);
 
@@ -20,7 +22,7 @@ public interface VedleggService {
 
     byte[] lagForhandsvisning(Long soknadId, Long vedleggId, int side);
 
-    Long genererVedleggFaktum(Long soknadId, Long faktumId);
+    Long genererVedleggFaktum(Long soknadId, Long faktumId, String gosysId);
 
     List<VedleggForventning> hentPaakrevdeVedlegg(Long soknadId);
 }
