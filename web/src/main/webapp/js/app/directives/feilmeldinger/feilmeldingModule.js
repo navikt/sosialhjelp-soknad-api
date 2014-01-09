@@ -72,7 +72,6 @@ angular.module('nav.feilmeldinger', [])
 
                 scope.scrollTilElementMedFeil = function (feilmelding) {
                     if (scope.erKlikkbarFeil(feilmelding)) {
-                        console.log("klikk")
                         var formLinje = feilmelding.elem.closest('.form-linje');
                         scrollToElement(formLinje, 200);
 
@@ -89,7 +88,6 @@ angular.module('nav.feilmeldinger', [])
                 }
 
                 scope.giFokus = function (element) {
-                    console.log(element)
                     if(element[0]) {
                         element[0].focus();
                     } else {

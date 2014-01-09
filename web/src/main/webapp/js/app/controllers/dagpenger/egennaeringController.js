@@ -103,8 +103,6 @@ angular.module('nav.egennaering', [])
         var prosentFeil = false;
 
         $scope.summererAndeleneTil100 = function () {
-            console.log(prosentFeil)
-
             if ($scope.erSynlig('gardsbruk')) {
                 $scope.totalsumAndel.value = "";
                 prosentFeil = false;
@@ -129,12 +127,10 @@ angular.module('nav.egennaering', [])
                 } else {
                     $scope.totalsumAndel.value = "";
                     prosentFeil = true;
-                    console.log(andel)
                 }
             } else {
                 prosentFeil = false;
             }
-            console.log(prosentFeil)
         }
 
         $scope.prosentFeil = function () {
