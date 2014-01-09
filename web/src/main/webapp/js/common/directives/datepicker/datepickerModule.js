@@ -33,7 +33,7 @@
  *      - er-fradato-required: Expression som sier om fra-dato er påkrevd. Er false dersom ikke oppgitt
  *      - er-begge-required: Expression som sier om både til- og fra-dato er påkrevd. Er false dersom ikke oppgitt.
  *                           Denne setter både er-fradato-required og er-tildato-required.
- *      - er-fremtidigdato-tilatt: Expression som sier om det er lovelig å sette datoen frem i tid.
+ *      - er-fremtidigdato-tillatt: Expression som sier om det er lovelig å sette datoen frem i tid.
  */
 
 angular.module('nav.datepicker', [])
@@ -41,10 +41,9 @@ angular.module('nav.datepicker', [])
         altFormat: 'dd.MM.yyyy',
         dateFormat: 'dd.mm.yy',
         changeMonth: true,
-        changeYear: true,
-        maxDate: new Date()
+        changeYear: true
     })
-    .directive('navDato', ['$timeout', 'datepickerConfig', function ($timeout, datepickerConfig) {
+    .directive('navDato', ['$timeout', 'datepickerConfig', '$filter', function ($timeout, datepickerConfig, $filter) {
         return {
             restrict: "A",
             require: '^form',
@@ -71,6 +70,11 @@ angular.module('nav.datepicker', [])
                 var harHattFokus = false;
                 var datepickerErLukket = true;
                 scope.harFokus = false;
+
+                scope.options = {};
+                if (!scope.erFremtidigdatoTillatt) {
+                    scope.options['maxDate'] = new Date();
+                }
 
                 scope.toggleDatepicker = function () {
                     if ($('#ui-datepicker-div').is(':hidden')) {
@@ -164,20 +168,15 @@ angular.module('nav.datepicker', [])
                         scope.options = angular.extend({}, {defaultDate: defaultDate}, scope.options);
                     }
 
-                    if(scope.erFremtidigdatoTillatt) {
-                        var config = deepClone(datepickerConfig);
-                        config["maxDate"] = undefined;
-                        return angular.extend({}, config, scope.options);
-                    } else {
-                        return angular.extend({}, datepickerConfig, scope.options);
-                    }
+                    return angular.extend({}, datepickerConfig, scope.options);
                 };
 
                 function leggTilDatepicker() {
                     var opts = datepickerOptions();
 
                     opts.onSelect = function () {
-                        scope.ngModel = datepickerInput.datepicker("getDate");
+                        var dato = datepickerInput.datepicker("getDate");
+                        scope.ngModel = $filter('date')(dato, "yyyy.MM.dd");
                     };
 
                     opts.beforeShow = function () {
@@ -265,10 +264,6 @@ angular.module('nav.datepicker', [])
                     caretPosisjonElement.show();
                 });
 
-                maskElement.bind('click', function () {
-                    element.focus();
-                });
-
                 element.bind('keydown', function (event) {
                     if (event.keyCode == 32) {
                         return false;
@@ -276,7 +271,12 @@ angular.module('nav.datepicker', [])
                 });
 
                 ngModel.$formatters.unshift(function (dato) {
-                    return $filter('date')(dato, "dd.MM.yyyy");
+                    if (dato) {
+                        var datoSomDateObjekt = new Date(dato);
+                        return $filter('date')(datoSomDateObjekt, "dd.MM.yyyy");
+                    } else {
+                        return '';
+                    }
                 });
 
                 var gammelInputVerdi = '';
@@ -285,19 +285,24 @@ angular.module('nav.datepicker', [])
                     var caretPosisjon = hentCaretPosisjon(element);
 
                     if (!slettet) {
+
                         var start = caretPosisjon - (datoInput.length - gammelInputVerdi.length);
                         var slutt = caretPosisjon;
 
                         for (var i = start; i < slutt && i < datoInput.length; i++) {
                             var skrevetTegn = datoInput[i];
 
-                            if (isNaN(skrevetTegn) || datoInput.substring(0, i + 1).length > datoMask.length) {
-                                datoInput = datoInput.splice(i, 1, '');
-                                caretPosisjon--;
-                                i--;
-                                continue;
+                            if (isNaN(skrevetTegn) || datoInput.substring(0, i + 1).length > datoMask.length || datoInput.splice(i, 1, '').length == datoMask.length) {
+                                if (skrevetTegn != '.' || (i != 3 && i != 5)) {
+                                    datoInput = datoInput.splice(i, 1, '');
+                                    caretPosisjon--;
+                                    i--;
+                                    slutt--;
+                                    continue;
+                                }
                             }
 
+                            console.log(i);
                             if (i == 1 || i == 4) {
                                 if (datoInput[i + 1] == '.') {
                                     caretPosisjon++;
@@ -317,7 +322,7 @@ angular.module('nav.datepicker', [])
                     ngModel.$render();
                     settCaretPosisjon(element, caretPosisjon);
 
-                    return konverterStringFraNorskDatoformatTilDateObjekt(datoInput);
+                    return reverserNorskDatoformat(datoInput);
                 });
 
                 scope.$watch(
@@ -329,6 +334,8 @@ angular.module('nav.datepicker', [])
                         if (nyVerdi == undefined) {
                             tekst = '';
                         }
+
+                        gammelInputVerdi = tekst;
 
                         caretPosisjonElement.text(tekst);
                         venstre = inputElementVenstre + caretPosisjonElement.outerWidth();

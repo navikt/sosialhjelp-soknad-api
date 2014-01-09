@@ -229,13 +229,10 @@ function fadeFeilmelding(element, melding, feilmeldingsklasse, scope) {
         }
     }, 20);
 }
-function konverterStringFraNorskDatoformatTilDateObjekt(datoString) {
+function reverserNorskDatoformat(datoString) {
     var re = new RegExp(/^\d\d\.\d\d\.\d\d\d\d$/);
     if (re.test(datoString) && erGyldigDato(datoString)) {
-        var datoKomponenter = datoString.split('.');
-
-        // Måned indekseres fra 0, så må trekke fra 1
-        return new Date(datoKomponenter[2], datoKomponenter[1] - 1, datoKomponenter[0]);
+        return datoString.split('.').reverse().join('.');
     } else {
         return "";
     }
