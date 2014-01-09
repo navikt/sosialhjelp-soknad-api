@@ -1,1 +1,1 @@
-angular.module('nav.arbeidsforhold',['nav.arbeidsforhold.directive', 'nav.arbeidsforhold.controller', 'nav.arbeidsforhold.nyttarbeidsforhold.controller']);
+angular.module('nav.arbeidsforhold',['nav.arbeidsforhold.controller', 'nav.arbeidsforhold.nyttarbeidsforhold.controller']);
