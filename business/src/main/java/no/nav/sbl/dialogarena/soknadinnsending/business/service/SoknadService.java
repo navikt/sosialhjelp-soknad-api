@@ -21,7 +21,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVed
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import org.apache.commons.io.IOUtils;
-import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.Splitter;
 import org.joda.time.DateTime;
@@ -32,7 +31,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.awt.*;
+import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -123,7 +122,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public void sendSoknad(long soknadId) {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
         List<VedleggForventning> vedleggForventnings = hentPaakrevdeVedlegg(soknadId);
-     //   henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(), new XMLHovedskjema(), Transformers.convertToXmlVedleggListe(vedleggForventnings));
+        //   henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(), new XMLHovedskjema(), Transformers.convertToXmlVedleggListe(vedleggForventnings));
         repository.avslutt(soknad);
 
     }
@@ -138,7 +137,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public void avbrytSoknad(Long soknadId) {
         WebSoknad soknad = repository.hentSoknad(soknadId);
         repository.avbryt(soknadId);
-     //   henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
+        //   henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
     }
 
     @Override
@@ -154,7 +153,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public Long startSoknad(String navSoknadId) {
         //String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid(), navSoknadId);
-       String behandlingsId = "MOCK" + new Random().nextInt(100000000);
+        String behandlingsId = "MOCK" + new Random().nextInt(100000000);
         WebSoknad soknad = WebSoknad.startSoknad().
                 medBehandlingId(behandlingsId).
                 medGosysId(navSoknadId).
@@ -193,7 +192,17 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
         try {
             byte[] bytes = IOUtils.toByteArray(inputStream);
-            if (new IsPdf().evaluate(bytes)) {
+            if (new IsImage().evaluate(bytes)) {
+                if (ScriptRunner.IM_EXISTS) {
+                    bytes = new ScriptRunner(ScriptRunner.Type.IM, IMAGE_RESIZE, null, new ByteArrayInputStream(bytes)).call();
+                    bytes = new ScriptRunner(ScriptRunner.Type.IM, IMAGE_PDFA, null, new ByteArrayInputStream(bytes)).call();
+                } else {
+                    bytes = new ImageToPdf().transform(bytes);
+                }
+                Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(), vedlegg.getFaktumId(), vedlegg.getGosysId(), vedlegg.getNavn(), (long) bytes.length, 1, UUID.randomUUID().toString(), null);
+                resultat.add(vedleggRepository.lagreVedlegg(sideVedlegg, bytes));
+
+            } else if (new IsPdf().evaluate(bytes)) {
                 List<PDDocument> split = new Splitter().split(PDDocument.load(new ByteArrayInputStream(bytes)));
                 for (PDDocument pdDocument : split) {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -202,9 +211,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
                     resultat.add(vedleggRepository.lagreVedlegg(sideVedlegg, baos.toByteArray()));
                 }
             } else {
-                resultat.add(lagreVedlegg(vedlegg, inputStream));
+                throw new ApplicationException("Unsupported format");
             }
-        } catch (IOException | COSVisitorException e) {
+        } catch (Exception e) {
             throw new ApplicationException("Kunne ikke lese innkommende dokument", e);
         }
         return resultat;
@@ -267,7 +276,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         WebSoknad webSoknad = hentSoknad(soknadId);
         SoknadStruktur struktur = hentStruktur(webSoknad.getGosysId());
 
-        for (Faktum faktum : webSoknad.getFakta().values()) {
+        for (Faktum faktum : repository.hentAlleBrukerData(soknadId)) {
             List<SoknadVedlegg> aktuelleVedlegg = struktur.vedleggFor(faktum.getKey());
             if (!aktuelleVedlegg.isEmpty()) {
                 for (SoknadVedlegg soknadVedlegg : aktuelleVedlegg) {
