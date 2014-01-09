@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.detect.IsImage;
@@ -40,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import static java.lang.String.format;
@@ -123,7 +123,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public void sendSoknad(long soknadId) {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
         List<VedleggForventning> vedleggForventnings = hentPaakrevdeVedlegg(soknadId);
-        henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(), new XMLHovedskjema(), Transformers.convertToXmlVedleggListe(vedleggForventnings));
+     //   henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(), new XMLHovedskjema(), Transformers.convertToXmlVedleggListe(vedleggForventnings));
         repository.avslutt(soknad);
 
     }
@@ -138,7 +138,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public void avbrytSoknad(Long soknadId) {
         WebSoknad soknad = repository.hentSoknad(soknadId);
         repository.avbryt(soknadId);
-        henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
+     //   henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
     }
 
     @Override
@@ -153,8 +153,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Long startSoknad(String navSoknadId) {
-        String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid(), navSoknadId);
-       // String behandlingsId = "MOCK" + new Random().nextInt(100000000);
+        //String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid(), navSoknadId);
+       String behandlingsId = "MOCK" + new Random().nextInt(100000000);
         WebSoknad soknad = WebSoknad.startSoknad().
                 medBehandlingId(behandlingsId).
                 medGosysId(navSoknadId).
@@ -254,7 +254,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         }
         byte[] doc = new PdfMerger().transform(bytes);
         Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, gosysId, "faktum.pdf", (long) doc.length, vedleggs.size(), UUID.randomUUID().toString(), doc);
-        fillagerConnector.lagreFil(vedlegg.getFillagerReferanse(), new ByteArrayInputStream(doc));
+        //fillagerConnector.lagreFil(vedlegg.getFillagerReferanse(), new ByteArrayInputStream(doc));
         vedleggRepository.slettVedleggForFaktum(soknadId, faktumId);
         Long opplastetDokument = vedleggRepository.lagreVedlegg(vedlegg, doc);
         vedleggRepository.settVedleggStatus(soknadId, faktumId, vedlegg.getGosysId());
