@@ -7,12 +7,19 @@ angular.module('nav.navfaktum', [])
                 var props = $scope.$eval($attrs.navProperty);
                 $scope.ikkeAutoLagre = $attrs.ikkeAutoLagre;
                 var satt = false;
-                data.fakta.forEach(function (faktum) {
-                    if (faktum.key === $attrs.navFaktum) {
-                        $scope.faktum = faktum;
-                        satt = true;
-                    }
-                });
+
+                if ($scope[$attrs.navFaktum]) {
+                    $scope.faktum = $scope[$attrs.navFaktum];
+                    satt = true;
+                } else {
+                    data.fakta.forEach(function (faktum) {
+                        if (faktum.key === $attrs.navFaktum) {
+                            $scope.faktum = faktum;
+                            satt = true;
+                        }
+                    });
+                }
+
                 if (!satt) {
                     $scope.faktum = new Faktum({
                             key: $attrs.navFaktum,

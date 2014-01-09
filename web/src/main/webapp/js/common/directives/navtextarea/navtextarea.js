@@ -23,12 +23,25 @@ angular.module('nav.textarea', [])
 
                 },
                 post: function (scope, element) {
-                    scope.fokus = false;
                     scope.feil = false;
+
+                    var harFokus = false;
 
                     scope.hvisSynlig = function () {
                         return element.is(':visible');
-                    }
+                    };
+
+                    element.find('textarea').bind('focus', function() {
+                        harFokus = true;
+                    });
+
+                    element.find('textarea').bind('blur', function() {
+                        harFokus = false;
+                    });
+
+                    scope.harFokusOgFeil = function() {
+                        return scope.feil || harFokus;
+                    };
                 }},
             templateUrl: linker
         };
@@ -63,7 +76,6 @@ angular.module('nav.textarea', [])
                     }
 
                 }
-                scope.fokus = false;
                 ngModel.$formatters.push(function (viewValue) {
                     validerOgOppdater(viewValue);
                     return viewValue;
@@ -118,11 +130,7 @@ angular.module('nav.textarea', [])
                     }
                 })
 
-                scope.tattFokus = function () {
-                    scope.fokus = true;
-                };
                 scope.mistetFokus = function () {
-                    scope.fokus = false;
                     validerAntallTegn();
                     validerTom(ngModel.$viewValue);
                     if (ngModel.$invalid) {

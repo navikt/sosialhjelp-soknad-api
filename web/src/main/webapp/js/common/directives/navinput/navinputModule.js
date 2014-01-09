@@ -71,12 +71,72 @@ angular.module('nav.input', ['nav.cmstekster'])
             restrict: "A",
             replace: true,
             scope: true,
-            link: function (scope, element) {
-                scope.hvisSynlig = function () {
-                    return element.is(':visible');
+            link: {
+                pre: function (scope, element, attrs) {
+                    if (attrs.regexvalidering) {
+                        scope.regexvalidering = attrs.regexvalidering.toString();
+                    } else {
+                        scope.regexvalidering = "";
+                    }
+                    if (attrs.inputfeltmaxlength) {
+                        scope.inputfeltmaxlength = attrs.inputfeltmaxlength;
+                    } else {
+                        scope.inputfeltmaxlength = undefined;
+                    }
+                },
+                post: function (scope, element, attrs, ctrl) {
+                    scope.hvisSynlig = function () {
+                        return element.is(':visible');
+                    }
                 }
             },
             templateUrl: '../js/common/directives/navinput/navtekstTemplate.html'
+        }
+    }]).directive('tekstfeltPatternvalidering', ['$timeout', function ($timeout) {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attrs, ctrl) {
+
+                element.bind('blur', function () {
+                    if (ctrl.$valid) {
+                        scope.lagreFaktum();
+                    }
+                })
+            }
+        }
+    }])
+
+    .directive('navorganisasjonsnummerfelt', [function () {
+        return {
+            restrict: "A",
+            replace: true,
+            scope: true,
+            link: function (scope, element) {
+//              kun første element som skal være required
+                scope.erSynligOgForsteElement = function () {
+                    return element.is(':visible') && scope.navindex == 0;
+                }
+            },
+            templateUrl: '../js/common/directives/navinput/navorgnrfeltTemplate.html'
+        }
+    }]).directive('orgnrValidate', [function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attrs, ctrl) {
+                element.bind('blur', function () {
+                    if (ctrl.$valid) {
+                        scope.lagreFaktum();
+                    }
+                })
+
+                scope.formateringsfeil = function () {
+                    return ctrl.$error.pattern;
+                }
+
+                scope.harRequiredFeil = function () {
+                    return ctrl.$error.required;
+                }
+            }
         }
     }])
 
