@@ -232,7 +232,7 @@ function fadeFeilmelding(element, melding, feilmeldingsklasse, scope) {
 function reverserNorskDatoformat(datoString) {
     var re = new RegExp(/^\d\d\.\d\d\.\d\d\d\d$/);
     if (re.test(datoString) && erGyldigDato(datoString)) {
-        return datoString.split('.').reverse().join('.');
+        return datoString.split('.').reverse().join('-');
     } else {
         return "";
     }
