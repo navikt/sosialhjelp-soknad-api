@@ -1,10 +1,11 @@
+<div data-ng-controller="ModusCtrl">
 <div class="modalBoks" data-ng-controller="ArbeidsforholdNyttCtrl">
     <div data-ng-form="nyttArbeidsforholdForm" class="vertikal">
         <div class="begrensning">
             <div class="sak-totredel">
                 <div class="arbeidsforhold-spm spm-boks panel-standard-belyst">
                     <a href="#/dagpenger/{{ soknadData.soknadId }}" class="lukk"> </a>
-
+                    <div data-form-errors></div>
                     <h2 class="stor-strek">
                         <span data-cmstekster="arbeidsforhold.nyttarbeidsforhold.tittel"></span>
                     </h2>
@@ -135,5 +136,6 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 </div>
