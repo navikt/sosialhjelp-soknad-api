@@ -26,11 +26,6 @@ module.exports = Page.create({
             util.ventTilSideHarLastet('[data-ng-form=dagpengerForm]');
         }
     },
-    stegindikator: {
-        get: function() {
-            return element(by.css('.stegindikator'));
-        }
-    },
     aktivtSteg: {
         get: function() {
             return element.all(by.repeater('steg in data.liste')).get(0);

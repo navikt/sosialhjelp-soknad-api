@@ -1,11 +1,14 @@
 var util = require('../util/common.js');
 var infoPage = require('../util/infoPage.js');
 var skjemaPage = require('../util/skjemapage/skjemaPage.js');
+var vedleggPage = require('../util/vedleggpage/vedleggPage.js');
+var oppsummeringPage = require('../util/oppsummeringpage/oppsummeringPage.js');
+var kvitteringPage = require('../util/kvitteringpage/kvitteringPage.js');
 
 describe('krav om dagpenger:', function() {
     var ptor;
 
-    describe('skal kunne gå igjen hele søknaden -', function() {
+    describe('skal kunne gå igjennom hele søknaden -', function() {
         ptor = protractor.getInstance();
 
         it('skal åpne informasjonssiden', function() {
@@ -18,7 +21,7 @@ describe('krav om dagpenger:', function() {
             expect(infoPage.startknapp.getAttribute('value')).toBeDefined();
         });
 
-        it('skal være på første steg i stegindikator', function() {
+        it('skal være på første steg i stegindikator når man er på informasjonssiden', function() {
             expect(infoPage.aktivtSteg.getAttribute('class')).toContain('aktiv');
         });
 
@@ -36,6 +39,10 @@ describe('krav om dagpenger:', function() {
             expect(skjemaPage.ytelser.elem.getAttribute('class')).toContain('accordion-group');
             expect(skjemaPage.personalia.elem.getAttribute('class')).toContain('accordion-group');
             expect(skjemaPage.barnetillegg.elem.getAttribute('class')).toContain('accordion-group');
+        });
+
+        it('skal være på andre steg i stegindikator når man er på skjemasiden', function() {
+            expect(skjemaPage.aktivtSteg.getAttribute('class')).toContain('aktiv');
         });
 
         it('reell arbeidssøker skal validere og lukkes, mens arbeidsforhold skal åpnes, dersom man svarer ja på alle radioknapper og trykker neste', function() {
@@ -117,7 +124,33 @@ describe('krav om dagpenger:', function() {
 
         it('skjema skal valideres og vedleggssiden skal åpnes når man trykker på gå til vedleggsknappen', function() {
             skjemaPage.gaaTilVedlegg();
-            expect(ptor.getCurrentUrl()).toContain('#/vedlegg');
+            expect(ptor.getCurrentUrl()).toContain(vedleggPage.url);
+        });
+
+        it('skal være på tredje steg i stegindikator når man er på vedleggsiden', function() {
+            expect(vedleggPage.aktivtSteg.getAttribute('class')).toContain('aktiv');
+        });
+
+        it('vedleggssiden skal ha knapp for å legge til ekstra vedlegg og knapp for å gå til oppsummering', function() {
+            expect(vedleggPage.leggTilVedlegg.getAttribute('value')).toBeDefined();
+            expect(vedleggPage.videreKnapp.getAttribute('href')).toContain(oppsummeringPage.url);
+        });
+
+        it('skal kunne gå fra vedleggside til oppsummeringside', function() {
+            vedleggPage.gaaTilOppsummering();
+
+            // TODO: Legg inn denne sjekke i oppsummeringspage
+            expect(ptor.getCurrentUrl()).toContain(oppsummeringPage.url);
+        });
+
+        it('oppsummeringssiden skal ha knapp for å sende søknaden', function() {
+            expect(oppsummeringPage.sendKnapp.getAttribute('value')).toBeDefined();
+        });
+
+        it('skal kunne sende inn søknaden', function() {
+            oppsummeringPage.sendSoknad();
+
+            expect(ptor.getCurrentUrl()).toContain(kvitteringPage.url);
         });
     });
 
