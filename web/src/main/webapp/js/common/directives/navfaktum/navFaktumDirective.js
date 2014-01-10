@@ -31,7 +31,7 @@ angular.module('nav.navfaktum', [])
                 var props = $scope.$eval($attrs.navProperty);
                 $scope.ikkeAutoLagre = $attrs.ikkeAutoLagre;
                 var satt = false;
-                
+
                 if($scope[$attrs.navFaktum]) {
                     $scope.faktum = $scope[$attrs.navFaktum];
                     satt=true;
@@ -43,6 +43,7 @@ angular.module('nav.navfaktum', [])
                         }
                     });
                 }
+
                 if (!satt) {
                     $scope.faktum = new Faktum({
                             key: $attrs.navFaktum,

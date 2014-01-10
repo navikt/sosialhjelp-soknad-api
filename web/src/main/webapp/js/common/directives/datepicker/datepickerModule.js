@@ -148,6 +148,12 @@ angular.module('nav.datepicker', [])
                         scope.tilDato = '';
                         scope.tilDatoFeil = true;
                     }
+
+                    if (isNaN(new Date(scope.ngModel).getDate())) {
+                        datepickerInput.datepicker("setDate", new Date());
+                    } else {
+                        datepickerInput.datepicker("setDate", new Date(scope.ngModel));
+                    }
                 });
 
                 function inputfeltHarTekstOgGyldigDatoFormat() {
@@ -176,7 +182,7 @@ angular.module('nav.datepicker', [])
 
                     opts.onSelect = function () {
                         var dato = datepickerInput.datepicker("getDate");
-                        scope.ngModel = $filter('date')(dato, "yyyy.MM.dd");
+                        scope.ngModel = $filter('date')(dato, "yyyy-MM-dd");
                     };
 
                     opts.beforeShow = function () {
@@ -191,7 +197,6 @@ angular.module('nav.datepicker', [])
                     datepickerInput.datepicker('destroy');
                     datepickerInput.datepicker(opts);
                 };
-
                 // Legger til datepicker på nytt dersom options endrer seg
                 scope.$watch(datepickerOptions, leggTilDatepicker, true);
             }
@@ -250,7 +255,7 @@ angular.module('nav.datepicker', [])
                 var caretPosisjonElement = element.closest('.datepicker').find('.caretPosition');
                 var maskElement = element.next();
                 var inputElementVenstre = element.position().left + 7;
-                var topp = element.position().top + 6;
+                var topp = getTopp();
                 var venstre = inputElementVenstre;
                 maskElement.css({top: topp + "px", left: venstre + "px"});
                 maskElement.text(datoMask);
@@ -293,10 +298,13 @@ angular.module('nav.datepicker', [])
                             var skrevetTegn = datoInput[i];
 
                             if (isNaN(skrevetTegn) || datoInput.substring(0, i + 1).length > datoMask.length || datoInput.splice(i, 1, '').length == datoMask.length) {
-                                datoInput = datoInput.splice(i, 1, '');
-                                caretPosisjon--;
-                                i--;
-                                continue;
+                                if (skrevetTegn != '.' || (i != 3 && i != 5)) {
+                                    datoInput = datoInput.splice(i, 1, '');
+                                    caretPosisjon--;
+                                    i--;
+                                    slutt--;
+                                    continue;
+                                }
                             }
 
                             if (i == 1 || i == 4) {
@@ -335,7 +343,7 @@ angular.module('nav.datepicker', [])
 
                         caretPosisjonElement.text(tekst);
                         venstre = inputElementVenstre + caretPosisjonElement.outerWidth();
-                        maskElement.css({top: topp + "px", left: venstre + "px"});
+                        maskElement.css({top: getTopp() + "px", left: venstre + "px"});
 
                         var antallPunktum = tekst.match(/\./g) == null ? 0 : tekst.match(/\./g).length;
 
@@ -367,7 +375,11 @@ angular.module('nav.datepicker', [])
                             return antallPunktum == 2 && dagOgMaanedTekst.length < 6 && aarTekst.length < 5;
                         }
                     }
-                )
+                );
+
+                function getTopp() {
+                    return element.position().top + 6;
+                }
             }
         }
     }]);

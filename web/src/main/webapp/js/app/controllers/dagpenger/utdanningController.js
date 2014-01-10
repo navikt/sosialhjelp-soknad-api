@@ -4,7 +4,7 @@ angular.module('nav.utdanning', [])
         $scope.sidedata = {navn: 'utdanning'};
 
         var nokler = ['utdanning.kveld', 'utdanning.kortvarig', 'utdanning.kortvarigflere', 'utdanning.norsk', 'utdanning.introduksjon', 'underUtdanningAnnet' ];
-        $scope.utdanning = {skalViseFeilmeldingForUtdanningAnnet: false};
+        $scope.utdanningEgenskaper = {skalViseFeilmeldingForUtdanningAnnet: false};
 
         $scope.harHuketAvCheckboks = {value: ''};
 
@@ -106,7 +106,7 @@ angular.module('nav.utdanning', [])
             var faktum = data.finnFaktum("underUtdanningAnnet")
             if (harIkkeValgtUtdanning) {
                 $scope.harHuketAvCheckboks.value = ''
-                $scope.utdanning.skalViseFeilmeldingForUtdanningAnnet = false;
+                $scope.utdanningEgenskaper.skalViseFeilmeldingForUtdanningAnnet = false;
             } else {
                 $scope.harHuketAvCheckboks.value = true;
             }

@@ -18,8 +18,9 @@ public enum LessResources {
     ARBEIDSFORHOLD_LESS("arbeidsforhold"),
     BARNETILLEGG_LESS("barnetillegg"),
     SLETT_LESS("slett"),
-    UTDANNING_LESS("utdanning"),
-    MODALSIDE("modalside");
+    MODALSIDE("modalside"),
+    EGENNAERING("egennaering"),
+    UTDANNING_LESS("utdanning");
 
     private static final String FOLDER = "css/";
     private static final String TYPE = ".less";
