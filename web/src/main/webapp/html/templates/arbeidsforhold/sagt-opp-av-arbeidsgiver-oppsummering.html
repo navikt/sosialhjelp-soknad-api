@@ -1,7 +1,7 @@
 <div class="varighet">
-    <span data-ng-bind="af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy'"></span>
+    <span data-ng-bind="af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy' | norskdato"></span>
     <span data-ng-if="af.sluttaarsak.properties.datotil"> TIL </span>
-    <span data-ng-if="af.sluttaarsak.properties.datotil" data-ng-bind="af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy'"></span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil" data-ng-bind="af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy' | norskdato"></span>
 </div>
 
 <ul>

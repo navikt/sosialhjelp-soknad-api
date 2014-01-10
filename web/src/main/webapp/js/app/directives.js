@@ -25,5 +25,6 @@ angular.module('app.directives', [
     'nav.scrollbar',
     'nav.dagpengerdirective',
     'nav.skjematittel',
-    'nav.aria'
+    'nav.aria',
+    'nav.norskDatoFilter'
 ]);
