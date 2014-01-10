@@ -1,9 +1,20 @@
-<p class="svar-oppsummering-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.informasjon"></p>
-<p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.sporsmal"></p>
-<p class="svar-oppsummering">{{af.sagtOppSelvVarighetTil | date:'dd.MM.yyyy'}}</p>
-<p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.aarsak.sporsmal">:</p>
-<p class="svar-oppsummering">{{ af.sagtoppselvAarsak }} </p>
-<p class="svar-oppsummering-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.aarsak.informasjon"></p>
+<div class="varighet">
+    <span data-ng-bind="af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy' | norskdato"></span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil"> TIL </span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil" data-ng-bind="af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy' | norskdato"></span>
+</div>
 
-
-
+<ul>
+    <li>
+        <p data-ng-bind="af.sluttaarsak.properties.type"></p>
+    </li>
+    <li>
+        <span data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.aarsak.sporsmal"></span>
+        <p data-ng-bind="af.sluttaarsak.properties.sagtoppselvAarsak"></p>
+    </li>
+    <li>
+         <span data-cmstekster="arbeidsforhold.sluttaarsak.baatelleroffshore.sporsmal"></span>
+         <p data-ng-show="af.sluttaarsak.properties.baatEllerOffshore == 'true'" data-cmstekster="arbeidsforhold.sluttaarsak.baatelleroffshore.true"></p>   
+         <p data-ng-show="af.sluttaarsak.properties.baatEllerOffshore == 'false'" data-cmstekster="arbeidsforhold.sluttaarsak.baatelleroffshore.false"></p> 
+    </li>
+</ul>
