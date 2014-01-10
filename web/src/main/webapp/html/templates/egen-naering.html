@@ -18,7 +18,7 @@
                  data-nav-faktum="egennaering_orgnummer"
                  data-navconfig
                  data-navlabel="egennaering.driveregennaering.false.organisasjonsnummer"
-                 data-navfeilmelding="egennaering.driveregennaering.false.organisasjonsnummer.feilmelding"
+                 data-navfeilmelding="{ required: 'egennaering.driveregennaering.false.organisasjonsnummer.feilmelding', pattern: 'organisasjonsnummer.format.feilmelding'}"
                  data-navindex="{{$index}}">
             </div>
         </div>
@@ -69,7 +69,8 @@
          data-nav-faktum="orgnrGardsbruk"
          data-navconfig
          data-navlabel="egennaering.gardsbruk.false.organisasjonsnummer"
-         data-navfeilmelding="egennaering.gardsbruk.false.organisasjonsnummer.feilmelding"></div>
+         data-navfeilmelding="{ required: 'egennaering.gardsbruk.false.organisasjonsnummer.feilmelding',
+          pattern: 'organisasjonsnummer.format.feilmelding'}"></div>
 
     <div class="form-linje checkbox" data-checkbox-validate>
         <h4 class="spm-sporsmal">

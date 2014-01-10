@@ -111,10 +111,13 @@ angular.module('nav.input', ['nav.cmstekster'])
             restrict: "A",
             replace: true,
             scope: true,
-            link: function (scope, element) {
-//              kun første element som skal være required
+            link: function (scope, element, attrs) {
+//              kun første element som skal være required hvis man skal kunne legge til flere orgnr. Navindexen settes på et slikt felt.
                 scope.erSynligOgForsteElement = function () {
-                    return element.is(':visible') && scope.navindex == 0;
+                    if(attrs.navindex) {
+                        return element.is(':visible') && scope.navindex == 0;
+                    }
+                    return element.is(':visible');
                 }
             },
             templateUrl: '../js/common/directives/navinput/navorgnrfeltTemplate.html'
