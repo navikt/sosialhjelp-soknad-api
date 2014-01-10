@@ -9,10 +9,18 @@ module.exports = {
                     }
                 });
             },
-            validerbolk: element(this.by.css('#egennaering .spm-knapper button')),
+            validerbolk: element(by.css('#egennaering .spm-knapper button')),
             driverEgennaering: {
-                nei: element.all(this.by.css('[data-nav-faktum=ikkeegennaering] input')).get(0),
-                ja: element.all(this.by.css('[data-nav-faktum=ikkeegennaering] input')).get(1)
+                nei: element.all(by.css('[data-nav-faktum=driverEgennaering] input')).get(0),
+                ja: element.all(by.css('[data-nav-faktum=driverEgennaering] input')).get(1)
+            },
+            driverGardsbruk: {
+                nei: element.all(by.css('[data-nav-faktum=gardsbruk] input')).get(0),
+                ja: element.all(by.css('[data-nav-faktum=gardsbruk] input')).get(1)
+            },
+            driverFangstEllerFiske: {
+                nei: element.all(by.css('[data-nav-faktum=inntektFangstogfiske] input')).get(0),
+                ja: element.all(by.css('[data-nav-faktum=inntektFangstogfiske] input')).get(1)
             }
         }
     }

@@ -39,6 +39,7 @@ describe('krav om dagpenger:', function() {
         });
 
         it('reell arbeidssøker skal validere og lukkes, mens arbeidsforhold skal åpnes, dersom man svarer ja på alle radioknapper og trykker neste', function() {
+            skjemaPage.reellarbeidssoker.open();
             util.sjekkAtIngenRadioknapperErHuketAvOgVelgJa(skjemaPage.reellarbeidssoker.deltid);
             util.sjekkAtIngenRadioknapperErHuketAvOgVelgJa(skjemaPage.reellarbeidssoker.pendle);
             util.sjekkAtIngenRadioknapperErHuketAvOgVelgJa(skjemaPage.reellarbeidssoker.helse);
@@ -50,9 +51,8 @@ describe('krav om dagpenger:', function() {
         });
 
         it('arbeidsforhold skal validere og lukkes, mens egen næring skal åpnes, dersom man huker av at man ikke har jobbet og trykker neste', function() {
-            expect(skjemaPage.arbeidsforhold.ikkejobbet.getAttribute('checked')).toBeFalsy();
-            skjemaPage.arbeidsforhold.ikkejobbet.click();
-            expect(skjemaPage.arbeidsforhold.ikkejobbet.getAttribute('checked')).toBeTruthy();
+            skjemaPage.arbeidsforhold.open();
+            util.sjekkAtIngenRadioknapperErHuketAvOgVelgNei(skjemaPage.arbeidsforhold.harjobbet);
 
             skjemaPage.arbeidsforhold.validerbolk.click();
             expect(skjemaPage.arbeidsforhold.elem.getAttribute('class')).not.toContain('open');
@@ -62,6 +62,8 @@ describe('krav om dagpenger:', function() {
         it('egen næring skal validere og lukkes, mens verneplikt skal åpnes, dersom man svarer at man ikke driver egen næring og trykker neste', function() {
             skjemaPage.egennaering.open();
             util.sjekkAtIngenRadioknapperErHuketAvOgVelgNei(skjemaPage.egennaering.driverEgennaering);
+            util.sjekkAtIngenRadioknapperErHuketAvOgVelgNei(skjemaPage.egennaering.driverGardsbruk);
+            util.sjekkAtIngenRadioknapperErHuketAvOgVelgNei(skjemaPage.egennaering.driverFangstEllerFiske);
 
             skjemaPage.egennaering.validerbolk.click();
             expect(skjemaPage.egennaering.elem.getAttribute('class')).not.toContain('open');
