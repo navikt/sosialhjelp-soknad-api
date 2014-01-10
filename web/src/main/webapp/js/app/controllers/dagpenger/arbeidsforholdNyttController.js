@@ -1,9 +1,6 @@
 angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
     .controller('ArbeidsforholdNyttCtrl', ['$scope', 'data', 'Faktum', '$location', '$cookieStore', function ($scope, data, Faktum, $location, $cookieStore) {
-         $scope.testMe = function() {
-            console.log("blurrrrrry");
-        }
-
+        
         $scope.templates = {
             'Kontrakt utgått': {url: '../html/templates/arbeidsforhold/kontrakt-utgaatt.html'},
             'Avskjediget': {url: '../html/templates/arbeidsforhold/avskjediget.html'},
@@ -106,6 +103,15 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
          function oppdaterFaktumListe(type) {
             if (!endreModus) {
                 data.fakta.push($scope[type]);
+            }
+        }
+
+        $scope.skalVisePermitteringInfo = false;
+        $scope.settPermitteringsflagg = function($event) {
+            if($event.currentTarget.value < 50) {
+                $scope.skalVisePermitteringInfo = true;
+            } else {
+                 $scope.skalVisePermitteringInfo = false;
             }
         }
 
