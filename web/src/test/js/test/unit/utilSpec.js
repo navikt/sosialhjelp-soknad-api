@@ -252,7 +252,8 @@ describe('utility funksjoner -', function () {
             expect(dato.length).toBeGreaterThan(0);
         });
 
-        it('skal få tilbake dato på format yyyy.MM.dd', function () {
+
+        it('skal få tilbake dato på format yyyy-MM-dd', function () {
             var forventetDatoFormattering = '2013-01-01';
             var dato = reverserNorskDatoformat("01.01.2013");
             expect(dato).toBe(forventetDatoFormattering);

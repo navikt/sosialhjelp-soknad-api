@@ -1,0 +1,141 @@
+<div data-ng-controller="ModusCtrl">
+<div class="modalBoks" data-ng-controller="ArbeidsforholdNyttCtrl">
+    <div data-ng-form="nyttArbeidsforholdForm" class="vertikal">
+        <div class="begrensning">
+            <div class="sak-totredel">
+                <div class="arbeidsforhold-spm spm-boks panel-standard-belyst">
+                    <a href="#/dagpenger/{{ soknadData.soknadId }}" class="lukk"> </a>
+                    <div data-form-errors></div>
+                    <h2 class="stor-strek">
+                        <span data-cmstekster="arbeidsforhold.nyttarbeidsforhold.tittel"></span>
+                    </h2>
+
+                    <div data-nav-faktum="arbeidsforhold" data-ikke-auto-lagre="true">
+                        <div class="form-linje">
+                            <div data-navtekst
+                            data-navconfig
+                            data-nav-faktum-property="arbeidsgivernavn"
+                            data-navlabel="arbeidsforhold.arbeidsgiver.navn"
+                            data-navfeilmelding="arbeidsforhold.arbeidsgiver.navn.feilmelding"
+                            data-ng-required></div>
+                        </div>
+
+                        <div class="land">
+                            <div data-nav-select
+                                 data-navconfig
+                                 data-nav-faktum-property="land"
+                                 data-label="arbeidsforhold.arbeidsgiver.land"
+                                 data-options="land.result"
+                                 data-er-required="true"
+                                 data-ikke-auto-lagre="true"
+                                 data-default-value="arbeidsforhold.arbeidsgiver.landDefault"
+                                 data-required-feilmelding="arbeidsforhold.arbeidsgiver.land.feilmelding"
+                                 data-ugyldig-feilmelding="arbeidsforhold.arbeidsgiver.land.ugyldig.feilmelding">
+                            </div>
+                        </div>
+                    </div>
+
+                <div class="form-linje">
+                    <p class="informasjonstekst" data-cms-tekster="arbeidsforhold.arbeidsgiver.sluttaarsak.informasjon"> </p>
+
+                    <div class="nav-radio-knapp">
+                        <input class="sendsoknad-radio"
+                               id="radio1"
+                               type="radio"
+                               value="Kontrakt utgått"
+                               data-ng-model="sluttaarsakType"
+                               data-click-validate
+                               data-ng-required="true"
+                               data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'">
+                        <label for='radio1' data-cmstekster="arbeidsforhold.sluttaarsak.radio.kontraktutgaatt"></label>
+                    </div>
+
+                    <div class="nav-radio-knapp">
+                        <input class="sendsoknad-radio"
+                               id="radio2"
+                               type="radio"
+                               value="Avskjediget"
+                               data-ng-model="sluttaarsakType"
+                               data-ng-required="true"
+                               data-click-validate
+                               data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'">
+                        <label for='radio2' data-cmstekster="arbeidsforhold.sluttaarsak.radio.avskjediget"></label>
+                    </div>
+
+                    <div class="nav-radio-knapp">
+                        <input class="sendsoknad-radio"
+                               id="radio3"
+                               type="radio"
+                               value="Redusert arbeidstid"
+                               data-ng-model="sluttaarsakType"
+                               data-ng-required="true"
+                               data-click-validate
+                               data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'">
+                        <label for='radio3' data-cmstekster="arbeidsforhold.sluttaarsak.radio.redusertArbeidstid"></label>
+                    </div>
+
+                    <div class="nav-radio-knapp">
+                        <input class="sendsoknad-radio"
+                               id="radio4"
+                               type="radio"
+                               value="Arbeidsgiver er konkurs"
+                               data-ng-model="sluttaarsakType"
+                               data-ng-required="true"
+                               data-click-validate
+                               data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'">
+                        <label for='radio4' data-cmstekster="arbeidsforhold.sluttaarsak.radio.arbeidsgiverErKonkurs"></label>
+                    </div>
+
+                    <div class="nav-radio-knapp">
+                        <input class="sendsoknad-radio"
+                               id="radio5"
+                               type="radio"
+                               value="Sagt opp av arbeidsgiver"
+                               data-ng-model="sluttaarsakType"
+                               data-ng-required="true"
+                               data-click-validate
+                               data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'">
+                        <label for='radio5' data-cmstekster="arbeidsforhold.sluttaarsak.radio.sagtOppAvArbeidsgiver"></label>
+                    </div>
+
+                    <div class="nav-radio-knapp">
+                        <input class="sendsoknad-radio"
+                               id="radio6"
+                               type="radio"
+                               value="Sagt opp selv"
+                               data-ng-model="sluttaarsakType"
+                               data-ng-required="true"
+                               data-click-validate
+                               data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'">
+                        <label for='radio6' data-cmstekster="arbeidsforhold.sluttaarsak.radio.sagtOppSelv"></label>
+                    </div>
+
+                    <div class="nav-radio-knapp">
+                        <input class="sendsoknad-radio"
+                               id="radio7"
+                               type="radio"
+                               value="Permittert"
+                               data-ng-model="sluttaarsakType"
+                               data-ng-required="true"
+                               data-click-validate
+                               data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'">
+                        <label for='radio7' data-cmstekster="arbeidsforhold.sluttaarsak.radio.permittert"></label>
+                    </div>
+                    <span class="melding"></span>
+                 </div>
+
+                <div data-ng-if="sluttaarsakType">
+                    <div data-ng-include="templates[sluttaarsakType].url"></div>
+                </div>
+                <div class="knapper-opprett">
+                    <input class="knapp-hoved-liten" name="lagre" type="submit" data-cmstekster="arbeidsforhold.nyttarbeidsforhold.lagre"
+                    data-ng-click="lagreArbeidsforhold(nyttArbeidsforholdForm);">
+                    <a href="#/dagpenger/{{ soknadData.soknadId }}" data-cmstekster="arbeidsforhold.nyttarbeidsforhold.avbryt"></a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>

@@ -1,23 +1,41 @@
 <div>
     <p class="sluttaarsak-informasjon" cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.informasjon"></p>
 
-    <div class="varighet">
-        <div data-nav-dato
-             data-ng-model="af.sagtOppSelvVarighetTil"
-             data-label="arbeidsforhold.sluttaarsak.sagtoppselv.sporsmal"
-             data-er-required="true"
-             data-er-fremtidigdato-tillatt="true"
-             data-required-error-message="arbeidsforhold.sluttaarsak.sagtoppselv.varighetTil.feilmelding">
-        </div>
-    </div>
+    <div data-nav-faktum="sluttaarsak"
+        data-ikke-auto-lagre="true">
 
-    <div data-navtextarea
-         data-inputname="arbeidsforhold.sluttaarsak.sagtoppselv.aarsak.sporsmal"
-         data-modus='data.redigeringsModus'
-         data-ng-model="af.sagtoppselvAarsak"
-         data-nokkel="arbeidsforhold.sluttaarsak.sagtoppselv.aarsak"
-         data-maxlengde="500"
-         data-feilmelding="arbeidsforhold.sluttaarsak.sagtoppselv.aarsak.feilmelding"
-         data-obligatorisk="true"></div>
-    <p class="sluttaarsak-tilleggsinformasjon" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.aarsak.informasjon"></p>
+        <div class="varighet">
+            <div data-nav-dato-intervall
+                 data-fra-dato="faktum.properties.datofra"
+                 data-til-dato="faktum.properties.datotil"
+                 data-label="arbeidsforhold.arbeidsgiver.varighet"
+                 data-er-fremtidigdato-tillatt="true"
+                 data-er-begge-required="true">
+            </div>
+        </div>
+
+        <div data-navtextarea
+             data-navconfig
+             data-nav-faktum-property="sagtoppselvAarsak"
+             data-nokkel="arbeidsforhold.sluttaarsak.sagtoppselv.aarsak"
+             data-maxlengde="500"
+             data-feilmelding="arbeidsforhold.sluttaarsak.sagtoppselv.aarsak.feilmelding"
+             data-obligatorisk="true"></div>
+
+        <p class="sluttaarsak-tilleggsinformasjon">
+            <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.1"></span>
+            <ul>
+                <li> 
+                    <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></span>
+                </li>
+                <li> 
+                    <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2"></span>
+                    <a href="http://TODO.com" data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst">
+                    </a>
+                </li>
+            </ul>
+            <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.2"></span>
+        </p>
+
+    </div>
 </div>

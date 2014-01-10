@@ -1,21 +1,40 @@
 <div>
-    <p class="sluttaarsak-informasjon" cmstekster="arbeidsforhold.sluttaarsak.avskjediget.informasjon"/>
+    <p class="sluttaarsak-informasjon" cmstekster="arbeidsforhold.sluttaarsak.avskjediget.informasjon.1"></p>
+    <p class="sluttaarsak-informasjon" cmstekster="arbeidsforhold.sluttaarsak.avskjediget.informasjon.2"></p>
 
-    <div class="varighet">
-        <div data-nav-dato
-             data-ng-model="af.avskjedigetFraDato"
-             data-label="arbeidsforhold.sluttaarsak.avskjediget.sporsmal"
-             data-er-required="true"
-             data-required-error-message="arbeidsforhold.sluttaarsak.avskjediget.feilmelding">
+    <div data-nav-faktum="sluttaarsak"
+        data-ikke-auto-lagre="true">
+
+        <div class="varighet">
+            <div data-nav-dato-intervall
+                 data-fra-dato="faktum.properties.datofra"
+                 data-til-dato="faktum.properties.datotil"
+                 data-label="arbeidsforhold.arbeidsgiver.varighet"
+                 data-er-begge-required="true">
+            </div>
         </div>
+
+        <div data-navtextarea
+             data-navconfig
+             data-nav-faktum-property="avskjedigetGrunn"
+             data-nokkel="arbeidsforhold.sluttaarsak.avskjedigetgrunn"
+             data-maxlengde="500"
+             data-feilmelding="arbeidsforhold.sluttaarsak.avskjedigetgrunn.feilmelding"
+             data-obligatorisk="true"></div>
+
+        <p class="sluttaarsak-tilleggsinformasjon">
+            <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.1"></span>
+            <ul>
+                <li> 
+                    <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></span>
+                </li>
+                <li> 
+                    <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2"></span>
+                    <a href="http://TODO.com" data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst">
+                    </a>
+                </li>
+            </ul>
+            <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.2"></span>
+        </p>
     </div>
-    <div data-navtextarea
-         data-inputname="arbeidsforhold.sluttaarsak.avskjedigetgrunn.sporsmal"
-         data-modus='data.redigeringsModus'
-         data-ng-model="af.avskjedigetGrunn"
-         data-nokkel="arbeidsforhold.sluttaarsak.avskjedigetgrunn"
-         data-maxlengde="500"
-         data-feilmelding="arbeidsforhold.sluttaarsak.avskjedigetgrunn.feilmelding"
-         data-obligatorisk="true"></div>
-    <p class="sluttaarsak-tilleggsinformasjon" data-cmstekster="arbeidsforhold.sluttaarsak.avskjediget.vedlegg"></p>
 </div>

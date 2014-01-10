@@ -1,59 +1,52 @@
-<div class="sluttaarsak-informasjon">
+<div>
     <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.informasjon"></p>
 
-    <p cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.informasjon.oppsigelsestid"></p>
-</div>
-
-<div class="varighet">
-    <p data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.sporsmal"></p>
-
-    <div data-nav-dato-intervall
-         data-fra-dato="af.sagtOppAvArbeidsgiverVarighetFra"
-         data-til-dato="af.sagtOppAvArbeidsgiverVarighetTil"
-         data-er-begge-required="true"
-         data-label="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.varighet">
-    </div>
-</div>
-
-<div class="sporsmaal form-linje boolean">
-    <h4 data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.sporsmal"></h4>
-
-    <div>
-        <input class="sendsoknad-radio"
-               id="tilbudomjobbannetstedJa"
-               type="radio"
-               value="true"
-               data-ng-model="af.sagtOppAvArbeidsgiverTilbudomjobbannetsted"
-               data-name="tilbudomjobbannetsted"
-               data-error-messages="'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.feilmelding'"
-               data-ng-required="true"
-               data-click-validate/>
-
-        <label for="tilbudomjobbannetstedJa"
-               data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true"></label>
-
-        <div data-ng-show="af.sagtOppAvArbeidsgiverTilbudomjobbannetsted == 'true'">
-            <p class=""
-               data-cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true.informasjon"></p>
+    <div data-nav-faktum="sluttaarsak"
+        data-ikke-auto-lagre="true">
+        
+        <div class="varighet">
+            <div data-nav-dato-intervall
+                 data-fra-dato="faktum.properties.datofra"
+                 data-til-dato="faktum.properties.datotil"
+                 data-label="arbeidsforhold.arbeidsgiver.varighet"
+                 data-er-begge-required="true">
+            </div>
         </div>
-    </div>
 
-    <div>
-        <input class="sendsoknad-radio"
-               id="tilbudomjobbannetstedNei"
-               type="radio"
-               value="false"
-               data-ng-model="af.sagtOppAvArbeidsgiverTilbudomjobbannetsted"
-               data-name="tilbudomjobbannetsted"
-               data-error-messages="'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.feilmelding'"
-               data-ng-required="true"
-               data-click-validate/>
+        <div data-navtextarea
+             data-navconfig
+             data-nav-faktum-property="aarsak"
+             data-nokkel="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.aarsak"
+             data-maxlengde="500"
+             data-feilmelding="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.aarsak.feilmelding"
+             data-obligatorisk="true"></div>
 
-        <label for="tilbudomjobbannetstedNei"
-               data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.false"></label>
-    </div>
-    <span class="melding"
-          data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.feilmelding"></span>
-</div>
+        <div data-booleanradio
+             data-navconfig
+             data-nav-faktum-property="sagtOppAvArbeidsgiverTilbudomjobbannetsted"
+             data-nokkel="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted"></div>
+        
+        <div data-ng-show="sluttaarsak.properties.sagtOppAvArbeidsgiverTilbudomjobbannetsted == 'true'">
+            <div data-navinfoboks>
+                <p data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true.informasjon"></p>
+            </div>
+        </div>
+
+        <p class="sluttaarsak-tilleggsinformasjon">
+            <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.1"></span>
+            <ul>
+                <li> 
+                    <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></span>
+                </li>
+                <li> 
+                    <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2"></span>
+                    <a href="http://TODO.com" data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst">
+                    </a>
+                </li>
+            </ul>
+            <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.2"></span>
+        </p>
+      </div>
+  </div>
 
 
