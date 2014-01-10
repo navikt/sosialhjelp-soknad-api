@@ -95,6 +95,10 @@ angular.module('nav.barn', ['app.services'])
         $scope.lagreBarn = function (form) {
             var eventString = 'RUN_VALIDATION' + form.$name;
             $scope.$broadcast(eventString);
+
+            $scope.validateForm(form.$invalid);
+            $scope.runValidation(true);
+
             if (form.$valid) {
                 $scope.barn.properties.alder = finnAlder();
                 $scope.barn.properties.sammensattnavn = finnSammensattNavn();
