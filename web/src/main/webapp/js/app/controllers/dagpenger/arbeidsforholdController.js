@@ -122,7 +122,7 @@ angular.module('nav.arbeidsforhold.controller', [])
 
             $scope.settBreddeSlikAtDetFungererIIE = function () {
                 setTimeout(function () {
-                    $("#sluttaarsak_id").width($("#sluttaarsak_id").width());
+                    $("#egennaering.gardsbruk.aar").width($("#egennaering.gardsbruk.aar").width());
                 }, 50);
             }
 
