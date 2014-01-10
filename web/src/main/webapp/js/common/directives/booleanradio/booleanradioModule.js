@@ -5,7 +5,7 @@ angular.module('nav.booleanradio', ['nav.cmstekster', 'nav.input'])
             replace: true,
             transclude: true,
             scope: true,
-            require: ['navFaktum', '^form'],
+            require: ['^navFaktum', '^form'],
             link: {
                 pre: function (scope, element, attrs) {
                     var src = attrs.nokkel;
