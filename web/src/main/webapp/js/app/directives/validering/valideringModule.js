@@ -3,7 +3,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
         return {
             require: ['ngModel', '^form'],
             link: function (scope, element, attrs, ctrls) {
-                var feil, revaliderFeilMetode;
+                var feil, revaliderFeilObjekt;
 
                 var ngModel = ctrls[0];
                 var form = ctrls[1];
@@ -19,9 +19,9 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 }
 
                 // Rekkefølgen på setup-metodene bestemmer prioriteten på valideringsmetodene
-                RequiredValidator.init(attrs, valideringsMetoder);
-                PatternValidator.init(attrs, valideringsMetoder);
-                LengthValidator.init(attrs, valideringsMetoder);
+                valideringsMetoder.push(new RequiredValidator(attrs));
+                valideringsMetoder.push(new PatternValidator(attrs));
+                valideringsMetoder.push(new LengthValidator(attrs));
 
                 scope.$on(eventString, function () {
                     if (!sjekkOmInputErGyldig() && element.is(':visible')) {
@@ -46,17 +46,17 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 scope.$watch(function () {
                     return ngModel.$viewValue;
                 }, function () {
-                    if (revaliderFeilMetode && revaliderFeilMetode(ngModel.$viewValue) == true) {
+                    if (revaliderFeilObjekt && revaliderFeilObjekt.validate(ngModel.$viewValue) == true) {
                         formElem.removeClass('feil');
                     }
                 });
 
                 function sjekkOmInputErGyldig() {
                     for (var i = 0; i < valideringsMetoder.length; i++) {
-                        var valideringReturVerdi = valideringsMetoder[i](ngModel.$viewValue);
+                        var valideringReturVerdi = valideringsMetoder[i].validate(ngModel.$viewValue);
 
                         if (valideringReturVerdi != true) {
-                            revaliderFeilMetode = valideringsMetoder[i];
+                            revaliderFeilObjekt = valideringsMetoder[i];
                             settFeilmeldingsTekst(valideringReturVerdi);
                             return false;
                         }
@@ -65,14 +65,21 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 }
 
                 function settFeilmeldingsTekst(feilNokkel) {
-                    var feilmeldingsNokkel = feil;
+                    if (meldingIkkeInneholderFeilmelding()) {
+                        var feilmeldingsNokkel = feil;
 
-                    if (typeof feil === 'object') {
-                        feilmeldingsNokkel = feil[feilNokkel];
+                        if (typeof feil === 'object') {
+                            feilmeldingsNokkel = feil[feilNokkel];
+                        }
+
+                        var feilmeldingTekst = cms.tekster[feilmeldingsNokkel];
+                        formElem.find('.melding').text(feilmeldingTekst);
                     }
 
-                    var feilmeldingTekst = cms.tekster[feilmeldingsNokkel];
-                    formElem.find('.melding').text(feilmeldingTekst);
+                }
+
+                function meldingIkkeInneholderFeilmelding() {
+                    return !(formElem.find('.melding')[0] && formElem.find('.melding')[0].hasAttribute('data-cmstekster'));
                 }
             }
         }

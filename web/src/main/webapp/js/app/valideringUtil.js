@@ -1,83 +1,69 @@
-var RequiredValidator = (function() {
-    var init = function(attrs, valideringsMetoder) {
-        if (harAttributt(attrs, 'required')) {
-            valideringsMetoder.push(validate);
-        }
-    }
+(function () {
+    var RequiredValidator = function RequiredValidator(attrs) {
+        var erRequired;
 
-    var validate = function(value) {
-        if (value && verdiErIkkeTom(value.trim())) {
+        if (harAttributt(attrs, 'required')) {
+            this.erRequired = true;
+        }
+    };
+
+    RequiredValidator.prototype.validate = function (verdi) {
+        if (this.erRequired && verdi && verdiErIkkeTom(verdi.trim())) {
             return true;
         }
+
         return 'required';
     }
 
-    return {
-        init: init
-    };
-})();
+    window.RequiredValidator = RequiredValidator;
 
-var PatternValidator = (function() {
-    var pattern;
+    var PatternValidator = function PatternValidator(attrs) {
+        var pattern;
 
-    var init = function(attrs, valideringsMetoder) {
         var stringPattern = harAttributt(attrs, 'pattern');
         if (stringPattern) {
-            valideringsMetoder.push(validate);
-
             // Tatt fra angular for å bygge regexp fra string
             var match = stringPattern.match(/^\/(.*)\/([gim]*)$/);
-            pattern = new RegExp(match[1], match[2]);
+            this.pattern = new RegExp(match[1], match[2]);
         }
-    }
-
-    var validate = function(value) {
-        if (pattern.test(value)) {
-            return true;
-        }
-        return 'pattern';
-    }
-
-    return {
-        init: init
     };
-})();
 
-var LengthValidator = (function() {
-    var minLengde, maxLengde;
-
-    var init = function(attrs, valideringsMetoder) {
-        minLengde = harAttributt(attrs, 'minlength');
-
-        if (minLengde) {
-            valideringsMetoder.push(validateMinimum);
+    PatternValidator.prototype.validate = function (verdi) {
+        if (this.pattern && !this.pattern.test(verdi)) {
+            return 'pattern';
         }
-
-        maxLengde = harAttributt(attrs, 'maxlength');
-
-        if (maxLengde) {
-            valideringsMetoder.push(validateMaximum);
-        }
-
-    }
-
-    var validateMinimum = function(value) {
-        if (value.trim().length >= minLengde) {
-            return true;
-        }
-
-        return 'minlength';
-    }
-
-    var validateMaximum = function(value) {
-        if (value.trim().length <= maxLengde) {
-            return true;
-        }
-
-        return 'maxlength';
-    }
-
-    return {
-        init: init
+        return true;
     };
+
+    window.PatternValidator = PatternValidator;
+
+
+    var LengthValidator = function LengthValidator(attrs) {
+        var minLengde, maxLengde;
+
+        this.minLengde = harAttributt(attrs, 'minlength');
+        if (!this.minLengde) {
+            this.minLengde = false;
+        }
+
+        this.maxLengde = harAttributt(attrs, 'maxlength');
+        if (!this.maxLengde) {
+            this.maxLengde = false;
+        }
+    }
+
+
+    LengthValidator.prototype.validate = function (value) {
+        if (this.minLengde && value.trim().length < this.minLengde) {
+            return 'minlength'; // Invalid
+        }
+
+        if (this.maxLengde && value.trim().length > this.maxLengde) {
+            return 'maxlength'; // Invalid
+        }
+
+        return true;
+    }
+
+    window.LengthValidator = LengthValidator;
 })();

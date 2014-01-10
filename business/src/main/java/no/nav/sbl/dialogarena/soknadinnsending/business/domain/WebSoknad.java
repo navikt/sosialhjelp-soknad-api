@@ -28,8 +28,7 @@ public class WebSoknad implements Serializable {
     private DateTime sistLagret;
     private DelstegStatus delstegStatus;
 
-    private static final List<String> LIST_FAKTUM = Arrays.asList("barn", "barnetillegg", "ikkebarneinntekt", "barneinntekttall", "arbeidsforhold", "sluttaarsak");
-
+    private static final List<String> LIST_FAKTUM = Arrays.asList("barn", "barnetillegg", "ikkebarneinntekt", "barneinntekttall", "orgnummer", "arbeidsforhold", "sluttaarsak");
 
     public Long getSistLagret() {
         if (sistLagret != null) {
