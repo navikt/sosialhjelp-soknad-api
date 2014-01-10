@@ -16,8 +16,8 @@
         <p data-cmstekster="arbeidsforhold.arbeidsgiver.permittert.varighet"></p>
         <div class="varighet">
             <div data-nav-dato-intervall
-                 data-fra-dato="faktum.properties.permiteringsperiode.datofra"
-                 data-til-dato="faktum.properties.permiteringsperiode.datotil"
+                 data-fra-dato="faktum.properties.permiteringsperiodedatofra"
+                 data-til-dato="faktum.properties.permiteringsperiodedatotil"
                  data-label="arbeidsforhold.arbeidsgiver.permittert.varighet"
                  data-er-fremtidigdato-tillatt="true"
                  data-er-fradato-required="true">
@@ -27,8 +27,8 @@
         <p data-cmstekster="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet"></p>
         <div class="varighet">
             <div data-nav-dato-intervall
-                 data-fra-dato="faktum.properties.lonnspliktigperiode.datofra"
-                 data-til-dato="faktum.properties.lonnspliktigperiode.datotil"
+                 data-fra-dato="faktum.properties.lonnspliktigperiodedatofra"
+                 data-til-dato="faktum.properties.lonnspliktigperiodedatotil"
                  data-label="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet"
                  data-er-fremtidigdato-tillatt="true"
                  data-er-fradato-required="true">
@@ -37,35 +37,34 @@
 
         <p data-cmstekster="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.informasjon"></p>
 
-        <div class="tekstfelt form-linje">
+        <div class="tekstfelt form-linje prosentfelt">
             <label>
-                <span data-cmstekster="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad"></span>
-                <input data-ng-model="permitteringProsent" 
+                <span class="labeltekst" data-cmstekster="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad"></span>
+                <input data-ng-model="sluttaarsak.properties.permitteringProsent" 
                         type="text" 
                         data-ng-required="true"
-                        data-error-messages="'arbeidsforhold.sluttaarsak.permittert.grad.feilmelding'" 
-                        data-blur-validate 
-                        data-ng-blur="testMe()" 
-                        data-minlength="1" 
-                        data-maxlength="3" />
+                        data-error-messages="{required:'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.feilmelding', pattern: 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.pattern.feilmelding'}"
+                        data-ng-pattern="/\d+/" 
+                        data-blur-validate
+                        data-ng-blur="settPermitteringsflagg($event)" 
+                        maxlength="3" 
+                        data-tekstfelt-patternvalidering/>
+                <span class="prosent" data-cmstekster="egennaering.prosent"></span>
                 <span class="melding"></span>
             </label>
         </div>
 
-
-
-        <!--div data-navtekst
-             data-navconfig
-             data-nav-faktum-property="permitteringProsent"
-             data-navlabel="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad"
-             data-navfeilmelding="arbeidsforhold.sluttaarsak.permittert.grad.feilmelding"
-             data-navblur="console.log('blurrry')"></div-->
-
-        <div data-ng-show="sluttaarsak.properties.permitteringProsent < 50">
+        <div data-ng-show="skalVisePermitteringInfo">
             <div data-navinfoboks>
                 <p data-cmstekster="arbeidsforhold.sluttaarsak.permittert.forlite"></p>
             </div>
         </div>
+
+        <div data-booleanradio
+             data-navconfig
+             data-nav-faktum-property="baatEllerOffshore"
+             data-nokkel="arbeidsforhold.sluttaarsak.baatelleroffshore"></div>      
+
         
         <p class="sluttaarsak-tilleggsinformasjon">
             <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.1"></span>
