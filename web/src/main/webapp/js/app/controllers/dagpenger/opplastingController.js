@@ -1,5 +1,5 @@
 angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
-    .controller('OpplastingCtrl', ['$scope', '$http', '$location', '$routeParams', 'vedleggService', 'soknadService', 'data', function ($scope, $http, $location, $routeParams, vedleggService, soknadService, data) {
+    .controller('OpplastingCtrl', ['$scope', '$http', '$location', '$routeParams', 'vedleggService', 'soknadService', 'data', 'cms', function ($scope, $http, $location, $routeParams, vedleggService, soknadService, data, cms) {
         $scope.fremdriftsindikator = {
             laster: false
         };
@@ -8,12 +8,15 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
             faktumId: $routeParams.faktumId,
             gosysId: $routeParams.gosysId,
             soknadId: data.soknad.soknadId,
-            autoUpload: true
+            opplastingFeilet: false
         };
+        $scope.$on('fileuploadstart', function(){
+            $scope.data.opplastingFeilet = false;
+        })
         $scope.$on('fileuploadprocessfail', function (event, data) {
             $.each(data.files, function (index, file) {
                 if (file.error) {
-                    $scope.opplastingFeilet = file.error;
+                    $scope.data.opplastingFeilet = file.error;
                     data.scope().clear(file);
                     $scope.clear(file);
                 }
@@ -21,16 +24,26 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         });
 
         $scope.options = {
-            maxFileSize: 10000000,
+            maxFileSize: 4000000,
             acceptFileTypes: /(\.|\/)(jpg|png|pdf|jpeg)$/i,
-            url: "/sendsoknad/rest/soknad/" + data.soknad.soknadId + "/faktum/" + $scope.data.faktumId + "/vedlegg?gosysId=" + $scope.data.gosysId
+            autoUpload: true,
+            url: "/sendsoknad/rest/soknad/" + data.soknad.soknadId + "/faktum/" + $scope.data.faktumId + "/vedlegg?gosysId=" + $scope.data.gosysId,
+            // Error and info messages:
+            messages: {
+                maxNumberOfFiles: cms.tekster['opplasting.feilmelding.makssider'],
+                acceptFileTypes: cms.tekster['opplasting.feilmelding.feiltype'],
+                maxFileSize: cms.tekster['opplasting.feilmelding.maksstorrelse']
+            }
         };
         $scope.opplastingFeil = function (error) {
-            $scope.opplastingFeilet = error;
+            $scope.data.opplastingFeilet = error;
         }
         $scope.lastopp = function () {
             submit();
             $scope.submit()
+            $scope.data.opplastingFeilet=false;
+            console.log("laster opp")
+            $scope.$apply();
         };
         $scope.oppdaterSoknad = function () {
             soknadService.get({param: data.soknad.soknadId},
@@ -72,6 +85,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
     .controller('SlettOpplastingCtrl', ['$scope', 'vedleggService', 'data', function ($scope, vedleggService, data) {
         var file = $scope.file;
         file.$destroy = function () {
+            $scope.data.opplastingFeilet = false;
             vedleggService.remove({
                 soknadId: data.soknad.soknadId,
                 faktumId: $scope.data.faktumId,
