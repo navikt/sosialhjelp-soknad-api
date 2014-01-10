@@ -23,5 +23,10 @@ module.exports = Page.create({
             this.validerSkjemaSide.click();
             util.ventTilSideHarLastet('#vedlegg');
         }
+    },
+    aktivtSteg: {
+        get: function() {
+            return element.all(by.repeater('steg in data.liste')).get(1);
+        }
     }
 });
