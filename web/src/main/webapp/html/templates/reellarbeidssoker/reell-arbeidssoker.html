@@ -5,7 +5,7 @@
         <div data-form-errors></div>
         <div data-nav-hjelpetekst-element></div>
 
-        <div data-nav-faktum="villigdeltid"
+        <div data-nav-faktum="reellarbeidssoker.villigdeltid"
              data-ng-model="faktum.value"
              data-navconfig
              data-booleanradio
@@ -15,42 +15,42 @@
             </div>
 
             <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
-                <input type="hidden" data-ng-model="harHuketAvCheckboksDeltid.value" data-nav-faktum="villigdeltid"
+                <input type="hidden" data-ng-model="harHuketAvCheckboksDeltid.value" data-nav-faktum="reellarbeidssoker.villigdeltid"
                        data-ng-required="faktum.value == 'false' && erUnder60Aar()"
                        data-error-messages="'reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding'">
 
                 <div data-navcheckbox
                      data-navconfig
-                     data-nav-faktum="reduserthelse"
+                     data-nav-faktum="reellarbeidssoker.villigdeltid.reduserthelse"
                      data-navlabel="reellarbeidssoker.reduserthelse"
                      data-navendret="endreDeltidsAarsaker()"></div>
 
                 <div data-navcheckbox
                      data-navconfig
-                     data-nav-faktum="omsorgbarnunder1aar"
+                     data-nav-faktum="reellarbeidssoker.villigdeltid.omsorgbarnunder1aar"
                      data-navlabel="reellarbeidssoker.omsorgbarnunder1aar"
                      data-navendret="endreDeltidsAarsaker()"></div>
 
                 <div data-navcheckbox
                      data-navconfig
-                     data-nav-faktum="eneansvarbarnunder5skoleaar"
+                     data-nav-faktum="reellarbeidssoker.villigdeltid.eneansvarbarnunder5skoleaar"
                      data-navlabel="reellarbeidssoker.eneansvarbarnunder5skoleaar"
                      data-navendret="endreDeltidsAarsaker()"></div>
 
                 <div data-navcheckbox
                      data-navconfig
-                     data-nav-faktum="eneansvarbarnopptil18aar"
+                     data-nav-faktum="reellarbeidssoker.villigdeltid.eneansvarbarnopptil18aar"
                      data-navlabel="reellarbeidssoker.eneansvarbarnopptil18aar"
                      data-navendret="endreDeltidsAarsaker()"></div>
 
                 <div data-navcheckbox
                      data-navconfig
-                     data-nav-faktum="omsorgansvar"
+                     data-nav-faktum="reellarbeidssoker.villigdeltid.omsorgansvar"
                      data-navlabel="reellarbeidssoker.omsorgansvar"
                      data-navendret="endreDeltidsAarsaker()"></div>
 
                 <div data-navcheckbox
-                     data-nav-faktum="annensituasjon"
+                     data-nav-faktum="reellarbeidssoker.villigdeltid.annensituasjon"
                      data-navconfig
                      data-navlabel="reellarbeidssoker.annensituasjon"
                      data-navendret="endreDeltidsAarsaker()"></div>
@@ -62,15 +62,15 @@
             <p class="informasjonstekst" data-cmstekster="reellarbeidssoker.villigdeltid.false.informasjon2"></p>
 
             <div data-navtekst
-                 data-nav-faktum="maksimalarbeidstid"
+                 data-nav-faktum="reellarbeidssoker.villigdeltid.maksimalarbeidstid"
                  data-navconfig
-                 data-ng-pattern="/\d+/"
+                 data-regexvalidering="/\d+/"
                  data-navlabel=" reellarbeidssoker.maksimalarbeidstid"
                  data-navfeilmelding="reellarbeidssoker.maksimalarbeidstid.feilmelding"></div>
         </div>
 
 
-        <div data-nav-faktum="villigpendle"
+        <div data-nav-faktum="reellarbeidssoker.villigpendle"
              data-navconfig
              data-booleanradio
              data-nokkel="reellarbeidssoker.villigpendle">
@@ -79,48 +79,48 @@
                 <span data-cmstekster="reellarbeidssoker.villigpendle.false.informasjon"></span>
             </div>
             <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
-                <input type="hidden" data-ng-model="harHuketAvCheckboksPendle.value" data-nav-faktum="villigpendle"
+                <input type="hidden" data-ng-model="harHuketAvCheckboksPendle.value" data-nav-faktum="reellarbeidssoker.villigpendle"
                        data-ng-required="faktum.value == 'false' && erUnder60Aar()"
                        data-error-messages="'reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding'"/>
                 <div data-navcheckbox
                      data-navconfig
-                     data-nav-faktum="pendlereduserthelse"
+                     data-nav-faktum="reellarbeidssoker.villigpendle.reduserthelse"
                      data-navlabel="reellarbeidssoker.pendlereduserthelse"
                      data-navendret="endrePendleAarsaker()"></div>
 
                 <div data-navcheckbox
                      data-navconfig
-                     data-nav-faktum="pendleomsorgbarnunder1aar"
+                     data-nav-faktum="reellarbeidssoker.villigpendle.omsorgbarnunder1aar"
                      data-navlabel="reellarbeidssoker.pendleomsorgbarnunder1aar"
                      data-navendret="endrePendleAarsaker()"></div>
 
                 <div data-navcheckbox
                      data-navconfig
-                     data-nav-faktum="pendleomsorgbarnopptil10"
+                     data-nav-faktum="reellarbeidssoker.villigpendle.omsorgbarnopptil10"
                      data-navlabel="reellarbeidssoker.pendleomsorgbarnopptil10"
                      data-navendret="endrePendleAarsaker()"></div>
 
                 <div data-navcheckbox
                      data-navconfig
-                     data-nav-faktum="pendleeneansvarbarnunder5skoleaar"
+                     data-nav-faktum="reellarbeidssoker.villigpendle.eneansvarbarnunder5skoleaar"
                      data-navlabel="reellarbeidssoker.pendleeneansvarbarnunder5skoleaar"
                      data-navendret="endrePendleAarsaker()"></div>
 
                 <div data-navcheckbox
                      data-navconfig
-                     data-nav-faktum="pendleeneansvarbarnopptil18aar"
+                     data-nav-faktum="reellarbeidssoker.villigpendle.eneansvarbarnopptil18aar"
                      data-navlabel="reellarbeidssoker.pendleeneansvarbarnopptil18aar"
                      data-navendret="endrePendleAarsaker()"></div>
 
                 <div data-navcheckbox
                      data-navconfig
-                     data-nav-faktum="pendleomsorgansvar"
+                     data-nav-faktum="reellarbeidssoker.villigpendle.omsorgansvar"
                      data-navlabel="reellarbeidssoker.pendleomsorgansvar"
                      data-navendret="endrePendleAarsaker()"></div>
 
                 <div data-navcheckbox
                      data-navconfig
-                     data-nav-faktum="pendleannensituasjon"
+                     data-nav-faktum="reellarbeidssoker.villigpendle.annensituasjon"
                      data-navlabel="reellarbeidssoker.pendleannensituasjon"
                      data-navendret="endrePendleAarsaker()"></div>
 
@@ -134,7 +134,7 @@
         <div class="helse"
              data-booleanradio
              data-navconfig
-             data-nav-faktum="villighelse"
+             data-nav-faktum="reellarbeidssoker.villighelse"
              data-nokkel="reellarbeidssoker.villighelse"
              data-hjelpetekst>
 
@@ -143,7 +143,7 @@
             </div>
             <div data-navtextarea
                  data-navconfig
-                 data-nav-faktum="helseFritekst"
+                 data-nav-faktum="reellarbeidssoker.villighelse.fritekst"
                  data-nokkel="reellarbeidssoker.helsefritekst"
                  data-maxlengde="500"
                  data-navfeilmelding="reellarbeidssoker.helsefritekst.feilmelding"
@@ -153,7 +153,7 @@
 
         <div data-booleanradio
              data-navconfig
-             data-nav-faktum="villigjobb"
+             data-nav-faktum="reellarbeidssoker.villigjobb"
              data-nokkel="reellarbeidssoker.villigjobb">
 
             <div data-navinfoboks>

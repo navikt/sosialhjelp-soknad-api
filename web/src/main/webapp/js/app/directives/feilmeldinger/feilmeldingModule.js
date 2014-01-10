@@ -76,16 +76,23 @@ angular.module('nav.feilmeldinger', [])
                         scrollToElement(formLinje, 200);
 
                         if (feilmelding.elem.is('[type=hidden]')) {
-                            scope.giFokus(formLinje.find('input[type=checkbox]').first());
+                            if(feilmelding.elem.hasClass('tekstfelt')) {
+                                scope.giFokus(formLinje.find('input[type=text]').filter(':visible').first());
+                            } else {
+                                scope.giFokus(formLinje.find('input[type=checkbox]').first());
+                            }
                         } else {
                             scope.giFokus(feilmelding.elem);
                         }
-
                     }
                 }
 
                 scope.giFokus = function (element) {
-                    element.focus();
+                    if(element[0]) {
+                        element[0].focus();
+                    } else {
+                        element.focus();
+                    }
                 }
 
                 scope.erKlikkbarFeil = function (feilmelding) {
