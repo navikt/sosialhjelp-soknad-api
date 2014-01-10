@@ -73,11 +73,11 @@ describe('DagpengerControllere', function () {
             });
         }));
 
-        it('skal kalle metode for å validere form', function () {
-            expect(scope.validateFormFunctionBleKalt).toEqual(false);
-            scope.validerOgSettModusOppsummering(form);
-            expect(scope.validateFormFunctionBleKalt).toEqual(true);
-        });
+//        it('skal kalle metode for å validere form', function () {
+//            expect(scope.validateFormFunctionBleKalt).toEqual(false);
+//            scope.validerOgSettModusOppsummering(form);
+//            expect(scope.validateFormFunctionBleKalt).toEqual(true);
+//        });
     });
 
     describe('vernepliktCtrl', function () {
