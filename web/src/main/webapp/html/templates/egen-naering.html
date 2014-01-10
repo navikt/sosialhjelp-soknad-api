@@ -149,11 +149,17 @@
             <div class="tekstfelt form-linje" data-ng-show="gardseier('jegEierGardsbruk')">
                 <label>
                     <span data-cmstekster="egennaering.gardsbruk.false.eierandel.din"></span>
-                    <input data-ng-model="faktum.value" type="text" data-ng-required="gardseier('jegEierGardsbruk')"
+                    <input data-ng-model="faktum.value"
+                           type="text"
+                           data-ng-required="gardseier('jegEierGardsbruk')"
                            data-error-messages="'egennaering.gardsbruk.false.eierandel.din.feilmelding'"
-                           data-ng-pattern="/\d+/" data-blur-validate
-                           data-ng-blur="summererAndeleneTil100()" maxlength="3" data-tekstfelt-patternvalidering
-                           data-nav-faktum="dinAndelGardsbruk" data-navconfig/>
+                           data-ng-pattern="/\d+/"
+                           data-blur-validate
+                           data-ng-blur="summererAndeleneTil100()"
+                           maxlength="3"
+                           data-tekstfelt-patternvalidering
+                           data-nav-faktum="dinAndelGardsbruk"
+                           data-navconfig/>
                     <span class="egennaering-prosent" data-cmstekster="egennaering.prosent"></span>
                     <span class="melding"></span>
                 </label>
@@ -216,8 +222,9 @@
 
         <div class="tekstfelt form-linje">
             <label><span data-cmstekster="egennaering.gardsbruk.false.aar"></span></label>
-            <select data-ng-model="faktum.value"
-                    data-nav-faktum="egennaeringAarstall"
+            <select id="egennaeringgardsbrukaar"
+                    data-ng-model="faktum.value"
+                    data-nav-faktum="egennaering.gardsbruk.aar"
                     data-navconfig
                     data-error-messages="aarstall.feilmelding"
                     data-ng-init="faktum.value = faktum.value || forrigeAar; lagreFaktum();"

@@ -5,6 +5,7 @@ angular.module('nav.egennaering', [])
         $scope.orgnummer = data.finnFakta('egennaering_orgnummer');
         $scope.aarstall = [];
 
+
         $scope.leggTilOrgnr = function () {
             $scope.orgnummer.push(new Faktum(
                 {
@@ -168,6 +169,21 @@ angular.module('nav.egennaering', [])
             for (var i = 0; i < 5; i++) {
                 $scope.aarstall.push('' + (iAar - i));
             }
+        }
+
+        $scope.$watch(function () {
+            return data.finnFaktum('gardsbruk').value;
+            },function () {
+            if(data.finnFaktum('gardsbruk').value == 'false') {
+                console.log("he")
+                settBreddeSlikAtDetFungererIIE();
+            }
+        })
+        settBreddeSlikAtDetFungererIIE();
+        function settBreddeSlikAtDetFungererIIE() {
+            setTimeout(function () {
+                $("#egennaeringgardsbrukaar").width($("#egennaeringgardsbrukaar").width());
+            }, 50);
         }
 
     }])
