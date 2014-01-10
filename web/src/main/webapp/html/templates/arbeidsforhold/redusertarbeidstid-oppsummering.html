@@ -1,17 +1,27 @@
-<p class="svar-oppsummering-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.informasjon"></p>
-
-<p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.sporsmal"></p>
-<p class="svar-oppsummering">{{af.redusertArbeidstid.fra | date:'dd.MM.yyyy'}} </p>
-
-
-<p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.sporsmal"></p>
-<div data-ng-show="af.redusertArbeidstid.nyttTilbud">
-    <p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.true"></p>
-    <p class="svar-oppsummering-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.informasjon"></p>
-
+<div class="varighet">
+    <span data-ng-bind="af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy' | norskdato"></span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil"> TIL </span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil" data-ng-bind="af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy' | norskdato"></span>
 </div>
 
-<div data-ng-show="af.redusertArbeidstid.nyttTilbud == 'false'">
-    <p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.false"></p>
-</div>
-
+<ul>
+    <li>
+        <p data-ng-bind="af.sluttaarsak.properties.type"></p>
+    </li>
+    <li>
+        <span data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.sporsmal"></span>
+        <p data-ng-bind="af.sluttaarsak.properties.redusertfra"></p>
+    </li>
+    <li>
+        <span data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.sporsmal"></span>
+        <p data-ng-show="af.sluttaarsak.properties.nyttTilbud == 'true'" 
+            data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.true"></p>
+        <p data-ng-show="af.sluttaarsak.properties.nyttTilbud == 'false'" 
+            data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.false"></p>
+    </li>
+    <li>
+         <span data-cmstekster="arbeidsforhold.sluttaarsak.baatelleroffshore.sporsmal"></span>
+         <p data-ng-show="af.sluttaarsak.properties.baatEllerOffshore == 'true'" data-cmstekster="arbeidsforhold.sluttaarsak.baatelleroffshore.true"></p>   
+         <p data-ng-show="af.sluttaarsak.properties.baatEllerOffshore == 'false'" data-cmstekster="arbeidsforhold.sluttaarsak.baatelleroffshore.false"></p> 
+    </li>
+</ul>

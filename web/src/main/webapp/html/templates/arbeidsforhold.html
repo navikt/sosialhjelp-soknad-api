@@ -1,118 +1,88 @@
-<div class="skjemaramme" data-ng-controller="ModusCtrl">
-    <div ng-form="arbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl"
-         data-ng-submit="validerArbeidsforhold(arbeidsforholdForm)">
+<div class="skjemaramme" data-ng-controller="ModusCtrl" data-scroll-tilbake-directive="arbeidsforhold">
+    <div ng-form="arbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl">
         <div data-form-errors></div>
         <p class="arbeidsforhold-informasjonstekst" data-cmstekster="arbeidsforhold.informasjon"></p>
 
-        <div data-ng-repeat="af in arbeidsforhold" data-ng-class="{'last': $last}">
-            <div class="arbeidsforhold" data-ng-show="arbeidsforholdetErIkkeIRedigeringsModus($index)">
-                <p class="arbeidsforhold-dato">{{ af.varighetFra | date:'dd.MM.yyyy'}} - {{
-                    af.varighetTil | date:'dd.MM.yyyy'}}</p>
+        <div data-navradio 
+            data-value="harIkkeJobbet"
+            data-navconfig 
+            data-nav-faktum="arbeidstilstand"
+            data-navlabel="arbeidsforhold.arbeidstilstand.harikkejobbet"
+            data-navfeilmelding="arbeidsforhold.arbeidstilstand.feilmelding">
+        </div>
 
-                <p class="arbeidsforhold-arbeidsgivernavn-overskrift">{{ af.navn }}</p>
+         <div data-navradio 
+            data-value="varierendeArbeidstid"
+            data-navconfig
+            data-nav-faktum="arbeidstilstand"
+            data-navlabel="arbeidsforhold.arbeidstilstand.varierendearbeidstid"
+            data-navfeilmelding="arbeidsforhold.arbeidstilstand.feilmelding">
+        </div>
+       
+
+         <div data-navradio 
+            data-value="fastArbeidstid"
+            data-navconfig
+            data-nav-faktum="arbeidstilstand"
+            data-navlabel="arbeidsforhold.arbeidstilstand.fastarbeidstid"
+            data-navfeilmelding="arbeidsforhold.arbeidstilstand.feilmelding">
+        </div>
+        
+        <div data-ng-show="hvisHarJobbetVarierende()">
+            <div data-navinfoboks>
+                <span data-cmstekster="arbeidsforhold.arbeidstilstand.varierendearbeidstid.informasjonstekst"></span>
+            </div>
+        </div>
+        <div data-ng-show="hvisHarJobbetFast()">
+            <div data-navinfoboks>
+                 <span data-cmstekster="arbeidsforhold.arbeidstilstand.fastarbeidstid.informasjonstekst"></span>
+            </div>
+        </div>
+
+        <div class="spm-boks vertikal" data-ng-repeat="af in arbeidsliste" data-ng-class="{'last': $last}">
+            <div id="arbeidsforhold{{af.arbeidsforhold.faktumId}}">
+                <a href="#" class="lukk" data-ng-click="slettArbeidsforhold(af, $index, $event)"> </a>
+                <span class="robust">{{ af.arbeidsforhold.properties.arbeidsgivernavn }}</span>
+                <span class="robust">, </span>
+                <span class="robust">{{ af.arbeidsforhold.properties.land }} </span>
 
                 <div class="arbeidsforhold-land-sluttaarsak-blokk">
-                    <span class="svar-oppsummering-label" data-cmstekster="arbeidsforhold.arbeidsgiver.land"></span>
-                    <span class="svar-oppsummering-label-svar">{{ af.land }}</span>
-                    <span class="svar-oppsummering-deler"> | </span>
-                    <span class="svar-oppsummering-label" data-cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsak"></span>
-                    <span class="svar-oppsummering-label-svar">{{ af.sluttaarsak.navn }}</span>
+                     <div class="arbeidsgiver-oppsummering-sluttaarsaker">
+                        <div data-ng-include="templates[af.sluttaarsak.properties.type].oppsummeringsurl"></div>
+                    </div>
                 </div>
 
-                <div class="arbeidsgiver-oppsummering-sluttaarsaker">
-                    <div data-ng-include="af.sluttaarsak.oppsummeringsurl"></div>
+                <div class="arbeidsforhold-oppsummering-endre-slett">
+                    <ul class="liste-vannrett">
+                        <li>
+                            <a href data-ng-click="slettArbeidsforhold(af, $index, $event)" data-cmstekster="arbeidsforhold.slettarbeidsforhold"></a>
+                        </li>
+                        <li>
+                            <a href data-ng-click="endreArbeidsforhold(af, $index, $event)" data-cmstekster="arbeidsforhold.endrearbeidsforhold"></a>
+                        </li>
+                    </ul>
                 </div>
-
-                <p class="arbeidsforhold-oppsummering-endre-slett lenker-dot" data-ng-show="hvisIRedigeringsmodus()">
-                    <a href data-ng-click="slettArbeidsforhold(af)" data-cmstekster="arbeidsforhold.slettarbeidsforhold"></a>
-                    <a href data-ng-click="endreArbeidsforhold($index, arbeidsforholdForm)" data-cmstekster="arbeidsforhold.endrearbeidsforhold"></a>
-                </p>
+                
             </div>
-
-            <div class="spm-boks vertikal" data-ng-if="posisjonForArbeidsforholdUnderRedigering == $index"
-                 data-ng-form="leggTilArbeidsforholdForm" data-ng-controller="LeggTilArbeidsforholdCtrl">
-                <div data-form-errors></div>
-                <div class="arbeidsforhold-spm">
-                    <div class="form-linje">
-                        <label>
-                            <span data-cmstekster="arbeidsforhold.arbeidsgiver.navn"></span>
-                            <input name="arbeidsgivernavn"
-                                   data-error-messages="'arbeidsforhold.arbeidsgiver.navn.feilmelding'" type="text"
-                                   data-ng-model="af.navn"
-                                   data-blur-validate required>
-                            <span class="melding"></span>
-                        </label>
-                    </div>
-
-
-                    <div class="land">
-                        <div data-nav-select
-                             data-navconfig
-                             data-label="arbeidsforhold.arbeidsgiver.land"
-                             data-nav-faktum="af.land"
-                             data-ikke-auto-lagre="true"
-                             data-options="landService.result"
-                             data-er-required="true"
-                             data-default-value="arbeidsforhold.arbeidsgiver.landDefault"
-                             data-required-feilmelding="arbeidsforhold.arbeidsgiver.land.feilmelding"
-                             data-ugyldig-feilmelding="arbeidsforhold.arbeidsgiver.land.ugyldig.feilmelding">
-                        </div>
-                    </div>
-
-                    <div class="varighet">
-                        <div data-nav-dato-intervall
-                             data-fra-dato="af.varighetFra"
-                             data-til-dato="af.varighetTil"
-                             data-label="arbeidsforhold.arbeidsgiver.varighet"
-                             data-er-begge-required="true">
-                        </div>
-                    </div>
-
-                    <div class="form-linje">
-                        <label>
-                            <span data-cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsak"></span>
-                            <select id="sluttaarsak_id"
-                                    data-name="sluttaarsak"
-                                    data-ng-model="af.sluttaarsak"
-                                    data-ng-options="t.navn for t in templates"
-                                    data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'"
-                                    data-ng-required="true">
-                                <option value="" cmstekster="arbeidsforhold.arbeidsgiver.sluttaarsakDefault"></option>
-                            </select>
-                            <span class="melding"></span>
-                        </label>
-                    </div>
-
-                    <div data-ng-show="af.sluttaarsak">
-                        <div data-ng-include="af.sluttaarsak.url"></div>
-                    </div>
-                </div>
-                <div class="knapper-opprett-arbeidsforhold">
-                    <input class="knapp-hoved-liten" name="lagre" data-cmstekster="arbeidsforhold.lagre" type="submit"
-                           id="arbeidsgiverLagre" data-ng-click="lagreArbeidsforhold(af, arbeidsforholdForm)">
-                    <a class="arbeidsforhold-avbryt" href data-cmstekster="arbeidsforhold.avbryt"
-                       data-ng-click="avbrytEndringAvArbeidsforhold(af, arbeidsforholdForm)"></a>
-                </div>
-            </div>
-
         </div>
+
+        <div data-ng-if="hvisHarJobbet()">
+            <input type="hidden" 
+                    data-ng-model="harLagretArbeidsforhold" 
+                    data-nav-faktum="harLagretArbeidsforhold"
+                    data-ng-required="true"
+                    data-error-messages="'arbeidsforhold.arbeidsforhold.required'">
+        </div>
+
         <div class="knapper-arbeidsforhold">
-            <div id="legg-til" data-ng-show="hvisIRedigeringsmodus()">
+            <div id="legg-til" data-ng-show="hvisHarJobbet()">            
                 <button class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event, arbeidsforholdForm)"
                         data-cmstekster="arbeidsforhold.nyttarbeidsforhold" role="button"></button>
             </div>
 
-            <div id="har-ikke-jobbet" data-ng-show="harIkkeLagretArbeidsforhold()">
-                <div data-navcheckbox
-                     data-navconfig
-                     data-nav-faktum="harIkkeJobbet"
-                     data-navlabel="arbeidsforhold.harIkkeJobbet"
-                     data-navendret="toggleRedigeringsmodus(arbeidsforholdForm)"></div>
-            </div>
-
             <div data-spmblokkferdig
                  data-nokkel="arbeidsforhold"
-                 data-submit-method="validerOgSettModusOppsummering(arbeidsforholdForm, true)"></div>
+                 data-submit-method="validerOgSettModusOppsummering(arbeidsforholdForm)"></div>
         </div>
     </div>
 </div>
