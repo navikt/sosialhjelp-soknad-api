@@ -41,7 +41,10 @@
 
         <div class="spm-boks vertikal" data-ng-repeat="af in arbeidsliste" data-ng-class="{'last': $last}">
             <div id="arbeidsforhold{{af.arbeidsforhold.faktumId}}">
+                <a href="#" class="lukk" data-ng-click="slettArbeidsforhold(af, $index, $event)"> </a>
                 <span class="robust">{{ af.arbeidsforhold.properties.arbeidsgivernavn }}</span>
+                <span class="robust">, </span>
+                <span class="robust">{{ af.arbeidsforhold.properties.land }} </span>
 
                 <div class="arbeidsforhold-land-sluttaarsak-blokk">
                      <div class="arbeidsgiver-oppsummering-sluttaarsaker">
@@ -49,10 +52,17 @@
                     </div>
                 </div>
 
-                <p class="arbeidsforhold-oppsummering-endre-slett lenker-dot">
-                    <a href data-ng-click="slettArbeidsforhold(af, $index, $event)" data-cmstekster="arbeidsforhold.slettarbeidsforhold"></a>
-                    <a href data-ng-click="endreArbeidsforhold(af, $index, $event)" data-cmstekster="arbeidsforhold.endrearbeidsforhold"></a>
-                </p>
+                <div class="arbeidsforhold-oppsummering-endre-slett">
+                    <ul class="liste-vannrett">
+                        <li>
+                            <a href data-ng-click="slettArbeidsforhold(af, $index, $event)" data-cmstekster="arbeidsforhold.slettarbeidsforhold"></a>
+                        </li>
+                        <li>
+                            <a href data-ng-click="endreArbeidsforhold(af, $index, $event)" data-cmstekster="arbeidsforhold.endrearbeidsforhold"></a>
+                        </li>
+                    </ul>
+                </div>
+                
             </div>
         </div>
 
