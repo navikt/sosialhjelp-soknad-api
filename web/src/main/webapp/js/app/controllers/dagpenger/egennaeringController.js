@@ -37,15 +37,15 @@ angular.module('nav.egennaering', [])
         }
 
         $scope.gardseier = function (eier) {
-            return data.finnFaktum(eier).value == 'true' && $scope.erSynlig('gardsbruk');
+            return data.finnFaktum(eier).value == 'true' && $scope.erSynlig('egennaering.gardsbruk');
         }
 
-        $scope.svartPaHvemEierGardsbruket = function (fakta) {
-            if (!$scope.erSynlig('gardsbruk')) {
+        $scope.svartPaHvemEierGardsbruket = function () {
+            if (!$scope.erSynlig('egennaering.gardsbruk')) {
                 return false;
             }
-            for (var i = 0; i < fakta.length; i++) {
-                if (data.finnFaktum(fakta[i]) && data.finnFaktum(fakta[i]).value == 'true') {
+            for (var i = 0; i < eierGardsbrukNokler.length; i++) {
+                if (data.finnFaktum(eierGardsbrukNokler[i]) && data.finnFaktum(eierGardsbrukNokler[i]).value == 'true') {
                     return true;
                 }
             }
@@ -67,8 +67,8 @@ angular.module('nav.egennaering', [])
             $scope.runValidation(skalScrolle);
         }
 
-        var typeGardsbrukNokler = ['dyrGardsbruk', 'jordGardsbruk', 'skogGardsbruk', 'annetGardsbruk'];
-        var eierGardsbrukNokler = ['jegEierGardsbruk', 'ektefelleEierGardsbruk', 'annetEierGardsbruk'];
+        var typeGardsbrukNokler = ['egennaering.gardsbruk.false.type.dyr', 'egennaering.gardsbruk.false.type.jord', 'egennaering.gardsbruk.false.type.skog', 'egennaering.gardsbruk.false.type.annet'];
+        var eierGardsbrukNokler = ['egennaering.gardsbruk.false.eier.jeg', 'egennaering.gardsbruk.false.eier.ektefelle', 'egennaering.gardsbruk.false.eier.annet'];
         $scope.harHuketAvTypeGardsbruk = {value: ''};
         $scope.harHuketAvEierGardsbruk = {value: ''};
 
@@ -104,19 +104,19 @@ angular.module('nav.egennaering', [])
         var prosentFeil = false;
 
         $scope.summererAndeleneTil100 = function () {
-            if ($scope.erSynlig('gardsbruk')) {
+            if ($scope.erSynlig('egennaering.gardsbruk')) {
                 $scope.totalsumAndel.value = "";
                 prosentFeil = false;
 
                 var andel = "";
-                if ($scope.gardseier("jegEierGardsbruk")) {
-                    andel = parseInt(data.finnFaktum("dinAndelGardsbruk").value);
+                if ($scope.gardseier("egennaering.gardsbruk.false.eier.jeg")) {
+                    andel = parseInt(data.finnFaktum("egennaering.gardsbruk.false.eierandel.din").value);
                 }
-                if ($scope.gardseier("ektefelleEierGardsbruk")) {
-                    andel += parseInt(data.finnFaktum("ektefelleAndelGardsbruk").value);
+                if ($scope.gardseier("egennaering.gardsbruk.false.eier.ektefelle")) {
+                    andel += parseInt(data.finnFaktum("egennaering.gardsbruk.false.eierandel.ektefelle").value);
                 }
-                if ($scope.gardseier("annetEierGardsbruk")) {
-                    andel += parseInt(data.finnFaktum("annetAndelGardsbruk").value);
+                if ($scope.gardseier("egennaering.gardsbruk.false.eier.annet")) {
+                    andel += parseInt(data.finnFaktum("egennaering.gardsbruk.false.eierandel.annet").value);
                 }
 
                 if (isNaN(andel) || andel == '') {
@@ -172,10 +172,9 @@ angular.module('nav.egennaering', [])
         }
 
         $scope.$watch(function () {
-            return data.finnFaktum('gardsbruk').value;
+            return data.finnFaktum('egennaering.gardsbruk').value;
             },function () {
-            if(data.finnFaktum('gardsbruk').value == 'false') {
-                console.log("he")
+            if(data.finnFaktum('egennaering.gardsbruk').value == 'false') {
                 settBreddeSlikAtDetFungererIIE();
             }
         })
