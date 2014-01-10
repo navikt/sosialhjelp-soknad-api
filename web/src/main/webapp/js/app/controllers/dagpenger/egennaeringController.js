@@ -2,14 +2,14 @@ angular.module('nav.egennaering', [])
     .controller('EgennaeringCtrl', ['$scope', 'Faktum', 'data', function ($scope, Faktum, data) {
         $scope.navigering = {nesteside: 'verneplikt'};
         $scope.sidedata = {navn: 'egennaering'};
-        $scope.orgnummer = data.finnFakta('egennaering_orgnummer');
+        $scope.orgnummer = data.finnFakta('egennaering.drivergennaering.orgnummer');
         $scope.aarstall = [];
 
 
         $scope.leggTilOrgnr = function () {
             $scope.orgnummer.push(new Faktum(
                 {
-                    key: 'egennaering_orgnummer',
+                    key: 'egennaering.drivergennaering.orgnummer',
                     value: '',
                     soknadId: data.soknad.soknadId
 

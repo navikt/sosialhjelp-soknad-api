@@ -12,10 +12,10 @@
         <p data-cmstekster="egennaering.driveregennaering.false.informasjon.2"></p>
     </div>
 
-    <div data-ng-repeat="egennaering_orgnummer in orgnummer">
+    <div data-ng-repeat="egennaering_drivergennaering_orgnummer in orgnummer">
         <div class="orgnummer-repeat">
             <div data-navorganisasjonsnummerfelt
-                 data-nav-faktum="egennaering_orgnummer"
+                 data-nav-faktum="egennaering_drivergennaering_orgnummer"
                  data-navconfig
                  data-navlabel="egennaering.driveregennaering.false.organisasjonsnummer"
                  data-navfeilmelding="{ required: 'egennaering.driveregennaering.false.organisasjonsnummer.feilmelding', pattern: 'organisasjonsnummer.format.feilmelding'}"
@@ -32,23 +32,18 @@
 
     <div class="tekstfelt form-linje arbeidsmengde-container">
         <label>
-            <span data-cmstekster=" egennaering.driveregennaering.arbeidsmengde"></span>
-            <!--Tillater desimaltall med . og ,-->
-            <input data-ng-model="faktum.value"
-                   type="text"
-                   data-ng-required="erSynlig('driverEgennaering')"
-                   data-error-messages="'egennaering.driveregennaering.arbeidsmengde.feilmelding'"
-                   data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
-                   data-blur-validate
-                   data-tekstfelt-patternvalidering
-                   data-nav-faktum="arbeidsmengdeEgennaering"
+            <span data-cmstekster="egennaering.driveregennaering.arbeidsmengde"></span>
+            <input type="text"
+                   data-ng-model="faktum.value"
+                   data-nav-faktum="egennaering.driveregennaering.arbeidsmengde"
                    data-navconfig
-                   name="arbeidsmengdeEgennaering"/>
+                   data-ng-required="erSynlig('driverEgennaering')"
+                   data-error-messages="{required:'egennaering.driveregennaering.arbeidsmengde.feilmelding',
+                   pattern: 'regex.tall.komma.punktum'}"
+                   data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
+                   data-tekstfelt-patternvalidering
+                   data-blur-validate/>
             <span class="timer" data-cmstekster="egennaering.driveregennaering.arbeidsmengde.timer"></span>
-            <span class="melding" data-ng-if="egennaeringForm.arbeidsmengdeEgennaering.$error.required"
-                  data-cmstekster="egennaering.driveregennaering.arbeidsmengde.feilmelding"></span>
-            <span class="melding" data-ng-if="egennaeringForm.arbeidsmengdeEgennaering.$error.pattern"
-                  data-cmstekster="regex.tall.komma.punktum"></span>
         </label>
     </div>
 </div>
@@ -62,6 +57,7 @@
         <p data-cmstekster="egennaering.gardsbruk.false.informasjon.1">
 
         <p data-cmstekster="egennaering.gardsbruk.false.informasjon.2">
+
         <p data-cmstekster="egennaering.gardsbruk.false.informasjon.3">
     </div>
 
