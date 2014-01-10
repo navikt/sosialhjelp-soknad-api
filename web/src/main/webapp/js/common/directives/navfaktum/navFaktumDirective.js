@@ -1,4 +1,28 @@
 angular.module('nav.navfaktum', [])
+    .directive('navFaktumProperty', [function () {
+        return {
+            replace: false,
+            scope: true,
+            controller: ['$scope', '$attrs', '$filter', 'data', 'Faktum', function ($scope, $attrs, $filter, data, Faktum) {
+                var val = $scope.parentFaktum.properties[$attrs.navFaktumProperty];
+                if (val && val.match(/\d\d\d\d\.\d\d\.\d\d/)) {
+                     val = new Date(val);
+                }
+
+                $scope.faktum = {key: $attrs.navFaktumProperty, value:val};
+                $scope.$watch('faktum.value', function(newValue) {
+                    if(newValue) {
+                        var value = newValue;
+                        if (angular.isDate(value)) {
+                            value = $filter('date')(value, 'yyyy.MM.dd');
+                        } else {
+                            value = value.toString();
+                        }
+                        $scope.parentFaktum.properties[$attrs.navFaktumProperty] = value;
+                    }
+                });
+            }]}
+        }])
     .directive('navFaktum', [function () {
         return {
             replace: false,
@@ -9,10 +33,10 @@ angular.module('nav.navfaktum', [])
                 $scope.ikkeAutoLagre = $attrs.ikkeAutoLagre;
                 var satt = false;
 
-                if ($scope[$attrs.navFaktum]) {
+                if($scope[$attrs.navFaktum]) {
                     $scope.faktum = $scope[$attrs.navFaktum];
                     satt = true;
-                } else {
+                } else if(!$attrs.navNyttFaktum){
                     data.fakta.forEach(function (faktum) {
                         if (faktum.key === faktumNavn) {
                             $scope.faktum = faktum;
@@ -44,20 +68,20 @@ angular.module('nav.navfaktum', [])
                 }
 
                 $scope.lagreFaktum = function () {
-                    if (props) {
-                        props.forEach(function (prop) {
-                            var value = $scope.navproperties[prop];
-                            if (value != undefined) {
-                                if (angular.isDate(value)) {
-                                    value = $filter('date')(value, 'yyyy.MM.dd')
-                                } else {
-                                    value = value.toString();
+                    if(!$scope.ikkeAutoLagre) {
+                        if (props) {
+                            props.forEach(function (prop) {
+                                var value = $scope.navproperties[prop];
+                                if (value != undefined) {
+                                    if (angular.isDate(value)) {
+                                        value = $filter('date')(value, 'yyyy.MM.dd');
+                                    } else {
+                                        value = value.toString();
+                                    }
                                 }
-                            }
-                            $scope.parentFaktum.properties[prop] = value;
-                        })
-                    }
-                    if (!$scope.ikkeAutoLagre) {
+                                $scope.parentFaktum.properties[prop] = value;
+                            })
+                        }
                         $scope.parentFaktum.$save();
                     }
                 }

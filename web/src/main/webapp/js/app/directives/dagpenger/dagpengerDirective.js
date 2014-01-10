@@ -47,3 +47,16 @@ angular.module('nav.dagpengerdirective', [])
             }
         }
     }])
+
+angular.module("nav.norskDatoFilter", []).filter("norskdato" , function() {
+    return function(input) {
+        var monthNames = ['Januar', 'Februar','Mars', 'April','Mai', 'Juni','Juli', 'August','September', 'Oktober','November', 'Desember']; 
+        if(input) {
+            var dag = input.substring(0,2);
+            var mnd = input.substring(3,5);
+            var year =input.substring(6,10);
+            return dag +". " + monthNames[mnd-1] + " " + year;
+        }
+        return input;
+    }
+});

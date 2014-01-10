@@ -21,9 +21,10 @@ angular.module('app.directives', [
     'nav.bildenavigering',
     'nav.navfaktum',
     'nav.accordion',
-    'nav.barnetillegg.directive',
+    'nav.scroll.directive',
     'nav.scrollbar',
     'nav.dagpengerdirective',
     'nav.skjematittel',
-    'nav.aria'
+    'nav.aria',
+    'nav.norskDatoFilter'
 ]);

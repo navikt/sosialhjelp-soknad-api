@@ -1,43 +1,81 @@
-<p class="sluttaarsak-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.permittert.informasjon"/>
+<div>
+    <p class="sluttaarsak-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.permittert.informasjon"/>
 
-<div class="varighet">
-    <p data-cmstekster="arbeidsforhold.arbeidsgiver.permittert.varighet"></p>
+    <div data-nav-faktum="sluttaarsak"
+        data-ikke-auto-lagre="true">
 
-    <div data-nav-dato-intervall
-         data-fra-dato="af.permittertFraDato"
-         data-til-dato="af.permittertTilDato"
-         data-er-fradato-required="true"
-         data-er-fremtidigdato-tillatt="true"
-         data-label="arbeidsforhold.arbeidsgiver.permittert.varighet">
+        <div class="varighet form-linje">
+            <div data-nav-dato
+                 data-ng-model="sluttaarsak.properties.datofra"
+                 data-label="arbeidsforhold.arbeidsgiver.varighet.fra"
+                 data-er-required="true"
+                 data-required-error-message="arbeidsforhold.arbeidsgiver.varighet.fra.feilmelding">
+            </div>
+        </div>
+
+        <p data-cmstekster="arbeidsforhold.arbeidsgiver.permittert.varighet"></p>
+        <div class="varighet">
+            <div data-nav-dato-intervall
+                 data-fra-dato="faktum.properties.permiteringsperiodedatofra"
+                 data-til-dato="faktum.properties.permiteringsperiodedatotil"
+                 data-label="arbeidsforhold.arbeidsgiver.permittert.varighet"
+                 data-er-fremtidigdato-tillatt="true"
+                 data-er-fradato-required="true">
+            </div>
+        </div>
+
+        <p data-cmstekster="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet"></p>
+        <div class="varighet">
+            <div data-nav-dato-intervall
+                 data-fra-dato="faktum.properties.lonnspliktigperiodedatofra"
+                 data-til-dato="faktum.properties.lonnspliktigperiodedatotil"
+                 data-label="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet"
+                 data-er-fremtidigdato-tillatt="true"
+                 data-er-fradato-required="true">
+            </div>
+        </div>
+
+        <p data-cmstekster="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.informasjon"></p>
+
+        <div class="tekstfelt form-linje prosentfelt">
+            <label>
+                <span class="labeltekst" data-cmstekster="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad"></span>
+                <input data-ng-model="sluttaarsak.properties.permitteringProsent" 
+                        type="text" 
+                        data-ng-required="true"
+                        data-error-messages="{required:'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.feilmelding', pattern: 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.pattern.feilmelding'}"
+                        data-ng-pattern="/^\d+$/" 
+                        data-blur-validate
+                        data-ng-blur="settPermitteringsflagg($event)" 
+                        maxlength="3" 
+                        data-tekstfelt-patternvalidering/>
+                <span class="prosent" data-cmstekster="egennaering.prosent"></span>
+                <span class="melding"></span>
+            </label>
+        </div>
+
+        <div data-ng-show="skalVisePermitteringInfo">
+            <div data-navinfoboks>
+                <p data-cmstekster="arbeidsforhold.sluttaarsak.permittert.forlite"></p>
+            </div>
+        </div>
+
+        <p class="sluttaarsak-tilleggsinformasjon">
+            <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.1"></span>
+            <ul>
+                <li> 
+                    <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></span>
+                </li>
+                <li> 
+                    <span data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2"></span>
+                    <a href="http://TODO.com" data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2.lenketekst">
+                    </a>
+                </li>
+                <li> 
+                    <span data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.3"></span>
+                </li>
+            </ul>
+            <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.2"></span>
+        </p>
     </div>
-
-    <p data-cmstekster="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet"></p>
-    <div data-nav-dato-intervall
-         data-fra-dato="af.permittertLonnspliktFraDato"
-         data-til-dato="af.permittertLonnspliktTilDato"
-         data-er-begge-required="true"
-         data-er-fremtidigdato-tillatt="true"
-         data-label="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet">
-    </div>
-
 </div>
-
-<div class="sporsmaal form-linje">
-    <label>
-        <span data-cmstekster="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad"></span>
-        <select id="permitteringProsent"
-                type="text"
-                data-ng-model="af.permitteringProsent"
-                data-error-messages="'arbeidsforhold.sluttaarsak.permittert.grad.feilmelding'"
-                data-ng-options="obj.id as obj.name for obj in permitteringsgrad"
-                data-required
-                data-blur-validate>
-            <option value="" data-cmstekster="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.placeholder"></option>
-        </select>
-        <span class="melding"></span>
-    </label>
-    <div data-ng-if="af.permitteringProsent < 50 ">
-        <p data-cmstekster="arbeidsforhold.sluttaarsak.permittert.forlite"/>
-    </div>
-</div>
-
