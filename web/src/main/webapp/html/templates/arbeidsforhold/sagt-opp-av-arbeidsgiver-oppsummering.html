@@ -1,23 +1,27 @@
-<p class="svar-oppsummering-informasjon"
-   data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.informasjon"></p>
-<p  class="svar-oppsummering-informasjon" cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.informasjon.oppsigelsestid"></p>
-
-<p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.sporsmal"></p>
-<p class="svar-oppsummering">
-    <span>{{af.varighetFra | date:'dd.MM.yyyy'}} - </span>
-    <span>{{af.varighetTil | date:'dd.MM.yyyy'}} </span>
-</p>
-
-<p class="svar-oppsummering-sporsmal"
-   data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.sporsmal"></p>
-
-<div data-ng-show="af.sagtOppAvArbeidsgiverTilbudomjobbannetsted">
-    <p class="svar-oppsummering"
-       data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true"></p>
-    <p class="svar-oppsummering-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true.informasjon"></p>
-
+<div class="varighet">
+    <span data-ng-bind="af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy' | norskdato"></span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil"> TIL </span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil" data-ng-bind="af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy' | norskdato"></span>
 </div>
-<div data-ng-show="af.sagtOppAvArbeidsgiverTilbudomjobbannetsted == 'false'">
-    <p class="svar-oppsummering"
-       data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.false"></p>
-</div>
+
+<ul>
+    <li>
+        <p data-ng-bind="af.sluttaarsak.properties.type"></p>
+    </li>
+    <li>
+        <span data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.aarsak.sporsmal"></span>
+        <p data-ng-bind="af.sluttaarsak.properties.aarsak"></p>
+    </li>
+    <li>
+        <span data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.sporsmal"></span>
+        <p data-ng-show="af.sluttaarsak.properties.sagtOppAvArbeidsgiverTilbudomjobbannetsted == 'true'" 
+            data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true"></p>
+        <p data-ng-show="af.sluttaarsak.properties.sagtOppAvArbeidsgiverTilbudomjobbannetsted == 'false'" 
+            data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.false"></p>
+    </li>
+    <li>
+         <span data-cmstekster="arbeidsforhold.sluttaarsak.baatelleroffshore.sporsmal"></span>
+         <p data-ng-show="af.sluttaarsak.properties.baatEllerOffshore == 'true'" data-cmstekster="arbeidsforhold.sluttaarsak.baatelleroffshore.true"></p>   
+         <p data-ng-show="af.sluttaarsak.properties.baatEllerOffshore == 'false'" data-cmstekster="arbeidsforhold.sluttaarsak.baatelleroffshore.false"></p> 
+    </li>
+</ul>
