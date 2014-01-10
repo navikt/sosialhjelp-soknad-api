@@ -4,6 +4,7 @@ angular.module('nav.navfaktum', [])
             replace: false,
             scope: true,
             controller: ['$scope', '$attrs', '$filter', 'data', 'Faktum', function ($scope, $attrs, $filter, data, Faktum) {
+                var faktumNavn = $attrs.navFaktum.replace(/_/g, '.');
                 var props = $scope.$eval($attrs.navProperty);
                 $scope.ikkeAutoLagre = $attrs.ikkeAutoLagre;
                 var satt = false;
@@ -13,7 +14,7 @@ angular.module('nav.navfaktum', [])
                     satt = true;
                 } else {
                     data.fakta.forEach(function (faktum) {
-                        if (faktum.key === $attrs.navFaktum) {
+                        if (faktum.key === faktumNavn) {
                             $scope.faktum = faktum;
                             satt = true;
                         }
@@ -22,7 +23,7 @@ angular.module('nav.navfaktum', [])
 
                 if (!satt) {
                     $scope.faktum = new Faktum({
-                            key: $attrs.navFaktum,
+                            key: faktumNavn,
                             soknadId: data.soknad.soknadId,
                             properties: {}
                         }
@@ -56,7 +57,7 @@ angular.module('nav.navfaktum', [])
                             $scope.parentFaktum.properties[prop] = value;
                         })
                     }
-                    if(!$scope.ikkeAutoLagre) {
+                    if (!$scope.ikkeAutoLagre) {
                         $scope.parentFaktum.$save();
                     }
                 }
