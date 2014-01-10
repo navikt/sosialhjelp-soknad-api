@@ -2,14 +2,13 @@ angular.module('nav.reellarbeidssoker', [])
     .controller('ReellarbeidssokerCtrl', ['$scope', 'data', function ($scope, data) {
         $scope.alder = data.alder.alder;
 //        For testing av alder:
-//        $scope.alder = 59;
+        $scope.alder = 59;
 
         $scope.navigering = {nesteside: 'arbeidsforhold'};
         $scope.sidedata = {navn: 'reellarbeidssoker'};
 
-        var deltidnokler = ['reduserthelse', 'omsorgbarnunder1aar', 'eneansvarbarnunder5skoleaar', 'eneansvarbarnopptil18aar', 'omsorgansvar', 'annensituasjon'];
-        var pendlenokler = ['pendlereduserthelse', 'pendleomsorgbarnunder1aar', 'pendleomsorgbarnopptil10', 'pendleeneansvarbarnunder5skoleaar',
-            'pendleeneansvarbarnopptil18aar', 'pendleomsorgansvar',  'pendleannensituasjon' ];
+        var deltidnokler = ['reellarbeidssoker.villigdeltid.reduserthelse', 'reellarbeidssoker.villigdeltid.omsorgbarnunder1aar', 'reellarbeidssoker.villigdeltid.eneansvarbarnunder5skoleaar', 'reellarbeidssoker.villigdeltid.eneansvarbarnopptil18aar', 'reellarbeidssoker.villigdeltid.omsorgansvar', 'reellarbeidssoker.villigdeltid.annensituasjon'];
+        var pendlenokler = ['reellarbeidssoker.villigpendle.reduserthelse', 'reellarbeidssoker.villigpendle.omsorgbarnunder1aar', 'reellarbeidssoker.villigpendle.eneansvarbarnunder5skoleaar', 'reellarbeidssoker.villigpendle.omsorgbarnopptil10', 'reellarbeidssoker.villigpendle.eneansvarbarnopptil18aar', 'reellarbeidssoker.villigpendle.omsorgansvar',  'reellarbeidssoker.villigpendle.annensituasjon' ];
 
         $scope.harHuketAvCheckboksDeltid = {value: ''};
         $scope.harHuketAvCheckboksPendle = {value: ''};
