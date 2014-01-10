@@ -64,6 +64,10 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
         $scope.lagreArbeidsforhold = function(form) {
             var eventString = 'RUN_VALIDATION' + form.$name;
             $scope.$broadcast(eventString);
+            
+            $scope.validateForm(form.$invalid);
+            $scope.runValidation(true);
+
             if (form.$valid) {
                 lagreArbeidsforholdOgSluttaarsak();
             }
