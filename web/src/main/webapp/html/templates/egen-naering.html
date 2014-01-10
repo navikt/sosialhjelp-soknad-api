@@ -1,7 +1,7 @@
 <div class="skjemaramme">
 <div data-ng-form="egennaeringForm" class="skjemainnhold" data-ng-controller="EgennaeringCtrl" data-novalidate>
 <div data-form-errors></div>
-<div data-nav-faktum="driverEgennaering"
+<div data-nav-faktum="egennaering.driveregennaering"
      data-navconfig
      data-booleanradio
      data-nokkel="egennaering.driveregennaering">
@@ -37,7 +37,7 @@
                    data-ng-model="faktum.value"
                    data-nav-faktum="egennaering.driveregennaering.arbeidsmengde"
                    data-navconfig
-                   data-ng-required="erSynlig('driverEgennaering')"
+                   data-ng-required="erSynlig('egennaering.driveregennaering')"
                    data-error-messages="{required:'egennaering.driveregennaering.arbeidsmengde.feilmelding',
                    pattern:'regex.tall.komma.punktum'}"
                    data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
@@ -152,8 +152,8 @@
                 <input data-ng-model="faktum.value"
                        type="text"
                        data-ng-required="gardseier('egennaering.gardsbruk.false.eier.jeg')"
-                       data-error-messages="'egennaering.gardsbruk.false.eierandel.din.feilmelding'"
-                       data-ng-pattern="/\d+/"
+                       data-error-messages="{required:'egennaering.gardsbruk.false.eierandel.din.feilmelding', pattern:'regex.tall'}"
+                       data-ng-pattern="/^\d+$/"
                        data-blur-validate
                        data-ng-blur="summererAndeleneTil100()"
                        maxlength="3"
@@ -170,8 +170,8 @@
                 <input data-ng-model="faktum.value"
                        type="text"
                        data-ng-required="gardseier('egennaering.gardsbruk.false.eier.ektefelle')"
-                       data-error-messages="'egennaering.gardsbruk.false.eierandel.ektefelle.feilmelding'"
-                       data-ng-pattern="/\d+/"
+                       data-error-messages="{required:'egennaering.gardsbruk.false.eierandel.ektefelle.feilmelding', pattern:'regex.tall'}"
+                       data-ng-pattern="/^\d+$/"
                        data-blur-validate
                        data-ng-blur="summererAndeleneTil100()"
                        maxlength="3"
@@ -188,8 +188,8 @@
                 <input data-ng-model="faktum.value"
                        type="text"
                        data-ng-required="gardseier('egennaering.gardsbruk.false.eier.annet')"
-                       data-error-messages="'egennaering.gardsbruk.false.eierandel.annet.feilmelding'"
-                       data-ng-pattern="/\d+/"
+                       data-error-messages="{required:'egennaering.gardsbruk.false.eierandel.annet.feilmelding', pattern:'regex.tall'}"
+                       data-ng-pattern="/^\d+$/"
                        data-blur-validate
                        data-ng-blur="summererAndeleneTil100()"
                        maxlength="3"

@@ -48,7 +48,7 @@ angular.module('nav.egennaering', [])
         }
 
         $scope.gardseier = function (eier) {
-            return data.finnFaktum(eier).value == 'true' && $scope.erSynlig('egennaering.gardsbruk');
+            return data.finnFaktum(eier) && data.finnFaktum(eier).value == 'true' && $scope.erSynlig('egennaering.gardsbruk');
         }
 
         $scope.svartPaHvemEierGardsbruket = function () {
