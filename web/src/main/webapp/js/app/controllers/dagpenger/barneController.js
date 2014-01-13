@@ -240,11 +240,11 @@ angular.module('nav.barn', ['app.services'])
 
                 var result = dagensDato.getFullYear() - year;
 
-                if (dagensDato.getMonth() < maaned) {
+                if (dagensDato.getMonth() + 1 < maaned) {
                     result--;
                 }
 
-                if (dagensDato.getMonth() == maaned && dagensDato.getDate() < dag) {
+                if (dagensDato.getMonth() + 1 == maaned && dagensDato.getDate() < dag) {
                     result--;
                 }
 

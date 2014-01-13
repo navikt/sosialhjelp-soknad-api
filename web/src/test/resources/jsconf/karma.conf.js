@@ -19,6 +19,7 @@ module.exports = function (config) {
             '../../../test/js/lib/TimeoutBoxMock.js',
             '../../../main/webapp/js/lib/angular.js',
             '../jslib/angular-mocks.js',
+            '../../../main/webapp/js/lib/angular-cookies.js',
             '../../../main/webapp/js/lib/angular-resource.js',
             '../../../main/webapp/js/lib/angular-sanitize.js',
             '../../../main/webapp/js/lib/bindonce.js',

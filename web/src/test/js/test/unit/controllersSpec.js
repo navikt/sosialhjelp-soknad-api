@@ -13,6 +13,7 @@ describe('GrunnlagsdataController', function () {
     beforeEach(inject(function (_$httpBackend_, $injector) {
         $scope = $injector.get('$rootScope');
 
+
         $controller = $injector.get('$controller');
 
         $httpBackend = _$httpBackend_;
@@ -29,7 +30,7 @@ describe('DagpengerControllere', function () {
 
     beforeEach(module(function ($provide) {
         $provide.value("data", {alder: {'alder': 61},
-            fakta: [], finnFaktum: function(faktumKey) {}});
+            fakta: [], finnFaktum: function(faktumKey) {}, finnFakta: function(faktumKey) {}});
         $provide.value("cms", {});
         $provide.constant('lagreSoknadData', "OPPDATER_OG_LAGRE");
     }));
