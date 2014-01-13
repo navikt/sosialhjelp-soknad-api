@@ -49,6 +49,10 @@
 }
 
 .andelsfordeling-container {
+  &.aktiv-feilmelding.feil {
+    border: 1px solid #c30000;
+    background-color: #FAD6D6;
+  }
   .andels-fordeling {
     .form-linje {
       width: 45%;
@@ -87,7 +91,6 @@
   &.feil .andels-fordeling .melding {
     display: none;
   }
-
   .prosentmelding {
     clear: both;
   }
