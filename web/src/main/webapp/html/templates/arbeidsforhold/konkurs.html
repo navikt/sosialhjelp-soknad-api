@@ -1,6 +1,6 @@
 <div>
-    <div data-nav-faktum="sluttaarsak"
-        data-ikke-auto-lagre="true">
+    <div class="spm" data-nav-faktum="sluttaarsak"
+         data-ikke-auto-lagre="true">
 
         <div class="varighet form-linje">
             <div data-nav-dato
@@ -29,12 +29,11 @@
              data-feilmelding="arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.feilmelding"
              data-obligatorisk="true"></div>
 
-
-
-
-        <p class="sluttaarsak-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.informasjon"></p>
+        <p class="sluttaarsak-informasjon"
+           data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.informasjon"></p>
 
         <p data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.sporsmal"></p>
+
         <div class="form-linje spm">
             <div class="nav-radio-knapp">
                 <input class="sendsoknad-radio"
@@ -45,11 +44,13 @@
                        data-click-validate
                        data-ng-required="true"
                        data-error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'">
-                <label for='lonnsgaranti1' data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaharsokt"></label>
+                <label for='lonnsgaranti1'
+                       data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaharsokt"></label>
             </div>
 
             <div class="ekstra-spm-boks" data-ng-show="sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'">
-                <p data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.sporsmal"> </p>
+                <p data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.sporsmal"></p>
+
                 <div class="form-linje">
                     <div class="nav-radio-knapp">
                         <input class="sendsoknad-radio"
@@ -60,7 +61,8 @@
                                data-click-validate
                                data-ng-required="sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'"
                                data-error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.feilmelding'">
-                        <label for='lonnsgarantidekker1' data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.nei"></label>
+                        <label for='lonnsgarantidekker1'
+                               data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.nei"></label>
                     </div>
                     <div class="nav-radio-knapp">
                         <input class="sendsoknad-radio"
@@ -71,7 +73,8 @@
                                data-click-validate
                                data-ng-required="sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'"
                                data-error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.feilmelding'">
-                        <label for='lonnsgarantidekker2' data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.ja"></label>
+                        <label for='lonnsgarantidekker2'
+                               data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.ja"></label>
                     </div>
                     <div class="nav-radio-knapp">
                         <input class="sendsoknad-radio"
@@ -82,14 +85,15 @@
                                data-click-validate
                                data-ng-required="sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'"
                                data-error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.feilmelding'">
-                        <label for='lonnsgarantidekker3' data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.vetikke"></label>
+                        <label for='lonnsgarantidekker3'
+                               data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.vetikke"></label>
                     </div>
 
                     <span class="melding"></span>
                 </div>
             </div>
 
-          <div class="nav-radio-knapp">
+            <div class="nav-radio-knapp">
                 <input class="sendsoknad-radio"
                        id="lonnsgaranti2"
                        type="radio"
@@ -98,7 +102,8 @@
                        data-click-validate
                        data-ng-required="true"
                        data-error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'">
-                <label for='lonnsgaranti2' data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaskalsoke"></label>
+                <label for='lonnsgaranti2'
+                       data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaskalsoke"></label>
             </div>
             <div class="nav-radio-knapp">
                 <input class="sendsoknad-radio"
@@ -109,7 +114,8 @@
                        data-click-validate
                        data-ng-required="true"
                        data-error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'">
-                <label for='lonnsgaranti3' data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.nei"></label>
+                <label for='lonnsgaranti3'
+                       data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.nei"></label>
             </div>
 
             <span class="melding"></span>
@@ -126,25 +132,23 @@
              data-nav-faktum-property="lonnkonkursmaaned"
              data-nokkel="arbeidsforhold.sluttaarsak.konkurs.lonnkonkursmaaned"></div>
 
-
-        <p class="sluttaarsak-tilleggsinformasjon">
-            <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.1"></span>
+        <div class="ekstra-spm-boks" data-vedlegginfoboks>
             <ul>
-                <li> 
-                    <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></span>
+                <li>
+                    <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></p>
                 </li>
-                <li> 
-                    <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2"></span>
+                <li>
+                    <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2"></p>
                     <a href="http://TODO.com" data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst">
                     </a>
                 </li>
-                <li> 
-                    <span data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3"></span>
-                    <a href="http://TODO.com" data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3.lenketekst">
+                <li>
+                    <p data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3"></p>
+                    <a href="http://TODO.com"
+                       data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3.lenketekst">
                     </a>
                 </li>
             </ul>
-            <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.2"></span>
-        </p>
+        </div>
     </div>
 </div>
