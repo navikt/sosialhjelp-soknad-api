@@ -4,14 +4,27 @@
     <div data-nav-faktum="sluttaarsak"
         data-ikke-auto-lagre="true">
         
-        <div class="varighet">
-            <div data-nav-dato-intervall
-                 data-fra-dato="faktum.properties.datofra"
-                 data-til-dato="faktum.properties.datotil"
-                 data-label="arbeidsforhold.arbeidsgiver.varighet"
-                 data-er-begge-required="true">
+
+        <div class="varighet form-linje">
+            <div data-nav-dato
+                 data-ng-model="sluttaarsak.properties.datofra"
+                 data-label="arbeidsforhold.arbeidsgiver.varighet.fra"
+                 data-er-required="true"
+                 data-required-error-message="arbeidsforhold.arbeidsgiver.varighet.fra.feilmelding">
             </div>
         </div>
+
+        <div class="varighet form-linje">
+            <div data-nav-dato
+                 data-ng-model="sluttaarsak.properties.datotil"
+                 data-label="arbeidsforhold.arbeidsgiver.varighet.til"
+                 data-er-required="true"
+                 data-er-fremtidigdato-tillatt="true"
+                 data-required-error-message="arbeidsforhold.arbeidsgiver.varighet.til.feilmelding">
+            </div>
+        </div>
+
+       
 
         <div data-navtextarea
              data-navconfig
