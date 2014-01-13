@@ -1,41 +1,38 @@
 <div>
-    <div data-nav-faktum="sluttaarsak"
-        data-ikke-auto-lagre="true">
+    <div class="spm" data-nav-faktum="sluttaarsak"
+         data-ikke-auto-lagre="true">
 
         <div class="varighet">
             <div data-nav-dato-intervall
                  data-fra-dato="faktum.properties.datofra"
                  data-til-dato="faktum.properties.datotil"
-                 data-label="arbeidsforhold.arbeidsgiver.varighet"                 
+                 data-label="arbeidsforhold.arbeidsgiver.varighet"
                  data-er-begge-required="true">
             </div>
         </div>
-         
-      <div data-booleanradio
+
+        <div data-booleanradio
              data-navconfig
              data-nav-faktum-property="tilbudomjobbannetsted"
              data-nokkel="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette"></div>
-        
-      <div data-ng-show="sluttaarsak.properties.tilbudomjobbannetsted == 'true'">
-          <div data-navinfoboks>
-              <p data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true.informasjon"></p>
-          </div>
-      </div>
 
-      <p class="sluttaarsak-tilleggsinformasjon">
-          <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.1"></span>
-              <ul>
-                  <li> 
-                      <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></span>
-                  </li>
-                  <li> 
-                      <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2"></span>
-                      <a href="http://TODO.com" data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst">
-                      </a>
-                  </li>
-              </ul>
-          <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.2"></span>
-      </p>
+        <div data-ng-show="sluttaarsak.properties.tilbudomjobbannetsted == 'true'">
+            <div data-navinfoboks>
+                <p data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true.informasjon"></p>
+            </div>
+        </div>
 
+        <div class="ekstra-spm-boks" data-vedlegginfoboks>
+            <ul>
+                <li>
+                    <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></p>
+                </li>
+                <li>
+                    <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2"></p>
+                    <a href="http://TODO.com" data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst">
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
