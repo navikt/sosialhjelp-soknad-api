@@ -43,7 +43,7 @@
                 <input data-ng-model="sluttaarsak.properties.permitteringProsent" 
                         type="text" 
                         data-ng-required="true"
-                        data-error-messages="{required:'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.feilmelding', pattern: 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.pattern.feilmelding'}"
+                        data-error-messages="{required:'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.feilmelding', pattern: 'regex.tall'}"
                         data-ng-pattern="/^\d+$/" 
                         data-blur-validate
                         data-ng-blur="settPermitteringsflagg($event)" 
