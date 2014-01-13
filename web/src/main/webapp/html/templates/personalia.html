@@ -97,6 +97,14 @@
 		<div class="henter-personalia" ng-show="harIkkeHentetPersonalia()">
 			<img src="../img/ajaxloader/hvit/loader_hvit_64.gif" alt="Fremdriftsindikator"/>
 		</div>
+
+
+	   <div data-ng-show="soknadData.fakta.statsborgerskap.value != 'NOR'">
+            <div data-navinfoboks>
+                <p data-cmstekster="personalia.utenlandskstatsborger.informasjon"></p>
+            </div>
+        </div>
+
 		<div data-spmblokkferdig data-nokkel="personalia" data-submit-method="validerPersonalia(personaliaForm)"></div>
 	</div>
 </div>
