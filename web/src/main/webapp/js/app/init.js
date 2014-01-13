@@ -74,7 +74,6 @@ angular.module('sendsoknad')
 
         var alder = $resource('/sendsoknad/rest/soknad/personalder').get(
             function (result) { // Success
-                data.alder = result;
                 personalia.alder = result.alder;
             }
         );
