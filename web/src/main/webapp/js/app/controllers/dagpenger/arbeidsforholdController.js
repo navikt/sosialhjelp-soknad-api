@@ -1,5 +1,10 @@
 angular.module('nav.arbeidsforhold.controller', [])
     .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams, $cookieStore, $location, data, Faktum) {
+        
+        $scope.$on('VALIDER_ARBEIDSFORHOLD', function () {
+            $scope.validerArbeidsforhold(false);
+        });
+
         $scope.templates = {
             'Kontrakt utgått': {oppsummeringsurl: '../html/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html'},
             'Avskjediget': {oppsummeringsurl: '../html/templates/arbeidsforhold/avskjediget-oppsummering.html' },
@@ -61,7 +66,11 @@ angular.module('nav.arbeidsforhold.controller', [])
 
         $scope.validerOgSettModusOppsummering = function (form) {
             $scope.validateForm(form.$invalid);
-            $scope.runValidation(true);
+            $scope.validerArbeidsforhold(true);
+        }
+
+        $scope.validerArbeidsforhold = function (skalScrolle) {
+            $scope.runValidation(skalScrolle);
         }
 
         $scope.nyttArbeidsforhold = function ($event) {
