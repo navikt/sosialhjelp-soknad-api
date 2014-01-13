@@ -9,9 +9,6 @@
                 <span data-cmstekster="ytelser.sporsmal"></span>
             </h4>
 
-            <div data-navcheckbox
-                 data-navconfig data-nav-faktum="stonadFisker"
-                 data-navlabel="ytelser.stonadFisker" data-navendret="endreYtelse(ytelserForm)"></div>
 
             <div data-navcheckbox
                  data-navconfig data-nav-faktum="offentligTjenestepensjon"
@@ -34,24 +31,10 @@
             </div>
 
             <div data-navcheckbox
-                 data-navconfig data-nav-faktum="vartpenger"
-                 data-navlabel="ytelser.vartpenger" data-navendret="endreYtelse(ytelserForm)">
+                 data-navconfig data-nav-faktum="stonadFisker"
+                 data-navlabel="ytelser.stonadFisker" data-navendret="endreYtelse(ytelserForm)"></div>
 
-                <div data-navtekst
-                     data-navconfig data-nav-faktum="vartpengerUtbetaler"
-                     data-navlabel="ytelser.vartpengerUtbetaler"
-                     data-navfeilmelding="ytelser.vartpengerUtbetaler.feilmelding"></div>
-            </div>
 
-            <div data-navcheckbox
-                 data-navconfig data-nav-faktum="etterlonn"
-                 data-navlabel="ytelser.etterlonn" data-navendret="endreYtelse(ytelserForm)">
-
-                <div data-navtekst
-                     data-navconfig data-nav-faktum="etterlonnUtbetaler"
-                     data-navlabel="ytelser.etterlonnUtbetaler"
-                     data-navfeilmelding="ytelser.etterlonnUtbetaler.feilmelding"></div>
-            </div>
             <div data-navcheckbox
                  data-navconfig
                  data-nav-faktum="garantilott"
@@ -63,6 +46,28 @@
                      data-navlabel="ytelser.garantilottUtbetaler"
                      data-navfeilmelding="ytelser.garantilottUtbetaler.feilmelding"></div>
             </div>
+
+            <div data-navcheckbox
+                 data-navconfig data-nav-faktum="etterlonn"
+                 data-navlabel="ytelser.etterlonn" data-navendret="endreYtelse(ytelserForm)">
+
+                <div data-navtekst
+                     data-navconfig data-nav-faktum="etterlonnUtbetaler"
+                     data-navlabel="ytelser.etterlonnUtbetaler"
+                     data-navfeilmelding="ytelser.etterlonnUtbetaler.feilmelding"></div>
+            </div>
+
+            <div data-navcheckbox
+                 data-navconfig data-nav-faktum="vartpenger"
+                 data-navlabel="ytelser.vartpenger" data-navendret="endreYtelse(ytelserForm)">
+
+                <div data-navtekst
+                     data-navconfig data-nav-faktum="vartpengerUtbetaler"
+                     data-navlabel="ytelser.vartpengerUtbetaler"
+                     data-navfeilmelding="ytelser.vartpengerUtbetaler.feilmelding"></div>
+            </div>
+
+
             <div data-navcheckbox
                 data-navconfig
                 data-nav-faktum="dagpengerEOS"
@@ -172,12 +177,10 @@
             data-booleanradio
             data-nokkel="ytelser.ikkeavtale"></div>
 
-            <div data-navtekst
+            <div data-navtextarea
                  data-navconfig
                  data-ng-if="hvisAvtaleInngaatt()"
                  data-nav-faktum="avtaleBeskrivelse"
-                 data-navmaxlength="50"
-                 data-navminlength="5"
                  data-regexvalidering="/^[-a-zA-Z0-9æøåÆØÅ _+§%()]*$/"
                  data-navlabel="ytelser.ikkeavtale.hvaslagsavtale"
                  data-navfeilmelding="ytelser.ikkeavtale.avtale.feilmelding"></div>
