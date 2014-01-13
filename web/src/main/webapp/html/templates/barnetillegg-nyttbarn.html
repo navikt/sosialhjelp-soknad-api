@@ -26,7 +26,10 @@
                                 <input name="fornavn"
                                        data-error-messages="'barnetillegg.nyttbarn.fornavn.feilmelding'" type="text"
                                        data-ng-model="barn.properties.fornavn"
-                                       data-blur-validate required>
+                                       data-blur-validate
+                                       data-maxlength="200"
+                                       maxlength="200"
+                                       required>
                                 <span class="melding"></span>
                             </label>
                         </div>
@@ -36,7 +39,10 @@
                                 <input name="fnr"
                                        data-error-messages="'barnetillegg.nyttbarn.etternavn.feilmelding'" type="text"
                                        data-ng-model="barn.properties.etternavn"
-                                       data-blur-validate required>
+                                       data-blur-validate 
+                                       data-maxlength="200"
+                                       maxlength="200"
+                                       required>
                                 <span class="melding"></span>
                             </label>
                         </div>
@@ -113,7 +119,10 @@
                                                type="text"
                                                data-ng-pattern="/\d+/"
                                                data-ng-model="nyttbarn.barneinntekttall.value"
-                                               data-blur-validate required="barnetHarInntekt()">
+                                               data-blur-validate 
+                                               data-maxlength="200"
+                                               maxlength="200"
+                                               required="barnetHarInntekt()">
                                         <span class="melding"></span>
                                     </label>
                                 </div>
