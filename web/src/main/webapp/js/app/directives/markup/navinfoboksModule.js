@@ -6,4 +6,12 @@ angular.module('nav.markup.navinfoboks', [])
             transclude: true,
             templateUrl: '../js/app/directives/markup/navinfoboksTemplate.html'
         }
+    }])
+    .directive('vedlegginfoboks', [function () {
+        return {
+            restrict: 'A',
+            replace: true,
+            transclude: true,
+            templateUrl: '../js/app/directives/markup/vedlegginfoboksTemplate.html'
+        }
     }]);
