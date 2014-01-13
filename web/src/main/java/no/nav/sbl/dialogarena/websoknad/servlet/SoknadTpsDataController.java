@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.FamilieRelasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonService;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -105,7 +107,28 @@ public class SoknadTpsDataController {
             }
         }
 
-        return person;
+        // TODO: Fjern en gang!
+        List<Adresse> adresser = new ArrayList<>();
+        Adresse ad1 = new Adresse(new Long(soknadId), Adressetype.BOSTEDSADRESSE);
+        ad1.setGatenavn("Gata");
+        ad1.setHusnummer("1");
+        ad1.setHusbokstav("B");
+        ad1.setPostnummer("0001");
+        ad1.setPoststed("Plassen");
+        adresser.add(ad1);
+
+        Adresse ad2 = new Adresse(new Long(soknadId), Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE);
+        ad2.setGatenavn("Gata");
+        ad2.setHusnummer("1");
+        ad2.setHusbokstav("B");
+        ad2.setPostnummer("0001");
+        ad2.setPoststed("Plassen");
+        ad2.setGyldigtil(DateTime.parse("2015-01-01"));
+
+        adresser.add(ad1);
+        adresser.add(ad2);
+        Person MockPerson = new Person(new Long(soknadId), "***REMOVED***", "Bob", "Kåre", "Byggmester", Adressetype.BOSTEDSADRESSE.toString(), adresser);
+        return MockPerson;
     }
 
     @RequestMapping(value = "/{soknadId}/familierelasjoner", method = RequestMethod.GET, produces = "application/json")
