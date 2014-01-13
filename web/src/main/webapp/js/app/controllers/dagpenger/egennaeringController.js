@@ -28,7 +28,7 @@ angular.module('nav.egennaering', [])
                 }));
         }
         //Orgnrfeltet genreres så lenge det ikke finnes et fra før ved f.eks refresh
-        if ($scope.orgnummer.length == 0) {
+        if ($scope.orgnummer && $scope.orgnummer.length == 0) {
             $scope.leggTilOrgnr();
         }
 
