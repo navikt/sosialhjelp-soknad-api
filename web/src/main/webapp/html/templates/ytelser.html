@@ -69,21 +69,21 @@
 
 
             <div data-navcheckbox
-                data-navconfig
-                data-nav-faktum="dagpengerEOS"
-                data-navlabel="ytelser.dagpengerEOS" data-navendret="endreYtelse(ytelserForm)">
+                 data-navconfig
+                 data-nav-faktum="dagpengerEOS"
+                 data-navlabel="ytelser.dagpengerEOS" data-navendret="endreYtelse(ytelserForm)">
 
-            <div class="land">
-                <div nav-select
-                     nav-faktum="dagpengerEOSUtbetalerLand"
-                     data-navconfig
-                     data-label="ytelser.dagpengerEOSUtbetaler"
-                     data-options="land.result"
-                     data-er-required="hvisHarDagpengerEOS()"
-                     data-required-feilmelding="ytelser.dagpengerEOSUtbetaler.feilmelding"
-                     data-ugyldig-feilmelding="ytelser.dagpengerEOSUtbetaler.ugyldig.feilmelding">
+                <div class="land">
+                    <div nav-select
+                         nav-faktum="dagpengerEOSUtbetalerLand"
+                         data-navconfig
+                         data-label="ytelser.dagpengerEOSUtbetaler"
+                         data-options="land.result"
+                         data-er-required="hvisHarDagpengerEOS()"
+                         data-required-feilmelding="ytelser.dagpengerEOSUtbetaler.feilmelding"
+                         data-ugyldig-feilmelding="ytelser.dagpengerEOSUtbetaler.ugyldig.feilmelding">
+                    </div>
                 </div>
-            </div>
 
             </div>
 
@@ -111,7 +111,7 @@
             <span class="melding" data-cmstekster="ytelser.minstEnCheckboksErAvhuket.feilmelding"></span>
         </div>
         <div class="spm form-linje checkbox" data-checkbox-validate>
-             <input type="hidden" data-ng-model="harHuketAvCheckboksNavYtelse.value" data-ng-required="true"
+            <input type="hidden" data-ng-model="harHuketAvCheckboksNavYtelse.value" data-ng-required="true"
                    data-error-messages="'ytelser.minstEnCheckboksErAvhuket.navYtelserfeilmelding'">
             <h4 class="spm-sporsmal">
                 <span data-cmstekster="ytelser.nav.informasjon"></span>
@@ -173,9 +173,9 @@
             </h4>
 
             <div data-nav-faktum="ikkeavtale"
-            data-navconfig
-            data-booleanradio
-            data-nokkel="ytelser.ikkeavtale"></div>
+                 data-navconfig
+                 data-booleanradio
+                 data-nokkel="ytelser.ikkeavtale"></div>
 
             <div data-navtextarea
                  data-navconfig
@@ -184,12 +184,17 @@
                  data-regexvalidering="/^[-a-zA-Z0-9æøåÆØÅ _+§%()]*$/"
                  data-navlabel="ytelser.ikkeavtale.hvaslagsavtale"
                  data-navfeilmelding="ytelser.ikkeavtale.avtale.feilmelding"></div>
-            <div class="infoboks" data-ng-if="hvisAvtaleInngaatt()" cmstekster="ytelser.avtale.dokumentasjon"> </div>
 
+            <div data-vedlegginfoboks data-ng-if="hvisAvtaleInngaatt()">
+                <ul>
+                    <li><p data-cmstekster="ytelser.avtale.dokumentasjon"></p></li>
+                </ul>
+            </div>
             <!-- <span class="melding"></span> -->
         </div>
 
         <div data-spmblokkferdig data-nokkel="ytelser"
              data-submit-method="validerOgSettModusOppsummering(ytelserForm)"></div>
-    
+
+    </div>
 </div>

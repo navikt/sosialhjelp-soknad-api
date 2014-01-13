@@ -21,10 +21,29 @@
         <span data-ng-if="af.sluttaarsak.properties.lonnspliktigperiodedatotil" data-ng-bind="af.sluttaarsak.properties.lonnspliktigperiodedatotil | date:'dd.MM.yyyy'"></span>
     </li>
     <li>
-        <span data-cmstekster="regex.tall"></span>
+        <span data-cmstekster="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad"></span>
         <p>
             <span data-ng-bind="af.sluttaarsak.properties.permitteringProsent"></span>
             <span class="prosent" data-cmstekster="egennaering.prosent"></span>
         </p>
     </li>
 </ul>
+
+
+<div data-vedlegginfoboks>
+    <ul>
+        <li>
+            <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></p>
+        </li>
+        <li>
+            <p data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2"></p>
+            <a href="http://TODO.com"
+               data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2.lenketekst">
+            </a>
+        </li>
+        <li>
+            <p data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.3"></p>
+        </li>
+    </ul>
+    </p>
+</div>
