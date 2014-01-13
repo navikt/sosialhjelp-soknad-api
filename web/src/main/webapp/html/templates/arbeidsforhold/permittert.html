@@ -1,8 +1,8 @@
 <div>
     <p class="sluttaarsak-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.permittert.informasjon"/>
 
-    <div data-nav-faktum="sluttaarsak"
-        data-ikke-auto-lagre="true">
+    <div class="spm" data-nav-faktum="sluttaarsak"
+         data-ikke-auto-lagre="true">
 
         <div class="varighet form-linje">
             <div data-nav-dato
@@ -14,6 +14,7 @@
         </div>
 
         <p data-cmstekster="arbeidsforhold.arbeidsgiver.permittert.varighet"></p>
+
         <div class="varighet">
             <div data-nav-dato-intervall
                  data-fra-dato="faktum.properties.permiteringsperiodedatofra"
@@ -25,6 +26,7 @@
         </div>
 
         <p data-cmstekster="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet"></p>
+
         <div class="varighet">
             <div data-nav-dato-intervall
                  data-fra-dato="faktum.properties.lonnspliktigperiodedatofra"
@@ -39,16 +41,17 @@
 
         <div class="tekstfelt form-linje prosentfelt">
             <label>
-                <span class="labeltekst" data-cmstekster="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad"></span>
-                <input data-ng-model="sluttaarsak.properties.permitteringProsent" 
-                        type="text" 
-                        data-ng-required="true"
-                        data-error-messages="{required:'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.feilmelding', pattern: 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.pattern.feilmelding'}"
-                        data-ng-pattern="/^\d+$/" 
-                        data-blur-validate
-                        data-ng-blur="settPermitteringsflagg($event)" 
-                        maxlength="3" 
-                        data-tekstfelt-patternvalidering/>
+                <span class="labeltekst"
+                      data-cmstekster="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad"></span>
+                <input data-ng-model="sluttaarsak.properties.permitteringProsent"
+                       type="text"
+                       data-ng-required="true"
+                       data-error-messages="{required:'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.feilmelding', pattern: 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.pattern.feilmelding'}"
+                       data-ng-pattern="/^\d+$/"
+                       data-blur-validate
+                       data-ng-blur="settPermitteringsflagg($event)"
+                       maxlength="3"
+                       data-tekstfelt-patternvalidering/>
                 <span class="prosent" data-cmstekster="egennaering.prosent"></span>
                 <span class="melding"></span>
             </label>
@@ -60,22 +63,22 @@
             </div>
         </div>
 
-        <p class="sluttaarsak-tilleggsinformasjon">
-            <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.1"></span>
+        <div class="ekstra-spm-boks" data-vedlegginfoboks>
             <ul>
-                <li> 
-                    <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></span>
+                <li>
+                    <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></p>
                 </li>
-                <li> 
-                    <span data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2"></span>
-                    <a href="http://TODO.com" data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2.lenketekst">
+                <li>
+                    <p data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2"></p>
+                    <a href="http://TODO.com"
+                       data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2.lenketekst">
                     </a>
                 </li>
-                <li> 
-                    <span data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.3"></span>
+                <li>
+                    <p data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.3"></p>
                 </li>
             </ul>
-            <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.2"></span>
-        </p>
+            </p>
+        </div>
     </div>
 </div>
