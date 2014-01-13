@@ -1,6 +1,5 @@
 angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
-    .controller('ArbeidsforholdNyttCtrl', ['$scope', 'data', 'Faktum', '$location', '$cookieStore', function ($scope, data, Faktum, $location, $cookieStore) {
-        
+    .controller('ArbeidsforholdNyttCtrl', ['$scope', 'data', 'Faktum', '$location', '$cookieStore', function ($scope, data, Faktum, $location, $cookieStore) {        
         $scope.templates = {
             'Kontrakt utgått': {url: '../html/templates/arbeidsforhold/kontrakt-utgaatt.html'},
             'Avskjediget': {url: '../html/templates/arbeidsforhold/avskjediget.html'},
