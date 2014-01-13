@@ -108,7 +108,7 @@ angular.module('nav.egennaering', [])
          Sjekker derfor om foreldre radiospørsmålet slik at andelsfeltene vises.
          */
         $scope.summererAndeleneTil100 = function () {
-            if ($scope.erSynlig('egennaering.gardsbruk')) {
+            if (data.finnFaktum('egennaering.gardsbruk') && data.finnFaktum('egennaering.gardsbruk').value == 'false') {
                 $scope.totalsumAndel.value = "";
                 skalViseAndelsProsentfeil = false;
 
