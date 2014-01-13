@@ -2,55 +2,6 @@ angular.module('nav.egennaering', [])
     .controller('EgennaeringCtrl', ['$scope', 'Faktum', 'data', function ($scope, Faktum, data) {
         $scope.navigering = {nesteside: 'verneplikt'};
         $scope.sidedata = {navn: 'egennaering'};
-        $scope.orgnummer = data.finnFakta('egennaering_orgnummer');
-        $scope.aarstall = [];
-
-        $scope.leggTilOrgnr = function () {
-            $scope.orgnummer.push(new Faktum(
-                {
-                    key: 'egennaering_orgnummer',
-                    value: '',
-                    soknadId: data.soknad.soknadId
-
-                }));
-        }
-
-        if ($scope.orgnummer.length == 0) {
-            $scope.leggTilOrgnr();
-        }
-
-        $scope.slettOrg = function (org, index) {
-
-            org.$delete({soknadId: $scope.soknadData.soknadId}).then(function () {
-                $scope.orgnummer.splice(index, 1);
-            });
-
-        }
-
-        $scope.skalViseSlettKnapp = function (index) {
-            return !(index == 0);
-        }
-
-        $scope.erSynlig = function (faktum) {
-            return data.finnFaktum(faktum) && data.finnFaktum(faktum).value == 'false';
-        }
-
-        $scope.gardseier = function (eier) {
-            return data.finnFaktum(eier).value == 'true' && $scope.erSynlig('gardsbruk');
-        }
-
-        $scope.svartPaHvemEierGardsbruket = function (fakta) {
-            if (!$scope.erSynlig('gardsbruk')) {
-                return false;
-            }
-            for (var i = 0; i < fakta.length; i++) {
-                if (data.finnFaktum(fakta[i]) && data.finnFaktum(fakta[i]).value == 'true') {
-                    return true;
-                }
-            }
-            return false;
-        }
-
 
         $scope.$on('VALIDER_EGENNAERING', function () {
             $scope.validerEgennaering(false);
@@ -66,8 +17,54 @@ angular.module('nav.egennaering', [])
             $scope.runValidation(skalScrolle);
         }
 
-        var typeGardsbrukNokler = ['dyrGardsbruk', 'jordGardsbruk', 'skogGardsbruk', 'annetGardsbruk'];
-        var eierGardsbrukNokler = ['jegEierGardsbruk', 'ektefelleEierGardsbruk', 'annetEierGardsbruk'];
+        $scope.orgnummer = data.finnFakta('egennaering.drivergennaering.orgnummer');
+
+        $scope.leggTilOrgnr = function () {
+            $scope.orgnummer.push(new Faktum(
+                {
+                    key: 'egennaering.drivergennaering.orgnummer',
+                    value: '',
+                    soknadId: data.soknad.soknadId
+                }));
+        }
+        //Orgnrfeltet genreres så lenge det ikke finnes et fra før ved f.eks refresh
+        if ($scope.orgnummer.length == 0) {
+            $scope.leggTilOrgnr();
+        }
+
+        $scope.slettOrg = function (org, index) {
+            org.$delete({soknadId: $scope.soknadData.soknadId}).then(function () {
+                $scope.orgnummer.splice(index, 1);
+            });
+        }
+
+        //Skal ikke kunne slette første orgnr
+        $scope.skalViseSlettKnapp = function (index) {
+            return !(index == 0);
+        }
+
+        $scope.erSynlig = function (faktum) {
+            return data.finnFaktum(faktum) && data.finnFaktum(faktum).value == 'false';
+        }
+
+        $scope.gardseier = function (eier) {
+            return data.finnFaktum(eier) && data.finnFaktum(eier).value == 'true' && $scope.erSynlig('egennaering.gardsbruk');
+        }
+
+        $scope.svartPaHvemEierGardsbruket = function () {
+            if (!$scope.erSynlig('egennaering.gardsbruk')) {
+                return false;
+            }
+            for (var i = 0; i < eierGardsbrukNokler.length; i++) {
+                if (data.finnFaktum(eierGardsbrukNokler[i]) && data.finnFaktum(eierGardsbrukNokler[i]).value == 'true') {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        var typeGardsbrukNokler = ['egennaering.gardsbruk.false.type.dyr', 'egennaering.gardsbruk.false.type.jord', 'egennaering.gardsbruk.false.type.skog', 'egennaering.gardsbruk.false.type.annet'];
+        var eierGardsbrukNokler = ['egennaering.gardsbruk.false.eier.jeg', 'egennaering.gardsbruk.false.eier.ektefelle', 'egennaering.gardsbruk.false.eier.annet'];
         $scope.harHuketAvTypeGardsbruk = {value: ''};
         $scope.harHuketAvEierGardsbruk = {value: ''};
 
@@ -100,41 +97,56 @@ angular.module('nav.egennaering', [])
         $scope.totalsumAndel = {
             value: ''
         }
-        var prosentFeil = false;
+        var skalViseAndelsProsentfeil = false;
 
+        $scope.prosentFeil = function () {
+            return skalViseAndelsProsentfeil;
+        }
+
+        /*
+         Andelsprosentfeltene vises kun dersom det tilsvarende andelseier-feltet er krysset av.
+         Sjekker derfor om foreldre radiospørsmålet slik at andelsfeltene vises.
+         */
         $scope.summererAndeleneTil100 = function () {
-            if ($scope.erSynlig('gardsbruk')) {
+            if (data.finnFaktum('egennaering.gardsbruk') && data.finnFaktum('egennaering.gardsbruk').value == 'false') {
                 $scope.totalsumAndel.value = "";
-                prosentFeil = false;
+                skalViseAndelsProsentfeil = false;
 
-                var andel = "";
-                if ($scope.gardseier("jegEierGardsbruk")) {
-                    andel = parseInt(data.finnFaktum("dinAndelGardsbruk").value);
-                }
-                if ($scope.gardseier("ektefelleEierGardsbruk")) {
-                    andel += parseInt(data.finnFaktum("ektefelleAndelGardsbruk").value);
-                }
-                if ($scope.gardseier("annetEierGardsbruk")) {
-                    andel += parseInt(data.finnFaktum("annetAndelGardsbruk").value);
-                }
+                var andel = summerAndelsprosentene();
 
+                //Hvis feltet vises og er tomt, så skal kun requiredfeilmelding vises
                 if (isNaN(andel) || andel == '') {
-                    prosentFeil = false;
+                    skalViseAndelsProsentfeil = false;
                 }
+                //hvis feltet/ene summerer til 100 så setter en verdi i hidden-feltet som er required
                 else if (andel == 100) {
                     $scope.totalsumAndel.value = "true";
-                    prosentFeil = false;
+                    skalViseAndelsProsentfeil = false;
                 } else {
                     $scope.totalsumAndel.value = "";
-                    prosentFeil = true;
+                    skalViseAndelsProsentfeil = true;
                 }
             } else {
-                prosentFeil = false;
+                skalViseAndelsProsentfeil = false;
             }
         }
 
-        $scope.prosentFeil = function () {
-            return prosentFeil;
+        /*
+         Tar kun hensyn til de prosentandelsfeltene som tilsvarer avhuket eierfelt
+         sånn at man ikke må fylle inn andelsprosent for en eiertype som ikke eier noe
+         */
+        function summerAndelsprosentene() {
+            var sum = "";
+            if ($scope.gardseier("egennaering.gardsbruk.false.eier.jeg")) {
+                sum = parseInt(data.finnFaktum("egennaering.gardsbruk.false.eierandel.din").value);
+            }
+            if ($scope.gardseier("egennaering.gardsbruk.false.eier.ektefelle")) {
+                sum += parseInt(data.finnFaktum("egennaering.gardsbruk.false.eierandel.ektefelle").value);
+            }
+            if ($scope.gardseier("egennaering.gardsbruk.false.eier.annet")) {
+                sum += parseInt(data.finnFaktum("egennaering.gardsbruk.false.eierandel.annet").value);
+            }
+            return sum;
         }
 
         function erCheckboxerAvhuket(checkboxNokler) {
@@ -155,10 +167,12 @@ angular.module('nav.egennaering', [])
             return minstEnAvhuket;
         }
 
+
+        $scope.aarstall = [];
         $scope.forrigeAar = '';
         genererAarstallListe();
 
-
+        //Forrige ar skal være prevalgt
         function genererAarstallListe() {
             var idag = new Date();
             var iAar = idag.getFullYear();
@@ -166,8 +180,25 @@ angular.module('nav.egennaering', [])
             $scope.forrigeAar = (iAar - 1).toString();
 
             for (var i = 0; i < 5; i++) {
-                $scope.aarstall.push('' + (iAar - i));
+                $scope.aarstall.push((iAar - i).toString());
             }
+        }
+
+        /*
+         Når elementet med selectboksen blir synlig skal settBreddeSlikAtDetFungererIIE kjøres for å fikse bredden i IE
+         */
+        $scope.$watch(function () {
+            return data.finnFaktum('egennaering.gardsbruk').value;
+        }, function () {
+            if (data.finnFaktum('egennaering.gardsbruk').value == 'false') {
+                settBreddeSlikAtDetFungererIIE();
+            }
+        })
+
+        function settBreddeSlikAtDetFungererIIE() {
+            setTimeout(function () {
+                $("#egennaeringgardsbrukaar").width($("#egennaeringgardsbrukaar").width());
+            }, 50);
         }
 
     }])

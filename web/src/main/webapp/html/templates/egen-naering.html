@@ -1,7 +1,7 @@
 <div class="skjemaramme">
 <div data-ng-form="egennaeringForm" class="skjemainnhold" data-ng-controller="EgennaeringCtrl" data-novalidate>
 <div data-form-errors></div>
-<div data-nav-faktum="driverEgennaering"
+<div data-nav-faktum="egennaering.driveregennaering"
      data-navconfig
      data-booleanradio
      data-nokkel="egennaering.driveregennaering">
@@ -12,13 +12,13 @@
         <p data-cmstekster="egennaering.driveregennaering.false.informasjon.2"></p>
     </div>
 
-    <div data-ng-repeat="egennaering_orgnummer in orgnummer">
+    <div data-ng-repeat="egennaering_drivergennaering_orgnummer in orgnummer">
         <div class="orgnummer-repeat">
             <div data-navorganisasjonsnummerfelt
-                 data-nav-faktum="egennaering_orgnummer"
+                 data-nav-faktum="egennaering_drivergennaering_orgnummer"
                  data-navconfig
                  data-navlabel="egennaering.driveregennaering.false.organisasjonsnummer"
-                 data-navfeilmelding="egennaering.driveregennaering.false.organisasjonsnummer.feilmelding"
+                 data-navfeilmelding="{ required: 'egennaering.driveregennaering.false.organisasjonsnummer.feilmelding', pattern: 'organisasjonsnummer.format.feilmelding'}"
                  data-navindex="{{$index}}">
             </div>
         </div>
@@ -32,245 +32,260 @@
 
     <div class="tekstfelt form-linje arbeidsmengde-container">
         <label>
-            <span data-cmstekster=" egennaering.driveregennaering.arbeidsmengde"></span>
-            <!--Tillater desimaltall med . og ,-->
-            <input data-ng-model="faktum.value"
-                   type="text"
-                   data-ng-required="erSynlig('driverEgennaering')"
-                   data-error-messages="'egennaering.driveregennaering.arbeidsmengde.feilmelding'"
-                   data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
-                   data-blur-validate
-                   data-tekstfelt-patternvalidering
-                   data-nav-faktum="arbeidsmengdeEgennaering"
+            <span data-cmstekster="egennaering.driveregennaering.arbeidsmengde"></span>
+            <input type="text"
+                   data-ng-model="faktum.value"
+                   data-nav-faktum="egennaering.driveregennaering.arbeidsmengde"
                    data-navconfig
-                   name="arbeidsmengdeEgennaering"/>
+                   data-ng-required="erSynlig('egennaering.driveregennaering')"
+                   data-error-messages="{required:'egennaering.driveregennaering.arbeidsmengde.feilmelding',
+                   pattern:'regex.tall.komma.punktum'}"
+                   data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
+                   data-tekstfelt-patternvalidering
+                   data-blur-validate/>
             <span class="timer" data-cmstekster="egennaering.driveregennaering.arbeidsmengde.timer"></span>
-            <span class="melding" data-ng-if="egennaeringForm.arbeidsmengdeEgennaering.$error.required"
-                  data-cmstekster="egennaering.driveregennaering.arbeidsmengde.feilmelding"></span>
-            <span class="melding" data-ng-if="egennaeringForm.arbeidsmengdeEgennaering.$error.pattern"
-                  data-cmstekster="regex.tall.komma.punktum"></span>
+            <span class="melding"></span>
         </label>
     </div>
 </div>
 
-<div data-nav-faktum="gardsbruk"
+<div data-nav-faktum="egennaering.gardsbruk"
      data-navconfig
      data-booleanradio
      data-nokkel="egennaering.gardsbruk">
 
-    <div data-navinfoboks>
-        <p data-cmstekster="egennaering.gardsbruk.false.informasjon.1">
+<div data-navinfoboks>
+    <p data-cmstekster="egennaering.gardsbruk.false.informasjon.1">
 
-        <p data-cmstekster="egennaering.gardsbruk.false.informasjon.2">
-        <p data-cmstekster="egennaering.gardsbruk.false.informasjon.3">
-    </div>
 
-    <div data-navorganisasjonsnummerfelt
-         data-nav-faktum="orgnrGardsbruk"
+    <p data-cmstekster="egennaering.gardsbruk.false.informasjon.2">
+
+    <p data-cmstekster="egennaering.gardsbruk.false.informasjon.3">
+
+</div>
+
+<div data-navorganisasjonsnummerfelt
+     data-nav-faktum="egennaering.gardsbruk.false.organisasjonsnummer"
+     data-navconfig
+     data-navlabel="egennaering.gardsbruk.false.organisasjonsnummer"
+     data-navfeilmelding="{ required: 'egennaering.gardsbruk.false.organisasjonsnummer.feilmelding',
+          pattern: 'organisasjonsnummer.format.feilmelding'}"></div>
+
+<div class="form-linje checkbox" data-checkbox-validate>
+    <h4 class="spm-sporsmal">
+        <span data-cmstekster="egennaering.gardsbruk.false.type.sporsmal"></span>
+    </h4>
+
+    <input type="hidden" data-ng-model="harHuketAvTypeGardsbruk.value"
+           data-ng-required="erSynlig('egennaering.gardsbruk')"
+           data-error-messages="'egennaering.gardsbruk.false.type.feilmelding'">
+
+    <div data-navcheckbox
          data-navconfig
-         data-navlabel="egennaering.gardsbruk.false.organisasjonsnummer"
-         data-navfeilmelding="egennaering.gardsbruk.false.organisasjonsnummer.feilmelding"></div>
+         data-nav-faktum="egennaering.gardsbruk.false.type.dyr"
+         data-navlabel="egennaering.gardsbruk.false.type.dyr"
+         data-navendret="endreTypeGardsbruk()"></div>
 
-    <div class="form-linje checkbox" data-checkbox-validate>
-        <h4 class="spm-sporsmal">
-            <span data-cmstekster="egennaering.gardsbruk.false.type.sporsmal"></span>
-        </h4>
+    <div data-navcheckbox
+         data-navconfig
+         data-nav-faktum="egennaering.gardsbruk.false.type.jord"
+         data-navlabel="egennaering.gardsbruk.false.type.jord"
+         data-navendret="endreTypeGardsbruk()"></div>
 
-        <input type="hidden" data-ng-model="harHuketAvTypeGardsbruk.value"
-               data-ng-required="erSynlig('gardsbruk')"
-               data-error-messages="'egennaering.gardsbruk.false.type.feilmelding'">
+    <div data-navcheckbox
+         data-navconfig
+         data-nav-faktum="egennaering.gardsbruk.false.type.skog"
+         data-navlabel="egennaering.gardsbruk.false.type.skog"
+         data-navendret="endreTypeGardsbruk()"></div>
 
-        <div data-navcheckbox
-             data-navconfig
-             data-nav-faktum="dyrGardsbruk"
-             data-navlabel="egennaering.gardsbruk.false.type.dyr"
-             data-navendret="endreTypeGardsbruk()"></div>
+    <div data-navcheckbox
+         data-navconfig
+         data-nav-faktum="egennaering.gardsbruk.false.type.annet"
+         data-navlabel="egennaering.gardsbruk.false.type.annet"
+         data-navendret="endreTypeGardsbruk()"></div>
+    <span class="melding" data-cmstekster="egennaering.gardsbruk.false.type.feilmelding"></span>
+</div>
+<div class="form-linje checkbox" data-checkbox-validate>
+    <h4 class="spm-sporsmal">
+        <span data-cmstekster="egennaering.gardsbruk.false.eier.sporsmal"></span>
+    </h4>
 
-        <div data-navcheckbox
-             data-navconfig
-             data-nav-faktum="jordGardsbruk"
-             data-navlabel="egennaering.gardsbruk.false.type.jord"
-             data-navendret="endreTypeGardsbruk()"></div>
+    <input type="hidden" data-ng-model="harHuketAvEierGardsbruk.value"
+           data-ng-required="erSynlig('egennaering.gardsbruk')"
+           data-error-messages="'egennaering.gardsbruk.false.eier.feilmelding'">
 
-        <div data-navcheckbox
-             data-navconfig
-             data-nav-faktum="skogGardsbruk"
-             data-navlabel="egennaering.gardsbruk.false.type.skog"
-             data-navendret="endreTypeGardsbruk()"></div>
+    <div data-navcheckbox
+         data-navconfig
+         data-nav-faktum="egennaering.gardsbruk.false.eier.jeg"
+         data-navlabel="egennaering.gardsbruk.false.eier.jeg"
+         data-navendret="endreEierGardsbruk()"></div>
 
-        <div data-navcheckbox
-             data-navconfig
-             data-nav-faktum="annetGardsbruk"
-             data-navlabel="egennaering.gardsbruk.false.type.annet"
-             data-navendret="endreTypeGardsbruk()"></div>
-        <span class="melding" data-cmstekster="egennaering.gardsbruk.false.type.feilmelding"></span>
-    </div>
-    <div class="form-linje checkbox" data-checkbox-validate>
-        <h4 class="spm-sporsmal">
-            <span data-cmstekster="egennaering.gardsbruk.false.eier.sporsmal"></span>
-        </h4>
+    <div data-navcheckbox
+         data-navconfig
+         data-nav-faktum="egennaering.gardsbruk.false.eier.ektefelle"
+         data-navlabel="egennaering.gardsbruk.false.eier.ektefelle"
+         data-navendret="endreEierGardsbruk()"></div>
 
-        <input type="hidden" data-ng-model="harHuketAvEierGardsbruk.value"
-               data-ng-required="erSynlig('gardsbruk')"
-               data-error-messages="'egennaering.gardsbruk.false.eier.feilmelding'">
+    <div data-navcheckbox
+         data-navconfig
+         data-nav-faktum="egennaering.gardsbruk.false.eier.annet"
+         data-navlabel="egennaering.gardsbruk.false.eier.annet"
+         data-navendret="endreEierGardsbruk()"></div>
 
-        <div data-navcheckbox
-             data-navconfig
-             data-nav-faktum="jegEierGardsbruk"
-             data-navlabel="egennaering.gardsbruk.false.eier.jeg"
-             data-navendret="endreEierGardsbruk()"></div>
+    <span class="melding" data-cmstekster="egennaering.gardsbruk.false.eier.feilmelding"></span>
+</div>
 
-        <div data-navcheckbox
-             data-navconfig
-             data-nav-faktum="ektefelleEierGardsbruk"
-             data-navlabel="egennaering.gardsbruk.false.eier.ektefelle"
-             data-navendret="endreEierGardsbruk()"></div>
+<div class="form-linje andelsfordeling-container" ng-class="{feil : prosentFeil()} "
+     data-ng-show="svartPaHvemEierGardsbruket()">
+    <h4 class="spm-sporsmal andelsfordeling-spm">
+        <span data-cmstekster="egennaering.gardsbruk.false.eierandel.sporsmal"></span>
+    </h4>
 
-        <div data-navcheckbox
-             data-navconfig
-             data-nav-faktum="annetEierGardsbruk"
-             data-navlabel="egennaering.gardsbruk.false.eier.annet"
-             data-navendret="endreEierGardsbruk()"></div>
+    <input class="tekstfelt" type="hidden" data-ng-model="totalsumAndel.value"
+           data-ng-required="svartPaHvemEierGardsbruket()"
+           data-error-messages="'egennaering.gardsbruk.false.eierandel.feilmelding'">
 
-        <span class="melding" data-cmstekster="egennaering.gardsbruk.false.eier.feilmelding"></span>
-    </div>
-
-    <div class="form-linje andelsfordeling-container" ng-class="{feil : prosentFeil()} "
-         data-ng-show="svartPaHvemEierGardsbruket(['jegEierGardsbruk', 'ektefelleEierGardsbruk', 'annetEierGardsbruk'])">
-        <h4 class="spm-sporsmal andelsfordeling-spm">
-            <span data-cmstekster="egennaering.gardsbruk.false.eierandel.sporsmal"></span>
-        </h4>
-
-        <input class="tekstfelt" type="hidden" data-ng-model="totalsumAndel.value"
-               data-ng-required="svartPaHvemEierGardsbruket(['jegEierGardsbruk', 'ektefelleEierGardsbruk', 'annetEierGardsbruk'])"
-               data-error-messages="'egennaering.gardsbruk.false.eierandel.feilmelding'">
-
-        <div class="andels-fordeling">
-            <div class="tekstfelt form-linje" data-ng-show="gardseier('jegEierGardsbruk')">
-                <label>
-                    <span data-cmstekster="egennaering.gardsbruk.false.eierandel.din"></span>
-                    <input data-ng-model="faktum.value" type="text" data-ng-required="gardseier('jegEierGardsbruk')"
-                           data-error-messages="'egennaering.gardsbruk.false.eierandel.din.feilmelding'"
-                           data-ng-pattern="/\d+/" data-blur-validate
-                           data-ng-blur="summererAndeleneTil100()" maxlength="3" data-tekstfelt-patternvalidering
-                           data-nav-faktum="dinAndelGardsbruk" data-navconfig/>
-                    <span class="egennaering-prosent" data-cmstekster="egennaering.prosent"></span>
-                    <span class="melding"></span>
-                </label>
-            </div>
-
-            <div class="tekstfelt form-linje" data-ng-show="gardseier('ektefelleEierGardsbruk')">
-                <label>
-                    <span data-cmstekster="egennaering.gardsbruk.false.eierandel.ektefelle"></span>
-                    <input data-ng-model="faktum.value" type="text"
-                           data-ng-required="gardseier('ektefelleEierGardsbruk')"
-                           data-error-messages="'egennaering.gardsbruk.false.eierandel.ektefelle.feilmelding'"
-                           data-ng-pattern="/\d+/" data-blur-validate
-                           data-ng-blur="summererAndeleneTil100()" maxlength="3" data-tekstfelt-patternvalidering
-                           data-nav-faktum="ektefelleAndelGardsbruk" data-navconfig/>
-                    <span class="egennaering-prosent" data-cmstekster="egennaering.prosent"></span>
-                    <span class="melding"></span>
-                </label>
-            </div>
-            <div class="tekstfelt form-linje" data-ng-show="gardseier('annetEierGardsbruk')">
-                <label>
-                    <span data-cmstekster="egennaering.gardsbruk.false.eierandel.annet"></span>
-                    <input data-ng-model="faktum.value" type="text" data-ng-required="gardseier('annetEierGardsbruk')"
-                           data-error-messages="'egennaering.gardsbruk.false.eierandel.annet.feilmelding'"
-                           data-ng-pattern="/\d+/" data-blur-validate
-                           data-ng-blur="summererAndeleneTil100()" maxlength="3" data-tekstfelt-patternvalidering
-                           data-nav-faktum="annetAndelGardsbruk" data-navconfig/>
-                    <span class="egennaering-prosent" data-cmstekster="egennaering.prosent"></span>
-                    <span class="melding"></span>
-                </label>
-            </div>
-        </div>
-        <span class="melding prosentmelding" data-cmstekster="egennaering.gardsbruk.false.eierandel.feilmelding"></span>
-    </div>
-
-
-    <div class="gardsbruk-timer">
-        <h4 class="spm-sporsmal">
-            <span data-cmstekster="egennaering.gardsbruk.false.arbeidsforbruk"></span>
-        </h4>
-
-        <div class="tekstfelt form-linje arbeidsmengde-container">
+    <div class="andels-fordeling">
+        <div class="tekstfelt form-linje" data-ng-show="gardseier('egennaering.gardsbruk.false.eier.jeg')">
             <label>
-                <span data-cmstekster="egennaering.gardsbruk.false.timer"></span>
+                <span data-cmstekster="egennaering.gardsbruk.false.eierandel.din"></span>
                 <input data-ng-model="faktum.value"
                        type="text"
-                       data-ng-required="erSynlig('gardsbruk')"
-                       data-error-messages="'egennaering.gardsbruk.false.timer.feilmelding'"
-                       data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
+                       data-ng-required="gardseier('egennaering.gardsbruk.false.eier.jeg')"
+                       data-error-messages="{required:'egennaering.gardsbruk.false.eierandel.din.feilmelding', pattern:'regex.tall'}"
+                       data-ng-pattern="/^\d+$/"
                        data-blur-validate
+                       data-ng-blur="summererAndeleneTil100()"
+                       maxlength="3"
                        data-tekstfelt-patternvalidering
-                       data-nav-faktum="timerBruktPaGardsbruk"
-                       data-navconfig
-                       name="timerBruktPaGardsbruk"/>
-            <span class="melding" data-ng-if="egennaeringForm.timerBruktPaGardsbruk.$error.required"
-                  data-cmstekster="egennaering.gardsbruk.false.timer.feilmelding"></span>
-            <span class="melding" data-ng-if="egennaeringForm.timerBruktPaGardsbruk.$error.pattern"
-                  data-cmstekster="regex.tall.komma.punktum"></span>
+                       data-nav-faktum="egennaering.gardsbruk.false.eierandel.din"
+                       data-navconfig/>
+                <span class="egennaering-prosent" data-cmstekster="egennaering.prosent"></span>
+                <span class="melding"></span>
             </label>
         </div>
-
-        <div class="tekstfelt form-linje">
-            <label><span data-cmstekster="egennaering.gardsbruk.false.aar"></span></label>
-            <select data-ng-model="faktum.value"
-                    data-nav-faktum="egennaeringAarstall"
-                    data-navconfig
-                    data-error-messages="aarstall.feilmelding"
-                    data-ng-init="faktum.value = faktum.value || forrigeAar; lagreFaktum();"
-                    data-ng-options="aar for aar in aarstall"
-                    data-ng-change="lagreFaktum()"/>
+        <div class="tekstfelt form-linje" data-ng-show="gardseier('egennaering.gardsbruk.false.eier.ektefelle')">
+            <label>
+                <span data-cmstekster="egennaering.gardsbruk.false.eierandel.ektefelle"></span>
+                <input data-ng-model="faktum.value"
+                       type="text"
+                       data-ng-required="gardseier('egennaering.gardsbruk.false.eier.ektefelle')"
+                       data-error-messages="{required:'egennaering.gardsbruk.false.eierandel.ektefelle.feilmelding', pattern:'regex.tall'}"
+                       data-ng-pattern="/^\d+$/"
+                       data-blur-validate
+                       data-ng-blur="summererAndeleneTil100()"
+                       maxlength="3"
+                       data-tekstfelt-patternvalidering
+                       data-nav-faktum="egennaering.gardsbruk.false.eierandel.ektefelle"
+                       data-navconfig/>
+                <span class="egennaering-prosent" data-cmstekster="egennaering.prosent"></span>
+                <span class="melding"></span>
+            </label>
+        </div>
+        <div class="tekstfelt form-linje" data-ng-show="gardseier('egennaering.gardsbruk.false.eier.annet')">
+            <label>
+                <span data-cmstekster="egennaering.gardsbruk.false.eierandel.annet"></span>
+                <input data-ng-model="faktum.value"
+                       type="text"
+                       data-ng-required="gardseier('egennaering.gardsbruk.false.eier.annet')"
+                       data-error-messages="{required:'egennaering.gardsbruk.false.eierandel.annet.feilmelding', pattern:'regex.tall'}"
+                       data-ng-pattern="/^\d+$/"
+                       data-blur-validate
+                       data-ng-blur="summererAndeleneTil100()"
+                       maxlength="3"
+                       data-tekstfelt-patternvalidering
+                       data-nav-faktum="egennaering.gardsbruk.false.eierandel.annet"
+                       data-navconfig/>
+                <span class="egennaering-prosent" data-cmstekster="egennaering.prosent"></span>
+                <span class="melding"></span>
+            </label>
         </div>
     </div>
+    <span class="melding prosentmelding" data-cmstekster="egennaering.gardsbruk.false.eierandel.feilmelding"></span>
+</div>
 
-    <div class="timeredegjoring">
-        <div data-navtextarea
-             data-navconfig
-             data-nav-faktum="timeredegjoringGardsbruk"
-             data-nokkel="egennaering.gardsbruk.false.timeredegjoring"
-             data-maxlengde="500"
-             data-navfeilmelding="egennaering.gardsbruk.false.timeredegjoring.feilmelding"
-             data-obligatorisk="true"></div>
+
+<div class="gardsbruk-timer">
+    <h4 class="spm-sporsmal">
+        <span data-cmstekster="egennaering.gardsbruk.false.arbeidsforbruk"></span>
+    </h4>
+
+    <div class="tekstfelt form-linje arbeidsmengde-container">
+        <label>
+            <span data-cmstekster="egennaering.gardsbruk.false.timer"></span>
+            <input data-ng-model="faktum.value"
+                   type="text"
+                   data-ng-required="erSynlig('egennaering.gardsbruk')"
+                   data-error-messages="{required: 'egennaering.gardsbruk.false.timer.feilmelding', pattern: 'regex.tall.komma.punktum'}"
+                   data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
+                   data-blur-validate
+                   data-tekstfelt-patternvalidering
+                   data-nav-faktum="egennaering.gardsbruk.false.timer"
+                   data-navconfig/>
+            <span class="melding"></span>
+        </label>
     </div>
 
+    <div class="tekstfelt form-linje">
+        <label><span data-cmstekster="egennaering.gardsbruk.false.aar"></span></label>
+        <select id="egennaeringgardsbrukaar"
+                data-ng-model="faktum.value"
+                data-nav-faktum="egennaering.gardsbruk.false.aar"
+                data-navconfig
+                data-error-messages="aarstall.feilmelding"
+                data-ng-init="faktum.value = faktum.value || forrigeAar; lagreFaktum();"
+                data-ng-options="aar for aar in aarstall"
+                data-ng-change="lagreFaktum()"/>
+    </div>
+</div>
+
+<div class="timeredegjoring">
+    <div data-navtextarea
+         data-navconfig
+         data-nav-faktum="egennaering.gardsbruk.false.timeredegjoring"
+         data-nokkel="egennaering.gardsbruk.false.timeredegjoring"
+         data-maxlengde="500"
+         data-navfeilmelding="egennaering.gardsbruk.false.timeredegjoring.feilmelding"
+         data-obligatorisk="true"></div>
+</div>
+
+<div data-vedlegginfoboks>
     <p class="informasjonstekst-normal">
         <span data-cmstekster="egennaering.gardsbruk.false.vedlegg"></span>
         <a href="egennaering.gardsbruk.false.vedlegg.lenkeurl"
            data-cmstekster="egennaering.gardsbruk.false.vedlegg.lenketekst"></a>
     </p>
 </div>
+</div>
 
-<div data-nav-faktum="inntektFangstogfiske"
+<div data-nav-faktum="egennaering.fangstogfiske"
      data-navconfig
      data-booleanradio
      data-nokkel="egennaering.fangstogfiske">
 
-    <div class="form-linje">
+    <div class="form-linje boolean">
         <h4 class="spm-sporsmal" data-cmstekster="egennaering.fangstogfiske.false.arbeid.sporsmal"></h4>
 
         <div data-navradio
              data-navconfig
-             data-nav-faktum="arbeidFangstogfiske"
+             data-nav-faktum="egennaering.fangstogfiske.false.arbeid"
              data-value="true"
              data-navlabel="egennaering.fangstogfiske.false.arbeid.true"
              data-navfeilmelding="egennaering.fangstogfiske.false.arbeid.feilmelding"></div>
 
         <div data-navradio
              data-navconfig
-             data-nav-faktum="arbeidFangstogfiske"
+             data-nav-faktum="egennaering.fangstogfiske.false.arbeid"
              data-value="false"
              data-navlabel="egennaering.fangstogfiske.false.arbeid.false"
              data-navfeilmelding="egennaering.fangstogfiske.false.arbeid.feilmelding"></div>
         <span class="melding"></span>
     </div>
 
-    <div data-ng-if="erSynlig('arbeidFangstogfiske')">
+    <div data-ng-if="erSynlig('egennaering.fangstogfiske')">
         <div class="fangstfiskeinntekt">
             <div data-navtekst
-                 data-nav-faktum="faktiskInntektFangstogfiske"
+                 data-nav-faktum="egennaering.fangstogfiske.false.arbeid.false.inntekt"
                  data-navconfig
                  data-navlabel="egennaering.fangstogfiske.false.arbeid.false.inntekt"
                  data-navfeilmelding="egennaering.fangstogfiske.false.arbeid.false.inntekt.feilmelding"
