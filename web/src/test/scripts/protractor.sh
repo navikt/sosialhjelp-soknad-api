@@ -9,3 +9,4 @@ echo "Running tests against $BASEURL"
 echo "-------------------------------------------------------------------"
 
 protractor ../resources/jsconf/protractor.conf.js --baseUrl=$BASEURL
+
