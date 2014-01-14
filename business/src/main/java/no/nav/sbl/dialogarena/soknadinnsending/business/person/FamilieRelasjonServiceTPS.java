@@ -55,6 +55,7 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
         //    logger.debug("Fullstendig XML fra Person-servicen:" + response.getPerson());
        // }
         Person person = new FamilieRelasjonTransform().mapFamilierelasjonTilPerson(soknadId, response);
+
         lagreBarn(soknadId, person);
         lagreStatsborgerskap(soknadId, person);
         return person;

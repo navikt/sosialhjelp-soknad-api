@@ -1,5 +1,5 @@
 angular.module('nav.barnetillegg', [])
-	.controller('BarnetilleggCtrl', ['$scope', '$cookieStore', '$location', '$timeout', 'Faktum', function ($scope, $cookieStore, $location, $timeout, Faktum) {
+	.controller('BarnetilleggCtrl', ['$scope', '$cookieStore', '$location', '$timeout', 'Faktum', 'data', function ($scope, $cookieStore, $location, $timeout, Faktum, data) {
 
 		$scope.erBrukerregistrert = function (barn) {
 			return barn.type === 'BRUKERREGISTRERT';
@@ -33,10 +33,9 @@ angular.module('nav.barnetillegg', [])
 
 		$scope.slettBarn = function (b, index, $event) {
 			$event.preventDefault();
-			$scope.barnSomSkalSlettes = new Faktum(b);
-			$scope.barnSomSkalSlettes.$delete({soknadId: $scope.soknadData.soknadId}).then(function () {
-				$scope.soknadData.fakta.barn.valuelist.splice(index, 1);
-			});
+			
+			$scope.soknadData.fakta.barn.valuelist.splice(index, 1);
+			data.slettFaktum(b);
 		};
 
 		$scope.erGutt = function (barn) {

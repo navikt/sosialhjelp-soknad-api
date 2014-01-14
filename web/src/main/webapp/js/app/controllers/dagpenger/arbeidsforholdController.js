@@ -42,6 +42,8 @@ angular.module('nav.arbeidsforhold.controller', [])
 
         if($scope.soknadData.fakta.arbeidsforhold && $scope.soknadData.fakta.arbeidsforhold.valuelist) {
             $scope.harLagretArbeidsforhold = true;            
+        } else {
+            $scope.harLagretArbeidsforhold = undefined;
         }
 
         $scope.hvisHarJobbet = function() {
@@ -50,6 +52,11 @@ angular.module('nav.arbeidsforhold.controller', [])
            return faktum && faktum.value && faktum.value !== 'harIkkeJobbet';
         };
 
+        $scope.hvisHarIkkeJobbet = function() {
+            var faktum = data.finnFaktum('arbeidstilstand');
+
+            return faktum && faktum.value && faktum.value === 'harIkkeJobbet';
+        }
         $scope.hvisHarJobbetVarierende = function() {
             var faktum = data.finnFaktum('arbeidstilstand');
 
@@ -84,16 +91,13 @@ angular.module('nav.arbeidsforhold.controller', [])
 
         $scope.slettArbeidsforhold = function (af, index, $event) {
             $event.preventDefault();
-            $scope.arbeidsforholdSomSkalSlettes = new Faktum(af.arbeidsforhold);
+           
+            $scope.arbeidsliste.splice(index, 1);
+            data.slettFaktum(af.arbeidsforhold);
 
-            $scope.arbeidsforholdSomSkalSlettes.$delete({soknadId: $scope.soknadData.soknadId}).then(function () {
-                $scope.arbeidsliste.splice(index, 1);
-
-                if($scope.arbeidsliste.length === 0) {
-                    $scope.harLagretArbeidsforhold = undefined;
-                }
-            });
-
+            if($scope.arbeidsliste.length === 0) {
+                $scope.harLagretArbeidsforhold = undefined;
+            }
         };
 
         function settArbeidsforholdCookie(faktumId) {
