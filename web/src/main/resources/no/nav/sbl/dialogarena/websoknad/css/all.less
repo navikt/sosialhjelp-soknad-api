@@ -491,6 +491,15 @@ form-linje.feil {
   }
 
   &.feil {
+    .form-linje {
+      .melding {
+        display: none;
+      }
+      input, select, textarea {
+        border: 1px solid #ccc;
+        background-color: #fff;
+      }
+    }
     select {
       border: 1px solid #fee6e6;
       border-top: 1px solid #ff0000;
