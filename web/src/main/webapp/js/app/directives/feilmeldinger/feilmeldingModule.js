@@ -76,7 +76,7 @@ angular.module('nav.feilmeldinger', [])
                         scrollToElement(formLinje, 200);
 
                         if (feilmelding.elem.is('[type=hidden]')) {
-                            if(feilmelding.elem.hasClass('tekstfelt')) {
+                            if (feilmelding.elem.hasClass('tekstfelt')) {
                                 scope.giFokus(formLinje.find('input[type=text]').filter(':visible').first());
                             } else {
                                 scope.giFokus(formLinje.find('input[type=checkbox]').first());
@@ -87,10 +87,20 @@ angular.module('nav.feilmeldinger', [])
                     }
                 }
 
+                /*
+                 Ved ng-repeat så må vi sjekke hvilket element som inneholder feil først. Sjekker at lengden er større
+                 enn 1 for at checkbokser som bruker hidden-felt og ikke har klassen ng-invalid får riktig fokus
+                 */
                 scope.giFokus = function (element) {
-                    if(element[0]) {
-                        element[0].focus();
-                    } else {
+                    if (typeof element === 'object' && element.length > 1) {
+                        for (var i = 0; i < element.length; i++) {
+                            if ($(element[i]).hasClass('ng-invalid')) {
+                                element[i].focus();
+                                return;
+                            }
+                        }
+                    }
+                    else {
                         element.focus();
                     }
                 }
