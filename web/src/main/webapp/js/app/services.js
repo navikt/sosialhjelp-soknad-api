@@ -101,19 +101,9 @@ angular.module('app.services', ['ngResource'])
 			}});
 	})
 
-<<<<<<< HEAD
     .factory('landService', function ($resource) {
         return $resource('/sendsoknad/rest/soknad/kodeverk/landliste');
     })
-=======
-	.factory('tpsService', function ($resource) {
-		return $resource('/sendsoknad/rest/soknad/:soknadId/personalia');
-	})
-
-	.factory('landService', function ($resource) {
-		return $resource('/sendsoknad/rest/soknad/kodeverk/landliste');
-	})
->>>>>>> master
 
 
 	.factory('StartSoknadService', ['data', '$resource', '$q', function (data, $resource, $q) {
