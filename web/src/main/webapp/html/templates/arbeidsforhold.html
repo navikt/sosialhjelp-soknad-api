@@ -32,6 +32,11 @@
             <span class="melding"> </span>
         </div>
         
+        <div data-ng-show="hvisHarIkkeJobbet()">
+            <div data-navinfoboks>
+                <span data-cmstekster="arbeidsforhold.arbeidstilstand.harikkejobbet.informasjonstekst"></span>
+            </div>
+        </div>
         <div data-ng-show="hvisHarJobbetVarierende()">
             <div data-navinfoboks>
                 <span data-cmstekster="arbeidsforhold.arbeidstilstand.varierendearbeidstid.informasjonstekst"></span>
@@ -79,7 +84,7 @@
         </div>
 
         <div class="knapper-arbeidsforhold">
-            <div id="legg-til" data-ng-show="hvisHarJobbet()">            
+            <div id="legg-til">            
                 <button class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event, arbeidsforholdForm)"
                         data-cmstekster="arbeidsforhold.nyttarbeidsforhold" role="button"></button>
             </div>
