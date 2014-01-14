@@ -47,6 +47,7 @@
   border-top: 1px solid #ddd;
   margin: 15px;
   padding-top: 20px;
+  clear: both;
 
   [class*="strek-ikon-vedlegg"], [class*="ikon-vedlegg-strek"] {
     background-image: url(../img/vedlegg-svart.svg);
@@ -555,9 +556,18 @@ form-linje.feil {
     }
   }
 
-  &.orgnummer input {
-    width: 100px !important;
-    display: block;
+  &.orgnummer {
+    float:left;
+    span {
+      clear: both;
+      float: left;
+    }
+    input {
+      width: 100px !important;
+      display: inline-block;
+      clear: both;
+      float: left;
+    }
   }
 }
 

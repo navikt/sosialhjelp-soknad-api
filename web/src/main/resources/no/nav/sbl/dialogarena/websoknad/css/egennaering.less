@@ -5,6 +5,12 @@
 
   &feil .melding {
     display: block;
+    clear: both;
+  }
+  span {
+    clear: both;
+    float: left;
+    margin-top: 7px !important;
   }
 }
 
@@ -12,14 +18,13 @@
   float: left;
   display: block;
   margin-left: -300px;
-  margin-top: 42px;
+  margin-top: 45px;
 }
 
 .orgnummer-leggtil {
-  display: block;
+  display: inline-block;
   clear: both;
   margin: 15px;
-  padding-top: 10px;
 }
 
 .test {
@@ -42,6 +47,7 @@
     margin-left: 5px;
     text-transform: none;
     font-size: 1rem !important;
+    display: inline-block;
   }
   .melding {
     clear: both;
@@ -61,7 +67,7 @@
       vertical-align: top;
 
       input {
-        width: 40px !important;
+        width: 55px !important;
         float: left;
         margin-right: 5px;
         display: block;
@@ -91,19 +97,25 @@
   &.feil .andels-fordeling .melding {
     display: none;
   }
+
+  &.feil .prosentmelding {
+    color: #A00404;
+  }
+
   .prosentmelding {
     clear: both;
+    color: #3e3832;
   }
 }
 
 .gardsbruk-timer {
-  clear: both;
   padding: 15px;
 
   .form-linje {
     float: left;
     width: 25%;
     padding: 0px !important;
+    clear: none !important;
 
     input {
       width: 70px !important;
@@ -119,7 +131,21 @@
   clear: both;
 }
 
-.fangstfiskeinntekt input {
-  width: 120px !important;
-  display: block;
+.fangstfiskeinntekt {
+  float: left;
+  margin-bottom: 20px;
+
+  span {
+    clear: both;
+    float: left;
+  }
+  .melding {
+    clear: both;
+  }
+  input {
+    width: 120px !important;
+    display: inline-block;
+    clear: both;
+    float: left;
+  }
 }

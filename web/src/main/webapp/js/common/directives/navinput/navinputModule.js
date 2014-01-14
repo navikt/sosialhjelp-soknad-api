@@ -112,11 +112,7 @@ angular.module('nav.input', ['nav.cmstekster'])
             replace: true,
             scope: true,
             link: function (scope, element, attrs) {
-//              kun første element som skal være required hvis man skal kunne legge til flere orgnr. Navindexen settes på et slikt felt.
-                scope.erSynligOgForsteElement = function () {
-                    if(attrs.navindex) {
-                        return element.is(':visible') && scope.navindex == 0;
-                    }
+                scope.erSynlig = function () {
                     return element.is(':visible');
                 }
             },
