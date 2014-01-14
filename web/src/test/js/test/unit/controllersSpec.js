@@ -81,13 +81,14 @@ describe('DagpengerControllere', function () {
         });
 
         it('skal generere aarstallene fra i år og 4 år bakover', function () {
-            ctrl.genererAarstallListe;
+            //ctrl.genererAarstallListe;
             expect(scope.aarstall.length).toEqual(5);
         })
 
-        it('iaar skal være i aar', function() {
-            ctrl.genererAarstallListe
-            expect()
+        it('prevalgte aret skal være fjorårets år', function() {
+            var idag = new Date();
+            var ifjor = idag.getFullYear();
+            expect(scope.forrigeAar).toEqual((ifjor-1).toString())
         })
     });
 
