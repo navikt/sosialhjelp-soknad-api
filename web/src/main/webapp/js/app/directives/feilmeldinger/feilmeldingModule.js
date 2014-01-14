@@ -1,5 +1,4 @@
 angular.module('nav.feilmeldinger', [])
-
     // settes på inputfeltene som skal gi feilmeldinger
     .directive('errorMessages', [function () {
         return {
@@ -109,6 +108,7 @@ angular.module('nav.feilmeldinger', [])
                     return feilmelding.elem && feilmelding.elem.length > 0;
                 }
 
+
                 /*
                  * Dersom vi har en egendefinert feil med der $skalVisesAlene er satt til true så skal kun denne feilmeldingen vises. I det tilfellet fjernes alle andre feilmeldinger
                  * og vi skal ikke loope mer. Return false dersom vi skal stoppe loopen, ellers true.
@@ -150,13 +150,13 @@ angular.module('nav.feilmeldinger', [])
                     var feilmeldingNokkel = finnFeilmeldingsNokkel(feil, feilNokkel);
                     var feilmelding = cms.tekster[feilmeldingNokkel];
                     if (feilmelding === undefined) {
-                        return {feil: "Fant ikke feilmelding med key " + feilmeldingNokkel, elem: finnTilhorendeElement(feil)};
+                        return {feil: 'Fant ikke feilmelding med key ' + feilmeldingNokkel, elem: finnTilhorendeElement(feil)};
                     }
                     return {feil: feilmelding, elem: finnTilhorendeElement(feil)};
                 }
 
                 function finnFeilmeldingsNokkel(feil, feilNokkel) {
-                    if (feil && feil.$errorMessages != undefined) {
+                    if (feil && feil.$errorMessages !== undefined) {
                         if (typeof feil.$errorMessages === 'object') {
                             return feil.$errorMessages[feilNokkel];
                         } else if (typeof feil.$errorMessages === 'string') {
@@ -189,5 +189,5 @@ angular.module('nav.feilmeldinger', [])
             }
             return feilmeldinger;
         }
-    }])
+    }]);
 
