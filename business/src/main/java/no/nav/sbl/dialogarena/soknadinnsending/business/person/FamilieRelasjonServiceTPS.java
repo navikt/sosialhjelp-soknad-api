@@ -42,10 +42,17 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
         } catch (IkkeFunnetException e) {
             return new Person();
         }
-
-        if (response != null && logger.isDebugEnabled()) {
-            logger.debug("Fullstendig XML fra Person-servicen:" + response.getPerson());
+        if (response != null)
+        {
+            logger.warn("Fullstendig respons fra Person-servicen:" + response.getPerson());
         }
+        else
+        {
+            logger.warn("Respons fra Person-servicen er null");
+        }
+        //if (response != null && logger.isDebugEnabled()) {
+        //    logger.debug("Fullstendig XML fra Person-servicen:" + response.getPerson());
+       // }
         Person person = new FamilieRelasjonTransform().mapFamilierelasjonTilPerson(soknadId, response);
         lagreBarn(soknadId, person);
         lagreStatsborgerskap(soknadId, person);
