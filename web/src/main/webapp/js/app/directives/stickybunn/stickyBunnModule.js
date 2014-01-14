@@ -1,47 +1,48 @@
 angular.module('nav.stickybunn', [])
-    .directive('sistLagret', ['data', '$window', '$timeout', function (data, $window, $timeout) {
-        return {
-            replace: true,
-            templateUrl: '../js/app/directives/stickybunn/stickyBunnTemplate.html',
-            link: function(scope, element) {
-                scope.soknadId = data.soknad.soknadId;
+	.directive('sistLagret', ['data', '$window', '$timeout', function (data, $window, $timeout) {
+		return {
+			replace    : true,
+			templateUrl: '../js/app/directives/stickybunn/stickyBunnTemplate.html',
+			link       : function (scope, element) {
+				scope.soknadId = data.soknad.soknadId;
 
-                scope.hentSistLagretTid = function() {
-                    return data.soknad.sistLagret;
-                }
+				scope.hentSistLagretTid = function () {
+					return data.soknad.sistLagret;
+				};
 
-                scope.soknadHarBlittLagret = function() {
-                    return data.soknad.sistLagret != null;
-                }
+				scope.soknadHarBlittLagret = function () {
+					return data.soknad.sistLagret !== null;
+				};
 
-                scope.soknadHarAldriBlittLagret = function() {
-                    return !scope.soknadHarBlittLagret();
-                }
+				scope.soknadHarAldriBlittLagret = function () {
+					return !scope.soknadHarBlittLagret();
+				};
 
-                angular.element($window).bind('scroll', function() {
-                    settStickySistLagret();
-                });
+				angular.element($window).bind('scroll', function () {
+					settStickySistLagret();
+				});
 
-                // Litt hacky måte å få smooth overgang mellom sticky og non-sticky...
-                var nonStickyHeightCompensation = 16;
-                var stickyHeightCompensation = 56;
-                var stickyHeight = nonStickyHeightCompensation;
-                function settStickySistLagret() {
-                    var elementTop = element.find('#sticky-bunn-anchor')[0].getBoundingClientRect().bottom + stickyHeight;
-                    var windowTop = this.innerHeight;
+				// Litt hacky måte å få smooth overgang mellom sticky og non-sticky...
+				var nonStickyHeightCompensation = 16;
+				var stickyHeightCompensation = 56;
+				var stickyHeight = nonStickyHeightCompensation;
 
-                    if (elementTop > windowTop) {
-                        stickyHeight = stickyHeightCompensation;
-                        element.find('.sticky-bunn').addClass('stick');
-                    } else {
-                        stickyHeight = nonStickyHeightCompensation;
-                        element.find('.sticky-bunn').removeClass('stick');
-                    }
-                }
+				function settStickySistLagret() {
+					var elementTop = element.find('#sticky-bunn-anchor')[0].getBoundingClientRect().bottom + stickyHeight;
+					var windowTop = this.innerHeight;
 
-                $timeout(function() {
-                    settStickySistLagret();
-                });
-            }
-        }
-    }]);
+					if (elementTop > windowTop) {
+						stickyHeight = stickyHeightCompensation;
+						element.find('.sticky-bunn').addClass('stick');
+					} else {
+						stickyHeight = nonStickyHeightCompensation;
+						element.find('.sticky-bunn').removeClass('stick');
+					}
+				}
+
+				$timeout(function () {
+					settStickySistLagret();
+				});
+			}
+		}
+	}]);
