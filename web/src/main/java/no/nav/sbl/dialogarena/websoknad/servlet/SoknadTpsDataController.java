@@ -107,28 +107,7 @@ public class SoknadTpsDataController {
             }
         }
 
-        // TODO: Fjern en gang!
-        List<Adresse> adresser = new ArrayList<>();
-        Adresse ad1 = new Adresse(new Long(soknadId), Adressetype.BOSTEDSADRESSE);
-        ad1.setGatenavn("Gata");
-        ad1.setHusnummer("1");
-        ad1.setHusbokstav("B");
-        ad1.setPostnummer("0001");
-        ad1.setPoststed("Plassen");
-        adresser.add(ad1);
-
-        Adresse ad2 = new Adresse(new Long(soknadId), Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE);
-        ad2.setGatenavn("Gata");
-        ad2.setHusnummer("1");
-        ad2.setHusbokstav("B");
-        ad2.setPostnummer("0001");
-        ad2.setPoststed("Plassen");
-        ad2.setGyldigtil(DateTime.parse("2015-01-01"));
-
-        adresser.add(ad1);
-        adresser.add(ad2);
-        Person MockPerson = new Person(new Long(soknadId), "01015245464", "Bob", "Kåre", "Byggmester", Adressetype.BOSTEDSADRESSE.toString(), adresser);
-        return MockPerson;
+        return person;
     }
 
     @RequestMapping(value = "/{soknadId}/familierelasjoner", method = RequestMethod.GET, produces = "application/json")
