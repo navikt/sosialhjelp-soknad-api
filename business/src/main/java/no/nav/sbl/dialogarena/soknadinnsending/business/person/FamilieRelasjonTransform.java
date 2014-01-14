@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
+
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
@@ -24,7 +26,18 @@ public class FamilieRelasjonTransform {
                 finnFornavn(xmlperson),
                 finnMellomNavn(xmlperson),
                 finnEtterNavn(xmlperson),
-                finnBarn(xmlperson, soknadId));
+                finnBarn(xmlperson, soknadId),
+                finnStatsborgerskap(xmlperson));
+    }
+    
+    private String finnStatsborgerskap(no.nav.tjeneste.virksomhet.person.v1.informasjon.Person soapPerson) {
+        if(soapPerson.getStatsborgerskap() != null) {
+            Statsborgerskap statsborgerskap = soapPerson.getStatsborgerskap();
+            return statsborgerskap.getLand().getValue();
+        }
+        else {
+            return "NOR";
+        }
     }
 
     private List<Barn> finnBarn(
