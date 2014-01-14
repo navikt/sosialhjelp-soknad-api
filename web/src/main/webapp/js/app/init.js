@@ -35,10 +35,11 @@ angular.module('sendsoknad')
         $http.get('../js/app/directives/stegindikator/stegIndikatorTemplate.html', {cache: $templateCache});
         $http.get('../js/app/directives/stickybunn/stickyBunnTemplate.html', {cache: $templateCache});
     }])
-    .constant('lagreSoknadData', "OPPDATER_OG_LAGRE")
+    .constant('lagreSoknadData', 'OPPDATER_OG_LAGRE')
     .value('data', {})
     .value('cms', {})
     .value('basepath', '../')
+
     .factory('InformasjonsSideResolver', ['data', 'cms', '$resource', '$q', '$route', function (data, cms, $resource, $q, $route) {
         var promiseArray = [];
 
@@ -57,10 +58,9 @@ angular.module('sendsoknad')
         promiseArray.push(tekster.$promise);
         promiseArray.push(utslagskriterier.$promise);
 
-        var d = $q.all(promiseArray);
-
-        return d;
+        return $q.all(promiseArray);
     }])
+
     .factory('HentSoknadService', ['data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', function (data, cms, $resource, $q, $route, soknadService, landService, Faktum) {
         var soknadId = $route.current.params.soknadId;
         var promiseArray = [];
@@ -79,7 +79,7 @@ angular.module('sendsoknad')
         );
         promiseArray.push(alder.$promise);
 
-        if (soknadId != undefined) {
+        if (soknadId !== undefined) {
             // Barn må hentes før man henter søknadsdataene.
             var soknadDeferer = $q.defer();
             var barn = $resource('/sendsoknad/rest/soknad/:soknadId/familierelasjoner').get(
@@ -108,7 +108,7 @@ angular.module('sendsoknad')
                 data.finnFaktum = function (key) {
                     var res = null;
                     data.fakta.forEach(function (item) {
-                        if (item.key == key) {
+                        if (item.key === key) {
                             res = item;
                         }
                     });
@@ -117,7 +117,7 @@ angular.module('sendsoknad')
                 data.finnFakta = function (key) {
                     var res = [];
                     data.fakta.forEach(function (item) {
-                        if (item.key == key) {
+                        if (item.key === key) {
                             res.push(item);
                         }
                     });
@@ -127,9 +127,7 @@ angular.module('sendsoknad')
             promiseArray.push(barn.$promise, soknadOppsett.$promise, soknadDeferer.promise, fakta.$promise);
         }
 
-        var d = $q.all(promiseArray);
-
-        return d;
+        return $q.all(promiseArray);
     }])
 
     //Lagt til for å tvinge ny lasting av fakta fra server. Da er vi sikker på at e-post kommer med til fortsett-senere siden.
@@ -155,9 +153,7 @@ angular.module('sendsoknad')
             });
         promiseArray.push(soknad.$promise, soknadOppsett.$promise);
 
-        var d = $q.all(promiseArray);
-
-        return d;
+        return $q.all(promiseArray);
     }])
 
     .factory('NyttBarnSideResolver', ['data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', function (data, cms, $resource, $q, $route, soknadService, landService, Faktum) {
@@ -193,7 +189,7 @@ angular.module('sendsoknad')
                 data.finnFaktum = function (key) {
                     var res = null;
                     data.fakta.forEach(function (item) {
-                        if (item.key == key) {
+                        if (item.key === key) {
                             res = item;
                         }
                     });
@@ -202,7 +198,5 @@ angular.module('sendsoknad')
             });
         promiseArray.push(fakta.$promise)
 
-        var d = $q.all(promiseArray);
-
-        return d;
+        return $q.all(promiseArray);
     }]);
