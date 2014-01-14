@@ -110,8 +110,7 @@ angular.module('nav.personalia', [])
         }
 
         $scope.erUtenlandskStatsborger = function() {
-            return true;
-//            return $scope.personalia.statsborgerskap != 'NOR';
+            return $scope.personalia.statsborgerskap != 'NOR';
         }
 
         $scope.validerPersonalia = function (form) {
