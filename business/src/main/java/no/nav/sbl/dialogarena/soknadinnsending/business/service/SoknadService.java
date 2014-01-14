@@ -91,7 +91,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
         if (!uniqueProperty.isEmpty()) {
             for (Faktum faktum : fakta) {
-                if (faktum.getProperties().get(uniqueProperty).equals(f.getProperties().get(uniqueProperty))) {
+                if (faktum.getProperties() != null &&
+                    faktum.getProperties().get(uniqueProperty) != null &&
+                    faktum.getProperties().get(uniqueProperty).equals(f.getProperties().get(uniqueProperty))) {
                     f.setFaktumId(faktum.getFaktumId());
                     return repository.lagreFaktum(soknadId, f);
 

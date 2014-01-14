@@ -20,9 +20,11 @@
                  data-navfeilmelding="utdanning.utdanning.feilmelding">
             </div>
 
-            <div class="ekstra-info" data-ng-if="hvis('utdanning', 'avsluttetUtdanning')">
-                <div data-navinfoboks>
-                    <span data-cmstekster="utdanning.svar.under.utdanning.avsluttet.dokumentere"></span>
+            <div class="spm" data-ng-if="hvis('utdanning', 'avsluttetUtdanning')">
+                <div class="ekstra-spm-boks" data-vedlegginfoboks>
+                    <ul>
+                        <li><p data-cmstekster="utdanning.svar.under.utdanning.avsluttet.dokumentere"></p></li>
+                    </ul>
                 </div>
             </div>
 
