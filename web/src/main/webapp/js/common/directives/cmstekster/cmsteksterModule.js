@@ -48,7 +48,7 @@ angular.module('nav.cmstekster', ['app.services'])
     }])
     .directive('cmslenketekster', ['cms', function (cms) {
         return function ($scope, element, attrs) {
-            var nokkel = attrs['cmstekster'];
+            var nokkel = attrs['cmslenketekster'];
             if (element.is('a')) {
                 element.attr('href', cms.tekster[nokkel]);
             }
