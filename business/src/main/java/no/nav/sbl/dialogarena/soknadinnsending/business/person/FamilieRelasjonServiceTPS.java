@@ -55,7 +55,7 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
     private void lagreStatsborgerskap(Long soknadId, Person person) {
         String statsborgerskap = (String)person.getFakta().get("statsborgerskap");
         
-        if(!statsborgerskap.isEmpty()) {
+        if((statsborgerskap != null) && (!statsborgerskap.isEmpty())) {
             Faktum statsborgerskapFaktum = new Faktum(soknadId, null, "statsborgerskap", statsborgerskap, FaktumType.SYSTEMREGISTRERT.toString());
             Map<String, String> properties = new HashMap<>();
             statsborgerskapFaktum.setProperties(properties);
