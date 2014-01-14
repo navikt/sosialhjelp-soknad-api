@@ -32,8 +32,7 @@ public class HenvendelseConnector {
     public String startSoknad(String fnr, String hovedskjema) {
         logger.error("Inne i metoden for startSoknad");
         try {
-            //XMLHovedskjema skjema = new XMLHovedskjema().withSkjemanummer(hovedskjema);
-            XMLHovedskjema skjema = new XMLHovedskjema().withInnsendingsvalg("STARTET");
+            XMLHovedskjema skjema = new XMLHovedskjema().withSkjemanummer(hovedskjema);
             WSStartSoknadRequest request = new WSStartSoknadRequest().withFodselsnummer(fnr).withType(SOKNADINNSENDING).withAny(new XMLMetadataListe().withMetadata(skjema));
             WSBehandlingsId behandlingsId = sendSoknadService.startSoknad(request);
             return behandlingsId.getBehandlingsId();
