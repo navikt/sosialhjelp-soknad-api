@@ -15,15 +15,14 @@ angular.module('nav.arbeidsforhold.controller', [])
             'Permittert': {oppsummeringsurl: '../html/templates/arbeidsforhold/permittert-oppsummering.html' }
         };
 
-        var arbeidsforhold = data.finnFakta("arbeidsforhold");
-        var sluttaarsak = data.finnFakta("sluttaarsak");
+        var arbeidsforhold = data.finnFakta('arbeidsforhold');
+        var sluttaarsak = data.finnFakta('sluttaarsak');
         $scope.arbeidsliste = [];
         
-
         angular.forEach(arbeidsforhold, function (af) {
             angular.forEach(sluttaarsak, function (s) {
-                if (s.parrentFaktum == af.faktumId) {
-                   $scope.arbeidsliste.push({"arbeidsforhold": af, "sluttaarsak": s});
+                if (s.parrentFaktum === af.faktumId) {
+                   $scope.arbeidsliste.push({'arbeidsforhold': af, 'sluttaarsak': s});
                 }
             });
 
@@ -48,42 +47,40 @@ angular.module('nav.arbeidsforhold.controller', [])
         $scope.hvisHarJobbet = function() {
            var faktum = data.finnFaktum('arbeidstilstand');
 
-           return faktum && faktum.value && faktum.value != 'harIkkeJobbet';
-        }
-
+           return faktum && faktum.value && faktum.value !== 'harIkkeJobbet';
+        };
 
         $scope.hvisHarJobbetVarierende = function() {
             var faktum = data.finnFaktum('arbeidstilstand');
 
-            return faktum && faktum.value && faktum.value == 'varierendeArbeidstid';
-        }
+            return faktum && faktum.value && faktum.value === 'varierendeArbeidstid';
+        };
 
         $scope.hvisHarJobbetFast = function() {
             var faktum = data.finnFaktum('arbeidstilstand');
-
-            return faktum && faktum.value && faktum.value == 'fastArbeidstid';
-        }
+            return faktum && faktum.value && faktum.value === 'fastArbeidstid';
+        };
 
         $scope.validerOgSettModusOppsummering = function (form) {
             $scope.validateForm(form.$invalid);
             $scope.validerArbeidsforhold(true);
-        }
+        };
 
         $scope.validerArbeidsforhold = function (skalScrolle) {
             $scope.runValidation(skalScrolle);
-        }
+        };
 
         $scope.nyttArbeidsforhold = function ($event) {
             $event.preventDefault();
             settArbeidsforholdCookie();
             $location.path('nyttarbeidsforhold/' + $scope.soknadData.soknadId);
-        }
+        };
 
         $scope.endreArbeidsforhold = function(af, $index, $event) {
             $event.preventDefault();
             settArbeidsforholdCookie(af.arbeidsforhold.faktumId);
             $location.path('endrearbeidsforhold/' + $scope.soknadData.soknadId + '/' + af.arbeidsforhold.faktumId);   
-        }
+        };
 
         $scope.slettArbeidsforhold = function (af, index, $event) {
             $event.preventDefault();
@@ -92,12 +89,12 @@ angular.module('nav.arbeidsforhold.controller', [])
             $scope.arbeidsforholdSomSkalSlettes.$delete({soknadId: $scope.soknadData.soknadId}).then(function () {
                 $scope.arbeidsliste.splice(index, 1);
 
-                if($scope.arbeidsliste.length == 0) {
+                if($scope.arbeidsliste.length === 0) {
                     $scope.harLagretArbeidsforhold = undefined;
                 }
             });
 
-        }
+        };
 
         function settArbeidsforholdCookie(faktumId) {
             var aapneTabIds = [];
@@ -109,9 +106,9 @@ angular.module('nav.arbeidsforhold.controller', [])
 
             $cookieStore.put('arbeidsforhold', {
                 aapneTabs: aapneTabIds,
-                gjeldendeTab: "#arbeidsforhold",
+                gjeldendeTab: '#arbeidsforhold',
                 faktumId: faktumId
             })
         }
 
-    })
+    });
