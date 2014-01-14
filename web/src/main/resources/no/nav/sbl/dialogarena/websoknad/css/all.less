@@ -38,47 +38,46 @@
     }
 }
 
-.ekstra-spm-boks&.vedlegginfoboks {
-  padding-bottom: 0px !important;
+.ekstra-spm-boks &.vedlegginfoboks {
+    padding-bottom: 0px !important;
+}
+
+.informasjonstekst-utrop {
+    background-image: url(../img/info-utrop.svg);
+    background-repeat: no-repeat;
+    background-position: 10px top;
+    padding-left: 25px;
+    padding-top: 2px;
+    min-height: 19px;
 }
 
 .vedlegginfoboks {
-<<<<<<< HEAD
+    border-top: 1px solid #ddd;
+    margin: 15px;
+    padding-top: 20px;
+
     [class*="strek-ikon-vedlegg"], [class*="ikon-vedlegg-strek"] {
-        background-image: url(../img/vedlegg_graa.svg);
+        background-image: url(../img/vedlegg-svart.svg);
         background-position: 0 top;
         background-repeat: no-repeat;
-        padding-bottom: 15px;
+        padding-bottom: 0px !important;
         margin-bottom: 15px !important;
-    }
-=======
-  border-top: 1px solid #ddd;
-  margin: 15px;
-  padding-top: 20px;
+        padding-left: 30px;
 
-  [class*="strek-ikon-vedlegg"], [class*="ikon-vedlegg-strek"] {
-    background-image: url(../img/vedlegg-svart.svg);
-    background-position: 0 top;
-    background-repeat: no-repeat;
-    padding-bottom: 0px !important;
-    margin-bottom: 15px !important;
-    padding-left: 30px;
+        .leggved {
+            font-weight: bold;
+        }
 
-    .leggved {
-      font-weight: bold;
-    }
+        ul {
+            padding-left: 15px;
 
-    ul {
-      padding-left: 15px;
-
-      p {
-        margin: 0;
-      }
+            p {
+                margin: 0;
+            }
+        }
+        .lastopp {
+        }
     }
-    .lastopp {
-    }
-  }
->>>>>>> master
 }
 
 .informasjonstekst-normal {
@@ -363,8 +362,10 @@
             }
 
             .spm-knapper {
-                margin-top: 15px;
                 text-align: center;
+                border-top: 1px solid #ddd;
+                margin-top: 15px;
+                padding-top: 40px;
 
                 input, button, a {
                     margin-bottom: 15px;
@@ -379,72 +380,6 @@
 
                 button {
                     margin: 0 auto 15px;
-                }
-                .skjemaramme {
-                    padding-bottom: 40px;
-                    .strek-top;
-
-                    .skjemainnhold {
-                        width: 90%;
-                        max-width: 550px;
-                        margin: 0 auto;
-
-                        .svar-oppsummering {
-                            margin-top: 10px;
-                            margin-bottom: 10px;
-
-                            &:before {
-                                content: url(../img/hake.svg);
-                                position: relative;
-                                top: 1px;
-                                margin-right: 10px;
-                            }
-                        }
-
-                        .svar-oppsummering-informasjon {
-                            margin-bottom: 10px;
-                        }
-
-                        .svar-oppsummering-label {
-                            text-transform: uppercase;
-                            margin-right: 5px;
-                        }
-
-                        .svar-oppsummering-label-svar {
-                            padding-bottom: 10px !important;
-                        }
-
-                        .svar-oppsummering-uten-checkbox {
-                            margin-bottom: 10px !important;
-                            font-weight: bold;
-                        }
-
-                        .svar-oppsummering-sporsmal {
-                            font-weight: bold;
-                        }
-
-                        .spm-knapper {
-                            text-align: center;
-                            border-top: 1px solid #ddd;
-                            margin-top: 15px;
-                            padding-top: 40px;
-
-                            input, button, a {
-                                margin-bottom: 15px;
-
-                                &:last-child {
-                                    margin-bottom: 0;
-                                }
-                            }
-                            button, a {
-                                display: block;
-                            }
-
-                            button {
-                                margin: 0 auto 15px;
-                            }
-                        }
-                    }
                 }
             }
         }

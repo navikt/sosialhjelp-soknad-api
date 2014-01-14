@@ -22,7 +22,6 @@ angular.module('app.brukerdata', ['app.services'])
             $location.path('kvittering');
         }
     })
-
     .controller('SoknadDataCtrl', ['$scope', 'data', '$http', function ($scope, data, $http) {
         $scope.soknadData = data.soknad;
 

@@ -1,10 +1,7 @@
 angular.module('nav.personalia', [])
     .controller('PersonaliaCtrl', ['$scope', '$routeParams', 'cms', 'data', 'personalia', function ($scope, $routeParams, cms, data, personalia) {
         $scope.personaliaData = {};
-        $scope.personalia = {
-            alder: personalia.alder,
-            fakta: personalia.fakta
-        }
+        $scope.personalia = personalia;
 
         if ($scope.personalia.fakta.adresser != undefined) {
             $scope.personalia.fakta.adresser.forEach(function (data, index) {
@@ -101,6 +98,11 @@ angular.module('nav.personalia', [])
 
         $scope.harHentetPersonalia = function () {
             return $scope.personalia.fakta != undefined;
+        }
+
+        $scope.erUtenlandskStatsborger = function() {
+            return true;
+//            return $scope.personalia.statsborgerskap != 'NOR';
         }
 
         $scope.validerPersonalia = function (form) {
