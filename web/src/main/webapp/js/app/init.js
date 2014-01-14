@@ -39,11 +39,6 @@ angular.module('sendsoknad')
     .value('data', {})
     .value('personalia', {})
     .value('cms', {})
-<<<<<<< HEAD
-=======
-    .value('basepath', '../')
-
->>>>>>> master
     .factory('InformasjonsSideResolver', ['data', 'cms', '$resource', '$q', '$route', function (data, cms, $resource, $q, $route) {
         var promiseArray = [];
 
@@ -64,12 +59,7 @@ angular.module('sendsoknad')
 
         return $q.all(promiseArray);
     }])
-<<<<<<< HEAD
     .factory('HentSoknadService', ['data', 'cms', 'personalia', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', function (data, cms, personalia, $resource, $q, $route, soknadService, landService, Faktum) {
-=======
-
-    .factory('HentSoknadService', ['data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', function (data, cms, $resource, $q, $route, soknadService, landService, Faktum) {
->>>>>>> master
         var soknadId = $route.current.params.soknadId;
         var promiseArray = [];
 
@@ -87,7 +77,6 @@ angular.module('sendsoknad')
         );
         promiseArray.push(alder.$promise);
 
-<<<<<<< HEAD
         var land = landService.get(
             function (result) { // Success
                 data.land = result;
@@ -96,9 +85,6 @@ angular.module('sendsoknad')
         promiseArray.push(land.$promise);
 
         if (soknadId != undefined) {
-=======
-        if (soknadId !== undefined) {
->>>>>>> master
             // Barn må hentes før man henter søknadsdataene.
             var soknadDeferer = $q.defer();
             var barn = $resource('/sendsoknad/rest/soknad/:soknadId/familierelasjoner').get(
