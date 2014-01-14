@@ -48,7 +48,19 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
         }
         Person person = new FamilieRelasjonTransform().mapFamilierelasjonTilPerson(soknadId, response);
         lagreBarn(soknadId, person);
+        lagreStatsborgerskap(soknadId, person);
         return person;
+    }
+
+    private void lagreStatsborgerskap(Long soknadId, Person person) {
+        String statsborgerskap = (String)person.getFakta().get("statsborgerskap");
+        
+        if(!statsborgerskap.isEmpty()) {
+            Faktum statsborgerskapFaktum = new Faktum(soknadId, null, "statsborgerskap", statsborgerskap, FaktumType.SYSTEMREGISTRERT.toString());
+            Map<String, String> properties = new HashMap<>();
+            statsborgerskapFaktum.setProperties(properties);
+            soknadService.lagreSystemFaktum(soknadId, statsborgerskapFaktum, "fnr");
+        }
     }
 
     @SuppressWarnings("unchecked")
