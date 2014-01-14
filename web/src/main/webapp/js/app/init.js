@@ -37,9 +37,8 @@ angular.module('sendsoknad')
     }])
     .constant('lagreSoknadData', 'OPPDATER_OG_LAGRE')
     .value('data', {})
+    .value('personalia', {})
     .value('cms', {})
-    .value('basepath', '../')
-
     .factory('InformasjonsSideResolver', ['data', 'cms', '$resource', '$q', '$route', function (data, cms, $resource, $q, $route) {
         var promiseArray = [];
 
@@ -60,8 +59,7 @@ angular.module('sendsoknad')
 
         return $q.all(promiseArray);
     }])
-
-    .factory('HentSoknadService', ['data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', function (data, cms, $resource, $q, $route, soknadService, landService, Faktum) {
+    .factory('HentSoknadService', ['data', 'cms', 'personalia', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', function (data, cms, personalia, $resource, $q, $route, soknadService, landService, Faktum) {
         var soknadId = $route.current.params.soknadId;
         var promiseArray = [];
 
@@ -74,12 +72,19 @@ angular.module('sendsoknad')
 
         var alder = $resource('/sendsoknad/rest/soknad/personalder').get(
             function (result) { // Success
-                data.alder = result;
+                personalia.alder = result.alder;
             }
         );
         promiseArray.push(alder.$promise);
 
-        if (soknadId !== undefined) {
+        var land = landService.get(
+            function (result) { // Success
+                data.land = result;
+            }
+        );
+        promiseArray.push(land.$promise);
+
+        if (soknadId != undefined) {
             // Barn må hentes før man henter søknadsdataene.
             var soknadDeferer = $q.defer();
             var barn = $resource('/sendsoknad/rest/soknad/:soknadId/familierelasjoner').get(
@@ -87,6 +92,10 @@ angular.module('sendsoknad')
                 function (result) { // Success
                     var soknad = soknadService.get({param: soknadId},
                         function (result) { // Success
+                            if (result.fakta.statsborgerskap) {
+                                personalia.statsborgerskap = result.fakta.statsborgerskap.value;
+                                delete result.fakta.statsborgerskap;
+                            }
                             data.soknad = result;
                             soknadDeferer.resolve();
                         }
@@ -94,15 +103,20 @@ angular.module('sendsoknad')
                 }
             );
 
-            var land = landService.get(
+            var personaliaPromise = $resource('/sendsoknad/rest/soknad/:soknadId/personalia').get(
+                {soknadId: soknadId},
                 function (result) { // Success
-                    data.land = result;
+                    personalia.fakta = result.fakta;
                 }
             );
+            promiseArray.push(personaliaPromise.$promise);
+
             var soknadOppsett = soknadService.options({param: soknadId},
                 function (result) { // Success
                     data.soknadOppsett = result;
-                });
+                }
+            );
+
             var fakta = Faktum.query({soknadId: soknadId}, function (result) {
                 data.fakta = result;
                 data.finnFaktum = function (key) {

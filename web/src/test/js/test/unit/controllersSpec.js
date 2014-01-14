@@ -29,9 +29,15 @@ describe('DagpengerControllere', function () {
     beforeEach(module('app.services', 'app.controllers', 'nav.feilmeldinger'));
 
     beforeEach(module(function ($provide) {
-        $provide.value("data", {alder: {'alder': 61},
-            fakta: [], finnFaktum: function(faktumKey) {}, finnFakta: function(faktumKey) {}});
+        $provide.value("data", {
+            fakta: [],
+            finnFaktum: function(faktumKey) {},
+            finnFakta: function(faktumKey) {}
+        });
         $provide.value("cms", {});
+        $provide.value("personalia", {
+            alder: 61
+        });
         $provide.constant('lagreSoknadData', "OPPDATER_OG_LAGRE");
     }));
 
