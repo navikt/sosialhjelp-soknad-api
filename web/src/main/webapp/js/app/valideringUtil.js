@@ -1,69 +1,65 @@
 (function () {
-    var RequiredValidator = function RequiredValidator(attrs) {
-        var erRequired;
+	var RequiredValidator = function RequiredValidator(attrs) {
+		var erRequired;
+		if (harAttributt(attrs, 'required')) {
+			this.erRequired = true;
+		}
+	};
 
-        if (harAttributt(attrs, 'required')) {
-            this.erRequired = true;
-        }
-    };
+	RequiredValidator.prototype.validate = function (verdi) {
+		if (this.erRequired && verdi && verdiErIkkeTom(verdi.trim())) {
+			return true;
+		}
+		return 'required';
+	}
 
-    RequiredValidator.prototype.validate = function (verdi) {
-        if (this.erRequired && verdi && verdiErIkkeTom(verdi.trim())) {
-            return true;
-        }
+	window.RequiredValidator = RequiredValidator;
 
-        return 'required';
-    }
+	var PatternValidator = function PatternValidator(attrs) {
+		var pattern;
+		var stringPattern = harAttributt(attrs, 'pattern');
+		if (stringPattern) {
+			// Tatt fra angular for å bygge regexp fra string
+			var match = stringPattern.match(/^\/(.*)\/([gim]*)$/);
+			this.pattern = new RegExp(match[1], match[2]);
+		}
+	};
 
-    window.RequiredValidator = RequiredValidator;
+	PatternValidator.prototype.validate = function (verdi) {
+		if (this.pattern && !this.pattern.test(verdi)) {
+			return 'pattern';
+		}
+		return true;
+	};
 
-    var PatternValidator = function PatternValidator(attrs) {
-        var pattern;
+	window.PatternValidator = PatternValidator;
 
-        var stringPattern = harAttributt(attrs, 'pattern');
-        if (stringPattern) {
-            // Tatt fra angular for å bygge regexp fra string
-            var match = stringPattern.match(/^\/(.*)\/([gim]*)$/);
-            this.pattern = new RegExp(match[1], match[2]);
-        }
-    };
+	var LengthValidator = function LengthValidator(attrs) {
+		var minLengde, maxLengde;
+		this.minLengde = harAttributt(attrs, 'minlength');
 
-    PatternValidator.prototype.validate = function (verdi) {
-        if (this.pattern && !this.pattern.test(verdi)) {
-            return 'pattern';
-        }
-        return true;
-    };
+		if (!this.minLengde) {
+			this.minLengde = false;
+		}
 
-    window.PatternValidator = PatternValidator;
+		this.maxLengde = harAttributt(attrs, 'maxlength');
 
+		if (!this.maxLengde) {
+			this.maxLengde = false;
+		}
+	};
 
-    var LengthValidator = function LengthValidator(attrs) {
-        var minLengde, maxLengde;
+	LengthValidator.prototype.validate = function (value) {
+		if (this.minLengde && value.trim().length < this.minLengde) {
+			return 'minlength'; // Invalid
+		}
 
-        this.minLengde = harAttributt(attrs, 'minlength');
-        if (!this.minLengde) {
-            this.minLengde = false;
-        }
+		if (this.maxLengde && value.trim().length > this.maxLengde) {
+			return 'maxlength'; // Invalid
+		}
 
-        this.maxLengde = harAttributt(attrs, 'maxlength');
-        if (!this.maxLengde) {
-            this.maxLengde = false;
-        }
-    }
+		return true;
+	};
 
-
-    LengthValidator.prototype.validate = function (value) {
-        if (this.minLengde && value.trim().length < this.minLengde) {
-            return 'minlength'; // Invalid
-        }
-
-        if (this.maxLengde && value.trim().length > this.maxLengde) {
-            return 'maxlength'; // Invalid
-        }
-
-        return true;
-    }
-
-    window.LengthValidator = LengthValidator;
+	window.LengthValidator = LengthValidator;
 })();
