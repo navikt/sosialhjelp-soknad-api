@@ -25,6 +25,9 @@ angular.module('app.brukerdata', ['app.services'])
 
 
     .controller('PersonaliaCtrl', ["$scope", "$routeParams", "tpsService", "cms", function ($scope, $routeParams, tpsService, cms) {
+        //For testing av statsborgerskap kan linjen under kommenteres inn
+        //$scope.soknadData.fakta.statsborgerskap.value = "POL"
+
         $scope.personaliaData = {};
 
         tpsService.get({soknadId: $routeParams.soknadId}).$promise.then(function (result) {
