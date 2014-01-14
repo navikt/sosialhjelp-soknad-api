@@ -7,7 +7,7 @@
 
         <div data-ng-show="harHentetPersonalia()">
             <div class="personalia">
-                <div class="alderOgKjonn mann">
+                <div class="alderOgKjonn" data-ng-class="{mann: erMann(), kvinne: erKvinne()}">
                     <span data-cmstekster="aar"></span>
                     <span class="alder robust">{{ personalia.alder }}</span>
                 </div>
