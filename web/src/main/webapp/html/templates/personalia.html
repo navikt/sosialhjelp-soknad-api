@@ -115,6 +115,19 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="statsborgerskap" data-ng-if="erUtenlandskStatsborger()">
+                    <div class="informasjonstekst-utrop">
+                        {{ 'personalia.utenlandskstatsborger.statsborgerskap.informasjon' | cmstekst }}
+                    </div>
+                    <div class="ekstra-spm-boks" data-vedlegginfoboks>
+                        <ul>
+                            <li>
+                                {{ 'personalia.utenlandskstatsborger.statsborgerskap.dokumentasjon' | cmstekst}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
         <div data-spmblokkferdig data-nokkel="personalia" data-submit-method="validerPersonalia(personaliaForm)"></div>

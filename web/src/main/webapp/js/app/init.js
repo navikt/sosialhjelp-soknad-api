@@ -94,6 +94,10 @@ angular.module('sendsoknad')
                 function (result) { // Success
                     var soknad = soknadService.get({param: soknadId},
                         function (result) { // Success
+                            if (result.fakta.statsborgerskap) {
+                                personalia.statsborgerskap = result.fakta.statsborgerskap.value;
+                                delete result.fakta.statsborgerskap;
+                            }
                             data.soknad = result;
                             soknadDeferer.resolve();
                         }

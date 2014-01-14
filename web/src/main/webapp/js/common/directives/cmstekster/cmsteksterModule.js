@@ -53,4 +53,11 @@ angular.module('nav.cmstekster', ['app.services'])
                 element.attr('href', cms.tekster[nokkel]);
             }
         };
+    }])
+    .filter('cmstekst', ['cms', function(cms) {
+        return function(nokkel) {
+            var tekst = cms.tekster[nokkel];
+
+            return tekst === undefined ? '' : tekst;
+        }
     }]);
