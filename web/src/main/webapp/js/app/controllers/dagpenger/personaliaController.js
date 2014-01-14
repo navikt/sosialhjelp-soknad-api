@@ -2,7 +2,6 @@ angular.module('nav.personalia', [])
     .controller('PersonaliaCtrl', ['$scope', '$routeParams', 'cms', 'data', 'personalia', function ($scope, $routeParams, cms, data, personalia) {
         $scope.personaliaData = {};
         $scope.personalia = personalia;
-        console.log($scope.personalia);
 
         if ($scope.personalia.fakta.adresser != undefined) {
             $scope.personalia.fakta.adresser.forEach(function (data, index) {
@@ -29,6 +28,7 @@ angular.module('nav.personalia', [])
         }
 
         $scope.harBostedsAdresse = function () {
+            console.log()
             return $scope.personaliaData.bostedsAdresse != undefined;
         }
 
