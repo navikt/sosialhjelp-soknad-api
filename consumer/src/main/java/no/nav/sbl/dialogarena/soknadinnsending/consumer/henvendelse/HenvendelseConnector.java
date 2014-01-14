@@ -32,12 +32,13 @@ public class HenvendelseConnector {
     public String startSoknad(String fnr, String hovedskjema) {
         logger.error("Inne i metoden for startSoknad");
         try {
-            XMLHovedskjema skjema = new XMLHovedskjema().withSkjemanummer(hovedskjema);
+            //XMLHovedskjema skjema = new XMLHovedskjema().withSkjemanummer(hovedskjema);
+            XMLHovedskjema skjema = new XMLHovedskjema();
             WSStartSoknadRequest request = new WSStartSoknadRequest().withFodselsnummer(fnr).withType(SOKNADINNSENDING).withAny(new XMLMetadataListe().withMetadata(skjema));
             WSBehandlingsId behandlingsId = sendSoknadService.startSoknad(request);
             return behandlingsId.getBehandlingsId();
         } catch (SOAPFaultException e) {
-            logger.error("Feil ved oppretting av søknad for bruker " + fnr, e);
+            logger.error("Feil ved start søknad for bruker " + fnr, e);
             throw new ApplicationException("Kunne ikke opprette ny søknad", e);
         }
     }
