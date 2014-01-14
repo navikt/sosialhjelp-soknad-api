@@ -7,10 +7,13 @@
         margin-bottom: 30px;
     }
     .knapper-opprett {
-        //border-top: 1px solid #ddd;
         margin-top: 1rem;
-        //padding-top: 2rem;
         text-align: center;
+
+        p {
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
 
         input, a {
             //display: block;
@@ -19,36 +22,17 @@
     }
 }
 
-#barnetillegg .spm-knapper {
-    border-top: 1px solid #ddd;
-    padding-top: 40px;
-}
-
 .modalBoks {
-    margin-top: 100px;
-
-    h2 {
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-
-    .lukk {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        width: 32px;
-        height: 32px;
-        background: url("../img/kryss.svg");
-        background-color: transparent;
-        background-repeat: no-repeat;
-    }
-
     .datepicker {
         padding: 15px;
     }
 
     p {
         margin: 15px;
+    }
+
+    input:not([type="submit"]), .select-input {
+        width: 65%;
     }
 
     .knapper-opprett {
@@ -76,21 +60,13 @@
         background-repeat: no-repeat;
     }
 
-    //TODO Andreas fiks.
-    .lenker-dot {
-        margin-bottom: 40px;
-        text-align: center;
-    }
-    /*.lenker-dot a:not(:first-child):before {
-        content: "•";
-        text-align: center;
-        color: #0067c5;
-    }*/
-    .lenker-dot > a {
-        margin-left: 14px;
-    }
-    .lenker-dot > a:first-child {
-        margin-left: 0;
+    ul {
+        margin-top: 25px;
+        margin-bottom: 15px;
+
+        li {
+            margin-top: 0;
+        }
     }
 
     .barnealder {
@@ -114,10 +90,13 @@
     }
 
     .barnecheckbox {
-        margin-top: 20px;
+        margin-left: 65px;
+        margin-top: 15px;
+        margin-bottom: 15px;
     }
 
     .barneinfo {
+        margin-left: 10px;
         display: inline-block;
         font-weight: 600;
         font-family: Modus, Arial;
