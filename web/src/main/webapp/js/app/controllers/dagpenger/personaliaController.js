@@ -2,6 +2,7 @@ angular.module('nav.personalia', [])
     .controller('PersonaliaCtrl', ['$scope', '$routeParams', 'cms', 'data', 'personalia', function ($scope, $routeParams, cms, data, personalia) {
         $scope.personaliaData = {};
         $scope.personalia = personalia;
+        console.log($scope.personalia);
 
         if ($scope.personalia.fakta.adresser != undefined) {
             $scope.personalia.fakta.adresser.forEach(function (data, index) {
@@ -94,6 +95,14 @@ angular.module('nav.personalia', [])
                     tekst = cms.tekster["personalia.ingenadresse"];
             }
             return tekst;
+        }
+
+        $scope.erMann = function() {
+            return $scope.personalia.fakta.kjonn.value == 'gutt';
+        }
+
+        $scope.erKvinne = function() {
+            return $scope.personalia.fakta.kjonn.value == 'jente';
         }
 
         $scope.harHentetPersonalia = function () {
