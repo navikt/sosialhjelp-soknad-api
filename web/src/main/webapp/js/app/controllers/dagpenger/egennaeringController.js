@@ -138,15 +138,15 @@ angular.module('nav.egennaering', [])
         function summerAndelsprosentene() {
             var sum = "";
             if ($scope.gardseier("egennaering.gardsbruk.false.eier.jeg")) {
-                sum = parseInt(data.finnFaktum("egennaering.gardsbruk.false.eierandel.din").value);
+                sum = parseFloat(data.finnFaktum("egennaering.gardsbruk.false.eierandel.din").value);
             }
             if ($scope.gardseier("egennaering.gardsbruk.false.eier.ektefelle")) {
-                sum += parseInt(data.finnFaktum("egennaering.gardsbruk.false.eierandel.ektefelle").value);
+                sum += parseFloat(data.finnFaktum("egennaering.gardsbruk.false.eierandel.ektefelle").value);
             }
             if ($scope.gardseier("egennaering.gardsbruk.false.eier.annet")) {
-                sum += parseInt(data.finnFaktum("egennaering.gardsbruk.false.eierandel.annet").value);
+                sum += parseFloat(data.finnFaktum("egennaering.gardsbruk.false.eierandel.annet").value);
             }
-            return sum;
+            return Math.ceil(sum);
         }
 
         function erCheckboxerAvhuket(checkboxNokler) {
