@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.DateTimeSerializer;
+
 import com.google.gson.GsonBuilder;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -10,7 +12,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.FamilieRelasjonSe
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
-import no.nav.sbl.dialogarena.websoknad.util.DateTimeSerializer;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
