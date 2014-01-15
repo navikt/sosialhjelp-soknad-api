@@ -195,12 +195,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         try {
             byte[] bytes = IOUtils.toByteArray(inputStream);
             if (new IsImage().evaluate(bytes)) {
-                if (ScriptRunner.IM_EXISTS) {
-                    bytes = new ScriptRunner(ScriptRunner.Type.IM, IMAGE_RESIZE, null, new ByteArrayInputStream(bytes)).call();
-                    bytes = new ScriptRunner(ScriptRunner.Type.IM, IMAGE_PDFA, null, new ByteArrayInputStream(bytes)).call();
-                } else {
-                    bytes = new ImageToPdf().transform(bytes);
-                }
+                bytes = new ImageToPdf().transform(bytes);
                 Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(), vedlegg.getFaktumId(), vedlegg.getGosysId(), vedlegg.getNavn(), (long) bytes.length, 1, UUID.randomUUID().toString(), null);
                 resultat.add(vedleggRepository.lagreVedlegg(sideVedlegg, bytes));
 
@@ -263,6 +258,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
             }
 
         }
+        //vannmerk her!
         byte[] doc = new PdfMerger().transform(bytes);
         Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, gosysId, "faktum.pdf", (long) doc.length, vedleggs.size(), UUID.randomUUID().toString(), doc);
         WebSoknad soknad = repository.hentSoknad(soknadId);
