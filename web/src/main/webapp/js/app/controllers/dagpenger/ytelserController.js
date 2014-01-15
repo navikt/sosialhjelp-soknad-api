@@ -1,5 +1,5 @@
 angular.module('nav.ytelser', [])
-	.controller('YtelserCtrl', ['$scope', 'lagreSoknadData', 'data', function ($scope, lagreSoknadData, data) {
+	.controller('YtelserCtrl', ['$scope', 'data', function ($scope, data) {
 
 		$scope.land = data.land;
 		$scope.ytelser = {skalViseFeilmeldingForIngenYtelser: false};

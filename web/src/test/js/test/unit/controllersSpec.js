@@ -38,7 +38,6 @@ describe('DagpengerControllere', function () {
         $provide.value("personalia", {
             alder: 61
         });
-        $provide.constant('lagreSoknadData', "OPPDATER_OG_LAGRE");
     }));
 
     beforeEach(inject(function ($rootScope, $controller, $compile, $httpBackend) {

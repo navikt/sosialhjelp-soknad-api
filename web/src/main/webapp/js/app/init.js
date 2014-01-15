@@ -35,7 +35,6 @@ angular.module('sendsoknad')
         $http.get('../js/app/directives/stegindikator/stegIndikatorTemplate.html', {cache: $templateCache});
         $http.get('../js/app/directives/stickybunn/stickyBunnTemplate.html', {cache: $templateCache});
     }])
-    .constant('lagreSoknadData', 'OPPDATER_OG_LAGRE')
     .value('data', {})
     .value('personalia', {})
     .value('cms', {})
