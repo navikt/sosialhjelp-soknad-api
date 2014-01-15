@@ -20,6 +20,8 @@ public interface SoknadRepository {
 
     void avbryt(Long soknad);
 
+    List<WebSoknad> hentAlleSoknaderSistLagretUnderEnTimeSiden();
+
     List<WebSoknad> hentListe(String aktorId);
 
     Long lagreFaktum(long soknadId, Faktum faktum);

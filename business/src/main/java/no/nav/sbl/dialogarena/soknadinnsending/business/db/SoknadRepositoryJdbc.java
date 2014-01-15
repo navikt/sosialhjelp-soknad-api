@@ -21,6 +21,7 @@ import javax.inject.Named;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -102,6 +103,14 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     public WebSoknad hentSoknad(Long id) {
         String sql = "select * from SOKNAD where soknad_id = ?";
         return getJdbcTemplate().queryForObject(sql, new SoknadRowMapper(), id);
+    }
+
+    public List<WebSoknad> hentAlleSoknaderSistLagretUnderEnTimeSiden() {
+        String sql = "select * from SOKNAD where sistlagret >= ?";
+        return getJdbcTemplate().query(
+                sql,
+                new String[]{new Timestamp(DateTime.now().minusHours(1).getMillis()).toString()},
+                new SoknadMapper());
     }
 
     @Override
