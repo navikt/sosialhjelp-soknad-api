@@ -17,15 +17,14 @@
 }
 
 .informasjonstekst {
-  font-size: 1rem;
-  font-weight: bold;
-  margin-top: 20px !important;
-  margin-left: 15px !important;
+    font-weight: bold;
+    font-size: 1rem;
+    font-weight: bold;
 }
 
 .infoboks {
-  padding: 20px 5%;
-  margin-bottom: 20px;
+    padding: 20px 5%;
+    margin-bottom: 20px;
 
   .utrop-sirkel-ikon {
     background-image: url(../img/utrop.svg);
@@ -41,6 +40,15 @@
 
 .ekstra-spm-boks&.vedlegginfoboks {
   padding-bottom: 0px !important;
+}
+
+.informasjonstekst-utrop {
+    background-image: url(../img/info-utrop.svg);
+    background-repeat: no-repeat;
+    background-position: 10px top;
+    padding-left: 25px;
+    padding-top: 2px;
+    min-height: 19px;
 }
 
 .vedlegginfoboks {
@@ -67,8 +75,6 @@
       p {
         margin: 0;
       }
-    }
-    .lastopp {
     }
   }
 }
@@ -255,8 +261,7 @@
 
     .flipp {
       cursor: pointer;
-      border-color: transparent transparent #a3a3a3 transparent
-    ;
+      border-color: transparent transparent #a3a3a3 transparent;
 
       &:before {
         border-top: 30px solid #ccc;
@@ -268,16 +273,15 @@
     }
   }
 
-  .flipp {
-    position: relative;
-    top: -3px;
-    width: 64px;
-    height: 0;
-    margin: 0 auto;
-    border-style: solid;
-    border-color: transparent transparent #0067c5 transparent
-  ;
-    border-width: 0 2px 3px 2px;
+    .flipp {
+        position: relative;
+        top: -3px;
+        width: 64px;
+        height: 0;
+        margin: 0 auto;
+        border-style: solid;
+        border-color: transparent transparent #0067c5 transparent;
+        border-width: 0 2px 3px 2px;
 
     &:before {
       content: "";
@@ -357,9 +361,11 @@
         font-weight: bold;
       }
 
-      .spm-knapper {
-        margin-top: 15px;
-        text-align: center;
+            .spm-knapper {
+                text-align: center;
+                border-top: 1px solid #ddd;
+                margin-top: 15px;
+                padding-top: 40px;
 
         input, button, a {
           margin-bottom: 15px;
@@ -372,25 +378,25 @@
           display: block;
         }
 
-        button {
-          margin: 0 auto 15px;
+                button {
+                    margin: 0 auto 15px;
+                }
+            }
         }
-      }
+  
+        .spm-fortsett {
+          margin-top: 1rem;
+      
+          span {
+            text-transform: uppercase;
+      
+                a {
+                    text-transform: none;
+                }
+            }
+        }
+          }
     }
-  }
-
-  .spm-fortsett {
-    margin-top: 1rem;
-
-    span {
-      text-transform: uppercase;
-
-      a {
-        text-transform: none;
-      }
-    }
-  }
-}
 
 form-linje.feil {
   border: 1px solid #df4b78;

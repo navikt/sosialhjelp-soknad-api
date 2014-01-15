@@ -1,7 +1,6 @@
 angular.module('nav.reellarbeidssoker', [])
-	.controller('ReellarbeidssokerCtrl', ['$scope', 'data', function ($scope, data) {
-
-		$scope.alder = data.alder.alder;
+    .controller('ReellarbeidssokerCtrl', ['$scope', 'personalia', 'data', function ($scope, personalia, data) {
+        $scope.alder = personalia.alder;
 //        For testing av alder:
 //        $scope.alder = 59;
 

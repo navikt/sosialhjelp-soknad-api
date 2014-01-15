@@ -20,9 +20,9 @@ public class FillagerConnector {
     @Named("fillagerService")
     private FilLagerPortType portType;
 
-    public void lagreFil(String uid, InputStream fil) {
+    public void lagreFil(String behandlingsId, String uid, InputStream fil) {
         try {
-            portType.lagre(uid, new DataHandler(new ByteArrayDataSource(fil, "application/octet-stream")));
+            portType.lagre(behandlingsId, uid, new DataHandler(new ByteArrayDataSource(fil, "application/octet-stream")));
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lagre fil: " + e, e);
         } catch (SOAPFaultException ws) {
