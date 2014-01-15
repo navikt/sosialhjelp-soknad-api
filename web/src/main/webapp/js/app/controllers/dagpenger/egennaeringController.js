@@ -188,7 +188,9 @@ angular.module('nav.egennaering', [])
          Når elementet med selectboksen blir synlig skal settBreddeSlikAtDetFungererIIE kjøres for å fikse bredden i IE
          */
         $scope.$watch(function () {
-            return data.finnFaktum('egennaering.gardsbruk').value;
+            if(data.finnFaktum('egennaering.gardsbruk')) {
+                return data.finnFaktum('egennaering.gardsbruk').value;
+            }
         }, function () {
             if (data.finnFaktum('egennaering.gardsbruk').value == 'false') {
                 settBreddeSlikAtDetFungererIIE();
