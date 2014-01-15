@@ -7,6 +7,20 @@
 <h3>{{gosysId}}</h3>
 <div>
    Oppsummering... {{soknadId}}
+   {{#forFaktum "test"}}
+   err inni her
+        Oppsummering... {{value}}
+   {{/forFaktum}}
+
+<ul>
+   {{#forFakta "liste"}}
+   {{#each this}}
+   <li>
+   {{value}}
+   </li>
+   {{/each}}
+   {{/forFakta}}
+   </ul>
 </div>
 
 </body>

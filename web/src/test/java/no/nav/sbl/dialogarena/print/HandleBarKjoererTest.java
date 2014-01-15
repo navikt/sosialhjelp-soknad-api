@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.lowagie.text.DocumentException;
-import org.junit.Ignore;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -50,12 +51,16 @@ public class HandleBarKjoererTest {
         assertThat(applied, containsString("188"));
     }
 
-    @Ignore
     @Test
     public void createPDFFromJson() throws IOException, DocumentException {
-        String html = HandleBarKjoerer.fyllHtmlMalMedInnhold(hentWebSoknadJson(), "/html/WebSoknadHtml");
-        assertThat(html, containsString("Dagpenger"));
-        assertThat(html, containsString("188"));
+        WebSoknad soknad = new WebSoknad();
+        soknad.setGosysId("NAV-1-1-1");
+        soknad.leggTilFaktum(new Faktum(1L, 1L, "test", "testinnhold"));
+        soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold2"));
+        soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold3"));
+        soknad.leggTilFaktum(new Faktum(1L, 1L, "test3", "testinnhold4"));
+        String html = HandleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/html/WebSoknadHtml");
+        assertThat(html, containsString("NAV-1-1-1"));
 
         String baseUrl = "/c:/test/";
         String pdf = "c:/test/handlebar.pdf";

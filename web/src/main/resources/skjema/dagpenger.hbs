@@ -1,0 +1,108 @@
+<html>
+<head>
+    <style type="text/css">
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 1rem;
+            font-weight: normal;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: #3e3832;
+        }
+
+        h1 {
+            si
+        }
+
+        #header {
+            width: 100%;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+<div id="header">
+    <h1>Søknad om dagpenger {{gosysid}}</h1>
+    ---
+    <div>
+        {{#forFaktum "personalia"}}
+            <h2>{{properties.navn}}</h2>
+
+            <h2>{{properties.fnr}}</h2>
+
+            <h3>{{addresse}}</h3>
+        {{/forFaktum}}
+    </div>
+</div>
+<div id="soknad">
+    <h2>Reel arbeidsoker</h2>
+
+    <div>
+        {{#forFaktum "reelarbeidsoker.villigdeltid"}}
+            <div>{{#if value="true"}}[x]{{else}}[ ]{{/if}} Jeg er villig til å søke både hel- og deltidsjobb</div>
+        {{/forFaktum}}
+        {{#forFaktum "reelarbeidsoker.villigflytte"}}
+            <div>{{#if value="true"}}[x]{{else}}[ ]{{/if}} Jeg er villig til å flytte eller pendle</div>
+        {{/forFaktum}}
+        {{#forFaktum "reelarbeidsoker.villighelse"}}
+            <div>{{#if value="true"}}[x]{{else}}[ ]{{/if}} Jeg kan ta enhver type arbeid</div>
+        {{/forFaktum}}
+        {{#forFaktum "reelarbeidsoker.villigjobb"}}
+            <div>{{#if value="true"}}[x]{{else}}[ ]{{/if}} Jeg er villig til å bytte yrke og gå ned i lønn</div>
+        {{/forFaktum}}
+    </div>
+    <h2>Arbeidsforhold de siste 12 måneder</h2>
+    <ul>
+        {{#forFakta "arbeidsforhold"}}
+            {{#each }}
+                <li>Arbeidsforhold hos {{properties.navn}}</li>
+            {{/each}}
+        {{/forFakta}}
+    </ul>
+    <h2>Egen næring</h2>
+
+    <div>
+        {{#forFaktum "ikkeegennaering"}}
+            {{#hvisSant}}
+                Jeg driver ikke egen næring, gårdsbruk eller fangst/fiske
+            {{else}}
+                Her kommer ting når en driver med egen næring
+            {{/hvisSant}}
+        {{/forFaktum}}
+    </div>
+    <h2>Verneplikt</h2>
+    {{#forFaktum "ikkeavtjentverneplikt"}}
+        {{#hvisSant}}
+            Jeg har ikke avtjent verneplikt de siste 12 mnd
+        {{else}}
+            Jeg har avtjent verneplikt de siste 12 mnd
+        {{/hvisSant}}
+    {{/forFaktum}}
+    <h2>Andre ytelser</h2>
+    {{#forFaktaStarterMed "andreytelser"}}
+        {{#each }}
+            {{#hvisSant}}
+                {{key}}: {{properties.fraHvem}}
+            {{/hvisSant}}
+        {{/each}}
+    {{/forFaktaStarterMed}}
+
+    <h2>Barn som det søkes barnetilegg for</h2>
+    {{#forFakta "barn"}}
+        {{#each this}}
+            {{properties.navn}}, født den {{properties.fodselsdato}}, bor i norge, inntekt på {{properties.inntekt}}
+        {{/each}}
+    {{/forFakta}}
+
+    <h2>Vedlegg</h2>
+
+</div>
+</body>
+</html>
