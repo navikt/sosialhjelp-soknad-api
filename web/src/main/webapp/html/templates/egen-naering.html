@@ -18,13 +18,13 @@
                  data-nav-faktum="egennaering_drivergennaering_orgnummer"
                  data-navconfig
                  data-navlabel="egennaering.driveregennaering.false.organisasjonsnummer"
-                 data-navfeilmelding="{ required: 'egennaering.driveregennaering.false.organisasjonsnummer.feilmelding', pattern: 'organisasjonsnummer.format.feilmelding'}"
-                 data-navindex="{{$index}}">
+                 data-navfeilmelding="{ required: 'egennaering.driveregennaering.false.organisasjonsnummer.feilmelding', pattern: 'organisasjonsnummer.format.feilmelding'}">
             </div>
         </div>
         <a href="javascript:void(0)" aria-role="button" class="orgnummer-slett"
            data-ng-show="skalViseSlettKnapp($index)"
-           data-ng-click="slettOrg(egennaering_orgnummer, $index)" data-cmstekster="organisasjonsnummer.slett"></a>
+           data-ng-click="slettOrg(egennaering_drivergennaering_orgnummer, $index)"
+           data-cmstekster="organisasjonsnummer.slett"></a>
     </div>
 
     <a href="javascript:void(0)" aria-role="button" class="orgnummer-leggtil" data-ng-click="leggTilOrgnr()"
@@ -40,7 +40,7 @@
                    data-ng-required="erSynlig('egennaering.driveregennaering')"
                    data-error-messages="{required:'egennaering.driveregennaering.arbeidsmengde.feilmelding',
                    pattern:'regex.tall.komma.punktum'}"
-                   data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
+                   data-ng-pattern="/^(\d+(?:[\.\,]\d{0,2})?)$/"
                    data-tekstfelt-patternvalidering
                    data-blur-validate/>
             <span class="timer" data-cmstekster="egennaering.driveregennaering.arbeidsmengde.timer"></span>
@@ -153,10 +153,10 @@
                        type="text"
                        data-ng-required="gardseier('egennaering.gardsbruk.false.eier.jeg')"
                        data-error-messages="{required:'egennaering.gardsbruk.false.eierandel.din.feilmelding', pattern:'regex.tall'}"
-                       data-ng-pattern="/^\d+$/"
+                       data-ng-pattern="/^(\d+(?:[\.\,]\d{0,2})?)$/"
                        data-blur-validate
                        data-ng-blur="summererAndeleneTil100()"
-                       maxlength="3"
+                       maxlength="5"
                        data-tekstfelt-patternvalidering
                        data-nav-faktum="egennaering.gardsbruk.false.eierandel.din"
                        data-navconfig/>
@@ -171,10 +171,10 @@
                        type="text"
                        data-ng-required="gardseier('egennaering.gardsbruk.false.eier.ektefelle')"
                        data-error-messages="{required:'egennaering.gardsbruk.false.eierandel.ektefelle.feilmelding', pattern:'regex.tall'}"
-                       data-ng-pattern="/^\d+$/"
+                       data-ng-pattern="/^(\d+(?:[\.\,]\d{0,2})?)$/"
                        data-blur-validate
                        data-ng-blur="summererAndeleneTil100()"
-                       maxlength="3"
+                       maxlength="5"
                        data-tekstfelt-patternvalidering
                        data-nav-faktum="egennaering.gardsbruk.false.eierandel.ektefelle"
                        data-navconfig/>
@@ -189,10 +189,10 @@
                        type="text"
                        data-ng-required="gardseier('egennaering.gardsbruk.false.eier.annet')"
                        data-error-messages="{required:'egennaering.gardsbruk.false.eierandel.annet.feilmelding', pattern:'regex.tall'}"
-                       data-ng-pattern="/^\d+$/"
+                       data-ng-pattern="/^(\d+(?:[\.\,]\d{0,2})?)$/"
                        data-blur-validate
                        data-ng-blur="summererAndeleneTil100()"
-                       maxlength="3"
+                       maxlength="5"
                        data-tekstfelt-patternvalidering
                        data-nav-faktum="egennaering.gardsbruk.false.eierandel.annet"
                        data-navconfig/>
@@ -201,7 +201,7 @@
             </label>
         </div>
     </div>
-    <span class="melding prosentmelding" data-cmstekster="egennaering.gardsbruk.false.eierandel.feilmelding"></span>
+    <span class="prosentmelding" data-cmstekster="egennaering.gardsbruk.false.eierandel.feilmelding"></span>
 </div>
 
 
@@ -217,7 +217,7 @@
                    type="text"
                    data-ng-required="erSynlig('egennaering.gardsbruk')"
                    data-error-messages="{required: 'egennaering.gardsbruk.false.timer.feilmelding', pattern: 'regex.tall.komma.punktum'}"
-                   data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
+                   data-ng-pattern="/^(\d+(?:[\.\,]\d{0,2})?)$/"
                    data-blur-validate
                    data-tekstfelt-patternvalidering
                    data-nav-faktum="egennaering.gardsbruk.false.timer"
@@ -227,8 +227,9 @@
     </div>
 
     <div class="tekstfelt form-linje">
-        <label><span data-cmstekster="egennaering.gardsbruk.false.aar"></span></label>
-        <select id="egennaeringgardsbrukaar"
+        <label>
+            <span data-cmstekster="egennaering.gardsbruk.false.aar"></span>
+            <select id="egennaeringgardsbrukaar"
                 data-ng-model="faktum.value"
                 data-nav-faktum="egennaering.gardsbruk.false.aar"
                 data-navconfig
@@ -236,6 +237,7 @@
                 data-ng-init="faktum.value = faktum.value || forrigeAar; lagreFaktum();"
                 data-ng-options="aar for aar in aarstall"
                 data-ng-change="lagreFaktum()"/>
+        </label>
     </div>
 </div>
 
@@ -265,6 +267,10 @@
      data-booleanradio
      data-nokkel="egennaering.fangstogfiske">
 
+    <div data-navinfoboks>
+        <p data-cmstekster="egennaering.fangstogfiske.false.arbeid.informasjon"></p>
+    </div>
+
     <div class="form-linje boolean">
         <h4 class="spm-sporsmal" data-cmstekster="egennaering.fangstogfiske.false.arbeid.sporsmal"></h4>
 
@@ -284,14 +290,14 @@
         <span class="melding"></span>
     </div>
 
-    <div data-ng-if="erSynlig('egennaering.fangstogfiske')">
+    <div data-ng-if="erSynlig('egennaering.fangstogfiske.false.arbeid')">
         <div class="fangstfiskeinntekt">
             <div data-navtekst
                  data-nav-faktum="egennaering.fangstogfiske.false.arbeid.false.inntekt"
                  data-navconfig
                  data-navlabel="egennaering.fangstogfiske.false.arbeid.false.inntekt"
-                 data-navfeilmelding="egennaering.fangstogfiske.false.arbeid.false.inntekt.feilmelding"
-                 data-regexvalidering="/^(\d+(?:[\.\,]\d)?)$/">
+                 data-navfeilmelding="{required: 'egennaering.fangstogfiske.false.arbeid.false.inntekt.feilmelding', pattern: 'regex.tall.komma.punktum'}"
+                 data-regexvalidering="/^(\d+(?:[\.\,]\d{0,2})?)$/">
             </div>
         </div>
         <div data-vedlegginfoboks>

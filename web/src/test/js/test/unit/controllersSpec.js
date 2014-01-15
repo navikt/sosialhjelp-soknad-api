@@ -85,6 +85,17 @@ describe('DagpengerControllere', function () {
             scope.validerOgSettModusOppsummering(form);
             expect(scope.validateFormFunctionBleKalt).toEqual(true);
         });
+
+        it('skal generere aarstallene fra i år og 4 år bakover', function () {
+            //ctrl.genererAarstallListe;
+            expect(scope.aarstall.length).toEqual(5);
+        })
+
+        it('prevalgte aret skal være fjorårets år', function() {
+            var idag = new Date();
+            var ifjor = idag.getFullYear();
+            expect(scope.forrigeAar).toEqual((ifjor-1).toString())
+        })
     });
 
     describe('vernepliktCtrl', function () {
