@@ -14,5 +14,8 @@
     </div>
     <span class="melding"></span>
 
-    <div class="ng-transclude nav-boolean ekstra-spm-boks" data-ng-show="skalViseTranscludedInnhold()"></div>
+    <div data-ng-if="vis()" data-ng-show="skalViseTranscludedInnhold()">
+            <div class="ng-transclude nav-boolean ekstra-spm-boks" >
+            </div>
+    </div>
 </div>
