@@ -59,7 +59,7 @@ angular.module('sendsoknad')
 
         return $q.all(promiseArray);
     }])
-    .factory('HentSoknadService', ['data', 'cms', 'personalia', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', function (data, cms, personalia, $resource, $q, $route, soknadService, landService, Faktum) {
+    .factory('HentSoknadService', ['$rootScope', 'data', 'cms', 'personalia', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', function ($scope, data, cms, personalia, $resource, $q, $route, soknadService, landService, Faktum) {
         var soknadId = $route.current.params.soknadId;
         var promiseArray = [];
 
@@ -136,6 +136,18 @@ angular.module('sendsoknad')
                         }
                     });
                     return res;
+                };
+
+                data.slettFaktum = function(faktumData) {
+                    $scope.faktumSomSkalSlettes = new Faktum(faktumData);
+                    $scope.faktumSomSkalSlettes.$delete({soknadId: faktumData.soknadId}).then(function () {
+                    });
+
+                    data.fakta.forEach(function (item, index) {
+                        if (item.faktumId === faktumData.faktumId) {
+                            data.fakta.splice(index,1);
+                        }
+                    });
                 };
             });
             promiseArray.push(barn.$promise, soknadOppsett.$promise, soknadDeferer.promise, fakta.$promise);

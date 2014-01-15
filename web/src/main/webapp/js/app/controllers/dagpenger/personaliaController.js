@@ -98,11 +98,17 @@ angular.module('nav.personalia', [])
         }
 
         $scope.erMann = function() {
-            return $scope.personalia.fakta.kjonn.value == 'gutt';
+            if($scope.personalia && $scope.personalia.fakta && $scope.personalia.fakta.kjonn) {
+                return $scope.personalia.fakta.kjonn.value == 'gutt';
+            }
+            return false;
         }
 
         $scope.erKvinne = function() {
-            return $scope.personalia.fakta.kjonn.value == 'jente';
+            if($scope.personalia && $scope.personalia.fakta && $scope.personalia.fakta.kjonn) {
+                return $scope.personalia.fakta.kjonn.value == 'jente';
+            }
+            return false;
         }
 
         $scope.harHentetPersonalia = function () {
