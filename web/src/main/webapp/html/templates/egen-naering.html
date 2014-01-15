@@ -227,8 +227,9 @@
     </div>
 
     <div class="tekstfelt form-linje">
-        <label><span data-cmstekster="egennaering.gardsbruk.false.aar"></span></label>
-        <select id="egennaeringgardsbrukaar"
+        <label>
+            <span data-cmstekster="egennaering.gardsbruk.false.aar"></span>
+            <select id="egennaeringgardsbrukaar"
                 data-ng-model="faktum.value"
                 data-nav-faktum="egennaering.gardsbruk.false.aar"
                 data-navconfig
@@ -236,6 +237,7 @@
                 data-ng-init="faktum.value = faktum.value || forrigeAar; lagreFaktum();"
                 data-ng-options="aar for aar in aarstall"
                 data-ng-change="lagreFaktum()"/>
+        </label>
     </div>
 </div>
 
