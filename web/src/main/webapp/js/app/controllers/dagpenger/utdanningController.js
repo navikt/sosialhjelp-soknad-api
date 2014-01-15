@@ -1,5 +1,5 @@
 angular.module('nav.utdanning', [])
-	.controller('UtdanningCtrl', ['$scope', 'lagreSoknadData', 'data', function ($scope, lagreSoknadData, data) {
+	.controller('UtdanningCtrl', ['$scope', 'data', function ($scope, data) {
 
 		$scope.navigering = {nesteside: 'ytelser'};
 		$scope.sidedata = {navn: 'utdanning'};

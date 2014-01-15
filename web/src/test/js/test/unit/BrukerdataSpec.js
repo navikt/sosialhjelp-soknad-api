@@ -17,24 +17,6 @@ describe('brukerdata domene', function () {
             });
     }));
 
-    describe('soknaddata controller', function () {
-
-        var scope, ctrl;
-
-        beforeEach(inject(function ($rootScope, $controller) {
-            scope = $rootScope.$new();
-            ctrl = $controller('SoknadDataCtrl', {
-                $scope: scope
-            });
-        }));
-
-        it('skal returnere soknaddata', function () {
-            expect(scope.soknadData.soknadId).toEqual(1);
-            expect(scope.soknadData.fakta.fornavn.soknadId).toEqual(1);
-            expect(scope.soknadData.fakta.fornavn.value).toEqual('Ola');
-        });
-    })
-
     describe('modus controller', function () {
 
         var scope, ctrl;
