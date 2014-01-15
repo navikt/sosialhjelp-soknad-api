@@ -118,6 +118,9 @@ public class Faktum implements Serializable {
     }
 
     public Map<String, String> getProperties() {
+        if(properties == null) {
+            properties = new HashMap<>();
+        }
         return properties;
     }
 
@@ -129,6 +132,11 @@ public class Faktum implements Serializable {
     public String toString() {
         return "Faktum [soknadId=" + soknadId + ", key=" + key + ", value="
                 + value + ", type=" + type + "]";
+    }
+
+    public Faktum medProperty(String key, String value) {
+        getProperties().put(key, value);
+        return this;
     }
 
     public enum FaktumType {SYSTEMREGISTRERT, BRUKERREGISTRERT;}

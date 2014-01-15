@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
+import org.apache.commons.collections15.Predicate;
 import org.joda.time.DateTime;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -14,6 +15,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static no.nav.modig.lang.collections.IterUtils.on;
+
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class WebSoknad implements Serializable {
@@ -21,6 +24,7 @@ public class WebSoknad implements Serializable {
     private Long soknadId;
     private String gosysId;
     private String brukerBehandlingId;
+    private List<Faktum> faktaListe;
     private Map<String, Faktum> fakta;
     private SoknadInnsendingStatus status;
     private String aktoerId;
@@ -53,6 +57,7 @@ public class WebSoknad implements Serializable {
 
     public WebSoknad() {
         fakta = new LinkedHashMap<>();
+        faktaListe = new ArrayList<>();
     }
 
     public final Long getSoknadId() {
@@ -75,12 +80,22 @@ public class WebSoknad implements Serializable {
         return fakta;
     }
 
-    public final void leggTilFakta(Map<String, Faktum> fakta) {
-        this.fakta.putAll(fakta);
+    public List<Faktum> getFaktaListe() {
+        return faktaListe;
     }
 
-    public final void leggTilFaktum(String key, Faktum faktum) {
-        this.fakta.put(key, faktum);
+    public void setFaktaListe(List<Faktum> faktaListe) {
+        this.faktaListe = faktaListe;
+    }
+
+    public final void leggTilFakta(Map<String, Faktum> fakta) {
+        this.fakta.putAll(fakta);
+        this.faktaListe.addAll(fakta.values());
+    }
+
+    public final void leggTilFaktum(Faktum faktum) {
+        this.fakta.put(faktum.getKey(), faktum);
+        this.faktaListe.add(faktum);
     }
 
     public String getBrukerBehandlingId() {
@@ -197,4 +212,22 @@ public class WebSoknad implements Serializable {
         return this;
     }
 
+    public List<Faktum> getFaktaMedKey(final String key) {
+        return on(faktaListe).filter(new Predicate<Faktum>() {
+            @Override
+            public boolean evaluate(Faktum faktum) {
+                return faktum.getKey().equals(key);
+            }
+        }).collect();
+
+    }
+    public List<Faktum> getFaktaSomStarterMed(final String key) {
+        return on(faktaListe).filter(new Predicate<Faktum>() {
+            @Override
+            public boolean evaluate(Faktum faktum) {
+                return faktum.getKey().startsWith(key);
+            }
+        }).collect();
+
+    }
 }
