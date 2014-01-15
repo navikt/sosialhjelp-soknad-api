@@ -175,6 +175,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
             } else if (Detect.isPdf(bytes)) {
                 PDDocument document = PDDocument.load(new ByteArrayInputStream(bytes));
+                sjekkOmPdfErGyldig(document);
                 List<PDDocument> pages = new Splitter().split(document);
                 for (PDDocument page : pages) {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -280,5 +281,16 @@ public class SoknadService implements SendSoknadService, VedleggService {
             throw new RuntimeException("Kunne ikke laste definisjoner. ", e);
         }
 
+    }
+
+    private static void sjekkOmPdfErGyldig(PDDocument document) {
+        PdfDetector detector = new PdfDetector(document);
+        if (detector.pdfIsSigned()) {
+            throw new UgyldigOpplastingTypeException("PDF kan ikke være signert.", null, "vedlegg.opplasting.feil.pdf.signert");
+        } else if (detector.pdfIsEncrypted()) {
+            throw new UgyldigOpplastingTypeException("PDF kan ikke være krypert.", null, "vedlegg.opplasting.feil.pdf.krypert");
+        } else if (detector.pdfIsSavedOrExportedWithApplePreview()) {
+            throw new UgyldigOpplastingTypeException("PDF kan ikke være lagret med Apple Preview.", null, "vedlegg.opplasting.feil.pdf.applepreview");
+        }
     }
 }
