@@ -3,15 +3,16 @@
     <div data-panelbelyst data-sidetittel="sidetittel.skjema">
         <h1 class="stor strek-ikon-soknader">{{ 'skjema.tittel' | cmstekst }}</h1>
         <div class="oppsummering">
-            <div class="personalia">
-                <div class="navnOgFnr">
-                    <span>{{ personalia.fakta.sammensattnavn.value }}</span>
-                    <span>/</span>
-                    <span>{{ personalia.fakta.fnr.value | formatterFnr }}</span>
-                </div>
-                <div data-ng-include="'../html/templates/adresse.html'"></div>
+            <!--<div class="personalia">-->
+                <!--<div class="navnOgFnr">-->
+                    <!--<span>{{ personalia.fakta.sammensattnavn.value }}</span>-->
+                    <!--<span>/</span>-->
+                    <!--<span>{{ personalia.fakta.fnr.value | formatterFnr }}</span>-->
+                <!--</div>-->
+                <!--<div data-ng-include="'../html/templates/adresse.html'"></div>-->
+            <!--</div>-->
 
-            </div>
+            <div data-ng-bind-html="oppsummeringHtml"></div>
 
             <div class="oppsummering-knapper">
                 <a class="knapp-hoved" data-ng-click="sendSoknad()" data-cmstekster="send"></a>

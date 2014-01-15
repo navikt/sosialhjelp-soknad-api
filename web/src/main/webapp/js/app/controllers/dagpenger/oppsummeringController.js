@@ -1,7 +1,10 @@
 angular.module('nav.oppsummering', [])
-    .controller('OppsummeringCtrl', ['$scope', '$location', '$routeParams', 'soknadService', 'personalia', function ($scope, $location, $routeParams, soknadService, personalia) {
+    .controller('OppsummeringCtrl', ['$scope', '$location', '$routeParams', 'soknadService', 'personalia', 'oppsummeringService', function ($scope, $location, $routeParams, soknadService, personalia, oppsummeringService) {
         $scope.personalia = personalia;
-        console.log($scope.personalia);
+        $scope.oppsummeringHtml = '';
+        oppsummeringService.get($routeParams.soknadId).then(function(markup) {
+            $scope.oppsummeringHtml = markup;
+        });
 
         $scope.sendSoknad = function () {
             soknadService.send({param: $routeParams.soknadId, action: 'send'});
