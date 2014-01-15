@@ -1,15 +1,15 @@
-<!--data-ikke-auto-lagre="true"-->
 
 <div class="skjemaramme">
     <div data-ng-form="utdanningForm" class="skjemainnhold vertikal" data-ng-controller="UtdanningCtrl" data-novalidate>
         <div data-form-errors></div>
         <div class="spm boolean">
+            <div class="spm boolean form-linje">
             <h4 class="spm-sporsmal" data-cmstekster="utdanning.informasjon"></h4>
 
             <div data-navradio data-value="ikkeUtdanning"
                  data-navconfig data-nav-faktum="utdanning"
                  data-navlabel="utdanning.svar.ikkeUtdanning"
-                 data-navfeilmelding="utdanning.utdanning.feilmelding">
+                 data-navfeilmelding="utdanning.feilmelding">
             </div>
 
             <div data-navradio
@@ -17,7 +17,7 @@
                  data-nav-faktum="utdanning"
                  data-value="avsluttetUtdanning"
                  data-navlabel="utdanning.svar.avsluttetUtdanning"
-                 data-navfeilmelding="utdanning.utdanning.feilmelding">
+                 data-navfeilmelding="utdanning.feilmelding">
             </div>
 
             <div class="spm" data-ng-if="hvis('utdanning', 'avsluttetUtdanning')">
@@ -33,7 +33,7 @@
                  data-nav-faktum="utdanning"
                  data-value="underUtdanning"
                  data-navlabel="utdanning.svar.underUtdanning"
-                 data-navfeilmelding="utdanning.utdanning.feilmelding">
+                 data-navfeilmelding="utdanning.feilmelding">
             </div>
 
             <div class="ekstra-info form-linje checkbox" data-ng-show="hvis('utdanning', 'underUtdanning')" data-checkbox-validate>
@@ -97,11 +97,7 @@
                         <span data-cmstekster="utdanning.unntak.informasjon"></span>
                     </div>
                 </div>
-
-                <div class="annetvalg-nei form-linje" data-ng-class="{feil:utdanningEgenskaper.skalViseFeilmeldingForUtdanningAnnet}">
-                    <span class="melding" data-cmstekster="utdanning.minstEnAvhuket.feilmelding"></span>
                 </div>
-
 
             </div>
             <div data-spmblokkferdig data-nokkel="utdanning"
