@@ -17,5 +17,6 @@ angular.module('app.controllers', [
     'nav.dagpenger',
     'nav.personalia',
     'nav.oppsummering',
-    'nav.adresse'
+    'nav.adresse',
+    'nav.avbryt'
 ]);
