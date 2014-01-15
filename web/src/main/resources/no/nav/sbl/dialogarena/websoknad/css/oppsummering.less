@@ -1,10 +1,42 @@
 #oppsummering {
-    h2 {
-        text-align: center;
+
+    .stegindikator {
+        margin-top: 40px;
     }
 
     .oppsummering {
-        margin-top: 40px;
+        .personalia {
+            text-align: center;
+            padding-bottom: 40px;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #ddd;
+
+            .navnOgFnr span {
+                font-weight: 800;
+                font-family: Modus, Arial, Helvetica, sans-serif;;
+            }
+
+            .adresse {
+                .adressetype {
+                    display: none;
+                }
+
+                p {
+                    display: inline-block;
+
+                    &:after {
+                        content: ", ";
+                    }
+
+                    &:last-child {
+
+                        &:after {
+                            content: "";
+                        }
+                    }
+                }
+            }
+        }
 
         .oppsummering-knapper {
             margin-top: 40px;

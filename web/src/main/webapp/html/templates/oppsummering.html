@@ -1,23 +1,22 @@
-<div data-nav-tittel="skjema.tittel"></div>
-<stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="3"></stegindikator>
+<div id="oppsummering" data-ng-controller="OppsummeringCtrl">
+    <div data-stegindikator data-steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="3"></div>
+    <div data-panelbelyst data-sidetittel="sidetittel.skjema">
+        <h1 class="stor strek-ikon-soknader">{{ 'skjema.tittel' | cmstekst }}</h1>
+        <div class="oppsummering">
+            <div class="personalia">
+                <div class="navnOgFnr">
+                    <span>{{ personalia.fakta.sammensattnavn.value }}</span>
+                    <span>/</span>
+                    <span>{{ personalia.fakta.fnr.value | formatterFnr }}</span>
+                </div>
+                <div data-ng-include="'../html/templates/adresse.html'"></div>
 
-<div data-panelbelyst id="oppsummering" data-sidetittel="sidetittel.skjema">
-	<h2 class="stor" data-lenker-dotcmstekster="dagpenger.oppsummering.tittel"></h2>
-	<p data-cmstekster="dagpenger.oppsummering.info"></p>
-	<div class="oppsummering">
-		<ul>
-			<li>
-				<p class="svar-oppsummering-hake" data-cmstekster="dagpenger.informasjonsside.lestbrosjyre.sporsmal"></p>
-			</li>
-			<li>
-				Punktliste... Todo
-			</li>
-			
-		</ul>
-		<div class="oppsummering-knapper" data-ng-controller="SendSoknadCtrl">
-			<a class="knapp-hoved" data-ng-click="sendSoknad()" data-cmstekster="send"></a>
-			<a href="#/vedlegg/{{ soknadData.soknadId }}" data-cmstekster="tilbake"></a>
-		</div>
-	</div>
+            </div>
+
+            <div class="oppsummering-knapper">
+                <a class="knapp-hoved" data-ng-click="sendSoknad()" data-cmstekster="send"></a>
+                <a href="#/vedlegg/{{ soknadData.soknadId }}" data-cmstekster="tilbake"></a>
+            </div>
+        </div>
+    </div>
 </div>
-<div data-sist-lagret></div>
