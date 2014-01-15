@@ -17,12 +17,13 @@
         <form data-ng-submit="sendSoknad()">
             <span class="oppgitt">{{ 'dagpenger.informasjonsside.lestbrosjyre.sporsmal' | cmstekst }}</span>
 
-            <input id="bekreftelseOpplysninger" type="checkbox">
+            <input id="bekreftelseOpplysninger" type="checkbox" data-ng-model="harbekreftet.value">
             <label for="bekreftelseOpplysninger">
                 <span>
                     {{ 'dagpenger.oppsummering.bekreftOpplysninger' | cmstekst }}
                 </span>
             </label>
+
             <input class="knapp-hoved" type="submit" value="{{ 'dagpenger.oppsummering.send' | cmstekst }}">
 
             <div class="lenker">
