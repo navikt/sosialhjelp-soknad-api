@@ -13,11 +13,31 @@
             <!--</div>-->
 
             <div data-ng-bind-html="oppsummeringHtml"></div>
-
-            <div class="oppsummering-knapper">
-                <a class="knapp-hoved" data-ng-click="sendSoknad()" data-cmstekster="send"></a>
-                <a href="#/vedlegg/{{ soknadData.soknadId }}" data-cmstekster="tilbake"></a>
-            </div>
         </div>
+        <form data-ng-submit="sendSoknad()">
+            <span class="oppgitt">{{ 'dagpenger.informasjonsside.lestbrosjyre.sporsmal' | cmstekst }}</span>
+
+            <input id="bekreftelseOpplysninger" type="checkbox">
+            <label for="bekreftelseOpplysninger">
+                <span>
+                    {{ 'dagpenger.oppsummering.bekreftOpplysninger' | cmstekst }}
+                </span>
+            </label>
+            <input class="knapp-hoved" type="submit" value="{{ 'dagpenger.oppsummering.send' | cmstekst }}">
+
+            <div class="lenker">
+                <ul class="liste-vannrett">
+                    <li>
+                        <a href="#/fortsettsenere/{{ soknadId }}">{{ 'fortsettSenere' | cmstekst }}</a>
+                    </li>
+                    <li>
+                        <a href="#/avbryt/{{ soknadId }}">{{ 'avbryt.slett' | cmstekst }}</a>
+                    </li>
+                    <li>
+                        <a href="#/vedlegg/{{ soknadId }}">{{ 'dagpenger.oppsummering.tilbake' | cmstekst }}</a>
+                    </li>
+                </ul>
+            </div>
+        </form>
     </div>
 </div>

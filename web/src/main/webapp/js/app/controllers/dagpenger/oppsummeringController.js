@@ -2,13 +2,15 @@ angular.module('nav.oppsummering', [])
     .controller('OppsummeringCtrl', ['$scope', '$location', '$routeParams', 'soknadService', 'personalia', 'oppsummeringService', function ($scope, $location, $routeParams, soknadService, personalia, oppsummeringService) {
         $scope.personalia = personalia;
         $scope.oppsummeringHtml = '';
-        oppsummeringService.get($routeParams.soknadId).then(function(markup) {
+        $scope.soknadId = $routeParams.soknadId;
+        oppsummeringService.get($scope.soknadId).then(function(markup) {
             $scope.oppsummeringHtml = markup;
         });
 
         $scope.sendSoknad = function () {
-            soknadService.send({param: $routeParams.soknadId, action: 'send'});
-            $location.path('kvittering');
+            console.log("HEI");
+//            soknadService.send({param: $scope.soknadId, action: 'send'});
+//            $location.path('kvittering');
         }
     }])
     .filter('formatterFnr', function() {
