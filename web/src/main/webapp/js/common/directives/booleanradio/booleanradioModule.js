@@ -24,10 +24,13 @@ angular.module('nav.booleanradio', ['nav.cmstekster', 'nav.input'])
 						return scope.faktum.value && !scope.hvisModelErTrue();
 					};
 
-					scope.skalViseTranscludedInnhold = function () {
-						var transcludeElement = element.find('.ng-transclude');
-						return scope.hvisModelErFalse() && transcludeElement.text().length > 0;
+					scope.vis = function () {
+						return scope.hvisModelErFalse();
 					};
+
+                    scope.skalViseTranscludedInnhold = function () {
+                        return element.find('.ng-transclude').text().trim().length > 0;
+                    };
 
 					scope.hvisIkkeIEkstraSpmBoks = function () {
 						return !element.parents().hasClass('ekstra-spm-boks');
