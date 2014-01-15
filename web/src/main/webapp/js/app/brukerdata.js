@@ -1,21 +1,5 @@
 angular.module('app.brukerdata', ['app.services'])
 
-    .controller('StartSoknadCtrl', function ($scope, $location, soknadService) {
-        $scope.fremdriftsindikator = {
-            laster: false
-        };
-        $scope.startSoknad = function () {
-            var soknadType = window.location.pathname.split("/")[3];
-            $scope.fremdriftsindikator.laster = true;
-            $scope.soknad = soknadService.create({param: soknadType},
-                function (result) {
-                    $location.path('dagpenger/' + result.id);
-                }, function () {
-                    $scope.fremdriftsindikator.laster = false;
-                });
-        }
-    })
-
     .controller('SendSoknadCtrl', function ($scope, $location, $routeParams, soknadService) {
         $scope.sendSoknad = function () {
             soknadService.send({param: $routeParams.soknadId, action: 'send'});
