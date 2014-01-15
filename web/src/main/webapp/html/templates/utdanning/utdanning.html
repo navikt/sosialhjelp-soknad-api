@@ -1,9 +1,9 @@
-<!--data-ikke-auto-lagre="true"-->
 
 <div class="skjemaramme">
     <div data-ng-form="utdanningForm" class="skjemainnhold vertikal" data-ng-controller="UtdanningCtrl" data-novalidate>
         <div data-form-errors></div>
-        <div class="spm boolean form-linje">
+        <div class="spm boolean">
+            <div class="spm boolean form-linje">
             <h4 class="spm-sporsmal" data-cmstekster="utdanning.informasjon"></h4>
 
             <div data-navradio data-value="ikkeUtdanning"
@@ -97,11 +97,7 @@
                         <span data-cmstekster="utdanning.unntak.informasjon"></span>
                     </div>
                 </div>
-
-                <div class="annetvalg-nei form-linje" data-ng-class="{feil:utdanningEgenskaper.skalViseFeilmeldingForUtdanningAnnet}">
-                    <span class="melding" data-cmstekster="utdanning.minstEnAvhuket.feilmelding"></span>
                 </div>
-
 
             </div>
             <div data-spmblokkferdig data-nokkel="utdanning"
