@@ -51,7 +51,7 @@ public class SoknadServiceTest {
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
         when(vedleggRepository.lagreVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(11L);
 
-        ByteArrayInputStream bais = new ByteArrayInputStream(getBytesFromFile("/images/bilde.png"));
+        ByteArrayInputStream bais = new ByteArrayInputStream(getBytesFromFile("/images/bilde.jpg"));
         List<Long> ids = soknadService.splitOgLagreVedlegg(vedlegg, bais);
         assertThat(captor.getValue(), match(new IsPdf()));
         assertThat(ids, contains(11L));
