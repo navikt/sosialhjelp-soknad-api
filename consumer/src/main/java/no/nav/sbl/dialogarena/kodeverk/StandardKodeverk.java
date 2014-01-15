@@ -152,12 +152,13 @@ public class StandardKodeverk implements Kodeverk {
         XMLEnkeltKodeverk kodeverket = null;
         Optional<RuntimeException> webserviceException = none();
         try {
-            kodeverket = (XMLEnkeltKodeverk) webservice.hentKodeverk(new XMLHentKodeverkRequest().withNavn(navn).withSpraak(spraak)).getKodeverk();
-        } catch (HentKodeverkHentKodeverkKodeverkIkkeFunnet kodeverkIkkeFunnet) {
+             kodeverket = (XMLEnkeltKodeverk) webservice.hentKodeverk(new XMLHentKodeverkRequest().withNavn(navn).withSpraak(spraak)).getKodeverk();
+       } catch (HentKodeverkHentKodeverkKodeverkIkkeFunnet kodeverkIkkeFunnet) {
             throw new SystemException("Kodeverk '" + navn + "' (" + spraak + "): " + kodeverkIkkeFunnet.getMessage(), kodeverkIkkeFunnet);
         } catch (RuntimeException e) {
             webserviceException = optional(e);
         }
+
         if (webserviceException.isSome()) {
             RuntimeException kodeverkfeil = webserviceException.get();
             if (kodeverk.containsKey(navn)) {
