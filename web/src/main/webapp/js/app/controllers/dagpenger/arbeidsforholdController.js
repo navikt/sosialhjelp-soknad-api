@@ -52,11 +52,6 @@ angular.module('nav.arbeidsforhold.controller', [])
            return faktum && faktum.value && faktum.value !== 'harIkkeJobbet';
         };
 
-        $scope.hvisHarIkkeJobbet = function() {
-            var faktum = data.finnFaktum('arbeidstilstand');
-
-            return faktum && faktum.value && faktum.value === 'harIkkeJobbet';
-        }
         $scope.hvisHarJobbetVarierende = function() {
             var faktum = data.finnFaktum('arbeidstilstand');
 
