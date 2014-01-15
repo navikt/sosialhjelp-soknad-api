@@ -19,6 +19,7 @@
         position: absolute;
         z-index: 1030;
         width: 250px;
+        left: -20px;
 
         .tittel {
             padding: 20px 20px 0;
@@ -91,13 +92,25 @@
         &:before {
             content: "";
             border: solid transparent;
-            border-top-color: #3e3832;
             border-width: 10px;
             position: absolute;
             height: 0;
             width: 0;
-            left: 8%;
-            top: 100%;
+            left: 20px;
+        }
+
+        &.over {
+            &:before {
+                border-top-color: #3e3832;
+                top: 100%;
+            }
+        }
+
+        &.under {
+            &:before {
+                border-bottom-color: #3e3832;
+                top: -20px;
+            }
         }
     }
 }
