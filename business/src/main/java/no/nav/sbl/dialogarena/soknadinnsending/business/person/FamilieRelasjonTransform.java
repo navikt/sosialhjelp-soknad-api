@@ -57,7 +57,7 @@ public class FamilieRelasjonTransform {
         for (Familierelasjon familierelasjon : familierelasjoner) {
             Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
             logger.warn("relasjonstype" + familierelasjonType.getValue());
-            if (familierelasjonType.getValue().equals("FARA") || familierelasjonType.getValue().equals("MORA")) {
+            if (familierelasjonType.getValue().equals("BARN")) {
                 no.nav.tjeneste.virksomhet.person.v1.informasjon.Person tilPerson = familierelasjon.getTilPerson();
                 Barn barn = mapXmlPersonToPerson(tilPerson, soknadId);
                 logger.warn("Barnets alder er " + barn.getAlder());
