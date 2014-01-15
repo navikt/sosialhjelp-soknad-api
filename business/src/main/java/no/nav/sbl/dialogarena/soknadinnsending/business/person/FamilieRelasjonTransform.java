@@ -6,12 +6,15 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FamilieRelasjonTransform {
+import static org.slf4j.LoggerFactory.getLogger;
 
+public class FamilieRelasjonTransform {
+    private static final Logger logger = getLogger(FamilieRelasjonTransform.class);
     public Person mapFamilierelasjonTilPerson(Long soknadId,
                                               HentKjerneinformasjonResponse response) {
         if (response == null) {
@@ -45,16 +48,19 @@ public class FamilieRelasjonTransform {
         List<Barn> result = new ArrayList<>();
 
         List<Familierelasjon> familierelasjoner = xmlperson.getHarFraRolleI();
+        logger.warn("Informasjon om barn: " + familierelasjoner.size());
         if (familierelasjoner.isEmpty()) {
+            logger.warn("Ingen barn");
             return result;
         }
 
         for (Familierelasjon familierelasjon : familierelasjoner) {
             Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
-
-            if (familierelasjonType.getValue().equals("FARA") || familierelasjonType.getValue().equals("MORA")) {
+            logger.warn("relasjonstype" + familierelasjonType.getValue());
+            if (familierelasjonType.getValue().equals("BARN")) {
                 no.nav.tjeneste.virksomhet.person.v1.informasjon.Person tilPerson = familierelasjon.getTilPerson();
                 Barn barn = mapXmlPersonToPerson(tilPerson, soknadId);
+                logger.warn("Barnets alder er " + barn.getAlder());
                 if (barn.getAlder() < 18) {
                     result.add(barn);
                 }
