@@ -64,7 +64,6 @@ angular.module('nav.input', ['nav.cmstekster'])
 			templateUrl: '../js/common/directives/navinput/navcheckboxTemplate.html'
 		}
 	}])
-
 	.directive('navtekst', [function () {
 		return {
 			restrict   : 'A',
@@ -104,22 +103,18 @@ angular.module('nav.input', ['nav.cmstekster'])
 		}
 	}])
 
-	.directive('navorganisasjonsnummerfelt', [function () {
-		return {
-			restrict   : 'A',
-			replace    : true,
-			scope      : true,
-			link       : function (scope, element, attrs) {
-//              kun første element som skal være required hvis man skal kunne legge til flere orgnr. Navindexen settes på et slikt felt.
-				scope.erSynligOgForsteElement = function () {
-					if (attrs.navindex) {
-						return element.is(':visible') && scope.navindex === 0;
-					}
-					return element.is(':visible');
-				}
-			},
-			templateUrl: '../js/common/directives/navinput/navorgnrfeltTemplate.html'
-		}
+    .directive('navorganisasjonsnummerfelt', [function () {
+        return {
+            restrict: "A",
+            replace: true,
+            scope: true,
+            link: function (scope, element, attrs) {
+                scope.erSynlig = function () {
+                    return element.is(':visible');
+                }
+            },
+            templateUrl: '../js/common/directives/navinput/navorgnrfeltTemplate.html'
+        }
 	}]).directive('orgnrValidate', [function () {
 		return {
 			require: 'ngModel',
@@ -129,7 +124,6 @@ angular.module('nav.input', ['nav.cmstekster'])
 						scope.lagreFaktum();
 					}
 				});
-
 				scope.formateringsfeil = function () {
 					return ctrl.$error.pattern;
 				};
