@@ -95,7 +95,7 @@ public class FamilierelasjonServiceTest {
         familierelasjon.setTilPerson(barn1);
         Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
 
-        familieRelasjonRolle.setValue("FARA");
+        familieRelasjonRolle.setValue("BARN");
         familierelasjon.setTilRolle(familieRelasjonRolle);
 
         familieRelasjoner.add(familierelasjon);

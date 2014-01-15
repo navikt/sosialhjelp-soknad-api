@@ -48,19 +48,14 @@ public class FamilieRelasjonTransform {
         List<Barn> result = new ArrayList<>();
 
         List<Familierelasjon> familierelasjoner = xmlperson.getHarFraRolleI();
-        logger.warn("Informasjon om barn: " + familierelasjoner.size());
         if (familierelasjoner.isEmpty()) {
-            logger.warn("Ingen barn");
             return result;
         }
-
         for (Familierelasjon familierelasjon : familierelasjoner) {
             Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
-            logger.warn("relasjon" + familierelasjon.getTilRolle() );
-            if (familierelasjonType.getValue().equals("FARA") || familierelasjonType.getValue().equals("MORA")) {
+            if (familierelasjonType.getValue().equals("BARN")) {
                 no.nav.tjeneste.virksomhet.person.v1.informasjon.Person tilPerson = familierelasjon.getTilPerson();
                 Barn barn = mapXmlPersonToPerson(tilPerson, soknadId);
-                logger.warn("Barnets alder er " + barn.getAlder());
                 if (barn.getAlder() < 18) {
                     result.add(barn);
                 }
