@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.detect.Detect;
+import no.nav.sbl.dialogarena.detect.pdf.PdfDetector;
 import no.nav.sbl.dialogarena.pdf.Convert;
 import no.nav.sbl.dialogarena.pdf.ConvertToPng;
 import no.nav.sbl.dialogarena.pdf.PdfMerger;
@@ -12,11 +12,14 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventning;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import org.apache.commons.io.IOUtils;
+import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.Splitter;
 import org.joda.time.DateTime;
@@ -182,10 +185,10 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 }
                 document.close();
             } else {
-                throw new ApplicationException("Unsupported format");
+                throw new UgyldigOpplastingTypeException("Ugyldig filtype for opplasting", null, "vedlegg.opplasting.feil.filtype");
             }
-        } catch (Exception e) {
-            throw new ApplicationException("Kunne ikke lese innkommende dokument", e);
+        } catch (IOException | COSVisitorException e) {
+            throw new OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell");
         }
         return resultat;
     }

@@ -4,8 +4,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.RestFeil;
 import no.nav.sbl.dialogarena.soknadinnsending.VedleggOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.soknadinnsending.exception.OpplastingException;
-import no.nav.sbl.dialogarena.soknadinnsending.exception.UgyldigOpplastingTypeException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.Tika;
 import org.slf4j.Logger;
@@ -99,7 +99,7 @@ public class VedleggController {
             public VedleggOpplasting call() throws Exception {
                 List<Vedlegg> res = new ArrayList<>();
                 for (MultipartFile file : files) {
-                    byte[] in = validateAndGetInput(file);
+                    byte[] in = getByteArray(file);
                     Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, gosysId, file.getOriginalFilename(), file.getSize(), 1, null, in);
                     List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, new ByteArrayInputStream(in));
                     for (Long id : ids) {
@@ -130,12 +130,8 @@ public class VedleggController {
         };
     }
 
-    private byte[] validateAndGetInput(MultipartFile file) {
+    private static byte[] getByteArray(MultipartFile file) {
         try {
-            String contentType = new Tika().detect(file.getInputStream(), file.getOriginalFilename());
-            if (!LEGAL_CONTENT_TYPES.contains(contentType)) {
-                throw new UgyldigOpplastingTypeException("Kunne ikke lagre fil", null, "vedlegg.opplasting.feil.filtype");
-            }
             return IOUtils.toByteArray(file.getInputStream());
         } catch (IOException e) {
             throw new OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell");
