@@ -32,7 +32,13 @@
 
             <span class="melding"> </span>
         </div>
-        
+
+        <div data-ng-show="hvisHarIkkeJobbet()">
+            <div data-navinfoboks>
+                <span data-cmstekster="arbeidsforhold.arbeidstilstand.harikkejobbet.informasjonstekst"></span>
+            </div>
+        </div>
+
         <div data-ng-show="hvisHarJobbetVarierende()">
             <div data-navinfoboks>
                 <span data-cmstekster="arbeidsforhold.arbeidstilstand.varierendearbeidstid.informasjonstekst"></span>
@@ -44,7 +50,7 @@
             </div>
         </div>
 
-        <div class="spm-boks vertikal" data-ng-repeat="af in arbeidsliste" data-ng-class="{'last': $last}" data-ng-if="hvisHarJobbet()">
+        <div class="spm-boks vertikal" data-ng-repeat="af in arbeidsliste" data-ng-class="{'last': $last}">
             <div id="arbeidsforhold{{af.arbeidsforhold.faktumId}}">
                 <a href="#" class="lukk" data-ng-click="slettArbeidsforhold(af, $index, $event)"> </a>
                 <span class="robust">{{ af.arbeidsforhold.properties.arbeidsgivernavn }}</span>
@@ -80,7 +86,7 @@
         </div>
 
         <div class="knapper-arbeidsforhold">
-            <div id="legg-til" data-ng-if="hvisHarJobbet()">
+            <div id="legg-til">
                 <button class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event, arbeidsforholdForm)"
                         data-cmstekster="arbeidsforhold.nyttarbeidsforhold" role="button"></button>
             </div>
