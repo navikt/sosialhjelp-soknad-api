@@ -47,11 +47,9 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Sta
 @Component
 public class SoknadService implements SendSoknadService, VedleggService {
 
-    public static final String PDF_PDFA = "-dNOPAUSE -dBATCH -dSAFER -dPDFA -dNOGA -sDEVICE=pdfwrite -sOutputFile=%stdout%  -q -c \"30000000 setvmthreshold\" -_ -c quit";
     private static final String BRUKERREGISTRERT_FAKTUM = "BRUKERREGISTRERT";
     private static final String SYSTEMREGISTRERT_FAKTUM = "SYSTEMREGISTRERT";
-    private static final String IMAGE_RESIZE = "- -units PixelsPerInch -density 150 -quality 50 -resize 1240x1754 jpeg:-";
-    private static final String IMAGE_PDFA = "-  pdfa:-";
+
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository repository;
