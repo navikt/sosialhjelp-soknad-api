@@ -31,8 +31,8 @@
         <cxf.version>2.7.7</cxf.version>
         <nav.sbl.commons.version>3.30</nav.sbl.commons.version>
         <modig-security.version>1.0.19</modig-security.version>
-        <sendsoknad.tjenestespec.version>0.0.11</sendsoknad.tjenestespec.version>
-        <fillager.tjenestespec.version>0.0.1</fillager.tjenestespec.version>
+        <sendsoknad.tjenestespec.version>0.0.12</sendsoknad.tjenestespec.version>
+        <fillager.tjenestespec.version>0.0.2</fillager.tjenestespec.version>
         <sonar.exclusions>no/nav/sbl/dialogarena/websoknad/config/**</sonar.exclusions>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>

@@ -22,6 +22,7 @@ public class Person implements Serializable {
     private static final String EPOSTKEY = "epost";
     private static final String BARNKEY = "barn";
     private static final String STATSBORGERSKAP = "statsborgerskap";
+    private static final String KJONN = "kjonn";
 
     private Map<String, Object> fakta;
 
@@ -32,6 +33,7 @@ public class Person implements Serializable {
     public Person(Long soknadId, String fnr, String fornavn, String mellomnavn, String etternavn, String gjeldendeAdresseType, List<Adresse> adresser) {
         fakta = new HashMap<>();
 
+        fakta.put(KJONN, genererFaktum(soknadId, KJONN, finnKjonn(fnr)));
         fakta.put(FODSELSNUMMERKEY, genererFaktum(soknadId, FODSELSNUMMERKEY, fnr));
         fakta.put(FORNAVNKEY, genererFaktum(soknadId, FORNAVNKEY, fornavn));
         fakta.put(MELLOMNAVNKEY, genererFaktum(soknadId, MELLOMNAVNKEY, mellomnavn));
@@ -75,6 +77,10 @@ public class Person implements Serializable {
         faktum.setValue(value);
         faktum.setType("System");
         return faktum;
+    }
+
+    private String finnKjonn(String fnr) {
+        return Character.getNumericValue(fnr.charAt(8)) % 2 == 0 ? "jente" : "gutt";
     }
 
     public Map<String, Object> getFakta() {
