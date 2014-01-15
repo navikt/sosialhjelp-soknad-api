@@ -1,14 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.detect.IsImage;
 import no.nav.sbl.dialogarena.detect.IsPdf;
+import no.nav.sbl.dialogarena.pdf.Convert;
 import no.nav.sbl.dialogarena.pdf.ConvertToPng;
-import no.nav.sbl.dialogarena.pdf.ImageScaler;
-import no.nav.sbl.dialogarena.pdf.ImageToPdf;
 import no.nav.sbl.dialogarena.pdf.PdfMerger;
-import no.nav.sbl.dialogarena.pdf.PdfWatermarker;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -31,7 +28,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.awt.*;
+import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -172,7 +169,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         try {
             byte[] bytes = IOUtils.toByteArray(inputStream);
             if (new IsImage().evaluate(bytes)) {
-                bytes = new ImageToPdf().transform(bytes);
+                bytes = Convert.scaleImageAndConvertToPdf(bytes, new Dimension(1240, 1754));
                 Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(), vedlegg.getFaktumId(), vedlegg.getGosysId(), vedlegg.getNavn(), (long) bytes.length, 1, UUID.randomUUID().toString(), null);
                 resultat.add(vedleggRepository.lagreVedlegg(sideVedlegg, bytes));
 
@@ -218,7 +215,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public byte[] lagForhandsvisning(Long soknadId, Long vedleggId, int side) {
         try {
-            return new ConvertToPng(new Dimension(600, 800), ImageScaler.ScaleMode.SCALE_TO_FIT_INSIDE_BOX, side)
+            return new ConvertToPng(new Dimension(600, 800), side)
                     .transform(IOUtils.toByteArray(vedleggRepository.hentVedleggStream(soknadId, vedleggId)));
         } catch (IOException e) {
             throw new RuntimeException("Kunne ikke generere thumbnail " + e, e);
