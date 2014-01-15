@@ -1,5 +1,22 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadressetyper;
+
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLLandkoder;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadresse;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLUstrukturertAdresse;
+
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
+
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
+
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
+
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLNorskIdent;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPersonnavn;
+
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
@@ -170,15 +187,57 @@ public class MockConsumerConfig {
 
     @Configuration
     public static class BrukerProfilWSConfig {
-
-
+        
+        
         @Bean
-        public BrukerprofilPortType brukerProfilService() {
-            return mock(BrukerprofilPortType.class);
+        public BrukerprofilPortType brukerProfilService() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+            BrukerprofilPortType mock = mock(BrukerprofilPortType.class);
+            
+            XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse(); 
+            XMLBruker person = genererXmlBrukerMedGyldigIdentOgNavn();
+            person.setPostadresse(genererUtenlandskPostadresse());
+            XMLPostadressetyper postadressetyper = new XMLPostadressetyper();
+            postadressetyper.setValue("POSTADRESSE");
+            person.setGjeldendePostadresseType(postadressetyper);
+            response.setPerson(person);
+            when(mock.hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(response);
+            return mock;
+        }
+        
+        private XMLPostadresse genererUtenlandskPostadresse() {
+            XMLPostadresse xmlPostadresseUtland = new XMLPostadresse();
+            XMLUstrukturertAdresse ustrukturertAdresse =  new XMLUstrukturertAdresse();
+            ustrukturertAdresse.setAdresselinje1("Poitigatan 55");
+            ustrukturertAdresse.setAdresselinje2("Nord-Poiti");
+            ustrukturertAdresse.setAdresselinje3("1111");
+            ustrukturertAdresse.setAdresselinje4("Helsinki");
+            XMLLandkoder xmlLandkode = new XMLLandkoder();
+            xmlLandkode.setValue("POL");
+            ustrukturertAdresse.setLandkode(xmlLandkode);
+
+            xmlPostadresseUtland.setUstrukturertAdresse(ustrukturertAdresse);
+            
+            return xmlPostadresseUtland;
         }
 
+        private XMLBruker genererXmlBrukerMedGyldigIdentOgNavn() {
+            //XMLBruker xmlBruker = new XMLBruker().withElektroniskKommunikasjonskanal(lagElektroniskKommunikasjonskanal());
+            XMLBruker xmlBruker = new XMLBruker();
+            XMLPersonnavn personNavn = new XMLPersonnavn();
+            personNavn.setFornavn("Jan");
+            personNavn.setMellomnavn("P.");
+            personNavn.setEtternavn("Mock");
+            personNavn.setSammensattNavn("Jan P. Mock");
+            xmlBruker.setPersonnavn(personNavn);
+            XMLNorskIdent xmlNorskIdent = new XMLNorskIdent();
+            xmlNorskIdent.setIdent("***REMOVED***");
+            xmlBruker.setIdent(xmlNorskIdent);
+            return xmlBruker;
+        }
+
+
         @Bean
-        public BrukerprofilPortType brukerProfilSelftest() {
+        public BrukerprofilPortType brukerProfilSelftest() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
             return brukerProfilService();
         }
     }
