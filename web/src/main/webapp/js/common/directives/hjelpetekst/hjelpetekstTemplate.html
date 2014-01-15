@@ -1,9 +1,9 @@
 <div class="hjelpetekst" data-ng-click="stoppKlikk($event)">
     <span class="infoikon" data-ng-click="toggleHjelpetekst()"></span>
-    <div class="hjelpetekst-tooltip" data-ng-if="visHjelp" data-nav-hjelpetekst-tooltip>
+    <div class="hjelpetekst-tooltip" data-ng-if="visHjelp" data-ng-class="{over: skalVisesOverInfoIkon(), under: skalVisesUnderInfoIkon()}" data-nav-hjelpetekst-tooltip>
         <div class="tittel">
             <h3 class="liten-strek">{{ tittel }}</h3>
-            <a class="lukk liten" href="javascript:void(0)" data-cmstekster="lukk" data-ng-click="lukk()"></a>
+            <a class="lukk liten" href="javascript:void(0)" data-ng-click="lukk()">{{ 'lukk' | cmstekst }}</a>
         </div>
 
         <div class="tekst" data-nav-scroll>
