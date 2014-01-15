@@ -1,8 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.detect.IsImage;
-import no.nav.sbl.dialogarena.detect.IsPdf;
+import no.nav.sbl.dialogarena.detect.Detect;
 import no.nav.sbl.dialogarena.pdf.Convert;
 import no.nav.sbl.dialogarena.pdf.ConvertToPng;
 import no.nav.sbl.dialogarena.pdf.PdfMerger;
@@ -166,12 +165,12 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
         try {
             byte[] bytes = IOUtils.toByteArray(inputStream);
-            if (new IsImage().evaluate(bytes)) {
+            if (Detect.isImage(bytes)) {
                 bytes = Convert.scaleImageAndConvertToPdf(bytes, new Dimension(1240, 1754));
                 Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(), vedlegg.getFaktumId(), vedlegg.getGosysId(), vedlegg.getNavn(), (long) bytes.length, 1, UUID.randomUUID().toString(), null);
                 resultat.add(vedleggRepository.lagreVedlegg(sideVedlegg, bytes));
 
-            } else if (new IsPdf().evaluate(bytes)) {
+            } else if (Detect.isPdf(bytes)) {
                 PDDocument document = PDDocument.load(new ByteArrayInputStream(bytes));
                 List<PDDocument> pages = new Splitter().split(document);
                 for (PDDocument page : pages) {
