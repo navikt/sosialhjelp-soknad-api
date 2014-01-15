@@ -25,7 +25,7 @@ public class PersonAlder implements Serializable{
         return yearsBetween(fodselsdato, new LocalDate()).getYears();
 	}
 	
-	public boolean sjekkAlder() {
+	public Boolean sjekkAlder() {
 		return getAlder() < 67;
 	}
 
