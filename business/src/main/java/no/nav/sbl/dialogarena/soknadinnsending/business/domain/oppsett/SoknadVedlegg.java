@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import javax.xml.bind.annotation.XmlIDREF;
 import java.io.Serializable;
 
@@ -9,6 +11,7 @@ public class SoknadVedlegg implements Serializable {
     private SoknadFaktum faktum;
     private String onValue;
     private String gosysId;
+    private String property;
 
     @XmlIDREF
     public SoknadFaktum getFaktum() {
@@ -35,17 +38,26 @@ public class SoknadVedlegg implements Serializable {
         this.gosysId = gosysId;
     }
 
-    @Override
-    public String toString() {
-        return new StringBuilder("SoknadVedlegg{")
-                .append("faktum=").append(faktum)
-                .append(", onValue='").append(onValue).append('\'')
-                .append(", gosysId='").append(gosysId).append('\'')
-                .append('}')
-                .toString();
+    public String getProperty() {
+        return property;
     }
 
+    public void setProperty(String property) {
+        this.property = property;
+    }
+
+
     public boolean trengerVedlegg(String value) {
-        return onValue.equalsIgnoreCase(value);
+        return onValue == null || onValue.equalsIgnoreCase(value);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("faktum", faktum)
+                .append("onValue", onValue)
+                .append("gosysId", gosysId)
+                .append("property", property)
+                .toString();
     }
 }

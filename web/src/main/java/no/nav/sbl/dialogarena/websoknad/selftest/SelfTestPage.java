@@ -1,10 +1,11 @@
 package no.nav.sbl.dialogarena.websoknad.selftest;
 
 import no.nav.modig.wicket.selftest.SelfTestBase;
-import no.nav.sbl.dialogarena.websoknad.config.ConsumerConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.ConsumerConfig;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
+import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Import;
@@ -21,7 +22,7 @@ import static java.lang.System.currentTimeMillis;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.slf4j.LoggerFactory.getLogger;
 
-@Import({ConsumerConfig.SelftestStsConfig.class})
+@Import({ConsumerConfig.WsServices.class})
 public class SelfTestPage extends SelfTestBase {
     private static final Logger LOGGER = getLogger(SelfTestPage.class);
 
@@ -36,6 +37,10 @@ public class SelfTestPage extends SelfTestBase {
     @Inject
     @Named("brukerProfilService")
     private BrukerprofilPortType brukerProfilService;
+
+    @Inject
+    @Named("personService")
+    private PersonPortType personService;
 
     @Inject
     @Named(value = "cmsBaseUrl")
@@ -59,9 +64,16 @@ public class SelfTestPage extends SelfTestBase {
             }
         }.addStatus(statusList);
 
+
         new ServiceStatusHenter("TPS_HENT_BRUKERPROFIL") {
             public void ping() {
                 brukerProfilService.ping();
+            }
+        }.addStatus(statusList);
+
+        new ServiceStatusHenter("TPS_HENT_PERSON") {
+            public void ping() {
+                personService.ping();
             }
         }.addStatus(statusList);
 

@@ -1,7 +1,7 @@
 .datepicker {
     width: 135px;
     vertical-align: top;
-    padding: 0;
+    padding: 0 !important;
 
     .caretPosition {
         border: none !important;
@@ -24,11 +24,13 @@
         font-size: 14px !important;
         cursor: text;
         text-transform: none;
+        z-index: 0;
     }
 
     label {
         .datepicker-input {
             position: relative;
+            min-width: 135px;
             display: block;
             height: 32px;
             border: 1px solid #cccccc;
@@ -40,10 +42,11 @@
                 border: none !important;
                 border: none !important;
                 position: absolute;
-                top: 7px;
-                left: 7px;
+                left: 0;
                 right: 32px;
-                padding: 0;
+                width: 100px;
+                background-color: transparent !important;
+                z-index: 10;
             }
 
             .apne-datepicker {
@@ -55,7 +58,7 @@
                 background-image: url(../img/kalender.svg);
                 background-repeat: no-repeat;
                 background-position: center;
-
+                z-index: 1010;
 
                 &:hover {
                     background-image: url(../img/kalender_hover.svg);
@@ -88,11 +91,13 @@
 }
 
 .datepicker-intervall {
+    padding: 15px;
+
     .datepicker {
         display: inline-block;
 
         &:last-child {
-            float: right;
+            margin-left: 20px;
         }
     }
 }

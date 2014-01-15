@@ -1,4 +1,50 @@
+.arbeidsforhold-spm {
+	.form-linje.prosentfelt {
+    	display:inline-block;
+    	
+    	.labeltekst {
+    		display:block;
+    	}
+    	
+    	input {
+    		float:left;
+    		display:block;
+    	}
+    	
+		.prosent {
+        	margin-top: 5px;
+        	display:inline-block;
+       		font-size: 1rem !important;
+      	}
+		&.feil .melding {
+		    display: block;
+		    clear: both;
+		}
+    }
+}
+
 #arbeidsforhold {
+	ul {
+		padding-left: 20px;
+	}
+	
+	.varighet span {
+		  text-transform: uppercase;
+		  font-size: 1rem !important;
+		  font-family: Modus, Arial, Helvetica, sans-serif;
+	}
+	
+	.lukk {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        width: 32px;
+        height: 32px;
+        background: url("../img/kryss.svg");
+        background-color: transparent;
+        background-repeat: no-repeat;
+    }
+	
     .skjemainnhold {
         padding-top: 20px;
     }
@@ -30,6 +76,7 @@
         }
 
         .sluttaarsak-informasjon {
+            padding: 0px !important;
             .informasjonstekst;
             margin-bottom: 1rem;
         }
@@ -66,6 +113,9 @@
         #har-ikke-jobbet {
             margin-top: 40px;
         }
+    }
+    .sluttaarsak-tilleggsinformasjon {
+        padding: 15px;
     }
 }
 

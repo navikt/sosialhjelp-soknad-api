@@ -1,0 +1,264 @@
+package no.nav.sbl.dialogarena.soknadinnsending.consumer;
+
+import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
+import no.nav.tjeneste.virksomhet.aktoer.v1.AktoerPortType;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBostedsadresse;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLEPost;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskAdresse;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskKommunikasjonskanal;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGateadresse;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLNorskIdent;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPersonnavn;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostnummer;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.HentKodeverkHentKodeverkKodeverkIkkeFunnet;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLEnkeltKodeverk;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKode;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLTerm;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkRequest;
+import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkResponse;
+import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.NorskIdent;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
+import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
+import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
+import org.hamcrest.CustomMatcher;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+import java.math.BigInteger;
+import java.util.List;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.springframework.context.annotation.ComponentScan.Filter;
+
+@Configuration
+@ComponentScan(excludeFilters = @Filter(Configuration.class))
+
+public class MockConsumerConfig {
+
+    @Configuration
+    public static class SendSoknadWSConfig {
+        private int id = 0;
+
+        @Bean
+        public SendSoknadPortType sendSoknadService() {
+            SendSoknadPortType mock = mock(SendSoknadPortType.class);
+            when(mock.startSoknad(any(WSStartSoknadRequest.class))).thenReturn(new WSBehandlingsId().withBehandlingsId("ID" + id++));
+            return mock;
+        }
+
+        @Bean
+        public SendSoknadPortType sendSoknadSelftest() {
+            return sendSoknadService();
+        }
+    }
+
+    @Configuration
+    public static class FilLagerWSConfig {
+
+        @Bean
+        public FilLagerPortType fillagerService() {
+            return mock(FilLagerPortType.class);
+        }
+
+        @Bean
+        public FilLagerPortType fillagerServiceSelftest() {
+            return fillagerService();
+        }
+    }
+
+    @Configuration
+    public static class PersonWSConfig {
+
+        @Bean
+        public PersonPortType personService() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
+            PersonPortType mock = mock(PersonPortType.class);
+            HentKjerneinformasjonResponse response = new HentKjerneinformasjonResponse();
+            Person person = genererPersonMedGyldigIdentOgNavn("02104635787", "person", "mock");
+            List<Familierelasjon> familieRelasjoner = person.getHarFraRolleI();
+            Familierelasjon familierelasjon = new Familierelasjon();
+            Person barn1 = genererPersonMedGyldigIdentOgNavn("01010091736", "Barn1", "mock");
+            familierelasjon.setTilPerson(barn1);
+            Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
+            familieRelasjonRolle.setValue("FARA");
+            familierelasjon.setTilRolle(familieRelasjonRolle);
+            familieRelasjoner.add(familierelasjon);
+            response.setPerson(person);
+            when(mock.hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class))).thenReturn(response);
+            return mock;
+        }
+
+        @Bean
+        public PersonPortType personServiceSelftest() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
+            return personService();
+        }
+
+        private Person genererPersonMedGyldigIdentOgNavn(String ident, String fornavn, String etternavn) {
+            Person xmlPerson = new Person();
+
+            Personnavn personnavn = new Personnavn();
+            personnavn.setFornavn(fornavn);
+            personnavn.setMellomnavn("");
+            personnavn.setEtternavn(etternavn);
+            xmlPerson.setPersonnavn(personnavn);
+
+            NorskIdent norskIdent = new NorskIdent();
+            norskIdent.setIdent(ident);
+            xmlPerson.setIdent(norskIdent);
+
+            return xmlPerson;
+        }
+
+
+    }
+
+    @Configuration
+    public static class AktorWsConfig {
+
+        @Bean
+        public AktoerPortType aktorPortType() {
+            return mock(AktoerPortType.class);
+        }
+
+        @Bean
+        public AktoerPortType aktorSelftestPortType() {
+            return aktorPortType();
+        }
+    }
+
+    @Configuration
+    public static class KodeverkWSConfig {
+
+        private static XMLHentKodeverkResponse landkodeKodeverkResponse() {
+            XMLKode norge = new XMLKode().withNavn("NOR").withTerm(new XMLTerm().withNavn("Norge"));
+            XMLKode sverige = new XMLKode().withNavn("SWE").withTerm(new XMLTerm().withNavn("Sverige"));
+            XMLKode albania = new XMLKode().withNavn("ALB").withTerm(new XMLTerm().withNavn("Albania"));
+            XMLKode danmark = new XMLKode().withNavn("DNK").withTerm(new XMLTerm().withNavn("Danmark"));
+
+            return new XMLHentKodeverkResponse().withKodeverk(new XMLEnkeltKodeverk().withNavn("Landkoder").withKode(norge, sverige, albania, danmark));
+        }
+
+        @Bean
+        public KodeverkPortType kodeverkService() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
+            KodeverkPortType mock = mock(KodeverkPortType.class);
+            when(mock.hentKodeverk(argThat(new CustomMatcher<XMLHentKodeverkRequest>("sjekk om kodeverk matcher") {
+                @Override
+                public boolean matches(Object item) {
+                    XMLHentKodeverkRequest kodeverkRequest = (XMLHentKodeverkRequest) item;
+                    return kodeverkRequest.getNavn().equals("Landkoder");
+                }
+            }))).thenReturn(postnummerKodeverkResponse());
+            return mock;
+        }
+
+        @Bean
+        public KodeverkPortType kodeverkServiceSelftest() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
+            return kodeverkService();
+        }
+
+        private XMLHentKodeverkResponse postnummerKodeverkResponse() {
+            XMLKode kode = new XMLKode().withNavn("0565").withTerm(new XMLTerm().withNavn("Oslo"));
+            return new XMLHentKodeverkResponse().withKodeverk(new XMLEnkeltKodeverk().withNavn("Kommuner").withKode(kode));
+        }
+
+    }
+
+    @Configuration
+    public static class BrukerProfilWSConfig {
+
+        private static final String RIKTIG_IDENT = "12345612345";
+        private static final String ET_FORNAVN = "Ola";
+        private static final String ET_MELLOMNAVN = "Johan";
+        private static final String ET_ETTERNAVN = "Normann";
+
+        private static final String EN_EPOST = "test@epost.com";
+        private static final String EN_ADRESSE_GATE = "Grepalida";
+        private static final String EN_ADRESSE_HUSNUMMER = "44";
+        private static final String EN_ADRESSE_HUSBOKSTAV = "B";
+        private static final String EN_ADRESSE_POSTNUMMER = "0560";
+        private static final String EN_ADRESSE_POSTSTED = "Oslo";
+
+        @Bean
+        public BrukerprofilPortType brukerProfilService() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+            BrukerprofilPortType mock = mock(BrukerprofilPortType.class);
+            XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
+            XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
+
+            XMLBostedsadresse bostedsadresse = genererXMLFolkeregistrertAdresse(true);
+            xmlBruker.setBostedsadresse(bostedsadresse);
+
+            response.setPerson(xmlBruker);
+
+            when(mock.hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(response);
+
+            return mock;
+        }
+
+        private XMLBostedsadresse genererXMLFolkeregistrertAdresse(boolean medData) {
+            XMLBostedsadresse bostedsadresse = new XMLBostedsadresse();
+            XMLGateadresse gateadresse = new XMLGateadresse();
+            XMLPostnummer xmlpostnummer = new XMLPostnummer();
+            if (medData) {
+                gateadresse.setGatenavn(EN_ADRESSE_GATE);
+                gateadresse.setHusnummer(new BigInteger(EN_ADRESSE_HUSNUMMER));
+                gateadresse.setHusbokstav(EN_ADRESSE_HUSBOKSTAV);
+                xmlpostnummer.setValue(EN_ADRESSE_POSTNUMMER);
+            }
+            gateadresse.setPoststed(xmlpostnummer);
+            bostedsadresse.setStrukturertAdresse(gateadresse);
+            return bostedsadresse;
+        }
+
+        private XMLBruker genererXmlBrukerMedGyldigIdentOgNavn(boolean medMellomnavn) {
+            XMLBruker xmlBruker = new XMLBruker().withElektroniskKommunikasjonskanal(lagElektroniskKommunikasjonskanal());
+            XMLPersonnavn personNavn = new XMLPersonnavn();
+            personNavn.setFornavn(ET_FORNAVN);
+            if (medMellomnavn) {
+                personNavn.setMellomnavn(ET_MELLOMNAVN);
+                personNavn.setSammensattNavn(ET_FORNAVN + " " + ET_MELLOMNAVN + " " + ET_ETTERNAVN);
+            } else {
+                personNavn.setMellomnavn("");
+                personNavn.setSammensattNavn(ET_FORNAVN + " " + ET_ETTERNAVN);
+            }
+            personNavn.setEtternavn(ET_ETTERNAVN);
+            xmlBruker.setPersonnavn(personNavn);
+            XMLNorskIdent xmlNorskIdent = new XMLNorskIdent();
+            xmlNorskIdent.setIdent(RIKTIG_IDENT);
+            xmlBruker.setIdent(xmlNorskIdent);
+
+            return xmlBruker;
+        }
+
+        private static XMLElektroniskKommunikasjonskanal lagElektroniskKommunikasjonskanal() {
+            return new XMLElektroniskKommunikasjonskanal().withElektroniskAdresse(lagElektroniskAdresse());
+        }
+
+        private static XMLElektroniskAdresse lagElektroniskAdresse() {
+            return new XMLEPost().withIdentifikator(EN_EPOST);
+        }
+
+        @Bean
+        public BrukerprofilPortType brukerProfilSelftest() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+            return brukerProfilService();
+        }
+    }
+}

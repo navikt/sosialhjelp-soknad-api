@@ -15,7 +15,13 @@ public enum LessResources {
     SKJEMA_LESS("skjema"),
     DATEPICKER_LESS("datepicker"),
     TEXTAREA_LESS("textarea"),
-    ARBEIDSFORHOLD_LESS("arbeidsforhold");
+    ARBEIDSFORHOLD_LESS("arbeidsforhold"),
+    BARNETILLEGG_LESS("barnetillegg"),
+    SLETT_LESS("slett"),
+    MODALSIDE("modalside"),
+    EGENNAERING("egennaering"),
+    PERSONALIA("personalia"),
+    UTDANNING_LESS("utdanning");
 
     private static final String FOLDER = "css/";
     private static final String TYPE = ".less";

@@ -1,90 +1,200 @@
-<div class="skjemaramme" data-ng-controller="ModusCtrl">
-	<div data-ng-form="ytelserForm" class="skjemainnhold vertikal" data-ng-controller="YtelserCtrl" data-novalidate data-ng-submit="settOppsummeringsModus()">
-		<div data-form-errors></div>
-		<div class="spm form-linje checkbox" data-checkbox-validate>
-            <input type="hidden" data-ng-model="harHuketAvCheckboks.value" data-ng-required="true"
+<div class="skjemaramme">
+    <div data-ng-form="ytelserForm" class="skjemainnhold vertikal" data-ng-controller="YtelserCtrl" data-novalidate>
+        <div data-form-errors></div>
+        <div class="spm form-linje checkbox" data-checkbox-validate>
+            <input type="hidden" data-ng-model="harHuketAvCheckboksYtelse.value" data-ng-required="true"
                    data-error-messages="'ytelser.minstEnCheckboksErAvhuket.feilmelding'">
-			<h4 class="spm-sporsmal">
-				<span data-cmstekster="ytelser.informasjon"></span>
-				<span data-cmstekster="ytelser.sporsmal"></span>
-			</h4>
-
-			<div data-navcheckbox data-ng-model="soknadData.fakta.stonadFisker.value"
-					data-modus="data.redigeringsModus" data-inputname="stonadFisker"
-					data-label="ytelser.stonadFisker" data-endret="endreYtelse(ytelserForm)"></div>
-
-			<div data-navcheckbox data-ng-model="soknadData.fakta.offentligTjenestepensjon.value"
-					data-modus="data.redigeringsModus" data-inputname="offentligTjenestepensjon"
-					data-label="ytelser.offentligTjenestepensjon" data-endret="endreYtelse(ytelserForm)">
-
-				<div data-navtekst data-ng-model="soknadData.fakta.offentligTjenestepensjonUtbetaler.value"
-						data-modus="data.redigeringsModus" data-inputname="offentligTjenestepensjonUtbetaler"
-						data-label="ytelser.offentligTjenestepensjonUtbetaler" data-feilmelding="ytelser.offentligTjenestepensjonUtbetaler.feilmelding"></div>
-			</div>
-
-			<div data-navcheckbox data-ng-model="soknadData.fakta.privatTjenestepensjon.value"
-					data-modus="data.redigeringsModus" data-inputname="privatTjenestepensjon"
-					data-label="ytelser.privatTjenestepensjon" data-endret="endreYtelse(ytelserForm)">
-
-				<div data-navtekst data-ng-model="soknadData.fakta.privatTjenestepensjonUtbetaler.value"
-						data-modus="data.redigeringsModus" data-inputname="privatTjenestepensjonUtbetaler"
-						data-label="ytelser.privatTjenestepensjonUtbetaler" data-feilmelding="ytelser.privatTjenestepensjonUtbetaler.feilmelding"></div>
-			</div>
-
-			<div data-navcheckbox data-ng-model="soknadData.fakta.vartpenger.value"
-					data-modus="data.redigeringsModus" data-inputname="vartpenger"
-					data-label="ytelser.vartpenger" data-endret="endreYtelse(ytelserForm)">
-
-				<div data-navtekst data-ng-model="soknadData.fakta.vartpengerUtbetaler.value"
-						data-modus="data.redigeringsModus" data-inputname="vartpengerUtbetaler"
-						data-label="ytelser.vartpengerUtbetaler" data-feilmelding="ytelser.vartpengerUtbetaler.feilmelding"></div>
-			</div>
-
-			<div data-navcheckbox data-ng-model="soknadData.fakta.ventelonn.value"
-					data-modus="data.redigeringsModus" data-inputname="ventelonn"
-					data-label="ytelser.ventelonn" data-endret="endreYtelse(ytelserForm)">
-
-				<div data-navtekst data-ng-model="soknadData.fakta.ventelonnUtbetaler.value"
-						data-modus="data.redigeringsModus" data-inputname="ventelonnUtbetaler"
-						data-label="ytelser.ventelonnUtbetaler" data-feilmelding="ytelser.ventelonnUtbetaler.feilmelding"></div>
-			</div>
-
-			<div data-navcheckbox data-ng-model="soknadData.fakta.dagpengerEOS.value"
-					data-modus="data.redigeringsModus" data-inputname="dagpengerEOS"
-					data-label="ytelser.dagpengerEOS" data-endret="endreYtelse(ytelserForm)">
-
-				<div data-navtekst data-ng-model="soknadData.fakta.dagpengerEOSUtbetaler.value"
-						data-modus="data.redigeringsModus" data-inputname="dagpengerEOSUtbetaler"
-						data-label="ytelser.dagpengerEOSUtbetaler" data-feilmelding="ytelser.dagpengerEOSUtbetaler.feilmelding"></div>
-			</div>
+            <h4 class="spm-sporsmal">
+                <span data-cmstekster="ytelser.informasjon"></span>
+                <span data-cmstekster="ytelser.sporsmal"></span>
+            </h4>
 
 
-			<div data-navcheckbox data-ng-model="soknadData.fakta.annenYtelse.value" data-modus="data.redigeringsModus"
-					data-inputname="annenYtelse" data-label="ytelser.annenYtelse" data-endret="endreYtelse(ytelserForm)">
+            <div data-navcheckbox
+                 data-navconfig data-nav-faktum="offentligTjenestepensjon"
+                 data-navlabel="ytelser.offentligTjenestepensjon" data-navendret="endreYtelse(ytelserForm)">
 
-				<div data-navtekst data-ng-model="soknadData.fakta.annenYtelseType.value" data-modus="data.redigeringsModus"
-						data-inputname="annenYtelseType" data-label="ytelser.annenYtelseType"
-						data-feilmelding="ytelser.annenYtelseType.feilmelding"></div>
-				<div data-navtekst data-ng-model="soknadData.fakta.annenYtelseUtbetaler.value"
-						data-modus="data.redigeringsModus" data-inputname="annenYtelseUtbetaler"
-						data-label="ytelser.annenYtelseUtbetaler" data-feilmelding="ytelser.annenYtelseUtbetaler.feilmelding"></div>
-			</div>
-			<div>
-				<div data-ng-show="hvisIRedigeringsmodus()">
-					<div class="annetvalg-nei form-linje" data-valider-ingen-ytelser>
-                        <!--<input type="text" data-ng-model="soknadData.fakta.ingenYtelse.value" data-error-messages="ytelser.harValgtYtelse.feilmelding" data-required />-->
-						<input id="ingenYtelseCheckbox" data-ng-model="soknadData.fakta.ingenYtelse.value" type="checkbox"
-								name="ingenYtelse" data-ng-change="endreIngenYtelse(ytelserForm)" data-boolean-verdi/>
-						<label for="ingenYtelseCheckbox" class="svar-alt" data-cmstekster="ytelser.ingenYtelse"></label>
-						<span class="ingen-ytelse-melding" data-cmstekster="ytelser.harValgtYtelse.feilmelding"></span>
-					</div>
-				</div>
+                <div data-navtekst
+                     data-navconfig data-nav-faktum="offentligTjenestepensjonUtbetaler"
+                     data-navlabel="ytelser.offentligTjenestepensjonUtbetaler"
+                     data-navfeilmelding="'ytelser.offentligTjenestepensjonUtbetaler.feilmelding'"></div>
+            </div>
 
-				<p class="svar-oppsummering" data-ng-show="ingenYtelserOppsummeringSkalVises()" data-cmstekster="ytelser.ingenYtelse"></p>
-			</div>
-			<span class="melding" data-cmstekster="ytelser.minstEnCheckboksErAvhuket.feilmelding"></span>
-		</div>
+            <div data-navcheckbox
+                 data-navconfig data-nav-faktum="privatTjenestepensjon"
+                 data-navlabel="ytelser.privatTjenestepensjon" data-navendret="endreYtelse(ytelserForm)">
 
-		<div data-spmblokkferdig data-nokkel="ytelser" data-modus="data.redigeringsModus" data-submit-method="validerOgSettModusOppsummering(ytelserForm)"></div>
-	</div>
+                <div data-navtekst
+                     data-navconfig data-nav-faktum="privatTjenestepensjonUtbetaler"
+                     data-navlabel="ytelser.privatTjenestepensjonUtbetaler"
+                     data-navfeilmelding="'ytelser.privatTjenestepensjonUtbetaler.feilmelding'"></div>
+            </div>
+
+            <div data-navcheckbox
+                 data-navconfig data-nav-faktum="stonadFisker"
+                 data-navlabel="ytelser.stonadFisker" data-navendret="endreYtelse(ytelserForm)"></div>
+
+
+            <div data-navcheckbox
+                 data-navconfig
+                 data-nav-faktum="garantilott"
+                 data-navlabel="ytelser.garantilott" data-navendret="endreYtelse(ytelserForm)">
+
+                <div data-navtekst
+                     data-navconfig
+                     data-nav-faktum="garantilottUtbetaler"
+                     data-navlabel="ytelser.garantilottUtbetaler"
+                     data-navfeilmelding="'ytelser.garantilottUtbetaler.feilmelding'"></div>
+            </div>
+
+            <div data-navcheckbox
+                 data-navconfig data-nav-faktum="etterlonn"
+                 data-navlabel="ytelser.etterlonn" data-navendret="endreYtelse(ytelserForm)">
+
+                <div data-navtekst
+                     data-navconfig data-nav-faktum="etterlonnUtbetaler"
+                     data-navlabel="ytelser.etterlonnUtbetaler"
+                     data-navfeilmelding="'ytelser.etterlonnUtbetaler.feilmelding'"></div>
+            </div>
+
+            <div data-navcheckbox
+                 data-navconfig data-nav-faktum="vartpenger"
+                 data-navlabel="ytelser.vartpenger" data-navendret="endreYtelse(ytelserForm)">
+
+                <div data-navtekst
+                     data-navconfig data-nav-faktum="vartpengerUtbetaler"
+                     data-navlabel="ytelser.vartpengerUtbetaler"
+                     data-navfeilmelding="'ytelser.vartpengerUtbetaler.feilmelding'"></div>
+            </div>
+
+
+            <div data-navcheckbox
+                 data-navconfig
+                 data-nav-faktum="dagpengerEOS"
+                 data-navlabel="ytelser.dagpengerEOS" data-navendret="endreYtelse(ytelserForm)">
+
+                <div class="land">
+                    <div nav-select
+                         nav-faktum="dagpengerEOSUtbetalerLand"
+                         data-navconfig
+                         data-label="ytelser.dagpengerEOSUtbetaler"
+                         data-options="land.result"
+                         data-er-required="hvisHarDagpengerEOS()"
+                         data-required-feilmelding="ytelser.dagpengerEOSUtbetaler.feilmelding"
+                         data-ugyldig-feilmelding="ytelser.dagpengerEOSUtbetaler.ugyldig.feilmelding">
+                    </div>
+                </div>
+
+            </div>
+
+            <div data-navcheckbox
+                 data-navconfig
+                 data-nav-faktum="annenYtelse"
+                 data-navlabel="ytelser.annenYtelse"
+                 data-navendret="endreYtelse(ytelserForm)">
+
+                <div data-navtekst
+                     data-navconfig data-nav-faktum="annenYtelseType" data-navlabel="ytelser.annenYtelseType"
+                     data-navfeilmelding="'ytelser.annenYtelseType.feilmelding'"></div>
+                <div data-navtekst
+                     data-navconfig data-nav-faktum="annenYtelseUtbetaler"
+                     data-navlabel="ytelser.annenYtelseUtbetaler"
+                     data-navfeilmelding="'ytelser.annenYtelseUtbetaler.feilmelding'"></div>
+            </div>
+            <div>
+                <div class="annetvalg-nei form-linje" data-nav-faktum="ingenYtelse">
+                    <input id="ingenYtelseCheckbox" data-ng-model="faktum.value" type="checkbox"
+                           name="ingenYtelse" data-ng-change="endreIngenYtelse()" data-boolean-verdi>
+                    <label for="ingenYtelseCheckbox" data-cmstekster="ytelser.ingenYtelse"></label>
+                </div>
+            </div>
+            <span class="melding" data-cmstekster="ytelser.minstEnCheckboksErAvhuket.feilmelding"></span>
+        </div>
+        <div class="spm form-linje checkbox" data-checkbox-validate>
+            <input type="hidden" data-ng-model="harHuketAvCheckboksNavYtelse.value" data-ng-required="true"
+                   data-error-messages="'ytelser.minstEnCheckboksErAvhuket.navYtelserfeilmelding'">
+            <h4 class="spm-sporsmal">
+                <span data-cmstekster="ytelser.nav.informasjon"></span>
+                <span data-cmstekster="ytelser.nav.sporsmal"></span>
+            </h4>
+
+            <div data-navcheckbox
+                 data-navconfig
+                 data-nav-faktum="sykepenger"
+                 data-navlabel="ytelser.nav.sykepenger"
+                 data-navendret="endreNavYtelse(ytelserForm)"></div>
+
+            <div data-navcheckbox
+                 data-navconfig
+                 data-nav-faktum="aap"
+                 data-navlabel="ytelser.nav.aap"
+                 data-navendret="endreNavYtelse(ytelserForm)"></div>
+
+
+            <div data-navcheckbox
+                 data-navconfig
+                 data-nav-faktum="uforetrygd"
+                 data-navlabel="ytelser.nav.uforetrygd"
+                 data-navendret="endreNavYtelse(ytelserForm)"></div>
+
+
+            <div data-navcheckbox
+                 data-navconfig
+                 data-nav-faktum="svangerskapspenger"
+                 data-navlabel="ytelser.nav.svangerskapspenger"
+                 data-navendret="endreNavYtelse(ytelserForm)"></div>
+
+
+            <div data-navcheckbox
+                 data-navconfig
+                 data-nav-faktum="foreldrepenger"
+                 data-navlabel="ytelser.nav.foreldrepenger"
+                 data-navendret="endreNavYtelse(ytelserForm)"></div>
+
+
+            <div data-navcheckbox
+                 data-navconfig
+                 data-nav-faktum="ventelonn"
+                 data-navlabel="ytelser.nav.ventelonn"
+                 data-navendret="endreNavYtelse(ytelserForm)"></div>
+
+
+            <div class="annetvalg-nei form-linje" data-nav-faktum="ingennavytelser">
+                <input id="ingennavytelserCheckbox" data-ng-model="faktum.value" type="checkbox"
+                       name="ingennavytelser" data-ng-change="endreIngenNavYtelse(ytelserForm)" data-boolean-verdi/>
+                <label for="ingennavytelserCheckbox" data-cmstekster="ytelser.nav.ingen"></label>
+            </div>
+            <span class="melding" data-cmstekster="ytelser.minstEnCheckboksErAvhuket.navYtelserfeilmelding"></span>
+        </div>
+
+        <div>
+            <h4 class="spm-sporsmal">
+                <span data-cmstekster="ytelser.goder.info"></span>
+            </h4>
+
+            <div data-nav-faktum="ikkeavtale"
+                 data-navconfig
+                 data-booleanradio
+                 data-nokkel="ytelser.ikkeavtale"></div>
+
+            <div data-navtextarea
+                 data-navconfig
+                 data-ng-if="hvisAvtaleInngaatt()"
+                 data-nav-faktum="avtaleBeskrivelse"
+                 data-regexvalidering="/^[-a-zA-Z0-9æøåÆØÅ _+§%()]*$/"
+                 data-navlabel="ytelser.ikkeavtale.hvaslagsavtale"
+                 data-navfeilmelding="ytelser.ikkeavtale.avtale.feilmelding"></div>
+
+            <div data-vedlegginfoboks data-ng-if="hvisAvtaleInngaatt()">
+                <ul>
+                    <li><p data-cmstekster="ytelser.avtale.dokumentasjon"></p></li>
+                </ul>
+            </div>
+            <!-- <span class="melding"></span> -->
+        </div>
+
+        <div data-spmblokkferdig data-nokkel="ytelser"
+             data-submit-method="validerOgSettModusOppsummering(ytelserForm)"></div>
+
+    </div>
 </div>

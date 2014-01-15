@@ -1,16 +1,9 @@
 ﻿<div class="tekstfelt form-linje">
-    <div data-ng-show="hvisIRedigeringsmodus()">
-        <label>
-            <span data-cmstekster="{{ label }}"></span>
-            <input data-ng-model="model" type="text" value="{{ value }}" name="tmpName" data-ng-required="hvisSynlig()" data-error-messages="'{{ feilmelding }}'" data-blur-validate data-mod-faktum/>
-            <span class="melding"></span>
-        </label>
-    </div>
-
-    <div data-ng-show="hvisIOppsummeringsmodus()">
-        <span data-cmstekster="{{ label }}"></span>:
-        <span>
-            {{ model }}
-        </span>
-    </div>
+    <label>
+        <span data-cmstekster="{{ navlabel }}"></span>
+        <input data-ng-model="faktum.value" type="text" value="{{ value }}" data-ng-required="hvisSynlig()"
+               data-error-messages="{{ navfeilmelding }}" data-ng-pattern="{{regexvalidering}}" data-blur-validate data-minlength="{{navminlength}}" data-maxlength="{{navmaxlength}}"
+               maxlength="{{inputfeltmaxlength}}"  data-tekstfelt-patternvalidering/>
+        <span class="melding"></span>
+    </label>
 </div>

@@ -1,3 +1,4 @@
+<div data-nav-tittel="skjema.tittel"></div>
 <div data-stegindikator data-steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="1"></div>
 <div data-ng-form="dagpengerForm" data-ng-controller="ModusCtrl" data-ng-cloak data-apne-bolker>
     <div data-ng-controller="DagpengerCtrl">
@@ -5,9 +6,9 @@
         <div class="rad soknad" data-sidetittel="sidetittel.skjema">
             <section class="sak-hel">
                 <div class="panel-standard-belyst skjema">
-
                     <div data-accordion data-close-others="false">
-                        <div data-accordion-group data-ng-repeat="gruppe in grupper" class="spm-blokk" id="{{gruppe.id}}" data-is-open="gruppe.apen">
+                        <div data-accordion-group data-ng-repeat="gruppe in grupper" class="spm-blokk"
+                             id="{{gruppe.id}}" data-is-open="gruppe.apen">
                             <div data-accordion-heading>
                                 <div class="flipp">
                                     <span>+</span>
@@ -27,14 +28,17 @@
                     <div data-ng-form="frivilligForm" class="textarea-form" data-novalidate>
                         <div id="frivillig-textarea">
                             <div data-form-errors></div>
-                            <div data-navtextarea data-inputname="fritekst"
-                                 data-ng-model="soknadData.fakta.fritekst.value"
+                            <div data-navtextarea
+                                 data-navconfig
+                                 data-nav-faktum="fritekst"
+                                 data-inputname="fritekst"
                                  data-nokkel="fritekst"
                                  data-maxlengde="500"
                                  data-feilmelding="fritekst.feilmelding"></div>
                         </div>
                     </div>
-                    <a href="#/vedlegg/{{soknadData.soknadId}}"  class="knapp-hoved" data-cmstekster="skjema.ferdig" data-ng-click="validerDagpenger(dagpengerForm, $event)"></a>
+                    <a href="#/vedlegg/{{soknadData.soknadId}}" class="knapp-hoved" data-cmstekster="skjema.ferdig"
+                       data-ng-click="validerDagpenger(dagpengerForm, $event)"></a>
                 </section>
             </div>
         </div>

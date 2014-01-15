@@ -1,3 +1,4 @@
+<script src="../js/jquery/jquery-ui-1.10.3.custom.js"></script>
 <script src="../js/app/i18n/i18n.js"></script>
 <script src="../js/lib/angular.js"></script>
 <script src="../js/lib/angular-locale_no.js"></script>
@@ -5,6 +6,7 @@
 <script src="../js/lib/angular-resource.js"></script>
 <script src="../js/lib/angular-sanitize.js"></script>
 <script src="../js/lib/angular-animate.js"></script>
+<script src="../js/lib/angular-cookies.js"></script>
 <script src="../js/lib/bindonce.js"></script>
 <script src="../js/app/app.js"></script>
 <script src="../js/app/routes.js"></script>
@@ -25,6 +27,7 @@
 <script src="../js/app/controllers/dagpenger/vernepliktController.js"></script>
 <script src="../js/app/controllers/dagpenger/utdanningController.js"></script>
 <script src="../js/app/controllers/dagpenger/arbeidsforholdController.js"></script>
+<script src="../js/app/controllers/dagpenger/arbeidsforholdNyttController.js"></script>
 <script src="../js/app/controllers/dagpenger/arbeidsforholdModule.js"></script>
 <script src="../js/app/controllers/dagpenger/vedleggController.js"></script>
 <script src="../js/app/controllers/dagpenger/opplastingController.js"></script>
@@ -34,22 +37,22 @@
 <script src="../js/app/controllers/dagpenger/barnetilleggFaktumController.js"></script>
 <script src="../js/app/controllers/dagpenger/barneController.js"></script>
 <script src="../js/app/controllers/dagpenger/dagpengerController.js"></script>
-
+<script src="../js/app/controllers/dagpenger/personaliaController.js"></script>
 
 <!-- DAGPENGER DIRECTIVES -->
 <script src="../js/app/directives/feilmeldinger/feilmeldingModule.js"></script>
 <script src="../js/app/directives/feilmeldinger/stickyFeilmeldingDirective.js"></script>
-<script src="../js/app/directives/dagpenger/arbeidsforholdDirective.js"></script>
+<script src="../js/app/directives/dagpenger/scrollDirective.js"></script>
 <script src="../js/app/directives/dagpenger/dagpengerDirective.js"></script>
 <script src="../js/app/directives/sporsmalferdig/spmblokkFerdigModule.js"></script>
 <script src="../js/app/directives/stegindikator/stegIndikatorModule.js"></script>
 <script src="../js/app/directives/markup/markupModule.js"></script>
+<script src="../js/app/directives/markup/bodyDirective.js"></script>
 <script src="../js/app/directives/markup/panelStandardBelystDirective.js"></script>
-<script src="../js/app/directives/markup/navinfoboksDirective.js"></script>
+<script src="../js/app/directives/markup/navinfoboksModule.js"></script>
+<script src="../js/app/directives/markup/bodyDirective.js"></script>
 <script src="../js/app/directives/stickybunn/stickyBunnModule.js"></script>
 <script src="../js/app/directives/validering/valideringModule.js"></script>
-<script src="../js/app/directives/ytelser/ingenYtelserValidering.js"></script>
-<script src="../js/app/directives/utdanning/utdanningAnnetValidering.js"></script>
 <script src="../js/app/directives/bildenavigering/bildenavigeringModule.js"></script>
 
 
@@ -68,6 +71,9 @@
 <script src="../js/common/directives/scrollbar/jquery.mousewheel.js"></script>
 <script src="../js/common/directives/scrollbar/perfect-scrollbar.js"></script>
 <script src="../js/common/directives/scrollbar/angular-perfect-scrollbar.js"></script>
+<script src="../js/common/directives/tittel/tittelModule.js"></script>
+<script src="../js/common/directives/aria/ariaModule.js"></script>
+<script src="../js/common/directives/navfaktum/navFaktumDirective.js"></script>
 
 
 <!-- COMMON ANIMATIONS -->
@@ -81,4 +87,4 @@
 <script type="text/javascript" src="../js/jquery/jquery.fileupload-validate.js"></script>
 <script type="text/javascript" src="../js/jquery/jquery.fileupload-angular.js"></script>
 
-<div data-ng-view></div>
+<div data-ng-view data-avbryt-helper data-modalside-helper></div>
