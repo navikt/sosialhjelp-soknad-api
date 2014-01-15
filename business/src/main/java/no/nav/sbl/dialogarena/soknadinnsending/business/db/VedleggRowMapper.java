@@ -24,9 +24,11 @@ public class VedleggRowMapper implements RowMapper<Vedlegg> {
                 rs.getLong("vedlegg_id"),
                 rs.getLong("soknad_id"),
                 rs.getLong("faktum"),
+                rs.getString("gosysId"),
                 rs.getString("navn"),
                 rs.getLong("storrelse"),
                 rs.getInt("antallsider"),
+                rs.getString("fillagerReferanse"),
                 includeData ? rs.getBytes("data") : null
         );
     }

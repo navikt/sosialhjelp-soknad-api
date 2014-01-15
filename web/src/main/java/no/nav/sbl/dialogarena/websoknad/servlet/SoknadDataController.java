@@ -5,14 +5,12 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventnin
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.websoknad.service.HenvendelseConnector;
-
+import org.apache.commons.collections15.Predicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,13 +19,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.util.List;
 
 import static java.lang.String.format;
 import static javax.xml.bind.JAXBContext.newInstance;
+import static no.nav.modig.lang.collections.IterUtils.on;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
@@ -39,13 +37,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class SoknadDataController {
 
     @Inject
-    private SoknadService soknadService;
+    private SendSoknadService soknadService;
     @Inject
     private VedleggService vedleggService;
-
-    @Inject
-    @Named("henvendelseConnector")
-    private HenvendelseConnector henvendelseConnector;
 
     @RequestMapping(value = "/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
@@ -74,11 +68,23 @@ public class SoknadDataController {
         return vedleggService.hentPaakrevdeVedlegg(soknadId);
     }
 
+    @RequestMapping(value = "{soknadId}/{faktumId}/forventning", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseBody()
+    public List<VedleggForventning> hentPaakrevdeVedleggForFaktum(
+            @PathVariable final Long soknadId, @PathVariable final Long faktumId) {
+        return on(vedleggService.hentPaakrevdeVedlegg(soknadId)).filter(new Predicate<VedleggForventning>() {
+            @Override
+            public boolean evaluate(VedleggForventning vedleggForventning) {
+                return vedleggForventning.getFaktum().getFaktumId().equals(faktumId);
+            }
+        }).collect();
+    }
+
     @RequestMapping(value = "{soknadId}/forventning/valg", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseBody()
     @ResponseStatus(HttpStatus.OK)
     public void endreValg(@PathVariable final Long soknadId,
-            @RequestBody VedleggForventning forventning) {
+                          @RequestBody VedleggForventning forventning) {
         soknadService.endreInnsendingsvalg(soknadId, forventning.getFaktum());
     }
 
@@ -91,16 +97,16 @@ public class SoknadDataController {
     @RequestMapping(value = "/lagre/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody()
     public void lagreSoknad(@PathVariable Long soknadId,
-            @RequestBody WebSoknad webSoknad) {
+                            @RequestBody WebSoknad webSoknad) {
         for (Faktum faktum : webSoknad.getFakta().values()) {
             soknadService.lagreSoknadsFelt(soknadId, faktum);
         }
     }
 
-    @RequestMapping(value = "/{soknadId}/faktum", method = RequestMethod.POST)
+    @RequestMapping(value = "/{soknadId}/faktum/", method = RequestMethod.POST)
     @ResponseBody()
     public Faktum lagreFaktum(@PathVariable Long soknadId,
-            @RequestBody Faktum faktum) {
+                              @RequestBody Faktum faktum) {
         return soknadService.lagreSoknadsFelt(soknadId, faktum);
     }
 

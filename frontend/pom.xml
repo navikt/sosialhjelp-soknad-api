@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>no.nav.sbl.dialogarena</groupId>
+        <artifactId>sendsoknad</artifactId>
+        <version>1.0.8-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>sendsoknad-frontend</artifactId>
+    <name>${project.artifactId}</name>
+    <packaging>jar</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>pl.allegro</groupId>
+				<artifactId>grunt-maven-plugin</artifactId>
+				<version>1.1.2</version>
+				<configuration>
+					<jsSourceDirectory>public</jsSourceDirectory>
+					<gruntOptions>
+						<gruntOption>--verbose</gruntOption>
+					</gruntOptions>
+					<filteredResources>
+						<filteredResource>maven.properties.json</filteredResource>
+					</filteredResources>
+					<gruntExecutable>${basedir}/node_modules/grunt-cli/bin/grunt</gruntExecutable>
+					<runGruntWithNode>true</runGruntWithNode>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>create-resources</goal>
+							<goal>link-node-modules</goal>
+							<goal>grunt</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

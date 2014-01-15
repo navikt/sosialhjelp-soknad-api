@@ -1,14 +1,31 @@
-<p class="svar-oppsummering-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.informasjon"></p>
-
-<p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.sistearbeidsdag.sporsmal"></p>
-<p class="svar-oppsummering"> {{af.kontraktUtgaattSisteArbeidsdag | date:'dd.MM.yyyy'}}</p>
-
-<p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.sporsmal"></p>
-<div data-ng-if="af.kontraktUtgaattTilbudomfortsette">
-	<p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true"></p>
-	<p class="svar-oppsummering-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true.informasjon"></p>
+<div class="varighet">
+    <span data-ng-bind="af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy' | norskdato"></span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil"> TIL </span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil" data-ng-bind="af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy' | norskdato"></span>
 </div>
 
-<div data-ng-if="af.kontraktUtgaattTilbudomfortsette == 'false'">
-	<p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.false"></p>
+<ul>
+    <li>
+        <p data-ng-bind="af.sluttaarsak.properties.type"></p>
+    </li>
+    <li>
+        <span data-cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.sporsmal"></span>
+        <p data-ng-show="af.sluttaarsak.properties.tilbudomjobbannetsted == 'true'" 
+            data-cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true"></p>
+        <p data-ng-show="af.sluttaarsak.properties.tilbudomjobbannetsted == 'false'" 
+            data-cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.false"></p>
+    </li>
+</ul>
+
+<div class="ekstra-spm-boks" data-vedlegginfoboks>
+    <ul>
+        <li>
+            <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></p>
+        </li>
+        <li>
+            <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2"></p>
+            <a cmslenketekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenkeurl" data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst">
+            </a>
+        </li>
+    </ul>
 </div>

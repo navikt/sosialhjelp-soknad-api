@@ -1,48 +1,50 @@
-<p class="sluttaarsak-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.informasjon"></p>
+<div>
+    <p class="sluttaarsak-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.informasjon"></p>
 
-<div data-nav-dato data-ng-model="af.redusertArbeidstid.fra"
-     data-label="arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.sporsmal"
-     data-er-required="true"
-     data-endret="validateRedusertArbeidstidDato(af)"
-     data-required-error-message="arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.feilmelding">
-</div>
+    <div class="spm" data-nav-faktum="sluttaarsak"
+         data-ikke-auto-lagre="true">
 
-<div class="sporsmaal form-linje boolean">
-    <h4 data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.sporsmal"></h4>
+        <div class="varighet form-linje">
+            <div data-nav-dato
+                 data-ng-model="sluttaarsak.properties.datofra"
+                 data-label="arbeidsforhold.arbeidsgiver.varighet.fra"
+                 data-er-required="true"
+                 data-required-error-message="arbeidsforhold.arbeidsgiver.varighet.fra.feilmelding">
+            </div>
+        </div>
 
-    <div>
-        <input class="sendsoknad-radio"
-               id="nyttTilbudJa"
-               type="radio"
-               value="true"
-               data-ng-model="af.redusertArbeidstid.nyttTilbud"
-               data-name="nyttTilbud"
-               data-error-messages="'arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.feilmelding'"
-               data-ng-required="true"
-               data-click-validate/>
+        <div class="varighet form-linje">
+            <div data-nav-dato
+                 data-ng-model="sluttaarsak.properties.redusertfra"
+                 data-label="arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.sporsmal"
+                 data-er-required="true"
+                 data-er-fremtidigdato-tillatt="true"
+                 data-required-error-message="arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.feilmelding">
+            </div>
+        </div>
 
-        <label for="nyttTilbudJa" class="svar-alt"
-               data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.true"></label>
-    </div>
+        <div data-booleanradio
+             data-navconfig
+             data-nav-faktum-property="nyttTilbud"
+             data-nokkel="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud"></div>
 
-    <div>
-        <input class="sendsoknad-radio"
-               id="nyttTilbudNei"
-               type="radio"
-               value="false"
-               data-ng-model="af.redusertArbeidstid.nyttTilbud"
-               data-name="nyttTilbud"
-               data-error-messages="'arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.feilmelding'"
-               data-ng-required="true"
-               data-click-validate/>
+        <div data-ng-show="sluttaarsak.properties.nyttTilbud == 'true'">
+            <div data-navinfoboks>
+                <p data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.true.informasjon"></p>
+            </div>
+        </div>
 
-        <label for="nyttTilbudNei" class='svar-alt'
-               data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.false"></label>
-    </div>
-    <span class="melding"
-          data-cmstekster="arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.feilmelding"></span>
-
-    <div data-ng-show="af.redusertArbeidstid.nyttTilbud == 'true'">
-        <p data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.informasjon"></p>
+        <div class="ekstra-spm-boks" data-vedlegginfoboks>
+            <ul>
+                <li>
+                    <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></p>
+                </li>
+                <li>
+                    <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2"></p>
+                    <a cmslenketekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenkeurl" data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst">
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>

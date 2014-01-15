@@ -1,9 +1,8 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import no.nav.sbl.dialogarena.soknadinnsending.VedleggFeil;
+import no.nav.sbl.dialogarena.soknadinnsending.RestFeil;
 import no.nav.sbl.dialogarena.soknadinnsending.VedleggOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.exception.OpplastingException;
 import no.nav.sbl.dialogarena.soknadinnsending.exception.UgyldigOpplastingTypeException;
@@ -48,42 +47,6 @@ public class VedleggController {
     @Inject
     private VedleggService vedleggService;
 
-    @Inject
-    private SoknadService soknadService;
-
-    @RequestMapping(value = "", method = RequestMethod.POST, produces = "text/html; charset=utf-8")
-    @ResponseBody()
-    @ResponseStatus(HttpStatus.CREATED)
-    public Callable<VedleggOpplasting> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam("files[]") final List<MultipartFile> files) {
-        return new Callable<VedleggOpplasting>() {
-
-            @Override
-            public VedleggOpplasting call() throws Exception {
-                List<Vedlegg> res = new ArrayList<>();
-                for (MultipartFile file : files) {
-                    byte[] in = validateAndGetInput(file);
-                    Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, file.getOriginalFilename(), file.getSize(), 1, in);
-                    Long id = vedleggService.lagreVedlegg(vedlegg, new ByteArrayInputStream(in));
-                    vedlegg.setId(id);
-                    res.add(vedlegg);
-                }
-                return new VedleggOpplasting(res);
-            }
-        };
-    }
-
-    private byte[] validateAndGetInput(MultipartFile file) {
-        try {
-            String contentType = new Tika().detect(file.getInputStream(), file.getOriginalFilename());
-            if (!LEGAL_CONTENT_TYPES.contains(contentType)) {
-                throw new UgyldigOpplastingTypeException("Kunne ikke lagre fil", null, "vedlegg.opplasting.feil.filtype");
-            }
-            return IOUtils.toByteArray(file.getInputStream());
-        } catch (IOException e) {
-            throw new OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell");
-        }
-    }
-
     @RequestMapping(value = "/{vedleggId}/delete", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
     @ResponseBody
     public void slettVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
@@ -104,59 +67,79 @@ public class VedleggController {
         return vedlegg.getData();
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public VedleggOpplasting hentVedleggForFaktum(@PathVariable final Long soknadId, @PathVariable final Long faktumId) {
-        List<Vedlegg> vedlegg = vedleggService.hentVedleggForFaktum(soknadId, faktumId);
-        return new VedleggOpplasting(vedlegg);
-    }
-
     @RequestMapping(value = "/{vedleggId}/thumbnail", method = RequestMethod.GET, produces = IMAGE_PNG_VALUE)
     @ResponseBody()
-    public Callable<byte[]> lagForhandsvisningForVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestParam(value = "side", defaultValue = "0") final int side) {
-        return new Callable<byte[]>() {
-            @Override
-            public byte[] call() throws Exception {
-                return vedleggService.lagForhandsvisning(soknadId, vedleggId, side);
-            }
-        };
-    }
-
-
-    @RequestMapping(value = "/generer", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
-    @ResponseBody()
-    public Callable<Vedlegg> bekreftFaktumVedlegg(@PathVariable final Long soknadId, @PathVariable final Long faktumId) {
-        return new Callable<Vedlegg>() {
-            @Override
-            public Vedlegg call() throws Exception {
-                Long vedleggId = vedleggService.genererVedleggFaktum(soknadId, faktumId);
-                return vedleggService.hentVedlegg(soknadId, vedleggId, false);
-            }
-        };
+    public byte[] lagForhandsvisningForVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestParam(value = "side", defaultValue = "0") final int side) {
+        return vedleggService.lagForhandsvisning(soknadId, vedleggId, side);
     }
 
     @ExceptionHandler(UgyldigOpplastingTypeException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-    public VedleggFeil handterFeilType(UgyldigOpplastingTypeException ex) {
+    public RestFeil handterFeilType(UgyldigOpplastingTypeException ex) {
         LOG.warn("Feilet opplasting med: " + ex, ex);
-        return new VedleggFeil(ex.getId());
+        return new RestFeil(ex.getId());
     }
 
     @ExceptionHandler(OpplastingException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    public VedleggFeil handterVedleggException(OpplastingException ex) {
+    public RestFeil handterVedleggException(OpplastingException ex) {
         LOG.warn("Feilet opplasting med: " + ex, ex);
-        return new VedleggFeil(ex.getId());
+        return new RestFeil(ex.getId());
     }
 
-    @ExceptionHandler(Throwable.class)
+    @RequestMapping(value = "", params = "gosysId", method = RequestMethod.POST, produces = "text/html; charset=utf-8")
+    @ResponseBody()
+    @ResponseStatus(HttpStatus.CREATED)
+    public Callable<VedleggOpplasting> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam final String gosysId, @RequestParam("files[]") final List<MultipartFile> files) {
+        return new Callable<VedleggOpplasting>() {
+
+            @Override
+            public VedleggOpplasting call() throws Exception {
+                List<Vedlegg> res = new ArrayList<>();
+                for (MultipartFile file : files) {
+                    byte[] in = validateAndGetInput(file);
+                    Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, gosysId, file.getOriginalFilename(), file.getSize(), 1, null, in);
+                    List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, new ByteArrayInputStream(in));
+                    for (Long id : ids) {
+                        res.add(vedleggService.hentVedlegg(soknadId, id, false));
+                    }
+                }
+                return new VedleggOpplasting(res);
+            }
+        };
+    }
+
+    @RequestMapping(value = "", params = "gosysId", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handlerException(Exception ex) {
-        LOG.warn("Feilet opplasting med: " + ex, ex);
-        return "Feilet med: " + ex + "  " + Arrays.toString(ex.getStackTrace());
+    public VedleggOpplasting hentVedleggForFaktum(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam String gosysId) {
+        List<Vedlegg> vedlegg = vedleggService.hentVedleggForFaktum(soknadId, faktumId, gosysId);
+        return new VedleggOpplasting(vedlegg);
+    }
+
+    @RequestMapping(value = "/generer", params = "gosysId", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
+    @ResponseBody()
+    public Callable<Vedlegg> bekreftFaktumVedlegg(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam final String gosysId) {
+        return new Callable<Vedlegg>() {
+            @Override
+            public Vedlegg call() throws Exception {
+                Long vedleggId = vedleggService.genererVedleggFaktum(soknadId, faktumId, gosysId);
+                return vedleggService.hentVedlegg(soknadId, vedleggId, false);
+            }
+        };
+    }
+
+    private byte[] validateAndGetInput(MultipartFile file) {
+        try {
+            String contentType = new Tika().detect(file.getInputStream(), file.getOriginalFilename());
+            if (!LEGAL_CONTENT_TYPES.contains(contentType)) {
+                throw new UgyldigOpplastingTypeException("Kunne ikke lagre fil", null, "vedlegg.opplasting.feil.filtype");
+            }
+            return IOUtils.toByteArray(file.getInputStream());
+        } catch (IOException e) {
+            throw new OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell");
+        }
     }
 
 }
