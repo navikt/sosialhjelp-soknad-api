@@ -165,29 +165,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     @Override
-    public Long lagreVedlegg(Vedlegg vedlegg, InputStream inputStream) {
-        try {
-            byte[] bytes = IOUtils.toByteArray(inputStream);
-            if (new IsImage().evaluate(bytes)) {
-                if (ScriptRunner.IM_EXISTS) {
-                    bytes = new ScriptRunner(ScriptRunner.Type.IM, IMAGE_RESIZE, null, new ByteArrayInputStream(bytes)).call();
-                    bytes = new ScriptRunner(ScriptRunner.Type.IM, IMAGE_PDFA, null, new ByteArrayInputStream(bytes)).call();
-                } else {
-                    bytes = new ImageToPdf().transform(bytes);
-                }
-            } else if (new IsPdf().evaluate(bytes)) {
-                if (ScriptRunner.GS_EXISTS) {
-                    bytes = new ScriptRunner(ScriptRunner.Type.GS, PDF_PDFA, null, new ByteArrayInputStream(bytes)).call();
-                }
-            }
-            bytes = new PdfWatermarker().applyOn(bytes, SubjectHandler.getSubjectHandler().getUid());
-            return vedleggRepository.lagreVedlegg(vedlegg, bytes);
-        } catch (Exception e) {
-            throw new ApplicationException("Kunne ikke lagre vedlegg: " + e, e);
-        }
-    }
-
-    @Override
     @Transactional
     public List<Long> splitOgLagreVedlegg(Vedlegg vedlegg, InputStream inputStream) {
         List<Long> resultat = new ArrayList<>();
@@ -195,23 +172,21 @@ public class SoknadService implements SendSoknadService, VedleggService {
         try {
             byte[] bytes = IOUtils.toByteArray(inputStream);
             if (new IsImage().evaluate(bytes)) {
-                if (ScriptRunner.IM_EXISTS) {
-                    bytes = new ScriptRunner(ScriptRunner.Type.IM, IMAGE_RESIZE, null, new ByteArrayInputStream(bytes)).call();
-                    bytes = new ScriptRunner(ScriptRunner.Type.IM, IMAGE_PDFA, null, new ByteArrayInputStream(bytes)).call();
-                } else {
-                    bytes = new ImageToPdf().transform(bytes);
-                }
+                bytes = new ImageToPdf().transform(bytes);
                 Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(), vedlegg.getFaktumId(), vedlegg.getGosysId(), vedlegg.getNavn(), (long) bytes.length, 1, UUID.randomUUID().toString(), null);
                 resultat.add(vedleggRepository.lagreVedlegg(sideVedlegg, bytes));
 
             } else if (new IsPdf().evaluate(bytes)) {
-                List<PDDocument> split = new Splitter().split(PDDocument.load(new ByteArrayInputStream(bytes)));
-                for (PDDocument pdDocument : split) {
+                PDDocument document = PDDocument.load(new ByteArrayInputStream(bytes));
+                List<PDDocument> pages = new Splitter().split(document);
+                for (PDDocument page : pages) {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    pdDocument.save(baos);
+                    page.save(baos);
+                    page.close();
                     Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(), vedlegg.getFaktumId(), vedlegg.getGosysId(), vedlegg.getNavn(), (long) baos.size(), 1, UUID.randomUUID().toString(), null);
                     resultat.add(vedleggRepository.lagreVedlegg(sideVedlegg, baos.toByteArray()));
                 }
+                document.close();
             } else {
                 throw new ApplicationException("Unsupported format");
             }
@@ -263,6 +238,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
             }
 
         }
+        //vannmerk her!
         byte[] doc = new PdfMerger().transform(bytes);
         Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, gosysId, "faktum.pdf", (long) doc.length, vedleggs.size(), UUID.randomUUID().toString(), doc);
         WebSoknad soknad = repository.hentSoknad(soknadId);
