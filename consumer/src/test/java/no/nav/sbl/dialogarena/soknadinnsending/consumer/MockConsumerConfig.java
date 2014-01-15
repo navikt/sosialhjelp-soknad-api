@@ -1,16 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLLandkoder;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadresse;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLUstrukturertAdresse;
-
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadressetyper;
-
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
@@ -25,9 +14,13 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLEPost;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskKommunikasjonskanal;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGateadresse;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLLandkoder;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLNorskIdent;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPersonnavn;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadresse;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadressetyper;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostnummer;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLUstrukturertAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.HentKodeverkHentKodeverkKodeverkIkkeFunnet;
@@ -47,7 +40,6 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
-
 import org.hamcrest.CustomMatcher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -56,6 +48,11 @@ import org.springframework.context.annotation.Configuration;
 
 import java.math.BigInteger;
 import java.util.List;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @Configuration
 @ComponentScan(excludeFilters = @Filter(Configuration.class))
@@ -224,14 +221,14 @@ public class MockConsumerConfig {
         }
 
         private void settAdresse(XMLBruker xmlBruker, String type) {
-            if(type.equals("BOSTEDSADRESSE")) {
+            if("BOSTEDSADRESSE".equals(type)) {
                 XMLBostedsadresse bostedsadresse = genererXMLFolkeregistrertAdresse(true);
                 xmlBruker.setBostedsadresse(bostedsadresse);
                 
                 XMLPostadressetyper postadressetyper = new XMLPostadressetyper();
                 postadressetyper.setValue("BOSTEDSADRESSE");
                 xmlBruker.setGjeldendePostadresseType(postadressetyper);
-            } else if(type.equals("UTENLANDSK_ADRESSE")) {
+            } else if("UTENLANDSK_ADRESSE".equals(type)) {
                 XMLPostadresse xmlPostadresseUtland = new XMLPostadresse();
                 XMLUstrukturertAdresse utenlandskUstrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(4);
 
