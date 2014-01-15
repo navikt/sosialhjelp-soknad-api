@@ -5,6 +5,12 @@ import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLLandkoder;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadresse;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLUstrukturertAdresse;
+
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadressetyper;
+
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
@@ -188,7 +194,7 @@ public class MockConsumerConfig {
         private static final String RIKTIG_IDENT = "12345612345";
         private static final String ET_FORNAVN = "Ola";
         private static final String ET_MELLOMNAVN = "Johan";
-        private static final String ET_ETTERNAVN = "Normann";
+        private static final String ET_ETTERNAVN = "Mockmann";
 
         private static final String EN_EPOST = "test@epost.com";
         private static final String EN_ADRESSE_GATE = "Grepalida";
@@ -197,20 +203,80 @@ public class MockConsumerConfig {
         private static final String EN_ADRESSE_POSTNUMMER = "0560";
         private static final String EN_ADRESSE_POSTSTED = "Oslo";
 
+        private static final String EN_ADRESSELINJE = "Poitigatan 55";
+        private static final String EN_ANNEN_ADRESSELINJE = "Nord-Poiti";
+        private static final String EN_TREDJE_ADRESSELINJE = "1111";
+        private static final String EN_FJERDE_ADRESSELINJE = "Helsinki";
+        
         @Bean
         public BrukerprofilPortType brukerProfilService() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
             BrukerprofilPortType mock = mock(BrukerprofilPortType.class);
             XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
             XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
 
-            XMLBostedsadresse bostedsadresse = genererXMLFolkeregistrertAdresse(true);
-            xmlBruker.setBostedsadresse(bostedsadresse);
+            settAdresse(xmlBruker, "UTENLANDSK_ADRESSE");
 
             response.setPerson(xmlBruker);
 
             when(mock.hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(response);
 
             return mock;
+        }
+
+        private void settAdresse(XMLBruker xmlBruker, String type) {
+            if(type.equals("BOSTEDSADRESSE")) {
+                XMLBostedsadresse bostedsadresse = genererXMLFolkeregistrertAdresse(true);
+                xmlBruker.setBostedsadresse(bostedsadresse);
+                
+                XMLPostadressetyper postadressetyper = new XMLPostadressetyper();
+                postadressetyper.setValue("BOSTEDSADRESSE");
+                xmlBruker.setGjeldendePostadresseType(postadressetyper);
+            } else if(type.equals("UTENLANDSK_ADRESSE")) {
+                XMLPostadresse xmlPostadresseUtland = new XMLPostadresse();
+                XMLUstrukturertAdresse utenlandskUstrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(4);
+
+                XMLLandkoder xmlLandkode = new XMLLandkoder();
+                xmlLandkode.setValue("POL");
+                utenlandskUstrukturertAdresse.setLandkode(xmlLandkode);
+
+                xmlPostadresseUtland.setUstrukturertAdresse(utenlandskUstrukturertAdresse);
+                xmlBruker.setPostadresse(xmlPostadresseUtland);
+                
+                XMLPostadressetyper postadressetyper = new XMLPostadressetyper();
+                postadressetyper.setValue("UTENLANDSK_ADRESSE");
+                xmlBruker.setGjeldendePostadresseType(postadressetyper);
+            }
+        }
+        
+        private XMLUstrukturertAdresse generateUstrukturertAdresseMedXAntallAdersseLinjer(
+                int antallAdresseLinjer) {
+            XMLUstrukturertAdresse ustrukturertAdresse = new XMLUstrukturertAdresse();
+            switch (antallAdresseLinjer) {
+                case 0:
+                    break;
+                case 1:
+                    ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
+                    break;
+                case 2:
+                    ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
+                    ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
+                    break;
+                case 3:
+                    ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
+                    ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
+                    ustrukturertAdresse.setAdresselinje3(EN_TREDJE_ADRESSELINJE);
+                    break;
+                case 4:
+                    ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
+                    ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
+                    ustrukturertAdresse.setAdresselinje3(EN_TREDJE_ADRESSELINJE);
+                    ustrukturertAdresse.setAdresselinje4(EN_FJERDE_ADRESSELINJE);
+                    break;
+                default:
+                    break;
+            }
+
+            return ustrukturertAdresse;
         }
 
         private XMLBostedsadresse genererXMLFolkeregistrertAdresse(boolean medData) {
