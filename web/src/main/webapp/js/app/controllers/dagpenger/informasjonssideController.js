@@ -10,7 +10,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 
 
 			$scope.skalViseBrosjyreMelding = false;
-
+			
 			$scope.fremdriftsindikator = {
 				laster: false
 			};
