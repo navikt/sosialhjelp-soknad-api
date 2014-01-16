@@ -23,5 +23,6 @@
     <cache name="cms.content" maxElementsInMemory="10" overflowToDisk="false" timeToLiveSeconds="1800"  />
     <cache name="cms.article" maxElementsInMemory="100" overflowToDisk="false" timeToLiveSeconds="1800" />
     <cache name="person" maxElementsInMemory="1000" overflowToDisk="false" eternal="false"/>
+    <cache name="aktorCache" maxElementsInMemory="1000000" overflowToDisk="true" eternal="true"/>
 
 </ehcache>

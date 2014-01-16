@@ -295,7 +295,7 @@ angular.module('nav.datepicker', [])
 							var skrevetTegn = datoInput[i];
 
 							if (isNaN(skrevetTegn) || datoInput.substring(0, i + 1).length > datoMask.length || datoInput.splice(i, 1, '').length == datoMask.length) {
-								if (skrevetTegn !== '.' || (i !== 3 && i !== 5)) {
+								if (skrevetTegn !== '.' || (i !== 2 && i !== 5)) {
 									datoInput = datoInput.splice(i, 1, '');
 									caretPosisjon--;
 									i--;

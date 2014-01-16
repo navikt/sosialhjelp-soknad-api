@@ -18,7 +18,7 @@ angular.module('nav.barn', ['app.services'])
 
 			if ($scope.soknadData.fakta.barn) {
 				angular.forEach($scope.soknadData.fakta.barn.valuelist, function (value) {
-					if (value.faktumId === faktumId) {
+					if (value.faktumId.toString() === faktumId) {
 						barnUnderEndring = value;
 					}
 				});
@@ -29,7 +29,7 @@ angular.module('nav.barn', ['app.services'])
 			faktumId = url.split('/').pop();
 			if ($scope.soknadData.fakta.barnetillegg) {
 				angular.forEach($scope.soknadData.fakta.barnetillegg.valuelist, function (value) {
-					if (value.parrentFaktum === faktumId) {
+					if (value.parrentFaktum.toString() === faktumId) {
 						$scope.barnetillegg = value;
 						barnetilleggsData = value;
 					}
@@ -37,7 +37,7 @@ angular.module('nav.barn', ['app.services'])
 			}
 			if ($scope.soknadData.fakta.ikkebarneinntekt) {
 				angular.forEach($scope.soknadData.fakta.ikkebarneinntekt.valuelist, function (value) {
-					if (value.parrentFaktum === faktumId) {
+					if (value.parrentFaktum.toString() === faktumId) {
 						$scope.ikkebarneinntekt = value;
 						ikkebarneinntekt = value;
 					}
@@ -45,7 +45,7 @@ angular.module('nav.barn', ['app.services'])
 			}
 			if ($scope.soknadData.fakta.barneinntekttall) {
 				angular.forEach($scope.soknadData.fakta.barneinntekttall.valuelist, function (value) {
-					if (value.parrentFaktum === faktumId) {
+					if (value.parrentFaktum.toString() === faktumId) {
 						$scope.nyttbarn.barneinntekttall = value;
 						barneinntekttall = value;
 					}
@@ -60,7 +60,7 @@ angular.module('nav.barn', ['app.services'])
 			$scope.land = data.land;
 		} else if (barnetilleggModus) {
 			angular.forEach($scope.soknadData.fakta.barn.valuelist, function (value) {
-				if (value.faktumId === faktumId) {
+				if (value.faktumId.toString() === faktumId) {
 					$scope.barnenavn = value.properties.sammensattnavn;
 				}
 			});
@@ -101,7 +101,7 @@ angular.module('nav.barn', ['app.services'])
 			$scope.runValidation(true);
 
 			if (form.$valid) {
-				$scope.barn.properties.alder = finnAlder();
+				$scope.barn.properties.alder = $scope.finnAlder();
 				$scope.barn.properties.sammensattnavn = finnSammensattNavn();
 				lagreBarnOgBarnetilleggFaktum();
 			}
@@ -209,7 +209,7 @@ angular.module('nav.barn', ['app.services'])
 			if ($scope.soknadData.fakta[type] && $scope.soknadData.fakta[type].valuelist) {
 				if (endreModus) {
 					angular.forEach($scope.soknadData.fakta[type].valuelist, function (value, index) {
-						if (value.faktumId === $scope[type].faktumId) {
+						if (value.faktumId.toString() === $scope[type].faktumId) {
 							$scope.soknadData.fakta[type].valuelist[index] = $scope[type];
 						}
 					})
@@ -227,12 +227,13 @@ angular.module('nav.barn', ['app.services'])
 		}
 
 		//TODO: FIX Tester
-		function finnAlder() {
+		$scope.finnAlder =function() {
 			if ($scope.barn.properties.fodselsdato) {
-				var year = $scope.barn.properties.fodselsdato.substring(0, 4);
-				var maaned = $scope.barn.properties.fodselsdato.substring(5, 7);
-				var dag = $scope.barn.properties.fodselsdato.substring(8, 10);
+				var year = parseInt($scope.barn.properties.fodselsdato.split(".")[0]);
+				var maaned = parseInt($scope.barn.properties.fodselsdato.split(".")[1]);
+				var dag = parseInt($scope.barn.properties.fodselsdato.split(".")[2]);
 				var dagensDato = new Date();
+
 				var result = dagensDato.getFullYear() - year;
 
 				if (dagensDato.getMonth() + 1 < maaned) {
@@ -242,6 +243,7 @@ angular.module('nav.barn', ['app.services'])
 				if (dagensDato.getMonth() + 1 === maaned && dagensDato.getDate() < dag) {
 					result--;
 				}
+
 				return result;
 			}
 			return 'undefined';

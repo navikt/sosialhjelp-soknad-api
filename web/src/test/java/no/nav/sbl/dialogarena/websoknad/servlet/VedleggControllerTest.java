@@ -1,10 +1,9 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
 
-import no.nav.sbl.dialogarena.soknadinnsending.VedleggOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.soknadinnsending.exception.OpplastingException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

@@ -1,168 +1,182 @@
 .arbeidsforhold-spm {
-	.form-linje.prosentfelt {
-    	display:inline-block;
-    	
-    	.labeltekst {
-    		display:block;
-    	}
-    	
-    	input {
-    		float:left;
-    		display:block;
-    	}
-    	
-		.prosent {
-        	margin-top: 5px;
-        	display:inline-block;
-       		font-size: 1rem !important;
-      	}
-		&.feil .melding {
-		    display: block;
-		    clear: both;
-		}
+  .form-linje.prosentfelt {
+    display: inline-block;
+
+    .labeltekst {
+      display: block;
     }
+
+    input {
+      float: left;
+      display: block;
+    }
+
+    .prosent {
+      margin-top: 5px;
+      display: inline-block;
+      font-size: 1rem !important;
+    }
+    &.feil .melding {
+      display: block;
+      clear: both;
+    }
+  }
 }
 
 #arbeidsforhold {
-	ul {
-		padding-left: 20px;
-	}
-	
-	.varighet span {
-		  text-transform: uppercase;
-		  font-size: 1rem !important;
-		  font-family: Modus, Arial, Helvetica, sans-serif;
-	}
-	
-	.lukk {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        width: 32px;
-        height: 32px;
-        background: url("../img/kryss.svg");
-        background-color: transparent;
-        background-repeat: no-repeat;
-    }
-	
-    .skjemainnhold {
-        padding-top: 20px;
-    }
+  ul {
+    padding-left: 20px;
+  }
 
-    .arbeidsforhold-informasjonstekst {
-        font-size: 1.21rem;
-        font-weight: 600;
-        font-family: Modus, Arial, Helvetica, sans-serif;
-        margin-bottom: 30px;
-        line-height: 1.6rem;
-    }
-    .arbeidsforhold-spm {
-        margin-bottom: 40px;
+  .form-errors {
+    padding-left: 3rem;
+  }
 
-        input, select, .nav-select, .datepicker-intervall {
-            width: 75%;
+  .varighet span {
+    text-transform: uppercase;
+    font-size: 1rem !important;
+    font-family: Modus, Arial, Helvetica, sans-serif;
+  }
 
-            &#arbeidsgiver_navn {
-                width: 100%;
-            }
-        }
+  .lukk {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 32px;
+    height: 32px;
+    background: url("../img/kryss.svg");
+    background-color: transparent;
+    background-repeat: no-repeat;
+  }
 
-        .varighet, .land {
-            padding: 15px;
+  .skjemainnhold {
+    padding-top: 20px;
+  }
 
-            .datepicker, .nav-select {
-                padding: 0;
-            }
-        }
+  .arbeidsforhold-informasjonstekst {
+    font-size: 1.21rem;
+    font-weight: 600;
+    font-family: Modus, Arial, Helvetica, sans-serif;
+    margin-bottom: 30px;
+    line-height: 1.6rem;
+  }
+  .arbeidsforhold-spm {
+    margin-bottom: 40px;
 
-        .sluttaarsak-informasjon {
-            padding: 0px !important;
-            .informasjonstekst;
-            margin-bottom: 1rem;
-        }
+    input, select, .nav-select, .datepicker-intervall {
+      width: 75%;
+
+      &#arbeidsgiver_navn {
+        width: 100%;
+      }
     }
 
-    .knapper-opprett-arbeidsforhold {
-        border-top: 1px solid #ddd;
-        margin-top: 1rem;
-        padding-top: 2rem;
-        text-align: center;
+    .varighet, .land {
+      padding: 15px;
 
-        input, a {
-            display: block;
-            margin: 0 auto 1rem;
-        }
+      .datepicker, .nav-select {
+        padding: 0;
+      }
     }
 
-    .arbeidsforhold-oppsummering-endre-slett {
-        text-align: center;
-        margin-bottom: 30px !important;
+    .sluttaarsak-informasjon {
+      padding: 0px !important;
+      .informasjonstekst;
+      margin-bottom: 1rem;
+    }
+  }
+
+  .knapper-opprett-arbeidsforhold {
+    border-top: 1px solid #ddd;
+    margin-top: 1rem;
+    padding-top: 2rem;
+    text-align: center;
+
+    input, a {
+      display: block;
+      margin: 0 auto 1rem;
+    }
+  }
+
+  .arbeidsforhold-oppsummering-endre-slett {
+    text-align: center;
+    margin-bottom: 30px !important;
+  }
+
+  .spm-knapper {
+    border-top: 1px solid #ddd;
+    padding-top: 40px;
+  }
+
+  .knapper-arbeidsforhold {
+    #legg-til {
+      text-align: center;
+      margin-top: 40px;
     }
 
-    .spm-knapper {
-        border-top: 1px solid #ddd;
-        padding-top: 40px;
+    #har-ikke-jobbet {
+      margin-top: 40px;
     }
+  }
+  .sluttaarsak-tilleggsinformasjon {
+    padding: 15px;
+  }
+  .form-linje.feil.knapp {
+    background-color: #fee6e6;
+    border: 1px solid #fee6e6;
+    padding-top: 20px;
 
-    .knapper-arbeidsforhold {
-        #legg-til {
-            text-align: center;
-            margin-top: 40px;
-        }
-
-        #har-ikke-jobbet {
-            margin-top: 40px;
-        }
+    .melding {
+      text-align: center;
     }
-    .sluttaarsak-tilleggsinformasjon {
-        padding: 15px;
-    }
+  }
 }
 
 [data-ng-repeat="af in arbeidsforhold"] {
-    border-bottom: 1px solid #ddd;
-    margin-bottom: 30px;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 30px;
 
-    &.last {
-        border-bottom: none;
-        margin-bottom: 0;
-    }
+  &.last {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
 }
 
 .arbeidsforhold {
 
-    .arbeidsforhold-dato {
-        text-transform: uppercase;
-        margin-right: 5px;
-    }
-    .arbeidsforhold-arbeidsgivernavn {
-        font-weight: bold;
-    }
-    .arbeidsforhold-arbeidsgivernavn-overskrift {
-        font-size: 17px;
-        font-family: modus;
-        font-weight: 600;
-        margin-bottom: 15px !important;
-    }
+  .arbeidsforhold-dato {
+    text-transform: uppercase;
+    margin-right: 5px;
+  }
+  .arbeidsforhold-arbeidsgivernavn {
+    font-weight: bold;
+  }
+  .arbeidsforhold-arbeidsgivernavn-overskrift {
+    font-size: 17px;
+    font-family: modus;
+    font-weight: 600;
+    margin-bottom: 15px !important;
+  }
 
-    .arbeidsforhold-land-sluttaarsak-blokk {
-        margin-bottom: 15px;
+  .arbeidsforhold-land-sluttaarsak-blokk {
+    margin-bottom: 15px;
 
-        .svar-oppsummering-deler {
-            margin: 0px 5px;
-        }
+    .svar-oppsummering-deler {
+      margin: 0px 5px;
     }
+  }
 
-    .arbeidsforhold-oppsummering-endre-slett {
-        text-align: center;
-    }
+  .arbeidsforhold-oppsummering-endre-slett {
+    text-align: center;
+  }
 }
 
 .arbeidsforhold-avbryt {
-    margin-top: 10px;
-    margin-bottom: 20px;
-    display: inline-block;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  display: inline-block;
 }
+
 
 
 

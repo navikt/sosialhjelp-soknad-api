@@ -1,5 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
+import org.joda.time.DateTime;
+
+import com.google.gson.GsonBuilder;
+
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 
@@ -85,6 +89,37 @@ public class Person implements Serializable {
 
     public Map<String, Object> getFakta() {
         return fakta;
+    }
+    
+    
+    public String hentGjeldendeAdresse() {
+        List<Adresse> adresser = getAdresser();
+        
+        Object object = getFakta().get(GJELDENDEADRESSETYPE);
+        Faktum faktum = (Faktum) object;
+        if (adresser != null)
+        {
+            for (Adresse adresse : adresser) {
+                if(erUtenlandskFolkeregistrertAdresse(faktum, adresse) || adresse.getType().toString().equals(faktum.getValue())) {
+                    GsonBuilder gson = new GsonBuilder();
+                    gson.registerTypeAdapter(DateTime.class, new DateTimeSerializer());
+
+                    return gson.create().toJson(adresse);
+                }
+            }
+        }
+        
+        return "{}";
+    }
+
+    private boolean erUtenlandskFolkeregistrertAdresse(Faktum faktum, Adresse adresse) {
+        return adresse.getType().toString().equals("UTENLANDSK_ADRESSE") && faktum.getValue().equals("POSTADRESSE");
+    }
+    
+    private List<Adresse> getAdresser() {
+        Object adresserobject = getFakta().get(ADRESSERKEY);
+        List<Adresse> adresser = (List<Adresse>) adresserobject;
+        return adresser;
     }
 
     public boolean harUtenlandskAdresse() {

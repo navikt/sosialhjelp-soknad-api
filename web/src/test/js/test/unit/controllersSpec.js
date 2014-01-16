@@ -26,7 +26,8 @@ describe('GrunnlagsdataController', function () {
 describe('DagpengerControllere', function () {
     var scope, ctrl, form, element;
 
-    beforeEach(module('app.services', 'app.controllers', 'nav.feilmeldinger'));
+    beforeEach(module('ngCookies', 'app.services'));
+    beforeEach(module('app.controllers', 'nav.feilmeldinger'));
 
     beforeEach(module(function ($provide) {
         $provide.value("data", {
@@ -161,4 +162,54 @@ describe('DagpengerControllere', function () {
             expect(scope.validateFormFunctionBleKalt).toEqual(true);
         });
     });
+
+    describe('BarneCtrl', function () {
+        beforeEach(inject(function ($controller) {
+            ctrl = $controller('BarneCtrl', {
+                $scope: scope
+            });
+        }));
+
+        it('skal returnere 0 aar for barn fodt idag', function () {
+            var idag = new Date();
+            var year = idag.getFullYear();
+            var month = idag.getMonth() + 1;
+            var date = idag.getDate();
+
+            scope.barn.properties.fodselsdato = year + "." + month +"." + date;
+            expect(scope.finnAlder().toString()).toEqual("0");
+        });
+
+        it('skal returnere 1 aar for barn fodt samme dag ifjor', function () {
+            var idag = new Date();
+            var lastyear = idag.getFullYear() - 1;
+            var month = idag.getMonth() + 1;
+            var date = idag.getDate();
+
+            scope.barn.properties.fodselsdato = lastyear + "." + month +"." + date;
+            expect(scope.finnAlder().toString()).toEqual("1");
+        });
+
+        it('skal returnere 0 aar for barn fodt dagen etter idag ifjor', function () {
+            var idag = new Date();
+            var lastyear = idag.getFullYear() - 1;
+            var month = idag.getMonth() + 1;
+            var date = idag.getDate()  + 1;
+
+            scope.barn.properties.fodselsdato = lastyear + "." + month +"." + date;
+
+
+            expect(scope.finnAlder().toString()).toEqual("0");
+        });
+        it('skal returnere 0 aar for barn fodt måneden etter idag ifjor', function () {
+            var idag = new Date();
+            var lastyear = idag.getFullYear() - 1;
+            var lastmonth = idag.getMonth() + 2;
+            var date = idag.getDate();
+
+            scope.barn.properties.fodselsdato = lastyear + "." + lastmonth +"." + date;
+            expect(scope.finnAlder().toString()).toEqual("0");
+        });
+    });
+
 });
