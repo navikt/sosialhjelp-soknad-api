@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 
 import no.nav.modig.core.context.StaticSubjectHandler;
-import no.nav.sbl.dialogarena.detect.IsPdf;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import org.apache.commons.io.IOUtils;
@@ -21,6 +20,7 @@ import java.util.List;
 
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
+import static no.nav.sbl.dialogarena.detect.Detect.IS_PDF;
 import static no.nav.sbl.dialogarena.test.match.Matchers.match;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
@@ -51,9 +51,9 @@ public class SoknadServiceTest {
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
         when(vedleggRepository.lagreVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(11L);
 
-        ByteArrayInputStream bais = new ByteArrayInputStream(getBytesFromFile("/images/bilde.png"));
+        ByteArrayInputStream bais = new ByteArrayInputStream(getBytesFromFile("/images/bilde.jpg"));
         List<Long> ids = soknadService.splitOgLagreVedlegg(vedlegg, bais);
-        assertThat(captor.getValue(), match(new IsPdf()));
+        assertThat(captor.getValue(), match(IS_PDF));
         assertThat(ids, contains(11L));
     }
 
@@ -65,7 +65,7 @@ public class SoknadServiceTest {
 
         ByteArrayInputStream bais = new ByteArrayInputStream(getBytesFromFile("/pdfs/navskjema.pdf"));
         List<Long> ids = soknadService.splitOgLagreVedlegg(vedlegg, bais);
-        assertThat(captor.getValue(), match(new IsPdf()));
+        assertThat(captor.getValue(), match(IS_PDF));
         assertThat(ids, contains(10L, 11L, 12L, 13L, 14L));
     }
 }
