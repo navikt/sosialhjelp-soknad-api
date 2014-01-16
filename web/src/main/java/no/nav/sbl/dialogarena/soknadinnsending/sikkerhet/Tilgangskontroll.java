@@ -10,8 +10,8 @@ import no.nav.modig.security.tilgangskontroll.policy.pep.EnforcementPoint;
 import no.nav.modig.security.tilgangskontroll.policy.pep.PEPImpl;
 import no.nav.modig.security.tilgangskontroll.policy.request.attributes.SubjectAttribute;
 import no.nav.sbl.dialogarena.soknadinnsending.SoknadInnsendingConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.aktor.AktorIdService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -30,7 +30,7 @@ import static no.nav.modig.security.tilgangskontroll.utils.RequestUtils.forReque
 public class Tilgangskontroll {
 
     @Inject
-    private HenvendelseConnector soknadService;
+    private SendSoknadService soknadService;
     @Inject
     private AktorIdService aktorIdService;
 
@@ -43,9 +43,8 @@ public class Tilgangskontroll {
     }
 
     public void verifiserBrukerHarTilgangTilSoknad(Long soknadId) {
-        String eier = soknadService.hentSoknadEier(soknadId);
+        String eier = soknadService.hentSoknad(soknadId).getAktoerId();
         String aktorId = aktorIdService.hentAktorIdForFno(getSubjectHandler().getUid());
-
         SubjectAttribute aktorSubjectId = new SubjectAttribute(new URN("urn:nav:ikt:tilgangskontroll:xacml:subject:aktor-id"), new StringValue(aktorId));
 
         pep.assertAccess(
