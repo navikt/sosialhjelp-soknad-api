@@ -233,7 +233,7 @@ public class MockConsumerConfig {
                 XMLUstrukturertAdresse utenlandskUstrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(4);
 
                 XMLLandkoder xmlLandkode = new XMLLandkoder();
-                xmlLandkode.setValue("POL");
+                xmlLandkode.setValue("FIN");
                 utenlandskUstrukturertAdresse.setLandkode(xmlLandkode);
 
                 xmlPostadresseUtland.setUstrukturertAdresse(utenlandskUstrukturertAdresse);
