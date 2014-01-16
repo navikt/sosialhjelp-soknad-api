@@ -44,7 +44,8 @@ public class Tilgangskontroll {
 
     public void verifiserBrukerHarTilgangTilSoknad(Long soknadId) {
         String eier = soknadService.hentSoknad(soknadId).getAktoerId();
-        String aktorId = aktorIdService.hentAktorIdForFno(getSubjectHandler().getUid());
+        //String aktorId = aktorIdService.hentAktorIdForFno(getSubjectHandler().getUid());
+        String aktorId = getSubjectHandler().getUid();
         SubjectAttribute aktorSubjectId = new SubjectAttribute(new URN("urn:nav:ikt:tilgangskontroll:xacml:subject:aktor-id"), new StringValue(aktorId));
 
         pep.assertAccess(
