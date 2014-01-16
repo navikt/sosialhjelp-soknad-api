@@ -11,5 +11,9 @@ angular.module('nav.scrollbar', []).directive('navScroll', ['$parse', '$timeout'
 		$timeout(function () {
 			elem.perfectScrollbar('update');
 		});
+
+        $(window).bind('resize', function() {
+            elem.perfectScrollbar('update');
+        });
 	}
 }]);
