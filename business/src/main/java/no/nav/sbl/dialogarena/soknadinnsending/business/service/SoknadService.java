@@ -42,6 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static java.lang.String.format;
 import static javax.xml.bind.JAXBContext.newInstance;
+import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.LastetOpp;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.VedleggKreves;
@@ -123,7 +124,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public void sendSoknad(long soknadId) {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
         List<VedleggForventning> vedleggForventnings = hentPaakrevdeVedlegg(soknadId);
-        XMLHovedskjema hovedskjema = new XMLHovedskjema().withInnsendingsvalg("LASTET_OPP").withSkjemanummer("NAV 04-01.03");
+        XMLHovedskjema hovedskjema = new XMLHovedskjema().withInnsendingsvalg(LASTET_OPP.toString()).withSkjemanummer("NAV 04-01.03");
         henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, Transformers.convertToXmlVedleggListe(vedleggForventnings));
         repository.avslutt(soknad);
 
