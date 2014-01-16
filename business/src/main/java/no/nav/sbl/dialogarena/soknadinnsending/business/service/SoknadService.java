@@ -3,6 +3,13 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.sbl.dialogarena.detect.Detect;
 import no.nav.sbl.dialogarena.detect.pdf.PdfDetector;
 import no.nav.sbl.dialogarena.pdf.Convert;
+import java.util.HashMap;
+import java.util.Map;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
+import no.nav.modig.core.context.SubjectHandler;
+import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.detect.IsImage;
+import no.nav.sbl.dialogarena.detect.IsPdf;
 import no.nav.sbl.dialogarena.pdf.ConvertToPng;
 import no.nav.sbl.dialogarena.pdf.PdfMerger;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
@@ -37,7 +44,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import static java.lang.String.format;
@@ -51,7 +57,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     private static final String BRUKERREGISTRERT_FAKTUM = "BRUKERREGISTRERT";
     private static final String SYSTEMREGISTRERT_FAKTUM = "SYSTEMREGISTRERT";
-
+    private static Map<String, String> soknadKodeverkMapping;
+    
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository repository;
@@ -62,6 +69,11 @@ public class SoknadService implements SendSoknadService, VedleggService {
     private HenvendelseConnector henvendelseConnector;
     @Inject
     private FillagerConnector fillagerConnector;
+
+    static {
+        soknadKodeverkMapping = new HashMap<>();
+        soknadKodeverkMapping.put("Dagpenger", "NAV 04-01.03");
+    }
 
     @Override
     public WebSoknad hentSoknad(long soknadId) {
@@ -121,7 +133,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public void sendSoknad(long soknadId) {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
         List<VedleggForventning> vedleggForventnings = hentPaakrevdeVedlegg(soknadId);
-        //   henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(), new XMLHovedskjema(), Transformers.convertToXmlVedleggListe(vedleggForventnings));
+        XMLHovedskjema hovedskjema = new XMLHovedskjema().withInnsendingsvalg("LASTET_OPP").withSkjemanummer(soknadKodeverkMapping.get(soknad.getGosysId()));
+        henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, Transformers.convertToXmlVedleggListe(vedleggForventnings));
         repository.avslutt(soknad);
 
     }
@@ -136,7 +149,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public void avbrytSoknad(Long soknadId) {
         WebSoknad soknad = repository.hentSoknad(soknadId);
         repository.avbryt(soknadId);
-        //   henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
+        henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
     }
 
     @Override
@@ -151,8 +164,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Long startSoknad(String navSoknadId) {
-       // String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid(), navSoknadId);
-       String behandlingsId = "MOCK" + new Random().nextInt(100000000);
+       String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid(), soknadKodeverkMapping.get(navSoknadId));
+//       String behandlingsId = "MOCK" + new Random().nextInt(100000000);
         WebSoknad soknad = WebSoknad.startSoknad().
                 medBehandlingId(behandlingsId).
                 medGosysId(navSoknadId).

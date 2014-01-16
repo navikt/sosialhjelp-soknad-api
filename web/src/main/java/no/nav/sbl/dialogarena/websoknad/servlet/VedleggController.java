@@ -120,14 +120,9 @@ public class VedleggController {
 
     @RequestMapping(value = "/generer", params = "gosysId", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
-    public Callable<Vedlegg> bekreftFaktumVedlegg(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam final String gosysId) {
-        return new Callable<Vedlegg>() {
-            @Override
-            public Vedlegg call() throws Exception {
-                Long vedleggId = vedleggService.genererVedleggFaktum(soknadId, faktumId, gosysId);
-                return vedleggService.hentVedlegg(soknadId, vedleggId, false);
-            }
-        };
+    public Vedlegg bekreftFaktumVedlegg(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam final String gosysId) {
+        Long vedleggId = vedleggService.genererVedleggFaktum(soknadId, faktumId, gosysId);
+        return vedleggService.hentVedlegg(soknadId, vedleggId, false);
     }
 
     private static byte[] getByteArray(MultipartFile file) {
