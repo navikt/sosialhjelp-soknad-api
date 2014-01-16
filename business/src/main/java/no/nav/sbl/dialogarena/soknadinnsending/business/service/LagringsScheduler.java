@@ -31,8 +31,13 @@ public class LagringsScheduler {
             StringWriter xml = new StringWriter();
             JAXB.marshal(soknad, xml);
             henvendelseConnector.mellomlagreSoknad(soknad.getBrukerBehandlingId(), xml.toString());
+            nullstillElementIDatabase(soknad.getSoknadId());
         }
         soknadRepository.nullstillDb();
+    }
+
+    private void nullstillElementIDatabase(long soknadsId) {
+        //TODO implementèr logikk
     }
 
 }
