@@ -89,8 +89,8 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     public Long opprettSoknad(WebSoknad soknad) {
         Long databasenokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_ID_SEQ"), Long.class);
         getJdbcTemplate()
-                .update("insert into soknad (soknad_id, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status, delstegstatus) values (?,?,?,?,?,?,?)",
-                        databasenokkel, soknad.getBrukerBehandlingId(),
+                .update("insert into soknad (soknad_id, uuid, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status, delstegstatus) values (?,?,?,?,?,?,?,?)",
+                        databasenokkel, soknad.getUuid(), soknad.getBrukerBehandlingId(),
                         soknad.getGosysId(), soknad.getAktoerId(),
                         new Date(soknad.getOpprettetDato()),
                         UNDER_ARBEID.name(), OPPRETTET.name());

@@ -76,7 +76,7 @@ public class DatabaseTestContext {
             st.execute("drop table SOKNADBRUKERDATA if exists");
             st.execute("drop table FAKTUMEGENSKAP if exists");
             st.execute("drop table SOKNAD if exists");
-            st.execute("create table SOKNAD (soknad_id numeric not null, brukerbehandlingid varchar(255) not null, navsoknadid varchar(255) not null, " +
+            st.execute("create table SOKNAD (soknad_id numeric not null, uuid varchar(255) not null, brukerbehandlingid varchar(255) not null, navsoknadid varchar(255) not null, " +
                     "aktorid varchar(255) not null, opprettetdato timestamp not null, status varchar(255) not null, delstegstatus varchar(255), sistlagret timestamp)");
             st.execute("drop table VEDLEGG if exists");
             st.execute("create table VEDLEGG (vedlegg_id bigint not null , soknad_id bigint not null, faktum bigint not null, gosysid varchar(36), navn varchar(255) not null, antallsider bigint, fillagerReferanse varchar(36), storrelse bigint not null, " +
