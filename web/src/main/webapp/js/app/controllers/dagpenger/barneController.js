@@ -101,7 +101,7 @@ angular.module('nav.barn', ['app.services'])
 			$scope.runValidation(true);
 
 			if (form.$valid) {
-				$scope.barn.properties.alder = finnAlder();
+				$scope.barn.properties.alder = $scope.finnAlder();
 				$scope.barn.properties.sammensattnavn = finnSammensattNavn();
 				lagreBarnOgBarnetilleggFaktum();
 			}
@@ -227,12 +227,13 @@ angular.module('nav.barn', ['app.services'])
 		}
 
 		//TODO: FIX Tester
-		function finnAlder() {
+		$scope.finnAlder =function() {
 			if ($scope.barn.properties.fodselsdato) {
-				var year = $scope.barn.properties.fodselsdato.substring(0, 4);
-				var maaned = $scope.barn.properties.fodselsdato.substring(5, 7);
-				var dag = $scope.barn.properties.fodselsdato.substring(8, 10);
+				var year = parseInt($scope.barn.properties.fodselsdato.split(".")[0]);
+				var maaned = parseInt($scope.barn.properties.fodselsdato.split(".")[1]);
+				var dag = parseInt($scope.barn.properties.fodselsdato.split(".")[2]);
 				var dagensDato = new Date();
+
 				var result = dagensDato.getFullYear() - year;
 
 				if (dagensDato.getMonth() + 1 < maaned) {
@@ -242,6 +243,7 @@ angular.module('nav.barn', ['app.services'])
 				if (dagensDato.getMonth() + 1 === maaned && dagensDato.getDate() < dag) {
 					result--;
 				}
+
 				return result;
 			}
 			return 'undefined';
