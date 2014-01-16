@@ -14,7 +14,7 @@
     <section >
         <div data-accordion data-close-others="false" data-ng-if="forventninger != null">
             <section class="vedlegg" data-ng-form>
-                <div data-accordion-group data-ng-repeat="forventning in forventninger" class="spm-blokk" data-is-open="vedleggEr(forventning, 'VedleggKreves')" id="faktum_{{forventning.faktum.id}}">
+                <div data-accordion-group data-ng-repeat="forventning in forventninger" class="spm-blokk"  id="faktum_{{forventning.faktum.id}}">
                     <div data-accordion-heading>
                         <div class="flipp">
                             <span>+</span>
@@ -56,11 +56,16 @@
                                 <div data-ng-if="!erEkstraVedlegg(forventning)">
                                     <h4 data-cmstekster="vedlegg.faktum.andreInnsendingsvalg">Hvis du ikke har dette vedlegget tilgjengelig nå, kan du: </h4>
 
-                                    <input id="{{$index}}ettersendRadio" data-ng-model="forventning.faktum.properties[key(forventning)]" type="radio" value="SendesSenere"
+                                    <input id="{{$index}}ettersendRadio"
+                                           data-ng-model="forventning.faktum.properties[key(forventning)]"
+                                           type="radio" value="SendesSenere"
                                            data-ng-change="endreInnsendingsvalg(forventning)">
                                     <label for="{{$index}}ettersendRadio" data-cmstekster="vedlegg.faktum.ettersend"></label>
 
-                                    <input id="{{$index}}ikkesendRadio" data-ng-model="forventning.faktum.properties[key(forventning)]" type="radio" value="SendesIkke"
+                                    <input id="{{$index}}ikkesendRadio"
+                                           data-ng-model="forventning.faktum.properties[key(forventning)]"
+                                           type="radio"
+                                           value="SendesIkke"
                                            data-ng-change="endreInnsendingsvalg(forventning)">
                                     <label for="{{$index}}ikkesendRadio" data-cmstekster="vedlegg.faktum.ikkesend"></label>
                                 </div>

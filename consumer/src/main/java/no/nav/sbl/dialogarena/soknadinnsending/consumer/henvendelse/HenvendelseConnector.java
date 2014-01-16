@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.soap.SOAPFaultException;
 
+import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.IKKE_VALGT;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -74,7 +75,7 @@ public class HenvendelseConnector {
     }
 
     private XMLHovedskjema createXMLSkjema(String hovedskjema) {
-        return new XMLHovedskjema().withInnsendingsvalg("LASTET_OPP").withSkjemanummer(hovedskjema);
+        return new XMLHovedskjema().withInnsendingsvalg(IKKE_VALGT.toString()).withSkjemanummer(hovedskjema);
     }
 
 }
