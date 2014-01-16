@@ -38,6 +38,7 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
             $timeout(function() {
                 plasserTooltipHorisontalt();
                 scrollDersomNodvendig();
+                settMaxHoyde();
             });
 
             function plasserTooltipVertikalt() {
@@ -68,16 +69,28 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
                 }
             };
 
-            $($window).data('over767', $window.innerWidth > 767);
+            function settMaxHoyde() {
+                var padding = element.css('left');
+                var hoyde = element.height() - element.find('.tittel').height() - parseInt(padding.substring(0, padding.length - 2));
+                element.find('.tekst').css({'max-height': hoyde + "px"});
+            }
+
+            var mobilStorrelse = 767;
+
+            $($window).data('forrigeBredde', $window.innerWidth);
+            $($window).data('forrigeHoyde', $window.innerHeight);
             $($window).bind('resize', function() {
-                if ($window.innerWidth > 767) {
+                if ($window.innerWidth > mobilStorrelse) {
                     plasserTooltipHorisontalt();
 
-                    if (!$($window).data('over767')) {
+                    if ($($window).data('forrigeBredde') <= mobilStorrelse) {
                         plasserTooltipVertikalt();
                     }
+                } else if ($window.innerHeight !== $($window).data('forrigeHoyde')) {
+                    settMaxHoyde();
                 }
-                $($window).data('over767', $window.innerWidth > 767);
+                $($window).data('forrigeHoyde', $window.innerHeight);
+                $($window).data('forrigeBredde', $window.innerWidth);
             });
 		}
 	}]);
