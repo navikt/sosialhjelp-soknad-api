@@ -23,13 +23,13 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 			var sluttaarsak = data.finnFakta('sluttaarsak');
 
 			angular.forEach(arbeidsforhold, function (value) {
-				if (value.faktumId === faktumId) {
+				if (value.faktumId === parseInt(faktumId)) {
 					arbeidsforholdData = value;
 				}
 			});
 
 			angular.forEach(sluttaarsak, function (value) {
-				if (value.parrentFaktum === faktumId) {
+				if (value.parrentFaktum === parseInt(faktumId)) {
 					sluttaarsakData = value;
 				}
 			});
