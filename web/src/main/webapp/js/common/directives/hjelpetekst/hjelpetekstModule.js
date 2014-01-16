@@ -31,11 +31,11 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
 			}
 		}
 	}])
-	.directive('navHjelpetekstTooltip', ['$timeout', function ($timeout) {
+	.directive('navHjelpetekstTooltip', ['$timeout', '$document', function ($timeout, $document) {
 		return function (scope, element) {
             $timeout(function() {
                 plasserTooltipHorisontalt();
-                plasserTooltipVertikalt();
+                scrollDersomNodvendig();
             });
 
             function plasserTooltipHorisontalt() {
@@ -49,15 +49,12 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
                 }
             };
 
-            function plasserTooltipVertikalt() {
-                var plasseringTopp = -element.height() - 30;
-                var erPlassTilAHaTooltipOverIkon = element[0].getBoundingClientRect().top + plasseringTopp - 20 > 0;
-
-                if (erPlassTilAHaTooltipOverIkon) {
-                    element.css({top: plasseringTopp});
-                } else {
-                    element.addClass('under');
-                    element.css({top: element.prev().height() + 20});
+            function scrollDersomNodvendig() {
+                element.css({top: -element.height() - 30});
+                var diff = element[0].getBoundingClientRect().top - 20;
+                if (diff < 0) {
+                    var animationSpeed = 200;
+                    $('body, html').scrollToPos($document.scrollTop() + diff, animationSpeed);
                 }
             };
 		}
