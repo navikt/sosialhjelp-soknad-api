@@ -10,7 +10,6 @@ import java.util.List;
  * Metoder som manippulerer vedlegg.
  */
 public interface VedleggService {
-    Long lagreVedlegg(Vedlegg vedlegg, InputStream inputStream);
 
     List<Long> splitOgLagreVedlegg(Vedlegg vedlegg, InputStream inputStream);
 
