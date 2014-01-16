@@ -97,19 +97,28 @@
             height: 0;
             width: 0;
             left: 20px;
-        }
-
-        &.over {
-            &:before {
-                border-top-color: #3e3832;
-                top: 100%;
-            }
+            border-top-color: #3e3832;
+            top: 100%;
         }
 
         &.under {
             &:before {
+                border-top-color: transparent;
                 border-bottom-color: #3e3832;
                 top: -20px;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .hjelpetekst {
+        .hjelpetekst-tooltip {
+            height: 100%;
+            width: 100%;
+
+            &:before {
+                border: transparent;
             }
         }
     }

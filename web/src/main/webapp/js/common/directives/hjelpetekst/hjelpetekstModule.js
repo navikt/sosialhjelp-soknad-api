@@ -31,28 +31,14 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
 			}
 		}
 	}])
-	.directive('navHjelpetekstTooltip', ['$timeout', '$document', function ($timeout, $document) {
+	.directive('navHjelpetekstTooltip', ['$timeout', function ($timeout) {
 		return function (scope, element) {
-            scope.skalVisesOverInfoIkon = function() {
-                var skalPlasseresOver = erScrolletLangtNokNedTilAViseHjelpetekstOverIkonet();
-                plasserTooltipIXRetning();
-                if (skalPlasseresOver) {
-                    element.css({top: -element.height() - 30});
-                }
+            $timeout(function() {
+                plasserTooltipHorisontalt();
+                plasserTooltipVertikalt();
+            });
 
-                return skalPlasseresOver;
-            }
-
-            scope.skalVisesUnderInfoIkon = function() {
-                var skalPlasseresUnder = !scope.skalVisesOverInfoIkon();
-
-                if (skalPlasseresUnder) {
-                    element.css({top: element.prev().height() + 20});
-                }
-                return skalPlasseresUnder;
-            }
-
-            function plasserTooltipIXRetning() {
+            function plasserTooltipHorisontalt() {
                 var plassSomMangleTilHoyre = element[0].getBoundingClientRect().right + 40 - (window.innerWidth || document.documentElement.clientWidth);
                 if (plassSomMangleTilHoyre > 0) {
                     var venstre = 20 + plassSomMangleTilHoyre
@@ -61,10 +47,18 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
                 } else if (element.css('left') === '-20px') {
                     $('style:contains(.hjelpetekst .hjelpetekst-tooltip:before)').remove();
                 }
-            }
+            };
 
-            function erScrolletLangtNokNedTilAViseHjelpetekstOverIkonet(){
-                return element[0].getBoundingClientRect().top - 20 > 0;
-            }
+            function plasserTooltipVertikalt() {
+                var plasseringTopp = -element.height() - 30;
+                var erPlassTilAHaTooltipOverIkon = element[0].getBoundingClientRect().top + plasseringTopp - 20 > 0;
+
+                if (erPlassTilAHaTooltipOverIkon) {
+                    element.css({top: plasseringTopp});
+                } else {
+                    element.addClass('under');
+                    element.css({top: element.prev().height() + 20});
+                }
+            };
 		}
 	}]);
