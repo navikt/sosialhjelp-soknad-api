@@ -142,12 +142,12 @@ public class ConsumerConfig {
 
         @Bean
         public AktoerPortType aktorPortType() {
-            return factory().withUserSecurity().get();
+            return factory().withSystemSecurity().get();
         }
 
         @Bean
         public AktoerPortType aktorSelftestPortType() {
-            return factory().withSystemSecurity().get();
+            return aktorPortType();
         }
     }
 
