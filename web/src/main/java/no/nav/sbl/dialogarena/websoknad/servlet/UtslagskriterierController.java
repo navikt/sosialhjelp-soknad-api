@@ -39,7 +39,7 @@ public class UtslagskriterierController {
     }
 
     private Boolean harNorskAdresse(Person person) {
-        return person.harUtenlandskAdresse();
+        return !person.harUtenlandskAdresse();
     }
 
 }

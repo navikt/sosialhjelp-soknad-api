@@ -88,6 +88,7 @@ function checkFalse(element) {
 }
 
 function scrollToElement(element, offset) {
+    console.log(element)
 	var animationSpeed = 200;
 	var scrollPos = Math.max(element.offset().top - offset, 0);
 	$('body, html').scrollToPos(scrollPos, animationSpeed);
