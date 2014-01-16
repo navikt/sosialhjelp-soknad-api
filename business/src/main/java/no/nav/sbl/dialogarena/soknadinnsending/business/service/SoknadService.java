@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.pdf.Convert;
 import java.util.HashMap;
 import java.util.Map;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
-import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.detect.IsImage;
 import no.nav.sbl.dialogarena.detect.IsPdf;
@@ -23,6 +22,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.Opplast
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.aktor.AktorIdService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import org.apache.commons.io.IOUtils;
@@ -43,7 +43,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static java.lang.String.format;
@@ -69,6 +71,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
     private HenvendelseConnector henvendelseConnector;
     @Inject
     private FillagerConnector fillagerConnector;
+    @Inject
+    private AktorIdService aktorIdService;
 
     static {
         soknadKodeverkMapping = new HashMap<>();
@@ -101,8 +105,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
         if (!uniqueProperty.isEmpty()) {
             for (Faktum faktum : fakta) {
                 if (faktum.getProperties() != null &&
-                    faktum.getProperties().get(uniqueProperty) != null &&
-                    faktum.getProperties().get(uniqueProperty).equals(f.getProperties().get(uniqueProperty))) {
+                        faktum.getProperties().get(uniqueProperty) != null &&
+                        faktum.getProperties().get(uniqueProperty).equals(f.getProperties().get(uniqueProperty))) {
                     f.setFaktumId(faktum.getFaktumId());
                     return repository.lagreFaktum(soknadId, f);
 
@@ -164,12 +168,12 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Long startSoknad(String navSoknadId) {
-       String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid(), soknadKodeverkMapping.get(navSoknadId));
+        String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid(), soknadKodeverkMapping.get(navSoknadId));
 //       String behandlingsId = "MOCK" + new Random().nextInt(100000000);
         WebSoknad soknad = WebSoknad.startSoknad().
                 medBehandlingId(behandlingsId).
                 medGosysId(navSoknadId).
-                medAktorId(getSubjectHandler().getUid()).
+                medAktorId(aktorIdService.hentAktorIdForFno(getSubjectHandler().getUid())).
                 opprettetDato(DateTime.now());
         return repository.opprettSoknad(soknad);
     }
