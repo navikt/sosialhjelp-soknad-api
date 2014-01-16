@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.soknadinnsending.exception;
+package no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception;
 
 import no.nav.modig.core.exception.ApplicationException;
 

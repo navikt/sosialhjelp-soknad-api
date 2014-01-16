@@ -14,7 +14,11 @@
     <logger name="no.nav.modig.lang.reflect" level="warn" />
     <logger name="no.nav.sbl" level="debug" />
 
+<<<<<<< HEAD
     <logger name="org.apache.cxf" level="error" />
+=======
+    <logger name="org.apache.cxf" level="info" />
+>>>>>>> master
     
     <root level="INFO">
         <appender-ref ref="Console"/>

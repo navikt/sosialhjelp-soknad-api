@@ -28,7 +28,6 @@ angular.module('nav.personalia', [])
         }
 
         $scope.harBostedsAdresse = function () {
-            console.log()
             return $scope.personaliaData.bostedsAdresse != undefined;
         }
 
