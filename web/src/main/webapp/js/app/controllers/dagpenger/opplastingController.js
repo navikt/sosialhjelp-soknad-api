@@ -49,7 +49,6 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 			submit();
 			$scope.submit();
 			$scope.data.opplastingFeilet = false;
-			console.log('laster opp');
 			$scope.$apply();
 		};
 
