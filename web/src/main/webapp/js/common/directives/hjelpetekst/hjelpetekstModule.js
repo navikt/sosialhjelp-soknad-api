@@ -67,7 +67,7 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
                     $('style:contains(.hjelpetekst .hjelpetekst-tooltip:before)').text('.hjelpetekst .hjelpetekst-tooltip:before {left: ' + -venstre + 'px !important};');
                 }
             };
-            
+
             $($window).data('over767', $window.innerWidth > 767);
             $($window).bind('resize', function() {
                 if ($window.innerWidth > 767) {
