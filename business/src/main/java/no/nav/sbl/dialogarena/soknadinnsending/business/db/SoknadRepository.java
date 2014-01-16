@@ -35,7 +35,6 @@ public interface SoknadRepository {
     Faktum hentSystemFaktum(Long soknadId, String key,
                             String systemregistrertFaktum);
 
-
     List<Faktum> hentSystemFaktumList(Long soknadId, String key, String string);
     
     void endreInnsendingsValg(Long soknadId, Long faktumId, Faktum.Status innsendingsvalg);
@@ -44,5 +43,5 @@ public interface SoknadRepository {
 
     void slettBrukerFaktum(Long soknadId, Long faktumId);
 
-    void nullstillDb();
+    void slettSoknad(long soknadId);
 }

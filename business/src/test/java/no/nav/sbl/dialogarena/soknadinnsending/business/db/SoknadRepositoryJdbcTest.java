@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -186,7 +187,6 @@ public class SoknadRepositoryJdbcTest {
     public void skalHenteOppSoknaderEldreEnnEnTime() {
         opprettOgPersisterSoknad();
         setCurrentMillisFixed(now().minusMinutes(61).getMillis()); //bedre enn å sette Thread.sleep(61 min)
-//        Thread.sleep(3660000); //#yolo
         soknadRepository.settSistLagretTidspunkt(soknadId);
         setCurrentMillisSystem();
         assertThat(soknadRepository.hentAlleSoknaderSistLagretOverEnTimeSiden().size(), equalTo(1));
@@ -213,6 +213,13 @@ public class SoknadRepositoryJdbcTest {
         WebSoknad avbruttSoknad = soknadRepository.hentSoknad(soknadId);
         assertThat(avbruttSoknad, notNullValue());
         assertThat(avbruttSoknad.getStatus(), is(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER));
+    }
+
+    @Test(expected = EmptyResultDataAccessException.class)
+    public void skalKunneSletteSoknad() {
+        opprettOgPersisterSoknad();
+        soknadRepository.slettSoknad(soknadId);
+        soknadRepository.hentSoknad(soknadId);
     }
 
     @Test

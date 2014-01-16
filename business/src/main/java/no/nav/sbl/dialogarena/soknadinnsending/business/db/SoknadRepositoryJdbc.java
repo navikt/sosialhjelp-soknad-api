@@ -234,11 +234,6 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     }
 
     @Override
-    public void nullstillDb() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public void settSistLagretTidspunkt(Long soknadId) {
         getJdbcTemplate()
                 .update("update soknad set sistlagret=? where soknad_id = ?", new Date(now().getMillis()), soknadId);
@@ -278,6 +273,14 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         getJdbcTemplate().update("delete from vedlegg where soknad_id = ?", soknad);
 
         getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ?", soknad);
+    }
+
+    @Override
+    public void slettSoknad(long soknadId) {
+        LOG.debug("Sletter søknad med ID: " + soknadId);
+        getJdbcTemplate().update("delete from soknad where soknad_id = ?", soknadId);
+        getJdbcTemplate().update("delete from vedlegg where soknad_id = ?", soknadId);
+        getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ?", soknadId);
     }
 
     @Override
