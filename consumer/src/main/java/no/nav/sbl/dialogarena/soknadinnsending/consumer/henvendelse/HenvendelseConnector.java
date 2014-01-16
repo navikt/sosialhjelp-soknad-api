@@ -39,16 +39,6 @@ public class HenvendelseConnector {
         }
     }
 
-    public void mellomlagreSoknad(String behandlingsId, String webSoknadAsXML) {
-        LOGGER.info("Inne i metoden for mellomlagreSoknad");
-        try {
-            sendSoknadService.mellomlagreSoknad(new WSSoknadsdata().withBehandlingsId(behandlingsId).withAny(webSoknadAsXML));
-        } catch (SOAPFaultException e) {
-            LOGGER.error("Feil ved mellomlagring av søknad med id: " + behandlingsId, e);
-            throw new ApplicationException("Kunne ikke mellomlagre søknad", e);
-        }
-    }
-
     public void avsluttSoknad(String behandlingsId, XMLHovedskjema hovedskjema, XMLVedlegg... vedlegg) {
         try {
             WSSoknadsdata parameters = new WSSoknadsdata().withBehandlingsId(behandlingsId).withAny(new XMLMetadataListe()
