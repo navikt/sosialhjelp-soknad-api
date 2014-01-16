@@ -20,7 +20,7 @@ public interface SoknadRepository {
 
     void avbryt(Long soknad);
 
-    List<WebSoknad> hentAlleSoknaderSistLagretUnderEnTimeSiden();
+    List<WebSoknad> hentAlleSoknaderSistLagretOverEnTimeSiden();
 
     List<WebSoknad> hentListe(String aktorId);
 
@@ -44,4 +44,5 @@ public interface SoknadRepository {
 
     void slettBrukerFaktum(Long soknadId, Long faktumId);
 
+    void nullstillDb();
 }
