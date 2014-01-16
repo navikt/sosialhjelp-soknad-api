@@ -97,13 +97,15 @@ public class Person implements Serializable {
         
         Object object = getFakta().get(GJELDENDEADRESSETYPE);
         Faktum faktum = (Faktum) object;
-        
-        for (Adresse adresse : adresser) {
-            if(adresse.getType().toString().equals(faktum.getValue())) {
-                GsonBuilder gson = new GsonBuilder();
-                gson.registerTypeAdapter(DateTime.class, new DateTimeSerializer());
+        if (adresser != null)
+        {
+            for (Adresse adresse : adresser) {
+                if(adresse.getType().toString().equals(faktum.getValue())) {
+                    GsonBuilder gson = new GsonBuilder();
+                    gson.registerTypeAdapter(DateTime.class, new DateTimeSerializer());
 
-                return gson.create().toJson(adresse);
+                    return gson.create().toJson(adresse);
+                }
             }
         }
         
