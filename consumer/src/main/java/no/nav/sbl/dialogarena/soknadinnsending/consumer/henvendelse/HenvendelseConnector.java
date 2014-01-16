@@ -30,10 +30,10 @@ public class HenvendelseConnector {
         return "";
     }
 
-    public String startSoknad(String fnr, String hovedskjema) {
+    public String startSoknad(String fnr) {
         LOGGER.info("Inne i metoden for startSoknad");
         try {
-            return sendSoknadService.startSoknad(createXMLStartSoknadRequest(fnr, createXMLSkjema(hovedskjema))).getBehandlingsId();
+            return sendSoknadService.startSoknad(createXMLStartSoknadRequest(fnr, createXMLSkjema())).getBehandlingsId();
         } catch (SOAPFaultException e) {
             LOGGER.error("Feil ved start søknad for bruker " + fnr, e);
             throw new ApplicationException("Kunne ikke opprette ny søknad", e);
@@ -84,8 +84,8 @@ public class HenvendelseConnector {
                         .withMetadata(skjema));
     }
 
-    private XMLHovedskjema createXMLSkjema(String hovedskjema) {
-        return new XMLHovedskjema().withInnsendingsvalg(IKKE_VALGT.toString()).withSkjemanummer(hovedskjema);
+    private XMLHovedskjema createXMLSkjema() {
+        return new XMLHovedskjema().withInnsendingsvalg(IKKE_VALGT.toString());
     }
 
 }
