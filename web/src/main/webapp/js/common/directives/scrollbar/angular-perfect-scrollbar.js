@@ -2,10 +2,8 @@
 angular.module('nav.scrollbar', []).directive('navScroll', ['$parse', '$timeout', function ($parse, $timeout) {
 	return function (scope, elem, attr) {
 		elem.perfectScrollbar({
-			wheelSpeed        : $parse(attr.wheelSpeed)() || 50,
-			wheelPropagation  : $parse(attr.wheelPropagation)() || false,
-			minScrollbarLength: $parse(attr.minScrollbarLength)() || false,
-			suppressScrollY   : true
+			minScrollbarLength: $parse(attr.minScrollbarLength)() || 10,
+            suppressScrollX   : $parse(attr.suppressScrollX)() || true
 		});
 
 		$timeout(function () {
