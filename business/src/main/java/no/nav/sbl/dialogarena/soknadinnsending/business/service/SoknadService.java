@@ -1,14 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.sbl.dialogarena.detect.Detect;
 import no.nav.sbl.dialogarena.detect.pdf.PdfDetector;
 import no.nav.sbl.dialogarena.pdf.Convert;
-import java.util.HashMap;
-import java.util.Map;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
-import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.detect.IsImage;
-import no.nav.sbl.dialogarena.detect.IsPdf;
 import no.nav.sbl.dialogarena.pdf.ConvertToPng;
 import no.nav.sbl.dialogarena.pdf.PdfMerger;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
