@@ -208,10 +208,6 @@ describe('DagpengerControllere', function () {
             var date = idag.getDate();
 
             scope.barn.properties.fodselsdato = lastyear + "." + lastmonth +"." + date;
-
-            console.log("fødselsdato: " + scope.barn.properties.fodselsdato);
-            console.log("dagensdato: " + new Date().toString());
-
             expect(scope.finnAlder().toString()).toEqual("0");
         });
     });
