@@ -15,7 +15,8 @@
             </div>
 
             <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
-                <input type="hidden" data-ng-model="harHuketAvCheckboksDeltid.value" data-nav-faktum="reellarbeidssoker.villigdeltid"
+                <input type="hidden" data-ng-model="harHuketAvCheckboksDeltid.value"
+                       data-nav-faktum="reellarbeidssoker.villigdeltid"
                        data-ng-required="faktum.value == 'false' && erUnder60Aar()"
                        data-error-messages="'reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding'">
 
@@ -61,14 +62,23 @@
 
             <p class="informasjonstekst" data-cmstekster="reellarbeidssoker.villigdeltid.false.informasjon2"></p>
 
-            <div data-navtekst
-                 data-nav-faktum="reellarbeidssoker.villigdeltid.maksimalarbeidstid"
-                 data-navconfig
-                 data-regexvalidering="/\d+/"
-                 data-navlabel=" reellarbeidssoker.maksimalarbeidstid"
-                 data-navfeilmelding="reellarbeidssoker.maksimalarbeidstid.feilmelding"></div>
+            <div class="tekstfelt form-linje arbeidsmengde-container">
+                <label>
+                    <span data-cmstekster="reellarbeidssoker.maksimalarbeidstid"></span>
+                    <input type="text"
+                           data-ng-model="faktum.value"
+                           data-nav-faktum="reellarbeidssoker.villigdeltid.maksimalarbeidstid"
+                           data-navconfig
+                           data-ng-required=hvisSynlig()
+                           data-error-messages="{required:'reellarbeidssoker.maksimalarbeidstid.feilmelding', pattern:'regex.tall.komma.punktum'}"
+                           data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
+                           data-tekstfelt-patternvalidering
+                           data-blur-validate/>
+                    <span class="timer" data-cmstekster="egennaering.driveregennaering.arbeidsmengde.timer"></span>
+                    <span class="melding"></span>
+                </label>
+            </div>
         </div>
-
 
         <div data-nav-faktum="reellarbeidssoker.villigpendle"
              data-navconfig
@@ -79,9 +89,11 @@
                 <span data-cmstekster="reellarbeidssoker.villigpendle.false.informasjon"></span>
             </div>
             <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
-                <input type="hidden" data-ng-model="harHuketAvCheckboksPendle.value" data-nav-faktum="reellarbeidssoker.villigpendle"
+                <input type="hidden" data-ng-model="harHuketAvCheckboksPendle.value"
+                       data-nav-faktum="reellarbeidssoker.villigpendle"
                        data-ng-required="faktum.value == 'false' && erUnder60Aar()"
                        data-error-messages="'reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding'"/>
+
                 <div data-navcheckbox
                      data-navconfig
                      data-nav-faktum="reellarbeidssoker.villigpendle.reduserthelse"
@@ -92,12 +104,6 @@
                      data-navconfig
                      data-nav-faktum="reellarbeidssoker.villigpendle.omsorgbarnunder1aar"
                      data-navlabel="reellarbeidssoker.pendleomsorgbarnunder1aar"
-                     data-navendret="endrePendleAarsaker()"></div>
-
-                <div data-navcheckbox
-                     data-navconfig
-                     data-nav-faktum="reellarbeidssoker.villigpendle.omsorgbarnopptil10"
-                     data-navlabel="reellarbeidssoker.pendleomsorgbarnopptil10"
                      data-navendret="endrePendleAarsaker()"></div>
 
                 <div data-navcheckbox

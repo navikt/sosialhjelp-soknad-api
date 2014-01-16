@@ -34,7 +34,7 @@ angular.module('nav.dagpenger', [])
 					giFokus(elementMedForsteFeil);
 					setAktivFeilmeldingsklasse(elementMedForsteFeil);
 				}
-			}, 400);
+			}, 800);
 		};
 
 		$scope.$on('OPEN_TAB', function (e, ider) {
