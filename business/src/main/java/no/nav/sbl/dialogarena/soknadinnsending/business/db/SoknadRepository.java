@@ -20,7 +20,7 @@ public interface SoknadRepository {
 
     void avbryt(Long soknad);
 
-    List<WebSoknad> hentAlleSoknaderSistLagretOverEnTimeSiden();
+    List<Long> hentAlleSoknaderSistLagretOverEnTimeSiden();
 
     List<WebSoknad> hentListe(String aktorId);
 

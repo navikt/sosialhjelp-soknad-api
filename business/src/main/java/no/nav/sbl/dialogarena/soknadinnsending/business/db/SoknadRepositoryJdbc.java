@@ -103,12 +103,12 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         return getJdbcTemplate().queryForObject(sql, new SoknadRowMapper(), id);
     }
 
-    public List<WebSoknad> hentAlleSoknaderSistLagretOverEnTimeSiden() {
-        String sql = "select * from SOKNAD where sistlagret <= ?";
-        return getJdbcTemplate().query(
+    public List<Long> hentAlleSoknaderSistLagretOverEnTimeSiden() {
+        String sql = "select soknad_id from SOKNAD where sistlagret <= ?";
+        return getJdbcTemplate().queryForList(
                 sql,
                 new String[]{new Timestamp(now().minusHours(1).getMillis()).toString()},
-                new SoknadMapper());
+                Long.class);
     }
 
     @Override
