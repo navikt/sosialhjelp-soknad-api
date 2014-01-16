@@ -34,11 +34,33 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
 	}])
 	.directive('navHjelpetekstTooltip', ['$timeout', '$document', '$window', function ($timeout, $document, $window) {
 		return function (scope, element) {
+            var mobilStorrelse = 767;
+
+            $($window).data('forrigeBredde', $window.innerWidth);
+            $($window).data('forrigeHoyde', $window.innerHeight);
+            $($window).bind('resize', function() {
+                if ($window.innerWidth > mobilStorrelse) {
+                    plasserTooltipHorisontalt();
+
+                    if ($($window).data('forrigeBredde') <= mobilStorrelse) {
+                        plasserTooltipVertikalt();
+                    }
+                } else if ($window.innerHeight !== $($window).data('forrigeHoyde')) {
+                    settMaxHoyde();
+                }
+                $($window).data('forrigeHoyde', $window.innerHeight);
+                $($window).data('forrigeBredde', $window.innerWidth);
+            });
+
             $('style:contains(.hjelpetekst .hjelpetekst-tooltip:before)').remove();
             $timeout(function() {
                 plasserTooltipHorisontalt();
                 scrollDersomNodvendig();
-                settMaxHoyde();
+
+                if ($window.innerWidth <= mobilStorrelse) {
+                    settMaxHoyde();
+                }
+
             });
 
             function plasserTooltipVertikalt() {
@@ -73,24 +95,6 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
                 var padding = element.css('left');
                 var hoyde = element.height() - element.find('.tittel').height() - parseInt(padding.substring(0, padding.length - 2));
                 element.find('.tekst').css({'max-height': hoyde + "px"});
-            }
-
-            var mobilStorrelse = 767;
-
-            $($window).data('forrigeBredde', $window.innerWidth);
-            $($window).data('forrigeHoyde', $window.innerHeight);
-            $($window).bind('resize', function() {
-                if ($window.innerWidth > mobilStorrelse) {
-                    plasserTooltipHorisontalt();
-
-                    if ($($window).data('forrigeBredde') <= mobilStorrelse) {
-                        plasserTooltipVertikalt();
-                    }
-                } else if ($window.innerHeight !== $($window).data('forrigeHoyde')) {
-                    settMaxHoyde();
-                }
-                $($window).data('forrigeHoyde', $window.innerHeight);
-                $($window).data('forrigeBredde', $window.innerWidth);
-            });
+            };
 		}
 	}]);
