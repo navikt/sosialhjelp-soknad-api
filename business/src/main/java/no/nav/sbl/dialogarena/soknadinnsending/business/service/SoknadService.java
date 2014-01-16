@@ -1,5 +1,17 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import java.awt.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.sbl.dialogarena.detect.Detect;
 import no.nav.sbl.dialogarena.detect.pdf.PdfDetector;
@@ -28,21 +40,6 @@ import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.awt.Dimension;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import static java.lang.String.format;
 import static javax.xml.bind.JAXBContext.newInstance;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -54,7 +51,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     private static final String BRUKERREGISTRERT_FAKTUM = "BRUKERREGISTRERT";
     private static final String SYSTEMREGISTRERT_FAKTUM = "SYSTEMREGISTRERT";
-    private static Map<String, String> soknadKodeverkMapping;
     
     @Inject
     @Named("soknadInnsendingRepository")
@@ -68,11 +64,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
     private FillagerConnector fillagerConnector;
     @Inject
     private AktorIdService aktorIdService;
-
-    static {
-        soknadKodeverkMapping = new HashMap<>();
-        soknadKodeverkMapping.put("Dagpenger", "NAV 04-01.03");
-    }
 
     @Override
     public WebSoknad hentSoknad(long soknadId) {
@@ -132,7 +123,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public void sendSoknad(long soknadId) {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
         List<VedleggForventning> vedleggForventnings = hentPaakrevdeVedlegg(soknadId);
-        XMLHovedskjema hovedskjema = new XMLHovedskjema().withInnsendingsvalg("LASTET_OPP").withSkjemanummer(soknadKodeverkMapping.get(soknad.getGosysId()));
+        XMLHovedskjema hovedskjema = new XMLHovedskjema().withInnsendingsvalg("LASTET_OPP").withSkjemanummer("NAV 04-01.03");
         henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, Transformers.convertToXmlVedleggListe(vedleggForventnings));
         repository.avslutt(soknad);
 
@@ -163,7 +154,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Long startSoknad(String navSoknadId) {
-        String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid(), soknadKodeverkMapping.get(navSoknadId));
+        String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid(), "NAV 04-01.03");
 //       String behandlingsId = "MOCK" + new Random().nextInt(100000000);
         WebSoknad soknad = WebSoknad.startSoknad().
                 medBehandlingId(behandlingsId).
