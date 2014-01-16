@@ -4,7 +4,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,12 +13,16 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.UUID;
 
+import static java.util.UUID.randomUUID;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.joda.time.DateTime.now;
+import static org.joda.time.DateTimeUtils.setCurrentMillisFixed;
+import static org.joda.time.DateTimeUtils.setCurrentMillisSystem;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -58,7 +61,7 @@ public class SoknadRepositoryJdbcTest {
         soknad = WebSoknad.startSoknad()
                 .medBehandlingId(behandlingsId)
                 .medGosysId(gosysId)
-                .opprettetDato(DateTime.now());
+                .opprettetDato(now());
 
         soknadRepository.opprettSoknad(soknad);
     }
@@ -68,7 +71,7 @@ public class SoknadRepositoryJdbcTest {
         soknad = WebSoknad.startSoknad()
                 .medAktorId(aktorId)
                 .medGosysId(gosysId)
-                .opprettetDato(DateTime.now());
+                .opprettetDato(now());
 
         soknadRepository.opprettSoknad(soknad);
     }
@@ -78,7 +81,7 @@ public class SoknadRepositoryJdbcTest {
         soknad = WebSoknad.startSoknad()
                 .medAktorId(aktorId)
                 .medBehandlingId(behandlingsId)
-                .opprettetDato(DateTime.now());
+                .opprettetDato(now());
 
         soknadRepository.opprettSoknad(soknad);
     }
@@ -97,7 +100,7 @@ public class SoknadRepositoryJdbcTest {
 
     @Test
     public void skalKunneHenteOpprettetSoknadMedBehandlingsId() {
-        String behId = UUID.randomUUID().toString();
+        String behId = randomUUID().toString();
         opprettOgPersisterSoknad(behId, "aktor-3");
 
         WebSoknad opprettetSoknad = soknadRepository.hentMedBehandlingsId(behId);
@@ -180,6 +183,16 @@ public class SoknadRepositoryJdbcTest {
     }
 
     @Test
+    public void skalHenteOppSoknaderEldreEnnEnTime() {
+        opprettOgPersisterSoknad();
+        setCurrentMillisFixed(now().minusMinutes(61).getMillis()); //bedre enn å sette Thread.sleep(61 min)
+//        Thread.sleep(3660000); //#yolo
+        soknadRepository.settSistLagretTidspunkt(soknadId);
+        setCurrentMillisSystem();
+        assertThat(soknadRepository.hentAlleSoknaderSistLagretOverEnTimeSiden().size(), equalTo(1));
+    }
+
+    @Test
     public void skalKunneAvslutteEnSoknad() {
         opprettOgPersisterSoknad();
 
@@ -231,14 +244,14 @@ public class SoknadRepositoryJdbcTest {
     }
 
     private void opprettOgPersisterSoknad(String nyAktorId) {
-        opprettOgPersisterSoknad(UUID.randomUUID().toString(), nyAktorId);
+        opprettOgPersisterSoknad(randomUUID().toString(), nyAktorId);
     }
 
     private void opprettOgPersisterSoknad(String behId, String aktor) {
         soknad = WebSoknad.startSoknad()
                 .medAktorId(aktor)
                 .medBehandlingId(behId)
-                .medGosysId(gosysId).opprettetDato(DateTime.now());
+                .medGosysId(gosysId).opprettetDato(now());
 
         soknadId = soknadRepository.opprettSoknad(soknad);
         assertThat(soknadId, greaterThan(0L));
