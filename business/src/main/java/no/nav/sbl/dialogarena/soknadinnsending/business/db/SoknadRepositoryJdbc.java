@@ -19,7 +19,6 @@ import javax.inject.Named;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -107,8 +106,8 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         String sql = "select soknad_id from SOKNAD where sistlagret <= ?";
         return getJdbcTemplate().queryForList(
                 sql,
-                new String[]{new Timestamp(now().minusHours(1).getMillis()).toString()},
-                Long.class);
+                Long.class,
+                new Date(now().minusHours(1).getMillis()));
     }
 
     @Override
