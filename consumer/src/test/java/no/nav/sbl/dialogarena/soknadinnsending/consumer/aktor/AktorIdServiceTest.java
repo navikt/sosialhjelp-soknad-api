@@ -33,7 +33,8 @@ public class AktorIdServiceTest {
 
     @Test
     public void skalKalleHentMedKorrektArgumentOgReturnereSvar() throws Exception {
-        HentAktoerIdForIdentResponse serviceRes = new HentAktoerIdForIdentResponse("321");
+        HentAktoerIdForIdentResponse serviceRes = new HentAktoerIdForIdentResponse();
+        serviceRes.setAktoerId("321");
         when(aktoerPortType.hentAktoerIdForIdent(any(HentAktoerIdForIdentRequest.class))).thenReturn(serviceRes);
         String res = aktorIdService.hentAktorIdForFno("123");
         verify(aktoerPortType).hentAktoerIdForIdent(argThat(HENT_AKTOR_MATCHER));
@@ -42,7 +43,7 @@ public class AktorIdServiceTest {
 
     @Test(expected = ApplicationException.class)
     public void skalWrappeExceptionsPaIkkeFunnet() throws Exception {
-        when(aktoerPortType.hentAktoerIdForIdent(any(HentAktoerIdForIdentRequest.class))).thenThrow(new HentAktoerIdForIdentPersonIkkeFunnet());
+        when(aktoerPortType.hentAktoerIdForIdent(any(HentAktoerIdForIdentRequest.class))).thenThrow(new HentAktoerIdForIdentPersonIkkeFunnet("beskjed", null));
         aktorIdService.hentAktorIdForFno("123");
     }
 
