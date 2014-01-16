@@ -15,7 +15,8 @@
             </div>
 
             <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
-                <input type="hidden" data-ng-model="harHuketAvCheckboksDeltid.value" data-nav-faktum="reellarbeidssoker.villigdeltid"
+                <input type="hidden" data-ng-model="harHuketAvCheckboksDeltid.value"
+                       data-nav-faktum="reellarbeidssoker.villigdeltid"
                        data-ng-required="faktum.value == 'false' && erUnder60Aar()"
                        data-error-messages="'reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding'">
 
@@ -88,9 +89,11 @@
                 <span data-cmstekster="reellarbeidssoker.villigpendle.false.informasjon"></span>
             </div>
             <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
-                <input type="hidden" data-ng-model="harHuketAvCheckboksPendle.value" data-nav-faktum="reellarbeidssoker.villigpendle"
+                <input type="hidden" data-ng-model="harHuketAvCheckboksPendle.value"
+                       data-nav-faktum="reellarbeidssoker.villigpendle"
                        data-ng-required="faktum.value == 'false' && erUnder60Aar()"
                        data-error-messages="'reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding'"/>
+
                 <div data-navcheckbox
                      data-navconfig
                      data-nav-faktum="reellarbeidssoker.villigpendle.reduserthelse"
