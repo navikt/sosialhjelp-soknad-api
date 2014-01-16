@@ -100,7 +100,7 @@ public class Person implements Serializable {
         if (adresser != null)
         {
             for (Adresse adresse : adresser) {
-                if(adresse.getType().toString().equals(faktum.getValue())) {
+                if(erUtenlandskFolkeregistrertAdresse(faktum, adresse) || adresse.getType().toString().equals(faktum.getValue())) {
                     GsonBuilder gson = new GsonBuilder();
                     gson.registerTypeAdapter(DateTime.class, new DateTimeSerializer());
 
@@ -109,7 +109,11 @@ public class Person implements Serializable {
             }
         }
         
-        return "";
+        return "{}";
+    }
+
+    private boolean erUtenlandskFolkeregistrertAdresse(Faktum faktum, Adresse adresse) {
+        return adresse.getType().toString().equals("UTENLANDSK_ADRESSE") && faktum.getValue().equals("POSTADRESSE");
     }
     
     private List<Adresse> getAdresser() {

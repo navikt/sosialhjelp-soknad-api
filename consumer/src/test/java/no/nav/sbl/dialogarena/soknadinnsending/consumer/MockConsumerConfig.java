@@ -1,5 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
@@ -43,7 +47,7 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
-import org.hamcrest.CustomMatcher;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -51,11 +55,6 @@ import org.springframework.context.annotation.Configuration;
 
 import java.math.BigInteger;
 import java.util.List;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @Configuration
 @ComponentScan(excludeFilters = @Filter(Configuration.class))
@@ -177,24 +176,22 @@ public class MockConsumerConfig {
         @Bean
         public KodeverkPortType kodeverkService() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
             KodeverkPortType mock = mock(KodeverkPortType.class);
-            when(mock.hentKodeverk(argThat(new CustomMatcher<XMLHentKodeverkRequest>("sjekk om kodeverk matcher") {
-                @Override
-                public boolean matches(Object item) {
-                    XMLHentKodeverkRequest kodeverkRequest = (XMLHentKodeverkRequest) item;
-                    return kodeverkRequest.getNavn().equals("Landkoder");
-                }
-            }))).thenReturn(postnummerKodeverkResponse());
+          
+            when(mock.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(postnummerKodeverkResponse());
+            when(mock.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(landkodeKodeverkResponse());
+    
             return mock;
         }
-
+        
         @Bean
         public KodeverkPortType kodeverkServiceSelftest() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
             return kodeverkService();
         }
 
-        private XMLHentKodeverkResponse postnummerKodeverkResponse() {
+        private static XMLHentKodeverkResponse postnummerKodeverkResponse() {
             XMLKode kode = new XMLKode().withNavn("0565").withTerm(new XMLTerm().withNavn("Oslo"));
-            return new XMLHentKodeverkResponse().withKodeverk(new XMLEnkeltKodeverk().withNavn("Kommuner").withKode(kode));
+            XMLKode kode2 = new XMLKode().withNavn("0560").withTerm(new XMLTerm().withNavn("Oslo"));
+            return new XMLHentKodeverkResponse().withKodeverk(new XMLEnkeltKodeverk().withNavn("Postnummer").withKode(kode,kode2));
         }
 
     }
@@ -211,7 +208,6 @@ public class MockConsumerConfig {
         private static final String EN_ADRESSE_HUSNUMMER = "44";
         private static final String EN_ADRESSE_HUSBOKSTAV = "B";
         private static final String EN_ADRESSE_POSTNUMMER = "0560";
-        private static final String EN_ADRESSE_POSTSTED = "Oslo";
 
         private static final String EN_ADRESSELINJE = "Poitigatan 55";
         private static final String EN_ANNEN_ADRESSELINJE = "Nord-Poiti";
@@ -246,14 +242,14 @@ public class MockConsumerConfig {
                 XMLUstrukturertAdresse utenlandskUstrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(4);
 
                 XMLLandkoder xmlLandkode = new XMLLandkoder();
-                xmlLandkode.setValue("POL");
+                xmlLandkode.setValue("FIN");
                 utenlandskUstrukturertAdresse.setLandkode(xmlLandkode);
 
                 xmlPostadresseUtland.setUstrukturertAdresse(utenlandskUstrukturertAdresse);
                 xmlBruker.setPostadresse(xmlPostadresseUtland);
                 
                 XMLPostadressetyper postadressetyper = new XMLPostadressetyper();
-                postadressetyper.setValue("UTENLANDSK_ADRESSE");
+                postadressetyper.setValue("POSTADRESSE");
                 xmlBruker.setGjeldendePostadresseType(postadressetyper);
             }
         }
