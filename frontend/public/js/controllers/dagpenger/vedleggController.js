@@ -23,7 +23,6 @@ angular.module('nav.vedlegg.controller', [])
             return 'vedlegg_' + forventning.gosysId;
         };
         $scope.endreInnsendingsvalg = function (forventning, valg) {
-            console.log('jejeje');
             if (valg !== undefined) {
                 forventning.faktum.properties['vedlegg_' + forventning.gosysId] = valg;
             }

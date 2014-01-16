@@ -1,39 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import java.util.HashMap;
-import java.util.Map;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
-import no.nav.modig.core.context.SubjectHandler;
-import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.detect.IsImage;
-import no.nav.sbl.dialogarena.detect.IsPdf;
-import no.nav.sbl.dialogarena.pdf.ConvertToPng;
-import no.nav.sbl.dialogarena.pdf.ImageScaler;
-import no.nav.sbl.dialogarena.pdf.ImageToPdf;
-import no.nav.sbl.dialogarena.pdf.PdfMerger;
-import no.nav.sbl.dialogarena.pdf.PdfWatermarker;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventning;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
-import org.apache.commons.io.IOUtils;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.util.Splitter;
-import org.joda.time.DateTime;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -42,9 +8,41 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
+import no.nav.sbl.dialogarena.detect.Detect;
+import no.nav.sbl.dialogarena.detect.pdf.PdfDetector;
+import no.nav.sbl.dialogarena.pdf.Convert;
+import no.nav.sbl.dialogarena.pdf.ConvertToPng;
+import no.nav.sbl.dialogarena.pdf.PdfMerger;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventning;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.aktor.AktorIdService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
+import org.apache.commons.io.IOUtils;
+import org.apache.pdfbox.exceptions.COSVisitorException;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.util.Splitter;
+import org.joda.time.DateTime;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import static java.lang.String.format;
 import static javax.xml.bind.JAXBContext.newInstance;
+import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.LastetOpp;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.VedleggKreves;
@@ -52,12 +50,9 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Sta
 @Component
 public class SoknadService implements SendSoknadService, VedleggService {
 
-    public static final String PDF_PDFA = "-dNOPAUSE -dBATCH -dSAFER -dPDFA -dNOGA -sDEVICE=pdfwrite -sOutputFile=%stdout%  -q -c \"30000000 setvmthreshold\" -_ -c quit";
     private static final String BRUKERREGISTRERT_FAKTUM = "BRUKERREGISTRERT";
     private static final String SYSTEMREGISTRERT_FAKTUM = "SYSTEMREGISTRERT";
-    private static final String IMAGE_RESIZE = "- -units PixelsPerInch -density 150 -quality 50 -resize 1240x1754 jpeg:-";
-    private static final String IMAGE_PDFA = "-  pdfa:-";
-    private static Map<String, String> soknadKodeverkMapping;
+    
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository repository;
@@ -68,11 +63,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
     private HenvendelseConnector henvendelseConnector;
     @Inject
     private FillagerConnector fillagerConnector;
-
-    static {
-        soknadKodeverkMapping = new HashMap<>();
-        soknadKodeverkMapping.put("Dagpenger", "NAV 04-01.03");
-    }
+    @Inject
+    private AktorIdService aktorIdService;
 
     @Override
     public WebSoknad hentSoknad(long soknadId) {
@@ -100,8 +92,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
         if (!uniqueProperty.isEmpty()) {
             for (Faktum faktum : fakta) {
                 if (faktum.getProperties() != null &&
-                    faktum.getProperties().get(uniqueProperty) != null &&
-                    faktum.getProperties().get(uniqueProperty).equals(f.getProperties().get(uniqueProperty))) {
+                        faktum.getProperties().get(uniqueProperty) != null &&
+                        faktum.getProperties().get(uniqueProperty).equals(f.getProperties().get(uniqueProperty))) {
                     f.setFaktumId(faktum.getFaktumId());
                     return repository.lagreFaktum(soknadId, f);
 
@@ -132,7 +124,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public void sendSoknad(long soknadId) {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
         List<VedleggForventning> vedleggForventnings = hentPaakrevdeVedlegg(soknadId);
-        XMLHovedskjema hovedskjema = new XMLHovedskjema().withInnsendingsvalg("LASTET_OPP").withSkjemanummer(soknadKodeverkMapping.get(soknad.getGosysId()));
+        XMLHovedskjema hovedskjema = new XMLHovedskjema().withInnsendingsvalg(LASTET_OPP.toString()).withSkjemanummer("NAV 04-01.03");
         henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, Transformers.convertToXmlVedleggListe(vedleggForventnings));
         repository.avslutt(soknad);
 
@@ -163,12 +155,12 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Long startSoknad(String navSoknadId) {
-       String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid(), soknadKodeverkMapping.get(navSoknadId));
+        String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid());
 //       String behandlingsId = "MOCK" + new Random().nextInt(100000000);
         WebSoknad soknad = WebSoknad.startSoknad().
                 medBehandlingId(behandlingsId).
                 medGosysId(navSoknadId).
-                medAktorId(getSubjectHandler().getUid()).
+                medAktorId(aktorIdService.hentAktorIdForFno(getSubjectHandler().getUid())).
                 opprettetDato(DateTime.now());
         return repository.opprettSoknad(soknad);
     }
@@ -180,13 +172,14 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
         try {
             byte[] bytes = IOUtils.toByteArray(inputStream);
-            if (new IsImage().evaluate(bytes)) {
-                bytes = new ImageToPdf().transform(bytes);
+            if (Detect.isImage(bytes)) {
+                bytes = Convert.scaleImageAndConvertToPdf(bytes, new Dimension(1240, 1754));
                 Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(), vedlegg.getFaktumId(), vedlegg.getGosysId(), vedlegg.getNavn(), (long) bytes.length, 1, UUID.randomUUID().toString(), null);
                 resultat.add(vedleggRepository.lagreVedlegg(sideVedlegg, bytes));
 
-            } else if (new IsPdf().evaluate(bytes)) {
+            } else if (Detect.isPdf(bytes)) {
                 PDDocument document = PDDocument.load(new ByteArrayInputStream(bytes));
+                sjekkOmPdfErGyldig(document);
                 List<PDDocument> pages = new Splitter().split(document);
                 for (PDDocument page : pages) {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -197,10 +190,10 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 }
                 document.close();
             } else {
-                throw new ApplicationException("Unsupported format");
+                throw new UgyldigOpplastingTypeException("Ugyldig filtype for opplasting", null, "vedlegg.opplasting.feil.filtype");
             }
-        } catch (Exception e) {
-            throw new ApplicationException("Kunne ikke lese innkommende dokument", e);
+        } catch (IOException | COSVisitorException e) {
+            throw new OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell");
         }
         return resultat;
     }
@@ -227,7 +220,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public byte[] lagForhandsvisning(Long soknadId, Long vedleggId, int side) {
         try {
-            return new ConvertToPng(new Dimension(600, 800), ImageScaler.ScaleMode.SCALE_TO_FIT_INSIDE_BOX, side)
+            return new ConvertToPng(new Dimension(600, 800), side)
                     .transform(IOUtils.toByteArray(vedleggRepository.hentVedleggStream(soknadId, vedleggId)));
         } catch (IOException e) {
             throw new RuntimeException("Kunne ikke generere thumbnail " + e, e);
@@ -292,5 +285,16 @@ public class SoknadService implements SendSoknadService, VedleggService {
             throw new RuntimeException("Kunne ikke laste definisjoner. ", e);
         }
 
+    }
+
+    private static void sjekkOmPdfErGyldig(PDDocument document) {
+        PdfDetector detector = new PdfDetector(document);
+        if (detector.pdfIsSigned()) {
+            throw new UgyldigOpplastingTypeException("PDF kan ikke være signert.", null, "vedlegg.opplasting.feil.pdf.signert");
+        } else if (detector.pdfIsEncrypted()) {
+            throw new UgyldigOpplastingTypeException("PDF kan ikke være krypert.", null, "vedlegg.opplasting.feil.pdf.krypert");
+        } else if (detector.pdfIsSavedOrExportedWithApplePreview()) {
+            throw new UgyldigOpplastingTypeException("PDF kan ikke være lagret med Apple Preview.", null, "vedlegg.opplasting.feil.pdf.applepreview");
+        }
     }
 }
