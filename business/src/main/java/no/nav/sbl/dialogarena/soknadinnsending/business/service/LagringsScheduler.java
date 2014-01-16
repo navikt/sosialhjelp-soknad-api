@@ -31,13 +31,12 @@ public class LagringsScheduler {
             StringWriter xml = new StringWriter();
             JAXB.marshal(soknad, xml);
             henvendelseConnector.mellomlagreSoknad(soknad.getBrukerBehandlingId(), xml.toString());
-            nullstillElementIDatabase(soknad.getSoknadId());
+            slettSoknadFraDb(soknad.getSoknadId());
         }
-        soknadRepository.nullstillDb();
     }
 
-    private void nullstillElementIDatabase(long soknadsId) {
-        //TODO implementèr logikk
+    private void slettSoknadFraDb(long soknadsId) {
+        soknadRepository.slettSoknad(soknadsId);
     }
 
 }
