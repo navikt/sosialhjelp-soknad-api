@@ -30,7 +30,7 @@ public class TilgangskontrollTest {
         StaticSubjectHandler subjectHandler = (StaticSubjectHandler) SubjectHandler.getSubjectHandler();
 
         when(aktorIdService.hentAktorIdForFno(subjectHandler.getUid())).thenReturn("123");
-        when(soknadService.hentSoknad(1L)).thenReturn(new WebSoknad().medAktorId("123"));
+        when(soknadService.hentSoknad(1L)).thenReturn(new WebSoknad().medAktorId(subjectHandler.getUid()));
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(1L);
 
     }

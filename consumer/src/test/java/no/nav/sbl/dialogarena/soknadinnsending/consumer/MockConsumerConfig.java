@@ -1,9 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
@@ -55,6 +51,11 @@ import org.springframework.context.annotation.Configuration;
 
 import java.math.BigInteger;
 import java.util.List;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @Configuration
 @ComponentScan(excludeFilters = @Filter(Configuration.class))
@@ -145,7 +146,9 @@ public class MockConsumerConfig {
             return new AktoerPortType() {
                 @Override
                 public HentAktoerIdForIdentResponse hentAktoerIdForIdent(HentAktoerIdForIdentRequest request) throws HentAktoerIdForIdentPersonIkkeFunnet {
-                    return new HentAktoerIdForIdentResponse("01015245464");
+                    HentAktoerIdForIdentResponse hentAktoerIdForIdentResponse = new HentAktoerIdForIdentResponse();
+                    hentAktoerIdForIdentResponse.setAktoerId("01015245464");
+                    return hentAktoerIdForIdentResponse;
                 }
 
                 @Override
