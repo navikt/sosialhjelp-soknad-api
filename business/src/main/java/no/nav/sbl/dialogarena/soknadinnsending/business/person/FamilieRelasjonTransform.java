@@ -14,7 +14,7 @@ import java.util.List;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class FamilieRelasjonTransform {
-    private static final Logger logger = getLogger(FamilieRelasjonTransform.class);
+
     public Person mapFamilierelasjonTilPerson(Long soknadId,
                                               HentKjerneinformasjonResponse response) {
         if (response == null) {
