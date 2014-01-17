@@ -64,6 +64,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     private HenvendelseConnector henvendelseConnector;
     @Inject
     private FillagerConnector fillagerConnector;
+    @SuppressWarnings("PMD")
     @Inject
     private AktorIdService aktorIdService;
 
