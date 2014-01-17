@@ -71,7 +71,6 @@ angular.module('nav.feilmeldinger', [])
 
                 scope.scrollTilElementMedFeil = function (feilmelding) {
                     if (scope.erKlikkbarFeil(feilmelding)) {
-                        console.log(feilmelding)
                         var formLinje = feilmelding.elem.closest('.form-linje');
                         scrollToElement(formLinje, 200);
 

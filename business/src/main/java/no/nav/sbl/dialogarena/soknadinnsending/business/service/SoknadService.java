@@ -160,7 +160,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
         WebSoknad soknad = WebSoknad.startSoknad().
                 medBehandlingId(behandlingsId).
                 medGosysId(navSoknadId).
-                medAktorId(aktorIdService.hentAktorIdForFno(getSubjectHandler().getUid())).
+                //medAktorId(aktorIdService.hentAktorIdForFno(getSubjectHandler().getUid())).
+                medAktorId(getSubjectHandler().getUid()).
                 opprettetDato(DateTime.now());
         return repository.opprettSoknad(soknad);
     }
