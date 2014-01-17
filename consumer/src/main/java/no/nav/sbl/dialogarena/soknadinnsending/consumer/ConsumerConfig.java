@@ -85,7 +85,6 @@ public class ConsumerConfig {
                     .withWsdl("classpath:FilLager.wsdl")
                     .build()
                     .withHttpsMock()
-                    .withMDC()
                     .withSystemSecurity();
         }
 
