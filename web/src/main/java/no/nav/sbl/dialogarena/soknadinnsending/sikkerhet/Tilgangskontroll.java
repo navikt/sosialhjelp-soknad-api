@@ -31,6 +31,7 @@ public class Tilgangskontroll {
 
     @Inject
     private SendSoknadService soknadService;
+    @SuppressWarnings("PMD")
     @Inject
     private AktorIdService aktorIdService;
 

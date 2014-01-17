@@ -89,10 +89,6 @@ public class Faktum implements Serializable {
         return Status.valueOf(properties.get("vedlegg_" + gosysId));
     }
 
-    private FaktumEgenskap finnEgenskap(String key) {
-        return null;
-    }
-
     public void setInnsendingsvalg(String gosysId, Status innsendingsvalg) {
         properties.put("vedlegg_" + gosysId, innsendingsvalg.toString());
     }
