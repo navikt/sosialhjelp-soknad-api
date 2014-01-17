@@ -1,10 +1,9 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
 
-import no.nav.sbl.dialogarena.soknadinnsending.VedleggOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.soknadinnsending.exception.OpplastingException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -13,15 +12,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.InputStream;
+import java.util.Arrays;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,7 +51,12 @@ public class VedleggControllerTest {
 
     @Before
     public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        MappingJackson2HttpMessageConverter json = new MappingJackson2HttpMessageConverter();
+        json.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.TEXT_HTML));
+
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+                .setMessageConverters(json)
+                .build();
     }
 
     private static final byte[] PDF = new byte[]{0x25, 0x50, 0x44, 0x46, 0x01, 0x01};
@@ -56,18 +65,22 @@ public class VedleggControllerTest {
 
     @Test
     public void shouldUploadFile() throws Exception {
-        when(vedleggService.lagreVedlegg(any(Vedlegg.class), any(InputStream.class))).thenReturn(1L).thenReturn(2L).thenReturn(3L);
-        MvcResult mvcResult = mockMvc.perform(fileUpload("/soknad/11/faktum/12/vedlegg")
+        when(vedleggService.splitOgLagreVedlegg(any(Vedlegg.class), any(InputStream.class))).thenReturn(asList(1L)).thenReturn(asList(2L)).thenReturn(asList(3L));
+        when(vedleggService.hentVedlegg(eq(11L), eq(1L), eq(false))).thenReturn(new Vedlegg(1L, 11L, 12L, "L6", "test", 1L, 1, "gfdg", null));
+        when(vedleggService.hentVedlegg(eq(11L), eq(2L), eq(false))).thenReturn(new Vedlegg(2L, 11L, 12L, "L6", "test", 1L, 1, "gfdg", null));
+        when(vedleggService.hentVedlegg(eq(11L), eq(3L), eq(false))).thenReturn(new Vedlegg(3L, 11L, 12L, "L6", "test", 1L, 1, "gfdg", null));
+        MvcResult mvcResult = mockMvc.perform(fileUpload("/soknad/11/faktum/12/vedlegg?gosysId=L6")
                 .file(createFile("test.pdf", PDF))
                 .file(createFile("test.jpg", JPEG))
                 .file(createFile("test.png", PNG))
                 .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isCreated())
                 .andExpect(request().asyncStarted())
-                .andExpect(request().asyncResult(instanceOf(VedleggOpplasting.class)))
                 .andReturn();
-        Thread.sleep(1000); //Spring async har en bug som gjør at det noen ganger feiler. Denne sleepen fikser det.
+        Thread.sleep(500); //Spring async har en bug som gjør at det noen ganger feiler. Denne sleepen fikser det.
         mockMvc.perform(asyncDispatch(mvcResult))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("files[0].vedlegg.id").value(1))
                 .andExpect(jsonPath("files[1].vedlegg.id").value(2))
                 .andExpect(jsonPath("files[2].vedlegg.id").value(3));

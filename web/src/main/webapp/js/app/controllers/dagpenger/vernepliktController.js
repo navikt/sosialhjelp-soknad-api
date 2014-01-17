@@ -1,18 +1,19 @@
-angular.module('nav.verneplikt',[])
-    .controller('VernepliktCtrl', ['$scope', function ($scope) {
-        $scope.navigering = {nesteside: 'utdanning'};
-        $scope.sidedata = {navn: 'vernepliktig'};
+angular.module('nav.verneplikt', [])
+	.controller('VernepliktCtrl', ['$scope', function ($scope) {
 
-        $scope.$on('VALIDER_VERNEPLIKT', function () {
-            $scope.validerVerneplikt(false);
-        });
+		$scope.navigering = {nesteside: 'utdanning'};
+		$scope.sidedata = {navn: 'vernepliktig'};
 
-        $scope.validerOgSettModusOppsummering = function(form) {
-            $scope.validateForm(form.$invalid);
-            $scope.validerVerneplikt(true);
-        }
+		$scope.$on('VALIDER_VERNEPLIKT', function () {
+			$scope.validerVerneplikt(false);
+		});
 
-        $scope.validerVerneplikt = function(skalScrolle ) {
-            $scope.runValidation(skalScrolle);
-        }
-    }]);
+		$scope.validerOgSettModusOppsummering = function (form) {
+			$scope.validateForm(form.$invalid);
+			$scope.validerVerneplikt(true);
+		};
+
+		$scope.validerVerneplikt = function (skalScrolle) {
+			$scope.runValidation(skalScrolle);
+		};
+	}]);

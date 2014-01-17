@@ -19,6 +19,7 @@
         position: absolute;
         z-index: 1030;
         width: 250px;
+        left: -20px;
 
         .tittel {
             padding: 20px 20px 0;
@@ -61,43 +62,55 @@
             }
 
             [class*="ps-scrollbar"] {
-                position: absolute;
                 background-color: #00a9e0;
-                border-radius: 4px;
                 opacity: 0.6;
-                transition: opacity .2s linear;
 
                 &:hover {
                     opacity: 1;
-                    cursor: default;
                 }
 
                 &.in-scrolling {
                     opacity: 1;
                 }
             }
-
-            .ps-scrollbar-x {
-                bottom: 3px;
-                height: 8px;
-            }
-
-            .ps-scrollbar-y {
-                right: 3px;
-                width: 8px;
-            }
         }
 
         &:before {
             content: "";
             border: solid transparent;
-            border-top-color: #3e3832;
             border-width: 10px;
             position: absolute;
             height: 0;
             width: 0;
-            left: 8%;
+            left: 20px;
+            border-top-color: #3e3832;
             top: 100%;
+        }
+
+        &.under {
+            &:before {
+                border-top-color: transparent;
+                border-bottom-color: #3e3832;
+                top: -20px;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .hjelpetekst {
+        .hjelpetekst-tooltip {
+            position: fixed;
+            top: 10px !important;
+            bottom: 10px !important;
+            right: 10px !important;
+            left: 10px !important;
+            width: auto;
+            z-index: 1050;
+
+            &:before {
+                border: transparent;
+            }
         }
     }
 }

@@ -198,7 +198,7 @@
         <id>4</id>
         <faktum>arbeidsforhold</faktum>
         <gosysId>T8</gosysId>
-        <property>navn</property>
+        <property>arbeidsgivernavn</property>
     </vedlegg>
 
 </soknad>

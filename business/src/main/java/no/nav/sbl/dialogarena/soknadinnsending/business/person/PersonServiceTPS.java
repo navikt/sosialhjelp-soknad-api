@@ -39,7 +39,7 @@ public class PersonServiceTPS implements PersonService {
         XMLHentKontaktinformasjonOgPreferanserResponse response = null;
         try {
             response = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequest(fodselsnummer));
-            logger.warn("Fullstendig XML fra  TPS:" + response);
+            logger.warn("Fullstendig respons fra  TPS:" + response);
         } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
             logger.error("Fant ikke bruker i TPS.", e);
             return new Person();

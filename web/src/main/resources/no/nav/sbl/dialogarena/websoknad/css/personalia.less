@@ -1,0 +1,85 @@
+#personalia {
+    .skjemaramme {
+        padding-top: 40px;
+
+        .informasjon {
+            span, a {
+                display: block;
+            }
+
+            a {
+                text-align: center;
+                margin-top: 20px;
+            }
+        }
+
+        .personalia {
+            margin-top: 40px;
+
+            .alderOgKjonn {
+                display: inline-block;
+                padding-top: 74px;
+                background-repeat: no-repeat;
+                text-align: center;
+                width: 64px;
+                margin-right: 10px;
+
+                &.mann {
+                    background-image: url(../img/mann-graa.svg);
+                    span {
+                        color: #0ca9e1;
+                    }
+                }
+                &.kvinne {
+                    background-image: url(../img/kvinne-graa.svg);
+                    span {
+                        color: #df4b78;
+                    }
+                }
+
+                .alder {
+                    display: block;
+                    font-size: 3rem;
+                    font-weight: 800;
+                    font-family: Modus, Arial, Helvetica, sans-serif;
+                    position: relative;
+                    top: -6px;
+                }
+            }
+
+            .personInfo {
+                display: inline-block;
+                vertical-align: top;
+                padding-top: 13px;
+
+                .navnOgFnr {
+                    margin-bottom: 10px;
+                    span {
+                        display: block;
+                        font-size: 1.2rem;
+                        font-weight: 600;
+                        font-family: Modus, Arial, Helvetica, sans-serif;
+                    }
+                }
+
+                .adresse {
+                    .adressetype {
+                        text-transform: uppercase;
+                        font-size: 0.85rem;
+                    }
+
+                    p {
+                        font-weight: 800;
+                        font-size: 0.9rem;
+                    }
+                }
+            }
+
+            .statsborgerskap {
+                padding-top: 40px;
+                margin-top: 40px;
+                border-top: 1px solid #ddd;
+            }
+        }
+    }
+}

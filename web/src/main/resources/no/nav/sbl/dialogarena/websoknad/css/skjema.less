@@ -1,194 +1,214 @@
 h4 {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 .informasjonstekst {
-    font-size: 1rem;
-    font-weight: bold;
-    padding: 0 15px;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 0 15px;
+}
+
+.svar-oppsummering-hake {
+
+  &:before {
+    content: url(../img/hake.svg);
+    position: relative;
+    top: 1px;
+    margin-right: 10px;
+  }
 }
 
 .radio-knapp, .nav-radio-knapp {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 .nav-checkbox, .nav-radio-knapp {
-    margin-left: 32px;
-    margin-bottom: 8px;
+  margin-left: 32px;
+  margin-bottom: 8px;
 
-    > label {
-        margin-left: -32px;
-        height: auto !important;
-        min-height: 22px;
-    }
+  > label {
+    margin-left: -32px;
+    height: auto !important;
+    min-height: 22px;
+  }
 
-    a {
-        white-space: nowrap;
-    }
+  a {
+    white-space: nowrap;
+  }
 }
 
 .henter-personalia {
-    text-align: center;
-    margin-top: 3rem;
+  text-align: center;
+  margin-top: 3rem;
 }
 
 .ng-transclude {
-    margin-top: 15px;
+  margin-top: 15px;
 }
 
 .ferdig-skjema {
-    border-bottom: none;
-    padding-bottom: 0;
+  border-bottom: none;
+  padding-bottom: 0;
 
-    .textarea-form {
-        text-align: center;
+  .textarea-form {
+    text-align: center;
 
-        .textarea-container {
-            margin: 0 auto 35px;
-            width: 50%;
-        }
+    .textarea-container {
+      margin: 0 auto 35px;
+      width: 50%;
     }
+  }
 
-    a[class*="knapp-"] {
-        margin-bottom: 40px;
-    }
+  a[class*="knapp-"] {
+    margin-bottom: 40px;
+  }
 }
 
 .egen-linje {
-    display: block;
-    margin-top: 10px;
-    text-align: center;
+  display: block;
+  margin-top: 10px;
+  text-align: center;
 }
 
-
-
 .ingen-ytelse-melding {
-    display: none;
+  display: none;
 }
 
 .ingen-navytelse-melding {
-    display: none;
+  display: none;
 }
 
 .utdanning-nei-melding {
-    display: none;
+  display: none;
 }
 
 .annetvalg-nei {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .spm {
+  .spm-sporsmal {
+    font-size: 1.21rem;
+    font-weight: 600;
+    font-family: Modus, Arial, Helvetica, sans-serif;
+    margin-bottom: 10px;
+    line-height: 1.6rem;
+  }
+
+  .ekstra-info {
+    margin-left: 17px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    padding-top: 0;
+
+    &.form-linje.checkbox .nav-checkbox {
+      margin-left: 32px;
+    }
+
     .spm-sporsmal {
-        font-size: 1.21rem;
-        font-weight: 600;
-        font-family: Modus, Arial, Helvetica, sans-serif;
-        margin-bottom: 10px;
-        line-height: 1.6rem;
+      font-size: 1rem;
+      font-weight: bold;
+      line-height: 1.4rem;
+    }
+  }
+}
+
+.ekstra-spm-boks {
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  &:after, &:before {
+    bottom: 100%;
+    border: solid transparent;
+    content: "";
+    height: 0;
+    width: 0;
+    position: absolute;
+    left: 8%;
+  }
+
+  &:after {
+    border-bottom-color: #f1f1f1;
+    border-width: 12px;
+    margin-left: -12px;
+  }
+
+  &:before {
+    border-bottom-color: #ddd;
+    border-width: 13px;
+    margin-left: -13px;
+  }
+
+  > *:last-child {
+    padding-bottom: 15px !important;
+    margin-bottom: 0 !important;
+  }
+
+  .informasjonstekst {
+    padding: 0 15px;
+  }
+
+  .ekstra-spm-boks {
+    border: none;
+    padding: 0;
+    margin-top: 0;
+
+    &:after, &:before {
+      bottom: 0;
+      border-bottom-color: transparent;
+      border-width: 0;
+      margin-left: 0;
+      border: none;
+      content: "";
+      height: 0;
+      width: 0;
+      position: absolute;
+      left: 0;
     }
 
-    .ekstra-info {
-        padding-left: 32px;
+    > .form-linje {
+      margin-left: -15px;
+    }
+  }
 
-        .spm-sporsmal {
-            font-size: 1rem;
-            font-weight: bold;
-            line-height: 1.4rem;
-        }
+  .form-linje {
+    padding: 10px 15px;
+    clear: both;
+  }
+
+  .textarea-container {
+
+    &:last-child {
+      span {
+        padding-bottom: 0 !important;
+      }
     }
 
-    .ekstra-spm-boks {
-        margin-top: 20px;
-        margin-bottom: 20px;
-
-        &:after, &:before {
-            bottom: 100%;
-            border: solid transparent;
-            content: "";
-            height: 0;
-            width: 0;
-            position: absolute;
-            left: 8%;
-        }
-
-        &:after {
-            border-bottom-color: #f1f1f1;
-            border-width: 12px;
-            margin-left: -12px;
-        }
-
-        &:before {
-            border-bottom-color: #ddd;
-            border-width: 13px;
-            margin-left: -13px;
-        }
-
-        > *:last-child {
-            padding-bottom: 15px !important;
-            margin-bottom: 0 !important;
-        }
-
-        .ekstra-spm-boks {
-            border: none;
-            padding: 0;
-            margin-top: 0;
-
-            &:after, &:before {
-                bottom: 0;
-                border-bottom-color: transparent;
-                border-width: 0;
-                margin-left: 0;
-                border: none;
-                content: "";
-                height: 0;
-                width: 0;
-                position: absolute;
-                left: 0;
-            }
-
-            > .form-linje {
-                margin-left: -15px;
-            }
-        }
-
-        .form-linje {
-            padding: 15px;
-        }
-
-        .textarea-container {
-
-            &:last-child {
-                span {
-                    padding-bottom: 0 !important;
-                }
-            }
-
-            textarea {
-                width: 100%;
-                max-width: 100%;
-            }
-        }
-
-        input {
-            width: 100%;
-        }
-
-        .melding:last-child {
-            padding-bottom: 0 !important;
-        }
-
-        &.nav-boolean {
-            margin-left: 32px;
-        }
-
-        .spm-sporsmal {
-            font-size: 1rem;
-            font-weight: bold;
-            line-height: 1.4;
-        }
-
-        .nav-checkbox label {
-            margin-left: 0px;
-        }
+    textarea {
+      width: 100%;
+      max-width: 100%;
     }
+  }
+
+  input {
+    width: 100%;
+  }
+
+  .melding:last-child {
+    padding-bottom: 0 !important;
+  }
+
+  &.nav-boolean {
+    margin-left: 32px;
+  }
+
+  .spm-sporsmal {
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: 1.4;
+  }
+
+  .nav-checkbox label {
+    margin-left: 0px;
+  }
 }

@@ -3,8 +3,9 @@ package no.nav.sbl.dialogarena.soknadinnsending.sikkerhet;
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.core.exception.AuthorizationException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.aktor.AktorIdService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -21,7 +22,7 @@ public class TilgangskontrollTest {
     @Mock
     private AktorIdService aktorIdService;
     @Mock
-    private HenvendelseConnector soknadService;
+    private SoknadService soknadService;
 
     @Test
     public void skalGiTilgangForBruker() {
@@ -29,7 +30,7 @@ public class TilgangskontrollTest {
         StaticSubjectHandler subjectHandler = (StaticSubjectHandler) SubjectHandler.getSubjectHandler();
 
         when(aktorIdService.hentAktorIdForFno(subjectHandler.getUid())).thenReturn("123");
-        when(soknadService.hentSoknadEier(1L)).thenReturn("123");
+        when(soknadService.hentSoknad(1L)).thenReturn(new WebSoknad().medAktorId(subjectHandler.getUid()));
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(1L);
 
     }
@@ -40,7 +41,7 @@ public class TilgangskontrollTest {
         StaticSubjectHandler subjectHandler = (StaticSubjectHandler) SubjectHandler.getSubjectHandler();
 
         when(aktorIdService.hentAktorIdForFno(subjectHandler.getUid())).thenReturn("124");
-        when(soknadService.hentSoknadEier(1L)).thenReturn("123");
+        when(soknadService.hentSoknad(1L)).thenReturn(new WebSoknad().medAktorId("123"));
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(1L);
 
     }

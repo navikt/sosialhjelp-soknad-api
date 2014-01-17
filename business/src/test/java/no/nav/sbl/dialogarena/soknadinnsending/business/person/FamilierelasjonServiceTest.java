@@ -26,7 +26,7 @@ import java.util.List;
 import static org.mockito.Mockito.when;
 
 @RunWith(value = MockitoJUnitRunner.class)
-public class FamilierelasjonServiceTest {
+public class FamilieRelasjonServiceTest {
     private static final String GYLDIG_IDENT = "56128349974";
     private static final String ET_FORNAVN = "Per";
     private static final String ET_ETTERNAVN = "Persen";
@@ -43,6 +43,7 @@ public class FamilierelasjonServiceTest {
     private PersonConnector personMock;
 
     @Mock
+    @SuppressWarnings("PMD")
     private SoknadService soknadServiceMock;
 
     @SuppressWarnings("unchecked")
@@ -95,7 +96,7 @@ public class FamilierelasjonServiceTest {
         familierelasjon.setTilPerson(barn1);
         Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
 
-        familieRelasjonRolle.setValue("FARA");
+        familieRelasjonRolle.setValue("BARN");
         familierelasjon.setTilRolle(familieRelasjonRolle);
 
         familieRelasjoner.add(familierelasjon);

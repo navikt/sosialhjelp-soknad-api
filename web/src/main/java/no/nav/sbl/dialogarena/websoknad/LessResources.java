@@ -20,6 +20,7 @@ public enum LessResources {
     SLETT_LESS("slett"),
     MODALSIDE("modalside"),
     EGENNAERING("egennaering"),
+    PERSONALIA("personalia"),
     UTDANNING_LESS("utdanning");
 
     private static final String FOLDER = "css/";

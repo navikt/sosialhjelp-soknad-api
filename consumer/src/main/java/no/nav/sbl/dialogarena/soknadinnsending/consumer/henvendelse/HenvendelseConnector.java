@@ -5,21 +5,22 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataL
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.soap.SOAPFaultException;
 
+import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.IKKE_VALGT;
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Component
 public class HenvendelseConnector {
 
-    private static final Logger logger = LoggerFactory.getLogger(HenvendelseConnector.class);
+    private static final Logger LOGGER = getLogger(HenvendelseConnector.class);
     private static final String SOKNADINNSENDING = "SEND_SOKNAD";
     @Inject
     @Named("sendSoknadService")
@@ -29,15 +30,23 @@ public class HenvendelseConnector {
         return "";
     }
 
-    public String startSoknad(String fnr, String hovedskjema) {
+    public String startSoknad(String fnr) {
+        LOGGER.info("Inne i metoden for startSoknad");
         try {
-            XMLHovedskjema skjema = new XMLHovedskjema().withSkjemanummer(hovedskjema);
-            WSStartSoknadRequest request = new WSStartSoknadRequest().withFodselsnummer(fnr).withType(SOKNADINNSENDING).withAny(new XMLMetadataListe().withMetadata(skjema));
-            WSBehandlingsId behandlingsId = sendSoknadService.startSoknad(request);
-            return behandlingsId.getBehandlingsId();
+            return sendSoknadService.startSoknad(createXMLStartSoknadRequest(fnr, createXMLSkjema())).getBehandlingsId();
         } catch (SOAPFaultException e) {
-            logger.error("Feil ved oppretting av søknad for bruker " + fnr, e);
+            LOGGER.error("Feil ved start søknad for bruker " + fnr, e);
             throw new ApplicationException("Kunne ikke opprette ny søknad", e);
+        }
+    }
+
+    public void mellomlagreSoknad(String behandlingsId, String webSoknadAsXML) {
+        LOGGER.info("Inne i metoden for mellomlagreSoknad");
+        try {
+            sendSoknadService.mellomlagreSoknad(new WSSoknadsdata().withBehandlingsId(behandlingsId).withAny(webSoknadAsXML));
+        } catch (SOAPFaultException e) {
+            LOGGER.error("Feil ved mellomlagring av søknad med id: " + behandlingsId, e);
+            throw new ApplicationException("Kunne ikke mellomlagre søknad", e);
         }
     }
 
@@ -48,7 +57,7 @@ public class HenvendelseConnector {
                     .withMetadata(vedlegg));
             sendSoknadService.sendSoknad(parameters);
         } catch (SOAPFaultException e) {
-            logger.error("Feil ved innsending av søknad: " + e, e);
+            LOGGER.error("Feil ved innsending av søknad: " + e, e);
             throw new ApplicationException("Kunne ikke opprette ny søknad", e);
         }
     }
@@ -58,13 +67,25 @@ public class HenvendelseConnector {
     }
 
     public void avbrytSoknad(String behandlingsId) {
-        logger.debug("Avbryt søknad");
+        LOGGER.debug("Avbryt søknad");
         try {
             sendSoknadService.avbrytSoknad(behandlingsId);
         } catch (SOAPFaultException e) {
-            logger.error("Kunne ikke avbryte søknad med ID {}", behandlingsId, e);
+            LOGGER.error("Kunne ikke avbryte søknad med ID {}", behandlingsId, e);
             throw new ApplicationException("Feil ved avbryting av søknad", e);
         }
+    }
+
+    private WSStartSoknadRequest createXMLStartSoknadRequest(String fnr, XMLHovedskjema skjema) {
+        return new WSStartSoknadRequest()
+                .withFodselsnummer(fnr)
+                .withType(SOKNADINNSENDING)
+                .withAny(new XMLMetadataListe()
+                        .withMetadata(skjema));
+    }
+
+    private XMLHovedskjema createXMLSkjema() {
+        return new XMLHovedskjema().withInnsendingsvalg(IKKE_VALGT.toString());
     }
 
 }

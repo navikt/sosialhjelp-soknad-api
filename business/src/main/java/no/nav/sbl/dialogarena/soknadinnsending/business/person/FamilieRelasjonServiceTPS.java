@@ -40,15 +40,35 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
         try {
             response = personConnector.hentKjerneinformasjon(lagXMLRequest(fodselsnummer));
         } catch (IkkeFunnetException e) {
+            logger.warn("Ikke funnet person i TPS");
             return new Person();
         }
-
-        if (response != null && logger.isDebugEnabled()) {
-            logger.debug("Fullstendig XML fra Person-servicen:" + response.getPerson());
+        if (response != null)
+        {
+            logger.warn("Fullstendig respons fra Person-servicen:" + response.getPerson());
+        } else
+        {
+            logger.warn("Respons fra Person-servicen er null");
         }
+        //if (response != null && logger.isDebugEnabled()) {
+        //    logger.debug("Fullstendig XML fra Person-servicen:" + response.getPerson());
+       // }
         Person person = new FamilieRelasjonTransform().mapFamilierelasjonTilPerson(soknadId, response);
+
         lagreBarn(soknadId, person);
+        lagreStatsborgerskap(soknadId, person);
         return person;
+    }
+
+    private void lagreStatsborgerskap(Long soknadId, Person person) {
+        String statsborgerskap = (String)person.getFakta().get("statsborgerskap");
+        
+        if((statsborgerskap != null) && (!statsborgerskap.isEmpty())) {
+            Faktum statsborgerskapFaktum = new Faktum(soknadId, null, "statsborgerskap", statsborgerskap, FaktumType.SYSTEMREGISTRERT.toString());
+            Map<String, String> properties = new HashMap<>();
+            statsborgerskapFaktum.setProperties(properties);
+            soknadService.lagreSystemFaktum(soknadId, statsborgerskapFaktum, "fnr");
+        }
     }
 
     @SuppressWarnings("unchecked")

@@ -1,0 +1,18 @@
+<div class='spm form-linje boolean'>
+    <h4 class="spm-sporsmal" data-cmstekster="{{ sporsmal }}"></h4>
+
+    <div data-navradio
+         data-navconfig
+         data-value='true'
+         data-navlabel='{{ trueLabel }}'>
+    </div>
+
+    <div data-navradio
+         data-navconfig
+         data-value='false'
+         data-navlabel='{{ falseLabel }}'>
+    </div>
+    <span class="melding"></span>
+
+    <div class="ng-transclude nav-boolean ekstra-spm-boks" data-ng-show="skalViseTranscludedInnhold()"></div>
+</div>

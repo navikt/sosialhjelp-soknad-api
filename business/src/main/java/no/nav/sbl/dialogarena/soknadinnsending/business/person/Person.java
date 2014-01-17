@@ -1,5 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
+import org.joda.time.DateTime;
+
+import com.google.gson.GsonBuilder;
+
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 
@@ -21,6 +25,8 @@ public class Person implements Serializable {
     private static final String GJELDENDEADRESSETYPE = "gjeldendeAdresseType";
     private static final String EPOSTKEY = "epost";
     private static final String BARNKEY = "barn";
+    private static final String STATSBORGERSKAP = "statsborgerskap";
+    private static final String KJONN = "kjonn";
 
     private Map<String, Object> fakta;
 
@@ -31,6 +37,7 @@ public class Person implements Serializable {
     public Person(Long soknadId, String fnr, String fornavn, String mellomnavn, String etternavn, String gjeldendeAdresseType, List<Adresse> adresser) {
         fakta = new HashMap<>();
 
+        fakta.put(KJONN, genererFaktum(soknadId, KJONN, finnKjonn(fnr)));
         fakta.put(FODSELSNUMMERKEY, genererFaktum(soknadId, FODSELSNUMMERKEY, fnr));
         fakta.put(FORNAVNKEY, genererFaktum(soknadId, FORNAVNKEY, fornavn));
         fakta.put(MELLOMNAVNKEY, genererFaktum(soknadId, MELLOMNAVNKEY, mellomnavn));
@@ -41,7 +48,7 @@ public class Person implements Serializable {
     }
 
     public Person(Long soknadId, String fnr, String fornavn,
-                  String mellomnavn, String etternavn, List<Barn> barn) {
+                  String mellomnavn, String etternavn, List<Barn> barn, String statsborgerskap) {
         fakta = new HashMap<>();
 
         fakta.put(FODSELSNUMMERKEY, genererFaktum(soknadId, FODSELSNUMMERKEY, fnr));
@@ -50,6 +57,7 @@ public class Person implements Serializable {
         fakta.put(ETTERNAVNKEY, genererFaktum(soknadId, ETTERNAVNKEY, etternavn));
         fakta.put(SAMMENSATTNAVNKEY, genererFaktum(soknadId, SAMMENSATTNAVNKEY, getSammenSattNavn(fornavn, mellomnavn, etternavn)));
         fakta.put(BARNKEY, barn);
+        fakta.put(STATSBORGERSKAP, statsborgerskap);
     }
 
     public void setEpost(Long soknadId, String epost) {
@@ -75,8 +83,43 @@ public class Person implements Serializable {
         return faktum;
     }
 
+    private String finnKjonn(String fnr) {
+        return Character.getNumericValue(fnr.charAt(8)) % 2 == 0 ? "jente" : "gutt";
+    }
+
     public Map<String, Object> getFakta() {
         return fakta;
+    }
+    
+    
+    public String hentGjeldendeAdresse() {
+        List<Adresse> adresser = getAdresser();
+        
+        Object object = getFakta().get(GJELDENDEADRESSETYPE);
+        Faktum faktum = (Faktum) object;
+        if (adresser != null)
+        {
+            for (Adresse adresse : adresser) {
+                if(erUtenlandskFolkeregistrertAdresse(faktum, adresse) || adresse.getType().toString().equals(faktum.getValue())) {
+                    GsonBuilder gson = new GsonBuilder();
+                    gson.registerTypeAdapter(DateTime.class, new DateTimeSerializer());
+
+                    return gson.create().toJson(adresse);
+                }
+            }
+        }
+        
+        return "{}";
+    }
+
+    private boolean erUtenlandskFolkeregistrertAdresse(Faktum faktum, Adresse adresse) {
+        return adresse.getType().toString().equals("UTENLANDSK_ADRESSE") && faktum.getValue().equals("POSTADRESSE");
+    }
+    
+    private List<Adresse> getAdresser() {
+        Object adresserobject = getFakta().get(ADRESSERKEY);
+        List<Adresse> adresser = (List<Adresse>) adresserobject;
+        return adresser;
     }
 
     public boolean harUtenlandskAdresse() {
