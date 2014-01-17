@@ -5,7 +5,6 @@
                   data-ng-trim="false" aria-controls="{{sporsmal}}" data-validate-textarea data-ng-blur="mistetFokus()"
                   data-ng-focus="tattFokus()"></textarea>
         <span class="egen-linje" data-ng-show="fokus || feil">
-            <span data-cmstekster="fritekst.opptil" data-ng-if="counter >= 0"></span>
             <span class="tellertekst" data-ng-class="{negativtekstteller: counter < 0 }"> {{counter}} </span>
             <span data-cmstekster="fritekst.negativtellertekst" data-ng-show="counter < 0"></span>
             <span data-cmstekster="fritekst.tellertekst" data-ng-show="counter >= 0"></span>
