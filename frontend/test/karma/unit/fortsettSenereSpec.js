@@ -52,7 +52,6 @@ describe('FortsettSenereController', function() {
     	}));
 
 		beforeEach(inject(['$compile', '$rootScope', '$templateCache', function ($c, $r, $templateCache) {
-			$templateCache.put("../html/templates/gjenoppta/skjema-under-arbeid.html", "<div>hello</div>");
 			$compile = $c;
 	        $rootScope = $r;
 	        
@@ -61,15 +60,6 @@ describe('FortsettSenereController', function() {
 	        $rootScope.$digest();
 
 	    }]));
-
-	    it('dersom søknadsskjemaet ikke er ferdig utfylt skal man få valg om å gå til skjemasiden', function() {
-	    	expect(element.html()).toContain('hello');
-	    })
-
-	    it('dersom søknad er ferdig utfylt skal man få valg om å gå til en oppsummeringsside', function() {
-	    	//$rootScope.data.soknad.status = 'FERDIG';
-	    	//expect(element.html()).toContain('FERDIG');
-	    })
 
 	})
 })
