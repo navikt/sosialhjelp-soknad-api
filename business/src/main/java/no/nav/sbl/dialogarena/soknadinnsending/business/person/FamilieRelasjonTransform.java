@@ -37,8 +37,7 @@ public class FamilieRelasjonTransform {
         if(soapPerson.getStatsborgerskap() != null) {
             Statsborgerskap statsborgerskap = soapPerson.getStatsborgerskap();
             return statsborgerskap.getLand().getValue();
-        }
-        else {
+        } else {
             return "NOR";
         }
     }
