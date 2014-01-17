@@ -1,21 +1,18 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager;
 
 
-import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.InputStream;
 
 @Component
 public class FillagerConnector {
 
-    @Inject
-    @Named("fillagerService")
-    private FilLagerPortType portType;
+   // @Inject
+   // @Named("fillagerService")
+   // private FilLagerPortType portType;
 
     private static final Logger logger = LoggerFactory.getLogger(FillagerConnector.class);
 
