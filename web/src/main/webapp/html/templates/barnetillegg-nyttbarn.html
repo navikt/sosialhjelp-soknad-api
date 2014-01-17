@@ -1,10 +1,11 @@
-<div class="modalBoks" data-ng-controller="BarneCtrl">FSDAFDF
+<div data-ng-controller="ModusCtrl">
+<div class="modalBoks" data-ng-controller="BarneCtrl">
     <div data-ng-form="nyttBarnForm" class="vertikal">
         <div class="begrensning">
             <div class="sak-totredel">
                 <div class="barn-spm spm-boks panel-standard-belyst">
                     <a href="#/dagpenger/{{ soknadData.soknadId }}" class="lukk"> </a>
-
+                    <div data-form-errors></div>
                     <h2 class="stor-strek" data-ng-if="endrerSystemregistrertBarn()">
                         <span data-cmstekster="barnetillegg.sokerbarnetillegg.tittel"></span>
                         <span data-ng-bind="barnenavn"></span>
@@ -25,7 +26,10 @@
                                 <input name="fornavn"
                                        data-error-messages="'barnetillegg.nyttbarn.fornavn.feilmelding'" type="text"
                                        data-ng-model="barn.properties.fornavn"
-                                       data-blur-validate required>
+                                       data-blur-validate
+                                       data-maxlength="200"
+                                       maxlength="200"
+                                       required>
                                 <span class="melding"></span>
                             </label>
                         </div>
@@ -35,16 +39,21 @@
                                 <input name="fnr"
                                        data-error-messages="'barnetillegg.nyttbarn.etternavn.feilmelding'" type="text"
                                        data-ng-model="barn.properties.etternavn"
-                                       data-blur-validate required>
+                                       data-blur-validate 
+                                       data-maxlength="200"
+                                       maxlength="200"
+                                       required>
                                 <span class="melding"></span>
                             </label>
                         </div>
 
-                        <div data-nav-dato
-                             data-ng-model="barn.properties.fodselsdato"
-                             data-label="barnetillegg.nyttbarn.fodselsdato"
-                             data-er-required="true"
-                             data-required-error-message="barnetillegg.nyttbarn.fodselsdato.feilmelding">
+                        <div class="form-linje">
+                            <div data-nav-dato
+                                 data-ng-model="barn.properties.fodselsdato"
+                                 data-label="barnetillegg.nyttbarn.fodselsdato"
+                                 data-er-required="true"
+                                 data-required-error-message="barnetillegg.nyttbarn.fodselsdato.feilmelding">
+                            </div>
                         </div>
 
                         <div class="land">
@@ -110,7 +119,10 @@
                                                type="text"
                                                data-ng-pattern="/\d+/"
                                                data-ng-model="nyttbarn.barneinntekttall.value"
-                                               data-blur-validate required="barnetHarInntekt()">
+                                               data-blur-validate 
+                                               data-maxlength="200"
+                                               maxlength="200"
+                                               required="barnetHarInntekt()">
                                         <span class="melding"></span>
                                     </label>
                                 </div>
@@ -130,4 +142,5 @@
             </div>
         </div>
     </div>
+</div>
 </div>

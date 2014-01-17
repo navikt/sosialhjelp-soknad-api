@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.print;
 
 import com.lowagie.text.DocumentException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.File;
@@ -12,6 +14,7 @@ import java.net.MalformedURLException;
 
 public class PDFFabrikk {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PDFFabrikk.class);
     /**
      * Lag en pdf fra en html-string. Baseurl er adressen til mappen hvor css ligger.
      * PDFen skrives til en fil (adressen er i outputPdfPath).
@@ -40,7 +43,7 @@ public class PDFFabrikk {
                 try {
                     os.close();
                 } catch (IOException e) {
-                    // ignore
+                    LOG.warn("IOexception fra PDFFabrikk " + e.getStackTrace());
                 }
             }
         }

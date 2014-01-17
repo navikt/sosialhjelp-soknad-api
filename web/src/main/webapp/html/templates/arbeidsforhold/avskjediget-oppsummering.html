@@ -1,8 +1,30 @@
-<p class="svar-oppsummering-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.avskjediget.informasjon"></p>
-<p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.avskjediget.sporsmal"></p>
-<p class="svar-oppsummering">{{af.avskjedigetFraDato | date:'dd.MM.yyyy'}}</p>
-<p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.avskjedigetgrunn.sporsmal">:</p>
-<p class="svar-oppsummering">{{ af.avskjedigetGrunn }} </p>
-<p svar-oppsummering-informasjon data-cmstekster="arbeidsforhold.sluttaarsak.avskjediget.vedlegg"></p>
+<div class="varighet">
+    <span data-ng-bind="af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy' | norskdato"></span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil"> TIL </span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil" data-ng-bind="af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy' | norskdato"></span>
+</div>
 
+<ul>
+    <li>
+        <p data-ng-bind="af.sluttaarsak.properties.type"></p>
+    </li>
+    <li>
+        <span data-cmstekster="arbeidsforhold.sluttaarsak.avskjedigetgrunn.sporsmal"></span>
+        <p data-ng-bind="af.sluttaarsak.properties.avskjedigetGrunn"></p>
+    </li>
+</ul>
+
+
+<div data-vedlegginfoboks>
+    <ul>
+        <li>
+            <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></span>
+        </li>
+        <li>
+            <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2"></p>
+            <a cmslenketekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenkeurl" data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst">
+            </a>
+        </li>
+    </ul>
+</div>
 

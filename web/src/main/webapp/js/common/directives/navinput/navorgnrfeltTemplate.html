@@ -1,12 +1,9 @@
 <div class="form-linje tekstfelt orgnummer" >
         <label>
             <span data-cmstekster="{{ navlabel }}"></span>
-            <input data-ng-model="faktum.value" type="text" value="{{ value }}" data-ng-required="erSynligOgForsteElement()"
-                   data-error-messages="'{{ navfeilmelding }}'" data-blur-validate
+            <input data-ng-model="faktum.value" type="text" value="{{ value }}" data-ng-required="erSynlig()"
+                   data-error-messages="{{ navfeilmelding }}" data-blur-validate
                    placeholder="123456789" data-ng-pattern="/\d{9}/" maxlength="9" orgnr-validate>
-
         </label>
-
-        <span class="melding" data-ng-if="harRequiredFeil()" data-cmstekster="{{ navfeilmelding }}"></span>
-        <span class="melding" data-ng-if="formateringsfeil()" data-cmstekster="organisasjonsnummer.format.feilmelding"></span>
+        <span class="melding"></span>
 </div>

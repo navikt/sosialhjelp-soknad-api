@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 
@@ -21,7 +20,6 @@ public class SoknadStruktur implements Serializable {
     private String gosysId;
     private List<SoknadFaktum> fakta = new ArrayList<>();
     private List<SoknadVedlegg> vedlegg = new ArrayList<>();
-    private transient Map<String, SoknadVedlegg> vedleggMap;
 
     @XmlAttribute
     public String getGosysId() {

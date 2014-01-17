@@ -1,0 +1,1 @@
+ALTER TABLE Vedlegg ADD gosysId VARCHAR(36);

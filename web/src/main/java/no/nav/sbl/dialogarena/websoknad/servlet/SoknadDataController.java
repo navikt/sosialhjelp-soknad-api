@@ -131,6 +131,12 @@ public class SoknadDataController {
         // henvendelseConnector.avbrytSoknad("12412412");
     }
 
+    @RequestMapping(value = "/oppsummering/{soknadId}", method = RequestMethod.GET, produces = "text/html")
+    @ResponseBody()
+    public String hentOppsummering(@PathVariable Long soknadId) {
+        return "<div>Oppsummering for " + soknadId.toString() + " </div>";
+    }
+
     //
     // @RequestMapping(value = "/{soknadId}/{faktum}", method =
     // RequestMethod.GET)

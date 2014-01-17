@@ -21,7 +21,9 @@ public class AktorIdService {
     @Cacheable("aktorCache")
     public String hentAktorIdForFno(String ident) {
         try {
-            return aktorPortType.hentAktoerIdForIdent(new HentAktoerIdForIdentRequest(ident)).getAktoerId();
+            HentAktoerIdForIdentRequest request = new HentAktoerIdForIdentRequest();
+            request.setIdent(ident);
+            return aktorPortType.hentAktoerIdForIdent(request).getAktoerId();
         } catch (SOAPFaultException | HentAktoerIdForIdentPersonIkkeFunnet ex) {
             throw new ApplicationException("Kunne ikke kontakte AktorIdService", ex);
         }

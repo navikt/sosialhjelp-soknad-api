@@ -9,15 +9,15 @@
     </div>
     <form id="opplastingform" method="POST" enctype="multipart/form-data" data-file-upload="options" data-ng-controller="OpplastingCtrl">
         <div class="begrensning sak-trekvart">
+            <div id="opplastingFeilmelding" class="feil" style="width: 73%;margin: 0 auto; " data-ng-if="data.opplastingFeilet" data-ng-bind="data.opplastingFeilet">dette er en feil</div>
             <section class="panel-standard oversikt">
-                <article id="opplastingFeilmelding" class="feil" data-ng-if="opplastingFeilet" data-ng-bind="opplastingFeilet"></article>
                 <ul class="opplastingliste clearfix">
                     <li data-ng-repeat="file in queue" data-ng-class="{'lasteropp': file.$processing()}" data-fil-feil>
                         <a class="lukk" data-ng-if="!!file.sletteUrl" data-ng-click="file.$destroy()" data-ng-controller="SlettOpplastingCtrl"></a>
                         <img data-async-image="../{{file.forhandsvisningUrl}}" data-ng-if="!!file.forhandsvisningUrl">
                     </li>
                     <li class="leggtil">
-                        <input id="leggtil" type="file" name="files[]" class="vekk" data-last-opp-fil multiple accept="image/jpeg,image/png,application/pdf">
+                        <input id="leggtil" type="file" name="files[]" class="vekk"  multiple accept="image/jpeg,image/png,application/pdf">
                         <label for="leggtil" class="robust" data-cmstekster="opplasting.leggtil"></label>
                     </li>
                 </ul>

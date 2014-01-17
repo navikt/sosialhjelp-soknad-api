@@ -6,7 +6,7 @@
      data-navconfig
      data-nav-faktum="utdanning.kortvarigflere.sted"
      data-navlabel="utdanning.utdanningssted.navn"
-     data-navfeilmelding="utdanning.error.kortvarigflere.utdanningsstednavn"
+     data-navfeilmelding="'utdanning.error.kortvarigflere.utdanningsstednavn'"
      data-ng-required="true">
 </div>
 
@@ -15,7 +15,7 @@
      data-navconfig
      data-nav-faktum="utdanning.kortvarigflere.navn"
      data-navlabel="utdanning.utdanning.navn"
-     data-navfeilmelding="utdanning.error.kortvarigflere.utdanningsnavn"
+     data-navfeilmelding="'utdanning.error.kortvarigflere.utdanningsnavn'"
      data-ng-required="true">
 </div>
 
@@ -25,11 +25,14 @@
          data-fra-dato="navproperties.varighetFra"
          data-til-dato="navproperties.varighetTil"
          data-label="utdanning.varighet"
+         data-er-fremtidigdato-tillatt="true"
          data-er-required="true"
          data-lagre="lagreFaktum()">
     </div>
 </div>
 
-<div data-navinfoboks>
-    <span data-cmstekster="utdanning.svar.under.utdanning.dokumentasjon"></span>
+<div data-vedlegginfoboks>
+    <ul>
+        <li><p data-cmstekster="utdanning.svar.under.utdanning.dokumentasjon"></p></li>
+    </ul>
 </div>

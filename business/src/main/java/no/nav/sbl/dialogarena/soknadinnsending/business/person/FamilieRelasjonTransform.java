@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 
 import java.util.ArrayList;
@@ -24,7 +25,17 @@ public class FamilieRelasjonTransform {
                 finnFornavn(xmlperson),
                 finnMellomNavn(xmlperson),
                 finnEtterNavn(xmlperson),
-                finnBarn(xmlperson, soknadId));
+                finnBarn(xmlperson, soknadId),
+                finnStatsborgerskap(xmlperson));
+    }
+    
+    private String finnStatsborgerskap(no.nav.tjeneste.virksomhet.person.v1.informasjon.Person soapPerson) {
+        if(soapPerson.getStatsborgerskap() != null) {
+            Statsborgerskap statsborgerskap = soapPerson.getStatsborgerskap();
+            return statsborgerskap.getLand().getValue();
+        } else {
+            return "NOR";
+        }
     }
 
     private List<Barn> finnBarn(
@@ -35,11 +46,9 @@ public class FamilieRelasjonTransform {
         if (familierelasjoner.isEmpty()) {
             return result;
         }
-
         for (Familierelasjon familierelasjon : familierelasjoner) {
             Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
-
-            if (familierelasjonType.getValue().equals("FARA") || familierelasjonType.getValue().equals("MORA")) {
+            if (familierelasjonType.getValue().equals("BARN")) {
                 no.nav.tjeneste.virksomhet.person.v1.informasjon.Person tilPerson = familierelasjon.getTilPerson();
                 Barn barn = mapXmlPersonToPerson(tilPerson, soknadId);
                 if (barn.getAlder() < 18) {

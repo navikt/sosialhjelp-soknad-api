@@ -1,102 +1,39 @@
 <div class="skjemaramme" data-ng-controller="ModusCtrl" xmlns="http://www.w3.org/1999/html">
-	<div data-ng-form="personaliaForm" class="skjemainnhold" data-ng-controller="PersonaliaCtrl" data-novalidate>
-        <h4 class="spm-sporsmal">
-            <span data-cmstekster="personalia.intro"></span>
-        </h4>
-        <div class="spm">
-			<p class="spm-sporsmal">
-				<span data-knapp-hovedcmstekster="personalia.intro"></span>
-				<a data-cmstekster="personalia.intro.tekst" data-cmslenketekster="personalia.intro.url"></a>
-			</p>
-		</div>
-		<div data-ng-show="harHentetPersonalia()">
-			<label data-cmstekster="personalia.fnr"></label>
-			<p> {{personalia.fakta.fnr.value}}</p>
-			<label data-cmstekster="personalia.navn"></label>
-			<p> {{personalia.fakta.sammensattnavn.value}}</p>
-			<div data-ng-show="harBostedsadresseOgIngenMidlertidigAdresse()">
-				<label data-cmstekster="personalia.bostedsadresse"></label>
-				<p>
-					{{ personalia.fakta.adresser[personaliaData.bostedsAdresse].gatenavn }}
-					{{ personalia.fakta.adresser[personaliaData.bostedsAdresse].husnummer }}
-					{{ personalia.fakta.adresser[personaliaData.bostedsAdresse].husbokstav }}
-				</p>
-				<p>
-					{{ personalia.fakta.adresser[personaliaData.bostedsAdresse].postnummer }}
-					{{ personalia.fakta.adresser[personaliaData.bostedsAdresse].poststed }}
-				</p>
-			</div>
-			<div data-ng-if="harMidlertidigAdresse()">
-				<h4> {{ hentMidlertidigAdresseTittel() }}</h4>
-				<div data-ng-show="harMidlertidigAdresseEier()">
-					<p>
-						<span data-cmstekster="personalia.co"></span>
-						<span> {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].adresseEier }}</span>
-					</p>
-				</div>
-				<p data-ng-show="harPostboksAdresse()">
-					<label data-cmstekster="personalia.postboks"></label>
-					{{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].postboksNummer }}
-					{{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].postboksNavn }}
-				</p>
-				<p data-ng-show="harGateAdresse()">
-					{{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gatenavn }}
-					{{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].husnummer }}
-					{{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].husbokstav }}
+    <div data-ng-form="personaliaForm" class="skjemainnhold" data-ng-controller="PersonaliaCtrl" data-novalidate>
+        <div class="informasjon">
+            <span class="informasjonstekst" data-cmstekster="personalia.intro"></span>
+            <a target="_blank" data-cmstekster="personalia.intro.tekst" data-cmslenketekster="personalia.intro.url"></a>
+        </div>
 
-				</p>
-				<p data-ng-show="harOmrodeAdresse()">
-					{{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].eiendomsnavn }}
-				</p>
-				<p>
-					{{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].postnummer }}
-					{{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].poststed }}
-				</p>
-				<p data-ng-show="harNorskMidlertidigAdresse()">
-					Gyldig til: {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
-					}}
-				</p>
-				<div data-ng-show="harMidlertidigUtenlandskAdresse()">
-					<p>
-                    <span data-ng-repeat="linje in personalia.fakta.adresser[personaliaData.midlertidigAdresse].utenlandsAdresse">
-                        {{linje}}
-                    </span>
-						{{personalia.fakta.adresser[personaliaData.midlertidigAdresse].land}}
-					</p>
-					<p>
-						{{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].postnummer }}
-						{{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].poststed }}
-					</p>
-					<p>
-						Gyldig til: {{ personalia.fakta.adresser[personaliaData.midlertidigAdresse].gyldigTil | date:'dd.MM.yyyy'
-						}}
-					</p>
-					<h4 data-cmstekster="personalia.folkeregistrertadresse"></h4>
-					<p>
-						{{ personalia.fakta.adresser[personaliaData.bostedsAdresse].gatenavn }}
-						{{ personalia.fakta.adresser[personaliaData.bostedsAdresse].husnummer }}
-						{{ personalia.fakta.adresser[personaliaData.bostedsAdresse].husbokstav }}
-					</p>
-					<p>
-						{{ personalia.fakta.adresser[personaliaData.bostedsAdresse].postnummer }}
-						{{ personalia.fakta.adresser[personaliaData.bostedsAdresse].poststed }}
-					</p>
-				</div>
-				<div data-ng-show="harUtenlandskAdresse()">
-					<h4> Folkeregistrert adresse</h4>
-					<p> {{personalia.fakta.sammensattnavn.value}}</p>
-					<p>
-                        <span data-ng-repeat="linje in personalia.fakta.adresser[personaliaData.utenlandskAdresse].utenlandsAdresse">
-                            {{linje}}
-                        </span>
-						{{personalia.fakta.adresser[personaliaData.utenlandskAdresse].land}}
-					</p>
-				</div>
-			</div>
-		</div>
-		<div class="henter-personalia" ng-show="harIkkeHentetPersonalia()">
-			<img src="../img/ajaxloader/hvit/loader_hvit_64.gif" alt="Fremdriftsindikator"/>
-		</div>
-		<div data-spmblokkferdig data-nokkel="personalia" data-submit-method="validerPersonalia(personaliaForm)"></div>
-	</div>
+        <div data-ng-show="harHentetPersonalia()">
+            <div class="personalia">
+                <div class="alderOgKjonn" data-ng-class="{mann: erMann(), kvinne: erKvinne()}">
+                    <span data-cmstekster="aar"></span>
+                    <span class="alder robust">{{ personalia.alder }}</span>
+                </div>
+                <div class="personInfo">
+                    <div class="navnOgFnr">
+                        <span>{{ personalia.fakta.sammensattnavn.value }}</span>
+                        <span>{{ personalia.fakta.fnr.value }}</span>
+                    </div>
+
+                    <div data-ng-include="'../html/templates/adresse.html'"></div>
+                </div>
+
+                <div class="statsborgerskap" data-ng-if="erUtenlandskStatsborger()">
+                    <div class="informasjonstekst-utrop">
+                        {{ 'personalia.utenlandskstatsborger.statsborgerskap.informasjon' | cmstekst }}
+                    </div>
+                    <div class="ekstra-spm-boks" data-vedlegginfoboks>
+                        <ul>
+                            <li>
+                                {{ 'personalia.utenlandskstatsborger.statsborgerskap.dokumentasjon' | cmstekst}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-spmblokkferdig data-nokkel="personalia" data-submit-method="validerPersonalia(personaliaForm)"></div>
+    </div>
 </div>

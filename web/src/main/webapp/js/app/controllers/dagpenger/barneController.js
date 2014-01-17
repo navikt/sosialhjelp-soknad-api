@@ -1,253 +1,251 @@
 angular.module('nav.barn', ['app.services'])
 
-    .controller('BarneCtrl', ['$scope', 'Faktum', 'data', '$cookieStore', '$location', function ($scope, Faktum, data, $cookieStore, $location) {
-        var url = $location.$$url;
-        var endreModus = url.indexOf("endrebarn") != -1;
-        var barnetilleggModus = url.indexOf("sokbarnetillegg") != -1;
+	.controller('BarneCtrl', ['$scope', 'Faktum', 'data', '$cookieStore', '$location', function ($scope, Faktum, data, $cookieStore, $location) {
+		var url = $location.$$url;
+		var endreModus = url.indexOf('endrebarn') !== -1;
+		var barnetilleggModus = url.indexOf('sokbarnetillegg') !== -1;
 
-        $scope.nyttbarn = {barneinntekttall: undefined};
-        $scope.barnetillegg = {value: "true"}
-        var barnetilleggsData;
-        var ikkebarneinntekt;
-        var barneinntekttall;
+		$scope.nyttbarn = {barneinntekttall: undefined};
+		$scope.barnetillegg = {value: 'true'};
+		var barnetilleggsData;
+		var ikkebarneinntekt;
+		var barneinntekttall;
+		var faktumId;
 
-        if (endreModus) {
-            var faktumId = url.split("/").pop();
-            var barnUnderEndring = {};
+		if (endreModus) {
+			faktumId = url.split('/').pop();
+			var barnUnderEndring = {};
 
-            if ($scope.soknadData.fakta.barn) {
-                angular.forEach($scope.soknadData.fakta.barn.valuelist, function (value) {
-                    if (value.faktumId == faktumId) {
-                        barnUnderEndring = value;
-                    }
-                });
-            }
-            if(barnUnderEndring.properties) {
-                barnUnderEndring.properties.fodselsdato = new Date(barnUnderEndring.properties.fodselsdato);
-            }
-        }
+			if ($scope.soknadData.fakta.barn) {
+				angular.forEach($scope.soknadData.fakta.barn.valuelist, function (value) {
+					if (value.faktumId.toString() === faktumId) {
+						barnUnderEndring = value;
+					}
+				});
+			}
+		}
 
-        if (endreModus || barnetilleggModus) {
-            var faktumId = url.split("/").pop();
-            if ($scope.soknadData.fakta.barnetillegg) {
-                angular.forEach($scope.soknadData.fakta.barnetillegg.valuelist, function (value) {
-                    if (value.parrentFaktum == faktumId) {
-                        $scope.barnetillegg = value;
-                        barnetilleggsData = value;
-                    }
-                });
-            }
-            if ($scope.soknadData.fakta.ikkebarneinntekt) {
-                angular.forEach($scope.soknadData.fakta.ikkebarneinntekt.valuelist, function (value) {
-                    if (value.parrentFaktum == faktumId) {
-                        $scope.ikkebarneinntekt = value;
-                        ikkebarneinntekt = value;
-                    }
-                });
-            }
-            if ($scope.soknadData.fakta.barneinntekttall) {
-                angular.forEach($scope.soknadData.fakta.barneinntekttall.valuelist, function (value) {
-                    if (value.parrentFaktum == faktumId) {
-                        $scope.nyttbarn.barneinntekttall = value;
-                        barneinntekttall = value;
-                    }
-                });
-            }
-        }
+		if (endreModus || barnetilleggModus) {
+			faktumId = url.split('/').pop();
+			if ($scope.soknadData.fakta.barnetillegg) {
+				angular.forEach($scope.soknadData.fakta.barnetillegg.valuelist, function (value) {
+					if (value.parrentFaktum.toString() === faktumId) {
+						$scope.barnetillegg = value;
+						barnetilleggsData = value;
+					}
+				});
+			}
+			if ($scope.soknadData.fakta.ikkebarneinntekt) {
+				angular.forEach($scope.soknadData.fakta.ikkebarneinntekt.valuelist, function (value) {
+					if (value.parrentFaktum.toString() === faktumId) {
+						$scope.ikkebarneinntekt = value;
+						ikkebarneinntekt = value;
+					}
+				});
+			}
+			if ($scope.soknadData.fakta.barneinntekttall) {
+				angular.forEach($scope.soknadData.fakta.barneinntekttall.valuelist, function (value) {
+					if (value.parrentFaktum.toString() === faktumId) {
+						$scope.nyttbarn.barneinntekttall = value;
+						barneinntekttall = value;
+					}
+				});
+			}
+		}
 
-        if (barnUnderEndring) {
-            var barneData = barnUnderEndring;
-            $scope.barn = new Faktum(barneData);
-            $scope.land = data.land;
-        } else if (barnetilleggModus) {
-            angular.forEach($scope.soknadData.fakta.barn.valuelist, function (value) {
-                if (value.faktumId == faktumId) {
-                    $scope.barnenavn = value.properties.sammensattnavn;
-                }
-            });
-        } else {
-            var barneData = {
-                key: 'barn',
-                properties: {
-                    "fnr": undefined,
-                    "fornavn": undefined,
-                    "etternavn": undefined,
-                    "sammensattnavn": undefined,
-                    "alder": undefined
-                }
-            };
-            $scope.barn = new Faktum(barneData);
-            $scope.land = data.land;
-        }
+		var barneData;
+		if (barnUnderEndring) {
+			barneData = barnUnderEndring;
+			$scope.barn = new Faktum(barneData);
+			$scope.land = data.land;
+		} else if (barnetilleggModus) {
+			angular.forEach($scope.soknadData.fakta.barn.valuelist, function (value) {
+				if (value.faktumId.toString() === faktumId) {
+					$scope.barnenavn = value.properties.sammensattnavn;
+				}
+			});
+		} else {
+			barneData = {
+				key       : 'barn',
+				properties: {
+					'fnr'           : undefined,
+					'fornavn'       : undefined,
+					'etternavn'     : undefined,
+					'sammensattnavn': undefined,
+					'alder'         : undefined
+				}
+			};
+			$scope.barn = new Faktum(barneData);
+			$scope.land = data.land;
+		}
 
-        $scope.barnetilleggErRegistrert = function () {
-            return $scope.barnetillegg.value == 'true';
-        }
+		$scope.barnetilleggErRegistrert = function () {
+			return $scope.barnetillegg.value === 'true';
+		};
 
-        $scope.barnetHarInntekt = function () {
-            if ($scope.ikkebarneinntekt == undefined) {
-                return false;
-            }
-            return sjekkOmGittEgenskapTilObjektErFalse($scope.ikkebarneinntekt);
-        }
+		$scope.barnetHarInntekt = function () {
+			if ($scope.ikkebarneinntekt === undefined) {
+				return false;
+			}
+			return sjekkOmGittEgenskapTilObjektErFalse($scope.ikkebarneinntekt);
+		};
 
-        $scope.barnetHarIkkeInntekt = function () {
-            return !$scope.barnetHarInntekt();
-        }
+		$scope.barnetHarIkkeInntekt = function () {
+			return !$scope.barnetHarInntekt();
+		};
 
-        $scope.lagreBarn = function (form) {
-            var eventString = 'RUN_VALIDATION' + form.$name;
-            $scope.$broadcast(eventString);
-            if (form.$valid) {
-                $scope.barn.properties.alder = finnAlder();
-                $scope.barn.properties.sammensattnavn = finnSammensattNavn();
-                lagreBarnOgBarnetilleggFaktum();
-            }
-        }
+		$scope.lagreBarn = function (form) {
+			var eventString = 'RUN_VALIDATION' + form.$name;
+			$scope.$broadcast(eventString);
+			$scope.validateForm(form.$invalid);
+			$scope.runValidation(true);
 
-        $scope.lagreBarneFaktum = function (form) {
-            var eventString = 'RUN_VALIDATION' + form.$name;
-            $scope.$broadcast(eventString);
-            if (form.$valid) {
-                lagreTilleggsFaktum(url.split("/").pop());
-            }
-        }
+			if (form.$valid) {
+				$scope.barn.properties.alder = $scope.finnAlder();
+				$scope.barn.properties.sammensattnavn = finnSammensattNavn();
+				lagreBarnOgBarnetilleggFaktum();
+			}
+		};
 
-        $scope.endrerSystemregistrertBarn = function () {
-            return barnetilleggModus;
-        }
+		$scope.lagreBarneFaktum = function (form) {
+			var eventString = 'RUN_VALIDATION' + form.$name;
+			$scope.$broadcast(eventString);
+			if (form.$valid) {
+				lagreTilleggsFaktum(url.split('/').pop());
+			}
+		};
 
-        $scope.leggerTilNyttBarnEllerEndrerBarn = function () {
-            return !$scope.endrerSystemregistrertBarn();
-        }
+		$scope.endrerSystemregistrertBarn = function () {
+			return barnetilleggModus;
+		};
 
+		$scope.leggerTilNyttBarnEllerEndrerBarn = function () {
+			return !$scope.endrerSystemregistrertBarn();
+		};
 
-        function oppdaterCookieValue(faktumId) {
-            var barneCookie = $cookieStore.get('barneCookie');
+		function oppdaterCookieValue(faktumId) {
+			var barneCookie = $cookieStore.get('barn');
+			$cookieStore.put('barn', {
+				aapneTabs   : barneCookie.aapneTabs,
+				gjeldendeTab: barneCookie.gjeldendeTab,
+				faktumId    : faktumId
+			});
+		}
 
-            $cookieStore.put('barneCookie', {
-                aapneTabs: barneCookie.aapneTabs,
-                gjeldendeTab: barneCookie.gjeldendeTab,
-                barneFaktumId: faktumId
-            });
-        }
+		/**
+		 * Lagrer barnefaktum, tar vare på faktumId-en man får tilbake for så å lagre barnetilleggsfaktum basert på returnerte faktumID.
+		 * Til slutt legges de to faktumene inn i sine respektive lister for at de skal vises i 'oppsummeringsmodus'
+		 **/
+		function lagreBarnOgBarnetilleggFaktum() {
+			$scope.barn.$save({soknadId: $scope.soknadData.soknadId}).then(function (barnData) {
+				$scope.barn = barnData;
+				oppdaterFaktumListe('barn');
+				oppdaterCookieValue(barnData.faktumId);
+				lagreTilleggsFaktum(barnData.faktumId);
+			});
+		}
 
-        /**
-         * Lagrer barnefaktum, tar vare på faktumId-en man får tilbake for så å lagre barnetilleggsfaktum basert på returnerte faktumID.
-         * Til slutt legges de to faktumene inn i sine respektive lister for at de skal vises i "oppsummeringsmodus"
-         **/
-        function lagreBarnOgBarnetilleggFaktum() {
-            $scope.barn.$save({soknadId: $scope.soknadData.soknadId}).then(function (barnData) {
-                $scope.barn = barnData;
-                oppdaterFaktumListe("barn");
-                oppdaterCookieValue(barnData.faktumId);
+		function lagreTilleggsFaktum(parrentFaktumId) {
+			if (barnetilleggsData === undefined) {
+				barnetilleggsData = {
+					key          : 'barnetillegg',
+					value        : true,
+					parrentFaktum: parrentFaktumId
+				};
+			}
 
-                lagreTilleggsFaktum(barnData.faktumId);
-            });
-        }
+			$scope.barnetillegg = new Faktum(barnetilleggsData);
 
-        function lagreTilleggsFaktum(parrentFaktumId) {
-            if (barnetilleggsData == undefined) {
-                barnetilleggsData = {
-                    key: 'barnetillegg',
-                    value: true,
-                    parrentFaktum: parrentFaktumId
-                };
-            }
+			$scope.barnetillegg.$save({soknadId: $scope.soknadData.soknadId}).then(function (data) {
+				$scope.barnetillegg = data;
+				oppdaterFaktumListe('barnetillegg');
+				$scope.barn = new Faktum(barneData);
 
-            $scope.barnetillegg = new Faktum(barnetilleggsData);
-            $scope.barnetillegg.$save({soknadId: $scope.soknadData.soknadId}).then(function (data) {
-                $scope.barnetillegg = data;
-                oppdaterFaktumListe("barnetillegg");
+				if (ikkebarneinntekt === undefined) {
+					ikkebarneinntekt = {
+						key          : 'ikkebarneinntekt',
+						value        : $scope.ikkebarneinntekt.value,
+						parrentFaktum: parrentFaktumId
+					};
+				}
 
-                $scope.barn = new Faktum(barneData);
+				$scope.nyttBarnIkkeBarneInntekt = new Faktum(ikkebarneinntekt);
+				$scope.nyttBarnIkkeBarneInntekt.$save({soknadId: $scope.soknadData.soknadId}).then(function (data) {
+					$scope.ikkebarneinntekt = data;
+					oppdaterFaktumListe('ikkebarneinntekt');
 
-                if (ikkebarneinntekt == undefined) {
-                    ikkebarneinntekt = {
-                        key: 'ikkebarneinntekt',
-                        value: $scope.ikkebarneinntekt.value,
-                        parrentFaktum: parrentFaktumId
-                    };
-                }
+					if ($scope.barnetHarInntekt()) {
+						if (barneinntekttall === undefined) {
+							barneinntekttall = {
+								key          : 'barneinntekttall',
+								value        : $scope.nyttbarn.barneinntekttall.value,
+								parrentFaktum: parrentFaktumId
+							};
+						}
 
-                $scope.nyttBarnIkkeBarneInntekt = new Faktum(ikkebarneinntekt);
-                $scope.nyttBarnIkkeBarneInntekt.$save({soknadId: $scope.soknadData.soknadId}).then(function (data) {
-                    $scope.ikkebarneinntekt = data;
-                    oppdaterFaktumListe("ikkebarneinntekt");
+						$scope.nyttBarnBarneInntektTall = new Faktum(barneinntekttall);
+						$scope.nyttBarnBarneInntektTall.$save({soknadId: $scope.soknadData.soknadId}).then(function (data) {
+							$scope.nyttbarn.barneinntekttall = data;
 
-                    if ($scope.barnetHarInntekt()) {
-                        if (barneinntekttall == undefined) {
-                            barneinntekttall = {
-                                key: 'barneinntekttall',
-                                value: $scope.nyttbarn.barneinntekttall.value,
-                                parrentFaktum: parrentFaktumId
-                            };
-                        }
+							if ($scope.soknadData.fakta.barneinntekttall && $scope.soknadData.fakta.barneinntekttall) {
+								$scope.soknadData.fakta.barneinntekttall.valuelist.push($scope.nyttbarn.barneinntekttall);
+							} else {
+								$scope.soknadData.fakta.barneinntekttall = {};
+								$scope.soknadData.fakta.barneinntekttall.valuelist = [$scope.nyttbarn.barneinntekttall];
+							}
 
-                        $scope.nyttBarnBarneInntektTall = new Faktum(barneinntekttall);
-                        $scope.nyttBarnBarneInntektTall.$save({soknadId: $scope.soknadData.soknadId}).then(function (data) {
-                            $scope.nyttbarn.barneinntekttall = data;
+							$scope.ikkebarneinntekt = false;
+							$location.path('dagpenger/' + $scope.soknadData.soknadId);
+						});
+					} else {
+						$scope.ikkebarneinntekt = false;
+						$location.path('dagpenger/' + $scope.soknadData.soknadId);
+					}
+				});
+			});
+		}
 
-                            if ($scope.soknadData.fakta.barneinntekttall && $scope.soknadData.fakta.barneinntekttall) {
-                                $scope.soknadData.fakta.barneinntekttall.valuelist.push($scope.nyttbarn.barneinntekttall);
-                            } else {
-                                $scope.soknadData.fakta.barneinntekttall = {};
-                                $scope.soknadData.fakta.barneinntekttall.valuelist = [$scope.nyttbarn.barneinntekttall];
-                            }
+		function oppdaterFaktumListe(type) {
+			if ($scope.soknadData.fakta[type] && $scope.soknadData.fakta[type].valuelist) {
+				if (endreModus) {
+					angular.forEach($scope.soknadData.fakta[type].valuelist, function (value, index) {
+						if (value.faktumId.toString() === $scope[type].faktumId) {
+							$scope.soknadData.fakta[type].valuelist[index] = $scope[type];
+						}
+					})
+				} else {
+					$scope.soknadData.fakta[type].valuelist.push($scope[type]);
+				}
+			} else {
+				$scope.soknadData.fakta[type] = {};
+				$scope.soknadData.fakta[type].valuelist = [$scope[type]];
+			}
+		}
 
-                            $scope.ikkebarneinntekt = false;
-                            $location.path('dagpenger/' + $scope.soknadData.soknadId);
-                        });
-                    } else {
-                        $scope.ikkebarneinntekt = false;
-                        $location.path('dagpenger/' + $scope.soknadData.soknadId);
-                    }
+		function finnSammensattNavn() {
+			return $scope.barn.properties.fornavn + ' ' + $scope.barn.properties.etternavn;
+		}
 
-                });
-            });
-        }
+		//TODO: FIX Tester
+		$scope.finnAlder =function() {
+			if ($scope.barn.properties.fodselsdato) {
+				var year = parseInt($scope.barn.properties.fodselsdato.split(".")[0]);
+				var maaned = parseInt($scope.barn.properties.fodselsdato.split(".")[1]);
+				var dag = parseInt($scope.barn.properties.fodselsdato.split(".")[2]);
+				var dagensDato = new Date();
 
-        function oppdaterFaktumListe(type) {
-            if ($scope.soknadData.fakta[type] && $scope.soknadData.fakta[type].valuelist) {
-                if (endreModus) {
-                    angular.forEach($scope.soknadData.fakta[type].valuelist, function (value, index) {
-                        if (value.faktumId == $scope[type].faktumId) {
-                            $scope.soknadData.fakta[type].valuelist[index] = $scope[type];
-                        }
-                    })
-                } else {
-                    $scope.soknadData.fakta[type].valuelist.push($scope[type]);
-                }
+				var result = dagensDato.getFullYear() - year;
 
-            } else {
-                $scope.soknadData.fakta[type] = {};
-                $scope.soknadData.fakta[type].valuelist = [$scope[type]];
-            }
-        }
+				if (dagensDato.getMonth() + 1 < maaned) {
+					result--;
+				}
 
-        function finnSammensattNavn() {
-            return $scope.barn.properties.fornavn + " " + $scope.barn.properties.etternavn;
-        }
+				if (dagensDato.getMonth() + 1 === maaned && dagensDato.getDate() < dag) {
+					result--;
+				}
 
-        //TODO: FIX Tester
-        function finnAlder() {
-            if ($scope.barn.properties.fodselsdato) {
-                var year = $scope.barn.properties.fodselsdato.getFullYear();
-                var maaned = $scope.barn.properties.fodselsdato.getMonth();
-                var dag = $scope.barn.properties.fodselsdato.getDate()
-                var dagensDato = new Date();
-
-                var result = dagensDato.getFullYear() - year;
-
-                if (dagensDato.getMonth() < maaned) {
-                    result--;
-                }
-
-                if (dagensDato.getMonth() == maaned && dagensDato.getDate() < dag) {
-                    result--;
-                }
-
-                return result;
-            }
-        }
-    }]);
+				return result;
+			}
+			return 'undefined';
+		}
+	}]);

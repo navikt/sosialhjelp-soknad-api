@@ -1,8 +1,11 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SikkerhetsAspect;
+import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.Tilgangskontroll;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
@@ -24,7 +27,18 @@ import static org.springframework.context.annotation.ComponentScan.Filter;
 @EnableWebMvc
 @EnableAsync
 @ComponentScan(excludeFilters = @Filter(Configuration.class))
+@EnableAspectJAutoProxy
 public class ServletContext extends WebMvcConfigurerAdapter {
+    @Bean
+    public SikkerhetsAspect sikkerhet() {
+        return new SikkerhetsAspect();
+    }
+
+    @Bean
+    public Tilgangskontroll tilgangskontroll() {
+        return new Tilgangskontroll();
+    }
+
     @Bean
     public TaskExecutor thumbnailExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();

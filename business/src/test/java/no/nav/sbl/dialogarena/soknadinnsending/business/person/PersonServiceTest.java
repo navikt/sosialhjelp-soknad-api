@@ -51,8 +51,8 @@ public class PersonServiceTest {
     @Mock
     private Kodeverk kodeverkMock;
 
-    private static final String RIKTIG_IDENT = "12345";
-    private static final String FEIL_IDENT = "54321";
+    private static final String RIKTIG_IDENT = "12345612345";
+    private static final String FEIL_IDENT = "54321012345";
     private static final String ET_FORNAVN = "Ola";
     private static final String ET_MELLOMNAVN = "Johan";
     private static final String ET_ETTERNAVN = "Normann";
