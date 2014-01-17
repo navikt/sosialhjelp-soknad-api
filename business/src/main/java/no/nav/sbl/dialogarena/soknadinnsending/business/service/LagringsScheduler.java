@@ -32,7 +32,7 @@ public class LagringsScheduler {
             StringWriter xml = new StringWriter();
             WebSoknad soknad = soknadRepository.hentSoknadMedData(id);
             JAXB.marshal(soknad, xml);
-            fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), new ByteArrayInputStream(xml.toString().getBytes()));
+            fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(xml.toString().getBytes()));
             soknadRepository.slettSoknad(soknad.getSoknadId());
         }
     }
