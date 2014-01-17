@@ -1,108 +1,227 @@
 <html>
-<head>
-    <style type="text/css">
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 1rem;
-            font-weight: normal;
-        }
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+		<style type="text/css">
+			@page   { size: A4; margin: 1.5cm 2cm 4cm; @top-center { content: element(header, last-except) }; @bottom-center { content: element(footer) }; }
+			*       { box-sizing: border-box; }
+			body    { font-family: Modus, Arial, Helvetica, sans-serif; font-size: 10pt; line-height: 1.4em; margin: 0; color: #3e3832; }
+			h1      { font-size: 24pt; }
+			h2, h3, h4, h5, h6 { font-size: 13pt; }
+			table   { border-collapse: collapse; width: 170mm; }
+			td      { vertical-align: middle; text-align: left; padding: 0; font-size: 10pt; }
+			td:first-child { width: 5.5mm; vertical-align: top; }
+			td:last-child { width: 164.5mm; }
+			.header { position: running(header); text-align: center; }
+			.header span { display: inline-block; }
+			.header .fnr:before { content: "&#8226;"; margin: 0 10px; }
+			.footer { position: running(footer); font-size: 8pt; text-align: center; margin-bottom: 2mm; border-top: .5pt solid #ccc; }
+			.footer span { display: inline-block; margin: 0 10px; }
+			.footer table { margin: 5mm 0 10mm -2mm; text-align: left; }
+			.logo      { position: absolute; left: 77mm; top: 0; width: 17mm; }
+			.sjekket   { display: inline-block; background: url(http://localhost:8181/sendsoknad/img/hake_sort.png) no-repeat center; width: 10px; height: 10px; background-size: 100%; }
+			.usjekket  { display: inline-block; background: url(http://localhost:8181/sendsoknad/img/minus_sort.png) no-repeat center; width: 10px; height: 10px; }
+			.hode      { text-align: center; margin: 15mm 0 6mm; }
+			.hode hr   { border: none; border-top: .5pt solid #ccc; width: 8mm; margin: 7mm auto; }
+			.hode span { display: block; }
+			.hode .nvn { font-weight: bold; font-size: 13pt; }
+			.hode .fnr { font-weight: bold; font-size: 13pt; }
+			.hode .adr { margin-top: 2mm; }
+			.hode .personalia { padding-bottom: 8mm; border-bottom: .5pt solid #ccc; }
+		</style>
+	</head>
+	<body>
 
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6 {
-            color: #3e3832;
-        }
+		<div class="header">
+			<span class="navn">Herman Kristian Normann Olsen</span><span class="fnr">01039749706</span>
+		</div>
 
-        h1 {
-            si
-        }
+		<div class="footer">
+			<table>
+				<tr>
+					<td>
+						<span class="sjekket"></span>
+					</td>
+					<td>
+						Jeg har lest Dagpengebrosjyren
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" style="height: 6pt;"></td>
+				</tr>
+				<tr>
+					<td>
+						<span class="sjekket"></span>
+					</td>
+					<td>
+						Jeg er kjent med at mangelfulle eller feilaktige opplysninger kan medføre krav om tilbakebetaling av feilutbetalt stønad og/eller straff.
+					</td>
+				</tr>
+			</table>
 
-        #header {
-            width: 100%;
-            text-align: center;
-        }
+			NAV 12-24.03
+			<span>|</span>
+			Webversjon 2
+			<span>|</span>
+			20.02.2014 kl 15:45
+		</div>
 
-    </style>
-</head>
-<body>
-<div id="header">
-    <h1>Søknad om dagpenger {{gosysid}}</h1>
-    ---
-    <div>
-        {{#forFaktum "personalia"}}
-            <h2>{{properties.navn}}</h2>
+		<div id="soknad">
+			<img class="logo" src="http://localhost:8181/sendsoknad/img/nav-logo.gif"/>
+			<div class="hode">
+				<h1>Søknad om dagpenger {{gosysid}}</h1>
+				<hr/>
+				{{#forFaktum "personalia"}}
+					<div class="personalia">
+						<span class="nvn">{{properties.navn}}</span>
+						<span class="fnr">{{properties.fnr}}</span>
+						<span class="adr">{{properties.addresse}}</span>
+					</div>
+				{{/forFaktum}}
+			</div>
 
-            <h2>{{properties.fnr}}</h2>
+			<h2>Reel arbeidsoker</h2>
+			<table>
+				{{#forFaktum "reelarbeidsoker.villigdeltid"}}
+					<tr>
+						<td>
+							{{#if value="true"}}
+								<span class="sjekket"></span>
+							{{else}}
+								<span class="usjekket"></span>
+							{{/if}}
+						</td>
+						<td>
+							Jeg er villig til å søke både hel- og deltidsjobb
+						</td>
+					</tr>
+				{{/forFaktum}}
+				{{#forFaktum "reelarbeidsoker.villigflytte"}}
+					<tr>
+						<td>
+							{{#if value="true"}}
+								<span class="sjekket"></span>
+							{{else}}
+								<span class="usjekket"></span>
+							{{/if}}
+						</td>
+						<td>
+							Jeg er villig til å flytte eller pendle
+						</td>
+					</tr>
+				{{/forFaktum}}
+				{{#forFaktum "reelarbeidsoker.villighelse"}}
+					<tr>
+						<td>
+						{{#if value="true"}}
+							<span class="sjekket"></span>
+						{{else}}
+							<span class="usjekket"></span>
+						{{/if}}
+						</td>
+						<td>
+							Jeg kan ta enhver type arbeid
+						</td>
+					</tr>
+				{{/forFaktum}}
+				{{#forFaktum "reelarbeidsoker.villigjobb"}}
+					<tr>
+						<td>
+						{{#if value="true"}}
+							<span class="sjekket"></span>
+						{{else}}
+							<span class="usjekket"></span>
+						{{/if}}
+						</td>
+						<td>
+							Jeg er villig til å bytte yrke og gå ned i lønn
+						</td>
+					</tr>
+				{{/forFaktum}}
+			</table>
 
-            <h3>{{addresse}}</h3>
-        {{/forFaktum}}
-    </div>
-</div>
-<div id="soknad">
-    <h2>Reel arbeidsoker</h2>
+			<h2>Arbeidsforhold de siste 12 måneder</h2>
+			<ul>
+				{{#forFakta "arbeidsforhold"}}
+					{{#each }}
+						<li>Arbeidsforhold hos {{properties.navn}}</li>
+					{{/each}}
+				{{/forFakta}}
+			</ul>
+			<h2>Egen næring</h2>
 
-    <div>
-        {{#forFaktum "reelarbeidsoker.villigdeltid"}}
-            <div>{{#if value="true"}}[x]{{else}}[ ]{{/if}} Jeg er villig til å søke både hel- og deltidsjobb</div>
-        {{/forFaktum}}
-        {{#forFaktum "reelarbeidsoker.villigflytte"}}
-            <div>{{#if value="true"}}[x]{{else}}[ ]{{/if}} Jeg er villig til å flytte eller pendle</div>
-        {{/forFaktum}}
-        {{#forFaktum "reelarbeidsoker.villighelse"}}
-            <div>{{#if value="true"}}[x]{{else}}[ ]{{/if}} Jeg kan ta enhver type arbeid</div>
-        {{/forFaktum}}
-        {{#forFaktum "reelarbeidsoker.villigjobb"}}
-            <div>{{#if value="true"}}[x]{{else}}[ ]{{/if}} Jeg er villig til å bytte yrke og gå ned i lønn</div>
-        {{/forFaktum}}
-    </div>
-    <h2>Arbeidsforhold de siste 12 måneder</h2>
-    <ul>
-        {{#forFakta "arbeidsforhold"}}
-            {{#each }}
-                <li>Arbeidsforhold hos {{properties.navn}}</li>
-            {{/each}}
-        {{/forFakta}}
-    </ul>
-    <h2>Egen næring</h2>
+			{{#forFaktum "ikkeegennaering"}}
+				<table>
+					<tr>
+						{{#hvisSant}}
+							<td>
+								<span class="sjekket"></span>
+							</td>
+							<td>
+								Jeg driver ikke egen næring, gårdsbruk eller fangst/fiske
+							</td>
+						{{else}}
+							<td>
+								<span class="usjekket"></span>
+							</td>
+							<td>
+								Her kommer ting når en driver med egen næring
+							</td>
+						{{/hvisSant}}
+					</tr>
+				</table>
+			{{/forFaktum}}
 
-    <div>
-        {{#forFaktum "ikkeegennaering"}}
-            {{#hvisSant}}
-                Jeg driver ikke egen næring, gårdsbruk eller fangst/fiske
-            {{else}}
-                Her kommer ting når en driver med egen næring
-            {{/hvisSant}}
-        {{/forFaktum}}
-    </div>
-    <h2>Verneplikt</h2>
-    {{#forFaktum "ikkeavtjentverneplikt"}}
-        {{#hvisSant}}
-            Jeg har ikke avtjent verneplikt de siste 12 mnd
-        {{else}}
-            Jeg har avtjent verneplikt de siste 12 mnd
-        {{/hvisSant}}
-    {{/forFaktum}}
-    <h2>Andre ytelser</h2>
-    {{#forFaktaStarterMed "andreytelser"}}
-        {{#each }}
-            {{#hvisSant}}
-                {{key}}: {{properties.fraHvem}}
-            {{/hvisSant}}
-        {{/each}}
-    {{/forFaktaStarterMed}}
+			<h2>Verneplikt</h2>
+			{{#forFaktum "ikkeavtjentverneplikt"}}
+				<table>
+					<tr>
+						{{#hvisSant}}
+							<td>
+								<span class="sjekket"></span>
+							</td>
+							<td>
+								Jeg har ikke avtjent verneplikt de siste 12 mnd
+							</td>
+						{{else}}
+							<td>
+								<span class="Usjekket"></span>
+							</td>
+							<td>
+								Jeg har avtjent verneplikt de siste 12 mnd
+							</td>
+						{{/hvisSant}}
+					</tr>
+				</table>
+			{{/forFaktum}}
 
-    <h2>Barn som det søkes barnetilegg for</h2>
-    {{#forFakta "barn"}}
-        {{#each this}}
-            {{properties.navn}}, født den {{properties.fodselsdato}}, bor i norge, inntekt på {{properties.inntekt}}
-        {{/each}}
-    {{/forFakta}}
+			<h2>Andre ytelser</h2>
+			{{#forFaktaStarterMed "andreytelser"}}
+				{{#each }}
+					{{#hvisSant}}
+						{{key}}: {{properties.fraHvem}}
+					{{/hvisSant}}
+				{{/each}}
+			{{/forFaktaStarterMed}}
 
-    <h2>Vedlegg</h2>
+			<h2>Barn som det søkes barnetilegg for</h2>
+			{{#forFakta "barn"}}
+				{{#each this}}
+					{{properties.navn}}, født den {{properties.fodselsdato}}, bor i norge, inntekt på {{properties.inntekt}}
+				{{/each}}
+			{{/forFakta}}
 
-</div>
-</body>
+			<h2>Vedlegg</h2>
+			<table>
+				<tr>
+					<td>
+						<span class="sjekket"></span>
+					</td>
+					<td>
+						Bekreftelse på opppsigelse fra Firmakongen AS
+					</td>
+				</tr>
+			</table>
+
+		</div>
+	</body>
 </html>
