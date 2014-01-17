@@ -2,27 +2,30 @@
     <div data-stegindikator data-steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="3"></div>
     <div data-panelbelyst data-sidetittel="sidetittel.skjema">
         <h1 class="stor strek-ikon-soknader">{{ 'skjema.tittel' | cmstekst }}</h1>
+
         <div class="oppsummering">
             <!--<div class="personalia">-->
-                <!--<div class="navnOgFnr">-->
-                    <!--<span>{{ personalia.fakta.sammensattnavn.value }}</span>-->
-                    <!--<span>/</span>-->
-                    <!--<span>{{ personalia.fakta.fnr.value | formatterFnr }}</span>-->
-                <!--</div>-->
-                <!--<div data-ng-include="'../html/templates/adresse.html'"></div>-->
+            <!--<div class="navnOgFnr">-->
+            <!--<span>{{ personalia.fakta.sammensattnavn.value }}</span>-->
+            <!--<span>/</span>-->
+            <!--<span>{{ personalia.fakta.fnr.value | formatterFnr }}</span>-->
+            <!--</div>-->
+            <!--<div data-ng-include="'../html/templates/adresse.html'"></div>-->
             <!--</div>-->
 
             <div data-ng-bind-html="oppsummeringHtml"></div>
         </div>
         <form data-ng-submit="sendSoknad()">
-            <span class="oppgitt">{{ 'dagpenger.informasjonsside.lestbrosjyre.sporsmal' | cmstekst }}</span>
+            <!--<span class="oppgitt">{{ 'dagpenger.informasjonsside.lestbrosjyre.sporsmal' | cmstekst }}</span>-->
 
-            <input id="bekreftelseOpplysninger" type="checkbox" data-ng-model="harbekreftet.value">
-            <label for="bekreftelseOpplysninger">
-                <span>
+            <div class="checkbox form-linje" data-ng-class="{feilstyling : skalViseFeilmelding.value === true}" data-checkbox-validate>
+                <input id="bekreftelseOpplysninger" type="checkbox" data-ng-model="harbekreftet.value">
+                <label for="bekreftelseOpplysninger">
+
                     {{ 'dagpenger.oppsummering.bekreftOpplysninger' | cmstekst }}
-                </span>
-            </label>
+                </label>
+                <span class="melding">{{ 'dagpenger.oppsummering.bekreftelse.feilmelding' | cmstekst }} </span>
+            </div>
 
             <input class="knapp-hoved" type="submit" value="{{ 'dagpenger.oppsummering.send' | cmstekst }}">
 
