@@ -26,7 +26,7 @@ import java.util.List;
 import static org.mockito.Mockito.when;
 
 @RunWith(value = MockitoJUnitRunner.class)
-public class FamilieRelasjonServiceTest {
+public class FamilieRelasjonerServiceTest {
     private static final String GYLDIG_IDENT = "56128349974";
     private static final String ET_FORNAVN = "Per";
     private static final String ET_ETTERNAVN = "Persen";
