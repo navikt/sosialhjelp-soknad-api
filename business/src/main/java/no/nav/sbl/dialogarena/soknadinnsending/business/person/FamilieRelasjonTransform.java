@@ -1,17 +1,13 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
-import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
-
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
-import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.slf4j.LoggerFactory.getLogger;
 
 public class FamilieRelasjonTransform {
 
