@@ -54,11 +54,6 @@ describe('DagpengerControllere', function () {
             //expected call..
         };
 
-
-        scope.soknadData = {
-            fakta: {}
-        }
-
         element = angular.element(
             '<form name="form">'
                 + '<div form-errors></div>'
@@ -151,14 +146,6 @@ describe('DagpengerControllere', function () {
         it('skal returnere false for person over 60 aar', function () {
             scope.alder = 62;
             expect(scope.erUnder60Aar()).toBe(false);
-        });
-
-        it('skal kalle metode for å validere form', function () {
-            scope.soknadData.fakta.villigdeltid = true;
-            scope.soknadData.fakta.villigpendle = true;
-            expect(scope.validateFormFunctionBleKalt).toEqual(false);
-            scope.validerOgSettModusOppsummering(form);
-            expect(scope.validateFormFunctionBleKalt).toEqual(true);
         });
     });
 

@@ -1,4 +1,13 @@
 angular.module('app.brukerdata', ['app.services'])
+    .controller('SendSoknadCtrl', function ($scope, $location, $routeParams, soknadService) {
+        $scope.sendSoknad = function () {
+            soknadService.send({param: $routeParams.soknadId, action: 'send'});
+            $location.path('kvittering');
+        }
+    })
+    .controller('SoknadDataCtrl', ['$scope', 'data', '$http', function ($scope, data, $http) {
+        $scope.soknadData = data.soknad;
+    }])
     .controller('ModusCtrl', function ($scope) {
         $scope.data = {
             redigeringsModus: true
