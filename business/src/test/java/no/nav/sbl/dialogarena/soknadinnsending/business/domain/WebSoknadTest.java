@@ -28,5 +28,4 @@ public class WebSoknadTest {
 		soknad.leggTilFaktum(new Faktum(soknadId, faktumId, "enKey", "enValue", null));
 		Assert.assertEquals(1,soknad.antallFakta());
 	}
-	
 }

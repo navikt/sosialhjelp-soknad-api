@@ -87,7 +87,7 @@ public class VedleggController {
         return new RestFeil(ex.getId());
     }
 
-    @RequestMapping(value = "", params = "gosysId", method = RequestMethod.POST, produces = "text/html; charset=utf-8")
+    @RequestMapping(value = "", params = "gosysId", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
     @ResponseBody()
     @ResponseStatus(HttpStatus.CREATED)
     public Callable<VedleggOpplasting> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam final String gosysId, @RequestParam("files[]") final List<MultipartFile> files) {

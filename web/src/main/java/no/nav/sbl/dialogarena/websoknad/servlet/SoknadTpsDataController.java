@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import com.google.gson.GsonBuilder;
+import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
@@ -9,6 +10,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.DateTimeSerialize
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.FamilieRelasjonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
@@ -25,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 
 @Controller
 @RequestMapping("/soknad")
@@ -41,6 +45,9 @@ public class SoknadTpsDataController {
 
     @Inject
     private FamilieRelasjonService familieRelasjonService;
+
+    @Inject
+    private PersonaliaService personaliaService;
 
     @RequestMapping(value = "/kodeverk/{postnummer}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
@@ -119,6 +126,32 @@ public class SoknadTpsDataController {
     @ResponseBody()
     public Person hentEnPerson(@PathVariable String soknadId, @PathVariable String fnr) {
         return personService.hentPerson(new Long(soknadId), fnr);
+    }
+
+    @RequestMapping(value = "/personalia", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody()
+    public Personalia hentPersonalia() {
+        String fnr = SubjectHandler.getSubjectHandler().getUid();
+        Personalia personalia = personaliaService.hentPersonalia(fnr);
+
+        Map<String, String> personaliaProperties = new HashMap<>();
+
+        personaliaProperties.put("fnr", personalia.getFnr());
+        personaliaProperties.put("alder", personalia.getAlder());
+        personaliaProperties.put("navn", personalia.getNavn());
+        personaliaProperties.put("epost", personalia.getEpost());
+        personaliaProperties.put("statsborgerskap", personalia.getStatsborgerskap());
+        personaliaProperties.put("kjonn", personalia.getKjonn());
+        personaliaProperties.put("gjeldendeAdresse", personalia.getGjeldendeAdresse().getAdresse());
+        personaliaProperties.put("gjeldendeAdresseType", personalia.getGjeldendeAdresse().getAdressetype());
+        personaliaProperties.put("gjeldendeAdresseGydligFra", personalia.getGjeldendeAdresse().getGyldigFra());
+        personaliaProperties.put("gjeldendeAdresseGydligTil", personalia.getGjeldendeAdresse().getGyldigTil());
+        personaliaProperties.put("sekundarAdresse", personalia.getSekundarAdresse().getAdresse());
+        personaliaProperties.put("sekundarAdresseType", personalia.getSekundarAdresse().getAdressetype());
+        personaliaProperties.put("sekundarAdresseGydligFra", personalia.getSekundarAdresse().getGyldigFra());
+        personaliaProperties.put("sekundarAdresseGydligTil", personalia.getSekundarAdresse().getGyldigTil());
+
+        return personalia;
     }
 
 }

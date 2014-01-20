@@ -229,4 +229,5 @@ public class WebSoknad implements Serializable {
         }).collect();
 
     }
+
 }

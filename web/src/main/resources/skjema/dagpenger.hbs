@@ -76,13 +76,19 @@
 			<div class="hode">
 				<h1>Søknad om dagpenger {{gosysid}}</h1>
 				<hr/>
-				{{#forFaktum "personalia"}}
-					<div class="personalia">
-						<span class="nvn">{{properties.navn}}</span>
-						<span class="fnr">{{properties.fnr}}</span>
-						<span class="adr">{{properties.addresse}}</span>
-					</div>
-				{{/forFaktum}}
+                <div class="personalia">
+                    {{#forFaktum "sammensattnavn"}}
+                        <span class="nvn">{{value}}</span>
+                    {{/forFaktum}}
+
+                    {{#forFaktum "fnr"}}
+                        <span class="fnr">{{value}}</span>
+                    {{/forFaktum}}
+
+                    {{#forFaktum "gjeldendeAdresseType"}}
+                        <span>{{value}}</span>
+                    {{/forFaktum}}
+                </div>
 			</div>
 
 			<h2>Reel arbeidsoker</h2>
@@ -158,7 +164,7 @@
 			{{#forFaktum "ikkeegennaering"}}
 				<table>
 					<tr>
-						{{#hvisSant}}
+						{{#if value="true"}}
 							<td>
 								<span class="sjekket"></span>
 							</td>
@@ -172,7 +178,7 @@
 							<td>
 								Her kommer ting når en driver med egen næring
 							</td>
-						{{/hvisSant}}
+						{{/if}}
 					</tr>
 				</table>
 			{{/forFaktum}}
@@ -181,7 +187,7 @@
 			{{#forFaktum "ikkeavtjentverneplikt"}}
 				<table>
 					<tr>
-						{{#hvisSant}}
+						{{#if value="true"}}
 							<td>
 								<span class="sjekket"></span>
 							</td>
@@ -195,7 +201,7 @@
 							<td>
 								Jeg har avtjent verneplikt de siste 12 mnd
 							</td>
-						{{/hvisSant}}
+						{{/if}}
 					</tr>
 				</table>
 			{{/forFaktum}}

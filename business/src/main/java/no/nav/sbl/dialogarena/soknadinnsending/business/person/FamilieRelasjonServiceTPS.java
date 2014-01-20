@@ -60,6 +60,24 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
         return person;
     }
 
+    @Override
+    public String hentStatsborgerskap(String fodselsnummer) {
+        HentKjerneinformasjonResponse response;
+        try {
+            response = personConnector.hentKjerneinformasjon(lagXMLRequest(fodselsnummer));
+        } catch (IkkeFunnetException e) {
+            logger.warn("Ikke funnet person i TPS");
+            return "";
+        }
+        if (response != null) {
+            logger.warn("Fullstendig respons fra Person-servicen:" + response.getPerson());
+        } else {
+            logger.warn("Respons fra Person-servicen er null");
+        }
+
+        return response.getPerson().getStatsborgerskap().getLand().getValue();
+    }
+
     private void lagreStatsborgerskap(Long soknadId, Person person) {
         String statsborgerskap = (String)person.getFakta().get("statsborgerskap");
         

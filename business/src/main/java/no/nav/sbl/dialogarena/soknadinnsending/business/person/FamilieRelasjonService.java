@@ -14,4 +14,6 @@ public interface FamilieRelasjonService {
      * @return
      */
     Person hentPerson(Long soknadId, String ident);
+
+    String hentStatsborgerskap(String fodselsnummer);
 }
