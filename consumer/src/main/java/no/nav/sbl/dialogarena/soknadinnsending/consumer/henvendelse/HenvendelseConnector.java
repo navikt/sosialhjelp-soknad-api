@@ -85,7 +85,7 @@ public class HenvendelseConnector {
     }
 
     private XMLHovedskjema createXMLSkjema() {
-        return new XMLHovedskjema().withInnsendingsvalg(IKKE_VALGT.toString());
+        return new XMLHovedskjema().withSkjemanummer("NAV 04-01.03").withInnsendingsvalg(IKKE_VALGT.toString());
     }
 
 }
