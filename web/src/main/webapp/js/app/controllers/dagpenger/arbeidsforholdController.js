@@ -1,6 +1,5 @@
 angular.module('nav.arbeidsforhold.controller', [])
     .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams, $cookieStore, $location, data, Faktum) {
-
         $scope.$on('VALIDER_ARBEIDSFORHOLD', function () {
             $scope.validerArbeidsforhold(false);
         });

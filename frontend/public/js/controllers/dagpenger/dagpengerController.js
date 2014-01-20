@@ -1,5 +1,5 @@
 angular.module('nav.dagpenger', [])
-	.controller('DagpengerCtrl', ['$scope', '$location', '$timeout', function ($scope, $location, $timeout) {
+	.controller('DagpengerCtrl', ['$scope', 'data', '$location', '$timeout', function ($scope, data, $location, $timeout) {
 
 		$scope.grupper = [
 			{id: 'reellarbeidssoker', tittel: 'reellarbeidssoker.tittel', template: '../html/templates/reellarbeidssoker/reell-arbeidssoker.html', apen: false},
@@ -28,7 +28,7 @@ angular.module('nav.dagpenger', [])
 				$scope.validateForm(form.$invalid);
 				var elementMedForsteFeil = $('.accordion-group').find('.form-linje.feil, .form-linje.feilstyling').first();
 				if (form.$valid) {
-					$location.path('/vedlegg/' + $scope.soknadData.soknadId);
+					$location.path('/vedlegg/' + data.soknad.soknadId);
 
 				} else {
 					scrollToElement(elementMedForsteFeil, 200);
