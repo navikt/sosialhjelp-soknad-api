@@ -47,6 +47,7 @@ import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLIn
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.LastetOpp;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.VedleggKreves;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getSkjemanummer;
 
 @Component
 public class SoknadService implements SendSoknadService, VedleggService {
@@ -126,7 +127,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public void sendSoknad(long soknadId) {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
         List<VedleggForventning> vedleggForventnings = hentPaakrevdeVedlegg(soknadId);
-        XMLHovedskjema hovedskjema = new XMLHovedskjema().withInnsendingsvalg(LASTET_OPP.toString()).withSkjemanummer("NAV 04-01.03");
+        String skjemanummer = getSkjemanummer(soknad);
+        XMLHovedskjema hovedskjema = new XMLHovedskjema().withInnsendingsvalg(LASTET_OPP.toString()).withSkjemanummer(skjemanummer);
         henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, Transformers.convertToXmlVedleggListe(vedleggForventnings));
         repository.avslutt(soknad);
 
