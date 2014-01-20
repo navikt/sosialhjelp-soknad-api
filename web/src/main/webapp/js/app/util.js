@@ -88,7 +88,6 @@ function checkFalse(element) {
 }
 
 function scrollToElement(element, offset) {
-    console.log(element)
 	var animationSpeed = 200;
 	var scrollPos = Math.max(element.offset().top - offset, 0);
 	$('body, html').scrollToPos(scrollPos, animationSpeed);
@@ -104,11 +103,6 @@ function fiksNavn(element, navn, tmpNavn) {
 	formCtrl.$removeControl(currentElementCtrl);
 	currentElementCtrl.$name = navn;
 	formCtrl.$addControl(currentElementCtrl);
-}
-
-function verdiErLagretISoknadData(scope, nokkel) {
-	return scope.soknadData && scope.soknadData.fakta[nokkel];
-
 }
 
 function verdiErIkkeTom(verdi) {

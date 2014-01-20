@@ -1,5 +1,4 @@
 angular.module('app.brukerdata', ['app.services'])
-
     .controller('SendSoknadCtrl', function ($scope, $location, $routeParams, soknadService) {
         $scope.sendSoknad = function () {
             soknadService.send({param: $routeParams.soknadId, action: 'send'});
@@ -8,28 +7,7 @@ angular.module('app.brukerdata', ['app.services'])
     })
     .controller('SoknadDataCtrl', ['$scope', 'data', '$http', function ($scope, data, $http) {
         $scope.soknadData = data.soknad;
-
-        $scope.$on("OPPDATER_OG_LAGRE", function (e, faktumData) {
-            if ($scope.soknadData.fakta[faktumData.key] == undefined) {
-                $scope.soknadData.fakta[faktumData.key] = {};
-            }
-            $scope.soknadData.fakta[faktumData.key].value = faktumData.value;
-            $scope.soknadData.fakta[faktumData.key].key = faktumData.key;
-
-            var url = '/sendsoknad/rest/soknad/' + $scope.soknadData.soknadId + '/faktum/' + '?rand=' + new Date().getTime();
-            $http({method: 'POST', url: url, data: $scope.soknadData.fakta[faktumData.key]})
-                .success(function (dataFraServer, status) {
-                    $scope.soknadData.fakta[faktumData.key] = dataFraServer;
-                    $scope.soknadData.sistLagret = new Date().getTime();
-                    data.soknad = $scope.soknadData;
-                })
-                .error(function (data, status) {
-
-                });
-        });
     }])
-
-    //Blir kun brukt av arbeidsforhold
     .controller('ModusCtrl', function ($scope) {
         $scope.data = {
             redigeringsModus: true
@@ -78,7 +56,7 @@ angular.module('app.brukerdata', ['app.services'])
                     var delay = 1500 - ($.now() - start);
                     setTimeout(function () {
                         $scope.$apply(function () {
-                            $location.path('slettet');
+                            $location.path('/slettet');
                         });
                     }, delay);
                 },

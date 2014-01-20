@@ -38,8 +38,9 @@
         </dependency>
 
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>aktorid-jaxws</artifactId>
+            <groupId>no.nav.tjenester.fim</groupId>
+            <artifactId>nav-fim-aktoer-v1-tjenestespesifikasjon</artifactId>
+            <classifier>jaxws</classifier>
         </dependency>
 
         <dependency>
@@ -175,6 +176,17 @@
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
         </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.activation</groupId>
+                    <artifactId>activation</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <dependency>
             <groupId>net.sourceforge.collections</groupId>
             <artifactId>collections-generic</artifactId>

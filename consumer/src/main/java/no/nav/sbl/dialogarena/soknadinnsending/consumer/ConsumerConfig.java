@@ -19,8 +19,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import javax.xml.namespace.QName;
-
 import static java.lang.System.setProperty;
 
 @Configuration
@@ -137,7 +135,6 @@ public class ConsumerConfig {
                     .asStandardService()
                     .withAddress(aktorServiceEndpoint)
                     .withWsdl("classpath:wsdl/no/nav/tjeneste/virksomhet/aktoer/v1/Aktoer.wsdl")
-                    .withServiceName(new QName("http://nav.no/tjeneste/virksomhet/aktoer/v1/", "AktoerPortType"))
                     .build()
                     .withHttpsMock()
                     .withMDC();
@@ -145,12 +142,12 @@ public class ConsumerConfig {
 
         @Bean
         public AktoerPortType aktorPortType() {
-            return factory().withUserSecurity().get();
+            return factory().withSystemSecurity().get();
         }
 
         @Bean
         public AktoerPortType aktorSelftestPortType() {
-            return factory().withSystemSecurity().get();
+            return aktorPortType();
         }
     }
 

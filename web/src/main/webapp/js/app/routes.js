@@ -11,6 +11,15 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
+			.when('/behandling/:behandlingId', {
+				templateUrl: '../html/templates/informasjonsside.html',
+				controller: 'BehandlingCtrl',
+				resolve    : {
+					notUsedButRequiredProperty: function (BehandlingSideResolver) {
+						return BehandlingSideResolver;
+					}
+				}
+			})
 			.when('/vedlegg/:soknadId', {
 				templateUrl: '../html/templates/vedlegg.html',
 				controller : 'SoknadDataCtrl',
