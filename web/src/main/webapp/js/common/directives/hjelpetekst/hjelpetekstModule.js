@@ -1,5 +1,5 @@
 angular.module('nav.hjelpetekst', ['nav.animation'])
-	.directive('navHjelpetekstelement', ['$document', function ($document) {
+	.directive('navHjelpetekstelement', ['$document', '$window', function ($document, $window) {
 		return {
 			replace    : true,
 			scope      : {
@@ -7,7 +7,9 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
 				tekst : '@'
 			},
 			templateUrl: '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html',
-			link       : function (scope) {
+			link: function (scope) {
+                var lukkEventTimestamp = 0;
+
 				scope.visHjelp = false;
 				scope.toggleHjelpetekst = function () {
 					scope.visHjelp = !scope.visHjelp;
@@ -15,25 +17,84 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
 
 				scope.lukk = function () {
 					scope.visHjelp = false;
+                    $($window).unbind('resize');
 				};
 
 				scope.stoppKlikk = function (event) {
-					event.stopPropagation();
+                    lukkEventTimestamp = event.timeStamp;
 				};
 
-				$document.bind('click', function () {
-					scope.visHjelp = false;
+				$document.bind('click', function (event) {
+                    if (lukkEventTimestamp !== event.timeStamp) {
+                        scope.visHjelp = false;
+                    }
 				});
 			}
 		}
 	}])
-	.directive('navHjelpetekstTooltip', ['$timeout', function ($timeout) {
+	.directive('navHjelpetekstTooltip', ['$timeout', '$document', '$window', function ($timeout, $document, $window) {
 		return function (scope, element) {
-			$timeout(function () {
-				var posisjon = element.prev().position();
-				var topp = posisjon.top - element.outerHeight() - 15;
-				var venstre = posisjon.left - 20;
-				element.css({top: topp + 'px', left: venstre + 'px'});
-			});
+            var mobilStorrelse = 767;
+
+            $($window).data('forrigeBredde', $window.innerWidth);
+            $($window).data('forrigeHoyde', $window.innerHeight);
+            $($window).bind('resize', function() {
+                if ($window.innerWidth > mobilStorrelse) {
+                    plasserTooltipHorisontalt();
+
+                    if ($($window).data('forrigeBredde') <= mobilStorrelse) {
+                        plasserTooltipVertikalt();
+                    }
+                } else if ($window.innerHeight !== $($window).data('forrigeHoyde')) {
+                    settMaxHoyde();
+                }
+                $($window).data('forrigeHoyde', $window.innerHeight);
+                $($window).data('forrigeBredde', $window.innerWidth);
+            });
+
+            $('style:contains(.hjelpetekst .hjelpetekst-tooltip:before)').remove();
+            $timeout(function() {
+                plasserTooltipHorisontalt();
+                scrollDersomNodvendig();
+
+                if ($window.innerWidth <= mobilStorrelse) {
+                    settMaxHoyde();
+                }
+
+            });
+
+            function plasserTooltipVertikalt() {
+                element.css({top: -element.height() - 30});
+            }
+
+            function plasserTooltipHorisontalt() {
+                var plassSomMangleTilHoyre = element[0].getBoundingClientRect().right + 40 - (window.innerWidth || document.documentElement.clientWidth);
+                var venstre = Math.min(element.position().left - plassSomMangleTilHoyre, -20);
+                element.css({left: venstre});
+                settPilStyling(venstre);
+            };
+
+            function scrollDersomNodvendig() {
+                plasserTooltipVertikalt();
+                var diff = element[0].getBoundingClientRect().top - 20;
+                if (diff < 0) {
+                    var animationSpeed = 200;
+                    $('body, html').scrollToPos($document.scrollTop() + diff, animationSpeed);
+                }
+            };
+
+            function settPilStyling(venstre) {
+                if ($('style:contains(.hjelpetekst .hjelpetekst-tooltip:before)').length === 0) {
+                    $('<style/>', {text: '.hjelpetekst .hjelpetekst-tooltip:before {left: ' + -venstre + 'px !important};'}).appendTo('head');
+                } else {
+                    $('style:contains(.hjelpetekst .hjelpetekst-tooltip:before)').text('.hjelpetekst .hjelpetekst-tooltip:before {left: ' + -venstre + 'px !important};');
+                }
+            };
+
+            function settMaxHoyde() {
+                var padding = element.css('left');
+                var hoyde = element.height() - element.find('.tittel').height() - parseInt(padding.substring(0, padding.length - 2));
+                element.find('.tekst').css({'max-height': hoyde + "px"});
+            };
 		}
 	}]);
