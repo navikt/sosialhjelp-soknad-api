@@ -87,10 +87,10 @@ public class VedleggController {
         return new RestFeil(ex.getId());
     }
 
-    @RequestMapping(value = "", params = "gosysId", method = RequestMethod.POST, produces = "text/html; charset=utf-8")
+    @RequestMapping(value = "", params = "skjemaNummer", method = RequestMethod.POST, produces = "text/html; charset=utf-8")
     @ResponseBody()
     @ResponseStatus(HttpStatus.CREATED)
-    public Callable<VedleggOpplasting> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam final String gosysId, @RequestParam("files[]") final List<MultipartFile> files) {
+    public Callable<VedleggOpplasting> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam final String skjemaNummer, @RequestParam("files[]") final List<MultipartFile> files) {
         return new Callable<VedleggOpplasting>() {
 
             @Override
@@ -98,7 +98,7 @@ public class VedleggController {
                 List<Vedlegg> res = new ArrayList<>();
                 for (MultipartFile file : files) {
                     byte[] in = getByteArray(file);
-                    Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, gosysId, file.getOriginalFilename(), file.getSize(), 1, null, in);
+                    Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, skjemaNummer, file.getOriginalFilename(), file.getSize(), 1, null, in);
                     List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, new ByteArrayInputStream(in));
                     for (Long id : ids) {
                         res.add(vedleggService.hentVedlegg(soknadId, id, false));
@@ -109,17 +109,17 @@ public class VedleggController {
         };
     }
 
-    @RequestMapping(value = "", params = "gosysId", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "", params = "skjemaNummer", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody
-    public VedleggOpplasting hentVedleggForFaktum(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam String gosysId) {
-        List<Vedlegg> vedlegg = vedleggService.hentVedleggForFaktum(soknadId, faktumId, gosysId);
+    public VedleggOpplasting hentVedleggForFaktum(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam String skjemaNummer) {
+        List<Vedlegg> vedlegg = vedleggService.hentVedleggForFaktum(soknadId, faktumId, skjemaNummer);
         return new VedleggOpplasting(vedlegg);
     }
 
-    @RequestMapping(value = "/generer", params = "gosysId", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/generer", params = "skjemaNummer", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
-    public Vedlegg bekreftFaktumVedlegg(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam final String gosysId) {
-        Long vedleggId = vedleggService.genererVedleggFaktum(soknadId, faktumId, gosysId);
+    public Vedlegg bekreftFaktumVedlegg(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam final String skjemaNummer) {
+        Long vedleggId = vedleggService.genererVedleggFaktum(soknadId, faktumId, skjemaNummer);
         return vedleggService.hentVedlegg(soknadId, vedleggId, false);
     }
 

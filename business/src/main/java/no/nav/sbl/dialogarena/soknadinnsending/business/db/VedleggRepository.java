@@ -32,10 +32,10 @@ public interface VedleggRepository {
      *
      * @param soknadId soknaden det skal hentes for
      * @param faktum   faktument det skal hentes for
-     * @param gosysId  hvilket vedlegg det skal hentes for
+     * @param skjemaNummer  hvilket vedlegg det skal hentes for
      * @return en liste med vedlegg
      */
-    List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktum, String gosysId);
+    List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktum, String skjemaNummer);
 
     /**
      * Henter innholdet til ett bestemt vedlegg
@@ -56,23 +56,23 @@ public interface VedleggRepository {
     Vedlegg hentVedlegg(Long soknadId, Long vedleggId);
 
     /**
-     * Henter vedlegg for et faktum og gosysId
+     * Henter vedlegg for et faktum og skjemaNummer
      *
      * @param soknadId soknaden det skal hentes for
      * @param faktumId faktumet det skal hentes vedlegg for
-     * @param gosysId  gosysId til faktumet
+     * @param skjemaNummer  skjemaNummer til faktumet
      * @return vedlegget
      */
-    Vedlegg hentVedleggForGosysId(Long soknadId, Long faktumId, String gosysId);
+    Vedlegg hentVedleggForskjemaNummer(Long soknadId, Long faktumId, String skjemaNummer);
 
     /**
      * Knytter et vedlegg til et faktum
      *
      * @param soknadId soknaden det endres på
      * @param faktumId faktumet som skal få et vedlegg
-     * @param gosysId  hvilket vedlegg status skal endres for
+     * @param skjemaNummer  hvilket vedlegg status skal endres for
      */
-    void settVedleggStatus(Long soknadId, Long faktumId, String gosysId);
+    void settVedleggStatus(Long soknadId, Long faktumId, String skjemaNummer);
 
     /**
      * Sletter alle vedlegg for et bestemt faktum
