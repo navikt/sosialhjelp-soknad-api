@@ -5,16 +5,10 @@ angular.module('nav.oppsummering', [])
         $scope.harbekreftet = {value: ''};
         $scope.skalViseFeilmelding = {value: false};
         $scope.fikkIkkeSendtSoknad = {value: false};
-        $scope.markupFeil = {value: false};
 
         $scope.soknadId = $routeParams.soknadId;
         oppsummeringService.get($scope.soknadId).then(function (markup) {
-           //success
             $scope.oppsummeringHtml = markup;
-            $scope.markupFeil.value = false;
-        }, function () {
-            //error
-            $scope.markupFeil.value = true;
         });
 
         $scope.$watch(function () {
@@ -32,11 +26,9 @@ angular.module('nav.oppsummering', [])
                 soknadService.send({param: $scope.soknadId, action: 'send'},
                     //Success
                     function () {
-                        $scope.fikkIkkeSendtSoknad.value = true;
-//
-//                        $scope.fikkIkkeSendtSoknad.value = false;
-//                        //TODO: Må endre lenken
-//                        $window.location.href = "https://tjenester-t11.nav.no/minehenvendelser/?behandlingsId=" + data.soknad.brukerBehandlingId;
+                        $scope.fikkIkkeSendtSoknad.value = false;
+                        //TODO: Må endre lenken
+                        $window.location.href = "https://tjenester-t11.nav.no/minehenvendelser/?behandlingsId=" + data.soknad.brukerBehandlingId;
                     },
                     //Error
                     function () {
