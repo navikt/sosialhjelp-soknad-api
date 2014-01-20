@@ -16,17 +16,17 @@ import java.util.Map;
 @XmlRootElement
 public class Person implements Serializable {
 
-    private static final String FODSELSNUMMERKEY = "fnr";
-    private static final String FORNAVNKEY = "fornavn";
-    private static final String MELLOMNAVNKEY = "mellomnavn";
-    private static final String ETTERNAVNKEY = "etternavn";
-    private static final String SAMMENSATTNAVNKEY = "sammensattnavn";
-    private static final String ADRESSERKEY = "adresser";
-    private static final String GJELDENDEADRESSETYPE = "gjeldendeAdresseType";
-    private static final String EPOSTKEY = "epost";
-    private static final String BARNKEY = "barn";
-    private static final String STATSBORGERSKAP = "statsborgerskap";
-    private static final String KJONN = "kjonn";
+    public static final String FODSELSNUMMERKEY = "fnr";
+    public static final String FORNAVNKEY = "fornavn";
+    public static final String MELLOMNAVNKEY = "mellomnavn";
+    public static final String ETTERNAVNKEY = "etternavn";
+    public static final String SAMMENSATTNAVNKEY = "sammensattnavn";
+    public static final String ADRESSERKEY = "adresser";
+    public static final String GJELDENDEADRESSETYPE = "gjeldendeAdresseType";
+    public static final String EPOSTKEY = "epost";
+    public static final String BARNKEY = "barn";
+    public static final String STATSBORGERSKAP = "statsborgerskap";
+    public static final String KJONN = "kjonn";
 
     private Map<String, Object> fakta;
 
