@@ -11,7 +11,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/behandling/:behandlingId', {
+			.when('/:behandlingId', {
 				templateUrl: '../html/templates/informasjonsside.html',
 				controller: 'BehandlingCtrl',
 				resolve    : {
