@@ -4,7 +4,7 @@
         <div class="begrensning">
             <div class="sak-totredel">
                 <div class="arbeidsforhold-spm spm-boks panel-standard-belyst">
-                    <a href="#/dagpenger/{{ soknadData.soknadId }}" class="lukk"> </a>
+                    <a href="#/dagpenger/{{ data.soknad.soknadId }}" class="lukk"> </a>
                     <div data-form-errors></div>
                     <h2 class="stor-strek">
                         <span data-cmstekster="arbeidsforhold.nyttarbeidsforhold.tittel"></span>
@@ -130,7 +130,7 @@
                 <div class="knapper-opprett">
                     <input class="knapp-hoved-liten" name="lagre" type="submit" data-cmstekster="arbeidsforhold.nyttarbeidsforhold.lagre"
                     data-ng-click="lagreArbeidsforhold(nyttArbeidsforholdForm);">
-                    <a href="#/dagpenger/{{ soknadData.soknadId }}" data-cmstekster="arbeidsforhold.nyttarbeidsforhold.avbryt"></a>
+                    <a href="#/dagpenger/{{data.soknad.soknadId }}" data-cmstekster="arbeidsforhold.nyttarbeidsforhold.avbryt"></a>
                 </div>
 
             </div>

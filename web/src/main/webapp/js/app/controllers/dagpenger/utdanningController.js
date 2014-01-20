@@ -51,13 +51,6 @@ angular.module('nav.utdanning', [])
 			}
 		};
 
-		$scope.hvisIngenUnntakGjelder = function (utdanning) {
-			if ($scope.soknadData && $scope.soknadData.fakta) {
-				return $scope.soknadData.fakta.underUtdanningAnnet && checkTrue($scope.soknadData.fakta.underUtdanningAnnet.value);
-			}
-			return false;
-		};
-
 		function erCheckboxerAvhuket(checkboxNokler) {
 			var minstEnAvhuket = false;
 			var fakta = {};
