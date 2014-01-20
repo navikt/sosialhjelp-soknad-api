@@ -10,6 +10,8 @@ public interface SendSoknadService {
     Long startSoknad(String navSoknadId);
 
     WebSoknad hentSoknad(long soknadId);
+    
+    Long hentSoknadMedBehandlinsId(String behandlingsId);
 
     Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum);
     
@@ -30,4 +32,6 @@ public interface SendSoknadService {
     List<Faktum> hentFakta(Long soknadId);
 
     void slettBrukerFaktum(Long soknadId, Long faktumId);
+
+    
 }
