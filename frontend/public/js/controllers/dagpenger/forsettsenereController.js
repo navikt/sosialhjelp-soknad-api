@@ -18,34 +18,16 @@ angular.module('nav.forsettsenere',['nav.cmstekster'])
 
     .directive('navGjenoppta', ['$compile','data', function($compile, data) {
         
-        var getForDelsteg = function(delstegstatus) {
-            var templateUrl = '';
-            switch (delstegstatus){
-                case 'UTFYLLING':
-                    templateUrl = '../html/templates/gjenoppta/skjema-under-arbeid.html';
-                    break;
-                case 'VEDLEGG_VALIDERT':
-                    templateUrl = '../html/templates/gjenoppta/skjema-ferdig.html';
-                    break;
 
-                case 'SKJEMA_VALIDERT':
-                    templateUrl = '../html/templates/gjenoppta/skjema-validert.html';
-                    break;
-                default:
-                    templateUrl = '../html/templates/gjenoppta/skjema-under-arbeid.html';
-
-            }
-            return templateUrl;
-        };
 
         var getTemplateUrl =  function(status, delstegstatus) {
             var templateUrl = '';
             switch (status) {
                     case 'UNDER_ARBEID':
-                        templateUrl = getForDelsteg(delstegstatus);
+                        templateUrl = '/html/dagpenger.html';
                         break;
                     case 'FERDIG':
-                        templateUrl = '../html/templates/gjenoppta/skjema-sendt.html';
+                        templateUrl = '/html/dagpenger.html';
                         break;
                     case 'AVBRUTT':
                         break;
