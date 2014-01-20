@@ -14,5 +14,8 @@ angular.module('app.controllers', [
     'nav.vedlegg.controller',
     'nav.forsettsenere',
     'nav.dagpenger',
-    'nav.personalia'
+    'nav.personalia',
+    'nav.arbeidsforhold',
+    'nav.informasjonsside',
+    'nav.behandlingside'
 ]);
