@@ -1,13 +1,17 @@
 angular.module('nav.oppsummering', [])
-    .controller('OppsummeringCtrl', ['$scope', '$location', '$routeParams', 'soknadService', 'personalia', 'oppsummeringService', function ($scope, $location, $routeParams, soknadService, personalia, oppsummeringService) {
+    .controller('OppsummeringCtrl', ['$scope', '$location', '$routeParams', 'soknadService', 'personalia', '$http', function ($scope, $location, $routeParams, soknadService, personalia, $http) {
         $scope.personalia = personalia;
         $scope.oppsummeringHtml = '';
         $scope.harbekreftet = {value: ''};
         $scope.skalViseFeilmelding = {value: false};
 
         $scope.soknadId = $routeParams.soknadId;
-        oppsummeringService.get($scope.soknadId).then(function(markup) {
-            $scope.oppsummeringHtml = markup;
+        $http.get('/sendsoknad/rest/soknad/oppsummering/' + $scope.soknadId).then(function(response) {
+            var soknadElement = $(response.data).filter("#soknad");
+            soknadElement.find('.logo').remove();
+            soknadElement.find('.hode h1').addClass('stor strek-ikon-soknader');
+            soknadElement.find('hr').remove();
+            $scope.oppsummeringHtml = soknadElement.html();
         });
 
         console.log($scope.skalViseFeilmelding.value)
@@ -19,7 +23,7 @@ angular.module('nav.oppsummering', [])
         }, function () {
             $scope.skalViseFeilmelding.value = false;
             console.log($scope.skalViseFeilmelding.value)
-        })
+        });
 
         $scope.sendSoknad = function () {
             if ($scope.harbekreftet.value) {

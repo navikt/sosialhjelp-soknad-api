@@ -1,59 +1,80 @@
 #oppsummering {
 
-  .stegindikator {
-    margin-top: 40px;
-  }
-
-  .oppsummering {
-    padding-bottom: 40px;
-    margin-bottom: 40px;
-    border-bottom: 1px solid #ddd;
-
-    //        .personalia {
-    //            text-align: center;
-    //
-    //
-    //            .navnOgFnr span {
-    //                font-weight: 800;
-    //                font-family: Modus, Arial, Helvetica, sans-serif;;
-    //            }
-    //
-    //            .adresse {
-    //                .adressetype {
-    //                    display: none;
-    //                }
-    //
-    //                p {
-    //                    display: inline-block;
-    //
-    //                    &:after {
-    //                        content: ", ";
-    //                    }
-    //
-    //                    &:last-child {
-    //
-    //                        &:after {
-    //                            content: "";
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //        }
-  }
-
-  form {
-
-    .form-linje.feilstyling {
-      padding-top: 20px !important;
-    }
-    input[type="submit"] {
-      display: block;
-      margin: 50px auto;
+    .stegindikator {
+        margin-top: 40px;
     }
 
-    .lenker {
-      text-align: center;
+    .oppsummering {
+        padding-bottom: 40px;
+        margin-bottom: 40px;
+        border-bottom: 1px solid #ddd;
+
+        .sjekket {
+            display: inline-block;
+            background: url(../img/hake_sort.png) no-repeat center;
+            width: 10px;
+            height: 10px;
+            background-size: 100%;
+        }
+        .usjekket {
+            display: inline-block;
+            background: url(../img/minus_sort.png) no-repeat center;
+            width: 10px;
+            height: 10px;
+        }
+
+        .hode {
+            .personalia {
+                padding-bottom: 30px;
+                margin-bottom: 30px;
+                border-bottom: 1px solid #ddd;
+            }
+        }
+        //        .personalia {
+        //            text-align: center;
+        //
+        //
+        //            .navnOgFnr span {
+        //                font-weight: 800;
+        //                font-family: Modus, Arial, Helvetica, sans-serif;;
+        //            }
+        //
+        //            .adresse {
+        //                .adressetype {
+        //                    display: none;
+        //                }
+        //
+        //                p {
+        //                    display: inline-block;
+        //
+        //                    &:after {
+        //                        content: ", ";
+        //                    }
+        //
+        //                    &:last-child {
+        //
+        //                        &:after {
+        //                            content: "";
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
     }
-  }
+
+    form {
+
+        .form-linje.feilstyling {
+            padding-top: 20px !important;
+        }
+        input[type="submit"] {
+            display: block;
+            margin: 50px auto;
+        }
+
+        .lenker {
+            text-align: center;
+        }
+    }
 
 }

@@ -21,11 +21,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import java.io.IOException;
 import java.util.List;
 
 import static java.lang.String.format;
 import static javax.xml.bind.JAXBContext.newInstance;
 import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.sbl.dialogarena.print.HandleBarKjoerer.fyllHtmlMalMedInnhold;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
@@ -133,8 +135,11 @@ public class SoknadDataController {
 
     @RequestMapping(value = "/oppsummering/{soknadId}", method = RequestMethod.GET, produces = "text/html")
     @ResponseBody()
-    public String hentOppsummering(@PathVariable Long soknadId) {
-        return "<div>Oppsummering for " + soknadId.toString() + " </div>";
+    public String hentOppsummering(@PathVariable Long soknadId) throws IOException {
+        WebSoknad soknad = soknadService.hentSoknad(soknadId);
+
+        String markup = fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+        return markup;
     }
 
     //

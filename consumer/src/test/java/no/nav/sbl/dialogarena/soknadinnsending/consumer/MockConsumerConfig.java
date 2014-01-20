@@ -38,9 +38,11 @@ import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegre
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Landkoder;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.NorskIdent;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 
@@ -100,6 +102,12 @@ public class MockConsumerConfig {
             PersonPortType mock = mock(PersonPortType.class);
             HentKjerneinformasjonResponse response = new HentKjerneinformasjonResponse();
             Person person = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "person", "mock");
+
+            Statsborgerskap statsborgerskap = new Statsborgerskap();
+            Landkoder landkoder = new Landkoder();
+            landkoder.setValue("NOR");
+            statsborgerskap.setLand(landkoder);
+            person.setStatsborgerskap(statsborgerskap);
             List<Familierelasjon> familieRelasjoner = person.getHarFraRolleI();
             Familierelasjon familierelasjon = new Familierelasjon();
             Person barn1 = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "Barn1", "mock");
@@ -200,7 +208,7 @@ public class MockConsumerConfig {
 
     @Configuration
     public static class BrukerProfilWSConfig {
-        private static final String RIKTIG_IDENT = "12345612345";
+        private static final String RIKTIG_IDENT = "***REMOVED***";
         private static final String ET_FORNAVN = "Ola";
         private static final String ET_MELLOMNAVN = "Johan";
         private static final String ET_ETTERNAVN = "Mockmann";
