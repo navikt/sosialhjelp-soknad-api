@@ -56,7 +56,7 @@ angular.module('app.brukerdata', ['app.services'])
                     var delay = 1500 - ($.now() - start);
                     setTimeout(function () {
                         $scope.$apply(function () {
-                            $location.path('slettet');
+                            $location.path('/slettet');
                         });
                     }, delay);
                 },
