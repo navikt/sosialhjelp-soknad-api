@@ -139,6 +139,12 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     @Override
+    public Long hentSoknadMedBehandlinsId(String behandlingsId) {
+        WebSoknad soknad = repository.hentMedBehandlingsId(behandlingsId);
+        return soknad.getSoknadId();
+    }
+    
+    @Override
     public void avbrytSoknad(Long soknadId) {
         WebSoknad soknad = repository.hentSoknad(soknadId);
         repository.avbryt(soknadId);
