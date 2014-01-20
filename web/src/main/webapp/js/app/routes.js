@@ -12,7 +12,6 @@ angular.module('app.routes', ['ngRoute'])
 				}
 			})
 			.when('/behandling/:behandlingId', {
-				//redirectTo: '/dagpenger/:soknadId',
 				templateUrl: '../html/templates/informasjonsside.html',
 				controller: 'BehandlingCtrl',
 				resolve    : {
