@@ -35,6 +35,7 @@ public class TestApplicationContext {
     private boolean mockTps = true;
     private boolean mockKodeverk = true;
     @Inject
+    @SuppressWarnings("PMD")
     private org.springframework.context.ApplicationContext context;
 
     @Bean

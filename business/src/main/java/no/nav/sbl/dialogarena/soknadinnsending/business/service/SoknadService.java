@@ -1,17 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import java.awt.*;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.sbl.dialogarena.detect.Detect;
 import no.nav.sbl.dialogarena.detect.pdf.PdfDetector;
@@ -40,6 +28,19 @@ import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.awt.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import static java.lang.String.format;
 import static javax.xml.bind.JAXBContext.newInstance;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
@@ -63,6 +64,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     private HenvendelseConnector henvendelseConnector;
     @Inject
     private FillagerConnector fillagerConnector;
+    @SuppressWarnings("PMD")
     @Inject
     private AktorIdService aktorIdService;
 
@@ -160,7 +162,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
         WebSoknad soknad = WebSoknad.startSoknad().
                 medBehandlingId(behandlingsId).
                 medGosysId(navSoknadId).
-                medAktorId(aktorIdService.hentAktorIdForFno(getSubjectHandler().getUid())).
+                //medAktorId(aktorIdService.hentAktorIdForFno(getSubjectHandler().getUid())).
+                medAktorId(getSubjectHandler().getUid()).
                 opprettetDato(DateTime.now());
         return repository.opprettSoknad(soknad);
     }
