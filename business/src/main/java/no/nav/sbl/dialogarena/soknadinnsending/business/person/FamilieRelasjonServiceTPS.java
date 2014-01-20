@@ -46,8 +46,7 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
         if (response != null)
         {
             logger.warn("Fullstendig respons fra Person-servicen:" + response.getPerson());
-        }
-        else
+        } else
         {
             logger.warn("Respons fra Person-servicen er null");
         }

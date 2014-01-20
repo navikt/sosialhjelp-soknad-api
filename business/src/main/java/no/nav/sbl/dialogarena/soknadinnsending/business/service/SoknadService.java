@@ -47,6 +47,8 @@ import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLIn
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.LastetOpp;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.VedleggKreves;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getJournalforendeEnhet;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getSkjemanummer;
 
 @Component
 public class SoknadService implements SendSoknadService, VedleggService {
@@ -64,6 +66,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     private HenvendelseConnector henvendelseConnector;
     @Inject
     private FillagerConnector fillagerConnector;
+    @SuppressWarnings("PMD")
     @Inject
     private AktorIdService aktorIdService;
 
@@ -125,7 +128,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public void sendSoknad(long soknadId) {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
         List<VedleggForventning> vedleggForventnings = hentPaakrevdeVedlegg(soknadId);
-        XMLHovedskjema hovedskjema = new XMLHovedskjema().withInnsendingsvalg(LASTET_OPP.toString()).withSkjemanummer("NAV 04-01.03");
+        String skjemanummer = getSkjemanummer(soknad);
+        String journalforendeEnhet = getJournalforendeEnhet(soknad);
+        XMLHovedskjema hovedskjema = new XMLHovedskjema().withInnsendingsvalg(LASTET_OPP.toString()).withSkjemanummer(skjemanummer).withJournalforendeEnhet(journalforendeEnhet);
         henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, Transformers.convertToXmlVedleggListe(vedleggForventnings));
         repository.avslutt(soknad);
 
@@ -137,6 +142,12 @@ public class SoknadService implements SendSoknadService, VedleggService {
         return null;
     }
 
+    @Override
+    public Long hentSoknadMedBehandlinsId(String behandlingsId) {
+        WebSoknad soknad = repository.hentMedBehandlingsId(behandlingsId);
+        return soknad.getSoknadId();
+    }
+    
     @Override
     public void avbrytSoknad(Long soknadId) {
         WebSoknad soknad = repository.hentSoknad(soknadId);
@@ -156,12 +167,13 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Long startSoknad(String navSoknadId) {
-        String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid(), "NAV 04-01.03");
+        String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid());
 //       String behandlingsId = "MOCK" + new Random().nextInt(100000000);
         WebSoknad soknad = WebSoknad.startSoknad().
                 medBehandlingId(behandlingsId).
                 medGosysId(navSoknadId).
-                medAktorId(aktorIdService.hentAktorIdForFno(getSubjectHandler().getUid())).
+                //medAktorId(aktorIdService.hentAktorIdForFno(getSubjectHandler().getUid())).
+                medAktorId(getSubjectHandler().getUid()).
                 opprettetDato(DateTime.now());
         return repository.opprettSoknad(soknad);
     }

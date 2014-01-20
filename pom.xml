@@ -53,7 +53,7 @@
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>dialogarena-behandlingsinformasjon</artifactId>
-                <version>0.0.3</version>
+                <version>0.0.4</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
@@ -129,12 +129,13 @@
                 <version>1.0.4</version>
                 <classifier>jaxws</classifier>
             </dependency>
-
             <dependency>
-                <groupId>no.nav.sbl.dialogarena</groupId>
-                <artifactId>aktorid-jaxws</artifactId>
-                <version>1.0</version>
+                <groupId>no.nav.tjenester.fim</groupId>
+                <artifactId>nav-fim-aktoer-v1-tjenestespesifikasjon</artifactId>
+                <version>1.0.0</version>
+                <classifier>jaxws</classifier>
             </dependency>
+
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>kodeverk-tjenestespesifikasjon</artifactId>
@@ -184,7 +185,7 @@
             <dependency>
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-lang</artifactId>
-                <version>1.1.0</version>
+                <version>2.0.0-alpha.2</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.modig</groupId>

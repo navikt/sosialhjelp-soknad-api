@@ -59,6 +59,24 @@ angular.module('sendsoknad')
 
         return $q.all(promiseArray);
     }])
+
+    .factory('BehandlingSideResolver', ['$resource', '$q', '$route' , function ($resource, $q, $route) {
+        var promiseArray = [];
+
+        var behandlingId = $route.current.params.behandlingId;
+        var soknadDeferer = $q.defer();
+        var soknad = $resource('/sendsoknad/rest/soknad/behandling/:behandlingId').get(
+            {behandlingId: behandlingId},
+            function (result) { // Success
+                $route.current.params.soknadId = result.result;
+                soknadDeferer.resolve();
+            }
+        );
+        promiseArray.push(soknadDeferer.promise)
+        
+        return $q.all(promiseArray);
+    }])
+
     .factory('HentSoknadService', ['$rootScope', 'data', 'cms', 'personalia', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', function ($scope, data, cms, personalia, $resource, $q, $route, soknadService, landService, Faktum) {
         var soknadId = $route.current.params.soknadId;
         var promiseArray = [];

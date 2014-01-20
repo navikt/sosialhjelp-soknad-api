@@ -6,8 +6,6 @@ angular.module('sendsoknad', [
 	'app.services',
 	'app.directives',
 	'app.controllers',
-	'nav.arbeidsforhold',
-	'nav.informasjonsside',
 	'pasvaz.bindonce',
 	'ngAnimate',
 	'ngCookies'
