@@ -44,6 +44,7 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 
+import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -110,6 +111,9 @@ public class MockConsumerConfig {
             familieRelasjoner.add(familierelasjon);
             response.setPerson(person);
             when(mock.hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class))).thenReturn(response);
+            
+            //Mockito.doThrow(new RuntimeException()).when(mock).ping();
+            
             return mock;
         }
 
@@ -227,7 +231,9 @@ public class MockConsumerConfig {
             response.setPerson(xmlBruker);
 
             when(mock.hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(response);
-
+            
+            //Mockito.doThrow(new RuntimeException()).when(mock).ping();
+            
             return mock;
         }
 

@@ -16,6 +16,18 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 			$scope.fremdriftsindikator = {
 				laster: false
 			};
+
+			$scope.tpsSvarer = function() {
+				return !$scope.tpsSvarerIkke()
+			}
+
+			$scope.tpsSvarerIkke = function() {
+				if($scope.utslagskriterier.error != undefined) {
+					return true;
+				}
+				return false;
+			}
+
 	        $scope.startSoknad = function () {
 	            var soknadType = window.location.pathname.split("/")[3];
 	            $scope.fremdriftsindikator.laster = true;

@@ -4,83 +4,92 @@
 
 <div id="informasjonsside" data-sidetittel="sidetittel.informasjon">
 	<div data-panelbelyst>
-        <h2 data-ng-show="kravForDagpengerOppfylt()" class="stor strek-ikon-info" data-cmstekster="dagpenger.informasjonsside.tittel"></h2>
-    
-		<div id="utslagskriterier" ng-show="kravForDagpengerIkkeOppfylt()">
-			<div class="utslagskriterie" data-ng-show="ikkeBosattINorge()">
-				<h2 class="stor strek-ikon-info" data-cmstekster="dagpenger.informasjonsside.ikkebosattinorge.tittel"></h2>
-				<ul>
-					<li>
-						<p data-cmstekster="utslagskriterier.utslag.bosted.liste.1"></p>
-						<div class="adresse">
-							<div data-ng-repeat="linje in gjeldendeAdresse.adresseLinjer"> 
-								<span>{{linje}}</span>
+        <div data-ng-show="tpsSvarerIkke()"> 
+        	<h1 data-cmstekster="feilmelding"></h1>
+       		<span data-cmstekster="feilmelding.tps"></span>
+       	</div>
+       	<div data-ng-show="tpsSvarer()">
+
+	        <h2 data-ng-show="kravForDagpengerOppfylt()" class="stor strek-ikon-info" data-cmstekster="dagpenger.informasjonsside.tittel"></h2>
+	    	
+
+
+			<div id="utslagskriterier" ng-show="kravForDagpengerIkkeOppfylt()">
+				<div class="utslagskriterie" data-ng-show="ikkeBosattINorge()">
+					<h2 class="stor strek-ikon-info" data-cmstekster="dagpenger.informasjonsside.ikkebosattinorge.tittel"></h2>
+					<ul>
+						<li>
+							<p data-cmstekster="utslagskriterier.utslag.bosted.liste.1"></p>
+							<div class="adresse">
+								<div data-ng-repeat="linje in gjeldendeAdresse.adresseLinjer"> 
+									<span>{{linje}}</span>
+								</div>
+								<span data-ng-bind="gjeldendeAdresse.land"></span>
 							</div>
-							<span data-ng-bind="gjeldendeAdresse.land"></span>
-						</div>
+						</li>
+						<li>
+							<p data-cmstekster="utslagskriterier.utslag.bosted.liste.2"></p>
+						</li>
+						<li>
+							<p data-cmstekster="utslagskriterier.utslag.bosted.liste.3"></p>
+						</li>
+					</ul>
+				</div>
+
+				<div class="utslagskriterie" data-ng-show="ikkeGyldigAlder()">
+					<h2 class="stor strek-ikon-info" data-cmstekster="dagpenger.informasjonsside.ikkegyldigalder.tittel"></h2>
+					<ul>
+						<li>
+							<span data-cmstekster="utslagskriterier.utslag.alder.1"></span>
+							<a data-cmstekster="utslagskriterier.utslag.alder.2.lenketekst" cmslenketekster="utslagskriterier.utslag.alder.2.lenkeurl"></a>
+						</li>
+					</ul>
+				</div>
+
+			</div>
+
+			<div class="viktig-info" data-ng-show="kravForDagpengerOppfylt()">
+				<ul  class="informasjonsliste">
+					<li>
+						<p class="medium" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.1"></p>
+						<a data-cmslenketekster="dagpenger.informasjonsside.informasjon.liste.1.lenkeurl" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.1.lenketekst"> </a>		
 					</li>
 					<li>
-						<p data-cmstekster="utslagskriterier.utslag.bosted.liste.2"></p>
+						<p class="medium" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.2"></p>
 					</li>
 					<li>
-						<p data-cmstekster="utslagskriterier.utslag.bosted.liste.3"></p>
+						<p class="medium" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.3"></p>
+						<a data-cmslenketekster="dagpenger.informasjonsside.informasjon.liste.3.lenkeurl" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.3.lenketekst"> </a>		
 					</li>
 				</ul>
-			</div>
 
-			<div class="utslagskriterie" data-ng-show="ikkeGyldigAlder()">
-				<h2 class="stor strek-ikon-info" data-cmstekster="dagpenger.informasjonsside.ikkegyldigalder.tittel"></h2>
-				<ul>
-					<li>
-						<span data-cmstekster="utslagskriterier.utslag.alder.1"></span>
-						<a data-cmstekster="utslagskriterier.utslag.alder.2.lenketekst" cmslenketekster="utslagskriterier.utslag.alder.2.lenkeurl"></a>
-					</li>
-				</ul>
-			</div>
+				<form>
+					<div class="nav-checkbox">
+						<input id="lestBrosjyre" data-ng-model="utslagskriterier.harlestbrosjyre" type="checkbox"	/>
+						<label for="lestBrosjyre" data-cmstekster="dagpenger.informasjonsside.lestbrosjyre.sporsmal"></label>
+					</div>
+				</form>
 
-		</div>
-
-		<div class="viktig-info" data-ng-show="kravForDagpengerOppfylt()">
-			<ul  class="informasjonsliste">
-				<li>
-					<p class="medium" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.1"></p>
-					<a data-cmslenketekster="dagpenger.informasjonsside.informasjon.liste.1.lenkeurl" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.1.lenketekst"> </a>		
-				</li>
-				<li>
-					<p class="medium" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.2"></p>
-				</li>
-				<li>
-					<p class="medium" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.3"></p>
-					<a data-cmslenketekster="dagpenger.informasjonsside.informasjon.liste.3.lenkeurl" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.3.lenketekst"> </a>		
-				</li>
-			</ul>
-
-			<form>
-				<div class="nav-checkbox">
-					<input id="lestBrosjyre" data-ng-model="utslagskriterier.harlestbrosjyre" type="checkbox"	/>
-					<label for="lestBrosjyre" data-cmstekster="dagpenger.informasjonsside.lestbrosjyre.sporsmal"></label>
-				</div>
-			</form>
-
-			<div class="brosjyre-info" data-ng-show="skalViseBrosjyreMelding">
-				<div data-navinfoboks>
-					<span data-cmstekster="dagpenger.informasjonsside.lestbrosjyre.feilmelding"> </span>
+				<div class="brosjyre-info" data-ng-show="skalViseBrosjyreMelding">
+					<div data-navinfoboks>
+						<span data-cmstekster="dagpenger.informasjonsside.lestbrosjyre.feilmelding"> </span>
+					</div>
 				</div>
 			</div>
-		</div>
 
 
-		<div class="utslagskriterier-knapper" data-ng-show="kravForDagpengerOppfylt()">
-			<input type="button" class="knapp-hoved" data-cmstekster="utslagskriterier.utslag.fortsett" data-ng-click="startSoknadDersomBrosjyreLest()" data-fremdriftsindikator/>
-			<a data-cmslenketekster="utslagskriterier.utslag.avbryt.lenkeurl" data-cmstekster="utslagskriterier.utslag.avbryt.lenketekst"/>
-		</div>
+			<div class="utslagskriterier-knapper" data-ng-show="kravForDagpengerOppfylt()">
+				<input type="button" class="knapp-hoved" data-cmstekster="utslagskriterier.utslag.fortsett" data-ng-click="startSoknadDersomBrosjyreLest()" data-fremdriftsindikator/>
+				<a data-cmslenketekster="utslagskriterier.utslag.avbryt.lenkeurl" data-cmstekster="utslagskriterier.utslag.avbryt.lenketekst"/>
+			</div>
 
-		<div class="utslagskriterier-knapper" data-ng-show="kravForDagpengerIkkeOppfylt()">
-			<a type="button" class="knapp-hoved" data-cmslenketekster="utslagskriterier.utslag.avbryt.lenkeurl" data-cmstekster="utslagskriterier.utslag.avbryt.lenketekst"/>
-			<p>
-				<a href="#" data-cmstekster="utslagskriterier.utslag.fortsettlikevel" data-ng-click="fortsettLikevel($event)" data-fremdriftsindikator/>
-				<span data-cmstekster="utslagskriterier.utslag.infoAvslag"> </span>
-			</p>
+			<div class="utslagskriterier-knapper" data-ng-show="kravForDagpengerIkkeOppfylt()">
+				<a type="button" class="knapp-hoved" data-cmslenketekster="utslagskriterier.utslag.avbryt.lenkeurl" data-cmstekster="utslagskriterier.utslag.avbryt.lenketekst"/>
+				<p>
+					<a href="#" data-cmstekster="utslagskriterier.utslag.fortsettlikevel" data-ng-click="fortsettLikevel($event)" data-fremdriftsindikator/>
+					<span data-cmstekster="utslagskriterier.utslag.infoAvslag"> </span>
+				</p>
+			</div>
 		</div>
 	</div>
 </div>
