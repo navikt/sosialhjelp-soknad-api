@@ -1,7 +1,4 @@
 angular.module('nav.informasjonsside', ['nav.cmstekster'])
-	.controller('BehandlingCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', 'soknadService', function ($scope, data, $routeParams, $http, $location, soknadService) {
-		$location.path('dagpenger/' + $routeParams.soknadId);
-	}])
 	.controller('InformasjonsSideCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', 'soknadService', function ($scope, data, $routeParams, $http, $location, soknadService) {
 			$scope.utslagskriterier = data.utslagskriterier;
 			//Inntil vi får arena-kobling
