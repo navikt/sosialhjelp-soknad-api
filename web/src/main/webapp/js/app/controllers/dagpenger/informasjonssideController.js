@@ -20,9 +20,12 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 	            var soknadType = window.location.pathname.split("/")[3];
 	            $scope.fremdriftsindikator.laster = true;
 	            $scope.soknad = soknadService.create({param: soknadType},
+                    //Success
 	                function (result) {
 	                    $location.path('dagpenger/' + result.id);
-	                }, function () {
+	                },
+                    //Error
+                    function () {
 	                    $scope.fremdriftsindikator.laster = false;
 	                });
 	        }

@@ -1,41 +1,55 @@
 angular.module('nav.oppsummering', [])
-    .controller('OppsummeringCtrl', ['$scope', '$location', '$routeParams', 'soknadService', 'personalia', 'oppsummeringService', function ($scope, $location, $routeParams, soknadService, personalia, oppsummeringService) {
+    .controller('OppsummeringCtrl', ['$scope', 'data', '$location', '$routeParams', 'soknadService', 'personalia', 'oppsummeringService', '$window', function ($scope, data, $location, $routeParams, soknadService, personalia, oppsummeringService, $window) {
         $scope.personalia = personalia;
         $scope.oppsummeringHtml = '';
         $scope.harbekreftet = {value: ''};
         $scope.skalViseFeilmelding = {value: false};
+        $scope.fikkIkkeSendtSoknad = {value: false};
+        $scope.markupFeil = {value: false};
 
         $scope.soknadId = $routeParams.soknadId;
-        oppsummeringService.get($scope.soknadId).then(function(markup) {
+        oppsummeringService.get($scope.soknadId).then(function (markup) {
+           //success
             $scope.oppsummeringHtml = markup;
+            $scope.markupFeil.value = false;
+        }, function () {
+            //error
+            $scope.markupFeil.value = true;
         });
 
-        console.log($scope.skalViseFeilmelding.value)
-
         $scope.$watch(function () {
-            if($scope.harbekreftet) {
+            if ($scope.harbekreftet) {
                 return $scope.harbekreftet.value;
             }
         }, function () {
             $scope.skalViseFeilmelding.value = false;
-            console.log($scope.skalViseFeilmelding.value)
         })
 
         $scope.sendSoknad = function () {
             if ($scope.harbekreftet.value) {
-                console.log("HEI");
                 $scope.skalViseFeilmelding.value = false;
+
+                soknadService.send({param: $scope.soknadId, action: 'send'},
+                    //Success
+                    function () {
+                        $scope.fikkIkkeSendtSoknad.value = true;
+//
+//                        $scope.fikkIkkeSendtSoknad.value = false;
+//                        //TODO: Må endre lenken
+//                        $window.location.href = "https://tjenester-t11.nav.no/minehenvendelser/?behandlingsId=" + data.soknad.brukerBehandlingId;
+                    },
+                    //Error
+                    function () {
+                        $scope.fikkIkkeSendtSoknad.value = true;
+                    }
+                );
             } else {
                 $scope.skalViseFeilmelding.value = true;
             }
-            console.log($scope.skalViseFeilmelding.value)
-
-//            soknadService.send({param: $scope.soknadId, action: 'send'});
-//            $location.path('kvittering');
         }
     }])
-    .filter('formatterFnr', function() {
-        return function(fnr) {
+    .filter('formatterFnr', function () {
+        return function (fnr) {
             return fnr.substring(0, 6) + " " + fnr.substring(6, fnr.length);
         };
     });
