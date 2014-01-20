@@ -89,15 +89,17 @@ angular.module('nav.arbeidsforhold.controller', [])
         $scope.validerOgSettModusOppsummering = function (form) {
             $scope.validateForm(form.$invalid);
             $scope.validerArbeidsforhold(true);
+
+        };
+
+        $scope.validerArbeidsforhold = function (skalScrolle) {
+            $scope.runValidation(skalScrolle);
+
             $scope.harFeil = false;
 
             if (!$scope.hvisHarIkkeJobbet()) {
                 $scope.harFeil = true;
             }
-        };
-
-        $scope.validerArbeidsforhold = function (skalScrolle) {
-            $scope.runValidation(skalScrolle);
         };
 
         $scope.nyttArbeidsforhold = function ($event) {
