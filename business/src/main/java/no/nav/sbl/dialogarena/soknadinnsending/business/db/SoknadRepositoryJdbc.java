@@ -92,7 +92,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         getJdbcTemplate()
                 .update("insert into soknad (soknad_id, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status, delstegstatus) values (?,?,?,?,?,?,?)",
                         databasenokkel, soknad.getBrukerBehandlingId(),
-                        soknad.getGosysId(), soknad.getAktoerId(),
+                        soknad.getskjemaNummer(), soknad.getAktoerId(),
                         new Date(soknad.getOpprettetDato()),
                         UNDER_ARBEID.name(), OPPRETTET.name());
         return databasenokkel;
@@ -285,7 +285,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
             return startSoknad()
                     .medId(rs.getLong("soknad_id"))
                     .medBehandlingId(rs.getString("brukerbehandlingid"))
-                    .medGosysId(rs.getString("navsoknadid"))
+                    .medskjemaNummer(rs.getString("navsoknadid"))
                     .medAktorId(rs.getString("aktorid"))
                     .opprettetDato(
                             new DateTime(rs.getTimestamp("opprettetdato")

@@ -38,7 +38,7 @@ public class SoknadRepositoryJdbcTest {
 
     private String aktorId = "1";
     private String behandlingsId = "1";
-    private String gosysId = "gosysid";
+    private String skjemaNummer = "skjemaNummer";
 
 
     @After
@@ -57,7 +57,7 @@ public class SoknadRepositoryJdbcTest {
     public void skalIkkeKunneOppretteUtenAktorId() {
         soknad = WebSoknad.startSoknad()
                 .medBehandlingId(behandlingsId)
-                .medGosysId(gosysId)
+                .medskjemaNummer(skjemaNummer)
                 .opprettetDato(DateTime.now());
 
         soknadRepository.opprettSoknad(soknad);
@@ -67,14 +67,14 @@ public class SoknadRepositoryJdbcTest {
     public void skalIkkeKunneOppretteUtenBehandlingId() {
         soknad = WebSoknad.startSoknad()
                 .medAktorId(aktorId)
-                .medGosysId(gosysId)
+                .medskjemaNummer(skjemaNummer)
                 .opprettetDato(DateTime.now());
 
         soknadRepository.opprettSoknad(soknad);
     }
 
     @Test(expected = DataIntegrityViolationException.class)
-    public void skalIkkeKunneOppretteUtenGosysId() {
+    public void skalIkkeKunneOppretteUtenskjemaNummer() {
         soknad = WebSoknad.startSoknad()
                 .medAktorId(aktorId)
                 .medBehandlingId(behandlingsId)
@@ -92,7 +92,7 @@ public class SoknadRepositoryJdbcTest {
         assertThat(opprettetSoknad.getStatus(), is(SoknadInnsendingStatus.UNDER_ARBEID));
         assertThat(opprettetSoknad.getAktoerId(), is(aktorId));
         assertThat(opprettetSoknad.getBrukerBehandlingId(), is(behandlingsId));
-        assertThat(opprettetSoknad.getGosysId(), is(gosysId));
+        assertThat(opprettetSoknad.getskjemaNummer(), is(skjemaNummer));
     }
 
     @Test
@@ -106,7 +106,7 @@ public class SoknadRepositoryJdbcTest {
         assertThat(opprettetSoknad.getStatus(), is(SoknadInnsendingStatus.UNDER_ARBEID));
         assertThat(opprettetSoknad.getAktoerId(), is("aktor-3"));
         assertThat(opprettetSoknad.getBrukerBehandlingId(), is(behId));
-        assertThat(opprettetSoknad.getGosysId(), is(gosysId));
+        assertThat(opprettetSoknad.getskjemaNummer(), is(skjemaNummer));
     }
 
     @Test
@@ -238,7 +238,7 @@ public class SoknadRepositoryJdbcTest {
         soknad = WebSoknad.startSoknad()
                 .medAktorId(aktor)
                 .medBehandlingId(behId)
-                .medGosysId(gosysId).opprettetDato(DateTime.now());
+                .medskjemaNummer(skjemaNummer).opprettetDato(DateTime.now());
 
         soknadId = soknadRepository.opprettSoknad(soknad);
         assertThat(soknadId, greaterThan(0L));
