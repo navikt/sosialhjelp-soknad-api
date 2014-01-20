@@ -21,8 +21,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+<<<<<<< HEAD
 import java.io.IOException;
+=======
+
+import java.util.HashMap;
+>>>>>>> master
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.String.format;
 import static javax.xml.bind.JAXBContext.newInstance;
@@ -47,6 +53,16 @@ public class SoknadDataController {
     @ResponseBody()
     public WebSoknad hentSoknadData(@PathVariable Long soknadId) {
         return soknadService.hentSoknad(soknadId);
+    }
+    
+    @RequestMapping(value = "/behandling/{behandlingsId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody()
+    public Map<String,String> hentSoknadIdMedBehandligsId(@PathVariable String behandlingsId) {
+        Map<String, String> result = new HashMap<>();
+        String soknadId = soknadService.hentSoknadMedBehandlinsId(behandlingsId).toString();
+        result.put("result", soknadId);
+        
+        return result;
     }
 
     @RequestMapping(value = "/options/{soknadId}", method = RequestMethod.GET, produces = "application/json")
