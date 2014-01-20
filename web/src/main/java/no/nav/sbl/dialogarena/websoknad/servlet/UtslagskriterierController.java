@@ -2,6 +2,8 @@ package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.FamilieRelasjonService;
+
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Person;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonService;
@@ -21,20 +23,28 @@ public class UtslagskriterierController {
 
     @Inject
     private PersonService personService;
+    
+    @Inject
+    private FamilieRelasjonService familieRelasjonService;
 
     private Map<String, String> utslagskriterierResultat = new HashMap<>();
 
     @RequestMapping(value = "utslagskriterier", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Map<String, String> sjekkUtslagskriterier() {
-        String uid = getSubjectHandler().getUid();
+        if(personService.ping() && familieRelasjonService.ping()) {
+            String uid = getSubjectHandler().getUid();
        
-        utslagskriterierResultat.put("gyldigAlder", new PersonAlder(uid).sjekkAlder().toString());
-        
-        Person person = personService.hentPerson(1l, uid);
-        utslagskriterierResultat.put("bosattINorge", harNorskAdresse(person).toString());
-        
-        utslagskriterierResultat.put("registrertAdresse", person.hentGjeldendeAdresse());
+            utslagskriterierResultat.put("gyldigAlder", new PersonAlder(uid).sjekkAlder().toString());
+            
+            Person person = personService.hentPerson(1l, uid);
+            utslagskriterierResultat.put("bosattINorge", harNorskAdresse(person).toString());
+            
+            utslagskriterierResultat.put("registrertAdresse", person.hentGjeldendeAdresse());
+            
+        } else {
+            utslagskriterierResultat.put("error", "TPS");
+        }
         return utslagskriterierResultat;
     }
 
