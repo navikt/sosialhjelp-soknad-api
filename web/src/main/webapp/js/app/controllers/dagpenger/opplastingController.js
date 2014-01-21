@@ -8,8 +8,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 		$scope.opplastingFeilet = false;
 
 		$scope.data = {
-			faktumId        : $routeParams.faktumId,
-			gosysId         : $routeParams.gosysId,
+			vedleggId        : $routeParams.vedleggId,
 			soknadId        : data.soknad.soknadId,
 			opplastingFeilet: false
 		};
@@ -32,7 +31,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 			maxFileSize    : 4000000,
 			acceptFileTypes: /(\.|\/)(jpg|png|pdf|jpeg)$/i,
 			autoUpload     : true,
-			url            : '/sendsoknad/rest/soknad/' + data.soknad.soknadId + '/faktum/' + $scope.data.faktumId + '/vedlegg?gosysId=' + $scope.data.gosysId,
+			url            : '/sendsoknad/rest/soknad/' + data.soknad.soknadId + '/vedlegg/' + $scope.data.vedleggId + '/opplasting',
 			// Error and info messages:
 			messages       : {
 				maxNumberOfFiles: cms.tekster['opplasting.feilmelding.makssider'],
@@ -67,8 +66,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 			$scope.fremdriftsindikator.laster = true;
 			vedleggService.merge({
 				soknadId: soknadId,
-				faktumId: $scope.data.faktumId,
-				gosysId : $scope.data.gosysId
+				vedleggId: $scope.data.vedleggId
 			}, function (data) {
 				$scope.oppdaterSoknad();
 			}, function () {
@@ -77,12 +75,11 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 		};
 
 		$scope.loadingFiles = true;
-		vedleggService.get({
+		vedleggService.underbehandling({
 				soknadId: data.soknad.soknadId,
-				faktumId: $scope.data.faktumId,
-				gosysId : $scope.data.gosysId
+				vedleggId: $scope.data.vedleggId
 			}, function (data) {
-				$scope.queue = data.files || [];
+				$scope.queue = data || [];
 				$scope.loadingFiles = false;
 			}
 		);
@@ -92,11 +89,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 		var file = $scope.file;
 		file.$destroy = function () {
 			$scope.data.opplastingFeilet = false;
-			vedleggService.remove({
-				soknadId : data.soknad.soknadId,
-				faktumId : $scope.data.faktumId,
-				vedleggId: file.vedlegg.id
-			}, function () {
+			file.$remove().then(function () {
 				$scope.clear(file);
 			});
 		}

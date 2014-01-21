@@ -23,17 +23,17 @@ public class VedleggOpplastingResultat {
     }
 
     public String getUrl() {
-        return String.format("rest/soknad/%d/faktum/%d/vedlegg/%d", vedlegg.getSoknadId(), vedlegg.getFaktumId(), vedlegg.getId());
+        return String.format("rest/soknad/%d/vedlegg/%d", vedlegg.getSoknadId(), vedlegg.getVedleggId());
     }
 
     @XmlElement(name="thumbnail_url")
     public String getForhandsvisningUrl() {
-        return String.format("rest/soknad/%d/faktum/%d/vedlegg/%d/thumbnail", vedlegg.getSoknadId(), vedlegg.getFaktumId(), vedlegg.getId());
+        return String.format("rest/soknad/%d/vedlegg/%d/thumbnail", vedlegg.getSoknadId(), vedlegg.getVedleggId());
     }
 
     @XmlElement(name="delete_url")
     public String getSletteUrl() {
-        return String.format("rest/soknad/%d/faktum/%d/vedlegg/%d/delete", vedlegg.getSoknadId(), vedlegg.getFaktumId(), vedlegg.getId());
+        return String.format("rest/soknad/%d/vedlegg/%d/delete", vedlegg.getSoknadId(), vedlegg.getVedleggId());
     }
 
     @XmlElement(name="delete_url")

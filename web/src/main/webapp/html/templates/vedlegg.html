@@ -4,8 +4,8 @@
 <div id="vedlegg" class="soknad" data-sidetittel="sidetittel.opplasting" data-ng-controller="VedleggCtrl">
     <div class="rad-belyst inforad">
         <div class="begrensning sak-totredel">
-            <section class="panel-standard oversikt">
-                <h1 class="strek-ikon-slett" data-cmstekster="vedlegg.tittel"></h1>
+            <section class="panel-standard ">
+                <h2 class="stor-strek-ikon-slett" data-cmstekster="vedlegg.tittel"></h2>
 
                 <p class="info" data-cmstekster="vedlegg.info"></p>
             </section>
@@ -13,25 +13,30 @@
     </div>
     <section >
         <div data-accordion data-close-others="false" data-ng-if="forventninger != null">
-            <section class="vedlegg" data-ng-form>
-                <div data-accordion-group data-ng-repeat="forventning in forventninger" class="spm-blokk"  id="faktum_{{forventning.faktum.id}}">
+            <section class="vedlegg vertikal" data-ng-form>
+                <div data-accordion-group data-ng-repeat="forventning in forventninger" class="spm-blokk"  id="faktum_{{forventning.vedleggId}}">
                     <div data-accordion-heading>
                         <div class="flipp">
                             <span>+</span>
                         </div>
-                        <div class="begrensning sak-halv">
+                        <div class="begrensning sak-totredel">
                             <div class="panel-mini nettobunn uten-ramme" data-ng-class="{behandlet: !vedleggEr(forventning, 'VedleggKreves'), lastetopp: vedleggEr(forventning, 'LastetOpp')}">
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'LastetOpp')" data-cmstekster="vedlegg.behandlet.lastetopp"></div>
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesSenere')" data-cmstekster="vedlegg.behandlet.sendessenere"></div>
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesIkke')" data-cmstekster="vedlegg.behandlet.sendesikke"></div>
-                                <h2 class="stor" data-cmsvedlegg data-cmstekster="{{soknadData.gosysId}}.vedlegg.{{forventning.gosysId}}.header"></h2>
+                                <h2 class="stor"><span data-cmstekster="{{soknadData.gosysId}}.vedlegg.{{forventning.gosysId}}.header"></span><span data-ng-if="forventning.navn">: {{forventning.navn}}</span></h2>
                             </div>
                         </div>
                     </div>
-                    <div data-div class="skjemaramme begrensning sak-halv">
+                    <div data-div class="skjemaramme begrensning sak-totredel">
                         <div class="panel-standard">
-                            <h4 data-cmstekster="vedlegg.faktum.maabekrefte"></h4>
-                            <p class="info-liste" data-cmshtml="{{soknadData.gosysId}}.vedlegg.{{forventning.gosysId}}.bekrefte"></p>
+                            <h4 data-ng-if="!erEkstraVedlegg(forventning)" data-cmstekster="vedlegg.faktum.maabekrefte"></h4>
+                            <h4 data-ng-if="erEkstraVedlegg(forventning)" data-cmstekster="vedlegg.faktum.maabekrefte.annetvedlegg"></h4>
+                            <label data-ng-if="erEkstraVedlegg(forventning)">
+                                <span>Hva vedlegger du (max 20 tegn)? </span>
+                                <input type="text" maxlength="20" data-ng-minlength="3" data-ng-maxlength="20"  data-ng-model="forventning.navn" data-ng-blur="lagreVedlegg(forventning)">
+                            </label>
+                            <h4 data-ng-if="!erEkstraVedlegg(forventning)" class="info-liste" data-cmshtml="{{soknadData.gosysId}}.vedlegg.{{forventning.gosysId}}.bekrefte"></h4>
 
                             <div class="spm-knapper send-valg checkboxAsRadio" data-ng-if="!vedleggEr(forventning, 'LastetOpp')">
 
@@ -48,22 +53,22 @@
                                     </a-->
                                 </div>
                                 <div class="lastOpp">
-                                    <a data-ng-href="#/opplasting/{{ soknadData.soknadId }}/{{forventning.faktum.faktumId}}/{{forventning.gosysId}}" class="knapp-link"
+                                    <a data-ng-href="#/opplasting/{{ data.soknadId }}/{{forventning.vedleggId}}" class="knapp-link"
                                        data-ng-click="endreInnsendingsvalg(forventning, 'VedleggKreves');">Last opp vedlegget</a>
-                                    <button class="knapp-liten" data-ng-if="erEkstraVedlegg(forventning)" data-ng-click="slettAnnetVedlegg(forventning);" name="Slett">Slett</button>
+                                    <a class="" data-ng-if="erEkstraVedlegg(forventning)" data-ng-click="slettAnnetVedlegg(forventning);" name="Slett">Slett</a>
 
                                 </div>
                                 <div data-ng-if="!erEkstraVedlegg(forventning)">
                                     <h4 data-cmstekster="vedlegg.faktum.andreInnsendingsvalg">Hvis du ikke har dette vedlegget tilgjengelig nå, kan du: </h4>
 
                                     <input id="{{$index}}ettersendRadio"
-                                           data-ng-model="forventning.faktum.properties[key(forventning)]"
+                                           data-ng-model="forventning.innsendingsvalg"
                                            type="radio" value="SendesSenere"
                                            data-ng-change="endreInnsendingsvalg(forventning)">
                                     <label for="{{$index}}ettersendRadio" data-cmstekster="vedlegg.faktum.ettersend"></label>
 
                                     <input id="{{$index}}ikkesendRadio"
-                                           data-ng-model="forventning.faktum.properties[key(forventning)]"
+                                           data-ng-model="forventning.innsendingsvalg"
                                            type="radio"
                                            value="SendesIkke"
                                            data-ng-change="endreInnsendingsvalg(forventning)">
@@ -72,7 +77,7 @@
                             </div>
                             <div data-ng-if="vedleggEr(forventning, 'LastetOpp')">
                             <div class="forhandsvisning">
-                                    <div data-bildenavigering data-vedlegg="forventning.vedlegg" data-nav-template="bildenavigeringTemplateLiten.html"></div>
+                                    <div data-bildenavigering data-vedlegg="forventning" data-nav-template="bildenavigeringTemplateLiten.html"></div>
                                     <div class="knapper">
                                         <!--a data-ng-href="../rest/soknad/{{soknadData.soknadId}}/faktum/{{forventning.faktum.faktumId}}/vedlegg/{{forventning.faktum.vedleggId}}/data"
                                            data-cmstekster="vedlegg.lastned"></a-->
