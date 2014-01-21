@@ -3,7 +3,6 @@ angular.module('nav.barnetillegg', [])
 
         $scope.soknadId = data.soknad.soknadId;
         $scope.barn = data.finnFakta('barn');
-        console.log($scope.barn);
 
 		$scope.erBrukerregistrert = function (barn) {
 			return barn.type === 'BRUKERREGISTRERT';
