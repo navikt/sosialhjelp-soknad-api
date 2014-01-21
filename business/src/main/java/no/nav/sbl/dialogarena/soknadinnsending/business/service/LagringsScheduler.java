@@ -5,7 +5,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import org.slf4j.Logger;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -27,7 +26,7 @@ public class LagringsScheduler {
     @Inject
     FillagerConnector fillagerConnector;
 
-    @Scheduled(fixedRate = SCHEDULE_RATE_MS)
+   // @Scheduled(fixedRate = SCHEDULE_RATE_MS)
     private void mellomlagreSoknaderOgNullstillLokalDb() {
         LOG.info("entered mellomlagreSoknaderOgNullstillLokalDb");
         for (Long id : soknadRepository.hentAlleSoknaderSistLagretOverEnTimeSiden()) {

@@ -2,12 +2,11 @@ angular.module('nav.vedlegg.controller', [])
 	.controller('VisVedleggCtrl', ['$scope', '$routeParams', 'vedleggService', 'Faktum', function ($scope, $routeParams, vedleggService, Faktum) {
 		$scope.vedlegg = vedleggService.get({
 			soknadId : $routeParams.soknadId,
-			faktumId : $routeParams.faktumId,
 			vedleggId: $routeParams.vedleggId
 		});
 	}])
 
-	.controller('VedleggCtrl', ['$scope', '$location', '$routeParams', '$anchorScroll', 'data', 'vedleggService', 'Faktum', function ($scope, $location, $routeParams, $anchorScroll, data, vedleggService, Faktum) {
+	.controller('VedleggCtrl', ['$scope', '$location', '$routeParams', '$anchorScroll', 'data', 'vedleggService', 'Faktum', 'VedleggForventning', function ($scope, $location, $routeParams, $anchorScroll, data, vedleggService, Faktum, VedleggForventning) {
         $scope.data = {soknadId: data.soknad.soknadId};
 
 		$scope.forventninger = vedleggService.query({soknadId: data.soknad.soknadId});
@@ -18,7 +17,7 @@ angular.module('nav.vedlegg.controller', [])
 		};
 
 		$scope.slettVedlegg = function (forventning) {
-			if (false && $scope.erEkstraVedlegg(forventning)) {
+			if ($scope.erEkstraVedlegg(forventning)) {
 				$scope.slettAnnetVedlegg(forventning);
 			}
 			forventning.$remove().then(function () {
@@ -47,7 +46,7 @@ angular.module('nav.vedlegg.controller', [])
 
 		$scope.slettAnnetVedlegg = function (forventning) {
 			var index = $scope.forventninger.indexOf(forventning);
-			Faktum.delete({soknadId: data.soknad.soknadId, faktumId: forventning.faktum.faktumId});
+			Faktum.delete({soknadId: forventning.soknadId, faktumId: forventning.faktumId});
 			$scope.forventninger.splice(index, 1);
 		};
 
