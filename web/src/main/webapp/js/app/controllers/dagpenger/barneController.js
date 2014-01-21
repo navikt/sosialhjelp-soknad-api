@@ -78,7 +78,8 @@ angular.module('nav.barn', ['app.services'])
 					'fornavn'       : undefined,
 					'etternavn'     : undefined,
 					'sammensattnavn': undefined,
-					'alder'         : undefined
+					'alder'         : undefined,
+                    'land'          : undefined
 				}
 			};
 			$scope.barn = new Faktum(barneData);
