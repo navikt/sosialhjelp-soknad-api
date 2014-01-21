@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.support.AbstractLobCreatingPreparedStatementCallback;
@@ -36,14 +35,14 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     }
 
     @Override
-    public List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktum, String gosysId) {
-        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, gosysid, navn, storrelse, opprettetdato, antallsider, fillagerReferanse from Vedlegg where soknad_id = ? and faktum = ? and gosysid = ?", new VedleggRowMapper(false), soknadId, faktum, gosysId);
+    public List<Vedlegg> hentVedleggUnderBehandling(Long soknadId, Long faktum, String gosysId) {
+        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, gosysid, navn, innsendingsvalg, storrelse, opprettetdato, antallsider, fillagerReferanse from Vedlegg where soknad_id = ? and faktum = ? and gosysid = ? and innsendingsvalg = 'UnderBehandling'", new VedleggRowMapper(false), soknadId, faktum, gosysId);
     }
 
     @Override
-    public Long lagreVedlegg(final Vedlegg vedlegg, final byte[] content) {
+    public Long opprettVedlegg(final Vedlegg vedlegg, final byte[] content) {
         final Long databasenokkel = getJdbcTemplate().queryForObject(SQLUtils.selectNextSequenceValue("VEDLEGG_ID_SEQ"), Long.class);
-        getJdbcTemplate().execute("insert into vedlegg(vedlegg_id, soknad_id,faktum, gosysid, navn, storrelse, antallsider, fillagerReferanse, data, opprettetdato) values (?, ?, ?, ?, ?, ?, ?, ?, ?, sysdate)",
+        getJdbcTemplate().execute("insert into vedlegg(vedlegg_id, soknad_id,faktum, gosysid, navn, innsendingsvalg, storrelse, antallsider, fillagerReferanse, data, opprettetdato) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, sysdate)",
 
                 new AbstractLobCreatingPreparedStatementCallback(lobHandler) {
                     @Override
@@ -53,13 +52,35 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
                         ps.setLong(3, vedlegg.getFaktumId());
                         ps.setString(4, vedlegg.getGosysId());
                         ps.setString(5, vedlegg.getNavn());
-                        ps.setLong(6, vedlegg.getStorrelse());
-                        ps.setLong(7, vedlegg.getAntallSider());
-                        ps.setString(8, vedlegg.getFillagerReferanse());
-                        lobCreator.setBlobAsBytes(ps, 9, content);
+                        ps.setString(6, vedlegg.getInnsendingsvalg().toString());
+                        ps.setLong(7, vedlegg.getStorrelse());
+                        ps.setLong(8, vedlegg.getAntallSider());
+                        ps.setString(9, vedlegg.getFillagerReferanse());
+                        lobCreator.setBlobAsBytes(ps, 10, content);
                     }
                 });
         return databasenokkel;
+    }
+
+    @Override
+    public void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg) {
+        getJdbcTemplate().update("update vedlegg set navn = ?, innsendingsvalg = ? where soknad_id = ? and vedlegg_id = ?", vedlegg.getNavn(), vedlegg.getInnsendingsvalg().toString(), soknadId, vedleggId);
+    }
+
+    @Override
+    public void lagreVedleggMedData(final Long soknadId, final Long vedleggId, final Vedlegg vedlegg) {
+        getJdbcTemplate().update("update vedlegg set innsendingsvalg = ?, storrelse = ?, antallsider = ?, data = ? where soknad_id = ? and vedlegg_id = ?",
+                new AbstractLobCreatingPreparedStatementCallback(lobHandler) {
+                    @Override
+                    public void setValues(PreparedStatement preparedStatement, LobCreator lobCreator) throws SQLException {
+                        preparedStatement.setString(1, vedlegg.getInnsendingsvalg().toString());
+                        preparedStatement.setLong(2, vedlegg.getStorrelse());
+                        preparedStatement.setLong(3, vedlegg.getAntallSider());
+                        lobCreator.setBlobAsBytes(preparedStatement, 4, vedlegg.getData());
+                        preparedStatement.setLong(5, soknadId);
+                        preparedStatement.setLong(6, vedleggId);
+                    }
+                });
     }
 
     public InputStream hentVedleggStream(Long soknadId, Long vedleggId) {
@@ -71,34 +92,25 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     }
 
     @Override
-    public void settVedleggStatus(Long soknadId, Long faktumId, String gosysId) {
-        String key = "vedlegg_" + gosysId;
-        getJdbcTemplate().update("delete from faktumegenskap where soknad_id = ? and faktum_id = ? and key = ?", soknadId, faktumId, key);
-        getJdbcTemplate().update("insert into faktumegenskap (soknad_id, faktum_id, key, value) values (?, ?, ?, ?)",
-                soknadId, faktumId, key, Faktum.Status.LastetOpp.toString());
-    }
-
-    @Override
     public void slettVedlegg(Long soknadId, Long vedleggId) {
         Vedlegg v = hentVedlegg(soknadId, vedleggId);
-        getJdbcTemplate().update("delete from faktumegenskap where soknad_id = ? and faktum_id = ? and key = ?", soknadId, v.getFaktumId(), "vedlegg_" + v.getGosysId());
-        getJdbcTemplate().update("Delete from vedlegg where soknad_id=? and vedlegg_id=?", soknadId, vedleggId);
+        getJdbcTemplate().update("update vedlegg set data = null, innsendingsvalg='VedleggKreves' where soknad_id = ? and vedlegg_id = ?", soknadId, vedleggId);
     }
 
     @Override
-    public void slettVedleggForFaktum(Long soknadId, Long faktumId) {
-        getJdbcTemplate().update("delete from vedlegg where soknad_id = ? and faktum = ?", soknadId, faktumId);
+    public void slettVedleggUnderBehandling(Long soknadId, Long faktumId, String gosysId) {
+        getJdbcTemplate().update("delete from vedlegg where soknad_id = ? and faktum = ? and gosysid = ? and innsendingsvalg = 'UnderBehandling'", soknadId, faktumId, gosysId);
     }
 
     @Override
     public Vedlegg hentVedlegg(Long soknadId, Long vedleggId) {
-        return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, gosysId, navn, storrelse, antallsider, fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and vedlegg_id = ?", new VedleggRowMapper(false), soknadId, vedleggId);
+        return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, gosysId, navn, innsendingsvalg, storrelse, antallsider, fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and vedlegg_id = ?", new VedleggRowMapper(false), soknadId, vedleggId);
     }
 
     @Override
     public Vedlegg hentVedleggForGosysId(Long soknadId, Long faktumId, String gosysId) {
         try {
-            return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, gosysId, navn, storrelse, antallsider, fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and faktum = ? and gosysId = ?", new VedleggRowMapper(false), soknadId, faktumId, gosysId);
+            return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, gosysId, navn, innsendingsvalg, storrelse, antallsider, fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and faktum = ? and gosysId = ?", new VedleggRowMapper(false), soknadId, faktumId, gosysId);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }

@@ -66,9 +66,9 @@ public class VedleggControllerTest {
     @Test
     public void shouldUploadFile() throws Exception {
         when(vedleggService.splitOgLagreVedlegg(any(Vedlegg.class), any(InputStream.class))).thenReturn(asList(1L)).thenReturn(asList(2L)).thenReturn(asList(3L));
-        when(vedleggService.hentVedlegg(eq(11L), eq(1L), eq(false))).thenReturn(new Vedlegg(1L, 11L, 12L, "L6", "test", 1L, 1, "gfdg", null));
-        when(vedleggService.hentVedlegg(eq(11L), eq(2L), eq(false))).thenReturn(new Vedlegg(2L, 11L, 12L, "L6", "test", 1L, 1, "gfdg", null));
-        when(vedleggService.hentVedlegg(eq(11L), eq(3L), eq(false))).thenReturn(new Vedlegg(3L, 11L, 12L, "L6", "test", 1L, 1, "gfdg", null));
+        when(vedleggService.hentVedlegg(eq(11L), eq(1L), eq(false))).thenReturn(new Vedlegg(1L, 11L, 12L, "L6", "test", 1L, 1, "gfdg", null, Vedlegg.Status.VedleggKreves));
+        when(vedleggService.hentVedlegg(eq(11L), eq(2L), eq(false))).thenReturn(new Vedlegg(2L, 11L, 12L, "L6", "test", 1L, 1, "gfdg", null, Vedlegg.Status.VedleggKreves));
+        when(vedleggService.hentVedlegg(eq(11L), eq(3L), eq(false))).thenReturn(new Vedlegg(3L, 11L, 12L, "L6", "test", 1L, 1, "gfdg", null, Vedlegg.Status.VedleggKreves));
         MvcResult mvcResult = mockMvc.perform(fileUpload("/soknad/11/faktum/12/vedlegg?gosysId=L6")
                 .file(createFile("test.pdf", PDF))
                 .file(createFile("test.jpg", JPEG))
@@ -125,8 +125,8 @@ public class VedleggControllerTest {
 
     @Test
     public void skalGenereFerdigPdf() throws Exception {
-        Vedlegg v = new Vedlegg(1L, 11L, 1L, "1", "", 3L, 1, null, null);
-        when(vedleggService.genererVedleggFaktum(11L, 14L, "1")).thenReturn(2L);
+        Vedlegg v = new Vedlegg(1L, 11L, 1L, "1", "", 3L, 1, null, null, Vedlegg.Status.VedleggKreves);
+        when(vedleggService.genererVedleggFaktum(11L, 14L)).thenReturn(2L);
         when(vedleggService.hentVedlegg(11L, 2L, false)).thenReturn(v);
         MvcResult mvcResult = mockMvc.perform(post("/soknad/{soknadId}/faktum/{faktumId}/vedlegg/generer", 11L, 14L))
                 .andExpect(request().asyncStarted())
@@ -134,6 +134,6 @@ public class VedleggControllerTest {
                 .andReturn();
         mockMvc.perform(asyncDispatch(mvcResult))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("id").value(v.getId().intValue()));
+                .andExpect(jsonPath("id").value(v.getVedleggId().intValue()));
     }
 }

@@ -1,23 +1,21 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventning;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.LastetOpp;
-
 public class Transformers {
 
-    public static XMLVedlegg[] convertToXmlVedleggListe(List<VedleggForventning> vedleggForventnings) {
+    public static XMLVedlegg[] convertToXmlVedleggListe(List<Vedlegg> vedleggForventnings) {
         List<XMLVedlegg> resultat = new ArrayList<>();
-        for (VedleggForventning vedlegg : vedleggForventnings) {
-            if (vedlegg.getFaktum().getInnsendingsvalg(vedlegg.getGosysId()).er(LastetOpp)) {
+        for (Vedlegg vedlegg : vedleggForventnings) {
+            if (vedlegg.getInnsendingsvalg().er(Vedlegg.Status.LastetOpp)) {
                 resultat.add(new XMLVedlegg()
-                        .withFilnavn(vedlegg.getVedlegg().getNavn())
-                        .withSideantall(vedlegg.getVedlegg().getAntallSider())
-                        .withFilstorrelse(vedlegg.getVedlegg().getStorrelse().toString())
+                        .withFilnavn(vedlegg.getNavn())
+                        .withSideantall(vedlegg.getAntallSider())
+                        .withFilstorrelse(vedlegg.getStorrelse().toString())
                         .withSkjemanummer(vedlegg.getGosysId())
                         .withArkivreferanse("TODO")
                         .withInnsendingsvalg("INNSENDT"));
