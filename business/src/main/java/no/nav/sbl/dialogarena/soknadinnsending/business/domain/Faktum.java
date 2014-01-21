@@ -82,15 +82,15 @@ public class Faktum implements Serializable {
         this.type = type;
     }
 
-    public Status getInnsendingsvalg(String gosysId) {
-        if (!properties.containsKey("vedlegg_" + gosysId)) {
-            properties.put("vedlegg_" + gosysId, Status.IkkeVedlegg.toString());
+    public Status getInnsendingsvalg(String skjemaNummer) {
+        if (!properties.containsKey("vedlegg_" + skjemaNummer)) {
+            properties.put("vedlegg_" + skjemaNummer, Status.IkkeVedlegg.toString());
         }
-        return Status.valueOf(properties.get("vedlegg_" + gosysId));
+        return Status.valueOf(properties.get("vedlegg_" + skjemaNummer));
     }
 
-    public void setInnsendingsvalg(String gosysId, Status innsendingsvalg) {
-        properties.put("vedlegg_" + gosysId, innsendingsvalg.toString());
+    public void setInnsendingsvalg(String skjemaNummer, Status innsendingsvalg) {
+        properties.put("vedlegg_" + skjemaNummer, innsendingsvalg.toString());
     }
 
     public List<Faktum> getValuelist() {

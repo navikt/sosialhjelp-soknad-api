@@ -69,7 +69,7 @@ public class VedleggControllerTest {
         when(vedleggService.hentVedlegg(eq(11L), eq(1L), eq(false))).thenReturn(new Vedlegg(1L, 11L, 12L, "L6", "test", 1L, 1, "gfdg", null));
         when(vedleggService.hentVedlegg(eq(11L), eq(2L), eq(false))).thenReturn(new Vedlegg(2L, 11L, 12L, "L6", "test", 1L, 1, "gfdg", null));
         when(vedleggService.hentVedlegg(eq(11L), eq(3L), eq(false))).thenReturn(new Vedlegg(3L, 11L, 12L, "L6", "test", 1L, 1, "gfdg", null));
-        MvcResult mvcResult = mockMvc.perform(fileUpload("/soknad/11/faktum/12/vedlegg?gosysId=L6")
+        MvcResult mvcResult = mockMvc.perform(fileUpload("/soknad/11/faktum/12/vedlegg?skjemaNummer=L6")
                 .file(createFile("test.pdf", PDF))
                 .file(createFile("test.jpg", JPEG))
                 .file(createFile("test.png", PNG))

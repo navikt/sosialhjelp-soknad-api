@@ -21,9 +21,8 @@ import static java.util.UUID.randomUUID;
 public class WebSoknad implements Serializable {
 
     private Long soknadId;
+    private String skjemaNummer;
     private String uuid;
-
-    private String gosysId;
     private String brukerBehandlingId;
     private Map<String, Faktum> fakta;
     private SoknadInnsendingStatus status;
@@ -71,12 +70,12 @@ public class WebSoknad implements Serializable {
         this.soknadId = soknadId;
     }
 
-    public final String getGosysId() {
-        return gosysId;
+    public final String getskjemaNummer() {
+        return skjemaNummer;
     }
 
-    public final void setGosysId(String gosysId) {
-        this.gosysId = gosysId;
+    public final void setskjemaNummer(String skjemaNummer) {
+        this.skjemaNummer = skjemaNummer;
     }
 
     public final Map<String, Faktum> getFakta() {
@@ -113,7 +112,7 @@ public class WebSoknad implements Serializable {
 
     @Override
     public String toString() {
-        return "WebSoknad [soknadId=" + soknadId + ", gosysId=" + gosysId
+        return "WebSoknad [soknadId=" + soknadId + ", skjemaNummer=" + skjemaNummer
                 + ", brukerBehandlingId=" + brukerBehandlingId + ", fakta="
                 + fakta + "]";
     }
@@ -131,8 +130,8 @@ public class WebSoknad implements Serializable {
         return this;
     }
 
-    public WebSoknad medGosysId(String gosysId) {
-        this.gosysId = gosysId;
+    public WebSoknad medskjemaNummer(String skjemaNummer) {
+        this.skjemaNummer = skjemaNummer;
         return this;
     }
 
