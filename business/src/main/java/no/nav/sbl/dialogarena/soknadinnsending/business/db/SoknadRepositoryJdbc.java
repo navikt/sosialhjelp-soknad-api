@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Maps;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.FaktumEgenskap;
@@ -9,7 +8,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingS
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.transaction.annotation.Isolation;
@@ -26,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static com.google.common.collect.Maps.uniqueIndex;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.IdGenerator.lagBehandlingsId;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.OPPRETTET;
@@ -34,6 +33,8 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInns
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.FERDIG;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad.startSoknad;
+import static org.joda.time.DateTime.now;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Named("soknadInnsendingRepository")
 // marker alle metoder som transactional. Alle operasjoner vil skje i en
@@ -43,8 +44,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad.
 
 public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadRepository {
 
-    private static final Logger LOG = LoggerFactory
-            .getLogger(SoknadRepositoryJdbc.class);
+    private static final Logger LOG = getLogger(SoknadRepositoryJdbc.class);
     private final RowMapper<Faktum> soknadDataRowMapper = new RowMapper<Faktum>() {
         public Faktum mapRow(ResultSet rs, int rowNum) throws SQLException {
 
@@ -76,8 +76,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
 
     @Override
     public String opprettBehandling() {
-        Long databasenokkel = getJdbcTemplate().queryForObject(
-                selectNextSequenceValue("BRUKERBEH_ID_SEQ"), Long.class);
+        Long databasenokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("BRUKERBEH_ID_SEQ"), Long.class);
         String behandlingsId = lagBehandlingsId(databasenokkel);
         getJdbcTemplate()
                 .update("insert into henvendelse (henvendelse_id, behandlingsid, type, opprettetdato) values (?, ?, ?, sysdate)",
@@ -87,11 +86,10 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
 
     @Override
     public Long opprettSoknad(WebSoknad soknad) {
-        Long databasenokkel = getJdbcTemplate().queryForObject(
-                selectNextSequenceValue("SOKNAD_ID_SEQ"), Long.class);
+        Long databasenokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_ID_SEQ"), Long.class);
         getJdbcTemplate()
-                .update("insert into soknad (soknad_id, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status, delstegstatus) values (?,?,?,?,?,?,?)",
-                        databasenokkel, soknad.getBrukerBehandlingId(),
+                .update("insert into soknad (soknad_id, uuid, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status, delstegstatus) values (?,?,?,?,?,?,?,?)",
+                        databasenokkel, soknad.getUuid(), soknad.getBrukerBehandlingId(),
                         soknad.getskjemaNummer(), soknad.getAktoerId(),
                         new Date(soknad.getOpprettetDato()),
                         UNDER_ARBEID.name(), OPPRETTET.name());
@@ -102,6 +100,14 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     public WebSoknad hentSoknad(Long id) {
         String sql = "select * from SOKNAD where soknad_id = ?";
         return getJdbcTemplate().queryForObject(sql, new SoknadRowMapper(), id);
+    }
+
+    public List<Long> hentAlleSoknaderSistLagretOverEnTimeSiden() {
+        String sql = "select soknad_id from SOKNAD where sistlagret <= ?";
+        return getJdbcTemplate().queryForList(
+                sql,
+                Long.class,
+                new Date(now().minusHours(1).getMillis()));
     }
 
     @Override
@@ -167,7 +173,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         List<Faktum> fakta = getJdbcTemplate().query(sql, soknadDataRowMapper, soknadId, key, FaktumType.SYSTEMREGISTRERT.toString());
 
         List<FaktumEgenskap> egenskaper = select("select * from FAKTUMEGENSKAP where soknad_id = ?", faktumEgenskapRowMapper, soknadId);
-        Map<Long, Faktum> faktaMap = Maps.uniqueIndex(fakta, new Function<Faktum, Long>() {
+        Map<Long, Faktum> faktaMap = uniqueIndex(fakta, new Function<Faktum, Long>() {
             @Override
             public Long apply(Faktum input) {
                 return input.getFaktumId();
@@ -189,9 +195,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     @Override
     public Long lagreFaktum(long soknadId, Faktum faktum) {
         if (faktum.getFaktumId() == null) {
-            Long dbNokkel = getJdbcTemplate().queryForObject(
-                    selectNextSequenceValue("SOKNAD_BRUKER_DATA_ID_SEQ"),
-                    Long.class);
+            Long dbNokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_BRUKER_DATA_ID_SEQ"), Long.class);
             getJdbcTemplate()
                     .update("insert into soknadbrukerdata (soknadbrukerdata_id, soknad_id, key, value, type, parrent_faktum, sistendret) values (?, ?, ?, ?, ?,?, sysdate)",
                             dbNokkel, soknadId, faktum.getKey(),
@@ -231,15 +235,14 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     @Override
     public void settSistLagretTidspunkt(Long soknadId) {
         getJdbcTemplate()
-                .update("update soknad set sistlagret=? where soknad_id = ?",
-                        new Date(), soknadId);
+                .update("update soknad set sistlagret=? where soknad_id = ?", new Date(now().getMillis()), soknadId);
     }
 
     @Override
     public List<Faktum> hentAlleBrukerData(Long soknadId) {
         List<Faktum> fakta = select("select * from SOKNADBRUKERDATA where soknad_id = ? order by soknadbrukerdata_id asc", soknadDataRowMapper, soknadId);
         List<FaktumEgenskap> egenskaper = select("select * from FAKTUMEGENSKAP where soknad_id = ?", faktumEgenskapRowMapper, soknadId);
-        Map<Long, Faktum> faktaMap = Maps.uniqueIndex(fakta, new Function<Faktum, Long>() {
+        Map<Long, Faktum> faktaMap = uniqueIndex(fakta, new Function<Faktum, Long>() {
             @Override
             public Long apply(Faktum input) {
                 return input.getFaktumId();
@@ -269,6 +272,14 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         getJdbcTemplate().update("delete from vedlegg where soknad_id = ?", soknad);
 
         getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ?", soknad);
+    }
+
+    @Override
+    public void slettSoknad(long soknadId) {
+        LOG.debug("Sletter søknad med ID: " + soknadId);
+        getJdbcTemplate().update("delete from soknad where soknad_id = ?", soknadId);
+        getJdbcTemplate().update("delete from vedlegg where soknad_id = ?", soknadId);
+        getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ?", soknadId);
     }
 
     @Override

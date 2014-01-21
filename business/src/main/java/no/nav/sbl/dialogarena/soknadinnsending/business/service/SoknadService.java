@@ -257,7 +257,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         byte[] doc = new PdfMerger().transform(bytes);
         Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, skjemaNummer, "faktum.pdf", (long) doc.length, vedleggs.size(), UUID.randomUUID().toString(), doc);
         WebSoknad soknad = repository.hentSoknad(soknadId);
-        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), vedlegg.getFillagerReferanse(), new ByteArrayInputStream(doc));
+        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), vedlegg.getFillagerReferanse(), soknad.getAktoerId(), new ByteArrayInputStream(doc));
         vedleggRepository.slettVedleggForFaktum(soknadId, faktumId);
         Long opplastetDokument = vedleggRepository.lagreVedlegg(vedlegg, doc);
         vedleggRepository.settVedleggStatus(soknadId, faktumId, vedlegg.getskjemaNummer());
