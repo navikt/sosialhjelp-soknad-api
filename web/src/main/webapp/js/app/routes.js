@@ -31,7 +31,6 @@ angular.module('app.routes', ['ngRoute'])
 			})
 			.when('/opplasting/:soknadId/:faktumId/:skjemaNummer', {
 				templateUrl: '../html/templates/opplasting.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -49,7 +48,6 @@ angular.module('app.routes', ['ngRoute'])
 			})
 			.when('/dagpenger/:soknadId', {
 				templateUrl: '../html/dagpenger-singlepage.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -58,7 +56,6 @@ angular.module('app.routes', ['ngRoute'])
 			})
 			.when('/fortsettsenere/:soknadId', {
 				templateUrl: '../html/templates/fortsettSenere.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (EpostResolver) {
 						return EpostResolver;
@@ -74,18 +71,8 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/gjenoppta/:soknadId', {
-				templateUrl: '../html/templates/gjenoppta.html',
-				controller : 'SoknadDataCtrl',
-				resolve    : {
-					notUsedButRequiredProperty: function (HentSoknadService) {
-						return HentSoknadService;
-					}
-				}
-			})
-			.when('/reell-arbeidssoker/:soknadId', {
+            .when('/reell-arbeidssoker/:soknadId', {
 				templateUrl: '../html/templates/reell-arbeidssoker.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -94,7 +81,6 @@ angular.module('app.routes', ['ngRoute'])
 			})
 			.when('/egennaering/:soknadId', {
 				templateUrl: '../html/templates/egen-naering.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -103,7 +89,6 @@ angular.module('app.routes', ['ngRoute'])
 			})
 			.when('/verneplikt/:soknadId', {
 				templateUrl: '../html/templates/verneplikt.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -112,7 +97,6 @@ angular.module('app.routes', ['ngRoute'])
 			})
 			.when('/personalia/:soknadId', {
 				templateUrl: '../html/templates/personalia.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -121,7 +105,6 @@ angular.module('app.routes', ['ngRoute'])
 			})
 			.when('/barnetillegg/:soknadId', {
 				templateUrl: '../html/templates/barnetillegg.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -130,34 +113,30 @@ angular.module('app.routes', ['ngRoute'])
 			})
 			.when('/nyttbarn/:soknadId', {
 				templateUrl: '../html/templates/barnetillegg-nyttbarn.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
-					notUsedButRequiredProperty: function (NyttBarnSideResolver) {
-						return NyttBarnSideResolver;
+					notUsedButRequiredProperty: function (HentSoknadService) {
+						return HentSoknadService;
 					}
 				}
 			})
 			.when('/endrebarn/:soknadId/:faktumId', {
 				templateUrl: '../html/templates/barnetillegg-nyttbarn.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
-					notUsedButRequiredProperty: function (NyttBarnSideResolver) {
-						return NyttBarnSideResolver;
+					notUsedButRequiredProperty: function (HentSoknadService) {
+						return HentSoknadService;
 					}
 				}
 			})
 			.when('/sokbarnetillegg/:soknadId/:faktumId', {
 				templateUrl: '../html/templates/barnetillegg-nyttbarn.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
-					notUsedButRequiredProperty: function (NyttBarnSideResolver) {
-						return NyttBarnSideResolver;
+					notUsedButRequiredProperty: function (HentSoknadService) {
+						return HentSoknadService;
 					}
 				}
 			})
 			.when('/arbeidsforhold/:soknadId', {
 				templateUrl: '../html/templates/arbeidsforhold.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -166,7 +145,6 @@ angular.module('app.routes', ['ngRoute'])
 			})
 			.when('/nyttarbeidsforhold/:soknadId', {
 				templateUrl: '../html/templates/arbeidsforhold-nytt.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -175,7 +153,6 @@ angular.module('app.routes', ['ngRoute'])
 			})
 			.when('/endrearbeidsforhold/:soknadId/:faktumId', {
 				templateUrl: '../html/templates/arbeidsforhold-nytt.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -184,7 +161,6 @@ angular.module('app.routes', ['ngRoute'])
 			})
 			.when('/ytelser/:soknadId', {
 				templateUrl: '../html/templates/ytelser.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -193,7 +169,6 @@ angular.module('app.routes', ['ngRoute'])
 			})
 			.when('/oppsummering/:soknadId', {
 				templateUrl: '../html/templates/oppsummering.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -202,7 +177,6 @@ angular.module('app.routes', ['ngRoute'])
 			})
 			.when('/utdanning/:soknadId', {
 				templateUrl: '../html/templates/utdanning.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -219,7 +193,6 @@ angular.module('app.routes', ['ngRoute'])
 			})
 			.when('/avbryt/:soknadId', {
 				templateUrl: '../html/templates/avbryt.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -228,7 +201,6 @@ angular.module('app.routes', ['ngRoute'])
 			})
 			.when('/slettet', {
 				templateUrl: '../html/templates/soknadSlettet.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
