@@ -4,6 +4,8 @@ angular.module('nav.reellarbeidssoker', [])
 //        For testing av alder:
         $scope.alder = 59;
 
+       $scope.soknadId = data.soknad.soknadId;
+
 		$scope.navigering = {nesteside: 'arbeidsforhold'};
 		$scope.sidedata = {navn: 'reellarbeidssoker'};
 

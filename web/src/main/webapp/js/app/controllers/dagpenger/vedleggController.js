@@ -8,7 +8,6 @@ angular.module('nav.vedlegg.controller', [])
 	}])
 
 	.controller('VedleggCtrl', ['$scope', '$location', '$routeParams', '$anchorScroll', 'data', 'VedleggForventning', 'Faktum', function ($scope, $location, $routeParams, $anchorScroll, data, VedleggForventning, Faktum) {
-
 		$scope.forventninger = VedleggForventning.query({soknadId: data.soknad.soknadId});
 		$scope.sidedata = {navn: 'vedlegg'};
 
