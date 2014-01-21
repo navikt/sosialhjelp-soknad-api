@@ -26,7 +26,8 @@ angular.module('app.services', ['ngResource'])
 				create : { method: 'POST', params: {param: '@param', action: 'opprett'} },
 				send   : {method: 'POST', params: {param: '@param', action: 'send'}},
 				remove : {method: 'POST', params: {param: '@param', action: 'delete'}},
-				options: {method: 'GET', params: {param: '@param', action: 'options'}}
+				options: {method: 'GET', params: {param: '@param', action: 'options'}},
+				behandling: {method: 'GET', params: {param: '@param', action: 'behandling'}}
 			}
 		);
 	})
@@ -54,7 +55,7 @@ angular.module('app.services', ['ngResource'])
 				soknadId : '@soknadId',
 				faktumId : '@faktumId',
 				vedleggId: '@vedleggId',
-				gosysId  : '@gosysId'},
+				skjemaNummer  : '@skjemaNummer'},
 			{
 				get   : { method: 'GET', params: {} },
 				create: { method: 'POST', params: {} },

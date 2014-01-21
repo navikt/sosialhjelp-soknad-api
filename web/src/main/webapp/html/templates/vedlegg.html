@@ -24,14 +24,14 @@
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'LastetOpp')" data-cmstekster="vedlegg.behandlet.lastetopp"></div>
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesSenere')" data-cmstekster="vedlegg.behandlet.sendessenere"></div>
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesIkke')" data-cmstekster="vedlegg.behandlet.sendesikke"></div>
-                                <h2 class="stor" data-cmsvedlegg data-cmstekster="{{soknadData.gosysId}}.vedlegg.{{forventning.gosysId}}.header"></h2>
+                                <h2 class="stor" data-cmsvedlegg data-cmstekster="{{soknadData.skjemaNummer}}.vedlegg.{{forventning.skjemaNummer}}.header"></h2>
                             </div>
                         </div>
                     </div>
                     <div data-div class="skjemaramme begrensning sak-halv">
                         <div class="panel-standard">
                             <h4 data-cmstekster="vedlegg.faktum.maabekrefte"></h4>
-                            <p class="info-liste" data-cmshtml="{{soknadData.gosysId}}.vedlegg.{{forventning.gosysId}}.bekrefte"></p>
+                            <p class="info-liste" data-cmshtml="{{soknadData.skjemaNummer}}.vedlegg.{{forventning.skjemaNummer}}.bekrefte"></p>
 
                             <div class="spm-knapper send-valg checkboxAsRadio" data-ng-if="!vedleggEr(forventning, 'LastetOpp')">
 
@@ -48,7 +48,7 @@
                                     </a-->
                                 </div>
                                 <div class="lastOpp">
-                                    <a data-ng-href="#/opplasting/{{ soknadData.soknadId }}/{{forventning.faktum.faktumId}}/{{forventning.gosysId}}" class="knapp-link"
+                                    <a data-ng-href="#/opplasting/{{ soknadData.soknadId }}/{{forventning.faktum.faktumId}}/{{forventning.skjemaNummer}}" class="knapp-link"
                                        data-ng-click="endreInnsendingsvalg(forventning, 'VedleggKreves');">Last opp vedlegget</a>
                                     <button class="knapp-liten" data-ng-if="erEkstraVedlegg(forventning)" data-ng-click="slettAnnetVedlegg(forventning);" name="Slett">Slett</button>
 
