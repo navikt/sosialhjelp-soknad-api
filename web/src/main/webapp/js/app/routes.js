@@ -37,7 +37,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/visVedlegg/:soknadId/:faktumId/:vedleggId', {
+			.when('/visVedlegg/:soknadId/:vedleggId', {
 				templateUrl: '../html/templates/visvedlegg.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
