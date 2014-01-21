@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
+
 public class Personalia {
 
     private String fnr;
@@ -76,5 +78,28 @@ public class Personalia {
 
     public void setSekundarAdresse(NewAdresse sekundarAdresse) {
         this.sekundarAdresse = sekundarAdresse;
+    }
+
+    public boolean harUtenlandskAdresse() {
+        String adressetype = gjeldendeAdresse.getAdressetype();
+
+        if (adressetype == null) {
+            return false;
+        }
+
+        if (adressetype.equalsIgnoreCase(Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND.name()) || adressetype.equalsIgnoreCase(Adressetype.POSTADRESSE_UTLAND.name())) {
+            return true;
+        } else if (adressetype.equalsIgnoreCase(Adressetype.POSTADRESSE.name())) {
+            return erUtenlandskFolkeregistrertAdresse();
+        }
+        return false;
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean erUtenlandskFolkeregistrertAdresse() {
+        if (gjeldendeAdresse.getAdressetype().equalsIgnoreCase(UTENLANDSK_ADRESSE.name()) || sekundarAdresse.getAdressetype().equalsIgnoreCase(UTENLANDSK_ADRESSE.name())) {
+            return true;
+        }
+        return false;
     }
 }

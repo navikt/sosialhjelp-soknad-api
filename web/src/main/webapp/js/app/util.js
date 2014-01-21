@@ -47,6 +47,12 @@ String.prototype.splice = function (idx, rem, str) {
 	return (this.slice(0, idx) + str + this.slice(idx + Math.abs(rem)));
 };
 
+String.prototype.toCamelCase = function() {
+    return this.toLowerCase().replace(/\_([a-z])/g, function(all, match) {
+        return match.toUpperCase();
+    });
+};
+
 function sjekkOmGittEgenskapTilObjektErFalse(objekt) {
 	if (objekt) {
 		return checkFalse(objekt.value);
@@ -281,3 +287,4 @@ function settFokusTilNesteElement(inputElement) {
 	});
 	fokuserbareElementer.eq(fokuserbareElementer.index(inputElement) + 1).focus();
 }
+

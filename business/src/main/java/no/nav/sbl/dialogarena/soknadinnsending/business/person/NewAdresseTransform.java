@@ -175,10 +175,11 @@ public class NewAdresseTransform {
     }
 
     private NewAdresse finnPostAdresse(XMLPostadresse postadresse) {
-
         XMLUstrukturertAdresse ustrukturertAdresse = postadresse.getUstrukturertAdresse();
         NewAdresse adresse = retrieveFolkeregistrertUtenlandskAdresse(ustrukturertAdresse);
-        adresse.setAdresse(StringUtils.join(hentAdresseLinjer(ustrukturertAdresse), ", "));
+        List<String> adresseLinjer = hentAdresseLinjer(ustrukturertAdresse);
+        addIfNotNull(adresseLinjer, getLand(ustrukturertAdresse.getLandkode()));
+        adresse.setAdresse(StringUtils.join(adresseLinjer, ", "));
         return adresse;
     }
 
@@ -257,9 +258,11 @@ public class NewAdresseTransform {
         stringBuilder.append(xmlPostboksAdresse.getTilleggsadresse());
         stringBuilder.append(", ");
         stringBuilder.append(getPostnummerString(xmlPostboksAdresse));
+        stringBuilder.append(" ");
         stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlPostboksAdresse)));
         stringBuilder.append(", ");
         stringBuilder.append(xmlPostboksAdresse.getPostboksanlegg());
+        stringBuilder.append(" ");
         stringBuilder.append(xmlPostboksAdresse.getPostboksnummer());
         adresse.setAdresse(stringBuilder.toString());
 
@@ -277,6 +280,7 @@ public class NewAdresseTransform {
         stringBuilder.append(xmlMatrikkelAdresse.getTilleggsadresse());
         stringBuilder.append(", ");
         stringBuilder.append(getPostnummerString(xmlMatrikkelAdresse));
+        stringBuilder.append(" ");
         stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlMatrikkelAdresse)));
         stringBuilder.append(", ");
         stringBuilder.append(xmlMatrikkelAdresse.getEiendomsnavn());
@@ -296,10 +300,12 @@ public class NewAdresseTransform {
         stringBuilder.append(xmlGateAdresse.getTilleggsadresse());
         stringBuilder.append(", ");
         stringBuilder.append(xmlGateAdresse.getGatenavn());
+        stringBuilder.append(" ");
         stringBuilder.append(getHusnummer(xmlGateAdresse));
         stringBuilder.append(getHusbokstav(xmlGateAdresse));
         stringBuilder.append(", ");
         stringBuilder.append(getPostnummerString(xmlGateAdresse));
+        stringBuilder.append(" ");
         stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlGateAdresse)));
         stringBuilder.append(", ");
         stringBuilder.append(getLandkode(xmlGateAdresse));
@@ -314,14 +320,15 @@ public class NewAdresseTransform {
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(xmlGateAdresse.getGatenavn());
-        stringBuilder.append(", ");
+        stringBuilder.append(" ");
         stringBuilder.append(getHusnummer(xmlGateAdresse));
         stringBuilder.append(getHusbokstav(xmlGateAdresse));
         stringBuilder.append(", ");
         stringBuilder.append(getPostnummerString(xmlGateAdresse));
+        stringBuilder.append(" ");
         stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlGateAdresse)));
         stringBuilder.append(", ");
-        stringBuilder.append(getLandkode(xmlGateAdresse));
+        stringBuilder.append(getLand(xmlGateAdresse.getLandkode()));
         adresse.setAdresse(stringBuilder.toString());
 
         return adresse;

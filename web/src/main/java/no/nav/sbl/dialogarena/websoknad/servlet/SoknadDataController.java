@@ -21,12 +21,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-<<<<<<< HEAD
 import java.io.IOException;
-=======
 
 import java.util.HashMap;
->>>>>>> master
 import java.util.List;
 import java.util.Map;
 
