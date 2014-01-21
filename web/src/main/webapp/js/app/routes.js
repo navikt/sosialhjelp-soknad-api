@@ -29,7 +29,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/opplasting/:soknadId/:faktumId/:skjemaNummer', {
+			.when('/opplasting/:soknadId/:vedleggId', {
 				templateUrl: '../html/templates/opplasting.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -37,7 +37,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/visVedlegg/:soknadId/:faktumId/:vedleggId', {
+			.when('/visVedlegg/:soknadId/:vedleggId', {
 				templateUrl: '../html/templates/visvedlegg.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {

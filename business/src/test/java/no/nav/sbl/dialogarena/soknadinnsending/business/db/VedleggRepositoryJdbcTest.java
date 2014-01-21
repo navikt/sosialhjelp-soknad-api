@@ -36,23 +36,23 @@ public class VedleggRepositoryJdbcTest {
     public void skalLasteOppBlob() throws IOException {
         byte[] bytes = {1, 2, 3};
         Vedlegg v = getVedlegg(bytes);
-        vedleggRepository.lagreVedlegg(v, bytes);
+        vedleggRepository.opprettVedlegg(v, bytes);
 
-        List<Vedlegg> vedlegg = vedleggRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktumId(), v.getskjemaNummer());
+        List<Vedlegg> vedlegg = vedleggRepository.hentVedleggUnderBehandling(v.getSoknadId(), v.getFaktumId(), v.getskjemaNummer());
         assertThat(vedlegg.size(), is(equalTo(1)));
-        v.setId(vedlegg.get(0).getId());
+        v.setVedleggId(vedlegg.get(0).getVedleggId());
         assertThat(vedlegg.get(0), is(equalTo(v)));
     }
 
     @Test
     public void skalKunneSletteVedlegg() {
         final Vedlegg v = getVedlegg();
-        Long id = vedleggRepository.lagreVedlegg(v, new byte[0]);
-        List<Vedlegg> hentet = vedleggRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktumId(), v.getskjemaNummer());
+        Long id = vedleggRepository.opprettVedlegg(v, new byte[0]);
+        List<Vedlegg> hentet = vedleggRepository.hentVedleggUnderBehandling(v.getSoknadId(), v.getFaktumId(), v.getskjemaNummer());
         assertThat(hentet, is(notNullValue()));
         assertThat(hentet.size(), is(1));
         vedleggRepository.slettVedlegg(v.getSoknadId(), id);
-        hentet = vedleggRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktumId(), v.getskjemaNummer());
+        hentet = vedleggRepository.hentVedleggUnderBehandling(v.getSoknadId(), v.getFaktumId(), v.getskjemaNummer());
         assertThat(hentet, is(notNullValue()));
         assertThat(hentet.size(), is(0));
     }
@@ -61,7 +61,7 @@ public class VedleggRepositoryJdbcTest {
     public void skalHenteInnhold() throws IOException {
         byte[] lagret = new byte[]{1, 2, 3};
         final Vedlegg v = getVedlegg(lagret);
-        Long id = vedleggRepository.lagreVedlegg(v, lagret);
+        Long id = vedleggRepository.opprettVedlegg(v, lagret);
         InputStream hentet = vedleggRepository.hentVedleggStream(v.getSoknadId(), id);
         byte[] bytes = IOUtils.toByteArray(hentet);
         assertThat(bytes, is(equalTo(lagret)));
@@ -72,7 +72,7 @@ public class VedleggRepositoryJdbcTest {
     }
 
     private Vedlegg getVedlegg(byte[] bytes) {
-        return new Vedlegg(null, 12L, 10L, "1", "navn", (long) bytes.length, 1, null, null);
+        return new Vedlegg(null, 12L, 10L, "1", "navn", (long) bytes.length, 1, null, null, Vedlegg.Status.UnderBehandling);
     }
 
 }
