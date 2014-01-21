@@ -79,7 +79,7 @@ public class DatabaseTestContext {
             st.execute("create table SOKNAD (soknad_id numeric not null, uuid varchar(255) not null, brukerbehandlingid varchar(255) not null, navsoknadid varchar(255) not null, " +
                     "aktorid varchar(255) not null, opprettetdato timestamp not null, status varchar(255) not null, delstegstatus varchar(255), sistlagret timestamp)");
             st.execute("drop table VEDLEGG if exists");
-            st.execute("create table VEDLEGG (vedlegg_id bigint not null , soknad_id bigint not null, faktum bigint not null, gosysid varchar(36), navn varchar(255) not null, antallsider bigint, fillagerReferanse varchar(36), storrelse bigint not null, " +
+            st.execute("create table VEDLEGG (vedlegg_id bigint not null , soknad_id bigint not null, faktum bigint not null, skjemaNummer varchar(36), navn varchar(255) not null, antallsider bigint, fillagerReferanse varchar(36), storrelse bigint not null, " +
                     " opprettetdato timestamp , data blob)");
             st.execute("create table SOKNADBRUKERDATA (soknadbrukerdata_id bigint not null, soknad_id bigint not null, key varchar(255) not null, value varchar(2000) not null, " +
                     "type varchar(255), sistendret timestamp not null, PARRENT_FAKTUM bigint)");

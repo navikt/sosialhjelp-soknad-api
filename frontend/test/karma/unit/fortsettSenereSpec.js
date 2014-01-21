@@ -21,7 +21,7 @@ describe('FortsettSenereController', function() {
 
             $httpBackend.whenGET(/sendsoknad\/rest\/soknad\/.*/).
                respond(
-                {"soknadId": 1, "status": "UNDER_ARBEID", "gosysId": "Dagpenger", "brukerBehandlingId": "100000000",
+                {"soknadId": 1, "status": "UNDER_ARBEID", "skjemaNummer": "Dagpenger", "brukerBehandlingId": "100000000",
                 "fakta":{"epost":{"soknadId":1,"key":"epost", "value": "ketil.s.velle@nav.no","type": "SYSTEM"},
                 "sammensattnavn":{"soknadId":1,"key":"sammensattnavn","value":"ENGELSK TESTFAMILIEN","type":"System"},
                 "mellomnavn":{"soknadId":1,"key":"mellomnavn","value":"","type":"System"},
