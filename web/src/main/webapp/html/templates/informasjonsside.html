@@ -4,9 +4,13 @@
 
 <div id="informasjonsside" data-sidetittel="sidetittel.informasjon">
 	<div data-panelbelyst>
-        <div data-ng-show="tpsSvarerIkke()"> 
+        <div class="persondata-feil" data-ng-show="tpsSvarerIkke()"> 
+        	<div class="utrop-sirkel-ikon"></div>
         	<h1 data-cmstekster="feilmelding"></h1>
-       		<span data-cmstekster="feilmelding.tps"></span>
+       		<p class="mini-strek">{{ 'feilmelding.tps' | cmstekst }}</p>
+			<div class="knapper">
+       			<a type="button" class="knapp-hoved" data-cmslenketekster="utslagskriterier.utslag.avbryt.lenkeurl" data-cmstekster="feilmelding.lenketekst"></a>
+       		</div>
        	</div>
        	<div data-ng-show="tpsSvarer()">
 

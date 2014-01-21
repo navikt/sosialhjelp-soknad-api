@@ -6,7 +6,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 			$scope.utslagskriterier.harlestbrosjyre=false;
 			//For testing uten TPS:
 			
-			//$scope.utslagskriterier.gyldigAlder = true;
+			//$scope.utslagskriterier.gyldigAlder = false;
 			//$scope.utslagskriterier.bosattINorge = false;
 
 			$scope.gjeldendeAdresse = angular.fromJson($scope.utslagskriterier.registrertAdresse);
