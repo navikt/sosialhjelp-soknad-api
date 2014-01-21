@@ -1,35 +1,28 @@
-<p class="svar-oppsummering-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.informasjon"></p>
-
-<p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.sporsmal"></p>
-
-<div data-ng-show="af.sagtOppSelvInnskrenkninger">
-	<p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.true"></p>
-	<p class="svar-oppsummering-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.informasjon"></p>
+<div class="varighet">
+    <span data-ng-bind="af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy' | norskdato"></span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil"> TIL </span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil" data-ng-bind="af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy' | norskdato"></span>
 </div>
 
-<div data-ng-show="af.sagtOppSelvInnskrenkninger == 'false'">
-	<p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.innskrenkninger.false"></p>
-</div>
+<ul>
+    <li>
+        <p data-ng-bind="af.sluttaarsak.properties.type"></p>
+    </li>
+    <li>
+        <span data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.aarsak.sporsmal"></span>
+        <p data-ng-bind="af.sluttaarsak.properties.sagtoppselvAarsak"></p>
+    </li>
+</ul>
 
-<p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.sporsmal"></p>
-<p class="svar-oppsummering">{{af.sagtOppSelvVarighetTil | date:'dd.MM.yyyy'}}</p>
-
-<p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.sporsmal"></p>
-
-<div data-ng-show="af.sagtOppSelvOppsigelseslonn">
-	<p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.true"></p>
-</div>
-
-<div data-ng-show="af.sagtOppSelvOppsigelseslonn == 'false'">
-	<p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.oppsigelseslonn.false"></p>
-</div>
-
-<p class="svar-oppsummering-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.sporsmal"></p>
-
-<div data-ng-show="af.sagtOppSelvAvtaleomOkonomiskytelse">
-	<p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.true"></p>
-</div>
-
-<div data-ng-show="af.sagtOppSelvAvtaleomOkonomiskytelse == 'false'">
-	<p class="svar-oppsummering" data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.avtaleomokonomiskytelse.false"></p>
+<div data-vedlegginfoboks>
+    <ul>
+        <li>
+            <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></p>
+        </li>
+        <li>
+            <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2"></p>
+            <a cmslenketekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenkeurl" data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst">
+            </a>
+        </li>
+    </ul>
 </div>

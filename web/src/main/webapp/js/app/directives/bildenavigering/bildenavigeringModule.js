@@ -1,24 +1,27 @@
 angular.module('nav.bildenavigering', [])
     .directive('bildenavigering', [function () {
         return {
-            restrict: "A",
+            restrict: 'A',
             replace: true,
             scope: {
                 vedlegg: '='
             },
-            link: function (scope, element) {
 
+            link: function (scope, element) {
                 var bilder = [];
                 scope.side = 0;
                 scope.bilder = bilder;
+
                 scope.range = function (til) {
                     var r = [];
                     for (var i = 0; i < til; i++) r.push(i);
                     return r;
-                }
+                };
+
                 scope.sideErSynlig = function (index) {
-                    return index == scope.side;
-                }
+                    return index === scope.side;
+                };
+
                 scope.naviger = function (retning) {
                     //element.find('img').attr('src', '');
                     scope.side = scope.side + retning;
@@ -28,8 +31,8 @@ angular.module('nav.bildenavigering', [])
                         scope.side = 0;
                     }
                 }
-
             },
+
             templateUrl: function (element, attr) {
                 if (attr.selvstendig) {
                     return '../js/app/directives/bildenavigering/bildenavigeringTemplateStor.html';

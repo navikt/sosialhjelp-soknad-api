@@ -1,13 +1,14 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import org.apache.commons.collections15.Predicate;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import static no.nav.modig.lang.collections.IterUtils.on;
 
 /**
  * Denne klassen fungerer som en oversikt over en søknad. Den Lister ut en søknad med tilhørende felter og avhengigheter.
@@ -15,20 +16,9 @@ import java.util.Map;
 @XmlRootElement(name = "soknad")
 public class SoknadStruktur implements Serializable {
 
-    private String gosysId;
-
     private List<SoknadFaktum> fakta = new ArrayList<>();
     private List<SoknadVedlegg> vedlegg = new ArrayList<>();
-    private transient Map<String, SoknadVedlegg> vedleggMap;
 
-    @XmlAttribute
-    public String getGosysId() {
-        return gosysId;
-    }
-
-    public void setGosysId(String gosysId) {
-        this.gosysId = gosysId;
-    }
 
     @XmlElement(name = "faktum")
     public List<SoknadFaktum> getFakta() {
@@ -51,21 +41,19 @@ public class SoknadStruktur implements Serializable {
     @Override
     public String toString() {
         return new StringBuilder("SoknadStruktur{")
-                .append("gosysId='").append(gosysId).append('\'')
                 .append(", fakta=").append(fakta)
                 .append(", vedlegg=").append(vedlegg)
                 .append('}')
                 .toString();
     }
 
-    public SoknadVedlegg vedleggFor(String felt) {
-
-        if (vedleggMap == null) {
-            vedleggMap = new HashMap<>();
-            for (SoknadVedlegg soknadVedlegg : vedlegg) {
-                vedleggMap.put(soknadVedlegg.getFaktum().getId(), soknadVedlegg);
+    public List<SoknadVedlegg> vedleggFor(final String felt) {
+        return on(vedlegg).filter(new Predicate<SoknadVedlegg>() {
+            @Override
+            public boolean evaluate(SoknadVedlegg soknadVedlegg) {
+                return soknadVedlegg.getFaktum().getId().equals(felt);
             }
-        }
-        return vedleggMap.get(felt);
+        }).collect();
+
     }
 }

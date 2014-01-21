@@ -1,0 +1,1 @@
+ALTER TABLE Vedlegg ADD skjemaNummer VARCHAR(36);

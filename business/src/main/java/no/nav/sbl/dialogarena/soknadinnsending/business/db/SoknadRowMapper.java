@@ -17,7 +17,7 @@ public class SoknadRowMapper implements RowMapper<WebSoknad> {
         return startSoknad()
         		.medId(rs.getLong("soknad_id"))
         		.medBehandlingId(rs.getString("brukerbehandlingid"))
-        		.medGosysId(rs.getString("navsoknadid"))
+        		.medskjemaNummer(rs.getString("navsoknadid"))
         		.medAktorId(rs.getString("aktorid"))
                 .medStatus(SoknadInnsendingStatus.valueOf(rs.getString("status")))
                 .medDelstegStatus(DelstegStatus.valueOf(rs.getString("delstegstatus")))

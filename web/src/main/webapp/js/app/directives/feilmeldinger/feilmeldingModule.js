@@ -1,5 +1,4 @@
 angular.module('nav.feilmeldinger', [])
-
     // settes på inputfeltene som skal gi feilmeldinger
     .directive('errorMessages', [function () {
         return {
@@ -30,7 +29,6 @@ angular.module('nav.feilmeldinger', [])
             transclude: true,
             restrict: 'A',
             link: function postLink(scope, elem, attrs, ctrl) {
-
                 var eventString = 'RUN_VALIDATION' + ctrl.$name;
 
                 scope.feilmeldinger = [];
@@ -77,21 +75,39 @@ angular.module('nav.feilmeldinger', [])
                         scrollToElement(formLinje, 200);
 
                         if (feilmelding.elem.is('[type=hidden]')) {
-                            scope.giFokus(formLinje.find('input[type=checkbox]').first());
+                            if (feilmelding.elem.hasClass('tekstfelt')) {
+                                scope.giFokus(formLinje.find('input[type=text]').filter(':visible').first());
+                            } else {
+                                scope.giFokus(formLinje.find('input[type=checkbox]').first());
+                            }
                         } else {
                             scope.giFokus(feilmelding.elem);
                         }
-
                     }
                 }
 
+                /*
+                 Ved ng-repeat så må vi sjekke hvilket element som inneholder feil først. Sjekker at lengden er større
+                 enn 1 for at checkbokser som bruker hidden-felt og ikke har klassen ng-invalid får riktig fokus
+                 */
                 scope.giFokus = function (element) {
-                    element.focus();
+                    if (typeof element === 'object' && element.length > 1) {
+                        for (var i = 0; i < element.length; i++) {
+                            if ($(element[i]).hasClass('ng-invalid')) {
+                                element[i].focus();
+                                return;
+                            }
+                        }
+                    }
+                    else {
+                        element.focus();
+                    }
                 }
 
                 scope.erKlikkbarFeil = function (feilmelding) {
                     return feilmelding.elem && feilmelding.elem.length > 0;
                 }
+
 
                 /*
                  * Dersom vi har en egendefinert feil med der $skalVisesAlene er satt til true så skal kun denne feilmeldingen vises. I det tilfellet fjernes alle andre feilmeldinger
@@ -134,13 +150,13 @@ angular.module('nav.feilmeldinger', [])
                     var feilmeldingNokkel = finnFeilmeldingsNokkel(feil, feilNokkel);
                     var feilmelding = cms.tekster[feilmeldingNokkel];
                     if (feilmelding === undefined) {
-                        return {feil: "Fant ikke feilmelding med key " + feilmeldingNokkel, elem: finnTilhorendeElement(feil)};
+                        return {feil: 'Fant ikke feilmelding med key ' + feilmeldingNokkel, elem: finnTilhorendeElement(feil)};
                     }
                     return {feil: feilmelding, elem: finnTilhorendeElement(feil)};
                 }
 
                 function finnFeilmeldingsNokkel(feil, feilNokkel) {
-                    if (feil && feil.$errorMessages != undefined) {
+                    if (feil && feil.$errorMessages !== undefined) {
                         if (typeof feil.$errorMessages === 'object') {
                             return feil.$errorMessages[feilNokkel];
                         } else if (typeof feil.$errorMessages === 'string') {
@@ -173,5 +189,5 @@ angular.module('nav.feilmeldinger', [])
             }
             return feilmeldinger;
         }
-    }])
+    }]);
 

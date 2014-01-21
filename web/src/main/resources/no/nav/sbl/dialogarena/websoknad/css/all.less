@@ -1,5 +1,14 @@
 @svar-bakgrunnsfarge: #d1d1d1;
 
+:invalid
+{
+    box-shadow: none;
+}
+
+.ng-pristine .ng-invalid-required
+{
+    box-shadow: none;
+}
 .nav,
 .pagination,
 .carousel a {
@@ -17,10 +26,70 @@
 }
 
 .informasjonstekst {
+    font-weight: bold;
     font-size: 1rem;
     font-weight: bold;
-    margin-top: 20px !important;
-    margin-left: 15px !important;
+}
+
+.infoboks {
+    padding: 20px 5%;
+    margin-bottom: 20px;
+
+    .utrop-sirkel-ikon {
+        background-image: url(../img/utrop.svg);
+        background-position: center top;
+        background-repeat: no-repeat;
+        padding-top: 46px;
+    }
+    p {
+        margin-bottom: 10px;
+        text-align: left;
+    }
+}
+
+.ekstra-spm-boks &.vedlegginfoboks {
+    padding-bottom: 0px !important;
+}
+
+.informasjonstekst-utrop {
+    background-image: url(../img/info-utrop.svg);
+    background-repeat: no-repeat;
+    background-position: 10px top;
+    padding-left: 25px;
+    padding-top: 2px;
+    min-height: 19px;
+}
+
+.vedlegginfoboks {
+    border-top: 1px solid #ddd;
+    margin: 15px;
+    padding-top: 20px;
+    clear: both;
+
+    [class*="strek-ikon-vedlegg"], [class*="ikon-vedlegg-strek"] {
+        background-image: url(../img/vedlegg-svart.svg);
+        background-position: 0 top;
+        background-repeat: no-repeat;
+        padding-bottom: 0px !important;
+        margin-bottom: 15px !important;
+        padding-left: 30px;
+
+        .leggved {
+            font-weight: bold;
+        }
+
+        ul {
+            padding-left: 15px;
+
+            p {
+                margin: 0;
+            }
+        }
+    }
+}
+
+.informasjonstekst-normal {
+    padding: 15px;
 }
 
 .sticky-feilmelding {
@@ -174,8 +243,6 @@
     background: #f1f1f1;
     border: 1px solid #ddd;
     padding: 20px;
-    margin-left: 44px;
-    margin-right: 0px;
     margin-bottom: 30px;
 }
 
@@ -189,8 +256,7 @@
 
         .flipp {
             cursor: pointer;
-            border-color: transparent transparent #00468B transparent
-        ;
+            border-color: transparent transparent #00468B transparent;
 
             &:before {
                 border-top: 30px solid #0067c5;
@@ -203,8 +269,7 @@
 
         .flipp {
             cursor: pointer;
-            border-color: transparent transparent #a3a3a3 transparent
-        ;
+            border-color: transparent transparent #a3a3a3 transparent;
 
             &:before {
                 border-top: 30px solid #ccc;
@@ -223,8 +288,7 @@
         height: 0;
         margin: 0 auto;
         border-style: solid;
-        border-color: transparent transparent #0067c5 transparent
-    ;
+        border-color: transparent transparent #0067c5 transparent;
         border-width: 0 2px 3px 2px;
 
         &:before {
@@ -306,8 +370,10 @@
             }
 
             .spm-knapper {
-                margin-top: 15px;
                 text-align: center;
+                border-top: 1px solid #ddd;
+                margin-top: 15px;
+                padding-top: 40px;
 
                 input, button, a {
                     margin-bottom: 15px;
@@ -325,52 +391,18 @@
                 }
             }
         }
-    }
 
-    .spm-fortsett {
-        margin-top: 1rem;
+        .spm-fortsett {
+            margin-top: 1rem;
 
-        span {
-            text-transform: uppercase;
+            span {
+                text-transform: uppercase;
 
-            a {
-                text-transform: none;
+                a {
+                    text-transform: none;
+                }
             }
         }
-    }
-}
-
-.spm {
-    width: 100%;
-
-    .spm-sporsmal {
-        font-size: 1.21rem;
-        font-weight: 600;
-        font-family: Modus, Arial, Helvetica, sans-serif;
-        margin-bottom: 10px;
-        line-height: 1.6rem;
-    }
-
-    .blokk-resultat {
-        margin: 10px 15px;
-        width: 100%;
-
-        .checked {
-            background-color: #333;
-        }
-    }
-
-    .svar-alt {
-        text-transform: none !important;
-
-        .mer-info {
-            margin-left: 5px;
-        }
-    }
-
-    textarea {
-        width: 40%;
-        margin: 10px 0px;
     }
 }
 
@@ -428,12 +460,16 @@ form-linje.feil {
             display: none;
         }
 
+        .nav-checkbox {
+            margin-left: 0px;
+        }
+
         &.feil {
             border: 1px solid #fee6e6;
             background: #fee6e6;
             padding: 15px;
 
-            &.tekstfelt, &.textarea-container {
+            &.tekstfelt, &.textarea-container, &.datepicker {
                 border: none;
                 background: #f1f1f1;
             }
@@ -444,9 +480,13 @@ form-linje.feil {
                     display: block;
                     margin-bottom: 10px;
                 }
+                .ingen-navytelse-melding {
+                    display: block;
+                    margin-bottom: 10px;
+                }
             }
 
-            .utdanning-annet-melding {
+            .utdanning-nei-melding {
                 display: block;
                 margin-bottom: 10px;
             }
@@ -456,7 +496,6 @@ form-linje.feil {
             }
             .melding {
                 color: #A00404;
-
             }
         }
     }
@@ -466,6 +505,15 @@ form-linje.feil {
     }
 
     &.feil {
+        .form-linje {
+            .melding {
+                display: none;
+            }
+            input, select, textarea {
+                border: 1px solid #ccc;
+                background-color: #fff;
+            }
+        }
         select {
             border: 1px solid #fee6e6;
             border-top: 1px solid #ff0000;
@@ -474,6 +522,7 @@ form-linje.feil {
 
         .melding {
             display: block;
+            white-space: initial;
         }
 
         &.boolean {
@@ -490,7 +539,12 @@ form-linje.feil {
             background-color: #fee6e6;
         }
 
-        &.aktiv-feilmelding.boolean {
+        &.knapp {
+          background-color: #fee6e6;
+          border: 1px solid #fee6e6;
+        }
+
+        &.aktiv-feilmelding.boolean, &.aktiv-feilmelding.knapp {
             border: 1px solid #c30000;
             background-color: #FAD6D6;
 
@@ -498,13 +552,16 @@ form-linje.feil {
                 color: #A00404;
             }
         }
-        &.aktiv-feilmelding.tekstfelt input {
+        &.aktiv-feilmelding.tekstfelt input, &.aktiv-feilmelding textarea {
             border: 1px solid #c30000;
             background-color: #FAD6D6;
 
             .melding {
                 color: #A00404;
             }
+        }
+        .form-linje.tekstfelt input {
+            background-color: #fff;
         }
     }
     &.aktiv-feilmelding.checkbox.feilstyling {
@@ -520,10 +577,26 @@ form-linje.feil {
         border: 1px solid #fee6e6;
         background: #fee6e6;
         padding: 14px !important;
+        margin-bottom: 20px;
 
         .melding {
             margin-bottom: 10px;
             display: block;
+            white-space: initial;
+        }
+    }
+
+    &.orgnummer {
+        float: left;
+        span {
+            clear: both;
+            float: left;
+        }
+        input {
+            width: 100px !important;
+            display: inline-block;
+            clear: both;
+            float: left;
         }
     }
 }
@@ -542,11 +615,7 @@ form-linje.feil {
             font-family: Modus, Arial, Helvetica, sans-serif;;
             font-weight: 600;
             padding: 10px 40px;
-        }
-
-        &.done a {
             background: #f1f1f1;
-            color: #3e3832;
         }
     }
 }
@@ -630,6 +699,10 @@ form, [ng-form], [data-ng-form] {
         }
     }
 
+    .ps-scrollbar-y-rail {
+        right: 0;
+    }
+
     .ps-scrollbar-x {
         bottom: 3px;
         height: 8px;
@@ -640,3 +713,5 @@ form, [ng-form], [data-ng-form] {
         width: 8px;
     }
 }
+
+

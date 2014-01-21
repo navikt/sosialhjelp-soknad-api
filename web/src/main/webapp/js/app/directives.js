@@ -1,4 +1,3 @@
-'use strict';
 angular.module('app.directives', [
 	'app.services',
 	'nav.booleanradio',
@@ -12,16 +11,19 @@ angular.module('app.directives', [
 	'nav.textarea',
 	'nav.fremdriftsindikator',
 	'nav.validering',
-    'nav.stickybunn',
+	'nav.stickybunn',
 	'nav.select',
 	'nav.hjelpetekst',
 	'nav.datepicker',
 	'nav.prosent',
 	'nav.sidetittel',
-    'nav.bildenavigering',
-    'nav.utdanningannet',
-    'nav.ingenytelser',
-    'nav.accordion',
-    'nav.scrollbar',
-    'nav.dagpengerdirective'
+	'nav.bildenavigering',
+	'nav.navfaktum',
+	'nav.accordion',
+	'nav.scroll.directive',
+	'nav.scrollbar',
+	'nav.dagpengerdirective',
+	'nav.skjematittel',
+	'nav.aria',
+	'nav.norskDatoFilter'
 ]);

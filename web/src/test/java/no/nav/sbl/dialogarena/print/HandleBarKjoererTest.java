@@ -39,10 +39,10 @@ public class HandleBarKjoererTest {
     public void createHashAndApplyTemplate() throws IOException {
         String json = hentWebSoknadJson();
         Map<String, Object> resultat = new ObjectMapper().readValue(json, Map.class);
-        String[] s = {"soknadId", "gosysId", "brukerBehandlingId", "fakta", "status", "aktoerId", "opprettetDato", "delstegStatus"};
+        String[] s = {"soknadId", "skjemaNummer", "brukerBehandlingId", "fakta", "status", "aktoerId", "opprettetDato", "delstegStatus"};
 
         assertThat(resultat.keySet(), contains(s));
-        assertThat((String) resultat.get("gosysId"), is(equalTo("Dagpenger")));
+        assertThat((String) resultat.get("skjemaNummer"), is(equalTo("Dagpenger")));
         assertThat((String) resultat.get("status"), is(equalTo("UNDER_ARBEID")));
 
         String applied = HandleBarKjoerer.fyllHtmlStringMedInnhold(hentWebSoknadHtml(), resultat);

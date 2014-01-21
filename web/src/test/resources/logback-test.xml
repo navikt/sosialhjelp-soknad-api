@@ -14,8 +14,7 @@
     <logger name="no.nav.modig.lang.reflect" level="warn" />
     <logger name="no.nav.sbl" level="debug" />
 
-    <logger name="org.apache.cxf" level="error" />
-    
+    <logger name="org.apache.cxf" level="info" />
     <root level="INFO">
         <appender-ref ref="Console"/>
     </root>

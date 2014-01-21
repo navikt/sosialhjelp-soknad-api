@@ -1,0 +1,62 @@
+<input type="hidden"
+       data-ng-model="harHuketAvCheckboks.value"
+       data-ng-required="hvis('utdanning', 'underUtdanning')"
+       data-error-messages="'utdanning.minstEnAvhuket.feilmelding'">
+
+<div data-navinfoboks>
+    <span data-cmstekster="utdanning.svar.under.utdanning.kveld.undervisning.folges.info"></span>
+</div>
+
+<div data-nav-faktum="utdanning.kveld.folges"
+     data-booleanradio
+     data-nokkel="utdanning.svar.under.utdanning.kveld.undervisning.folges">
+</div>
+
+<div data-navinfoboks>
+    <span data-cmstekster="utdanning.progresjon.info"></span>
+</div>
+
+<div data-nav-faktum="utdanning.kveld.progresjonUnder50"
+     data-booleanradio
+     data-nokkel="utdanning.progresjon">
+
+    <div data-nav-faktum="utdanning.kveld.PaabegyntUnder6mnd"
+         data-booleanradio
+         data-nokkel="utdanning.paabegyntUnder6mnd">
+
+        <div data-navinfoboks>
+            <span data-cmstekster="utdanning.unntak.under6mnd"></span>
+        </div>
+    </div>
+</div>
+
+<div data-navtekst
+     data-navconfig
+     data-nav-faktum="utdanning.kveld.sted"
+     data-navlabel="utdanning.utdanningssted.navn"
+     data-navfeilmelding="'utdanning.error.kveld.utdanningsstednavn'"
+     data-ng-required></div>
+
+<div data-navtekst
+     data-navconfig
+     data-nav-faktum="utdanning.kveld.navn"
+     data-navlabel="utdanning.utdanning.navn"
+     data-navfeilmelding="'utdanning.error.kveld.utdanningsnavn'"
+     data-ng-required></div>
+
+<div class="varighet"  data-nav-faktum="utdanning.kveld.varighet" data-nav-property="['varighetFra', 'varighetTil']">
+    <div data-nav-dato-intervall
+         data-fra-dato="navproperties.varighetFra"
+         data-til-dato="navproperties.varighetTil"
+         data-label="utdanning.varighet"
+         data-er-fremtidigdato-tillatt="true"
+         data-er-required="true"
+         data-lagre="lagreFaktum()">
+    </div>
+</div>
+
+<div data-vedlegginfoboks>
+    <ul>
+        <li><p data-cmstekster="utdanning.svar.under.utdanning.dokumentasjon"></p></li>
+    </ul>
+</div>
