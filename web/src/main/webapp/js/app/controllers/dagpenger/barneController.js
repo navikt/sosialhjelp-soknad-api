@@ -195,11 +195,11 @@ angular.module('nav.barn', ['app.services'])
 							}
 
 							$scope.ikkebarneinntekt = false;
-							$location.path('dagpenger/' + $scope.soknadData.soknadId);
+							$location.path('soknad/');
 						});
 					} else {
 						$scope.ikkebarneinntekt = false;
-						$location.path('dagpenger/' + $scope.soknadData.soknadId);
+						$location.path('soknad/');
 					}
 				});
 			});
