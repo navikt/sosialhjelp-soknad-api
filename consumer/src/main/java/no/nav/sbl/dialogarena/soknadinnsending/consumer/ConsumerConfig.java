@@ -83,7 +83,7 @@ public class ConsumerConfig {
                     .withWsdl("classpath:FilLager.wsdl")
                     .build()
                     .withHttpsMock()
-                    .withMDC();
+                    .withSystemSecurity();
         }
 
         @Bean
@@ -93,7 +93,7 @@ public class ConsumerConfig {
 
         @Bean
         public FilLagerPortType fillagerServiceSelftest() {
-            return factory().withSystemSecurity().get();
+            return factory().get();
         }
     }
 

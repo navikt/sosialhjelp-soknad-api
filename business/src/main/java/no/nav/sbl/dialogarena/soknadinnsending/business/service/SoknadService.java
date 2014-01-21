@@ -47,6 +47,8 @@ import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLIn
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.LastetOpp;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.VedleggKreves;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getJournalforendeEnhet;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getSkjemanummer;
 
 @Component
 public class SoknadService implements SendSoknadService, VedleggService {
@@ -126,7 +128,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public void sendSoknad(long soknadId) {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
         List<VedleggForventning> vedleggForventnings = hentPaakrevdeVedlegg(soknadId);
-        XMLHovedskjema hovedskjema = new XMLHovedskjema().withInnsendingsvalg(LASTET_OPP.toString()).withSkjemanummer("NAV 04-01.03");
+        String skjemanummer = getSkjemanummer(soknad);
+        String journalforendeEnhet = getJournalforendeEnhet(soknad);
+        XMLHovedskjema hovedskjema = new XMLHovedskjema().withInnsendingsvalg(LASTET_OPP.toString()).withSkjemanummer(skjemanummer).withJournalforendeEnhet(journalforendeEnhet);
         henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(), hovedskjema, Transformers.convertToXmlVedleggListe(vedleggForventnings));
         repository.avslutt(soknad);
 
@@ -138,6 +142,12 @@ public class SoknadService implements SendSoknadService, VedleggService {
         return null;
     }
 
+    @Override
+    public Long hentSoknadMedBehandlinsId(String behandlingsId) {
+        WebSoknad soknad = repository.hentMedBehandlingsId(behandlingsId);
+        return soknad.getSoknadId();
+    }
+    
     @Override
     public void avbrytSoknad(Long soknadId) {
         WebSoknad soknad = repository.hentSoknad(soknadId);
@@ -158,10 +168,10 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public Long startSoknad(String navSoknadId) {
         String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid());
-//       String behandlingsId = "MOCK" + new Random().nextInt(100000000);
+       //String behandlingsId = "MOCK" + new Random().nextInt(100000000);
         WebSoknad soknad = WebSoknad.startSoknad().
                 medBehandlingId(behandlingsId).
-                medGosysId(navSoknadId).
+                medskjemaNummer(navSoknadId).
                 //medAktorId(aktorIdService.hentAktorIdForFno(getSubjectHandler().getUid())).
                 medAktorId(getSubjectHandler().getUid()).
                 opprettetDato(DateTime.now());
@@ -177,7 +187,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
             byte[] bytes = IOUtils.toByteArray(inputStream);
             if (Detect.isImage(bytes)) {
                 bytes = Convert.scaleImageAndConvertToPdf(bytes, new Dimension(1240, 1754));
-                Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(), vedlegg.getFaktumId(), vedlegg.getGosysId(), vedlegg.getNavn(), (long) bytes.length, 1, UUID.randomUUID().toString(), null);
+                Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(), vedlegg.getFaktumId(), vedlegg.getskjemaNummer(), vedlegg.getNavn(), (long) bytes.length, 1, UUID.randomUUID().toString(), null);
                 resultat.add(vedleggRepository.lagreVedlegg(sideVedlegg, bytes));
 
             } else if (Detect.isPdf(bytes)) {
@@ -188,7 +198,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     page.save(baos);
                     page.close();
-                    Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(), vedlegg.getFaktumId(), vedlegg.getGosysId(), vedlegg.getNavn(), (long) baos.size(), 1, UUID.randomUUID().toString(), null);
+                    Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(), vedlegg.getFaktumId(), vedlegg.getskjemaNummer(), vedlegg.getNavn(), (long) baos.size(), 1, UUID.randomUUID().toString(), null);
                     resultat.add(vedleggRepository.lagreVedlegg(sideVedlegg, baos.toByteArray()));
                 }
                 document.close();
@@ -202,8 +212,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     @Override
-    public List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId, String gosysId) {
-        return vedleggRepository.hentVedleggForFaktum(soknadId, faktumId, gosysId);
+    public List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId, String skjemaNummer) {
+        return vedleggRepository.hentVedleggForFaktum(soknadId, faktumId, skjemaNummer);
     }
 
     @Override
@@ -231,8 +241,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     @Override
-    public Long genererVedleggFaktum(Long soknadId, Long faktumId, String gosysId) {
-        List<Vedlegg> vedleggs = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId, gosysId);
+    public Long genererVedleggFaktum(Long soknadId, Long faktumId, String skjemaNummer) {
+        List<Vedlegg> vedleggs = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId, skjemaNummer);
         List<byte[]> bytes = new ArrayList<>();
         for (Vedlegg vedlegg : vedleggs) {
             InputStream inputStream = vedleggRepository.hentVedleggStream(soknadId, vedlegg.getId());
@@ -245,12 +255,12 @@ public class SoknadService implements SendSoknadService, VedleggService {
         }
         //vannmerk her!
         byte[] doc = new PdfMerger().transform(bytes);
-        Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, gosysId, "faktum.pdf", (long) doc.length, vedleggs.size(), UUID.randomUUID().toString(), doc);
+        Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, skjemaNummer, "faktum.pdf", (long) doc.length, vedleggs.size(), UUID.randomUUID().toString(), doc);
         WebSoknad soknad = repository.hentSoknad(soknadId);
-        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), vedlegg.getFillagerReferanse(), new ByteArrayInputStream(doc));
+        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), vedlegg.getFillagerReferanse(), soknad.getAktoerId(), new ByteArrayInputStream(doc));
         vedleggRepository.slettVedleggForFaktum(soknadId, faktumId);
         Long opplastetDokument = vedleggRepository.lagreVedlegg(vedlegg, doc);
-        vedleggRepository.settVedleggStatus(soknadId, faktumId, vedlegg.getGosysId());
+        vedleggRepository.settVedleggStatus(soknadId, faktumId, vedlegg.getskjemaNummer());
         return opplastetDokument;
     }
 
@@ -258,18 +268,18 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public List<VedleggForventning> hentPaakrevdeVedlegg(Long soknadId) {
         List<VedleggForventning> forventninger = new ArrayList<>();
         WebSoknad webSoknad = hentSoknad(soknadId);
-        SoknadStruktur struktur = hentStruktur(webSoknad.getGosysId());
+        SoknadStruktur struktur = hentStruktur(webSoknad.getskjemaNummer());
 
         for (Faktum faktum : repository.hentAlleBrukerData(soknadId)) {
             List<SoknadVedlegg> aktuelleVedlegg = struktur.vedleggFor(faktum.getKey());
             if (!aktuelleVedlegg.isEmpty()) {
                 for (SoknadVedlegg soknadVedlegg : aktuelleVedlegg) {
                     if (soknadVedlegg.trengerVedlegg(faktum.getValue())) {
-                        Vedlegg vedlegg = faktum.getInnsendingsvalg(soknadVedlegg.getGosysId()).er(LastetOpp) ? vedleggRepository.hentVedleggForGosysId(soknadId, faktum.getFaktumId(), soknadVedlegg.getGosysId()) : null;
-                        if (vedlegg == null && faktum.getInnsendingsvalg(soknadVedlegg.getGosysId()).er(LastetOpp)) {
-                            faktum.setInnsendingsvalg(soknadVedlegg.getGosysId(), VedleggKreves);
+                        Vedlegg vedlegg = faktum.getInnsendingsvalg(soknadVedlegg.getskjemaNummer()).er(LastetOpp) ? vedleggRepository.hentVedleggForskjemaNummer(soknadId, faktum.getFaktumId(), soknadVedlegg.getskjemaNummer()) : null;
+                        if (vedlegg == null && faktum.getInnsendingsvalg(soknadVedlegg.getskjemaNummer()).er(LastetOpp)) {
+                            faktum.setInnsendingsvalg(soknadVedlegg.getskjemaNummer(), VedleggKreves);
                         }
-                        forventninger.add(new VedleggForventning(faktum, vedlegg, soknadVedlegg.getGosysId(), soknadVedlegg.getProperty()));
+                        forventninger.add(new VedleggForventning(faktum, vedlegg, soknadVedlegg.getskjemaNummer(), soknadVedlegg.getProperty()));
                     }
                 }
             }

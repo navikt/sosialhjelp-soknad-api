@@ -20,6 +20,8 @@ public interface SoknadRepository {
 
     void avbryt(Long soknad);
 
+    List<Long> hentAlleSoknaderSistLagretOverEnTimeSiden();
+
     List<WebSoknad> hentListe(String aktorId);
 
     Long lagreFaktum(long soknadId, Faktum faktum);
@@ -33,7 +35,6 @@ public interface SoknadRepository {
     Faktum hentSystemFaktum(Long soknadId, String key,
                             String systemregistrertFaktum);
 
-
     List<Faktum> hentSystemFaktumList(Long soknadId, String key, String string);
     
     void endreInnsendingsValg(Long soknadId, Long faktumId, Faktum.Status innsendingsvalg);
@@ -42,4 +43,5 @@ public interface SoknadRepository {
 
     void slettBrukerFaktum(Long soknadId, Long faktumId);
 
+    void slettSoknad(long soknadId);
 }
