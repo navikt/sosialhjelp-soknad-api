@@ -21,7 +21,8 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 	            $scope.fremdriftsindikator.laster = true;
 	            $scope.soknad = soknadService.create({param: soknadType},
 	                function (result) {
-	                    $location.path('dagpenger/' + result.id);
+	                	var currentUrl = location.href;
+	                	location.href = currentUrl.substring(0, currentUrl.indexOf('start/')) + 'soknad/' + result.brukerbehandlingId + '#/soknad';
 	                }, function () {
 	                    $scope.fremdriftsindikator.laster = false;
 	                });

@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
+
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.sbl.dialogarena.detect.Detect;
 import no.nav.sbl.dialogarena.detect.pdf.PdfDetector;
@@ -166,16 +168,20 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     @Override
-    public Long startSoknad(String navSoknadId) {
+    public String startSoknad(String navSoknadId) {
         String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid());
-//       String behandlingsId = "MOCK" + new Random().nextInt(100000000);
         WebSoknad soknad = WebSoknad.startSoknad().
                 medBehandlingId(behandlingsId).
                 medGosysId(navSoknadId).
                 //medAktorId(aktorIdService.hentAktorIdForFno(getSubjectHandler().getUid())).
                 medAktorId(getSubjectHandler().getUid()).
                 opprettetDato(DateTime.now());
-        return repository.opprettSoknad(soknad);
+        
+        Long soknadId = repository.opprettSoknad(soknad);
+        WebSoknadId websoknadId = new WebSoknadId();
+        websoknadId.setId(soknadId);
+        
+        return behandlingsId;
     }
 
     @Override
