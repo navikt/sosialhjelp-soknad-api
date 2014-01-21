@@ -121,7 +121,7 @@ public class VedleggController {
                 List<Vedlegg> res = new ArrayList<>();
                 for (MultipartFile file : files) {
                     byte[] in = getByteArray(file);
-                    Vedlegg vedlegg = new Vedlegg(null, soknadId, forventning.getFaktumId(), forventning.getGosysId(), file.getOriginalFilename(), file.getSize(), 1, null, in, Vedlegg.Status.UnderBehandling);
+                    Vedlegg vedlegg = new Vedlegg(null, soknadId, forventning.getFaktumId(), forventning.getskjemaNummer(), file.getOriginalFilename(), file.getSize(), 1, null, in, Vedlegg.Status.UnderBehandling);
                     List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, new ByteArrayInputStream(in));
                     for (Long id : ids) {
                         res.add(vedleggService.hentVedlegg(soknadId, id, false));
@@ -136,7 +136,7 @@ public class VedleggController {
     @ResponseBody
     public List<Vedlegg> hentVedleggUnderBehandling(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
         Vedlegg forventning = vedleggService.hentVedlegg(soknadId, vedleggId, false);
-        List<Vedlegg> vedlegg = vedleggService.hentVedleggUnderBehandling(soknadId, forventning.getFaktumId(), forventning.getGosysId());
+        List<Vedlegg> vedlegg = vedleggService.hentVedleggUnderBehandling(soknadId, forventning.getFaktumId(), forventning.getskjemaNummer());
         return vedlegg;
     }
 

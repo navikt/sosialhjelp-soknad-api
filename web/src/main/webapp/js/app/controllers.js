@@ -12,8 +12,10 @@ angular.module('app.controllers', [
     'nav.barn',
     'nav.barnetilleggfaktum',
     'nav.vedlegg.controller',
-    'nav.opplasting.controller',
     'nav.forsettsenere',
     'nav.dagpenger',
-    'nav.personalia'
+    'nav.personalia',
+    'nav.arbeidsforhold',
+    'nav.informasjonsside',
+    'nav.behandlingside'
 ]);

@@ -1,5 +1,14 @@
 @svar-bakgrunnsfarge: #d1d1d1;
 
+:invalid
+{
+    box-shadow: none;
+}
+
+.ng-pristine .ng-invalid-required
+{
+    box-shadow: none;
+}
 .nav,
 .pagination,
 .carousel a {
@@ -530,7 +539,12 @@ form-linje.feil {
             background-color: #fee6e6;
         }
 
-        &.aktiv-feilmelding.boolean {
+        &.knapp {
+          background-color: #fee6e6;
+          border: 1px solid #fee6e6;
+        }
+
+        &.aktiv-feilmelding.boolean, &.aktiv-feilmelding.knapp {
             border: 1px solid #c30000;
             background-color: #FAD6D6;
 
@@ -699,3 +713,5 @@ form, [ng-form], [data-ng-form] {
         width: 8px;
     }
 }
+
+

@@ -31,7 +31,7 @@ angular.module('nav.vedlegg.controller', [])
 		};
 
 		$scope.key = function (forventning) {
-			return 'vedlegg_' + forventning.gosysId;
+			return 'vedlegg_' + forventning.skjemaNummer;
 		};
 
 		$scope.endreInnsendingsvalg = function (forventning, valg) {
@@ -42,7 +42,7 @@ angular.module('nav.vedlegg.controller', [])
 		};
 
 		$scope.erEkstraVedlegg = function (forventning) {
-			return forventning.gosysId === 'L6';
+			return forventning.skjemaNummer === 'L6';
 		};
 
 		$scope.slettAnnetVedlegg = function (forventning) {

@@ -32,10 +32,10 @@ public interface VedleggRepository {
      *
      * @param soknadId soknaden det skal hentes for
      * @param faktum   faktument det skal hentes for
-     * @param gosysId  hvilket vedlegg det skal hentes for
+     * @param skjemaNummer  hvilket vedlegg det skal hentes for
      * @return en liste med vedlegg
      */
-    List<Vedlegg> hentVedleggUnderBehandling(Long soknadId, Long faktum, String gosysId);
+    List<Vedlegg> hentVedleggUnderBehandling(Long soknadId, Long faktum, String skjemaNummer);
 
     void lagreVedleggMedData(Long soknadId, Long vedleggId, Vedlegg vedlegg);
 
@@ -58,14 +58,14 @@ public interface VedleggRepository {
     Vedlegg hentVedlegg(Long soknadId, Long vedleggId);
 
     /**
-     * Henter vedlegg for et faktum og gosysId
+     * Henter vedlegg for et faktum og skjemaNummer
      *
      * @param soknadId soknaden det skal hentes for
      * @param faktumId faktumet det skal hentes vedlegg for
-     * @param gosysId  gosysId til faktumet
+     * @param skjemaNummer  skjemaNummer til faktumet
      * @return vedlegget
      */
-    Vedlegg hentVedleggForGosysId(Long soknadId, Long faktumId, String gosysId);
+    Vedlegg hentVedleggForskjemaNummer(Long soknadId, Long faktumId, String skjemaNummer);
 
 
     /**

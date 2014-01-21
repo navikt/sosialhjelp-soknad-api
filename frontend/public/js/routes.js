@@ -20,7 +20,7 @@ angular.module('app.routes', ['ngRoute'])
                     }
                 }
             })
-            .when('/opplasting/:soknadId/:faktumId/:gosysId', {
+            .when('/opplasting/:soknadId/:faktumId/:skjemaNummer', {
                 templateUrl: '../html/templates/opplasting.html',
                 controller: 'SoknadDataCtrl',
                 resolve: {
@@ -59,16 +59,6 @@ angular.module('app.routes', ['ngRoute'])
 
             .when('/kvittering-fortsettsenere/:soknadId', {
                 templateUrl: '../html/templates/kvittering-fortsettsenere.html',
-                controller: 'SoknadDataCtrl',
-                resolve: {
-                    notUsedButRequiredProperty: function (HentSoknadService) {
-                        return HentSoknadService;
-                    }
-                }
-            })
-
-            .when('/gjenoppta/:soknadId', {
-                templateUrl: '../html/templates/gjenoppta.html',
                 controller: 'SoknadDataCtrl',
                 resolve: {
                     notUsedButRequiredProperty: function (HentSoknadService) {

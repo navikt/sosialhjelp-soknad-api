@@ -69,12 +69,12 @@ angular.module('nav.personalia', [])
                 && $scope.personalia.fakta.adresser[$scope.personaliaData.midlertidigAdresse].utenlandsAdresse.length > 0;
         }
 
-        $scope.harUtenlandskFolkeregistrertAdresseOgMidlertidigNorskAdresse = function () {
-            return $scope.harMidlertidigAdresse() && $scope.harUtenlandskPostAdresse() && $scope.personalia.fakta.adresser[$scope.personaliaData.utenlandskAdresse].land != undefined && $scope.personalia.fakta.adresser[$scope.personaliaData.utenlandskAdresse].land != "";
+        $scope.harUtenlandskFolkeregistrertAdresse = function () {
+            return $scope.harUtenlandskPostAdresse() && $scope.personalia.fakta.adresser[$scope.personaliaData.utenlandskAdresse].land != undefined && $scope.personalia.fakta.adresser[$scope.personaliaData.utenlandskAdresse].land != "";
         }
 
         $scope.harUtenlandskAdresse = function () {
-            return $scope.harUtenlandskFolkeregistrertAdresseOgMidlertidigNorskAdresse();
+            return $scope.harUtenlandskFolkeregistrertAdresse();
         }
         $scope.hentMidlertidigAdresseTittel = function () {
             if (!$scope.harMidlertidigAdresse()) {

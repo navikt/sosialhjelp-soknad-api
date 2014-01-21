@@ -1,1 +1,1 @@
-ALTER TABLE Vedlegg ADD gosysId VARCHAR(36);
+ALTER TABLE Vedlegg ADD skjemaNummer VARCHAR(36);
