@@ -35,7 +35,7 @@ angular.module('nav.ytelser', [])
 
 		$scope.hvisHarDagpengerEOS = function () {
 			var faktum = data.finnFaktum('dagpengerEOS');
-			if (faktum !== undefined && faktum.value !== undefined) {
+			if (faktum && faktum.value) {
 				return faktum.value === 'true';
 			}
 			return false;
