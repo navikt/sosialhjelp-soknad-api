@@ -13,7 +13,7 @@ public interface VedleggService {
 
     List<Long> splitOgLagreVedlegg(Vedlegg vedlegg, InputStream inputStream);
 
-    List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId, String gosysId);
+    List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId, String skjemaNummer);
 
     Vedlegg hentVedlegg(Long soknadId, Long vedleggId, boolean medInnhold);
 
@@ -21,7 +21,7 @@ public interface VedleggService {
 
     byte[] lagForhandsvisning(Long soknadId, Long vedleggId, int side);
 
-    Long genererVedleggFaktum(Long soknadId, Long faktumId, String gosysId);
+    Long genererVedleggFaktum(Long soknadId, Long faktumId, String skjemaNummer);
 
     List<VedleggForventning> hentPaakrevdeVedlegg(Long soknadId);
 }

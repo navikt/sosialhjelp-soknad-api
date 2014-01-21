@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager;
 
 
 import no.nav.modig.core.exception.ApplicationException;
+import no.nav.modig.core.exception.SystemException;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import org.springframework.stereotype.Component;
 
@@ -16,17 +17,17 @@ import java.io.InputStream;
 @Component
 public class FillagerConnector {
 
-   @Inject
-   @Named("fillagerService")
-   private FilLagerPortType portType;
+    @Inject
+    @Named("fillagerService")
+    private FilLagerPortType portType;
 
-    public void lagreFil(String behandlingsId, String uid, InputStream fil) {
+    public void lagreFil(String behandlingsId, String uid, String fnr, InputStream fil) {
         try {
-            portType.lagre(behandlingsId, uid, new DataHandler(new ByteArrayDataSource(fil, "application/octet-stream")));
+            portType.lagre(behandlingsId, uid, fnr, new DataHandler(new ByteArrayDataSource(fil, "application/octet-stream")));
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lagre fil: " + e, e);
         } catch (SOAPFaultException ws) {
-            throw new ApplicationException("Feil i kommunikasjon med fillager: " + ws, ws);
+            throw new SystemException("Feil i kommunikasjon med fillager: " + ws, ws);
         }
     }
 }
