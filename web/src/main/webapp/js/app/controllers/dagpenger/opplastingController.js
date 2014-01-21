@@ -5,6 +5,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 			laster: false
 		};
 
+        $scope.soknadId = data.soknad.soknadId;
 		$scope.opplastingFeilet = false;
 
 		$scope.data = {
