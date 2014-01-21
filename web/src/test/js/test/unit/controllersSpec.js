@@ -39,6 +39,7 @@ describe('DagpengerControllere', function () {
             }
         ];
         $provide.value("data", {
+<<<<<<< HEAD
             fakta: fakta,
             finnFaktum: function(key) {
                 var res = null;
@@ -52,6 +53,17 @@ describe('DagpengerControllere', function () {
             finnFakta: function(faktumKey) {}
         });
         $provide.value("cms", {});
+=======
+            fakta: [],
+            finnFaktum: function(faktumKey) {},
+            finnFakta: function(faktumKey) {},
+            soknad: {soknadId: 1}
+        });
+        $provide.value("cms", {});
+        $provide.value("personalia", {
+            alder: 61
+        });
+>>>>>>> master
     }));
 
     beforeEach(inject(function ($rootScope, $controller, $compile, $httpBackend) {

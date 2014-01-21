@@ -149,7 +149,49 @@ angular.module('sendsoknad')
                     data.soknadOppsett = result;
                 }
             );
+<<<<<<< HEAD
             promiseArray.push(soknadOppsett.$promise, soknadDeferer.promise, faktaDeferer.promise);
+=======
+
+            var fakta = Faktum.query({soknadId: soknadId}, function (result) {
+                data.fakta = result;
+
+                data.finnFakta = function (key) {
+                    var res = [];
+                    data.fakta.forEach(function (item) {
+                        if (item.key === key) {
+                            res.push(item);
+                        }
+                    });
+                    return res;
+                };
+                data.finnFaktum = function (key) {
+                    var res = null;
+                    data.fakta.forEach(function (item) {
+                        if (item.key === key) {
+                            res = item;
+                        }
+                    });
+                    return res;
+                };
+                data.leggTilFaktum = function(faktum) {
+                    data.fakta.push(faktum);
+                };
+
+                data.slettFaktum = function(faktumData) {
+                    $scope.faktumSomSkalSlettes = new Faktum(faktumData);
+                    $scope.faktumSomSkalSlettes.$delete({soknadId: faktumData.soknadId}).then(function () {
+                    });
+
+                    data.fakta.forEach(function (item, index) {
+                        if (item.faktumId === faktumData.faktumId) {
+                            data.fakta.splice(index,1);
+                        }
+                    });
+                };
+            });
+            promiseArray.push(barn.$promise, soknadOppsett.$promise, soknadDeferer.promise, fakta.$promise);
+>>>>>>> master
         }
 
         return $q.all(promiseArray);
@@ -177,51 +219,6 @@ angular.module('sendsoknad')
                 data.soknadOppsett = result;
             });
         promiseArray.push(soknad.$promise, soknadOppsett.$promise);
-
-        return $q.all(promiseArray);
-    }])
-
-    .factory('NyttBarnSideResolver', ['data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', function (data, cms, $resource, $q, $route, soknadService, landService, Faktum) {
-        var soknadId = $route.current.params.soknadId;
-        var promiseArray = [];
-
-        var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
-            function (result) { // Success
-                cms.tekster = result;
-            }
-        );
-        promiseArray.push(tekster.$promise);
-
-        var soknad = soknadService.get({param: soknadId},
-            function (result) { // Success
-                data.soknad = result;
-            }
-        );
-        var soknadOppsett = soknadService.options({param: soknadId},
-            function (result) { // Success
-                data.soknadOppsett = result;
-            });
-        promiseArray.push(soknad.$promise, soknadOppsett.$promise);
-
-        var land = landService.get(
-            function (result) { // Success
-                data.land = result;
-            }
-        );
-
-        var fakta = Faktum.query({soknadId: soknadId}, function (result) {
-                data.fakta = result;
-                data.finnFaktum = function (key) {
-                    var res = null;
-                    data.fakta.forEach(function (item) {
-                        if (item.key === key) {
-                            res = item;
-                        }
-                    });
-                    return res;
-                }
-            });
-        promiseArray.push(fakta.$promise)
 
         return $q.all(promiseArray);
     }]);

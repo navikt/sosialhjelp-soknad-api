@@ -65,7 +65,7 @@ public class SoknadDataController {
     @RequestMapping(value = "/options/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public SoknadStruktur hentSoknadStruktur(@PathVariable Long soknadId) {
-        String type = soknadService.hentSoknad(soknadId).getGosysId() + ".xml";
+        String type = soknadService.hentSoknad(soknadId).getskjemaNummer() + ".xml";
         try {
             Unmarshaller unmarshaller = newInstance(SoknadStruktur.class)
                     .createUnmarshaller();

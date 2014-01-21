@@ -57,7 +57,7 @@ angular.module('app.services', ['ngResource'])
 				soknadId : '@soknadId',
 				faktumId : '@faktumId',
 				vedleggId: '@vedleggId',
-				gosysId  : '@gosysId'},
+				skjemaNummer  : '@skjemaNummer'},
 			{
 				get   : { method: 'GET', params: {} },
 				create: { method: 'POST', params: {} },
@@ -88,7 +88,7 @@ angular.module('app.services', ['ngResource'])
 		});
 	})
 
-	.factory('forsettSenereService', function ($resource) {
+	.factory('fortsettSenereService', function ($resource) {
 		return $resource('/sendsoknad/rest/soknad/:soknadId/fortsettsenere',
 			{soknadId: '@soknadId'},
 			{send: {method: 'POST'}}

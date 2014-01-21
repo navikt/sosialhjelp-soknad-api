@@ -11,6 +11,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 			'Permittert'              : {url: '../html/templates/arbeidsforhold/permittert.html'}
 		};
 		$scope.land = data.land;
+        $scope.soknadId = data.soknad.soknadId;
 
 		var url = $location.$$url;
 		var endreModus = url.indexOf('endrearbeidsforhold') !== -1;

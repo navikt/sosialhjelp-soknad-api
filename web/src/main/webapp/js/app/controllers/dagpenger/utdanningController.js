@@ -1,5 +1,9 @@
 angular.module('nav.utdanning', [])
+<<<<<<< HEAD
 	.controller('UtdanningCtrl', ['$scope', 'data', function ($scope, data) {
+=======
+	.controller('UtdanningCtrl', ['$scope', 'data', function ($scope,  data) {
+>>>>>>> master
 
 		$scope.navigering = {nesteside: 'ytelser'};
 		$scope.sidedata = {navn: 'utdanning'};
@@ -49,13 +53,6 @@ angular.module('nav.utdanning', [])
 			} else {
 				$scope.utdanningDatoError = false;
 			}
-		};
-
-		$scope.hvisIngenUnntakGjelder = function (utdanning) {
-			if ($scope.soknadData && $scope.soknadData.fakta) {
-				return $scope.soknadData.fakta.underUtdanningAnnet && checkTrue($scope.soknadData.fakta.underUtdanningAnnet.value);
-			}
-			return false;
 		};
 
 		function erCheckboxerAvhuket(checkboxNokler) {

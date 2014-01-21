@@ -36,14 +36,14 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     }
 
     @Override
-    public List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktum, String gosysId) {
-        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, gosysid, navn, storrelse, opprettetdato, antallsider, fillagerReferanse from Vedlegg where soknad_id = ? and faktum = ? and gosysid = ?", new VedleggRowMapper(false), soknadId, faktum, gosysId);
+    public List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktum, String skjemaNummer) {
+        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, storrelse, opprettetdato, antallsider, fillagerReferanse from Vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ?", new VedleggRowMapper(false), soknadId, faktum, skjemaNummer);
     }
 
     @Override
     public Long lagreVedlegg(final Vedlegg vedlegg, final byte[] content) {
         final Long databasenokkel = getJdbcTemplate().queryForObject(SQLUtils.selectNextSequenceValue("VEDLEGG_ID_SEQ"), Long.class);
-        getJdbcTemplate().execute("insert into vedlegg(vedlegg_id, soknad_id,faktum, gosysid, navn, storrelse, antallsider, fillagerReferanse, data, opprettetdato) values (?, ?, ?, ?, ?, ?, ?, ?, ?, sysdate)",
+        getJdbcTemplate().execute("insert into vedlegg(vedlegg_id, soknad_id,faktum, skjemaNummer, navn, storrelse, antallsider, fillagerReferanse, data, opprettetdato) values (?, ?, ?, ?, ?, ?, ?, ?, ?, sysdate)",
 
                 new AbstractLobCreatingPreparedStatementCallback(lobHandler) {
                     @Override
@@ -51,7 +51,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
                         ps.setLong(1, databasenokkel);
                         ps.setLong(2, vedlegg.getSoknadId());
                         ps.setLong(3, vedlegg.getFaktumId());
-                        ps.setString(4, vedlegg.getGosysId());
+                        ps.setString(4, vedlegg.getskjemaNummer());
                         ps.setString(5, vedlegg.getNavn());
                         ps.setLong(6, vedlegg.getStorrelse());
                         ps.setLong(7, vedlegg.getAntallSider());
@@ -71,8 +71,8 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     }
 
     @Override
-    public void settVedleggStatus(Long soknadId, Long faktumId, String gosysId) {
-        String key = "vedlegg_" + gosysId;
+    public void settVedleggStatus(Long soknadId, Long faktumId, String skjemaNummer) {
+        String key = "vedlegg_" + skjemaNummer;
         getJdbcTemplate().update("delete from faktumegenskap where soknad_id = ? and faktum_id = ? and key = ?", soknadId, faktumId, key);
         getJdbcTemplate().update("insert into faktumegenskap (soknad_id, faktum_id, key, value) values (?, ?, ?, ?)",
                 soknadId, faktumId, key, Faktum.Status.LastetOpp.toString());
@@ -81,7 +81,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     @Override
     public void slettVedlegg(Long soknadId, Long vedleggId) {
         Vedlegg v = hentVedlegg(soknadId, vedleggId);
-        getJdbcTemplate().update("delete from faktumegenskap where soknad_id = ? and faktum_id = ? and key = ?", soknadId, v.getFaktumId(), "vedlegg_" + v.getGosysId());
+        getJdbcTemplate().update("delete from faktumegenskap where soknad_id = ? and faktum_id = ? and key = ?", soknadId, v.getFaktumId(), "vedlegg_" + v.getskjemaNummer());
         getJdbcTemplate().update("Delete from vedlegg where soknad_id=? and vedlegg_id=?", soknadId, vedleggId);
     }
 
@@ -92,13 +92,13 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
 
     @Override
     public Vedlegg hentVedlegg(Long soknadId, Long vedleggId) {
-        return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, gosysId, navn, storrelse, antallsider, fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and vedlegg_id = ?", new VedleggRowMapper(false), soknadId, vedleggId);
+        return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, storrelse, antallsider, fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and vedlegg_id = ?", new VedleggRowMapper(false), soknadId, vedleggId);
     }
 
     @Override
-    public Vedlegg hentVedleggForGosysId(Long soknadId, Long faktumId, String gosysId) {
+    public Vedlegg hentVedleggForskjemaNummer(Long soknadId, Long faktumId, String skjemaNummer) {
         try {
-            return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, gosysId, navn, storrelse, antallsider, fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and faktum = ? and gosysId = ?", new VedleggRowMapper(false), soknadId, faktumId, gosysId);
+            return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, storrelse, antallsider, fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ?", new VedleggRowMapper(false), soknadId, faktumId, skjemaNummer);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
