@@ -168,7 +168,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public Long startSoknad(String navSoknadId) {
         String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid());
-//       String behandlingsId = "MOCK" + new Random().nextInt(100000000);
+       //String behandlingsId = "MOCK" + new Random().nextInt(100000000);
         WebSoknad soknad = WebSoknad.startSoknad().
                 medBehandlingId(behandlingsId).
                 medskjemaNummer(navSoknadId).
