@@ -1,10 +1,12 @@
 <div data-nav-tittel="skjema.tittel"></div>
 <div stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="2"></div>
 
-<div id="opplasting" class="soknad rad-belyst" data-sidetittel="sidetittel.opplasting">
+<div id="opplasting" class="soknad rad-belyst" data-sidetittel="sidetittel.opplasting" data-ng-controller="OpplastingVedleggCtrl">
     <div class="begrensning sak-halv">
         <div class="panel uten-ramme">
-            <h1 class="stor-ikon-vedlegg-strek" data-cmstekster="opplasting.lastopp"></h1>
+            <h1 class="stor-ikon-vedlegg-strek" ><span data-ng-if="vedlegg.vedleggId" data-cmstekster="{{soknad.skjemaNummer}}.vedlegg.{{vedlegg.skjemaNummer}}.header"></span><span
+                    data-ng-if="vedlegg.navn">: {{vedlegg.navn}}</span></h1>
+
         </div>
     </div>
     <form id="opplastingform" method="POST" enctype="multipart/form-data" data-file-upload="options" data-ng-controller="OpplastingCtrl">
@@ -13,11 +15,11 @@
             <section class="panel-standard oversikt">
                 <ul class="opplastingliste clearfix">
                     <li data-ng-repeat="file in queue" data-ng-class="{'lasteropp': file.$processing()}" data-fil-feil>
-                        <a class="lukk" data-ng-if="!!file.sletteUrl" data-ng-click="file.$destroy()" data-ng-controller="SlettOpplastingCtrl"></a>
-                        <img data-async-image="../{{file.forhandsvisningUrl}}" data-ng-if="!!file.forhandsvisningUrl">
+                        <a class="lukk" data-ng-if="!!file.vedleggId" data-ng-click="file.$destroy()" data-ng-controller="SlettOpplastingCtrl"></a>
+                        <img data-async-image="../rest/soknad/{{file.soknadId}}/vedlegg/{{file.vedleggId}}/thumbnail" data-ng-if="!!file.vedleggId">
                     </li>
                     <li class="leggtil">
-                        <input id="leggtil" type="file" name="files[]" class="vekk"  multiple accept="image/jpeg,image/png,application/pdf">
+                        <input id="leggtil" type="file" name="files[]" class="vekk" multiple accept="image/jpeg,image/png,application/pdf">
                         <label for="leggtil" class="robust" data-cmstekster="opplasting.leggtil"></label>
                     </li>
                 </ul>
@@ -25,8 +27,9 @@
         </div>
         <div class="rad uten-ramme">
             <div class="begrensning sak-totredel">
-                <a data-redirect="#/vedlegg/{{ soknadId }}" class="knapp-hoved" data-cmstekster="opplasting.ferdig" data-ng-click="leggVed()" data-fremdriftsindikator></a>
-                <a data-ng-href="#/vedlegg/{{ soknadId }}" class="avbryt" data-cmstekster="opplasting.avbryt"></a>
+                <a href="javascript:void(0);" data-redirect="#/vedlegg/{{ data.soknadId }}" class="knapp-hoved" data-cmstekster="opplasting.ferdig" data-ng-click="leggVed()"
+                   data-fremdriftsindikator></a>
+                <a href="javascript:void(0);" data-ng-href="#/vedlegg/{{ data.soknadId }}" class="avbryt" data-cmstekster="opplasting.avbryt"></a>
             </div>
         </div>
     </form>

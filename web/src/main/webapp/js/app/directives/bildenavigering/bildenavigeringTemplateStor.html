@@ -1,9 +1,9 @@
 <div class="bildenavigering" data-ng-cloak>
-    <div class="nav" data-ng-if="vedlegg.id">
+    <div class="nav" data-ng-if="vedlegg.vedleggId">
         <a class="pil-venstre-sort" data-ng-click="naviger(-1)" data-ng-if="vedlegg.antallSider > 1">
         </a><div class="bilde" data-ng-click="naviger(1)">
         <img data-ng-repeat="bilde in range(vedlegg.antallSider)"
-             data-ng-src="../rest/soknad/{{vedlegg.soknadId}}/faktum/{{vedlegg.faktumId}}/vedlegg/{{vedlegg.id}}/thumbnail?side={{bilde}}"
+             data-ng-src="../rest/soknad/{{vedlegg.soknadId}}/vedlegg/{{vedlegg.vedleggId}}/thumbnail?side={{bilde}}"
              alt="Forhåndsvisning"
              data-ng-hide="!sideErSynlig(bilde)">
         <a class="tilbake" onclick="history.back()" data-cmstekster="vedlegg.forhandsvisning.tilbake"></a>
