@@ -11,7 +11,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/:behandlingId', {
+			.when('/behandling/:behandlingId', {
 				templateUrl: '../html/templates/informasjonsside.html',
 				controller: 'BehandlingCtrl',
 				resolve    : {
@@ -28,7 +28,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/opplasting/:soknadId/:faktumId/:gosysId', {
+			.when('/opplasting/:soknadId/:faktumId/:skjemaNummer', {
 				templateUrl: '../html/templates/opplasting.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -68,6 +68,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
+<<<<<<< HEAD
 			.when('/gjenoppta/:soknadId', {
 				templateUrl: '../html/templates/gjenoppta.html',
 				resolve    : {
@@ -77,6 +78,9 @@ angular.module('app.routes', ['ngRoute'])
 				}
 			})
 			.when('/reell-arbeidssoker/:soknadId', {
+=======
+            .when('/reell-arbeidssoker/:soknadId', {
+>>>>>>> master
 				templateUrl: '../html/templates/reell-arbeidssoker.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -119,24 +123,24 @@ angular.module('app.routes', ['ngRoute'])
 			.when('/nyttbarn/:soknadId', {
 				templateUrl: '../html/templates/barnetillegg-nyttbarn.html',
 				resolve    : {
-					notUsedButRequiredProperty: function (NyttBarnSideResolver) {
-						return NyttBarnSideResolver;
+					notUsedButRequiredProperty: function (HentSoknadService) {
+						return HentSoknadService;
 					}
 				}
 			})
 			.when('/endrebarn/:soknadId/:faktumId', {
 				templateUrl: '../html/templates/barnetillegg-nyttbarn.html',
 				resolve    : {
-					notUsedButRequiredProperty: function (NyttBarnSideResolver) {
-						return NyttBarnSideResolver;
+					notUsedButRequiredProperty: function (HentSoknadService) {
+						return HentSoknadService;
 					}
 				}
 			})
 			.when('/sokbarnetillegg/:soknadId/:faktumId', {
 				templateUrl: '../html/templates/barnetillegg-nyttbarn.html',
 				resolve    : {
-					notUsedButRequiredProperty: function (NyttBarnSideResolver) {
-						return NyttBarnSideResolver;
+					notUsedButRequiredProperty: function (HentSoknadService) {
+						return HentSoknadService;
 					}
 				}
 			})

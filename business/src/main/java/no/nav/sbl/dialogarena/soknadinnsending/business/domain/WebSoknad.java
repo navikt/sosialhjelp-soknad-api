@@ -9,20 +9,25 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+<<<<<<< HEAD
 import static no.nav.modig.lang.collections.IterUtils.on;
+=======
+import static java.util.Arrays.asList;
+import static java.util.UUID.randomUUID;
+>>>>>>> master
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class WebSoknad implements Serializable {
 
     private Long soknadId;
-    private String gosysId;
+    private String skjemaNummer;
+    private String uuid;
     private String brukerBehandlingId;
     private List<Faktum> faktaListe;
     private Map<String, Faktum> fakta;
@@ -32,7 +37,7 @@ public class WebSoknad implements Serializable {
     private DateTime sistLagret;
     private DelstegStatus delstegStatus;
 
-    private static final List<String> LIST_FAKTUM = Arrays.asList("barn", "barnetillegg", "ikkebarneinntekt", "barneinntekttall", "orgnummer", "arbeidsforhold", "sluttaarsak");
+    private static final List<String> LIST_FAKTUM = asList("barn", "barnetillegg", "ikkebarneinntekt", "barneinntekttall", "orgnummer", "arbeidsforhold", "sluttaarsak");
 
     public Long getSistLagret() {
         if (sistLagret != null) {
@@ -55,8 +60,13 @@ public class WebSoknad implements Serializable {
     }
 
     public WebSoknad() {
+        uuid = randomUUID().toString();
         fakta = new LinkedHashMap<>();
         faktaListe = new ArrayList<>();
+    }
+
+    public final String getUuid() {
+        return uuid;
     }
 
     public final Long getSoknadId() {
@@ -67,12 +77,12 @@ public class WebSoknad implements Serializable {
         this.soknadId = soknadId;
     }
 
-    public final String getGosysId() {
-        return gosysId;
+    public final String getskjemaNummer() {
+        return skjemaNummer;
     }
 
-    public final void setGosysId(String gosysId) {
-        this.gosysId = gosysId;
+    public final void setskjemaNummer(String skjemaNummer) {
+        this.skjemaNummer = skjemaNummer;
     }
 
     public final Map<String, Faktum> getFakta() {
@@ -119,7 +129,7 @@ public class WebSoknad implements Serializable {
 
     @Override
     public String toString() {
-        return "WebSoknad [soknadId=" + soknadId + ", gosysId=" + gosysId
+        return "WebSoknad [soknadId=" + soknadId + ", skjemaNummer=" + skjemaNummer
                 + ", brukerBehandlingId=" + brukerBehandlingId + ", fakta="
                 + fakta + "]";
     }
@@ -137,8 +147,8 @@ public class WebSoknad implements Serializable {
         return this;
     }
 
-    public WebSoknad medGosysId(String gosysId) {
-        this.gosysId = gosysId;
+    public WebSoknad medskjemaNummer(String skjemaNummer) {
+        this.skjemaNummer = skjemaNummer;
         return this;
     }
 

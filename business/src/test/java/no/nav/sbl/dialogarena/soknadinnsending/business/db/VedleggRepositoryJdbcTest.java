@@ -38,7 +38,7 @@ public class VedleggRepositoryJdbcTest {
         Vedlegg v = getVedlegg(bytes);
         vedleggRepository.lagreVedlegg(v, bytes);
 
-        List<Vedlegg> vedlegg = vedleggRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktumId(), v.getGosysId());
+        List<Vedlegg> vedlegg = vedleggRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktumId(), v.getskjemaNummer());
         assertThat(vedlegg.size(), is(equalTo(1)));
         v.setId(vedlegg.get(0).getId());
         assertThat(vedlegg.get(0), is(equalTo(v)));
@@ -48,11 +48,11 @@ public class VedleggRepositoryJdbcTest {
     public void skalKunneSletteVedlegg() {
         final Vedlegg v = getVedlegg();
         Long id = vedleggRepository.lagreVedlegg(v, new byte[0]);
-        List<Vedlegg> hentet = vedleggRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktumId(), v.getGosysId());
+        List<Vedlegg> hentet = vedleggRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktumId(), v.getskjemaNummer());
         assertThat(hentet, is(notNullValue()));
         assertThat(hentet.size(), is(1));
         vedleggRepository.slettVedlegg(v.getSoknadId(), id);
-        hentet = vedleggRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktumId(), v.getGosysId());
+        hentet = vedleggRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktumId(), v.getskjemaNummer());
         assertThat(hentet, is(notNullValue()));
         assertThat(hentet.size(), is(0));
     }

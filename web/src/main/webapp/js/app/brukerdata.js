@@ -30,4 +30,93 @@ angular.module('app.brukerdata', ['app.services'])
         $scope.hvisIOppsummeringsmodus = function () {
             return !$scope.hvisIRedigeringsmodus();
         }
+<<<<<<< HEAD
+=======
+    })
+
+    .controller('AvbrytCtrl', function ($scope, data, $routeParams, $location, soknadService) {
+        $scope.fremdriftsindikator = {
+            laster: false
+        }
+        $scope.krevBekreftelse = {value: false}
+        $scope.soknadId = data.soknad.soknadId;
+
+        soknadService.get({param: $routeParams.soknadId}).$promise.then(function (result) {
+            var fakta = $.map(result.fakta, function (element) {
+                return element.type;
+            });
+            $scope.krevBekreftelse.value = $.inArray("BRUKERREGISTRERT", fakta) > 0;
+
+            if (!$scope.krevBekreftelse.value) {
+                $scope.submitForm();
+            }
+        })
+
+        $scope.submitForm = function () {
+            var start = $.now();
+            $scope.fremdriftsindikator.laster = true;
+            soknadService.remove({param: $routeParams.soknadId},
+                function () { // Success
+                    var delay = 1500 - ($.now() - start);
+                    setTimeout(function () {
+                        $scope.$apply(function () {
+                            $location.path('/slettet');
+                        });
+                    }, delay);
+                },
+                function () { // Error
+                    $scope.fremdriftsindikator.laster = false;
+                }
+            );
+        };
+    })
+
+    .directive('modFaktum', function () {
+        return function ($scope, element, attrs) {
+            var eventType;
+            switch (element.attr('type')) {
+                case "radio":
+                case "checkbox":
+                    eventType = "change";
+                    break;
+                default:
+                    eventType = "blur";
+            }
+
+            element.bind(eventType, function () {
+                var verdi = element.val().toString();
+                if (element.attr('type') === "checkbox") {
+                    verdi = element.is(':checked').toString();
+                }
+
+                if ($scope.faktum) {
+                    $scope.faktum.$save();
+                } else {
+                    $scope.$apply(function () {
+                        $scope.$emit("OPPDATER_OG_LAGRE", {key: element.attr('name'), value: verdi});
+                    });
+                }
+
+            });
+        };
+    })
+
+    .filter('midlertidigAdresseType', function () {
+        return function (input, scope) {
+            var tekst;
+            switch (input) {
+                case "MIDLERTIDIG_POSTADRESSE_NORGE":
+
+                    tekst = "tekster.personalia_midlertidig_adresse_norge";
+                    break;
+                case "MIDLERTIDIG_POSTADRESSE_UTLAND":
+                    tekst = scope.tekster.personalia_midlertidig_adresse_utland;
+                    break;
+                default :
+                    //TODO: fix
+                    tekst = "Du har ikke midlertidig adresse i norge eller utlandet";
+            }
+            return tekst;
+        }
+>>>>>>> master
     });
