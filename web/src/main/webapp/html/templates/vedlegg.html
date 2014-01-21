@@ -24,7 +24,7 @@
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'LastetOpp')" data-cmstekster="vedlegg.behandlet.lastetopp"></div>
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesSenere')" data-cmstekster="vedlegg.behandlet.sendessenere"></div>
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesIkke')" data-cmstekster="vedlegg.behandlet.sendesikke"></div>
-                                <h2 class="stor"><span data-cmstekster="{{soknadData.gosysId}}.vedlegg.{{forventning.gosysId}}.header"></span><span data-ng-if="forventning.navn">: {{forventning.navn}}</span></h2>
+                                <h2 class="stor"><span data-cmstekster="{{soknadData.skjemaNummer}}.vedlegg.{{forventning.skjemaNummer}}.header"></span><span data-ng-if="forventning.navn">: {{forventning.navn}}</span></h2>
                             </div>
                         </div>
                     </div>
@@ -36,7 +36,7 @@
                                 <span>Hva vedlegger du (max 20 tegn)? </span>
                                 <input type="text" maxlength="20" data-ng-minlength="3" data-ng-maxlength="20"  data-ng-model="forventning.navn" data-ng-blur="lagreVedlegg(forventning)">
                             </label>
-                            <h4 data-ng-if="!erEkstraVedlegg(forventning)" class="info-liste" data-cmshtml="{{soknadData.gosysId}}.vedlegg.{{forventning.gosysId}}.bekrefte"></h4>
+                            <h4 data-ng-if="!erEkstraVedlegg(forventning)" class="info-liste" data-cmshtml="{{soknadData.skjemaNummer}}.vedlegg.{{forventning.skjemaNummer}}.bekrefte"></h4>
 
                             <div class="spm-knapper send-valg checkboxAsRadio" data-ng-if="!vedleggEr(forventning, 'LastetOpp')">
 

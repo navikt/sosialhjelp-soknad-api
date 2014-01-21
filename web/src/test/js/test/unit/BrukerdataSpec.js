@@ -3,7 +3,7 @@ describe('brukerdata domene', function () {
     beforeEach(
         module('app.services', 'app.brukerdata', function ($provide) {
             $provide.value("data", {
-                soknad: {"soknadId": 1, "gosysId": "Dagpenger", "brukerBehandlingId": "100000000",
+                soknad: {"soknadId": 1, "skjemaNummer": "Dagpenger", "brukerBehandlingId": "100000000",
                     "fakta": {
                         "fornavn": {"soknadId": 1, "key": "fornavn", "value": "Ola"},
                         "mellomnavn": {"soknadId": 1, "key": "mellomnavn", "value": "Johan"},
@@ -16,24 +16,6 @@ describe('brukerdata domene', function () {
                 }
             });
     }));
-
-    describe('soknaddata controller', function () {
-
-        var scope, ctrl;
-
-        beforeEach(inject(function ($rootScope, $controller) {
-            scope = $rootScope.$new();
-            ctrl = $controller('SoknadDataCtrl', {
-                $scope: scope
-            });
-        }));
-
-        it('skal returnere soknaddata', function () {
-            expect(scope.soknadData.soknadId).toEqual(1);
-            expect(scope.soknadData.fakta.fornavn.soknadId).toEqual(1);
-            expect(scope.soknadData.fakta.fornavn.value).toEqual('Ola');
-        });
-    })
 
     describe('modus controller', function () {
 

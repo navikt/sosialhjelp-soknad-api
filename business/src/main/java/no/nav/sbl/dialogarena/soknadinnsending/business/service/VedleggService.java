@@ -12,7 +12,7 @@ public interface VedleggService {
 
     List<Long> splitOgLagreVedlegg(Vedlegg vedlegg, InputStream inputStream);
 
-    List<Vedlegg> hentVedleggUnderBehandling(Long soknadId, Long faktumId, String gosysId);
+    List<Vedlegg> hentVedleggUnderBehandling(Long soknadId, Long faktumId, String skjemaNummer);
 
     Vedlegg hentVedlegg(Long soknadId, Long vedleggId, boolean medInnhold);
 

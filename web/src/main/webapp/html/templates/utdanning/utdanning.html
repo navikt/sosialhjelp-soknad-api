@@ -2,12 +2,14 @@
 <div class="skjemaramme">
     <div data-ng-form="utdanningForm" class="skjemainnhold vertikal" data-ng-controller="UtdanningCtrl" data-novalidate>
         <div data-form-errors></div>
-        <div class="spm boolean">
+
             <div class="spm boolean form-linje">
             <h4 class="spm-sporsmal" data-cmstekster="utdanning.informasjon"></h4>
 
-            <div data-navradio data-value="ikkeUtdanning"
-                 data-navconfig data-nav-faktum="utdanning"
+            <div data-navradio
+                 data-value="ikkeUtdanning"
+                 data-navconfig
+                 data-nav-faktum="utdanning"
                  data-navlabel="utdanning.svar.ikkeUtdanning"
                  data-navfeilmelding="utdanning.feilmelding">
             </div>
@@ -36,7 +38,10 @@
                  data-navfeilmelding="utdanning.feilmelding">
             </div>
 
-            <div class="ekstra-info form-linje checkbox" data-ng-show="hvis('utdanning', 'underUtdanning')" data-checkbox-validate>
+
+                <span class="melding"> </span>
+
+            <div class="ekstra-info spm form-linje checkbox" data-ng-show="hvis('utdanning', 'underUtdanning')" data-checkbox-validate>
                 <h4 class="spm-sporsmal" data-cmstekster="utdanning.sporsmal"></h4>
                 <div id="underUtdanningKveld"
                      data-navcheckbox
@@ -44,7 +49,6 @@
                      data-nav-faktum="utdanning.kveld"
                      data-navlabel="utdanning.svar.under.utdanning.kveld"
                      data-navendret="endreUtdanning(utdanningForm)">
-
                     <div data-ng-include="'../html/templates/utdanning/utdanningKveldTemplate.html'"></div>
                 </div>
 
@@ -53,7 +57,6 @@
                      data-nav-faktum="utdanning.kortvarig"
                      data-navlabel="utdanning.svar.under.utdanning.kortvarig"
                      data-navendret="endreUtdanning(utdanningForm)">
-
                     <div data-ng-include="'../html/templates/utdanning/utdanningKortvarigTemplate.html'"></div>
                 </div>
 
@@ -97,13 +100,16 @@
                         <span data-cmstekster="utdanning.unntak.informasjon"></span>
                     </div>
                 </div>
-                </div>
+                <span class="melding" data-cmstekster="utdanning.minstEnAvhuket.feilmelding"></span>
 
             </div>
+                  </div>
+
             <div data-spmblokkferdig data-nokkel="utdanning"
                  data-submit-method="validerOgSettModusOppsummering(utdanningForm)">
             </div>
+
         </div>
 
-    </div>
+
 </div>

@@ -21,7 +21,7 @@ describe('FortsettSenereController', function() {
 
             $httpBackend.whenGET(/sendsoknad\/rest\/soknad\/.*/).
                respond(
-                {"soknadId": 1, "status": "UNDER_ARBEID", "gosysId": "Dagpenger", "brukerBehandlingId": "100000000",
+                {"soknadId": 1, "status": "UNDER_ARBEID", "skjemaNummer": "Dagpenger", "brukerBehandlingId": "100000000",
                 "fakta":{"epost":{"soknadId":1,"key":"epost", "value": "ketil.s.velle@nav.no","type": "SYSTEM"},
                 "sammensattnavn":{"soknadId":1,"key":"sammensattnavn","value":"ENGELSK TESTFAMILIEN","type":"System"},
                 "mellomnavn":{"soknadId":1,"key":"mellomnavn","value":"","type":"System"},
@@ -52,7 +52,6 @@ describe('FortsettSenereController', function() {
     	}));
 
 		beforeEach(inject(['$compile', '$rootScope', '$templateCache', function ($c, $r, $templateCache) {
-			$templateCache.put("../html/templates/gjenoppta/skjema-under-arbeid.html", "<div>hello</div>");
 			$compile = $c;
 	        $rootScope = $r;
 	        
@@ -61,15 +60,6 @@ describe('FortsettSenereController', function() {
 	        $rootScope.$digest();
 
 	    }]));
-
-	    it('dersom søknadsskjemaet ikke er ferdig utfylt skal man få valg om å gå til skjemasiden', function() {
-	    	expect(element.html()).toContain('hello');
-	    })
-
-	    it('dersom søknad er ferdig utfylt skal man få valg om å gå til en oppsummeringsside', function() {
-	    	//$rootScope.data.soknad.status = 'FERDIG';
-	    	//expect(element.html()).toContain('FERDIG');
-	    })
 
 	})
 })

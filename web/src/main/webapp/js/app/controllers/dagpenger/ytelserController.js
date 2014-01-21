@@ -1,5 +1,5 @@
 angular.module('nav.ytelser', [])
-	.controller('YtelserCtrl', ['$scope', 'lagreSoknadData', 'data', function ($scope, lagreSoknadData, data) {
+	.controller('YtelserCtrl', ['$scope', 'data', function ($scope, data) {
 
 		$scope.land = data.land;
 		$scope.ytelser = {skalViseFeilmeldingForIngenYtelser: false};
@@ -35,7 +35,7 @@ angular.module('nav.ytelser', [])
 
 		$scope.hvisHarDagpengerEOS = function () {
 			var faktum = data.finnFaktum('dagpengerEOS');
-			if (faktum !== undefined && faktum.value !== undefined) {
+			if (faktum && faktum.value) {
 				return faktum.value === 'true';
 			}
 			return false;

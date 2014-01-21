@@ -1,4 +1,4 @@
-<soknad gosysId="Dagpenger">
+<soknad skjemaNummer="Dagpenger">
 
     <!-- ReelArbeidsoker -->
 
@@ -172,34 +172,34 @@
         <id>ekstraVedlegg</id>
         <type>java.lang.boolean</type>
     </faktum>
-
-
     <vedlegg>
         <id>1</id>
         <faktum>villigdeltid</faktum>
         <onValue>false</onValue>
-        <gosysId>NAV-01010101</gosysId>
+        <skjemaNummer>NAV-01010101</skjemaNummer>
     </vedlegg>
-
     <vedlegg>
         <id>2</id>
         <faktum>ikkeavtjentverneplikt</faktum>
         <onValue>false</onValue>
-        <gosysId>NAV-123123</gosysId>
+        <skjemaNummer>NAV-123123</skjemaNummer>
     </vedlegg>
-
     <vedlegg>
         <id>3</id>
         <faktum>ekstraVedlegg</faktum>
         <onValue>true</onValue>
-        <gosysId>L6</gosysId>
+        <skjemaNummer>L6</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>4</id>
         <faktum>arbeidsforhold</faktum>
-        <gosysId>T8</gosysId>
+        <skjemaNummer>T8</skjemaNummer>
         <property>arbeidsgivernavn</property>
     </vedlegg>
-
-
+    <vedlegg>
+        <id>5</id>
+        <faktum>reellarbeidssoker.villigdeltid.reduserthelse</faktum>
+        <onValue>true</onValue>
+        <skjemaNummer>XX</skjemaNummer>
+    </vedlegg>
 </soknad>

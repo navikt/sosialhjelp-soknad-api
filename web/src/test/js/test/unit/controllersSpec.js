@@ -33,13 +33,13 @@ describe('DagpengerControllere', function () {
         $provide.value("data", {
             fakta: [],
             finnFaktum: function(faktumKey) {},
-            finnFakta: function(faktumKey) {}
+            finnFakta: function(faktumKey) {},
+            soknad: {soknadId: 1}
         });
         $provide.value("cms", {});
         $provide.value("personalia", {
             alder: 61
         });
-        $provide.constant('lagreSoknadData', "OPPDATER_OG_LAGRE");
     }));
 
     beforeEach(inject(function ($rootScope, $controller, $compile, $httpBackend) {
@@ -54,11 +54,6 @@ describe('DagpengerControllere', function () {
         scope.runValidation = function (form) {
             //expected call..
         };
-
-
-        scope.soknadData = {
-            fakta: {}
-        }
 
         element = angular.element(
             '<form name="form">'
@@ -152,14 +147,6 @@ describe('DagpengerControllere', function () {
         it('skal returnere false for person over 60 aar', function () {
             scope.alder = 62;
             expect(scope.erUnder60Aar()).toBe(false);
-        });
-
-        it('skal kalle metode for å validere form', function () {
-            scope.soknadData.fakta.villigdeltid = true;
-            scope.soknadData.fakta.villigpendle = true;
-            expect(scope.validateFormFunctionBleKalt).toEqual(false);
-            scope.validerOgSettModusOppsummering(form);
-            expect(scope.validateFormFunctionBleKalt).toEqual(true);
         });
     });
 

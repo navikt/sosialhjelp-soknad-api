@@ -22,7 +22,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.String.format;
 import static javax.xml.bind.JAXBContext.newInstance;
@@ -47,11 +50,21 @@ public class SoknadDataController {
     public WebSoknad hentSoknadData(@PathVariable Long soknadId) {
         return soknadService.hentSoknad(soknadId);
     }
+    
+    @RequestMapping(value = "/behandling/{behandlingsId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody()
+    public Map<String,String> hentSoknadIdMedBehandligsId(@PathVariable String behandlingsId) {
+        Map<String, String> result = new HashMap<>();
+        String soknadId = soknadService.hentSoknadMedBehandlinsId(behandlingsId).toString();
+        result.put("result", soknadId);
+        
+        return result;
+    }
 
     @RequestMapping(value = "/options/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public SoknadStruktur hentSoknadStruktur(@PathVariable Long soknadId) {
-        String type = soknadService.hentSoknad(soknadId).getGosysId() + ".xml";
+        String type = soknadService.hentSoknad(soknadId).getskjemaNummer() + ".xml";
         try {
             Unmarshaller unmarshaller = newInstance(SoknadStruktur.class)
                     .createUnmarshaller();
@@ -126,12 +139,4 @@ public class SoknadDataController {
         // Må legges til i forbindelse med kobling mot henvendelse.
         // henvendelseConnector.avbrytSoknad("12412412");
     }
-
-    //
-    // @RequestMapping(value = "/{soknadId}/{faktum}", method =
-    // RequestMethod.GET)
-    // public void hentFaktum(@PathVariable Long soknadId, @PathVariable Long
-    // faktumId) {
-    // throw new ApplicationException("Ikke implementert enda. ");
-    // }
 }

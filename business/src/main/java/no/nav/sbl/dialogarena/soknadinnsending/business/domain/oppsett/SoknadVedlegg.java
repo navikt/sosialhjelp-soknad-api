@@ -10,7 +10,7 @@ public class SoknadVedlegg implements Serializable {
 
     private SoknadFaktum faktum;
     private String onValue;
-    private String gosysId;
+    private String skjemaNummer;
     private String property;
 
     @XmlIDREF
@@ -30,12 +30,12 @@ public class SoknadVedlegg implements Serializable {
         this.onValue = onValue;
     }
 
-    public String getGosysId() {
-        return gosysId;
+    public String getskjemaNummer() {
+        return skjemaNummer;
     }
 
-    public void setGosysId(String gosysId) {
-        this.gosysId = gosysId;
+    public void setskjemaNummer(String skjemaNummer) {
+        this.skjemaNummer = skjemaNummer;
     }
 
     public String getProperty() {
@@ -56,7 +56,7 @@ public class SoknadVedlegg implements Serializable {
         return new ToStringBuilder(this)
                 .append("faktum", faktum)
                 .append("onValue", onValue)
-                .append("gosysId", gosysId)
+                .append("skjemaNummer", skjemaNummer)
                 .append("property", property)
                 .toString();
     }

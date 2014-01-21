@@ -11,6 +11,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 			'Permittert'              : {url: '../html/templates/arbeidsforhold/permittert.html'}
 		};
 		$scope.land = data.land;
+        $scope.soknadId = data.soknad.soknadId;
 
 		var url = $location.$$url;
 		var endreModus = url.indexOf('endrearbeidsforhold') !== -1;
@@ -72,7 +73,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 		};
 
 		function lagreArbeidsforholdOgSluttaarsak() {
-			$scope.arbeidsforhold.$save({soknadId: $scope.soknadData.soknadId}).then(function (arbeidsforholdData) {
+			$scope.arbeidsforhold.$save({soknadId: data.soknad.soknadId}).then(function (arbeidsforholdData) {
 				$scope.arbeidsforhold = arbeidsforholdData;
 				oppdaterFaktumListe('arbeidsforhold');
 				oppdaterCookieValue(arbeidsforholdData.faktumId);
@@ -83,10 +84,10 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 		function lagreSluttaarsak(parentFaktumId) {
 			$scope.sluttaarsak.parrentFaktum = parentFaktumId;
 			$scope.sluttaarsak.properties.type = $scope.sluttaarsakType;
-			$scope.sluttaarsak.$save({soknadId: $scope.soknadData.soknadId}).then(function (sluttaarsakData) {
+			$scope.sluttaarsak.$save({soknadId: data.soknad.soknadId}).then(function (sluttaarsakData) {
 				$scope.sluttaarsak = sluttaarsakData;
 				oppdaterFaktumListe('sluttaarsak');
-				$location.path('dagpenger/' + $scope.soknadData.soknadId);
+				$location.path('dagpenger/' + data.soknad.soknadId);
 			});
 		}
 

@@ -15,7 +15,7 @@ public class Vedlegg {
     private Long vedleggId;
     private Long soknadId;
     private Long faktumId;
-    private String gosysId;
+    private String skjemaNummer;
     private Status innsendingsvalg;
     private String beskrivelse;
     private String navn = "";
@@ -27,18 +27,18 @@ public class Vedlegg {
     public Vedlegg() {
     }
 
-    public Vedlegg(Long soknadId, Long faktumId, String gosysId, Status innsendingsvalg) {
+    public Vedlegg(Long soknadId, Long faktumId, String skjemaNummer, Status innsendingsvalg) {
         this.soknadId = soknadId;
         this.faktumId = faktumId;
-        this.gosysId = gosysId;
+        this.skjemaNummer = skjemaNummer;
         this.innsendingsvalg = innsendingsvalg;
     }
 
-    public Vedlegg(Long vedleggId, Long soknadId, Long faktumId, String gosysId, String navn, Long storrelse, Integer antallSider, String fillagerReferanse, byte[] data, Status innsendingsvalg) {
+    public Vedlegg(Long vedleggId, Long soknadId, Long faktumId, String skjemaNummer, String navn, Long storrelse, Integer antallSider, String fillagerReferanse, byte[] data, Status innsendingsvalg) {
         this.vedleggId = vedleggId;
         this.soknadId = soknadId;
         this.faktumId = faktumId;
-        this.gosysId = gosysId;
+        this.skjemaNummer = skjemaNummer;
         this.navn = navn;
         this.beskrivelse = navn;
         this.storrelse = storrelse;
@@ -88,12 +88,12 @@ public class Vedlegg {
         return antallSider;
     }
 
-    public String getGosysId() {
-        return gosysId;
+    public String getskjemaNummer() {
+        return skjemaNummer;
     }
 
-    public void setGosysId(String gosysId) {
-        this.gosysId = gosysId;
+    public void setskjemaNummer(String skjemaNummer) {
+        this.skjemaNummer = skjemaNummer;
     }
 
     public String getFillagerReferanse() {
@@ -132,7 +132,7 @@ public class Vedlegg {
                 .append(this.navn, rhs.navn)
                 .append(this.storrelse, rhs.storrelse)
                 .append(this.faktumId, rhs.faktumId)
-                .append(this.gosysId, rhs.gosysId)
+                .append(this.skjemaNummer, rhs.skjemaNummer)
                 .append(this.antallSider, rhs.antallSider)
                 .append(this.data, rhs.data)
                 .append(this.fillagerReferanse, rhs.fillagerReferanse)
@@ -147,7 +147,7 @@ public class Vedlegg {
                 .append(navn)
                 .append(storrelse)
                 .append(faktumId)
-                .append(gosysId)
+                .append(skjemaNummer)
                 .append(antallSider)
                 .append(data)
                 .append(fillagerReferanse)
@@ -162,7 +162,7 @@ public class Vedlegg {
                 .append("navn", navn)
                 .append("storrelse", storrelse)
                 .append("faktumId", faktumId)
-                .append("gosysId", gosysId)
+                .append("skjemaNummer", skjemaNummer)
                 .append("antallSider", antallSider)
                 .append("data", data)
                 .append("fillagerReferanse", fillagerReferanse)
