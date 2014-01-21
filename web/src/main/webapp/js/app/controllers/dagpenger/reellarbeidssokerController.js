@@ -1,6 +1,6 @@
 angular.module('nav.reellarbeidssoker', [])
-    .controller('ReellarbeidssokerCtrl', ['$scope', 'personalia', 'data', function ($scope, personalia, data) {
-        $scope.alder = personalia.alder;
+    .controller('ReellarbeidssokerCtrl', ['$scope', 'data', function ($scope, data) {
+        $scope.alder = parseInt(data.finnFaktum('personalia').properties.alder);
 //        For testing av alder:
         $scope.alder = 59;
 

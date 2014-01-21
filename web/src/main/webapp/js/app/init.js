@@ -12,6 +12,7 @@ angular.module('sendsoknad')
         $http.get('../html/templates/utdanning/utdanningKortvarigTemplate.html', {cache: $templateCache});
         $http.get('../html/templates/utdanning/utdanningKortvarigFlereTemplate.html', {cache: $templateCache});
         $http.get('../html/templates/utdanning/utdanningNorskTemplate.html', {cache: $templateCache});
+        $http.get('../html/templates/adresse.html', {cache: $templateCache});
         $http.get('../html/dagpenger-singlepage.html', {cache: $templateCache});
         $http.get('../js/common/directives/booleanradio/booleanradioTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/accordion/accordionGroupTemplate.html', {cache: $templateCache});
@@ -36,7 +37,6 @@ angular.module('sendsoknad')
         $http.get('../js/app/directives/stickybunn/stickyBunnTemplate.html', {cache: $templateCache});
     }])
     .value('data', {})
-    .value('personalia', {})
     .value('cms', {})
     .factory('InformasjonsSideResolver', ['data', 'cms', '$resource', '$q', '$route', function (data, cms, $resource, $q, $route) {
         var promiseArray = [];
@@ -76,7 +76,7 @@ angular.module('sendsoknad')
         return $q.all(promiseArray);
     }])
 
-    .factory('HentSoknadService', ['$rootScope', 'data', 'cms', 'personalia', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', function ($scope, data, cms, personalia, $resource, $q, $route, soknadService, landService, Faktum) {
+    .factory('HentSoknadService', ['$rootScope', 'data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', '$http', function ($scope, data, cms, $resource, $q, $route, soknadService, landService, Faktum, $http) {
         var soknadId = $route.current.params.soknadId;
         var promiseArray = [];
 
@@ -86,13 +86,6 @@ angular.module('sendsoknad')
             }
         );
         promiseArray.push(tekster.$promise);
-
-        var alder = $resource('/sendsoknad/rest/soknad/personalder').get(
-            function (result) { // Success
-                personalia.alder = result.alder;
-            }
-        );
-        promiseArray.push(alder.$promise);
 
         var land = landService.get(
             function (result) { // Success
@@ -104,28 +97,51 @@ angular.module('sendsoknad')
         if (soknadId != undefined) {
             // Barn må hentes før man henter søknadsdataene.
             var soknadDeferer = $q.defer();
-            var barn = $resource('/sendsoknad/rest/soknad/:soknadId/familierelasjoner').get(
-                {soknadId: soknadId},
-                function (result) { // Success
-                    var soknad = soknadService.get({param: soknadId},
-                        function (result) { // Success
-                            if (result.fakta.statsborgerskap) {
-                                personalia.statsborgerskap = result.fakta.statsborgerskap.value;
-                                delete result.fakta.statsborgerskap;
-                            }
-                            data.soknad = result;
-                            soknadDeferer.resolve();
-                        }
-                    );
-                }
-            );
+            var faktaDeferer = $q.defer();
 
-            var personaliaPromise = $resource('/sendsoknad/rest/soknad/:soknadId/personalia').get(
-                {soknadId: soknadId},
-                function (result) { // Success
-                    personalia.fakta = result.fakta;
-                }
-            );
+            var personaliaPromise = $http.post('/sendsoknad/rest/soknad/personalia', soknadId).then(function() {
+                soknadService.get({param: soknadId},
+                    function (result) { // Success
+                        data.soknad = result;
+                        soknadDeferer.resolve();
+                    }
+                );
+
+                Faktum.query({soknadId: soknadId}, function (result) {
+                    data.fakta = result;
+                    data.finnFaktum = function (key) {
+                        var res = null;
+                        data.fakta.forEach(function (item) {
+                            if (item.key === key) {
+                                res = item;
+                            }
+                        });
+                        return res;
+                    };
+                    data.finnFakta = function (key) {
+                        var res = [];
+                        data.fakta.forEach(function (item) {
+                            if (item.key === key) {
+                                res.push(item);
+                            }
+                        });
+                        return res;
+                    };
+
+                    data.slettFaktum = function(faktumData) {
+                        $scope.faktumSomSkalSlettes = new Faktum(faktumData);
+                        $scope.faktumSomSkalSlettes.$delete({soknadId: faktumData.soknadId}).then(function () {
+                        });
+
+                        data.fakta.forEach(function (item, index) {
+                            if (item.faktumId === faktumData.faktumId) {
+                                data.fakta.splice(index,1);
+                            }
+                        });
+                    };
+                    faktaDeferer.resolve();
+                });
+            });
             promiseArray.push(personaliaPromise.$promise);
 
             var soknadOppsett = soknadService.options({param: soknadId},
@@ -133,41 +149,7 @@ angular.module('sendsoknad')
                     data.soknadOppsett = result;
                 }
             );
-
-            var fakta = Faktum.query({soknadId: soknadId}, function (result) {
-                data.fakta = result;
-                data.finnFaktum = function (key) {
-                    var res = null;
-                    data.fakta.forEach(function (item) {
-                        if (item.key === key) {
-                            res = item;
-                        }
-                    });
-                    return res;
-                };
-                data.finnFakta = function (key) {
-                    var res = [];
-                    data.fakta.forEach(function (item) {
-                        if (item.key === key) {
-                            res.push(item);
-                        }
-                    });
-                    return res;
-                };
-
-                data.slettFaktum = function(faktumData) {
-                    $scope.faktumSomSkalSlettes = new Faktum(faktumData);
-                    $scope.faktumSomSkalSlettes.$delete({soknadId: faktumData.soknadId}).then(function () {
-                    });
-
-                    data.fakta.forEach(function (item, index) {
-                        if (item.faktumId === faktumData.faktumId) {
-                            data.fakta.splice(index,1);
-                        }
-                    });
-                };
-            });
-            promiseArray.push(barn.$promise, soknadOppsett.$promise, soknadDeferer.promise, fakta.$promise);
+            promiseArray.push(soknadOppsett.$promise, soknadDeferer.promise, faktaDeferer.promise);
         }
 
         return $q.all(promiseArray);

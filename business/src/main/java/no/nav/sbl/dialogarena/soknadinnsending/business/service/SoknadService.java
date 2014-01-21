@@ -9,7 +9,6 @@ import no.nav.sbl.dialogarena.pdf.PdfMerger;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventning;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -91,7 +90,10 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Long lagreSystemFaktum(Long soknadId, Faktum f, String uniqueProperty) {
-        List<Faktum> fakta = repository.hentSystemFaktumList(soknadId, f.getKey(), FaktumType.SYSTEMREGISTRERT.toString());
+        Faktum eksisterendeFaktum = repository.hentSystemFaktum(soknadId, f.getKey(), SYSTEMREGISTRERT_FAKTUM);
+        f.setFaktumId(eksisterendeFaktum.getFaktumId());
+        f.setType(SYSTEMREGISTRERT_FAKTUM);
+        List<Faktum> fakta = repository.hentSystemFaktumList(soknadId, f.getKey(), SYSTEMREGISTRERT_FAKTUM);
 
         if (!uniqueProperty.isEmpty()) {
             for (Faktum faktum : fakta) {
@@ -111,8 +113,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value) {
         //TODO: her blir barn overskrevet. Hent ut fnr osv.
         Faktum faktum = repository.hentSystemFaktum(soknadId, key, SYSTEMREGISTRERT_FAKTUM);
-
-        Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId, faktum.getFaktumId(), key, value, SYSTEMREGISTRERT_FAKTUM));
+        Long faktumId = repository.lagreFaktum(soknadId, faktum);
         return repository.hentFaktum(soknadId, faktumId);
     }
 

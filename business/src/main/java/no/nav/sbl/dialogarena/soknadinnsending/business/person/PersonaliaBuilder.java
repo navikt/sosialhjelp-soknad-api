@@ -64,6 +64,7 @@ public class PersonaliaBuilder {
         personalia.setKjonn(kjonn);
         personalia.setGjeldendeAdresse(gjeldenseAdresse);
         personalia.setSekundarAdresse(sekundarAdresse);
+        personalia.setAlder(alder);
 
         return personalia;
     }
