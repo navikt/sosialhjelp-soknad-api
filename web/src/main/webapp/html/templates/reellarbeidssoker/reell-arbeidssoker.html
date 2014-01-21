@@ -1,0 +1,181 @@
+<div class="skjemaramme" data-ng-controller="ModusCtrl">
+    <div data-ng-form="reellarbeidssokerForm" class="skjemainnhold vertikal" data-ng-controller="ReellarbeidssokerCtrl"
+         novalidate>
+
+        <div data-form-errors></div>
+        <div data-nav-hjelpetekst-element></div>
+
+        <div data-nav-faktum="reellarbeidssoker.villigdeltid"
+             data-ng-model="faktum.value"
+             data-navconfig
+             data-booleanradio
+             data-nokkel="reellarbeidssoker.villigdeltid">
+            <div data-navinfoboks>
+                <span data-cmstekster="reellarbeidssoker.villigdeltid.false.informasjon"></span>
+            </div>
+
+            <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
+                <input type="hidden" data-ng-model="harHuketAvCheckboksDeltid.value"
+                       data-nav-faktum="reellarbeidssoker.villigdeltid"
+                       data-ng-required="faktum.value == 'false' && erUnder60Aar()"
+                       data-error-messages="'reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding'">
+
+                <div data-navcheckbox
+                     data-navconfig
+                     data-nav-faktum="reellarbeidssoker.villigdeltid.reduserthelse"
+                     data-navlabel="reellarbeidssoker.reduserthelse"
+                     data-navendret="endreDeltidsAarsaker()"></div>
+
+                <div data-navcheckbox
+                     data-navconfig
+                     data-nav-faktum="reellarbeidssoker.villigdeltid.omsorgbarnunder1aar"
+                     data-navlabel="reellarbeidssoker.omsorgbarnunder1aar"
+                     data-navendret="endreDeltidsAarsaker()"></div>
+
+                <div data-navcheckbox
+                     data-navconfig
+                     data-nav-faktum="reellarbeidssoker.villigdeltid.eneansvarbarnunder5skoleaar"
+                     data-navlabel="reellarbeidssoker.eneansvarbarnunder5skoleaar"
+                     data-navendret="endreDeltidsAarsaker()"></div>
+
+                <div data-navcheckbox
+                     data-navconfig
+                     data-nav-faktum="reellarbeidssoker.villigdeltid.eneansvarbarnopptil18aar"
+                     data-navlabel="reellarbeidssoker.eneansvarbarnopptil18aar"
+                     data-navendret="endreDeltidsAarsaker()"></div>
+
+                <div data-navcheckbox
+                     data-navconfig
+                     data-nav-faktum="reellarbeidssoker.villigdeltid.omsorgansvar"
+                     data-navlabel="reellarbeidssoker.omsorgansvar"
+                     data-navendret="endreDeltidsAarsaker()"></div>
+
+                <div data-navcheckbox
+                     data-nav-faktum="reellarbeidssoker.villigdeltid.annensituasjon"
+                     data-navconfig
+                     data-navlabel="reellarbeidssoker.annensituasjon"
+                     data-navendret="endreDeltidsAarsaker()"></div>
+
+                <span class="melding"
+                      data-cmstekster="reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding"></span>
+            </div>
+
+            <p class="informasjonstekst" data-cmstekster="reellarbeidssoker.villigdeltid.false.informasjon2"></p>
+
+            <div class="tekstfelt form-linje arbeidsmengde-container">
+                <label>
+                    <span data-cmstekster="reellarbeidssoker.maksimalarbeidstid"></span>
+                    <input type="text"
+                           data-ng-model="faktum.value"
+                           data-nav-faktum="reellarbeidssoker.villigdeltid.maksimalarbeidstid"
+                           data-navconfig
+                           data-ng-required=hvisSynlig()
+                           data-error-messages="{required:'reellarbeidssoker.maksimalarbeidstid.feilmelding', pattern:'regex.tall.komma.punktum'}"
+                           data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
+                           data-tekstfelt-patternvalidering
+                           data-blur-validate/>
+                    <span class="timer" data-cmstekster="egennaering.driveregennaering.arbeidsmengde.timer"></span>
+                    <span class="melding"></span>
+                </label>
+            </div>
+        </div>
+
+        <div data-nav-faktum="reellarbeidssoker.villigpendle"
+             data-navconfig
+             data-booleanradio
+             data-nokkel="reellarbeidssoker.villigpendle">
+
+            <div data-navinfoboks>
+                <span data-cmstekster="reellarbeidssoker.villigpendle.false.informasjon"></span>
+            </div>
+            <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
+                <input type="hidden" data-ng-model="harHuketAvCheckboksPendle.value"
+                       data-nav-faktum="reellarbeidssoker.villigpendle"
+                       data-ng-required="faktum.value == 'false' && erUnder60Aar()"
+                       data-error-messages="'reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding'"/>
+
+                <div data-navcheckbox
+                     data-navconfig
+                     data-nav-faktum="reellarbeidssoker.villigpendle.reduserthelse"
+                     data-navlabel="reellarbeidssoker.pendlereduserthelse"
+                     data-navendret="endrePendleAarsaker()"></div>
+
+                <div data-navcheckbox
+                     data-navconfig
+                     data-nav-faktum="reellarbeidssoker.villigpendle.omsorgbarnunder1aar"
+                     data-navlabel="reellarbeidssoker.pendleomsorgbarnunder1aar"
+                     data-navendret="endrePendleAarsaker()"></div>
+
+                <div data-navcheckbox
+                     data-navconfig
+                     data-nav-faktum="reellarbeidssoker.villigpendle.eneansvarbarnunder5skoleaar"
+                     data-navlabel="reellarbeidssoker.pendleeneansvarbarnunder5skoleaar"
+                     data-navendret="endrePendleAarsaker()"></div>
+
+                <div data-navcheckbox
+                     data-navconfig
+                     data-nav-faktum="reellarbeidssoker.villigpendle.eneansvarbarnopptil18aar"
+                     data-navlabel="reellarbeidssoker.pendleeneansvarbarnopptil18aar"
+                     data-navendret="endrePendleAarsaker()"></div>
+
+                <div data-navcheckbox
+                     data-navconfig
+                     data-nav-faktum="reellarbeidssoker.villigpendle.omsorgansvar"
+                     data-navlabel="reellarbeidssoker.pendleomsorgansvar"
+                     data-navendret="endrePendleAarsaker()"></div>
+
+                <div data-navcheckbox
+                     data-navconfig
+                     data-nav-faktum="reellarbeidssoker.villigpendle.annensituasjon"
+                     data-navlabel="reellarbeidssoker.pendleannensituasjon"
+                     data-navendret="endrePendleAarsaker()"></div>
+
+                <span class="melding"
+                      data-cmstekster="reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding"></span>
+            </div>
+
+
+        </div>
+
+        <div class="helse"
+             data-booleanradio
+             data-navconfig
+             data-nav-faktum="reellarbeidssoker.villighelse"
+             data-nokkel="reellarbeidssoker.villighelse"
+             data-hjelpetekst>
+
+            <div data-navinfoboks>
+                <span data-cmstekster="reellarbeidssoker.villighelse.false.vedlegginformasjon"></span>
+            </div>
+            <div data-navtextarea
+                 data-navconfig
+                 data-nav-faktum="reellarbeidssoker.villighelse.fritekst"
+                 data-nokkel="reellarbeidssoker.helsefritekst"
+                 data-maxlengde="500"
+                 data-navfeilmelding="reellarbeidssoker.helsefritekst.feilmelding"
+                 data-obligatorisk="true"></div>
+        </div>
+
+
+        <div data-booleanradio
+             data-navconfig
+             data-nav-faktum="reellarbeidssoker.villigjobb"
+             data-nokkel="reellarbeidssoker.villigjobb">
+
+            <div data-navinfoboks>
+                <span data-cmstekster="reellarbeidssoker.villigjobb.false.informasjon"></span>
+            </div>
+            <div class="sentrert">
+                <a href="#/avbryt/{{ soknadData.soknadId }}"
+                   data-cmstekster="reellarbeidssoker.villigjobb.false.avbryt"></a>
+            </div>
+
+        </div>
+
+
+        <div data-spmblokkferdig data-nokkel="reellarbeidssoker"
+             data-submit-method="validerOgSettModusOppsummering(reellarbeidssokerForm, true)"></div>
+    </div>
+</div>
+
+

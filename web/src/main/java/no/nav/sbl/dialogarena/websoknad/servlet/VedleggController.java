@@ -1,14 +1,12 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import no.nav.sbl.dialogarena.soknadinnsending.VedleggFeil;
+import no.nav.sbl.dialogarena.soknadinnsending.RestFeil;
 import no.nav.sbl.dialogarena.soknadinnsending.VedleggOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
-import no.nav.sbl.dialogarena.soknadinnsending.exception.OpplastingException;
-import no.nav.sbl.dialogarena.soknadinnsending.exception.UgyldigOpplastingTypeException;
 import org.apache.commons.io.IOUtils;
-import org.apache.tika.Tika;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -28,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -44,45 +41,9 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 @RequestMapping("/soknad/{soknadId}/faktum/{faktumId}/vedlegg")
 public class VedleggController {
     private static final Logger LOG = LoggerFactory.getLogger(VedleggController.class);
-    private static final List<String> LEGAL_CONTENT_TYPES = Arrays.asList("application/pdf", "image/png", "image/jpeg");
+    //private static final List<String> LEGAL_CONTENT_TYPES = Arrays.asList("application/pdf", "image/png", "image/jpeg");
     @Inject
     private VedleggService vedleggService;
-
-    @Inject
-    private SoknadService soknadService;
-
-    @RequestMapping(value = "", method = RequestMethod.POST, produces = "text/html; charset=utf-8")
-    @ResponseBody()
-    @ResponseStatus(HttpStatus.CREATED)
-    public Callable<VedleggOpplasting> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam("files[]") final List<MultipartFile> files) {
-        return new Callable<VedleggOpplasting>() {
-
-            @Override
-            public VedleggOpplasting call() throws Exception {
-                List<Vedlegg> res = new ArrayList<>();
-                for (MultipartFile file : files) {
-                    byte[] in = validateAndGetInput(file);
-                    Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, file.getOriginalFilename(), file.getSize(), 1, in);
-                    Long id = vedleggService.lagreVedlegg(vedlegg, new ByteArrayInputStream(in));
-                    vedlegg.setId(id);
-                    res.add(vedlegg);
-                }
-                return new VedleggOpplasting(res);
-            }
-        };
-    }
-
-    private byte[] validateAndGetInput(MultipartFile file) {
-        try {
-            String contentType = new Tika().detect(file.getInputStream(), file.getOriginalFilename());
-            if (!LEGAL_CONTENT_TYPES.contains(contentType)) {
-                throw new UgyldigOpplastingTypeException("Kunne ikke lagre fil", null, "vedlegg.opplasting.feil.filtype");
-            }
-            return IOUtils.toByteArray(file.getInputStream());
-        } catch (IOException e) {
-            throw new OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell");
-        }
-    }
 
     @RequestMapping(value = "/{vedleggId}/delete", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -104,59 +65,70 @@ public class VedleggController {
         return vedlegg.getData();
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public VedleggOpplasting hentVedleggForFaktum(@PathVariable final Long soknadId, @PathVariable final Long faktumId) {
-        List<Vedlegg> vedlegg = vedleggService.hentVedleggForFaktum(soknadId, faktumId);
-        return new VedleggOpplasting(vedlegg);
-    }
-
     @RequestMapping(value = "/{vedleggId}/thumbnail", method = RequestMethod.GET, produces = IMAGE_PNG_VALUE)
     @ResponseBody()
-    public Callable<byte[]> lagForhandsvisningForVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestParam(value = "side", defaultValue = "0") final int side) {
-        return new Callable<byte[]>() {
-            @Override
-            public byte[] call() throws Exception {
-                return vedleggService.lagForhandsvisning(soknadId, vedleggId, side);
-            }
-        };
-    }
-
-
-    @RequestMapping(value = "/generer", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
-    @ResponseBody()
-    public Callable<Vedlegg> bekreftFaktumVedlegg(@PathVariable final Long soknadId, @PathVariable final Long faktumId) {
-        return new Callable<Vedlegg>() {
-            @Override
-            public Vedlegg call() throws Exception {
-                Long vedleggId = vedleggService.genererVedleggFaktum(soknadId, faktumId);
-                return vedleggService.hentVedlegg(soknadId, vedleggId, false);
-            }
-        };
+    public byte[] lagForhandsvisningForVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestParam(value = "side", defaultValue = "0") final int side) {
+        return vedleggService.lagForhandsvisning(soknadId, vedleggId, side);
     }
 
     @ExceptionHandler(UgyldigOpplastingTypeException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-    public VedleggFeil handterFeilType(UgyldigOpplastingTypeException ex) {
+    public RestFeil handterFeilType(UgyldigOpplastingTypeException ex) {
         LOG.warn("Feilet opplasting med: " + ex, ex);
-        return new VedleggFeil(ex.getId());
+        return new RestFeil(ex.getId());
     }
 
     @ExceptionHandler(OpplastingException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    public VedleggFeil handterVedleggException(OpplastingException ex) {
+    public RestFeil handterVedleggException(OpplastingException ex) {
         LOG.warn("Feilet opplasting med: " + ex, ex);
-        return new VedleggFeil(ex.getId());
+        return new RestFeil(ex.getId());
     }
 
-    @ExceptionHandler(Throwable.class)
+    @RequestMapping(value = "", params = "skjemaNummer", method = RequestMethod.POST, produces = "text/html; charset=utf-8")
+    @ResponseBody()
+    @ResponseStatus(HttpStatus.CREATED)
+    public Callable<VedleggOpplasting> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam final String skjemaNummer, @RequestParam("files[]") final List<MultipartFile> files) {
+        return new Callable<VedleggOpplasting>() {
+
+            @Override
+            public VedleggOpplasting call() throws Exception {
+                List<Vedlegg> res = new ArrayList<>();
+                for (MultipartFile file : files) {
+                    byte[] in = getByteArray(file);
+                    Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, skjemaNummer, file.getOriginalFilename(), file.getSize(), 1, null, in);
+                    List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, new ByteArrayInputStream(in));
+                    for (Long id : ids) {
+                        res.add(vedleggService.hentVedlegg(soknadId, id, false));
+                    }
+                }
+                return new VedleggOpplasting(res);
+            }
+        };
+    }
+
+    @RequestMapping(value = "", params = "skjemaNummer", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handlerException(Exception ex) {
-        LOG.warn("Feilet opplasting med: " + ex, ex);
-        return "Feilet med: " + ex + "  " + Arrays.toString(ex.getStackTrace());
+    public VedleggOpplasting hentVedleggForFaktum(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam String skjemaNummer) {
+        List<Vedlegg> vedlegg = vedleggService.hentVedleggForFaktum(soknadId, faktumId, skjemaNummer);
+        return new VedleggOpplasting(vedlegg);
+    }
+
+    @RequestMapping(value = "/generer", params = "skjemaNummer", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
+    @ResponseBody()
+    public Vedlegg bekreftFaktumVedlegg(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam final String skjemaNummer) {
+        Long vedleggId = vedleggService.genererVedleggFaktum(soknadId, faktumId, skjemaNummer);
+        return vedleggService.hentVedlegg(soknadId, vedleggId, false);
+    }
+
+    private static byte[] getByteArray(MultipartFile file) {
+        try {
+            return IOUtils.toByteArray(file.getInputStream());
+        } catch (IOException e) {
+            throw new OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell");
+        }
     }
 
 }

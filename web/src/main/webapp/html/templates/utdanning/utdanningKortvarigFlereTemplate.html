@@ -1,0 +1,38 @@
+<div data-navinfoboks>
+    <span data-cmstekster="utdanning.svar.under.utdanning.kortvarigflere.informasjon"></span>
+</div>
+
+<div data-navtekst
+     data-navconfig
+     data-nav-faktum="utdanning.kortvarigflere.sted"
+     data-navlabel="utdanning.utdanningssted.navn"
+     data-navfeilmelding="'utdanning.error.kortvarigflere.utdanningsstednavn'"
+     data-ng-required="true">
+</div>
+
+
+<div data-navtekst
+     data-navconfig
+     data-nav-faktum="utdanning.kortvarigflere.navn"
+     data-navlabel="utdanning.utdanning.navn"
+     data-navfeilmelding="'utdanning.error.kortvarigflere.utdanningsnavn'"
+     data-ng-required="true">
+</div>
+
+<div class="varighet" data-nav-faktum="utdanning.kortvarigflere.varighet"
+     data-nav-property="['varighetFra', 'varighetTil']">
+    <div data-nav-dato-intervall
+         data-fra-dato="navproperties.varighetFra"
+         data-til-dato="navproperties.varighetTil"
+         data-label="utdanning.varighet"
+         data-er-fremtidigdato-tillatt="true"
+         data-er-required="true"
+         data-lagre="lagreFaktum()">
+    </div>
+</div>
+
+<div data-vedlegginfoboks>
+    <ul>
+        <li><p data-cmstekster="utdanning.svar.under.utdanning.dokumentasjon"></p></li>
+    </ul>
+</div>

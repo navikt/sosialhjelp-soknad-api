@@ -1,41 +1,29 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Faktum implements Serializable {
-    public enum Status {
-        IkkeVedlegg,
-        VedleggKreves,
-        LastetOpp,
-        SendesSenere,
-        SendesIkke;
-
-        public boolean er(Status status) {
-            return this.equals(status);
-        }
-    }
-
-    //public enum FaktumType { FAGREGISTER, BRUKERREGISTRERT; }
     private Long faktumId;
     private Long soknadId;
-    private Long vedleggId;
     private Long parrentFaktum;
-    private Status innsendingsvalg;
     private String key;
     private String value;
     private List<Faktum> valuelist;
+    private Map<String, String> properties = new HashMap<>();
     private String type;
 
-    
     public Faktum() {
-    	
+
     }
-    
-	public Faktum(Long soknadId, Long faktumId, String key, String value, String type, Long parrentFaktum) {
-		this(soknadId, faktumId, key,value, type);
-		this.parrentFaktum = parrentFaktum;
-	}
+
+    public Faktum(Long soknadId, Long faktumId, String key, String value, String type, Long parrentFaktum) {
+        this(soknadId, faktumId, key, value, type);
+        this.parrentFaktum = parrentFaktum;
+    }
+
 
     public Faktum(Long soknadId, Long faktumId, String key, String value, String type) {
         this(soknadId, faktumId, key, value);
@@ -50,11 +38,11 @@ public class Faktum implements Serializable {
     }
 
     public Faktum(Long soknadId, String key) {
-		this.soknadId = soknadId;
-		this.key = key;
-	}
+        this.soknadId = soknadId;
+        this.key = key;
+    }
 
-	public Long getFaktumId() {
+    public Long getFaktumId() {
         return faktumId;
     }
 
@@ -62,16 +50,12 @@ public class Faktum implements Serializable {
         this.faktumId = faktumId;
     }
 
-    public Long getVedleggId() {
-        return vedleggId;
-    }
-
-    public void setVedleggId(Long vedleggId) {
-        this.vedleggId = vedleggId;
-    }
-
     public String getValue() {
         return value;
+    }
+
+    public final void setValue(String value) {
+        this.value = value;
     }
 
     public Long getSoknadId() {
@@ -90,10 +74,6 @@ public class Faktum implements Serializable {
         this.key = key;
     }
 
-    public final void setValue(String value) {
-        this.value = value;
-    }
-
     public String getType() {
         return type;
     }
@@ -102,15 +82,43 @@ public class Faktum implements Serializable {
         this.type = type;
     }
 
-    public Status getInnsendingsvalg() {
-        if (innsendingsvalg == null) {
-            innsendingsvalg = Status.IkkeVedlegg;
+    public Status getInnsendingsvalg(String skjemaNummer) {
+        if (!properties.containsKey("vedlegg_" + skjemaNummer)) {
+            properties.put("vedlegg_" + skjemaNummer, Status.IkkeVedlegg.toString());
         }
-        return innsendingsvalg;
+        return Status.valueOf(properties.get("vedlegg_" + skjemaNummer));
     }
 
-    public void setInnsendingsvalg(Status innsendingsvalg) {
-        this.innsendingsvalg = innsendingsvalg;
+    public void setInnsendingsvalg(String skjemaNummer, Status innsendingsvalg) {
+        properties.put("vedlegg_" + skjemaNummer, innsendingsvalg.toString());
+    }
+
+    public List<Faktum> getValuelist() {
+        return valuelist;
+    }
+
+    public void setValuelist(List<Faktum> valueList) {
+        this.valuelist = valueList;
+    }
+
+    public Faktum cloneFaktum() {
+        return new Faktum(soknadId, key);
+    }
+
+    public Long getParrentFaktum() {
+        return parrentFaktum;
+    }
+
+    public void setParrentFaktum(Long parrentFaktum) {
+        this.parrentFaktum = parrentFaktum;
+    }
+
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Map<String, String> properties) {
+        this.properties = properties;
     }
 
     @Override
@@ -119,24 +127,17 @@ public class Faktum implements Serializable {
                 + value + ", type=" + type + "]";
     }
 
-	public List<Faktum> getValuelist() {
-		return valuelist;
-	}
+    public enum FaktumType {SYSTEMREGISTRERT, BRUKERREGISTRERT;}
 
-	public void setValuelist(List<Faktum> valueList) {
-		this.valuelist = valueList;
-	}
+    public enum Status {
+        IkkeVedlegg,
+        VedleggKreves,
+        LastetOpp,
+        SendesSenere,
+        SendesIkke;
 
-	public Faktum cloneFaktum() {
-		return new Faktum(soknadId, key);
-	}
-
-	public Long getParrentFaktum() {
-		return parrentFaktum;
-	}
-
-	public void setParrentFaktum(Long parrentFaktum) {
-		this.parrentFaktum = parrentFaktum;
-	}
-
+        public boolean er(Status status) {
+            return this.equals(status);
+        }
+    }
 }

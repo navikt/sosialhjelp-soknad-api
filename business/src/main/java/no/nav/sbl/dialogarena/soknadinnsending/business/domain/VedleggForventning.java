@@ -8,17 +8,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class VedleggForventning {
     private Faktum faktum;
     private Vedlegg vedlegg;
-    private String gosysId;
+    private String skjemaNummer;
+    private String property;
 
     public VedleggForventning() {
     }
 
-    public VedleggForventning(Faktum faktum, Vedlegg vedlegg, String gosysId) {
+    public VedleggForventning(Faktum faktum, Vedlegg vedlegg, String skjemaNummer, String property) {
         this.faktum = faktum;
         this.vedlegg = vedlegg;
-        this.gosysId = gosysId;
-        if (faktum.getInnsendingsvalg() == null || faktum.getInnsendingsvalg().equals(Faktum.Status.IkkeVedlegg)) {
-            faktum.setInnsendingsvalg(Faktum.Status.VedleggKreves);
+        this.skjemaNummer = skjemaNummer;
+        this.property = property;
+        if (faktum.getInnsendingsvalg(skjemaNummer).equals(Faktum.Status.IkkeVedlegg)) {
+            faktum.setInnsendingsvalg(skjemaNummer, Faktum.Status.VedleggKreves);
         }
     }
 
@@ -39,11 +41,19 @@ public class VedleggForventning {
         this.vedlegg = vedlegg;
     }
 
-    public String getGosysId() {
-        return gosysId;
+    public String getskjemaNummer() {
+        return skjemaNummer;
     }
 
-    public void setGosysId(String gosysId) {
-        this.gosysId = gosysId;
+    public void setskjemaNummer(String skjemaNummer) {
+        this.skjemaNummer = skjemaNummer;
+    }
+
+    public String getProperty() {
+        return property;
+    }
+
+    public void setProperty(String property) {
+        this.property = property;
     }
 }

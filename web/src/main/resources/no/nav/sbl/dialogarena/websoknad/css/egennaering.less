@@ -1,0 +1,152 @@
+.orgnummer-repeat .orgnummer {
+  width: 100%;
+  padding-bottom: 0px !important;
+  float: left;
+
+  &feil .melding {
+    display: block;
+    clear: both;
+  }
+  span {
+    clear: both;
+    float: left;
+    margin-top: 7px !important;
+  }
+}
+
+.orgnummer-slett {
+  float: left;
+  display: block;
+  margin-left: -300px;
+  margin-top: 52px;
+}
+
+.orgnummer-leggtil {
+  display: inline-block;
+  clear: both;
+  margin: 15px;
+}
+
+.arbeidsmengde-container {
+  input {
+    width: 50px !important;
+    float: left;
+    margin-right: 10px;
+  }
+
+  span {
+    display: block;
+  }
+  .timer {
+    font-weight: bold;
+    margin-top: 9px;
+    margin-left: 5px;
+    text-transform: none;
+    font-size: 1rem !important;
+    display: inline-block;
+  }
+  .melding {
+    clear: both;
+  }
+}
+
+.andelsfordeling-container {
+  &.aktiv-feilmelding.feil {
+    border: 1px solid #c30000;
+    background-color: #FAD6D6;
+  }
+  .andels-fordeling {
+    .form-linje {
+      width: 45%;
+      padding: 0px !important;
+      display: inline-block;
+      vertical-align: top;
+
+      input {
+        width: 55px !important;
+        float: left;
+        margin-right: 5px;
+        display: block;
+      }
+
+      span:not(.melding) {
+        display: block;
+      }
+      .egennaering-prosent {
+        margin-top: 5px;
+        font-size: 1rem !important;
+      }
+
+      &.feil .melding {
+        display: block;
+        clear: both;
+      }
+
+      &:first-child {
+        width: 25%;
+      }
+      &:last-child {
+        width: 25%;
+      }
+    }
+  }
+  &.feil .andels-fordeling .melding {
+    display: none;
+  }
+
+  &.feil .prosentmelding {
+    color: #A00404;
+    display: block;
+  }
+
+  .prosentmelding {
+//    clear: both;
+//    color: #3e3832;
+    display: none;
+  }
+}
+
+.gardsbruk-timer {
+  padding: 15px;
+
+  .form-linje {
+    float: left;
+    width: 25%;
+    padding: 0px !important;
+    clear: none !important;
+
+    input {
+      width: 70px !important;
+      display: block;
+    }
+    select {
+      width: 77px;
+    }
+    span {
+      display: block;
+    }
+  }
+}
+
+.timeredegjoring {
+  clear: both;
+}
+
+.fangstfiskeinntekt {
+  float: left;
+  margin-bottom: 20px;
+
+  span {
+    clear: both;
+    float: left;
+  }
+  .melding {
+    clear: both;
+  }
+  input {
+    width: 120px !important;
+    display: inline-block;
+    clear: both;
+    float: left;
+  }
+}

@@ -1,46 +1,42 @@
-angular.module('nav.booleanradio',['nav.cmstekster', 'nav.input'])
-    .directive('booleanradio', [function() {
-        return {
-            restrict: "A",
-            replace: true,
-            require: 'ngModel',
-            transclude: true,
-            scope: {
-                model: '=ngModel',
-                modus: '=',
-                nokkel: '@'
-            },
-            controller: function($scope) {
-                $scope.sporsmal = $scope.nokkel + ".sporsmal";
-                $scope.trueLabel = $scope.nokkel + ".true";
-                $scope.falseLabel = $scope.nokkel + ".false";
-                $scope.feilmelding = $scope.nokkel + ".feilmelding";
-                $scope.inputname = $scope.nokkel.split('.').last();
-            },
-            link: function(scope, element) {
-                scope.hvisIRedigeringsmodus = function() {
-                    return scope.modus;
-                }
+angular.module('nav.booleanradio', ['nav.cmstekster', 'nav.input'])
+	.directive('booleanradio', [function () {
+		return {
+			restrict   : 'A',
+			replace    : true,
+			transclude : true,
+			scope      : true,
+			require    : ['^navFaktum', '^form'],
+			link       : {
+				pre : function (scope, element, attrs) {
+					var src = attrs.nokkel;
+					scope.navModel = attrs.navModel;
+					scope.sporsmal = src + '.sporsmal';
+					scope.trueLabel = src + '.true';
+					scope.falseLabel = src + '.false';
+					scope.navfeilmelding = src + '.feilmelding';
+				},
+				post: function (scope, element) {
+					scope.hvisModelErTrue = function () {
+						return scope.faktum.value === 'true';
+					};
 
-                scope.hvisIOppsummeringsmodus = function () {
-                    return !scope.hvisIRedigeringsmodus();
-                }
+					scope.hvisModelErFalse = function () {
+						return scope.faktum.value && !scope.hvisModelErTrue();
+					};
 
-                scope.hvisModelErTrue = function() {
-                    return scope.model == 'true';
-                }
+					scope.vis = function () {
+						return scope.hvisModelErFalse();
+					};
 
-                scope.hvisModelErFalse = function() {
-                    return scope.model && !scope.hvisModelErTrue();
-                }
+                    scope.skalViseTranscludedInnhold = function () {
+                        return element.find('.ng-transclude').text().trim().length > 0;
+                    };
 
-                scope.skalViseTranscludedInnhold = function () {
-                    var transcludeElement = element.find('.ng-transclude');
-                    return scope.hvisModelErFalse() && transcludeElement.text().length > 0;
-                }
-            },
-            templateUrl: '../js/common/directives/booleanradio/booleanradioTemplate.html'
-
-
-        }
-    }]);
+					scope.hvisIkkeIEkstraSpmBoks = function () {
+						return !element.parents().hasClass('ekstra-spm-boks');
+					};
+				}
+			},
+			templateUrl: '../js/common/directives/booleanradio/booleanradioTemplate.html'
+		}
+	}]);

@@ -1,0 +1,136 @@
+#legg-til-barn {
+    margin: 20px 45px;
+}
+
+#barnetilleggForm {
+    .informasjonstekst {
+        margin-bottom: 30px;
+    }
+    .knapper-opprett {
+        margin-top: 1rem;
+        text-align: center;
+
+        p {
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+
+        input, a {
+            //display: block;
+            margin: 0 auto 1rem;
+        }
+    }
+}
+
+.modalBoks {
+    .datepicker {
+        padding: 15px;
+    }
+
+    p {
+        margin: 15px;
+    }
+
+    input:not([type="submit"]), .select-input {
+        width: 65%;
+    }
+
+    .knapper-opprett {
+        border-top: 1px solid #ddd;
+        margin-top: 1rem;
+        padding-top: 2rem;
+        text-align: center;
+
+        input, a {
+            display: block;
+            margin: 0 auto 1rem;
+        }
+    }
+}
+
+.barn {
+    .lukk {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        width: 32px;
+        height: 32px;
+        background: url("../img/kryss.svg");
+        background-color: transparent;
+        background-repeat: no-repeat;
+    }
+
+    ul {
+        margin-top: 25px;
+        margin-bottom: 15px;
+
+        li {
+            margin-top: 0;
+        }
+    }
+
+    .barnealder {
+        display: inline-block;
+        height: 100%;
+        width: 50px;
+        vertical-align: top;
+        text-align: center;
+
+        .alder {
+            font-size: 3rem;
+            font-weight: 800;
+            font-family: Arial;
+            position: relative;
+            top: -6px;
+        }
+
+        span {
+            display: block;
+        }
+    }
+
+    .barnecheckbox {
+        margin-left: 65px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+
+    .barneinfo {
+        margin-left: 10px;
+        display: inline-block;
+        font-weight: 600;
+        font-family: Modus, Arial;
+
+        div:not(.barnbosted) {
+            font-size: 1.2rem;
+        }
+
+        .barnbosted {
+            span {
+                &.bosted {
+                    text-transform: uppercase;
+                    font-weight: 400;
+                    font-size: 0.95rem;
+                }
+
+            }
+        }
+    }
+
+    &.gutt {
+        .barnealder {
+            color: #0ca9e1 !important;
+            span {
+                color: #0ca9e1 !important;
+            }
+        }
+    }
+    &.jente {
+        .barnealder {
+            color: #ec288d !important;
+            span {
+                color: #ec288d !important;
+            }
+        }
+    }
+}

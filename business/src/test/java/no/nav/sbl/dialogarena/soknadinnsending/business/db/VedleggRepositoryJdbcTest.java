@@ -24,7 +24,6 @@ public class VedleggRepositoryJdbcTest {
 
     @Inject
     private VedleggRepository vedleggRepository;
-
     @Inject
     private RepositoryTestSupport soknadRepositoryTestSupport;
 
@@ -38,7 +37,8 @@ public class VedleggRepositoryJdbcTest {
         byte[] bytes = {1, 2, 3};
         Vedlegg v = getVedlegg(bytes);
         vedleggRepository.lagreVedlegg(v, bytes);
-        List<Vedlegg> vedlegg = vedleggRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktumId());
+
+        List<Vedlegg> vedlegg = vedleggRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktumId(), v.getskjemaNummer());
         assertThat(vedlegg.size(), is(equalTo(1)));
         v.setId(vedlegg.get(0).getId());
         assertThat(vedlegg.get(0), is(equalTo(v)));
@@ -48,11 +48,11 @@ public class VedleggRepositoryJdbcTest {
     public void skalKunneSletteVedlegg() {
         final Vedlegg v = getVedlegg();
         Long id = vedleggRepository.lagreVedlegg(v, new byte[0]);
-        List<Vedlegg> hentet = vedleggRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktumId());
+        List<Vedlegg> hentet = vedleggRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktumId(), v.getskjemaNummer());
         assertThat(hentet, is(notNullValue()));
         assertThat(hentet.size(), is(1));
         vedleggRepository.slettVedlegg(v.getSoknadId(), id);
-        hentet = vedleggRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktumId());
+        hentet = vedleggRepository.hentVedleggForFaktum(v.getSoknadId(), v.getFaktumId(), v.getskjemaNummer());
         assertThat(hentet, is(notNullValue()));
         assertThat(hentet.size(), is(0));
     }
@@ -67,13 +67,12 @@ public class VedleggRepositoryJdbcTest {
         assertThat(bytes, is(equalTo(lagret)));
     }
 
-
     private Vedlegg getVedlegg() {
         return getVedlegg(new byte[]{1, 2, 3});
     }
 
     private Vedlegg getVedlegg(byte[] bytes) {
-        return new Vedlegg(null, 12L, 10L, "navn", (long) bytes.length, 1, bytes);
+        return new Vedlegg(null, 12L, 10L, "1", "navn", (long) bytes.length, 1, null, null);
     }
 
 }
