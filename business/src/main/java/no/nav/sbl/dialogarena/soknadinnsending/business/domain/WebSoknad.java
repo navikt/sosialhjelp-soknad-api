@@ -8,11 +8,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static java.util.UUID.randomUUID;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -20,6 +22,7 @@ public class WebSoknad implements Serializable {
 
     private Long soknadId;
     private String skjemaNummer;
+    private String uuid;
     private String brukerBehandlingId;
     private Map<String, Faktum> fakta;
     private SoknadInnsendingStatus status;
@@ -28,7 +31,7 @@ public class WebSoknad implements Serializable {
     private DateTime sistLagret;
     private DelstegStatus delstegStatus;
 
-    private static final List<String> LIST_FAKTUM = Arrays.asList("barn", "barnetillegg", "ikkebarneinntekt", "barneinntekttall", "orgnummer", "arbeidsforhold", "sluttaarsak");
+    private static final List<String> LIST_FAKTUM = asList("barn", "barnetillegg", "ikkebarneinntekt", "barneinntekttall", "orgnummer", "arbeidsforhold", "sluttaarsak");
 
     public Long getSistLagret() {
         if (sistLagret != null) {
@@ -51,7 +54,12 @@ public class WebSoknad implements Serializable {
     }
 
     public WebSoknad() {
+        uuid = randomUUID().toString();
         fakta = new LinkedHashMap<>();
+    }
+
+    public final String getUuid() {
+        return uuid;
     }
 
     public final Long getSoknadId() {
