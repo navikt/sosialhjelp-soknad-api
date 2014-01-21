@@ -27,16 +27,16 @@ public class FillagerConnector {
     private FilLagerPortType portType;
 
     public void lagreFil(String behandlingsId, String uid, String fnr, InputStream fil) {
-        LOG.info("Skal lagre soknad til henvendelse. UUID: " + uid);
+        LOG.info("Skal lagre soknad til henvendelse. UUID: " + uid + ". Behandlingsid: " + behandlingsId);
         try {
             portType.lagre(behandlingsId, uid, fnr, new DataHandler(new ByteArrayDataSource(fil, "application/octet-stream")));
             LOG.info("Søknad lagret til henvendelse");
         } catch (IOException e) {
             LOG.error("Fikk ikke lagret søknad til henvendelse");
-            throw new ApplicationException("Kunne ikke lagre fil: " + e, e);
+            throw new ApplicationException("Kunne ikke lagre fil: " + e + ". BehandlingsID: " + behandlingsId, e);
         } catch (SOAPFaultException ws) {
             LOG.error("Fikk ikke lagret søknad til henvendelse");
-            throw new SystemException("Feil i kommunikasjon med fillager: " + ws, ws);
+            throw new SystemException("Feil i kommunikasjon med fillager: " + ws + ". BehandlingsID: " + behandlingsId, ws);
         }
     }
 }
