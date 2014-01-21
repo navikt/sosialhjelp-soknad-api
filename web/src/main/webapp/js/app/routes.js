@@ -74,7 +74,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/gjenoppta/:soknadId', {
+			.when('/gjenoppta/', {
 				templateUrl: '../html/templates/gjenoppta.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -83,7 +83,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/reell-arbeidssoker/:soknadId', {
+			.when('/reell-arbeidssoker', {
 				templateUrl: '../html/templates/reell-arbeidssoker.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -92,7 +92,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/egennaering/:soknadId', {
+			.when('/egennaering', {
 				templateUrl: '../html/templates/egen-naering.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -101,7 +101,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/verneplikt/:soknadId', {
+			.when('/verneplikt', {
 				templateUrl: '../html/templates/verneplikt.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -110,7 +110,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/personalia/:soknadId', {
+			.when('/personalia', {
 				templateUrl: '../html/templates/personalia.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -119,7 +119,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/barnetillegg/:soknadId', {
+			.when('/barnetillegg', {
 				templateUrl: '../html/templates/barnetillegg.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -128,34 +128,34 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/nyttbarn/:soknadId', {
+			.when('/nyttbarn', {
 				templateUrl: '../html/templates/barnetillegg-nyttbarn.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
-					notUsedButRequiredProperty: function (NyttBarnSideResolver) {
-						return NyttBarnSideResolver;
+					notUsedButRequiredProperty: function (HentSoknadService) {
+						return HentSoknadService;
 					}
 				}
 			})
-			.when('/endrebarn/:soknadId/:faktumId', {
+			.when('/endrebarn/:faktumId', {
 				templateUrl: '../html/templates/barnetillegg-nyttbarn.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
-					notUsedButRequiredProperty: function (NyttBarnSideResolver) {
-						return NyttBarnSideResolver;
+					notUsedButRequiredProperty: function (HentSoknadService) {
+						return HentSoknadService;
 					}
 				}
 			})
-			.when('/sokbarnetillegg/:soknadId/:faktumId', {
+			.when('/sokbarnetillegg/:faktumId', {
 				templateUrl: '../html/templates/barnetillegg-nyttbarn.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
-					notUsedButRequiredProperty: function (NyttBarnSideResolver) {
-						return NyttBarnSideResolver;
+					notUsedButRequiredProperty: function (HentSoknadService) {
+						return HentSoknadService;
 					}
 				}
 			})
-			.when('/arbeidsforhold/:soknadId', {
+			.when('/arbeidsforhold', {
 				templateUrl: '../html/templates/arbeidsforhold.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -164,7 +164,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/nyttarbeidsforhold/:soknadId', {
+			.when('/nyttarbeidsforhold', {
 				templateUrl: '../html/templates/arbeidsforhold-nytt.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -173,7 +173,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/endrearbeidsforhold/:soknadId/:faktumId', {
+			.when('/endrearbeidsforhold/:faktumId', {
 				templateUrl: '../html/templates/arbeidsforhold-nytt.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -182,7 +182,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/ytelser/:soknadId', {
+			.when('/ytelser', {
 				templateUrl: '../html/templates/ytelser.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -191,7 +191,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/oppsummering/:soknadId', {
+			.when('/oppsummering', {
 				templateUrl: '../html/templates/oppsummering.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -200,7 +200,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/utdanning/:soknadId', {
+			.when('/utdanning', {
 				templateUrl: '../html/templates/utdanning.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -217,7 +217,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/avbryt/:soknadId', {
+			.when('/avbryt', {
 				templateUrl: '../html/templates/avbryt.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {

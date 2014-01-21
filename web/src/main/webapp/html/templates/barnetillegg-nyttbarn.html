@@ -4,7 +4,7 @@
         <div class="begrensning">
             <div class="sak-totredel">
                 <div class="barn-spm spm-boks panel-standard-belyst">
-                    <a href="#/dagpenger/{{ soknadData.soknadId }}" class="lukk"> </a>
+                    <a href="#/soknad" class="lukk"> </a>
                     <div data-form-errors></div>
                     <h2 class="stor-strek" data-ng-if="endrerSystemregistrertBarn()">
                         <span data-cmstekster="barnetillegg.sokerbarnetillegg.tittel"></span>
@@ -135,7 +135,7 @@
                                data-ng-click="lagreBarn(nyttBarnForm);">
                         <input class="knapp-hoved-liten" name="lagre" type="submit" data-cmstekster="barnetillegg.nyttbarn.lagre" data-ng-if="endrerSystemregistrertBarn()"
                                data-ng-click="lagreBarneFaktum(nyttBarnForm);">
-                        <a href="#/dagpenger/{{ soknadData.soknadId }}" data-cmstekster="barnetillegg.nyttbarn.avbryt"></a>
+                        <a href="#/soknad" data-cmstekster="barnetillegg.nyttbarn.avbryt"></a>
                     </div>
 
                 </div>
