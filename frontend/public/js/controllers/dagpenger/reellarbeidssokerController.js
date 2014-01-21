@@ -3,7 +3,6 @@ angular.module('nav.reellarbeidssoker', [])
 
         $scope.alder = data.alder.alder;
 //        For testing av alder:
-        $scope.alder = 73;
 
         $scope.navigering = {nesteside: 'arbeidsforhold'};
         $scope.sidedata = {navn: 'reellarbeidssoker'};
