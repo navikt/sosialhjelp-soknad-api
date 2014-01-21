@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import static java.lang.String.format;
@@ -167,8 +168,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Long startSoknad(String navSoknadId) {
-        String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid());
-//       String behandlingsId = "MOCK" + new Random().nextInt(100000000);
+        //String behandlingsId = henvendelseConnector.startSoknad(getSubjectHandler().getUid());
+       String behandlingsId = "MOCK" + new Random().nextInt(100000000);
         WebSoknad soknad = WebSoknad.startSoknad().
                 medBehandlingId(behandlingsId).
                 medskjemaNummer(navSoknadId).
