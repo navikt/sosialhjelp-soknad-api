@@ -55,7 +55,7 @@ angular.module('app.services', ['ngResource'])
 				soknadId : '@soknadId',
 				faktumId : '@faktumId',
 				vedleggId: '@vedleggId',
-				gosysId  : '@gosysId'},
+				skjemaNummer  : '@skjemaNummer'},
 			{
 				get   : { method: 'GET', params: {} },
 				create: { method: 'POST', params: {} },

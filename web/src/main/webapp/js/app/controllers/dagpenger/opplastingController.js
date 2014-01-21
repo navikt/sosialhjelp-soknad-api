@@ -10,7 +10,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 
 		$scope.data = {
 			faktumId        : $routeParams.faktumId,
-			gosysId         : $routeParams.gosysId,
+			skjemaNummer         : $routeParams.skjemaNummer,
 			soknadId        : data.soknad.soknadId,
 			opplastingFeilet: false
 		};
@@ -33,7 +33,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 			maxFileSize    : 4000000,
 			acceptFileTypes: /(\.|\/)(jpg|png|pdf|jpeg)$/i,
 			autoUpload     : true,
-			url            : '/sendsoknad/rest/soknad/' + data.soknad.soknadId + '/faktum/' + $scope.data.faktumId + '/vedlegg?gosysId=' + $scope.data.gosysId,
+			url            : '/sendsoknad/rest/soknad/' + data.soknad.soknadId + '/faktum/' + $scope.data.faktumId + '/vedlegg?skjemaNummer=' + $scope.data.skjemaNummer,
 			// Error and info messages:
 			messages       : {
 				maxNumberOfFiles: cms.tekster['opplasting.feilmelding.makssider'],
@@ -69,7 +69,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 			vedleggService.merge({
 				soknadId: soknadId,
 				faktumId: $scope.data.faktumId,
-				gosysId : $scope.data.gosysId
+				skjemaNummer : $scope.data.skjemaNummer
 			}, function (data) {
 				$scope.oppdaterSoknad();
 			}, function () {
@@ -81,7 +81,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 		vedleggService.get({
 				soknadId: data.soknad.soknadId,
 				faktumId: $scope.data.faktumId,
-				gosysId : $scope.data.gosysId
+				skjemaNummer : $scope.data.skjemaNummer
 			}, function (data) {
 				$scope.queue = data.files || [];
 				$scope.loadingFiles = false;
