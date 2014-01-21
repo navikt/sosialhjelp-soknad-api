@@ -33,6 +33,12 @@ public class SoknadComponent extends WebComponent {
         initLegalFilenames();
         this.soknadType = soknadType;
     }
+    
+    public SoknadComponent(String id) {
+        super(id);
+        initLegalFilenames();
+        this.soknadType = "Dagpenger";
+    }
 
     private void initLegalFilenames() {
         if (files == null) {

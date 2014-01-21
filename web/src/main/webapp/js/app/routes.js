@@ -47,7 +47,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/dagpenger/:soknadId', {
+			.when('/soknad', {
 				templateUrl: '../html/dagpenger-singlepage.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
