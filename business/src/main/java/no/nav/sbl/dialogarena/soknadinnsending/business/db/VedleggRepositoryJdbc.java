@@ -86,7 +86,6 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
                 }
             });
         } catch (DataAccessException e) {
-            e.printStackTrace();
             throw e;
         }
     }

@@ -19,7 +19,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class LagringsScheduler {
 
     private static final Logger LOG = getLogger(LagringsScheduler.class);
-    private static final int SCHEDULE_RATE_MS = 1000*60*60; //1 time
+   // private static final int SCHEDULE_RATE_MS = 1000*60*60; //1 time
 
     @Inject
     SoknadRepository soknadRepository;
