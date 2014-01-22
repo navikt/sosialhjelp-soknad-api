@@ -43,7 +43,7 @@ public class PDFFabrikk {
                 try {
                     os.close();
                 } catch (IOException e) {
-                    LOG.warn("IOexception fra PDFFabrikk " + e.getStackTrace());
+                    LOG.warn("IOexception fra PDFFabrikk " + e.getMessage());
                 }
             }
         }

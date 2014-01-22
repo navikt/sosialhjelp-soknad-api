@@ -40,4 +40,8 @@ public class PersonConnector {
         }
 
     }
+    
+    public void ping() {
+        person.ping();
+    }
 }
