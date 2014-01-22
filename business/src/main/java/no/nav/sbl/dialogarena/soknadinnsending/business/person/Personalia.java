@@ -4,6 +4,22 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetyp
 
 public class Personalia {
 
+    public static final String PERSONALIA_KEY = "personalia";
+    public static final String FNR_KEY = "fnr";
+    public static final String ALDER_KEY = "alder";
+    public static final String EPOST_KEY = "epost";
+    public static final String STATSBORGERSKAP_KEY = "statsborgerskap";
+    public static final String NAVN_KEY = "navn";
+    public static final String KJONN_KEY = "kjonn";
+    public static final String GJELDENDEADRESSE_KEY = "gjeldendeAdresse";
+    public static final String GJELDENDEADRESSE_TYPE_KEY = "gjeldendeAdresseType";
+    public static final String GJELDENDEADRESSE_GYLDIGFRA_KEY = "gjeldendeAdresseGydligFra";
+    public static final String GJELDENDEADRESSE_GYLDIGTIL_KEY = "gjeldendeAdresseGydligTil";
+    public static final String SEKUNDARADRESSE_KEY = "sekundarAdresse";
+    public static final String SEKUNDARADRESSE_TYPE_KEY = "sekundarAdresseType";
+    public static final String SEKUNDARADRESSE_GYLDIGFRA_KEY = "sekundarAdresseGydligFra";
+    public static final String SEKUNDARADRESSE_GYLDIGTIL_KEY = "sekundarAdresseGydligTil";
+
     private String fnr;
     private String alder;
     private String navn;

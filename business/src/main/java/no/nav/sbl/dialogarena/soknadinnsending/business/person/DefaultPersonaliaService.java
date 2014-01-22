@@ -25,12 +25,26 @@ import java.util.List;
 import java.util.Map;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.ALDER_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.EPOST_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.FNR_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_GYLDIGFRA_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_GYLDIGTIL_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_TYPE_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.KJONN_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.NAVN_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_GYLDIGFRA_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_GYLDIGTIL_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_TYPE_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.STATSBORGERSKAP_KEY;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
 public class DefaultPersonaliaService implements PersonaliaService {
 
-    private static final Logger logger = getLogger(PersonServiceTPS.class);
+    private static final Logger logger = getLogger(DefaultPersonaliaService.class);
 
     @Inject
     @Named("brukerProfilService")
@@ -102,20 +116,20 @@ public class DefaultPersonaliaService implements PersonaliaService {
 
     private void lagrePersonalia(Long soknadId, Personalia personalia) {
         Map<String, String> personaliaProperties = new HashMap<>();
-        personaliaProperties.put("fnr", personalia.getFnr());
-        personaliaProperties.put("alder", personalia.getAlder());
-        personaliaProperties.put("navn", personalia.getNavn());
-        personaliaProperties.put("epost", personalia.getEpost());
-        personaliaProperties.put("statsborgerskap", personalia.getStatsborgerskap());
-        personaliaProperties.put("kjonn", personalia.getKjonn());
-        personaliaProperties.put("gjeldendeAdresse", personalia.getGjeldendeAdresse().getAdresse());
-        personaliaProperties.put("gjeldendeAdresseType", personalia.getGjeldendeAdresse().getAdressetype());
-        personaliaProperties.put("gjeldendeAdresseGydligFra", personalia.getGjeldendeAdresse().getGyldigFra());
-        personaliaProperties.put("gjeldendeAdresseGydligTil", personalia.getGjeldendeAdresse().getGyldigTil());
-        personaliaProperties.put("sekundarAdresse", personalia.getSekundarAdresse().getAdresse());
-        personaliaProperties.put("sekundarAdresseType", personalia.getSekundarAdresse().getAdressetype());
-        personaliaProperties.put("sekundarAdresseGydligFra", personalia.getSekundarAdresse().getGyldigFra());
-        personaliaProperties.put("sekundarAdresseGydligTil", personalia.getSekundarAdresse().getGyldigTil());
+        personaliaProperties.put(FNR_KEY, personalia.getFnr());
+        personaliaProperties.put(ALDER_KEY, personalia.getAlder());
+        personaliaProperties.put(NAVN_KEY, personalia.getNavn());
+        personaliaProperties.put(EPOST_KEY, personalia.getEpost());
+        personaliaProperties.put(STATSBORGERSKAP_KEY, personalia.getStatsborgerskap());
+        personaliaProperties.put(KJONN_KEY, personalia.getKjonn());
+        personaliaProperties.put(GJELDENDEADRESSE_KEY, personalia.getGjeldendeAdresse().getAdresse());
+        personaliaProperties.put(GJELDENDEADRESSE_TYPE_KEY, personalia.getGjeldendeAdresse().getAdressetype());
+        personaliaProperties.put(GJELDENDEADRESSE_GYLDIGFRA_KEY, personalia.getGjeldendeAdresse().getGyldigFra());
+        personaliaProperties.put(GJELDENDEADRESSE_GYLDIGTIL_KEY, personalia.getGjeldendeAdresse().getGyldigTil());
+        personaliaProperties.put(SEKUNDARADRESSE_KEY, personalia.getSekundarAdresse().getAdresse());
+        personaliaProperties.put(SEKUNDARADRESSE_TYPE_KEY, personalia.getSekundarAdresse().getAdressetype());
+        personaliaProperties.put(SEKUNDARADRESSE_GYLDIGFRA_KEY, personalia.getSekundarAdresse().getGyldigFra());
+        personaliaProperties.put(SEKUNDARADRESSE_GYLDIGTIL_KEY, personalia.getSekundarAdresse().getGyldigTil());
 
         Faktum personaliaFaktum = new Faktum(soknadId, null, "personalia", "");
         personaliaFaktum.setProperties(personaliaProperties);

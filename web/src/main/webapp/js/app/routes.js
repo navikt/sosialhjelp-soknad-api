@@ -68,19 +68,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-<<<<<<< HEAD
-			.when('/gjenoppta/:soknadId', {
-				templateUrl: '../html/templates/gjenoppta.html',
-				resolve    : {
-					notUsedButRequiredProperty: function (HentSoknadService) {
-						return HentSoknadService;
-					}
-				}
-			})
-			.when('/reell-arbeidssoker/:soknadId', {
-=======
             .when('/reell-arbeidssoker/:soknadId', {
->>>>>>> master
 				templateUrl: '../html/templates/reell-arbeidssoker.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {

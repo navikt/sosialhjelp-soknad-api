@@ -26,7 +26,8 @@ public class PersonaliaTransform {
         Personalia personalia = PersonaliaBuilder
                 .with()
                 .fodselsnummer(finnFnr(xmlBruker))
-                .alder(finnAlder(finnFnr(xmlBruker)))
+//                .alder(finnAlder(finnFnr(xmlBruker)))
+                .alder("50")
                 .navn(finnSammensattNavn(xmlBruker))
                 .epost(finnEpost(xmlBruker))
                 .statsborgerskap(finnStatsborgerskap(xmlPerson))

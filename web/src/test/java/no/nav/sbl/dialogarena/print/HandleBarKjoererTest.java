@@ -54,7 +54,7 @@ public class HandleBarKjoererTest {
     @Test
     public void createPDFFromJson() throws IOException, DocumentException {
         WebSoknad soknad = new WebSoknad();
-        soknad.setGosysId("NAV-1-1-1");
+        soknad.setskjemaNummer("NAV-1-1-1");
         soknad.leggTilFaktum(new Faktum(1L, 1L, "test", "testinnhold"));
         soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold2"));
         soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold3"));

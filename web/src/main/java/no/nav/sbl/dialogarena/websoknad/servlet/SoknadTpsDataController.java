@@ -2,12 +2,8 @@ package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.FamilieRelasjonService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.Person;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
