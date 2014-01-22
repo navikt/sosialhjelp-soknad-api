@@ -124,8 +124,8 @@ angular.module('nav.barn', ['app.services'])
 		};
 
 		function oppdaterCookieValue(faktumId) {
-			var barneCookie = $cookieStore.get('barn');
-			$cookieStore.put('barn', {
+			var barneCookie = $cookieStore.get('barnetillegg');
+			$cookieStore.put('barnetillegg', {
 				aapneTabs   : barneCookie.aapneTabs,
 				gjeldendeTab: barneCookie.gjeldendeTab,
 				faktumId    : faktumId

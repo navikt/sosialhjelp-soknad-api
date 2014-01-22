@@ -33,18 +33,18 @@
             <span class="melding"> </span>
         </div>
 
-        <div data-ng-show="hvisHarIkkeJobbet()">
+        <div data-ng-if="hvisHarIkkeJobbet()">
             <div data-navinfoboks>
                 <span data-cmstekster="arbeidsforhold.arbeidstilstand.harikkejobbet.informasjonstekst"></span>
             </div>
         </div>
 
-        <div data-ng-show="hvisHarJobbetVarierende()">
+        <div data-ng-if="hvisHarJobbetVarierende()">
             <div data-navinfoboks>
                 <span data-cmstekster="arbeidsforhold.arbeidstilstand.varierendearbeidstid.informasjonstekst"></span>
             </div>
         </div>
-        <div data-ng-show="hvisHarJobbetFast()">
+        <div data-ng-if="hvisHarJobbetFast()">
             <div data-navinfoboks>
                 <span data-cmstekster="arbeidsforhold.arbeidstilstand.fastarbeidstid.informasjonstekst"></span>
             </div>
@@ -75,7 +75,6 @@
                         </li>
                     </ul>
                 </div>
-
             </div>
         </div>
 
