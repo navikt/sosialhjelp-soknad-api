@@ -112,7 +112,7 @@ public class MockConsumerConfig {
             Person barn1 = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "Barn1", "mock");
             familierelasjon.setTilPerson(barn1);
             Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
-            familieRelasjonRolle.setValue("FARA");
+            familieRelasjonRolle.setValue("BARN");
             familierelasjon.setTilRolle(familieRelasjonRolle);
             familieRelasjoner.add(familierelasjon);
             response.setPerson(person);

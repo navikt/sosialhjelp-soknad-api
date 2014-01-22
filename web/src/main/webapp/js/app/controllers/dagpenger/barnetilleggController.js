@@ -40,6 +40,8 @@ angular.module('nav.barnetillegg', [])
             var barn = data.finnFakta('barn')
             barn.splice(index, 1);
 			data.slettFaktum(b);
+
+			$scope.barn = data.finnFakta('barn');
 		};
 
 		$scope.erGutt = function (barn) {
