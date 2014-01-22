@@ -3,18 +3,18 @@
         <div class="begrensning sak-totredel">
             <section class="panel-standard oversikt" data-ng-controller="AvbrytCtrl">
 
-                <div class="fremdriftsindikator" ng-if="data.krevBekreftelse == false">
+                <div class="fremdriftsindikator" ng-if="krevBekreftelse.value === false">
                     <img src="../img/ajaxloader/hvit/loader_hvit_64.gif" alt="Fremdriftsindikator"/>
                 </div>
 
-                <div ng-if="data.krevBekreftelse == true">
+                <div ng-show="krevBekreftelse.value == true">
                     <h1 class="stor-ikon-slett-strek" data-cmstekster="slett.tittel"></h1>
 
                     <p class="info" data-cmstekster="slett.informasjon"></p>
                 </div>
 
                 <div class="slett-soknad-stor">
-                    <div data-ng-if="data.krevBekreftelse == true">
+                    <div data-ng-if="krevBekreftelse.value == true">
                         <form novalidate>
                             <input type="button" class="knapp-advarsel" data-ng-click="submitForm()"
                                    data-cmstekster="avbryt.slett"
@@ -22,10 +22,9 @@
                         </form>
 
                         <div>
-                            <a href="#/dagpenger/{{soknadData.soknadId}}" data-cmstekster="slett.tilbake"></a>
+                            <a href="#/soknad" data-cmstekster="slett.tilbake"></a>
                         </div>
                     </div>
-
                 </div>
             </section>
         </div>

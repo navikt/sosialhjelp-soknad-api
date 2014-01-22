@@ -47,9 +47,9 @@ public class SoknadServiceTest {
 
     @Test
     public void skalAKonvertereFilerVedOpplasting() throws IOException {
-        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L, "1", "", 1L, 1, null, null);
+        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L, "1", "", 1L, 1, null, null, Vedlegg.Status.VedleggKreves);
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
-        when(vedleggRepository.lagreVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(11L);
+        when(vedleggRepository.opprettVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(11L);
 
         ByteArrayInputStream bais = new ByteArrayInputStream(getBytesFromFile("/images/bilde.jpg"));
         List<Long> ids = soknadService.splitOgLagreVedlegg(vedlegg, bais);
@@ -59,9 +59,9 @@ public class SoknadServiceTest {
 
     @Test
     public void skalKonverterePdfVedOpplasting() throws IOException {
-        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L, "1", "", 1L, 1, null, null);
+        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L, "1", "", 1L, 1, null, null, Vedlegg.Status.VedleggKreves);
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
-        when(vedleggRepository.lagreVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(10L, 11L, 12L, 13L, 14L);
+        when(vedleggRepository.opprettVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(10L, 11L, 12L, 13L, 14L);
 
         ByteArrayInputStream bais = new ByteArrayInputStream(getBytesFromFile("/pdfs/navskjema.pdf"));
         List<Long> ids = soknadService.splitOgLagreVedlegg(vedlegg, bais);

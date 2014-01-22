@@ -1,143 +1,147 @@
 angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
-	.controller('OpplastingCtrl', ['$scope', '$http', '$location', '$routeParams', 'vedleggService', 'soknadService', 'data', 'cms', function ($scope, $http, $location, $routeParams, vedleggService, soknadService, data, cms) {
 
-		$scope.fremdriftsindikator = {
-			laster: false
-		};
+    .controller('OpplastingVedleggCtrl', ['$scope', '$http', '$location', '$routeParams', 'vedleggService', 'soknadService', 'data', 'cms', function ($scope, $http, $location, $routeParams, vedleggService, soknadService, data, cms) {
+        $scope.vedlegg = vedleggService.get({soknadId: data.soknad.soknadId, vedleggId: $routeParams.vedleggId});
+        $scope.soknad = data.soknad;
+    }])
+    .controller('OpplastingCtrl', ['$scope', '$http', '$location', '$routeParams', 'vedleggService', 'soknadService', 'data', 'cms', function ($scope, $http, $location, $routeParams, vedleggService, soknadService, data, cms) {
 
-		$scope.opplastingFeilet = false;
+        $scope.fremdriftsindikator = {
+            laster: false
+        };
 
-		$scope.data = {
-			faktumId        : $routeParams.faktumId,
-			skjemaNummer         : $routeParams.skjemaNummer,
-			soknadId        : data.soknad.soknadId,
-			opplastingFeilet: false
-		};
+        $scope.opplastingFeilet = false;
 
-		$scope.$on('fileuploadstart', function () {
-			$scope.data.opplastingFeilet = false;
-		});
+        $scope.data = {
+            vedleggId: $routeParams.vedleggId,
+            soknadId: data.soknad.soknadId,
+            opplastingFeilet: false
+        };
 
-		$scope.$on('fileuploadprocessfail', function (event, data) {
-			$.each(data.files, function (index, file) {
-				if (file.error) {
-					$scope.data.opplastingFeilet = file.error;
-					data.scope().clear(file);
-					$scope.clear(file);
-				}
-			})
-		});
+        $scope.$on('fileuploadstart', function () {
+            $scope.data.opplastingFeilet = false;
+        });
 
-		$scope.options = {
-			maxFileSize    : 4000000,
-			acceptFileTypes: /(\.|\/)(jpg|png|pdf|jpeg)$/i,
-			autoUpload     : true,
-			url            : '/sendsoknad/rest/soknad/' + data.soknad.soknadId + '/faktum/' + $scope.data.faktumId + '/vedlegg?skjemaNummer=' + $scope.data.skjemaNummer,
-			// Error and info messages:
-			messages       : {
-				maxNumberOfFiles: cms.tekster['opplasting.feilmelding.makssider'],
-				acceptFileTypes : cms.tekster['opplasting.feilmelding.feiltype'],
-				maxFileSize     : cms.tekster['opplasting.feilmelding.maksstorrelse']
-			}
-		};
+        $scope.$on('fileuploadprocessfail', function (event, data) {
+            $.each(data.files, function (index, file) {
+                if (file.error) {
+                    $scope.data.opplastingFeilet = file.error;
+                    data.scope().clear(file);
+                    $scope.clear(file);
+                }
+            })
+        });
 
-		$scope.opplastingFeil = function (error) {
-			$scope.data.opplastingFeilet = error;
-		};
+        $scope.options = {
+            maxFileSize: 4000000,
+            acceptFileTypes: /(\.|\/)(jpg|png|pdf|jpeg)$/i,
+            autoUpload: true,
+            url: '/sendsoknad/rest/soknad/' + data.soknad.soknadId + '/vedlegg/' + $scope.data.vedleggId + '/opplasting',
+            done: function (e, data) {
+                $scope.clear(data.originalFiles[0]);
+                data.result.files.forEach(function (item) {
+                    $scope.queue.push(new vedleggService(item));
+                });
+            },
+            // Error and info messages:
+            messages: {
+                maxNumberOfFiles: cms.tekster['opplasting.feilmelding.makssider'],
+                acceptFileTypes: cms.tekster['opplasting.feilmelding.feiltype'],
+                maxFileSize: cms.tekster['opplasting.feilmelding.maksstorrelse']
+            }
+        };
 
-		$scope.lastopp = function () {
-			submit();
-			$scope.submit();
-			$scope.data.opplastingFeilet = false;
-			$scope.$apply();
-		};
+        $scope.opplastingFeil = function (error) {
+            $scope.data.opplastingFeilet = error;
+        };
 
-		$scope.oppdaterSoknad = function () {
-			soknadService.get({param: data.soknad.soknadId},
-				function (result) { // Success
-					data.soknad = result;
-					$scope.fremdriftsindikator.laster = false;
-					$location.url('/vedlegg/' + data.soknad.soknadId + '?scrollTo=faktum_' + $scope.data.faktumId).replace();
-				}
-			);
-		};
+        $scope.lastopp = function () {
+            submit();
+            $scope.submit();
+            $scope.data.opplastingFeilet = false;
+            $scope.$apply();
+        };
 
-		$scope.leggVed = function () {
-			var soknadId = data.soknad.soknadId;
-			$scope.fremdriftsindikator.laster = true;
-			vedleggService.merge({
-				soknadId: soknadId,
-				faktumId: $scope.data.faktumId,
-				skjemaNummer : $scope.data.skjemaNummer
-			}, function (data) {
-				$scope.oppdaterSoknad();
-			}, function () {
-				$scope.fremdriftsindikator.laster = false;
-			});
-		};
+        $scope.oppdaterSoknad = function () {
+            soknadService.get({param: data.soknad.soknadId},
+                function (result) { // Success
+                    data.soknad = result;
+                    $scope.fremdriftsindikator.laster = false;
+                    $location.url('/vedlegg/' + data.soknad.soknadId + '?scrollTo=faktum_' + $scope.data.faktumId).replace();
+                }
+            );
+        };
 
-		$scope.loadingFiles = true;
-		vedleggService.get({
-				soknadId: data.soknad.soknadId,
-				faktumId: $scope.data.faktumId,
-				skjemaNummer : $scope.data.skjemaNummer
-			}, function (data) {
-				$scope.queue = data.files || [];
-				$scope.loadingFiles = false;
-			}
-		);
-	}])
+        $scope.leggVed = function () {
+            var soknadId = data.soknad.soknadId;
+            $scope.fremdriftsindikator.laster = true;
+            vedleggService.merge({
+                soknadId: soknadId,
+                vedleggId: $scope.data.vedleggId
+            }, function (data) {
+                $scope.oppdaterSoknad();
+            }, function () {
+                $scope.fremdriftsindikator.laster = false;
+            });
+        };
 
-	.controller('SlettOpplastingCtrl', ['$scope', 'vedleggService', 'data', function ($scope, vedleggService, data) {
-		var file = $scope.file;
-		file.$destroy = function () {
-			$scope.data.opplastingFeilet = false;
-			vedleggService.remove({
-				soknadId : data.soknad.soknadId,
-				faktumId : $scope.data.faktumId,
-				vedleggId: file.vedlegg.id
-			}, function () {
-				$scope.clear(file);
-			});
-		}
-	}])
+        $scope.loadingFiles = true;
+        vedleggService.underbehandling({
+                soknadId: data.soknad.soknadId,
+                vedleggId: $scope.data.vedleggId
+            }, function (data) {
+                $scope.queue = data || [];
+                $scope.loadingFiles = false;
+            }
+        );
+    }])
 
-	.directive('filFeil', function () {
-		'use strict';
-		return {
-			restrict: 'A',
-			link    : function (scope, element, attrs) {
-				scope.$watch('file.error', function (a1, a2, a3, a4) {
-					if (a2) {
-						scope.clear(scope.file);
-					}
-				})
-			}
-		}
-	})
+    .controller('SlettOpplastingCtrl', ['$scope', 'vedleggService', 'data', function ($scope, vedleggService, data) {
+        var file = $scope.file;
+        file.$destroy = function () {
+            $scope.data.opplastingFeilet = false;
+            file.$remove().then(function () {
+                $scope.clear(file);
+            });
+        }
+    }])
 
-	.directive('lastOppFil', function () {
-		'use strict';
-		return {
-			restrict: 'A',
-			link    : function (scope, element, attrs) {
-				element.bind('change', function () {
-					scope.submit();
-				});
-			}
-		}
-	})
+    .directive('filFeil', function () {
+        'use strict';
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                scope.$watch('file.error', function (a1, a2, a3, a4) {
+                    if (a2) {
+                        scope.clear(scope.file);
+                    }
+                })
+            }
+        }
+    })
 
-	.directive('asyncImage', function () {
-		return {
-			restrict: 'A',
-			link    : function (scope, element, attrs) {
-				var img = new Image();
-				img.onload = function () {
-					element.parent().css('background-image', 'none');
-					element.replaceWith(img);
-				};
-				img.src = attrs['asyncImage'];
-			}
-		}
-	});
+    .directive('lastOppFil', function () {
+        'use strict';
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                element.bind('change', function () {
+                    scope.submit();
+                });
+            }
+        }
+    })
+
+    .directive('asyncImage', function () {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                var img = new Image();
+                img.onload = function () {
+                    element.parent().css('background-image', 'none');
+                    element.replaceWith(img);
+                };
+                img.src = attrs['asyncImage'];
+            }
+        }
+    });

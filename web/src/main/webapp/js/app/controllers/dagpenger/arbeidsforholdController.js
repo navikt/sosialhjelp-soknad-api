@@ -1,9 +1,10 @@
 angular.module('nav.arbeidsforhold.controller', [])
     .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams, $cookieStore, $location, data, Faktum) {
-
         $scope.$on('VALIDER_ARBEIDSFORHOLD', function () {
             $scope.validerArbeidsforhold(false);
         });
+
+        $scope.soknadId = data.soknad.soknadId;
 
         $scope.templates = {
             'Kontrakt utgått': {oppsummeringsurl: '../html/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html'},
@@ -104,13 +105,13 @@ angular.module('nav.arbeidsforhold.controller', [])
         $scope.nyttArbeidsforhold = function ($event) {
             $event.preventDefault();
             settArbeidsforholdCookie();
-            $location.path('nyttarbeidsforhold/' + data.soknad.soknadId);
+            $location.path('nyttarbeidsforhold');
         };
 
         $scope.endreArbeidsforhold = function (af, $index, $event) {
             $event.preventDefault();
             settArbeidsforholdCookie(af.arbeidsforhold.faktumId);
-            $location.path('endrearbeidsforhold/' + data.soknad.soknadId + '/' + af.arbeidsforhold.faktumId);
+            $location.path('endrearbeidsforhold/' + af.arbeidsforhold.faktumId);
         };
 
         $scope.slettArbeidsforhold = function (af, index, $event) {
