@@ -32,7 +32,7 @@ public class UtslagskriterierController {
     @RequestMapping(value = "utslagskriterier", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Map<String, String> sjekkUtslagskriterier() {
-        if(personService.ping() && familieRelasjonService.ping()) {
+//        if(personService.ping() && familieRelasjonService.ping()) {
             String uid = getSubjectHandler().getUid();
        
             utslagskriterierResultat.put("gyldigAlder", new PersonAlder(uid).sjekkAlder().toString());
@@ -41,10 +41,10 @@ public class UtslagskriterierController {
             utslagskriterierResultat.put("bosattINorge", harNorskAdresse(person).toString());
             
             utslagskriterierResultat.put("registrertAdresse", person.hentGjeldendeAdresse());
-            
-        } else {
-            utslagskriterierResultat.put("error", "TPS");
-        }
+//            
+//        } else {
+//            utslagskriterierResultat.put("error", "TPS");
+//        }
         return utslagskriterierResultat;
     }
 
