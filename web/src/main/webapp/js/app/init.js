@@ -184,7 +184,6 @@ angular.module('sendsoknad')
             }
         );
         promiseArray.push(land.$promise);
-
         return $q.all(promiseArray);
     }])
 
