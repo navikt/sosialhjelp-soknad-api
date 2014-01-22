@@ -10,7 +10,7 @@ angular.module('nav.forsettsenere', ['nav.cmstekster'])
 				$scope.$broadcast('RUN_VALIDATION' + form.$name);
 
 				if (form.$valid) {
-					var soknadId = $routeParams.soknadId;
+					var soknadId = data.soknad.soknadId;
 					if ($scope.epost) {
 						new fortsettSenereService({epost: $scope.epost.value}).$send({soknadId: soknadId}).then(function (data) {
 							$location.path('kvittering-fortsettsenere/' + soknadId);

@@ -1,5 +1,6 @@
 angular.module('nav.barnetilleggfaktum', ['app.services'])
 	.controller('BarnetilleggFaktumCtrl', ['$scope', 'Faktum', 'data', function ($scope, Faktum, data) {
+		var soknadId = data.soknad.soknadId;
 
 		var barnetilleggsData = {
 			key          : 'barnetillegg',
@@ -47,8 +48,8 @@ angular.module('nav.barnetilleggfaktum', ['app.services'])
 		$scope.barnetillegg = new Faktum(barnetilleggsData);
 		$scope.$watch('barnetillegg.value', function (newValue, oldValue, scope) {
 			if (newValue !== undefined && newValue !== oldValue) {
-				scope.barnetillegg.$save({soknadId: scope.soknadId}).then(function (value) {
-					scope.barnetillegg = value;
+				scope.barnetillegg.$save({soknadId: soknadId}).then(function (data) {
+					scope.barnetillegg = data;
 				});
 			}
 		});
@@ -56,8 +57,8 @@ angular.module('nav.barnetilleggfaktum', ['app.services'])
 		$scope.ikkebarneinntekt = new Faktum(ikkebarneinntekt);
 		$scope.$watch('ikkebarneinntekt.value', function (newValue, oldValue, scope) {
 			if (newValue !== undefined && newValue !== oldValue) {
-				scope.ikkebarneinntekt.$save({soknadId: scope.soknadId}).then(function (value) {
-					scope.ikkebarneinntekt = value;
+				scope.ikkebarneinntekt.$save({soknadId: soknadId}).then(function (data) {
+					scope.ikkebarneinntekt = data;
 				});
 			}
 		});
@@ -65,8 +66,8 @@ angular.module('nav.barnetilleggfaktum', ['app.services'])
 		$scope.barneinntekttall = new Faktum(barneinntekttall);
 		$scope.$watch('barneinntekttall.value', function (newValue, oldValue, scope) {
 			if (newValue !== undefined && newValue !== oldValue) {
-				scope.barneinntekttall.$save({soknadId: scope.soknadId}).then(function (value) {
-					scope.barneinntekttall = value;
+				scope.barneinntekttall.$save({soknadId: soknadId}).then(function (data) {
+					scope.barneinntekttall = data;
 				});
 			}
 		});
@@ -103,7 +104,7 @@ angular.module('nav.barnetilleggfaktum', ['app.services'])
 
 			$scope.barnetilleggSomSkalSlettes = new Faktum(barnetilleggsData);
 
-			$scope.barnetilleggSomSkalSlettes.$delete({soknadId: $scope.soknadId}).then(function () {
+			$scope.barnetilleggSomSkalSlettes.$delete({soknadId: soknadId}).then(function () {
 				$scope.barnetillegg.value = 'false';
                 barnetillegg.splice(index, 1);
 			});
