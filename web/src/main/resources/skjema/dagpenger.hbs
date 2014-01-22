@@ -76,77 +76,228 @@
 			<div class="hode">
 				<h1>Søknad om dagpenger {{gosysid}}</h1>
 				<hr/>
-                <div class="personalia">
-                    {{#forFaktum "sammensattnavn"}}
-                        <span class="nvn">{{value}}</span>
-                    {{/forFaktum}}
-
-                    {{#forFaktum "fnr"}}
-                        <span class="fnr">{{value}}</span>
-                    {{/forFaktum}}
-
-                    {{#forFaktum "gjeldendeAdresseType"}}
-                        <span>{{value}}</span>
-                    {{/forFaktum}}
-                </div>
+                {{#forFaktum "personalia"}}
+                    <div class="personalia">
+                        <span class="nvn">{{properties.navn}}</span>
+                        <span class="fnr">{{properties.fnr}}</span>
+                        <span class="adr">{{properties.gjeldendeAdresse}}</span>
+                    </div>
+                {{/forFaktum}}
 			</div>
 
 			<h2>Reel arbeidsoker</h2>
 			<table>
-				{{#forFaktum "reelarbeidsoker.villigdeltid"}}
+				{{#forFaktum "reellarbeidssoker.villigdeltid"}}
 					<tr>
+                        <td class="sjekket"></td>
 						<td>
-							{{#if value="true"}}
-								<span class="sjekket"></span>
-							{{else}}
-								<span class="usjekket"></span>
-							{{/if}}
-						</td>
-						<td>
-							Jeg er villig til å søke både hel- og deltidsjobb
+                            {{#hvisSant value}}
+                                {{ hentTekst "reellarbeidssoker.villigdeltid.true"}}
+                            {{else}}
+                                {{ hentTekst "reellarbeidssoker.villigdeltid.false"}}
+
+                                <table>
+                                    {{#forFaktum "personalia"}}
+                                        {{#hvisMindre properties.alder "60"}}
+                                            {{#forFaktum "reellarbeidssoker.villigdeltid.reduserthelse"}}
+                                                {{#hvisSant value}}
+                                                    <tr>
+                                                        <td class="kulepunkt"></td>
+                                                        <td>
+                                                            <span>{{ hentTekst "reellarbeidssoker.reduserthelse"}}</span>
+                                                        </td>
+                                                    </tr>
+                                                {{/hvisSant}}
+                                            {{/forFaktum}}
+
+                                            {{#forFaktum "reellarbeidssoker.villigdeltid.omsorgbarnunder1aar"}}
+                                                {{#hvisSant value}}
+                                                    <tr>
+                                                        <td class="kulepunkt"></td>
+                                                        <td>
+                                                            <span>{{ hentTekst "reellarbeidssoker.omsorgbarnunder1aar"}}</span>
+                                                        </td>
+                                                    </tr>
+                                                {{/hvisSant}}
+                                            {{/forFaktum}}
+
+                                            {{#forFaktum "reellarbeidssoker.villigdeltid.eneansvarbarnunder5skoleaar"}}
+                                                {{#hvisSant value}}
+                                                    <tr>
+                                                        <td class="kulepunkt"></td>
+                                                        <td>
+                                                            <span>{{ hentTekst "reellarbeidssoker.eneansvarbarnunder5skoleaar"}}</span>
+                                                        </td>
+                                                    </tr>
+                                                {{/hvisSant}}
+                                            {{/forFaktum}}
+
+                                            {{#forFaktum "reellarbeidssoker.villigdeltid.eneansvarbarnopptil18aar"}}
+                                                {{#hvisSant value}}
+                                                    <tr>
+                                                        <td class="kulepunkt"></td>
+                                                        <td>
+                                                            <span>{{ hentTekst "reellarbeidssoker.eneansvarbarnopptil18aar"}}</span>
+                                                        </td>
+                                                    </tr>
+                                                {{/hvisSant}}
+                                            {{/forFaktum}}
+
+                                            {{#forFaktum "reellarbeidssoker.villigdeltid.omsorgansvar"}}
+                                                {{#hvisSant value}}
+                                                    <tr>
+                                                        <td class="kulepunkt"></td>
+                                                        <td>
+                                                            <span>{{ hentTekst "reellarbeidssoker.omsorgansvar"}}</span>
+                                                        </td>
+                                                    </tr>
+                                                {{/hvisSant}}
+                                            {{/forFaktum}}
+
+                                            {{#forFaktum "reellarbeidssoker.villigdeltid.annensituasjon"}}
+                                                {{#hvisSant value}}
+                                                    <tr>
+                                                        <td class="kulepunkt"></td>
+                                                        <td>
+                                                            <span>{{ hentTekst "reellarbeidssoker.annensituasjon"}}</span>
+                                                        </td>
+                                                    </tr>
+                                                {{/hvisSant}}
+                                            {{/forFaktum}}
+                                        {{/hvisMindre}}
+                                    {{/forFaktum}}
+
+                                    {{#forFaktum "reellarbeidssoker.villigdeltid.maksimalarbeidstid"}}
+                                        <tr>
+                                            <td class="kulepunkt"></td>
+                                            <td>
+                                                <span>{{ hentTekst "reellarbeidssoker.maksimalarbeidstid"}}:</span>
+                                                <span>{{ value }}</span>
+                                            </td>
+                                        </tr>
+                                    {{/forFaktum}}
+                                </table>
+                            {{/hvisSant}}
 						</td>
 					</tr>
 				{{/forFaktum}}
-				{{#forFaktum "reelarbeidsoker.villigflytte"}}
+				{{#forFaktum "reellarbeidssoker.villigpendle"}}
 					<tr>
-						<td>
-							{{#if value="true"}}
-								<span class="sjekket"></span>
-							{{else}}
-								<span class="usjekket"></span>
-							{{/if}}
-						</td>
-						<td>
-							Jeg er villig til å flytte eller pendle
-						</td>
+                        <td class="sjekket"></td>
+                        <td>
+                            {{#hvisSant value}}
+                                <span>{{ hentTekst "reellarbeidssoker.villigpendle.true"}}</span>
+                            {{else}}
+                                <span>{{ hentTekst "reellarbeidssoker.villigpendle.false"}}</span>
+
+                                <table>
+                                    {{#forFaktum "personalia"}}
+                                        {{#hvisMindre properties.alder "60"}}
+                                            {{#forFaktum "reellarbeidssoker.villigpendle.reduserthelse"}}
+                                                {{#hvisSant value}}
+                                                    <tr>
+                                                        <td class="kulepunkt"></td>
+                                                        <td>
+                                                            <span>{{ hentTekst "reellarbeidssoker.pendlereduserthelse"}}</span>
+                                                        </td>
+                                                    </tr>
+                                                {{/hvisSant}}
+                                            {{/forFaktum}}
+
+                                            {{#forFaktum "reellarbeidssoker.villigpendle.pendleomsorgbarnunder1aar"}}
+                                                {{#hvisSant value}}
+                                                    <tr>
+                                                        <td class="kulepunkt"></td>
+                                                        <td>
+                                                            <span>{{ hentTekst "reellarbeidssoker.pendleomsorgbarnunder1aar"}}</span>
+                                                        </td>
+                                                    </tr>
+                                                {{/hvisSant}}
+                                            {{/forFaktum}}
+
+                                            {{#forFaktum "reellarbeidssoker.villigpendle.eneansvarbarnunder5skoleaar"}}
+                                                {{#hvisSant value}}
+                                                    <tr>
+                                                        <td class="kulepunkt"></td>
+                                                        <td>
+                                                            <span>{{ hentTekst "reellarbeidssoker.pendleeneansvarbarnunder5skoleaar"}}</span>
+                                                        </td>
+                                                    </tr>
+                                                {{/hvisSant}}
+                                            {{/forFaktum}}
+
+                                            {{#forFaktum "reellarbeidssoker.villigpendle.eneansvarbarnopptil18aar"}}
+                                                {{#hvisSant value}}
+                                                    <tr>
+                                                        <td class="kulepunkt"></td>
+                                                        <td>
+                                                            <span>{{ hentTekst "reellarbeidssoker.pendleeneansvarbarnopptil18aar"}}</span>
+                                                        </td>
+                                                    </tr>
+                                                {{/hvisSant}}
+                                            {{/forFaktum}}
+
+                                            {{#forFaktum "reellarbeidssoker.villigpendle.omsorgansvar"}}
+                                                {{#hvisSant value}}
+                                                    <tr>
+                                                        <td class="kulepunkt"></td>
+                                                        <td>
+                                                            <span>{{ hentTekst "reellarbeidssoker.pendleomsorgansvar"}}</span>
+                                                        </td>
+                                                    </tr>
+                                                {{/hvisSant}}
+                                            {{/forFaktum}}
+
+                                            {{#forFaktum "reellarbeidssoker.villigpendle.annensituasjon"}}
+                                                {{#hvisSant value}}
+                                                    <tr>
+                                                        <td class="kulepunkt"></td>
+                                                        <td>
+                                                            <span>{{ hentTekst "reellarbeidssoker.pendleannensituasjon"}}</span>
+                                                        </td>
+                                                    </tr>
+                                                {{/hvisSant}}
+                                            {{/forFaktum}}
+                                        {{/hvisMindre}}
+                                    {{/forFaktum}}
+                                </table>
+                            {{/hvisSant}}
+                        </td>
 					</tr>
 				{{/forFaktum}}
-				{{#forFaktum "reelarbeidsoker.villighelse"}}
+				{{#forFaktum "reellarbeidssoker.villighelse"}}
 					<tr>
-						<td>
-						{{#if value="true"}}
-							<span class="sjekket"></span>
-						{{else}}
-							<span class="usjekket"></span>
-						{{/if}}
-						</td>
-						<td>
-							Jeg kan ta enhver type arbeid
-						</td>
+                        <td class="sjekket"></td>
+                        <td>
+                            {{#hvisSant value}}
+                                <span>{{ hentTekst "reellarbeidssoker.villighelse.true"}}</span>
+                            {{else}}
+                                <span>{{ hentTekst "reellarbeidssoker.villighelse.false"}}</span>
+                                <table>
+                                    {{#forFaktum "reellarbeidssoker.villighelse.fritekst"}}
+                                        <tr>
+                                            <td class="kulepunkt"></td>
+                                            <td>
+                                                <span>{{ hentTekst "reellarbeidssoker.helsefritekst.sporsmal"}}:</span>
+                                                <span>{{ value }}</span>
+                                            </td>
+                                        </tr>
+                                    {{/forFaktum}}
+                                </table>
+                            {{/hvisSant}}
+                        </td>
 					</tr>
 				{{/forFaktum}}
-				{{#forFaktum "reelarbeidsoker.villigjobb"}}
+				{{#forFaktum "reellarbeidssoker.villigjobb"}}
 					<tr>
-						<td>
-						{{#if value="true"}}
-							<span class="sjekket"></span>
-						{{else}}
-							<span class="usjekket"></span>
-						{{/if}}
-						</td>
-						<td>
-							Jeg er villig til å bytte yrke og gå ned i lønn
-						</td>
+                        <td class="sjekket"></td>
+                        <td>
+                            {{#hvisSant value}}
+                                <span>{{ hentTekst "reellarbeidssoker.villigjobb.true"}}</span>
+                            {{else}}
+                                <span>{{ hentTekst "reellarbeidssoker.villigjobb.false"}}</span>
+                            {{/hvisSant}}
+                        </td>
 					</tr>
 				{{/forFaktum}}
 			</table>
@@ -159,80 +310,331 @@
 					{{/each}}
 				{{/forFakta}}
 			</ul>
+
 			<h2>Egen næring</h2>
 
-			{{#forFaktum "ikkeegennaering"}}
-				<table>
-					<tr>
-						{{#if value="true"}}
-							<td>
-								<span class="sjekket"></span>
-							</td>
-							<td>
-								Jeg driver ikke egen næring, gårdsbruk eller fangst/fiske
-							</td>
-						{{else}}
-							<td>
-								<span class="usjekket"></span>
-							</td>
-							<td>
-								Her kommer ting når en driver med egen næring
-							</td>
-						{{/if}}
-					</tr>
-				</table>
-			{{/forFaktum}}
+            <table>
+                {{#forFaktum "egennaering.driveregennaering"}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            {{#hvisSant value}}
+                                <span>{{ hentTekst "egennaering.driveregennaering.true"}}</span>
+                            {{else}}
+                                <span>{{ hentTekst "egennaering.driveregennaering.false"}}</span>
+                                <table>
+                                    {{#forFakta "egennaering.drivergennaering.orgnummer"}}
+                                        <tr>
+                                            <td class="kulepunkt"></td>
+                                            <td>
+                                                <span>{{ hentTekst "egennaering.driveregennaering.false.organisasjonsnummer"}}:</span>
+                                                <span>{{ value }}</span>
+                                            </td>
+                                        </tr>
+                                    {{/forFakta}}
+                                    {{#forFaktum "egennaering.driveregennaering.arbeidsmengde"}}
+                                        <tr>
+                                            <td class="kulepunkt"></td>
+                                            <td>
+                                                <span>{{ hentTekst "egennaering.driveregennaering.arbeidsmengde"}}:</span>
+                                                <span>{{ value }}</span>
+                                            </td>
+                                        </tr>
+                                    {{/forFaktum}}
+                                </table>
+                            {{/hvisSant}}
+                        </td>
+                    </tr>
+                {{/forFaktum}}
 
-			<h2>Verneplikt</h2>
-			{{#forFaktum "ikkeavtjentverneplikt"}}
-				<table>
-					<tr>
-						{{#if value="true"}}
-							<td>
-								<span class="sjekket"></span>
-							</td>
-							<td>
-								Jeg har ikke avtjent verneplikt de siste 12 mnd
-							</td>
-						{{else}}
-							<td>
-								<span class="Usjekket"></span>
-							</td>
-							<td>
-								Jeg har avtjent verneplikt de siste 12 mnd
-							</td>
-						{{/if}}
-					</tr>
-				</table>
-			{{/forFaktum}}
+                {{#forFaktum "egennaering.gardsbruk"}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            {{#hvisSant value}}
+                                <span>{{ hentTekst "egennaering.gardsbruk.true"}}</span>
+                            {{else}}
+                                <span>{{ hentTekst "egennaering.gardsbruk.false"}}</span>
+                                <table>
+                                    {{#forFaktum "egennaering.gardsbruk.false.organisasjonsnummer"}}
+                                        <td class="kulepunkt"></td>
+                                        <td>
+                                            <span>{{ hentTekst "egennaering.gardsbruk.false.organisasjonsnummer" }}</span>
+                                            <span>{{ value }}</span>
+                                        </td>
+                                    {{/forFaktum}}
 
-			<h2>Andre ytelser</h2>
-			{{#forFaktaStarterMed "andreytelser"}}
-				{{#each }}
-					{{#hvisSant}}
-						{{key}}: {{properties.fraHvem}}
-					{{/hvisSant}}
-				{{/each}}
-			{{/forFaktaStarterMed}}
+                                    <tr>
+                                        <td class="kulepunkt"></td>
+                                        <td>
+                                            <span>{{ hentTekst "egennaering.gardsbruk.false.type.sporsmal" }}</span>
+                                            <table>
+                                                {{#forFaktum "egennaering.gardsbruk.false.type.dyr"}}
+                                                    {{#hvisSant value}}
+                                                        <tr>
+                                                            <td class="kulepunkt"></td>
+                                                            <td>
+                                                                <span>{{ hentTekst "egennaering.gardsbruk.false.type.dyr"}}</span>
+                                                            </td>
+                                                        </tr>
+                                                    {{/hvisSant}}
+                                                {{/forFaktum}}
 
-			<h2>Barn som det søkes barnetilegg for</h2>
-			{{#forFakta "barn"}}
-				{{#each this}}
-					{{properties.navn}}, født den {{properties.fodselsdato}}, bor i norge, inntekt på {{properties.inntekt}}
-				{{/each}}
-			{{/forFakta}}
+                                                {{#forFaktum "egennaering.gardsbruk.false.type.jord"}}
+                                                    {{#hvisSant value}}
+                                                        <tr>
+                                                            <td class="kulepunkt"></td>
+                                                            <td>
+                                                                <span>{{ hentTekst "egennaering.gardsbruk.false.type.jord"}}</span>
+                                                            </td>
+                                                        </tr>
+                                                    {{/hvisSant}}
+                                                {{/forFaktum}}
 
-			<h2>Vedlegg</h2>
-			<table>
-				<tr>
-					<td>
-						<span class="sjekket"></span>
-					</td>
-					<td>
-						Bekreftelse på opppsigelse fra Firmakongen AS
-					</td>
-				</tr>
-			</table>
+                                                {{#forFaktum "egennaering.gardsbruk.false.type.skog"}}
+                                                    {{#hvisSant value}}
+                                                        <tr>
+                                                            <td class="kulepunkt"></td>
+                                                            <td>
+                                                                <span>{{ hentTekst "egennaering.gardsbruk.false.type.skog"}}</span>
+                                                            </td>
+                                                        </tr>
+                                                    {{/hvisSant}}
+                                                {{/forFaktum}}
+
+                                                {{#forFaktum "egennaering.gardsbruk.false.type.annet"}}
+                                                    {{#hvisSant value}}
+                                                        <tr>
+                                                            <td class="kulepunkt"></td>
+                                                            <td>
+                                                                <span>{{ hentTekst "egennaering.gardsbruk.false.type.annet"}}</span>
+                                                            </td>
+                                                        </tr>
+                                                    {{/hvisSant}}
+                                                {{/forFaktum}}
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="kulepunkt"></td>
+                                        <td>
+                                            <span>{{ hentTekst "egennaering.gardsbruk.false.eier.sporsmal" }}</span>
+                                            <table>
+                                                {{#forFaktum "egennaering.gardsbruk.false.eier.jeg"}}
+                                                    {{#hvisSant value}}
+                                                        <tr>
+                                                            <td class="kulepunkt"></td>
+                                                            <td>
+                                                                <span>{{ hentTekst "egennaering.gardsbruk.false.eier.jeg"}}</span>
+                                                            </td>
+                                                        </tr>
+                                                    {{/hvisSant}}
+                                                {{/forFaktum}}
+
+                                                {{#forFaktum "egennaering.gardsbruk.false.eier.ektefelle"}}
+                                                    {{#hvisSant value}}
+                                                        <tr>
+                                                            <td class="kulepunkt"></td>
+                                                            <td>
+                                                                <span>{{ hentTekst "egennaering.gardsbruk.false.eier.ektefelle"}}</span>
+                                                            </td>
+                                                        </tr>
+                                                    {{/hvisSant}}
+                                                {{/forFaktum}}
+
+                                                {{#forFaktum "egennaering.gardsbruk.false.eier.annet"}}
+                                                    {{#hvisSant value}}
+                                                        <tr>
+                                                            <td class="kulepunkt"></td>
+                                                            <td>
+                                                                <span>{{ hentTekst "egennaering.gardsbruk.false.eier.annet"}}</span>
+                                                            </td>
+                                                        </tr>
+                                                    {{/hvisSant}}
+                                                {{/forFaktum}}
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="kulepunkt"></td>
+                                        <td>
+                                            <span>{{ hentTekst "egennaering.gardsbruk.false.eierandel.sporsmal" }}</span>
+                                            <table>
+                                                {{#forFaktum "egennaering.gardsbruk.false.eier.jeg"}}
+                                                    {{#hvisSant value}}
+                                                        <tr>
+                                                            <td class="kulepunkt"></td>
+                                                            <td>
+                                                                <span>{{ hentTekst "egennaering.gardsbruk.false.eierandel.din"}}:</span>
+                                                                {{#forFaktum "egennaering.gardsbruk.false.eierandel.din"}}
+                                                                    <span>{{ value }}%</span>
+                                                                {{/forFaktum}}
+                                                            </td>
+                                                        </tr>
+                                                    {{/hvisSant}}
+                                                {{/forFaktum}}
+
+                                                {{#forFaktum "egennaering.gardsbruk.false.eier.ektefelle"}}
+                                                    {{#hvisSant value}}
+                                                        <tr>
+                                                            <td class="kulepunkt"></td>
+                                                            <td>
+                                                                <span>{{ hentTekst "egennaering.gardsbruk.false.eierandel.ektefelle"}}:</span>
+                                                                {{#forFaktum "egennaering.gardsbruk.false.eierandel.ektefelle"}}
+                                                                    <span>{{ value }}%</span>
+                                                                {{/forFaktum}}
+                                                            </td>
+                                                        </tr>
+                                                    {{/hvisSant}}
+                                                {{/forFaktum}}
+
+                                                {{#forFaktum "egennaering.gardsbruk.false.eier.annet"}}
+                                                    {{#hvisSant value}}
+                                                        <tr>
+                                                            <td class="kulepunkt"></td>
+                                                            <td>
+                                                                <span>{{ hentTekst "egennaering.gardsbruk.false.eierandel.annet"}}:</span>
+                                                                {{#forFaktum "egennaering.gardsbruk.false.eierandel.annet"}}
+                                                                    <span>{{ value }}%</span>
+                                                                {{/forFaktum}}
+                                                            </td>
+                                                        </tr>
+                                                    {{/hvisSant}}
+                                                {{/forFaktum}}
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="kulepunkt"></td>
+                                        <td>
+                                            <span>{{ hentTekst "egennaering.gardsbruk.false.arbeidsforbruk" }}</span>
+                                            <table>
+                                                <tr>
+                                                    <td class="kulepunkt"></td>
+                                                    <td>
+                                                        {{#forFaktum "egennaering.gardsbruk.false.timer"}}
+                                                            <span>{{ value }}</span>
+                                                        {{/forFaktum}}
+
+                                                        <span>{{ hentTekst "egennaering.gardsbruk.false.timer"}}</span>
+                                                        <span>{{ hentTekst "egennaering.gardsbruk.false.aar" }}</span>
+                                                        {{#forFaktum "egennaering.gardsbruk.false.aar"}}
+                                                            <span>{{ value }}</span>
+                                                        {{/forFaktum}}
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    {{#forFaktum "egennaering.gardsbruk.false.timeredegjoring"}}
+                                        <tr>
+                                            <td class="kulepunkt"></td>
+                                            <td>
+                                                <span>{{ hentTekst "egennaering.gardsbruk.false.timeredegjoring.sporsmal" }}</span>
+                                                <span>{{ value }}</span>
+                                            </td>
+                                        </tr>
+                                    {{/forFaktum}}
+                                </table>
+                            {{/hvisSant}}
+                        </td>
+                    </tr>
+                {{/forFaktum}}
+
+                {{#forFaktum "egennaering.fangstogfiske"}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            {{#hvisSant value}}
+                                <span>{{ hentTekst "egennaering.fangstogfiske.true"}}</span>
+                            {{else}}
+                                <span>{{ hentTekst "egennaering.fangstogfiske.false"}}</span>
+                                <table>
+                                    {{#forFaktum "egennaering.fangstogfiske.false.arbeid"}}
+                                        <tr>
+                                            <td class="kulepunkt"></td>
+                                            <td>
+                                                {{#hvisSant value}}
+                                                    <span>{{ hentTekst "egennaering.fangstogfiske.false.arbeid.true"}}</span>
+                                                {{else}}
+                                                    <span>{{ hentTekst "egennaering.fangstogfiske.false.arbeid.false"}}</span>
+                                                    <table>
+                                                        {{#forFaktum "egennaering.fangstogfiske.false.arbeid.false.inntekt"}}
+                                                            <tr>
+                                                                <td class="kulepunkt"></td>
+                                                                <td>
+                                                                    <span>{{ hentTekst "egennaering.fangstogfiske.false.arbeid.false.inntekt" }}:</span>
+                                                                    <span>{{ value }}</span>
+                                                                </td>
+                                                            </tr>
+                                                        {{/forFaktum}}
+                                                    </table>
+                                                {{/hvisSant}}
+                                            </td>
+                                        </tr>
+                                    {{/forFaktum}}
+                                </table>
+                            {{/hvisSant}}
+                        </td>
+                    </tr>
+                {{/forFaktum}}
+
+            </table>
+
+			<!--<h2>Verneplikt</h2>-->
+			<!--{{#forFaktum "ikkeavtjentverneplikt"}}-->
+				<!--<table>-->
+					<!--<tr>-->
+						<!--{{#if value="true"}}-->
+							<!--<td>-->
+								<!--<span class="sjekket"></span>-->
+							<!--</td>-->
+							<!--<td>-->
+								<!--Jeg har ikke avtjent verneplikt de siste 12 mnd-->
+							<!--</td>-->
+						<!--{{else}}-->
+							<!--<td>-->
+								<!--<span class="Usjekket"></span>-->
+							<!--</td>-->
+							<!--<td>-->
+								<!--Jeg har avtjent verneplikt de siste 12 mnd-->
+							<!--</td>-->
+						<!--{{/if}}-->
+					<!--</tr>-->
+				<!--</table>-->
+			<!--{{/forFaktum}}-->
+
+			<!--<h2>Andre ytelser</h2>-->
+			<!--{{#forFaktaStarterMed "andreytelser"}}-->
+				<!--{{#each }}-->
+					<!--{{#hvisSant}}-->
+						<!--{{key}}: {{properties.fraHvem}}-->
+					<!--{{/hvisSant}}-->
+				<!--{{/each}}-->
+			<!--{{/forFaktaStarterMed}}-->
+
+			<!--<h2>Barn som det søkes barnetilegg for</h2>-->
+			<!--{{#forFakta "barn"}}-->
+				<!--{{#each this}}-->
+					<!--{{properties.navn}}, født den {{properties.fodselsdato}}, bor i norge, inntekt på {{properties.inntekt}}-->
+				<!--{{/each}}-->
+			<!--{{/forFakta}}-->
+
+			<!--<h2>Vedlegg</h2>-->
+			<!--<table>-->
+				<!--<tr>-->
+					<!--<td>-->
+						<!--<span class="sjekket"></span>-->
+					<!--</td>-->
+					<!--<td>-->
+						<!--Bekreftelse på opppsigelse fra Firmakongen AS-->
+					<!--</td>-->
+				<!--</tr>-->
+			<!--</table>-->
 
 		</div>
 	</body>

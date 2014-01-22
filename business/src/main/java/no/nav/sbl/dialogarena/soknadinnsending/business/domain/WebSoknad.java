@@ -14,12 +14,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-<<<<<<< HEAD
 import static no.nav.modig.lang.collections.IterUtils.on;
-=======
 import static java.util.Arrays.asList;
 import static java.util.UUID.randomUUID;
->>>>>>> master
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -187,6 +184,7 @@ public class WebSoknad implements Serializable {
     }
 
     public WebSoknad medBrukerData(List<Faktum> brukerData) {
+        faktaListe = new ArrayList<>(brukerData);
         fakta = new HashMap<>();
 
         for (Faktum faktum : brukerData) {

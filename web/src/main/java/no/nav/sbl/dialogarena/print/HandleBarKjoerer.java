@@ -7,10 +7,12 @@ import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import org.apache.wicket.model.StringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -90,41 +92,90 @@ public class HandleBarKjoerer {
         handlebars.registerHelper("forFaktum", new Helper<String>() {
             @Override
             public CharSequence apply(String o, Options options) throws IOException {
-                WebSoknad soknad = (WebSoknad) options.context.model();
+                WebSoknad soknad = finnWebSoknad(options.context);
                 Faktum faktum = soknad.getFakta().get(o);
-                System.out.println(faktum);
                 return options.fn(faktum);
             }
         });
         handlebars.registerHelper("forFakta", new Helper<String>() {
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
-                WebSoknad soknad = (WebSoknad) options.context.model();
-                List<Faktum> faktum = soknad.getFaktaMedKey(key);
-                System.out.println(faktum);
-                return options.fn(faktum);
+                WebSoknad soknad = finnWebSoknad(options.context);
+                List<Faktum> fakta = soknad.getFaktaMedKey(key);
+
+                return lagItererbarRespons(options, fakta);
             }
         });
         handlebars.registerHelper("forFaktaStarterMed", new Helper<String>() {
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
-                WebSoknad soknad = (WebSoknad) options.context.model();
-                List<Faktum> faktum = soknad.getFaktaSomStarterMed(key);
-                System.out.println(faktum);
-                return options.fn(faktum);
+                WebSoknad soknad = finnWebSoknad(options.context);
+                List<Faktum> fakta = soknad.getFaktaSomStarterMed(key);
+                return lagItererbarRespons(options, fakta);
             }
         });
-        handlebars.registerHelper("hvisSant", new Helper<Faktum>() {
+        handlebars.registerHelper("hvisSant", new Helper<String>() {
             @Override
-            public CharSequence apply(Faktum faktum, Options options) throws IOException {
-                if(faktum.getValue() != null && faktum.getValue().equals("true")){
-                    return options.fn(faktum);
+            public CharSequence apply(String value, Options options) throws IOException {
+                if(value != null && value.equals("true")){
+                    return options.fn(this);
                 } else {
-                    return options.inverse(faktum);
+                    return options.inverse(this);
                 }
+            }
+        });
+        handlebars.registerHelper("hvisMindre", new Helper<String>() {
+            @Override
+            public CharSequence apply(String value, Options options) throws IOException {
+                Integer grense = Integer.parseInt((String) options.param(0));
+                Integer verdi = Integer.parseInt(value); 
+                if(verdi < grense){
+                    return options.fn(this);
+                } else {
+                    return options.inverse(this);
+                }
+            }
+        });
+        handlebars.registerHelper("hentTekst", new Helper<String>() {
+            @Override
+            public CharSequence apply(String key, Options options) throws IOException {
+                String tekst = new StringResourceModel(key, null).getString();
+                return tekst;
             }
         });
 
         return handlebars;
+    }
+
+    private static WebSoknad finnWebSoknad(Context context) {
+        if (context == null) {
+            return null;
+        } else if (context.model() instanceof WebSoknad) {
+            return (WebSoknad)context.model();
+        } else {
+            return finnWebSoknad(context.parent());
+        }
+    }
+
+    private static String lagItererbarRespons(Options options, List<Faktum> fakta) throws IOException {
+        Context parent = options.context;
+        StringBuilder buffer = new StringBuilder();
+        int index = 0;
+        Iterator<Faktum> iterator = fakta.iterator();
+        while (iterator.hasNext()) {
+            Object element = iterator.next();
+            boolean first = index == 0;
+            boolean even = index % 2 == 0;
+            boolean last = !iterator.hasNext();
+            Context current = Context.newContext(parent, element)
+                    .data("index", index)
+                    .data("first", first ? "first" : "")
+                    .data("last", last ? "last" : "")
+                    .data("odd", even ? "" : "odd")
+                    .data("even", even ? "even" : "");
+            buffer.append(options.fn(current));
+            index++;
+        }
+        return buffer.toString();
     }
 }

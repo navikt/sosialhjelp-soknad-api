@@ -30,8 +30,6 @@ angular.module('app.brukerdata', ['app.services'])
         $scope.hvisIOppsummeringsmodus = function () {
             return !$scope.hvisIRedigeringsmodus();
         }
-<<<<<<< HEAD
-=======
     })
 
     .controller('AvbrytCtrl', function ($scope, data, $routeParams, $location, soknadService) {
@@ -118,5 +116,4 @@ angular.module('app.brukerdata', ['app.services'])
             }
             return tekst;
         }
->>>>>>> master
     });

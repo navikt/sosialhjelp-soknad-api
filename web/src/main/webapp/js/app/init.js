@@ -139,6 +139,11 @@ angular.module('sendsoknad')
                             }
                         });
                     };
+
+                    data.leggTilFaktum = function(faktum) {
+                        data.fakta.push(faktum);
+                    };
+
                     faktaDeferer.resolve();
                 });
             });
@@ -149,49 +154,7 @@ angular.module('sendsoknad')
                     data.soknadOppsett = result;
                 }
             );
-<<<<<<< HEAD
             promiseArray.push(soknadOppsett.$promise, soknadDeferer.promise, faktaDeferer.promise);
-=======
-
-            var fakta = Faktum.query({soknadId: soknadId}, function (result) {
-                data.fakta = result;
-
-                data.finnFakta = function (key) {
-                    var res = [];
-                    data.fakta.forEach(function (item) {
-                        if (item.key === key) {
-                            res.push(item);
-                        }
-                    });
-                    return res;
-                };
-                data.finnFaktum = function (key) {
-                    var res = null;
-                    data.fakta.forEach(function (item) {
-                        if (item.key === key) {
-                            res = item;
-                        }
-                    });
-                    return res;
-                };
-                data.leggTilFaktum = function(faktum) {
-                    data.fakta.push(faktum);
-                };
-
-                data.slettFaktum = function(faktumData) {
-                    $scope.faktumSomSkalSlettes = new Faktum(faktumData);
-                    $scope.faktumSomSkalSlettes.$delete({soknadId: faktumData.soknadId}).then(function () {
-                    });
-
-                    data.fakta.forEach(function (item, index) {
-                        if (item.faktumId === faktumData.faktumId) {
-                            data.fakta.splice(index,1);
-                        }
-                    });
-                };
-            });
-            promiseArray.push(barn.$promise, soknadOppsett.$promise, soknadDeferer.promise, fakta.$promise);
->>>>>>> master
         }
 
         return $q.all(promiseArray);

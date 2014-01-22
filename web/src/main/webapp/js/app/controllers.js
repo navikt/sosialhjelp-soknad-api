@@ -15,13 +15,10 @@ angular.module('app.controllers', [
     'nav.forsettsenere',
     'nav.dagpenger',
     'nav.personalia',
-<<<<<<< HEAD
     'nav.oppsummering',
     'nav.adresse',
-    'nav.avbryt'
-=======
+    'nav.avbryt',
     'nav.arbeidsforhold',
     'nav.informasjonsside',
     'nav.behandlingside'
->>>>>>> master
 ]);

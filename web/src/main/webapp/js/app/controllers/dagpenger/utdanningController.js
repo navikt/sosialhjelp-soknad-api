@@ -1,10 +1,5 @@
 angular.module('nav.utdanning', [])
-<<<<<<< HEAD
 	.controller('UtdanningCtrl', ['$scope', 'data', function ($scope, data) {
-=======
-	.controller('UtdanningCtrl', ['$scope', 'data', function ($scope,  data) {
->>>>>>> master
-
 		$scope.navigering = {nesteside: 'ytelser'};
 		$scope.sidedata = {navn: 'utdanning'};
 
