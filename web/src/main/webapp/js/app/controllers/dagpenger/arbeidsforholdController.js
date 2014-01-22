@@ -106,13 +106,13 @@ angular.module('nav.arbeidsforhold.controller', [])
         $scope.nyttArbeidsforhold = function ($event) {
             $event.preventDefault();
             settArbeidsforholdCookie();
-            $location.path('nyttarbeidsforhold/' + $scope.soknadId);
+            $location.path('nyttarbeidsforhold');
         };
 
         $scope.endreArbeidsforhold = function (af, $index, $event) {
             $event.preventDefault();
             settArbeidsforholdCookie(af.arbeidsforhold.faktumId);
-            $location.path('endrearbeidsforhold/' +$scope.soknadId + '/' + af.arbeidsforhold.faktumId);
+            $location.path('endrearbeidsforhold/' + af.arbeidsforhold.faktumId);
         };
 
         $scope.slettArbeidsforhold = function (af, index, $event) {

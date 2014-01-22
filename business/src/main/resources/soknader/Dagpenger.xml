@@ -3,19 +3,82 @@
     <!-- ReelArbeidsoker -->
 
     <faktum>
-        <id>villigdeltid</id>
+        <id>reelarbeidssoker.villigdeltid</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
     </faktum>
     <faktum>
-        <id>villigpendle</id>
+        <id>reellarbeidssoker.villigdeltid.eneansvarbarnopptil18aar</id>
+        <type>java.lang.Boolean</type>
+        <panel>ReelArbeidsoker</panel>
+        <dependOn>reelarbeidssoker.villigdeltid</dependOn>
+        <dependOnValue>false</dependOnValue>
+    </faktum>
+    <faktum>
+        <id>reellarbeidssoker.villigdeltid.reduserthelse</id>
+        <type>java.lang.Boolean</type>
+        <panel>ReelArbeidsoker</panel>
+        <dependOn>reelarbeidssoker.villigdeltid</dependOn>
+        <dependOnValue>false</dependOnValue>
+    </faktum>
+    <faktum>
+        <id>reellarbeidssoker.villigdeltid.omsorgansvar</id>
+        <type>java.lang.Boolean</type>
+        <panel>ReelArbeidsoker</panel>
+        <dependOn>reelarbeidssoker.villigdeltid</dependOn>
+        <dependOnValue>false</dependOnValue>
+    </faktum>
+    <faktum>
+        <id>reellarbeidssoker.villigdeltid.annensituasjon</id>
+        <type>java.lang.Boolean</type>
+        <panel>ReelArbeidsoker</panel>
+        <dependOn>reelarbeidssoker.villigdeltid</dependOn>
+        <dependOnValue>false</dependOnValue>
+    </faktum>
+    <faktum>
+        <id>reellarbeissoker.villigpendle</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
     </faktum>
     <faktum>
-        <id>villighelse</id>
+        <id>reellarbeidssoker.villigpendle.eneansvarbarnopptil18aar</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
+        <dependOn>reelarbeidssoker.villigpendle</dependOn>
+        <dependOnValue>false</dependOnValue>
+    </faktum>
+    <faktum>
+        <id>reellarbeidssoker.villigpendle.reduserthelse</id>
+        <type>java.lang.Boolean</type>
+        <panel>ReelArbeidsoker</panel>
+        <dependOn>reelarbeidssoker.villigpendle</dependOn>
+        <dependOnValue>false</dependOnValue>
+    </faktum>
+    <faktum>
+        <id>reellarbeidssoker.villigpendle.omsorgansvar</id>
+        <type>java.lang.Boolean</type>
+        <panel>ReelArbeidsoker</panel>
+        <dependOn>reelarbeidssoker.villigpendle</dependOn>
+        <dependOnValue>false</dependOnValue>
+    </faktum>
+    <faktum>
+        <id>reellarbeidssoker.villigpendle.annensituasjon</id>
+        <type>java.lang.Boolean</type>
+        <panel>ReelArbeidsoker</panel>
+        <dependOn>reelarbeidssoker.villigpendle</dependOn>
+        <dependOnValue>false</dependOnValue>
+    </faktum>
+    <faktum>
+        <id>reellarbeidssoker.villighelse</id>
+        <type>java.lang.Boolean</type>
+        <panel>ReelArbeidsoker</panel>
+    </faktum>
+    <faktum>
+        <id>reellarbeidssoker.villigdeltid.reduserthelse</id>
+        <type>java.lang.Boolean</type>
+        <panel>ReelArbeidsoker</panel>
+        <dependOn>reellarbeidssoker.villighelse</dependOn>
+        <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
         <id>villigjobb</id>
@@ -41,6 +104,11 @@
         <type>java.lang.Boolean</type>
         <panel>EgenNaering</panel>
     </faktum>
+    <faktum>
+        <id>egennaering.gardsbruk</id>
+        <type>java.lang.Boolean</type>
+        <panel>EgenNaering</panel>
+    </faktum>
     <!-- Verneplikt -->
     <faktum>
         <id>ikkeavtjentverneplikt</id>
@@ -50,8 +118,8 @@
     <!-- Verneplikt -->
     <!-- Utdanning" -->
     <faktum>
-        <id>ikkeUtdanning</id>
-        <type>java.lang.Boolean</type>
+        <id>utdanning</id>
+        <type>java.lang.String</type>
         <panel>Utdanning</panel>
     </faktum>
     <faktum>
@@ -65,52 +133,59 @@
         <panel>Utdanning</panel>
     </faktum>
     <faktum>
-        <id>stonadFisker</id>
+        <id>ytelser.stonadFisker</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingenYtelse</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
-        <id>offentligTjenestepensjon</id>
+        <id>ytelser.offentligTjenestepensjon</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingenYtelse</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
-        <id>offentligTjenestepensjonUtbetaler</id>
+        <id>ytelser.offentligTjenestepensjonUtbetaler</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
-        <dependOn>offentligTjenestepensjon</dependOn>
+        <dependOn>ytelser.offentligTjenestepensjon</dependOn>
         <dependOnValue>true</dependOnValue>
     </faktum>
     <faktum>
-        <id>privatTjenestepensjon</id>
+        <id>ytelser.privatTjenestepensjon</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingenYtelse</dependOn>
+        <dependOn>ytelser.ingenYtelse</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
-        <id>privatTjenestepensjonUtbetaler</id>
+        <id>ytelser.privatTjenestepensjonUtbetaler</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
-        <dependOn>privatTjenestepensjon</dependOn>
+        <dependOn>ytelser.privatTjenestepensjon</dependOn>
         <dependOnValue>true</dependOnValue>
     </faktum>
     <faktum>
-        <id>vartpenger</id>
+        <id>ytelser.etterlonn</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingenYtelse</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
-        <id>vartpengerUtbetaler</id>
+        <id>ytelser.vartpenger</id>
+        <type>java.lang.Boolean</type>
+        <panel>AndreYtelser</panel>
+        <dependOn>ingenYtelse</dependOn>
+        <dependOnValue>false</dependOnValue>
+    </faktum>
+    <faktum>
+        <id>ytelser.vartpengerUtbetaler</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
-        <dependOn>vartpenger</dependOn>
+        <dependOn>ytelser.vartpenger</dependOn>
         <dependOnValue>true</dependOnValue>
     </faktum>
     <faktum>
@@ -128,7 +203,7 @@
         <dependOnValue>true</dependOnValue>
     </faktum>
     <faktum>
-        <id>dagpengerEOS</id>
+        <id>ytelser.dagpengerEOS</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingenYtelse</dependOn>
@@ -138,11 +213,11 @@
         <id>dagpengerEOSUtbetaler</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
-        <dependOn>dagpengerEOS</dependOn>
+        <dependOn>ytelser.dagpengerEOS</dependOn>
         <dependOnValue>true</dependOnValue>
     </faktum>
     <faktum>
-        <id>annenYtelse</id>
+        <id>ytelser.annenYtelse</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
         <dependOn>ingenYtelse</dependOn>
@@ -152,7 +227,7 @@
         <id>annenYtelseType</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
-        <dependOn>annenYtelse</dependOn>
+        <dependOn>ytelser.annenYtelse</dependOn>
         <dependOnValue>true</dependOnValue>
     </faktum>
     <faktum>
@@ -173,33 +248,137 @@
         <type>java.lang.boolean</type>
     </faktum>
     <vedlegg>
-        <id>1</id>
-        <faktum>villigdeltid</faktum>
+        <id>5</id>
+        <faktum>reellarbeidssoker.villigdeltid.eneansvarbarnopptil18aar</faktum>
+        <onValue>true</onValue>
+        <skjemaNummer>Y2</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <id>5</id>
+        <faktum>reellarbeidssoker.villigdeltid.reduserthelse</faktum>
+        <onValue>true</onValue>
+        <skjemaNummer>Y2</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <id>5</id>
+        <faktum>reellarbeidssoker.villigdeltid.omsorgansvar</faktum>
+        <onValue>true</onValue>
+        <skjemaNummer>Y2</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <id>5</id>
+        <faktum>reellarbeidssoker.villigdeltid.annensituasjon</faktum>
+        <onValue>true</onValue>
+        <skjemaNummer>Y2</skjemaNummer>
+    </vedlegg>
+
+    <vedlegg>
+        <id>5</id>
+        <faktum>reellarbeidssoker.villigpendle.eneansvarbarnopptil18aar</faktum>
+        <onValue>true</onValue>
+        <skjemaNummer>Y2</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <id>5</id>
+        <faktum>reellarbeidssoker.villigpendle.reduserthelse</faktum>
+        <onValue>true</onValue>
+        <skjemaNummer>Y2</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <id>5</id>
+        <faktum>reellarbeidssoker.villigpendle.omsorgansvar</faktum>
+        <onValue>true</onValue>
+        <skjemaNummer>Y2</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <id>5</id>
+        <faktum>reellarbeidssoker.villigpendle.annensituasjon</faktum>
+        <onValue>true</onValue>
+        <skjemaNummer>Y2</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <id>5</id>
+        <faktum>reellarbeidssoker.villighelse</faktum>
         <onValue>false</onValue>
-        <skjemaNummer>NAV-01010101</skjemaNummer>
+        <skjemaNummer>T9</skjemaNummer>
+    </vedlegg>
+
+    <vedlegg>
+        <id>1</id>
+        <faktum>utdanning</faktum>
+        <onValue>avsluttetUtdanning</onValue>
+        <skjemaNummer>T2</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <id>1</id>
+        <faktum>utdanning</faktum>
+        <onValue>underUtdanning</onValue>
+        <skjemaNummer>T1</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>2</id>
         <faktum>ikkeavtjentverneplikt</faktum>
         <onValue>false</onValue>
-        <skjemaNummer>NAV-123123</skjemaNummer>
+        <skjemaNummer>T3</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>3</id>
         <faktum>ekstraVedlegg</faktum>
         <onValue>true</onValue>
-        <skjemaNummer>L6</skjemaNummer>
+        <skjemaNummer>N6</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <id>3</id>
+        <faktum>egennaering.gardsbruk</faktum>
+        <onValue>false</onValue>
+        <skjemaNummer>NAV 04-03.03</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <id>3</id>
+        <faktum>ytelser.offentligTjenestepensjon</faktum>
+        <onValue>true</onValue>
+        <skjemaNummer>K1</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <id>3</id>
+        <faktum>ytelser.privatTjenestepensjon</faktum>
+        <onValue>true</onValue>
+        <skjemaNummer>K1</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <id>3</id>
+        <faktum>ytelser.stonadFisker</faktum>
+        <onValue>true</onValue>
+        <skjemaNummer>K1</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <id>3</id>
+        <faktum>ytelser.etterlonn</faktum>
+        <onValue>true</onValue>
+        <skjemaNummer>K1</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <id>3</id>
+        <faktum>ytelser.vartpenger</faktum>
+        <onValue>true</onValue>
+        <skjemaNummer>K1</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <id>3</id>
+        <faktum>ytelser.dagpengerEOS</faktum>
+        <onValue>true</onValue>
+        <skjemaNummer>K1</skjemaNummer>
+    </vedlegg>
+    <vedlegg>
+        <id>3</id>
+        <faktum>ytelser.annenYtelse</faktum>
+        <onValue>true</onValue>
+        <skjemaNummer>K1</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>4</id>
         <faktum>arbeidsforhold</faktum>
         <skjemaNummer>T8</skjemaNummer>
         <property>arbeidsgivernavn</property>
-    </vedlegg>
-    <vedlegg>
-        <id>5</id>
-        <faktum>reellarbeidssoker.villigdeltid.reduserthelse</faktum>
-        <onValue>true</onValue>
-        <skjemaNummer>XX</skjemaNummer>
     </vedlegg>
 </soknad>

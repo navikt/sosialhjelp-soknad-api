@@ -19,19 +19,19 @@ angular.module('nav.barnetillegg', [])
 		$scope.leggTilBarn = function ($event) {
 			$event.preventDefault();
 			settBarnCookie();
-			$location.path('nyttbarn/' + $scope.soknadId);
+			$location.path('nyttbarn/');
 		};
 
 		$scope.endreBarn = function (faktumId, $event) {
 			$event.preventDefault();
 			settBarnCookie(faktumId);
-			$location.path('endrebarn/' + $scope.soknadId + '/' + faktumId);
+			$location.path('endrebarn/' + faktumId);
 		};
 
 		$scope.sokbarnetillegg = function (faktumId, $event) {
 			$event.preventDefault();
 			settBarnCookie(faktumId);
-			$location.path('sokbarnetillegg/' + $scope.soknadId + '/' + faktumId);
+			$location.path('sokbarnetillegg/' + faktumId);
 		};
 
 		$scope.slettBarn = function (b, index, $event) {
@@ -40,6 +40,8 @@ angular.module('nav.barnetillegg', [])
             var barn = data.finnFakta('barn')
             barn.splice(index, 1);
 			data.slettFaktum(b);
+
+			$scope.barn = data.finnFakta('barn');
 		};
 
 		$scope.erGutt = function (barn) {

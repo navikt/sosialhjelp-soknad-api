@@ -10,8 +10,11 @@
              data-navconfig
              data-booleanradio
              data-nokkel="reellarbeidssoker.villigdeltid">
-            <div data-navinfoboks>
-                <span data-cmstekster="reellarbeidssoker.villigdeltid.false.informasjon"></span>
+            <div data-ng-if="erUnder60Aar()" data-navinfoboks>
+                <span data-cmstekster="reellarbeidssoker.villigdeltid.false.informasjon.under60"></span>
+            </div>
+            <div data-ng-if="erOver59Aar()" data-navinfoboks>
+                <span data-cmstekster="reellarbeidssoker.villigdeltid.false.informasjon.over60"></span>
             </div>
 
             <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
@@ -56,6 +59,11 @@
                      data-navlabel="reellarbeidssoker.annensituasjon"
                      data-navendret="endreDeltidsAarsaker()"></div>
 
+
+                <div data-navinfoboks>
+                    <p data-cmstekster="reellarbeidssoker.unntak.dokumentasjon"></p>
+                </div>
+
                 <span class="melding"
                       data-cmstekster="reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding"></span>
             </div>
@@ -84,10 +92,13 @@
              data-navconfig
              data-booleanradio
              data-nokkel="reellarbeidssoker.villigpendle">
-
-            <div data-navinfoboks>
-                <span data-cmstekster="reellarbeidssoker.villigpendle.false.informasjon"></span>
+            <div data-ng-if="erUnder60Aar()" data-navinfoboks>
+                <span data-cmstekster="reellarbeidssoker.villigpendle.false.informasjon.under60"></span>
             </div>
+            <div data-ng-if="erOver59Aar()" data-navinfoboks>
+                <span data-cmstekster="reellarbeidssoker.villigpendle.false.informasjon.over60"></span>
+            </div>
+
             <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
                 <input type="hidden" data-ng-model="harHuketAvCheckboksPendle.value"
                        data-nav-faktum="reellarbeidssoker.villigpendle"
@@ -130,6 +141,10 @@
                      data-navlabel="reellarbeidssoker.pendleannensituasjon"
                      data-navendret="endrePendleAarsaker()"></div>
 
+                <div data-navinfoboks>
+                    <p data-cmstekster="reellarbeidssoker.unntak.dokumentasjon"></p>
+                </div>
+
                 <span class="melding"
                       data-cmstekster="reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding"></span>
             </div>
@@ -166,7 +181,7 @@
                 <span data-cmstekster="reellarbeidssoker.villigjobb.false.informasjon"></span>
             </div>
             <div class="sentrert">
-                <a href="#/avbryt/{{ soknadId }}"
+                <a href="#/avbryt"
                    data-cmstekster="reellarbeidssoker.villigjobb.false.avbryt"></a>
             </div>
 

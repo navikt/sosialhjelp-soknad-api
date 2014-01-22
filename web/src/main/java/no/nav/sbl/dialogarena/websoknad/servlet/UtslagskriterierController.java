@@ -1,5 +1,12 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+<<<<<<< HEAD
+=======
+import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
+
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.FamilieRelasjonService;
+
+>>>>>>> master
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
@@ -18,13 +25,21 @@ import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 public class UtslagskriterierController {
 
     @Inject
+<<<<<<< HEAD
     private PersonaliaService personaliaService;
+=======
+    private PersonService personService;
+    
+    @Inject
+    private FamilieRelasjonService familieRelasjonService;
+>>>>>>> master
 
     private Map<String, String> utslagskriterierResultat = new HashMap<>();
 
     @RequestMapping(value = "utslagskriterier", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Map<String, String> sjekkUtslagskriterier() {
+<<<<<<< HEAD
         String uid = getSubjectHandler().getUid();
         Personalia personalia = personaliaService.hentPersonalia(uid);
         utslagskriterierResultat.put("gyldigAlder", new PersonAlder(uid).sjekkAlder().toString());
@@ -33,6 +48,21 @@ public class UtslagskriterierController {
         utslagskriterierResultat.put("registrertAdresseGyldigFra", personalia.getGjeldendeAdresse().getGyldigFra());
         utslagskriterierResultat.put("registrertAdresseGyldigTil", personalia.getGjeldendeAdresse().getGyldigTil());
 
+=======
+//        if(personService.ping() && familieRelasjonService.ping()) {
+            String uid = getSubjectHandler().getUid();
+       
+            utslagskriterierResultat.put("gyldigAlder", new PersonAlder(uid).sjekkAlder().toString());
+            
+            Person person = personService.hentPerson(1l, uid);
+            utslagskriterierResultat.put("bosattINorge", harNorskAdresse(person).toString());
+            
+            utslagskriterierResultat.put("registrertAdresse", person.hentGjeldendeAdresse());
+//            
+//        } else {
+//            utslagskriterierResultat.put("error", "TPS");
+//        }
+>>>>>>> master
         return utslagskriterierResultat;
     }
 

@@ -1,5 +1,6 @@
 angular.module('nav.barnetilleggfaktum', ['app.services'])
 	.controller('BarnetilleggFaktumCtrl', ['$scope', 'Faktum', 'data', function ($scope, Faktum, data) {
+		var soknadId = data.soknad.soknadId;
 
 		var barnetilleggsData = {
 			key          : 'barnetillegg',
@@ -13,7 +14,7 @@ angular.module('nav.barnetilleggfaktum', ['app.services'])
 			parrentFaktum: $scope.b.faktumId
 		};
 
-		var barneinntekttall = {
+		var barneinntekttallData = {
 			key          : 'barneinntekttall',
 			value        : undefined,
 			parrentFaktum: $scope.b.faktumId
@@ -39,7 +40,7 @@ angular.module('nav.barnetilleggfaktum', ['app.services'])
 		if (barneinntekttall) {
 			angular.forEach(barneinntekttall, function (value) {
 				if (value.parrentFaktum === $scope.b.faktumId) {
-                    ikkebarneinntektData = value;
+                    barneinntekttallData = value;
 				}
 			});
 		}
@@ -47,26 +48,26 @@ angular.module('nav.barnetilleggfaktum', ['app.services'])
 		$scope.barnetillegg = new Faktum(barnetilleggsData);
 		$scope.$watch('barnetillegg.value', function (newValue, oldValue, scope) {
 			if (newValue !== undefined && newValue !== oldValue) {
-				scope.barnetillegg.$save({soknadId: scope.soknadId}).then(function (value) {
-					scope.barnetillegg = value;
+				scope.barnetillegg.$save({soknadId: soknadId}).then(function (data) {
+					scope.barnetillegg = data;
 				});
 			}
 		});
 
-		$scope.ikkebarneinntekt = new Faktum(ikkebarneinntekt);
+		$scope.ikkebarneinntekt = new Faktum(ikkebarneinntektData);
 		$scope.$watch('ikkebarneinntekt.value', function (newValue, oldValue, scope) {
 			if (newValue !== undefined && newValue !== oldValue) {
-				scope.ikkebarneinntekt.$save({soknadId: scope.soknadId}).then(function (value) {
-					scope.ikkebarneinntekt = value;
+				scope.ikkebarneinntekt.$save({soknadId: soknadId}).then(function (data) {
+					scope.ikkebarneinntekt = data;
 				});
 			}
 		});
 
-		$scope.barneinntekttall = new Faktum(barneinntekttall);
+		$scope.barneinntekttall = new Faktum(barneinntekttallData);
 		$scope.$watch('barneinntekttall.value', function (newValue, oldValue, scope) {
 			if (newValue !== undefined && newValue !== oldValue) {
-				scope.barneinntekttall.$save({soknadId: scope.soknadId}).then(function (value) {
-					scope.barneinntekttall = value;
+				scope.barneinntekttall.$save({soknadId: soknadId}).then(function (data) {
+					scope.barneinntekttall = data;
 				});
 			}
 		});
@@ -94,19 +95,16 @@ angular.module('nav.barnetilleggfaktum', ['app.services'])
 			$event.preventDefault();
 			var barnetilleggsData;
 
-            var barnetillegg = data.finnFakta('barnetillegg')
-			angular.forEach(barnetillegg, function (value) {
+            var barnetilleggFaktum = data.finnFakta('barnetillegg')
+			angular.forEach(barnetilleggFaktum, function (value) {
 				if (value.parrentFaktum === faktumId) {
 					barnetilleggsData = value;
 				}
 			});
 
-			$scope.barnetilleggSomSkalSlettes = new Faktum(barnetilleggsData);
+			$scope.barnetillegg.value = 'false';
+			data.slettFaktum(barnetilleggsData);
 
-			$scope.barnetilleggSomSkalSlettes.$delete({soknadId: $scope.soknadId}).then(function () {
-				$scope.barnetillegg.value = 'false';
-                barnetillegg.splice(index, 1);
-			});
 		};
 
 	}]);

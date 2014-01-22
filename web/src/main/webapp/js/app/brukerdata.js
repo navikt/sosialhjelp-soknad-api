@@ -32,14 +32,14 @@ angular.module('app.brukerdata', ['app.services'])
         }
     })
 
-    .controller('AvbrytCtrl', function ($scope, data, $routeParams, $location, soknadService) {
+    .controller('AvbrytCtrl', function ($scope, $routeParams, $location, soknadService, data) {
+        var soknadId = data.soknad.soknadId;
+
         $scope.fremdriftsindikator = {
             laster: false
         }
-        $scope.krevBekreftelse = {value: false}
-        $scope.soknadId = data.soknad.soknadId;
-
-        soknadService.get({param: $routeParams.soknadId}).$promise.then(function (result) {
+        $scope.data = {}
+        soknadService.get({param: soknadId}).$promise.then(function (result) {
             var fakta = $.map(result.fakta, function (element) {
                 return element.type;
             });
@@ -53,7 +53,7 @@ angular.module('app.brukerdata', ['app.services'])
         $scope.submitForm = function () {
             var start = $.now();
             $scope.fremdriftsindikator.laster = true;
-            soknadService.remove({param: $routeParams.soknadId},
+            soknadService.remove({param: soknadId},
                 function () { // Success
                     var delay = 1500 - ($.now() - start);
                     setTimeout(function () {

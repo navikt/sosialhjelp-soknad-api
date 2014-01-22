@@ -82,18 +82,17 @@ public class ConsumerConfig {
                     .withAddress(serviceEndpoint)
                     .withWsdl("classpath:FilLager.wsdl")
                     .build()
-                    .withHttpsMock()
-                    .withSystemSecurity();
+                    .withHttpsMock();
         }
 
         @Bean
         public FilLagerPortType fillagerService() {
-            return factory().withUserSecurity().get();
+            return factory().withMDC().withUserSecurity().get();
         }
 
         @Bean
         public FilLagerPortType fillagerServiceSelftest() {
-            return factory().get();
+            return factory().withSystemSecurity().get();
         }
     }
 

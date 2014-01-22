@@ -189,9 +189,11 @@ public class WebSoknad implements Serializable {
 
         for (Faktum faktum : brukerData) {
             if (LIST_FAKTUM.contains(faktum.getKey())) {
-                faktum = wrapFaktumIFaktumListeObjekt(faktum, fakta);
+                Faktum nyttFaktum = wrapFaktumIFaktumListeObjekt(faktum, fakta);
+                fakta.put(faktum.getKey(), nyttFaktum);
+            } else {
+                fakta.put(faktum.getKey(), faktum);
             }
-            fakta.put(faktum.getKey(), faktum);
         }
         return this;
 

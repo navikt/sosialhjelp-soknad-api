@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventning;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
@@ -76,21 +77,16 @@ public class SoknadDataController {
         }
     }
 
-    @RequestMapping(value = "{soknadId}/forventning", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseBody()
-    public List<VedleggForventning> hentPaakrevdeVedlegg(
-            @PathVariable final Long soknadId) {
-        return vedleggService.hentPaakrevdeVedlegg(soknadId);
-    }
+
 
     @RequestMapping(value = "{soknadId}/{faktumId}/forventning", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
-    public List<VedleggForventning> hentPaakrevdeVedleggForFaktum(
+    public List<Vedlegg> hentPaakrevdeVedleggForFaktum(
             @PathVariable final Long soknadId, @PathVariable final Long faktumId) {
-        return on(vedleggService.hentPaakrevdeVedlegg(soknadId)).filter(new Predicate<VedleggForventning>() {
+        return on(vedleggService.hentPaakrevdeVedlegg(soknadId)).filter(new Predicate<Vedlegg>() {
             @Override
-            public boolean evaluate(VedleggForventning vedleggForventning) {
-                return vedleggForventning.getFaktum().getFaktumId().equals(faktumId);
+            public boolean evaluate(Vedlegg vedleggForventning) {
+                return vedleggForventning.getFaktumId().equals(faktumId);
             }
         }).collect();
     }
@@ -127,15 +123,13 @@ public class SoknadDataController {
 
     @RequestMapping(value = "/opprett/{soknadType}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody()
-    public WebSoknadId opprettSoknad(@PathVariable String soknadType) {
-        // Må legges til i forbindelse med kobling mot henvendelse.
-        // String behandlingsId =
-        // henvendelseConnector.startSoknad(SubjectHandler.getSubjectHandler().getUid(),
-        // null);
-        Long id = soknadService.startSoknad(soknadType);
-        WebSoknadId soknadId = new WebSoknadId();
-        soknadId.setId(id);
-        return soknadId;
+    public Map<String,String> opprettSoknad(@PathVariable String soknadType) {
+        Map<String, String> result = new HashMap<>();
+        
+        String behandlingId = soknadService.startSoknad(soknadType);
+        result.put("brukerbehandlingId", behandlingId);
+        
+        return result;
     }
 
     @RequestMapping(value = "/delete/{soknadId}", method = RequestMethod.POST)
