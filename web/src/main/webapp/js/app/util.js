@@ -47,6 +47,10 @@ String.prototype.splice = function (idx, rem, str) {
 	return (this.slice(0, idx) + str + this.slice(idx + Math.abs(rem)));
 };
 
+function getBehandlingIdFromUrl() {
+	return location.pathname.split('/').last();
+}
+
 function sjekkOmGittEgenskapTilObjektErFalse(objekt) {
 	if (objekt) {
 		return checkFalse(objekt.value);

@@ -56,7 +56,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/fortsettsenere/:soknadId', {
+			.when('/fortsettsenere', {
 				templateUrl: '../html/templates/fortsettSenere.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -65,7 +65,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/kvittering-fortsettsenere/:soknadId', {
+			.when('/kvittering-fortsettsenere', {
 				templateUrl: '../html/templates/kvittering-fortsettsenere.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -191,7 +191,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/oppsummering', {
+			.when('/oppsummering/:soknadId/', {
 				templateUrl: '../html/templates/oppsummering.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {

@@ -1,6 +1,7 @@
 angular.module('nav.barn', ['app.services'])
 
 	.controller('BarneCtrl', ['$scope', 'Faktum', 'data', '$cookieStore', '$location', function ($scope, Faktum, data, $cookieStore, $location) {
+		var soknadId = data.soknad.soknadId;
 		var url = $location.$$url;
 		var endreModus = url.indexOf('endrebarn') !== -1;
 		var barnetilleggModus = url.indexOf('sokbarnetillegg') !== -1;
@@ -137,7 +138,7 @@ angular.module('nav.barn', ['app.services'])
 		 * Til slutt legges de to faktumene inn i sine respektive lister for at de skal vises i 'oppsummeringsmodus'
 		 **/
 		function lagreBarnOgBarnetilleggFaktum() {
-			$scope.barn.$save({soknadId: $scope.soknadData.soknadId}).then(function (barnData) {
+			$scope.barn.$save({soknadId: soknadId}).then(function (barnData) {
 				$scope.barn = barnData;
 				oppdaterFaktumListe('barn');
 				oppdaterCookieValue(barnData.faktumId);
@@ -156,7 +157,7 @@ angular.module('nav.barn', ['app.services'])
 
 			$scope.barnetillegg = new Faktum(barnetilleggsData);
 
-			$scope.barnetillegg.$save({soknadId: $scope.soknadData.soknadId}).then(function (data) {
+			$scope.barnetillegg.$save({soknadId: soknadId}).then(function (data) {
 				$scope.barnetillegg = data;
 				oppdaterFaktumListe('barnetillegg');
 				$scope.barn = new Faktum(barneData);

@@ -33,7 +33,7 @@ angular.module('nav.egennaering', [])
         }
 
         $scope.slettOrg = function (org, index) {
-            org.$delete({soknadId: $scope.soknadData.soknadId}).then(function () {
+            org.$delete({soknadId: data.soknad.soknadId}).then(function () {
                 $scope.orgnummer.splice(index, 1);
             });
         }
