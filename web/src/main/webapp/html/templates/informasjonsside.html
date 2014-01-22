@@ -80,8 +80,13 @@
 
 
 			<div class="utslagskriterier-knapper" data-ng-show="kravForDagpengerOppfylt()">
-				<input type="button" class="knapp-hoved" data-cmstekster="utslagskriterier.utslag.fortsett" data-ng-click="startSoknadDersomBrosjyreLest()" data-fremdriftsindikator/>
-				<a data-cmslenketekster="utslagskriterier.utslag.avbryt.lenkeurl" data-cmstekster="utslagskriterier.utslag.avbryt.lenketekst"/>
+				<div data-ng-show="soknadErStartet()">
+					<input type="button" class="knapp-hoved" data-cmstekster="utslagskriterier.utslag.fortsettSoknad" data-ng-click="forsettSoknadDersomBrosjyreLest()" data-fremdriftsindikator/>
+				</div>
+				<div data-ng-show="soknadErIkkeStartet()">
+					<input type="button" class="knapp-hoved" data-cmstekster="utslagskriterier.utslag.fortsett" data-ng-click="startSoknadDersomBrosjyreLest()" data-fremdriftsindikator/>
+					<a data-cmslenketekster="utslagskriterier.utslag.avbryt.lenkeurl" data-cmstekster="utslagskriterier.utslag.avbryt.lenketekst"/>
+				</div>
 			</div>
 
 			<div class="utslagskriterier-knapper" data-ng-show="kravForDagpengerIkkeOppfylt()">
