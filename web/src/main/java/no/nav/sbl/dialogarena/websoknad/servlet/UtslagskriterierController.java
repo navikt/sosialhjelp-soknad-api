@@ -1,9 +1,5 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
-
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.FamilieRelasjonService;
-
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
@@ -23,9 +19,6 @@ public class UtslagskriterierController {
 
     @Inject
     private PersonaliaService personaliaService;
-
-    @Inject
-    private FamilieRelasjonService familieRelasjonService;
 
     private Map<String, String> utslagskriterierResultat = new HashMap<>();
 
