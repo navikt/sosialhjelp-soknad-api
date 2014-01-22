@@ -87,7 +87,7 @@ angular.module('sendsoknad')
 
         promiseArray.push(soknadOppsettDefer.promise, soknadDeferer.promise, faktaDefer.promise, personaliaDefer.promise);
 
-        var brukerbehandlingsid = location.pathname.split('/').last();
+        var brukerbehandlingsid = getBehandlingIdFromUrl();
         var soknad = $resource('/sendsoknad/rest/soknad/behandling/:behandlingId').get(
             {behandlingId: brukerbehandlingsid},
             function (result) { // Success
@@ -190,7 +190,7 @@ angular.module('sendsoknad')
 
     //Lagt til for å tvinge ny lasting av fakta fra server. Da er vi sikker på at e-post kommer med til fortsett-senere siden.
     .factory('EpostResolver', ['data', 'cms', '$resource', '$q', '$route', 'soknadService', function (data, cms, $resource, $q, $route, soknadService) {
-        var soknadId = $route.current.params.soknadId;
+        var soknadId = data.soknad.soknadId;
         var promiseArray = [];
 
         var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
