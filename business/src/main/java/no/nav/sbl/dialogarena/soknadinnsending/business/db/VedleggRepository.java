@@ -17,7 +17,7 @@ public interface VedleggRepository {
      * @param content innholdet i vedlegget
      * @return
      */
-    Long lagreVedlegg(final Vedlegg vedlegg, byte[] content);
+    Long opprettVedlegg(final Vedlegg vedlegg, byte[] content);
 
     /**
      * Sletter et bestemt vedlegg
@@ -35,7 +35,9 @@ public interface VedleggRepository {
      * @param skjemaNummer  hvilket vedlegg det skal hentes for
      * @return en liste med vedlegg
      */
-    List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktum, String skjemaNummer);
+    List<Vedlegg> hentVedleggUnderBehandling(Long soknadId, Long faktum, String skjemaNummer);
+
+    void lagreVedleggMedData(Long soknadId, Long vedleggId, Vedlegg vedlegg);
 
     /**
      * Henter innholdet til ett bestemt vedlegg
@@ -65,22 +67,15 @@ public interface VedleggRepository {
      */
     Vedlegg hentVedleggForskjemaNummer(Long soknadId, Long faktumId, String skjemaNummer);
 
-    /**
-     * Knytter et vedlegg til et faktum
-     *
-     * @param soknadId soknaden det endres på
-     * @param faktumId faktumet som skal få et vedlegg
-     * @param skjemaNummer  hvilket vedlegg status skal endres for
-     */
-    void settVedleggStatus(Long soknadId, Long faktumId, String skjemaNummer);
 
     /**
      * Sletter alle vedlegg for et bestemt faktum
      *
      * @param soknadId soknaden det jobbes på
      * @param faktumId faktumet det skal slettes vedlegg for
+     * @param gosysId
      */
-    void slettVedleggForFaktum(Long soknadId, Long faktumId);
+    void slettVedleggUnderBehandling(Long soknadId, Long faktumId, String gosysId);
 
     /**
      * Henter ett vedleg med innhold
@@ -91,4 +86,5 @@ public interface VedleggRepository {
      */
     Vedlegg hentVedleggMedInnhold(Long soknadId, Long vedleggId);
 
+    void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg);
 }

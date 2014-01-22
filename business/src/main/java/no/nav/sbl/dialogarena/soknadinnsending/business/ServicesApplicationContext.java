@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business;
 
+import no.nav.sbl.dialogarena.common.kodeverk.JsonKodeverk;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.kodeverk.StandardKodeverk;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
@@ -36,6 +37,10 @@ public class ServicesApplicationContext {
             LOG.warn("Definer property 'brukerprofil.datadir' for å aktivere fallback for kodeverk dersom tjenesten går ned");
         }
         return new StandardKodeverk(kodeverkService, NORSK_BOKMAAL, optional(brukerprofilDataDirectory).map(appendPathname("kodeverkdump")));
+    }
+    @Bean
+    public JsonKodeverk jsonKodeverk(){
+        return new JsonKodeverk(getClass().getResourceAsStream("/kodeverk.json"));
     }
 
 }

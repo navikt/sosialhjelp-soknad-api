@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,17 +39,26 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
  */
 @Controller()
 @ControllerAdvice()
-@RequestMapping("/soknad/{soknadId}/faktum/{faktumId}/vedlegg")
+@RequestMapping("/soknad/{soknadId}/vedlegg")
 public class VedleggController {
     private static final Logger LOG = LoggerFactory.getLogger(VedleggController.class);
     //private static final List<String> LEGAL_CONTENT_TYPES = Arrays.asList("application/pdf", "image/png", "image/jpeg");
     @Inject
     private VedleggService vedleggService;
 
-    @RequestMapping(value = "/{vedleggId}/delete", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public void slettVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
-        vedleggService.slettVedlegg(soknadId, vedleggId);
+    private static byte[] getByteArray(MultipartFile file) {
+        try {
+            return IOUtils.toByteArray(file.getInputStream());
+        } catch (IOException e) {
+            throw new OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell");
+        }
+    }
+
+    @RequestMapping(value = "/", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseBody()
+    public List<Vedlegg> hentPaakrevdeVedlegg(
+            @PathVariable final Long soknadId) {
+        return vedleggService.hentPaakrevdeVedlegg(soknadId);
     }
 
     @RequestMapping(value = "/{vedleggId}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
@@ -57,11 +67,23 @@ public class VedleggController {
         return vedleggService.hentVedlegg(soknadId, vedleggId, false);
     }
 
+    @RequestMapping(value = "/{vedleggId}", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void lagreVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestBody Vedlegg vedlegg) {
+        vedleggService.lagreVedlegg(soknadId, vedleggId, vedlegg);
+    }
+
+    @RequestMapping(value = "/{vedleggId}/delete", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public void slettVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
+        vedleggService.slettVedlegg(soknadId, vedleggId);
+    }
+
     @RequestMapping(value = "/{vedleggId}/data", method = RequestMethod.GET, produces = APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody()
     public byte[] hentVedleggData(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, HttpServletResponse response) {
         Vedlegg vedlegg = vedleggService.hentVedlegg(soknadId, vedleggId, true);
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + vedlegg.getId() + ".pdf\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + vedlegg.getVedleggId() + ".pdf\"");
         return vedlegg.getData();
     }
 
@@ -87,18 +109,19 @@ public class VedleggController {
         return new RestFeil(ex.getId());
     }
 
-    @RequestMapping(value = "", params = "skjemaNummer", method = RequestMethod.POST, produces = "text/html; charset=utf-8")
+    @RequestMapping(value = "/{vedleggId}/opplasting", method = RequestMethod.POST, produces = "text/html; charset=utf-8")
     @ResponseBody()
     @ResponseStatus(HttpStatus.CREATED)
-    public Callable<VedleggOpplasting> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam final String skjemaNummer, @RequestParam("files[]") final List<MultipartFile> files) {
+    public Callable<VedleggOpplasting> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestParam("files[]") final List<MultipartFile> files) {
         return new Callable<VedleggOpplasting>() {
 
             @Override
             public VedleggOpplasting call() throws Exception {
+                Vedlegg forventning = vedleggService.hentVedlegg(soknadId, vedleggId, false);
                 List<Vedlegg> res = new ArrayList<>();
                 for (MultipartFile file : files) {
                     byte[] in = getByteArray(file);
-                    Vedlegg vedlegg = new Vedlegg(null, soknadId, faktumId, skjemaNummer, file.getOriginalFilename(), file.getSize(), 1, null, in);
+                    Vedlegg vedlegg = new Vedlegg(null, soknadId, forventning.getFaktumId(), forventning.getskjemaNummer(), file.getOriginalFilename(), file.getSize(), 1, null, in, Vedlegg.Status.UnderBehandling);
                     List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, new ByteArrayInputStream(in));
                     for (Long id : ids) {
                         res.add(vedleggService.hentVedlegg(soknadId, id, false));
@@ -109,26 +132,19 @@ public class VedleggController {
         };
     }
 
-    @RequestMapping(value = "", params = "skjemaNummer", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{vedleggId}/underBehandling", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody
-    public VedleggOpplasting hentVedleggForFaktum(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam String skjemaNummer) {
-        List<Vedlegg> vedlegg = vedleggService.hentVedleggForFaktum(soknadId, faktumId, skjemaNummer);
-        return new VedleggOpplasting(vedlegg);
+    public List<Vedlegg> hentVedleggUnderBehandling(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
+        Vedlegg forventning = vedleggService.hentVedlegg(soknadId, vedleggId, false);
+        List<Vedlegg> vedlegg = vedleggService.hentVedleggUnderBehandling(soknadId, forventning.getFaktumId(), forventning.getskjemaNummer());
+        return vedlegg;
     }
 
-    @RequestMapping(value = "/generer", params = "skjemaNummer", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{vedleggId}/generer", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
-    public Vedlegg bekreftFaktumVedlegg(@PathVariable final Long soknadId, @PathVariable final Long faktumId, @RequestParam final String skjemaNummer) {
-        Long vedleggId = vedleggService.genererVedleggFaktum(soknadId, faktumId, skjemaNummer);
+    public Vedlegg bekreftFaktumVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
+        vedleggService.genererVedleggFaktum(soknadId, vedleggId);
         return vedleggService.hentVedlegg(soknadId, vedleggId, false);
-    }
-
-    private static byte[] getByteArray(MultipartFile file) {
-        try {
-            return IOUtils.toByteArray(file.getInputStream());
-        } catch (IOException e) {
-            throw new OpplastingException("Kunne ikke lagre fil", e, "vedlegg.opplasting.feil.generell");
-        }
     }
 
 }
