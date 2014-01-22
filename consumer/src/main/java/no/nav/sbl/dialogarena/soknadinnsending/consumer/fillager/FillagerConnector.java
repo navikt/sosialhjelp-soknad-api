@@ -36,6 +36,7 @@ public class FillagerConnector {
             FilLagerPortType filLagerPortType = portType;
             if (getSubjectHandler().getIdentType() == null) {
                 filLagerPortType = portTypeSystemSecurity;
+                LOG.debug("Bruker systembruker for kall");
             }
             filLagerPortType.lagre(behandlingsId, uid, fnr, new DataHandler(new ByteArrayDataSource(fil, "application/octet-stream")));
             LOG.info("Søknad lagret til henvendelse");
