@@ -4,21 +4,7 @@
 
 <div id="informasjonsside" data-sidetittel="sidetittel.informasjon">
 	<div data-panelbelyst>
-<<<<<<< HEAD
-        <h2 data-ng-show="kravForDagpengerOppfylt()" class="stor strek-ikon-info" data-cmstekster="dagpenger.informasjonsside.tittel"></h2>
-    
-		<div id="utslagskriterier" ng-show="kravForDagpengerIkkeOppfylt()">
-			<div class="utslagskriterie" data-ng-show="ikkeBosattINorge()">
-				<h2 class="stor strek-ikon-info" data-cmstekster="dagpenger.informasjonsside.ikkebosattinorge.tittel"></h2>
-				<ul>
-					<li>
-						<p data-cmstekster="utslagskriterier.utslag.bosted.liste.1"></p>
-						<div class="adresse">
-                            {{ utslagskriterier.registrertAdresse }}
-						</div>
-					</li>
-=======
-        <div class="persondata-feil" data-ng-show="tpsSvarerIkke()"> 
+        <div class="persondata-feil" data-ng-show="tpsSvarerIkke()">
         	<div class="utrop-sirkel-ikon"></div>
         	<h1 data-cmstekster="feilmelding"></h1>
        		<p class="mini-strek">{{ 'feilmelding.tps' | cmstekst }}</p>
@@ -35,12 +21,9 @@
 					<ul>
 						<li>
 							<p data-cmstekster="utslagskriterier.utslag.bosted.liste.1"></p>
-							<div class="adresse">
-								<div data-ng-repeat="linje in gjeldendeAdresse.adresseLinjer"> 
-									<span>{{linje}}</span>
-								</div>
-								<span data-ng-bind="gjeldendeAdresse.land"></span>
-							</div>
+                            <div class="adresse">
+                                {{ utslagskriterier.registrertAdresse }}
+                            </div>
 						</li>
 						<li>
 							<p data-cmstekster="utslagskriterier.utslag.bosted.liste.2"></p>
@@ -65,7 +48,6 @@
 
 			<div class="viktig-info" data-ng-show="kravForDagpengerOppfylt()">
 				<ul class="informasjonsliste">
->>>>>>> master
 					<li>
 						<p class="medium" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.1"></p>
 						<a data-cmslenketekster="dagpenger.informasjonsside.informasjon.liste.1.lenkeurl" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.1.lenketekst"> </a>		
