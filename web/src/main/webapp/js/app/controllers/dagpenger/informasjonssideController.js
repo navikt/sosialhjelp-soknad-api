@@ -6,16 +6,45 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 			$scope.utslagskriterier.harlestbrosjyre=false;
 			//For testing uten TPS:
 			
-			//$scope.utslagskriterier.gyldigAlder = true;
+			//$scope.utslagskriterier.gyldigAlder = false;
 			//$scope.utslagskriterier.bosattINorge = false;
 
 			$scope.gjeldendeAdresse = angular.fromJson($scope.utslagskriterier.registrertAdresse);
 
 			$scope.skalViseBrosjyreMelding = false;
 			
+			if(getBehandlingIdFromUrl() != "Dagpenger") {
+				$scope.utslagskriterier.harlestbrosjyre=true;
+			}
+
 			$scope.fremdriftsindikator = {
 				laster: false
 			};
+
+			$scope.tpsSvarer = function() {
+				return !$scope.tpsSvarerIkke()
+			}
+
+			$scope.tpsSvarerIkke = function() {
+				if($scope.utslagskriterier.error != undefined) {
+					return true;
+				}
+				return false;
+			}
+
+			$scope.soknadErIkkeStartet = function() {
+				return !$scope.soknadErStartet();
+			}
+
+			$scope.soknadErStartet = function() {
+				var behandlingId = getBehandlingIdFromUrl();
+				if(behandlingId != "Dagpenger") {
+					return true;
+				}
+
+				return false;
+			}
+
 	        $scope.startSoknad = function () {
 	            var soknadType = window.location.pathname.split("/")[3];
 	            $scope.fremdriftsindikator.laster = true;
@@ -45,9 +74,18 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 					$scope.startSoknad();
 				} else {
 					$scope.skalViseBrosjyreMelding=true;
-					//alert("oioi, du må nok lese brosjyren først!")
 				}
 			}
+
+			$scope.forsettSoknadDersomBrosjyreLest = function() {
+				if($scope.harLestBrosjyre()) {
+					$scope.skalViseBrosjyreMelding = false;
+					$location.path("/soknad");
+				} else {
+					$scope.skalViseBrosjyreMelding=true;
+				}
+			}
+
 			$scope.kravForDagpengerOppfylt = function () {
 				return $scope.registrertArbeidssoker() && $scope.gyldigAlder() && $scope.bosattINorge();
 			};
