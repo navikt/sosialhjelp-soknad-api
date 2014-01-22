@@ -108,15 +108,10 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Long lagreSystemFaktum(Long soknadId, Faktum f, String uniqueProperty) {
-<<<<<<< HEAD
         Faktum eksisterendeFaktum = repository.hentSystemFaktum(soknadId, f.getKey(), SYSTEMREGISTRERT_FAKTUM);
         f.setFaktumId(eksisterendeFaktum.getFaktumId());
         f.setType(SYSTEMREGISTRERT_FAKTUM);
         List<Faktum> fakta = repository.hentSystemFaktumList(soknadId, f.getKey(), SYSTEMREGISTRERT_FAKTUM);
-=======
-        List<Faktum> fakta = repository.hentSystemFaktumList(soknadId,
-                f.getKey(), FaktumType.SYSTEMREGISTRERT.toString());
->>>>>>> master
 
         if (!uniqueProperty.isEmpty()) {
             for (Faktum faktum : fakta) {
@@ -135,18 +130,12 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value) {
-<<<<<<< HEAD
-        //TODO: her blir barn overskrevet. Hent ut fnr osv.
-        Faktum faktum = repository.hentSystemFaktum(soknadId, key, SYSTEMREGISTRERT_FAKTUM);
-        Long faktumId = repository.lagreFaktum(soknadId, faktum);
-=======
         // TODO: her blir barn overskrevet. Hent ut fnr osv.
         Faktum faktum = repository.hentSystemFaktum(soknadId, key,
                 SYSTEMREGISTRERT_FAKTUM);
 
         Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId,
                 faktum.getFaktumId(), key, value, SYSTEMREGISTRERT_FAKTUM));
->>>>>>> master
         return repository.hentFaktum(soknadId, faktumId);
     }
 
