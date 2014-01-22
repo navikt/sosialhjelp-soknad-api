@@ -41,7 +41,7 @@ angular.module('nav.vedlegg.controller', [])
 		};
 
 		$scope.erEkstraVedlegg = function (forventning) {
-			return forventning.skjemaNummer === 'L6';
+			return forventning.skjemaNummer === 'N6';
 		};
 
 		$scope.slettAnnetVedlegg = function (forventning) {
