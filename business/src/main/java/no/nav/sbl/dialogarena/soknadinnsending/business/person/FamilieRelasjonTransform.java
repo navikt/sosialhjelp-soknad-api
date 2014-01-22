@@ -5,12 +5,16 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 public class FamilieRelasjonTransform {
 
+    private static final Logger logger = getLogger(FamilieRelasjonTransform.class);
     public Person mapFamilierelasjonTilPerson(Long soknadId,
                                               HentKjerneinformasjonResponse response) {
         if (response == null) {
@@ -43,15 +47,20 @@ public class FamilieRelasjonTransform {
         List<Barn> result = new ArrayList<>();
 
         List<Familierelasjon> familierelasjoner = xmlperson.getHarFraRolleI();
+        logger.warn("Antall Familierelasjoner" + familierelasjoner.size());
         if (familierelasjoner.isEmpty()) {
             return result;
         }
         for (Familierelasjon familierelasjon : familierelasjoner) {
+
             Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
+            logger.warn("Type familierelasjon" + familierelasjonType);
             if (familierelasjonType.getValue().equals("BARN")) {
                 no.nav.tjeneste.virksomhet.person.v1.informasjon.Person tilPerson = familierelasjon.getTilPerson();
                 Barn barn = mapXmlPersonToPerson(tilPerson, soknadId);
+                logger.warn("Barns alder" + barn.getAlder());
                 if (barn.getAlder() < 18) {
+
                     result.add(barn);
                 }
             }
