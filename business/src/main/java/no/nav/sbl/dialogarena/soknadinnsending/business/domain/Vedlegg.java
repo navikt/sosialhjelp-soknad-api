@@ -6,6 +6,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.xml.bind.annotation.XmlTransient;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -23,6 +25,8 @@ public class Vedlegg {
     private Integer antallSider = 0;
     private byte[] data;
     private String fillagerReferanse = UUID.randomUUID().toString();
+    private Map<String, String> urls = new HashMap<>();
+    private String tittel;
 
     public Vedlegg() {
     }
@@ -108,6 +112,10 @@ public class Vedlegg {
         return beskrivelse;
     }
 
+    public Map<String, String> getUrls() {
+        return urls;
+    }
+
     @XmlTransient
     @JsonIgnore
     public byte[] getData() {
@@ -174,6 +182,18 @@ public class Vedlegg {
         this.innsendingsvalg = Status.LastetOpp;
         this.antallSider = antallSider;
         this.storrelse = (long) doc.length;
+    }
+
+    public void leggTilURL(String nokkel, String url) {
+        urls.put(nokkel, url);
+    }
+
+    public String getTittel() {
+        return tittel;
+    }
+
+    public void setTittel(String tittel) {
+        this.tittel = tittel;
     }
 
     public enum Status {
