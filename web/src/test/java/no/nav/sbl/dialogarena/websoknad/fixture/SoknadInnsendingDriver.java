@@ -13,6 +13,8 @@ import org.springframework.test.context.ContextConfiguration;
 
 import javax.inject.Inject;
 
+import java.util.Map;
+
 @ContextConfiguration(classes = FitNesseApplicationConfig.class)
 public class SoknadInnsendingDriver extends SpringAwareDoFixture {
 
@@ -42,8 +44,9 @@ public class SoknadInnsendingDriver extends SpringAwareDoFixture {
 		return fnr;
 	}
 	
+	//TODO:
 	public long opprettNySoknad(String type)  {
-		this.webSoknadId = startSoknad();
+		//this.webSoknadId = startSoknad();
 		return webSoknadId.getId();
 	}
 	
@@ -83,7 +86,7 @@ public class SoknadInnsendingDriver extends SpringAwareDoFixture {
 	public String listFakta() {
 		return webSoknad.getFakta().toString();
 	}
-	private WebSoknadId startSoknad() {
+	private Map<String, String> startSoknad() {
 		return soknadDataController.opprettSoknad("Dagpenger");
 	}
 	

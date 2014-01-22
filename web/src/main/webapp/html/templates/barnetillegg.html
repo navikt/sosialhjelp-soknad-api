@@ -3,7 +3,7 @@
 
         <p class="informasjonstekst" cmstekster="barnetillegg.informasjon"></p>
 
-        <div class="spm-boks vertikal" data-ng-repeat="b in soknadData.fakta.barn.valuelist">
+        <div class="spm-boks vertikal" data-ng-repeat="b in barn">
             <div data-ng-class="{gutt: erGutt(b), jente:erJente(b)}" id="barn{{b.faktumId}}" class="barn">
                 <a href="#" class="lukk" data-ng-show="erBrukerregistrert(b)" data-ng-click="slettBarn(b, $index, $event)"> </a>
 
@@ -57,7 +57,7 @@
 
         <div class="knapper-opprett" id="legg-til-barn" data-ng-show="hvisIRedigeringsmodus()">
             <p data-cmstekster="barnetillegg.nyttbarn.informasjon"></p>
-            <a class="knapp-leggtil-liten" href="#/nyttbarn/{{ soknadData.soknadId }}" data-ng-click="leggTilBarn($event)" data-cmstekster="barnetillegg.nyttbarn"></a>
+            <a class="knapp-leggtil-liten" href="#/nyttbarn" data-ng-click="leggTilBarn($event)" data-cmstekster="barnetillegg.nyttbarn"></a>
         </div>
 
         <div spmblokkferdig

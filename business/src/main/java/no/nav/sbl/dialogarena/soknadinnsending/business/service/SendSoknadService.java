@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface SendSoknadService {
 
-    Long startSoknad(String navSoknadId);
+    String startSoknad(String navSoknadId);
 
     WebSoknad hentSoknad(long soknadId);
     

@@ -29,16 +29,15 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/opplasting/:soknadId/:faktumId/:skjemaNummer', {
+			.when('/opplasting/:soknadId/:vedleggId', {
 				templateUrl: '../html/templates/opplasting.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
 					}
 				}
 			})
-			.when('/visVedlegg/:soknadId/:faktumId/:vedleggId', {
+			.when('/visVedlegg/:soknadId/:vedleggId', {
 				templateUrl: '../html/templates/visvedlegg.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -47,25 +46,23 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/dagpenger/:soknadId', {
+			.when('/soknad', {
 				templateUrl: '../html/dagpenger-singlepage.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
 					}
 				}
 			})
-			.when('/fortsettsenere/:soknadId', {
+			.when('/fortsettsenere', {
 				templateUrl: '../html/templates/fortsettSenere.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (EpostResolver) {
 						return EpostResolver;
 					}
 				}
 			})
-			.when('/kvittering-fortsettsenere/:soknadId', {
+			.when('/kvittering-fortsettsenere', {
 				templateUrl: '../html/templates/kvittering-fortsettsenere.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -74,135 +71,112 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/gjenoppta/:soknadId', {
-				templateUrl: '../html/templates/gjenoppta.html',
-				controller : 'SoknadDataCtrl',
-				resolve    : {
-					notUsedButRequiredProperty: function (HentSoknadService) {
-						return HentSoknadService;
-					}
-				}
-			})
-			.when('/reell-arbeidssoker/:soknadId', {
+			.when('/reell-arbeidssoker', {
 				templateUrl: '../html/templates/reell-arbeidssoker.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
 					}
 				}
 			})
-			.when('/egennaering/:soknadId', {
+			.when('/egennaering', {
 				templateUrl: '../html/templates/egen-naering.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
 					}
 				}
 			})
-			.when('/verneplikt/:soknadId', {
+			.when('/verneplikt', {
 				templateUrl: '../html/templates/verneplikt.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
 					}
 				}
 			})
-			.when('/personalia/:soknadId', {
+			.when('/personalia', {
 				templateUrl: '../html/templates/personalia.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
 					}
 				}
 			})
-			.when('/barnetillegg/:soknadId', {
+			.when('/barnetillegg', {
 				templateUrl: '../html/templates/barnetillegg.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
 					}
 				}
 			})
-			.when('/nyttbarn/:soknadId', {
+			.when('/nyttbarn', {
 				templateUrl: '../html/templates/barnetillegg-nyttbarn.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
-					notUsedButRequiredProperty: function (NyttBarnSideResolver) {
-						return NyttBarnSideResolver;
+					notUsedButRequiredProperty: function (HentSoknadService) {
+						return HentSoknadService;
 					}
 				}
 			})
-			.when('/endrebarn/:soknadId/:faktumId', {
+			.when('/endrebarn/:faktumId', {
 				templateUrl: '../html/templates/barnetillegg-nyttbarn.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
-					notUsedButRequiredProperty: function (NyttBarnSideResolver) {
-						return NyttBarnSideResolver;
+					notUsedButRequiredProperty: function (HentSoknadService) {
+						return HentSoknadService;
 					}
 				}
 			})
-			.when('/sokbarnetillegg/:soknadId/:faktumId', {
+			.when('/sokbarnetillegg/:faktumId', {
 				templateUrl: '../html/templates/barnetillegg-nyttbarn.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
-					notUsedButRequiredProperty: function (NyttBarnSideResolver) {
-						return NyttBarnSideResolver;
+					notUsedButRequiredProperty: function (HentSoknadService) {
+						return HentSoknadService;
 					}
 				}
 			})
-			.when('/arbeidsforhold/:soknadId', {
+			.when('/arbeidsforhold', {
 				templateUrl: '../html/templates/arbeidsforhold.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
 					}
 				}
 			})
-			.when('/nyttarbeidsforhold/:soknadId', {
+			.when('/nyttarbeidsforhold', {
 				templateUrl: '../html/templates/arbeidsforhold-nytt.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
 					}
 				}
 			})
-			.when('/endrearbeidsforhold/:soknadId/:faktumId', {
+			.when('/endrearbeidsforhold/:faktumId', {
 				templateUrl: '../html/templates/arbeidsforhold-nytt.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
 					}
 				}
 			})
-			.when('/ytelser/:soknadId', {
+			.when('/ytelser', {
 				templateUrl: '../html/templates/ytelser.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
 					}
 				}
 			})
-			.when('/oppsummering/:soknadId', {
+			.when('/oppsummering/:soknadId/', {
 				templateUrl: '../html/templates/oppsummering.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
 					}
 				}
 			})
-			.when('/utdanning/:soknadId', {
+			.when('/utdanning', {
 				templateUrl: '../html/templates/utdanning.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -217,9 +191,8 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/avbryt/:soknadId', {
+			.when('/avbryt', {
 				templateUrl: '../html/templates/avbryt.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -228,7 +201,6 @@ angular.module('app.routes', ['ngRoute'])
 			})
 			.when('/slettet', {
 				templateUrl: '../html/templates/soknadSlettet.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;

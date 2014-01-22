@@ -1,14 +1,18 @@
 angular.module('nav.forsettsenere', ['nav.cmstekster'])
-	.controller('FortsettSenereCtrl', ['$scope', '$routeParams', '$http', '$location', "forsettSenereService",
+	.controller('FortsettSenereCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', "fortsettSenereService",
 
-		function ($scope, $routeParams, $http, $location, forsettSenereService) {
-			$scope.forsettSenere = function (form) {
+		function ($scope, data, $routeParams, $http, $location, fortsettSenereService) {
+            $scope.epost = data.finnFaktum('epost');
+            $scope.soknadId = data.soknad.soknadId;
+
+            $scope.forsettSenere = function (form) {
 				$scope.validateForm(form.$invalid);
 				$scope.$broadcast('RUN_VALIDATION' + form.$name);
+
 				if (form.$valid) {
-					var soknadId = $routeParams.soknadId;
-					if ($scope.soknadData.fakta.epost) {
-						new forsettSenereService({epost: $scope.soknadData.fakta.epost.value}).$send({soknadId: soknadId}).then(function (data) {
+					var soknadId = data.soknad.soknadId;
+					if ($scope.epost) {
+						new fortsettSenereService({epost: $scope.epost.value}).$send({soknadId: soknadId}).then(function (data) {
 							$location.path('kvittering-fortsettsenere/' + soknadId);
 						});
 					}
