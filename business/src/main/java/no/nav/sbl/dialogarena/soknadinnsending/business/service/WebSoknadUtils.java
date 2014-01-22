@@ -38,11 +38,8 @@ public class WebSoknadUtils {
         if (sluttaarsak != null) {
             List<Faktum> sortertEtterDatoTil = on(sluttaarsak.getValuelist()).collect(reverseOrder(compareWith(DATO_TIL)));
             LocalDate nyesteDato = on(sortertEtterDatoTil).map(DATO_TIL).head().getOrElse(null);
-            logger.warn("ZTEST dato " +  nyesteDato);
             List<Faktum> nyesteSluttaarsaker = on(sortertEtterDatoTil).filter(where(DATO_TIL, equalTo(nyesteDato))).collect();
-            logger.warn("ZTEST size " + nyesteSluttaarsaker.size());
             boolean erPermittert = on(nyesteSluttaarsaker).filter(where(TYPE, equalTo("Permittert"))).head().isSome();
-            logger.warn("ZTEST er permittert " + erPermittert);
             return erPermittert ? DAGPENGER_VED_PERMITTERING : DAGPENGER;
         }
         return DAGPENGER;
