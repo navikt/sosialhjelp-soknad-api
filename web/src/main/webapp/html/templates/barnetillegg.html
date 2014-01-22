@@ -2,8 +2,6 @@
     <div id="barnetilleggForm" data-ng-form="barnetilleggForm" class="skjemainnhold" data-ng-controller="BarnetilleggCtrl" novalidate>
 
         <p class="informasjonstekst" cmstekster="barnetillegg.informasjon"></p>
-
-
         <div class="spm-boks vertikal" data-ng-repeat="b in barn">
             <div data-ng-class="{gutt: erGutt(b), jente:erJente(b)}" id="barnetillegg{{b.faktumId}}" class="barn">
                 <a href="#" class="lukk" data-ng-show="erBrukerregistrert(b)" data-ng-click="slettBarn(b, $index, $event)"> </a>
