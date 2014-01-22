@@ -585,29 +585,260 @@
 
             </table>
 
-			<!--<h2>Verneplikt</h2>-->
-			<!--{{#forFaktum "ikkeavtjentverneplikt"}}-->
-				<!--<table>-->
-					<!--<tr>-->
-						<!--{{#if value="true"}}-->
-							<!--<td>-->
-								<!--<span class="sjekket"></span>-->
-							<!--</td>-->
-							<!--<td>-->
-								<!--Jeg har ikke avtjent verneplikt de siste 12 mnd-->
-							<!--</td>-->
-						<!--{{else}}-->
-							<!--<td>-->
-								<!--<span class="Usjekket"></span>-->
-							<!--</td>-->
-							<!--<td>-->
-								<!--Jeg har avtjent verneplikt de siste 12 mnd-->
-							<!--</td>-->
-						<!--{{/if}}-->
-					<!--</tr>-->
-				<!--</table>-->
-			<!--{{/forFaktum}}-->
+			<h2>Verneplikt</h2>
+            <table>
+                {{#forFaktum "ikkeavtjentverneplikt"}}
+                        <tr>
+                            <td class="sjekket"></td>
+                            <td>
+                                {{#hvisSant value}}
+                                    <span>{{ hentTekst "ikkeavtjentverneplikt.true" }}</span>
+                                {{ else }}
+                                    <span>{{ hentTekst "ikkeavtjentverneplikt.false" }}</span>
+                                {{/hvisSant}}
+                            </td>
+                        </tr>
+                {{/forFaktum}}
+            </table>
 
+            <h2>Utdanning</h2>
+            <table>
+                {{#forFaktum "utdanning"}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            {{#hvisLik value "ikkeUtdanning"}}
+                                <span>{{ hentTekst "utdanning.svar.ikkeUtdanning" }}</span>
+                            {{/hvisLik}}
+
+                            {{#hvisLik value "avsluttetUtdanning"}}
+                                <span>{{ hentTekst "utdanning.svar.avsluttetUtdanning" }}</span>
+                            {{/hvisLik}}
+
+                            {{#hvisLik value "underUtdanning"}}
+                                <span>{{ hentTekst "utdanning.svar.underUtdanning" }}</span>
+                                <table>
+                                    {{#forFaktum "utdanning.kveld"}}
+                                        {{#hvisSant value}}
+                                            <tr>
+                                                <td class="kulepunkt"></td>
+                                                <td>
+                                                    <span>{{ hentTekst "utdanning.svar.under.utdanning.kveld"}}</span>
+                                                    <table>
+                                                        {{#forFaktum "utdanning.kveld.folges"}}
+                                                            <tr>
+                                                                <td class="kulepunkt"></td>
+                                                                <td>
+                                                                    {{#hvisSant value}}
+                                                                        <span>{{ hentTekst "utdanning.svar.under.utdanning.kveld.undervisning.folges.true" }}</span>
+                                                                    {{ else }}
+                                                                        <span>{{ hentTekst "utdanning.svar.under.utdanning.kveld.undervisning.folges.false" }}</span>
+                                                                    {{/hvisSant}}
+                                                                </td>
+                                                            </tr>
+                                                        {{/forFaktum}}
+
+                                                        {{#forFaktum "utdanning.kveld.progresjonUnder50"}}
+                                                            <tr>
+                                                                <td class="kulepunkt"></td>
+                                                                <td>
+                                                                    {{#hvisSant value}}
+                                                                        <span>{{ hentTekst "utdanning.progresjon.true" }}</span>
+                                                                    {{ else }}
+                                                                        <span>{{ hentTekst "utdanning.progresjon.false" }}</span><
+                                                                        <table>
+                                                                            {{#forFaktum "utdanning.kveld.PaabegyntUnder6mnd"}}
+                                                                                <tr>
+                                                                                    <td class="kulepunkt"></td>
+                                                                                    <td>
+                                                                                        {{#hvisSant value}}
+                                                                                            <span>{{ hentTekst "utdanning.paabegyntUnder6mnd.true" }}</span>
+                                                                                        {{ else }}
+                                                                                            <span>{{ hentTekst "utdanning.paabegyntUnder6mnd.false" }}</span>
+                                                                                        {{/hvisSant}}
+                                                                                    </td>
+                                                                                </tr>
+                                                                            {{/forFaktum}}
+                                                                        </table>
+                                                                    {{/hvisSant}}
+                                                                </td>
+                                                            </tr>
+                                                        {{/forFaktum}}
+
+                                                        {{#forFaktum "utdanning.kveld.sted"}}
+                                                            <tr>
+                                                                <td class="kulepunkt"></td>
+                                                                <td>
+                                                                    <span>{{ hentTekst "utdanning.utdanningssted.navn" }}:</span>
+                                                                    <span>{{ value }}</span>
+                                                                </td>
+                                                            </tr>
+                                                        {{/forFaktum}}
+
+                                                        {{#forFaktum "utdanning.kveld.varighet"}}
+                                                            <tr>
+                                                                <td class="kulepunkt"></td>
+                                                                <td>
+                                                                    <span>{{ hentTekst "utdanning.varighet" }}</span>
+                                                                    <span>{{ properties.varighetFra }}</span> <!--TODO Formattering dato-->
+                                                                    <span>{{ properties.varighetTil }}</span> <!--TODO Formattering dato-->
+                                                                </td>
+                                                            </tr>
+                                                        {{/forFaktum}}
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        {{/hvisSant}}
+                                    {{/forFaktum}}
+
+                                    {{#forFaktum "utdanning.kortvarig"}}
+                                        {{#hvisSant value}}
+                                            <tr>
+                                                <td class="kulepunkt"></td>
+                                                <td>
+                                                    <span>{{ hentTekst "utdanning.svar.under.utdanning.kortvarig"}}</span>
+                                                    <table>
+                                                        {{#forFaktum "utdanning.kortvarig.sted"}}
+                                                            <tr>
+                                                                <td class="kulepunkt"></td>
+                                                                <td>
+                                                                    <span>{{ hentTekst "utdanning.utdanningssted.navn" }}:</span>
+                                                                    <span>{{ value }}</span>
+                                                                </td>
+                                                            </tr>
+                                                        {{/forFaktum}}
+
+                                                        {{#forFaktum "utdanning.kortvarig.navn"}}
+                                                            <tr>
+                                                                <td class="kulepunkt"></td>
+                                                                <td>
+                                                                    <span>{{ hentTekst "utdanning.utdanning.navn" }}:</span>
+                                                                    <span>{{ value }}</span>
+                                                                </td>
+                                                            </tr>
+                                                        {{/forFaktum}}
+
+                                                        {{#forFaktum "utdanning.kortvarig.varighet"}}
+                                                            <tr>
+                                                                <td class="kulepunkt"></td>
+                                                                <td>
+                                                                    <span>{{ hentTekst "utdanning.varighet" }}</span>
+                                                                    <span>{{ properties.varighetFra }}</span> <!--TODO Formattering dato-->
+                                                                    <span>{{ properties.varighetTil }}</span> <!--TODO Formattering dato-->
+                                                                </td>
+                                                            </tr>
+                                                        {{/forFaktum}}
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        {{/hvisSant}}
+                                    {{/forFaktum}}
+
+                                    {{#forFaktum "utdanning.kortvarigflere"}}
+                                        {{#hvisSant value}}
+                                            <tr>
+                                                <td class="kulepunkt"></td>
+                                                <td>
+                                                    <span>{{ hentTekst "utdanning.svar.under.utdanning.kortvarigflere"}}</span>
+                                                    <table>
+                                                        {{#forFaktum "utdanning.kortvarigflere.sted"}}
+                                                            <tr>
+                                                                <td class="kulepunkt"></td>
+                                                                <td>
+                                                                    <span>{{ hentTekst "utdanning.utdanningssted.navn" }}:</span>
+                                                                    <span>{{ value }}</span>
+                                                                </td>
+                                                            </tr>
+                                                        {{/forFaktum}}
+
+                                                        {{#forFaktum "utdanning.kortvarigflere.navn"}}
+                                                            <tr>
+                                                                <td class="kulepunkt"></td>
+                                                                <td>
+                                                                    <span>{{ hentTekst "utdanning.utdanning.navn" }}:</span>
+                                                                    <span>{{ value }}</span>
+                                                                </td>
+                                                            </tr>
+                                                        {{/forFaktum}}
+
+                                                        {{#forFaktum "utdanning.kortvarigflere.varighet"}}
+                                                            <tr>
+                                                                <td class="kulepunkt"></td>
+                                                                <td>
+                                                                    <span>{{ hentTekst "utdanning.varighet" }}</span>
+                                                                    <span>{{ properties.varighetFra }}</span> <!--TODO Formattering dato-->
+                                                                    <span>{{ properties.varighetTil }}</span> <!--TODO Formattering dato-->
+                                                                </td>
+                                                            </tr>
+                                                        {{/forFaktum}}
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        {{/hvisSant}}
+                                    {{/forFaktum}}
+
+                                    {{#forFaktum "utdanning.norsk"}}
+                                        {{#hvisSant value}}
+                                            <tr>
+                                                <td class="kulepunkt"></td>
+                                                <td>
+                                                    <span>{{ hentTekst "utdanning.svar.under.utdanning.norsk"}}</span>
+                                                    <table>
+                                                        {{#forFaktum "utdanning.norsk.sted"}}
+                                                            <tr>
+                                                                <td class="kulepunkt"></td>
+                                                                <td>
+                                                                    <span>{{ hentTekst "utdanning.utdanningssted.navn" }}:</span>
+                                                                    <span>{{ value }}</span>
+                                                                </td>
+                                                            </tr>
+                                                        {{/forFaktum}}
+
+                                                        {{#forFaktum "utdanning.norsk.varighet"}}
+                                                            <tr>
+                                                                <td class="kulepunkt"></td>
+                                                                <td>
+                                                                    <span>{{ hentTekst "utdanning.varighet" }}</span>
+                                                                    <span>{{ properties.varighetFra }}</span> <!--TODO Formattering dato-->
+                                                                    <span>{{ properties.varighetTil }}</span> <!--TODO Formattering dato-->
+                                                                </td>
+                                                            </tr>
+                                                        {{/forFaktum}}
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        {{/hvisSant}}
+                                    {{/forFaktum}}
+
+                                    {{#forFaktum "utdanning.introduksjon"}}
+                                        {{#hvisSant value}}
+                                            <tr>
+                                                <td class="kulepunkt"></td>
+                                                <td>
+                                                    <span>{{ hentTekst "utdanning.svar.under.utdanning.introduksjon"}}</span>
+                                                </td>
+                                            </tr>
+                                        {{/hvisSant}}
+                                    {{/forFaktum}}
+
+                                    {{#forFaktum "underUtdanningAnnet"}}
+                                        {{#hvisSant value}}
+                                            <tr>
+                                                <td class="kulepunkt"></td>
+                                                <td>
+                                                    <span>{{ hentTekst "utdanning.svar.under.utdanning.nei"}}</span>
+                                                </td>
+                                            </tr>
+                                        {{/hvisSant}}
+                                    {{/forFaktum}}
+
+
+                                </table>
+                            {{/hvisLik}}
+                        </td>
+                    </tr>
+                {{/forFaktum}}
+            </table>
 			<!--<h2>Andre ytelser</h2>-->
 			<!--{{#forFaktaStarterMed "andreytelser"}}-->
 				<!--{{#each }}-->

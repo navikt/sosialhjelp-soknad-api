@@ -136,6 +136,18 @@ public class HandleBarKjoerer {
                 }
             }
         });
+
+        handlebars.registerHelper("hvisLik", new Helper<String>() {
+            @Override
+            public CharSequence apply(String value, Options options) throws IOException {
+                if(value != null && value.equals(options.param(0))){
+                    return options.fn(this);
+                } else {
+                    return options.inverse(this);
+                }
+            }
+        });
+
         handlebars.registerHelper("hentTekst", new Helper<String>() {
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
