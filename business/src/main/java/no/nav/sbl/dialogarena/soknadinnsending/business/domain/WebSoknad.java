@@ -228,6 +228,7 @@ public class WebSoknad implements Serializable {
         }).collect();
 
     }
+
     public List<Faktum> getFaktaSomStarterMed(final String key) {
         return on(faktaListe).filter(new Predicate<Faktum>() {
             @Override
@@ -238,4 +239,13 @@ public class WebSoknad implements Serializable {
 
     }
 
+    public List<Faktum> getFaktaMedKeyOgParentFaktum(final String key, final Long parentFaktumId) {
+        return on(faktaListe).filter(new Predicate<Faktum>() {
+            @Override
+            public boolean evaluate(Faktum faktum) {
+                return faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId);
+            }
+        }).collect();
+
+    }
 }

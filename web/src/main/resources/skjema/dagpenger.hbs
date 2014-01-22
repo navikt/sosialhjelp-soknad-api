@@ -1147,12 +1147,33 @@
             </table>
 
 
-			<!--<h2>Barn som det søkes barnetilegg for</h2>-->
-			<!--{{#forFakta "barn"}}-->
-				<!--{{#each this}}-->
-					<!--{{properties.navn}}, født den {{properties.fodselsdato}}, bor i norge, inntekt på {{properties.inntekt}}-->
-				<!--{{/each}}-->
-			<!--{{/forFakta}}-->
+			<h2>Barn som det søkes barnetillegg for</h2>
+            <table>
+                {{#forFakta "barn"}}
+                    {{#forBarneFaktum "barnetillegg" faktumId}}
+                        {{#hvisSant value}}
+                            <tr>
+                                <td class="sjekket"></td>
+                                <td>
+                                    <span>{{ properties.sammensattnavn }},</span>
+                                    <span>{{ hentTekst "dagpenger.oppsummering.fodt" }}</span>
+                                    <span>{{ properties.fodselsdato }}</span>
+                                </td>
+                            </tr>
+                        {{/hvisSant}}
+                    {{/forBarneFaktum}}
+                {{else}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            <span>{{ hentTekst "dagpenger.oppsummering.ingenBarn" }}</span>
+                        </td>
+                    </tr>
+                {{/forFakta}}
+            </table>
+
+
+
 
 			<!--<h2>Vedlegg</h2>-->
 			<!--<table>-->
