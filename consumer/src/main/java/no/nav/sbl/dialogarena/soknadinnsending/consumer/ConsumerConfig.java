@@ -87,7 +87,7 @@ public class ConsumerConfig {
 
         @Bean
         public FilLagerPortType fillagerService() {
-            return factory().withSystemSecurity().get();
+            return factory().withMDC().withUserSecurity().get();
         }
 
         @Bean
