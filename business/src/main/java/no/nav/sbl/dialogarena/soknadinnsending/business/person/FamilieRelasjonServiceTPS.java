@@ -98,4 +98,15 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
         request.setIdent(ident);
         return request;
     }
+
+    @Override
+    public boolean ping() {
+        try {
+            personConnector.ping();
+            return true;
+        } catch (RuntimeException e) {
+            return false;
+        }
+
+    }
 }

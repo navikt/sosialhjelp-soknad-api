@@ -14,4 +14,6 @@ public interface PersonService {
      * @return
      */
     Person hentPerson(Long soknadId, String ident);
+    
+    boolean ping();
 }
