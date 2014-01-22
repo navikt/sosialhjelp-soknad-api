@@ -280,8 +280,10 @@ function settCaretPosisjon(element, posisjon) {
 }
 
 function settFokusTilNesteElement(inputElement) {
-	var fokuserbareElementer = $('input, a, select, button, textarea').filter(function () {
+	console.log(inputElement)
+    var fokuserbareElementer = $('input, a, select, button, textarea').filter(function () {
 		return $(this).css('display') !== 'none';
 	});
-	fokuserbareElementer.eq(fokuserbareElementer.index(inputElement) + 1).focus();
+
+    fokuserbareElementer.eq(fokuserbareElementer.index(inputElement) + 1).focus();
 }
