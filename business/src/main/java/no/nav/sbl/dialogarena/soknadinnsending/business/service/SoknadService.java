@@ -26,6 +26,7 @@ import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.Splitter;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,10 +51,11 @@ import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLIn
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getJournalforendeEnhet;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getSkjemanummer;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
 public class SoknadService implements SendSoknadService, VedleggService {
-
+    private static final Logger logger = getLogger(SoknadService.class);
     private static final String BRUKERREGISTRERT_FAKTUM = "BRUKERREGISTRERT";
     private static final String SYSTEMREGISTRERT_FAKTUM = "SYSTEMREGISTRERT";
     @Inject
@@ -151,7 +153,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
         List<Vedlegg> vedleggForventnings = hentPaakrevdeVedlegg(soknadId);
         String skjemanummer = getSkjemanummer(soknad);
+        logger.warn("sendsoknad har " + skjemanummer + " for " + soknadId);
         String journalforendeEnhet = getJournalforendeEnhet(soknad);
+        logger.warn("sendsoknad har " + journalforendeEnhet + " for " + soknadId);
         XMLHovedskjema hovedskjema = new XMLHovedskjema()
                 .withInnsendingsvalg(LASTET_OPP.toString())
                 .withSkjemanummer(skjemanummer)

@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Person;
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +26,10 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Person.GJE
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Person.MELLOMNAVNKEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.DATO_TIL;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.TYPE;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class WebSoknadUtils {
-
+    private static final Logger logger = getLogger(WebSoknadUtils.class);
     public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
     public static final String DAGPENGER = "NAV 04-01.03";
 
@@ -36,8 +38,11 @@ public class WebSoknadUtils {
         if (sluttaarsak != null) {
             List<Faktum> sortertEtterDatoTil = on(sluttaarsak.getValuelist()).collect(reverseOrder(compareWith(DATO_TIL)));
             LocalDate nyesteDato = on(sortertEtterDatoTil).map(DATO_TIL).head().getOrElse(null);
+            logger.warn("ZTEST dato " +  nyesteDato);
             List<Faktum> nyesteSluttaarsaker = on(sortertEtterDatoTil).filter(where(DATO_TIL, equalTo(nyesteDato))).collect();
+            logger.warn("ZTEST size " + nyesteSluttaarsaker.size());
             boolean erPermittert = on(nyesteSluttaarsaker).filter(where(TYPE, equalTo("Permittert"))).head().isSome();
+            logger.warn("ZTEST er permittert " + erPermittert);
             return erPermittert ? DAGPENGER_VED_PERMITTERING : DAGPENGER;
         }
         return DAGPENGER;
