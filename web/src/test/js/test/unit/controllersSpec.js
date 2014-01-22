@@ -34,13 +34,12 @@ describe('DagpengerControllere', function () {
             fakta: [],
             finnFaktum: function(faktumKey) {},
             finnFakta: function(faktumKey) {},
-            soknad: {soknadId:1}
+            soknad: {soknadId: 1}
         });
         $provide.value("cms", {});
         $provide.value("personalia", {
             alder: 61
         });
-        $provide.constant('lagreSoknadData', "OPPDATER_OG_LAGRE");
     }));
 
     beforeEach(inject(function ($rootScope, $controller, $compile, $httpBackend) {

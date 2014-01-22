@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventning;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
@@ -63,7 +64,7 @@ public class SoknadDataController {
     @RequestMapping(value = "/options/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public SoknadStruktur hentSoknadStruktur(@PathVariable Long soknadId) {
-        String type = soknadService.hentSoknad(soknadId).getGosysId() + ".xml";
+        String type = soknadService.hentSoknad(soknadId).getskjemaNummer() + ".xml";
         try {
             Unmarshaller unmarshaller = newInstance(SoknadStruktur.class)
                     .createUnmarshaller();
@@ -74,21 +75,16 @@ public class SoknadDataController {
         }
     }
 
-    @RequestMapping(value = "{soknadId}/forventning", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
-    @ResponseBody()
-    public List<VedleggForventning> hentPaakrevdeVedlegg(
-            @PathVariable final Long soknadId) {
-        return vedleggService.hentPaakrevdeVedlegg(soknadId);
-    }
+
 
     @RequestMapping(value = "{soknadId}/{faktumId}/forventning", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
-    public List<VedleggForventning> hentPaakrevdeVedleggForFaktum(
+    public List<Vedlegg> hentPaakrevdeVedleggForFaktum(
             @PathVariable final Long soknadId, @PathVariable final Long faktumId) {
-        return on(vedleggService.hentPaakrevdeVedlegg(soknadId)).filter(new Predicate<VedleggForventning>() {
+        return on(vedleggService.hentPaakrevdeVedlegg(soknadId)).filter(new Predicate<Vedlegg>() {
             @Override
-            public boolean evaluate(VedleggForventning vedleggForventning) {
-                return vedleggForventning.getFaktum().getFaktumId().equals(faktumId);
+            public boolean evaluate(Vedlegg vedleggForventning) {
+                return vedleggForventning.getFaktumId().equals(faktumId);
             }
         }).collect();
     }

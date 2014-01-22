@@ -43,9 +43,9 @@ angular.module('app.brukerdata', ['app.services'])
             var fakta = $.map(result.fakta, function (element) {
                 return element.type;
             });
-            $scope.data.krevBekreftelse = $.inArray("BRUKERREGISTRERT", fakta) > 0;
+            $scope.krevBekreftelse.value = $.inArray("BRUKERREGISTRERT", fakta) > 0;
 
-            if (!$scope.data.krevBekreftelse) {
+            if (!$scope.krevBekreftelse.value) {
                 $scope.submitForm();
             }
         })

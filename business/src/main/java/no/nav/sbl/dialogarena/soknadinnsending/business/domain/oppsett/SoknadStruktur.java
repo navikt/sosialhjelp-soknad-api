@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 
 import org.apache.commons.collections15.Predicate;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -17,18 +16,9 @@ import static no.nav.modig.lang.collections.IterUtils.on;
 @XmlRootElement(name = "soknad")
 public class SoknadStruktur implements Serializable {
 
-    private String gosysId;
     private List<SoknadFaktum> fakta = new ArrayList<>();
     private List<SoknadVedlegg> vedlegg = new ArrayList<>();
 
-    @XmlAttribute
-    public String getGosysId() {
-        return gosysId;
-    }
-
-    public void setGosysId(String gosysId) {
-        this.gosysId = gosysId;
-    }
 
     @XmlElement(name = "faktum")
     public List<SoknadFaktum> getFakta() {
@@ -51,7 +41,6 @@ public class SoknadStruktur implements Serializable {
     @Override
     public String toString() {
         return new StringBuilder("SoknadStruktur{")
-                .append("gosysId='").append(gosysId).append('\'')
                 .append(", fakta=").append(fakta)
                 .append(", vedlegg=").append(vedlegg)
                 .append('}')

@@ -8,7 +8,7 @@
 					<div class="form-linje">
 						<label>
 							<span data-cmstekster="dagpenger.fortsettSenere.epost.label"> </span>
-							<input type="email" name="epost" role="textbox" data-ng-model="soknadData.fakta.epost.value"
+							<input type="email" name="epost" role="textbox" data-ng-model="epost.value"
 									data-error-messages="{required: 'dagpenger.fortsettSenere.epost.required.feilmelding', pattern: 'dagpenger.fortsettSenere.epost.pattern.feilmelding' }"
 									data-ng-required="true" data-ng-pattern="/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}$/" data-blur-validate/>
 						</label>
@@ -22,7 +22,6 @@
 				<p data-cmstekster="dagpenger.fortsettSenere.info.frister"></p>
 				<p data-cmstekster="dagpenger.fortsettSenere.info.konsekvenser"></p>
 			</div>
-
 			<div class="lenker-dot">
 				<a href="#/soknad" id="tilOversikt" role="link" data-cmstekster="dagpenger.fortsettSenere.tilbake"></a>
 				<a href="https://tjenester-t11.nav.no/inngangsporten/innlogget" id="dittnav" role="link" data-cmstekster="dagpenger.fortsettSenere.dittNav"></a>
