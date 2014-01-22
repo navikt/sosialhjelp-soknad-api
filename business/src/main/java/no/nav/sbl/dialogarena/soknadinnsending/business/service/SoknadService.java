@@ -153,9 +153,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
         List<Vedlegg> vedleggForventnings = hentPaakrevdeVedlegg(soknadId);
         String skjemanummer = getSkjemanummer(soknad);
-        logger.warn("sendsoknad har " + skjemanummer + " for " + soknadId);
         String journalforendeEnhet = getJournalforendeEnhet(soknad);
-        logger.warn("sendsoknad har " + journalforendeEnhet + " for " + soknadId);
         XMLHovedskjema hovedskjema = new XMLHovedskjema()
                 .withInnsendingsvalg(LASTET_OPP.toString())
                 .withSkjemanummer(skjemanummer)
