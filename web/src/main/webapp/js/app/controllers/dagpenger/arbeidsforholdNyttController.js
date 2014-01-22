@@ -11,6 +11,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 			'Permittert'              : {url: '../html/templates/arbeidsforhold/permittert.html'}
 		};
 		$scope.land = data.land;
+        $scope.soknadId = data.soknad.soknadId;
 
 		var url = $location.$$url;
 		var endreModus = url.indexOf('endrearbeidsforhold') !== -1;
@@ -86,7 +87,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 			$scope.sluttaarsak.$save({soknadId: data.soknad.soknadId}).then(function (sluttaarsakData) {
 				$scope.sluttaarsak = sluttaarsakData;
 				oppdaterFaktumListe('sluttaarsak');
-				$location.path('dagpenger/' + data.soknad.soknadId);
+				$location.path('soknad/');
 			});
 		}
 

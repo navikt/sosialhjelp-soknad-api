@@ -1,6 +1,9 @@
 angular.module('nav.barnetillegg', [])
 	.controller('BarnetilleggCtrl', ['$scope', '$cookieStore', '$location', '$timeout', 'Faktum', 'data', function ($scope, $cookieStore, $location, $timeout, Faktum, data) {
 
+        $scope.soknadId = data.soknad.soknadId;
+        $scope.barn = data.finnFakta('barn');
+
 		$scope.erBrukerregistrert = function (barn) {
 			return barn.type === 'BRUKERREGISTRERT';
 		};
@@ -16,25 +19,26 @@ angular.module('nav.barnetillegg', [])
 		$scope.leggTilBarn = function ($event) {
 			$event.preventDefault();
 			settBarnCookie();
-			$location.path('nyttbarn/' + $scope.soknadData.soknadId);
+			$location.path('nyttbarn/');
 		};
 
 		$scope.endreBarn = function (faktumId, $event) {
 			$event.preventDefault();
 			settBarnCookie(faktumId);
-			$location.path('endrebarn/' + $scope.soknadData.soknadId + '/' + faktumId);
+			$location.path('endrebarn/' + faktumId);
 		};
 
 		$scope.sokbarnetillegg = function (faktumId, $event) {
 			$event.preventDefault();
 			settBarnCookie(faktumId);
-			$location.path('sokbarnetillegg/' + $scope.soknadData.soknadId + '/' + faktumId);
+			$location.path('sokbarnetillegg/' + faktumId);
 		};
 
 		$scope.slettBarn = function (b, index, $event) {
 			$event.preventDefault();
-			
-			$scope.soknadData.fakta.barn.valuelist.splice(index, 1);
+
+            var barn = data.finnFakta('barn')
+            barn.splice(index, 1);
 			data.slettFaktum(b);
 		};
 
