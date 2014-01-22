@@ -148,6 +148,9 @@ angular.module('sendsoknad')
                         });
                         return res;
                     };
+                    data.leggTilFaktum = function(faktum) {
+                        data.fakta.push(faktum);
+                    };
 
                     data.slettFaktum = function(faktumData) {
                         $scope.faktumSomSkalSlettes = new Faktum(faktumData);
