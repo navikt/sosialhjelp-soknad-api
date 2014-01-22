@@ -1,6 +1,7 @@
 angular.module('nav.barn', ['app.services'])
 
 	.controller('BarneCtrl', ['$scope', 'Faktum', 'data', '$cookieStore', '$location', function ($scope, Faktum, data, $cookieStore, $location) {
+		var soknadId = data.soknad.soknadId;
 		var url = $location.$$url;
 		var endreModus = url.indexOf('endrebarn') !== -1;
 		var barnetilleggModus = url.indexOf('sokbarnetillegg') !== -1;
@@ -38,18 +39,18 @@ angular.module('nav.barn', ['app.services'])
 					}
 				});
 			}
-            var ikkebarneinntekt = data.finnFakta('ikkebarneinntekt')
-			if (ikkebarneinntekt) {
-				angular.forEach(ikkebarneinntekt, function (value) {
+            var ikkebarneinntektFaktum = data.finnFakta('ikkebarneinntekt')
+			if (ikkebarneinntektFaktum) {
+				angular.forEach(ikkebarneinntektFaktum, function (value) {
 					if (value.parrentFaktum.toString() === faktumId) {
 						$scope.ikkebarneinntekt = value;
 						ikkebarneinntekt = value;
 					}
 				});
 			}
-            var barneinntekttall = data.finnFakta('barneinntekttall')
-			if (barneinntekttall) {
-				angular.forEach(barneinntekttall, function (value) {
+            var barneinntekttallFaktum = data.finnFakta('barneinntekttall')
+			if (barneinntekttallFaktum) {
+				angular.forEach(barneinntekttallFaktum, function (value) {
 					if (value.parrentFaktum.toString() === faktumId) {
 						$scope.nyttbarn.barneinntekttall = value;
 						barneinntekttall = value;
@@ -64,7 +65,7 @@ angular.module('nav.barn', ['app.services'])
 			$scope.barn = new Faktum(barneData);
 			$scope.land = data.land;
 		} else if (barnetilleggModus) {
-            var barn = data.finnFakta('barn')
+            var barn = data.finnFakta('barn');
 			angular.forEach(barn, function (value) {
 				if (value.faktumId.toString() === faktumId) {
 					$scope.barnenavn = value.properties.sammensattnavn;
@@ -144,7 +145,7 @@ angular.module('nav.barn', ['app.services'])
 		 * Til slutt legges de to faktumene inn i sine respektive lister for at de skal vises i 'oppsummeringsmodus'
 		 **/
 		function lagreBarnOgBarnetilleggFaktum() {
-			$scope.barn.$save({soknadId: $scope.soknadId}).then(function (barnData) {
+			$scope.barn.$save({soknadId: soknadId}).then(function (barnData) {
 				$scope.barn = barnData;
 				oppdaterFaktumListe('barn');
 				oppdaterCookieValue(barnData.faktumId);
@@ -163,10 +164,10 @@ angular.module('nav.barn', ['app.services'])
 
 			$scope.barnetillegg = new Faktum(barnetilleggsData);
 
-			$scope.barnetillegg.$save({soknadId: $scope.soknadId}).then(function (data) {
-				$scope.barnetillegg = data;
+			$scope.barnetillegg.$save({soknadId: soknadId}).then(function (value) {
+				$scope.barnetillegg = value;
 				oppdaterFaktumListe('barnetillegg');
-				$scope.barn = new Faktum(barneData);
+				//$scope.barn = new Faktum(barneData);
 
 				if (ikkebarneinntekt === undefined) {
 					ikkebarneinntekt = {
@@ -177,8 +178,8 @@ angular.module('nav.barn', ['app.services'])
 				}
 
 				$scope.nyttBarnIkkeBarneInntekt = new Faktum(ikkebarneinntekt);
-				$scope.nyttBarnIkkeBarneInntekt.$save({soknadId: $scope.soknadId}).then(function (data) {
-					$scope.ikkebarneinntekt = data;
+				$scope.nyttBarnIkkeBarneInntekt.$save({soknadId: $scope.soknadId}).then(function (value) {
+					$scope.ikkebarneinntekt = value;
 					oppdaterFaktumListe('ikkebarneinntekt');
 
 					if ($scope.barnetHarInntekt()) {
@@ -191,25 +192,24 @@ angular.module('nav.barn', ['app.services'])
 						}
 
 						$scope.nyttBarnBarneInntektTall = new Faktum(barneinntekttall);
-						$scope.nyttBarnBarneInntektTall.$save({soknadId: $scope.soknadId}).then(function (data) {
-							$scope.nyttbarn.barneinntekttall = data;
+						$scope.nyttBarnBarneInntektTall.$save({soknadId: $scope.soknadId}).then(function (value) {
+							$scope.nyttbarn.barneinntekttall = value;
 
-                            var barneinntekttall = data.finnFakta('barneinntekttall');
-                            barneinntekttall.push($scope.nyttbarn.barneinntekttall);
+							data.leggTilFaktum($scope.nyttbarn.barneinntekttall);
 
-                            $scope.ikkebarneinntekt = false;
-							$location.path('dagpenger/' + $scope.soknadId);
+							$scope.ikkebarneinntekt = false;
+							$location.path('soknad/');
 						});
 					} else {
 						$scope.ikkebarneinntekt = false;
-						$location.path('dagpenger/' + $scope.soknadId);
+						$location.path('soknad/');
 					}
 				});
 			});
 		}
 
 		function oppdaterFaktumListe(type) {
-            var faktaType = data.finnFakta(type)
+            var faktaType = data.finnFakta(type);
 			if (faktaType.length > 0) {
 				if (endreModus) {
 					angular.forEach(faktaType, function (value, index) {

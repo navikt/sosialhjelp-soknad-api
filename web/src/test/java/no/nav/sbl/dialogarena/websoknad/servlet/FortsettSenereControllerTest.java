@@ -7,8 +7,8 @@ public class FortsettSenereControllerTest {
 
 	@Test
 	public void skalKunneGenerereGjenopptaUrl() {
-		Assert.assertEquals("http://a34duvw22583.devillo.no:8181/sendsoknad/soknad/Dagpenger#/dagpenger/244",
-				ServerUtils.getGjenopptaUrl("http://a34duvw22583.devillo.no:8181/sendsoknad/rest/soknad/244/fortsettsenere", 244));
+		Assert.assertEquals("http://a34duvw22583.devillo.no:8181/sendsoknad/soknad/abc-123-def#/soknad",
+				ServerUtils.getGjenopptaUrl("http://a34duvw22583.devillo.no:8181/sendsoknad/rest/soknad/244/fortsettsenere", "abc-123-def"));
 	}
 	
 }
