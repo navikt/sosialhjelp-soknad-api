@@ -103,7 +103,11 @@ public class HandleBarKjoerer {
                 WebSoknad soknad = finnWebSoknad(options.context);
                 List<Faktum> fakta = soknad.getFaktaMedKey(key);
 
-                return lagItererbarRespons(options, fakta);
+                if (fakta.isEmpty()) {
+                    return options.inverse(this);
+                } else {
+                    return lagItererbarRespons(options, fakta);
+                }
             }
         });
         handlebars.registerHelper("forFaktaStarterMed", new Helper<String>() {
@@ -114,6 +118,16 @@ public class HandleBarKjoerer {
                 return lagItererbarRespons(options, fakta);
             }
         });
+        handlebars.registerHelper("forBarneFaktum", new Helper<String>() {
+            @Override
+            public CharSequence apply(String key, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                Long parentFaktumId = options.param(0);
+                Faktum faktum = soknad.getFaktaMedKeyOgParentFaktum(key, parentFaktumId).get(0);
+                return options.fn(faktum);
+            }
+        });
+
         handlebars.registerHelper("hvisSant", new Helper<String>() {
             @Override
             public CharSequence apply(String value, Options options) throws IOException {
