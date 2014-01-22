@@ -24,7 +24,8 @@
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'LastetOpp')" data-cmstekster="vedlegg.behandlet.lastetopp"></div>
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesSenere')" data-cmstekster="vedlegg.behandlet.sendessenere"></div>
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesIkke')" data-cmstekster="vedlegg.behandlet.sendesikke"></div>
-                                <h2 class="stor"><span data-cmstekster="{{soknadData.skjemaNummer}}.vedlegg.{{forventning.skjemaNummer}}.header"></span><span data-ng-if="forventning.navn">: {{forventning.navn}}</span></h2>
+                                <!--h2 class="stor"><span data-cmstekster="{{soknadData.skjemaNummer}}.vedlegg.{{forventning.skjemaNummer}}.header"></span><span data-ng-if="forventning.navn">: {{forventning.navn}}</span></h2 -->
+                                <h2 class="stor"><span >{{forventning.tittel}}</span><span data-ng-if="forventning.navn">: {{forventning.navn}}</span></h2>
                             </div>
                         </div>
                     </div>
