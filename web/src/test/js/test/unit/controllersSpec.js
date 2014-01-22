@@ -33,7 +33,8 @@ describe('DagpengerControllere', function () {
         $provide.value("data", {
             fakta: [],
             finnFaktum: function(faktumKey) {},
-            finnFakta: function(faktumKey) {}
+            finnFakta: function(faktumKey) {},
+            soknad: {soknadId:1}
         });
         $provide.value("cms", {});
         $provide.value("personalia", {
