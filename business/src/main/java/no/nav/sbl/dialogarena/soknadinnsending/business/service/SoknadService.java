@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.melding.domene.brukerdialog.behandlngsinformasjon.v1.XMLHovedskjema;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.Nokkel;
 import no.nav.sbl.dialogarena.detect.Detect;
