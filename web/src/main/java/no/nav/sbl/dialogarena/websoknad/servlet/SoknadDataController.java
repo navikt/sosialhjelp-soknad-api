@@ -121,15 +121,13 @@ public class SoknadDataController {
 
     @RequestMapping(value = "/opprett/{soknadType}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody()
-    public WebSoknadId opprettSoknad(@PathVariable String soknadType) {
-        // Må legges til i forbindelse med kobling mot henvendelse.
-        // String behandlingsId =
-        // henvendelseConnector.startSoknad(SubjectHandler.getSubjectHandler().getUid(),
-        // null);
-        Long id = soknadService.startSoknad(soknadType);
-        WebSoknadId soknadId = new WebSoknadId();
-        soknadId.setId(id);
-        return soknadId;
+    public Map<String,String> opprettSoknad(@PathVariable String soknadType) {
+        Map<String, String> result = new HashMap<>();
+        
+        String behandlingId = soknadService.startSoknad(soknadType);
+        result.put("brukerbehandlingId", behandlingId);
+        
+        return result;
     }
 
     @RequestMapping(value = "/delete/{soknadId}", method = RequestMethod.POST)

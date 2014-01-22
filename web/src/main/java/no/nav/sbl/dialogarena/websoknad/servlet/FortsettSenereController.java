@@ -31,11 +31,11 @@ public class FortsettSenereController {
     @Inject
     private EmailService emailService;
 
-    @RequestMapping(value = "/{soknadId}/fortsettsenere", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{behandlingId}/fortsettsenere", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseBody()
-    public void sendEpost(HttpServletRequest request, @PathVariable Long soknadId, @RequestBody FortsettSenere epost) {
+    public void sendEpost(HttpServletRequest request, @PathVariable String behandlingId, @RequestBody FortsettSenere epost) {
         ValueMap map = new ValueMap();
-        map.put("url", getGjenopptaUrl(request.getRequestURL().toString(), soknadId));
+        map.put("url", getGjenopptaUrl(request.getRequestURL().toString(), behandlingId));
         String content = new StringResourceModel("fortsettSenere.sendEpost.epostInnhold", of(map)).getString();
         emailService.sendFortsettSenereEPost(epost.getEpost(), "Lenke til påbegynt dagpengesøknad", content);
     }

@@ -87,7 +87,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 			$scope.sluttaarsak.$save({soknadId: data.soknad.soknadId}).then(function (sluttaarsakData) {
 				$scope.sluttaarsak = sluttaarsakData;
 				oppdaterFaktumListe('sluttaarsak');
-				$location.path('dagpenger/' + data.soknad.soknadId);
+				$location.path('soknad/');
 			});
 		}
 

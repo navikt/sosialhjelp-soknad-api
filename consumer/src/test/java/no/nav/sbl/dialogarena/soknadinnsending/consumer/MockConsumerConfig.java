@@ -44,6 +44,8 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -51,6 +53,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -63,12 +66,17 @@ public class MockConsumerConfig {
 
     @Configuration
     public static class SendSoknadWSConfig {
-        private int id = 0;
-
+        
         @Bean
         public SendSoknadPortType sendSoknadService() {
             SendSoknadPortType mock = mock(SendSoknadPortType.class);
-            when(mock.startSoknad(any(WSStartSoknadRequest.class))).thenReturn(new WSBehandlingsId().withBehandlingsId("ID" + id++));
+            when(mock.startSoknad(any(WSStartSoknadRequest.class))).thenAnswer(new Answer<WSBehandlingsId>(){
+                @Override
+                public WSBehandlingsId answer(InvocationOnMock invocation) throws Throwable {
+                    return new WSBehandlingsId().withBehandlingsId(UUID.randomUUID().toString());
+                }
+                
+            });
             return mock;
         }
 

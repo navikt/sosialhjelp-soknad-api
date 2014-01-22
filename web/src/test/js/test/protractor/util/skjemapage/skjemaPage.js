@@ -3,7 +3,7 @@ var Page = require('astrolabe').Page;
 
 module.exports = Page.create({
     url: {
-        value: '#/dagpenger'
+        value: '#/soknad'
     },
     reellarbeidssoker: require('./reellArebeidssokerBolk.js'),
     arbeidsforhold: require('./arbeidsforholdBolk.js'),

@@ -46,7 +46,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/dagpenger/:soknadId', {
+			.when('/soknad', {
 				templateUrl: '../html/dagpenger-singlepage.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -54,7 +54,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/fortsettsenere/:soknadId', {
+			.when('/fortsettsenere', {
 				templateUrl: '../html/templates/fortsettSenere.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (EpostResolver) {
@@ -62,7 +62,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/kvittering-fortsettsenere/:soknadId', {
+			.when('/kvittering-fortsettsenere', {
 				templateUrl: '../html/templates/kvittering-fortsettsenere.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -71,7 +71,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-            .when('/reell-arbeidssoker/:soknadId', {
+			.when('/reell-arbeidssoker', {
 				templateUrl: '../html/templates/reell-arbeidssoker.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -79,7 +79,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/egennaering/:soknadId', {
+			.when('/egennaering', {
 				templateUrl: '../html/templates/egen-naering.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -87,7 +87,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/verneplikt/:soknadId', {
+			.when('/verneplikt', {
 				templateUrl: '../html/templates/verneplikt.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -95,7 +95,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/personalia/:soknadId', {
+			.when('/personalia', {
 				templateUrl: '../html/templates/personalia.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -103,7 +103,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/barnetillegg/:soknadId', {
+			.when('/barnetillegg', {
 				templateUrl: '../html/templates/barnetillegg.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -111,7 +111,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/nyttbarn/:soknadId', {
+			.when('/nyttbarn', {
 				templateUrl: '../html/templates/barnetillegg-nyttbarn.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -119,7 +119,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/endrebarn/:soknadId/:faktumId', {
+			.when('/endrebarn/:faktumId', {
 				templateUrl: '../html/templates/barnetillegg-nyttbarn.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -127,7 +127,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/sokbarnetillegg/:soknadId/:faktumId', {
+			.when('/sokbarnetillegg/:faktumId', {
 				templateUrl: '../html/templates/barnetillegg-nyttbarn.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -135,7 +135,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/arbeidsforhold/:soknadId', {
+			.when('/arbeidsforhold', {
 				templateUrl: '../html/templates/arbeidsforhold.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -143,7 +143,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/nyttarbeidsforhold/:soknadId', {
+			.when('/nyttarbeidsforhold', {
 				templateUrl: '../html/templates/arbeidsforhold-nytt.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -151,7 +151,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/endrearbeidsforhold/:soknadId/:faktumId', {
+			.when('/endrearbeidsforhold/:faktumId', {
 				templateUrl: '../html/templates/arbeidsforhold-nytt.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -159,7 +159,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/ytelser/:soknadId', {
+			.when('/ytelser', {
 				templateUrl: '../html/templates/ytelser.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -167,7 +167,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/oppsummering/:soknadId', {
+			.when('/oppsummering/:soknadId/', {
 				templateUrl: '../html/templates/oppsummering.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -175,7 +175,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/utdanning/:soknadId', {
+			.when('/utdanning', {
 				templateUrl: '../html/templates/utdanning.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -191,7 +191,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/avbryt/:soknadId', {
+			.when('/avbryt', {
 				templateUrl: '../html/templates/avbryt.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {

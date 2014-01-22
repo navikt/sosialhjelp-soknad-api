@@ -78,9 +78,92 @@ angular.module('sendsoknad')
     }])
 
     .factory('HentSoknadService', ['$rootScope', 'data', 'cms', 'personalia', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', function ($scope, data, cms, personalia, $resource, $q, $route, soknadService, landService, Faktum) {
-        var soknadId = $route.current.params.soknadId;
         var promiseArray = [];
+        
+        var soknadOppsettDefer = $q.defer();
+        var soknadDeferer = $q.defer();
+        var faktaDefer = $q.defer();
+        var personaliaDefer = $q.defer();
 
+        promiseArray.push(soknadOppsettDefer.promise, soknadDeferer.promise, faktaDefer.promise, personaliaDefer.promise);
+
+        var brukerbehandlingsid = getBehandlingIdFromUrl();
+        var soknad = $resource('/sendsoknad/rest/soknad/behandling/:behandlingId').get(
+            {behandlingId: brukerbehandlingsid},
+            function (result) { // Success
+                var soknadId = result.result;
+                // Barn må hentes før man henter søknadsdataene.
+                
+                var barn = $resource('/sendsoknad/rest/soknad/:soknadId/familierelasjoner').get(
+                    {soknadId: soknadId},
+                    function (result) { // Success
+                        var soknad = soknadService.get({param: soknadId},
+                            function (result) { // Success
+                                if (result.fakta.statsborgerskap) {
+                                    personalia.statsborgerskap = result.fakta.statsborgerskap.value;
+                                    delete result.fakta.statsborgerskap;
+                                }
+                                data.soknad = result;
+                                soknadDeferer.resolve();
+
+                            }
+                        );
+                    }
+                );
+
+                $resource('/sendsoknad/rest/soknad/:soknadId/personalia').get(
+                    {soknadId: soknadId},
+                    function (result) { // Success
+                        personalia.fakta = result.fakta;
+                        personaliaDefer.resolve();
+                    }
+                );
+        
+
+                soknadService.options({param: soknadId},
+                    function (result) { // Success
+                        data.soknadOppsett = result;
+                        soknadOppsettDefer.resolve();
+                    }
+                );
+
+                Faktum.query({soknadId: soknadId}, function (result) {
+                    data.fakta = result;
+                    faktaDefer.resolve();
+                    data.finnFaktum = function (key) {
+                        var res = null;
+                        data.fakta.forEach(function (item) {
+                            if (item.key === key) {
+                                res = item;
+                            }
+                        });
+                        return res;
+                    };
+                    data.finnFakta = function (key) {
+                        var res = [];
+                        data.fakta.forEach(function (item) {
+                            if (item.key === key) {
+                                res.push(item);
+                            }
+                        });
+                        return res;
+                    };
+
+                    data.slettFaktum = function(faktumData) {
+                        $scope.faktumSomSkalSlettes = new Faktum(faktumData);
+                        $scope.faktumSomSkalSlettes.$delete({soknadId: faktumData.soknadId}).then(function () {
+                        });
+
+                        data.fakta.forEach(function (item, index) {
+                            if (item.faktumId === faktumData.faktumId) {
+                                data.fakta.splice(index,1);
+                            }
+                        });
+                    };
+                });
+            }
+        );
+        
         var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
             function (result) { // Success
                 cms.tekster = result;
@@ -101,86 +184,12 @@ angular.module('sendsoknad')
             }
         );
         promiseArray.push(land.$promise);
-
-        if (soknadId != undefined) {
-            // Barn må hentes før man henter søknadsdataene.
-            var soknadDeferer = $q.defer();
-            var barn = $resource('/sendsoknad/rest/soknad/:soknadId/familierelasjoner').get(
-                {soknadId: soknadId},
-                function (result) { // Success
-                    var soknad = soknadService.get({param: soknadId},
-                        function (result) { // Success
-                            if (result.fakta.statsborgerskap) {
-                                personalia.statsborgerskap = result.fakta.statsborgerskap.value;
-                                delete result.fakta.statsborgerskap;
-                            }
-                            data.soknad = result;
-                            soknadDeferer.resolve();
-                        }
-                    );
-                }
-            );
-
-            var personaliaPromise = $resource('/sendsoknad/rest/soknad/:soknadId/personalia').get(
-                {soknadId: soknadId},
-                function (result) { // Success
-                    personalia.fakta = result.fakta;
-                }
-            );
-            promiseArray.push(personaliaPromise.$promise);
-
-            var soknadOppsett = soknadService.options({param: soknadId},
-                function (result) { // Success
-                    data.soknadOppsett = result;
-                }
-            );
-
-            var fakta = Faktum.query({soknadId: soknadId}, function (result) {
-                data.fakta = result;
-
-                data.finnFakta = function (key) {
-                    var res = [];
-                    data.fakta.forEach(function (item) {
-                        if (item.key === key) {
-                            res.push(item);
-                        }
-                    });
-                    return res;
-                };
-                data.finnFaktum = function (key) {
-                    var res = null;
-                    data.fakta.forEach(function (item) {
-                        if (item.key === key) {
-                            res = item;
-                        }
-                    });
-                    return res;
-                };
-                data.leggTilFaktum = function(faktum) {
-                    data.fakta.push(faktum);
-                };
-
-                data.slettFaktum = function(faktumData) {
-                    $scope.faktumSomSkalSlettes = new Faktum(faktumData);
-                    $scope.faktumSomSkalSlettes.$delete({soknadId: faktumData.soknadId}).then(function () {
-                    });
-
-                    data.fakta.forEach(function (item, index) {
-                        if (item.faktumId === faktumData.faktumId) {
-                            data.fakta.splice(index,1);
-                        }
-                    });
-                };
-            });
-            promiseArray.push(barn.$promise, soknadOppsett.$promise, soknadDeferer.promise, fakta.$promise);
-        }
-
         return $q.all(promiseArray);
     }])
 
     //Lagt til for å tvinge ny lasting av fakta fra server. Da er vi sikker på at e-post kommer med til fortsett-senere siden.
     .factory('EpostResolver', ['data', 'cms', '$resource', '$q', '$route', 'soknadService', function (data, cms, $resource, $q, $route, soknadService) {
-        var soknadId = $route.current.params.soknadId;
+        var soknadId = data.soknad.soknadId;
         var promiseArray = [];
 
         var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
