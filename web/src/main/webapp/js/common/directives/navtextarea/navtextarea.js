@@ -59,7 +59,7 @@ angular.module('nav.textarea', [])
 
 				};
 				var validerOgOppdater = function (viewValue) {
-					if (viewValue !== undefined) {
+					if (viewValue) {
 						settStorrelse();
 						scope.counter = scope.maxlengde - viewValue.length;
 						var valid = validerAntallTegn();
@@ -96,7 +96,7 @@ angular.module('nav.textarea', [])
 				}
 
 				function validerTom(viewValue) {
-					if (viewValue === undefined || viewValue.length === 0) {
+					if (viewValue === undefined || viewValue === null || viewValue.length === 0) {
 						ngModel.$setValidity(scope.nokkel, true);
 						settFeilmeldingsTekst();
 						element.closest('.form-linje').addClass('feil');
