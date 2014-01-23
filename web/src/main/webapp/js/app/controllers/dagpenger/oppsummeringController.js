@@ -6,7 +6,7 @@ angular.module('nav.oppsummering', [])
         $scope.skalViseFeilmelding = {value: false};
         $scope.fikkIkkeSendtSoknad = {value: false};
 
-        $scope.soknadId = $routeParams.soknadId;
+        $scope.soknadId = data.soknad.soknadId;
         oppsummeringService.get($scope.soknadId).then(function (markup) {
             $scope.oppsummeringHtml = markup;
         });
