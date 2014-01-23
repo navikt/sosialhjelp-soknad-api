@@ -34,8 +34,8 @@
                             <h4 data-ng-if="!erEkstraVedlegg(forventning)" data-cmstekster="vedlegg.faktum.maabekrefte"></h4>
                             <h4 data-ng-if="erEkstraVedlegg(forventning)" data-cmstekster="vedlegg.faktum.maabekrefte.annetvedlegg"></h4>
                             <label data-ng-if="erEkstraVedlegg(forventning)">
-                                <span>Hva vedlegger du (max 20 tegn)? </span>
-                                <input type="text" maxlength="20" data-ng-minlength="3" data-ng-maxlength="20"  data-ng-model="forventning.navn" data-ng-blur="lagreVedlegg(forventning)">
+                                <span>Hva vedlegger du (max 25 tegn)? </span>
+                                <input type="text" maxlength="25" data-ng-minlength="3" data-ng-maxlength="25"  data-ng-model="forventning.navn" data-ng-blur="lagreVedlegg(forventning)">
                             </label>
                             <h4 data-ng-if="!erEkstraVedlegg(forventning)" class="info-liste" data-cmshtml="{{soknadData.skjemaNummer}}.vedlegg.{{forventning.skjemaNummer}}.bekrefte"></h4>
 
