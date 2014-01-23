@@ -14,7 +14,7 @@
     <section >
         <div data-accordion data-close-others="false" data-ng-if="forventninger != null">
             <section class="vedlegg vertikal" data-ng-form>
-                <div data-accordion-group data-ng-repeat="forventning in forventninger" class="spm-blokk"  id="faktum_{{forventning.vedleggId}}">
+                <div data-accordion-group data-ng-repeat="forventning in forventninger" class="spm-blokk"  id="vedlegg_{{forventning.vedleggId}}">
                     <div data-accordion-heading>
                         <div class="flipp">
                             <span>+</span>
@@ -54,7 +54,7 @@
                                     </a-->
                                 </div>
                                 <div class="lastOpp">
-                                    <a data-ng-href="#/opplasting/{{ data.soknadId }}/{{forventning.vedleggId}}" class="knapp-link"
+                                    <a data-ng-href="#/opplasting/{{forventning.vedleggId}}" class="knapp-link"
                                        data-ng-click="endreInnsendingsvalg(forventning, 'VedleggKreves');">Last opp vedlegget</a>
                                     <a class="" data-ng-if="erEkstraVedlegg(forventning)" data-ng-click="slettAnnetVedlegg(forventning);" name="Slett">Slett</a>
 
