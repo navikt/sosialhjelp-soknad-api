@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventning;
 
 import java.io.InputStream;
 import java.util.List;
@@ -13,7 +12,7 @@ public interface VedleggService {
 
     List<Long> splitOgLagreVedlegg(Vedlegg vedlegg, InputStream inputStream);
 
-    List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId, String gosysId);
+    List<Vedlegg> hentVedleggUnderBehandling(Long soknadId, Long faktumId, String skjemaNummer);
 
     Vedlegg hentVedlegg(Long soknadId, Long vedleggId, boolean medInnhold);
 
@@ -21,7 +20,9 @@ public interface VedleggService {
 
     byte[] lagForhandsvisning(Long soknadId, Long vedleggId, int side);
 
-    Long genererVedleggFaktum(Long soknadId, Long faktumId, String gosysId);
+    Long genererVedleggFaktum(Long soknadId, Long vedleggId);
 
-    List<VedleggForventning> hentPaakrevdeVedlegg(Long soknadId);
+    List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId);
+
+    void lagreVedlegg(Long soknadId, Long vedleggId,  Vedlegg vedlegg);
 }

@@ -1,5 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
@@ -43,7 +47,8 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
-
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -51,10 +56,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.math.BigInteger;
 import java.util.List;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import java.util.UUID;
 
 @Configuration
 @ComponentScan(excludeFilters = @Filter(Configuration.class))
@@ -63,12 +65,17 @@ public class MockConsumerConfig {
 
     @Configuration
     public static class SendSoknadWSConfig {
-        private int id = 0;
-
+        
         @Bean
         public SendSoknadPortType sendSoknadService() {
             SendSoknadPortType mock = mock(SendSoknadPortType.class);
-            when(mock.startSoknad(any(WSStartSoknadRequest.class))).thenReturn(new WSBehandlingsId().withBehandlingsId("ID" + id++));
+            when(mock.startSoknad(any(WSStartSoknadRequest.class))).thenAnswer(new Answer<WSBehandlingsId>(){
+                @Override
+                public WSBehandlingsId answer(InvocationOnMock invocation) throws Throwable {
+                    return new WSBehandlingsId().withBehandlingsId(UUID.randomUUID().toString());
+                }
+                
+            });
             return mock;
         }
 
@@ -105,11 +112,14 @@ public class MockConsumerConfig {
             Person barn1 = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "Barn1", "mock");
             familierelasjon.setTilPerson(barn1);
             Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
-            familieRelasjonRolle.setValue("FARA");
+            familieRelasjonRolle.setValue("BARN");
             familierelasjon.setTilRolle(familieRelasjonRolle);
             familieRelasjoner.add(familierelasjon);
             response.setPerson(person);
             when(mock.hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class))).thenReturn(response);
+            
+            //Mockito.doThrow(new RuntimeException()).when(mock).ping();
+            
             return mock;
         }
 
@@ -227,7 +237,9 @@ public class MockConsumerConfig {
             response.setPerson(xmlBruker);
 
             when(mock.hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(response);
-
+            
+            //Mockito.doThrow(new RuntimeException()).when(mock).ping();
+            
             return mock;
         }
 

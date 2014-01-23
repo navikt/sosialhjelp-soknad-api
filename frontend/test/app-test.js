@@ -2,7 +2,7 @@ angular.module('sendsoknad',['app.routes','app.brukerdata','app.services','app.d
 
 
 .run(function($httpBackend) {
-	soknadData = {"soknadId":1,"gosysId":"Dagpenger","brukerBehandlingId":"100000000",
+	soknadData = {"soknadId":1,"skjemaNummer":"Dagpenger","brukerBehandlingId":"100000000",
 	"fakta":{
 		"fornavn":{"soknadId":1,"key":"fornavn","value":"Kari"},
 		"mellomnavn":{"soknadId":1,"key":"mellomnavn","value":"Johan"},

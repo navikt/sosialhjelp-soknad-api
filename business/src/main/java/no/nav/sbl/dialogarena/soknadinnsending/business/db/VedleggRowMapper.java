@@ -19,17 +19,27 @@ public class VedleggRowMapper implements RowMapper<Vedlegg> {
 
     @Override
     public Vedlegg mapRow(ResultSet rs, int rowNum) throws SQLException {
+        Vedlegg.Status innsendingsvalg = null;
+        try {
+            String valg = rs.getString("innsendingsvalg");
+            if (valg != null) {
+                innsendingsvalg = Vedlegg.Status.valueOf(valg);
+            }
+        } catch (IllegalArgumentException e) {
+            innsendingsvalg = Vedlegg.Status.IkkeVedlegg;
+        }
 
         return new Vedlegg(
                 rs.getLong("vedlegg_id"),
                 rs.getLong("soknad_id"),
                 rs.getLong("faktum"),
-                rs.getString("gosysId"),
+                rs.getString("skjemaNummer"),
                 rs.getString("navn"),
                 rs.getLong("storrelse"),
                 rs.getInt("antallsider"),
                 rs.getString("fillagerReferanse"),
-                includeData ? rs.getBytes("data") : null
+                includeData ? rs.getBytes("data") : null,
+                innsendingsvalg
         );
     }
 }

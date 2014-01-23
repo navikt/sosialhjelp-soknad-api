@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventning;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.LocalDate;
 
@@ -14,20 +14,20 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Sta
 
 public class Transformers {
 
-    public static XMLVedlegg[] convertToXmlVedleggListe(List<VedleggForventning> vedleggForventnings) {
+    public static XMLVedlegg[] convertToXmlVedleggListe(List<Vedlegg> vedleggForventnings) {
         List<XMLVedlegg> resultat = new ArrayList<>();
-        for (VedleggForventning vedlegg : vedleggForventnings) {
-            if (vedlegg.getFaktum().getInnsendingsvalg(vedlegg.getGosysId()).er(LastetOpp)) {
+        for (Vedlegg vedlegg : vedleggForventnings) {
+            if (vedlegg.getInnsendingsvalg().er(Vedlegg.Status.LastetOpp)) {
                 resultat.add(new XMLVedlegg()
-                        .withFilnavn(vedlegg.getVedlegg().getNavn())
-                        .withSideantall(vedlegg.getVedlegg().getAntallSider())
-                        .withFilstorrelse(vedlegg.getVedlegg().getStorrelse().toString())
-                        .withSkjemanummer(vedlegg.getGosysId())
+                        .withFilnavn(vedlegg.getNavn())
+                        .withSideantall(vedlegg.getAntallSider())
+                        .withFilstorrelse(vedlegg.getStorrelse().toString())
+                        .withSkjemanummer(vedlegg.getskjemaNummer())
                         .withArkivreferanse("TODO")
                         .withInnsendingsvalg("INNSENDT"));
             } else {
                 resultat.add(new XMLVedlegg().withInnsendingsvalg("SENDES_IKKE")
-                        .withSkjemanummer(vedlegg.getGosysId()));
+                        .withSkjemanummer(vedlegg.getskjemaNummer()));
             }
 
         }

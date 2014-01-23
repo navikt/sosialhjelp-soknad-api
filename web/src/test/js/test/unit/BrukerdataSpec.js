@@ -3,7 +3,7 @@ describe('brukerdata domene', function () {
     beforeEach(
         module('app.services', 'app.brukerdata', function ($provide) {
             $provide.value("data", {
-                soknad: {"soknadId": 1, "gosysId": "Dagpenger", "brukerBehandlingId": "100000000",
+                soknad: {"soknadId": 1, "skjemaNummer": "Dagpenger", "brukerBehandlingId": "100000000",
                     "fakta": {
                         "fornavn": {"soknadId": 1, "key": "fornavn", "value": "Ola"},
                         "mellomnavn": {"soknadId": 1, "key": "mellomnavn", "value": "Johan"},
