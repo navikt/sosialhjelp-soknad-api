@@ -11,7 +11,6 @@ import no.nav.sbl.dialogarena.pdf.PdfMerger;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
@@ -109,8 +108,10 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Long lagreSystemFaktum(Long soknadId, Faktum f, String uniqueProperty) {
-        List<Faktum> fakta = repository.hentSystemFaktumList(soknadId,
-                f.getKey(), FaktumType.SYSTEMREGISTRERT.toString());
+        Faktum eksisterendeFaktum = repository.hentSystemFaktum(soknadId, f.getKey(), SYSTEMREGISTRERT_FAKTUM);
+        f.setFaktumId(eksisterendeFaktum.getFaktumId());
+        f.setType(SYSTEMREGISTRERT_FAKTUM);
+        List<Faktum> fakta = repository.hentSystemFaktumList(soknadId, f.getKey(), SYSTEMREGISTRERT_FAKTUM);
 
         if (!uniqueProperty.isEmpty()) {
             for (Faktum faktum : fakta) {
@@ -119,12 +120,12 @@ public class SoknadService implements SendSoknadService, VedleggService {
                         && faktum.getProperties().get(uniqueProperty)
                                 .equals(f.getProperties().get(uniqueProperty))) {
                     f.setFaktumId(faktum.getFaktumId());
-                    return repository.lagreFaktum(soknadId, f);
+                    return repository.lagreFaktum(soknadId, f, true);
 
                 }
             }
         }
-        return repository.lagreFaktum(soknadId, f);
+        return repository.lagreFaktum(soknadId, f, true);
     }
 
     @Override
@@ -132,9 +133,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
         // TODO: her blir barn overskrevet. Hent ut fnr osv.
         Faktum faktum = repository.hentSystemFaktum(soknadId, key,
                 SYSTEMREGISTRERT_FAKTUM);
-
-        Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId,
-                faktum.getFaktumId(), key, value, SYSTEMREGISTRERT_FAKTUM));
+        Faktum nyttFaktum = new Faktum(soknadId, faktum.getFaktumId(), key, value, SYSTEMREGISTRERT_FAKTUM);
+        Long faktumId = repository.lagreFaktum(soknadId, nyttFaktum, true);
         return repository.hentFaktum(soknadId, faktumId);
     }
 
@@ -143,8 +143,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public Faktum lagreBarnSystemSoknadsFelt(Long soknadId, String key,
             String fnr, String json) {
 
-        Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId,
-                null, key, json, SYSTEMREGISTRERT_FAKTUM));
+        Faktum faktum = new Faktum(soknadId, null, key, json, SYSTEMREGISTRERT_FAKTUM);
+        Long faktumId = repository.lagreFaktum(soknadId, faktum, true);
         return repository.hentFaktum(soknadId, faktumId);
     }
 

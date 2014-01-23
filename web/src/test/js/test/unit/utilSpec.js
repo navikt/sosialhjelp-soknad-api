@@ -36,6 +36,15 @@ describe('utility funksjoner -', function () {
         });
     });
 
+    describe('String prototype', function() {
+        it('Skal konvertere string som består av bare store bokstaver og underscore til camelcase', function () {
+            var expectedString = "camelCase";
+            var originalString = "CAMEL_CASE";
+
+            expect(originalString.toCamelCase()).toBe(expectedString);
+        });
+    });
+
     describe('Sjekk om element er true', function () {
         it('skal returnere false dersom elementet er undefined', function () {
             var elm;

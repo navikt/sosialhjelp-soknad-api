@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
+import org.apache.commons.collections15.Predicate;
 import org.joda.time.DateTime;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static no.nav.modig.lang.collections.IterUtils.on;
 import static java.util.Arrays.asList;
 import static java.util.UUID.randomUUID;
 
@@ -24,6 +26,7 @@ public class WebSoknad implements Serializable {
     private String skjemaNummer;
     private String uuid;
     private String brukerBehandlingId;
+    private List<Faktum> faktaListe;
     private Map<String, Faktum> fakta;
     private SoknadInnsendingStatus status;
     private String aktoerId;
@@ -56,6 +59,7 @@ public class WebSoknad implements Serializable {
     public WebSoknad() {
         uuid = randomUUID().toString();
         fakta = new LinkedHashMap<>();
+        faktaListe = new ArrayList<>();
     }
 
     public final String getUuid() {
@@ -82,12 +86,22 @@ public class WebSoknad implements Serializable {
         return fakta;
     }
 
-    public final void leggTilFakta(Map<String, Faktum> fakta) {
-        this.fakta.putAll(fakta);
+    public List<Faktum> getFaktaListe() {
+        return faktaListe;
     }
 
-    public final void leggTilFaktum(String key, Faktum faktum) {
-        this.fakta.put(key, faktum);
+    public void setFaktaListe(List<Faktum> faktaListe) {
+        this.faktaListe = faktaListe;
+    }
+
+    public final void leggTilFakta(Map<String, Faktum> fakta) {
+        this.fakta.putAll(fakta);
+        this.faktaListe.addAll(fakta.values());
+    }
+
+    public final void leggTilFaktum(Faktum faktum) {
+        this.fakta.put(faktum.getKey(), faktum);
+        this.faktaListe.add(faktum);
     }
 
     public String getBrukerBehandlingId() {
@@ -170,6 +184,7 @@ public class WebSoknad implements Serializable {
     }
 
     public WebSoknad medBrukerData(List<Faktum> brukerData) {
+        faktaListe = new ArrayList<>(brukerData);
         fakta = new HashMap<>();
 
         for (Faktum faktum : brukerData) {
@@ -206,4 +221,41 @@ public class WebSoknad implements Serializable {
         return this;
     }
 
+    public List<Faktum> getFaktaMedKey(final String key) {
+        return on(faktaListe).filter(new Predicate<Faktum>() {
+            @Override
+            public boolean evaluate(Faktum faktum) {
+                return faktum.getKey().equals(key);
+            }
+        }).collect();
+    }
+
+    public List<Faktum> getFaktaMedKeyOgPropertyLikTrue(final String key, final String propertyKey) {
+        return on(faktaListe).filter(new Predicate<Faktum>() {
+            @Override
+            public boolean evaluate(Faktum faktum) {
+                return faktum.getKey().equals(key) && faktum.getProperties().get(propertyKey) != null && faktum.getProperties().get(propertyKey).equals("true");
+            }
+        }).collect();
+    }
+
+    public List<Faktum> getFaktaSomStarterMed(final String key) {
+        return on(faktaListe).filter(new Predicate<Faktum>() {
+            @Override
+            public boolean evaluate(Faktum faktum) {
+                return faktum.getKey().startsWith(key);
+            }
+        }).collect();
+
+    }
+
+    public List<Faktum> getFaktaMedKeyOgParentFaktum(final String key, final Long parentFaktumId) {
+        return on(faktaListe).filter(new Predicate<Faktum>() {
+            @Override
+            public boolean evaluate(Faktum faktum) {
+                return faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId);
+            }
+        }).collect();
+
+    }
 }
