@@ -30,8 +30,8 @@ angular.module('nav.oppsummering', [])
                     //Success
                     function () {
                         $scope.fikkIkkeSendtSoknad.value = false;
-                        //TODO: Må endre lenken
-                        $window.location.href = "https://tjenester-t11.nav.no/minehenvendelser/?behandlingsId=" + getBehandlingIdFromUrl();
+                        var mineHenveldelserBaseUrl = data.config["minehenvendelser.link.url"];
+                        $window.location.href = mineHenveldelserBaseUrl + "?behandlingsId=" + getBehandlingIdFromUrl();
                     },
                     //Error
                     function () {
