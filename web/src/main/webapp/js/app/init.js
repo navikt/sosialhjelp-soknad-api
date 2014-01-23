@@ -166,6 +166,12 @@ angular.module('sendsoknad')
             }
         );
         
+        var config = $resource('/sendsoknad/rest/getConfig').get(
+            function (result) {
+                data.config = result;
+            }
+        );
+
         var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
             function (result) { // Success
                 cms.tekster = result;

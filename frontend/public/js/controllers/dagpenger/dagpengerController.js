@@ -28,7 +28,7 @@ angular.module('nav.dagpenger', [])
 				$scope.validateForm(form.$invalid);
 				var elementMedForsteFeil = $('.accordion-group').find('.form-linje.feil, .form-linje.feilstyling').first();
 				if (form.$valid) {
-					$location.path('/vedlegg/' + data.soknad.soknadId);
+					$location.path('/vedlegg');
 
 				} else {
 					scrollToElement(elementMedForsteFeil, 200);

@@ -67,7 +67,8 @@ public class FamilieRelasjonTransform {
                 finnFnr(xmlperson),
                 finnFornavn(xmlperson),
                 finnMellomNavn(xmlperson),
-                finnEtterNavn(xmlperson));
+                finnEtterNavn(xmlperson),
+                null);
     }
 
     private String finnFornavn(no.nav.tjeneste.virksomhet.person.v1.informasjon.Person soapPerson) {
