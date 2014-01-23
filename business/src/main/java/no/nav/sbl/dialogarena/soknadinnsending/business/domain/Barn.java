@@ -13,7 +13,6 @@ public class Barn {
     private String kjonn;
     private String sammensattnavn;
     private Integer alder;
-    private String land;
 
     public Barn(Long soknadId, String fnr, String fornavn, String mellomnavn, String etternavn, String land) {
         this.soknadId = soknadId;
@@ -24,7 +23,6 @@ public class Barn {
         this.sammensattnavn = setSammenSattNavn(fornavn, mellomnavn, etternavn);
         this.kjonn = bestemKjonn();
         this.alder = bestemAlder();
-        this.land = land;
     }
 
     private Integer bestemAlder() {
@@ -87,10 +85,6 @@ public class Barn {
 
     public Long getSoknadId() {
         return soknadId;
-    }
-
-    public String getLand() {
-        return land;
     }
 
 }
