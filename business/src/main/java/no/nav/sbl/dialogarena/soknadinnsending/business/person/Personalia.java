@@ -1,0 +1,121 @@
+package no.nav.sbl.dialogarena.soknadinnsending.business.person;
+
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
+
+public class Personalia {
+
+    public static final String PERSONALIA_KEY = "personalia";
+    public static final String FNR_KEY = "fnr";
+    public static final String ALDER_KEY = "alder";
+    public static final String EPOST_KEY = "epost";
+    public static final String STATSBORGERSKAP_KEY = "statsborgerskap";
+    public static final String NAVN_KEY = "navn";
+    public static final String KJONN_KEY = "kjonn";
+    public static final String GJELDENDEADRESSE_KEY = "gjeldendeAdresse";
+    public static final String GJELDENDEADRESSE_TYPE_KEY = "gjeldendeAdresseType";
+    public static final String GJELDENDEADRESSE_GYLDIGFRA_KEY = "gjeldendeAdresseGydligFra";
+    public static final String GJELDENDEADRESSE_GYLDIGTIL_KEY = "gjeldendeAdresseGydligTil";
+    public static final String SEKUNDARADRESSE_KEY = "sekundarAdresse";
+    public static final String SEKUNDARADRESSE_TYPE_KEY = "sekundarAdresseType";
+    public static final String SEKUNDARADRESSE_GYLDIGFRA_KEY = "sekundarAdresseGydligFra";
+    public static final String SEKUNDARADRESSE_GYLDIGTIL_KEY = "sekundarAdresseGydligTil";
+
+    private String fnr;
+    private String alder;
+    private String navn;
+    private String epost;
+    private String statsborgerskap;
+    private String kjonn;
+    private NewAdresse gjeldendeAdresse;
+    private NewAdresse sekundarAdresse;
+
+    public Personalia() {
+    }
+
+    public String getFnr() {
+        return fnr;
+    }
+
+    public void setFnr(String fnr) {
+        this.fnr = fnr;
+    }
+
+    public String getAlder() {
+        return alder;
+    }
+
+    public void setAlder(String alder) {
+        this.alder = alder;
+    }
+
+    public String getNavn() {
+        return navn;
+    }
+
+    public void setNavn(String navn) {
+        this.navn = navn;
+    }
+
+    public String getEpost() {
+        return epost;
+    }
+
+    public void setEpost(String epost) {
+        this.epost = epost;
+    }
+
+    public String getStatsborgerskap() {
+        return statsborgerskap;
+    }
+
+    public void setStatsborgerskap(String statsborgerskap) {
+        this.statsborgerskap = statsborgerskap;
+    }
+
+    public String getKjonn() {
+        return kjonn;
+    }
+
+    public void setKjonn(String kjonn) {
+        this.kjonn = kjonn;
+    }
+
+    public NewAdresse getGjeldendeAdresse() {
+        return gjeldendeAdresse;
+    }
+
+    public void setGjeldendeAdresse(NewAdresse gjeldendeAdresse) {
+        this.gjeldendeAdresse = gjeldendeAdresse;
+    }
+
+    public NewAdresse getSekundarAdresse() {
+        return sekundarAdresse;
+    }
+
+    public void setSekundarAdresse(NewAdresse sekundarAdresse) {
+        this.sekundarAdresse = sekundarAdresse;
+    }
+
+    public boolean harUtenlandskAdresse() {
+        String adressetype = gjeldendeAdresse.getAdressetype();
+
+        if (adressetype == null) {
+            return false;
+        }
+
+        if (adressetype.equalsIgnoreCase(Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND.name()) || adressetype.equalsIgnoreCase(Adressetype.POSTADRESSE_UTLAND.name())) {
+            return true;
+        } else if (adressetype.equalsIgnoreCase(Adressetype.POSTADRESSE.name())) {
+            return erUtenlandskFolkeregistrertAdresse();
+        }
+        return false;
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean erUtenlandskFolkeregistrertAdresse() {
+        if (gjeldendeAdresse.getAdressetype().equalsIgnoreCase(UTENLANDSK_ADRESSE.name()) || sekundarAdresse.getAdressetype().equalsIgnoreCase(UTENLANDSK_ADRESSE.name())) {
+            return true;
+        }
+        return false;
+    }
+}

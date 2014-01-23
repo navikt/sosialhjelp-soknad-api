@@ -42,7 +42,7 @@
         <dialogarena.webkomponent.innstillinger>1.1.0-SNAPSHOT</dialogarena.webkomponent.innstillinger>
         <dialogarena.dokumentinnsending.version>2.0.1</dialogarena.dokumentinnsending.version>
         <ojdbc.version>11.2.0.3</ojdbc.version>
-        <flying.saucer.version>9.0.3</flying.saucer.version>
+        <flying.saucer.version>9.0.4</flying.saucer.version>
         <handlebars.version>1.1.2</handlebars.version>
     </properties>
 

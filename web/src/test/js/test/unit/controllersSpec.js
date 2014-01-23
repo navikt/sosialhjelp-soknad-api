@@ -30,16 +30,29 @@ describe('DagpengerControllere', function () {
     beforeEach(module('app.controllers', 'nav.feilmeldinger'));
 
     beforeEach(module(function ($provide) {
+        var fakta = [
+            {
+                key: 'personalia',
+                properties: {
+                    alder: "61"
+                }
+            }
+        ];
         $provide.value("data", {
-            fakta: [],
-            finnFaktum: function(faktumKey) {},
+            fakta: fakta,
+            finnFaktum: function(key) {
+                var res = null;
+                fakta.forEach(function (item) {
+                    if (item.key == key) {
+                        res = item;
+                    }
+                });
+                return res;
+            },
             finnFakta: function(faktumKey) {},
             soknad: {soknadId: 1}
         });
         $provide.value("cms", {});
-        $provide.value("personalia", {
-            alder: 61
-        });
     }));
 
     beforeEach(inject(function ($rootScope, $controller, $compile, $httpBackend) {

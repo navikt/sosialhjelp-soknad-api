@@ -20,6 +20,9 @@ angular.module('app.controllers', [
     'nav.personalia',
     'nav.oppsummering',
     'nav.adresse',
+    'nav.arbeidsforhold',
+    'nav.informasjonsside',
+    'nav.behandlingside',
     'nav.avbryt',
     'nav.bekreftelse'
 ]);

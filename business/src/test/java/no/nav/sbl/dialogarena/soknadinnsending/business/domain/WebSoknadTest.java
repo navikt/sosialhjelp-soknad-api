@@ -25,8 +25,7 @@ public class WebSoknadTest {
 	
 	@Test
 	public void skalKunneLeggeTilFakta() {
-		soknad.leggTilFaktum("enKey", new Faktum(soknadId, faktumId, "enKey", "enValue", null));
+		soknad.leggTilFaktum(new Faktum(soknadId, faktumId, "enKey", "enValue", null));
 		Assert.assertEquals(1,soknad.antallFakta());
 	}
-	
 }
