@@ -26,6 +26,8 @@ public interface SoknadRepository {
 
     Long lagreFaktum(long soknadId, Faktum faktum);
 
+    Long lagreFaktum(long soknadId, Faktum faktum, Boolean systemFaktum);
+
     WebSoknad hentMedBehandlingsId(String behandlingsId);
 
     String opprettBehandling();

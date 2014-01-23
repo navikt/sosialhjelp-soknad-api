@@ -194,12 +194,13 @@
             <artifactId>commons-io</artifactId>
         </dependency>
 
-        <!-- Avhengigheter med scope runtime -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <scope>runtime</scope>
         </dependency>
+
+        <!-- Avhengigheter med scope runtime -->
+
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
