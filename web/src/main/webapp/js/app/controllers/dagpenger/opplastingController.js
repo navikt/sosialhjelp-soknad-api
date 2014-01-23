@@ -67,7 +67,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                 function (result) { // Success
                     data.soknad = result;
                     $scope.fremdriftsindikator.laster = false;
-                    $location.url('/vedlegg/' + data.soknad.soknadId + '?scrollTo=faktum_' + $scope.data.faktumId).replace();
+                    $location.url('/vedlegg?scrollTo=vedlegg_' + $scope.data.vedleggId).replace();
                 }
             );
         };
