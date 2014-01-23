@@ -16,6 +16,7 @@ import static no.nav.modig.lang.collections.ComparatorUtils.compareWith;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
 import static no.nav.modig.lang.collections.PredicateUtils.where;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.FNR_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_TYPE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.PERSONALIA_KEY;
@@ -27,6 +28,8 @@ public class WebSoknadUtils {
     private static final Logger logger = getLogger(WebSoknadUtils.class);
     public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
     public static final String DAGPENGER = "NAV 04-01.03";
+    public static final String EOS_DAGPENGER = "4304";
+    public static final String RUTES_I_BRUT = "0000";
 
     public static String getSkjemanummer(WebSoknad soknad) {
         Faktum sluttaarsak = soknad.getFakta().get("sluttaarsak");
@@ -41,8 +44,15 @@ public class WebSoknadUtils {
     }
 
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
-        Personalia personalia = getPerson(webSoknad);
-        return personalia.harUtenlandskAdresse() ? "4304" : "0000";
+        if (webSoknad.getFakta().get(FNR_KEY) != null)
+        {
+            Personalia personalia = getPerson(webSoknad);
+            return personalia.harUtenlandskAdresse() ? "4304" : "0000";
+        }
+        else
+        {
+            return RUTES_I_BRUT;
+        }
     }
 
     public static Personalia getPerson(WebSoknad webSoknad) {

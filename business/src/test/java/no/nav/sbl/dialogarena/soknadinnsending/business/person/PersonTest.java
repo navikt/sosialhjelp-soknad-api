@@ -1,7 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
 

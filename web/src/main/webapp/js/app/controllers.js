@@ -14,11 +14,15 @@ angular.module('app.controllers', [
     'nav.vedlegg.controller',
     'nav.forsettsenere',
     'nav.dagpenger',
+    'nav.arbeidsforhold',
+    'nav.informasjonsside',
+    'nav.behandlingside',
     'nav.personalia',
     'nav.oppsummering',
     'nav.adresse',
     'nav.avbryt',
     'nav.arbeidsforhold',
     'nav.informasjonsside',
-    'nav.behandlingside'
+    'nav.behandlingside',
+    'nav.avbryt'
 ]);

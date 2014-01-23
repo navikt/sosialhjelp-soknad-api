@@ -1,10 +1,11 @@
 angular.module('nav.oppsummering', [])
-    .controller('OppsummeringCtrl', ['$scope', '$location', '$routeParams', 'soknadService', '$http', function ($scope, $location, $routeParams, soknadService, $http) {
+    .controller('OppsummeringCtrl', ['$scope', 'data', '$location', '$routeParams', 'soknadService', '$http', '$window', function ($scope, data, $location, $routeParams, soknadService, $http, $window) {
         $scope.oppsummeringHtml = '';
         $scope.harbekreftet = {value: ''};
         $scope.skalViseFeilmelding = {value: false};
+        $scope.fikkIkkeSendtSoknad = {value: false};
 
-        $scope.soknadId = $routeParams.soknadId;
+        $scope.soknadId = data.soknad.soknadId;
         $http.get('/sendsoknad/rest/soknad/oppsummering/' + $scope.soknadId).then(function(response) {
             var soknadElement = $(response.data).filter("#soknad");
             soknadElement.find('.logo').remove();
@@ -13,32 +14,37 @@ angular.module('nav.oppsummering', [])
             $scope.oppsummeringHtml = soknadElement.html();
         });
 
-        console.log($scope.skalViseFeilmelding.value)
-
         $scope.$watch(function () {
-            if($scope.harbekreftet) {
+            if ($scope.harbekreftet) {
                 return $scope.harbekreftet.value;
             }
         }, function () {
             $scope.skalViseFeilmelding.value = false;
-            console.log($scope.skalViseFeilmelding.value)
-        });
+        })
 
         $scope.sendSoknad = function () {
             if ($scope.harbekreftet.value) {
-                console.log("HEI");
                 $scope.skalViseFeilmelding.value = false;
+
+                soknadService.send({param: $scope.soknadId, action: 'send'},
+                    //Success
+                    function () {
+                        $scope.fikkIkkeSendtSoknad.value = false;
+                        //TODO: Må endre lenken
+                        $window.location.href = "https://tjenester-t11.nav.no/minehenvendelser/?behandlingsId=" + getBehandlingIdFromUrl();
+                    },
+                    //Error
+                    function () {
+                        $scope.fikkIkkeSendtSoknad.value = true;
+                    }
+                );
             } else {
                 $scope.skalViseFeilmelding.value = true;
             }
-            console.log($scope.skalViseFeilmelding.value)
-
-//            soknadService.send({param: $scope.soknadId, action: 'send'});
-//            $location.path('kvittering');
         }
     }])
-    .filter('formatterFnr', function() {
-        return function(fnr) {
+    .filter('formatterFnr', function () {
+        return function (fnr) {
             return fnr.substring(0, 6) + " " + fnr.substring(6, fnr.length);
         };
     });

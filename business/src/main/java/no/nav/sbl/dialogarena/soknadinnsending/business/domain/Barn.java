@@ -14,18 +14,18 @@ public class Barn {
     private String sammensattnavn;
     private Integer alder;
 
-    public Barn(Long soknadId, String fnr, String fornavn, String mellomnavn, String etternavn) {
+    public Barn(Long soknadId, String fnr, String fornavn, String mellomnavn, String etternavn, String land) {
         this.soknadId = soknadId;
         this.fnr = fnr;
         this.fornavn = fornavn;
         this.mellomnavn = mellomnavn;
         this.etternavn = etternavn;
         this.sammensattnavn = setSammenSattNavn(fornavn, mellomnavn, etternavn);
-        this.kjonn = bestemmKjonn();
-        this.alder = bestemmAlder();
+        this.kjonn = bestemKjonn();
+        this.alder = bestemAlder();
     }
 
-    private Integer bestemmAlder() {
+    private Integer bestemAlder() {
         PersonAlder personAlder = new PersonAlder(fnr);
         return personAlder.getAlder();
     }
@@ -35,7 +35,7 @@ public class Barn {
      *
      * @return
      */
-    private String bestemmKjonn() {
+    private String bestemKjonn() {
         String kjonnSiffer = fnr.substring(8, 9);
 
         if (Integer.parseInt(kjonnSiffer) % 2 == 0) {
@@ -86,4 +86,5 @@ public class Barn {
     public Long getSoknadId() {
         return soknadId;
     }
+
 }

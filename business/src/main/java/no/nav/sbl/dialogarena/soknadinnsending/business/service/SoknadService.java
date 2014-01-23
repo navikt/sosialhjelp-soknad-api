@@ -272,9 +272,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public Vedlegg hentVedlegg(Long soknadId, Long vedleggId, boolean medInnhold) {
         if (medInnhold) {
-            return vedleggRepository.hentVedleggMedInnhold(soknadId, vedleggId);
+            return medKodeverk(vedleggRepository.hentVedleggMedInnhold(soknadId, vedleggId));
         } else {
-            return vedleggRepository.hentVedlegg(soknadId, vedleggId);
+            return medKodeverk(vedleggRepository.hentVedlegg(soknadId, vedleggId));
         }
     }
 
@@ -341,28 +341,31 @@ public class SoknadService implements SendSoknadService, VedleggService {
                         vedlegg = new Vedlegg(soknadId, faktum.getFaktumId(), soknadVedlegg.getskjemaNummer(), Vedlegg.Status.VedleggKreves);
                         vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
                     }
-                    try {
-                        Map<Kodeverk.Nokkel,String> koder = kodeverk.getKoder(vedlegg.getskjemaNummer());
-                        for (Entry<Nokkel, String> nokkelEntry : koder.entrySet()) {
-                            if(nokkelEntry.getKey().toString().contains("URL")){
-                                vedlegg.leggTilURL(nokkelEntry.getKey().toString(), koder.get(nokkelEntry.getKey()));
-                            }
-                        }
-                        vedlegg.setTittel(koder.get(Kodeverk.Nokkel.TITTEL));
-                    } catch (Exception ignore) {
-                        
-                    }
-
                     if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {
                         vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
+                        vedleggRepository.lagreVedlegg(soknadId, vedlegg.getVedleggId(), vedlegg);
                     }
-
-                    forventninger.add(vedlegg);
+                    forventninger.add(medKodeverk(vedlegg));
                 }
             }
         }
 
         return forventninger;
+    }
+
+    private Vedlegg medKodeverk(Vedlegg vedlegg) {
+        try {
+            Map<Kodeverk.Nokkel,String> koder = kodeverk.getKoder(vedlegg.getskjemaNummer());
+            for (Entry<Nokkel, String> nokkelEntry : koder.entrySet()) {
+                if(nokkelEntry.getKey().toString().contains("URL")){
+                    vedlegg.leggTilURL(nokkelEntry.getKey().toString(), koder.get(nokkelEntry.getKey()));
+                }
+            }
+            vedlegg.setTittel(koder.get(Kodeverk.Nokkel.TITTEL));
+        } catch (Exception ignore) {
+
+        }
+        return vedlegg;
     }
 
     @Override
