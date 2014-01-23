@@ -8,11 +8,9 @@
             <div class="checkbox form-linje" data-ng-class="{feilstyling : skalViseFeilmelding.value === true}"
                  data-checkbox-validate>
                 <input id="bekreftelseOpplysninger" type="checkbox" data-ng-model="harbekreftet.value">
-                <label for="bekreftelseOpplysninger">
-
-                    {{ 'dagpenger.oppsummering.bekreftOpplysninger' | cmstekst }}
+                <label for="bekreftelseOpplysninger" data-cmstekster="dagpenger.oppsummering.bekreftOpplysninger">
                 </label>
-                <span class="melding">{{ 'dagpenger.oppsummering.bekreftelse.feilmelding' | cmstekst }} </span>
+                <span class="melding" data-cmstekster="dagpenger.oppsummering.bekreftelse.feilmelding"></span>
             </div>
             <div class="oppsummering-knapp">
                 <input class="knapp-hoved" type="submit" value="{{ 'dagpenger.oppsummering.send' | cmstekst }}">
@@ -20,13 +18,13 @@
             <div class="lenker">
                 <ul class="liste-vannrett">
                     <li>
-                        <a href="#/fortsettsenere/{{ soknadId }}">{{ 'fortsettSenere' | cmstekst }}</a>
+                        <a href="#/fortsettsenere" data-cmstekster="fortsettSenere"></a>
                     </li>
                     <li>
-                        <a href="#/avbryt/{{ soknadId }}">{{ 'avbryt.slett' | cmstekst }}</a>
+                        <a href="#/avbryt" data-cmstekster="avbryt.slett"></a>
                     </li>
                     <li>
-                        <a href="#/vedlegg">{{ 'dagpenger.oppsummering.tilbake' | cmstekst }}</a>
+                        <a href="#/vedlegg" data-cmstekster="dagpenger.oppsummering.tilbake"></a>
                     </li>
                 </ul>
             </div>
