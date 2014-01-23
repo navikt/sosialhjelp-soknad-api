@@ -720,6 +720,12 @@ form, [ng-form], [data-ng-form] {
   input:focus + label {
     color: #0067c5 !important;
   }
+  input[type='checkbox']:focus + label {
+    background-image: url(../img/check_tab.svg);
+  }
+  input[type='radio']:focus + label {
+    background-image: url(../img/radio_tab.svg);
+  }
 }
 
 .accordion-inner, .modalBoks {
