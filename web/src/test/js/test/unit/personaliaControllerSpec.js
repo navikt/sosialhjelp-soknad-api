@@ -86,11 +86,6 @@ describe('Personalia domene', function () {
 //            expect(scope.harMidlertidigAdresse()).toBe(false);
 //        })
 
-
-        it('skal ikke feile når det ikke finnes adresser registrert', function () {
-            expect(scope.harAdresseRegistrert()).toBe(false);
-        })
-
 //        it('har postboksadresse hvis postboksnummer er satt', function () {
 //            expect(scope.harPostboksAdresse()).toBe(true);
 //        })

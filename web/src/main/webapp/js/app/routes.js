@@ -167,7 +167,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/oppsummering/:soknadId/', {
+			.when('/oppsummering', {
 				templateUrl: '../html/templates/oppsummering.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {

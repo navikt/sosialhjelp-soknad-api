@@ -1,19 +1,81 @@
 #oppsummering {
-    h2 {
-        text-align: center;
+
+  .stegindikator {
+    margin-top: 40px;
+  }
+
+  [class*="strek-ikon-oppsummering"], [class*="ikon-soknader-strek"] {
+    background-image: url(../img/under-dark.png), url(../img/oppsummering.svg);
+    background-position: bottom center, center 0;
+    padding-bottom: 15px;
+    margin-bottom: 15px !important;
+  }
+
+  .oppsummering {
+    padding-bottom: 40px;
+    margin-bottom: 40px;
+    border-bottom: 1px solid #ddd;
+
+    .markup-feil {
+      margin-top: 15px;
+      p {
+        color: #c30000;
+      }
+    }
+    //        .personalia {
+    //            text-align: center;
+    //
+    //
+    //            .navnOgFnr span {
+    //                font-weight: 800;
+    //                font-family: Modus, Arial, Helvetica, sans-serif;;
+    //            }
+    //
+    //            .adresse {
+    //                .adressetype {
+    //                    display: none;
+    //                }
+    //
+    //                p {
+    //                    display: inline-block;
+    //
+    //                    &:after {
+    //                        content: ", ";
+    //                    }
+    //
+    //                    &:last-child {
+    //
+    //                        &:after {
+    //                            content: "";
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        }
+  }
+
+  form {
+
+    .form-linje.feilstyling {
+      padding-top: 20px !important;
+    }
+    input[type="submit"] {
+      display: block;
+      margin: 50px auto;
     }
 
-    .oppsummering {
-        margin-top: 40px;
+    .ikke-sendt {
+      text-align: center;
+      margin-bottom: 30px;
+      margin-top: -30px;
 
-        .oppsummering-knapper {
-            margin-top: 40px;
-            margin-bottom: 40px;
-            text-align: center;
-
-            a {
-                margin: 10px;
-            }
-        }
+      p {
+        color: #c30000;
+      }
     }
+
+    .lenker {
+      text-align: center;
+    }
+  }
 }
