@@ -28,7 +28,7 @@ angular.module('nav.oppsummering', [])
                     function () {
                         $scope.fikkIkkeSendtSoknad.value = false;
                         //TODO: Må endre lenken
-                        $window.location.href = "https://tjenester-t11.nav.no/minehenvendelser/?behandlingsId=" + data.soknad.brukerBehandlingId;
+                        $window.location.href = "https://tjenester-t11.nav.no/minehenvendelser/?behandlingsId=" + getBehandlingIdFromUrl();
                     },
                     //Error
                     function () {
