@@ -87,6 +87,7 @@ public class FamilieRelasjonServiceTPS implements FamilieRelasjonService {
                 properties.put("kjonn", barn.getKjonn());
                 properties.put("alder", barn.getAlder().toString());
                 properties.put("land", barn.getLand());
+                logger.warn("Legger inn land " + barn.getLand());
                 barneFaktum.setProperties(properties);
 
                 soknadService.lagreSystemFaktum(soknadId, barneFaktum, "fnr");
