@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.lowagie.text.DocumentException;
-import org.junit.Ignore;
+import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -20,6 +22,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class HandleBarKjoererTest {
 
@@ -38,6 +41,7 @@ public class HandleBarKjoererTest {
     @Test
     public void createHashAndApplyTemplate() throws IOException {
         String json = hentWebSoknadJson();
+        Kodeverk kodeverk = mock(Kodeverk.class);
         Map<String, Object> resultat = new ObjectMapper().readValue(json, Map.class);
         String[] s = {"soknadId", "skjemaNummer", "brukerBehandlingId", "fakta", "status", "aktoerId", "opprettetDato", "delstegStatus"};
 
@@ -45,17 +49,22 @@ public class HandleBarKjoererTest {
         assertThat((String) resultat.get("skjemaNummer"), is(equalTo("Dagpenger")));
         assertThat((String) resultat.get("status"), is(equalTo("UNDER_ARBEID")));
 
-        String applied = HandleBarKjoerer.fyllHtmlStringMedInnhold(hentWebSoknadHtml(), resultat);
+        String applied = new HandleBarKjoerer(kodeverk).fyllHtmlStringMedInnhold(hentWebSoknadHtml(), resultat);
         assertThat(applied, containsString("Dagpenger"));
         assertThat(applied, containsString("188"));
     }
 
-    @Ignore
     @Test
     public void createPDFFromJson() throws IOException, DocumentException {
-        String html = HandleBarKjoerer.fyllHtmlMalMedInnhold(hentWebSoknadJson(), "/html/WebSoknadHtml");
-        assertThat(html, containsString("Dagpenger"));
-        assertThat(html, containsString("188"));
+        Kodeverk kodeverk = mock(Kodeverk.class);
+        WebSoknad soknad = new WebSoknad();
+        soknad.setskjemaNummer("NAV-1-1-1");
+        soknad.leggTilFaktum(new Faktum(1L, 1L, "test", "testinnhold"));
+        soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold2"));
+        soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold3"));
+        soknad.leggTilFaktum(new Faktum(1L, 1L, "test3", "testinnhold4"));
+        String html = new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/html/WebSoknadHtml");
+        assertThat(html, containsString("NAV-1-1-1"));
 
         String baseUrl = "/c:/test/";
         String pdf = "c:/test/handlebar.pdf";

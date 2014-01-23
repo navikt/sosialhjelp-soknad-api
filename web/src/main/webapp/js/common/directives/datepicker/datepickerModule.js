@@ -216,6 +216,7 @@ angular.module('nav.datepicker', [])
 				erTildatoRequired     : '=',
 				erBeggeRequired       : '=',
 				erFremtidigdatoTillatt: '=',
+                lagre                 : '&',
 				label                 : '@'
 			},
 			controller : function ($scope) {
