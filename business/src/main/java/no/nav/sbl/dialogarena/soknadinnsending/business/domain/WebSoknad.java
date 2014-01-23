@@ -228,7 +228,15 @@ public class WebSoknad implements Serializable {
                 return faktum.getKey().equals(key);
             }
         }).collect();
+    }
 
+    public List<Faktum> getFaktaMedKeyOgPropertyLikTrue(final String key, final String propertyKey) {
+        return on(faktaListe).filter(new Predicate<Faktum>() {
+            @Override
+            public boolean evaluate(Faktum faktum) {
+                return faktum.getKey().equals(key) && faktum.getProperties().get(propertyKey) != null && faktum.getProperties().get(propertyKey).equals("true");
+            }
+        }).collect();
     }
 
     public List<Faktum> getFaktaSomStarterMed(final String key) {

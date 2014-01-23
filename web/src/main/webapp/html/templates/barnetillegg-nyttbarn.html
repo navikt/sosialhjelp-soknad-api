@@ -73,7 +73,7 @@
 
                     <div>
                         <div class="form-linje checkbox" data-checkbox-validate>
-                            <input data-ng-model="barnetillegg.value" name="barnetilegg" id="barnetilegg" type="checkbox" data-error-messages="'barnetillegg.nyttbarn.barnetillegg.feilmelding'"
+                            <input data-ng-model="barn.properties.barnetillegg" name="barnetilegg" id="barnetilegg" type="checkbox" data-error-messages="'barnetillegg.nyttbarn.barnetillegg.feilmelding'"
                                    data-boolean-verdi data-ng-required="true">
                             <label for="barnetilegg" data-cmstekster="barnetillegg.barnetilegg.sporsmal"></label>
                             <span class="melding" data-cmstekster="barnetillegg.nyttbarn.barnetillegg.feilmelding"> </span>
@@ -88,7 +88,7 @@
                                            id="ikkebarneinntekt"
                                            type="radio"
                                            value="true"
-                                           data-ng-model="ikkebarneinntekt.value"
+                                           data-ng-model="barn.properties.ikkebarneinntekt"
                                            data-ng-required="barnetilleggErRegistrert()"
                                            name="ikkebarneinntekt"
                                            data-click-validate
@@ -100,7 +100,7 @@
                                            id="ikkebarneinntektNei"
                                            type="radio"
                                            value="false"
-                                           data-ng-model="ikkebarneinntekt.value"
+                                           data-ng-model="barn.properties.ikkebarneinntekt"
                                            data-ng-required="barnetilleggErRegistrert()"
                                            name="ikkebarneinntektNei"
                                            data-click-validate
@@ -118,7 +118,7 @@
                                                data-error-messages="{required:'barnetillegg.barnetilegg.barneinntekttall.feilmelding', pattern:'barnetillegg.barnetilegg.barneinntekttall.ugyldig.feilmelding'}"
                                                type="text"
                                                data-ng-pattern="/\d+/"
-                                               data-ng-model="nyttbarn.barneinntekttall.value"
+                                               data-ng-model="barn.properties.barneinntekttall"
                                                data-blur-validate 
                                                data-maxlength="200"
                                                maxlength="200"

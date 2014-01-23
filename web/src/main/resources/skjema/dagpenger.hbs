@@ -1149,19 +1149,30 @@
 
 			<h2>Barn som det søkes barnetillegg for</h2>
             <table>
-                {{#forFakta "barn"}}
-                    {{#forBarneFaktum "barnetillegg" faktumId}}
-                        {{#hvisSant value}}
-                            <tr>
-                                <td class="sjekket"></td>
-                                <td>
-                                    <span>{{ properties.sammensattnavn }},</span>
-                                    <span>{{ hentTekst "dagpenger.oppsummering.fodt" }}</span>
-                                    <span>{{ properties.fodselsdato }}</span>
-                                </td>
-                            </tr>
-                        {{/hvisSant}}
-                    {{/forBarneFaktum}}
+                {{#forFaktaMedPropertySattTilTrue "barn" "barnetillegg"}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            <span>{{ properties.sammensattnavn }},</span>
+                            <span>{{ hentTekst "dagpenger.oppsummering.fodt" }}</span>
+                            {{#hvisLik type "SYSTEMREGISTRERT"}}
+                                <span>{{ formatterFodelsDato properties.fnr }},</span>
+                            {{ else }}
+                                <span>{{ formatterFodelsDato properties.fodselsdato }},</span>
+                            {{/hvisLik}}
+
+                            <span>{{ hentTekst "dagpenger.oppsummering.bor" }}</span>
+                            <span>Norge,</span>
+
+                            <span>{{ hentTekst "dagpenger.oppsummering.inntekt" }}</span>
+                            {{#hvisLik properties.ikkebarneinntekt "false" }}
+                                <span>{{ properties.barneinntekttall }}</span>
+                            {{ else }}
+                               <span>0</span>
+                            {{/hvisLik}}
+                            <span>NOK</span>
+                        </td>
+                    </tr>
                 {{else}}
                     <tr>
                         <td class="sjekket"></td>
@@ -1169,7 +1180,7 @@
                             <span>{{ hentTekst "dagpenger.oppsummering.ingenBarn" }}</span>
                         </td>
                     </tr>
-                {{/forFakta}}
+                {{/forFaktaMedPropertySattTilTrue}}
             </table>
 
 

@@ -5,6 +5,7 @@ import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
+import no.bekk.bekkopen.person.Fodselsnummer;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.wicket.model.StringResourceModel;
@@ -15,6 +16,11 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
+import static org.apache.commons.lang3.ArrayUtils.reverse;
+import static org.apache.commons.lang3.StringUtils.join;
+import static org.apache.commons.lang3.StringUtils.split;
 
 
 public class HandleBarKjoerer {
@@ -110,6 +116,34 @@ public class HandleBarKjoerer {
                 }
             }
         });
+        handlebars.registerHelper("forFaktaMedPropertySattTilTrue", new Helper<String>() {
+            @Override
+            public CharSequence apply(String key, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                List<Faktum> fakta = soknad.getFaktaMedKeyOgPropertyLikTrue(key, (String) options.param(0)); 
+                if (fakta.isEmpty()) {
+                    return options.inverse(this);
+                } else {
+                    return lagItererbarRespons(options, fakta);
+                }
+            }
+        });
+
+        handlebars.registerHelper("formatterFodelsDato", new Helper<String>() {
+            @Override
+            public CharSequence apply(String s, Options options) throws IOException {
+                if (s.length() == 11) {
+                    Fodselsnummer fnr = getFodselsnummer(s);
+                    return fnr.getDayInMonth() + "." + fnr.getMonth() + "." + fnr.getBirthYear();
+                } else {
+                    String[] datoSplit = split(s, "-");
+                    reverse(datoSplit);
+                    return join(datoSplit, ".");
+                }
+            }
+        });
+
+
         handlebars.registerHelper("forFaktaStarterMed", new Helper<String>() {
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
