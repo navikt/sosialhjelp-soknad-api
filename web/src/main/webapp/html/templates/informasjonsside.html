@@ -4,7 +4,7 @@
 
 <div id="informasjonsside" data-sidetittel="sidetittel.informasjon">
 	<div data-panelbelyst>
-        <div class="persondata-feil" data-ng-show="tpsSvarerIkke()"> 
+        <div class="persondata-feil" data-ng-show="tpsSvarerIkke()">
         	<div class="utrop-sirkel-ikon"></div>
         	<h1 data-cmstekster="feilmelding"></h1>
        		<p class="mini-strek">{{ 'feilmelding.tps' | cmstekst }}</p>
@@ -21,12 +21,9 @@
 					<ul>
 						<li>
 							<p data-cmstekster="utslagskriterier.utslag.bosted.liste.1"></p>
-							<div class="adresse">
-								<div data-ng-repeat="linje in gjeldendeAdresse.adresseLinjer"> 
-									<span>{{linje}}</span>
-								</div>
-								<span data-ng-bind="gjeldendeAdresse.land"></span>
-							</div>
+                            <div class="adresse">
+                                {{ utslagskriterier.registrertAdresse }}
+                            </div>
 						</li>
 						<li>
 							<p data-cmstekster="utslagskriterier.utslag.bosted.liste.2"></p>

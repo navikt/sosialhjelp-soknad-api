@@ -65,7 +65,7 @@ angular.module('nav.select', ['ngSanitize'])
 					scope.defaultValue = cms.tekster[attrs.defaultValue] ? cms.tekster[attrs.defaultValue] : attrs.defaultValue;
 
 					if (scope.faktum.value === undefined) {
-						scope.faktum.value = (scope.defaultValue) ? scope.defaultValue : '';
+						scope.faktum.value = scope.defaultValue ? scope.defaultValue : '';
 					}
 
 					scope.inputVerdi = hentValgtTekstBasertPaaValue();
