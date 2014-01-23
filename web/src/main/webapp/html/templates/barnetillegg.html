@@ -21,24 +21,24 @@
                         <span data-ng-bind="b.properties.land"></span>
                     </div>
                 </div>
-                <div class="barnecheckbox" data-ng-controller="BarnetilleggFaktumCtrl">
+                <div class="barnecheckbox">
                     <div data-ng-if="hvisIRedigeringsmodus()">
                         <div data-ng-show="erSystemRegistrert(b)">
-                            <a href data-ng-click="sokbarnetillegg(b.faktumId, $event)" data-cmstekster="barnetillegg.barnetilegg.sporsmal" data-ng-if="barnetilleggIkkeRegistrert()"></a>
-                            <a href="#" data-ng-if="barnetilleggErRegistrert()" data-ng-click="slettBarnetillegg(b.faktumId, $index, $event)" data-cmstekster="barnetillegg.slettbarnetillegg"></a>
+                            <a href data-ng-click="sokbarnetillegg(b.faktumId, $event)" data-cmstekster="barnetillegg.barnetilegg.sporsmal" data-ng-if="barnetilleggIkkeRegistrert(b)"></a>
+                            <a href="#" data-ng-if="barnetilleggErRegistrert(b)" data-ng-click="slettBarnetillegg(b, $index, $event)" data-cmstekster="barnetillegg.slettbarnetillegg"></a>
                         </div>
                     </div>
 
-                    <div data-ng-if="barnetilleggErRegistrert()">
+                    <div data-ng-if="barnetilleggErRegistrert(b)">
                         <p class="svar-oppsummering" data-cmstekster="barnetillegg.barnetilegg.sporsmal"></p>
 
-                        <p class="svar-oppsummering" data-ng-if="barnetHarIkkeInntekt()" data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.true"></p>
+                        <p class="svar-oppsummering" data-ng-if="barnetHarIkkeInntekt(b)" data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.true"></p>
 
-                        <p class="svar-oppsummering" data-ng-if="barnetHarInntekt()">
+                        <p class="svar-oppsummering" data-ng-if="barnetHarInntekt(b)">
                             <span data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.false"> </span>
                             <span>.</span>
                             <span data-cmstekster="barnetillegg.barnetilegg.barneinntekttall.sporsmal"></span>
-                            <span data-ng-bind="barneinntekttall.value | currency"></span>
+                            <span>{{ b.properties.barneinntekttall | currency }}</span>
                         </p>
                     </div>
                 </div>
