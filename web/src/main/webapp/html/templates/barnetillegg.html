@@ -1,10 +1,11 @@
-<div class="skjemaramme" data-ng-controller="ModusCtrl" data-scroll-tilbake-directive="barnetillegg">
+<div class="skjemaramme" data-ng-controller="ModusCtrl" data-scroll-tilbake-directive="barn">
     <div id="barnetilleggForm" data-ng-form="barnetilleggForm" class="skjemainnhold" data-ng-controller="BarnetilleggCtrl" novalidate>
 
         <p class="informasjonstekst" cmstekster="barnetillegg.informasjon"></p>
+
         <div class="spm-boks vertikal" data-ng-repeat="b in barn">
-            <div data-ng-class="{gutt: erGutt(b), jente:erJente(b)}" id="barnetillegg{{b.faktumId}}" class="barn">
-                <a href="#" class="lukk" data-ng-show="erBrukerregistrert(b)" data-ng-click="slettBarn(b, $index, $event)" data-fokus-slettmoduler="barnetillegg"> </a>
+            <div data-ng-class="{gutt: erGutt(b), jente:erJente(b)}" id="barn{{b.faktumId}}" class="barn">
+                <a href="#" class="lukk" data-ng-show="erBrukerregistrert(b)" data-ng-click="slettBarn(b, $index, $event)"> </a>
 
                 <div class="barnealder">
                     <span data-cmstekster="aar"></span>
@@ -23,8 +24,8 @@
                 <div class="barnecheckbox" data-ng-controller="BarnetilleggFaktumCtrl">
                     <div data-ng-if="hvisIRedigeringsmodus()">
                         <div data-ng-show="erSystemRegistrert(b)">
-                            <a href data-ng-click="sokbarnetillegg(b.faktumId, $event)" data-cmstekster="barnetillegg.barnetilegg.sporsmal" data-ng-if="barnetilleggIkkeRegistrert()"></a>
-                            <a href="#" data-ng-if="barnetilleggErRegistrert()" data-ng-click="slettBarnetillegg(b.faktumId, $index, $event)" data-cmstekster="barnetillegg.slettbarnetillegg" data-fokus-slettmoduler="barnetillegg"></a>
+                            <a href data-ng-click="sokbarnetillegg(b.faktumId, $event)" data-cmstekster="barnetillegg.barnetilegg.sporsmal" data-ng-if="barnetilleggIkkeRegistrert(b)"></a>
+                            <a href="#" data-ng-if="barnetilleggErRegistrert(b)" data-ng-click="slettBarnetillegg(b, $index, $event)" data-cmstekster="barnetillegg.slettbarnetillegg"></a>
                         </div>
                     </div>
 
@@ -44,7 +45,7 @@
                 <div class="sentrert" data-ng-show="erBrukerregistrert(b)">
                     <ul class="liste-vannrett">
                         <li>
-                            <a href="#" data-ng-click="slettBarn(b, $index, $event)" data-cmstekster="barnetillegg.slettbarn" data-fokus-slettmoduler="barnetillegg"></a>
+                            <a href="#" data-ng-click="slettBarn(b, $index, $event)" data-cmstekster="barnetillegg.slettbarn"></a>
                         </li>
                         <li>
                             <a href="#" data-ng-click="endreBarn(b.faktumId, $event)" data-cmstekster="barnetillegg.endrebarn"></a>
@@ -56,7 +57,7 @@
 
         <div class="knapper-opprett" id="legg-til-barn" data-ng-show="hvisIRedigeringsmodus()">
             <p data-cmstekster="barnetillegg.nyttbarn.informasjon"></p>
-            <button class="knapp-leggtil-liten" href="#/nyttbarn" data-ng-click="leggTilBarn($event)" data-cmstekster="barnetillegg.nyttbarn"></button>
+            <a class="knapp-leggtil-liten" href="#/nyttbarn" data-ng-click="leggTilBarn($event)" data-cmstekster="barnetillegg.nyttbarn"></a>
         </div>
 
         <div spmblokkferdig

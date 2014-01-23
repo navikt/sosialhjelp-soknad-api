@@ -20,7 +20,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/vedlegg/:soknadId', {
+			.when('/vedlegg', {
 				templateUrl: '../html/templates/vedlegg.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -29,7 +29,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/opplasting/:soknadId/:vedleggId', {
+			.when('/opplasting/:vedleggId', {
 				templateUrl: '../html/templates/opplasting.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -37,7 +37,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/visVedlegg/:soknadId/:vedleggId', {
+			.when('/visVedlegg/:vedleggId', {
 				templateUrl: '../html/templates/visvedlegg.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -167,7 +167,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/oppsummering/:soknadId/', {
+			.when('/oppsummering', {
 				templateUrl: '../html/templates/oppsummering.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
