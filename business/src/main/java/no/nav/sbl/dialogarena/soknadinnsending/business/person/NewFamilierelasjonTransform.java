@@ -48,7 +48,17 @@ public class NewFamilierelasjonTransform {
                 finnFnr(xmlperson),
                 finnFornavn(xmlperson),
                 finnMellomNavn(xmlperson),
-                finnEtterNavn(xmlperson));
+                finnEtterNavn(xmlperson),
+                finnStatsborgerskap(xmlperson));
+    }
+
+    private static String finnStatsborgerskap(no.nav.tjeneste.virksomhet.person.v1.informasjon.Person soapPerson) {
+        if(soapPerson.getStatsborgerskap() != null) {
+            Statsborgerskap statsborgerskap = soapPerson.getStatsborgerskap();
+            return statsborgerskap.getLand().getValue();
+        } else {
+            return "NOR";
+        }
     }
 
     private static String finnFornavn(Person soapPerson) {
