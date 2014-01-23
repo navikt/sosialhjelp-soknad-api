@@ -18,21 +18,20 @@
 			<div id="utslagskriterier" ng-show="kravForDagpengerIkkeOppfylt()">
 				<div class="utslagskriterie" data-ng-show="ikkeBosattINorge()">
 					<h2 class="stor strek-ikon-info-orange" data-cmstekster="dagpenger.informasjonsside.ikkebosattinorge.tittel"></h2>
+					
+					<p class="label" data-cmstekster="utslagskriterier.utslag.bosted.label"></p>
+					<div class="adresse">
+						<div data-ng-repeat="linje in gjeldendeAdresse.adresseLinjer"> 
+							<span>{{linje}}</span>
+						</div>
+					</div>
+			
 					<ul>
 						<li>
 							<p data-cmstekster="utslagskriterier.utslag.bosted.liste.1"></p>
-							<div class="adresse">
-								<div data-ng-repeat="linje in gjeldendeAdresse.adresseLinjer"> 
-									<span>{{linje}}</span>
-								</div>
-								<span data-ng-bind="gjeldendeAdresse.land"></span>
-							</div>
 						</li>
 						<li>
 							<p data-cmstekster="utslagskriterier.utslag.bosted.liste.2"></p>
-						</li>
-						<li>
-							<p data-cmstekster="utslagskriterier.utslag.bosted.liste.3"></p>
 						</li>
 					</ul>
 				</div>
