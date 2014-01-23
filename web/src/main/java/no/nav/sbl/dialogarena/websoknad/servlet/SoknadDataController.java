@@ -148,12 +148,4 @@ public class SoknadDataController {
         String markup = fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
         return markup;
     }
-
-    //
-    // @RequestMapping(value = "/{soknadId}/{faktum}", method =
-    // RequestMethod.GET)
-    // public void hentFaktum(@PathVariable Long soknadId, @PathVariable Long
-    // faktumId) {
-    // throw new ApplicationException("Ikke implementert enda. ");
-    // }
 }

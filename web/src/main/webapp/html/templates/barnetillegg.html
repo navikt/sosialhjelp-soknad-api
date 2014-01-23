@@ -17,7 +17,7 @@
                     <div>{{ b.properties.fodselsdato | date:'dd.MM.yyyy'}}</div>
                     <div class="barnbosted">
                         <span class="bosted">bosted: </span>
-                        <span data-ng-show="ingenLandRegistrert(b)">Norge</span>
+                        <span data-ng-show="ingenLandRegistrert(b)">Ingen land registrert</span>
                         <span data-ng-bind="b.properties.land"></span>
                     </div>
                 </div>
