@@ -9,8 +9,6 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 			//$scope.utslagskriterier.gyldigAlder = false;
 			//$scope.utslagskriterier.bosattINorge = false;
 
-			$scope.gjeldendeAdresse = angular.fromJson($scope.utslagskriterier.registrertAdresse);
-
 			$scope.skalViseBrosjyreMelding = false;
 			
 			if(getBehandlingIdFromUrl() != "Dagpenger") {

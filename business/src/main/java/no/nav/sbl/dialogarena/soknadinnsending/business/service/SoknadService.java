@@ -11,7 +11,6 @@ import no.nav.sbl.dialogarena.pdf.PdfMerger;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
@@ -109,8 +108,10 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Long lagreSystemFaktum(Long soknadId, Faktum f, String uniqueProperty) {
-        List<Faktum> fakta = repository.hentSystemFaktumList(soknadId,
-                f.getKey(), FaktumType.SYSTEMREGISTRERT.toString());
+        Faktum eksisterendeFaktum = repository.hentSystemFaktum(soknadId, f.getKey(), SYSTEMREGISTRERT_FAKTUM);
+        f.setFaktumId(eksisterendeFaktum.getFaktumId());
+        f.setType(SYSTEMREGISTRERT_FAKTUM);
+        List<Faktum> fakta = repository.hentSystemFaktumList(soknadId, f.getKey(), SYSTEMREGISTRERT_FAKTUM);
 
         if (!uniqueProperty.isEmpty()) {
             for (Faktum faktum : fakta) {
@@ -119,12 +120,12 @@ public class SoknadService implements SendSoknadService, VedleggService {
                         && faktum.getProperties().get(uniqueProperty)
                                 .equals(f.getProperties().get(uniqueProperty))) {
                     f.setFaktumId(faktum.getFaktumId());
-                    return repository.lagreFaktum(soknadId, f);
+                    return repository.lagreFaktum(soknadId, f, true);
 
                 }
             }
         }
-        return repository.lagreFaktum(soknadId, f);
+        return repository.lagreFaktum(soknadId, f, true);
     }
 
     @Override
@@ -132,9 +133,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
         // TODO: her blir barn overskrevet. Hent ut fnr osv.
         Faktum faktum = repository.hentSystemFaktum(soknadId, key,
                 SYSTEMREGISTRERT_FAKTUM);
-
-        Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId,
-                faktum.getFaktumId(), key, value, SYSTEMREGISTRERT_FAKTUM));
+        Faktum nyttFaktum = new Faktum(soknadId, faktum.getFaktumId(), key, value, SYSTEMREGISTRERT_FAKTUM);
+        Long faktumId = repository.lagreFaktum(soknadId, nyttFaktum, true);
         return repository.hentFaktum(soknadId, faktumId);
     }
 
@@ -143,8 +143,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public Faktum lagreBarnSystemSoknadsFelt(Long soknadId, String key,
             String fnr, String json) {
 
-        Long faktumId = repository.lagreFaktum(soknadId, new Faktum(soknadId,
-                null, key, json, SYSTEMREGISTRERT_FAKTUM));
+        Faktum faktum = new Faktum(soknadId, null, key, json, SYSTEMREGISTRERT_FAKTUM);
+        Long faktumId = repository.lagreFaktum(soknadId, faktum, true);
         return repository.hentFaktum(soknadId, faktumId);
     }
 
@@ -153,9 +153,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
         List<Vedlegg> vedleggForventnings = hentPaakrevdeVedlegg(soknadId);
         String skjemanummer = getSkjemanummer(soknad);
-        logger.warn("sendsoknad har " + skjemanummer + " for " + soknadId);
         String journalforendeEnhet = getJournalforendeEnhet(soknad);
-        logger.warn("sendsoknad har " + journalforendeEnhet + " for " + soknadId);
         XMLHovedskjema hovedskjema = new XMLHovedskjema()
                 .withInnsendingsvalg(LASTET_OPP.toString())
                 .withSkjemanummer(skjemanummer)
@@ -274,9 +272,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public Vedlegg hentVedlegg(Long soknadId, Long vedleggId, boolean medInnhold) {
         if (medInnhold) {
-            return vedleggRepository.hentVedleggMedInnhold(soknadId, vedleggId);
+            return medKodeverk(vedleggRepository.hentVedleggMedInnhold(soknadId, vedleggId));
         } else {
-            return vedleggRepository.hentVedlegg(soknadId, vedleggId);
+            return medKodeverk(vedleggRepository.hentVedlegg(soknadId, vedleggId));
         }
     }
 
@@ -343,28 +341,31 @@ public class SoknadService implements SendSoknadService, VedleggService {
                         vedlegg = new Vedlegg(soknadId, faktum.getFaktumId(), soknadVedlegg.getskjemaNummer(), Vedlegg.Status.VedleggKreves);
                         vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
                     }
-                    try {
-                        Map<Kodeverk.Nokkel,String> koder = kodeverk.getKoder(vedlegg.getskjemaNummer());
-                        for (Entry<Nokkel, String> nokkelEntry : koder.entrySet()) {
-                            if(nokkelEntry.getKey().toString().contains("URL")){
-                                vedlegg.leggTilURL(nokkelEntry.getKey().toString(), koder.get(nokkelEntry.getKey()));
-                            }
-                        }
-                        vedlegg.setTittel(koder.get(Kodeverk.Nokkel.TITTEL));
-                    } catch (Exception ignore) {
-                        
-                    }
-
                     if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {
                         vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
+                        vedleggRepository.lagreVedlegg(soknadId, vedlegg.getVedleggId(), vedlegg);
                     }
-
-                    forventninger.add(vedlegg);
+                    forventninger.add(medKodeverk(vedlegg));
                 }
             }
         }
 
         return forventninger;
+    }
+
+    private Vedlegg medKodeverk(Vedlegg vedlegg) {
+        try {
+            Map<Kodeverk.Nokkel,String> koder = kodeverk.getKoder(vedlegg.getskjemaNummer());
+            for (Entry<Nokkel, String> nokkelEntry : koder.entrySet()) {
+                if(nokkelEntry.getKey().toString().contains("URL")){
+                    vedlegg.leggTilURL(nokkelEntry.getKey().toString(), koder.get(nokkelEntry.getKey()));
+                }
+            }
+            vedlegg.setTittel(koder.get(Kodeverk.Nokkel.TITTEL));
+        } catch (Exception ignore) {
+
+        }
+        return vedlegg;
     }
 
     @Override
