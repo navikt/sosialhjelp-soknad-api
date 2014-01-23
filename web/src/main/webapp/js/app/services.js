@@ -105,19 +105,6 @@ angular.module('app.services', ['ngResource'])
     .factory('landService', function ($resource) {
         return $resource('/sendsoknad/rest/soknad/kodeverk/landliste');
     })
-
-     .factory('oppsummeringService', function ($http, $q) {
-		return {
-			get: function(soknadId) {
-				var deferred = $q.defer();
-				$http.get('/sendsoknad/rest/soknad/oppsummering/' + soknadId).then(function(response) {
-					deferred.resolve(response.data.substring(1, response.data.length - 1));
-				});
-				return deferred.promise;
-			}
-		}
-	})
-
 	.factory('StartSoknadService', ['data', '$resource', '$q', function (data, $resource, $q) {
 		var deferred = $q.defer();
 		var soknadType = window.location.pathname.split('/')[3];

@@ -1,13 +1,16 @@
 angular.module('nav.oppsummering', [])
-    .controller('OppsummeringCtrl', ['$scope', 'data', '$location', '$routeParams', 'soknadService', 'personalia', 'oppsummeringService', '$window', function ($scope, data, $location, $routeParams, soknadService, personalia, oppsummeringService, $window) {
-        $scope.personalia = personalia;
+    .controller('OppsummeringCtrl', ['$scope', 'data', '$location', '$routeParams', 'soknadService', '$http', '$window', function ($scope, data, $location, $routeParams, soknadService, $http, $window) {
         $scope.oppsummeringHtml = '';
         $scope.harbekreftet = {value: ''};
         $scope.skalViseFeilmelding = {value: false};
 
         $scope.soknadId = data.soknad.soknadId;
-        oppsummeringService.get($scope.soknadId).then(function (markup) {
-            $scope.oppsummeringHtml = markup;
+        $http.get('/sendsoknad/rest/soknad/oppsummering/' + $scope.soknadId).then(function(response) {
+            var soknadElement = $(response.data).filter("#soknad");
+            soknadElement.find('.logo').remove();
+            soknadElement.find('.hode h1').addClass('stor strek-ikon-soknader');
+            soknadElement.find('hr').remove();
+            $scope.oppsummeringHtml = soknadElement.html();
         });
 
         $scope.$watch(function () {
