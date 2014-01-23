@@ -31,14 +31,16 @@ public class PersonServiceTPS implements PersonService {
     private Kodeverk kodeverk;
 
     /**
-     * Forsøker å hente person fra TPS og transformere denne til vår Personmodell.
-     * Dersom det feiler, logges feilen og det returneres et tomt Person objekt videre
+     * Forsøker å hente person fra TPS og transformere denne til vår
+     * Personmodell. Dersom det feiler, logges feilen og det returneres et tomt
+     * Person objekt videre
      */
     @Override
     public Person hentPerson(Long soknadId, String fodselsnummer) {
         XMLHentKontaktinformasjonOgPreferanserResponse response = null;
         try {
-            response = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequest(fodselsnummer));
+            response = brukerProfil
+                    .hentKontaktinformasjonOgPreferanser(lagXMLRequest(fodselsnummer));
             logger.warn("Fullstendig respons fra  TPS:" + response);
         } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
             logger.error("Fant ikke bruker i TPS.", e);
@@ -53,7 +55,20 @@ public class PersonServiceTPS implements PersonService {
         return new PersonTransform().mapToPerson(soknadId, response, kodeverk);
     }
 
-    private XMLHentKontaktinformasjonOgPreferanserRequest lagXMLRequest(String ident) {
-        return new XMLHentKontaktinformasjonOgPreferanserRequest().withIdent(ident);
+    private XMLHentKontaktinformasjonOgPreferanserRequest lagXMLRequest(
+            String ident) {
+        return new XMLHentKontaktinformasjonOgPreferanserRequest()
+                .withIdent(ident);
+    }
+
+    @Override
+    public boolean ping() {
+        try {
+            brukerProfil.ping();
+            return true;
+        } catch (RuntimeException e) {
+            return false;
+        }
+
     }
 }

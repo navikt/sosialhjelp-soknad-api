@@ -52,17 +52,17 @@ angular.module('app.services', ['ngResource'])
  * Service som behandler vedlegg
  */
 	.factory('vedleggService', function ($resource) {
-		return $resource('/sendsoknad/rest/soknad/:soknadId/faktum/:faktumId/vedlegg/:vedleggId/:action',
+		return $resource('/sendsoknad/rest/soknad/:soknadId/vedlegg/:vedleggId/:action?rand=' + new Date().getTime(),
 			{
 				soknadId : '@soknadId',
-				faktumId : '@faktumId',
 				vedleggId: '@vedleggId',
-				gosysId  : '@gosysId'},
+				skjemaNummer  : '@skjemaNummer'},
 			{
 				get   : { method: 'GET', params: {} },
 				create: { method: 'POST', params: {} },
 				merge : { method: 'POST', params: {action: 'generer'} },
-				remove: {method: 'POST', params: {action: 'delete'}}
+				remove: {method: 'POST', params: {action: 'delete'}},
+                underbehandling: {method: 'GET', params: {action: 'underBehandling'}, isArray: true }
 			}
 		);
 	})
@@ -78,7 +78,7 @@ angular.module('app.services', ['ngResource'])
 				method: 'POST',
 				params: {
 					faktumId : '@faktum.faktumId',
-					vedleggId: '@vedlegg.id'
+					vedleggId: '@vedlegg.vedleggId'
 				}
 			},
 			endreValg   : {
@@ -88,7 +88,7 @@ angular.module('app.services', ['ngResource'])
 		});
 	})
 
-	.factory('forsettSenereService', function ($resource) {
+	.factory('fortsettSenereService', function ($resource) {
 		return $resource('/sendsoknad/rest/soknad/:soknadId/fortsettsenere',
 			{soknadId: '@soknadId'},
 			{send: {method: 'POST'}}

@@ -5,11 +5,11 @@ angular.module('nav.cmstekster', ['app.services'])
 			required: 'navFaktum',
 			link    : {
 				pre: function (scope, elem, attr, faktum) {
-					if (scope.forventning.property) {
-						scope.cmsProps = {};
-						scope.cmsProps[scope.forventning.property] = scope.forventning.faktum.properties[scope.forventning.property];
+                    scope.cmsProps = {};
+                    if (attr.cmsvedlegg) {
+						scope.cmsProps.ekstra = attr.cmsvedlegg;
 					}
-				}
+                }
 			}
 		}
 	}])
@@ -27,9 +27,11 @@ angular.module('nav.cmstekster', ['app.services'])
 
 				if (scope.cmsProps) {
 					Object.keys(scope.cmsProps).forEach(function (attr) {
-						cmstekst = cmstekst.replace('${' + attr + '}', scope.cmsProps[attr], 'i');
+						//cmstekst = cmstekst.replace('${' + attr + '}', scope.cmsProps[attr], 'i');
+						cmstekst = cmstekst + ': ' + scope.cmsProps.ekstra;
 					});
 				}
+                cmstekst = cmstekst.replace('${.*}', '', 'i');
 
                 if (element.is('input')) {
                     element.attr('value', cmstekst);

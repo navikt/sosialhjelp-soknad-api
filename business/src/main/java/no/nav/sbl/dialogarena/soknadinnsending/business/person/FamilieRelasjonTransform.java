@@ -41,12 +41,12 @@ public class FamilieRelasjonTransform {
     private List<Barn> finnBarn(
             no.nav.tjeneste.virksomhet.person.v1.informasjon.Person xmlperson, Long soknadId) {
         List<Barn> result = new ArrayList<>();
-
         List<Familierelasjon> familierelasjoner = xmlperson.getHarFraRolleI();
         if (familierelasjoner.isEmpty()) {
             return result;
         }
         for (Familierelasjon familierelasjon : familierelasjoner) {
+
             Familierelasjoner familierelasjonType = familierelasjon.getTilRolle();
             if (familierelasjonType.getValue().equals("BARN")) {
                 no.nav.tjeneste.virksomhet.person.v1.informasjon.Person tilPerson = familierelasjon.getTilPerson();
