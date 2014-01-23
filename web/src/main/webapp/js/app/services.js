@@ -4,8 +4,6 @@ angular.module('app.services', ['ngResource'])
 
 	.config(function ($httpProvider) {
 		$httpProvider.responseInterceptors.push('resetTimeoutInterceptor');
-        $httpProvider.defaults.headers.common.Accept = "application/json, text/plain, text/html, */*";
-//        console.log($httpProvider.defaults.headers);
 	})
 
 	.factory('resetTimeoutInterceptor', function () {
@@ -89,8 +87,8 @@ angular.module('app.services', ['ngResource'])
 	})
 
 	.factory('fortsettSenereService', function ($resource) {
-		return $resource('/sendsoknad/rest/soknad/:soknadId/fortsettsenere',
-			{soknadId: '@soknadId'},
+		return $resource('/sendsoknad/rest/soknad/:behandlingId/fortsettsenere',
+			{soknadId: '@behandlingId'},
 			{send: {method: 'POST'}}
 		);
 	})
@@ -108,18 +106,6 @@ angular.module('app.services', ['ngResource'])
         return $resource('/sendsoknad/rest/soknad/kodeverk/landliste');
     })
 
-    .factory('oppsummeringService', function ($http, $q) {
-        return {
-            get: function(soknadId) {
-                var deferred = $q.defer();
-                $http.get('/sendsoknad/rest/soknad/oppsummering/' + soknadId).then(function(response) {
-                   deferred.resolve(response.data.substring(1, response.data.length - 1));
-                });
-
-                return deferred.promise;
-            }
-        }
-    })
 
 	.factory('StartSoknadService', ['data', '$resource', '$q', function (data, $resource, $q) {
 		var deferred = $q.defer();
