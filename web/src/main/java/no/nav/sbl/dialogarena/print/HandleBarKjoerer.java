@@ -6,6 +6,7 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
 import no.bekk.bekkopen.person.Fodselsnummer;
+import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.wicket.model.StringResourceModel;
@@ -24,7 +25,14 @@ import static org.apache.commons.lang3.StringUtils.split;
 
 
 public class HandleBarKjoerer {
+
+    private Kodeverk kodeverk;
+
     private static final Logger LOGG = LoggerFactory.getLogger(HandleBarKjoerer.class);
+
+    public HandleBarKjoerer(Kodeverk kodeverk) {
+        this.kodeverk = kodeverk;
+    }
 
     /**
      * Tar inn json og html på string-format. Htmlen er en Mustache-mal, med nøkler
@@ -33,7 +41,7 @@ public class HandleBarKjoerer {
      * @return String Html med verdier fra Json-data
      */
     @SuppressWarnings("unchecked")
-    public static String hentHTML(String json, String html) {
+    public String hentHTML(String json, String html) {
         String ut = "";
         try {
             Map<String, Object> hashMap = new ObjectMapper().readValue(json, Map.class);
@@ -50,7 +58,7 @@ public class HandleBarKjoerer {
      *
      * @return String Html med verdier fra input Map
      */
-    public static String fyllHtmlStringMedInnhold(String input, Map<String, Object> hash) throws IOException {
+    public String fyllHtmlStringMedInnhold(String input, Map<String, Object> hash) throws IOException {
         Handlebars handlebars = getHandlebars();
         return handlebars.compileInline(input).apply(hash);
     }
@@ -63,7 +71,7 @@ public class HandleBarKjoerer {
      * @return String Html med verdier fra Json-data
      */
     @SuppressWarnings("unchecked")
-    public static String fyllHtmlMalMedInnhold(String json, String hbsFil) {
+    public String fyllHtmlMalMedInnhold(String json, String hbsFil) {
         String ut = "";
         try {
             Map<String, Object> map = new ObjectMapper().readValue(json, Map.class);
@@ -74,7 +82,7 @@ public class HandleBarKjoerer {
         return ut;
     }
 
-    public static String fyllHtmlMalMedInnhold(WebSoknad soknad, String file) throws IOException {
+    public String fyllHtmlMalMedInnhold(WebSoknad soknad, String file) throws IOException {
         return getHandlebars().compile(file)
                 .apply(soknad);
 
@@ -86,13 +94,13 @@ public class HandleBarKjoerer {
      *
      * @return String Html med verdier fra input Map
      */
-    public static String fyllHtmlMalMedInnhold(String htmlFile, Map<String, Object> hash) throws IOException {
+    public String fyllHtmlMalMedInnhold(String htmlFile, Map<String, Object> hash) throws IOException {
         return getHandlebars().compile(htmlFile)
                 .apply(hash);
     }
 
 
-    private static Handlebars getHandlebars() {
+    private Handlebars getHandlebars() {
         Context c = Context.newBuilder(new WebSoknad()).build();
         Handlebars handlebars = new Handlebars();
         handlebars.registerHelper("forFaktum", new Helper<String>() {
@@ -201,6 +209,13 @@ public class HandleBarKjoerer {
             public CharSequence apply(String key, Options options) throws IOException {
                 String tekst = new StringResourceModel(key, null).getString();
                 return tekst;
+            }
+        });
+
+        handlebars.registerHelper("hentLand", new Helper<String>() {
+            @Override
+            public CharSequence apply(String landKode, Options options) throws IOException {
+                return kodeverk.getLand(landKode);
             }
         });
 

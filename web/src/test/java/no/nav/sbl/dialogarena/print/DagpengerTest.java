@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.print;
 
 import com.lowagie.text.DocumentException;
+import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.commons.io.IOUtils;
@@ -13,11 +14,14 @@ import java.util.Date;
 
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class DagpengerTest {
 
     @Test
     public void createPDFFromJson() throws IOException, DocumentException {
+        Kodeverk kodeverk = mock(Kodeverk.class);
+
         WebSoknad soknad = new WebSoknad();
         soknad.setskjemaNummer("NAV-1-1-1");
         soknad.leggTilFaktum(new Faktum(1L, 1L, "personalia", "true").medProperty("navn", "Ola Normann").medProperty("fnr", "01010101011").medProperty("addresse", "osloveien 1,  0479 oslo"));
@@ -34,7 +38,7 @@ public class DagpengerTest {
         soknad.leggTilFaktum(new Faktum(1L, 1L, "arbeidsforhold", "").medProperty("navn", "arbeidsforhold 2"));
         soknad.leggTilFaktum(new Faktum(1L, 1L, "arbeidsforhold", "").medProperty("navn", "arbeidsforhold 3"));
 
-        String html = HandleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+        String html = new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
 
         IOUtils.write(html, new FileOutputStream("/c:/test/dagpenger.html"));
 
