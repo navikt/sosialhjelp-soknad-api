@@ -109,7 +109,7 @@ public class VedleggController {
         return new RestFeil(ex.getId());
     }
 
-    @RequestMapping(value = "/{vedleggId}/opplasting", method = RequestMethod.POST, produces = "text/html; charset=utf-8")
+    @RequestMapping(value = "/{vedleggId}/opplasting", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
     @ResponseBody()
     @ResponseStatus(HttpStatus.CREATED)
     public Callable<VedleggOpplasting> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestParam("files[]") final List<MultipartFile> files) {
