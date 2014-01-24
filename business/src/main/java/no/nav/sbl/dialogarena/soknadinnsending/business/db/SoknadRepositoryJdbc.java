@@ -213,22 +213,15 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
 
     }
 
-    // TODO: Refaktorer
     private void oppdaterBrukerData(long soknadId, Faktum faktum, Boolean systemFaktum) {
         Faktum lagretFaktum = hentFaktum(soknadId, faktum.getFaktumId());
 
-        if (valueOf(lagretFaktum.getType()).equals(BRUKERREGISTRERT)) {
-            oppdater(soknadId, faktum);
-        } else if(systemFaktum) {
-            oppdater(soknadId, faktum);
+        if (valueOf(lagretFaktum.getType()).equals(BRUKERREGISTRERT) || systemFaktum) {
+            getJdbcTemplate()
+                    .update("update soknadbrukerdata set value=? where soknadbrukerdata_id = ? and soknad_id = ?",
+                            faktum.getValue(), faktum.getFaktumId(), soknadId);
         }
         lagreAlleEgenskaper(soknadId, faktum, systemFaktum);
-    }
-
-    private void oppdater(Long soknadId, Faktum faktum) {
-        getJdbcTemplate()
-                .update("update soknadbrukerdata set value=? where soknadbrukerdata_id = ? and soknad_id = ?",
-                        faktum.getValue(), faktum.getFaktumId(), soknadId);
     }
 
     // TODO: Refaktorer

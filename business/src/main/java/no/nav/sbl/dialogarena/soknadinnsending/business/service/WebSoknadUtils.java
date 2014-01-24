@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.NewAdresse;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBuilder;
 import org.joda.time.LocalDate;
@@ -58,7 +58,7 @@ public class WebSoknadUtils {
     public static Personalia getPerson(WebSoknad webSoknad) {
         Map<String, String> properties = webSoknad.getFakta().get(PERSONALIA_KEY).getProperties();
 
-        NewAdresse gjeldendeAdresse = new NewAdresse();
+        Adresse gjeldendeAdresse = new Adresse();
         gjeldendeAdresse.setAdresse(properties.get(GJELDENDEADRESSE_KEY));
         gjeldendeAdresse.setAdressetype(properties.get(GJELDENDEADRESSE_TYPE_KEY));
 
