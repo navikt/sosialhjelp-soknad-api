@@ -381,4 +381,37 @@
         <skjemaNummer>T8</skjemaNummer>
         <property>arbeidsgivernavn</property>
     </vedlegg>
+    <vedlegg>
+        <id>4</id>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>NAV 04-08.03</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValue>Permittert</onValue>
+        <inverted>true</inverted>
+    </vedlegg>
+    <vedlegg>
+        <id>4</id>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>NAV 04-03.07</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValue>Arbeidsgiver er konkurs</onValue>
+    </vedlegg>
+    <vedlegg>
+        <id>4</id>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>M7</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValue>Arbeidsgiver er konkurs</onValue>
+    </vedlegg>
+    <vedlegg>
+        <id>4</id>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>NAV 04-08.04</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValue>Permittert</onValue>
+    </vedlegg>
 </soknad>
