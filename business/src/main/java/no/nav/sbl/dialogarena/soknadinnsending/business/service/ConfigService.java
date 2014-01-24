@@ -18,6 +18,20 @@ public class ConfigService {
     private String skjemaveilederUrl;
     @Value("${soknad.alderspensjon.url}")
     private String alderspensjonUrl;
+    @Value("${soknad.reelarbeidsoker.url}")
+    private String reelarbeidsokerUrl;
+    @Value("${soknad.dagpengerbrosjyre.url}")
+    private String dagpengerBrosjyreUrl;
+    @Value("${soknad.brukerprofil.url}")
+    private String brukerProfilUrl;
+    @Value("${soknad.sluttaarsak.url}")
+    private String sluttaarsakUrl;
+    @Value("${soknad.lonnskravskjema.url}")
+    private String lonnskravSkjemaUrl;
+    @Value("${soknad.permitteringsskjema.url}")
+    private String permitteringskjemaUrl;
+    
+    
     
     public Map<String,String> getConfig() {
         Map<String, String> result = new HashMap<String, String>();
@@ -27,6 +41,13 @@ public class ConfigService {
         result.put("soknad.inngangsporten.url", inngangsportenUrl);
         result.put("soknad.skjemaveileder.url", skjemaveilederUrl);
         result.put("soknad.alderspensjon.url", alderspensjonUrl);
+        result.put("soknad.reelarbeidsoker.url", reelarbeidsokerUrl);
+        result.put("soknad.dagpengerbrosjyre.url", dagpengerBrosjyreUrl);
+        result.put("soknad.brukerprofil.url", brukerProfilUrl);
+        result.put("soknad.sluttaarsak.url", sluttaarsakUrl);
+        result.put("soknad.lonnskravskjema.url", lonnskravSkjemaUrl);
+        result.put("soknad.permitteringsskjema.url", permitteringskjemaUrl);
+        
         return result;
     }
     
