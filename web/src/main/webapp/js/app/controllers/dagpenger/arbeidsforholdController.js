@@ -6,6 +6,10 @@ angular.module('nav.arbeidsforhold.controller', [])
 
         $scope.soknadId = data.soknad.soknadId;
 
+        $scope.sluttaarsakUrl = data.config["soknad.sluttaarsak.url"];
+        $scope.lonnskravSkjema = data.config["soknad.lonnskravskjema.url"];
+        $scope.permiteringUrl = data.config["soknad.permitteringsskjema.url"];
+
         $scope.templates = {
             'Kontrakt utgått': {oppsummeringsurl: '../html/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html'},
             'Avskjediget': {oppsummeringsurl: '../html/templates/arbeidsforhold/avskjediget-oppsummering.html' },
