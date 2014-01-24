@@ -6,6 +6,8 @@ import org.junit.Test;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
+
+// TODO: Fiks testene
 //@ContextConfiguration(classes = { FitNesseApplicationConfig.class })
 //@RunWith(SpringJUnit4ClassRunner.class)
 public class SoknadListePageTest {
