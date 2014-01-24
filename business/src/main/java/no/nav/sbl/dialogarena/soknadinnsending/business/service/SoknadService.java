@@ -335,10 +335,10 @@ public class SoknadService implements SendSoknadService, VedleggService {
         for (Faktum faktum : repository.hentAlleBrukerData(soknadId)) {
             List<SoknadVedlegg> aktuelleVedlegg = struktur.vedleggFor(faktum.getKey());
             for (SoknadVedlegg soknadVedlegg : aktuelleVedlegg) {
-                if (soknadVedlegg.trengerVedlegg(faktum.getValue())) {
-                    Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummer(soknadId, faktum.getFaktumId(), soknadVedlegg.getskjemaNummer());
+                if (soknadVedlegg.trengerVedlegg(faktum)) {
+                    Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummer(soknadId, faktum.getFaktumId(), soknadVedlegg.getSkjemaNummer());
                     if (vedlegg == null) {
-                        vedlegg = new Vedlegg(soknadId, faktum.getFaktumId(), soknadVedlegg.getskjemaNummer(), Vedlegg.Status.VedleggKreves);
+                        vedlegg = new Vedlegg(soknadId, faktum.getFaktumId(), soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
                         vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
                     }
                     if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {

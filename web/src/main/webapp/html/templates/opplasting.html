@@ -15,7 +15,7 @@
             <section class="panel-standard oversikt">
                 <ul class="opplastingliste clearfix">
                     <li data-ng-repeat="file in queue" data-ng-class="{'lasteropp': file.$processing()}" data-fil-feil>
-                        <a class="lukk" data-ng-if="!!file.vedleggId" data-ng-click="file.$destroy()" data-ng-controller="SlettOpplastingCtrl"></a>
+                        <a class="lukk" data-ng-if="!!file.vedleggId" data-ng-click="file.$destroy()" data-ng-controller="SlettOpplastingCtrl" href="javascript:void(0);" data-aria-label="Slett siden"></a>
                         <img data-async-image="../rest/soknad/{{file.soknadId}}/vedlegg/{{file.vedleggId}}/thumbnail" data-ng-if="!!file.vedleggId">
                     </li>
                     <li class="leggtil">

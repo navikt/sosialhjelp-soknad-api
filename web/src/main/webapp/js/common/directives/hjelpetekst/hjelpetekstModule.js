@@ -7,7 +7,7 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
 				tekst : '@'
 			},
 			templateUrl: '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html',
-			link: function (scope) {
+			link: function (scope, element) {
                 var lukkEventTimestamp = 0;
 
 				scope.visHjelp = false;
@@ -18,6 +18,7 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
 				scope.lukk = function () {
 					scope.visHjelp = false;
                     $($window).unbind('resize');
+                    settFokusTilNesteElement(element.closest('.nav-checkbox').find('input[type=checkbox]'));
 				};
 
 				scope.stoppKlikk = function (event) {
