@@ -1,6 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.POSTADRESSE_UTLAND;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.POSTADRESSE;
 
 public class Personalia {
 
@@ -103,16 +107,33 @@ public class Personalia {
             return false;
         }
 
-        if (adressetype.equalsIgnoreCase(Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND.name()) || adressetype.equalsIgnoreCase(Adressetype.POSTADRESSE_UTLAND.name())) {
+        if (adressetype.equalsIgnoreCase(MIDLERTIDIG_POSTADRESSE_UTLAND.name()) || adressetype.equalsIgnoreCase(POSTADRESSE_UTLAND.name())) {
             return true;
-        } else if (adressetype.equalsIgnoreCase(Adressetype.POSTADRESSE.name())) {
-            return erUtenlandskFolkeregistrertAdresse();
+        } else if (adressetype.equalsIgnoreCase(POSTADRESSE.name())) {
+            return harUtenlandskFolkeregistrertAdresse();
         }
         return false;
     }
 
+    public boolean harNorskMidlertidigAdresse() {
+        if (sekundarAdresse == null)
+        {
+            return false;
+        }
+        String adressetype = sekundarAdresse.getAdressetype();
+
+        if (adressetype == null) {
+            return false;
+        }
+        if (adressetype.equalsIgnoreCase(MIDLERTIDIG_POSTADRESSE_NORGE.name())) {
+            return true;
+        }
+        return false;
+    }
+
+
     @SuppressWarnings("unchecked")
-    private boolean erUtenlandskFolkeregistrertAdresse() {
+    public boolean harUtenlandskFolkeregistrertAdresse() {
         if (gjeldendeAdresse.getAdressetype().equalsIgnoreCase(UTENLANDSK_ADRESSE.name()) || sekundarAdresse.getAdressetype().equalsIgnoreCase(UTENLANDSK_ADRESSE.name())) {
             return true;
         }
