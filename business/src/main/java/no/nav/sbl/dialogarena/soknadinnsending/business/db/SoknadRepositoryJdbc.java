@@ -219,7 +219,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
 
         if (valueOf(lagretFaktum.getType()).equals(BRUKERREGISTRERT)) {
             oppdater(soknadId, faktum);
-        } else if(systemFaktum) {
+        } else if (systemFaktum) {
             oppdater(soknadId, faktum);
         }
         lagreAlleEgenskaper(soknadId, faktum, systemFaktum);
@@ -241,7 +241,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
                 getJdbcTemplate().update("insert into faktumegenskap (soknad_id, faktum_id, key, value) values (?, ?, ?, ?)",
                         soknadId, faktum.getFaktumId(), key, faktum.getProperties().get(key));
             }
-        } else if(systemFaktum) {
+        } else if (systemFaktum) {
             getJdbcTemplate().update("delete from faktumegenskap where soknad_Id = ? and faktum_id = ? and systemegenskap = ?", soknadId, faktum.getFaktumId(), "1");
             for (String key : faktum.getProperties().keySet()) {
                 getJdbcTemplate().update("insert into faktumegenskap (soknad_id, faktum_id, key, value, systemegenskap) values (?, ?, ?, ?, ?)",
@@ -339,6 +339,11 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     @Override
     public void endreInnsendingsValg(Long soknadId, Long faktumId, Faktum.Status innsendingsvalg) {
         getJdbcTemplate().update("update soknadbrukerdata set innsendingsvalg = ? where soknad_id = ? and soknadbrukerdata_id = ?", innsendingsvalg.toString(), soknadId, faktumId);
+    }
+
+    @Override
+    public String hentSoknadType(Long soknadId) {
+        return getJdbcTemplate().queryForObject("select navsoknadid from soknad where soknad_id = ? ", String.class, soknadId);
     }
 
     private <T> List<T> select(String sql, RowMapper<T> rowMapper, Object... args) {
