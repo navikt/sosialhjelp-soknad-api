@@ -60,7 +60,6 @@ public class WebSoknadUtilsTest {
         assertEquals(DAGPENGER_VED_PERMITTERING, getSkjemanummer(soknad));
     }
 
-    @Ignore
     @Test
     public void harSkjemanummer0000DerMinstEnErPermitteringOgBrukerBorInnenlands() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
@@ -71,7 +70,6 @@ public class WebSoknadUtilsTest {
         assertEquals("0000", getJournalforendeEnhet(soknad));
     }
 
-    @Ignore
     @Test
     public void harSkjemanummer0000DerMinstEnErPermitteringOgBrukerBorIUtlandetOgHarNorskMidlertidigAdresse() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
@@ -84,6 +82,7 @@ public class WebSoknadUtilsTest {
 
     @Ignore
     @Test
+    //TODO sett opp person i test ordentlig
     public void harSkjemanummer0000DerMinstEnErPermitteringOgBrukerBorIUtlandet() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
         WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert("2014-1-1"), lagAvskjediget("2014-1-1"));
