@@ -2,6 +2,7 @@ angular.module('nav.avbryt', [])
     .controller('AvbrytCtrl', ['$scope', '$routeParams', '$location', 'soknadService', 'data', function ($scope, $routeParams, $location, soknadService, data) {
         $scope.fremdriftsindikator = {
             laster: false
+
         }
 
         $scope.krevBekreftelse =data.fakta.filter(function(item) {
