@@ -26,8 +26,8 @@ public class Personalia {
     private String epost;
     private String statsborgerskap;
     private String kjonn;
-    private NewAdresse gjeldendeAdresse;
-    private NewAdresse sekundarAdresse;
+    private Adresse gjeldendeAdresse;
+    private Adresse sekundarAdresse;
 
     public Personalia() {
     }
@@ -80,19 +80,19 @@ public class Personalia {
         this.kjonn = kjonn;
     }
 
-    public NewAdresse getGjeldendeAdresse() {
+    public Adresse getGjeldendeAdresse() {
         return gjeldendeAdresse;
     }
 
-    public void setGjeldendeAdresse(NewAdresse gjeldendeAdresse) {
+    public void setGjeldendeAdresse(Adresse gjeldendeAdresse) {
         this.gjeldendeAdresse = gjeldendeAdresse;
     }
 
-    public NewAdresse getSekundarAdresse() {
+    public Adresse getSekundarAdresse() {
         return sekundarAdresse;
     }
 
-    public void setSekundarAdresse(NewAdresse sekundarAdresse) {
+    public void setSekundarAdresse(Adresse sekundarAdresse) {
         this.sekundarAdresse = sekundarAdresse;
     }
 

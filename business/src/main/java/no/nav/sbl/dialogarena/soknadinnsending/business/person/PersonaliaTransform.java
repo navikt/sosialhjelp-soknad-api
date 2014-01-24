@@ -26,8 +26,7 @@ public class PersonaliaTransform {
         Personalia personalia = PersonaliaBuilder
                 .with()
                 .fodselsnummer(finnFnr(xmlBruker))
-//                .alder(finnAlder(finnFnr(xmlBruker)))
-                .alder("50")
+                .alder(finnAlder(finnFnr(xmlBruker)))
                 .navn(finnSammensattNavn(xmlBruker))
                 .epost(finnEpost(xmlBruker))
                 .statsborgerskap(finnStatsborgerskap(xmlPerson))
@@ -39,13 +38,13 @@ public class PersonaliaTransform {
         return personalia;
     }
 
-    private static NewAdresse finnGjeldendeAdresse(XMLBruker xmlBruker, Kodeverk kodeverk) {
-        NewAdresse adresse = new NewAdresseTransform().mapGjeldendeAdresse(xmlBruker, kodeverk);
+    private static Adresse finnGjeldendeAdresse(XMLBruker xmlBruker, Kodeverk kodeverk) {
+        Adresse adresse = new AdresseTransform().mapGjeldendeAdresse(xmlBruker, kodeverk);
         return adresse;
     }
 
-    private static NewAdresse finnSekundarAdresse(XMLBruker xmlBruker, Kodeverk kodeverk) {
-        NewAdresse adresse = new NewAdresseTransform().mapSekundarAdresse(xmlBruker, kodeverk);
+    private static Adresse finnSekundarAdresse(XMLBruker xmlBruker, Kodeverk kodeverk) {
+        Adresse adresse = new AdresseTransform().mapSekundarAdresse(xmlBruker, kodeverk);
         return adresse;
     }
 
