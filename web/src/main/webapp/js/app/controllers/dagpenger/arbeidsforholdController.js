@@ -17,16 +17,10 @@ angular.module('nav.arbeidsforhold.controller', [])
         };
 
         var arbeidsforhold = data.finnFakta('arbeidsforhold');
-        var sluttaarsak = data.finnFakta('sluttaarsak');
         $scope.arbeidsliste = [];
 
         angular.forEach(arbeidsforhold, function (af) {
-            angular.forEach(sluttaarsak, function (s) {
-                if (s.parrentFaktum === af.faktumId) {
-                    $scope.arbeidsliste.push({'arbeidsforhold': af, 'sluttaarsak': s});
-                }
-            });
-
+            $scope.arbeidsliste.push({'arbeidsforhold': af, 'sluttaarsak': af});
         });
 
         function compareArbeidsforholdDate(a1, a2) {
