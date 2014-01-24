@@ -8,8 +8,9 @@ angular.module('nav.avbryt', [])
             var fakta = $.map(result.fakta, function (element) {
                 return element.type;
             });
-            $scope.krevBekreftelse.value = $.inArray("BRUKERREGISTRERT", fakta) > 0;
 
+            $scope.krevBekreftelse.value = fakta.indexOf("BRUKERREGISTRERT") >= 0;
+            
             if (!$scope.krevBekreftelse.value) {
                 $scope.submitForm();
             }
