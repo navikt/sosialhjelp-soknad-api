@@ -207,6 +207,14 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
+			.when('/ferdigstilt', {
+				templateUrl: '../html/templates/ferdigstilt.html',
+				resolve    : {
+					notUsedButRequiredProperty: function (HentSoknadService) {
+						return HentSoknadService;
+					}
+				}
+			})
 			.when('/soknadliste', {templateUrl: '../html/templates/soknadliste.html'})
 			.otherwise({redirectTo: '/informasjonsside'});
 

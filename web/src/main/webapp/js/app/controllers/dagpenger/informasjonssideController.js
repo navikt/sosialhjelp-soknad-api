@@ -50,7 +50,9 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 			}
 
 			$scope.soknadErFerdigstilt = function() {
-				return data && data.soknad && data.soknad.status == "FERDIG";
+				if(data && data.soknad && data.soknad.status == "FERDIG") {
+					$location.path('/ferdigstilt');
+				}
 			}
 
 	        $scope.startSoknad = function () {
