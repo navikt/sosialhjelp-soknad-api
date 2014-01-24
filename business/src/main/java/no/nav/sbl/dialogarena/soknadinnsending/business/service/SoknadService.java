@@ -86,6 +86,11 @@ public class SoknadService implements SendSoknadService, VedleggService {
                     "vedlegg.opplasting.feil.pdf.applepreview");
         }
     }
+    
+    @Override
+    public WebSoknad hentSoknadMetaData(long soknadId) {
+        return repository.hentSoknad(soknadId);
+    }
 
     @Override
     public WebSoknad hentSoknad(long soknadId) {
