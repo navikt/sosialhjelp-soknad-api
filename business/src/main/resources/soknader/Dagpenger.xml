@@ -133,66 +133,66 @@
         <panel>Utdanning</panel>
     </faktum>
     <faktum>
-        <id>ytelser.stonadFisker</id>
+        <id>stonadFisker</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ytelser.ingenYtelse</dependOn>
+        <dependOn>ingenYtelse</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
-        <id>ytelser.offentligTjenestepensjon</id>
+        <id>offentligTjenestepensjon</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ytelser.ingenYtelse</dependOn>
+        <dependOn>ingenYtelse</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
-        <id>ytelser.offentligTjenestepensjonUtbetaler</id>
+        <id>offentligTjenestepensjonUtbetaler</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ytelser.offentligTjenestepensjon</dependOn>
+        <dependOn>offentligTjenestepensjon</dependOn>
         <dependOnValue>true</dependOnValue>
     </faktum>
     <faktum>
-        <id>ytelser.privatTjenestepensjon</id>
+        <id>privatTjenestepensjon</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ytelser.ytelser.ingenYtelse</dependOn>
+        <dependOn>ingenYtelse</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
-        <id>ytelser.privatTjenestepensjonUtbetaler</id>
+        <id>privatTjenestepensjonUtbetaler</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ytelser.privatTjenestepensjon</dependOn>
+        <dependOn>privatTjenestepensjon</dependOn>
         <dependOnValue>true</dependOnValue>
     </faktum>
     <faktum>
-        <id>ytelser.etterlonn</id>
+        <id>etterlonn</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ytelser.ingenYtelse</dependOn>
+        <dependOn>ingenYtelse</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
-        <id>ytelser.vartpenger</id>
+        <id>vartpenger</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ytelser.ingenYtelse</dependOn>
+        <dependOn>ingenYtelse</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
-        <id>ytelser.vartpengerUtbetaler</id>
+        <id>vartpengerUtbetaler</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ytelser.vartpenger</dependOn>
+        <dependOn>vartpenger</dependOn>
         <dependOnValue>true</dependOnValue>
     </faktum>
     <faktum>
         <id>ventelonn</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ytelser.ingenYtelse</dependOn>
+        <dependOn>ingenYtelse</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
@@ -203,31 +203,31 @@
         <dependOnValue>true</dependOnValue>
     </faktum>
     <faktum>
-        <id>ytelser.dagpengerEOS</id>
+        <id>dagpengerEOS</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ytelser.ingenYtelse</dependOn>
+        <dependOn>ingenYtelse</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
         <id>dagpengerEOSUtbetaler</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ytelser.dagpengerEOS</dependOn>
+        <dependOn>dagpengerEOS</dependOn>
         <dependOnValue>true</dependOnValue>
     </faktum>
     <faktum>
-        <id>ytelser.annenYtelse</id>
+        <id>annenYtelse</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ytelser.ingenYtelse</dependOn>
+        <dependOn>ingenYtelse</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
         <id>annenYtelseType</id>
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ytelser.annenYtelse</dependOn>
+        <dependOn>annenYtelse</dependOn>
         <dependOnValue>true</dependOnValue>
     </faktum>
     <faktum>
@@ -238,7 +238,7 @@
         <dependOnValue>true</dependOnValue>
     </faktum>
     <faktum>
-        <id>ytelser.ingenYtelse</id>
+        <id>ingenYtelse</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
     </faktum>
@@ -335,43 +335,43 @@
     </vedlegg>
     <vedlegg>
         <id>3</id>
-        <faktum>ytelser.offentligTjenestepensjon</faktum>
+        <faktum>offentligTjenestepensjon</faktum>
         <onValue>true</onValue>
         <skjemaNummer>K1</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>3</id>
-        <faktum>ytelser.privatTjenestepensjon</faktum>
+        <faktum>privatTjenestepensjon</faktum>
         <onValue>true</onValue>
         <skjemaNummer>K1</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>3</id>
-        <faktum>ytelser.stonadFisker</faktum>
+        <faktum>stonadFisker</faktum>
         <onValue>true</onValue>
         <skjemaNummer>K1</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>3</id>
-        <faktum>ytelser.etterlonn</faktum>
+        <faktum>etterlonn</faktum>
         <onValue>true</onValue>
         <skjemaNummer>K1</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>3</id>
-        <faktum>ytelser.vartpenger</faktum>
+        <faktum>vartpenger</faktum>
         <onValue>true</onValue>
         <skjemaNummer>K1</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>3</id>
-        <faktum>ytelser.dagpengerEOS</faktum>
+        <faktum>dagpengerEOS</faktum>
         <onValue>true</onValue>
         <skjemaNummer>K1</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>3</id>
-        <faktum>ytelser.annenYtelse</faktum>
+        <faktum>annenYtelse</faktum>
         <onValue>true</onValue>
         <skjemaNummer>K1</skjemaNummer>
     </vedlegg>
