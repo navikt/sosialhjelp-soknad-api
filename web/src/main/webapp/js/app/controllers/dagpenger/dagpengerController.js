@@ -15,7 +15,9 @@ angular.module('nav.dagpenger', [])
 		$scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];
 
 		$scope.soknadFerdigstilt = function() {
-			return data.soknad.status=="FERDIG";
+			if(data.soknad.status=="FERDIG") {
+				$location.path('/ferdigstilt');
+			}
 		}
 
 		$scope.soknadUnderArbeid= function() {
@@ -79,4 +81,8 @@ angular.module('nav.dagpenger', [])
 		function setAktivFeilmeldingsklasse(element) {
 			element.addClass('aktiv-feilmelding');
 		}
-	}]);
+	}])
+	.controller('FerdigstiltCtrl', ['$scope', 'data', '$location', '$timeout', function ($scope, data, $location, $timeout) {
+		$scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];
+	}])
+
