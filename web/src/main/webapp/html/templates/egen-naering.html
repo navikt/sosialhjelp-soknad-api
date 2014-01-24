@@ -22,9 +22,10 @@
             </div>
         </div>
         <a href="javascript:void(0)" aria-role="button" class="orgnummer-slett"
-           data-ng-show="skalViseSlettKnapp($index)"
+           data-ng-if="skalViseSlettKnapp($index)"
            data-ng-click="slettOrg(egennaering_drivergennaering_orgnummer, $index)"
-           data-cmstekster="organisasjonsnummer.slett"></a>
+           data-cmstekster="organisasjonsnummer.slett"
+           data-fokus></a>
     </div>
 
     <a href="javascript:void(0)" aria-role="button" class="orgnummer-leggtil" data-ng-click="leggTilOrgnr()"
@@ -136,7 +137,7 @@
 </div>
 
 <div class="form-linje andelsfordeling-container" ng-class="{feil : prosentFeil()} "
-     data-ng-show="svartPaHvemEierGardsbruket()">
+     data-ng-if="svartPaHvemEierGardsbruket()">
     <h4 class="spm-sporsmal andelsfordeling-spm">
         <span data-cmstekster="egennaering.gardsbruk.false.eierandel.sporsmal"></span>
     </h4>

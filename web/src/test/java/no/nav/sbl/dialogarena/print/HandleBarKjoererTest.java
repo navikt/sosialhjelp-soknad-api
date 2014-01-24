@@ -55,7 +55,7 @@ public class HandleBarKjoererTest {
         assertThat(true, Is.is(true));
 //        Kodeverk kodeverk = mock(Kodeverk.class);
 //        WebSoknad soknad = new WebSoknad();
-//        soknad.setskjemaNummer("NAV-1-1-1");
+//        soknad.setSkjemaNummer("NAV-1-1-1");
 //        soknad.leggTilFaktum(new Faktum(1L, 1L, "test", "testinnhold"));
 //        soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold2"));
 //        soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold3"));
