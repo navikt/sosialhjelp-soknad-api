@@ -50,6 +50,7 @@ public class HandleBarKjoererTest {
         assertThat(applied, containsString("188"));
     }
 
+    // TODO: Fiks testen
     @Test
     public void createPDFFromJson() throws IOException, DocumentException {
         assertThat(true, Is.is(true));

@@ -94,7 +94,10 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public WebSoknad hentSoknad(long soknadId) {
-        return repository.hentSoknadMedData(soknadId);
+        WebSoknad soknad = repository.hentSoknadMedData(soknadId);
+        List<Vedlegg> vedlegg = hentPaakrevdeVedlegg(soknadId, soknad);
+        soknad.setVedlegg(vedlegg);
+        return soknad;
     }
 
     @Override
@@ -154,14 +157,16 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     @Override
-    public void sendSoknad(long soknadId) {
+    public void sendSoknad(long soknadId, byte[] pdf) {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
-        List<Vedlegg> vedleggForventnings = hentPaakrevdeVedlegg(soknadId);
+        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
+        List<Vedlegg> vedleggForventnings = hentPaakrevdeVedlegg(soknadId, soknad);
         String skjemanummer = getSkjemanummer(soknad);
         String journalforendeEnhet = getJournalforendeEnhet(soknad);
         XMLHovedskjema hovedskjema = new XMLHovedskjema()
                 .withInnsendingsvalg(LASTET_OPP.toString())
                 .withSkjemanummer(skjemanummer)
+                .withUuid(soknad.getUuid())
                 .withJournalforendeEnhet(journalforendeEnhet);
         henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(),
                 hovedskjema,
@@ -332,10 +337,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     @Override
-    public List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId) {
+    public List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId, WebSoknad soknad) {
         List<Vedlegg> forventninger = new ArrayList<>();
-        WebSoknad webSoknad = hentSoknad(soknadId);
-        SoknadStruktur struktur = hentStruktur(webSoknad.getskjemaNummer());
+        SoknadStruktur struktur = hentStruktur(soknad.getskjemaNummer());
 
         for (Faktum faktum : repository.hentAlleBrukerData(soknadId)) {
             List<SoknadVedlegg> aktuelleVedlegg = struktur.vedleggFor(faktum.getKey());

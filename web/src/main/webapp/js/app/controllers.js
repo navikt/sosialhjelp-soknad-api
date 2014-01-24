@@ -10,7 +10,6 @@ angular.module('app.controllers', [
     'nav.opplasting.controller',
     'nav.barnetillegg',
     'nav.barn',
-    'nav.barnetilleggfaktum',
     'nav.vedlegg.controller',
     'nav.forsettsenere',
     'nav.dagpenger',

@@ -1,145 +1,19 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class PersonServiceTest {
 
-//    public static final String ADRESSER = "adresser";
-//    @InjectMocks
-//    private PersonServiceTPS service;
-//
-//    @Mock
-//    private BrukerprofilPortType brukerprofilMock;
-//    @Mock
-//    private Kodeverk kodeverkMock;
-//
-//
-    @SuppressWarnings("unchecked")
     @Test
-    public void returnerPersonUtenDataHvisPersonenSomReturneresHarFeilIdent() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-        Assert.assertThat(true, is(true));
-//        XMLHentKontaktinformasjonOgPreferanserRequest request = new XMLHentKontaktinformasjonOgPreferanserRequest();
-//        request.setIdent(FEIL_IDENT);
-//        when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenThrow(HentKontaktinformasjonOgPreferanserPersonIkkeFunnet.class);
-//        Person person = service.hentPerson(1l, FEIL_IDENT);
-//        Assert.assertNotNull(person);
+    public void test() {
+        assertThat(true, is(true));
     }
-//
-//    @Test
-//    public void returnererPersonObjektDersomPersonenSomReturneresHarRiktigIdent() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-//        XMLHentKontaktinformasjonOgPreferanserRequest request = hentRequestMedGyldigIdent();
-//        XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
-//
-//        XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
-//        response.setPerson(xmlBruker);
-//
-//        when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenReturn(response);
-//        Person hentetPerson = service.hentPerson(2l, RIKTIG_IDENT);
-//        Assert.assertNotNull(hentetPerson.getFakta());
-//
-//        Faktum fnr = (Faktum) hentetPerson.getFakta().get("fnr");
-//        Faktum fornavn = (Faktum) hentetPerson.getFakta().get("fornavn");
-//        Faktum mellomnavn = (Faktum) hentetPerson.getFakta().get("mellomnavn");
-//        Faktum etternavnavn = (Faktum) hentetPerson.getFakta().get("etternavn");
-//        Faktum sammensattnavn = (Faktum) hentetPerson.getFakta().get("sammensattnavn");
-//        Faktum epost = (Faktum) hentetPerson.getFakta().get("epost");
-//        Assert.assertEquals(RIKTIG_IDENT, fnr.getValue());
-//        Assert.assertEquals(ET_FORNAVN, fornavn.getValue());
-//        Assert.assertEquals(ET_MELLOMNAVN, mellomnavn.getValue());
-//        Assert.assertEquals(ET_ETTERNAVN, etternavnavn.getValue());
-//        Assert.assertEquals(ET_FORNAVN + " " + ET_MELLOMNAVN + " " + ET_ETTERNAVN, sammensattnavn.getValue());
-//        Assert.assertEquals(EN_EPOST, epost.getValue());
-//    }
-//
-//    @Test
-//    public void skalStottePersonerUtenMellomnavn() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-//        XMLHentKontaktinformasjonOgPreferanserRequest request = hentRequestMedGyldigIdent();
-//        XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
-//
-//        XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(false);
-//
-//        response.setPerson(xmlBruker);
-//
-//        when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenReturn(response);
-//        Person hentetPerson = service.hentPerson(2l, RIKTIG_IDENT);
-//        Assert.assertNotNull(hentetPerson.getFakta());
-//
-//        Faktum mellomnavn = (Faktum) hentetPerson.getFakta().get("mellomnavn");
-//        Faktum sammensattnavn = (Faktum) hentetPerson.getFakta().get("sammensattnavn");
-//        Assert.assertEquals("", mellomnavn.getValue());
-//        Assert.assertEquals(ET_FORNAVN + " " + ET_ETTERNAVN, sammensattnavn.getValue());
-//    }
-//
-//    @Test
-//    public void skalStottePersonerUtenNavn() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-//        XMLHentKontaktinformasjonOgPreferanserRequest request = hentRequestMedGyldigIdent();
-//        XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
-//
-//
-//        XMLBruker xmlBruker = new XMLBruker();
-//        XMLNorskIdent xmlNorskIdent = new XMLNorskIdent();
-//        xmlNorskIdent.setIdent(RIKTIG_IDENT);
-//        xmlBruker.setIdent(xmlNorskIdent);
-//        response.setPerson(xmlBruker);
-//
-//        when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenReturn(response);
-//        Person hentetPerson = service.hentPerson(2l, RIKTIG_IDENT);
-//        Assert.assertNotNull(hentetPerson.getFakta());
-//
-//        Faktum sammensattnavn = (Faktum) hentetPerson.getFakta().get("sammensattnavn");
-//        Assert.assertEquals("", sammensattnavn.getValue());
-//    }
-//
-//    @SuppressWarnings("unchecked")
-//    @Test
-//    public void returnererPersonObjektMedAdresseInformasjon() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-//        XMLHentKontaktinformasjonOgPreferanserRequest request = hentRequestMedGyldigIdent();
-//        XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
-//
-//        XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
-//
-//        XMLBostedsadresse bostedsadresse = genererXMLFolkeregistrertAdresse(true);
-//        xmlBruker.setBostedsadresse(bostedsadresse);
-//
-//        XMLMidlertidigPostadresseNorge xmlMidlertidigNorge = generateMidlertidigAdresseNorge();
-//        xmlBruker.setMidlertidigPostadresse(xmlMidlertidigNorge);
-//
-//        XMLPostadressetyper postadressetyper = new XMLPostadressetyper();
-//        postadressetyper.setValue(FOLKEREGISTRERT_ADRESSE_VALUE);
-//        xmlBruker.setGjeldendePostadresseType(postadressetyper);
-//        response.setPerson(xmlBruker);
-//
-//        when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenReturn(response);
-//        when(kodeverkMock.getPoststed(EN_ADRESSE_POSTNUMMER)).thenReturn(EN_ADRESSE_POSTSTED);
-//        Person hentetPerson = service.hentPerson(3l, RIKTIG_IDENT);
-//
-//        List<Adresse> adresseliste = (List<Adresse>) hentetPerson.getFakta().get(ADRESSER);
-//        Assert.assertNotNull(adresseliste);
-//        Assert.assertEquals(EN_ADRESSE_GATE, adresseliste.get(0).getGatenavn());
-//        Assert.assertEquals(EN_ADRESSE_HUSNUMMER, adresseliste.get(0).getHusnummer());
-//        Assert.assertEquals(EN_ADRESSE_HUSBOKSTAV, adresseliste.get(0).getHusbokstav());
-//        Assert.assertEquals(EN_ADRESSE_POSTNUMMER, adresseliste.get(0).getPostnummer());
-//        Assert.assertEquals(EN_ADRESSE_POSTSTED, adresseliste.get(0).getPoststed());
-//        Assert.assertEquals(FOLKEREGISTRERT_ADRESSE_VALUE, adresseliste.get(0).getType().toString());
-//        Assert.assertTrue(adresseliste.size() > 1);
-//        Assert.assertEquals(MIDLERTIDIG_POSTADRESSE_NORGE_VALUE, adresseliste.get(1).getType().toString());
-//        Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_FRA, adresseliste.get(1).getGyldigFra());
-//        Assert.assertEquals(EN_ANNEN_ADRESSE_GYLDIG_TIL, adresseliste.get(1).getGyldigTil());
-//        Assert.assertEquals(EN_POSTBOKS_ADRESSEEIER, adresseliste.get(1).getAdresseEier());
-//        Assert.assertEquals(EN_ANNEN_ADRESSE_GATE, adresseliste.get(1).getGatenavn());
-//        Assert.assertEquals(EN_ANNEN_ADRESSE_HUSNUMMER, adresseliste.get(1).getHusnummer());
-//        Assert.assertEquals(EN_ANNEN_ADRESSE_HUSBOKSTAV, adresseliste.get(1).getHusbokstav());
-//        Assert.assertEquals(EN_ANNEN_ADRESSE_POSTNUMMER, adresseliste.get(1).getPostnummer());
-//
-//    }
 //
 //    @SuppressWarnings("unchecked")
 //    @Test
