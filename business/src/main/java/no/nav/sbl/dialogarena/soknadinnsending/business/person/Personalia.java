@@ -134,11 +134,12 @@ public class Personalia {
 
     @SuppressWarnings("unchecked")
     public boolean harUtenlandskFolkeregistrertAdresse() {
-        if (gjeldendeAdresse == null)
+
+        if ((gjeldendeAdresse == null) || (gjeldendeAdresse.getAdressetype() == null))
         {
             return false;
         }
-        if (sekundarAdresse == null)
+        if ((sekundarAdresse == null) || (sekundarAdresse.getAdressetype() == null))
         {
             return false;
         }
