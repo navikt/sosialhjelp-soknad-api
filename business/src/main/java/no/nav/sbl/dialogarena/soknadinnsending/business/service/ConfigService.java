@@ -12,7 +12,7 @@ public class ConfigService {
     private String mineHenvendelserUrl;
     @Value("${dialogarena.navnolink.url}")
     private String navNoUrl;
-    @Value("${soknad.inngangsporten.url}")
+   /* @Value("${soknad.inngangsporten.url}")
     private String inngangsportenUrl;
     @Value("${soknad.skjemaveileder.url}")
     private String skjemaveilederUrl;
@@ -29,7 +29,7 @@ public class ConfigService {
     @Value("${soknad.lonnskravskjema.url}")
     private String lonnskravSkjemaUrl;
     @Value("${soknad.permitteringsskjema.url}")
-    private String permitteringskjemaUrl;
+    private String permitteringskjemaUrl;*/
     
     
     
@@ -38,7 +38,7 @@ public class ConfigService {
         
         result.put("minehenvendelser.link.url", mineHenvendelserUrl);
         result.put("dialogarena.navnolink.url", navNoUrl);
-        result.put("soknad.inngangsporten.url", inngangsportenUrl);
+    /*    result.put("soknad.inngangsporten.url", inngangsportenUrl);
         result.put("soknad.skjemaveileder.url", skjemaveilederUrl);
         result.put("soknad.alderspensjon.url", alderspensjonUrl);
         result.put("soknad.reelarbeidsoker.url", reelarbeidsokerUrl);
@@ -46,7 +46,7 @@ public class ConfigService {
         result.put("soknad.brukerprofil.url", brukerProfilUrl);
         result.put("soknad.sluttaarsak.url", sluttaarsakUrl);
         result.put("soknad.lonnskravskjema.url", lonnskravSkjemaUrl);
-        result.put("soknad.permitteringsskjema.url", permitteringskjemaUrl);
+        result.put("soknad.permitteringsskjema.url", permitteringskjemaUrl);*/
         
         return result;
     }
