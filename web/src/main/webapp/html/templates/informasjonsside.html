@@ -39,7 +39,7 @@
 					<ul>
 						<li>
 							<span data-cmstekster="utslagskriterier.utslag.alder.1"></span>
-							<a data-cmstekster="utslagskriterier.utslag.alder.2.lenketekst" cmslenketekster="utslagskriterier.utslag.alder.2.lenkeurl"></a>
+							<a data-cmstekster="utslagskriterier.utslag.alder.2.lenketekst" href="{{alderspensjonUrl}}"></a>
 						</li>
 					</ul>
 				</div>
@@ -92,6 +92,12 @@
 					<a href="#" data-cmstekster="utslagskriterier.utslag.fortsettlikevel" data-ng-click="fortsettLikevel($event)" data-fremdriftsindikator/>
 					<span data-cmstekster="utslagskriterier.utslag.infoAvslag"> </span>
 				</p>
+			</div>
+
+			<div data-ng-show="soknadErFerdigstilt()">
+				<span data-cmstekster="soknad.ferdigstilt"></span>
+				<a href="{{mineHenveldelserUrl}}" id="slettetMinehenvendelser"
+                                   role="link" data-cmstekster="slettet.videretilnav"></a>
 			</div>
 		</div>
 	</div>
