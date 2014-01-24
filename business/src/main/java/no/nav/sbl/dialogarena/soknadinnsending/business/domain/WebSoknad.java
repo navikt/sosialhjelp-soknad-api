@@ -33,6 +33,7 @@ public class WebSoknad implements Serializable {
     private DateTime opprettetDato;
     private DateTime sistLagret;
     private DelstegStatus delstegStatus;
+    private List<Vedlegg> vedlegg;
 
     private static final List<String> LIST_FAKTUM = asList("barn", "barnetillegg", "ikkebarneinntekt", "barneinntekttall", "orgnummer", "arbeidsforhold", "sluttaarsak");
 
@@ -76,6 +77,14 @@ public class WebSoknad implements Serializable {
 
     public final String getskjemaNummer() {
         return skjemaNummer;
+    }
+
+    public List<Vedlegg> getVedlegg() {
+        return vedlegg;
+    }
+
+    public void setVedlegg(List<Vedlegg> vedlegg) {
+        this.vedlegg = vedlegg;
     }
 
     public final void setskjemaNummer(String skjemaNummer) {
