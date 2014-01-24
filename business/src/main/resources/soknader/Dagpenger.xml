@@ -136,14 +136,14 @@
         <id>ytelser.stonadFisker</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingenYtelse</dependOn>
+        <dependOn>ytelser.ingenYtelse</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
         <id>ytelser.offentligTjenestepensjon</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingenYtelse</dependOn>
+        <dependOn>ytelser.ingenYtelse</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
@@ -157,7 +157,7 @@
         <id>ytelser.privatTjenestepensjon</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ytelser.ingenYtelse</dependOn>
+        <dependOn>ytelser.ytelser.ingenYtelse</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
@@ -171,14 +171,14 @@
         <id>ytelser.etterlonn</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingenYtelse</dependOn>
+        <dependOn>ytelser.ingenYtelse</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
         <id>ytelser.vartpenger</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingenYtelse</dependOn>
+        <dependOn>ytelser.ingenYtelse</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
@@ -192,7 +192,7 @@
         <id>ventelonn</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingenYtelse</dependOn>
+        <dependOn>ytelser.ingenYtelse</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
@@ -206,7 +206,7 @@
         <id>ytelser.dagpengerEOS</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingenYtelse</dependOn>
+        <dependOn>ytelser.ingenYtelse</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
@@ -220,7 +220,7 @@
         <id>ytelser.annenYtelse</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
-        <dependOn>ingenYtelse</dependOn>
+        <dependOn>ytelser.ingenYtelse</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
@@ -238,7 +238,7 @@
         <dependOnValue>true</dependOnValue>
     </faktum>
     <faktum>
-        <id>ingenYtelse</id>
+        <id>ytelser.ingenYtelse</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
     </faktum>
