@@ -11,6 +11,9 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 
 			$scope.alderspensjonUrl = data.config["soknad.alderspensjon.url"];
 			$scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];
+			$scope.reelArbeidsokerUrl = data.config["soknad.reelarbeidsoker.url"];
+			$scope.dagpengerBrosjyreUrl = data.config["soknad.dagpengerbrosjyre.url"];
+			$scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
 			$scope.skalViseBrosjyreMelding = false;
 			
 			if(getBehandlingIdFromUrl() != "Dagpenger") {

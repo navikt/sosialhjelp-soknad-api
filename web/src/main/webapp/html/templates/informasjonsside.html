@@ -9,7 +9,7 @@
         	<h1 data-cmstekster="feilmelding"></h1>
        		<p class="mini-strek">{{ 'feilmelding.tps' | cmstekst }}</p>
 			<div class="knapper">
-       			<a type="button" class="knapp-hoved" data-cmslenketekster="utslagskriterier.utslag.avbryt.lenkeurl" data-cmstekster="feilmelding.lenketekst"></a>
+       			<a type="button" class="knapp-hoved" href="{{inngangsportenUrl}}" data-cmstekster="feilmelding.lenketekst"></a>
        		</div>
        	</div>
        	<div data-ng-show="tpsSvarer()">
@@ -50,14 +50,14 @@
 				<ul class="informasjonsliste">
 					<li>
 						<p class="medium" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.1"></p>
-						<a data-cmslenketekster="dagpenger.informasjonsside.informasjon.liste.1.lenkeurl" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.1.lenketekst"> </a>		
+						<a href="{{reelArbeidsokerUrl}}" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.1.lenketekst"> </a>		
 					</li>
 					<li>
 						<p class="medium" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.2"></p>
 					</li>
 					<li>
 						<p class="medium" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.3"></p>
-						<a data-cmslenketekster="dagpenger.informasjonsside.informasjon.liste.3.lenkeurl" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.3.lenketekst"> </a>		
+						<a href="{{dagpengerBrosjyreUrl}}" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.3.lenketekst"> </a>		
 					</li>
 				</ul>
 
@@ -82,12 +82,12 @@
 				</div>
 				<div data-ng-show="soknadErIkkeStartet()">
 					<input type="button" class="knapp-hoved" data-cmstekster="utslagskriterier.utslag.fortsett" data-ng-click="startSoknadDersomBrosjyreLest()" data-fremdriftsindikator/>
-					<a data-cmslenketekster="utslagskriterier.utslag.avbryt.lenkeurl" data-cmstekster="utslagskriterier.utslag.avbryt.lenketekst"/>
+					<a href="{{inngangsportenUrl}}" data-cmstekster="utslagskriterier.utslag.avbryt.lenketekst"/>
 				</div>
 			</div>
 
 			<div class="utslagskriterier-knapper" data-ng-show="kravForDagpengerIkkeOppfylt()">
-				<a type="button" class="knapp-hoved" data-cmslenketekster="utslagskriterier.utslag.avbryt.lenkeurl" data-cmstekster="utslagskriterier.utslag.avbryt.lenketekst"/>
+				<a type="button" class="knapp-hoved" href="{{inngangsportenUrl}}" data-cmstekster="utslagskriterier.utslag.avbryt.lenketekst"/>
 				<p>
 					<a href="#" data-cmstekster="utslagskriterier.utslag.fortsettlikevel" data-ng-click="fortsettLikevel($event)" data-fremdriftsindikator/>
 					<span data-cmstekster="utslagskriterier.utslag.infoAvslag"> </span>
