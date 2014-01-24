@@ -352,6 +352,7 @@
       .svar-oppsummering-informasjon {
         margin-bottom: 10px;
       }
+<<<<<<< HEAD
 
       .svar-oppsummering-label {
         text-transform: uppercase;
@@ -367,6 +368,23 @@
         font-weight: bold;
       }
 
+=======
+
+      .svar-oppsummering-label {
+        text-transform: uppercase;
+        margin-right: 5px;
+      }
+
+      .svar-oppsummering-label-svar {
+        padding-bottom: 10px !important;
+      }
+
+      .svar-oppsummering-uten-checkbox {
+        margin-bottom: 10px !important;
+        font-weight: bold;
+      }
+
+>>>>>>> master
       .svar-oppsummering-sporsmal {
         font-weight: bold;
       }
@@ -454,10 +472,17 @@ form-linje.feil {
 
 .form-linje {
   padding: 15px;
+<<<<<<< HEAD
 
   &.checkbox.feilstyling .form-linje, .form-linje {
     padding: 0px;
 
+=======
+
+  &.checkbox.feilstyling .form-linje, .form-linje {
+    padding: 0px;
+
+>>>>>>> master
     .melding {
       display: none;
     }
@@ -531,6 +556,7 @@ form-linje.feil {
       border: 1px solid #fee6e6;
       background: #fee6e6;
       margin-bottom: 20px;
+<<<<<<< HEAD
 
       .melding {
         margin-bottom: 10px;
@@ -565,6 +591,42 @@ form-linje.feil {
     .form-linje.tekstfelt input {
       background-color: #fff;
     }
+=======
+
+      .melding {
+        margin-bottom: 10px;
+      }
+    }
+
+    textarea {
+      background-color: #fee6e6;
+    }
+
+    &.knapp {
+      background-color: #fee6e6;
+      border: 1px solid #fee6e6;
+    }
+
+    &.aktiv-feilmelding.boolean, &.aktiv-feilmelding.knapp {
+      border: 1px solid #c30000;
+      background-color: #FAD6D6;
+
+      .melding {
+        color: #A00404;
+      }
+    }
+    &.aktiv-feilmelding.tekstfelt input, &.aktiv-feilmelding textarea {
+      border: 1px solid #c30000;
+      background-color: #FAD6D6;
+
+      .melding {
+        color: #A00404;
+      }
+    }
+    .form-linje.tekstfelt input {
+      background-color: #fff;
+    }
+>>>>>>> master
   }
   &.aktiv-feilmelding.checkbox.feilstyling {
     border: 1px solid #c30000;
@@ -733,3 +795,16 @@ a.infoikon:focus, a.lukk:focus {
   outline: 1px solid #0067c5;
 }
 
+.bekreftelse {
+  p, div {
+    text-align: center;
+    margin-bottom: 30px !important;
+  }
+}
+
+[class*="infogronn"] {
+  background-image: url(../img/under-dark.png), url(../img/info.svg) !important;
+  background-position: bottom center, center 0;
+  padding-bottom: 15px;
+  margin-bottom: 15px !important;
+}

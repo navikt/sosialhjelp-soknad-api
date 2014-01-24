@@ -175,6 +175,14 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
+            .when('/bekreftelse', {
+                templateUrl: '../html/templates/bekreftelse.html',
+                resolve    : {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
 			.when('/utdanning', {
 				templateUrl: '../html/templates/utdanning.html',
 				resolve    : {
