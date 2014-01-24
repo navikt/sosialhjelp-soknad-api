@@ -87,4 +87,6 @@ public interface VedleggRepository {
     Vedlegg hentVedleggMedInnhold(Long soknadId, Long vedleggId);
 
     void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg);
+
+    List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId);
 }
