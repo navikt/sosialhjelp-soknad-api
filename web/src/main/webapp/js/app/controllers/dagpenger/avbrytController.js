@@ -3,7 +3,6 @@ angular.module('nav.avbryt', [])
         $scope.fremdriftsindikator = {
             laster: false
         }
-        var soknadId = data.soknad.soknadId;
 
         $scope.krevBekreftelse =data.fakta.filter(function(item) {
             return item.type==="BRUKERREGISTRERT";
@@ -16,7 +15,8 @@ angular.module('nav.avbryt', [])
         $scope.submitForm = function () {
             var start = $.now();
             $scope.fremdriftsindikator.laster = true;
-            soknadService.remove({param: soknadId},
+
+            soknadService.remove({param: data.soknad.soknadId},
                 function () { // Success
                     var delay = 1500 - ($.now() - start);
                     setTimeout(function () {
@@ -35,6 +35,3 @@ angular.module('nav.avbryt', [])
         $scope.skjemaVeilederUrl = data.config["soknad.skjemaveileder.url"];  
         $scope.mineHenveldelserBaseUrl = data.config["minehenvendelser.link.url"];     
     }]);
-
-
- 

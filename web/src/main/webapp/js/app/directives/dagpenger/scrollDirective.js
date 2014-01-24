@@ -13,16 +13,19 @@ angular.module('nav.scroll.directive', [])
 						$scope.$emit('OPEN_TAB', cookie.aapneTabs);
 
 						var faktumId = cookie.faktumId;
-						var element;
+						var blokkelement = angular.element('#'+cookiename);
+                        var fokusElement = $(blokkelement).find('.knapp-leggtil-liten').first().focus();
+                        var scrollElement;
 						if (faktumId) {
-							element = angular.element('#' + cookiename + faktumId);
+                            scrollElement = $(blokkelement).find('#' + cookiename + faktumId);
 						} else {
-							element = angular.element('#' + cookiename);
-						}
+                            scrollElement = fokusElement;
+                        }
 
 						$timeout(function () {
-							scrollToElement(element, 0);
-							fadeBakgrunnsfarge(element.parent(), $scope, 255, 255, 255);
+							scrollToElement(scrollElement, 200);
+                            fokusElement.focus();
+							fadeBakgrunnsfarge(scrollElement.parent(), $scope, 255, 255, 255);
 						}, 600);
 						$cookieStore.remove(cookiename);
 					}

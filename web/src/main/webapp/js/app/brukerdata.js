@@ -34,11 +34,12 @@ angular.module('app.brukerdata', ['app.services'])
 
     .controller('AvbrytCtrl', function ($scope, $routeParams, $location, soknadService, data) {
         var soknadId = data.soknad.soknadId;
+        $scope.krevBekreftelse = {value: ''};
 
         $scope.fremdriftsindikator = {
             laster: false
         }
-        $scope.data = {}
+
         soknadService.get({param: soknadId}).$promise.then(function (result) {
             var fakta = $.map(result.fakta, function (element) {
                 return element.type;
