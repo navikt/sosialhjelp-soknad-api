@@ -3,7 +3,6 @@ angular.module('nav.oppsummering', [])
         $scope.oppsummeringHtml = '';
         $scope.harbekreftet = {value: ''};
         $scope.skalViseFeilmelding = {value: false};
-        $scope.fikkIkkeSendtSoknad = {value: false};
 
         $scope.soknadId = data.soknad.soknadId;
         $http.get('/sendsoknad/rest/soknad/oppsummering/' + $scope.soknadId).then(function(response) {
@@ -29,13 +28,11 @@ angular.module('nav.oppsummering', [])
                 soknadService.send({param: $scope.soknadId, action: 'send'},
                     //Success
                     function () {
-                        $scope.fikkIkkeSendtSoknad.value = false;
-                        var mineHenveldelserBaseUrl = data.config["minehenvendelser.link.url"];
-                        $window.location.href = mineHenveldelserBaseUrl + "?behandlingsId=" + getBehandlingIdFromUrl();
+                        $location.path('bekreftelse');
                     },
                     //Error
                     function () {
-                        $scope.fikkIkkeSendtSoknad.value = true;
+                        //TODOD
                     }
                 );
             } else {
