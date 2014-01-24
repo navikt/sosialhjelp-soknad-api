@@ -26,7 +26,6 @@ angular.module('nav.arbeidsforhold.controller', [])
                     $scope.arbeidsliste.push({'arbeidsforhold': af, 'sluttaarsak': s});
                 }
             });
-
         });
 
         function compareArbeidsforholdDate(a1, a2) {
@@ -49,7 +48,7 @@ angular.module('nav.arbeidsforhold.controller', [])
         }
 
         $scope.skalViseFeil = function () {
-            return $scope.harFeil === true;
+            return $scope.harFeil === true && !$scope.harLagretArbeidsforhold;
         }
 
         $scope.harSvart = function () {
