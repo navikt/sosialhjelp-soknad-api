@@ -106,7 +106,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
         }
 
         Personalia personalia = PersonaliaTransform.mapTilPersonalia(preferanserResponse, kjerneinformasjonResponse, kodeverk);
-        List<Barn> barn = NewFamilierelasjonTransform.mapFamilierelasjon(kjerneinformasjonResponse);
+        List<Barn> barn = FamilierelasjonTransform.mapFamilierelasjon(kjerneinformasjonResponse);
 
         lagrePersonalia(soknadId, personalia);
         lagreBarn(soknadId, barn);
