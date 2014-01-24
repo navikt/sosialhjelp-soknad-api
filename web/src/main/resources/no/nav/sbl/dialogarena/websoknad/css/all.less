@@ -716,7 +716,37 @@ form, [ng-form], [data-ng-form] {
   }
 }
 
-.bekreftelse {
+.rad, .modalBoks {
+  input:focus + label {
+    color: #0067c5 !important;
+  }
+  input[type='checkbox']:focus:checked + label {
+    background: url(../img/check_valgt.svg) 0 0 no-repeat;
+  }
+  input[type='radio']:focus:checked + label {
+    background: url(../img/radio_valgt.svg) 0 0 no-repeat;
+  }
+
+  input[type='checkbox']:focus + label {
+        background: url(../img/check_tab.svg) 0 0 no-repeat;
+  }
+  input[type='radio']:focus + label {
+        background: url(../img/radio_tab.svg) 0 0 no-repeat;
+  }
+ }
+
+.accordion-inner, .modalBoks {
+  p:focus, span:focus, a:focus {
+    outline: none;
+    text-decoration: underline !important;
+  }
+}
+
+a.infoikon:focus, a.lukk:focus, accordion-heading:focus {
+  outline: 1px solid #0067c5;
+}
+
+  .bekreftelse {
   p, div {
     text-align: center;
     margin-bottom: 30px !important;

@@ -33,18 +33,18 @@
             <span class="melding"> </span>
         </div>
 
-        <div data-ng-show="hvisHarIkkeJobbet()">
+        <div data-ng-if="hvisHarIkkeJobbet()">
             <div data-navinfoboks>
                 <span data-cmstekster="arbeidsforhold.arbeidstilstand.harikkejobbet.informasjonstekst"></span>
             </div>
         </div>
 
-        <div data-ng-show="hvisHarJobbetVarierende()">
+        <div data-ng-if="hvisHarJobbetVarierende()">
             <div data-navinfoboks>
                 <span data-cmstekster="arbeidsforhold.arbeidstilstand.varierendearbeidstid.informasjonstekst"></span>
             </div>
         </div>
-        <div data-ng-show="hvisHarJobbetFast()">
+        <div data-ng-if="hvisHarJobbetFast()">
             <div data-navinfoboks>
                 <span data-cmstekster="arbeidsforhold.arbeidstilstand.fastarbeidstid.informasjonstekst"></span>
             </div>
@@ -52,7 +52,7 @@
 
         <div class="spm-boks vertikal" data-ng-repeat="af in arbeidsliste" data-ng-class="{'last': $last}">
             <div id="arbeidsforhold{{af.arbeidsforhold.faktumId}}">
-                <a href="#" class="lukk" data-ng-click="slettArbeidsforhold(af, $index, $event)"> </a>
+                <a href="#" class="lukk" data-ng-click="slettArbeidsforhold(af, $index, $event)" data-fokus-slettmoduler="arbeidsforhold" data-tab-autoscroll> </a>
                 <span class="robust">{{ af.arbeidsforhold.properties.arbeidsgivernavn }}</span>
                 <span class="robust">, </span>
                 <span class="robust">{{ af.arbeidsforhold.properties.land }} </span>
@@ -67,7 +67,7 @@
                     <ul class="liste-vannrett">
                         <li>
                             <a href data-ng-click="slettArbeidsforhold(af, $index, $event)"
-                               data-cmstekster="arbeidsforhold.slettarbeidsforhold"></a>
+                               data-cmstekster="arbeidsforhold.slettarbeidsforhold" data-fokus-slettmoduler="arbeidsforhold" data-tab-autoscroll></a>
                         </li>
                         <li>
                             <a href data-ng-click="endreArbeidsforhold(af, $index, $event)"
@@ -75,7 +75,6 @@
                         </li>
                     </ul>
                 </div>
-
             </div>
         </div>
 
@@ -86,7 +85,8 @@
                            data-ng-model="harLagretArbeidsforhold"
                            data-nav-faktum="harLagretArbeidsforhold"
                            data-ng-required="true"
-                           data-error-messages="'arbeidsforhold.arbeidsforhold.required'">
+                           data-error-messages="'arbeidsforhold.arbeidsforhold.required'"
+                           data-tab-autoscroll>
                 </div>
 
                 <button class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event, arbeidsforholdForm)"
