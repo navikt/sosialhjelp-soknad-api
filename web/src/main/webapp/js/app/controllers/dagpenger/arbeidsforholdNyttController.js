@@ -13,6 +13,10 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 		$scope.land = data.land;
         $scope.soknadId = data.soknad.soknadId;
 
+		$scope.sluttaarsakUrl = data.config["soknad.sluttaarsak.url"];
+		$scope.lonnskravSkjema = data.config["soknad.lonnskravskjema.url"];
+		$scope.permiteringUrl = data.config["soknad.permitteringsskjema.url"];
+
 		var url = $location.$$url;
 		var endreModus = url.indexOf('endrearbeidsforhold') !== -1;
 		var arbeidsforholdData;
