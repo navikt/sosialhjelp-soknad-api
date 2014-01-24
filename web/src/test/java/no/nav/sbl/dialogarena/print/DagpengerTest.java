@@ -16,7 +16,7 @@ public class DagpengerTest {
 //        Kodeverk kodeverk = mock(Kodeverk.class);
 //
 //        WebSoknad soknad = new WebSoknad();
-//        soknad.setskjemaNummer("NAV-1-1-1");
+//        soknad.setSkjemaNummer("NAV-1-1-1");
 //        soknad.leggTilFaktum(new Faktum(1L, 1L, "personalia", "true").medProperty("navn", "Ola Normann").medProperty("fnr", "01010101011").medProperty("addresse", "osloveien 1,  0479 oslo"));
 //        soknad.leggTilFaktum(new Faktum(1L, 1L, "reelarbeidsoker.villigdeltid", "true"));
 //        soknad.leggTilFaktum(new Faktum(1L, 1L, "reelarbeidsoker.villighelse", "true"));
