@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.NewAdresse;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import org.joda.time.DateTimeUtils;
 import org.joda.time.LocalDate;
@@ -127,20 +127,20 @@ public class WebSoknadUtilsTest {
         return lagFaktum("Redusert arbeidstid", "datotil", dato);
     }
 
-    private static NewAdresse lagUtenlandskAdresse() {
-        NewAdresse adresse = new NewAdresse();
+    private static Adresse lagUtenlandskAdresse() {
+        Adresse adresse = new Adresse();
         adresse.setAdressetype(UTENLANDSK_ADRESSE.name());
         return adresse;
     }
 
-    private static NewAdresse lagSekundarAdresseNorge() {
-        NewAdresse adresse = new NewAdresse();
+    private static Adresse lagSekundarAdresseNorge() {
+        Adresse adresse = new Adresse();
         adresse.setAdressetype(MIDLERTIDIG_POSTADRESSE_NORGE.name());
         return adresse;
     }
 
-    private static NewAdresse lagSekundarAdresseUtland() {
-        NewAdresse adresse = new NewAdresse();
+    private static Adresse lagSekundarAdresseUtland() {
+        Adresse adresse = new Adresse();
         adresse.setAdressetype(MIDLERTIDIG_POSTADRESSE_UTLAND.name());
         return adresse;
     }
