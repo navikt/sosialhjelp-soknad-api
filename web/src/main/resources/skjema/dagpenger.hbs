@@ -303,13 +303,25 @@
 			</table>
 
 			<h2>Arbeidsforhold de siste 12 måneder</h2>
-			<ul>
+			<table>
 				{{#forFakta "arbeidsforhold"}}
-					{{#each }}
-						<li>Arbeidsforhold hos {{properties.navn}}</li>
-					{{/each}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            <span>{{ properties.arbeidsgivernavn }},</span>
+                            <span>{{ hentLand properties.land }}</span>
+                        </td>
+                    </tr>
+                {{else}}
+                    <tr>
+                        <td class="sjekket"></td>
+                        <td>
+                            <span>Ingen arbeidsforhold</span>
+                        </td>
+                    </tr>
+
 				{{/forFakta}}
-			</ul>
+            </table>
 
 			<h2>Egen næring</h2>
 
@@ -1186,17 +1198,45 @@
 
 
 
-			<!--<h2>Vedlegg</h2>-->
-			<!--<table>-->
-				<!--<tr>-->
-					<!--<td>-->
-						<!--<span class="sjekket"></span>-->
-					<!--</td>-->
-					<!--<td>-->
-						<!--Bekreftelse på opppsigelse fra Firmakongen AS-->
-					<!--</td>-->
-				<!--</tr>-->
-			<!--</table>-->
+			<h2>Vedlegg</h2>
+			<table class="vedlegg">
+                {{#forVedlegg}}
+                    <tr>
+                        {{#hvisLik innsendingsvalg "LastetOpp"}}
+                            <td class="sjekket"></td>
+                        {{else}}
+                            <td class="usjekket"></td>
+                        {{/hvisLik}}
+                        <td>
+                            <span>{{ tittel }}</span>
+
+                            {{#if navn}}
+                                <span>: {{ navn }}</span>
+                            {{/if}}
+
+                            <span class="vedleggStatus">
+                                {{#hvisLik innsendingsvalg "LastetOpp"}}
+                                    <span class="lastetOpp">
+                                        <span class="vedlegg"></span>
+                                        <span>{{ antallSider }}</span>
+                                        <span class="antallSide">{{ hentTekst "dagpenger.oppsummering.sider" }}</span>
+                                        <span class="seVedlegg">{{ hentTekst "dagpenger.oppsummering.seVedlegg" }}</span>
+                                        <span class="lastetOppVedlegg">{{ hentTekst "dagpenger.oppsummering.lastetOpp" }}</span>
+                                    </span>
+                                {{/hvisLik}}
+
+                                {{#hvisLik innsendingsvalg "SendesSenere"}}
+                                    <span>{{ hentTekst "dagpenger.oppsummering.sendesSenere" }}</span>
+                                {{/hvisLik}}
+
+                                {{#hvisLik innsendingsvalg "SendesIkke"}}
+                                    <span>{{ hentTekst "dagpenger.oppsummering.sendesIkke" }}</span>
+                                {{/hvisLik}}
+                            </span>
+                        </td>
+                    </tr>
+                {{/forVedlegg}}
+			</table>
 
 		</div>
 	</body>

@@ -85,7 +85,8 @@ public class SoknadDataController {
     @ResponseBody()
     public List<Vedlegg> hentPaakrevdeVedleggForFaktum(
             @PathVariable final Long soknadId, @PathVariable final Long faktumId) {
-        return on(vedleggService.hentPaakrevdeVedlegg(soknadId)).filter(new Predicate<Vedlegg>() {
+        WebSoknad soknad = soknadService.hentSoknad(soknadId);
+        return on(vedleggService.hentPaakrevdeVedlegg(soknadId, soknad)).filter(new Predicate<Vedlegg>() {
             @Override
             public boolean evaluate(Vedlegg vedleggForventning) {
                 return vedleggForventning.getFaktumId().equals(faktumId);
