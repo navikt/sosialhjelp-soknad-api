@@ -43,7 +43,7 @@ angular.module('nav.arbeidsforhold.controller', [])
         }
 
         $scope.skalViseFeil = function () {
-            return $scope.harFeil === true;
+            return $scope.harFeil === true && !$scope.harLagretArbeidsforhold;
         }
 
         $scope.harSvart = function () {

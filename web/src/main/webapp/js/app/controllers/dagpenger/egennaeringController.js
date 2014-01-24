@@ -33,9 +33,11 @@ angular.module('nav.egennaering', [])
         }
 
         $scope.slettOrg = function (org, index) {
+
             org.$delete({soknadId: data.soknad.soknadId}).then(function () {
                 $scope.orgnummer.splice(index, 1);
             });
+            console.log("slettet")
         }
 
         //Skal ikke kunne slette første orgnr
