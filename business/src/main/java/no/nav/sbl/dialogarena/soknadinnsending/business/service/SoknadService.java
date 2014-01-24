@@ -157,14 +157,16 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     @Override
-    public void sendSoknad(long soknadId) {
+    public void sendSoknad(long soknadId, byte[] pdf) {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
+        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
         List<Vedlegg> vedleggForventnings = hentPaakrevdeVedlegg(soknadId, soknad);
         String skjemanummer = getSkjemanummer(soknad);
         String journalforendeEnhet = getJournalforendeEnhet(soknad);
         XMLHovedskjema hovedskjema = new XMLHovedskjema()
                 .withInnsendingsvalg(LASTET_OPP.toString())
                 .withSkjemanummer(skjemanummer)
+                .withUuid(soknad.getUuid())
                 .withJournalforendeEnhet(journalforendeEnhet);
         henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(),
                 hovedskjema,
