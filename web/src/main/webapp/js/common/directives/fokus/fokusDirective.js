@@ -1,8 +1,6 @@
 angular.module('nav.fokus', [])
     .directive('fokus', [function () {
         return {
-            replace: true,
-
             /*
              Brukes for å sette fokus til neste element da spesielt mtp elementer
              som blir fjernet fra DOMen og bruker tabber seg videre. Hvis ikke denne brukes
@@ -10,22 +8,33 @@ angular.module('nav.fokus', [])
              */
             link: function (scope, elm) {
                 elm.bind("click", function () {
-
-                    console.log(elm.closest('.spm-boks'))
                     settFokusTilNesteElement(elm);
                 })
             }
         };
     }])
+    /*
+    setter fokus på legg-tilknappen hvis et element blir slettet mest mtp tabbing
+     */
     .directive('fokusSlettmoduler', [function () {
         return {
-            replace: true,
-
             link: function (scope, elm, attrs) {
             var id = attrs.fokusSlettmoduler;
                 elm.bind("click", function () {
                     angular.element("#" + id + " .knapp-leggtil-liten").focus();
                 })
+            }
+        };
+    }])
+    /*
+    Fikser autoscrolling ved tabbing for elementer med zero-area (height, width osv = 0)
+     */
+    .directive('tabAutoscroll', [function () {
+        return {
+            link: function (scope, elm) {
+                elm.bind('focus', function() {
+                    scrollToElement(elm, 800);
+                });
             }
         };
     }]);
