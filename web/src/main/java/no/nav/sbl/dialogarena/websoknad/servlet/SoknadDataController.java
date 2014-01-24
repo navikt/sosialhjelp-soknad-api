@@ -55,6 +55,12 @@ public class SoknadDataController {
         return soknadService.hentSoknad(soknadId);
     }
     
+    @RequestMapping(value = "/metadata/{soknadId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody()
+    public WebSoknad hentSoknadMetaData(@PathVariable Long soknadId) {
+        return soknadService.hentSoknadMetaData(soknadId);
+    }
+    
     @RequestMapping(value = "/behandling/{behandlingsId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Map<String,String> hentSoknadIdMedBehandligsId(@PathVariable String behandlingsId) {
