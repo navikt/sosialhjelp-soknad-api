@@ -12,6 +12,16 @@ angular.module('nav.dagpenger', [])
 			{id: 'barnetillegg', tittel: 'barnetillegg.tittel', template: '../html/templates/barnetillegg.html', apen: false}
 		];
 
+		$scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];
+
+		$scope.soknadFerdigstilt = function() {
+			return data.soknad.status=="FERDIG";
+		}
+
+		$scope.soknadUnderArbeid= function() {
+			return data.soknad.status=="UNDER_ARBEID";
+		}
+
 		$scope.validerDagpenger = function (form, event) {
 			//burde refaktoreres, bruke noe annet en events?
 			event.preventDefault();

@@ -3,18 +3,18 @@
         <div class="begrensning sak-totredel">
             <section class="panel-standard oversikt" data-ng-controller="AvbrytCtrl">
 
-                <div class="fremdriftsindikator" ng-show="krevBekreftelse.value === false">
+                <div class="fremdriftsindikator" ng-show="krevBekreftelse === false">
                     <img src="../img/ajaxloader/hvit/loader_hvit_64.gif" alt="Fremdriftsindikator"/>
                 </div>
 
-                <div ng-show="krevBekreftelse.value == true">
+                <div ng-show="krevBekreftelse == true">
                     <h1 class="stor-ikon-slett-strek" data-cmstekster="slett.tittel"></h1>
 
                     <p class="info" data-cmstekster="slett.informasjon"></p>
                 </div>
 
                 <div class="slett-soknad-stor">
-                    <div data-ng-show="krevBekreftelse.value == true">
+                    <div data-ng-show="krevBekreftelse == true">
                         <form novalidate>
                             <input type="button" class="knapp-advarsel" data-ng-click="submitForm()"
                                    data-cmstekster="avbryt.slett"

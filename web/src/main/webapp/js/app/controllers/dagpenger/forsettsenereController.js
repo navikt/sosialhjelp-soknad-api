@@ -1,9 +1,10 @@
 angular.module('nav.forsettsenere', ['nav.cmstekster'])
 	.controller('FortsettSenereCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', "fortsettSenereService",
-
 		function ($scope, data, $routeParams, $http, $location, fortsettSenereService) {
             $scope.epost = data.finnFaktum('epost');
             $scope.soknadId = data.soknad.soknadId;
+
+            $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
 
             $scope.forsettSenere = function (form) {
 				$scope.validateForm(form.$invalid);
@@ -13,12 +14,16 @@ angular.module('nav.forsettsenere', ['nav.cmstekster'])
 					var behandlingId = getBehandlingIdFromUrl();
 					if ($scope.epost) {
 						new fortsettSenereService({epost: $scope.epost.value}).$send({behandlingId: behandlingId}).then(function (data) {
-							$location.path('kvittering-fortsettsenere/' + soknadId);
+							$location.path('kvittering-fortsettsenere/');
 						});
 					}
 				}
 			}
-		}])
+	}])
+	.controller('FortsettSenereKvitteringCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', "fortsettSenereService",
+		function ($scope, data, $routeParams, $http, $location, fortsettSenereService) {
+            $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
+	}])
 
 	.directive('navGjenoppta', ['$compile', 'data', function ($compile, data) {
 

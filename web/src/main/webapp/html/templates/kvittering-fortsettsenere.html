@@ -1,12 +1,15 @@
 <div data-panelbelyst id="kvittering">
-	<h2 class="stor" data-cmstekster="dagpenger.fortsettSenere.kvittering.tittel"></h2>
-	<p data-cmstekster="dagpenger.fortsettSenere.kvittering.tekst"></p>
-	<span> {{soknadData.fakta.epost.value}}</span>
-	<a href="#/fortsettsenere/{{soknadData.soknadId}}" data-cmstekster="dagpenger.fortsettSenere.kvittering.sendpaanyttlink"></a>
-	<p data-cmstekster="dagpenger.fortsettSenere.kvittering.frist"></p>
-	<p data-cmstekster="dagpenger.fortsettSenere.kvittering.konsekvens-vente"></p>
-	<a href="#/soknad" data-cmstekster="dagpenger.fortsettSenere.fortsettlink"></a>
-	<a href="https://tjenester-t11.nav.no/inngangsporten/innlogget" id="dittnav" role="link" data-cmstekster="dagpenger.fortsettSenere.dittNav"></a>
+	<div data-ng-controller="FortsettSenereKvitteringCtrl">
+        <h2 class="stor" data-cmstekster="dagpenger.fortsettSenere.kvittering.tittel"></h2>
+    	<p data-cmstekster="dagpenger.fortsettSenere.kvittering.tekst"></p>
+    	<!-- TODO -->
+        <span> {{soknadData.fakta.epost.value}}</span>
+    	<a href="#/fortsettsenere" data-cmstekster="dagpenger.fortsettSenere.kvittering.sendpaanyttlink"></a>
+    	<p data-cmstekster="dagpenger.fortsettSenere.kvittering.frist"></p>
+    	<p data-cmstekster="dagpenger.fortsettSenere.kvittering.konsekvens-vente"></p>
+    	<a href="#/soknad" data-cmstekster="dagpenger.fortsettSenere.fortsettlink"></a>
+    	<a href="{{inngangsportenUrl}}" id="dittnav" role="link" data-cmstekster="dagpenger.fortsettSenere.dittNav"></a>
+    </div>
 </div>
 
 
