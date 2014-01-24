@@ -16,12 +16,10 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 		var url = $location.$$url;
 		var endreModus = url.indexOf('endrearbeidsforhold') !== -1;
 		var arbeidsforholdData;
-		var sluttaarsakData;
 
 		if (endreModus) {
 			var faktumId = url.split('/').pop();
 			var arbeidsforhold = data.finnFakta('arbeidsforhold');
-			var sluttaarsak = data.finnFakta('sluttaarsak');
 
 			angular.forEach(arbeidsforhold, function (value) {
 				if (value.faktumId === parseInt(faktumId)) {
@@ -29,14 +27,9 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 				}
 			});
 
-			angular.forEach(sluttaarsak, function (value) {
-				if (value.parrentFaktum === parseInt(faktumId)) {
-					sluttaarsakData = value;
-				}
-			});
 
 			angular.forEach($scope.templates, function (template, index) {
-				if (sluttaarsakData.properties.type === index) {
+				if (arbeidsforholdData.properties.type === index) {
 					$scope.sluttaarsakType = index;
 				}
 			});
@@ -47,19 +40,13 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 				properties: {
 					'arbeidsgivernavn': undefined,
 					'datofra'         : undefined,
-					'datotil'         : undefined
-				}
-			};
-
-			sluttaarsakData = {
-				key       : 'sluttaarsak',
-				properties: {
-					'type': undefined
+					'datotil'         : undefined,
+                    'type': undefined
 				}
 			};
 		}
 		$scope.arbeidsforhold = new Faktum(arbeidsforholdData);
-		$scope.sluttaarsak = new Faktum(sluttaarsakData);
+		$scope.sluttaarsak = $scope.arbeidsforhold;
 
 		$scope.lagreArbeidsforhold = function (form) {
 			var eventString = 'RUN_VALIDATION' + form.$name;
@@ -77,17 +64,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 				$scope.arbeidsforhold = arbeidsforholdData;
 				oppdaterFaktumListe('arbeidsforhold');
 				oppdaterCookieValue(arbeidsforholdData.faktumId);
-				lagreSluttaarsak(arbeidsforholdData.faktumId);
-			});
-		}
-
-		function lagreSluttaarsak(parentFaktumId) {
-			$scope.sluttaarsak.parrentFaktum = parentFaktumId;
-			$scope.sluttaarsak.properties.type = $scope.sluttaarsakType;
-			$scope.sluttaarsak.$save({soknadId: data.soknad.soknadId}).then(function (sluttaarsakData) {
-				$scope.sluttaarsak = sluttaarsakData;
-				oppdaterFaktumListe('sluttaarsak');
-				$location.path('soknad/');
+                $location.path('soknad/');
 			});
 		}
 
