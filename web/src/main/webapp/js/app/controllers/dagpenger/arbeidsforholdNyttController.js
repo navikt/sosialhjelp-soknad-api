@@ -2,13 +2,13 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 	.controller('ArbeidsforholdNyttCtrl', ['$scope', 'data', 'Faktum', '$location', '$cookieStore', function ($scope, data, Faktum, $location, $cookieStore) {
 
 		$scope.templates = {
-			'Kontrakt utgått'         : {url: '../html/templates/arbeidsforhold/kontrakt-utgaatt.html'},
-			'Avskjediget'             : {url: '../html/templates/arbeidsforhold/avskjediget.html'},
-			'Redusert arbeidstid'     : {url: '../html/templates/arbeidsforhold/redusertarbeidstid.html'},
-			'Arbeidsgiver er konkurs' : {url: '../html/templates/arbeidsforhold/konkurs.html'},
-			'Sagt opp av arbeidsgiver': {url: '../html/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html'},
-			'Sagt opp selv'           : {url: '../html/templates/arbeidsforhold/sagt-opp-selv.html'},
-			'Permittert'              : {url: '../html/templates/arbeidsforhold/permittert.html'}
+            'Sagt opp av arbeidsgiver': {url: '../html/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html'},
+            'Permittert'              : {url: '../html/templates/arbeidsforhold/permittert.html'},
+            'Kontrakt utgått'         : {url: '../html/templates/arbeidsforhold/kontrakt-utgaatt.html'},
+            'Sagt opp selv'           : {url: '../html/templates/arbeidsforhold/sagt-opp-selv.html'},
+            'Redusert arbeidstid'     : {url: '../html/templates/arbeidsforhold/redusertarbeidstid.html'},
+            'Arbeidsgiver er konkurs' : {url: '../html/templates/arbeidsforhold/konkurs.html'},
+			'Avskjediget'             : {url: '../html/templates/arbeidsforhold/avskjediget.html'}
 		};
 		$scope.land = data.land;
         $scope.soknadId = data.soknad.soknadId;
