@@ -1,5 +1,19 @@
 @svar-bakgrunnsfarge: #d1d1d1;
 
+body {
+  padding-bottom: 60px;
+
+  form input[type="radio"],
+  [ng-form] input[type="radio"],
+  [data-ng-form] input[type="radio"],
+  form input[type="checkbox"],
+  [ng-form] input[type="checkbox"],
+  [data-ng-form] input[type="checkbox"] {
+    width: 1px;
+    height: 1px;
+  }
+}
+
 :invalid {
   box-shadow: none;
 }

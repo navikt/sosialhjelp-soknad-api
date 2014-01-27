@@ -1,5 +1,5 @@
 <section class="accordion-group" data-ng-class="{open: isOpen}">
-    <div class="accordion-heading" >
+    <div class="accordion-heading">
         <a class="accordion-toggle"
            id="{{ id }}-heading"
            aria-owns="{{ id }}-body"
@@ -7,8 +7,7 @@
            href=""
            data-ng-click="isOpen = !isOpen"
            data-nav-aria-expanded="isOpen"
-           data-accordion-transclude="heading"
-           data-tab-autoscroll>
+           data-accordion-transclude="heading">
             {{heading}}
         </a>
     </div>
