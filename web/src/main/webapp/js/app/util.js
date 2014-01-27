@@ -286,7 +286,6 @@ function settCaretPosisjon(element, posisjon) {
 }
 
 function settFokusTilNesteElement(inputElement) {
-	console.log(inputElement)
     var fokuserbareElementer = $('input, a, select, button, textarea').filter(function () {
 		return $(this).css('display') !== 'none';
 	});
