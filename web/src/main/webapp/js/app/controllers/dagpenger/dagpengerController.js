@@ -12,6 +12,18 @@ angular.module('nav.dagpenger', [])
 			{id: 'barnetillegg', tittel: 'barnetillegg.tittel', template: '../html/templates/barnetillegg.html', apen: false}
 		];
 
+		$scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];
+
+		$scope.soknadFerdigstilt = function() {
+			if(data.soknad.status=="FERDIG") {
+				$location.path('/ferdigstilt');
+			}
+		}
+
+		$scope.soknadUnderArbeid= function() {
+			return data.soknad.status=="UNDER_ARBEID";
+		}
+
 		$scope.validerDagpenger = function (form, event) {
 			//burde refaktoreres, bruke noe annet en events?
 			event.preventDefault();
@@ -28,7 +40,7 @@ angular.module('nav.dagpenger', [])
 				$scope.validateForm(form.$invalid);
 				var elementMedForsteFeil = $('.accordion-group').find('.form-linje.feil, .form-linje.feilstyling').first();
 				if (form.$valid) {
-					$location.path('/vedlegg/' + data.soknad.soknadId);
+					$location.path('/vedlegg');
 				} else {
 					scrollToElement(elementMedForsteFeil, 200);
 					giFokus(elementMedForsteFeil);
@@ -69,4 +81,8 @@ angular.module('nav.dagpenger', [])
 		function setAktivFeilmeldingsklasse(element) {
 			element.addClass('aktiv-feilmelding');
 		}
-	}]);
+	}])
+	.controller('FerdigstiltCtrl', ['$scope', 'data', '$location', '$timeout', function ($scope, data, $location, $timeout) {
+		$scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];
+	}])
+

@@ -42,9 +42,11 @@ import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegre
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Landkoder;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.NorskIdent;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 import org.mockito.invocation.InvocationOnMock;
@@ -107,12 +109,18 @@ public class MockConsumerConfig {
             PersonPortType mock = mock(PersonPortType.class);
             HentKjerneinformasjonResponse response = new HentKjerneinformasjonResponse();
             Person person = genererPersonMedGyldigIdentOgNavn("02104635787", "person", "mock");
+
+            Statsborgerskap statsborgerskap = new Statsborgerskap();
+            Landkoder landkoder = new Landkoder();
+            landkoder.setValue("NOR");
+            statsborgerskap.setLand(landkoder);
+            person.setStatsborgerskap(statsborgerskap);
             List<Familierelasjon> familieRelasjoner = person.getHarFraRolleI();
             Familierelasjon familierelasjon = new Familierelasjon();
             Person barn1 = genererPersonMedGyldigIdentOgNavn("01010091736", "Barn1", "mock");
             familierelasjon.setTilPerson(barn1);
             Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
-            familieRelasjonRolle.setValue("FARA");
+            familieRelasjonRolle.setValue("BARN");
             familierelasjon.setTilRolle(familieRelasjonRolle);
             familieRelasjoner.add(familierelasjon);
             response.setPerson(person);
@@ -175,23 +183,11 @@ public class MockConsumerConfig {
 
     @Configuration
     public static class KodeverkWSConfig {
-
-        private static XMLHentKodeverkResponse landkodeKodeverkResponse() {
-            XMLKode norge = new XMLKode().withNavn("NOR").withTerm(new XMLTerm().withNavn("Norge"));
-            XMLKode sverige = new XMLKode().withNavn("SWE").withTerm(new XMLTerm().withNavn("Sverige"));
-            XMLKode albania = new XMLKode().withNavn("ALB").withTerm(new XMLTerm().withNavn("Albania"));
-            XMLKode danmark = new XMLKode().withNavn("DNK").withTerm(new XMLTerm().withNavn("Danmark"));
-
-            return new XMLHentKodeverkResponse().withKodeverk(new XMLEnkeltKodeverk().withNavn("Landkoder").withKode(norge, sverige, albania, danmark));
-        }
-
         @Bean
         public KodeverkPortType kodeverkService() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
             KodeverkPortType mock = mock(KodeverkPortType.class);
-          
-            when(mock.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(postnummerKodeverkResponse());
-            when(mock.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(landkodeKodeverkResponse());
-    
+            when(mock.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(kodeverkResponse());
+
             return mock;
         }
         
@@ -200,17 +196,29 @@ public class MockConsumerConfig {
             return kodeverkService();
         }
 
-        private static XMLHentKodeverkResponse postnummerKodeverkResponse() {
+        private static XMLHentKodeverkResponse kodeverkResponse() {
             XMLKode kode = new XMLKode().withNavn("0565").withTerm(new XMLTerm().withNavn("Oslo"));
             XMLKode kode2 = new XMLKode().withNavn("0560").withTerm(new XMLTerm().withNavn("Oslo"));
-            return new XMLHentKodeverkResponse().withKodeverk(new XMLEnkeltKodeverk().withNavn("Postnummer").withKode(kode,kode2));
+
+            XMLKode norge = new XMLKode().withNavn("NOR").withTerm(new XMLTerm().withNavn("Norge"));
+            XMLKode sverige = new XMLKode().withNavn("SWE").withTerm(new XMLTerm().withNavn("Sverige"));
+            XMLKode albania = new XMLKode().withNavn("ALB").withTerm(new XMLTerm().withNavn("Albania"));
+            XMLKode danmark = new XMLKode().withNavn("DNK").withTerm(new XMLTerm().withNavn("Danmark"));
+            XMLKode finland = new XMLKode().withNavn("FIN").withTerm(new XMLTerm().withNavn("Finland"));
+
+            return new XMLHentKodeverkResponse()
+                    .withKodeverk(new XMLEnkeltKodeverk()
+                            .withNavn("Postnummer")
+                            .withKode(kode, kode2)
+                            .withNavn("Landkoder")
+                            .withKode(norge, sverige, albania, danmark, finland));
         }
 
     }
 
     @Configuration
     public static class BrukerProfilWSConfig {
-        private static final String RIKTIG_IDENT = "12345612345";
+        private static final String RIKTIG_IDENT = "01015245464";
         private static final String ET_FORNAVN = "Ola";
         private static final String ET_MELLOMNAVN = "Johan";
         private static final String ET_ETTERNAVN = "Mockmann";
@@ -223,16 +231,15 @@ public class MockConsumerConfig {
 
         private static final String EN_ADRESSELINJE = "Poitigatan 55";
         private static final String EN_ANNEN_ADRESSELINJE = "Nord-Poiti";
-        private static final String EN_TREDJE_ADRESSELINJE = "1111";
-        private static final String EN_FJERDE_ADRESSELINJE = "Helsinki";
-        
+        private static final String EN_TREDJE_ADRESSELINJE = "1111 Helsinki";
+
         @Bean
         public BrukerprofilPortType brukerProfilService() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
             BrukerprofilPortType mock = mock(BrukerprofilPortType.class);
             XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
             XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
 
-            settAdresse(xmlBruker, "UTENLANDSK_ADRESSE");
+            settAdresse(xmlBruker, "BOSTEDSADRESSE");
 
             response.setPerson(xmlBruker);
 
@@ -253,11 +260,9 @@ public class MockConsumerConfig {
                 xmlBruker.setGjeldendePostadresseType(postadressetyper);
             } else if("UTENLANDSK_ADRESSE".equals(type)) {
                 XMLPostadresse xmlPostadresseUtland = new XMLPostadresse();
-                XMLUstrukturertAdresse utenlandskUstrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(4);
+                XMLUstrukturertAdresse utenlandskUstrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(3);
 
-                XMLLandkoder xmlLandkode = new XMLLandkoder();
-                xmlLandkode.setValue("FIN");
-                utenlandskUstrukturertAdresse.setLandkode(xmlLandkode);
+                utenlandskUstrukturertAdresse.setLandkode(lagLandkode("FIN"));
 
                 xmlPostadresseUtland.setUstrukturertAdresse(utenlandskUstrukturertAdresse);
                 xmlBruker.setPostadresse(xmlPostadresseUtland);
@@ -286,12 +291,6 @@ public class MockConsumerConfig {
                     ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
                     ustrukturertAdresse.setAdresselinje3(EN_TREDJE_ADRESSELINJE);
                     break;
-                case 4:
-                    ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
-                    ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
-                    ustrukturertAdresse.setAdresselinje3(EN_TREDJE_ADRESSELINJE);
-                    ustrukturertAdresse.setAdresselinje4(EN_FJERDE_ADRESSELINJE);
-                    break;
                 default:
                     break;
             }
@@ -311,6 +310,7 @@ public class MockConsumerConfig {
             }
             gateadresse.setPoststed(xmlpostnummer);
             bostedsadresse.setStrukturertAdresse(gateadresse);
+            gateadresse.setLandkode(lagLandkode("NOR"));
             return bostedsadresse;
         }
 
@@ -340,6 +340,12 @@ public class MockConsumerConfig {
 
         private static XMLElektroniskAdresse lagElektroniskAdresse() {
             return new XMLEPost().withIdentifikator(EN_EPOST);
+        }
+
+        private static XMLLandkoder lagLandkode(String landkode) {
+            XMLLandkoder xmlLandkode = new XMLLandkoder();
+            xmlLandkode.setValue(landkode);
+            return xmlLandkode;
         }
 
         public BrukerprofilPortType brukerProfilSelftest() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {

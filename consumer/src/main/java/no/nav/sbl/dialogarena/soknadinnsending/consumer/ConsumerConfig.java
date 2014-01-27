@@ -92,7 +92,7 @@ public class ConsumerConfig {
 
         @Bean
         public FilLagerPortType fillagerServiceSelftest() {
-            return factory().get();
+            return factory().withSystemSecurity().get();
         }
     }
 

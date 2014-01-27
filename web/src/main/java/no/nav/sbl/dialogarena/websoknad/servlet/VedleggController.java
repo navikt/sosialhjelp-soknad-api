@@ -3,8 +3,10 @@ package no.nav.sbl.dialogarena.websoknad.servlet;
 import no.nav.sbl.dialogarena.soknadinnsending.RestFeil;
 import no.nav.sbl.dialogarena.soknadinnsending.VedleggOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -46,6 +48,9 @@ public class VedleggController {
     @Inject
     private VedleggService vedleggService;
 
+    @Inject
+    private SendSoknadService soknadService;
+
     private static byte[] getByteArray(MultipartFile file) {
         try {
             return IOUtils.toByteArray(file.getInputStream());
@@ -58,7 +63,8 @@ public class VedleggController {
     @ResponseBody()
     public List<Vedlegg> hentPaakrevdeVedlegg(
             @PathVariable final Long soknadId) {
-        return vedleggService.hentPaakrevdeVedlegg(soknadId);
+        WebSoknad soknad = soknadService.hentSoknad(soknadId);
+        return vedleggService.hentPaakrevdeVedlegg(soknadId, soknad);
     }
 
     @RequestMapping(value = "/{vedleggId}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
@@ -109,7 +115,7 @@ public class VedleggController {
         return new RestFeil(ex.getId());
     }
 
-    @RequestMapping(value = "/{vedleggId}/opplasting", method = RequestMethod.POST, produces = "text/html; charset=utf-8")
+    @RequestMapping(value = "/{vedleggId}/opplasting", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
     @ResponseBody()
     @ResponseStatus(HttpStatus.CREATED)
     public Callable<VedleggOpplasting> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestParam("files[]") final List<MultipartFile> files) {

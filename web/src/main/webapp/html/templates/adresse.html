@@ -1,0 +1,11 @@
+<div class="adresse" data-ng-controller="AdresseCtrl">
+    <div data-ng-if="harGjeldendeAdresse()">
+        <span class="adressetype">{{ gjeldendeAdresseTypeLabel | cmstekst }}</span>
+        <span data-ng-bind-html="formattertGjeldendeAdresse"></span>
+    </div>
+
+    <div data-ng-if="harSekundarAdresse()">
+        <span class="adressetype">{{ sekundarAdresseTypeLabel | cmstekst }}</span>
+        <span data-ng-bind-html="formattertSekundarAdresse"></span>
+    </div>
+</div>

@@ -20,7 +20,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/vedlegg/:soknadId', {
+			.when('/vedlegg', {
 				templateUrl: '../html/templates/vedlegg.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -29,7 +29,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/opplasting/:soknadId/:vedleggId', {
+			.when('/opplasting/:vedleggId', {
 				templateUrl: '../html/templates/opplasting.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -37,7 +37,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/visVedlegg/:soknadId/:vedleggId', {
+			.when('/visVedlegg/:vedleggId', {
 				templateUrl: '../html/templates/visvedlegg.html',
 				controller : 'SoknadDataCtrl',
 				resolve    : {
@@ -167,7 +167,7 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
-			.when('/oppsummering/:soknadId/', {
+			.when('/oppsummering', {
 				templateUrl: '../html/templates/oppsummering.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
@@ -175,6 +175,14 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
+            .when('/bekreftelse', {
+                templateUrl: '../html/templates/bekreftelse.html',
+                resolve    : {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
 			.when('/utdanning', {
 				templateUrl: '../html/templates/utdanning.html',
 				resolve    : {
@@ -201,6 +209,14 @@ angular.module('app.routes', ['ngRoute'])
 			})
 			.when('/slettet', {
 				templateUrl: '../html/templates/soknadSlettet.html',
+				resolve    : {
+					notUsedButRequiredProperty: function (HentSoknadService) {
+						return HentSoknadService;
+					}
+				}
+			})
+			.when('/ferdigstilt', {
+				templateUrl: '../html/templates/ferdigstilt.html',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;

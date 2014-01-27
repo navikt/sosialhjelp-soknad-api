@@ -47,6 +47,12 @@ String.prototype.splice = function (idx, rem, str) {
 	return (this.slice(0, idx) + str + this.slice(idx + Math.abs(rem)));
 };
 
+String.prototype.toCamelCase = function() {
+    return this.toLowerCase().replace(/\_([a-z])/g, function(all, match) {
+        return match.toUpperCase();
+    });
+};
+
 function getBehandlingIdFromUrl() {
 	return location.pathname.split('/').last();
 }
@@ -280,8 +286,10 @@ function settCaretPosisjon(element, posisjon) {
 }
 
 function settFokusTilNesteElement(inputElement) {
-	var fokuserbareElementer = $('input, a, select, button, textarea').filter(function () {
+    var fokuserbareElementer = $('input, a, select, button, textarea').filter(function () {
 		return $(this).css('display') !== 'none';
 	});
-	fokuserbareElementer.eq(fokuserbareElementer.index(inputElement) + 1).focus();
+
+    fokuserbareElementer.eq(fokuserbareElementer.index(inputElement) + 1).focus();
 }
+
