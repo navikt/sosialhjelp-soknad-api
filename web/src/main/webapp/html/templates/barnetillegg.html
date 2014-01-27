@@ -5,7 +5,7 @@
 
         <div class="spm-boks vertikal" data-ng-repeat="b in barn">
             <div data-ng-class="{gutt: erGutt(b), jente:erJente(b)}" id="barnetillegg{{b.faktumId}}" class="barn">
-                <a href="#" class="lukk" data-ng-show="erBrukerregistrert(b)" data-ng-click="slettBarn(b, $index, $event)" data-tab-autoscroll> </a>
+                <a href="#" class="lukk" data-ng-show="erBrukerregistrert(b)" data-ng-click="slettBarn(b, $index, $event)" > </a>
 
                 <div class="barnealder">
                     <span data-cmstekster="aar"></span>
@@ -45,7 +45,7 @@
                 <div class="sentrert" data-ng-show="erBrukerregistrert(b)">
                     <ul class="liste-vannrett">
                         <li>
-                            <a href="#" data-ng-click="slettBarn(b, $index, $event)" data-cmstekster="barnetillegg.slettbarn" data-tab-autoscroll></a>
+                            <a href="#" data-ng-click="slettBarn(b, $index, $event)" data-cmstekster="barnetillegg.slettbarn" ></a>
                         </li>
                         <li>
                             <a href="#" data-ng-click="endreBarn(b.faktumId, $event)" data-cmstekster="barnetillegg.endrebarn"></a>
