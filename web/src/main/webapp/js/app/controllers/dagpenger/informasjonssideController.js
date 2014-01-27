@@ -6,9 +6,14 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 			$scope.utslagskriterier.harlestbrosjyre=false;
 			//For testing uten TPS:
 			
-			//$scope.utslagskriterier.gyldigAlder = false;
+			$scope.utslagskriterier.gyldigAlder = false;
 			//$scope.utslagskriterier.bosattINorge = false;
 
+			$scope.alderspensjonUrl = data.config["soknad.alderspensjon.url"];
+			$scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];
+			$scope.reelArbeidsokerUrl = data.config["soknad.reelarbeidsoker.url"];
+			$scope.dagpengerBrosjyreUrl = data.config["soknad.dagpengerbrosjyre.url"];
+			$scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
 			$scope.skalViseBrosjyreMelding = false;
 			
 			if(getBehandlingIdFromUrl() != "Dagpenger") {
@@ -41,6 +46,16 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 				}
 
 				return false;
+			}
+
+			$scope.soknadErIkkeFerdigstilt = function() {
+				return !$scope.soknadErFerdigstilt();
+			}
+
+			$scope.soknadErFerdigstilt = function() {
+				if(data && data.soknad && data.soknad.status == "FERDIG") {
+					$location.path('/ferdigstilt');
+				}
 			}
 
 	        $scope.startSoknad = function () {
@@ -85,11 +100,11 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 			}
 
 			$scope.kravForDagpengerOppfylt = function () {
-				return $scope.registrertArbeidssoker() && $scope.gyldigAlder() && $scope.bosattINorge();
+				return $scope.registrertArbeidssoker() && $scope.gyldigAlder() && $scope.bosattINorge() && $scope.soknadErIkkeFerdigstilt();
 			};
 
 			$scope.kravForDagpengerIkkeOppfylt = function () {
-				return !$scope.kravForDagpengerOppfylt();
+				return !$scope.kravForDagpengerOppfylt()  && $scope.soknadErIkkeFerdigstilt();
 			};
 
 

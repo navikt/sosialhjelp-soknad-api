@@ -15,6 +15,9 @@ public class Barn {
     private String land;
     private Integer alder;
 
+    private static final String KJONN_MANN = "m";
+    private static final String KJONN_KVINNE = "k";
+
     public Barn(Long soknadId, String fnr, String fornavn, String mellomnavn, String etternavn, String land) {
         this.soknadId = soknadId;
         this.fnr = fnr;
@@ -41,9 +44,9 @@ public class Barn {
         String kjonnSiffer = fnr.substring(8, 9);
 
         if (Integer.parseInt(kjonnSiffer) % 2 == 0) {
-            return "jente";
+            return KJONN_MANN;
         } else {
-            return "gutt";
+            return KJONN_KVINNE;
         }
     }
 

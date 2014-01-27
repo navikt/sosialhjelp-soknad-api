@@ -46,12 +46,39 @@ angular.module('sendsoknad')
                 cms.tekster = result;
             }
         );
+        var config = $resource('/sendsoknad/rest/getConfig').get(
+            function (result) {
+                data.config = result;
+            }
+        );
 
         var utslagskriterier = $resource('/sendsoknad/rest/utslagskriterier/').get(
             function (result) {
                 data.utslagskriterier = result;
             }
         );
+
+        var behandlingId = getBehandlingIdFromUrl();
+
+        if(behandlingId!="Dagpenger") {
+            var soknadDeferer = $q.defer();
+            var soknad = $resource('/sendsoknad/rest/soknad/behandling/:behandlingId').get(
+                {behandlingId: behandlingId},
+                function (result) { // Success
+                    var soknadId = result.result;
+                    
+                    var soknadMetadata = $resource('/sendsoknad/rest/soknad/metadata/:soknadId').get(
+                        {soknadId: soknadId},
+                        function (result) { // Success
+                            data.soknad = result;
+                            soknadDeferer.resolve();
+                        }
+                    );
+                    
+                }
+            );
+            promiseArray.push(soknadDeferer.promise)       
+        }
 
         promiseArray.push(tekster.$promise);
         promiseArray.push(utslagskriterier.$promise);

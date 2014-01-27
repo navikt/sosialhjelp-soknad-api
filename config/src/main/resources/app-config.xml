@@ -30,6 +30,18 @@
         <baseUrl alias="minehenvendelser.link" mapToProperty="minehenvendelser.link"/>
         <baseUrl alias="dialogarena.cms" mapToProperty="dialogarena.cms"/>
         <baseUrl alias="dialogarena.navnolink" mapToProperty="dialogarena.navnolink" />
+
+        <baseUrl alias="soknad.inngangsporten" mapToProperty="soknad.inngangsporten"/>
+        <baseUrl alias="soknad.skjemaveileder" mapToProperty="soknad.skjemaveileder"/>
+        <baseUrl alias="soknad.alderspensjon" mapToProperty="soknad.alderspensjon"/>
+        <baseUrl alias="soknad.reelarbeidsoker" mapToProperty="soknad.reelarbeidsoker" />
+
+        <baseUrl alias="soknad.dagpengerbrosjyre" mapToProperty="soknad.dagpengerbrosjyre"/>
+        <baseUrl alias="soknad.brukerprofil" mapToProperty="soknad.brukerprofil"/>
+        <baseUrl alias="soknad.sluttaarsak" mapToProperty="soknad.sluttaarsak"/>
+        <baseUrl alias="soknad.lonnskravskjema" mapToProperty="soknad.lonnskravskjema" />
+        <baseUrl alias="soknad.permitteringsskjema" mapToProperty="soknad.permitteringsskjema" />
+
         <smtpServer alias="dokumentinnsending.smtpServer" mapToProperty="dokumentinnsending.smtpServer"/>
         <localFiles name="sendsoknad" mapToProperty="sendsoknad.datadir"/>
         <applicationCertificate alias="srvSendsoknad"/>

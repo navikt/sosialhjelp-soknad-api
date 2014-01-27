@@ -8,6 +8,7 @@ import com.github.jknack.handlebars.Options;
 import no.bekk.bekkopen.person.Fodselsnummer;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.wicket.model.StringResourceModel;
 import org.slf4j.Logger;
@@ -193,10 +194,10 @@ public class HandleBarKjoerer {
             }
         });
 
-        handlebars.registerHelper("hvisLik", new Helper<String>() {
+        handlebars.registerHelper("hvisLik", new Helper<Object>() {
             @Override
-            public CharSequence apply(String value, Options options) throws IOException {
-                if(value != null && value.equals(options.param(0))){
+            public CharSequence apply(Object value, Options options) throws IOException {
+                if(value != null && value.toString().equals(options.param(0))){
                     return options.fn(this);
                 } else {
                     return options.inverse(this);
@@ -219,6 +220,20 @@ public class HandleBarKjoerer {
             }
         });
 
+        handlebars.registerHelper("forVedlegg", new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object context, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                List<Vedlegg> vedlegg = soknad.getVedlegg();
+
+                if (vedlegg.isEmpty()) {
+                    return options.inverse(this);
+                } else {
+                    return lagItererbarRespons(options, vedlegg);
+                }
+            }
+        });
+
         return handlebars;
     }
 
@@ -232,11 +247,11 @@ public class HandleBarKjoerer {
         }
     }
 
-    private static String lagItererbarRespons(Options options, List<Faktum> fakta) throws IOException {
+    private static <T> String lagItererbarRespons(Options options, List<T> liste) throws IOException {
         Context parent = options.context;
         StringBuilder buffer = new StringBuilder();
         int index = 0;
-        Iterator<Faktum> iterator = fakta.iterator();
+        Iterator<T> iterator = liste.iterator();
         while (iterator.hasNext()) {
             Object element = iterator.next();
             boolean first = index == 0;

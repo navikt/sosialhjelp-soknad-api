@@ -1,23 +1,22 @@
 angular.module('nav.avbryt', [])
-    .controller('AvbrytCtrl', ['$scope', 'data', '$location', 'soknadService', function ($scope, data, $location, soknadService) {
+    .controller('AvbrytCtrl', ['$scope', '$routeParams', '$location', 'soknadService', 'data', function ($scope, $routeParams, $location, soknadService, data) {
         $scope.fremdriftsindikator = {
             laster: false
-        };
-        $scope.krevBekreftelse = {value: false};
-        soknadService.get({param: data.soknad.soknadId}).$promise.then(function (result) {
-            var fakta = $.map(result.fakta, function (element) {
-                return element.type;
-            });
-            $scope.krevBekreftelse.value = $.inArray("BRUKERREGISTRERT", fakta) > 0;
 
-            if (!$scope.krevBekreftelse.value) {
-                $scope.submitForm();
-            }
-        })
+        }
+
+        $scope.krevBekreftelse =data.fakta.filter(function(item) {
+            return item.type==="BRUKERREGISTRERT";
+        }).length>0;
+        
+        if (!$scope.krevBekreftelse) {
+            $scope.submitForm();
+        }
 
         $scope.submitForm = function () {
             var start = $.now();
             $scope.fremdriftsindikator.laster = true;
+
             soknadService.remove({param: data.soknad.soknadId},
                 function () { // Success
                     var delay = 1500 - ($.now() - start);
@@ -32,4 +31,8 @@ angular.module('nav.avbryt', [])
                 }
             );
         };
+    }])
+    .controller('SlettetCtrl', ['$scope', '$routeParams', '$location', 'data', function ($scope, $routeParams, $location, data) {
+        $scope.skjemaVeilederUrl = data.config["soknad.skjemaveileder.url"];  
+        $scope.mineHenveldelserBaseUrl = data.config["minehenvendelser.link.url"];     
     }]);
