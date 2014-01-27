@@ -32,6 +32,7 @@ angular.module('nav.fokus', [])
     .directive('tabAutoscroll', [function () {
         return {
             link: function (scope, elm) {
+
             }
         };
     }]);

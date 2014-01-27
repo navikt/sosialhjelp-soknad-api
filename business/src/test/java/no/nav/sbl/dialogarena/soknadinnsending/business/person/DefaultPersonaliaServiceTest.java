@@ -7,12 +7,23 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBostedsadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLEPost;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskKommunikasjonskanal;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGateadresse;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGyldighetsperiode;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLLandkoder;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMatrikkeladresse;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseNorge;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLNorskIdent;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPersonnavn;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadressetyper;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostboksadresseNorsk;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostnummer;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLUstrukturertAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
@@ -25,12 +36,14 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 import org.joda.time.DateTime;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
@@ -89,6 +102,9 @@ public class DefaultPersonaliaServiceTest {
     private static final String ET_EIEDOMSNAVN = "Villastrøket";
     private static final String EN_EPOST = "test@epost.com";
 
+    private static final String NORGE = "Norge";
+    private static final String NORGE_KODE = "NOR";
+
     @InjectMocks
     private DefaultPersonaliaService personaliaService;
 
@@ -107,6 +123,39 @@ public class DefaultPersonaliaServiceTest {
 
     //TODO Refaktorer tester og legg til de resterende testene fra PersonServiceTest
 
+    private XMLBruker xmlBruker;
+
+    @Before
+    public void setup() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+        when(kodeverkMock.getPoststed(EN_ADRESSE_POSTNUMMER)).thenReturn(EN_ADRESSE_POSTSTED);
+        when(kodeverkMock.getPoststed(EN_ANNEN_ADRESSE_POSTNUMMER)).thenReturn(EN_ADRESSE_POSTSTED);
+        when(kodeverkMock.getLand(NORGE_KODE)).thenReturn(NORGE);
+
+        HentKjerneinformasjonResponse response = new HentKjerneinformasjonResponse();
+        Person person = genererPersonMedGyldigIdentOgNavn(RIKTIG_IDENT, ET_FORNAVN, ET_ETTERNAVN);
+        List<Familierelasjon> familieRelasjoner = person.getHarFraRolleI();
+        Familierelasjon familierelasjon = new Familierelasjon();
+        Person barn1 = genererPersonMedGyldigIdentOgNavn(BARN_IDENT, BARN_FORNAVN, BARN_ETTERNAVN);
+
+        familierelasjon.setTilPerson(barn1);
+        Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
+
+        familieRelasjonRolle.setValue("BARN");
+        familierelasjon.setTilRolle(familieRelasjonRolle);
+
+        familieRelasjoner.add(familierelasjon);
+        response.setPerson(person);
+        when(personMock.hentKjerneinformasjon(org.mockito.Matchers.any(HentKjerneinformasjonRequest.class))).thenReturn(response);
+
+        XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse = new XMLHentKontaktinformasjonOgPreferanserResponse();
+        xmlBruker = new XMLBruker().withElektroniskKommunikasjonskanal(lagElektroniskKommunikasjonskanal());
+        XMLNorskIdent xmlNorskIdent = new XMLNorskIdent();
+        xmlNorskIdent.setIdent(RIKTIG_IDENT);
+        xmlBruker.setIdent(xmlNorskIdent);
+        preferanserResponse.setPerson(xmlBruker);
+        when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(org.mockito.Matchers.any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(preferanserResponse);
+    }
+
     @SuppressWarnings("unchecked")
     @Test
     public void returnerPersonaliaUtenDataHvisPersonenSomReturneresHarFeilIdent() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
@@ -119,7 +168,7 @@ public class DefaultPersonaliaServiceTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void returnererPersonObjektDersomPersonenSomReturneresHarRiktigIdent() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+    public void returnererPersonaliaObjektDersomPersonenSomReturneresHarRiktigIdent() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
         mockGyldigPerson();
 
         Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
@@ -139,67 +188,246 @@ public class DefaultPersonaliaServiceTest {
         verify(soknadServiceMock, times(2)).lagreSystemFaktum(anyLong(), any(Faktum.class), anyString());
     }
 
-    private void mockGyldigPerson() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
-        HentKjerneinformasjonResponse response = new HentKjerneinformasjonResponse();
-        XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse = new XMLHentKontaktinformasjonOgPreferanserResponse();
+    @Test
+    public void skalStottePersonerUtenMellomnavn() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+        mockGyldigPersonUtenMellomnavn();
 
-        Person person = genererPersonMedGyldigIdentOgNavn(RIKTIG_IDENT, ET_FORNAVN, ET_ETTERNAVN);
+        Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
 
-        response.setPerson(person);
+        assertThat(personalia, is(not(nullValue())));
+        assertThat(personalia.getNavn(), is(ET_FORNAVN + " " + ET_ETTERNAVN));
+    }
 
-        XMLBruker xmlBruker = new XMLBruker().withElektroniskKommunikasjonskanal(lagElektroniskKommunikasjonskanal());
+    @Test
+    public void skalStottePersonerUtenNavn() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+        mockGyldigPersonUtenNavn();
+
+        Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
+
+        assertThat(personalia, is(not(nullValue())));
+        assertThat(personalia.getNavn(), is(""));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void returnererPersonObjektMedAdresseInformasjon() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+        String forventetGjeldendeAdresse = EN_ADRESSE_GATE + " " + EN_ADRESSE_HUSNUMMER + EN_ADRESSE_HUSBOKSTAV + ", " + EN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED + ", " + NORGE;
+        String forventetSekunarAdresse = EN_POSTBOKS_ADRESSEEIER + ", " + EN_ANNEN_ADRESSE_GATE + " " + EN_ANNEN_ADRESSE_HUSNUMMER + EN_ANNEN_ADRESSE_HUSBOKSTAV + ", " + EN_ANNEN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
+
+        mockGyldigPersonMedAdresse();
+
+        Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
+        assertThat(personalia, is(not(nullValue())));
+
+        Adresse gjeldendeAdresse = personalia.getGjeldendeAdresse();
+        Adresse sekundarAdresse = personalia.getSekundarAdresse();
+
+        assertThat(gjeldendeAdresse, is(not(nullValue())));
+        assertThat(sekundarAdresse, is(not(nullValue())));
+
+        assertThat(gjeldendeAdresse.getAdressetype(), is(Adressetype.BOSTEDSADRESSE.name()));
+        assertThat(gjeldendeAdresse.getAdresse(), is(forventetGjeldendeAdresse));
+
+        assertThat(sekundarAdresse.getAdressetype(), is(Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE.name()));
+        assertThat(sekundarAdresse.getAdresse(), is(forventetSekunarAdresse));
+    }
+
+    private void mockGyldigPersonMedAdresse() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+        xmlBruker.setPersonnavn(navnMedMellomnavn());
+        XMLBostedsadresse bostedsadresse = genererXMLFolkeregistrertAdresse(true);
+        XMLMidlertidigPostadresseNorge xmlMidlertidigNorge = generateMidlertidigAdresseNorge();
+
+        XMLPostadressetyper postadressetyper = new XMLPostadressetyper();
+        postadressetyper.setValue(FOLKEREGISTRERT_ADRESSE_VALUE);
+
+        xmlBruker.setBostedsadresse(bostedsadresse);
+        xmlBruker.setGjeldendePostadresseType(postadressetyper);
+        xmlBruker.setMidlertidigPostadresse(xmlMidlertidigNorge);
+    }
+
+    private void mockGyldigPersonUtenNavn() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
         XMLPersonnavn personNavn = new XMLPersonnavn();
-        personNavn.setFornavn(ET_FORNAVN);
-        personNavn.setMellomnavn(ET_MELLOMNAVN);
-        personNavn.setSammensattNavn(ET_FORNAVN + " " + ET_MELLOMNAVN + " " + ET_ETTERNAVN);
-        personNavn.setEtternavn(ET_ETTERNAVN);
         xmlBruker.setPersonnavn(personNavn);
-        XMLNorskIdent xmlNorskIdent = new XMLNorskIdent();
-        xmlNorskIdent.setIdent(RIKTIG_IDENT);
-        xmlBruker.setIdent(xmlNorskIdent);
+    }
 
-        preferanserResponse.setPerson(xmlBruker);
+    private void mockGyldigPersonUtenMellomnavn() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+        xmlBruker.setPersonnavn(navnUtenMellomnavn());
+    }
 
-        when(personMock.hentKjerneinformasjon(org.mockito.Matchers.any(HentKjerneinformasjonRequest.class))).thenReturn(response);
-        when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(org.mockito.Matchers.any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(preferanserResponse);
+    private void mockGyldigPerson() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+        xmlBruker.setPersonnavn(navnMedMellomnavn());
     }
 
     private void mockGyldigPersonMedBarn() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
-        HentKjerneinformasjonResponse response = new HentKjerneinformasjonResponse();
-        XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse = new XMLHentKontaktinformasjonOgPreferanserResponse();
+        xmlBruker.setPersonnavn(navnMedMellomnavn());
+    }
 
-        Person person = genererPersonMedGyldigIdentOgNavn(RIKTIG_IDENT, ET_FORNAVN, ET_ETTERNAVN);
+    private XMLMidlertidigPostadresseNorge generateMidlertidigAdresseNorge() {
+        XMLMidlertidigPostadresseNorge xmlMidlertidigNorge = new XMLMidlertidigPostadresseNorge();
+        XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode(true);
+        xmlMidlertidigNorge.setPostleveringsPeriode(xmlGyldighetsperiode);
+        XMLGateadresse xmlgateadresse = new XMLGateadresse();
+        xmlgateadresse.setTilleggsadresse(EN_POSTBOKS_ADRESSEEIER);
+        xmlgateadresse.setGatenavn(EN_ANNEN_ADRESSE_GATE);
+        xmlgateadresse.setHusnummer(new BigInteger(EN_ANNEN_ADRESSE_HUSNUMMER));
+        xmlgateadresse.setHusbokstav(EN_ANNEN_ADRESSE_HUSBOKSTAV);
+        XMLPostnummer xmlpostnummer = new XMLPostnummer();
+        xmlpostnummer.setValue(EN_ANNEN_ADRESSE_POSTNUMMER);
+        xmlgateadresse.setPoststed(xmlpostnummer);
+        xmlMidlertidigNorge.setStrukturertAdresse(xmlgateadresse);
+        return xmlMidlertidigNorge;
+    }
 
-        List<Familierelasjon> familieRelasjoner = person.getHarFraRolleI();
+    private XMLMidlertidigPostadresseNorge generateMidlertidigPostboksAdresseNorge(boolean medData) {
+        XMLMidlertidigPostadresseNorge xmlMidlertidigPostboksNorge = new XMLMidlertidigPostadresseNorge();
 
-        Familierelasjon familierelasjon = new Familierelasjon();
-        Person barn1 = genererPersonMedGyldigIdentOgNavn(BARN_IDENT, BARN_FORNAVN, BARN_ETTERNAVN);
+        XMLPostboksadresseNorsk xmlpostboksadresse = new XMLPostboksadresseNorsk();
+        XMLPostnummer xmlpostnummer = new XMLPostnummer();
+        XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode(medData);
+        xmlMidlertidigPostboksNorge.setPostleveringsPeriode(xmlGyldighetsperiode);
+        if (medData) {
+            xmlpostboksadresse.setTilleggsadresse(EN_POSTBOKS_ADRESSEEIER);
+            xmlpostboksadresse.setPostboksanlegg(ET_POSTBOKS_NAVN);
+            xmlpostboksadresse.setPostboksnummer(EN_POSTBOKS_NUMMER);
+            xmlpostnummer.setValue(EN_ANNEN_ADRESSE_POSTNUMMER);
+        }
+        xmlpostboksadresse.setPoststed(xmlpostnummer);
+        xmlMidlertidigPostboksNorge.setStrukturertAdresse(xmlpostboksadresse);
+        return xmlMidlertidigPostboksNorge;
 
-        familierelasjon.setTilPerson(barn1);
-        Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
 
-        familieRelasjonRolle.setValue("BARN");
-        familierelasjon.setTilRolle(familieRelasjonRolle);
+    }
 
-        familieRelasjoner.add(familierelasjon);
+    private XMLMidlertidigPostadresseNorge generateMidlertidigOmrodeAdresseNorge() {
+        XMLMidlertidigPostadresseNorge xmlMidlertidigPostadresse = new XMLMidlertidigPostadresseNorge();
 
-        response.setPerson(person);
+        XMLMatrikkeladresse xmlMatrikkelAdresse = new XMLMatrikkeladresse();
+        XMLPostnummer xmlpostnummer = new XMLPostnummer();
+        XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode(true);
+        xmlMidlertidigPostadresse.setPostleveringsPeriode(xmlGyldighetsperiode);
 
+        xmlpostnummer.setValue(EN_ADRESSE_POSTNUMMER);
+        xmlMatrikkelAdresse.setPoststed(xmlpostnummer);
+        xmlMatrikkelAdresse.setEiendomsnavn(ET_EIEDOMSNAVN);
+
+        xmlMidlertidigPostadresse.setStrukturertAdresse(xmlMatrikkelAdresse);
+        return xmlMidlertidigPostadresse;
+    }
+
+    private XMLGyldighetsperiode generateGyldighetsperiode(boolean harFraDato) {
+        XMLGyldighetsperiode xmlGyldighetsperiode = new XMLGyldighetsperiode();
+        if (harFraDato) {
+            xmlGyldighetsperiode.setFom(new DateTime(EN_ANNEN_ADRESSE_GYLDIG_FRA));
+        }
+        xmlGyldighetsperiode.setTom(new DateTime(EN_ANNEN_ADRESSE_GYLDIG_TIL));
+        return xmlGyldighetsperiode;
+    }
+
+
+    private XMLBruker genererXmlBrukerMedGyldigIdentOgNavn(boolean medMellomnavn) {
         XMLBruker xmlBruker = new XMLBruker().withElektroniskKommunikasjonskanal(lagElektroniskKommunikasjonskanal());
         XMLPersonnavn personNavn = new XMLPersonnavn();
         personNavn.setFornavn(ET_FORNAVN);
-        personNavn.setMellomnavn(ET_MELLOMNAVN);
-        personNavn.setSammensattNavn(ET_FORNAVN + " " + ET_MELLOMNAVN + " " + ET_ETTERNAVN);
+        if (medMellomnavn) {
+            personNavn.setMellomnavn(ET_MELLOMNAVN);
+            personNavn.setSammensattNavn(ET_FORNAVN + " " + ET_MELLOMNAVN + " " + ET_ETTERNAVN);
+        } else {
+            personNavn.setMellomnavn("");
+            personNavn.setSammensattNavn(ET_FORNAVN + " " + ET_ETTERNAVN);
+        }
         personNavn.setEtternavn(ET_ETTERNAVN);
         xmlBruker.setPersonnavn(personNavn);
         XMLNorskIdent xmlNorskIdent = new XMLNorskIdent();
         xmlNorskIdent.setIdent(RIKTIG_IDENT);
         xmlBruker.setIdent(xmlNorskIdent);
 
-        preferanserResponse.setPerson(xmlBruker);
+        return xmlBruker;
+    }
 
-        when(personMock.hentKjerneinformasjon(org.mockito.Matchers.any(HentKjerneinformasjonRequest.class))).thenReturn(response);
-        when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(org.mockito.Matchers.any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(preferanserResponse);
+    private XMLBostedsadresse genererXMLFolkeregistrertAdresse(boolean medData) {
+        XMLBostedsadresse bostedsadresse = new XMLBostedsadresse();
+        XMLGateadresse gateadresse = new XMLGateadresse();
+        XMLPostnummer xmlpostnummer = new XMLPostnummer();
+        if (medData) {
+            gateadresse.setGatenavn(EN_ADRESSE_GATE);
+            gateadresse.setHusnummer(new BigInteger(EN_ADRESSE_HUSNUMMER));
+            gateadresse.setHusbokstav(EN_ADRESSE_HUSBOKSTAV);
+            xmlpostnummer.setValue(EN_ADRESSE_POSTNUMMER);
+        }
+        gateadresse.setPoststed(xmlpostnummer);
+        gateadresse.setLandkode(lagLandkode());
+        bostedsadresse.setStrukturertAdresse(gateadresse);
+        return bostedsadresse;
+    }
+
+    private XMLHentKontaktinformasjonOgPreferanserRequest hentRequestMedGyldigIdent() {
+        XMLHentKontaktinformasjonOgPreferanserRequest request = new XMLHentKontaktinformasjonOgPreferanserRequest();
+        request.setIdent(RIKTIG_IDENT);
+        return request;
+    }
+
+//    private Person skalStotteMidlertidigUtenlandskMidlertidigAdresser(int antallAdresseLinjer) throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+//        XMLHentKontaktinformasjonOgPreferanserRequest request = hentRequestMedGyldigIdent();
+//        XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
+//
+//        XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
+//
+//        XMLMidlertidigPostadresseUtland midlertidigPostboksAdresseUtlandet = generateMidlertidigAdresseUtlandet(antallAdresseLinjer);
+//        xmlBruker.setMidlertidigPostadresse(midlertidigPostboksAdresseUtlandet);
+//
+//        response.setPerson(xmlBruker);
+//
+//        when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenReturn(response);
+//        when(kodeverkMock.getLand(EN_LANDKODE)).thenReturn(ET_LAND);
+//        Person hentetPerson = service.hentPerson(5l, RIKTIG_IDENT);
+//
+//        return hentetPerson;
+//    }
+
+    private XMLMidlertidigPostadresseUtland generateMidlertidigAdresseUtlandet(int antallAdresseLinjer) {
+        XMLMidlertidigPostadresseUtland xmlMidlertidigAdresseUtland = new XMLMidlertidigPostadresseUtland();
+        XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode(true);
+        xmlMidlertidigAdresseUtland.setPostleveringsPeriode(xmlGyldighetsperiode);
+
+        XMLUstrukturertAdresse ustrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(antallAdresseLinjer);
+
+        XMLLandkoder xmlLandkode = new XMLLandkoder();
+        xmlLandkode.setValue(EN_LANDKODE);
+        ustrukturertAdresse.setLandkode(xmlLandkode);
+        xmlMidlertidigAdresseUtland.setUstrukturertAdresse(ustrukturertAdresse);
+
+        return xmlMidlertidigAdresseUtland;
+    }
+
+    private XMLUstrukturertAdresse generateUstrukturertAdresseMedXAntallAdersseLinjer(
+            int antallAdresseLinjer) {
+        XMLUstrukturertAdresse ustrukturertAdresse = new XMLUstrukturertAdresse();
+        switch (antallAdresseLinjer) {
+            case 0:
+                break;
+            case 1:
+                ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
+                break;
+            case 2:
+                ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
+                ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
+                break;
+            case 3:
+                ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
+                ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
+                ustrukturertAdresse.setAdresselinje3(EN_TREDJE_ADRESSELINJE);
+                break;
+            case 4:
+                ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
+                ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
+                ustrukturertAdresse.setAdresselinje3(EN_TREDJE_ADRESSELINJE);
+                ustrukturertAdresse.setAdresselinje4(EN_FJERDE_ADRESSELINJE);
+                break;
+            default:
+                break;
+        }
+
+        return ustrukturertAdresse;
     }
 
     private static XMLElektroniskKommunikasjonskanal lagElektroniskKommunikasjonskanal() {
@@ -208,6 +436,27 @@ public class DefaultPersonaliaServiceTest {
 
     private static XMLElektroniskAdresse lagElektroniskAdresse() {
         return new XMLEPost().withIdentifikator(EN_EPOST);
+    }
+
+    private static XMLLandkoder lagLandkode() {
+        return new XMLLandkoder().withValue(NORGE);
+    }
+
+    private static XMLPersonnavn navnMedMellomnavn() {
+        XMLPersonnavn personNavn = new XMLPersonnavn();
+        personNavn.setFornavn(ET_FORNAVN);
+        personNavn.setMellomnavn(ET_MELLOMNAVN);
+        personNavn.setSammensattNavn(ET_FORNAVN + " " + ET_MELLOMNAVN + " " + ET_ETTERNAVN);
+        personNavn.setEtternavn(ET_ETTERNAVN);
+        return personNavn;
+    }
+
+    private static XMLPersonnavn navnUtenMellomnavn() {
+        XMLPersonnavn personNavn = new XMLPersonnavn();
+        personNavn.setFornavn(ET_FORNAVN);
+        personNavn.setSammensattNavn(ET_FORNAVN + " " + ET_ETTERNAVN);
+        personNavn.setEtternavn(ET_ETTERNAVN);
+        return personNavn;
     }
 
     private Person genererPersonMedGyldigIdentOgNavn(String ident, String fornavn, String etternavn) {

@@ -27,7 +27,8 @@ angular.module('app.services', ['ngResource'])
 				send   : {method: 'POST', params: {param: '@param', action: 'send'}},
 				remove : {method: 'POST', params: {param: '@param', action: 'delete'}},
 				options: {method: 'GET', params: {param: '@param', action: 'options'}},
-				behandling: {method: 'GET', params: {param: '@param', action: 'behandling'}}
+				behandling: {method: 'GET', params: {param: '@param', action: 'behandling'}},
+				metadata: {method: 'GET', params: {param: '@param', action: 'metadata'}}
 			}
 		);
 	})
