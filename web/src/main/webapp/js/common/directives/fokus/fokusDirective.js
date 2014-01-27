@@ -32,7 +32,11 @@ angular.module('nav.fokus', [])
     .directive('tabAutoscroll', [function () {
         return {
             link: function (scope, elm) {
-
+                elm.bind("keydown keypress", function (event) {
+                    if(event.which === 9) {
+                        console.log("hei");
+                    }
+                })
             }
         };
     }]);
