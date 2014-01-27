@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
+
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
@@ -42,6 +44,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import javax.xml.ws.WebServiceException;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -162,16 +166,15 @@ public class DefaultPersonaliaServiceTest {
         HentKjerneinformasjonRequest request = new HentKjerneinformasjonRequest();
         request.setIdent(FEIL_IDENT);
         when(personMock.hentKjerneinformasjon(request)).thenThrow(HentKjerneinformasjonPersonIkkeFunnet.class);
-        try
-        {
-            Personalia personalia = personaliaService.hentPersonalia(FEIL_IDENT);
-            assertThat(personalia, is(not(nullValue())));
+        Personalia personalia;
+        try {
+            personalia = personaliaService.hentPersonalia(FEIL_IDENT);
+        } catch (IkkeFunnetException | WebServiceException
+                | HentKontaktinformasjonOgPreferanserPersonIkkeFunnet
+                | HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
+            personalia = null;
         }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
+        assertThat(personalia, is(not(nullValue())));
     }
 
     @SuppressWarnings("unchecked")
