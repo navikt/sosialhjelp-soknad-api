@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.detect.pdf.PdfDetector;
 import no.nav.sbl.dialogarena.pdf.Convert;
 import no.nav.sbl.dialogarena.pdf.ConvertToPng;
 import no.nav.sbl.dialogarena.pdf.PdfMerger;
+import no.nav.sbl.dialogarena.pdf.PdfWatermarker;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -69,6 +70,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
     private FillagerConnector fillagerConnector;
     @Inject
     private Kodeverk kodeverk;
+
+    private PdfWatermarker watermarker = new PdfWatermarker();
 
     private static void sjekkOmPdfErGyldig(PDDocument document) {
         PdfDetector detector = new PdfDetector(document);
@@ -231,8 +234,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         try {
             byte[] bytes = IOUtils.toByteArray(inputStream);
             if (Detect.isImage(bytes)) {
-                bytes = Convert.scaleImageAndConvertToPdf(bytes, new Dimension(
-                        1240, 1754));
+                bytes = Convert.scaleImageAndConvertToPdf(bytes, new Dimension(1240, 1754));
                 Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(),
                         vedlegg.getFaktumId(), vedlegg.getskjemaNummer(),
                         vedlegg.getNavn(), (long) bytes.length, 1, UUID
@@ -323,8 +325,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
             }
 
         }
-        // vannmerk her!
         byte[] doc = new PdfMerger().transform(bytes);
+        doc = watermarker.forIdent(getSubjectHandler().getUid(), false).transform(doc);
+
         forventning.leggTilInnhold(doc, vedleggUnderBehandling.size());
         WebSoknad soknad = repository.hentSoknad(soknadId);
         fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(),
