@@ -229,13 +229,13 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         Faktum lagretFaktum = hentFaktum(soknadId, faktum.getFaktumId());
 
         if (valueOf(lagretFaktum.getType()).equals(BRUKERREGISTRERT)) {
-            getJdbcTemplate().update("delete from faktumegenskap where soknad_Id = ? and faktum_id = ?", soknadId, faktum.getFaktumId());
+            getJdbcTemplate().update("delete from faktumegenskap where soknad_id = ? and faktum_id = ?", soknadId, faktum.getFaktumId());
             for (String key : faktum.getProperties().keySet()) {
                 getJdbcTemplate().update("insert into faktumegenskap (soknad_id, faktum_id, key, value) values (?, ?, ?, ?)",
                         soknadId, faktum.getFaktumId(), key, faktum.getProperties().get(key));
             }
         } else if(systemFaktum) {
-            getJdbcTemplate().update("delete from faktumegenskap where soknad_Id = ? and faktum_id = ? and systemegenskap = ?", soknadId, faktum.getFaktumId(), "1");
+            getJdbcTemplate().update("delete from faktumegenskap where soknad_id = ? and faktum_id = ? and systemegenskap = ?", soknadId, faktum.getFaktumId(), "1");
             for (String key : faktum.getProperties().keySet()) {
                 getJdbcTemplate().update("insert into faktumegenskap (soknad_id, faktum_id, key, value, systemegenskap) values (?, ?, ?, ?, ?)",
                         soknadId, faktum.getFaktumId(), key, faktum.getProperties().get(key), "1");
