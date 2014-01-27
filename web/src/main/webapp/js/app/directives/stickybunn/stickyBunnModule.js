@@ -2,9 +2,21 @@ angular.module('nav.stickybunn', [])
 	.directive('sistLagret', ['data', '$window', '$timeout', function (data, $window, $timeout) {
 		return {
 			replace    : true,
-			templateUrl: '../js/app/directives/stickybunn/stickyBunnTemplate.html',
+            scope: 	{
+                navtilbakelenke: '@'
+            },
+            templateUrl: '../js/app/directives/stickybunn/stickyBunnTemplate.html',
 			link       : function (scope, element) {
 				scope.soknadId = data.soknad.soknadId;
+                scope.lenke = {
+                    value: ""
+                }
+
+                if(scope.navtilbakelenke.indexOf('vedlegg') > -1) {
+                    scope.lenke.value="#/vedlegg";
+                } else if (scope.navtilbakelenke.indexOf('soknad') > -1) {
+                    scope.lenke.value="#/soknad";
+                }
 
 				scope.hentSistLagretTid = function () {
 					return data.soknad.sistLagret;
@@ -21,6 +33,8 @@ angular.module('nav.stickybunn', [])
 				angular.element($window).bind('scroll', function () {
 					settStickySistLagret();
 				});
+
+
 
 				// Litt hacky måte å få smooth overgang mellom sticky og non-sticky...
 				var nonStickyHeightCompensation = 16;
