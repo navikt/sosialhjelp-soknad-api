@@ -43,6 +43,30 @@
 
                                 <div class="nav-radio-knapp">
                                     <input class="sendsoknad-radio"
+                                           id="radio5"
+                                           type="radio"
+                                           value="Sagt opp av arbeidsgiver"
+                                           data-ng-model="faktum.properties.type"
+                                           data-ng-required="true"
+                                           data-click-validate
+                                           data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'">
+                                    <label for='radio5' data-cmstekster="arbeidsforhold.sluttaarsak.radio.sagtOppAvArbeidsgiver"></label>
+                                </div>
+
+                                <div class="nav-radio-knapp">
+                                    <input class="sendsoknad-radio"
+                                           id="radio7"
+                                           type="radio"
+                                           value="Permittert"
+                                           data-ng-model="faktum.properties.type"
+                                           data-ng-required="true"
+                                           data-click-validate
+                                           data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'">
+                                    <label for='radio7' data-cmstekster="arbeidsforhold.sluttaarsak.radio.permittert"></label>
+                                </div>
+
+                                <div class="nav-radio-knapp">
+                                    <input class="sendsoknad-radio"
                                            id="radio1"
                                            type="radio"
                                            value="Kontrakt utgått"
@@ -55,14 +79,14 @@
 
                                 <div class="nav-radio-knapp">
                                     <input class="sendsoknad-radio"
-                                           id="radio2"
+                                           id="radio6"
                                            type="radio"
-                                           value="Avskjediget"
-                                           data-ng-model="faktum.properties.type"
+                                           value="Sagt opp selv"
+                                           data-ng-model=faktum.properties.type
                                            data-ng-required="true"
                                            data-click-validate
                                            data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'">
-                                    <label for='radio2' data-cmstekster="arbeidsforhold.sluttaarsak.radio.avskjediget"></label>
+                                    <label for='radio6' data-cmstekster="arbeidsforhold.sluttaarsak.radio.sagtOppSelv"></label>
                                 </div>
 
                                 <div class="nav-radio-knapp">
@@ -91,39 +115,16 @@
 
                                 <div class="nav-radio-knapp">
                                     <input class="sendsoknad-radio"
-                                           id="radio5"
+                                           id="radio2"
                                            type="radio"
-                                           value="Sagt opp av arbeidsgiver"
+                                           value="Avskjediget"
                                            data-ng-model="faktum.properties.type"
                                            data-ng-required="true"
                                            data-click-validate
                                            data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'">
-                                    <label for='radio5' data-cmstekster="arbeidsforhold.sluttaarsak.radio.sagtOppAvArbeidsgiver"></label>
+                                    <label for='radio2' data-cmstekster="arbeidsforhold.sluttaarsak.radio.avskjediget"></label>
                                 </div>
 
-                                <div class="nav-radio-knapp">
-                                    <input class="sendsoknad-radio"
-                                           id="radio6"
-                                           type="radio"
-                                           value="Sagt opp selv"
-                                           data-ng-model=faktum.properties.type
-                                           data-ng-required="true"
-                                           data-click-validate
-                                           data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'">
-                                    <label for='radio6' data-cmstekster="arbeidsforhold.sluttaarsak.radio.sagtOppSelv"></label>
-                                </div>
-
-                                <div class="nav-radio-knapp">
-                                    <input class="sendsoknad-radio"
-                                           id="radio7"
-                                           type="radio"
-                                           value="Permittert"
-                                           data-ng-model="faktum.properties.type"
-                                           data-ng-required="true"
-                                           data-click-validate
-                                           data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'">
-                                    <label for='radio7' data-cmstekster="arbeidsforhold.sluttaarsak.radio.permittert"></label>
-                                </div>
                                 <span class="melding"></span>
                             </div>
 

@@ -55,11 +55,11 @@ angular.module('nav.barnetillegg', [])
 		};
 
 		$scope.erGutt = function (barn) {
-			return barn.properties.kjonn === 'gutt';
+			return barn.properties.kjonn === 'm';
 		};
 
 		$scope.erJente = function (barn) {
-			return barn.properties.kjonn === 'jente';
+			return barn.properties.kjonn === 'k';
 		};
 
         $scope.barnetHarInntekt = function (barn) {

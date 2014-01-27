@@ -7,8 +7,8 @@ public class PersonaliaBuilder {
     private String epost;
     private String statsborgerskap;
     private String kjonn;
-    private NewAdresse gjeldenseAdresse;
-    private NewAdresse sekundarAdresse;
+    private Adresse gjeldenseAdresse;
+    private Adresse sekundarAdresse;
 
     public static PersonaliaBuilder with() {
         return new PersonaliaBuilder();
@@ -44,12 +44,12 @@ public class PersonaliaBuilder {
         return this;
     }
 
-    public PersonaliaBuilder gjeldendeAdresse(NewAdresse gjeldenseAdresse) {
+    public PersonaliaBuilder gjeldendeAdresse(Adresse gjeldenseAdresse) {
         this.gjeldenseAdresse = gjeldenseAdresse;
         return this;
     }
 
-    public PersonaliaBuilder sekundarAdresse(NewAdresse sekundarAdresse) {
+    public PersonaliaBuilder sekundarAdresse(Adresse sekundarAdresse) {
         this.sekundarAdresse = sekundarAdresse;
         return this;
     }
