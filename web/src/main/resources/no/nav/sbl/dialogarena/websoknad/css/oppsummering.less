@@ -7,28 +7,72 @@
         margin-bottom: 15px !important;
     }
 
+    .dagpengerbrosjyre {
+        margin-bottom: 20px;
+    }
+
+    .sjekket {
+        display: inline-block;
+        background: url(../img/hake_sort.png) no-repeat center;
+        width: 10px;
+        height: 10px;
+        background-size: 100%;
+    }
+
     .oppsummering {
         padding-bottom: 40px;
         border-bottom: 1px solid #ddd;
 
-        .sjekket {
-            display: inline-block;
-            background: url(../img/hake_sort.png) no-repeat center;
-            width: 10px;
-            height: 10px;
-            background-size: 100%;
+        table {
+            tr td:last-child{
+                padding-bottom: 5px;
+            }
+
+            ul {
+                list-style: none;
+                padding-left: 0;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
         }
+
+        .arbeidsforhold-data {
+            margin-top: 0;
+
+            .arbeidsforhold-varighet {
+                font-size: 0.85rem;
+                padding-bottom: 15px;
+            }
+        }
+
+        .barn-navn {
+            font-weight: bold;
+        }
+
         .usjekket {
             display: inline-block;
             background: url(../img/minus_sort.png) no-repeat center;
             width: 10px;
             height: 10px;
         }
-        .kulepunkt {
-            display: inline-block;
-            background: url(../img/7x7_svart.png) no-repeat center;
-            width: 10px;
-            height: 10px;
+
+        .kulepunkt:before {
+            content: "•";
+            font-size: 1.5rem;
+            position: relative;
+            top: 2px;
+        }
+
+        .personalia {
+            text-align: center;
+            .nvn, .fnr {
+                font-size: 1.14rem;
+                font-weight: bold;
+            }
+
+            .adr {
+                display: block;
+            }
         }
 
         .vedlegg {
@@ -36,21 +80,18 @@
             width: 100%;
 
             .vedleggStatus {
-                position: absolute;
-                right: 0;
+                text-align: right;
+                white-space: nowrap;
+                padding-left: 30px;
 
                 .lastetOpp {
-                    position: relative;
-                    padding-left: 30px;
-
                     .vedlegg {
                         display: inline-block;
                         background: url(../img/vedlegg-svart.svg) no-repeat center;
                         width: 20px;
                         height: 20px;
-                        position: absolute;
-                        top: -2px;
-                        left: 0;
+                        position: relative;
+                        top: 4px;
                         margin-right: 10px;
                     }
 
@@ -70,8 +111,6 @@
             }
 
         }
-
-
 
         .hode {
             .personalia {

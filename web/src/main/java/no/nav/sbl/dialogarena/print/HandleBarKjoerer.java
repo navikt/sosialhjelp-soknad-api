@@ -11,12 +11,16 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.apache.wicket.model.StringResourceModel;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
@@ -152,6 +156,14 @@ public class HandleBarKjoerer {
             }
         });
 
+        handlebars.registerHelper("formatterLangDato", new Helper<String>() {
+            @Override
+            public CharSequence apply(String dato, Options options) throws IOException {
+                Locale locale = new Locale("nb", "no");
+                DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(locale);
+                return dt.print(DateTime.parse(dato));
+            }
+        });
 
         handlebars.registerHelper("forFaktaStarterMed", new Helper<String>() {
             @Override

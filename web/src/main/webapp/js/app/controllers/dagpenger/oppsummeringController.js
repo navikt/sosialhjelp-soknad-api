@@ -28,7 +28,7 @@ angular.module('nav.oppsummering', [])
                 soknadService.send({param: $scope.soknadId, action: 'send'},
                     //Success
                     function () {
-                        $location.path('bekreftelse');
+//                        $location.path('bekreftelse');
                     },
                     //Error
                     function () {
