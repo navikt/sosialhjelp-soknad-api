@@ -57,7 +57,6 @@ angular.module('nav.barn', ['app.services'])
                 }
             };
             $scope.barn = new Faktum(barneData);
-            console.log(data.land);
             $scope.land = data.land;
         }
 
