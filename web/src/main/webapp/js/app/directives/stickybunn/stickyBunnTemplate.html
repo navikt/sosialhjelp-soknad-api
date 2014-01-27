@@ -16,10 +16,10 @@
             <li>
                 <a href="#/avbryt" data-cmstekster="avbryt.soknad"></a>
             </li>
-            <li>
-                <a href="#/soknad" data-cmstekster="tilbake.til.soknad.lenke">Tilbake til søknad</a>
+            <li data-ng-if="navtilbakelenke !== 'ingenlenke'">
+                <a href="{{ lenke.value}}" data-cmstekster="{{ navtilbakelenke }}"></a>
             </li>
         </ul>
     </div>
-    <div id="sticky-bunn-anchor"/>
+    <div id="sticky-bunn-anchor"></div>
 </div>

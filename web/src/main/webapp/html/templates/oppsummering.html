@@ -15,19 +15,7 @@
             <div class="oppsummering-knapp">
                 <input class="knapp-hoved" type="submit" value="{{ 'dagpenger.oppsummering.send' | cmstekst }}">
             </div>
-            <div class="lenker">
-                <ul class="liste-vannrett">
-                    <li>
-                        <a href="#/fortsettsenere" data-cmstekster="fortsettSenere"></a>
-                    </li>
-                    <li>
-                        <a href="#/avbryt" data-cmstekster="avbryt.slett"></a>
-                    </li>
-                    <li>
-                        <a href="#/vedlegg" data-cmstekster="dagpenger.oppsummering.tilbake"></a>
-                    </li>
-                </ul>
-            </div>
+            <div data-sist-lagret data-navtilbakelenke="tilbake.til.vedlegg.lenke"></div>
         </form>
     </div>
 </div>
