@@ -1,10 +1,12 @@
 package no.nav.sbl.dialogarena.print;
 
 import com.lowagie.text.DocumentException;
+import no.nav.modig.core.exception.ApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -47,6 +49,20 @@ public class PDFFabrikk {
                 }
             }
         }
+    }
+
+    public static byte[] lagPdfFil(String html)  {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try {
+            ITextRenderer renderer = new ITextRenderer();
+
+            renderer.setDocumentFromString(html, "");
+            renderer.layout();
+            renderer.createPDF(os);
+        } catch (DocumentException e) {
+            throw new ApplicationException("Kunne ikke lagre oppsummering som PDF", e);
+        }
+        return os.toByteArray();
     }
 
     /**

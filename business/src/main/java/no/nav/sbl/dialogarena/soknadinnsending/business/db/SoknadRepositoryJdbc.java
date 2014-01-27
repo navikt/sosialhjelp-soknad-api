@@ -213,22 +213,15 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
 
     }
 
-    // TODO: Refaktorer
     private void oppdaterBrukerData(long soknadId, Faktum faktum, Boolean systemFaktum) {
         Faktum lagretFaktum = hentFaktum(soknadId, faktum.getFaktumId());
 
-        if (valueOf(lagretFaktum.getType()).equals(BRUKERREGISTRERT)) {
-            oppdater(soknadId, faktum);
-        } else if (systemFaktum) {
-            oppdater(soknadId, faktum);
+        if (valueOf(lagretFaktum.getType()).equals(BRUKERREGISTRERT) || systemFaktum) {
+            getJdbcTemplate()
+                    .update("update soknadbrukerdata set value=? where soknadbrukerdata_id = ? and soknad_id = ?",
+                            faktum.getValue(), faktum.getFaktumId(), soknadId);
         }
         lagreAlleEgenskaper(soknadId, faktum, systemFaktum);
-    }
-
-    private void oppdater(Long soknadId, Faktum faktum) {
-        getJdbcTemplate()
-                .update("update soknadbrukerdata set value=? where soknadbrukerdata_id = ? and soknad_id = ?",
-                        faktum.getValue(), faktum.getFaktumId(), soknadId);
     }
 
     // TODO: Refaktorer
@@ -236,13 +229,13 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         Faktum lagretFaktum = hentFaktum(soknadId, faktum.getFaktumId());
 
         if (valueOf(lagretFaktum.getType()).equals(BRUKERREGISTRERT)) {
-            getJdbcTemplate().update("delete from faktumegenskap where soknad_Id = ? and faktum_id = ?", soknadId, faktum.getFaktumId());
+            getJdbcTemplate().update("delete from faktumegenskap where soknad_id = ? and faktum_id = ?", soknadId, faktum.getFaktumId());
             for (String key : faktum.getProperties().keySet()) {
                 getJdbcTemplate().update("insert into faktumegenskap (soknad_id, faktum_id, key, value) values (?, ?, ?, ?)",
                         soknadId, faktum.getFaktumId(), key, faktum.getProperties().get(key));
             }
-        } else if (systemFaktum) {
-            getJdbcTemplate().update("delete from faktumegenskap where soknad_Id = ? and faktum_id = ? and systemegenskap = ?", soknadId, faktum.getFaktumId(), "1");
+        } else if(systemFaktum) {
+            getJdbcTemplate().update("delete from faktumegenskap where soknad_id = ? and faktum_id = ? and systemegenskap = ?", soknadId, faktum.getFaktumId(), "1");
             for (String key : faktum.getProperties().keySet()) {
                 getJdbcTemplate().update("insert into faktumegenskap (soknad_id, faktum_id, key, value, systemegenskap) values (?, ?, ?, ?, ?)",
                         soknadId, faktum.getFaktumId(), key, faktum.getProperties().get(key), "1");

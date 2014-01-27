@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.detect.pdf.PdfDetector;
 import no.nav.sbl.dialogarena.pdf.Convert;
 import no.nav.sbl.dialogarena.pdf.ConvertToPng;
 import no.nav.sbl.dialogarena.pdf.PdfMerger;
+import no.nav.sbl.dialogarena.pdf.PdfWatermarker;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -70,6 +71,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Inject
     private Kodeverk kodeverk;
 
+    private PdfWatermarker watermarker = new PdfWatermarker();
+
     private static void sjekkOmPdfErGyldig(PDDocument document) {
         PdfDetector detector = new PdfDetector(document);
         if (detector.pdfIsSigned()) {
@@ -86,10 +89,18 @@ public class SoknadService implements SendSoknadService, VedleggService {
                     "vedlegg.opplasting.feil.pdf.applepreview");
         }
     }
+    
+    @Override
+    public WebSoknad hentSoknadMetaData(long soknadId) {
+        return repository.hentSoknad(soknadId);
+    }
 
     @Override
     public WebSoknad hentSoknad(long soknadId) {
-        return repository.hentSoknadMedData(soknadId);
+        WebSoknad soknad = repository.hentSoknadMedData(soknadId);
+        List<Vedlegg> vedlegg = hentPaakrevdeVedlegg(soknadId, soknad);
+        soknad.setVedlegg(vedlegg);
+        return soknad;
     }
 
     @Override
@@ -151,14 +162,16 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     @Override
-    public void sendSoknad(long soknadId) {
+    public void sendSoknad(long soknadId, byte[] pdf) {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
-        List<Vedlegg> vedleggForventnings = hentPaakrevdeVedlegg(soknadId);
+        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
+        List<Vedlegg> vedleggForventnings = hentPaakrevdeVedlegg(soknadId, soknad);
         String skjemanummer = getSkjemanummer(soknad);
         String journalforendeEnhet = getJournalforendeEnhet(soknad);
         XMLHovedskjema hovedskjema = new XMLHovedskjema()
                 .withInnsendingsvalg(LASTET_OPP.toString())
                 .withSkjemanummer(skjemanummer)
+                .withUuid(soknad.getUuid())
                 .withJournalforendeEnhet(journalforendeEnhet);
         henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(),
                 hovedskjema,
@@ -223,8 +236,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         try {
             byte[] bytes = IOUtils.toByteArray(inputStream);
             if (Detect.isImage(bytes)) {
-                bytes = Convert.scaleImageAndConvertToPdf(bytes, new Dimension(
-                        1240, 1754));
+                bytes = Convert.scaleImageAndConvertToPdf(bytes, new Dimension(1240, 1754));
                 Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(),
                         vedlegg.getFaktumId(), vedlegg.getskjemaNummer(),
                         vedlegg.getNavn(), (long) bytes.length, 1, UUID
@@ -315,8 +327,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
             }
 
         }
-        // vannmerk her!
         byte[] doc = new PdfMerger().transform(bytes);
+        doc = watermarker.forIdent(getSubjectHandler().getUid(), false).transform(doc);
+
         forventning.leggTilInnhold(doc, vedleggUnderBehandling.size());
         WebSoknad soknad = repository.hentSoknad(soknadId);
         fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(),
@@ -329,8 +342,14 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     @Override
-    public List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId) {
-        return vedleggRepository.hentPaakrevdeVedlegg(soknadId);
+    public List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId, WebSoknad soknad) {
+        List<Vedlegg> result = vedleggRepository.hentPaakrevdeVedlegg(soknadId);
+        
+        for (Vedlegg vedlegg : result) {
+            vedlegg = medKodeverk(vedlegg);
+        }
+        
+        return result;
     }
 
     private void genererVedleggForFaktum(Faktum faktum) {

@@ -32,9 +32,9 @@ angular.module('nav.fokus', [])
     .directive('tabAutoscroll', [function () {
         return {
             link: function (scope, elm) {
-                elm.bind('focus', function() {
-                    scrollToElement(elm, 800);
-                });
+//                elm.bind('focus', function() {
+//                    scrollToElement(elm, 800);
+//                });
             }
         };
     }]);

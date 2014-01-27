@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Status.LastetOpp;
-
 public class Transformers {
 
     public static XMLVedlegg[] convertToXmlVedleggListe(List<Vedlegg> vedleggForventnings) {
@@ -23,7 +21,7 @@ public class Transformers {
                         .withSideantall(vedlegg.getAntallSider())
                         .withFilstorrelse(vedlegg.getStorrelse().toString())
                         .withSkjemanummer(vedlegg.getskjemaNummer())
-                        .withArkivreferanse("TODO")
+                        .withUuid(vedlegg.getFillagerReferanse())
                         .withInnsendingsvalg("INNSENDT"));
             } else {
                 resultat.add(new XMLVedlegg().withInnsendingsvalg("SENDES_IKKE")

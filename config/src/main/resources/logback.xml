@@ -29,6 +29,20 @@
         </triggeringPolicy>
     </appender>
 
+    <appender name="batchlog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${APP_LOG_HOME}/sendsoknad-batch.log</File>
+        <encoder>
+            <pattern>%date [%-5level] [%thread] %logger{5} %replace(- [%X{consumerId}, %X{callId}, %X{userId}] ){'- \[, , \] ',''}- %m%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <maxIndex>10</maxIndex>
+            <FileNamePattern>${APP_LOG_HOME}/sendsoknad-batch.log.%i</FileNamePattern>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>10MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
     <logger name="org.apache.wicket.util.tester.BaseWicketTester" level="info">
         <appender-ref ref="infolog"/>
     </logger>
@@ -51,6 +65,10 @@
 
     <logger name="org.apache.pdfbox" level="error">
         <appender-ref ref="exceptionlog"/>
+    </logger>
+
+    <logger name="no.nav.sbl.dialogarena.soknadinnsending.business.service.LagringsScheduler" level="info">
+        <appender-ref ref="batchlog"/>
     </logger>
 
     <root level="${ROOT_LOG_LEVEL:-INFO}">

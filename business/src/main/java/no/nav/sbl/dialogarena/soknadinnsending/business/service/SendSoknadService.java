@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 
+import java.io.OutputStream;
 import java.util.List;
 
 public interface SendSoknadService {
@@ -21,7 +22,7 @@ public interface SendSoknadService {
 
     Faktum lagreBarnSystemSoknadsFelt(Long soknadId, String string, String fnr, String json);
 
-    void sendSoknad(long soknadId);
+    void sendSoknad(long soknadId, byte[] outputStream);
 
     List<Long> hentMineSoknader(String aktorId);
 
@@ -32,6 +33,8 @@ public interface SendSoknadService {
     List<Faktum> hentFakta(Long soknadId);
 
     void slettBrukerFaktum(Long soknadId, Long faktumId);
+
+    WebSoknad hentSoknadMetaData(long soknadId);
 
     
 }

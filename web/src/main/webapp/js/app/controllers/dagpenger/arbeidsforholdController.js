@@ -6,14 +6,18 @@ angular.module('nav.arbeidsforhold.controller', [])
 
         $scope.soknadId = data.soknad.soknadId;
 
+        $scope.sluttaarsakUrl = data.config["soknad.sluttaarsak.url"];
+        $scope.lonnskravSkjema = data.config["soknad.lonnskravskjema.url"];
+        $scope.permiteringUrl = data.config["soknad.permitteringsskjema.url"];
+
         $scope.templates = {
+            'Sagt opp av arbeidsgiver': { oppsummeringsurl: '../html/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html' },
+            'Permittert': {oppsummeringsurl: '../html/templates/arbeidsforhold/permittert-oppsummering.html' },
             'Kontrakt utgått': {oppsummeringsurl: '../html/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html'},
-            'Avskjediget': {oppsummeringsurl: '../html/templates/arbeidsforhold/avskjediget-oppsummering.html' },
+            'Sagt opp selv': {oppsummeringsurl: '../html/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html' },
             'Redusert arbeidstid': {oppsummeringsurl: '../html/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html' },
             'Arbeidsgiver er konkurs': {oppsummeringsurl: '../html/templates/arbeidsforhold/konkurs-oppsummering.html'},
-            'Sagt opp av arbeidsgiver': { oppsummeringsurl: '../html/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html' },
-            'Sagt opp selv': {oppsummeringsurl: '../html/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html' },
-            'Permittert': {oppsummeringsurl: '../html/templates/arbeidsforhold/permittert-oppsummering.html' }
+            'Avskjediget': {oppsummeringsurl: '../html/templates/arbeidsforhold/avskjediget-oppsummering.html' }
         };
 
         var arbeidsforhold = data.finnFakta('arbeidsforhold');
@@ -40,6 +44,17 @@ angular.module('nav.arbeidsforhold.controller', [])
             $scope.harFeil = false;
         } else {
             $scope.harLagretArbeidsforhold = undefined;
+        }
+
+        $scope.finnLandFraLandkode = function(landkode) {
+            
+            for(var i=0; i<data.land.result.length; i++) { 
+                if(data.land.result[i].value == landkode) {
+                    return data.land.result[i].text;
+                }
+            }
+
+            return "";
         }
 
         $scope.skalViseFeil = function () {

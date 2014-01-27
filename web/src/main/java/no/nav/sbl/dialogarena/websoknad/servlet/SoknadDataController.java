@@ -1,7 +1,9 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.print.HandleBarKjoerer;
+import no.nav.sbl.dialogarena.print.PDFFabrikk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventning;
@@ -24,6 +26,7 @@ import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +56,12 @@ public class SoknadDataController {
     @ResponseBody()
     public WebSoknad hentSoknadData(@PathVariable Long soknadId) {
         return soknadService.hentSoknad(soknadId);
+    }
+    
+    @RequestMapping(value = "/metadata/{soknadId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody()
+    public WebSoknad hentSoknadMetaData(@PathVariable Long soknadId) {
+        return soknadService.hentSoknadMetaData(soknadId);
     }
     
     @RequestMapping(value = "/behandling/{behandlingsId}", method = RequestMethod.GET, produces = "application/json")
@@ -85,7 +94,8 @@ public class SoknadDataController {
     @ResponseBody()
     public List<Vedlegg> hentPaakrevdeVedleggForFaktum(
             @PathVariable final Long soknadId, @PathVariable final Long faktumId) {
-        return on(vedleggService.hentPaakrevdeVedlegg(soknadId)).filter(new Predicate<Vedlegg>() {
+        WebSoknad soknad = soknadService.hentSoknad(soknadId);
+        return on(vedleggService.hentPaakrevdeVedlegg(soknadId, soknad)).filter(new Predicate<Vedlegg>() {
             @Override
             public boolean evaluate(Vedlegg vedleggForventning) {
                 return vedleggForventning.getFaktumId().equals(faktumId);
@@ -104,7 +114,16 @@ public class SoknadDataController {
     @RequestMapping(value = "/send/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody()
     public void sendSoknad(@PathVariable Long soknadId) {
-        soknadService.sendSoknad(soknadId);
+        WebSoknad soknad = soknadService.hentSoknad(soknadId);
+        String oppsummeringMarkup = null;
+        try {
+            oppsummeringMarkup = new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+
+        } catch (IOException e) {
+            throw new ApplicationException("Kunne ikke lage markup av søknad", e);
+        }
+        byte[] outputStream = PDFFabrikk.lagPdfFil(oppsummeringMarkup);
+        soknadService.sendSoknad(soknadId, outputStream);
     }
 
     @RequestMapping(value = "/lagre/{soknadId}", method = RequestMethod.POST, consumes = "application/json")

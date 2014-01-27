@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 
 import java.io.InputStream;
 import java.util.List;
@@ -22,7 +23,7 @@ public interface VedleggService {
 
     Long genererVedleggFaktum(Long soknadId, Long vedleggId);
 
-    List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId);
+    List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId, WebSoknad soknad);
 
     void lagreVedlegg(Long soknadId, Long vedleggId,  Vedlegg vedlegg);
 }
