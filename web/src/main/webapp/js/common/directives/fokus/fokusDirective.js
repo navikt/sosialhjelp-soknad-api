@@ -14,12 +14,12 @@ angular.module('nav.fokus', [])
         };
     }])
     /*
-    setter fokus på legg-tilknappen hvis et element blir slettet mest mtp tabbing
+     setter fokus på legg-tilknappen hvis et element blir slettet mest mtp tabbing
      */
     .directive('fokusSlettmoduler', [function () {
         return {
             link: function (scope, elm, attrs) {
-            var id = attrs.fokusSlettmoduler;
+                var id = attrs.fokusSlettmoduler;
                 elm.bind("click", function () {
                     angular.element("#" + id + " .knapp-leggtil-liten").focus();
                 })
@@ -27,14 +27,28 @@ angular.module('nav.fokus', [])
         };
     }])
     /*
-    Fikser autoscrolling ved tabbing for elementer med zero-area (height, width osv = 0)
+     Fikser autoscrolling ved tabbing for elementer som skjules bak sticky-lenken
      */
     .directive('tabAutoscroll', [function () {
         return {
             link: function (scope, elm) {
-                elm.bind("keydown keypress", function (event) {
-                    if(event.which === 9) {
-                        console.log("hei");
+                elm.bind("keyup keypress", function (event) {
+                    if (event.which === 9) {
+                        var stickyElement = elm.next().find('.sticky-bunn');
+                        var stickyPosisjon = stickyElement[0].getBoundingClientRect();
+
+                        var elementMedFokus = document.activeElement;
+                        var posisjon = "";
+
+                        if ($(elementMedFokus).is("[type=radio]") || $(elementMedFokus).is("[type=checkbox]")) {
+                            posisjon = $(elementMedFokus).closest('div')[0].getBoundingClientRect();
+                        } else {
+                            posisjon = elementMedFokus.getBoundingClientRect();
+                        }
+
+                        if (posisjon.top + 10 >= stickyPosisjon.top) {
+                            scrollToElement(stickyElement, stickyPosisjon.top / 2);
+                        }
                     }
                 })
             }
