@@ -14,11 +14,9 @@
     <section >
         <div data-accordion data-close-others="false" data-ng-if="forventninger != null">
             <section class="vedlegg vertikal" data-ng-form>
-                <div data-accordion-group data-ng-repeat="forventning in forventninger" class="spm-blokk"  id="faktum_{{forventning.vedleggId}}">
+                <div data-accordion-group data-ng-repeat="forventning in forventninger" class="spm-blokk"  id="vedlegg_{{forventning.vedleggId}}">
                     <div data-accordion-heading>
-                        <div class="flipp">
-                            <span>+</span>
-                        </div>
+                        <div class="flipp"></div>
                         <div class="begrensning sak-totredel">
                             <div class="panel-mini nettobunn uten-ramme" data-ng-class="{behandlet: !vedleggEr(forventning, 'VedleggKreves'), lastetopp: vedleggEr(forventning, 'LastetOpp')}">
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'LastetOpp')" data-cmstekster="vedlegg.behandlet.lastetopp"></div>
@@ -31,11 +29,14 @@
                     </div>
                     <div data-div class="skjemaramme begrensning sak-totredel">
                         <div class="panel-standard">
+                           
+
                             <h4 data-ng-if="!erEkstraVedlegg(forventning)" data-cmstekster="vedlegg.faktum.maabekrefte"></h4>
+
                             <h4 data-ng-if="erEkstraVedlegg(forventning)" data-cmstekster="vedlegg.faktum.maabekrefte.annetvedlegg"></h4>
                             <label data-ng-if="erEkstraVedlegg(forventning)">
-                                <span>Hva vedlegger du (max 20 tegn)? </span>
-                                <input type="text" maxlength="20" data-ng-minlength="3" data-ng-maxlength="20"  data-ng-model="forventning.navn" data-ng-blur="lagreVedlegg(forventning)">
+                                <span>Hva vedlegger du (max 25 tegn)? </span>
+                                <input type="text" maxlength="25" data-ng-minlength="3" data-ng-maxlength="25"  data-ng-model="forventning.navn" data-ng-blur="lagreVedlegg(forventning)">
                             </label>
                             <h4 data-ng-if="!erEkstraVedlegg(forventning)" class="info-liste" data-cmshtml="{{soknadData.skjemaNummer}}.vedlegg.{{forventning.skjemaNummer}}.bekrefte"></h4>
 
@@ -53,8 +54,11 @@
                                         <span data-cmstekster="vedlegg.faktum.lastopp.dennepc"></span>
                                     </a-->
                                 </div>
+                                <div class="egen-linje" data-ng-if="forventning.urls.URL != ''">
+                                        <a href="{{forventning.urls.URL}}">{{forventning.tittel}}</a>
+                                </div>
                                 <div class="lastOpp">
-                                    <a data-ng-href="#/opplasting/{{ data.soknadId }}/{{forventning.vedleggId}}" class="knapp-link"
+                                    <a data-ng-href="#/opplasting/{{forventning.vedleggId}}" class="knapp-link"
                                        data-ng-click="endreInnsendingsvalg(forventning, 'VedleggKreves');">Last opp vedlegget</a>
                                     <a class="" data-ng-if="erEkstraVedlegg(forventning)" data-ng-click="slettAnnetVedlegg(forventning);" name="Slett">Slett</a>
 
@@ -103,7 +107,7 @@
     <div class="rad ferdig-skjema">
         <div class="begrensning sak-totredel">
             <section class="panel-standard oversikt">
-                <a href="#/oppsummering/{{ soknadData.soknadId }}" class="knapp-hoved" data-cmstekster="vedlegg.ferdig"></a>
+                <a href="#/oppsummering" class="knapp-hoved" data-cmstekster="vedlegg.ferdig" data-fremdriftsindikator></a>
             </section>
         </div>
     </div>

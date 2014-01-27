@@ -22,9 +22,10 @@
             </div>
         </div>
         <a href="javascript:void(0)" aria-role="button" class="orgnummer-slett"
-           data-ng-show="skalViseSlettKnapp($index)"
+           data-ng-if="skalViseSlettKnapp($index)"
            data-ng-click="slettOrg(egennaering_drivergennaering_orgnummer, $index)"
-           data-cmstekster="organisasjonsnummer.slett"></a>
+           data-cmstekster="organisasjonsnummer.slett"
+           data-fokus></a>
     </div>
 
     <a href="javascript:void(0)" aria-role="button" class="orgnummer-leggtil" data-ng-click="leggTilOrgnr()"
@@ -136,7 +137,7 @@
 </div>
 
 <div class="form-linje andelsfordeling-container" ng-class="{feil : prosentFeil()} "
-     data-ng-show="svartPaHvemEierGardsbruket()">
+     data-ng-if="svartPaHvemEierGardsbruket()">
     <h4 class="spm-sporsmal andelsfordeling-spm">
         <span data-cmstekster="egennaering.gardsbruk.false.eierandel.sporsmal"></span>
     </h4>
@@ -230,15 +231,19 @@
         <label>
             <span data-cmstekster="egennaering.gardsbruk.false.aar"></span>
             <select id="egennaeringgardsbrukaar"
-                data-ng-model="faktum.value"
-                data-nav-faktum="egennaering.gardsbruk.false.aar"
-                data-navconfig
-                data-error-messages="aarstall.feilmelding"
-                data-ng-init="faktum.value = faktum.value || forrigeAar; lagreFaktum();"
-                data-ng-options="aar for aar in aarstall"
-                data-ng-change="lagreFaktum()"/>
+                    data-ng-model="faktum.value"
+                    data-nav-faktum="egennaering.gardsbruk.false.aar"
+                    data-navconfig
+                    data-error-messages="aarstall.feilmelding"
+                    data-ng-init="faktum.value = faktum.value || forrigeAar; lagreFaktum();"
+                    data-ng-options="aar for aar in aarstall"
+                    data-ng-change="lagreFaktum()"/>
         </label>
     </div>
+</div>
+
+<div data-navinfoboks>
+    <p data-cmstekster="egennaering.gardsbruk.arbeid.informasjon"></p>
 </div>
 
 <div class="timeredegjoring">

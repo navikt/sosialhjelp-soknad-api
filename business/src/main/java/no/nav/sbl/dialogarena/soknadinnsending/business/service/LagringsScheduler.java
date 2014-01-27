@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import org.slf4j.Logger;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -19,23 +20,27 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class LagringsScheduler {
 
     private static final Logger LOG = getLogger(LagringsScheduler.class);
-    private static final int SCHEDULE_RATE_MS = 1000*60*60; //1 time
+   private static final int SCHEDULE_RATE_MS = 1000*60*60; //1 time
 
     @Inject
     SoknadRepository soknadRepository;
     @Inject
     FillagerConnector fillagerConnector;
 
-   // @Scheduled(fixedRate = SCHEDULE_RATE_MS)
+   @Scheduled(fixedRate = SCHEDULE_RATE_MS)
     private void mellomlagreSoknaderOgNullstillLokalDb() {
-        LOG.info("entered mellomlagreSoknaderOgNullstillLokalDb");
-        for (Long id : soknadRepository.hentAlleSoknaderSistLagretOverEnTimeSiden()) {
-            StringWriter xml = new StringWriter();
-            WebSoknad soknad = soknadRepository.hentSoknadMedData(id);
-            JAXB.marshal(soknad, xml);
-            lagreFilTilHenvendelseOgSlettILokalDb(xml, soknad);
-        }
-    }
+       if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "false"))) { // TODO: Burde fjernes når applikasjonen skal ut i prod
+           LOG.info("entered mellomlagreSoknaderOgNullstillLokalDb");
+           for (Long id : soknadRepository.hentAlleSoknaderSistLagretOverEnTimeSiden()) {
+               StringWriter xml = new StringWriter();
+               WebSoknad soknad = soknadRepository.hentSoknadMedData(id);
+               JAXB.marshal(soknad, xml);
+               lagreFilTilHenvendelseOgSlettILokalDb(xml, soknad);
+           }
+       } else {
+           LOG.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
+       }
+   }
 
     private void lagreFilTilHenvendelseOgSlettILokalDb(StringWriter xml, WebSoknad soknad) {
         try {

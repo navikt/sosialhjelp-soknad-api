@@ -1,12 +1,12 @@
 <div class="bildenavigering" data-ng-cloak>
-    <a class="pil-venstre-hvit" data-ng-click="naviger(-1)" data-ng-if="vedlegg.antallSider > 1"></a>
-    <a class="bilde" alt="Forstørr" data-ng-href="#visVedlegg/{{vedlegg.soknadId}}/{{vedlegg.vedleggId}}">
+    <a class="pil-venstre-hvit" data-ng-click="naviger(-1)" data-ng-if="vedlegg.antallSider > 1" href="javascript:void(0);"></a>
+    <a class="bilde" alt="Forstørr" data-ng-href="#visVedlegg/{{vedlegg.vedleggId}}">
         <img data-ng-repeat="bilde in range(vedlegg.antallSider)"
              data-ng-src="../rest/soknad/{{vedlegg.soknadId}}/vedlegg/{{vedlegg.vedleggId}}/thumbnail?side={{bilde}}"
              alt="Forhåndsvisning"
              data-ng-if="sideErSynlig(bilde)">
         <span>{{vedlegg.navn}} ({{side + 1}}/{{vedlegg.antallSider}})</span>
     </a>
-    <a class="pil-hoyre-hvit" data-ng-click="naviger(1)" data-ng-if="vedlegg.antallSider > 1"></a>
+    <a class="pil-hoyre-hvit" data-ng-click="naviger(1)" data-ng-if="vedlegg.antallSider > 1" href="javascript:void(0);"></a>
 
 </div>

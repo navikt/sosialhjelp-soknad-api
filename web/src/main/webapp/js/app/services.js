@@ -27,7 +27,8 @@ angular.module('app.services', ['ngResource'])
 				send   : {method: 'POST', params: {param: '@param', action: 'send'}},
 				remove : {method: 'POST', params: {param: '@param', action: 'delete'}},
 				options: {method: 'GET', params: {param: '@param', action: 'options'}},
-				behandling: {method: 'GET', params: {param: '@param', action: 'behandling'}}
+				behandling: {method: 'GET', params: {param: '@param', action: 'behandling'}},
+				metadata: {method: 'GET', params: {param: '@param', action: 'metadata'}}
 			}
 		);
 	})
@@ -87,8 +88,8 @@ angular.module('app.services', ['ngResource'])
 	})
 
 	.factory('fortsettSenereService', function ($resource) {
-		return $resource('/sendsoknad/rest/soknad/:soknadId/fortsettsenere',
-			{soknadId: '@soknadId'},
+		return $resource('/sendsoknad/rest/soknad/:behandlingId/fortsettsenere',
+			{soknadId: '@behandlingId'},
 			{send: {method: 'POST'}}
 		);
 	})
@@ -105,8 +106,6 @@ angular.module('app.services', ['ngResource'])
     .factory('landService', function ($resource) {
         return $resource('/sendsoknad/rest/soknad/kodeverk/landliste');
     })
-
-
 	.factory('StartSoknadService', ['data', '$resource', '$q', function (data, $resource, $q) {
 		var deferred = $q.defer();
 		var soknadType = window.location.pathname.split('/')[3];

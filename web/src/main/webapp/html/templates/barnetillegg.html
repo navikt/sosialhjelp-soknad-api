@@ -1,11 +1,11 @@
-<div class="skjemaramme" data-ng-controller="ModusCtrl" data-scroll-tilbake-directive="barn">
+<div class="skjemaramme" data-ng-controller="ModusCtrl" data-scroll-tilbake-directive="barnetillegg">
     <div id="barnetilleggForm" data-ng-form="barnetilleggForm" class="skjemainnhold" data-ng-controller="BarnetilleggCtrl" novalidate>
 
         <p class="informasjonstekst" cmstekster="barnetillegg.informasjon"></p>
 
         <div class="spm-boks vertikal" data-ng-repeat="b in barn">
-            <div data-ng-class="{gutt: erGutt(b), jente:erJente(b)}" id="barn{{b.faktumId}}" class="barn">
-                <a href="#" class="lukk" data-ng-show="erBrukerregistrert(b)" data-ng-click="slettBarn(b, $index, $event)"> </a>
+            <div data-ng-class="{gutt: erGutt(b), jente:erJente(b)}" id="barnetillegg{{b.faktumId}}" class="barn">
+                <a href="#" class="lukk" data-ng-show="erBrukerregistrert(b)" data-ng-click="slettBarn(b, $index, $event)" data-tab-autoscroll> </a>
 
                 <div class="barnealder">
                     <span data-cmstekster="aar"></span>
@@ -17,35 +17,35 @@
                     <div>{{ b.properties.fodselsdato | date:'dd.MM.yyyy'}}</div>
                     <div class="barnbosted">
                         <span class="bosted">bosted: </span>
-                        <span data-ng-show="ingenLandRegistrert(b)">Norge</span>
+                        <span data-ng-show="ingenLandRegistrert(b)">Ingen land registrert</span>
                         <span data-ng-bind="b.properties.land"></span>
                     </div>
                 </div>
-                <div class="barnecheckbox" data-ng-controller="BarnetilleggFaktumCtrl">
+                <div class="barnecheckbox">
                     <div data-ng-if="hvisIRedigeringsmodus()">
                         <div data-ng-show="erSystemRegistrert(b)">
-                            <a href data-ng-click="sokbarnetillegg(b.faktumId, $event)" data-cmstekster="barnetillegg.barnetilegg.sporsmal" data-ng-if="barnetilleggIkkeRegistrert()"></a>
-                            <a href="#" data-ng-if="barnetilleggErRegistrert()" data-ng-click="slettBarnetillegg(b.faktumId, $index, $event)">Fjern barnetillegg</a>
+                            <a href data-ng-click="sokbarnetillegg(b.faktumId, $event)" data-cmstekster="barnetillegg.barnetilegg.sporsmal" data-ng-if="barnetilleggIkkeRegistrert(b)"></a>
+                            <a href="#" data-ng-if="barnetilleggErRegistrert(b)" data-ng-click="slettBarnetillegg(b, $index, $event)" data-cmstekster="barnetillegg.slettbarnetillegg"></a>
                         </div>
                     </div>
 
-                    <div data-ng-if="barnetilleggErRegistrert()">
+                    <div data-ng-if="barnetilleggErRegistrert(b)">
                         <p class="svar-oppsummering" data-cmstekster="barnetillegg.barnetilegg.sporsmal"></p>
 
-                        <p class="svar-oppsummering" data-ng-if="barnetHarIkkeInntekt()" data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.true"></p>
+                        <p class="svar-oppsummering" data-ng-if="barnetHarIkkeInntekt(b)" data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.true"></p>
 
-                        <p class="svar-oppsummering" data-ng-if="barnetHarInntekt()">
+                        <p class="svar-oppsummering" data-ng-if="barnetHarInntekt(b)">
                             <span data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.false"> </span>
                             <span>.</span>
                             <span data-cmstekster="barnetillegg.barnetilegg.barneinntekttall.sporsmal"></span>
-                            <span data-ng-bind="barneinntekttall.value | currency"></span>
+                            <span>{{ b.properties.barneinntekttall | currency }}</span>
                         </p>
                     </div>
                 </div>
                 <div class="sentrert" data-ng-show="erBrukerregistrert(b)">
                     <ul class="liste-vannrett">
                         <li>
-                            <a href="#" data-ng-click="slettBarn(b, $index, $event)" data-cmstekster="barnetillegg.slettbarn"></a>
+                            <a href="#" data-ng-click="slettBarn(b, $index, $event)" data-cmstekster="barnetillegg.slettbarn" data-tab-autoscroll></a>
                         </li>
                         <li>
                             <a href="#" data-ng-click="endreBarn(b.faktumId, $event)" data-cmstekster="barnetillegg.endrebarn"></a>

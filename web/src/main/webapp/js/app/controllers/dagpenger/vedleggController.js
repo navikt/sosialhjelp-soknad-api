@@ -1,7 +1,7 @@
 angular.module('nav.vedlegg.controller', [])
-	.controller('VisVedleggCtrl', ['$scope', '$routeParams', 'vedleggService', 'Faktum', function ($scope, $routeParams, vedleggService, Faktum) {
+	.controller('VisVedleggCtrl', ['$scope', '$routeParams', 'vedleggService', 'Faktum', 'data', function ($scope, $routeParams, vedleggService, Faktum, data) {
 		$scope.vedlegg = vedleggService.get({
-			soknadId : $routeParams.soknadId,
+			soknadId : data.soknad.soknadId,
 			vedleggId: $routeParams.vedleggId
 		});
 	}])
@@ -22,7 +22,6 @@ angular.module('nav.vedlegg.controller', [])
 			}
 			forventning.$remove().then(function () {
 				forventning.innsendingsvalg = 'VedleggKreves';
-				forventning.vedleggId = null;
 			});
 		};
         $scope.lagreVedlegg = function (forventning) {
@@ -41,7 +40,7 @@ angular.module('nav.vedlegg.controller', [])
 		};
 
 		$scope.erEkstraVedlegg = function (forventning) {
-			return forventning.skjemaNummer === 'L6';
+			return forventning.skjemaNummer === 'N6';
 		};
 
 		$scope.slettAnnetVedlegg = function (forventning) {

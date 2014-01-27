@@ -15,74 +15,150 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostboksadresseNorsk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLStrukturertAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLUstrukturertAdresse;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.BOSTEDSADRESSE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.POSTADRESSE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
 import static org.slf4j.LoggerFactory.getLogger;
 
-/**
- * Hjelpeklasse for å hente adresser ut fra TPS-resultat
- *
- * @author V140448
- */
 public class AdresseTransform {
-
     private Kodeverk kodeverk;
 
     private static final Logger logger = getLogger(AdresseTransform.class);
 
-    public List<Adresse> mapAdresser(long soknadId, XMLBruker soapPerson, Kodeverk kodeverk) {
+    public Adresse mapGjeldendeAdresse(XMLBruker soapPerson, Kodeverk kodeverk) {
         this.kodeverk = kodeverk;
 
-        List<Adresse> result = new ArrayList<Adresse>();
-        if (strukturertAdresseExists(soapPerson.getBostedsadresse())) {
-            result.add(hentBostedsAdresse(soknadId, (XMLGateadresse) soapPerson.getBostedsadresse().getStrukturertAdresse()));
+        if (harMidlertidigAdresseSomErGjeldendeAdresse(soapPerson)) {
+            return finnMidlertidigAdresse(soapPerson.getMidlertidigPostadresse());
+        } else if (harStrukturertAdresseSomErGjeldendeAdresse(soapPerson)) {
+            return hentBostedsAdresse((XMLGateadresse) soapPerson.getBostedsadresse().getStrukturertAdresse());
+        } else if (harUstrukturertAdresseSomErGjeldendeAdresse(soapPerson)) {
+            return finnPostAdresse(soapPerson.getPostadresse());
+        } else {
+            return new Adresse();
         }
+    }
+
+    public Adresse mapSekundarAdresse(XMLBruker soapPerson, Kodeverk kodeverk) {
+        this.kodeverk = kodeverk;
+
+        if (harMidlertidigAdresseSomIkkeErGjeldendeAdresse(soapPerson)) {
+            return finnMidlertidigAdresse(soapPerson.getMidlertidigPostadresse());
+        } else if (harStrukturertAdresseSomIkkeErGjeldendeAdresse(soapPerson)) {
+            return hentBostedsAdresse((XMLGateadresse) soapPerson.getBostedsadresse().getStrukturertAdresse());
+        } else if (harUstrukturertAdresseSomIkkeErGjeldendeAdresse(soapPerson)) {
+            return finnPostAdresse(soapPerson.getPostadresse());
+        } else {
+            return new Adresse();
+        }
+    }
+
+    private boolean harMidlertidigAdresseSomErGjeldendeAdresse(XMLBruker soapPerson) {
         if (soapPerson.getMidlertidigPostadresse() != null) {
-            leggMidlertidigAdresseTilResultat(soknadId, result, soapPerson.getMidlertidigPostadresse());
+            String gjeldendeAdressetype = finnGjeldendeAdressetype(soapPerson);
+            if (gjeldendeAdressetype.toLowerCase().startsWith("midlertidig")) {
+                return true;
+            }
         }
-        finnPostAdresse(soknadId, result, soapPerson.getPostadresse());
-        return result;
+        return false;
+    }
+
+    private boolean harStrukturertAdresseSomErGjeldendeAdresse(XMLBruker soapPerson) {
+        if (strukturertAdresseExists(soapPerson.getBostedsadresse())) {
+            String gjeldendeAdressetype = finnGjeldendeAdressetype(soapPerson);
+            if (gjeldendeAdressetype.equalsIgnoreCase(BOSTEDSADRESSE.name())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean harUstrukturertAdresseSomErGjeldendeAdresse(XMLBruker soapPerson) {
+        if (ustrukturertAdresseExists(soapPerson.getPostadresse())) {
+            String gjeldendeAdressetype = finnGjeldendeAdressetype(soapPerson);
+            if (gjeldendeAdressetype.equalsIgnoreCase(UTENLANDSK_ADRESSE.name()) || gjeldendeAdressetype.equalsIgnoreCase(POSTADRESSE.name())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean harMidlertidigAdresseSomIkkeErGjeldendeAdresse(XMLBruker soapPerson) {
+        if (soapPerson.getMidlertidigPostadresse() != null) {
+            String gjeldendeAdressetype = finnGjeldendeAdressetype(soapPerson);
+            if (!gjeldendeAdressetype.toLowerCase().startsWith("midlertidig")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean harStrukturertAdresseSomIkkeErGjeldendeAdresse(XMLBruker soapPerson) {
+        if (strukturertAdresseExists(soapPerson.getBostedsadresse())) {
+            String gjeldendeAdressetype = finnGjeldendeAdressetype(soapPerson);
+            if (!gjeldendeAdressetype.equalsIgnoreCase(BOSTEDSADRESSE.name())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean harUstrukturertAdresseSomIkkeErGjeldendeAdresse(XMLBruker soapPerson) {
+        if (ustrukturertAdresseExists(soapPerson.getPostadresse())) {
+            String gjeldendeAdressetype = finnGjeldendeAdressetype(soapPerson);
+            if (!gjeldendeAdressetype.equalsIgnoreCase(UTENLANDSK_ADRESSE.name()) && !gjeldendeAdressetype.equalsIgnoreCase(POSTADRESSE.name())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private String finnGjeldendeAdressetype(XMLBruker soapPerson) {
+        return soapPerson.getGjeldendePostadresseType() != null ? soapPerson.getGjeldendePostadresseType().getValue() : "";
     }
 
     private boolean strukturertAdresseExists(XMLBostedsadresse bostedsadresse) {
         return bostedsadresse != null && bostedsadresse.getStrukturertAdresse() instanceof XMLGateadresse;
     }
 
-    private void leggMidlertidigAdresseTilResultat(long soknadId, List<Adresse> result, XMLMidlertidigPostadresse midlertidigPostadresse) {
+    private Adresse finnMidlertidigAdresse(XMLMidlertidigPostadresse midlertidigPostadresse) {
         if (midlertidigPostadresse instanceof XMLMidlertidigPostadresseNorge) {
             XMLMidlertidigPostadresseNorge xmlMidlPostAdrNorge = (XMLMidlertidigPostadresseNorge) midlertidigPostadresse;
-            result.add(finnMidlertidigAdresse(soknadId, xmlMidlPostAdrNorge, xmlMidlPostAdrNorge.getStrukturertAdresse()));
+            return finnMidlertidigAdresse(xmlMidlPostAdrNorge, xmlMidlPostAdrNorge.getStrukturertAdresse());
         } else if (midlertidigPostadresse instanceof XMLMidlertidigPostadresseUtland) {
-            Adresse midlertidigAdresse = new Adresse(soknadId, MIDLERTIDIG_POSTADRESSE_UTLAND);
+            Adresse midlertidigAdresse = new Adresse();
+            midlertidigAdresse.setAdressetype(MIDLERTIDIG_POSTADRESSE_UTLAND.name());
             setLandkodeOgGyldighetsDatoer(midlertidigAdresse, (XMLMidlertidigPostadresseUtland) midlertidigPostadresse);
-            result.add(midlertidigAdresse);
+            return midlertidigAdresse;
+        } else {
+            return new Adresse();
         }
     }
 
-    private Adresse finnMidlertidigAdresse(long soknadId, XMLMidlertidigPostadresseNorge xmlMidlPostAdrNorge, XMLStrukturertAdresse strukturertAdresse) {
+    private Adresse finnMidlertidigAdresse(XMLMidlertidigPostadresseNorge xmlMidlPostAdrNorge, XMLStrukturertAdresse strukturertAdresse) {
         if (strukturertAdresse instanceof XMLGateadresse) {
             return getMidlertidigPostadresseNorge(
-                    soknadId,
                     retrieveGyldigFra(xmlMidlPostAdrNorge.getPostleveringsPeriode()),
                     retrieveGyldigTil(xmlMidlPostAdrNorge.getPostleveringsPeriode()),
                     (XMLGateadresse) strukturertAdresse);
         } else if (strukturertAdresse instanceof XMLPostboksadresseNorsk) {
             return getMidlertidigPostboksadresseNorge(
-                    soknadId,
                     retrieveGyldigFra(xmlMidlPostAdrNorge.getPostleveringsPeriode()),
                     retrieveGyldigTil(xmlMidlPostAdrNorge.getPostleveringsPeriode()),
                     (XMLPostboksadresseNorsk) strukturertAdresse);
         } else if (strukturertAdresse instanceof XMLMatrikkeladresse) {
             return getMidlertidigOmrodeAdresse(
-                    soknadId,
                     retrieveGyldigFra(xmlMidlPostAdrNorge.getPostleveringsPeriode()),
                     retrieveGyldigTil(xmlMidlPostAdrNorge.getPostleveringsPeriode()),
                     (XMLMatrikkeladresse) strukturertAdresse);
@@ -98,14 +174,13 @@ public class AdresseTransform {
         return postleveringsPeriode != null ? postleveringsPeriode.getFom() : null;
     }
 
-    private void finnPostAdresse(long soknadId, List<Adresse> result, XMLPostadresse postadresse) {
-        if (ustrukturertAdresseExists(postadresse)) {
-            XMLUstrukturertAdresse ustrukturertAdresse = postadresse.getUstrukturertAdresse();
-            Adresse folkeregistrertUtenlandskAdresse = retrieveFolkeregistrertUtenlandskAdresse(soknadId, ustrukturertAdresse);
-            folkeregistrertUtenlandskAdresse.setAdresselinjer(hentAdresseLinjer(ustrukturertAdresse));
-            folkeregistrertUtenlandskAdresse.setLand(getLand(ustrukturertAdresse.getLandkode()));
-            result.add(folkeregistrertUtenlandskAdresse);
-        }
+    private Adresse finnPostAdresse(XMLPostadresse postadresse) {
+        XMLUstrukturertAdresse ustrukturertAdresse = postadresse.getUstrukturertAdresse();
+        Adresse adresse = retrieveFolkeregistrertUtenlandskAdresse(ustrukturertAdresse);
+        List<String> adresseLinjer = hentAdresseLinjer(ustrukturertAdresse);
+        addIfNotNull(adresseLinjer, getLand(ustrukturertAdresse.getLandkode()));
+        adresse.setAdresse(StringUtils.join(adresseLinjer, ", "));
+        return adresse;
     }
 
     private boolean ustrukturertAdresseExists(XMLPostadresse postadresse) {
@@ -122,15 +197,17 @@ public class AdresseTransform {
                 return land;
             }
         }
-        return null;
+        return "";
     }
 
-    private Adresse retrieveFolkeregistrertUtenlandskAdresse(long soknadId, XMLUstrukturertAdresse ustrukturertAdresse) {
+    private Adresse retrieveFolkeregistrertUtenlandskAdresse(XMLUstrukturertAdresse ustrukturertAdresse) {
+        Adresse adresse = new Adresse();
         if (ustrukturertAdresse.getLandkode() != null && "NOR".equals(ustrukturertAdresse.getLandkode().getValue())) {
-            return new Adresse(soknadId, POSTADRESSE);
+            adresse.setAdressetype(POSTADRESSE.name());
         } else {
-            return new Adresse(soknadId, UTENLANDSK_ADRESSE);
+            adresse.setAdressetype(UTENLANDSK_ADRESSE.name());
         }
+        return adresse;
     }
 
     private void setLandkodeOgGyldighetsDatoer(Adresse midlertidigAdresse, XMLMidlertidigPostadresseUtland xmlMidlAdrUtland) {
@@ -139,17 +216,19 @@ public class AdresseTransform {
     }
 
     private void setGyldigFraOgTil(Adresse midlertidigAdresse, XMLGyldighetsperiode postleveringsPeriode) {
-        midlertidigAdresse.setGyldigfra(postleveringsPeriode != null ? postleveringsPeriode.getFom() : null);
-        midlertidigAdresse.setGyldigtil(postleveringsPeriode != null ? postleveringsPeriode.getTom() : null);
+        DateTimeFormatter dateTimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
+        midlertidigAdresse.setGyldigFra(postleveringsPeriode != null ? dateTimeFormat.print(postleveringsPeriode.getFom()) : "");
+        midlertidigAdresse.setGyldigTil(postleveringsPeriode != null ? dateTimeFormat.print(postleveringsPeriode.getTom()) : "");
     }
 
     private void setLandkode(Adresse midlertidigAdresse, XMLUstrukturertAdresse ustrukturertAdresse) {
         if (ustrukturertAdresse != null) {
-            midlertidigAdresse.setAdresselinjer(hentAdresseLinjer(ustrukturertAdresse));
+            String adresse = StringUtils.join(hentAdresseLinjer(ustrukturertAdresse), ", ");
             XMLLandkoder xmlLandkode = ustrukturertAdresse.getLandkode();
             if (xmlLandkode != null) {
-                midlertidigAdresse.setLand(kodeverk.getLand(xmlLandkode.getValue()));
+                adresse += ", " + getLand(xmlLandkode);
             }
+            midlertidigAdresse.setAdresse(adresse);
         }
     }
 
@@ -168,52 +247,89 @@ public class AdresseTransform {
         }
     }
 
-    private Adresse getMidlertidigPostboksadresseNorge(long soknadId, DateTime gyldigFra, DateTime gyldigTil, XMLPostboksadresseNorsk xmlPostboksAdresse) {
-        Adresse midlertidigPostboksAdresse = new Adresse(soknadId, MIDLERTIDIG_POSTADRESSE_NORGE);
-        midlertidigPostboksAdresse.setGyldigfra(gyldigFra);
-        midlertidigPostboksAdresse.setGyldigtil(gyldigTil);
-        midlertidigPostboksAdresse.setAdresseeier(xmlPostboksAdresse.getTilleggsadresse());
-        midlertidigPostboksAdresse.setPostnummer(getPostnummerString(xmlPostboksAdresse));
-        midlertidigPostboksAdresse.setPoststed(kodeverk.getPoststed(getPostnummerString(xmlPostboksAdresse)));
-        midlertidigPostboksAdresse.setPostboksnavn(xmlPostboksAdresse.getPostboksanlegg());
-        midlertidigPostboksAdresse.setPostboksnummer(xmlPostboksAdresse.getPostboksnummer());
-        return midlertidigPostboksAdresse;
+    private Adresse getMidlertidigPostboksadresseNorge(DateTime gyldigFra, DateTime gyldigTil, XMLPostboksadresseNorsk xmlPostboksAdresse) {
+        DateTimeFormatter dateTimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
+        Adresse adresse = new Adresse();
+        adresse.setAdressetype(MIDLERTIDIG_POSTADRESSE_NORGE.name());
+        adresse.setGyldigFra(dateTimeFormat.print(gyldigFra));
+        adresse.setGyldigTil(dateTimeFormat.print(gyldigTil));
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(xmlPostboksAdresse.getTilleggsadresse());
+        stringBuilder.append(", ");
+        stringBuilder.append(getPostnummerString(xmlPostboksAdresse));
+        stringBuilder.append(" ");
+        stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlPostboksAdresse)));
+        stringBuilder.append(", ");
+        stringBuilder.append(xmlPostboksAdresse.getPostboksanlegg());
+        stringBuilder.append(" ");
+        stringBuilder.append(xmlPostboksAdresse.getPostboksnummer());
+        adresse.setAdresse(stringBuilder.toString());
+
+        return adresse;
     }
 
-    private Adresse getMidlertidigOmrodeAdresse(long soknadId, DateTime gyldigFra, DateTime gyldigTil, XMLMatrikkeladresse xmlMatrikkelAdresse) {
-        Adresse midlertidigOmrodeAdresse = new Adresse(soknadId, MIDLERTIDIG_POSTADRESSE_NORGE);
-        midlertidigOmrodeAdresse.setGyldigfra(gyldigFra);
-        midlertidigOmrodeAdresse.setGyldigtil(gyldigTil);
-        midlertidigOmrodeAdresse.setAdresseeier(xmlMatrikkelAdresse.getTilleggsadresse());
-        midlertidigOmrodeAdresse.setPostnummer(getPostnummerString(xmlMatrikkelAdresse));
-        midlertidigOmrodeAdresse.setPoststed(kodeverk.getPoststed(getPostnummerString(xmlMatrikkelAdresse)));
-        midlertidigOmrodeAdresse.setEiendomsnavn(xmlMatrikkelAdresse.getEiendomsnavn());
-        return midlertidigOmrodeAdresse;
+    private Adresse getMidlertidigOmrodeAdresse(DateTime gyldigFra, DateTime gyldigTil, XMLMatrikkeladresse xmlMatrikkelAdresse) {
+        DateTimeFormatter dateTimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
+        Adresse adresse = new Adresse();
+        adresse.setAdressetype(MIDLERTIDIG_POSTADRESSE_NORGE.name());
+        adresse.setGyldigFra(dateTimeFormat.print(gyldigFra));
+        adresse.setGyldigTil(dateTimeFormat.print(gyldigTil));
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(xmlMatrikkelAdresse.getTilleggsadresse());
+        stringBuilder.append(", ");
+        stringBuilder.append(getPostnummerString(xmlMatrikkelAdresse));
+        stringBuilder.append(" ");
+        stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlMatrikkelAdresse)));
+        stringBuilder.append(", ");
+        stringBuilder.append(xmlMatrikkelAdresse.getEiendomsnavn());
+        adresse.setAdresse(stringBuilder.toString());
+
+        return adresse;
     }
 
-    private Adresse getMidlertidigPostadresseNorge(long soknadId, DateTime gyldigFra, DateTime gyldigTil, XMLGateadresse xmlGateAdresse) {
-        Adresse midlertidigAdresse = new Adresse(soknadId, MIDLERTIDIG_POSTADRESSE_NORGE);
-        midlertidigAdresse.setGyldigfra(gyldigFra);
-        midlertidigAdresse.setGyldigtil(gyldigTil);
-        midlertidigAdresse.setAdresseeier(xmlGateAdresse.getTilleggsadresse());
-        midlertidigAdresse.setGatenavn(xmlGateAdresse.getGatenavn());
-        midlertidigAdresse.setHusnummer(getHusnummer(xmlGateAdresse));
-        midlertidigAdresse.setHusbokstav(getHusbokstav(xmlGateAdresse));
-        midlertidigAdresse.setPostnummer(getPostnummerString(xmlGateAdresse));
-        midlertidigAdresse.setPoststed(kodeverk.getPoststed(getPostnummerString(xmlGateAdresse)));
-        midlertidigAdresse.setLand(getLandkode(xmlGateAdresse));
-        return midlertidigAdresse;
+    private Adresse getMidlertidigPostadresseNorge(DateTime gyldigFra, DateTime gyldigTil, XMLGateadresse xmlGateAdresse) {
+        DateTimeFormatter dateTimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
+        Adresse adresse = new Adresse();
+        adresse.setAdressetype(MIDLERTIDIG_POSTADRESSE_NORGE.name());
+        adresse.setGyldigFra(dateTimeFormat.print(gyldigFra));
+        adresse.setGyldigTil(dateTimeFormat.print(gyldigTil));
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(xmlGateAdresse.getTilleggsadresse());
+        stringBuilder.append(", ");
+        stringBuilder.append(xmlGateAdresse.getGatenavn());
+        stringBuilder.append(" ");
+        stringBuilder.append(getHusnummer(xmlGateAdresse));
+        stringBuilder.append(getHusbokstav(xmlGateAdresse));
+        stringBuilder.append(", ");
+        stringBuilder.append(getPostnummerString(xmlGateAdresse));
+        stringBuilder.append(" ");
+        stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlGateAdresse)));
+        adresse.setAdresse(stringBuilder.toString());
+
+        return adresse;
     }
 
-    private Adresse hentBostedsAdresse(long soknadId, XMLGateadresse xmlGateAdresse) {
-        Adresse personAdresse = new Adresse(soknadId, Adressetype.BOSTEDSADRESSE);
-        personAdresse.setGatenavn(xmlGateAdresse.getGatenavn());
-        personAdresse.setHusnummer(getHusnummer(xmlGateAdresse));
-        personAdresse.setHusbokstav(getHusbokstav(xmlGateAdresse));
-        personAdresse.setPostnummer(getPostnummerString(xmlGateAdresse));
-        personAdresse.setPoststed(kodeverk.getPoststed(getPostnummerString(xmlGateAdresse)));
-        personAdresse.setLand(getLandkode(xmlGateAdresse));
-        return personAdresse;
+    private Adresse hentBostedsAdresse(XMLGateadresse xmlGateAdresse) {
+        Adresse adresse = new Adresse();
+        adresse.setAdressetype(BOSTEDSADRESSE.name());
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(xmlGateAdresse.getGatenavn());
+        stringBuilder.append(" ");
+        stringBuilder.append(getHusnummer(xmlGateAdresse));
+        stringBuilder.append(getHusbokstav(xmlGateAdresse));
+        stringBuilder.append(", ");
+        stringBuilder.append(getPostnummerString(xmlGateAdresse));
+        stringBuilder.append(" ");
+        stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlGateAdresse)));
+        stringBuilder.append(", ");
+        stringBuilder.append(getLand(xmlGateAdresse.getLandkode()));
+        adresse.setAdresse(stringBuilder.toString());
+
+        return adresse;
     }
 
     private String getLandkode(XMLGateadresse xmlGateAdresse) {
@@ -239,4 +355,5 @@ public class AdresseTransform {
     private String getHusbokstav(XMLGateadresse xmlGateAdresse) {
         return xmlGateAdresse.getHusbokstav() != null ? xmlGateAdresse.getHusbokstav() : "";
     }
+
 }

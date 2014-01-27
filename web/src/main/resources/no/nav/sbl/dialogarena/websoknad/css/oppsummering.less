@@ -1,19 +1,111 @@
 #oppsummering {
-    h2 {
-        text-align: center;
+
+    [class*="strek-ikon-oppsummering"], [class*="ikon-soknader-strek"] {
+        background-image: url(../img/under-dark.png), url(../img/oppsummering.svg);
+        background-position: bottom center, center 0;
+        padding-bottom: 15px;
+        margin-bottom: 15px !important;
     }
 
     .oppsummering {
-        margin-top: 40px;
+        padding-bottom: 40px;
+        border-bottom: 1px solid #ddd;
 
-        .oppsummering-knapper {
-            margin-top: 40px;
-            margin-bottom: 40px;
+        .sjekket {
+            display: inline-block;
+            background: url(../img/hake_sort.png) no-repeat center;
+            width: 10px;
+            height: 10px;
+            background-size: 100%;
+        }
+        .usjekket {
+            display: inline-block;
+            background: url(../img/minus_sort.png) no-repeat center;
+            width: 10px;
+            height: 10px;
+        }
+        .kulepunkt {
+            display: inline-block;
+            background: url(../img/7x7_svart.png) no-repeat center;
+            width: 10px;
+            height: 10px;
+        }
+
+        .vedlegg {
+            position: relative;
+            width: 100%;
+
+            .vedleggStatus {
+                position: absolute;
+                right: 0;
+
+                .lastetOpp {
+                    position: relative;
+                    padding-left: 30px;
+
+                    .vedlegg {
+                        display: inline-block;
+                        background: url(../img/vedlegg-svart.svg) no-repeat center;
+                        width: 20px;
+                        height: 20px;
+                        position: absolute;
+                        top: -2px;
+                        left: 0;
+                        margin-right: 10px;
+                    }
+
+                    .antallSide {
+                        &:after {
+                            content: "•";
+                            padding-left: 8px;
+                            padding-right: 5px;
+                            color: #000000;
+                        }
+                    }
+
+                    .lastetOppVedlegg {
+                        display: none;
+                    }
+                }
+            }
+
+        }
+
+
+
+        .hode {
+            .personalia {
+                padding-bottom: 30px;
+                margin-bottom: 30px;
+                border-bottom: 1px solid #ddd;
+            }
+        }
+
+        .markup-feil {
+            margin-top: 15px;
+            p {
+                color: #c30000;
+            }
+        }
+    }
+
+    form {
+
+        .form-linje.feilstyling {
+            padding-top: 20px !important;
+        }
+
+        .checkbox {
+            margin-top: 20px;
+        }
+        .lenker, .oppsummering-knapp {
+            margin-top: 20px;
             text-align: center;
-
-            a {
-                margin: 10px;
+            input {
+                margin-bottom: 40px;
             }
         }
     }
 }
+
+

@@ -29,6 +29,8 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.db.IdGenerator.la
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.OPPRETTET;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.UTFYLLING;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.valueOf;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.FERDIG;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
@@ -61,7 +63,8 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
                     rs.getLong("soknad_id"),
                     rs.getLong("faktum_id"),
                     rs.getString("key"),
-                    rs.getString("value"));
+                    rs.getString("value"),
+                    rs.getString("systemegenskap"));
             return faktum;
         }
     };
@@ -129,13 +132,6 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
                 behandlingsId);
     }
 
-    private void oppdaterBrukerData(long soknadId, Faktum faktum) {
-        getJdbcTemplate()
-                .update("update soknadbrukerdata set value=? where soknadbrukerdata_id = ? and soknad_id = ?",
-                        faktum.getValue(), faktum.getFaktumId(), soknadId);
-        lagreAlleEgenskaper(soknadId, faktum);
-    }
-
     @Override
     public Faktum hentFaktum(Long soknadId, Long faktumId) {
         String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and soknadbrukerdata_id = ?";
@@ -194,6 +190,11 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
 
     @Override
     public Long lagreFaktum(long soknadId, Faktum faktum) {
+        return lagreFaktum(soknadId, faktum, false);
+    }
+
+    @Override
+    public Long lagreFaktum(long soknadId, Faktum faktum, Boolean systemFaktum) {
         if (faktum.getFaktumId() == null) {
             Long dbNokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_BRUKER_DATA_ID_SEQ"), Long.class);
             getJdbcTemplate()
@@ -201,22 +202,54 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
                             dbNokkel, soknadId, faktum.getKey(),
                             faktum.getValue(), faktum.getType(), faktum.getParrentFaktum());
             faktum.setFaktumId(dbNokkel);
-            lagreAlleEgenskaper(soknadId, faktum);
+            lagreAlleEgenskaper(soknadId, faktum, systemFaktum);
 
             utfyllingStartet(soknadId);
             return dbNokkel;
         } else {
-            oppdaterBrukerData(soknadId, faktum);
+            oppdaterBrukerData(soknadId, faktum, systemFaktum);
             return faktum.getFaktumId();
         }
 
     }
 
-    private void lagreAlleEgenskaper(Long soknadId, Faktum faktum) {
-        getJdbcTemplate().update("delete from faktumegenskap where soknad_Id = ? and faktum_id=?", soknadId, faktum.getFaktumId());
-        for (String key : faktum.getProperties().keySet()) {
-            getJdbcTemplate().update("insert into faktumegenskap (soknad_id, faktum_id, key, value) values (?, ?, ?, ?)",
-                    soknadId, faktum.getFaktumId(), key, faktum.getProperties().get(key));
+    private void oppdaterBrukerData(long soknadId, Faktum faktum, Boolean systemFaktum) {
+        Faktum lagretFaktum = hentFaktum(soknadId, faktum.getFaktumId());
+
+        if (valueOf(lagretFaktum.getType()).equals(BRUKERREGISTRERT) || systemFaktum) {
+            getJdbcTemplate()
+                    .update("update soknadbrukerdata set value=? where soknadbrukerdata_id = ? and soknad_id = ?",
+                            faktum.getValue(), faktum.getFaktumId(), soknadId);
+        }
+        lagreAlleEgenskaper(soknadId, faktum, systemFaktum);
+    }
+
+    // TODO: Refaktorer
+    private void lagreAlleEgenskaper(Long soknadId, Faktum faktum, Boolean systemFaktum) {
+        Faktum lagretFaktum = hentFaktum(soknadId, faktum.getFaktumId());
+
+        if (valueOf(lagretFaktum.getType()).equals(BRUKERREGISTRERT)) {
+            getJdbcTemplate().update("delete from faktumegenskap where soknad_Id = ? and faktum_id = ?", soknadId, faktum.getFaktumId());
+            for (String key : faktum.getProperties().keySet()) {
+                getJdbcTemplate().update("insert into faktumegenskap (soknad_id, faktum_id, key, value) values (?, ?, ?, ?)",
+                        soknadId, faktum.getFaktumId(), key, faktum.getProperties().get(key));
+            }
+        } else if(systemFaktum) {
+            getJdbcTemplate().update("delete from faktumegenskap where soknad_Id = ? and faktum_id = ? and systemegenskap = ?", soknadId, faktum.getFaktumId(), "1");
+            for (String key : faktum.getProperties().keySet()) {
+                getJdbcTemplate().update("insert into faktumegenskap (soknad_id, faktum_id, key, value, systemegenskap) values (?, ?, ?, ?, ?)",
+                        soknadId, faktum.getFaktumId(), key, faktum.getProperties().get(key), "1");
+            }
+        } else {
+            getJdbcTemplate().update("delete from faktumegenskap where soknad_Id = ? and faktum_id = ? and systemegenskap = ?", soknadId, faktum.getFaktumId(), "0");
+            for (String key : faktum.getProperties().keySet()) {
+                FaktumEgenskap egenskap = hentFaktumegenskap(soknadId, faktum.getFaktumId(), key);
+
+                if (egenskap == null) {
+                    getJdbcTemplate().update("insert into faktumegenskap (soknad_id, faktum_id, key, value) values (?, ?, ?, ?)",
+                            soknadId, faktum.getFaktumId(), key, faktum.getProperties().get(key));
+                }
+            }
         }
     }
 
@@ -254,6 +287,20 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
             }
         }
         return fakta;
+    }
+
+    private List<FaktumEgenskap> hentFaktumegenskaper(Long soknadId, Long faktumId) {
+        return select("select * from FAKTUMEGENSKAP where soknad_id = ? and faktum_id = ?", faktumEgenskapRowMapper, soknadId, faktumId);
+    }
+
+    private FaktumEgenskap hentFaktumegenskap(Long soknadId, Long faktumId, String key) {
+        List<FaktumEgenskap> faktumEgenskaper = select("select * from FAKTUMEGENSKAP where soknad_id = ? and faktum_id = ? and key = ?", faktumEgenskapRowMapper, soknadId, faktumId, key);
+
+        if (faktumEgenskaper.isEmpty()) {
+            return null;
+        } else {
+            return faktumEgenskaper.get(0);
+        }
     }
 
     @Override

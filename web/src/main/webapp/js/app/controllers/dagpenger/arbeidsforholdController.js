@@ -6,6 +6,10 @@ angular.module('nav.arbeidsforhold.controller', [])
 
         $scope.soknadId = data.soknad.soknadId;
 
+        $scope.sluttaarsakUrl = data.config["soknad.sluttaarsak.url"];
+        $scope.lonnskravSkjema = data.config["soknad.lonnskravskjema.url"];
+        $scope.permiteringUrl = data.config["soknad.permitteringsskjema.url"];
+
         $scope.templates = {
             'Kontrakt utgått': {oppsummeringsurl: '../html/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html'},
             'Avskjediget': {oppsummeringsurl: '../html/templates/arbeidsforhold/avskjediget-oppsummering.html' },
@@ -17,16 +21,10 @@ angular.module('nav.arbeidsforhold.controller', [])
         };
 
         var arbeidsforhold = data.finnFakta('arbeidsforhold');
-        var sluttaarsak = data.finnFakta('sluttaarsak');
         $scope.arbeidsliste = [];
 
         angular.forEach(arbeidsforhold, function (af) {
-            angular.forEach(sluttaarsak, function (s) {
-                if (s.parrentFaktum === af.faktumId) {
-                    $scope.arbeidsliste.push({'arbeidsforhold': af, 'sluttaarsak': s});
-                }
-            });
-
+            $scope.arbeidsliste.push({'arbeidsforhold': af, 'sluttaarsak': af});
         });
 
         function compareArbeidsforholdDate(a1, a2) {
@@ -49,7 +47,7 @@ angular.module('nav.arbeidsforhold.controller', [])
         }
 
         $scope.skalViseFeil = function () {
-            return $scope.harFeil === true;
+            return $scope.harFeil === true && !$scope.harLagretArbeidsforhold;
         }
 
         $scope.harSvart = function () {
