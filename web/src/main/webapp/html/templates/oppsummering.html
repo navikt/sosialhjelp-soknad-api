@@ -7,9 +7,13 @@
 
             <div class="checkbox form-linje" data-ng-class="{feilstyling : skalViseFeilmelding.value === true}"
                  data-checkbox-validate>
+                <div class="dagpengerbrosjyre">
+                    <span class="sjekket"></span>
+                    <span>{{ 'dagpenger.informasjonsside.lestbrosjyre.sporsmal' | cmstekst }}</span>
+                </div>
+
                 <input id="bekreftelseOpplysninger" type="checkbox" data-ng-model="harbekreftet.value">
-                <label for="bekreftelseOpplysninger" data-cmstekster="dagpenger.oppsummering.bekreftOpplysninger">
-                </label>
+                <label for="bekreftelseOpplysninger" data-cmstekster="dagpenger.oppsummering.bekreftOpplysninger"></label>
                 <span class="melding" data-cmstekster="dagpenger.oppsummering.bekreftelse.feilmelding"></span>
             </div>
             <div class="oppsummering-knapp">
