@@ -60,7 +60,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
     private SendSoknadService soknadService;
 
     @Override
-    public Personalia hentPersonalia(String fodselsnummer) {
+    public Personalia hentPersonalia(String fodselsnummer) throws IkkeFunnetException, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, WebServiceException {
         XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse;
         HentKjerneinformasjonResponse kjerneinformasjonResponse;
 
@@ -69,16 +69,16 @@ public class DefaultPersonaliaService implements PersonaliaService {
             preferanserResponse = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequestPreferanser(fodselsnummer));
         } catch (IkkeFunnetException e) {
             logger.warn("Ikke funnet person i TPS");
-            return new Personalia();
+            throw e;
         } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
             logger.error("Fant ikke bruker i TPS.", e);
-            return new Personalia();
+            throw e;
         } catch (HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
             logger.error("Kunne ikke hente bruker fra TPS.", e);
-            return new Personalia();
+            throw e;
         } catch (WebServiceException e) {
             logger.error("Ingen kontakt med TPS.", e);
-            return new Personalia();
+            throw e;
         }
         return PersonaliaTransform.mapTilPersonalia(preferanserResponse, kjerneinformasjonResponse, kodeverk);
     }
@@ -136,7 +136,6 @@ public class DefaultPersonaliaService implements PersonaliaService {
         soknadService.lagreSystemFaktum(soknadId, personaliaFaktum, "");
     }
 
-    @SuppressWarnings("unchecked")
     private void lagreBarn(Long soknadId, List<Barn> barneliste) {
 
         for (Barn barn : barneliste) {

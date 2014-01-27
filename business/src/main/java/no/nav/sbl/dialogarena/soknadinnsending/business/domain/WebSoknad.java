@@ -87,7 +87,7 @@ public class WebSoknad implements Serializable {
         this.vedlegg = vedlegg;
     }
 
-    public final void setskjemaNummer(String skjemaNummer) {
+    public final void setSkjemaNummer(String skjemaNummer) {
         this.skjemaNummer = skjemaNummer;
     }
 

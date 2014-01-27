@@ -1,5 +1,8 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
+
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
@@ -72,7 +75,13 @@ public class SoknadTpsDataController {
     @ResponseBody()
     public Personalia hentPersonalia() {
         String fnr = SubjectHandler.getSubjectHandler().getUid();
-        Personalia personalia = personaliaService.hentPersonalia(fnr);
+        Personalia personalia;
+        try {
+            personalia = personaliaService.hentPersonalia(fnr);
+        } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet
+                | HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
+            return new Personalia();
+        }
         return personalia;
     }
 }
