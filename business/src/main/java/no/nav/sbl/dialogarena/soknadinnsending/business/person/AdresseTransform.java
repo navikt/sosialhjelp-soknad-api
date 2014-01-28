@@ -325,8 +325,6 @@ public class AdresseTransform {
         stringBuilder.append(getPostnummerString(xmlGateAdresse));
         stringBuilder.append(" ");
         stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlGateAdresse)));
-        stringBuilder.append(", ");
-        stringBuilder.append(getLand(xmlGateAdresse.getLandkode()));
         adresse.setAdresse(stringBuilder.toString());
 
         return adresse;

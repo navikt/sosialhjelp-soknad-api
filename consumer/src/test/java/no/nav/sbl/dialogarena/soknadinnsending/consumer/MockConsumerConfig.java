@@ -1,9 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
@@ -49,7 +45,6 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
-
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.context.annotation.Bean;
@@ -60,6 +55,10 @@ import org.springframework.context.annotation.Configuration;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.UUID;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @Configuration
 @ComponentScan(excludeFilters = @Filter(Configuration.class))
@@ -77,7 +76,7 @@ public class MockConsumerConfig {
                 public WSBehandlingsId answer(InvocationOnMock invocation) throws Throwable {
                     return new WSBehandlingsId().withBehandlingsId(UUID.randomUUID().toString());
                 }
-                
+
             });
             return mock;
         }
@@ -93,6 +92,72 @@ public class MockConsumerConfig {
 
         @Bean
         public FilLagerPortType fillagerService() {
+//            FilLagerPortType filLagerPortType = new FilLagerPortType() {
+//                @Override
+//                public void slett(String s) {
+//
+//                }
+//
+//                @Override
+//                public void ping() {
+//
+//                }
+//
+//                @Override
+//                public void slettAlle(String s) {
+//
+//                }
+//
+//                @Override
+//                public void lagre(String s, String s2, String s3, DataHandler dataHandler) {
+//                    InputStream inputStream = null;
+//                    OutputStream os = null;
+//                    File file;
+//                    try {
+//                        file = new File("C:" + File.separator + "TestPdf" + File.separator + "test.pdf");
+//                        if (!file.exists()) {
+//                            file.createNewFile();
+//                        }
+//
+//                        inputStream = dataHandler.getInputStream();
+//                        os = new FileOutputStream(file);
+//                        IOUtils.copy(inputStream, os);
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    } catch (UnsupportedEncodingException e) {
+//                        e.printStackTrace();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    } finally {
+//                        if (os != null) {
+//                            try {
+//                                os.close();
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                        if (inputStream != null) {
+//                            try {
+//                                inputStream.close();
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }
+//
+//                }
+//
+//                @Override
+//                public List<WSInnhold> hentAlle(String s) {
+//                    return null;
+//                }
+//
+//                @Override
+//                public void hent(Holder<String> stringHolder, Holder<DataHandler> dataHandlerHolder) {
+//
+//                }
+//            };
+//            return filLagerPortType;
             return mock(FilLagerPortType.class);
         }
 
