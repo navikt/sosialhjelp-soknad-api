@@ -167,13 +167,14 @@ public class DefaultPersonaliaServiceTest {
         request.setIdent(FEIL_IDENT);
         when(personMock.hentKjerneinformasjon(request)).thenThrow(HentKjerneinformasjonPersonIkkeFunnet.class);
         Personalia personalia;
-        try {
-            personalia = personaliaService.hentPersonalia(FEIL_IDENT);
-        } catch (IkkeFunnetException | WebServiceException
-                | HentKontaktinformasjonOgPreferanserPersonIkkeFunnet
-                | HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
-            personalia = null;
-        }
+        personalia = personaliaService.hentPersonalia(FEIL_IDENT);
+//        try {
+//            personalia = personaliaService.hentPersonalia(FEIL_IDENT);
+//        } catch (IkkeFunnetException | WebServiceException
+//                | HentKontaktinformasjonOgPreferanserPersonIkkeFunnet
+//                | HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
+//            personalia = null;
+//        }
         assertThat(personalia, is(not(nullValue())));
     }
 

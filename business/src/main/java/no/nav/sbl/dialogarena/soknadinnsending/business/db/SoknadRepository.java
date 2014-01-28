@@ -46,4 +46,6 @@ public interface SoknadRepository {
     void slettBrukerFaktum(Long soknadId, Long faktumId);
 
     void slettSoknad(long soknadId);
+
+    String hentSoknadType(Long soknadId);
 }
