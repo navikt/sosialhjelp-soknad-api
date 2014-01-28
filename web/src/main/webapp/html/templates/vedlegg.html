@@ -98,7 +98,7 @@
                                            data-cmstekster="vedlegg.faktum.ikkesend"></label>
                                     {{forventning.innsendingsvalg}}
                                     <input type="hidden" data-ng-model="hiddenFelt.value" data-ng-required="true"
-                                           data-error-messages="'Dagpenger.vedlegg.{{forventning.skjemaNummer}}.feilmelding'">
+                                           data-error-messages="'Dagpenger.vedlegg.{{forventning.skjemaNummer | nospace}}.feilmelding'">
                                 </div>
                                 <span class="melding" data-cmstekster="Dagpenger.vedlegg.{{forventning.skjemaNummer}}.feilmelding"></span>
                             </div>
