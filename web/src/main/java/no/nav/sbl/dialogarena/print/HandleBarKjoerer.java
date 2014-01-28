@@ -10,6 +10,7 @@ import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils;
 import org.apache.wicket.model.StringResourceModel;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -108,6 +109,7 @@ public class HandleBarKjoerer {
     private Handlebars getHandlebars() {
         Context c = Context.newBuilder(new WebSoknad()).build();
         Handlebars handlebars = new Handlebars();
+
         handlebars.registerHelper("forFaktum", new Helper<String>() {
             @Override
             public CharSequence apply(String o, Options options) throws IOException {
@@ -243,6 +245,13 @@ public class HandleBarKjoerer {
                 } else {
                     return lagItererbarRespons(options, vedlegg);
                 }
+            }
+        });
+
+        handlebars.registerHelper("hentSkjemanummer", new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object context, Options options) throws IOException {
+                return WebSoknadUtils.getSkjemanummer(finnWebSoknad(options.context));
             }
         });
 

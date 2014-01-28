@@ -8,18 +8,20 @@
 			    src: url('../font/modusb-semibold.woff') format('woff'); }
 			@font-face { font-family: 'Modus'; font-weight: bold; font-style: normal;
 			    src: url('../font/modub-bold.woff') format('woff'); }
-			@page   { size: A4; margin: 1.5cm 2cm 4cm; @top-center { content: element(header, last-except) }; @bottom-center { content: element(footer) }; }
+			@page   { size: A4; margin: 2.5cm 2cm 4cm; @top-center { content: element(header, last-except) }; @top-right { font-family: Modus, Arial, Helvetica, sans-serif; font-size: 10pt; content: counter(page) " av " counter(pages); }; @bottom-center { content: element(footer) }; }
+            @page:first { margin: 1.5cm 2cm 4cm; @top-right { content: ""; }; }
 			*       { box-sizing: border-box; }
 			body    { font-family: Modus, Arial, Helvetica, sans-serif; font-size: 10pt; line-height: 1.4em; margin: 0; color: #3e3832; }
 			h1      { font-size: 24pt; }
 			h2, h3, h4, h5, h6 { font-size: 13pt; }
 			table   { border-collapse: collapse; width: 170mm; }
-            table ul { padding-left: 0; }
+            table ul { list-style: none; padding-left: 0; margin-top: 0; margin-bottom: 0; }
 			td      { vertical-align: middle; text-align: left; padding: 0; font-size: 10pt; }
 			td:first-child { width: 5.5mm; vertical-align: top; }
 			td:last-child { width: 164.5mm; padding-bottom: 5px; }
 			.header { position: running(header); text-align: center; }
 			.header span { display: inline-block; }
+			.header .header-logo { position: absolute; left: 0; top: 8mm; width: 14mm; }
 			.header .fnr:before { content: "&#8226;"; margin: 0 10px; }
 			.footer { position: running(footer); font-size: 8pt; text-align: center; margin-bottom: 2mm; border-top: .5pt solid #ccc; }
 			.footer span { display: inline-block; margin: 0 10px; }
@@ -35,20 +37,24 @@
 			.hode .adr { margin-top: 2mm; }
 			.hode .personalia { padding-bottom: 8mm; border-bottom: .5pt solid #ccc; }
             .seVedlegg { display: none; }
-            .vedlegg { position: relative;, width: 100%; }
-            .vedlegg .vedleggStatus { text-align: right; white-space: nowrap; padding-left: 30px; }
-            .vedlegg .vedleggStatus .lastetOpp { position: relative;, padding-left: 30px; }
-            .vedlegg .vedleggStatus .lastetOpp .vedlegg { display: inline-block; background: url(../img/vedlegg-svart.svg) no-repeat center; width: 20px; height: 20px; position: relative; top: 4px; margin-right: 10px; }
-            .vedlegg .vedleggStatus .lastetOpp .antallSide:after { content: "•"; padding-left: 8px; padding-right: 5px; color: #000000; }
+            .vedlegg .sjekket { position: relative; top: 5px; }
+            .vedlegg .usjekket { position: relative; top: 4px; }
+            .vedlegg .vedleggStatus { width: auto; text-align: right;}
+            .vedlegg .vedleggStatus .lastetOpp .vedlegg { display: none; }
             .arbeidsforhold-data { margin-top: 0; }
-            .arbeidsforhold-data .arbeidsforhold-varighet { font-size: 0.85rem; position: relative; left: -13px; padding-bottom: 15px; }
+            .arbeidsforhold-data .arbeidsforhold-varighet { font-size: 8pt; padding-bottom: 0; list-style-type: none; padding-left: 0; }
             .barn-navn { font-weight: bold; }
+            .kulepunkt:before { content: "•"; font-size: 14pt; position: relative; top: 1pt; }
 		</style>
 	</head>
 	<body>
 
 		<div class="header">
-			<span class="navn">Herman Kristian Normann Olsen</span><span class="fnr">01039749706</span>
+            <img class="header-logo" src="http://localhost:8181/sendsoknad/img/nav-logo.gif"/>
+            {{#forFaktum "personalia"}}
+                <span class="navn">{{properties.navn}}</span><span class="fnr">{{properties.fnr}}</span>
+            {{/forFaktum}}
+
 		</div>
 
 		<div class="footer">
@@ -58,7 +64,7 @@
 						<span class="sjekket"></span>
 					</td>
 					<td>
-						Jeg har lest Dagpengebrosjyren
+						{{ hentTekst "dagpenger.informasjonsside.lestbrosjyre.sporsmal" }}
 					</td>
 				</tr>
 				<tr>
@@ -69,22 +75,21 @@
 						<span class="sjekket"></span>
 					</td>
 					<td>
-						Jeg er kjent med at mangelfulle eller feilaktige opplysninger kan medføre krav om tilbakebetaling av feilutbetalt stønad og/eller straff.
+                        {{ hentTekst "dagpenger.oppsummering.bekreftOpplysninger" }}
 					</td>
 				</tr>
 			</table>
 
-			NAV 12-24.03
-			<span>|</span>
-			Webversjon 2
-			<span>|</span>
-			20.02.2014 kl 15:45
+            <span>
+                <span>{{ hentSkjemanummer }} {{ hentTekst "dagpenger.oppsummering.eSoknad" }}.</span>
+                <span>{{ hentTekst "dagpenger.oppsummering.fastsattDato" }} 03.2014.</span>
+            </span>
 		</div>
 
 		<div id="soknad">
 			<img class="logo" src="http://localhost:8181/sendsoknad/img/nav-logo.gif"/>
 			<div class="hode">
-				<h1>Søknad om dagpenger {{gosysid}}</h1>
+				<h1>{{ hentTekst "skjema.tittel" }}</h1>
 				<hr/>
                 {{#forFaktum "personalia"}}
                     <div class="personalia">
@@ -95,7 +100,7 @@
                 {{/forFaktum}}
 			</div>
 
-			<h2>Reel arbeidsoker</h2>
+			<h2>{{ hentTekst "reellarbeidssoker.tittel" }}</h2>
 			<table>
 				{{#forFaktum "reellarbeidssoker.villigdeltid"}}
 					<tr>
@@ -270,7 +275,7 @@
 				{{/forFaktum}}
 			</table>
 
-			<h2>Arbeidsforhold de siste 12 måneder</h2>
+			<h2>{{ hentTekst "arbeidsforhold.tittel" }}</h2>
 			<table>
 				{{#forFakta "arbeidsforhold"}}
                     <tr>
@@ -408,14 +413,14 @@
                     <tr>
                         <td class="sjekket"></td>
                         <td>
-                            <span>Ingen arbeidsforhold</span>
+                            <span>{{ hentTekst "dagpenger.oppsummering.arbeidsforhold.ingen" }}</span>
                         </td>
                     </tr>
 
 				{{/forFakta}}
             </table>
 
-			<h2>Egen næring</h2>
+			<h2>{{ hentTekst "egennaering.tittel" }}</h2>
 
             <table>
                 {{#forFaktum "egennaering.driveregennaering"}}
@@ -628,7 +633,7 @@
 
             </table>
 
-			<h2>Verneplikt</h2>
+            <h2>{{ hentTekst "ikkeavtjentverneplikt.tittel" }}</h2>
             <table>
                 {{#forFaktum "ikkeavtjentverneplikt"}}
                         <tr>
@@ -644,7 +649,7 @@
                 {{/forFaktum}}
             </table>
 
-            <h2>Utdanning</h2>
+            <h2>{{ hentTekst "utdanning.tittel" }}</h2>
             <table>
                 {{#forFaktum "utdanning"}}
                     <tr>
@@ -707,8 +712,8 @@
                                                     {{#forFaktum "utdanning.kveld.varighet"}}
                                                         <li class="kulepunkt">
                                                             <span>{{ hentTekst "utdanning.varighet" }}</span>
-                                                            <span>{{ properties.varighetFra }}</span> <!--TODO Formattering dato-->
-                                                            <span>{{ properties.varighetTil }}</span> <!--TODO Formattering dato-->
+                                                            <span>{{ formatterLangDato properties.varighetFra }}</span>
+                                                            <span>{{ formatterLangDato properties.varighetTil }}</span>
                                                         </li>
                                                     {{/forFaktum}}
                                                 </ul>
@@ -738,8 +743,8 @@
                                                     {{#forFaktum "utdanning.kortvarig.varighet"}}
                                                         <li class="kulepunkt">
                                                             <span>{{ hentTekst "utdanning.varighet" }}</span>
-                                                            <span>{{ properties.varighetFra }}</span> <!--TODO Formattering dato-->
-                                                            <span>{{ properties.varighetTil }}</span> <!--TODO Formattering dato-->
+                                                            <span>{{ formatterLangDato properties.varighetFra }}</span>
+                                                            <span>{{ formatterLangDato properties.varighetTil }}</span>
                                                         </li>
                                                     {{/forFaktum}}
                                                 </ul>
@@ -769,8 +774,8 @@
                                                     {{#forFaktum "utdanning.kortvarigflere.varighet"}}
                                                         <li class="kulepunkt">
                                                             <span>{{ hentTekst "utdanning.varighet" }}</span>
-                                                            <span>{{ properties.varighetFra }}</span> <!--TODO Formattering dato-->
-                                                            <span>{{ properties.varighetTil }}</span> <!--TODO Formattering dato-->
+                                                            <span>{{ formatterLangDato properties.varighetFra }}</span>
+                                                            <span>{{ formatterLangDato properties.varighetTil }}</span>
                                                         </li>
                                                     {{/forFaktum}}
                                                 </ul>
@@ -793,8 +798,8 @@
                                                     {{#forFaktum "utdanning.norsk.varighet"}}
                                                         <li class="kulepunkt">
                                                             <span>{{ hentTekst "utdanning.varighet" }}</span>
-                                                            <span>{{ properties.varighetFra }}</span> <!--TODO Formattering dato-->
-                                                            <span>{{ properties.varighetTil }}</span> <!--TODO Formattering dato-->
+                                                            <span>{{ formatterLangDato properties.varighetFra }}</span>
+                                                            <span>{{ formatterLangDato properties.varighetTil }}</span>
                                                         </li>
                                                     {{/forFaktum}}
                                                 </ul>
@@ -827,7 +832,7 @@
             </table>
 
 
-			<h2>Andre ytelser</h2>
+            <h2>{{ hentTekst "ytelser.tittel" }}</h2>
             <table>
                 {{#forFaktum "offentligTjenestepensjon"}}
                     {{#hvisSant value}}
@@ -1103,7 +1108,7 @@
             </table>
 
 
-			<h2>Barn som det søkes barnetillegg for</h2>
+            <h2>{{ hentTekst "dagpenger.oppsummering.barn.tittel" }}</h2>
             <table>
                 {{#forFaktaMedPropertySattTilTrue "barn" "barnetillegg"}}
                     <tr>
@@ -1142,7 +1147,7 @@
 
 
 
-			<h2>Vedlegg</h2>
+            <h2>{{ hentTekst "dagpenger.oppsummering.vedlegg.tittel" }}</h2>
 			<table class="vedlegg">
                 {{#forVedlegg}}
                     <tr>
@@ -1166,7 +1171,6 @@
                                         <span>{{ antallSider }}</span>
                                         <span class="antallSide">{{ hentTekst "dagpenger.oppsummering.sider" }}</span>
                                         <a href="#/visVedlegg/{{ vedleggId }}" class="seVedlegg">{{ hentTekst "dagpenger.oppsummering.seVedlegg" }}</a>
-                                        <span class="lastetOppVedlegg">{{ hentTekst "dagpenger.oppsummering.lastetOpp" }}</span>
                                     </span>
                                 {{/hvisLik}}
 

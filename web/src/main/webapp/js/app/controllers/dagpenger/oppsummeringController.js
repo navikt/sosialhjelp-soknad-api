@@ -8,7 +8,7 @@ angular.module('nav.oppsummering', [])
         $http.get('/sendsoknad/rest/soknad/oppsummering/' + $scope.soknadId).then(function(response) {
             var soknadElement = $(response.data).filter("#soknad");
             soknadElement.find('.logo').remove();
-            soknadElement.find('.hode h1').addClass('stor strek-ikon-soknader');
+            soknadElement.find('.hode h1').addClass('stor strek-ikon-oppsummering');
             soknadElement.find('hr').remove();
             $scope.oppsummeringHtml = soknadElement.html();
         });
@@ -28,7 +28,7 @@ angular.module('nav.oppsummering', [])
                 soknadService.send({param: $scope.soknadId, action: 'send'},
                     //Success
                     function () {
-//                        $location.path('bekreftelse');
+                        $location.path('bekreftelse');
                     },
                     //Error
                     function () {
