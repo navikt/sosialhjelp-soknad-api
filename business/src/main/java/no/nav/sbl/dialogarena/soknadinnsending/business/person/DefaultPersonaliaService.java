@@ -60,7 +60,8 @@ public class DefaultPersonaliaService implements PersonaliaService {
     private SendSoknadService soknadService;
 
     @Override
-    public Personalia hentPersonalia(String fodselsnummer) throws IkkeFunnetException, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, WebServiceException {
+    public Personalia hentPersonalia(String fodselsnummer) {
+//    public Personalia hentPersonalia(String fodselsnummer) throws IkkeFunnetException, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, WebServiceException {
         XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse;
         HentKjerneinformasjonResponse kjerneinformasjonResponse;
 
@@ -69,16 +70,20 @@ public class DefaultPersonaliaService implements PersonaliaService {
             preferanserResponse = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequestPreferanser(fodselsnummer));
         } catch (IkkeFunnetException e) {
             logger.warn("Ikke funnet person i TPS");
-            throw e;
+            //throw e;
+            return new Personalia();
         } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
             logger.error("Fant ikke bruker i TPS.", e);
-            throw e;
+            //throw e;
+            return new Personalia();
         } catch (HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
             logger.error("Kunne ikke hente bruker fra TPS.", e);
-            throw e;
+            //throw e;
+            return new Personalia();
         } catch (WebServiceException e) {
             logger.error("Ingen kontakt med TPS.", e);
-            throw e;
+            //throw e;
+            return new Personalia();
         }
         return PersonaliaTransform.mapTilPersonalia(preferanserResponse, kjerneinformasjonResponse, kodeverk);
     }

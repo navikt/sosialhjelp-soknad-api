@@ -1,5 +1,10 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import static java.lang.String.format;
+import static javax.xml.bind.JAXBContext.newInstance;
+import static no.nav.modig.lang.collections.IterUtils.on;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.print.HandleBarKjoerer;
@@ -11,6 +16,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+
 import org.apache.commons.collections15.Predicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -25,16 +31,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static java.lang.String.format;
-import static javax.xml.bind.JAXBContext.newInstance;
-import static no.nav.modig.lang.collections.IterUtils.on;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * Klassen håndterer alle rest kall for å hente grunnlagsdata til applikasjonen.
