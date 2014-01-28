@@ -181,14 +181,33 @@ public class MockConsumerConfig {
             landkoder.setValue("NOR");
             statsborgerskap.setLand(landkoder);
             person.setStatsborgerskap(statsborgerskap);
+          
             List<Familierelasjon> familieRelasjoner = person.getHarFraRolleI();
+            
             Familierelasjon familierelasjon = new Familierelasjon();
-            Person barn1 = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "Barn1", "mock");
+            Person barn1 = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "Dole", "Mockmann");
             familierelasjon.setTilPerson(barn1);
             Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
             familieRelasjonRolle.setValue("BARN");
             familierelasjon.setTilRolle(familieRelasjonRolle);
             familieRelasjoner.add(familierelasjon);
+                      
+            Familierelasjon familierelasjon2 = new Familierelasjon();
+            Person barn2 = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "Ole", "Mockmann");
+            familierelasjon2.setTilPerson(barn2);
+            Familierelasjoner familieRelasjonRolle2 = new Familierelasjoner();
+            familieRelasjonRolle2.setValue("BARN");
+            familierelasjon2.setTilRolle(familieRelasjonRolle2);
+            familieRelasjoner.add(familierelasjon2);
+            
+            Familierelasjon familierelasjon3 = new Familierelasjon();
+            Person barn3 = genererPersonMedGyldigIdentOgNavn("***REMOVED***", "Doffen", "Mockmann");
+            familierelasjon3.setTilPerson(barn3);
+            Familierelasjoner familieRelasjonRolle3 = new Familierelasjoner();
+            familieRelasjonRolle3.setValue("BARN");
+            familierelasjon3.setTilRolle(familieRelasjonRolle3);
+            familieRelasjoner.add(familierelasjon3);
+            
             response.setPerson(person);
             
             when(mock.hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class))).thenReturn(response);
@@ -285,8 +304,8 @@ public class MockConsumerConfig {
     @Configuration
     public static class BrukerProfilWSConfig {
         private static final String RIKTIG_IDENT = "***REMOVED***";
-        private static final String ET_FORNAVN = "Ola";
-        private static final String ET_MELLOMNAVN = "Johan";
+        private static final String ET_FORNAVN = "Dolly";
+        private static final String ET_MELLOMNAVN = "D.";
         private static final String ET_ETTERNAVN = "Mockmann";
 
         private static final String EN_EPOST = "test@epost.com";
