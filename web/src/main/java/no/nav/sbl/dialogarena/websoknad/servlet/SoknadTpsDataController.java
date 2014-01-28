@@ -1,12 +1,12 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,12 +17,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.inject.Inject;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Controller
 @RequestMapping("/soknad")
@@ -76,12 +75,13 @@ public class SoknadTpsDataController {
     public Personalia hentPersonalia() {
         String fnr = SubjectHandler.getSubjectHandler().getUid();
         Personalia personalia;
-        try {
-            personalia = personaliaService.hentPersonalia(fnr);
-        } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet
-                | HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
-            return new Personalia();
-        }
+        personalia = personaliaService.hentPersonalia(fnr);
+//        try {
+//            personalia = personaliaService.hentPersonalia(fnr);
+//        } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet
+//                | HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
+//            return new Personalia();
+//        }
         return personalia;
     }
 }

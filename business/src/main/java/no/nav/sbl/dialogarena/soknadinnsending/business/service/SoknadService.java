@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.detect.pdf.PdfDetector;
 import no.nav.sbl.dialogarena.pdf.Convert;
 import no.nav.sbl.dialogarena.pdf.ConvertToPng;
 import no.nav.sbl.dialogarena.pdf.PdfMerger;
+import no.nav.sbl.dialogarena.pdf.PdfWatermarker;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -33,7 +34,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.awt.*;
+import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -70,6 +71,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Inject
     private Kodeverk kodeverk;
 
+    private PdfWatermarker watermarker = new PdfWatermarker();
+
     private static void sjekkOmPdfErGyldig(PDDocument document) {
         PdfDetector detector = new PdfDetector(document);
         if (detector.pdfIsSigned()) {
@@ -105,8 +108,10 @@ public class SoknadService implements SendSoknadService, VedleggService {
         faktum.setType(BRUKERREGISTRERT_FAKTUM);
         Long faktumId = repository.lagreFaktum(soknadId, faktum);
         repository.settSistLagretTidspunkt(soknadId);
+        Faktum resultat = repository.hentFaktum(soknadId, faktumId);
+        genererVedleggForFaktum(resultat);
 
-        return repository.hentFaktum(soknadId, faktumId);
+        return resultat;
     }
 
     @Override
@@ -126,7 +131,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 if (faktum.getProperties() != null
                         && faktum.getProperties().get(uniqueProperty) != null
                         && faktum.getProperties().get(uniqueProperty)
-                                .equals(f.getProperties().get(uniqueProperty))) {
+                        .equals(f.getProperties().get(uniqueProperty))) {
                     f.setFaktumId(faktum.getFaktumId());
                     return repository.lagreFaktum(soknadId, f, true);
 
@@ -149,7 +154,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     // TODO: Kan sikkert slettes etter ny faktum-lagrings-modell
     @Override
     public Faktum lagreBarnSystemSoknadsFelt(Long soknadId, String key,
-            String fnr, String json) {
+                                             String fnr, String json) {
 
         Faktum faktum = new Faktum(soknadId, null, key, json, SYSTEMREGISTRERT_FAKTUM);
         Long faktumId = repository.lagreFaktum(soknadId, faktum, true);
@@ -211,8 +216,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
         WebSoknad soknad = WebSoknad.startSoknad()
                 .medBehandlingId(behandlingsId).medskjemaNummer(navSoknadId)
                 .
-                // medAktorId(aktorIdService.hentAktorIdForFno(getSubjectHandler().getUid())).
-                medAktorId(getSubjectHandler().getUid())
+                        // medAktorId(aktorIdService.hentAktorIdForFno(getSubjectHandler().getUid())).
+                                medAktorId(getSubjectHandler().getUid())
                 .opprettetDato(DateTime.now());
 
         Long soknadId = repository.opprettSoknad(soknad);
@@ -225,18 +230,17 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     @Transactional
     public List<Long> splitOgLagreVedlegg(Vedlegg vedlegg,
-            InputStream inputStream) {
+                                          InputStream inputStream) {
         List<Long> resultat = new ArrayList<>();
 
         try {
             byte[] bytes = IOUtils.toByteArray(inputStream);
             if (Detect.isImage(bytes)) {
-                bytes = Convert.scaleImageAndConvertToPdf(bytes, new Dimension(
-                        1240, 1754));
+                bytes = Convert.scaleImageAndConvertToPdf(bytes, new Dimension(1240, 1754));
                 Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(),
                         vedlegg.getFaktumId(), vedlegg.getskjemaNummer(),
                         vedlegg.getNavn(), (long) bytes.length, 1, UUID
-                                .randomUUID().toString(), null,
+                        .randomUUID().toString(), null,
                         Vedlegg.Status.UnderBehandling);
                 resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
                         bytes));
@@ -274,7 +278,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public List<Vedlegg> hentVedleggUnderBehandling(Long soknadId,
-            Long faktumId, String skjemaNummer) {
+                                                    Long faktumId, String skjemaNummer) {
         return vedleggRepository.hentVedleggUnderBehandling(soknadId, faktumId,
                 skjemaNummer);
     }
@@ -323,8 +327,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
             }
 
         }
-        // vannmerk her!
         byte[] doc = new PdfMerger().transform(bytes);
+        doc = watermarker.forIdent(getSubjectHandler().getUid(), false).transform(doc);
+
         forventning.leggTilInnhold(doc, vedleggUnderBehandling.size());
         WebSoknad soknad = repository.hentSoknad(soknadId);
         fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(),
@@ -338,35 +343,42 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId, WebSoknad soknad) {
-        List<Vedlegg> forventninger = new ArrayList<>();
-        SoknadStruktur struktur = hentStruktur(soknad.getskjemaNummer());
+        List<Vedlegg> result = vedleggRepository.hentPaakrevdeVedlegg(soknadId);
+        
+        for (Vedlegg vedlegg : result) {
+            vedlegg = medKodeverk(vedlegg);
+        }
+        
+        return result;
+    }
 
-        for (Faktum faktum : repository.hentAlleBrukerData(soknadId)) {
-            List<SoknadVedlegg> aktuelleVedlegg = struktur.vedleggFor(faktum.getKey());
-            for (SoknadVedlegg soknadVedlegg : aktuelleVedlegg) {
-                if (soknadVedlegg.trengerVedlegg(faktum)) {
-                    Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummer(soknadId, faktum.getFaktumId(), soknadVedlegg.getSkjemaNummer());
-                    if (vedlegg == null) {
-                        vedlegg = new Vedlegg(soknadId, faktum.getFaktumId(), soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
-                        vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
-                    }
-                    if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {
-                        vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
-                        vedleggRepository.lagreVedlegg(soknadId, vedlegg.getVedleggId(), vedlegg);
-                    }
-                    forventninger.add(medKodeverk(vedlegg));
+    private void genererVedleggForFaktum(Faktum faktum) {
+        SoknadStruktur struktur = hentStruktur(repository.hentSoknadType(faktum.getSoknadId()));
+        List<SoknadVedlegg> aktuelleVedlegg = struktur.vedleggFor(faktum.getKey());
+        for (SoknadVedlegg soknadVedlegg : aktuelleVedlegg) {
+            Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummer(faktum.getSoknadId(), faktum.getFaktumId(), soknadVedlegg.getSkjemaNummer());
+            if (soknadVedlegg.trengerVedlegg(faktum)) {
+                if (vedlegg == null) {
+                    vedlegg = new Vedlegg(faktum.getSoknadId(), faktum.getFaktumId(), soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
+                    vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
                 }
+                if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {
+                    vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
+                    vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
+                }
+            } else if (vedlegg != null) {
+                vedlegg.setInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
+                vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
             }
         }
 
-        return forventninger;
     }
 
     private Vedlegg medKodeverk(Vedlegg vedlegg) {
         try {
-            Map<Kodeverk.Nokkel,String> koder = kodeverk.getKoder(vedlegg.getskjemaNummer());
+            Map<Kodeverk.Nokkel, String> koder = kodeverk.getKoder(vedlegg.getskjemaNummer());
             for (Entry<Nokkel, String> nokkelEntry : koder.entrySet()) {
-                if(nokkelEntry.getKey().toString().contains("URL")){
+                if (nokkelEntry.getKey().toString().contains("URL")) {
                     vedlegg.leggTilURL(nokkelEntry.getKey().toString(), koder.get(nokkelEntry.getKey()));
                 }
             }
