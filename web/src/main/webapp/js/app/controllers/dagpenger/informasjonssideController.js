@@ -6,7 +6,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 			$scope.utslagskriterier.harlestbrosjyre=false;
 			//For testing uten TPS:
 			
-			$scope.utslagskriterier.gyldigAlder = false;
+			//$scope.utslagskriterier.gyldigAlder = false;
 			//$scope.utslagskriterier.bosattINorge = false;
 
 			$scope.alderspensjonUrl = data.config["soknad.alderspensjon.url"];
