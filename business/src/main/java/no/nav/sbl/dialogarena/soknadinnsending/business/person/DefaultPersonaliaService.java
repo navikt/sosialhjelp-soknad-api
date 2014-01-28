@@ -138,7 +138,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
 
         Faktum personaliaFaktum = new Faktum(soknadId, null, "personalia", "");
         personaliaFaktum.setProperties(personaliaProperties);
-        soknadService.lagreSystemFaktum(soknadId, personaliaFaktum, "");
+        soknadService.lagreSystemFaktum(soknadId, personaliaFaktum, "fnr");
     }
 
     private void lagreBarn(Long soknadId, List<Barn> barneliste) {
