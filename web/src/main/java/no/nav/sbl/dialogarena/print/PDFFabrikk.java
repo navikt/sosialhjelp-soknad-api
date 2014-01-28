@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.print;
 
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.BaseFont;
 import no.nav.modig.core.exception.ApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,6 @@ public class PDFFabrikk {
             os = new FileOutputStream(outputPdfPath);
 
             ITextRenderer renderer = new ITextRenderer();
-
             renderer.setDocumentFromString(html, baseUrlString);
             renderer.layout();
             renderer.createPDF(os);
@@ -55,12 +55,17 @@ public class PDFFabrikk {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
             ITextRenderer renderer = new ITextRenderer();
-
             renderer.setDocumentFromString(html, "");
+            renderer.getFontResolver().addFont("/fonts/modus/ModusRegular.ttf", "Modus", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
+            renderer.getFontResolver().addFont("/fonts/modus/ModusLight.ttf", "Modus", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
+            renderer.getFontResolver().addFont("/fonts/modus/ModusBold.ttf", "Modus", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
+            renderer.getFontResolver().addFont("/fonts/modus/ModusSemiBold.ttf", "Modus", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, null);
             renderer.layout();
             renderer.createPDF(os);
         } catch (DocumentException e) {
             throw new ApplicationException("Kunne ikke lagre oppsummering som PDF", e);
+        } catch (IOException e) {
+            throw new ApplicationException("Kunne ikke finne modus-fonter", e);
         }
         return os.toByteArray();
     }
