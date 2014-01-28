@@ -167,13 +167,14 @@ public class DefaultPersonaliaServiceTest {
         request.setIdent(FEIL_IDENT);
         when(personMock.hentKjerneinformasjon(request)).thenThrow(HentKjerneinformasjonPersonIkkeFunnet.class);
         Personalia personalia;
-        try {
-            personalia = personaliaService.hentPersonalia(FEIL_IDENT);
-        } catch (IkkeFunnetException | WebServiceException
-                | HentKontaktinformasjonOgPreferanserPersonIkkeFunnet
-                | HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
-            personalia = null;
-        }
+        personalia = personaliaService.hentPersonalia(FEIL_IDENT);
+//        try {
+//            personalia = personaliaService.hentPersonalia(FEIL_IDENT);
+//        } catch (IkkeFunnetException | WebServiceException
+//                | HentKontaktinformasjonOgPreferanserPersonIkkeFunnet
+//                | HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
+//            personalia = null;
+//        }
         assertThat(personalia, is(not(nullValue())));
     }
 
@@ -222,7 +223,7 @@ public class DefaultPersonaliaServiceTest {
     @SuppressWarnings("unchecked")
     @Test
     public void returnererPersonObjektMedAdresseInformasjon() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-        String forventetGjeldendeAdresse = EN_ADRESSE_GATE + " " + EN_ADRESSE_HUSNUMMER + EN_ADRESSE_HUSBOKSTAV + ", " + EN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED + ", " + NORGE;
+        String forventetGjeldendeAdresse = EN_ADRESSE_GATE + " " + EN_ADRESSE_HUSNUMMER + EN_ADRESSE_HUSBOKSTAV + ", " + EN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
         String forventetSekunarAdresse = EN_POSTBOKS_ADRESSEEIER + ", " + EN_ANNEN_ADRESSE_GATE + " " + EN_ANNEN_ADRESSE_HUSNUMMER + EN_ANNEN_ADRESSE_HUSBOKSTAV + ", " + EN_ANNEN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
 
         mockGyldigPersonMedAdresse();

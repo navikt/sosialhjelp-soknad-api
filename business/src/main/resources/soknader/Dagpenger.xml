@@ -239,9 +239,14 @@
     </faktum>
     <faktum>
         <id>ingenYtelse</id>
-        <type>java.lang.Boolean</type>
+        <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
     </faktum>
+
+	<!-- faktum>
+        <id>barn</id>
+        <panel>Barnetillegg</panel>
+    </faktum-->
 
     <faktum>
         <id>ekstraVedlegg</id>
@@ -414,4 +419,12 @@
         <onProperty>type</onProperty>
         <onValue>Permittert</onValue>
     </vedlegg>
+    <!-- vedlegg>
+        <id>6</id>
+        <faktum>barn</faktum>
+        <skjemaNummer>TOOOOODOOOO</skjemaNummer>
+        <property>sammensattnavn</property>
+        <onProperty>land</onProperty>
+        <onValue>NOR</onValue>
+    </vedlegg-->
 </soknad>

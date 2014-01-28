@@ -334,6 +334,11 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         getJdbcTemplate().update("update soknadbrukerdata set innsendingsvalg = ? where soknad_id = ? and soknadbrukerdata_id = ?", innsendingsvalg.toString(), soknadId, faktumId);
     }
 
+    @Override
+    public String hentSoknadType(Long soknadId) {
+        return getJdbcTemplate().queryForObject("select navsoknadid from soknad where soknad_id = ? ", String.class, soknadId);
+    }
+
     private <T> List<T> select(String sql, RowMapper<T> rowMapper, Object... args) {
         return getJdbcTemplate().query(sql, args, rowMapper);
     }
