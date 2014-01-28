@@ -20,15 +20,17 @@
                     <div data-ng-include="'../html/templates/adresse.html'"></div>
                 </div>
 
-                <div class="statsborgerskap" data-ng-if="erUtenlandskStatsborger()" data-navinfoboks >
-                        {{ 'personalia.utenlandskstatsborger.statsborgerskap.informasjon' | cmstekst }}
-                    </div>
-                    <div class="ekstra-spm-boks" data-vedlegginfoboks>
-                        <ul>
-                            <li>
-                                {{ 'personalia.utenlandskstatsborger.statsborgerskap.dokumentasjon' | cmstekst}}
-                            </li>
-                        </ul>
+                <div data-ng-if="erUtenlandskStatsborger()">
+                    <div class="statsborgerskap" data-navinfoboks >
+                            {{ 'personalia.utenlandskstatsborger.statsborgerskap.informasjon' | cmstekst }}
+                        </div>
+                        <div class="ekstra-spm-boks" data-vedlegginfoboks>
+                            <ul>
+                                <li>
+                                    {{ 'personalia.utenlandskstatsborger.statsborgerskap.dokumentasjon' | cmstekst}}
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>

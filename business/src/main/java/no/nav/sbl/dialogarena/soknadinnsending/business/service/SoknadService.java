@@ -121,8 +121,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Long lagreSystemFaktum(Long soknadId, Faktum f, String uniqueProperty) {
-        Faktum eksisterendeFaktum = repository.hentSystemFaktum(soknadId, f.getKey(), SYSTEMREGISTRERT_FAKTUM);
-        f.setFaktumId(eksisterendeFaktum.getFaktumId());
         f.setType(SYSTEMREGISTRERT_FAKTUM);
         List<Faktum> fakta = repository.hentSystemFaktumList(soknadId, f.getKey(), SYSTEMREGISTRERT_FAKTUM);
 
@@ -134,7 +132,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
                         .equals(f.getProperties().get(uniqueProperty))) {
                     f.setFaktumId(faktum.getFaktumId());
                     return repository.lagreFaktum(soknadId, f, true);
-
                 }
             }
         }
