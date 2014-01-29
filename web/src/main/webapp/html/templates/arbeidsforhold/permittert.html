@@ -1,5 +1,7 @@
 <div>
-    <p class="sluttaarsak-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.permittert.informasjon"/>
+    <div data-navinfoboks>
+        <p class="sluttaarsak-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.permittert.informasjon"/>
+    </div>
 
     <div class="spm" data-nav-faktum="sluttaarsak"
          data-ikke-auto-lagre="true">
@@ -42,16 +44,17 @@
         <div class="tekstfelt form-linje prosentfelt">
             <label>
 
-                <span class="labeltekst" data-cmstekster="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad"></span>
-                <input data-ng-model="sluttaarsak.properties.permitteringProsent" 
-                        type="text" 
-                        data-ng-required="true"
-                        data-error-messages="{required:'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.feilmelding', pattern: 'regex.tall'}"
-                        data-ng-pattern="/^\d+$/" 
-                        data-blur-validate
-                        data-ng-blur="settPermitteringsflagg($event)" 
-                        maxlength="3" 
-                        data-tekstfelt-patternvalidering/>
+                <span class="labeltekst"
+                      data-cmstekster="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad"></span>
+                <input data-ng-model="sluttaarsak.properties.permitteringProsent"
+                       type="text"
+                       data-ng-required="true"
+                       data-error-messages="{required:'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.feilmelding', pattern: 'regex.tall'}"
+                       data-ng-pattern="/^\d+$/"
+                       data-blur-validate
+                       data-ng-blur="settPermitteringsflagg($event)"
+                       maxlength="3"
+                       data-tekstfelt-patternvalidering/>
                 <span class="prosent" data-cmstekster="egennaering.prosent"></span>
                 <span class="melding"></span>
             </label>
@@ -70,7 +73,8 @@
                 </li>
                 <li>
                     <p data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2"></p>
-                    <a href="{{permiteringUrl}}" data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2.lenketekst">
+                    <a href="{{permiteringUrl}}"
+                       data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2.lenketekst">
                     </a>
                 </li>
                 <li>

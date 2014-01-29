@@ -1,103 +1,103 @@
 .datepicker {
-    width: 135px;
-    vertical-align: top;
+  vertical-align: top;
+  padding: 0 !important;
+
+  .caretPosition {
+    border: none !important;
     padding: 0 !important;
+    margin: 0 !important;
+    display: inline !important;
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
 
-    .caretPosition {
+  .mask {
+    background: transparent;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    position: absolute;
+    color: #ccc !important;
+    font-size: 14px !important;
+    cursor: text;
+    text-transform: none;
+    z-index: 0;
+  }
+
+  label {
+    .datepicker-input {
+      position: relative;
+      min-width: 135px;
+      width: 135px;
+      display: block;
+      height: 32px;
+      border: 1px solid #cccccc;
+      border-top: 1px solid #b7b1a9;
+      cursor: text;
+      background-color: white;
+
+      input {
         border: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        display: inline !important;
-        visibility: hidden;
+        border: none !important;
         position: absolute;
-        top: 0;
         left: 0;
+        right: 32px;
+        width: 100px;
+        background-color: transparent !important;
+        z-index: 10;
+      }
+
+      .apne-datepicker {
+        display: block;
+        float: right;
+        cursor: pointer;
+        height: 32px;
+        width: 32px;
+        background-image: url(../img/kalender.svg);
+        background-repeat: no-repeat;
+        background-position: center;
+        z-index: 1010;
+
+        &:hover {
+          background-image: url(../img/kalender_hover.svg);
+        }
+      }
+    }
+  }
+
+  &.feil {
+    .knapp-liten {
+      border-left: 1px solid #fca292;
     }
 
-    .mask {
-        background: transparent;
-        border: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        position: absolute;
-        color: #ccc !important;
-        font-size: 14px !important;
-        cursor: text;
-        text-transform: none;
-        z-index: 0;
+    .melding {
+      display: block !important;
     }
 
-    label {
-        .datepicker-input {
-            position: relative;
-            min-width: 135px;
-            display: block;
-            height: 32px;
-            border: 1px solid #cccccc;
-            border-top: 1px solid #b7b1a9;
-            cursor: text;
-            background-color: white;
-
-            input {
-                border: none !important;
-                border: none !important;
-                position: absolute;
-                left: 0;
-                right: 32px;
-                width: 100px;
-                background-color: transparent !important;
-                z-index: 10;
-            }
-
-            .apne-datepicker {
-                display: block;
-                float: right;
-                cursor: pointer;
-                height: 32px;
-                width: 32px;
-                background-image: url(../img/kalender.svg);
-                background-repeat: no-repeat;
-                background-position: center;
-                z-index: 1010;
-
-                &:hover {
-                    background-image: url(../img/kalender_hover.svg);
-                }
-            }
-        }
+    .datepicker-input {
+      background-color: #fee6e6;
+      border: 1px solid #fca292;
+      border-top: 1px solid @red;
     }
+  }
 
-    &.feil {
-        .knapp-liten {
-            border-left: 1px solid #fca292;
-        }
-
-        .melding {
-            display: block !important;
-        }
-
-        .datepicker-input {
-            background-color: #fee6e6;
-            border: 1px solid #fca292;
-            border-top: 1px solid @red;
-        }
+  &.fokus {
+    .datepicker-input {
+      border-color: rgba(82, 168, 236, .8);
     }
-
-    &.fokus {
-        .datepicker-input {
-            border-color: rgba(82, 168, 236, .8);
-        }
-    }
+  }
 }
 
 .datepicker-intervall {
-    padding: 15px;
+  padding: 15px;
 
-    .datepicker {
-        display: inline-block;
+  .datepicker {
+    display: inline-block;
 
-        &:last-child {
-            margin-left: 20px;
-        }
+    &:last-child {
+      margin-left: 20px;
     }
+  }
 }
