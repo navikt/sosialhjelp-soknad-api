@@ -38,7 +38,6 @@ public class Vedlegg {
         this.skjemaNummer = skjemaNummer;
         this.innsendingsvalg = innsendingsvalg;
         
-        //this.flereTillatt = flereTillatt;
         if (flereTillatt.equals("1")) {
             this.flereTillatt = true;
         } else {
