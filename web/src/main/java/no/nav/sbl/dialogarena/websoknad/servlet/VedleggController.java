@@ -124,10 +124,18 @@ public class VedleggController {
             @Override
             public VedleggOpplasting call() throws Exception {
                 Vedlegg forventning = vedleggService.hentVedlegg(soknadId, vedleggId, false);
+                
+                String flereTillattString;
+                if(forventning.getFlereTillatt()) {
+                    flereTillattString = "1";
+                } else {
+                    flereTillattString = "0";
+                }
+                
                 List<Vedlegg> res = new ArrayList<>();
                 for (MultipartFile file : files) {
                     byte[] in = getByteArray(file);
-                    Vedlegg vedlegg = new Vedlegg(null, soknadId, forventning.getFaktumId(), forventning.getskjemaNummer(), file.getOriginalFilename(), file.getSize(), 1, null, in, Vedlegg.Status.UnderBehandling);
+                    Vedlegg vedlegg = new Vedlegg(null, soknadId, forventning.getFaktumId(), forventning.getskjemaNummer(), flereTillattString , file.getOriginalFilename(), file.getSize(), 1, null, in, Vedlegg.Status.UnderBehandling);
                     List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, new ByteArrayInputStream(in));
                     for (Long id : ids) {
                         res.add(vedleggService.hentVedlegg(soknadId, id, false));
