@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosBorgerService;
+
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
@@ -123,6 +125,9 @@ public class DefaultPersonaliaServiceTest {
     private BrukerprofilPortType brukerProfilMock;
 
     @Mock
+    private EosBorgerService eosBorgerService;
+    
+    @Mock
     private Kodeverk kodeverkMock;
 
     //TODO Refaktorer tester og legg til de resterende testene fra PersonServiceTest
@@ -134,6 +139,8 @@ public class DefaultPersonaliaServiceTest {
         when(kodeverkMock.getPoststed(EN_ADRESSE_POSTNUMMER)).thenReturn(EN_ADRESSE_POSTSTED);
         when(kodeverkMock.getPoststed(EN_ANNEN_ADRESSE_POSTNUMMER)).thenReturn(EN_ADRESSE_POSTSTED);
         when(kodeverkMock.getLand(NORGE_KODE)).thenReturn(NORGE);
+        
+        when(eosBorgerService.getStatsborgeskapType(NORGE_KODE)).thenReturn("Norsk");
 
         HentKjerneinformasjonResponse response = new HentKjerneinformasjonResponse();
         Person person = genererPersonMedGyldigIdentOgNavn(RIKTIG_IDENT, ET_FORNAVN, ET_ETTERNAVN);
