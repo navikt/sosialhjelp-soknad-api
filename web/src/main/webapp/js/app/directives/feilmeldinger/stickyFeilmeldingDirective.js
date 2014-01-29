@@ -39,9 +39,9 @@ angular.module('nav.stickyFeilmelding', [])
 						idAlleBolker.push(this.id);
 					});
 
-					scope.$broadcast('CLOSE_TAB', idAlleBolker);
+					scope.$emit('CLOSE_TAB', idAlleBolker);
 					$timeout(function () {
-						scope.$broadcast('OPEN_TAB', idBolkerMedFeil, 800);
+						scope.$emit('OPEN_TAB', idBolkerMedFeil, 800);
 					}, 800);
 				});
 
