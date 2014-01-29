@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 
-import java.io.OutputStream;
 import java.util.List;
 
 public interface SendSoknadService {

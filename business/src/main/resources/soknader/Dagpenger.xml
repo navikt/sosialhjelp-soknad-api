@@ -243,10 +243,14 @@
         <panel>AndreYtelser</panel>
     </faktum>
 
-	<!-- faktum>
+	<faktum>
+        <id>personalia</id>
+        <panel>Personalia</panel>
+    </faktum>
+	<faktum>
         <id>barn</id>
         <panel>Barnetillegg</panel>
-    </faktum-->
+    </faktum>
 
     <faktum>
         <id>ekstraVedlegg</id>
@@ -419,12 +423,30 @@
         <onProperty>type</onProperty>
         <onValue>Permittert</onValue>
     </vedlegg>
-    <!-- vedlegg>
+    <vedlegg>
         <id>6</id>
         <faktum>barn</faktum>
-        <skjemaNummer>TOOOOODOOOO</skjemaNummer>
+        <skjemaNummer>X8</skjemaNummer>
         <property>sammensattnavn</property>
         <onProperty>land</onProperty>
         <onValue>NOR</onValue>
-    </vedlegg-->
+        <forSystemfaktum>false</forSystemfaktum>
+    </vedlegg>
+    <vedlegg>
+        <id>7</id>
+        <faktum>personalia</faktum>
+        <skjemaNummer>T4</skjemaNummer>
+        <onProperty>statsborgerskapType</onProperty>
+        <onValue>eos</onValue>
+        <forSystemfaktum>true</forSystemfaktum>
+    </vedlegg>
+    <vedlegg>
+        <id>7</id>
+        <faktum>personalia</faktum>
+        <skjemaNummer>T4</skjemaNummer>
+        <onProperty>statsborgerskapType</onProperty>
+        <onValue>ikkeEos</onValue>
+        <forSystemfaktum>true</forSystemfaktum>
+    </vedlegg>
 </soknad>
+	
