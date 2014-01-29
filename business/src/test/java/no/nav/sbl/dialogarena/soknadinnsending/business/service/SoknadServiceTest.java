@@ -47,7 +47,7 @@ public class SoknadServiceTest {
 
     @Test
     public void skalAKonvertereFilerVedOpplasting() throws IOException {
-        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L, "1", "", 1L, 1, null, null, Vedlegg.Status.VedleggKreves);
+        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L,"0", "1", "", 1L, 1, null, null, Vedlegg.Status.VedleggKreves);
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
         when(vedleggRepository.opprettVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(11L);
 
@@ -59,7 +59,7 @@ public class SoknadServiceTest {
 
     @Test
     public void skalKonverterePdfVedOpplasting() throws IOException {
-        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L, "1", "", 1L, 1, null, null, Vedlegg.Status.VedleggKreves);
+        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L,"0", "1", "", 1L, 1, null, null, Vedlegg.Status.VedleggKreves);
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
         when(vedleggRepository.opprettVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(10L, 11L, 12L, 13L, 14L);
 
