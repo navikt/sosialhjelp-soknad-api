@@ -389,6 +389,7 @@
         <faktum>arbeidsforhold</faktum>
         <skjemaNummer>T8</skjemaNummer>
         <property>arbeidsgivernavn</property>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <id>4</id>
@@ -398,6 +399,7 @@
         <onProperty>type</onProperty>
         <onValue>Permittert</onValue>
         <inverted>true</inverted>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <id>4</id>
@@ -406,6 +408,7 @@
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
         <onValue>Arbeidsgiver er konkurs</onValue>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <id>4</id>
@@ -414,6 +417,7 @@
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
         <onValue>Arbeidsgiver er konkurs</onValue>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <id>4</id>
@@ -422,6 +426,7 @@
         <property>arbeidsgivernavn</property>
         <onProperty>type</onProperty>
         <onValue>Permittert</onValue>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <id>6</id>
