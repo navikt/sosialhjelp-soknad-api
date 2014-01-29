@@ -112,6 +112,15 @@ angular.module('app.routes', ['ngRoute'])
                     }
                 }
             })
+            .when('/fritekst/:soknadId', {
+                templateUrl: '../html/templates/fritekst.html',
+                controller: 'SoknadDataCtrl',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
             .when('/nyttbarn/:soknadId', {
                 templateUrl: '../html/templates/barnetillegg-nyttbarn.html',
                 controller: 'SoknadDataCtrl',

@@ -135,6 +135,14 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
+            .when('/fritekst', {
+                templateUrl: '../html/templates/fritekst.html',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
 			.when('/arbeidsforhold', {
 				templateUrl: '../html/templates/arbeidsforhold.html',
 				resolve    : {
