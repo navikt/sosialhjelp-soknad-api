@@ -18,6 +18,7 @@ public class Vedlegg {
     private Long soknadId;
     private Long faktumId;
     private String skjemaNummer;
+    private Boolean flereTillatt = false;
     private Status innsendingsvalg;
     private String beskrivelse;
     private String navn = "";
@@ -31,14 +32,21 @@ public class Vedlegg {
     public Vedlegg() {
     }
 
-    public Vedlegg(Long soknadId, Long faktumId, String skjemaNummer, Status innsendingsvalg) {
+    public Vedlegg(Long soknadId, Long faktumId, String skjemaNummer, String flereTillatt, Status innsendingsvalg) {
         this.soknadId = soknadId;
         this.faktumId = faktumId;
         this.skjemaNummer = skjemaNummer;
         this.innsendingsvalg = innsendingsvalg;
+        
+        //this.flereTillatt = flereTillatt;
+        if (flereTillatt.equals("1")) {
+            this.flereTillatt = true;
+        } else {
+            this.flereTillatt = false;
+        }
     }
 
-    public Vedlegg(Long vedleggId, Long soknadId, Long faktumId, String skjemaNummer, String navn, Long storrelse, Integer antallSider, String fillagerReferanse, byte[] data, Status innsendingsvalg) {
+    public Vedlegg(Long vedleggId, Long soknadId, Long faktumId, String skjemaNummer, String flereTillatt, String navn, Long storrelse, Integer antallSider, String fillagerReferanse, byte[] data, Status innsendingsvalg) {
         this.vedleggId = vedleggId;
         this.soknadId = soknadId;
         this.faktumId = faktumId;
@@ -50,6 +58,12 @@ public class Vedlegg {
         this.antallSider = antallSider;
         this.fillagerReferanse = fillagerReferanse;
         this.innsendingsvalg = innsendingsvalg;
+        
+        if (flereTillatt.equals("1")) {
+            this.flereTillatt = true;
+        } else {
+            this.flereTillatt = false;
+        }
     }
 
     public Long getVedleggId() {
@@ -194,6 +208,14 @@ public class Vedlegg {
 
     public void setTittel(String tittel) {
         this.tittel = tittel;
+    }
+
+    public Boolean getFlereTillatt() {
+        return flereTillatt;
+    }
+
+    public void setFlereTillatt(Boolean flereTillatt) {
+        this.flereTillatt = flereTillatt;
     }
 
     public enum Status {

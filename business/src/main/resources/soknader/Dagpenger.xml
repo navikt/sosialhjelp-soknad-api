@@ -431,6 +431,7 @@
         <onProperty>land</onProperty>
         <onValue>NOR</onValue>
         <forSystemfaktum>false</forSystemfaktum>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <id>7</id>
