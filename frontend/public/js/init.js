@@ -7,6 +7,7 @@ angular.module('sendsoknad')
         $http.get('../html/templates/arbeidsforhold.html', {cache: $templateCache});
         $http.get('../html/templates/ytelser.html', {cache: $templateCache});
         $http.get('../html/templates/barnetillegg.html', {cache: $templateCache});
+        $http.get('../html/templates/fritekst.html', {cache: $templateCache});
         $http.get('../html/templates/utdanning/utdanning.html', {cache: $templateCache});
         $http.get('../html/templates/utdanning/utdanningKveldTemplate.html', {cache: $templateCache});
         $http.get('../html/templates/utdanning/utdanningKortvarigTemplate.html', {cache: $templateCache});

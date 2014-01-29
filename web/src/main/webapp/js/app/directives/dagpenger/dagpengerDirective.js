@@ -3,7 +3,7 @@ angular.module('nav.dagpengerdirective', [])
 		return {
 			require: '^form',
 			link   : function (scope, element, attrs, ctrl) {
-				var bolkerIRiktigRekkefolge = ['reellarbeidssokerForm', 'arbeidsforholdForm', 'egennaeringForm', 'vernepliktForm', 'utdanningForm', 'ytelserForm', 'personaliaForm', 'barnetilleggForm'];
+				var bolkerIRiktigRekkefolge = ['reellarbeidssokerForm', 'arbeidsforholdForm', 'egennaeringForm', 'vernepliktForm', 'utdanningForm', 'ytelserForm', 'personaliaForm', 'barnetilleggForm', 'fritekstForm'];
 				var bolkIdMedFeil = '';
 
 				$timeout(function () {

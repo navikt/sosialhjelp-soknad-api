@@ -9,7 +9,8 @@ angular.module('nav.dagpenger', [])
 			{id: 'utdanning', tittel: 'utdanning.tittel', template: '../html/templates/utdanning/utdanning.html', apen: false},
 			{id: 'ytelser', tittel: 'ytelser.tittel', template: '../html/templates/ytelser.html', apen: false},
 			{id: 'personalia', tittel: 'personalia.tittel', template: '../html/templates/personalia.html', apen: false},
-			{id: 'barnetillegg', tittel: 'barnetillegg.tittel', template: '../html/templates/barnetillegg.html', apen: false}
+			{id: 'barnetillegg', tittel: 'barnetillegg.tittel', template: '../html/templates/barnetillegg.html', apen: false},
+            {id: 'fritekst', tittel: 'fritekst.tittel', template: '../html/templates/fritekst.html', apen: false}
 		];
 
 		$scope.validerDagpenger = function (form, event) {
