@@ -330,10 +330,6 @@ public class AdresseTransform {
         return adresse;
     }
 
-    private String getLandkode(XMLGateadresse xmlGateAdresse) {
-        return xmlGateAdresse.getLandkode() != null ? xmlGateAdresse.getLandkode().getValue() : "";
-    }
-
     private String getPostnummerString(XMLGateadresse xmlGateAdresse) {
         return xmlGateAdresse.getPoststed() != null ? xmlGateAdresse.getPoststed().getValue() : "";
     }

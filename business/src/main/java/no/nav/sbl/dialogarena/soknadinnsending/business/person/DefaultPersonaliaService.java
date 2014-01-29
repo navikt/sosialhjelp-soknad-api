@@ -1,29 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
-import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
-import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.xml.ws.WebServiceException;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.ALDER_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.EPOST_KEY;
@@ -38,8 +14,35 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_GYLDIGTIL_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_TYPE_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.STATSBORGERSKAPTYPE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.STATSBORGERSKAP_KEY;
 import static org.slf4j.LoggerFactory.getLogger;
+
+import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosBorgerService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserResponse;
+import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
+import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
+
+import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.xml.ws.WebServiceException;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class DefaultPersonaliaService implements PersonaliaService {
@@ -59,6 +62,9 @@ public class DefaultPersonaliaService implements PersonaliaService {
     @Inject
     private SendSoknadService soknadService;
 
+    @Inject
+    private EosBorgerService eosBorgerService;
+    
     @Override
     public Personalia hentPersonalia(String fodselsnummer) {
 //    public Personalia hentPersonalia(String fodselsnummer) throws IkkeFunnetException, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, WebServiceException {
@@ -125,7 +131,11 @@ public class DefaultPersonaliaService implements PersonaliaService {
         personaliaProperties.put(ALDER_KEY, personalia.getAlder());
         personaliaProperties.put(NAVN_KEY, personalia.getNavn());
         personaliaProperties.put(EPOST_KEY, personalia.getEpost());
-        personaliaProperties.put(STATSBORGERSKAP_KEY, personalia.getStatsborgerskap());
+        
+        String statsborgerskap = personalia.getStatsborgerskap();
+        personaliaProperties.put(STATSBORGERSKAP_KEY, statsborgerskap);
+        personaliaProperties.put(STATSBORGERSKAPTYPE_KEY, eosBorgerService.getStatsborgeskapType(statsborgerskap));
+        
         personaliaProperties.put(KJONN_KEY, personalia.getKjonn());
         personaliaProperties.put(GJELDENDEADRESSE_KEY, personalia.getGjeldendeAdresse().getAdresse());
         personaliaProperties.put(GJELDENDEADRESSE_TYPE_KEY, personalia.getGjeldendeAdresse().getAdressetype());
