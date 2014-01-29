@@ -52,7 +52,7 @@ public class SelfTestPage extends SelfTestBase {
 
     @Override
     protected void addToStatusList(List<AvhengighetStatus> statusList) {
-    /*    new ServiceStatusHenter("SENDSOKNAD") {
+        new ServiceStatusHenter("SENDSOKNAD") {
             public void ping() {
                 sendSoknadSelftest.ping();
             }
@@ -77,7 +77,7 @@ public class SelfTestPage extends SelfTestBase {
             }
         }.addStatus(statusList);
 
-        statusList.add(cmsStatus());*/
+        statusList.add(cmsStatus());
     }
 
     private AvhengighetStatus cmsStatus() {
