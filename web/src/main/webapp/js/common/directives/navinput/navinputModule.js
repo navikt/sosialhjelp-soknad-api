@@ -20,6 +20,7 @@ angular.module('nav.input', ['nav.cmstekster'])
 				pre : function (scope, element, attr) {
 					scope.value = attr.value;
 					scope.label = attr.label;
+
 				},
 				post: function (scope, element, attr) {
 					scope.hvisSynlig = function () {
@@ -29,6 +30,14 @@ angular.module('nav.input', ['nav.cmstekster'])
 					scope.endret = function () {
 						scope.$eval(attr.navendret);
 					};
+
+                    var index = scope.navlabel.indexOf(".true");
+                    if(index > -1) {
+                        scope.name = scope.navlabel.substr(0, index);
+                    } else {
+                        index = scope.navlabel.indexOf(".false");
+                        scope.name = scope.navlabel.substr(0, index);
+                    }
 				}
 			},
 			templateUrl: '../js/common/directives/navinput/navradioTemplate.html'

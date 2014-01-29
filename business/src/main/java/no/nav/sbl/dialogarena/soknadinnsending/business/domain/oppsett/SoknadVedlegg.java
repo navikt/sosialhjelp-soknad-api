@@ -14,6 +14,7 @@ public class SoknadVedlegg implements Serializable {
     private String onValue;
     private String onProperty;
     private Boolean forSystemfaktum;
+    private Boolean flereTillatt;
     private String skjemaNummer;
     private String property;
     private Boolean inverted = false;
@@ -98,5 +99,13 @@ public class SoknadVedlegg implements Serializable {
 
     public void setForSystemfaktum(Boolean forSystemfaktum) {
         this.forSystemfaktum = forSystemfaktum;
+    }
+
+    public Boolean getFlereTillatt() {
+        return flereTillatt;
+    }
+
+    public void setFlereTillatt(Boolean flereTillatt) {
+        this.flereTillatt = flereTillatt;
     }
 }
