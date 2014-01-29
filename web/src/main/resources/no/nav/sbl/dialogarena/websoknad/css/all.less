@@ -272,7 +272,8 @@
 
     .flipp {
       cursor: pointer;
-      border-color: transparent transparent #800000 transparent;
+      border-color: transparent transparent #800000 transparent
+    ;
 
       &:before {
         border-top: 30px solid #c30000;
@@ -287,7 +288,8 @@
     height: 0;
     margin: 0 auto;
     border-style: solid;
-    border-color: transparent transparent #a3a3a3 transparent;
+    border-color: transparent transparent #a3a3a3 transparent
+  ;
     border-width: 0 2px 3px 2px;
 
     &:before {
@@ -718,12 +720,12 @@ form, [ng-form], [data-ng-form] {
   }
 
   input[type='checkbox']:focus + label {
-        background: url(../img/check_tab.svg) 0 0 no-repeat;
+    background: url(../img/check_tab.svg) 0 0 no-repeat;
   }
   input[type='radio']:focus + label {
-        background: url(../img/radio_tab.svg) 0 0 no-repeat;
+    background: url(../img/radio_tab.svg) 0 0 no-repeat;
   }
- }
+}
 
 .accordion-inner, .modalBoks {
   p:focus, span:focus, a:focus {
@@ -734,9 +736,14 @@ form, [ng-form], [data-ng-form] {
 
 a.infoikon:focus, a.lukk:focus, a.accordion-toggle:focus h2 {
   outline: 1px solid #0067c5;
+  text-decoration: none !important;
 }
 
-  .bekreftelse {
+a.accordion-toggle:focus {
+  outline: none;
+}
+
+.bekreftelse {
   p, div {
     text-align: center;
     margin-bottom: 30px !important;
