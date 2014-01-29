@@ -346,12 +346,20 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId, WebSoknad soknad) {
-        List<Vedlegg> result = vedleggRepository.hentPaakrevdeVedlegg(soknadId);
+        List<Vedlegg> paakrevdeVedlegg = vedleggRepository.hentPaakrevdeVedlegg(soknadId);
+        List<Vedlegg> result = new ArrayList<Vedlegg>();
         
-        for (Vedlegg vedlegg : result) {
-            vedlegg = medKodeverk(vedlegg);
+        
+       
+        List<String> innlagtSkjemaNr = new ArrayList<String>();
+        for (Vedlegg vedlegg : paakrevdeVedlegg) {
+            //Sjekk om det er multivedlegg, må inn i basen eller så må det leses inn fra struktur her
+            if(!innlagtSkjemaNr.contains(vedlegg.getskjemaNummer()))  {
+                innlagtSkjemaNr.add(vedlegg.getskjemaNummer());
+                vedlegg = medKodeverk(vedlegg);
+                result.add(vedlegg);
+            }
         }
-        
         return result;
     }
 
@@ -367,8 +375,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 }
                 if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {
                     vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
-                    vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
                 }
+                vedlegg.setInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+                vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
             } else if (vedlegg != null) {
                 vedlegg.setInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
                 vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
