@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -12,6 +13,7 @@ public class SoknadVedlegg implements Serializable {
     private SoknadFaktum faktum;
     private String onValue;
     private String onProperty;
+    private Boolean forSystemfaktum;
     private String skjemaNummer;
     private String property;
     private Boolean inverted = false;
@@ -67,25 +69,34 @@ public class SoknadVedlegg implements Serializable {
 
     public boolean trengerVedlegg(Faktum value) {
         String valToCheck;
-        if (onProperty != null) {
-            valToCheck = value.getProperties().get(onProperty);
-        } else {
-            valToCheck = value.getValue();
+        if (forSystemfaktum == null || forSystemfaktum || value.getType().equals(FaktumType.BRUKERREGISTRERT.name())) {
+            if (onProperty != null) {
+                valToCheck = value.getProperties().get(onProperty);
+            } else {
+                valToCheck = value.getValue();
+            }
+            if (inverted == null || !inverted) {
+                return onValue == null || onValue.equalsIgnoreCase(valToCheck);
+            } else {
+                return !onValue.equalsIgnoreCase(valToCheck);
+            }
         }
-        if (inverted == null || !inverted) {
-            return onValue == null || onValue.equalsIgnoreCase(valToCheck);
-        } else {
-            return !onValue.equalsIgnoreCase(valToCheck);
-        }
+        return false;
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .append("faktum", faktum)
+        return new ToStringBuilder(this).append("faktum", faktum)
                 .append("onValue", onValue)
                 .append("skjemaNummer", skjemaNummer)
-                .append("property", property)
-                .toString();
+                .append("property", property).toString();
+    }
+
+    public Boolean getForSystemfaktum() {
+        return forSystemfaktum;
+    }
+
+    public void setForSystemfaktum(Boolean forSystemfaktum) {
+        this.forSystemfaktum = forSystemfaktum;
     }
 }
