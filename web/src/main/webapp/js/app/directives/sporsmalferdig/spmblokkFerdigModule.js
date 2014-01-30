@@ -18,8 +18,8 @@ angular.module('nav.sporsmalferdig', [])
 					if (form.$valid) {
 						gaaTilTab(tab);
 						lukkTab(tab);
-						apneTab(tab.next());
-
+						apneTab(nesteTab);
+                        setFokus(nesteTab);
 					}
 				};
 
@@ -38,6 +38,10 @@ angular.module('nav.sporsmalferdig', [])
 				function lukkTab(lukkTab) {
 					scope.$emit('CLOSE_TAB', lukkTab.attr('id'));
 				}
+
+                function setFokus(tab) {
+                    tab.closest('.accordion-group').find('a').focus();
+                }
 			}
 		}
 	}]);
