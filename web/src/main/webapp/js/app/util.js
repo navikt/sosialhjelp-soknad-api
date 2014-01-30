@@ -293,3 +293,6 @@ function settFokusTilNesteElement(inputElement) {
     fokuserbareElementer.eq(fokuserbareElementer.index(inputElement) + 1).focus();
 }
 
+function erTouchDevice() {
+    return 'ontouchstart' in window || 'onmsgesturechange' in window;
+}

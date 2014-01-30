@@ -24,6 +24,8 @@
                     mapToProperty="soknad.webservice.henvendelse.sendsoknadservice"/>
         <webservice alias="domene.Brukerdialog:fillagerservice_v1"
                     mapToProperty="soknad.webservice.henvendelse.fillager"/>
+        <webservice alias="domene.Arena:personinfoservice_v1"
+                    mapToProperty="soknad.webservice.arena.personinfo"/>
         <webservice alias="virksomhet:Kodeverk_v2" mapToProperty="sendsoknad.webservice.kodeverk"/>
         <webservice alias="Aktoer_v1" mapToProperty="soknad.webservice.aktor.aktorservice"/>
         <baseUrl alias="innlogging.navnetjeneste" mapToProperty="innlogging.navnetjeneste"/>
@@ -45,6 +47,7 @@
         <smtpServer alias="dokumentinnsending.smtpServer" mapToProperty="dokumentinnsending.smtpServer"/>
         <localFiles name="sendsoknad" mapToProperty="sendsoknad.datadir"/>
         <applicationCertificate alias="srvSendsoknad"/>
+        <credential alias="arena.personInfoService" mapToProperty="arena.personInfoService"/>
     </resources>
     <security serviceUserResourceAlias="srvSendsoknad">
         <logins>

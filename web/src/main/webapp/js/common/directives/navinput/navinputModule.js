@@ -23,10 +23,6 @@ angular.module('nav.input', ['nav.cmstekster'])
 
 				},
 				post: function (scope, element, attr) {
-					scope.hvisSynlig = function () {
-						return element.is(':visible');
-					};
-
 					scope.endret = function () {
 						scope.$eval(attr.navendret);
 					};
