@@ -2,7 +2,7 @@
     <span class="caretPosition"></span>
     <label>
         <span data-cmstekster="{{ label }}"></span>
-        <span data-ng-if="navDatepicker()">
+        <!--<span data-ng-if="navDatepicker()">-->
             <span class="vekk" data-cmstekster="dato.format"></span>
             <span class="datepicker-input">
                 <input type="text"
@@ -16,15 +16,15 @@
                 <input type="hidden" data-ng-model="ngModel">
                 <span class="apne-datepicker" data-ng-click="toggleDatepicker()"></span>
             </span>
-        </span>
-        <span data-ng-if="vanligDatepicker()">
-            <input type="date"
-                   data-ng-model="ngModel"
-                   data-ng-required="erRequired"
-                   data-ng-blur="blur()"
-                   data-ng-focus="focus()"
-                   data-error-messages="'{{ requiredErrorMessage }}'">
-        </span>
+        <!--</span>-->
+        <!--<span data-ng-if="vanligDatepicker()">-->
+            <!--<input type="date"-->
+                   <!--data-ng-model="ngModel"-->
+                   <!--data-ng-required="erRequired"-->
+                   <!--data-ng-blur="blur()"-->
+                   <!--data-ng-focus="focus()"-->
+                   <!--data-error-messages="'{{ requiredErrorMessage }}'">-->
+        <!--</span>-->
     </label>
 
     <span class="melding" data-ng-if="harRequiredFeil()" data-cmstekster="{{ requiredErrorMessage }}"></span>
