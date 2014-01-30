@@ -119,6 +119,11 @@
 
         <!-- CXF deps END -->
 
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+
 
         <dependency>
             <groupId>no.nav.sbl.dialogarena</groupId>

@@ -140,6 +140,13 @@
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
+        <id>garantilott</id>
+        <type>java.lang.Boolean</type>
+        <panel>AndreYtelser</panel>
+        <dependOn>ingenYtelse</dependOn>
+        <dependOnValue>false</dependOnValue>
+    </faktum>
+    <faktum>
         <id>offentligTjenestepensjon</id>
         <type>java.lang.Boolean</type>
         <panel>AndreYtelser</panel>
@@ -242,7 +249,11 @@
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
     </faktum>
-
+	<faktum>
+        <id>ikkeavtale</id>
+        <type>java.lang.String</type>
+        <panel>AndreYtelser</panel>
+    </faktum>
 	<faktum>
         <id>personalia</id>
         <panel>Personalia</panel>
@@ -347,42 +358,62 @@
         <faktum>offentligTjenestepensjon</faktum>
         <onValue>true</onValue>
         <skjemaNummer>K1</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <id>3</id>
         <faktum>privatTjenestepensjon</faktum>
         <onValue>true</onValue>
         <skjemaNummer>K1</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <id>3</id>
         <faktum>stonadFisker</faktum>
         <onValue>true</onValue>
         <skjemaNummer>K1</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <id>3</id>
+        <faktum>garantilott</faktum>
+        <onValue>true</onValue>
+        <skjemaNummer>K1</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <id>3</id>
         <faktum>etterlonn</faktum>
         <onValue>true</onValue>
         <skjemaNummer>K1</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <id>3</id>
         <faktum>vartpenger</faktum>
         <onValue>true</onValue>
         <skjemaNummer>K1</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <id>3</id>
         <faktum>dagpengerEOS</faktum>
         <onValue>true</onValue>
         <skjemaNummer>K1</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <id>3</id>
         <faktum>annenYtelse</faktum>
         <onValue>true</onValue>
         <skjemaNummer>K1</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+    <vedlegg>
+        <id>8</id>
+        <faktum>ikkeavtale</faktum>
+        <onValue>false</onValue>
+        <skjemaNummer>V6</skjemaNummer>
     </vedlegg>
     <vedlegg>
         <id>4</id>
