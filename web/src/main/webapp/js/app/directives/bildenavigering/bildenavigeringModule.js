@@ -30,7 +30,11 @@ angular.module('nav.bildenavigering', [])
                     } else if (scope.side >= scope.vedlegg.antallSider) {
                         scope.side = 0;
                     }
-                }
+                };
+
+                scope.hentTimestamp = new Date().getTime();
+
+
             },
 
             templateUrl: function (element, attr) {

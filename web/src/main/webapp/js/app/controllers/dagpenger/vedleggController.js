@@ -23,6 +23,8 @@ angular.module('nav.vedlegg.controller', [])
             }
             $scope.runValidation(true);
         }
+
+
     }])
 
     .controller('validervedleggCtrl', ['$scope', 'Faktum', function ($scope, Faktum) {
@@ -32,10 +34,8 @@ angular.module('nav.vedlegg.controller', [])
 //            });
 //        }
 
-        if($scope.forventning.innsendingsvalg === "VedleggKreves") {
+        if ($scope.forventning.innsendingsvalg === "VedleggKreves") {
             $scope.hiddenFelt = {value: '' };
-        }
-        if($scope.forventning.innsendingsvalg === "VedleggKreves") {
             $scope.skalViseFeil = { value: true };
         }
 
@@ -71,8 +71,14 @@ angular.module('nav.vedlegg.controller', [])
             }
 
             forventning.$save();
-            $scope.hiddenFelt.value = true;
-            $scope.skalViseFeil.value = false;
+
+            if (!$scope.hiddenFelt) {
+                $scope.hiddenFelt = { value: true };
+                $scope.skalViseFeil = { value: false };
+            } else {
+                $scope.hiddenFelt.value = true;
+                $scope.skalViseFeil.value = false;
+            }
 
 //            $scope.bolkerMedFeil.splice($scope.bolkerMedFeil.indexOf(forventning.skjemaNummer), 1);
         };
@@ -103,7 +109,7 @@ angular.module('nav.vedlegg.controller', [])
         };
     }])
 
-    .filter('nospace', function() {
+    .filter('nospace', function () {
         return function (value) {
             return (!value) ? '' : value.replace(/ /g, '');
         };

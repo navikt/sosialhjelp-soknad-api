@@ -20,6 +20,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 
         $scope.$on('fileuploadstart', function () {
             $scope.data.opplastingFeilet = false;
+
         });
 
         $scope.$on('fileuploadprocessfail', function (event, data) {

@@ -727,14 +727,38 @@ form, [ng-form], [data-ng-form] {
   }
 }
 
-.accordion-inner, .modalBoks {
+#vedlegg {
+  input:focus + label {
+    color: #0067c5 !important;
+  }
+
+  input[type='radio']:focus:checked + label {
+    background: url(../img/check_valgt_tab.svg) 0 0 no-repeat;
+  }
+  input[type='radio']:focus + label {
+    background: url(../img/check_tab.svg) 0 0 no-repeat;
+  }
+
+  a.bilde:focus, .forhandsvisning:focus {
+    outline: 3px solid #0067c5;
+  }
+
+}
+
+#opplasting {
+  #leggtil:focus + label {
+    outline: 1px solid #0067c5;
+  }
+}
+
+.accordion-inner, .modalBoks, #opplasting, #vedlegg {
   p:focus, span:focus, a:focus {
     outline: none;
     text-decoration: underline !important;
   }
 }
 
-a.infoikon:focus, a.lukk:focus, a.accordion-toggle:focus h2 {
+a.infoikon:focus, a.lukk:focus, a.accordion-toggle:focus h2, a.knapp-link:focus {
   outline: 1px solid #0067c5;
   text-decoration: none !important;
 }
