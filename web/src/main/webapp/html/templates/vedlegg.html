@@ -17,24 +17,21 @@
 
     <section>
         <div data-accordion data-close-others="false" data-ng-if="forventninger != null">
-            <section class="vedlegg vertikal">
-                <div data-accordion-group data-ng-repeat="forventning in forventninger" class="spm-blokk"
+            <div class="vedlegg">
+                <div data-accordion-group data-ng-repeat="forventning in forventninger" class="spm-blokk vertikal"
                      id="vedlegg_{{forventning.vedleggId}}">
                     <div data-accordion-heading>
                         <div class="flipp"></div>
-                        <div class="begrensning sak-totredel">
-                            <div class="panel-mini nettobunn uten-ramme"
-                                 data-ng-class="{behandlet: !vedleggEr(forventning, 'VedleggKreves'), lastetopp: vedleggEr(forventning, 'LastetOpp')}">
-                                <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'LastetOpp')"
-                                     data-cmstekster="vedlegg.behandlet.lastetopp"></div>
-                                <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesSenere')"
-                                     data-cmstekster="vedlegg.behandlet.sendessenere"></div>
-                                <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesIkke')"
-                                     data-cmstekster="vedlegg.behandlet.sendesikke"></div>
-                                <!--h2 class="stor"><span data-cmstekster="{{soknadData.skjemaNummer}}.vedlegg.{{forventning.skjemaNummer}}.header"></span><span data-ng-if="forventning.navn">: {{forventning.navn}}</span></h2 -->
-                                <h2 class="stor"><span>{{forventning.tittel}}</span><span data-ng-if="forventning.navn">: {{forventning.navn}}</span>
-                                </h2>
-                            </div>
+                        <div data-ng-class="{behandlet: !vedleggEr(forventning, 'VedleggKreves'), lastetopp: vedleggEr(forventning, 'LastetOpp')}">
+                            <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'LastetOpp')"
+                                 data-cmstekster="vedlegg.behandlet.lastetopp"></div>
+                            <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesSenere')"
+                                 data-cmstekster="vedlegg.behandlet.sendessenere"></div>
+                            <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesIkke')"
+                                 data-cmstekster="vedlegg.behandlet.sendesikke"></div>
+                            <!--h2 class="stor"><span data-cmstekster="{{soknadData.skjemaNummer}}.vedlegg.{{forventning.skjemaNummer}}.header"></span><span data-ng-if="forventning.navn">: {{forventning.navn}}</span></h2 -->
+                            <h2 class="stor"><span>{{forventning.tittel}}</span><span data-ng-if="forventning.navn">: {{forventning.navn}}</span>
+                            </h2>
                         </div>
                     </div>
                     <div data-div class="skjemaramme begrensning sak-totredel" data-ng-controller="validervedleggCtrl">
@@ -53,7 +50,8 @@
                                 data-cmshtml="{{soknadData.skjemaNummer}}.vedlegg.{{forventning.skjemaNummer}}.bekrefte"></h4>
 
                             <div class="spm-knapper send-valg checkboxAsRadio form-linje boolean"
-                                 data-ng-if="!vedleggEr(forventning, 'LastetOpp')" data-ng-class="{feil: skalViseFeil.value === true && validert.value === true}">
+                                 data-ng-if="!vedleggEr(forventning, 'LastetOpp')"
+                                 data-ng-class="{feil: skalViseFeil.value === true && validert.value === true}">
 
                                 <!-- input id="{{$index}}sendInnFraPcRadio" data-ng-model="forventning.faktum.innsendingsvalg" type="radio" value="VedleggKreves"
                                        data-ng-change="endreInnsendingsvalg(forventning)" data-ng-show="false">
@@ -99,7 +97,8 @@
                                     <input type="hidden" data-ng-model="hiddenFelt.value" data-ng-required="true"
                                            data-error-messages="'Dagpenger.vedlegg.{{forventning.skjemaNummer | nospace}}.feilmelding'">
                                 </div>
-                                <span class="melding" data-cmstekster="Dagpenger.vedlegg.{{forventning.skjemaNummer}}.feilmelding"></span>
+                                <span class="melding"
+                                      data-cmstekster="Dagpenger.vedlegg.{{forventning.skjemaNummer}}.feilmelding"></span>
                             </div>
                             <div data-ng-if="vedleggEr(forventning, 'LastetOpp')">
                                 <div class="forhandsvisning">
@@ -116,7 +115,7 @@
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
         </div>
     </section>
     <div class="rad-belyst leggtilekstra">
@@ -131,8 +130,8 @@
     <div class="rad ferdig-skjema">
         <div class="begrensning sak-totredel">
             <section class="panel-standard oversikt">
-                <button class="knapp-hoved" data-ng-click="validerVedlegg(vedleggForm)" data-cmstekster="vedlegg.ferdig"
-                        data-fremdriftsindikator></button>
+                <a class="knapp-hoved" data-ng-click="validerVedlegg(vedleggForm)" data-cmstekster="vedlegg.ferdig"
+                        data-fremdriftsindikator></a>
             </section>
         </div>
     </div>
