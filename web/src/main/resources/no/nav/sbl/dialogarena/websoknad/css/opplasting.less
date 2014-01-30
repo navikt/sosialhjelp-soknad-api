@@ -1,392 +1,390 @@
 [class*="strek-ikon-vedlegg"], [class*="ikon-vedlegg-strek"] {
-    background-image: url(../img/under-dark.png), url(../img/vedlegg_graa.svg);
-    background-position: bottom center, center 0;
-    padding-bottom: 15px;
-    margin-bottom: 15px !important;
+  background-image: url(../img/under-dark.png), url(../img/vedlegg_graa.svg);
+  background-position: bottom center, center 0;
+  padding-bottom: 15px;
+  margin-bottom: 15px !important;
 }
 
 .uten-ramme {
-    border: none;
+  border: none;
 }
 
 form, [ng-form], [data-ng-form] {
-    .checkboxAsRadio {
-        input[type="radio"] + label {
-            background: url(../img/check.svg) 0 0 no-repeat;
-        }
-
-        input[type="radio"]:disabled + label {
-            background: url(../img/check_inactive.svg) 0 0 no-repeat;
-        }
-
-        input[type="radio"]:checked + label {
-            background: url(../img/check_valgt.svg) 0 0 no-repeat;
-        }
-
-        input[type="radio"]:disabled:checked + label {
-            background: url(../img/check_inactive_valgt.svg) 0 0 no-repeat;
-        }
-
-        input[type="radio"] + label {
-            display: inline-block;
-            position: relative;
-            padding: 2px 0 0 32px;
-            height: 30px;
-            margin-right: 1rem;
-            font-family: @sansFontFamily;
-            font-size: 1rem !important;
-            text-transform: none;
-        }
-
-        input[type="radio"]:checked + label {
-            font-weight: bold;
-        }
+  .checkboxAsRadio {
+    input[type="radio"] + label {
+      background: url(../img/check.svg) 0 0 no-repeat;
     }
+
+    input[type="radio"]:disabled + label {
+      background: url(../img/check_inactive.svg) 0 0 no-repeat;
+    }
+
+    input[type="radio"]:checked + label {
+      background: url(../img/check_valgt.svg) 0 0 no-repeat;
+    }
+
+    input[type="radio"]:disabled:checked + label {
+      background: url(../img/check_inactive_valgt.svg) 0 0 no-repeat;
+    }
+
+    input[type="radio"] + label {
+      display: inline-block;
+      position: relative;
+      padding: 2px 0 0 32px;
+      height: 30px;
+      margin-right: 1rem;
+      font-family: @sansFontFamily;
+      font-size: 1rem !important;
+      text-transform: none;
+    }
+
+    input[type="radio"]:checked + label {
+      font-weight: bold;
+    }
+  }
 }
 
 #vedlegg {
-    [class*="ikon-vedlegg-strek"] {
-        padding-bottom: 30px;
-        margin-bottom: 30px !important;
+  [class*="ikon-vedlegg-strek"] {
+    padding-bottom: 30px;
+    margin-bottom: 30px !important;
+  }
+
+  .info, h4 {
+    font-weight: 600;
+    padding-bottom: 10px;
+    line-height: 1.6rem;
+    font-size: 1.21rem;
+    font-family: Modus, Arial, Helvetica, sans-serif;
+  }
+  .oversikt {
+    text-align: center;
+  }
+  .inforad {
+    border-bottom: none;
+    border-top: 1px solid #d1d1d1;
+  }
+  .leggtilekstra {
+    padding: 50px;
+  }
+  .ferdig-skjema {
+    padding-top: 50px;
+  }
+
+  .vedlegg {
+    h4 {
+      padding: 0;
+      margin: 0;
+      padding-bottom: 10px;
     }
 
-    .info, h4 {
-        font-weight: 600;
-        padding-bottom: 10px;
-        line-height: 1.6rem;
-        font-size: 1.21rem;
-        font-family: Modus, Arial, Helvetica, sans-serif;
+    .info-liste {
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 20px;
+      ul {
+        list-style-type: disc;
+        padding-left: 16px;
+      }
     }
-    .oversikt {
-        text-align: center;
+    .skjemaramme {
+      padding-top: 35px;
     }
-    .inforad {
-        border-bottom: none;
-        border-top: 1px solid #d1d1d1;
-    }
-    .spm-blokk {
-        background-color: #fff;
-    }
-    .leggtilekstra {
-        padding: 50px;
-    }
-    .ferdig-skjema {
-        padding-top: 50px;
-    }
+    .valgbokser {
 
-    .vedlegg {
-        h4 {
-            padding: 0;
-            margin: 0;
-            padding-bottom: 10px;
-        }
-        .info-liste {
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 20px;
-            ul {
-                list-style-type: disc;
-                padding-left: 16px;
-            }
-        }
-        .skjemaramme {
-            padding-top: 35px;
-        }
-        .valgbokser {
-
-        }
-        [class^='valgboks-'] {
-            position: relative;
-            display: inline-block;
-            vertical-align: bottom;
-            text-align: center;
-            width: 213px;
-            height: 213px;
-            padding: 17px;
-            margin: 10px 10px;
-            margin-bottom: 30px;
-            background-color: #333333;
-            background-repeat: no-repeat, no-repeat;
-            span {
-                position: absolute;
-                bottom: 0%;
-                left: 0%;
-                width: 100%;
-                padding: 20px;
-                color: white;
-                text-transform: uppercase;
-            }
-        }
-        .lastOpp {
-            text-align: center;
-            padding-bottom: 30px;
-            padding-top: 35px;
-        }
-        .valgboks-pc {
-            background-image: url('../img/pc.svg'), url('../img/under-dark.png');
-            background-position: center 20px, center 135px;
-        }
-        .valgboks-mobil {
-            margin-left: 0;
-            background-image: url('../img/mobil.svg'), url('../img/under-dark.png');
-            background-position: center 20px, center 155px;
-        }
-        .send-valg {
-            label {
-                display: block;
-            }
-        }
-        .liste-vannrett {
-            margin-top: 30px;
-        }
-        .behandlet {
-            div {
-                padding-top: 30px;
-                text-transform: uppercase;
-                color: #3e3832;
-            }
-            h2 {
-                padding-top: 0;
-            }
-        }
-        .lastetopp {
-            h2 {
-                padding-top: 0;
-                &:before {
-                    display: inline-block;
-                    content: "";
-                    background: url('../img/hake.svg') no-repeat center 10px;
-                    width: 2.1rem;
-                    height: 2.1rem;
-                    background-size: 1.4rem;
-                }
-            }
-        }
     }
-    .accordion {
-        border-bottom: 1px solid #d1d1d1;
-    }
-
-    .forhandsvisning {
+    [class^='valgboks-'] {
+      position: relative;
+      display: inline-block;
+      vertical-align: bottom;
+      text-align: center;
+      width: 213px;
+      height: 213px;
+      padding: 17px;
+      margin: 10px 10px;
+      margin-bottom: 30px;
+      background-color: #333333;
+      background-repeat: no-repeat, no-repeat;
+      span {
+        position: absolute;
+        bottom: 0%;
+        left: 0%;
         width: 100%;
-        margin: 0 auto;
-        text-align: center;
-        color: #0CA9E0;
-        margin-top: 35px;
-        .knapper {
-            margin-top: 20px;
-
-        }
-
-        .bildenavigering {
-            .bilde {
-                width: 220px;
-                height: 311px;
-            }
-        }
+        padding: 20px;
+        color: white;
+        text-transform: uppercase;
+      }
     }
+    .lastOpp {
+      text-align: center;
+      padding-bottom: 30px;
+      padding-top: 35px;
+    }
+    .valgboks-pc {
+      background-image: url('../img/pc.svg'), url('../img/under-dark.png');
+      background-position: center 20px, center 135px;
+    }
+    .valgboks-mobil {
+      margin-left: 0;
+      background-image: url('../img/mobil.svg'), url('../img/under-dark.png');
+      background-position: center 20px, center 155px;
+    }
+    .send-valg {
+      label {
+        display: block;
+      }
+    }
+    .liste-vannrett {
+      margin-top: 30px;
+    }
+    .behandlet {
+      div {
+        padding-top: 30px;
+        text-transform: uppercase;
+        color: #3e3832;
+      }
+      h2 {
+        padding-top: 0;
+      }
+    }
+    .lastetopp {
+      h2 {
+        padding-top: 0;
+        &:before {
+          display: inline-block;
+          content: "";
+          background: url('../img/hake.svg') no-repeat center 10px;
+          width: 2.1rem;
+          height: 2.1rem;
+          background-size: 1.4rem;
+        }
+      }
+    }
+  }
+  .accordion {
+    border-bottom: 1px solid #d1d1d1;
+  }
+
+  .forhandsvisning {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    color: #0CA9E0;
+    margin-top: 35px;
+    .knapper {
+      margin-top: 20px;
+
+    }
+
+    .bildenavigering {
+      .bilde {
+        width: 220px;
+        height: 311px;
+      }
+    }
+  }
 }
 
 .bildenavigering {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  color: #0CA9E0;
+
+  .bilde {
+    position: relative;
+    padding: 10px;
+    padding-bottom: 40px;
+    background-image: url('../img/ajaxloader/svart/loader_svart_128.gif');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #333333;
+    display: inline-block;
+    vertical-align: middle;
+    span {
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      color: #e0ded8;
+    }
+  }
+  [class*='pil-'] {
+    display: inline-block;
+    height: 56px;
+    width: 56px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 56px 56px;
+    text-decoration: none;
+    margin-top: 21%;
+    cursor: pointer;
+
+  }
+  [class*='pil-venstre'] {
+    float: left;
+    margin-left: 30px;
+  }
+  [class*='pil-hoyre'] {
+    float: right;
+    margin-right: 30px;
+  }
+  .pil-venstre-hvit {
+    background-image: url('../img/rund-pil-hvit-venstre.svg');
+  }
+  .pil-venstre-hvit:hover, .pil-venstre-hvit:focus {
+    background-image: url('../img/rund-pil-hvit-venstre-hover.svg');
+  }
+  .pil-hoyre-hvit {
+    background-image: url('../img/rund-pil-hvit-hoyre.svg');
+  }
+  .pil-hoyre-hvit:hover, .pil-hoyre-hvit:focus {
+    background-image: url('../img/rund-pil-hvit-hoyre-hover.svg');
+  }
+  .pil-venstre-sort {
+    background-image: url('../img/rund-pil-sort-venstre.svg');
+  }
+  .pil-venstre-sort:hover, .pil-venstre-sort:focus {
+    background-image: url('../img/rund-pil-sort-venstre-hover.svg');
+  }
+  .pil-hoyre-sort {
+    background-image: url('../img/rund-pil-sort-hoyre.svg');
+  }
+  .pil-hoyre-sort:hover, .pil-hoyre-sort:focus {
+    background-image: url('../img/rund-pil-sort-hoyre-hover.svg');
+  }
+  .knapper {
     width: 100%;
-    margin: 0 auto;
     text-align: center;
-    color: #0CA9E0;
-
-    .bilde {
-        position: relative;
-        padding: 10px;
-        padding-bottom: 40px;
-        background-image: url('../img/ajaxloader/svart/loader_svart_128.gif');
-        background-repeat: no-repeat;
-        background-position: center;
-        background-color: #333333;
-        display: inline-block;
-        vertical-align: middle;
-        span {
-            position: absolute;
-            bottom: 10px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            color: #e0ded8;
-        }
-    }
-    [class*='pil-'] {
-        display: inline-block;
-        height: 56px;
-        width: 56px;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: 56px 56px;
-        text-decoration: none;
-        margin-top: 21%;
-        cursor: pointer;
-
-    }
-    [class*='pil-venstre'] {
-        float: left;
-        margin-left: 30px;
-    }
-    [class*='pil-hoyre'] {
-        float: right;
-        margin-right: 30px;
-    }
-    .pil-venstre-hvit {
-        background-image: url('../img/rund-pil-hvit-venstre.svg');
-    }
-    .pil-venstre-hvit:hover, .pil-venstre-hvit:focus {
-        background-image: url('../img/rund-pil-hvit-venstre-hover.svg');
-    }
-    .pil-hoyre-hvit {
-        background-image: url('../img/rund-pil-hvit-hoyre.svg');
-    }
-    .pil-hoyre-hvit:hover, .pil-hoyre-hvit:focus  {
-        background-image: url('../img/rund-pil-hvit-hoyre-hover.svg');
-    }
-    .pil-venstre-sort {
-        background-image: url('../img/rund-pil-sort-venstre.svg');
-    }
-    .pil-venstre-sort:hover, .pil-venstre-sort:focus {
-        background-image: url('../img/rund-pil-sort-venstre-hover.svg');
-    }
-    .pil-hoyre-sort {
-        background-image: url('../img/rund-pil-sort-hoyre.svg');
-    }
-    .pil-hoyre-sort:hover, .pil-hoyre-sort:focus {
-        background-image: url('../img/rund-pil-sort-hoyre-hover.svg');
-    }
-    .knapper {
-        width: 100%;
-        text-align: center;
-        margin-top: 20px;
-    }
+    margin-top: 20px;
+  }
 }
 
 #visvedlegg {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    z-index: 10;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  left: 0;
+  top: 0;
+  margin: 0 auto;
+  text-align: center;
+  color: #0CA9E0;
+  background-color: #333333;
+  .header {
+    position: absolute;
     left: 0;
     top: 0;
-    margin: 0 auto;
-    text-align: center;
-    color: #0CA9E0;
-    background-color: #333333;
-    .header {
-        position: absolute;
-        left: 0;
-        top: 0;
-        height: 40px;
-        width: 100%;
-        box-shadow: 0 1px 4px #000000;
-        color: #d1d1d1;
-        padding-top: 13px;
+    height: 40px;
+    width: 100%;
+    box-shadow: 0 1px 4px #000000;
+    color: #d1d1d1;
+    padding-top: 13px;
+  }
+  .bildenavigering {
+    width: 66%;
+    height: 100%;
+    [class*='pil-'] {
+      float: none;
     }
-    .bildenavigering {
-        width: 66%;
-        height: 100%;
-        [class*='pil-'] {
-            float: none;
-        }
-        .tilbake {
-            position: absolute;
-            left: 0px;
-            top: 5px;
-            padding-top: 6px;
-            border: 1px groove #d1d1d1;
-            width: 150px;
-            color: #d1d1d1;
-            height: 30px;
-            display: block;
-            z-index: 11;
-        }
-        .nav {
-            height: 100%;
-            img {
-                margin-top: 60px;
-            }
-        }
-        .bilde {
-            display: inline-block;
-            width: 50%;
-            height: 90%;
-            img {
-            }
-        }
+    .tilbake {
+      position: absolute;
+      left: 0px;
+      top: 5px;
+      padding-top: 6px;
+      border: 1px groove #d1d1d1;
+      width: 150px;
+      color: #d1d1d1;
+      height: 30px;
+      display: block;
+      z-index: 11;
+    }
+    .nav {
+      height: 100%;
+      img {
+        margin-top: 60px;
+      }
+    }
+    .bilde {
+      display: inline-block;
+      width: 50%;
+      height: 90%;
+      img {
+      }
+    }
 
-    }
+  }
 }
 
 #opplasting {
-    border-top: 1px solid #d1d1d1;
-    [class*="ikon-vedlegg-strek"] {
-        padding-bottom: 30px;
-        margin-bottom: 30px !important;
-    }
-    .sak-trekvart [class*="panel-"] {
-        width: auto;
-        max-width: 73%;
-    }
-    .opplastingliste {
-        padding: 0;
-        list-style: none;
-        li {
-            position: relative;
-            display: block;
-            float: left;
-            width: 220px;
-            height: 311px;
-            color: #0CA9E0;
-            background-color: #333333;
-            margin-left: 20px;
-            margin-bottom: 20px;
-            &:nth-child(3n + 1) {
-                margin-left: 0
-            }
-            padding: 10px;
-            background-image: url('../img/ajaxloader/svart/loader_svart_128.gif');
-            background-repeat: no-repeat;
-            background-position: center;
-            .lukk {
-                display: block;
-                position: absolute;
-                cursor: pointer;
-                background: #333333 url('../img/kryss_bla.svg') no-repeat center ~'/' 50%;
-                right: 0;
-                top: 0;
-                height: 40px;
-                width: 40px;
-            }
-
-        }
-        .leggtil {
-            background-image: url('../img/legg_til.svg');
-            background-repeat: no-repeat;
-            background-position: center 39%;
-            label {
-                text-align: center;
-                display: inline-block;
-                width: 100%;
-                height: 100%;
-                padding-top: 90%;
-            }
-        }
-        .leggtil:hover {
-            background-image: url('../img/legg_til_hover.svg');
-        }
-    }
-    .feil {
-        width: 100%;
-        background-color: #c30000;
-        padding: 1rem;
-        padding-left: 3rem;
-        margin-bottom: 2rem;
-        text-align: center;
-        color: #fff;
-    }
-    .avbryt {
+  border-top: 1px solid #d1d1d1;
+  [class*="ikon-vedlegg-strek"] {
+    padding-bottom: 30px;
+    margin-bottom: 30px !important;
+  }
+  .sak-trekvart [class*="panel-"] {
+    width: auto;
+    max-width: 73%;
+  }
+  .opplastingliste {
+    padding: 0;
+    list-style: none;
+    li {
+      position: relative;
+      display: block;
+      float: left;
+      width: 220px;
+      height: 311px;
+      color: #0CA9E0;
+      background-color: #333333;
+      margin-left: 20px;
+      margin-bottom: 20px;
+      &:nth-child(3n + 1) {
+        margin-left: 0
+      }
+      padding: 10px;
+      background-image: url('../img/ajaxloader/svart/loader_svart_128.gif');
+      background-repeat: no-repeat;
+      background-position: center;
+      .lukk {
         display: block;
-        margin-top: 25px;
+        position: absolute;
+        cursor: pointer;
+        background: #333333 url('../img/kryss_bla.svg') no-repeat center ~'/' 50%;
+        right: 0;
+        top: 0;
+        height: 40px;
+        width: 40px;
+      }
+
     }
+    .leggtil {
+      background-image: url('../img/legg_til.svg');
+      background-repeat: no-repeat;
+      background-position: center 39%;
+      label {
+        text-align: center;
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+        padding-top: 90%;
+      }
+    }
+    .leggtil:hover {
+      background-image: url('../img/legg_til_hover.svg');
+    }
+  }
+  .feil {
+    width: 100%;
+    background-color: #c30000;
+    padding: 1rem;
+    padding-left: 3rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: #fff;
+  }
+  .avbryt {
+    display: block;
+    margin-top: 25px;
+  }
 }
