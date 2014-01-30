@@ -75,6 +75,17 @@ angular.module('nav.datepicker', [])
 					scope.options['maxDate'] = new Date();
 				}
 
+
+                scope.navDatepicker = function() {
+                    return false;
+//                    return erTouchDevice();
+                }
+
+                scope.vanligDatepicker = function() {
+                    return true;
+//                    return erTouchDevice();
+                }
+
 				scope.toggleDatepicker = function () {
 					var dateDiv = $('#ui-datepicker-div');
 					if (dateDiv.is(':hidden')) {
@@ -114,8 +125,13 @@ angular.module('nav.datepicker', [])
 				});
 
 				scope.harRequiredFeil = function () {
-					return scope.erRequired && !scope.ngModel && !scope.harFokus && harHattFokus && datepickerErLukket &&
-						!scope.tilDatoFeil && !inputfeltHarTekstMenIkkeGyldigDatoFormat() && !erGyldigDato(tekstInput.val());
+                    if (scope.navDatepicker()) {
+                        return scope.erRequired && !scope.ngModel && !scope.harFokus && harHattFokus && datepickerErLukket &&
+                            !scope.tilDatoFeil && !inputfeltHarTekstMenIkkeGyldigDatoFormat() && !erGyldigDato(tekstInput.val());
+                    } else {
+                        return scope.erRequired && !scope.ngModel && !scope.harFokus && harHattFokus && !scope.tilDatoFeil;
+                    }
+
 				};
 
 				scope.harTilDatoFeil = function () {
@@ -132,8 +148,20 @@ angular.module('nav.datepicker', [])
 				};
 
 				scope.harFeil = function () {
-					return scope.harRequiredFeil() || scope.harFormatteringsFeil() || scope.harTilDatoFeil() || scope.erIkkeGyldigDato();
+					if (scope.navDatepicker()) {
+                        return harFeilMedNavDatepicker();
+                    } else {
+                        return harFeilMedDateInput();
+                    }
 				};
+
+                function harFeilMedNavDatepicker() {
+                    return scope.harRequiredFeil() || scope.harFormatteringsFeil() || scope.harTilDatoFeil() || scope.erIkkeGyldigDato();
+                }
+
+                function harFeilMedDateInput() {
+                    return scope.harRequiredFeil() || scope.harTilDatoFeil();
+                }
 
 				scope.$watch('ngModel', function (newVal, oldVal) {
 					if (newVal === oldVal) {
