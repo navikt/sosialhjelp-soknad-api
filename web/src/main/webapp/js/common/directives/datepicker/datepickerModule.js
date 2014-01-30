@@ -77,12 +77,10 @@ angular.module('nav.datepicker', [])
 
 
                 scope.navDatepicker = function() {
-                    return false;
-//                    return erTouchDevice();
+                    return !scope.vanligDatepicker();
                 }
 
                 scope.vanligDatepicker = function() {
-                    return true;
 //                    return erTouchDevice();
                 }
 
