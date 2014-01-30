@@ -89,4 +89,14 @@ public interface VedleggRepository {
     void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg);
 
     List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId);
+
+    /**
+     * Henter alle vedlegg som er tilknyttet et faktum
+     * @param soknadId
+     * @param faktumId
+     * @return
+     */
+    List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId);
+
+    void slettVedleggOgData(Long soknadId, Long faktumId, String skjemaNummer);
 }

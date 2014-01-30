@@ -118,6 +118,11 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public void slettBrukerFaktum(Long soknadId, Long faktumId) {
+        List<Vedlegg> vedleggliste = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
+        
+        for (Vedlegg vedlegg : vedleggliste) {
+            vedleggRepository.slettVedleggOgData(soknadId, vedlegg.getFaktumId(), vedlegg.getskjemaNummer());
+        }
         repository.slettBrukerFaktum(soknadId, faktumId);
     }
 
