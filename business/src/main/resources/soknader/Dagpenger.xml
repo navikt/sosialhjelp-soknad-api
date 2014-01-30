@@ -254,8 +254,6 @@
         <type>java.lang.String</type>
         <panel>AndreYtelser</panel>
     </faktum>
-	
-
 	<faktum>
         <id>personalia</id>
         <panel>Personalia</panel>
