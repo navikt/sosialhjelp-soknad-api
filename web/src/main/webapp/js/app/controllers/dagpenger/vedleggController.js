@@ -23,6 +23,22 @@ angular.module('nav.vedlegg.controller', [])
             }
             $scope.runValidation(true);
         }
+
+        $scope.vedleggEr = function (vedlegg, status) {
+            return vedlegg.innsendingsvalg === status;
+        };
+
+        $scope.nyttAnnetVedlegg = function () {
+            new Faktum({
+                key: 'ekstraVedlegg',
+                value: 'true',
+                soknadId: data.soknad.soknadId
+            }).$save().then(function (nyttfaktum) {
+                    VedleggForventning.query({soknadId: data.soknad.soknadId, faktumId: nyttfaktum.faktumId}, function (forventninger) {
+                        $scope.forventninger.push.apply($scope.forventninger, forventninger);
+                    });
+                });
+        };
     }])
 
     .controller('validervedleggCtrl', ['$scope', 'Faktum', function ($scope, Faktum) {
@@ -32,16 +48,11 @@ angular.module('nav.vedlegg.controller', [])
 //            });
 //        }
 
-        if($scope.forventning.innsendingsvalg === "VedleggKreves") {
+        if ($scope.forventning.innsendingsvalg === "VedleggKreves") {
             $scope.hiddenFelt = {value: '' };
-        }
-        if($scope.forventning.innsendingsvalg === "VedleggKreves") {
             $scope.skalViseFeil = { value: true };
         }
 
-        $scope.vedleggEr = function (vedlegg, status) {
-            return vedlegg.innsendingsvalg === status;
-        };
 
         $scope.slettVedlegg = function (forventning) {
             if ($scope.erEkstraVedlegg(forventning)) {
@@ -71,8 +82,14 @@ angular.module('nav.vedlegg.controller', [])
             }
 
             forventning.$save();
-            $scope.hiddenFelt.value = true;
-            $scope.skalViseFeil.value = false;
+
+            if (!$scope.hiddenFelt) {
+                $scope.hiddenFelt = { value: true };
+                $scope.skalViseFeil = { value: false };
+            } else {
+                $scope.hiddenFelt.value = true;
+                $scope.skalViseFeil.value = false;
+            }
 
 //            $scope.bolkerMedFeil.splice($scope.bolkerMedFeil.indexOf(forventning.skjemaNummer), 1);
         };
@@ -89,21 +106,9 @@ angular.module('nav.vedlegg.controller', [])
             $scope.validert.value = false;
 
         };
-
-        $scope.nyttAnnetVedlegg = function () {
-            new Faktum({
-                key: 'ekstraVedlegg',
-                value: 'true',
-                soknadId: data.soknad.soknadId
-            }).$save().then(function (nyttfaktum) {
-                    VedleggForventning.query({soknadId: data.soknad.soknadId, faktumId: nyttfaktum.faktumId}, function (forventninger) {
-                        $scope.forventninger.push.apply($scope.forventninger, forventninger);
-                    });
-                });
-        };
     }])
 
-    .filter('nospace', function() {
+    .filter('nospace', function () {
         return function (value) {
             return (!value) ? '' : value.replace(/ /g, '');
         };
