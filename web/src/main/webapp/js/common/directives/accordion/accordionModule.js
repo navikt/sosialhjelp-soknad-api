@@ -85,7 +85,7 @@ angular.module('nav.accordion', [])
 	}])
 
 // The collapsible directive indicates a block of html that will expand and collapse
-	.directive('collapse', ['$transition', function ($transition) {
+	.directive('collapse', ['$transition', '$timeout', function ($transition, $timeout) {
 		// CSS transitions don't work with height: auto, so we have to manually change the height to a
 		// specific value and then once the animation completes, we can reset the height to auto.
 		// Unfortunately if you do this while the CSS transitions are specified (i.e. in the CSS class
@@ -107,11 +107,13 @@ angular.module('nav.accordion', [])
 				var initialAnimSkip = true;
 
 				scope.$watch(attrs.collapse, function (value) {
-					if (value) {
-						collapse();
-					} else {
-						expand();
-					}
+                    $timeout(function() {
+                        if (value) {
+                            collapse();
+                        } else {
+                            expand();
+                        }
+                    });
 				});
 
 
