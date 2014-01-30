@@ -24,7 +24,21 @@ angular.module('nav.vedlegg.controller', [])
             $scope.runValidation(true);
         }
 
+        $scope.vedleggEr = function (vedlegg, status) {
+            return vedlegg.innsendingsvalg === status;
+        };
 
+        $scope.nyttAnnetVedlegg = function () {
+            new Faktum({
+                key: 'ekstraVedlegg',
+                value: 'true',
+                soknadId: data.soknad.soknadId
+            }).$save().then(function (nyttfaktum) {
+                    VedleggForventning.query({soknadId: data.soknad.soknadId, faktumId: nyttfaktum.faktumId}, function (forventninger) {
+                        $scope.forventninger.push.apply($scope.forventninger, forventninger);
+                    });
+                });
+        };
     }])
 
     .controller('validervedleggCtrl', ['$scope', 'Faktum', function ($scope, Faktum) {
@@ -39,9 +53,6 @@ angular.module('nav.vedlegg.controller', [])
             $scope.skalViseFeil = { value: true };
         }
 
-        $scope.vedleggEr = function (vedlegg, status) {
-            return vedlegg.innsendingsvalg === status;
-        };
 
         $scope.slettVedlegg = function (forventning) {
             if ($scope.erEkstraVedlegg(forventning)) {
@@ -94,18 +105,6 @@ angular.module('nav.vedlegg.controller', [])
             $scope.skalViseFeil = { value: true };
             $scope.validert.value = false;
 
-        };
-
-        $scope.nyttAnnetVedlegg = function () {
-            new Faktum({
-                key: 'ekstraVedlegg',
-                value: 'true',
-                soknadId: data.soknad.soknadId
-            }).$save().then(function (nyttfaktum) {
-                    VedleggForventning.query({soknadId: data.soknad.soknadId, faktumId: nyttfaktum.faktumId}, function (forventninger) {
-                        $scope.forventninger.push.apply($scope.forventninger, forventninger);
-                    });
-                });
         };
     }])
 
