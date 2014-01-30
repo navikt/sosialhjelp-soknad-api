@@ -7,7 +7,7 @@ angular.module('nav.dagpengerdirective', [])
 				var bolkIdMedFeil = '';
 
 				$timeout(function () {
-					lukkAlleTaber();
+//					lukkAlleTaber();
 					if (ctrl.$invalid) {
 						var formMedFeil = '';
 						var index = bolkerIRiktigRekkefolge.length;
