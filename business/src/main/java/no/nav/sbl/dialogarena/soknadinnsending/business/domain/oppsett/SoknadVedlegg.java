@@ -14,7 +14,7 @@ public class SoknadVedlegg implements Serializable {
     private String onValue;
     private String onProperty;
     private Boolean forSystemfaktum;
-    private Boolean flereTillatt;
+    private Boolean flereTillatt = false;
     private String skjemaNummer;
     private String property;
     private Boolean inverted = false;
