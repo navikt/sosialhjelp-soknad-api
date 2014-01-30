@@ -81,7 +81,7 @@ angular.module('nav.datepicker', [])
                 }
 
                 scope.vanligDatepicker = function() {
-//                    return erTouchDevice();
+                    return erTouchDevice();
                 }
 
 				scope.toggleDatepicker = function () {
