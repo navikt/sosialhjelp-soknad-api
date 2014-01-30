@@ -236,12 +236,21 @@ public class SoknadService implements SendSoknadService, VedleggService {
                                           InputStream inputStream) {
         List<Long> resultat = new ArrayList<>();
 
+        String fleretillattString;
+        if(vedlegg.getFlereTillatt()) {
+            fleretillattString = "1";
+        } else {
+            fleretillattString = "0";
+        }
+        
         try {
             byte[] bytes = IOUtils.toByteArray(inputStream);
             if (Detect.isImage(bytes)) {
                 bytes = Convert.scaleImageAndConvertToPdf(bytes, new Dimension(1240, 1754));
+                
                 Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(),
                         vedlegg.getFaktumId(), vedlegg.getskjemaNummer(),
+                        fleretillattString,
                         vedlegg.getNavn(), (long) bytes.length, 1, UUID
                         .randomUUID().toString(), null,
                         Vedlegg.Status.UnderBehandling);
@@ -259,8 +268,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
                     page.close();
                     Vedlegg sideVedlegg = new Vedlegg(null,
                             vedlegg.getSoknadId(), vedlegg.getFaktumId(),
-                            vedlegg.getskjemaNummer(), vedlegg.getNavn(),
-                            (long) baos.size(), 1,
+                            vedlegg.getskjemaNummer(),
+                            fleretillattString,
+                            vedlegg.getNavn(), (long) baos.size(), 1,
                             UUID.randomUUID().toString(), null,
                             Vedlegg.Status.UnderBehandling);
                     resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
@@ -346,12 +356,17 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId, WebSoknad soknad) {
-        List<Vedlegg> result = vedleggRepository.hentPaakrevdeVedlegg(soknadId);
+        List<Vedlegg> paakrevdeVedlegg = vedleggRepository.hentPaakrevdeVedlegg(soknadId);
+        List<Vedlegg> result = new ArrayList<Vedlegg>();
         
-        for (Vedlegg vedlegg : result) {
-            vedlegg = medKodeverk(vedlegg);
+        List<String> innlagtSkjemaNr = new ArrayList<String>();
+        for (Vedlegg vedlegg : paakrevdeVedlegg) {
+            if(vedlegg.getFlereTillatt() || !innlagtSkjemaNr.contains(vedlegg.getskjemaNummer()))  {
+                innlagtSkjemaNr.add(vedlegg.getskjemaNummer());
+                vedlegg = medKodeverk(vedlegg);
+                result.add(vedlegg);
+            }
         }
-        
         return result;
     }
 
@@ -362,13 +377,22 @@ public class SoknadService implements SendSoknadService, VedleggService {
             Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummer(faktum.getSoknadId(), faktum.getFaktumId(), soknadVedlegg.getSkjemaNummer());
             if (soknadVedlegg.trengerVedlegg(faktum)) {
                 if (vedlegg == null) {
-                    vedlegg = new Vedlegg(faktum.getSoknadId(), faktum.getFaktumId(), soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
+                    String flereTillattString;
+                    if(soknadVedlegg.getFlereTillatt()){
+                        flereTillattString = "1";
+                    } else {
+                        flereTillattString = "0";
+                    }
+                    
+                    vedlegg = new Vedlegg(faktum.getSoknadId(), faktum.getFaktumId(), soknadVedlegg.getSkjemaNummer(),
+                            flereTillattString,  Vedlegg.Status.VedleggKreves);
                     vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
                 }
                 if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {
                     vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
-                    vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
                 }
+                vedlegg.setInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+                vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
             } else if (vedlegg != null) {
                 vedlegg.setInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
                 vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
