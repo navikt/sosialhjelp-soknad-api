@@ -168,6 +168,11 @@
                 <version>${fillager.tjenestespec.version}</version>
             </dependency>
             <dependency>
+                <groupId>no.nav.sbl.dialogarena</groupId>
+                <artifactId>arena-personinfo-tjenestespesifikasjon</artifactId>
+                <version>0.0.1</version>
+            </dependency>
+            <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>dokumentinnsending-consumer</artifactId>
                 <version>${dialogarena.dokumentinnsending.version}</version>

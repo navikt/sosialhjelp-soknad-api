@@ -66,12 +66,19 @@
 					</li>
 				</ul>
 
-				<form>
+
+				<form data-ng-if="oppsummering != true">
 					<div class="nav-checkbox">
 						<input id="lestBrosjyre" data-ng-model="utslagskriterier.harlestbrosjyre" type="checkbox"	/>
 						<label for="lestBrosjyre" data-cmstekster="dagpenger.informasjonsside.lestbrosjyre.sporsmal"></label>
 					</div>
 				</form>
+				
+				<div id="oppsummering" data-ng-if="oppsummering == true">
+					<span class="sjekket"></span>
+                    <span>{{ 'dagpenger.informasjonsside.lestbrosjyre.sporsmal' | cmstekst }}</span>
+				</div>
+
 
 				<div class="brosjyre-info" data-ng-show="skalViseBrosjyreMelding">
 					<div data-navinfoboks>
