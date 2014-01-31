@@ -2,7 +2,7 @@
 <div data-stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="2"></div>
 
 <div data-ng-form="vedleggForm" id="vedlegg" class="soknad" data-sidetittel="sidetittel.opplasting"
-     data-ng-controller="VedleggCtrl">
+     data-ng-controller="VedleggCtrl" data-trigg-bolker>
     <div class="rad-belyst inforad">
         <div class="begrensning sak-totredel">
             <section class="panel-standard ">
@@ -121,8 +121,8 @@
     <div class="rad-belyst leggtilekstra">
         <div class="begrensning sak-totredel">
             <section class="panel-standard oversikt">
-                <button class="knapp-stor" data-cmstekster="vedlegg.leggtilekstravedlegg"
-                        data-ng-click="nyttAnnetVedlegg()"></button>
+                <a class="knapp-stor" data-cmstekster="vedlegg.leggtilekstravedlegg"
+                        data-ng-click="nyttAnnetVedlegg()"></a>
             </section>
         </div>
     </div>

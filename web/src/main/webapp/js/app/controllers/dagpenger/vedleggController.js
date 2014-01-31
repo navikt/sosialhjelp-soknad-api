@@ -10,15 +10,17 @@ angular.module('nav.vedlegg.controller', [])
         $scope.data = {soknadId: data.soknad.soknadId};
 
         $scope.forventninger = vedleggService.query({soknadId: data.soknad.soknadId});
+        console.log($scope.forventninger);
+
         $scope.sidedata = {navn: 'vedlegg'};
 
         $scope.validert = {value: ''};
-//        $scope.bolkerMedFeil = [];
 
         $scope.validerVedlegg = function (form) {
             if (form.$valid) {
                 $location.path('/oppsummering');
             } else {
+                $scope.$emit("APNE_VEDLEGGBOLKER");
                 $scope.validert.value = true;
             }
             $scope.runValidation(true);
@@ -38,16 +40,12 @@ angular.module('nav.vedlegg.controller', [])
                         $scope.forventninger.push.apply($scope.forventninger, forventninger);
                     });
                 });
+
+            console.log($scope.forventninger);
         };
     }])
 
     .controller('validervedleggCtrl', ['$scope', 'Faktum', function ($scope, Faktum) {
-//        if ($scope.bolkerMedFeil.length === 0) {
-//            angular.forEach($scope.forventninger, function (forventning, nokkel) {
-//                $scope.bolkerMedFeil.push(forventning.skjemaNummer);
-//            });
-//        }
-
         if ($scope.forventning.innsendingsvalg === "VedleggKreves") {
             $scope.hiddenFelt = {value: '' };
             $scope.skalViseFeil = { value: true };
@@ -91,7 +89,6 @@ angular.module('nav.vedlegg.controller', [])
                 $scope.skalViseFeil.value = false;
             }
 
-//            $scope.bolkerMedFeil.splice($scope.bolkerMedFeil.indexOf(forventning.skjemaNummer), 1);
         };
 
         $scope.erEkstraVedlegg = function (forventning) {
