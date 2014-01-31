@@ -8,19 +8,14 @@ angular.module('nav.vedlegg.controller', [])
 
     .controller('VedleggCtrl', ['$scope', '$location', '$routeParams', '$anchorScroll', 'data', 'vedleggService', 'Faktum', 'VedleggForventning', function ($scope, $location, $routeParams, $anchorScroll, data, vedleggService, Faktum, VedleggForventning) {
         $scope.data = {soknadId: data.soknad.soknadId};
-
         $scope.forventninger = vedleggService.query({soknadId: data.soknad.soknadId});
-        console.log($scope.forventninger);
-
         $scope.sidedata = {navn: 'vedlegg'};
-
         $scope.validert = {value: ''};
 
         $scope.validerVedlegg = function (form) {
             if (form.$valid) {
                 $location.path('/oppsummering');
             } else {
-                $scope.$emit("APNE_VEDLEGGBOLKER");
                 $scope.validert.value = true;
             }
             $scope.runValidation(true);
@@ -40,8 +35,6 @@ angular.module('nav.vedlegg.controller', [])
                         $scope.forventninger.push.apply($scope.forventninger, forventninger);
                     });
                 });
-
-            console.log($scope.forventninger);
         };
     }])
 
@@ -62,8 +55,6 @@ angular.module('nav.vedlegg.controller', [])
 
             $scope.skalViseFeil = { value: true };
             $scope.validert.value = false;
-
-
         };
 
         $scope.lagreVedlegg = function (forventning) {
@@ -88,7 +79,6 @@ angular.module('nav.vedlegg.controller', [])
                 $scope.hiddenFelt.value = true;
                 $scope.skalViseFeil.value = false;
             }
-
         };
 
         $scope.erEkstraVedlegg = function (forventning) {
@@ -101,7 +91,6 @@ angular.module('nav.vedlegg.controller', [])
             $scope.forventninger.splice(index, 1);
             $scope.skalViseFeil = { value: true };
             $scope.validert.value = false;
-
         };
     }])
 
