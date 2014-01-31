@@ -208,6 +208,19 @@ public class HandleBarKjoerer {
             }
         });
 
+        handlebars.registerHelper("hvisMer", new Helper<String>() {
+            @Override
+            public CharSequence apply(String value, Options options) throws IOException {
+                Integer grense = Integer.parseInt((String) options.param(0));
+                Integer verdi = Integer.parseInt(value);
+                if(verdi > grense){
+                    return options.fn(this);
+                } else {
+                    return options.inverse(this);
+                }
+            }
+        });
+
         handlebars.registerHelper("hvisLik", new Helper<Object>() {
             @Override
             public CharSequence apply(Object value, Options options) throws IOException {
@@ -226,6 +239,15 @@ public class HandleBarKjoerer {
                 return tekst;
             }
         });
+
+        handlebars.registerHelper("hentTekstMedParameter", new Helper<String>() {
+            @Override
+            public CharSequence apply(String key, Options options) throws IOException {
+                String tekst = new StringResourceModel(key, null, options.param(0)).getString();
+                return tekst;
+            }
+        });
+
 
         handlebars.registerHelper("hentLand", new Helper<String>() {
             @Override
