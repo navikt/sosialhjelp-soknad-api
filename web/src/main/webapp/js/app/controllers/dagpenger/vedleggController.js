@@ -66,16 +66,22 @@ angular.module('nav.vedlegg.controller', [])
         };
 
         $scope.endreInnsendingsvalg = function (forventning, valg) {
-            if (valg !== undefined) {
+            if (valg !== 'SendesSenere' && valg !== 'SendesIkke') {
                 forventning.innsendingsvalg = valg;
             }
-
-            forventning.$save();
-
             if (!$scope.hiddenFelt) {
-                $scope.hiddenFelt = { value: true };
-                $scope.skalViseFeil = { value: false };
+                $scope.hiddenFelt = { value: "" };
+                $scope.skalViseFeil = { value: "" };
+            }
+
+            if (forventning.innsendingsvalg === valg) {
+                forventning.innsendingsvalg = null;
+                $scope.hiddenFelt.value = "";
+                $scope.skalViseFeil.value = true;
             } else {
+                forventning.innsendingsvalg = valg;
+                forventning.$save();
+
                 $scope.hiddenFelt.value = true;
                 $scope.skalViseFeil.value = false;
             }
