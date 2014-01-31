@@ -8,12 +8,9 @@ angular.module('nav.vedlegg.controller', [])
 
     .controller('VedleggCtrl', ['$scope', '$location', '$routeParams', '$anchorScroll', 'data', 'vedleggService', 'Faktum', 'VedleggForventning', function ($scope, $location, $routeParams, $anchorScroll, data, vedleggService, Faktum, VedleggForventning) {
         $scope.data = {soknadId: data.soknad.soknadId};
-
         $scope.forventninger = vedleggService.query({soknadId: data.soknad.soknadId});
         $scope.sidedata = {navn: 'vedlegg'};
-
         $scope.validert = {value: ''};
-//        $scope.bolkerMedFeil = [];
 
         $scope.validerVedlegg = function (form) {
             if (form.$valid) {
@@ -42,12 +39,6 @@ angular.module('nav.vedlegg.controller', [])
     }])
 
     .controller('validervedleggCtrl', ['$scope', 'Faktum', function ($scope, Faktum) {
-//        if ($scope.bolkerMedFeil.length === 0) {
-//            angular.forEach($scope.forventninger, function (forventning, nokkel) {
-//                $scope.bolkerMedFeil.push(forventning.skjemaNummer);
-//            });
-//        }
-
         if ($scope.forventning.innsendingsvalg === "VedleggKreves") {
             $scope.hiddenFelt = {value: '' };
             $scope.skalViseFeil = { value: true };
@@ -64,8 +55,6 @@ angular.module('nav.vedlegg.controller', [])
 
             $scope.skalViseFeil = { value: true };
             $scope.validert.value = false;
-
-
         };
 
         $scope.lagreVedlegg = function (forventning) {
@@ -77,21 +66,25 @@ angular.module('nav.vedlegg.controller', [])
         };
 
         $scope.endreInnsendingsvalg = function (forventning, valg) {
-            if (valg !== undefined) {
+            if (valg !== 'SendesSenere' && valg !== 'SendesIkke') {
                 forventning.innsendingsvalg = valg;
             }
-
-            forventning.$save();
-
             if (!$scope.hiddenFelt) {
-                $scope.hiddenFelt = { value: true };
-                $scope.skalViseFeil = { value: false };
+                $scope.hiddenFelt = { value: "" };
+                $scope.skalViseFeil = { value: "" };
+            }
+
+            if (forventning.innsendingsvalg === valg) {
+                forventning.innsendingsvalg = null;
+                $scope.hiddenFelt.value = "";
+                $scope.skalViseFeil.value = true;
             } else {
+                forventning.innsendingsvalg = valg;
+                forventning.$save();
+
                 $scope.hiddenFelt.value = true;
                 $scope.skalViseFeil.value = false;
             }
-
-//            $scope.bolkerMedFeil.splice($scope.bolkerMedFeil.indexOf(forventning.skjemaNummer), 1);
         };
 
         $scope.erEkstraVedlegg = function (forventning) {
@@ -104,7 +97,6 @@ angular.module('nav.vedlegg.controller', [])
             $scope.forventninger.splice(index, 1);
             $scope.skalViseFeil = { value: true };
             $scope.validert.value = false;
-
         };
     }])
 
