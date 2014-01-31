@@ -43,6 +43,7 @@ public class SoknadRepositoryJdbcTest {
     private String aktorId = "1";
     private String behandlingsId = "1";
     private String skjemaNummer = "skjemaNummer";
+    private String uuid = "123";
 
 
     @After
@@ -60,6 +61,7 @@ public class SoknadRepositoryJdbcTest {
     @Test(expected = DataIntegrityViolationException.class)
     public void skalIkkeKunneOppretteUtenAktorId() {
         soknad = WebSoknad.startSoknad()
+                .medUuid(uuid)
                 .medBehandlingId(behandlingsId)
                 .medskjemaNummer(skjemaNummer)
                 .opprettetDato(now());
@@ -70,6 +72,7 @@ public class SoknadRepositoryJdbcTest {
     @Test(expected = DataIntegrityViolationException.class)
     public void skalIkkeKunneOppretteUtenBehandlingId() {
         soknad = WebSoknad.startSoknad()
+                .medUuid(uuid)
                 .medAktorId(aktorId)
                 .medskjemaNummer(skjemaNummer)
                 .opprettetDato(now());
@@ -80,6 +83,7 @@ public class SoknadRepositoryJdbcTest {
     @Test(expected = DataIntegrityViolationException.class)
     public void skalIkkeKunneOppretteUtenskjemaNummer() {
         soknad = WebSoknad.startSoknad()
+                .medUuid(uuid)
                 .medAktorId(aktorId)
                 .medBehandlingId(behandlingsId)
                 .opprettetDato(now());
@@ -256,6 +260,7 @@ public class SoknadRepositoryJdbcTest {
 
     private void opprettOgPersisterSoknad(String behId, String aktor) {
         soknad = WebSoknad.startSoknad()
+                .medUuid(uuid)
                 .medAktorId(aktor)
                 .medBehandlingId(behId)
                 .medskjemaNummer(skjemaNummer).opprettetDato(now());
