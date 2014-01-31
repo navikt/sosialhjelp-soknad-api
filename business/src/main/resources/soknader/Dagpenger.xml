@@ -346,6 +346,7 @@
         <faktum>ekstraVedlegg</faktum>
         <onValue>true</onValue>
         <skjemaNummer>N6</skjemaNummer>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
     <vedlegg>
         <id>3</id>
