@@ -2,7 +2,7 @@
 <div data-stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="2"></div>
 
 <div data-ng-form="vedleggForm" id="vedlegg" class="soknad" data-sidetittel="sidetittel.opplasting"
-     data-ng-controller="VedleggCtrl">
+     data-ng-controller="VedleggCtrl" data-trigg-bolker>
     <div class="rad-belyst inforad">
         <div class="begrensning sak-totredel">
             <section class="panel-standard ">
@@ -83,7 +83,7 @@
                                     <input id="{{$index}}ettersendRadio"
                                            data-ng-model="forventning.innsendingsvalg"
                                            type="radio" value="SendesSenere"
-                                           data-ng-change="endreInnsendingsvalg(forventning)">
+                                           data-ng-click="endreInnsendingsvalg(forventning, 'SendesSenere')">
                                     <label for="{{$index}}ettersendRadio"
                                            data-cmstekster="vedlegg.faktum.ettersend"></label>
 
@@ -91,7 +91,7 @@
                                            data-ng-model="forventning.innsendingsvalg"
                                            type="radio"
                                            value="SendesIkke"
-                                           data-ng-change="endreInnsendingsvalg(forventning)">
+                                           data-ng-click="endreInnsendingsvalg(forventning, 'SendesIkke')">
                                     <label for="{{$index}}ikkesendRadio"
                                            data-cmstekster="vedlegg.faktum.ikkesend"></label>
                                     <input type="hidden" data-ng-model="hiddenFelt.value" data-ng-required="true"
@@ -121,8 +121,8 @@
     <div class="rad-belyst leggtilekstra">
         <div class="begrensning sak-totredel">
             <section class="panel-standard oversikt">
-                <button class="knapp-stor" data-cmstekster="vedlegg.leggtilekstravedlegg"
-                        data-ng-click="nyttAnnetVedlegg()"></button>
+                <a class="knapp-stor" data-cmstekster="vedlegg.leggtilekstravedlegg"
+                   data-ng-click="nyttAnnetVedlegg()"></a>
             </section>
         </div>
     </div>
@@ -130,8 +130,9 @@
     <div class="rad ferdig-skjema">
         <div class="begrensning sak-totredel">
             <section class="panel-standard oversikt">
-                <a class="knapp-hoved" data-ng-click="validerVedlegg(vedleggForm)" data-cmstekster="vedlegg.ferdig"
-                        data-fremdriftsindikator></a>
+                <a id="til-oppsummering" class="knapp-hoved" data-ng-click="validerVedlegg(vedleggForm)"
+                   data-cmstekster="vedlegg.ferdig"
+                   data-fremdriftsindikator></a>
             </section>
         </div>
     </div>
