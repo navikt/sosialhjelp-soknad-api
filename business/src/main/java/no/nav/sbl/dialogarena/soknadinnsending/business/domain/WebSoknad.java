@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
 import org.apache.commons.collections15.Predicate;
 import org.joda.time.DateTime;
+import org.springframework.ui.context.support.UiApplicationContextUtils;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -58,7 +59,6 @@ public class WebSoknad implements Serializable {
     }
 
     public WebSoknad() {
-        uuid = randomUUID().toString();
         fakta = new LinkedHashMap<>();
         faktaListe = new ArrayList<>();
     }
@@ -189,6 +189,11 @@ public class WebSoknad implements Serializable {
 
     public WebSoknad medStatus(SoknadInnsendingStatus status) {
         this.status = status;
+        return this;
+    }
+    
+    public WebSoknad medUuid(String uuid) {
+        this.uuid = uuid;
         return this;
     }
 
