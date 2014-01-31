@@ -1,8 +1,8 @@
 angular.module('nav.vedleggbolker', [])
     .directive('triggBolker', ['$timeout', function ($timeout) {
-
         return {
-            link: function($scope, element) {
+            require: 'form',
+            link: function($scope, element, attrs, ctrl) {
                 $timeout(function() {
                    var bolker = $(".accordion-group");
                    var bolkerMedFeil = finnBolkerMedFeil(bolker);
@@ -10,15 +10,21 @@ angular.module('nav.vedleggbolker', [])
                     apneForsteBolkMedFeil(bolkerMedFeil[0]);
                 }, 500);
 
-
-                $scope.$on('APNE_VEDLEGGBOLKER', function () {
-                    var alleBolker = finnAlleBolker();
-                    apneBolker(alleBolker);
+                //Bolker med feil og som er lukket skal åpnes ved validering av hele vedleggsiden
+                element.find('#til-oppsummering').bind('click', function() {
+                    if(ctrl.$invalid) {
+                        var alleBolker = finnAlleBolker();
+                        var alleBolkerMedFeil = finnBolkerMedFeil(alleBolker);
+                        apneBolkerSomIkkeErApenFraFor(alleBolkerMedFeil);
+                    }
                 });
 
-                function apneBolker(bolker) {
+                function apneBolkerSomIkkeErApenFraFor(bolker) {
                     for(var i =0; i<bolker.length; i++) {
-                        $(bolker[i]).find('.accordion-toggle').trigger('click');
+                        var bolk = $(bolker[i]);
+                        if(!(bolk.hasClass('open'))) {
+                            bolk.find('.accordion-toggle').trigger('click');
+                        }
                     }
                 }
 
