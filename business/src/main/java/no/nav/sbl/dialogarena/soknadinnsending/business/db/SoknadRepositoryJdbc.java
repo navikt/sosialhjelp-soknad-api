@@ -350,6 +350,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
                     .medBehandlingId(rs.getString("brukerbehandlingid"))
                     .medskjemaNummer(rs.getString("navsoknadid"))
                     .medAktorId(rs.getString("aktorid"))
+                    .medUuid("uuid")
                     .opprettetDato(
                             new DateTime(rs.getTimestamp("opprettetdato")
                                     .getTime()))
