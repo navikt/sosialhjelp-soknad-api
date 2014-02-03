@@ -16,8 +16,10 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 			$scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
 			$scope.skalViseBrosjyreMelding = false;
 			
+			$scope.oppsummering=false;
 			if(getBehandlingIdFromUrl() != "Dagpenger") {
 				$scope.utslagskriterier.harlestbrosjyre=true;
+				$scope.oppsummering=true;
 			}
 
 			$scope.fremdriftsindikator = {
