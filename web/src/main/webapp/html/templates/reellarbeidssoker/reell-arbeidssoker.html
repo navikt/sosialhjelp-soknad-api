@@ -73,15 +73,16 @@
             <div class="tekstfelt form-linje arbeidsmengde-container">
                 <label>
                     <span data-cmstekster="reellarbeidssoker.maksimalarbeidstid"></span>
-                    <input data-ng-model="faktum.value"
-                           type="text"
-                           data-ng-required="erSynlig('egennaering.gardsbruk')"
-                           data-error-messages="{ required: 'reellarbeidssoker.maksimalarbeidstid.feilmelding', pattern: 'reellarbeidssoker.maksimalarbeidstid.pattern.feilmelding'}"
-                           data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
-                           data-blur-validate
-                           data-tekstfelt-patternvalidering
+                    <input type="text"
+                           data-ng-model="faktum.value"
                            data-nav-faktum="reellarbeidssoker.villigdeltid.maksimalarbeidstid"
-                           data-navconfig/>
+                           data-navconfig
+                           data-ng-required="true"
+                           data-error-messages="{ required: 'reellarbeidssoker.maksimalarbeidstid.feilmelding',
+                           pattern: 'reellarbeidssoker.maksimalarbeidstid.pattern.feilmelding'}"
+                           data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
+                           data-tekstfelt-patternvalidering
+                           data-blur-validate />
                     <span class="timer" data-cmstekster="egennaering.gardsbruk.false.timer"></span>
                     <span class="melding"></span>
                 </label>

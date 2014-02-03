@@ -23,8 +23,8 @@ angular.module('nav.validering', ['nav.cmstekster'])
 				valideringsMetoder.push(new LengthValidator(attrs));
 
 				scope.$on(eventString, function () {
-					if (!sjekkOmInputErGyldig() && element.is(':visible')) {
-						formElem.addClass('feil');
+					if (!sjekkOmInputErGyldig()) {
+                        formElem.addClass('feil');
 					}
 				});
 
@@ -34,13 +34,14 @@ angular.module('nav.validering', ['nav.cmstekster'])
 					}
 				});
 
-				scope.$watch(function () {
-					return element.is(':visible');
-				}, function (erSynlig) {
-					if (!erSynlig) {
-						formElem.removeClass('feil');
-					}
-				});
+//				scope.$watch(function () {
+//					return element.is(':visible');
+//				}, function (erSynlig) {
+//					if (!erSynlig) {
+//                        console.log(form.$name);
+//                        formElem.removeClass('feil');
+//					}
+//				});
 
 				scope.$watch(function () {
 					return ngModel.$viewValue;
