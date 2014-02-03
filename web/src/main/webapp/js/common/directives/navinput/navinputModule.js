@@ -58,9 +58,13 @@ angular.module('nav.input', ['nav.cmstekster'])
 						return scope.hjelpetekst.tittel && scope.hjelpetekst.tekst;
 					};
 
-					scope.hvisHuketAv = function () {
+                    scope.erHuketAv = function() {
+                        return checkTrue(scope.faktum.value);
+                    }
+
+					scope.harTranscludedInnhold = function () {
 						var transcludeElement = element.find('.ng-transclude');
-						return checkTrue(scope.faktum.value) && transcludeElement.text().trim().length > 0;
+						return transcludeElement.text().trim().length > 0;
 					};
 					scope.endret = function () {
 						scope.$eval(scope.navendret);
