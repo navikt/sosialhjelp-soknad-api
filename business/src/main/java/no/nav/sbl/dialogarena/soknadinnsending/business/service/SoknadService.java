@@ -397,7 +397,13 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {
                     vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
                 }
-                vedlegg.setInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+                
+                if(vedlegg.getStorrelse() > 0) {
+                    vedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
+                } else {
+                    vedlegg.setInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+                }
+                
                 vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
             } else if (vedlegg != null) {
                 vedlegg.setInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
