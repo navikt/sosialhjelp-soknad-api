@@ -19,6 +19,7 @@ import no.nav.sbl.dialogarena.pdf.PdfMerger;
 import no.nav.sbl.dialogarena.pdf.PdfWatermarker;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -112,6 +113,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         faktum.setType(BRUKERREGISTRERT_FAKTUM);
         Long faktumId = repository.lagreFaktum(soknadId, faktum);
         repository.settSistLagretTidspunkt(soknadId);
+        repository.setDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
         Faktum resultat = repository.hentFaktum(soknadId, faktumId);
         genererVedleggForFaktum(resultat);
 
@@ -126,6 +128,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
             vedleggRepository.slettVedleggOgData(soknadId, vedlegg.getFaktumId(), vedlegg.getskjemaNummer());
         }
         repository.slettBrukerFaktum(soknadId, faktumId);
+        repository.setDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
     }
 
     @Override
@@ -314,6 +317,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public void slettVedlegg(Long soknadId, Long vedleggId) {
         vedleggRepository.slettVedlegg(soknadId, vedleggId);
+        repository.setDelstegstatus(soknadId, DelstegStatus.SKJEMA_VALIDERT);
     }
 
     @Override
@@ -425,6 +429,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg) {
         vedleggRepository.lagreVedlegg(soknadId, vedleggId, vedlegg);
+        repository.setDelstegstatus(soknadId, DelstegStatus.SKJEMA_VALIDERT);
     }
 
     private SoknadStruktur hentStruktur(String skjema) {
