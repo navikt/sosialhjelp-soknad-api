@@ -42,6 +42,9 @@ angular.module('nav.vedlegg.controller', [])
         if ($scope.forventning.innsendingsvalg === "VedleggKreves") {
             $scope.hiddenFelt = {value: '' };
             $scope.skalViseFeil = { value: true };
+        } else {
+            $scope.hiddenFelt = {value: 'true' };
+            $scope.skalViseFeil = { value: false };
         }
 
 
