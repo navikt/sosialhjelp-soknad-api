@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
+import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
@@ -174,6 +175,15 @@ public class MockConsumerConfig {
         @Bean
         public FilLagerPortType fillagerServiceSelftest() {
             return fillagerService();
+        }
+    }
+
+    @Configuration
+    public static class PersonInfoWSConfig {
+
+        @Bean
+        public PersonInfoServiceSoap personInfoServiceSoap() {
+            return mock(PersonInfoServiceSoap.class);
         }
     }
 

@@ -41,10 +41,12 @@
         <baseUrl alias="soknad.sluttaarsak" mapToProperty="soknad.sluttaarsak"/>
         <baseUrl alias="soknad.lonnskravskjema" mapToProperty="soknad.lonnskravskjema" />
         <baseUrl alias="soknad.permitteringsskjema" mapToProperty="soknad.permitteringsskjema" />
+        <baseUrl alias="arena.personinfoservice" mapToProperty="soknad.webservice.arena.personinfo"/>
 
         <smtpServer alias="dokumentinnsending.smtpServer" mapToProperty="dokumentinnsending.smtpServer"/>
         <localFiles name="sendsoknad" mapToProperty="sendsoknad.datadir"/>
         <applicationCertificate alias="srvSendsoknad"/>
+        <credential alias="arena.personInfoService" mapToProperty="arena.personInfoService"/>
     </resources>
     <security serviceUserResourceAlias="srvSendsoknad">
         <logins>

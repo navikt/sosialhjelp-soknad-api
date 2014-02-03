@@ -106,6 +106,14 @@ angular.module('nav.select', ['ngSanitize'])
 						element.addClass('fokus');
 					});
 
+                    scope.navSelect = function() {
+                        return !scope.vanligSelect();
+                    }
+
+                    scope.vanligSelect = function() {
+                        return erTouchDevice();
+                    }
+
 					scope.$on(eventForAValidereHeleFormen, function () {
 						harHattFokus = true;
 					});

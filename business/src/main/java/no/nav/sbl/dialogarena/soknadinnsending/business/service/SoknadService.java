@@ -55,6 +55,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import static java.util.UUID.randomUUID;
+
 @Component
 public class SoknadService implements SendSoknadService, VedleggService {
     private static final Logger logger = getLogger(SoknadService.class);
@@ -118,6 +120,11 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public void slettBrukerFaktum(Long soknadId, Long faktumId) {
+        List<Vedlegg> vedleggliste = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
+        
+        for (Vedlegg vedlegg : vedleggliste) {
+            vedleggRepository.slettVedleggOgData(soknadId, vedlegg.getFaktumId(), vedlegg.getskjemaNummer());
+        }
         repository.slettBrukerFaktum(soknadId, faktumId);
     }
 
@@ -218,9 +225,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 .startSoknad(getSubjectHandler().getUid());
         WebSoknad soknad = WebSoknad.startSoknad()
                 .medBehandlingId(behandlingsId).medskjemaNummer(navSoknadId)
-                .
-                        // medAktorId(aktorIdService.hentAktorIdForFno(getSubjectHandler().getUid())).
-                                medAktorId(getSubjectHandler().getUid())
+                .medUuid(randomUUID().toString())
+                .medAktorId(getSubjectHandler().getUid())
                 .opprettetDato(DateTime.now());
 
         Long soknadId = repository.opprettSoknad(soknad);

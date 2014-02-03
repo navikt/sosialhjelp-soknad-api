@@ -59,7 +59,6 @@
                      data-navlabel="reellarbeidssoker.annensituasjon"
                      data-navendret="endreDeltidsAarsaker()"></div>
 
-
                 <div data-navinfoboks>
                     <p data-cmstekster="reellarbeidssoker.unntak.dokumentasjon"></p>
                 </div>
@@ -67,23 +66,26 @@
                 <span class="melding"
                       data-cmstekster="reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding"></span>
 
-
-            <p class="informasjonstekst" data-cmstekster="reellarbeidssoker.villigdeltid.false.informasjon2"></p>
-
-
-            </div>
-            <div data-navtekst class="arbeidsmengde-container form-linje ekstra-spm-boks tekstboks"
-                 data-ng-model="faktum.value"
-                 data-nav-faktum="reellarbeidssoker.villigdeltid.maksimalarbeidstid"
-                 data-navconfig
-                 data-navlabel="reellarbeidssoker.maksimalarbeidstid"
-                 data-ng-required
-                 data-navfeilmelding="{ required: 'reellarbeidssoker.maksimalarbeidstid.feilmelding', pattern: 'reellarbeidssoker.maksimalarbeidstid.pattern.feilmelding'}"
-                 data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
-                 data-tekstfelt-patternvalidering
-                 data-blur-validate>
+                <p class="informasjonstekst" data-cmstekster="reellarbeidssoker.villigdeltid.false.informasjon2"></p>
             </div>
 
+
+            <div class="tekstfelt form-linje arbeidsmengde-container">
+                <label>
+                    <span data-cmstekster="reellarbeidssoker.maksimalarbeidstid"></span>
+                    <input data-ng-model="faktum.value"
+                           type="text"
+                           data-ng-required="erSynlig('egennaering.gardsbruk')"
+                           data-error-messages="{ required: 'reellarbeidssoker.maksimalarbeidstid.feilmelding', pattern: 'reellarbeidssoker.maksimalarbeidstid.pattern.feilmelding'}"
+                           data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
+                           data-blur-validate
+                           data-tekstfelt-patternvalidering
+                           data-nav-faktum="reellarbeidssoker.villigdeltid.maksimalarbeidstid"
+                           data-navconfig/>
+                    <span class="timer" data-cmstekster="egennaering.gardsbruk.false.timer"></span>
+                    <span class="melding"></span>
+                </label>
+            </div>
         </div>
 
         <div data-nav-faktum="reellarbeidssoker.villigpendle"
@@ -160,6 +162,7 @@
             <div data-navinfoboks>
                 <span data-cmstekster="reellarbeidssoker.villighelse.false.vedlegginformasjon"></span>
             </div>
+
             <div data-navtextarea
                  data-navconfig
                  data-nav-faktum="reellarbeidssoker.villighelse.fritekst"

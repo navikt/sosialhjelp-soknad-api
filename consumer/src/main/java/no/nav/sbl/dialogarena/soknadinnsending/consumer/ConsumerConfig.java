@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
+import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
@@ -12,6 +13,10 @@ import no.nav.tjeneste.virksomhet.aktoer.v1.AktoerPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
+import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
+import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
+import org.apache.ws.security.WSPasswordCallback;
+import org.apache.ws.security.handler.WSHandlerConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +24,14 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.UnsupportedCallbackException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.lang.System.getProperty;
 import static java.lang.System.setProperty;
 
 @Configuration
@@ -36,6 +49,7 @@ public class ConsumerConfig {
             AktorWsConfig.class,
             SendSoknadWSConfig.class,
             FilLagerWSConfig.class,
+            PersonInfoWSConfig.class,
             BrukerProfilWSConfig.class,
             KodeverkWSConfig.class,
             PersonWSConfig.class})
@@ -94,6 +108,36 @@ public class ConsumerConfig {
         public FilLagerPortType fillagerServiceSelftest() {
             return factory().withSystemSecurity().get();
         }
+    }
+
+    @Configuration
+    public static class PersonInfoWSConfig {
+        @Value("${soknad.webservice.arena.personinfo.url}")
+        private String endpoint;
+
+        @Bean
+        public PersonInfoServiceSoap personInfoServiceSoap() {
+            JaxWsProxyFactoryBean factoryBean = new JaxWsProxyFactoryBean();
+            factoryBean.setServiceClass(PersonInfoServiceSoap.class);
+            factoryBean.setAddress(endpoint);
+            Map<String, Object> map = new HashMap<>();
+            map.put(WSHandlerConstants.ACTION, WSHandlerConstants.USERNAME_TOKEN);
+            map.put(WSHandlerConstants.PASSWORD_TYPE, "PasswordText");
+
+            map.put(WSHandlerConstants.USER, getProperty("arena.personInfoService.username"));
+            CallbackHandler passwordCallbackHandler = new CallbackHandler() {
+                @Override
+                public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
+                    WSPasswordCallback callback = (WSPasswordCallback) callbacks[0];
+                    callback.setPassword(getProperty("arena.personInfoService.password"));
+                }
+            };
+            map.put(WSHandlerConstants.PW_CALLBACK_REF, passwordCallbackHandler);
+            factoryBean.getOutInterceptors().add(new WSS4JOutInterceptor(map));
+
+            return factoryBean.create(PersonInfoServiceSoap.class);
+        }
+
     }
 
     @Configuration
