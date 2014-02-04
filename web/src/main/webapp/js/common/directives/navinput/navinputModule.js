@@ -53,19 +53,24 @@ angular.module('nav.input', ['nav.cmstekster'])
 					}
 
 				},
-				post: function (scope, element) {
-					scope.hvisHarHjelpetekst = function () {
-						return scope.hjelpetekst.tittel && scope.hjelpetekst.tekst;
-					};
+                post: function (scope, element) {
+                    scope.hvisHarHjelpetekst = function () {
+                        return scope.hjelpetekst.tittel && scope.hjelpetekst.tekst;
+                    };
 
-					scope.hvisHuketAv = function () {
-						var transcludeElement = element.find('.ng-transclude');
-						return checkTrue(scope.faktum.value) && transcludeElement.text().trim().length > 0;
-					};
-					scope.endret = function () {
-						scope.$eval(scope.navendret);
-					};
-				}},
+                    scope.hvisHuketAv = function () {
+                        return checkTrue(scope.faktum.value);
+                    };
+
+                    scope.hvisHarTranscludedInnhold = function () {
+                        var transcludeElement = element.find('.ng-transclude');
+                        return transcludeElement.text().trim().length > 0;
+                    };
+
+                    scope.endret = function () {
+                        scope.$eval(scope.navendret);
+                    };
+                }},
 			templateUrl: '../js/common/directives/navinput/navcheckboxTemplate.html'
 		}
 	}])
