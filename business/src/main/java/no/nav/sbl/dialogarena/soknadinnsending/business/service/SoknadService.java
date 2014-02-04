@@ -241,14 +241,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public List<Long> splitOgLagreVedlegg(Vedlegg vedlegg,
                                           InputStream inputStream) {
         List<Long> resultat = new ArrayList<>();
-
-        String fleretillattString;
-        if(vedlegg.getFlereTillatt()) {
-            fleretillattString = "1";
-        } else {
-            fleretillattString = "0";
-        }
-        
         try {
             byte[] bytes = IOUtils.toByteArray(inputStream);
             if (Detect.isImage(bytes)) {
@@ -256,7 +248,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 
                 Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(),
                         vedlegg.getFaktumId(), vedlegg.getskjemaNummer(),
-                        fleretillattString,
                         vedlegg.getNavn(), (long) bytes.length, 1, UUID
                         .randomUUID().toString(), null,
                         Vedlegg.Status.UnderBehandling);
@@ -275,7 +266,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
                     Vedlegg sideVedlegg = new Vedlegg(null,
                             vedlegg.getSoknadId(), vedlegg.getFaktumId(),
                             vedlegg.getskjemaNummer(),
-                            fleretillattString,
                             vedlegg.getNavn(), (long) baos.size(), 1,
                             UUID.randomUUID().toString(), null,
                             Vedlegg.Status.UnderBehandling);
@@ -367,11 +357,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
         
         List<String> innlagtSkjemaNr = new ArrayList<String>();
         for (Vedlegg vedlegg : paakrevdeVedlegg) {
-            if(vedlegg.getFlereTillatt() || !innlagtSkjemaNr.contains(vedlegg.getskjemaNummer()))  {
-                innlagtSkjemaNr.add(vedlegg.getskjemaNummer());
-                vedlegg = medKodeverk(vedlegg);
-                result.add(vedlegg);
-            }
+            innlagtSkjemaNr.add(vedlegg.getskjemaNummer());
+            vedlegg = medKodeverk(vedlegg);
+            result.add(vedlegg);
         }
         return result;
     }
@@ -380,18 +368,10 @@ public class SoknadService implements SendSoknadService, VedleggService {
         SoknadStruktur struktur = hentStruktur(repository.hentSoknadType(faktum.getSoknadId()));
         List<SoknadVedlegg> aktuelleVedlegg = struktur.vedleggFor(faktum.getKey());
         for (SoknadVedlegg soknadVedlegg : aktuelleVedlegg) {
-            Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummer(faktum.getSoknadId(), faktum.getFaktumId(), soknadVedlegg.getSkjemaNummer());
+            Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummer(faktum.getSoknadId(), soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null, soknadVedlegg.getSkjemaNummer());
             if (soknadVedlegg.trengerVedlegg(faktum)) {
                 if (vedlegg == null) {
-                    String flereTillattString;
-                    if(soknadVedlegg.getFlereTillatt()){
-                        flereTillattString = "1";
-                    } else {
-                        flereTillattString = "0";
-                    }
-                    
-                    vedlegg = new Vedlegg(faktum.getSoknadId(), faktum.getFaktumId(), soknadVedlegg.getSkjemaNummer(),
-                            flereTillattString,  Vedlegg.Status.VedleggKreves);
+                    vedlegg = new Vedlegg(faktum.getSoknadId(), soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null, soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
                     vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
                 }
                 if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {
@@ -405,12 +385,35 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 }
                 
                 vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
-            } else if (vedlegg != null) {
+            } else if(!soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId() , soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValue(), struktur)) { //do nothing 
+            } else if (vedlegg != null) { // sett vedleggsforventning til ikke paakrevd
                 vedlegg.setInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
                 vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
             }
         }
+    }
 
+    /**
+     * 
+     * Looper alle mulige vedleggsforventinger for gitt skjemanummer, 
+     * dersom soknadbrukerdata har et innslag som har riktig onValue, returneres true (et annet faktum trigger vedlegget)
+     * ellers returneres false
+     * 
+     * @param soknadId
+     * @param skjemaNummer
+     * @param onValue
+     * @param struktur
+     * @return
+     */
+    private boolean annetFaktumHarForventning(Long soknadId, String skjemaNummer, String onValue, SoknadStruktur struktur) {
+        List<SoknadVedlegg> vedleggMedGittSkjemanummer = struktur.vedleggForSkjemanr(skjemaNummer);
+        for (SoknadVedlegg sv : vedleggMedGittSkjemanummer) {
+            String faktumKey = sv.getFaktum().getId();
+            if(repository.isVedleggPaakrevd(soknadId, faktumKey, onValue)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Vedlegg medKodeverk(Vedlegg vedlegg) {
