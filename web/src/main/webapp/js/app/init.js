@@ -1,5 +1,7 @@
 angular.module('sendsoknad')
-    .run(['$http', '$templateCache', function ($http, $templateCache) {
+    .value('data', {})
+    .value('cms', {})
+    .run(['$http', '$templateCache', '$rootScope', 'data', '$location', function ($http, $templateCache, $rootScope, data, $location) {
         $http.get('../html/templates/reellarbeidssoker/reell-arbeidssoker.html', {cache: $templateCache});
         $http.get('../html/templates/egen-naering.html', {cache: $templateCache});
         $http.get('../html/templates/verneplikt.html', {cache: $templateCache});
@@ -36,10 +38,52 @@ angular.module('sendsoknad')
         $http.get('../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html', {cache: $templateCache});
         $http.get('../js/app/directives/stegindikator/stegIndikatorTemplate.html', {cache: $templateCache});
         $http.get('../js/app/directives/stickybunn/stickyBunnTemplate.html', {cache: $templateCache});
+
+        $('#hoykontrast a, .skriftstorrelse a').attr('href', 'javascript:void(0)')
+
+        $rootScope.$on('$routeChangeSuccess', function(event, next, current) {
+            redirectDersomSoknadErFerdig();
+            if (next.$$route) {
+                if (next.$$route.originalPath === "/oppsummering") {
+                    redirectTilVedleggsideDersomVedleggIkkeErValidert();
+                    redirectTilSkjemasideDersomSkjemaIkkeErValidert();
+                } else if (next.$$route.originalPath === "/vedlegg") {
+                    redirectTilSkjemasideDersomSkjemaIkkeErValidert();
+                }
+            }
+        });
+
+        function harHentetData() {
+            return data && data.soknad;
+        }
+
+        function redirectDersomSoknadErFerdig() {
+            if (harHentetData() && data.soknad.status === "FERDIG") {
+                $location.path('/ferdigstilt');
+            }
+        }
+
+        function redirectTilSkjemasideDersomSkjemaIkkeErValidert() {
+            if (harHentetData() && !skjemaErValidert()) {
+                $location.path('/soknad');
+            }
+        }
+
+        function redirectTilVedleggsideDersomVedleggIkkeErValidert() {
+            if (harHentetData() && !vedleggErValidert()) {
+                $location.path('/vedlegg');
+            }
+        }
+
+        function skjemaErValidert() {
+            return data.soknad.delstegStatus === "SKJEMA_VALIDERT" || vedleggErValidert();
+        }
+
+        function vedleggErValidert() {
+            return data.soknad.delstegStatus === "VEDLEGG_VALIDERT";
+        }
     }])
-    .value('data', {})
-    .value('cms', {})
-    .factory('InformasjonsSideResolver', ['data', 'cms', '$resource', '$q', '$route', function (data, cms, $resource, $q, $route) {
+    .factory('InformasjonsSideResolver', ['data', 'cms', '$resource', '$q', '$route', '$location', function (data, cms, $resource, $q, $route, $location) {
         var promiseArray = [];
 
         var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
@@ -68,7 +112,7 @@ angular.module('sendsoknad')
                 function (result) { // Success
                     var soknadId = result.result;
                     
-                    var soknadMetadata = $resource('/sendsoknad/rest/soknad/metadata/:soknadId').get(
+                    $resource('/sendsoknad/rest/soknad/metadata/:soknadId').get(
                         {soknadId: soknadId},
                         function (result) { // Success
                             data.soknad = result;
@@ -104,7 +148,7 @@ angular.module('sendsoknad')
         return $q.all(promiseArray);
     }])
 
-    .factory('HentSoknadService', ['$rootScope', 'data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', '$http', function ($scope, data, cms, $resource, $q, $route, soknadService, landService, Faktum, $http) {
+    .factory('HentSoknadService', ['$rootScope', 'data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', '$http', '$location', function ($scope, data, cms, $resource, $q, $route, soknadService, landService, Faktum, $http, $location) {
         var promiseArray = [];
         
         var soknadOppsettDefer = $q.defer();
@@ -118,7 +162,7 @@ angular.module('sendsoknad')
                 var soknadId = result.result;
 
                 $http.post('/sendsoknad/rest/soknad/personalia', soknadId).then(function() {
-                    soknadService.get({param: soknadId},
+                    soknadService.get({soknadId: soknadId},
                         function (result) { // Success
                             data.soknad = result;
                             soknadDeferer.resolve();
@@ -165,7 +209,7 @@ angular.module('sendsoknad')
                     });
                 });
 
-                soknadService.options({param: soknadId},
+                soknadService.options({soknadId: soknadId},
                     function (result) { // Success
                         data.soknadOppsett = result;
                         soknadOppsettDefer.resolve();
@@ -207,12 +251,12 @@ angular.module('sendsoknad')
         );
         promiseArray.push(tekster.$promise);
 
-        var soknad = soknadService.get({param: soknadId},
+        var soknad = soknadService.get({soknadId: soknadId},
             function (result) { // Success
                 data.soknad = result;
             }
         );
-        var soknadOppsett = soknadService.options({param: soknadId},
+        var soknadOppsett = soknadService.options({soknadId: soknadId},
             function (result) { // Success
                 data.soknadOppsett = result;
             });

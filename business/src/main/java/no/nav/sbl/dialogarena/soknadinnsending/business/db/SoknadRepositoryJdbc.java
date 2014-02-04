@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import com.google.common.base.Function;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.FaktumEgenskap;
@@ -280,6 +281,8 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
                 .update("update soknad set sistlagret=? where soknad_id = ?", new Date(now().getMillis()), soknadId);
     }
 
+
+
     @Override
     public List<Faktum> hentAlleBrukerData(Long soknadId) {
         List<Faktum> fakta = select("select * from SOKNADBRUKERDATA where soknad_id = ? order by soknadbrukerdata_id asc", soknadDataRowMapper, soknadId);
@@ -348,6 +351,12 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         return getJdbcTemplate().queryForObject("select navsoknadid from soknad where soknad_id = ? ", String.class, soknadId);
     }
 
+    @Override
+    public void settDelstegstatus(Long soknadId, DelstegStatus status) {
+        getJdbcTemplate()
+                .update("update soknad set delstegstatus=? where soknad_id = ?", status.name(), soknadId);
+    }
+
     private <T> List<T> select(String sql, RowMapper<T> rowMapper, Object... args) {
         return getJdbcTemplate().query(sql, args, rowMapper);
     }
@@ -365,7 +374,8 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
                                     .getTime()))
                     .medStatus(
                             SoknadInnsendingStatus.valueOf(rs
-                                    .getString("status")));
+                                    .getString("status")))
+                    .medDelstegStatus(DelstegStatus.valueOf(rs.getString("delstegstatus")));
         }
     }
 }

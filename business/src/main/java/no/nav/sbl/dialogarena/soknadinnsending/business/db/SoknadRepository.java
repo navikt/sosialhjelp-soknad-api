@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 
@@ -50,4 +51,6 @@ public interface SoknadRepository {
     String hentSoknadType(Long soknadId);
 
     Boolean isVedleggPaakrevd(Long soknadId, String key, String value);
+
+    void settDelstegstatus(Long soknadId, DelstegStatus status);
 }
