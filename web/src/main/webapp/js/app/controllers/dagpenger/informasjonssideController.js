@@ -131,7 +131,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 				return !$scope.bosattINorge();
 			};
 
-            if ($scope.kravForDagpengerOppfylt()) {
+            if ($scope.kravForDagpengerOppfylt() && $scope.soknadErStartet()) {
                 if(data.soknad.delstegStatus === "SKJEMA_VALIDERT") {
                     $location.path('/vedlegg');
                 } else if(data.soknad.delstegStatus === "VEDLEGG_VALIDERT") {
