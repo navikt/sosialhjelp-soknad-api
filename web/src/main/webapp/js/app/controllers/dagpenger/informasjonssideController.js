@@ -130,4 +130,14 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 			$scope.ikkeBosattINorge = function () {
 				return !$scope.bosattINorge();
 			};
+
+            if ($scope.kravForDagpengerOppfylt() && $scope.soknadErStartet()) {
+                if(data.soknad.delstegStatus === "SKJEMA_VALIDERT") {
+                    $location.path('/vedlegg');
+                } else if(data.soknad.delstegStatus === "VEDLEGG_VALIDERT") {
+                    $location.path('/oppsummering');
+                } else {
+                    $location.path('/soknad');
+                }
+            };
 		}]);
