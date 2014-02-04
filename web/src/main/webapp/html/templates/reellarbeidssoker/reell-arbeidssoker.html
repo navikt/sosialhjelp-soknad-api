@@ -68,16 +68,22 @@
                 <p class="informasjonstekst" data-cmstekster="reellarbeidssoker.villigdeltid.false.informasjon2"></p>
             </div>
 
-            <div data-navtekst class="arbeidsmengde-container form-linje ekstra-spm-boks tekstboks"
-                 data-ng-model="faktum.value"
-                 data-nav-faktum="reellarbeidssoker.villigdeltid.maksimalarbeidstid"
-                 data-navconfig
-                 data-navlabel="reellarbeidssoker.maksimalarbeidstid"
-                 data-ng-required
-                 data-navfeilmelding="{ required: 'reellarbeidssoker.maksimalarbeidstid.feilmelding', pattern: 'reellarbeidssoker.maksimalarbeidstid.pattern.feilmelding'}"
-                 data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
-                 data-tekstfelt-patternvalidering
-                 data-blur-validate>
+            <div class="tekstfelt form-linje arbeidsmengde-container">
+                <label>
+                    <span data-cmstekster="reellarbeidssoker.maksimalarbeidstid"></span>
+                    <input type="text"
+                           data-ng-model="faktum.value"
+                           data-nav-faktum="reellarbeidssoker.villigdeltid.maksimalarbeidstid"
+                           data-navconfig
+                           data-ng-required="true"
+                           data-error-messages="{ required: 'reellarbeidssoker.maksimalarbeidstid.feilmelding',
+                           pattern: 'reellarbeidssoker.maksimalarbeidstid.pattern.feilmelding'}"
+                           data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
+                           data-tekstfelt-patternvalidering
+                           data-blur-validate />
+                    <span class="timer" data-cmstekster="egennaering.gardsbruk.false.timer"></span>
+                    <span class="melding"></span>
+                </label>
             </div>
         </div>
 
