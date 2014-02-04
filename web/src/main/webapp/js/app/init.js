@@ -72,7 +72,6 @@ angular.module('sendsoknad')
                         {soknadId: soknadId},
                         function (result) { // Success
                             data.soknad = result;
-
                             if (data.soknad.status == "FERDIG") {
                                 $location.path('/ferdigstilt');
                             } else if(data.soknad.delstegStatus == "SKJEMA_VALIDERT") {

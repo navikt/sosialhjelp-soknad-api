@@ -4,6 +4,7 @@ angular.module('app.services', ['ngResource'])
 
 	.config(function ($httpProvider) {
 		$httpProvider.responseInterceptors.push('resetTimeoutInterceptor');
+		$httpProvider.responseInterceptors.push('settDelstegStatusEtterKallMotServer');
 	})
 
 	.factory('resetTimeoutInterceptor', function () {
@@ -16,6 +17,29 @@ angular.module('app.services', ['ngResource'])
 		}
 	})
 
+    .factory('settDelstegStatusEtterKallMotServer', ['data', function (data) {
+        return function (promise) {
+            return promise.then(function (response) {
+                if (response.config.method === 'POST') {
+                    var urlArray = response.config.url.split('/');
+                    if (urlArray.contains('fakta')) {
+                        data.soknad.delstegStatus = 'UTFYLLING';
+                    } else if (urlArray.contains('vedlegg')) {
+                        data.soknad.delstegStatus = 'SKJEMA_VALIDERT';
+                    } else if (urlArray.contains('delsteg')) {
+                        if (response.config.data.delsteg === "vedlegg") {
+                            data.soknad.delstegStatus = 'SKJEMA_VALIDERT';
+                        } else if (response.config.data.delsteg === "oppsummering") {
+                            data.soknad.delstegStatus = 'VEDLEGG_VALIDERT';
+                        } else {
+                            data.soknad.delstegStatus = 'UTFYLLING';
+                        }
+                    }
+                }
+                return response;
+            });
+        }
+    }])
 /**
  * Service som henter en søknad fra henvendelse
  */
@@ -45,7 +69,7 @@ angular.module('app.services', ['ngResource'])
 /**
  * Service for å lagre Faktum
  */
-	.factory('Faktum', function ($resource) {
+	.factory('Faktum', ['$resource', function ($resource) {
 		var url = '/sendsoknad/rest/soknad/:soknadId/fakta/:faktumId/:mode';
 		return $resource(url,
 			{soknadId: '@soknadId', faktumId: '@faktumId', mode: '@mode'},
@@ -53,8 +77,8 @@ angular.module('app.services', ['ngResource'])
 				save  : { method: 'POST', params: {mode: ''}},
 				delete: { method: 'POST', params: {mode: 'delete'}}
 			}
-		)
-	})
+		);
+	}])
 
 /**
  * Service som behandler vedlegg

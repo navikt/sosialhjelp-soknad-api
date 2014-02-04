@@ -54,6 +54,7 @@ angular.module('nav.dagpenger', [])
                         }
                     );
 				} else {
+                    $scope.fremdriftsindikator.laster = false;
 					scrollToElement(elementMedForsteFeil, 200);
 					giFokus(elementMedForsteFeil);
 					setAktivFeilmeldingsklasse(elementMedForsteFeil);
