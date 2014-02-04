@@ -11,28 +11,28 @@
         <id>reellarbeidssoker.villigdeltid.eneansvarbarnopptil18aar</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
-        <dependOn>reelarbeidssoker.villigdeltid</dependOn>
+        <dependOn>reellarbeidssoker.villigdeltid</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigdeltid.reduserthelse</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
-        <dependOn>reelarbeidssoker.villigdeltid</dependOn>
+        <dependOn>reellarbeidssoker.villigdeltid</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigdeltid.omsorgansvar</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
-        <dependOn>reelarbeidssoker.villigdeltid</dependOn>
+        <dependOn>reellarbeidssoker.villigdeltid</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigdeltid.annensituasjon</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
-        <dependOn>reelarbeidssoker.villigdeltid</dependOn>
+        <dependOn>reellarbeidssoker.villigdeltid</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
@@ -44,28 +44,28 @@
         <id>reellarbeidssoker.villigpendle.eneansvarbarnopptil18aar</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
-        <dependOn>reelarbeidssoker.villigpendle</dependOn>
+        <dependOn>reellarbeidssoker.villigpendle</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigpendle.reduserthelse</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
-        <dependOn>reelarbeidssoker.villigpendle</dependOn>
+        <dependOn>reellarbeidssoker.villigpendle</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigpendle.omsorgansvar</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
-        <dependOn>reelarbeidssoker.villigpendle</dependOn>
+        <dependOn>reellarbeidssoker.villigpendle</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
         <id>reellarbeidssoker.villigpendle.annensituasjon</id>
         <type>java.lang.Boolean</type>
         <panel>ReelArbeidsoker</panel>
-        <dependOn>reelarbeidssoker.villigpendle</dependOn>
+        <dependOn>reellarbeidssoker.villigpendle</dependOn>
         <dependOnValue>false</dependOnValue>
     </faktum>
     <faktum>
