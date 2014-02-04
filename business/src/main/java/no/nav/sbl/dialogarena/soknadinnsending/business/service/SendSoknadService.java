@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 
@@ -35,5 +36,6 @@ public interface SendSoknadService {
 
     WebSoknad hentSoknadMetaData(long soknadId);
 
-    
+
+    void settDelsteg(Long soknadId, DelstegStatus delstegStatus);
 }
