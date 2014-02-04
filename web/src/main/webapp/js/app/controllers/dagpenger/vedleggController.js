@@ -42,6 +42,9 @@ angular.module('nav.vedlegg.controller', [])
         if ($scope.forventning.innsendingsvalg === "VedleggKreves") {
             $scope.hiddenFelt = {value: '' };
             $scope.skalViseFeil = { value: true };
+        } else {
+            $scope.hiddenFelt = {value: 'true' };
+            $scope.skalViseFeil = { value: false };
         }
 
 
@@ -75,9 +78,10 @@ angular.module('nav.vedlegg.controller', [])
             }
 
             if (forventning.innsendingsvalg === valg) {
-                forventning.innsendingsvalg = null;
+                forventning.innsendingsvalg = "VedleggKreves";
                 $scope.hiddenFelt.value = "";
                 $scope.skalViseFeil.value = true;
+                forventning.$save();
             } else {
                 forventning.innsendingsvalg = valg;
                 forventning.$save();

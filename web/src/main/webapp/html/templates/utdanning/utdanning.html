@@ -1,9 +1,8 @@
-
 <div class="skjemaramme">
     <div data-ng-form="utdanningForm" class="skjemainnhold vertikal" data-ng-controller="UtdanningCtrl" data-novalidate>
         <div data-form-errors></div>
 
-            <div class="spm boolean form-linje">
+        <div class="spm boolean form-linje">
             <h4 class="spm-sporsmal" data-cmstekster="utdanning.informasjon"></h4>
 
             <div data-navradio
@@ -43,10 +42,17 @@
             </div>
 
 
-                <span class="melding"> </span>
+            <span class="melding"> </span>
 
-            <div class="ekstra-info spm form-linje checkbox" data-ng-if="hvis('utdanning', 'underUtdanning')" data-checkbox-validate>
+            <div class="ekstra-info spm form-linje checkbox" data-ng-if="hvis('utdanning', 'underUtdanning')"
+                 data-checkbox-validate>
                 <h4 class="spm-sporsmal" data-cmstekster="utdanning.sporsmal"></h4>
+
+                <input type="hidden"
+                       data-ng-model="harHuketAvCheckboks.value"
+                       data-ng-required="hvis('utdanning', 'underUtdanning')"
+                       data-error-messages="'utdanning.minstEnAvhuket.feilmelding'">
+
                 <div id="underUtdanningKveld"
                      data-navcheckbox
                      data-navconfig
@@ -87,7 +93,6 @@
                      data-nav-faktum="utdanning.introduksjon"
                      data-navlabel="utdanning.svar.under.utdanning.introduksjon"
                      data-navendret="endreUtdanning(utdanningForm)">
-
                 </div>
 
 
@@ -96,7 +101,8 @@
                            data-ng-change="endreUtdannelseAnnet(utdanningForm)" data-boolean-verdi/>
                     <label for="underUtdanningNeiCheckbox"
                            data-cmstekster="utdanning.svar.under.utdanning.nei"></label>
-                    <span class="utdanning-nei-melding" data-cmstekster="utdanning.harValgtUtdanning.feilmelding"></span>
+                    <span class="utdanning-nei-melding"
+                          data-cmstekster="utdanning.harValgtUtdanning.feilmelding"></span>
                 </div>
 
                 <div class="ekstra-info" data-ng-if="hvis('underUtdanningAnnet')">
@@ -107,13 +113,10 @@
                 <span class="melding" data-cmstekster="utdanning.minstEnAvhuket.feilmelding"></span>
 
             </div>
-                  </div>
-
-            <div data-spmblokkferdig data-nokkel="utdanning"
-                 data-submit-method="validerOgSettModusOppsummering(utdanningForm)">
-            </div>
-
         </div>
 
-
+        <div data-spmblokkferdig data-nokkel="utdanning"
+             data-submit-method="validerOgSettModusOppsummering(utdanningForm)">
+        </div>
+    </div>
 </div>
