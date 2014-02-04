@@ -6,15 +6,31 @@ angular.module('nav.vedlegg.controller', [])
         });
     }])
 
-    .controller('VedleggCtrl', ['$scope', '$location', '$routeParams', '$anchorScroll', 'data', 'vedleggService', 'Faktum', 'VedleggForventning', function ($scope, $location, $routeParams, $anchorScroll, data, vedleggService, Faktum, VedleggForventning) {
+    .controller('VedleggCtrl', ['$scope', '$location', '$routeParams', '$anchorScroll', 'data', 'vedleggService', 'Faktum', 'VedleggForventning', 'soknadService', function ($scope, $location, $routeParams, $anchorScroll, data, vedleggService, Faktum, VedleggForventning, soknadService) {
+        if (data.soknad.delstegStatus !== 'SKJEMA_VALIDERT' && data.soknad.delstegStatus !== 'VEDLEGG_VALIDERT' && data.soknad.delstegStatus !== 'SAMTYKKET') {
+            console.log(data.soknad.delstegStatus);
+            $location.path('/soknad');
+        }
+
         $scope.data = {soknadId: data.soknad.soknadId};
         $scope.forventninger = vedleggService.query({soknadId: data.soknad.soknadId});
         $scope.sidedata = {navn: 'vedlegg'};
         $scope.validert = {value: ''};
+        $scope.fremdriftsindikator = {
+            laster: false
+        };
 
         $scope.validerVedlegg = function (form) {
+            $scope.fremdriftsindikator.laster = true;
             if (form.$valid) {
-                $location.path('/oppsummering');
+                soknadService.delsteg({soknadId: data.soknad.soknadId, delsteg: 'oppsummering'},
+                    function() {
+                        $location.path('/oppsummering');
+                    },
+                    function() {
+                        $scope.fremdriftsindikator.laster = false;
+                    }
+                );
             } else {
                 $scope.validert.value = true;
             }

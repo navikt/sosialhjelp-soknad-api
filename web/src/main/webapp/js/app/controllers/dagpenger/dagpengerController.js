@@ -1,5 +1,5 @@
 angular.module('nav.dagpenger', [])
-	.controller('DagpengerCtrl', ['$scope', 'data', '$location', '$timeout', function ($scope, data, $location, $timeout) {
+	.controller('DagpengerCtrl', ['$scope', 'data', '$location', '$timeout', 'soknadService', function ($scope, data, $location, $timeout,soknadService) {
 
 		$scope.grupper = [
 			{id: 'reellarbeidssoker', tittel: 'reellarbeidssoker.tittel', template: '../html/templates/reellarbeidssoker/reell-arbeidssoker.html', apen: false},
@@ -12,6 +12,10 @@ angular.module('nav.dagpenger', [])
             {id: 'barnetillegg', tittel: 'barnetillegg.tittel', template: '../html/templates/barnetillegg.html', apen: false},
             {id: 'fritekst', tittel: 'fritekst.tittel', template: '../html/templates/fritekst.html', apen: false}
 		];
+
+        $scope.fremdriftsindikator = {
+            laster: false
+        };
 
 		$scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];
 
@@ -36,13 +40,21 @@ angular.module('nav.dagpenger', [])
 			$scope.$broadcast('VALIDER_VERNEPLIKT', form.vernepliktForm);
 			$scope.$broadcast('VALIDER_REELLARBEIDSSOKER', form.reellarbeidssokerForm);
 			$scope.$broadcast('VALIDER_DAGPENGER', form);
-
+            $scope.fremdriftsindikator.laster = true;
 			$timeout(function () {
 				$scope.validateForm(form.$invalid);
 				var elementMedForsteFeil = $('.accordion-group').find('.form-linje.feil, .form-linje.feilstyling').first();
 				if (form.$valid) {
-					$location.path('/vedlegg');
+                    soknadService.delsteg({soknadId: data.soknad.soknadId, delsteg: 'vedlegg'},
+                        function() {
+                            $location.path('/vedlegg');
+                        },
+                        function() {
+                            $scope.fremdriftsindikator.laster = false;
+                        }
+                    );
 				} else {
+                    $scope.fremdriftsindikator.laster = false;
 					scrollToElement(elementMedForsteFeil, 200);
 					giFokus(elementMedForsteFeil);
 					setAktivFeilmeldingsklasse(elementMedForsteFeil);

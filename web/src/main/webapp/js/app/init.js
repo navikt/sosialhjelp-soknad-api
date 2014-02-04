@@ -39,7 +39,7 @@ angular.module('sendsoknad')
     }])
     .value('data', {})
     .value('cms', {})
-    .factory('InformasjonsSideResolver', ['data', 'cms', '$resource', '$q', '$route', function (data, cms, $resource, $q, $route) {
+    .factory('InformasjonsSideResolver', ['data', 'cms', '$resource', '$q', '$route', '$location', function (data, cms, $resource, $q, $route, $location) {
         var promiseArray = [];
 
         var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
@@ -68,11 +68,19 @@ angular.module('sendsoknad')
                 function (result) { // Success
                     var soknadId = result.result;
                     
-                    var soknadMetadata = $resource('/sendsoknad/rest/soknad/metadata/:soknadId').get(
+                    $resource('/sendsoknad/rest/soknad/metadata/:soknadId').get(
                         {soknadId: soknadId},
                         function (result) { // Success
                             data.soknad = result;
-                            soknadDeferer.resolve();
+                            if (data.soknad.status == "FERDIG") {
+                                $location.path('/ferdigstilt');
+                            } else if(data.soknad.delstegStatus == "SKJEMA_VALIDERT") {
+                                $location.path('/vedlegg');
+                            } else if(data.soknad.delstegStatus == "VEDLEGG_VALIDERT") {
+                                $location.path('/oppsummering');
+                            } else {
+                                $location.path('/soknad');
+                            }
                         }
                     );
                     
@@ -118,7 +126,7 @@ angular.module('sendsoknad')
                 var soknadId = result.result;
 
                 $http.post('/sendsoknad/rest/soknad/personalia', soknadId).then(function() {
-                    soknadService.get({param: soknadId},
+                    soknadService.get({soknadId: soknadId},
                         function (result) { // Success
                             data.soknad = result;
                             soknadDeferer.resolve();
@@ -165,7 +173,7 @@ angular.module('sendsoknad')
                     });
                 });
 
-                soknadService.options({param: soknadId},
+                soknadService.options({soknadId: soknadId},
                     function (result) { // Success
                         data.soknadOppsett = result;
                         soknadOppsettDefer.resolve();
@@ -207,12 +215,12 @@ angular.module('sendsoknad')
         );
         promiseArray.push(tekster.$promise);
 
-        var soknad = soknadService.get({param: soknadId},
+        var soknad = soknadService.get({soknadId: soknadId},
             function (result) { // Success
                 data.soknad = result;
             }
         );
-        var soknadOppsett = soknadService.options({param: soknadId},
+        var soknadOppsett = soknadService.options({soknadId: soknadId},
             function (result) { // Success
                 data.soknadOppsett = result;
             });
