@@ -34,15 +34,6 @@ angular.module('nav.validering', ['nav.cmstekster'])
 					}
 				});
 
-//				scope.$watch(function () {
-//					return element.is(':visible');
-//				}, function (erSynlig) {
-//					if (!erSynlig) {
-//                        console.log(form.$name);
-//                        formElem.removeClass('feil');
-//					}
-//				});
-
 				scope.$watch(function () {
 					return ngModel.$viewValue;
 				}, function () {
