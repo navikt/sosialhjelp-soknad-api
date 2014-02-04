@@ -27,6 +27,7 @@ angular.module('nav.vedlegg.controller', [])
                     }
                 );
             } else {
+                $scope.fremdriftsindikator.laster = false;
                 $scope.validert.value = true;
             }
             $scope.runValidation(true);
