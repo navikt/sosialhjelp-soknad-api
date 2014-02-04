@@ -2,9 +2,10 @@ angular.module('nav.reellarbeidssoker', [])
     .controller('ReellarbeidssokerCtrl', ['$scope', 'data', function ($scope, data) {
         $scope.alder = parseInt(data.finnFaktum('personalia').properties.alder);
 //        For testing av alder:
-//        $scope.alder = 59;
-
-       $scope.soknadId = data.soknad.soknadId;
+        $scope.alder = 59;
+        $scope.deltidannen = data.finnFaktum('reellarbeidssoker.villigdeltid.annensituasjon');
+        $scope.pendleannen = data.finnFaktum('reellarbeidssoker.villigdeltid.annensituasjon');
+        $scope.soknadId = data.soknad.soknadId;
 
 		$scope.navigering = {nesteside: 'arbeidsforhold'};
 		$scope.sidedata = {navn: 'reellarbeidssoker'};
@@ -43,6 +44,17 @@ angular.module('nav.reellarbeidssoker', [])
 		$scope.erOver59Aar = function () {
 			return $scope.alder > 59;
 		};
+
+        $scope.harValgtAnnetUnntakDeltid = function () {
+
+            return $scope.deltidannen.value === 'true';
+        };
+
+        $scope.harValgtAnnetUnntakPendle = function () {
+           
+             return $scope.pendleannen.value === 'true';
+        };
+
 
 		$scope.endreDeltidsAarsaker = function () {
 			var minstEnDeltidCheckboksAvhuket = erCheckboxerAvhuket(deltidnokler);
