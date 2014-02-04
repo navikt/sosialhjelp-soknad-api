@@ -115,7 +115,6 @@ angular.module('sendsoknad')
                         {soknadId: soknadId},
                         function (result) { // Success
                             data.soknad = result;
-                            console.log("Setter data");
                             soknadDeferer.resolve();
                         }
                     );
