@@ -4,6 +4,7 @@ angular.module('app.services', ['ngResource'])
 
 	.config(function ($httpProvider) {
 		$httpProvider.responseInterceptors.push('resetTimeoutInterceptor');
+		$httpProvider.responseInterceptors.push('settDelstegStatusEtterKallMotServer');
 	})
 
 	.factory('resetTimeoutInterceptor', function () {
@@ -16,19 +17,51 @@ angular.module('app.services', ['ngResource'])
 		}
 	})
 
+    .factory('settDelstegStatusEtterKallMotServer', ['data', function (data) {
+        return function (promise) {
+            return promise.then(function (response) {
+                if (response.config.method === 'POST') {
+                    var urlArray = response.config.url.split('/');
+                    if (urlArray.contains('fakta')) {
+                        data.soknad.delstegStatus = 'UTFYLLING';
+                    } else if (urlArray.contains('vedlegg')) {
+                        data.soknad.delstegStatus = 'SKJEMA_VALIDERT';
+                    } else if (urlArray.contains('delsteg')) {
+                        if (response.config.data.delsteg === "vedlegg") {
+                            data.soknad.delstegStatus = 'SKJEMA_VALIDERT';
+                        } else if (response.config.data.delsteg === "oppsummering") {
+                            data.soknad.delstegStatus = 'VEDLEGG_VALIDERT';
+                        } else {
+                            data.soknad.delstegStatus = 'UTFYLLING';
+                        }
+                    }
+                }
+                return response;
+            });
+        }
+    }])
 /**
  * Service som henter en søknad fra henvendelse
  */
 	.factory('soknadService', function ($resource) {
-		return $resource('/sendsoknad/rest/soknad/:action/:param?rand=' + new Date().getTime(),
-			{param: '@param'},
+		return $resource('/sendsoknad/rest/soknad/:action/:soknadId?rand=' + new Date().getTime(),
+            { soknadId: '@soknadId', soknadType: '@soknadType', delsteg: '@delsteg'},
 			{
-				create : { method: 'POST', params: {param: '@param', action: 'opprett'} },
-				send   : {method: 'POST', params: {param: '@param', action: 'send'}},
-				remove : {method: 'POST', params: {param: '@param', action: 'delete'}},
-				options: {method: 'GET', params: {param: '@param', action: 'options'}},
-				behandling: {method: 'GET', params: {param: '@param', action: 'behandling'}},
-				metadata: {method: 'GET', params: {param: '@param', action: 'metadata'}}
+				create : {
+                    method: 'POST',
+                    params: {soknadType: '@soknadType'},
+                    url: '/sendsoknad/rest/soknad/opprett/:soknadType?rand=' + new Date().getTime()
+                },
+				send   : { method: 'POST', params: {soknadId: '@soknadId', action: 'send' }},
+				remove : { method: 'POST', params: {soknadId: '@soknadId', action: 'delete' }},
+				options: { method: 'GET', params: {soknadId: '@soknadId', action: 'options' }},
+				behandling: { method: 'GET', params: {soknadId: '@soknadId', action: 'behandling' }},
+				metadata: { method: 'GET', params: {soknadId: '@soknadId', action: 'metadata' }},
+				delsteg: {
+                    method: 'POST',
+                    params: {soknadId: '@soknadId', delsteg: '@delsteg' },
+                    url: '/sendsoknad/rest/soknad/delsteg/:soknadId/:delsteg?rand=' + new Date().getTime()
+                }
 			}
 		);
 	})
@@ -36,7 +69,7 @@ angular.module('app.services', ['ngResource'])
 /**
  * Service for å lagre Faktum
  */
-	.factory('Faktum', function ($resource) {
+	.factory('Faktum', ['$resource', function ($resource) {
 		var url = '/sendsoknad/rest/soknad/:soknadId/fakta/:faktumId/:mode';
 		return $resource(url,
 			{soknadId: '@soknadId', faktumId: '@faktumId', mode: '@mode'},
@@ -44,8 +77,8 @@ angular.module('app.services', ['ngResource'])
 				save  : { method: 'POST', params: {mode: ''}},
 				delete: { method: 'POST', params: {mode: 'delete'}}
 			}
-		)
-	})
+		);
+	}])
 
 /**
  * Service som behandler vedlegg
@@ -65,6 +98,7 @@ angular.module('app.services', ['ngResource'])
 			}
 		);
 	})
+
 /**
  * Service som behandler vedlegg
  */

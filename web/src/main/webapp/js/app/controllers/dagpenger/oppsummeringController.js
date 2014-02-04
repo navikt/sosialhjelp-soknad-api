@@ -1,5 +1,12 @@
 angular.module('nav.oppsummering', [])
     .controller('OppsummeringCtrl', ['$scope', 'data', '$location', '$routeParams', 'soknadService', '$http', '$window', function ($scope, data, $location, $routeParams, soknadService, $http, $window) {
+        if (data.soknad.delstegStatus !== 'VEDLEGG_VALIDERT' && data.soknad.delstegStatus !== 'SAMTYKKET') {
+            if (data.soknad.delstegStatus === 'SKJEMA_VALIDERT') {
+                $location.path('/vedlegg');
+            } else {
+                $location.path('/soknad');
+            }
+        }
         $scope.oppsummeringHtml = '';
         $scope.harbekreftet = {value: ''};
         $scope.skalViseFeilmelding = {value: false};
@@ -25,7 +32,7 @@ angular.module('nav.oppsummering', [])
             if ($scope.harbekreftet.value) {
                 $scope.skalViseFeilmelding.value = false;
 
-                soknadService.send({param: $scope.soknadId, action: 'send'},
+                soknadService.send({soknadId: $scope.soknadId},
                     //Success
                     function () {
                         $location.path('bekreftelse');
