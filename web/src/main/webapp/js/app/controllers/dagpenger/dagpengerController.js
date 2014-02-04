@@ -19,16 +19,6 @@ angular.module('nav.dagpenger', [])
 
 		$scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];
 
-		$scope.soknadFerdigstilt = function() {
-			if(data.soknad.status=="FERDIG") {
-				$location.path('/ferdigstilt');
-			}
-		}
-
-		$scope.soknadUnderArbeid= function() {
-			return data.soknad.status=="UNDER_ARBEID";
-		}
-
 		$scope.validerDagpenger = function (form, event) {
 			//burde refaktoreres, bruke noe annet en events?
 			event.preventDefault();
