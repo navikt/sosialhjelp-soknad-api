@@ -50,5 +50,5 @@ public interface SoknadRepository {
 
     String hentSoknadType(Long soknadId);
 
-    void setDelstegstatus(Long soknadId, DelstegStatus status);
+    void settDelstegstatus(Long soknadId, DelstegStatus status);
 }

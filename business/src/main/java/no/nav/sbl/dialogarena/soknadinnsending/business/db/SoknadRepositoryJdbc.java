@@ -343,7 +343,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     }
 
     @Override
-    public void setDelstegstatus(Long soknadId, DelstegStatus status) {
+    public void settDelstegstatus(Long soknadId, DelstegStatus status) {
         getJdbcTemplate()
                 .update("update soknad set delstegstatus=? where soknad_id = ?", status.name(), soknadId);
     }

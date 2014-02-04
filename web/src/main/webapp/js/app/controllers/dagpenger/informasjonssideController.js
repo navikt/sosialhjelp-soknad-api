@@ -46,7 +46,6 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 				if(behandlingId != "Dagpenger") {
 					return true;
 				}
-
 				return false;
 			}
 
@@ -55,15 +54,13 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 			}
 
 			$scope.soknadErFerdigstilt = function() {
-				if(data && data.soknad && data.soknad.status == "FERDIG") {
-					$location.path('/ferdigstilt');
-				}
+				return data && data.soknad && data.soknad.status == "FERDIG";
 			}
 
 	        $scope.startSoknad = function () {
 	            var soknadType = window.location.pathname.split("/")[3];
 	            $scope.fremdriftsindikator.laster = true;
-	            $scope.soknad = soknadService.create({param: soknadType},
+	            $scope.soknad = soknadService.create({soknadType: soknadType},
 	                function (result) {
 	                	var currentUrl = location.href;
 	                	location.href = currentUrl.substring(0, currentUrl.indexOf('start/')) + 'soknad/' + result.brukerbehandlingId + '#/soknad';
