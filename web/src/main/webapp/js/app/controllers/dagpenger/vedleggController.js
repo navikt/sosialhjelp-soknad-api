@@ -120,11 +120,6 @@ angular.module('nav.vedlegg.controller', [])
         };
     }])
 
-    .filter('nospace', function () {
-        return function (value) {
-            return (!value) ? '' : value.replace(/ /g, '');
-        };
-    })
     .directive('bildeNavigering', [function () {
         return {
             restrict: 'a',
