@@ -48,4 +48,6 @@ public interface SoknadRepository {
     void slettSoknad(long soknadId);
 
     String hentSoknadType(Long soknadId);
+
+    Boolean isVedleggPaakrevd(Long soknadId, String key, String value);
 }

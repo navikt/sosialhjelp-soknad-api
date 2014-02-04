@@ -475,15 +475,8 @@
         <faktum>personalia</faktum>
         <skjemaNummer>T4</skjemaNummer>
         <onProperty>statsborgerskapType</onProperty>
-        <onValue>eos</onValue>
-        <forSystemfaktum>true</forSystemfaktum>
-    </vedlegg>
-    <vedlegg>
-        <id>7</id>
-        <faktum>personalia</faktum>
-        <skjemaNummer>T4</skjemaNummer>
-        <onProperty>statsborgerskapType</onProperty>
-        <onValue>ikkeEos</onValue>
+        <onValue>norsk</onValue>
+        <inverted>true</inverted>
         <forSystemfaktum>true</forSystemfaktum>
     </vedlegg>
 </soknad>
