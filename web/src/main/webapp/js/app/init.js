@@ -39,8 +39,9 @@ angular.module('sendsoknad')
         $http.get('../js/app/directives/stegindikator/stegIndikatorTemplate.html', {cache: $templateCache});
         $http.get('../js/app/directives/stickybunn/stickyBunnTemplate.html', {cache: $templateCache});
 
-        $rootScope.$on('$routeChangeSuccess', function(event, next, current) {
+        $('#hoykontrast a, .skriftstorrelse a').attr('href', 'javascript:void(0)')
 
+        $rootScope.$on('$routeChangeSuccess', function(event, next, current) {
             redirectDersomSoknadErFerdig();
             if (next.$$route) {
                 if (next.$$route.originalPath === "/oppsummering") {
