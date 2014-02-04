@@ -58,7 +58,7 @@
                      data-navlabel="reellarbeidssoker.annensituasjon"
                      data-navendret="endreDeltidsAarsaker()"></div>
 
-                <div data-navinfoboks>
+                <div data-navinfoboks data-ng-if="harValgtAnnetUnntakDeltid()">
                     <p data-cmstekster="reellarbeidssoker.unntak.dokumentasjon"></p>
                 </div>
 
@@ -140,7 +140,7 @@
                      data-navlabel="reellarbeidssoker.pendleannensituasjon"
                      data-navendret="endrePendleAarsaker()"></div>
 
-                <div data-navinfoboks>
+                <div data-navinfoboks data-ng-if="harValgtAnnetUnntakPendle()">
                     <p data-cmstekster="reellarbeidssoker.unntak.dokumentasjon"></p>
                 </div>
 
