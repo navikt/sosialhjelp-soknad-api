@@ -20,15 +20,24 @@ angular.module('app.services', ['ngResource'])
  * Service som henter en søknad fra henvendelse
  */
 	.factory('soknadService', function ($resource) {
-		return $resource('/sendsoknad/rest/soknad/:action/:param?rand=' + new Date().getTime(),
-			{param: '@param'},
+		return $resource('/sendsoknad/rest/soknad/:action/:soknadId?rand=' + new Date().getTime(),
+            { soknadId: '@soknadId', soknadType: '@soknadType', delsteg: '@delsteg'},
 			{
-				create : { method: 'POST', params: {param: '@param', action: 'opprett'} },
-				send   : {method: 'POST', params: {param: '@param', action: 'send'}},
-				remove : {method: 'POST', params: {param: '@param', action: 'delete'}},
-				options: {method: 'GET', params: {param: '@param', action: 'options'}},
-				behandling: {method: 'GET', params: {param: '@param', action: 'behandling'}},
-				metadata: {method: 'GET', params: {param: '@param', action: 'metadata'}}
+				create : {
+                    method: 'POST',
+                    params: {soknadType: '@soknadType'},
+                    url: '/sendsoknad/rest/soknad/opprett/:soknadType?rand=' + new Date().getTime()
+                },
+				send   : { method: 'POST', params: {soknadId: '@soknadId', action: 'send' }},
+				remove : { method: 'POST', params: {soknadId: '@soknadId', action: 'delete' }},
+				options: { method: 'GET', params: {soknadId: '@soknadId', action: 'options' }},
+				behandling: { method: 'GET', params: {soknadId: '@soknadId', action: 'behandling' }},
+				metadata: { method: 'GET', params: {soknadId: '@soknadId', action: 'metadata' }},
+				delsteg: {
+                    method: 'POST',
+                    params: {soknadId: '@soknadId', delsteg: '@delsteg' },
+                    url: '/sendsoknad/rest/soknad/delsteg/:soknadId/:delsteg?rand=' + new Date().getTime()
+                }
 			}
 		);
 	})
@@ -65,6 +74,7 @@ angular.module('app.services', ['ngResource'])
 			}
 		);
 	})
+
 /**
  * Service som behandler vedlegg
  */
