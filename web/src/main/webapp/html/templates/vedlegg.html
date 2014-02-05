@@ -49,11 +49,11 @@
                             <div class="form-linje tekstfelt" data-ng-if="erEkstraVedlegg(forventning)">
                                 <label>
                                     <span>Hva vedlegger du (max 25 tegn)? </span>
-                                    <input type="text" maxlength="25" data-ng-minlength="3" data-ng-maxlength="25"
-                                           required data-ng-model="forventning.navn"
+                                    <input type="text" maxlength="25" data-ng-maxlength="25"
+                                           data-ng-required="true" data-ng-model="forventning.navn"
                                            data-ng-blur="lagreVedlegg(forventning)"
                                             data-blur-validate
-                                            data-error-messages="{required:'vedlegg.annet.navn.feilmelding', minlength: 'vedlegg.annet.navn.lengde.feilmelding'}">
+                                            data-error-messages="{required:'vedlegg.annet.navn.feilmelding'}">
                                 </label>
                                 <span class="melding" data-cmstekster="vedlegg.annet.navn.feilmelding"></span>
                             </div>
