@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 
+import no.nav.modig.lang.option.Optional;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 
@@ -20,7 +22,9 @@ public interface SoknadRepository {
 
     void avbryt(Long soknad);
 
-    List<Long> hentAlleSoknaderSistLagretOverEnTimeSiden();
+    Optional<WebSoknad> plukkSoknadTilMellomlagring();
+
+    void leggTilbake(WebSoknad webSoknad);
 
     List<WebSoknad> hentListe(String aktorId);
 
@@ -48,4 +52,8 @@ public interface SoknadRepository {
     void slettSoknad(long soknadId);
 
     String hentSoknadType(Long soknadId);
+
+    Boolean isVedleggPaakrevd(Long soknadId, String key, String value);
+
+    void settDelstegstatus(Long soknadId, DelstegStatus status);
 }

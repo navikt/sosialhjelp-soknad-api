@@ -8,7 +8,10 @@
             <section class="panel-standard ">
                 <h2 class="stor-strek-ikon-slett" data-cmstekster="vedlegg.tittel"></h2>
 
-                <p class="info" data-cmstekster="vedlegg.info"></p>
+                <p class="info" data-cmstekster="vedlegg.info1"></p>
+                <p class="info" data-cmstekster="vedlegg.info2"></p>
+                <p class="info" data-cmstekster="vedlegg.info3"></p>
+
 
                 <div data-form-errors></div>
             </section>
@@ -23,7 +26,7 @@
                     <div data-accordion-heading>
                         <div class="flipp"></div>
 
-                        <div data-ng-class="{behandlet: !vedleggEr(forventning, 'VedleggKreves'), lastetopp: vedleggEr(forventning, 'LastetOpp')}">
+                        <div class="vedlegg-bolk" data-ng-class="{behandlet: !vedleggEr(forventning, 'VedleggKreves'), lastetopp: vedleggEr(forventning, 'LastetOpp')}">
                             <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'LastetOpp')"
                                  data-cmstekster="vedlegg.behandlet.lastetopp"></div>
                             <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesSenere')"
@@ -42,11 +45,18 @@
 
                             <h4 data-ng-if="erEkstraVedlegg(forventning)"
                                 data-cmstekster="vedlegg.faktum.maabekrefte.annetvedlegg"></h4>
-                            <label data-ng-if="erEkstraVedlegg(forventning)">
-                                <span>Hva vedlegger du (max 25 tegn)? </span>
-                                <input type="text" maxlength="25" data-ng-minlength="3" data-ng-maxlength="25"
-                                       data-ng-model="forventning.navn" data-ng-blur="lagreVedlegg(forventning)">
-                            </label>
+
+                            <div class="form-linje tekstfelt" data-ng-if="erEkstraVedlegg(forventning)">
+                                <label>
+                                    <span>Hva vedlegger du (max 25 tegn)? </span>
+                                    <input type="text" maxlength="25" data-ng-maxlength="25"
+                                           data-ng-required="true" data-ng-model="forventning.navn"
+                                           data-ng-blur="lagreVedlegg(forventning)"
+                                            data-blur-validate
+                                            data-error-messages="{required:'vedlegg.annet.navn.feilmelding'}">
+                                </label>
+                                <span class="melding" data-cmstekster="vedlegg.annet.navn.feilmelding"></span>
+                            </div>
                             <h4 data-ng-if="!erEkstraVedlegg(forventning)" class="info-liste"
                                 data-cmshtml="{{soknadData.skjemaNummer}}.vedlegg.{{forventning.skjemaNummer}}.bekrefte"></h4>
 
@@ -96,10 +106,10 @@
                                     <label for="{{$index}}ikkesendRadio"
                                            data-cmstekster="vedlegg.faktum.ikkesend"></label>
                                     <input type="hidden" data-ng-model="hiddenFelt.value" data-ng-required="true"
-                                           data-error-messages="'Dagpenger.vedlegg.{{forventning.skjemaNummer | nospace}}.feilmelding'">
+                                           data-error-messages="'{{forventning.tittel}}'">
                                 </div>
                                 <span class="melding"
-                                      data-cmstekster="Dagpenger.vedlegg.{{forventning.skjemaNummer}}.feilmelding"></span>
+                                      data-cmstekster="vedlegg.inlinefeilmelding"></span>
                             </div>
                             <div data-ng-if="vedleggEr(forventning, 'LastetOpp')">
                                 <div class="forhandsvisning">
@@ -133,7 +143,7 @@
             <section class="panel-standard oversikt">
                 <a id="til-oppsummering" class="knapp-hoved" data-ng-click="validerVedlegg(vedleggForm)"
                    data-cmstekster="vedlegg.ferdig"
-                   data-fremdriftsindikator></a>
+                   data-fremdriftsindikator="grå" role="button"></a>
             </section>
         </div>
     </div>

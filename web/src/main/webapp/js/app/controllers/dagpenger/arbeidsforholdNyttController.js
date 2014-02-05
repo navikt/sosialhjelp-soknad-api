@@ -1,5 +1,5 @@
 angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
-	.controller('ArbeidsforholdNyttCtrl', ['$scope', 'data', 'Faktum', '$location', '$cookieStore', function ($scope, data, Faktum, $location, $cookieStore) {
+	.controller('ArbeidsforholdNyttCtrl', ['$scope', 'data', 'Faktum', '$location', '$cookieStore', '$resource', function ($scope, data, Faktum, $location, $cookieStore, $resource) {
 
 		$scope.templates = {
             'Sagt opp av arbeidsgiver': {url: '../html/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html'},
@@ -45,7 +45,8 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 					'arbeidsgivernavn': undefined,
 					'datofra'         : undefined,
 					'datotil'         : undefined,
-                    'type': undefined
+                    'type': undefined,
+                    'eosland': "false"
 				}
 			};
 		}
@@ -64,12 +65,18 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 		};
 
 		function lagreArbeidsforholdOgSluttaarsak() {
-			$scope.arbeidsforhold.$save({soknadId: data.soknad.soknadId}).then(function (arbeidsforholdData) {
-				$scope.arbeidsforhold = arbeidsforholdData;
-				oppdaterFaktumListe('arbeidsforhold');
-				oppdaterCookieValue(arbeidsforholdData.faktumId);
-                $location.path('soknad/');
-			});
+			$resource('/sendsoknad/rest/landtype/:landkode').get(
+				{landkode: $scope.arbeidsforhold.properties.land},
+	            function (eosdata) { // Success
+	                $scope.arbeidsforhold.properties.eosland = eosdata.result;
+	                $scope.arbeidsforhold.$save({soknadId: data.soknad.soknadId}).then(function (arbeidsforholdData) {
+						$scope.arbeidsforhold = arbeidsforholdData;
+						oppdaterFaktumListe('arbeidsforhold');
+						oppdaterCookieValue(arbeidsforholdData.faktumId);
+		                $location.path('soknad/');
+					});
+	            }
+        	);
 		}
 
 		function oppdaterCookieValue(faktumId) {

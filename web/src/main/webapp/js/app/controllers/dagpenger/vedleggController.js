@@ -6,16 +6,28 @@ angular.module('nav.vedlegg.controller', [])
         });
     }])
 
-    .controller('VedleggCtrl', ['$scope', '$location', '$routeParams', '$anchorScroll', 'data', 'vedleggService', 'Faktum', 'VedleggForventning', function ($scope, $location, $routeParams, $anchorScroll, data, vedleggService, Faktum, VedleggForventning) {
+    .controller('VedleggCtrl', ['$scope', '$location', '$routeParams', '$anchorScroll', 'data', 'vedleggService', 'Faktum', 'VedleggForventning', 'soknadService', function ($scope, $location, $routeParams, $anchorScroll, data, vedleggService, Faktum, VedleggForventning, soknadService) {
         $scope.data = {soknadId: data.soknad.soknadId};
         $scope.forventninger = vedleggService.query({soknadId: data.soknad.soknadId});
         $scope.sidedata = {navn: 'vedlegg'};
         $scope.validert = {value: ''};
+        $scope.fremdriftsindikator = {
+            laster: false
+        };
 
         $scope.validerVedlegg = function (form) {
+            $scope.fremdriftsindikator.laster = true;
             if (form.$valid) {
-                $location.path('/oppsummering');
+                soknadService.delsteg({soknadId: data.soknad.soknadId, delsteg: 'oppsummering'},
+                    function() {
+                        $location.path('/oppsummering');
+                    },
+                    function() {
+                        $scope.fremdriftsindikator.laster = false;
+                    }
+                );
             } else {
+                $scope.fremdriftsindikator.laster = false;
                 $scope.validert.value = true;
             }
             $scope.runValidation(true);
@@ -31,8 +43,8 @@ angular.module('nav.vedlegg.controller', [])
                 value: 'true',
                 soknadId: data.soknad.soknadId
             }).$save().then(function (nyttfaktum) {
-                    VedleggForventning.query({soknadId: data.soknad.soknadId, faktumId: nyttfaktum.faktumId}, function (forventninger) {
-                        $scope.forventninger.push.apply($scope.forventninger, forventninger);
+                    vedleggService.hentAnnetVedlegg({soknadId: data.soknad.soknadId, faktumId: nyttfaktum.faktumId}, function (forventninger) {
+                        $scope.forventninger.push(forventninger);
                     });
                 });
         };
@@ -104,11 +116,6 @@ angular.module('nav.vedlegg.controller', [])
         };
     }])
 
-    .filter('nospace', function () {
-        return function (value) {
-            return (!value) ? '' : value.replace(/ /g, '');
-        };
-    })
     .directive('bildeNavigering', [function () {
         return {
             restrict: 'a',

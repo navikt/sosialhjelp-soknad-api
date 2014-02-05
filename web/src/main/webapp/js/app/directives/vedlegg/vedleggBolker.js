@@ -33,7 +33,7 @@ angular.module('nav.vedleggbolker', [])
                 }
 
                 function bolkHarFeil(bolk) {
-                    return !($(bolk).hasClass('behandlet') || $(bolk).hasClass('lastetopp'));
+                    return !($(bolk).find('.vedlegg-bolk').hasClass('behandlet'));
                 }
 
                 function finnAlleBolker() {
