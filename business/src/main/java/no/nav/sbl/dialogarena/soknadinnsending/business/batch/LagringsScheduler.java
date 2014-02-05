@@ -21,7 +21,7 @@ public class LagringsScheduler {
 
     private static final Logger LOG = getLogger(LagringsScheduler.class);
     private static final int SCHEDULE_RATE_MS = 1000 * 60 * 60; // 1 time
-    private static final int SCHEDULE_INTERRUPT_MS = 1000 * 60; // 1 min
+    private static final int SCHEDULE_INTERRUPT_MS = 1000 * 60 * 10; // 10 min
     private DateTime batchStartTime;
 
     @Inject
@@ -33,7 +33,7 @@ public class LagringsScheduler {
     public void mellomlagreSoknaderOgNullstillLokalDb() throws InterruptedException {
         batchStartTime = DateTime.now();
         if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "false"))) { // TODO: Burde fjernes når applikasjonen skal ut i prod
-            LOG.info("entered mellomlagreSoknaderOgNullstillLokalDb");
+            LOG.info("Starter flytting av søknader til henvendelse-jobb");
             for (Optional<WebSoknad> ws = soknadRepository.plukkSoknadTilMellomlagring(); ws.isSome(); ws = soknadRepository.plukkSoknadTilMellomlagring()) {
                 lagreFilTilHenvendelseOgSlettILokalDb(ws);
                 // Avslutt prosessen hvis det er gått for lang tid. Tyder på at noe er nede.
@@ -53,10 +53,14 @@ public class LagringsScheduler {
             JAXB.marshal(soknad, xml);
             fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(xml.toString().getBytes()));
             soknadRepository.slettSoknad(soknad.getSoknadId());
-            LOG.info("---- Lagret soknad til henvendelse og slettet lokalt. Soknadsid: " + soknad.getUuid() + "----");
+            LOG.info("---- Lagret soknad til henvendelse og slettet lokalt. Soknadsid: " + soknad.getSoknadId() + "----");
         } catch (Exception e) {
-            LOG.error("Feil", e);
-            soknadRepository.leggTilbake(soknad);
+            LOG.error("Lagring eller sletting feilet for soknad {}. Setter tilbake til LEDIG", soknad.getSoknadId(), e);
+            try {
+                soknadRepository.leggTilbake(soknad);
+            } catch (Exception e1) {
+                LOG.error("Klarte ikke å legge tilbake søknad {}", soknad.getSoknadId(), e1);
+            }
             Thread.sleep(1000); // Så loggen ikke blir fylt opp
         }
 

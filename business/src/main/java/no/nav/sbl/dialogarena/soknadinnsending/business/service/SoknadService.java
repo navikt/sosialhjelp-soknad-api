@@ -41,6 +41,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -145,8 +147,12 @@ public class SoknadService implements SendSoknadService, VedleggService {
                         && faktum.getProperties().get(uniqueProperty)
                         .equals(f.getProperties().get(uniqueProperty))) {
                     f.setFaktumId(faktum.getFaktumId());
-                    genererVedleggForFaktum(f);
-                    return repository.lagreFaktum(soknadId, f, true);
+                    
+                    //TODO trenger å få lagt inn properties....)
+                    Long lagretFaktumId = repository.lagreFaktum(soknadId, f, true);
+                    Faktum hentetFaktum = repository.hentFaktum(soknadId, lagretFaktumId);
+                    genererVedleggForFaktum(hentetFaktum);
+                    return lagretFaktumId;
                 }
             }
         }
@@ -237,6 +243,17 @@ public class SoknadService implements SendSoknadService, VedleggService {
         Long soknadId = repository.opprettSoknad(soknad);
         WebSoknadId websoknadId = new WebSoknadId();
         websoknadId.setId(soknadId);
+
+        List<String> bolker = Arrays.asList("reellarbeidssoker", "arbeidsforhold", "egennaering", "verneplikt", "utdanning", "ytelser", "personalia", "barnetillegg", "fritekst");
+        Map<String, String> erBolderValidert = new HashMap<>();
+        for (String bolk : bolker) {
+            erBolderValidert.put(bolk, "false");
+        }
+
+        Faktum bolkerFaktum = new Faktum(soknadId, null, "bolker", null, BRUKERREGISTRERT_FAKTUM);
+        bolkerFaktum.setProperties(erBolderValidert);
+
+        repository.lagreFaktum(soknadId, bolkerFaktum);
 
         return behandlingsId;
     }
@@ -391,7 +408,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 }
                 
                 vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
-            } else if(!soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId() , soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValue(), struktur)) { //do nothing 
+            } else if(!soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId() , soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValue(), struktur)) { //do nothing
             } else if (vedlegg != null) { // sett vedleggsforventning til ikke paakrevd
                 vedlegg.setInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
                 vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
