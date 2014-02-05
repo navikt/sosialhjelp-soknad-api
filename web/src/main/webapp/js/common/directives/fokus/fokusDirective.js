@@ -26,6 +26,15 @@ angular.module('nav.fokus', [])
             }
         };
     }])
+    .directive('leggtilOrgnr', [function () {
+        return {
+            link: function (scope, elm, attrs) {
+                elm.bind("click", function () {
+                    elm.prev().find('.orgnummer-repeat input').focus();
+                })
+            }
+        };
+    }])
     /*
      Fikser autoscrolling ved tabbing for elementer som skjules bak sticky-lenken
      */
