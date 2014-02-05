@@ -11,6 +11,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -146,6 +147,14 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         }
 
         return result;
+    }
+    
+    @Override
+    public Boolean isVedleggPaakrevd(Long soknadId, String key, String value) {
+        String sql =  "select * from soknadbrukerdata where soknad_id=? and key=? and value like ?";
+        SqlRowSet rs = getJdbcTemplate().queryForRowSet(sql,  soknadId, key, value);
+        
+        return rs.next();
     }
 
     /**

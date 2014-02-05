@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import no.aetat.arena.personstatus.Personstatus;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoConnector;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
 
+import static no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoConnector.Status;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Controller
@@ -23,7 +23,7 @@ public class PersonInfoController {
 
     @RequestMapping(value = "", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
-    public Personstatus hentSoknadData(@PathVariable String fnr) {
+    public Status hentSoknadData(@PathVariable String fnr) {
         return personInfoConnector.hent(fnr);
     }
 
