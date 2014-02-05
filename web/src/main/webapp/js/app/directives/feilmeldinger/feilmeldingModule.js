@@ -77,7 +77,10 @@ angular.module('nav.feilmeldinger', [])
                         if (feilmelding.elem.is('[type=hidden]')) {
                             if (feilmelding.elem.hasClass('tekstfelt')) {
                                 scope.giFokus(formLinje.find('input[type=text]').filter(':visible').first());
-                            } else {
+                            } else if(feilmelding.elem.hasClass('under-atten-dato')) {
+                                scope.giFokus(formLinje.find('input[type=text]').first());
+                            }
+                            else {
                                 scope.giFokus(formLinje.find('input[type=checkbox]').first());
                             }
                         } else {
@@ -180,8 +183,7 @@ angular.module('nav.feilmeldinger', [])
         };
     }
     ])
-    .
-    filter('fiksRekkefolge', [function () {
+    .filter('fiksRekkefolge', [function () {
         return function (feilmeldinger) {
             var sortertFeilmeldingerArray = [];
 

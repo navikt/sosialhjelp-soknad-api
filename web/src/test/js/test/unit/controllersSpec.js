@@ -176,7 +176,7 @@ describe('DagpengerControllere', function () {
             var month = idag.getMonth() + 1;
             var date = idag.getDate();
 
-            scope.barn.properties.fodselsdato = year + "." + month +"." + date;
+            scope.barn.properties.fodselsdato = year + "-" + month +"-" + date;
             expect(scope.finnAlder().toString()).toEqual("0");
         });
 
@@ -186,7 +186,7 @@ describe('DagpengerControllere', function () {
             var month = idag.getMonth() + 1;
             var date = idag.getDate();
 
-            scope.barn.properties.fodselsdato = lastyear + "." + month +"." + date;
+            scope.barn.properties.fodselsdato = lastyear + "-" + month +"-" + date;
             expect(scope.finnAlder().toString()).toEqual("1");
         });
 
@@ -196,7 +196,7 @@ describe('DagpengerControllere', function () {
             var month = idag.getMonth() + 1;
             var date = idag.getDate()  + 1;
 
-            scope.barn.properties.fodselsdato = lastyear + "." + month +"." + date;
+            scope.barn.properties.fodselsdato = lastyear + "-" + month +"-" + date;
 
 
             expect(scope.finnAlder().toString()).toEqual("0");
@@ -207,9 +207,19 @@ describe('DagpengerControllere', function () {
             var lastmonth = idag.getMonth() + 2;
             var date = idag.getDate();
 
-            scope.barn.properties.fodselsdato = lastyear + "." + lastmonth +"." + date;
+            scope.barn.properties.fodselsdato = lastyear + "-" + lastmonth +"-" + date;
             expect(scope.finnAlder().toString()).toEqual("0");
         });
+        it('skal returnere false for et barn som fyller 18 i den måneden vi er i', function () {
+            var idag = new Date();
+            var maaned = idag.getMonth();
+            var dag = idag.getDay() -1;
+
+            var attenAarSiden = idag.getFullYear() -18;
+
+            scope.barn.properties.fodselsdato = attenAarSiden + "-" + maaned +"-" + dag;
+            expect(scope.fyllerAarDenneMaaneden()).toBe(false);
+        })
     });
 
 });
