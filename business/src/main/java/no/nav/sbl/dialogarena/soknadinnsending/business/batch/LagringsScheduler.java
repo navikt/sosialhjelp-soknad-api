@@ -53,7 +53,7 @@ public class LagringsScheduler {
             JAXB.marshal(soknad, xml);
             fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(xml.toString().getBytes()));
             soknadRepository.slettSoknad(soknad.getSoknadId());
-            LOG.info("---- Lagret soknad til henvendelse og slettet lokalt. Soknadsid: " + soknad.getUuid() + "----");
+            LOG.info("---- Lagret soknad til henvendelse og slettet lokalt. Soknadsid: " + soknad.getSoknadId() + "----");
         } catch (Exception e) {
             LOG.error("Lagring eller sletting feilet for soknad {}. Setter tilbake til LEDIG", soknad.getSoknadId(), e);
             try {
