@@ -24,7 +24,7 @@ public class PersonInfoController {
     @RequestMapping(value = "", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
     public Status hentSoknadData(@PathVariable String fnr) {
-        return personInfoConnector.hent(fnr);
+        return personInfoConnector.hentArbeidssokerStatus(fnr);
     }
 
 }

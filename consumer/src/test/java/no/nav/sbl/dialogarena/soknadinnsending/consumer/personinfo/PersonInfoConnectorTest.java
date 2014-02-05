@@ -25,28 +25,28 @@ public class PersonInfoConnectorTest {
     @Test
     public void returnererRegistrertHvisStatusArbeidssokerErARBS() throws FaultGeneriskMsg {
         when(service.hentPersonStatus(any(Fodselsnr.class))).thenReturn(new Personstatus().withPersonData(new PersonstatusType.PersonData().withStatusArbeidsoker("ARBS")));
-        Status status = connector.hent("12345678910");
+        Status status = connector.hentArbeidssokerStatus("12345678910");
         assertEquals(Status.REGISTRERT, status);
     }
 
     @Test
     public void returnererRegistrertHvisStatusArbeidssokerIkkeErARBS() throws FaultGeneriskMsg {
         when(service.hentPersonStatus(any(Fodselsnr.class))).thenReturn(new Personstatus().withPersonData(new PersonstatusType.PersonData().withStatusArbeidsoker("PARBS")));
-        Status status = connector.hent("12345678910");
+        Status status = connector.hentArbeidssokerStatus("12345678910");
         assertEquals(Status.IKKE_REGISTRERT, status);
     }
 
     @Test
     public void returnererIkkeRegistrertHvisTjenestenSvarerMedNull() throws FaultGeneriskMsg {
         when(service.hentPersonStatus(any(Fodselsnr.class))).thenReturn(null);
-        Status status = connector.hent("12345678910");
+        Status status = connector.hentArbeidssokerStatus("12345678910");
         assertEquals(Status.IKKE_REGISTRERT, status);
     }
 
     @Test
     public void returnererUkjentHvisServicekallFeiler() throws FaultGeneriskMsg {
         when(service.hentPersonStatus(any(Fodselsnr.class))).thenThrow(new RuntimeException("Tjenesten er nede"));
-        Status status = connector.hent("12345678910");
+        Status status = connector.hentArbeidssokerStatus("12345678910");
         assertEquals(Status.UKJENT, status);
     }
 }
