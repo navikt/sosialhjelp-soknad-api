@@ -50,22 +50,21 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     @Override
     public Long opprettVedlegg(final Vedlegg vedlegg, final byte[] content) {
         final Long databasenokkel = getJdbcTemplate().queryForObject(SQLUtils.selectNextSequenceValue("VEDLEGG_ID_SEQ"), Long.class);
-        getJdbcTemplate().execute("insert into vedlegg(vedlegg_id, soknad_id,faktum, skjemaNummer, flereTillatt, navn, innsendingsvalg, storrelse, antallsider, fillagerReferanse, data, opprettetdato) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, sysdate)",
+        getJdbcTemplate().execute("insert into vedlegg(vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, storrelse, antallsider, fillagerReferanse, data, opprettetdato) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, sysdate)",
 
                 new AbstractLobCreatingPreparedStatementCallback(lobHandler) {
                     @Override
                     protected void setValues(PreparedStatement ps, LobCreator lobCreator) throws SQLException {
                         ps.setLong(1, databasenokkel);
                         ps.setLong(2, vedlegg.getSoknadId());
-                        ps.setLong(3, vedlegg.getFaktumId());
+                        ps.setObject(3, vedlegg.getFaktumId());
                         ps.setString(4, vedlegg.getskjemaNummer());
-                        ps.setBoolean(5, vedlegg.getFlereTillatt());
-                        ps.setString(6, vedlegg.getNavn());
-                        ps.setString(7, vedlegg.getInnsendingsvalg().toString());
-                        ps.setLong(8, vedlegg.getStorrelse());
-                        ps.setLong(9, vedlegg.getAntallSider());
-                        ps.setString(10, vedlegg.getFillagerReferanse());
-                        lobCreator.setBlobAsBytes(ps, 11, content);
+                        ps.setString(5, vedlegg.getNavn());
+                        ps.setString(6, vedlegg.getInnsendingsvalg().toString());
+                        ps.setLong(7, vedlegg.getStorrelse());
+                        ps.setLong(8, vedlegg.getAntallSider());
+                        ps.setString(9, vedlegg.getFillagerReferanse());
+                        lobCreator.setBlobAsBytes(ps, 10, content);
                     }
                 });
         return databasenokkel;
@@ -132,7 +131,12 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     @Override
     public Vedlegg hentVedleggForskjemaNummer(Long soknadId, Long faktumId, String skjemaNummer) {
         try {
-            return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, skjemaNummer, flereTillatt, navn, innsendingsvalg, storrelse, antallsider, fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ? and innsendingsvalg != 'UnderBehandling'", new VedleggRowMapper(false), soknadId, faktumId, skjemaNummer);
+            if(faktumId == null) {
+                return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, skjemaNummer, flereTillatt, navn, innsendingsvalg, storrelse, antallsider, fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and faktum is null and skjemaNummer = ? and innsendingsvalg != 'UnderBehandling'", new VedleggRowMapper(false), soknadId, skjemaNummer);
+            } else {
+                return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, skjemaNummer, flereTillatt, navn, innsendingsvalg, storrelse, antallsider, fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ? and innsendingsvalg != 'UnderBehandling'", new VedleggRowMapper(false), soknadId, faktumId, skjemaNummer);
+            }
+            
         } catch (EmptyResultDataAccessException e) {
             return null;
         }

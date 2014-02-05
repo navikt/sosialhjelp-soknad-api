@@ -27,11 +27,11 @@ angular.module('nav.input', ['nav.cmstekster'])
 						scope.$eval(attr.navendret);
 					};
 
-                    var index = scope.navlabel.indexOf(".true");
+                    var index = scope.navlabel.lastIndexOf(".true");
                     if(index > -1) {
                         scope.name = scope.navlabel.substr(0, index);
                     } else {
-                        index = scope.navlabel.indexOf(".false");
+                        index = scope.navlabel.lastIndexOf(".false");
                         scope.name = scope.navlabel.substr(0, index);
                     }
 				}
@@ -53,22 +53,28 @@ angular.module('nav.input', ['nav.cmstekster'])
 					}
 
 				},
-				post: function (scope, element) {
-					scope.hvisHarHjelpetekst = function () {
-						return scope.hjelpetekst.tittel && scope.hjelpetekst.tekst;
-					};
+                post: function (scope, element) {
+                    scope.hvisHarHjelpetekst = function () {
+                        return scope.hjelpetekst.tittel && scope.hjelpetekst.tekst;
+                    };
 
-					scope.hvisHuketAv = function () {
-						var transcludeElement = element.find('.ng-transclude');
-						return checkTrue(scope.faktum.value) && transcludeElement.text().trim().length > 0;
-					};
-					scope.endret = function () {
-						scope.$eval(scope.navendret);
-					};
-				}},
+                    scope.hvisHuketAv = function () {
+                        return checkTrue(scope.faktum.value);
+                    };
+
+                    scope.hvisHarTranscludedInnhold = function () {
+                        var transcludeElement = element.find('.ng-transclude');
+                        return transcludeElement.text().trim().length > 0;
+                    };
+
+                    scope.endret = function () {
+                        scope.$eval(scope.navendret);
+                    };
+                }},
 			templateUrl: '../js/common/directives/navinput/navcheckboxTemplate.html'
 		}
 	}])
+
 	.directive('navtekst', [function () {
 		return {
 			restrict   : 'A',

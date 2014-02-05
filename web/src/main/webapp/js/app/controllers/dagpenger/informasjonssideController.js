@@ -1,136 +1,152 @@
 angular.module('nav.informasjonsside', ['nav.cmstekster'])
-	.controller('InformasjonsSideCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', 'soknadService', function ($scope, data, $routeParams, $http, $location, soknadService) {
-			$scope.utslagskriterier = data.utslagskriterier;
-			//Inntil vi får arena-kobling
-			$scope.utslagskriterier.erRegistrertArbeidssoker = "true";
-			$scope.utslagskriterier.harlestbrosjyre=false;
-			//For testing uten TPS:
-			
-			//$scope.utslagskriterier.gyldigAlder = false;
-			//$scope.utslagskriterier.bosattINorge = false;
+    .controller('InformasjonsSideCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', 'soknadService', 'sjekkUtslagskriterier', function ($scope, data, $routeParams, $http, $location, soknadService, sjekkUtslagskriterier) {
+        $scope.utslagskriterier = data.utslagskriterier;
+        //Inntil vi får arena-kobling
+        $scope.utslagskriterier.erRegistrertArbeidssoker = "true";
+        $scope.utslagskriterier.harlestbrosjyre = false;
+        //For testing uten TPS:
 
-			$scope.alderspensjonUrl = data.config["soknad.alderspensjon.url"];
-			$scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];
-			$scope.reelArbeidsokerUrl = data.config["soknad.reelarbeidsoker.url"];
-			$scope.dagpengerBrosjyreUrl = data.config["soknad.dagpengerbrosjyre.url"];
-			$scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
-			$scope.skalViseBrosjyreMelding = false;
-			
-			$scope.oppsummering=false;
-			if(getBehandlingIdFromUrl() != "Dagpenger") {
-				$scope.utslagskriterier.harlestbrosjyre=true;
-				$scope.oppsummering=true;
-			}
+        //$scope.utslagskriterier.gyldigAlder = false;
+        //$scope.utslagskriterier.bosattINorge = false;
 
-			$scope.fremdriftsindikator = {
-				laster: false
-			};
+        $scope.alderspensjonUrl = data.config["soknad.alderspensjon.url"];
+        $scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];
+        $scope.reelArbeidsokerUrl = data.config["soknad.reelarbeidsoker.url"];
+        $scope.dagpengerBrosjyreUrl = data.config["soknad.dagpengerbrosjyre.url"];
+        $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
+        $scope.skalViseBrosjyreMelding = false;
 
-			$scope.tpsSvarer = function() {
-				return !$scope.tpsSvarerIkke()
-			}
+        $scope.oppsummering = false;
+        if (getBehandlingIdFromUrl() != "Dagpenger") {
+            $scope.utslagskriterier.harlestbrosjyre = true;
+            $scope.oppsummering = true;
+        }
 
-			$scope.tpsSvarerIkke = function() {
-				if($scope.utslagskriterier.error != undefined) {
-					return true;
-				}
-				return false;
-			}
+        $scope.fremdriftsindikator = {
+            laster: false
+        };
 
-			$scope.soknadErIkkeStartet = function() {
-				return !$scope.soknadErStartet();
-			}
+        $scope.tpsSvarer = function () {
+            return !$scope.tpsSvarerIkke()
+        }
 
-			$scope.soknadErStartet = function() {
-				var behandlingId = getBehandlingIdFromUrl();
-				if(behandlingId != "Dagpenger") {
-					return true;
-				}
+        $scope.tpsSvarerIkke = function () {
+            if ($scope.utslagskriterier.error != undefined) {
+                return true;
+            }
+            return false;
+        }
 
-				return false;
-			}
+        $scope.soknadErIkkeStartet = function () {
+            return !$scope.soknadErStartet();
+        }
 
-			$scope.soknadErIkkeFerdigstilt = function() {
-				return !$scope.soknadErFerdigstilt();
-			}
+        $scope.soknadErStartet = function () {
+            var behandlingId = getBehandlingIdFromUrl();
+            if (behandlingId != "Dagpenger") {
+                return true;
+            }
+            return false;
+        }
 
-			$scope.soknadErFerdigstilt = function() {
-				if(data && data.soknad && data.soknad.status == "FERDIG") {
-					$location.path('/ferdigstilt');
-				}
-			}
+        $scope.soknadErIkkeFerdigstilt = function () {
+            return !$scope.soknadErFerdigstilt();
+        }
 
-	        $scope.startSoknad = function () {
-	            var soknadType = window.location.pathname.split("/")[3];
-	            $scope.fremdriftsindikator.laster = true;
-	            $scope.soknad = soknadService.create({param: soknadType},
-	                function (result) {
-	                	var currentUrl = location.href;
-	                	location.href = currentUrl.substring(0, currentUrl.indexOf('start/')) + 'soknad/' + result.brukerbehandlingId + '#/soknad';
-	                }, function () {
-	                    $scope.fremdriftsindikator.laster = false;
-	                });
-	        }
+        $scope.soknadErFerdigstilt = function () {
+            return data && data.soknad && data.soknad.status == "FERDIG";
+        }
 
-			$scope.harLestBrosjyre = function() {
-				return $scope.utslagskriterier.harlestbrosjyre;
-			}
+        $scope.startSoknad = function () {
+            var soknadType = window.location.pathname.split("/")[3];
+            $scope.fremdriftsindikator.laster = true;
+            $scope.soknad = soknadService.create({soknadType: soknadType},
+                function (result) {
+                    var currentUrl = location.href;
+                    location.href = currentUrl.substring(0, currentUrl.indexOf('start/')) + 'soknad/' + result.brukerbehandlingId + '#/soknad';
+                }, function () {
+                    $scope.fremdriftsindikator.laster = false;
+                });
+        }
 
-			$scope.fortsettLikevel = function($event) {
-				$event.preventDefault();
-				$scope.utslagskriterier.erRegistrertArbeidssoker = 'true';
-				$scope.utslagskriterier.gyldigAlder = 'true';
-				$scope.utslagskriterier.bosattINorge = 'true';
-			}
+        $scope.harLestBrosjyre = function () {
+            return $scope.utslagskriterier.harlestbrosjyre;
+        }
 
-			$scope.startSoknadDersomBrosjyreLest = function() {
-				if($scope.harLestBrosjyre()) {
-					$scope.skalViseBrosjyreMelding = false;
-					$scope.startSoknad();
-				} else {
-					$scope.skalViseBrosjyreMelding=true;
-				}
-			}
+        $scope.fortsettLikevel = function ($event) {
+            $event.preventDefault();
+            $scope.utslagskriterier.erRegistrertArbeidssoker = 'true';
+            $scope.utslagskriterier.gyldigAlder = 'true';
+            $scope.utslagskriterier.bosattINorge = 'true';
+        }
 
-			$scope.forsettSoknadDersomBrosjyreLest = function() {
-				if($scope.harLestBrosjyre()) {
-					$scope.skalViseBrosjyreMelding = false;
-					$location.path("/soknad");
-				} else {
-					$scope.skalViseBrosjyreMelding=true;
-				}
-			}
+        $scope.startSoknadDersomBrosjyreLest = function () {
+            if ($scope.harLestBrosjyre()) {
+                $scope.skalViseBrosjyreMelding = false;
+                $scope.startSoknad();
+            } else {
+                $scope.skalViseBrosjyreMelding = true;
+            }
+        }
 
-			$scope.kravForDagpengerOppfylt = function () {
-				return $scope.registrertArbeidssoker() && $scope.gyldigAlder() && $scope.bosattINorge() && $scope.soknadErIkkeFerdigstilt();
-			};
+        $scope.forsettSoknadDersomBrosjyreLest = function () {
+            if ($scope.harLestBrosjyre()) {
+                $scope.skalViseBrosjyreMelding = false;
+                $location.path("/soknad");
+            } else {
+                $scope.skalViseBrosjyreMelding = true;
+            }
+        }
 
-			$scope.kravForDagpengerIkkeOppfylt = function () {
-				return !$scope.kravForDagpengerOppfylt()  && $scope.soknadErIkkeFerdigstilt();
-			};
+        $scope.kravForDagpengerOppfylt = function () {
+            return sjekkUtslagskriterier.erOppfylt($scope.utslagskriterier);
+        };
+
+        $scope.kravForDagpengerIkkeOppfylt = function () {
+            return !$scope.kravForDagpengerOppfylt() && $scope.soknadErIkkeFerdigstilt();
+        };
 
 
-			$scope.registrertArbeidssoker = function () {
-				return $scope.utslagskriterier.erRegistrertArbeidssoker == 'true'
-			};
+        $scope.registrertArbeidssoker = function () {
+            return $scope.utslagskriterier.erRegistrertArbeidssoker == 'true'
+        };
 
-			$scope.gyldigAlder = function () {
-				return $scope.utslagskriterier.gyldigAlder == 'true';
-			};
+        $scope.gyldigAlder = function () {
+            return $scope.utslagskriterier.gyldigAlder == 'true';
+        };
 
-			$scope.bosattINorge = function () {
-				return $scope.utslagskriterier.bosattINorge == 'true';
-			};
+        $scope.bosattINorge = function () {
+            return $scope.utslagskriterier.bosattINorge == 'true';
+        };
 
-			$scope.ikkeRegistrertArbeidssoker = function () {
-				return !$scope.registrertArbeidssoker();
-			};
+        $scope.ikkeRegistrertArbeidssoker = function () {
+            return !$scope.registrertArbeidssoker();
+        };
 
-			$scope.ikkeGyldigAlder = function () {
-				return !$scope.gyldigAlder();
-			};
+        $scope.ikkeGyldigAlder = function () {
+            return !$scope.gyldigAlder();
+        };
 
-			$scope.ikkeBosattINorge = function () {
-				return !$scope.bosattINorge();
-			};
-		}]);
+        $scope.ikkeBosattINorge = function () {
+            return !$scope.bosattINorge();
+        };
+    }])
+    .factory('sjekkUtslagskriterier', [function () {
+        return {
+            erOppfylt: function(utslagskriterier) {
+                return registrertArbeidssoker() && gyldigAlder() && bosattINorge();
+
+                function registrertArbeidssoker() {
+                    return utslagskriterier.erRegistrertArbeidssoker == 'true'
+                };
+
+                function gyldigAlder() {
+                    return utslagskriterier.gyldigAlder == 'true';
+                };
+
+                function bosattINorge() {
+                    return utslagskriterier.bosattINorge == 'true';
+                };
+            }
+        }
+    }]);

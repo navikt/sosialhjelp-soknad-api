@@ -3,7 +3,6 @@
          novalidate>
 
         <div data-form-errors></div>
-        <div data-nav-hjelpetekst-element></div>
 
         <div data-nav-faktum="reellarbeidssoker.villigdeltid"
              data-ng-model="faktum.value"
@@ -59,7 +58,7 @@
                      data-navlabel="reellarbeidssoker.annensituasjon"
                      data-navendret="endreDeltidsAarsaker()"></div>
 
-                <div data-navinfoboks>
+                <div data-navinfoboks data-ng-if="harValgtAnnetUnntakDeltid()">
                     <p data-cmstekster="reellarbeidssoker.unntak.dokumentasjon"></p>
                 </div>
 
@@ -69,19 +68,19 @@
                 <p class="informasjonstekst" data-cmstekster="reellarbeidssoker.villigdeltid.false.informasjon2"></p>
             </div>
 
-
             <div class="tekstfelt form-linje arbeidsmengde-container">
                 <label>
                     <span data-cmstekster="reellarbeidssoker.maksimalarbeidstid"></span>
-                    <input data-ng-model="faktum.value"
-                           type="text"
-                           data-ng-required="erSynlig('egennaering.gardsbruk')"
-                           data-error-messages="{ required: 'reellarbeidssoker.maksimalarbeidstid.feilmelding', pattern: 'reellarbeidssoker.maksimalarbeidstid.pattern.feilmelding'}"
-                           data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
-                           data-blur-validate
-                           data-tekstfelt-patternvalidering
+                    <input type="text"
+                           data-ng-model="faktum.value"
                            data-nav-faktum="reellarbeidssoker.villigdeltid.maksimalarbeidstid"
-                           data-navconfig/>
+                           data-navconfig
+                           data-ng-required="true"
+                           data-error-messages="{ required: 'reellarbeidssoker.maksimalarbeidstid.feilmelding',
+                           pattern: 'reellarbeidssoker.maksimalarbeidstid.pattern.feilmelding'}"
+                           data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
+                           data-tekstfelt-patternvalidering
+                           data-blur-validate />
                     <span class="timer" data-cmstekster="egennaering.gardsbruk.false.timer"></span>
                     <span class="melding"></span>
                 </label>
@@ -141,7 +140,7 @@
                      data-navlabel="reellarbeidssoker.pendleannensituasjon"
                      data-navendret="endrePendleAarsaker()"></div>
 
-                <div data-navinfoboks>
+                <div data-navinfoboks data-ng-if="harValgtAnnetUnntakPendle()">
                     <p data-cmstekster="reellarbeidssoker.unntak.dokumentasjon"></p>
                 </div>
 

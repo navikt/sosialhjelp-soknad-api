@@ -64,7 +64,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         };
 
         $scope.oppdaterSoknad = function () {
-            soknadService.get({param: data.soknad.soknadId},
+            soknadService.get({soknadId: data.soknad.soknadId},
                 function (result) { // Success
                     data.soknad = result;
                     $scope.fremdriftsindikator.laster = false;

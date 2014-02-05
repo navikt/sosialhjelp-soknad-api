@@ -29,12 +29,15 @@
              data-feilmelding="arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.feilmelding"
              data-obligatorisk="true"></div>
 
-        <p class="sluttaarsak-informasjon"
-           data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.informasjon"></p>
+        <div data-navinfoboks>
+            <p class="sluttaarsak-informasjon"
+               data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.informasjon"></p>
+        </div>
 
-        <p data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.sporsmal"></p>
 
         <div class="form-linje spm boolean">
+            <h4 class="spm-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.sporsmal"></h4>
+
             <div class="nav-radio-knapp">
                 <input class="sendsoknad-radio"
                        id="lonnsgaranti1"
@@ -49,9 +52,10 @@
             </div>
 
             <div class="ekstra-spm-boks" data-ng-show="sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'">
-                <p data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.sporsmal"></p>
 
-                <div class="form-linje">
+                <div class="form-linje boolean">
+                    <h4 class="spm-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.sporsmal"></h4>
+
                     <div class="nav-radio-knapp">
                         <input class="sendsoknad-radio"
                                id="lonnsgarantidekker1"
@@ -139,12 +143,14 @@
                 </li>
                 <li>
                     <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2"></p>
-                    <a href="{{sluttaarsakUrl}}" data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst">
+                    <a href="{{sluttaarsakUrl}}"
+                       data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst">
                     </a>
                 </li>
                 <li>
                     <p data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3"></p>
-                    <a href="{{lonnskravSkjema}}" data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3.lenketekst">
+                    <a href="{{lonnskravSkjema}}"
+                       data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3.lenketekst">
                     </a>
                 </li>
             </ul>
