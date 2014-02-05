@@ -127,12 +127,11 @@ angular.module('nav.validering', ['nav.cmstekster'])
 				var eventString = 'RUN_VALIDATION' + ctrl[0].$name;
 
 				scope.$on(eventString, function () {
-
 					if (element.find('input:checked').length > 0) {
 						element.closest('.form-linje').removeClass('feil');
-					} else if (element.find('input:checked').length === 0 && element.is(':visible')) {
-						if (element.closest('.form-linje').hasClass('checkbox')) {
-							element.closest('.form-linje').addClass('feilstyling');
+					} else if (element.find('input:checked').length === 0) {
+                        if (element.closest('.form-linje').hasClass('checkbox')) {
+                            element.closest('.form-linje').addClass('feilstyling');
 						} else {
 							element.closest('.form-linje').addClass('feil');
 						}
@@ -143,7 +142,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
 					return element.find('input:checked').length;
 				}, function () {
 					if (element.find('input:checked').length > 0 && element.closest('.form-linje').hasClass('feil')) {
-						fadeFeilmelding(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil', scope);
+                        fadeFeilmelding(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil', scope);
 					} else if (element.find('input:checked').length > 0 && element.closest('.form-linje').hasClass('feilstyling')) {
 						fadeFeilmelding(element.closest('.form-linje'), element.closest('.form-linje.feilstyling').children('.melding'), 'feilstyling', scope);
 					}

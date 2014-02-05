@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 
+import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -9,21 +10,27 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
+import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
+import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.joda.time.DateTime.now;
-import static org.joda.time.DateTimeUtils.setCurrentMillisFixed;
-import static org.joda.time.DateTimeUtils.setCurrentMillisSystem;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -35,6 +42,9 @@ public class SoknadRepositoryJdbcTest {
 
     @Inject
     private RepositoryTestSupport soknadRepositoryTestSupport;
+
+    @Inject
+    private DataSource ds;
 
     private WebSoknad soknad;
 
@@ -188,12 +198,40 @@ public class SoknadRepositoryJdbcTest {
     }
 
     @Test
-    public void skalHenteOppSoknaderEldreEnnEnTime() {
-        opprettOgPersisterSoknad();
-        setCurrentMillisFixed(now().minusMinutes(61).getMillis()); //bedre enn � sette Thread.sleep(61 min)
-        soknadRepository.settSistLagretTidspunkt(soknadId);
-        setCurrentMillisSystem();
-        assertThat(soknadRepository.hentAlleSoknaderSistLagretOverEnTimeSiden().size(), equalTo(1));
+    public void plukkerRiktigeSoknaderPaaTversAvAlleTraader() throws InterruptedException {
+        JdbcTemplate template = new JdbcTemplate(ds);
+        List<Long> soknaderSomSkalMellomlagres = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Long id = opprettOgPersisterSoknad();
+            template.update("update soknad set sistlagret = SYSDATE - (INTERVAL '2' HOUR) where soknad_id = ?", soknadId);
+            soknaderSomSkalMellomlagres.add(id);
+        }
+
+        final List<Long> soknaderSomBleMellomlagret = Collections.synchronizedList(new ArrayList<Long>());
+        int numberOfThreads = 10;
+        ExecutorService threadpool = Executors.newFixedThreadPool(numberOfThreads);
+        for (int i = 0; i < numberOfThreads; i++) {
+            threadpool.submit(new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    while (true) {
+                        Optional<WebSoknad> soknad = soknadRepository.plukkSoknadTilMellomlagring();
+                        if (soknad.isSome()) {
+                            soknaderSomBleMellomlagret.add(soknad.get().getSoknadId());
+                        } else {
+                            break;
+                        }
+                    }
+                    return null;
+                }
+            });
+        }
+        threadpool.shutdown();
+        threadpool.awaitTermination(1, TimeUnit.MINUTES);
+
+        sort(soknaderSomSkalMellomlagres);
+        sort(soknaderSomBleMellomlagret);
+        assertThat(soknaderSomBleMellomlagret, equalTo(soknaderSomSkalMellomlagres));
     }
 
     @Test
@@ -250,23 +288,22 @@ public class SoknadRepositoryJdbcTest {
     }
 
 
-    private void opprettOgPersisterSoknad() {
-        opprettOgPersisterSoknad(behandlingsId, aktorId);
+    private Long opprettOgPersisterSoknad() {
+        return opprettOgPersisterSoknad(behandlingsId, aktorId);
     }
 
-    private void opprettOgPersisterSoknad(String nyAktorId) {
-        opprettOgPersisterSoknad(randomUUID().toString(), nyAktorId);
+    private Long opprettOgPersisterSoknad(String nyAktorId) {
+        return opprettOgPersisterSoknad(randomUUID().toString(), nyAktorId);
     }
 
-    private void opprettOgPersisterSoknad(String behId, String aktor) {
+    private Long opprettOgPersisterSoknad(String behId, String aktor) {
         soknad = WebSoknad.startSoknad()
                 .medUuid(uuid)
                 .medAktorId(aktor)
                 .medBehandlingId(behId)
                 .medskjemaNummer(skjemaNummer).opprettetDato(now());
 
-        soknadId = soknadRepository.opprettSoknad(soknad);
-        assertThat(soknadId, greaterThan(0L));
+        return soknadId = soknadRepository.opprettSoknad(soknad);
     }
 
     private Long lagreData(String key, Long faktumId, String value) {
