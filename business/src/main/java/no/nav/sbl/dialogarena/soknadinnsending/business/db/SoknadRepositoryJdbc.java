@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import com.google.common.base.Function;
+import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
@@ -27,7 +28,11 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.collect.Maps.uniqueIndex;
+import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.modig.lang.option.Optional.none;
+import static no.nav.modig.lang.option.Optional.optional;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.IdGenerator.lagBehandlingsId;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.limit;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.OPPRETTET;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.UTFYLLING;
@@ -37,7 +42,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInns
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.FERDIG;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad.startSoknad;
-import static org.joda.time.DateTime.now;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Named("soknadInnsendingRepository")
@@ -107,12 +111,25 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         return getJdbcTemplate().queryForObject(sql, new SoknadRowMapper(), id);
     }
 
-    public List<Long> hentAlleSoknaderSistLagretOverEnTimeSiden() {
-        String sql = "select soknad_id from SOKNAD where sistlagret <= ?";
-        return getJdbcTemplate().queryForList(
-                sql,
-                Long.class,
-                new Date(now().minusHours(1).getMillis()));
+    @Override
+    public Optional<WebSoknad> plukkSoknadTilMellomlagring() {
+        while (true) {
+            String select = "select * from soknad where sistlagret < SYSDATE - (INTERVAL '1' HOUR) and batch_status = 'LEDIG'" + limit(1);
+            Optional<WebSoknad> soknad = on(getJdbcTemplate().query(select, new SoknadRowMapper())).head();
+            if (!soknad.isSome()) {
+                return none();
+            }
+            String update = "update soknad set batch_status ='TATT' where soknad_id = ? and batch_status = 'LEDIG'";
+            int rowsAffected = getJdbcTemplate().update(update, soknad.get().getSoknadId());
+            if (rowsAffected == 1) {
+                return optional(hentSoknadMedData(soknad.get().getSoknadId()));
+            }
+        }
+    }
+
+    @Override
+    public void leggTilbake(WebSoknad webSoknad) {
+        getJdbcTemplate().update("update soknad set batch_status = 'LEDIG' where soknad_id = ?", webSoknad.getSoknadId());
     }
 
     @Override
@@ -277,8 +294,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
 
     @Override
     public void settSistLagretTidspunkt(Long soknadId) {
-        getJdbcTemplate()
-                .update("update soknad set sistlagret=? where soknad_id = ?", new Date(now().getMillis()), soknadId);
+        getJdbcTemplate().update("update soknad set sistlagret = SYSDATE where soknad_id = ?", soknadId);
     }
 
 

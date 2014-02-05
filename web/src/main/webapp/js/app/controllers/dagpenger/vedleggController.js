@@ -43,8 +43,8 @@ angular.module('nav.vedlegg.controller', [])
                 value: 'true',
                 soknadId: data.soknad.soknadId
             }).$save().then(function (nyttfaktum) {
-                    VedleggForventning.query({soknadId: data.soknad.soknadId, faktumId: nyttfaktum.faktumId}, function (forventninger) {
-                        $scope.forventninger.push.apply($scope.forventninger, forventninger);
+                    vedleggService.hentAnnetVedlegg({soknadId: data.soknad.soknadId, faktumId: nyttfaktum.faktumId}, function (forventninger) {
+                        $scope.forventninger.push(forventninger);
                     });
                 });
         };

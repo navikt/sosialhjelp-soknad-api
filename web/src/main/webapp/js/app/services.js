@@ -1,25 +1,28 @@
 'use strict';
-
+// TODO: Denne modulen må ryddes opp i
 angular.module('app.services', ['ngResource'])
 
 	.config(function ($httpProvider) {
-		$httpProvider.responseInterceptors.push('resetTimeoutInterceptor');
-		$httpProvider.responseInterceptors.push('settDelstegStatusEtterKallMotServer');
+		$httpProvider.interceptors.push('resetTimeoutInterceptor');
+		$httpProvider.interceptors.push('settDelstegStatusEtterKallMotServer');
+		$httpProvider.interceptors.push('httpRequestInterceptorPreventCache');
 	})
 
+    // Resetter session-timeout
 	.factory('resetTimeoutInterceptor', function () {
-		return function (promise) {
-			return promise.then(function (response) {
-				// Bare reset dersom kallet gikk gjennom
-				TimeoutBox.startTimeout();
-				return response;
-			});
-		}
+        return {
+            'response': function(response) {
+                // Bare reset dersom kallet gikk gjennom
+                TimeoutBox.startTimeout();
+                return response;
+            }
+        }
 	})
 
+    // Oppdaterer delstegstatus dersom man gjør endringer på faktum eller vedlegg
     .factory('settDelstegStatusEtterKallMotServer', ['data', function (data) {
-        return function (promise) {
-            return promise.then(function (response) {
+        return {
+            'response': function(response) {
                 if (response.config.method === 'POST') {
                     var urlArray = response.config.url.split('/');
                     if (urlArray.contains('fakta')) {
@@ -37,20 +40,33 @@ angular.module('app.services', ['ngResource'])
                     }
                 }
                 return response;
-            });
+            }
         }
     }])
+
+    // Legger på tilfeldige tall sist i GET-requests for å forhindre caching i IE
+    .factory('httpRequestInterceptorPreventCache', [function() {
+        return {
+            'request': function(config) {
+                if (config.method === "GET" && config.url.indexOf('.html') < 0) {
+                    config.url = config.url + '?rand=' + new Date().getTime();
+                }
+                return config;
+            }
+        }
+    }])
+
 /**
  * Service som henter en søknad fra henvendelse
  */
 	.factory('soknadService', function ($resource) {
-		return $resource('/sendsoknad/rest/soknad/:action/:soknadId?rand=' + new Date().getTime(),
+		return $resource('/sendsoknad/rest/soknad/:action/:soknadId',
             { soknadId: '@soknadId', soknadType: '@soknadType', delsteg: '@delsteg'},
 			{
 				create : {
                     method: 'POST',
                     params: {soknadType: '@soknadType'},
-                    url: '/sendsoknad/rest/soknad/opprett/:soknadType?rand=' + new Date().getTime()
+                    url: '/sendsoknad/rest/soknad/opprett/:soknadType'
                 },
 				send   : { method: 'POST', params: {soknadId: '@soknadId', action: 'send' }},
 				remove : { method: 'POST', params: {soknadId: '@soknadId', action: 'delete' }},
@@ -60,7 +76,7 @@ angular.module('app.services', ['ngResource'])
 				delsteg: {
                     method: 'POST',
                     params: {soknadId: '@soknadId', delsteg: '@delsteg' },
-                    url: '/sendsoknad/rest/soknad/delsteg/:soknadId/:delsteg?rand=' + new Date().getTime()
+                    url: '/sendsoknad/rest/soknad/delsteg/:soknadId/:delsteg'
                 }
 			}
 		);
@@ -80,17 +96,22 @@ angular.module('app.services', ['ngResource'])
 		);
 	}])
 
+// TODO: Disse må ryddes opp i
 /**
  * Service som behandler vedlegg
  */
 	.factory('vedleggService', function ($resource) {
-		return $resource('/sendsoknad/rest/soknad/:soknadId/vedlegg/:vedleggId/:action?rand=' + new Date().getTime(),
+		return $resource('/sendsoknad/rest/soknad/:soknadId/vedlegg/:vedleggId/:action',
 			{
 				soknadId : '@soknadId',
 				vedleggId: '@vedleggId',
 				skjemaNummer  : '@skjemaNummer'},
 			{
 				get   : { method: 'GET', params: {} },
+                hentAnnetVedlegg : {
+                    url: '/sendsoknad/rest/soknad/:soknadId/vedlegg/:faktumId/hentannetvedlegg?rand=' + new Date().getTime(),
+                    method: 'GET', 
+                    params: {faktumId: '@faktumId'}},
 				create: { method: 'POST', params: {} },
 				merge : { method: 'POST', params: {action: 'generer'} },
 				remove: {method: 'POST', params: {action: 'delete'}},
@@ -102,11 +123,14 @@ angular.module('app.services', ['ngResource'])
 /**
  * Service som behandler vedlegg
  */
+
+ // TODO: Disse må ryddes opp i
 	.factory('VedleggForventning', function ($resource) {
-		return $resource('/sendsoknad/rest/soknad/:soknadId/:faktumId/forventning?rand=' + new Date().getTime(), {
-			soknadId: '@faktum.soknadId'
+		return $resource('/sendsoknad/rest/soknad/:soknadId/:faktumId/forventning', {
+			soknadId: '@soknadId',
+            vedleggId: '@vedleggId'
 		}, {
-			slettVedlegg: {
+            slettVedlegg: {
 				url   : '/sendsoknad/rest/soknad/:soknadId/faktum/:faktumId/vedlegg/:vedleggId/delete',
 				method: 'POST',
 				params: {
@@ -140,6 +164,7 @@ angular.module('app.services', ['ngResource'])
     .factory('landService', function ($resource) {
         return $resource('/sendsoknad/rest/soknad/kodeverk/landliste');
     })
+
 	.factory('StartSoknadService', ['data', '$resource', '$q', function (data, $resource, $q) {
 		var deferred = $q.defer();
 		var soknadType = window.location.pathname.split('/')[3];
