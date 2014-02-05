@@ -197,8 +197,6 @@ describe('DagpengerControllere', function () {
             var date = idag.getDate()  + 1;
 
             scope.barn.properties.fodselsdato = lastyear + "-" + month +"-" + date;
-
-
             expect(scope.finnAlder().toString()).toEqual("0");
         });
         it('skal returnere 0 aar for barn fodt måneden etter idag ifjor', function () {
@@ -210,16 +208,6 @@ describe('DagpengerControllere', function () {
             scope.barn.properties.fodselsdato = lastyear + "-" + lastmonth +"-" + date;
             expect(scope.finnAlder().toString()).toEqual("0");
         });
-        it('skal returnere false for et barn som fyller 18 i den måneden vi er i', function () {
-            var idag = new Date();
-            var maaned = idag.getMonth();
-            var dag = idag.getDay() -1;
-
-            var attenAarSiden = idag.getFullYear() -18;
-
-            scope.barn.properties.fodselsdato = attenAarSiden + "-" + maaned +"-" + dag;
-            expect(scope.fyllerAarDenneMaaneden()).toBe(false);
-        })
     });
 
 });
