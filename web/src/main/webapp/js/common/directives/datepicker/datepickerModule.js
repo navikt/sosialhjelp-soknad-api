@@ -56,10 +56,12 @@ angular.module('nav.datepicker', [])
 				fraDato               : '=',
 				tilDatoFeil           : '=',
 				erFremtidigdatoTillatt: '=',
+                aarBegrensning        : '=',
 				endret                : '&',
 				lagre                 : '&',
 				label                 : '@',
 				requiredErrorMessage  : '@'
+
 			},
 			link       : function (scope, element, attrs, form) {
 				var eventForAValidereHeleFormen = 'RUN_VALIDATION' + form.$name;
@@ -67,6 +69,8 @@ angular.module('nav.datepicker', [])
 				var datepickerInput = element.find('input[type=hidden]');
 				var harHattFokus = false;
 				var datepickerErLukket = true;
+
+
 				scope.harFokus = false;
 
 				scope.options = {};
