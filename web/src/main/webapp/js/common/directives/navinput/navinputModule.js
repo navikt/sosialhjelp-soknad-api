@@ -27,11 +27,11 @@ angular.module('nav.input', ['nav.cmstekster'])
 						scope.$eval(attr.navendret);
 					};
 
-                    var index = scope.navlabel.indexOf(".true");
+                    var index = scope.navlabel.lastIndexOf(".true");
                     if(index > -1) {
                         scope.name = scope.navlabel.substr(0, index);
                     } else {
-                        index = scope.navlabel.indexOf(".false");
+                        index = scope.navlabel.lastIndexOf(".false");
                         scope.name = scope.navlabel.substr(0, index);
                     }
 				}
@@ -74,6 +74,7 @@ angular.module('nav.input', ['nav.cmstekster'])
 			templateUrl: '../js/common/directives/navinput/navcheckboxTemplate.html'
 		}
 	}])
+
 	.directive('navtekst', [function () {
 		return {
 			restrict   : 'A',
