@@ -39,12 +39,12 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
 
     @Override
     public List<Vedlegg> hentVedleggUnderBehandling(Long soknadId, Long faktum, String skjemaNummer) {
-        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, flereTillatt, navn, innsendingsvalg, storrelse, opprettetdato, antallsider, fillagerReferanse from Vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ? and innsendingsvalg = 'UnderBehandling'", new VedleggRowMapper(false), soknadId, faktum, skjemaNummer);
+        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, storrelse, opprettetdato, antallsider, fillagerReferanse from Vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ? and innsendingsvalg = 'UnderBehandling'", new VedleggRowMapper(false), soknadId, faktum, skjemaNummer);
     }
 
     @Override
     public List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId) {
-        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, flereTillatt, navn, innsendingsvalg, storrelse, opprettetdato, antallsider, fillagerReferanse from Vedlegg where soknad_id = ? and innsendingsvalg in ('VedleggKreves', 'LastetOpp', 'SendesSenere','SendesIkke') ", new VedleggRowMapper(false), soknadId);
+        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, storrelse, opprettetdato, antallsider, fillagerReferanse from Vedlegg where soknad_id = ? and innsendingsvalg in ('VedleggKreves', 'LastetOpp', 'SendesSenere','SendesIkke') ", new VedleggRowMapper(false), soknadId);
     }
 
     @Override
@@ -125,16 +125,16 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
 
     @Override
     public Vedlegg hentVedlegg(Long soknadId, Long vedleggId) {
-        return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, skjemaNummer, flereTillatt, navn, innsendingsvalg, storrelse, antallsider, fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and vedlegg_id = ?", new VedleggRowMapper(false), soknadId, vedleggId);
+        return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, storrelse, antallsider, fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and vedlegg_id = ?", new VedleggRowMapper(false), soknadId, vedleggId);
     }
 
     @Override
     public Vedlegg hentVedleggForskjemaNummer(Long soknadId, Long faktumId, String skjemaNummer) {
         try {
             if(faktumId == null) {
-                return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, skjemaNummer, flereTillatt, navn, innsendingsvalg, storrelse, antallsider, fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and faktum is null and skjemaNummer = ? and innsendingsvalg != 'UnderBehandling'", new VedleggRowMapper(false), soknadId, skjemaNummer);
+                return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, storrelse, antallsider, fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and faktum is null and skjemaNummer = ? and innsendingsvalg != 'UnderBehandling'", new VedleggRowMapper(false), soknadId, skjemaNummer);
             } else {
-                return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, skjemaNummer, flereTillatt, navn, innsendingsvalg, storrelse, antallsider, fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ? and innsendingsvalg != 'UnderBehandling'", new VedleggRowMapper(false), soknadId, faktumId, skjemaNummer);
+                return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, storrelse, antallsider, fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ? and innsendingsvalg != 'UnderBehandling'", new VedleggRowMapper(false), soknadId, faktumId, skjemaNummer);
             }
             
         } catch (EmptyResultDataAccessException e) {
@@ -149,7 +149,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
 
     @Override
     public List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId) {
-        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, flereTillatt, navn, innsendingsvalg, storrelse, opprettetdato, antallsider, fillagerReferanse from Vedlegg where soknad_id = ? and faktum=? and innsendingsvalg in ('VedleggKreves', 'LastetOpp', 'SendesSenere','SendesIkke') ", new VedleggRowMapper(false), soknadId, faktumId);
+        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, storrelse, opprettetdato, antallsider, fillagerReferanse from Vedlegg where soknad_id = ? and faktum=? and innsendingsvalg in ('VedleggKreves', 'LastetOpp', 'SendesSenere','SendesIkke') ", new VedleggRowMapper(false), soknadId, faktumId);
     }
 
 }
