@@ -1,7 +1,7 @@
 angular.module('sendsoknad')
     .value('data', {})
     .value('cms', {})
-    .run(['$http', '$templateCache', '$rootScope', 'data', '$location', function ($http, $templateCache, $rootScope, data, $location) {
+    .run(['$http', '$templateCache', '$rootScope', 'data', '$location', 'sjekkUtslagskriterier', function ($http, $templateCache, $rootScope, data, $location, sjekkUtslagskriterier) {
         $http.get('../html/templates/reellarbeidssoker/reell-arbeidssoker.html', {cache: $templateCache});
         $http.get('../html/templates/egen-naering.html', {cache: $templateCache});
         $http.get('../html/templates/verneplikt.html', {cache: $templateCache});
@@ -44,7 +44,18 @@ angular.module('sendsoknad')
         $rootScope.$on('$routeChangeSuccess', function(event, next, current) {
             redirectDersomSoknadErFerdig();
             if (next.$$route) {
-                if (next.$$route.originalPath === "/oppsummering") {
+                /*
+                 * Dersom vi kommer inn på informasjonsside utenfra (current sin redirectTo er informasjonsside), og krav for søknaden er oppfylt, skal vi redirecte til rett side.
+                 */
+                if (next.$$route.originalPath === "/informasjonsside" && sjekkUtslagskriterier.erOppfylt(data.utslagskriterier) && current.redirectTo === '/informasjonsside') {
+                    if (data.soknad.delstegStatus === "SKJEMA_VALIDERT") {
+                        $location.path('/vedlegg');
+                    } else if (data.soknad.delstegStatus === "VEDLEGG_VALIDERT") {
+                        $location.path('/oppsummering');
+                    } else {
+                        $location.path('/soknad');
+                    }
+                } else if (next.$$route.originalPath === "/oppsummering") {
                     redirectTilVedleggsideDersomVedleggIkkeErValidert();
                     redirectTilSkjemasideDersomSkjemaIkkeErValidert();
                 } else if (next.$$route.originalPath === "/vedlegg") {
