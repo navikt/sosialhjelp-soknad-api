@@ -27,5 +27,6 @@ angular.module('app.directives', [
 	'nav.aria',
 	'nav.norskDatoFilter',
     'nav.fokus',
-    'nav.vedleggbolker'
+    'nav.vedleggbolker',
+    'nav.sjekkBoklerValiditet'
 ]);

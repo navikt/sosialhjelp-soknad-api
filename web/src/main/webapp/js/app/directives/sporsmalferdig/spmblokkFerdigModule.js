@@ -1,5 +1,5 @@
 angular.module('nav.sporsmalferdig', [])
-	.directive('spmblokkferdig', ['$timeout', function ($timeout) {
+	.directive('spmblokkferdig', ['$timeout', 'data', function ($timeout, data) {
 		return {
 			require    : '^form',
 			replace    : true,
@@ -10,16 +10,24 @@ angular.module('nav.sporsmalferdig', [])
 			},
 			link       : function (scope, element, attrs, form) {
 				var tab = element.closest('.accordion-group');
-				var nesteTab = tab.next();
 
 				scope.validerOgGaaTilNeste = function () {
 					scope.submitMethod();
-
 					if (form.$valid) {
-						gaaTilTab(tab);
-						lukkTab(tab);
-						apneTab(nesteTab);
-                        setFokus(nesteTab);
+                        var bolkerFaktum = data.finnFaktum('bolker');
+                        bolkerFaktum.properties[tab.attr('id')] = "true";
+                        bolkerFaktum.$save();
+                        form.$setPristine();
+                        lukkTab(tab);
+
+                        var nesteInvalidTab = tab.nextAll().not('.validert').first();
+                        if (nesteInvalidTab.length > 0) {
+                            gaaTilTab(nesteInvalidTab.prev());
+                            apneTab(nesteInvalidTab);
+                            setFokus(nesteInvalidTab);
+                        } else {
+                            gaaTilTab(angular.element('.accordion-group').last());
+                        }
 					}
 				};
 

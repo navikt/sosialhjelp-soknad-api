@@ -12,6 +12,7 @@
                             <span data-cmstekster="barnetillegg.sokerbarnetillegg.tittel"></span>
                             <span data-ng-bind="barnenavn"></span>
                         </h2>
+
                         <div data-nav-faktum="barn" data-ikke-auto-lagre="true">
 
 
@@ -48,13 +49,21 @@
                                     </label>
                                 </div>
 
-                                <div class="form-linje">
+                                <div class="form-linje under-atten"
+                                     data-ng-class="{feil: skalViseFeilmelding === true }">
+                                    <input type="hidden" class="under-atten-dato" data-ng-model="underAtten.value"
+                                           data-ng-required="true"
+                                           data-error-messages="'barnetillegg.nyttbarn.fodselsdato.feilmelding'">
+
                                     <div data-nav-dato
                                          data-ng-model="barn.properties.fodselsdato"
                                          data-label="barnetillegg.nyttbarn.fodselsdato"
                                          data-er-required="true"
                                          data-required-error-message="barnetillegg.nyttbarn.fodselsdato.feilmelding">
                                     </div>
+
+                                    <span class="melding"
+                                          data-cmstekster="barnetillegg.nyttbarn.fodselsdato.underAtten.feilmelding"></span>
                                 </div>
 
                                 <div class="land">
