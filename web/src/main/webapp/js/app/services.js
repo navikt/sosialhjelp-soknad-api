@@ -1,5 +1,5 @@
 'use strict';
-
+// TODO: Denne modulen må ryddes opp i
 angular.module('app.services', ['ngResource'])
 
 	.config(function ($httpProvider) {
@@ -96,6 +96,7 @@ angular.module('app.services', ['ngResource'])
 		);
 	}])
 
+// TODO: Disse må ryddes opp i
 /**
  * Service som behandler vedlegg
  */
@@ -107,6 +108,10 @@ angular.module('app.services', ['ngResource'])
 				skjemaNummer  : '@skjemaNummer'},
 			{
 				get   : { method: 'GET', params: {} },
+                hentAnnetVedlegg : {
+                    url: '/sendsoknad/rest/soknad/:soknadId/vedlegg/:faktumId/hentannetvedlegg?rand=' + new Date().getTime(),
+                    method: 'GET', 
+                    params: {faktumId: '@faktumId'}},
 				create: { method: 'POST', params: {} },
 				merge : { method: 'POST', params: {action: 'generer'} },
 				remove: {method: 'POST', params: {action: 'delete'}},
@@ -118,11 +123,14 @@ angular.module('app.services', ['ngResource'])
 /**
  * Service som behandler vedlegg
  */
+
+ // TODO: Disse må ryddes opp i
 	.factory('VedleggForventning', function ($resource) {
 		return $resource('/sendsoknad/rest/soknad/:soknadId/:faktumId/forventning', {
-			soknadId: '@faktum.soknadId'
+			soknadId: '@soknadId',
+            vedleggId: '@vedleggId'
 		}, {
-			slettVedlegg: {
+            slettVedlegg: {
 				url   : '/sendsoknad/rest/soknad/:soknadId/faktum/:faktumId/vedlegg/:vedleggId/delete',
 				method: 'POST',
 				params: {
