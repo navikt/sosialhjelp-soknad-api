@@ -72,7 +72,7 @@ public class VedleggRepositoryJdbcTest {
     }
 
     private Vedlegg getVedlegg(byte[] bytes) {
-        return new Vedlegg(null, 12L, 10L,"0", "1", "navn", (long) bytes.length, 1, null, null, Vedlegg.Status.UnderBehandling);
+        return new Vedlegg(null, 12L, 10L, "1", "navn", (long) bytes.length, 1, null, null, Vedlegg.Status.UnderBehandling);
     }
 
 }

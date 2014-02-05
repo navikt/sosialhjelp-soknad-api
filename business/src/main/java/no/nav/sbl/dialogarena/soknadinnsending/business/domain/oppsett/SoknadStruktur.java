@@ -56,4 +56,15 @@ public class SoknadStruktur implements Serializable {
         }).collect();
 
     }
+
+    public List<SoknadVedlegg> vedleggForSkjemanr(final String skjemaNr) {
+        return on(vedlegg).filter(new Predicate<SoknadVedlegg>() {
+            @Override
+            public boolean evaluate(SoknadVedlegg soknadVedlegg) {
+                return soknadVedlegg.getSkjemaNummer().equals(skjemaNr);
+            }
+        }).collect();
+
+    }
+    
 }
