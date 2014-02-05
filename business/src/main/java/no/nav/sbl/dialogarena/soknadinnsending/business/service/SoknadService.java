@@ -391,7 +391,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 }
                 
                 vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
-            } else if(!soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId() , soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValue(), struktur)) { //do nothing 
+            } else if(!soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId() , soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValue(), struktur)) { //do nothing
             } else if (vedlegg != null) { // sett vedleggsforventning til ikke paakrevd
                 vedlegg.setInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
                 vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
