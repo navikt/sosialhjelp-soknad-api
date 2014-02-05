@@ -482,7 +482,6 @@
 		<property>arbeidsgivernavn</property>
 		<flereTillatt>true</flereTillatt>
 	</vedlegg>
-
 	<vedlegg>
 		<id>4</id>
 		<faktum>arbeidsforhold</faktum>
@@ -496,7 +495,16 @@
 	<vedlegg>
 		<id>4</id>
 		<faktum>arbeidsforhold</faktum>
-		<skjemaNummer>NAV 04-03.07</skjemaNummer>
+		<skjemaNummer>S9</skjemaNummer>
+		<property>arbeidsgivernavn</property>
+		<onProperty>eosland</onProperty>
+		<onValue>true</onValue>
+		<flereTillatt>true</flereTillatt>
+	</vedlegg>
+	<vedlegg>
+		<id>4</id>
+		<faktum>arbeidsforhold</faktum>
+		<skjemaNummer>A2</skjemaNummer>
 		<property>arbeidsgivernavn</property>
 		<onProperty>type</onProperty>
 		<onValue>Arbeidsgiver er konkurs</onValue>
