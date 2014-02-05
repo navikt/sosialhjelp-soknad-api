@@ -6,7 +6,7 @@
 
     <name>sendsoknad</name>
 
-    <selftestPagePath>sendsoknad/internal/selftest?status</selftestPagePath>
+    <selftestPagePath>sendsoknad/internal/selftest</selftestPagePath>
 
     <artifacts>
         <ear groupId="no.nav.sbl.dialogarena" artifactId="sendsoknad-jee"/>
