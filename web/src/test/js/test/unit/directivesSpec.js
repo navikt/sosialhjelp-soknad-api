@@ -1,23 +1,28 @@
 describe('directives', function () {
-    var scope, form, element;
+    var scope, form, element, checkbox;
 
     beforeEach(module('app.directives'));
-    beforeEach(inject(function ($compile, $rootScope) {
-        scope = $rootScope;
-        element = angular.element(
-            '<form name="form">' +
-                '<input type="text" ng-model="permiteringProsent" name="permiteringProsent" prosent />' +
-                '</form>'
-        );
-        scope.permiteringProsent = '';
-        $compile(element)(scope);
-        scope.$digest();
-        form = scope.form;
-        element.scope().$apply();
-
+    beforeEach(module(function ($provide) {
+        $provide.value("data", {
+        });
     }));
 
     describe('prosent', function () {
+        beforeEach(inject(function ($compile, $rootScope) {
+            scope = $rootScope;
+            element = angular.element(
+                '<form name="form">' +
+                    '<input type="text" ng-model="permiteringProsent" name="permiteringProsent" prosent />' +
+                    '</form>'
+            );
+            scope.permiteringProsent = '';
+            $compile(element)(scope);
+            scope.$digest();
+            form = scope.form;
+            element.scope().$apply();
+
+        }));
+
         it('skal returnere true for prosenten 0', function () {
             form.permiteringProsent.$setViewValue('0');
             expect(scope.permiteringProsent).toEqual('0');
@@ -54,29 +59,22 @@ describe('directives', function () {
             expect(form.permiteringProsent.$valid).toBe(false);
         });
     });
-});
-
-
-describe('directives', function () {
-    var scope, form, element, checkbox;
-
-    beforeEach(module('app.directives'));
-    beforeEach(inject(function ($compile, $rootScope) {
-        scope = $rootScope;
-        element = angular.element(
-            '<form name="form">' +
-                '<input type="checkbox" ng-model="checkboxValueModel" name="checkbox" boolean-verdi />' +
-                '</form>'
-        );
-        $compile(element)(scope);
-        scope.$digest();
-        form = scope.form;
-        checkbox = form.checkbox;
-        element.scope().$apply();
-
-    }));
 
     describe('booleanVerdi', function () {
+        beforeEach(inject(function ($compile, $rootScope) {
+            scope = $rootScope;
+            element = angular.element(
+                '<form name="form">' +
+                    '<input type="checkbox" ng-model="checkboxValueModel" name="checkbox" boolean-verdi />' +
+                    '</form>'
+            );
+            $compile(element)(scope);
+            scope.$digest();
+            form = scope.form;
+            checkbox = form.checkbox;
+            element.scope().$apply();
+        }));
+
         it('viewvalue skal settes til false dersom det ikke er satt en verdi i modellen', function () {
             expect(checkbox.$viewValue).toEqual(false);
         });
@@ -101,41 +99,39 @@ describe('directives', function () {
             expect(scope.checkboxValueModel).toEqual('false');
         });
     });
-});
 
-describe('cmstekster-direktiv', function () {
-    var scope, element;
+    describe('cmstekster-direktiv', function () {
+        beforeEach(module('nav.cmstekster', function ($provide) {
+            $provide.value("cms", {
+                tekster: {
+                    "nokkel.label": "Label",
+                    "nokkel.input": "Inputlabel"
+                }
+            });
+        }));
 
-    beforeEach(module('nav.cmstekster', function ($provide) {
-        $provide.value("cms", {
-            tekster: {
-                "nokkel.label": "Label",
-                "nokkel.input": "Inputlabel"
-            }
+        beforeEach(inject(function ($compile, $rootScope) {
+            scope = $rootScope;
+
+            element = angular.element(
+                '<div name="testdiv" >' +
+                    '<input type="text" name="testinput" cmstekster="nokkel.input" />' +
+                    '<span name="testspan" cmstekster="nokkel.label"></span>' +
+                    '</div>'
+            );
+            $compile(element)(scope);
+            scope.$digest();
+            element.scope().$apply();
+        }));
+
+        it('skal legge inn rett tekst ("Label") fra key i ett html-element', function () {
+            var spanElement = element.find('span');
+            expect(spanElement.text()).toEqual('Label');
         });
-    }));
 
-    beforeEach(inject(function ($compile, $rootScope) {
-        scope = $rootScope;
-
-        element = angular.element(
-            '<div name="testdiv" >' +
-                '<input type="text" name="testinput" cmstekster="nokkel.input" />' +
-                '<span name="testspan" cmstekster="nokkel.label"></span>' +
-            '</div>'
-        );
-        $compile(element)(scope);
-        scope.$digest();
-        element.scope().$apply();
-    }));
-
-    it('skal legge inn rett tekst ("Label") fra key i ett html-element', function () {
-        var spanElement = element.find('span');
-        expect(spanElement.text()).toEqual('Label');
-    });
-
-    it('skal legge inn rett tekst fra key som value-attributt på ett input-element', function () {
-        var inputElement = element.find('input');
-        expect(inputElement.attr('value')).toEqual('Inputlabel');
+        it('skal legge inn rett tekst fra key som value-attributt på ett input-element', function () {
+            var inputElement = element.find('input');
+            expect(inputElement.attr('value')).toEqual('Inputlabel');
+        });
     });
 });

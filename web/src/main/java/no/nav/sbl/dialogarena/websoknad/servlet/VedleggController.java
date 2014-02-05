@@ -59,7 +59,7 @@ public class VedleggController {
         }
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
     public List<Vedlegg> hentPaakrevdeVedlegg(
             @PathVariable final Long soknadId) {
