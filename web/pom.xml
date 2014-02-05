@@ -34,10 +34,6 @@
             <artifactId>sendsoknad-tjenestespesifikasjon</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.sbl.dialogarena</groupId>
-            <artifactId>arena-personinfo-tjenestespesifikasjon</artifactId>
-        </dependency>
-        <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-content</artifactId>
         </dependency>
