@@ -67,7 +67,7 @@
         <appender-ref ref="exceptionlog"/>
     </logger>
 
-    <logger name="no.nav.sbl.dialogarena.soknadinnsending.business.service.LagringsScheduler" level="info">
+    <logger name="no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler" level="info">
         <appender-ref ref="batchlog"/>
     </logger>
 
