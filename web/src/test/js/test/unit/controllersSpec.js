@@ -176,7 +176,7 @@ describe('DagpengerControllere', function () {
             var month = idag.getMonth() + 1;
             var date = idag.getDate();
 
-            scope.barn.properties.fodselsdato = year + "." + month +"." + date;
+            scope.barn.properties.fodselsdato = year + "-" + month +"-" + date;
             expect(scope.finnAlder().toString()).toEqual("0");
         });
 
@@ -186,7 +186,7 @@ describe('DagpengerControllere', function () {
             var month = idag.getMonth() + 1;
             var date = idag.getDate();
 
-            scope.barn.properties.fodselsdato = lastyear + "." + month +"." + date;
+            scope.barn.properties.fodselsdato = lastyear + "-" + month +"-" + date;
             expect(scope.finnAlder().toString()).toEqual("1");
         });
 
@@ -196,9 +196,7 @@ describe('DagpengerControllere', function () {
             var month = idag.getMonth() + 1;
             var date = idag.getDate()  + 1;
 
-            scope.barn.properties.fodselsdato = lastyear + "." + month +"." + date;
-
-
+            scope.barn.properties.fodselsdato = lastyear + "-" + month +"-" + date;
             expect(scope.finnAlder().toString()).toEqual("0");
         });
         it('skal returnere 0 aar for barn fodt måneden etter idag ifjor', function () {
@@ -207,7 +205,7 @@ describe('DagpengerControllere', function () {
             var lastmonth = idag.getMonth() + 2;
             var date = idag.getDate();
 
-            scope.barn.properties.fodselsdato = lastyear + "." + lastmonth +"." + date;
+            scope.barn.properties.fodselsdato = lastyear + "-" + lastmonth +"-" + date;
             expect(scope.finnAlder().toString()).toEqual("0");
         });
     });
