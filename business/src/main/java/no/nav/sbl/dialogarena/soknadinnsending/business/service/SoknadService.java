@@ -41,6 +41,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -237,6 +239,17 @@ public class SoknadService implements SendSoknadService, VedleggService {
         Long soknadId = repository.opprettSoknad(soknad);
         WebSoknadId websoknadId = new WebSoknadId();
         websoknadId.setId(soknadId);
+
+        List<String> bolker = Arrays.asList("reellarbeidssoker", "arbeidsforhold", "egennaering", "verneplikt", "utdanning", "ytelser", "personalia", "barnetillegg", "fritekst");
+        Map<String, String> erBolderValidert = new HashMap<>();
+        for (String bolk : bolker) {
+            erBolderValidert.put(bolk, "false");
+        }
+
+        Faktum bolkerFaktum = new Faktum(soknadId, null, "bolker", null, BRUKERREGISTRERT_FAKTUM);
+        bolkerFaktum.setProperties(erBolderValidert);
+
+        repository.lagreFaktum(soknadId, bolkerFaktum);
 
         return behandlingsId;
     }
