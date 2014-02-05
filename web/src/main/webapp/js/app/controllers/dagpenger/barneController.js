@@ -157,17 +157,7 @@ angular.module('nav.barn', ['app.services'])
             var alder = $scope.finnAlder();
 
             if (alder !== "undefined") {
-                if (alder === 17) {
-                    if ($scope.fyllerAarDenneMaaneden()) {
-                        $scope.underAtten.value = "";
-                        $scope.skalViseFeilmelding = true;
-
-                    } else {
-                        $scope.underAtten.value = "true";
-                        $scope.skalViseFeilmelding = false;
-                    }
-                }
-                else if (alder < 18) {
+                if (alder < 18) {
                     $scope.underAtten.value = "true";
                     $scope.skalViseFeilmelding = false;
 
@@ -180,13 +170,6 @@ angular.module('nav.barn', ['app.services'])
             }
         });
 
-        //Hvis man fyller 18 ila denne maaneden skal man ikke faa barnetillegg
-        $scope.fyllerAarDenneMaaneden = function () {
-            var maaned = parseInt($scope.barn.properties.fodselsdato.split("-")[1]);
-            var dagensDato = new Date();
-
-            return maaned === dagensDato.getMonth() + 1;
-        }
 
         //TODO: FIX Tester
         $scope.finnAlder = function () {
