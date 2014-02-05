@@ -10,12 +10,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,9 +40,6 @@ public class SoknadRepositoryJdbcTest {
 
     @Inject
     private RepositoryTestSupport soknadRepositoryTestSupport;
-
-    @Inject
-    private DataSource ds;
 
     private WebSoknad soknad;
 
@@ -199,13 +194,9 @@ public class SoknadRepositoryJdbcTest {
 
     @Test
     public void plukkerRiktigeSoknaderPaaTversAvAlleTraader() throws InterruptedException {
-        JdbcTemplate template = new JdbcTemplate(ds);
-        List<Long> soknaderSomSkalMellomlagres = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Long id = opprettOgPersisterSoknad();
-            template.update("update soknad set sistlagret = SYSDATE - (INTERVAL '2' HOUR) where soknad_id = ?", soknadId);
-            soknaderSomSkalMellomlagres.add(id);
-        }
+        List<Long> soknaderSomSkalMellomlagres = lagreXSoknader(15, 2);
+        lagreXSoknader(5, 0); // legger til søknader som ikke skal taes med
+
 
         final List<Long> soknaderSomBleMellomlagret = Collections.synchronizedList(new ArrayList<Long>());
         int numberOfThreads = 10;
@@ -287,6 +278,15 @@ public class SoknadRepositoryJdbcTest {
         assertThat(soknadBrukerData, empty());
     }
 
+    private List<Long> lagreXSoknader(int antall, int timerSidenLagring) {
+        List<Long> soknadsIder = new ArrayList<>(antall);
+        for (int i = 0; i < antall; i++) {
+            Long id = opprettOgPersisterSoknad();
+            soknadRepositoryTestSupport.getJdbcTemplate().update("update soknad set sistlagret = SYSDATE - (INTERVAL '" + timerSidenLagring + "' HOUR) where soknad_id = ?", soknadId);
+            soknadsIder.add(id);
+        }
+        return soknadsIder;
+    }
 
     private Long opprettOgPersisterSoknad() {
         return opprettOgPersisterSoknad(behandlingsId, aktorId);
