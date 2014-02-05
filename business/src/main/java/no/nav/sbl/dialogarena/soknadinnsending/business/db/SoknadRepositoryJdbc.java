@@ -352,9 +352,9 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     @Override
     public void slettSoknad(long soknadId) {
         LOG.debug("Sletter søknad med ID: " + soknadId);
-        getJdbcTemplate().update("delete from soknad where soknad_id = ?", soknadId);
-        getJdbcTemplate().update("delete from vedlegg where soknad_id = ?", soknadId);
         getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ?", soknadId);
+        getJdbcTemplate().update("delete from vedlegg where soknad_id = ?", soknadId);
+        getJdbcTemplate().update("delete from soknad where soknad_id = ?", soknadId);
     }
 
     @Override
