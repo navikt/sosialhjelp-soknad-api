@@ -150,7 +150,7 @@ angular.module('app.services', ['ngResource'])
 			{},
 			{get: {
 				method: 'GET'
-			}}); 
+			}});
 	})
 
     .factory('landService', function ($resource) {
