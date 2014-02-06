@@ -173,7 +173,7 @@ angular.module('sendsoknad')
                 var soknadId = result.result;
 
                 $http.post('/sendsoknad/rest/soknad/personalia', soknadId).then(function() {
-                    soknadService.get({soknadId: soknadId},
+                    soknadService.get({param: soknadId},
                         function (result) { // Success
                             data.soknad = result;
                             soknadDeferer.resolve();
@@ -220,7 +220,7 @@ angular.module('sendsoknad')
                     });
                 });
 
-                soknadService.options({soknadId: soknadId},
+                soknadService.options({param: soknadId},
                     function (result) { // Success
                         data.soknadOppsett = result;
                         soknadOppsettDefer.resolve();
