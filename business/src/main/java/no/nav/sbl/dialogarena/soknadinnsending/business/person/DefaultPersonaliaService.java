@@ -64,7 +64,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
     private EosBorgerService eosBorgerService;
     
     @Override
-    public Personalia hentPersonalia(String fodselsnummer) {
+    public Personalia hentPersonalia(String fodselsnummer) throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
 //    public Personalia hentPersonalia(String fodselsnummer) throws IkkeFunnetException, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, WebServiceException {
         XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse;
         HentKjerneinformasjonResponse kjerneinformasjonResponse;
@@ -72,22 +72,15 @@ public class DefaultPersonaliaService implements PersonaliaService {
         try {
             kjerneinformasjonResponse = personConnector.hentKjerneinformasjon(lagXMLRequestKjerneinformasjon(fodselsnummer));
             preferanserResponse = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequestPreferanser(fodselsnummer));
-        } catch (IkkeFunnetException e) {
-            logger.warn("Ikke funnet person i TPS");
-            //throw e;
-            return new Personalia();
-        } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
-            logger.error("Fant ikke bruker i TPS.", e);
-            //throw e;
-            return new Personalia();
+        } catch (IkkeFunnetException | HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
+            logger.warn("Ikke funnet person i TPS", e);
+            throw e;
         } catch (HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
             logger.error("Kunne ikke hente bruker fra TPS.", e);
-            //throw e;
-            return new Personalia();
+            throw e;
         } catch (WebServiceException e) {
             logger.error("Ingen kontakt med TPS.", e);
-            //throw e;
-            return new Personalia();
+            throw e;
         }
         return PersonaliaTransform.mapTilPersonalia(preferanserResponse, kjerneinformasjonResponse, kodeverk);
     }
@@ -119,11 +112,15 @@ public class DefaultPersonaliaService implements PersonaliaService {
 
         logger.warn("TPS-tjenester kalt");
         Personalia personalia = PersonaliaTransform.mapTilPersonalia(preferanserResponse, kjerneinformasjonResponse, kodeverk);
+        logger.warn("*** Ferdig med å hente personalia ***");
         List<Barn> barn = FamilierelasjonTransform.mapFamilierelasjon(kjerneinformasjonResponse);
+        logger.warn("*** Ferdig med å hente barn ***");
 
         lagrePersonalia(soknadId, personalia);
+        logger.warn("*** Ferdig lagret personalia ***");
         lagreBarn(soknadId, barn);
-
+        logger.warn("*** Ferdig lagret barn ***");
+        
         return personalia;
     }
 
@@ -134,11 +131,19 @@ public class DefaultPersonaliaService implements PersonaliaService {
         personaliaProperties.put(NAVN_KEY, personalia.getNavn());
         personaliaProperties.put(EPOST_KEY, personalia.getEpost());
         
+        logger.warn("*** Personalia 1 ***");
+        
         String statsborgerskap = personalia.getStatsborgerskap();
+        logger.warn("*** Personalia 2 ***" + statsborgerskap);
         personaliaProperties.put(STATSBORGERSKAP_KEY, statsborgerskap);
+        
+        logger.warn("*** Personalia 3 ***" + eosBorgerService.getStatsborgeskapType(statsborgerskap));
         personaliaProperties.put(STATSBORGERSKAPTYPE_KEY, eosBorgerService.getStatsborgeskapType(statsborgerskap));
         
         personaliaProperties.put(KJONN_KEY, personalia.getKjonn());
+        
+        logger.warn("*** Personalia 4 ***");
+        
         personaliaProperties.put(GJELDENDEADRESSE_KEY, personalia.getGjeldendeAdresse().getAdresse());
         personaliaProperties.put(GJELDENDEADRESSE_TYPE_KEY, personalia.getGjeldendeAdresse().getAdressetype());
         personaliaProperties.put(GJELDENDEADRESSE_GYLDIGFRA_KEY, personalia.getGjeldendeAdresse().getGyldigFra());
@@ -148,9 +153,13 @@ public class DefaultPersonaliaService implements PersonaliaService {
         personaliaProperties.put(SEKUNDARADRESSE_GYLDIGFRA_KEY, personalia.getSekundarAdresse().getGyldigFra());
         personaliaProperties.put(SEKUNDARADRESSE_GYLDIGTIL_KEY, personalia.getSekundarAdresse().getGyldigTil());
 
+        logger.warn("*** Personalia 5 ***");
+        
         Faktum personaliaFaktum = new Faktum(soknadId, null, "personalia", "");
         personaliaFaktum.setProperties(personaliaProperties);
         soknadService.lagreSystemFaktum(soknadId, personaliaFaktum, "fnr");
+        
+        logger.warn("*** Personalia ferdig ***");
     }
 
     private void lagreBarn(Long soknadId, List<Barn> barneliste) {
