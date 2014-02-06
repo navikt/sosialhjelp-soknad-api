@@ -5,6 +5,7 @@ angular.module('nav.barn', ['app.services'])
         var url = $location.$$url;
         var endreModus = url.indexOf('endrebarn') !== -1;
         var barnetilleggModus = url.indexOf('sokbarnetillegg') !== -1;
+        $scope.underAtten = {value: ''};
 
         $scope.soknadId = data.soknad.soknadId;
         $scope.nyttbarn = {barneinntekttall: undefined};
@@ -43,15 +44,15 @@ angular.module('nav.barn', ['app.services'])
             });
         } else {
             barneData = {
-                key       : 'barn',
+                key: 'barn',
                 properties: {
-                    'fnr'           : undefined,
-                    'fornavn'       : undefined,
-                    'etternavn'     : undefined,
+                    'fnr': undefined,
+                    'fornavn': undefined,
+                    'etternavn': undefined,
                     'sammensattnavn': undefined,
-                    'alder'         : undefined,
-                    'land'          : undefined,
-                    'barnetillegg'  : 'true',
+                    'alder': undefined,
+                    'land': undefined,
+                    'barnetillegg': 'true',
                     'barneinntekttall': undefined,
                     'ikkebarneinntekt': undefined
                 }
@@ -104,12 +105,13 @@ angular.module('nav.barn', ['app.services'])
             return !$scope.endrerSystemregistrertBarn();
         };
 
+
         function oppdaterCookieValue(faktumId) {
             var barneCookie = $cookieStore.get('barnetillegg');
             $cookieStore.put('barnetillegg', {
-                aapneTabs   : barneCookie.aapneTabs,
+                aapneTabs: barneCookie.aapneTabs,
                 gjeldendeTab: barneCookie.gjeldendeTab,
-                faktumId    : faktumId
+                faktumId: faktumId
             });
         }
 
@@ -147,12 +149,34 @@ angular.module('nav.barn', ['app.services'])
             return $scope.barn.properties.fornavn + ' ' + $scope.barn.properties.etternavn;
         }
 
-        //TODO: FIX Tester
-        $scope.finnAlder =function() {
+        $scope.$watch(function () {
             if ($scope.barn.properties.fodselsdato) {
-                var year = parseInt($scope.barn.properties.fodselsdato.split(".")[0]);
-                var maaned = parseInt($scope.barn.properties.fodselsdato.split(".")[1]);
-                var dag = parseInt($scope.barn.properties.fodselsdato.split(".")[2]);
+                return $scope.barn.properties.fodselsdato;
+            }
+        }, function () {
+            var alder = $scope.finnAlder();
+
+            if (alder !== "undefined") {
+                if (alder < 18) {
+                    $scope.underAtten.value = "true";
+                    $scope.skalViseFeilmelding = false;
+
+                } else {
+                    $scope.skalViseFeilmelding = true;
+                    $scope.underAtten.value = "";
+                }
+            } else {
+                $scope.skalViseFeilmelding = false;
+            }
+        });
+
+
+        //TODO: FIX Tester
+        $scope.finnAlder = function () {
+            if ($scope.barn.properties.fodselsdato) {
+                var year = parseInt($scope.barn.properties.fodselsdato.split("-")[0]);
+                var maaned = parseInt($scope.barn.properties.fodselsdato.split("-")[1]);
+                var dag = parseInt($scope.barn.properties.fodselsdato.split("-")[2]);
                 var dagensDato = new Date();
 
                 var result = dagensDato.getFullYear() - year;
