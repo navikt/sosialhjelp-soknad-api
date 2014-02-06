@@ -412,7 +412,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 logger.warn("*** lagrer vedlegg ***" + faktum.getKey());
                 vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
                 logger.warn("*** ferdig lagret vedlegg ***" + faktum.getKey());
-            } else if(!soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId() , soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValue(), struktur)) { //do nothing
+            } else if(!soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId() , soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValue(), struktur)) {
+                //do nothing
+                logger.warn("*** DOOO nothin ***");
             } else if (vedlegg != null) { // sett vedleggsforventning til ikke paakrevd
                 logger.warn("*** setter vedlegg ikke paakrevd ***" + faktum.getKey());
                 vedlegg.setInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
