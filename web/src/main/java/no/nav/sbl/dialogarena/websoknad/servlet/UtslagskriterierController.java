@@ -1,14 +1,12 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
-
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.personinfo.PersonInfoConnector;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,9 +14,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
 import javax.xml.ws.WebServiceException;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 
 @Controller
 public class UtslagskriterierController {
@@ -26,13 +25,18 @@ public class UtslagskriterierController {
     @Inject
     private PersonaliaService personaliaService;
 
+    @Inject
+    PersonInfoConnector personInfoConnector;
+
     private Map<String, String> utslagskriterierResultat = new HashMap<>();
 
     @RequestMapping(value = "utslagskriterier", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Map<String, String> sjekkUtslagskriterier() {
         String uid = getSubjectHandler().getUid();
-        
+        PersonInfoConnector.Status status = personInfoConnector.hentArbeidssokerStatus(uid);
+        utslagskriterierResultat.put("registrertArbeidssøker", status.name());
+
         Personalia personalia;
         try {
             personalia = personaliaService.hentPersonalia(uid);
