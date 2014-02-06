@@ -224,16 +224,16 @@ public class SoknadService implements SendSoknadService, VedleggService {
         WebSoknadId websoknadId = new WebSoknadId();
         websoknadId.setId(soknadId);
 
-//        List<String> bolker = Arrays.asList("reellarbeidssoker", "arbeidsforhold", "egennaering", "verneplikt", "utdanning", "ytelser", "personalia", "barnetillegg", "fritekst");
-//        Map<String, String> erBolkerValidert = new HashMap<>();
-//        for (String bolk : bolker) {
-//            erBolkerValidert.put(bolk, "false");
-//        }
-//
-//        Faktum bolkerFaktum = new Faktum(soknadId, null, "bolker", null, BRUKERREGISTRERT_FAKTUM);
-//        bolkerFaktum.setProperties(erBolkerValidert);
-//
-//        repository.lagreFaktum(soknadId, bolkerFaktum);
+        List<String> bolker = Arrays.asList("reellarbeidssoker", "arbeidsforhold", "egennaering", "verneplikt", "utdanning", "ytelser", "personalia", "barnetillegg", "fritekst");
+        Map<String, String> erBolkerValidert = new HashMap<>();
+        for (String bolk : bolker) {
+            erBolkerValidert.put(bolk, "false");
+        }
+
+        Faktum bolkerFaktum = new Faktum(soknadId, null, "bolker", null, BRUKERREGISTRERT_FAKTUM);
+        bolkerFaktum.setProperties(erBolkerValidert);
+
+        repository.lagreFaktum(soknadId, bolkerFaktum);
 
         return behandlingsId;
     }
