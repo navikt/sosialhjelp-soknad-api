@@ -77,12 +77,8 @@ public class SoknadTpsDataController {
     public Personalia hentPersonalia() {
         String fnr = SubjectHandler.getSubjectHandler().getUid();
         Personalia personalia;
-        try {
-            personalia = personaliaService.hentPersonalia(fnr);
-        } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet
-                | HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
-            return new Personalia();
-        }
+        personalia = personaliaService.hentPersonalia(fnr);
+       
         return personalia;
     }
 }
