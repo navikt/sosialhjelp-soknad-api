@@ -162,7 +162,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         }
         Long lagretFaktumId = repository.lagreFaktum(soknadId, f, true);
         Faktum hentetFaktum = repository.hentFaktum(soknadId, lagretFaktumId);
-        logger.warn("*** Lagrer systemfaktum ***");
+        logger.warn("*** Lagrer systemfaktum *** faktumId: " + lagretFaktumId);
         genererVedleggForFaktum(hentetFaktum);
         return lagretFaktumId;
     }
@@ -388,7 +388,10 @@ public class SoknadService implements SendSoknadService, VedleggService {
         List<SoknadVedlegg> aktuelleVedlegg = struktur.vedleggFor(faktum.getKey());
         logger.warn("*** aktuelle vedlegg er ***" + aktuelleVedlegg.size());
         for (SoknadVedlegg soknadVedlegg : aktuelleVedlegg) {
+            logger.warn("*** Henter  vedlegg for skjemanummer ***" + soknadVedlegg.getSkjemaNummer());
+            logger.warn("*** Henter  vedlegg for flerer tilatt ***" + soknadVedlegg.getFlereTillatt());
             Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummer(faktum.getSoknadId(), soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null, soknadVedlegg.getSkjemaNummer());
+            logger.warn("*** Ferdig hentet  vedlegg for skjemanummer ***" + soknadVedlegg.getSkjemaNummer());
             if (soknadVedlegg.trengerVedlegg(faktum)) {
                 logger.warn("*** trenger vedlegg for faktum ***" + faktum.getKey());
                 if (vedlegg == null) {
@@ -417,6 +420,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 logger.warn("*** ferdig vedlegg helt i bunn***" + faktum.getKey());
             }
         }
+        logger.warn("*** Ferdig med vedleggsmetode ***");
     }
 
     /**
