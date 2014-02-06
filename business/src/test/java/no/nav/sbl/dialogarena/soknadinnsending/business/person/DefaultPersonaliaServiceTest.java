@@ -1,11 +1,19 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosBorgerService;
-
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosBorgerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
@@ -39,6 +47,7 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
+
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,22 +56,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import javax.xml.ws.WebServiceException;
-
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class DefaultPersonaliaServiceTest {

@@ -16,11 +16,7 @@ public interface SendSoknadService {
 
     Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum);
     
-    Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value);
-    
     Long lagreSystemFaktum(Long soknadId, Faktum faktum, String uniqueProperty);
-
-    Faktum lagreBarnSystemSoknadsFelt(Long soknadId, String string, String fnr, String json);
 
     void sendSoknad(long soknadId, byte[] outputStream);
 

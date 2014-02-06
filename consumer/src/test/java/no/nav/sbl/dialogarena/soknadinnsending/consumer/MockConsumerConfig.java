@@ -1,5 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
+import no.aetat.arena.fodselsnr.Fodselsnr;
+import no.aetat.arena.personstatus.Personstatus;
+import no.aetat.arena.personstatus.PersonstatusType;
+import no.nav.arena.tjenester.person.v1.FaultGeneriskMsg;
 import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
@@ -57,8 +61,6 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.activation.DataHandler;
 import javax.xml.ws.Holder;
-import javax.xml.ws.WebServiceException;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -182,10 +184,23 @@ public class MockConsumerConfig {
 
     @Configuration
     public static class PersonInfoWSConfig {
+        public static final String ARBS = "ARBS";
 
         @Bean
         public PersonInfoServiceSoap personInfoServiceSoap() {
-            return mock(PersonInfoServiceSoap.class);
+            PersonInfoServiceSoap mock = mock(PersonInfoServiceSoap.class);
+            Personstatus personstatus = new Personstatus();
+            PersonstatusType.PersonData personData = new PersonstatusType.PersonData();
+            personData.setStatusArbeidsoker("123");
+            personstatus.setPersonData(personData);
+
+            try {
+                when(mock.hentPersonStatus(any(Fodselsnr.class))).thenReturn(personstatus);
+            } catch (FaultGeneriskMsg faultGeneriskMsg) {
+                return mock;
+            }
+
+            return mock;
         }
     }
 
