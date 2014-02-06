@@ -438,9 +438,13 @@ public class SoknadService implements SendSoknadService, VedleggService {
      * @return
      */
     private boolean annetFaktumHarForventning(Long soknadId, String skjemaNummer, String onValue, SoknadStruktur struktur) {
+        logger.warn("*******'annetfaktum");
         List<SoknadVedlegg> vedleggMedGittSkjemanummer = struktur.vedleggForSkjemanr(skjemaNummer);
+        logger.warn("********har hentet :" + vedleggMedGittSkjemanummer.size());
         for (SoknadVedlegg sv : vedleggMedGittSkjemanummer) {
+            
             String faktumKey = sv.getFaktum().getId();
+            logger.warn("********for faktukey :" +faktumKey);
             if(repository.isVedleggPaakrevd(soknadId, faktumKey, onValue)) {
                 return true;
             }
