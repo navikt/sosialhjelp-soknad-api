@@ -57,6 +57,8 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.activation.DataHandler;
 import javax.xml.ws.Holder;
+import javax.xml.ws.WebServiceException;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -232,6 +234,7 @@ public class MockConsumerConfig {
             
             when(mock.hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class))).thenReturn(response);
             //Mockito.doThrow(new RuntimeException()).when(mock).hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class));
+            //when(mock.hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class))).thenThrow(new WebServiceException());
             
             return mock;
         }
