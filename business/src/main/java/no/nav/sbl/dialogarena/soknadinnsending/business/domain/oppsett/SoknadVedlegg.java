@@ -126,6 +126,7 @@ public class SoknadVedlegg implements Serializable {
     }
 
     public Boolean getFlereTillatt() {
+        logger.warn("***********getFlereTillatt" + flereTillatt);
         return flereTillatt;
     }
 

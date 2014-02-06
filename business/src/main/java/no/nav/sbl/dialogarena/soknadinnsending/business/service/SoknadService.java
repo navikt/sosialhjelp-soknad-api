@@ -392,6 +392,15 @@ public class SoknadService implements SendSoknadService, VedleggService {
             logger.warn("*** Henter  vedlegg for flerer tilatt ***" + soknadVedlegg.getFlereTillatt());
             Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummer(faktum.getSoknadId(), soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null, soknadVedlegg.getSkjemaNummer());
             logger.warn("*** Ferdig hentet  vedlegg for skjemanummer ***" + soknadVedlegg.getSkjemaNummer());
+            
+            
+            logger.warn("*** soknadVedlegg.getFlereTillatt() ***" + soknadVedlegg.getFlereTillatt());
+            logger.warn("*** faktum.getSoknadId() ***" + faktum.getSoknadId());
+            logger.warn("*** soknadVedlegg.getSkjemaNummer() ***" + soknadVedlegg.getSkjemaNummer());
+            logger.warn("*** soknadVedlegg.getOnValue()) ***" + soknadVedlegg.getOnValue());
+            logger.warn("*** struktur ***" + struktur);
+            
+            
             if (soknadVedlegg.trengerVedlegg(faktum)) {
                 logger.warn("*** trenger vedlegg for faktum ***" + faktum.getKey());
                 if (vedlegg == null) {
