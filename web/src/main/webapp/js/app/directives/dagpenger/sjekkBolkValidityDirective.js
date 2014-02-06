@@ -1,5 +1,5 @@
 angular.module('nav.sjekkBoklerValiditet', [])
-    .directive('sjekkValidert', ['data', '$parse', function (data, $parse) {
+    .directive('sjekkValidert', ['data', function (data) {
         return {
             link: {
                 post: function (scope, element, attrs) {
@@ -9,40 +9,28 @@ angular.module('nav.sjekkBoklerValiditet', [])
                         element.addClass('validert');
                     };
 
-                    scope.$watch(
-                        function() {
-                            return data.finnFaktum('bolker').properties[attrs.id];
-                        },
-                        function(newVal, oldVal) {
-                            if (newVal === oldVal) {
-                                return;
-                            }
+                    if (!skalSettesTilValidVedForsteApning) {
+                        scope.$watch(
+                            function() {
+                                var form = element.find('[data-ng-form]');
+                                return form.length > 0 && form.is('.ng-dirty');
+                            },
+                            function(newVal, oldVal) {
+                                if (newVal === oldVal) {
+                                    return;
+                                }
+                                if (newVal) {
+                                    var bolkerFaktum = data.finnFaktum('bolker');
+                                    bolkerFaktum.properties[attrs.id] = "false";
+                                    bolkerFaktum.$save();
 
-                            if (newVal === "true") {
-                                element.addClass('validert');
-                            } else {
-                                element.removeClass('validert');
+                                    if (element.hasClass('validert')) {
+                                        element.removeClass('validert');
+                                    }
+                                }
                             }
-                        }
-                    );
-
-                    scope.$watch(
-                        function() {
-                            return element.find('[data-ng-form]').length > 0 && element.find('[data-ng-form]').is('.ng-dirty');
-                        },
-                        function(newVal, oldVal) {
-                            if (newVal === oldVal) {
-                                return;
-                            }
-                            if (newVal) {
-                                var bolkerFaktum = data.finnFaktum('bolker');
-                                bolkerFaktum.properties[attrs.id] = "false";
-                                bolkerFaktum.$save();
-                            }
-                        }
-                    );
-
-                    if (skalSettesTilValidVedForsteApning && !erValidert) {
+                        );
+                    } else if (!erValidert) {
                         var unregister = scope.$watch(
                             function() {
                                 return scope.$eval(attrs.isOpen);
@@ -52,6 +40,7 @@ angular.module('nav.sjekkBoklerValiditet', [])
                                     var bolkerFaktum = data.finnFaktum('bolker');
                                     bolkerFaktum.properties[attrs.id] = "true";
                                     bolkerFaktum.$save();
+                                    element.addClass('validert');
                                     unregister();
                                 }
                             }
