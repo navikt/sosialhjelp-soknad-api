@@ -191,7 +191,7 @@ public class MockConsumerConfig {
             PersonInfoServiceSoap mock = mock(PersonInfoServiceSoap.class);
             Personstatus personstatus = new Personstatus();
             PersonstatusType.PersonData personData = new PersonstatusType.PersonData();
-            personData.setStatusArbeidsoker(ARBS);
+            personData.setStatusArbeidsoker("123");
             personstatus.setPersonData(personData);
 
             try {
