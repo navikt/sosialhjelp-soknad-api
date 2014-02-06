@@ -23,6 +23,8 @@ public class LagringsScheduler {
     private static final int SCHEDULE_RATE_MS = 1000 * 60 * 60; // 1 time
     private static final int SCHEDULE_INTERRUPT_MS = 1000 * 60 * 10; // 10 min
     private DateTime batchStartTime;
+    private int vellykket;
+    private int feilet;
 
     @Inject
     private SoknadRepository soknadRepository;
@@ -32,6 +34,8 @@ public class LagringsScheduler {
     @Scheduled(fixedRate = SCHEDULE_RATE_MS)
     public void mellomlagreSoknaderOgNullstillLokalDb() throws InterruptedException {
         batchStartTime = DateTime.now();
+        vellykket = 0;
+        feilet = 0;
         if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) { // TODO: Burde fjernes når applikasjonen skal ut i prod
             LOG.info("---- Starter flytting av søknader til henvendelse-jobb ----");
             for (Optional<WebSoknad> ws = soknadRepository.plukkSoknadTilMellomlagring(); ws.isSome(); ws = soknadRepository.plukkSoknadTilMellomlagring()) {
@@ -42,7 +46,7 @@ public class LagringsScheduler {
                     return;
                 }
             }
-            LOG.info("---- Ferdig med flytting av søknader til henvendelse-jobb ----");
+            LOG.info("---- Jobb fullført: {} vellykket, {} feilet ----", vellykket, feilet);
         } else {
             LOG.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
         }
@@ -55,8 +59,10 @@ public class LagringsScheduler {
             JAXB.marshal(soknad, xml);
             fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(xml.toString().getBytes()));
             soknadRepository.slettSoknad(soknad.getSoknadId());
+            vellykket++;
             LOG.info("---- Lagret soknad til henvendelse og slettet lokalt. Soknadsid: " + soknad.getSoknadId() + "----");
         } catch (Exception e) {
+            feilet++;
             LOG.error("Lagring eller sletting feilet for soknad {}. Setter tilbake til LEDIG", soknad.getSoknadId(), e);
             try {
                 soknadRepository.leggTilbake(soknad);
