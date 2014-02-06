@@ -1,12 +1,15 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
+import static java.util.Arrays.asList;
+import static no.nav.modig.lang.collections.IterUtils.on;
+
 import org.apache.commons.collections15.Predicate;
 import org.joda.time.DateTime;
-import org.springframework.ui.context.support.UiApplicationContextUtils;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -14,10 +17,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import static no.nav.modig.lang.collections.IterUtils.on;
-import static java.util.Arrays.asList;
-import static java.util.UUID.randomUUID;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)

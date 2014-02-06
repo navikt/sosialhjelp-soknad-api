@@ -30,22 +30,13 @@ public class UtslagskriterierController {
         String uid = getSubjectHandler().getUid();
         
         Personalia personalia;
-//        try {
-            personalia = personaliaService.hentPersonalia(uid);
-            utslagskriterierResultat.put("gyldigAlder", new PersonAlder(uid).sjekkAlder().toString());
-            utslagskriterierResultat.put("bosattINorge", harNorskAdresse(personalia).toString());
-            utslagskriterierResultat.put("registrertAdresse", personalia.getGjeldendeAdresse().getAdresse());
-            utslagskriterierResultat.put("registrertAdresseGyldigFra", personalia.getGjeldendeAdresse().getGyldigFra());
-            utslagskriterierResultat.put("registrertAdresseGyldigTil", personalia.getGjeldendeAdresse().getGyldigTil());
-//        } catch (IkkeFunnetException | HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
-//            utslagskriterierResultat.put("error", "TPS: person ikke funnet");
-//        } catch(HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
-//            utslagskriterierResultat.put("error", "TPS: sikkerhetsbegrensing");
-//        } catch(WebServiceException e) {
-//            utslagskriterierResultat.put("error", "TPS: webservicefeil");
-//        } catch(Exception e) {
-//            utslagskriterierResultat.put("error", "TPS: feil");
-//        }
+        personalia = personaliaService.hentPersonalia(uid);
+        utslagskriterierResultat.put("gyldigAlder", new PersonAlder(uid).sjekkAlder().toString());
+        utslagskriterierResultat.put("bosattINorge", harNorskAdresse(personalia).toString());
+        utslagskriterierResultat.put("registrertAdresse", personalia.getGjeldendeAdresse().getAdresse());
+        utslagskriterierResultat.put("registrertAdresseGyldigFra", personalia.getGjeldendeAdresse().getGyldigFra());
+        utslagskriterierResultat.put("registrertAdresseGyldigTil", personalia.getGjeldendeAdresse().getGyldigTil());
+        
         return utslagskriterierResultat;
         
     }
