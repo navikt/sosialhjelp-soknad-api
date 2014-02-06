@@ -99,7 +99,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         }
 
         $scope.kravForDagpengerOppfylt = function () {
-            return sjekkUtslagskriterier.erOppfylt($scope.utslagskriterier);
+            return sjekkUtslagskriterier.erOppfylt();
         };
 
         $scope.kravForDagpengerIkkeOppfylt = function () {
@@ -108,19 +108,23 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 
 
         $scope.registrertArbeidssoker = function () {
-            return $scope.utslagskriterier.erRegistrertArbeidssoker == 'true'
+            return sjekkUtslagskriterier.erRegistrertArbeidssoker();
         };
 
         $scope.gyldigAlder = function () {
-            return $scope.utslagskriterier.gyldigAlder == 'true';
+            return sjekkUtslagskriterier.harGyldigAlder();
         };
 
         $scope.bosattINorge = function () {
-            return $scope.utslagskriterier.bosattINorge == 'true';
+            return sjekkUtslagskriterier.erBosattINorge();
         };
 
         $scope.ikkeRegistrertArbeidssoker = function () {
-            return !$scope.registrertArbeidssoker();
+            return sjekkUtslagskriterier.erIkkeRegistrertArbeidssoker();
+        };
+
+        $scope.registrertArbeidssokerUkjent = function () {
+            return sjekkUtslagskriterier.harUkjentStatusSomArbeidssoker();
         };
 
         $scope.ikkeGyldigAlder = function () {
@@ -131,22 +135,46 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
             return !$scope.bosattINorge();
         };
     }])
-    .factory('sjekkUtslagskriterier', [function () {
+    .factory('sjekkUtslagskriterier', ['data', function (data) {
+        function registrertArbeidssoker() {
+            return data.utslagskriterier.registrertArbeidssøker === 'REGISTRERT';
+        };
+
+        function ikkeRegistertArbeidssoker() {
+            return data.utslagskriterier.registrertArbeidssøker === 'IKKE_REGISTRERT';
+        };
+
+        function gyldigAlder() {
+            return data.utslagskriterier.gyldigAlder === 'true';
+        };
+
+        function bosattINorge() {
+            return data.utslagskriterier.bosattINorge === 'true';
+        };
+
         return {
-            erOppfylt: function(utslagskriterier) {
-                return registrertArbeidssoker() && gyldigAlder() && bosattINorge();
+            erOppfylt: function() {
+                return (registrertArbeidssoker() || !ikkeRegistertArbeidssoker()) && gyldigAlder() && bosattINorge();
+            },
 
-                function registrertArbeidssoker() {
-                    return utslagskriterier.erRegistrertArbeidssoker == 'true'
-                };
+            harGyldigAlder: function() {
+                return gyldigAlder();
+            },
 
-                function gyldigAlder() {
-                    return utslagskriterier.gyldigAlder == 'true';
-                };
+            erBosattINorge: function() {
+                return bosattINorge();
+            },
 
-                function bosattINorge() {
-                    return utslagskriterier.bosattINorge == 'true';
-                };
+            erRegistrertArbeidssoker: function() {
+                return registrertArbeidssoker();
+            },
+
+            erIkkeRegistrertArbeidssoker: function() {
+                return ikkeRegistertArbeidssoker();
+            },
+
+            harUkjentStatusSomArbeidssoker: function() {
+                return !ikkeRegistertArbeidssoker() && !registrertArbeidssoker();
             }
         }
     }]);

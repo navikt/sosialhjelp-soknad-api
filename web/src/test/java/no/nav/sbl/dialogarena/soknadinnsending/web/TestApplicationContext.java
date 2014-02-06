@@ -85,6 +85,16 @@ public class TestApplicationContext {
     }
 
     @Bean
+    public Object personInfoServiceCreator() {
+
+        if (mockTps) {
+            return new MockConsumerConfig.PersonInfoWSConfig();
+        } else {
+            return new ConsumerConfig.PersonInfoWSConfig();
+        }
+    }
+
+    @Bean
     public Object aktorServiceCreator() {
 
         if (mockTps) {

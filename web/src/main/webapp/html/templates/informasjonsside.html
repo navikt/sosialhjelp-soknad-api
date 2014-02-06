@@ -15,8 +15,8 @@
        	<div data-ng-show="tpsSvarer()">
 	        <h2 data-ng-show="kravForDagpengerOppfylt()" class="stor strek-ikon-info-orange" data-cmstekster="dagpenger.informasjonsside.tittel"></h2>
 	    	
-			<div id="utslagskriterier" ng-show="kravForDagpengerIkkeOppfylt()">
-				<div class="utslagskriterie" data-ng-show="ikkeBosattINorge()">
+			<div id="utslagskriterier" data-ng-if="kravForDagpengerIkkeOppfylt()">
+				<div class="utslagskriterie" data-ng-if="ikkeBosattINorge()">
 					<h2 class="stor strek-ikon-info-orange" data-cmstekster="dagpenger.informasjonsside.ikkebosattinorge.tittel"></h2>
 					
 					<p class="label" data-cmstekster="utslagskriterier.utslag.bosted.label"></p>
@@ -39,7 +39,7 @@
 					</ul>
 				</div>
 
-				<div class="utslagskriterie" data-ng-show="ikkeGyldigAlder()">
+				<div class="utslagskriterie" data-ng-if="ikkeGyldigAlder()">
 					<h2 class="stor strek-ikon-info-orange" data-cmstekster="dagpenger.informasjonsside.ikkegyldigalder.tittel"></h2>
 					<ul>
 						<li>
@@ -49,21 +49,29 @@
 					</ul>
 				</div>
 
+                <div class="utslagskriterie" data-ng-if="ikkeRegistrertArbeidssoker()">
+                    <h2 class="stor strek-ikon-info-orange" data-cmstekster="dagpenger.informasjonsside.ikkegyldigarbeidssoker.tittel"></h2>
+                    <ul>
+                        <li>
+                            <span data-cmstekster="utslagskriterier.utslag.reellarbeidssoker"></span>
+                            <a href="{{reelArbeidsokerUrl}}" data-cmstekster="utslagskriterier.utslag.reellarbeidssoker.registert"></a>
+                        </li>
+                    </ul>
+                </div>
 			</div>
 
 			<div class="viktig-info" data-ng-show="kravForDagpengerOppfylt()">
 				<ul class="informasjonsliste">
 					<li>
 						<p class="medium" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.1"></p>
-						<a href="{{reelArbeidsokerUrl}}" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.1.lenketekst"> </a>		
 					</li>
 					<li>
 						<p class="medium" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.2"></p>
+						<a href="{{dagpengerBrosjyreUrl}}" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.2.lenketekst"> </a>
 					</li>
-					<li>
-						<p class="medium" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.3"></p>
-						<a href="{{dagpengerBrosjyreUrl}}" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.3.lenketekst"> </a>		
-					</li>
+                    <li data-ng-if="registrertArbeidssokerUkjent()">
+                        <p class="medium" data-cmstekster="dagpenger.informasjonsside.informasjon.liste.3"></p>
+                    </li>
 				</ul>
 
 
