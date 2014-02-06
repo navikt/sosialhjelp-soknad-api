@@ -9,7 +9,7 @@ angular.module('nav.fokus', [])
             link: function (scope, elm) {
                 elm.bind("click", function () {
                     settFokusTilNesteElement(elm);
-                })
+                });
             }
         };
     }])
@@ -22,7 +22,7 @@ angular.module('nav.fokus', [])
                 var id = attrs.fokusSlettmoduler;
                 elm.bind("click", function () {
                     angular.element("#" + id + " .knapp-leggtil-liten").focus();
-                })
+                });
             }
         };
     }])
@@ -31,7 +31,7 @@ angular.module('nav.fokus', [])
             link: function (scope, elm, attrs) {
                 elm.bind("click", function () {
                     elm.prev().find('.orgnummer-repeat input').focus();
-                })
+                });
             }
         };
     }])
@@ -55,8 +55,8 @@ angular.module('nav.fokus', [])
                             posisjon = elementMedFokus.getBoundingClientRect();
                         }
 
-                        if (posisjon.top + 10 >= stickyPosisjon.top) {
-                            scrollToElement(stickyElement, stickyPosisjon.top / 2);
+                        if (posisjon.top + 10 >= stickyPosisjon.top ) {
+                            scrollToElement($(elementMedFokus), stickyPosisjon.top / 2);
                         }
                     }
                 })
