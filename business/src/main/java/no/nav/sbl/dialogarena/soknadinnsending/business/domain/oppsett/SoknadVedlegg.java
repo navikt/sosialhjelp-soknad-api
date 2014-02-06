@@ -101,6 +101,7 @@ public class SoknadVedlegg implements Serializable {
                 return onValue == null || onValue.equalsIgnoreCase(valToCheck);
             } else {
                 logger.warn("*** trenger vedlegg 7***");
+                logger.warn("*** onValue.equalsIgnoreCase(valToCheck)***: " + onValue.equalsIgnoreCase(valToCheck));
                 return !onValue.equalsIgnoreCase(valToCheck);
             }
         }
