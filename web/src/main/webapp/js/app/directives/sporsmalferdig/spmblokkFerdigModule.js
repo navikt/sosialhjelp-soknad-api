@@ -44,7 +44,7 @@ angular.module('nav.sporsmalferdig', [])
                         }
 
                         if (nesteTab.length > 0) {
-                            gaaTilTab(nesteTab.prev());
+                            gaaTilTab(nesteTab);
                             apneTab(nesteTab);
                             setFokus(nesteTab);
                         } else {
