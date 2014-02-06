@@ -32,15 +32,17 @@ public class LagringsScheduler {
     @Scheduled(fixedRate = SCHEDULE_RATE_MS)
     public void mellomlagreSoknaderOgNullstillLokalDb() throws InterruptedException {
         batchStartTime = DateTime.now();
-        if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "false"))) { // TODO: Burde fjernes når applikasjonen skal ut i prod
-            LOG.info("Starter flytting av søknader til henvendelse-jobb");
+        if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) { // TODO: Burde fjernes når applikasjonen skal ut i prod
+            LOG.info("---- Starter flytting av søknader til henvendelse-jobb ----");
             for (Optional<WebSoknad> ws = soknadRepository.plukkSoknadTilMellomlagring(); ws.isSome(); ws = soknadRepository.plukkSoknadTilMellomlagring()) {
                 lagreFilTilHenvendelseOgSlettILokalDb(ws);
                 // Avslutt prosessen hvis det er gått for lang tid. Tyder på at noe er nede.
                 if (harGaattForLangTid()) {
+                    LOG.warn("---- Jobben har kjørt i mer enn {} ms. Den blir derfor terminert ----", SCHEDULE_INTERRUPT_MS);
                     return;
                 }
             }
+            LOG.info("---- Ferdig med flytting av søknader til henvendelse-jobb ----");
         } else {
             LOG.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
         }
