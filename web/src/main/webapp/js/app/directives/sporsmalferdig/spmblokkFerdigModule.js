@@ -5,11 +5,26 @@ angular.module('nav.sporsmalferdig', [])
 			replace    : true,
 			templateUrl: '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html',
 			scope      : {
-				nokkel      : '@',
 				submitMethod: '&'
 			},
-			link       : function (scope, element, attrs, form) {
+			link: function (scope, element, attrs, form) {
+                scope.knappTekst = 'neste';
+
 				var tab = element.closest('.accordion-group');
+
+                scope.$watch(
+                    function() {
+                        return tab.hasClass('validert');
+                    },
+                    function(newVal, oldVal) {
+                        if (newVal === oldVal) {
+                            return;
+                        }
+                        if (!newVal) {
+                            scope.knappTekst = 'lagreEndring';
+                        }
+                    }
+                );
 
 				scope.validerOgGaaTilNeste = function () {
 					scope.submitMethod();
@@ -18,13 +33,20 @@ angular.module('nav.sporsmalferdig', [])
                         bolkerFaktum.properties[tab.attr('id')] = "true";
                         bolkerFaktum.$save();
                         form.$setPristine();
+                        tab.addClass('validert');
                         lukkTab(tab);
 
-                        var nesteInvalidTab = tab.nextAll().not('.validert').first();
-                        if (nesteInvalidTab.length > 0) {
-                            gaaTilTab(nesteInvalidTab.prev());
-                            apneTab(nesteInvalidTab);
-                            setFokus(nesteInvalidTab);
+                        var nesteTab;
+                        if (scope.knappTekst === 'lagreEndring') {
+                            nesteTab = tab.nextAll().not('.validert').first();
+                        } else {
+                            nesteTab = tab.next();
+                        }
+
+                        if (nesteTab.length > 0) {
+                            gaaTilTab(nesteTab.prev());
+                            apneTab(nesteTab);
+                            setFokus(nesteTab);
                         } else {
                             gaaTilTab(angular.element('.accordion-group').last());
                         }
