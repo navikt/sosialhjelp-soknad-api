@@ -471,6 +471,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 return true;
             }
         }
+        logger.warn("********ferdig i annetFaktumForv");
         return false;
     }
 
