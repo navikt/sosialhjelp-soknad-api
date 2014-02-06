@@ -78,6 +78,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
             $scope.utslagskriterier.erRegistrertArbeidssoker = 'true';
             $scope.utslagskriterier.gyldigAlder = 'true';
             $scope.utslagskriterier.bosattINorge = 'true';
+            $scope.startSoknad();
         }
 
         $scope.startSoknadDersomBrosjyreLest = function () {
