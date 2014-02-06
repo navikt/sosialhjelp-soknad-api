@@ -9,6 +9,7 @@ angular.module('nav.fokus', [])
             link: function (scope, elm) {
                 elm.bind("click", function () {
                     settFokusTilNesteElement(elm);
+                    console.log(settFokusTilNesteElement(elm))
                 });
             }
         };
@@ -22,6 +23,15 @@ angular.module('nav.fokus', [])
                 var id = attrs.fokusSlettmoduler;
                 elm.bind("click", function () {
                     angular.element("#" + id + " .knapp-leggtil-liten").focus();
+                });
+            }
+        };
+    }])
+    .directive('fokusSlettAnnet', [function () {
+        return {
+            link: function (scope, elm, attrs) {
+                elm.bind("click", function () {
+                    angular.element(".knapp-stor").focus();
                 });
             }
         };

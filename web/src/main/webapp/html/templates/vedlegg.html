@@ -89,8 +89,8 @@
                                     <a data-ng-href="#/opplasting/{{forventning.vedleggId}}" class="knapp-link"
                                        data-ng-click="endreInnsendingsvalg(forventning, 'VedleggKreves');">Last opp
                                         vedlegget</a>
-                                    <a class="" data-ng-if="erEkstraVedlegg(forventning)"
-                                       data-ng-click="slettAnnetVedlegg(forventning);" name="Slett">Slett</a>
+                                    <a href="javascript:void(0)" aria-role="button" data-ng-if="erEkstraVedlegg(forventning)"
+                                       data-ng-click="slettAnnetVedlegg(forventning);" name="Slett" data-fokus-slett-annet data-cmstekster="vedlegg.annet.slett">Slett</a>
 
                                 </div>
                                 <div data-ng-if="!erEkstraVedlegg(forventning)">
@@ -123,7 +123,7 @@
                                     <div class="knapper">
                                         <!--a data-ng-href="../rest/soknad/{{soknadData.soknadId}}/faktum/{{forventning.faktum.faktumId}}/vedlegg/{{forventning.faktum.vedleggId}}/data"
                                            data-cmstekster="vedlegg.lastned"></a-->
-                                        <a data-cmstekster="vedlegg.slett" data-ng-click="slettVedlegg(forventning)"
+                                        <a href="javascript:void(0)" aria-role="button" data-cmstekster="vedlegg.slett" data-ng-click="slettVedlegg(forventning)"
                                            data-cmshtml="vedlegg.slettvedlegg"></a>
                                     </div>
                                 </div>
