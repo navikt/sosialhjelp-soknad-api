@@ -42,12 +42,19 @@ angular.module('nav.fokus', [])
         return {
             link: function (scope, elm) {
                 elm.bind("keyup keypress", function (event) {
-                    var stickyElementBunn = elm.next().find('.sticky-bunn');
-                    var stickyElementTopp = elm.find('.sticky-feilmelding');
+                    if (elm.hasClass('dagpenger')) {
+                        var stickyElementBunn = elm.next().find('.sticky-bunn');
+                        var stickyElementTopp = elm.find('.sticky-feilmelding');
+                        var stickyPosisjonTopp = stickyElementTopp[0].getBoundingClientRect();
+
+                    }
+                    else {
+                        var stickyElementBunn = elm.find('.sticky-bunn');
+                        var stickyPosisjonTopp = {top: 0, bottom: 60};
+                    }
 
                     if (event.which === 9) {
-                        var stickyPosisjon = stickyElementBunn[0].getBoundingClientRect();
-
+                        var stickyPosisjonBunn = stickyElementBunn[0].getBoundingClientRect();
                         var elementMedFokus = document.activeElement;
                         var posisjon = "";
 
@@ -57,12 +64,11 @@ angular.module('nav.fokus', [])
                             posisjon = elementMedFokus.getBoundingClientRect();
                         }
 
-                        if (posisjon.top + 10 >= stickyPosisjon.top) {
-                            scrollToElement($(elementMedFokus), stickyPosisjon.top / 2);
+                        if (posisjon.top + 10 >= stickyPosisjonBunn.top) {
+                            scrollToElement($(elementMedFokus), $(window).height() / 2);
                         }
                     }
                     if (event.which === 9 && event.shiftKey) {
-                        var stickyPosisjon = stickyElementTopp[0].getBoundingClientRect();
                         var elementMedFokus = document.activeElement;
                         var posisjon = "";
 
@@ -72,8 +78,8 @@ angular.module('nav.fokus', [])
                             posisjon = elementMedFokus.getBoundingClientRect();
                         }
 
-                        if (posisjon.bottom - 20 <= stickyPosisjon.bottom) {
-                            scrollToElement($(stickyElementTopp), $(window).height() / 2);
+                        if (posisjon.bottom - 20 <= stickyPosisjonTopp.bottom) {
+                            scrollToElement($(elementMedFokus), $(window).height() / 2);
                         }
                     }
                 });
