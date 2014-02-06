@@ -170,7 +170,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     public Boolean isVedleggPaakrevd(Long soknadId, String key, String value) {
         LOG.warn("**** isVedleggPaakrevd startet");
         String sql =  "select * from soknadbrukerdata where soknad_id=? and key=? and value like ?";
-        
+        LOG.warn("**** returnerr false");
         return false;
 //     getJdbcTemplate().queryforrow
 //        
