@@ -1,6 +1,7 @@
 <div data-nav-tittel="skjema.tittel"></div>
 <div data-stegindikator data-steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="1"></div>
-<div class="dagpenger" data-ng-form="dagpengerForm" data-ng-controller="ModusCtrl" data-ng-cloak data-apne-bolker data-tab-autoscroll>
+<div class="dagpenger" data-ng-form="dagpengerForm" data-ng-controller="ModusCtrl" data-ng-cloak data-apne-bolker
+     data-tab-autoscroll>
     <div data-ng-controller="DagpengerCtrl">
         <div data-sticky-feilmelding></div>
         <div class="rad soknad" data-sidetittel="sidetittel.skjema">
@@ -8,12 +9,16 @@
                 <div class="panel-standard-belyst skjema">
                     <div data-accordion data-close-others="false">
                         <div data-accordion-group data-ng-repeat="gruppe in grupper" class="spm-blokk"
-                             id="{{gruppe.id}}" data-is-open="gruppe.apen" data-sjekk-validert="gruppe.skalSettesTilValidVedForsteApning">
+                             id="{{gruppe.id}}" data-is-open="gruppe.apen"
+                             data-sjekk-validert="gruppe.skalSettesTilValidVedForsteApning">
                             <div data-accordion-heading>
-                                <div class="flipp">
-                                    <span>+</span>
+                                <div class="bolk-fokus">
+                                    <div class="flipp">
+                                        <span>+</span>
+                                    </div>
+
+                                    <h2 class="stor" data-cmstekster="{{gruppe.tittel}}"></h2>
                                 </div>
-                                <h2 class="stor" data-cmstekster="{{gruppe.tittel}}"></h2>
                             </div>
                             <div data-div data-ng-include="gruppe.template"></div>
                         </div>
@@ -26,7 +31,8 @@
             <div class="begrensning">
                 <section class="sak-hel">
                     <a href="#/vedlegg" class="knapp-hoved" data-cmstekster="skjema.ferdig"
-                       data-ng-click="validerDagpenger(dagpengerForm, $event)" role="button" data-fremdriftsindikator="grå"></a>
+                       data-ng-click="validerDagpenger(dagpengerForm, $event)" role="button"
+                       data-fremdriftsindikator="grå"></a>
                 </section>
             </div>
         </div>

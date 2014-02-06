@@ -9,7 +9,9 @@
                 <h2 class="stor-strek-ikon-slett" data-cmstekster="vedlegg.tittel"></h2>
 
                 <p class="info" data-cmstekster="vedlegg.info1"></p>
+
                 <p class="info" data-cmstekster="vedlegg.info2"></p>
+
                 <p class="info" data-cmstekster="vedlegg.info3"></p>
 
 
@@ -24,18 +26,21 @@
                 <div data-accordion-group data-ng-repeat="forventning in forventninger" class="spm-blokk vertikal"
                      id="vedlegg_{{forventning.vedleggId}}">
                     <div data-accordion-heading>
-                        <div class="flipp"></div>
+                        <div class="bolk-fokus">
+                            <div class="flipp"></div>
 
-                        <div class="vedlegg-bolk" data-ng-class="{behandlet: !vedleggEr(forventning, 'VedleggKreves'), lastetopp: vedleggEr(forventning, 'LastetOpp')}">
-                            <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'LastetOpp')"
-                                 data-cmstekster="vedlegg.behandlet.lastetopp"></div>
-                            <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesSenere')"
-                                 data-cmstekster="vedlegg.behandlet.sendessenere"></div>
-                            <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesIkke')"
-                                 data-cmstekster="vedlegg.behandlet.sendesikke"></div>
-                            <!--h2 class="stor"><span data-cmstekster="{{soknadData.skjemaNummer}}.vedlegg.{{forventning.skjemaNummer}}.header"></span><span data-ng-if="forventning.navn">: {{forventning.navn}}</span></h2 -->
-                            <h2 class="stor"><span>{{forventning.tittel}}</span><span data-ng-if="forventning.navn">: {{forventning.navn}}</span>
-                            </h2>
+                            <div class="vedlegg-bolk"
+                                 data-ng-class="{behandlet: !vedleggEr(forventning, 'VedleggKreves'), lastetopp: vedleggEr(forventning, 'LastetOpp')}">
+                                <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'LastetOpp')"
+                                     data-cmstekster="vedlegg.behandlet.lastetopp"></div>
+                                <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesSenere')"
+                                     data-cmstekster="vedlegg.behandlet.sendessenere"></div>
+                                <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesIkke')"
+                                     data-cmstekster="vedlegg.behandlet.sendesikke"></div>
+                                <!--h2 class="stor"><span data-cmstekster="{{soknadData.skjemaNummer}}.vedlegg.{{forventning.skjemaNummer}}.header"></span><span data-ng-if="forventning.navn">: {{forventning.navn}}</span></h2 -->
+                                <h2 class="stor"><span>{{forventning.tittel}}</span><span data-ng-if="forventning.navn">: {{forventning.navn}}</span>
+                                </h2>
+                            </div>
                         </div>
                     </div>
                     <div data-div class="skjemaramme begrensning sak-totredel" data-ng-controller="validervedleggCtrl">
@@ -52,8 +57,8 @@
                                     <input type="text" maxlength="25" data-ng-maxlength="25"
                                            data-ng-required="true" data-ng-model="forventning.navn"
                                            data-ng-blur="lagreVedlegg(forventning)"
-                                            data-blur-validate
-                                            data-error-messages="{required:'vedlegg.annet.navn.feilmelding'}">
+                                           data-blur-validate
+                                           data-error-messages="{required:'vedlegg.annet.navn.feilmelding'}">
                                 </label>
                                 <span class="melding" data-cmstekster="vedlegg.annet.navn.feilmelding"></span>
                             </div>
