@@ -1,5 +1,7 @@
 angular.module('nav.informasjonsside', ['nav.cmstekster'])
     .controller('InformasjonsSideCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', 'soknadService', 'sjekkUtslagskriterier', function ($scope, data, $routeParams, $http, $location, soknadService, sjekkUtslagskriterier) {
+        var fortsettLikevell = false;
+
         $scope.utslagskriterier = data.utslagskriterier;
         //Inntil vi får arena-kobling
         $scope.utslagskriterier.erRegistrertArbeidssoker = "true";
@@ -75,9 +77,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 
         $scope.fortsettLikevel = function ($event) {
             $event.preventDefault();
-            $scope.utslagskriterier.erRegistrertArbeidssoker = 'true';
-            $scope.utslagskriterier.gyldigAlder = 'true';
-            $scope.utslagskriterier.bosattINorge = 'true';
+            fortsettLikevell = true;
         }
 
         $scope.startSoknadDersomBrosjyreLest = function () {
@@ -99,7 +99,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         }
 
         $scope.kravForDagpengerOppfylt = function () {
-            return sjekkUtslagskriterier.erOppfylt();
+            return sjekkUtslagskriterier.erOppfylt() || fortsettLikevell;
         };
 
         $scope.kravForDagpengerIkkeOppfylt = function () {
