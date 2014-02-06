@@ -6,6 +6,8 @@ import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -75,13 +77,12 @@ public class SoknadTpsDataController {
     public Personalia hentPersonalia() {
         String fnr = SubjectHandler.getSubjectHandler().getUid();
         Personalia personalia;
-        personalia = personaliaService.hentPersonalia(fnr);
-//        try {
-//            personalia = personaliaService.hentPersonalia(fnr);
-//        } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet
-//                | HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
-//            return new Personalia();
-//        }
+        try {
+            personalia = personaliaService.hentPersonalia(fnr);
+        } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet
+                | HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
+            return new Personalia();
+        }
         return personalia;
     }
 }

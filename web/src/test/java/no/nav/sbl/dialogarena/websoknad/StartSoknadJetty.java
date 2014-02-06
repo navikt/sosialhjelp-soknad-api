@@ -40,6 +40,7 @@ public final class StartSoknadJetty {
     private StartSoknadJetty(Env env) throws Exception {
         configureSecurity();
         configureLocalConfig();
+        disableBatch();
         setProperty("java.security.auth.login.config", env.getLoginConf());
         setupKeyAndTrustStore();
 
@@ -53,6 +54,10 @@ public final class StartSoknadJetty {
                 .addDatasource(buildDataSource(), "jdbc/SoknadInnsendingDS")
                 .port(PORT).buildJetty();
         jetty.startAnd(first(waitFor(gotKeypress())).then(jetty.stop));
+    }
+
+    private void disableBatch() {
+        setProperty("sendsoknad.batch.enabled", "false");
     }
 
     private void configureLocalConfig() throws IOException {

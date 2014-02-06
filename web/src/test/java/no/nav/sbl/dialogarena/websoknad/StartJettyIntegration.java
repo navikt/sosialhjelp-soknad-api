@@ -30,6 +30,7 @@ public final class StartJettyIntegration {
         setFrom("jetty-env.properties");
         setProperty("no.nav.sbl.dialogarena.sendsoknad.sslMock", "true");
         setProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "false");
+        setProperty("sendsoknad.batch.enabled", "false");
         setProperty(SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
 
         JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
