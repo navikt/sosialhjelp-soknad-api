@@ -9,7 +9,10 @@ angular.module('nav.dagpengerdirective', [])
                     scope.apneTab(forsteInvalidBolk.attr('id'));
                     $timeout(function() {
                         var fokusElement = forsteInvalidBolk.find('input').first();
-                        scrollToElement(fokusElement, 400);
+
+                        if (fokusElement.length > 0) {
+                            scrollToElement(fokusElement, 400);
+                        };
                     });
                 });
 			}
