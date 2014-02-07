@@ -93,7 +93,7 @@ public class WebSoknadUtilsTest {
         Faktum person = new Faktum();
         Faktum fnr = new Faktum();
         sluttaarsak.setValuelist(asList(sluttaarsaker));
-        fakta.put("arbeidsforhold.type", sluttaarsak);
+        fakta.put("arbeidsforhold", sluttaarsak);
         fakta.put(PERSONALIA_KEY, person);
         fakta.put(FNR_KEY, fnr);
         soknad.leggTilFakta(fakta);
