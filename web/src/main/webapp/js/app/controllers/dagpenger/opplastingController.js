@@ -10,7 +10,10 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
             laster: false
         };
 
-        $scope.harLagtTilVedlegg = false;
+        $scope.harLagtTilVedlegg = {
+            value:false
+        }
+
         $scope.skalViseFeilmelding = false;
         $scope.opplastingFeilet = false;
 
@@ -21,7 +24,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         };
 
         $scope.$on('fileuploadstart', function () {
-            $scope.harLagtTilVedlegg = true;
+            $scope.harLagtTilVedlegg.value = true;
 
             $scope.data.opplastingFeilet = false;
 
@@ -31,7 +34,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
             $.each(data.files, function (index, file) {
                 if (file.error) {
                     $scope.data.opplastingFeilet = file.error;
-                    $scope.harLagtTilVedlegg = false;
+                    $scope.harLagtTilVedlegg.value = false;
                     data.scope().clear(file);
                     $scope.clear(file);
                 }
@@ -79,7 +82,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         };
 
         $scope.leggVed = function () {
-            if ($scope.harLagtTilVedlegg === true) {
+            if ($scope.harLagtTilVedlegg.value === true) {
                 $scope.skalViseFeilmelding = false;
                 var soknadId = data.soknad.soknadId;
                 $scope.fremdriftsindikator.laster = true;
@@ -105,7 +108,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                 $scope.queue = data || [];
                 $scope.loadingFiles = false;
                 if(data.length > 0) {
-                    $scope.harLagtTilVedlegg = true;
+                    $scope.harLagtTilVedlegg.value = true;
                 }
             }
         );
@@ -115,6 +118,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         var file = $scope.file;
         file.$destroy = function () {
             $scope.data.opplastingFeilet = false;
+            $scope.harLagtTilVedlegg.value = false;
             file.$remove().then(function () {
                 $scope.clear(file);
             });

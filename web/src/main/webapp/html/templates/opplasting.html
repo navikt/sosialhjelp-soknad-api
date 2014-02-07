@@ -27,7 +27,7 @@
         </div>
         <div class="rad uten-ramme">
             <div class="begrensning sak-totredel">
-                <div class="form-linje" data-ng-class="{feil: skalViseFeilmelding === true && harLagtTilVedlegg === false}">
+                <div class="form-linje" data-ng-class="{feil: skalViseFeilmelding === true && harLagtTilVedlegg.value === false}">
                     <span class="melding" data-cmstekster="opplasting.feilmelding.manglerVedlegg"></span>
                 </div>
                 <a href="javascript:void(0);" data-redirect="#/vedlegg" class="knapp-hoved" data-cmstekster="opplasting.ferdig" data-ng-click="leggVed()"
