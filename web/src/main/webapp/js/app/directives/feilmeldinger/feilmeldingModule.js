@@ -79,6 +79,8 @@ angular.module('nav.feilmeldinger', [])
                                 scope.giFokus(formLinje.find('input[type=text]').filter(':visible').first());
                             } else if(feilmelding.elem.hasClass('under-atten-dato')) {
                                 scope.giFokus(formLinje.find('input[type=text]').first());
+                            } else if(feilmelding.elem.hasClass('hidden-vedlegg')) {
+                                scope.giFokus(formLinje.find('a.knapp-link').first());
                             }
                             else {
                                 scope.giFokus(formLinje.find('input[type=checkbox]').first());
@@ -159,6 +161,7 @@ angular.module('nav.feilmeldinger', [])
                         feilmelding = feilmeldingNokkel;
                         return {feil: 'Fant ikke feilmelding med key ' + feilmeldingNokkel, elem: finnTilhorendeElement(feil)};
                     }
+
                     return {feil: feilmelding, elem: finnTilhorendeElement(feil)};
                 }
 
