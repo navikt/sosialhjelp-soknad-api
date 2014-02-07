@@ -1,6 +1,7 @@
 angular.module('sendsoknad')
     .value('data', {})
     .value('cms', {})
+    .constant('validertKlasse', 'validert')
     .run(['$http', '$templateCache', '$rootScope', 'data', '$location', 'sjekkUtslagskriterier', function ($http, $templateCache, $rootScope, data, $location, sjekkUtslagskriterier) {
         $http.get('../html/templates/reellarbeidssoker/reell-arbeidssoker.html', {cache: $templateCache});
         $http.get('../html/templates/egen-naering.html', {cache: $templateCache});

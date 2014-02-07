@@ -13,17 +13,11 @@ angular.module('nav.ytelser', [])
 
 		if (erCheckboxerAvhuket(nokler)) {
 			$scope.harHuketAvCheckboksYtelse.value = true;
-			$scope.harHuketAvCheckboksNavYtelse.value = true;
 		}
 
-		$scope.$on('VALIDER_YTELSER', function () {
-			$scope.validerYtelser(false);
-		});
-
-		$scope.validerOgSettModusOppsummering = function (form) {
-			$scope.validateForm(form.$invalid);
-			$scope.validerYtelser(true);
-		};
+        if (erCheckboxerAvhuket(undernokler)) {
+            $scope.harHuketAvCheckboksNavYtelse.value = true;
+        }
 
 		$scope.hvisAvtaleInngaatt = function () {
 			var faktum = data.finnFaktum('ikkeavtale');
@@ -42,11 +36,17 @@ angular.module('nav.ytelser', [])
 		};
 
 //      sjekker om formen er validert når bruker trykker ferdig med ytelser
-		$scope.validerYtelser = function (skalScrolle) {
+		$scope.valider = function (skalScrolle) {
 			$scope.ytelser.skalViseFeilmeldingForIngenYtelser = false;
 			$scope.ytelser.skalViseFeilmeldingForIngenNavYtelser = false;
 			$scope.ytelser.skalViseFeilmeldingForAvtale = false;
-			$scope.runValidation(skalScrolle);
+            var valid = $scope.runValidation(skalScrolle);
+            if (valid) {
+                $scope.lukkTab('ytelser');
+                $scope.settValidert('ytelser');
+            } else {
+                $scope.apneTab('ytelser');
+            }
 		};
 
 //      kjøres hver gang det skjer en endring på checkboksene

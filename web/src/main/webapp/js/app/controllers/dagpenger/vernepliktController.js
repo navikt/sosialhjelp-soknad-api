@@ -4,16 +4,13 @@ angular.module('nav.verneplikt', [])
 		$scope.navigering = {nesteside: 'utdanning'};
 		$scope.sidedata = {navn: 'vernepliktig'};
 
-		$scope.$on('VALIDER_VERNEPLIKT', function () {
-			$scope.validerVerneplikt(false);
-		});
-
-		$scope.validerOgSettModusOppsummering = function (form) {
-			$scope.validateForm(form.$invalid);
-			$scope.validerVerneplikt(true);
-		};
-
-		$scope.validerVerneplikt = function (skalScrolle) {
-			$scope.runValidation(skalScrolle);
+		$scope.valider = function (skalScrolle) {
+            var valid = $scope.runValidation(skalScrolle);
+            if (valid) {
+                $scope.lukkTab('verneplikt');
+                $scope.settValidert('verneplikt');
+            } else {
+                $scope.apneTab('verneplikt');
+            }
 		};
 	}]);
