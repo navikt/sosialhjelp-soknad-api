@@ -1,5 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
+import no.aetat.arena.fodselsnr.Fodselsnr;
+import no.aetat.arena.personstatus.Personstatus;
+import no.aetat.arena.personstatus.PersonstatusType;
+import no.nav.arena.tjenester.person.v1.FaultGeneriskMsg;
+import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
@@ -178,6 +183,28 @@ public class MockConsumerConfig {
     }
 
     @Configuration
+    public static class PersonInfoWSConfig {
+        public static final String ARBS = "ARBS";
+
+        @Bean
+        public PersonInfoServiceSoap personInfoServiceSoap() {
+            PersonInfoServiceSoap mock = mock(PersonInfoServiceSoap.class);
+            Personstatus personstatus = new Personstatus();
+            PersonstatusType.PersonData personData = new PersonstatusType.PersonData();
+            personData.setStatusArbeidsoker(ARBS);
+            personstatus.setPersonData(personData);
+
+            try {
+                when(mock.hentPersonStatus(any(Fodselsnr.class))).thenReturn(personstatus);
+            } catch (FaultGeneriskMsg faultGeneriskMsg) {
+                return mock;
+            }
+
+            return mock;
+        }
+    }
+
+    @Configuration
     public static class PersonWSConfig {
 
         @Bean
@@ -222,6 +249,7 @@ public class MockConsumerConfig {
             
             when(mock.hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class))).thenReturn(response);
             //Mockito.doThrow(new RuntimeException()).when(mock).hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class));
+            //when(mock.hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class))).thenThrow(new WebServiceException());
             
             return mock;
         }

@@ -32,12 +32,16 @@ public class WebSoknadUtils {
     private static final Logger logger = getLogger(WebSoknadUtils.class);
     private static boolean erPermittertellerHarRedusertArbeidstid(WebSoknad soknad)
     {
-        Faktum sluttaarsak = soknad.getFakta().get("sluttaarsak");
+
+        Faktum sluttaarsak = soknad.getFakta().get("arbeidsforhold.type");
+        logger.warn("RUTINGTEST: sluttaarsak" + sluttaarsak);
         boolean erPermittert = false;
         if (sluttaarsak != null) {
             List<Faktum> sortertEtterDatoTil = on(sluttaarsak.getValuelist()).collect(reverseOrder(compareWith(DATO_TIL)));
             LocalDate nyesteDato = on(sortertEtterDatoTil).map(DATO_TIL).head().getOrElse(null);
             List<Faktum> nyesteSluttaarsaker = on(sortertEtterDatoTil).filter(where(DATO_TIL, equalTo(nyesteDato))).collect();
+            logger.warn("RUTINGTEST: nyesteSluttaarsaker" + nyesteSluttaarsaker.size());
+            logger.warn("RUTINGTEST: nyesteSluttaarsaker" + nyesteSluttaarsaker.get(0).getType());
             erPermittert = on(nyesteSluttaarsaker).filter(where(TYPE, equalTo("Permittert"))).head().isSome() || on(nyesteSluttaarsaker).filter(where(TYPE, equalTo("Redusert arbeidstid"))).head().isSome();
         }
         return erPermittert;

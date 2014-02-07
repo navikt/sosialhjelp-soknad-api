@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import com.google.common.base.Function;
+import no.nav.modig.lang.option.Optional;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.FaktumEgenskap;
@@ -8,8 +10,10 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingS
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +29,11 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.collect.Maps.uniqueIndex;
+import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.modig.lang.option.Optional.none;
+import static no.nav.modig.lang.option.Optional.optional;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.IdGenerator.lagBehandlingsId;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.limit;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.OPPRETTET;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.UTFYLLING;
@@ -35,7 +43,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInns
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.FERDIG;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad.startSoknad;
-import static org.joda.time.DateTime.now;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Named("soknadInnsendingRepository")
@@ -105,12 +112,25 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         return getJdbcTemplate().queryForObject(sql, new SoknadRowMapper(), id);
     }
 
-    public List<Long> hentAlleSoknaderSistLagretOverEnTimeSiden() {
-        String sql = "select soknad_id from SOKNAD where sistlagret <= ?";
-        return getJdbcTemplate().queryForList(
-                sql,
-                Long.class,
-                new Date(now().minusHours(1).getMillis()));
+    @Override
+    public Optional<WebSoknad> plukkSoknadTilMellomlagring() {
+        while (true) {
+            String select = "select * from soknad where sistlagret < SYSDATE - (INTERVAL '1' HOUR) and batch_status = 'LEDIG'" + limit(1);
+            Optional<WebSoknad> soknad = on(getJdbcTemplate().query(select, new SoknadRowMapper())).head();
+            if (!soknad.isSome()) {
+                return none();
+            }
+            String update = "update soknad set batch_status ='TATT' where soknad_id = ? and batch_status = 'LEDIG'";
+            int rowsAffected = getJdbcTemplate().update(update, soknad.get().getSoknadId());
+            if (rowsAffected == 1) {
+                return optional(hentSoknadMedData(soknad.get().getSoknadId()));
+            }
+        }
+    }
+
+    @Override
+    public void leggTilbake(WebSoknad webSoknad) {
+        getJdbcTemplate().update("update soknad set batch_status = 'LEDIG' where soknad_id = ?", webSoknad.getSoknadId());
     }
 
     @Override
@@ -145,6 +165,24 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
         }
 
         return result;
+    }
+    
+    @Override
+    public Boolean isVedleggPaakrevd(Long soknadId, String key, String value) {
+        String sql =  "select count(*) from soknadbrukerdata where soknad_id=? and key=? and value like ?";
+        
+        Integer count = null;
+        try{
+            count = getJdbcTemplate().queryForObject(sql, Integer.class, soknadId, key, value);    
+        } catch(DataAccessException e) {
+            LOG.warn("Klarte ikke hente count fra soknadBrukerData", e);
+        }
+        
+        if(count != null) {
+            return count > 0;
+        }
+        
+        return false;
     }
 
     /**
@@ -267,9 +305,10 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
 
     @Override
     public void settSistLagretTidspunkt(Long soknadId) {
-        getJdbcTemplate()
-                .update("update soknad set sistlagret=? where soknad_id = ?", new Date(now().getMillis()), soknadId);
+        getJdbcTemplate().update("update soknad set sistlagret = SYSDATE where soknad_id = ?", soknadId);
     }
+
+
 
     @Override
     public List<Faktum> hentAlleBrukerData(Long soknadId) {
@@ -324,9 +363,9 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     @Override
     public void slettSoknad(long soknadId) {
         LOG.debug("Sletter søknad med ID: " + soknadId);
-        getJdbcTemplate().update("delete from soknad where soknad_id = ?", soknadId);
-        getJdbcTemplate().update("delete from vedlegg where soknad_id = ?", soknadId);
         getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ?", soknadId);
+        getJdbcTemplate().update("delete from vedlegg where soknad_id = ?", soknadId);
+        getJdbcTemplate().update("delete from soknad where soknad_id = ?", soknadId);
     }
 
     @Override
@@ -337,6 +376,12 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     @Override
     public String hentSoknadType(Long soknadId) {
         return getJdbcTemplate().queryForObject("select navsoknadid from soknad where soknad_id = ? ", String.class, soknadId);
+    }
+
+    @Override
+    public void settDelstegstatus(Long soknadId, DelstegStatus status) {
+        getJdbcTemplate()
+                .update("update soknad set delstegstatus=? where soknad_id = ?", status.name(), soknadId);
     }
 
     private <T> List<T> select(String sql, RowMapper<T> rowMapper, Object... args) {
@@ -350,12 +395,14 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
                     .medBehandlingId(rs.getString("brukerbehandlingid"))
                     .medskjemaNummer(rs.getString("navsoknadid"))
                     .medAktorId(rs.getString("aktorid"))
+                    .medUuid("uuid")
                     .opprettetDato(
                             new DateTime(rs.getTimestamp("opprettetdato")
                                     .getTime()))
                     .medStatus(
                             SoknadInnsendingStatus.valueOf(rs
-                                    .getString("status")));
+                                    .getString("status")))
+                    .medDelstegStatus(DelstegStatus.valueOf(rs.getString("delstegstatus")));
         }
     }
 }
