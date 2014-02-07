@@ -43,6 +43,7 @@
                        id="lonnsgaranti1"
                        type="radio"
                        value="JaHarSokt"
+                       name="lonnsgaranti"
                        data-ng-model="sluttaarsak.properties.lonnsgaranti"
                        data-click-validate
                        data-ng-required="true"
@@ -51,8 +52,7 @@
                        data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaharsokt"></label>
             </div>
 
-            <div class="ekstra-spm-boks" data-ng-show="sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'">
-
+            <div class="ekstra-spm-boks" data-ng-if="sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'">
                 <div class="form-linje boolean">
                     <h4 class="spm-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.sporsmal"></h4>
 
@@ -61,6 +61,7 @@
                                id="lonnsgarantidekker1"
                                type="radio"
                                value="Nei"
+                               name="lonnsgarantidekker"
                                data-ng-model="sluttaarsak.properties.lonnsgarantidekker"
                                data-click-validate
                                data-ng-required="sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'"
@@ -73,6 +74,7 @@
                                id="lonnsgarantidekker2"
                                type="radio"
                                value="Ja"
+                               name="lonnsgarantidekker"
                                data-ng-model="sluttaarsak.properties.lonnsgarantidekker"
                                data-click-validate
                                data-ng-required="sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'"
@@ -85,6 +87,7 @@
                                id="lonnsgarantidekker3"
                                type="radio"
                                value="Vet ikke"
+                               name="lonnsgarantidekker"
                                data-ng-model="sluttaarsak.properties.lonnsgarantidekker"
                                data-click-validate
                                data-ng-required="sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'"
@@ -102,6 +105,7 @@
                        id="lonnsgaranti2"
                        type="radio"
                        value="JaSkalSoke"
+                       name="lonnsgaranti"
                        data-ng-model="sluttaarsak.properties.lonnsgaranti"
                        data-click-validate
                        data-ng-required="true"
@@ -114,6 +118,7 @@
                        id="lonnsgaranti3"
                        type="radio"
                        value="Nei"
+                       name="lonnsgaranti"
                        data-ng-model="sluttaarsak.properties.lonnsgaranti"
                        data-click-validate
                        data-ng-required="true"
