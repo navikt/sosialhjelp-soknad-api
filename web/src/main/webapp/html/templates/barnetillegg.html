@@ -42,6 +42,18 @@
                         </p>
                     </div>
                 </div>
+
+                <div data-vedlegginfoboks data-ng-if="kreverVedlegg(b)">
+                    <ul>
+                        <li data-ng-if="manglendeNorskBarn(b)">
+                            <p data-cmstekster="barnetillegg.nyttbarn.land.norge.vedlegginformasjon"></p>
+                        </li>
+                        <li data-ng-if="barnetHarInntekt(b)">
+                            <p data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.false.vedlegginformasjon"></p>
+                        </li>
+                    </ul>
+                </div>
+
                 <div class="sentrert" data-ng-show="erBrukerregistrert(b)">
                     <ul class="liste-vannrett">
                         <li>
