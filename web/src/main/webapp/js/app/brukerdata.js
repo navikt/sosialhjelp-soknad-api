@@ -1,10 +1,4 @@
 angular.module('app.brukerdata', ['app.services'])
-    .controller('SendSoknadCtrl', function ($scope, $location, $routeParams, soknadService) {
-        $scope.sendSoknad = function () {
-            soknadService.send({param: $routeParams.soknadId, action: 'send'});
-            $location.path('kvittering');
-        }
-    })
     .controller('SoknadDataCtrl', ['$scope', 'data', '$http', function ($scope, data, $http) {
         $scope.soknadData = data.soknad;
     }])
@@ -40,7 +34,7 @@ angular.module('app.brukerdata', ['app.services'])
             laster: false
         }
 
-        soknadService.get({param: soknadId}).$promise.then(function (result) {
+        soknadService.get({soknadId: soknadId}).$promise.then(function (result) {
             var fakta = $.map(result.fakta, function (element) {
                 return element.type;
             });
@@ -54,7 +48,7 @@ angular.module('app.brukerdata', ['app.services'])
         $scope.submitForm = function () {
             var start = $.now();
             $scope.fremdriftsindikator.laster = true;
-            soknadService.remove({param: soknadId},
+            soknadService.remove({soknadId: soknadId},
                 function () { // Success
                     var delay = 1500 - ($.now() - start);
                     setTimeout(function () {

@@ -25,7 +25,7 @@ angular.module('nav.oppsummering', [])
             if ($scope.harbekreftet.value) {
                 $scope.skalViseFeilmelding.value = false;
 
-                soknadService.send({param: $scope.soknadId, action: 'send'},
+                soknadService.send({soknadId: $scope.soknadId},
                     //Success
                     function () {
                         $location.path('bekreftelse');

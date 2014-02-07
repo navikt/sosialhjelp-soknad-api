@@ -10,14 +10,14 @@
             <span data-cmstekster="sistLagret.aldriLagret" data-ng-if="soknadHarAldriBlittLagret()"/>
         </div>
         <ul class="liste-vannrett">
+            <li data-ng-if="navtilbakelenke !== 'ingenlenke'">
+                <a href="{{ lenke.value}}" data-cmstekster="{{ navtilbakelenke }}"></a>
+            </li>
             <li>
                 <a href="#/fortsettsenere" data-cmstekster="fortsettSenere"></a>
             </li>
             <li>
                 <a href="#/avbryt" data-cmstekster="avbryt.soknad"></a>
-            </li>
-            <li data-ng-if="navtilbakelenke !== 'ingenlenke'">
-                <a href="{{ lenke.value}}" data-cmstekster="{{ navtilbakelenke }}"></a>
             </li>
         </ul>
     </div>

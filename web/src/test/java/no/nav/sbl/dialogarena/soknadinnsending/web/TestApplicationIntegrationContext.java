@@ -28,7 +28,8 @@ import javax.inject.Inject;
         ContentConfig.class,
         SoknadInnsendingDBConfig.class,
         ConsumerConfig.SendSoknadWSConfig.class,
-        ConsumerConfig.FilLagerWSConfig.class
+        ConsumerConfig.FilLagerWSConfig.class,
+        ConsumerConfig.PersonInfoWSConfig.class
 })
 
 public class TestApplicationIntegrationContext {
