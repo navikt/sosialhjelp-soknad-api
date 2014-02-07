@@ -109,7 +109,7 @@
                                            data-ng-click="endreInnsendingsvalg(forventning, 'SendesIkke')">
                                     <label for="{{$index}}ikkesendRadio"
                                            data-cmstekster="vedlegg.faktum.ikkesend"></label>
-                                    <input type="hidden" data-ng-model="hiddenFelt.value" data-ng-required="true"
+                                    <input type="hidden" class="hidden-vedlegg" data-ng-model="hiddenFelt.value" data-ng-required="true"
                                            data-error-messages="'{{forventning.tittel}}'">
                                 </div>
                                 <span class="melding"
@@ -137,7 +137,7 @@
         <div class="begrensning sak-totredel">
             <section class="panel-standard oversikt">
                 <a href="javascript:void(0)" aria-role="button" class="knapp-stor" data-cmstekster="vedlegg.leggtilekstravedlegg"
-                   data-ng-click="nyttAnnetVedlegg()"></a>
+                   data-ng-click="nyttAnnetVedlegg()" data-apne-annet-vedlegg></a>
             </section>
         </div>
     </div>
