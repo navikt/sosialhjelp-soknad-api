@@ -2,16 +2,21 @@ angular.module('nav.dagpenger', [])
 	.controller('DagpengerCtrl', ['$scope', 'data', '$location', '$timeout', 'soknadService', function ($scope, data, $location, $timeout,soknadService) {
 
 		$scope.grupper = [
-			{id: 'reellarbeidssoker', tittel: 'reellarbeidssoker.tittel', template: '../html/templates/reellarbeidssoker/reell-arbeidssoker.html', apen: false, skalSettesTilValidVedForsteApning: false},
-			{id: 'arbeidsforhold', tittel: 'arbeidsforhold.tittel', template: '../html/templates/arbeidsforhold.html', apen: false, skalSettesTilValidVedForsteApning: false},
-			{id: 'egennaering', tittel: 'egennaering.tittel', template: '../html/templates/egen-naering.html', apen: false, skalSettesTilValidVedForsteApning: false},
-			{id: 'verneplikt', tittel: 'ikkeavtjentverneplikt.tittel', template: '../html/templates/verneplikt.html', apen: false, skalSettesTilValidVedForsteApning: false},
-			{id: 'utdanning', tittel: 'utdanning.tittel', template: '../html/templates/utdanning/utdanning.html', apen: false, skalSettesTilValidVedForsteApning: false},
-			{id: 'ytelser', tittel: 'ytelser.tittel', template: '../html/templates/ytelser.html', apen: false, skalSettesTilValidVedForsteApning: false},
-			{id: 'personalia', tittel: 'personalia.tittel', template: '../html/templates/personalia.html', apen: false, skalSettesTilValidVedForsteApning: true},
-            {id: 'barnetillegg', tittel: 'barnetillegg.tittel', template: '../html/templates/barnetillegg.html', apen: false, skalSettesTilValidVedForsteApning: true},
-            {id: 'fritekst', tittel: 'fritekst.tittel', template: '../html/templates/fritekst.html', apen: false, skalSettesTilValidVedForsteApning: true}
+			{id: 'reellarbeidssoker', tittel: 'reellarbeidssoker.tittel', template: '../html/templates/reellarbeidssoker/reell-arbeidssoker.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
+			{id: 'arbeidsforhold', tittel: 'arbeidsforhold.tittel', template: '../html/templates/arbeidsforhold.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
+			{id: 'egennaering', tittel: 'egennaering.tittel', template: '../html/templates/egen-naering.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
+			{id: 'verneplikt', tittel: 'ikkeavtjentverneplikt.tittel', template: '../html/templates/verneplikt.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
+			{id: 'utdanning', tittel: 'utdanning.tittel', template: '../html/templates/utdanning/utdanning.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
+			{id: 'ytelser', tittel: 'ytelser.tittel', template: '../html/templates/ytelser.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
+			{id: 'personalia', tittel: 'personalia.tittel', template: '../html/templates/personalia.html', apen: false, skalSettesTilValidVedForsteApning: true, validering: false},
+            {id: 'barnetillegg', tittel: 'barnetillegg.tittel', template: '../html/templates/barnetillegg.html', apen: false, skalSettesTilValidVedForsteApning: true, validering: false},
+            {id: 'fritekst', tittel: 'fritekst.tittel', template: '../html/templates/fritekst.html', apen: false, skalSettesTilValidVedForsteApning: true, validering: false}
 		];
+
+        $scope.leggTilValideringsmetode = function(bolkId, valideringsmetode) {
+            var idx = $scope.grupper.indexByValue(bolkId);
+            $scope.grupper[idx].valideringsmetode = valideringsmetode;
+        }
 
         $scope.fremdriftsindikator = {
             laster: false
@@ -19,48 +24,22 @@ angular.module('nav.dagpenger', [])
 
 		$scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];
 
-		$scope.validerDagpenger = function (form, event) {
-			//burde refaktoreres, bruke noe annet en events?
-			event.preventDefault();
+        $scope.stickyFeilmelding = function() {
+            $scope.leggTilStickyFeilmelding();
+        };
 
-			$scope.$broadcast('VALIDER_YTELSER', form.ytelserForm);
-			$scope.$broadcast('VALIDER_UTDANNING', form.utdanningForm);
-			$scope.$broadcast('VALIDER_ARBEIDSFORHOLD', form.arbeidsforholdForm);
-			$scope.$broadcast('VALIDER_EGENNAERING', form.egennaeringForm);
-			$scope.$broadcast('VALIDER_VERNEPLIKT', form.vernepliktForm);
-			$scope.$broadcast('VALIDER_REELLARBEIDSSOKER', form.reellarbeidssokerForm);
-            //$scope.$broadcast('VALIDER_FRITEKST', form.fritekstForm);
-			$scope.$broadcast('VALIDER_DAGPENGER', form);
+        $scope.apneTab = function(ider) {
+            settApenStatusForAccordion(true, ider);
+        };
 
-            $scope.fremdriftsindikator.laster = true;
-			$timeout(function () {
-				$scope.validateForm(form.$invalid);
-				var elementMedForsteFeil = $('.accordion-group').find('.form-linje.feil, .form-linje.feilstyling').first();
-				if (form.$valid) {
-                    soknadService.delsteg({soknadId: data.soknad.soknadId, delsteg: 'vedlegg'},
-                        function() {
-                            $location.path('/vedlegg');
-                        },
-                        function() {
-                            $scope.fremdriftsindikator.laster = false;
-                        }
-                    );
-				} else {
-                    $scope.fremdriftsindikator.laster = false;
-					scrollToElement(elementMedForsteFeil, 200);
-					giFokus(elementMedForsteFeil);
-					setAktivFeilmeldingsklasse(elementMedForsteFeil);
-				}
-			}, 800);
-		};
+        $scope.lukkTab = function(ider) {
+            settApenStatusForAccordion(false, ider);
+        };
 
-		$scope.$on('OPEN_TAB', function (e, ider) {
-			settApenStatusForAccordion(true, ider);
-		});
-
-		$scope.$on('CLOSE_TAB', function (e, ider) {
-			settApenStatusForAccordion(false, ider);
-		});
+        $scope.settValidert = function(id) {
+            var idx = $scope.grupper.indexByValue(id);
+            $scope.grupper[idx].validering = false;
+        }
 
 		function settApenStatusForAccordion(apen, ider) {
 			if (ider instanceof Array) {
@@ -70,22 +49,14 @@ angular.module('nav.dagpenger', [])
 			} else {
 				settApenForId(apen, ider);
 			}
-		}
+		};
 
 		function settApenForId(apen, id) {
 			var idx = $scope.grupper.indexByValue(id);
 			if (idx > -1) {
 				$scope.grupper[idx].apen = apen;
 			}
-		}
-
-		function giFokus(element) {
-			element.find(':input').focus();
-		}
-
-		function setAktivFeilmeldingsklasse(element) {
-			element.addClass('aktiv-feilmelding');
-		}
+		};
 	}])
 	.controller('FerdigstiltCtrl', ['$scope', 'data', '$location', '$timeout', function ($scope, data, $location, $timeout) {
 		$scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];
