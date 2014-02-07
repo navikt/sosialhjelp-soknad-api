@@ -60,12 +60,13 @@ describe('DagpengerControllere', function () {
             respond('');
 
         scope = $rootScope;
-        scope.validateFormFunctionBleKalt = false;
-        scope.validateForm = function (form) {
-            scope.validateFormFunctionBleKalt = true;
+        scope.runValidationBleKalt = false;
+        scope.runValidation = function () {
+            scope.runValidationBleKalt = true;
         };
-        scope.runValidation = function (form) {
-            //expected call..
+
+        scope.apneTab = function() {
+
         };
 
         element = angular.element(
@@ -90,9 +91,9 @@ describe('DagpengerControllere', function () {
         }));
 
         it('skal kalle metode for å validere form', function () {
-            expect(scope.validateFormFunctionBleKalt).toEqual(false);
-            scope.validerOgSettModusOppsummering(form);
-            expect(scope.validateFormFunctionBleKalt).toEqual(true);
+            expect(scope.runValidationBleKalt).toEqual(false);
+            scope.valider();
+            expect(scope.runValidationBleKalt).toEqual(true);
         });
 
         it('skal generere aarstallene fra i år og 4 år bakover', function () {
@@ -115,9 +116,9 @@ describe('DagpengerControllere', function () {
         }));
 
         it('skal kalle metode for å validere form', function () {
-            expect(scope.validateFormFunctionBleKalt).toEqual(false);
-            scope.validerOgSettModusOppsummering(form);
-            expect(scope.validateFormFunctionBleKalt).toEqual(true);
+            expect(scope.runValidationBleKalt).toEqual(false);
+            scope.valider();
+            expect(scope.runValidationBleKalt).toEqual(true);
         });
     });
 
@@ -129,9 +130,9 @@ describe('DagpengerControllere', function () {
         }));
 
         it('skal kalle metode for å validere form', function () {
-            expect(scope.validateFormFunctionBleKalt).toEqual(false);
-            scope.validerOgSettModusOppsummering(form);
-            expect(scope.validateFormFunctionBleKalt).toEqual(true);
+            expect(scope.runValidationBleKalt).toEqual(false);
+            scope.valider();
+            expect(scope.runValidationBleKalt).toEqual(true);
         });
     });
 
