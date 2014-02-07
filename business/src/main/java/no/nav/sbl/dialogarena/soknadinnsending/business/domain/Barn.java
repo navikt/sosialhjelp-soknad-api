@@ -44,9 +44,9 @@ public class Barn {
         String kjonnSiffer = fnr.substring(8, 9);
 
         if (Integer.parseInt(kjonnSiffer) % 2 == 0) {
-            return KJONN_MANN;
-        } else {
             return KJONN_KVINNE;
+        } else {
+            return KJONN_MANN;
         }
     }
 

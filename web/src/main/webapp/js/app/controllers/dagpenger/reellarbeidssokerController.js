@@ -2,7 +2,7 @@ angular.module('nav.reellarbeidssoker', [])
     .controller('ReellarbeidssokerCtrl', ['$scope', 'data', function ($scope, data) {
         $scope.alder = parseInt(data.finnFaktum('personalia').properties.alder);
 //        For testing av alder:
-//        $scope.alder = 59;
+        //$scope.alder = 59;
         $scope.deltidannen = data.finnFaktum('reellarbeidssoker.villigdeltid.annensituasjon');
         $scope.pendleannen = data.finnFaktum('reellarbeidssoker.villigdeltid.annensituasjon');
         $scope.soknadId = data.soknad.soknadId;
@@ -46,7 +46,7 @@ angular.module('nav.reellarbeidssoker', [])
 		};
 
         $scope.harValgtAnnetUnntakDeltid = function () {
-             if ($scope.deltidannen != 'undefined')
+             if ($scope.deltidannen != undefined)
              {
                 return $scope.deltidannen.value === 'true';
              }
@@ -57,7 +57,7 @@ angular.module('nav.reellarbeidssoker', [])
         };
 
         $scope.harValgtAnnetUnntakPendle = function () {
-            if ($scope.pendleannen != 'undefined')
+            if ($scope.pendleannen != undefined)
             {
                 return $scope.pendleannen.value === 'true';
             }
@@ -85,6 +85,35 @@ angular.module('nav.reellarbeidssoker', [])
 				$scope.harHuketAvCheckboksPendle.value = '';
 			}
 		};
+
+        $scope.trengerUtalelseFraFagpersonellDeltid = function() {
+            var villigdeltidHelse = data.finnFaktum('reellarbeidssoker.villigdeltid.reduserthelse');
+            var villigdeltidBarn18 = data.finnFaktum('reellarbeidssoker.villigdeltid.eneansvarbarnopptil18aar');
+            var villigdeltidOmsorg = data.finnFaktum('reellarbeidssoker.villigdeltid.omsorgansvar');
+            var villigdeltidAnnen = data.finnFaktum('reellarbeidssoker.villigdeltid.annensituasjon');
+            
+            return (villigdeltidHelse != null && villigdeltidHelse.value == "true") ||
+                (villigdeltidBarn18 != null && villigdeltidBarn18.value == "true") ||
+                (villigdeltidOmsorg != null && villigdeltidOmsorg.value == "true") ||
+                (villigdeltidAnnen != null && villigdeltidAnnen.value == "true");
+        }
+
+        $scope.trengerUtalelseFraFagpersonellPendle = function() {
+            var villigpendleHelse = data.finnFaktum('reellarbeidssoker.villigpendle.reduserthelse');
+            var villigpendleBarn18 = data.finnFaktum('reellarbeidssoker.villigpendle.eneansvarbarnopptil18aar');
+            var villigpendleOmsorg = data.finnFaktum('reellarbeidssoker.villigpendle.omsorgansvar');
+            var villigpendleAnnen = data.finnFaktum('reellarbeidssoker.villigpendle.annensituasjon');
+
+            return (villigpendleHelse != null && villigpendleHelse.value== "true") ||
+                (villigpendleBarn18 != null && villigpendleBarn18.value == "true") ||
+                (villigpendleOmsorg != null && villigpendleOmsorg.value == "true") ||
+                (villigpendleAnnen != null && villigpendleAnnen.value == "true");
+        }
+
+        $scope.kanIkkeTaAlleTyperArbeid = function() {
+            var villighelse = data.finnFaktum('reellarbeidssoker.villighelse');
+            return villighelse != null && villighelse.value == "false";
+        }
 
 		function erCheckboxerAvhuket(checkboxNokler) {
 			var minstEnAvhuket = false;
