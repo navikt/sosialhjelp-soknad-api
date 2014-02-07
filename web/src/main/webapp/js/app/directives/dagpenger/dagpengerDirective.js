@@ -1,20 +1,24 @@
 angular.module('nav.dagpengerdirective', [])
-	.directive('apneBolker', ['$timeout', function ($timeout) {
+	.directive('apneBolker', ['$timeout', '$cookieStore', function ($timeout, $cookieStore) {
 		return {
 			require: '^form',
 			link   : function (scope) {
-                $timeout(function() {
-                    var forsteInvalidBolk = $('.accordion-group').not('.validert').first();
-
-                    scope.apneTab(forsteInvalidBolk.attr('id'));
+                var cookiename = 'scrollTil';
+                var cookie = $cookieStore.get(cookiename);
+                if (!cookie) {
                     $timeout(function() {
-                        var fokusElement = forsteInvalidBolk.find('input').first();
+                        var forsteInvalidBolk = $('.accordion-group').not('.validert').first();
 
-                        if (fokusElement.length > 0) {
-                            scrollToElement(fokusElement, 400);
-                        };
+                        scope.apneTab(forsteInvalidBolk.attr('id'));
+                        $timeout(function() {
+                            var fokusElement = forsteInvalidBolk.find('input').first();
+
+                            if (fokusElement.length > 0) {
+                                scrollToElement(fokusElement, 400);
+                            };
+                        });
                     });
-                });
+                }
 			}
 		}
 	}]);
