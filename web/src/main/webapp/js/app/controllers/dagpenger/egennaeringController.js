@@ -100,6 +100,7 @@ angular.module('nav.egennaering', [])
         $scope.totalsumAndel = {
             value: ''
         }
+
         var skalViseAndelsProsentfeil = false;
 
         $scope.prosentFeil = function () {
@@ -133,6 +134,8 @@ angular.module('nav.egennaering', [])
                 skalViseAndelsProsentfeil = false;
             }
         }
+        $scope.summererAndeleneTil100();
+
 
         /*
          Tar kun hensyn til de prosentandelsfeltene som tilsvarer avhuket eierfelt
