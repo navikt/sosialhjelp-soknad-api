@@ -32,10 +32,8 @@ public class WebSoknadUtils {
     private static final Logger logger = getLogger(WebSoknadUtils.class);
     private static boolean erPermittertellerHarRedusertArbeidstid(WebSoknad soknad)
     {
-        Faktum arbeidsforhold = soknad.getFakta().get("arbeidsforhold");
-        logger.warn("RUTINGTEST: sluttaarsak"+ arbeidsforhold.getProperties().entrySet());
-        Faktum sluttaarsak = soknad.getFakta().get("sluttaarsak");
-        logger.warn("RUTINGTEST: sluttaarsak" + soknad.getFakta().entrySet());
+
+        Faktum sluttaarsak = soknad.getFakta().get("arbeidsforhold.type");
         logger.warn("RUTINGTEST: sluttaarsak" + sluttaarsak);
         boolean erPermittert = false;
         if (sluttaarsak != null) {
