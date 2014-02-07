@@ -79,7 +79,6 @@ angular.module('nav.barn', ['app.services'])
         $scope.lagreBarn = function (form) {
             var eventString = 'RUN_VALIDATION' + form.$name;
             $scope.$broadcast(eventString);
-            $scope.validateForm(form.$invalid);
             $scope.runValidation(true);
 
             if (form.$valid) {
@@ -114,8 +113,8 @@ angular.module('nav.barn', ['app.services'])
         }
 
         function oppdaterCookieValue(faktumId) {
-            var barneCookie = $cookieStore.get('barnetillegg');
-            $cookieStore.put('barnetillegg', {
+            var barneCookie = $cookieStore.get('scrollTil');
+            $cookieStore.put('scrollTil', {
                 aapneTabs: barneCookie.aapneTabs,
                 gjeldendeTab: barneCookie.gjeldendeTab,
                 faktumId: faktumId

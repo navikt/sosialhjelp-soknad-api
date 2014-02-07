@@ -12,20 +12,14 @@ angular.module('nav.utdanning', [])
 			$scope.harHuketAvCheckboks.value = true;
 		}
 
-		$scope.$on('VALIDER_UTDANNING', function () {
-			$scope.validerUtdanning(false);
-		});
-
-		$scope.validerOgSettModusOppsummering = function (form) {
-			$scope.validateForm(form.$invalid);
-			$scope.validerUtdanning(true);
-		};
-
-		$scope.validerUtdanning = function (skalScrolle) {
-			if ($scope.hvis('utdanning', 'underUtdanning')) {
-				var minstEnAvhuket = erCheckboxerAvhuket(nokler);
-			}
-			$scope.runValidation(skalScrolle);
+		$scope.valider = function (skalScrolle) {
+            var valid = $scope.runValidation(skalScrolle);
+            if (valid) {
+                $scope.lukkTab('utdanning');
+                $scope.settValidert('utdanning');
+            } else {
+                $scope.apneTab('utdanning');
+            }
 		};
 
 		$scope.hvis = function (faktumKey, verdi) {

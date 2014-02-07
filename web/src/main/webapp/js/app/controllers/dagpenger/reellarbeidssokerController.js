@@ -24,17 +24,15 @@ angular.module('nav.reellarbeidssoker', [])
 			$scope.harHuketAvCheckboksPendle.value = true;
 		}
 
-		$scope.$on('VALIDER_REELLARBEIDSSOKER', function () {
-			$scope.validerReellarbeidssoker(false);
-		});
+		$scope.valider = function (skalScrolle) {
+			var valid = $scope.runValidation(skalScrolle);
+            if (valid) {
+                $scope.lukkTab('reellarbeidssoker');
+                $scope.settValidert('reellarbeidssoker');
 
-		$scope.validerOgSettModusOppsummering = function (form) {
-			$scope.validateForm(form.$invalid);
-			$scope.validerReellarbeidssoker(true);
-		};
-
-		$scope.validerReellarbeidssoker = function (skalScrolle) {
-			$scope.runValidation(skalScrolle);
+            } else {
+                $scope.apneTab('reellarbeidssoker');
+            }
 		};
 
 		$scope.erUnder60Aar = function () {
