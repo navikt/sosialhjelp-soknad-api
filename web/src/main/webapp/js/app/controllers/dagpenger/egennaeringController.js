@@ -3,18 +3,15 @@ angular.module('nav.egennaering', [])
         $scope.navigering = {nesteside: 'verneplikt'};
         $scope.sidedata = {navn: 'egennaering'};
 
-        $scope.$on('VALIDER_EGENNAERING', function () {
-            $scope.validerEgennaering(false);
-        });
-
-        $scope.validerOgSettModusOppsummering = function (form) {
-            $scope.validateForm(form.$invalid);
-            $scope.validerEgennaering(true);
-        }
-
-        $scope.validerEgennaering = function (skalScrolle) {
+        $scope.valider = function (skalScrolle) {
             $scope.summererAndeleneTil100();
-            $scope.runValidation(skalScrolle);
+            var valid = $scope.runValidation(skalScrolle);
+            if (valid) {
+                $scope.lukkTab('egennaering');
+                $scope.settValidert('egennaering');
+            } else {
+                $scope.apneTab('egennaering');
+            }
         }
 
         $scope.orgnummer = data.finnFakta('egennaering.drivergennaering.orgnummer');

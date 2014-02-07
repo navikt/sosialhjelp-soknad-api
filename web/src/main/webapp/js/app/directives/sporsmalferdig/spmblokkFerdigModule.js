@@ -4,13 +4,11 @@ angular.module('nav.sporsmalferdig', [])
 			require    : '^form',
 			replace    : true,
 			templateUrl: '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html',
-			scope      : {
-				submitMethod: '&'
-			},
 			link: function (scope, element, attrs, form) {
-                scope.knappTekst = 'neste';
+                var tab = element.closest('.accordion-group');
 
-				var tab = element.closest('.accordion-group');
+                scope.knappTekst = 'neste';
+                scope.leggTilValideringsmetode(tab.attr('id'), scope.valider);
 
                 scope.$watch(
                     function() {
@@ -22,19 +20,20 @@ angular.module('nav.sporsmalferdig', [])
                         }
                         if (!newVal) {
                             scope.knappTekst = 'lagreEndring';
+                        } else {
+                            scope.knappTekst = 'neste';
                         }
                     }
                 );
 
 				scope.validerOgGaaTilNeste = function () {
-					scope.submitMethod();
+					scope.valider(true);
 					if (form.$valid) {
                         var bolkerFaktum = data.finnFaktum('bolker');
                         bolkerFaktum.properties[tab.attr('id')] = "true";
                         bolkerFaktum.$save();
                         form.$setPristine();
                         tab.addClass('validert');
-                        lukkTab(tab);
 
                         var nesteTab;
                         if (scope.knappTekst === 'lagreEndring') {
@@ -62,11 +61,7 @@ angular.module('nav.sporsmalferdig', [])
 				}
 
 				function apneTab(apneTab) {
-					scope.$emit('OPEN_TAB', apneTab.attr('id'));
-				}
-
-				function lukkTab(lukkTab) {
-					scope.$emit('CLOSE_TAB', lukkTab.attr('id'));
+					scope.apneTab(apneTab.attr('id'));
 				}
 
                 function setFokus(tab) {

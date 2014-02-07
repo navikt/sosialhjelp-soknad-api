@@ -85,9 +85,9 @@ angular.module('nav.barnetillegg', [])
             barn.$save();
         };
 
-		$scope.validerBarnetillegg = function (form) {
-			$scope.validateForm(form.$invalid);
-			$scope.runValidation();
+        //TODO: Trenger vi denne? Formen vil jo alltid være valid
+		$scope.valider = function (skalScrolle) {
+//			$scope.runValidation(skalScrolle);
 		};
 
 		function settBarnCookie(faktumId) {
@@ -98,7 +98,7 @@ angular.module('nav.barnetillegg', [])
 				}
 			});
 
-			$cookieStore.put('barnetillegg', {
+			$cookieStore.put('scrollTil', {
 				aapneTabs   : aapneTabIds,
 				gjeldendeTab: '#barnetillegg',
 				faktumId    : faktumId

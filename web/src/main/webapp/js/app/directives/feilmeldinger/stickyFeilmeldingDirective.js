@@ -20,32 +20,16 @@ angular.module('nav.stickyFeilmelding', [])
 				var skalDeaktivereNesteKnapp = false;
 				var feilHarBlittRettet = false;
 
-				scope.$on('VALIDER_DAGPENGER', function (eventscope, form) {
-					elem = element.next();
-					bolker = $('[data-accordion-group]');
+                scope.leggTilStickyFeilmelding = function() {
+                    elem = element.next();
+                    bolker = $('[data-accordion-group]');
 
-					scope.feil.skalViseStickyFeilmeldinger = true;
+                    scope.feil.skalViseStickyFeilmeldinger = true;
                     var elementerMedFeil = elem.find('.form-linje.feil');
                     var elementerMedFeilstyling = elem.find('.form-linje.feilstyling');
-					scope.feil.antallFeilMedKlasseFeil = elementerMedFeil.not('.ng-hide').length;
-					scope.feil.antallFeilMedKlasseFeilstyling = elementerMedFeilstyling.not('.ng-hide').length;
-
-					var idBolkerMedFeil = [];
-					var idAlleBolker = [];
-					var bolkerMedFeil = bolker.has('.form-linje.feil, .form-linje.feilstyling');
-
-					bolkerMedFeil.each(function () {
-						idBolkerMedFeil.push(this.id);
-					});
-					bolker.each(function () {
-						idAlleBolker.push(this.id);
-					});
-
-					scope.$emit('CLOSE_TAB', idAlleBolker);
-					$timeout(function () {
-						scope.$emit('OPEN_TAB', idBolkerMedFeil, 800);
-					}, 800);
-				});
+                    scope.feil.antallFeilMedKlasseFeil = elementerMedFeil.not('.ng-hide').length;
+                    scope.feil.antallFeilMedKlasseFeilstyling = elementerMedFeilstyling.not('.ng-hide').length;
+                };
 
 				scope.forrige = function () {
 					if (!(feilHarBlittRettet && scope.feil.navaerende < 1)) {
@@ -142,13 +126,7 @@ angular.module('nav.stickyFeilmelding', [])
 				}
 
 				function giFokus(element) {
-					var inputElement = $(element[scope.feil.navaerende]).find(':input');
-					if (inputElement.is('[type=hidden]')) {
-						inputElement.find('input[type=checkbox]').first().focus();
-					}
-					else {
-						inputElement.focus();
-					}
+					$(element[scope.feil.navaerende]).find(':input').not('[type=hidden]').first().focus();
 				}
 
 				function totalAntalLFeil() {
@@ -183,7 +161,7 @@ angular.module('nav.stickyFeilmelding', [])
 				}
 
 				function apneBolk(bolk) {
-					scope.$broadcast('OPEN_TAB', $(bolk[scope.feil.navaerende]).closest('.accordion-group').attr('id'));
+                    scope.apneTab($(bolk[scope.feil.navaerende]).closest('.accordion-group').attr('id'));
 				}
 			}
 		}

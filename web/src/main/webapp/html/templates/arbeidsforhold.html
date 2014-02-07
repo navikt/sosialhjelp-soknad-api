@@ -1,5 +1,5 @@
-<div class="skjemaramme" data-ng-controller="ModusCtrl" data-scroll-tilbake-directive="arbeidsforhold">
-    <div ng-form="arbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl">
+<div class="skjemaramme">
+    <div data-ng-form="arbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl">
         <div data-form-errors></div>
         <p class="arbeidsforhold-informasjonstekst" data-cmstekster="arbeidsforhold.informasjon"></p>
 
@@ -96,8 +96,7 @@
             </div>
 
             <div data-spmblokkferdig
-                 data-nokkel="arbeidsforhold"
-                 data-submit-method="validerOgSettModusOppsummering(arbeidsforholdForm)"></div>
+                 data-submit-method="validerArbeidsforhold(true)"></div>
         </div>
     </div>
 </div>
