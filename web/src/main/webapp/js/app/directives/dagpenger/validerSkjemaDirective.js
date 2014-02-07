@@ -15,7 +15,6 @@ angular.module('nav.validerskjema', [])
                                 if (gruppe.valideringsmetode) {
                                     gruppe.valideringsmetode(false);
                                 }
-//                                gruppe.validering = false;
                             });
                         }
                     });
