@@ -12,18 +12,18 @@ angular.module('nav.scroll.directive', [])
 
                         $timeout(function() {
                             var faktumId = cookie.faktumId;
-                            var blokkelement = angular.element('#'+cookie.aapneTabs);
+                            var blokkelement = angular.element(cookie.gjeldendeTab);
 
                             // TODO Burde være etter scrolling siden denne får browseren til å scrolle selv
                             var fokusElement = $(blokkelement).find('.knapp-leggtil-liten').first().focus();
-                            var scrollElement;
-                            if (faktumId) {
-                                scrollElement = $(blokkelement).find('#' + cookie.aapneTabs + faktumId);
-                            } else {
-                                scrollElement = fokusElement;
-                            }
 
                             $timeout(function () {
+                                var scrollElement;
+                                if (faktumId) {
+                                    scrollElement = $(blokkelement).find(cookie.gjeldendeTab + faktumId);
+                                } else {
+                                    scrollElement = fokusElement;
+                                }
                                 scrollToElement(scrollElement, 200);
                                 fokusElement.focus();
                                 fadeBakgrunnsfarge(scrollElement.parent(), $scope, 255, 255, 255);
