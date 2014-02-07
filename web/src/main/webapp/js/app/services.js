@@ -24,7 +24,9 @@ angular.module('app.services', ['ngResource'])
         return {
             'response': function(response) {
                 if (response.config.method === 'POST') {
-                    data.soknad.sistLagret = new Date().getTime();
+                    if (data.soknad) {
+                        data.soknad.sistLagret = new Date().getTime();
+                    }
                     var urlArray = response.config.url.split('/');
                     if (urlArray.contains('fakta')) {
                         data.soknad.delstegStatus = 'UTFYLLING';
