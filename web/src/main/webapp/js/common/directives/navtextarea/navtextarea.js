@@ -25,20 +25,23 @@ angular.module('nav.textarea', [])
 					scope.feil = false;
 					var harFokus = false;
 
-					scope.hvisSynlig = function () {
+                    scope.hvisSynlig = function () {
 						return element.is(':visible');
 					};
 
 					element.find('textarea').bind('focus', function () {
-						harFokus = true;
-					});
+                        harFokus = true;
+                        scope.$apply();
+
+                    });
 
 					element.find('textarea').bind('blur', function () {
-						harFokus = false;
+                        harFokus = false;
+                        scope.$apply();
 					});
 
 					scope.harFokusOgFeil = function () {
-						return scope.feil || harFokus;
+						return harFokus || scope.feil;
 					};
 				}},
 			templateUrl: linker
