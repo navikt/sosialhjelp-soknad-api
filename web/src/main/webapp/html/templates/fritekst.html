@@ -1,14 +1,17 @@
 <div class="skjemaramme">
-    <div data-ng-form="fritekstForm" class="skjemainnhold" data-novalidate>
+    <div data-ng-form="fritekstForm" class="skjemainnhold vertikal" data-novalidate>
+        <div data-form-errors></div>
         <div data-ng-form="frivilligForm" class="textarea-form" data-novalidate>
             <div id="frivillig-textarea">
-                <div data-form-errors></div>
                 <div data-navtextarea
+                     data-ng-model="faktum.value"
                      data-navconfig
                      data-nav-faktum="fritekst"
                      data-nokkel="fritekst"
                      data-maxlengde="500"
-                     data-navfeilmelding="fritekst.feilmelding"></div>
+                     maxlength="500"
+                     data-navfeilmelding="'fritekst.feilmelding'">
+                  </div>
             </div>
         </div>
     </div>
