@@ -1,25 +1,55 @@
 angular.module('nav.sporsmalferdig', [])
-	.directive('spmblokkferdig', ['$timeout', function ($timeout) {
+	.directive('spmblokkferdig', ['$timeout', 'data', function ($timeout, data) {
 		return {
 			require    : '^form',
 			replace    : true,
 			templateUrl: '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html',
 			scope      : {
-				nokkel      : '@',
 				submitMethod: '&'
 			},
-			link       : function (scope, element, attrs, form) {
+			link: function (scope, element, attrs, form) {
+                scope.knappTekst = 'neste';
+
 				var tab = element.closest('.accordion-group');
-				var nesteTab = tab.next();
+
+                scope.$watch(
+                    function() {
+                        return tab.hasClass('validert');
+                    },
+                    function(newVal, oldVal) {
+                        if (newVal === oldVal) {
+                            return;
+                        }
+                        if (!newVal) {
+                            scope.knappTekst = 'lagreEndring';
+                        }
+                    }
+                );
 
 				scope.validerOgGaaTilNeste = function () {
 					scope.submitMethod();
-
 					if (form.$valid) {
-						gaaTilTab(tab);
-						lukkTab(tab);
-						apneTab(tab.next());
+                        var bolkerFaktum = data.finnFaktum('bolker');
+                        bolkerFaktum.properties[tab.attr('id')] = "true";
+                        bolkerFaktum.$save();
+                        form.$setPristine();
+                        tab.addClass('validert');
+                        lukkTab(tab);
 
+                        var nesteTab;
+                        if (scope.knappTekst === 'lagreEndring') {
+                            nesteTab = tab.nextAll().not('.validert').first();
+                        } else {
+                            nesteTab = tab.next();
+                        }
+
+                        if (nesteTab.length > 0) {
+                            gaaTilTab(nesteTab);
+                            apneTab(nesteTab);
+                            setFokus(nesteTab);
+                        } else {
+                            gaaTilTab(angular.element('.accordion-group').last());
+                        }
 					}
 				};
 
@@ -38,6 +68,10 @@ angular.module('nav.sporsmalferdig', [])
 				function lukkTab(lukkTab) {
 					scope.$emit('CLOSE_TAB', lukkTab.attr('id'));
 				}
+
+                function setFokus(tab) {
+                    tab.closest('.accordion-group').find('a').focus();
+                }
 			}
 		}
 	}]);

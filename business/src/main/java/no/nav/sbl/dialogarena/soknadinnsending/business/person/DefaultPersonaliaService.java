@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosBorgerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.WebServiceException;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +38,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_GYLDIGTIL_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.SEKUNDARADRESSE_TYPE_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.STATSBORGERSKAPTYPE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.STATSBORGERSKAP_KEY;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -59,8 +60,12 @@ public class DefaultPersonaliaService implements PersonaliaService {
     @Inject
     private SendSoknadService soknadService;
 
+    @Inject
+    private EosBorgerService eosBorgerService;
+    
+    //TODO: Må fikses, ikke returnere tom personalia når manglende svar fra TPS.
     @Override
-    public Personalia hentPersonalia(String fodselsnummer) {
+    public Personalia hentPersonalia(String fodselsnummer)  {
 //    public Personalia hentPersonalia(String fodselsnummer) throws IkkeFunnetException, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, WebServiceException {
         XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse;
         HentKjerneinformasjonResponse kjerneinformasjonResponse;
@@ -68,21 +73,14 @@ public class DefaultPersonaliaService implements PersonaliaService {
         try {
             kjerneinformasjonResponse = personConnector.hentKjerneinformasjon(lagXMLRequestKjerneinformasjon(fodselsnummer));
             preferanserResponse = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequestPreferanser(fodselsnummer));
-        } catch (IkkeFunnetException e) {
-            logger.warn("Ikke funnet person i TPS");
-            //throw e;
-            return new Personalia();
-        } catch (HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
-            logger.error("Fant ikke bruker i TPS.", e);
-            //throw e;
+        } catch (IkkeFunnetException | HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
+            logger.warn("Ikke funnet person i TPS", e);
             return new Personalia();
         } catch (HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
             logger.error("Kunne ikke hente bruker fra TPS.", e);
-            //throw e;
             return new Personalia();
         } catch (WebServiceException e) {
             logger.error("Ingen kontakt med TPS.", e);
-            //throw e;
             return new Personalia();
         }
         return PersonaliaTransform.mapTilPersonalia(preferanserResponse, kjerneinformasjonResponse, kodeverk);
@@ -94,8 +92,11 @@ public class DefaultPersonaliaService implements PersonaliaService {
         HentKjerneinformasjonResponse kjerneinformasjonResponse;
 
         try {
+            logger.warn("Kaller kjerneinformasjon " + fodselsnummer);
             kjerneinformasjonResponse = personConnector.hentKjerneinformasjon(lagXMLRequestKjerneinformasjon(fodselsnummer));
+            logger.warn("Kaller preferanser " + fodselsnummer);
             preferanserResponse = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequestPreferanser(fodselsnummer));
+            logger.warn("Kalt TPS-tjenestene");
         } catch (IkkeFunnetException e) {
             logger.warn("Ikke funnet person i TPS");
             return new Personalia();
@@ -110,6 +111,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
             return new Personalia();
         }
 
+        logger.warn("TPS-tjenester kalt");
         Personalia personalia = PersonaliaTransform.mapTilPersonalia(preferanserResponse, kjerneinformasjonResponse, kodeverk);
         List<Barn> barn = FamilierelasjonTransform.mapFamilierelasjon(kjerneinformasjonResponse);
 
@@ -125,7 +127,11 @@ public class DefaultPersonaliaService implements PersonaliaService {
         personaliaProperties.put(ALDER_KEY, personalia.getAlder());
         personaliaProperties.put(NAVN_KEY, personalia.getNavn());
         personaliaProperties.put(EPOST_KEY, personalia.getEpost());
-        personaliaProperties.put(STATSBORGERSKAP_KEY, personalia.getStatsborgerskap());
+        
+        String statsborgerskap = personalia.getStatsborgerskap();
+        personaliaProperties.put(STATSBORGERSKAP_KEY, statsborgerskap);
+        personaliaProperties.put(STATSBORGERSKAPTYPE_KEY, eosBorgerService.getStatsborgeskapType(statsborgerskap));
+        
         personaliaProperties.put(KJONN_KEY, personalia.getKjonn());
         personaliaProperties.put(GJELDENDEADRESSE_KEY, personalia.getGjeldendeAdresse().getAdresse());
         personaliaProperties.put(GJELDENDEADRESSE_TYPE_KEY, personalia.getGjeldendeAdresse().getAdressetype());

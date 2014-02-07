@@ -1,9 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 
-import java.io.OutputStream;
 import java.util.List;
 
 public interface SendSoknadService {
@@ -16,11 +16,7 @@ public interface SendSoknadService {
 
     Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum);
     
-    Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value);
-    
     Long lagreSystemFaktum(Long soknadId, Faktum faktum, String uniqueProperty);
-
-    Faktum lagreBarnSystemSoknadsFelt(Long soknadId, String string, String fnr, String json);
 
     void sendSoknad(long soknadId, byte[] outputStream);
 
@@ -36,5 +32,6 @@ public interface SendSoknadService {
 
     WebSoknad hentSoknadMetaData(long soknadId);
 
-    
+
+    void settDelsteg(Long soknadId, DelstegStatus delstegStatus);
 }

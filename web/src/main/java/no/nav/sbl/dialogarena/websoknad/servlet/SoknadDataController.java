@@ -9,6 +9,7 @@ import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.print.HandleBarKjoerer;
 import no.nav.sbl.dialogarena.print.PDFFabrikk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventning;
@@ -89,7 +90,25 @@ public class SoknadDataController {
         }
     }
 
+    @RequestMapping(value = "/delsteg/{soknadId}/{delsteg}", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public void settDelstegStatus(@PathVariable Long soknadId, @PathVariable String delsteg) {
+        DelstegStatus delstegstatus;
+        String s = delsteg.toLowerCase();
+        if (s.equals("utfylling")) {
+            delstegstatus = DelstegStatus.UTFYLLING;
 
+        } else if (s.equals("vedlegg")) {
+            delstegstatus = DelstegStatus.SKJEMA_VALIDERT;
+
+        } else if (s.equals("oppsummering")) {
+            delstegstatus = DelstegStatus.VEDLEGG_VALIDERT;
+        } else {
+            throw new ApplicationException("Ugyldig delsteg sendt inn til REST-controller.");
+        }
+        soknadService.settDelsteg(soknadId, delstegstatus);
+    }
 
     @RequestMapping(value = "{soknadId}/{faktumId}/forventning", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()

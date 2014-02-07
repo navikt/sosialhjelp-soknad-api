@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBuilder;
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -21,21 +22,26 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.PERSONALIA_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.DATO_TIL;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.TYPE;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class WebSoknadUtils {
     public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
     public static final String DAGPENGER = "NAV 04-01.03";
     public static final String EOS_DAGPENGER = "4304";
     public static final String RUTES_I_BRUT = "0000";
-
+    private static final Logger logger = getLogger(WebSoknadUtils.class);
     private static boolean erPermittertellerHarRedusertArbeidstid(WebSoknad soknad)
     {
-        Faktum sluttaarsak = soknad.getFakta().get("sluttaarsak");
+
+        Faktum sluttaarsak = soknad.getFakta().get("arbeidsforhold.type");
+        logger.warn("RUTINGTEST: sluttaarsak" + sluttaarsak);
         boolean erPermittert = false;
         if (sluttaarsak != null) {
             List<Faktum> sortertEtterDatoTil = on(sluttaarsak.getValuelist()).collect(reverseOrder(compareWith(DATO_TIL)));
             LocalDate nyesteDato = on(sortertEtterDatoTil).map(DATO_TIL).head().getOrElse(null);
             List<Faktum> nyesteSluttaarsaker = on(sortertEtterDatoTil).filter(where(DATO_TIL, equalTo(nyesteDato))).collect();
+            logger.warn("RUTINGTEST: nyesteSluttaarsaker" + nyesteSluttaarsaker.size());
+            logger.warn("RUTINGTEST: nyesteSluttaarsaker" + nyesteSluttaarsaker.get(0).getType());
             erPermittert = on(nyesteSluttaarsaker).filter(where(TYPE, equalTo("Permittert"))).head().isSome() || on(nyesteSluttaarsaker).filter(where(TYPE, equalTo("Redusert arbeidstid"))).head().isSome();
         }
         return erPermittert;
@@ -49,14 +55,18 @@ public class WebSoknadUtils {
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
         if (!erPermittertellerHarRedusertArbeidstid(webSoknad))
         {
+            logger.warn("RUTINGTEST: Er ikke permittert eller har redusert arbeidstid");
             return RUTES_I_BRUT;
         }
         if (webSoknad.getFakta().get(FNR_KEY) != null)
         {
             Personalia personalia = getPerson(webSoknad);
-            return (personalia.harUtenlandskFolkeregistrertAdresse() && (!personalia.harNorskMidlertidigAdresse())) ? EOS_DAGPENGER : RUTES_I_BRUT;
+            logger.warn("RUTINGTEST har utenlandsadresse" + personalia.harUtenlandskFolkeregistrertAdresse());
+            logger.warn("RUTINGTEST har midlertidig norsk adresse" + personalia.harNorskMidlertidigAdresse());
+            return (personalia.harUtenlandskFolkeregistrertAdresse() && (!personalia.harNorskMidlertidigAdresse())) ?  EOS_DAGPENGER : RUTES_I_BRUT;
         } else
         {
+            logger.warn("RUTINGTEST: Bor ikke i utlandet");
             return RUTES_I_BRUT;
         }
     }

@@ -1,10 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.POSTADRESSE_UTLAND;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.POSTADRESSE;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.POSTADRESSE_UTLAND;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
 
 public class Personalia {
 
@@ -13,6 +13,7 @@ public class Personalia {
     public static final String ALDER_KEY = "alder";
     public static final String EPOST_KEY = "epost";
     public static final String STATSBORGERSKAP_KEY = "statsborgerskap";
+    public static final String STATSBORGERSKAPTYPE_KEY = "statsborgerskapType";
     public static final String NAVN_KEY = "navn";
     public static final String KJONN_KEY = "kjonn";
     public static final String GJELDENDEADRESSE_KEY = "gjeldendeAdresse";
@@ -131,10 +132,7 @@ public class Personalia {
         return false;
     }
 
-
-    @SuppressWarnings("unchecked")
     public boolean harUtenlandskFolkeregistrertAdresse() {
-
         if ((gjeldendeAdresse == null) || (gjeldendeAdresse.getAdressetype() == null))
         {
             return false;

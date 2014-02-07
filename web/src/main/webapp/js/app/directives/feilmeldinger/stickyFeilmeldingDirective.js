@@ -25,8 +25,10 @@ angular.module('nav.stickyFeilmelding', [])
 					bolker = $('[data-accordion-group]');
 
 					scope.feil.skalViseStickyFeilmeldinger = true;
-					scope.feil.antallFeilMedKlasseFeil = elem.find('.form-linje.feil').length;
-					scope.feil.antallFeilMedKlasseFeilstyling = elem.find('.form-linje.feilstyling').length;
+                    var elementerMedFeil = elem.find('.form-linje.feil');
+                    var elementerMedFeilstyling = elem.find('.form-linje.feilstyling');
+					scope.feil.antallFeilMedKlasseFeil = elementerMedFeil.not('.ng-hide').length;
+					scope.feil.antallFeilMedKlasseFeilstyling = elementerMedFeilstyling.not('.ng-hide').length;
 
 					var idBolkerMedFeil = [];
 					var idAlleBolker = [];
@@ -39,9 +41,9 @@ angular.module('nav.stickyFeilmelding', [])
 						idAlleBolker.push(this.id);
 					});
 
-					scope.$broadcast('CLOSE_TAB', idAlleBolker);
+					scope.$emit('CLOSE_TAB', idAlleBolker);
 					$timeout(function () {
-						scope.$broadcast('OPEN_TAB', idBolkerMedFeil, 800);
+						scope.$emit('OPEN_TAB', idBolkerMedFeil, 800);
 					}, 800);
 				});
 
@@ -125,7 +127,8 @@ angular.module('nav.stickyFeilmelding', [])
 
 				function leggTilMarkeringAvFeilmelding(verdi) {
 					bolker = $('[data-accordion-group]');
-					var bolk = bolker.find('.form-linje.feil, .form-linje.feilstyling');
+                    var bolkMedFeil = bolker.find('.form-linje.feil, .form-linje.feilstyling');
+					var bolk = bolkMedFeil.not('.ng-hide');
 					$(bolk[scope.feil.navaerende]).removeClass('aktiv-feilmelding');
 					scope.feil.navaerende = scope.feil.navaerende + verdi;
 					$(bolk[scope.feil.navaerende]).addClass('aktiv-feilmelding');
@@ -153,15 +156,18 @@ angular.module('nav.stickyFeilmelding', [])
 				}
 
 				function feilMedKlasseFeilHarBlittRettet() {
-					return elem.find('.form-linje.feil').length < scope.feil.antallFeilMedKlasseFeil;
+                    var elementMedFeil = elem.find('.form-linje.feil');
+					return elementMedFeil.not('.ng-hide').length < scope.feil.antallFeilMedKlasseFeil;
 				}
 
 				function feilMedKlasseFeilstylingHarBlittRettet() {
-					return elem.find('.form-linje.feilstyling').length < scope.feil.antallFeilMedKlasseFeilstyling;
+                    var elementMedFeil = elem.find('.form-linje.feilstyling');
+                    return elementMedFeil.not('.ng-hide').length < scope.feil.antallFeilMedKlasseFeilstyling;
 				}
 
 				function antallFeilMedKlasse(klasse) {
-					return elem.find('.form-linje' + klasse).length;
+                    var elementMedFeil = elem.find('.form-linje' + klasse);
+					return elementMedFeil.not('.ng-hide').length;
 				}
 
 				function harKommetTilEndenAvFeilmeldinger() {

@@ -17,7 +17,7 @@ angular.module('nav.avbryt', [])
             var start = $.now();
             $scope.fremdriftsindikator.laster = true;
 
-            soknadService.remove({param: data.soknad.soknadId},
+            soknadService.remove({soknadId: data.soknad.soknadId},
                 function () { // Success
                     var delay = 1500 - ($.now() - start);
                     setTimeout(function () {

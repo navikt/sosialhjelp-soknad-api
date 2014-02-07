@@ -3,11 +3,8 @@ angular.module('nav.dagpengerdirective', [])
 		return {
 			require: '^form',
 			link   : function (scope, element, attrs, ctrl) {
-				var bolkerIRiktigRekkefolge = ['reellarbeidssokerForm', 'arbeidsforholdForm', 'egennaeringForm', 'vernepliktForm', 'utdanningForm', 'ytelserForm', 'personaliaForm', 'barnetilleggForm'];
-				var bolkIdMedFeil = '';
-
+				var bolkerIRiktigRekkefolge = ['reellarbeidssokerForm', 'arbeidsforholdForm', 'egennaeringForm', 'vernepliktForm', 'utdanningForm', 'ytelserForm', 'personaliaForm', 'barnetilleggForm', 'fritekstForm'];
 				$timeout(function () {
-					lukkAlleTaber();
 					if (ctrl.$invalid) {
 						var formMedFeil = '';
 						var index = bolkerIRiktigRekkefolge.length;
@@ -38,11 +35,6 @@ angular.module('nav.dagpengerdirective', [])
 
 				function hentIdFraForm(formNavn) {
 					return formNavn.split('Form')[0];
-				}
-
-				function lukkAlleTaber() {
-					var bolker = $('[data-accordion-group]');
-					scope.$broadcast('CLOSE_TAB', bolker);
 				}
 			}
 		}

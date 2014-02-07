@@ -77,7 +77,10 @@ angular.module('nav.feilmeldinger', [])
                         if (feilmelding.elem.is('[type=hidden]')) {
                             if (feilmelding.elem.hasClass('tekstfelt')) {
                                 scope.giFokus(formLinje.find('input[type=text]').filter(':visible').first());
-                            } else {
+                            } else if(feilmelding.elem.hasClass('under-atten-dato')) {
+                                scope.giFokus(formLinje.find('input[type=text]').first());
+                            }
+                            else {
                                 scope.giFokus(formLinje.find('input[type=checkbox]').first());
                             }
                         } else {
@@ -91,17 +94,20 @@ angular.module('nav.feilmeldinger', [])
                  enn 1 for at checkbokser som bruker hidden-felt og ikke har klassen ng-invalid får riktig fokus
                  */
                 scope.giFokus = function (element) {
-                    if (typeof element === 'object' && element.length > 1) {
-                        for (var i = 0; i < element.length; i++) {
-                            if ($(element[i]).hasClass('ng-invalid')) {
-                                element[i].focus();
-                                return;
+                    $timeout(function() {
+                        if (typeof element === 'object' && element.length > 1) {
+                            for (var i = 0; i < element.length; i++) {
+                                if ($(element[i]).hasClass('ng-invalid')) {
+                                    element[i].focus();
+                                    return;
+                                }
                             }
                         }
-                    }
-                    else {
-                        element.focus();
-                    }
+                        else {
+                            element.focus();
+                        }
+                    });
+
                 }
 
                 scope.erKlikkbarFeil = function (feilmelding) {
@@ -150,6 +156,7 @@ angular.module('nav.feilmeldinger', [])
                     var feilmeldingNokkel = finnFeilmeldingsNokkel(feil, feilNokkel);
                     var feilmelding = cms.tekster[feilmeldingNokkel];
                     if (feilmelding === undefined) {
+                        feilmelding = feilmeldingNokkel;
                         return {feil: 'Fant ikke feilmelding med key ' + feilmeldingNokkel, elem: finnTilhorendeElement(feil)};
                     }
                     return {feil: feilmelding, elem: finnTilhorendeElement(feil)};
@@ -179,8 +186,7 @@ angular.module('nav.feilmeldinger', [])
         };
     }
     ])
-    .
-    filter('fiksRekkefolge', [function () {
+    .filter('fiksRekkefolge', [function () {
         return function (feilmeldinger) {
             var sortertFeilmeldingerArray = [];
 

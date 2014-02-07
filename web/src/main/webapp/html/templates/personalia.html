@@ -1,4 +1,4 @@
-<div class="skjemaramme" data-ng-controller="ModusCtrl" xmlns="http://www.w3.org/1999/html">
+<div class="skjemaramme" data-ng-controller="ModusCtrl">
     <div data-ng-form="personaliaForm" class="skjemainnhold" data-ng-controller="PersonaliaCtrl" data-novalidate>
         <div class="informasjon">
             <span class="informasjonstekst" data-cmstekster="personalia.intro"></span>
@@ -34,7 +34,7 @@
                     </div>
                 </div>
             </div>
-              <div data-spmblokkferdig data-nokkel="personalia" data-submit-method="validerPersonalia(personaliaForm)"></div>
+              <div data-spmblokkferdig data-valider-nar-apen="true" data-submit-method="validerPersonalia(personaliaForm)"></div>
         </div>
 
     </div>
