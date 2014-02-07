@@ -80,6 +80,17 @@
                                     </div>
                                 </div>
                                 
+                                <div data-ng-show="erEosLandAnnetEnnNorge()">
+                                    <div data-navinfoboks>
+                                        <p class="sluttaarsak-informasjon" cmstekster="barnetillegg.nyttbarn.land.eos"></p>
+                                    </div>
+                                </div>
+                                <div data-ng-show="erIkkeEosLand()">
+                                    <div data-navinfoboks>
+                                        <p class="sluttaarsak-informasjon" cmstekster="barnetillegg.nyttbarn.land.ikkeeos"></p>
+                                    </div>
+                                </div>
+
                                 <div data-ng-show="barn.properties.land == 'NOR'">
                                     <div class="ekstra-spm-boks" data-vedlegginfoboks>
                                         <ul>
@@ -157,7 +168,7 @@
                                         <div class="ekstra-spm-boks" data-vedlegginfoboks>
                                             <ul>
                                                 <li>
-                                                    {{ 'barnetillegg.nyttbarn.land.norge.vedlegginformasjon' | cmstekst}}
+                                                    {{ 'barnetillegg.barnetilegg.ikkebarneinntekt.false.vedlegginformasjon' | cmstekst}}
                                                 </li>
                                             </ul>
                                         </div>
