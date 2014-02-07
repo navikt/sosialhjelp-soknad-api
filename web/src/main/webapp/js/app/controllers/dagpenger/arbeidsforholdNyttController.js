@@ -53,6 +53,19 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 		$scope.arbeidsforhold = new Faktum(arbeidsforholdData);
 		$scope.sluttaarsak = $scope.arbeidsforhold;
 
+		$scope.$watch(function () {
+            if ($scope.arbeidsforhold.properties.land) {
+                return $scope.arbeidsforhold.properties.land;
+            }
+        }, function () {
+          	$resource('/sendsoknad/rest/ereosland/:landkode').get(
+				{landkode: $scope.arbeidsforhold.properties.land},
+	            function (eosdata) { // Success
+	                $scope.arbeidsforhold.properties.eosland = eosdata.result;
+	        });
+        });
+
+
 		$scope.lagreArbeidsforhold = function (form) {
 			var eventString = 'RUN_VALIDATION' + form.$name;
 			$scope.$broadcast(eventString);
@@ -64,18 +77,12 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 		};
 
 		function lagreArbeidsforholdOgSluttaarsak() {
-			$resource('/sendsoknad/rest/landtype/:landkode').get(
-				{landkode: $scope.arbeidsforhold.properties.land},
-	            function (eosdata) { // Success
-	                $scope.arbeidsforhold.properties.eosland = eosdata.result;
-	                $scope.arbeidsforhold.$save({soknadId: data.soknad.soknadId}).then(function (arbeidsforholdData) {
-						$scope.arbeidsforhold = arbeidsforholdData;
-						oppdaterFaktumListe('arbeidsforhold');
-						oppdaterCookieValue(arbeidsforholdData.faktumId);
-		                $location.path('soknad/');
-					});
-	            }
-        	);
+            $scope.arbeidsforhold.$save({soknadId: data.soknad.soknadId}).then(function (arbeidsforholdData) {
+				$scope.arbeidsforhold = arbeidsforholdData;
+				oppdaterFaktumListe('arbeidsforhold');
+				oppdaterCookieValue(arbeidsforholdData.faktumId);
+                $location.path('soknad/');
+			});
 		}
 
 		function oppdaterCookieValue(faktumId) {

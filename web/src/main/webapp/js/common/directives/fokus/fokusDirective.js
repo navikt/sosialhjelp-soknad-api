@@ -9,7 +9,7 @@ angular.module('nav.fokus', [])
             link: function (scope, elm) {
                 elm.bind("click", function () {
                     settFokusTilNesteElement(elm);
-                })
+                });
             }
         };
     }])
@@ -22,7 +22,25 @@ angular.module('nav.fokus', [])
                 var id = attrs.fokusSlettmoduler;
                 elm.bind("click", function () {
                     angular.element("#" + id + " .knapp-leggtil-liten").focus();
-                })
+                });
+            }
+        };
+    }])
+    .directive('fokusSlettAnnet', [function () {
+        return {
+            link: function (scope, elm, attrs) {
+                elm.bind("click", function () {
+                    angular.element(".knapp-stor").focus();
+                });
+            }
+        };
+    }])
+    .directive('leggtilOrgnr', [function () {
+        return {
+            link: function (scope, elm, attrs) {
+                elm.bind("click", function () {
+                    elm.prev().find('.orgnummer-repeat input').focus();
+                });
             }
         };
     }])
@@ -33,10 +51,19 @@ angular.module('nav.fokus', [])
         return {
             link: function (scope, elm) {
                 elm.bind("keyup keypress", function (event) {
-                    if (event.which === 9) {
-                        var stickyElement = elm.next().find('.sticky-bunn');
-                        var stickyPosisjon = stickyElement[0].getBoundingClientRect();
+                    if (elm.hasClass('dagpenger')) {
+                        var stickyElementBunn = elm.next().find('.sticky-bunn');
+                        var stickyElementTopp = elm.find('.sticky-feilmelding');
+                        var stickyPosisjonTopp = stickyElementTopp[0].getBoundingClientRect();
 
+                    }
+                    else {
+                        var stickyElementBunn = elm.find('.sticky-bunn');
+                        var stickyPosisjonTopp = {top: 0, bottom: 60};
+                    }
+
+                    if (event.which === 9) {
+                        var stickyPosisjonBunn = stickyElementBunn[0].getBoundingClientRect();
                         var elementMedFokus = document.activeElement;
                         var posisjon = "";
 
@@ -46,11 +73,25 @@ angular.module('nav.fokus', [])
                             posisjon = elementMedFokus.getBoundingClientRect();
                         }
 
-                        if (posisjon.top + 10 >= stickyPosisjon.top) {
-                            scrollToElement(stickyElement, stickyPosisjon.top / 2);
+                        if (posisjon.top + 10 >= stickyPosisjonBunn.top) {
+                            scrollToElement($(elementMedFokus), $(window).height() / 2);
                         }
                     }
-                })
+                    if (event.which === 9 && event.shiftKey) {
+                        var elementMedFokus = document.activeElement;
+                        var posisjon = "";
+
+                        if ($(elementMedFokus).is("[type=radio]") || $(elementMedFokus).is("[type=checkbox]")) {
+                            posisjon = $(elementMedFokus).closest('div')[0].getBoundingClientRect();
+                        } else {
+                            posisjon = elementMedFokus.getBoundingClientRect();
+                        }
+
+                        if (posisjon.bottom - 20 <= stickyPosisjonTopp.bottom) {
+                            scrollToElement($(elementMedFokus), $(window).height() / 2);
+                        }
+                    }
+                });
             }
         };
     }]);

@@ -1,6 +1,6 @@
 angular.module('nav.barn', ['app.services'])
 
-    .controller('BarneCtrl', ['$scope', 'Faktum', 'data', '$cookieStore', '$location', function ($scope, Faktum, data, $cookieStore, $location) {
+    .controller('BarneCtrl', ['$scope', 'Faktum', 'data', '$cookieStore', '$location', '$resource', function ($scope, Faktum, data, $cookieStore, $location, $resource) {
         var soknadId = data.soknad.soknadId;
         var url = $location.$$url;
         var endreModus = url.indexOf('endrebarn') !== -1;
@@ -104,6 +104,13 @@ angular.module('nav.barn', ['app.services'])
             return !$scope.endrerSystemregistrertBarn();
         };
 
+        $scope.erEosLandAnnetEnnNorge = function() {
+            return $scope.eosLandType == "eos";
+        }
+
+        $scope.erIkkeEosLand = function() {
+            return $scope.eosLandType == "ikkeEos";   
+        }
 
         function oppdaterCookieValue(faktumId) {
             var barneCookie = $cookieStore.get('scrollTil');
@@ -167,6 +174,18 @@ angular.module('nav.barn', ['app.services'])
             } else {
                 $scope.skalViseFeilmelding = false;
             }
+        });
+
+        $scope.$watch(function () {
+            if ($scope.barn.properties.land) {
+                return $scope.barn.properties.land;
+            }
+        }, function () {
+            $resource('/sendsoknad/rest/landtype/:landkode').get(
+                {landkode: $scope.barn.properties.land},
+                function (eosdata) { // Success
+                    $scope.eosLandType = eosdata.result;
+            });
         });
 
 

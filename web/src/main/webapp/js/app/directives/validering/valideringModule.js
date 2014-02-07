@@ -23,7 +23,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
 				valideringsMetoder.push(new LengthValidator(attrs));
 
 				scope.$on(eventString, function () {
-					if (!sjekkOmInputErGyldig()) {
+					if (!sjekkOmInputErGyldig() && !element.hasClass(".ng-valid")) {
                         formElem.addClass('feil');
 					}
 				});
