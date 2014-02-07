@@ -1,5 +1,5 @@
 angular.module('nav.validerskjema', [])
-    .directive('validerSkjema', ['validertKlasse', '$timeout', '$location', 'soknadService', function (validertKlasse, $timeout, $location, soknadService) {
+    .directive('validerSkjema', ['validertKlasse', '$timeout', '$location', 'soknadService', 'data', function (validertKlasse, $timeout, $location, soknadService, data) {
         return {
             require: '^form',
             link: function (scope, element, attrs, form) {
