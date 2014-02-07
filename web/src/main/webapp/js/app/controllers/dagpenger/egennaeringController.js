@@ -20,13 +20,16 @@ angular.module('nav.egennaering', [])
         $scope.orgnummer = data.finnFakta('egennaering.drivergennaering.orgnummer');
 
         $scope.leggTilOrgnr = function () {
-            $scope.orgnummer.push(new Faktum(
+            var faktum = new Faktum(
                 {
                     key: 'egennaering.drivergennaering.orgnummer',
                     value: '',
                     soknadId: data.soknad.soknadId
-                }));
+                });
+            $scope.orgnummer.push(faktum);
+            data.fakta.push(faktum);
         }
+
         //Orgnrfeltet genreres så lenge det ikke finnes et fra før ved f.eks refresh
         if ($scope.orgnummer && $scope.orgnummer.length == 0) {
             $scope.leggTilOrgnr();

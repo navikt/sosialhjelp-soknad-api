@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import org.joda.time.DateTimeUtils;
 import org.joda.time.LocalDate;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -80,19 +79,6 @@ public class WebSoknadUtilsTest {
         assertEquals("0000", getJournalforendeEnhet(soknad));
     }
 
-    @Ignore
-    @Test
-    //TODO sett opp person i test ordentlig
-    public void harSkjemanummer0000DerMinstEnErPermitteringOgBrukerBorIUtlandet() {
-        DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-        WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert("2014-1-1"), lagAvskjediget("2014-1-1"));
-        Personalia personalia = WebSoknadUtils.getPerson(soknad);
-        personalia.setGjeldendeAdresse(lagUtenlandskAdresse());
-        personalia.setSekundarAdresse(lagSekundarAdresseUtland());
-        assertEquals("4304", getJournalforendeEnhet(soknad));
-    }
-
-
     @Test
     public void harSkjemanummerDagpengerVedPermitteringHvisDetIkkeErSattDatoTilForPermittering() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
@@ -107,7 +93,7 @@ public class WebSoknadUtilsTest {
         Faktum person = new Faktum();
         Faktum fnr = new Faktum();
         sluttaarsak.setValuelist(asList(sluttaarsaker));
-        fakta.put("sluttaarsak", sluttaarsak);
+        fakta.put("arbeidsforhold.type", sluttaarsak);
         fakta.put(PERSONALIA_KEY, person);
         fakta.put(FNR_KEY, fnr);
         soknad.leggTilFakta(fakta);

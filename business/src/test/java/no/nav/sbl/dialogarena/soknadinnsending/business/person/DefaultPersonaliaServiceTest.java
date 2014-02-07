@@ -1,9 +1,19 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosBorgerService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
@@ -37,6 +47,7 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
+
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,22 +56,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import javax.xml.ws.WebServiceException;
-
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class DefaultPersonaliaServiceTest {
@@ -123,6 +121,9 @@ public class DefaultPersonaliaServiceTest {
     private BrukerprofilPortType brukerProfilMock;
 
     @Mock
+    private EosBorgerService eosBorgerService;
+    
+    @Mock
     private Kodeverk kodeverkMock;
 
     //TODO Refaktorer tester og legg til de resterende testene fra PersonServiceTest
@@ -134,6 +135,8 @@ public class DefaultPersonaliaServiceTest {
         when(kodeverkMock.getPoststed(EN_ADRESSE_POSTNUMMER)).thenReturn(EN_ADRESSE_POSTSTED);
         when(kodeverkMock.getPoststed(EN_ANNEN_ADRESSE_POSTNUMMER)).thenReturn(EN_ADRESSE_POSTSTED);
         when(kodeverkMock.getLand(NORGE_KODE)).thenReturn(NORGE);
+        
+        when(eosBorgerService.getStatsborgeskapType(NORGE_KODE)).thenReturn("Norsk");
 
         HentKjerneinformasjonResponse response = new HentKjerneinformasjonResponse();
         Person person = genererPersonMedGyldigIdentOgNavn(RIKTIG_IDENT, ET_FORNAVN, ET_ETTERNAVN);
@@ -168,13 +171,7 @@ public class DefaultPersonaliaServiceTest {
         when(personMock.hentKjerneinformasjon(request)).thenThrow(HentKjerneinformasjonPersonIkkeFunnet.class);
         Personalia personalia;
         personalia = personaliaService.hentPersonalia(FEIL_IDENT);
-//        try {
-//            personalia = personaliaService.hentPersonalia(FEIL_IDENT);
-//        } catch (IkkeFunnetException | WebServiceException
-//                | HentKontaktinformasjonOgPreferanserPersonIkkeFunnet
-//                | HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
-//            personalia = null;
-//        }
+     
         assertThat(personalia, is(not(nullValue())));
     }
 

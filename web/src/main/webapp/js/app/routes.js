@@ -135,6 +135,14 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
+            .when('/fritekst', {
+                templateUrl: '../html/templates/fritekst.html',
+                resolve: {
+                    notUsedButRequiredProperty: function (HentSoknadService) {
+                        return HentSoknadService;
+                    }
+                }
+            })
 			.when('/arbeidsforhold', {
 				templateUrl: '../html/templates/arbeidsforhold.html',
 				resolve    : {
@@ -226,7 +234,6 @@ angular.module('app.routes', ['ngRoute'])
 			.when('/soknadliste', {templateUrl: '../html/templates/soknadliste.html'})
 			.otherwise({redirectTo: '/informasjonsside'});
 
-//    $locationProvider.html5Mode(true);
 	}).run(function ($rootScope, $location, $anchorScroll, $routeParams) {
 		$rootScope.$on('$routeChangeSuccess', function (newRoute, oldRoute) {
 			$location.hash($routeParams.scrollTo);

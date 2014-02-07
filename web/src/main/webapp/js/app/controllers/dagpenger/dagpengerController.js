@@ -1,28 +1,23 @@
 angular.module('nav.dagpenger', [])
-	.controller('DagpengerCtrl', ['$scope', 'data', '$location', '$timeout', function ($scope, data, $location, $timeout) {
+	.controller('DagpengerCtrl', ['$scope', 'data', '$location', '$timeout', 'soknadService', function ($scope, data, $location, $timeout,soknadService) {
 
 		$scope.grupper = [
-			{id: 'reellarbeidssoker', tittel: 'reellarbeidssoker.tittel', template: '../html/templates/reellarbeidssoker/reell-arbeidssoker.html', apen: false},
-			{id: 'arbeidsforhold', tittel: 'arbeidsforhold.tittel', template: '../html/templates/arbeidsforhold.html', apen: false},
-			{id: 'egennaering', tittel: 'egennaering.tittel', template: '../html/templates/egen-naering.html', apen: false},
-			{id: 'verneplikt', tittel: 'ikkeavtjentverneplikt.tittel', template: '../html/templates/verneplikt.html', apen: false},
-			{id: 'utdanning', tittel: 'utdanning.tittel', template: '../html/templates/utdanning/utdanning.html', apen: false},
-			{id: 'ytelser', tittel: 'ytelser.tittel', template: '../html/templates/ytelser.html', apen: false},
-			{id: 'personalia', tittel: 'personalia.tittel', template: '../html/templates/personalia.html', apen: false},
-			{id: 'barnetillegg', tittel: 'barnetillegg.tittel', template: '../html/templates/barnetillegg.html', apen: false}
+			{id: 'reellarbeidssoker', tittel: 'reellarbeidssoker.tittel', template: '../html/templates/reellarbeidssoker/reell-arbeidssoker.html', apen: false, skalSettesTilValidVedForsteApning: false},
+			{id: 'arbeidsforhold', tittel: 'arbeidsforhold.tittel', template: '../html/templates/arbeidsforhold.html', apen: false, skalSettesTilValidVedForsteApning: false},
+			{id: 'egennaering', tittel: 'egennaering.tittel', template: '../html/templates/egen-naering.html', apen: false, skalSettesTilValidVedForsteApning: false},
+			{id: 'verneplikt', tittel: 'ikkeavtjentverneplikt.tittel', template: '../html/templates/verneplikt.html', apen: false, skalSettesTilValidVedForsteApning: false},
+			{id: 'utdanning', tittel: 'utdanning.tittel', template: '../html/templates/utdanning/utdanning.html', apen: false, skalSettesTilValidVedForsteApning: false},
+			{id: 'ytelser', tittel: 'ytelser.tittel', template: '../html/templates/ytelser.html', apen: false, skalSettesTilValidVedForsteApning: false},
+			{id: 'personalia', tittel: 'personalia.tittel', template: '../html/templates/personalia.html', apen: false, skalSettesTilValidVedForsteApning: true},
+            {id: 'barnetillegg', tittel: 'barnetillegg.tittel', template: '../html/templates/barnetillegg.html', apen: false, skalSettesTilValidVedForsteApning: true},
+            {id: 'fritekst', tittel: 'fritekst.tittel', template: '../html/templates/fritekst.html', apen: false, skalSettesTilValidVedForsteApning: true}
 		];
 
+        $scope.fremdriftsindikator = {
+            laster: false
+        };
+
 		$scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];
-
-		$scope.soknadFerdigstilt = function() {
-			if(data.soknad.status=="FERDIG") {
-				$location.path('/ferdigstilt');
-			}
-		}
-
-		$scope.soknadUnderArbeid= function() {
-			return data.soknad.status=="UNDER_ARBEID";
-		}
 
 		$scope.validerDagpenger = function (form, event) {
 			//burde refaktoreres, bruke noe annet en events?
@@ -35,13 +30,21 @@ angular.module('nav.dagpenger', [])
 			$scope.$broadcast('VALIDER_VERNEPLIKT', form.vernepliktForm);
 			$scope.$broadcast('VALIDER_REELLARBEIDSSOKER', form.reellarbeidssokerForm);
 			$scope.$broadcast('VALIDER_DAGPENGER', form);
-
+            $scope.fremdriftsindikator.laster = true;
 			$timeout(function () {
 				$scope.validateForm(form.$invalid);
 				var elementMedForsteFeil = $('.accordion-group').find('.form-linje.feil, .form-linje.feilstyling').first();
 				if (form.$valid) {
-					$location.path('/vedlegg');
+                    soknadService.delsteg({soknadId: data.soknad.soknadId, delsteg: 'vedlegg'},
+                        function() {
+                            $location.path('/vedlegg');
+                        },
+                        function() {
+                            $scope.fremdriftsindikator.laster = false;
+                        }
+                    );
 				} else {
+                    $scope.fremdriftsindikator.laster = false;
 					scrollToElement(elementMedForsteFeil, 200);
 					giFokus(elementMedForsteFeil);
 					setAktivFeilmeldingsklasse(elementMedForsteFeil);

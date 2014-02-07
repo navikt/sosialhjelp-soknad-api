@@ -11,6 +11,7 @@ import no.nav.sbl.dialogarena.pdf.PdfMerger;
 import no.nav.sbl.dialogarena.pdf.PdfWatermarker;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -34,18 +35,21 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.awt.Dimension;
+import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
 import static java.lang.String.format;
+import static java.util.UUID.randomUUID;
 import static javax.xml.bind.JAXBContext.newInstance;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
@@ -96,6 +100,11 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     @Override
+    public void settDelsteg(Long soknadId, DelstegStatus delstegStatus) {
+        repository.settDelstegstatus(soknadId, delstegStatus);
+    }
+
+    @Override
     public WebSoknad hentSoknad(long soknadId) {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
         List<Vedlegg> vedlegg = hentPaakrevdeVedlegg(soknadId, soknad);
@@ -108,6 +117,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         faktum.setType(BRUKERREGISTRERT_FAKTUM);
         Long faktumId = repository.lagreFaktum(soknadId, faktum);
         repository.settSistLagretTidspunkt(soknadId);
+        repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
         Faktum resultat = repository.hentFaktum(soknadId, faktumId);
         genererVedleggForFaktum(resultat);
 
@@ -116,11 +126,18 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public void slettBrukerFaktum(Long soknadId, Long faktumId) {
+        List<Vedlegg> vedleggliste = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
+        
+        for (Vedlegg vedlegg : vedleggliste) {
+            vedleggRepository.slettVedleggOgData(soknadId, vedlegg.getFaktumId(), vedlegg.getskjemaNummer());
+        }
         repository.slettBrukerFaktum(soknadId, faktumId);
+        repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
     }
 
     @Override
     public Long lagreSystemFaktum(Long soknadId, Faktum f, String uniqueProperty) {
+        logger.warn("*** Lagrer systemfaktum ***: " + f.getKey());
         f.setType(SYSTEMREGISTRERT_FAKTUM);
         List<Faktum> fakta = repository.hentSystemFaktumList(soknadId, f.getKey(), SYSTEMREGISTRERT_FAKTUM);
 
@@ -131,31 +148,18 @@ public class SoknadService implements SendSoknadService, VedleggService {
                         && faktum.getProperties().get(uniqueProperty)
                         .equals(f.getProperties().get(uniqueProperty))) {
                     f.setFaktumId(faktum.getFaktumId());
-                    return repository.lagreFaktum(soknadId, f, true);
+                    
+                    Long lagretFaktumId = repository.lagreFaktum(soknadId, f, true);
+                    Faktum hentetFaktum = repository.hentFaktum(soknadId, lagretFaktumId);
+                    genererVedleggForFaktum(hentetFaktum);
+                    return lagretFaktumId;
                 }
             }
         }
-        return repository.lagreFaktum(soknadId, f, true);
-    }
-
-    @Override
-    public Faktum lagreSystemSoknadsFelt(Long soknadId, String key, String value) {
-        // TODO: her blir barn overskrevet. Hent ut fnr osv.
-        Faktum faktum = repository.hentSystemFaktum(soknadId, key,
-                SYSTEMREGISTRERT_FAKTUM);
-        Faktum nyttFaktum = new Faktum(soknadId, faktum.getFaktumId(), key, value, SYSTEMREGISTRERT_FAKTUM);
-        Long faktumId = repository.lagreFaktum(soknadId, nyttFaktum, true);
-        return repository.hentFaktum(soknadId, faktumId);
-    }
-
-    // TODO: Kan sikkert slettes etter ny faktum-lagrings-modell
-    @Override
-    public Faktum lagreBarnSystemSoknadsFelt(Long soknadId, String key,
-                                             String fnr, String json) {
-
-        Faktum faktum = new Faktum(soknadId, null, key, json, SYSTEMREGISTRERT_FAKTUM);
-        Long faktumId = repository.lagreFaktum(soknadId, faktum, true);
-        return repository.hentFaktum(soknadId, faktumId);
+        Long lagretFaktumId = repository.lagreFaktum(soknadId, f, true);
+        Faktum hentetFaktum = repository.hentFaktum(soknadId, lagretFaktumId);
+        genererVedleggForFaktum(hentetFaktum);
+        return lagretFaktumId;
     }
 
     @Override
@@ -212,14 +216,24 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 .startSoknad(getSubjectHandler().getUid());
         WebSoknad soknad = WebSoknad.startSoknad()
                 .medBehandlingId(behandlingsId).medskjemaNummer(navSoknadId)
-                .
-                        // medAktorId(aktorIdService.hentAktorIdForFno(getSubjectHandler().getUid())).
-                                medAktorId(getSubjectHandler().getUid())
+                .medUuid(randomUUID().toString())
+                .medAktorId(getSubjectHandler().getUid())
                 .opprettetDato(DateTime.now());
 
         Long soknadId = repository.opprettSoknad(soknad);
         WebSoknadId websoknadId = new WebSoknadId();
         websoknadId.setId(soknadId);
+
+        List<String> bolker = Arrays.asList("reellarbeidssoker", "arbeidsforhold", "egennaering", "verneplikt", "utdanning", "ytelser", "personalia", "barnetillegg", "fritekst");
+        Map<String, String> erBolkerValidert = new HashMap<>();
+        for (String bolk : bolker) {
+            erBolkerValidert.put(bolk, "false");
+        }
+
+        Faktum bolkerFaktum = new Faktum(soknadId, null, "bolker", null, BRUKERREGISTRERT_FAKTUM);
+        bolkerFaktum.setProperties(erBolkerValidert);
+
+        repository.lagreFaktum(soknadId, bolkerFaktum);
 
         return behandlingsId;
     }
@@ -229,11 +243,11 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public List<Long> splitOgLagreVedlegg(Vedlegg vedlegg,
                                           InputStream inputStream) {
         List<Long> resultat = new ArrayList<>();
-
         try {
             byte[] bytes = IOUtils.toByteArray(inputStream);
             if (Detect.isImage(bytes)) {
                 bytes = Convert.scaleImageAndConvertToPdf(bytes, new Dimension(1240, 1754));
+                
                 Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(),
                         vedlegg.getFaktumId(), vedlegg.getskjemaNummer(),
                         vedlegg.getNavn(), (long) bytes.length, 1, UUID
@@ -253,8 +267,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
                     page.close();
                     Vedlegg sideVedlegg = new Vedlegg(null,
                             vedlegg.getSoknadId(), vedlegg.getFaktumId(),
-                            vedlegg.getskjemaNummer(), vedlegg.getNavn(),
-                            (long) baos.size(), 1,
+                            vedlegg.getskjemaNummer(),
+                            vedlegg.getNavn(), (long) baos.size(), 1,
                             UUID.randomUUID().toString(), null,
                             Vedlegg.Status.UnderBehandling);
                     resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
@@ -292,6 +306,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public void slettVedlegg(Long soknadId, Long vedleggId) {
         vedleggRepository.slettVedlegg(soknadId, vedleggId);
+        repository.settDelstegstatus(soknadId, DelstegStatus.SKJEMA_VALIDERT);
     }
 
     @Override
@@ -340,12 +355,15 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId, WebSoknad soknad) {
-        List<Vedlegg> result = vedleggRepository.hentPaakrevdeVedlegg(soknadId);
+        List<Vedlegg> paakrevdeVedlegg = vedleggRepository.hentPaakrevdeVedlegg(soknadId);
+        List<Vedlegg> result = new ArrayList<Vedlegg>();
         
-        for (Vedlegg vedlegg : result) {
+        List<String> innlagtSkjemaNr = new ArrayList<String>();
+        for (Vedlegg vedlegg : paakrevdeVedlegg) {
+            innlagtSkjemaNr.add(vedlegg.getskjemaNummer());
             vedlegg = medKodeverk(vedlegg);
+            result.add(vedlegg);
         }
-        
         return result;
     }
 
@@ -353,22 +371,53 @@ public class SoknadService implements SendSoknadService, VedleggService {
         SoknadStruktur struktur = hentStruktur(repository.hentSoknadType(faktum.getSoknadId()));
         List<SoknadVedlegg> aktuelleVedlegg = struktur.vedleggFor(faktum.getKey());
         for (SoknadVedlegg soknadVedlegg : aktuelleVedlegg) {
-            Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummer(faktum.getSoknadId(), faktum.getFaktumId(), soknadVedlegg.getSkjemaNummer());
+            Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummer(faktum.getSoknadId(), soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null, soknadVedlegg.getSkjemaNummer());
+            
             if (soknadVedlegg.trengerVedlegg(faktum)) {
                 if (vedlegg == null) {
-                    vedlegg = new Vedlegg(faktum.getSoknadId(), faktum.getFaktumId(), soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
+                    vedlegg = new Vedlegg(faktum.getSoknadId(), soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null, soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
                     vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
                 }
                 if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {
                     vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
-                    vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
                 }
-            } else if (vedlegg != null) {
+                
+                if(vedlegg.getStorrelse() > 0) {
+                    vedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
+                } else {
+                    vedlegg.setInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+                }
+                vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
+            } else if(!soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId() , soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValue(), struktur)) {//do nothing
+            } else if (vedlegg != null) { // sett vedleggsforventning til ikke paakrevd
                 vedlegg.setInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
                 vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
             }
         }
+    }
 
+    /**
+     * 
+     * Looper alle mulige vedleggsforventinger for gitt skjemanummer, 
+     * dersom soknadbrukerdata har et innslag som har riktig onValue, returneres true (et annet faktum trigger vedlegget)
+     * ellers returneres false
+     * 
+     * @param soknadId
+     * @param skjemaNummer
+     * @param onValue
+     * @param struktur
+     * @return
+     */
+    private boolean annetFaktumHarForventning(Long soknadId, String skjemaNummer, String onValue, SoknadStruktur struktur) {
+        List<SoknadVedlegg> vedleggMedGittSkjemanummer = struktur.vedleggForSkjemanr(skjemaNummer);
+        for (SoknadVedlegg sv : vedleggMedGittSkjemanummer) {
+            
+            String faktumKey = sv.getFaktum().getId();
+            if(repository.isVedleggPaakrevd(soknadId, faktumKey, onValue)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Vedlegg medKodeverk(Vedlegg vedlegg) {
@@ -389,6 +438,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg) {
         vedleggRepository.lagreVedlegg(soknadId, vedleggId, vedlegg);
+        repository.settDelstegstatus(soknadId, DelstegStatus.SKJEMA_VALIDERT);
     }
 
     private SoknadStruktur hentStruktur(String skjema) {
