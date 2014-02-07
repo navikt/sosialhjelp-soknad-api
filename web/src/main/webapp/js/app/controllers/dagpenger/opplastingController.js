@@ -10,6 +10,8 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
             laster: false
         };
 
+        $scope.harLagtTilVedlegg = false;
+        $scope.skalViseFeilmelding = false;
         $scope.opplastingFeilet = false;
 
         $scope.data = {
@@ -19,6 +21,8 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         };
 
         $scope.$on('fileuploadstart', function () {
+            $scope.harLagtTilVedlegg = true;
+
             $scope.data.opplastingFeilet = false;
 
         });
@@ -27,6 +31,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
             $.each(data.files, function (index, file) {
                 if (file.error) {
                     $scope.data.opplastingFeilet = file.error;
+                    $scope.harLagtTilVedlegg = false;
                     data.scope().clear(file);
                     $scope.clear(file);
                 }
@@ -74,16 +79,22 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         };
 
         $scope.leggVed = function () {
-            var soknadId = data.soknad.soknadId;
-            $scope.fremdriftsindikator.laster = true;
-            vedleggService.merge({
-                soknadId: soknadId,
-                vedleggId: $scope.data.vedleggId
-            }, function (data) {
-                $scope.oppdaterSoknad();
-            }, function () {
-                $scope.fremdriftsindikator.laster = false;
-            });
+            if ($scope.harLagtTilVedlegg === true) {
+                $scope.skalViseFeilmelding = false;
+                var soknadId = data.soknad.soknadId;
+                $scope.fremdriftsindikator.laster = true;
+                vedleggService.merge({
+                    soknadId: soknadId,
+                    vedleggId: $scope.data.vedleggId
+                }, function (data) {
+                    $scope.oppdaterSoknad();
+                }, function () {
+                    $scope.fremdriftsindikator.laster = false;
+                });
+            } else {
+                $scope.skalViseFeilmelding = true;
+            }
+
         };
 
         $scope.loadingFiles = true;
@@ -93,6 +104,9 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
             }, function (data) {
                 $scope.queue = data || [];
                 $scope.loadingFiles = false;
+                if(data.length > 0) {
+                    $scope.harLagtTilVedlegg = true;
+                }
             }
         );
     }])
