@@ -108,10 +108,10 @@ public class Personalia {
             return false;
         }
 
-        if (adressetype.equalsIgnoreCase(MIDLERTIDIG_POSTADRESSE_UTLAND.name()) || adressetype.equalsIgnoreCase(POSTADRESSE_UTLAND.name())) {
+        if (adressetype.equalsIgnoreCase(MIDLERTIDIG_POSTADRESSE_UTLAND.name()) ||
+                adressetype.equalsIgnoreCase(POSTADRESSE_UTLAND.name()) ||
+                adressetype.equalsIgnoreCase(UTENLANDSK_ADRESSE.name())) {
             return true;
-        } else if (adressetype.equalsIgnoreCase(POSTADRESSE.name())) {
-            return harUtenlandskFolkeregistrertAdresse();
         }
         return false;
     }
@@ -137,11 +137,7 @@ public class Personalia {
         {
             return false;
         }
-        if ((sekundarAdresse == null) || (sekundarAdresse.getAdressetype() == null))
-        {
-            return false;
-        }
-        if (gjeldendeAdresse.getAdressetype().equalsIgnoreCase(UTENLANDSK_ADRESSE.name()) || sekundarAdresse.getAdressetype().equalsIgnoreCase(UTENLANDSK_ADRESSE.name())) {
+        if (gjeldendeAdresse.getAdressetype().equalsIgnoreCase(UTENLANDSK_ADRESSE.name())) {
             return true;
         }
         return false;

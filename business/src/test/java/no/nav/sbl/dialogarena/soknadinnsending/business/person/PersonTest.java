@@ -14,65 +14,56 @@ import static org.hamcrest.core.Is.is;
 public class PersonTest {
 
 
+    
     @Test
-    public void skalSetteSammenForOgEtterNavnPaaRiktigMaateMedNull() {
-        Assert.assertThat(true, is(true));
-//        Person person = new Person(1l, "11111112345", "Jan", null, "Larsen", "midlertidig", new ArrayList<Adresse>());
-//
-//        Map<String, Object> fakta = person.getFakta();
-//
-//        Faktum sammensattnavn = (Faktum) fakta.get("sammensattnavn");
-//        Assert.assertEquals("Jan Larsen", sammensattnavn.getValue());
+    public void skalReturnereTrueForPostadresseUtland() {
+        Personalia personalia = new Personalia();
+        Adresse gjeldendeAdresse = new Adresse();
+        gjeldendeAdresse.setAdressetype(Adressetype.POSTADRESSE_UTLAND.name());
+        personalia.setGjeldendeAdresse(gjeldendeAdresse);
+
+        Assert.assertEquals(true, personalia.harUtenlandskAdresse());
     }
-//
-//    @Test
-//    public void skalSetteSammenForOgEtterNavnPaaRiktigMaateMedMellomrom() {
-//        Person person = new Person(1l, "11111112345", "Jan", "", "Larsen", "midlertidig", new ArrayList<Adresse>());
-//
-//        Map<String, Object> fakta = person.getFakta();
-//
-//        Faktum sammensattnavn = (Faktum) fakta.get("sammensattnavn");
-//        Assert.assertEquals("Jan Larsen", sammensattnavn.getValue());
-//    }
-//
-//    @Test
-//    public void skalReturnereTrueForPostadresseUtland() {
-//        Person person = new Person(1l, "11111112345", "Jan", "", "Larsen", Adressetype.POSTADRESSE_UTLAND.toString(), new ArrayList<Adresse>());
-//
-//        Assert.assertEquals(true, person.harUtenlandskAdresse());
-//    }
-//
-//    @Test
-//    public void skalReturnereTrueForFolkeregistrertPostadresseUtland() {
-//        List<Adresse> adresser = new ArrayList<Adresse>();
-//        adresser.add(new Adresse(1l, Adressetype.UTENLANDSK_ADRESSE));
-//
-//        Person person = new Person(1l, "11111112345", "Jan", "", "Larsen", Adressetype.POSTADRESSE.toString(), adresser);
-//
-//        Assert.assertEquals(true, person.harUtenlandskAdresse());
-//    }
-//
-//    @Test
-//    public void skalReturnereTrueForMidlertidigPostadresseUtland() {
-//        Person person = new Person(1l, "11111112345", "Jan", "", "Larsen", Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND.toString(), new ArrayList<Adresse>());
-//
-//        Assert.assertEquals(true, person.harUtenlandskAdresse());
-//    }
-//
-//    @Test
-//    public void skalReturnereFalseForMidlertidigPostadresseNorge() {
-//        Person person = new Person(1l, "11111112345", "Jan", "", "Larsen", Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE.toString(), new ArrayList<Adresse>());
-//
-//        Assert.assertEquals(false, person.harUtenlandskAdresse());
-//    }
-//
-//    @Test
-//    public void skalReturnereFalseForFolkeregistrertAdresseNorge() {
-//        Person person = new Person(1l, "11111112345", "Jan", "", "Larsen", Adressetype.BOSTEDSADRESSE.toString(), new ArrayList<Adresse>());
-//
-//        Assert.assertEquals(false, person.harUtenlandskAdresse());
-//    }
-//
+    
+    @Test
+    public void skalReturnereTrueForFolkeregistrertPostadresseUtland() {
+        Personalia personalia = new Personalia();
+        Adresse gjeldendeAdresse = new Adresse();
+        gjeldendeAdresse.setAdressetype(Adressetype.UTENLANDSK_ADRESSE.name());
+        personalia.setGjeldendeAdresse(gjeldendeAdresse);
+
+        Assert.assertEquals(true, personalia.harUtenlandskAdresse());
+    }
+    
+    @Test
+    public void skalReturnereTrueForMidlertidigPostadresseUtland() {
+        Personalia personalia = new Personalia();
+        Adresse gjeldendeAdresse = new Adresse();
+        gjeldendeAdresse.setAdressetype(Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND.name());
+        personalia.setGjeldendeAdresse(gjeldendeAdresse);
+
+        Assert.assertEquals(true, personalia.harUtenlandskAdresse());
+    }
+    
+    @Test
+    public void skalReturnereFalseForMidlertidigPostadresseNorge() {
+        Personalia personalia = new Personalia();
+        Adresse gjeldendeAdresse = new Adresse();
+        gjeldendeAdresse.setAdressetype(Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE.name());
+        personalia.setGjeldendeAdresse(gjeldendeAdresse);
+
+        Assert.assertEquals(false, personalia.harUtenlandskAdresse());
+    }
+    
+    public void skalReturnereFalseForFolkeregistrertAdresseNorge() {
+        Personalia personalia = new Personalia();
+        Adresse gjeldendeAdresse = new Adresse();
+        gjeldendeAdresse.setAdressetype(Adressetype.BOSTEDSADRESSE.name());
+        personalia.setGjeldendeAdresse(gjeldendeAdresse);
+
+        Assert.assertEquals(false, personalia.harUtenlandskAdresse());
+    }
+
     @Test
     public void skalReturneGuttVedGuttePersonNummer() {
         String dato = "060258";
