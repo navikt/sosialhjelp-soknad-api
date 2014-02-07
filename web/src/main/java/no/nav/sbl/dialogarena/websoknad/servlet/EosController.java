@@ -18,17 +18,25 @@ import java.util.Map;
 
 @Controller
 @ControllerAdvice()
-@RequestMapping(value = "/landtype/{landkode}")
+@RequestMapping(value = "")
 public class EosController {
 
     @Inject
     private EosBorgerService eosService;
 
-    @RequestMapping(value = "", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/ereosland/{landkode}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
     public Map<String, String> isEosLandAnnetEnnNorge(@PathVariable String landkode) {
         HashMap<String, String> result = new HashMap<>();
         result.put("result", String.valueOf(eosService.isEosLandAnnetEnnNorge(landkode)));
+        return result;
+    }
+    
+    @RequestMapping(value = "/landtype/{landkode}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
+    @ResponseBody()
+    public Map<String, String> landType(@PathVariable String landkode) {
+        HashMap<String, String> result = new HashMap<>();
+        result.put("result", String.valueOf(eosService.getStatsborgeskapType(landkode)));
         return result;
     }
 }
