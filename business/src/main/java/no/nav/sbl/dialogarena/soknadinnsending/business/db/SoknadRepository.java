@@ -38,11 +38,13 @@ public interface SoknadRepository {
 
     Faktum hentFaktum(Long soknadId, Long faktumId);
 
+    Faktum finnFaktum(Long soknadId, String key);
+
     Faktum hentSystemFaktum(Long soknadId, String key,
                             String systemregistrertFaktum);
 
     List<Faktum> hentSystemFaktumList(Long soknadId, String key, String string);
-    
+
     void endreInnsendingsValg(Long soknadId, Long faktumId, Faktum.Status innsendingsvalg);
 
     void settSistLagretTidspunkt(Long soknadId);
@@ -53,7 +55,9 @@ public interface SoknadRepository {
 
     String hentSoknadType(Long soknadId);
 
-    Boolean isVedleggPaakrevd(Long soknadId, String key, String value);
+    Boolean isVedleggPaakrevd(Long soknadId, String key, String value, String dependOnValue);
 
     void settDelstegstatus(Long soknadId, DelstegStatus status);
+
+    List<Faktum> hentBarneFakta(Long soknadId, Long faktumId);
 }
