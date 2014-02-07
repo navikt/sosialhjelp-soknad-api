@@ -37,7 +37,12 @@ angular.module('nav.stegindikator', ['nav.cmstekster'])
                             return '#/vedlegg';
                         } else if (idx === 1) {
                             return '#/soknad';
-                        } else {
+                        }
+                        else if (idx === 3)
+                        {
+                            return '#/oppsummering'
+                        }
+                        else {
                             return '#/informasjonsside';
                         }
                     };
