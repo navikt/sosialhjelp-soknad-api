@@ -529,7 +529,6 @@
 		<flereTillatt>true</flereTillatt>
 	</vedlegg>
 	
-	<!-- Disse går i beina på hverandre..  -->
 	<vedlegg>
 		<id>6</id>
 		<faktum>barn</faktum>
