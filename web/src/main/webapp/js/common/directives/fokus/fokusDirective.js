@@ -9,7 +9,6 @@ angular.module('nav.fokus', [])
             link: function (scope, elm) {
                 elm.bind("click", function () {
                     settFokusTilNesteElement(elm);
-                    console.log(settFokusTilNesteElement(elm))
                 });
             }
         };
