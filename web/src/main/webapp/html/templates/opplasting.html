@@ -11,7 +11,7 @@
     </div>
     <form id="opplastingform" method="POST" enctype="multipart/form-data" data-file-upload="options" data-ng-controller="OpplastingCtrl">
         <div class="begrensning sak-trekvart">
-            <div id="opplastingFeilmelding" class="feil" style="width: 73%;margin: 0 auto; " data-ng-if="data.opplastingFeilet" data-ng-bind="data.opplastingFeilet">dette er en feil</div>
+            <div id="opplastingFeilmelding" class="opplastingfeil" style="width: 73%;margin: 0 auto; " data-ng-if="data.opplastingFeilet" data-ng-bind="data.opplastingFeilet">dette er en feil</div>
             <section class="panel-standard oversikt">
                 <ul class="opplastingliste clearfix">
                     <li data-ng-repeat="file in queue" data-ng-class="{'lasteropp': file.$processing()}" data-fil-feil>
@@ -27,6 +27,9 @@
         </div>
         <div class="rad uten-ramme">
             <div class="begrensning sak-totredel">
+                <div class="form-linje" data-ng-class="{feil: skalViseFeilmelding === true && harLagtTilVedlegg === false}">
+                    <span class="melding" data-cmstekster="opplasting.feilmelding.manglerVedlegg"></span>
+                </div>
                 <a href="javascript:void(0);" data-redirect="#/vedlegg" class="knapp-hoved" data-cmstekster="opplasting.ferdig" data-ng-click="leggVed()"
                    data-fremdriftsindikator></a>
                 <a href="javascript:void(0);" data-ng-href="#/vedlegg" class="avbryt" data-cmstekster="opplasting.avbryt"></a>
