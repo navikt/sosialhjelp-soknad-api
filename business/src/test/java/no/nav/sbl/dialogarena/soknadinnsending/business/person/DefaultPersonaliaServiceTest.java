@@ -375,24 +375,6 @@ public class DefaultPersonaliaServiceTest {
         return request;
     }
 
-//    private Person skalStotteMidlertidigUtenlandskMidlertidigAdresser(int antallAdresseLinjer) throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-//        XMLHentKontaktinformasjonOgPreferanserRequest request = hentRequestMedGyldigIdent();
-//        XMLHentKontaktinformasjonOgPreferanserResponse response = new XMLHentKontaktinformasjonOgPreferanserResponse();
-//
-//        XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
-//
-//        XMLMidlertidigPostadresseUtland midlertidigPostboksAdresseUtlandet = generateMidlertidigAdresseUtlandet(antallAdresseLinjer);
-//        xmlBruker.setMidlertidigPostadresse(midlertidigPostboksAdresseUtlandet);
-//
-//        response.setPerson(xmlBruker);
-//
-//        when(brukerprofilMock.hentKontaktinformasjonOgPreferanser(request)).thenReturn(response);
-//        when(kodeverkMock.getLand(EN_LANDKODE)).thenReturn(ET_LAND);
-//        Person hentetPerson = service.hentPerson(5l, RIKTIG_IDENT);
-//
-//        return hentetPerson;
-//    }
-
     private XMLMidlertidigPostadresseUtland generateMidlertidigAdresseUtlandet(int antallAdresseLinjer) {
         XMLMidlertidigPostadresseUtland xmlMidlertidigAdresseUtland = new XMLMidlertidigPostadresseUtland();
         XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode(true);
