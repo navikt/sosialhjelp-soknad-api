@@ -29,7 +29,9 @@ angular.module('nav.dagpenger', [])
 			$scope.$broadcast('VALIDER_EGENNAERING', form.egennaeringForm);
 			$scope.$broadcast('VALIDER_VERNEPLIKT', form.vernepliktForm);
 			$scope.$broadcast('VALIDER_REELLARBEIDSSOKER', form.reellarbeidssokerForm);
+            $scope.$broadcast('VALIDER_FRITEKST', form.fritekstForm);
 			$scope.$broadcast('VALIDER_DAGPENGER', form);
+
             $scope.fremdriftsindikator.laster = true;
 			$timeout(function () {
 				$scope.validateForm(form.$invalid);
