@@ -159,7 +159,6 @@ angular.module('nav.feilmeldinger', [])
                     var feilmelding = cms.tekster[feilmeldingNokkel];
                     if (feilmelding === undefined) {
                         feilmelding = feilmeldingNokkel;
-                        return {feil: 'Fant ikke feilmelding med key ' + feilmeldingNokkel, elem: finnTilhorendeElement(feil)};
                     }
 
                     return {feil: feilmelding, elem: finnTilhorendeElement(feil)};
