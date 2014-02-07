@@ -85,6 +85,14 @@
                     <span class="melding"></span>
                 </label>
             </div>
+
+            <div class="ekstra-spm-boks" data-vedlegginfoboks data-ng-show="trengerUtalelseFraFagpersonellDeltid()">
+                <ul>
+                    <li>
+                        <span data-cmstekster="reellarbeidssoker.utalelsefagpersonell.vedlegginformasjon"></span>
+                    </li>
+                </ul>
+            </div>
         </div>
 
         <div data-nav-faktum="reellarbeidssoker.villigpendle"
@@ -148,6 +156,13 @@
                       data-cmstekster="reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding"></span>
             </div>
 
+            <div class="ekstra-spm-boks" data-vedlegginfoboks data-ng-show="trengerUtalelseFraFagpersonellPendle()">
+                <ul>
+                    <li>
+                        <span data-cmstekster="reellarbeidssoker.utalelsefagpersonell.vedlegginformasjon"></span>
+                    </li>
+                </ul>
+            </div>
 
         </div>
 
@@ -161,7 +176,7 @@
             <div data-navinfoboks>
                 <span data-cmstekster="reellarbeidssoker.villighelse.false.vedlegginformasjon"></span>
             </div>
-
+             
             <div data-navtextarea
                  data-navconfig
                  data-nav-faktum="reellarbeidssoker.villighelse.fritekst"
@@ -169,6 +184,16 @@
                  data-maxlengde="500"
                  data-navfeilmelding="reellarbeidssoker.helsefritekst.feilmelding"
                  data-obligatorisk="true"></div>
+
+            
+            <div class="ekstra-spm-boks" data-vedlegginfoboks data-ng-show="kanIkkeTaAlleTyperArbeid()">
+                <ul>
+                    <li>
+                        <span data-cmstekster="reellarbeidssoker.kanikkealletyperarbeid.vedlegginformasjon"></span>
+                    </li>
+                </ul>
+            </div>
+
         </div>
 
 
