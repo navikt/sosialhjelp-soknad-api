@@ -33,15 +33,12 @@ public class WebSoknadUtils {
     private static boolean erPermittertellerHarRedusertArbeidstid(WebSoknad soknad)
     {
 
-        Faktum sluttaarsak = soknad.getFakta().get("arbeidsforhold.type");
-        logger.warn("RUTINGTEST: sluttaarsak" + sluttaarsak);
+        Faktum sluttaarsak = soknad.getFakta().get("arbeidsforhold");
         boolean erPermittert = false;
         if (sluttaarsak != null) {
             List<Faktum> sortertEtterDatoTil = on(sluttaarsak.getValuelist()).collect(reverseOrder(compareWith(DATO_TIL)));
             LocalDate nyesteDato = on(sortertEtterDatoTil).map(DATO_TIL).head().getOrElse(null);
             List<Faktum> nyesteSluttaarsaker = on(sortertEtterDatoTil).filter(where(DATO_TIL, equalTo(nyesteDato))).collect();
-            logger.warn("RUTINGTEST: nyesteSluttaarsaker" + nyesteSluttaarsaker.size());
-            logger.warn("RUTINGTEST: nyesteSluttaarsaker" + nyesteSluttaarsaker.get(0).getType());
             erPermittert = on(nyesteSluttaarsaker).filter(where(TYPE, equalTo("Permittert"))).head().isSome() || on(nyesteSluttaarsaker).filter(where(TYPE, equalTo("Redusert arbeidstid"))).head().isSome();
         }
         return erPermittert;
@@ -55,18 +52,14 @@ public class WebSoknadUtils {
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
         if (!erPermittertellerHarRedusertArbeidstid(webSoknad))
         {
-            logger.warn("RUTINGTEST: Er ikke permittert eller har redusert arbeidstid");
             return RUTES_I_BRUT;
         }
         if (webSoknad.getFakta().get(FNR_KEY) != null)
         {
             Personalia personalia = getPerson(webSoknad);
-            logger.warn("RUTINGTEST har utenlandsadresse" + personalia.harUtenlandskFolkeregistrertAdresse());
-            logger.warn("RUTINGTEST har midlertidig norsk adresse" + personalia.harNorskMidlertidigAdresse());
             return (personalia.harUtenlandskFolkeregistrertAdresse() && (!personalia.harNorskMidlertidigAdresse())) ?  EOS_DAGPENGER : RUTES_I_BRUT;
         } else
         {
-            logger.warn("RUTINGTEST: Bor ikke i utlandet");
             return RUTES_I_BRUT;
         }
     }

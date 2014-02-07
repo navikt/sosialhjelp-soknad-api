@@ -29,7 +29,7 @@
     </div>
 
     <a href="javascript:void(0)" aria-role="button" class="orgnummer-leggtil" data-ng-click="leggTilOrgnr()"
-       data-cmstekster="organisasjonsnummer.leggtil"></a>
+       data-cmstekster="organisasjonsnummer.leggtil" data-leggtil-orgnr></a>
 
     <div class="tekstfelt form-linje arbeidsmengde-container">
         <label>
@@ -136,7 +136,7 @@
     <span class="melding" data-cmstekster="egennaering.gardsbruk.false.eier.feilmelding"></span>
 </div>
 
-<div class="form-linje andelsfordeling-container" ng-class="{feil : prosentFeil()} "
+<div class="form-linje andelsfordeling-container" data-ng-class="{feil : prosentFeil()} "
      data-ng-if="svartPaHvemEierGardsbruket()">
     <h4 class="spm-sporsmal andelsfordeling-spm">
         <span data-cmstekster="egennaering.gardsbruk.false.eierandel.sporsmal"></span>

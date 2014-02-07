@@ -78,6 +78,28 @@
                                      data-ugyldig-feilmelding="barnetillegg.nyttbarn.land.ugyldig.feilmelding">
                                 </div>
                             </div>
+
+                            <div data-ng-show="erEosLandAnnetEnnNorge()">
+                                <div data-navinfoboks>
+                                    <p class="sluttaarsak-informasjon" cmstekster="barnetillegg.nyttbarn.land.eos"></p>
+                                </div>
+                            </div>
+                            <div data-ng-show="erIkkeEosLand()">
+                                <div data-navinfoboks>
+                                    <p class="sluttaarsak-informasjon" cmstekster="barnetillegg.nyttbarn.land.ikkeeos"></p>
+                                </div>
+                            </div>
+
+                            <div data-ng-show="barn.properties.land == 'NOR'">
+                                <div class="ekstra-spm-boks" data-vedlegginfoboks>
+                                    <ul>
+                                        <li>
+                                            {{ 'barnetillegg.nyttbarn.land.norge.vedlegginformasjon' | cmstekst}}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
                         </div>
 
                         <div>
@@ -141,6 +163,15 @@
                                             <span class="melding"></span>
                                         </label>
                                     </div>
+
+                                    <div class="ekstra-spm-boks" data-vedlegginfoboks>
+                                        <ul>
+                                            <li>
+                                                {{ 'barnetillegg.barnetilegg.ikkebarneinntekt.false.vedlegginformasjon' | cmstekst}}
+                                            </li>
+                                        </ul>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
