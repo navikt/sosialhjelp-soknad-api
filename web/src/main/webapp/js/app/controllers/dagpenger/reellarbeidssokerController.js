@@ -46,13 +46,25 @@ angular.module('nav.reellarbeidssoker', [])
 		};
 
         $scope.harValgtAnnetUnntakDeltid = function () {
-
-            return $scope.deltidannen.value === 'true';
+             if ($scope.deltidannen != 'undefined')
+             {
+                return $scope.deltidannen.value === 'true';
+             }
+            else
+             {
+                 return false;
+             }
         };
 
         $scope.harValgtAnnetUnntakPendle = function () {
-           
-             return $scope.pendleannen.value === 'true';
+            if ($scope.pendleannen != 'undefined')
+            {
+                return $scope.pendleannen.value === 'true';
+            }
+            else
+            {
+                return false;
+            }
         };
 
 

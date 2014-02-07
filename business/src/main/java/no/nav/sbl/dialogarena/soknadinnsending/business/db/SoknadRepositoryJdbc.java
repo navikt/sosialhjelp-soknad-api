@@ -10,6 +10,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingS
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -169,15 +170,19 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     @Override
     public Boolean isVedleggPaakrevd(Long soknadId, String key, String value) {
         String sql =  "select count(*) from soknadbrukerdata where soknad_id=? and key=? and value like ?";
-        //Integer count = getJdbcTemplate().queryForObject(sql, Integer.class, soknadId, key, value);
+        
+        Integer count = null;
+        try{
+            count = getJdbcTemplate().queryForObject(sql, Integer.class, soknadId, key, value);    
+        } catch(DataAccessException e) {
+            LOG.warn("Klarte ikke hente count fra soknadBrukerData", e);
+        }
+        
+        if(count != null) {
+            return count > 0;
+        }
         
         return false;
-        
-//        if(count != null) {
-//            return count > 0;
-//        }
-//        
-//        return false;
     }
 
     /**
