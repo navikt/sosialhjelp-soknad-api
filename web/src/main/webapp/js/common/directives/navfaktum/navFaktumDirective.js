@@ -68,7 +68,11 @@ angular.module('nav.navfaktum', [])
 				}
 
 				$scope.lagreFaktum = function () {
-					if (!$scope.ikkeAutoLagre) {
+                    if($scope.$parent.faktum && $scope.faktum.key.indexOf($scope.$parent.faktum.key) >= 0){
+                        $scope.parentFaktum.parrentFaktum = $scope.$parent.faktum.faktumId;
+                    }
+
+                    if (!$scope.ikkeAutoLagre) {
 						if (props) {
 							props.forEach(function (prop) {
 								var value = $scope.navproperties[prop];
@@ -82,7 +86,7 @@ angular.module('nav.navfaktum', [])
 								$scope.parentFaktum.properties[prop] = value;
 							})
 						}
-						$scope.parentFaktum.$save();
+                        $scope.parentFaktum.$save();
 					}
 				};
 				this.lagreFaktum = $scope.lagreFaktum;

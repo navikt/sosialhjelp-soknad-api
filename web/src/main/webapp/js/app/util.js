@@ -196,10 +196,10 @@ function stringContainsNotCaseSensitive(str, query) {
 
 function fadeBakgrunnsfarge(element, scope, rgb1, rgb2, rgb3) {
 	var backgroundColour = [rgb1, rgb2, rgb3].join(',') + ',';
-	var transparency = 1;
+	var transparency = 0;
 	var timeout = setInterval(function () {
 		if (transparency >= 0) {
-			element[0].style.backgroundColor = 'rgba(' + backgroundColour + (transparency -= 0.015) + ')';
+			element[0].style.backgroundColor = 'rgba(' + backgroundColour + (transparency += 0.015) + ')';
 		} else {
 			element.removeAttr('style');
 			clearInterval(timeout);

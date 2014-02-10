@@ -66,5 +66,13 @@ public class SoknadStruktur implements Serializable {
         }).collect();
 
     }
-    
+
+    public SoknadFaktum finnFaktum(final String key) {
+        for (SoknadFaktum soknadFaktum : fakta) {
+            if (soknadFaktum.getId().equals(key)) {
+                return soknadFaktum;
+            }
+        }
+        return null;
+    }
 }
