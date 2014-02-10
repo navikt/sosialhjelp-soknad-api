@@ -28,7 +28,9 @@
                     <div data-accordion-heading>
                         <div class="bolk-fokus">
                             <div class="vedlegg-bolk"
-                                 data-ng-class="{behandlet: !vedleggEr(forventning, 'VedleggKreves') && ekstraVedleggFerdig(forventning), lastetopp: vedleggEr(forventning, 'LastetOpp') && ekstraVedleggFerdig(forventning), ekstraVedlegg:   !ekstraVedleggFerdig(forventning)}">
+                                 data-ng-class="{behandlet: !vedleggEr(forventning, 'VedleggKreves') && ekstraVedleggFerdig(forventning),
+                                 lastetopp: vedleggEr(forventning, 'LastetOpp') && ekstraVedleggFerdig(forventning),
+                                 ekstraVedlegg: !ekstraVedleggFerdig(forventning)}">
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'LastetOpp')"
                                      data-cmstekster="vedlegg.behandlet.lastetopp"></div>
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesSenere')"
@@ -51,7 +53,8 @@
 
                             <div class="form-linje tekstfelt" data-ng-if="erEkstraVedlegg(forventning)">
                                 <label>
-                                    <span>Hva vedlegger du (max 25 tegn)? </span> Modellen: {{forventning.navn}} df: {{ ekstraVedleggFerdig(forventning) }}
+                                    <span>Hva vedlegger du (max 25 tegn)? </span> Modellen: {{forventning.navn}} df: {{
+                                    ekstraVedleggFerdig(forventning) }}
                                     <input type="text" maxlength="25" data-ng-maxlength="25"
                                            data-ng-minlength="3"
                                            data-ng-required="true" data-ng-model="forventning.navn"

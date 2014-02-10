@@ -38,9 +38,8 @@ angular.module('nav.vedlegg.controller', [])
         };
 
         $scope.ekstraVedleggFerdig = function (forventning) {
-            console.log(forventning)
             if(forventning.skjemaNummer === 'N6') {
-                return forventning.navn !== null;
+                return forventning.navn !== null && forventning.navn !== undefined;
             }
             return true;
         };
