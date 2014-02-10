@@ -1,31 +1,10 @@
+//TODO: Hele modulen burde vel fjernes? Flytte det som skal beholdes til egne moduler
 angular.module('app.brukerdata', ['app.services'])
-    .controller('SoknadDataCtrl', ['$scope', 'data', '$http', function ($scope, data, $http) {
+    // TODO: Denne skal vel bort?
+    .controller('SoknadDataCtrl', ['$scope', 'data', function ($scope, data) {
         $scope.soknadData = data.soknad;
     }])
-    .controller('ModusCtrl', function ($scope) {
-        $scope.data = {
-            redigeringsModus: true
-        };
-
-        // TODO: Endre navn. Setter bare til redigerings-/oppsummerings-modus. Trenger vi denne?
-        $scope.validateForm = function (invalid) {
-            $scope.data.redigeringsModus = invalid;
-        }
-
-        $scope.gaTilRedigeringsmodus = function () {
-            $scope.data.redigeringsModus = true;
-            $scope.$broadcast("ENDRET_TIL_REDIGERINGS_MODUS", {key: 'redigeringsmodus', value: true});
-        }
-
-        $scope.hvisIRedigeringsmodus = function () {
-            return $scope.data.redigeringsModus;
-        }
-
-        $scope.hvisIOppsummeringsmodus = function () {
-            return !$scope.hvisIRedigeringsmodus();
-        }
-    })
-
+    // TODO: Flytte til egen modul?
     .controller('AvbrytCtrl', function ($scope, $routeParams, $location, soknadService, data) {
         var soknadId = data.soknad.soknadId;
         $scope.krevBekreftelse = {value: ''};
@@ -63,7 +42,7 @@ angular.module('app.brukerdata', ['app.services'])
             );
         };
     })
-
+    // TODO: Denne skal vel bort?
     .directive('modFaktum', function () {
         return function ($scope, element, attrs) {
             var eventType;
@@ -93,7 +72,7 @@ angular.module('app.brukerdata', ['app.services'])
             });
         };
     })
-
+    // TODO: Denne skal vel bort?
     .filter('midlertidigAdresseType', function () {
         return function (input, scope) {
             var tekst;

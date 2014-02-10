@@ -54,6 +54,17 @@ angular.module('nav.barnetillegg', [])
 			$scope.barn = data.finnFakta('barn');
 		};
 
+        $scope.kreverVedlegg = function(barn) {
+            return $scope.barnetHarInntekt(barn) || $scope.manglendeNorskBarn(barn);
+        }
+
+        $scope.manglendeNorskBarn = function(barn) {
+            if(barn && barn.properties) { 
+                return barn.type === 'BRUKERREGISTRERT' && barn.properties.land == "NOR";
+            }   
+            return false;
+        }
+
 		$scope.erGutt = function (barn) {
 			return barn.properties.kjonn === 'm';
 		};
@@ -63,7 +74,10 @@ angular.module('nav.barnetillegg', [])
 		};
 
         $scope.barnetHarInntekt = function (barn) {
-            return barn.properties.ikkebarneinntekt === 'false';
+            if(barn && barn.properties) { 
+                return barn.properties.ikkebarneinntekt === 'false';
+            }
+            return false;
         };
 
         $scope.barnetHarIkkeInntekt = function (barn) {
@@ -85,9 +99,9 @@ angular.module('nav.barnetillegg', [])
             barn.$save();
         };
 
-		$scope.validerBarnetillegg = function (form) {
-			$scope.validateForm(form.$invalid);
-			$scope.runValidation();
+        //TODO: Trenger vi denne? Formen vil jo alltid være valid
+		$scope.valider = function (skalScrolle) {
+//			$scope.runValidation(skalScrolle);
 		};
 
 		function settBarnCookie(faktumId) {
@@ -98,7 +112,7 @@ angular.module('nav.barnetillegg', [])
 				}
 			});
 
-			$cookieStore.put('barnetillegg', {
+			$cookieStore.put('scrollTil', {
 				aapneTabs   : aapneTabIds,
 				gjeldendeTab: '#barnetillegg',
 				faktumId    : faktumId
