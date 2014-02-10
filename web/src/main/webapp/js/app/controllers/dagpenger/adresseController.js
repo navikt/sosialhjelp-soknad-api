@@ -8,9 +8,10 @@ angular.module('nav.adresse', [])
 
         $scope.formattertGjeldendeAdresse = '';
         $scope.gjeldendeAdresseTypeLabel = '';
+
         if ($scope.harGjeldendeAdresse()) {
-            $scope.formattertGjeldendeAdresse = hentFormattertAdresse($scope.personalia.gjeldendeAdresse);
-            $scope.gjeldendeAdresseTypeLabel = hentAdresseTypeNokkel($scope.personalia.gjeldendeAdresseType);
+            $scope.formattertGjeldendeAdresse = $scope.hentFormattertAdresse($scope.personalia.gjeldendeAdresse);
+            $scope.gjeldendeAdresseTypeLabel = $scope.hentAdresseTypeNokkel($scope.personalia.gjeldendeAdresseType);
         }
 
         $scope.harSekundarAdresse = function() {
@@ -20,11 +21,11 @@ angular.module('nav.adresse', [])
         $scope.formattertSekundarAdresse = '';
         $scope.sekundarAdresseTypeLabel = '';
         if ($scope.harSekundarAdresse()) {
-            $scope.formattertSekundarAdresse = hentFormattertAdresse($scope.personalia.sekundarAdresse);
-            $scope.sekundarAdresseTypeLabel = hentAdresseTypeNokkel($scope.personalia.sekundarAdresseType);
+            $scope.formattertSekundarAdresse = $scope.hentFormattertAdresse($scope.personalia.sekundarAdresse);
+            $scope.sekundarAdresseTypeLabel = $scope.hentAdresseTypeNokkel($scope.personalia.sekundarAdresseType);
         }
 
-        function hentFormattertAdresse(adresse) {
+        $scope.hentFormattertAdresse = function(adresse) {
             var formattertAdresse = '';
 
             var adresseLinjer = adresse.split(',');
@@ -35,11 +36,12 @@ angular.module('nav.adresse', [])
             return formattertAdresse;
         };
 
-        function hentAdresseTypeNokkel(adresseType) {
-            if (adresseType === 'UTENLANDSK_ADRESSE' || 'BOSTEDSADRESSE' || 'POSTADRESSE') {
+
+        $scope.hentAdresseTypeNokkel = function(adresseType) {
+            if (adresseType === 'UTENLANDSK_ADRESSE' || adresseType === 'BOSTEDSADRESSE' || adresseType === 'POSTADRESSE') {
                 return 'personalia.folkeregistrertadresse';
             } else if (adresseType === 'MIDLERTIDIG_POSTADRESSE_NORGE') {
-                return 'personalia.midlertidigAdresseNorge';
+                return 'MIDLERTIDIG_POSTADRESSE_NORGE';
             } else if (adresseType === 'MIDLERTIDIG_POSTADRESSE_UTLAND') {
                 return 'personalia.midlertidigAdresseUtland';
             } else {
