@@ -31,6 +31,13 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
             laster: false
         };
 
+        $scope.hentAdresseLinjer = function() {
+            if( $scope.utslagskriterier &&  $scope.utslagskriterier.registrertAdresse != "") {
+                return $scope.utslagskriterier.registrertAdresse.split(", ");
+            }
+            return [];
+        }
+
         $scope.tpsSvarer = function () {
             return !$scope.tpsSvarerIkke()
         }
