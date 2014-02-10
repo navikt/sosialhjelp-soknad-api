@@ -57,8 +57,8 @@ angular.module('app.routes', ['ngRoute'])
 			.when('/fortsettsenere', {
 				templateUrl: '../html/templates/fortsettSenere.html',
 				resolve    : {
-					notUsedButRequiredProperty: function (EpostResolver) {
-						return EpostResolver;
+					notUsedButRequiredProperty: function (HentSoknadService) {
+						return HentSoknadService;
 					}
 				}
 			})

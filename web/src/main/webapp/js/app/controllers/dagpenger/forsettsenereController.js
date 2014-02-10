@@ -20,7 +20,6 @@ angular.module('nav.forsettsenere', ['nav.cmstekster'])
             $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
 
             $scope.forsettSenere = function (form) {
-				$scope.validateForm(form.$invalid);
 				$scope.$broadcast('RUN_VALIDATION' + form.$name);
 
 				if (form.$valid) {
@@ -28,6 +27,7 @@ angular.module('nav.forsettsenere', ['nav.cmstekster'])
 					if ($scope.epost) {
 						$scope.epost = new Faktum($scope.epost);
 						$scope.epost.$save({soknadId: data.soknad.soknadId}).then(function (epostData) {
+                            data.leggTilFaktum(epostData);
 							new fortsettSenereService({epost: $scope.epost.value}).$send({behandlingId: behandlingId}).then(function (data) {
 								$location.path('kvittering-fortsettsenere/');
 							});

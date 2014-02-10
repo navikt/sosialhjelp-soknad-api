@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +60,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
             return new Faktum(rs.getLong("soknad_id"),
                     rs.getLong("soknadbrukerdata_id"),
                     rs.getString("key"), rs.getString("value"),
-                    rs.getString("type"), rs.getLong("parrent_faktum"));
+                    rs.getString("type"), (Long) JdbcUtils.getResultSetValue(rs, rs.findColumn("parrent_faktum"), Long.class));
         }
     };
     private final RowMapper<FaktumEgenskap> faktumEgenskapRowMapper = new RowMapper<FaktumEgenskap>() {
@@ -166,22 +166,33 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
 
         return result;
     }
-    
+
     @Override
-    public Boolean isVedleggPaakrevd(Long soknadId, String key, String value) {
-        String sql =  "select count(*) from soknadbrukerdata where soknad_id=? and key=? and value like ?";
-        
+    public List<Faktum> hentBarneFakta(Long soknadId, Long faktumId) {
+        return getJdbcTemplate().query("select * from soknadbrukerdata where soknad_id = ? and parrent_faktum = ?", soknadDataRowMapper, soknadId, faktumId);
+    }
+
+    @Override
+    public Faktum finnFaktum(Long soknadId, String key) {
+        Long faktumId = getJdbcTemplate().queryForObject("select soknadbrukerdata_id from SOKNADBRUKERDATA where soknad_id = ? and key = ?", Long.class, soknadId, key);
+        return hentFaktum(soknadId, faktumId);
+    }
+
+    @Override
+    public Boolean isVedleggPaakrevd(Long soknadId, String key, String value, String dependOnValue) {
+        String sql = "select count(*) from soknadbrukerdata data left outer join soknadbrukerdata parent on parent.soknadbrukerdata_id = data.parrent_faktum where data.soknad_id=? and data.key=? and data.value like ? and (data.parrent_faktum is null OR parent.value like ?)";
+
         Integer count = null;
-        try{
-            count = getJdbcTemplate().queryForObject(sql, Integer.class, soknadId, key, value);    
-        } catch(DataAccessException e) {
+        try {
+            count = getJdbcTemplate().queryForObject(sql, Integer.class, soknadId, key, value, dependOnValue);
+        } catch (DataAccessException e) {
             LOG.warn("Klarte ikke hente count fra soknadBrukerData", e);
         }
-        
-        if(count != null) {
+
+        if (count != null) {
             return count > 0;
         }
-        
+
         return false;
     }
 
@@ -272,7 +283,7 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
                 getJdbcTemplate().update("insert into faktumegenskap (soknad_id, faktum_id, key, value) values (?, ?, ?, ?)",
                         soknadId, faktum.getFaktumId(), key, faktum.getProperties().get(key));
             }
-        } else if(systemFaktum) {
+        } else if (systemFaktum) {
             getJdbcTemplate().update("delete from faktumegenskap where soknad_id = ? and faktum_id = ? and systemegenskap = ?", soknadId, faktum.getFaktumId(), "1");
             for (String key : faktum.getProperties().keySet()) {
                 getJdbcTemplate().update("insert into faktumegenskap (soknad_id, faktum_id, key, value, systemegenskap) values (?, ?, ?, ?, ?)",
@@ -307,8 +318,6 @@ public class SoknadRepositoryJdbc extends JdbcDaoSupport implements SoknadReposi
     public void settSistLagretTidspunkt(Long soknadId) {
         getJdbcTemplate().update("update soknad set sistlagret = SYSDATE where soknad_id = ?", soknadId);
     }
-
-
 
     @Override
     public List<Faktum> hentAlleBrukerData(Long soknadId) {

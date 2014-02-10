@@ -249,30 +249,4 @@ angular.module('sendsoknad')
         );
         promiseArray.push(soknadOppsettDefer.promise, soknadDeferer.promise, faktaDefer.promise, land.$promise, tekster.$promise);
         return $q.all(promiseArray);
-    }])
-
-    //Lagt til for å tvinge ny lasting av fakta fra server. Da er vi sikker på at e-post kommer med til fortsett-senere siden.
-    .factory('EpostResolver', ['data', 'cms', '$resource', '$q', '$route', 'soknadService', function (data, cms, $resource, $q, $route, soknadService) {
-        var soknadId = data.soknad.soknadId;
-        var promiseArray = [];
-
-        var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
-            function (result) { // Success
-                cms.tekster = result;
-            }
-        );
-        promiseArray.push(tekster.$promise);
-
-        var soknad = soknadService.get({soknadId: soknadId},
-            function (result) { // Success
-                data.soknad = result;
-            }
-        );
-        var soknadOppsett = soknadService.options({soknadId: soknadId},
-            function (result) { // Success
-                data.soknadOppsett = result;
-            });
-        promiseArray.push(soknad.$promise, soknadOppsett.$promise);
-
-        return $q.all(promiseArray);
     }]);
