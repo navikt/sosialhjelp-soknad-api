@@ -1,41 +1,24 @@
 angular.module('nav.dagpengerdirective', [])
-	.directive('apneBolker', [ '$timeout', function ($timeout) {
+	.directive('apneBolker', ['$timeout', '$cookieStore', function ($timeout, $cookieStore) {
 		return {
 			require: '^form',
-			link   : function (scope, element, attrs, ctrl) {
-				var bolkerIRiktigRekkefolge = ['reellarbeidssokerForm', 'arbeidsforholdForm', 'egennaeringForm', 'vernepliktForm', 'utdanningForm', 'ytelserForm', 'personaliaForm', 'barnetilleggForm', 'fritekstForm'];
-				$timeout(function () {
-					if (ctrl.$invalid) {
-						var formMedFeil = '';
-						var index = bolkerIRiktigRekkefolge.length;
-						angular.forEach(ctrl.$error, function (verdi) {
-							for (var i = 0; i < verdi.length; i++) {
-								if (bolkenFinnes(verdi[i])) {
-									if (bolkenErUferdigOgKommerForTidligereBolk(verdi[i], index)) {
-										formMedFeil = verdi[i].$name;
-										index = bolkerIRiktigRekkefolge.indexOf(verdi[i].$name);
-									}
-								}
-							}
-						});
+			link   : function (scope) {
+                var cookiename = 'scrollTil';
+                var cookie = $cookieStore.get(cookiename);
+                if (!cookie) {
+                    $timeout(function() {
+                        var forsteInvalidBolk = $('.accordion-group').not('.validert').first();
 
-						scope.$broadcast('OPEN_TAB', hentIdFraForm(formMedFeil));
-						var fokusElement = element.find('#' + hentIdFraForm(formMedFeil)).find('input');
-						scrollToElement(fokusElement, 400);
-					}
-				}, 800);
+                        scope.apneTab(forsteInvalidBolk.attr('id'));
+                        $timeout(function() {
+                            var fokusElement = forsteInvalidBolk.find('input').first();
 
-				function bolkenErUferdigOgKommerForTidligereBolk(bolk, index) {
-					return bolk.$invalid && bolkerIRiktigRekkefolge.indexOf(bolk.$name) < index;
-				}
-
-				function bolkenFinnes(bolk) {
-					return bolkerIRiktigRekkefolge.indexOf(bolk.$name) > -1;
-				}
-
-				function hentIdFraForm(formNavn) {
-					return formNavn.split('Form')[0];
-				}
+                            if (fokusElement.length > 0) {
+                                scrollToElement(fokusElement, 400);
+                            };
+                        });
+                    });
+                }
 			}
 		}
 	}]);

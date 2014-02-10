@@ -48,6 +48,7 @@ angular.module('nav.feilmeldinger', [])
                         }, 1);
                     }
                     scope.$broadcast(eventString);
+                    return ctrl.$valid;
                 }
 
                 scope.$watch(function () {

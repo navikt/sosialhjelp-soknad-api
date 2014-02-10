@@ -5,7 +5,7 @@ angular.module('nav.vedleggbolker', [])
             link: function ($scope, element, attrs, ctrl) {
                 $timeout(function () {
                     var bolker = $(".accordion-group");
-                    var bolkerMedFeil = finnBolkerMedFeil(bolker);
+                    var bolkerMedFeil = finnBolkerMedOgUtenFeil(bolker);
 
                     apneForsteBolkMedFeil(bolkerMedFeil[0]);
                 }, 500);
@@ -14,15 +14,25 @@ angular.module('nav.vedleggbolker', [])
                 element.find('#til-oppsummering').bind('click', function () {
                     if (ctrl.$invalid) {
                         var alleBolker = finnAlleBolker();
-                        var alleBolkerMedFeil = finnBolkerMedFeil(alleBolker);
-                        apneBolkerSomIkkeErApenFraFor(alleBolkerMedFeil);
+                        var inndeltBolker = finnBolkerMedOgUtenFeil(alleBolker);
+                        apneFeilBolkerSomIkkeErApenFraFor(inndeltBolker.medFeil);
+                        lukkeRiktigBolkerSomIkkErLukketFraFor(inndeltBolker.utenFeil);
                     }
                 });
 
-                function apneBolkerSomIkkeErApenFraFor(bolker) {
+                function apneFeilBolkerSomIkkeErApenFraFor(bolker) {
                     for (var i = 0; i < bolker.length; i++) {
                         var bolk = $(bolker[i]);
                         if (!(bolk.hasClass('open'))) {
+                            bolk.find('.accordion-toggle').trigger('click');
+                        }
+                    }
+                }
+
+                function lukkeRiktigBolkerSomIkkErLukketFraFor(bolker) {
+                    for (var i = 0; i < bolker.length; i++) {
+                        var bolk = $(bolker[i]);
+                        if (bolk.hasClass('open')) {
                             bolk.find('.accordion-toggle').trigger('click');
                         }
                     }
@@ -40,16 +50,21 @@ angular.module('nav.vedleggbolker', [])
                     return $(".accordion-group");
                 }
 
-                function finnBolkerMedFeil(bolker) {
+                function finnBolkerMedOgUtenFeil(bolker) {
                     var bolkerMedFeil = [];
+                    var bolkerUtenfeil = [];
 
                     for (var i = 0; i < bolker.length; i++) {
                         if (bolkHarFeil(bolker[i])) {
                             bolkerMedFeil.push(bolker[i]);
+                        } else {
+                            bolkerUtenfeil.push(bolker[i]);
                         }
                     }
-                    return bolkerMedFeil;
+                    var bolker = {medFeil: bolkerMedFeil, utenFeil: bolkerUtenfeil };
+                    return bolker;
                 }
+
             }
         };
     }])

@@ -69,7 +69,6 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 		$scope.lagreArbeidsforhold = function (form) {
 			var eventString = 'RUN_VALIDATION' + form.$name;
 			$scope.$broadcast(eventString);
-			$scope.validateForm(form.$invalid);
 			$scope.runValidation(true);
 
 			if (form.$valid) {
@@ -87,9 +86,9 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 		}
 
 		function oppdaterCookieValue(faktumId) {
-			var arbeidsforholdCookie = $cookieStore.get('arbeidsforhold');
+			var arbeidsforholdCookie = $cookieStore.get('scrollTil');
 
-			$cookieStore.put('arbeidsforhold', {
+			$cookieStore.put('scrollTil', {
 				aapneTabs   : arbeidsforholdCookie.aapneTabs,
 				gjeldendeTab: arbeidsforholdCookie.gjeldendeTab,
 				faktumId    : faktumId

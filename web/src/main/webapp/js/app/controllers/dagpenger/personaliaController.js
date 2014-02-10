@@ -25,8 +25,8 @@ angular.module('nav.personalia', [])
             return $scope.personalia.statsborgerskap != 'NOR';
         }
 
-        $scope.validerPersonalia = function (form) {
-            // Har ikke form her ennå
-            $scope.validateForm(false);
+
+        // TODO: Trenger jo ikke validering når vi ikke har form
+        $scope.valider = function (skalScrolle) {
         }
     }]);

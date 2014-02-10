@@ -1,9 +1,5 @@
 angular.module('nav.arbeidsforhold.controller', [])
     .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams, $cookieStore, $location, data, Faktum) {
-        $scope.$on('VALIDER_ARBEIDSFORHOLD', function () {
-            $scope.validerArbeidsforhold(false);
-        });
-
         $scope.soknadId = data.soknad.soknadId;
 
         $scope.sluttaarsakUrl = data.config["soknad.sluttaarsak.url"];
@@ -96,14 +92,14 @@ angular.module('nav.arbeidsforhold.controller', [])
             return faktum && faktum.value && faktum.value === 'fastArbeidstid';
         };
 
-        $scope.validerOgSettModusOppsummering = function (form) {
-            $scope.validateForm(form.$invalid);
-            $scope.validerArbeidsforhold(true);
-
-        };
-
-        $scope.validerArbeidsforhold = function (skalScrolle) {
-            $scope.runValidation(skalScrolle);
+        $scope.valider = function (skalScrolle) {
+            var valid = $scope.runValidation(skalScrolle);
+            if (valid) {
+                $scope.lukkTab('arbeidsforhold');
+                $scope.settValidert('arbeidsforhold');
+            } else {
+                $scope.apneTab('arbeidsforhold');
+            }
 
             $scope.harFeil = false;
 
@@ -145,7 +141,7 @@ angular.module('nav.arbeidsforhold.controller', [])
                 }
             });
 
-            $cookieStore.put('arbeidsforhold', {
+            $cookieStore.put('scrollTil', {
                 aapneTabs: aapneTabIds,
                 gjeldendeTab: '#arbeidsforhold',
                 faktumId: faktumId
