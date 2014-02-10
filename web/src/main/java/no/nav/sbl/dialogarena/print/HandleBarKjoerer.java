@@ -232,6 +232,17 @@ public class HandleBarKjoerer {
             }
         });
 
+        handlebars.registerHelper("hvisIkkeTom", new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object value, Options options) throws IOException {
+                if(value != null && !value.toString().isEmpty()){
+                    return options.fn(this);
+                } else {
+                    return options.inverse(this);
+                }
+            }
+        });
+
         handlebars.registerHelper("hentTekst", new Helper<String>() {
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
