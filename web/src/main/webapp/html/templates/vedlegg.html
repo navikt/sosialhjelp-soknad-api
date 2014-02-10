@@ -28,7 +28,7 @@
                     <div data-accordion-heading>
                         <div class="bolk-fokus">
                             <div class="vedlegg-bolk"
-                                 data-ng-class="{behandlet: !vedleggEr(forventning, 'VedleggKreves'), lastetopp: vedleggEr(forventning, 'LastetOpp')}">
+                                 data-ng-class="{behandlet: !vedleggEr(forventning, 'VedleggKreves') && ekstraVedleggFerdig(forventning), lastetopp: vedleggEr(forventning, 'LastetOpp') && ekstraVedleggFerdig(forventning), ekstraVedlegg:   !ekstraVedleggFerdig(forventning)}">
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'LastetOpp')"
                                      data-cmstekster="vedlegg.behandlet.lastetopp"></div>
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesSenere')"
@@ -51,13 +51,13 @@
 
                             <div class="form-linje tekstfelt" data-ng-if="erEkstraVedlegg(forventning)">
                                 <label>
-                                    <span>Hva vedlegger du (max 25 tegn)? </span>
+                                    <span>Hva vedlegger du (max 25 tegn)? </span> Modellen: {{forventning.navn}} df: {{ ekstraVedleggFerdig(forventning) }}
                                     <input type="text" maxlength="25" data-ng-maxlength="25"
-                                            data-ng-minlength="3"
+                                           data-ng-minlength="3"
                                            data-ng-required="true" data-ng-model="forventning.navn"
                                            data-ng-blur="lagreVedlegg(forventning)"
-                                            data-blur-validate
-                                            data-error-messages="{required:'vedlegg.annet.navn.feilmelding', minlength:'vedlegg.annet.navn.lengde.feilmelding'}">
+                                           data-blur-validate
+                                           data-error-messages="{required:'vedlegg.annet.navn.feilmelding', minlength:'vedlegg.annet.navn.lengde.feilmelding'}">
                                 </label>
                                 <span class="melding" data-cmstekster="vedlegg.annet.navn.feilmelding"></span>
                             </div>
@@ -88,8 +88,10 @@
                                     <a data-ng-href="#/opplasting/{{forventning.vedleggId}}" class="knapp-link"
                                        data-ng-click="endreInnsendingsvalg(forventning, 'VedleggKreves');">Last opp
                                         vedlegget</a>
-                                    <a href="javascript:void(0)" aria-role="button" data-ng-if="erEkstraVedlegg(forventning)"
-                                       data-ng-click="slettAnnetVedlegg(forventning);" name="Slett" data-fokus-slett-annet data-cmstekster="vedlegg.annet.slett">Slett</a>
+                                    <a href="javascript:void(0)" aria-role="button"
+                                       data-ng-if="erEkstraVedlegg(forventning)"
+                                       data-ng-click="slettAnnetVedlegg(forventning);" name="Slett"
+                                       data-fokus-slett-annet data-cmstekster="vedlegg.annet.slett">Slett</a>
 
                                 </div>
                                 <div data-ng-if="!erEkstraVedlegg(forventning)">
@@ -109,7 +111,8 @@
                                            data-ng-click="endreInnsendingsvalg(forventning, 'SendesIkke')">
                                     <label for="{{$index}}ikkesendRadio"
                                            data-cmstekster="vedlegg.faktum.ikkesend"></label>
-                                    <input type="hidden" class="hidden-vedlegg" data-ng-model="hiddenFelt.value" data-ng-required="true"
+                                    <input type="hidden" class="hidden-vedlegg" data-ng-model="hiddenFelt.value"
+                                           data-ng-required="true"
                                            data-error-messages="'{{forventning.tittel}}'">
                                 </div>
                                 <span class="melding"
@@ -122,7 +125,8 @@
                                     <div class="knapper">
                                         <!--a data-ng-href="../rest/soknad/{{soknadData.soknadId}}/faktum/{{forventning.faktum.faktumId}}/vedlegg/{{forventning.faktum.vedleggId}}/data"
                                            data-cmstekster="vedlegg.lastned"></a-->
-                                        <a href="javascript:void(0)" aria-role="button" data-cmstekster="vedlegg.slett" data-ng-click="slettVedlegg(forventning)"
+                                        <a href="javascript:void(0)" aria-role="button" data-cmstekster="vedlegg.slett"
+                                           data-ng-click="slettVedlegg(forventning)"
                                            data-cmshtml="vedlegg.slettvedlegg"></a>
                                     </div>
                                 </div>
@@ -136,7 +140,8 @@
     <div class="rad-belyst leggtilekstra">
         <div class="begrensning sak-totredel">
             <section class="panel-standard oversikt">
-                <a href="javascript:void(0)" aria-role="button" class="knapp-stor" data-cmstekster="vedlegg.leggtilekstravedlegg"
+                <a href="javascript:void(0)" aria-role="button" class="knapp-stor"
+                   data-cmstekster="vedlegg.leggtilekstravedlegg"
                    data-ng-click="nyttAnnetVedlegg()" data-apne-annet-vedlegg></a>
             </section>
         </div>
@@ -145,7 +150,8 @@
     <div class="rad ferdig-skjema">
         <div class="begrensning sak-totredel">
             <section class="panel-standard oversikt">
-                <a href="javascript:void(0)" aria-role="button" id="til-oppsummering" class="knapp-hoved" data-ng-click="validerVedlegg(vedleggForm)"
+                <a href="javascript:void(0)" aria-role="button" id="til-oppsummering" class="knapp-hoved"
+                   data-ng-click="validerVedlegg(vedleggForm)"
                    data-cmstekster="vedlegg.ferdig"
                    data-fremdriftsindikator="grå" role="button"></a>
             </section>
