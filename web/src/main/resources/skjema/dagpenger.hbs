@@ -1135,18 +1135,21 @@
                 {{/forFaktaMedPropertySattTilTrue}}
             </table>
 
+            {{#forFaktum "fritekst"}}
+                {{#hvisIkkeTom value}}
+                    <h2>{{ hentTekst "fritekst.tittel" }}</h2>
+                    <table>
 
-            <h2>{{ hentTekst "fritekst.tittel" }}</h2>
-            <table>
-                {{#forFaktum "fritekst"}}
-                    <tr>
-                        <td class="sjekket"></td>
-                        <td>
-                            <span>{{ value }}</span>
-                        </td>
-                    </tr>
-                {{/forFaktum}}
-            </table>
+                            <tr>
+                                <td class="sjekket"></td>
+                                <td>
+                                    <span>{{ value }}</span>
+                                </td>
+                            </tr>
+
+                    </table>
+                {{/hvisIkkeTom}}
+            {{/forFaktum}}
 
             <h2>{{ hentTekst "dagpenger.oppsummering.vedlegg.tittel" }}</h2>
 			<table class="vedlegg">
