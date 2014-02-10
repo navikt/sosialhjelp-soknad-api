@@ -28,8 +28,8 @@
                     <div data-accordion-heading>
                         <div class="bolk-fokus">
                             <div class="vedlegg-bolk"
-                                 data-ng-class="{behandlet: !vedleggEr(forventning, 'VedleggKreves') && ekstraVedleggFerdig(forventning),
-                                 lastetopp: vedleggEr(forventning, 'LastetOpp') && ekstraVedleggFerdig(forventning),
+                                 data-ng-class="{behandlet: !vedleggEr(forventning, 'VedleggKreves'),
+                                 lastetopp: vedleggEr(forventning, 'LastetOpp'),
                                  ekstraVedlegg: !ekstraVedleggFerdig(forventning)}">
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'LastetOpp')"
                                      data-cmstekster="vedlegg.behandlet.lastetopp"></div>
@@ -52,6 +52,7 @@
                                 data-cmstekster="vedlegg.faktum.maabekrefte.annetvedlegg"></h4>
 
                             <div class="form-linje tekstfelt" data-ng-if="erEkstraVedlegg(forventning)">
+                                <input type="hidden" data-ng-required="true" data-ng-model="filVedlagt" data-error-messages="'vedlegg.annet.ikkelastetopp.feilmelding'"/>
                                 <label>
                                     <span>Hva vedlegger du (max 25 tegn)? </span>
                                     <input type="text" maxlength="25" data-ng-maxlength="25"
