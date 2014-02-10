@@ -7,7 +7,7 @@ angular.module('nav.vedleggbolker', [])
                     var bolker = $(".accordion-group");
                     var bolkerMedFeil = finnBolkerMedOgUtenFeil(bolker);
 
-                    apneForsteBolkMedFeil(bolkerMedFeil[0]);
+                    apneForsteBolkMedFeil(bolkerMedFeil.medFeil[0]);
                 }, 500);
 
                 //Bolker med feil og som er lukket skal åpnes ved validering av hele vedleggsiden
@@ -39,7 +39,9 @@ angular.module('nav.vedleggbolker', [])
                 }
 
                 function apneForsteBolkMedFeil(bolk) {
-                    $(bolk).find('.accordion-toggle').trigger('click');
+                    if(!($(bolk).hasClass('open'))) {
+                        $(bolk).find('.accordion-toggle').trigger('click');
+                    }
                 }
 
                 function bolkHarFeil(bolk) {
