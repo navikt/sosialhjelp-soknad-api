@@ -5,7 +5,10 @@ angular.module('app.services', ['ngResource'])
 	.config(function ($httpProvider) {
 		$httpProvider.interceptors.push('resetTimeoutInterceptor');
 		$httpProvider.interceptors.push('settDelstegStatusEtterKallMotServer');
-		$httpProvider.interceptors.push('httpRequestInterceptorPreventCache');
+
+        if (getIEVersion() < 10) {
+            $httpProvider.interceptors.push('httpRequestInterceptorPreventCache');
+        }
 	})
 
     // Resetter session-timeout
