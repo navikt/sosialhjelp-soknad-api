@@ -15,7 +15,6 @@ angular.module('app.directives', [
 	'nav.select',
 	'nav.hjelpetekst',
 	'nav.datepicker',
-	'nav.prosent',
 	'nav.sidetittel',
 	'nav.bildenavigering',
 	'nav.navfaktum',
@@ -25,6 +24,7 @@ angular.module('app.directives', [
 	'nav.dagpengerdirective',
 	'nav.skjematittel',
 	'nav.aria',
+
 	'nav.norskDatoFilter',
     'nav.fokus',
     'nav.vedleggbolker',

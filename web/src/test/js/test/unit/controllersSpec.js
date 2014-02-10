@@ -38,9 +38,10 @@ describe('DagpengerControllere', function () {
                 }
             }
         ];
+
         $provide.value("data", {
             fakta: fakta,
-            finnFaktum: function(key) {
+            finnFaktum: function (key) {
                 var res = null;
                 fakta.forEach(function (item) {
                     if (item.key == key) {
@@ -49,8 +50,16 @@ describe('DagpengerControllere', function () {
                 });
                 return res;
             },
-            finnFakta: function(faktumKey) {},
-            soknad: {soknadId: 1}
+            finnFakta: function (faktumKey) {
+            },
+            leggTilFaktum: function (faktum) {
+                fakta.push(faktum);
+            },
+            land: {result: [{value: 'NOR', text: 'Norge'},{ value:'DNK', text: 'Danmark'}]},
+            soknad: {soknadId: 1},
+            config: ["soknad.sluttaarsak.url", "soknad.lonnskravskjema.url", "soknad.permitteringsskjema.url" ],
+            slettFaktum: function (faktumData) {
+            }
         });
         $provide.value("cms", {});
     }));
@@ -65,7 +74,7 @@ describe('DagpengerControllere', function () {
             scope.runValidationBleKalt = true;
         };
 
-        scope.apneTab = function() {
+        scope.apneTab = function () {
 
         };
 
@@ -101,10 +110,10 @@ describe('DagpengerControllere', function () {
             expect(scope.aarstall.length).toEqual(5);
         })
 
-        it('prevalgte aret skal være fjorårets år', function() {
+        it('prevalgte aret skal være fjorårets år', function () {
             var idag = new Date();
             var ifjor = idag.getFullYear();
-            expect(scope.forrigeAar).toEqual((ifjor-1).toString())
+            expect(scope.forrigeAar).toEqual((ifjor - 1).toString())
         })
     });
 
@@ -177,7 +186,7 @@ describe('DagpengerControllere', function () {
             var month = idag.getMonth() + 1;
             var date = idag.getDate();
 
-            scope.barn.properties.fodselsdato = year + "-" + month +"-" + date;
+            scope.barn.properties.fodselsdato = year + "-" + month + "-" + date;
             expect(scope.finnAlder().toString()).toEqual("0");
         });
 
@@ -187,7 +196,7 @@ describe('DagpengerControllere', function () {
             var month = idag.getMonth() + 1;
             var date = idag.getDate();
 
-            scope.barn.properties.fodselsdato = lastyear + "-" + month +"-" + date;
+            scope.barn.properties.fodselsdato = lastyear + "-" + month + "-" + date;
             expect(scope.finnAlder().toString()).toEqual("1");
         });
 
@@ -195,9 +204,9 @@ describe('DagpengerControllere', function () {
             var idag = new Date();
             var lastyear = idag.getFullYear() - 1;
             var month = idag.getMonth() + 1;
-            var date = idag.getDate()  + 1;
+            var date = idag.getDate() + 1;
 
-            scope.barn.properties.fodselsdato = lastyear + "-" + month +"-" + date;
+            scope.barn.properties.fodselsdato = lastyear + "-" + month + "-" + date;
             expect(scope.finnAlder().toString()).toEqual("0");
         });
         it('skal returnere 0 aar for barn fodt måneden etter idag ifjor', function () {
@@ -206,9 +215,149 @@ describe('DagpengerControllere', function () {
             var lastmonth = idag.getMonth() + 2;
             var date = idag.getDate();
 
-            scope.barn.properties.fodselsdato = lastyear + "-" + lastmonth +"-" + date;
+            scope.barn.properties.fodselsdato = lastyear + "-" + lastmonth + "-" + date;
             expect(scope.finnAlder().toString()).toEqual("0");
         });
     });
+    describe('AdresseCtrl', function () {
+        beforeEach(inject(function ($controller) {
+            ctrl = $controller('AdresseCtrl', {
+                $scope: scope
+            });
+        }));
 
+        it('Skal returnere true hvis har gjeldene adresse', function () {
+            scope.personalia = {gjeldendeAdresse: "Gjeldene adresse"};
+            expect(scope.harGjeldendeAdresse()).toEqual(true);
+        });
+        it('Skal returnere true hvis har sekundær adresse', function () {
+            scope.personalia = {gjeldendeAdresse: "Gjeldene adresse", sekundarAdresse: 'sekundær adresse'};
+            expect(scope.harGjeldendeAdresse()).toEqual(true);
+        });
+        it('adressetype BOSTEDSADRESSE skal returnere folkeregistrertadresse ', function () {
+            expect(scope.hentAdresseTypeNokkel("BOSTEDSADRESSE")).toEqual("personalia.folkeregistrertadresse");
+        });
+        it('adressetype UTENLANDSK_ADRESSE skal returnere folkeregistrertadresse ', function () {
+            expect(scope.hentAdresseTypeNokkel("UTENLANDSK_ADRESSE")).toEqual("personalia.folkeregistrertadresse");
+        });
+        it('adressetype POSTADRESSE skal returnere folkeregistrertadresse ', function () {
+            expect(scope.hentAdresseTypeNokkel("POSTADRESSE")).toEqual("personalia.folkeregistrertadresse");
+        });
+        it('adressetype MIDLERTIDIG_POSTADRESSE_NORGE skal returnere folkeregistrertadresse ', function () {
+            expect(scope.hentAdresseTypeNokkel("MIDLERTIDIG_POSTADRESSE_NORGE")).toEqual("MIDLERTIDIG_POSTADRESSE_NORGE");
+        });
+        it('adressetype MIDLERTIDIG_POSTADRESSE_UTLAND skal returnere folkeregistrertadresse ', function () {
+            expect(scope.hentAdresseTypeNokkel("MIDLERTIDIG_POSTADRESSE_UTLAND")).toEqual("personalia.midlertidigAdresseUtland");
+        });
+        it('ugyldig adressetype skal returnere tom string ', function () {
+            expect(scope.hentAdresseTypeNokkel("sdfsdf")).toEqual("");
+        });
+    });
+    describe('ArbeidsforholdCtrl', function () {
+        beforeEach(inject(function ($controller, data) {
+            ctrl = $controller('ArbeidsforholdCtrl', {
+                $scope: scope
+            });
+            scope.data = data;
+        }));
+        it('hvis arbeidsforholdet inneholder feil og arbeidsforholdet er lagret så skal feil vises', function () {
+            scope.harFeil = true;
+            scope.harLagretArbeidsforhold = false;
+            expect(scope.skalViseFeil()).toEqual(true);
+        });
+        it('hvis bruker har svart har ikke jobbet så skal harSvart returnere true', function () {
+            var arbeidstilstand = {
+                key: 'arbeidstilstand',
+                value: 'harIkkeJobbet'
+            };
+            scope.data.leggTilFaktum(arbeidstilstand);
+            expect(scope.harSvart()).toBe(true);
+        });
+        it('hvis bruker ikke har svart har ikke jobbet så skal harSvart returnere true', function () {
+            var arbeidstilstand = {
+                key: 'arbeidstilstand',
+                value: ''
+            };
+            scope.data.leggTilFaktum(arbeidstilstand);
+            expect(scope.harSvart()).toBe(true);
+        });
+        it('hvis bruker ikke har jobbet så skal hvisHarJobbet returnere false', function () {
+            var arbeidstilstand = {
+                key: 'arbeidstilstand',
+                value: 'harIkkeJobbet'
+            }
+            scope.data.leggTilFaktum(arbeidstilstand);
+            scope.hvisHarJobbetVarierende();
+            expect(scope.hvisHarJobbet()).toBe(false);
+        });
+        it('hvis bruker har jobbet så skal hvisHarJobbet returnere true', function () {
+            var arbeidstilstand = {
+                key: 'arbeidstilstand',
+                value: ''
+            };
+            scope.data.leggTilFaktum(arbeidstilstand);
+            expect(scope.hvisHarJobbet()).toBe(true);
+        });
+        it('hvis bruker ikke har jobbet så skal hvisHarIkkeJobbet returnere true', function () {
+            var arbeidstilstand = {
+                key: 'arbeidstilstand',
+                value: 'harIkkeJobbet'
+            };
+            scope.data.leggTilFaktum(arbeidstilstand);
+            expect(scope.hvisHarIkkeJobbet()).toBe(true);
+        });
+        it('hvis bruker har jobbet så skal hvisHarIkkeJobbet returnere false', function () {
+            var arbeidstilstand = {
+                key: 'arbeidstilstand',
+                value: 'sdf'
+            };
+            scope.data.leggTilFaktum(arbeidstilstand);
+            expect(scope.hvisHarIkkeJobbet()).toBe(false);
+        });
+        it('hvis bruker har jobbet varierende så skal hvisHarJobbetVarierende returnere true', function () {
+            var arbeidstilstand = {
+                key: 'arbeidstilstand',
+                value: 'varierendeArbeidstid'
+            };
+            scope.data.leggTilFaktum(arbeidstilstand);
+            expect(scope.hvisHarJobbetVarierende()).toBe(true);
+        });
+        it('hvis bruker ikke har jobbet varierende så skal hvisHarJobbetVarierende returnere false', function () {
+            var arbeidstilstand = {
+                key: 'arbeidstilstand',
+                value: ''
+            };
+            scope.data.leggTilFaktum(arbeidstilstand);
+            expect(scope.hvisHarJobbetVarierende()).toBe(false);
+        });
+        it('hvis bruker har jobbet fast så skal hvisHarJobbetFast returnere true', function () {
+            var arbeidstilstand = {
+                key: 'arbeidstilstand',
+                value: 'fastArbeidstid'
+            };
+            scope.data.leggTilFaktum(arbeidstilstand);
+            expect(scope.hvisHarJobbetFast()).toBe(true);
+        });
+        it('hvis bruker ikke har jobbet fast så skal hvisHarJobbetFast returnere false', function () {
+            var arbeidstilstand = {
+                key: 'arbeidstilstand',
+                value: ''
+            };
+            scope.data.leggTilFaktum(arbeidstilstand);
+            expect(scope.hvisHarJobbetFast()).toBe(false);
+        });
+        it('hvis arbeidslisten inneholder to arbeidsforhold skal den kun innholde en etter at 1 blir slettet', function () {
+            scope.arbeidsliste = ["arbeidsforhold1", "arbeidsforhold2"];
+            var arbeidsforhold = [
+                {arbeidsforhold: "arbeidsforhold"}
+            ];
+            var event = $.Event("click");
+            expect(scope.arbeidsliste.length).toEqual(2);
+            scope.slettArbeidsforhold(arbeidsforhold, 0, event);
+            expect(scope.arbeidsliste.length).toEqual(1);
+        });
+        it('skal returnere Norge for landkode NOR', function () {
+            expect(scope.finnLandFraLandkode('NOR')).toEqual("Norge");
+        })
+    });
 });
