@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.websoknad.servlet;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import no.nav.modig.core.context.SubjectHandler;
+import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
@@ -75,7 +76,12 @@ public class SoknadTpsDataController {
     public Personalia hentPersonalia() {
         String fnr = SubjectHandler.getSubjectHandler().getUid();
         Personalia personalia;
-        personalia = personaliaService.hentPersonalia(fnr);
+        
+        try {
+           personalia = personaliaService.hentPersonalia(fnr);
+        } catch(ApplicationException e) {
+           personalia = new Personalia();
+        }
        
         return personalia;
     }
