@@ -55,10 +55,10 @@ angular.module('nav.barnetillegg', [])
 		};
 
         $scope.kreverVedlegg = function(barn) {
-            return $scope.barnetHarInntekt(barn) || $scope.manglendeNorskBarn(barn);
+            return $scope.barnetHarInntekt(barn) || $scope.norskBarnIkkeFunnetITPS(barn);
         }
 
-        $scope.manglendeNorskBarn = function(barn) {
+        $scope.norskBarnIkkeFunnetITPS = function(barn) {
             if(barn && barn.properties) { 
                 return barn.type === 'BRUKERREGISTRERT' && barn.properties.land == "NOR";
             }   

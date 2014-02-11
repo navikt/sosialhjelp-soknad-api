@@ -156,12 +156,25 @@ angular.module('nav.barn', ['app.services'])
         }
 
         $scope.$watch(function () {
+            if ($scope.barn.properties.land && $scope.barn.properties.land != "") {
+                return $scope.barn.properties.land;
+            }
+        }, function () {
+            if($scope.barn.properties.land && $scope.barn.properties.land != "") {
+                $resource('/sendsoknad/rest/landtype/:landkode').get(
+                    {landkode: $scope.barn.properties.land},
+                    function (eosdata) { // Success
+                        $scope.eosLandType = eosdata.result;
+                    });
+            }
+        });
+
+        $scope.$watch(function () {
             if ($scope.barn.properties.fodselsdato) {
                 return $scope.barn.properties.fodselsdato;
             }
         }, function () {
             var alder = $scope.finnAlder();
-
             if (alder !== "undefined") {
                 if (alder < 18) {
                     $scope.underAtten.value = "true";
@@ -173,20 +186,6 @@ angular.module('nav.barn', ['app.services'])
                 }
             } else {
                 $scope.skalViseFeilmelding = false;
-            }
-        });
-
-        $scope.$watch(function () {
-            if ($scope.barn.properties.land && $scope.barn.properties.land != "") {
-                return $scope.barn.properties.land;
-            }
-        }, function () {
-            if($scope.barn.properties.land && $scope.barn.properties.land != "") {
-                $resource('/sendsoknad/rest/landtype/:landkode').get(
-                    {landkode: $scope.barn.properties.land},
-                    function (eosdata) { // Success
-                        $scope.eosLandType = eosdata.result;
-                });
             }
         });
 

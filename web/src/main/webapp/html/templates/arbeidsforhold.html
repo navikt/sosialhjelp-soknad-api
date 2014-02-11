@@ -21,7 +21,6 @@
                  data-navfeilmelding="arbeidsforhold.arbeidstilstand.feilmelding">
             </div>
 
-
             <div data-navradio
                  data-value="harIkkeJobbet"
                  data-navconfig
@@ -80,7 +79,7 @@
         </div>
 
         <div class="knapper-arbeidsforhold">
-            <div id="legg-til" class="form-linje knapp" data-ng-if="harSvart()" data-ng-class="{feil: skalViseFeil()}">
+            <div id="legg-til" class="form-linje knapp ikke-fadebakgrunn" data-ng-if="harSvart()" data-ng-class="{feil: skalViseFeil()}">
                 <div data-ng-if="hvisHarJobbet()">
                     <input type="hidden"
                            data-ng-model="harLagretArbeidsforhold"
