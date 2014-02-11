@@ -158,6 +158,36 @@ form, [ng-form], [data-ng-form] {
           background-size: 1.4rem;
         }
       }
+
+      &.ekstraVedlegg {
+        h2 {
+          padding-top: 40px;
+          &:before {
+            display: inline-block;
+            content: "";
+            background: none;
+            width: none;
+            height: none;
+            background-size: none;
+          }
+        }
+      }
+    }
+    .ekstraVedlegg {
+      h2 {
+        padding-top: 40px;
+      }
+
+      &.lastetopp, &.behandlet {
+        h2 {
+          padding-top: 0px !important;
+        }
+        div {
+          padding-top: 30px;
+          text-transform: uppercase;
+          color: #3e3832;
+        }
+      }
     }
   }
   .accordion {

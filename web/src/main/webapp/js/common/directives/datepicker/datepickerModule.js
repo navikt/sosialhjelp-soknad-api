@@ -43,7 +43,7 @@ angular.module('nav.datepicker', [])
 		changeMonth: true,
 		changeYear : true
 	})
-	.directive('navDato', ['$timeout', 'datepickerConfig', '$filter', function ($timeout, datepickerConfig, $filter) {
+	.directive('navDato', ['$timeout', 'datepickerConfig', '$filter', 'cms', function ($timeout, datepickerConfig, $filter, cms) {
 		return {
 			restrict   : 'A',
 			require    : '^form',
@@ -69,7 +69,7 @@ angular.module('nav.datepicker', [])
 				var datepickerInput = element.find('input[type=hidden]');
 				var harHattFokus = false;
 				var datepickerErLukket = true;
-
+				var ugyldigFremtidigDatoFeilmelding = cms.tekster['dato.ugyldigFremtidig.feilmelding'];
 
 				scope.harFokus = false;
 
@@ -143,6 +143,27 @@ angular.module('nav.datepicker', [])
 					return inputfeltHarTekstMenIkkeGyldigDatoFormat() && !scope.harFokus && harHattFokus;
 				};
 
+				scope.sjekkUloveligFremtidigDato = function () {
+					if(!scope.erFremtidigdatoTillatt && scope.ngModel != undefined) {
+						return erFremtidigDato(scope.ngModel);
+					}
+					return false;
+				};
+
+				scope.erUloveligFremtidigDato = function() {
+					
+					if(scope.fremtidigDatoFeil && !scope.harFokus && harHattFokus) {
+						var el = element.controller('ngModel');
+						el.$setValidity(ugyldigFremtidigDatoFeilmelding, false);
+						return true;
+					} else if(!scope.fremtidigDatoFeil) {
+						var el = element.controller('ngModel');
+						el.$setValidity(ugyldigFremtidigDatoFeilmelding, true);
+						return false;
+					}
+					return false;
+				}
+
 				scope.erIkkeGyldigDato = function () {
 					return !scope.ngModel && inputfeltHarTekstOgGyldigDatoFormat() &&
 						!erGyldigDato(element.find('input[type=text]').val()) && !scope.harFokus && harHattFokus;
@@ -157,7 +178,7 @@ angular.module('nav.datepicker', [])
 				};
 
                 function harFeilMedNavDatepicker() {
-                    return scope.harRequiredFeil() || scope.harFormatteringsFeil() || scope.harTilDatoFeil() || scope.erIkkeGyldigDato();
+                    return scope.harRequiredFeil() || scope.harFormatteringsFeil() || scope.harTilDatoFeil() || scope.erIkkeGyldigDato() || scope.erUloveligFremtidigDato();
                 }
 
                 function harFeilMedDateInput() {
@@ -173,6 +194,8 @@ angular.module('nav.datepicker', [])
 						scope.endret();
 					}
 
+					scope.fremtidigDatoFeil = scope.sjekkUloveligFremtidigDato();
+					
 					if (new Date(scope.ngModel) < new Date(scope.fraDato)) {
 						scope.ngModel = '';
 						scope.tilDatoFeil = true;

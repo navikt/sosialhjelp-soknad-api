@@ -1,5 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import no.aetat.arena.fodselsnr.Fodselsnr;
 import no.aetat.arena.personstatus.Personstatus;
 import no.aetat.arena.personstatus.PersonstatusType;
@@ -51,6 +55,7 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
+
 import org.apache.commons.io.IOUtils;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -61,6 +66,7 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.activation.DataHandler;
 import javax.xml.ws.Holder;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -71,10 +77,6 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.UUID;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @Configuration
 @ComponentScan(excludeFilters = @Filter(Configuration.class))
@@ -94,6 +96,9 @@ public class MockConsumerConfig {
                 }
 
             });
+            
+            //when(mock.sendSoknad(any(WSSoknadsdata.class))).thenThrow(new RuntimeException());
+            
             return mock;
         }
 

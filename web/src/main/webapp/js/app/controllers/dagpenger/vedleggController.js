@@ -37,6 +37,13 @@ angular.module('nav.vedlegg.controller', [])
             return vedlegg.innsendingsvalg === status;
         };
 
+        $scope.ekstraVedleggFerdig = function (forventning) {
+            if(forventning.skjemaNummer === 'N6') {
+                return forventning.navn !== null && forventning.navn !== undefined;
+            }
+            return true;
+        };
+
         $scope.nyttAnnetVedlegg = function () {
             new Faktum({
                 key: 'ekstraVedlegg',
@@ -59,6 +66,8 @@ angular.module('nav.vedlegg.controller', [])
             $scope.skalViseFeil = { value: false };
         }
 
+        $scope.filVedlagt = $scope.forventning.storrelse == 0 ? "" : "true";
+
 
         $scope.slettVedlegg = function (forventning) {
             if ($scope.erEkstraVedlegg(forventning)) {
@@ -66,8 +75,10 @@ angular.module('nav.vedlegg.controller', [])
             }
             forventning.$remove().then(function () {
                 forventning.innsendingsvalg = 'VedleggKreves';
+
             });
 
+            $scope.hiddenFelt = {value: '' };
             $scope.skalViseFeil = { value: true };
             $scope.validert.value = false;
         };
