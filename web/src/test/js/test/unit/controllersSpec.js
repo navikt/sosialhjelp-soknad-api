@@ -335,8 +335,93 @@ describe('DagpengerControllere', function () {
         }));
 
         it('erBrukerregistrert skal returnere true for brukerregistert barn', function () {
-            
+            var barn = {
+                key: 'barn',
+                type: 'BRUKERREGISTRERT'
+            };
+            expect(scope.erBrukerregistrert(barn)).toEqual(true);
         });
+        it('erSystemRegistrert skal returnere true for SYSTEMREGISTRERT barn', function () {
+            var barn = {
+                key: 'barn',
+                type: 'SYSTEMREGISTRERT'
+            };
+            expect(scope.erSystemRegistrert(barn)).toEqual(true);
+        });
+        it('ingenLandRegistrert skal returnere true ingen land registrert', function () {
+            var barn = {
+                key: 'barn',
+                properties: {land: ''}
+            };
+            expect(scope.ingenLandRegistrert(barn)).toEqual(true);
+        });
+        it('ingenLandRegistrert skal returnere false med land registrert', function () {
+            var barn = {
+                key: 'barn',
+                properties: {land: 'Norge'}
+            };
+            expect(scope.ingenLandRegistrert(barn)).toEqual(false);
+        });
+        it('norskBarnIkkeFunnetITPS skal returnere true for brukerregistrert barn og med land NOR', function () {
+            var barn = {
+                key: 'barn',
+                properties: {land: 'NOR'},
+                type: 'BRUKERREGISTRERT'
+            };
+            expect(scope.norskBarnIkkeFunnetITPS(barn)).toEqual(true);
+        });
+        it('norskBarnIkkeFunnetITPS skal returnere false for brukerregistrert barn og med land DNK', function () {
+            var barn = {
+                key: 'barn',
+                properties: {land: 'DNK'},
+                type: 'BRUKERREGISTRERT'
+            };
+            expect(scope.norskBarnIkkeFunnetITPS(barn)).toEqual(false);
+        });
+        it('norskBarnIkkeFunnetITPS skal returnere false for systemregistrert barn og med land NOR', function () {
+            var barn = {
+                key: 'barn',
+                properties: {land: 'NOR'},
+                type: 'SYSTEMREGISTRERT'
+            };
+            expect(scope.norskBarnIkkeFunnetITPS(barn)).toEqual(false);
+        });
+        it('norskBarnIkkeFunnetITPS skal returnere false hvis ikke barn er registrert ', function () {
+            var barn = {
+                key: 'barn'
+            };
+            expect(scope.norskBarnIkkeFunnetITPS(barn)).toEqual(false);
+        });
+        it('hvis barnet har inntekt så kreves vedlegg', function () {
+            var barn = {
+                key: 'barn',
+                properties: {ikkebarneinntekt: 'false'}
+            };
+            expect(scope.kreverVedlegg(barn)).toEqual(true);
+        });
+        it('hvis barnet ikke har inntekt så kreves ikke vedlegg', function () {
+            var barn = {
+                key: 'barn',
+                properties: {ikkebarneinntekt: 'true'}
+            };
+            expect(scope.kreverVedlegg(barn)).toEqual(false);
+        });
+        it('hvis barnet er norsk og ikke funnet i tps så kreves vedlegg', function () {
+            var barn = {
+                key: 'barn',
+                properties: {land: 'NOR'},
+                type: 'BRUKERREGISTRERT'
+            };
+            expect(scope.kreverVedlegg(barn)).toEqual(true);
+        });
+        it('erGutt skal returnere true for barn med hannkjønn', function() {
+            var barn = {
+                key: 'barn',
+                properties: {kjonn: 'm'}
+            };
+            expect(scope.erGutt(barn)).toEqual(true);
+        })
+
     });
 
     describe('AdresseCtrl', function () {
