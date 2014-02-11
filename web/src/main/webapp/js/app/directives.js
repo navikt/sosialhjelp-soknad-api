@@ -24,7 +24,6 @@ angular.module('app.directives', [
 	'nav.dagpengerdirective',
 	'nav.skjematittel',
 	'nav.aria',
-
 	'nav.norskDatoFilter',
     'nav.fokus',
     'nav.vedleggbolker',

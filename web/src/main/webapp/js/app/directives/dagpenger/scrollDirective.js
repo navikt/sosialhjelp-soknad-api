@@ -28,7 +28,6 @@ angular.module('nav.scroll.directive', [])
                                 $timeout(function() {
                                     fokusElement.focus();
                                 }, 200);
-                                console.log(scrollElement.parent());
                                 if(!(scrollElement.parent().hasClass("ikke-fadebakgrunn"))) {
                                     fadeBakgrunnsfarge(scrollElement.parent(), $scope, 241, 241, 241);
                                 }
