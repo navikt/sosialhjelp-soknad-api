@@ -1,7 +1,5 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import no.nav.modig.core.exception.ApplicationException;
-
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.PersonAlder;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
@@ -36,16 +34,13 @@ public class UtslagskriterierController {
         utslagskriterierResultat.put("registrertArbeidssøker", status.name());
 
         Personalia personalia;
-        try {
+
             personalia = personaliaService.hentPersonalia(uid);
             utslagskriterierResultat.put("gyldigAlder", new PersonAlder(uid).sjekkAlder().toString());
             utslagskriterierResultat.put("bosattINorge", harNorskAdresse(personalia).toString());
             utslagskriterierResultat.put("registrertAdresse", personalia.getGjeldendeAdresse().getAdresse());
             utslagskriterierResultat.put("registrertAdresseGyldigFra", personalia.getGjeldendeAdresse().getGyldigFra());
-            utslagskriterierResultat.put("registrertAdresseGyldigTil", personalia.getGjeldendeAdresse().getGyldigTil());    
-        } catch(ApplicationException e) {
-            utslagskriterierResultat.put("error", e.getMessage());
-        }
+            utslagskriterierResultat.put("registrertAdresseGyldigTil", personalia.getGjeldendeAdresse().getGyldigTil());
         
         return utslagskriterierResultat;
         
