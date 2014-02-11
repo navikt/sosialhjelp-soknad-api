@@ -1,5 +1,5 @@
 angular.module('nav.validerskjema', [])
-    .directive('validerSkjema', ['validertKlasse', '$timeout', '$location', 'soknadService', 'data', function (validertKlasse, $timeout, $location, soknadService, data) {
+    .directive('validerSkjema', ['validertKlasse', '$timeout', '$location', 'soknadService', 'data', '$q', function (validertKlasse, $timeout, $location, soknadService, data, $q) {
         return {
             require: '^form',
             link: function (scope, element, attrs, form) {
@@ -12,23 +12,30 @@ angular.module('nav.validerskjema', [])
                         if (gruppeErIkkeValidert) {
                             gruppe.validering = true;
                             $timeout(function() {
-                                if (gruppe.valideringsmetode) {
-                                    gruppe.valideringsmetode(false);
-                                }
+                                gruppe.valideringsmetode(false);
                             });
                         }
                     });
 
                     $timeout(function() {
                         if (form.$valid) {
-                            soknadService.delsteg({soknadId: data.soknad.soknadId, delsteg: 'vedlegg'},
-                                function () {
-                                    $location.path('/vedlegg');
-                                },
-                                function () {
-                                    scope.fremdriftsindikator.laster = false;
-                                }
-                            );
+                            var bolkerFaktum = data.finnFaktum('bolker');
+                            angular.forEach(scope.grupper, function(gruppe){
+                                bolkerFaktum.properties[gruppe.id] = "true";
+                            });
+                            
+                            bolkerFaktum.$save().then(function(result) {
+                                soknadService.delsteg({soknadId: data.soknad.soknadId, delsteg: 'vedlegg'},
+                                    function () {
+                                        $location.path('/vedlegg');
+                                    },
+                                    function () {
+                                        scope.fremdriftsindikator.laster = false;
+                                    }
+                                );
+                            });
+
+                            
                         } else {
                             var elementMedForsteFeil = $('.accordion-group').find('.form-linje.feil, .form-linje.feilstyling').first();
                             scope.fremdriftsindikator.laster = false;

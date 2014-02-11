@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -39,6 +40,7 @@ public class VedleggRowMapper implements RowMapper<Vedlegg> {
                 rs.getInt("antallsider"),
                 rs.getString("fillagerReferanse"),
                 includeData ? rs.getBytes("data") : null,
+                rs.getTimestamp("opprettetdato").getTime(),
                 innsendingsvalg
         );
     }
