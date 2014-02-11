@@ -34,8 +34,12 @@ angular.module('nav.input', ['nav.cmstekster'])
                         index = scope.navlabel.lastIndexOf(".false");
                         scope.name = scope.navlabel.substr(0, index);
 
-                        if (index === -1 && scope.navlabel.indexOf('utdanning') > -1) {
-                            scope.name = "utdanning";
+                        if (index === -1) {
+                            if(scope.navlabel.indexOf('utdanning') > -1) {
+                                scope.name = "utdanning";
+                            } else if(scope.navlabel.indexOf('arbeidstilstand') > -1) {
+                                scope.name="arbeidstilstand";
+                            }
                         }
                     }
                 }
