@@ -414,13 +414,66 @@ describe('DagpengerControllere', function () {
             };
             expect(scope.kreverVedlegg(barn)).toEqual(true);
         });
-        it('erGutt skal returnere true for barn med hannkjønn', function() {
-            var barn = {
+        it('erGutt skal returnere true for barn med hannkjønn og false for barn med hunnkjønn', function() {
+            var gutt = {
                 key: 'barn',
                 properties: {kjonn: 'm'}
             };
-            expect(scope.erGutt(barn)).toEqual(true);
-        })
+            var jente = {
+                key: 'barn',
+                properties: {kjonn: 'f'}
+            };
+            expect(scope.erGutt(gutt)).toEqual(true);
+            expect(scope.erGutt(jente)).toEqual(false);
+        });
+        it('erJente skal returnere true for barn med hunnkjønn og false for barn med hannkjønn ', function() {
+            var gutt = {
+                key: 'barn',
+                properties: {kjonn: 'm'}
+            };
+            var jente = {
+                key: 'barn',
+                properties: {kjonn: 'k'}
+            };
+            expect(scope.erJente(gutt)).toEqual(false);
+            expect(scope.erJente(jente)).toEqual(true);
+        });
+        it('barnetHarInntekt skal returnere true hvis barnet har inntekt og false hvis barnet ikke har inntekt', function() {
+            var barnInntekt = {
+                key: 'barn',
+                properties: {ikkebarneinntekt: 'false'}
+            };
+            var barnIkkeInntekt = {
+                key: 'barn',
+                properties: {ikkebarneinntekt: 'true'}
+            };
+            expect(scope.barnetHarInntekt(barnInntekt)).toBe(true);
+            expect(scope.barnetHarInntekt(barnIkkeInntekt)).toBe(false);
+        });
+        it('barnetHarIkkeInntekt skal returnere true hvis barnet ikke har inntekt og false hvis barnet  har inntekt', function() {
+            var barnInntekt = {
+                key: 'barn',
+                properties: {ikkebarneinntekt: 'false'}
+            };
+            var barnIkkeInntekt = {
+                key: 'barn',
+                properties: {ikkebarneinntekt: 'true'}
+            };
+            expect(scope.barnetHarIkkeInntekt(barnInntekt)).toBe(false);
+            expect(scope.barnetHarIkkeInntekt(barnIkkeInntekt)).toBe(true);
+        });
+        it('barnetilleggErRegistrert skal returnere true hvis barnet har barnetillegg', function() {
+            var barnIkkeTillegg = {
+                key: 'barn',
+                properties: {barnetillegg: 'false'}
+            };
+            var barnTillegg = {
+                key: 'barn',
+                properties: {barnetillegg: 'true'}
+            };
+            expect(scope.barnetilleggErRegistrert(barnIkkeTillegg)).toEqual('false');
+            expect(scope.barnetilleggErRegistrert(barnTillegg)).toEqual('true');
+        });
 
     });
 
