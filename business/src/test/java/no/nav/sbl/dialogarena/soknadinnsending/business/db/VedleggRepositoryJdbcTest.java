@@ -1,7 +1,14 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+
 import org.apache.commons.io.IOUtils;
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,14 +16,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {DbConfig.class})
@@ -72,7 +75,7 @@ public class VedleggRepositoryJdbcTest {
     }
 
     private Vedlegg getVedlegg(byte[] bytes) {
-        return new Vedlegg(null, 12L, 10L, "1", "navn", (long) bytes.length, 1, null, null, Vedlegg.Status.UnderBehandling);
+        return new Vedlegg(null, 12L, 10L, "1", "navn", (long) bytes.length, 1, null, null, DateTime.now().getMillis(), Vedlegg.Status.UnderBehandling);
     }
 
 }
