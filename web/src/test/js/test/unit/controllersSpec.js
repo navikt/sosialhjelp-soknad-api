@@ -24,7 +24,7 @@ describe('GrunnlagsdataController', function () {
 });
 
 describe('DagpengerControllere', function () {
-    var scope, ctrl, form, element;
+    var scope, ctrl, form, element, barn, $httpBackend;
 
     beforeEach(module('ngCookies', 'app.services'));
     beforeEach(module('app.controllers', 'nav.feilmeldinger'));
@@ -36,6 +36,10 @@ describe('DagpengerControllere', function () {
                 properties: {
                     alder: "61"
                 }
+            },
+            {
+                key: 'etFaktum',
+                type: 'BRUKERREGISTRERT'
             }
         ];
 
@@ -55,7 +59,10 @@ describe('DagpengerControllere', function () {
             leggTilFaktum: function (faktum) {
                 fakta.push(faktum);
             },
-            land: {result: [{value: 'NOR', text: 'Norge'},{ value:'DNK', text: 'Danmark'}]},
+            land: {result: [
+                {value: 'NOR', text: 'Norge'},
+                { value: 'DNK', text: 'Danmark'}
+            ]},
             soknad: {soknadId: 1},
             config: ["soknad.sluttaarsak.url", "soknad.lonnskravskjema.url", "soknad.permitteringsskjema.url" ],
             slettFaktum: function (faktumData) {
@@ -80,13 +87,16 @@ describe('DagpengerControllere', function () {
 
         element = angular.element(
             '<form name="form">'
-                + '<div form-errors></div>'
-                + '</form>'
+                + '<div form-errors></div>' +
+                '<input type="text" ng-model="scope.barn.properties.fodselsdato" name="alder"/>' +
+                '<input type="hidden" data-ng-model="underAtten.value" data-ng-required="true"/>'
+            + '</form>'
         );
 
         $compile(element)(scope);
         scope.$digest();
         form = scope.form;
+        barn = form.alder;
         element.scope().$apply();
 
 
@@ -174,10 +184,14 @@ describe('DagpengerControllere', function () {
     });
 
     describe('BarneCtrl', function () {
-        beforeEach(inject(function ($controller) {
+        beforeEach(inject(function (_$httpBackend_, $controller) {
             ctrl = $controller('BarneCtrl', {
                 $scope: scope
             });
+            $httpBackend = _$httpBackend_;
+            $httpBackend.expectGET('/sendsoknad/rest/landtype/'+scope.barn.properties.land).
+            respond({});
+
         }));
 
         it('skal returnere 0 aar for barn fodt idag', function () {
@@ -189,7 +203,6 @@ describe('DagpengerControllere', function () {
             scope.barn.properties.fodselsdato = year + "-" + month + "-" + date;
             expect(scope.finnAlder().toString()).toEqual("0");
         });
-
         it('skal returnere 1 aar for barn fodt samme dag ifjor', function () {
             var idag = new Date();
             var lastyear = idag.getFullYear() - 1;
@@ -199,7 +212,6 @@ describe('DagpengerControllere', function () {
             scope.barn.properties.fodselsdato = lastyear + "-" + month + "-" + date;
             expect(scope.finnAlder().toString()).toEqual("1");
         });
-
         it('skal returnere 0 aar for barn fodt dagen etter idag ifjor', function () {
             var idag = new Date();
             var lastyear = idag.getFullYear() - 1;
@@ -218,7 +230,91 @@ describe('DagpengerControllere', function () {
             scope.barn.properties.fodselsdato = lastyear + "-" + lastmonth + "-" + date;
             expect(scope.finnAlder().toString()).toEqual("0");
         });
+        it('skal vise feilmelding hvis barnet er over 18', function () {
+            var idag = new Date();
+            var overAtten = idag.getFullYear() - 18;
+            var denneManeden = idag.getMonth() + 1;
+            var dag = idag.getDate() - 1;
+            scope.barn.properties.fodselsdato = overAtten + "-" + denneManeden + "-" + dag;
+            barn.$setViewValue(overAtten + "-" + denneManeden + "-" + dag);
+            element.scope().$apply();
+
+            expect(scope.underAtten.value).toEqual("");
+            expect(scope.skalViseFeilmelding).toEqual(true);
+        });
+        it('skal ikke vise feilmelding hvis barnet er under 18', function () {
+            var idag = new Date();
+            var overAtten = idag.getFullYear() - 17;
+            var denneManeden = idag.getMonth() + 1;
+            var dag = idag.getDate() - 1;
+            scope.barn.properties.fodselsdato = overAtten + "-" + denneManeden + "-" + dag;
+            barn.$setViewValue(overAtten + "-" + denneManeden + "-" + dag);
+            element.scope().$apply();
+
+            expect(scope.underAtten.value).toEqual("true");
+            expect(scope.skalViseFeilmelding).toEqual(false);
+        });
+        it('Hvis alder ikke er oppgitt enda så skal ikke feilmeldingen om at barnet må være under 18 vises', function () {
+            scope.barn.properties.fodselsdato = "";
+            barn.$setViewValue();
+            element.scope().$apply();
+            expect(scope.skalViseFeilmelding).toEqual(false);
+        });
+        it('skal returnere true hvis barnetillegg er registrert', function() {
+            scope.barn.properties.barnetillegg = 'true';
+            expect(scope.barnetilleggErRegistrert()).toBe(true);
+        });
+        it('skal returnere false hvis barnet ikke har inntekt', function() {
+            scope.barn.properties.ikkebarneinntekt = '';
+            expect(scope.barnetHarInntekt()).toBe(false);
+        });
+        it('skal returnere true hvis barnet har inntekt', function() {
+            scope.barn.properties.ikkebarneinntekt = 'false';
+            expect(scope.barnetHarInntekt()).toBe(true);
+        });
+        it('skal returnere true hvis barnet ikke har inntekt', function() {
+            scope.barn.properties.ikkebarneinntekt = 'true';
+            expect(scope.barnetHarIkkeInntekt()).toBe(true);
+        });
+        it('alder skal kun settes hvis formen er valid', function() {
+            var idag = new Date();
+            var lastyear = idag.getFullYear() - 1;
+            var month = idag.getMonth() + 1;
+            var date = idag.getDate();
+
+            scope.barn.properties.fodselsdato = lastyear + "-" + month + "-" + date;
+            barn.$setViewValue(idag + "-" + month + "-" + date);
+            element.scope().$apply();
+
+            scope.lagreBarn(scope.form);
+            expect(scope.barn.properties.alder).toEqual(1);
+        });
+        it('alder skal ikke være satt naar formen er valid', function() {
+            var idag = new Date();
+            var overAtten = idag.getFullYear() - 18;
+            var denneManeden = idag.getMonth() + 1;
+            var dag = idag.getDate() - 1;
+            scope.barn.properties.fodselsdato = overAtten + "-" + denneManeden + "-" + dag;
+
+            barn.$setViewValue(overAtten + "-" + denneManeden + "-" + dag);
+            element.scope().$apply();
+
+            scope.lagreBarn(scope.form);
+            expect(scope.barn.properties.alder).toEqual(undefined);
+        });
     });
+    describe('BarnetilleggCtrl', function () {
+        beforeEach(inject(function ($controller) {
+            ctrl = $controller('BarnetilleggCtrl', {
+                $scope: scope
+            });
+        }));
+
+        it('erBrukerregistrert skal returnere true for brukerregistert barn', function () {
+            
+        });
+    });
+
     describe('AdresseCtrl', function () {
         beforeEach(inject(function ($controller) {
             ctrl = $controller('AdresseCtrl', {
@@ -359,5 +455,17 @@ describe('DagpengerControllere', function () {
         it('skal returnere Norge for landkode NOR', function () {
             expect(scope.finnLandFraLandkode('NOR')).toEqual("Norge");
         })
+    });
+    describe('AvbrytCtrl', function () {
+        beforeEach(inject(function ($controller, data) {
+            ctrl = $controller('AvbrytCtrl', {
+                $scope: scope
+            });
+            scope.data = data;
+        }));
+
+        it('skal kreve brekftelse med fakta som er brukerregistrerte', function () {
+            expect(scope.krevBekreftelse).toEqual(true);
+        });
     });
 });
