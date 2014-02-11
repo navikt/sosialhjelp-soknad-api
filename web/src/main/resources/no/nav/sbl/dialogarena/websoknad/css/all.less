@@ -759,8 +759,18 @@ form, [ng-form], [data-ng-form] {
     }
 }
 
-a.infoikon:focus, a.lukk:focus, a.knapp-link:focus, a.accordion-toggle:focus h2, #vedlegg a.accordion-toggle:focus .bolk-fokus {
-  text-decoration: underline;
+a.infoikon, a.lukk, a.knapp-link, a.accordion-toggle, #vedlegg a.accordion-toggle {
+  display: block;
+    &:active {
+      color: #3e3832;
+      outline: none;
+      text-decoration: underline !important;
+    }
+    &:focus {
+      color: #3e3832;
+      outline: none;
+      text-decoration: underline !important;
+    }
 }
 
 a.accordion-toggle:focus,  #vedlegg a.accordion-toggle:focus h2 {
