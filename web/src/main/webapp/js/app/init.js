@@ -49,6 +49,7 @@ angular.module('sendsoknad')
                  * Dersom vi kommer inn på informasjonsside utenfra (current sin redirectTo er informasjonsside), og krav for søknaden er oppfylt, skal vi redirecte til rett side.
                  */
                 if (next.$$route.originalPath === "/informasjonsside" && sjekkUtslagskriterier.erOppfylt() && (!current || current.redirectTo === '/informasjonsside') && data.soknad) {
+
                     if (data.soknad.delstegStatus === "SKJEMA_VALIDERT") {
                         $location.path('/vedlegg');
                     } else if (data.soknad.delstegStatus === "VEDLEGG_VALIDERT") {

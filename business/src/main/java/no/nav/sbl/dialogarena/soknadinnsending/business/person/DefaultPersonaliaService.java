@@ -75,12 +75,15 @@ public class DefaultPersonaliaService implements PersonaliaService {
             preferanserResponse = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequestPreferanser(fodselsnummer));
         } catch (IkkeFunnetException | HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
             logger.warn("Ikke funnet person i TPS", e);
+            //throw new ApplicationException("TPS:PersonIkkefunnet",e);
             return new Personalia();
         } catch (HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
             logger.error("Kunne ikke hente bruker fra TPS.", e);
+            //throw new ApplicationException("TPS:Sikkerhetsbegrensing",e);
             return new Personalia();
         } catch (WebServiceException e) {
             logger.error("Ingen kontakt med TPS.", e);
+            // throw new ApplicationException("TPS:webserviceException",e);
             return new Personalia();
         }
         return PersonaliaTransform.mapTilPersonalia(preferanserResponse, kjerneinformasjonResponse, kodeverk);

@@ -237,6 +237,20 @@ function reverserNorskDatoformat(datoString) {
 	}
 }
 
+function erFremtidigDato(datoString) {
+	var dato = new Date(datoString);
+
+	var enDagMillis = 86400000 //1000*60*60*24
+	var dagensDato =  new Date();
+	var temp = new Date(dagensDato.getMonth()+1 +  "." + dagensDato.getDate() + "." + dagensDato.getFullYear());
+	var morgenDagensDatoMillis = temp.setTime(temp.getTime() + 86400000);
+
+	if(dato.getTime() >= morgenDagensDatoMillis) {
+		return true;		
+	}
+	return false;
+}
+
 // stackoverflow.com/questions/5812220/test-if-date-is-valid
 function erGyldigDato(datoString) {
 	var bits = datoString.split('.');

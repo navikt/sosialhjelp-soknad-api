@@ -1,4 +1,7 @@
 angular.module('nav.informasjonsside', ['nav.cmstekster'])
+    .controller('FeilSideCtrl', ['$scope', 'data',  function ($scope, data) {
+
+    }])
     .controller('InformasjonsSideCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', 'soknadService', 'sjekkUtslagskriterier', function ($scope, data, $routeParams, $http, $location, soknadService, sjekkUtslagskriterier) {
         var fortsettLikevell = false;
 
@@ -27,6 +30,13 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         $scope.fremdriftsindikator = {
             laster: false
         };
+
+        $scope.hentAdresseLinjer = function() {
+            if( $scope.utslagskriterier &&  $scope.utslagskriterier.registrertAdresse != "") {
+                return $scope.utslagskriterier.registrertAdresse.split(", ");
+            }
+            return [];
+        }
 
         $scope.tpsSvarer = function () {
             return !$scope.tpsSvarerIkke()

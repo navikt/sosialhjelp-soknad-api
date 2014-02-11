@@ -177,15 +177,17 @@ angular.module('nav.barn', ['app.services'])
         });
 
         $scope.$watch(function () {
-            if ($scope.barn.properties.land) {
+            if ($scope.barn.properties.land && $scope.barn.properties.land != "") {
                 return $scope.barn.properties.land;
             }
         }, function () {
-            $resource('/sendsoknad/rest/landtype/:landkode').get(
-                {landkode: $scope.barn.properties.land},
-                function (eosdata) { // Success
-                    $scope.eosLandType = eosdata.result;
-            });
+            if($scope.barn.properties.land && $scope.barn.properties.land != "") {
+                $resource('/sendsoknad/rest/landtype/:landkode').get(
+                    {landkode: $scope.barn.properties.land},
+                    function (eosdata) { // Success
+                        $scope.eosLandType = eosdata.result;
+                });
+            }
         });
 
 
