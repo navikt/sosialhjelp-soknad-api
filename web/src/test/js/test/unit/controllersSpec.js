@@ -276,7 +276,7 @@ describe('DagpengerControllere', function () {
             scope.barn.properties.ikkebarneinntekt = 'true';
             expect(scope.barnetHarIkkeInntekt()).toBe(true);
         });
-        it('alder skal kun settes hvis formen er valid', function() {
+        it('alder og sammensatt navn skal kun settes hvis formen er valid', function() {
             var idag = new Date();
             var lastyear = idag.getFullYear() - 1;
             var month = idag.getMonth() + 1;
@@ -286,10 +286,14 @@ describe('DagpengerControllere', function () {
             barn.$setViewValue(idag + "-" + month + "-" + date);
             element.scope().$apply();
 
+            scope.barn.properties.fornavn = "Fornavn";
+            scope.barn.properties.etternavn = "Etternavn";
+
             scope.lagreBarn(scope.form);
             expect(scope.barn.properties.alder).toEqual(1);
+            expect(scope.barn.properties.sammensattnavn).toEqual("Fornavn Etternavn");
         });
-        it('alder skal ikke være satt naar formen er valid', function() {
+        it('alder og sammensatt navn skal ikke være satt naar formen er valid', function() {
             var idag = new Date();
             var overAtten = idag.getFullYear() - 18;
             var denneManeden = idag.getMonth() + 1;
@@ -299,9 +303,29 @@ describe('DagpengerControllere', function () {
             barn.$setViewValue(overAtten + "-" + denneManeden + "-" + dag);
             element.scope().$apply();
 
+            scope.barn.properties.fornavn = "Fornavn";
+            scope.barn.properties.etternavn = "Etternavn";
             scope.lagreBarn(scope.form);
+
             expect(scope.barn.properties.alder).toEqual(undefined);
+            expect(scope.barn.properties.sammensattnavn).toEqual(undefined);
         });
+        it('skal returnere true for EOSland som ikke er norge', function() {
+            scope.eosLandType = "eos";
+            expect(scope.erEosLandAnnetEnnNorge()).toBe(true);
+        });
+        it('erEosLandAnnetEnnNorge skal returnere false for norge', function() {
+            scope.eosLandType = "Norge";
+            expect(scope.erEosLandAnnetEnnNorge()).toBe(false);
+            scope.eosLandType = "norge";
+            expect(scope.erEosLandAnnetEnnNorge()).toBe(false);
+        });
+        it('erIkkeEosLand skal returnere false for et land som ikke er i eos', function() {
+            scope.eosLandType = "ikkeEos";
+            expect(scope.erIkkeEosLand()).toBe(true);
+        });
+
+
     });
     describe('BarnetilleggCtrl', function () {
         beforeEach(inject(function ($controller) {
