@@ -118,6 +118,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         faktum.setType(BRUKERREGISTRERT_FAKTUM);
         Long faktumId = repository.lagreFaktum(soknadId, faktum);
         repository.settSistLagretTidspunkt(soknadId);
+        //TODO: Vi lagrer også faktum når vi sender til fortsett senere.
         repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
         Faktum resultat = repository.hentFaktum(soknadId, faktumId);
         genererVedleggForFaktum(resultat);
