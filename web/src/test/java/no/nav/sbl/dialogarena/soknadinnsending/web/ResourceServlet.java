@@ -13,8 +13,12 @@ import java.io.File;
 public class ResourceServlet extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        File libs = new File(FilesAndDirs.PROJECT_BASEDIR, "../frontend/public/");
-        registry.addResourceHandler("/js/**").addResourceLocations(libs.toURI().toString());
+        File libs = new File(FilesAndDirs.PROJECT_BASEDIR, "../frontend/");
+        String frontendPath = libs.toURI().toString();
+        String javascriptPath = frontendPath + "js/";
+        String viewPath = frontendPath + "views/";
+        registry.addResourceHandler("/js/**").addResourceLocations(javascriptPath);
+        registry.addResourceHandler("/views/**").addResourceLocations(viewPath);
 
     }
 }

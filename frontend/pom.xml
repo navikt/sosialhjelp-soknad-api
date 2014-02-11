@@ -34,8 +34,7 @@
 				<version>1.1.2</version>
 				<configuration>
 					<sourceDirectory>${basedir}</sourceDirectory>
-					<jsSourceDirectory>public</jsSourceDirectory>
-                    <!--<gruntBuildDirectory>${project.build.directory}/grunt</gruntBuildDirectory>-->
+					<jsSourceDirectory>js</jsSourceDirectory>
                     <target>maven</target>
 					<gruntOptions>
 						<gruntOption>--verbose</gruntOption>

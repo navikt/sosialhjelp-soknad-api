@@ -2,31 +2,57 @@ module.exports = function (grunt) {
 
 	grunt.initConfig({
 		pkg   : grunt.file.readJSON('package.json'),
+        html2js: {
+            main: {
+                src: [
+                    'views/dagpenger-singlepage.html',
+                    'views/templates/**/*.html',
+                    'js/app/**/*.html',
+                    'js/common/**/*.html'
+                ],
+                dest: 'js/app/templates.js'
+            }
+        },
+
         htmlbuild: {
-            def: {
-                src: 'public/views/Dagpenger.html',
-                dest: 'public/views/test',
+            dev: {
+                src: 'views/DagpengerIndex.html',
+                dest: 'views/Dagpenger.html',
                 options: {
                     beautify: true,
-                    relative: true,
+                    relative: false,
+                    prefix: '../dev/',
                     scripts: {
                         angular: [
-                            'public/lib/angular/angular.js',
-                            'public/lib/angular/angular-*.js'
+                            'js/lib/angular/angular.js',
+                            'js/lib/angular/angular-*.js'
                         ],
-                        fileupload: 'public/lib/jquery/**/*.js',
-                        libs: 'public/lib/*.js'
+                        fileupload: [
+                            'js/lib/jquery/jquery-ui-1.10.3.custom.js',
+                            'js/lib/jquery/cors/jquery.xdr-transport.js',
+                            'js/lib/jquery/cors/jquery.postmessage-transport.js',
+                            'js/lib/jquery/jquery.iframe-transport.js',
+                            'js/lib/jquery/jquery.fileupload.js',
+                            'js/lib/jquery/jquery.fileupload-process.js',
+                            'js/lib/jquery/jquery.fileupload-validate.js',
+                            'js/lib/jquery/jquery.fileupload-angular.js'
+                        ],
+                        libs: 'js/lib/*.js',
+                        app: [
+                            'js/app/**/*.js',
+                            'js/common/**/*.js'
+                        ]
                     }
                 }
             },
             prod: {
-                src: 'public/views/Dagpenger.html',
-                dest: 'public/views/test',
+                src: 'js/views/DagpengerIndex.html',
+                dest: 'js/views/test',
                 options: {
                     beautify: true,
                     relative: false,
                     scripts: {
-                        bundle: 'public/lib/angular/**/*.js'
+                        bundle: 'js/lib/angular/**/*.js'
                     }
                 }
             }
@@ -37,14 +63,14 @@ module.exports = function (grunt) {
 			},
 			dist   : {
 				src   : [
-					'public/lib/angular/*.js',
-					'public/lib/bindonce.js',
-					'public/js/controllers/**/*.js',
-					'public/js/directives/**/*.js',
-					'public/js/common/**/*.js',
-					'public/js/i18n/**/*.js'
+					'js/lib/angular/*.js',
+					'js/lib/bindonce.js',
+					'js/js/controllers/**/*.js',
+					'js/js/directives/**/*.js',
+					'js/js/common/**/*.js',
+					'js/js/i18n/**/*.js'
 				],
-				dest  : 'public/built/built.js',
+				dest  : 'js/built/built.js',
 				nonull: true
 			}
 		},
@@ -54,34 +80,34 @@ module.exports = function (grunt) {
 			},
 			my_target: {
 				files: {
-					'public/built/built.min.js': ['public/built/built.js']
+					'js/built/built.min.js': ['js/built/built.js']
 				}
 			}
 		},
 		watch : {
 			js  : {
-				files  : ['public/js/**'],
+				files  : ['js/js/**'],
 				options: {
 					livereload: true
 				}
 			},
 			html: {
-				files  : ['public/views/**'],
+				files  : ['js/views/**'],
 				options: {
 					livereload: true
 				}
 			},
 			css : {
-				files  : ['public/css/**'],
+				files  : ['js/css/**'],
 				options: {
 					livereload: true
 				}
 			}
 		},
 		jshint: {
-			files  : ['gruntfile.js', 'public/js/**/*.js', 'test/karma/**/*.js', 'app/**/*.js'],
+			files  : ['gruntfile.js', 'js/js/**/*.js', 'test/karma/**/*.js', 'app/**/*.js'],
 			options: {
-				ignores: ['public/built/built.js', 'public/js/i18n/**']
+				ignores: ['js/built/built.js', 'js/js/i18n/**']
 			}
 		},
 		karma : {
@@ -110,6 +136,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-html-build');
+	grunt.loadNpmTasks('grunt-html2js');
 
 	grunt.loadNpmTasks('grunt-karma');
 	grunt.loadTasks('maven-tasks');
@@ -120,6 +147,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('maven', ['jshint']);
 	grunt.registerTask('test', ['jshint', 'karma:unit']);
 	grunt.registerTask('prod', ['concat', 'uglify']);
-	grunt.registerTask('html', ['htmlbuild:def']);
+	grunt.registerTask('html', ['htmlbuild:dev']);
 	grunt.registerTask('htmlprod', ['htmlbuild:prod']);
+	grunt.registerTask('tpl', ['html2js']);
 };
