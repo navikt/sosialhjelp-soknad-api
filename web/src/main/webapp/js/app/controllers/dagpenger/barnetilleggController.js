@@ -100,9 +100,7 @@ angular.module('nav.barnetillegg', [])
         };
 
         //TODO: Trenger vi denne? Formen vil jo alltid være valid
-		$scope.valider = function (skalScrolle) {
-//			$scope.runValidation(skalScrolle);
-		};
+		$scope.valider = function (skalScrolle) {};
 
 		function settBarnCookie(faktumId) {
 			var aapneTabIds = [];
