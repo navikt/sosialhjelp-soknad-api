@@ -190,8 +190,6 @@ angular.module('nav.barn', ['app.services'])
             }
         });
 
-
-        //TODO: FIX Tester
         $scope.finnAlder = function () {
             if ($scope.barn.properties.fodselsdato) {
                 var year = parseInt($scope.barn.properties.fodselsdato.split("-")[0]);
