@@ -28,7 +28,10 @@ angular.module('nav.scroll.directive', [])
                                 $timeout(function() {
                                     fokusElement.focus();
                                 }, 200);
-                                fadeBakgrunnsfarge(scrollElement.parent(), $scope, 241, 241, 241);
+                                console.log(scrollElement.parent());
+                                if(!(scrollElement.parent().hasClass("ikke-fadebakgrunn"))) {
+                                    fadeBakgrunnsfarge(scrollElement.parent(), $scope, 241, 241, 241);
+                                }
                             }, 600);
                             $cookieStore.remove(cookiename);
                         });

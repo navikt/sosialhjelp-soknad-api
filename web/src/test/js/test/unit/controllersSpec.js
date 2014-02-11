@@ -471,9 +471,22 @@ describe('DagpengerControllere', function () {
                 key: 'barn',
                 properties: {barnetillegg: 'true'}
             };
-            expect(scope.barnetilleggErRegistrert(barnIkkeTillegg)).toEqual('false');
-            expect(scope.barnetilleggErRegistrert(barnTillegg)).toEqual('true');
+            expect(scope.barnetilleggErRegistrert(barnIkkeTillegg)).toEqual(false);
+            expect(scope.barnetilleggErRegistrert(barnTillegg)).toEqual(true);
         });
+        it('barnetilleggIkkeRegistrert skal returnere true hvis barnet ikke har barnetillegg', function() {
+            var barnIkkeTillegg = {
+                key: 'barn',
+                properties: {barnetillegg: 'false'}
+            };
+            var barnTillegg = {
+                key: 'barn',
+                properties: {barnetillegg: 'true'}
+            };
+            expect(scope.barnetilleggIkkeRegistrert(barnIkkeTillegg)).toEqual(true);
+            expect(scope.barnetilleggIkkeRegistrert(barnTillegg)).toEqual(false);
+        });
+
 
     });
 
