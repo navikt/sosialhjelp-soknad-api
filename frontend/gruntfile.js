@@ -2,6 +2,35 @@ module.exports = function (grunt) {
 
 	grunt.initConfig({
 		pkg   : grunt.file.readJSON('package.json'),
+        htmlbuild: {
+            def: {
+                src: 'public/views/Dagpenger.html',
+                dest: 'public/views/test',
+                options: {
+                    beautify: true,
+                    relative: true,
+                    scripts: {
+                        angular: [
+                            'public/lib/angular/angular.js',
+                            'public/lib/angular/angular-*.js'
+                        ],
+                        fileupload: 'public/lib/jquery/**/*.js',
+                        libs: 'public/lib/*.js'
+                    }
+                }
+            },
+            prod: {
+                src: 'public/views/Dagpenger.html',
+                dest: 'public/views/test',
+                options: {
+                    beautify: true,
+                    relative: false,
+                    scripts: {
+                        bundle: 'public/lib/angular/**/*.js'
+                    }
+                }
+            }
+        },
 		concat: {
 			options: {
 				separator: ';'
@@ -80,6 +109,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-html-build');
 
 	grunt.loadNpmTasks('grunt-karma');
 	grunt.loadTasks('maven-tasks');
@@ -87,6 +117,9 @@ module.exports = function (grunt) {
 	grunt.option('force', true);
 
 	grunt.registerTask('default', ['jshint', 'watch']);
+	grunt.registerTask('maven', ['jshint']);
 	grunt.registerTask('test', ['jshint', 'karma:unit']);
 	grunt.registerTask('prod', ['concat', 'uglify']);
+	grunt.registerTask('html', ['htmlbuild:def']);
+	grunt.registerTask('htmlprod', ['htmlbuild:prod']);
 };
