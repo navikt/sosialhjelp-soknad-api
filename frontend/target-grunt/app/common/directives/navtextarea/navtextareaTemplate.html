@@ -1,0 +1,14 @@
+<div class="form-linje textarea-container" data-ng-class="{feil: feil}">
+    <label>
+        <span data-cmstekster="{{sporsmal}}"></span>
+        <textarea data-ng-model="faktum.value" data-ng-name="faktum.key" data-error-messages="'{{ feilmelding }}'"
+                  data-ng-trim="false" aria-controls="{{sporsmal}}" data-validate-textarea data-ng-blur="mistetFokus()"
+                  data-ng-focus="tattFokus()"></textarea>
+        <span class="egen-linje" data-ng-show="fokus || feil">
+            <span class="tellertekst" data-ng-class="{negativtekstteller: counter < 0 }"> {{counter}} </span>
+            <span data-cmstekster="fritekst.negativtellertekst" data-ng-show="counter < 0"></span>
+            <span data-cmstekster="fritekst.tellertekst" data-ng-show="counter >= 0"></span>
+        </span>
+    </label>
+    <span class="melding" data-cmstekster="fritekst.feilmelding"></span>
+</div>
