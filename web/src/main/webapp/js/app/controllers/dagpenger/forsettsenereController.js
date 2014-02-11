@@ -12,7 +12,6 @@ angular.module('nav.forsettsenere', ['nav.cmstekster'])
             		value: undefined
             	}
             	$scope.epost.value = personalia.properties.epost;
-            	//finn i personaia
             }
             
             $scope.soknadId = data.soknad.soknadId;
