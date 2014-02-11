@@ -259,7 +259,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(),
                         vedlegg.getFaktumId(), vedlegg.getskjemaNummer(),
                         vedlegg.getNavn(), (long) bytes.length, 1, UUID
-                        .randomUUID().toString(), null,
+                        .randomUUID().toString(), null, vedlegg.getOpprettetDato(),
                         Vedlegg.Status.UnderBehandling);
                 resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
                         bytes));
@@ -277,7 +277,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                             vedlegg.getSoknadId(), vedlegg.getFaktumId(),
                             vedlegg.getskjemaNummer(),
                             vedlegg.getNavn(), (long) baos.size(), 1,
-                            UUID.randomUUID().toString(), null,
+                            UUID.randomUUID().toString(), null, vedlegg.getOpprettetDato(),
                             Vedlegg.Status.UnderBehandling);
                     resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
                             baos.toByteArray()));

@@ -23,7 +23,7 @@
     <section>
         <div data-accordion data-close-others="false" data-ng-if="forventninger != null">
             <div class="vedlegg">
-                <div data-accordion-group data-ng-repeat="forventning in forventninger" class="spm-blokk vertikal"
+                <div data-accordion-group data-ng-repeat="forventning in forventninger | orderBy: forventning.opprettetDato" class="spm-blokk vertikal"
                      id="vedlegg_{{forventning.vedleggId}}">
                     <div data-accordion-heading>
                         <div class="bolk-fokus">
@@ -118,8 +118,8 @@
                                            data-ng-required="true"
                                            data-error-messages="'{{forventning.tittel}}'">
                                 </div>
-                                <span class="melding"
-                                      data-cmstekster="vedlegg.inlinefeilmelding"></span>
+                                <span class="melding" data-cmstekster="vedlegg.annet.inlinefeilmelding" data-ng-if="erEkstraVedlegg(forventning)"></span>
+                                <span class="melding" data-cmstekster="vedlegg.inlinefeilmelding" data-ng-if="!erEkstraVedlegg(forventning)"></span>
                             </div>
                             <div data-ng-if="vedleggEr(forventning, 'LastetOpp')">
                                 <div class="forhandsvisning">

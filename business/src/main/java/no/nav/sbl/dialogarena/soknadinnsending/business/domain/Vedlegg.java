@@ -1,11 +1,13 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.xml.bind.annotation.XmlTransient;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -23,6 +25,7 @@ public class Vedlegg {
     private String navn = "";
     private Long storrelse = 0L;
     private Integer antallSider = 0;
+    private Long opprettetDato;
     private byte[] data;
     private String fillagerReferanse = UUID.randomUUID().toString();
     private Map<String, String> urls = new HashMap<>();
@@ -38,7 +41,7 @@ public class Vedlegg {
         this.innsendingsvalg = innsendingsvalg;
     }
 
-    public Vedlegg(Long vedleggId, Long soknadId, Long faktumId, String skjemaNummer, String navn, Long storrelse, Integer antallSider, String fillagerReferanse, byte[] data, Status innsendingsvalg) {
+    public Vedlegg(Long vedleggId, Long soknadId, Long faktumId, String skjemaNummer, String navn, Long storrelse, Integer antallSider, String fillagerReferanse, byte[] data, Long opprettetDato, Status innsendingsvalg) {
         this.vedleggId = vedleggId;
         this.soknadId = soknadId;
         this.faktumId = faktumId;
@@ -47,6 +50,7 @@ public class Vedlegg {
         this.beskrivelse = navn;
         this.storrelse = storrelse;
         this.data = data;
+        this.opprettetDato = opprettetDato;
         this.antallSider = antallSider;
         this.fillagerReferanse = fillagerReferanse;
         this.innsendingsvalg = innsendingsvalg;
@@ -194,6 +198,14 @@ public class Vedlegg {
 
     public void setTittel(String tittel) {
         this.tittel = tittel;
+    }
+
+    public Long getOpprettetDato() {
+        return opprettetDato;
+    }
+
+    public void setOpprettetDato(Long opprettetDato) {
+        this.opprettetDato = opprettetDato;
     }
 
     public enum Status {

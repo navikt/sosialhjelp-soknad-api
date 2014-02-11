@@ -1,5 +1,10 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import static no.nav.modig.lang.collections.IterUtils.on;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
+import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
+
 import no.nav.sbl.dialogarena.soknadinnsending.RestFeil;
 import no.nav.sbl.dialogarena.soknadinnsending.VedleggOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
@@ -28,16 +33,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-
-import static no.nav.modig.lang.collections.IterUtils.on;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
-import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
 /**
  * Controller klasse som brukes til å laste opp filer fra frontend.
@@ -143,7 +144,7 @@ public class VedleggController {
                 List<Vedlegg> res = new ArrayList<>();
                 for (MultipartFile file : files) {
                     byte[] in = getByteArray(file);
-                    Vedlegg vedlegg = new Vedlegg(null, soknadId, forventning.getFaktumId(), forventning.getskjemaNummer(), forventning.getNavn(), file.getSize(), 1, null, in, Vedlegg.Status.UnderBehandling);
+                    Vedlegg vedlegg = new Vedlegg(null, soknadId, forventning.getFaktumId(), forventning.getskjemaNummer(), forventning.getNavn(), file.getSize(), 1, null, in, forventning.getOpprettetDato(), Vedlegg.Status.UnderBehandling);
                     List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, new ByteArrayInputStream(in));
                     for (Long id : ids) {
                         res.add(vedleggService.hentVedlegg(soknadId, id, false));
