@@ -5,7 +5,7 @@
         <div class="persondata-feil">
             <div class="utrop-sirkel-ikon"></div>
             <h1 data-cmstekster="feilmelding"></h1>
-            <p class="mini-strek">{{ 'feilmelding.tps' | cmstekst }}</p>
+            <p data-ng-show="utslagskriterier.error != ''" class="mini-strek">{{ 'feilmelding.generelt' | cmstekst }}</p>
             <div class="knapper">
                 <a type="button" class="knapp-hoved" href="{{inngangsportenUrl}}" data-cmstekster="feilmelding.lenketekst"></a>
             </div>
