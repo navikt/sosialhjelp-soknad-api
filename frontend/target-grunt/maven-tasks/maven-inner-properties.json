@@ -1,0 +1,7 @@
+{
+    "projectRootPath": "C:/Projects/sendsoknad/frontend",
+    "targetPath": "C:/Projects/sendsoknad/frontend/target",
+    "sourceDirectory": "C:/Projects/sendsoknad/frontend",
+    "jsSourceDirectory": "public",
+    "filteredFiles": ["maven.properties.json"]
+}
