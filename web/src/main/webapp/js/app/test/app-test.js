@@ -1,4 +1,4 @@
-angular.module('sendsoknad', ['app.routes', 'app.brukerdata', 'app.services', 'app.directives', 'app.controllers', 'app.date', 'app.grunnlagsdata', 'ngMockE2E'])
+angular.module('sendsoknad', ['app.routes', 'app.services', 'app.directives', 'app.controllers', 'app.date', 'app.grunnlagsdata', 'ngMockE2E'])
 
 	.run(function ($httpBackend) {
 		soknadData = {"soknadId": 1, "skjemaNummer": "Dagpenger", "brukerBehandlingId": "100000000",

@@ -27,6 +27,5 @@ angular.module('nav.personalia', [])
 
 
         // TODO: Trenger jo ikke validering når vi ikke har form
-        $scope.valider = function (skalScrolle) {
-        }
+        $scope.valider = function (skalScrolle) {}
     }]);
