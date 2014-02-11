@@ -32,7 +32,7 @@ angular.module('nav.oppsummering', [])
                     },
                     //Error
                     function () {
-                        //TODOD
+                        $location.path('feilside');
                     }
                 );
             } else {

@@ -231,6 +231,14 @@ angular.module('app.routes', ['ngRoute'])
 					}
 				}
 			})
+			.when('/feilside', {
+				templateUrl: '../html/templates/feilside.html',
+				resolve    : {
+					notUsedButRequiredProperty: function (InformasjonsSideResolver) {
+						return InformasjonsSideResolver;
+					}
+				}
+			})
 			.when('/soknadliste', {templateUrl: '../html/templates/soknadliste.html'})
 			.otherwise({redirectTo: '/informasjonsside'});
 
