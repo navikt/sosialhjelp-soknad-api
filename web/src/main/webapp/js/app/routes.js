@@ -22,7 +22,6 @@ angular.module('app.routes', ['ngRoute'])
 			})
 			.when('/vedlegg', {
 				templateUrl: '../html/templates/vedlegg.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -39,7 +38,6 @@ angular.module('app.routes', ['ngRoute'])
 			})
 			.when('/visVedlegg/:vedleggId', {
 				templateUrl: '../html/templates/visvedlegg.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -64,7 +62,6 @@ angular.module('app.routes', ['ngRoute'])
 			})
 			.when('/kvittering-fortsettsenere', {
 				templateUrl: '../html/templates/kvittering-fortsettsenere.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
