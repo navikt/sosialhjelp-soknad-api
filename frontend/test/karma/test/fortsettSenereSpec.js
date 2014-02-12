@@ -1,7 +1,7 @@
 describe('FortsettSenereController', function() {
 
 	beforeEach(
-        module('app.services','nav.forsettsenere')
+        module('app.services','nav.fortsettsenere')
         
     );
 
@@ -41,7 +41,7 @@ describe('FortsettSenereController', function() {
 	describe("vis riktig valg på landingsside for gjennopptakelse av søknad", function() {
 		var scope, $rootScope, $compile, element, manualCompiledElement;
 
-		beforeEach(module('nav.forsettsenere', function ($provide) {
+		beforeEach(module('nav.fortsettsenere', function ($provide) {
         $provide.value("data", {
             soknad: {
                 "soknadId": "1",
