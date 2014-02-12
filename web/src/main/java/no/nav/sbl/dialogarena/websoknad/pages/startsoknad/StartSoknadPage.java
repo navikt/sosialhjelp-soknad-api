@@ -13,7 +13,7 @@ public class StartSoknadPage extends BasePage {
 		if(soknadType == null || soknadType.isEmpty()) {
 		    add(new SoknadComponent("soknad"));
 		} else {
-		    add(new SoknadComponent("soknad", soknadType));
+		    add(new SoknadComponent("soknad"));
 		}
 		
 		

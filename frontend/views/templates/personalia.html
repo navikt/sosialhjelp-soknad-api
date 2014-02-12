@@ -1,0 +1,41 @@
+<div class="skjemaramme">
+    <div data-ng-form="personaliaForm" class="skjemainnhold" data-ng-controller="PersonaliaCtrl" data-novalidate>
+        <div class="informasjon">
+            <span class="informasjonstekst" data-cmstekster="personalia.intro"></span>
+            <a target="_blank" data-cmstekster="personalia.intro.tekst" href="{{brukerprofilUrl}}"></a>
+        </div>
+
+        <div data-ng-show="harHentetPersonalia()">
+            <div class="personalia">
+                <div class="alderOgKjonn" data-ng-class="{mann: erMann(), kvinne: erKvinne()}">
+                    <span data-cmstekster="aar"></span>
+                    <span class="alder robust">{{ personalia.alder }}</span>
+                </div>
+                <div class="personInfo">
+                    <div class="navnOgFnr">
+                        <span>{{ personalia.navn }}</span>
+                        <span>{{ personalia.fnr }}</span>
+                    </div>
+
+                    <div data-ng-include="'../views/templates/adresse.html'"></div>
+                </div>
+
+                <div data-ng-if="erUtenlandskStatsborger()">
+                    <div class="statsborgerskap" data-navinfoboks >
+                            {{ 'personalia.utenlandskstatsborger.statsborgerskap.informasjon' | cmstekst }}
+                        </div>
+                        <div class="ekstra-spm-boks" data-vedlegginfoboks>
+                            <ul>
+                                <li>
+                                    {{ 'personalia.utenlandskstatsborger.statsborgerskap.dokumentasjon' | cmstekst}}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+              <div data-spmblokkferdig></div>
+        </div>
+
+    </div>
+</div>
