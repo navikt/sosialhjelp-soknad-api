@@ -241,7 +241,6 @@ angular.module("../views/templates/arbeidsforhold.html", []).run(["$templateCach
     "                 data-navfeilmelding=\"arbeidsforhold.arbeidstilstand.feilmelding\">\n" +
     "            </div>\n" +
     "\n" +
-    "\n" +
     "            <div data-navradio\n" +
     "                 data-value=\"harIkkeJobbet\"\n" +
     "                 data-navconfig\n" +
@@ -300,7 +299,7 @@ angular.module("../views/templates/arbeidsforhold.html", []).run(["$templateCach
     "        </div>\n" +
     "\n" +
     "        <div class=\"knapper-arbeidsforhold\">\n" +
-    "            <div id=\"legg-til\" class=\"form-linje knapp\" data-ng-if=\"harSvart()\" data-ng-class=\"{feil: skalViseFeil()}\">\n" +
+    "            <div id=\"legg-til\" class=\"form-linje knapp ikke-fadebakgrunn\" data-ng-if=\"harSvart()\" data-ng-class=\"{feil: skalViseFeil()}\">\n" +
     "                <div data-ng-if=\"hvisHarJobbet()\">\n" +
     "                    <input type=\"hidden\"\n" +
     "                           data-ng-model=\"harLagretArbeidsforhold\"\n" +
@@ -1424,13 +1423,15 @@ angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templ
 angular.module("../views/templates/barnetillegg.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/templates/barnetillegg.html",
     "<div class=\"skjemaramme\">\n" +
-    "    <div id=\"barnetilleggForm\" data-ng-form=\"barnetilleggForm\" class=\"skjemainnhold\" data-ng-controller=\"BarnetilleggCtrl\" novalidate>\n" +
+    "    <div id=\"barnetilleggForm\" data-ng-form=\"barnetilleggForm\" class=\"skjemainnhold\"\n" +
+    "         data-ng-controller=\"BarnetilleggCtrl\" novalidate>\n" +
     "\n" +
     "        <p class=\"informasjonstekst\" cmstekster=\"barnetillegg.informasjon\"></p>\n" +
     "\n" +
     "        <div class=\"spm-boks vertikal\" data-ng-repeat=\"b in barn\">\n" +
     "            <div data-ng-class=\"{gutt: erGutt(b), jente:erJente(b)}\" id=\"barnetillegg{{b.faktumId}}\" class=\"barn\">\n" +
-    "                <a href=\"#\" class=\"lukk\" data-ng-show=\"erBrukerregistrert(b)\" data-ng-click=\"slettBarn(b, $index, $event)\" > </a>\n" +
+    "                <a href=\"#\" class=\"lukk\" data-ng-show=\"erBrukerregistrert(b)\"\n" +
+    "                   data-ng-click=\"slettBarn(b, $index, $event)\"> </a>\n" +
     "\n" +
     "                <div class=\"barnealder\">\n" +
     "                    <span data-cmstekster=\"aar\"></span>\n" +
@@ -1448,14 +1449,19 @@ angular.module("../views/templates/barnetillegg.html", []).run(["$templateCache"
     "                </div>\n" +
     "                <div class=\"barnecheckbox\">\n" +
     "                    <div data-ng-show=\"erSystemRegistrert(b)\">\n" +
-    "                        <a href data-ng-click=\"sokbarnetillegg(b.faktumId, $event)\" data-cmstekster=\"barnetillegg.barnetilegg.sporsmal\" data-ng-if=\"barnetilleggIkkeRegistrert(b)\"></a>\n" +
-    "                        <a href=\"#\" data-ng-if=\"barnetilleggErRegistrert(b)\" data-ng-click=\"slettBarnetillegg(b, $index, $event)\" data-cmstekster=\"barnetillegg.slettbarnetillegg\"></a>\n" +
+    "                        <a href data-ng-click=\"sokbarnetillegg(b.faktumId, $event)\"\n" +
+    "                           data-cmstekster=\"barnetillegg.barnetilegg.sporsmal\"\n" +
+    "                           data-ng-if=\"barnetilleggIkkeRegistrert(b)\"></a>\n" +
+    "                        <a href=\"#\" data-ng-if=\"barnetilleggErRegistrert(b)\"\n" +
+    "                           data-ng-click=\"slettBarnetillegg(b, $index, $event)\"\n" +
+    "                           data-cmstekster=\"barnetillegg.slettbarnetillegg\"></a>\n" +
     "                    </div>\n" +
     "\n" +
     "                    <div data-ng-if=\"barnetilleggErRegistrert(b)\">\n" +
     "                        <p class=\"svar-oppsummering\" data-cmstekster=\"barnetillegg.barnetilegg.sporsmal\"></p>\n" +
     "\n" +
-    "                        <p class=\"svar-oppsummering\" data-ng-if=\"barnetHarIkkeInntekt(b)\" data-cmstekster=\"barnetillegg.barnetilegg.ikkebarneinntekt.true\"></p>\n" +
+    "                        <p class=\"svar-oppsummering\" data-ng-if=\"barnetHarIkkeInntekt(b)\"\n" +
+    "                           data-cmstekster=\"barnetillegg.barnetilegg.ikkebarneinntekt.true\"></p>\n" +
     "\n" +
     "                        <p class=\"svar-oppsummering\" data-ng-if=\"barnetHarInntekt(b)\">\n" +
     "                            <span data-cmstekster=\"barnetillegg.barnetilegg.ikkebarneinntekt.false\"> </span>\n" +
@@ -1480,19 +1486,22 @@ angular.module("../views/templates/barnetillegg.html", []).run(["$templateCache"
     "                <div class=\"sentrert\" data-ng-show=\"erBrukerregistrert(b)\">\n" +
     "                    <ul class=\"liste-vannrett\">\n" +
     "                        <li>\n" +
-    "                            <a href=\"#\" data-ng-click=\"slettBarn(b, $index, $event)\" data-cmstekster=\"barnetillegg.slettbarn\" ></a>\n" +
+    "                            <a href=\"#\" data-ng-click=\"slettBarn(b, $index, $event)\"\n" +
+    "                               data-cmstekster=\"barnetillegg.slettbarn\"></a>\n" +
     "                        </li>\n" +
     "                        <li>\n" +
-    "                            <a href=\"#\" data-ng-click=\"endreBarn(b.faktumId, $event)\" data-cmstekster=\"barnetillegg.endrebarn\"></a>\n" +
+    "                            <a href=\"#\" data-ng-click=\"endreBarn(b.faktumId, $event)\"\n" +
+    "                               data-cmstekster=\"barnetillegg.endrebarn\"></a>\n" +
     "                        </li>\n" +
     "                    </ul>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "\n" +
-    "        <div class=\"knapper-opprett\" id=\"legg-til-barn\">\n" +
+    "        <div class=\"knapper-opprett ikke-fadebakgrunn\" id=\"legg-til-barn\">\n" +
     "            <p data-cmstekster=\"barnetillegg.nyttbarn.informasjon\"></p>\n" +
-    "            <button class=\"knapp-leggtil-liten\" href=\"#/nyttbarn\" data-ng-click=\"leggTilBarn($event)\" data-cmstekster=\"barnetillegg.nyttbarn\"></button>\n" +
+    "            <button class=\"knapp-leggtil-liten\" href=\"#/nyttbarn\" data-ng-click=\"leggTilBarn($event)\"\n" +
+    "                    data-cmstekster=\"barnetillegg.nyttbarn\"></button>\n" +
     "        </div>\n" +
     "\n" +
     "        <div data-spmblokkferdig></div>\n" +
@@ -1854,10 +1863,44 @@ angular.module("../views/templates/feilside.html", []).run(["$templateCache", fu
     "<div data-stegindikator data-steg-liste=\"veiledning, skjema, vedlegg, sendInn\" data-aktiv-index=\"0\"></div>      \n" +
     "<div id=\"feilside\" data-ng-controller=\"FeilSideCtrl\">\n" +
     "    <div data-panelbelyst>\n" +
-    "        <div class=\"persondata-feil\">\n" +
+    "        <div class=\"feil\">\n" +
     "            <div class=\"utrop-sirkel-ikon\"></div>\n" +
-    "            <h1 data-cmstekster=\"feilmelding\"></h1>\n" +
-    "            <p data-ng-show=\"utslagskriterier.error != ''\" class=\"mini-strek\">{{ 'feilmelding.generelt' | cmstekst }}</p>\n" +
+    "            <h1 class=\"h1-strek\" data-cmstekster=\"feilmelding\"></h1>\n" +
+    "            \n" +
+    "            <div class=\"generellfeil\" data-ng-form=\"epostForm\" data-ng-controller=\"FortsettSenereCtrl\" data-novalidate>\n" +
+    "\n" +
+    "                <div class=\"form-linje\">\n" +
+    "                    <p>{{ 'feilmelding.innsending.1' | cmstekst }}</p>\n" +
+    "                </div>\n" +
+    "\n" +
+    "\n" +
+    "                <div class=\"send-epost\">\n" +
+    "                    <div class=\"input-boks\">\n" +
+    "                        <div class=\"form-linje\">\n" +
+    "                            <label>\n" +
+    "                                <span data-cmstekster=\"dagpenger.fortsettSenere.epost.label\"> </span>\n" +
+    "                                <input type=\"email\" name=\"epost\" role=\"textbox\" data-ng-model=\"epost.value\"\n" +
+    "                                        data-error-messages=\"{required: 'dagpenger.fortsettSenere.epost.required.feilmelding', pattern: 'dagpenger.fortsettSenere.epost.pattern.feilmelding' }\"\n" +
+    "                                        data-ng-required=\"true\" data-ng-pattern=\"/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$/\" data-blur-validate/>\n" +
+    "                            </label>\n" +
+    "                            <input type=\"submit\" class=\"knapp-hoved-liten\" data-cmstekster=\"dagpenger.fortsettSenere.epost.send\" role=\"button\" data-ng-click=\"forsettSenere(epostForm)\"/>\n" +
+    "                            <span class=\"melding\"></span>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "\n" +
+    "                <div class=\"form-linje\">\n" +
+    "                    <p>\n" +
+    "                        <span>{{ 'feilmelding.innsending.2' | cmstekst }}</span>\n" +
+    "                        <a href=\"{{mineInnsendinger}}\">{{ 'feilmelding.mineinnsedinger.lenketekst' | cmstekst }}</a>\n" +
+    "                    </p>\n" +
+    "                </div>\n" +
+    "           \n" +
+    "           </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
     "            <div class=\"knapper\">\n" +
     "                <a type=\"button\" class=\"knapp-hoved\" href=\"{{inngangsportenUrl}}\" data-cmstekster=\"feilmelding.lenketekst\"></a>\n" +
     "            </div>\n" +
@@ -1976,7 +2019,7 @@ angular.module("../views/templates/informasjonsside.html", []).run(["$templateCa
     "\n" +
     "<div id=\"informasjonsside\" data-sidetittel=\"sidetittel.informasjon\" data-ng-cloak>\n" +
     "	<div data-panelbelyst>\n" +
-    "        <div class=\"persondata-feil\" data-ng-show=\"tpsSvarerIkke()\">\n" +
+    "        <div class=\"feil\" data-ng-show=\"tpsSvarerIkke()\">\n" +
     "        	<div class=\"utrop-sirkel-ikon\"></div>\n" +
     "        	<h1 data-cmstekster=\"feilmelding\"></h1>\n" +
     "       		<p class=\"mini-strek\">{{ 'feilmelding.tps' | cmstekst }}</p>\n" +
@@ -3444,8 +3487,14 @@ angular.module("../js/app/directives/stegindikator/stegIndikatorTemplate.html", 
     "	<div class=\"begrensning\">\n" +
     "		<ul class=\"stegindikator\">\n" +
     "		    <li data-ng-repeat=\"steg in data.liste\" ng-class=\"{aktiv: $index == {{ aktivIndex }}}\">\n" +
-    "		        <a href=\"{{ hentLenke($index) }}\" data-cmstekster=\"stegindikator.{{ steg }}\" data-ng-if=\"erKlikkbar($index)\"></a>\n" +
-    "                <span data-cmstekster=\"stegindikator.{{ steg }}\" data-ng-if=\"erIkkeKlikkbar($index)\"></span>\n" +
+    "		        <a class=\"steg\" href=\"{{ hentLenke($index) }}\" data-ng-if=\"erKlikkbar($index)\">\n" +
+    "                    <span class=\"tekst\">{{  'stegindikator.' + steg | cmstekst }}</span>\n" +
+    "                    <span class=\"stegnummer\">{{ $index }}</span>\n" +
+    "                </a>\n" +
+    "                <span class=\"steg\" data-ng-if=\"erIkkeKlikkbar($index)\">\n" +
+    "                    <span class=\"tekst\">{{  'stegindikator.' + steg | cmstekst }}</span>\n" +
+    "                    <span class=\"stegnummer\">{{ $index }}</span>\n" +
+    "                </span>\n" +
     "		    </li>\n" +
     "		</ul>\n" +
     "	</div>\n" +
@@ -3486,21 +3535,21 @@ angular.module("../js/common/directives/accordion/accordionGroupTemplate.html", 
   $templateCache.put("../js/common/directives/accordion/accordionGroupTemplate.html",
     "<section class=\"accordion-group\" data-ng-class=\"{open: isOpen}\">\n" +
     "    <div class=\"accordion-heading\">\n" +
-    "        <div class=\"flipp\">\n" +
-    "            <span>+</span>\n" +
-    "        </div>\n" +
-    "            <a class=\"accordion-toggle\"\n" +
-    "               id=\"{{ id }}-heading\"\n" +
-    "               aria-owns=\"{{ id }}-body\"\n" +
-    "               aria-controls=\"{{ id }}-body\"\n" +
-    "               href=\"\"\n" +
-    "               data-ng-click=\"isOpen = !isOpen\"\n" +
-    "               data-nav-aria-expanded=\"isOpen\"\n" +
-    "               data-accordion-transclude=\"heading\">\n" +
-    "                <h2 class=\"stor\">\n" +
-    "                    {{heading}}\n" +
-    "                </h2>\n" +
-    "            </a>\n" +
+    "        <a class=\"accordion-toggle\"\n" +
+    "           id=\"{{ id }}-heading\"\n" +
+    "           aria-owns=\"{{ id }}-body\"\n" +
+    "           aria-controls=\"{{ id }}-body\"\n" +
+    "           href=\"javascript:void(0)\" tabindex=\"0\"\n" +
+    "           data-ng-click=\"isOpen = !isOpen\"\n" +
+    "           data-nav-aria-expanded=\"isOpen\"\n" +
+    "           data-accordion-transclude=\"heading\">\n" +
+    "            <div class=\"flipp\">\n" +
+    "                <span>+</span>\n" +
+    "            </div>\n" +
+    "            <h2 class=\"stor\">\n" +
+    "                {{heading}}\n" +
+    "            </h2>\n" +
+    "        </a>\n" +
     "    </div>\n" +
     "    <div class=\"accordion-body\"\n" +
     "         id=\"{{ id }}-body\"\n" +
@@ -3662,7 +3711,7 @@ angular.module("../js/common/directives/navinput/navorgnrfeltTemplate.html", [])
     "            <span data-cmstekster=\"{{ navlabel }}\"></span>\n" +
     "            <input data-ng-model=\"faktum.value\" type=\"text\" value=\"{{ value }}\" data-ng-required=\"erSynlig()\"\n" +
     "                   data-error-messages=\"{{ navfeilmelding }}\" data-blur-validate\n" +
-    "                   placeholder=\"123456789\" data-ng-pattern=\"/\\d{9}/\" maxlength=\"9\" orgnr-validate>\n" +
+    "                   placeholder=\"123456789\" data-ng-pattern=\"/[0-9]*/\" maxlength=\"9\" orgnr-validate>\n" +
     "        </label>\n" +
     "        <span class=\"melding\"></span>\n" +
     "</div>\n" +
