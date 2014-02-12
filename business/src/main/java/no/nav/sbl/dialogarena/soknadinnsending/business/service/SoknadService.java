@@ -118,6 +118,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         faktum.setType(BRUKERREGISTRERT_FAKTUM);
         Long faktumId = repository.lagreFaktum(soknadId, faktum);
         repository.settSistLagretTidspunkt(soknadId);
+        //Setter delstegstatus dersom et faktum blir lagret, med mindre det er epost. Bør gjøres mer elegant, litt quickfix
         if (!"epost".equals(faktum.getKey()))
         {
             repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
