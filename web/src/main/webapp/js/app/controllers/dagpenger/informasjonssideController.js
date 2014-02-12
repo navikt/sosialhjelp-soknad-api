@@ -1,7 +1,4 @@
 angular.module('nav.informasjonsside', ['nav.cmstekster'])
-    .controller('FeilSideCtrl', ['$scope', 'data',  function ($scope, data) {
-
-    }])
     .controller('InformasjonsSideCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', 'soknadService', 'sjekkUtslagskriterier', function ($scope, data, $routeParams, $http, $location, soknadService, sjekkUtslagskriterier) {
         var fortsettLikevell = false;
 
