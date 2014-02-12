@@ -759,7 +759,7 @@ form, [ng-form], [data-ng-form] {
     }
 }
 
-a.infoikon, a.lukk, a.knapp-link, a.accordion-toggle, #vedlegg a.accordion-toggle {
+a.accordion-toggle, #vedlegg a.accordion-toggle {
   display: block;
     &:active {
       color: #3e3832;
@@ -771,6 +771,18 @@ a.infoikon, a.lukk, a.knapp-link, a.accordion-toggle, #vedlegg a.accordion-toggl
       outline: none;
       text-decoration: underline !important;
     }
+}
+a.infoikon, a.lukk, a.knapp-link {
+  &:active {
+    color: #3e3832;
+    outline: none;
+    text-decoration: underline !important;
+  }
+  &:focus {
+    color: #3e3832;
+    outline: none;
+    text-decoration: underline !important;
+  }
 }
 
 a.accordion-toggle:focus,  #vedlegg a.accordion-toggle:focus h2 {
