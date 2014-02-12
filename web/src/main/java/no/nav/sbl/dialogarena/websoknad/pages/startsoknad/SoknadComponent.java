@@ -15,10 +15,10 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sun.xml.internal.ws.util.StreamUtils.copyToString;
 import static java.lang.String.format;
 import static java.nio.charset.Charset.forName;
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.util.StreamUtils.copyToString;
 
 
 /**
@@ -27,19 +27,11 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class SoknadComponent extends WebComponent {
 
     private static final Logger LOGGER = getLogger(SoknadComponent.class);
-    private final String soknadType;
     private static List<String> files;
-
-    public SoknadComponent(String id, String soknadType) {
-        super(id);
-        initLegalFilenames();
-        this.soknadType = soknadType;
-    }
 
     public SoknadComponent(String id) {
         super(id);
         initLegalFilenames();
-        this.soknadType = "Dagpenger";
     }
 
     private void initLegalFilenames() {
@@ -60,13 +52,13 @@ public class SoknadComponent extends WebComponent {
 
     @Override
     public void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
-        String file = format("/views/built/bootstrap.html", soknadType);
+        String file = "/views/built/bootstrap.html";
         try (InputStream content = WebApplication.get().getServletContext().getResourceAsStream(format("/views/%s", file))) {
             replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
         } catch (IllegalArgumentException| IOException e) {
             try {
                 File basedir = new File(WebApplication.get().getServletContext().getResource("/").toURI());
-                File devDir = new File(basedir, "../../../../frontend/views/built/bootstrap.html");
+                File devDir = new File(basedir, "../../../../frontend/views/built/bootstrapDev.html");
                 try(InputStream content = new FileInputStream(devDir)){
                     replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
                 }

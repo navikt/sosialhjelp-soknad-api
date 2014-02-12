@@ -16,9 +16,7 @@ public class ResourceServlet extends WebMvcConfigurerAdapter {
         File libs = new File(FilesAndDirs.PROJECT_BASEDIR, "../frontend/");
         String frontendPath = libs.toURI().toString();
         String javascriptPath = frontendPath + "js/";
-        String viewsPath = frontendPath + "src/main/resources/META-INF/resources/views/Dagpenger.html";
         registry.addResourceHandler("/js/**").addResourceLocations(javascriptPath);
-        registry.addResourceHandler("/views/**").addResourceLocations(viewsPath);
 
     }
 }
