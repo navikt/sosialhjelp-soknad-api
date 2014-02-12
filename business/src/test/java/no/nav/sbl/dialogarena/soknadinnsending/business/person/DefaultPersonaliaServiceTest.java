@@ -29,12 +29,10 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGyldighetsperio
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLLandkoder;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMatrikkeladresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseNorge;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLNorskIdent;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPersonnavn;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadressetyper;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostboksadresseNorsk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostnummer;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLUstrukturertAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.meldinger.XMLHentKontaktinformasjonOgPreferanserRequest;
@@ -70,25 +68,20 @@ public class DefaultPersonaliaServiceTest {
     private static final String BARN_IDENT = "01010091736";
     private static final String BARN_FORNAVN = "Bjarne";
     private static final String BARN_ETTERNAVN = "Barnet";
-    private static final Object BARN_SAMMENSATTNAVN = BARN_FORNAVN + " "
-            + BARN_ETTERNAVN;
-
+    
     private static final String FEIL_IDENT = "54321012345";
     private static final String ET_FORNAVN = "Ola";
     private static final String ET_MELLOMNAVN = "Johan";
     private static final String ET_ETTERNAVN = "Normann";
     private static final String FOLKEREGISTRERT_ADRESSE_VALUE = "BOSTEDSADRESSE";
-    private static final String MIDLERTIDIG_POSTADRESSE_NORGE_VALUE = "MIDLERTIDIG_POSTADRESSE_NORGE";
     private static final String EN_ADRESSE_GATE = "Grepalida";
     private static final String EN_ADRESSE_HUSNUMMER = "44";
     private static final String EN_ADRESSE_HUSBOKSTAV = "B";
     private static final String EN_ADRESSE_POSTNUMMER = "0560";
     private static final String EN_ADRESSE_POSTSTED = "Oslo";
 
-    private static final Long EN_ANNEN_ADRESSE_GYLDIG_FRA = new DateTime(2012,
-            10, 11, 14, 44).getMillis();
-    private static final Long EN_ANNEN_ADRESSE_GYLDIG_TIL = new DateTime(2012,
-            11, 12, 15, 55).getMillis();
+    private static final Long EN_ANNEN_ADRESSE_GYLDIG_FRA = new DateTime(2012, 10, 11, 14, 44).getMillis();
+    private static final Long EN_ANNEN_ADRESSE_GYLDIG_TIL = new DateTime(2012, 11, 12, 15, 55).getMillis();
     private static final String EN_ANNEN_ADRESSE_GATE = "Vegvegen";
     private static final String EN_ANNEN_ADRESSE_HUSNUMMER = "44";
     private static final String EN_ANNEN_ADRESSE_HUSBOKSTAV = "D";
@@ -138,9 +131,6 @@ public class DefaultPersonaliaServiceTest {
 
     @Mock
     private Kodeverk kodeverkMock;
-
-    // TODO Refaktorer tester
-
     private XMLBruker xmlBruker;
     private DateTimeFormatter dateTimeFormat;
 
@@ -464,27 +454,6 @@ public class DefaultPersonaliaServiceTest {
         return xmlMidlertidigNorge;
     }
 
-    private XMLMidlertidigPostadresseNorge generateMidlertidigPostboksAdresseNorge(
-            boolean medData) {
-        XMLMidlertidigPostadresseNorge xmlMidlertidigPostboksNorge = new XMLMidlertidigPostadresseNorge();
-
-        XMLPostboksadresseNorsk xmlpostboksadresse = new XMLPostboksadresseNorsk();
-        XMLPostnummer xmlpostnummer = new XMLPostnummer();
-        XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode(medData);
-        xmlMidlertidigPostboksNorge
-                .setPostleveringsPeriode(xmlGyldighetsperiode);
-        if (medData) {
-            xmlpostboksadresse.setTilleggsadresse(EN_POSTBOKS_ADRESSEEIER);
-            xmlpostboksadresse.setPostboksanlegg(ET_POSTBOKS_NAVN);
-            xmlpostboksadresse.setPostboksnummer(EN_POSTBOKS_NUMMER);
-            xmlpostnummer.setValue(EN_ANNEN_ADRESSE_POSTNUMMER);
-        }
-        xmlpostboksadresse.setPoststed(xmlpostnummer);
-        xmlMidlertidigPostboksNorge.setStrukturertAdresse(xmlpostboksadresse);
-        return xmlMidlertidigPostboksNorge;
-
-    }
-
     private XMLMidlertidigPostadresseNorge generateMidlertidigOmrodeAdresseNorge() {
         XMLMidlertidigPostadresseNorge xmlMidlertidigPostadresse = new XMLMidlertidigPostadresseNorge();
 
@@ -510,29 +479,7 @@ public class DefaultPersonaliaServiceTest {
         xmlGyldighetsperiode.setTom(new DateTime(EN_ANNEN_ADRESSE_GYLDIG_TIL));
         return xmlGyldighetsperiode;
     }
-
-    private XMLBruker genererXmlBrukerMedGyldigIdentOgNavn(boolean medMellomnavn) {
-        XMLBruker xmlBruker = new XMLBruker()
-                .withElektroniskKommunikasjonskanal(lagElektroniskKommunikasjonskanal());
-        XMLPersonnavn personNavn = new XMLPersonnavn();
-        personNavn.setFornavn(ET_FORNAVN);
-        if (medMellomnavn) {
-            personNavn.setMellomnavn(ET_MELLOMNAVN);
-            personNavn.setSammensattNavn(ET_FORNAVN + " " + ET_MELLOMNAVN + " "
-                    + ET_ETTERNAVN);
-        } else {
-            personNavn.setMellomnavn("");
-            personNavn.setSammensattNavn(ET_FORNAVN + " " + ET_ETTERNAVN);
-        }
-        personNavn.setEtternavn(ET_ETTERNAVN);
-        xmlBruker.setPersonnavn(personNavn);
-        XMLNorskIdent xmlNorskIdent = new XMLNorskIdent();
-        xmlNorskIdent.setIdent(RIKTIG_IDENT);
-        xmlBruker.setIdent(xmlNorskIdent);
-
-        return xmlBruker;
-    }
-
+    
     private XMLBostedsadresse genererXMLFolkeregistrertAdresse(boolean medData) {
         XMLBostedsadresse bostedsadresse = new XMLBostedsadresse();
         XMLGateadresse gateadresse = new XMLGateadresse();
@@ -547,29 +494,6 @@ public class DefaultPersonaliaServiceTest {
         gateadresse.setLandkode(lagLandkode());
         bostedsadresse.setStrukturertAdresse(gateadresse);
         return bostedsadresse;
-    }
-
-    private XMLHentKontaktinformasjonOgPreferanserRequest hentRequestMedGyldigIdent() {
-        XMLHentKontaktinformasjonOgPreferanserRequest request = new XMLHentKontaktinformasjonOgPreferanserRequest();
-        request.setIdent(RIKTIG_IDENT);
-        return request;
-    }
-
-    private XMLMidlertidigPostadresseUtland generateMidlertidigAdresseUtlandet(
-            int antallAdresseLinjer) {
-        XMLMidlertidigPostadresseUtland xmlMidlertidigAdresseUtland = new XMLMidlertidigPostadresseUtland();
-        XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode(true);
-        xmlMidlertidigAdresseUtland
-                .setPostleveringsPeriode(xmlGyldighetsperiode);
-
-        XMLUstrukturertAdresse ustrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(antallAdresseLinjer);
-
-        XMLLandkoder xmlLandkode = new XMLLandkoder();
-        xmlLandkode.setValue(EN_LANDKODE);
-        ustrukturertAdresse.setLandkode(xmlLandkode);
-        xmlMidlertidigAdresseUtland.setUstrukturertAdresse(ustrukturertAdresse);
-
-        return xmlMidlertidigAdresseUtland;
     }
 
     private XMLUstrukturertAdresse generateUstrukturertAdresseMedXAntallAdersseLinjer(

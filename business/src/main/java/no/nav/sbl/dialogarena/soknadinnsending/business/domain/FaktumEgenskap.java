@@ -19,7 +19,7 @@ public class FaktumEgenskap implements Serializable {
         this.key = key;
         this.value = value;
 
-        if (systemEgenskap.equals('1')) {
+        if (systemEgenskap.equals("1")) {
             this.systemEgenskap = true;
         } else {
             this.systemEgenskap = false;
