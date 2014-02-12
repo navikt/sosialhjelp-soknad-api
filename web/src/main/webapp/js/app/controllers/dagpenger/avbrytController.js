@@ -7,7 +7,7 @@ angular.module('nav.avbryt', [])
 
         $scope.krevBekreftelse = data.fakta.filter(function(item) {
             return item.type==="BRUKERREGISTRERT";
-        }).length>0;
+        }).length>1;
         
 
 
