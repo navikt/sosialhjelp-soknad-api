@@ -64241,7 +64241,6 @@ function(boDirective)
 ;angular.module('sendsoknad', [
 	'ui.keypress',
 	'app.routes',
-	'app.brukerdata',
 	'app.grunnlagsdata',
 	'app.services',
 	'app.directives',
@@ -64251,99 +64250,6 @@ function(boDirective)
 	'ngCookies',
     'templates-main'
 ]);
-;//TODO: Hele modulen burde vel fjernes? Flytte det som skal beholdes til egne moduler
-angular.module('app.brukerdata', ['app.services'])
-    // TODO: Denne skal vel bort?
-    .controller('SoknadDataCtrl', ['$scope', 'data', function ($scope, data) {
-        $scope.soknadData = data.soknad;
-    }])
-    // TODO: Flytte til egen modul?
-    .controller('AvbrytCtrl', function ($scope, $routeParams, $location, soknadService, data) {
-        var soknadId = data.soknad.soknadId;
-        $scope.krevBekreftelse = {value: ''};
-
-        $scope.fremdriftsindikator = {
-            laster: false
-        }
-
-        soknadService.get({soknadId: soknadId}).$promise.then(function (result) {
-            var fakta = $.map(result.fakta, function (element) {
-                return element.type;
-            });
-            $scope.krevBekreftelse.value = $.inArray("BRUKERREGISTRERT", fakta) > 0;
-
-            if (!$scope.krevBekreftelse.value) {
-                $scope.submitForm();
-            }
-        })
-
-        $scope.submitForm = function () {
-            var start = $.now();
-            $scope.fremdriftsindikator.laster = true;
-            soknadService.remove({soknadId: soknadId},
-                function () { // Success
-                    var delay = 1500 - ($.now() - start);
-                    setTimeout(function () {
-                        $scope.$apply(function () {
-                            $location.path('/slettet');
-                        });
-                    }, delay);
-                },
-                function () { // Error
-                    $scope.fremdriftsindikator.laster = false;
-                }
-            );
-        };
-    })
-    // TODO: Denne skal vel bort?
-    .directive('modFaktum', function () {
-        return function ($scope, element, attrs) {
-            var eventType;
-            switch (element.attr('type')) {
-                case "radio":
-                case "checkbox":
-                    eventType = "change";
-                    break;
-                default:
-                    eventType = "blur";
-            }
-
-            element.bind(eventType, function () {
-                var verdi = element.val().toString();
-                if (element.attr('type') === "checkbox") {
-                    verdi = element.is(':checked').toString();
-                }
-
-                if ($scope.faktum) {
-                    $scope.faktum.$save();
-                } else {
-                    $scope.$apply(function () {
-                        $scope.$emit("OPPDATER_OG_LAGRE", {key: element.attr('name'), value: verdi});
-                    });
-                }
-
-            });
-        };
-    })
-    // TODO: Denne skal vel bort?
-    .filter('midlertidigAdresseType', function () {
-        return function (input, scope) {
-            var tekst;
-            switch (input) {
-                case "MIDLERTIDIG_POSTADRESSE_NORGE":
-
-                    tekst = "tekster.personalia_midlertidig_adresse_norge";
-                    break;
-                case "MIDLERTIDIG_POSTADRESSE_UTLAND":
-                    tekst = scope.tekster.personalia_midlertidig_adresse_utland;
-                    break;
-                default :
-                    //TODO: fix
-                    tekst = "Du har ikke midlertidig adresse i norge eller utlandet";
-            }
-            return tekst;
-        }
-    });
 ;'use strict';
 angular.module('app.controllers', [
     'app.services',
@@ -64357,10 +64263,11 @@ angular.module('app.controllers', [
     'nav.barnetillegg',
     'nav.barn',
     'nav.vedlegg.controller',
-    'nav.forsettsenere',
+    'nav.fortsettsenere',
     'nav.dagpenger',
     'nav.arbeidsforhold',
     'nav.informasjonsside',
+    'nav.feilside',
     'nav.behandlingside',
     'nav.personalia',
     'nav.oppsummering',
@@ -64381,23 +64288,8 @@ angular.module('app.controllers', [
 
         $scope.formattertGjeldendeAdresse = '';
         $scope.gjeldendeAdresseTypeLabel = '';
-        if ($scope.harGjeldendeAdresse()) {
-            $scope.formattertGjeldendeAdresse = hentFormattertAdresse($scope.personalia.gjeldendeAdresse);
-            $scope.gjeldendeAdresseTypeLabel = hentAdresseTypeNokkel($scope.personalia.gjeldendeAdresseType);
-        }
 
-        $scope.harSekundarAdresse = function() {
-            return $scope.personalia.sekundarAdresse != null;
-        };
-
-        $scope.formattertSekundarAdresse = '';
-        $scope.sekundarAdresseTypeLabel = '';
-        if ($scope.harSekundarAdresse()) {
-            $scope.formattertSekundarAdresse = hentFormattertAdresse($scope.personalia.sekundarAdresse);
-            $scope.sekundarAdresseTypeLabel = hentAdresseTypeNokkel($scope.personalia.sekundarAdresseType);
-        }
-
-        function hentFormattertAdresse(adresse) {
+        $scope.hentFormattertAdresse = function(adresse) {
             var formattertAdresse = '';
 
             var adresseLinjer = adresse.split(',');
@@ -64408,19 +64300,40 @@ angular.module('app.controllers', [
             return formattertAdresse;
         };
 
-        function hentAdresseTypeNokkel(adresseType) {
-            if (adresseType === 'UTENLANDSK_ADRESSE' || 'BOSTEDSADRESSE' || 'POSTADRESSE') {
+        $scope.hentAdresseTypeNokkel = function(adresseType) {
+            if (adresseType === 'UTENLANDSK_ADRESSE' || adresseType === 'BOSTEDSADRESSE' || adresseType === 'POSTADRESSE') {
                 return 'personalia.folkeregistrertadresse';
             } else if (adresseType === 'MIDLERTIDIG_POSTADRESSE_NORGE') {
-                return 'personalia.midlertidigAdresseNorge';
+                return 'MIDLERTIDIG_POSTADRESSE_NORGE';
             } else if (adresseType === 'MIDLERTIDIG_POSTADRESSE_UTLAND') {
                 return 'personalia.midlertidigAdresseUtland';
             } else {
                 return '';
             }
         };
+
+        if ($scope.harGjeldendeAdresse()) {
+            $scope.formattertGjeldendeAdresse = $scope.hentFormattertAdresse($scope.personalia.gjeldendeAdresse);
+            $scope.gjeldendeAdresseTypeLabel = $scope.hentAdresseTypeNokkel($scope.personalia.gjeldendeAdresseType);
+        }
+
+        $scope.harSekundarAdresse = function() {
+            return $scope.personalia.sekundarAdresse != null;
+        };
+
+        $scope.formattertSekundarAdresse = '';
+        $scope.sekundarAdresseTypeLabel = '';
+        if ($scope.harSekundarAdresse()) {
+            $scope.formattertSekundarAdresse = $scope.hentFormattertAdresse($scope.personalia.sekundarAdresse);
+            $scope.sekundarAdresseTypeLabel = $scope.hentAdresseTypeNokkel($scope.personalia.sekundarAdresseType);
+        }
+
+       
+
+
+        
     }]);;angular.module('nav.arbeidsforhold.controller', [])
-    .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $routeParams, $cookieStore, $location, data, Faktum) {
+    .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $cookieStore, $location, data, Faktum) {
         $scope.soknadId = data.soknad.soknadId;
 
         $scope.sluttaarsakUrl = data.config["soknad.sluttaarsak.url"];
@@ -64464,13 +64377,11 @@ angular.module('app.controllers', [
         }
 
         $scope.finnLandFraLandkode = function(landkode) {
-            
-            for(var i=0; i<data.land.result.length; i++) { 
+            for(var i=0; i<data.land.result.length; i++) {
                 if(data.land.result[i].value == landkode) {
                     return data.land.result[i].text;
                 }
             }
-
             return "";
         }
 
@@ -64493,24 +64404,22 @@ angular.module('app.controllers', [
 
         $scope.hvisHarJobbet = function () {
             var faktum = data.finnFaktum('arbeidstilstand');
-
-            return faktum && faktum.value && faktum.value !== 'harIkkeJobbet';
+            return !sjekkOmGittEgenskapTilObjektErVerdi(faktum, "harIkkeJobbet");
         };
 
         $scope.hvisHarIkkeJobbet = function () {
             var faktum = data.finnFaktum('arbeidstilstand');
+            return sjekkOmGittEgenskapTilObjektErVerdi(faktum, "harIkkeJobbet");
 
-            return faktum && faktum.value && faktum.value === 'harIkkeJobbet';
         }
         $scope.hvisHarJobbetVarierende = function () {
             var faktum = data.finnFaktum('arbeidstilstand');
-
-            return faktum && faktum.value && faktum.value === 'varierendeArbeidstid';
+            return sjekkOmGittEgenskapTilObjektErVerdi(faktum, "varierendeArbeidstid");
         };
 
         $scope.hvisHarJobbetFast = function () {
             var faktum = data.finnFaktum('arbeidstilstand');
-            return faktum && faktum.value && faktum.value === 'fastArbeidstid';
+            return sjekkOmGittEgenskapTilObjektErVerdi(faktum, "fastArbeidstid");
         };
 
         $scope.valider = function (skalScrolle) {
@@ -64682,19 +64591,17 @@ angular.module('app.controllers', [
 
 	}]);
 ;angular.module('nav.avbryt', [])
-    .controller('AvbrytCtrl', ['$scope', '$routeParams', '$location', 'soknadService', 'data', function ($scope, $routeParams, $location, soknadService, data) {
+    .controller('AvbrytCtrl', ['$scope', '$location', 'soknadService', 'data', function ($scope, $location, soknadService, data) {
         $scope.fremdriftsindikator = {
             laster: false
 
         }
 
-        $scope.krevBekreftelse =data.fakta.filter(function(item) {
+        $scope.krevBekreftelse = data.fakta.filter(function(item) {
             return item.type==="BRUKERREGISTRERT";
-        }).length>0;
+        }).length>1;
         
-        if (!$scope.krevBekreftelse) {
-            $scope.submitForm();
-        }
+
 
         $scope.submitForm = function () {
             var start = $.now();
@@ -64714,8 +64621,12 @@ angular.module('app.controllers', [
                 }
             );
         };
+
+        if (!$scope.krevBekreftelse) {
+            $scope.submitForm();
+        }
     }])
-    .controller('SlettetCtrl', ['$scope', '$routeParams', '$location', 'data', function ($scope, $routeParams, $location, data) {
+    .controller('SlettetCtrl', ['$scope', '$location', 'data', function ($scope, $location, data) {
         $scope.skjemaVeilederUrl = data.config["soknad.skjemaveileder.url"];  
         $scope.mineHenveldelserBaseUrl = data.config["minehenvendelser.link.url"];     
     }]);
@@ -64877,12 +64788,25 @@ angular.module('app.controllers', [
         }
 
         $scope.$watch(function () {
+            if ($scope.barn.properties.land && $scope.barn.properties.land != "") {
+                return $scope.barn.properties.land;
+            }
+        }, function () {
+            if($scope.barn.properties.land && $scope.barn.properties.land != "") {
+                $resource('/sendsoknad/rest/landtype/:landkode').get(
+                    {landkode: $scope.barn.properties.land},
+                    function (eosdata) { // Success
+                        $scope.eosLandType = eosdata.result;
+                    });
+            }
+        });
+
+        $scope.$watch(function () {
             if ($scope.barn.properties.fodselsdato) {
                 return $scope.barn.properties.fodselsdato;
             }
         }, function () {
             var alder = $scope.finnAlder();
-
             if (alder !== "undefined") {
                 if (alder < 18) {
                     $scope.underAtten.value = "true";
@@ -64897,22 +64821,6 @@ angular.module('app.controllers', [
             }
         });
 
-        $scope.$watch(function () {
-            if ($scope.barn.properties.land && $scope.barn.properties.land != "") {
-                return $scope.barn.properties.land;
-            }
-        }, function () {
-            if($scope.barn.properties.land && $scope.barn.properties.land != "") {
-                $resource('/sendsoknad/rest/landtype/:landkode').get(
-                    {landkode: $scope.barn.properties.land},
-                    function (eosdata) { // Success
-                        $scope.eosLandType = eosdata.result;
-                });
-            }
-        });
-
-
-        //TODO: FIX Tester
         $scope.finnAlder = function () {
             if ($scope.barn.properties.fodselsdato) {
                 var year = parseInt($scope.barn.properties.fodselsdato.split("-")[0]);
@@ -64992,10 +64900,10 @@ angular.module('app.controllers', [
 		};
 
         $scope.kreverVedlegg = function(barn) {
-            return $scope.barnetHarInntekt(barn) || $scope.manglendeNorskBarn(barn);
+            return $scope.barnetHarInntekt(barn) || $scope.norskBarnIkkeFunnetITPS(barn);
         }
 
-        $scope.manglendeNorskBarn = function(barn) {
+        $scope.norskBarnIkkeFunnetITPS = function(barn) {
             if(barn && barn.properties) { 
                 return barn.type === 'BRUKERREGISTRERT' && barn.properties.land == "NOR";
             }   
@@ -65037,9 +64945,7 @@ angular.module('app.controllers', [
         };
 
         //TODO: Trenger vi denne? Formen vil jo alltid være valid
-		$scope.valider = function (skalScrolle) {
-//			$scope.runValidation(skalScrolle);
-		};
+		$scope.valider = function (skalScrolle) {};
 
 		function settBarnCookie(faktumId) {
 			var aapneTabIds = [];
@@ -65447,7 +65353,103 @@ angular.module('app.controllers', [
         }
 
     }])
-;;angular.module('nav.forsettsenere', ['nav.cmstekster'])
+;;angular.module('nav.feilside', [])
+    .controller('FeilSideCtrl', ['$scope', 'data',  function ($scope, data) {
+        $scope.mineInnsendinger = data.config["minehenvendelser.link.url"];
+        $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
+    }]);angular.module('nav.forsettsenere', ['nav.cmstekster'])
+	.controller('FortsettSenereCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', "fortsettSenereService", "Faktum",
+		function ($scope, data, $routeParams, $http, $location, fortsettSenereService, Faktum) {
+            var lagretEpost = data.finnFaktum('epost');
+
+            if(lagretEpost) {
+            	$scope.epost = data.finnFaktum('epost');	
+            } else {
+            	var personalia = data.finnFaktum('personalia');
+            	$scope.epost = {
+            		key: 'epost',
+            		value: undefined
+            	}
+            	$scope.epost.value = personalia.properties.epost;
+            }
+            
+            $scope.soknadId = data.soknad.soknadId;
+
+            $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
+
+            $scope.forsettSenere = function (form) {
+				$scope.$broadcast('RUN_VALIDATION' + form.$name);
+
+				if (form.$valid) {
+					var behandlingId = getBehandlingIdFromUrl();
+					if ($scope.epost) {
+						$scope.epost = new Faktum($scope.epost);
+						$scope.epost.$save({soknadId: data.soknad.soknadId}).then(function (epostData) {
+                            data.leggTilFaktum(epostData);
+							new fortsettSenereService({epost: $scope.epost.value}).$send({behandlingId: behandlingId}).then(function (data) {
+								$location.path('kvittering-fortsettsenere/');
+							});
+						});
+					}
+				}
+			}
+	}])
+	.controller('FortsettSenereKvitteringCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', "fortsettSenereService",
+		function ($scope, data, $routeParams, $http, $location, fortsettSenereService) {
+            $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
+            $scope.epost = data.finnFaktum('epost');
+	}])
+
+	.directive('navGjenoppta', ['$compile', 'data', function ($compile, data) {
+
+		var getForDelsteg = function (delstegstatus) {
+			var templateUrl = '';
+			switch (delstegstatus) {
+				case 'UTFYLLING':
+					templateUrl = '../views/templates/gjenoppta/skjema-under-arbeid.html';
+					break;
+				case 'VEDLEGG_VALIDERT':
+					templateUrl = '../views/templates/gjenoppta/skjema-ferdig.html';
+					break;
+				case 'SKJEMA_VALIDERT':
+					templateUrl = '../views/templates/gjenoppta/skjema-validert.html';
+					break;
+				default:
+					templateUrl = '../views/templates/gjenoppta/skjema-under-arbeid.html';
+
+			}
+			return templateUrl;
+		};
+
+		var getTemplateUrl = function (status, delstegstatus) {
+			var templateUrl = '';
+			switch (status) {
+				case 'UNDER_ARBEID':
+					templateUrl = getForDelsteg(delstegstatus);
+					break;
+				case 'FERDIG':
+					templateUrl = '../views/templates/gjenoppta/skjema-sendt.html';
+					break;
+				case 'AVBRUTT':
+					break;
+			}
+			return templateUrl;
+		};
+
+
+		var linker = function (scope, element, attrs) {
+			return getTemplateUrl(data.soknad.status, data.soknad.delstegStatus);
+		};
+
+		return{
+			restrict   : 'A',
+			replace    : true,
+			templateUrl: linker
+		}
+	}]);
+
+
+;angular.module('nav.fortsettsenere', ['nav.cmstekster'])
 	.controller('FortsettSenereCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', "fortsettSenereService", "Faktum",
 		function ($scope, data, $routeParams, $http, $location, fortsettSenereService, Faktum) {
             var lagretEpost = data.finnFaktum('epost');
@@ -65540,9 +65542,6 @@ angular.module('app.controllers', [
 
 
 ;angular.module('nav.informasjonsside', ['nav.cmstekster'])
-    .controller('FeilSideCtrl', ['$scope', 'data',  function ($scope, data) {
-
-    }])
     .controller('InformasjonsSideCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', 'soknadService', 'sjekkUtslagskriterier', function ($scope, data, $routeParams, $http, $location, soknadService, sjekkUtslagskriterier) {
         var fortsettLikevell = false;
 
@@ -65963,8 +65962,7 @@ angular.module('app.controllers', [
 
 
         // TODO: Trenger jo ikke validering når vi ikke har form
-        $scope.valider = function (skalScrolle) {
-        }
+        $scope.valider = function (skalScrolle) {}
     }]);;angular.module('nav.reellarbeidssoker', [])
     .controller('ReellarbeidssokerCtrl', ['$scope', 'data', function ($scope, data) {
         $scope.alder = parseInt(data.finnFaktum('personalia').properties.alder);
@@ -66543,7 +66541,6 @@ angular.module('app.controllers', [
 	'nav.select',
 	'nav.hjelpetekst',
 	'nav.datepicker',
-	'nav.prosent',
 	'nav.sidetittel',
 	'nav.bildenavigering',
 	'nav.navfaktum',
@@ -66732,7 +66729,9 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
                                 $timeout(function() {
                                     fokusElement.focus();
                                 }, 200);
-                                fadeBakgrunnsfarge(scrollElement.parent(), $scope, 241, 241, 241);
+                                if(!(scrollElement.parent().hasClass("ikke-fadebakgrunn"))) {
+                                    fadeBakgrunnsfarge(scrollElement.parent(), $scope, 241, 241, 241);
+                                }
                             }, 600);
                             $cookieStore.remove(cookiename);
                         });
@@ -66803,6 +66802,10 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
                         var gruppeErIkkeValidert = !bolk.hasClass(validertKlasse);
                         if (gruppeErIkkeValidert) {
                             gruppe.validering = true;
+                            //Todo småhacky
+                            if(gruppe.id == "fritekst") {
+                                scope.leggTilValideringsmetode(gruppe.id, function() {});
+                            }
                             $timeout(function() {
                                 gruppe.valideringsmetode(false);
                             });
@@ -67400,6 +67403,10 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
                         }
 
                     };
+
+//                    scope.hentTekst = function() {
+//                        return 'stegindikator.' + scope.steg;
+//                    }
 
                     scope.erIkkeKlikkbar = function(idx) {
                         return !scope.erKlikkbar(idx);
@@ -68270,7 +68277,6 @@ angular.module('ui.keypress').directive('uiKeyup', ['keypressHelper', function (
 			})
 			.when('/vedlegg', {
 				templateUrl: '../views/templates/vedlegg.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -68287,7 +68293,6 @@ angular.module('ui.keypress').directive('uiKeyup', ['keypressHelper', function (
 			})
 			.when('/visVedlegg/:vedleggId', {
 				templateUrl: '../views/templates/visvedlegg.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -68312,7 +68317,6 @@ angular.module('ui.keypress').directive('uiKeyup', ['keypressHelper', function (
 			})
 			.when('/kvittering-fortsettsenere', {
 				templateUrl: '../views/templates/kvittering-fortsettsenere.html',
-				controller : 'SoknadDataCtrl',
 				resolve    : {
 					notUsedButRequiredProperty: function (HentSoknadService) {
 						return HentSoknadService;
@@ -68482,8 +68486,8 @@ angular.module('ui.keypress').directive('uiKeyup', ['keypressHelper', function (
 			.when('/feilside', {
 				templateUrl: '../views/templates/feilside.html',
 				resolve    : {
-					notUsedButRequiredProperty: function (InformasjonsSideResolver) {
-						return InformasjonsSideResolver;
+					notUsedButRequiredProperty: function (HentSoknadService) {
+						return HentSoknadService;
 					}
 				}
 			})
@@ -68927,7 +68931,6 @@ angular.module("../views/templates/arbeidsforhold.html", []).run(["$templateCach
     "                 data-navfeilmelding=\"arbeidsforhold.arbeidstilstand.feilmelding\">\n" +
     "            </div>\n" +
     "\n" +
-    "\n" +
     "            <div data-navradio\n" +
     "                 data-value=\"harIkkeJobbet\"\n" +
     "                 data-navconfig\n" +
@@ -68986,7 +68989,7 @@ angular.module("../views/templates/arbeidsforhold.html", []).run(["$templateCach
     "        </div>\n" +
     "\n" +
     "        <div class=\"knapper-arbeidsforhold\">\n" +
-    "            <div id=\"legg-til\" class=\"form-linje knapp\" data-ng-if=\"harSvart()\" data-ng-class=\"{feil: skalViseFeil()}\">\n" +
+    "            <div id=\"legg-til\" class=\"form-linje knapp ikke-fadebakgrunn\" data-ng-if=\"harSvart()\" data-ng-class=\"{feil: skalViseFeil()}\">\n" +
     "                <div data-ng-if=\"hvisHarJobbet()\">\n" +
     "                    <input type=\"hidden\"\n" +
     "                           data-ng-model=\"harLagretArbeidsforhold\"\n" +
@@ -70110,13 +70113,15 @@ angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templ
 angular.module("../views/templates/barnetillegg.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/templates/barnetillegg.html",
     "<div class=\"skjemaramme\">\n" +
-    "    <div id=\"barnetilleggForm\" data-ng-form=\"barnetilleggForm\" class=\"skjemainnhold\" data-ng-controller=\"BarnetilleggCtrl\" novalidate>\n" +
+    "    <div id=\"barnetilleggForm\" data-ng-form=\"barnetilleggForm\" class=\"skjemainnhold\"\n" +
+    "         data-ng-controller=\"BarnetilleggCtrl\" novalidate>\n" +
     "\n" +
     "        <p class=\"informasjonstekst\" cmstekster=\"barnetillegg.informasjon\"></p>\n" +
     "\n" +
     "        <div class=\"spm-boks vertikal\" data-ng-repeat=\"b in barn\">\n" +
     "            <div data-ng-class=\"{gutt: erGutt(b), jente:erJente(b)}\" id=\"barnetillegg{{b.faktumId}}\" class=\"barn\">\n" +
-    "                <a href=\"#\" class=\"lukk\" data-ng-show=\"erBrukerregistrert(b)\" data-ng-click=\"slettBarn(b, $index, $event)\" > </a>\n" +
+    "                <a href=\"#\" class=\"lukk\" data-ng-show=\"erBrukerregistrert(b)\"\n" +
+    "                   data-ng-click=\"slettBarn(b, $index, $event)\"> </a>\n" +
     "\n" +
     "                <div class=\"barnealder\">\n" +
     "                    <span data-cmstekster=\"aar\"></span>\n" +
@@ -70134,14 +70139,19 @@ angular.module("../views/templates/barnetillegg.html", []).run(["$templateCache"
     "                </div>\n" +
     "                <div class=\"barnecheckbox\">\n" +
     "                    <div data-ng-show=\"erSystemRegistrert(b)\">\n" +
-    "                        <a href data-ng-click=\"sokbarnetillegg(b.faktumId, $event)\" data-cmstekster=\"barnetillegg.barnetilegg.sporsmal\" data-ng-if=\"barnetilleggIkkeRegistrert(b)\"></a>\n" +
-    "                        <a href=\"#\" data-ng-if=\"barnetilleggErRegistrert(b)\" data-ng-click=\"slettBarnetillegg(b, $index, $event)\" data-cmstekster=\"barnetillegg.slettbarnetillegg\"></a>\n" +
+    "                        <a href data-ng-click=\"sokbarnetillegg(b.faktumId, $event)\"\n" +
+    "                           data-cmstekster=\"barnetillegg.barnetilegg.sporsmal\"\n" +
+    "                           data-ng-if=\"barnetilleggIkkeRegistrert(b)\"></a>\n" +
+    "                        <a href=\"#\" data-ng-if=\"barnetilleggErRegistrert(b)\"\n" +
+    "                           data-ng-click=\"slettBarnetillegg(b, $index, $event)\"\n" +
+    "                           data-cmstekster=\"barnetillegg.slettbarnetillegg\"></a>\n" +
     "                    </div>\n" +
     "\n" +
     "                    <div data-ng-if=\"barnetilleggErRegistrert(b)\">\n" +
     "                        <p class=\"svar-oppsummering\" data-cmstekster=\"barnetillegg.barnetilegg.sporsmal\"></p>\n" +
     "\n" +
-    "                        <p class=\"svar-oppsummering\" data-ng-if=\"barnetHarIkkeInntekt(b)\" data-cmstekster=\"barnetillegg.barnetilegg.ikkebarneinntekt.true\"></p>\n" +
+    "                        <p class=\"svar-oppsummering\" data-ng-if=\"barnetHarIkkeInntekt(b)\"\n" +
+    "                           data-cmstekster=\"barnetillegg.barnetilegg.ikkebarneinntekt.true\"></p>\n" +
     "\n" +
     "                        <p class=\"svar-oppsummering\" data-ng-if=\"barnetHarInntekt(b)\">\n" +
     "                            <span data-cmstekster=\"barnetillegg.barnetilegg.ikkebarneinntekt.false\"> </span>\n" +
@@ -70166,19 +70176,22 @@ angular.module("../views/templates/barnetillegg.html", []).run(["$templateCache"
     "                <div class=\"sentrert\" data-ng-show=\"erBrukerregistrert(b)\">\n" +
     "                    <ul class=\"liste-vannrett\">\n" +
     "                        <li>\n" +
-    "                            <a href=\"#\" data-ng-click=\"slettBarn(b, $index, $event)\" data-cmstekster=\"barnetillegg.slettbarn\" ></a>\n" +
+    "                            <a href=\"#\" data-ng-click=\"slettBarn(b, $index, $event)\"\n" +
+    "                               data-cmstekster=\"barnetillegg.slettbarn\"></a>\n" +
     "                        </li>\n" +
     "                        <li>\n" +
-    "                            <a href=\"#\" data-ng-click=\"endreBarn(b.faktumId, $event)\" data-cmstekster=\"barnetillegg.endrebarn\"></a>\n" +
+    "                            <a href=\"#\" data-ng-click=\"endreBarn(b.faktumId, $event)\"\n" +
+    "                               data-cmstekster=\"barnetillegg.endrebarn\"></a>\n" +
     "                        </li>\n" +
     "                    </ul>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "\n" +
-    "        <div class=\"knapper-opprett\" id=\"legg-til-barn\">\n" +
+    "        <div class=\"knapper-opprett ikke-fadebakgrunn\" id=\"legg-til-barn\">\n" +
     "            <p data-cmstekster=\"barnetillegg.nyttbarn.informasjon\"></p>\n" +
-    "            <button class=\"knapp-leggtil-liten\" href=\"#/nyttbarn\" data-ng-click=\"leggTilBarn($event)\" data-cmstekster=\"barnetillegg.nyttbarn\"></button>\n" +
+    "            <button class=\"knapp-leggtil-liten\" href=\"#/nyttbarn\" data-ng-click=\"leggTilBarn($event)\"\n" +
+    "                    data-cmstekster=\"barnetillegg.nyttbarn\"></button>\n" +
     "        </div>\n" +
     "\n" +
     "        <div data-spmblokkferdig></div>\n" +
@@ -70540,10 +70553,44 @@ angular.module("../views/templates/feilside.html", []).run(["$templateCache", fu
     "<div data-stegindikator data-steg-liste=\"veiledning, skjema, vedlegg, sendInn\" data-aktiv-index=\"0\"></div>      \n" +
     "<div id=\"feilside\" data-ng-controller=\"FeilSideCtrl\">\n" +
     "    <div data-panelbelyst>\n" +
-    "        <div class=\"persondata-feil\">\n" +
+    "        <div class=\"feil\">\n" +
     "            <div class=\"utrop-sirkel-ikon\"></div>\n" +
-    "            <h1 data-cmstekster=\"feilmelding\"></h1>\n" +
-    "            <p data-ng-show=\"utslagskriterier.error != ''\" class=\"mini-strek\">{{ 'feilmelding.generelt' | cmstekst }}</p>\n" +
+    "            <h1 class=\"h1-strek\" data-cmstekster=\"feilmelding\"></h1>\n" +
+    "            \n" +
+    "            <div class=\"generellfeil\" data-ng-form=\"epostForm\" data-ng-controller=\"FortsettSenereCtrl\" data-novalidate>\n" +
+    "\n" +
+    "                <div class=\"form-linje\">\n" +
+    "                    <p>{{ 'feilmelding.innsending.1' | cmstekst }}</p>\n" +
+    "                </div>\n" +
+    "\n" +
+    "\n" +
+    "                <div class=\"send-epost\">\n" +
+    "                    <div class=\"input-boks\">\n" +
+    "                        <div class=\"form-linje\">\n" +
+    "                            <label>\n" +
+    "                                <span data-cmstekster=\"dagpenger.fortsettSenere.epost.label\"> </span>\n" +
+    "                                <input type=\"email\" name=\"epost\" role=\"textbox\" data-ng-model=\"epost.value\"\n" +
+    "                                        data-error-messages=\"{required: 'dagpenger.fortsettSenere.epost.required.feilmelding', pattern: 'dagpenger.fortsettSenere.epost.pattern.feilmelding' }\"\n" +
+    "                                        data-ng-required=\"true\" data-ng-pattern=\"/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$/\" data-blur-validate/>\n" +
+    "                            </label>\n" +
+    "                            <input type=\"submit\" class=\"knapp-hoved-liten\" data-cmstekster=\"dagpenger.fortsettSenere.epost.send\" role=\"button\" data-ng-click=\"forsettSenere(epostForm)\"/>\n" +
+    "                            <span class=\"melding\"></span>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "\n" +
+    "                <div class=\"form-linje\">\n" +
+    "                    <p>\n" +
+    "                        <span>{{ 'feilmelding.innsending.2' | cmstekst }}</span>\n" +
+    "                        <a href=\"{{mineInnsendinger}}\">{{ 'feilmelding.mineinnsedinger.lenketekst' | cmstekst }}</a>\n" +
+    "                    </p>\n" +
+    "                </div>\n" +
+    "           \n" +
+    "           </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
     "            <div class=\"knapper\">\n" +
     "                <a type=\"button\" class=\"knapp-hoved\" href=\"{{inngangsportenUrl}}\" data-cmstekster=\"feilmelding.lenketekst\"></a>\n" +
     "            </div>\n" +
@@ -70662,7 +70709,7 @@ angular.module("../views/templates/informasjonsside.html", []).run(["$templateCa
     "\n" +
     "<div id=\"informasjonsside\" data-sidetittel=\"sidetittel.informasjon\" data-ng-cloak>\n" +
     "	<div data-panelbelyst>\n" +
-    "        <div class=\"persondata-feil\" data-ng-show=\"tpsSvarerIkke()\">\n" +
+    "        <div class=\"feil\" data-ng-show=\"tpsSvarerIkke()\">\n" +
     "        	<div class=\"utrop-sirkel-ikon\"></div>\n" +
     "        	<h1 data-cmstekster=\"feilmelding\"></h1>\n" +
     "       		<p class=\"mini-strek\">{{ 'feilmelding.tps' | cmstekst }}</p>\n" +
@@ -72130,8 +72177,14 @@ angular.module("../js/app/directives/stegindikator/stegIndikatorTemplate.html", 
     "	<div class=\"begrensning\">\n" +
     "		<ul class=\"stegindikator\">\n" +
     "		    <li data-ng-repeat=\"steg in data.liste\" ng-class=\"{aktiv: $index == {{ aktivIndex }}}\">\n" +
-    "		        <a href=\"{{ hentLenke($index) }}\" data-cmstekster=\"stegindikator.{{ steg }}\" data-ng-if=\"erKlikkbar($index)\"></a>\n" +
-    "                <span data-cmstekster=\"stegindikator.{{ steg }}\" data-ng-if=\"erIkkeKlikkbar($index)\"></span>\n" +
+    "		        <a class=\"steg\" href=\"{{ hentLenke($index) }}\" data-ng-if=\"erKlikkbar($index)\">\n" +
+    "                    <span class=\"tekst\">{{  'stegindikator.' + steg | cmstekst }}</span>\n" +
+    "                    <span class=\"stegnummer\">{{ $index }}</span>\n" +
+    "                </a>\n" +
+    "                <span class=\"steg\" data-ng-if=\"erIkkeKlikkbar($index)\">\n" +
+    "                    <span class=\"tekst\">{{  'stegindikator.' + steg | cmstekst }}</span>\n" +
+    "                    <span class=\"stegnummer\">{{ $index }}</span>\n" +
+    "                </span>\n" +
     "		    </li>\n" +
     "		</ul>\n" +
     "	</div>\n" +
@@ -72172,21 +72225,21 @@ angular.module("../js/common/directives/accordion/accordionGroupTemplate.html", 
   $templateCache.put("../js/common/directives/accordion/accordionGroupTemplate.html",
     "<section class=\"accordion-group\" data-ng-class=\"{open: isOpen}\">\n" +
     "    <div class=\"accordion-heading\">\n" +
-    "        <div class=\"flipp\">\n" +
-    "            <span>+</span>\n" +
-    "        </div>\n" +
-    "            <a class=\"accordion-toggle\"\n" +
-    "               id=\"{{ id }}-heading\"\n" +
-    "               aria-owns=\"{{ id }}-body\"\n" +
-    "               aria-controls=\"{{ id }}-body\"\n" +
-    "               href=\"\"\n" +
-    "               data-ng-click=\"isOpen = !isOpen\"\n" +
-    "               data-nav-aria-expanded=\"isOpen\"\n" +
-    "               data-accordion-transclude=\"heading\">\n" +
-    "                <h2 class=\"stor\">\n" +
-    "                    {{heading}}\n" +
-    "                </h2>\n" +
-    "            </a>\n" +
+    "        <a class=\"accordion-toggle\"\n" +
+    "           id=\"{{ id }}-heading\"\n" +
+    "           aria-owns=\"{{ id }}-body\"\n" +
+    "           aria-controls=\"{{ id }}-body\"\n" +
+    "           href=\"javascript:void(0)\" tabindex=\"0\"\n" +
+    "           data-ng-click=\"isOpen = !isOpen\"\n" +
+    "           data-nav-aria-expanded=\"isOpen\"\n" +
+    "           data-accordion-transclude=\"heading\">\n" +
+    "            <div class=\"flipp\">\n" +
+    "                <span>+</span>\n" +
+    "            </div>\n" +
+    "            <h2 class=\"stor\">\n" +
+    "                {{heading}}\n" +
+    "            </h2>\n" +
+    "        </a>\n" +
     "    </div>\n" +
     "    <div class=\"accordion-body\"\n" +
     "         id=\"{{ id }}-body\"\n" +
@@ -72348,7 +72401,7 @@ angular.module("../js/common/directives/navinput/navorgnrfeltTemplate.html", [])
     "            <span data-cmstekster=\"{{ navlabel }}\"></span>\n" +
     "            <input data-ng-model=\"faktum.value\" type=\"text\" value=\"{{ value }}\" data-ng-required=\"erSynlig()\"\n" +
     "                   data-error-messages=\"{{ navfeilmelding }}\" data-blur-validate\n" +
-    "                   placeholder=\"123456789\" data-ng-pattern=\"/\\d{9}/\" maxlength=\"9\" orgnr-validate>\n" +
+    "                   placeholder=\"123456789\" data-ng-pattern=\"/[0-9]*/\" maxlength=\"9\" orgnr-validate>\n" +
     "        </label>\n" +
     "        <span class=\"melding\"></span>\n" +
     "</div>\n" +
@@ -74447,26 +74500,6 @@ angular.module('nav.datepicker', [])
 				};
 			}
 		}
-	}]);
-;angular.module('nav.prosent', [])
-	.directive('prosent', [function () {
-		return {
-			replace: true,
-			require: 'ngModel',
-
-			link: function (scope, elm, attrs, ctrl) {
-				ctrl.$parsers.unshift(function (viewValue) {
-					var INTEGER_REGEX = /^\-?\d*$/;
-					if (INTEGER_REGEX.test(viewValue) && viewValue <= 100 && viewValue >= 0) {
-						ctrl.$setValidity('prosent', true);
-						return viewValue;
-					} else {
-						ctrl.$setValidity('prosent', false);
-						return undefined;
-					}
-				});
-			}
-		};
 	}]);
 ;// https://github.com/itsdrewmiller/angular-perferct-scrollbar
 angular.module('nav.scrollbar', []).directive('navScroll', ['$parse', '$timeout', function ($parse, $timeout) {
