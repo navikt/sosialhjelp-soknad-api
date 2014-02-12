@@ -11,8 +11,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadresse;
-
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosBorgerService;
@@ -34,6 +32,7 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPost
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLNorskIdent;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPersonnavn;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadressetyper;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostboksadresseNorsk;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostnummer;
@@ -71,7 +70,8 @@ public class DefaultPersonaliaServiceTest {
     private static final String BARN_IDENT = "***REMOVED***";
     private static final String BARN_FORNAVN = "Bjarne";
     private static final String BARN_ETTERNAVN = "Barnet";
-    private static final Object BARN_SAMMENSATTNAVN = BARN_FORNAVN + " " + BARN_ETTERNAVN;
+    private static final Object BARN_SAMMENSATTNAVN = BARN_FORNAVN + " "
+            + BARN_ETTERNAVN;
 
     private static final String FEIL_IDENT = "54321012345";
     private static final String ET_FORNAVN = "Ola";
@@ -85,8 +85,10 @@ public class DefaultPersonaliaServiceTest {
     private static final String EN_ADRESSE_POSTNUMMER = "0560";
     private static final String EN_ADRESSE_POSTSTED = "Oslo";
 
-    private static final Long EN_ANNEN_ADRESSE_GYLDIG_FRA = new DateTime(2012, 10, 11, 14, 44).getMillis();
-    private static final Long EN_ANNEN_ADRESSE_GYLDIG_TIL = new DateTime(2012, 11, 12, 15, 55).getMillis();
+    private static final Long EN_ANNEN_ADRESSE_GYLDIG_FRA = new DateTime(2012,
+            10, 11, 14, 44).getMillis();
+    private static final Long EN_ANNEN_ADRESSE_GYLDIG_TIL = new DateTime(2012,
+            11, 12, 15, 55).getMillis();
     private static final String EN_ANNEN_ADRESSE_GATE = "Vegvegen";
     private static final String EN_ANNEN_ADRESSE_HUSNUMMER = "44";
     private static final String EN_ANNEN_ADRESSE_HUSBOKSTAV = "D";
@@ -100,10 +102,16 @@ public class DefaultPersonaliaServiceTest {
     private static final String EN_ANNEN_ADRESSELINJE = "Nord-Poiti";
     private static final String EN_TREDJE_ADRESSELINJE = "1111";
     private static final String EN_FJERDE_ADRESSELINJE = "Helsinki";
-    private static final List<String> EN_ADRESSE_UTLANDET = Arrays.asList(EN_ADRESSELINJE);
-    private static final List<String> EN_ANNEN_ADRESSE_UTLANDET = Arrays.asList(EN_ADRESSELINJE, EN_ANNEN_ADRESSELINJE);
-    private static final List<String> EN_TREDJE_ADRESSE_UTLANDET = Arrays.asList(EN_ADRESSELINJE, EN_ANNEN_ADRESSELINJE, EN_TREDJE_ADRESSELINJE);
-    private static final List<String> EN_FJERDE_ADRESSE_UTLANDET = Arrays.asList(EN_ADRESSELINJE, EN_ANNEN_ADRESSELINJE, EN_TREDJE_ADRESSELINJE, EN_FJERDE_ADRESSELINJE);
+    private static final List<String> EN_ADRESSE_UTLANDET = Arrays
+            .asList(EN_ADRESSELINJE);
+    private static final List<String> EN_ANNEN_ADRESSE_UTLANDET = Arrays
+            .asList(EN_ADRESSELINJE, EN_ANNEN_ADRESSELINJE);
+    private static final List<String> EN_TREDJE_ADRESSE_UTLANDET = Arrays
+            .asList(EN_ADRESSELINJE, EN_ANNEN_ADRESSELINJE,
+                    EN_TREDJE_ADRESSELINJE);
+    private static final List<String> EN_FJERDE_ADRESSE_UTLANDET = Arrays
+            .asList(EN_ADRESSELINJE, EN_ANNEN_ADRESSELINJE,
+                    EN_TREDJE_ADRESSELINJE, EN_FJERDE_ADRESSELINJE);
     private static final String ET_LAND = "Finland";
     private static final String EN_LANDKODE = "FIN";
     private static final String ET_EIEDOMSNAVN = "Villastrøket";
@@ -127,30 +135,37 @@ public class DefaultPersonaliaServiceTest {
 
     @Mock
     private EosBorgerService eosBorgerService;
-    
+
     @Mock
     private Kodeverk kodeverkMock;
 
-    //TODO Refaktorer tester og legg til de resterende testene fra PersonServiceTest
+    // TODO Refaktorer tester
 
     private XMLBruker xmlBruker;
     private DateTimeFormatter dateTimeFormat;
-    
+
     @Before
-    public void setup() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
-        when(kodeverkMock.getPoststed(EN_ADRESSE_POSTNUMMER)).thenReturn(EN_ADRESSE_POSTSTED);
-        when(kodeverkMock.getPoststed(EN_ANNEN_ADRESSE_POSTNUMMER)).thenReturn(EN_ADRESSE_POSTSTED);
+    public void setup()
+            throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning,
+            HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+        when(kodeverkMock.getPoststed(EN_ADRESSE_POSTNUMMER)).thenReturn(
+                EN_ADRESSE_POSTSTED);
+        when(kodeverkMock.getPoststed(EN_ANNEN_ADRESSE_POSTNUMMER)).thenReturn(
+                EN_ADRESSE_POSTSTED);
         when(kodeverkMock.getLand(NORGE_KODE)).thenReturn(NORGE);
         when(kodeverkMock.getLand(EN_LANDKODE)).thenReturn(ET_LAND);
-        when(eosBorgerService.getStatsborgeskapType(NORGE_KODE)).thenReturn("Norsk");
+        when(eosBorgerService.getStatsborgeskapType(NORGE_KODE)).thenReturn(
+                "Norsk");
 
         dateTimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
-        
+
         HentKjerneinformasjonResponse response = new HentKjerneinformasjonResponse();
-        Person person = genererPersonMedGyldigIdentOgNavn(RIKTIG_IDENT, ET_FORNAVN, ET_ETTERNAVN);
+        Person person = genererPersonMedGyldigIdentOgNavn(RIKTIG_IDENT,
+                ET_FORNAVN, ET_ETTERNAVN);
         List<Familierelasjon> familieRelasjoner = person.getHarFraRolleI();
         Familierelasjon familierelasjon = new Familierelasjon();
-        Person barn1 = genererPersonMedGyldigIdentOgNavn(BARN_IDENT, BARN_FORNAVN, BARN_ETTERNAVN);
+        Person barn1 = genererPersonMedGyldigIdentOgNavn(BARN_IDENT,
+                BARN_FORNAVN, BARN_ETTERNAVN);
 
         familierelasjon.setTilPerson(barn1);
         Familierelasjoner familieRelasjonRolle = new Familierelasjoner();
@@ -160,53 +175,75 @@ public class DefaultPersonaliaServiceTest {
 
         familieRelasjoner.add(familierelasjon);
         response.setPerson(person);
-        when(personMock.hentKjerneinformasjon(org.mockito.Matchers.any(HentKjerneinformasjonRequest.class))).thenReturn(response);
+        when(
+                personMock.hentKjerneinformasjon(org.mockito.Matchers
+                        .any(HentKjerneinformasjonRequest.class))).thenReturn(
+                response);
 
         XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse = new XMLHentKontaktinformasjonOgPreferanserResponse();
-        xmlBruker = new XMLBruker().withElektroniskKommunikasjonskanal(lagElektroniskKommunikasjonskanal());
+        xmlBruker = new XMLBruker()
+                .withElektroniskKommunikasjonskanal(lagElektroniskKommunikasjonskanal());
         XMLNorskIdent xmlNorskIdent = new XMLNorskIdent();
         xmlNorskIdent.setIdent(RIKTIG_IDENT);
         xmlBruker.setIdent(xmlNorskIdent);
         preferanserResponse.setPerson(xmlBruker);
-        when(brukerProfilMock.hentKontaktinformasjonOgPreferanser(org.mockito.Matchers.any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(preferanserResponse);
+        when(
+                brukerProfilMock
+                        .hentKontaktinformasjonOgPreferanser(org.mockito.Matchers
+                                .any(XMLHentKontaktinformasjonOgPreferanserRequest.class)))
+                .thenReturn(preferanserResponse);
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void returnerPersonaliaUtenDataHvisPersonenSomReturneresHarFeilIdent() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
+    public void returnerPersonaliaUtenDataHvisPersonenSomReturneresHarFeilIdent()
+            throws HentKjerneinformasjonPersonIkkeFunnet,
+            HentKjerneinformasjonSikkerhetsbegrensning {
         HentKjerneinformasjonRequest request = new HentKjerneinformasjonRequest();
         request.setIdent(FEIL_IDENT);
-        when(personMock.hentKjerneinformasjon(request)).thenThrow(HentKjerneinformasjonPersonIkkeFunnet.class);
+        when(personMock.hentKjerneinformasjon(request)).thenThrow(
+                HentKjerneinformasjonPersonIkkeFunnet.class);
         Personalia personalia;
         personalia = personaliaService.hentPersonalia(FEIL_IDENT);
-     
+
         assertThat(personalia, is(not(nullValue())));
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void returnererPersonaliaObjektDersomPersonenSomReturneresHarRiktigIdent() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+    public void returnererPersonaliaObjektDersomPersonenSomReturneresHarRiktigIdent()
+            throws HentKjerneinformasjonPersonIkkeFunnet,
+            HentKjerneinformasjonSikkerhetsbegrensning,
+            HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning,
+            HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
         mockGyldigPerson();
 
         Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
 
         assertThat(personalia, is(not(nullValue())));
         assertThat(personalia.getFnr(), is(RIKTIG_IDENT));
-        assertThat(personalia.getNavn(), is(ET_FORNAVN + " " + ET_MELLOMNAVN + " " + ET_ETTERNAVN));
+        assertThat(personalia.getNavn(), is(ET_FORNAVN + " " + ET_MELLOMNAVN
+                + " " + ET_ETTERNAVN));
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void skalHenteBarn() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+    public void skalHenteBarn() throws HentKjerneinformasjonPersonIkkeFunnet,
+            HentKjerneinformasjonSikkerhetsbegrensning,
+            HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning,
+            HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
         mockGyldigPersonMedBarn();
 
         personaliaService.lagrePersonaliaOgBarn(RIKTIG_IDENT, 21L);
 
-        verify(soknadServiceMock, times(2)).lagreSystemFaktum(anyLong(), any(Faktum.class), anyString());
+        verify(soknadServiceMock, times(2)).lagreSystemFaktum(anyLong(),
+                any(Faktum.class), anyString());
     }
 
     @Test
-    public void skalStottePersonerUtenMellomnavn() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+    public void skalStottePersonerUtenMellomnavn()
+            throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet,
+            HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
         mockGyldigPersonUtenMellomnavn();
 
         Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
@@ -216,7 +253,9 @@ public class DefaultPersonaliaServiceTest {
     }
 
     @Test
-    public void skalStottePersonerUtenNavn() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+    public void skalStottePersonerUtenNavn()
+            throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet,
+            HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
         mockGyldigPersonUtenNavn();
 
         Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
@@ -227,10 +266,17 @@ public class DefaultPersonaliaServiceTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void returnererPersonObjektMedAdresseInformasjon() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-        String forventetGjeldendeAdresse = EN_ADRESSE_GATE + " " + EN_ADRESSE_HUSNUMMER + EN_ADRESSE_HUSBOKSTAV + ", " + EN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
-        String forventetSekunarAdresse = EN_POSTBOKS_ADRESSEEIER + ", " + EN_ANNEN_ADRESSE_GATE + " " + EN_ANNEN_ADRESSE_HUSNUMMER + EN_ANNEN_ADRESSE_HUSBOKSTAV + ", " + EN_ANNEN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
-        
+    public void returnererPersonObjektMedAdresseInformasjon()
+            throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet,
+            HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+        String forventetGjeldendeAdresse = EN_ADRESSE_GATE + " "
+                + EN_ADRESSE_HUSNUMMER + EN_ADRESSE_HUSBOKSTAV + ", "
+                + EN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
+        String forventetSekunarAdresse = EN_POSTBOKS_ADRESSEEIER + ", "
+                + EN_ANNEN_ADRESSE_GATE + " " + EN_ANNEN_ADRESSE_HUSNUMMER
+                + EN_ANNEN_ADRESSE_HUSBOKSTAV + ", "
+                + EN_ANNEN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
+
         mockGyldigPersonMedAdresse();
 
         Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
@@ -242,98 +288,106 @@ public class DefaultPersonaliaServiceTest {
         assertThat(gjeldendeAdresse, is(not(nullValue())));
         assertThat(sekundarAdresse, is(not(nullValue())));
 
-        assertThat(gjeldendeAdresse.getAdressetype(), is(Adressetype.BOSTEDSADRESSE.name()));
+        assertThat(gjeldendeAdresse.getAdressetype(),
+                is(Adressetype.BOSTEDSADRESSE.name()));
         assertThat(gjeldendeAdresse.getAdresse(), is(forventetGjeldendeAdresse));
 
-        assertThat(sekundarAdresse.getAdressetype(), is(Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE.name()));
+        assertThat(sekundarAdresse.getAdressetype(),
+                is(Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE.name()));
         assertThat(sekundarAdresse.getAdresse(), is(forventetSekunarAdresse));
-        
-       
-        assertThat(sekundarAdresse.getGyldigFra(), is(dateTimeFormat.print(EN_ANNEN_ADRESSE_GYLDIG_FRA)));
-        assertThat(sekundarAdresse.getGyldigTil(), is(dateTimeFormat.print(EN_ANNEN_ADRESSE_GYLDIG_TIL)));
+
+        assertThat(sekundarAdresse.getGyldigFra(),
+                is(dateTimeFormat.print(EN_ANNEN_ADRESSE_GYLDIG_FRA)));
+        assertThat(sekundarAdresse.getGyldigTil(),
+                is(dateTimeFormat.print(EN_ANNEN_ADRESSE_GYLDIG_TIL)));
     }
-    
-    
-    
-    
-  @SuppressWarnings("unchecked")
-  @Test
-  public void skalStotteMidlertidigOmrodeAdresseNorge() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-      String forventetsekundarAdresse = EN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED +", " + ET_EIEDOMSNAVN;
-      mockGyldigPersonMedMidlertidigOmrodeAdresse();
-      Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
-      
-      Adresse sekundarAdresse = personalia.getSekundarAdresse();
-      
-      Assert.assertNotNull(sekundarAdresse);
-      assertThat(sekundarAdresse.getAdresse(), is(forventetsekundarAdresse));
-  }
-    
-@SuppressWarnings("unchecked")
-@Test
-public void skalStotteFolkeregistretUtenlandskAdresse() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-    String forventetAdresse = EN_ADRESSELINJE + ", " + EN_ANNEN_ADRESSELINJE + ", " + EN_TREDJE_ADRESSELINJE+ ", " + EN_FJERDE_ADRESSELINJE + ", " + ET_LAND;
-    
-    mockGyldigPersonMedUtenlandskFolkeregistrertAdresse(4);
 
-    Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
+    @SuppressWarnings("unchecked")
+    @Test
+    public void skalStotteMidlertidigOmrodeAdresseNorge()
+            throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet,
+            HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+        String forventetsekundarAdresse = EN_ADRESSE_POSTNUMMER + " "
+                + EN_ADRESSE_POSTSTED + ", " + ET_EIEDOMSNAVN;
+        mockGyldigPersonMedMidlertidigOmrodeAdresse();
+        Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
 
-    Adresse sekundarAdresse = personalia.getSekundarAdresse();
-    
-    Assert.assertNotNull(sekundarAdresse.getAdresse());
-    
-    assertThat(sekundarAdresse.getAdresse(), is(forventetAdresse));
-}
+        Adresse sekundarAdresse = personalia.getSekundarAdresse();
 
+        Assert.assertNotNull(sekundarAdresse);
+        assertThat(sekundarAdresse.getAdresse(), is(forventetsekundarAdresse));
+    }
 
-@SuppressWarnings("unchecked")
-@Test
-public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed1Linjer() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-    String forventetAdresse = EN_ADRESSELINJE + ", " + ET_LAND;
-    
-    mockGyldigPersonMedUtenlandskFolkeregistrertAdresse(1);
-    Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
-    Adresse sekundarAdresse = personalia.getSekundarAdresse();
-    
-    Assert.assertNotNull(sekundarAdresse.getAdresse());
-    assertThat(sekundarAdresse.getAdresse(), is(forventetAdresse));
-}
+    @SuppressWarnings("unchecked")
+    @Test
+    public void skalStotteFolkeregistretUtenlandskAdresse()
+            throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet,
+            HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+        String forventetAdresse = EN_ADRESSELINJE + ", "
+                + EN_ANNEN_ADRESSELINJE + ", " + EN_TREDJE_ADRESSELINJE + ", "
+                + EN_FJERDE_ADRESSELINJE + ", " + ET_LAND;
 
-@SuppressWarnings("unchecked")
-@Test
-public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed2Linjer() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-    String forventetAdresse = EN_ADRESSELINJE + ", " + EN_ANNEN_ADRESSELINJE + ", " + ET_LAND;
-    
-    mockGyldigPersonMedUtenlandskFolkeregistrertAdresse(2);
-    Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
-    Adresse sekundarAdresse = personalia.getSekundarAdresse();
-    
-    Assert.assertNotNull(sekundarAdresse.getAdresse());
-    assertThat(sekundarAdresse.getAdresse(), is(forventetAdresse));
-}
+        mockGyldigPersonMedUtenlandskFolkeregistrertAdresse(4);
 
-@SuppressWarnings("unchecked")
-@Test
-public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed3Linjer() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-    String forventetAdresse = EN_ADRESSELINJE + ", " + EN_ANNEN_ADRESSELINJE + ", " + EN_TREDJE_ADRESSELINJE+ ", " + ET_LAND;
-    
-    mockGyldigPersonMedUtenlandskFolkeregistrertAdresse(3);
-    Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
-    Adresse sekundarAdresse = personalia.getSekundarAdresse();
-    
-    Assert.assertNotNull(sekundarAdresse.getAdresse());
-    assertThat(sekundarAdresse.getAdresse(), is(forventetAdresse));
-}
+        Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
 
+        Adresse sekundarAdresse = personalia.getSekundarAdresse();
 
-    
-    
-    
-    
-    
-    
+        Assert.assertNotNull(sekundarAdresse.getAdresse());
 
-    private void mockGyldigPersonMedUtenlandskFolkeregistrertAdresse(int adresselinjer) {
+        assertThat(sekundarAdresse.getAdresse(), is(forventetAdresse));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed1Linjer()
+            throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet,
+            HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+        String forventetAdresse = EN_ADRESSELINJE + ", " + ET_LAND;
+
+        mockGyldigPersonMedUtenlandskFolkeregistrertAdresse(1);
+        Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
+        Adresse sekundarAdresse = personalia.getSekundarAdresse();
+
+        Assert.assertNotNull(sekundarAdresse.getAdresse());
+        assertThat(sekundarAdresse.getAdresse(), is(forventetAdresse));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed2Linjer()
+            throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet,
+            HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+        String forventetAdresse = EN_ADRESSELINJE + ", "
+                + EN_ANNEN_ADRESSELINJE + ", " + ET_LAND;
+
+        mockGyldigPersonMedUtenlandskFolkeregistrertAdresse(2);
+        Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
+        Adresse sekundarAdresse = personalia.getSekundarAdresse();
+
+        Assert.assertNotNull(sekundarAdresse.getAdresse());
+        assertThat(sekundarAdresse.getAdresse(), is(forventetAdresse));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed3Linjer()
+            throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet,
+            HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+        String forventetAdresse = EN_ADRESSELINJE + ", "
+                + EN_ANNEN_ADRESSELINJE + ", " + EN_TREDJE_ADRESSELINJE + ", "
+                + ET_LAND;
+
+        mockGyldigPersonMedUtenlandskFolkeregistrertAdresse(3);
+        Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
+        Adresse sekundarAdresse = personalia.getSekundarAdresse();
+
+        Assert.assertNotNull(sekundarAdresse.getAdresse());
+        assertThat(sekundarAdresse.getAdresse(), is(forventetAdresse));
+    }
+
+    private void mockGyldigPersonMedUtenlandskFolkeregistrertAdresse(
+            int adresselinjer) {
         XMLPostadresse xmlPostadresseUtland = new XMLPostadresse();
         XMLUstrukturertAdresse utenlandskUstrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(adresselinjer);
 
@@ -341,11 +395,12 @@ public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed3Linjer() throws
         xmlLandkode.setValue(EN_LANDKODE);
         utenlandskUstrukturertAdresse.setLandkode(xmlLandkode);
 
-        xmlPostadresseUtland.setUstrukturertAdresse(utenlandskUstrukturertAdresse);
-        
+        xmlPostadresseUtland
+                .setUstrukturertAdresse(utenlandskUstrukturertAdresse);
+
         xmlBruker.setPostadresse(xmlPostadresseUtland);
-    
-}
+
+    }
 
     private void mockGyldigPersonMedMidlertidigOmrodeAdresse() {
         XMLMidlertidigPostadresseNorge midlertidigOmrodeAdresseNorge = generateMidlertidigOmrodeAdresseNorge();
@@ -353,7 +408,9 @@ public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed3Linjer() throws
         xmlBruker.setPersonnavn(navnMedMellomnavn());
     }
 
-    private void mockGyldigPersonMedAdresse() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+    private void mockGyldigPersonMedAdresse()
+            throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning,
+            HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
         xmlBruker.setPersonnavn(navnMedMellomnavn());
         XMLBostedsadresse bostedsadresse = genererXMLFolkeregistrertAdresse(true);
         XMLMidlertidigPostadresseNorge xmlMidlertidigNorge = generateMidlertidigAdresseNorge();
@@ -366,20 +423,28 @@ public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed3Linjer() throws
         xmlBruker.setMidlertidigPostadresse(xmlMidlertidigNorge);
     }
 
-    private void mockGyldigPersonUtenNavn() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+    private void mockGyldigPersonUtenNavn()
+            throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning,
+            HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
         XMLPersonnavn personNavn = new XMLPersonnavn();
         xmlBruker.setPersonnavn(personNavn);
     }
 
-    private void mockGyldigPersonUtenMellomnavn() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+    private void mockGyldigPersonUtenMellomnavn()
+            throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning,
+            HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
         xmlBruker.setPersonnavn(navnUtenMellomnavn());
     }
 
-    private void mockGyldigPerson() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+    private void mockGyldigPerson()
+            throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning,
+            HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
         xmlBruker.setPersonnavn(navnMedMellomnavn());
     }
 
-    private void mockGyldigPersonMedBarn() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+    private void mockGyldigPersonMedBarn()
+            throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning,
+            HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
         xmlBruker.setPersonnavn(navnMedMellomnavn());
     }
 
@@ -399,13 +464,15 @@ public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed3Linjer() throws
         return xmlMidlertidigNorge;
     }
 
-    private XMLMidlertidigPostadresseNorge generateMidlertidigPostboksAdresseNorge(boolean medData) {
+    private XMLMidlertidigPostadresseNorge generateMidlertidigPostboksAdresseNorge(
+            boolean medData) {
         XMLMidlertidigPostadresseNorge xmlMidlertidigPostboksNorge = new XMLMidlertidigPostadresseNorge();
 
         XMLPostboksadresseNorsk xmlpostboksadresse = new XMLPostboksadresseNorsk();
         XMLPostnummer xmlpostnummer = new XMLPostnummer();
         XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode(medData);
-        xmlMidlertidigPostboksNorge.setPostleveringsPeriode(xmlGyldighetsperiode);
+        xmlMidlertidigPostboksNorge
+                .setPostleveringsPeriode(xmlGyldighetsperiode);
         if (medData) {
             xmlpostboksadresse.setTilleggsadresse(EN_POSTBOKS_ADRESSEEIER);
             xmlpostboksadresse.setPostboksanlegg(ET_POSTBOKS_NAVN);
@@ -415,7 +482,6 @@ public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed3Linjer() throws
         xmlpostboksadresse.setPoststed(xmlpostnummer);
         xmlMidlertidigPostboksNorge.setStrukturertAdresse(xmlpostboksadresse);
         return xmlMidlertidigPostboksNorge;
-
 
     }
 
@@ -438,20 +504,22 @@ public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed3Linjer() throws
     private XMLGyldighetsperiode generateGyldighetsperiode(boolean harFraDato) {
         XMLGyldighetsperiode xmlGyldighetsperiode = new XMLGyldighetsperiode();
         if (harFraDato) {
-            xmlGyldighetsperiode.setFom(new DateTime(EN_ANNEN_ADRESSE_GYLDIG_FRA));
+            xmlGyldighetsperiode.setFom(new DateTime(
+                    EN_ANNEN_ADRESSE_GYLDIG_FRA));
         }
         xmlGyldighetsperiode.setTom(new DateTime(EN_ANNEN_ADRESSE_GYLDIG_TIL));
         return xmlGyldighetsperiode;
     }
 
-
     private XMLBruker genererXmlBrukerMedGyldigIdentOgNavn(boolean medMellomnavn) {
-        XMLBruker xmlBruker = new XMLBruker().withElektroniskKommunikasjonskanal(lagElektroniskKommunikasjonskanal());
+        XMLBruker xmlBruker = new XMLBruker()
+                .withElektroniskKommunikasjonskanal(lagElektroniskKommunikasjonskanal());
         XMLPersonnavn personNavn = new XMLPersonnavn();
         personNavn.setFornavn(ET_FORNAVN);
         if (medMellomnavn) {
             personNavn.setMellomnavn(ET_MELLOMNAVN);
-            personNavn.setSammensattNavn(ET_FORNAVN + " " + ET_MELLOMNAVN + " " + ET_ETTERNAVN);
+            personNavn.setSammensattNavn(ET_FORNAVN + " " + ET_MELLOMNAVN + " "
+                    + ET_ETTERNAVN);
         } else {
             personNavn.setMellomnavn("");
             personNavn.setSammensattNavn(ET_FORNAVN + " " + ET_ETTERNAVN);
@@ -487,10 +555,12 @@ public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed3Linjer() throws
         return request;
     }
 
-    private XMLMidlertidigPostadresseUtland generateMidlertidigAdresseUtlandet(int antallAdresseLinjer) {
+    private XMLMidlertidigPostadresseUtland generateMidlertidigAdresseUtlandet(
+            int antallAdresseLinjer) {
         XMLMidlertidigPostadresseUtland xmlMidlertidigAdresseUtland = new XMLMidlertidigPostadresseUtland();
         XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode(true);
-        xmlMidlertidigAdresseUtland.setPostleveringsPeriode(xmlGyldighetsperiode);
+        xmlMidlertidigAdresseUtland
+                .setPostleveringsPeriode(xmlGyldighetsperiode);
 
         XMLUstrukturertAdresse ustrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(antallAdresseLinjer);
 
@@ -506,35 +576,36 @@ public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed3Linjer() throws
             int antallAdresseLinjer) {
         XMLUstrukturertAdresse ustrukturertAdresse = new XMLUstrukturertAdresse();
         switch (antallAdresseLinjer) {
-            case 0:
-                break;
-            case 1:
-                ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
-                break;
-            case 2:
-                ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
-                ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
-                break;
-            case 3:
-                ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
-                ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
-                ustrukturertAdresse.setAdresselinje3(EN_TREDJE_ADRESSELINJE);
-                break;
-            case 4:
-                ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
-                ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
-                ustrukturertAdresse.setAdresselinje3(EN_TREDJE_ADRESSELINJE);
-                ustrukturertAdresse.setAdresselinje4(EN_FJERDE_ADRESSELINJE);
-                break;
-            default:
-                break;
+        case 0:
+            break;
+        case 1:
+            ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
+            break;
+        case 2:
+            ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
+            ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
+            break;
+        case 3:
+            ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
+            ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
+            ustrukturertAdresse.setAdresselinje3(EN_TREDJE_ADRESSELINJE);
+            break;
+        case 4:
+            ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
+            ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
+            ustrukturertAdresse.setAdresselinje3(EN_TREDJE_ADRESSELINJE);
+            ustrukturertAdresse.setAdresselinje4(EN_FJERDE_ADRESSELINJE);
+            break;
+        default:
+            break;
         }
 
         return ustrukturertAdresse;
     }
 
     private static XMLElektroniskKommunikasjonskanal lagElektroniskKommunikasjonskanal() {
-        return new XMLElektroniskKommunikasjonskanal().withElektroniskAdresse(lagElektroniskAdresse());
+        return new XMLElektroniskKommunikasjonskanal()
+                .withElektroniskAdresse(lagElektroniskAdresse());
     }
 
     private static XMLElektroniskAdresse lagElektroniskAdresse() {
@@ -549,7 +620,8 @@ public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed3Linjer() throws
         XMLPersonnavn personNavn = new XMLPersonnavn();
         personNavn.setFornavn(ET_FORNAVN);
         personNavn.setMellomnavn(ET_MELLOMNAVN);
-        personNavn.setSammensattNavn(ET_FORNAVN + " " + ET_MELLOMNAVN + " " + ET_ETTERNAVN);
+        personNavn.setSammensattNavn(ET_FORNAVN + " " + ET_MELLOMNAVN + " "
+                + ET_ETTERNAVN);
         personNavn.setEtternavn(ET_ETTERNAVN);
         return personNavn;
     }
@@ -562,7 +634,8 @@ public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed3Linjer() throws
         return personNavn;
     }
 
-    private Person genererPersonMedGyldigIdentOgNavn(String ident, String fornavn, String etternavn) {
+    private Person genererPersonMedGyldigIdentOgNavn(String ident,
+            String fornavn, String etternavn) {
         Person xmlPerson = new Person();
 
         Personnavn personnavn = new Personnavn();
