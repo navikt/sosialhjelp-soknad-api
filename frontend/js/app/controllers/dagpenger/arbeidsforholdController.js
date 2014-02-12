@@ -7,13 +7,13 @@ angular.module('nav.arbeidsforhold.controller', [])
         $scope.permiteringUrl = data.config["soknad.permitteringsskjema.url"];
 
         $scope.templates = {
-            'Sagt opp av arbeidsgiver': { oppsummeringsurl: '../html/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html' },
-            'Permittert': {oppsummeringsurl: '../html/templates/arbeidsforhold/permittert-oppsummering.html' },
-            'Kontrakt utgått': {oppsummeringsurl: '../html/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html'},
-            'Sagt opp selv': {oppsummeringsurl: '../html/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html' },
-            'Redusert arbeidstid': {oppsummeringsurl: '../html/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html' },
-            'Arbeidsgiver er konkurs': {oppsummeringsurl: '../html/templates/arbeidsforhold/konkurs-oppsummering.html'},
-            'Avskjediget': {oppsummeringsurl: '../html/templates/arbeidsforhold/avskjediget-oppsummering.html' }
+            'Sagt opp av arbeidsgiver': { oppsummeringsurl: '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html' },
+            'Permittert': {oppsummeringsurl: '../views/templates/arbeidsforhold/permittert-oppsummering.html' },
+            'Kontrakt utgått': {oppsummeringsurl: '../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html'},
+            'Sagt opp selv': {oppsummeringsurl: '../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html' },
+            'Redusert arbeidstid': {oppsummeringsurl: '../views/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html' },
+            'Arbeidsgiver er konkurs': {oppsummeringsurl: '../views/templates/arbeidsforhold/konkurs-oppsummering.html'},
+            'Avskjediget': {oppsummeringsurl: '../views/templates/arbeidsforhold/avskjediget-oppsummering.html' }
         };
 
         var arbeidsforhold = data.finnFakta('arbeidsforhold');

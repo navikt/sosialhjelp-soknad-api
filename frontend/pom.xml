@@ -17,14 +17,8 @@
 	<build>
         <resources>
             <resource>
-                <directory>
-                    ${basedir}/target-grunt
-                </directory>
-                <excludes>
-                    <exclude>
-                        maven-tasks/**
-                    </exclude>
-                </excludes>
+                <filtering>false</filtering>
+                <directory>src/main/resources</directory>
             </resource>
         </resources>
 		<plugins>
@@ -35,6 +29,7 @@
 				<configuration>
 					<sourceDirectory>${basedir}</sourceDirectory>
 					<jsSourceDirectory>js</jsSourceDirectory>
+                    <gruntBuildDirectory>${basedir}/src/main/resources/META-INF/resources/js</gruntBuildDirectory>
                     <target>maven</target>
 					<gruntOptions>
 						<gruntOption>--verbose</gruntOption>
@@ -47,6 +42,8 @@
 				</configuration>
 				<executions>
 					<execution>
+                        <id>grunt</id>
+                        <phase>generate-resources</phase>
 						<goals>
 							<goal>create-resources</goal>
 							<goal>link-node-modules</goal>
