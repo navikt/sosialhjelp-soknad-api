@@ -505,7 +505,7 @@
                                     <type>jar</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/${artifactId}-${project.version}/js</outputDirectory>
-                                    <excludes>**/META-INF/**, **/app/**, **/built/**</excludes>
+                                    <excludes>**/META-INF/**</excludes>
                                 </artifactItem>
                             </artifactItems>
                             <!--<outputDirectory>${basedir}/src/main/webapp/grunt</outputDirectory>-->

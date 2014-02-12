@@ -3,43 +3,6 @@ angular.module('sendsoknad')
     .value('cms', {})
     .constant('validertKlasse', 'validert')
     .run(['$http', '$templateCache', '$rootScope', 'data', '$location', 'sjekkUtslagskriterier', function ($http, $templateCache, $rootScope, data, $location, sjekkUtslagskriterier) {
-//        $http.get('../views/templates/reellarbeidssoker/reell-arbeidssoker.html', {cache: $templateCache});
-//        $http.get('../views/templates/egen-naering.html', {cache: $templateCache});
-//        $http.get('../views/templates/verneplikt.html', {cache: $templateCache});
-//        $http.get('../views/templates/personalia.html', {cache: $templateCache});
-//        $http.get('../views/templates/arbeidsforhold.html', {cache: $templateCache});
-//        $http.get('../views/templates/ytelser.html', {cache: $templateCache});
-//        $http.get('../views/templates/barnetillegg.html', {cache: $templateCache});
-//        $http.get('../views/templates/fritekst.html', {cache: $templateCache});
-//        $http.get('../views/templates/utdanning/utdanning.html', {cache: $templateCache});
-//        $http.get('../views/templates/utdanning/utdanningKveldTemplate.html', {cache: $templateCache});
-//        $http.get('../views/templates/utdanning/utdanningKortvarigTemplate.html', {cache: $templateCache});
-//        $http.get('../views/templates/utdanning/utdanningKortvarigFlereTemplate.html', {cache: $templateCache});
-//        $http.get('../views/templates/utdanning/utdanningNorskTemplate.html', {cache: $templateCache});
-//        $http.get('../views/templates/adresse.html', {cache: $templateCache});
-//        $http.get('../views/dagpenger-singlepage.html', {cache: $templateCache});
-//        $http.get('../js/common/directives/booleanradio/booleanradioTemplate.html', {cache: $templateCache});
-//        $http.get('../js/common/directives/accordion/accordionGroupTemplate.html', {cache: $templateCache});
-//        $http.get('../js/common/directives/accordion/accordionTemplate.html', {cache: $templateCache});
-//        $http.get('../js/common/directives/hjelpetekst/hjelpetekstTemplate.html', {cache: $templateCache});
-//        $http.get('../js/common/directives/datepicker/singleDatepickerTemplate.html', {cache: $templateCache});
-//        $http.get('../js/common/directives/datepicker/doubleDatepickerTemplate.html', {cache: $templateCache});
-//        $http.get('../js/common/directives/navinput/navbuttonspinnerTemplate.html', {cache: $templateCache});
-//        $http.get('../js/common/directives/navinput/navcheckboxTemplate.html', {cache: $templateCache});
-//        $http.get('../js/common/directives/navinput/navradioTemplate.html', {cache: $templateCache});
-//        $http.get('../js/common/directives/navinput/navtekstTemplate.html', {cache: $templateCache});
-//        $http.get('../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html', {cache: $templateCache});
-//        $http.get('../js/common/directives/navtextarea/navtextareaTemplate.html', {cache: $templateCache});
-//        $http.get('../js/common/directives/select/selectTemplate.html', {cache: $templateCache});
-//        $http.get('../js/app/directives/feilmeldinger/feilmeldingerTemplate.html', {cache: $templateCache});
-//        $http.get('../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html', {cache: $templateCache});
-//        $http.get('../js/app/directives/dagpenger/arbeidsforholdformTemplate.html', {cache: $templateCache});
-//        $http.get('../js/app/directives/markup/navinfoboksTemplate.html', {cache: $templateCache});
-//        $http.get('../js/app/directives/markup/panelStandardBelystTemplate.html', {cache: $templateCache});
-//        $http.get('../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html', {cache: $templateCache});
-//        $http.get('../js/app/directives/stegindikator/stegIndikatorTemplate.html', {cache: $templateCache});
-//        $http.get('../js/app/directives/stickybunn/stickyBunnTemplate.html', {cache: $templateCache});
-
         $('#hoykontrast a, .skriftstorrelse a').attr('href', 'javascript:void(0)')
 
         $rootScope.$on('$routeChangeSuccess', function(event, next, current) {
