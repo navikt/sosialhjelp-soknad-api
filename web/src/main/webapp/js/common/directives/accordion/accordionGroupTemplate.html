@@ -1,20 +1,20 @@
 <section class="accordion-group" data-ng-class="{open: isOpen}">
     <div class="accordion-heading">
-        <div class="flipp">
-            <span>+</span>
-        </div>
-            <a class="accordion-toggle"
-               id="{{ id }}-heading"
-               aria-owns="{{ id }}-body"
-               aria-controls="{{ id }}-body"
-               href="javascript:void(0)" tabindex="0"
-               data-ng-click="isOpen = !isOpen"
-               data-nav-aria-expanded="isOpen"
-               data-accordion-transclude="heading">
-                <h2 class="stor">
-                    {{heading}}
-                </h2>
-            </a>
+        <a class="accordion-toggle"
+           id="{{ id }}-heading"
+           aria-owns="{{ id }}-body"
+           aria-controls="{{ id }}-body"
+           href="javascript:void(0)" tabindex="0"
+           data-ng-click="isOpen = !isOpen"
+           data-nav-aria-expanded="isOpen"
+           data-accordion-transclude="heading">
+            <div class="flipp">
+                <span>+</span>
+            </div>
+            <h2 class="stor">
+                {{heading}}
+            </h2>
+        </a>
     </div>
     <div class="accordion-body"
          id="{{ id }}-body"
