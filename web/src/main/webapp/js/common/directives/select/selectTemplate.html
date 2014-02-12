@@ -24,7 +24,7 @@
                 data-ng-class="{harFokus: harFokus(option.value)}"/>
         </ul>
     </div>
-    <div data-ng-if="vanligSelect()">
+    <div class="vanlig-select" data-ng-if="vanligSelect()">
         <label>
             <span data-cmstekster="{{ label }}"></span>
             <select data-ng-model="faktum.value" data-ng-options="opt.value as opt.text for opt in orginalListe"></select>
