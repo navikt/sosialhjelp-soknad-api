@@ -144,10 +144,10 @@ angular.module('nav.barn', ['app.services'])
                         }
                     })
                 } else {
-                    data.leggTilFaktum($scope[type]);
+                    data.leggTilFaktum($scope[type], "barn");
                 }
             } else {
-                data.leggTilFaktum($scope[type]);
+                data.leggTilFaktum($scope[type], "barn");
             }
         }
 
