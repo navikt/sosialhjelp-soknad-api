@@ -16,8 +16,8 @@ module.exports = function (grunt) {
 
         htmlbuild: {
             dev: {
-                src: 'views/DagpengerIndex.html',
-                dest: 'src/main/resources/META-INF/resources/views/Dagpenger.html',
+                src: 'views/bootstrapTemplate.html',
+                dest: 'views/built/bootstrapDev.html',
                 options: {
                     beautify: true,
                     relative: false,
@@ -46,8 +46,8 @@ module.exports = function (grunt) {
                 }
             },
             test: {
-                src: 'views/DagpengerIndex.html',
-                dest: 'src/main/resources/META-INF/resources/views/Dagpenger.html',
+                src: 'views/bootstrapTemplate.html',
+                dest: 'views/built/bootstrap.html',
                 options: {
                     beautify: true,
                     relative: false,
@@ -76,8 +76,8 @@ module.exports = function (grunt) {
                 }
             },
             prod: {
-                src: 'views/DagpengerIndexProd.html',
-                dest: 'src/main/resources/META-INF/resources/views/Dagpenger.html',
+                src: 'views/bootstrapTemplateProd.html',
+                dest: 'views/built/bootstrap.html',
                 options: {
                     beautify: true,
                     relative: false,
@@ -182,8 +182,8 @@ module.exports = function (grunt) {
 	grunt.option('force', true);
 
 	grunt.registerTask('default', ['jshint', 'watch']);
-	grunt.registerTask('maven', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev']);
-	grunt.registerTask('maven-test', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:test']);
-	grunt.registerTask('test', ['jshint', 'html2js', 'karma:unit']);
-	grunt.registerTask('prod', ['html2js', 'concat', 'htmlbuild:prod', 'uglify']);
+    grunt.registerTask('test', ['jshint', 'html2js', 'karma:unit']);
+    grunt.registerTask('maven', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev']);
+    grunt.registerTask('maven-test', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev', 'htmlbuild:test']);
+	grunt.registerTask('maven-prod', ['html2js', 'concat', 'htmlbuild:dev', 'htmlbuild:prod', 'uglify']);
 };
