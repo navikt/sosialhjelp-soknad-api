@@ -1,16 +1,14 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 
 import javax.xml.bind.annotation.XmlIDREF;
-
 import java.io.Serializable;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class SoknadVedlegg implements Serializable {
 
@@ -75,7 +73,7 @@ public class SoknadVedlegg implements Serializable {
 
     public boolean trengerVedlegg(Faktum value) {
         String valToCheck;
-        if (forSystemfaktum == null || forSystemfaktum || value.getType().equals(FaktumType.BRUKERREGISTRERT.name())) {
+        if (forSystemfaktum == null || forSystemfaktum || value.er(FaktumType.BRUKERREGISTRERT)) {
             if (onProperty != null) {
                 valToCheck = value.getProperties().get(onProperty);
             } else {

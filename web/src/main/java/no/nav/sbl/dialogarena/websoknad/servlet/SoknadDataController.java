@@ -147,7 +147,7 @@ public class SoknadDataController {
     @ResponseBody()
     public void lagreSoknad(@PathVariable Long soknadId,
                             @RequestBody WebSoknad webSoknad) {
-        for (Faktum faktum : webSoknad.getFakta().values()) {
+        for (Faktum faktum : webSoknad.getFaktaListe()) {
             soknadService.lagreSoknadsFelt(soknadId, faktum);
         }
     }
