@@ -369,8 +369,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
         List<String> innlagtSkjemaNr = new ArrayList<String>();
         for (Vedlegg vedlegg : paakrevdeVedlegg) {
             innlagtSkjemaNr.add(vedlegg.getskjemaNummer());
-            vedlegg = medKodeverk(vedlegg);
-            result.add(vedlegg);
+            Vedlegg oppdatertVedleg = medKodeverk(vedlegg);
+            result.add(oppdatertVedleg);
         }
         return result;
     }
@@ -441,6 +441,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
             }
             vedlegg.setTittel(koder.get(Kodeverk.Nokkel.TITTEL));
         } catch (Exception ignore) {
+            logger.debug("ignored exception");
 
         }
         return vedlegg;
