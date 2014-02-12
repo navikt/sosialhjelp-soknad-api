@@ -1,0 +1,26 @@
+<form name="endreArbeidsforholdForm" data-ng-submit="aksjon(af)">
+	<label for="arbeidsgiver_navn">Navn på arbeidsgiver</label>
+    <input id="arbeidsgiver_navn" type="text" data-ng-model="af.navn" required/>
+    
+    <label for="arbeidsgiver_land">Land</label>
+    <select id="arbeidsgiver_land" data-ng-model="af.land" data-ng-options="item for item in landService.result" required>
+    	<option value="1">--Velg land--</option>
+    </select>
+    
+    <div class="varighet">
+        <label>Fra:</label>
+        <input type="text" name="varighetFra" ui-date ui-date-format ng-model="af.varighetFra" data-ng-change="validateTilFraDato(af)"  required >
+        <label>Til:</label>
+        <span data-ng-show="datoError" style="color:red">Tildato må være etter fradato</span>
+        <input type="text" name="varighetTil" ui-date ui-date-format ng-model="af.varighetTil" data-ng-change="validateTilFraDato(af)" required >
+    </div>
+    
+    <label>Årsaken til at du sluttet i jobben</label>
+    <select id="sluttaarsak_id" type="text" data-ng-model="sluttaarsak" data-ng-options="t.navn for t in templates" required>
+    	<option value="1">--Velg sluttårsak--</option>
+	</select>
+    <div data-ng-show="sluttaarsak.navn" data-ng-include data-src="sluttaarsak.url"></div>
+
+    <input data-cmstekster="arbeidsforhold.lagre" type="submit" id="arbeidsgiverLagre"/>
+    <a href data-cmstekster="arbeidsforhold.avbryt" data-ng-click="avbrytEndringAvArbeidsforhold()"></a>
+</form>
