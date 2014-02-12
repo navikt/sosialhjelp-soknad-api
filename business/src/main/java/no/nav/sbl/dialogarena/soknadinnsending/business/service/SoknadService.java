@@ -189,9 +189,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     }
 
+    //TODO: Er dette noe vi har behov for? Slette metode fra interface?
     @Override
     public List<Long> hentMineSoknader(String aktorId) {
-        // TODO Auto-generated method stub
         return null;
     }
 

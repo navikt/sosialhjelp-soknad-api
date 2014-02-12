@@ -32,8 +32,6 @@ public class SoknadInnsendingDriver extends SpringAwareDoFixture {
 
 	private String fnr;
 	
-	
-	
 	public SoknadInnsendingDriver(String fnr) throws Exception{
 		super.setUp();
 		this.fnr = fnr;
@@ -44,9 +42,7 @@ public class SoknadInnsendingDriver extends SpringAwareDoFixture {
 		return fnr;
 	}
 	
-	//TODO:
 	public long opprettNySoknad(String type)  {
-		//this.webSoknadId = startSoknad();
 		return webSoknadId.getId();
 	}
 	
