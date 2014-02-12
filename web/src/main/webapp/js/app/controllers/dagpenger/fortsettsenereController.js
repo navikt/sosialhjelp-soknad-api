@@ -1,4 +1,4 @@
-angular.module('nav.forsettsenere', ['nav.cmstekster'])
+angular.module('nav.fortsettsenere', ['nav.cmstekster'])
 	.controller('FortsettSenereCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', "fortsettSenereService", "Faktum",
 		function ($scope, data, $routeParams, $http, $location, fortsettSenereService, Faktum) {
             var lagretEpost = data.finnFaktum('epost');
