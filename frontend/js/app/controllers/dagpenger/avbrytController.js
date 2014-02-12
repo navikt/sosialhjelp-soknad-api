@@ -7,7 +7,7 @@ angular.module('nav.avbryt', [])
 
         $scope.krevBekreftelse = data.fakta.filter(function(item) {
             return item.type==="BRUKERREGISTRERT";
-        }).length>0;
+        }).length>1;
         
 
 
@@ -34,7 +34,7 @@ angular.module('nav.avbryt', [])
             $scope.submitForm();
         }
     }])
-    .controller('SlettetCtrl', ['$scope', '$routeParams', '$location', 'data', function ($scope, $location, data) {
+    .controller('SlettetCtrl', ['$scope', '$location', 'data', function ($scope, $location, data) {
         $scope.skjemaVeilederUrl = data.config["soknad.skjemaveileder.url"];  
         $scope.mineHenveldelserBaseUrl = data.config["minehenvendelser.link.url"];     
     }]);
