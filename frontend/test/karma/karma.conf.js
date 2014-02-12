@@ -21,6 +21,7 @@ module.exports = function (config) {
             'lib/angular-mocks.js',
             '../../js/lib/angular/angular-resource.js',
             '../../js/lib/angular/angular-sanitize.js',
+            '../../js/lib/angular/angular-cookies.js',
             '../../js/lib/bindonce.js',
             '../../js/app/**/*.js',
             '../../js/common/**/*.js',
@@ -68,7 +69,8 @@ module.exports = function (config) {
         // - Safari (only Mac)
         // - PhantomJS
         // - IE (only Windows)
-        browsers: ['Chrome', 'Firefox', 'IE'],
+        browsers: ['Chrome'],
+//        browsers: ['Chrome', 'Firefox', 'IE'],
 
         //plugins: ['karma-phantomjs-runner', 'karma-jasmine'],
 

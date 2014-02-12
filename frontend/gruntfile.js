@@ -183,6 +183,6 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('default', ['jshint', 'watch']);
 	grunt.registerTask('maven', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev']);
-	grunt.registerTask('test', ['jshint', 'karma:unit']);
+	grunt.registerTask('test', ['jshint', 'html2js', 'karma:unit']);
 	grunt.registerTask('prod', ['html2js', 'concat', 'htmlbuild:prod', 'uglify']);
 };
