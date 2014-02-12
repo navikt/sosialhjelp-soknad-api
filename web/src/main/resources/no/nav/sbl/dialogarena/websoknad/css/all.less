@@ -612,55 +612,6 @@ form-linje.feil {
     border-bottom: none;
 }
 
-.stegindikator {
-    display: table;
-    list-style: none;
-    margin: 10px auto 20px;
-    padding: 0;
-    background: url(../img/stripe-ccc.png) repeat-x center center;
-
-    li {
-        width: 150px;
-        margin-right: 15px;
-        display: block;
-        float: left;
-
-        &:last-child {
-            margin-right: 0;
-        }
-
-        &.aktiv {
-            a, span {
-                background: @red;
-                color: @white;
-            }
-        }
-
-        a, span {
-            display: block;
-            position: relative;
-            padding: 10px 30px;
-            border: 1px solid @borderColorLight;
-            background: @white;
-            color: @grayDark;
-            text-decoration: none;
-            text-transform: uppercase;
-
-            font-family: Modus, Arial, Helvetica, sans-serif;;
-            font-weight: 600;
-            padding: 10px 40px;
-        }
-
-        span {
-            background: #f1f1f1;
-        }
-
-        a {
-            background: #fff;
-        }
-    }
-}
-
 form, [ng-form], [data-ng-form] {
     &.horisontal {
         label {
@@ -808,8 +759,30 @@ form, [ng-form], [data-ng-form] {
     }
 }
 
-a.infoikon:focus, a.lukk:focus, a.knapp-link:focus, a.accordion-toggle:focus h2, #vedlegg a.accordion-toggle:focus .bolk-fokus {
-  text-decoration: underline;
+a.accordion-toggle, #vedlegg a.accordion-toggle {
+  display: block;
+    &:active {
+      color: #3e3832;
+      outline: none;
+      text-decoration: underline !important;
+    }
+    &:focus {
+      color: #3e3832;
+      outline: none;
+      text-decoration: underline !important;
+    }
+}
+a.infoikon, a.lukk, a.knapp-link {
+  &:active {
+    color: #3e3832;
+    outline: none;
+    text-decoration: underline !important;
+  }
+  &:focus {
+    color: #3e3832;
+    outline: none;
+    text-decoration: underline !important;
+  }
 }
 
 a.accordion-toggle:focus,  #vedlegg a.accordion-toggle:focus h2 {

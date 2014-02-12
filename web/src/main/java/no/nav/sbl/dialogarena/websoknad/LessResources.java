@@ -21,7 +21,8 @@ public enum LessResources {
     MODALSIDE("modalside"),
     EGENNAERING("egennaering"),
     PERSONALIA("personalia"),
-    UTDANNING_LESS("utdanning");
+    UTDANNING_LESS("utdanning"),
+    STEGINDIKATOR_LESS("stegindikator");
 
     private static final String FOLDER = "css/";
     private static final String TYPE = ".less";

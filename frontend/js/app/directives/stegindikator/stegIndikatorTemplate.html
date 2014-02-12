@@ -2,8 +2,14 @@
 	<div class="begrensning">
 		<ul class="stegindikator">
 		    <li data-ng-repeat="steg in data.liste" ng-class="{aktiv: $index == {{ aktivIndex }}}">
-		        <a href="{{ hentLenke($index) }}" data-cmstekster="stegindikator.{{ steg }}" data-ng-if="erKlikkbar($index)"></a>
-                <span data-cmstekster="stegindikator.{{ steg }}" data-ng-if="erIkkeKlikkbar($index)"></span>
+		        <a class="steg" href="{{ hentLenke($index) }}" data-ng-if="erKlikkbar($index)">
+                    <span class="tekst">{{  'stegindikator.' + steg | cmstekst }}</span>
+                    <span class="stegnummer">{{ $index }}</span>
+                </a>
+                <span class="steg" data-ng-if="erIkkeKlikkbar($index)">
+                    <span class="tekst">{{  'stegindikator.' + steg | cmstekst }}</span>
+                    <span class="stegnummer">{{ $index }}</span>
+                </span>
 		    </li>
 		</ul>
 	</div>

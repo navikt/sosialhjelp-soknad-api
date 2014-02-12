@@ -1,17 +1,15 @@
 angular.module('nav.avbryt', [])
-    .controller('AvbrytCtrl', ['$scope', '$routeParams', '$location', 'soknadService', 'data', function ($scope, $routeParams, $location, soknadService, data) {
+    .controller('AvbrytCtrl', ['$scope', '$location', 'soknadService', 'data', function ($scope, $location, soknadService, data) {
         $scope.fremdriftsindikator = {
             laster: false
 
         }
 
-        $scope.krevBekreftelse =data.fakta.filter(function(item) {
+        $scope.krevBekreftelse = data.fakta.filter(function(item) {
             return item.type==="BRUKERREGISTRERT";
         }).length>0;
         
-        if (!$scope.krevBekreftelse) {
-            $scope.submitForm();
-        }
+
 
         $scope.submitForm = function () {
             var start = $.now();
@@ -31,8 +29,12 @@ angular.module('nav.avbryt', [])
                 }
             );
         };
+
+        if (!$scope.krevBekreftelse) {
+            $scope.submitForm();
+        }
     }])
-    .controller('SlettetCtrl', ['$scope', '$routeParams', '$location', 'data', function ($scope, $routeParams, $location, data) {
+    .controller('SlettetCtrl', ['$scope', '$routeParams', '$location', 'data', function ($scope, $location, data) {
         $scope.skjemaVeilederUrl = data.config["soknad.skjemaveileder.url"];  
         $scope.mineHenveldelserBaseUrl = data.config["minehenvendelser.link.url"];     
     }]);

@@ -55,10 +55,10 @@ angular.module('nav.barnetillegg', [])
 		};
 
         $scope.kreverVedlegg = function(barn) {
-            return $scope.barnetHarInntekt(barn) || $scope.manglendeNorskBarn(barn);
+            return $scope.barnetHarInntekt(barn) || $scope.norskBarnIkkeFunnetITPS(barn);
         }
 
-        $scope.manglendeNorskBarn = function(barn) {
+        $scope.norskBarnIkkeFunnetITPS = function(barn) {
             if(barn && barn.properties) { 
                 return barn.type === 'BRUKERREGISTRERT' && barn.properties.land == "NOR";
             }   
@@ -100,9 +100,7 @@ angular.module('nav.barnetillegg', [])
         };
 
         //TODO: Trenger vi denne? Formen vil jo alltid være valid
-		$scope.valider = function (skalScrolle) {
-//			$scope.runValidation(skalScrolle);
-		};
+		$scope.valider = function (skalScrolle) {};
 
 		function settBarnCookie(faktumId) {
 			var aapneTabIds = [];
