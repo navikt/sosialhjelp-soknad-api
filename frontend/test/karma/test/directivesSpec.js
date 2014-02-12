@@ -7,59 +7,6 @@ describe('directives', function () {
         });
     }));
 
-    describe('prosent', function () {
-        beforeEach(inject(function ($compile, $rootScope) {
-            scope = $rootScope;
-            element = angular.element(
-                '<form name="form">' +
-                    '<input type="text" ng-model="permiteringProsent" name="permiteringProsent" prosent />' +
-                    '</form>'
-            );
-            scope.permiteringProsent = '';
-            $compile(element)(scope);
-            scope.$digest();
-            form = scope.form;
-            element.scope().$apply();
-
-        }));
-
-        it('skal returnere true for prosenten 0', function () {
-            form.permiteringProsent.$setViewValue('0');
-            expect(scope.permiteringProsent).toEqual('0');
-            expect(form.permiteringProsent.$valid).toBe(true);
-        });
-        it('skal returnere true for prosenten 100', function () {
-            form.permiteringProsent.$setViewValue('100');
-            expect(scope.permiteringProsent).toEqual('100');
-            expect(form.permiteringProsent.$valid).toBe(true);
-        });
-        it('skal returnere false for prosenten p', function () {
-            form.permiteringProsent.$setViewValue('p');
-            expect(scope.permiteringProsent).toBeUndefined();
-            expect(form.permiteringProsent.$valid).toBe(false);
-        });
-        it('skal returnere false for prosenten -1', function () {
-            form.permiteringProsent.$setViewValue('-1');
-            expect(scope.permiteringProsent).toBeUndefined();
-            expect(form.permiteringProsent.$valid).toBe(false);
-        });
-        it('skal returnere false for prosenten 50.0', function () {
-            form.permiteringProsent.$setViewValue('50.0');
-            expect(scope.permiteringProsent).toBeUndefined();
-            expect(form.permiteringProsent.$valid).toBe(false);
-        });
-        it('skal returnere false for prosenten 101', function () {
-            form.permiteringProsent.$setViewValue('101');
-            expect(scope.permiteringProsent).toBeUndefined();
-            expect(form.permiteringProsent.$valid).toBe(false);
-        });
-        it('skal returnere false for prosenten 20%', function () {
-            form.permiteringProsent.$setViewValue('20%');
-            expect(scope.permiteringProsent).toBeUndefined();
-            expect(form.permiteringProsent.$valid).toBe(false);
-        });
-    });
-
     describe('booleanVerdi', function () {
         beforeEach(inject(function ($compile, $rootScope) {
             scope = $rootScope;

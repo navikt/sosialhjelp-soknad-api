@@ -56,6 +56,13 @@ describe('krav om dagpenger:', function() {
             expect(skjemaPage.reellarbeidssoker.elem.getAttribute('class')).not.toContain('open');
             expect(skjemaPage.arbeidsforhold.elem.getAttribute('class')).toContain('open');
         });
+        it('reell arbeidssøker skal vise 4 feilmeldinger når ingen av sporsmalene er svar', function() {
+            skjemaPage.reellarbeidssoker.open();
+
+            skjemaPage.reellarbeidssoker.validerbolk.click();
+            expect(skjemaPage.reellarbeidssoker.elem.getAttribute('class')).toContain('open');
+            expect(skjemaPage.reellarbeidssoker.get)
+        });
 
         it('arbeidsforhold skal validere og lukkes, mens egen næring skal åpnes, dersom man huker av at man ikke har jobbet og trykker neste', function() {
             skjemaPage.arbeidsforhold.open();
