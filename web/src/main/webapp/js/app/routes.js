@@ -231,8 +231,8 @@ angular.module('app.routes', ['ngRoute'])
 			.when('/feilside', {
 				templateUrl: '../html/templates/feilside.html',
 				resolve    : {
-					notUsedButRequiredProperty: function (InformasjonsSideResolver) {
-						return InformasjonsSideResolver;
+					notUsedButRequiredProperty: function (HentSoknadService) {
+						return HentSoknadService;
 					}
 				}
 			})
