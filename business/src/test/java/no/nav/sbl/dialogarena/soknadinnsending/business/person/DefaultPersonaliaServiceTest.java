@@ -11,6 +11,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadresse;
+
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosBorgerService;
@@ -49,6 +51,9 @@ import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonReque
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -129,15 +134,18 @@ public class DefaultPersonaliaServiceTest {
     //TODO Refaktorer tester og legg til de resterende testene fra PersonServiceTest
 
     private XMLBruker xmlBruker;
-
+    private DateTimeFormatter dateTimeFormat;
+    
     @Before
     public void setup() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
         when(kodeverkMock.getPoststed(EN_ADRESSE_POSTNUMMER)).thenReturn(EN_ADRESSE_POSTSTED);
         when(kodeverkMock.getPoststed(EN_ANNEN_ADRESSE_POSTNUMMER)).thenReturn(EN_ADRESSE_POSTSTED);
         when(kodeverkMock.getLand(NORGE_KODE)).thenReturn(NORGE);
-        
+        when(kodeverkMock.getLand(EN_LANDKODE)).thenReturn(ET_LAND);
         when(eosBorgerService.getStatsborgeskapType(NORGE_KODE)).thenReturn("Norsk");
 
+        dateTimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
+        
         HentKjerneinformasjonResponse response = new HentKjerneinformasjonResponse();
         Person person = genererPersonMedGyldigIdentOgNavn(RIKTIG_IDENT, ET_FORNAVN, ET_ETTERNAVN);
         List<Familierelasjon> familieRelasjoner = person.getHarFraRolleI();
@@ -222,7 +230,7 @@ public class DefaultPersonaliaServiceTest {
     public void returnererPersonObjektMedAdresseInformasjon() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
         String forventetGjeldendeAdresse = EN_ADRESSE_GATE + " " + EN_ADRESSE_HUSNUMMER + EN_ADRESSE_HUSBOKSTAV + ", " + EN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
         String forventetSekunarAdresse = EN_POSTBOKS_ADRESSEEIER + ", " + EN_ANNEN_ADRESSE_GATE + " " + EN_ANNEN_ADRESSE_HUSNUMMER + EN_ANNEN_ADRESSE_HUSBOKSTAV + ", " + EN_ANNEN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED;
-
+        
         mockGyldigPersonMedAdresse();
 
         Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
@@ -239,6 +247,110 @@ public class DefaultPersonaliaServiceTest {
 
         assertThat(sekundarAdresse.getAdressetype(), is(Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE.name()));
         assertThat(sekundarAdresse.getAdresse(), is(forventetSekunarAdresse));
+        
+       
+        assertThat(sekundarAdresse.getGyldigFra(), is(dateTimeFormat.print(EN_ANNEN_ADRESSE_GYLDIG_FRA)));
+        assertThat(sekundarAdresse.getGyldigTil(), is(dateTimeFormat.print(EN_ANNEN_ADRESSE_GYLDIG_TIL)));
+    }
+    
+    
+    
+    
+  @SuppressWarnings("unchecked")
+  @Test
+  public void skalStotteMidlertidigOmrodeAdresseNorge() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+      String forventetsekundarAdresse = EN_ADRESSE_POSTNUMMER + " " + EN_ADRESSE_POSTSTED +", " + ET_EIEDOMSNAVN;
+      mockGyldigPersonMedMidlertidigOmrodeAdresse();
+      Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
+      
+      Adresse sekundarAdresse = personalia.getSekundarAdresse();
+      
+      Assert.assertNotNull(sekundarAdresse);
+      assertThat(sekundarAdresse.getAdresse(), is(forventetsekundarAdresse));
+  }
+    
+@SuppressWarnings("unchecked")
+@Test
+public void skalStotteFolkeregistretUtenlandskAdresse() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+    String forventetAdresse = EN_ADRESSELINJE + ", " + EN_ANNEN_ADRESSELINJE + ", " + EN_TREDJE_ADRESSELINJE+ ", " + EN_FJERDE_ADRESSELINJE + ", " + ET_LAND;
+    
+    mockGyldigPersonMedUtenlandskFolkeregistrertAdresse(4);
+
+    Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
+
+    Adresse sekundarAdresse = personalia.getSekundarAdresse();
+    
+    Assert.assertNotNull(sekundarAdresse.getAdresse());
+    
+    assertThat(sekundarAdresse.getAdresse(), is(forventetAdresse));
+}
+
+
+@SuppressWarnings("unchecked")
+@Test
+public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed1Linjer() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+    String forventetAdresse = EN_ADRESSELINJE + ", " + ET_LAND;
+    
+    mockGyldigPersonMedUtenlandskFolkeregistrertAdresse(1);
+    Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
+    Adresse sekundarAdresse = personalia.getSekundarAdresse();
+    
+    Assert.assertNotNull(sekundarAdresse.getAdresse());
+    assertThat(sekundarAdresse.getAdresse(), is(forventetAdresse));
+}
+
+@SuppressWarnings("unchecked")
+@Test
+public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed2Linjer() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+    String forventetAdresse = EN_ADRESSELINJE + ", " + EN_ANNEN_ADRESSELINJE + ", " + ET_LAND;
+    
+    mockGyldigPersonMedUtenlandskFolkeregistrertAdresse(2);
+    Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
+    Adresse sekundarAdresse = personalia.getSekundarAdresse();
+    
+    Assert.assertNotNull(sekundarAdresse.getAdresse());
+    assertThat(sekundarAdresse.getAdresse(), is(forventetAdresse));
+}
+
+@SuppressWarnings("unchecked")
+@Test
+public void skalStotteMidlertidigUtenlandskMidlertidigAdresseMed3Linjer() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+    String forventetAdresse = EN_ADRESSELINJE + ", " + EN_ANNEN_ADRESSELINJE + ", " + EN_TREDJE_ADRESSELINJE+ ", " + ET_LAND;
+    
+    mockGyldigPersonMedUtenlandskFolkeregistrertAdresse(3);
+    Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
+    Adresse sekundarAdresse = personalia.getSekundarAdresse();
+    
+    Assert.assertNotNull(sekundarAdresse.getAdresse());
+    assertThat(sekundarAdresse.getAdresse(), is(forventetAdresse));
+}
+
+
+    
+    
+    
+    
+    
+    
+
+    private void mockGyldigPersonMedUtenlandskFolkeregistrertAdresse(int adresselinjer) {
+        XMLPostadresse xmlPostadresseUtland = new XMLPostadresse();
+        XMLUstrukturertAdresse utenlandskUstrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(adresselinjer);
+
+        XMLLandkoder xmlLandkode = new XMLLandkoder();
+        xmlLandkode.setValue(EN_LANDKODE);
+        utenlandskUstrukturertAdresse.setLandkode(xmlLandkode);
+
+        xmlPostadresseUtland.setUstrukturertAdresse(utenlandskUstrukturertAdresse);
+        
+        xmlBruker.setPostadresse(xmlPostadresseUtland);
+    
+}
+
+    private void mockGyldigPersonMedMidlertidigOmrodeAdresse() {
+        XMLMidlertidigPostadresseNorge midlertidigOmrodeAdresseNorge = generateMidlertidigOmrodeAdresseNorge();
+        xmlBruker.setMidlertidigPostadresse(midlertidigOmrodeAdresseNorge);
+        xmlBruker.setPersonnavn(navnMedMellomnavn());
     }
 
     private void mockGyldigPersonMedAdresse() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
