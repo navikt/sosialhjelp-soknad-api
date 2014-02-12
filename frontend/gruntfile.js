@@ -45,14 +45,45 @@ module.exports = function (grunt) {
                     }
                 }
             },
-            prod: {
-                src: 'js/views/DagpengerIndex.html',
-                dest: 'js/views/test',
+            test: {
+                src: 'views/DagpengerIndex.html',
+                dest: 'views/Dagpenger.html',
                 options: {
                     beautify: true,
                     relative: false,
+                    prefix: '../',
                     scripts: {
-                        bundle: 'js/lib/angular/**/*.js'
+                        angular: [
+                            'js/lib/angular/angular.js',
+                            'js/lib/angular/angular-*.js'
+                        ],
+                        fileupload: [
+                            'js/lib/jquery/jquery-ui-1.10.3.custom.js',
+                            'js/lib/jquery/cors/jquery.xdr-transport.js',
+                            'js/lib/jquery/cors/jquery.postmessage-transport.js',
+                            'js/lib/jquery/jquery.iframe-transport.js',
+                            'js/lib/jquery/jquery.fileupload.js',
+                            'js/lib/jquery/jquery.fileupload-process.js',
+                            'js/lib/jquery/jquery.fileupload-validate.js',
+                            'js/lib/jquery/jquery.fileupload-angular.js'
+                        ],
+                        libs: 'js/lib/*.js',
+                        app: [
+                            'js/app/**/*.js',
+                            'js/common/**/*.js'
+                        ]
+                    }
+                }
+            },
+            prod: {
+                src: 'views/DagpengerIndexProd.html',
+                dest: 'views/Dagpenger.html',
+                options: {
+                    beautify: true,
+                    relative: false,
+                    prefix: '../',
+                    scripts: {
+                        built: 'js/built/built.js'
                     }
                 }
             }
@@ -63,12 +94,19 @@ module.exports = function (grunt) {
 			},
 			dist   : {
 				src   : [
-					'js/lib/angular/*.js',
-					'js/lib/bindonce.js',
-					'js/js/controllers/**/*.js',
-					'js/js/directives/**/*.js',
-					'js/js/common/**/*.js',
-					'js/js/i18n/**/*.js'
+                    'js/lib/angular/angular.js',
+                    'js/lib/angular/angular-*.js',
+                    'js/lib/jquery/jquery-ui-1.10.3.custom.js',
+                    'js/lib/jquery/cors/jquery.xdr-transport.js',
+                    'js/lib/jquery/cors/jquery.postmessage-transport.js',
+                    'js/lib/jquery/jquery.iframe-transport.js',
+                    'js/lib/jquery/jquery.fileupload.js',
+                    'js/lib/jquery/jquery.fileupload-process.js',
+                    'js/lib/jquery/jquery.fileupload-validate.js',
+                    'js/lib/jquery/jquery.fileupload-angular.js',
+                    'js/lib/*.js',
+                    'js/app/**/*.js',
+                    'js/common/**/*.js'
 				],
 				dest  : 'js/built/built.js',
 				nonull: true
@@ -144,10 +182,7 @@ module.exports = function (grunt) {
 	grunt.option('force', true);
 
 	grunt.registerTask('default', ['jshint', 'watch']);
-	grunt.registerTask('maven', ['jshint']);
+	grunt.registerTask('maven', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev']);
 	grunt.registerTask('test', ['jshint', 'karma:unit']);
-	grunt.registerTask('prod', ['concat', 'uglify']);
-	grunt.registerTask('html', ['htmlbuild:dev']);
-	grunt.registerTask('htmlprod', ['htmlbuild:prod']);
-	grunt.registerTask('tpl', ['html2js']);
+	grunt.registerTask('prod', ['html2js', 'concat', 'htmlbuild:prod', 'uglify']);
 };

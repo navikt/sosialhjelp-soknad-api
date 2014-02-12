@@ -22,17 +22,15 @@ module.exports = function (config) {
             '../../js/lib/angular/angular-resource.js',
             '../../js/lib/angular/angular-sanitize.js',
             '../../js/lib/bindonce.js',
-            '../../js/app/directives/**/*.js',
-            '../../js/app/controllers/**/*.js',
-            '../../js/app/common/**/*.js',
-	        '../../js/app/*.js',
+            '../../js/app/**/*.js',
+            '../../js/common/**/*.js',
 
             '../../js/lib/jquery/jquery.iframe-transport.js',
             '../../js/lib/jquery/jquery.fileupload.js',
             '../../js/lib/jquery/jquery.fileupload-process.js',
             '../../js/lib/jquery/jquery.fileupload-validate.js',
             '../../js/lib/jquery/jquery.fileupload-angular.js',
-            'unit/*.js'
+            'test/*.js'
         ],
 
         // list of files to exclude
@@ -70,8 +68,7 @@ module.exports = function (config) {
         // - Safari (only Mac)
         // - PhantomJS
         // - IE (only Windows)
-        //browsers: ['PhantomJS', 'Chrome', 'Firefox', 'IE'],
-        browsers: ['PhantomJS'],
+        browsers: ['Chrome', 'Firefox', 'IE'],
 
         //plugins: ['karma-phantomjs-runner', 'karma-jasmine'],
 
@@ -85,12 +82,10 @@ module.exports = function (config) {
 
         plugins: [
             'karma-jasmine',
-            'karma-phantomjs-launcher'
-/*
+            'karma-phantomjs-launcher',
             'karma-chrome-launcher',
             'karma-firefox-launcher',
             'karma-ie-launcher'
-*/
         ],
 
         coverageReporter: {
