@@ -31,7 +31,17 @@
 				<groupId>pl.allegro</groupId>
 				<artifactId>grunt-maven-plugin</artifactId>
 				<version>1.1.2</version>
-				<configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>sysinternals</groupId>
+                        <artifactId>junction</artifactId>
+                        <type>exe</type>
+                        <scope>system</scope>
+                        <version>1.04</version>
+                        <systemPath>${project.basedir}/junction.exe</systemPath>
+                    </dependency>
+                </dependencies>
+                <configuration>
 					<sourceDirectory>${basedir}</sourceDirectory>
 					<jsSourceDirectory>js</jsSourceDirectory>
                     <gruntBuildDirectory>${project.build.directory}/classes/META-INF/resources/js</gruntBuildDirectory>
