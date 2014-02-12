@@ -146,7 +146,7 @@ public class SoknadDataController {
     @RequestMapping(value = "/lagre/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody()
     public void lagreSoknad(@PathVariable Long soknadId,
-                            @RequestBody WebSoknad webSoknad, String side) {
+                            @RequestBody WebSoknad webSoknad) {
         for (Faktum faktum : webSoknad.getFakta().values()) {
             soknadService.lagreSoknadsFelt(soknadId, faktum);
         }

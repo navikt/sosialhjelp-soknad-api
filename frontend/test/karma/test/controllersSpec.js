@@ -56,7 +56,7 @@ describe('DagpengerControllere', function () {
             },
             finnFakta: function (faktumKey) {
             },
-            leggTilFaktum: function (faktum, side) {
+            leggTilFaktum: function (faktum) {
                 fakta.push(faktum);
             },
             land: {result: [
