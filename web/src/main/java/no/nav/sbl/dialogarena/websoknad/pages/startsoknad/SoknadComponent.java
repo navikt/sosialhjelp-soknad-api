@@ -66,7 +66,7 @@ public class SoknadComponent extends WebComponent {
         } catch (IllegalArgumentException| IOException e) {
             try {
                 File basedir = new File(WebApplication.get().getServletContext().getResource("/").toURI());
-                File devDir = new File(basedir, "../../../../frontend/views/Dagpenger.html");
+                File devDir = new File(basedir, "../../../../frontend/src/main/resources/META-INF/resources/views/Dagpenger.html");
                 try(InputStream content = new FileInputStream(devDir)){
                     replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
                 }

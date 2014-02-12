@@ -47,16 +47,16 @@ angular.module('nav.fortsettsenere', ['nav.cmstekster'])
 			var templateUrl = '';
 			switch (delstegstatus) {
 				case 'UTFYLLING':
-					templateUrl = '../html/templates/gjenoppta/skjema-under-arbeid.html';
+					templateUrl = '../views/templates/gjenoppta/skjema-under-arbeid.html';
 					break;
 				case 'VEDLEGG_VALIDERT':
-					templateUrl = '../html/templates/gjenoppta/skjema-ferdig.html';
+					templateUrl = '../views/templates/gjenoppta/skjema-ferdig.html';
 					break;
 				case 'SKJEMA_VALIDERT':
-					templateUrl = '../html/templates/gjenoppta/skjema-validert.html';
+					templateUrl = '../views/templates/gjenoppta/skjema-validert.html';
 					break;
 				default:
-					templateUrl = '../html/templates/gjenoppta/skjema-under-arbeid.html';
+					templateUrl = '../views/templates/gjenoppta/skjema-under-arbeid.html';
 
 			}
 			return templateUrl;
@@ -69,7 +69,7 @@ angular.module('nav.fortsettsenere', ['nav.cmstekster'])
 					templateUrl = getForDelsteg(delstegstatus);
 					break;
 				case 'FERDIG':
-					templateUrl = '../html/templates/gjenoppta/skjema-sendt.html';
+					templateUrl = '../views/templates/gjenoppta/skjema-sendt.html';
 					break;
 				case 'AVBRUTT':
 					break;

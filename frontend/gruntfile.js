@@ -17,7 +17,7 @@ module.exports = function (grunt) {
         htmlbuild: {
             dev: {
                 src: 'views/DagpengerIndex.html',
-                dest: 'views/Dagpenger.html',
+                dest: 'src/main/resources/META-INF/resources/views/Dagpenger.html',
                 options: {
                     beautify: true,
                     relative: false,
@@ -47,7 +47,7 @@ module.exports = function (grunt) {
             },
             test: {
                 src: 'views/DagpengerIndex.html',
-                dest: 'views/Dagpenger.html',
+                dest: 'src/main/resources/META-INF/resources/views/Dagpenger.html',
                 options: {
                     beautify: true,
                     relative: false,
@@ -77,7 +77,7 @@ module.exports = function (grunt) {
             },
             prod: {
                 src: 'views/DagpengerIndexProd.html',
-                dest: 'views/Dagpenger.html',
+                dest: 'src/main/resources/META-INF/resources/views/Dagpenger.html',
                 options: {
                     beautify: true,
                     relative: false,
@@ -177,12 +177,13 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-html2js');
 
 	grunt.loadNpmTasks('grunt-karma');
-	grunt.loadTasks('maven-tasks');
+//	grunt.loadTasks('maven-tasks');
 
 	grunt.option('force', true);
 
 	grunt.registerTask('default', ['jshint', 'watch']);
 	grunt.registerTask('maven', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev']);
+	grunt.registerTask('maven-test', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:test']);
 	grunt.registerTask('test', ['jshint', 'html2js', 'karma:unit']);
 	grunt.registerTask('prod', ['html2js', 'concat', 'htmlbuild:prod', 'uglify']);
 };
