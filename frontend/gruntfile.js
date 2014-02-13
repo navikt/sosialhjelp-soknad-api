@@ -124,28 +124,24 @@ module.exports = function (grunt) {
 		},
 		watch : {
 			js  : {
-				files  : ['js/js/**'],
-				options: {
-					livereload: true
-				}
+				files  : [
+                    'js/app/**/*.js',
+                    'js/common/**/*.js'
+                ],
+                tasks: 'jshint'
 			},
 			html: {
-				files  : ['js/views/**'],
-				options: {
-					livereload: true
-				}
-			},
-			css : {
-				files  : ['js/css/**'],
-				options: {
-					livereload: true
-				}
+				files  : [
+                    'js/app/**/*.html',
+                    'js/common/**/*.html'
+                ],
+                tasks: 'html2js'
 			}
 		},
 		jshint: {
-			files  : ['gruntfile.js', 'js/js/**/*.js', 'test/karma/**/*.js', 'app/**/*.js'],
+			files  : ['gruntfile.js', 'js/app/**/*.js', 'js/common/**/*.js', 'test/**/*.js'],
 			options: {
-				ignores: ['js/built/built.js', 'js/js/i18n/**']
+				ignores: ['js/built/*.js', 'js/app/i18n/**', 'js/app/templates.js']
 			}
 		},
 		karma : {
@@ -181,7 +177,7 @@ module.exports = function (grunt) {
 
 	grunt.option('force', true);
 
-	grunt.registerTask('default', ['jshint', 'watch']);
+	grunt.registerTask('default', ['jshint', 'html2js', 'watch']);
     grunt.registerTask('test', ['jshint', 'html2js', 'karma:unit']);
     grunt.registerTask('maven', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev']);
     grunt.registerTask('maven-test', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev', 'htmlbuild:test']);

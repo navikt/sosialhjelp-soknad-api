@@ -31,18 +31,20 @@
 }
 
 .infoboks {
-    padding: 20px 5%;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 
-    .utrop-sirkel-ikon {
-        background-image: url(../img/utrop.svg);
-        background-position: center top;
-        background-repeat: no-repeat;
-        padding-top: 46px;
-    }
-    p {
-        margin-bottom: 10px;
-        text-align: left;
+    .infoboks-inner {
+        padding: 20px 5%;
+        .utrop-sirkel-ikon {
+            background-image: url(../img/utrop.svg);
+            background-position: center top;
+            background-repeat: no-repeat;
+            padding-top: 46px;
+        }
+        p {
+            margin-bottom: 10px;
+            text-align: left;
+        }
     }
 }
 
@@ -61,8 +63,10 @@
 
 .vedlegginfoboks {
     border-top: 1px solid #ddd;
-    margin: 15px;
-    padding-top: 20px;
+    margin-left: 15px;
+    margin-right: 15px;
+    padding-top: 30px;
+    margin-top: 20px;
     clear: both;
 
     [class*="strek-ikon-vedlegg"], [class*="ikon-vedlegg-strek"] {
@@ -70,7 +74,7 @@
         background-position: 0 top;
         background-repeat: no-repeat;
         padding-bottom: 0px !important;
-        margin-bottom: 15px !important;
+        margin-bottom: 0px !important;
         padding-left: 30px;
 
         .leggved {
@@ -237,12 +241,6 @@
     background-repeat: no-repeat;
 }
 
-.strek-top {
-    .strek;
-    background-position: top center;
-    padding-top: 20px;
-}
-
 .strek-bottom {
     .strek;
     background-position: bottom center;
@@ -269,8 +267,6 @@
 }
 
 .tekstfelt {
-    margin-bottom: 10px !important;
-
     &:last-child {
         margin-bottom: 0;
     }
@@ -363,8 +359,10 @@
     }
 
     .skjemaramme {
+        .strek;
+        background-position: top center;
         padding-bottom: 40px;
-        .strek-top;
+        padding-top: 25px;
 
         .skjemainnhold {
             width: 90%;
@@ -792,17 +790,28 @@ form, [ng-form], [data-ng-form] {
     }
 }
 
+.accordion-group.validert {
+    .flipp {
+        cursor: pointer;
+        border-color: transparent transparent #800000 transparent;
+
+        &:before {
+            border-top: 30px solid #c30000;
+        }
+    }
+}
+
 a.accordion-toggle, #vedlegg a.accordion-toggle {
   display: block;
     &:active {
-      .flipp {
-        cursor: pointer;
-        border-color: transparent transparent #0000FF transparent;
+        .flipp {
+            cursor: pointer;
+            border-color: transparent transparent #004283 transparent;
 
-        &:before {
-          border-top: 30px solid #0000FF;
+            &:before {
+                border-top: 30px solid #0067c5;
+            }
         }
-      }
 
     }
     &:focus {
