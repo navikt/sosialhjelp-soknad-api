@@ -65286,13 +65286,13 @@ angular.module('app.controllers', [
          */
         function summerAndelsprosentene() {
             var sum = "";
-            if ($scope.gardseier("egennaering.gardsbruk.false.eier.jeg")) {
+            if ($scope.gardseier("egennaering.gardsbruk.false.eier.jeg") && data.finnFaktum("egennaering.gardsbruk.false.eierandel.din")) {
                 sum = parseFloat(data.finnFaktum("egennaering.gardsbruk.false.eierandel.din").value);
             }
-            if ($scope.gardseier("egennaering.gardsbruk.false.eier.ektefelle")) {
+            if ($scope.gardseier("egennaering.gardsbruk.false.eier.ektefelle") && data.finnFaktum("egennaering.gardsbruk.false.eierandel.ektefelle")) {
                 sum += parseFloat(data.finnFaktum("egennaering.gardsbruk.false.eierandel.ektefelle").value);
             }
-            if ($scope.gardseier("egennaering.gardsbruk.false.eier.annet")) {
+            if ($scope.gardseier("egennaering.gardsbruk.false.eier.annet") && data.finnFaktum("egennaering.gardsbruk.false.eierandel.annet")) {
                 sum += parseFloat(data.finnFaktum("egennaering.gardsbruk.false.eierandel.annet").value);
             }
             return Math.ceil(sum);
@@ -65967,30 +65967,30 @@ angular.module('app.controllers', [
     .controller('ReellarbeidssokerCtrl', ['$scope', 'data', function ($scope, data) {
         $scope.alder = parseInt(data.finnFaktum('personalia').properties.alder);
 //        For testing av alder:
-        //$scope.alder = 59;
+//        $scope.alder = 59;
         $scope.deltidannen = data.finnFaktum('reellarbeidssoker.villigdeltid.annensituasjon');
         $scope.pendleannen = data.finnFaktum('reellarbeidssoker.villigdeltid.annensituasjon');
         $scope.soknadId = data.soknad.soknadId;
 
-		$scope.navigering = {nesteside: 'arbeidsforhold'};
-		$scope.sidedata = {navn: 'reellarbeidssoker'};
+        $scope.navigering = {nesteside: 'arbeidsforhold'};
+        $scope.sidedata = {navn: 'reellarbeidssoker'};
 
-		var deltidnokler = ['reellarbeidssoker.villigdeltid.reduserthelse', 'reellarbeidssoker.villigdeltid.omsorgbarnunder1aar', 'reellarbeidssoker.villigdeltid.eneansvarbarnunder5skoleaar', 'reellarbeidssoker.villigdeltid.eneansvarbarnopptil18aar', 'reellarbeidssoker.villigdeltid.omsorgansvar', 'reellarbeidssoker.villigdeltid.annensituasjon'];
-		var pendlenokler = ['reellarbeidssoker.villigpendle.reduserthelse', 'reellarbeidssoker.villigpendle.omsorgbarnunder1aar', 'reellarbeidssoker.villigpendle.eneansvarbarnunder5skoleaar', 'reellarbeidssoker.villigpendle.omsorgbarnopptil10', 'reellarbeidssoker.villigpendle.eneansvarbarnopptil18aar', 'reellarbeidssoker.villigpendle.omsorgansvar', 'reellarbeidssoker.villigpendle.annensituasjon' ];
+        var deltidnokler = ['reellarbeidssoker.villigdeltid.reduserthelse', 'reellarbeidssoker.villigdeltid.omsorgbarnunder1aar', 'reellarbeidssoker.villigdeltid.eneansvarbarnunder5skoleaar', 'reellarbeidssoker.villigdeltid.eneansvarbarnopptil18aar', 'reellarbeidssoker.villigdeltid.omsorgansvar', 'reellarbeidssoker.villigdeltid.annensituasjon'];
+        var pendlenokler = ['reellarbeidssoker.villigpendle.reduserthelse', 'reellarbeidssoker.villigpendle.omsorgbarnunder1aar', 'reellarbeidssoker.villigpendle.eneansvarbarnunder5skoleaar', 'reellarbeidssoker.villigpendle.omsorgbarnopptil10', 'reellarbeidssoker.villigpendle.eneansvarbarnopptil18aar', 'reellarbeidssoker.villigpendle.omsorgansvar', 'reellarbeidssoker.villigpendle.annensituasjon' ];
 
-		$scope.harHuketAvCheckboksDeltid = {value: ''};
-		$scope.harHuketAvCheckboksPendle = {value: ''};
+        $scope.harHuketAvCheckboksDeltid = {value: ''};
+        $scope.harHuketAvCheckboksPendle = {value: ''};
 
-		if (erCheckboxerAvhuket(deltidnokler)) {
-			$scope.harHuketAvCheckboksDeltid.value = true;
-		}
+        if (erCheckboxerAvhuket(deltidnokler)) {
+            $scope.harHuketAvCheckboksDeltid.value = true;
+        }
 
-		if (erCheckboxerAvhuket(pendlenokler)) {
-			$scope.harHuketAvCheckboksPendle.value = true;
-		}
+        if (erCheckboxerAvhuket(pendlenokler)) {
+            $scope.harHuketAvCheckboksPendle.value = true;
+        }
 
-		$scope.valider = function (skalScrolle) {
-			var valid = $scope.runValidation(skalScrolle);
+        $scope.valider = function (skalScrolle) {
+            var valid = $scope.runValidation(skalScrolle);
             if (valid) {
                 $scope.lukkTab('reellarbeidssoker');
                 $scope.settValidert('reellarbeidssoker');
@@ -65998,25 +65998,25 @@ angular.module('app.controllers', [
             } else {
                 $scope.apneTab('reellarbeidssoker');
             }
-		};
+        };
 
-		$scope.erUnder60Aar = function () {
-			return $scope.alder < 60;
-		};
+        $scope.erUnder60Aar = function () {
+            return $scope.alder < 60;
+        };
 
-		$scope.erOver59Aar = function () {
-			return $scope.alder > 59;
-		};
+        $scope.erOver59Aar = function () {
+            return $scope.alder > 59;
+        };
 
         $scope.harValgtAnnetUnntakDeltid = function () {
-             if ($scope.deltidannen != undefined)
-             {
+            if ($scope.deltidannen != undefined)
+            {
                 return $scope.deltidannen.value === 'true';
-             }
+            }
             else
-             {
-                 return false;
-             }
+            {
+                return false;
+            }
         };
 
         $scope.harValgtAnnetUnntakPendle = function () {
@@ -66031,30 +66031,30 @@ angular.module('app.controllers', [
         };
 
 
-		$scope.endreDeltidsAarsaker = function () {
-			var minstEnDeltidCheckboksAvhuket = erCheckboxerAvhuket(deltidnokler);
-			if (minstEnDeltidCheckboksAvhuket) {
-				$scope.harHuketAvCheckboksDeltid.value = true;
-			} else {
-				$scope.harHuketAvCheckboksDeltid.value = '';
-			}
-		};
+        $scope.endreDeltidsAarsaker = function () {
+            var minstEnDeltidCheckboksAvhuket = erCheckboxerAvhuket(deltidnokler);
+            if (minstEnDeltidCheckboksAvhuket) {
+                $scope.harHuketAvCheckboksDeltid.value = true;
+            } else {
+                $scope.harHuketAvCheckboksDeltid.value = '';
+            }
+        };
 
-		$scope.endrePendleAarsaker = function () {
-			var minstEnPendleCheckboksAvhuket = erCheckboxerAvhuket(pendlenokler);
-			if (minstEnPendleCheckboksAvhuket) {
-				$scope.harHuketAvCheckboksPendle.value = true;
-			} else {
-				$scope.harHuketAvCheckboksPendle.value = '';
-			}
-		};
+        $scope.endrePendleAarsaker = function () {
+            var minstEnPendleCheckboksAvhuket = erCheckboxerAvhuket(pendlenokler);
+            if (minstEnPendleCheckboksAvhuket) {
+                $scope.harHuketAvCheckboksPendle.value = true;
+            } else {
+                $scope.harHuketAvCheckboksPendle.value = '';
+            }
+        };
 
         $scope.trengerUtalelseFraFagpersonellDeltid = function() {
             var villigdeltidHelse = data.finnFaktum('reellarbeidssoker.villigdeltid.reduserthelse');
             var villigdeltidBarn18 = data.finnFaktum('reellarbeidssoker.villigdeltid.eneansvarbarnopptil18aar');
             var villigdeltidOmsorg = data.finnFaktum('reellarbeidssoker.villigdeltid.omsorgansvar');
             var villigdeltidAnnen = data.finnFaktum('reellarbeidssoker.villigdeltid.annensituasjon');
-            
+
             return (villigdeltidHelse != null && villigdeltidHelse.value == "true") ||
                 (villigdeltidBarn18 != null && villigdeltidBarn18.value == "true") ||
                 (villigdeltidOmsorg != null && villigdeltidOmsorg.value == "true") ||
@@ -66078,24 +66078,24 @@ angular.module('app.controllers', [
             return villighelse != null && villighelse.value == "false";
         }
 
-		function erCheckboxerAvhuket(checkboxNokler) {
-			var minstEnAvhuket = false;
-			var fakta = {};
-			data.fakta.forEach(function (faktum) {
-				if (checkboxNokler.indexOf(faktum.key >= 0)) {
-					fakta[faktum.key] = faktum;
-				}
-			});
+        function erCheckboxerAvhuket(checkboxNokler) {
+            var minstEnAvhuket = false;
+            var fakta = {};
+            data.fakta.forEach(function (faktum) {
+                if (checkboxNokler.indexOf(faktum.key >= 0)) {
+                    fakta[faktum.key] = faktum;
+                }
+            });
 
-			for (var i = 0; i < checkboxNokler.length; i++) {
-				var nokkel = checkboxNokler[i];
-				if (fakta[nokkel] && checkTrue(fakta[nokkel].value)) {
-					minstEnAvhuket = true;
-				}
-			}
-			return minstEnAvhuket;
-		}
-	}]);
+            for (var i = 0; i < checkboxNokler.length; i++) {
+                var nokkel = checkboxNokler[i];
+                if (fakta[nokkel] && checkTrue(fakta[nokkel].value)) {
+                    minstEnAvhuket = true;
+                }
+            }
+            return minstEnAvhuket;
+        }
+    }]);
 ;angular.module('nav.utdanning', [])
 	.controller('UtdanningCtrl', ['$scope', 'data', function ($scope, data) {
 		$scope.navigering = {nesteside: 'ytelser'};
@@ -67487,6 +67487,16 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 					settStickySistLagret();
 				});
 
+                var initScreenSize = window.innerHeight;
+                scope.tastatur = false;
+
+                angular.element($window).bind('resize'), function() {
+                    if(window.innerHeight < initScreenSize && settStickySistLagret()) {
+                        scope.tastatur = true;
+                    } else {
+                        scope.tastatur = false;
+                    }
+                }
 
 
 				// Litt hacky måte å få smooth overgang mellom sticky og non-sticky...
@@ -67501,9 +67511,11 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 					if (elementTop > windowTop) {
 						stickyHeight = stickyHeightCompensation;
 						element.find('.sticky-bunn').addClass('stick');
+                        return true;
 					} else {
 						stickyHeight = nonStickyHeightCompensation;
 						element.find('.sticky-bunn').removeClass('stick');
+                        return false;
 					}
 				}
 
@@ -71037,7 +71049,8 @@ angular.module("../views/templates/reellarbeidssoker/reell-arbeidssoker.html", [
     "\n" +
     "                <span class=\"melding\"\n" +
     "                      data-cmstekster=\"reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding\"></span>\n" +
-    "\n" +
+    "            </div>\n" +
+    "            <div data-ng-if=\"erUnder60Aar()\">\n" +
     "                <p class=\"informasjonstekst\" data-cmstekster=\"reellarbeidssoker.villigdeltid.false.informasjon2\"></p>\n" +
     "            </div>\n" +
     "\n" +
@@ -71552,9 +71565,13 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "        <div class=\"begrensning sak-totredel\">\n" +
     "            <section class=\"panel-standard \">\n" +
     "                <h2 class=\"stor-strek-ikon-slett\" data-cmstekster=\"vedlegg.tittel\"></h2>\n" +
+    "\n" +
     "                <p class=\"info\" data-cmstekster=\"vedlegg.info1\"></p>\n" +
+    "\n" +
     "                <p class=\"info\" data-cmstekster=\"vedlegg.info2\"></p>\n" +
+    "\n" +
     "                <p class=\"info\" data-cmstekster=\"vedlegg.info3\"></p>\n" +
+    "\n" +
     "                <div data-form-errors></div>\n" +
     "            </section>\n" +
     "        </div>\n" +
@@ -71563,7 +71580,9 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "    <section>\n" +
     "        <div data-accordion data-close-others=\"false\" data-ng-if=\"forventninger != null\">\n" +
     "            <div class=\"vedlegg\">\n" +
-    "                <div data-accordion-group data-ng-repeat=\"forventning in forventninger | orderBy: forventning.opprettetDato\" class=\"spm-blokk vertikal\"\n" +
+    "                <div data-accordion-group\n" +
+    "                     data-ng-repeat=\"forventning in forventninger | orderBy: forventning.opprettetDato\"\n" +
+    "                     class=\"spm-blokk vertikal\"\n" +
     "                     id=\"vedlegg_{{forventning.vedleggId}}\">\n" +
     "                    <div data-accordion-heading>\n" +
     "                        <div class=\"bolk-fokus\">\n" +
@@ -71578,6 +71597,7 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                <div class=\"mini behandlet\" data-ng-if=\"vedleggEr(forventning, 'SendesIkke')\"\n" +
     "                                     data-cmstekster=\"vedlegg.behandlet.sendesikke\"></div>\n" +
     "\n" +
+    "                                <div class=\"flipp\"></div>\n" +
     "                                <h2 class=\"stor\">\n" +
     "                                    <span>{{forventning.tittel}}</span>\n" +
     "                                    <span data-ng-if=\"forventning.navn\">: {{forventning.navn}}</span>\n" +
@@ -71593,7 +71613,8 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                data-cmstekster=\"vedlegg.faktum.maabekrefte.annetvedlegg\"></h4>\n" +
     "\n" +
     "                            <div class=\"form-linje tekstfelt\" data-ng-if=\"erEkstraVedlegg(forventning)\">\n" +
-    "                                <input type=\"hidden\" data-ng-required=\"true\" data-ng-model=\"filVedlagt\" data-error-messages=\"'vedlegg.annet.ikkelastetopp.feilmelding'\"/>\n" +
+    "                                <input type=\"hidden\" data-ng-required=\"true\" data-ng-model=\"filVedlagt\"\n" +
+    "                                       data-error-messages=\"'vedlegg.annet.ikkelastetopp.feilmelding'\"/>\n" +
     "                                <label>\n" +
     "                                    <span data-cmstekster=\"vedlegg.annet.beskrivelse.sporsmal\"></span>\n" +
     "                                    <input type=\"text\" maxlength=\"25\" data-ng-maxlength=\"25\"\n" +
@@ -71620,11 +71641,13 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                </div>\n" +
     "                                <div class=\"lastOpp\">\n" +
     "                                    <a data-ng-href=\"#/opplasting/{{forventning.vedleggId}}\" class=\"knapp-link\"\n" +
-    "                                       data-ng-click=\"endreInnsendingsvalg(forventning, 'VedleggKreves');\">{{'vedlegg.lastopp' | cmstekst}}</a>\n" +
+    "                                       data-ng-click=\"endreInnsendingsvalg(forventning, 'VedleggKreves');\">{{'vedlegg.lastopp'\n" +
+    "                                        | cmstekst}}</a>\n" +
     "                                    <a href=\"javascript:void(0)\" aria-role=\"button\"\n" +
     "                                       data-ng-if=\"erEkstraVedlegg(forventning)\"\n" +
     "                                       data-ng-click=\"slettAnnetVedlegg(forventning);\" name=\"Slett\"\n" +
-    "                                       data-fokus-slett-annet data-cmstekster=\"vedlegg.annet.slett\">{{'vedlegg.slett' | cmstekst}}</a>\n" +
+    "                                       data-fokus-slett-annet data-cmstekster=\"vedlegg.annet.slett\">{{'vedlegg.slett' |\n" +
+    "                                        cmstekst}}</a>\n" +
     "\n" +
     "                                </div>\n" +
     "                                <div data-ng-if=\"!erEkstraVedlegg(forventning)\">\n" +
@@ -71648,8 +71671,10 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                           data-ng-required=\"true\"\n" +
     "                                           data-error-messages=\"'{{forventning.tittel}}'\">\n" +
     "                                </div>\n" +
-    "                                <span class=\"melding\" data-cmstekster=\"vedlegg.annet.inlinefeilmelding\" data-ng-if=\"erEkstraVedlegg(forventning)\"></span>\n" +
-    "                                <span class=\"melding\" data-cmstekster=\"vedlegg.inlinefeilmelding\" data-ng-if=\"!erEkstraVedlegg(forventning)\"></span>\n" +
+    "                                <span class=\"melding\" data-cmstekster=\"vedlegg.annet.inlinefeilmelding\"\n" +
+    "                                      data-ng-if=\"erEkstraVedlegg(forventning)\"></span>\n" +
+    "                                <span class=\"melding\" data-cmstekster=\"vedlegg.inlinefeilmelding\"\n" +
+    "                                      data-ng-if=\"!erEkstraVedlegg(forventning)\"></span>\n" +
     "                            </div>\n" +
     "                            <div data-ng-if=\"vedleggEr(forventning, 'LastetOpp')\">\n" +
     "                                <div class=\"forhandsvisning\">\n" +
@@ -72118,10 +72143,10 @@ angular.module("../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.htm
     "<div class=\"sticky-feilmelding\" data-ng-show=\"skalVises()\">\n" +
     "    <div>\n" +
     "        <div class=\"antall-feil-innholder\">\n" +
-    "            <span data-cmstekster=\"skjema.feilmelding.antall.feilmeldinger\"></span>\n" +
+    "            <span class=\"vise-tekst\" data-cmstekster=\"skjema.feilmelding.antall.feilmeldinger\"></span>\n" +
     "            <span class=\"antall-feil\"> {{feil.antallFeilMedKlasseFeil + feil.antallFeilMedKlasseFeilstyling}}</span>\n" +
     "        </div>\n" +
-    "        <span>\n" +
+    "        <span class=\"navigeringsknapper\">\n" +
     "            <a class=\"forrige\" data-cmstekster=\"skjema.feilmelding.gaatil.forrige\" data-ng-click=\"forrige()\"\n" +
     "               data-ng-class=\"{deaktiverFeilmelding: skalDeaktivereForrigeKnapp()}\"> Forrige </a>\n" +
     "            <a class=\"neste\" data-cmstekster=\"skjema.feilmelding.gaatil.neste\" data-ng-click=\"neste()\"\n" +
@@ -72154,11 +72179,11 @@ angular.module("../js/app/directives/markup/panelStandardBelystTemplate.html", [
 
 angular.module("../js/app/directives/markup/vedlegginfoboksTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/app/directives/markup/vedlegginfoboksTemplate.html",
-    "        <div class=\"vedlegginfoboks\">\n" +
+    "<div class=\"vedlegginfoboks\">\n" +
     "    <div class=\"mini ikon-vedlegg-strek\">\n" +
     "        <p class=\"leggved\" data-cmstekster=\"vedlegg.leggved\"></p>\n" +
     "        <p data-ng-transclude></p>\n" +
-    "        <p class=\"lastopp\" data-cmstekster=\"vedlegg.lastopp\"></p>\n" +
+    "        <p class=\"lastopp\" data-cmstekster=\"vedlegg.infoboks.lastopp\"></p>\n" +
     "    </div>\n" +
     "</div>");
 }]);
@@ -72194,7 +72219,7 @@ angular.module("../js/app/directives/stegindikator/stegIndikatorTemplate.html", 
 
 angular.module("../js/app/directives/stickybunn/stickyBunnTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/app/directives/stickybunn/stickyBunnTemplate.html",
-    "<div>\n" +
+    "<div data-ng-class=\"{ikkevises: tastatur === true}\">\n" +
     "    <div class=\"sticky-bunn\">\n" +
     "        <div>\n" +
     "            <span data-ng-if=\"soknadHarBlittLagret()\">\n" +
@@ -72518,7 +72543,7 @@ angular.module("../js/common/directives/select/selectTemplate.html", []).run(["$
     "                data-ng-class=\"{harFokus: harFokus(option.value)}\"/>\n" +
     "        </ul>\n" +
     "    </div>\n" +
-    "    <div data-ng-if=\"vanligSelect()\">\n" +
+    "    <div class=\"vanlig-select\" data-ng-if=\"vanligSelect()\">\n" +
     "        <label>\n" +
     "            <span data-cmstekster=\"{{ label }}\"></span>\n" +
     "            <select data-ng-model=\"faktum.value\" data-ng-options=\"opt.value as opt.text for opt in orginalListe\"></select>\n" +
@@ -72846,7 +72871,8 @@ function settFokusTilNesteElement(inputElement) {
 }
 
 function erTouchDevice() {
-    return 'ontouchstart' in window || 'onmsgesturechange' in window;
+    return true;
+//    return 'ontouchstart' in window || 'onmsgesturechange' in window;
 }
 
 function getIEVersion() {
