@@ -86,6 +86,21 @@
         }
     }
 }
+@media only screen and (max-width: 767px) {
+  .vedlegginfoboks {
+    [class*="strek-ikon-vedlegg"], [class*="ikon-vedlegg-strek"] {
+      background-image: none;
+      padding-left: 0px;
+    }
+    .leggved {
+      margin: 0px;
+    }
+    ul {
+      padding-left: 0px !important;
+    }
+  }
+}
+
 
 .informasjonstekst-normal {
     padding: 15px;
@@ -144,6 +159,24 @@
     }
 }
 
+@media only screen and (max-width: 767px) {
+  .sticky-feilmelding {
+    .vise-tekst {
+      display: none;
+    }
+    .antall-feil-innholder {
+      left: inherit !important;
+      padding: 0px !important;
+    }
+    .antall-feil {
+      line-height: 28px;
+      font-size: 2rem;
+    }
+    .navigeringsknapper {
+      padding: 0 30px;
+    }
+  }
+}
 .rad.soknad {
     padding: 0;
 }
@@ -612,55 +645,6 @@ form-linje.feil {
     border-bottom: none;
 }
 
-.stegindikator {
-    display: table;
-    list-style: none;
-    margin: 10px auto 20px;
-    padding: 0;
-    background: url(../img/stripe-ccc.png) repeat-x center center;
-
-    li {
-        width: 150px;
-        margin-right: 15px;
-        display: block;
-        float: left;
-
-        &:last-child {
-            margin-right: 0;
-        }
-
-        &.aktiv {
-            a, span {
-                background: @red;
-                color: @white;
-            }
-        }
-
-        a, span {
-            display: block;
-            position: relative;
-            padding: 10px 30px;
-            border: 1px solid @borderColorLight;
-            background: @white;
-            color: @grayDark;
-            text-decoration: none;
-            text-transform: uppercase;
-
-            font-family: Modus, Arial, Helvetica, sans-serif;;
-            font-weight: 600;
-            padding: 10px 40px;
-        }
-
-        span {
-            background: #f1f1f1;
-        }
-
-        a {
-            background: #fff;
-        }
-    }
-}
-
 form, [ng-form], [data-ng-form] {
     &.horisontal {
         label {
@@ -808,9 +792,41 @@ form, [ng-form], [data-ng-form] {
     }
 }
 
-a.infoikon:focus, a.lukk:focus, a.knapp-link:focus, a.accordion-toggle:focus h2, #vedlegg a.accordion-toggle:focus .bolk-fokus {
-    outline: 1px solid #0067c5;
-    text-decoration: none !important;
+a.accordion-toggle, #vedlegg a.accordion-toggle {
+  display: block;
+    &:active {
+      .flipp {
+        cursor: pointer;
+        border-color: transparent transparent #0000FF transparent;
+
+        &:before {
+          border-top: 30px solid #0000FF;
+        }
+      }
+
+    }
+    &:focus {
+      .flipp {
+        cursor: pointer;
+        border-color: transparent transparent #004283 transparent;
+
+        &:before {
+          border-top: 30px solid #0067c5;
+        }
+      }
+    }
+}
+a.infoikon, a.lukk, a.knapp-link {
+  &:active {
+    color: #3e3832;
+    outline: none;
+    text-decoration: underline !important;
+  }
+  &:focus {
+    color: #3e3832;
+    outline: none;
+    text-decoration: underline !important;
+  }
 }
 
 a.accordion-toggle:focus,  #vedlegg a.accordion-toggle:focus h2 {

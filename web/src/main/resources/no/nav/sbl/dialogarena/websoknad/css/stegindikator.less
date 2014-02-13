@@ -1,0 +1,89 @@
+.stegindikator {
+    display: table;
+    list-style: none;
+    margin: 10px auto 20px;
+    padding: 0;
+    background: url(../img/stripe-ccc.png) repeat-x center center;
+
+    li {
+        width: 150px;
+        margin-right: 15px;
+        display: block;
+        float: left;
+
+        &:last-child {
+            margin-right: 0;
+        }
+
+        .stegnummer {
+            display: none;
+        }
+
+        &.aktiv {
+            .steg {
+                background: @red;
+                color: @white;
+            }
+        }
+
+        .steg {
+            display: block;
+            position: relative;
+            padding: 10px 30px;
+            border: 1px solid @borderColorLight;
+            background: @white;
+            color: @grayDark;
+            text-decoration: none;
+            text-transform: uppercase;
+
+            font-family: Modus, Arial, Helvetica, sans-serif;;
+            font-weight: 600;
+            padding: 10px 40px;
+        }
+
+        span.steg {
+            background: #f1f1f1;
+        }
+
+        a.steg {
+            background: #fff;
+        }
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .stegindikator {
+        li {
+            width: auto;
+            margin-right: 10px;
+            display: block;
+            float: left;
+
+            &:last-child {
+                margin-right: 0;
+            }
+
+            .stegnummer {
+                display: inline-block;
+            }
+
+            .tekst {
+                display: none;
+            }
+
+            &.aktiv {
+                .tekst {
+                    display: inline-block;
+                }
+
+                .stegnummer {
+                    display: none;
+                }
+            }
+
+            .steg {
+                padding: 10px 20px;
+            }
+        }
+    }
+}

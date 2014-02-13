@@ -14,25 +14,24 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-            '../../public/lib/jquery/jquery-1.10.2.js',
-            '../../public/lib/jquery/jquery-ui.js',
+            '../../js/lib/jquery/jquery-1.10.2.js',
+            '../../js/lib/jquery/jquery-ui.js',
             'lib/TimeoutBoxMock.js',
-            '../../public/lib/angular/angular.js',
+            '../../js/lib/angular/angular.js',
             'lib/angular-mocks.js',
-            '../../public/lib/angular/angular-resource.js',
-            '../../public/lib/angular/angular-sanitize.js',
-            '../../public/lib/bindonce.js',
-            '../../public/js/directives/**/*.js',
-            '../../public/js/controllers/**/*.js',
-            '../../public/js/common/**/*.js',
-	        '../../public/js/*.js',
+            '../../js/lib/angular/angular-resource.js',
+            '../../js/lib/angular/angular-sanitize.js',
+            '../../js/lib/angular/angular-cookies.js',
+            '../../js/lib/bindonce.js',
+            '../../js/app/**/*.js',
+            '../../js/common/**/*.js',
 
-            '../../public/lib/jquery/jquery.iframe-transport.js',
-            '../../public/lib/jquery/jquery.fileupload.js',
-            '../../public/lib/jquery/jquery.fileupload-process.js',
-            '../../public/lib/jquery/jquery.fileupload-validate.js',
-            '../../public/lib/jquery/jquery.fileupload-angular.js',
-            'unit/*.js'
+            '../../js/lib/jquery/jquery.iframe-transport.js',
+            '../../js/lib/jquery/jquery.fileupload.js',
+            '../../js/lib/jquery/jquery.fileupload-process.js',
+            '../../js/lib/jquery/jquery.fileupload-validate.js',
+            '../../js/lib/jquery/jquery.fileupload-angular.js',
+            'test/*.js'
         ],
 
         // list of files to exclude
@@ -70,8 +69,7 @@ module.exports = function (config) {
         // - Safari (only Mac)
         // - PhantomJS
         // - IE (only Windows)
-        //browsers: ['PhantomJS', 'Chrome', 'Firefox', 'IE'],
-        browsers: ['PhantomJS'],
+        browsers: ['Chrome', 'Firefox', 'IE'],
 
         //plugins: ['karma-phantomjs-runner', 'karma-jasmine'],
 
@@ -85,12 +83,10 @@ module.exports = function (config) {
 
         plugins: [
             'karma-jasmine',
-            'karma-phantomjs-launcher'
-/*
+            'karma-phantomjs-launcher',
             'karma-chrome-launcher',
             'karma-firefox-launcher',
             'karma-ie-launcher'
-*/
         ],
 
         coverageReporter: {

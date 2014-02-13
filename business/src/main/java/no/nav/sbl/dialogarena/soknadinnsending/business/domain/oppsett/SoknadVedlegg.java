@@ -73,7 +73,7 @@ public class SoknadVedlegg implements Serializable {
 
     public boolean trengerVedlegg(Faktum value) {
         String valToCheck;
-        if (forSystemfaktum == null || forSystemfaktum || value.getType().equals(FaktumType.BRUKERREGISTRERT.name())) {
+        if (forSystemfaktum == null || forSystemfaktum || value.er(FaktumType.BRUKERREGISTRERT)) {
             if (onProperty != null) {
                 valToCheck = value.getProperties().get(onProperty);
             } else {

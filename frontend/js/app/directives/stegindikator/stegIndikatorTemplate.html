@@ -1,0 +1,16 @@
+<div class="rad nettotopp">
+	<div class="begrensning">
+		<ul class="stegindikator">
+		    <li data-ng-repeat="steg in data.liste" ng-class="{aktiv: $index == {{ aktivIndex }}}">
+		        <a class="steg" href="{{ hentLenke($index) }}" data-ng-if="erKlikkbar($index)">
+                    <span class="tekst">{{  'stegindikator.' + steg | cmstekst }}</span>
+                    <span class="stegnummer">{{ $index }}</span>
+                </a>
+                <span class="steg" data-ng-if="erIkkeKlikkbar($index)">
+                    <span class="tekst">{{  'stegindikator.' + steg | cmstekst }}</span>
+                    <span class="stegnummer">{{ $index }}</span>
+                </span>
+		    </li>
+		</ul>
+	</div>
+</div>

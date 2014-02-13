@@ -114,7 +114,7 @@ public class HandleBarKjoerer {
             @Override
             public CharSequence apply(String o, Options options) throws IOException {
                 WebSoknad soknad = finnWebSoknad(options.context);
-                Faktum faktum = soknad.getFakta().get(o);
+                Faktum faktum = soknad.getFaktumMedKey(o);
                 return options.fn(faktum);
             }
         });
@@ -225,6 +225,17 @@ public class HandleBarKjoerer {
             @Override
             public CharSequence apply(Object value, Options options) throws IOException {
                 if(value != null && value.toString().equals(options.param(0))){
+                    return options.fn(this);
+                } else {
+                    return options.inverse(this);
+                }
+            }
+        });
+
+        handlebars.registerHelper("hvisIkkeTom", new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object value, Options options) throws IOException {
+                if(value != null && !value.toString().isEmpty()){
                     return options.fn(this);
                 } else {
                     return options.inverse(this);
