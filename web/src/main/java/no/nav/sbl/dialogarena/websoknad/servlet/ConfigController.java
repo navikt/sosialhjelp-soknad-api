@@ -1,9 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-
+import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.ConfigService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -14,24 +12,30 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.Map;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * Klassen håndterer rest kall for å hente config fra EnvConfig/properties
- * 
  */
 @Controller
 @ControllerAdvice()
 public class ConfigController {
     Logger log = LoggerFactory.getLogger(ConfigController.class);
-
     @Inject
     ConfigService configService;
-    
+    @Inject
+    LagringsScheduler lagringsScheduler;
+
     @RequestMapping(value = "/getConfig", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
-        @ResponseBody()
-        public Map<String,String> sendEpost(HttpServletRequest request) {
-           return configService.getConfig();
-        }
+    @ResponseBody()
+    public Map<String, String> sendEpost(HttpServletRequest request) {
+        return configService.getConfig();
+    }
+
+    @RequestMapping(value="/internal/lagre")
+    public void kjorLagring() throws InterruptedException {
+        lagringsScheduler.mellomlagreSoknaderOgNullstillLokalDb();
+    }
 }
