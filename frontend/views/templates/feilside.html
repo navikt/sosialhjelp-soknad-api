@@ -1,0 +1,48 @@
+<div data-nav-tittel="skjema.tittel"></div>
+<div data-stegindikator data-steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="0"></div>      
+<div id="feilside" data-ng-controller="FeilSideCtrl">
+    <div data-panelbelyst>
+        <div class="feil">
+            <div class="utrop-sirkel-ikon"></div>
+            <h1 class="h1-strek" data-cmstekster="feilmelding"></h1>
+            
+            <div class="generellfeil" data-ng-form="epostForm" data-ng-controller="FortsettSenereCtrl" data-novalidate>
+
+                <div class="form-linje">
+                    <p>{{ 'feilmelding.innsending.1' | cmstekst }}</p>
+                </div>
+
+
+                <div class="send-epost">
+                    <div class="input-boks">
+                        <div class="form-linje">
+                            <label>
+                                <span data-cmstekster="dagpenger.fortsettSenere.epost.label"> </span>
+                                <input type="email" name="epost" role="textbox" data-ng-model="epost.value"
+                                        data-error-messages="{required: 'dagpenger.fortsettSenere.epost.required.feilmelding', pattern: 'dagpenger.fortsettSenere.epost.pattern.feilmelding' }"
+                                        data-ng-required="true" data-ng-pattern="/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}$/" data-blur-validate/>
+                            </label>
+                            <input type="submit" class="knapp-hoved-liten" data-cmstekster="dagpenger.fortsettSenere.epost.send" role="button" data-ng-click="forsettSenere(epostForm)"/>
+                            <span class="melding"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-linje">
+                    <p>
+                        <span>{{ 'feilmelding.innsending.2' | cmstekst }}</span>
+                        <a href="{{mineInnsendinger}}">{{ 'feilmelding.mineinnsedinger.lenketekst' | cmstekst }}</a>
+                    </p>
+                </div>
+           
+           </div>
+
+
+
+
+            <div class="knapper">
+                <a type="button" class="knapp-hoved" href="{{inngangsportenUrl}}" data-cmstekster="feilmelding.lenketekst"></a>
+            </div>
+        </div>
+    </div>
+</div>

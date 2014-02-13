@@ -1,0 +1,164 @@
+<div>
+    <div class="spm" data-nav-faktum="sluttaarsak"
+         data-ikke-auto-lagre="true">
+
+        <div class="varighet form-linje">
+            <div data-nav-dato
+                 data-ng-model="sluttaarsak.properties.datofra"
+                 data-label="arbeidsforhold.arbeidsgiver.varighet.fra"
+                 data-er-required="true"
+                 data-required-error-message="arbeidsforhold.arbeidsgiver.varighet.fra.feilmelding">
+            </div>
+        </div>
+
+        <div class="varighet form-linje">
+            <div data-nav-dato
+                 data-ng-model="sluttaarsak.properties.konkursdato"
+                 data-label="arbeidsforhold.sluttaarsak.konkurs.konkursdato.sporsmal"
+                 data-er-required="true"
+                 data-er-fremtidigdato-tillatt="true"
+                 data-required-error-message="arbeidsforhold.sluttaarsak.konkurs.konkursdato.feilmelding">
+            </div>
+        </div>
+
+        <div data-navtextarea
+             data-navconfig
+             data-nav-faktum-property="bostyrersnavn"
+             data-nokkel="arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn"
+             data-maxlengde="500"
+             data-feilmelding="arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.feilmelding"
+             data-obligatorisk="true"></div>
+
+        <!--div data-navinfoboks>
+            <p class="sluttaarsak-informasjon"
+               data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.informasjon"></p>
+        </div-->
+
+
+        <div class="form-linje spm boolean">
+            <h4 class="spm-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.sporsmal"></h4>
+
+            <div class="nav-radio-knapp">
+                <input class="sendsoknad-radio"
+                       id="lonnsgaranti1"
+                       type="radio"
+                       value="JaHarSokt"
+                       name="lonnsgaranti"
+                       data-ng-model="sluttaarsak.properties.lonnsgaranti"
+                       data-click-validate
+                       data-ng-required="true"
+                       data-error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'">
+                <label for='lonnsgaranti1'
+                       data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaharsokt"></label>
+            </div>
+
+            <div class="ekstra-spm-boks" data-ng-if="sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'">
+                <div class="form-linje boolean">
+                    <h4 class="spm-sporsmal" data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.sporsmal"></h4>
+
+                    <div class="nav-radio-knapp">
+                        <input class="sendsoknad-radio"
+                               id="lonnsgarantidekker1"
+                               type="radio"
+                               value="Nei"
+                               name="lonnsgarantidekker"
+                               data-ng-model="sluttaarsak.properties.lonnsgarantidekker"
+                               data-click-validate
+                               data-ng-required="sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'"
+                               data-error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.feilmelding'">
+                        <label for='lonnsgarantidekker1'
+                               data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.nei"></label>
+                    </div>
+                    <div class="nav-radio-knapp">
+                        <input class="sendsoknad-radio"
+                               id="lonnsgarantidekker2"
+                               type="radio"
+                               value="Ja"
+                               name="lonnsgarantidekker"
+                               data-ng-model="sluttaarsak.properties.lonnsgarantidekker"
+                               data-click-validate
+                               data-ng-required="sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'"
+                               data-error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.feilmelding'">
+                        <label for='lonnsgarantidekker2'
+                               data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.ja"></label>
+                    </div>
+                    <div class="nav-radio-knapp">
+                        <input class="sendsoknad-radio"
+                               id="lonnsgarantidekker3"
+                               type="radio"
+                               value="Vet ikke"
+                               name="lonnsgarantidekker"
+                               data-ng-model="sluttaarsak.properties.lonnsgarantidekker"
+                               data-click-validate
+                               data-ng-required="sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'"
+                               data-error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.feilmelding'">
+                        <label for='lonnsgarantidekker3'
+                               data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.vetikke"></label>
+                    </div>
+
+                    <span class="melding"></span>
+                </div>
+            </div>
+
+            <div class="nav-radio-knapp">
+                <input class="sendsoknad-radio"
+                       id="lonnsgaranti2"
+                       type="radio"
+                       value="JaSkalSoke"
+                       name="lonnsgaranti"
+                       data-ng-model="sluttaarsak.properties.lonnsgaranti"
+                       data-click-validate
+                       data-ng-required="true"
+                       data-error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'">
+                <label for='lonnsgaranti2'
+                       data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaskalsoke"></label>
+            </div>
+            <div class="nav-radio-knapp">
+                <input class="sendsoknad-radio"
+                       id="lonnsgaranti3"
+                       type="radio"
+                       value="Nei"
+                       name="lonnsgaranti"
+                       data-ng-model="sluttaarsak.properties.lonnsgaranti"
+                       data-click-validate
+                       data-ng-required="true"
+                       data-error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'">
+                <label for='lonnsgaranti3'
+                       data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.nei"></label>
+            </div>
+
+            <span class="melding"></span>
+        </div>
+
+        <div data-ng-show="sluttaarsak.properties.lonnsgaranti == 'Nei'">
+            <div data-navinfoboks>
+                <p data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.nei.informasjon"></p>
+            </div>
+        </div>
+
+        <div data-booleanradio
+             data-navconfig
+             data-nav-faktum-property="lonnkonkursmaaned"
+             data-nokkel="arbeidsforhold.sluttaarsak.konkurs.lonnkonkursmaaned"></div>
+
+        <div class="ekstra-spm-boks" data-vedlegginfoboks>
+            <ul>
+                <li>
+                    <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></p>
+                </li>
+                <li>
+                    <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2"></p>
+                    <a href="{{sluttaarsakUrl}}"
+                       data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst">
+                    </a>
+                </li>
+                <li>
+                    <p data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3"></p>
+                    <a href="{{lonnskravSkjema}}"
+                       data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3.lenketekst">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

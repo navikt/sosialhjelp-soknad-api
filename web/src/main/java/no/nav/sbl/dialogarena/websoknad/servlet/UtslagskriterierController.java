@@ -34,12 +34,13 @@ public class UtslagskriterierController {
         utslagskriterierResultat.put("registrertArbeidssøker", status.name());
 
         Personalia personalia;
-        personalia = personaliaService.hentPersonalia(uid);
-        utslagskriterierResultat.put("gyldigAlder", new PersonAlder(uid).sjekkAlder().toString());
-        utslagskriterierResultat.put("bosattINorge", harNorskAdresse(personalia).toString());
-        utslagskriterierResultat.put("registrertAdresse", personalia.getGjeldendeAdresse().getAdresse());
-        utslagskriterierResultat.put("registrertAdresseGyldigFra", personalia.getGjeldendeAdresse().getGyldigFra());
-        utslagskriterierResultat.put("registrertAdresseGyldigTil", personalia.getGjeldendeAdresse().getGyldigTil());
+
+            personalia = personaliaService.hentPersonalia(uid);
+            utslagskriterierResultat.put("gyldigAlder", new PersonAlder(uid).sjekkAlder().toString());
+            utslagskriterierResultat.put("bosattINorge", harNorskAdresse(personalia).toString());
+            utslagskriterierResultat.put("registrertAdresse", personalia.getGjeldendeAdresse().getAdresse());
+            utslagskriterierResultat.put("registrertAdresseGyldigFra", personalia.getGjeldendeAdresse().getGyldigFra());
+            utslagskriterierResultat.put("registrertAdresseGyldigTil", personalia.getGjeldendeAdresse().getGyldigTil());
         
         return utslagskriterierResultat;
         

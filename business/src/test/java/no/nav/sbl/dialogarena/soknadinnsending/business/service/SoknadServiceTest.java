@@ -5,6 +5,7 @@ import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import org.apache.commons.io.IOUtils;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +48,7 @@ public class SoknadServiceTest {
 
     @Test
     public void skalAKonvertereFilerVedOpplasting() throws IOException {
-        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L, "1", "", 1L, 1, null, null, Vedlegg.Status.VedleggKreves);
+        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L, "1", "", 1L, 1, null, null,DateTime.now().getMillis(), Vedlegg.Status.VedleggKreves);
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
         when(vedleggRepository.opprettVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(11L);
 
@@ -59,7 +60,7 @@ public class SoknadServiceTest {
 
     @Test
     public void skalKonverterePdfVedOpplasting() throws IOException {
-        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L, "1", "", 1L, 1, null, null, Vedlegg.Status.VedleggKreves);
+        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L, "1", "", 1L, 1, null, null, DateTime.now().getMillis(), Vedlegg.Status.VedleggKreves);
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
         when(vedleggRepository.opprettVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(10L, 11L, 12L, 13L, 14L);
 

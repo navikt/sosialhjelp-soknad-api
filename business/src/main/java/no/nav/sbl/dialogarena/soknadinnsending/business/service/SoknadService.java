@@ -1,6 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
+import no.nav.modig.core.exception.ApplicationException;
+import no.nav.modig.lang.collections.predicate.InstanceOf;
+import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.Nokkel;
 import no.nav.sbl.dialogarena.detect.Detect;
@@ -22,6 +27,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStr
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
+import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import org.apache.commons.collections15.Closure;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
@@ -34,6 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.awt.Dimension;
@@ -55,6 +63,8 @@ import static javax.xml.bind.JAXBContext.newInstance;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getJournalforendeEnhet;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getSkjemanummer;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -115,10 +125,15 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum) {
-        faktum.setType(BRUKERREGISTRERT_FAKTUM);
+        faktum.setType(BRUKERREGISTRERT);
+        faktum.setSoknadId(soknadId);
         Long faktumId = repository.lagreFaktum(soknadId, faktum);
         repository.settSistLagretTidspunkt(soknadId);
-        repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
+        //Setter delstegstatus dersom et faktum blir lagret, med mindre det er epost. Bør gjøres mer elegant, litt quickfix
+        if (!"epost".equals(faktum.getKey()))
+        {
+            repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
+        }
         Faktum resultat = repository.hentFaktum(soknadId, faktumId);
         genererVedleggForFaktum(resultat);
         on(repository.hentBarneFakta(soknadId, faktum.getFaktumId())).forEach(new Closure<Faktum>() {
@@ -144,8 +159,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Long lagreSystemFaktum(Long soknadId, Faktum f, String uniqueProperty) {
-        logger.warn("*** Lagrer systemfaktum ***: " + f.getKey());
-        f.setType(SYSTEMREGISTRERT_FAKTUM);
+        logger.debug("*** Lagrer systemfaktum ***: " + f.getKey());
+        f.setType(SYSTEMREGISTRERT);
         List<Faktum> fakta = repository.hentSystemFaktumList(soknadId, f.getKey(), SYSTEMREGISTRERT_FAKTUM);
 
         if (!uniqueProperty.isEmpty()) {
@@ -189,15 +204,44 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     @Override
-    public List<Long> hentMineSoknader(String aktorId) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public Long hentSoknadMedBehandlinsId(String behandlingsId) {
         WebSoknad soknad = repository.hentMedBehandlingsId(behandlingsId);
+        if (soknad == null) {
+            populerFraHenvendelse(behandlingsId);
+            soknad = repository.hentMedBehandlingsId(behandlingsId);
+        }
         return soknad.getSoknadId();
+    }
+
+    private void populerFraHenvendelse(String behandlingsId) {
+        WSHentSoknadResponse wsSoknadsdata = henvendelseConnector.hentSoknad(behandlingsId);
+        XMLMetadataListe vedleggListe = (XMLMetadataListe) wsSoknadsdata.getAny();
+        Optional<XMLMetadata> hovedskjema = on(vedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
+        if (hovedskjema.isSome()) {
+            byte[] bytes = fillagerConnector.hentFil(((XMLHovedskjema) hovedskjema.get()).getUuid());
+            WebSoknad soknad = JAXB.unmarshal(new ByteArrayInputStream(bytes), WebSoknad.class);
+            repository.populerFraStruktur(soknad);
+            List<WSInnhold> innhold = fillagerConnector.hentFiler(soknad.getBrukerBehandlingId());
+            populerVedleggMedDataFraHenvendelse(soknad, innhold);
+        } else {
+            throw new ApplicationException("Kunne ikke hente opp søknad");
+        }
+    }
+
+    private void populerVedleggMedDataFraHenvendelse(WebSoknad soknad, List<WSInnhold> innhold) {
+        for (WSInnhold wsInnhold : innhold) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try {
+                wsInnhold.getInnhold().writeTo(baos);
+            } catch (IOException e) {
+                throw new ApplicationException("Kunne ikke hente opp soknaddata", e);
+            }
+            Vedlegg vedlegg = soknad.hentVedleggMedUID(wsInnhold.getUuid());
+            if (vedlegg != null) {
+                vedlegg.setData(baos.toByteArray());
+                vedleggRepository.lagreVedleggMedData(soknad.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
+            }
+        }
     }
 
     @Override
@@ -219,11 +263,12 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public String startSoknad(String navSoknadId) {
+        String mainUid = randomUUID().toString();
         String behandlingsId = henvendelseConnector
-                .startSoknad(getSubjectHandler().getUid());
+                .startSoknad(getSubjectHandler().getUid(), "NAV-11111", mainUid);
         WebSoknad soknad = WebSoknad.startSoknad()
                 .medBehandlingId(behandlingsId).medskjemaNummer(navSoknadId)
-                .medUuid(randomUUID().toString())
+                .medUuid(mainUid)
                 .medAktorId(getSubjectHandler().getUid())
                 .opprettetDato(DateTime.now());
 
@@ -237,7 +282,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
             erBolkerValidert.put(bolk, "false");
         }
 
-        Faktum bolkerFaktum = new Faktum(soknadId, null, "bolker", null, BRUKERREGISTRERT_FAKTUM);
+        Faktum bolkerFaktum = new Faktum(soknadId, null, "bolker", null, BRUKERREGISTRERT);
         bolkerFaktum.setProperties(erBolkerValidert);
 
         repository.lagreFaktum(soknadId, bolkerFaktum);
@@ -258,7 +303,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(),
                         vedlegg.getFaktumId(), vedlegg.getskjemaNummer(),
                         vedlegg.getNavn(), (long) bytes.length, 1, UUID
-                        .randomUUID().toString(), null,
+                        .randomUUID().toString(), null, vedlegg.getOpprettetDato(),
                         Vedlegg.Status.UnderBehandling);
                 resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
                         bytes));
@@ -276,7 +321,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                             vedlegg.getSoknadId(), vedlegg.getFaktumId(),
                             vedlegg.getskjemaNummer(),
                             vedlegg.getNavn(), (long) baos.size(), 1,
-                            UUID.randomUUID().toString(), null,
+                            UUID.randomUUID().toString(), null, vedlegg.getOpprettetDato(),
                             Vedlegg.Status.UnderBehandling);
                     resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
                             baos.toByteArray()));

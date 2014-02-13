@@ -9,6 +9,9 @@ import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSEmpty;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
 import no.nav.tjeneste.virksomhet.aktoer.v1.AktoerPortType;
 import no.nav.tjeneste.virksomhet.aktoer.v1.HentAktoerIdForIdentPersonIkkeFunnet;
@@ -52,16 +55,16 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 import org.apache.commons.io.IOUtils;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 
 import javax.activation.DataHandler;
+import javax.mail.util.ByteArrayDataSource;
 import javax.xml.ws.Holder;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -69,12 +72,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 
 @Configuration
 @ComponentScan(excludeFilters = @Filter(Configuration.class))
@@ -83,17 +89,44 @@ public class MockConsumerConfig {
 
     @Configuration
     public static class SendSoknadWSConfig {
-        
+
         @Bean
         public SendSoknadPortType sendSoknadService() {
-            SendSoknadPortType mock = mock(SendSoknadPortType.class);
-            when(mock.startSoknad(any(WSStartSoknadRequest.class))).thenAnswer(new Answer<WSBehandlingsId>(){
+            final Map<String, WSHentSoknadResponse> lager = new HashMap<>();
+            SendSoknadPortType mock = new SendSoknadPortType() {
                 @Override
-                public WSBehandlingsId answer(InvocationOnMock invocation) throws Throwable {
-                    return new WSBehandlingsId().withBehandlingsId(UUID.randomUUID().toString());
+                public void ping() {
+
                 }
 
-            });
+                @Override
+                public WSEmpty sendSoknad(WSSoknadsdata parameters) {
+                    return null;
+                }
+
+                @Override
+                public WSEmpty mellomlagreSoknad(WSSoknadsdata parameters) {
+
+                    return new WSEmpty();
+                }
+
+                @Override
+                public WSHentSoknadResponse hentSoknad(WSBehandlingsId parameters) {
+                    return lager.get(parameters.getBehandlingsId());
+                }
+
+                @Override
+                public void avbrytSoknad(String behandlingsId) {
+
+                }
+
+                @Override
+                public WSBehandlingsId startSoknad(WSStartSoknadRequest parameters) {
+                    String uuid = UUID.randomUUID().toString();
+                    lager.put(uuid, new WSHentSoknadResponse().withBehandlingsId(uuid).withAny(parameters.getAny()));
+                    return new WSBehandlingsId().withBehandlingsId(uuid);
+                }
+            };
             return mock;
         }
 
@@ -130,7 +163,7 @@ public class MockConsumerConfig {
                     OutputStream os = null;
                     File file;
                     try {
-                        file = new File("C:" + File.separator + "TestPdf" + File.separator + "test.pdf");
+                        file = new File("C:" + File.separator + "temp" + File.separator + s2);
                         if (!file.exists()) {
                             file.createNewFile();
                         }
@@ -170,6 +203,13 @@ public class MockConsumerConfig {
 
                 @Override
                 public void hent(Holder<String> stringHolder, Holder<DataHandler> dataHandlerHolder) {
+                    try {
+                        File file = new File("C:" + File.separator + "temp" + File.separator + stringHolder.value);
+                        InputStream in = new FileInputStream(file);
+                        dataHandlerHolder.value = new DataHandler(new ByteArrayDataSource(in, "application/octet-stream"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
                 }
             };
@@ -218,9 +258,9 @@ public class MockConsumerConfig {
             landkoder.setValue("NOR");
             statsborgerskap.setLand(landkoder);
             person.setStatsborgerskap(statsborgerskap);
-          
+
             List<Familierelasjon> familieRelasjoner = person.getHarFraRolleI();
-            
+
             Familierelasjon familierelasjon = new Familierelasjon();
             Person barn1 = genererPersonMedGyldigIdentOgNavn("01010091736", "Dole", "Mockmann");
             familierelasjon.setTilPerson(barn1);
@@ -228,7 +268,7 @@ public class MockConsumerConfig {
             familieRelasjonRolle.setValue("BARN");
             familierelasjon.setTilRolle(familieRelasjonRolle);
             familieRelasjoner.add(familierelasjon);
-                      
+
             Familierelasjon familierelasjon2 = new Familierelasjon();
             Person barn2 = genererPersonMedGyldigIdentOgNavn("03060193877", "Ole", "Mockmann");
             familierelasjon2.setTilPerson(barn2);
@@ -236,7 +276,7 @@ public class MockConsumerConfig {
             familieRelasjonRolle2.setValue("BARN");
             familierelasjon2.setTilRolle(familieRelasjonRolle2);
             familieRelasjoner.add(familierelasjon2);
-            
+
             Familierelasjon familierelasjon3 = new Familierelasjon();
             Person barn3 = genererPersonMedGyldigIdentOgNavn("03060194075", "Doffen", "Mockmann");
             familierelasjon3.setTilPerson(barn3);
@@ -244,13 +284,13 @@ public class MockConsumerConfig {
             familieRelasjonRolle3.setValue("BARN");
             familierelasjon3.setTilRolle(familieRelasjonRolle3);
             familieRelasjoner.add(familierelasjon3);
-            
+
             response.setPerson(person);
-            
+
             when(mock.hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class))).thenReturn(response);
             //Mockito.doThrow(new RuntimeException()).when(mock).hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class));
             //when(mock.hentKjerneinformasjon(any(HentKjerneinformasjonRequest.class))).thenThrow(new WebServiceException());
-            
+
             return mock;
         }
 
@@ -306,19 +346,6 @@ public class MockConsumerConfig {
 
     @Configuration
     public static class KodeverkWSConfig {
-        @Bean
-        public KodeverkPortType kodeverkService() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
-            KodeverkPortType mock = mock(KodeverkPortType.class);
-            when(mock.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(kodeverkResponse());
-
-            return mock;
-        }
-        
-        @Bean
-        public KodeverkPortType kodeverkServiceSelftest() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
-            return kodeverkService();
-        }
-
         private static XMLHentKodeverkResponse kodeverkResponse() {
             XMLKode kode = new XMLKode().withNavn("0565").withTerm(new XMLTerm().withNavn("Oslo"));
             XMLKode kode2 = new XMLKode().withNavn("0560").withTerm(new XMLTerm().withNavn("Oslo"));
@@ -337,6 +364,19 @@ public class MockConsumerConfig {
                             .withKode(norge, sverige, albania, danmark, finland));
         }
 
+        @Bean
+        public KodeverkPortType kodeverkService() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
+            KodeverkPortType mock = mock(KodeverkPortType.class);
+            when(mock.hentKodeverk(any(XMLHentKodeverkRequest.class))).thenReturn(kodeverkResponse());
+
+            return mock;
+        }
+
+        @Bean
+        public KodeverkPortType kodeverkServiceSelftest() throws HentKodeverkHentKodeverkKodeverkIkkeFunnet {
+            return kodeverkService();
+        }
+
     }
 
     @Configuration
@@ -345,16 +385,28 @@ public class MockConsumerConfig {
         private static final String ET_FORNAVN = "Dolly";
         private static final String ET_MELLOMNAVN = "D.";
         private static final String ET_ETTERNAVN = "Mockmann";
-
         private static final String EN_EPOST = "test@epost.com";
         private static final String EN_ADRESSE_GATE = "Grepalida";
         private static final String EN_ADRESSE_HUSNUMMER = "44";
         private static final String EN_ADRESSE_HUSBOKSTAV = "B";
         private static final String EN_ADRESSE_POSTNUMMER = "0560";
-
         private static final String EN_ADRESSELINJE = "Poitigatan 55";
         private static final String EN_ANNEN_ADRESSELINJE = "Nord-Poiti";
         private static final String EN_TREDJE_ADRESSELINJE = "1111 Helsinki";
+
+        private static XMLElektroniskKommunikasjonskanal lagElektroniskKommunikasjonskanal() {
+            return new XMLElektroniskKommunikasjonskanal().withElektroniskAdresse(lagElektroniskAdresse());
+        }
+
+        private static XMLElektroniskAdresse lagElektroniskAdresse() {
+            return new XMLEPost().withIdentifikator(EN_EPOST);
+        }
+
+        private static XMLLandkoder lagLandkode(String landkode) {
+            XMLLandkoder xmlLandkode = new XMLLandkoder();
+            xmlLandkode.setValue(landkode);
+            return xmlLandkode;
+        }
 
         @Bean
         public BrukerprofilPortType brukerProfilService() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
@@ -368,19 +420,19 @@ public class MockConsumerConfig {
 
             when(mock.hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class))).thenReturn(response);
             //Mockito.doThrow(new RuntimeException()).when(mock).hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class));
-            
+
             return mock;
         }
 
         private void settAdresse(XMLBruker xmlBruker, String type) {
-            if("BOSTEDSADRESSE".equals(type)) {
+            if ("BOSTEDSADRESSE".equals(type)) {
                 XMLBostedsadresse bostedsadresse = genererXMLFolkeregistrertAdresse(true);
                 xmlBruker.setBostedsadresse(bostedsadresse);
-                
+
                 XMLPostadressetyper postadressetyper = new XMLPostadressetyper();
                 postadressetyper.setValue("BOSTEDSADRESSE");
                 xmlBruker.setGjeldendePostadresseType(postadressetyper);
-            } else if("UTENLANDSK_ADRESSE".equals(type)) {
+            } else if ("UTENLANDSK_ADRESSE".equals(type)) {
                 XMLPostadresse xmlPostadresseUtland = new XMLPostadresse();
                 XMLUstrukturertAdresse utenlandskUstrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(3);
 
@@ -388,13 +440,13 @@ public class MockConsumerConfig {
 
                 xmlPostadresseUtland.setUstrukturertAdresse(utenlandskUstrukturertAdresse);
                 xmlBruker.setPostadresse(xmlPostadresseUtland);
-                
+
                 XMLPostadressetyper postadressetyper = new XMLPostadressetyper();
                 postadressetyper.setValue("POSTADRESSE");
                 xmlBruker.setGjeldendePostadresseType(postadressetyper);
             }
         }
-        
+
         private XMLUstrukturertAdresse generateUstrukturertAdresseMedXAntallAdersseLinjer(
                 int antallAdresseLinjer) {
             XMLUstrukturertAdresse ustrukturertAdresse = new XMLUstrukturertAdresse();
@@ -454,20 +506,6 @@ public class MockConsumerConfig {
             xmlBruker.setIdent(xmlNorskIdent);
 
             return xmlBruker;
-        }
-
-        private static XMLElektroniskKommunikasjonskanal lagElektroniskKommunikasjonskanal() {
-            return new XMLElektroniskKommunikasjonskanal().withElektroniskAdresse(lagElektroniskAdresse());
-        }
-
-        private static XMLElektroniskAdresse lagElektroniskAdresse() {
-            return new XMLEPost().withIdentifikator(EN_EPOST);
-        }
-
-        private static XMLLandkoder lagLandkode(String landkode) {
-            XMLLandkoder xmlLandkode = new XMLLandkoder();
-            xmlLandkode.setValue(landkode);
-            return xmlLandkode;
         }
 
         public BrukerprofilPortType brukerProfilSelftest() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {

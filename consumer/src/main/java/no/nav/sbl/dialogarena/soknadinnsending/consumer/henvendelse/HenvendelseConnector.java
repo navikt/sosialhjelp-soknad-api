@@ -5,6 +5,8 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataL
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
 import org.slf4j.Logger;
@@ -30,10 +32,10 @@ public class HenvendelseConnector {
         return "";
     }
 
-    public String startSoknad(String fnr) {
+    public String startSoknad(String fnr, String skjema, String uid) {
         LOGGER.info("Inne i metoden for startSoknad");
         try {
-            return sendSoknadService.startSoknad(createXMLStartSoknadRequest(fnr, createXMLSkjema())).getBehandlingsId();
+            return sendSoknadService.startSoknad(createXMLStartSoknadRequest(fnr, createXMLSkjema(skjema, uid))).getBehandlingsId();
         } catch (SOAPFaultException e) {
             LOGGER.error("Feil ved start søknad for bruker " + fnr, e);
             throw new ApplicationException("Kunne ikke opprette ny søknad", e);
@@ -74,8 +76,11 @@ public class HenvendelseConnector {
                         .withMetadata(skjema));
     }
 
-    private XMLHovedskjema createXMLSkjema() {
-        return new XMLHovedskjema().withSkjemanummer("NAV 04-01.03").withInnsendingsvalg(IKKE_VALGT.toString());
+    private XMLHovedskjema createXMLSkjema(String skjema, String uid) {
+        return new XMLHovedskjema().withSkjemanummer("NAV 04-01.03").withUuid(uid).withInnsendingsvalg(IKKE_VALGT.toString());
     }
 
+    public WSHentSoknadResponse hentSoknad(String behandlingsId) {
+        return sendSoknadService.hentSoknad(new WSBehandlingsId().withBehandlingsId(behandlingsId));
+    }
 }

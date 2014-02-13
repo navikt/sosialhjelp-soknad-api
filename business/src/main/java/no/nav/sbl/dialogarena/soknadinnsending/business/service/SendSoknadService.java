@@ -20,8 +20,6 @@ public interface SendSoknadService {
 
     void sendSoknad(long soknadId, byte[] outputStream);
 
-    List<Long> hentMineSoknader(String aktorId);
-
     void avbrytSoknad(Long soknadId);
 
     void endreInnsendingsvalg(Long soknadId, Faktum faktum);

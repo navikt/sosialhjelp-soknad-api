@@ -1,0 +1,103 @@
+<div class="skjemaramme">
+    <div data-ng-form="arbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl">
+        <div data-form-errors></div>
+        <p class="arbeidsforhold-informasjonstekst" data-cmstekster="arbeidsforhold.informasjon"></p>
+
+        <div class="form-linje boolean">
+
+            <div data-navradio
+                 data-value="fastArbeidstid"
+                 data-navconfig
+                 data-nav-faktum="arbeidstilstand"
+                 data-navlabel="arbeidsforhold.arbeidstilstand.fastarbeidstid"
+                 data-navfeilmelding="arbeidsforhold.arbeidstilstand.feilmelding">
+            </div>
+
+            <div data-navradio
+                 data-value="varierendeArbeidstid"
+                 data-navconfig
+                 data-nav-faktum="arbeidstilstand"
+                 data-navlabel="arbeidsforhold.arbeidstilstand.varierendearbeidstid"
+                 data-navfeilmelding="arbeidsforhold.arbeidstilstand.feilmelding">
+            </div>
+
+            <div data-navradio
+                 data-value="harIkkeJobbet"
+                 data-navconfig
+                 data-nav-faktum="arbeidstilstand"
+                 data-navlabel="arbeidsforhold.arbeidstilstand.harikkejobbet"
+                 data-navfeilmelding="arbeidsforhold.arbeidstilstand.feilmelding">
+            </div>
+
+            <span class="melding"> </span>
+        </div>
+
+        <div data-ng-if="hvisHarIkkeJobbet()">
+            <div data-navinfoboks>
+                <p>{{ 'arbeidsforhold.arbeidstilstand.harikkejobbet.informasjonstekst.del1' | cmstekst }}</p>
+                <p>{{ 'arbeidsforhold.arbeidstilstand.harikkejobbet.informasjonstekst.del2' | cmstekst }}</p>
+            </div>
+        </div>
+
+        <div data-ng-if="hvisHarJobbetVarierende()">
+            <div data-navinfoboks>
+                <span data-cmstekster="arbeidsforhold.arbeidstilstand.varierendearbeidstid.informasjonstekst"></span>
+            </div>
+        </div>
+        <div data-ng-if="hvisHarJobbetFast()">
+            <div data-navinfoboks>
+                <span data-cmstekster="arbeidsforhold.arbeidstilstand.fastarbeidstid.informasjonstekst"></span>
+            </div>
+        </div>
+
+        <div class="spm-boks vertikal" data-ng-repeat="af in arbeidsliste" data-ng-class="{'last': $last}">
+            <div id="arbeidsforhold{{af.arbeidsforhold.faktumId}}">
+                <a href="#" class="lukk" data-ng-click="slettArbeidsforhold(af, $index, $event)" data-fokus-slettmoduler="arbeidsforhold" > </a>
+                <span class="robust">{{ af.arbeidsforhold.properties.arbeidsgivernavn }}</span>
+                <span class="robust">, </span>  
+                <span class="robust">{{ finnLandFraLandkode(af.arbeidsforhold.properties.land) }}</span>
+
+                <div class="arbeidsforhold-land-sluttaarsak-blokk">
+                    <div class="arbeidsgiver-oppsummering-sluttaarsaker">
+                        <div data-ng-include="templates[af.sluttaarsak.properties.type].oppsummeringsurl"></div>
+                    </div>
+                </div>
+
+                <div class="arbeidsforhold-oppsummering-endre-slett">
+                    <ul class="liste-vannrett">
+                        <li>
+                            <a href data-ng-click="slettArbeidsforhold(af, $index, $event)"
+                               data-cmstekster="arbeidsforhold.slettarbeidsforhold" data-fokus-slettmoduler="arbeidsforhold" ></a>
+                        </li>
+                        <li>
+                            <a href data-ng-click="endreArbeidsforhold(af, $index, $event)"
+                               data-cmstekster="arbeidsforhold.endrearbeidsforhold"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="knapper-arbeidsforhold">
+            <div id="legg-til" class="form-linje knapp ikke-fadebakgrunn" data-ng-if="harSvart()" data-ng-class="{feil: skalViseFeil()}">
+                <div data-ng-if="hvisHarJobbet()">
+                    <input type="hidden"
+                           data-ng-model="harLagretArbeidsforhold"
+                           data-nav-faktum="harLagretArbeidsforhold"
+                           data-ng-required="true"
+                           data-error-messages="'arbeidsforhold.arbeidsforhold.required'"
+                           >
+                </div>
+
+                <button class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event, arbeidsforholdForm)"
+                        data-cmstekster="arbeidsforhold.nyttarbeidsforhold" role="button"></button>
+                <span class="melding" data-cmstekster="arbeidsforhold.arbeidsforhold.required"></span>
+            </div>
+
+            <div data-spmblokkferdig
+                 data-submit-method="validerArbeidsforhold(true)"></div>
+        </div>
+    </div>
+</div>
+
+
