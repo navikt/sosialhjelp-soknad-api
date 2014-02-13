@@ -32,6 +32,8 @@
                                  data-ng-class="{behandlet: !vedleggEr(forventning, 'VedleggKreves'),
                                  lastetopp: vedleggEr(forventning, 'LastetOpp'),
                                  ekstraVedlegg: !ekstraVedleggFerdig(forventning)}">
+                                <div class="flipp"></div>
+
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'LastetOpp')"
                                      data-cmstekster="vedlegg.behandlet.lastetopp"></div>
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesSenere')"
@@ -39,7 +41,6 @@
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesIkke')"
                                      data-cmstekster="vedlegg.behandlet.sendesikke"></div>
 
-                                <div class="flipp"></div>
                                 <h2 class="stor">
                                     <span>{{forventning.tittel}}</span>
                                     <span data-ng-if="forventning.navn">: {{forventning.navn}}</span>

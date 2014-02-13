@@ -526,10 +526,10 @@ angular.module("../views/templates/arbeidsforhold/konkurs.html", []).run(["$temp
     "             data-feilmelding=\"arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.feilmelding\"\n" +
     "             data-obligatorisk=\"true\"></div>\n" +
     "\n" +
-    "        <div data-navinfoboks>\n" +
+    "        <!--div data-navinfoboks>\n" +
     "            <p class=\"sluttaarsak-informasjon\"\n" +
     "               data-cmstekster=\"arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.informasjon\"></p>\n" +
-    "        </div>\n" +
+    "        </div-->\n" +
     "\n" +
     "\n" +
     "        <div class=\"form-linje spm boolean\">\n" +
@@ -2888,6 +2888,8 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                 data-ng-class=\"{behandlet: !vedleggEr(forventning, 'VedleggKreves'),\n" +
     "                                 lastetopp: vedleggEr(forventning, 'LastetOpp'),\n" +
     "                                 ekstraVedlegg: !ekstraVedleggFerdig(forventning)}\">\n" +
+    "                                <div class=\"flipp\"></div>\n" +
+    "\n" +
     "                                <div class=\"mini behandlet\" data-ng-if=\"vedleggEr(forventning, 'LastetOpp')\"\n" +
     "                                     data-cmstekster=\"vedlegg.behandlet.lastetopp\"></div>\n" +
     "                                <div class=\"mini behandlet\" data-ng-if=\"vedleggEr(forventning, 'SendesSenere')\"\n" +
@@ -2895,7 +2897,6 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                <div class=\"mini behandlet\" data-ng-if=\"vedleggEr(forventning, 'SendesIkke')\"\n" +
     "                                     data-cmstekster=\"vedlegg.behandlet.sendesikke\"></div>\n" +
     "\n" +
-    "                                <div class=\"flipp\"></div>\n" +
     "                                <h2 class=\"stor\">\n" +
     "                                    <span>{{forventning.tittel}}</span>\n" +
     "                                    <span data-ng-if=\"forventning.navn\">: {{forventning.navn}}</span>\n" +
