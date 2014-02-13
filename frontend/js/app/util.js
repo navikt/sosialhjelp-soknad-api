@@ -311,8 +311,8 @@ function settFokusTilNesteElement(inputElement) {
 }
 
 function erTouchDevice() {
-    return true;
-//    return 'ontouchstart' in window || 'onmsgesturechange' in window;
+
+    return 'ontouchstart' in window || 'onmsgesturechange' in window;
 }
 
 function getIEVersion() {
