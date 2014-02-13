@@ -73,7 +73,8 @@ public class SoknadTpsDataController {
     public Personalia hentPersonalia() {
         String fnr = SubjectHandler.getSubjectHandler().getUid();
         Personalia personalia;
-        return personaliaService.hentPersonalia(fnr);
+        personalia = personaliaService.hentPersonalia(fnr);
+        return personalia;
 
     }
 }

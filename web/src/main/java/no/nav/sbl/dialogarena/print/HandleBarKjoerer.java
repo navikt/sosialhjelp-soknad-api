@@ -107,7 +107,6 @@ public class HandleBarKjoerer {
 
 
     private Handlebars getHandlebars() {
-        Context c = Context.newBuilder(new WebSoknad()).build();
         Handlebars handlebars = new Handlebars();
 
         handlebars.registerHelper("forFaktum", new Helper<String>() {

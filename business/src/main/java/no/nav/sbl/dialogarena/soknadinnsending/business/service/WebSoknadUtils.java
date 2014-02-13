@@ -1,16 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
-import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBuilder;
-import org.joda.time.LocalDate;
-import org.slf4j.Logger;
-
-import java.util.List;
-import java.util.Map;
-
 import static java.util.Collections.reverseOrder;
 import static no.nav.modig.lang.collections.ComparatorUtils.compareWith;
 import static no.nav.modig.lang.collections.IterUtils.on;
@@ -22,14 +11,23 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.PERSONALIA_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.DATO_TIL;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.TYPE;
-import static org.slf4j.LoggerFactory.getLogger;
+
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBuilder;
+
+import org.joda.time.LocalDate;
+
+import java.util.List;
+import java.util.Map;
 
 public class WebSoknadUtils {
     public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
     public static final String DAGPENGER = "NAV 04-01.03";
     public static final String EOS_DAGPENGER = "4304";
     public static final String RUTES_I_BRUT = "0000";
-    private static final Logger logger = getLogger(WebSoknadUtils.class);
     private static boolean erPermittertellerHarRedusertArbeidstid(WebSoknad soknad)
     {
 

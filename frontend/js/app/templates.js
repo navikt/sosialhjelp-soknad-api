@@ -2496,7 +2496,6 @@ angular.module("../views/templates/reellarbeidssoker/reell-arbeidssoker.html", [
     "\n" +
     "        </div>\n" +
     "\n" +
-    "\n" +
     "        <div data-spmblokkferdig></div>\n" +
     "    </div>\n" +
     "</div>\n" +
