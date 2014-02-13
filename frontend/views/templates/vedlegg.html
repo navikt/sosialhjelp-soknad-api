@@ -7,9 +7,13 @@
         <div class="begrensning sak-totredel">
             <section class="panel-standard ">
                 <h2 class="stor-strek-ikon-slett" data-cmstekster="vedlegg.tittel"></h2>
+
                 <p class="info" data-cmstekster="vedlegg.info1"></p>
+
                 <p class="info" data-cmstekster="vedlegg.info2"></p>
+
                 <p class="info" data-cmstekster="vedlegg.info3"></p>
+
                 <div data-form-errors></div>
             </section>
         </div>
@@ -18,7 +22,9 @@
     <section>
         <div data-accordion data-close-others="false" data-ng-if="forventninger != null">
             <div class="vedlegg">
-                <div data-accordion-group data-ng-repeat="forventning in forventninger | orderBy: forventning.opprettetDato" class="spm-blokk vertikal"
+                <div data-accordion-group
+                     data-ng-repeat="forventning in forventninger | orderBy: forventning.opprettetDato"
+                     class="spm-blokk vertikal"
                      id="vedlegg_{{forventning.vedleggId}}">
                     <div data-accordion-heading>
                         <div class="bolk-fokus">
@@ -33,6 +39,7 @@
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesIkke')"
                                      data-cmstekster="vedlegg.behandlet.sendesikke"></div>
 
+                                <div class="flipp"></div>
                                 <h2 class="stor">
                                     <span>{{forventning.tittel}}</span>
                                     <span data-ng-if="forventning.navn">: {{forventning.navn}}</span>
@@ -48,7 +55,8 @@
                                 data-cmstekster="vedlegg.faktum.maabekrefte.annetvedlegg"></h4>
 
                             <div class="form-linje tekstfelt" data-ng-if="erEkstraVedlegg(forventning)">
-                                <input type="hidden" data-ng-required="true" data-ng-model="filVedlagt" data-error-messages="'vedlegg.annet.ikkelastetopp.feilmelding'"/>
+                                <input type="hidden" data-ng-required="true" data-ng-model="filVedlagt"
+                                       data-error-messages="'vedlegg.annet.ikkelastetopp.feilmelding'"/>
                                 <label>
                                     <span data-cmstekster="vedlegg.annet.beskrivelse.sporsmal"></span>
                                     <input type="text" maxlength="25" data-ng-maxlength="25"
@@ -75,11 +83,13 @@
                                 </div>
                                 <div class="lastOpp">
                                     <a data-ng-href="#/opplasting/{{forventning.vedleggId}}" class="knapp-link"
-                                       data-ng-click="endreInnsendingsvalg(forventning, 'VedleggKreves');">{{'vedlegg.lastopp' | cmstekst}}</a>
+                                       data-ng-click="endreInnsendingsvalg(forventning, 'VedleggKreves');">{{'vedlegg.lastopp'
+                                        | cmstekst}}</a>
                                     <a href="javascript:void(0)" aria-role="button"
                                        data-ng-if="erEkstraVedlegg(forventning)"
                                        data-ng-click="slettAnnetVedlegg(forventning);" name="Slett"
-                                       data-fokus-slett-annet data-cmstekster="vedlegg.annet.slett">{{'vedlegg.slett' | cmstekst}}</a>
+                                       data-fokus-slett-annet data-cmstekster="vedlegg.annet.slett">{{'vedlegg.slett' |
+                                        cmstekst}}</a>
 
                                 </div>
                                 <div data-ng-if="!erEkstraVedlegg(forventning)">
@@ -103,8 +113,10 @@
                                            data-ng-required="true"
                                            data-error-messages="'{{forventning.tittel}}'">
                                 </div>
-                                <span class="melding" data-cmstekster="vedlegg.annet.inlinefeilmelding" data-ng-if="erEkstraVedlegg(forventning)"></span>
-                                <span class="melding" data-cmstekster="vedlegg.inlinefeilmelding" data-ng-if="!erEkstraVedlegg(forventning)"></span>
+                                <span class="melding" data-cmstekster="vedlegg.annet.inlinefeilmelding"
+                                      data-ng-if="erEkstraVedlegg(forventning)"></span>
+                                <span class="melding" data-cmstekster="vedlegg.inlinefeilmelding"
+                                      data-ng-if="!erEkstraVedlegg(forventning)"></span>
                             </div>
                             <div data-ng-if="vedleggEr(forventning, 'LastetOpp')">
                                 <div class="forhandsvisning">
