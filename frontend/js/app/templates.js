@@ -526,10 +526,10 @@ angular.module("../views/templates/arbeidsforhold/konkurs.html", []).run(["$temp
     "             data-feilmelding=\"arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.feilmelding\"\n" +
     "             data-obligatorisk=\"true\"></div>\n" +
     "\n" +
-    "        <div data-navinfoboks>\n" +
+    "        <!--div data-navinfoboks>\n" +
     "            <p class=\"sluttaarsak-informasjon\"\n" +
     "               data-cmstekster=\"arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.informasjon\"></p>\n" +
-    "        </div>\n" +
+    "        </div-->\n" +
     "\n" +
     "\n" +
     "        <div class=\"form-linje spm boolean\">\n" +

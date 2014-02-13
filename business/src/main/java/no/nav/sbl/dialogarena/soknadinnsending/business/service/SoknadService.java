@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
+
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
@@ -72,8 +74,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Component
 public class SoknadService implements SendSoknadService, VedleggService {
     private static final Logger logger = getLogger(SoknadService.class);
-    private static final String BRUKERREGISTRERT_FAKTUM = "BRUKERREGISTRERT";
-    private static final String SYSTEMREGISTRERT_FAKTUM = "SYSTEMREGISTRERT";
+    
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository repository;
@@ -87,6 +88,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Inject
     private Kodeverk kodeverk;
     private PdfWatermarker watermarker = new PdfWatermarker();
+    
+    private List<String> gyldigeSkjemaer = Arrays.asList("NAV 04-01.03");
 
     private static void sjekkOmPdfErGyldig(PDDocument document) {
         PdfDetector detector = new PdfDetector(document);
@@ -161,7 +164,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public Long lagreSystemFaktum(Long soknadId, Faktum f, String uniqueProperty) {
         logger.debug("*** Lagrer systemfaktum ***: " + f.getKey());
         f.setType(SYSTEMREGISTRERT);
-        List<Faktum> fakta = repository.hentSystemFaktumList(soknadId, f.getKey(), SYSTEMREGISTRERT_FAKTUM);
+        List<Faktum> fakta = repository.hentSystemFaktumList(soknadId, f.getKey(), SYSTEMREGISTRERT.name());
 
         if (!uniqueProperty.isEmpty()) {
             for (Faktum faktum : fakta) {
@@ -203,7 +206,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     }
 
-    @Override
     public Long hentSoknadMedBehandlinsId(String behandlingsId) {
         WebSoknad soknad = repository.hentMedBehandlingsId(behandlingsId);
         if (soknad == null) {
@@ -263,9 +265,11 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public String startSoknad(String navSoknadId) {
+        validerSkjemanummer(navSoknadId);
+        
         String mainUid = randomUUID().toString();
         String behandlingsId = henvendelseConnector
-                .startSoknad(getSubjectHandler().getUid(), "NAV-11111", mainUid);
+                .startSoknad(getSubjectHandler().getUid(), navSoknadId, mainUid);
         WebSoknad soknad = WebSoknad.startSoknad()
                 .medBehandlingId(behandlingsId).medskjemaNummer(navSoknadId)
                 .medUuid(mainUid)
@@ -288,6 +292,12 @@ public class SoknadService implements SendSoknadService, VedleggService {
         repository.lagreFaktum(soknadId, bolkerFaktum);
 
         return behandlingsId;
+    }
+
+    private void validerSkjemanummer(String navSoknadId) {
+        if(!gyldigeSkjemaer.contains(navSoknadId)) {
+            throw new ApplicationException("Ikke gyldig skjemanummer "+ navSoknadId);
+        }
     }
 
     @Override
@@ -413,8 +423,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
         List<String> innlagtSkjemaNr = new ArrayList<String>();
         for (Vedlegg vedlegg : paakrevdeVedlegg) {
             innlagtSkjemaNr.add(vedlegg.getskjemaNummer());
-            vedlegg = medKodeverk(vedlegg);
-            result.add(vedlegg);
+            Vedlegg oppdatertVedleg = medKodeverk(vedlegg);
+            result.add(oppdatertVedleg);
         }
         return result;
     }
@@ -426,26 +436,31 @@ public class SoknadService implements SendSoknadService, VedleggService {
             Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummer(faktum.getSoknadId(), soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null, soknadVedlegg.getSkjemaNummer());
             Faktum parentFaktum = faktum.getParrentFaktum() != null ? repository.hentFaktum(faktum.getSoknadId(), faktum.getParrentFaktum()) : null;
             if (soknadVedlegg.trengerVedlegg(faktum) && erParentAktiv(soknadVedlegg, parentFaktum)) {
-                if (vedlegg == null) {
-                    vedlegg = new Vedlegg(faktum.getSoknadId(), soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null, soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
-                    vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
-                }
-                if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {
-                    vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
-                }
-
-                if (vedlegg.getStorrelse() > 0) {
-                    vedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
-                } else {
-                    vedlegg.setInnsendingsvalg(Vedlegg.Status.VedleggKreves);
-                }
-                vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
+                lagrePaakrevdVedlegg(faktum, soknadVedlegg, vedlegg);
             } else if (!soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId(), soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValue(), struktur)) {//do nothing
             } else if (vedlegg != null) { // sett vedleggsforventning til ikke paakrevd
                 vedlegg.setInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
                 vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
             }
         }
+    }
+
+    private void lagrePaakrevdVedlegg(Faktum faktum,
+            SoknadVedlegg soknadVedlegg, Vedlegg vedlegg) {
+        if (vedlegg == null) {
+            vedlegg = new Vedlegg(faktum.getSoknadId(), soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null, soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
+            vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
+        }
+        if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {
+            vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
+        }
+
+        if (vedlegg.getStorrelse() > 0) {
+            vedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
+        } else {
+            vedlegg.setInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+        }
+        vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
     }
 
     private boolean erParentAktiv(SoknadVedlegg soknadVedlegg, Faktum parent) {
@@ -485,6 +500,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
             }
             vedlegg.setTittel(koder.get(Kodeverk.Nokkel.TITTEL));
         } catch (Exception ignore) {
+            logger.debug("ignored exception");
 
         }
         return vedlegg;

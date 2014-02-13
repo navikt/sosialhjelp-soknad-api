@@ -62,7 +62,7 @@ public class Transformers {
         @Override
         public String transform(Faktum faktum) {
             Map<String, String> properties = faktum.getProperties();
-            return properties == null ? null : properties.get("type");
+            return properties.get("type");
         }
     };
 }

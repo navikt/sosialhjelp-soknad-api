@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import no.nav.sbl.dialogarena.websoknad.domain.StartSoknad;
+
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.print.HandleBarKjoerer;
@@ -27,6 +29,8 @@ import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +71,7 @@ public class SoknadDataController {
     @ResponseBody()
     public Map<String,String> hentSoknadIdMedBehandligsId(@PathVariable String behandlingsId) {
         Map<String, String> result = new HashMap<>();
-        String soknadId = soknadService.hentSoknadMedBehandlinsId(behandlingsId).toString();
+        String soknadId = soknadService.hentSoknadMedBehandlinsId(behandlingsId.replaceAll("%20", " ")).toString();
         result.put("result", soknadId);
         
         return result;
@@ -91,20 +95,23 @@ public class SoknadDataController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public void settDelstegStatus(@PathVariable Long soknadId, @PathVariable String delsteg) {
-        DelstegStatus delstegstatus;
-        String s = delsteg.toLowerCase();
-        if (s.equals("utfylling")) {
-            delstegstatus = DelstegStatus.UTFYLLING;
-
-        } else if (s.equals("vedlegg")) {
-            delstegstatus = DelstegStatus.SKJEMA_VALIDERT;
-
-        } else if (s.equals("oppsummering")) {
-            delstegstatus = DelstegStatus.VEDLEGG_VALIDERT;
-        } else {
+        if(delsteg == null){
             throw new ApplicationException("Ugyldig delsteg sendt inn til REST-controller.");
+        } else {
+            DelstegStatus delstegstatus;
+            if (delsteg.equalsIgnoreCase("utfylling")) {
+                delstegstatus = DelstegStatus.UTFYLLING;
+    
+            } else if (delsteg.equalsIgnoreCase("vedlegg")) {
+                delstegstatus = DelstegStatus.SKJEMA_VALIDERT;
+    
+            } else if (delsteg.equalsIgnoreCase("oppsummering")) {
+                delstegstatus = DelstegStatus.VEDLEGG_VALIDERT;
+            } else {
+                throw new ApplicationException("Ugyldig delsteg sendt inn til REST-controller.");
+            }
+            soknadService.settDelsteg(soknadId, delstegstatus);
         }
-        soknadService.settDelsteg(soknadId, delstegstatus);
     }
 
     @RequestMapping(value = "{soknadId}/{faktumId}/forventning", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
@@ -159,12 +166,12 @@ public class SoknadDataController {
         return soknadService.lagreSoknadsFelt(soknadId, faktum);
     }
 
-    @RequestMapping(value = "/opprett/{soknadType}", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/opprett", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody()
-    public Map<String,String> opprettSoknad(@PathVariable String soknadType) {
+    public Map<String,String> opprettSoknad(@RequestBody StartSoknad soknadType) {
         Map<String, String> result = new HashMap<>();
         
-        String behandlingId = soknadService.startSoknad(soknadType);
+        String behandlingId = soknadService.startSoknad(soknadType.getSoknadType());
         result.put("brukerbehandlingId", behandlingId);
         
         return result;
