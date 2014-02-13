@@ -140,13 +140,13 @@ angular.module('nav.egennaering', [])
          */
         function summerAndelsprosentene() {
             var sum = "";
-            if ($scope.gardseier("egennaering.gardsbruk.false.eier.jeg")) {
+            if ($scope.gardseier("egennaering.gardsbruk.false.eier.jeg") && data.finnFaktum("egennaering.gardsbruk.false.eierandel.din")) {
                 sum = parseFloat(data.finnFaktum("egennaering.gardsbruk.false.eierandel.din").value);
             }
-            if ($scope.gardseier("egennaering.gardsbruk.false.eier.ektefelle")) {
+            if ($scope.gardseier("egennaering.gardsbruk.false.eier.ektefelle") && data.finnFaktum("egennaering.gardsbruk.false.eierandel.ektefelle")) {
                 sum += parseFloat(data.finnFaktum("egennaering.gardsbruk.false.eierandel.ektefelle").value);
             }
-            if ($scope.gardseier("egennaering.gardsbruk.false.eier.annet")) {
+            if ($scope.gardseier("egennaering.gardsbruk.false.eier.annet") && data.finnFaktum("egennaering.gardsbruk.false.eierandel.annet")) {
                 sum += parseFloat(data.finnFaktum("egennaering.gardsbruk.false.eierandel.annet").value);
             }
             return Math.ceil(sum);

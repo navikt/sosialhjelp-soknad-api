@@ -308,7 +308,6 @@ function settFokusTilNesteElement(inputElement) {
 }
 
 function erTouchDevice() {
-    console.log($(window).width());
     return true;
 //    return 'ontouchstart' in window || 'onmsgesturechange' in window;
 }
