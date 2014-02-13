@@ -82,9 +82,9 @@ public class DatabaseTestContext {
             st.execute("drop table VEDLEGG if exists");
             st.execute("create table VEDLEGG (vedlegg_id bigint not null , soknad_id bigint not null, faktum bigint, skjemaNummer varchar(36), navn varchar(255) not null,innsendingsvalg varchar(255) not null , antallsider bigint, fillagerReferanse varchar(36), storrelse bigint not null, " +
                     " opprettetdato timestamp , data blob)");
-            st.execute("create table SOKNADBRUKERDATA (soknadbrukerdata_id bigint not null, soknad_id bigint not null, key varchar(255) not null, value varchar(2000) not null, " +
+            st.execute("create table SOKNADBRUKERDATA (soknadbrukerdata_id bigint not null, soknad_id bigint not null, key varchar(255) not null, value varchar(2000), " +
                     "type varchar(255), sistendret timestamp not null, PARRENT_FAKTUM bigint)");
-            st.execute("create table FAKTUMEGENSKAP (soknad_id bigint not null,faktum_id bigint not null, key varchar(255) not null, value varchar(255)) ");
+            st.execute("create table FAKTUMEGENSKAP (soknad_id bigint not null,faktum_id bigint not null, key varchar(255) not null, value varchar(255), systemegenskap bit) ");
             st.execute("drop sequence SOKNAD_ID_SEQ if exists");
             st.execute("create sequence SOKNAD_ID_SEQ as integer start with 1 increment by 1");
             st.execute("drop sequence SOKNAD_BRUKER_DATA_ID_SEQ if exists");

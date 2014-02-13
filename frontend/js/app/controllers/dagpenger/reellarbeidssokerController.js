@@ -40,7 +40,7 @@ angular.module('nav.reellarbeidssoker', [])
 		};
 
 		$scope.erOver59Aar = function () {
-			return $scope.alder > 59;
+            return $scope.alder > 59;
 		};
 
         $scope.harValgtAnnetUnntakDeltid = function () {
