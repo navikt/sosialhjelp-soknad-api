@@ -6,13 +6,23 @@
     <div class="rad-belyst inforad">
         <div class="begrensning sak-totredel">
             <section class="panel-standard ">
-                <h2 class="stor-strek-ikon-slett" data-cmstekster="vedlegg.tittel"></h2>
+                <h2 class="stor strek-ikon-info-orange" data-cmstekster="vedlegg.tittel"></h2>
 
-                <p class="info" data-cmstekster="vedlegg.info1"></p>
+                <div class="viktig-info">
+                <ul>
+                    <li>
+                        <p class="info" data-cmstekster="vedlegg.info1"></p>
+                    </li>
+                    <li>
+                        <p class="info" data-cmstekster="vedlegg.info2"></p>
 
-                <p class="info" data-cmstekster="vedlegg.info2"></p>
+                    </li>
+                    <li>
+                        <p class="info" data-cmstekster="vedlegg.info3"></p>
 
-                <p class="info" data-cmstekster="vedlegg.info3"></p>
+                    </li>
+                </ul>
+                </div>
 
                 <div data-form-errors></div>
             </section>
@@ -32,6 +42,7 @@
                                  data-ng-class="{behandlet: !vedleggEr(forventning, 'VedleggKreves'),
                                  lastetopp: vedleggEr(forventning, 'LastetOpp'),
                                  ekstraVedlegg: !ekstraVedleggFerdig(forventning)}">
+                                <div class="flipp"></div>
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'LastetOpp')"
                                      data-cmstekster="vedlegg.behandlet.lastetopp"></div>
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesSenere')"

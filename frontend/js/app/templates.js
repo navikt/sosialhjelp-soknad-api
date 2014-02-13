@@ -2190,11 +2190,12 @@ angular.module("../views/templates/opplasting.html", []).run(["$templateCache", 
     "        </div>\n" +
     "        <div class=\"rad uten-ramme\">\n" +
     "            <div class=\"begrensning sak-totredel\">\n" +
-    "                <div class=\"form-linje\" data-ng-class=\"{feil: skalViseFeilmelding === true}\">\n" +
-    "                    <span class=\"melding\" data-cmstekster=\"opplasting.feilmelding.manglerVedlegg\"></span>\n" +
-    "                </div>\n" +
     "                <a href=\"javascript:void(0);\" data-redirect=\"#/vedlegg\" class=\"knapp-hoved\" data-cmstekster=\"opplasting.ferdig\" data-ng-click=\"leggVed()\"\n" +
     "                   data-fremdriftsindikator></a>\n" +
+    "                <div class=\"form-linje\" data-ng-class=\"{feil: skalViseFeilmelding === true}\" data-ng-if=\"skalViseFeilmelding === true\">\n" +
+    "                    <span class=\"melding\" data-cmstekster=\"opplasting.feilmelding.manglerVedlegg\"></span>\n" +
+    "                </div>\n" +
+    "\n" +
     "                <a href=\"javascript:void(0);\" data-ng-href=\"#/vedlegg\" class=\"avbryt\" data-cmstekster=\"opplasting.avbryt\"></a>\n" +
     "            </div>\n" +
     "        </div>\n" +
@@ -2862,13 +2863,23 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "    <div class=\"rad-belyst inforad\">\n" +
     "        <div class=\"begrensning sak-totredel\">\n" +
     "            <section class=\"panel-standard \">\n" +
-    "                <h2 class=\"stor-strek-ikon-slett\" data-cmstekster=\"vedlegg.tittel\"></h2>\n" +
+    "                <h2 class=\"stor strek-ikon-info-orange\" data-cmstekster=\"vedlegg.tittel\"></h2>\n" +
     "\n" +
-    "                <p class=\"info\" data-cmstekster=\"vedlegg.info1\"></p>\n" +
+    "                <div class=\"viktig-info\">\n" +
+    "                <ul>\n" +
+    "                    <li>\n" +
+    "                        <p class=\"info\" data-cmstekster=\"vedlegg.info1\"></p>\n" +
+    "                    </li>\n" +
+    "                    <li>\n" +
+    "                        <p class=\"info\" data-cmstekster=\"vedlegg.info2\"></p>\n" +
     "\n" +
-    "                <p class=\"info\" data-cmstekster=\"vedlegg.info2\"></p>\n" +
+    "                    </li>\n" +
+    "                    <li>\n" +
+    "                        <p class=\"info\" data-cmstekster=\"vedlegg.info3\"></p>\n" +
     "\n" +
-    "                <p class=\"info\" data-cmstekster=\"vedlegg.info3\"></p>\n" +
+    "                    </li>\n" +
+    "                </ul>\n" +
+    "                </div>\n" +
     "\n" +
     "                <div data-form-errors></div>\n" +
     "            </section>\n" +
@@ -2889,7 +2900,6 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                 lastetopp: vedleggEr(forventning, 'LastetOpp'),\n" +
     "                                 ekstraVedlegg: !ekstraVedleggFerdig(forventning)}\">\n" +
     "                                <div class=\"flipp\"></div>\n" +
-    "\n" +
     "                                <div class=\"mini behandlet\" data-ng-if=\"vedleggEr(forventning, 'LastetOpp')\"\n" +
     "                                     data-cmstekster=\"vedlegg.behandlet.lastetopp\"></div>\n" +
     "                                <div class=\"mini behandlet\" data-ng-if=\"vedleggEr(forventning, 'SendesSenere')\"\n" +
