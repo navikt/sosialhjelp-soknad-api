@@ -64540,13 +64540,11 @@ angular.module('app.controllers', [
                 return $scope.arbeidsforhold.properties.land;
             }
         }, function () {
-        	if($scope.arbeidsforhold.properties.land && $scope.arbeidsforhold.properties.land != "") {
-	          	$resource('/sendsoknad/rest/ereosland/:landkode').get(
-					{landkode: $scope.arbeidsforhold.properties.land},
-		            function (eosdata) { // Success
-		                $scope.arbeidsforhold.properties.eosland = eosdata.result;
-		        });
-	        }
+          	$resource('/sendsoknad/rest/ereosland/:landkode').get(
+				{landkode: $scope.arbeidsforhold.properties.land},
+	            function (eosdata) { // Success
+	                $scope.arbeidsforhold.properties.eosland = eosdata.result;
+	        });
         });
 
 
@@ -71199,6 +71197,7 @@ angular.module("../views/templates/reellarbeidssoker/reell-arbeidssoker.html", [
     "            </div>\n" +
     "\n" +
     "        </div>\n" +
+    "\n" +
     "\n" +
     "        <div data-spmblokkferdig></div>\n" +
     "    </div>\n" +
