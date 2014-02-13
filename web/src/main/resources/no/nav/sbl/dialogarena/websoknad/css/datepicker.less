@@ -98,7 +98,18 @@
 .datepicker-intervall {
   padding: 15px;
 
+  div {
+    margin-bottom: 15px;
+  }
+
   .datepicker:last-child {
     margin-left: 20px;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .datepicker-intervall {
+    .datepicker:last-child {
+      margin-left: 0px;
+    }
   }
 }
