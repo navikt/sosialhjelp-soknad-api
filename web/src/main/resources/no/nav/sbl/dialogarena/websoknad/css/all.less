@@ -762,14 +762,25 @@ form, [ng-form], [data-ng-form] {
 a.accordion-toggle, #vedlegg a.accordion-toggle {
   display: block;
     &:active {
-      color: #3e3832;
-      outline: none;
-      text-decoration: underline !important;
+      .flipp {
+        cursor: pointer;
+        border-color: transparent transparent #0000FF transparent;
+
+        &:before {
+          border-top: 30px solid #0000FF;
+        }
+      }
+
     }
     &:focus {
-      color: #3e3832;
-      outline: none;
-      text-decoration: underline !important;
+      .flipp {
+        cursor: pointer;
+        border-color: transparent transparent #004283 transparent;
+
+        &:before {
+          border-top: 30px solid #0067c5;
+        }
+      }
     }
 }
 a.infoikon, a.lukk, a.knapp-link {
