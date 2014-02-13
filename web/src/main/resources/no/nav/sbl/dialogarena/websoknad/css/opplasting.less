@@ -1,8 +1,8 @@
 [class*="strek-ikon-vedlegg"], [class*="ikon-vedlegg-strek"] {
-  background-image: url(../img/utropstegn_stor.svg);
-  background-position: center top;
-  background-repeat: no-repeat;
-  padding-top: 97px;
+  background-image: url(../img/under-dark.png), url(../img/vedlegg_graa.svg);
+  background-position: bottom center, center 0;
+  padding-bottom: 15px;
+  margin-bottom: 15px !important;
 }
 
 .uten-ramme {
@@ -48,6 +48,32 @@ form, [ng-form], [data-ng-form] {
   [class*="ikon-vedlegg-strek"] {
     padding-bottom: 30px;
     margin-bottom: 30px !important;
+  }
+  .strek-ikon-info-orange {
+    margin-top: 30px;
+    padding-bottom: 25px !important;
+    margin-bottom: 25px !important;
+  }
+
+  .viktig-info {
+    margin-bottom: 25px;
+    border-bottom: 1px solid #d1d1d1;
+
+    ul {
+      list-style-type: none;
+      margin-bottom: 0px;
+      padding-left: 0px;
+
+      li {
+        background-image: url(../img/7x7_svart.png);
+        background-repeat: no-repeat;
+        background-position: left 5px;
+        padding-bottom: 15px;
+        padding-left: 20px;
+        font-weight: bold;
+      }
+    }
+
   }
 
   .info, h4 {
@@ -404,6 +430,9 @@ form, [ng-form], [data-ng-form] {
       background-image: url('../img/legg_til_hover.svg');
     }
   }
+  .form-linje {
+    padding: 5px;
+  }
   .opplastingfeil {
     width: 100%;
     background-color: #c30000;
@@ -415,7 +444,7 @@ form, [ng-form], [data-ng-form] {
   }
   .avbryt {
     display: block;
-    margin-top: 25px;
+    margin-top: 15px;
   }
   .melding {
     text-align: center;
