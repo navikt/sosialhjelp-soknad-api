@@ -306,9 +306,9 @@ public class WebSoknad implements Serializable {
     }
 
     public Vedlegg hentVedleggMedUID(String uuid) {
-        for (Vedlegg vedlegg : this.vedlegg) {
-            if (vedlegg.getFillagerReferanse().equals(uuid)) {
-                return vedlegg;
+        for (Vedlegg v : vedlegg) {
+            if (v.getFillagerReferanse().equals(uuid)) {
+                return v;
             }
         }
         return null;

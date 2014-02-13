@@ -61,7 +61,7 @@ public class FillagerConnector {
             innhold.value.writeTo(baos);
             return baos.toByteArray();
         } catch (IOException e) {
-            throw new ApplicationException("Kunne ikke hente ut fil fra henvendelse");
+            throw new ApplicationException("Kunne ikke hente ut fil fra henvendelse",e);
         }
     }
 

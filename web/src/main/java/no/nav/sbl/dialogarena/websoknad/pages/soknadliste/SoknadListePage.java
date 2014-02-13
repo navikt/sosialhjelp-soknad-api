@@ -13,7 +13,7 @@ public class SoknadListePage extends BasePage {
         add(new Link<String>("dagpenger") {
             @Override
             public void onClick() {
-                PageParameters parameters = new PageParameters().set("soknadType", "Dagpenger");
+                PageParameters parameters = new PageParameters().set("soknadType", "NAV 04-01.03");
                 setResponsePage(StartSoknadPage.class, parameters);
             }
         });
