@@ -59,21 +59,20 @@ form, [ng-form], [data-ng-form] {
     margin-bottom: 25px;
     border-bottom: 1px solid #d1d1d1;
 
-    ul {
-      list-style-type: none;
-      margin-bottom: 0px;
-      padding-left: 0px;
-
-      li {
-        background-image: url(../img/7x7_svart.png);
-        background-repeat: no-repeat;
-        background-position: left 5px;
-        padding-bottom: 15px;
-        padding-left: 20px;
-        font-weight: bold;
-      }
+    li {
+      background-image: url(../img/7x7_svart.png);
+      background-repeat: no-repeat;
+      background-position: left 5px;
+      padding-bottom: 15px;
+      padding-left: 20px;
+      font-weight: bold;
     }
+  }
 
+  ul {
+    list-style-type: none;
+    margin-bottom: 0px;
+    padding-left: 0px;
   }
 
   .info, h4 {
@@ -94,7 +93,7 @@ form, [ng-form], [data-ng-form] {
     padding: 50px;
   }
   .ferdig-skjema {
-    padding-top: 50px;
+    padding-top: 40px;
   }
 
   .vedlegg {
@@ -144,6 +143,9 @@ form, [ng-form], [data-ng-form] {
       text-align: center;
       padding-bottom: 30px;
       padding-top: 35px;
+      li {
+        margin: 15px;
+      }
     }
     .valgboks-pc {
       background-image: url('../img/pc.svg'), url('../img/under-dark.png');
@@ -237,6 +239,15 @@ form, [ng-form], [data-ng-form] {
         height: 311px;
       }
     }
+  }
+
+  .form-linje.tekstfelt {
+    margin: 0 auto;
+
+    label, label input {
+      display: block;
+    }
+
   }
 }
 
@@ -382,6 +393,16 @@ form, [ng-form], [data-ng-form] {
     width: auto;
     max-width: 73%;
   }
+  ul {
+    list-style-type: none;
+    margin-bottom: 0px;
+    padding-left: 0px;
+
+    li {
+      margin: 15px;
+    }
+  }
+
   .opplastingliste {
     padding: 0;
     list-style: none;
@@ -395,9 +416,9 @@ form, [ng-form], [data-ng-form] {
       background-color: #333333;
       margin-left: 20px;
       margin-bottom: 20px;
-      &:nth-child(3n + 1) {
-        margin-left: 0
-      }
+//      &:nth-child(3n + 1) {
+//        margin-left: 0
+//      }
       padding: 10px;
       background-image: url('../img/ajaxloader/svart/loader_svart_128.gif');
       background-repeat: no-repeat;
@@ -441,10 +462,6 @@ form, [ng-form], [data-ng-form] {
     margin-bottom: 2rem;
     text-align: center;
     color: #fff;
-  }
-  .avbryt {
-    display: block;
-    margin-top: 15px;
   }
   .melding {
     text-align: center;

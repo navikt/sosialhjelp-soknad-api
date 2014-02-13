@@ -9,19 +9,19 @@
                 <h2 class="stor strek-ikon-info-orange" data-cmstekster="vedlegg.tittel"></h2>
 
                 <div class="viktig-info">
-                <ul>
-                    <li>
-                        <p class="info" data-cmstekster="vedlegg.info1"></p>
-                    </li>
-                    <li>
-                        <p class="info" data-cmstekster="vedlegg.info2"></p>
+                    <ul>
+                        <li>
+                            <p class="info" data-cmstekster="vedlegg.info1"></p>
+                        </li>
+                        <li>
+                            <p class="info" data-cmstekster="vedlegg.info2"></p>
 
-                    </li>
-                    <li>
-                        <p class="info" data-cmstekster="vedlegg.info3"></p>
+                        </li>
+                        <li>
+                            <p class="info" data-cmstekster="vedlegg.info3"></p>
 
-                    </li>
-                </ul>
+                        </li>
+                    </ul>
                 </div>
 
                 <div data-form-errors></div>
@@ -61,21 +61,19 @@
                         <div class="panel-standard">
                             <h4 data-ng-if="!erEkstraVedlegg(forventning)"
                                 data-cmstekster="vedlegg.faktum.maabekrefte"></h4>
-                            <h4 data-ng-if="erEkstraVedlegg(forventning)"
-                                data-cmstekster="vedlegg.faktum.maabekrefte.annetvedlegg"></h4>
 
                             <div class="form-linje tekstfelt" data-ng-if="erEkstraVedlegg(forventning)">
                                 <input type="hidden" data-ng-required="true" data-ng-model="filVedlagt"
                                        data-error-messages="'vedlegg.annet.ikkelastetopp.feilmelding'"/>
-                                <label>
-                                    <span data-cmstekster="vedlegg.annet.beskrivelse.sporsmal"></span>
-                                    <input type="text" maxlength="25" data-ng-maxlength="25"
+
+                                    <label for="{{$index}}annet"> {{'vedlegg.annet.beskrivelse.sporsmal' | cmstekst}}</label>
+                                    <input id="{{$index}}annet" type="text" maxlength="25" data-ng-maxlength="25"
                                            data-ng-minlength="3"
                                            data-ng-required="true" data-ng-model="forventning.navn"
                                            data-ng-blur="lagreVedlegg(forventning)"
                                            data-blur-validate
                                            data-error-messages="{required:'vedlegg.annet.navn.feilmelding', minlength:'vedlegg.annet.navn.lengde.feilmelding'}">
-                                </label>
+
                                 <span class="melding" data-cmstekster="vedlegg.annet.navn.feilmelding"></span>
                             </div>
                             <h4 data-ng-if="!erEkstraVedlegg(forventning)" class="info-liste"
@@ -92,15 +90,21 @@
                                     <a href="{{forventning.urls.URL}}">{{forventning.tittel}}</a>
                                 </div>
                                 <div class="lastOpp">
-                                    <a data-ng-href="#/opplasting/{{forventning.vedleggId}}" class="knapp-link"
-                                       data-ng-click="endreInnsendingsvalg(forventning, 'VedleggKreves');">{{'vedlegg.lastopp'
-                                        | cmstekst}}</a>
-                                    <a href="javascript:void(0)" aria-role="button"
-                                       data-ng-if="erEkstraVedlegg(forventning)"
-                                       data-ng-click="slettAnnetVedlegg(forventning);" name="Slett"
-                                       data-fokus-slett-annet data-cmstekster="vedlegg.annet.slett">{{'vedlegg.slett' |
-                                        cmstekst}}</a>
-
+                                    <ul>
+                                        <li>
+                                            <a data-ng-href="#/opplasting/{{forventning.vedleggId}}" class="knapp-link"
+                                               data-ng-click="endreInnsendingsvalg(forventning, 'VedleggKreves');">{{'vedlegg.lastopp'
+                                                | cmstekst}}</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0)" aria-role="button"
+                                               data-ng-if="erEkstraVedlegg(forventning)"
+                                               data-ng-click="slettAnnetVedlegg(forventning);" name="Slett"
+                                               data-fokus-slett-annet data-cmstekster="vedlegg.annet.slett">{{'vedlegg.slett'
+                                                |
+                                                cmstekst}}</a>
+                                        </li>
+                                    </ul>
                                 </div>
                                 <div data-ng-if="!erEkstraVedlegg(forventning)">
                                     <h4 data-cmstekster="vedlegg.faktum.andreInnsendingsvalg"></h4>
@@ -148,7 +152,7 @@
     <div class="rad-belyst leggtilekstra">
         <div class="begrensning sak-totredel">
             <section class="panel-standard oversikt">
-                <a href="javascript:void(0)" aria-role="button" class="knapp-stor"
+                <a href="javascript:void(0)" aria-role="button" class="knapp-leggtil-liten"
                    data-cmstekster="vedlegg.leggtilekstravedlegg"
                    data-ng-click="nyttAnnetVedlegg()" data-apne-annet-vedlegg></a>
             </section>
