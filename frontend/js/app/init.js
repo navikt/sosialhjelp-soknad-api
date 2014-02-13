@@ -81,7 +81,7 @@ angular.module('sendsoknad')
 
         var behandlingId = getBehandlingIdFromUrl();
 
-        if(behandlingId!="Dagpenger") {
+        if(erSoknadStartet()) {
             var soknadDeferer = $q.defer();
             var soknad = $resource('/sendsoknad/rest/soknad/behandling/:behandlingId').get(
                 {behandlingId: behandlingId},
