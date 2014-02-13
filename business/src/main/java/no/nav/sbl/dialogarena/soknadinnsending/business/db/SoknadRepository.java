@@ -60,4 +60,6 @@ public interface SoknadRepository {
     void settDelstegstatus(Long soknadId, DelstegStatus status);
 
     List<Faktum> hentBarneFakta(Long soknadId, Long faktumId);
+
+    void populerFraStruktur(WebSoknad soknad);
 }

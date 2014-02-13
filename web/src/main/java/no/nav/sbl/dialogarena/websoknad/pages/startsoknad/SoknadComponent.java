@@ -8,8 +8,10 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.slf4j.Logger;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,19 +27,11 @@ import static org.springframework.util.StreamUtils.copyToString;
 public class SoknadComponent extends WebComponent {
 
     private static final Logger LOGGER = getLogger(SoknadComponent.class);
-    private final String soknadType;
     private static List<String> files;
 
-    public SoknadComponent(String id, String soknadType) {
-        super(id);
-        initLegalFilenames();
-        this.soknadType = soknadType;
-    }
-    
     public SoknadComponent(String id) {
         super(id);
         initLegalFilenames();
-        this.soknadType = "Dagpenger";
     }
 
     private void initLegalFilenames() {
@@ -58,15 +52,19 @@ public class SoknadComponent extends WebComponent {
 
     @Override
     public void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
-        String file = format("%s.html", soknadType);
-        if (files.contains(file)) {
-            try (InputStream content = WebApplication.get().getServletContext().getResourceAsStream(format("/html/%s", file))) {
-                replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
-            } catch (IOException e) {
+        String file = "/views/built/bootstrap.html";
+        try (InputStream content = WebApplication.get().getServletContext().getResourceAsStream(format("/views/%s", file))) {
+            replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
+        } catch (IllegalArgumentException| IOException e) {
+            try {
+                File basedir = new File(WebApplication.get().getServletContext().getResource("/").toURI());
+                File devDir = new File(basedir, "../../../../frontend/views/built/bootstrapDev.html");
+                try(InputStream content = new FileInputStream(devDir)){
+                    replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
+                }
+            } catch (IOException |URISyntaxException e2) {
                 throw new ApplicationException("feilet under lasting av markup", e);
             }
-        } else {
-            throw new ApplicationException("Fant ikke template " + file);
         }
     }
 }

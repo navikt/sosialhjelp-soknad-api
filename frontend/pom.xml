@@ -13,15 +13,39 @@
     <artifactId>sendsoknad-frontend</artifactId>
     <name>${project.artifactId}</name>
     <packaging>jar</packaging>
+    <properties>
+        <grunttarget>maven-prod</grunttarget>
+    </properties>
+
 
 	<build>
+        <resources>
+            <resource>
+                <filtering>false</filtering>
+                <targetPath>META-INF/resources/views</targetPath>
+                <directory>views/built</directory>
+            </resource>
+        </resources>
 		<plugins>
 			<plugin>
 				<groupId>pl.allegro</groupId>
 				<artifactId>grunt-maven-plugin</artifactId>
 				<version>1.1.2</version>
-				<configuration>
-					<jsSourceDirectory>public</jsSourceDirectory>
+                <dependencies>
+                    <dependency>
+                        <groupId>sysinternals</groupId>
+                        <artifactId>junction</artifactId>
+                        <type>exe</type>
+                        <scope>system</scope>
+                        <version>1.04</version>
+                        <systemPath>${project.basedir}/junction.exe</systemPath>
+                    </dependency>
+                </dependencies>
+                <configuration>
+					<sourceDirectory>${basedir}</sourceDirectory>
+					<jsSourceDirectory>js</jsSourceDirectory>
+                    <gruntBuildDirectory>${project.build.directory}/classes/META-INF/resources/js</gruntBuildDirectory>
+                    <target>${grunttarget}</target>
 					<gruntOptions>
 						<gruntOption>--verbose</gruntOption>
 					</gruntOptions>
@@ -33,6 +57,8 @@
 				</configuration>
 				<executions>
 					<execution>
+                        <id>grunt</id>
+                        <phase>generate-resources</phase>
 						<goals>
 							<goal>create-resources</goal>
 							<goal>link-node-modules</goal>
@@ -43,5 +69,13 @@
 			</plugin>
 		</plugins>
 	</build>
+    <profiles>
+        <profile>
+            <id>utv</id>
+            <properties>
+                <grunttarget>maven-test</grunttarget>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>

@@ -33,10 +33,10 @@ public class WebSoknadUtils {
     private static boolean erPermittertellerHarRedusertArbeidstid(WebSoknad soknad)
     {
 
-        Faktum sluttaarsak = soknad.getFakta().get("arbeidsforhold");
+        List<Faktum> sluttaarsak = soknad.getFaktaMedKey("arbeidsforhold");
         boolean erPermittert = false;
-        if (sluttaarsak != null) {
-            List<Faktum> sortertEtterDatoTil = on(sluttaarsak.getValuelist()).collect(reverseOrder(compareWith(DATO_TIL)));
+        if (!sluttaarsak.isEmpty()) {
+            List<Faktum> sortertEtterDatoTil = on(sluttaarsak).collect(reverseOrder(compareWith(DATO_TIL)));
             LocalDate nyesteDato = on(sortertEtterDatoTil).map(DATO_TIL).head().getOrElse(null);
             List<Faktum> nyesteSluttaarsaker = on(sortertEtterDatoTil).filter(where(DATO_TIL, equalTo(nyesteDato))).collect();
             erPermittert = on(nyesteSluttaarsaker).filter(where(TYPE, equalTo("Permittert"))).head().isSome() || on(nyesteSluttaarsaker).filter(where(TYPE, equalTo("Redusert arbeidstid"))).head().isSome();
@@ -54,7 +54,7 @@ public class WebSoknadUtils {
         {
             return RUTES_I_BRUT;
         }
-        if (webSoknad.getFakta().get(FNR_KEY) != null)
+        if (!webSoknad.getFaktaMedKey(FNR_KEY).isEmpty())
         {
             Personalia personalia = getPerson(webSoknad);
             return (personalia.harUtenlandskFolkeregistrertAdresse() && (!personalia.harNorskMidlertidigAdresse())) ?  EOS_DAGPENGER : RUTES_I_BRUT;
@@ -65,7 +65,7 @@ public class WebSoknadUtils {
     }
 
     public static Personalia getPerson(WebSoknad webSoknad) {
-        Map<String, String> properties = webSoknad.getFakta().get(PERSONALIA_KEY).getProperties();
+        Map<String, String> properties = webSoknad.getFaktaMedKey(PERSONALIA_KEY).get(0).getProperties();
 
         Adresse gjeldendeAdresse = new Adresse();
         gjeldendeAdresse.setAdresse(properties.get(GJELDENDEADRESSE_KEY));
