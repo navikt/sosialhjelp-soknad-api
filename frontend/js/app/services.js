@@ -71,8 +71,7 @@ angular.module('app.services', ['ngResource'])
 			{
 				create : {
                     method: 'POST',
-                    params: {soknadType: '@soknadType'},
-                    url: '/sendsoknad/rest/soknad/opprett/:soknadType'
+                    url: '/sendsoknad/rest/soknad/opprett'
                 },
 				send   : { method: 'POST', params: {soknadId: '@soknadId', action: 'send' }},
 				remove : { method: 'POST', params: {soknadId: '@soknadId', action: 'delete' }},
