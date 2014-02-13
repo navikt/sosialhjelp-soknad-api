@@ -2347,7 +2347,8 @@ angular.module("../views/templates/reellarbeidssoker/reell-arbeidssoker.html", [
     "\n" +
     "                <span class=\"melding\"\n" +
     "                      data-cmstekster=\"reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding\"></span>\n" +
-    "\n" +
+    "            </div>\n" +
+    "            <div data-ng-if=\"erUnder60Aar()\">\n" +
     "                <p class=\"informasjonstekst\" data-cmstekster=\"reellarbeidssoker.villigdeltid.false.informasjon2\"></p>\n" +
     "            </div>\n" +
     "\n" +
@@ -2494,7 +2495,6 @@ angular.module("../views/templates/reellarbeidssoker/reell-arbeidssoker.html", [
     "            </div>\n" +
     "\n" +
     "        </div>\n" +
-    "\n" +
     "\n" +
     "        <div data-spmblokkferdig></div>\n" +
     "    </div>\n" +
@@ -2862,9 +2862,13 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "        <div class=\"begrensning sak-totredel\">\n" +
     "            <section class=\"panel-standard \">\n" +
     "                <h2 class=\"stor-strek-ikon-slett\" data-cmstekster=\"vedlegg.tittel\"></h2>\n" +
+    "\n" +
     "                <p class=\"info\" data-cmstekster=\"vedlegg.info1\"></p>\n" +
+    "\n" +
     "                <p class=\"info\" data-cmstekster=\"vedlegg.info2\"></p>\n" +
+    "\n" +
     "                <p class=\"info\" data-cmstekster=\"vedlegg.info3\"></p>\n" +
+    "\n" +
     "                <div data-form-errors></div>\n" +
     "            </section>\n" +
     "        </div>\n" +
@@ -2873,7 +2877,9 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "    <section>\n" +
     "        <div data-accordion data-close-others=\"false\" data-ng-if=\"forventninger != null\">\n" +
     "            <div class=\"vedlegg\">\n" +
-    "                <div data-accordion-group data-ng-repeat=\"forventning in forventninger | orderBy: forventning.opprettetDato\" class=\"spm-blokk vertikal\"\n" +
+    "                <div data-accordion-group\n" +
+    "                     data-ng-repeat=\"forventning in forventninger | orderBy: forventning.opprettetDato\"\n" +
+    "                     class=\"spm-blokk vertikal\"\n" +
     "                     id=\"vedlegg_{{forventning.vedleggId}}\">\n" +
     "                    <div data-accordion-heading>\n" +
     "                        <div class=\"bolk-fokus\">\n" +
@@ -2888,6 +2894,7 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                <div class=\"mini behandlet\" data-ng-if=\"vedleggEr(forventning, 'SendesIkke')\"\n" +
     "                                     data-cmstekster=\"vedlegg.behandlet.sendesikke\"></div>\n" +
     "\n" +
+    "                                <div class=\"flipp\"></div>\n" +
     "                                <h2 class=\"stor\">\n" +
     "                                    <span>{{forventning.tittel}}</span>\n" +
     "                                    <span data-ng-if=\"forventning.navn\">: {{forventning.navn}}</span>\n" +
@@ -2903,7 +2910,8 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                data-cmstekster=\"vedlegg.faktum.maabekrefte.annetvedlegg\"></h4>\n" +
     "\n" +
     "                            <div class=\"form-linje tekstfelt\" data-ng-if=\"erEkstraVedlegg(forventning)\">\n" +
-    "                                <input type=\"hidden\" data-ng-required=\"true\" data-ng-model=\"filVedlagt\" data-error-messages=\"'vedlegg.annet.ikkelastetopp.feilmelding'\"/>\n" +
+    "                                <input type=\"hidden\" data-ng-required=\"true\" data-ng-model=\"filVedlagt\"\n" +
+    "                                       data-error-messages=\"'vedlegg.annet.ikkelastetopp.feilmelding'\"/>\n" +
     "                                <label>\n" +
     "                                    <span data-cmstekster=\"vedlegg.annet.beskrivelse.sporsmal\"></span>\n" +
     "                                    <input type=\"text\" maxlength=\"25\" data-ng-maxlength=\"25\"\n" +
@@ -2930,11 +2938,13 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                </div>\n" +
     "                                <div class=\"lastOpp\">\n" +
     "                                    <a data-ng-href=\"#/opplasting/{{forventning.vedleggId}}\" class=\"knapp-link\"\n" +
-    "                                       data-ng-click=\"endreInnsendingsvalg(forventning, 'VedleggKreves');\">{{'vedlegg.lastopp' | cmstekst}}</a>\n" +
+    "                                       data-ng-click=\"endreInnsendingsvalg(forventning, 'VedleggKreves');\">{{'vedlegg.lastopp'\n" +
+    "                                        | cmstekst}}</a>\n" +
     "                                    <a href=\"javascript:void(0)\" aria-role=\"button\"\n" +
     "                                       data-ng-if=\"erEkstraVedlegg(forventning)\"\n" +
     "                                       data-ng-click=\"slettAnnetVedlegg(forventning);\" name=\"Slett\"\n" +
-    "                                       data-fokus-slett-annet data-cmstekster=\"vedlegg.annet.slett\">{{'vedlegg.slett' | cmstekst}}</a>\n" +
+    "                                       data-fokus-slett-annet data-cmstekster=\"vedlegg.annet.slett\">{{'vedlegg.slett' |\n" +
+    "                                        cmstekst}}</a>\n" +
     "\n" +
     "                                </div>\n" +
     "                                <div data-ng-if=\"!erEkstraVedlegg(forventning)\">\n" +
@@ -2958,8 +2968,10 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                           data-ng-required=\"true\"\n" +
     "                                           data-error-messages=\"'{{forventning.tittel}}'\">\n" +
     "                                </div>\n" +
-    "                                <span class=\"melding\" data-cmstekster=\"vedlegg.annet.inlinefeilmelding\" data-ng-if=\"erEkstraVedlegg(forventning)\"></span>\n" +
-    "                                <span class=\"melding\" data-cmstekster=\"vedlegg.inlinefeilmelding\" data-ng-if=\"!erEkstraVedlegg(forventning)\"></span>\n" +
+    "                                <span class=\"melding\" data-cmstekster=\"vedlegg.annet.inlinefeilmelding\"\n" +
+    "                                      data-ng-if=\"erEkstraVedlegg(forventning)\"></span>\n" +
+    "                                <span class=\"melding\" data-cmstekster=\"vedlegg.inlinefeilmelding\"\n" +
+    "                                      data-ng-if=\"!erEkstraVedlegg(forventning)\"></span>\n" +
     "                            </div>\n" +
     "                            <div data-ng-if=\"vedleggEr(forventning, 'LastetOpp')\">\n" +
     "                                <div class=\"forhandsvisning\">\n" +
@@ -3428,10 +3440,10 @@ angular.module("../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.htm
     "<div class=\"sticky-feilmelding\" data-ng-show=\"skalVises()\">\n" +
     "    <div>\n" +
     "        <div class=\"antall-feil-innholder\">\n" +
-    "            <span data-cmstekster=\"skjema.feilmelding.antall.feilmeldinger\"></span>\n" +
+    "            <span class=\"vise-tekst\" data-cmstekster=\"skjema.feilmelding.antall.feilmeldinger\"></span>\n" +
     "            <span class=\"antall-feil\"> {{feil.antallFeilMedKlasseFeil + feil.antallFeilMedKlasseFeilstyling}}</span>\n" +
     "        </div>\n" +
-    "        <span>\n" +
+    "        <span class=\"navigeringsknapper\">\n" +
     "            <a class=\"forrige\" data-cmstekster=\"skjema.feilmelding.gaatil.forrige\" data-ng-click=\"forrige()\"\n" +
     "               data-ng-class=\"{deaktiverFeilmelding: skalDeaktivereForrigeKnapp()}\"> Forrige </a>\n" +
     "            <a class=\"neste\" data-cmstekster=\"skjema.feilmelding.gaatil.neste\" data-ng-click=\"neste()\"\n" +
@@ -3464,11 +3476,11 @@ angular.module("../js/app/directives/markup/panelStandardBelystTemplate.html", [
 
 angular.module("../js/app/directives/markup/vedlegginfoboksTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/app/directives/markup/vedlegginfoboksTemplate.html",
-    "        <div class=\"vedlegginfoboks\">\n" +
+    "<div class=\"vedlegginfoboks\">\n" +
     "    <div class=\"mini ikon-vedlegg-strek\">\n" +
     "        <p class=\"leggved\" data-cmstekster=\"vedlegg.leggved\"></p>\n" +
     "        <p data-ng-transclude></p>\n" +
-    "        <p class=\"lastopp\" data-cmstekster=\"vedlegg.lastopp\"></p>\n" +
+    "        <p class=\"lastopp\" data-cmstekster=\"vedlegg.infoboks.lastopp\"></p>\n" +
     "    </div>\n" +
     "</div>");
 }]);
@@ -3504,7 +3516,7 @@ angular.module("../js/app/directives/stegindikator/stegIndikatorTemplate.html", 
 
 angular.module("../js/app/directives/stickybunn/stickyBunnTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/app/directives/stickybunn/stickyBunnTemplate.html",
-    "<div>\n" +
+    "<div data-ng-class=\"{ikkevises: tastatur === true}\">\n" +
     "    <div class=\"sticky-bunn\">\n" +
     "        <div>\n" +
     "            <span data-ng-if=\"soknadHarBlittLagret()\">\n" +
@@ -3828,7 +3840,7 @@ angular.module("../js/common/directives/select/selectTemplate.html", []).run(["$
     "                data-ng-class=\"{harFokus: harFokus(option.value)}\"/>\n" +
     "        </ul>\n" +
     "    </div>\n" +
-    "    <div data-ng-if=\"vanligSelect()\">\n" +
+    "    <div class=\"vanlig-select\" data-ng-if=\"vanligSelect()\">\n" +
     "        <label>\n" +
     "            <span data-cmstekster=\"{{ label }}\"></span>\n" +
     "            <select data-ng-model=\"faktum.value\" data-ng-options=\"opt.value as opt.text for opt in orginalListe\"></select>\n" +
