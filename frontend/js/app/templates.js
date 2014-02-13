@@ -2909,7 +2909,6 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                data-cmstekster=\"vedlegg.faktum.maabekrefte\"></h4>\n" +
     "                            <h4 data-ng-if=\"erEkstraVedlegg(forventning)\"\n" +
     "                                data-cmstekster=\"vedlegg.faktum.maabekrefte.annetvedlegg\"></h4>\n" +
-    "\n" +
     "                            <div class=\"form-linje tekstfelt\" data-ng-if=\"erEkstraVedlegg(forventning)\">\n" +
     "                                <input type=\"hidden\" data-ng-required=\"true\" data-ng-model=\"filVedlagt\"\n" +
     "                                       data-error-messages=\"'vedlegg.annet.ikkelastetopp.feilmelding'\"/>\n" +
@@ -2924,8 +2923,9 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                </label>\n" +
     "                                <span class=\"melding\" data-cmstekster=\"vedlegg.annet.navn.feilmelding\"></span>\n" +
     "                            </div>\n" +
+    "                          TEst  {{soknadData}}Test\n" +
     "                            <h4 data-ng-if=\"!erEkstraVedlegg(forventning)\" class=\"info-liste\"\n" +
-    "                                data-cmshtml=\"{{soknadData.skjemaNummer}}.vedlegg.{{forventning.skjemaNummer}}.bekrefte\"></h4>\n" +
+    "                                data-cmshtml=\"Dagpenger.vedlegg.{{forventning.skjemaNummer}}.bekrefte\"></h4>\n" +
     "\n" +
     "                            <div class=\"spm-knapper send-valg checkboxAsRadio form-linje boolean\"\n" +
     "                                 data-ng-if=\"!vedleggEr(forventning, 'LastetOpp')\"\n" +
