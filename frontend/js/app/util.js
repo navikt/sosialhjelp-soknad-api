@@ -53,6 +53,9 @@ String.prototype.toCamelCase = function() {
     });
 };
 
+function erSoknadStartet() {
+    return location.href.indexOf("sendsoknad/soknad/")>0;
+}
 function getBehandlingIdFromUrl() {
 	return location.pathname.split('/').last();
 }
