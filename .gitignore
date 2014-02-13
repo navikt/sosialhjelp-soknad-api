@@ -24,3 +24,9 @@ test.pdf
 /web/FitNesseRoot/files
 /web/FitNesseRoot/RecentChanges
 /web/FitNesseRoot/FitNesse
+
+/frontend/js/app/templates.js
+/frontend/js/built/built.js
+/frontend/js/built/built.min.js
+/frontend/views/built/bootstrap.html
+/frontend/views/built/bootstrapDev.html
