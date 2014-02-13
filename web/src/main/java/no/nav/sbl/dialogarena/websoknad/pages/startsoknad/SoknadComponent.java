@@ -55,6 +55,7 @@ public class SoknadComponent extends WebComponent {
         try (InputStream content = this.getClass().getClassLoader().getResourceAsStream(file)) {
             replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
         } catch (IllegalArgumentException| IOException e) {
+            LOGGER.warn("Fant ikke fil" + file,e);
             try {
                 File basedir = new File(WebApplication.get().getServletContext().getResource("/").toURI());
                 File devDir = new File(basedir, "../../../../frontend/views/built/bootstrapDev.html");

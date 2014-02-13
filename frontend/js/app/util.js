@@ -311,7 +311,7 @@ function settFokusTilNesteElement(inputElement) {
 }
 
 function erTouchDevice() {
-
+    //return true;
     return 'ontouchstart' in window || 'onmsgesturechange' in window;
 }
 

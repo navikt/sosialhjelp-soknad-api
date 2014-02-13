@@ -436,26 +436,31 @@ public class SoknadService implements SendSoknadService, VedleggService {
             Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummer(faktum.getSoknadId(), soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null, soknadVedlegg.getSkjemaNummer());
             Faktum parentFaktum = faktum.getParrentFaktum() != null ? repository.hentFaktum(faktum.getSoknadId(), faktum.getParrentFaktum()) : null;
             if (soknadVedlegg.trengerVedlegg(faktum) && erParentAktiv(soknadVedlegg, parentFaktum)) {
-                if (vedlegg == null) {
-                    vedlegg = new Vedlegg(faktum.getSoknadId(), soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null, soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
-                    vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
-                }
-                if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {
-                    vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
-                }
-
-                if (vedlegg.getStorrelse() > 0) {
-                    vedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
-                } else {
-                    vedlegg.setInnsendingsvalg(Vedlegg.Status.VedleggKreves);
-                }
-                vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
+                lagrePaakrevdVedlegg(faktum, soknadVedlegg, vedlegg);
             } else if (!soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId(), soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValue(), struktur)) {//do nothing
             } else if (vedlegg != null) { // sett vedleggsforventning til ikke paakrevd
                 vedlegg.setInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
                 vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
             }
         }
+    }
+
+    private void lagrePaakrevdVedlegg(Faktum faktum,
+            SoknadVedlegg soknadVedlegg, Vedlegg vedlegg) {
+        if (vedlegg == null) {
+            vedlegg = new Vedlegg(faktum.getSoknadId(), soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null, soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
+            vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
+        }
+        if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {
+            vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
+        }
+
+        if (vedlegg.getStorrelse() > 0) {
+            vedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
+        } else {
+            vedlegg.setInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+        }
+        vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
     }
 
     private boolean erParentAktiv(SoknadVedlegg soknadVedlegg, Faktum parent) {
