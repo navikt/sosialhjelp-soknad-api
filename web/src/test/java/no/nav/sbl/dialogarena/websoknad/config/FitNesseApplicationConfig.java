@@ -1,6 +1,8 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
 
+import static org.mockito.Mockito.mock;
+
 import no.nav.modig.wicket.test.FluentWicketTester;
 import no.nav.sbl.dialogarena.common.kodeverk.JsonKodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbConfig;
@@ -9,14 +11,12 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.MockConsumerConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import no.nav.sbl.dialogarena.websoknad.WicketApplication;
-import no.nav.sbl.dialogarena.websoknad.servlet.SoknadDataController;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 import java.util.Locale;
-
-import static org.mockito.Mockito.mock;
 
 @Import({FooterConfig.class, GAConfig.class, ContentConfigTest.class, DbConfig.class, MockConsumerConfig.class})
 public class FitNesseApplicationConfig {
@@ -35,12 +35,7 @@ public class FitNesseApplicationConfig {
     public String logoutURL() {
         return logoutURL;
     }
-
-    @Bean
-    public SoknadDataController soknadDataController() {
-        return new SoknadDataController();
-    }
-
+    
     @Bean
     public SoknadService webSoknadService() {
         return new SoknadService();
@@ -50,7 +45,7 @@ public class FitNesseApplicationConfig {
     HenvendelseConnector henvendelseConnector() {
         return new HenvendelseConnector();
     }
-
+    
     @Bean
     FillagerConnector faillagerConnector() {
         return new FillagerConnector();

@@ -18,7 +18,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Fak
 
 @ContextConfiguration(classes = FitNesseApplicationConfig.class)
 public class SoknadInnsendingDriver extends SpringAwareDoFixture {
-
     static {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
         System.setProperty(ModigSecurityConstants.SYSTEMUSER_USERNAME, "BD05");
@@ -92,6 +91,5 @@ public class SoknadInnsendingDriver extends SpringAwareDoFixture {
         webSoknad.getFaktaListe().add(new Faktum(webSoknad.getSoknadId(), null, faktum, verdi, BRUKERREGISTRERT));
         soknadDataController.lagreSoknad(webSoknadId.getId(), webSoknad);
     }
-
 
 }
