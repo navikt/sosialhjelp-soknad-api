@@ -65967,7 +65967,7 @@ angular.module('app.controllers', [
     .controller('ReellarbeidssokerCtrl', ['$scope', 'data', function ($scope, data) {
         $scope.alder = parseInt(data.finnFaktum('personalia').properties.alder);
 //        For testing av alder:
-//        $scope.alder = 59;
+        $scope.alder = 59;
         $scope.deltidannen = data.finnFaktum('reellarbeidssoker.villigdeltid.annensituasjon');
         $scope.pendleannen = data.finnFaktum('reellarbeidssoker.villigdeltid.annensituasjon');
         $scope.soknadId = data.soknad.soknadId;
@@ -72273,7 +72273,7 @@ angular.module("../js/common/directives/accordion/accordionGroupTemplate.html", 
     "         data-nav-aria-hidden=\"!isOpen\"\n" +
     "         data-nav-aria-expanded=\"isOpen\"\n" +
     "         data-collapse=\"!isOpen\">\n" +
-    "        <div class=\"accordion-inner\" data-ng-transclude></div>\n" +
+    "        <div class=\"accordion-inner\" data-ng-show=\"isOpen\" data-ng-transclude></div>\n" +
     "    </div>\n" +
     "</section>\n" +
     "");
@@ -72871,8 +72871,8 @@ function settFokusTilNesteElement(inputElement) {
 }
 
 function erTouchDevice() {
-    return true;
-//    return 'ontouchstart' in window || 'onmsgesturechange' in window;
+//    return true;
+    return 'ontouchstart' in window || 'onmsgesturechange' in window;
 }
 
 function getIEVersion() {
