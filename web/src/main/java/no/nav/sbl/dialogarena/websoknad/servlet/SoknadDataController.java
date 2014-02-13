@@ -97,21 +97,21 @@ public class SoknadDataController {
     public void settDelstegStatus(@PathVariable Long soknadId, @PathVariable String delsteg) {
         if(delsteg == null){
             throw new ApplicationException("Ugyldig delsteg sendt inn til REST-controller.");
-        }
-        DelstegStatus delstegstatus;
-        String s = delsteg.toLowerCase();
-        if (s.equals("utfylling")) {
-            delstegstatus = DelstegStatus.UTFYLLING;
-
-        } else if (s.equals("vedlegg")) {
-            delstegstatus = DelstegStatus.SKJEMA_VALIDERT;
-
-        } else if (s.equals("oppsummering")) {
-            delstegstatus = DelstegStatus.VEDLEGG_VALIDERT;
         } else {
-            throw new ApplicationException("Ugyldig delsteg sendt inn til REST-controller.");
+            DelstegStatus delstegstatus;
+            if (delsteg.equalsIgnoreCase("utfylling")) {
+                delstegstatus = DelstegStatus.UTFYLLING;
+    
+            } else if (delsteg.equalsIgnoreCase("vedlegg")) {
+                delstegstatus = DelstegStatus.SKJEMA_VALIDERT;
+    
+            } else if (delsteg.equalsIgnoreCase("oppsummering")) {
+                delstegstatus = DelstegStatus.VEDLEGG_VALIDERT;
+            } else {
+                throw new ApplicationException("Ugyldig delsteg sendt inn til REST-controller.");
+            }
+            soknadService.settDelsteg(soknadId, delstegstatus);
         }
-        soknadService.settDelsteg(soknadId, delstegstatus);
     }
 
     @RequestMapping(value = "{soknadId}/{faktumId}/forventning", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
