@@ -113,7 +113,7 @@ public class HandleBarKjoerer {
             @Override
             public CharSequence apply(String o, Options options) throws IOException {
                 WebSoknad soknad = finnWebSoknad(options.context);
-                Faktum faktum = soknad.getFakta().get(o);
+                Faktum faktum = soknad.getFaktumMedKey(o);
                 return options.fn(faktum);
             }
         });

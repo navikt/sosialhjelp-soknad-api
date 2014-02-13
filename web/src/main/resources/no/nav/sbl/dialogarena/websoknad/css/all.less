@@ -86,6 +86,21 @@
         }
     }
 }
+@media only screen and (max-width: 767px) {
+  .vedlegginfoboks {
+    [class*="strek-ikon-vedlegg"], [class*="ikon-vedlegg-strek"] {
+      background-image: none;
+      padding-left: 0px;
+    }
+    .leggved {
+      margin: 0px;
+    }
+    ul {
+      padding-left: 0px !important;
+    }
+  }
+}
+
 
 .informasjonstekst-normal {
     padding: 15px;
@@ -144,6 +159,24 @@
     }
 }
 
+@media only screen and (max-width: 767px) {
+  .sticky-feilmelding {
+    .vise-tekst {
+      display: none;
+    }
+    .antall-feil-innholder {
+      left: inherit !important;
+      padding: 0px !important;
+    }
+    .antall-feil {
+      line-height: 28px;
+      font-size: 2rem;
+    }
+    .navigeringsknapper {
+      padding: 0 30px;
+    }
+  }
+}
 .rad.soknad {
     padding: 0;
 }
@@ -762,14 +795,25 @@ form, [ng-form], [data-ng-form] {
 a.accordion-toggle, #vedlegg a.accordion-toggle {
   display: block;
     &:active {
-      color: #3e3832;
-      outline: none;
-      text-decoration: underline !important;
+      .flipp {
+        cursor: pointer;
+        border-color: transparent transparent #0000FF transparent;
+
+        &:before {
+          border-top: 30px solid #0000FF;
+        }
+      }
+
     }
     &:focus {
-      color: #3e3832;
-      outline: none;
-      text-decoration: underline !important;
+      .flipp {
+        cursor: pointer;
+        border-color: transparent transparent #004283 transparent;
+
+        &:before {
+          border-top: 30px solid #0067c5;
+        }
+      }
     }
 }
 a.infoikon, a.lukk, a.knapp-link {

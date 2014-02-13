@@ -1,0 +1,159 @@
+<div data-nav-tittel="skjema.tittel"></div>
+<div data-stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="2"></div>
+
+<div data-ng-form="vedleggForm" id="vedlegg" class="soknad" data-sidetittel="sidetittel.opplasting"
+     data-ng-controller="VedleggCtrl" data-trigg-bolker data-tab-autoscroll>
+    <div class="rad-belyst inforad">
+        <div class="begrensning sak-totredel">
+            <section class="panel-standard ">
+                <h2 class="stor-strek-ikon-slett" data-cmstekster="vedlegg.tittel"></h2>
+
+                <p class="info" data-cmstekster="vedlegg.info1"></p>
+
+                <p class="info" data-cmstekster="vedlegg.info2"></p>
+
+                <p class="info" data-cmstekster="vedlegg.info3"></p>
+
+                <div data-form-errors></div>
+            </section>
+        </div>
+    </div>
+
+    <section>
+        <div data-accordion data-close-others="false" data-ng-if="forventninger != null">
+            <div class="vedlegg">
+                <div data-accordion-group
+                     data-ng-repeat="forventning in forventninger | orderBy: forventning.opprettetDato"
+                     class="spm-blokk vertikal"
+                     id="vedlegg_{{forventning.vedleggId}}">
+                    <div data-accordion-heading>
+                        <div class="bolk-fokus">
+                            <div class="vedlegg-bolk"
+                                 data-ng-class="{behandlet: !vedleggEr(forventning, 'VedleggKreves'),
+                                 lastetopp: vedleggEr(forventning, 'LastetOpp'),
+                                 ekstraVedlegg: !ekstraVedleggFerdig(forventning)}">
+                                <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'LastetOpp')"
+                                     data-cmstekster="vedlegg.behandlet.lastetopp"></div>
+                                <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesSenere')"
+                                     data-cmstekster="vedlegg.behandlet.sendessenere"></div>
+                                <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'SendesIkke')"
+                                     data-cmstekster="vedlegg.behandlet.sendesikke"></div>
+
+                                <div class="flipp"></div>
+                                <h2 class="stor">
+                                    <span>{{forventning.tittel}}</span>
+                                    <span data-ng-if="forventning.navn">: {{forventning.navn}}</span>
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-div class="skjemaramme begrensning sak-totredel" data-ng-controller="validervedleggCtrl">
+                        <div class="panel-standard">
+                            <h4 data-ng-if="!erEkstraVedlegg(forventning)"
+                                data-cmstekster="vedlegg.faktum.maabekrefte"></h4>
+                            <h4 data-ng-if="erEkstraVedlegg(forventning)"
+                                data-cmstekster="vedlegg.faktum.maabekrefte.annetvedlegg"></h4>
+
+                            <div class="form-linje tekstfelt" data-ng-if="erEkstraVedlegg(forventning)">
+                                <input type="hidden" data-ng-required="true" data-ng-model="filVedlagt"
+                                       data-error-messages="'vedlegg.annet.ikkelastetopp.feilmelding'"/>
+                                <label>
+                                    <span data-cmstekster="vedlegg.annet.beskrivelse.sporsmal"></span>
+                                    <input type="text" maxlength="25" data-ng-maxlength="25"
+                                           data-ng-minlength="3"
+                                           data-ng-required="true" data-ng-model="forventning.navn"
+                                           data-ng-blur="lagreVedlegg(forventning)"
+                                           data-blur-validate
+                                           data-error-messages="{required:'vedlegg.annet.navn.feilmelding', minlength:'vedlegg.annet.navn.lengde.feilmelding'}">
+                                </label>
+                                <span class="melding" data-cmstekster="vedlegg.annet.navn.feilmelding"></span>
+                            </div>
+                            <h4 data-ng-if="!erEkstraVedlegg(forventning)" class="info-liste"
+                                data-cmshtml="{{soknadData.skjemaNummer}}.vedlegg.{{forventning.skjemaNummer}}.bekrefte"></h4>
+
+                            <div class="spm-knapper send-valg checkboxAsRadio form-linje boolean"
+                                 data-ng-if="!vedleggEr(forventning, 'LastetOpp')"
+                                 data-ng-class="{feil: skalViseFeil.value === true && validert.value === true}">
+
+                                <div class="valgbokser" data-ng-if="vedleggEr(forventning, 'VedleggKreves')"
+                                     data-ng-show="false">
+                                </div>
+                                <div class="egen-linje" data-ng-if="forventning.urls.URL != ''">
+                                    <a href="{{forventning.urls.URL}}">{{forventning.tittel}}</a>
+                                </div>
+                                <div class="lastOpp">
+                                    <a data-ng-href="#/opplasting/{{forventning.vedleggId}}" class="knapp-link"
+                                       data-ng-click="endreInnsendingsvalg(forventning, 'VedleggKreves');">{{'vedlegg.lastopp'
+                                        | cmstekst}}</a>
+                                    <a href="javascript:void(0)" aria-role="button"
+                                       data-ng-if="erEkstraVedlegg(forventning)"
+                                       data-ng-click="slettAnnetVedlegg(forventning);" name="Slett"
+                                       data-fokus-slett-annet data-cmstekster="vedlegg.annet.slett">{{'vedlegg.slett' |
+                                        cmstekst}}</a>
+
+                                </div>
+                                <div data-ng-if="!erEkstraVedlegg(forventning)">
+                                    <h4 data-cmstekster="vedlegg.faktum.andreInnsendingsvalg"></h4>
+
+                                    <input id="{{$index}}ettersendRadio"
+                                           data-ng-model="forventning.innsendingsvalg"
+                                           type="radio" value="SendesSenere"
+                                           data-ng-click="endreInnsendingsvalg(forventning, 'SendesSenere')">
+                                    <label for="{{$index}}ettersendRadio"
+                                           data-cmstekster="vedlegg.faktum.ettersend"></label>
+
+                                    <input id="{{$index}}ikkesendRadio"
+                                           data-ng-model="forventning.innsendingsvalg"
+                                           type="radio"
+                                           value="SendesIkke"
+                                           data-ng-click="endreInnsendingsvalg(forventning, 'SendesIkke')">
+                                    <label for="{{$index}}ikkesendRadio"
+                                           data-cmstekster="vedlegg.faktum.ikkesend"></label>
+                                    <input type="hidden" class="hidden-vedlegg" data-ng-model="hiddenFelt.value"
+                                           data-ng-required="true"
+                                           data-error-messages="'{{forventning.tittel}}'">
+                                </div>
+                                <span class="melding" data-cmstekster="vedlegg.annet.inlinefeilmelding"
+                                      data-ng-if="erEkstraVedlegg(forventning)"></span>
+                                <span class="melding" data-cmstekster="vedlegg.inlinefeilmelding"
+                                      data-ng-if="!erEkstraVedlegg(forventning)"></span>
+                            </div>
+                            <div data-ng-if="vedleggEr(forventning, 'LastetOpp')">
+                                <div class="forhandsvisning">
+                                    <div data-bildenavigering data-vedlegg="forventning"
+                                         data-nav-template="bildenavigeringTemplateLiten.html"></div>
+                                    <div class="knapper">
+                                        <a href="javascript:void(0)" aria-role="button" data-cmstekster="vedlegg.slett"
+                                           data-ng-click="slettVedlegg(forventning)"
+                                           data-cmshtml="vedlegg.slettvedlegg"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="rad-belyst leggtilekstra">
+        <div class="begrensning sak-totredel">
+            <section class="panel-standard oversikt">
+                <a href="javascript:void(0)" aria-role="button" class="knapp-stor"
+                   data-cmstekster="vedlegg.leggtilekstravedlegg"
+                   data-ng-click="nyttAnnetVedlegg()" data-apne-annet-vedlegg></a>
+            </section>
+        </div>
+    </div>
+
+    <div class="rad ferdig-skjema">
+        <div class="begrensning sak-totredel">
+            <section class="panel-standard oversikt">
+                <a href="javascript:void(0)" aria-role="button" id="til-oppsummering" class="knapp-hoved"
+                   data-ng-click="validerVedlegg(vedleggForm)"
+                   data-cmstekster="vedlegg.ferdig"
+                   data-fremdriftsindikator="grå" role="button"></a>
+            </section>
+        </div>
+    </div>
+    <div data-sist-lagret data-navtilbakelenke="tilbake.til.soknad.lenke"></div>
+</div>
