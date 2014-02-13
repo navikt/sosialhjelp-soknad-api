@@ -63,7 +63,7 @@ public class SoknadComponent extends WebComponent {
                     replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
                 }
             } catch (IOException |URISyntaxException e2) {
-                throw new ApplicationException("feilet under lasting av markup", e);
+                throw new ApplicationException("feilet under lasting av markup", e2);
             }
         }
     }
