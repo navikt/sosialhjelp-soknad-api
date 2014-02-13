@@ -1,5 +1,9 @@
 package no.nav.sbl.dialogarena.websoknad.fixture;
 
+import no.nav.sbl.dialogarena.websoknad.domain.StartSoknad;
+
+import no.nav.sbl.dialogarena.websoknad.servlet.SoknadTpsDataController;
+
 import no.nav.modig.core.context.ModigSecurityConstants;
 import no.nav.modig.core.context.SubjectHandlerUtils;
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
@@ -84,7 +88,9 @@ public class SoknadInnsendingDriver extends SpringAwareDoFixture {
     }
 
     private Map<String, String> startSoknad() {
-        return soknadDataController.opprettSoknad("Dagpenger");
+        StartSoknad soknadType = new StartSoknad();
+        soknadType.setSoknadType("NAV 04-01.03");
+        return soknadDataController.opprettSoknad(soknadType);
     }
 
     public void lagreFaktumMedVerdi(String faktum, String verdi) {

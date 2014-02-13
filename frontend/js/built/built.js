@@ -64540,11 +64540,13 @@ angular.module('app.controllers', [
                 return $scope.arbeidsforhold.properties.land;
             }
         }, function () {
-          	$resource('/sendsoknad/rest/ereosland/:landkode').get(
-				{landkode: $scope.arbeidsforhold.properties.land},
-	            function (eosdata) { // Success
-	                $scope.arbeidsforhold.properties.eosland = eosdata.result;
-	        });
+        	if($scope.arbeidsforhold.properties.land && $scope.arbeidsforhold.properties.land != "") {
+	          	$resource('/sendsoknad/rest/ereosland/:landkode').get(
+					{landkode: $scope.arbeidsforhold.properties.land},
+		            function (eosdata) { // Success
+		                $scope.arbeidsforhold.properties.eosland = eosdata.result;
+		        });
+	        }
         });
 
 
@@ -65562,7 +65564,7 @@ angular.module('app.controllers', [
         $scope.skalViseBrosjyreMelding = false;
 
         $scope.oppsummering = false;
-        if (getBehandlingIdFromUrl() != "Dagpenger") {
+        if (erSoknadStartet()) {
             $scope.utslagskriterier.harlestbrosjyre = true;
             $scope.oppsummering = true;
         }
@@ -65595,7 +65597,7 @@ angular.module('app.controllers', [
 
         $scope.soknadErStartet = function () {
             var behandlingId = getBehandlingIdFromUrl();
-            if (behandlingId != "Dagpenger") {
+            if (erSoknadStartet()) {
                 return true;
             }
             return false;
@@ -65610,7 +65612,7 @@ angular.module('app.controllers', [
         }
 
         $scope.startSoknad = function () {
-            var soknadType = window.location.pathname.split("/")[3];
+            var soknadType = decodeURI(window.location.pathname).split("/")[3];
             $scope.fremdriftsindikator.laster = true;
             $scope.soknad = soknadService.create({soknadType: soknadType},
                 function (result) {
@@ -68014,7 +68016,7 @@ $.datepicker.setDefaults($.datepicker.regional['no']);
 
         var behandlingId = getBehandlingIdFromUrl();
 
-        if(behandlingId!="Dagpenger") {
+        if(erSoknadStartet()) {
             var soknadDeferer = $q.defer();
             var soknad = $resource('/sendsoknad/rest/soknad/behandling/:behandlingId').get(
                 {behandlingId: behandlingId},
@@ -68585,8 +68587,7 @@ angular.module('app.services', ['ngResource'])
 			{
 				create : {
                     method: 'POST',
-                    params: {soknadType: '@soknadType'},
-                    url: '/sendsoknad/rest/soknad/opprett/:soknadType'
+                    url: '/sendsoknad/rest/soknad/opprett'
                 },
 				send   : { method: 'POST', params: {soknadId: '@soknadId', action: 'send' }},
 				remove : { method: 'POST', params: {soknadId: '@soknadId', action: 'delete' }},
@@ -69228,10 +69229,10 @@ angular.module("../views/templates/arbeidsforhold/konkurs.html", []).run(["$temp
     "             data-feilmelding=\"arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.feilmelding\"\n" +
     "             data-obligatorisk=\"true\"></div>\n" +
     "\n" +
-    "        <div data-navinfoboks>\n" +
+    "        <!--div data-navinfoboks>\n" +
     "            <p class=\"sluttaarsak-informasjon\"\n" +
     "               data-cmstekster=\"arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.informasjon\"></p>\n" +
-    "        </div>\n" +
+    "        </div-->\n" +
     "\n" +
     "\n" +
     "        <div class=\"form-linje spm boolean\">\n" +
@@ -72273,7 +72274,7 @@ angular.module("../js/common/directives/accordion/accordionGroupTemplate.html", 
     "         data-nav-aria-hidden=\"!isOpen\"\n" +
     "         data-nav-aria-expanded=\"isOpen\"\n" +
     "         data-collapse=\"!isOpen\">\n" +
-    "        <div class=\"accordion-inner\" data-ng-transclude></div>\n" +
+    "        <div class=\"accordion-inner\" data-ng-show=\"isOpen\" data-ng-transclude></div>\n" +
     "    </div>\n" +
     "</section>\n" +
     "");
@@ -72616,6 +72617,9 @@ String.prototype.toCamelCase = function() {
     });
 };
 
+function erSoknadStartet() {
+    return location.href.indexOf("sendsoknad/soknad/")>0;
+}
 function getBehandlingIdFromUrl() {
 	return location.pathname.split('/').last();
 }
