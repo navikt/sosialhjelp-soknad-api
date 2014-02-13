@@ -3570,7 +3570,7 @@ angular.module("../js/common/directives/accordion/accordionGroupTemplate.html", 
     "         data-nav-aria-hidden=\"!isOpen\"\n" +
     "         data-nav-aria-expanded=\"isOpen\"\n" +
     "         data-collapse=\"!isOpen\">\n" +
-    "        <div class=\"accordion-inner\" data-ng-transclude></div>\n" +
+    "        <div class=\"accordion-inner\" data-ng-show=\"isOpen\" data-ng-transclude></div>\n" +
     "    </div>\n" +
     "</section>\n" +
     "");
