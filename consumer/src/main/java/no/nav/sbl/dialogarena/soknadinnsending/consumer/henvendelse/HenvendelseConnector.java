@@ -77,7 +77,7 @@ public class HenvendelseConnector {
     }
 
     private XMLHovedskjema createXMLSkjema(String skjema, String uid) {
-        return new XMLHovedskjema().withSkjemanummer("NAV 04-01.03").withUuid(uid).withInnsendingsvalg(IKKE_VALGT.toString());
+        return new XMLHovedskjema().withSkjemanummer(skjema).withUuid(uid).withInnsendingsvalg(IKKE_VALGT.toString());
     }
 
     public WSHentSoknadResponse hentSoknad(String behandlingsId) {
