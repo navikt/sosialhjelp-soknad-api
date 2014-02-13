@@ -208,6 +208,10 @@ public class Vedlegg {
         this.opprettetDato = opprettetDato;
     }
 
+    public void setData(byte[] data) {
+        this.data = data;
+    }
+
     public enum Status {
         IkkeVedlegg,
         VedleggKreves,
@@ -220,4 +224,6 @@ public class Vedlegg {
             return this.equals(status);
         }
     }
+
+
 }

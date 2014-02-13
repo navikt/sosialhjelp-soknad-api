@@ -8,24 +8,18 @@ public class FaktumEgenskap implements Serializable {
     private Long soknadId;
     private String key;
     private String value;
-    private Boolean systemEgenskap;
+    private Integer systemEgenskap;
 
     public FaktumEgenskap() {
     }
 
-    public FaktumEgenskap(Long soknadId, Long faktumId, String key, String value, String systemEgenskap) {
+    public FaktumEgenskap(Long soknadId, Long faktumId, String key, String value, Boolean systemEgenskap) {
         this.faktumId = faktumId;
         this.soknadId = soknadId;
         this.key = key;
         this.value = value;
-
-        if (systemEgenskap.equals("1")) {
-            this.systemEgenskap = true;
-        } else {
-            this.systemEgenskap = false;
-        }
+        this.systemEgenskap = systemEgenskap ? 1 : 0;
     }
-
 
     public Long getFaktumId() {
         return faktumId;
@@ -59,11 +53,11 @@ public class FaktumEgenskap implements Serializable {
         this.value = value;
     }
 
-    public Boolean getSystemEgenskap() {
+    public Integer getSystemEgenskap() {
         return systemEgenskap;
     }
 
-    public void setSystemEgenskap(Boolean systemEgenskap) {
+    public void setSystemEgenskap(Integer systemEgenskap) {
         this.systemEgenskap = systemEgenskap;
     }
 }
