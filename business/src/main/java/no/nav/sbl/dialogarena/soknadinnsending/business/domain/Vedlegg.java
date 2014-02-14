@@ -123,7 +123,7 @@ public class Vedlegg {
     @XmlTransient
     @JsonIgnore
     public byte[] getData() {
-        return data;
+        return data.clone();
     }
 
     @Override
