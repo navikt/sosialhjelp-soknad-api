@@ -30,6 +30,14 @@
   }
 }
 
+button:focus {
+  outline: none;
+}
+button.knapp-leggtil-liten:focus {
+  outline: none !important;
+  border: 1px solid #0067c5 !important;
+}
+
 #vedlegg {
   input[type='radio']:focus:checked + label {
     background: url(../img/check_valgt_tab.svg) 0 0 no-repeat;
@@ -89,6 +97,7 @@ a.accordion-toggle, #vedlegg a.accordion-toggle {
 
 a.knapp-link:focus, a.knapp-link:active {
   text-decoration: none !important;
+  border: 1px solid #0067c5;
 }
 
 a.infoikon, a.lukk{

@@ -2866,10 +2866,12 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "\n" +
     "<div data-ng-form=\"vedleggForm\" id=\"vedlegg\" class=\"soknad\" data-sidetittel=\"sidetittel.opplasting\"\n" +
     "     data-ng-controller=\"VedleggCtrl\" data-trigg-bolker data-tab-autoscroll>\n" +
+    "\n" +
     "    <div class=\"rad-belyst inforad\">\n" +
     "        <div class=\"begrensning sak-totredel\">\n" +
     "            <section class=\"panel-standard \">\n" +
     "                <h2 class=\"stor strek-ikon-info-orange\" data-cmstekster=\"vedlegg.tittel\"></h2>\n" +
+    "                <div data-form-errors></div>\n" +
     "\n" +
     "                <div class=\"viktig-info\">\n" +
     "                    <ul>\n" +
@@ -2887,10 +2889,10 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                    </ul>\n" +
     "                </div>\n" +
     "\n" +
-    "                <div data-form-errors></div>\n" +
     "            </section>\n" +
     "        </div>\n" +
     "    </div>\n" +
+    "    <div data-sticky-feilmelding></div>\n" +
     "\n" +
     "    <section>\n" +
     "        <div data-accordion data-close-others=\"false\" data-ng-if=\"forventninger != null\">\n" +
@@ -2926,7 +2928,7 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                            <h4 data-ng-if=\"!erEkstraVedlegg(forventning)\"\n" +
     "                                data-cmstekster=\"vedlegg.faktum.maabekrefte\"></h4>\n" +
     "                            <div class=\"form-linje tekstfelt\" data-ng-if=\"erEkstraVedlegg(forventning)\">\n" +
-    "                                <input type=\"hidden\" data-ng-required=\"true\" data-ng-model=\"filVedlagt\"\n" +
+    "                                <input class=\"hidden-vedlegg\" type=\"hidden\" data-ng-required=\"true\" data-ng-model=\"filVedlagt\"\n" +
     "                                       data-error-messages=\"'vedlegg.annet.ikkelastetopp.feilmelding'\"/>\n" +
     "\n" +
     "                                <div class=\"annet-container\" data-ng-class=\"{annetlastetopp: vedleggEr(forventning, 'LastetOpp')}\">\n" +
@@ -2945,7 +2947,7 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                            <h4 data-ng-if=\"!erEkstraVedlegg(forventning)\" class=\"info-liste\"\n" +
     "                                data-cmshtml=\"Dagpenger.vedlegg.{{forventning.skjemaNummer}}.bekrefte\"></h4>\n" +
     "\n" +
-    "                            <div class=\"spm-knapper send-valg checkboxAsRadio form-linje boolean\"\n" +
+    "                            <div class=\"spm-knapper send-valg checkboxAsRadio form-linje knapp\"\n" +
     "                                 data-ng-if=\"!vedleggEr(forventning, 'LastetOpp')\"\n" +
     "                                 data-ng-class=\"{feil: skalViseFeil.value === true && validert.value === true}\">\n" +
     "\n" +
@@ -2993,7 +2995,7 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                           data-ng-required=\"true\"\n" +
     "                                           data-error-messages=\"'{{forventning.tittel}}'\">\n" +
     "                                </div>\n" +
-    "                                <span class=\"melding\" data-cmstekster=\"vedlegg.annet.inlinefeilmelding\"\n" +
+    "                                <span class=\"melding annet\" data-cmstekster=\"vedlegg.annet.inlinefeilmelding\"\n" +
     "                                      data-ng-if=\"erEkstraVedlegg(forventning)\"></span>\n" +
     "                                <span class=\"melding\" data-cmstekster=\"vedlegg.inlinefeilmelding\"\n" +
     "                                      data-ng-if=\"!erEkstraVedlegg(forventning)\"></span>\n" +
