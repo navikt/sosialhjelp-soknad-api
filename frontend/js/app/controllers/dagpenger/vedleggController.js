@@ -37,6 +37,10 @@ angular.module('nav.vedlegg.controller', [])
             return vedlegg.innsendingsvalg === status;
         };
 
+        $scope.vedleggFerdigBehandlet = function(forventning) {
+            return $scope.ekstraVedleggFerdig(forventning) && !$scope.vedleggEr(forventning, 'VedleggKreves');
+        }
+
         $scope.ekstraVedleggFerdig = function (forventning) {
             if(forventning.skjemaNummer === 'N6') {
                 return forventning.navn !== null && forventning.navn !== undefined;
