@@ -75,7 +75,19 @@ public class VedleggRepositoryJdbcTest {
     }
 
     private Vedlegg getVedlegg(byte[] bytes) {
-        return new Vedlegg(null, 12L, 10L, "1", "navn", (long) bytes.length, 1, null, null, DateTime.now().getMillis(), Vedlegg.Status.UnderBehandling);
+        Vedlegg vedlegg = new Vedlegg()
+                .medVedleggId(null)
+                .medSoknadId(12L)
+                .medFaktumId(10L)
+                .medSkjemaNummer("1")
+                .medNavn("navn")
+                .medStorrelse((long) bytes.length)
+                .medAntallSider(1)
+                .medFillagerReferanse(null)
+                .medData(null)
+                .medOpprettetDato(DateTime.now().getMillis())
+                .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
+        return vedlegg;
     }
 
 }

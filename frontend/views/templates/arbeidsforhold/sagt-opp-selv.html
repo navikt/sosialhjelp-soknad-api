@@ -1,41 +1,37 @@
-<div>
-    <div data-navinfoboks>
-        <p class="sluttaarsak-informasjon" cmstekster="arbeidsforhold.sluttaarsak.sagtoppselv.informasjon"></p>
-        <p cmstekster="arbeidsforhold.sluttaarsak.advarsel"></p>
+<div class="varighet">
+    <div data-nav-dato-intervall
+         data-fra-dato="faktum.properties.datofra"
+         data-til-dato="faktum.properties.datotil"
+         data-label="arbeidsforhold.arbeidsgiver.varighet"
+         data-er-fremtidigdato-tillatt="true"
+         data-er-begge-required="true">
     </div>
+</div>
 
-    <div class="spm" data-nav-faktum="sluttaarsak"
-         data-ikke-auto-lagre="true">
+<div data-navtextarea
+     data-navconfig
+     data-nav-faktum-property="sagtoppselvAarsak"
+     data-nokkel="arbeidsforhold.sluttaarsak.sagtoppselv.aarsak"
+     data-maxlengde="500"
+     data-feilmelding="arbeidsforhold.sluttaarsak.sagtoppselv.aarsak.feilmelding"
+     data-obligatorisk="true"></div>
 
-        <div class="varighet">
-            <div data-nav-dato-intervall
-                 data-fra-dato="faktum.properties.datofra"
-                 data-til-dato="faktum.properties.datotil"
-                 data-label="arbeidsforhold.arbeidsgiver.varighet"
-                 data-er-fremtidigdato-tillatt="true"
-                 data-er-begge-required="true">
-            </div>
-        </div>
+<div class="ekstra-spm-boks">
+    <div data-navinfoboks>
+        <p class="sluttaarsak-informasjon">{{ 'arbeidsforhold.sluttaarsak.sagtoppselv.informasjon' | cmstekst }}</p>
 
-        <div data-navtextarea
-             data-navconfig
-             data-nav-faktum-property="sagtoppselvAarsak"
-             data-nokkel="arbeidsforhold.sluttaarsak.sagtoppselv.aarsak"
-             data-maxlengde="500"
-             data-feilmelding="arbeidsforhold.sluttaarsak.sagtoppselv.aarsak.feilmelding"
-             data-obligatorisk="true"></div>
-
-        <div class="ekstra-spm-boks" data-vedlegginfoboks>
-            <ul>
-                <li>
-                    <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></p>
-                </li>
-                <li>
-                    <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2"></p>
-                    <a href="{{sluttaarsakUrl}}" data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst">
-                    </a>
-                </li>
-            </ul>
-        </div>
+        <p>{{ 'arbeidsforhold.sluttaarsak.advarsel' | cmstekst }}</p>
+    </div>
+    <div data-vedlegginfoboks>
+        <ul>
+            <li>
+                <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</p>
+            </li>
+            <li>
+                <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2' | cmstekst }}</p>
+                <a href="{{sluttaarsakUrl}}">{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst' | cmstekst
+                    }}</a>
+            </li>
+        </ul>
     </div>
 </div>

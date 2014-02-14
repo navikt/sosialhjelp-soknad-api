@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.websoknad.pages.startsoknad;
 
-import no.nav.modig.core.exception.ApplicationException;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebComponent;
@@ -64,7 +63,7 @@ public class SoknadComponent extends WebComponent {
                 }
             } catch (IOException |URISyntaxException e2) {
                 LOGGER.warn("Problem med ressurslasting " + file, e2);
-                throw new ApplicationException("feilet under lasting av markup", e);
+                //throw new ApplicationException("feilet under lasting av markup", e);
             }
         }
     }

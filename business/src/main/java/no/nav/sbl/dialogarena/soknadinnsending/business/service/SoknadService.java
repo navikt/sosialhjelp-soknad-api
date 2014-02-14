@@ -310,11 +310,19 @@ public class SoknadService implements SendSoknadService, VedleggService {
             if (Detect.isImage(bytes)) {
                 bytes = Convert.scaleImageAndConvertToPdf(bytes, new Dimension(1240, 1754));
 
-                Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(),
-                        vedlegg.getFaktumId(), vedlegg.getskjemaNummer(),
-                        vedlegg.getNavn(), (long) bytes.length, 1, UUID
-                        .randomUUID().toString(), null, vedlegg.getOpprettetDato(),
-                        Vedlegg.Status.UnderBehandling);
+                Vedlegg sideVedlegg = new Vedlegg()
+                        .medVedleggId(null)
+                        .medSoknadId(vedlegg.getSoknadId())
+                        .medFaktumId(vedlegg.getFaktumId())
+                        .medSkjemaNummer(vedlegg.getskjemaNummer())
+                        .medNavn(vedlegg.getNavn())
+                        .medStorrelse((long) bytes.length)
+                        .medAntallSider(1)
+                        .medFillagerReferanse(UUID.randomUUID().toString())
+                        .medData(null)
+                        .medOpprettetDato(vedlegg.getOpprettetDato())
+                        .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
+                
                 resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
                         bytes));
 
@@ -327,12 +335,20 @@ public class SoknadService implements SendSoknadService, VedleggService {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     page.save(baos);
                     page.close();
-                    Vedlegg sideVedlegg = new Vedlegg(null,
-                            vedlegg.getSoknadId(), vedlegg.getFaktumId(),
-                            vedlegg.getskjemaNummer(),
-                            vedlegg.getNavn(), (long) baos.size(), 1,
-                            UUID.randomUUID().toString(), null, vedlegg.getOpprettetDato(),
-                            Vedlegg.Status.UnderBehandling);
+                    
+                    Vedlegg sideVedlegg = new Vedlegg()
+                        .medVedleggId(null)
+                        .medSoknadId(vedlegg.getSoknadId())
+                        .medFaktumId(vedlegg.getFaktumId())
+                        .medSkjemaNummer(vedlegg.getskjemaNummer())
+                        .medNavn(vedlegg.getNavn())
+                        .medStorrelse((long) baos.size())
+                        .medAntallSider(1)
+                        .medFillagerReferanse(UUID.randomUUID().toString())
+                        .medData(null)
+                        .medOpprettetDato(vedlegg.getOpprettetDato())
+                        .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
+
                     resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
                             baos.toByteArray()));
                 }
