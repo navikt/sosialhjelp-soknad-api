@@ -2048,7 +2048,7 @@ angular.module("../views/templates/opplasting.html", []).run(["$templateCache", 
     "<div id=\"opplasting\" class=\"soknad rad-belyst\" data-sidetittel=\"sidetittel.opplasting\" data-ng-controller=\"OpplastingVedleggCtrl\">\n" +
     "    <div class=\"begrensning sak-halv\">\n" +
     "        <div class=\"panel uten-ramme\">\n" +
-    "            <h1 class=\"stor-ikon-vedlegg-strek\" ><span data-ng-if=\"vedlegg.vedleggId\">{{vedlegg.tittel}}</span><span\n" +
+    "            <h1 class=\"stor-ikon-vedlegg-strek\" data-scrolling-tittel ><span data-ng-if=\"vedlegg.vedleggId\">{{vedlegg.tittel}}</span><span\n" +
     "                    data-ng-if=\"vedlegg.navn\">: {{vedlegg.navn}}</span></h1>\n" +
     "\n" +
     "        </div>\n" +
