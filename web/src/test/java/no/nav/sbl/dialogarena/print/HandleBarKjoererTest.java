@@ -71,8 +71,8 @@ public class HandleBarKjoererTest {
         soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold4", FaktumType.BRUKERREGISTRERT));
         String html = new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/html/WebSoknadHtml");
 
-        String baseUrl = "/c:/test/";
-        String pdf = "c:/test/handlebar.pdf";
+        String baseUrl = "";
+        String pdf = "handlebar.pdf";
         PDFFabrikk.lagPdfFil(html, baseUrl, pdf);
 
         long start = new Date().getTime();
