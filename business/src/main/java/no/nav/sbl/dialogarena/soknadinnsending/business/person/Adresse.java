@@ -4,7 +4,7 @@ public class Adresse {
     private String adressetype;
     private String gyldigTil;
     private String gyldigFra;
-    private String adresse;
+    private String adresseString;
 
     public String getAdressetype() {
         return adressetype;
@@ -31,10 +31,10 @@ public class Adresse {
     }
 
     public String getAdresse() {
-        return adresse;
+        return adresseString;
     }
 
     public void setAdresse(String adresse) {
-        this.adresse = adresse;
+        this.adresseString = adresse;
     }
 }

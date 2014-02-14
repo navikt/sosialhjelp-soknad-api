@@ -15,7 +15,7 @@ public class EosBorgerService {
             , "POL", "PRT", "ROU", "SVK", "SVN", "ESP", "GBR", "SWE", "CZE", "DEU", "HUN", "AUT");
     
     public String getStatsborgeskapType(String landkode) {
-        if(landkode.equals("NOR")) {
+        if("NOR".equals(landkode)) {
             return "norsk";
         } else if(eosLand.contains(landkode)) {
             return "eos";
