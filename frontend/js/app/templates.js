@@ -2929,7 +2929,9 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                <input type=\"hidden\" data-ng-required=\"true\" data-ng-model=\"filVedlagt\"\n" +
     "                                       data-error-messages=\"'vedlegg.annet.ikkelastetopp.feilmelding'\"/>\n" +
     "\n" +
-    "                                    <label for=\"{{$index}}annet\"> {{'vedlegg.annet.beskrivelse.sporsmal' | cmstekst}}></label>\n" +
+    "                                <div class=\"annet-container\" data-ng-class=\"{annetlastetopp: vedleggEr(forventning, 'LastetOpp')}\">\n" +
+    "                                    <label for=\"{{$index}}annet\"> {{'vedlegg.annet.beskrivelse.sporsmal' |\n" +
+    "                                        cmstekst}}</label>\n" +
     "                                    <input id=\"{{$index}}annet\" type=\"text\" maxlength=\"25\" data-ng-maxlength=\"25\"\n" +
     "                                           data-ng-minlength=\"3\"\n" +
     "                                           data-ng-required=\"true\" data-ng-model=\"forventning.navn\"\n" +
@@ -2937,7 +2939,8 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                           data-blur-validate\n" +
     "                                           data-error-messages=\"{required:'vedlegg.annet.navn.feilmelding', minlength:'vedlegg.annet.navn.lengde.feilmelding'}\">\n" +
     "\n" +
-    "                                <span class=\"melding\" data-cmstekster=\"vedlegg.annet.navn.feilmelding\"></span>\n" +
+    "                                    <span class=\"melding\" data-cmstekster=\"vedlegg.annet.navn.feilmelding\"></span>\n" +
+    "                                </div>\n" +
     "                            </div>\n" +
     "                            <h4 data-ng-if=\"!erEkstraVedlegg(forventning)\" class=\"info-liste\"\n" +
     "                                data-cmshtml=\"{{soknadData.skjemaNummer}}.vedlegg.{{forventning.skjemaNummer}}.bekrefte\"></h4>\n" +

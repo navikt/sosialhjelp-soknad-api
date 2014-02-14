@@ -245,12 +245,23 @@ form, [ng-form], [data-ng-form] {
     margin: 0 auto;
 
     .annet-container {
-      label, label input {
-        display: block;
+      width: 233px;
+      text-align: left;
+      margin: 0 auto;
+
+      input {
+        width: 100%;
+        margin-top: 8px;
       }
+
+    }
+    .annet-container.annetlastetopp {
+      width: 220px !important;
     }
   }
 }
+
+
 
 .bildenavigering {
   width: 100%;
@@ -417,9 +428,9 @@ form, [ng-form], [data-ng-form] {
       background-color: #333333;
       margin-left: 20px;
       margin-bottom: 20px;
-//      &:nth-child(3n + 1) {
-//        margin-left: 0
-//      }
+      //      &:nth-child(3n + 1) {
+      //        margin-left: 0
+      //      }
       padding: 10px;
       background-image: url('../img/ajaxloader/svart/loader_svart_128.gif');
       background-repeat: no-repeat;
