@@ -48,7 +48,19 @@ public class SoknadServiceTest {
 
     @Test
     public void skalAKonvertereFilerVedOpplasting() throws IOException {
-        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L, "1", "", 1L, 1, null, null,DateTime.now().getMillis(), Vedlegg.Status.VedleggKreves);
+        Vedlegg vedlegg = new Vedlegg()
+                .medVedleggId(1L)
+                .medSoknadId(1L)
+                .medFaktumId(1L)
+                .medSkjemaNummer("1")
+                .medNavn("")
+                .medStorrelse(1L)
+                .medAntallSider(1)
+                .medFillagerReferanse(null)
+                .medData(null)
+                .medOpprettetDato(DateTime.now().getMillis())
+                .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
         when(vedleggRepository.opprettVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(11L);
 
@@ -60,7 +72,19 @@ public class SoknadServiceTest {
 
     @Test
     public void skalKonverterePdfVedOpplasting() throws IOException {
-        Vedlegg vedlegg = new Vedlegg(1L, 1L, 1L, "1", "", 1L, 1, null, null, DateTime.now().getMillis(), Vedlegg.Status.VedleggKreves);
+        Vedlegg vedlegg = new Vedlegg()
+                .medVedleggId(1L)
+                .medSoknadId(1L)
+                .medFaktumId(1L)
+                .medSkjemaNummer("1")
+                .medNavn("")
+                .medStorrelse(1L)
+                .medAntallSider(1)
+                .medFillagerReferanse(null)
+                .medData(null)
+                .medOpprettetDato(DateTime.now().getMillis())
+                .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+        
         ArgumentCaptor<byte[]> captor = ArgumentCaptor.forClass(byte[].class);
         when(vedleggRepository.opprettVedlegg(any(Vedlegg.class), captor.capture())).thenReturn(10L, 11L, 12L, 13L, 14L);
 

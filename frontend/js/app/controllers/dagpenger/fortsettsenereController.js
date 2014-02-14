@@ -28,7 +28,7 @@ angular.module('nav.fortsettsenere', ['nav.cmstekster'])
                         $scope.epost.$save({soknadId: data.soknad.soknadId}).then(function (epostData) {
                             data.leggTilFaktum(epostData);
                             new fortsettSenereService({epost: $scope.epost.value}).$send({behandlingId: behandlingId}).then(function (data) {
-                                $location.path('kvittering-fortsettsenere/');
+                                $location.path('kvittering-fortsettsenere');
                             });
                         });
                     }

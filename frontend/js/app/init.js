@@ -103,6 +103,7 @@ angular.module('sendsoknad')
 
         promiseArray.push(tekster.$promise);
         promiseArray.push(utslagskriterier.$promise);
+        promiseArray.push(config.$promise);
 
         return $q.all(promiseArray);
     }])
@@ -211,6 +212,6 @@ angular.module('sendsoknad')
                 data.land = result;
             }
         );
-        promiseArray.push(soknadOppsettDefer.promise, soknadDeferer.promise, faktaDefer.promise, land.$promise, tekster.$promise);
+        promiseArray.push(soknadOppsettDefer.promise, soknadDeferer.promise, faktaDefer.promise, land.$promise, tekster.$promise, config.$promise);
         return $q.all(promiseArray);
     }]);
