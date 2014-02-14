@@ -30,18 +30,19 @@ public class VedleggRowMapper implements RowMapper<Vedlegg> {
             innsendingsvalg = Vedlegg.Status.IkkeVedlegg;
         }
 
-        return new Vedlegg(
-                rs.getLong("vedlegg_id"),
-                rs.getLong("soknad_id"),
-                rs.getLong("faktum"),
-                rs.getString("skjemaNummer"),
-                rs.getString("navn"),
-                rs.getLong("storrelse"),
-                rs.getInt("antallsider"),
-                rs.getString("fillagerReferanse"),
-                includeData ? rs.getBytes("data") : null,
-                rs.getTimestamp("opprettetdato").getTime(),
-                innsendingsvalg
-        );
+        Vedlegg result = new Vedlegg()
+                .medVedleggId(rs.getLong("vedlegg_id"))
+                .medSoknadId(rs.getLong("soknad_id"))
+                .medFaktumId(rs.getLong("faktum"))
+                .medSkjemaNummer(rs.getString("skjemaNummer"))
+                .medNavn(rs.getString("navn"))
+                .medStorrelse(rs.getLong("storrelse"))
+                .medAntallSider(rs.getInt("antallsider"))
+                .medFillagerReferanse(rs.getString("fillagerReferanse"))
+                .medData(includeData ? rs.getBytes("data") : null)
+                .medOpprettetDato(rs.getTimestamp("opprettetdato").getTime())
+                .medInnsendingsvalg(innsendingsvalg);
+        
+        return result;
     }
 }

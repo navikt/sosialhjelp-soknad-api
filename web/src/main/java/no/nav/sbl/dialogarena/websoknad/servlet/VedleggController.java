@@ -16,6 +16,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.io.IOUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -144,7 +145,20 @@ public class VedleggController {
                 List<Vedlegg> res = new ArrayList<>();
                 for (MultipartFile file : files) {
                     byte[] in = getByteArray(file);
-                    Vedlegg vedlegg = new Vedlegg(null, soknadId, forventning.getFaktumId(), forventning.getskjemaNummer(), forventning.getNavn(), file.getSize(), 1, null, in, forventning.getOpprettetDato(), Vedlegg.Status.UnderBehandling);
+                    
+                    Vedlegg vedlegg = new Vedlegg()
+                            .medVedleggId(null)
+                            .medSoknadId(soknadId)
+                            .medFaktumId(forventning.getFaktumId())
+                            .medSkjemaNummer(forventning.getskjemaNummer())
+                            .medNavn(forventning.getNavn())
+                            .medStorrelse(file.getSize())
+                            .medAntallSider(1)
+                            .medFillagerReferanse(null)
+                            .medData(in)
+                            .medOpprettetDato(forventning.getOpprettetDato())
+                            .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
+                    
                     List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, new ByteArrayInputStream(in));
                     for (Long id : ids) {
                         res.add(vedleggService.hentVedlegg(soknadId, id, false));

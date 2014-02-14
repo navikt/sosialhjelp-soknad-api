@@ -68,9 +68,46 @@ public class VedleggControllerTest {
     @Test
     public void shouldUploadFile() throws Exception {
         when(vedleggService.splitOgLagreVedlegg(any(Vedlegg.class), any(InputStream.class))).thenReturn(asList(1L)).thenReturn(asList(2L)).thenReturn(asList(3L));
-        when(vedleggService.hentVedlegg(eq(11L), eq(1L), eq(false))).thenReturn(new Vedlegg(1L, 11L, 12L, "L6", "test", 1L, 1, "gfdg", null, DateTime.now().getMillis(), Vedlegg.Status.VedleggKreves));
-        when(vedleggService.hentVedlegg(eq(11L), eq(2L), eq(false))).thenReturn(new Vedlegg(2L, 11L, 12L, "L6", "test", 1L, 1, "gfdg", null, DateTime.now().getMillis(), Vedlegg.Status.VedleggKreves));
-        when(vedleggService.hentVedlegg(eq(11L), eq(3L), eq(false))).thenReturn(new Vedlegg(3L, 11L, 12L, "L6", "test", 1L, 1, "gfdg", null, DateTime.now().getMillis(), Vedlegg.Status.VedleggKreves));
+        
+        Vedlegg vedlegg1 = new Vedlegg()
+                .medVedleggId(1L)
+                .medSoknadId(11L)
+                .medFaktumId(12L)
+                .medSkjemaNummer("L6")
+                .medNavn("test")
+                .medStorrelse(1L)
+                .medAntallSider(1)
+                .medFillagerReferanse("gfdg")
+                .medData(null)
+                .medOpprettetDato(DateTime.now().getMillis())
+                .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+        when(vedleggService.hentVedlegg(eq(11L), eq(1L), eq(false))).thenReturn(vedlegg1);
+        Vedlegg vedlegg2 = new Vedlegg()
+                .medVedleggId(2L)
+                .medSoknadId(11L)
+                .medFaktumId(12L)
+                .medSkjemaNummer("L6")
+                .medNavn("test")
+                .medStorrelse(1L)
+                .medAntallSider(1)
+                .medFillagerReferanse("gfdg")
+                .medData(null)
+                .medOpprettetDato(DateTime.now().getMillis())
+                .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+        when(vedleggService.hentVedlegg(eq(11L), eq(2L), eq(false))).thenReturn(vedlegg2);
+        Vedlegg vedlegg3 = new Vedlegg()
+                .medVedleggId(3L)
+                .medSoknadId(11L)
+                .medFaktumId(12L)
+                .medSkjemaNummer("L6")
+                .medNavn("test")
+                .medStorrelse(1L)
+                .medAntallSider(1)
+                .medFillagerReferanse("gfdg")
+                .medData(null)
+                .medOpprettetDato(DateTime.now().getMillis())
+                .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+        when(vedleggService.hentVedlegg(eq(11L), eq(3L), eq(false))).thenReturn(vedlegg3);
         MvcResult mvcResult = mockMvc.perform(fileUpload("/soknad/11/faktum/12/vedlegg?gosysId=L6")
                 .file(createFile("test.pdf", PDF))
                 .file(createFile("test.jpg", JPEG))
@@ -127,7 +164,18 @@ public class VedleggControllerTest {
 
     @Test
     public void skalGenereFerdigPdf() throws Exception {
-        Vedlegg v = new Vedlegg(1L, 11L, 1L, "1", "", 3L, 1, null, null, DateTime.now().getMillis(), Vedlegg.Status.VedleggKreves);
+        Vedlegg v = new Vedlegg()
+                .medVedleggId(1L)
+                .medSoknadId(11L)
+                .medFaktumId(1L)
+                .medSkjemaNummer("1")
+                .medNavn("")
+                .medStorrelse(3L)
+                .medAntallSider(1)
+                .medFillagerReferanse(null)
+                .medData(null)
+                .medOpprettetDato(DateTime.now().getMillis())
+                .medInnsendingsvalg(Vedlegg.Status.VedleggKreves);
         when(vedleggService.genererVedleggFaktum(11L, 14L)).thenReturn(2L);
         when(vedleggService.hentVedlegg(11L, 2L, false)).thenReturn(v);
         MvcResult mvcResult = mockMvc.perform(post("/soknad/{soknadId}/faktum/{faktumId}/vedlegg/generer", 11L, 14L))
