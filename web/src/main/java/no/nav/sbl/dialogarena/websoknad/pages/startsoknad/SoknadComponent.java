@@ -15,7 +15,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.String.format;
 import static java.nio.charset.Charset.forName;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.util.StreamUtils.copyToString;
@@ -52,10 +51,11 @@ public class SoknadComponent extends WebComponent {
 
     @Override
     public void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
-        String file = "/views/built/bootstrap.html";
-        try (InputStream content = WebApplication.get().getServletContext().getResourceAsStream(format("/views/%s", file))) {
+        String file = "META-INF/resources/views/bootstrap.html";
+        try (InputStream content = this.getClass().getClassLoader().getResourceAsStream(file)) {
             replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
         } catch (IllegalArgumentException| IOException e) {
+            LOGGER.warn("Fant ikke fil" + file,e);
             try {
                 File basedir = new File(WebApplication.get().getServletContext().getResource("/").toURI());
                 File devDir = new File(basedir, "../../../../frontend/views/built/bootstrapDev.html");
@@ -63,7 +63,7 @@ public class SoknadComponent extends WebComponent {
                     replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
                 }
             } catch (IOException |URISyntaxException e2) {
-                throw new ApplicationException("feilet under lasting av markup", e);
+                throw new ApplicationException("feilet under lasting av markup", e2);
             }
         }
     }

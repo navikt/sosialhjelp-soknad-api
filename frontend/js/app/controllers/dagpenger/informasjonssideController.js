@@ -19,7 +19,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         $scope.skalViseBrosjyreMelding = false;
 
         $scope.oppsummering = false;
-        if (getBehandlingIdFromUrl() != "Dagpenger") {
+        if (erSoknadStartet()) {
             $scope.utslagskriterier.harlestbrosjyre = true;
             $scope.oppsummering = true;
         }
@@ -52,7 +52,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 
         $scope.soknadErStartet = function () {
             var behandlingId = getBehandlingIdFromUrl();
-            if (behandlingId != "Dagpenger") {
+            if (erSoknadStartet()) {
                 return true;
             }
             return false;
@@ -67,7 +67,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         }
 
         $scope.startSoknad = function () {
-            var soknadType = window.location.pathname.split("/")[3];
+            var soknadType = decodeURI(window.location.pathname).split("/")[3];
             $scope.fremdriftsindikator.laster = true;
             $scope.soknad = soknadService.create({soknadType: soknadType},
                 function (result) {

@@ -257,8 +257,8 @@ public class Faktum implements Serializable {
 
     public void kopierFraProperies() {
         getFaktumEgenskaper().clear();
-        for (String key : getProperties().keySet()) {
-            faktumEgenskaper.add(new FaktumEgenskap(soknadId, faktumId, key, getProperties().get(key), false));
+        for (String k : getProperties().keySet()) {
+            faktumEgenskaper.add(new FaktumEgenskap(soknadId, faktumId, k, getProperties().get(k), false));
         }
     }
 

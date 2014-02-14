@@ -29,7 +29,7 @@ public class WebSoknadUtils {
     public static final String DAGPENGER = "NAV 04-01.03";
     public static final String EOS_DAGPENGER = "4304";
     public static final String RUTES_I_BRUT = "0000";
-    private static final Logger logger = getLogger(WebSoknadUtils.class);
+    private static final Logger LOGGER = getLogger(WebSoknadUtils.class);
     private static boolean erPermittertellerHarRedusertArbeidstid(WebSoknad soknad)
     {
 
@@ -50,16 +50,21 @@ public class WebSoknadUtils {
     }
 
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
+        LOGGER.warn("Inne i metoden");
         if (!erPermittertellerHarRedusertArbeidstid(webSoknad))
         {
+            LOGGER.warn("Har ikke redusert arbeidstid");
             return RUTES_I_BRUT;
         }
+        LOGGER.warn("Fnr" + webSoknad.getFaktaMedKey(FNR_KEY).isEmpty());
         if (!webSoknad.getFaktaMedKey(FNR_KEY).isEmpty())
         {
+            LOGGER.warn("Finner fnr_key");
             Personalia personalia = getPerson(webSoknad);
             return (personalia.harUtenlandskFolkeregistrertAdresse() && (!personalia.harNorskMidlertidigAdresse())) ?  EOS_DAGPENGER : RUTES_I_BRUT;
         } else
         {
+            LOGGER.warn("Rutes i brut");
             return RUTES_I_BRUT;
         }
     }

@@ -2348,7 +2348,7 @@ angular.module("../views/templates/reellarbeidssoker/reell-arbeidssoker.html", [
     "                     data-navlabel=\"reellarbeidssoker.annensituasjon\"\n" +
     "                     data-navendret=\"endreDeltidsAarsaker()\"></div>\n" +
     "\n" +
-    "                <div data-navinfoboks data-ng-if=\"harValgtAnnetUnntakDeltid()\">\n" +
+    "                <div class=\"siste-element\" data-navinfoboks data-ng-if=\"harValgtAnnetUnntakDeltid()\">\n" +
     "                    <p data-cmstekster=\"reellarbeidssoker.unntak.dokumentasjon\"></p>\n" +
     "                </div>\n" +
     "\n" +
@@ -2377,7 +2377,7 @@ angular.module("../views/templates/reellarbeidssoker/reell-arbeidssoker.html", [
     "                </label>\n" +
     "            </div>\n" +
     "\n" +
-    "            <div class=\"ekstra-spm-boks\" data-vedlegginfoboks data-ng-show=\"trengerUtalelseFraFagpersonellDeltid()\">\n" +
+    "            <div data-vedlegginfoboks data-ng-show=\"trengerUtalelseFraFagpersonellDeltid()\">\n" +
     "                <ul>\n" +
     "                    <li>\n" +
     "                        <span data-cmstekster=\"reellarbeidssoker.utalelsefagpersonell.vedlegginformasjon\"></span>\n" +
@@ -2439,7 +2439,7 @@ angular.module("../views/templates/reellarbeidssoker/reell-arbeidssoker.html", [
     "                     data-navlabel=\"reellarbeidssoker.pendleannensituasjon\"\n" +
     "                     data-navendret=\"endrePendleAarsaker()\"></div>\n" +
     "\n" +
-    "                <div data-navinfoboks data-ng-if=\"harValgtAnnetUnntakPendle()\">\n" +
+    "                <div class=\"siste-element\" data-navinfoboks data-ng-if=\"harValgtAnnetUnntakPendle()\">\n" +
     "                    <p data-cmstekster=\"reellarbeidssoker.unntak.dokumentasjon\"></p>\n" +
     "                </div>\n" +
     "\n" +
@@ -2447,7 +2447,7 @@ angular.module("../views/templates/reellarbeidssoker/reell-arbeidssoker.html", [
     "                      data-cmstekster=\"reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding\"></span>\n" +
     "            </div>\n" +
     "\n" +
-    "            <div class=\"ekstra-spm-boks\" data-vedlegginfoboks data-ng-show=\"trengerUtalelseFraFagpersonellPendle()\">\n" +
+    "            <div data-vedlegginfoboks data-ng-show=\"trengerUtalelseFraFagpersonellPendle()\">\n" +
     "                <ul>\n" +
     "                    <li>\n" +
     "                        <span data-cmstekster=\"reellarbeidssoker.utalelsefagpersonell.vedlegginformasjon\"></span>\n" +
@@ -2477,7 +2477,7 @@ angular.module("../views/templates/reellarbeidssoker/reell-arbeidssoker.html", [
     "                 data-obligatorisk=\"true\"></div>\n" +
     "\n" +
     "            \n" +
-    "            <div class=\"ekstra-spm-boks\" data-vedlegginfoboks data-ng-show=\"kanIkkeTaAlleTyperArbeid()\">\n" +
+    "            <div data-vedlegginfoboks data-ng-show=\"kanIkkeTaAlleTyperArbeid()\">\n" +
     "                <ul>\n" +
     "                    <li>\n" +
     "                        <span data-cmstekster=\"reellarbeidssoker.kanikkealletyperarbeid.vedlegginformasjon\"></span>\n" +
@@ -2924,7 +2924,6 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                        <div class=\"panel-standard\">\n" +
     "                            <h4 data-ng-if=\"!erEkstraVedlegg(forventning)\"\n" +
     "                                data-cmstekster=\"vedlegg.faktum.maabekrefte\"></h4>\n" +
-    "\n" +
     "                            <div class=\"form-linje tekstfelt\" data-ng-if=\"erEkstraVedlegg(forventning)\">\n" +
     "                                <input type=\"hidden\" data-ng-required=\"true\" data-ng-model=\"filVedlagt\"\n" +
     "                                       data-error-messages=\"'vedlegg.annet.ikkelastetopp.feilmelding'\"/>\n" +
@@ -2943,7 +2942,7 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                </div>\n" +
     "                            </div>\n" +
     "                            <h4 data-ng-if=\"!erEkstraVedlegg(forventning)\" class=\"info-liste\"\n" +
-    "                                data-cmshtml=\"{{soknadData.skjemaNummer}}.vedlegg.{{forventning.skjemaNummer}}.bekrefte\"></h4>\n" +
+    "                                data-cmshtml=\"Dagpenger.vedlegg.{{forventning.skjemaNummer}}.bekrefte\"></h4>\n" +
     "\n" +
     "                            <div class=\"spm-knapper send-valg checkboxAsRadio form-linje boolean\"\n" +
     "                                 data-ng-if=\"!vedleggEr(forventning, 'LastetOpp')\"\n" +
@@ -3480,11 +3479,12 @@ angular.module("../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.htm
 
 angular.module("../js/app/directives/markup/navinfoboksTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/app/directives/markup/navinfoboksTemplate.html",
-    "<div class=\"panel-mini-belyst infoboks\">\n" +
-    "    <p data-ng-transclude class=\"mini utrop-sirkel-ikon\">\n" +
-    "    </p>\n" +
-    "</div>\n" +
-    "");
+    "<div class=\"infoboks\">\n" +
+    "    <div class=\"infoboks-inner panel-mini-belyst\">\n" +
+    "        <p data-ng-transclude class=\"mini utrop-sirkel-ikon\">\n" +
+    "        </p>\n" +
+    "    </div>\n" +
+    "</div>");
 }]);
 
 angular.module("../js/app/directives/markup/panelStandardBelystTemplate.html", []).run(["$templateCache", function($templateCache) {
@@ -3840,7 +3840,7 @@ angular.module("../js/common/directives/navtextarea/navtextareaTemplate.html", [
 angular.module("../js/common/directives/select/selectTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/common/directives/select/selectTemplate.html",
     "<div class=\"nav-select form-linje\" data-ng-class=\"{open: selectOpen, feil: harFeil()}\">\n" +
-    "    <div data-ng-show=\"navSelect()\">\n" +
+    "    <div class=\"selectboks\" data-ng-show=\"navSelect()\">\n" +
     "        <label>\n" +
     "            <span data-cmstekster=\"{{ label }}\"></span>\n" +
     "            <span class=\"select-input clearfix\">\n" +

@@ -61,7 +61,6 @@
                         <div class="panel-standard">
                             <h4 data-ng-if="!erEkstraVedlegg(forventning)"
                                 data-cmstekster="vedlegg.faktum.maabekrefte"></h4>
-
                             <div class="form-linje tekstfelt" data-ng-if="erEkstraVedlegg(forventning)">
                                 <input type="hidden" data-ng-required="true" data-ng-model="filVedlagt"
                                        data-error-messages="'vedlegg.annet.ikkelastetopp.feilmelding'"/>
@@ -80,7 +79,7 @@
                                 </div>
                             </div>
                             <h4 data-ng-if="!erEkstraVedlegg(forventning)" class="info-liste"
-                                data-cmshtml="{{soknadData.skjemaNummer}}.vedlegg.{{forventning.skjemaNummer}}.bekrefte"></h4>
+                                data-cmshtml="Dagpenger.vedlegg.{{forventning.skjemaNummer}}.bekrefte"></h4>
 
                             <div class="spm-knapper send-valg checkboxAsRadio form-linje boolean"
                                  data-ng-if="!vedleggEr(forventning, 'LastetOpp')"

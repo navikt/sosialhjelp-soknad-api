@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.POSTADRESSE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.POSTADRESSE_UTLAND;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
 
