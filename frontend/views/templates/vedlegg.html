@@ -3,10 +3,12 @@
 
 <div data-ng-form="vedleggForm" id="vedlegg" class="soknad" data-sidetittel="sidetittel.opplasting"
      data-ng-controller="VedleggCtrl" data-trigg-bolker data-tab-autoscroll>
+
     <div class="rad-belyst inforad">
         <div class="begrensning sak-totredel">
             <section class="panel-standard ">
                 <h2 class="stor strek-ikon-info-orange" data-cmstekster="vedlegg.tittel"></h2>
+                <div data-form-errors></div>
 
                 <div class="viktig-info">
                     <ul>
@@ -24,10 +26,10 @@
                     </ul>
                 </div>
 
-                <div data-form-errors></div>
             </section>
         </div>
     </div>
+    <div data-sticky-feilmelding></div>
 
     <section>
         <div data-accordion data-close-others="false" data-ng-if="forventninger != null">
@@ -63,7 +65,7 @@
                             <h4 data-ng-if="!erEkstraVedlegg(forventning)"
                                 data-cmstekster="vedlegg.faktum.maabekrefte"></h4>
                             <div class="form-linje tekstfelt" data-ng-if="erEkstraVedlegg(forventning)">
-                                <input type="hidden" data-ng-required="true" data-ng-model="filVedlagt"
+                                <input class="hidden-vedlegg" type="hidden" data-ng-required="true" data-ng-model="filVedlagt"
                                        data-error-messages="'vedlegg.annet.ikkelastetopp.feilmelding'"/>
 
                                 <div class="annet-container" data-ng-class="{annetlastetopp: vedleggEr(forventning, 'LastetOpp')}">
@@ -82,7 +84,7 @@
                             <h4 data-ng-if="!erEkstraVedlegg(forventning)" class="info-liste"
                                 data-cmshtml="Dagpenger.vedlegg.{{forventning.skjemaNummer}}.bekrefte"></h4>
 
-                            <div class="spm-knapper send-valg checkboxAsRadio form-linje boolean"
+                            <div class="spm-knapper send-valg checkboxAsRadio form-linje knapp"
                                  data-ng-if="!vedleggEr(forventning, 'LastetOpp')"
                                  data-ng-class="{feil: skalViseFeil.value === true && validert.value === true}">
 
@@ -130,7 +132,7 @@
                                            data-ng-required="true"
                                            data-error-messages="'{{forventning.tittel}}'">
                                 </div>
-                                <span class="melding" data-cmstekster="vedlegg.annet.inlinefeilmelding"
+                                <span class="melding annet" data-cmstekster="vedlegg.annet.inlinefeilmelding"
                                       data-ng-if="erEkstraVedlegg(forventning)"></span>
                                 <span class="melding" data-cmstekster="vedlegg.inlinefeilmelding"
                                       data-ng-if="!erEkstraVedlegg(forventning)"></span>
@@ -154,8 +156,8 @@
     </section>
     <div class="rad-belyst leggtilekstra">
         <div class="begrensning sak-totredel">
-            <section class="panel-standard oversikt">
-                <a href="javascript:void(0)" aria-role="button" class="knapp-leggtil-liten"
+            <section class="panel-standard oversikt strek-bottom">
+                <a href="javascript:void(0)" aria-role="button" class="knapp-link"
                    data-cmstekster="vedlegg.leggtilekstravedlegg"
                    data-ng-click="nyttAnnetVedlegg()" data-apne-annet-vedlegg></a>
             </section>
