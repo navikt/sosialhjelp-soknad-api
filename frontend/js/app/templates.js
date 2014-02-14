@@ -1,4 +1,4 @@
-angular.module('templates-main', ['../views/dagpenger-singlepage.html', '../views/templates/adresse.html', '../views/templates/arbeidsforhold-nytt.html', '../views/templates/arbeidsforhold.html', '../views/templates/arbeidsforhold/arbeidsforhold_form.html', '../views/templates/arbeidsforhold/avskjediget-oppsummering.html', '../views/templates/arbeidsforhold/avskjediget.html', '../views/templates/arbeidsforhold/konkurs-oppsummering.html', '../views/templates/arbeidsforhold/konkurs.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt.html', '../views/templates/arbeidsforhold/permittert-oppsummering.html', '../views/templates/arbeidsforhold/permittert.html', '../views/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html', '../views/templates/arbeidsforhold/redusertarbeidstid.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html', '../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-selv.html', '../views/templates/arbeidsforhold/utdanning_form.html', '../views/templates/avbryt.html', '../views/templates/barnetillegg-nyttbarn.html', '../views/templates/barnetillegg.html', '../views/templates/bekreftelse.html', '../views/templates/egen-naering.html', '../views/templates/feilside.html', '../views/templates/ferdigstilt.html', '../views/templates/fortsettSenere.html', '../views/templates/fritekst.html', '../views/templates/gjenoppta/skjema-ferdig.html', '../views/templates/gjenoppta/skjema-sendt.html', '../views/templates/gjenoppta/skjema-under-arbeid.html', '../views/templates/gjenoppta/skjema-validert.html', '../views/templates/ikkekvalifisert.html', '../views/templates/informasjonsside.html', '../views/templates/kvittering-fortsettsenere.html', '../views/templates/kvittering-innsendt.html', '../views/templates/opplasting.html', '../views/templates/oppsummering.html', '../views/templates/personalia.html', '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', '../views/templates/soknadSlettet.html', '../views/templates/soknadliste.html', '../views/templates/utdanning/utdanning.html', '../views/templates/utdanning/utdanningKortvarigFlereTemplate.html', '../views/templates/utdanning/utdanningKortvarigTemplate.html', '../views/templates/utdanning/utdanningKveldTemplate.html', '../views/templates/utdanning/utdanningNorskTemplate.html', '../views/templates/utdanningsinformasjon-template.html', '../views/templates/vedlegg.html', '../views/templates/verneplikt.html', '../views/templates/visvedlegg.html', '../views/templates/ytelser.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateLiten.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateStor.html', '../js/app/directives/dagpenger/arbeidsforholdformTemplate.html', '../js/app/directives/feilmeldinger/feilmeldingerTemplate.html', '../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html', '../js/app/directives/markup/navinfoboksTemplate.html', '../js/app/directives/markup/panelStandardBelystTemplate.html', '../js/app/directives/markup/vedlegginfoboksTemplate.html', '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html', '../js/app/directives/stegindikator/stegIndikatorTemplate.html', '../js/app/directives/stickybunn/stickyBunnTemplate.html', '../js/common/directives/accordion/accordionGroupTemplate.html', '../js/common/directives/accordion/accordionTemplate.html', '../js/common/directives/booleanradio/booleanradioTemplate.html', '../js/common/directives/datepicker/doubleDatepickerTemplate.html', '../js/common/directives/datepicker/singleDatepickerTemplate.html', '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html', '../js/common/directives/navinput/navbuttonspinnerTemplate.html', '../js/common/directives/navinput/navcheckboxTemplate.html', '../js/common/directives/navinput/navorgnrfeltTemplate.html', '../js/common/directives/navinput/navradioTemplate.html', '../js/common/directives/navinput/navtekstTemplate.html', '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html', '../js/common/directives/navtextarea/navtextareaTemplate.html', '../js/common/directives/select/selectTemplate.html', '../js/common/directives/tittel/tittelTemplate.html']);
+angular.module('templates-main', ['../views/dagpenger-singlepage.html', '../views/templates/adresse.html', '../views/templates/arbeidsforhold-nytt.html', '../views/templates/arbeidsforhold.html', '../views/templates/arbeidsforhold/arbeidsforhold_form.html', '../views/templates/arbeidsforhold/avskjediget-oppsummering.html', '../views/templates/arbeidsforhold/avskjediget.html', '../views/templates/arbeidsforhold/konkurs-oppsummering.html', '../views/templates/arbeidsforhold/konkurs.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt.html', '../views/templates/arbeidsforhold/permittert-oppsummering.html', '../views/templates/arbeidsforhold/permittert.html', '../views/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html', '../views/templates/arbeidsforhold/redusertarbeidstid.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html', '../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-selv.html', '../views/templates/arbeidsforhold/utdanning_form.html', '../views/templates/avbryt.html', '../views/templates/barnetillegg-nyttbarn.html', '../views/templates/barnetillegg.html', '../views/templates/bekreftelse.html', '../views/templates/egennaering/egen-naering.html', '../views/templates/egennaering/egenNaeringvirksomhet.html', '../views/templates/egennaering/fangstOgFiske.html', '../views/templates/egennaering/gardsbruk.html', '../views/templates/feilside.html', '../views/templates/ferdigstilt.html', '../views/templates/fortsettSenere.html', '../views/templates/fritekst.html', '../views/templates/gjenoppta/skjema-ferdig.html', '../views/templates/gjenoppta/skjema-sendt.html', '../views/templates/gjenoppta/skjema-under-arbeid.html', '../views/templates/gjenoppta/skjema-validert.html', '../views/templates/ikkekvalifisert.html', '../views/templates/informasjonsside.html', '../views/templates/kvittering-fortsettsenere.html', '../views/templates/kvittering-innsendt.html', '../views/templates/opplasting.html', '../views/templates/oppsummering.html', '../views/templates/personalia.html', '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', '../views/templates/soknadSlettet.html', '../views/templates/soknadliste.html', '../views/templates/utdanning/utdanning.html', '../views/templates/utdanning/utdanningKortvarigFlereTemplate.html', '../views/templates/utdanning/utdanningKortvarigTemplate.html', '../views/templates/utdanning/utdanningKveldTemplate.html', '../views/templates/utdanning/utdanningNorskTemplate.html', '../views/templates/utdanningsinformasjon-template.html', '../views/templates/vedlegg.html', '../views/templates/verneplikt.html', '../views/templates/visvedlegg.html', '../views/templates/ytelser.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateLiten.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateStor.html', '../js/app/directives/dagpenger/arbeidsforholdformTemplate.html', '../js/app/directives/feilmeldinger/feilmeldingerTemplate.html', '../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html', '../js/app/directives/markup/navinfoboksTemplate.html', '../js/app/directives/markup/panelStandardBelystTemplate.html', '../js/app/directives/markup/vedlegginfoboksTemplate.html', '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html', '../js/app/directives/stegindikator/stegIndikatorTemplate.html', '../js/app/directives/stickybunn/stickyBunnTemplate.html', '../js/common/directives/accordion/accordionGroupTemplate.html', '../js/common/directives/accordion/accordionTemplate.html', '../js/common/directives/booleanradio/booleanradioTemplate.html', '../js/common/directives/datepicker/doubleDatepickerTemplate.html', '../js/common/directives/datepicker/singleDatepickerTemplate.html', '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html', '../js/common/directives/navinput/navbuttonspinnerTemplate.html', '../js/common/directives/navinput/navcheckboxTemplate.html', '../js/common/directives/navinput/navorgnrfeltTemplate.html', '../js/common/directives/navinput/navradioTemplate.html', '../js/common/directives/navinput/navtekstTemplate.html', '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html', '../js/common/directives/navtextarea/navtextareaTemplate.html', '../js/common/directives/select/selectTemplate.html', '../js/common/directives/tittel/tittelTemplate.html']);
 
 angular.module("../views/dagpenger-singlepage.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/dagpenger-singlepage.html",
@@ -1426,306 +1426,95 @@ angular.module("../views/templates/bekreftelse.html", []).run(["$templateCache",
     "</div>");
 }]);
 
-angular.module("../views/templates/egen-naering.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("../views/templates/egen-naering.html",
+angular.module("../views/templates/egennaering/egen-naering.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../views/templates/egennaering/egen-naering.html",
     "<div class=\"skjemaramme\">\n" +
-    "<div data-ng-form=\"egennaeringForm\" class=\"skjemainnhold\" data-ng-controller=\"EgennaeringCtrl\" data-novalidate>\n" +
-    "<div data-form-errors></div>\n" +
-    "<div data-nav-faktum=\"egennaering.driveregennaering\"\n" +
-    "     data-navconfig\n" +
-    "     data-booleanradio\n" +
-    "     data-nokkel=\"egennaering.driveregennaering\">\n" +
+    "    <div data-ng-form=\"egennaeringForm\" class=\"skjemainnhold\" data-ng-controller=\"EgennaeringCtrl\" data-novalidate>\n" +
+    "        <div data-form-errors></div>\n" +
+    "        <div data-nav-faktum=\"egennaering.driveregennaering\"\n" +
+    "             data-navconfig\n" +
+    "             data-booleanradio\n" +
+    "             data-nokkel=\"egennaering.driveregennaering\">\n" +
     "\n" +
-    "    <div data-navinfoboks>\n" +
-    "        <p data-cmstekster=\"egennaering.driveregennaering.false.informasjon.1\"></p>\n" +
-    "\n" +
-    "        <p data-cmstekster=\"egennaering.driveregennaering.false.informasjon.2\"></p>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div data-ng-repeat=\"egennaering_drivergennaering_orgnummer in orgnummer\">\n" +
-    "        <div class=\"orgnummer-repeat\">\n" +
-    "            <div data-navorganisasjonsnummerfelt\n" +
-    "                 data-nav-faktum=\"egennaering_drivergennaering_orgnummer\"\n" +
-    "                 data-navconfig\n" +
-    "                 data-navlabel=\"egennaering.driveregennaering.false.organisasjonsnummer\"\n" +
-    "                 data-navfeilmelding=\"{ required: 'egennaering.driveregennaering.false.organisasjonsnummer.feilmelding', pattern: 'organisasjonsnummer.format.feilmelding'}\">\n" +
-    "            </div>\n" +
+    "            <div data-ng-include=\"'../views/templates/egennaering/egenNaeringvirksomhet.html'\"></div>\n" +
     "        </div>\n" +
-    "        <a href=\"javascript:void(0)\" aria-role=\"button\" class=\"orgnummer-slett\"\n" +
-    "           data-ng-if=\"skalViseSlettKnapp($index)\"\n" +
-    "           data-ng-click=\"slettOrg(egennaering_drivergennaering_orgnummer, $index)\"\n" +
-    "           data-cmstekster=\"organisasjonsnummer.slett\"\n" +
-    "           data-fokus></a>\n" +
+    "\n" +
+    "        <div data-nav-faktum=\"egennaering.gardsbruk\"\n" +
+    "             data-navconfig\n" +
+    "             data-booleanradio\n" +
+    "             data-nokkel=\"egennaering.gardsbruk\">\n" +
+    "\n" +
+    "            <div data-ng-include=\"'../views/templates/egennaering/gardsbruk.html'\"></div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div data-nav-faktum=\"egennaering.fangstogfiske\"\n" +
+    "             data-navconfig\n" +
+    "             data-booleanradio\n" +
+    "             data-nokkel=\"egennaering.fangstogfiske\">\n" +
+    "\n" +
+    "            <div data-ng-include=\"'../views/templates/egennaering/fangstOgFiske.html'\"></div>\n" +
+    "        </div>\n" +
+    "        <div data-spmblokkferdig></div>\n" +
     "    </div>\n" +
+    "</div>");
+}]);
+
+angular.module("../views/templates/egennaering/egenNaeringvirksomhet.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../views/templates/egennaering/egenNaeringvirksomhet.html",
+    "<div data-navinfoboks>\n" +
+    "    <p>{{ 'egennaering.driveregennaering.false.informasjon.1' | cmstekst }}</p>\n" +
+    "    <p>{{ 'egennaering.driveregennaering.false.informasjon.2' | cmstekst }}</p>\n" +
+    "</div>\n" +
     "\n" +
-    "    <a href=\"javascript:void(0)\" aria-role=\"button\" class=\"orgnummer-leggtil\" data-ng-click=\"leggTilOrgnr()\"\n" +
-    "       data-cmstekster=\"organisasjonsnummer.leggtil\" data-leggtil-orgnr></a>\n" +
+    "<div data-ng-repeat=\"egennaering_drivergennaering_orgnummer in orgnummer\">\n" +
+    "    <div class=\"orgnummer-repeat\">\n" +
+    "        <div data-navorganisasjonsnummerfelt\n" +
+    "             data-nav-faktum=\"egennaering_drivergennaering_orgnummer\"\n" +
+    "             data-navconfig\n" +
+    "             data-navlabel=\"egennaering.driveregennaering.false.organisasjonsnummer\"\n" +
+    "             data-navfeilmelding=\"{ required: 'egennaering.driveregennaering.false.organisasjonsnummer.feilmelding', pattern: 'organisasjonsnummer.format.feilmelding'}\">\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <a href=\"javascript:void(0)\" aria-role=\"button\" class=\"orgnummer-slett\"\n" +
+    "       data-ng-if=\"skalViseSlettKnapp($index)\"\n" +
+    "       data-ng-click=\"slettOrg(egennaering_drivergennaering_orgnummer, $index)\"\n" +
+    "       data-fokus>{{ 'organisasjonsnummer.slett' | cmstekst }}</a>\n" +
+    "</div>\n" +
     "\n" +
-    "    <div class=\"tekstfelt form-linje arbeidsmengde-container\">\n" +
-    "        <label>\n" +
-    "            <span data-cmstekster=\"egennaering.driveregennaering.arbeidsmengde\"></span>\n" +
-    "            <input type=\"text\"\n" +
-    "                   data-ng-model=\"faktum.value\"\n" +
-    "                   data-nav-faktum=\"egennaering.driveregennaering.arbeidsmengde\"\n" +
-    "                   data-navconfig\n" +
-    "                   data-ng-required=\"true\"\n" +
-    "                   data-error-messages=\"{required:'egennaering.driveregennaering.arbeidsmengde.feilmelding',\n" +
+    "<a href=\"javascript:void(0)\" aria-role=\"button\" class=\"orgnummer-leggtil\" data-ng-click=\"leggTilOrgnr()\" data-leggtil-orgnr>{{ 'organisasjonsnummer.leggtil' | cmstekst }}</a>\n" +
+    "\n" +
+    "<div class=\"tekstfelt form-linje arbeidsmengde-container\">\n" +
+    "    <h4 class=\"spm-sporsmal\">{{ 'egennaering.driveregennaering.arbeidsmengde' | cmstekst }}</h4>\n" +
+    "    <label>\n" +
+    "        <span class=\"labeltekst\">{{ 'egennaering.driveregennaering.arbeidsmengde.timer' | cmstekst }}</span>\n" +
+    "        <input type=\"text\"\n" +
+    "               data-ng-model=\"faktum.value\"\n" +
+    "               data-nav-faktum=\"egennaering.driveregennaering.arbeidsmengde\"\n" +
+    "               data-navconfig\n" +
+    "               data-ng-required=\"true\"\n" +
+    "               data-error-messages=\"{required:'egennaering.driveregennaering.arbeidsmengde.feilmelding',\n" +
     "                   pattern:'regex.tall.komma.punktum'}\"\n" +
-    "                   data-ng-pattern=\"/^(\\d+(?:[\\.\\,]\\d{0,2})?)$/\"\n" +
-    "                   data-tekstfelt-patternvalidering\n" +
-    "                   data-blur-validate/>\n" +
-    "            <span class=\"timer\" data-cmstekster=\"egennaering.driveregennaering.arbeidsmengde.timer\"></span>\n" +
-    "            <span class=\"melding\"></span>\n" +
-    "        </label>\n" +
-    "    </div>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div data-nav-faktum=\"egennaering.gardsbruk\"\n" +
-    "     data-navconfig\n" +
-    "     data-booleanradio\n" +
-    "     data-nokkel=\"egennaering.gardsbruk\">\n" +
-    "\n" +
-    "<div data-navinfoboks>\n" +
-    "    <p data-cmstekster=\"egennaering.gardsbruk.false.informasjon.1\">\n" +
-    "\n" +
-    "\n" +
-    "    <p data-cmstekster=\"egennaering.gardsbruk.false.informasjon.2\">\n" +
-    "\n" +
-    "    <p data-cmstekster=\"egennaering.gardsbruk.false.informasjon.3\">\n" +
-    "\n" +
-    "</div>\n" +
-    "\n" +
-    "<div data-navorganisasjonsnummerfelt\n" +
-    "     data-nav-faktum=\"egennaering.gardsbruk.false.organisasjonsnummer\"\n" +
-    "     data-navconfig\n" +
-    "     data-navlabel=\"egennaering.gardsbruk.false.organisasjonsnummer\"\n" +
-    "     data-navfeilmelding=\"{ required: 'egennaering.gardsbruk.false.organisasjonsnummer.feilmelding',\n" +
-    "          pattern: 'organisasjonsnummer.format.feilmelding'}\"></div>\n" +
-    "\n" +
-    "<div class=\"form-linje checkbox\" data-checkbox-validate>\n" +
-    "    <h4 class=\"spm-sporsmal\">\n" +
-    "        <span data-cmstekster=\"egennaering.gardsbruk.false.type.sporsmal\"></span>\n" +
-    "    </h4>\n" +
-    "\n" +
-    "    <input type=\"hidden\" data-ng-model=\"harHuketAvTypeGardsbruk.value\"\n" +
-    "           data-ng-required=\"erSynlig('egennaering.gardsbruk')\"\n" +
-    "           data-error-messages=\"'egennaering.gardsbruk.false.type.feilmelding'\">\n" +
-    "\n" +
-    "    <div data-navcheckbox\n" +
-    "         data-navconfig\n" +
-    "         data-nav-faktum=\"egennaering.gardsbruk.false.type.dyr\"\n" +
-    "         data-navlabel=\"egennaering.gardsbruk.false.type.dyr\"\n" +
-    "         data-navendret=\"endreTypeGardsbruk()\"></div>\n" +
-    "\n" +
-    "    <div data-navcheckbox\n" +
-    "         data-navconfig\n" +
-    "         data-nav-faktum=\"egennaering.gardsbruk.false.type.jord\"\n" +
-    "         data-navlabel=\"egennaering.gardsbruk.false.type.jord\"\n" +
-    "         data-navendret=\"endreTypeGardsbruk()\"></div>\n" +
-    "\n" +
-    "    <div data-navcheckbox\n" +
-    "         data-navconfig\n" +
-    "         data-nav-faktum=\"egennaering.gardsbruk.false.type.skog\"\n" +
-    "         data-navlabel=\"egennaering.gardsbruk.false.type.skog\"\n" +
-    "         data-navendret=\"endreTypeGardsbruk()\"></div>\n" +
-    "\n" +
-    "    <div data-navcheckbox\n" +
-    "         data-navconfig\n" +
-    "         data-nav-faktum=\"egennaering.gardsbruk.false.type.annet\"\n" +
-    "         data-navlabel=\"egennaering.gardsbruk.false.type.annet\"\n" +
-    "         data-navendret=\"endreTypeGardsbruk()\"></div>\n" +
-    "    <span class=\"melding\" data-cmstekster=\"egennaering.gardsbruk.false.type.feilmelding\"></span>\n" +
-    "</div>\n" +
-    "<div class=\"form-linje checkbox\" data-checkbox-validate>\n" +
-    "    <h4 class=\"spm-sporsmal\">\n" +
-    "        <span data-cmstekster=\"egennaering.gardsbruk.false.eier.sporsmal\"></span>\n" +
-    "    </h4>\n" +
-    "\n" +
-    "    <input type=\"hidden\" data-ng-model=\"harHuketAvEierGardsbruk.value\"\n" +
-    "           data-ng-required=\"erSynlig('egennaering.gardsbruk')\"\n" +
-    "           data-error-messages=\"'egennaering.gardsbruk.false.eier.feilmelding'\">\n" +
-    "\n" +
-    "    <div data-navcheckbox\n" +
-    "         data-navconfig\n" +
-    "         data-nav-faktum=\"egennaering.gardsbruk.false.eier.jeg\"\n" +
-    "         data-navlabel=\"egennaering.gardsbruk.false.eier.jeg\"\n" +
-    "         data-navendret=\"endreEierGardsbruk()\"></div>\n" +
-    "\n" +
-    "    <div data-navcheckbox\n" +
-    "         data-navconfig\n" +
-    "         data-nav-faktum=\"egennaering.gardsbruk.false.eier.ektefelle\"\n" +
-    "         data-navlabel=\"egennaering.gardsbruk.false.eier.ektefelle\"\n" +
-    "         data-navendret=\"endreEierGardsbruk()\"></div>\n" +
-    "\n" +
-    "    <div data-navcheckbox\n" +
-    "         data-navconfig\n" +
-    "         data-nav-faktum=\"egennaering.gardsbruk.false.eier.annet\"\n" +
-    "         data-navlabel=\"egennaering.gardsbruk.false.eier.annet\"\n" +
-    "         data-navendret=\"endreEierGardsbruk()\"></div>\n" +
-    "\n" +
-    "    <span class=\"melding\" data-cmstekster=\"egennaering.gardsbruk.false.eier.feilmelding\"></span>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"form-linje andelsfordeling-container\" data-ng-class=\"{feil : prosentFeil()} \"\n" +
-    "     data-ng-if=\"svartPaHvemEierGardsbruket()\">\n" +
-    "    <h4 class=\"spm-sporsmal andelsfordeling-spm\">\n" +
-    "        <span data-cmstekster=\"egennaering.gardsbruk.false.eierandel.sporsmal\"></span>\n" +
-    "    </h4>\n" +
-    "\n" +
-    "    <input class=\"tekstfelt\" type=\"hidden\" data-ng-model=\"totalsumAndel.value\"\n" +
-    "           data-ng-required=\"svartPaHvemEierGardsbruket()\"\n" +
-    "           data-error-messages=\"'egennaering.gardsbruk.false.eierandel.feilmelding'\">\n" +
-    "\n" +
-    "    <div class=\"andels-fordeling\">\n" +
-    "        <div class=\"tekstfelt form-linje\" data-ng-show=\"gardseier('egennaering.gardsbruk.false.eier.jeg')\">\n" +
-    "            <label>\n" +
-    "                <span data-cmstekster=\"egennaering.gardsbruk.false.eierandel.din\"></span>\n" +
-    "                <input data-ng-model=\"faktum.value\"\n" +
-    "                       type=\"text\"\n" +
-    "                       data-ng-required=\"gardseier('egennaering.gardsbruk.false.eier.jeg')\"\n" +
-    "                       data-error-messages=\"{required:'egennaering.gardsbruk.false.eierandel.din.feilmelding', pattern:'regex.tall'}\"\n" +
-    "                       data-ng-pattern=\"/^(\\d+(?:[\\.\\,]\\d{0,2})?)$/\"\n" +
-    "                       data-blur-validate\n" +
-    "                       data-ng-blur=\"summererAndeleneTil100()\"\n" +
-    "                       maxlength=\"3\"\n" +
-    "                       data-tekstfelt-patternvalidering\n" +
-    "                       data-nav-faktum=\"egennaering.gardsbruk.false.eierandel.din\"\n" +
-    "                       data-navconfig/>\n" +
-    "                <span class=\"egennaering-prosent\" data-cmstekster=\"egennaering.prosent\"></span>\n" +
-    "                <span class=\"melding\"></span>\n" +
-    "            </label>\n" +
-    "        </div>\n" +
-    "        <div class=\"tekstfelt form-linje\" data-ng-show=\"gardseier('egennaering.gardsbruk.false.eier.ektefelle')\">\n" +
-    "            <label>\n" +
-    "                <span data-cmstekster=\"egennaering.gardsbruk.false.eierandel.ektefelle\"></span>\n" +
-    "                <input data-ng-model=\"faktum.value\"\n" +
-    "                       type=\"text\"\n" +
-    "                       data-ng-required=\"gardseier('egennaering.gardsbruk.false.eier.ektefelle')\"\n" +
-    "                       data-error-messages=\"{required:'egennaering.gardsbruk.false.eierandel.ektefelle.feilmelding', pattern:'regex.tall'}\"\n" +
-    "                       data-ng-pattern=\"/^(\\d+(?:[\\.\\,]\\d{0,2})?)$/\"\n" +
-    "                       data-blur-validate\n" +
-    "                       data-ng-blur=\"summererAndeleneTil100()\"\n" +
-    "                       maxlength=\"3\"\n" +
-    "                       data-tekstfelt-patternvalidering\n" +
-    "                       data-nav-faktum=\"egennaering.gardsbruk.false.eierandel.ektefelle\"\n" +
-    "                       data-navconfig/>\n" +
-    "                <span class=\"egennaering-prosent\" data-cmstekster=\"egennaering.prosent\"></span>\n" +
-    "                <span class=\"melding\"></span>\n" +
-    "            </label>\n" +
-    "        </div>\n" +
-    "        <div class=\"tekstfelt form-linje\" data-ng-show=\"gardseier('egennaering.gardsbruk.false.eier.annet')\">\n" +
-    "            <label>\n" +
-    "                <span data-cmstekster=\"egennaering.gardsbruk.false.eierandel.annet\"></span>\n" +
-    "                <input data-ng-model=\"faktum.value\"\n" +
-    "                       type=\"text\"\n" +
-    "                       data-ng-required=\"gardseier('egennaering.gardsbruk.false.eier.annet')\"\n" +
-    "                       data-error-messages=\"{required:'egennaering.gardsbruk.false.eierandel.annet.feilmelding', pattern:'regex.tall'}\"\n" +
-    "                       data-ng-pattern=\"/^(\\d+(?:[\\.\\,]\\d{0,2})?)$/\"\n" +
-    "                       data-blur-validate\n" +
-    "                       data-ng-blur=\"summererAndeleneTil100()\"\n" +
-    "                       maxlength=\"3\"\n" +
-    "                       data-tekstfelt-patternvalidering\n" +
-    "                       data-nav-faktum=\"egennaering.gardsbruk.false.eierandel.annet\"\n" +
-    "                       data-navconfig/>\n" +
-    "                <span class=\"egennaering-prosent\" data-cmstekster=\"egennaering.prosent\"></span>\n" +
-    "                <span class=\"melding\"></span>\n" +
-    "            </label>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <span class=\"prosentmelding\" data-cmstekster=\"egennaering.gardsbruk.false.eierandel.feilmelding\"></span>\n" +
-    "</div>\n" +
-    "\n" +
-    "\n" +
-    "<div class=\"gardsbruk-timer\">\n" +
-    "    <h4 class=\"spm-sporsmal\">\n" +
-    "        <span data-cmstekster=\"egennaering.gardsbruk.false.arbeidsforbruk\"></span>\n" +
-    "    </h4>\n" +
-    "\n" +
-    "    <div class=\"tekstfelt form-linje arbeidsmengde-container\">\n" +
-    "        <label>\n" +
-    "            <span data-cmstekster=\"egennaering.gardsbruk.false.timer\"></span>\n" +
-    "            <input data-ng-model=\"faktum.value\"\n" +
-    "                   type=\"text\"\n" +
-    "                   data-ng-required=\"erSynlig('egennaering.gardsbruk')\"\n" +
-    "                   data-error-messages=\"{required: 'egennaering.gardsbruk.false.timer.feilmelding', pattern: 'regex.tall.komma.punktum'}\"\n" +
-    "                   data-ng-pattern=\"/^(\\d+(?:[\\.\\,]\\d{0,2})?)$/\"\n" +
-    "                   data-blur-validate\n" +
-    "                   data-tekstfelt-patternvalidering\n" +
-    "                   data-nav-faktum=\"egennaering.gardsbruk.false.timer\"\n" +
-    "                   data-navconfig/>\n" +
-    "            <span class=\"melding\"></span>\n" +
-    "        </label>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"tekstfelt form-linje\">\n" +
-    "        <label>\n" +
-    "            <span data-cmstekster=\"egennaering.gardsbruk.false.aar\"></span>\n" +
-    "            <select id=\"egennaeringgardsbrukaar\"\n" +
-    "                    data-ng-model=\"faktum.value\"\n" +
-    "                    data-nav-faktum=\"egennaering.gardsbruk.false.aar\"\n" +
-    "                    data-navconfig\n" +
-    "                    data-error-messages=\"aarstall.feilmelding\"\n" +
-    "                    data-ng-init=\"faktum.value = faktum.value || forrigeAar; lagreFaktum();\"\n" +
-    "                    data-ng-options=\"aar for aar in aarstall\"\n" +
-    "                    data-ng-change=\"lagreFaktum()\"/>\n" +
-    "        </label>\n" +
-    "    </div>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div data-navinfoboks>\n" +
-    "    <p data-cmstekster=\"egennaering.gardsbruk.arbeid.informasjon\"></p>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"timeredegjoring\">\n" +
-    "    <div data-navtextarea\n" +
-    "         data-navconfig\n" +
-    "         data-nav-faktum=\"egennaering.gardsbruk.false.timeredegjoring\"\n" +
-    "         data-nokkel=\"egennaering.gardsbruk.false.timeredegjoring\"\n" +
-    "         data-maxlengde=\"500\"\n" +
-    "         data-navfeilmelding=\"egennaering.gardsbruk.false.timeredegjoring.feilmelding\"\n" +
-    "         data-obligatorisk=\"true\"></div>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div data-vedlegginfoboks>\n" +
-    "    <ul>\n" +
-    "        <li>\n" +
-    "            <p data-cmstekster=\"egennaering.gardsbruk.false.vedlegg\"></p>\n" +
-    "            <a href=\"egennaering.gardsbruk.false.vedlegg.lenkeurl\"\n" +
-    "               data-cmstekster=\"egennaering.gardsbruk.false.vedlegg.lenketekst\"></a>\n" +
-    "        </li>\n" +
-    "    </ul>\n" +
-    "</div>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div data-nav-faktum=\"egennaering.fangstogfiske\"\n" +
-    "     data-navconfig\n" +
-    "     data-booleanradio\n" +
-    "     data-nokkel=\"egennaering.fangstogfiske\">\n" +
-    "\n" +
-    "    <div data-navinfoboks>\n" +
-    "        <p data-cmstekster=\"egennaering.fangstogfiske.false.arbeid.informasjon\"></p>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"form-linje boolean\">\n" +
-    "        <h4 class=\"spm-sporsmal\" data-cmstekster=\"egennaering.fangstogfiske.false.arbeid.sporsmal\"></h4>\n" +
-    "\n" +
-    "        <div data-navradio\n" +
-    "             data-navconfig\n" +
-    "             data-nav-faktum=\"egennaering.fangstogfiske.false.arbeid\"\n" +
-    "             data-value=\"true\"\n" +
-    "             data-navlabel=\"egennaering.fangstogfiske.false.arbeid.true\"\n" +
-    "             data-navfeilmelding=\"egennaering.fangstogfiske.false.arbeid.feilmelding\"></div>\n" +
-    "\n" +
-    "        <div data-navradio\n" +
-    "             data-navconfig\n" +
-    "             data-nav-faktum=\"egennaering.fangstogfiske.false.arbeid\"\n" +
-    "             data-value=\"false\"\n" +
-    "             data-navlabel=\"egennaering.fangstogfiske.false.arbeid.false\"\n" +
-    "             data-navfeilmelding=\"egennaering.fangstogfiske.false.arbeid.feilmelding\"></div>\n" +
+    "               data-ng-pattern=\"/^(\\d+(?:[\\.\\,]\\d{0,2})?)$/\"\n" +
+    "               data-tekstfelt-patternvalidering\n" +
+    "               data-blur-validate/>\n" +
     "        <span class=\"melding\"></span>\n" +
+    "    </label>\n" +
+    "</div>");
+}]);
+
+angular.module("../views/templates/egennaering/fangstOgFiske.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../views/templates/egennaering/fangstOgFiske.html",
+    "<div id=\"fangst-og-fiske\">\n" +
+    "    <div data-navinfoboks>\n" +
+    "        <p>{{ 'egennaering.fangstogfiske.false.arbeid.informasjon' | cmstekst }}</p>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div data-ng-if=\"erSynlig('egennaering.fangstogfiske.false.arbeid')\">\n" +
+    "    <div data-nav-faktum=\"reellarbeidssoker.villigdeltid\"\n" +
+    "         data-ng-model=\"faktum.value\"\n" +
+    "         data-navconfig\n" +
+    "         data-booleanradio\n" +
+    "         data-nokkel=\"egennaering.fangstogfiske.false.arbeid\">\n" +
+    "\n" +
     "        <div class=\"fangstfiskeinntekt\">\n" +
     "            <div data-navtekst\n" +
     "                 data-nav-faktum=\"egennaering.fangstogfiske.false.arbeid.false.inntekt\"\n" +
@@ -1737,16 +1526,216 @@ angular.module("../views/templates/egen-naering.html", []).run(["$templateCache"
     "        </div>\n" +
     "        <div data-vedlegginfoboks>\n" +
     "            <ul>\n" +
-    "                <li><p data-cmstekster=\"egennaering.fangstogfiske.false.arbeid.vedlegg\"></p></li>\n" +
+    "                <li><p>{{ 'egennaering.fangstogfiske.false.arbeid.vedlegg' | cmstekst }}</p></li>\n" +
     "            </ul>\n" +
     "        </div>\n" +
+    "     </div>\n" +
+    "</div>");
+}]);
+
+angular.module("../views/templates/egennaering/gardsbruk.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../views/templates/egennaering/gardsbruk.html",
+    "<div id=\"gardsbruk\">\n" +
+    "    <div data-navinfoboks>\n" +
+    "        <p>{{ 'egennaering.gardsbruk.false.informasjon.1' | cmstekst }}</p>\n" +
+    "\n" +
+    "        <p>{{ 'egennaering.gardsbruk.false.informasjon.2' | cmstekst }}</p>\n" +
+    "\n" +
+    "        <p>{{ 'egennaering.gardsbruk.false.informasjon.3' | cmstekst }}</p>\n" +
     "    </div>\n" +
-    "</div>\n" +
-    "<div data-spmblokkferdig></div>\n" +
-    "</div>\n" +
-    "</div>\n" +
-    "</div>\n" +
-    "");
+    "\n" +
+    "    <div data-navorganisasjonsnummerfelt\n" +
+    "         data-nav-faktum=\"egennaering.gardsbruk.false.organisasjonsnummer\"\n" +
+    "         data-navconfig\n" +
+    "         data-navlabel=\"egennaering.gardsbruk.false.organisasjonsnummer\"\n" +
+    "         data-navfeilmelding=\"{ required: 'egennaering.gardsbruk.false.organisasjonsnummer.feilmelding',\n" +
+    "          pattern: 'organisasjonsnummer.format.feilmelding'}\"></div>\n" +
+    "\n" +
+    "    <div class=\"form-linje checkbox\" data-checkbox-validate>\n" +
+    "        <h4 class=\"spm-sporsmal\">\n" +
+    "            <span>{{ 'egennaering.gardsbruk.false.type.sporsmal' | cmstekst }}</span>\n" +
+    "        </h4>\n" +
+    "\n" +
+    "        <input type=\"hidden\" data-ng-model=\"harHuketAvTypeGardsbruk.value\"\n" +
+    "               data-ng-required=\"erSynlig('egennaering.gardsbruk')\"\n" +
+    "               data-error-messages=\"'egennaering.gardsbruk.false.type.feilmelding'\">\n" +
+    "\n" +
+    "        <div data-navcheckbox\n" +
+    "             data-navconfig\n" +
+    "             data-nav-faktum=\"egennaering.gardsbruk.false.type.dyr\"\n" +
+    "             data-navlabel=\"egennaering.gardsbruk.false.type.dyr\"\n" +
+    "             data-navendret=\"endreTypeGardsbruk()\"></div>\n" +
+    "\n" +
+    "        <div data-navcheckbox\n" +
+    "             data-navconfig\n" +
+    "             data-nav-faktum=\"egennaering.gardsbruk.false.type.jord\"\n" +
+    "             data-navlabel=\"egennaering.gardsbruk.false.type.jord\"\n" +
+    "             data-navendret=\"endreTypeGardsbruk()\"></div>\n" +
+    "\n" +
+    "        <div data-navcheckbox\n" +
+    "             data-navconfig\n" +
+    "             data-nav-faktum=\"egennaering.gardsbruk.false.type.skog\"\n" +
+    "             data-navlabel=\"egennaering.gardsbruk.false.type.skog\"\n" +
+    "             data-navendret=\"endreTypeGardsbruk()\"></div>\n" +
+    "\n" +
+    "        <div data-navcheckbox\n" +
+    "             data-navconfig\n" +
+    "             data-nav-faktum=\"egennaering.gardsbruk.false.type.annet\"\n" +
+    "             data-navlabel=\"egennaering.gardsbruk.false.type.annet\"\n" +
+    "             data-navendret=\"endreTypeGardsbruk()\"></div>\n" +
+    "        <span class=\"melding\" data-cmstekster=\"egennaering.gardsbruk.false.type.feilmelding\"></span>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"form-linje checkbox\" data-checkbox-validate>\n" +
+    "        <h4 class=\"spm-sporsmal\">\n" +
+    "            <span>{{ 'egennaering.gardsbruk.false.eier.sporsmal' | cmstekst }}</span>\n" +
+    "        </h4>\n" +
+    "\n" +
+    "        <input type=\"hidden\" data-ng-model=\"harHuketAvEierGardsbruk.value\"\n" +
+    "               data-ng-required=\"erSynlig('egennaering.gardsbruk')\"\n" +
+    "               data-error-messages=\"'egennaering.gardsbruk.false.eier.feilmelding'\">\n" +
+    "\n" +
+    "        <div data-navcheckbox\n" +
+    "             data-navconfig\n" +
+    "             data-nav-faktum=\"egennaering.gardsbruk.false.eier.jeg\"\n" +
+    "             data-navlabel=\"egennaering.gardsbruk.false.eier.jeg\"\n" +
+    "             data-navendret=\"endreEierGardsbruk()\"></div>\n" +
+    "\n" +
+    "        <div data-navcheckbox\n" +
+    "             data-navconfig\n" +
+    "             data-nav-faktum=\"egennaering.gardsbruk.false.eier.ektefelle\"\n" +
+    "             data-navlabel=\"egennaering.gardsbruk.false.eier.ektefelle\"\n" +
+    "             data-navendret=\"endreEierGardsbruk()\"></div>\n" +
+    "\n" +
+    "        <div data-navcheckbox\n" +
+    "             data-navconfig\n" +
+    "             data-nav-faktum=\"egennaering.gardsbruk.false.eier.annet\"\n" +
+    "             data-navlabel=\"egennaering.gardsbruk.false.eier.annet\"\n" +
+    "             data-navendret=\"endreEierGardsbruk()\"></div>\n" +
+    "\n" +
+    "        <span class=\"melding\">{{ 'egennaering.gardsbruk.false.eier.feilmelding' | cmstekst }}</span>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"form-linje andelsfordeling-container\" data-ng-class=\"{feil : prosentFeil()} \"\n" +
+    "         data-ng-if=\"svartPaHvemEierGardsbruket()\">\n" +
+    "        <h4 class=\"spm-sporsmal andelsfordeling-spm\">\n" +
+    "            <span>{{ 'egennaering.gardsbruk.false.eierandel.sporsmal' | cmstekst }}</span>\n" +
+    "        </h4>\n" +
+    "\n" +
+    "        <input class=\"tekstfelt\" type=\"hidden\" data-ng-model=\"totalsumAndel.value\"\n" +
+    "               data-ng-required=\"svartPaHvemEierGardsbruket()\"\n" +
+    "               data-error-messages=\"'egennaering.gardsbruk.false.eierandel.feilmelding'\">\n" +
+    "\n" +
+    "        <div class=\"andels-fordeling\">\n" +
+    "            <div class=\"tekstfelt form-linje\" data-ng-show=\"gardseier('egennaering.gardsbruk.false.eier.jeg')\">\n" +
+    "                <label>\n" +
+    "                    <span>{{ 'egennaering.gardsbruk.false.eierandel.din' | cmstekst }}</span>\n" +
+    "                    <input data-ng-model=\"faktum.value\"\n" +
+    "                           type=\"text\"\n" +
+    "                           data-ng-required=\"gardseier('egennaering.gardsbruk.false.eier.jeg')\"\n" +
+    "                           data-error-messages=\"{required:'egennaering.gardsbruk.false.eierandel.din.feilmelding', pattern:'regex.tall'}\"\n" +
+    "                           data-ng-pattern=\"/^(\\d+(?:[\\.\\,]\\d{0,2})?)$/\"\n" +
+    "                           data-blur-validate\n" +
+    "                           data-ng-blur=\"summererAndeleneTil100()\"\n" +
+    "                           maxlength=\"3\"\n" +
+    "                           data-tekstfelt-patternvalidering\n" +
+    "                           data-nav-faktum=\"egennaering.gardsbruk.false.eierandel.din\"\n" +
+    "                           data-navconfig/>\n" +
+    "                    <span class=\"melding\"></span>\n" +
+    "                </label>\n" +
+    "            </div>\n" +
+    "            <div class=\"tekstfelt form-linje\" data-ng-show=\"gardseier('egennaering.gardsbruk.false.eier.ektefelle')\">\n" +
+    "                <label>\n" +
+    "                    <span>{{ 'egennaering.gardsbruk.false.eierandel.ektefelle' | cmstekst }}</span>\n" +
+    "                    <input data-ng-model=\"faktum.value\"\n" +
+    "                           type=\"text\"\n" +
+    "                           data-ng-required=\"gardseier('egennaering.gardsbruk.false.eier.ektefelle')\"\n" +
+    "                           data-error-messages=\"{required:'egennaering.gardsbruk.false.eierandel.ektefelle.feilmelding', pattern:'regex.tall'}\"\n" +
+    "                           data-ng-pattern=\"/^(\\d+(?:[\\.\\,]\\d{0,2})?)$/\"\n" +
+    "                           data-blur-validate\n" +
+    "                           data-ng-blur=\"summererAndeleneTil100()\"\n" +
+    "                           maxlength=\"3\"\n" +
+    "                           data-tekstfelt-patternvalidering\n" +
+    "                           data-nav-faktum=\"egennaering.gardsbruk.false.eierandel.ektefelle\"\n" +
+    "                           data-navconfig/>\n" +
+    "                    <span class=\"melding\"></span>\n" +
+    "                </label>\n" +
+    "            </div>\n" +
+    "            <div class=\"tekstfelt form-linje\" data-ng-show=\"gardseier('egennaering.gardsbruk.false.eier.annet')\">\n" +
+    "                <label>\n" +
+    "                    <span>{{ 'egennaering.gardsbruk.false.eierandel.annet' | cmstekst }}</span>\n" +
+    "                    <input data-ng-model=\"faktum.value\"\n" +
+    "                           type=\"text\"\n" +
+    "                           data-ng-required=\"gardseier('egennaering.gardsbruk.false.eier.annet')\"\n" +
+    "                           data-error-messages=\"{required:'egennaering.gardsbruk.false.eierandel.annet.feilmelding', pattern:'regex.tall'}\"\n" +
+    "                           data-ng-pattern=\"/^(\\d+(?:[\\.\\,]\\d{0,2})?)$/\"\n" +
+    "                           data-blur-validate\n" +
+    "                           data-ng-blur=\"summererAndeleneTil100()\"\n" +
+    "                           maxlength=\"3\"\n" +
+    "                           data-tekstfelt-patternvalidering\n" +
+    "                           data-nav-faktum=\"egennaering.gardsbruk.false.eierandel.annet\"\n" +
+    "                           data-navconfig/>\n" +
+    "                    <span class=\"melding\"></span>\n" +
+    "                </label>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "        <span class=\"prosentmelding\">{{ 'egennaering.gardsbruk.false.eierandel.feilmelding' | cmstekst }}</span>\n" +
+    "    </div>\n" +
+    "\n" +
+    "\n" +
+    "    <div class=\"gardsbruk-timer\">\n" +
+    "        <h4 class=\"spm-sporsmal\">\n" +
+    "            <span>{{ 'egennaering.gardsbruk.false.arbeidsforbruk' | cmstekst }}</span>\n" +
+    "        </h4>\n" +
+    "\n" +
+    "        <div class=\"tekstfelt form-linje arbeidsmengde-container\">\n" +
+    "            <label>\n" +
+    "                <span class=\"labeltekst\">{{ 'egennaering.gardsbruk.false.timer' | cmstekst }}</span>\n" +
+    "                <input data-ng-model=\"faktum.value\"\n" +
+    "                       type=\"text\"\n" +
+    "                       data-ng-required=\"erSynlig('egennaering.gardsbruk')\"\n" +
+    "                       data-error-messages=\"{required: 'egennaering.gardsbruk.false.timer.feilmelding', pattern: 'regex.tall.komma.punktum'}\"\n" +
+    "                       data-ng-pattern=\"/^(\\d+(?:[\\.\\,]\\d{0,2})?)$/\"\n" +
+    "                       data-blur-validate\n" +
+    "                       data-tekstfelt-patternvalidering\n" +
+    "                       data-nav-faktum=\"egennaering.gardsbruk.false.timer\"\n" +
+    "                       data-navconfig/>\n" +
+    "            </label>\n" +
+    "            <label>\n" +
+    "                <span class=\"labeltekst\">{{ 'egennaering.gardsbruk.false.aar' | cmstekst }}</span>\n" +
+    "                <select id=\"egennaeringgardsbrukaar\"\n" +
+    "                        data-ng-model=\"faktum.value\"\n" +
+    "                        data-nav-faktum=\"egennaering.gardsbruk.false.aar\"\n" +
+    "                        data-navconfig\n" +
+    "                        data-error-messages=\"aarstall.feilmelding\"\n" +
+    "                        data-ng-init=\"faktum.value = faktum.value || forrigeAar; lagreFaktum();\"\n" +
+    "                        data-ng-options=\"aar for aar in aarstall\"\n" +
+    "                        data-ng-change=\"lagreFaktum()\"/>\n" +
+    "            </label>\n" +
+    "            <span class=\"melding\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"timeredegjoring\">\n" +
+    "        <div data-navtextarea\n" +
+    "             data-navconfig\n" +
+    "             data-nav-faktum=\"egennaering.gardsbruk.false.timeredegjoring\"\n" +
+    "             data-nokkel=\"egennaering.gardsbruk.false.timeredegjoring\"\n" +
+    "             data-maxlengde=\"500\"\n" +
+    "             data-navfeilmelding=\"egennaering.gardsbruk.false.timeredegjoring.feilmelding\"\n" +
+    "             data-obligatorisk=\"true\"></div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div data-vedlegginfoboks>\n" +
+    "        <ul>\n" +
+    "            <li>\n" +
+    "                <p>{{ 'egennaering.gardsbruk.false.vedlegg' | cmstekst }}</p>\n" +
+    "                <a href=\"egennaering.gardsbruk.false.vedlegg.lenkeurl\">{{\n" +
+    "                    'egennaering.gardsbruk.false.vedlegg.lenketekst' | cmstekst }}</a>\n" +
+    "            </li>\n" +
+    "        </ul>\n" +
+    "    </div>\n" +
+    "</div>");
 }]);
 
 angular.module("../views/templates/feilside.html", []).run(["$templateCache", function($templateCache) {
@@ -2257,7 +2246,6 @@ angular.module("../views/templates/reellarbeidssoker/reell-arbeidssoker.html", [
     "                           data-ng-pattern=\"/^(\\d+(?:[\\.\\,]\\d)?)$/\"\n" +
     "                           data-tekstfelt-patternvalidering\n" +
     "                           data-blur-validate />\n" +
-    "                    <span class=\"timer\" data-cmstekster=\"egennaering.gardsbruk.false.timer\"></span>\n" +
     "                    <span class=\"melding\"></span>\n" +
     "                </label>\n" +
     "            </div>\n" +
@@ -3616,8 +3604,7 @@ angular.module("../js/common/directives/navinput/navorgnrfeltTemplate.html", [])
     "        <label>\n" +
     "            <span data-cmstekster=\"{{ navlabel }}\"></span>\n" +
     "            <input data-ng-model=\"faktum.value\" type=\"text\" value=\"{{ value }}\" data-ng-required=\"erSynlig()\"\n" +
-    "                   data-error-messages=\"{{ navfeilmelding }}\" data-blur-validate\n" +
-    "                   placeholder=\"123456789\" data-ng-pattern=\"/[0-9]*/\" maxlength=\"9\" orgnr-validate>\n" +
+    "                   data-error-messages=\"{{ navfeilmelding }}\" data-blur-validate data-ng-pattern=\"/[0-9]*/\" maxlength=\"9\" orgnr-validate>\n" +
     "        </label>\n" +
     "        <span class=\"melding\"></span>\n" +
     "</div>\n" +

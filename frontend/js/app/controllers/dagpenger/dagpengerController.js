@@ -4,7 +4,7 @@ angular.module('nav.dagpenger', [])
 		$scope.grupper = [
 			{id: 'reellarbeidssoker', tittel: 'reellarbeidssoker.tittel', template: '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
 			{id: 'arbeidsforhold', tittel: 'arbeidsforhold.tittel', template: '../views/templates/arbeidsforhold.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
-			{id: 'egennaering', tittel: 'egennaering.tittel', template: '../views/templates/egen-naering.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
+			{id: 'egennaering', tittel: 'egennaering.tittel', template: '../views/templates/egennaering/egen-naering.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
 			{id: 'verneplikt', tittel: 'ikkeavtjentverneplikt.tittel', template: '../views/templates/verneplikt.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
 			{id: 'utdanning', tittel: 'utdanning.tittel', template: '../views/templates/utdanning/utdanning.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
 			{id: 'ytelser', tittel: 'ytelser.tittel', template: '../views/templates/ytelser.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
