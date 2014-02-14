@@ -310,11 +310,19 @@ public class SoknadService implements SendSoknadService, VedleggService {
             if (Detect.isImage(bytes)) {
                 bytes = Convert.scaleImageAndConvertToPdf(bytes, new Dimension(1240, 1754));
 
-                Vedlegg sideVedlegg = new Vedlegg(null, vedlegg.getSoknadId(),
-                        vedlegg.getFaktumId(), vedlegg.getskjemaNummer(),
-                        vedlegg.getNavn(), (long) bytes.length, 1, UUID
-                        .randomUUID().toString(), null, vedlegg.getOpprettetDato(),
-                        Vedlegg.Status.UnderBehandling);
+                Vedlegg sideVedlegg = new Vedlegg()
+                        .medVedleggId(null)
+                        .medSoknadId(vedlegg.getSoknadId())
+                        .medFaktumId(vedlegg.getFaktumId())
+                        .medSkjemaNummer(vedlegg.getskjemaNummer())
+                        .medNavn(vedlegg.getNavn())
+                        .medStorrelse((long) bytes.length)
+                        .medAntallSider(1)
+                        .medFillagerReferanse(UUID.randomUUID().toString())
+                        .medData(null)
+                        .medOpprettetDato(vedlegg.getOpprettetDato())
+                        .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
+                
                 resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
                         bytes));
 
@@ -327,12 +335,20 @@ public class SoknadService implements SendSoknadService, VedleggService {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     page.save(baos);
                     page.close();
-                    Vedlegg sideVedlegg = new Vedlegg(null,
-                            vedlegg.getSoknadId(), vedlegg.getFaktumId(),
-                            vedlegg.getskjemaNummer(),
-                            vedlegg.getNavn(), (long) baos.size(), 1,
-                            UUID.randomUUID().toString(), null, vedlegg.getOpprettetDato(),
-                            Vedlegg.Status.UnderBehandling);
+                    
+                    Vedlegg sideVedlegg = new Vedlegg()
+                        .medVedleggId(null)
+                        .medSoknadId(vedlegg.getSoknadId())
+                        .medFaktumId(vedlegg.getFaktumId())
+                        .medSkjemaNummer(vedlegg.getskjemaNummer())
+                        .medNavn(vedlegg.getNavn())
+                        .medStorrelse((long) baos.size())
+                        .medAntallSider(1)
+                        .medFillagerReferanse(UUID.randomUUID().toString())
+                        .medData(null)
+                        .medOpprettetDato(vedlegg.getOpprettetDato())
+                        .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
+
                     resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
                             baos.toByteArray()));
                 }
@@ -437,20 +453,27 @@ public class SoknadService implements SendSoknadService, VedleggService {
             Faktum parentFaktum = faktum.getParrentFaktum() != null ? repository.hentFaktum(faktum.getSoknadId(), faktum.getParrentFaktum()) : null;
             if (soknadVedlegg.trengerVedlegg(faktum) && erParentAktiv(soknadVedlegg, parentFaktum)) {
                 lagrePaakrevdVedlegg(faktum, soknadVedlegg, vedlegg);
-            } else if (!soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId(), soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValue(), struktur)) {//do nothing
-            } else if (vedlegg != null) { // sett vedleggsforventning til ikke paakrevd
+            } else if (vedlegg != null && !erVedleggKrevdAvAnnetFaktum(faktum, struktur, soknadVedlegg)) { // sett vedleggsforventning til ikke paakrevd
                 vedlegg.setInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
                 vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
             }
         }
     }
 
-    private void lagrePaakrevdVedlegg(Faktum faktum,
-            SoknadVedlegg soknadVedlegg, Vedlegg vedlegg) {
-        if (vedlegg == null) {
+    private boolean erVedleggKrevdAvAnnetFaktum(Faktum faktum,
+            SoknadStruktur struktur, SoknadVedlegg soknadVedlegg) {
+        return !soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId(), soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValue(), struktur);
+    }
+
+    private void lagrePaakrevdVedlegg(Faktum faktum, SoknadVedlegg soknadVedlegg, Vedlegg v) {
+        Vedlegg vedlegg;
+        if(v != null) {
+            vedlegg = v;
+        } else {
             vedlegg = new Vedlegg(faktum.getSoknadId(), soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null, soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
             vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
         }
+        
         if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {
             vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
         }

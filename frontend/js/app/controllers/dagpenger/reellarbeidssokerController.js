@@ -2,7 +2,11 @@ angular.module('nav.reellarbeidssoker', [])
     .controller('ReellarbeidssokerCtrl', ['$scope', 'data', function ($scope, data) {
         $scope.alder = parseInt(data.finnFaktum('personalia').properties.alder);
 //        For testing av alder:
+<<<<<<< HEAD
 //        $scope.alder = 59;
+=======
+        //$scope.alder = 59;
+>>>>>>> 3cd2f58cba57b8846f63f2e66ed1a600c6b8fc54
         $scope.deltidannen = data.finnFaktum('reellarbeidssoker.villigdeltid.annensituasjon');
         $scope.pendleannen = data.finnFaktum('reellarbeidssoker.villigdeltid.annensituasjon');
         $scope.soknadId = data.soknad.soknadId;
