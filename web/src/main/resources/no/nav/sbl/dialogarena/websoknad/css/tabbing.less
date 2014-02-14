@@ -1,3 +1,36 @@
+.rad, .modalBoks, #informasjonsside {
+  input[type='checkbox']:focus:checked + label {
+    background: url(../img/check_valgt_tab.svg) 0 0 no-repeat;
+    color: #3e3832;
+  }
+
+  input[type='radio']:focus:checked + label {
+    background: url(../img/radio_valgt_tab.svg) 0 0 no-repeat;
+    color: #3e3832;
+  }
+
+  input[type='checkbox']:focus + label {
+    background: url(../img/check_tab.svg) 0 0 no-repeat;
+    color: #0067c5;
+  }
+  input[type='radio']:focus + label {
+    background: url(../img/radio_tab.svg) 0 0 no-repeat;
+    color: #0067c5;
+
+  }
+
+  .feil, .feilstyling {
+    input[type='checkbox']:focus + label {
+      background: url(../img/check_tab.svg) 0 0 no-repeat;
+      color: #c30000;
+    }
+    input[type='radio']:focus + label {
+      background: url(../img/radio_tab.svg) 0 0 no-repeat;
+      color: #c30000;
+    }
+  }
+}
+
 #vedlegg {
   input[type='radio']:focus:checked + label {
     background: url(../img/check_valgt_tab.svg) 0 0 no-repeat;
