@@ -12,6 +12,11 @@
                  data-navlabel="arbeidsforhold.arbeidstilstand.fastarbeidstid"
                  data-navfeilmelding="arbeidsforhold.arbeidstilstand.feilmelding">
             </div>
+            <div class="ekstra-spm-boks nav-boolean" data-ng-if="hvisHarJobbetFast()">
+                <div data-navinfoboks>
+                    <span data-cmstekster="arbeidsforhold.arbeidstilstand.fastarbeidstid.informasjonstekst"></span>
+                </div>
+            </div>
 
             <div data-navradio
                  data-value="varierendeArbeidstid"
@@ -19,6 +24,11 @@
                  data-nav-faktum="arbeidstilstand"
                  data-navlabel="arbeidsforhold.arbeidstilstand.varierendearbeidstid"
                  data-navfeilmelding="arbeidsforhold.arbeidstilstand.feilmelding">
+            </div>
+            <div class="ekstra-spm-boks nav-boolean" data-ng-if="hvisHarJobbetVarierende()">
+                <div data-navinfoboks>
+                    <span data-cmstekster="arbeidsforhold.arbeidstilstand.varierendearbeidstid.informasjonstekst"></span>
+                </div>
             </div>
 
             <div data-navradio
@@ -28,26 +38,14 @@
                  data-navlabel="arbeidsforhold.arbeidstilstand.harikkejobbet"
                  data-navfeilmelding="arbeidsforhold.arbeidstilstand.feilmelding">
             </div>
+            <div class="ekstra-spm-boks nav-boolean" data-ng-if="hvisHarIkkeJobbet()">
+                <div data-navinfoboks>
+                    <p>{{ 'arbeidsforhold.arbeidstilstand.harikkejobbet.informasjonstekst.del1' | cmstekst }}</p>
+                    <p>{{ 'arbeidsforhold.arbeidstilstand.harikkejobbet.informasjonstekst.del2' | cmstekst }}</p>
+                </div>
+            </div>
 
             <span class="melding"> </span>
-        </div>
-
-        <div data-ng-if="hvisHarIkkeJobbet()">
-            <div data-navinfoboks>
-                <p>{{ 'arbeidsforhold.arbeidstilstand.harikkejobbet.informasjonstekst.del1' | cmstekst }}</p>
-                <p>{{ 'arbeidsforhold.arbeidstilstand.harikkejobbet.informasjonstekst.del2' | cmstekst }}</p>
-            </div>
-        </div>
-
-        <div data-ng-if="hvisHarJobbetVarierende()">
-            <div data-navinfoboks>
-                <span data-cmstekster="arbeidsforhold.arbeidstilstand.varierendearbeidstid.informasjonstekst"></span>
-            </div>
-        </div>
-        <div data-ng-if="hvisHarJobbetFast()">
-            <div data-navinfoboks>
-                <span data-cmstekster="arbeidsforhold.arbeidstilstand.fastarbeidstid.informasjonstekst"></span>
-            </div>
         </div>
 
         <div class="spm-boks vertikal" data-ng-repeat="af in arbeidsliste" data-ng-class="{'last': $last}">

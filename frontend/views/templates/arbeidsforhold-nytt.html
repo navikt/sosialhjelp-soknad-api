@@ -7,7 +7,7 @@
 
                     <div data-form-errors></div>
                     <h2 class="stor-strek">
-                        <span data-cmstekster="arbeidsforhold.nyttarbeidsforhold.tittel"></span>
+                        <span>{{ 'arbeidsforhold.nyttarbeidsforhold.tittel' | cmstekst }}</span>
                     </h2>
 
                     <div data-nav-faktum="arbeidsforhold" data-ikke-auto-lagre="true">
@@ -42,8 +42,7 @@
                         </div>
 
                         <div class="spm boolean form-linje">
-                            <h4 class="spm-sporsmal">{{ 'arbeidsforhold.arbeidsgiver.sluttaarsak.informasjon' |
-                                cmstekst }}</h4>
+                            <h4 class="spm-sporsmal">{{ 'arbeidsforhold.arbeidsgiver.sluttaarsak.informasjon' | cmstekst }}</h4>
 
                             <div class="nav-radio-knapp">
                                 <input class="sendsoknad-radio"
@@ -55,8 +54,7 @@
                                        data-ng-required="true"
                                        data-click-validate
                                        data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'">
-                                <label for='radio5'
-                                       data-cmstekster="arbeidsforhold.sluttaarsak.radio.sagtOppAvArbeidsgiver"></label>
+                                <label for='radio5'>{{ 'arbeidsforhold.sluttaarsak.radio.sagtOppAvArbeidsgiver' | cmstekst }}</label>
                             </div>
 
                             <div class="nav-radio-knapp">
@@ -69,8 +67,7 @@
                                        data-ng-required="true"
                                        data-click-validate
                                        data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'">
-                                <label for='radio7'
-                                       data-cmstekster="arbeidsforhold.sluttaarsak.radio.permittert"></label>
+                                <label for='radio7'>{{ 'arbeidsforhold.sluttaarsak.radio.permittert' | cmstekst }}</label>
                             </div>
 
                             <div class="nav-radio-knapp">
@@ -83,8 +80,7 @@
                                        data-click-validate
                                        data-ng-required="true"
                                        data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'">
-                                <label for='radio1'
-                                       data-cmstekster="arbeidsforhold.sluttaarsak.radio.kontraktutgaatt"></label>
+                                <label for='radio1'>{{ 'arbeidsforhold.sluttaarsak.radio.kontraktutgaatt' | cmstekst }}</label>
                             </div>
 
                             <div class="nav-radio-knapp">
@@ -97,8 +93,7 @@
                                        data-ng-required="true"
                                        data-click-validate
                                        data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'">
-                                <label for='radio6'
-                                       data-cmstekster="arbeidsforhold.sluttaarsak.radio.sagtOppSelv"></label>
+                                <label for='radio6'>{{ 'arbeidsforhold.sluttaarsak.radio.sagtOppSelv' | cmstekst }}</label>
                             </div>
 
                             <div class="nav-radio-knapp">
@@ -111,8 +106,7 @@
                                        data-ng-required="true"
                                        data-click-validate
                                        data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'">
-                                <label for='radio3'
-                                       data-cmstekster="arbeidsforhold.sluttaarsak.radio.redusertArbeidstid"></label>
+                                <label for='radio3'>{{ 'arbeidsforhold.sluttaarsak.radio.redusertArbeidstid' | cmstekst }}</label>
                             </div>
 
                             <div class="nav-radio-knapp">
@@ -125,8 +119,7 @@
                                        data-ng-required="true"
                                        data-click-validate
                                        data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'">
-                                <label for='radio4'
-                                       data-cmstekster="arbeidsforhold.sluttaarsak.radio.arbeidsgiverErKonkurs"></label>
+                                <label for='radio4'>{{ 'arbeidsforhold.sluttaarsak.radio.arbeidsgiverErKonkurs' | cmstekst }}</label>
                             </div>
 
                             <div class="nav-radio-knapp">
@@ -139,21 +132,20 @@
                                        data-ng-required="true"
                                        data-click-validate
                                        data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'">
-                                <label for='radio2'
-                                       data-cmstekster="arbeidsforhold.sluttaarsak.radio.avskjediget"></label>
+                                <label for='radio2'>{{ 'arbeidsforhold.sluttaarsak.radio.avskjediget' | cmstekst }}</label>
                             </div>
 
                             <span class="melding"></span>
                         </div>
 
                         <div data-ng-if="faktum.properties.type">
-                            <div data-ng-include="templates[faktum.properties.type].url"></div>
+                            <div class="spm" data-nav-faktum="sluttaarsak" data-ikke-auto-lagre="true" data-ng-include="templates[faktum.properties.type].url"></div>
                         </div>
-                        <div class="knapper-opprett">
-                            <input class="knapp-hoved-liten" name="lagre" type="submit"
-                                   data-cmstekster="arbeidsforhold.nyttarbeidsforhold.lagre"
+                        <div class="knapper-opprett" data-ng-class="{valgt: faktum.properties.type}">
+                            <input class="knapp-hoved-liten" type="submit"
+                                   value="{{ 'arbeidsforhold.nyttarbeidsforhold.lagre' | cmstekst }}"
                                    data-ng-click="lagreArbeidsforhold(nyttArbeidsforholdForm);">
-                            <a href="#/soknad" data-cmstekster="arbeidsforhold.nyttarbeidsforhold.avbryt"></a>
+                            <a href="#/soknad">{{ 'arbeidsforhold.nyttarbeidsforhold.avbryt' | cmstekst }}</a>
                         </div>
                     </div>
 

@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.websoknad.pages.startsoknad;
 
-import no.nav.modig.core.exception.ApplicationException;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebComponent;
