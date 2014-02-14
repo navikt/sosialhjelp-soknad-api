@@ -760,7 +760,6 @@ angular.module("../views/templates/arbeidsforhold/permittert.html", []).run(["$t
     "    </div>\n" +
     "</div>\n" +
     "\n" +
-    "\n" +
     "<div class=\"varighet form-linje\">\n" +
     "    <h4 class=\"spm-sporsmal\">\n" +
     "        <span>{{ 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet' | cmstekst }}</span>\n" +
@@ -821,7 +820,8 @@ angular.module("../views/templates/arbeidsforhold/permittert.html", []).run(["$t
     "            </li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
-    "</div>");
+    "</div>\n" +
+    "");
 }]);
 
 angular.module("../views/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html", []).run(["$templateCache", function($templateCache) {
@@ -2822,6 +2822,7 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                    <span class=\"melding\" data-cmstekster=\"vedlegg.annet.navn.feilmelding\"></span>\n" +
     "                                </div>\n" +
     "                            </div>\n" +
+    "                            {{forventning.tittel}}Test\n" +
     "                            <h4 data-ng-if=\"!erEkstraVedlegg(forventning)\" class=\"info-liste\"\n" +
     "                                data-cmshtml=\"Dagpenger.vedlegg.{{forventning.skjemaNummer}}.bekrefte\"></h4>\n" +
     "\n" +
@@ -3628,7 +3629,8 @@ angular.module("../js/common/directives/navinput/navorgnrfeltTemplate.html", [])
     "        <label>\n" +
     "            <span data-cmstekster=\"{{ navlabel }}\"></span>\n" +
     "            <input data-ng-model=\"faktum.value\" type=\"text\" value=\"{{ value }}\" data-ng-required=\"erSynlig()\"\n" +
-    "                   data-error-messages=\"{{ navfeilmelding }}\" data-blur-validate data-ng-pattern=\"/[0-9]*/\" maxlength=\"9\" orgnr-validate>\n" +
+    "                   data-error-messages=\"{{ navfeilmelding }}\" data-blur-validate\n" +
+    "                   data-ng-pattern=\"/[0-9]{9}/\" maxlength=\"9\" orgnr-validate>\n" +
     "        </label>\n" +
     "        <span class=\"melding\"></span>\n" +
     "</div>\n" +
