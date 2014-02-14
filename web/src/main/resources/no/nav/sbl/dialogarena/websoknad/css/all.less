@@ -739,88 +739,16 @@ form, [ng-form], [data-ng-form] {
 
 
 
-#vedlegg {
+.accordion-group.validert, .vedlegg-bolk.validert {
+   .flipp {
+     cursor: pointer;
+     border-color: transparent transparent #800000 transparent;
 
-    input[type='radio']:focus:checked + label {
-        background: url(../img/check_valgt_tab.svg) 0 0 no-repeat;
-        color: #3e3832;
-    }
-
-    input[type='radio']:focus + label {
-        background: url(../img/check_tab.svg) 0 0 no-repeat;
-        color: #0067c5 !important;
-    }
-
-    a.bilde:focus, .forhandsvisning:focus {
-        outline: 3px solid #0067c5;
-    }
-
-}
-
-#opplasting {
-    #leggtil:focus + label, a.knapp-hoved:focus, a.lukk:focus {
-        outline: 1px solid #0067c5;
-    }
-}
-
-.accordion-inner, .modalBoks, #opplasting {
-    p:focus, span:focus, a:focus {
-        outline: none;
-        text-decoration: underline !important;
-    }
-}
-
-.accordion-group.validert {
-    .flipp {
-        cursor: pointer;
-        border-color: transparent transparent #800000 transparent;
-
-        &:before {
-            border-top: 30px solid #c30000;
-        }
-    }
-}
-
-a.accordion-toggle, #vedlegg a.accordion-toggle {
-  display: block;
-    &:active {
-        .flipp {
-            cursor: pointer;
-            border-color: transparent transparent #004283 transparent;
-
-            &:before {
-                border-top: 30px solid #0067c5;
-            }
-        }
-
-    }
-    &:focus {
-      .flipp {
-        cursor: pointer;
-        border-color: transparent transparent #004283 transparent;
-
-        &:before {
-          border-top: 30px solid #0067c5;
-        }
-      }
-    }
-}
-a.infoikon, a.lukk, a.knapp-link {
-  &:active {
-    color: #3e3832;
-    outline: none;
-    text-decoration: underline !important;
-  }
-  &:focus {
-    color: #3e3832;
-    outline: none;
-    text-decoration: underline !important;
-  }
-}
-
-a.accordion-toggle:focus,  #vedlegg a.accordion-toggle:focus h2 {
-    outline: none;
-}
+     &:before {
+       border-top: 30px solid #c30000;
+     }
+   }
+ }
 
 .bekreftelse {
     p, div {

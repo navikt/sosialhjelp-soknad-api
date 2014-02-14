@@ -41,7 +41,8 @@
                             <div class="vedlegg-bolk"
                                  data-ng-class="{behandlet: !vedleggEr(forventning, 'VedleggKreves'),
                                  lastetopp: vedleggEr(forventning, 'LastetOpp'),
-                                 ekstraVedlegg: !ekstraVedleggFerdig(forventning)}">
+                                 ekstraVedlegg: !ekstraVedleggFerdig(forventning),
+                                 validert: vedleggFerdigBehandlet(forventning) }">
                                 <div class="flipp"></div>
                                 <div class="mini behandlet" data-ng-if="vedleggEr(forventning, 'LastetOpp')"
                                      data-cmstekster="vedlegg.behandlet.lastetopp"></div>

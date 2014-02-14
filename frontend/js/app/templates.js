@@ -2904,7 +2904,8 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                            <div class=\"vedlegg-bolk\"\n" +
     "                                 data-ng-class=\"{behandlet: !vedleggEr(forventning, 'VedleggKreves'),\n" +
     "                                 lastetopp: vedleggEr(forventning, 'LastetOpp'),\n" +
-    "                                 ekstraVedlegg: !ekstraVedleggFerdig(forventning)}\">\n" +
+    "                                 ekstraVedlegg: !ekstraVedleggFerdig(forventning),\n" +
+    "                                 validert: vedleggFerdigBehandlet(forventning) }\">\n" +
     "                                <div class=\"flipp\"></div>\n" +
     "                                <div class=\"mini behandlet\" data-ng-if=\"vedleggEr(forventning, 'LastetOpp')\"\n" +
     "                                     data-cmstekster=\"vedlegg.behandlet.lastetopp\"></div>\n" +

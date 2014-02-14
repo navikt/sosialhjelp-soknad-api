@@ -114,9 +114,7 @@ form, [ng-form], [data-ng-form] {
     .skjemaramme {
       padding-top: 35px;
     }
-    .valgbokser {
 
-    }
     [class^='valgboks-'] {
       position: relative;
       display: inline-block;
@@ -214,6 +212,11 @@ form, [ng-form], [data-ng-form] {
           padding-top: 30px;
           text-transform: uppercase;
           color: #3e3832;
+        }
+      }
+      &.behandlet.lastetopp {
+        .flipp {
+          padding-top: 0px;
         }
       }
     }

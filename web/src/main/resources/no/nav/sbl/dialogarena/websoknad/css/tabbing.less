@@ -18,15 +18,14 @@
     color: #0067c5;
 
   }
-
   .feil, .feilstyling {
     input[type='checkbox']:focus + label {
       background: url(../img/check_tab.svg) 0 0 no-repeat;
-      color: #c30000;
+      color: #c30000 !important;
     }
     input[type='radio']:focus + label {
       background: url(../img/radio_tab.svg) 0 0 no-repeat;
-      color: #c30000;
+      color: #c30000 !important;
     }
   }
 }
@@ -48,7 +47,7 @@
 }
 
 #opplasting {
-  #leggtil:focus + label,  a.lukk:focus {
+  #leggtil:focus + label, a.lukk:focus {
     outline: 1px solid #0067c5;
   }
   a.knapp-hoved:focus {
@@ -65,6 +64,7 @@
 
 a.accordion-toggle, #vedlegg a.accordion-toggle {
   display: block;
+  outline: none;
   &:active {
     .flipp {
       cursor: pointer;
@@ -87,7 +87,11 @@ a.accordion-toggle, #vedlegg a.accordion-toggle {
   }
 }
 
-a.infoikon, a.lukk, a.knapp-link {
+a.knapp-link:focus, a.knapp-link:active {
+  text-decoration: none !important;
+}
+
+a.infoikon, a.lukk{
   &:active {
     color: #3e3832;
     outline: none;
