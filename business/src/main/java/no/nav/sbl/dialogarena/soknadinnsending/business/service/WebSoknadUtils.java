@@ -50,21 +50,18 @@ public class WebSoknadUtils {
     }
 
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
-        LOGGER.warn("Inne i metoden");
+        LOGGER.warn("Faktaliste for ruting" + webSoknad.getFaktaListe());
         if (!erPermittertellerHarRedusertArbeidstid(webSoknad))
         {
-            LOGGER.warn("Har ikke redusert arbeidstid");
             return RUTES_I_BRUT;
         }
-        LOGGER.warn("Fnr" + webSoknad.getFaktaMedKey(FNR_KEY).isEmpty());
         if (!webSoknad.getFaktaMedKey(FNR_KEY).isEmpty())
         {
-            LOGGER.warn("Finner fnr_key");
             Personalia personalia = getPerson(webSoknad);
             return (personalia.harUtenlandskFolkeregistrertAdresse() && (!personalia.harNorskMidlertidigAdresse())) ?  EOS_DAGPENGER : RUTES_I_BRUT;
         } else
         {
-            LOGGER.warn("Rutes i brut");
+            LOGGER.warn("Fødselsnummer for bruker ble ikke funnet. Rutes derfor i BRUT");
             return RUTES_I_BRUT;
         }
     }
