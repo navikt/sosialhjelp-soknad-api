@@ -30,7 +30,7 @@ public class BasePage extends WebPage {
     public BasePage(PageParameters parameters) {
         super(parameters);
         add(
-                new InnstillingerPanel("innstillinger", getInnloggetIsTrueModel(), cmsContentRetriever),
+                new InnstillingerPanel("innstillinger", getInnloggetIsTrueModel(), cmsContentRetriever, false),
                 new NavigasjonPanel("navigasjon", navigasjonsLink, cmsContentRetriever),
                 new FooterPanel("footer", footerLinks, getInnloggetIsTrueModel(), FALSE, cmsContentRetriever)
         );

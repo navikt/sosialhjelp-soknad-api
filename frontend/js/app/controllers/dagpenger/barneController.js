@@ -130,7 +130,7 @@ angular.module('nav.barn', ['app.services'])
                 $scope.barn = barnData;
                 oppdaterFaktumListe('barn');
                 oppdaterCookieValue(barnData.faktumId);
-                $location.path('soknad/');
+                $location.path('soknad');
             });
         }
 
