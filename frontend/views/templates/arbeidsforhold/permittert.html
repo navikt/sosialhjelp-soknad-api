@@ -1,88 +1,83 @@
-<div>
-    <div data-navinfoboks>
-        <p class="sluttaarsak-informasjon" data-cmstekster="arbeidsforhold.sluttaarsak.permittert.informasjon"/>
+<div class="varighet form-linje">
+    <div data-nav-dato
+         data-ng-model="sluttaarsak.properties.datofra"
+         data-label="arbeidsforhold.arbeidsgiver.varighet.fra"
+         data-er-required="true"
+         data-required-error-message="arbeidsforhold.arbeidsgiver.varighet.fra.feilmelding">
     </div>
+</div>
 
-    <div class="spm" data-nav-faktum="sluttaarsak"
-         data-ikke-auto-lagre="true">
+<div class="varighet form-linje">
+    <h4 class="spm-sporsmal">{{ 'arbeidsforhold.arbeidsgiver.permittert.varighet' | cmstekst }}</h4>
 
-        <div class="varighet form-linje">
-            <div data-nav-dato
-                 data-ng-model="sluttaarsak.properties.datofra"
-                 data-label="arbeidsforhold.arbeidsgiver.varighet.fra"
-                 data-er-required="true"
-                 data-required-error-message="arbeidsforhold.arbeidsgiver.varighet.fra.feilmelding">
-            </div>
-        </div>
+    <div data-nav-dato-intervall
+         data-fra-dato="faktum.properties.permiteringsperiodedatofra"
+         data-til-dato="faktum.properties.permiteringsperiodedatotil"
+         data-label="arbeidsforhold.arbeidsgiver.permittert.varighet"
+         data-er-fremtidigdato-tillatt="true"
+         data-er-fradato-required="true">
+    </div>
+</div>
 
-        <p data-cmstekster="arbeidsforhold.arbeidsgiver.permittert.varighet"></p>
 
-        <div class="varighet">
-            <div data-nav-dato-intervall
-                 data-fra-dato="faktum.properties.permiteringsperiodedatofra"
-                 data-til-dato="faktum.properties.permiteringsperiodedatotil"
-                 data-label="arbeidsforhold.arbeidsgiver.permittert.varighet"
-                 data-er-fremtidigdato-tillatt="true"
-                 data-er-fradato-required="true">
-            </div>
-        </div>
+<div class="varighet form-linje">
+    <h4 class="spm-sporsmal">
+        <span>{{ 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet' | cmstekst }}</span>
+        <span data-nav-hjelpetekstelement></span>
+    </h4>
 
-        <p>
-            <span data-cmstekster="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet"></span>
-            <span data-nav-hjelpetekstelement></span>
-        </p>
+    <div data-nav-dato-intervall
+         data-fra-dato="faktum.properties.lonnspliktigperiodedatofra"
+         data-til-dato="faktum.properties.lonnspliktigperiodedatotil"
+         data-label="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet"
+         data-er-fremtidigdato-tillatt="true"
+         data-er-begge-required="true">
+    </div>
+</div>
 
-        <div class="varighet">
-            <div data-nav-dato-intervall
-                 data-fra-dato="faktum.properties.lonnspliktigperiodedatofra"
-                 data-til-dato="faktum.properties.lonnspliktigperiodedatotil"
-                 data-label="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet"
-                 data-er-fremtidigdato-tillatt="true"
-                 data-er-begge-required="true">
-            </div>
-        </div>
 
-        <div class="tekstfelt form-linje prosentfelt">
-            <label>
+<div class="tekstfelt form-linje prosentfelt">
+    <h4 class="spm-sporsmal">
+        {{ 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad' | cmstekst }}
+    </h4>
+    <label>
+        <span class="labeltekst">{{ 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.label' | cmstekst }}</span>
+        <input data-ng-model="sluttaarsak.properties.permitteringProsent"
+               type="text"
+               data-ng-required="true"
+               data-error-messages="{required:'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.feilmelding', pattern: 'regex.tall'}"
+               data-ng-pattern="/^\d+$/"
+               data-blur-validate
+               data-ng-blur="settPermitteringsflagg($event)"
+               maxlength="3"
+               data-tekstfelt-patternvalidering/>
+        <span class="melding"></span>
+    </label>
+</div>
 
-                <span class="labeltekst"
-                      data-cmstekster="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad"></span>
-                <input data-ng-model="sluttaarsak.properties.permitteringProsent"
-                       type="text"
-                       data-ng-required="true"
-                       data-error-messages="{required:'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.feilmelding', pattern: 'regex.tall'}"
-                       data-ng-pattern="/^\d+$/"
-                       data-blur-validate
-                       data-ng-blur="settPermitteringsflagg($event)"
-                       maxlength="3"
-                       data-tekstfelt-patternvalidering/>
-                <span class="prosent" data-cmstekster="egennaering.prosent"></span>
-                <span class="melding"></span>
-            </label>
-        </div>
+<div data-ng-show="skalVisePermitteringInfo">
+    <div data-navinfoboks>
+        <p>{{ 'arbeidsforhold.sluttaarsak.permittert.forlite' | cmstekst }}</p>
+    </div>
+</div>
 
-        <div data-ng-show="skalVisePermitteringInfo">
-            <div data-navinfoboks>
-                <p data-cmstekster="arbeidsforhold.sluttaarsak.permittert.forlite"></p>
-            </div>
-        </div>
-
-        <div class="ekstra-spm-boks" data-vedlegginfoboks>
-            <ul>
-                <li>
-                    <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></p>
-                </li>
-                <li>
-                    <p data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2"></p>
-                    <a href="{{permiteringUrl}}"
-                       data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2.lenketekst">
-                    </a>
-                </li>
-                <li>
-                    <p data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.3"></p>
-                </li>
-            </ul>
-            </p>
-        </div>
+<div class="ekstra-spm-boks">
+    <div data-navinfoboks>
+        <p class="sluttaarsak-informasjon">{{ 'arbeidsforhold.sluttaarsak.permittert.informasjon' | cmstekst }}</p>
+    </div>
+    <div data-vedlegginfoboks>
+        <ul>
+            <li>
+                <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</p>
+            </li>
+            <li>
+                <p>{{ 'arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2' | cmstekst }}</p>
+                <a href="{{permiteringUrl}}">{{ 'arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2.lenketekst' |
+                    cmstekst }}</a>
+            </li>
+            <li>
+                <p>{{ 'arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.3' | cmstekst }}</p>
+            </li>
+        </ul>
     </div>
 </div>
