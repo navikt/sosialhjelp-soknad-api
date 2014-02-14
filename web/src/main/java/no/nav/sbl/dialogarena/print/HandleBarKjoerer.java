@@ -109,164 +109,38 @@ public class HandleBarKjoerer {
     private Handlebars getHandlebars() {
         Handlebars handlebars = new Handlebars();
 
-        handlebars.registerHelper("forFaktum", new Helper<String>() {
-            @Override
-            public CharSequence apply(String o, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                Faktum faktum = soknad.getFaktumMedKey(o);
-                return options.fn(faktum);
-            }
-        });
-        handlebars.registerHelper("forFakta", new Helper<String>() {
-            @Override
-            public CharSequence apply(String key, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                List<Faktum> fakta = soknad.getFaktaMedKey(key);
+        handlebars.registerHelper("forFaktum", generateForFaktumHelper());
+        handlebars.registerHelper("forFakta", generateForFaktaHelper());
+        handlebars.registerHelper("forFaktaMedPropertySattTilTrue", generateForFaktaMedPropTrueHelper());
+        handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
+        handlebars.registerHelper("formatterLangDato", generateFormatterLangDatoHelper());
+        handlebars.registerHelper("forFaktaStarterMed", generateForFaktaStarterMedHelper());
+        handlebars.registerHelper("forBarneFaktum", generateForBarneFaktumHelper());
+        handlebars.registerHelper("hvisSant", generateHvisSantHelper());
+        handlebars.registerHelper("hvisMindre", generateHvisMindreHelper());
+        handlebars.registerHelper("hvisMer", generateHvisMerHelper());
+        handlebars.registerHelper("hvisLik", generateHvisLikHelper());
+        handlebars.registerHelper("hvisIkkeTom", generateHvisIkkeTomHelper());
+        handlebars.registerHelper("hentTekst", generateHvisTekstHelper());
+        handlebars.registerHelper("hentTekstMedParameter", generateHentTekstMedParameterHelper());
+        handlebars.registerHelper("hentLand", generateHentLandHelper());
+        handlebars.registerHelper("forVedlegg", generateForVedleggHelper());
+        handlebars.registerHelper("hentSkjemanummer", generateHentSkjemanummerHelper());
 
-                if (fakta.isEmpty()) {
-                    return options.inverse(this);
-                } else {
-                    return lagItererbarRespons(options, fakta);
-                }
-            }
-        });
-        handlebars.registerHelper("forFaktaMedPropertySattTilTrue", new Helper<String>() {
-            @Override
-            public CharSequence apply(String key, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                List<Faktum> fakta = soknad.getFaktaMedKeyOgPropertyLikTrue(key, (String) options.param(0)); 
-                if (fakta.isEmpty()) {
-                    return options.inverse(this);
-                } else {
-                    return lagItererbarRespons(options, fakta);
-                }
-            }
-        });
+        return handlebars;
+    }
 
-        handlebars.registerHelper("formatterFodelsDato", new Helper<String>() {
+    private Helper<Object> generateHentSkjemanummerHelper() {
+        return new Helper<Object>() {
             @Override
-            public CharSequence apply(String s, Options options) throws IOException {
-                if (s.length() == 11) {
-                    Fodselsnummer fnr = getFodselsnummer(s);
-                    return fnr.getDayInMonth() + "." + fnr.getMonth() + "." + fnr.getBirthYear();
-                } else {
-                    String[] datoSplit = split(s, "-");
-                    reverse(datoSplit);
-                    return join(datoSplit, ".");
-                }
+            public CharSequence apply(Object context, Options options) throws IOException {
+                return WebSoknadUtils.getSkjemanummer(finnWebSoknad(options.context));
             }
-        });
+        };
+    }
 
-        handlebars.registerHelper("formatterLangDato", new Helper<String>() {
-            @Override
-            public CharSequence apply(String dato, Options options) throws IOException {
-                Locale locale = new Locale("nb", "no");
-                DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(locale);
-                return dt.print(DateTime.parse(dato));
-            }
-        });
-
-        handlebars.registerHelper("forFaktaStarterMed", new Helper<String>() {
-            @Override
-            public CharSequence apply(String key, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                List<Faktum> fakta = soknad.getFaktaSomStarterMed(key);
-                return lagItererbarRespons(options, fakta);
-            }
-        });
-        handlebars.registerHelper("forBarneFaktum", new Helper<String>() {
-            @Override
-            public CharSequence apply(String key, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                Long parentFaktumId = options.param(0);
-                Faktum faktum = soknad.getFaktaMedKeyOgParentFaktum(key, parentFaktumId).get(0);
-                return options.fn(faktum);
-            }
-        });
-
-        handlebars.registerHelper("hvisSant", new Helper<String>() {
-            @Override
-            public CharSequence apply(String value, Options options) throws IOException {
-                if(value != null && value.equals("true")){
-                    return options.fn(this);
-                } else {
-                    return options.inverse(this);
-                }
-            }
-        });
-        handlebars.registerHelper("hvisMindre", new Helper<String>() {
-            @Override
-            public CharSequence apply(String value, Options options) throws IOException {
-                Integer grense = Integer.parseInt((String) options.param(0));
-                Integer verdi = Integer.parseInt(value); 
-                if(verdi < grense){
-                    return options.fn(this);
-                } else {
-                    return options.inverse(this);
-                }
-            }
-        });
-
-        handlebars.registerHelper("hvisMer", new Helper<String>() {
-            @Override
-            public CharSequence apply(String value, Options options) throws IOException {
-                Integer grense = Integer.parseInt((String) options.param(0));
-                Integer verdi = Integer.parseInt(value);
-                if(verdi > grense){
-                    return options.fn(this);
-                } else {
-                    return options.inverse(this);
-                }
-            }
-        });
-
-        handlebars.registerHelper("hvisLik", new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object value, Options options) throws IOException {
-                if(value != null && value.toString().equals(options.param(0))){
-                    return options.fn(this);
-                } else {
-                    return options.inverse(this);
-                }
-            }
-        });
-
-        handlebars.registerHelper("hvisIkkeTom", new Helper<Object>() {
-            @Override
-            public CharSequence apply(Object value, Options options) throws IOException {
-                if(value != null && !value.toString().isEmpty()){
-                    return options.fn(this);
-                } else {
-                    return options.inverse(this);
-                }
-            }
-        });
-
-        handlebars.registerHelper("hentTekst", new Helper<String>() {
-            @Override
-            public CharSequence apply(String key, Options options) throws IOException {
-                String tekst = new StringResourceModel(key, null).getString();
-                return tekst;
-            }
-        });
-
-        handlebars.registerHelper("hentTekstMedParameter", new Helper<String>() {
-            @Override
-            public CharSequence apply(String key, Options options) throws IOException {
-                String tekst = new StringResourceModel(key, null, options.param(0)).getString();
-                return tekst;
-            }
-        });
-
-
-        handlebars.registerHelper("hentLand", new Helper<String>() {
-            @Override
-            public CharSequence apply(String landKode, Options options) throws IOException {
-                return kodeverk.getLand(landKode);
-            }
-        });
-
-        handlebars.registerHelper("forVedlegg", new Helper<Object>() {
+    private Helper<Object> generateForVedleggHelper() {
+        return new Helper<Object>() {
             @Override
             public CharSequence apply(Object context, Options options) throws IOException {
                 WebSoknad soknad = finnWebSoknad(options.context);
@@ -278,16 +152,197 @@ public class HandleBarKjoerer {
                     return lagItererbarRespons(options, vedlegg);
                 }
             }
-        });
+        };
+    }
 
-        handlebars.registerHelper("hentSkjemanummer", new Helper<Object>() {
+    private Helper<String> generateHentLandHelper() {
+        return new Helper<String>() {
             @Override
-            public CharSequence apply(Object context, Options options) throws IOException {
-                return WebSoknadUtils.getSkjemanummer(finnWebSoknad(options.context));
+            public CharSequence apply(String landKode, Options options) throws IOException {
+                return kodeverk.getLand(landKode);
             }
-        });
+        };
+    }
 
-        return handlebars;
+    private Helper<String> generateHentTekstMedParameterHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String key, Options options) throws IOException {
+                String tekst = new StringResourceModel(key, null, options.param(0)).getString();
+                return tekst;
+            }
+        };
+    }
+
+    private Helper<String> generateHvisTekstHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String key, Options options) throws IOException {
+                String tekst = new StringResourceModel(key, null).getString();
+                return tekst;
+            }
+        };
+    }
+
+    private Helper<Object> generateHvisIkkeTomHelper() {
+        return new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object value, Options options) throws IOException {
+                if(value != null && !value.toString().isEmpty()){
+                    return options.fn(this);
+                } else {
+                    return options.inverse(this);
+                }
+            }
+        };
+    }
+
+    private Helper<Object> generateHvisLikHelper() {
+        return new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object value, Options options) throws IOException {
+                if(value != null && value.toString().equals(options.param(0))){
+                    return options.fn(this);
+                } else {
+                    return options.inverse(this);
+                }
+            }
+        };
+    }
+
+    private Helper<String> generateHvisMerHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String value, Options options) throws IOException {
+                Integer grense = Integer.parseInt((String) options.param(0));
+                Integer verdi = Integer.parseInt(value);
+                if(verdi > grense){
+                    return options.fn(this);
+                } else {
+                    return options.inverse(this);
+                }
+            }
+        };
+    }
+
+    private Helper<String> generateHvisMindreHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String value, Options options) throws IOException {
+                Integer grense = Integer.parseInt((String) options.param(0));
+                Integer verdi = Integer.parseInt(value); 
+                if(verdi < grense){
+                    return options.fn(this);
+                } else {
+                    return options.inverse(this);
+                }
+            }
+        };
+    }
+
+    private Helper<String> generateHvisSantHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String value, Options options) throws IOException {
+                if(value != null && value.equals("true")){
+                    return options.fn(this);
+                } else {
+                    return options.inverse(this);
+                }
+            }
+        };
+    }
+
+    private Helper<String> generateForBarneFaktumHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String key, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                Long parentFaktumId = options.param(0);
+                Faktum faktum = soknad.getFaktaMedKeyOgParentFaktum(key, parentFaktumId).get(0);
+                return options.fn(faktum);
+            }
+        };
+    }
+
+    private Helper<String> generateForFaktaStarterMedHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String key, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                List<Faktum> fakta = soknad.getFaktaSomStarterMed(key);
+                return lagItererbarRespons(options, fakta);
+            }
+        };
+    }
+
+    private Helper<String> generateFormatterLangDatoHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String dato, Options options) throws IOException {
+                Locale locale = new Locale("nb", "no");
+                DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(locale);
+                return dt.print(DateTime.parse(dato));
+            }
+        };
+    }
+
+    private Helper<String> generateFormatterFodselsdatoHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String s, Options options) throws IOException {
+                if (s.length() == 11) {
+                    Fodselsnummer fnr = getFodselsnummer(s);
+                    return fnr.getDayInMonth() + "." + fnr.getMonth() + "." + fnr.getBirthYear();
+                } else {
+                    String[] datoSplit = split(s, "-");
+                    reverse(datoSplit);
+                    return join(datoSplit, ".");
+                }
+            }
+        };
+    }
+
+    private Helper<String> generateForFaktaMedPropTrueHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String key, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                List<Faktum> fakta = soknad.getFaktaMedKeyOgPropertyLikTrue(key, (String) options.param(0)); 
+                if (fakta.isEmpty()) {
+                    return options.inverse(this);
+                } else {
+                    return lagItererbarRespons(options, fakta);
+                }
+            }
+        };
+    }
+
+    private Helper<String> generateForFaktaHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String key, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                List<Faktum> fakta = soknad.getFaktaMedKey(key);
+
+                if (fakta.isEmpty()) {
+                    return options.inverse(this);
+                } else {
+                    return lagItererbarRespons(options, fakta);
+                }
+            }
+        };
+    }
+
+    private Helper<String> generateForFaktumHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String o, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                Faktum faktum = soknad.getFaktumMedKey(o);
+                return options.fn(faktum);
+            }
+        };
     }
 
     private static WebSoknad finnWebSoknad(Context context) {
