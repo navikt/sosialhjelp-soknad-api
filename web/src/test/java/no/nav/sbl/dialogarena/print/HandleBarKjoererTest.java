@@ -9,6 +9,8 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
+
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
@@ -58,17 +60,15 @@ public class HandleBarKjoererTest {
         assertThat(applied, containsString("188"));
     }
 
-    //TODO: Må fikses etter frontend flytting!
-    @Ignore
     @Test
     public void createPDFFromJson() throws IOException, DocumentException {
         Kodeverk kodeverk = mock(Kodeverk.class);
         WebSoknad soknad = new WebSoknad();
         soknad.setSkjemaNummer("NAV-1-1-1");
-        soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold"));
-        soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold2"));
-        soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold3"));
-        soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold4"));
+        soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold", FaktumType.BRUKERREGISTRERT));
+        soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold2", FaktumType.BRUKERREGISTRERT));
+        soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold3", FaktumType.BRUKERREGISTRERT));
+        soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold4", FaktumType.BRUKERREGISTRERT));
         String html = new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/html/WebSoknadHtml");
 
         String baseUrl = "/c:/test/";
