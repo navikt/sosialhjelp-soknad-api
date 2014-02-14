@@ -83,7 +83,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 				$scope.arbeidsforhold = arbeidsforholdData;
 				oppdaterFaktumListe('arbeidsforhold');
 				oppdaterCookieValue(arbeidsforholdData.faktumId);
-                $location.path('soknad/');
+                $location.path('soknad');
 			});
 		}
 
