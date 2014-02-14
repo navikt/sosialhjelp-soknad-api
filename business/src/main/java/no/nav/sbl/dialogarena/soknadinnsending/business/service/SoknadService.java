@@ -437,12 +437,16 @@ public class SoknadService implements SendSoknadService, VedleggService {
             Faktum parentFaktum = faktum.getParrentFaktum() != null ? repository.hentFaktum(faktum.getSoknadId(), faktum.getParrentFaktum()) : null;
             if (soknadVedlegg.trengerVedlegg(faktum) && erParentAktiv(soknadVedlegg, parentFaktum)) {
                 lagrePaakrevdVedlegg(faktum, soknadVedlegg, vedlegg);
-            } else if (!soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId(), soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValue(), struktur)) {//do nothing
-            } else if (vedlegg != null) { // sett vedleggsforventning til ikke paakrevd
+            } else if (vedlegg != null && !erVedleggKrevdAvAnnetFaktum(faktum, struktur, soknadVedlegg)) { // sett vedleggsforventning til ikke paakrevd
                 vedlegg.setInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
                 vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
             }
         }
+    }
+
+    private boolean erVedleggKrevdAvAnnetFaktum(Faktum faktum,
+            SoknadStruktur struktur, SoknadVedlegg soknadVedlegg) {
+        return !soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId(), soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValue(), struktur);
     }
 
     private void lagrePaakrevdVedlegg(Faktum faktum,
