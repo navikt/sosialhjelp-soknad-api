@@ -133,7 +133,9 @@ module.exports = function (grunt) {
 			html: {
 				files  : [
                     'js/app/**/*.html',
-                    'js/common/**/*.html'
+                    'js/common/**/*.html',
+                    'views/templates/**/*.html',
+                    'views/dagpenger-singlepage.html'
                 ],
                 tasks: 'html2js'
 			}
