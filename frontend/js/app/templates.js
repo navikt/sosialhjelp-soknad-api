@@ -3019,8 +3019,8 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "    </section>\n" +
     "    <div class=\"rad-belyst leggtilekstra\">\n" +
     "        <div class=\"begrensning sak-totredel\">\n" +
-    "            <section class=\"panel-standard oversikt\">\n" +
-    "                <a href=\"javascript:void(0)\" aria-role=\"button\" class=\"knapp-leggtil-liten\"\n" +
+    "            <section class=\"panel-standard oversikt strek-bottom\">\n" +
+    "                <a href=\"javascript:void(0)\" aria-role=\"button\" class=\"knapp-link\"\n" +
     "                   data-cmstekster=\"vedlegg.leggtilekstravedlegg\"\n" +
     "                   data-ng-click=\"nyttAnnetVedlegg()\" data-apne-annet-vedlegg></a>\n" +
     "            </section>\n" +
@@ -3751,7 +3751,7 @@ angular.module("../js/common/directives/navinput/navorgnrfeltTemplate.html", [])
     "            <span data-cmstekster=\"{{ navlabel }}\"></span>\n" +
     "            <input data-ng-model=\"faktum.value\" type=\"text\" value=\"{{ value }}\" data-ng-required=\"erSynlig()\"\n" +
     "                   data-error-messages=\"{{ navfeilmelding }}\" data-blur-validate\n" +
-    "                   placeholder=\"123456789\" data-ng-pattern=\"/[0-9]*/\" maxlength=\"9\" orgnr-validate>\n" +
+    "                   placeholder=\"123456789\" data-ng-pattern=\"/[0-9]{9}/\" maxlength=\"9\" orgnr-validate>\n" +
     "        </label>\n" +
     "        <span class=\"melding\"></span>\n" +
     "</div>\n" +
