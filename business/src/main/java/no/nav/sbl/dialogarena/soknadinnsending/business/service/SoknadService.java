@@ -449,12 +449,15 @@ public class SoknadService implements SendSoknadService, VedleggService {
         return !soknadVedlegg.getFlereTillatt() && annetFaktumHarForventning(faktum.getSoknadId(), soknadVedlegg.getSkjemaNummer(), soknadVedlegg.getOnValue(), struktur);
     }
 
-    private void lagrePaakrevdVedlegg(Faktum faktum,
-            SoknadVedlegg soknadVedlegg, Vedlegg vedlegg) {
-        if (vedlegg == null) {
+    private void lagrePaakrevdVedlegg(Faktum faktum, SoknadVedlegg soknadVedlegg, Vedlegg v) {
+        Vedlegg vedlegg;
+        if(v != null) {
+            vedlegg = v;
+        } else {
             vedlegg = new Vedlegg(faktum.getSoknadId(), soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null, soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
             vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
         }
+        
         if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {
             vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
         }
