@@ -29,11 +29,14 @@ public class SoknadComponent extends WebComponent {
 
     public SoknadComponent(String id) {
         super(id);
+        LOGGER.warn("Opprette instans");
         initLegalFilenames();
     }
 
     private void initLegalFilenames() {
+        LOGGER.warn("Initierer filnavn");
         if (files == null) {
+            LOGGER.warn("filer == null");
             try {
                 String htmls = WebApplication.get().getServletContext().getRealPath("/html");
                 File folder = new File(htmls);
