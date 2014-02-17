@@ -6,7 +6,7 @@ angular.module('nav.sjekkBoklerValiditet', [])
                 var erValidert = data.finnFaktum('bolker').properties[attrs.id] === "true";
                 if (erValidert) {
                     element.addClass('validert');
-                };
+                }
 
                 if (!skalSettesTilValidVedForsteApning) {
                     scope.$watch(
@@ -46,5 +46,5 @@ angular.module('nav.sjekkBoklerValiditet', [])
                     );
                 }
             }
-        }
+        };
     }]);

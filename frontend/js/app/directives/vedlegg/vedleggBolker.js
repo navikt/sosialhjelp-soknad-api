@@ -63,8 +63,8 @@ angular.module('nav.vedleggbolker', [])
                             bolkerUtenfeil.push(bolker[i]);
                         }
                     }
-                    var bolker = {medFeil: bolkerMedFeil, utenFeil: bolkerUtenfeil };
-                    return bolker;
+                    var resultatBolker = {medFeil: bolkerMedFeil, utenFeil: bolkerUtenfeil };
+                    return resultatBolker;
                 }
 
             }
@@ -76,8 +76,8 @@ angular.module('nav.vedleggbolker', [])
                 element.bind('click', function () {
                     $timeout(function () {
                         $(".accordion-toggle").last().trigger('click');
-                    }, 200)
-                })
+                    }, 200);
+                });
             }
         };
     }]);

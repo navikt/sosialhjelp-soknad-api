@@ -10,7 +10,7 @@ angular.module('nav.fortsettsenere', ['nav.cmstekster'])
                 $scope.epost = {
                     key: 'epost',
                     value: undefined
-                }
+                };
                 $scope.epost.value = personalia.properties.epost;
             }
 
@@ -33,7 +33,7 @@ angular.module('nav.fortsettsenere', ['nav.cmstekster'])
                         });
                     }
                 }
-            }
+            };
         }
     ])
     .controller('FortsettSenereKvitteringCtrl', ['$scope', 'data', function ($scope, data) {
@@ -87,7 +87,7 @@ angular.module('nav.fortsettsenere', ['nav.cmstekster'])
             restrict: 'A',
             replace: true,
             templateUrl: linker
-        }
+        };
     }]);
 
 

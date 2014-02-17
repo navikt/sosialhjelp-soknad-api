@@ -2,7 +2,7 @@ angular.module('nav.stickybunn', [])
 	.directive('sistLagret', ['data', '$window', '$timeout', function (data, $window, $timeout) {
 		return {
 			replace    : true,
-            scope: 	{
+            scope: {
                 navtilbakelenke: '@'
             },
             templateUrl: '../js/app/directives/stickybunn/stickyBunnTemplate.html',
@@ -10,7 +10,7 @@ angular.module('nav.stickybunn', [])
 				scope.soknadId = data.soknad.soknadId;
                 scope.lenke = {
                     value: ""
-                }
+                };
 
                 if(scope.navtilbakelenke.indexOf('vedlegg') > -1) {
                     scope.lenke.value="#/vedlegg";
@@ -37,13 +37,13 @@ angular.module('nav.stickybunn', [])
                 var initScreenSize = window.innerHeight;
                 scope.tastatur = false;
 
-                angular.element($window).bind('resize'), function() {
+                angular.element($window).bind('resize', function() {
                     if(window.innerHeight < initScreenSize && settStickySistLagret()) {
                         scope.tastatur = true;
                     } else {
                         scope.tastatur = false;
                     }
-                }
+                });
 
 
 				// Litt hacky måte å få smooth overgang mellom sticky og non-sticky...
@@ -70,5 +70,5 @@ angular.module('nav.stickybunn', [])
 					settStickySistLagret();
 				});
 			}
-		}
+		};
 	}]);

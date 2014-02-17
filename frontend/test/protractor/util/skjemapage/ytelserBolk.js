@@ -20,6 +20,6 @@ module.exports = {
                 nei: element.all(this.by.css('[data-nav-faktum=ikkeavtale] input')).get(0),
                 ja: element.all(this.by.css('[data-nav-faktum=ikkeavtale] input')).get(1)
             }
-        }
+        };
     }
 };

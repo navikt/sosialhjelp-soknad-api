@@ -12,7 +12,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 
         $scope.harLagtTilVedlegg = {
             value:false
-        }
+        };
 
         $scope.skalViseFeilmelding = false;
         $scope.opplastingFeilet = false;
@@ -35,7 +35,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                     data.scope().clear(file);
                     $scope.clear(file);
                 }
-            })
+            });
         });
 
         $scope.options = {
@@ -115,7 +115,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
             file.$remove().then(function () {
                 $scope.clear(file);
             });
-        }
+        };
     }])
 
     .directive('filFeil', [function () {
@@ -127,9 +127,9 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                     if (a2) {
                         scope.clear(scope.file);
                     }
-                })
+                });
             }
-        }
+        };
     }])
 
     .directive('lastOppFil', [function () {
@@ -141,7 +141,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                     scope.submit();
                 });
             }
-        }
+        };
     }])
 
     .directive('asyncImage', [function () {
@@ -153,7 +153,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                     element.parent().css('background-image', 'none');
                     element.replaceWith(img);
                 };
-                img.src = attrs['asyncImage'];
+                img.src = attrs.asyncImage;
             }
-        }
+        };
     }]);

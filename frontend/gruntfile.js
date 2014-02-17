@@ -144,7 +144,16 @@ module.exports = function (grunt) {
 		jshint: {
 			files  : ['gruntfile.js', 'js/app/**/*.js', 'js/common/**/*.js', 'test/**/*.js'],
 			options: {
-				ignores: ['js/built/*.js', 'js/app/i18n/**', 'js/app/templates.js']
+				ignores: ['js/built/*.js', 'js/app/i18n/**', 'js/app/templates.js', 'test/karma/lib/angular-mocks.js', 'js/common/directives/scrollbar/perfect-scrollbar.js'],
+                globals: {
+                    it: true,
+                    expect: true,
+                    describe: true,
+                    beforeEach: true,
+                    inject: true,
+                    angular: true,
+                    module: true
+                }
 			}
 		},
 		karma : {
@@ -182,6 +191,7 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('default', ['jshint', 'html2js', 'watch']);
     grunt.registerTask('test', ['jshint', 'html2js', 'karma:unit']);
+    grunt.registerTask('hint', ['jshint', 'watch']);
     grunt.registerTask('maven', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev']);
     grunt.registerTask('maven-test', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev', 'htmlbuild:test']);
 	grunt.registerTask('maven-prod', ['html2js', 'concat', 'htmlbuild:dev', 'htmlbuild:prod', 'uglify']);

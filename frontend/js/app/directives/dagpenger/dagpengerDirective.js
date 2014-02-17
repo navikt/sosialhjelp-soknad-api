@@ -15,12 +15,12 @@ angular.module('nav.dagpengerdirective', [])
 
                             if (fokusElement.length > 0) {
                                 scrollToElement(fokusElement, 400);
-                            };
+                            }
                         });
                     });
                 }
 			}
-		}
+		};
 	}]);
 
 angular.module('nav.norskDatoFilter', []).filter('norskdato', [function () {
@@ -33,5 +33,5 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', [function () {
 			return dag + '. ' + monthNames[mnd - 1] + ' ' + year;
 		}
 		return input;
-	}
+	};
 }]);

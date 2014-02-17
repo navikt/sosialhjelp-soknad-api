@@ -11,14 +11,14 @@ angular.module('nav.cmstekster', ['app.services'])
 					}
                 }
 			}
-		}
+		};
 	}])
 	.directive('cmstekster', ['cms', function (cms) {
 
 		return {
 			scope: false,
 			link : function (scope, element, attrs) {
-				var nokkel = attrs['cmstekster'];
+				var nokkel = attrs.cmstekster;
 				var cmstekst = cms.tekster[nokkel];
 
 				if (cmstekst === undefined) {
@@ -43,13 +43,13 @@ angular.module('nav.cmstekster', ['app.services'])
     }])
     .directive('cmshtml', ['cms', function (cms) {
         return function ($scope, element, attrs) {
-            var nokkel = attrs['cmshtml'];
+            var nokkel = attrs.cmshtml;
             element.html(cms.tekster[nokkel]);
         };
     }])
     .directive('cmslenketekster', ['cms', function (cms) {
         return function ($scope, element, attrs) {
-            var nokkel = attrs['cmslenketekster'];
+            var nokkel = attrs.cmslenketekster;
             if (element.is('a')) {
                 element.attr('href', cms.tekster[nokkel]);
             }
@@ -60,5 +60,5 @@ angular.module('nav.cmstekster', ['app.services'])
             var tekst = cms.tekster[nokkel];
 
             return tekst === undefined ? '' : tekst;
-        }
+        };
     }]);

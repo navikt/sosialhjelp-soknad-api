@@ -16,5 +16,5 @@ angular.module('nav.animation', [])
 					done();
 				}
 			}
-		}
+		};
 	}]);

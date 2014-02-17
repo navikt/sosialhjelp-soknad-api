@@ -34,7 +34,7 @@ angular.module('nav.stickyFeilmelding', [])
 				scope.forrige = function () {
 					if (!(feilHarBlittRettet && scope.feil.navaerende < 1)) {
 						if (scope.feil.navaerende > 0) {
-							leggTilMarkeringAvFeilmelding(-1)
+							leggTilMarkeringAvFeilmelding(-1);
 							feilHarBlittRettet = false;
 						} else if (scope.feil.navaerende === 0) {
 							skalDeaktivereForrigeKnapp = true;
@@ -164,7 +164,7 @@ angular.module('nav.stickyFeilmelding', [])
                     scope.apneTab($(bolk[scope.feil.navaerende]).closest('.accordion-group').attr('id'));
 				}
 			}
-		}
+		};
 	}])
 	.animation('.sticky-feilmelding', ['$timeout', function ($timeout) {
 		return {
@@ -185,5 +185,5 @@ angular.module('nav.stickyFeilmelding', [])
 					done();
 				}
 			}
-		}
+		};
 	}]);
