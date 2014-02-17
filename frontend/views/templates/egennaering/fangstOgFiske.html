@@ -1,0 +1,27 @@
+<div id="fangst-og-fiske">
+    <div data-navinfoboks>
+        <p>{{ 'egennaering.fangstogfiske.false.arbeid.informasjon' | cmstekst }}</p>
+    </div>
+
+    <div data-nav-faktum="reellarbeidssoker.villigdeltid"
+         data-ng-model="faktum.value"
+         data-navconfig
+         data-booleanradio
+         data-nokkel="egennaering.fangstogfiske.false.arbeid">
+
+        <div class="fangstfiskeinntekt">
+            <div data-navtekst
+                 data-nav-faktum="egennaering.fangstogfiske.false.arbeid.false.inntekt"
+                 data-navconfig
+                 data-navlabel="egennaering.fangstogfiske.false.arbeid.false.inntekt"
+                 data-navfeilmelding="{required: 'egennaering.fangstogfiske.false.arbeid.false.inntekt.feilmelding', pattern: 'regex.tall.komma.punktum'}"
+                 data-regexvalidering="/^(\d+(?:[\.\,]\d{0,2})?)$/">
+            </div>
+        </div>
+        <div data-vedlegginfoboks>
+            <ul>
+                <li><p>{{ 'egennaering.fangstogfiske.false.arbeid.vedlegg' | cmstekst }}</p></li>
+            </ul>
+        </div>
+     </div>
+</div>

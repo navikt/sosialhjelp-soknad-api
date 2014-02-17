@@ -1,0 +1,114 @@
+.rad, .modalBoks, #informasjonsside {
+  input[type='checkbox']:focus:checked + label {
+    background: url(../img/check_valgt_tab.svg) 0 0 no-repeat;
+    color: #3e3832;
+  }
+
+  input[type='radio']:focus:checked + label {
+    background: url(../img/radio_valgt_tab.svg) 0 0 no-repeat;
+    color: #3e3832;
+  }
+
+  input[type='checkbox']:focus + label {
+    background: url(../img/check_tab.svg) 0 0 no-repeat;
+    color: #0067c5;
+  }
+  input[type='radio']:focus + label {
+    background: url(../img/radio_tab.svg) 0 0 no-repeat;
+    color: #0067c5;
+
+  }
+  .feil, .feilstyling {
+    input[type='checkbox']:focus + label {
+      background: url(../img/check_tab_feil.svg) 0 0 no-repeat;
+      color: #c30000 !important;
+    }
+    input[type='radio']:focus + label {
+      background: url(../img/radio_tab_feil.svg) 0 0 no-repeat;
+      color: #c30000 !important;
+    }
+  }
+}
+
+button:focus {
+  outline: none;
+}
+button.knapp-leggtil-liten:focus {
+  outline: none !important;
+  border: 1px solid #0067c5 !important;
+}
+
+#vedlegg {
+  input[type='radio']:focus:checked + label {
+    background: url(../img/check_valgt_tab.svg) 0 0 no-repeat;
+    color: #3e3832;
+  }
+
+  input[type='radio']:focus + label {
+    background: url(../img/check_tab.svg) 0 0 no-repeat;
+    color: #0067c5 !important;
+  }
+
+  a.bilde:focus, .forhandsvisning:focus {
+    outline: 3px solid #0067c5;
+  }
+}
+
+#opplasting {
+  #leggtil:focus + label, a.lukk:focus {
+    outline: 1px solid #0067c5;
+  }
+  a.knapp-hoved:focus {
+    text-decoration: none !important;
+  }
+}
+
+.accordion-inner, .modalBoks, #opplasting {
+  p:focus, span:focus, a:focus {
+    outline: none;
+    text-decoration: underline !important;
+  }
+}
+
+a.accordion-toggle, #vedlegg a.accordion-toggle {
+  display: block;
+  outline: none;
+  &:active {
+    .flipp {
+      cursor: pointer;
+      border-color: transparent transparent #800000 transparent;
+
+      &:before {
+        border-top: 30px solid #c30000;
+      }
+    }
+  }
+  &:focus {
+    .flipp {
+      cursor: pointer;
+      border-color: transparent transparent #800000 transparent;
+
+      &:before {
+        border-top: 30px solid #c30000;
+      }
+    }
+  }
+}
+
+a.knapp-link:focus, a.knapp-link:active {
+  text-decoration: none !important;
+  border: 1px solid #0067c5;
+}
+
+a.infoikon, a.lukk{
+  &:active {
+    color: #3e3832;
+    outline: none;
+    text-decoration: underline !important;
+  }
+  &:focus {
+    color: #3e3832;
+    outline: none;
+    text-decoration: underline !important;
+  }
+}

@@ -1,25 +1,58 @@
 .arbeidsforhold-spm {
+    .spm > .ekstra-spm-boks {
+        margin-right: 15px;
+        margin-left: 15px;
+    }
+
+    .nav-radio-knapp {
+        &:last-of-type {
+            margin-bottom: 0;
+
+            label {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    h4:first-child {
+        margin-top: 10px;
+    }
+
+    .knapper-opprett {
+        margin-left: 15px;
+        margin-right: 15px;
+
+        &:not(.valgt) {
+            margin-top: 30px;
+        }
+    }
+
     .form-linje.prosentfelt {
         display: inline-block;
-
-        .labeltekst {
-            display: block;
-        }
 
         input {
             float: left;
             display: block;
         }
 
-        .prosent {
-            margin-top: 5px;
-            display: inline-block;
-            font-size: 1rem !important;
-        }
         &.feil .melding {
             display: block;
             clear: both;
         }
+    }
+
+    .ekstra-spm-boks.vedlegginfoboks {
+        margin-top: 10px;
+    }
+
+    .fiks-siste-boks {
+        margin-right: 15px;
+        margin-left: 15px;
+        margin-bottom: 30px;
+    }
+
+    .infoboks + .vedlegginfoboks{
+        margin-top: 30px;
     }
 }
 
@@ -58,31 +91,6 @@
         margin-bottom: 30px;
         line-height: 1.6rem;
     }
-    .arbeidsforhold-spm {
-        margin-bottom: 40px;
-
-        input, select, .nav-select, .datepicker-intervall {
-            width: 75%;
-
-            &#arbeidsgiver_navn {
-                width: 100%;
-            }
-        }
-
-        .varighet, .land {
-            padding: 15px;
-
-            .datepicker, .nav-select {
-                padding: 0;
-            }
-        }
-
-        .sluttaarsak-informasjon {
-            padding: 0px !important;
-            .informasjonstekst;
-            margin-bottom: 1rem;
-        }
-    }
 
     .knapper-opprett-arbeidsforhold {
         border-top: 1px solid #ddd;
@@ -109,7 +117,6 @@
     .knapper-arbeidsforhold {
         #legg-til {
             text-align: center;
-            margin-top: 40px;
         }
 
         #har-ikke-jobbet {

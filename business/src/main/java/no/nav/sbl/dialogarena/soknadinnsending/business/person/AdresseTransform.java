@@ -277,8 +277,10 @@ public class AdresseTransform {
         adresse.setGyldigTil(dateTimeFormat.print(gyldigTil));
 
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(xmlMatrikkelAdresse.getTilleggsadresse());
-        stringBuilder.append(", ");
+        if(xmlMatrikkelAdresse.getTilleggsadresse() != null) {
+            stringBuilder.append(xmlMatrikkelAdresse.getTilleggsadresse());
+            stringBuilder.append(", ");
+        }
         stringBuilder.append(getPostnummerString(xmlMatrikkelAdresse));
         stringBuilder.append(" ");
         stringBuilder.append(kodeverk.getPoststed(getPostnummerString(xmlMatrikkelAdresse)));
