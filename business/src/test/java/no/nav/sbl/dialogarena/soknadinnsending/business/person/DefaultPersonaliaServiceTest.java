@@ -11,8 +11,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland;
-
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosBorgerService;
@@ -535,7 +533,7 @@ public class DefaultPersonaliaServiceTest {
         
     private void mockGyldigPersonMedMidlertidigUtenlandskAdresse(
             int adresselinjer) {
-        XMLMidlertidigPostadresseUtland xmlMidlertidigPostadresseUtland = new XMLMidlertidigPostadresseUtland();
+        XMLPostadresse xmlPostadresseUtland = new XMLPostadresse();
         XMLUstrukturertAdresse utenlandskUstrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(adresselinjer);
 
         XMLLandkoder xmlLandkode = new XMLLandkoder();
@@ -546,15 +544,16 @@ public class DefaultPersonaliaServiceTest {
         xmlPostadresseType.setValue("MIDLERTIDIG_POSTADRESSE_UTLAND");
         xmlBruker.setGjeldendePostadresseType(xmlPostadresseType);
         
-        xmlMidlertidigPostadresseUtland
+        xmlPostadresseUtland
                 .setUstrukturertAdresse(utenlandskUstrukturertAdresse);
 
-        xmlBruker.setMidlertidigPostadresse(xmlMidlertidigPostadresseUtland);
+        xmlBruker.setPostadresse(xmlPostadresseUtland);
 
     }
     
     private void mockGyldigPersonMedUtenlandskFolkeregistrertAdresse(int adresselinjer) {
         XMLPostadresse xmlPostadresseUtland = new XMLPostadresse();
+        //no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland xmlPostadresseUtland = new no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland();
         XMLUstrukturertAdresse utenlandskUstrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(4);
 
         XMLLandkoder xmlLandkode = new XMLLandkoder();
