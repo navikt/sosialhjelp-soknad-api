@@ -3560,7 +3560,8 @@ angular.module("../js/common/directives/datepicker/singleDatepickerTemplate.html
     "                       data-ng-focus=\"focus()\"\n" +
     "                       data-ng-required=\"erRequired\"\n" +
     "                       data-error-messages=\"'{{ requiredErrorMessage }}'\"\n" +
-    "                       data-dato-mask>\n" +
+    "                       data-dato-mask\n" +
+    "                       data-aktiv-feilmelding>\n" +
     "                <span class=\"mask\"></span>\n" +
     "                <input type=\"hidden\" data-ng-model=\"ngModel\">\n" +
     "                <span class=\"apne-datepicker\" data-ng-click=\"toggleDatepicker()\"></span>\n" +
@@ -3614,7 +3615,7 @@ angular.module("../js/common/directives/navinput/navcheckboxTemplate.html", []).
   $templateCache.put("../js/common/directives/navinput/navcheckboxTemplate.html",
     "<div class=\"nav-checkbox\">\n" +
     "    <input id=\"{{ navlabel }}\" data-ng-model=\"faktum.value\" type=\"checkbox\" data-boolean-verdi\n" +
-    "           data-ng-change=\"lagreFaktum(); endret()\"/>\n" +
+    "           data-ng-change=\"lagreFaktum(); endret()\" data-aktiv-feilmelding/>\n" +
     "    <label for=\"{{ navlabel }}\" data-cmstekster=\"{{ navlabel }}\"></label>\n" +
     "\n" +
     "    <div data-nav-hjelpetekstelement data-ng-if=\"hvisHarHjelpetekst()\" data-tittel=\"{{ hjelpetekst.tittel }}\"\n" +
@@ -3626,12 +3627,12 @@ angular.module("../js/common/directives/navinput/navcheckboxTemplate.html", []).
 
 angular.module("../js/common/directives/navinput/navorgnrfeltTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/common/directives/navinput/navorgnrfeltTemplate.html",
-    "<div class=\"form-linje tekstfelt orgnummer\" >\n" +
+    "<div class=\"form-linje tekstfelt orgnummer\">\n" +
     "        <label>\n" +
     "            <span data-cmstekster=\"{{ navlabel }}\"></span>\n" +
     "            <input data-ng-model=\"faktum.value\" type=\"text\" value=\"{{ value }}\" data-ng-required=\"erSynlig()\"\n" +
     "                   data-error-messages=\"{{ navfeilmelding }}\" data-blur-validate\n" +
-    "                   data-ng-pattern=\"/[0-9]{9}/\" maxlength=\"9\" orgnr-validate>\n" +
+    "                   data-ng-pattern=\"/[0-9]{9}/\" maxlength=\"9\" orgnr-validate  data-aktiv-feilmelding>\n" +
     "        </label>\n" +
     "        <span class=\"melding\"></span>\n" +
     "</div>\n" +
@@ -3650,7 +3651,8 @@ angular.module("../js/common/directives/navinput/navradioTemplate.html", []).run
     "           data-ng-required=\"true\"\n" +
     "           data-error-messages=\"'{{ navfeilmelding }}'\"\n" +
     "           data-ng-change=\"lagreFaktum()\"\n" +
-    "           data-click-validate>\n" +
+    "           data-click-validate\n" +
+    "           data-aktiv-feilmelding>\n" +
     "\n" +
     "    <label for='{{ navlabel }}' data-cmstekster=\"{{ navlabel }}\"></label>\n" +
     "</div>\n" +
@@ -3659,12 +3661,12 @@ angular.module("../js/common/directives/navinput/navradioTemplate.html", []).run
 
 angular.module("../js/common/directives/navinput/navtekstTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/common/directives/navinput/navtekstTemplate.html",
-    "<div class=\"tekstfelt form-linje\">\n" +
+    "<div class=\"tekstfelt form-linje\" >\n" +
     "    <label>\n" +
     "        <span class=\"labeltekst\">{{ navlabel | cmstekst }}</span>\n" +
     "        <input data-ng-model=\"faktum.value\" type=\"text\" value=\"{{ value }}\" data-ng-required=\"true\"\n" +
     "               data-error-messages=\"{{ navfeilmelding }}\" data-ng-pattern=\"{{regexvalidering}}\" data-blur-validate data-minlength=\"{{navminlength}}\" data-maxlength=\"{{navmaxlength}}\"\n" +
-    "               maxlength=\"{{inputfeltmaxlength}}\"  data-tekstfelt-patternvalidering/>\n" +
+    "               maxlength=\"{{inputfeltmaxlength}}\"  data-tekstfelt-patternvalidering data-aktiv-feilmelding/>\n" +
     "        <span class=\"melding\"></span>\n" +
     "    </label>\n" +
     "</div>\n" +
@@ -3683,7 +3685,8 @@ angular.module("../js/common/directives/navtextarea/navtextareaObligatoriskTempl
     "                  data-ng-trim=\"false\"\n" +
     "                  aria-controls=\"{{sporsmal}}\"\n" +
     "                  data-validate-textarea\n" +
-    "                  data-ng-blur=\"mistetFokus()\"></textarea>\n" +
+    "                  data-ng-blur=\"mistetFokus()\"\n" +
+    "                  data-aktiv-feilmelding></textarea>\n" +
     "\n" +
     "        <span class=\"egen-linje\" data-ng-show=\"harFokusOgFeil() === true\">\n" +
     "                    <span class=\"tellertekst\" data-ng-class=\"{negativtekstteller: counter < 0 }\" aria-live=\"polite\"\n" +

@@ -70673,7 +70673,7 @@ angular.module("../views/templates/opplasting.html", []).run(["$templateCache", 
     "<div id=\"opplasting\" class=\"soknad rad-belyst\" data-sidetittel=\"sidetittel.opplasting\" data-ng-controller=\"OpplastingVedleggCtrl\">\n" +
     "    <div class=\"begrensning sak-halv\">\n" +
     "        <div class=\"panel uten-ramme\">\n" +
-    "            <h1 class=\"stor-ikon-vedlegg-strek\" ><span data-ng-if=\"vedlegg.vedleggId\">{{vedlegg.tittel}}</span><span\n" +
+    "            <h1 class=\"stor-ikon-vedlegg-strek\" data-scrolling-tittel ><span data-ng-if=\"vedlegg.vedleggId\">{{vedlegg.tittel}}</span><span\n" +
     "                    data-ng-if=\"vedlegg.navn\">: {{vedlegg.navn}}</span></h1>\n" +
     "\n" +
     "        </div>\n" +
@@ -72284,7 +72284,7 @@ angular.module("../js/common/directives/navinput/navradioTemplate.html", []).run
 
 angular.module("../js/common/directives/navinput/navtekstTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/common/directives/navinput/navtekstTemplate.html",
-    "<div class=\"tekstfelt form-linje\">\n" +
+    "<div class=\"tekstfelt form-linje\" data-ng-class=\"{aktiv-feilmleding: $(input).focus()}\">\n" +
     "    <label>\n" +
     "        <span class=\"labeltekst\">{{ navlabel | cmstekst }}</span>\n" +
     "        <input data-ng-model=\"faktum.value\" type=\"text\" value=\"{{ value }}\" data-ng-required=\"true\"\n" +
@@ -73791,6 +73791,16 @@ angular.module('nav.datepicker', [])
                         }
                     }
                 });
+            }
+        };
+
+    }])
+    .directive('scrollingTittel', ['$timeout', function ($timeout) {
+        return {
+            link: function (scope, elm) {
+                $timeout(function() {
+                    scrollToElement(elm, 250);
+                }, 50)
             }
         };
     }]);;angular.module('nav.fremdriftsindikator', [])
