@@ -89,7 +89,7 @@ public class WebSoknadUtilsTest {
     private static WebSoknad lagSoknad(Faktum... sluttaarsaker) {
         WebSoknad soknad = new WebSoknad();
         List<Faktum> fakta = new ArrayList<>();
-        Faktum person = new Faktum(1L, 1L, "personalia", null);
+        Faktum person = new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("personalia");
         fakta.addAll(Arrays.asList(sluttaarsaker));
         fakta.add(person);
         soknad.setFaktaListe(fakta);
@@ -130,7 +130,7 @@ public class WebSoknadUtilsTest {
         Map<String, String> properties = new HashMap<>();
         properties.put("type", type);
         properties.put(datoKey, datoValue);
-        Faktum faktum = new Faktum(1L, 1L, "arbeidsforhold", null);
+        Faktum faktum = new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("arbeidsforhold");
         faktum.setProperties(properties);
         return faktum;
     }

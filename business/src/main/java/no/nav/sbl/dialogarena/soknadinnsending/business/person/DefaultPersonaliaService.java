@@ -120,7 +120,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
     private void lagrePersonalia(Long soknadId, Personalia personalia) {
         String statsborgerskap = personalia.getStatsborgerskap();
 
-        Faktum personaliaFaktum = new Faktum(soknadId, null, "personalia", "")
+        Faktum personaliaFaktum = new Faktum().medSoknadId(soknadId).medKey("personalia")
                 .medSystemProperty(FNR_KEY, personalia.getFnr())
                 .medSystemProperty(ALDER_KEY, personalia.getAlder())
                 .medSystemProperty(NAVN_KEY, personalia.getNavn())
@@ -143,7 +143,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
     private void lagreBarn(Long soknadId, List<Barn> barneliste) {
 
         for (Barn barn : barneliste) {
-            Faktum barneFaktum = new Faktum(soknadId, null, "barn", null, SYSTEMREGISTRERT)
+            Faktum barneFaktum = new Faktum().medSoknadId(soknadId).medKey("barn").medType(SYSTEMREGISTRERT)
                     .medSystemProperty("fornavn", barn.getFornavn())
                     .medSystemProperty("mellomnavn", barn.getMellomnavn())
                     .medSystemProperty("etternavn", barn.getEtternavn())
