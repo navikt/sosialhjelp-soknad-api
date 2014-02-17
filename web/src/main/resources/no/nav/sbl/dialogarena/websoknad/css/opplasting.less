@@ -57,7 +57,6 @@ form, [ng-form], [data-ng-form] {
 
   .viktig-info {
     margin-bottom: 25px;
-    border-bottom: 1px solid #d1d1d1;
 
     li {
       background-image: url(../img/7x7_svart.png);
@@ -73,6 +72,12 @@ form, [ng-form], [data-ng-form] {
     list-style-type: none;
     margin-bottom: 0px;
     padding-left: 0px;
+  }
+  ul.form-errors {
+    padding: 1rem;
+    padding-left: 3rem;
+    margin-bottom: 2rem;
+    text-align: left;
   }
 
   .info, h4 {
@@ -90,7 +95,24 @@ form, [ng-form], [data-ng-form] {
     border-top: 1px solid #d1d1d1;
   }
   .leggtilekstra {
+    background-color: #f1f1f1;
     padding: 50px;
+    border-bottom: none;
+
+    a {
+      font-weight: 600;
+      background-color: #f1f1f1;
+      color: #0067c5;
+      margin-bottom: 30px;
+      padding: 11px 23px;
+      border: 1px solid #d1d1d1;
+    }
+    a:hover, a:focus {
+      color: #fff;
+      background-color: #0067c5;
+      border-color: #0067c5;
+      outline: none;
+    }
   }
   .ferdig-skjema {
     padding-top: 40px;
@@ -262,6 +284,19 @@ form, [ng-form], [data-ng-form] {
       width: 220px !important;
     }
   }
+  .form-linje.knapp {
+    background-color: transparent;
+    border-color: transparent;
+    .melding {
+      text-align: center;
+    }
+    .melding.annet {
+      margin-top: -35px;
+    }
+  }
+  .form-linje {
+    padding: 0px;
+  }
 }
 
 
@@ -399,6 +434,9 @@ form, [ng-form], [data-ng-form] {
 }
 
 #opplasting {
+  .panel.uten-ramme {
+    margin-top: 30px;
+  }
   border-top: 1px solid #d1d1d1;
   [class*="ikon-vedlegg-strek"] {
     padding-bottom: 30px;
@@ -417,6 +455,7 @@ form, [ng-form], [data-ng-form] {
       margin: 15px;
     }
   }
+
 
   .opplastingliste {
     padding: 0;

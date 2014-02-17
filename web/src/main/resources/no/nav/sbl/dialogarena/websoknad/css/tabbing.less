@@ -20,14 +20,22 @@
   }
   .feil, .feilstyling {
     input[type='checkbox']:focus + label {
-      background: url(../img/check_tab.svg) 0 0 no-repeat;
+      background: url(../img/check_tab_feil.svg) 0 0 no-repeat;
       color: #c30000 !important;
     }
     input[type='radio']:focus + label {
-      background: url(../img/radio_tab.svg) 0 0 no-repeat;
+      background: url(../img/radio_tab_feil.svg) 0 0 no-repeat;
       color: #c30000 !important;
     }
   }
+}
+
+button:focus {
+  outline: none;
+}
+button.knapp-leggtil-liten:focus {
+  outline: none !important;
+  border: 1px solid #0067c5 !important;
 }
 
 #vedlegg {
@@ -68,20 +76,20 @@ a.accordion-toggle, #vedlegg a.accordion-toggle {
   &:active {
     .flipp {
       cursor: pointer;
-      border-color: transparent transparent #0000FF transparent;
+      border-color: transparent transparent #800000 transparent;
 
       &:before {
-        border-top: 30px solid #0000FF;
+        border-top: 30px solid #c30000;
       }
     }
   }
   &:focus {
     .flipp {
       cursor: pointer;
-      border-color: transparent transparent #004283 transparent;
+      border-color: transparent transparent #800000 transparent;
 
       &:before {
-        border-top: 30px solid #0067c5;
+        border-top: 30px solid #c30000;
       }
     }
   }
@@ -89,6 +97,7 @@ a.accordion-toggle, #vedlegg a.accordion-toggle {
 
 a.knapp-link:focus, a.knapp-link:active {
   text-decoration: none !important;
+  border: 1px solid #0067c5;
 }
 
 a.infoikon, a.lukk{

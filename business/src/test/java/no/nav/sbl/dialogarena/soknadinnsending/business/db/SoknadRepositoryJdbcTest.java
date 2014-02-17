@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingS
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -69,6 +70,13 @@ public class SoknadRepositoryJdbcTest {
     public void skalKunneOppretteSoknad() {
         opprettOgPersisterSoknad();
     }
+    
+    @Test
+    public void skalKunneOppretteBehandling() {
+        String behandlingsId = soknadRepository.opprettBehandling();
+        Assert.assertNotNull(behandlingsId);
+        Assert.assertNotEquals("", behandlingsId);
+    }
 
     @Test(expected = DataIntegrityViolationException.class)
     public void skalIkkeKunneOppretteUtenAktorId() {
@@ -128,6 +136,14 @@ public class SoknadRepositoryJdbcTest {
         assertThat(opprettetSoknad.getBrukerBehandlingId(), is(behId));
         assertThat(opprettetSoknad.getskjemaNummer(), is(skjemaNummer));
     }
+    
+    @Test
+    public void skalFaaNullVedUkjentBehandlingsId() {
+        String behId = randomUUID().toString();
+        WebSoknad soknad = soknadRepository.hentMedBehandlingsId(behId);
+        Assert.assertNull(soknad);
+    }
+    
 
     @Test
     public void skalKunneHenteListeMedSoknader() {
@@ -157,12 +173,33 @@ public class SoknadRepositoryJdbcTest {
         lagreData("key1", null, "value1");
         lagreData("key2", null, "value2");
         lagreData("key3", null, "value3");
+        
 
         List<Faktum> soknadBrukerData = soknadRepository.hentAlleBrukerData(soknadId);
 
         assertThat(soknadBrukerData, notNullValue());
         assertThat(soknadBrukerData.size(), is(3));
     }
+    
+    @Test
+    public void skalKunneHenteFaktum() {
+        opprettOgPersisterSoknad();
+        lagreData("key1", null, "value1");
+        Long faktumId = lagreData("key2", null, "value2");
+        lagreData("key3", null, "value3");
+        
+        soknadRepository.hentFaktum(soknadId, faktumId);
+    }
+    
+    //TODO: Hvordan får vi testet denne?
+//    @Test
+//    public void skalReturnereAtVedleggErPaakrevd() {
+//        opprettOgPersisterSoknad();
+//        
+//        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, "key2", "true", "key2");
+//        
+//        Assert.assertTrue(vedleggPaakrevd);
+//    }
 
     @Test
     public void skalTaVarePaaSystemproperties(){
@@ -290,6 +327,18 @@ public class SoknadRepositoryJdbcTest {
         assertThat(soknadBrukerData, notNullValue());
         assertThat(soknadBrukerData, empty());
     }
+    
+    @Test
+    public void skalKunneLeggeTilbake() {
+        opprettOgPersisterSoknad();
+        lagreData("key1", null, "value1");
+        lagreData("key2", null, "value2");
+
+        WebSoknad soknad = soknadRepository.hentSoknadMedData(soknadId);
+        soknadRepository.leggTilbake(soknad);
+        List<Faktum> soknadBrukerData = soknadRepository.hentAlleBrukerData(soknadId);
+        assertThat(soknadBrukerData, notNullValue());
+    }
 
     @Test
     public void skalRepopulereDatabase(){
@@ -340,4 +389,5 @@ public class SoknadRepositoryJdbcTest {
     private Long lagreData(String key, Long faktumId, String value) {
         return soknadRepository.lagreFaktum(soknadId, new Faktum(soknadId, faktumId, key, value, BRUKERREGISTRERT));
     }
+    
 }

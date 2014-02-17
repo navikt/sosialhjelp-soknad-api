@@ -94,4 +94,14 @@ angular.module('nav.fokus', [])
                 });
             }
         };
+
+    }])
+    .directive('scrollingTittel', ['$timeout', function ($timeout) {
+        return {
+            link: function (scope, elm) {
+                $timeout(function() {
+                    scrollToElement(elm, 250);
+                }, 50)
+            }
+        };
     }]);
