@@ -1939,7 +1939,7 @@ angular.module("../views/templates/informasjonsside.html", []).run(["$templateCa
     "       			<a type=\"button\" class=\"knapp-hoved\" href=\"{{ inngangsportenUrl }}\">{{ 'feilmelding.lenketekst' | cmstekst }}</a>\n" +
     "       		</div>\n" +
     "       	</div>\n" +
-    "       	<div data-ng-show=\"tpsSvarer()\">\n" +
+    "       	<form data-ng-show=\"tpsSvarer()\">\n" +
     "	        <h2 data-ng-show=\"kravForDagpengerOppfylt()\" class=\"stor strek-ikon-info-orange\">{{ 'dagpenger.informasjonsside.tittel' | cmstekst }}</h2>\n" +
     "	    	\n" +
     "			<div id=\"utslagskriterier\" data-ng-if=\"kravForDagpengerIkkeOppfylt()\">\n" +
@@ -1999,11 +1999,11 @@ angular.module("../views/templates/informasjonsside.html", []).run(["$templateCa
     "				</ul>\n" +
     "\n" +
     "\n" +
-    "				<form class=\"form-linje checkbox\" data-ng-class=\"{feilstyling: visFeilmelding() }\" data-ng-if=\"oppsummering != true\" data-checkbox-validate>\n" +
+    "				<div class=\"form-linje checkbox\" data-ng-if=\"oppsummering != true\" data-valider-informasjonsside data-checkbox-validate>\n" +
     "                    <input id=\"lestBrosjyre\" data-ng-model=\"utslagskriterier.harlestbrosjyre\" type=\"checkbox\">\n" +
     "                    <label for=\"lestBrosjyre\">{{ 'dagpenger.informasjonsside.lestbrosjyre.sporsmal' | cmstekst }}</label>\n" +
     "                    <span class=\"melding\">{{ 'dagpenger.informasjonsside.lestbrosjyre.feilmelding' | cmstekst }}</span>\n" +
-    "				</form>\n" +
+    "				</div>\n" +
     "				\n" +
     "				<div id=\"oppsummering\" data-ng-if=\"oppsummering == true\">\n" +
     "					<span class=\"sjekket\"></span>\n" +
@@ -2029,7 +2029,7 @@ angular.module("../views/templates/informasjonsside.html", []).run(["$templateCa
     "					<span>{{ 'utslagskriterier.utslag.infoAvslag' | cmstekst }}</span>\n" +
     "				</p>\n" +
     "			</div>\n" +
-    "		</div>\n" +
+    "		</form>\n" +
     "	</div>\n" +
     "</div>\n" +
     "");
@@ -2887,7 +2887,7 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                           type=\"radio\" value=\"SendesSenere\"\n" +
     "                                           data-ng-click=\"endreInnsendingsvalg(forventning, 'SendesSenere')\">\n" +
     "                                    <label for=\"{{$index}}ettersendRadio\"\n" +
-    "                                           data-cmstekster=\"vedlegg.faktum.ettersend\">sefwserwer</label>\n" +
+    "                                           data-cmstekster=\"vedlegg.faktum.ettersend\"></label>\n" +
     "\n" +
     "                                    <input id=\"{{$index}}ikkesendRadio\"\n" +
     "                                           data-ng-model=\"forventning.innsendingsvalg\"\n" +
