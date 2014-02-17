@@ -2036,25 +2036,33 @@ angular.module("../views/templates/opplasting.html", []).run(["$templateCache", 
     "<div data-nav-tittel=\"skjema.tittel\"></div>\n" +
     "<div stegindikator steg-liste=\"veiledning, skjema, vedlegg, sendInn\" aktiv-index=\"2\"></div>\n" +
     "\n" +
-    "<div id=\"opplasting\" class=\"soknad rad-belyst\" data-sidetittel=\"sidetittel.opplasting\" data-ng-controller=\"OpplastingVedleggCtrl\">\n" +
+    "<div id=\"opplasting\" class=\"soknad rad-belyst\" data-sidetittel=\"sidetittel.opplasting\"\n" +
+    "     data-ng-controller=\"OpplastingVedleggCtrl\">\n" +
     "    <div class=\"begrensning sak-halv\">\n" +
     "        <div class=\"panel uten-ramme\">\n" +
-    "            <h1 class=\"stor-ikon-vedlegg-strek\" data-scrolling-tittel ><span data-ng-if=\"vedlegg.vedleggId\">{{vedlegg.tittel}}</span><span\n" +
+    "            <h1 class=\"stor-ikon-vedlegg-strek\" data-scrolling-tittel><span data-ng-if=\"vedlegg.vedleggId\">{{vedlegg.tittel}}</span><span\n" +
     "                    data-ng-if=\"vedlegg.navn\">: {{vedlegg.navn}}</span></h1>\n" +
     "\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "    <form id=\"opplastingform\" method=\"POST\" enctype=\"multipart/form-data\" data-file-upload=\"options\" data-ng-controller=\"OpplastingCtrl\">\n" +
+    "    <form id=\"opplastingform\" method=\"POST\" enctype=\"multipart/form-data\" data-file-upload=\"options\"\n" +
+    "          data-ng-controller=\"OpplastingCtrl\">\n" +
     "        <div class=\"begrensning sak-trekvart\">\n" +
-    "            <div id=\"opplastingFeilmelding\" class=\"opplastingfeil\" style=\"width: 73%;margin: 0 auto; \" data-ng-if=\"data.opplastingFeilet\" data-ng-bind=\"data.opplastingFeilet\">dette er en feil</div>\n" +
+    "            <div id=\"opplastingFeilmelding\" class=\"opplastingfeil\" style=\"width: 73%;margin: 0 auto; \"\n" +
+    "                 data-ng-if=\"data.opplastingFeilet\" data-ng-bind=\"data.opplastingFeilet\">dette er en feil\n" +
+    "            </div>\n" +
     "            <section class=\"panel-standard oversikt\">\n" +
     "                <ul class=\"opplastingliste clearfix\">\n" +
     "                    <li data-ng-repeat=\"file in queue\" data-ng-class=\"{'lasteropp': file.$processing()}\" data-fil-feil>\n" +
-    "                        <a class=\"lukk\" data-ng-if=\"!!file.vedleggId\" data-ng-click=\"file.$destroy()\" data-ng-controller=\"SlettOpplastingCtrl\" href=\"javascript:void(0);\" data-aria-label=\"Slett siden\"></a>\n" +
-    "                        <img data-async-image=\"../rest/soknad/{{file.soknadId}}/vedlegg/{{file.vedleggId}}/thumbnail\" data-ng-if=\"!!file.vedleggId\">\n" +
+    "                        <a class=\"lukk\" data-ng-if=\"!!file.vedleggId\" data-ng-click=\"file.$destroy()\"\n" +
+    "                           data-ng-controller=\"SlettOpplastingCtrl\" href=\"javascript:void(0);\"\n" +
+    "                           data-aria-label=\"Slett siden\"></a>\n" +
+    "                        <img data-async-image=\"../rest/soknad/{{file.soknadId}}/vedlegg/{{file.vedleggId}}/thumbnail\"\n" +
+    "                             data-ng-if=\"!!file.vedleggId\">\n" +
     "                    </li>\n" +
     "                    <li class=\"leggtil\">\n" +
-    "                        <input id=\"leggtil\" type=\"file\" name=\"files[]\" class=\"vekk\" multiple accept=\"image/jpeg,image/png,application/pdf\" data-fokus>\n" +
+    "                        <input id=\"leggtil\" type=\"file\" name=\"files[]\" class=\"vekk\" multiple\n" +
+    "                               accept=\"image/jpeg,image/png,application/pdf\" data-fokus>\n" +
     "                        <label for=\"leggtil\" class=\"robust\" data-cmstekster=\"opplasting.leggtil\"></label>\n" +
     "                    </li>\n" +
     "                </ul>\n" +
@@ -2064,15 +2072,18 @@ angular.module("../views/templates/opplasting.html", []).run(["$templateCache", 
     "            <div class=\"begrensning sak-totredel\">\n" +
     "                <ul>\n" +
     "                    <li>\n" +
-    "                        <a href=\"javascript:void(0);\" data-redirect=\"#/vedlegg\" class=\"knapp-hoved\" data-cmstekster=\"opplasting.ferdig\" data-ng-click=\"leggVed()\"\n" +
+    "                        <a href=\"javascript:void(0);\" data-redirect=\"#/vedlegg\" class=\"knapp-hoved\"\n" +
+    "                           data-cmstekster=\"opplasting.ferdig\" data-ng-click=\"leggVed()\"\n" +
     "                           data-fremdriftsindikator></a>\n" +
     "\n" +
-    "                        <div class=\"form-linje\" data-ng-class=\"{feil: skalViseFeilmelding === true}\" data-ng-if=\"skalViseFeilmelding === true\">\n" +
+    "                        <div class=\"form-linje\" data-ng-class=\"{feil: skalViseFeilmelding === true}\"\n" +
+    "                             data-ng-if=\"skalViseFeilmelding === true\">\n" +
     "                            <span class=\"melding\" data-cmstekster=\"opplasting.feilmelding.manglerVedlegg\"></span>\n" +
     "                        </div>\n" +
     "                    </li>\n" +
     "                    <li>\n" +
-    "                        <a href=\"javascript:void(0);\" data-ng-href=\"#/vedlegg\" class=\"avbryt\" data-cmstekster=\"opplasting.avbryt\"></a>\n" +
+    "                        <a href=\"javascript:void(0);\" data-ng-href=\"#/vedlegg\" class=\"avbryt\"\n" +
+    "                           data-cmstekster=\"opplasting.avbryt\"></a>\n" +
     "                    </li>\n" +
     "                </ul>\n" +
     "            </div>\n" +
@@ -2853,7 +2864,7 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                           type=\"radio\" value=\"SendesSenere\"\n" +
     "                                           data-ng-click=\"endreInnsendingsvalg(forventning, 'SendesSenere')\">\n" +
     "                                    <label for=\"{{$index}}ettersendRadio\"\n" +
-    "                                           data-cmstekster=\"vedlegg.faktum.ettersend\"></label>\n" +
+    "                                           data-cmstekster=\"vedlegg.faktum.ettersend\">sefwserwer</label>\n" +
     "\n" +
     "                                    <input id=\"{{$index}}ikkesendRadio\"\n" +
     "                                           data-ng-model=\"forventning.innsendingsvalg\"\n" +
@@ -2891,9 +2902,8 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "    <div class=\"rad-belyst leggtilekstra\">\n" +
     "        <div class=\"begrensning sak-totredel\">\n" +
     "            <section class=\"panel-standard oversikt strek-bottom\">\n" +
-    "                <a href=\"javascript:void(0)\" aria-role=\"button\" class=\"knapp-link\"\n" +
-    "                   data-cmstekster=\"vedlegg.leggtilekstravedlegg\"\n" +
-    "                   data-ng-click=\"nyttAnnetVedlegg()\" data-apne-annet-vedlegg></a>\n" +
+    "                <button class=\"knapp-leggtil-liten\" data-cmstekster=\"vedlegg.leggtilekstravedlegg\"\n" +
+    "                        data-ng-click=\"nyttAnnetVedlegg()\" role=\"button\" data-apne-annet-vedlegg></button>\n" +
     "            </section>\n" +
     "        </div>\n" +
     "    </div>\n" +

@@ -6,7 +6,7 @@ angular.module('nav.vedlegg.controller', [])
         });
     }])
 
-    .controller('VedleggCtrl', ['$scope', '$location', '$routeParams', '$anchorScroll', 'data', 'vedleggService', 'Faktum', 'VedleggForventning', 'soknadService', function ($scope, $location, $routeParams, $anchorScroll, data, vedleggService, Faktum, VedleggForventning, soknadService) {
+    .controller('VedleggCtrl', ['$scope', '$location', '$routeParams', '$anchorScroll', 'data', 'vedleggService', 'Faktum', 'VedleggForventning', 'soknadService', '$timeout', function ($scope, $location, $routeParams, $anchorScroll, data, vedleggService, Faktum, VedleggForventning, soknadService, $timeout) {
         $scope.data = {soknadId: data.soknad.soknadId};
         $scope.forventninger = vedleggService.query({soknadId: data.soknad.soknadId});
         $scope.sidedata = {navn: 'vedlegg'};
@@ -29,7 +29,10 @@ angular.module('nav.vedlegg.controller', [])
             } else {
                 $scope.fremdriftsindikator.laster = false;
                 $scope.validert.value = true;
-                $scope.leggTilStickyFeilmelding();
+                $timeout(function () {
+                    $scope.leggTilStickyFeilmelding();
+                }, 50)
+
             }
             $scope.runValidation(true);
         };

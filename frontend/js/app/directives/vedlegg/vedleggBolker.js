@@ -45,7 +45,7 @@ angular.module('nav.vedleggbolker', [])
                 }
 
                 function bolkHarFeil(bolk) {
-                    return !($(bolk).find('.vedlegg-bolk').hasClass('behandlet'));
+                    return $(bolk).find('.vedlegg-bolk').hasClass('ekstraVedlegg') || !($(bolk).find('.vedlegg-bolk').hasClass('behandlet'));
                 }
 
                 function finnAlleBolker() {
