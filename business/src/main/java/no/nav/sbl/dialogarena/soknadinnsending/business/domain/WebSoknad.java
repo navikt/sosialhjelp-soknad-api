@@ -81,6 +81,9 @@ public class WebSoknad implements Serializable {
     }
 
     public List<Vedlegg> getVedlegg() {
+        if (vedlegg == null) {
+            vedlegg = new ArrayList<>();
+        }
         return vedlegg;
     }
 

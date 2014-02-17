@@ -143,6 +143,28 @@ public class Faktum implements Serializable {
         this.faktumEgenskaper = faktumEgenskaper;
     }
 
+    public Faktum medKey(String key) {
+        this.key = key;
+        return this;
+    }
+
+    public Faktum medValue(String value) {
+        this.value = value;
+        return this;
+    }
+    public Faktum medSoknadId(Long soknadId) {
+        this.soknadId = soknadId;
+        return this;
+    }
+    public Faktum medType(FaktumType type) {
+        this.type = type;
+        return this;
+    }
+    public Faktum medFaktumId(Long faktumId) {
+        this.faktumId = faktumId;
+        return this;
+    }
+
     public Faktum medProperty(String key, String value) {
         medEgenskap(new FaktumEgenskap(soknadId, faktumId, key, value, false));
         return this;
@@ -260,6 +282,17 @@ public class Faktum implements Serializable {
         for (String k : getProperties().keySet()) {
             faktumEgenskaper.add(new FaktumEgenskap(soknadId, faktumId, k, getProperties().get(k), false));
         }
+    }
+
+    public boolean matcherUnikProperty(String uniqueProperty, Faktum faktum) {
+        if (harEgenskap(uniqueProperty)) {
+            return getProperties().get(uniqueProperty).equals(faktum.getProperties().get(uniqueProperty));
+        }
+        return false;
+    }
+
+    private boolean harEgenskap(String uniqueProperty) {
+        return getProperties().get(uniqueProperty) != null;
     }
 
     public enum FaktumType {SYSTEMREGISTRERT, BRUKERREGISTRERT;}
