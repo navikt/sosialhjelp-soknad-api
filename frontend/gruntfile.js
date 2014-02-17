@@ -165,6 +165,26 @@ module.exports = function (grunt) {
                 singleRun: true
 			}
 		},
+//        karma_sonar: {
+//            options: {
+//
+//            },
+//            your_target: {
+//                project: {
+//                    key: 'grunt-sonar',
+//                    name: '<%= pkg.name %>',
+//                    version: '<%= pkg.version %>'
+//                },
+//                sources: [
+//                    {
+//                        path: '...',
+//                        prefix: '...',
+//                        coverageReport: ''
+//                    }
+//                ]
+//            }
+//        },
+
 		maven: {
 			warName: '<%= pkg.name %>-frontend.war',
 			dist: {
@@ -189,6 +209,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-html2js');
 
 	grunt.loadNpmTasks('grunt-karma');
+	grunt.loadNpmTasks('grunt-karma-sonar');
 //	grunt.loadTasks('maven-tasks');
 
 	grunt.option('force', true);

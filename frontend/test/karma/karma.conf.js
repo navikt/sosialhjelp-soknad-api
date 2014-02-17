@@ -41,7 +41,7 @@ module.exports = function (config) {
 
         // test results reporter to use
         // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-        reporters: ['progress'],
+        reporters: ['progress', 'junit', 'coverage'],
 
 
         // web server port
@@ -87,7 +87,8 @@ module.exports = function (config) {
             'karma-phantomjs-launcher',
             'karma-chrome-launcher',
             'karma-firefox-launcher',
-            'karma-ie-launcher'
+            'karma-ie-launcher',
+            'karma-junit-reporter'
         ],
 
         coverageReporter: {
