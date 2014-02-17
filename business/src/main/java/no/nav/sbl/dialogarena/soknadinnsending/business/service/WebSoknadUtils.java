@@ -16,7 +16,6 @@ import static no.nav.modig.lang.collections.ComparatorUtils.compareWith;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
 import static no.nav.modig.lang.collections.PredicateUtils.where;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.FNR_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_TYPE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.PERSONALIA_KEY;
@@ -55,16 +54,16 @@ public class WebSoknadUtils {
         {
             return RUTES_I_BRUT;
         }
-        if (!webSoknad.getFaktaMedKey(FNR_KEY).isEmpty())
-        {
+        /*if (!webSoknad.getFaktaMedKey(FNR_KEY).isEmpty())
+        {*/
             Personalia personalia = getPerson(webSoknad);
             return (personalia.harUtenlandskFolkeregistrertAdresse() && (!personalia.harNorskMidlertidigAdresse())) ?  EOS_DAGPENGER : RUTES_I_BRUT;
-        } else
+        }/* else
         {
             LOGGER.warn("Fødselsnummer for bruker ble ikke funnet. Rutes derfor i BRUT");
             return RUTES_I_BRUT;
         }
-    }
+    }*/
 
     public static Personalia getPerson(WebSoknad webSoknad) {
         Map<String, String> properties = webSoknad.getFaktaMedKey(PERSONALIA_KEY).get(0).getProperties();

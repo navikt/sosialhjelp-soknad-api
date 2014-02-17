@@ -9,7 +9,7 @@ angular.module('nav.barnetilleggfaktum', ['app.services'])
 
         var ikkebarneinntekt = {
             key: 'ikkebarneinntekt',
-            value: false,
+            value: undefined,
             parrentFaktum: $scope.b.faktumId
         };
 
