@@ -230,6 +230,25 @@ function fadeFeilmelding(element, melding, feilmeldingsklasse, scope) {
 		}
 	}, 20);
 }
+function fadeAktivFeilmelding(element, melding, feilmeldingsklasse, scope) {
+    var backgroundColour = [250, 214, 214].join(',') + ',';
+    var borderColour = [195, 0, 0].join(',') + ',';
+    var meldingColour = [160, 4, 4].join(',') + ',';
+    var transparency = 1;
+    var timeout = setInterval(function () {
+        if (transparency >= 0) {
+            element[0].style.backgroundColor = 'rgba(' + backgroundColour + (transparency -= 0.015) + ')';
+            element[0].style.borderColor = 'rgba(' + borderColour + (transparency -= 0.015) + ')';
+            melding[0].style.color = 'rgba(' + meldingColour + (transparency -= 0.015) + ')';
+        } else {
+            element.removeClass(feilmeldingsklasse);
+            element.removeAttr('style');
+            melding.removeAttr('style');
+            clearInterval(timeout);
+            scope.$apply();
+        }
+    }, 20);
+}
 
 function reverserNorskDatoformat(datoString) {
 	var re = new RegExp(/^\d\d\.\d\d\.\d\d\d\d$/);

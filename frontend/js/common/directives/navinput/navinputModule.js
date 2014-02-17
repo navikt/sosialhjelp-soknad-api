@@ -190,13 +190,15 @@ angular.module('nav.input', ['nav.cmstekster'])
             }
         };
     }])
-    .directive('aktivFeilmelding', [function () {
+    .directive('aktivFeilmelding', ['$timeout', function ($timeout) {
         return {
             link: function (scope, element) {
                 $(element).bind('blur', function () {
                     var formLinje = $(element).closest('.form-linje');
                     if(formLinje.hasClass('aktiv-feilmelding')) {
-                        formLinje.removeClass('aktiv-feilmelding');
+                        $timeout(function() {
+                            formLinje.removeClass('aktiv-feilmelding');
+                        }, 200);
                     }
                 })
             }

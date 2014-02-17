@@ -83,6 +83,8 @@ angular.module('nav.feilmeldinger', [])
                                 scope.giFokus(formLinje.find('input[type=text]').first());
                             } else if(feilmelding.elem.hasClass('hidden-vedlegg')) {
                                 scope.giFokus(formLinje.find('a.knapp-link').first());
+                            } else if(feilmelding.elem.hasClass('legg-til-arbeidsforhold')) {
+                                scope.giFokus(formLinje.find('button'));
                             }
                             else {
                                 scope.giFokus(formLinje.find('input[type=checkbox]').first());
