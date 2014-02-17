@@ -15,7 +15,7 @@ public interface VedleggRepository {
      *
      * @param vedlegg vedlegget som skal lagres
      * @param content innholdet i vedlegget
-     * @return
+     * @return id på opprettet dokument
      */
     Long opprettVedlegg(final Vedlegg vedlegg, byte[] content);
 
@@ -73,7 +73,7 @@ public interface VedleggRepository {
      *
      * @param soknadId soknaden det jobbes på
      * @param faktumId faktumet det skal slettes vedlegg for
-     * @param gosysId
+     * @param gosysId skjemanummer somskal slettes
      */
     void slettVedleggUnderBehandling(Long soknadId, Long faktumId, String gosysId);
 
@@ -92,9 +92,9 @@ public interface VedleggRepository {
 
     /**
      * Henter alle vedlegg som er tilknyttet et faktum
-     * @param soknadId
-     * @param faktumId
-     * @return
+     * @param soknadId soknaden det skal hentes for
+     * @param faktumId faktum det skal hentes for
+     * @return liste med vedlegg for faktumet
      */
     List<Vedlegg> hentVedleggForFaktum(Long soknadId, Long faktumId);
 

@@ -208,11 +208,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return getJdbcTemplate().query("select * from soknadbrukerdata where soknad_id = ? and parrent_faktum = ?", faktumRowMapper, soknadId, faktumId);
     }
 
-    @Override
-    public Faktum finnFaktum(Long soknadId, String key) {
-        Long faktumId = getJdbcTemplate().queryForObject("select soknadbrukerdata_id from SOKNADBRUKERDATA where soknad_id = ? and key = ?", Long.class, soknadId, key);
-        return hentFaktum(soknadId, faktumId);
-    }
 
     @Override
     public Boolean isVedleggPaakrevd(Long soknadId, String key, String value, String dependOnValue) {
@@ -232,21 +227,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return false;
     }
 
-    /**
-     * Brukes for å se om systemfaktumet er lagret tidligere.
-     * Returnerer faktumet dersom det eksisterer, Dersom ikke returneres et tomt faktum.
-     */
-    @Override
-    public Faktum hentSystemFaktum(Long soknadId, String key, String type) {
-        String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and key = ? and type= ?";
-        List<Faktum> faktum = getJdbcTemplate().query(sql, faktumRowMapper, soknadId, key, type);
-
-        if (!faktum.isEmpty()) {
-            return faktum.get(0);
-        } else {
-            return new Faktum();
-        }
-    }
 
     @Override
     public List<Faktum> hentSystemFaktumList(Long soknadId, String key) {
