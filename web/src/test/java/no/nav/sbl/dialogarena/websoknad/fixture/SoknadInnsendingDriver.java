@@ -1,9 +1,5 @@
 package no.nav.sbl.dialogarena.websoknad.fixture;
 
-import no.nav.sbl.dialogarena.websoknad.domain.StartSoknad;
-
-import no.nav.sbl.dialogarena.websoknad.servlet.SoknadTpsDataController;
-
 import no.nav.modig.core.context.ModigSecurityConstants;
 import no.nav.modig.core.context.SubjectHandlerUtils;
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
@@ -12,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
 import no.nav.sbl.dialogarena.websoknad.config.FitNesseApplicationConfig;
+import no.nav.sbl.dialogarena.websoknad.domain.StartSoknad;
 import no.nav.sbl.dialogarena.websoknad.servlet.SoknadDataController;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -94,7 +91,7 @@ public class SoknadInnsendingDriver extends SpringAwareDoFixture {
     }
 
     public void lagreFaktumMedVerdi(String faktum, String verdi) {
-        webSoknad.getFaktaListe().add(new Faktum(webSoknad.getSoknadId(), null, faktum, verdi, BRUKERREGISTRERT));
+        webSoknad.getFaktaListe().add(new Faktum().medSoknadId(webSoknad.getSoknadId()).medKey(faktum).medValue(verdi).medType(BRUKERREGISTRERT));
         soknadDataController.lagreSoknad(webSoknadId.getId(), webSoknad);
     }
 

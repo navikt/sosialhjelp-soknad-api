@@ -38,12 +38,7 @@ public interface SoknadRepository {
 
     Faktum hentFaktum(Long soknadId, Long faktumId);
 
-    Faktum finnFaktum(Long soknadId, String key);
-
-    Faktum hentSystemFaktum(Long soknadId, String key,
-                            String systemregistrertFaktum);
-
-    List<Faktum> hentSystemFaktumList(Long soknadId, String key, String string);
+    List<Faktum> hentSystemFaktumList(Long soknadId, String key);
 
     void endreInnsendingsValg(Long soknadId, Long faktumId, Faktum.Status innsendingsvalg);
 
