@@ -160,7 +160,8 @@ module.exports = function (grunt) {
 		},
 		karma : {
 			unit: {
-				configFile: 'test/karma/karma.conf.js'
+				configFile: 'test/karma/karma.conf.js',
+                browsers: ['PhantomJS']
 			}
 		},
 		maven: {
@@ -196,5 +197,5 @@ module.exports = function (grunt) {
     grunt.registerTask('hint', ['jshint', 'watch']);
     grunt.registerTask('maven', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev']);
     grunt.registerTask('maven-test', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev', 'htmlbuild:test']);
-	grunt.registerTask('maven-prod', ['html2js', 'karma:unit', 'concat', 'htmlbuild:dev', 'htmlbuild:prod', 'uglify']);
+	grunt.registerTask('maven-prod', ['html2js', 'karma:unit', 'concat', 'uglify', 'htmlbuild:dev', 'htmlbuild:prod']);
 };
