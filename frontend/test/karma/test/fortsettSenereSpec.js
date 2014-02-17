@@ -37,40 +37,4 @@ describe('FortsettSenereController', function () {
 
         }));
     });
-
-    describe("vis riktig valg på landingsside for gjennopptakelse av søknad", function () {
-        var scope, $rootScope, $compile, element, manualCompiledElement;
-
-        beforeEach(module('nav.fortsettsenere', function ($provide) {
-            $provide.value("data", {
-                soknad: {
-                    "soknadId": "1",
-                    "status": "UNDER_ARBEID",
-                    "delstegstatus": "UTFYLLING"
-                }
-            });
-        }));
-
-        beforeEach(inject(['$compile', '$rootScope', '$templateCache', function ($c, $r, $templateCache) {
-            $templateCache.put("../html/templates/gjenoppta/skjema-under-arbeid.html", "<div>hello</div>");
-            $compile = $c;
-            $rootScope = $r;
-
-            element = $compile('<div data-nav-gjenoppta></div>')($rootScope);
-            manualCompiledElement = angular.element($templateCache.get("../html/templates/gjenoppta/skjema-under-arbeid.html"));
-            $rootScope.$digest();
-
-        }]));
-
-        it('dersom søknadsskjemaet ikke er ferdig utfylt skal man få valg om å gå til skjemasiden', function () {
-                expect(element.html()).toContain('hello');
-            }
-        );
-
-        it('dersom søknad er ferdig utfylt skal man få valg om å gå til en oppsummeringsside', function () {
-                //$rootScope.data.soknad.status = 'FERDIG';
-                //expect(element.html()).toContain('FERDIG');
-            }
-        );
-    });
 });
