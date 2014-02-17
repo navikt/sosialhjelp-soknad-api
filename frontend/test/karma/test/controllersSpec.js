@@ -2,27 +2,6 @@
 
 /** jasmine spec */
 
-describe('GrunnlagsdataController', function () {
-
-    var $scope;
-    var $controller;
-    var $httpBackend;
-
-    beforeEach(module('app.grunnlagsdata'));
-
-    beforeEach(inject(function (_$httpBackend_, $injector) {
-        $scope = $injector.get('$rootScope');
-
-
-        $controller = $injector.get('$controller');
-
-        $httpBackend = _$httpBackend_;
-//        $httpBackend.expectGET('/sendsoknad/rest/utslagskriterier/1').
-//            respond({"alder":true, "borIUtland":true });
-
-    }));
-});
-
 describe('DagpengerControllere', function () {
     var scope, ctrl, form, element, barn, $httpBackend;
 

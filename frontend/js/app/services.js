@@ -2,17 +2,17 @@
 // TODO: Denne modulen må ryddes opp i
 angular.module('app.services', ['ngResource'])
 
-	.config(function ($httpProvider) {
+	.config(['$httpProvider', function ($httpProvider) {
 		$httpProvider.interceptors.push('resetTimeoutInterceptor');
 		$httpProvider.interceptors.push('settDelstegStatusEtterKallMotServer');
 
         if (getIEVersion() < 10) {
             $httpProvider.interceptors.push('httpRequestInterceptorPreventCache');
         }
-	})
+	}])
 
     // Resetter session-timeout
-	.factory('resetTimeoutInterceptor', function () {
+	.factory('resetTimeoutInterceptor', [function () {
         return {
             'response': function(response) {
                 // Bare reset dersom kallet gikk gjennom
@@ -20,7 +20,7 @@ angular.module('app.services', ['ngResource'])
                 return response;
             }
         }
-	})
+	}])
 
     // Oppdaterer delstegstatus dersom man gjør endringer på faktum eller vedlegg
     .factory('settDelstegStatusEtterKallMotServer', ['data', function (data) {
@@ -65,7 +65,7 @@ angular.module('app.services', ['ngResource'])
 /**
  * Service som henter en søknad fra henvendelse
  */
-	.factory('soknadService', function ($resource) {
+	.factory('soknadService', ['$resource', function ($resource) {
 		return $resource('/sendsoknad/rest/soknad/:action/:soknadId',
             { soknadId: '@soknadId', soknadType: '@soknadType', delsteg: '@delsteg'},
 			{
@@ -85,7 +85,7 @@ angular.module('app.services', ['ngResource'])
                 }
 			}
 		);
-	})
+	}])
 
 /**
  * Service for å lagre Faktum
@@ -105,7 +105,7 @@ angular.module('app.services', ['ngResource'])
 /**
  * Service som behandler vedlegg
  */
-	.factory('vedleggService', function ($resource) {
+	.factory('vedleggService', ['$resource', function ($resource) {
 		return $resource('/sendsoknad/rest/soknad/:soknadId/vedlegg/:vedleggId/:action',
 			{
 				soknadId : '@soknadId',
@@ -123,14 +123,14 @@ angular.module('app.services', ['ngResource'])
                 underbehandling: {method: 'GET', params: {action: 'underBehandling'}, isArray: true }
 			}
 		);
-	})
+	}])
 
 /**
  * Service som behandler vedlegg
  */
 
  // TODO: Disse må ryddes opp i
-	.factory('VedleggForventning', function ($resource) {
+	.factory('VedleggForventning', ['$resource', function ($resource) {
 		return $resource('/sendsoknad/rest/soknad/:soknadId/:faktumId/forventning', {
 			soknadId: '@soknadId',
             vedleggId: '@vedleggId'
@@ -148,27 +148,18 @@ angular.module('app.services', ['ngResource'])
 				method: 'POST'
 			}
 		});
-	})
+	}])
 
-	.factory('fortsettSenereService', function ($resource) {
+	.factory('fortsettSenereService', ['$resource', function ($resource) {
 		return $resource('/sendsoknad/rest/soknad/:behandlingId/fortsettsenere',
 			{soknadId: '@behandlingId'},
 			{send: {method: 'POST'}}
 		);
-	})
+	}])
 
-	// Husk språkstøtte...?
-	.factory('tekstService', function ($resource) {
-		return $resource('/sendsoknad/rest/enonic/:side',
-			{},
-			{get: {
-				method: 'GET'
-			}});
-	})
-
-    .factory('landService', function ($resource) {
+    .factory('landService', ['$resource', function ($resource) {
         return $resource('/sendsoknad/rest/soknad/kodeverk/landliste');
-    })
+    }])
 
 	.factory('StartSoknadService', ['data', '$resource', '$q', function (data, $resource, $q) {
 		var deferred = $q.defer();

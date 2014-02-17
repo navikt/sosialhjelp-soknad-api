@@ -1,10 +1,10 @@
 angular.module('nav.cmstekster', ['app.services'])
-	.directive('cmsvedlegg', ['cms', '$compile', function (cms, $compile) {
+	.directive('cmsvedlegg', [function () {
 		return {
 			scope   : false,
 			required: 'navFaktum',
 			link    : {
-				pre: function (scope, elem, attr, faktum) {
+				pre: function (scope, elem, attr) {
                     scope.cmsProps = {};
                     if (attr.cmsvedlegg) {
 						scope.cmsProps.ekstra = attr.cmsvedlegg;
@@ -13,7 +13,7 @@ angular.module('nav.cmstekster', ['app.services'])
 			}
 		}
 	}])
-	.directive('cmstekster', ['cms', '$compile', function (cms, $compile) {
+	.directive('cmstekster', ['cms', function (cms) {
 
 		return {
 			scope: false,
@@ -26,8 +26,7 @@ angular.module('nav.cmstekster', ['app.services'])
 				}
 
 				if (scope.cmsProps) {
-					Object.keys(scope.cmsProps).forEach(function (attr) {
-						//cmstekst = cmstekst.replace('${' + attr + '}', scope.cmsProps[attr], 'i');
+					Object.keys(scope.cmsProps).forEach(function () {
 						cmstekst = cmstekst + ': ' + scope.cmsProps.ekstra;
 					});
 				}

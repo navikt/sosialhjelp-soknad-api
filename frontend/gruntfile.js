@@ -83,7 +83,7 @@ module.exports = function (grunt) {
                     relative: false,
                     prefix: '../',
                     scripts: {
-                        built: 'js/built/built.js'
+                        built: 'js/built/built.min.js'
                     }
                 }
             }
@@ -114,11 +114,12 @@ module.exports = function (grunt) {
 		},
 		uglify: {
 			options: {
-				banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+				banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> */\n',
+                mangle: false
 			},
 			my_target: {
 				files: {
-					'js/built/built.min.js': ['js/built/built.js']
+					'js/built/built.min.js': ['js/built/built.min.js']
 				}
 			}
 		},

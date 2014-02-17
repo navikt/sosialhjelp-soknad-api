@@ -47,9 +47,4 @@ angular.module('nav.adresse', [])
             $scope.formattertSekundarAdresse = $scope.hentFormattertAdresse($scope.personalia.sekundarAdresse);
             $scope.sekundarAdresseTypeLabel = $scope.hentAdresseTypeNokkel($scope.personalia.sekundarAdresseType);
         }
-
-       
-
-
-        
     }]);
