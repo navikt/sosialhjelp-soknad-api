@@ -54,8 +54,9 @@ public class Transformers {
         for (Vedlegg vedlegg : vedleggForventnings) {
             if (vedlegg.getInnsendingsvalg().er(Vedlegg.Status.LastetOpp)) {
                 resultat.add(new XMLVedlegg()
-                        .withFilnavn(vedlegg.getNavn())
+                        .withFilnavn(vedlegg.getskjemaNummer() + ".pdf")
                         .withSideantall(vedlegg.getAntallSider())
+                        .withMimetype("application/pdf")
                         .withFilstorrelse(vedlegg.getStorrelse().toString())
                         .withSkjemanummer(vedlegg.getskjemaNummer())
                         .withUuid(vedlegg.getFillagerReferanse())

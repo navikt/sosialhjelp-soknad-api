@@ -249,7 +249,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     @Override
-    public List<Faktum> hentSystemFaktumList(Long soknadId, String key, String string) {
+    public List<Faktum> hentSystemFaktumList(Long soknadId, String key) {
         String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and key = ? and type= ?";
         List<Faktum> fakta = getJdbcTemplate().query(sql, faktumRowMapper, soknadId, key, SYSTEMREGISTRERT.toString());
 
