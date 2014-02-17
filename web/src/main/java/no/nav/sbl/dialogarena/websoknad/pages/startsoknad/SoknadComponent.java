@@ -1,9 +1,5 @@
 package no.nav.sbl.dialogarena.websoknad.pages.startsoknad;
 
-import static java.nio.charset.Charset.forName;
-import static org.slf4j.LoggerFactory.getLogger;
-import static org.springframework.util.StreamUtils.copyToString;
-
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebComponent;
@@ -18,6 +14,10 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.nio.charset.Charset.forName;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.util.StreamUtils.copyToString;
+
 
 /**
  * Klasse som laster inn en html snutt fra en tempate inn i siden.
@@ -29,11 +29,14 @@ public class SoknadComponent extends WebComponent {
 
     public SoknadComponent(String id) {
         super(id);
+        LOGGER.warn("Opprette instans");
         initLegalFilenames();
     }
 
     private void initLegalFilenames() {
+        LOGGER.warn("Initierer filnavn");
         if (files == null) {
+            LOGGER.warn("filer == null");
             try {
                 String htmls = WebApplication.get().getServletContext().getRealPath("/html");
                 File folder = new File(htmls);
@@ -54,10 +57,13 @@ public class SoknadComponent extends WebComponent {
         try (InputStream content = this.getClass().getClassLoader().getResourceAsStream(file)) {
             replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
         } catch (IllegalArgumentException| IOException e) {
-            
+            LOGGER.error("IllegalArgumentException");
             try {
+
                 File basedir = new File(WebApplication.get().getServletContext().getResource("/").toURI());
+                LOGGER.warn("Lest inn basedir");
                 File devDir = new File(basedir, "../../../../frontend/views/built/bootstrapDev.html");
+                LOGGER.warn("Lest inn devDir");
                 try(InputStream content = new FileInputStream(devDir)){
                     replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
                 }
