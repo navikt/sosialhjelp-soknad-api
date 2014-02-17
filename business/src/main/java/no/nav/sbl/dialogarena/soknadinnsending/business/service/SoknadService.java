@@ -116,8 +116,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public WebSoknad hentSoknad(long soknadId) {
-        WebSoknad soknad = repository.hentSoknadMedData(soknadId);
-        return soknad;
+        return repository.hentSoknadMedData(soknadId);
     }
 
     @Override
@@ -251,11 +250,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     @Override
-    public void endreInnsendingsvalg(Long soknadId, Faktum faktum) {
-        repository.endreInnsendingsValg(soknadId, faktum.getFaktumId(), null);
-    }
-
-    @Override
     public List<Faktum> hentFakta(Long soknadId) {
         return repository.hentAlleBrukerData(soknadId);
     }
@@ -283,7 +277,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
             erBolkerValidert.put(bolk, "false");
         }
 
-        Faktum bolkerFaktum = new Faktum(soknadId, null, "bolker", null, BRUKERREGISTRERT);
+        Faktum bolkerFaktum = new Faktum().medSoknadId(soknadId).medKey("bolker").medType(BRUKERREGISTRERT);
         bolkerFaktum.setProperties(erBolkerValidert);
 
         repository.lagreFaktum(soknadId, bolkerFaktum);
@@ -431,9 +425,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId, WebSoknad soknad) {
         List<Vedlegg> paakrevdeVedlegg = vedleggRepository.hentPaakrevdeVedlegg(soknadId);
-        List<Vedlegg> result = new ArrayList<Vedlegg>();
+        List<Vedlegg> result = new ArrayList<>();
 
-        List<String> innlagtSkjemaNr = new ArrayList<String>();
+        List<String> innlagtSkjemaNr = new ArrayList<>();
         for (Vedlegg vedlegg : paakrevdeVedlegg) {
             innlagtSkjemaNr.add(vedlegg.getskjemaNummer());
             Vedlegg oppdatertVedleg = medKodeverk(vedlegg);
@@ -489,12 +483,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
      * Looper alle mulige vedleggsforventinger for gitt skjemanummer,
      * dersom soknadbrukerdata har et innslag som har riktig onValue, returneres true (et annet faktum trigger vedlegget)
      * ellers returneres false
-     *
-     * @param soknadId
-     * @param skjemaNummer
-     * @param onValue
-     * @param struktur
-     * @return
      */
     private boolean annetFaktumHarForventning(Long soknadId, String skjemaNummer, String onValue, SoknadStruktur struktur) {
         List<SoknadVedlegg> vedleggMedGittSkjemanummer = struktur.vedleggForSkjemanr(skjemaNummer);

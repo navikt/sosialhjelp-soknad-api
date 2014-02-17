@@ -1,5 +1,21 @@
 package no.nav.sbl.dialogarena.print;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.jknack.handlebars.Handlebars;
+import com.github.jknack.handlebars.Template;
+import com.lowagie.text.DocumentException;
+import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Map;
+
 import static no.nav.sbl.dialogarena.print.helper.JsonTestData.hentWebSoknadHtml;
 import static no.nav.sbl.dialogarena.print.helper.JsonTestData.hentWebSoknadJson;
 import static org.hamcrest.Matchers.contains;
@@ -8,27 +24,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
-
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
-
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-
-import org.hamcrest.core.Is;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Template;
-import com.lowagie.text.DocumentException;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Date;
-import java.util.Map;
 
 public class HandleBarKjoererTest {
 
@@ -65,10 +60,10 @@ public class HandleBarKjoererTest {
         Kodeverk kodeverk = mock(Kodeverk.class);
         WebSoknad soknad = new WebSoknad();
         soknad.setSkjemaNummer("NAV-1-1-1");
-        soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold", FaktumType.BRUKERREGISTRERT));
-        soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold2", FaktumType.BRUKERREGISTRERT));
-        soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold3", FaktumType.BRUKERREGISTRERT));
-        soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold4", FaktumType.BRUKERREGISTRERT));
+        soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold" ).medType(FaktumType.BRUKERREGISTRERT));
+        soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold2").medType(FaktumType.BRUKERREGISTRERT));
+        soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold3").medType(FaktumType.BRUKERREGISTRERT));
+        soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold4").medType(FaktumType.BRUKERREGISTRERT));
         String html = new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/html/WebSoknadHtml");
 
         String baseUrl = "";
