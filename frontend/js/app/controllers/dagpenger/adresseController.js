@@ -10,14 +10,17 @@ angular.module('nav.adresse', [])
         $scope.gjeldendeAdresseTypeLabel = '';
 
         $scope.hentFormattertAdresse = function(adresse) {
-            var formattertAdresse = '';
+            if(adresse) {
+                var formattertAdresse = '';
 
-            var adresseLinjer = adresse.split(',');
+                var adresseLinjer = adresse.split(',');
 
-            adresseLinjer.forEach(function(adresseLinje) {
-                formattertAdresse += '<p>' + adresseLinje.trim() + '</p>';
-            });
-            return formattertAdresse;
+                adresseLinjer.forEach(function(adresseLinje) {
+                    formattertAdresse += '<p>' + adresseLinje.trim() + '</p>';
+                });
+                return formattertAdresse;
+            }
+            return "";
         };
 
         $scope.hentAdresseTypeNokkel = function(adresseType) {
