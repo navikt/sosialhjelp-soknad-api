@@ -29,24 +29,25 @@ public class SoknadComponent extends WebComponent {
 
     public SoknadComponent(String id) {
         super(id);
-        LOGGER.warn("Opprette instans");
         initLegalFilenames();
     }
 
     private void initLegalFilenames() {
-        LOGGER.warn("Initierer filnavn");
+
         if (files == null) {
-            LOGGER.warn("filer == null");
             try {
                 String htmls = WebApplication.get().getServletContext().getRealPath("/html");
+                LOGGER.warn("htmls" + htmls);
                 File folder = new File(htmls);
+                LOGGER.warn("Folder" + folder);
                 List<String> filer = new ArrayList<>();
+                LOGGER.warn("Filer" + filer.size());
                 for (File file : folder.listFiles()) {
                     filer.add(file.getName());
                 }
                 SoknadComponent.files = filer;
             } catch (Exception ex) {
-                LOGGER.error(ex.getMessage());
+                LOGGER.error("Feil ved lasting av filer" + ex.getMessage());
             }
         }
     }
@@ -57,13 +58,9 @@ public class SoknadComponent extends WebComponent {
         try (InputStream content = this.getClass().getClassLoader().getResourceAsStream(file)) {
             replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
         } catch (IllegalArgumentException| IOException e) {
-            LOGGER.error("IllegalArgumentException");
             try {
-
                 File basedir = new File(WebApplication.get().getServletContext().getResource("/").toURI());
-                LOGGER.warn("Lest inn basedir");
                 File devDir = new File(basedir, "../../../../frontend/views/built/bootstrapDev.html");
-                LOGGER.warn("Lest inn devDir");
                 try(InputStream content = new FileInputStream(devDir)){
                     replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
                 }
