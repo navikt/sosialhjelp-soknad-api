@@ -113,8 +113,7 @@ public class SoknadDataController {
     @ResponseBody()
     public List<Vedlegg> hentPaakrevdeVedleggForFaktum(
             @PathVariable final Long soknadId, @PathVariable final Long faktumId) {
-        WebSoknad soknad = soknadService.hentSoknad(soknadId);
-        return on(vedleggService.hentPaakrevdeVedlegg(soknadId, soknad)).filter(new Predicate<Vedlegg>() {
+        return on(vedleggService.hentPaakrevdeVedlegg(soknadId)).filter(new Predicate<Vedlegg>() {
             @Override
             public boolean evaluate(Vedlegg vedleggForventning) {
                 return vedleggForventning.getFaktumId().equals(faktumId);
@@ -177,7 +176,6 @@ public class SoknadDataController {
     public String hentOppsummering(@PathVariable Long soknadId) throws IOException {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
 
-        String markup = new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
-        return markup;
+        return new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
     }
 }

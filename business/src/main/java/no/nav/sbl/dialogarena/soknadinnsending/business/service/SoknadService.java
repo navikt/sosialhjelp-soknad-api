@@ -86,6 +86,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     private Kodeverk kodeverk;
     private PdfWatermarker watermarker = new PdfWatermarker();
     private List<String> gyldigeSkjemaer = Arrays.asList("NAV 04-01.03");
+    private PdfMerger pdfMerger = new PdfMerger();
 
     private static void sjekkOmPdfErGyldig(PDDocument document) {
         PdfDetector detector = new PdfDetector(document);
@@ -408,7 +409,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
             }
 
         }
-        byte[] doc = new PdfMerger().transform(bytes);
+        byte[] doc = pdfMerger.transform(bytes);
         doc = watermarker.forIdent(getSubjectHandler().getUid(), false).transform(doc);
 
         forventning.leggTilInnhold(doc, vedleggUnderBehandling.size());
@@ -423,13 +424,11 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     @Override
-    public List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId, WebSoknad soknad) {
+    public List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId) {
         List<Vedlegg> paakrevdeVedlegg = vedleggRepository.hentPaakrevdeVedlegg(soknadId);
         List<Vedlegg> result = new ArrayList<>();
 
-        List<String> innlagtSkjemaNr = new ArrayList<>();
         for (Vedlegg vedlegg : paakrevdeVedlegg) {
-            innlagtSkjemaNr.add(vedlegg.getskjemaNummer());
             Vedlegg oppdatertVedleg = medKodeverk(vedlegg);
             result.add(oppdatertVedleg);
         }
