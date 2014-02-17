@@ -46,27 +46,33 @@ public class FillagerConnector {
             LOG.info("Søknad lagret til henvendelse");
         } catch (IOException e) {
             LOG.error("Fikk ikke lagret søknad til henvendelse");
-            throw new ApplicationException("Kunne ikke lagre fil: " + e + ". BehandlingsID: " + behandlingsId, e);
+            throw new ApplicationException("Kunne ikke lagre fil: " + e + ". BehandlingsID: " + behandlingsId, e, "exception.system.baksystem");
         } catch (SOAPFaultException ws) {
             LOG.error("Fikk ikke lagret søknad til henvendelse");
-            throw new SystemException("Feil i kommunikasjon med fillager: " + ws + ". BehandlingsID: " + behandlingsId, ws);
+            throw new SystemException("Feil i kommunikasjon med fillager: " + ws + ". BehandlingsID: " + behandlingsId, ws, "exception.system.baksystem");
         }
     }
 
     public byte[] hentFil(String uuid) {
         Holder<DataHandler> innhold = new Holder<>();
-        portType.hent(new Holder<>(uuid), innhold);
         try {
+            portType.hent(new Holder<>(uuid), innhold);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             innhold.value.writeTo(baos);
             return baos.toByteArray();
         } catch (IOException e) {
-            throw new ApplicationException("Kunne ikke hente ut fil fra henvendelse",e);
+            throw new SystemException("Kunne ikke hente ut fil fra henvendelse", e, "exception.system.baksystem");
+        } catch (SOAPFaultException e) {
+            throw new SystemException("Kunne ikke hente filer fra baksystem", e, "exception.system.baksystem");
         }
     }
 
     public List<WSInnhold> hentFiler(String brukerBehandlingId) {
-        return portType.hentAlle(brukerBehandlingId);
+        try {
+            return portType.hentAlle(brukerBehandlingId);
+        } catch (SOAPFaultException e) {
+            throw new SystemException("Kunne ikke hente filer fra baksystem", e, "exception.system.baksystem");
+        }
 
     }
 }
