@@ -41,19 +41,59 @@ public class Vedlegg {
         this.innsendingsvalg = innsendingsvalg;
     }
 
-    public Vedlegg(Long vedleggId, Long soknadId, Long faktumId, String skjemaNummer, String navn, Long storrelse, Integer antallSider, String fillagerReferanse, byte[] data, Long opprettetDato, Status innsendingsvalg) {
+    public Vedlegg medVedleggId(Long vedleggId) {
         this.vedleggId = vedleggId;
+        return this;
+    }
+    
+    public Vedlegg medSoknadId(Long soknadId) {
         this.soknadId = soknadId;
+        return this;
+    }
+    
+    public Vedlegg medFaktumId(Long faktumId) {
         this.faktumId = faktumId;
+        return this;
+    }
+    public Vedlegg medSkjemaNummer(String skjemaNummer) {
         this.skjemaNummer = skjemaNummer;
+        return this;
+    }
+    
+    public Vedlegg medNavn(String navn) {
         this.navn = navn;
         this.beskrivelse = navn;
-        this.storrelse = storrelse;
-        this.data = data;
-        this.opprettetDato = opprettetDato;
+        return this;
+    }
+    
+    public Vedlegg medStorrelse(Long storrelse) {
+        this.storrelse  = storrelse;
+        return this;
+    }
+    
+    public Vedlegg medAntallSider(Integer antallSider) {
         this.antallSider = antallSider;
+        return this;
+    }
+    
+    public Vedlegg medFillagerReferanse(String fillagerReferanse) {
         this.fillagerReferanse = fillagerReferanse;
+        return this;
+    }
+    
+    public Vedlegg medData(byte[] data) {
+        this.data = data;
+        return this;
+    }
+    
+    public Vedlegg medOpprettetDato(Long opprettetDato) {
+        this.opprettetDato = opprettetDato;
+        return this;
+    }
+    
+    public Vedlegg medInnsendingsvalg(Status innsendingsvalg) {
         this.innsendingsvalg = innsendingsvalg;
+        return this;
     }
 
     public Long getVedleggId() {
@@ -123,7 +163,7 @@ public class Vedlegg {
     @XmlTransient
     @JsonIgnore
     public byte[] getData() {
-        return data;
+        return data.clone();
     }
 
     @Override

@@ -58,11 +58,13 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                 return $scope.arbeidsforhold.properties.land;
             }
         }, function () {
-          	$resource('/sendsoknad/rest/ereosland/:landkode').get(
-				{landkode: $scope.arbeidsforhold.properties.land},
-	            function (eosdata) { // Success
-	                $scope.arbeidsforhold.properties.eosland = eosdata.result;
-	        });
+        	if($scope.arbeidsforhold.properties.land && $scope.arbeidsforhold.properties.land != "") {
+	          	$resource('/sendsoknad/rest/ereosland/:landkode').get(
+					{landkode: $scope.arbeidsforhold.properties.land},
+		            function (eosdata) { // Success
+		                $scope.arbeidsforhold.properties.eosland = eosdata.result;
+		        });
+	        }
         });
 
 
@@ -81,7 +83,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 				$scope.arbeidsforhold = arbeidsforholdData;
 				oppdaterFaktumListe('arbeidsforhold');
 				oppdaterCookieValue(arbeidsforholdData.faktumId);
-                $location.path('soknad/');
+                $location.path('soknad');
 			});
 		}
 

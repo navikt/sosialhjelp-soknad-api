@@ -58,7 +58,7 @@
                      data-navlabel="reellarbeidssoker.annensituasjon"
                      data-navendret="endreDeltidsAarsaker()"></div>
 
-                <div data-navinfoboks data-ng-if="harValgtAnnetUnntakDeltid()">
+                <div class="siste-element" data-navinfoboks data-ng-if="harValgtAnnetUnntakDeltid()">
                     <p data-cmstekster="reellarbeidssoker.unntak.dokumentasjon"></p>
                 </div>
 
@@ -82,12 +82,11 @@
                            data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
                            data-tekstfelt-patternvalidering
                            data-blur-validate />
-                    <span class="timer" data-cmstekster="egennaering.gardsbruk.false.timer"></span>
                     <span class="melding"></span>
                 </label>
             </div>
 
-            <div class="ekstra-spm-boks" data-vedlegginfoboks data-ng-show="trengerUtalelseFraFagpersonellDeltid()">
+            <div data-vedlegginfoboks data-ng-show="trengerUtalelseFraFagpersonellDeltid()">
                 <ul>
                     <li>
                         <span data-cmstekster="reellarbeidssoker.utalelsefagpersonell.vedlegginformasjon"></span>
@@ -149,7 +148,7 @@
                      data-navlabel="reellarbeidssoker.pendleannensituasjon"
                      data-navendret="endrePendleAarsaker()"></div>
 
-                <div data-navinfoboks data-ng-if="harValgtAnnetUnntakPendle()">
+                <div class="siste-element" data-navinfoboks data-ng-if="harValgtAnnetUnntakPendle()">
                     <p data-cmstekster="reellarbeidssoker.unntak.dokumentasjon"></p>
                 </div>
 
@@ -157,7 +156,7 @@
                       data-cmstekster="reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding"></span>
             </div>
 
-            <div class="ekstra-spm-boks" data-vedlegginfoboks data-ng-show="trengerUtalelseFraFagpersonellPendle()">
+            <div data-vedlegginfoboks data-ng-show="trengerUtalelseFraFagpersonellPendle()">
                 <ul>
                     <li>
                         <span data-cmstekster="reellarbeidssoker.utalelsefagpersonell.vedlegginformasjon"></span>
@@ -187,7 +186,7 @@
                  data-obligatorisk="true"></div>
 
             
-            <div class="ekstra-spm-boks" data-vedlegginfoboks data-ng-show="kanIkkeTaAlleTyperArbeid()">
+            <div data-vedlegginfoboks data-ng-show="kanIkkeTaAlleTyperArbeid()">
                 <ul>
                     <li>
                         <span data-cmstekster="reellarbeidssoker.kanikkealletyperarbeid.vedlegginformasjon"></span>

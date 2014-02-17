@@ -2,19 +2,10 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Map;
-
-import static org.hamcrest.core.Is.is;
-
 public class PersonTest {
-
-
-    
     @Test
     public void skalReturnereTrueForPostadresseUtland() {
         Personalia personalia = new Personalia();
@@ -24,7 +15,7 @@ public class PersonTest {
 
         Assert.assertEquals(true, personalia.harUtenlandskAdresse());
     }
-    
+
     @Test
     public void skalReturnereTrueForFolkeregistrertPostadresseUtland() {
         Personalia personalia = new Personalia();
@@ -34,27 +25,31 @@ public class PersonTest {
 
         Assert.assertEquals(true, personalia.harUtenlandskAdresse());
     }
-    
+
     @Test
     public void skalReturnereTrueForMidlertidigPostadresseUtland() {
         Personalia personalia = new Personalia();
         Adresse gjeldendeAdresse = new Adresse();
-        gjeldendeAdresse.setAdressetype(Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND.name());
+        gjeldendeAdresse
+                .setAdressetype(Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND
+                        .name());
         personalia.setGjeldendeAdresse(gjeldendeAdresse);
 
         Assert.assertEquals(true, personalia.harUtenlandskAdresse());
     }
-    
+
     @Test
     public void skalReturnereFalseForMidlertidigPostadresseNorge() {
         Personalia personalia = new Personalia();
         Adresse gjeldendeAdresse = new Adresse();
-        gjeldendeAdresse.setAdressetype(Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE.name());
+        gjeldendeAdresse
+                .setAdressetype(Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE
+                        .name());
         personalia.setGjeldendeAdresse(gjeldendeAdresse);
 
         Assert.assertEquals(false, personalia.harUtenlandskAdresse());
     }
-    
+
     public void skalReturnereFalseForFolkeregistrertAdresseNorge() {
         Personalia personalia = new Personalia();
         Adresse gjeldendeAdresse = new Adresse();

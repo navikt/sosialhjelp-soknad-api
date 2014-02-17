@@ -86,11 +86,11 @@ describe('DagpengerControllere', function () {
         };
 
         element = angular.element(
-            '<form name="form">'
-                + '<div form-errors></div>' +
+            '<form name="form">'+
+                '<div form-errors></div>' +
                 '<input type="text" ng-model="scope.barn.properties.fodselsdato" name="alder"/>' +
-                '<input type="hidden" data-ng-model="underAtten.value" data-ng-required="true"/>'
-            + '</form>'
+                '<input type="hidden" data-ng-model="underAtten.value" data-ng-required="true"/>' +
+            '</form>'
         );
 
         $compile(element)(scope);
@@ -118,13 +118,13 @@ describe('DagpengerControllere', function () {
         it('skal generere aarstallene fra i år og 4 år bakover', function () {
             //ctrl.genererAarstallListe;
             expect(scope.aarstall.length).toEqual(5);
-        })
+        });
 
         it('prevalgte aret skal være fjorårets år', function () {
             var idag = new Date();
             var ifjor = idag.getFullYear();
-            expect(scope.forrigeAar).toEqual((ifjor - 1).toString())
-        })
+            expect(scope.forrigeAar).toEqual((ifjor - 1).toString());
+        });
     });
 
     describe('vernepliktCtrl', function () {
@@ -556,7 +556,7 @@ describe('DagpengerControllere', function () {
             var arbeidstilstand = {
                 key: 'arbeidstilstand',
                 value: 'harIkkeJobbet'
-            }
+            };
             scope.data.leggTilFaktum(arbeidstilstand);
             scope.hvisHarJobbetVarierende();
             expect(scope.hvisHarJobbet()).toBe(false);
@@ -629,7 +629,7 @@ describe('DagpengerControllere', function () {
         });
         it('skal returnere Norge for landkode NOR', function () {
             expect(scope.finnLandFraLandkode('NOR')).toEqual("Norge");
-        })
+        });
     });
     describe('AvbrytCtrl', function () {
         beforeEach(inject(function ($controller, data) {

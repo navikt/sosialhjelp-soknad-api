@@ -3,7 +3,7 @@
             <span data-cmstekster="{{ navlabel }}"></span>
             <input data-ng-model="faktum.value" type="text" value="{{ value }}" data-ng-required="erSynlig()"
                    data-error-messages="{{ navfeilmelding }}" data-blur-validate
-                   placeholder="123456789" data-ng-pattern="/[0-9]*/" maxlength="9" orgnr-validate>
+                   data-ng-pattern="/[0-9]{9}/" maxlength="9" orgnr-validate>
         </label>
         <span class="melding"></span>
 </div>

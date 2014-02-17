@@ -1,5 +1,9 @@
 package no.nav.sbl.dialogarena.websoknad.fixture;
 
+import no.nav.sbl.dialogarena.websoknad.domain.StartSoknad;
+
+import no.nav.sbl.dialogarena.websoknad.servlet.SoknadTpsDataController;
+
 import no.nav.modig.core.context.ModigSecurityConstants;
 import no.nav.modig.core.context.SubjectHandlerUtils;
 import no.nav.modig.core.context.ThreadLocalSubjectHandler;
@@ -18,7 +22,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Fak
 
 @ContextConfiguration(classes = FitNesseApplicationConfig.class)
 public class SoknadInnsendingDriver extends SpringAwareDoFixture {
-
     static {
         System.setProperty("no.nav.modig.core.context.subjectHandlerImplementationClass", ThreadLocalSubjectHandler.class.getName());
         System.setProperty(ModigSecurityConstants.SYSTEMUSER_USERNAME, "BD05");
@@ -85,13 +88,14 @@ public class SoknadInnsendingDriver extends SpringAwareDoFixture {
     }
 
     private Map<String, String> startSoknad() {
-        return soknadDataController.opprettSoknad("Dagpenger");
+        StartSoknad soknadType = new StartSoknad();
+        soknadType.setSoknadType("NAV 04-01.03");
+        return soknadDataController.opprettSoknad(soknadType);
     }
 
     public void lagreFaktumMedVerdi(String faktum, String verdi) {
         webSoknad.getFaktaListe().add(new Faktum(webSoknad.getSoknadId(), null, faktum, verdi, BRUKERREGISTRERT));
         soknadDataController.lagreSoknad(webSoknadId.getId(), webSoknad);
     }
-
 
 }

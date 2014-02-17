@@ -40,5 +40,5 @@ describe('ArbeidsforholdCtrl', function () {
         $httpBackend.flush();
     }));
 
-})
+});
 

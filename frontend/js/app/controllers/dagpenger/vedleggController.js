@@ -29,6 +29,7 @@ angular.module('nav.vedlegg.controller', [])
             } else {
                 $scope.fremdriftsindikator.laster = false;
                 $scope.validert.value = true;
+                $scope.leggTilStickyFeilmelding();
             }
             $scope.runValidation(true);
         }
@@ -36,6 +37,10 @@ angular.module('nav.vedlegg.controller', [])
         $scope.vedleggEr = function (vedlegg, status) {
             return vedlegg.innsendingsvalg === status;
         };
+
+        $scope.vedleggFerdigBehandlet = function(forventning) {
+            return $scope.ekstraVedleggFerdig(forventning) && !$scope.vedleggEr(forventning, 'VedleggKreves');
+        }
 
         $scope.ekstraVedleggFerdig = function (forventning) {
             if(forventning.skjemaNummer === 'N6') {

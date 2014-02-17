@@ -1,47 +1,81 @@
 body.modalside {
-  background-color: #3e3832;
-  [class*="innstillinger"], .rad-logo, .footer, .rad.tittel {
-    display: none;
-  }
-
-  .modalBoks {
-    margin-top: 100px;
-
-    .lukk {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      width: 32px;
-      height: 32px;
-      background: url("../img/kryss.svg");
-      background-color: transparent;
-      background-repeat: no-repeat;
+    background-color: #3e3832;
+    [class*="innstillinger"], .rad-logo, .footer, .rad.tittel {
+        display: none;
     }
 
-    .panel-standard-belyst {
-      padding: 15px;
-      max-width: 550px;
+    .modalBoks {
+        margin-top: 100px;
 
-      h2 {
-        margin-top: 20px;
-        margin-bottom: 20px !important;
-        padding-bottom: 35px !important;
-      }
+        .datepicker {
+            padding: 15px;
+        }
+
+        p {
+            margin: 15px;
+        }
+
+        .vedlegginfoboks{
+            p {
+                margin: 0;
+            }
+        }
+
+        input:not([type="submit"]), .selectboks {
+            width: 65%;
+        }
+
+        .knapper-opprett {
+            border-top: 1px solid #ddd;
+            margin-top: 40px;
+            padding-top: 40px;
+            text-align: center;
+
+            input, a {
+                display: block;
+                margin: 0 auto 1rem;
+            }
+        }
+        .under-atten.feil .datepicker-input {
+            background-color: #fee6e6;
+            border: 1px solid #fca292;
+            border-top: 1px solid #c30000;
+        }
+
+        .lukk {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 32px;
+            height: 32px;
+            background: url("../img/kryss.svg");
+            background-color: transparent;
+            background-repeat: no-repeat;
+        }
+
+        .panel-standard-belyst {
+            padding: 15px;
+            max-width: 550px;
+
+            h2 {
+                margin-top: 20px;
+                margin-bottom: 20px !important;
+                padding-bottom: 35px !important;
+            }
+        }
+        .informasjonstekst {
+            padding: 0px;
+            font-weight: normal;
+            margin: 0px 15px;
+
+        }
+
+        .infoboks {
+            width: initial;
+
+            p {
+                margin: 0px;
+            }
+        }
     }
-    .informasjonstekst {
-      padding: 0px;
-      font-weight: normal;
-      margin: 0px 15px;
-
-    }
-
-    .infoboks {
-      width: initial;
-      margin: 15px;
-
-      p {
-        margin: 0px;
-      }
-    }
-  }
 }
