@@ -1,5 +1,5 @@
 angular.module('nav.dagpenger', [])
-	.controller('DagpengerCtrl', ['$scope', 'data', '$location', '$timeout', 'soknadService', function ($scope, data, $location, $timeout,soknadService) {
+	.controller('DagpengerCtrl', ['$scope', 'data', function ($scope, data) {
 
 		$scope.grupper = [
 			{id: 'reellarbeidssoker', tittel: 'reellarbeidssoker.tittel', template: '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
@@ -58,7 +58,7 @@ angular.module('nav.dagpenger', [])
 			}
 		};
 	}])
-	.controller('FerdigstiltCtrl', ['$scope', 'data', '$location', '$timeout', function ($scope, data, $location, $timeout) {
+	.controller('FerdigstiltCtrl', ['$scope', 'data', function ($scope, data) {
 		$scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];
-	}])
+	}]);
 

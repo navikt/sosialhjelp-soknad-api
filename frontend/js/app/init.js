@@ -59,7 +59,7 @@ angular.module('sendsoknad')
             return data.soknad.delstegStatus === "VEDLEGG_VALIDERT";
         }
     }])
-    .factory('InformasjonsSideResolver', ['data', 'cms', '$resource', '$q', '$route', '$location', function (data, cms, $resource, $q, $route, $location) {
+    .factory('InformasjonsSideResolver', ['data', 'cms', '$resource', '$q', function (data, cms, $resource, $q) {
         var promiseArray = [];
 
         var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(

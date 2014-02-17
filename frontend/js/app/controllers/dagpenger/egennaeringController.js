@@ -206,5 +206,4 @@ angular.module('nav.egennaering', [])
             }, 50);
         }
 
-    }])
-;
+    }]);

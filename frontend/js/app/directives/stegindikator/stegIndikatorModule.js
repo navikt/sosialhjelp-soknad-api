@@ -28,10 +28,6 @@ angular.module('nav.stegindikator', ['nav.cmstekster'])
 
                     };
 
-//                    scope.hentTekst = function() {
-//                        return 'stegindikator.' + scope.steg;
-//                    }
-
                     scope.erIkkeKlikkbar = function(idx) {
                         return !scope.erKlikkbar(idx);
                     };

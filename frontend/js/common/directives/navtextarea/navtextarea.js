@@ -1,6 +1,6 @@
 angular.module('nav.textarea', [])
 	.directive('navtextarea', [function () {
-		var linker = function (scope, element, attrs) {
+		var linker = function (scope) {
 			if (scope.attr('data-obligatorisk')) {
 				return '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html';
 			} else {

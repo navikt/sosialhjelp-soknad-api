@@ -1,6 +1,6 @@
 angular.module('nav.stickyFeilmelding', [])
 
-	.directive('stickyFeilmelding', ['$timeout', function ($timeout) {
+	.directive('stickyFeilmelding', [function () {
 		return {
 			require    : '^form',
 			templateUrl: '../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html',

@@ -1,5 +1,5 @@
 angular.module('nav.arbeidsforhold.controller', [])
-    .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $cookieStore, $location, data, Faktum) {
+    .controller('ArbeidsforholdCtrl', ['$scope', 'soknadService', 'landService', '$cookieStore', '$location', 'data', function ($scope, soknadService, landService, $cookieStore, $location, data) {
         $scope.soknadId = data.soknad.soknadId;
 
         $scope.sluttaarsakUrl = data.config["soknad.sluttaarsak.url"];
@@ -144,4 +144,4 @@ angular.module('nav.arbeidsforhold.controller', [])
             })
         }
 
-    });
+    }]);
