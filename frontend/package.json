@@ -44,6 +44,7 @@
     "karma-ie-launcher": "~0.1.1",
     "karma-ng-html2js-preprocessor": "~0.1.0",
     "grunt-ngmin": "0.0.3",
-    "grunt-karma-sonar": "~0.1.3"
+    "grunt-karma-sonar": "~0.1.3",
+    "karma-junit-reporter": "~0.2.1"
   }
 }
