@@ -153,11 +153,11 @@ angular.module('nav.datepicker', [])
 				scope.erUloveligFremtidigDato = function() {
                     var el;
 					if(scope.fremtidigDatoFeil && !scope.harFokus && harHattFokus) {
-						element.controller('ngModel');
+                        el = element.controller('ngModel');
 						el.$setValidity(ugyldigFremtidigDatoFeilmelding, false);
 						return true;
 					} else if(!scope.fremtidigDatoFeil) {
-						element.controller('ngModel');
+                        el = element.controller('ngModel');
 						el.$setValidity(ugyldigFremtidigDatoFeilmelding, true);
 						return false;
 					}
@@ -169,7 +169,7 @@ angular.module('nav.datepicker', [])
 						!erGyldigDato(element.find('input[type=text]').val()) && !scope.harFokus && harHattFokus;
 				};
 
-				scope.harKlikketKnapp = function () {
+				scope.harFeil = function () {
 					if (scope.navDatepicker()) {
                         return harFeilMedNavDatepicker();
                     } else {
