@@ -11,7 +11,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.nio.charset.Charset.forName;
@@ -29,26 +28,6 @@ public class SoknadComponent extends WebComponent {
 
     public SoknadComponent(String id) {
         super(id);
-        LOGGER.warn("Opprette instans");
-        initLegalFilenames();
-    }
-
-    private void initLegalFilenames() {
-        LOGGER.warn("Initierer filnavn");
-        if (files == null) {
-            LOGGER.warn("filer == null");
-            try {
-                String htmls = WebApplication.get().getServletContext().getRealPath("/html");
-                File folder = new File(htmls);
-                List<String> filer = new ArrayList<>();
-                for (File file : folder.listFiles()) {
-                    filer.add(file.getName());
-                }
-                SoknadComponent.files = filer;
-            } catch (Exception ex) {
-                LOGGER.error(ex.getMessage());
-            }
-        }
     }
 
     @Override
@@ -57,13 +36,9 @@ public class SoknadComponent extends WebComponent {
         try (InputStream content = this.getClass().getClassLoader().getResourceAsStream(file)) {
             replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
         } catch (IllegalArgumentException| IOException e) {
-            LOGGER.error("IllegalArgumentException");
             try {
-
                 File basedir = new File(WebApplication.get().getServletContext().getResource("/").toURI());
-                LOGGER.warn("Lest inn basedir");
                 File devDir = new File(basedir, "../../../../frontend/views/built/bootstrapDev.html");
-                LOGGER.warn("Lest inn devDir");
                 try(InputStream content = new FileInputStream(devDir)){
                     replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
                 }

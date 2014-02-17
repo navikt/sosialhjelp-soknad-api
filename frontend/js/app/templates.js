@@ -105,7 +105,8 @@ angular.module("../views/templates/arbeidsforhold-nytt.html", []).run(["$templat
     "                                       data-ng-model=\"faktum.properties.type\"\n" +
     "                                       data-ng-required=\"true\"\n" +
     "                                       data-click-validate\n" +
-    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\">\n" +
+    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
+    "                                       data-aktiv-feilmelding>\n" +
     "                                <label for='radio5'>{{ 'arbeidsforhold.sluttaarsak.radio.sagtOppAvArbeidsgiver' | cmstekst }}</label>\n" +
     "                            </div>\n" +
     "\n" +
@@ -118,7 +119,8 @@ angular.module("../views/templates/arbeidsforhold-nytt.html", []).run(["$templat
     "                                       data-ng-model=\"faktum.properties.type\"\n" +
     "                                       data-ng-required=\"true\"\n" +
     "                                       data-click-validate\n" +
-    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\">\n" +
+    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
+    "                                       data-aktiv-feilmelding>\n" +
     "                                <label for='radio7'>{{ 'arbeidsforhold.sluttaarsak.radio.permittert' | cmstekst }}</label>\n" +
     "                            </div>\n" +
     "\n" +
@@ -131,7 +133,8 @@ angular.module("../views/templates/arbeidsforhold-nytt.html", []).run(["$templat
     "                                       data-ng-model=\"faktum.properties.type\"\n" +
     "                                       data-click-validate\n" +
     "                                       data-ng-required=\"true\"\n" +
-    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\">\n" +
+    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
+    "                                       data-aktiv-feilmelding>\n" +
     "                                <label for='radio1'>{{ 'arbeidsforhold.sluttaarsak.radio.kontraktutgaatt' | cmstekst }}</label>\n" +
     "                            </div>\n" +
     "\n" +
@@ -144,7 +147,8 @@ angular.module("../views/templates/arbeidsforhold-nytt.html", []).run(["$templat
     "                                       data-ng-model=faktum.properties.type\n" +
     "                                       data-ng-required=\"true\"\n" +
     "                                       data-click-validate\n" +
-    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\">\n" +
+    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
+    "                                       data-aktiv-feilmelding>\n" +
     "                                <label for='radio6'>{{ 'arbeidsforhold.sluttaarsak.radio.sagtOppSelv' | cmstekst }}</label>\n" +
     "                            </div>\n" +
     "\n" +
@@ -157,7 +161,8 @@ angular.module("../views/templates/arbeidsforhold-nytt.html", []).run(["$templat
     "                                       data-ng-model=\"faktum.properties.type\"\n" +
     "                                       data-ng-required=\"true\"\n" +
     "                                       data-click-validate\n" +
-    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\">\n" +
+    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
+    "                                       data-aktiv-feilmelding>\n" +
     "                                <label for='radio3'>{{ 'arbeidsforhold.sluttaarsak.radio.redusertArbeidstid' | cmstekst }}</label>\n" +
     "                            </div>\n" +
     "\n" +
@@ -170,7 +175,8 @@ angular.module("../views/templates/arbeidsforhold-nytt.html", []).run(["$templat
     "                                       data-ng-model=\"faktum.properties.type\"\n" +
     "                                       data-ng-required=\"true\"\n" +
     "                                       data-click-validate\n" +
-    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\">\n" +
+    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
+    "                                       data-aktiv-feilmelding>\n" +
     "                                <label for='radio4'>{{ 'arbeidsforhold.sluttaarsak.radio.arbeidsgiverErKonkurs' | cmstekst }}</label>\n" +
     "                            </div>\n" +
     "\n" +
@@ -183,7 +189,8 @@ angular.module("../views/templates/arbeidsforhold-nytt.html", []).run(["$templat
     "                                       data-ng-model=\"faktum.properties.type\"\n" +
     "                                       data-ng-required=\"true\"\n" +
     "                                       data-click-validate\n" +
-    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\">\n" +
+    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
+    "                                       data-aktiv-feilmelding>\n" +
     "                                <label for='radio2'>{{ 'arbeidsforhold.sluttaarsak.radio.avskjediget' | cmstekst }}</label>\n" +
     "                            </div>\n" +
     "\n" +
@@ -253,6 +260,7 @@ angular.module("../views/templates/arbeidsforhold.html", []).run(["$templateCach
     "            <div class=\"ekstra-spm-boks nav-boolean\" data-ng-if=\"hvisHarIkkeJobbet()\">\n" +
     "                <div data-navinfoboks>\n" +
     "                    <p>{{ 'arbeidsforhold.arbeidstilstand.harikkejobbet.informasjonstekst.del1' | cmstekst }}</p>\n" +
+    "\n" +
     "                    <p>{{ 'arbeidsforhold.arbeidstilstand.harikkejobbet.informasjonstekst.del2' | cmstekst }}</p>\n" +
     "                </div>\n" +
     "            </div>\n" +
@@ -262,9 +270,10 @@ angular.module("../views/templates/arbeidsforhold.html", []).run(["$templateCach
     "\n" +
     "        <div class=\"spm-boks vertikal\" data-ng-repeat=\"af in arbeidsliste\" data-ng-class=\"{'last': $last}\">\n" +
     "            <div id=\"arbeidsforhold{{af.arbeidsforhold.faktumId}}\">\n" +
-    "                <a href=\"#\" class=\"lukk\" data-ng-click=\"slettArbeidsforhold(af, $index, $event)\" data-fokus-slettmoduler=\"arbeidsforhold\" > </a>\n" +
+    "                <a href=\"#\" class=\"lukk\" data-ng-click=\"slettArbeidsforhold(af, $index, $event)\"\n" +
+    "                   data-fokus-slettmoduler=\"arbeidsforhold\"> </a>\n" +
     "                <span class=\"robust\">{{ af.arbeidsforhold.properties.arbeidsgivernavn }}</span>\n" +
-    "                <span class=\"robust\">, </span>  \n" +
+    "                <span class=\"robust\">, </span>\n" +
     "                <span class=\"robust\">{{ finnLandFraLandkode(af.arbeidsforhold.properties.land) }}</span>\n" +
     "\n" +
     "                <div class=\"arbeidsforhold-land-sluttaarsak-blokk\">\n" +
@@ -277,7 +286,8 @@ angular.module("../views/templates/arbeidsforhold.html", []).run(["$templateCach
     "                    <ul class=\"liste-vannrett\">\n" +
     "                        <li>\n" +
     "                            <a href data-ng-click=\"slettArbeidsforhold(af, $index, $event)\"\n" +
-    "                               data-cmstekster=\"arbeidsforhold.slettarbeidsforhold\" data-fokus-slettmoduler=\"arbeidsforhold\" ></a>\n" +
+    "                               data-cmstekster=\"arbeidsforhold.slettarbeidsforhold\"\n" +
+    "                               data-fokus-slettmoduler=\"arbeidsforhold\"></a>\n" +
     "                        </li>\n" +
     "                        <li>\n" +
     "                            <a href data-ng-click=\"endreArbeidsforhold(af, $index, $event)\"\n" +
@@ -289,18 +299,21 @@ angular.module("../views/templates/arbeidsforhold.html", []).run(["$templateCach
     "        </div>\n" +
     "\n" +
     "        <div class=\"knapper-arbeidsforhold\">\n" +
-    "            <div id=\"legg-til\" class=\"form-linje knapp ikke-fadebakgrunn\" data-ng-if=\"harSvart()\" data-ng-class=\"{feil: skalViseFeil()}\">\n" +
+    "            <div id=\"legg-til\" class=\"form-linje knapp ikke-fadebakgrunn\" data-ng-if=\"harSvart()\"\n" +
+    "                 data-ng-class=\"{feil: skalViseFeil()}\">\n" +
     "                <div data-ng-if=\"hvisHarJobbet()\">\n" +
     "                    <input type=\"hidden\"\n" +
     "                           data-ng-model=\"harLagretArbeidsforhold\"\n" +
     "                           data-nav-faktum=\"harLagretArbeidsforhold\"\n" +
     "                           data-ng-required=\"true\"\n" +
     "                           data-error-messages=\"'arbeidsforhold.arbeidsforhold.required'\"\n" +
-    "                           >\n" +
+    "                           class=\"legg-til-arbeidsforhold\"\n" +
+    "                            >\n" +
     "                </div>\n" +
     "\n" +
     "                <button class=\"knapp-leggtil-liten\" data-ng-click=\"nyttArbeidsforhold($event, arbeidsforholdForm)\"\n" +
-    "                        data-cmstekster=\"arbeidsforhold.nyttarbeidsforhold\" role=\"button\"></button>\n" +
+    "                        data-cmstekster=\"arbeidsforhold.nyttarbeidsforhold\" role=\"button\"\n" +
+    "                        data-aktiv-feilmelding></button>\n" +
     "                <span class=\"melding\" data-cmstekster=\"arbeidsforhold.arbeidsforhold.required\"></span>\n" +
     "            </div>\n" +
     "\n" +
@@ -501,7 +514,8 @@ angular.module("../views/templates/arbeidsforhold/konkurs.html", []).run(["$temp
     "               data-ng-model=\"sluttaarsak.properties.lonnsgaranti\"\n" +
     "               data-click-validate\n" +
     "               data-ng-required=\"true\"\n" +
-    "               data-error-messages=\"'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'\">\n" +
+    "               data-error-messages=\"'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'\"\n" +
+    "               data-aktiv-feilmelding>\n" +
     "        <label for='lonnsgaranti1'>{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaharsokt' | cmstekst }}</label>\n" +
     "    </div>\n" +
     "\n" +
@@ -519,7 +533,8 @@ angular.module("../views/templates/arbeidsforhold/konkurs.html", []).run(["$temp
     "                       data-ng-model=\"sluttaarsak.properties.lonnsgarantidekker\"\n" +
     "                       data-click-validate\n" +
     "                       data-ng-required=\"sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'\"\n" +
-    "                       data-error-messages=\"'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.feilmelding'\">\n" +
+    "                       data-error-messages=\"'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.feilmelding'\"\n" +
+    "                       data-aktiv-feilmelding>\n" +
     "                <label for='lonnsgarantidekker1'>{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.nei' |\n" +
     "                    cmstekst }}</label>\n" +
     "            </div>\n" +
@@ -532,7 +547,8 @@ angular.module("../views/templates/arbeidsforhold/konkurs.html", []).run(["$temp
     "                       data-ng-model=\"sluttaarsak.properties.lonnsgarantidekker\"\n" +
     "                       data-click-validate\n" +
     "                       data-ng-required=\"sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'\"\n" +
-    "                       data-error-messages=\"'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.feilmelding'\">\n" +
+    "                       data-error-messages=\"'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.feilmelding'\"\n" +
+    "                       data-aktiv-feilmelding>\n" +
     "                <label for='lonnsgarantidekker2'>{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.ja' |\n" +
     "                    cmstekst }}</label>\n" +
     "            </div>\n" +
@@ -545,7 +561,8 @@ angular.module("../views/templates/arbeidsforhold/konkurs.html", []).run(["$temp
     "                       data-ng-model=\"sluttaarsak.properties.lonnsgarantidekker\"\n" +
     "                       data-click-validate\n" +
     "                       data-ng-required=\"sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'\"\n" +
-    "                       data-error-messages=\"'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.feilmelding'\">\n" +
+    "                       data-error-messages=\"'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.feilmelding'\"\n" +
+    "                       data-aktiv-feilmelding>\n" +
     "                <label for='lonnsgarantidekker3'>{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.vetikke' |\n" +
     "                    cmstekst }}</label>\n" +
     "            </div>\n" +
@@ -563,7 +580,8 @@ angular.module("../views/templates/arbeidsforhold/konkurs.html", []).run(["$temp
     "               data-ng-model=\"sluttaarsak.properties.lonnsgaranti\"\n" +
     "               data-click-validate\n" +
     "               data-ng-required=\"true\"\n" +
-    "               data-error-messages=\"'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'\">\n" +
+    "               data-error-messages=\"'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'\"\n" +
+    "               data-aktiv-feilmelding>\n" +
     "        <label for='lonnsgaranti2'>{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaskalsoke' | cmstekst }}</label>\n" +
     "    </div>\n" +
     "    <div class=\"nav-radio-knapp\">\n" +
@@ -575,7 +593,8 @@ angular.module("../views/templates/arbeidsforhold/konkurs.html", []).run(["$temp
     "               data-ng-model=\"sluttaarsak.properties.lonnsgaranti\"\n" +
     "               data-click-validate\n" +
     "               data-ng-required=\"true\"\n" +
-    "               data-error-messages=\"'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'\">\n" +
+    "               data-error-messages=\"'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'\"\n" +
+    "               data-aktiv-feilmelding>\n" +
     "        <label for='lonnsgaranti3'>{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.nei' | cmstekst }}</label>\n" +
     "    </div>\n" +
     "\n" +
@@ -790,7 +809,8 @@ angular.module("../views/templates/arbeidsforhold/permittert.html", []).run(["$t
     "               data-blur-validate\n" +
     "               data-ng-blur=\"settPermitteringsflagg($event)\"\n" +
     "               maxlength=\"3\"\n" +
-    "               data-tekstfelt-patternvalidering/>\n" +
+    "               data-tekstfelt-patternvalidering\n" +
+    "               data-aktiv-feilmelding/>\n" +
     "        <span class=\"melding\"></span>\n" +
     "    </label>\n" +
     "</div>\n" +
@@ -1135,7 +1155,7 @@ angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templ
     "                            <div data-form-errors></div>\n" +
     "                            <h2 class=\"stor-strek\" data-cmstekster=\"barnetillegg.nyttbarn.tittel\"></h2>\n" +
     "\n" +
-    "                            <div class=\"form-linje\">\n" +
+    "                            <div class=\"form-linje tekstfelt\">\n" +
     "                                <label>\n" +
     "                                    <span data-cmstekster=\"barnetillegg.nyttbarn.fornavn\"></span>\n" +
     "                                    <input name=\"fornavn\"\n" +
@@ -1145,11 +1165,12 @@ angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templ
     "                                           data-blur-validate\n" +
     "                                           data-maxlength=\"200\"\n" +
     "                                           maxlength=\"200\"\n" +
-    "                                           required>\n" +
+    "                                           required\n" +
+    "                                           data-aktiv-feilmelding>\n" +
     "                                    <span class=\"melding\"></span>\n" +
     "                                </label>\n" +
     "                            </div>\n" +
-    "                            <div class=\"form-linje\">\n" +
+    "                            <div class=\"form-linje tekstfelt\">\n" +
     "                                <label>\n" +
     "                                    <span data-cmstekster=\"barnetillegg.nyttbarn.etternavn\"></span>\n" +
     "                                    <input name=\"fnr\"\n" +
@@ -1159,7 +1180,8 @@ angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templ
     "                                           data-blur-validate\n" +
     "                                           data-maxlength=\"200\"\n" +
     "                                           maxlength=\"200\"\n" +
-    "                                           required>\n" +
+    "                                           required\n" +
+    "                                           data-aktiv-feilmelding>\n" +
     "                                    <span class=\"melding\"></span>\n" +
     "                                </label>\n" +
     "                            </div>\n" +
@@ -1223,7 +1245,8 @@ angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templ
     "                                <input data-ng-model=\"barn.properties.barnetillegg\" name=\"barnetilegg\"\n" +
     "                                       id=\"barnetilegg\" type=\"checkbox\"\n" +
     "                                       data-error-messages=\"'barnetillegg.nyttbarn.barnetillegg.feilmelding'\"\n" +
-    "                                       data-boolean-verdi data-ng-required=\"true\">\n" +
+    "                                       data-boolean-verdi data-ng-required=\"true\"\n" +
+    "                                       data-aktiv-feilmelding>\n" +
     "                                <label for=\"barnetilegg\"\n" +
     "                                       data-cmstekster=\"barnetillegg.barnetilegg.sporsmal\"></label>\n" +
     "                                <span class=\"melding\"\n" +
@@ -1243,7 +1266,8 @@ angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templ
     "                                               data-ng-required=\"barnetilleggErRegistrert()\"\n" +
     "                                               name=\"ikkebarneinntekt\"\n" +
     "                                               data-click-validate\n" +
-    "                                               data-error-messages=\"'barnetillegg.barnetilegg.ikkebarneinntekt.feilmelding'\">\n" +
+    "                                               data-error-messages=\"'barnetillegg.barnetilegg.ikkebarneinntekt.feilmelding'\"\n" +
+    "                                                data-aktiv-feilmelding>\n" +
     "                                        <label for='ikkebarneinntekt'\n" +
     "                                               data-cmstekster=\"barnetillegg.barnetilegg.ikkebarneinntekt.true\"></label>\n" +
     "                                    </div>\n" +
@@ -1256,7 +1280,8 @@ angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templ
     "                                               data-ng-required=\"barnetilleggErRegistrert()\"\n" +
     "                                               name=\"ikkebarneinntekt\"\n" +
     "                                               data-click-validate\n" +
-    "                                               data-error-messages=\"'barnetillegg.barnetilegg.ikkebarneinntekt.feilmelding'\">\n" +
+    "                                               data-error-messages=\"'barnetillegg.barnetilegg.ikkebarneinntekt.feilmelding'\"\n" +
+    "                                               data-aktiv-feilmelding>\n" +
     "                                        <label for='ikkebarneinntektNei'\n" +
     "                                               data-cmstekster=\"barnetillegg.barnetilegg.ikkebarneinntekt.false\"></label>\n" +
     "                                    </div>\n" +
@@ -1264,7 +1289,7 @@ angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templ
     "                                </div>\n" +
     "\n" +
     "                                <div data-ng-if=\"barnetHarInntekt()\">\n" +
-    "                                    <div class=\"form-linje\">\n" +
+    "                                    <div class=\"form-linje tekstfelt\">\n" +
     "                                        <label>\n" +
     "                                            <span data-cmstekster=\"barnetillegg.barnetilegg.barneinntekttall.sporsmal\"></span>\n" +
     "                                            <input name=\"barneinntekttall\"\n" +
@@ -1275,7 +1300,8 @@ angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templ
     "                                                   data-blur-validate\n" +
     "                                                   data-maxlength=\"200\"\n" +
     "                                                   maxlength=\"200\"\n" +
-    "                                                   required=\"barnetHarInntekt()\">\n" +
+    "                                                   required=\"barnetHarInntekt()\"\n" +
+    "                                                   data-aktiv-feilmelding>\n" +
     "                                            <span class=\"melding\"></span>\n" +
     "                                        </label>\n" +
     "                                    </div>\n" +
@@ -1496,7 +1522,8 @@ angular.module("../views/templates/egennaering/egenNaeringvirksomhet.html", []).
     "                   pattern:'regex.tall.komma.punktum'}\"\n" +
     "               data-ng-pattern=\"/^(\\d+(?:[\\.\\,]\\d{0,2})?)$/\"\n" +
     "               data-tekstfelt-patternvalidering\n" +
-    "               data-blur-validate/>\n" +
+    "               data-blur-validate\n" +
+    "               data-aktiv-feilmelding/>\n" +
     "        <span class=\"melding\"></span>\n" +
     "    </label>\n" +
     "</div>");
@@ -1640,7 +1667,8 @@ angular.module("../views/templates/egennaering/gardsbruk.html", []).run(["$templ
     "                           maxlength=\"3\"\n" +
     "                           data-tekstfelt-patternvalidering\n" +
     "                           data-nav-faktum=\"egennaering.gardsbruk.false.eierandel.din\"\n" +
-    "                           data-navconfig/>\n" +
+    "                           data-navconfig\n" +
+    "                           data-aktiv-feilmelding/>\n" +
     "                    <span class=\"melding\"></span>\n" +
     "                </label>\n" +
     "            </div>\n" +
@@ -1657,7 +1685,8 @@ angular.module("../views/templates/egennaering/gardsbruk.html", []).run(["$templ
     "                           maxlength=\"3\"\n" +
     "                           data-tekstfelt-patternvalidering\n" +
     "                           data-nav-faktum=\"egennaering.gardsbruk.false.eierandel.ektefelle\"\n" +
-    "                           data-navconfig/>\n" +
+    "                           data-navconfig\n" +
+    "                           data-aktiv-feilmelding/>\n" +
     "                    <span class=\"melding\"></span>\n" +
     "                </label>\n" +
     "            </div>\n" +
@@ -1674,7 +1703,8 @@ angular.module("../views/templates/egennaering/gardsbruk.html", []).run(["$templ
     "                           maxlength=\"3\"\n" +
     "                           data-tekstfelt-patternvalidering\n" +
     "                           data-nav-faktum=\"egennaering.gardsbruk.false.eierandel.annet\"\n" +
-    "                           data-navconfig/>\n" +
+    "                           data-navconfig\n" +
+    "                           data-aktiv-feilmelding/>\n" +
     "                    <span class=\"melding\"></span>\n" +
     "                </label>\n" +
     "            </div>\n" +
@@ -1699,7 +1729,8 @@ angular.module("../views/templates/egennaering/gardsbruk.html", []).run(["$templ
     "                       data-blur-validate\n" +
     "                       data-tekstfelt-patternvalidering\n" +
     "                       data-nav-faktum=\"egennaering.gardsbruk.false.timer\"\n" +
-    "                       data-navconfig/>\n" +
+    "                       data-navconfig\n" +
+    "                       data-aktiv-feilmelding/>\n" +
     "            </label>\n" +
     "            <label>\n" +
     "                <span class=\"labeltekst\">{{ 'egennaering.gardsbruk.false.aar' | cmstekst }}</span>\n" +
@@ -3597,7 +3628,7 @@ angular.module("../js/common/directives/navinput/navcheckboxTemplate.html", []).
   $templateCache.put("../js/common/directives/navinput/navcheckboxTemplate.html",
     "<div class=\"nav-checkbox\">\n" +
     "    <input id=\"{{ navlabel }}\" data-ng-model=\"faktum.value\" type=\"checkbox\" data-boolean-verdi\n" +
-    "           data-ng-change=\"lagreFaktum(); endret()\"/>\n" +
+    "           data-ng-change=\"lagreFaktum(); endret()\" data-aktiv-feilmelding/>\n" +
     "    <label for=\"{{ navlabel }}\" data-cmstekster=\"{{ navlabel }}\"></label>\n" +
     "\n" +
     "    <div data-nav-hjelpetekstelement data-ng-if=\"hvisHarHjelpetekst()\" data-tittel=\"{{ hjelpetekst.tittel }}\"\n" +
@@ -3609,12 +3640,12 @@ angular.module("../js/common/directives/navinput/navcheckboxTemplate.html", []).
 
 angular.module("../js/common/directives/navinput/navorgnrfeltTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/common/directives/navinput/navorgnrfeltTemplate.html",
-    "<div class=\"form-linje tekstfelt orgnummer\" >\n" +
+    "<div class=\"form-linje tekstfelt orgnummer\">\n" +
     "        <label>\n" +
     "            <span data-cmstekster=\"{{ navlabel }}\"></span>\n" +
     "            <input data-ng-model=\"faktum.value\" type=\"text\" value=\"{{ value }}\" data-ng-required=\"erSynlig()\"\n" +
     "                   data-error-messages=\"{{ navfeilmelding }}\" data-blur-validate\n" +
-    "                   data-ng-pattern=\"/[0-9]{9}/\" maxlength=\"9\" orgnr-validate>\n" +
+    "                   data-ng-pattern=\"/[0-9]{9}/\" maxlength=\"9\" orgnr-validate  data-aktiv-feilmelding>\n" +
     "        </label>\n" +
     "        <span class=\"melding\"></span>\n" +
     "</div>\n" +
@@ -3633,7 +3664,8 @@ angular.module("../js/common/directives/navinput/navradioTemplate.html", []).run
     "           data-ng-required=\"true\"\n" +
     "           data-error-messages=\"'{{ navfeilmelding }}'\"\n" +
     "           data-ng-change=\"lagreFaktum()\"\n" +
-    "           data-click-validate>\n" +
+    "           data-click-validate\n" +
+    "           data-aktiv-feilmelding>\n" +
     "\n" +
     "    <label for='{{ navlabel }}' data-cmstekster=\"{{ navlabel }}\"></label>\n" +
     "</div>\n" +
@@ -3642,12 +3674,12 @@ angular.module("../js/common/directives/navinput/navradioTemplate.html", []).run
 
 angular.module("../js/common/directives/navinput/navtekstTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/common/directives/navinput/navtekstTemplate.html",
-    "<div class=\"tekstfelt form-linje\">\n" +
+    "<div class=\"tekstfelt form-linje\" >\n" +
     "    <label>\n" +
     "        <span class=\"labeltekst\">{{ navlabel | cmstekst }}</span>\n" +
     "        <input data-ng-model=\"faktum.value\" type=\"text\" value=\"{{ value }}\" data-ng-required=\"true\"\n" +
     "               data-error-messages=\"{{ navfeilmelding }}\" data-ng-pattern=\"{{regexvalidering}}\" data-blur-validate data-minlength=\"{{navminlength}}\" data-maxlength=\"{{navmaxlength}}\"\n" +
-    "               maxlength=\"{{inputfeltmaxlength}}\"  data-tekstfelt-patternvalidering/>\n" +
+    "               maxlength=\"{{inputfeltmaxlength}}\"  data-tekstfelt-patternvalidering data-aktiv-feilmelding/>\n" +
     "        <span class=\"melding\"></span>\n" +
     "    </label>\n" +
     "</div>\n" +
@@ -3666,7 +3698,8 @@ angular.module("../js/common/directives/navtextarea/navtextareaObligatoriskTempl
     "                  data-ng-trim=\"false\"\n" +
     "                  aria-controls=\"{{sporsmal}}\"\n" +
     "                  data-validate-textarea\n" +
-    "                  data-ng-blur=\"mistetFokus()\"></textarea>\n" +
+    "                  data-ng-blur=\"mistetFokus()\"\n" +
+    "                  data-aktiv-feilmelding></textarea>\n" +
     "\n" +
     "        <span class=\"egen-linje\" data-ng-show=\"harFokusOgFeil() === true\">\n" +
     "                    <span class=\"tellertekst\" data-ng-class=\"{negativtekstteller: counter < 0 }\" aria-live=\"polite\"\n" +

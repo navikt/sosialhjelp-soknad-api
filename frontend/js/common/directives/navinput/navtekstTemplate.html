@@ -1,9 +1,9 @@
-﻿<div class="tekstfelt form-linje">
+﻿<div class="tekstfelt form-linje" >
     <label>
         <span class="labeltekst">{{ navlabel | cmstekst }}</span>
         <input data-ng-model="faktum.value" type="text" value="{{ value }}" data-ng-required="true"
                data-error-messages="{{ navfeilmelding }}" data-ng-pattern="{{regexvalidering}}" data-blur-validate data-minlength="{{navminlength}}" data-maxlength="{{navmaxlength}}"
-               maxlength="{{inputfeltmaxlength}}"  data-tekstfelt-patternvalidering/>
+               maxlength="{{inputfeltmaxlength}}"  data-tekstfelt-patternvalidering data-aktiv-feilmelding/>
         <span class="melding"></span>
     </label>
 </div>
