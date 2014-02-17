@@ -11,8 +11,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
-
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosBorgerService;
@@ -53,7 +51,6 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 
-import org.hamcrest.core.IsNull;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -63,6 +60,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.xml.ws.WebServiceException;
@@ -393,11 +391,14 @@ public class DefaultPersonaliaServiceTest {
 
         Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
 
-        Adresse sekundarAdresse = personalia.getSekundarAdresse();
+        Adresse gjeldendeAdresse = personalia.getGjeldendeAdresse();
 
-        Assert.assertNotNull(sekundarAdresse.getAdresse());
-
-        assertThat(sekundarAdresse.getAdresse(), is(forventetAdresse));
+        Assert.assertNotNull(gjeldendeAdresse.getAdresse());
+        
+        Assert.assertFalse(personalia.harNorskMidlertidigAdresse());
+        Assert.assertTrue(personalia.harUtenlandskFolkeregistrertAdresse());
+        
+        assertThat(gjeldendeAdresse.getAdresse(), is(forventetAdresse));
     }
 
     @SuppressWarnings("unchecked")
@@ -450,9 +451,6 @@ public class DefaultPersonaliaServiceTest {
     
     @Test
     public void returnererTomPersonaliaVedTpsFeil() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-        XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse = new XMLHentKontaktinformasjonOgPreferanserResponse();
-        xmlBruker = new XMLBruker();
-        preferanserResponse.setPerson(xmlBruker);
         when(
                 brukerProfilMock
                         .hentKontaktinformasjonOgPreferanser(org.mockito.Matchers
@@ -468,13 +466,13 @@ public class DefaultPersonaliaServiceTest {
         Assert.assertNull(personalia.getEpost());
         Assert.assertNull(personalia.getKjonn());
         Assert.assertNull(personalia.getNavn());
+        
+        Assert.assertFalse(personalia.harNorskMidlertidigAdresse());
+        Assert.assertFalse(personalia.harUtenlandskAdresse());
     }
     
     @Test
     public void returnererTomPersonaliaVedManglendePerson() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-        XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse = new XMLHentKontaktinformasjonOgPreferanserResponse();
-        xmlBruker = new XMLBruker();
-        preferanserResponse.setPerson(xmlBruker);
         when(
                 brukerProfilMock
                         .hentKontaktinformasjonOgPreferanser(org.mockito.Matchers
@@ -494,9 +492,6 @@ public class DefaultPersonaliaServiceTest {
     
     @Test
     public void returnererTomPersonaliaVedSikkerhetsbegrensing() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
-        XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse = new XMLHentKontaktinformasjonOgPreferanserResponse();
-        xmlBruker = new XMLBruker();
-        preferanserResponse.setPerson(xmlBruker);
         when(
                 brukerProfilMock
                         .hentKontaktinformasjonOgPreferanser(org.mockito.Matchers
@@ -505,6 +500,27 @@ public class DefaultPersonaliaServiceTest {
         
         Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
         
+        assertThat(personalia, is(not(nullValue())));
+        Assert.assertNull(personalia.getAlder());
+        Assert.assertNull(personalia.getEpost());
+        Assert.assertNull(personalia.getFnr());
+        Assert.assertNull(personalia.getEpost());
+        Assert.assertNull(personalia.getKjonn());
+        Assert.assertNull(personalia.getNavn());
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void returnereTomPersonaliaVedWebserviceFeilIPersonTjeneste() throws HentKjerneinformasjonPersonIkkeFunnet,
+            HentKjerneinformasjonSikkerhetsbegrensning,
+            HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning,
+            HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+        when(personMock.hentKjerneinformasjon(org.mockito.Matchers
+                                .any(HentKjerneinformasjonRequest.class)))
+                .thenThrow(new WebServiceException());
+
+        Personalia personalia = personaliaService.lagrePersonaliaOgBarn(RIKTIG_IDENT, 21L);
+
         assertThat(personalia, is(not(nullValue())));
         Assert.assertNull(personalia.getAlder());
         Assert.assertNull(personalia.getEpost());
@@ -536,7 +552,8 @@ public class DefaultPersonaliaServiceTest {
     }
     
     private void mockGyldigPersonMedUtenlandskFolkeregistrertAdresse(int adresselinjer) {
-        no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland xmlPostadresseUtland = new no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland();
+        XMLPostadresse xmlPostadresseUtland = new XMLPostadresse();
+        //no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland xmlPostadresseUtland = new no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland();
         XMLUstrukturertAdresse utenlandskUstrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(4);
 
         XMLLandkoder xmlLandkode = new XMLLandkoder();
@@ -546,12 +563,9 @@ public class DefaultPersonaliaServiceTest {
         XMLPostadressetyper xmlPostadresseType = new XMLPostadressetyper();
         xmlPostadresseType.setValue("UTENLANDSK_ADRESSE");
         xmlBruker.setGjeldendePostadresseType(xmlPostadresseType);
-        
-        
-        
         xmlPostadresseUtland.setUstrukturertAdresse(utenlandskUstrukturertAdresse);
 
-        xmlBruker.setMidlertidigPostadresse(xmlPostadresseUtland);
+        xmlBruker.setPostadresse(xmlPostadresseUtland);
 
     }
 
