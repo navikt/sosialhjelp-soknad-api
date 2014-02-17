@@ -41,6 +41,11 @@ form, [ng-form], [data-ng-form] {
     input[type="radio"]:checked + label {
       font-weight: bold;
     }
+    &.form-linje.feil {
+      .melding {
+        text-align: left !important;
+      }
+    }
   }
 }
 
@@ -87,35 +92,32 @@ form, [ng-form], [data-ng-form] {
     font-size: 1.21rem;
     font-family: Modus, Arial, Helvetica, sans-serif;
   }
-  .oversikt {
-    text-align: center;
-  }
+
   .inforad {
     border-bottom: none;
     border-top: 1px solid #d1d1d1;
   }
+  .oversikt {
+    text-align: center;
+  }
   .leggtilekstra {
     background-color: #f1f1f1;
-    padding: 50px;
+    padding-top: 50px;
+    padding-bottom: 35px;
     border-bottom: none;
 
-    a {
-      font-weight: 600;
+    button {
       background-color: #f1f1f1;
-      color: #0067c5;
       margin-bottom: 30px;
-      padding: 11px 23px;
-      border: 1px solid #d1d1d1;
-    }
-    a:hover, a:focus {
-      color: #fff;
-      background-color: #0067c5;
-      border-color: #0067c5;
-      outline: none;
+
+      &:hover {
+        background-color: #0067c5;
+        color: #fff;
+      }
     }
   }
   .ferdig-skjema {
-    padding-top: 40px;
+    padding-top: 0px;
   }
 
   .vedlegg {
@@ -292,14 +294,16 @@ form, [ng-form], [data-ng-form] {
     }
     .melding.annet {
       margin-top: -35px;
+      text-align: center !important;
     }
   }
   .form-linje {
     padding: 0px;
   }
+  .bilde {
+    background-image: none;
+  }
 }
-
-
 
 .bildenavigering {
   width: 100%;
@@ -455,7 +459,6 @@ form, [ng-form], [data-ng-form] {
       margin: 15px;
     }
   }
-
 
   .opplastingliste {
     padding: 0;
