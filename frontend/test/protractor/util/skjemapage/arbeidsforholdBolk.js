@@ -15,6 +15,6 @@ module.exports = {
                 varierende: element.all(by.css('[data-nav-faktum=arbeidstilstand] input')).get(1),
                 ja: element.all(by.css('[data-nav-faktum=arbeidstilstand] input')).get(2)
             }
-        }
+        };
     }
 };

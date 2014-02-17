@@ -1,5 +1,5 @@
 angular.module('nav.arbeidsforhold.controller', [])
-    .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $cookieStore, $location, data, Faktum) {
+    .controller('ArbeidsforholdCtrl', ['$scope', 'soknadService', 'landService', '$cookieStore', '$location', 'data', function ($scope, soknadService, landService, $cookieStore, $location, data) {
         $scope.soknadId = data.soknad.soknadId;
 
         $scope.sluttaarsakUrl = data.config["soknad.sluttaarsak.url"];
@@ -49,15 +49,15 @@ angular.module('nav.arbeidsforhold.controller', [])
                 }
             }
             return "";
-        }
+        };
 
         $scope.skalViseFeil = function () {
             return $scope.harFeil === true && !$scope.harLagretArbeidsforhold;
-        }
+        };
 
         $scope.harSvart = function () {
             return $scope.hvisHarJobbet() || $scope.hvisHarIkkeJobbet();
-        }
+        };
 
         $scope.$watch(function () {
             if (data.finnFaktum('arbeidstilstand')) {
@@ -65,7 +65,7 @@ angular.module('nav.arbeidsforhold.controller', [])
             }
         }, function () {
             $scope.harFeil = false;
-        })
+        });
 
 
         $scope.hvisHarJobbet = function () {
@@ -77,7 +77,7 @@ angular.module('nav.arbeidsforhold.controller', [])
             var faktum = data.finnFaktum('arbeidstilstand');
             return sjekkOmGittEgenskapTilObjektErVerdi(faktum, "harIkkeJobbet");
 
-        }
+        };
         $scope.hvisHarJobbetVarierende = function () {
             var faktum = data.finnFaktum('arbeidstilstand');
             return sjekkOmGittEgenskapTilObjektErVerdi(faktum, "varierendeArbeidstid");
@@ -141,7 +141,7 @@ angular.module('nav.arbeidsforhold.controller', [])
                 aapneTabs: aapneTabIds,
                 gjeldendeTab: '#arbeidsforhold',
                 faktumId: faktumId
-            })
+            });
         }
 
-    });
+    }]);

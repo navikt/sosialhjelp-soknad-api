@@ -32,7 +32,7 @@ angular.module('nav.vedlegg.controller', [])
                 $scope.leggTilStickyFeilmelding();
             }
             $scope.runValidation(true);
-        }
+        };
 
         $scope.vedleggEr = function (vedlegg, status) {
             return vedlegg.innsendingsvalg === status;
@@ -40,7 +40,7 @@ angular.module('nav.vedlegg.controller', [])
 
         $scope.vedleggFerdigBehandlet = function(forventning) {
             return $scope.ekstraVedleggFerdig(forventning) && !$scope.vedleggEr(forventning, 'VedleggKreves');
-        }
+        };
 
         $scope.ekstraVedleggFerdig = function (forventning) {
             if(forventning.skjemaNummer === 'N6') {
@@ -71,7 +71,7 @@ angular.module('nav.vedlegg.controller', [])
             $scope.skalViseFeil = { value: false };
         }
 
-        $scope.filVedlagt = $scope.forventning.storrelse == 0 ? "" : "true";
+        $scope.filVedlagt = $scope.forventning.storrelse === 0 ? "" : "true";
 
 
         $scope.slettVedlegg = function (forventning) {
@@ -137,5 +137,5 @@ angular.module('nav.vedlegg.controller', [])
             restrict: 'a',
             replace: 'true',
             templateUrl: '../../'
-        }
+        };
     }]);

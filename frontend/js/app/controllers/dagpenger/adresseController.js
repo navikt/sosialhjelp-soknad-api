@@ -3,7 +3,7 @@ angular.module('nav.adresse', [])
         $scope.personalia = data.finnFaktum('personalia').properties;
 
         $scope.harGjeldendeAdresse = function() {
-            return $scope.personalia.gjeldendeAdresse != null;
+            return $scope.personalia.gjeldendeAdresse !== null;
         };
 
         $scope.formattertGjeldendeAdresse = '';
@@ -38,7 +38,7 @@ angular.module('nav.adresse', [])
         }
 
         $scope.harSekundarAdresse = function() {
-            return $scope.personalia.sekundarAdresse != null;
+            return $scope.personalia.sekundarAdresse !== null;
         };
 
         $scope.formattertSekundarAdresse = '';
@@ -47,9 +47,4 @@ angular.module('nav.adresse', [])
             $scope.formattertSekundarAdresse = $scope.hentFormattertAdresse($scope.personalia.sekundarAdresse);
             $scope.sekundarAdresseTypeLabel = $scope.hentAdresseTypeNokkel($scope.personalia.sekundarAdresseType);
         }
-
-       
-
-
-        
     }]);

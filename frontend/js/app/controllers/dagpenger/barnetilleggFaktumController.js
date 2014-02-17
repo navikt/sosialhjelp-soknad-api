@@ -102,5 +102,5 @@ angular.module('nav.barnetilleggfaktum', ['app.services'])
                 $scope.barnetillegg.value = 'false';
                 $scope.soknadData.fakta.barnetillegg.valuelist.splice(index, 1);
             });
-        }
+        };
     }]);

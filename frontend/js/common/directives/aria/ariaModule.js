@@ -14,7 +14,7 @@ angular.module('nav.aria', [])
 					}
 				);
 			}
-		}
+		};
 	}])
 	.directive('navAriaExpanded', [function () {
 		return {
@@ -31,5 +31,5 @@ angular.module('nav.aria', [])
 					}
 				);
 			}
-		}
+		};
 	}]);

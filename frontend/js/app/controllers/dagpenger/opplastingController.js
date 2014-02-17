@@ -1,6 +1,6 @@
 angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 
-    .controller('OpplastingVedleggCtrl', ['$scope', '$http', '$location', '$routeParams', 'vedleggService', 'soknadService', 'data', 'cms', function ($scope, $http, $location, $routeParams, vedleggService, soknadService, data, cms) {
+    .controller('OpplastingVedleggCtrl', ['$scope', '$http', '$location', '$routeParams', 'vedleggService', 'soknadService', 'data', function ($scope, $http, $location, $routeParams, vedleggService, soknadService, data) {
         $scope.vedlegg = vedleggService.get({soknadId: data.soknad.soknadId, vedleggId: $routeParams.vedleggId});
         $scope.soknad = data.soknad;
     }])
@@ -12,7 +12,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 
         $scope.harLagtTilVedlegg = {
             value:false
-        }
+        };
 
         $scope.skalViseFeilmelding = false;
         $scope.opplastingFeilet = false;
@@ -35,7 +35,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                     data.scope().clear(file);
                     $scope.clear(file);
                 }
-            })
+            });
         });
 
         $scope.options = {
@@ -108,31 +108,31 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         );
     }])
 
-    .controller('SlettOpplastingCtrl', ['$scope', 'vedleggService', 'data', function ($scope, vedleggService, data) {
+    .controller('SlettOpplastingCtrl', ['$scope', function ($scope) {
         var file = $scope.file;
         file.$destroy = function () {
             $scope.data.opplastingFeilet = false;
             file.$remove().then(function () {
                 $scope.clear(file);
             });
-        }
+        };
     }])
 
-    .directive('filFeil', function () {
+    .directive('filFeil', [function () {
         'use strict';
         return {
             restrict: 'A',
-            link: function (scope, element, attrs) {
-                scope.$watch('file.error', function (a1, a2, a3, a4) {
+            link: function (scope) {
+                scope.$watch('file.error', function (a1, a2) {
                     if (a2) {
                         scope.clear(scope.file);
                     }
-                })
+                });
             }
-        }
-    })
+        };
+    }])
 
-    .directive('lastOppFil', function () {
+    .directive('lastOppFil', [function () {
         'use strict';
         return {
             restrict: 'A',
@@ -141,10 +141,10 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                     scope.submit();
                 });
             }
-        }
-    })
+        };
+    }])
 
-    .directive('asyncImage', function () {
+    .directive('asyncImage', [function () {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -153,7 +153,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                     element.parent().css('background-image', 'none');
                     element.replaceWith(img);
                 };
-                img.src = attrs['asyncImage'];
+                img.src = attrs.asyncImage;
             }
-        }
-    });
+        };
+    }]);

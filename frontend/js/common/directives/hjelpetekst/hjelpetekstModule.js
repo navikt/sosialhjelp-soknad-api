@@ -31,7 +31,7 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
                     }
 				});
 			}
-		}
+		};
 	}])
 	.directive('navHjelpetekstTooltip', ['$timeout', '$document', '$window', function ($timeout, $document, $window) {
 		return function (scope, element) {
@@ -73,7 +73,7 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
                 var venstre = Math.min(element.position().left - plassSomMangleTilHoyre, -20);
                 element.css({left: venstre});
                 settPilStyling(venstre);
-            };
+            }
 
             function scrollDersomNodvendig() {
                 plasserTooltipVertikalt();
@@ -82,7 +82,7 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
                     var animationSpeed = 200;
                     $('body, html').scrollToPos($document.scrollTop() + diff, animationSpeed);
                 }
-            };
+            }
 
             function settPilStyling(venstre) {
                 if ($('style:contains(.hjelpetekst .hjelpetekst-tooltip:before)').length === 0) {
@@ -90,12 +90,12 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
                 } else {
                     $('style:contains(.hjelpetekst .hjelpetekst-tooltip:before)').text('.hjelpetekst .hjelpetekst-tooltip:before {left: ' + -venstre + 'px !important};');
                 }
-            };
+            }
 
             function settMaxHoyde() {
                 var padding = element.css('left');
                 var hoyde = element.height() - element.find('.tittel').height() - parseInt(padding.substring(0, padding.length - 2));
                 element.find('.tekst').css({'max-height': hoyde + "px"});
-            };
-		}
+            }
+		};
 	}]);

@@ -5,5 +5,5 @@ angular.module('nav.markup.navinfoboks', [])
             replace: true,
             transclude: true,
             templateUrl: '../js/app/directives/markup/navinfoboksTemplate.html'
-        }
+        };
     }]);

@@ -1,16 +1,16 @@
 angular.module('nav.input', ['nav.cmstekster'])
-    .directive('navconfig', function ($parse) {
+    .directive('navconfig', [function () {
         return {
             link: {
                 pre: function (scope, element, attr) {
-                    for (key in attr) {
+                    for (var key in attr) {
                         if (key.indexOf('nav') === 0 && key !== 'navconfig') {
                             scope[key] = attr[key];
                         }
                     }
                 }}
-        }
-    })
+        };
+    }])
     .directive('navradio', [function () {
         return {
             restrict: 'A',
@@ -45,7 +45,7 @@ angular.module('nav.input', ['nav.cmstekster'])
                 }
             },
             templateUrl: '../js/common/directives/navinput/navradioTemplate.html'
-        }
+        };
     }])
     .directive('navcheckbox', ['cms', function (cms) {
         return {
@@ -58,7 +58,7 @@ angular.module('nav.input', ['nav.cmstekster'])
                     scope.hjelpetekst = {
                         tittel: cms.tekster[attr.navlabel + '.hjelpetekst.tittel'],
                         tekst: cms.tekster[attr.navlabel + '.hjelpetekst.tekst']
-                    }
+                    };
 
                 },
                 post: function (scope, element) {
@@ -80,7 +80,7 @@ angular.module('nav.input', ['nav.cmstekster'])
                     };
                 }},
             templateUrl: '../js/common/directives/navinput/navcheckboxTemplate.html'
-        }
+        };
     }])
 
     .directive('navtekst', [function () {
@@ -101,15 +101,15 @@ angular.module('nav.input', ['nav.cmstekster'])
                         scope.inputfeltmaxlength = undefined;
                     }
                 },
-                post: function (scope, element, attrs, ctrl) {
+                post: function (scope, element) {
                     scope.hvisSynlig = function () {
                         return element.is(':visible');
                     };
                 }
             },
             templateUrl: '../js/common/directives/navinput/navtekstTemplate.html'
-        }
-    }]).directive('tekstfeltPatternvalidering', ['$timeout', function ($timeout) {
+        };
+    }]).directive('tekstfeltPatternvalidering', [function () {
         return {
             require: 'ngModel',
             link: function (scope, element, attrs, ctrl) {
@@ -117,9 +117,9 @@ angular.module('nav.input', ['nav.cmstekster'])
                     if (ctrl.$valid) {
                         scope.lagreFaktum();
                     }
-                })
+                });
             }
-        }
+        };
     }])
 
     .directive('navorganisasjonsnummerfelt', [function () {
@@ -127,13 +127,13 @@ angular.module('nav.input', ['nav.cmstekster'])
             restrict: "A",
             replace: true,
             scope: true,
-            link: function (scope, element, attrs) {
+            link: function (scope, element) {
                 scope.erSynlig = function () {
                     return element.is(':visible');
-                }
+                };
             },
             templateUrl: '../js/common/directives/navinput/navorgnrfeltTemplate.html'
-        }
+        };
     }]).directive('orgnrValidate', [function () {
         return {
             require: 'ngModel',
@@ -151,7 +151,7 @@ angular.module('nav.input', ['nav.cmstekster'])
                     return ctrl.$error.required;
                 };
             }
-        }
+        };
     }])
 
     .directive('navButtonSpinner', [function () {
@@ -166,7 +166,7 @@ angular.module('nav.input', ['nav.cmstekster'])
                 click: '&'
             },
             templateUrl: '../js/common/directives/navinput/navbuttonspinnerTemplate.html'
-        }
+        };
     }])
 
     .directive('booleanVerdi', [function () {
