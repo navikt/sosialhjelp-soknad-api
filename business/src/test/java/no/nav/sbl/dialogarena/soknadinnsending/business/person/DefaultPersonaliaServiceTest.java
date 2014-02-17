@@ -11,6 +11,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland;
+
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosBorgerService;
@@ -533,7 +535,7 @@ public class DefaultPersonaliaServiceTest {
         
     private void mockGyldigPersonMedMidlertidigUtenlandskAdresse(
             int adresselinjer) {
-        XMLPostadresse xmlPostadresseUtland = new XMLPostadresse();
+        XMLMidlertidigPostadresseUtland xmlMidlertidigPostadresseUtland = new XMLMidlertidigPostadresseUtland();
         XMLUstrukturertAdresse utenlandskUstrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(adresselinjer);
 
         XMLLandkoder xmlLandkode = new XMLLandkoder();
@@ -544,16 +546,15 @@ public class DefaultPersonaliaServiceTest {
         xmlPostadresseType.setValue("MIDLERTIDIG_POSTADRESSE_UTLAND");
         xmlBruker.setGjeldendePostadresseType(xmlPostadresseType);
         
-        xmlPostadresseUtland
+        xmlMidlertidigPostadresseUtland
                 .setUstrukturertAdresse(utenlandskUstrukturertAdresse);
 
-        xmlBruker.setPostadresse(xmlPostadresseUtland);
+        xmlBruker.setMidlertidigPostadresse(xmlMidlertidigPostadresseUtland);
 
     }
     
     private void mockGyldigPersonMedUtenlandskFolkeregistrertAdresse(int adresselinjer) {
         XMLPostadresse xmlPostadresseUtland = new XMLPostadresse();
-        //no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland xmlPostadresseUtland = new no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland();
         XMLUstrukturertAdresse utenlandskUstrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(4);
 
         XMLLandkoder xmlLandkode = new XMLLandkoder();
@@ -624,8 +625,37 @@ public class DefaultPersonaliaServiceTest {
     private void mockGyldigPersonMedBarn()
             throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning,
             HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
+        
+        List<Familierelasjon> familierelasjoner = person.getHarFraRolleI();
+        Familierelasjon familieRelasjon = new Familierelasjon();
+        Familierelasjoner type = new Familierelasjoner();
+        type.setValue("BARN");
+        familieRelasjon.setTilRolle(type);
+        familieRelasjon.setTilPerson(hentMockBarn());
+        familierelasjoner.add(familieRelasjon);
+        
         xmlBruker.setPersonnavn(navnMedMellomnavn());
     }
+
+    private Person hentMockBarn() {
+        Person barn = new Person();
+        Personnavn navn = new Personnavn();
+        navn.setFornavn("Jan");
+        navn.setEtternavn("Mockmann");
+        barn.setPersonnavn(navn);
+        NorskIdent ident = new NorskIdent();
+        ident.setIdent("03076321565");
+        barn.setIdent(ident);
+        
+        Statsborgerskap statsborgerskap = new Statsborgerskap();
+        Landkoder landkode = new Landkoder();
+        landkode.setValue("DNK");
+        statsborgerskap.setLand(landkode);
+        barn.setStatsborgerskap(statsborgerskap);
+        return barn;
+    }
+
+
 
     private XMLMidlertidigPostadresseNorge generateMidlertidigAdresseNorge() {
         XMLMidlertidigPostadresseNorge xmlMidlertidigNorge = new XMLMidlertidigPostadresseNorge();
