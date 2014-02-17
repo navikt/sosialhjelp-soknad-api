@@ -213,7 +213,7 @@ function fadeBakgrunnsfarge(element, scope, rgb1, rgb2, rgb3) {
 
 function fadeFeilmelding(element, melding, feilmeldingsklasse, scope) {
 	var backgroundColour = [254, 230, 230].join(',') + ',';
-	var borderColour = [252, 162, 146].join(',') + ',';
+	var borderColour = [254, 230, 230].join(',') + ',';
 	var meldingColour = [195, 0, 0].join(',') + ',';
 	var transparency = 1;
 	var timeout = setInterval(function () {
