@@ -11,7 +11,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.nio.charset.Charset.forName;
@@ -29,24 +28,6 @@ public class SoknadComponent extends WebComponent {
 
     public SoknadComponent(String id) {
         super(id);
-        initLegalFilenames();
-    }
-
-    private void initLegalFilenames() {
-
-        if (files == null) {
-            try {
-                String htmls = WebApplication.get().getServletContext().getRealPath("/html");
-                File folder = new File(htmls);
-                List<String> filer = new ArrayList<>();
-                for (File file : folder.listFiles()) {
-                    filer.add(file.getName());
-                }
-                SoknadComponent.files = filer;
-            } catch (Exception ex) {
-                LOGGER.error("Feil ved lasting av filer:" + ex.getMessage() + " med feillogg ") ;
-            }
-        }
     }
 
     @Override
