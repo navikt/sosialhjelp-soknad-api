@@ -45,7 +45,6 @@ public class SoknadComponent extends WebComponent {
                 SoknadComponent.files = filer;
             } catch (Exception ex) {
                 LOGGER.error("Feil ved lasting av filer:" + ex.getMessage() + " med feillogg ") ;
-                ex.printStackTrace(System.out);
             }
         }
     }
