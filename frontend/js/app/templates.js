@@ -1155,7 +1155,7 @@ angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templ
     "                            <div data-form-errors></div>\n" +
     "                            <h2 class=\"stor-strek\" data-cmstekster=\"barnetillegg.nyttbarn.tittel\"></h2>\n" +
     "\n" +
-    "                            <div class=\"form-linje\">\n" +
+    "                            <div class=\"form-linje tekstfelt\">\n" +
     "                                <label>\n" +
     "                                    <span data-cmstekster=\"barnetillegg.nyttbarn.fornavn\"></span>\n" +
     "                                    <input name=\"fornavn\"\n" +
@@ -1165,11 +1165,12 @@ angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templ
     "                                           data-blur-validate\n" +
     "                                           data-maxlength=\"200\"\n" +
     "                                           maxlength=\"200\"\n" +
-    "                                           required>\n" +
+    "                                           required\n" +
+    "                                           data-aktiv-feilmelding>\n" +
     "                                    <span class=\"melding\"></span>\n" +
     "                                </label>\n" +
     "                            </div>\n" +
-    "                            <div class=\"form-linje\">\n" +
+    "                            <div class=\"form-linje tekstfelt\">\n" +
     "                                <label>\n" +
     "                                    <span data-cmstekster=\"barnetillegg.nyttbarn.etternavn\"></span>\n" +
     "                                    <input name=\"fnr\"\n" +
@@ -1179,7 +1180,8 @@ angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templ
     "                                           data-blur-validate\n" +
     "                                           data-maxlength=\"200\"\n" +
     "                                           maxlength=\"200\"\n" +
-    "                                           required>\n" +
+    "                                           required\n" +
+    "                                           data-aktiv-feilmelding>\n" +
     "                                    <span class=\"melding\"></span>\n" +
     "                                </label>\n" +
     "                            </div>\n" +
@@ -1243,7 +1245,8 @@ angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templ
     "                                <input data-ng-model=\"barn.properties.barnetillegg\" name=\"barnetilegg\"\n" +
     "                                       id=\"barnetilegg\" type=\"checkbox\"\n" +
     "                                       data-error-messages=\"'barnetillegg.nyttbarn.barnetillegg.feilmelding'\"\n" +
-    "                                       data-boolean-verdi data-ng-required=\"true\">\n" +
+    "                                       data-boolean-verdi data-ng-required=\"true\"\n" +
+    "                                       data-aktiv-feilmelding>\n" +
     "                                <label for=\"barnetilegg\"\n" +
     "                                       data-cmstekster=\"barnetillegg.barnetilegg.sporsmal\"></label>\n" +
     "                                <span class=\"melding\"\n" +
@@ -1263,7 +1266,8 @@ angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templ
     "                                               data-ng-required=\"barnetilleggErRegistrert()\"\n" +
     "                                               name=\"ikkebarneinntekt\"\n" +
     "                                               data-click-validate\n" +
-    "                                               data-error-messages=\"'barnetillegg.barnetilegg.ikkebarneinntekt.feilmelding'\">\n" +
+    "                                               data-error-messages=\"'barnetillegg.barnetilegg.ikkebarneinntekt.feilmelding'\"\n" +
+    "                                                data-aktiv-feilmelding>\n" +
     "                                        <label for='ikkebarneinntekt'\n" +
     "                                               data-cmstekster=\"barnetillegg.barnetilegg.ikkebarneinntekt.true\"></label>\n" +
     "                                    </div>\n" +
@@ -1276,7 +1280,8 @@ angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templ
     "                                               data-ng-required=\"barnetilleggErRegistrert()\"\n" +
     "                                               name=\"ikkebarneinntekt\"\n" +
     "                                               data-click-validate\n" +
-    "                                               data-error-messages=\"'barnetillegg.barnetilegg.ikkebarneinntekt.feilmelding'\">\n" +
+    "                                               data-error-messages=\"'barnetillegg.barnetilegg.ikkebarneinntekt.feilmelding'\"\n" +
+    "                                               data-aktiv-feilmelding>\n" +
     "                                        <label for='ikkebarneinntektNei'\n" +
     "                                               data-cmstekster=\"barnetillegg.barnetilegg.ikkebarneinntekt.false\"></label>\n" +
     "                                    </div>\n" +
@@ -1284,7 +1289,7 @@ angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templ
     "                                </div>\n" +
     "\n" +
     "                                <div data-ng-if=\"barnetHarInntekt()\">\n" +
-    "                                    <div class=\"form-linje\">\n" +
+    "                                    <div class=\"form-linje tekstfelt\">\n" +
     "                                        <label>\n" +
     "                                            <span data-cmstekster=\"barnetillegg.barnetilegg.barneinntekttall.sporsmal\"></span>\n" +
     "                                            <input name=\"barneinntekttall\"\n" +
@@ -1295,7 +1300,8 @@ angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templ
     "                                                   data-blur-validate\n" +
     "                                                   data-maxlength=\"200\"\n" +
     "                                                   maxlength=\"200\"\n" +
-    "                                                   required=\"barnetHarInntekt()\">\n" +
+    "                                                   required=\"barnetHarInntekt()\"\n" +
+    "                                                   data-aktiv-feilmelding>\n" +
     "                                            <span class=\"melding\"></span>\n" +
     "                                        </label>\n" +
     "                                    </div>\n" +
