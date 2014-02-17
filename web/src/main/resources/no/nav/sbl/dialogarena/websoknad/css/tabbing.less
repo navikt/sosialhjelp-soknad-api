@@ -23,9 +23,26 @@
       background: url(../img/check_tab_feil.svg) 0 0 no-repeat;
       color: #c30000 !important;
     }
+    input[type='checkbox']:focus:checked + label {
+      background: url(../img/check_valgt.svg) 0 0 no-repeat;
+      color: #3e3832 !important;
+    }
     input[type='radio']:focus + label {
       background: url(../img/radio_tab_feil.svg) 0 0 no-repeat;
       color: #c30000 !important;
+    }
+    input[type='radio']:focus:checked + label {
+      background: url(../img/radio_valgt_tab.svg) 0 0 no-repeat;
+      color: #3e3832 !important;
+    }
+
+    &.aktiv-feilmelding {
+      input[type='checkbox']:focus + label {
+        color: #A00404 !important;
+      }
+      input[type='radio']:focus + label {
+        color: #A00404 !important;
+      }
     }
   }
 }

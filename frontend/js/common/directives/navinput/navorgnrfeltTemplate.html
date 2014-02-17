@@ -1,9 +1,9 @@
-<div class="form-linje tekstfelt orgnummer" >
+<div class="form-linje tekstfelt orgnummer">
         <label>
             <span data-cmstekster="{{ navlabel }}"></span>
             <input data-ng-model="faktum.value" type="text" value="{{ value }}" data-ng-required="erSynlig()"
                    data-error-messages="{{ navfeilmelding }}" data-blur-validate
-                   data-ng-pattern="/[0-9]{9}/" maxlength="9" orgnr-validate>
+                   data-ng-pattern="/[0-9]{9}/" maxlength="9" orgnr-validate  data-aktiv-feilmelding>
         </label>
         <span class="melding"></span>
 </div>
