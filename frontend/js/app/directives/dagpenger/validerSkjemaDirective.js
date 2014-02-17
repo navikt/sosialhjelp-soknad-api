@@ -57,7 +57,7 @@ angular.module('nav.validerskjema', [])
                     function setAktivFeilmeldingsklasse(element) {
                         element.addClass('aktiv-feilmelding');
                     }
-                }
+                };
             }
-        }
+        };
     }]);

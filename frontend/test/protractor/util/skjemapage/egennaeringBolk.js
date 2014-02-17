@@ -22,6 +22,6 @@ module.exports = {
                 nei: element.all(by.css('[data-nav-faktum=inntektFangstogfiske] input')).get(0),
                 ja: element.all(by.css('[data-nav-faktum=inntektFangstogfiske] input')).get(1)
             }
-        }
+        };
     }
 };

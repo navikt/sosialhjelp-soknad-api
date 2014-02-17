@@ -16,7 +16,7 @@ angular.module('nav.dagpenger', [])
         $scope.leggTilValideringsmetode = function(bolkId, valideringsmetode) {
             var idx = $scope.grupper.indexByValue(bolkId);
             $scope.grupper[idx].valideringsmetode = valideringsmetode;
-        }
+        };
 
         $scope.fremdriftsindikator = {
             laster: false
@@ -39,7 +39,7 @@ angular.module('nav.dagpenger', [])
         $scope.settValidert = function(id) {
             var idx = $scope.grupper.indexByValue(id);
             $scope.grupper[idx].validering = false;
-        }
+        };
 
 		function settApenStatusForAccordion(apen, ider) {
 			if (ider instanceof Array) {
@@ -49,14 +49,14 @@ angular.module('nav.dagpenger', [])
 			} else {
 				settApenForId(apen, ider);
 			}
-		};
+		}
 
 		function settApenForId(apen, id) {
 			var idx = $scope.grupper.indexByValue(id);
 			if (idx > -1) {
 				$scope.grupper[idx].apen = apen;
 			}
-		};
+		}
 	}])
 	.controller('FerdigstiltCtrl', ['$scope', 'data', function ($scope, data) {
 		$scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];

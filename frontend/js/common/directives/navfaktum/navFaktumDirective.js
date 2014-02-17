@@ -21,7 +21,7 @@ angular.module('nav.navfaktum', [])
 						$scope.parentFaktum.properties[$attrs.navFaktumProperty] = value;
 					}
 				});
-			}]}
+			}]};
 	}])
 	.directive('navFaktum', [function () {
 		return {
@@ -84,12 +84,12 @@ angular.module('nav.navfaktum', [])
 									}
 								}
 								$scope.parentFaktum.properties[prop] = value;
-							})
+							});
 						}
                         $scope.parentFaktum.$save();
 					}
 				};
 				this.lagreFaktum = $scope.lagreFaktum;
 			}]
-		}
+		};
 	}]);

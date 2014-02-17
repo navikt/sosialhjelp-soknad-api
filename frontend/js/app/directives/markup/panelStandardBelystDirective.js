@@ -5,5 +5,5 @@ angular.module('nav.markup.panelbelyst', [])
 			replace    : true,
 			transclude : true,
 			templateUrl: '../js/app/directives/markup/panelStandardBelystTemplate.html'
-		}
+		};
 	}]);

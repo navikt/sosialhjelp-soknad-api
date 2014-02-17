@@ -44,7 +44,7 @@ angular.module('nav.sporsmalferdig', [])
 
                         if (nesteTab.length > 0) {
                             gaaTilTab(nesteTab);
-                            apneTab(nesteTab);
+                            apneBolk(nesteTab);
                             setFokus(nesteTab);
                         } else {
                             gaaTilTab(angular.element('.accordion-group').last());
@@ -60,7 +60,7 @@ angular.module('nav.sporsmalferdig', [])
 					}
 				}
 
-				function apneTab(apneTab) {
+				function apneBolk(apneTab) {
 					scope.apneTab(apneTab.attr('id'));
 				}
 
@@ -68,5 +68,5 @@ angular.module('nav.sporsmalferdig', [])
                     tab.closest('.accordion-group').find('a').focus();
                 }
 			}
-		}
+		};
 	}]);

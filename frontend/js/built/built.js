@@ -63978,270 +63978,233 @@ $.datepicker.version = "1.10.3";
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
 
- angular.module('pasvaz.bindonce', [])
+angular.module('pasvaz.bindonce', [])
 
- .directive('bindonce', function() 
- {
-	var toBoolean = function(value) 
-	{
-		if (value && value.length !== 0) 
-		{
-			var v = angular.lowercase("" + value);
-			value = !(v == 'f' || v == '0' || v == 'false' || v == 'no' || v == 'n' || v == '[]');
-		}
-		else 
-		{
-			value = false;
-		}
-		return value;
-	}
+    .directive('bindonce', [function () {
+        var toBoolean = function (value) {
+            if (value && value.length !== 0) {
+                var v = angular.lowercase("" + value);
+                value = !(v == 'f' || v == '0' || v == 'false' || v == 'no' || v == 'n' || v == '[]');
+            }
+            else {
+                value = false;
+            }
+            return value;
+        }
 
-	var msie = parseInt((/msie (\d+)/.exec(angular.lowercase(navigator.userAgent)) || [])[1], 10);
-	if (isNaN(msie)) 
-	{
-		msie = parseInt((/trident\/.*; rv:(\d+)/.exec(angular.lowercase(navigator.userAgent)) || [])[1], 10);
-	}
+        var msie = parseInt((/msie (\d+)/.exec(angular.lowercase(navigator.userAgent)) || [])[1], 10);
+        if (isNaN(msie)) {
+            msie = parseInt((/trident\/.*; rv:(\d+)/.exec(angular.lowercase(navigator.userAgent)) || [])[1], 10);
+        }
 
-	var bindonceDirective =
-	{
-		restrict: "AM",
-		controller: ['$scope', '$element', '$attrs', '$interpolate', function($scope, $element, $attrs, $interpolate) 
-		{
-			var showHideBinder = function(elm, attr, value) 
-			{
-				var show = (attr == 'show') ? '' : 'none';
-				var hide = (attr == 'hide') ? '' : 'none';
-				elm.css('display', toBoolean(value) ? show : hide);
-			}
-			var classBinder = function(elm, value)
-			{
-				if (angular.isObject(value) && !angular.isArray(value)) 
-				{
-					var results = [];
-					angular.forEach(value, function(value, index) 
-					{
-						if (value) results.push(index);
-					});
-					value = results;
-				}
-				if (value) 
-				{
-					elm.addClass(angular.isArray(value) ? value.join(' ') : value);
-				}
-			}
+        var bindonceDirective =
+        {
+            restrict: "AM",
+            controller: ['$scope', '$element', '$attrs', '$interpolate', function ($scope, $element, $attrs, $interpolate) {
+                var showHideBinder = function (elm, attr, value) {
+                    var show = (attr == 'show') ? '' : 'none';
+                    var hide = (attr == 'hide') ? '' : 'none';
+                    elm.css('display', toBoolean(value) ? show : hide);
+                }
+                var classBinder = function (elm, value) {
+                    if (angular.isObject(value) && !angular.isArray(value)) {
+                        var results = [];
+                        angular.forEach(value, function (value, index) {
+                            if (value) results.push(index);
+                        });
+                        value = results;
+                    }
+                    if (value) {
+                        elm.addClass(angular.isArray(value) ? value.join(' ') : value);
+                    }
+                }
 
-			var ctrl =
-			{
-				watcherRemover : undefined,
-				binders : [],
-				group : $attrs.boName,
-				element : $element,
-				ran : false,
+                var ctrl =
+                {
+                    watcherRemover: undefined,
+                    binders: [],
+                    group: $attrs.boName,
+                    element: $element,
+                    ran: false,
 
-				addBinder : function(binder) 
-				{
-					this.binders.push(binder);
+                    addBinder: function (binder) {
+                        this.binders.push(binder);
 
-					// In case of late binding (when using the directive bo-name/bo-parent)
-					// it happens only when you use nested bindonce, if the bo-children
-					// are not dom children the linking can follow another order
-					if (this.ran)
-					{
-						this.runBinders();
-					}
-				},
+                        // In case of late binding (when using the directive bo-name/bo-parent)
+                        // it happens only when you use nested bindonce, if the bo-children
+                        // are not dom children the linking can follow another order
+                        if (this.ran) {
+                            this.runBinders();
+                        }
+                    },
 
-				setupWatcher : function(bindonceValue) 
-				{
-					var that = this;
-					this.watcherRemover = $scope.$watch(bindonceValue, function(newValue) 
-					{
-						if (newValue == undefined) return;
-						that.removeWatcher();
-						that.runBinders();
-					}, true);
-				},
+                    setupWatcher: function (bindonceValue) {
+                        var that = this;
+                        this.watcherRemover = $scope.$watch(bindonceValue, function (newValue) {
+                            if (newValue == undefined) return;
+                            that.removeWatcher();
+                            that.runBinders();
+                        }, true);
+                    },
 
-				removeWatcher : function() 
-				{
-					if (this.watcherRemover != undefined)
-					{
-						this.watcherRemover();
-						this.watcherRemover = undefined;
-					}
-				},
+                    removeWatcher: function () {
+                        if (this.watcherRemover != undefined) {
+                            this.watcherRemover();
+                            this.watcherRemover = undefined;
+                        }
+                    },
 
-				runBinders : function()
-				{
-					var i, max;
-					for (i = 0, max = this.binders.length; i < max; i ++)
-					{
-						var binder = this.binders[i];
-						if (this.group && this.group != binder.group ) continue;
-						var value = binder.scope.$eval((binder.interpolate) ? $interpolate(binder.value) : binder.value);
-						switch(binder.attr)
-						{
-							case 'if':
-								if (toBoolean(value)) 
-								{
-									binder.transclude(binder.scope.$new(), function (clone) 
-									{
-										var parent = binder.element.parent();
-										var afterNode = binder.element && binder.element[binder.element.length - 1];
-										var parentNode = parent && parent[0] || afterNode && afterNode.parentNode;
-										var afterNextSibling = (afterNode && afterNode.nextSibling) || null;
-										angular.forEach(clone, function(node) 
-										{
-											parentNode.insertBefore(node, afterNextSibling);
-										});
-									});
-								}
-								break;
-							case 'hide':
-							case 'show':
-								showHideBinder(binder.element, binder.attr, value);
-								break;
-							case 'class':
-								classBinder(binder.element, value);
-								break;
-							case 'text':
-								binder.element.text(value);
-								break;
-							case 'html':
-								binder.element.html(value);
-								break;
-							case 'style':
-								binder.element.css(value);
-								break;
-							case 'src':
-								binder.element.attr(binder.attr, value);
-								if (msie) binder.element.prop('src', value);
-							case 'attr':
-								angular.forEach(binder.attrs, function(attrValue, attrKey) 
-								{
-									var newAttr, newValue;
-									if (attrKey.match(/^boAttr./) && binder.attrs[attrKey]) 
-									{
-										newAttr = attrKey.replace(/^boAttr/, '').replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
-										newValue = binder.scope.$eval(binder.attrs[attrKey]);
-										binder.element.attr(newAttr, newValue);
-									}
-								});
-								break;
-							case 'href':
-							case 'alt':
-							case 'title':
-							case 'id':
-							case 'value':
-								binder.element.attr(binder.attr, value);
-								break;
-						}
-					}
-					this.ran = true;
-					this.binders = [];
-				}
-			}
+                    runBinders: function () {
+                        var i, max;
+                        for (i = 0, max = this.binders.length; i < max; i++) {
+                            var binder = this.binders[i];
+                            if (this.group && this.group != binder.group) continue;
+                            var value = binder.scope.$eval((binder.interpolate) ? $interpolate(binder.value) : binder.value);
+                            switch (binder.attr) {
+                                case 'if':
+                                    if (toBoolean(value)) {
+                                        binder.transclude(binder.scope.$new(), function (clone) {
+                                            var parent = binder.element.parent();
+                                            var afterNode = binder.element && binder.element[binder.element.length - 1];
+                                            var parentNode = parent && parent[0] || afterNode && afterNode.parentNode;
+                                            var afterNextSibling = (afterNode && afterNode.nextSibling) || null;
+                                            angular.forEach(clone, function (node) {
+                                                parentNode.insertBefore(node, afterNextSibling);
+                                            });
+                                        });
+                                    }
+                                    break;
+                                case 'hide':
+                                case 'show':
+                                    showHideBinder(binder.element, binder.attr, value);
+                                    break;
+                                case 'class':
+                                    classBinder(binder.element, value);
+                                    break;
+                                case 'text':
+                                    binder.element.text(value);
+                                    break;
+                                case 'html':
+                                    binder.element.html(value);
+                                    break;
+                                case 'style':
+                                    binder.element.css(value);
+                                    break;
+                                case 'src':
+                                    binder.element.attr(binder.attr, value);
+                                    if (msie) binder.element.prop('src', value);
+                                case 'attr':
+                                    angular.forEach(binder.attrs, function (attrValue, attrKey) {
+                                        var newAttr, newValue;
+                                        if (attrKey.match(/^boAttr./) && binder.attrs[attrKey]) {
+                                            newAttr = attrKey.replace(/^boAttr/, '').replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+                                            newValue = binder.scope.$eval(binder.attrs[attrKey]);
+                                            binder.element.attr(newAttr, newValue);
+                                        }
+                                    });
+                                    break;
+                                case 'href':
+                                case 'alt':
+                                case 'title':
+                                case 'id':
+                                case 'value':
+                                    binder.element.attr(binder.attr, value);
+                                    break;
+                            }
+                        }
+                        this.ran = true;
+                        this.binders = [];
+                    }
+                }
 
-			return ctrl;
-		}],
+                return ctrl;
+            }],
 
-		link: function(scope, elm, attrs, bindonceController) 
-		{
-			var value = (attrs.bindonce) ? scope.$eval(attrs.bindonce) : true;
-			if (value != undefined)
-			{
-				bindonceController.runBinders();
-			}
-			else
-			{
-				bindonceController.setupWatcher(attrs.bindonce);
-				elm.bind("$destroy", bindonceController.removeWatcher);
-			}
-		}
-	};
+            link: function (scope, elm, attrs, bindonceController) {
+                var value = (attrs.bindonce) ? scope.$eval(attrs.bindonce) : true;
+                if (value != undefined) {
+                    bindonceController.runBinders();
+                }
+                else {
+                    bindonceController.setupWatcher(attrs.bindonce);
+                    elm.bind("$destroy", bindonceController.removeWatcher);
+                }
+            }
+        };
 
-	return bindonceDirective;
-});
+        return bindonceDirective;
+    }]);
 
 angular.forEach(
-[
-	{directiveName:'boShow', attribute: 'show'},
-	{directiveName:'boIf', attribute: 'if', transclude: 'element', terminal: true, priority:1000},
-	{directiveName:'boHide', attribute:'hide'},
-	{directiveName:'boClass', attribute:'class'},
-	{directiveName:'boText', attribute:'text'},
-	{directiveName:'boHtml', attribute:'html'},
-	{directiveName:'boSrcI', attribute:'src', interpolate:true},
-	{directiveName:'boSrc', attribute:'src'},
-	{directiveName:'boHrefI', attribute:'href', interpolate:true},
-	{directiveName:'boHref', attribute:'href'},
-	{directiveName:'boAlt', attribute:'alt'},
-	{directiveName:'boTitle', attribute:'title'},
-	{directiveName:'boId', attribute:'id'},
-	{directiveName:'boStyle', attribute:'style'},
-	{directiveName:'boValue', attribute:'value'},
-	{directiveName:'boAttr', attribute:'attr'}
-],
-function(boDirective)
-{
-	var childPriority = 200;
-	return angular.module('pasvaz.bindonce').directive(boDirective.directiveName, function() 
-	{
-		var bindonceDirective =
-		{ 
-			priority: boDirective.priority || childPriority,
-			transclude: boDirective.transclude || false, 
-			terminal: boDirective.terminal || false, 
-			require: '^bindonce', 
-			compile: function (tElement, tAttrs, transclude) 
-			{
-				return function(scope, elm, attrs, bindonceController)
-				{
-					var name = attrs.boParent;
-					if (name && bindonceController.group != name)
-					{
-						var element = bindonceController.element.parent();
-						bindonceController = undefined;
-						var parentValue;
+    [
+        {directiveName: 'boShow', attribute: 'show'},
+        {directiveName: 'boIf', attribute: 'if', transclude: 'element', terminal: true, priority: 1000},
+        {directiveName: 'boHide', attribute: 'hide'},
+        {directiveName: 'boClass', attribute: 'class'},
+        {directiveName: 'boText', attribute: 'text'},
+        {directiveName: 'boHtml', attribute: 'html'},
+        {directiveName: 'boSrcI', attribute: 'src', interpolate: true},
+        {directiveName: 'boSrc', attribute: 'src'},
+        {directiveName: 'boHrefI', attribute: 'href', interpolate: true},
+        {directiveName: 'boHref', attribute: 'href'},
+        {directiveName: 'boAlt', attribute: 'alt'},
+        {directiveName: 'boTitle', attribute: 'title'},
+        {directiveName: 'boId', attribute: 'id'},
+        {directiveName: 'boStyle', attribute: 'style'},
+        {directiveName: 'boValue', attribute: 'value'},
+        {directiveName: 'boAttr', attribute: 'attr'}
+    ],
+    function (boDirective) {
+        var childPriority = 200;
+        return angular.module('pasvaz.bindonce').directive(boDirective.directiveName, [function () {
+            var bindonceDirective =
+            {
+                priority: boDirective.priority || childPriority,
+                transclude: boDirective.transclude || false,
+                terminal: boDirective.terminal || false,
+                require: '^bindonce',
+                compile: function (tElement, tAttrs, transclude) {
+                    return function (scope, elm, attrs, bindonceController) {
+                        var name = attrs.boParent;
+                        if (name && bindonceController.group != name) {
+                            var element = bindonceController.element.parent();
+                            bindonceController = undefined;
+                            var parentValue;
 
-						while (element[0].nodeType != 9 && element.length)
-						{
-							if ((parentValue = element.data('$bindonceController')) 
-								&& parentValue.group == name)
-							{
-								bindonceController = parentValue
-								break;
-							}
-							element = element.parent();
-						}
-						if (!bindonceController)
-						{
-							throw Error("No bindonce controller: " + name);
-						}
-					}
+                            while (element[0].nodeType != 9 && element.length) {
+                                if ((parentValue = element.data('$bindonceController'))
+                                    && parentValue.group == name) {
+                                    bindonceController = parentValue
+                                    break;
+                                }
+                                element = element.parent();
+                            }
+                            if (!bindonceController) {
+                                throw Error("No bindonce controller: " + name);
+                            }
+                        }
 
-					bindonceController.addBinder(
-					{
-						element		: 	elm,
-						attr		: 	boDirective.attribute,
-						attrs 		: 	attrs,
-						value		: 	attrs[boDirective.directiveName],
-						interpolate	: 	boDirective.interpolate,
-						group		: 	name,
-						transclude	: 	transclude,
-						scope		: 	scope
-					});
-				}
-			}
-		}
+                        bindonceController.addBinder(
+                            {
+                                element: elm,
+                                attr: boDirective.attribute,
+                                attrs: attrs,
+                                value: attrs[boDirective.directiveName],
+                                interpolate: boDirective.interpolate,
+                                group: name,
+                                transclude: transclude,
+                                scope: scope
+                            });
+                    }
+                }
+            }
 
-		return bindonceDirective;
-	});
-});
+            return bindonceDirective;
+        }]);
+    });
 ;angular.module('sendsoknad', [
 	'ui.keypress',
 	'app.routes',
-	'app.grunnlagsdata',
 	'app.services',
 	'app.directives',
 	'app.controllers',
@@ -64250,8 +64213,7 @@ function(boDirective)
 	'ngCookies',
     'templates-main'
 ]);
-;'use strict';
-angular.module('app.controllers', [
+;angular.module('app.controllers', [
     'app.services',
     'nav.reellarbeidssoker',
     'nav.ytelser',
@@ -64283,7 +64245,7 @@ angular.module('app.controllers', [
         $scope.personalia = data.finnFaktum('personalia').properties;
 
         $scope.harGjeldendeAdresse = function() {
-            return $scope.personalia.gjeldendeAdresse != null;
+            return $scope.personalia.gjeldendeAdresse !== null;
         };
 
         $scope.formattertGjeldendeAdresse = '';
@@ -64318,7 +64280,7 @@ angular.module('app.controllers', [
         }
 
         $scope.harSekundarAdresse = function() {
-            return $scope.personalia.sekundarAdresse != null;
+            return $scope.personalia.sekundarAdresse !== null;
         };
 
         $scope.formattertSekundarAdresse = '';
@@ -64327,13 +64289,8 @@ angular.module('app.controllers', [
             $scope.formattertSekundarAdresse = $scope.hentFormattertAdresse($scope.personalia.sekundarAdresse);
             $scope.sekundarAdresseTypeLabel = $scope.hentAdresseTypeNokkel($scope.personalia.sekundarAdresseType);
         }
-
-       
-
-
-        
     }]);;angular.module('nav.arbeidsforhold.controller', [])
-    .controller('ArbeidsforholdCtrl', function ($scope, soknadService, landService, $cookieStore, $location, data, Faktum) {
+    .controller('ArbeidsforholdCtrl', ['$scope', 'soknadService', 'landService', '$cookieStore', '$location', 'data', function ($scope, soknadService, landService, $cookieStore, $location, data) {
         $scope.soknadId = data.soknad.soknadId;
 
         $scope.sluttaarsakUrl = data.config["soknad.sluttaarsak.url"];
@@ -64383,15 +64340,15 @@ angular.module('app.controllers', [
                 }
             }
             return "";
-        }
+        };
 
         $scope.skalViseFeil = function () {
             return $scope.harFeil === true && !$scope.harLagretArbeidsforhold;
-        }
+        };
 
         $scope.harSvart = function () {
             return $scope.hvisHarJobbet() || $scope.hvisHarIkkeJobbet();
-        }
+        };
 
         $scope.$watch(function () {
             if (data.finnFaktum('arbeidstilstand')) {
@@ -64399,7 +64356,7 @@ angular.module('app.controllers', [
             }
         }, function () {
             $scope.harFeil = false;
-        })
+        });
 
 
         $scope.hvisHarJobbet = function () {
@@ -64411,7 +64368,7 @@ angular.module('app.controllers', [
             var faktum = data.finnFaktum('arbeidstilstand');
             return sjekkOmGittEgenskapTilObjektErVerdi(faktum, "harIkkeJobbet");
 
-        }
+        };
         $scope.hvisHarJobbetVarierende = function () {
             var faktum = data.finnFaktum('arbeidstilstand');
             return sjekkOmGittEgenskapTilObjektErVerdi(faktum, "varierendeArbeidstid");
@@ -64475,10 +64432,10 @@ angular.module('app.controllers', [
                 aapneTabs: aapneTabIds,
                 gjeldendeTab: '#arbeidsforhold',
                 faktumId: faktumId
-            })
+            });
         }
 
-    });
+    }]);
 ;angular.module('nav.arbeidsforhold',['nav.arbeidsforhold.controller', 'nav.arbeidsforhold.nyttarbeidsforhold.controller']);
 ;angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 	.controller('ArbeidsforholdNyttCtrl', ['$scope', 'data', 'Faktum', '$location', '$cookieStore', '$resource', function ($scope, data, Faktum, $location, $cookieStore, $resource) {
@@ -64540,13 +64497,14 @@ angular.module('app.controllers', [
                 return $scope.arbeidsforhold.properties.land;
             }
         }, function () {
-        	if($scope.arbeidsforhold.properties.land && $scope.arbeidsforhold.properties.land != "") {
-	          	$resource('/sendsoknad/rest/ereosland/:landkode').get(
-					{landkode: $scope.arbeidsforhold.properties.land},
-		            function (eosdata) { // Success
-		                $scope.arbeidsforhold.properties.eosland = eosdata.result;
-		        });
-	        }
+            if($scope.arbeidsforhold.properties.land && $scope.arbeidsforhold.properties.land !== '') {
+                $resource('/sendsoknad/rest/ereosland/:landkode').get(
+                    {landkode: $scope.arbeidsforhold.properties.land},
+                    function (eosdata) {
+                        $scope.arbeidsforhold.properties.eosland = eosdata.result;
+                    }
+                );
+            }
         });
 
 
@@ -64597,14 +64555,12 @@ angular.module('app.controllers', [
         $scope.fremdriftsindikator = {
             laster: false
 
-        }
+        };
 
         $scope.krevBekreftelse = data.fakta.filter(function(item) {
             return item.type==="BRUKERREGISTRERT";
         }).length>1;
         
-
-
         $scope.submitForm = function () {
             var start = $.now();
             $scope.fremdriftsindikator.laster = true;
@@ -64639,6 +64595,7 @@ angular.module('app.controllers', [
         var url = $location.$$url;
         var endreModus = url.indexOf('endrebarn') !== -1;
         var barnetilleggModus = url.indexOf('sokbarnetillegg') !== -1;
+        var barnUnderEndring;
         $scope.underAtten = {value: ''};
 
         $scope.soknadId = data.soknad.soknadId;
@@ -64648,7 +64605,7 @@ angular.module('app.controllers', [
 
         if (endreModus) {
             faktumId = url.split('/').pop();
-            var barnUnderEndring = {};
+            barnUnderEndring = {};
 
             if (data.finnFakta('barn').length > 0) {
                 angular.forEach(data.finnFakta('barn'), function (value) {
@@ -64740,11 +64697,11 @@ angular.module('app.controllers', [
 
         $scope.erEosLandAnnetEnnNorge = function() {
             return $scope.eosLandType == "eos";
-        }
+        };
 
         $scope.erIkkeEosLand = function() {
             return $scope.eosLandType == "ikkeEos";   
-        }
+        };
 
         function oppdaterCookieValue(faktumId) {
             var barneCookie = $cookieStore.get('scrollTil');
@@ -64776,7 +64733,7 @@ angular.module('app.controllers', [
                         if (value.faktumId.toString() === $scope[type].faktumId) {
                             faktaType[index] = $scope[type];
                         }
-                    })
+                    });
                 } else {
                     data.leggTilFaktum($scope[type]);
                 }
@@ -64790,11 +64747,11 @@ angular.module('app.controllers', [
         }
 
         $scope.$watch(function () {
-            if ($scope.barn.properties.land && $scope.barn.properties.land != "") {
+            if ($scope.barn.properties.land && $scope.barn.properties.land !== '') {
                 return $scope.barn.properties.land;
             }
         }, function () {
-            if($scope.barn.properties.land && $scope.barn.properties.land != "") {
+            if($scope.barn.properties.land && $scope.barn.properties.land !== '') {
                 $resource('/sendsoknad/rest/landtype/:landkode').get(
                     {landkode: $scope.barn.properties.land},
                     function (eosdata) { // Success
@@ -64843,7 +64800,7 @@ angular.module('app.controllers', [
                 return result;
             }
             return 'undefined';
-        }
+        };
     }]);
 ;angular.module('nav.barnetillegg', [])
 	.controller('BarnetilleggCtrl', ['$scope', '$cookieStore', '$location', '$timeout', 'Faktum', 'data', function ($scope, $cookieStore, $location, $timeout, Faktum, data) {
@@ -64856,7 +64813,7 @@ angular.module('app.controllers', [
                 b.properties.barnetillegg = 'false';
             }
             if (b.properties.ikkebarneinntekt === undefined) {
-                b.properties.ikkebarneinntekt = 'true'
+                b.properties.ikkebarneinntekt = 'true';
             }
         });
 
@@ -64870,7 +64827,7 @@ angular.module('app.controllers', [
 		};
 
 		$scope.ingenLandRegistrert = function (barn) {
-			return !barn.properties.land
+			return !barn.properties.land;
 		};
 
 		$scope.leggTilBarn = function ($event) {
@@ -64894,7 +64851,7 @@ angular.module('app.controllers', [
 		$scope.slettBarn = function (b, index, $event) {
 			$event.preventDefault();
 
-            var barn = data.finnFakta('barn')
+            var barn = data.finnFakta('barn');
             barn.splice(index, 1);
 			data.slettFaktum(b);
 
@@ -64903,14 +64860,14 @@ angular.module('app.controllers', [
 
         $scope.kreverVedlegg = function(barn) {
             return $scope.barnetHarInntekt(barn) || $scope.norskBarnIkkeFunnetITPS(barn);
-        }
+        };
 
         $scope.norskBarnIkkeFunnetITPS = function(barn) {
             if(barn && barn.properties) { 
                 return barn.type === 'BRUKERREGISTRERT' && barn.properties.land == "NOR";
             }   
             return false;
-        }
+        };
 
 		$scope.erGutt = function (barn) {
 			return barn.properties.kjonn === 'm';
@@ -64961,7 +64918,7 @@ angular.module('app.controllers', [
 				aapneTabs   : aapneTabIds,
 				gjeldendeTab: '#barnetillegg',
 				faktumId    : faktumId
-			})
+			});
 		}
 
 	}]);
@@ -65069,7 +65026,7 @@ angular.module('app.controllers', [
                 $scope.barnetillegg.value = 'false';
                 $scope.soknadData.fakta.barnetillegg.valuelist.splice(index, 1);
             });
-        }
+        };
     }]);
 ;angular.module('nav.behandlingside', [])
     .controller('BehandlingCtrl', ['$routeParams', '$location', function ($routeParams, $location) {
@@ -65083,7 +65040,7 @@ angular.module('app.controllers', [
 
         }, 3000);
     }]);;angular.module('nav.dagpenger', [])
-	.controller('DagpengerCtrl', ['$scope', 'data', '$location', '$timeout', 'soknadService', function ($scope, data, $location, $timeout,soknadService) {
+	.controller('DagpengerCtrl', ['$scope', 'data', function ($scope, data) {
 
 		$scope.grupper = [
 			{id: 'reellarbeidssoker', tittel: 'reellarbeidssoker.tittel', template: '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
@@ -65100,7 +65057,7 @@ angular.module('app.controllers', [
         $scope.leggTilValideringsmetode = function(bolkId, valideringsmetode) {
             var idx = $scope.grupper.indexByValue(bolkId);
             $scope.grupper[idx].valideringsmetode = valideringsmetode;
-        }
+        };
 
         $scope.fremdriftsindikator = {
             laster: false
@@ -65123,7 +65080,7 @@ angular.module('app.controllers', [
         $scope.settValidert = function(id) {
             var idx = $scope.grupper.indexByValue(id);
             $scope.grupper[idx].validering = false;
-        }
+        };
 
 		function settApenStatusForAccordion(apen, ider) {
 			if (ider instanceof Array) {
@@ -65133,18 +65090,18 @@ angular.module('app.controllers', [
 			} else {
 				settApenForId(apen, ider);
 			}
-		};
+		}
 
 		function settApenForId(apen, id) {
 			var idx = $scope.grupper.indexByValue(id);
 			if (idx > -1) {
 				$scope.grupper[idx].apen = apen;
 			}
-		};
+		}
 	}])
-	.controller('FerdigstiltCtrl', ['$scope', 'data', '$location', '$timeout', function ($scope, data, $location, $timeout) {
+	.controller('FerdigstiltCtrl', ['$scope', 'data', function ($scope, data) {
 		$scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];
-	}])
+	}]);
 
 ;angular.module('nav.egennaering', [])
     .controller('EgennaeringCtrl', ['$scope', 'Faktum', 'data', function ($scope, Faktum, data) {
@@ -65160,7 +65117,7 @@ angular.module('app.controllers', [
             } else {
                 $scope.apneTab('egennaering');
             }
-        }
+        };
 
         $scope.orgnummer = data.finnFakta('egennaering.drivergennaering.orgnummer');
 
@@ -65173,10 +65130,10 @@ angular.module('app.controllers', [
                 });
             $scope.orgnummer.push(faktum);
             data.fakta.push(faktum);
-        }
+        };
 
         //Orgnrfeltet genreres så lenge det ikke finnes et fra før ved f.eks refresh
-        if ($scope.orgnummer && $scope.orgnummer.length == 0) {
+        if ($scope.orgnummer && $scope.orgnummer.length === 0) {
             $scope.leggTilOrgnr();
         }
 
@@ -65184,20 +65141,20 @@ angular.module('app.controllers', [
             org.$delete({soknadId: data.soknad.soknadId}).then(function () {
                 $scope.orgnummer.splice(index, 1);
             });
-        }
+        };
 
         //Skal ikke kunne slette første orgnr
         $scope.skalViseSlettKnapp = function (index) {
-            return !(index == 0);
-        }
+            return index !== 0;
+        };
 
         $scope.erSynlig = function (faktum) {
             return data.finnFaktum(faktum) && data.finnFaktum(faktum).value == 'false';
-        }
+        };
 
         $scope.gardseier = function (eier) {
             return data.finnFaktum(eier) && data.finnFaktum(eier).value == 'true' && $scope.erSynlig('egennaering.gardsbruk');
-        }
+        };
 
         $scope.svartPaHvemEierGardsbruket = function () {
             if (!$scope.erSynlig('egennaering.gardsbruk')) {
@@ -65209,7 +65166,7 @@ angular.module('app.controllers', [
                 }
             }
             return false;
-        }
+        };
 
         var typeGardsbrukNokler = ['egennaering.gardsbruk.false.type.dyr', 'egennaering.gardsbruk.false.type.jord', 'egennaering.gardsbruk.false.type.skog', 'egennaering.gardsbruk.false.type.annet'];
         var eierGardsbrukNokler = ['egennaering.gardsbruk.false.eier.jeg', 'egennaering.gardsbruk.false.eier.ektefelle', 'egennaering.gardsbruk.false.eier.annet'];
@@ -65231,7 +65188,7 @@ angular.module('app.controllers', [
             } else {
                 $scope.harHuketAvTypeGardsbruk.value = '';
             }
-        }
+        };
 
         $scope.endreEierGardsbruk = function () {
             var minstEnGardsbrukEierAvhuket = erCheckboxerAvhuket(eierGardsbrukNokler);
@@ -65240,17 +65197,17 @@ angular.module('app.controllers', [
             } else {
                 $scope.harHuketAvEierGardsbruk.value = '';
             }
-        }
+        };
 
         $scope.totalsumAndel = {
             value: ''
-        }
+        };
 
         var skalViseAndelsProsentfeil = false;
 
         $scope.prosentFeil = function () {
             return skalViseAndelsProsentfeil;
-        }
+        };
 
         /*
          Andelsprosentfeltene vises kun dersom det tilsvarende andelseier-feltet er krysset av.
@@ -65264,7 +65221,7 @@ angular.module('app.controllers', [
                 var andel = summerAndelsprosentene();
 
                 //Hvis feltet vises og er tomt, så skal kun requiredfeilmelding vises
-                if (isNaN(andel) || andel == '') {
+                if (isNaN(andel) || andel === '') {
                     skalViseAndelsProsentfeil = false;
                 }
                 //hvis feltet/ene summerer til 100 så setter en verdi i hidden-feltet som er required
@@ -65278,7 +65235,7 @@ angular.module('app.controllers', [
             } else {
                 skalViseAndelsProsentfeil = false;
             }
-        }
+        };
         $scope.summererAndeleneTil100();
 
 
@@ -65346,7 +65303,7 @@ angular.module('app.controllers', [
             if (data.finnFaktum('egennaering.gardsbruk').value == 'false') {
                 settBreddeSlikAtDetFungererIIE();
             }
-        })
+        });
 
         function settBreddeSlikAtDetFungererIIE() {
             setTimeout(function () {
@@ -65354,13 +65311,12 @@ angular.module('app.controllers', [
             }, 50);
         }
 
-    }])
-;;angular.module('nav.feilside', [])
+    }]);;angular.module('nav.feilside', [])
     .controller('FeilSideCtrl', ['$scope', 'data',  function ($scope, data) {
         $scope.mineInnsendinger = data.config["minehenvendelser.link.url"];
         $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
-    }]);angular.module('nav.fortsettsenere', ['nav.cmstekster'])
-    .controller('FortsettSenereCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', "fortsettSenereService", "Faktum",
+    }]);;angular.module('nav.fortsettsenere', ['nav.cmstekster'])
+    .controller('FortsettSenereCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', 'fortsettSenereService', 'Faktum',
         function ($scope, data, $routeParams, $http, $location, fortsettSenereService, Faktum) {
             var lagretEpost = data.finnFaktum('epost');
 
@@ -65371,7 +65327,7 @@ angular.module('app.controllers', [
                 $scope.epost = {
                     key: 'epost',
                     value: undefined
-                }
+                };
                 $scope.epost.value = personalia.properties.epost;
             }
 
@@ -65394,11 +65350,10 @@ angular.module('app.controllers', [
                         });
                     }
                 }
-            }
+            };
         }
     ])
-    .controller('FortsettSenereKvitteringCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', "fortsettSenereService",
-        function ($scope, data, $routeParams, $http, $location, fortsettSenereService) {
+    .controller('FortsettSenereKvitteringCtrl', ['$scope', 'data', function ($scope, data) {
             $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
             $scope.epost = data.finnFaktum('epost');
         }
@@ -65449,7 +65404,7 @@ angular.module('app.controllers', [
             restrict: 'A',
             replace: true,
             templateUrl: linker
-        }
+        };
     }]);
 
 
@@ -65484,26 +65439,26 @@ angular.module('app.controllers', [
         };
 
         $scope.hentAdresseLinjer = function() {
-            if( $scope.utslagskriterier &&  $scope.utslagskriterier.registrertAdresse != "") {
+            if( $scope.utslagskriterier &&  $scope.utslagskriterier.registrertAdresse !== '') {
                 return $scope.utslagskriterier.registrertAdresse.split(", ");
             }
             return [];
-        }
+        };
 
         $scope.tpsSvarer = function () {
-            return !$scope.tpsSvarerIkke()
-        }
+            return !$scope.tpsSvarerIkke();
+        };
 
         $scope.tpsSvarerIkke = function () {
-            if ($scope.utslagskriterier.error != undefined) {
+            if ($scope.utslagskriterier.error !== undefined) {
                 return true;
             }
             return false;
-        }
+        };
 
         $scope.soknadErIkkeStartet = function () {
             return !$scope.soknadErStartet();
-        }
+        };
 
         $scope.soknadErStartet = function () {
             var behandlingId = getBehandlingIdFromUrl();
@@ -65511,15 +65466,15 @@ angular.module('app.controllers', [
                 return true;
             }
             return false;
-        }
+        };
 
         $scope.soknadErIkkeFerdigstilt = function () {
             return !$scope.soknadErFerdigstilt();
-        }
+        };
 
         $scope.soknadErFerdigstilt = function () {
             return data && data.soknad && data.soknad.status == "FERDIG";
-        }
+        };
 
         $scope.startSoknad = function () {
             var soknadType = decodeURI(window.location.pathname).split("/")[3];
@@ -65531,16 +65486,16 @@ angular.module('app.controllers', [
                 }, function () {
                     $scope.fremdriftsindikator.laster = false;
                 });
-        }
+        };
 
         $scope.harLestBrosjyre = function () {
             return $scope.utslagskriterier.harlestbrosjyre;
-        }
+        };
 
         $scope.fortsettLikevel = function ($event) {
             $event.preventDefault();
             fortsettLikevell = true;
-        }
+        };
 
         $scope.startSoknadDersomBrosjyreLest = function () {
             if ($scope.harLestBrosjyre()) {
@@ -65549,7 +65504,7 @@ angular.module('app.controllers', [
             } else {
                 $scope.skalViseBrosjyreMelding = true;
             }
-        }
+        };
 
         $scope.forsettSoknadDersomBrosjyreLest = function () {
             if ($scope.harLestBrosjyre()) {
@@ -65558,7 +65513,7 @@ angular.module('app.controllers', [
             } else {
                 $scope.skalViseBrosjyreMelding = true;
             }
-        }
+        };
 
         $scope.kravForDagpengerOppfylt = function () {
             return sjekkUtslagskriterier.erOppfylt() || fortsettLikevell;
@@ -65600,19 +65555,19 @@ angular.module('app.controllers', [
     .factory('sjekkUtslagskriterier', ['data', function (data) {
         function registrertArbeidssoker() {
             return data.utslagskriterier.registrertArbeidssøker === 'REGISTRERT';
-        };
+        }
 
         function ikkeRegistertArbeidssoker() {
             return data.utslagskriterier.registrertArbeidssøker === 'IKKE_REGISTRERT';
-        };
+        }
 
         function gyldigAlder() {
             return data.utslagskriterier.gyldigAlder === 'true';
-        };
+        }
 
         function bosattINorge() {
             return data.utslagskriterier.bosattINorge === 'true';
-        };
+        }
 
         return {
             erOppfylt: function() {
@@ -65638,11 +65593,11 @@ angular.module('app.controllers', [
             harUkjentStatusSomArbeidssoker: function() {
                 return !ikkeRegistertArbeidssoker() && !registrertArbeidssoker();
             }
-        }
+        };
     }]);
 ;angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 
-    .controller('OpplastingVedleggCtrl', ['$scope', '$http', '$location', '$routeParams', 'vedleggService', 'soknadService', 'data', 'cms', function ($scope, $http, $location, $routeParams, vedleggService, soknadService, data, cms) {
+    .controller('OpplastingVedleggCtrl', ['$scope', '$http', '$location', '$routeParams', 'vedleggService', 'soknadService', 'data', function ($scope, $http, $location, $routeParams, vedleggService, soknadService, data) {
         $scope.vedlegg = vedleggService.get({soknadId: data.soknad.soknadId, vedleggId: $routeParams.vedleggId});
         $scope.soknad = data.soknad;
     }])
@@ -65654,7 +65609,7 @@ angular.module('app.controllers', [
 
         $scope.harLagtTilVedlegg = {
             value:false
-        }
+        };
 
         $scope.skalViseFeilmelding = false;
         $scope.opplastingFeilet = false;
@@ -65677,7 +65632,7 @@ angular.module('app.controllers', [
                     data.scope().clear(file);
                     $scope.clear(file);
                 }
-            })
+            });
         });
 
         $scope.options = {
@@ -65750,31 +65705,31 @@ angular.module('app.controllers', [
         );
     }])
 
-    .controller('SlettOpplastingCtrl', ['$scope', 'vedleggService', 'data', function ($scope, vedleggService, data) {
+    .controller('SlettOpplastingCtrl', ['$scope', function ($scope) {
         var file = $scope.file;
         file.$destroy = function () {
             $scope.data.opplastingFeilet = false;
             file.$remove().then(function () {
                 $scope.clear(file);
             });
-        }
+        };
     }])
 
-    .directive('filFeil', function () {
+    .directive('filFeil', [function () {
         'use strict';
         return {
             restrict: 'A',
-            link: function (scope, element, attrs) {
-                scope.$watch('file.error', function (a1, a2, a3, a4) {
+            link: function (scope) {
+                scope.$watch('file.error', function (a1, a2) {
                     if (a2) {
                         scope.clear(scope.file);
                     }
-                })
+                });
             }
-        }
-    })
+        };
+    }])
 
-    .directive('lastOppFil', function () {
+    .directive('lastOppFil', [function () {
         'use strict';
         return {
             restrict: 'A',
@@ -65783,10 +65738,10 @@ angular.module('app.controllers', [
                     scope.submit();
                 });
             }
-        }
-    })
+        };
+    }])
 
-    .directive('asyncImage', function () {
+    .directive('asyncImage', [function () {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -65795,12 +65750,12 @@ angular.module('app.controllers', [
                     element.parent().css('background-image', 'none');
                     element.replaceWith(img);
                 };
-                img.src = attrs['asyncImage'];
+                img.src = attrs.asyncImage;
             }
-        }
-    });
+        };
+    }]);
 ;angular.module('nav.oppsummering', [])
-    .controller('OppsummeringCtrl', ['$scope', 'data', '$location', '$routeParams', 'soknadService', '$http', '$window', function ($scope, data, $location, $routeParams, soknadService, $http, $window) {
+    .controller('OppsummeringCtrl', ['$scope', 'data', '$location', '$routeParams', 'soknadService', '$http', function ($scope, data, $location, $routeParams, soknadService, $http) {
         $scope.oppsummeringHtml = '';
         $scope.harbekreftet = {value: ''};
         $scope.skalViseFeilmelding = {value: false};
@@ -65820,7 +65775,7 @@ angular.module('app.controllers', [
             }
         }, function () {
             $scope.skalViseFeilmelding.value = false;
-        })
+        });
 
         $scope.sendSoknad = function () {
             if ($scope.harbekreftet.value) {
@@ -65839,13 +65794,13 @@ angular.module('app.controllers', [
             } else {
                 $scope.skalViseFeilmelding.value = true;
             }
-        }
+        };
     }])
-    .filter('formatterFnr', function () {
+    .filter('formatterFnr', [function () {
         return function (fnr) {
             return fnr.substring(0, 6) + " " + fnr.substring(6, fnr.length);
         };
-    });;angular.module('nav.personalia', [])
+    }]);;angular.module('nav.personalia', [])
     .controller('PersonaliaCtrl', ['$scope', 'data', function ($scope, data) {
         $scope.personalia = data.finnFaktum('personalia').properties;
 
@@ -65855,26 +65810,26 @@ angular.module('app.controllers', [
                 return $scope.personalia.kjonn == 'm';
             }
             return false;
-        }
+        };
 
         $scope.erKvinne = function() {
             if($scope.personalia.kjonn) {
                 return $scope.personalia.kjonn == 'k';
             }
             return false;
-        }
+        };
 
         $scope.harHentetPersonalia = function () {
-            return $scope.personalia != null;
-        }
+            return $scope.personalia !== null;
+        };
 
         $scope.erUtenlandskStatsborger = function() {
             return $scope.personalia.statsborgerskap != 'NOR';
-        }
+        };
 
 
         // TODO: Trenger jo ikke validering når vi ikke har form
-        $scope.valider = function (skalScrolle) {}
+        $scope.valider = function (skalScrolle) {};
     }]);;angular.module('nav.reellarbeidssoker', [])
     .controller('ReellarbeidssokerCtrl', ['$scope', 'data', function ($scope, data) {
         $scope.alder = parseInt(data.finnFaktum('personalia').properties.alder);
@@ -65921,7 +65876,7 @@ angular.module('app.controllers', [
         };
 
         $scope.harValgtAnnetUnntakDeltid = function () {
-            if ($scope.deltidannen != undefined) {
+            if ($scope.deltidannen !== undefined) {
                 return $scope.deltidannen.value === 'true';
             }
             else {
@@ -65930,7 +65885,7 @@ angular.module('app.controllers', [
         };
 
         $scope.harValgtAnnetUnntakPendle = function () {
-            if ($scope.pendleannen != undefined)
+            if ($scope.pendleannen !== undefined)
             {
                 return $scope.pendleannen.value === 'true';
             }
@@ -65965,11 +65920,11 @@ angular.module('app.controllers', [
             var villigdeltidOmsorg = data.finnFaktum('reellarbeidssoker.villigdeltid.omsorgansvar');
             var villigdeltidAnnen = data.finnFaktum('reellarbeidssoker.villigdeltid.annensituasjon');
 
-            return (villigdeltidHelse != null && villigdeltidHelse.value == "true") ||
-                (villigdeltidBarn18 != null && villigdeltidBarn18.value == "true") ||
-                (villigdeltidOmsorg != null && villigdeltidOmsorg.value == "true") ||
-                (villigdeltidAnnen != null && villigdeltidAnnen.value == "true");
-        }
+            return (villigdeltidHelse !== null && villigdeltidHelse.value == "true") ||
+                (villigdeltidBarn18 !== null && villigdeltidBarn18.value == "true") ||
+                (villigdeltidOmsorg !== null && villigdeltidOmsorg.value == "true") ||
+                (villigdeltidAnnen !== null && villigdeltidAnnen.value == "true");
+        };
 
         $scope.trengerUtalelseFraFagpersonellPendle = function() {
             var villigpendleHelse = data.finnFaktum('reellarbeidssoker.villigpendle.reduserthelse');
@@ -65977,16 +65932,16 @@ angular.module('app.controllers', [
             var villigpendleOmsorg = data.finnFaktum('reellarbeidssoker.villigpendle.omsorgansvar');
             var villigpendleAnnen = data.finnFaktum('reellarbeidssoker.villigpendle.annensituasjon');
 
-            return (villigpendleHelse != null && villigpendleHelse.value== "true") ||
-                (villigpendleBarn18 != null && villigpendleBarn18.value == "true") ||
-                (villigpendleOmsorg != null && villigpendleOmsorg.value == "true") ||
-                (villigpendleAnnen != null && villigpendleAnnen.value == "true");
-        }
+            return (villigpendleHelse !== null && villigpendleHelse.value== "true") ||
+                (villigpendleBarn18 !== null && villigpendleBarn18.value == "true") ||
+                (villigpendleOmsorg !== null && villigpendleOmsorg.value == "true") ||
+                (villigpendleAnnen !== null && villigpendleAnnen.value == "true");
+        };
 
         $scope.kanIkkeTaAlleTyperArbeid = function() {
             var villighelse = data.finnFaktum('reellarbeidssoker.villighelse');
-            return villighelse != null && villighelse.value == "false";
-        }
+            return villighelse !== null && villighelse.value == "false";
+        };
 
         function erCheckboxerAvhuket(checkboxNokler) {
             var minstEnAvhuket = false;
@@ -66159,7 +66114,7 @@ angular.module('app.controllers', [
                 $scope.leggTilStickyFeilmelding();
             }
             $scope.runValidation(true);
-        }
+        };
 
         $scope.vedleggEr = function (vedlegg, status) {
             return vedlegg.innsendingsvalg === status;
@@ -66167,7 +66122,7 @@ angular.module('app.controllers', [
 
         $scope.vedleggFerdigBehandlet = function(forventning) {
             return $scope.ekstraVedleggFerdig(forventning) && !$scope.vedleggEr(forventning, 'VedleggKreves');
-        }
+        };
 
         $scope.ekstraVedleggFerdig = function (forventning) {
             if(forventning.skjemaNummer === 'N6') {
@@ -66198,7 +66153,7 @@ angular.module('app.controllers', [
             $scope.skalViseFeil = { value: false };
         }
 
-        $scope.filVedlagt = $scope.forventning.storrelse == 0 ? "" : "true";
+        $scope.filVedlagt = $scope.forventning.storrelse === 0 ? "" : "true";
 
 
         $scope.slettVedlegg = function (forventning) {
@@ -66264,7 +66219,7 @@ angular.module('app.controllers', [
             restrict: 'a',
             replace: 'true',
             templateUrl: '../../'
-        }
+        };
     }]);
 ;angular.module('nav.verneplikt', [])
 	.controller('VernepliktCtrl', ['$scope', function ($scope) {
@@ -66517,65 +66472,7 @@ angular.module('app.controllers', [
                     return '../js/app/directives/bildenavigering/bildenavigeringTemplateLiten.html';
                 }
             }
-        }
-    }]);
-;angular.module('nav.arbeidsforhold.directive',[])
-	.directive('lagreArbeidsforhold', function () {
-        return function ($scope, element, attrs) {
-            var eventType;
-            switch (element.attr('type')) {
-                case 'radio':
-                case 'checkbox':
-                    eventType = 'change';
-                    break;
-                default:
-                    eventType = 'blur';
-            }
-
-            element.bind(eventType, function () {
-                var verdi = element.val();
-                if (element.attr('type') === 'checkbox') {
-                    verdi = element.is(':checked');
-                }
-                $scope.$emit('OPPDATER_OG_LAGRE_ARBEIDSFORHOLD');
-            });
         };
-    })
-
-    .directive('legg-til-arbeidsforhold', function () {
-        return function ($scope, element, attrs) {
-            element.click(function () {
-                
-            })
-        }
-    });
-;angular.module('nav.barnetillegg.directive', [])
-    .directive('barnetilleggScrollDirective', ['$cookieStore', '$timeout', function ($cookieStore, $timeout) {
-        return function ($scope) {
-            $timeout(function () {
-                var barneCookie = $cookieStore.get('barneCookie');
-                if (barneCookie) {
-                    $scope.$emit('CLOSE_TAB', 'reell-arbeidssoker');
-                    $scope.$emit('OPEN_TAB', barneCookie.aapneTabs);
-
-                    var faktumId = barneCookie.barneFaktumId;
-                    var element;
-                    if (faktumId) {
-                        element = angular.element('#barn' + faktumId);
-                    } else {
-                        element = angular.element('#barnetillegg');
-                    }
-
-                    $timeout(
-                        function () {
-                            scrollToElement(element, 0);
-                            fadeBakgrunnsfarge(element.parent(), $scope, 255, 255, 255);
-                        }
-                        , 600);
-                    $cookieStore.remove('barneCookie');
-                }
-            })
-        }
     }]);
 ;angular.module('nav.dagpengerdirective', [])
 	.directive('apneBolker', ['$timeout', '$cookieStore', function ($timeout, $cookieStore) {
@@ -66594,15 +66491,15 @@ angular.module('app.controllers', [
 
                             if (fokusElement.length > 0) {
                                 scrollToElement(fokusElement, 400);
-                            };
+                            }
                         });
                     });
                 }
 			}
-		}
+		};
 	}]);
 
-angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
+angular.module('nav.norskDatoFilter', []).filter('norskdato', [function () {
 	return function (input) {
 		var monthNames = ['Januar', 'Februar', 'Mars', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Desember'];
 		if (input) {
@@ -66612,8 +66509,8 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 			return dag + '. ' + monthNames[mnd - 1] + ' ' + year;
 		}
 		return input;
-	}
-});
+	};
+}]);
 ;angular.module('nav.scroll.directive', [])
 	.directive('scrollTilbakeDirective', [function () {
 		return {
@@ -66653,7 +66550,7 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 					}
 				});
 			}]
-		}
+		};
 	}]);
 ;angular.module('nav.sjekkBoklerValiditet', [])
     .directive('sjekkValidert', ['data', function (data) {
@@ -66663,7 +66560,7 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
                 var erValidert = data.finnFaktum('bolker').properties[attrs.id] === "true";
                 if (erValidert) {
                     element.addClass('validert');
-                };
+                }
 
                 if (!skalSettesTilValidVedForsteApning) {
                     scope.$watch(
@@ -66703,9 +66600,9 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
                     );
                 }
             }
-        }
+        };
     }]);;angular.module('nav.validerskjema', [])
-    .directive('validerSkjema', ['validertKlasse', '$timeout', '$location', 'soknadService', 'data', '$q', function (validertKlasse, $timeout, $location, soknadService, data, $q) {
+    .directive('validerSkjema', ['validertKlasse', '$timeout', '$location', 'soknadService', 'data', function (validertKlasse, $timeout, $location, soknadService, data) {
         return {
             require: '^form',
             link: function (scope, element, attrs, form) {
@@ -66763,9 +66660,9 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
                     function setAktivFeilmeldingsklasse(element) {
                         element.addClass('aktiv-feilmelding');
                     }
-                }
+                };
             }
-        }
+        };
     }]);;angular.module('nav.feilmeldinger', [])
     // settes på inputfeltene som skal gi feilmeldinger
     .directive('errorMessages', [function () {
@@ -66817,7 +66714,7 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
                     }
                     scope.$broadcast(eventString);
                     return ctrl.$valid;
-                }
+                };
 
                 scope.$watch(function () {
                     return ctrl.$error;
@@ -66832,11 +66729,11 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
                         fortsattFeilListe = fortsattFeilListe.concat(leggTilFeilSomFortsattSkalVises(verdi, feilNokkel));
                     });
                     scope.feilmeldinger = fortsattFeilListe;
-                }
+                };
 
                 scope.skalViseFeilmeldinger = function () {
                     return scope.feilmeldinger.length > 0;
-                }
+                };
 
                 scope.scrollTilElementMedFeil = function (feilmelding) {
                     if (scope.erKlikkbarFeil(feilmelding)) {
@@ -66858,14 +66755,13 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
                             scope.giFokus(feilmelding.elem);
                         }
                     }
-                }
+                };
 
                 /*
                  Ved ng-repeat så må vi sjekke hvilket element som inneholder feil først. Sjekker at lengden er større
                  enn 1 for at checkbokser som bruker hidden-felt og ikke har klassen ng-invalid får riktig fokus
                  */
                 scope.giFokus = function (element) {
-                    console.log(element)
                     $timeout(function() {
                         if (typeof element === 'object' && element.length > 1) {
                             for (var i = 0; i < element.length; i++) {
@@ -66880,11 +66776,11 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
                         }
                     });
 
-                }
+                };
 
                 scope.erKlikkbarFeil = function (feilmelding) {
                     return feilmelding.elem && feilmelding.elem.length > 0;
-                }
+                };
 
 
                 /*
@@ -66966,12 +66862,12 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 //              skal bruke tabIndex når det er på plass
             }
             return feilmeldinger;
-        }
+        };
     }]);
 
 ;angular.module('nav.stickyFeilmelding', [])
 
-	.directive('stickyFeilmelding', ['$timeout', function ($timeout) {
+	.directive('stickyFeilmelding', [function () {
 		return {
 			require    : '^form',
 			templateUrl: '../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html',
@@ -67005,7 +66901,7 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 				scope.forrige = function () {
 					if (!(feilHarBlittRettet && scope.feil.navaerende < 1)) {
 						if (scope.feil.navaerende > 0) {
-							leggTilMarkeringAvFeilmelding(-1)
+							leggTilMarkeringAvFeilmelding(-1);
 							feilHarBlittRettet = false;
 						} else if (scope.feil.navaerende === 0) {
 							skalDeaktivereForrigeKnapp = true;
@@ -67135,7 +67031,7 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
                     scope.apneTab($(bolk[scope.feil.navaerende]).closest('.accordion-group').attr('id'));
 				}
 			}
-		}
+		};
 	}])
 	.animation('.sticky-feilmelding', ['$timeout', function ($timeout) {
 		return {
@@ -67156,13 +67052,13 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 					done();
 				}
 			}
-		}
+		};
 	}]);
 ;angular.module('nav.markup.bodydirective', [])
 /**
  * Legges på toppnoden til angular data-ng-view. Sjekker om den finner .modalboks, dersom den finnes settes custom stylesheet.
  **/
-	.directive('modalsideHelper', function ($timeout) {
+	.directive('modalsideHelper', ['$timeout', function ($timeout) {
 		return function (scope, element) {
 			$timeout(function () {
 				if (element.find('.modalBoks').length > 0) {
@@ -67171,9 +67067,9 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 					$('body').removeClass('modalside');
 				}
 			});
-		}
-	})
-	.directive('avbrytHelper', function ($timeout) {
+		};
+	}])
+	.directive('avbrytHelper', ['$timeout', function ($timeout) {
 		return function (scope, element) {
 			$timeout(function () {
 				if (element.find('.avbryt-boks').length > 0) {
@@ -67182,8 +67078,8 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 					$('body').attr('id', '');
 				}
 			});
-		}
-	});
+		};
+	}]);
 ;angular.module('nav.markup', ['nav.markup.panelbelyst', 'nav.markup.navinfoboks', 'nav.markup.bodydirective']);;angular.module('nav.markup.navinfoboks', [])
     .directive('navinfoboks', [function () {
         return {
@@ -67191,7 +67087,7 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
             replace: true,
             transclude: true,
             templateUrl: '../js/app/directives/markup/navinfoboksTemplate.html'
-        }
+        };
     }]);;angular.module('nav.markup.navinfoboks', [])
 	.directive('navinfoboks', [function () {
 		return {
@@ -67199,7 +67095,7 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 			replace    : true,
 			transclude : true,
 			templateUrl: '../js/app/directives/markup/navinfoboksTemplate.html'
-		}
+		};
 	}])
 	.directive('vedlegginfoboks', [function () {
 		return {
@@ -67207,7 +67103,7 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 			replace    : true,
 			transclude : true,
 			templateUrl: '../js/app/directives/markup/vedlegginfoboksTemplate.html'
-		}
+		};
 	}]);
 ;angular.module('nav.markup.panelbelyst', [])
 	.directive('panelbelyst', [function () {
@@ -67216,7 +67112,7 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 			replace    : true,
 			transclude : true,
 			templateUrl: '../js/app/directives/markup/panelStandardBelystTemplate.html'
-		}
+		};
 	}]);
 ;angular.module('nav.sporsmalferdig', [])
 	.directive('spmblokkferdig', ['$timeout', 'data', function ($timeout, data) {
@@ -67264,7 +67160,7 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 
                         if (nesteTab.length > 0) {
                             gaaTilTab(nesteTab);
-                            apneTab(nesteTab);
+                            apneBolk(nesteTab);
                             setFokus(nesteTab);
                         } else {
                             gaaTilTab(angular.element('.accordion-group').last());
@@ -67280,7 +67176,7 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 					}
 				}
 
-				function apneTab(apneTab) {
+				function apneBolk(apneTab) {
 					scope.apneTab(apneTab.attr('id'));
 				}
 
@@ -67288,7 +67184,7 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
                     tab.closest('.accordion-group').find('a').focus();
                 }
 			}
-		}
+		};
 	}]);
 ;angular.module('nav.stegindikator', ['nav.cmstekster'])
 	.directive('stegindikator', ['data', function (data) {
@@ -67320,10 +67216,6 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 
                     };
 
-//                    scope.hentTekst = function() {
-//                        return 'stegindikator.' + scope.steg;
-//                    }
-
                     scope.erIkkeKlikkbar = function(idx) {
                         return !scope.erKlikkbar(idx);
                     };
@@ -67336,7 +67228,7 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
                         }
                         else if (idx === 3)
                         {
-                            return '#/oppsummering'
+                            return '#/oppsummering';
                         }
                         else {
                             return '#/informasjonsside';
@@ -67348,30 +67240,30 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
                             return data.soknad.delstegStatus === "UTFYLLING" || skjemaErValidert();
                         }
                         return false;
-                    };
+                    }
 
                     function skjemaErValidert() {
                         if (data && data.soknad) {
                             return data.soknad.delstegStatus === "SKJEMA_VALIDERT" || vedleggErValidert();
                         }
                         return false;
-                    };
+                    }
 
                     function vedleggErValidert() {
                         if (data && data.soknad) {
                             return data.soknad.delstegStatus === "VEDLEGG_VALIDERT";
                         }
                         return false;
-                    };
+                    }
                 }
             }
-		}
+		};
 	}]);
 ;angular.module('nav.stickybunn', [])
 	.directive('sistLagret', ['data', '$window', '$timeout', function (data, $window, $timeout) {
 		return {
 			replace    : true,
-            scope: 	{
+            scope: {
                 navtilbakelenke: '@'
             },
             templateUrl: '../js/app/directives/stickybunn/stickyBunnTemplate.html',
@@ -67379,7 +67271,7 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 				scope.soknadId = data.soknad.soknadId;
                 scope.lenke = {
                     value: ""
-                }
+                };
 
                 if(scope.navtilbakelenke.indexOf('vedlegg') > -1) {
                     scope.lenke.value="#/vedlegg";
@@ -67406,13 +67298,13 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
                 var initScreenSize = window.innerHeight;
                 scope.tastatur = false;
 
-                angular.element($window).bind('resize'), function() {
+                angular.element($window).bind('resize', function() {
                     if(window.innerHeight < initScreenSize && settStickySistLagret()) {
                         scope.tastatur = true;
                     } else {
                         scope.tastatur = false;
                     }
-                }
+                });
 
 
 				// Litt hacky måte å få smooth overgang mellom sticky og non-sticky...
@@ -67439,7 +67331,7 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 					settStickySistLagret();
 				});
 			}
-		}
+		};
 	}]);
 ;angular.module('nav.validering', ['nav.cmstekster'])
 	.directive('blurValidate', ['cms', function (cms) {
@@ -67516,7 +67408,7 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 					return !(formElem.find('.melding')[0] && formElem.find('.melding')[0].hasAttribute('data-cmstekster'));
 				}
 			}
-		}
+		};
 	}])
 
 	.directive('clickValidate', ['$timeout', 'cms', function ($timeout, cms) {
@@ -67560,10 +67452,10 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 					element.closest('.form-linje').find('.melding').text(feilmeldingTekst);
 				}
 			}
-		}
+		};
 	}])
 //    direktivet skal brukes på div-en som ligger rundt en checkboksgruppe og som skal ha inlinevalidering
-	.directive('checkboxValidate', ['cms', function (cms) {
+	.directive('checkboxValidate', [function () {
 		return {
 			require: ['^form'],
 			link   : function (scope, element, attrs, ctrl) {
@@ -67591,7 +67483,7 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 					}
 				});
 			}
-		}
+		};
 	}])
 	.directive('dateValidate', ['cms', function (cms) {
 		return {
@@ -67616,8 +67508,8 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 								//fjerner feilmeldingen om at fra må være før til, så ved lagring vil brukeren få beskjed om required-feilmeldingen i stedet
 								form.$setValidity(feilNokkel, true);
 							}
-						})
-					})
+						});
+					});
 				});
 
 				scope.$watch(function () {
@@ -67658,7 +67550,7 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 					element.closest('.form-linje').removeClass('feil');
 				}
 			}
-		}
+		};
 	}]);
 ;angular.module('nav.vedleggbolker', [])
     .directive('triggBolker', ['$timeout', function ($timeout) {
@@ -67725,8 +67617,8 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
                             bolkerUtenfeil.push(bolker[i]);
                         }
                     }
-                    var bolker = {medFeil: bolkerMedFeil, utenFeil: bolkerUtenfeil };
-                    return bolker;
+                    var resultatBolker = {medFeil: bolkerMedFeil, utenFeil: bolkerUtenfeil };
+                    return resultatBolker;
                 }
 
             }
@@ -67738,101 +67630,11 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
                 element.bind('click', function () {
                     $timeout(function () {
                         $(".accordion-toggle").last().trigger('click');
-                    }, 200)
-                })
+                    }, 200);
+                });
             }
         };
     }]);
-;angular.module('app.grunnlagsdata', ['app.services'])
-	.controller('GrunnlagsdataCtrl', ['$scope', 'utslagskriterierService', '$location', function ($scope, utslagskriterierService, $location) {
-		$scope.personalia = utslagskriterierService.get();
-		$scope.maxAlder = 67;
-		$scope.minAlder = 18;
-
-		$scope.arena = {
-			jobbsoker: false
-		};
-
-		$scope.checkUtslagskriterier = function () {
-			if ($scope.personalia.alder && !$scope.personalia.borIUtland) {
-				$location.path('informasjonsside');
-			}
-		};
-
-		$scope.fattDagpengerSisteAaret = function () {
-			var fattDagpenger = true;
-			if (!fattDagpenger) {
-				$scope.sokePaaNytt();
-			}
-			return fattDagpenger;
-		};
-
-		$scope.faarForskuddsvisUtbetalingPgaKonkurs = function () {
-			var faarForskuddsvisUtbetalingPgaKonkurs = true;
-			if (faarForskuddsvisUtbetalingPgaKonkurs) {
-				return '*Forenklet søknad pga konkurs*';
-			}
-		};
-
-		$scope.hattPermitering = function () {
-			return false;
-		};
-
-		$scope.jobbetHosSammeArbeidsgiverMerEnnSeksUker = function () {
-			return true;
-		};
-
-		$scope.erFisker = function () {
-			return true;
-		};
-
-		$scope.jobetMerEnn26Uker = function () {
-			return true;
-		};
-
-		$scope.avbruddPgaUtdanning = function () {
-			return true;
-		};
-
-		$scope.sokePaaNytt = function () {
-//		if(tidligere tiltak) {
-//			return '*Gjenopptak pga tidligere fått invilget tiltakspenger'
-//		}
-//		if(tidligere verneplikt) {
-//			return '*Gjenopptak pga tidligere fått invilget vernepliktspenger'
-//		}
-//		if(tidligere graviditesrelatertSykdom) {
-//			return '*Gjenopptak pga tidligere fått invilget graviditesrelatertSykdomspenger'
-//		}
-//		if(tidligere graviditesrelatertSykdomMedForeldrepenger) {
-//			return '*Gjenopptak pga tidligere fått invilget graviditesrelatertSykdomMedForeldrepenger'
-//		}
-			return false;
-		};
-
-		$scope.kvalifisererForGjenopptak = function () {
-			if ($scope.fattDagpengerSisteAaret()) {
-				if (!$scope.hattPermitering()) {
-					return '*Gjenopptak pga ikke hatt permitering, og fått dagpenger de siste 52 ukene.*'
-				}
-				if (!$scope.jobbetHosSammeArbeidsgiverMerEnnSeksUker()) {
-					return '*Gjennopptak pga ikke hatt jobb hos samme arbeidsgiver vedkommende ble permittert fra, i mer enn 6 uker, og fått dagpenger de siste 52 ukene.'
-				}
-				if ($scope.erFisker() && !$scope.jobetMerEnn26Uker()) {
-					return '*Gjennopptak pga fisker, og fått dagpenger de siste 52 ukene.'
-				}
-				if (!$scope.avbruddPgaUtdanning()) {
-					return'*Gjennopptak pga ikke avbrudd pga utdanning, og fått dagpenger de siste 52 ukene.'
-				}
-			}
-			else {
-				if (sokePaaNytt() !== false) {
-					return sokePaaNytt();
-				}
-			}
-			return false;
-		};
-	}]);
 ;$.datepicker.regional['no'] = {
 	monthNames     : ['Januar', 'Februar', 'Mars', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Desember'],
 	monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'],
@@ -67847,12 +67649,14 @@ angular.module('nav.norskDatoFilter', []).filter('norskdato', function () {
 };
 
 $.datepicker.setDefaults($.datepicker.regional['no']);
-;angular.module('sendsoknad')
+;/* jshint scripturl: true */
+
+angular.module('sendsoknad')
     .value('data', {})
     .value('cms', {})
     .constant('validertKlasse', 'validert')
     .run(['$http', '$templateCache', '$rootScope', 'data', '$location', 'sjekkUtslagskriterier', function ($http, $templateCache, $rootScope, data, $location, sjekkUtslagskriterier) {
-        $('#hoykontrast a, .skriftstorrelse a').attr('href', 'javascript:void(0)')
+        $('#hoykontrast a, .skriftstorrelse a').attr('href', 'javascript:void(0)');
 
         $rootScope.$on('$routeChangeSuccess', function(event, next, current) {
             redirectDersomSoknadErFerdig();
@@ -67908,7 +67712,7 @@ $.datepicker.setDefaults($.datepicker.regional['no']);
             return data.soknad.delstegStatus === "VEDLEGG_VALIDERT";
         }
     }])
-    .factory('InformasjonsSideResolver', ['data', 'cms', '$resource', '$q', '$route', '$location', function (data, cms, $resource, $q, $route, $location) {
+    .factory('InformasjonsSideResolver', ['data', 'cms', '$resource', '$q', function (data, cms, $resource, $q) {
         var promiseArray = [];
 
         var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
@@ -67947,7 +67751,7 @@ $.datepicker.setDefaults($.datepicker.regional['no']);
                     
                 }
             );
-            promiseArray.push(soknadDeferer.promise)       
+            promiseArray.push(soknadDeferer.promise);
         }
 
         promiseArray.push(tekster.$promise);
@@ -67969,7 +67773,7 @@ $.datepicker.setDefaults($.datepicker.regional['no']);
                 soknadDeferer.resolve();
             }
         );
-        promiseArray.push(soknadDeferer.promise)
+        promiseArray.push(soknadDeferer.promise);
         
         return $q.all(promiseArray);
     }])
@@ -68182,9 +67986,11 @@ angular.module('ui.keypress').directive('uiKeyup', ['keypressHelper', function (
 		}
 	};
 }]);
-;angular.module('app.routes', ['ngRoute'])
+;//TODO: Fjern sider som ikke lengre skal være side...som reell arebeidssøker, arbeidsforhold etc
 
-    .config(function ($routeProvider, $locationProvider) {
+angular.module('app.routes', ['ngRoute'])
+
+    .config(['$routeProvider', function ($routeProvider) {
         $routeProvider
             .when('/informasjonsside', {
                 templateUrl: '../views/templates/informasjonsside.html',
@@ -68380,14 +68186,6 @@ angular.module('ui.keypress').directive('uiKeyup', ['keypressHelper', function (
                     }
                 }
             })
-            .when('/kvittering', {
-                templateUrl: '../views/templates/kvittering-innsendt.html',
-                resolve: {
-                    notUsedButRequiredProperty: function (TekstService) {
-                        return TekstService;
-                    }
-                }
-            })
             .when('/avbryt', {
                 templateUrl: '../views/templates/avbryt.html',
                 resolve: {
@@ -68423,10 +68221,10 @@ angular.module('ui.keypress').directive('uiKeyup', ['keypressHelper', function (
             .when('/soknadliste', {templateUrl: '../views/templates/soknadliste.html'})
             .otherwise({redirectTo: '/informasjonsside'});
 
-    }).run(function ($rootScope, $location, $anchorScroll, $routeParams) {
+    }]).run(['$rootScope', '$location', '$anchorScroll', '$routeParams', function ($rootScope, $location, $anchorScroll, $routeParams) {
         $rootScope.$on('$routeChangeSuccess', function (newRoute, oldRoute) {
             if (_gaq) {
-                var trackPage = "startSoknad"
+                var trackPage = "startSoknad";
                 if (erSoknadStartet()) {
                     trackPage = $location.path().split("/")[1];
                 }
@@ -68435,195 +68233,190 @@ angular.module('ui.keypress').directive('uiKeyup', ['keypressHelper', function (
             $location.hash($routeParams.scrollTo);
             $anchorScroll();
         });
-    });
-;'use strict';
-// TODO: Denne modulen må ryddes opp i
-angular.module('app.services', ['ngResource'])
+    }]);
+;/* global getIEVersion, TimeoutBox, window*/
 
-	.config(function ($httpProvider) {
-		$httpProvider.interceptors.push('resetTimeoutInterceptor');
-		$httpProvider.interceptors.push('settDelstegStatusEtterKallMotServer');
+(function () {
+    'use strict';
 
-        if (getIEVersion() < 10) {
-            $httpProvider.interceptors.push('httpRequestInterceptorPreventCache');
-        }
-	})
+    // TODO: Denne modulen må ryddes opp i
+    angular.module('app.services', ['ngResource'])
 
-    // Resetter session-timeout
-	.factory('resetTimeoutInterceptor', function () {
-        return {
-            'response': function(response) {
-                // Bare reset dersom kallet gikk gjennom
-                TimeoutBox.startTimeout();
-                return response;
+        .config(['$httpProvider', function ($httpProvider) {
+            $httpProvider.interceptors.push('resetTimeoutInterceptor');
+            $httpProvider.interceptors.push('settDelstegStatusEtterKallMotServer');
+
+            if (getIEVersion() < 10) {
+                $httpProvider.interceptors.push('httpRequestInterceptorPreventCache');
             }
-        }
-	})
+        }])
 
-    // Oppdaterer delstegstatus dersom man gjør endringer på faktum eller vedlegg
-    .factory('settDelstegStatusEtterKallMotServer', ['data', function (data) {
-        return {
-            'response': function(response) {
-                if (response.config.method === 'POST') {
-                    if (data.soknad) {
-                        data.soknad.sistLagret = new Date().getTime();
-                    }
-                    var urlArray = response.config.url.split('/');
-                    if (urlArray.contains('fakta')) {
-                        data.soknad.delstegStatus = 'UTFYLLING';
-                    } else if (urlArray.contains('vedlegg')) {
-                        data.soknad.delstegStatus = 'SKJEMA_VALIDERT';
-                    } else if (urlArray.contains('delsteg')) {
-                        if (response.config.data.delsteg === "vedlegg") {
-                            data.soknad.delstegStatus = 'SKJEMA_VALIDERT';
-                        } else if (response.config.data.delsteg === "oppsummering") {
-                            data.soknad.delstegStatus = 'VEDLEGG_VALIDERT';
-                        } else {
+        // Resetter session-timeout
+        .factory('resetTimeoutInterceptor', [function () {
+            return {
+                'response': function(response) {
+                    // Bare reset dersom kallet gikk gjennom
+                    TimeoutBox.startTimeout();
+                    return response;
+                }
+            };
+        }])
+
+        // Oppdaterer delstegstatus dersom man gjør endringer på faktum eller vedlegg
+        .factory('settDelstegStatusEtterKallMotServer', ['data', function (data) {
+            return {
+                'response': function(response) {
+                    if (response.config.method === 'POST') {
+                        if (data.soknad) {
+                            data.soknad.sistLagret = new Date().getTime();
+                        }
+                        var urlArray = response.config.url.split('/');
+                        if (urlArray.contains('fakta')) {
                             data.soknad.delstegStatus = 'UTFYLLING';
+                        } else if (urlArray.contains('vedlegg')) {
+                            data.soknad.delstegStatus = 'SKJEMA_VALIDERT';
+                        } else if (urlArray.contains('delsteg')) {
+                            if (response.config.data.delsteg === "vedlegg") {
+                                data.soknad.delstegStatus = 'SKJEMA_VALIDERT';
+                            } else if (response.config.data.delsteg === "oppsummering") {
+                                data.soknad.delstegStatus = 'VEDLEGG_VALIDERT';
+                            } else {
+                                data.soknad.delstegStatus = 'UTFYLLING';
+                            }
                         }
                     }
+                    return response;
                 }
-                return response;
-            }
-        }
-    }])
+            };
+        }])
 
-    // Legger på tilfeldige tall sist i GET-requests for å forhindre caching i IE
-    .factory('httpRequestInterceptorPreventCache', [function() {
-        return {
-            'request': function(config) {
-                if (config.method === "GET" && config.url.indexOf('.html') < 0) {
-                    config.url = config.url + '?rand=' + new Date().getTime();
+        // Legger på tilfeldige tall sist i GET-requests for å forhindre caching i IE
+        .factory('httpRequestInterceptorPreventCache', [function() {
+            return {
+                'request': function(config) {
+                    if (config.method === "GET" && config.url.indexOf('.html') < 0) {
+                        config.url = config.url + '?rand=' + new Date().getTime();
+                    }
+                    return config;
                 }
-                return config;
-            }
-        }
-    }])
+            };
+        }])
 
-/**
- * Service som henter en søknad fra henvendelse
- */
-	.factory('soknadService', function ($resource) {
-		return $resource('/sendsoknad/rest/soknad/:action/:soknadId',
-            { soknadId: '@soknadId', soknadType: '@soknadType', delsteg: '@delsteg'},
-			{
-				create : {
-                    method: 'POST',
-                    url: '/sendsoknad/rest/soknad/opprett'
-                },
-				send   : { method: 'POST', params: {soknadId: '@soknadId', action: 'send' }},
-				remove : { method: 'POST', params: {soknadId: '@soknadId', action: 'delete' }},
-				options: { method: 'GET', params: {soknadId: '@soknadId', action: 'options' }},
-				behandling: { method: 'GET', params: {soknadId: '@soknadId', action: 'behandling' }},
-				metadata: { method: 'GET', params: {soknadId: '@soknadId', action: 'metadata' }},
-				delsteg: {
-                    method: 'POST',
-                    params: {soknadId: '@soknadId', delsteg: '@delsteg' },
-                    url: '/sendsoknad/rest/soknad/delsteg/:soknadId/:delsteg'
+    /**
+     * Service som henter en søknad fra henvendelse
+     */
+        .factory('soknadService', ['$resource', function ($resource) {
+            return $resource('/sendsoknad/rest/soknad/:action/:soknadId',
+                { soknadId: '@soknadId', soknadType: '@soknadType', delsteg: '@delsteg'},
+                {
+                    create : {
+                        method: 'POST',
+                        url: '/sendsoknad/rest/soknad/opprett'
+                    },
+                    send   : { method: 'POST', params: {soknadId: '@soknadId', action: 'send' }},
+                    remove : { method: 'POST', params: {soknadId: '@soknadId', action: 'delete' }},
+                    options: { method: 'GET', params: {soknadId: '@soknadId', action: 'options' }},
+                    behandling: { method: 'GET', params: {soknadId: '@soknadId', action: 'behandling' }},
+                    metadata: { method: 'GET', params: {soknadId: '@soknadId', action: 'metadata' }},
+                    delsteg: {
+                        method: 'POST',
+                        params: {soknadId: '@soknadId', delsteg: '@delsteg' },
+                        url: '/sendsoknad/rest/soknad/delsteg/:soknadId/:delsteg'
+                    }
                 }
-			}
-		);
-	})
+            );
+        }])
 
-/**
- * Service for å lagre Faktum
- */
-	.factory('Faktum', ['$resource', function ($resource) {
-		var url = '/sendsoknad/rest/soknad/:soknadId/fakta/:faktumId/:mode';
-		return $resource(url,
-			{soknadId: '@soknadId', faktumId: '@faktumId', mode: '@mode'},
-			{
-				save  : { method: 'POST', params: {mode: ''}},
-				delete: { method: 'POST', params: {mode: 'delete'}}
-			}
-		);
-	}])
+    /**
+     * Service for å lagre Faktum
+     */
+        .factory('Faktum', ['$resource', function ($resource) {
+            var url = '/sendsoknad/rest/soknad/:soknadId/fakta/:faktumId/:mode';
+            return $resource(url,
+                {soknadId: '@soknadId', faktumId: '@faktumId', mode: '@mode'},
+                {
+                    save  : { method: 'POST', params: {mode: ''}},
+                    delete: { method: 'POST', params: {mode: 'delete'}}
+                }
+            );
+        }])
 
 // TODO: Disse må ryddes opp i
-/**
- * Service som behandler vedlegg
- */
-	.factory('vedleggService', function ($resource) {
-		return $resource('/sendsoknad/rest/soknad/:soknadId/vedlegg/:vedleggId/:action',
-			{
-				soknadId : '@soknadId',
-				vedleggId: '@vedleggId',
-				skjemaNummer  : '@skjemaNummer'},
-			{
-				get   : { method: 'GET', params: {} },
-                hentAnnetVedlegg : {
-                    url: '/sendsoknad/rest/soknad/:soknadId/vedlegg/:faktumId/hentannetvedlegg?rand=' + new Date().getTime(),
-                    method: 'GET', 
-                    params: {faktumId: '@faktumId'}},
-				create: { method: 'POST', params: {} },
-				merge : { method: 'POST', params: {action: 'generer'} },
-				remove: {method: 'POST', params: {action: 'delete'}},
-                underbehandling: {method: 'GET', params: {action: 'underBehandling'}, isArray: true }
-			}
-		);
-	})
+    /**
+     * Service som behandler vedlegg
+     */
+        .factory('vedleggService', ['$resource', function ($resource) {
+            return $resource('/sendsoknad/rest/soknad/:soknadId/vedlegg/:vedleggId/:action',
+                {
+                    soknadId : '@soknadId',
+                    vedleggId: '@vedleggId',
+                    skjemaNummer  : '@skjemaNummer'},
+                {
+                    get   : { method: 'GET', params: {} },
+                    hentAnnetVedlegg : {
+                        url: '/sendsoknad/rest/soknad/:soknadId/vedlegg/:faktumId/hentannetvedlegg?rand=' + new Date().getTime(),
+                        method: 'GET',
+                        params: {faktumId: '@faktumId'}},
+                    create: { method: 'POST', params: {} },
+                    merge : { method: 'POST', params: {action: 'generer'} },
+                    remove: {method: 'POST', params: {action: 'delete'}},
+                    underbehandling: {method: 'GET', params: {action: 'underBehandling'}, isArray: true }
+                }
+            );
+        }])
 
-/**
- * Service som behandler vedlegg
- */
+    /**
+     * Service som behandler vedlegg
+     */
 
- // TODO: Disse må ryddes opp i
-	.factory('VedleggForventning', function ($resource) {
-		return $resource('/sendsoknad/rest/soknad/:soknadId/:faktumId/forventning', {
-			soknadId: '@soknadId',
-            vedleggId: '@vedleggId'
-		}, {
-            slettVedlegg: {
-				url   : '/sendsoknad/rest/soknad/:soknadId/faktum/:faktumId/vedlegg/:vedleggId/delete',
-				method: 'POST',
-				params: {
-					faktumId : '@faktum.faktumId',
-					vedleggId: '@vedlegg.vedleggId'
-				}
-			},
-			endreValg   : {
-				url   : '/sendsoknad/rest/soknad/:soknadId/forventning/valg',
-				method: 'POST'
-			}
-		});
-	})
+        // TODO: Disse må ryddes opp i
+        .factory('VedleggForventning', ['$resource', function ($resource) {
+            return $resource('/sendsoknad/rest/soknad/:soknadId/:faktumId/forventning', {
+                soknadId: '@soknadId',
+                vedleggId: '@vedleggId'
+            }, {
+                slettVedlegg: {
+                    url   : '/sendsoknad/rest/soknad/:soknadId/faktum/:faktumId/vedlegg/:vedleggId/delete',
+                    method: 'POST',
+                    params: {
+                        faktumId : '@faktum.faktumId',
+                        vedleggId: '@vedlegg.vedleggId'
+                    }
+                },
+                endreValg   : {
+                    url   : '/sendsoknad/rest/soknad/:soknadId/forventning/valg',
+                    method: 'POST'
+                }
+            });
+        }])
 
-	.factory('fortsettSenereService', function ($resource) {
-		return $resource('/sendsoknad/rest/soknad/:behandlingId/fortsettsenere',
-			{soknadId: '@behandlingId'},
-			{send: {method: 'POST'}}
-		);
-	})
+        .factory('fortsettSenereService', ['$resource', function ($resource) {
+            return $resource('/sendsoknad/rest/soknad/:behandlingId/fortsettsenere',
+                {soknadId: '@behandlingId'},
+                {send: {method: 'POST'}}
+            );
+        }])
 
-	// Husk språkstøtte...?
-	.factory('tekstService', function ($resource) {
-		return $resource('/sendsoknad/rest/enonic/:side',
-			{},
-			{get: {
-				method: 'GET'
-			}});
-	})
+        .factory('landService', ['$resource', function ($resource) {
+            return $resource('/sendsoknad/rest/soknad/kodeverk/landliste');
+        }])
 
-    .factory('landService', function ($resource) {
-        return $resource('/sendsoknad/rest/soknad/kodeverk/landliste');
-    })
+        .factory('StartSoknadService', ['data', '$resource', '$q', function (data, $resource, $q) {
+            var deferred = $q.defer();
+            var soknadType = window.location.pathname.split('/')[3];
 
-	.factory('StartSoknadService', ['data', '$resource', '$q', function (data, $resource, $q) {
-		var deferred = $q.defer();
-		var soknadType = window.location.pathname.split('/')[3];
-
-		$resource('/sendsoknad/rest/soknad/opprett/' + soknadType).get(
-			function (result) { // Success
-				data.soknad = result;
-				deferred.resolve(result);
-			},
-			function () { // Error
-				deferred.reject('Klarte ikke laste tekster');
-			}
-		);
-		return deferred.promise;
-	}]);
-;angular.module('templates-main', ['../views/dagpenger-singlepage.html', '../views/templates/adresse.html', '../views/templates/arbeidsforhold-nytt.html', '../views/templates/arbeidsforhold.html', '../views/templates/arbeidsforhold/arbeidsforhold_form.html', '../views/templates/arbeidsforhold/avskjediget-oppsummering.html', '../views/templates/arbeidsforhold/avskjediget.html', '../views/templates/arbeidsforhold/konkurs-oppsummering.html', '../views/templates/arbeidsforhold/konkurs.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt.html', '../views/templates/arbeidsforhold/permittert-oppsummering.html', '../views/templates/arbeidsforhold/permittert.html', '../views/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html', '../views/templates/arbeidsforhold/redusertarbeidstid.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html', '../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-selv.html', '../views/templates/arbeidsforhold/utdanning_form.html', '../views/templates/avbryt.html', '../views/templates/barnetillegg-nyttbarn.html', '../views/templates/barnetillegg.html', '../views/templates/bekreftelse.html', '../views/templates/egennaering/egen-naering.html', '../views/templates/egennaering/egenNaeringvirksomhet.html', '../views/templates/egennaering/fangstOgFiske.html', '../views/templates/egennaering/gardsbruk.html', '../views/templates/feilside.html', '../views/templates/ferdigstilt.html', '../views/templates/fortsettSenere.html', '../views/templates/fritekst.html', '../views/templates/gjenoppta/skjema-ferdig.html', '../views/templates/gjenoppta/skjema-sendt.html', '../views/templates/gjenoppta/skjema-under-arbeid.html', '../views/templates/gjenoppta/skjema-validert.html', '../views/templates/ikkekvalifisert.html', '../views/templates/informasjonsside.html', '../views/templates/kvittering-fortsettsenere.html', '../views/templates/kvittering-innsendt.html', '../views/templates/opplasting.html', '../views/templates/oppsummering.html', '../views/templates/personalia.html', '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', '../views/templates/soknadSlettet.html', '../views/templates/soknadliste.html', '../views/templates/utdanning/utdanning.html', '../views/templates/utdanning/utdanningKortvarigFlereTemplate.html', '../views/templates/utdanning/utdanningKortvarigTemplate.html', '../views/templates/utdanning/utdanningKveldTemplate.html', '../views/templates/utdanning/utdanningNorskTemplate.html', '../views/templates/utdanningsinformasjon-template.html', '../views/templates/vedlegg.html', '../views/templates/verneplikt.html', '../views/templates/visvedlegg.html', '../views/templates/ytelser.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateLiten.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateStor.html', '../js/app/directives/dagpenger/arbeidsforholdformTemplate.html', '../js/app/directives/feilmeldinger/feilmeldingerTemplate.html', '../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html', '../js/app/directives/markup/navinfoboksTemplate.html', '../js/app/directives/markup/panelStandardBelystTemplate.html', '../js/app/directives/markup/vedlegginfoboksTemplate.html', '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html', '../js/app/directives/stegindikator/stegIndikatorTemplate.html', '../js/app/directives/stickybunn/stickyBunnTemplate.html', '../js/common/directives/accordion/accordionGroupTemplate.html', '../js/common/directives/accordion/accordionTemplate.html', '../js/common/directives/booleanradio/booleanradioTemplate.html', '../js/common/directives/datepicker/doubleDatepickerTemplate.html', '../js/common/directives/datepicker/singleDatepickerTemplate.html', '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html', '../js/common/directives/navinput/navbuttonspinnerTemplate.html', '../js/common/directives/navinput/navcheckboxTemplate.html', '../js/common/directives/navinput/navorgnrfeltTemplate.html', '../js/common/directives/navinput/navradioTemplate.html', '../js/common/directives/navinput/navtekstTemplate.html', '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html', '../js/common/directives/navtextarea/navtextareaTemplate.html', '../js/common/directives/select/selectTemplate.html', '../js/common/directives/tittel/tittelTemplate.html']);
+            $resource('/sendsoknad/rest/soknad/opprett/' + soknadType).get(
+                function (result) { // Success
+                    data.soknad = result;
+                    deferred.resolve(result);
+                },
+                function () { // Error
+                    deferred.reject('Klarte ikke laste tekster');
+                }
+            );
+            return deferred.promise;
+        }]);
+}());;angular.module('templates-main', ['../views/dagpenger-singlepage.html', '../views/templates/adresse.html', '../views/templates/arbeidsforhold-nytt.html', '../views/templates/arbeidsforhold.html', '../views/templates/arbeidsforhold/arbeidsforhold_form.html', '../views/templates/arbeidsforhold/avskjediget-oppsummering.html', '../views/templates/arbeidsforhold/avskjediget.html', '../views/templates/arbeidsforhold/konkurs-oppsummering.html', '../views/templates/arbeidsforhold/konkurs.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt.html', '../views/templates/arbeidsforhold/permittert-oppsummering.html', '../views/templates/arbeidsforhold/permittert.html', '../views/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html', '../views/templates/arbeidsforhold/redusertarbeidstid.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html', '../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-selv.html', '../views/templates/arbeidsforhold/utdanning_form.html', '../views/templates/avbryt.html', '../views/templates/barnetillegg-nyttbarn.html', '../views/templates/barnetillegg.html', '../views/templates/bekreftelse.html', '../views/templates/egennaering/egen-naering.html', '../views/templates/egennaering/egenNaeringvirksomhet.html', '../views/templates/egennaering/fangstOgFiske.html', '../views/templates/egennaering/gardsbruk.html', '../views/templates/feilside.html', '../views/templates/ferdigstilt.html', '../views/templates/fortsettSenere.html', '../views/templates/fritekst.html', '../views/templates/gjenoppta/skjema-ferdig.html', '../views/templates/gjenoppta/skjema-sendt.html', '../views/templates/gjenoppta/skjema-under-arbeid.html', '../views/templates/gjenoppta/skjema-validert.html', '../views/templates/ikkekvalifisert.html', '../views/templates/informasjonsside.html', '../views/templates/kvittering-fortsettsenere.html', '../views/templates/opplasting.html', '../views/templates/oppsummering.html', '../views/templates/personalia.html', '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', '../views/templates/soknadSlettet.html', '../views/templates/soknadliste.html', '../views/templates/utdanning/utdanning.html', '../views/templates/utdanning/utdanningKortvarigFlereTemplate.html', '../views/templates/utdanning/utdanningKortvarigTemplate.html', '../views/templates/utdanning/utdanningKveldTemplate.html', '../views/templates/utdanning/utdanningNorskTemplate.html', '../views/templates/utdanningsinformasjon-template.html', '../views/templates/vedlegg.html', '../views/templates/verneplikt.html', '../views/templates/visvedlegg.html', '../views/templates/ytelser.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateLiten.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateStor.html', '../js/app/directives/dagpenger/arbeidsforholdformTemplate.html', '../js/app/directives/feilmeldinger/feilmeldingerTemplate.html', '../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html', '../js/app/directives/markup/navinfoboksTemplate.html', '../js/app/directives/markup/panelStandardBelystTemplate.html', '../js/app/directives/markup/vedlegginfoboksTemplate.html', '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html', '../js/app/directives/stegindikator/stegIndikatorTemplate.html', '../js/app/directives/stickybunn/stickyBunnTemplate.html', '../js/common/directives/accordion/accordionGroupTemplate.html', '../js/common/directives/accordion/accordionTemplate.html', '../js/common/directives/booleanradio/booleanradioTemplate.html', '../js/common/directives/datepicker/doubleDatepickerTemplate.html', '../js/common/directives/datepicker/singleDatepickerTemplate.html', '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html', '../js/common/directives/navinput/navbuttonspinnerTemplate.html', '../js/common/directives/navinput/navcheckboxTemplate.html', '../js/common/directives/navinput/navorgnrfeltTemplate.html', '../js/common/directives/navinput/navradioTemplate.html', '../js/common/directives/navinput/navtekstTemplate.html', '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html', '../js/common/directives/navtextarea/navtextareaTemplate.html', '../js/common/directives/select/selectTemplate.html', '../js/common/directives/tittel/tittelTemplate.html']);
 
 angular.module("../views/dagpenger-singlepage.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/dagpenger-singlepage.html",
@@ -70656,15 +70449,6 @@ angular.module("../views/templates/kvittering-fortsettsenere.html", []).run(["$t
     "");
 }]);
 
-angular.module("../views/templates/kvittering-innsendt.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("../views/templates/kvittering-innsendt.html",
-    "<panelbelyst id=\"kvittering\">\n" +
-    "	<h2 class=\"stor\" data-cmstekster=\"dagpenger.kvittering.tittel\"></h2>\n" +
-    "	<p data-cmstekster=\"dagpenger.kvittering.info\"></p>\n" +
-    "</panelbelyst>\n" +
-    "");
-}]);
-
 angular.module("../views/templates/opplasting.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/templates/opplasting.html",
     "<div data-nav-tittel=\"skjema.tittel\"></div>\n" +
@@ -70673,7 +70457,7 @@ angular.module("../views/templates/opplasting.html", []).run(["$templateCache", 
     "<div id=\"opplasting\" class=\"soknad rad-belyst\" data-sidetittel=\"sidetittel.opplasting\" data-ng-controller=\"OpplastingVedleggCtrl\">\n" +
     "    <div class=\"begrensning sak-halv\">\n" +
     "        <div class=\"panel uten-ramme\">\n" +
-    "            <h1 class=\"stor-ikon-vedlegg-strek\" ><span data-ng-if=\"vedlegg.vedleggId\">{{vedlegg.tittel}}</span><span\n" +
+    "            <h1 class=\"stor-ikon-vedlegg-strek\" data-scrolling-tittel ><span data-ng-if=\"vedlegg.vedleggId\">{{vedlegg.tittel}}</span><span\n" +
     "                    data-ng-if=\"vedlegg.navn\">: {{vedlegg.navn}}</span></h1>\n" +
     "\n" +
     "        </div>\n" +
@@ -72406,33 +72190,33 @@ angular.module("../js/common/directives/tittel/tittelTemplate.html", []).run(["$
 			}
 		}
 		return -1;
-	}
+	};
 }
 
 if (!Array.prototype.last) {
 	Array.prototype.last = function () {
 		return this[this.length - 1];
-	}
+	};
 }
 
 if (!Array.prototype.contains) {
 	Array.prototype.contains = function (val) {
 		return $.inArray(val, this) > -1;
-	}
+	};
 }
 
 // Returnerer index til ett objekt som inneholder value (ikke nødvendigvis første)
 if (!Array.prototype.indexByValue) {
 	Array.prototype.indexByValue = function (val) {
 		return this.indexOf($.grep(this, function (obj) {
-			for (key in obj) {
+			for (var key in obj) {
 				if (obj[key] === val) {
 					return this;
 				}
 			}
 			return false;
 		})[0]);
-	}
+	};
 }
 
 String.prototype.splice = function (idx, rem, str) {
@@ -72586,7 +72370,7 @@ function stringContainsNotCaseSensitive(str, query) {
 		$(this).animate({
 			scrollTop: position
 		}, speed);
-	}
+	};
 })(jQuery);
 
 function fadeBakgrunnsfarge(element, scope, rgb1, rgb2, rgb3) {
@@ -72635,7 +72419,7 @@ function reverserNorskDatoformat(datoString) {
 function erFremtidigDato(datoString) {
 	var dato = new Date(datoString);
 
-	var enDagMillis = 86400000 //1000*60*60*24
+	var enDagMillis = 86400000; //1000*60*60*24
 	var dagensDato =  new Date();
 	var temp = new Date(dagensDato.getMonth()+1 +  "." + dagensDato.getDate() + "." + dagensDato.getFullYear());
 	var morgenDagensDatoMillis = temp.setTime(temp.getTime() + 86400000);
@@ -72655,7 +72439,7 @@ function erGyldigDato(datoString) {
 	var dagerIMaaned = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 	// Skuddår
-	if ((!(aar % 4) && aar % 100) || !(aar % 400)) {
+	if (((aar % 4) === 0 && aar % 100) || (aar % 400) === 0) {
 		dagerIMaaned[1] = 29;
 	}
 	return dag <= dagerIMaaned[--maaned];
@@ -72712,7 +72496,7 @@ function getIEVersion() {
         var  ua = navigator.userAgent;
         var re = new RegExp("MSIE ([0-9]{1,}[.0-9]{0,})");
 
-        if (re.exec(ua) != null) {
+        if (re.exec(ua) !== null) {
             version = parseInt(RegExp.$1);
         }
     }
@@ -72731,7 +72515,7 @@ function getIEVersion() {
 			return true;
 		}
 		return 'required';
-	}
+	};
 
 	window.RequiredValidator = RequiredValidator;
 
@@ -72801,7 +72585,7 @@ function getIEVersion() {
 					done();
 				}
 			}
-		}
+		};
 	}]);
 ;//Trukket ut fra angular-ui sin bootstrap-modul
 
@@ -73135,7 +72919,7 @@ angular.module('nav.accordion', [])
 					}
 				);
 			}
-		}
+		};
 	}])
 	.directive('navAriaExpanded', [function () {
 		return {
@@ -73152,7 +72936,7 @@ angular.module('nav.accordion', [])
 					}
 				);
 			}
-		}
+		};
 	}]);
 ;angular.module('nav.booleanradio', ['nav.cmstekster', 'nav.input'])
 	.directive('booleanradio', [function () {
@@ -73194,29 +72978,29 @@ angular.module('nav.accordion', [])
 				}
 			},
 			templateUrl: '../js/common/directives/booleanradio/booleanradioTemplate.html'
-		}
+		};
 	}]);
 ;angular.module('nav.cmstekster', ['app.services'])
-	.directive('cmsvedlegg', ['cms', '$compile', function (cms, $compile) {
+	.directive('cmsvedlegg', [function () {
 		return {
 			scope   : false,
 			required: 'navFaktum',
 			link    : {
-				pre: function (scope, elem, attr, faktum) {
+				pre: function (scope, elem, attr) {
                     scope.cmsProps = {};
                     if (attr.cmsvedlegg) {
 						scope.cmsProps.ekstra = attr.cmsvedlegg;
 					}
                 }
 			}
-		}
+		};
 	}])
-	.directive('cmstekster', ['cms', '$compile', function (cms, $compile) {
+	.directive('cmstekster', ['cms', function (cms) {
 
 		return {
 			scope: false,
 			link : function (scope, element, attrs) {
-				var nokkel = attrs['cmstekster'];
+				var nokkel = attrs.cmstekster;
 				var cmstekst = cms.tekster[nokkel];
 
 				if (cmstekst === undefined) {
@@ -73224,8 +73008,7 @@ angular.module('nav.accordion', [])
 				}
 
 				if (scope.cmsProps) {
-					Object.keys(scope.cmsProps).forEach(function (attr) {
-						//cmstekst = cmstekst.replace('${' + attr + '}', scope.cmsProps[attr], 'i');
+					Object.keys(scope.cmsProps).forEach(function () {
 						cmstekst = cmstekst + ': ' + scope.cmsProps.ekstra;
 					});
 				}
@@ -73242,13 +73025,13 @@ angular.module('nav.accordion', [])
     }])
     .directive('cmshtml', ['cms', function (cms) {
         return function ($scope, element, attrs) {
-            var nokkel = attrs['cmshtml'];
+            var nokkel = attrs.cmshtml;
             element.html(cms.tekster[nokkel]);
         };
     }])
     .directive('cmslenketekster', ['cms', function (cms) {
         return function ($scope, element, attrs) {
-            var nokkel = attrs['cmslenketekster'];
+            var nokkel = attrs.cmslenketekster;
             if (element.is('a')) {
                 element.attr('href', cms.tekster[nokkel]);
             }
@@ -73259,7 +73042,7 @@ angular.module('nav.accordion', [])
             var tekst = cms.tekster[nokkel];
 
             return tekst === undefined ? '' : tekst;
-        }
+        };
     }]);
 ;/**
  * Både direktiv for å legge til enkel datepicker og til-fra dato.
@@ -73338,17 +73121,17 @@ angular.module('nav.datepicker', [])
 
 				scope.options = {};
 				if (!scope.erFremtidigdatoTillatt) {
-					scope.options['maxDate'] = new Date();
+					scope.options.maxDate = new Date();
 				}
 
 
                 scope.navDatepicker = function() {
                     return !scope.vanligDatepicker();
-                }
+                };
 
                 scope.vanligDatepicker = function() {
                     return erTouchDevice();
-                }
+                };
 
 				scope.toggleDatepicker = function () {
 					var dateDiv = $('#ui-datepicker-div');
@@ -73407,25 +73190,25 @@ angular.module('nav.datepicker', [])
 				};
 
 				scope.sjekkUloveligFremtidigDato = function () {
-					if(!scope.erFremtidigdatoTillatt && scope.ngModel != undefined) {
+					if(!scope.erFremtidigdatoTillatt && scope.ngModel !== undefined) {
 						return erFremtidigDato(scope.ngModel);
 					}
 					return false;
 				};
 
 				scope.erUloveligFremtidigDato = function() {
-					
+                    var el;
 					if(scope.fremtidigDatoFeil && !scope.harFokus && harHattFokus) {
-						var el = element.controller('ngModel');
+						element.controller('ngModel');
 						el.$setValidity(ugyldigFremtidigDatoFeilmelding, false);
 						return true;
 					} else if(!scope.fremtidigDatoFeil) {
-						var el = element.controller('ngModel');
+						element.controller('ngModel');
 						el.$setValidity(ugyldigFremtidigDatoFeilmelding, true);
 						return false;
 					}
 					return false;
-				}
+				};
 
 				scope.erIkkeGyldigDato = function () {
 					return !scope.ngModel && inputfeltHarTekstOgGyldigDatoFormat() &&
@@ -73521,7 +73304,7 @@ angular.module('nav.datepicker', [])
 				// Legger til datepicker på nytt dersom options endrer seg
 				scope.$watch(datepickerOptions, leggTilDatepicker, true);
 			}
-		}
+		};
 	}])
 	.directive('navDatoIntervall', [function () {
 		return {
@@ -73560,7 +73343,7 @@ angular.module('nav.datepicker', [])
 					});
 				}
 			}
-		}
+		};
 	}])
 	.directive('datoMask', ['$filter', 'cms', function ($filter, cms) {
 		return {
@@ -73695,7 +73478,7 @@ angular.module('nav.datepicker', [])
 					return element.position().top + 6;
 				}
 			}
-		}
+		};
 	}]);
 ;angular.module('nav.fokus', [])
     .directive('fokus', [function () {
@@ -73749,22 +73532,27 @@ angular.module('nav.datepicker', [])
     .directive('tabAutoscroll', [function () {
         return {
             link: function (scope, elm) {
+                var stickyElementBunn;
+                var stickyPosisjonTopp;
+                var elementMedFokus;
+                var posisjon = "";
+
                 elm.bind("keyup keypress", function (event) {
                     if (elm.hasClass('dagpenger')) {
-                        var stickyElementBunn = elm.next().find('.sticky-bunn');
+                        stickyElementBunn = elm.next().find('.sticky-bunn');
                         var stickyElementTopp = elm.find('.sticky-feilmelding');
-                        var stickyPosisjonTopp = stickyElementTopp[0].getBoundingClientRect();
+                        stickyPosisjonTopp = stickyElementTopp[0].getBoundingClientRect();
 
                     }
                     else {
-                        var stickyElementBunn = elm.find('.sticky-bunn');
-                        var stickyPosisjonTopp = {top: 0, bottom: 60};
+                        stickyElementBunn = elm.find('.sticky-bunn');
+                        stickyPosisjonTopp = {top: 0, bottom: 60};
                     }
 
                     if (event.which === 9) {
                         var stickyPosisjonBunn = stickyElementBunn[0].getBoundingClientRect();
-                        var elementMedFokus = document.activeElement;
-                        var posisjon = "";
+                        elementMedFokus = document.activeElement;
+                        posisjon = "";
 
                         if ($(elementMedFokus).is("[type=radio]") || $(elementMedFokus).is("[type=checkbox]")) {
                             posisjon = $(elementMedFokus).closest('div')[0].getBoundingClientRect();
@@ -73777,8 +73565,8 @@ angular.module('nav.datepicker', [])
                         }
                     }
                     if (event.which === 9 && event.shiftKey) {
-                        var elementMedFokus = document.activeElement;
-                        var posisjon = "";
+                        elementMedFokus = document.activeElement;
+                        posisjon = "";
 
                         if ($(elementMedFokus).is("[type=radio]") || $(elementMedFokus).is("[type=checkbox]")) {
                             posisjon = $(elementMedFokus).closest('div')[0].getBoundingClientRect();
@@ -73791,6 +73579,16 @@ angular.module('nav.datepicker', [])
                         }
                     }
                 });
+            }
+        };
+
+    }])
+    .directive('scrollingTittel', ['$timeout', function ($timeout) {
+        return {
+            link: function (scope, elm) {
+                $timeout(function() {
+                    scrollToElement(elm, 250);
+                }, 50);
             }
         };
     }]);;angular.module('nav.fremdriftsindikator', [])
@@ -73859,7 +73657,7 @@ angular.module('nav.datepicker', [])
                     }
 				});
 			}
-		}
+		};
 	}])
 	.directive('navHjelpetekstTooltip', ['$timeout', '$document', '$window', function ($timeout, $document, $window) {
 		return function (scope, element) {
@@ -73901,7 +73699,7 @@ angular.module('nav.datepicker', [])
                 var venstre = Math.min(element.position().left - plassSomMangleTilHoyre, -20);
                 element.css({left: venstre});
                 settPilStyling(venstre);
-            };
+            }
 
             function scrollDersomNodvendig() {
                 plasserTooltipVertikalt();
@@ -73910,7 +73708,7 @@ angular.module('nav.datepicker', [])
                     var animationSpeed = 200;
                     $('body, html').scrollToPos($document.scrollTop() + diff, animationSpeed);
                 }
-            };
+            }
 
             function settPilStyling(venstre) {
                 if ($('style:contains(.hjelpetekst .hjelpetekst-tooltip:before)').length === 0) {
@@ -73918,21 +73716,21 @@ angular.module('nav.datepicker', [])
                 } else {
                     $('style:contains(.hjelpetekst .hjelpetekst-tooltip:before)').text('.hjelpetekst .hjelpetekst-tooltip:before {left: ' + -venstre + 'px !important};');
                 }
-            };
+            }
 
             function settMaxHoyde() {
                 var padding = element.css('left');
                 var hoyde = element.height() - element.find('.tittel').height() - parseInt(padding.substring(0, padding.length - 2));
                 element.find('.tekst').css({'max-height': hoyde + "px"});
-            };
-		}
+            }
+		};
 	}]);
 ;angular.module('nav.navfaktum', [])
 	.directive('navFaktumProperty', [function () {
 		return {
 			replace   : false,
 			scope     : true,
-			controller: ['$scope', '$attrs', '$filter', 'data', 'Faktum', function ($scope, $attrs, $filter, data, Faktum) {
+			controller: ['$scope', '$attrs', '$filter', function ($scope, $attrs, $filter) {
 				var val = $scope.parentFaktum.properties[$attrs.navFaktumProperty];
 				if (val && val.match(/\d\d\d\d\.\d\d\.\d\d/)) {
 					val = new Date(val);
@@ -73950,7 +73748,7 @@ angular.module('nav.datepicker', [])
 						$scope.parentFaktum.properties[$attrs.navFaktumProperty] = value;
 					}
 				});
-			}]}
+			}]};
 	}])
 	.directive('navFaktum', [function () {
 		return {
@@ -74013,28 +73811,28 @@ angular.module('nav.datepicker', [])
 									}
 								}
 								$scope.parentFaktum.properties[prop] = value;
-							})
+							});
 						}
                         $scope.parentFaktum.$save();
 					}
 				};
 				this.lagreFaktum = $scope.lagreFaktum;
 			}]
-		}
+		};
 	}]);
 ;angular.module('nav.input', ['nav.cmstekster'])
-    .directive('navconfig', function ($parse) {
+    .directive('navconfig', [function () {
         return {
             link: {
                 pre: function (scope, element, attr) {
-                    for (key in attr) {
+                    for (var key in attr) {
                         if (key.indexOf('nav') === 0 && key !== 'navconfig') {
                             scope[key] = attr[key];
                         }
                     }
                 }}
-        }
-    })
+        };
+    }])
     .directive('navradio', [function () {
         return {
             restrict: 'A',
@@ -74069,7 +73867,7 @@ angular.module('nav.datepicker', [])
                 }
             },
             templateUrl: '../js/common/directives/navinput/navradioTemplate.html'
-        }
+        };
     }])
     .directive('navcheckbox', ['cms', function (cms) {
         return {
@@ -74082,7 +73880,7 @@ angular.module('nav.datepicker', [])
                     scope.hjelpetekst = {
                         tittel: cms.tekster[attr.navlabel + '.hjelpetekst.tittel'],
                         tekst: cms.tekster[attr.navlabel + '.hjelpetekst.tekst']
-                    }
+                    };
 
                 },
                 post: function (scope, element) {
@@ -74104,7 +73902,7 @@ angular.module('nav.datepicker', [])
                     };
                 }},
             templateUrl: '../js/common/directives/navinput/navcheckboxTemplate.html'
-        }
+        };
     }])
 
     .directive('navtekst', [function () {
@@ -74125,15 +73923,15 @@ angular.module('nav.datepicker', [])
                         scope.inputfeltmaxlength = undefined;
                     }
                 },
-                post: function (scope, element, attrs, ctrl) {
+                post: function (scope, element) {
                     scope.hvisSynlig = function () {
                         return element.is(':visible');
                     };
                 }
             },
             templateUrl: '../js/common/directives/navinput/navtekstTemplate.html'
-        }
-    }]).directive('tekstfeltPatternvalidering', ['$timeout', function ($timeout) {
+        };
+    }]).directive('tekstfeltPatternvalidering', [function () {
         return {
             require: 'ngModel',
             link: function (scope, element, attrs, ctrl) {
@@ -74141,9 +73939,9 @@ angular.module('nav.datepicker', [])
                     if (ctrl.$valid) {
                         scope.lagreFaktum();
                     }
-                })
+                });
             }
-        }
+        };
     }])
 
     .directive('navorganisasjonsnummerfelt', [function () {
@@ -74151,13 +73949,13 @@ angular.module('nav.datepicker', [])
             restrict: "A",
             replace: true,
             scope: true,
-            link: function (scope, element, attrs) {
+            link: function (scope, element) {
                 scope.erSynlig = function () {
                     return element.is(':visible');
-                }
+                };
             },
             templateUrl: '../js/common/directives/navinput/navorgnrfeltTemplate.html'
-        }
+        };
     }]).directive('orgnrValidate', [function () {
         return {
             require: 'ngModel',
@@ -74175,7 +73973,7 @@ angular.module('nav.datepicker', [])
                     return ctrl.$error.required;
                 };
             }
-        }
+        };
     }])
 
     .directive('navButtonSpinner', [function () {
@@ -74190,7 +73988,7 @@ angular.module('nav.datepicker', [])
                 click: '&'
             },
             templateUrl: '../js/common/directives/navinput/navbuttonspinnerTemplate.html'
-        }
+        };
     }])
 
     .directive('booleanVerdi', [function () {
@@ -74216,7 +74014,7 @@ angular.module('nav.datepicker', [])
     }]);
 ;angular.module('nav.textarea', [])
 	.directive('navtextarea', [function () {
-		var linker = function (scope, element, attrs) {
+		var linker = function (scope) {
 			if (scope.attr('data-obligatorisk')) {
 				return '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html';
 			} else {
@@ -74262,8 +74060,6 @@ angular.module('nav.datepicker', [])
 				}},
 			templateUrl: linker
 		};
-
-
 	}])
 	.directive('validateTextarea', ['$timeout', 'cms', function ($timeout, cms) {
 		return {
@@ -74356,7 +74152,7 @@ angular.module('nav.datepicker', [])
 					scope.lagreFaktum();
 				};
 			}
-		}
+		};
 	}]);
 ;// https://github.com/itsdrewmiller/angular-perferct-scrollbar
 angular.module('nav.scrollbar', []).directive('navScroll', ['$parse', '$timeout', function ($parse, $timeout) {
@@ -74373,7 +74169,7 @@ angular.module('nav.scrollbar', []).directive('navScroll', ['$parse', '$timeout'
         $(window).bind('resize', function() {
             elem.perfectScrollbar('update');
         });
-	}
+	};
 }]);
 ;/*! Copyright (c) 2011 Brandon Aaron (http://brandonaaron.net)
  * Licensed under the MIT License (LICENSE.txt).
@@ -75116,7 +74912,7 @@ angular.module('nav.select', ['ngSanitize'])
 					scope.orginalListe = scope.$parent.$eval(attrs.options);
 
 					for (var i = 0; i < scope.orginalListe.length; i++) {
-						scope.orginalListe[i]['displayText'] = scope.orginalListe[i].text;
+						scope.orginalListe[i].displayText = scope.orginalListe[i].text;
 					}
 
 					scope.vistListe = filterListePaaSoketekst();
@@ -75167,11 +74963,11 @@ angular.module('nav.select', ['ngSanitize'])
 
                     scope.navSelect = function() {
                         return !scope.vanligSelect();
-                    }
+                    };
 
                     scope.vanligSelect = function() {
                         return erTouchDevice();
-                    }
+                    };
 
 					scope.$on(eventForAValidereHeleFormen, function () {
 						harHattFokus = true;
@@ -75285,7 +75081,7 @@ angular.module('nav.select', ['ngSanitize'])
 							return true;
 						} else if (!valgtElementErSynlig && hentVerdiTilForsteSynligeListeelement() === verdi) {
 							scope.valgtElementVerdi = verdi;
-							return true
+							return true;
 						} else {
 							return false;
 						}
@@ -75441,7 +75237,7 @@ angular.module('nav.select', ['ngSanitize'])
 							if (idx === 0) {
 								var endOfString = text.substring(idx + query.length, text.length);
 								var matchedString = text.substring(idx, idx + query.length);
-								input[i]['displayText'] = '<span>' + matchedString + '</span>' + endOfString;
+								input[i].displayText = '<span>' + matchedString + '</span>' + endOfString;
 								matchArray.push(input[i]);
 							}
 						}
@@ -75455,13 +75251,13 @@ angular.module('nav.select', ['ngSanitize'])
 						return scope.vistListe.slice(minimumIndeks, maximumIndeks);
 					}
 				}
-			}}
+			}};
 	}]);
 ;angular.module('nav.sidetittel', [])
 	.directive('sidetittel', ['$document', 'cms', function ($document, cms) {
 		return function (scope, element, attrs) {
 			$document[0].title = cms.tekster[attrs.sidetittel];
-		}
+		};
 	}]);
 ;angular.module('nav.skjematittel', [])
 	.directive('navTittel', [function () {
@@ -75473,5 +75269,5 @@ angular.module('nav.select', ['ngSanitize'])
 				}
 			},
 			templateUrl: '../js/common/directives/tittel/tittelTemplate.html'
-		}
+		};
 	}]);

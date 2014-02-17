@@ -11,7 +11,7 @@ angular.module('nav.markup.bodydirective', [])
 					$('body').removeClass('modalside');
 				}
 			});
-		}
+		};
 	}])
 	.directive('avbrytHelper', ['$timeout', function ($timeout) {
 		return function (scope, element) {
@@ -22,5 +22,5 @@ angular.module('nav.markup.bodydirective', [])
 					$('body').attr('id', '');
 				}
 			});
-		}
+		};
 	}]);

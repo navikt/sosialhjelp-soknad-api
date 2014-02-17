@@ -57,7 +57,7 @@ angular.module('nav.select', ['ngSanitize'])
 					scope.orginalListe = scope.$parent.$eval(attrs.options);
 
 					for (var i = 0; i < scope.orginalListe.length; i++) {
-						scope.orginalListe[i]['displayText'] = scope.orginalListe[i].text;
+						scope.orginalListe[i].displayText = scope.orginalListe[i].text;
 					}
 
 					scope.vistListe = filterListePaaSoketekst();
@@ -108,11 +108,11 @@ angular.module('nav.select', ['ngSanitize'])
 
                     scope.navSelect = function() {
                         return !scope.vanligSelect();
-                    }
+                    };
 
                     scope.vanligSelect = function() {
                         return erTouchDevice();
-                    }
+                    };
 
 					scope.$on(eventForAValidereHeleFormen, function () {
 						harHattFokus = true;
@@ -226,7 +226,7 @@ angular.module('nav.select', ['ngSanitize'])
 							return true;
 						} else if (!valgtElementErSynlig && hentVerdiTilForsteSynligeListeelement() === verdi) {
 							scope.valgtElementVerdi = verdi;
-							return true
+							return true;
 						} else {
 							return false;
 						}
@@ -382,7 +382,7 @@ angular.module('nav.select', ['ngSanitize'])
 							if (idx === 0) {
 								var endOfString = text.substring(idx + query.length, text.length);
 								var matchedString = text.substring(idx, idx + query.length);
-								input[i]['displayText'] = '<span>' + matchedString + '</span>' + endOfString;
+								input[i].displayText = '<span>' + matchedString + '</span>' + endOfString;
 								matchArray.push(input[i]);
 							}
 						}
@@ -396,5 +396,5 @@ angular.module('nav.select', ['ngSanitize'])
 						return scope.vistListe.slice(minimumIndeks, maximumIndeks);
 					}
 				}
-			}}
+			}};
 	}]);

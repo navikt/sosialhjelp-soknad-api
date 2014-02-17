@@ -46,8 +46,6 @@ angular.module('nav.textarea', [])
 				}},
 			templateUrl: linker
 		};
-
-
 	}])
 	.directive('validateTextarea', ['$timeout', 'cms', function ($timeout, cms) {
 		return {
@@ -140,5 +138,5 @@ angular.module('nav.textarea', [])
 					scope.lagreFaktum();
 				};
 			}
-		}
+		};
 	}]);

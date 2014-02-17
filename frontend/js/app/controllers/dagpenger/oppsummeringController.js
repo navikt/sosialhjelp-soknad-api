@@ -19,7 +19,7 @@ angular.module('nav.oppsummering', [])
             }
         }, function () {
             $scope.skalViseFeilmelding.value = false;
-        })
+        });
 
         $scope.sendSoknad = function () {
             if ($scope.harbekreftet.value) {
@@ -38,7 +38,7 @@ angular.module('nav.oppsummering', [])
             } else {
                 $scope.skalViseFeilmelding.value = true;
             }
-        }
+        };
     }])
     .filter('formatterFnr', [function () {
         return function (fnr) {

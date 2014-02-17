@@ -8,5 +8,5 @@ angular.module('nav.skjematittel', [])
 				}
 			},
 			templateUrl: '../js/common/directives/tittel/tittelTemplate.html'
-		}
+		};
 	}]);
