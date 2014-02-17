@@ -14,7 +14,6 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 
@@ -103,10 +102,6 @@ public class WebSoknad implements Serializable {
         this.faktaListe = faktaListe;
     }
 
-    public final void leggTilFakta(Map<String, Faktum> fakta) {
-        this.faktaListe.addAll(fakta.values());
-    }
-
     public final WebSoknad leggTilFaktum(Faktum faktum) {
         this.faktaListe.add(faktum);
         return this;
@@ -142,12 +137,12 @@ public class WebSoknad implements Serializable {
     }
 
     public WebSoknad medskjemaNummer(String skjemaNummer) {
-        this.skjemaNummer = skjemaNummer;
+        setSkjemaNummer(skjemaNummer);
         return this;
     }
 
     public WebSoknad medBehandlingId(String behandlingsId) {
-        this.brukerBehandlingId = behandlingsId;
+        setBrukerBehandlingId(behandlingsId);
         return this;
     }
 
@@ -158,11 +153,10 @@ public class WebSoknad implements Serializable {
 
     public WebSoknad sistLagret(Timestamp sistLagret) {
         if (sistLagret != null) {
-            this.sistLagret = new DateTime(sistLagret.getTime());
+            setSistLagret(new DateTime(sistLagret.getTime()));
         } else {
             this.sistLagret = null;
         }
-
         return this;
     }
 
@@ -186,7 +180,7 @@ public class WebSoknad implements Serializable {
     }
 
     public WebSoknad medBrukerData(List<Faktum> brukerData) {
-        faktaListe = new ArrayList<>(brukerData);
+        setFaktaListe(new ArrayList<>(brukerData));
         return this;
     }
 
@@ -196,7 +190,7 @@ public class WebSoknad implements Serializable {
     }
 
     public WebSoknad medDelstegStatus(DelstegStatus delstegStatus) {
-        this.delstegStatus = delstegStatus;
+        setDelstegStatus(delstegStatus);
         return this;
     }
 

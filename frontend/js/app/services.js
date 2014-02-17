@@ -146,10 +146,6 @@
                         faktumId : '@faktum.faktumId',
                         vedleggId: '@vedlegg.vedleggId'
                     }
-                },
-                endreValg   : {
-                    url   : '/sendsoknad/rest/soknad/:soknadId/forventning/valg',
-                    method: 'POST'
                 }
             });
         }])
