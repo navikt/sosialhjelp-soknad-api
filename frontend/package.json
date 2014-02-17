@@ -42,6 +42,7 @@
     "grunt-html-build": "~0.3.2",
     "grunt-html2js": "~0.2.4",
     "karma-ie-launcher": "~0.1.1",
-    "karma-ng-html2js-preprocessor": "~0.1.0"
+    "karma-ng-html2js-preprocessor": "~0.1.0",
+    "grunt-ngmin": "0.0.3"
   }
 }

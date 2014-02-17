@@ -1,6 +1,8 @@
+//TODO: Fjern sider som ikke lengre skal være side...som reell arebeidssøker, arbeidsforhold etc
+
 angular.module('app.routes', ['ngRoute'])
 
-    .config(function ($routeProvider, $locationProvider) {
+    .config(['$routeProvider', function ($routeProvider) {
         $routeProvider
             .when('/informasjonsside', {
                 templateUrl: '../views/templates/informasjonsside.html',
@@ -196,14 +198,6 @@ angular.module('app.routes', ['ngRoute'])
                     }
                 }
             })
-            .when('/kvittering', {
-                templateUrl: '../views/templates/kvittering-innsendt.html',
-                resolve: {
-                    notUsedButRequiredProperty: function (TekstService) {
-                        return TekstService;
-                    }
-                }
-            })
             .when('/avbryt', {
                 templateUrl: '../views/templates/avbryt.html',
                 resolve: {
@@ -239,10 +233,10 @@ angular.module('app.routes', ['ngRoute'])
             .when('/soknadliste', {templateUrl: '../views/templates/soknadliste.html'})
             .otherwise({redirectTo: '/informasjonsside'});
 
-    }).run(function ($rootScope, $location, $anchorScroll, $routeParams) {
+    }]).run(['$rootScope', '$location', '$anchorScroll', '$routeParams', function ($rootScope, $location, $anchorScroll, $routeParams) {
         $rootScope.$on('$routeChangeSuccess', function (newRoute, oldRoute) {
             if (_gaq) {
-                var trackPage = "startSoknad"
+                var trackPage = "startSoknad";
                 if (erSoknadStartet()) {
                     trackPage = $location.path().split("/")[1];
                 }
@@ -251,4 +245,4 @@ angular.module('app.routes', ['ngRoute'])
             $location.hash($routeParams.scrollTo);
             $anchorScroll();
         });
-    });
+    }]);

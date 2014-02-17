@@ -5,6 +5,7 @@ angular.module('nav.barn', ['app.services'])
         var url = $location.$$url;
         var endreModus = url.indexOf('endrebarn') !== -1;
         var barnetilleggModus = url.indexOf('sokbarnetillegg') !== -1;
+        var barnUnderEndring;
         $scope.underAtten = {value: ''};
 
         $scope.soknadId = data.soknad.soknadId;
@@ -14,7 +15,7 @@ angular.module('nav.barn', ['app.services'])
 
         if (endreModus) {
             faktumId = url.split('/').pop();
-            var barnUnderEndring = {};
+            barnUnderEndring = {};
 
             if (data.finnFakta('barn').length > 0) {
                 angular.forEach(data.finnFakta('barn'), function (value) {
@@ -106,11 +107,11 @@ angular.module('nav.barn', ['app.services'])
 
         $scope.erEosLandAnnetEnnNorge = function() {
             return $scope.eosLandType == "eos";
-        }
+        };
 
         $scope.erIkkeEosLand = function() {
             return $scope.eosLandType == "ikkeEos";   
-        }
+        };
 
         function oppdaterCookieValue(faktumId) {
             var barneCookie = $cookieStore.get('scrollTil');
@@ -142,7 +143,7 @@ angular.module('nav.barn', ['app.services'])
                         if (value.faktumId.toString() === $scope[type].faktumId) {
                             faktaType[index] = $scope[type];
                         }
-                    })
+                    });
                 } else {
                     data.leggTilFaktum($scope[type]);
                 }
@@ -156,11 +157,11 @@ angular.module('nav.barn', ['app.services'])
         }
 
         $scope.$watch(function () {
-            if ($scope.barn.properties.land && $scope.barn.properties.land != "") {
+            if ($scope.barn.properties.land && $scope.barn.properties.land !== '') {
                 return $scope.barn.properties.land;
             }
         }, function () {
-            if($scope.barn.properties.land && $scope.barn.properties.land != "") {
+            if($scope.barn.properties.land && $scope.barn.properties.land !== '') {
                 $resource('/sendsoknad/rest/landtype/:landkode').get(
                     {landkode: $scope.barn.properties.land},
                     function (eosdata) { // Success
@@ -209,5 +210,5 @@ angular.module('nav.barn', ['app.services'])
                 return result;
             }
             return 'undefined';
-        }
+        };
     }]);

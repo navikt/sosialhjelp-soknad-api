@@ -9,7 +9,7 @@ angular.module('nav.barnetillegg', [])
                 b.properties.barnetillegg = 'false';
             }
             if (b.properties.ikkebarneinntekt === undefined) {
-                b.properties.ikkebarneinntekt = 'true'
+                b.properties.ikkebarneinntekt = 'true';
             }
         });
 
@@ -23,7 +23,7 @@ angular.module('nav.barnetillegg', [])
 		};
 
 		$scope.ingenLandRegistrert = function (barn) {
-			return !barn.properties.land
+			return !barn.properties.land;
 		};
 
 		$scope.leggTilBarn = function ($event) {
@@ -47,7 +47,7 @@ angular.module('nav.barnetillegg', [])
 		$scope.slettBarn = function (b, index, $event) {
 			$event.preventDefault();
 
-            var barn = data.finnFakta('barn')
+            var barn = data.finnFakta('barn');
             barn.splice(index, 1);
 			data.slettFaktum(b);
 
@@ -56,14 +56,14 @@ angular.module('nav.barnetillegg', [])
 
         $scope.kreverVedlegg = function(barn) {
             return $scope.barnetHarInntekt(barn) || $scope.norskBarnIkkeFunnetITPS(barn);
-        }
+        };
 
         $scope.norskBarnIkkeFunnetITPS = function(barn) {
             if(barn && barn.properties) { 
                 return barn.type === 'BRUKERREGISTRERT' && barn.properties.land == "NOR";
             }   
             return false;
-        }
+        };
 
 		$scope.erGutt = function (barn) {
 			return barn.properties.kjonn === 'm';
@@ -114,7 +114,7 @@ angular.module('nav.barnetillegg', [])
 				aapneTabs   : aapneTabIds,
 				gjeldendeTab: '#barnetillegg',
 				faktumId    : faktumId
-			})
+			});
 		}
 
 	}]);

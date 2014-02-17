@@ -38,5 +38,5 @@ angular.module('nav.booleanradio', ['nav.cmstekster', 'nav.input'])
 				}
 			},
 			templateUrl: '../js/common/directives/booleanradio/booleanradioTemplate.html'
-		}
+		};
 	}]);

@@ -29,26 +29,26 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         };
 
         $scope.hentAdresseLinjer = function() {
-            if( $scope.utslagskriterier &&  $scope.utslagskriterier.registrertAdresse != "") {
+            if( $scope.utslagskriterier &&  $scope.utslagskriterier.registrertAdresse !== '') {
                 return $scope.utslagskriterier.registrertAdresse.split(", ");
             }
             return [];
-        }
+        };
 
         $scope.tpsSvarer = function () {
-            return !$scope.tpsSvarerIkke()
-        }
+            return !$scope.tpsSvarerIkke();
+        };
 
         $scope.tpsSvarerIkke = function () {
-            if ($scope.utslagskriterier.error != undefined) {
+            if ($scope.utslagskriterier.error !== undefined) {
                 return true;
             }
             return false;
-        }
+        };
 
         $scope.soknadErIkkeStartet = function () {
             return !$scope.soknadErStartet();
-        }
+        };
 
         $scope.soknadErStartet = function () {
             var behandlingId = getBehandlingIdFromUrl();
@@ -56,15 +56,15 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
                 return true;
             }
             return false;
-        }
+        };
 
         $scope.soknadErIkkeFerdigstilt = function () {
             return !$scope.soknadErFerdigstilt();
-        }
+        };
 
         $scope.soknadErFerdigstilt = function () {
             return data && data.soknad && data.soknad.status == "FERDIG";
-        }
+        };
 
         $scope.startSoknad = function () {
             var soknadType = decodeURI(window.location.pathname).split("/")[3];
@@ -76,16 +76,16 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
                 }, function () {
                     $scope.fremdriftsindikator.laster = false;
                 });
-        }
+        };
 
         $scope.harLestBrosjyre = function () {
             return $scope.utslagskriterier.harlestbrosjyre;
-        }
+        };
 
         $scope.fortsettLikevel = function ($event) {
             $event.preventDefault();
             fortsettLikevell = true;
-        }
+        };
 
         $scope.startSoknadDersomBrosjyreLest = function () {
             if ($scope.harLestBrosjyre()) {
@@ -94,7 +94,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
             } else {
                 $scope.skalViseBrosjyreMelding = true;
             }
-        }
+        };
 
         $scope.forsettSoknadDersomBrosjyreLest = function () {
             if ($scope.harLestBrosjyre()) {
@@ -103,7 +103,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
             } else {
                 $scope.skalViseBrosjyreMelding = true;
             }
-        }
+        };
 
         $scope.kravForDagpengerOppfylt = function () {
             return sjekkUtslagskriterier.erOppfylt() || fortsettLikevell;
@@ -145,19 +145,19 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
     .factory('sjekkUtslagskriterier', ['data', function (data) {
         function registrertArbeidssoker() {
             return data.utslagskriterier.registrertArbeidssøker === 'REGISTRERT';
-        };
+        }
 
         function ikkeRegistertArbeidssoker() {
             return data.utslagskriterier.registrertArbeidssøker === 'IKKE_REGISTRERT';
-        };
+        }
 
         function gyldigAlder() {
             return data.utslagskriterier.gyldigAlder === 'true';
-        };
+        }
 
         function bosattINorge() {
             return data.utslagskriterier.bosattINorge === 'true';
-        };
+        }
 
         return {
             erOppfylt: function() {
@@ -183,5 +183,5 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
             harUkjentStatusSomArbeidssoker: function() {
                 return !ikkeRegistertArbeidssoker() && !registrertArbeidssoker();
             }
-        }
+        };
     }]);

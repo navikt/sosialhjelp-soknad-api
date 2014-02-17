@@ -15,6 +15,6 @@ module.exports = {
                 jaSisteSeksMaaneder: element.all(by.css('[data-nav-faktum=utdanning] input')).get(1),
                 jaNaa: element.all(by.css('[data-nav-faktum=utdanning] input')).get(2)
             }
-        }
+        };
     }
 };

@@ -26,6 +26,6 @@ module.exports = {
                 ja: element.all(by.css('[data-nav-faktum*=villigjobb] input')).get(0),
                 nei: element.all(by.css('[data-nav-faktum*=villigjobb] input')).get(1)
             }
-        }
+        };
     }
 };

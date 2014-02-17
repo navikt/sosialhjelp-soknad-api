@@ -3,7 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.sikkerhet;
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.core.exception.AuthorizationException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.aktor.AktorIdService;
 import org.junit.Test;
@@ -30,7 +29,7 @@ public class TilgangskontrollTest {
         StaticSubjectHandler subjectHandler = (StaticSubjectHandler) SubjectHandler.getSubjectHandler();
 
         when(aktorIdService.hentAktorIdForFno(subjectHandler.getUid())).thenReturn("123");
-        when(soknadService.hentSoknad(1L)).thenReturn(new WebSoknad().medAktorId(subjectHandler.getUid()));
+        when(soknadService.hentSoknadEier(1L)).thenReturn(subjectHandler.getUid());
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(1L);
 
     }
@@ -41,7 +40,7 @@ public class TilgangskontrollTest {
         StaticSubjectHandler subjectHandler = (StaticSubjectHandler) SubjectHandler.getSubjectHandler();
 
         when(aktorIdService.hentAktorIdForFno(subjectHandler.getUid())).thenReturn("124");
-        when(soknadService.hentSoknad(1L)).thenReturn(new WebSoknad().medAktorId("123"));
+        when(soknadService.hentSoknadEier(1L)).thenReturn("123");
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(1L);
 
     }

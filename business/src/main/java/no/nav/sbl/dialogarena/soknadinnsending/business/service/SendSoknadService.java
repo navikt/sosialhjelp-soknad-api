@@ -11,11 +11,13 @@ public interface SendSoknadService {
     String startSoknad(String navSoknadId);
 
     WebSoknad hentSoknad(long soknadId);
-    
+
+    String hentSoknadEier(Long soknadId);
+
     Long hentSoknadMedBehandlinsId(String behandlingsId);
 
     Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum);
-    
+
     Long lagreSystemFaktum(Long soknadId, Faktum faktum, String uniqueProperty);
 
     void sendSoknad(long soknadId, byte[] outputStream);
@@ -28,8 +30,8 @@ public interface SendSoknadService {
 
     void slettBrukerFaktum(Long soknadId, Long faktumId);
 
-    WebSoknad hentSoknadMetaData(long soknadId);
 
+    WebSoknad hentSoknadMetaData(long soknadId);
 
     void settDelsteg(Long soknadId, DelstegStatus delstegStatus);
 }

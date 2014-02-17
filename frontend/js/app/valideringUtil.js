@@ -11,7 +11,7 @@
 			return true;
 		}
 		return 'required';
-	}
+	};
 
 	window.RequiredValidator = RequiredValidator;
 
