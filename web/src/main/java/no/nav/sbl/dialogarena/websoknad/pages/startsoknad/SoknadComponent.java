@@ -1,5 +1,9 @@
 package no.nav.sbl.dialogarena.websoknad.pages.startsoknad;
 
+import static java.nio.charset.Charset.forName;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.util.StreamUtils.copyToString;
+
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebComponent;
@@ -13,10 +17,6 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.nio.charset.Charset.forName;
-import static org.slf4j.LoggerFactory.getLogger;
-import static org.springframework.util.StreamUtils.copyToString;
 
 
 /**

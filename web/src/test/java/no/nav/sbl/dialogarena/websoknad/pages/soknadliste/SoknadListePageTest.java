@@ -1,8 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.pages.soknadliste;
 
 import static no.nav.modig.wicket.test.matcher.ComponentMatchers.withId;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -12,7 +10,6 @@ import no.nav.sbl.dialogarena.websoknad.config.FitNesseApplicationConfig;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.StartSoknadPage;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
@@ -48,8 +45,6 @@ public class SoknadListePageTest {
 		wicketTester.goTo(SoknadListePage.class);
 	}
 	
-	//TODO: Må fikses etter frontend flytting!
-    @Ignore
     @Test
     public void skalStarteNySoknadOmDagpenger() {
         wicketTester
