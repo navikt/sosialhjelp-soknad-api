@@ -216,7 +216,7 @@ angular.module('nav.select', ['ngSanitize'])
 						return hentListeLengde() === 0 && scope.inputVerdi;
 					};
 
-					scope.harFeil = function () {
+					scope.harKlikketKnapp = function () {
 						return scope.harRequiredFeil() || scope.inneholderIkkeSkrevetTekst();
 					};
 

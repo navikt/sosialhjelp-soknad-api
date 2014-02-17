@@ -514,7 +514,7 @@
                 scope.data = data;
             }));
             it('hvis arbeidsforholdet inneholder feil og arbeidsforholdet er lagret så skal feil vises', function () {
-                scope.harFeil = true;
+                scope.harKlikketKnapp = true;
                 scope.harLagretArbeidsforhold = false;
                 expect(scope.skalViseFeil()).toEqual(true);
             });
