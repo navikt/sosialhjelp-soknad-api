@@ -10,6 +10,6 @@ module.exports = {
                 });
             },
             validerbolk: element(by.css('#barnetillegg .spm-knapper button'))
-        }
+        };
     }
 };

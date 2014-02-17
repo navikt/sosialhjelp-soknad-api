@@ -67,7 +67,7 @@ public class PersonTest {
         String kontrollsiffer = "74";
 
         String fnr = dato + individisfferEnOgTo + kjonnSiffer + kontrollsiffer;
-        Barn barn = new Barn(1l, fnr, "andreas", "s", "svenskeby", "Norge");
+        Barn barn = new Barn(1l, fnr, "", "", "svenskeby", "Norge");
 
         Assert.assertEquals("m", barn.getKjonn());
 

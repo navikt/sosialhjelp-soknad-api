@@ -14,6 +14,6 @@ module.exports = {
                 nei: element.all(this.by.css('[data-nav-faktum=ikkeavtjentverneplikt] input')).get(0),
                 ja: element.all(this.by.css('[data-nav-faktum=ikkeavtjentverneplikt] input')).get(1)
             }
-        }
+        };
     }
 };

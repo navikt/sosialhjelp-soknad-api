@@ -12,7 +12,7 @@ angular.module('nav.egennaering', [])
             } else {
                 $scope.apneTab('egennaering');
             }
-        }
+        };
 
         $scope.orgnummer = data.finnFakta('egennaering.drivergennaering.orgnummer');
 
@@ -25,10 +25,10 @@ angular.module('nav.egennaering', [])
                 });
             $scope.orgnummer.push(faktum);
             data.fakta.push(faktum);
-        }
+        };
 
         //Orgnrfeltet genreres så lenge det ikke finnes et fra før ved f.eks refresh
-        if ($scope.orgnummer && $scope.orgnummer.length == 0) {
+        if ($scope.orgnummer && $scope.orgnummer.length === 0) {
             $scope.leggTilOrgnr();
         }
 
@@ -36,20 +36,20 @@ angular.module('nav.egennaering', [])
             org.$delete({soknadId: data.soknad.soknadId}).then(function () {
                 $scope.orgnummer.splice(index, 1);
             });
-        }
+        };
 
         //Skal ikke kunne slette første orgnr
         $scope.skalViseSlettKnapp = function (index) {
-            return !(index == 0);
-        }
+            return index !== 0;
+        };
 
         $scope.erSynlig = function (faktum) {
             return data.finnFaktum(faktum) && data.finnFaktum(faktum).value == 'false';
-        }
+        };
 
         $scope.gardseier = function (eier) {
             return data.finnFaktum(eier) && data.finnFaktum(eier).value == 'true' && $scope.erSynlig('egennaering.gardsbruk');
-        }
+        };
 
         $scope.svartPaHvemEierGardsbruket = function () {
             if (!$scope.erSynlig('egennaering.gardsbruk')) {
@@ -61,7 +61,7 @@ angular.module('nav.egennaering', [])
                 }
             }
             return false;
-        }
+        };
 
         var typeGardsbrukNokler = ['egennaering.gardsbruk.false.type.dyr', 'egennaering.gardsbruk.false.type.jord', 'egennaering.gardsbruk.false.type.skog', 'egennaering.gardsbruk.false.type.annet'];
         var eierGardsbrukNokler = ['egennaering.gardsbruk.false.eier.jeg', 'egennaering.gardsbruk.false.eier.ektefelle', 'egennaering.gardsbruk.false.eier.annet'];
@@ -83,7 +83,7 @@ angular.module('nav.egennaering', [])
             } else {
                 $scope.harHuketAvTypeGardsbruk.value = '';
             }
-        }
+        };
 
         $scope.endreEierGardsbruk = function () {
             var minstEnGardsbrukEierAvhuket = erCheckboxerAvhuket(eierGardsbrukNokler);
@@ -92,17 +92,17 @@ angular.module('nav.egennaering', [])
             } else {
                 $scope.harHuketAvEierGardsbruk.value = '';
             }
-        }
+        };
 
         $scope.totalsumAndel = {
             value: ''
-        }
+        };
 
         var skalViseAndelsProsentfeil = false;
 
         $scope.prosentFeil = function () {
             return skalViseAndelsProsentfeil;
-        }
+        };
 
         /*
          Andelsprosentfeltene vises kun dersom det tilsvarende andelseier-feltet er krysset av.
@@ -116,7 +116,7 @@ angular.module('nav.egennaering', [])
                 var andel = summerAndelsprosentene();
 
                 //Hvis feltet vises og er tomt, så skal kun requiredfeilmelding vises
-                if (isNaN(andel) || andel == '') {
+                if (isNaN(andel) || andel === '') {
                     skalViseAndelsProsentfeil = false;
                 }
                 //hvis feltet/ene summerer til 100 så setter en verdi i hidden-feltet som er required
@@ -130,7 +130,7 @@ angular.module('nav.egennaering', [])
             } else {
                 skalViseAndelsProsentfeil = false;
             }
-        }
+        };
         $scope.summererAndeleneTil100();
 
 
@@ -198,7 +198,7 @@ angular.module('nav.egennaering', [])
             if (data.finnFaktum('egennaering.gardsbruk').value == 'false') {
                 settBreddeSlikAtDetFungererIIE();
             }
-        })
+        });
 
         function settBreddeSlikAtDetFungererIIE() {
             setTimeout(function () {
@@ -206,5 +206,4 @@ angular.module('nav.egennaering', [])
             }, 50);
         }
 
-    }])
-;
+    }]);

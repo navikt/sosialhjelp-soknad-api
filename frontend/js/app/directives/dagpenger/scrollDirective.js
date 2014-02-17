@@ -37,5 +37,5 @@ angular.module('nav.scroll.directive', [])
 					}
 				});
 			}]
-		}
+		};
 	}]);

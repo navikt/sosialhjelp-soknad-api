@@ -10,6 +10,6 @@ module.exports = {
                 });
             },
             validerbolk: element(by.css('#personalia .spm-knapper button'))
-        }
+        };
     }
 };

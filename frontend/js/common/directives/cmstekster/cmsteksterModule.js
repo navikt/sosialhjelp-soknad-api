@@ -1,24 +1,24 @@
 angular.module('nav.cmstekster', ['app.services'])
-	.directive('cmsvedlegg', ['cms', '$compile', function (cms, $compile) {
+	.directive('cmsvedlegg', [function () {
 		return {
 			scope   : false,
 			required: 'navFaktum',
 			link    : {
-				pre: function (scope, elem, attr, faktum) {
+				pre: function (scope, elem, attr) {
                     scope.cmsProps = {};
                     if (attr.cmsvedlegg) {
 						scope.cmsProps.ekstra = attr.cmsvedlegg;
 					}
                 }
 			}
-		}
+		};
 	}])
-	.directive('cmstekster', ['cms', '$compile', function (cms, $compile) {
+	.directive('cmstekster', ['cms', function (cms) {
 
 		return {
 			scope: false,
 			link : function (scope, element, attrs) {
-				var nokkel = attrs['cmstekster'];
+				var nokkel = attrs.cmstekster;
 				var cmstekst = cms.tekster[nokkel];
 
 				if (cmstekst === undefined) {
@@ -26,8 +26,7 @@ angular.module('nav.cmstekster', ['app.services'])
 				}
 
 				if (scope.cmsProps) {
-					Object.keys(scope.cmsProps).forEach(function (attr) {
-						//cmstekst = cmstekst.replace('${' + attr + '}', scope.cmsProps[attr], 'i');
+					Object.keys(scope.cmsProps).forEach(function () {
 						cmstekst = cmstekst + ': ' + scope.cmsProps.ekstra;
 					});
 				}
@@ -44,13 +43,13 @@ angular.module('nav.cmstekster', ['app.services'])
     }])
     .directive('cmshtml', ['cms', function (cms) {
         return function ($scope, element, attrs) {
-            var nokkel = attrs['cmshtml'];
+            var nokkel = attrs.cmshtml;
             element.html(cms.tekster[nokkel]);
         };
     }])
     .directive('cmslenketekster', ['cms', function (cms) {
         return function ($scope, element, attrs) {
-            var nokkel = attrs['cmslenketekster'];
+            var nokkel = attrs.cmslenketekster;
             if (element.is('a')) {
                 element.attr('href', cms.tekster[nokkel]);
             }
@@ -61,5 +60,5 @@ angular.module('nav.cmstekster', ['app.services'])
             var tekst = cms.tekster[nokkel];
 
             return tekst === undefined ? '' : tekst;
-        }
+        };
     }]);

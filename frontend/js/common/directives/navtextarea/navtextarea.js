@@ -1,6 +1,6 @@
 angular.module('nav.textarea', [])
 	.directive('navtextarea', [function () {
-		var linker = function (scope, element, attrs) {
+		var linker = function (scope) {
 			if (scope.attr('data-obligatorisk')) {
 				return '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html';
 			} else {
@@ -46,8 +46,6 @@ angular.module('nav.textarea', [])
 				}},
 			templateUrl: linker
 		};
-
-
 	}])
 	.directive('validateTextarea', ['$timeout', 'cms', function ($timeout, cms) {
 		return {
@@ -140,5 +138,5 @@ angular.module('nav.textarea', [])
 					scope.lagreFaktum();
 				};
 			}
-		}
+		};
 	}]);

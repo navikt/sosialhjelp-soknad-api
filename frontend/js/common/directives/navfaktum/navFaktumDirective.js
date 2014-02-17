@@ -3,7 +3,7 @@ angular.module('nav.navfaktum', [])
 		return {
 			replace   : false,
 			scope     : true,
-			controller: ['$scope', '$attrs', '$filter', 'data', 'Faktum', function ($scope, $attrs, $filter, data, Faktum) {
+			controller: ['$scope', '$attrs', '$filter', function ($scope, $attrs, $filter) {
 				var val = $scope.parentFaktum.properties[$attrs.navFaktumProperty];
 				if (val && val.match(/\d\d\d\d\.\d\d\.\d\d/)) {
 					val = new Date(val);
@@ -21,7 +21,7 @@ angular.module('nav.navfaktum', [])
 						$scope.parentFaktum.properties[$attrs.navFaktumProperty] = value;
 					}
 				});
-			}]}
+			}]};
 	}])
 	.directive('navFaktum', [function () {
 		return {
@@ -84,12 +84,12 @@ angular.module('nav.navfaktum', [])
 									}
 								}
 								$scope.parentFaktum.properties[prop] = value;
-							})
+							});
 						}
                         $scope.parentFaktum.$save();
 					}
 				};
 				this.lagreFaktum = $scope.lagreFaktum;
 			}]
-		}
+		};
 	}]);

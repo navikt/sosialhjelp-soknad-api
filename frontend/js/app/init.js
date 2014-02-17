@@ -1,9 +1,11 @@
+/* jshint scripturl: true */
+
 angular.module('sendsoknad')
     .value('data', {})
     .value('cms', {})
     .constant('validertKlasse', 'validert')
     .run(['$http', '$templateCache', '$rootScope', 'data', '$location', 'sjekkUtslagskriterier', function ($http, $templateCache, $rootScope, data, $location, sjekkUtslagskriterier) {
-        $('#hoykontrast a, .skriftstorrelse a').attr('href', 'javascript:void(0)')
+        $('#hoykontrast a, .skriftstorrelse a').attr('href', 'javascript:void(0)');
 
         $rootScope.$on('$routeChangeSuccess', function(event, next, current) {
             redirectDersomSoknadErFerdig();
@@ -59,7 +61,7 @@ angular.module('sendsoknad')
             return data.soknad.delstegStatus === "VEDLEGG_VALIDERT";
         }
     }])
-    .factory('InformasjonsSideResolver', ['data', 'cms', '$resource', '$q', '$route', '$location', function (data, cms, $resource, $q, $route, $location) {
+    .factory('InformasjonsSideResolver', ['data', 'cms', '$resource', '$q', function (data, cms, $resource, $q) {
         var promiseArray = [];
 
         var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
@@ -98,7 +100,7 @@ angular.module('sendsoknad')
                     
                 }
             );
-            promiseArray.push(soknadDeferer.promise)       
+            promiseArray.push(soknadDeferer.promise);
         }
 
         promiseArray.push(tekster.$promise);
@@ -120,7 +122,7 @@ angular.module('sendsoknad')
                 soknadDeferer.resolve();
             }
         );
-        promiseArray.push(soknadDeferer.promise)
+        promiseArray.push(soknadDeferer.promise);
         
         return $q.all(promiseArray);
     }])

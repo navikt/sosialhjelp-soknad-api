@@ -1,5 +1,5 @@
 angular.module('nav.validerskjema', [])
-    .directive('validerSkjema', ['validertKlasse', '$timeout', '$location', 'soknadService', 'data', '$q', function (validertKlasse, $timeout, $location, soknadService, data, $q) {
+    .directive('validerSkjema', ['validertKlasse', '$timeout', '$location', 'soknadService', 'data', function (validertKlasse, $timeout, $location, soknadService, data) {
         return {
             require: '^form',
             link: function (scope, element, attrs, form) {
@@ -57,7 +57,7 @@ angular.module('nav.validerskjema', [])
                     function setAktivFeilmeldingsklasse(element) {
                         element.addClass('aktiv-feilmelding');
                     }
-                }
+                };
             }
-        }
+        };
     }]);

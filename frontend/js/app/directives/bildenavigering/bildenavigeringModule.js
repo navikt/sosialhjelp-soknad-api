@@ -44,5 +44,5 @@ angular.module('nav.bildenavigering', [])
                     return '../js/app/directives/bildenavigering/bildenavigeringTemplateLiten.html';
                 }
             }
-        }
+        };
     }]);

@@ -49,7 +49,7 @@ angular.module('nav.feilmeldinger', [])
                     }
                     scope.$broadcast(eventString);
                     return ctrl.$valid;
-                }
+                };
 
                 scope.$watch(function () {
                     return ctrl.$error;
@@ -64,11 +64,11 @@ angular.module('nav.feilmeldinger', [])
                         fortsattFeilListe = fortsattFeilListe.concat(leggTilFeilSomFortsattSkalVises(verdi, feilNokkel));
                     });
                     scope.feilmeldinger = fortsattFeilListe;
-                }
+                };
 
                 scope.skalViseFeilmeldinger = function () {
                     return scope.feilmeldinger.length > 0;
-                }
+                };
 
                 scope.scrollTilElementMedFeil = function (feilmelding) {
                     if (scope.erKlikkbarFeil(feilmelding)) {
@@ -90,14 +90,13 @@ angular.module('nav.feilmeldinger', [])
                             scope.giFokus(feilmelding.elem);
                         }
                     }
-                }
+                };
 
                 /*
                  Ved ng-repeat så må vi sjekke hvilket element som inneholder feil først. Sjekker at lengden er større
                  enn 1 for at checkbokser som bruker hidden-felt og ikke har klassen ng-invalid får riktig fokus
                  */
                 scope.giFokus = function (element) {
-                    console.log(element)
                     $timeout(function() {
                         if (typeof element === 'object' && element.length > 1) {
                             for (var i = 0; i < element.length; i++) {
@@ -112,11 +111,11 @@ angular.module('nav.feilmeldinger', [])
                         }
                     });
 
-                }
+                };
 
                 scope.erKlikkbarFeil = function (feilmelding) {
                     return feilmelding.elem && feilmelding.elem.length > 0;
-                }
+                };
 
 
                 /*
@@ -198,6 +197,6 @@ angular.module('nav.feilmeldinger', [])
 //              skal bruke tabIndex når det er på plass
             }
             return feilmeldinger;
-        }
+        };
     }]);
 
