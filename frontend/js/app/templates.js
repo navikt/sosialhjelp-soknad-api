@@ -1902,20 +1902,20 @@ angular.module("../views/templates/informasjonsside.html", []).run(["$templateCa
     "	<div data-panelbelyst>\n" +
     "        <div class=\"feil\" data-ng-show=\"tpsSvarerIkke()\">\n" +
     "        	<div class=\"utrop-sirkel-ikon\"></div>\n" +
-    "        	<h1 data-cmstekster=\"feilmelding\"></h1>\n" +
+    "        	<h1>{{ 'feilmelding' | cmstekst }}</h1>\n" +
     "       		<p class=\"mini-strek\">{{ 'feilmelding.tps' | cmstekst }}</p>\n" +
     "			<div class=\"knapper\">\n" +
-    "       			<a type=\"button\" class=\"knapp-hoved\" href=\"{{inngangsportenUrl}}\" data-cmstekster=\"feilmelding.lenketekst\"></a>\n" +
+    "       			<a type=\"button\" class=\"knapp-hoved\" href=\"{{ inngangsportenUrl }}\">{{ 'feilmelding.lenketekst' | cmstekst }}</a>\n" +
     "       		</div>\n" +
     "       	</div>\n" +
     "       	<div data-ng-show=\"tpsSvarer()\">\n" +
-    "	        <h2 data-ng-show=\"kravForDagpengerOppfylt()\" class=\"stor strek-ikon-info-orange\" data-cmstekster=\"dagpenger.informasjonsside.tittel\"></h2>\n" +
+    "	        <h2 data-ng-show=\"kravForDagpengerOppfylt()\" class=\"stor strek-ikon-info-orange\">{{ 'dagpenger.informasjonsside.tittel' | cmstekst }}</h2>\n" +
     "	    	\n" +
     "			<div id=\"utslagskriterier\" data-ng-if=\"kravForDagpengerIkkeOppfylt()\">\n" +
     "				<div class=\"utslagskriterie\" data-ng-if=\"ikkeBosattINorge()\">\n" +
-    "					<h2 class=\"stor strek-ikon-info-orange\" data-cmstekster=\"dagpenger.informasjonsside.ikkebosattinorge.tittel\"></h2>\n" +
+    "					<h2 class=\"stor strek-ikon-info-orange\">{{ 'dagpenger.informasjonsside.ikkebosattinorge.tittel' | cmstekst }}</h2>\n" +
     "					\n" +
-    "					<p class=\"label\" data-cmstekster=\"utslagskriterier.utslag.bosted.label\"></p>\n" +
+    "					<p class=\"label\">{{ 'utslagskriterier.utslag.bosted.label' | cmstekst }}</p>\n" +
     "					<div class=\"adresse\">\n" +
     "						<div data-ng-repeat=\"linje in hentAdresseLinjer()\">\n" +
     "                            <span>{{ linje }}</span>\n" +
@@ -1924,30 +1924,30 @@ angular.module("../views/templates/informasjonsside.html", []).run(["$templateCa
     "			\n" +
     "					<ul>\n" +
     "						<li>\n" +
-    "							<p data-cmstekster=\"utslagskriterier.utslag.bosted.liste.1\"></p>\n" +
+    "							<p>{{ 'utslagskriterier.utslag.bosted.liste.1' | cmstekst }}</p>\n" +
     "						</li>\n" +
     "						<li>\n" +
-    "							<p data-cmstekster=\"utslagskriterier.utslag.bosted.liste.2\"></p>\n" +
+    "							<p>{{ 'utslagskriterier.utslag.bosted.liste.2' | cmstekst }}</p>\n" +
     "						</li>\n" +
     "					</ul>\n" +
     "				</div>\n" +
     "\n" +
     "				<div class=\"utslagskriterie\" data-ng-if=\"ikkeGyldigAlder()\">\n" +
-    "					<h2 class=\"stor strek-ikon-info-orange\" data-cmstekster=\"dagpenger.informasjonsside.ikkegyldigalder.tittel\"></h2>\n" +
+    "					<h2 class=\"stor strek-ikon-info-orange\">{{ 'dagpenger.informasjonsside.ikkegyldigalder.tittel' | cmstekst }}</h2>\n" +
     "					<ul>\n" +
     "						<li>\n" +
-    "							<span data-cmstekster=\"utslagskriterier.utslag.alder.1\"></span>\n" +
-    "							<a data-cmstekster=\"utslagskriterier.utslag.alder.2.lenketekst\" href=\"{{alderspensjonUrl}}\"></a>\n" +
+    "							<span>{{ 'utslagskriterier.utslag.alder.1' | cmstekst }}</span>\n" +
+    "							<a href=\"{{ alderspensjonUrl }}\">{{ 'utslagskriterier.utslag.alder.2.lenketekst' | cmstekst }}</a>\n" +
     "						</li>\n" +
     "					</ul>\n" +
     "				</div>\n" +
     "\n" +
     "                <div class=\"utslagskriterie\" data-ng-if=\"ikkeRegistrertArbeidssoker()\">\n" +
-    "                    <h2 class=\"stor strek-ikon-info-orange\" data-cmstekster=\"dagpenger.informasjonsside.ikkegyldigarbeidssoker.tittel\"></h2>\n" +
+    "                    <h2 class=\"stor strek-ikon-info-orange\">{{ 'dagpenger.informasjonsside.ikkegyldigarbeidssoker.tittel' | cmstekst }}</h2>\n" +
     "                    <ul>\n" +
     "                        <li>\n" +
-    "                            <span data-cmstekster=\"utslagskriterier.utslag.reellarbeidssoker\"></span>\n" +
-    "                            <a href=\"{{reelArbeidsokerUrl}}\" data-cmstekster=\"utslagskriterier.utslag.reellarbeidssoker.registert\"></a>\n" +
+    "                            <span>{{ 'utslagskriterier.utslag.reellarbeidssoker' | cmstekst }}</span>\n" +
+    "                            <a href=\"{{ reelArbeidsokerUrl }}\">{{ 'utslagskriterier.utslag.reellarbeidssoker.registert' | cmstekst }}</a>\n" +
     "                        </li>\n" +
     "                    </ul>\n" +
     "                </div>\n" +
@@ -1956,54 +1956,46 @@ angular.module("../views/templates/informasjonsside.html", []).run(["$templateCa
     "			<div class=\"viktig-info\" data-ng-show=\"kravForDagpengerOppfylt()\">\n" +
     "				<ul class=\"informasjonsliste\">\n" +
     "					<li>\n" +
-    "						<p class=\"medium\" data-cmstekster=\"dagpenger.informasjonsside.informasjon.liste.1\"></p>\n" +
+    "						<p class=\"medium\">{{ 'dagpenger.informasjonsside.informasjon.liste.1' | cmstekst }}</p>\n" +
     "					</li>\n" +
     "					<li>\n" +
-    "						<p class=\"medium\" data-cmstekster=\"dagpenger.informasjonsside.informasjon.liste.2\"></p>\n" +
-    "						<a href=\"{{dagpengerBrosjyreUrl}}\" data-cmstekster=\"dagpenger.informasjonsside.informasjon.liste.2.lenketekst\"> </a>\n" +
+    "						<p class=\"medium\">{{ 'dagpenger.informasjonsside.informasjon.liste.2' | cmstekst }}</p>\n" +
+    "						<a href=\"{{dagpengerBrosjyreUrl}}\">{{ 'dagpenger.informasjonsside.informasjon.liste.2.lenketekst' | cmstekst }}</a>\n" +
     "					</li>\n" +
     "                    <li data-ng-if=\"registrertArbeidssokerUkjent()\">\n" +
-    "                        <p class=\"medium\" data-cmstekster=\"dagpenger.informasjonsside.informasjon.liste.3\"></p>\n" +
+    "                        <p class=\"medium\">{{ 'dagpenger.informasjonsside.informasjon.liste.3' | cmstekst }}</p>\n" +
     "                    </li>\n" +
     "				</ul>\n" +
     "\n" +
     "\n" +
-    "				<form data-ng-if=\"oppsummering != true\">\n" +
-    "					<div class=\"nav-checkbox\">\n" +
-    "						<input id=\"lestBrosjyre\" data-ng-model=\"utslagskriterier.harlestbrosjyre\" type=\"checkbox\"	/>\n" +
-    "						<label for=\"lestBrosjyre\" data-cmstekster=\"dagpenger.informasjonsside.lestbrosjyre.sporsmal\"></label>\n" +
-    "					</div>\n" +
+    "				<form class=\"form-linje checkbox\" data-ng-class=\"{feilstyling: visFeilmelding() }\" data-ng-if=\"oppsummering != true\" data-checkbox-validate>\n" +
+    "                    <input id=\"lestBrosjyre\" data-ng-model=\"utslagskriterier.harlestbrosjyre\" type=\"checkbox\">\n" +
+    "                    <label for=\"lestBrosjyre\">{{ 'dagpenger.informasjonsside.lestbrosjyre.sporsmal' | cmstekst }}</label>\n" +
+    "                    <span class=\"melding\">{{ 'dagpenger.informasjonsside.lestbrosjyre.feilmelding' | cmstekst }}</span>\n" +
     "				</form>\n" +
     "				\n" +
     "				<div id=\"oppsummering\" data-ng-if=\"oppsummering == true\">\n" +
     "					<span class=\"sjekket\"></span>\n" +
     "                    <span>{{ 'dagpenger.informasjonsside.lestbrosjyre.sporsmal' | cmstekst }}</span>\n" +
     "				</div>\n" +
-    "\n" +
-    "\n" +
-    "				<div class=\"brosjyre-info\" data-ng-show=\"skalViseBrosjyreMelding\">\n" +
-    "					<div data-navinfoboks>|\n" +
-    "						<span data-cmstekster=\"dagpenger.informasjonsside.lestbrosjyre.feilmelding\"> </span>\n" +
-    "					</div>\n" +
-    "				</div>\n" +
     "			</div>\n" +
     "\n" +
     "\n" +
-    "			<div class=\"utslagskriterier-knapper\" data-ng-show=\"kravForDagpengerOppfylt()\">\n" +
+    "			<div class=\"utslagskriterier-knapper\" data-ng-if=\"kravForDagpengerOppfylt()\">\n" +
     "				<div data-ng-show=\"soknadErStartet()\">\n" +
-    "					<input type=\"button\" class=\"knapp-hoved\" data-cmstekster=\"utslagskriterier.utslag.fortsettSoknad\" data-ng-click=\"forsettSoknadDersomBrosjyreLest()\" data-fremdriftsindikator/>\n" +
+    "					<input type=\"button\" class=\"knapp-hoved\" value=\"{{ 'utslagskriterier.utslag.fortsettSoknad' | cmstekst }}\" data-ng-click=\"forsettSoknadDersomBrosjyreLest()\" data-fremdriftsindikator/>\n" +
     "				</div>\n" +
     "				<div data-ng-show=\"soknadErIkkeStartet()\">\n" +
-    "					<input type=\"button\" class=\"knapp-hoved\" data-cmstekster=\"utslagskriterier.utslag.fortsett\" data-ng-click=\"startSoknadDersomBrosjyreLest()\" data-fremdriftsindikator/>\n" +
-    "					<a href=\"{{inngangsportenUrl}}\" data-cmstekster=\"utslagskriterier.utslag.avbryt.lenketekst\"/>\n" +
+    "					<input type=\"button\" class=\"knapp-hoved\" value=\"{{ 'utslagskriterier.utslag.fortsett' | cmstekst }}\" data-ng-click=\"startSoknadDersomBrosjyreLest()\" data-fremdriftsindikator/>\n" +
+    "					<a href=\"{{ inngangsportenUrl }}\">{{ 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst }}</a>\n" +
     "				</div>\n" +
     "			</div>\n" +
     "\n" +
-    "			<div class=\"utslagskriterier-knapper\" data-ng-show=\"kravForDagpengerIkkeOppfylt()\">\n" +
-    "				<a type=\"button\" class=\"knapp-hoved\" href=\"{{inngangsportenUrl}}\" data-cmstekster=\"utslagskriterier.utslag.avbryt.lenketekst\"/>\n" +
+    "			<div class=\"utslagskriterier-knapper\" data-ng-if=\"kravForDagpengerIkkeOppfylt()\">\n" +
+    "				<a type=\"button\" class=\"knapp-hoved\" href=\"{{ inngangsportenUrl }}\">{{ 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst }}</a>\n" +
     "				<p>\n" +
-    "					<a href=\"#\" data-cmstekster=\"utslagskriterier.utslag.fortsettlikevel\" data-ng-click=\"fortsettLikevel($event)\" data-fremdriftsindikator/>\n" +
-    "					<span data-cmstekster=\"utslagskriterier.utslag.infoAvslag\"> </span>\n" +
+    "					<a href=\"#\" data-ng-click=\"fortsettLikevel($event)\" data-fremdriftsindikator>{{ 'utslagskriterier.utslag.fortsettlikevel' | cmstekst }}</a>\n" +
+    "					<span>{{ 'utslagskriterier.utslag.infoAvslag' | cmstekst }}</span>\n" +
     "				</p>\n" +
     "			</div>\n" +
     "		</div>\n" +
@@ -2233,7 +2225,7 @@ angular.module("../views/templates/reellarbeidssoker/reell-arbeidssoker.html", [
     "\n" +
     "            <div class=\"tekstfelt form-linje arbeidsmengde-container\">\n" +
     "                <label>\n" +
-    "                    <span data-cmstekster=\"reellarbeidssoker.maksimalarbeidstid\"></span>\n" +
+    "                    <span class=\"labeltekst\" data-cmstekster=\"reellarbeidssoker.maksimalarbeidstid\"></span>\n" +
     "                    <input type=\"text\"\n" +
     "                           data-ng-model=\"faktum.value\"\n" +
     "                           data-nav-faktum=\"reellarbeidssoker.villigdeltid.maksimalarbeidstid\"\n" +
