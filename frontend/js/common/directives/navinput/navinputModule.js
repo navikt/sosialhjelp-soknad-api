@@ -189,4 +189,16 @@ angular.module('nav.input', ['nav.cmstekster'])
                 ngModel.$parsers.push(tilTekst);
             }
         };
-    }]);
+    }])
+    .directive('aktivFeilmelding', [function () {
+        return {
+            link: function (scope, element) {
+                $(element).bind('blur', function () {
+                    var formLinje = $(element).closest('.form-linje');
+                    if(formLinje.hasClass('aktiv-feilmelding')) {
+                        formLinje.removeClass('aktiv-feilmelding');
+                    }
+                })
+            }
+        };
+    }])

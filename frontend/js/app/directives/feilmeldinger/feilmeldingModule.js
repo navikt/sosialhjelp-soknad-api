@@ -74,6 +74,7 @@ angular.module('nav.feilmeldinger', [])
                     if (scope.erKlikkbarFeil(feilmelding)) {
                         var formLinje = feilmelding.elem.closest('.form-linje');
                         scrollToElement(formLinje, 200);
+                        formLinje.addClass('aktiv-feilmelding');
 
                         if (feilmelding.elem.is('[type=hidden]')) {
                             if (feilmelding.elem.hasClass('tekstfelt')) {
@@ -97,7 +98,6 @@ angular.module('nav.feilmeldinger', [])
                  enn 1 for at checkbokser som bruker hidden-felt og ikke har klassen ng-invalid får riktig fokus
                  */
                 scope.giFokus = function (element) {
-                    console.log(element)
                     $timeout(function() {
                         if (typeof element === 'object' && element.length > 1) {
                             for (var i = 0; i < element.length; i++) {
