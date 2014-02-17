@@ -24,11 +24,11 @@ angular.module('nav.stickyFeilmelding', [])
                     elem = element.next();
                     bolker = $('[data-accordion-group]');
 
+                    scope.feil.skalViseStickyFeilmeldinger = true;
                     var elementerMedFeil = elem.find('.form-linje.feil');
                     var elementerMedFeilstyling = elem.find('.form-linje.feilstyling');
                     scope.feil.antallFeilMedKlasseFeil = elementerMedFeil.not('.ng-hide').length;
                     scope.feil.antallFeilMedKlasseFeilstyling = elementerMedFeilstyling.not('.ng-hide').length;
-                    scope.feil.skalViseStickyFeilmeldinger = true;
                 };
 
 				scope.forrige = function () {
@@ -75,8 +75,6 @@ angular.module('nav.stickyFeilmelding', [])
 					}
 					if (totalAntalLFeil() === 0) {
 						scope.feil.skalViseStickyFeilmeldinger = false;
-                        console.log("false");
-
                     }
 					scope.feil.antallFeilMedKlasseFeil = antallFeilMedKlasse('.feil');
 				});
