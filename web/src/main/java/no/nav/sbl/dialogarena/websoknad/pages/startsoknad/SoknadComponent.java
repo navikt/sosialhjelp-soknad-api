@@ -11,7 +11,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.util.List;
 
 import static java.nio.charset.Charset.forName;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -24,7 +23,6 @@ import static org.springframework.util.StreamUtils.copyToString;
 public class SoknadComponent extends WebComponent {
 
     private static final Logger LOGGER = getLogger(SoknadComponent.class);
-    private static List<String> files;
 
     public SoknadComponent(String id) {
         super(id);
