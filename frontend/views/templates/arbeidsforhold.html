@@ -41,6 +41,7 @@
             <div class="ekstra-spm-boks nav-boolean" data-ng-if="hvisHarIkkeJobbet()">
                 <div data-navinfoboks>
                     <p>{{ 'arbeidsforhold.arbeidstilstand.harikkejobbet.informasjonstekst.del1' | cmstekst }}</p>
+
                     <p>{{ 'arbeidsforhold.arbeidstilstand.harikkejobbet.informasjonstekst.del2' | cmstekst }}</p>
                 </div>
             </div>
@@ -50,9 +51,10 @@
 
         <div class="spm-boks vertikal" data-ng-repeat="af in arbeidsliste" data-ng-class="{'last': $last}">
             <div id="arbeidsforhold{{af.arbeidsforhold.faktumId}}">
-                <a href="#" class="lukk" data-ng-click="slettArbeidsforhold(af, $index, $event)" data-fokus-slettmoduler="arbeidsforhold" > </a>
+                <a href="#" class="lukk" data-ng-click="slettArbeidsforhold(af, $index, $event)"
+                   data-fokus-slettmoduler="arbeidsforhold"> </a>
                 <span class="robust">{{ af.arbeidsforhold.properties.arbeidsgivernavn }}</span>
-                <span class="robust">, </span>  
+                <span class="robust">, </span>
                 <span class="robust">{{ finnLandFraLandkode(af.arbeidsforhold.properties.land) }}</span>
 
                 <div class="arbeidsforhold-land-sluttaarsak-blokk">
@@ -65,7 +67,8 @@
                     <ul class="liste-vannrett">
                         <li>
                             <a href data-ng-click="slettArbeidsforhold(af, $index, $event)"
-                               data-cmstekster="arbeidsforhold.slettarbeidsforhold" data-fokus-slettmoduler="arbeidsforhold" ></a>
+                               data-cmstekster="arbeidsforhold.slettarbeidsforhold"
+                               data-fokus-slettmoduler="arbeidsforhold"></a>
                         </li>
                         <li>
                             <a href data-ng-click="endreArbeidsforhold(af, $index, $event)"
@@ -77,18 +80,21 @@
         </div>
 
         <div class="knapper-arbeidsforhold">
-            <div id="legg-til" class="form-linje knapp ikke-fadebakgrunn" data-ng-if="harSvart()" data-ng-class="{feil: skalViseFeil()}">
+            <div id="legg-til" class="form-linje knapp ikke-fadebakgrunn" data-ng-if="harSvart()"
+                 data-ng-class="{feil: skalViseFeil()}">
                 <div data-ng-if="hvisHarJobbet()">
                     <input type="hidden"
                            data-ng-model="harLagretArbeidsforhold"
                            data-nav-faktum="harLagretArbeidsforhold"
                            data-ng-required="true"
                            data-error-messages="'arbeidsforhold.arbeidsforhold.required'"
-                           >
+                           class="legg-til-arbeidsforhold"
+                            >
                 </div>
 
                 <button class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event, arbeidsforholdForm)"
-                        data-cmstekster="arbeidsforhold.nyttarbeidsforhold" role="button"></button>
+                        data-cmstekster="arbeidsforhold.nyttarbeidsforhold" role="button"
+                        data-aktiv-feilmelding></button>
                 <span class="melding" data-cmstekster="arbeidsforhold.arbeidsforhold.required"></span>
             </div>
 
