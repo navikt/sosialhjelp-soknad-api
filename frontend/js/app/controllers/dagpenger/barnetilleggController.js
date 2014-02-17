@@ -74,7 +74,8 @@ angular.module('nav.barnetillegg', [])
 		};
 
         $scope.barnetHarInntekt = function (barn) {
-            if(barn && barn.properties) { 
+            if(barn && barn.properties) {
+                console.log('Testing');
                 return barn.properties.ikkebarneinntekt === 'false';
             }
             return false;

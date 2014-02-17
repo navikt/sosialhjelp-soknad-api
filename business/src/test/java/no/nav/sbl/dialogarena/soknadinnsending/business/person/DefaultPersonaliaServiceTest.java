@@ -11,6 +11,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland;
+
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosBorgerService;
@@ -410,7 +412,7 @@ public class DefaultPersonaliaServiceTest {
 
         mockGyldigPersonMedMidlertidigUtenlandskAdresse(1);
         Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
-        Adresse sekundarAdresse = personalia.getSekundarAdresse();
+        Adresse sekundarAdresse = personalia.getGjeldendeAdresse();
 
         Assert.assertNotNull(sekundarAdresse.getAdresse());
         assertThat(sekundarAdresse.getAdresse(), is(forventetAdresse));
@@ -426,7 +428,7 @@ public class DefaultPersonaliaServiceTest {
 
         mockGyldigPersonMedMidlertidigUtenlandskAdresse(2);
         Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
-        Adresse sekundarAdresse = personalia.getSekundarAdresse();
+        Adresse sekundarAdresse = personalia.getGjeldendeAdresse();
 
         Assert.assertNotNull(sekundarAdresse.getAdresse());
         assertThat(sekundarAdresse.getAdresse(), is(forventetAdresse));
@@ -443,7 +445,7 @@ public class DefaultPersonaliaServiceTest {
 
         mockGyldigPersonMedMidlertidigUtenlandskAdresse(3);
         Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
-        Adresse sekundarAdresse = personalia.getSekundarAdresse();
+        Adresse sekundarAdresse = personalia.getGjeldendeAdresse();
 
         Assert.assertNotNull(sekundarAdresse.getAdresse());
         assertThat(sekundarAdresse.getAdresse(), is(forventetAdresse));
@@ -533,7 +535,7 @@ public class DefaultPersonaliaServiceTest {
         
     private void mockGyldigPersonMedMidlertidigUtenlandskAdresse(
             int adresselinjer) {
-        XMLPostadresse xmlPostadresseUtland = new XMLPostadresse();
+        XMLMidlertidigPostadresseUtland xmlMidlertidigPostadresseUtland = new XMLMidlertidigPostadresseUtland();
         XMLUstrukturertAdresse utenlandskUstrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(adresselinjer);
 
         XMLLandkoder xmlLandkode = new XMLLandkoder();
@@ -544,16 +546,15 @@ public class DefaultPersonaliaServiceTest {
         xmlPostadresseType.setValue("MIDLERTIDIG_POSTADRESSE_UTLAND");
         xmlBruker.setGjeldendePostadresseType(xmlPostadresseType);
         
-        xmlPostadresseUtland
+        xmlMidlertidigPostadresseUtland
                 .setUstrukturertAdresse(utenlandskUstrukturertAdresse);
 
-        xmlBruker.setPostadresse(xmlPostadresseUtland);
+        xmlBruker.setMidlertidigPostadresse(xmlMidlertidigPostadresseUtland);
 
     }
     
     private void mockGyldigPersonMedUtenlandskFolkeregistrertAdresse(int adresselinjer) {
         XMLPostadresse xmlPostadresseUtland = new XMLPostadresse();
-        //no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland xmlPostadresseUtland = new no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland();
         XMLUstrukturertAdresse utenlandskUstrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(4);
 
         XMLLandkoder xmlLandkode = new XMLLandkoder();

@@ -75,7 +75,7 @@ angular.module('nav.stickyFeilmelding', [])
 					}
 					if (totalAntalLFeil() === 0) {
 						scope.feil.skalViseStickyFeilmeldinger = false;
-					}
+                    }
 					scope.feil.antallFeilMedKlasseFeil = antallFeilMedKlasse('.feil');
 				});
 
