@@ -22,7 +22,11 @@
                 {
                     key: 'etFaktum',
                     type: 'BRUKERREGISTRERT'
-                }
+                },
+                {
+                    key: 'Bolker',
+                    type: 'BRUKERREGISTRERT'
+                },
             ];
 
             $provide.value("data", {
@@ -474,13 +478,17 @@
 
         describe('AdresseCtrl', function () {
             beforeEach(inject(function ($controller) {
+                scope.personalia = {
+                    gjeldendeAdresse: "Gjeldene adresse"
+                }
                 ctrl = $controller('AdresseCtrl', {
                     $scope: scope
+                    
                 });
             }));
 
             it('Skal returnere true hvis har gjeldene adresse', function () {
-                scope.personalia = {gjeldendeAdresse: "Gjeldene adresse"};
+                //scope.personalia = {gjeldendeAdresse: "Gjeldene adresse"};
                 expect(scope.harGjeldendeAdresse()).toEqual(true);
             });
             it('Skal returnere true hvis har sekundær adresse', function () {
