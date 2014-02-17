@@ -37,17 +37,14 @@ public class SoknadComponent extends WebComponent {
         if (files == null) {
             try {
                 String htmls = WebApplication.get().getServletContext().getRealPath("/html");
-                LOGGER.warn("htmls" + htmls);
                 File folder = new File(htmls);
-                LOGGER.warn("Folder" + folder);
                 List<String> filer = new ArrayList<>();
-                LOGGER.warn("Filer" + filer.size());
                 for (File file : folder.listFiles()) {
                     filer.add(file.getName());
                 }
                 SoknadComponent.files = filer;
             } catch (Exception ex) {
-                LOGGER.error("Feil ved lasting av filer" + ex.getMessage());
+                LOGGER.error("Feil ved lasting av filer" + ex.getStackTrace() + ex.getMessage());
             }
         }
     }
