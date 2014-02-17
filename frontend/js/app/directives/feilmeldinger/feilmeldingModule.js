@@ -74,6 +74,7 @@ angular.module('nav.feilmeldinger', [])
                     if (scope.erKlikkbarFeil(feilmelding)) {
                         var formLinje = feilmelding.elem.closest('.form-linje');
                         scrollToElement(formLinje, 200);
+                        formLinje.addClass('aktiv-feilmelding');
 
                         if (feilmelding.elem.is('[type=hidden]')) {
                             if (feilmelding.elem.hasClass('tekstfelt')) {
@@ -82,6 +83,8 @@ angular.module('nav.feilmeldinger', [])
                                 scope.giFokus(formLinje.find('input[type=text]').first());
                             } else if(feilmelding.elem.hasClass('hidden-vedlegg')) {
                                 scope.giFokus(formLinje.find('a.knapp-link').first());
+                            } else if(feilmelding.elem.hasClass('legg-til-arbeidsforhold')) {
+                                scope.giFokus(formLinje.find('button'));
                             }
                             else {
                                 scope.giFokus(formLinje.find('input[type=checkbox]').first());
@@ -197,6 +200,20 @@ angular.module('nav.feilmeldinger', [])
 //              skal bruke tabIndex når det er på plass
             }
             return feilmeldinger;
+        }
+    }])
+    .directive('aktivFeilmelding', ['$timeout', function ($timeout) {
+        return {
+            link: function (scope, element) {
+                $(element).bind('blur', function () {
+                    var formLinje = $(element).closest('.form-linje');
+                    if(formLinje.hasClass('aktiv-feilmelding')) {
+                        $timeout(function() {
+                            formLinje.removeClass('aktiv-feilmelding');
+                        }, 100);
+                    }
+                })
+            }
         };
     }]);
 

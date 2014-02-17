@@ -121,9 +121,12 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public WebSoknad hentSoknad(long soknadId) {
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
-        List<Vedlegg> vedlegg = hentPaakrevdeVedlegg(soknadId, soknad);
-        soknad.setVedlegg(vedlegg);
         return soknad;
+    }
+
+    @Override
+    public String hentSoknadEier(Long soknadId) {
+        return repository.hentSoknad(soknadId).getAktoerId();
     }
 
     @Override
