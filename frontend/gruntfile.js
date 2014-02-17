@@ -1,5 +1,4 @@
 module.exports = function (grunt) {
-
 	grunt.initConfig({
 		pkg   : grunt.file.readJSON('package.json'),
         html2js: {
@@ -83,7 +82,10 @@ module.exports = function (grunt) {
                     relative: false,
                     prefix: '../',
                     scripts: {
-                        built: 'js/built/built.min.js'
+                        built: {
+                            cwd: 'target/classes/META-INF/resources',
+                            files: 'js/built/built<%= grunt.template.today("yyyymmdd") %>.min.js'
+                        }
                     }
                 }
             }
@@ -108,7 +110,7 @@ module.exports = function (grunt) {
                     'js/app/**/*.js',
                     'js/common/**/*.js'
 				],
-				dest  : 'js/built/built.js',
+				dest  : 'target/classes/META-INF/resources/js/built/built<%= grunt.template.today("yyyymmdd") %>.js',
 				nonull: true
 			}
 		},
@@ -119,7 +121,7 @@ module.exports = function (grunt) {
 			},
 			my_target: {
 				files: {
-					'js/built/built.min.js': ['js/built/built.min.js']
+					'target/classes/META-INF/resources/js/built/built<%= grunt.template.today("yyyymmdd") %>.min.js': ['target/classes/META-INF/resources/js/built/built<%= grunt.template.today("yyyymmdd") %>.js']
 				}
 			}
 		},
@@ -158,7 +160,9 @@ module.exports = function (grunt) {
 		},
 		karma : {
 			unit: {
-				configFile: 'test/karma/karma.conf.js'
+				configFile: 'test/karma/karma.conf.js',
+                browsers: ['PhantomJS'],
+                singleRun: true
 			}
 		},
 		maven: {
@@ -194,5 +198,5 @@ module.exports = function (grunt) {
     grunt.registerTask('hint', ['jshint', 'watch']);
     grunt.registerTask('maven', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev']);
     grunt.registerTask('maven-test', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev', 'htmlbuild:test']);
-	grunt.registerTask('maven-prod', ['html2js', 'concat', 'htmlbuild:dev', 'htmlbuild:prod', 'uglify']);
+	grunt.registerTask('maven-prod', ['html2js', 'karma:unit', 'concat', 'uglify', 'htmlbuild:dev', 'htmlbuild:prod']);
 };

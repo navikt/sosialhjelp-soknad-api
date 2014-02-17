@@ -16,7 +16,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         $scope.reelArbeidsokerUrl = data.config["soknad.reelarbeidsoker.url"];
         $scope.dagpengerBrosjyreUrl = data.config["soknad.dagpengerbrosjyre.url"];
         $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
-        $scope.skalViseBrosjyreMelding = false;
+        $scope.harKlikketKnapp = false;
 
         $scope.oppsummering = false;
         if (erSoknadStartet()) {
@@ -51,7 +51,6 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         };
 
         $scope.soknadErStartet = function () {
-            var behandlingId = getBehandlingIdFromUrl();
             if (erSoknadStartet()) {
                 return true;
             }
@@ -88,22 +87,25 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         };
 
         $scope.startSoknadDersomBrosjyreLest = function () {
+            $scope.harKlikketKnapp = true;
             if ($scope.harLestBrosjyre()) {
-                $scope.skalViseBrosjyreMelding = false;
                 $scope.startSoknad();
-            } else {
-                $scope.skalViseBrosjyreMelding = true;
             }
         };
 
         $scope.forsettSoknadDersomBrosjyreLest = function () {
+            $scope.harKlikketKnapp = true;
             if ($scope.harLestBrosjyre()) {
-                $scope.skalViseBrosjyreMelding = false;
                 $location.path("/soknad");
-            } else {
-                $scope.skalViseBrosjyreMelding = true;
             }
         };
+
+        $scope.visFeilmelding = function() {
+//            if ($scope.utslagskriterier.harlestbrosjyre) {
+//                $scope.harKlikketKnapp = false;
+//            }
+            return $scope.harKlikketKnapp;
+        }
 
         $scope.kravForDagpengerOppfylt = function () {
             return sjekkUtslagskriterier.erOppfylt() || fortsettLikevell;

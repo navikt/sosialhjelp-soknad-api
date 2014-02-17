@@ -66,7 +66,6 @@ angular.module('nav.validering', ['nav.cmstekster'])
 						var feilmeldingTekst = cms.tekster[feilmeldingsNokkel];
 						formElem.find('.melding').text(feilmeldingTekst);
 					}
-
 				}
 
 				function meldingIkkeInneholderFeilmelding() {
@@ -93,8 +92,13 @@ angular.module('nav.validering', ['nav.cmstekster'])
 				scope.$watch(function () {
 					return ngModel.$viewValue;
 				}, function () {
-					if (ngModel.$viewValue && element.closest('.form-linje').hasClass('feil')) {
-						fadeFeilmelding(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil', scope);
+                    var formLinje = element.closest('.form-linje');
+					if (ngModel.$viewValue && formLinje.hasClass('feil')) {
+                        if(formLinje.hasClass('aktiv-feilmelding')) {
+                            fadeAktivFeilmelding(formLinje, formLinje.find('.melding'), 'feil', scope);
+                        } else {
+                            fadeFeilmelding(formLinje, formLinje.find('.melding'), 'feil', scope);
+                        }
 					}
 				});
 
@@ -141,10 +145,19 @@ angular.module('nav.validering', ['nav.cmstekster'])
 				scope.$watch(function () {
 					return element.find('input:checked').length;
 				}, function () {
-					if (element.find('input:checked').length > 0 && element.closest('.form-linje').hasClass('feil')) {
-                        fadeFeilmelding(element.closest('.form-linje'), element.closest('.form-linje').find('.melding'), 'feil', scope);
-					} else if (element.find('input:checked').length > 0 && element.closest('.form-linje').hasClass('feilstyling')) {
-						fadeFeilmelding(element.closest('.form-linje'), element.closest('.form-linje.feilstyling').children('.melding'), 'feilstyling', scope);
+                    var formLinje = element.closest('.form-linje');
+					if (element.find('input:checked').length > 0 && formLinje.hasClass('feil')) {
+                        if(formLinje.hasClass('aktiv-feilmelding')) {
+                            fadeAktivFeilmelding(formLinje, formLinje.find('.melding'), 'feil', scope);
+                        } else {
+                            fadeFeilmelding(formLinje, formLinje.find('.melding'), 'feil', scope);
+                        }
+					} else if (element.find('input:checked').length > 0 && formLinje.hasClass('feilstyling')) {
+                        if(formLinje.hasClass('aktiv-feilmelding')) {
+                            fadeAktivFeilmelding(formLinje, formLinje.children('.melding'), 'feilstyling', scope);
+                        } else {
+                            fadeFeilmelding(formLinje, formLinje.children('.melding'), 'feilstyling', scope);
+                        }
 					}
 				});
 			}
