@@ -16,7 +16,6 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         $scope.reelArbeidsokerUrl = data.config["soknad.reelarbeidsoker.url"];
         $scope.dagpengerBrosjyreUrl = data.config["soknad.dagpengerbrosjyre.url"];
         $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
-        $scope.harKlikketKnapp = false;
 
         $scope.oppsummering = false;
         if (erSoknadStartet()) {
@@ -28,8 +27,8 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
             laster: false
         };
 
-        $scope.hentAdresseLinjer = function() {
-            if( $scope.utslagskriterier &&  $scope.utslagskriterier.registrertAdresse !== '') {
+        $scope.hentAdresseLinjer = function () {
+            if ($scope.utslagskriterier && $scope.utslagskriterier.registrertAdresse !== '') {
                 return $scope.utslagskriterier.registrertAdresse.split(", ");
             }
             return [];
@@ -87,25 +86,16 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         };
 
         $scope.startSoknadDersomBrosjyreLest = function () {
-            $scope.harKlikketKnapp = true;
             if ($scope.harLestBrosjyre()) {
                 $scope.startSoknad();
             }
         };
 
         $scope.forsettSoknadDersomBrosjyreLest = function () {
-            $scope.harKlikketKnapp = true;
             if ($scope.harLestBrosjyre()) {
                 $location.path("/soknad");
             }
         };
-
-        $scope.visFeilmelding = function() {
-//            if ($scope.utslagskriterier.harlestbrosjyre) {
-//                $scope.harKlikketKnapp = false;
-//            }
-            return $scope.harKlikketKnapp;
-        }
 
         $scope.kravForDagpengerOppfylt = function () {
             return sjekkUtslagskriterier.erOppfylt() || fortsettLikevell;
@@ -162,28 +152,41 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         }
 
         return {
-            erOppfylt: function() {
+            erOppfylt: function () {
                 return (registrertArbeidssoker() || !ikkeRegistertArbeidssoker()) && gyldigAlder() && bosattINorge();
             },
 
-            harGyldigAlder: function() {
+            harGyldigAlder: function () {
                 return gyldigAlder();
             },
 
-            erBosattINorge: function() {
+            erBosattINorge: function () {
                 return bosattINorge();
             },
 
-            erRegistrertArbeidssoker: function() {
+            erRegistrertArbeidssoker: function () {
                 return registrertArbeidssoker();
             },
 
-            erIkkeRegistrertArbeidssoker: function() {
+            erIkkeRegistrertArbeidssoker: function () {
                 return ikkeRegistertArbeidssoker();
             },
 
-            harUkjentStatusSomArbeidssoker: function() {
+            harUkjentStatusSomArbeidssoker: function () {
                 return !ikkeRegistertArbeidssoker() && !registrertArbeidssoker();
+            }
+        };
+    }])
+    .directive('validerInformasjonsside', [function () {
+        return {
+            link: function (scope, element) {
+                var formElement = element.closest('form').find('.form-linje');
+                var input = formElement.find('input');
+                element.bind('click', function () {
+                    if (input.not(':checked')) {
+                        formElement.addClass('feilstyling');
+                    }
+                });
             }
         };
     }]);

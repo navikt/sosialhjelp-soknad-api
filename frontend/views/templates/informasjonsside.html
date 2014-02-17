@@ -12,7 +12,7 @@
        			<a type="button" class="knapp-hoved" href="{{ inngangsportenUrl }}">{{ 'feilmelding.lenketekst' | cmstekst }}</a>
        		</div>
        	</div>
-       	<div data-ng-show="tpsSvarer()">
+       	<form data-ng-show="tpsSvarer()">
 	        <h2 data-ng-show="kravForDagpengerOppfylt()" class="stor strek-ikon-info-orange">{{ 'dagpenger.informasjonsside.tittel' | cmstekst }}</h2>
 	    	
 			<div id="utslagskriterier" data-ng-if="kravForDagpengerIkkeOppfylt()">
@@ -72,11 +72,11 @@
 				</ul>
 
 
-				<form class="form-linje checkbox" data-ng-class="{feilstyling: visFeilmelding() }" data-ng-if="oppsummering != true" data-checkbox-validate>
+				<div class="form-linje checkbox" data-ng-if="oppsummering != true" data-valider-informasjonsside data-checkbox-validate>
                     <input id="lestBrosjyre" data-ng-model="utslagskriterier.harlestbrosjyre" type="checkbox">
                     <label for="lestBrosjyre">{{ 'dagpenger.informasjonsside.lestbrosjyre.sporsmal' | cmstekst }}</label>
                     <span class="melding">{{ 'dagpenger.informasjonsside.lestbrosjyre.feilmelding' | cmstekst }}</span>
-				</form>
+				</div>
 				
 				<div id="oppsummering" data-ng-if="oppsummering == true">
 					<span class="sjekket"></span>
@@ -102,6 +102,6 @@
 					<span>{{ 'utslagskriterier.utslag.infoAvslag' | cmstekst }}</span>
 				</p>
 			</div>
-		</div>
+		</form>
 	</div>
 </div>
