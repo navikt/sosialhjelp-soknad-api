@@ -1,7 +1,6 @@
 angular.module('sendsoknad', [
 	'ui.keypress',
 	'app.routes',
-	'app.grunnlagsdata',
 	'app.services',
 	'app.directives',
 	'app.controllers',

@@ -28,10 +28,6 @@ angular.module('nav.stegindikator', ['nav.cmstekster'])
 
                     };
 
-//                    scope.hentTekst = function() {
-//                        return 'stegindikator.' + scope.steg;
-//                    }
-
                     scope.erIkkeKlikkbar = function(idx) {
                         return !scope.erKlikkbar(idx);
                     };
@@ -44,7 +40,7 @@ angular.module('nav.stegindikator', ['nav.cmstekster'])
                         }
                         else if (idx === 3)
                         {
-                            return '#/oppsummering'
+                            return '#/oppsummering';
                         }
                         else {
                             return '#/informasjonsside';
@@ -56,22 +52,22 @@ angular.module('nav.stegindikator', ['nav.cmstekster'])
                             return data.soknad.delstegStatus === "UTFYLLING" || skjemaErValidert();
                         }
                         return false;
-                    };
+                    }
 
                     function skjemaErValidert() {
                         if (data && data.soknad) {
                             return data.soknad.delstegStatus === "SKJEMA_VALIDERT" || vedleggErValidert();
                         }
                         return false;
-                    };
+                    }
 
                     function vedleggErValidert() {
                         if (data && data.soknad) {
                             return data.soknad.delstegStatus === "VEDLEGG_VALIDERT";
                         }
                         return false;
-                    };
+                    }
                 }
             }
-		}
+		};
 	}]);

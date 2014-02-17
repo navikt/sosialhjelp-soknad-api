@@ -75,17 +75,17 @@ angular.module('nav.datepicker', [])
 
 				scope.options = {};
 				if (!scope.erFremtidigdatoTillatt) {
-					scope.options['maxDate'] = new Date();
+					scope.options.maxDate = new Date();
 				}
 
 
                 scope.navDatepicker = function() {
                     return !scope.vanligDatepicker();
-                }
+                };
 
                 scope.vanligDatepicker = function() {
                     return erTouchDevice();
-                }
+                };
 
 				scope.toggleDatepicker = function () {
 					var dateDiv = $('#ui-datepicker-div');
@@ -144,25 +144,25 @@ angular.module('nav.datepicker', [])
 				};
 
 				scope.sjekkUloveligFremtidigDato = function () {
-					if(!scope.erFremtidigdatoTillatt && scope.ngModel != undefined) {
+					if(!scope.erFremtidigdatoTillatt && scope.ngModel !== undefined) {
 						return erFremtidigDato(scope.ngModel);
 					}
 					return false;
 				};
 
 				scope.erUloveligFremtidigDato = function() {
-					
+                    var el;
 					if(scope.fremtidigDatoFeil && !scope.harFokus && harHattFokus) {
-						var el = element.controller('ngModel');
+						element.controller('ngModel');
 						el.$setValidity(ugyldigFremtidigDatoFeilmelding, false);
 						return true;
 					} else if(!scope.fremtidigDatoFeil) {
-						var el = element.controller('ngModel');
+						element.controller('ngModel');
 						el.$setValidity(ugyldigFremtidigDatoFeilmelding, true);
 						return false;
 					}
 					return false;
-				}
+				};
 
 				scope.erIkkeGyldigDato = function () {
 					return !scope.ngModel && inputfeltHarTekstOgGyldigDatoFormat() &&
@@ -258,7 +258,7 @@ angular.module('nav.datepicker', [])
 				// Legger til datepicker på nytt dersom options endrer seg
 				scope.$watch(datepickerOptions, leggTilDatepicker, true);
 			}
-		}
+		};
 	}])
 	.directive('navDatoIntervall', [function () {
 		return {
@@ -297,7 +297,7 @@ angular.module('nav.datepicker', [])
 					});
 				}
 			}
-		}
+		};
 	}])
 	.directive('datoMask', ['$filter', 'cms', function ($filter, cms) {
 		return {
@@ -432,5 +432,5 @@ angular.module('nav.datepicker', [])
 					return element.position().top + 6;
 				}
 			}
-		}
+		};
 	}]);

@@ -32,13 +32,10 @@ public class PingExecutorTest {
             super(componentName);
             this.componentName=componentName;
         }
-        @Override
-        public Ping ping() {
-            return Ping.lyktes(componentName);
-        }
 
         @Override
         protected void pingOperation() {
+            //all good
         }
     }
     
@@ -49,13 +46,10 @@ public class PingExecutorTest {
             super(componentName);
             this.componentName=componentName;
         }
-        @Override
-        public Ping ping() {
-            return Ping.feilet(componentName, new RuntimeException());
-        }
 
         @Override
-        protected void pingOperation() {
+        protected void   pingOperation() {
+            throw new RuntimeException();
         }
     }
 }

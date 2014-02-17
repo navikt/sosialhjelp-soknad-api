@@ -72,7 +72,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
 					return !(formElem.find('.melding')[0] && formElem.find('.melding')[0].hasAttribute('data-cmstekster'));
 				}
 			}
-		}
+		};
 	}])
 
 	.directive('clickValidate', ['$timeout', 'cms', function ($timeout, cms) {
@@ -121,10 +121,10 @@ angular.module('nav.validering', ['nav.cmstekster'])
 					element.closest('.form-linje').find('.melding').text(feilmeldingTekst);
 				}
 			}
-		}
+		};
 	}])
 //    direktivet skal brukes på div-en som ligger rundt en checkboksgruppe og som skal ha inlinevalidering
-	.directive('checkboxValidate', ['cms', function (cms) {
+	.directive('checkboxValidate', [function () {
 		return {
 			require: ['^form'],
 			link   : function (scope, element, attrs, ctrl) {
@@ -161,7 +161,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
 					}
 				});
 			}
-		}
+		};
 	}])
 	.directive('dateValidate', ['cms', function (cms) {
 		return {
@@ -186,8 +186,8 @@ angular.module('nav.validering', ['nav.cmstekster'])
 								//fjerner feilmeldingen om at fra må være før til, så ved lagring vil brukeren få beskjed om required-feilmeldingen i stedet
 								form.$setValidity(feilNokkel, true);
 							}
-						})
-					})
+						});
+					});
 				});
 
 				scope.$watch(function () {
@@ -228,5 +228,5 @@ angular.module('nav.validering', ['nav.cmstekster'])
 					element.closest('.form-linje').removeClass('feil');
 				}
 			}
-		}
+		};
 	}]);

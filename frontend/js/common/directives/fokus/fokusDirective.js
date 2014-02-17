@@ -50,22 +50,27 @@ angular.module('nav.fokus', [])
     .directive('tabAutoscroll', [function () {
         return {
             link: function (scope, elm) {
+                var stickyElementBunn;
+                var stickyPosisjonTopp;
+                var elementMedFokus;
+                var posisjon = "";
+
                 elm.bind("keyup keypress", function (event) {
                     if (elm.hasClass('dagpenger')) {
-                        var stickyElementBunn = elm.next().find('.sticky-bunn');
+                        stickyElementBunn = elm.next().find('.sticky-bunn');
                         var stickyElementTopp = elm.find('.sticky-feilmelding');
-                        var stickyPosisjonTopp = stickyElementTopp[0].getBoundingClientRect();
+                        stickyPosisjonTopp = stickyElementTopp[0].getBoundingClientRect();
 
                     }
                     else {
-                        var stickyElementBunn = elm.find('.sticky-bunn');
-                        var stickyPosisjonTopp = {top: 0, bottom: 60};
+                        stickyElementBunn = elm.find('.sticky-bunn');
+                        stickyPosisjonTopp = {top: 0, bottom: 60};
                     }
 
                     if (event.which === 9) {
                         var stickyPosisjonBunn = stickyElementBunn[0].getBoundingClientRect();
-                        var elementMedFokus = document.activeElement;
-                        var posisjon = "";
+                        elementMedFokus = document.activeElement;
+                        posisjon = "";
 
                         if ($(elementMedFokus).is("[type=radio]") || $(elementMedFokus).is("[type=checkbox]")) {
                             posisjon = $(elementMedFokus).closest('div')[0].getBoundingClientRect();
@@ -78,8 +83,8 @@ angular.module('nav.fokus', [])
                         }
                     }
                     if (event.which === 9 && event.shiftKey) {
-                        var elementMedFokus = document.activeElement;
-                        var posisjon = "";
+                        elementMedFokus = document.activeElement;
+                        posisjon = "";
 
                         if ($(elementMedFokus).is("[type=radio]") || $(elementMedFokus).is("[type=checkbox]")) {
                             posisjon = $(elementMedFokus).closest('div')[0].getBoundingClientRect();
@@ -101,7 +106,7 @@ angular.module('nav.fokus', [])
             link: function (scope, elm) {
                 $timeout(function() {
                     scrollToElement(elm, 250);
-                }, 50)
+                }, 50);
             }
         };
     }]);

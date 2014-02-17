@@ -1,5 +1,5 @@
 angular.module('nav.fortsettsenere', ['nav.cmstekster'])
-    .controller('FortsettSenereCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', "fortsettSenereService", "Faktum",
+    .controller('FortsettSenereCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', 'fortsettSenereService', 'Faktum',
         function ($scope, data, $routeParams, $http, $location, fortsettSenereService, Faktum) {
             var lagretEpost = data.finnFaktum('epost');
 
@@ -10,7 +10,7 @@ angular.module('nav.fortsettsenere', ['nav.cmstekster'])
                 $scope.epost = {
                     key: 'epost',
                     value: undefined
-                }
+                };
                 $scope.epost.value = personalia.properties.epost;
             }
 
@@ -33,11 +33,10 @@ angular.module('nav.fortsettsenere', ['nav.cmstekster'])
                         });
                     }
                 }
-            }
+            };
         }
     ])
-    .controller('FortsettSenereKvitteringCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', "fortsettSenereService",
-        function ($scope, data, $routeParams, $http, $location, fortsettSenereService) {
+    .controller('FortsettSenereKvitteringCtrl', ['$scope', 'data', function ($scope, data) {
             $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
             $scope.epost = data.finnFaktum('epost');
         }
@@ -88,7 +87,7 @@ angular.module('nav.fortsettsenere', ['nav.cmstekster'])
             restrict: 'A',
             replace: true,
             templateUrl: linker
-        }
+        };
     }]);
 
 

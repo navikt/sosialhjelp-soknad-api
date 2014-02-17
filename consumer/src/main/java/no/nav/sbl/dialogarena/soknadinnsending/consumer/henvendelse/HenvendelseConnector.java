@@ -3,7 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
-import no.nav.modig.core.exception.ApplicationException;
+import no.nav.modig.core.exception.SystemException;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
@@ -38,7 +38,7 @@ public class HenvendelseConnector {
             return sendSoknadService.startSoknad(createXMLStartSoknadRequest(fnr, createXMLSkjema(skjema, uid))).getBehandlingsId();
         } catch (SOAPFaultException e) {
             LOGGER.error("Feil ved start søknad for bruker " + fnr, e);
-            throw new ApplicationException("Kunne ikke opprette ny søknad", e);
+            throw new SystemException("Kunne ikke opprette ny søknad", e, "exception.system.baksystem");
         }
     }
 
@@ -50,12 +50,16 @@ public class HenvendelseConnector {
             sendSoknadService.sendSoknad(parameters);
         } catch (SOAPFaultException e) {
             LOGGER.error("Feil ved innsending av søknad: " + e, e);
-            throw new ApplicationException("Kunne ikke opprette ny søknad", e);
+            throw new SystemException("Kunne ikke opprette ny søknad", e, "exception.system.baksystem");
         }
     }
 
     public no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSEmpty sendSoknad(WSSoknadsdata soknadsData) {
-        return sendSoknadService.sendSoknad(soknadsData);
+        try {
+            return sendSoknadService.sendSoknad(soknadsData);
+        } catch (Exception e) {
+            throw new SystemException("Kunne ikke sende søknad", e, "exception.system.baksystem");
+        }
     }
 
     public void avbrytSoknad(String behandlingsId) {
@@ -64,7 +68,7 @@ public class HenvendelseConnector {
             sendSoknadService.avbrytSoknad(behandlingsId);
         } catch (SOAPFaultException e) {
             LOGGER.error("Kunne ikke avbryte søknad med ID {}", behandlingsId, e);
-            throw new ApplicationException("Feil ved avbryting av søknad", e);
+            throw new SystemException("Kunne ikke avbryte søknad", e, "exception.system.baksystem");
         }
     }
 

@@ -14,33 +14,33 @@ if (!Array.prototype.indexOf) {
 			}
 		}
 		return -1;
-	}
+	};
 }
 
 if (!Array.prototype.last) {
 	Array.prototype.last = function () {
 		return this[this.length - 1];
-	}
+	};
 }
 
 if (!Array.prototype.contains) {
 	Array.prototype.contains = function (val) {
 		return $.inArray(val, this) > -1;
-	}
+	};
 }
 
 // Returnerer index til ett objekt som inneholder value (ikke nødvendigvis første)
 if (!Array.prototype.indexByValue) {
 	Array.prototype.indexByValue = function (val) {
 		return this.indexOf($.grep(this, function (obj) {
-			for (key in obj) {
+			for (var key in obj) {
 				if (obj[key] === val) {
 					return this;
 				}
 			}
 			return false;
 		})[0]);
-	}
+	};
 }
 
 String.prototype.splice = function (idx, rem, str) {
@@ -194,7 +194,7 @@ function stringContainsNotCaseSensitive(str, query) {
 		$(this).animate({
 			scrollTop: position
 		}, speed);
-	}
+	};
 })(jQuery);
 
 function fadeBakgrunnsfarge(element, scope, rgb1, rgb2, rgb3) {
@@ -262,7 +262,7 @@ function reverserNorskDatoformat(datoString) {
 function erFremtidigDato(datoString) {
 	var dato = new Date(datoString);
 
-	var enDagMillis = 86400000 //1000*60*60*24
+	var enDagMillis = 86400000; //1000*60*60*24
 	var dagensDato =  new Date();
 	var temp = new Date(dagensDato.getMonth()+1 +  "." + dagensDato.getDate() + "." + dagensDato.getFullYear());
 	var morgenDagensDatoMillis = temp.setTime(temp.getTime() + 86400000);
@@ -282,7 +282,7 @@ function erGyldigDato(datoString) {
 	var dagerIMaaned = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 	// Skuddår
-	if ((!(aar % 4) && aar % 100) || !(aar % 400)) {
+	if (((aar % 4) === 0 && aar % 100) || (aar % 400) === 0) {
 		dagerIMaaned[1] = 29;
 	}
 	return dag <= dagerIMaaned[--maaned];
@@ -339,7 +339,7 @@ function getIEVersion() {
         var  ua = navigator.userAgent;
         var re = new RegExp("MSIE ([0-9]{1,}[.0-9]{0,})");
 
-        if (re.exec(ua) != null) {
+        if (re.exec(ua) !== null) {
             version = parseInt(RegExp.$1);
         }
     }

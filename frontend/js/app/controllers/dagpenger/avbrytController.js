@@ -3,14 +3,12 @@ angular.module('nav.avbryt', [])
         $scope.fremdriftsindikator = {
             laster: false
 
-        }
+        };
 
         $scope.krevBekreftelse = data.fakta.filter(function(item) {
             return item.type==="BRUKERREGISTRERT";
         }).length>1;
         
-
-
         $scope.submitForm = function () {
             var start = $.now();
             $scope.fremdriftsindikator.laster = true;

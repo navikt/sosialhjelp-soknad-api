@@ -49,7 +49,7 @@ angular.module('nav.feilmeldinger', [])
                     }
                     scope.$broadcast(eventString);
                     return ctrl.$valid;
-                }
+                };
 
                 scope.$watch(function () {
                     return ctrl.$error;
@@ -64,11 +64,11 @@ angular.module('nav.feilmeldinger', [])
                         fortsattFeilListe = fortsattFeilListe.concat(leggTilFeilSomFortsattSkalVises(verdi, feilNokkel));
                     });
                     scope.feilmeldinger = fortsattFeilListe;
-                }
+                };
 
                 scope.skalViseFeilmeldinger = function () {
                     return scope.feilmeldinger.length > 0;
-                }
+                };
 
                 scope.scrollTilElementMedFeil = function (feilmelding) {
                     if (scope.erKlikkbarFeil(feilmelding)) {
@@ -93,7 +93,7 @@ angular.module('nav.feilmeldinger', [])
                             scope.giFokus(feilmelding.elem);
                         }
                     }
-                }
+                };
 
                 /*
                  Ved ng-repeat så må vi sjekke hvilket element som inneholder feil først. Sjekker at lengden er større
@@ -114,11 +114,11 @@ angular.module('nav.feilmeldinger', [])
                         }
                     });
 
-                }
+                };
 
                 scope.erKlikkbarFeil = function (feilmelding) {
                     return feilmelding.elem && feilmelding.elem.length > 0;
-                }
+                };
 
 
                 /*
