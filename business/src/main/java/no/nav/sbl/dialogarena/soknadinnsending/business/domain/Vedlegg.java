@@ -59,7 +59,15 @@ public class Vedlegg {
         this.skjemaNummer = skjemaNummer;
         return this;
     }
-    
+    public Vedlegg medTittel(String tittel) {
+        setTittel(tittel);
+        return this;
+    }
+    public Vedlegg medUrl(String key, String value) {
+        urls.put(key, value);
+        return this;
+    }
+
     public Vedlegg medNavn(String navn) {
         this.navn = navn;
         this.beskrivelse = navn;

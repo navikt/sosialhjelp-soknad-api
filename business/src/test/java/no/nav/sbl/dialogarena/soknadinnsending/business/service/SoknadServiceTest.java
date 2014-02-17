@@ -6,6 +6,7 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendin
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
@@ -39,12 +40,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.detect.Detect.IS_PDF;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.OPPRETTET;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.SKJEMA_VALIDERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.DAGPENGER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.RUTES_I_BRUT;
@@ -75,6 +79,8 @@ public class SoknadServiceTest {
     private HenvendelseConnector henvendelsesConnector;
     @Mock
     private FillagerConnector fillagerConnector;
+    @Mock
+    private Kodeverk kodeverk;
     @InjectMocks
     private SoknadService soknadService;
 
@@ -135,6 +141,43 @@ public class SoknadServiceTest {
         List<Long> ids = soknadService.splitOgLagreVedlegg(vedlegg, bais);
         assertThat(captor.getValue(), match(IS_PDF));
         assertThat(ids, contains(10L, 11L, 12L, 13L, 14L));
+    }
+
+    @Test
+    public void skalGenerereVedleggFaktum() throws IOException {
+        Vedlegg vedlegg = new Vedlegg().medSkjemaNummer("L6").medSoknadId(1L).medVedleggId(2L);
+        byte[] bytes = getBytesFromFile("/pdfs/minimal.pdf");
+        Vedlegg vedleggSjekk = new Vedlegg().medSkjemaNummer("L6").medSoknadId(1L).medAntallSider(1).medVedleggId(2L).medFillagerReferanse(vedlegg.getFillagerReferanse()).medData(bytes);
+        when(vedleggRepository.hentVedlegg(1L, 2L)).thenReturn(vedlegg);
+        when(vedleggRepository.hentVedleggUnderBehandling(1L, null, "L6")).thenReturn(Arrays.asList(new Vedlegg().medVedleggId(10L)));
+        when(vedleggRepository.hentVedleggStream(1L, 10L)).thenReturn(new ByteArrayInputStream(bytes));
+        when(soknadRepository.hentSoknad(1L)).thenReturn(new WebSoknad().medBehandlingId("123").medAktorId("234"));
+        soknadService.genererVedleggFaktum(1L, 2L);
+        vedleggSjekk.setData(vedlegg.getData());
+        vedleggSjekk.medStorrelse((long) vedlegg.getData().length);
+        verify(vedleggRepository).lagreVedleggMedData(1L, 2L, vedleggSjekk);
+        verify(fillagerConnector).lagreFil(eq("123"), eq(vedleggSjekk.getFillagerReferanse()), eq("234"), any(InputStream.class));
+    }
+
+    @Test
+    public void skalSletteVedlegg() {
+        soknadService.slettVedlegg(1L, 2L);
+        verify(vedleggRepository).slettVedlegg(1L, 2L);
+        verify(soknadRepository).settDelstegstatus(1L, SKJEMA_VALIDERT);
+    }
+
+    @Test
+    public void skalHentePaakrevdeVedlegg() {
+        Map<Kodeverk.Nokkel, String> map = new HashMap<>();
+        map.put(Kodeverk.Nokkel.TITTEL, "tittel");
+        map.put(Kodeverk.Nokkel.URL, "url");
+        when(kodeverk.getKoder("L6")).thenReturn(map);
+        Vedlegg vedlegg = new Vedlegg().medSkjemaNummer("L6");
+        Vedlegg vedleggSjekk = new Vedlegg().medSkjemaNummer("L6").medTittel("tittel").medUrl("URL", "url")
+                .medFillagerReferanse(vedlegg.getFillagerReferanse());
+        when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(Arrays.asList(vedlegg));
+        List<Vedlegg> vedleggs = soknadService.hentPaakrevdeVedlegg(1L);
+        assertThat(vedleggs.get(0), is(equalTo(vedleggSjekk)));
     }
 
     @Test
@@ -308,7 +351,6 @@ public class SoknadServiceTest {
         verify(soknadRepository).lagreFaktum(anyLong(), any(Faktum.class));
         DateTimeUtils.setCurrentMillisSystem();
     }
-
 
 
 }

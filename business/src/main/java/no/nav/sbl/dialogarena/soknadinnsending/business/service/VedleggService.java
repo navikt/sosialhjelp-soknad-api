@@ -23,7 +23,7 @@ public interface VedleggService {
 
     Long genererVedleggFaktum(Long soknadId, Long vedleggId);
 
-    List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId, WebSoknad soknad);
+    List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId);
 
     void lagreVedlegg(Long soknadId, Long vedleggId,  Vedlegg vedlegg);
 }
