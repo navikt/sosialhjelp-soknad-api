@@ -101,8 +101,11 @@ public class Personalia {
     }
 
     public boolean harUtenlandskAdresse() {
-        String adressetype = gjeldendeAdresse.getAdressetype();
-
+        String adressetype = null;
+        if(gjeldendeAdresse != null) {
+            adressetype = gjeldendeAdresse.getAdressetype(); 
+        }
+        
         if (adressetype == null) {
             return false;
         }
