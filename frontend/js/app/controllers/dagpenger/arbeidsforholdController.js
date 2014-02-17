@@ -37,7 +37,7 @@ angular.module('nav.arbeidsforhold.controller', [])
 
         if ($scope.arbeidsliste.length > 0) {
             $scope.harLagretArbeidsforhold = true;
-            $scope.harFeil = false;
+            $scope.harKlikketKnapp = false;
         } else {
             $scope.harLagretArbeidsforhold = undefined;
         }
@@ -52,7 +52,7 @@ angular.module('nav.arbeidsforhold.controller', [])
         };
 
         $scope.skalViseFeil = function () {
-            return $scope.harFeil === true && !$scope.harLagretArbeidsforhold;
+            return $scope.harKlikketKnapp === true && !$scope.harLagretArbeidsforhold;
         };
 
         $scope.harSvart = function () {
@@ -64,7 +64,7 @@ angular.module('nav.arbeidsforhold.controller', [])
                 return data.finnFaktum('arbeidstilstand').value === 'harIkkeJobbet';
             }
         }, function () {
-            $scope.harFeil = false;
+            $scope.harKlikketKnapp = false;
         });
 
 
@@ -97,10 +97,10 @@ angular.module('nav.arbeidsforhold.controller', [])
                 $scope.apneTab('arbeidsforhold');
             }
 
-            $scope.harFeil = false;
+            $scope.harKlikketKnapp = false;
 
             if (!$scope.hvisHarIkkeJobbet()) {
-                $scope.harFeil = true;
+                $scope.harKlikketKnapp = true;
             }
         };
 
@@ -125,7 +125,7 @@ angular.module('nav.arbeidsforhold.controller', [])
             if ($scope.arbeidsliste.length === 0) {
                 $scope.harLagretArbeidsforhold = undefined;
             }
-            $scope.harFeil = false;
+            $scope.harKlikketKnapp = false;
         };
 
 

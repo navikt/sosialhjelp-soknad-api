@@ -169,7 +169,7 @@ angular.module('nav.datepicker', [])
 						!erGyldigDato(element.find('input[type=text]').val()) && !scope.harFokus && harHattFokus;
 				};
 
-				scope.harFeil = function () {
+				scope.harKlikketKnapp = function () {
 					if (scope.navDatepicker()) {
                         return harFeilMedNavDatepicker();
                     } else {

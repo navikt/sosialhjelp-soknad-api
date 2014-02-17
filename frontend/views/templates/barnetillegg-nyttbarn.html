@@ -19,7 +19,7 @@
                             <div data-form-errors></div>
                             <h2 class="stor-strek" data-cmstekster="barnetillegg.nyttbarn.tittel"></h2>
 
-                            <div class="form-linje">
+                            <div class="form-linje tekstfelt">
                                 <label>
                                     <span data-cmstekster="barnetillegg.nyttbarn.fornavn"></span>
                                     <input name="fornavn"
@@ -29,11 +29,12 @@
                                            data-blur-validate
                                            data-maxlength="200"
                                            maxlength="200"
-                                           required>
+                                           required
+                                           data-aktiv-feilmelding>
                                     <span class="melding"></span>
                                 </label>
                             </div>
-                            <div class="form-linje">
+                            <div class="form-linje tekstfelt">
                                 <label>
                                     <span data-cmstekster="barnetillegg.nyttbarn.etternavn"></span>
                                     <input name="fnr"
@@ -43,7 +44,8 @@
                                            data-blur-validate
                                            data-maxlength="200"
                                            maxlength="200"
-                                           required>
+                                           required
+                                           data-aktiv-feilmelding>
                                     <span class="melding"></span>
                                 </label>
                             </div>
@@ -107,7 +109,8 @@
                                 <input data-ng-model="barn.properties.barnetillegg" name="barnetilegg"
                                        id="barnetilegg" type="checkbox"
                                        data-error-messages="'barnetillegg.nyttbarn.barnetillegg.feilmelding'"
-                                       data-boolean-verdi data-ng-required="true">
+                                       data-boolean-verdi data-ng-required="true"
+                                       data-aktiv-feilmelding>
                                 <label for="barnetilegg"
                                        data-cmstekster="barnetillegg.barnetilegg.sporsmal"></label>
                                 <span class="melding"
@@ -127,7 +130,8 @@
                                                data-ng-required="barnetilleggErRegistrert()"
                                                name="ikkebarneinntekt"
                                                data-click-validate
-                                               data-error-messages="'barnetillegg.barnetilegg.ikkebarneinntekt.feilmelding'">
+                                               data-error-messages="'barnetillegg.barnetilegg.ikkebarneinntekt.feilmelding'"
+                                                data-aktiv-feilmelding>
                                         <label for='ikkebarneinntekt'
                                                data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.true"></label>
                                     </div>
@@ -140,7 +144,8 @@
                                                data-ng-required="barnetilleggErRegistrert()"
                                                name="ikkebarneinntekt"
                                                data-click-validate
-                                               data-error-messages="'barnetillegg.barnetilegg.ikkebarneinntekt.feilmelding'">
+                                               data-error-messages="'barnetillegg.barnetilegg.ikkebarneinntekt.feilmelding'"
+                                               data-aktiv-feilmelding>
                                         <label for='ikkebarneinntektNei'
                                                data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.false"></label>
                                     </div>
@@ -148,7 +153,7 @@
                                 </div>
 
                                 <div data-ng-if="barnetHarInntekt()">
-                                    <div class="form-linje">
+                                    <div class="form-linje tekstfelt">
                                         <label>
                                             <span data-cmstekster="barnetillegg.barnetilegg.barneinntekttall.sporsmal"></span>
                                             <input name="barneinntekttall"
@@ -159,7 +164,8 @@
                                                    data-blur-validate
                                                    data-maxlength="200"
                                                    maxlength="200"
-                                                   required="barnetHarInntekt()">
+                                                   required="barnetHarInntekt()"
+                                                   data-aktiv-feilmelding>
                                             <span class="melding"></span>
                                         </label>
                                     </div>
