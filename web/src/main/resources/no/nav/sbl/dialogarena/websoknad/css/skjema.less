@@ -53,6 +53,13 @@ h4 {
     + .infoboks {
         margin-top: 24px;
     }
+
+    &:last-child {
+        margin-bottom: 0;
+        label {
+            margin-bottom: 0;
+        }
+    }
 }
 
 .henter-personalia {
@@ -169,12 +176,21 @@ h4 {
         margin-bottom: 0 !important;
     }
 
-    > .infoboks {
+
+    > .form-linje, [data-ng-include] .form-linje:first-child {
+        padding-top: 0;
+    }
+
+    > .infoboks, [data-ng-include] .infoboks {
         margin-right: 15px;
         margin-left: 15px;
 
         &:first-child {
-            margin-bottom: 15px;
+            margin-top: 0;
+        }
+
+        + .vedlegginfoboks {
+            margin-top: 30px;
         }
     }
 
@@ -203,11 +219,14 @@ h4 {
         > .form-linje {
             margin-left: -15px;
         }
+
+        &.nav-boolean {
+            margin-left: 18px;
+        }
     }
 
     .form-linje {
-        padding: 10px 15px;
-        clear: both;
+        padding: 15px;
     }
 
     .textarea-container {
@@ -233,7 +252,7 @@ h4 {
     }
 
     &.nav-boolean {
-        margin-left: 18px;
+        margin-left: 32px;
     }
 
     .spm-sporsmal {
