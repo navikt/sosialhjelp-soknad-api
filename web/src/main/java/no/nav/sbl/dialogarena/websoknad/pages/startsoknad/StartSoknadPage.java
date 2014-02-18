@@ -7,14 +7,7 @@ public class StartSoknadPage extends BasePage {
 
 	public StartSoknadPage(PageParameters parameters) {
 		super(parameters);
-		
-		String soknadType = parameters.get("soknadType").toString();
-		
-		if(soknadType == null || soknadType.isEmpty()) {
-		    add(new SoknadComponent("soknad"));
-		} else {
-		    add(new SoknadComponent("soknad", soknadType));
-		}
+		add(new SoknadComponent("soknad"));
 		
 		
 	}

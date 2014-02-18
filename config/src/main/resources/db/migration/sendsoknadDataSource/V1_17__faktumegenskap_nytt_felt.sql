@@ -1,1 +1,0 @@
-alter table faktumegenskap add systemegenskap char(1) default '0' check (systemegenskap in ('0','1'));

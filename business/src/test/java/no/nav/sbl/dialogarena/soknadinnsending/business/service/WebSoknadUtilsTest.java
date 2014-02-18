@@ -8,15 +8,15 @@ import org.joda.time.DateTimeUtils;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static java.util.Arrays.asList;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.FNR_KEY;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.PERSONALIA_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.DAGPENGER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.DAGPENGER_VED_PERMITTERING;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getJournalforendeEnhet;
@@ -88,15 +88,11 @@ public class WebSoknadUtilsTest {
 
     private static WebSoknad lagSoknad(Faktum... sluttaarsaker) {
         WebSoknad soknad = new WebSoknad();
-        Map<String, Faktum> fakta = new HashMap<>();
-        Faktum sluttaarsak = new Faktum();
-        Faktum person = new Faktum();
-        Faktum fnr = new Faktum();
-        sluttaarsak.setValuelist(asList(sluttaarsaker));
-        fakta.put("arbeidsforhold", sluttaarsak);
-        fakta.put(PERSONALIA_KEY, person);
-        fakta.put(FNR_KEY, fnr);
-        soknad.leggTilFakta(fakta);
+        List<Faktum> fakta = new ArrayList<>();
+        Faktum person = new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("personalia");
+        fakta.addAll(Arrays.asList(sluttaarsaker));
+        fakta.add(person);
+        soknad.setFaktaListe(fakta);
         return soknad;
     }
 
@@ -134,7 +130,7 @@ public class WebSoknadUtilsTest {
         Map<String, String> properties = new HashMap<>();
         properties.put("type", type);
         properties.put(datoKey, datoValue);
-        Faktum faktum = new Faktum();
+        Faktum faktum = new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("arbeidsforhold");
         faktum.setProperties(properties);
         return faktum;
     }

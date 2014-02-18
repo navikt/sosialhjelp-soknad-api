@@ -41,6 +41,11 @@ form, [ng-form], [data-ng-form] {
     input[type="radio"]:checked + label {
       font-weight: bold;
     }
+    &.form-linje.feil {
+      .melding {
+        text-align: left !important;
+      }
+    }
   }
 }
 
@@ -48,6 +53,36 @@ form, [ng-form], [data-ng-form] {
   [class*="ikon-vedlegg-strek"] {
     padding-bottom: 30px;
     margin-bottom: 30px !important;
+  }
+  .strek-ikon-info-orange {
+    margin-top: 30px;
+    padding-bottom: 25px !important;
+    margin-bottom: 25px !important;
+  }
+
+  .viktig-info {
+    margin-bottom: 25px;
+
+    li {
+      background-image: url(../img/7x7_svart.png);
+      background-repeat: no-repeat;
+      background-position: left 5px;
+      padding-bottom: 15px;
+      padding-left: 20px;
+      font-weight: bold;
+    }
+  }
+
+  ul {
+    list-style-type: none;
+    margin-bottom: 0px;
+    padding-left: 0px;
+  }
+  ul.form-errors {
+    padding: 1rem;
+    padding-left: 3rem;
+    margin-bottom: 2rem;
+    text-align: left;
   }
 
   .info, h4 {
@@ -57,18 +92,32 @@ form, [ng-form], [data-ng-form] {
     font-size: 1.21rem;
     font-family: Modus, Arial, Helvetica, sans-serif;
   }
-  .oversikt {
-    text-align: center;
-  }
+
   .inforad {
     border-bottom: none;
     border-top: 1px solid #d1d1d1;
   }
+  .oversikt {
+    text-align: center;
+  }
   .leggtilekstra {
-    padding: 50px;
+    background-color: #f1f1f1;
+    padding-top: 50px;
+    padding-bottom: 35px;
+    border-bottom: none;
+
+    button {
+      background-color: #f1f1f1;
+      margin-bottom: 30px;
+
+      &:hover {
+        background-color: #0067c5;
+        color: #fff;
+      }
+    }
   }
   .ferdig-skjema {
-    padding-top: 50px;
+    padding-top: 0px;
   }
 
   .vedlegg {
@@ -89,9 +138,7 @@ form, [ng-form], [data-ng-form] {
     .skjemaramme {
       padding-top: 35px;
     }
-    .valgbokser {
 
-    }
     [class^='valgboks-'] {
       position: relative;
       display: inline-block;
@@ -118,6 +165,9 @@ form, [ng-form], [data-ng-form] {
       text-align: center;
       padding-bottom: 30px;
       padding-top: 35px;
+      li {
+        margin: 15px;
+      }
     }
     .valgboks-pc {
       background-image: url('../img/pc.svg'), url('../img/under-dark.png');
@@ -137,7 +187,7 @@ form, [ng-form], [data-ng-form] {
       margin-top: 30px;
     }
     .behandlet {
-      div {
+      div:last-of-type {
         padding-top: 30px;
         text-transform: uppercase;
         color: #3e3832;
@@ -163,12 +213,12 @@ form, [ng-form], [data-ng-form] {
         h2 {
           padding-top: 40px;
           &:before {
-            display: inline-block;
-            content: "";
-            background: none;
-            width: none;
-            height: none;
-            background-size: none;
+            display: inherit;
+            content: inherit;
+            background: inherit;
+            width: inherit;
+            height: inherit;
+            background-size: inherit;
           }
         }
       }
@@ -186,6 +236,11 @@ form, [ng-form], [data-ng-form] {
           padding-top: 30px;
           text-transform: uppercase;
           color: #3e3832;
+        }
+      }
+      &.behandlet.lastetopp {
+        .flipp {
+          padding-top: 0px;
         }
       }
     }
@@ -211,6 +266,42 @@ form, [ng-form], [data-ng-form] {
         height: 311px;
       }
     }
+  }
+
+  .form-linje.tekstfelt {
+    margin: 0 auto;
+
+    .annet-container {
+      width: 233px;
+      text-align: left;
+      margin: 0 auto;
+
+      input {
+        width: 100%;
+        margin-top: 8px;
+      }
+
+    }
+    .annet-container.annetlastetopp {
+      width: 220px !important;
+    }
+  }
+  .form-linje.knapp {
+    background-color: transparent;
+    border-color: transparent;
+    .melding {
+      text-align: center;
+    }
+    .melding.annet {
+      margin-top: -35px;
+      text-align: center !important;
+    }
+  }
+  .form-linje {
+    padding: 0px;
+  }
+  .bilde {
+    background-image: none;
   }
 }
 
@@ -347,6 +438,9 @@ form, [ng-form], [data-ng-form] {
 }
 
 #opplasting {
+  .panel.uten-ramme {
+    margin-top: 30px;
+  }
   border-top: 1px solid #d1d1d1;
   [class*="ikon-vedlegg-strek"] {
     padding-bottom: 30px;
@@ -356,6 +450,16 @@ form, [ng-form], [data-ng-form] {
     width: auto;
     max-width: 73%;
   }
+  ul {
+    list-style-type: none;
+    margin-bottom: 0px;
+    padding-left: 0px;
+
+    li {
+      margin: 15px;
+    }
+  }
+
   .opplastingliste {
     padding: 0;
     list-style: none;
@@ -369,9 +473,9 @@ form, [ng-form], [data-ng-form] {
       background-color: #333333;
       margin-left: 20px;
       margin-bottom: 20px;
-      &:nth-child(3n + 1) {
-        margin-left: 0
-      }
+      //      &:nth-child(3n + 1) {
+      //        margin-left: 0
+      //      }
       padding: 10px;
       background-image: url('../img/ajaxloader/svart/loader_svart_128.gif');
       background-repeat: no-repeat;
@@ -404,6 +508,9 @@ form, [ng-form], [data-ng-form] {
       background-image: url('../img/legg_til_hover.svg');
     }
   }
+  .form-linje {
+    padding: 5px;
+  }
   .opplastingfeil {
     width: 100%;
     background-color: #c30000;
@@ -412,10 +519,6 @@ form, [ng-form], [data-ng-form] {
     margin-bottom: 2rem;
     text-align: center;
     color: #fff;
-  }
-  .avbryt {
-    display: block;
-    margin-top: 25px;
   }
   .melding {
     text-align: center;

@@ -1,0 +1,163 @@
+<div class="modalBoks" data-ng-controller="ArbeidsforholdNyttCtrl">
+    <div data-ng-form="nyttArbeidsforholdForm" class="vertikal">
+        <div class="begrensning">
+            <div class="sak-totredel">
+                <div class="arbeidsforhold-spm spm-boks panel-standard-belyst">
+                    <a href="#/soknad" class="lukk"> </a>
+
+                    <div data-form-errors></div>
+                    <h2 class="stor-strek">
+                        <span>{{ 'arbeidsforhold.nyttarbeidsforhold.tittel' | cmstekst }}</span>
+                    </h2>
+
+                    <div data-nav-faktum="arbeidsforhold" data-ikke-auto-lagre="true">
+                        <div data-navtekst
+                             data-navconfig
+                             data-nav-faktum-property="arbeidsgivernavn"
+                             data-navlabel="arbeidsforhold.arbeidsgiver.navn"
+                             data-navfeilmelding="'arbeidsforhold.arbeidsgiver.navn.feilmelding'"
+                             data-ng-required></div>
+
+                        <div class="land">
+                            <div data-nav-select
+                                 data-navconfig
+                                 data-nav-faktum-property="land"
+                                 data-label="arbeidsforhold.arbeidsgiver.land"
+                                 data-options="land.result"
+                                 data-er-required="true"
+                                 data-ikke-auto-lagre="true"
+                                 data-default-value="arbeidsforhold.arbeidsgiver.landDefault"
+                                 data-required-feilmelding="arbeidsforhold.arbeidsgiver.land.feilmelding"
+                                 data-ugyldig-feilmelding="arbeidsforhold.arbeidsgiver.land.ugyldig.feilmelding">
+                            </div>
+                        </div>
+                        <div data-ng-show="arbeidsforhold.properties.eosland == 'true'">
+                            <div class="ekstra-spm-boks" data-vedlegginfoboks>
+                                <ul>
+                                    <li>
+                                        {{ 'arbeidsforhold.arbeidsgiver.land.norge.vedlegginformasjon' | cmstekst}}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="spm boolean form-linje">
+                            <h4 class="spm-sporsmal">{{ 'arbeidsforhold.arbeidsgiver.sluttaarsak.informasjon' | cmstekst }}</h4>
+
+                            <div class="nav-radio-knapp">
+                                <input class="sendsoknad-radio"
+                                       id="radio5"
+                                       name="arbeidsforhold.sluttaarsak.radio"
+                                       type="radio"
+                                       value="Sagt opp av arbeidsgiver"
+                                       data-ng-model="faktum.properties.type"
+                                       data-ng-required="true"
+                                       data-click-validate
+                                       data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'"
+                                       data-aktiv-feilmelding>
+                                <label for='radio5'>{{ 'arbeidsforhold.sluttaarsak.radio.sagtOppAvArbeidsgiver' | cmstekst }}</label>
+                            </div>
+
+                            <div class="nav-radio-knapp">
+                                <input class="sendsoknad-radio"
+                                       id="radio7"
+                                       type="radio"
+                                       value="Permittert"
+                                       name="arbeidsforhold.sluttaarsak.radio"
+                                       data-ng-model="faktum.properties.type"
+                                       data-ng-required="true"
+                                       data-click-validate
+                                       data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'"
+                                       data-aktiv-feilmelding>
+                                <label for='radio7'>{{ 'arbeidsforhold.sluttaarsak.radio.permittert' | cmstekst }}</label>
+                            </div>
+
+                            <div class="nav-radio-knapp">
+                                <input class="sendsoknad-radio"
+                                       id="radio1"
+                                       type="radio"
+                                       value="Kontrakt utgått"
+                                       name="arbeidsforhold.sluttaarsak.radio"
+                                       data-ng-model="faktum.properties.type"
+                                       data-click-validate
+                                       data-ng-required="true"
+                                       data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'"
+                                       data-aktiv-feilmelding>
+                                <label for='radio1'>{{ 'arbeidsforhold.sluttaarsak.radio.kontraktutgaatt' | cmstekst }}</label>
+                            </div>
+
+                            <div class="nav-radio-knapp">
+                                <input class="sendsoknad-radio"
+                                       id="radio6"
+                                       type="radio"
+                                       value="Sagt opp selv"
+                                       name="arbeidsforhold.sluttaarsak.radio"
+                                       data-ng-model=faktum.properties.type
+                                       data-ng-required="true"
+                                       data-click-validate
+                                       data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'"
+                                       data-aktiv-feilmelding>
+                                <label for='radio6'>{{ 'arbeidsforhold.sluttaarsak.radio.sagtOppSelv' | cmstekst }}</label>
+                            </div>
+
+                            <div class="nav-radio-knapp">
+                                <input class="sendsoknad-radio"
+                                       id="radio3"
+                                       type="radio"
+                                       value="Redusert arbeidstid"
+                                       name="arbeidsforhold.sluttaarsak.radio"
+                                       data-ng-model="faktum.properties.type"
+                                       data-ng-required="true"
+                                       data-click-validate
+                                       data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'"
+                                       data-aktiv-feilmelding>
+                                <label for='radio3'>{{ 'arbeidsforhold.sluttaarsak.radio.redusertArbeidstid' | cmstekst }}</label>
+                            </div>
+
+                            <div class="nav-radio-knapp">
+                                <input class="sendsoknad-radio"
+                                       id="radio4"
+                                       type="radio"
+                                       value="Arbeidsgiver er konkurs"
+                                       name="arbeidsforhold.sluttaarsak.radio"
+                                       data-ng-model="faktum.properties.type"
+                                       data-ng-required="true"
+                                       data-click-validate
+                                       data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'"
+                                       data-aktiv-feilmelding>
+                                <label for='radio4'>{{ 'arbeidsforhold.sluttaarsak.radio.arbeidsgiverErKonkurs' | cmstekst }}</label>
+                            </div>
+
+                            <div class="nav-radio-knapp">
+                                <input class="sendsoknad-radio"
+                                       id="radio2"
+                                       type="radio"
+                                       value="Avskjediget"
+                                       name="arbeidsforhold.sluttaarsak.radio"
+                                       data-ng-model="faktum.properties.type"
+                                       data-ng-required="true"
+                                       data-click-validate
+                                       data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'"
+                                       data-aktiv-feilmelding>
+                                <label for='radio2'>{{ 'arbeidsforhold.sluttaarsak.radio.avskjediget' | cmstekst }}</label>
+                            </div>
+
+                            <span class="melding"></span>
+                        </div>
+
+                        <div data-ng-if="faktum.properties.type">
+                            <div class="spm" data-nav-faktum="sluttaarsak" data-ikke-auto-lagre="true" data-ng-include="templates[faktum.properties.type].url"></div>
+                        </div>
+                        <div class="knapper-opprett" data-ng-class="{valgt: faktum.properties.type}">
+                            <input class="knapp-hoved-liten" type="submit"
+                                   value="{{ 'arbeidsforhold.nyttarbeidsforhold.lagre' | cmstekst }}"
+                                   data-ng-click="lagreArbeidsforhold(nyttArbeidsforholdForm);">
+                            <a href="#/soknad">{{ 'arbeidsforhold.nyttarbeidsforhold.avbryt' | cmstekst }}</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

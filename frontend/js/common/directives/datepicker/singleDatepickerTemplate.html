@@ -1,0 +1,35 @@
+<div class="form-linje datepicker" data-ng-class="{feil: harFeil(), fokus: harFokus, nav: navDatepicker()}">
+    <span class="caretPosition"></span>
+    <label>
+        <span class="labeltekst">{{ label | cmstekst }}</span>
+        <span class="vekk">{{ 'dato.format' | cmstekst }}</span>
+        <span data-ng-show="navDatepicker()">
+            <span class="datepicker-input">
+                <input type="text"
+                       data-ng-model="ngModel"
+                       data-ng-blur="blur()"
+                       data-ng-focus="focus()"
+                       data-ng-required="erRequired"
+                       data-error-messages="'{{ requiredErrorMessage }}'"
+                       data-dato-mask>
+                <span class="mask"></span>
+                <input type="hidden" data-ng-model="ngModel">
+                <span class="apne-datepicker" data-ng-click="toggleDatepicker()"></span>
+            </span>
+        </span>
+        <span data-ng-show="vanligDatepicker()">
+            <input type="date"
+                   data-ng-model="ngModel"
+                   data-ng-required="erRequired"
+                   data-ng-blur="blur()"
+                   data-ng-focus="focus()"
+                   data-error-messages="'{{ requiredErrorMessage }}'">
+        </span>
+    </label>
+
+    <span class="melding" data-ng-if="harRequiredFeil()">{{ requiredErrorMessage | cmstekst }}</span>
+    <span class="melding" data-ng-if="harTilDatoFeil()">{{ 'dato.tilDato.feilmelding' | cmstekst }}</span>
+    <span class="melding" data-ng-if="harFormatteringsFeil()">{{ 'dato.format.feilmelding' | cmstekst }}</span>
+    <span class="melding" data-ng-if="erIkkeGyldigDato()">{{ 'dato.ikkeGyldigDato.feilmelding' | cmstekst }}</span>
+    <span class="melding" data-ng-if="erUloveligFremtidigDato()">{{ 'dato.ugyldigFremtidig.feilmelding' | cmstekst }}</span>
+</div>

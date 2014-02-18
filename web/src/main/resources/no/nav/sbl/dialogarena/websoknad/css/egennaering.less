@@ -1,142 +1,183 @@
-.orgnummer-repeat .orgnummer {
-  width: 100%;
-  padding-bottom: 0px !important;
-  float: left;
-
-  &feil .melding {
-    display: block;
-    clear: both;
-  }
-  span {
-    clear: both;
-    float: left;
-    margin-top: 7px !important;
-  }
-}
-
-.orgnummer-slett {
-  float: left;
-  display: block;
-  margin-left: -300px;
-  margin-top: 52px;
-}
-
-.orgnummer-leggtil {
-  display: inline-block;
-  clear: both;
-  margin: 15px;
-}
-
-.arbeidsmengde-container {
-  input {
-    width: 50px !important;
-    float: left;
-    margin-right: 10px;
+#egennaering {
+  h4 {
+    margin-top: 4px;
   }
 
-  span {
-    display: block;
-  }
-
-  .melding {
-    clear: both;
-  }
-}
-
-.andelsfordeling-container {
-  &.aktiv-feilmelding.feil {
-    border: 1px solid #c30000;
-    background-color: #FAD6D6;
-  }
-  .andels-fordeling {
-    .form-linje {
-      width: 38%;
-      padding: 0px !important;
-      display: inline-block;
-      vertical-align: top;
+  #fangst-og-fiske {
+    .fangstfiskeinntekt {
+      margin-bottom: 20px;
 
       input {
-        width: 55px !important;
-        float: left;
-        margin-right: 5px;
+        width: 120px !important;
+        display: inline-block;
+      }
+    }
+
+    .vedlegginfoboks {
+      margin-top: 30px;
+    }
+  }
+
+  #gardsbruk {
+    .orgnummer {
+      margin-bottom: 16px;
+    }
+
+    .timeredegjoring {
+      margin-top: 2px;
+    }
+
+    .arbeidsmengde-container {
+      .melding {
+      }
+    }
+
+    .gardsbruk-timer {
+      padding: 15px;
+
+      .form-linje {
+        padding: 0px !important;
+        clear: none !important;
+
+        label {
+          display: inline-block;
+        }
+
+        input {
+          width: 70px !important;
+          display: inline-block;
+        }
+        select {
+          display: inline-block;
+          width: 77px;
+          border: 1px solid #cccccc !important;
+          border-top: 1px solid #b7b1a9 !important;
+          background-color: #fff !important;
+        }
+      }
+    }
+
+    .andelsfordeling-container {
+      margin-bottom: 10px;
+
+      &.aktiv-feilmelding {
+        .form-linje.feil.tekstfelt input:focus{
+          border: 1px solid #c30000;
+          background-color: #FAD6D6;
+        }
+        &.feil {
+          border: 1px solid #c30000;
+          background-color: #FAD6D6;
+        }
+      }
+
+      .andels-fordeling {
+        .form-linje {
+          margin-bottom: 30px;
+          width: 38%;
+          padding: 0px !important;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+
+          input {
+            display: block;
+          }
+
+          span:not(.melding) {
+            display: block;
+          }
+
+          &.feil .melding {
+            display: block;
+            clear: both;
+          }
+          &.aktiv-feilmelding input {
+            border: 1px solid #c30000;
+            background-color: #FAD6D6;
+          }
+        }
+      }
+      &.feil .andels-fordeling .melding {
+        display: none;
+      }
+
+      &.feil .prosentmelding {
+        color: #A00404;
         display: block;
       }
 
-      span:not(.melding) {
-        display: block;
-      }
-      .egennaering-prosent {
-        margin-top: 15px;
-        font-size: 1rem !important;
-      }
-
-      &.feil .melding {
-        display: block;
-        clear: both;
-      }
-
-      &:first-child, &:last-child {
-        width: 30%;
+      .prosentmelding {
+        display: none;
       }
     }
   }
-  &.feil .andels-fordeling .melding {
-    display: none;
-  }
 
-  &.feil .prosentmelding {
-    color: #A00404;
-    display: block;
-  }
-
-  .prosentmelding {
-//    clear: both;
-//    color: #3e3832;
-    display: none;
-  }
-}
-
-.gardsbruk-timer {
-  padding: 15px;
-
-  .form-linje {
+  .orgnummer-repeat .orgnummer {
+    width: 100%;
+    padding-bottom: 0px !important;
     float: left;
-    width: 25%;
-    padding: 0px !important;
-    clear: none !important;
 
-    input {
-      width: 70px !important;
+    &feil .melding {
       display: block;
-    }
-    select {
-      width: 77px;
+      clear: both;
     }
     span {
-      display: block;
+      clear: both;
+      float: left;
+      margin-top: 7px !important;
+    }
+    &.aktiv-feilmelding.feil.tekstfelt input:focus {
+      border: 1px solid #c30000;
+      background-color: #FAD6D6;
+    }
+    &.aktiv-feilmelding.feil.tekstfelt input {
+      border: 1px solid #fca292;
+      background-color: #fee6e6;
     }
   }
-}
 
-.timeredegjoring {
-  clear: both;
-}
-
-.fangstfiskeinntekt {
-  float: left;
-  margin-bottom: 20px;
-
-  span {
-    clear: both;
+  .orgnummer-slett {
     float: left;
+    display: block;
+    margin-left: -300px;
+    margin-top: 52px;
   }
-  .melding {
-    clear: both;
+
+  @media only screen and (max-width: 570px) {
+    .orgnummer-slett {
+      margin-left: 0px;
+      margin-top: 0px;
+      padding-left: 15px;
+      float: none;
+    }
   }
-  input {
-    width: 120px !important;
+
+  .orgnummer-leggtil {
     display: inline-block;
     clear: both;
-    float: left;
+    margin: 15px 15px 26px;
+  }
+
+  .arbeidsmengde-container {
+    input {
+      width: 50px !important;
+      margin-right: 10px;
+    }
+  }
+
+  @media only screen and (max-width: 570px) {
+    .andels-fordeling .form-linje {
+      width: 74% !important;
+
+      span {
+        margin-bottom: 0px;
+      }
+    }
+
+    .arbeidsmengde-container {
+      margin-right: 25px !important;
+    }
   }
 }

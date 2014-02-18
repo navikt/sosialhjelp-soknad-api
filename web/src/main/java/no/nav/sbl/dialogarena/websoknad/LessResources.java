@@ -22,7 +22,9 @@ public enum LessResources {
     EGENNAERING("egennaering"),
     PERSONALIA("personalia"),
     UTDANNING_LESS("utdanning"),
-    STEGINDIKATOR_LESS("stegindikator");
+    STEGINDIKATOR_LESS("stegindikator"),
+    MOBIL_LESS("mobil"),
+    TABBING_LESS("tabbing");
 
     private static final String FOLDER = "css/";
     private static final String TYPE = ".less";
