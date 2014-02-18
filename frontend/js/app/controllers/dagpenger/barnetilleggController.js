@@ -55,7 +55,7 @@ angular.module('nav.barnetillegg', [])
 		};
 
         $scope.kreverVedlegg = function(barn) {
-            return $scope.barnetHarInntekt(barn) || $scope.norskBarnIkkeFunnetITPS(barn);
+            return ($scope.barnetilleggErRegistrert(barn) && $scope.barnetHarInntekt(barn)) || $scope.norskBarnIkkeFunnetITPS(barn);
         };
 
         $scope.norskBarnIkkeFunnetITPS = function(barn) {
@@ -75,7 +75,6 @@ angular.module('nav.barnetillegg', [])
 
         $scope.barnetHarInntekt = function (barn) {
             if(barn && barn.properties) {
-                console.log('Testing');
                 return barn.properties.ikkebarneinntekt === 'false';
             }
             return false;

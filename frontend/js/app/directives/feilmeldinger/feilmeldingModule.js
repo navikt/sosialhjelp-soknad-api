@@ -200,7 +200,7 @@ angular.module('nav.feilmeldinger', [])
 //              skal bruke tabIndex når det er på plass
             }
             return feilmeldinger;
-        }
+        };
     }])
     .directive('aktivFeilmelding', ['$timeout', function ($timeout) {
         return {
@@ -212,7 +212,7 @@ angular.module('nav.feilmeldinger', [])
                             formLinje.removeClass('aktiv-feilmelding');
                         }, 100);
                     }
-                })
+                });
             }
         };
     }]);

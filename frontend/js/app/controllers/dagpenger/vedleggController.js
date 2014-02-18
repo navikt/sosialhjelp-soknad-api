@@ -31,7 +31,7 @@ angular.module('nav.vedlegg.controller', [])
                 $scope.validert.value = true;
                 $timeout(function () {
                     $scope.leggTilStickyFeilmelding();
-                }, 50)
+                }, 50);
 
             }
             $scope.runValidation(true);
