@@ -381,7 +381,8 @@
             it('hvis barnet har inntekt så kreves vedlegg', function () {
                 var barn = {
                     key: 'barn',
-                    properties: {ikkebarneinntekt: 'false'}
+                    properties: {ikkebarneinntekt: 'false',
+                                barnetillegg: 'true'}
                 };
                 expect(scope.kreverVedlegg(barn)).toEqual(true);
             });
