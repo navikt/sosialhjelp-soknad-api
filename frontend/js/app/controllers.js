@@ -23,5 +23,6 @@ angular.module('app.controllers', [
     'nav.informasjonsside',
     'nav.behandlingside',
     'nav.avbryt',
-    'nav.bekreftelse'
+    'nav.bekreftelse',
+    'nav.tilleggsopplysninger'
 ]);

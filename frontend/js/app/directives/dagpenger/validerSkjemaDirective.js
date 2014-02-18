@@ -11,10 +11,6 @@ angular.module('nav.validerskjema', [])
                         var gruppeErIkkeValidert = !bolk.hasClass(validertKlasse);
                         if (gruppeErIkkeValidert) {
                             gruppe.validering = true;
-                            //Todo småhacky
-                            if(gruppe.id == "fritekst") {
-                                scope.leggTilValideringsmetode(gruppe.id, function() {});
-                            }
                             $timeout(function() {
                                 gruppe.valideringsmetode(false);
                             });
