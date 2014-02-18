@@ -10,7 +10,7 @@ angular.module('nav.dagpenger', [])
 			{id: 'ytelser', tittel: 'ytelser.tittel', template: '../views/templates/ytelser.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
 			{id: 'personalia', tittel: 'personalia.tittel', template: '../views/templates/personalia.html', apen: false, skalSettesTilValidVedForsteApning: true, validering: false},
             {id: 'barnetillegg', tittel: 'barnetillegg.tittel', template: '../views/templates/barnetillegg.html', apen: false, skalSettesTilValidVedForsteApning: true, validering: false},
-            {id: 'fritekst', tittel: 'fritekst.tittel', template: '../views/templates/fritekst.html', apen: false, skalSettesTilValidVedForsteApning: true, validering: false}
+            {id: 'tilleggsopplysninger', tittel: 'tilleggsopplysninger.tittel', template: '../views/templates/tilleggsopplysninger.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false}
 		];
 
         $scope.leggTilValideringsmetode = function(bolkId, valideringsmetode) {

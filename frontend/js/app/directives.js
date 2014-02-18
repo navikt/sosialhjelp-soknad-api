@@ -28,5 +28,6 @@ angular.module('app.directives', [
     'nav.fokus',
     'nav.vedleggbolker',
     'nav.sjekkBoklerValiditet',
-    'nav.validerskjema'
+    'nav.validerskjema',
+    'nav.tilleggsopplysninger'
 ]);
