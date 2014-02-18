@@ -348,5 +348,5 @@ function getIEVersion() {
 }
 
 function isNotNullOrUndefined(obj) {
-    return obj !== undefined && obj !== null
+    return obj !== undefined && obj !== null;
 }
