@@ -41,6 +41,7 @@ angular.module('nav.barn', ['app.services'])
                 if (value.faktumId.toString() === faktumId) {
                     $scope.barn = new Faktum(value);
                     $scope.barnenavn = value.properties.sammensattnavn;
+                    $scope.barn.properties.ikkebarneinntekt = undefined;
                 }
             });
         } else {
@@ -75,6 +76,17 @@ angular.module('nav.barn', ['app.services'])
 
         $scope.barnetHarIkkeInntekt = function () {
             return !$scope.barnetHarInntekt();
+        };
+
+        $scope.avbrytBarnetilegg = function($event) {
+            $event.preventDefault();
+            if(barnetilleggModus) {
+                $scope.barn.properties.barnetillegg=undefined;
+                $scope.barn.properties.barneinntekttall=undefined;
+                $scope.barn.properties.ikkebarneinntekt=undefined;
+            }
+
+            $location.path('soknad');
         };
 
         $scope.lagreBarn = function (form) {

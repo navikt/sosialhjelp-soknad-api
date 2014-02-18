@@ -480,7 +480,7 @@
             beforeEach(inject(function ($controller) {
                 scope.personalia = {
                     gjeldendeAdresse: "Gjeldene adresse"
-                }
+                };
                 ctrl = $controller('AdresseCtrl', {
                     $scope: scope
                     
