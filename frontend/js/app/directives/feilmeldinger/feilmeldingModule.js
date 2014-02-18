@@ -74,7 +74,9 @@ angular.module('nav.feilmeldinger', [])
                     if (scope.erKlikkbarFeil(feilmelding)) {
                         var formLinje = feilmelding.elem.closest('.form-linje');
                         scrollToElement(formLinje, 200);
-                        formLinje.addClass('aktiv-feilmelding');
+                        if(!formLinje.hasClass("andelsfordeling-container")) {
+                            formLinje.addClass('aktiv-feilmelding');
+                        }
 
                         if (feilmelding.elem.is('[type=hidden]')) {
                             if (feilmelding.elem.hasClass('tekstfelt')) {
