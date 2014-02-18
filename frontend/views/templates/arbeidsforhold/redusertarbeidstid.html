@@ -1,0 +1,40 @@
+<div class="varighet">
+    <div data-nav-dato-intervall
+         data-fra-dato="sluttaarsak.properties.datofra"
+         data-til-dato="sluttaarsak.properties.datotil"
+         data-label="arbeidsforhold.arbeidsgiver.varighet"
+         data-er-begge-required="true"
+         data-lagre="lagreFaktum()">
+    </div>
+</div>
+
+<div data-booleanradio
+     data-navconfig
+     data-nav-faktum-property="nyttTilbud"
+     data-nokkel="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud"></div>
+
+<div class="fiks-siste-boks ekstra-spm-boks" data-ng-if="sluttaarsak.properties.nyttTilbud == 'true'">
+    <div data-navinfoboks>
+        <p>{{ 'arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.true.informasjon' | cmstekst }}</p>
+    </div>
+</div>
+
+<div class="ekstra-spm-boks">
+    <div data-navinfoboks>
+        <p class="sluttaarsak-informasjon"
+           data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.informasjon"></p>
+    </div>
+    <div data-vedlegginfoboks>
+        <ul>
+            <li>
+                <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></p>
+            </li>
+            <li>
+                <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2"></p>
+                <a href="{{sluttaarsakUrl}}"
+                   data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst">
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

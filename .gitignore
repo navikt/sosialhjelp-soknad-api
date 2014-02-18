@@ -16,6 +16,8 @@ target
 consumer/*.pdf
 test.pdf
 
+web/handlebar.pdf
+
 # /web/FitNesseRoot/
 /web/FitNesseRoot/ErrorLogs
 /web/FitNesseRoot/properties

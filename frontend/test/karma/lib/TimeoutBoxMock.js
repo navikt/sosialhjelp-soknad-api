@@ -2,7 +2,7 @@
 var TimeoutBox = (function () {
     var startTimeout = function() {
         return;
-    }
+    };
     return {
         startTimeout: startTimeout
     };

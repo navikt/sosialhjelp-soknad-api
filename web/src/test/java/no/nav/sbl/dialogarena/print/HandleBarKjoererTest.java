@@ -5,10 +5,15 @@ import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import com.lowagie.text.DocumentException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import org.hamcrest.core.Is;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 
 import static no.nav.sbl.dialogarena.print.helper.JsonTestData.hentWebSoknadHtml;
@@ -50,32 +55,28 @@ public class HandleBarKjoererTest {
         assertThat(applied, containsString("188"));
     }
 
-    // TODO: Fiks testen
     @Test
     public void createPDFFromJson() throws IOException, DocumentException {
-        assertThat(true, Is.is(true));
-//        Kodeverk kodeverk = mock(Kodeverk.class);
-//        WebSoknad soknad = new WebSoknad();
-//        soknad.setSkjemaNummer("NAV-1-1-1");
-//        soknad.leggTilFaktum(new Faktum(1L, 1L, "test", "testinnhold"));
-//        soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold2"));
-//        soknad.leggTilFaktum(new Faktum(1L, 1L, "liste", "testinnhold3"));
-//        soknad.leggTilFaktum(new Faktum(1L, 1L, "test3", "testinnhold4"));
-//        String html = new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/html/WebSoknadHtml");
-//        assertThat(html, containsString("NAV-1-1-1"));
-//
-//        String baseUrl = "/c:/test/";
-//        String pdf = "c:/test/handlebar.pdf";
-//        PDFFabrikk.lagPdfFil(html, baseUrl, pdf);
-//
-//        long start = new Date().getTime();
-//        ByteArrayOutputStream ut = new ByteArrayOutputStream();
-//        PDFFabrikk.lagPDFOutputStream(html, baseUrl, ut);
-//        assertThat(ut.size(), is(1155));
-//        ut.close();
-//
-//        long stopp = new Date().getTime();
-//        long diff = stopp - start;
-//        assertThat(diff, lessThanOrEqualTo(2500l));
+        Kodeverk kodeverk = mock(Kodeverk.class);
+        WebSoknad soknad = new WebSoknad();
+        soknad.setSkjemaNummer("NAV-1-1-1");
+        soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold" ).medType(FaktumType.BRUKERREGISTRERT));
+        soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold2").medType(FaktumType.BRUKERREGISTRERT));
+        soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold3").medType(FaktumType.BRUKERREGISTRERT));
+        soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold4").medType(FaktumType.BRUKERREGISTRERT));
+        String html = new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/html/WebSoknadHtml");
+
+        String baseUrl = "";
+        String pdf = "handlebar.pdf";
+        PDFFabrikk.lagPdfFil(html, baseUrl, pdf);
+
+        long start = new Date().getTime();
+        ByteArrayOutputStream ut = new ByteArrayOutputStream();
+        PDFFabrikk.lagPDFOutputStream(html, baseUrl, ut);
+        ut.close();
+
+        long stopp = new Date().getTime();
+        long diff = stopp - start;
+        Assert.assertTrue(diff <= 2500l);
     }
 }

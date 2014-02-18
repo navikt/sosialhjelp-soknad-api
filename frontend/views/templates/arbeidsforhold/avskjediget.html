@@ -1,0 +1,37 @@
+<div class="varighet">
+    <div data-nav-dato-intervall
+         data-fra-dato="sluttaarsak.properties.datofra"
+         data-til-dato="sluttaarsak.properties.datotil"
+         data-label="arbeidsforhold.arbeidsgiver.varighet"
+         data-er-begge-required="true"
+         data-lagre="lagreFaktum()">
+    </div>
+</div>
+
+<div data-navtextarea
+     data-navconfig
+     data-nav-faktum-property="avskjedigetGrunn"
+     data-nokkel="arbeidsforhold.sluttaarsak.avskjedigetgrunn"
+     data-maxlengde="500"
+     data-feilmelding="arbeidsforhold.sluttaarsak.avskjedigetgrunn.feilmelding"
+     data-obligatorisk="true"></div>
+
+<div class="ekstra-spm-boks">
+    <div data-navinfoboks>
+        <p class="sluttaarsak-informasjon">{{ 'arbeidsforhold.sluttaarsak.avskjediget.informasjon.1' | cmstekst }}</p>
+
+        <p class="sluttaarsak-informasjon">{{ 'arbeidsforhold.sluttaarsak.avskjediget.informasjon.2' | cmstekst }}</p>
+    </div>
+    <div data-vedlegginfoboks>
+        <ul>
+            <li>
+                <span>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</span>
+            </li>
+            <li>
+                <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2' | cmstekst }}</p>
+                <a href="{{sluttaarsakUrl}}">{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst' | cmstekst
+                    }}</a>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -49,13 +49,15 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
 
     @Override
     public Long opprettVedlegg(final Vedlegg vedlegg, final byte[] content) {
-        final Long databasenokkel = getJdbcTemplate().queryForObject(SQLUtils.selectNextSequenceValue("VEDLEGG_ID_SEQ"), Long.class);
+        if (vedlegg.getVedleggId() == null) {
+            vedlegg.setVedleggId(getJdbcTemplate().queryForObject(SQLUtils.selectNextSequenceValue("VEDLEGG_ID_SEQ"), Long.class));
+        }
         getJdbcTemplate().execute("insert into vedlegg(vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, storrelse, antallsider, fillagerReferanse, data, opprettetdato) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, sysdate)",
 
                 new AbstractLobCreatingPreparedStatementCallback(lobHandler) {
                     @Override
                     protected void setValues(PreparedStatement ps, LobCreator lobCreator) throws SQLException {
-                        ps.setLong(1, databasenokkel);
+                        ps.setLong(1, vedlegg.getVedleggId());
                         ps.setLong(2, vedlegg.getSoknadId());
                         ps.setObject(3, vedlegg.getFaktumId());
                         ps.setString(4, vedlegg.getskjemaNummer());
@@ -67,7 +69,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
                         lobCreator.setBlobAsBytes(ps, 10, content);
                     }
                 });
-        return databasenokkel;
+        return vedlegg.getVedleggId();
     }
 
     @Override
@@ -117,7 +119,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     public void slettVedleggOgData(Long soknadId, Long faktumId, String skjemaNummer) {
         getJdbcTemplate().update("delete from vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ?", soknadId, faktumId, skjemaNummer);
     }
-    
+
     @Override
     public void slettVedleggUnderBehandling(Long soknadId, Long faktumId, String skjemaNummer) {
         getJdbcTemplate().update("delete from vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ? and innsendingsvalg = 'UnderBehandling'", soknadId, faktumId, skjemaNummer);
@@ -131,12 +133,12 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     @Override
     public Vedlegg hentVedleggForskjemaNummer(Long soknadId, Long faktumId, String skjemaNummer) {
         try {
-            if(faktumId == null) {
+            if (faktumId == null) {
                 return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, storrelse, antallsider, fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and faktum is null and skjemaNummer = ? and innsendingsvalg != 'UnderBehandling'", new VedleggRowMapper(false), soknadId, skjemaNummer);
             } else {
                 return getJdbcTemplate().queryForObject("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, storrelse, antallsider, fillagerReferanse, opprettetdato from Vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ? and innsendingsvalg != 'UnderBehandling'", new VedleggRowMapper(false), soknadId, faktumId, skjemaNummer);
             }
-            
+
         } catch (EmptyResultDataAccessException e) {
             return null;
         }

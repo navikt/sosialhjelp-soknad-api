@@ -20,9 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.WebServiceException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.ALDER_KEY;
@@ -46,26 +44,21 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class DefaultPersonaliaService implements PersonaliaService {
 
     private static final Logger logger = getLogger(DefaultPersonaliaService.class);
-
     @Inject
     @Named("brukerProfilService")
     private BrukerprofilPortType brukerProfil;
-
     @Inject
     private PersonConnector personConnector;
-
     @Inject
     private Kodeverk kodeverk;
-
     @Inject
     private SendSoknadService soknadService;
-
     @Inject
     private EosBorgerService eosBorgerService;
-    
+
     //TODO: Må fikses, ikke returnere tom personalia når manglende svar fra TPS.
     @Override
-    public Personalia hentPersonalia(String fodselsnummer)  {
+    public Personalia hentPersonalia(String fodselsnummer) {
 //    public Personalia hentPersonalia(String fodselsnummer) throws IkkeFunnetException, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, WebServiceException {
         XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse;
         HentKjerneinformasjonResponse kjerneinformasjonResponse;
@@ -74,7 +67,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
             kjerneinformasjonResponse = personConnector.hentKjerneinformasjon(lagXMLRequestKjerneinformasjon(fodselsnummer));
             preferanserResponse = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequestPreferanser(fodselsnummer));
         } catch (IkkeFunnetException | HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
-            logger.warn("Ikke funnet person i TPS", e);
+            logger.error("Ikke funnet person i TPS", e);
             //throw new ApplicationException("TPS:PersonIkkefunnet",e);
             return new Personalia();
         } catch (HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
@@ -125,45 +118,40 @@ public class DefaultPersonaliaService implements PersonaliaService {
     }
 
     private void lagrePersonalia(Long soknadId, Personalia personalia) {
-        Map<String, String> personaliaProperties = new HashMap<>();
-        personaliaProperties.put(FNR_KEY, personalia.getFnr());
-        personaliaProperties.put(ALDER_KEY, personalia.getAlder());
-        personaliaProperties.put(NAVN_KEY, personalia.getNavn());
-        personaliaProperties.put(EPOST_KEY, personalia.getEpost());
-        
         String statsborgerskap = personalia.getStatsborgerskap();
-        personaliaProperties.put(STATSBORGERSKAP_KEY, statsborgerskap);
-        personaliaProperties.put(STATSBORGERSKAPTYPE_KEY, eosBorgerService.getStatsborgeskapType(statsborgerskap));
-        
-        personaliaProperties.put(KJONN_KEY, personalia.getKjonn());
-        personaliaProperties.put(GJELDENDEADRESSE_KEY, personalia.getGjeldendeAdresse().getAdresse());
-        personaliaProperties.put(GJELDENDEADRESSE_TYPE_KEY, personalia.getGjeldendeAdresse().getAdressetype());
-        personaliaProperties.put(GJELDENDEADRESSE_GYLDIGFRA_KEY, personalia.getGjeldendeAdresse().getGyldigFra());
-        personaliaProperties.put(GJELDENDEADRESSE_GYLDIGTIL_KEY, personalia.getGjeldendeAdresse().getGyldigTil());
-        personaliaProperties.put(SEKUNDARADRESSE_KEY, personalia.getSekundarAdresse().getAdresse());
-        personaliaProperties.put(SEKUNDARADRESSE_TYPE_KEY, personalia.getSekundarAdresse().getAdressetype());
-        personaliaProperties.put(SEKUNDARADRESSE_GYLDIGFRA_KEY, personalia.getSekundarAdresse().getGyldigFra());
-        personaliaProperties.put(SEKUNDARADRESSE_GYLDIGTIL_KEY, personalia.getSekundarAdresse().getGyldigTil());
 
-        Faktum personaliaFaktum = new Faktum(soknadId, null, "personalia", "");
-        personaliaFaktum.setProperties(personaliaProperties);
+        Faktum personaliaFaktum = new Faktum().medSoknadId(soknadId).medKey("personalia")
+                .medSystemProperty(FNR_KEY, personalia.getFnr())
+                .medSystemProperty(ALDER_KEY, personalia.getAlder())
+                .medSystemProperty(NAVN_KEY, personalia.getNavn())
+                .medSystemProperty(EPOST_KEY, personalia.getEpost())
+                .medSystemProperty(STATSBORGERSKAP_KEY, statsborgerskap)
+                .medSystemProperty(STATSBORGERSKAPTYPE_KEY, eosBorgerService.getStatsborgeskapType(statsborgerskap))
+                .medSystemProperty(KJONN_KEY, personalia.getKjonn())
+                .medSystemProperty(GJELDENDEADRESSE_KEY, personalia.getGjeldendeAdresse().getAdresse())
+                .medSystemProperty(GJELDENDEADRESSE_TYPE_KEY, personalia.getGjeldendeAdresse().getAdressetype())
+                .medSystemProperty(GJELDENDEADRESSE_GYLDIGFRA_KEY, personalia.getGjeldendeAdresse().getGyldigFra())
+                .medSystemProperty(GJELDENDEADRESSE_GYLDIGTIL_KEY, personalia.getGjeldendeAdresse().getGyldigTil())
+                .medSystemProperty(SEKUNDARADRESSE_KEY, personalia.getSekundarAdresse().getAdresse())
+                .medSystemProperty(SEKUNDARADRESSE_TYPE_KEY, personalia.getSekundarAdresse().getAdressetype())
+                .medSystemProperty(SEKUNDARADRESSE_GYLDIGFRA_KEY, personalia.getSekundarAdresse().getGyldigFra())
+                .medSystemProperty(SEKUNDARADRESSE_GYLDIGTIL_KEY, personalia.getSekundarAdresse().getGyldigTil());
+
         soknadService.lagreSystemFaktum(soknadId, personaliaFaktum, "fnr");
     }
 
     private void lagreBarn(Long soknadId, List<Barn> barneliste) {
 
         for (Barn barn : barneliste) {
-            Faktum barneFaktum = new Faktum(soknadId, null, "barn", null, SYSTEMREGISTRERT.name());
-            Map<String, String> properties = new HashMap<>();
-            properties.put("fornavn", barn.getFornavn());
-            properties.put("mellomnavn", barn.getMellomnavn());
-            properties.put("etternavn", barn.getEtternavn());
-            properties.put("sammensattnavn", barn.getSammensattnavn());
-            properties.put("fnr", barn.getFnr());
-            properties.put("kjonn", barn.getKjonn());
-            properties.put("alder", barn.getAlder().toString());
-            properties.put("land", barn.getLand());
-            barneFaktum.setProperties(properties);
+            Faktum barneFaktum = new Faktum().medSoknadId(soknadId).medKey("barn").medType(SYSTEMREGISTRERT)
+                    .medSystemProperty("fornavn", barn.getFornavn())
+                    .medSystemProperty("mellomnavn", barn.getMellomnavn())
+                    .medSystemProperty("etternavn", barn.getEtternavn())
+                    .medSystemProperty("sammensattnavn", barn.getSammensattnavn())
+                    .medSystemProperty("fnr", barn.getFnr())
+                    .medSystemProperty("kjonn", barn.getKjonn())
+                    .medSystemProperty("alder", barn.getAlder().toString())
+                    .medSystemProperty("land", barn.getLand());
             soknadService.lagreSystemFaktum(soknadId, barneFaktum, "fnr");
         }
     }

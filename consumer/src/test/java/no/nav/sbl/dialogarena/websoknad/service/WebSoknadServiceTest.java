@@ -36,7 +36,7 @@ public class WebSoknadServiceTest {
     @Test
     public void skalKunneStarteSoknad() {
         when(webservice.startSoknad(any(WSStartSoknadRequest.class))).thenReturn(lagResultatFraStartSoknad());
-        String behandlingsId = service.startSoknad("***REMOVED***");
+        String behandlingsId = service.startSoknad("***REMOVED***", "NAV-123", "123");
         assertThat(behandlingsId, equalTo(BEHANDLINGS_ID));
     }
 
