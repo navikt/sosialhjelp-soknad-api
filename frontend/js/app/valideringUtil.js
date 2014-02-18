@@ -62,4 +62,37 @@
 	};
 
 	window.LengthValidator = LengthValidator;
+
+    var ValueValidator = function ValueValidator(attrs) {
+        var min, max;
+        this.min = harAttributt(attrs, 'min');
+
+        if (!this.min) {
+            this.min = false;
+        } else {
+            this.min = parseInt(this.min);
+        }
+
+        this.max = harAttributt(attrs, 'max');
+
+        if (!this.max) {
+            this.max = false;
+        } else {
+            this.max = parseInt(this.max);
+        }
+    };
+
+    ValueValidator.prototype.validate = function (value) {
+        if (this.min && parseInt(value.trim()) < this.min) {
+            return 'min'; // Invalid
+        }
+
+        if (this.max && parseInt(value.trim()) > this.max) {
+            return 'max'; // Invalid
+        }
+
+        return true;
+    };
+
+    window.ValueValidator = ValueValidator;
 })();

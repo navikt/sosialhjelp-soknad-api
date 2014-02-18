@@ -346,3 +346,7 @@ function getIEVersion() {
 
     return version;
 }
+
+function isNotNullOrUndefined(obj) {
+    return obj !== undefined && obj !== null
+}

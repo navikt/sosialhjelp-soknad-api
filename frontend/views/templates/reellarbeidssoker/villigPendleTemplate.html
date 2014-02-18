@@ -1,0 +1,72 @@
+<div data-nav-faktum="reellarbeidssoker.villigpendle"
+     data-navconfig
+     data-booleanradio
+     data-nokkel="reellarbeidssoker.villigpendle">
+
+    <div data-ng-if="erUnder60Aar()" data-navinfoboks>
+        <span>{{ 'reellarbeidssoker.villigpendle.false.informasjon.under60' | cmstekst }}</span>
+    </div>
+    <div data-ng-if="erOver59Aar()" data-navinfoboks>
+        <span>{{ 'reellarbeidssoker.villigpendle.false.informasjon.over60' | cmstekst }}</span>
+    </div>
+
+    <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
+        <input type="hidden" data-ng-model="harHuketAvCheckboksPendle.value"
+               data-nav-faktum="reellarbeidssoker.villigpendle"
+               data-ng-required="faktum.value == 'false' && erUnder60Aar()"
+               data-error-messages="'reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding'"/>
+
+        <div data-navcheckbox
+             data-navconfig
+             data-nav-faktum="reellarbeidssoker.villigpendle.reduserthelse"
+             data-navlabel="reellarbeidssoker.pendlereduserthelse"
+             data-navendret="endrePendleAarsaker()"></div>
+
+        <div data-navcheckbox
+             data-navconfig
+             data-nav-faktum="reellarbeidssoker.villigpendle.omsorgbarnunder1aar"
+             data-navlabel="reellarbeidssoker.pendleomsorgbarnunder1aar"
+             data-navendret="endrePendleAarsaker()"></div>
+
+        <div data-navcheckbox
+             data-navconfig
+             data-nav-faktum="reellarbeidssoker.villigpendle.eneansvarbarnunder5skoleaar"
+             data-navlabel="reellarbeidssoker.pendleeneansvarbarnunder5skoleaar"
+             data-navendret="endrePendleAarsaker()"></div>
+
+        <div data-navcheckbox
+             data-navconfig
+             data-nav-faktum="reellarbeidssoker.villigpendle.eneansvarbarnopptil18aar"
+             data-navlabel="reellarbeidssoker.pendleeneansvarbarnopptil18aar"
+             data-navendret="endrePendleAarsaker()"></div>
+
+        <div data-navcheckbox
+             data-navconfig
+             data-nav-faktum="reellarbeidssoker.villigpendle.omsorgansvar"
+             data-navlabel="reellarbeidssoker.pendleomsorgansvar"
+             data-navendret="endrePendleAarsaker()"></div>
+
+        <div data-navcheckbox
+             data-navconfig
+             data-nav-faktum="reellarbeidssoker.villigpendle.annensituasjon"
+             data-navlabel="reellarbeidssoker.pendleannensituasjon"
+             data-navendret="endrePendleAarsaker()"></div>
+
+        <div class="siste-element" data-navinfoboks data-ng-if="harValgtAnnetUnntakPendle()">
+            <p>{{ 'reellarbeidssoker.unntak.dokumentasjon' | cmstekst }}</p>
+        </div>
+
+        <div data-melding>
+            <span class="melding">{{ 'reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding' | cmstekst }}</span>
+        </div>
+    </div>
+
+    <div data-vedlegginfoboks data-ng-if="trengerUtalelseFraFagpersonellPendle()">
+        <ul>
+            <li>
+                <span>{{ 'reellarbeidssoker.utalelsefagpersonell.vedlegginformasjon' | cmstekst }}</span>
+            </li>
+        </ul>
+    </div>
+
+</div>

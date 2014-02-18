@@ -21,6 +21,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
 				valideringsMetoder.push(new RequiredValidator(attrs));
 				valideringsMetoder.push(new PatternValidator(attrs));
 				valideringsMetoder.push(new LengthValidator(attrs));
+				valideringsMetoder.push(new ValueValidator(attrs));
 
 				scope.$on(eventString, function () {
 					if (!sjekkOmInputErGyldig() && !element.hasClass(".ng-valid")) {
@@ -64,7 +65,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
 						}
 
 						var feilmeldingTekst = cms.tekster[feilmeldingsNokkel];
-						formElem.find('.melding').text(feilmeldingTekst);
+						formElem.find('.melding').first().text(feilmeldingTekst);
 					}
 				}
 

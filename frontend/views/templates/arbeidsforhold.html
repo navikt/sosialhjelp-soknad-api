@@ -1,9 +1,8 @@
 <div class="skjemaramme">
     <div data-ng-form="arbeidsforholdForm" class="skjemainnhold" data-ng-controller="ArbeidsforholdCtrl">
         <div data-form-errors></div>
-        <p class="arbeidsforhold-informasjonstekst" data-cmstekster="arbeidsforhold.informasjon"></p>
-
-        <div class="form-linje boolean">
+        <div class="spm form-linje boolean">
+            <h4 class="spm-sporsmal">{{ 'arbeidsforhold.informasjon' | cmstekst }}</h4>
 
             <div data-navradio
                  data-value="fastArbeidstid"
@@ -14,7 +13,7 @@
             </div>
             <div class="ekstra-spm-boks nav-boolean" data-ng-if="hvisHarJobbetFast()">
                 <div data-navinfoboks>
-                    <span data-cmstekster="arbeidsforhold.arbeidstilstand.fastarbeidstid.informasjonstekst"></span>
+                    <span>{{ 'arbeidsforhold.arbeidstilstand.fastarbeidstid.informasjonstekst' | cmstekst }}</span>
                 </div>
             </div>
 
@@ -27,7 +26,7 @@
             </div>
             <div class="ekstra-spm-boks nav-boolean" data-ng-if="hvisHarJobbetVarierende()">
                 <div data-navinfoboks>
-                    <span data-cmstekster="arbeidsforhold.arbeidstilstand.varierendearbeidstid.informasjonstekst"></span>
+                    <span>{{ 'arbeidsforhold.arbeidstilstand.varierendearbeidstid.informasjonstekst' | cmstekst }}</span>
                 </div>
             </div>
 
@@ -67,12 +66,12 @@
                     <ul class="liste-vannrett">
                         <li>
                             <a href data-ng-click="slettArbeidsforhold(af, $index, $event)"
-                               data-cmstekster="arbeidsforhold.slettarbeidsforhold"
-                               data-fokus-slettmoduler="arbeidsforhold"></a>
+                               data-fokus-slettmoduler="arbeidsforhold">{{ 'arbeidsforhold.slettarbeidsforhold' | cmstekst }}</a>
                         </li>
                         <li>
-                            <a href data-ng-click="endreArbeidsforhold(af, $index, $event)"
-                               data-cmstekster="arbeidsforhold.endrearbeidsforhold"></a>
+                            <a href data-ng-click="endreArbeidsforhold(af, $index, $event)">
+                                {{ 'arbeidsforhold.endrearbeidsforhold' | cmstekst }}
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -88,14 +87,12 @@
                            data-nav-faktum="harLagretArbeidsforhold"
                            data-ng-required="true"
                            data-error-messages="'arbeidsforhold.arbeidsforhold.required'"
-                           class="legg-til-arbeidsforhold"
-                            >
+                           class="legg-til-arbeidsforhold">
                 </div>
 
-                <button class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event, arbeidsforholdForm)"
-                        data-cmstekster="arbeidsforhold.nyttarbeidsforhold" role="button"
-                        data-aktiv-feilmelding></button>
-                <span class="melding" data-cmstekster="arbeidsforhold.arbeidsforhold.required"></span>
+                <button class="knapp-leggtil-liten" data-ng-click="nyttArbeidsforhold($event, arbeidsforholdForm)" role="button"
+                        data-aktiv-feilmelding>{{ 'arbeidsforhold.nyttarbeidsforhold' | cmstekst }}</button>
+                <span class="melding">{{ 'arbeidsforhold.arbeidsforhold.required' | cmstekst }}</span>
             </div>
 
             <div data-spmblokkferdig

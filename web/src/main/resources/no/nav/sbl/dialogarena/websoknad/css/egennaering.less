@@ -1,172 +1,150 @@
 #egennaering {
-  h4 {
-    margin-top: 4px;
-  }
+    #fangst-og-fiske {
+        .fangstfiskeinntekt {
 
-  #fangst-og-fiske {
-    .fangstfiskeinntekt {
-      margin-bottom: 20px;
-
-      input {
-        width: 120px !important;
-        display: inline-block;
-      }
-    }
-
-    .vedlegginfoboks {
-      margin-top: 30px;
-    }
-  }
-
-  #gardsbruk {
-    .orgnummer {
-      margin-bottom: 16px;
-    }
-
-    .timeredegjoring {
-      margin-top: 2px;
-    }
-
-    .arbeidsmengde-container {
-      .melding {
-      }
-    }
-
-    .gardsbruk-timer {
-      padding: 15px;
-
-      .form-linje {
-        padding: 0px !important;
-        clear: none !important;
-
-        label {
-          display: inline-block;
+            input {
+                width: 120px !important;
+                display: inline-block;
+            }
         }
 
-        input {
-          width: 70px !important;
-          display: inline-block;
-        }
-        select {
-          display: inline-block;
-          width: 77px;
-          border: 1px solid #cccccc !important;
-          border-top: 1px solid #b7b1a9 !important;
-          background-color: #fff !important;
-        }
-      }
-    }
-
-    .andelsfordeling-container {
-      margin-bottom: 10px;
-
-      &.aktiv-feilmelding {
-        .form-linje.feil.tekstfelt input:focus{
-          border: 1px solid #c30000;
-          background-color: #FAD6D6;
-        }
-        &.feil {
-          border: 1px solid #c30000;
-          background-color: #FAD6D6;
-        }
-      }
-
-      .andels-fordeling {
-
-        .form-linje {
-          margin-bottom: 30px;
-          width: 38%;
-          padding: 0px !important;
-
-          &:last-child {
+        .nav-boolean.ekstra-spm-boks {
             margin-bottom: 0;
-          }
-
-          input {
-            display: block;
-          }
-
-          span:not(.melding) {
-            display: block;
-          }
-
-          &.feil .melding {
-            display: block;
-            clear: both;
-          }
         }
-      }
-      &.feil .andels-fordeling .melding {
-        display: none;
-      }
 
-      &.feil .prosentmelding {
-        color: #A00404;
-        display: block;
-      }
-
-      .prosentmelding {
-        display: none;
-      }
+        .vedlegginfoboks {
+            margin-top: 0;
+        }
     }
-  }
 
-  .orgnummer-repeat .orgnummer {
-    width: 100%;
-    padding-bottom: 0px !important;
-    float: left;
+    #gardsbruk {
+        .arbeidsmengde-container {
+            label {
+                margin-bottom: 0 !important;
+            }
+            .melding {
+            }
+        }
 
-    &feil .melding {
-      display: block;
-      clear: both;
+        .gardsbruk-timer {
+            padding: 15px;
+
+            .form-linje {
+                padding: 0px !important;
+                clear: none !important;
+
+                label {
+                    display: inline-block;
+                }
+
+                input {
+                    width: 70px !important;
+                    display: inline-block;
+                }
+                select {
+                    display: inline-block;
+                    width: 77px;
+                    border: 1px solid #cccccc !important;
+                    border-top: 1px solid #b7b1a9 !important;
+                    background-color: #fff !important;
+                }
+            }
+        }
+
+        .andelsfordeling-container {
+
+            &.aktiv-feilmelding {
+                .form-linje.feil.tekstfelt input:focus {
+                    border: 1px solid #c30000;
+                    background-color: #FAD6D6;
+                }
+                &.feil {
+                    border: 1px solid #c30000;
+                    background-color: #FAD6D6;
+                }
+            }
+
+            .andels-fordeling {
+
+                .form-linje {
+                    margin-bottom: 30px;
+                    padding: 0px !important;
+
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+
+                    input {
+                        max-width: 42px;
+                        display: block;
+                    }
+
+                    span:not(.melding) {
+                        display: block;
+                    }
+
+                    &.feil .melding {
+                        display: block;
+                        clear: both;
+                    }
+                }
+            }
+            &.feil .andels-fordeling .melding {
+                display: none;
+            }
+
+            &.feil .prosentmelding {
+                margin-top: 10px;
+                color: #A00404;
+                display: block;
+            }
+
+            .prosentmelding {
+                display: none;
+            }
+        }
     }
-    span {
-      clear: both;
-      float: left;
-      margin-top: 7px !important;
+
+    .orgnummer-repeat .orgnummer {
+        width: 100%;
+        padding-bottom: 0px !important;
+
+        &feil .melding {
+            display: block;
+        }
+        span {
+            margin-top: 7px !important;
+        }
     }
-  }
 
-  .orgnummer-slett {
-    float: left;
-    display: block;
-    margin-left: -300px;
-    margin-top: 52px;
-  }
-
-  @media only screen and (max-width: 570px) {
     .orgnummer-slett {
-      margin-left: 0px;
-      margin-top: 0px;
-      padding-left: 15px;
-      float: none;
+        margin-left: 10px;
     }
-  }
 
-  .orgnummer-leggtil {
-    display: inline-block;
-    clear: both;
-    margin: 15px 15px 26px;
-  }
-
-  .arbeidsmengde-container {
-    input {
-      width: 50px !important;
-      margin-right: 10px;
-    }
-  }
-
-  @media only screen and (max-width: 570px) {
-    .andels-fordeling .form-linje {
-      width: 74% !important;
-
-      span {
-        margin-bottom: 0px;
-      }
+    .orgnummer-leggtil {
+        display: inline-block;
+        clear: both;
+        margin: 15px;
     }
 
     .arbeidsmengde-container {
-      margin-right: 25px !important;
+        input {
+            width: 50px !important;
+            margin-right: 10px;
+        }
     }
-  }
+
+    @media only screen and (max-width: 570px) {
+        .andels-fordeling .form-linje {
+            width: 74% !important;
+
+            span {
+                margin-bottom: 0px;
+            }
+        }
+
+        .arbeidsmengde-container {
+            margin-right: 25px !important;
+        }
+    }
 }
