@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -11,11 +10,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static no.nav.modig.lang.collections.IterUtils.on;
 
 public class Faktum implements Serializable {
     private Long faktumId;
@@ -26,33 +22,6 @@ public class Faktum implements Serializable {
     private Set<FaktumEgenskap> faktumEgenskaper;
     private Map<String, String> properties = new HashMap<>();
     private FaktumType type;
-
-    public Faktum() {
-
-    }
-
-    public Faktum(Long soknadId, Long faktumId, String key, String value, FaktumType type, Long parrentFaktum) {
-        this(soknadId, faktumId, key, value, type);
-        this.parrentFaktum = parrentFaktum;
-    }
-
-
-    public Faktum(Long soknadId, Long faktumId, String key, String value, FaktumType type) {
-        this(soknadId, faktumId, key, value);
-        this.type = type;
-    }
-
-    public Faktum(Long soknadId, Long faktumId, String key, String value) {
-        this.soknadId = soknadId;
-        this.faktumId = faktumId;
-        this.key = key;
-        this.value = value;
-    }
-
-    public Faktum(Long soknadId, String key) {
-        this.soknadId = soknadId;
-        this.key = key;
-    }
 
     public Long getFaktumId() {
         return faktumId;
@@ -99,18 +68,7 @@ public class Faktum implements Serializable {
 
     @JsonIgnore
     public String getTypeString() {
-        return type.toString();
-    }
-
-    public Status getInnsendingsvalg(String skjemaNummer) {
-        if (!properties.containsKey("vedlegg_" + skjemaNummer)) {
-            properties.put("vedlegg_" + skjemaNummer, Status.IkkeVedlegg.toString());
-        }
-        return Status.valueOf(properties.get("vedlegg_" + skjemaNummer));
-    }
-
-    public void setInnsendingsvalg(String skjemaNummer, Status innsendingsvalg) {
-        properties.put("vedlegg_" + skjemaNummer, innsendingsvalg.toString());
+        return getType().toString();
     }
 
     public Long getParrentFaktum() {
@@ -134,7 +92,7 @@ public class Faktum implements Serializable {
 
     public Set<FaktumEgenskap> getFaktumEgenskaper() {
         if (faktumEgenskaper == null) {
-            faktumEgenskaper = new HashSet<>();
+            setFaktumEgenskaper(new HashSet<FaktumEgenskap>());
         }
         return faktumEgenskaper;
     }
@@ -144,24 +102,32 @@ public class Faktum implements Serializable {
     }
 
     public Faktum medKey(String key) {
-        this.key = key;
+        setKey(key);
         return this;
     }
 
     public Faktum medValue(String value) {
-        this.value = value;
+        setValue(value);
         return this;
     }
+
     public Faktum medSoknadId(Long soknadId) {
-        this.soknadId = soknadId;
+        setSoknadId(soknadId);
         return this;
     }
+
     public Faktum medType(FaktumType type) {
-        this.type = type;
+        setType(type);
         return this;
     }
+
     public Faktum medFaktumId(Long faktumId) {
-        this.faktumId = faktumId;
+        setFaktumId(faktumId);
+        return this;
+    }
+
+    public Faktum medParrentFaktumId(Long faktumId) {
+        setParrentFaktum(faktumId);
         return this;
     }
 
@@ -237,15 +203,6 @@ public class Faktum implements Serializable {
         return res;
     }
 
-    public List<FaktumEgenskap> hentEgenskaper(final boolean hentSystemFaktum) {
-        return on(faktumEgenskaper).filter(new Predicate<FaktumEgenskap>() {
-            @Override
-            public boolean evaluate(FaktumEgenskap faktumEgenskap) {
-                return faktumEgenskap.getSystemEgenskap().equals(hentSystemFaktum ? 1 : 0);
-            }
-        }).collect();
-    }
-
     public void kopierBrukerlagrede(Faktum lagretFaktum) {
         for (FaktumEgenskap egenskap : lagretFaktum.getFaktumEgenskaper()) {
             if (egenskap.getSystemEgenskap().equals(0) && !this.hasEgenskap(egenskap.getKey())) {
@@ -285,17 +242,15 @@ public class Faktum implements Serializable {
     }
 
     public boolean matcherUnikProperty(String uniqueProperty, Faktum faktum) {
-        if (harEgenskap(uniqueProperty)) {
-            return getProperties().get(uniqueProperty).equals(faktum.getProperties().get(uniqueProperty));
-        }
-        return false;
+        return harEgenskap(uniqueProperty)
+                && getProperties().get(uniqueProperty).equals(faktum.getProperties().get(uniqueProperty));
     }
 
     private boolean harEgenskap(String uniqueProperty) {
         return getProperties().get(uniqueProperty) != null;
     }
 
-    public enum FaktumType {SYSTEMREGISTRERT, BRUKERREGISTRERT;}
+    public enum FaktumType {SYSTEMREGISTRERT, BRUKERREGISTRERT}
 
     public enum Status {
         IkkeVedlegg,

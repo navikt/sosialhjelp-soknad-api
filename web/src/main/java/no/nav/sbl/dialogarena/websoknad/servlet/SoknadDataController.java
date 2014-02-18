@@ -1,7 +1,5 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import no.nav.sbl.dialogarena.websoknad.domain.StartSoknad;
-
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.print.HandleBarKjoerer;
@@ -9,11 +7,11 @@ import no.nav.sbl.dialogarena.print.PDFFabrikk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.VedleggForventning;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.websoknad.domain.StartSoknad;
 import org.apache.commons.collections15.Predicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -29,8 +27,6 @@ import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +47,6 @@ public class SoknadDataController {
     private SendSoknadService soknadService;
     @Inject
     private VedleggService vedleggService;
-
     @Inject
     private Kodeverk kodeverk;
 
@@ -60,20 +55,20 @@ public class SoknadDataController {
     public WebSoknad hentSoknadData(@PathVariable Long soknadId) {
         return soknadService.hentSoknad(soknadId);
     }
-    
+
     @RequestMapping(value = "/metadata/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public WebSoknad hentSoknadMetaData(@PathVariable Long soknadId) {
         return soknadService.hentSoknadMetaData(soknadId);
     }
-    
+
     @RequestMapping(value = "/behandling/{behandlingsId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
-    public Map<String,String> hentSoknadIdMedBehandligsId(@PathVariable String behandlingsId) {
+    public Map<String, String> hentSoknadIdMedBehandligsId(@PathVariable String behandlingsId) {
         Map<String, String> result = new HashMap<>();
         String soknadId = soknadService.hentSoknadMedBehandlinsId(behandlingsId.replaceAll("%20", " ")).toString();
         result.put("result", soknadId);
-        
+
         return result;
     }
 
@@ -95,16 +90,16 @@ public class SoknadDataController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public void settDelstegStatus(@PathVariable Long soknadId, @PathVariable String delsteg) {
-        if(delsteg == null){
+        if (delsteg == null) {
             throw new ApplicationException("Ugyldig delsteg sendt inn til REST-controller.");
         } else {
             DelstegStatus delstegstatus;
             if (delsteg.equalsIgnoreCase("utfylling")) {
                 delstegstatus = DelstegStatus.UTFYLLING;
-    
+
             } else if (delsteg.equalsIgnoreCase("vedlegg")) {
                 delstegstatus = DelstegStatus.SKJEMA_VALIDERT;
-    
+
             } else if (delsteg.equalsIgnoreCase("oppsummering")) {
                 delstegstatus = DelstegStatus.VEDLEGG_VALIDERT;
             } else {
@@ -118,8 +113,7 @@ public class SoknadDataController {
     @ResponseBody()
     public List<Vedlegg> hentPaakrevdeVedleggForFaktum(
             @PathVariable final Long soknadId, @PathVariable final Long faktumId) {
-        WebSoknad soknad = soknadService.hentSoknad(soknadId);
-        return on(vedleggService.hentPaakrevdeVedlegg(soknadId, soknad)).filter(new Predicate<Vedlegg>() {
+        return on(vedleggService.hentPaakrevdeVedlegg(soknadId)).filter(new Predicate<Vedlegg>() {
             @Override
             public boolean evaluate(Vedlegg vedleggForventning) {
                 return vedleggForventning.getFaktumId().equals(faktumId);
@@ -127,22 +121,14 @@ public class SoknadDataController {
         }).collect();
     }
 
-    @RequestMapping(value = "{soknadId}/forventning/valg", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
-    @ResponseBody()
-    @ResponseStatus(HttpStatus.OK)
-    public void endreValg(@PathVariable final Long soknadId,
-                          @RequestBody VedleggForventning forventning) {
-        soknadService.endreInnsendingsvalg(soknadId, forventning.getFaktum());
-    }
 
     @RequestMapping(value = "/send/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody()
     public void sendSoknad(@PathVariable Long soknadId) {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
-        String oppsummeringMarkup = null;
+        String oppsummeringMarkup;
         try {
             oppsummeringMarkup = new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
-
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lage markup av søknad", e);
         }
@@ -168,12 +154,12 @@ public class SoknadDataController {
 
     @RequestMapping(value = "/opprett", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody()
-    public Map<String,String> opprettSoknad(@RequestBody StartSoknad soknadType) {
+    public Map<String, String> opprettSoknad(@RequestBody StartSoknad soknadType) {
         Map<String, String> result = new HashMap<>();
-        
+
         String behandlingId = soknadService.startSoknad(soknadType.getSoknadType());
         result.put("brukerbehandlingId", behandlingId);
-        
+
         return result;
     }
 
@@ -190,7 +176,6 @@ public class SoknadDataController {
     public String hentOppsummering(@PathVariable Long soknadId) throws IOException {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
 
-        String markup = new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
-        return markup;
+        return new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
     }
 }

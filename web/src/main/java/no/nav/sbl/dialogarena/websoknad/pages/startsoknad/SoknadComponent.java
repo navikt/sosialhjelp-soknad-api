@@ -11,7 +11,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.util.List;
 
 import static java.nio.charset.Charset.forName;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -24,7 +23,6 @@ import static org.springframework.util.StreamUtils.copyToString;
 public class SoknadComponent extends WebComponent {
 
     private static final Logger LOGGER = getLogger(SoknadComponent.class);
-    private static List<String> files;
 
     public SoknadComponent(String id) {
         super(id);
@@ -32,7 +30,7 @@ public class SoknadComponent extends WebComponent {
 
     @Override
     public void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
-        String file = "META-INF/resources/views/bootstrap2.html";
+        String file = "META-INF/resources/views/bootstrap.html";
         try (InputStream content = this.getClass().getClassLoader().getResourceAsStream(file)) {
             replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
         } catch (IllegalArgumentException| IOException e) {
