@@ -11,6 +11,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.websoknad.domain.StartSoknad;
 import org.apache.commons.collections15.Predicate;
 import org.springframework.http.HttpStatus;
@@ -52,18 +53,21 @@ public class SoknadDataController {
 
     @RequestMapping(value = "/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
+    @SjekkTilgangTilSoknad
     public WebSoknad hentSoknadData(@PathVariable Long soknadId) {
         return soknadService.hentSoknad(soknadId);
     }
 
     @RequestMapping(value = "/metadata/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
+    @SjekkTilgangTilSoknad
     public WebSoknad hentSoknadMetaData(@PathVariable Long soknadId) {
         return soknadService.hentSoknadMetaData(soknadId);
     }
 
     @RequestMapping(value = "/behandling/{behandlingsId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
+    @SjekkTilgangTilSoknad
     public Map<String, String> hentSoknadIdMedBehandligsId(@PathVariable String behandlingsId) {
         Map<String, String> result = new HashMap<>();
         String soknadId = soknadService.hentSoknadMedBehandlinsId(behandlingsId.replaceAll("%20", " ")).toString();
@@ -74,6 +78,7 @@ public class SoknadDataController {
 
     @RequestMapping(value = "/options/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
+    @SjekkTilgangTilSoknad
     public SoknadStruktur hentSoknadStruktur(@PathVariable Long soknadId) {
         String type = soknadService.hentSoknad(soknadId).getskjemaNummer() + ".xml";
         try {
@@ -89,6 +94,7 @@ public class SoknadDataController {
     @RequestMapping(value = "/delsteg/{soknadId}/{delsteg}", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
+    @SjekkTilgangTilSoknad
     public void settDelstegStatus(@PathVariable Long soknadId, @PathVariable String delsteg) {
         if (delsteg == null) {
             throw new ApplicationException("Ugyldig delsteg sendt inn til REST-controller.");
@@ -111,6 +117,7 @@ public class SoknadDataController {
 
     @RequestMapping(value = "{soknadId}/{faktumId}/forventning", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
+    @SjekkTilgangTilSoknad
     public List<Vedlegg> hentPaakrevdeVedleggForFaktum(
             @PathVariable final Long soknadId, @PathVariable final Long faktumId) {
         return on(vedleggService.hentPaakrevdeVedlegg(soknadId)).filter(new Predicate<Vedlegg>() {
@@ -124,6 +131,7 @@ public class SoknadDataController {
 
     @RequestMapping(value = "/send/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody()
+    @SjekkTilgangTilSoknad
     public void sendSoknad(@PathVariable Long soknadId) {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
         String oppsummeringMarkup;
@@ -138,6 +146,7 @@ public class SoknadDataController {
 
     @RequestMapping(value = "/lagre/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody()
+    @SjekkTilgangTilSoknad
     public void lagreSoknad(@PathVariable Long soknadId,
                             @RequestBody WebSoknad webSoknad) {
         for (Faktum faktum : webSoknad.getFaktaListe()) {
@@ -147,6 +156,7 @@ public class SoknadDataController {
 
     @RequestMapping(value = "/{soknadId}/faktum/", method = RequestMethod.POST)
     @ResponseBody()
+    @SjekkTilgangTilSoknad
     public Faktum lagreFaktum(@PathVariable Long soknadId,
                               @RequestBody Faktum faktum) {
         return soknadService.lagreSoknadsFelt(soknadId, faktum);
@@ -165,6 +175,7 @@ public class SoknadDataController {
 
     @RequestMapping(value = "/delete/{soknadId}", method = RequestMethod.POST)
     @ResponseBody()
+    @SjekkTilgangTilSoknad
     public void slettSoknad(@PathVariable Long soknadId) {
         soknadService.avbrytSoknad(soknadId);
         // Må legges til i forbindelse med kobling mot henvendelse.
@@ -173,6 +184,7 @@ public class SoknadDataController {
 
     @RequestMapping(value = "/oppsummering/{soknadId}", method = RequestMethod.GET, produces = "text/html")
     @ResponseBody()
+    @SjekkTilgangTilSoknad
     public String hentOppsummering(@PathVariable Long soknadId) throws IOException {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
 

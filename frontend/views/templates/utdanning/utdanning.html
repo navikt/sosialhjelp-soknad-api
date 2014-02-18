@@ -95,8 +95,12 @@
 
 
                 <div class="annetvalg-nei form-linje" data-nav-faktum="underUtdanningAnnet">
-                    <input id="underUtdanningNeiCheckbox" data-ng-model="faktum.value" type="checkbox"
-                           data-ng-change="endreUtdannelseAnnet(utdanningForm)" data-boolean-verdi/>
+                    <input id="underUtdanningNeiCheckbox"
+                           data-ng-model="faktum.value"
+                           type="checkbox"
+                           data-ng-change="endreUtdannelseAnnet(utdanningForm)"
+                           data-boolean-verdi
+                            data-aktiv-feilmelding/>
                     <label for="underUtdanningNeiCheckbox"
                            data-cmstekster="utdanning.svar.under.utdanning.nei"></label>
                     <span class="utdanning-nei-melding"

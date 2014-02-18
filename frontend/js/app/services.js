@@ -9,6 +9,7 @@
         .config(['$httpProvider', function ($httpProvider) {
             $httpProvider.interceptors.push('resetTimeoutInterceptor');
             $httpProvider.interceptors.push('settDelstegStatusEtterKallMotServer');
+            $httpProvider.interceptors.push('xsrfRelast');
 
             if (getIEVersion() < 10) {
                 $httpProvider.interceptors.push('httpRequestInterceptorPreventCache');
@@ -26,6 +27,17 @@
             };
         }])
 
+        .factory('xsrfRelast', [function () {
+            return {
+                'responseError': function(response){
+                    if(response.status == 403){
+                        //("Vi må håndtere feil fra rest kall på en god måte. 403 er når xsrf token ikke matcher. Må laste siden på nytt.")
+                    }
+                    return response;
+
+                }
+            };
+        }])
         // Oppdaterer delstegstatus dersom man gjør endringer på faktum eller vedlegg
         .factory('settDelstegStatusEtterKallMotServer', ['data', function (data) {
             return {
