@@ -23,21 +23,21 @@ angular.module('nav.textarea', [])
 				},
 				post: function (scope, element) {
 					scope.feil = false;
+                    scope.harIkkeFeil = true;
 					var harFokus = false;
-
-                    scope.hvisSynlig = function () {
-						return element.is(':visible');
-					};
 
 					element.find('textarea').bind('focus', function () {
                         harFokus = true;
-                        scope.$apply();
-
+                        if(!scope.feil) {
+                            scope.$apply();
+                        }
                     });
 
 					element.find('textarea').bind('blur', function () {
                         harFokus = false;
-                        scope.$apply();
+                        if(!scope.feil) {
+                            scope.$apply();
+                        }
 					});
 
 					scope.harFokusOgFeil = function () {
@@ -88,10 +88,13 @@ angular.module('nav.textarea', [])
 					if (scope.counter < 0) {
 						scope.feil = true;
 						settFeilmeldingsTekst();
-						return false;
+                        scope.harIkkeFeil = '';
+
+                        return false;
 					} else {
 						scope.feil = false;
-						element.closest('.form-linje').removeClass('feil');
+                        scope.harIkkeFeil = true;
+                        element.closest('.form-linje').removeClass('feil');
 						return true;
 					}
 				}

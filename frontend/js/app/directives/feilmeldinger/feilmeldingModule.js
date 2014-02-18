@@ -74,7 +74,11 @@ angular.module('nav.feilmeldinger', [])
                     if (scope.erKlikkbarFeil(feilmelding)) {
                         var formLinje = feilmelding.elem.closest('.form-linje');
                         scrollToElement(formLinje, 200);
-                        formLinje.addClass('aktiv-feilmelding');
+                        if(formLinje.hasClass("andelsfordeling-container")) {
+                            formLinje.find('.form-linje').first().addClass('aktiv-feilmelding');
+                        } else {
+                            formLinje.addClass('aktiv-feilmelding');
+                        }
 
                         if (feilmelding.elem.is('[type=hidden]')) {
                             if (feilmelding.elem.hasClass('tekstfelt')) {
@@ -200,7 +204,7 @@ angular.module('nav.feilmeldinger', [])
 //              skal bruke tabIndex når det er på plass
             }
             return feilmeldinger;
-        }
+        };
     }])
     .directive('aktivFeilmelding', ['$timeout', function ($timeout) {
         return {
@@ -212,7 +216,7 @@ angular.module('nav.feilmeldinger', [])
                             formLinje.removeClass('aktiv-feilmelding');
                         }, 100);
                     }
-                })
+                });
             }
         };
     }]);

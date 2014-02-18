@@ -87,6 +87,10 @@
                         display: block;
                         clear: both;
                     }
+                    &.aktiv-feilmelding input {
+                        border: 1px solid #c30000;
+                        background-color: #FAD6D6;
+                    }
                 }
             }
             &.feil .andels-fordeling .melding {
@@ -117,6 +121,15 @@
         }
     }
 
+    &.aktiv-feilmelding.feil.tekstfelt input:focus {
+        border: 1px solid #c30000;
+        background-color: #FAD6D6;
+    }
+    &.aktiv-feilmelding.feil.tekstfelt input {
+        border: 1px solid #fca292;
+        background-color: #fee6e6;
+    }
+    
     .orgnummer-slett {
         margin-left: 10px;
     }
