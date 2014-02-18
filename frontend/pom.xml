@@ -14,9 +14,9 @@
     <name>${project.artifactId}</name>
     <packaging>jar</packaging>
     <properties>
-     	<sonar.branch>JS</sonar.branch>
+     	<!-- sonar.branch>JS</sonar.branch>
         <sonar.language>JS</sonar.language>
-        <sonar.exclusions>js/jquery/**,js/lib/**</sonar.exclusions>
+        <sonar.exclusions>js/jquery/**,js/lib/**</sonar.exclusions-->
         <grunttarget>maven-prod</grunttarget>
     </properties>
 
