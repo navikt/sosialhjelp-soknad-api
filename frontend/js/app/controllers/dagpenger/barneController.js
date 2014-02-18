@@ -1,6 +1,6 @@
 angular.module('nav.barn', ['app.services'])
 
-    .controller('BarneCtrl', ['$scope', 'Faktum', 'data', '$cookieStore', '$location', '$resource', function ($scope, Faktum, data, $cookieStore, $location, $resource) {
+    .controller('BarneCtrl', ['$scope', 'Faktum', 'data', '$cookieStore', '$location', '$resource', 'cms', function ($scope, Faktum, data, $cookieStore, $location, $resource, cms) {
         var soknadId = data.soknad.soknadId;
         var url = $location.$$url;
         var endreModus = url.indexOf('endrebarn') !== -1;
@@ -20,7 +20,7 @@ angular.module('nav.barn', ['app.services'])
             if (data.finnFakta('barn').length > 0) {
                 angular.forEach(data.finnFakta('barn'), function (value) {
                     if (value.faktumId.toString() === faktumId) {
-                        barnUnderEndring = value;
+                        barnUnderEndring = angular.copy(value);
                     }
                 });
             }
@@ -53,7 +53,7 @@ angular.module('nav.barn', ['app.services'])
                     'etternavn': undefined,
                     'sammensattnavn': undefined,
                     'alder': undefined,
-                    'land': undefined,
+                    'land' : cms.tekster["barnetillegg.nyttbarn.landDefault"],
                     'barnetillegg': 'true',
                     'barneinntekttall': undefined,
                     'ikkebarneinntekt': undefined
@@ -141,19 +141,19 @@ angular.module('nav.barn', ['app.services'])
         function lagreBarnOgBarnetilleggFaktum() {
             $scope.barn.$save({soknadId: soknadId}).then(function (barnData) {
                 $scope.barn = barnData;
-                oppdaterFaktumListe('barn');
+                oppdaterFaktumListe('barn', barnData);
                 oppdaterCookieValue(barnData.faktumId);
                 $location.path('soknad');
             });
         }
 
-        function oppdaterFaktumListe(type) {
+        function oppdaterFaktumListe(type, barnData) {
             var faktaType = data.finnFakta(type);
             if (faktaType.length > 0) {
                 if (endreModus || barnetilleggModus) {
-                    angular.forEach(faktaType, function (value, index) {
-                        if (value.faktumId.toString() === $scope[type].faktumId) {
-                            faktaType[index] = $scope[type];
+                     angular.forEach(data.fakta, function (value, index) {
+                        if (value.faktumId === parseInt(barnData.faktumId)) {
+                            data.fakta[index] = barnData;
                         }
                     });
                 } else {
@@ -163,6 +163,7 @@ angular.module('nav.barn', ['app.services'])
                 data.leggTilFaktum($scope[type]);
             }
         }
+
 
         function finnSammensattNavn() {
             return $scope.barn.properties.fornavn + ' ' + $scope.barn.properties.etternavn;
