@@ -1,25 +1,44 @@
 package no.nav.sbl.dialogarena.soknadinnsending.sikkerhet;
 
 
+import no.nav.modig.core.exception.AuthorizationException;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 @Aspect
 @Component
 public class SikkerhetsAspect {
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(SikkerhetsAspect.class);
     @Inject
     Tilgangskontroll tilgangskontroll;
 
-    @Pointcut("@within(org.springframework.web.bind.annotation.RequestMapping)")
+    @Pointcut("@annotation(no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad)")
     public void requestMapping() {
     }
 
     @Before(value = "requestMapping() && args(soknadId, ..)", argNames = "soknadId")
     public void sjekkSoknadIdModBruker(Long soknadId) {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        if (request.getMethod().equals(RequestMethod.POST.name())) {
+            if (!XsrfGenerator.sjekkXsrfToken(request.getHeader("X-XSRF-TOKEN"), soknadId)) {
+                throw new AuthorizationException("Feil token");
+            }
+        }
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(soknadId);
     }
+
+    @Before(value = "requestMapping() && args(brukerbehandlingsId, ..)", argNames = "brukerbehandlingsId")
+    public void sjekkMetoderMedBrukerbehandlingsId(String brukerbehandlingsId) {
+        tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(brukerbehandlingsId);
+    }
+
 }
