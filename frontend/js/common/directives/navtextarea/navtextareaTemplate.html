@@ -2,15 +2,16 @@
     <label>
         <span data-cmstekster="{{sporsmal}}"></span>
         <textarea data-ng-model="faktum.value"
-                  data-ng-name="faktum.key"
                   data-error-messages="'{{ feilmelding }}'"
                   data-ng-trim="false"
                   aria-controls="{{sporsmal}}"
                   data-validate-textarea
-                  data-ng-blur="mistetFokus()"></textarea>
+                  data-ng-blur="mistetFokus()"
+                  data-aktiv-feilmelding></textarea>
 
         <span class="egen-linje" data-ng-show="harFokusOgFeil()">
-            <span class="tellertekst" data-ng-class="{negativtekstteller: counter < 0 }"  aria-live="polite"> {{counter}} </span>
+            <span class="tellertekst" data-ng-class="{negativtekstteller: counter < 0 }"
+                  aria-live="polite"> {{counter}} </span>
             <span data-cmstekster="fritekst.negativtellertekst" data-ng-if="counter < 0"></span>
             <span data-cmstekster="fritekst.tellertekst" data-ng-if="counter >= 0"></span>
         </span>
