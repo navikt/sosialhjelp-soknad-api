@@ -11,7 +11,6 @@ import no.nav.modig.security.tilgangskontroll.policy.pep.PEPImpl;
 import no.nav.modig.security.tilgangskontroll.policy.request.attributes.SubjectAttribute;
 import no.nav.sbl.dialogarena.soknadinnsending.SoknadInnsendingConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.aktor.AktorIdService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -29,13 +28,9 @@ import static no.nav.modig.security.tilgangskontroll.utils.RequestUtils.forReque
 @Named("tilgangskontroll")
 public class Tilgangskontroll {
 
+    private final EnforcementPoint pep;
     @Inject
     private SendSoknadService soknadService;
-    @SuppressWarnings("PMD")
-    @Inject
-    private AktorIdService aktorIdService;
-
-    private final EnforcementPoint pep;
 
     public Tilgangskontroll() {
         DecisionPoint pdp = new PicketLinkDecisionPoint(SoknadInnsendingConfig.class.getResource("/security/policyConfig.xml"));
@@ -43,9 +38,12 @@ public class Tilgangskontroll {
         ((PEPImpl) pep).setRequestEnrichers(asList(new EnvironmentRequestEnricher(), new SecurityContextRequestEnricher()));
     }
 
+    public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
+        verifiserBrukerHarTilgangTilSoknad(soknadService.hentSoknadMedBehandlinsId(behandlingsId));
+    }
+
     public void verifiserBrukerHarTilgangTilSoknad(Long soknadId) {
         String eier = soknadService.hentSoknadEier(soknadId);
-        //String aktorId = aktorIdService.hentAktorIdForFno(getSubjectHandler().getUid());
         String aktorId = getSubjectHandler().getUid();
         SubjectAttribute aktorSubjectId = new SubjectAttribute(new URN("urn:nav:ikt:tilgangskontroll:xacml:subject:aktor-id"), new StringValue(aktorId));
 
