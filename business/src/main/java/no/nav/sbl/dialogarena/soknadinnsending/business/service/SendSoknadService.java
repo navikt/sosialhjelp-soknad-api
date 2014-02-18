@@ -24,8 +24,6 @@ public interface SendSoknadService {
 
     void avbrytSoknad(Long soknadId);
 
-    void endreInnsendingsvalg(Long soknadId, Faktum faktum);
-
     List<Faktum> hentFakta(Long soknadId);
 
     void slettBrukerFaktum(Long soknadId, Long faktumId);

@@ -41,7 +41,7 @@ module.exports = function (config) {
 
         // test results reporter to use
         // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-        reporters: ['progress'],
+        reporters: ['progress', 'junit', 'coverage'],
 
 
         // web server port
@@ -80,23 +80,31 @@ module.exports = function (config) {
 
         // Continuous Integration mode
         // if true, it capture browsers, run tests and exit
-        singleRun: false,
+        singleRun: true,
 
         plugins: [
             'karma-jasmine',
             'karma-phantomjs-launcher',
             'karma-chrome-launcher',
             'karma-firefox-launcher',
-            'karma-ie-launcher'
+            'karma-ie-launcher',
+            'karma-junit-reporter',
+            'karma-coverage'
         ],
 
+        preprocessors: {
+            '../../js/app/**/*.js': ['coverage'],
+            '../../js/common/**/*.js': ['coverage']
+        },
+
         coverageReporter: {
-            type: 'html',
-            dir: 'target/karma-coverage'
+            type: 'lcovonly',
+            dir: '../../target/karma-coverage'
         },
 
         junitReporter: {
-            outputFile: 'target/surefire-reports/TEST-karma.xml'
+            outputFile: '../../target/surefire-reports/TEST-karma.xml',
+            suite: ''
         }
 
     });

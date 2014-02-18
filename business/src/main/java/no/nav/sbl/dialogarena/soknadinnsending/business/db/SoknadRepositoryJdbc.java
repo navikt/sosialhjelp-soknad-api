@@ -60,23 +60,22 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     private final RowMapper<Faktum> faktumRowMapper = new RowMapper<Faktum>() {
         public Faktum mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-            return new Faktum(rs.getLong("soknad_id"),
-                    rs.getLong("soknadbrukerdata_id"),
-                    rs.getString("key"), rs.getString("value"),
-                    Faktum.FaktumType.valueOf(rs.getString("type")),
-                    (Long) JdbcUtils.getResultSetValue(rs, rs.findColumn("parrent_faktum"), Long.class));
+            return new Faktum()
+                    .medSoknadId(rs.getLong("soknad_id"))
+                    .medFaktumId(rs.getLong("soknadbrukerdata_id"))
+                    .medKey(rs.getString("key")).medValue(rs.getString("value"))
+                    .medType(Faktum.FaktumType.valueOf(rs.getString("type")))
+                    .medParrentFaktumId((Long) JdbcUtils.getResultSetValue(rs, rs.findColumn("parrent_faktum"), Long.class));
         }
     };
     private final RowMapper<FaktumEgenskap> faktumEgenskapRowMapper = new RowMapper<FaktumEgenskap>() {
         public FaktumEgenskap mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-            FaktumEgenskap faktum = new FaktumEgenskap(
+            return new FaktumEgenskap(
                     rs.getLong("soknad_id"),
                     rs.getLong("faktum_id"),
                     rs.getString("key"),
                     rs.getString("value"),
                     rs.getBoolean("systemegenskap"));
-            return faktum;
         }
     };
     @Inject
@@ -208,25 +207,21 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         return getJdbcTemplate().query("select * from soknadbrukerdata where soknad_id = ? and parrent_faktum = ?", faktumRowMapper, soknadId, faktumId);
     }
 
-
     @Override
     public Boolean isVedleggPaakrevd(Long soknadId, String key, String value, String dependOnValue) {
         String sql = "select count(*) from soknadbrukerdata data left outer join soknadbrukerdata parent on parent.soknadbrukerdata_id = data.parrent_faktum where data.soknad_id=? and data.key=? and data.value like ? and (data.parrent_faktum is null OR parent.value like ?)";
 
-        Integer count = null;
+        Integer count;
         try {
             count = getJdbcTemplate().queryForObject(sql, Integer.class, soknadId, key, value, dependOnValue);
         } catch (DataAccessException e) {
             LOG.warn("Klarte ikke hente count fra soknadBrukerData", e);
+            return false;
         }
 
-        if (count != null) {
-            return count > 0;
-        }
+        return count != null && count > 0;
 
-        return false;
     }
-
 
     @Override
     public List<Faktum> hentSystemFaktumList(Long soknadId, String key) {
@@ -337,20 +332,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
             }
         }
         return fakta;
-    }
-
-    private List<FaktumEgenskap> hentFaktumegenskaper(Long soknadId, Long faktumId) {
-        return select("select * from FAKTUMEGENSKAP where soknad_id = ? and faktum_id = ?", faktumEgenskapRowMapper, soknadId, faktumId);
-    }
-
-    private FaktumEgenskap hentFaktumegenskap(Long soknadId, Long faktumId, String key) {
-        List<FaktumEgenskap> faktumEgenskaper = select("select * from FAKTUMEGENSKAP where soknad_id = ? and faktum_id = ? and key = ?", faktumEgenskapRowMapper, soknadId, faktumId, key);
-
-        if (faktumEgenskaper.isEmpty()) {
-            return null;
-        } else {
-            return faktumEgenskaper.get(0);
-        }
     }
 
     @Override
