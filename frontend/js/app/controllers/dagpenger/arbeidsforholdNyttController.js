@@ -1,5 +1,5 @@
 angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
-	.controller('ArbeidsforholdNyttCtrl', ['$scope', 'data', 'Faktum', '$location', '$cookieStore', '$resource', function ($scope, data, Faktum, $location, $cookieStore, $resource) {
+	.controller('ArbeidsforholdNyttCtrl', ['$scope', 'data', 'Faktum', '$location', '$cookieStore', '$resource', 'cms', function ($scope, data, Faktum, $location, $cookieStore, $resource, cms) {
 
 		$scope.templates = {
             'Sagt opp av arbeidsgiver': {url: '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html'},
@@ -23,14 +23,14 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 
 		if (endreModus) {
 			var faktumId = url.split('/').pop();
-			var arbeidsforhold = data.finnFakta('arbeidsforhold');
+			var opprinneligData = data.finnFakta('arbeidsforhold');
+            var arbeidsforhold = angular.copy(opprinneligData);
 
 			angular.forEach(arbeidsforhold, function (value) {
 				if (value.faktumId === parseInt(faktumId)) {
 					arbeidsforholdData = value;
 				}
 			});
-
 
 			angular.forEach($scope.templates, function (template, index) {
 				if (arbeidsforholdData.properties.type === index) {
@@ -46,7 +46,8 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 					'datofra'         : undefined,
 					'datotil'         : undefined,
                     'type': undefined,
-                    'eosland': "false"
+                    'eosland': "false",
+                    'land' : cms.tekster["arbeidsforhold.arbeidsgiver.landDefault"]
 				}
 			};
 		}
@@ -68,7 +69,6 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             }
         });
 
-
 		$scope.lagreArbeidsforhold = function (form) {
 			var eventString = 'RUN_VALIDATION' + form.$name;
 			$scope.$broadcast(eventString);
@@ -82,7 +82,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 		function lagreArbeidsforholdOgSluttaarsak() {
             $scope.arbeidsforhold.$save({soknadId: data.soknad.soknadId}).then(function (arbeidsforholdData) {
 				$scope.arbeidsforhold = arbeidsforholdData;
-				oppdaterFaktumListe('arbeidsforhold');
+				oppdaterFaktumListe('arbeidsforhold', arbeidsforholdData);
 				oppdaterCookieValue(arbeidsforholdData.faktumId);
                 $location.path('soknad');
 			});
@@ -98,10 +98,16 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 			});
 		}
 
-		function oppdaterFaktumListe(type) {
-			if (!endreModus) {
+		function oppdaterFaktumListe(type, arbeidsforholdData) {
+            if (!endreModus) {
 				data.fakta.push($scope[type]);
-			}
+			} else {
+                angular.forEach(data.fakta, function (value, index) {
+                    if (value.faktumId === parseInt(arbeidsforholdData.faktumId)) {
+                        data.fakta[index] = arbeidsforholdData;
+                    }
+                });
+            }
 		}
 
 		$scope.skalVisePermitteringInfo = false;

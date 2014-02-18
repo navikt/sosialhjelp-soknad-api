@@ -18,18 +18,18 @@
                              data-navfeilmelding="'arbeidsforhold.arbeidsgiver.navn.feilmelding'"
                              data-ng-required></div>
 
-                        <div class="land">
-                            <div data-nav-select
-                                 data-navconfig
-                                 data-nav-faktum-property="land"
-                                 data-label="arbeidsforhold.arbeidsgiver.land"
-                                 data-options="land.result"
-                                 data-er-required="true"
-                                 data-ikke-auto-lagre="true"
-                                 data-default-value="arbeidsforhold.arbeidsgiver.landDefault"
-                                 data-required-feilmelding="arbeidsforhold.arbeidsgiver.land.feilmelding"
-                                 data-ugyldig-feilmelding="arbeidsforhold.arbeidsgiver.land.ugyldig.feilmelding">
-                            </div>
+                      
+                        <div class="land form-linje">
+                            <label for="land">
+                                <span class="labeltekst" data-cmstekster="arbeidsforhold.arbeidsgiver.land"></span>
+                            </label>
+                            <select id="land"
+                                    data-ng-required="true"
+                                    data-error-messages="'arbeidsforhold.arbeidsgiver.land.feilmelding'" 
+                                    data-ng-model="arbeidsforhold.properties.land" 
+                                    data-ng-options="l.value as l.text for l in land.result">
+                            </select>
+                          
                         </div>
                         <div data-ng-show="arbeidsforhold.properties.eosland == 'true'">
                             <div class="ekstra-spm-boks" data-vedlegginfoboks>

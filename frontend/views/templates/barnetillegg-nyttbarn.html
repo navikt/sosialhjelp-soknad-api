@@ -3,7 +3,7 @@
         <div class="begrensning">
             <div class="sak-totredel">
                 <div class="barn-spm spm-boks panel-standard-belyst">
-                    <a href="#/soknad" class="lukk"> </a>
+                    <a href="#/soknad" data-ng-click="avbrytBarnetilegg($event)" class="lukk"> </a>
 
                     <div data-form-errors></div>
 
@@ -67,18 +67,16 @@
                                       data-cmstekster="barnetillegg.nyttbarn.fodselsdato.underAtten.feilmelding"></span>
                             </div>
 
-                            <div class="land">
-                                <div data-nav-select
-                                     data-navconfig
-                                     data-nav-faktum-property="land"
-                                     data-label="barnetillegg.nyttbarn.land"
-                                     data-options="land.result"
-                                     data-er-required="true"
-                                     data-ikke-auto-lagre="true"
-                                     data-default-value="barnetillegg.nyttbarn.landDefault"
-                                     data-required-feilmelding="barnetillegg.nyttbarn.land.feilmelding"
-                                     data-ugyldig-feilmelding="barnetillegg.nyttbarn.land.ugyldig.feilmelding">
-                                </div>
+                            <div class="land form-linje">
+                                <label for="land">
+                                    <span class="labeltekst" data-cmstekster="barnetillegg.nyttbarn.land"></span>
+                                </label>
+                                <select id="land"
+                                        data-ng-required="true"
+                                        data-error-messages="'barnetillegg.nyttbarn.land.feilmelding'" 
+                                        data-ng-model="barn.properties.land" 
+                                        data-ng-options="l.value as l.text for l in land.result">
+                                </select>
                             </div>
 
                             <div data-ng-show="erEosLandAnnetEnnNorge()">
