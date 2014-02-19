@@ -1,5 +1,5 @@
 angular.module('nav.ytelser', [])
-	.controller('YtelserCtrl', ['$scope', 'data', function ($scope, data) {
+	.controller('YtelserCtrl', ['$scope', 'data', '$timeout', function ($scope, data, $timeout) {
 
 		$scope.land = data.land;
 		$scope.ytelser = {skalViseFeilmeldingForIngenYtelser: false};
@@ -78,6 +78,12 @@ angular.module('nav.ytelser', [])
 
 			if (erCheckboksForIngenYtelseHuketAv) {
 				$scope.harHuketAvCheckboksYtelse.value = 'true';
+
+                var fokusElement = $("#ytelser .andreytelser .annetvalg-nei");
+                $timeout(function () {
+                    scrollToElement(fokusElement, 400);
+                }, 50);
+
 			} else {
 				$scope.harHuketAvCheckboksYtelse.value = '';
 			}
