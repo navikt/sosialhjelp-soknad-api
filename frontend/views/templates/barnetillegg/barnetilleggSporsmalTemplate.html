@@ -1,0 +1,38 @@
+<div class="form-linje checkbox" data-checkbox-validate>
+    <input data-ng-model="barn.properties.barnetillegg" name="barnetilegg"
+           id="barnetilegg" type="checkbox"
+           data-error-messages="'barnetillegg.nyttbarn.barnetillegg.feilmelding'"
+           data-boolean-verdi data-ng-required="true"
+           data-aktiv-feilmelding>
+    <label for="barnetilegg">{{ 'barnetillegg.barnetilegg.sporsmal' | cmstekst }}</label>
+    <span class="melding">
+        {{ 'barnetillegg.nyttbarn.barnetillegg.feilmelding' | cmstekst }}
+    </span>
+</div>
+
+<div data-ng-show="barnetilleggErRegistrert()">
+    <div data-nav-faktum-property="ikkebarneinntekt"
+         data-booleanradio
+         data-nokkel="barnetillegg.barnetilegg.ikkebarneinntekt">
+
+        <div data-navtekst
+             data-navconfig
+             data-navlabel="barnetillegg.barnetilegg.barneinntekttall.label"
+             data-navsporsmal="barnetillegg.barnetilegg.barneinntekttall.sporsmal"
+             data-nav-faktum-property="barneinntekttall"
+             data-regexvalidering="/^\d+$/"
+             data-inputfeltmaxlength="200"
+             data-navfeilmelding="{required:'barnetillegg.barnetilegg.barneinntekttall.feilmelding', pattern:'barnetillegg.barnetilegg.barneinntekttall.ugyldig.feilmelding'}"
+             data-ng-required>
+        </div>
+
+        <div class="ekstra-spm-boks" data-vedlegginfoboks>
+            <ul>
+                <li>
+                    {{ 'barnetillegg.barnetilegg.ikkebarneinntekt.false.vedlegginformasjon' |
+                    cmstekst}}
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
