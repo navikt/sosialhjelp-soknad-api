@@ -14,6 +14,9 @@
     <name>${project.artifactId}</name>
     <packaging>jar</packaging>
     <properties>
+    
+        <sonar.projectKey>no.nav.sbl.dialogarena:sendsoknad:js</sonar.projectKey>
+        <sonar.projectName>Send Søknad js</sonar.projectName>
      	<sonar.branch>js</sonar.branch>
         <sonar.language>js</sonar.language>
         <sonar.exclusions>js/jquery/**,js/lib/**</sonar.exclusions>
