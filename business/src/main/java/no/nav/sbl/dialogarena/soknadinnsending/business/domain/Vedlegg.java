@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -15,6 +16,7 @@ import java.util.UUID;
 /**
  * Domeneklasse som beskriver et vedlegg.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Vedlegg {
     private Long vedleggId;
     private Long soknadId;
