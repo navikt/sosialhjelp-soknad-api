@@ -53,7 +53,9 @@ angular.module('nav.stickyFeilmelding', [])
 
 						if (scope.feil.navaerende < (totalAntalLFeil() - 1)) {
 							leggTilMarkeringAvFeilmelding(1);
-						} else if (scope.feil.navaerende < totalAntalLFeil()) {
+						} else if( scope.feil.navaerende === totalAntalLFeil()-1) {
+
+                        } else if (scope.feil.navaerende < totalAntalLFeil()) {
 							leggTilMarkeringAvFeilmelding(0);
 						} else if (scope.feil.navaerende === totalAntalLFeil()) {
 							leggTilMarkeringAvFeilmelding(-1);
