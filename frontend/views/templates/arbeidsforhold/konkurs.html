@@ -1,8 +1,9 @@
-<div class="varighet">
+<div class="varighet form-linje">
+    <h4 class="spm-sporsmal">{{ 'arbeidsforhold.arbeidsgiver.varighet.label' | cmstekst }}</h4>
     <div data-nav-dato-intervall
          data-fra-dato="sluttaarsak.properties.datofra"
          data-til-dato="sluttaarsak.properties.konkursdato"
-         data-label="arbeidsforhold.sluttaarsak.konkurs.konkursdato"
+         data-label="arbeidsforhold.arbeidsgiver.varighet"
          data-er-begge-required="true"
          data-lagre="lagreFaktum()">
     </div>
@@ -16,7 +17,7 @@
      data-feilmelding="arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.feilmelding"
      data-obligatorisk="true"></div>
 
-<div class="form-linje spm boolean">
+<div class="form-linje spm boolean konkurs">
     <h4 class="spm-sporsmal">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.sporsmal' | cmstekst }}</h4>
 
     <div class="nav-radio-knapp">
@@ -113,13 +114,14 @@
     </div>
 
     <span class="melding"></span>
-</div>
 
-<div class="fiks-siste-boks ekstra-spm-boks" data-ng-show="sluttaarsak.properties.lonnsgaranti == 'Nei'">
-    <div data-navinfoboks>
-        <p>{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.nei.informasjon' | cmstekst }}</p>
+    <div class="ekstra-spm-boks" data-ng-if="sluttaarsak.properties.lonnsgaranti == 'Nei'">
+        <div data-navinfoboks>
+            <p>{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.nei.informasjon' | cmstekst }}</p>
+        </div>
     </div>
 </div>
+
 
 <div data-booleanradio
      data-navconfig

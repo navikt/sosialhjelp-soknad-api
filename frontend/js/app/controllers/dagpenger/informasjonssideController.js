@@ -183,7 +183,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
                 var formElement = element.closest('form').find('.form-linje');
                 var input = formElement.find('input');
                 element.bind('click', function () {
-                    if (input.not(':checked')) {
+                    if (!input.is(':checked')) {
                         formElement.addClass('feilstyling');
                     }
                 });

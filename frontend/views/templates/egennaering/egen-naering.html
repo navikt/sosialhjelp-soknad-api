@@ -1,29 +1,11 @@
 <div class="skjemaramme">
     <div data-ng-form="egennaeringForm" class="skjemainnhold" data-ng-controller="EgennaeringCtrl" data-novalidate>
         <div data-form-errors></div>
-        <div data-nav-faktum="egennaering.driveregennaering"
-             data-navconfig
-             data-booleanradio
-             data-nokkel="egennaering.driveregennaering">
 
-            <div data-ng-include="'../views/templates/egennaering/egenNaeringvirksomhet.html'"></div>
-        </div>
+        <div data-ng-include="'../views/templates/egennaering/egenNaeringvirksomhet.html'"></div>
+        <div data-ng-include="'../views/templates/egennaering/gardsbruk.html'"></div>
+        <div data-ng-include="'../views/templates/egennaering/fangstOgFiske.html'"></div>
 
-        <div data-nav-faktum="egennaering.gardsbruk"
-             data-navconfig
-             data-booleanradio
-             data-nokkel="egennaering.gardsbruk">
-
-            <div data-ng-include="'../views/templates/egennaering/gardsbruk.html'"></div>
-        </div>
-
-        <div data-nav-faktum="egennaering.fangstogfiske"
-             data-navconfig
-             data-booleanradio
-             data-nokkel="egennaering.fangstogfiske">
-
-            <div data-ng-include="'../views/templates/egennaering/fangstOgFiske.html'"></div>
-        </div>
         <div data-spmblokkferdig></div>
     </div>
 </div>

@@ -1,40 +1,45 @@
-<div data-navinfoboks>
-    <p>{{ 'egennaering.driveregennaering.false.informasjon.1' | cmstekst }}</p>
-    <p>{{ 'egennaering.driveregennaering.false.informasjon.2' | cmstekst }}</p>
-</div>
+<div data-nav-faktum="egennaering.driveregennaering"
+     data-navconfig
+     data-booleanradio
+     data-nokkel="egennaering.driveregennaering">
 
-<div data-ng-repeat="egennaering_drivergennaering_orgnummer in orgnummer">
-    <div class="orgnummer-repeat">
-        <div data-navorganisasjonsnummerfelt
-             data-nav-faktum="egennaering_drivergennaering_orgnummer"
-             data-navconfig
-             data-navlabel="egennaering.driveregennaering.false.organisasjonsnummer"
-             data-navfeilmelding="{ required: 'egennaering.driveregennaering.false.organisasjonsnummer.feilmelding', pattern: 'organisasjonsnummer.format.feilmelding'}">
+
+    <div data-navinfoboks>
+        <p>{{ 'egennaering.driveregennaering.false.informasjon.1' | cmstekst }}</p>
+
+        <p>{{ 'egennaering.driveregennaering.false.informasjon.2' | cmstekst }}</p>
+    </div>
+
+    <div data-ng-repeat="egennaering_drivergennaering_orgnummer in orgnummer">
+        <div class="orgnummer-repeat">
+            <div data-navorganisasjonsnummerfelt
+                 data-nav-faktum="egennaering_drivergennaering_orgnummer"
+                 data-navconfig
+                 data-navlabel="egennaering.driveregennaering.false.organisasjonsnummer"
+                 data-navfeilmelding="{ required: 'egennaering.driveregennaering.false.organisasjonsnummer.feilmelding', pattern: 'organisasjonsnummer.format.feilmelding'}">
+            </div>
         </div>
     </div>
-    <a href="javascript:void(0)" aria-role="button" class="orgnummer-slett"
-       data-ng-if="skalViseSlettKnapp($index)"
-       data-ng-click="slettOrg(egennaering_drivergennaering_orgnummer, $index)"
-       data-fokus>{{ 'organisasjonsnummer.slett' | cmstekst }}</a>
-</div>
 
-<a href="javascript:void(0)" aria-role="button" class="orgnummer-leggtil" data-ng-click="leggTilOrgnr()" data-leggtil-orgnr>{{ 'organisasjonsnummer.leggtil' | cmstekst }}</a>
+    <a href="javascript:void(0)" aria-role="button" class="orgnummer-leggtil" data-ng-click="leggTilOrgnr()"
+       data-leggtil-orgnr>{{ 'organisasjonsnummer.leggtil' | cmstekst }}</a>
 
-<div class="tekstfelt form-linje arbeidsmengde-container">
-    <h4 class="spm-sporsmal">{{ 'egennaering.driveregennaering.arbeidsmengde' | cmstekst }}</h4>
-    <label>
-        <span class="labeltekst">{{ 'egennaering.driveregennaering.arbeidsmengde.timer' | cmstekst }}</span>
-        <input type="text"
-               data-ng-model="faktum.value"
-               data-nav-faktum="egennaering.driveregennaering.arbeidsmengde"
-               data-navconfig
-               data-ng-required="true"
-               data-error-messages="{required:'egennaering.driveregennaering.arbeidsmengde.feilmelding',
+    <div class="tekstfelt form-linje arbeidsmengde-container">
+        <h4 class="spm-sporsmal">{{ 'egennaering.driveregennaering.arbeidsmengde' | cmstekst }}</h4>
+        <label>
+            <span class="labeltekst">{{ 'egennaering.driveregennaering.arbeidsmengde.timer' | cmstekst }}</span>
+            <input type="text"
+                   data-ng-model="faktum.value"
+                   data-nav-faktum="egennaering.driveregennaering.arbeidsmengde"
+                   data-navconfig
+                   data-ng-required="true"
+                   data-error-messages="{required:'egennaering.driveregennaering.arbeidsmengde.feilmelding',
                    pattern:'regex.tall.komma.punktum'}"
-               data-ng-pattern="/^(\d+(?:[\.\,]\d{0,2})?)$/"
-               data-tekstfelt-patternvalidering
-               data-blur-validate
-               data-aktiv-feilmelding/>
-        <span class="melding"></span>
-    </label>
+                   data-ng-pattern="/^(\d+(?:[\.\,]\d{0,2})?)$/"
+                   data-tekstfelt-patternvalidering
+                   data-blur-validate
+                   data-aktiv-feilmelding/>
+            <span class="melding"></span>
+        </label>
+    </div>
 </div>
