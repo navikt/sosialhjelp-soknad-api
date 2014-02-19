@@ -55,7 +55,7 @@ angular.module('nav.sporsmalferdig', [])
 				function gaaTilTab(nyTab) {
 					if (nyTab.length > 0) {
 						$timeout(function () {
-							scrollToElement(nyTab, 0);
+							scrollToElement(nyTab, 120);
 						}, 0);
 					}
 				}
