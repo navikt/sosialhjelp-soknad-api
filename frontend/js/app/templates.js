@@ -70,18 +70,18 @@ angular.module("../views/templates/arbeidsforhold-nytt.html", []).run(["$templat
     "                             data-navfeilmelding=\"'arbeidsforhold.arbeidsgiver.navn.feilmelding'\"\n" +
     "                             data-ng-required></div>\n" +
     "\n" +
-    "                        <div class=\"land\">\n" +
-    "                            <div data-nav-select\n" +
-    "                                 data-navconfig\n" +
-    "                                 data-nav-faktum-property=\"land\"\n" +
-    "                                 data-label=\"arbeidsforhold.arbeidsgiver.land\"\n" +
-    "                                 data-options=\"land.result\"\n" +
-    "                                 data-er-required=\"true\"\n" +
-    "                                 data-ikke-auto-lagre=\"true\"\n" +
-    "                                 data-default-value=\"arbeidsforhold.arbeidsgiver.landDefault\"\n" +
-    "                                 data-required-feilmelding=\"arbeidsforhold.arbeidsgiver.land.feilmelding\"\n" +
-    "                                 data-ugyldig-feilmelding=\"arbeidsforhold.arbeidsgiver.land.ugyldig.feilmelding\">\n" +
-    "                            </div>\n" +
+    "                      \n" +
+    "                        <div class=\"land form-linje\">\n" +
+    "                            <label for=\"land\">\n" +
+    "                                <span class=\"labeltekst\" data-cmstekster=\"arbeidsforhold.arbeidsgiver.land\"></span>\n" +
+    "                            </label>\n" +
+    "                            <select id=\"land\"\n" +
+    "                                    data-ng-required=\"true\"\n" +
+    "                                    data-error-messages=\"'arbeidsforhold.arbeidsgiver.land.feilmelding'\" \n" +
+    "                                    data-ng-model=\"arbeidsforhold.properties.land\" \n" +
+    "                                    data-ng-options=\"l.value as l.text for l in land.result\">\n" +
+    "                            </select>\n" +
+    "                          \n" +
     "                        </div>\n" +
     "                        <div data-ng-show=\"arbeidsforhold.properties.eosland == 'true'\">\n" +
     "                            <div class=\"ekstra-spm-boks\" data-vedlegginfoboks>\n" +
@@ -1134,56 +1134,56 @@ angular.module("../views/templates/avbryt.html", []).run(["$templateCache", func
 angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/templates/barnetillegg-nyttbarn.html",
     "<div class=\"modalBoks\" data-ng-controller=\"BarneCtrl\">\n" +
-    "<div data-ng-form=\"nyttBarnForm\" class=\"vertikal\">\n" +
-    "    <div class=\"begrensning\">\n" +
-    "        <div class=\"sak-totredel\">\n" +
-    "            <div class=\"barn-spm spm-boks panel-standard-belyst\">\n" +
-    "                <a href=\"#/soknad\" class=\"lukk\"> </a>\n" +
+    "    <div data-ng-form=\"nyttBarnForm\" class=\"vertikal\">\n" +
+    "        <div class=\"begrensning\">\n" +
+    "            <div class=\"sak-totredel\">\n" +
+    "                <div class=\"barn-spm spm-boks panel-standard-belyst\">\n" +
+    "                    <a href=\"#/soknad\" data-ng-click=\"avbrytBarnetilegg($event)\" class=\"lukk\"> </a>\n" +
     "\n" +
-    "                <div data-form-errors></div>\n" +
+    "                    <div data-form-errors></div>\n" +
     "\n" +
-    "                <h2 class=\"stor-strek\" data-ng-if=\"endrerSystemregistrertBarn()\">\n" +
-    "                    <span data-cmstekster=\"barnetillegg.sokerbarnetillegg.tittel\"></span>\n" +
-    "                    <span data-ng-bind=\"barnenavn\"></span>\n" +
-    "                </h2>\n" +
+    "                    <h2 class=\"stor-strek\" data-ng-if=\"endrerSystemregistrertBarn()\">\n" +
+    "                        <span data-cmstekster=\"barnetillegg.sokerbarnetillegg.tittel\"></span>\n" +
+    "                        <span data-ng-bind=\"barnenavn\"></span>\n" +
+    "                    </h2>\n" +
     "\n" +
-    "                <div data-nav-faktum=\"barn\" data-ikke-auto-lagre=\"true\">\n" +
+    "                    <div data-nav-faktum=\"barn\" data-ikke-auto-lagre=\"true\">\n" +
     "\n" +
     "\n" +
-    "                    <div data-ng-if=\"leggerTilNyttBarnEllerEndrerBarn()\">\n" +
-    "                        <div data-form-errors></div>\n" +
-    "                        <h2 class=\"stor-strek\" data-cmstekster=\"barnetillegg.nyttbarn.tittel\"></h2>\n" +
+    "                        <div data-ng-if=\"leggerTilNyttBarnEllerEndrerBarn()\">\n" +
+    "                            <div data-form-errors></div>\n" +
+    "                            <h2 class=\"stor-strek\" data-cmstekster=\"barnetillegg.nyttbarn.tittel\"></h2>\n" +
     "\n" +
-    "                        <div class=\"form-linje tekstfelt\">\n" +
-    "                            <label>\n" +
-    "                                <span data-cmstekster=\"barnetillegg.nyttbarn.fornavn\"></span>\n" +
-    "                                <input name=\"fornavn\"\n" +
-    "                                       data-error-messages=\"'barnetillegg.nyttbarn.fornavn.feilmelding'\"\n" +
-    "                                       type=\"text\"\n" +
-    "                                       data-ng-model=\"barn.properties.fornavn\"\n" +
-    "                                       data-blur-validate\n" +
-    "                                       data-maxlength=\"200\"\n" +
-    "                                       maxlength=\"200\"\n" +
-    "                                       required\n" +
-    "                                       data-aktiv-feilmelding>\n" +
-    "                                <span class=\"melding\"></span>\n" +
-    "                            </label>\n" +
-    "                        </div>\n" +
-    "                        <div class=\"form-linje tekstfelt\">\n" +
-    "                            <label>\n" +
-    "                                <span data-cmstekster=\"barnetillegg.nyttbarn.etternavn\"></span>\n" +
-    "                                <input name=\"fnr\"\n" +
-    "                                       data-error-messages=\"'barnetillegg.nyttbarn.etternavn.feilmelding'\"\n" +
-    "                                       type=\"text\"\n" +
-    "                                       data-ng-model=\"barn.properties.etternavn\"\n" +
-    "                                       data-blur-validate\n" +
-    "                                       data-maxlength=\"200\"\n" +
-    "                                       maxlength=\"200\"\n" +
-    "                                       required\n" +
-    "                                       data-aktiv-feilmelding>\n" +
-    "                                <span class=\"melding\"></span>\n" +
-    "                            </label>\n" +
-    "                        </div>\n" +
+    "                            <div class=\"form-linje tekstfelt\">\n" +
+    "                                <label>\n" +
+    "                                    <span data-cmstekster=\"barnetillegg.nyttbarn.fornavn\"></span>\n" +
+    "                                    <input name=\"fornavn\"\n" +
+    "                                           data-error-messages=\"'barnetillegg.nyttbarn.fornavn.feilmelding'\"\n" +
+    "                                           type=\"text\"\n" +
+    "                                           data-ng-model=\"barn.properties.fornavn\"\n" +
+    "                                           data-blur-validate\n" +
+    "                                           data-maxlength=\"200\"\n" +
+    "                                           maxlength=\"200\"\n" +
+    "                                           required\n" +
+    "                                           data-aktiv-feilmelding>\n" +
+    "                                    <span class=\"melding\"></span>\n" +
+    "                                </label>\n" +
+    "                            </div>\n" +
+    "                            <div class=\"form-linje tekstfelt\">\n" +
+    "                                <label>\n" +
+    "                                    <span data-cmstekster=\"barnetillegg.nyttbarn.etternavn\"></span>\n" +
+    "                                    <input name=\"fnr\"\n" +
+    "                                           data-error-messages=\"'barnetillegg.nyttbarn.etternavn.feilmelding'\"\n" +
+    "                                           type=\"text\"\n" +
+    "                                           data-ng-model=\"barn.properties.etternavn\"\n" +
+    "                                           data-blur-validate\n" +
+    "                                           data-maxlength=\"200\"\n" +
+    "                                           maxlength=\"200\"\n" +
+    "                                           required\n" +
+    "                                           data-aktiv-feilmelding>\n" +
+    "                                    <span class=\"melding\"></span>\n" +
+    "                                </label>\n" +
+    "                            </div>\n" +
     "\n" +
     "                        <div class=\"form-linje under-atten\"\n" +
     "                             data-ng-class=\"{feil: skalViseFeilmelding === true }\">\n" +
@@ -1202,17 +1202,16 @@ angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templ
     "                                      data-cmstekster=\"barnetillegg.nyttbarn.fodselsdato.underAtten.feilmelding\"></span>\n" +
     "                        </div>\n" +
     "\n" +
-    "                        <div class=\"land\">\n" +
-    "                            <div data-nav-select\n" +
-    "                                 data-navconfig\n" +
-    "                                 data-nav-faktum-property=\"land\"\n" +
-    "                                 data-label=\"barnetillegg.nyttbarn.land\"\n" +
-    "                                 data-options=\"land.result\"\n" +
-    "                                 data-er-required=\"true\"\n" +
-    "                                 data-ikke-auto-lagre=\"true\"\n" +
-    "                                 data-default-value=\"barnetillegg.nyttbarn.landDefault\"\n" +
-    "                                 data-required-feilmelding=\"barnetillegg.nyttbarn.land.feilmelding\"\n" +
-    "                                 data-ugyldig-feilmelding=\"barnetillegg.nyttbarn.land.ugyldig.feilmelding\">\n" +
+    "                        <div class=\"land form-linje\">\n" +
+    "                                <label for=\"land\">\n" +
+    "                                    <span class=\"labeltekst\" data-cmstekster=\"barnetillegg.nyttbarn.land\"></span>\n" +
+    "                                </label>\n" +
+    "                                <select id=\"land\"\n" +
+    "                                        data-ng-required=\"true\"\n" +
+    "                                        data-error-messages=\"'barnetillegg.nyttbarn.land.feilmelding'\" \n" +
+    "                                        data-ng-model=\"barn.properties.land\" \n" +
+    "                                        data-ng-options=\"l.value as l.text for l in land.result\">\n" +
+    "                                </select>\n" +
     "                            </div>\n" +
     "                        </div>\n" +
     "\n" +
@@ -1294,7 +1293,7 @@ angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templ
     "                                        <input name=\"barneinntekttall\"\n" +
     "                                               data-error-messages=\"{required:'barnetillegg.barnetilegg.barneinntekttall.feilmelding', pattern:'barnetillegg.barnetilegg.barneinntekttall.ugyldig.feilmelding'}\"\n" +
     "                                               type=\"text\"\n" +
-    "                                               data-ng-pattern=\"/\\d+/\"\n" +
+    "                                               data-ng-pattern=\"/^\\d+$/\"\n" +
     "                                               data-ng-model=\"barn.properties.barneinntekttall\"\n" +
     "                                               data-blur-validate\n" +
     "                                               data-maxlength=\"200\"\n" +
@@ -1537,7 +1536,7 @@ angular.module("../views/templates/egennaering/fangstOgFiske.html", []).run(["$t
     "        <p>{{ 'egennaering.fangstogfiske.false.arbeid.informasjon' | cmstekst }}</p>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div data-nav-faktum=\"reellarbeidssoker.villigdeltid\"\n" +
+    "    <div data-nav-faktum=\"egennaering.fangstogfiske.false.arbeid\"\n" +
     "         data-ng-model=\"faktum.value\"\n" +
     "         data-navconfig\n" +
     "         data-booleanradio\n" +
