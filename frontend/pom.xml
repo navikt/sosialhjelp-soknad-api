@@ -18,6 +18,7 @@
         <sonar.language>js</sonar.language>
         <sonar.exclusions>js/jquery/**,js/lib/**</sonar.exclusions>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.javascript.jstest.reportsPath>target/surefire-reports/</sonar.javascript.jstest.reportsPath>
         <!-- sonar.javascript.jstest.reportsPath>target/surefire-reports/TEST-karma.xml</sonar.javascript.jstest.reportsPath>
 		<sonar.javascript.lcov.reportPath>target/karma-coverage/PhantomJS 1.9.7 (Linux)/lcov.info</sonar.javascript.lcov.reportPath-->
         
