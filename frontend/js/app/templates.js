@@ -2694,6 +2694,15 @@ angular.module("../views/templates/utdanning/utdanningKveldTemplate.html", []).r
     "    </div>\n" +
     "</div>\n" +
     "\n" +
+    "<div class=\"varighet form-linje\" data-ng-if=\"hvis('utdanning.kveld.progresjonUnder50', 'false')\">\n" +
+    "    <h4 class=\"spm-sporsmal\">{{ 'utdanning.semester.avslutning.label' | cmstekst }}</h4>\n" +
+    "    <div data-nav-dato\n" +
+    "         data-ng-model=\"utdanning.semester.avslutning\"\n" +
+    "         data-label=\"utdanning.semester.avslutning.dato\"\n" +
+    "         data-required-error-message=\"utdanning.semester.avslutning.feilmelding\">\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "\n" +
     "<div data-vedlegginfoboks>\n" +
     "    <ul>\n" +
     "        <li><p data-cmstekster=\"utdanning.svar.under.utdanning.dokumentasjon\"></p></li>\n" +
