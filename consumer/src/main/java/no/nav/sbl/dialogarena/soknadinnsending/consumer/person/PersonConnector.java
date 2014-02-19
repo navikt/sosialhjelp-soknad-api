@@ -26,6 +26,7 @@ public class PersonConnector {
     private PersonPortType person;
 
     public HentKjerneinformasjonResponse hentKjerneinformasjon(HentKjerneinformasjonRequest request) {
+
         try {
             return person.hentKjerneinformasjon(request);
         } catch (HentKjerneinformasjonPersonIkkeFunnet e) {
