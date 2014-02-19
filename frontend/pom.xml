@@ -17,7 +17,7 @@
     	
     	<sonar.projectName>sendsoknad-frontend js</sonar.projectName>
         <sonar.projectKey>no.nav.sbl.dialogarena:sendsoknad-frontend:js</sonar.projectKey>
-     	<sonar.projectVersion>1.0</sonar.projectVersion>
+     	<sonar.projectVersion>1.0.8-SNAPSHOT</sonar.projectVersion>
      	<sonar.sources>js/**</sonar.sources>
      	<sonar.test>test/**</sonar.test>
      	
