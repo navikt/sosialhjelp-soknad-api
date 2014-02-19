@@ -3530,7 +3530,11 @@ angular.module("../js/common/directives/accordion/accordionTemplate.html", []).r
 angular.module("../js/common/directives/booleanradio/booleanradioTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/common/directives/booleanradio/booleanradioTemplate.html",
     "<div class='spm form-linje boolean'>\n" +
-    "    <h4 class=\"spm-sporsmal\">{{ sporsmal | cmstekst }}</h4>\n" +
+    "    <h4 class=\"spm-sporsmal\">\n" +
+    "        <span>{{ sporsmal | cmstekst }}</span>\n" +
+    "        <span data-nav-hjelpetekstelement data-ng-if=\"hvisHarHjelpetekst()\" data-tittel=\"{{ hjelpetekst.tittel | cmstekst }}\"\n" +
+    "             data-tekst=\"{{ hjelpetekst.tekst | cmstekst }}\"></span>\n" +
+    "    </h4>\n" +
     "    <div data-navradio\n" +
     "         data-navconfig\n" +
     "         data-value='true'\n" +
