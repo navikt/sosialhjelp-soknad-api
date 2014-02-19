@@ -48,6 +48,7 @@ angular.module('nav.stickybunn', [])
 
                     document.addEventListener('focusout', function(e) {
                         tastaturErApent = false;
+                        settStickySistLagret();
                         scope.$apply();
                     });
                 }
