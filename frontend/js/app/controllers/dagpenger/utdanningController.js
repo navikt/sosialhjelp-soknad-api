@@ -1,5 +1,5 @@
 angular.module('nav.utdanning', [])
-	.controller('UtdanningCtrl', ['$scope', 'data', function ($scope, data) {
+	.controller('UtdanningCtrl', ['$scope', 'data', '$timeout', function ($scope, data, $timeout) {
 		$scope.navigering = {nesteside: 'ytelser'};
 		$scope.sidedata = {navn: 'utdanning'};
 
@@ -111,6 +111,12 @@ angular.module('nav.utdanning', [])
 
 			if (erCheckboksForUtdanningAnnetHuketAv) {
 				$scope.harHuketAvCheckboks.value = 'true';
+                
+                var fokusElement = $("#utdanning .annetvalg-nei");
+                $timeout(function () {
+                    scrollToElement(fokusElement, 400);
+                }, 50);
+   
 			} else {
 				$scope.harHuketAvCheckboks.value = '';
 			}
