@@ -24,6 +24,7 @@ public enum LessResources {
     UTDANNING_LESS("utdanning"),
     STEGINDIKATOR_LESS("stegindikator"),
     MOBIL_LESS("mobil"),
+    FEILSIDE_LESS("feilside"),
     TABBING_LESS("tabbing");
 
     private static final String FOLDER = "css/";
