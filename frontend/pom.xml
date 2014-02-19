@@ -14,13 +14,14 @@
     <name>${project.artifactId}</name>
     <packaging>jar</packaging>
     <properties>
-    
+    	
+    	<sonar.projectName>sendsoknad-frontend js</sonar.projectName>
         <sonar.projectKey>no.nav.sbl.dialogarena:sendsoknad-frontend:js</sonar.projectKey>
      	<sonar.projectVersion>1.0</sonar.projectVersion>
      	<sonar.sources>js/**</sonar.sources>
      	<sonar.test>test/**</sonar.test>
      	
-     	<sonar.branch>js</sonar.branch>
+     	<!-- sonar.branch>js</sonar.branch-->
         <sonar.language>js</sonar.language>
         <sonar.exclusions>js/jquery/**,js/lib/**</sonar.exclusions>
         
