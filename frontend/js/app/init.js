@@ -27,6 +27,8 @@ angular.module('sendsoknad')
                     redirectTilSkjemasideDersomSkjemaIkkeErValidert();
                 } else if (next.$$route.originalPath === "/vedlegg") {
                     redirectTilSkjemasideDersomSkjemaIkkeErValidert();
+                } else if (current && next.$$route.originalPath === "/fortsettsenere") {
+                    $rootScope.forrigeSide = current.$$route.originalPath;
                 }
             }
         });

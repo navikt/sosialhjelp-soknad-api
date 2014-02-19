@@ -1820,7 +1820,7 @@ angular.module("../views/templates/fortsettSenere.html", []).run(["$templateCach
     "				<p data-cmstekster=\"dagpenger.fortsettSenere.info.konsekvenser\"></p>\n" +
     "			</div>\n" +
     "			<div class=\"lenker-dot\">\n" +
-    "				<a href=\"#/soknad\" id=\"tilOversikt\" role=\"link\" data-cmstekster=\"dagpenger.fortsettSenere.tilbake\"></a>\n" +
+    "				<a href=\"#{{ forrigeSide }}\" id=\"tilOversikt\" role=\"link\" data-cmstekster=\"dagpenger.fortsettSenere.tilbake\"></a>\n" +
     "				<a href=\"{{inngangsportenUrl}}\" id=\"dittnav\" role=\"link\" data-cmstekster=\"dagpenger.fortsettSenere.dittNav\"></a>\n" +
     "			</div>\n" +
     "		</div>\n" +
