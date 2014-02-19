@@ -4,7 +4,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         $scope.vedlegg = vedleggService.get({soknadId: data.soknad.soknadId, vedleggId: $routeParams.vedleggId});
         $scope.soknad = data.soknad;
     }])
-    .controller('OpplastingCtrl', ['$scope', '$http', '$location', '$routeParams', 'vedleggService', 'soknadService', 'data', 'cms', function ($scope, $http, $location, $routeParams, vedleggService, soknadService, data, cms) {
+    .controller('OpplastingCtrl', ['$scope', '$http', '$location', '$routeParams', '$cookies', 'vedleggService', 'soknadService', 'data', 'cms', function ($scope, $http, $location, $routeParams, $cookies, vedleggService, soknadService, data, cms) {
 
         $scope.fremdriftsindikator = {
             laster: false
@@ -20,7 +20,8 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         $scope.data = {
             vedleggId: $routeParams.vedleggId,
             soknadId: data.soknad.soknadId,
-            opplastingFeilet: false
+            opplastingFeilet: false,
+            xsrfToken: $cookies['XSRF-TOKEN']
         };
 
         $scope.$on('fileuploadstart', function () {
@@ -37,11 +38,12 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                 }
             });
         });
-
         $scope.options = {
             maxFileSize: 4000000,
+            formData: {'X-XSRF-TOKEN': $cookies['XSRF-TOKEN']},
             acceptFileTypes: /(\.|\/)(jpg|png|pdf|jpeg)$/i,
             autoUpload: true,
+            headers: {'X-XSRF-TOKEN': $cookies['XSRF-TOKEN'] },
             url: '/sendsoknad/rest/soknad/' + data.soknad.soknadId + '/vedlegg/' + $scope.data.vedleggId + '/opplasting',
             done: function (e, data) {
                 $scope.clear(data.originalFiles[0]);

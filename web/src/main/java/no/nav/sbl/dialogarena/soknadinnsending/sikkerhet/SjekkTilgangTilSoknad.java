@@ -14,5 +14,5 @@ import java.lang.annotation.Target;
  * Sjekker tilgang til søknad. Skjekker både søknadId og xsrf token.
  */
 public @interface SjekkTilgangTilSoknad {
-
+    boolean sjekkXsrf() default true;
 }

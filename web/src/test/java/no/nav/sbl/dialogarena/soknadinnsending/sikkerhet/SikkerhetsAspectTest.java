@@ -12,11 +12,39 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.lang.annotation.Annotation;
+
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SikkerhetsAspectTest {
+    public static final SjekkTilgangTilSoknad TILGANG = new SjekkTilgangTilSoknad() {
+        @Override
+        public boolean sjekkXsrf() {
+            return true;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
+        }
+
+        @Override
+        public String toString() {
+            return null;
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return SjekkTilgangTilSoknad.class;
+        }
+    };
     @Mock
     private Tilgangskontroll tilgangskontroll;
     @InjectMocks
@@ -25,13 +53,13 @@ public class SikkerhetsAspectTest {
     @Test
     public void skalTesteSikkerhet() {
         setup(XsrfGenerator.generateXsrfToken(1L));
-        sikkerhetsAspect.sjekkSoknadIdModBruker(1L);
+        sikkerhetsAspect.sjekkSoknadIdModBruker(1L, TILGANG);
     }
 
     @Test(expected = AuthorizationException.class)
     public void skalKasteExceptionNaarTokenIkkeStemmer() {
         setup("tull");
-        sikkerhetsAspect.sjekkSoknadIdModBruker(1L);
+        sikkerhetsAspect.sjekkSoknadIdModBruker(1L, TILGANG);
     }
 
     private void setup(String token) {
