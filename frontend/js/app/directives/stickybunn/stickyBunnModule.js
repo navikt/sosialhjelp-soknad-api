@@ -34,16 +34,27 @@ angular.module('nav.stickybunn', [])
 					settStickySistLagret();
 				});
 
-                var initScreenSize = window.innerHeight;
-                scope.tastatur = false;
 
-                angular.element($window).bind('resize', function() {
-                    if(window.innerHeight < initScreenSize && settStickySistLagret()) {
-                        scope.tastatur = true;
-                    } else {
-                        scope.tastatur = false;
-                    }
-                });
+                var tastaturErApent = false;
+
+                if (erTouchDevice() && getIEVersion() < 0) {
+                    document.addEventListener('focusin', function(e) {
+                        var type = e.target.type;
+                        if (type === 'text' || type === 'textarea' || type === 'date') {
+                            tastaturErApent = true;
+                            scope.$apply();
+                        }
+                    });
+
+                    document.addEventListener('focusout', function(e) {
+                        tastaturErApent = false;
+                        scope.$apply();
+                    });
+                }
+
+                scope.hvisTouchTastaturVises = function() {
+                    return !tastaturErApent;
+                };
 
 
 				// Litt hacky måte å få smooth overgang mellom sticky og non-sticky...
