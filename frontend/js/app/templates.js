@@ -3452,7 +3452,7 @@ angular.module("../js/app/directives/stegindikator/stegIndikatorTemplate.html", 
 
 angular.module("../js/app/directives/stickybunn/stickyBunnTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/app/directives/stickybunn/stickyBunnTemplate.html",
-    "<div data-ng-class=\"{ikkevises: tastatur === true}\">\n" +
+    "<div data-ng-show=\"hvisTouchTastaturVises()\">\n" +
     "    <div class=\"sticky-bunn\">\n" +
     "        <div>\n" +
     "            <span data-ng-if=\"soknadHarBlittLagret()\">\n" +
