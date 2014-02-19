@@ -105,6 +105,10 @@ angular.module('nav.input', ['nav.cmstekster'])
                     scope.hvisSynlig = function () {
                         return element.is(':visible');
                     };
+
+                    scope.harSporsmal = function() {
+                        return isNotNullOrUndefined(scope.navsporsmal) && scope.navsporsmal.length > 0;
+                    };
                 }
             },
             templateUrl: '../js/common/directives/navinput/navtekstTemplate.html'

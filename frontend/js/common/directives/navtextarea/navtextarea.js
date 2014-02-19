@@ -1,5 +1,5 @@
 angular.module('nav.textarea', [])
-	.directive('navtextarea', [function () {
+	.directive('navtextarea', ['cms', function (cms) {
 		var linker = function (scope) {
 			if (scope.attr('data-obligatorisk')) {
 				return '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html';
@@ -16,6 +16,7 @@ angular.module('nav.textarea', [])
 				pre : function (scope, element, attr) {
 					scope.nokkel = attr.nokkel;
 					scope.sporsmal = attr.nokkel + '.sporsmal';
+					scope.label = attr.nokkel + '.label';
 					scope.feilmelding = attr.nokkel + '.feilmelding';
 					scope.tellertekst = attr.nokkel + '.tellertekst';
 					scope.maxlengde = attr.maxlengde;
@@ -39,6 +40,11 @@ angular.module('nav.textarea', [])
                             scope.$apply();
                         }
 					});
+
+                    scope.harSporsmal = function() {
+                        var tekst = cms.tekster[scope.sporsmal];
+                        return isNotNullOrUndefined(tekst) && tekst.length > 0;
+                    };
 
 					scope.harFokusOgFeil = function () {
 						return harFokus || scope.feil;
