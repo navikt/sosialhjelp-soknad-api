@@ -134,26 +134,36 @@
 		<id>utdanning.kveld</id>
 		<type>java.lang.Boolean</type>
 		<panel>Utdanning</panel>
+        <dependOn>utdanning</dependOn>
+        <dependOnValue>underUtdanning</dependOnValue>
 	</faktum>
 	<faktum>
 		<id>utdanning.kortvarig</id>
 		<type>java.lang.Boolean</type>
 		<panel>Utdanning</panel>
+        <dependOn>utdanning</dependOn>
+        <dependOnValue>underUtdanning</dependOnValue>
 	</faktum>
 	<faktum>
 		<id>utdanning.kortvarigflere</id>
 		<type>java.lang.Boolean</type>
 		<panel>Utdanning</panel>
+        <dependOn>utdanning</dependOn>
+        <dependOnValue>underUtdanning</dependOnValue>
 	</faktum>
 	<faktum>
 		<id>utdanning.norsk</id>
 		<type>java.lang.Boolean</type>
 		<panel>Utdanning</panel>
+        <dependOn>underUtdanning</dependOn>
+        <dependOnValue>true</dependOnValue>
 	</faktum>
 	<faktum>
 		<id>underUtdanningAnnet</id>
 		<type>java.lang.Boolean</type>
 		<panel>Utdanning</panel>
+        <dependOn>utdanning</dependOn>
+        <dependOnValue>underUtdanning</dependOnValue>
 	</faktum>
 	<faktum>
 		<id>stonadFisker</id>
