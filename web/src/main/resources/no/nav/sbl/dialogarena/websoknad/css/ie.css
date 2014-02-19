@@ -1,0 +1,11 @@
+#oppsummering .dagpengerbrosjyre .sjekket {
+    background-position: center center;
+}
+
+#oppsummering .sjekket {
+    background-position: center 5px;
+}
+
+#oppsummering .oppsummering .usjekket {
+    background-position: center 8px;
+}
