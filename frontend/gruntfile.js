@@ -140,7 +140,7 @@ module.exports = function (grunt) {
                     'views/templates/**/*.html',
                     'views/dagpenger-singlepage.html'
                 ],
-                tasks: 'html2js'
+                tasks: ['html2js', 'htmlbuild:dev']
 			}
 		},
 		jshint: {
