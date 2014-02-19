@@ -2909,7 +2909,7 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                           data-cmstekster=\"vedlegg.faktum.ikkesend\"></label>\n" +
     "                                    <input type=\"hidden\" class=\"hidden-vedlegg\" data-ng-model=\"hiddenFelt.value\"\n" +
     "                                           data-ng-required=\"true\"\n" +
-    "                                           data-error-messages=\"'{{forventning.tittel}}'\">\n" +
+    "                                           data-error-messages=\"'{{forventning.tittel}} {{forventning.navn }}'\">\n" +
     "                                </div>\n" +
     "                                <span class=\"melding annet\" data-cmstekster=\"vedlegg.annet.inlinefeilmelding\"\n" +
     "                                      data-ng-if=\"erEkstraVedlegg(forventning)\"></span>\n" +
