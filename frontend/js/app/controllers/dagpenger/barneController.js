@@ -11,6 +11,12 @@ angular.module('nav.barn', ['app.services'])
         $scope.soknadId = data.soknad.soknadId;
         $scope.nyttbarn = {barneinntekttall: undefined};
 
+        $scope.settBreddeSlikAtDetFungererIIE = function() {
+            setTimeout(function() {
+                $("#land").width($("#land").width());
+            }, 50);
+        }
+        
         var faktumId;
 
         if (endreModus) {
@@ -35,6 +41,7 @@ angular.module('nav.barn', ['app.services'])
             barneData = barnUnderEndring;
             $scope.barn = new Faktum(barneData);
             $scope.land = data.land;
+            $scope.settBreddeSlikAtDetFungererIIE();
         } else if (barnetilleggModus) {
             var barn = data.finnFakta('barn');
             angular.forEach(barn, function (value) {
@@ -44,6 +51,7 @@ angular.module('nav.barn', ['app.services'])
                     $scope.barn.properties.ikkebarneinntekt = undefined;
                 }
             });
+            $scope.settBreddeSlikAtDetFungererIIE();
         } else {
             barneData = {
                 key: 'barn',
@@ -61,6 +69,7 @@ angular.module('nav.barn', ['app.services'])
             };
             $scope.barn = new Faktum(barneData);
             $scope.land = data.land;
+            $scope.settBreddeSlikAtDetFungererIIE();
         }
 
         $scope.barnetilleggErRegistrert = function () {

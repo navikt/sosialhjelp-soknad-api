@@ -136,6 +136,7 @@ public class SoknadDataController {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
         String oppsummeringMarkup;
         try {
+            vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
             oppsummeringMarkup = new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lage markup av søknad", e);
@@ -187,7 +188,7 @@ public class SoknadDataController {
     @SjekkTilgangTilSoknad
     public String hentOppsummering(@PathVariable Long soknadId) throws IOException {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
-
+        vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
         return new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
     }
 }

@@ -26,4 +26,6 @@ public interface VedleggService {
     List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId);
 
     void lagreVedlegg(Long soknadId, Long vedleggId,  Vedlegg vedlegg);
+    
+    void leggTilKodeverkFelter(List<Vedlegg> vedlegg);
 }
