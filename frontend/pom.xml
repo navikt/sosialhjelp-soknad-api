@@ -15,8 +15,10 @@
     <packaging>jar</packaging>
     <properties>
     
-        <sonar.projectKey>no.nav.sbl.dialogarena:sendsoknad:js</sonar.projectKey>
-        <sonar.projectName>Send Søknad js</sonar.projectName>
+        <sonar.projectKey>no.nav.sbl.dialogarena:sendsoknad-frontend:js</sonar.projectKey>
+     	<sonar.projectVersion>1.0</sonar.projectVersion>
+     	<sonar.sources>js/</sonar.sources>
+     	
      	<sonar.branch>js</sonar.branch>
         <sonar.language>js</sonar.language>
         <sonar.exclusions>js/jquery/**,js/lib/**</sonar.exclusions>
