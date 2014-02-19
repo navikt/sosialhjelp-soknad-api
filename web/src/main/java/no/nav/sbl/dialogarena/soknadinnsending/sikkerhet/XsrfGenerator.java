@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.sikkerhet;
 
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.core.exception.ApplicationException;
+import no.nav.modig.core.exception.AuthorizationException;
 import org.apache.wicket.util.crypt.Base64;
 import org.joda.time.DateTime;
 
@@ -32,9 +33,12 @@ public class XsrfGenerator {
         }
     }
 
-    public static boolean sjekkXsrfToken(String givenToken, Long soknadId) {
+    public static void sjekkXsrfToken(String givenToken, Long soknadId) {
         String token = generateXsrfToken(soknadId);
-        return token.equals(givenToken)
+        boolean sjekk = token.equals(givenToken)
                 || generateXsrfToken(soknadId, new DateTime().minusDays(1).toString("yyyyMMdd")).equals(givenToken);
+        if (!sjekk) {
+            throw new AuthorizationException("Feil token");
+        }
     }
 }
