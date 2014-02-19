@@ -1,0 +1,106 @@
+<div data-modalside>
+    <div class="vertikal barn-spm" data-ng-form="nyttBarnForm" data-ng-controller="BarneCtrl">
+        <a href="#/soknad" data-ng-click="avbrytBarnetilegg($event)" class="lukk"></a>
+        <div data-form-errors></div>
+
+        <h2 class="stor-strek" data-ng-if="endrerSystemregistrertBarn()">
+            <span>{{ 'barnetillegg.sokerbarnetillegg.tittel' | cmstekst }}</span>
+            <span data-ng-bind="barnenavn"></span>
+        </h2>
+
+        <div data-nav-faktum="barn" data-ikke-auto-lagre="true">
+            <div data-ng-if="leggerTilNyttBarnEllerEndrerBarn()">
+                <div data-form-errors></div>
+                <h2 class="stor-strek">{{ 'barnetillegg.nyttbarn.tittel' | cmstekst }}</h2>
+
+
+                <div data-navtekst
+                     data-navconfig
+                     data-navlabel="barnetillegg.nyttbarn.fornavn"
+                     data-nav-faktum-property="fornavn"
+                     data-inputfeltmaxlength="200"
+                     data-navfeilmelding="'barnetillegg.nyttbarn.fornavn.feilmelding'"
+                     data-ng-required>
+                </div>
+
+                <div data-navtekst
+                     data-navconfig
+                     data-navlabel="barnetillegg.nyttbarn.etternavn"
+                     data-nav-faktum-property="etternavn"
+                     data-navfeilmelding="'barnetillegg.nyttbarn.etternavn.feilmelding'"
+                     data-ng-required>
+                </div>
+
+                <div class="form-linje under-atten"
+                     data-ng-class="{feil: skalViseFeilmelding === true }">
+                    <input type="hidden" class="under-atten-dato" data-ng-model="underAtten.value"
+                           data-ng-required="true"
+                           data-error-messages="'barnetillegg.nyttbarn.fodselsdato.feilmelding'">
+
+                    <div data-nav-dato
+                         data-ng-model="barn.properties.fodselsdato"
+                         data-label="barnetillegg.nyttbarn.fodselsdato"
+                         data-er-required="true"
+                         data-required-error-message="barnetillegg.nyttbarn.fodselsdato.feilmelding">
+                    </div>
+
+                    <span class="melding">
+                        {{ 'barnetillegg.nyttbarn.fodselsdato.underAtten.feilmelding' | cmstekst }}
+                    </span>
+                </div>
+
+                <div class="land form-linje">
+                    <h4 class="spm-sporsmal">{{ 'barnetillegg.nyttbarn.land.sporsmal' | cmstekst }}</h4>
+                    <label>
+                        <span class="labeltekst">
+                            {{ 'barnetillegg.nyttbarn.land' | cmstekst }}
+                        </span>
+
+                        <select data-ng-required="true"
+                                data-error-messages="'barnetillegg.nyttbarn.land.feilmelding'"
+                                data-ng-model="barn.properties.land"
+                                data-ng-options="l.value as l.text for l in land.result">
+                        </select>
+                    </label>
+                </div>
+            </div>
+
+            <div data-ng-show="erEosLandAnnetEnnNorge()">
+                <div data-navinfoboks>
+                    <p class="sluttaarsak-informasjon">{{ 'barnetillegg.nyttbarn.land.eos' | cmstekst }}</p>
+                </div>
+            </div>
+            <div data-ng-show="erIkkeEosLand()">
+                <div data-navinfoboks>
+                    <p class="sluttaarsak-informasjon">{{ 'barnetillegg.nyttbarn.land.ikkeeos' | cmstekst }}</p>
+                </div>
+            </div>
+
+            <div data-ng-show="barn.properties.land == 'NOR'">
+                <div class="ekstra-spm-boks" data-vedlegginfoboks>
+                    <ul>
+                        <li>
+                            {{ 'barnetillegg.nyttbarn.land.norge.vedlegginformasjon' | cmstekst}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div data-ng-include="'../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html'"></div>
+        </div>
+
+
+        <div class="knapper-opprett">
+            <input class="knapp-hoved-liten" name="lagre" type="submit"
+                   value="{{ 'barnetillegg.nyttbarn.lagre' | cmstekst }}"
+                   data-ng-click="lagreBarn(nyttBarnForm);">
+
+            <a href="#/soknad" data-ng-click="avbrytBarnetilegg($event)">
+                {{ 'barnetillegg.nyttbarn.avbryt' | cmstekst }}
+            </a>
+        </div>
+    </div>
+</div>
+
+
+

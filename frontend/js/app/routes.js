@@ -71,7 +71,7 @@ angular.module('app.routes', ['ngRoute'])
                 }
             })
             .when('/nyttbarn', {
-                templateUrl: '../views/templates/barnetillegg-nyttbarn.html',
+                templateUrl: '../views/templates/barnetillegg/barnetillegg-nyttbarn.html',
                 resolve: {
                     notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
                         return HentSoknadService;
@@ -79,7 +79,7 @@ angular.module('app.routes', ['ngRoute'])
                 }
             })
             .when('/endrebarn/:faktumId', {
-                templateUrl: '../views/templates/barnetillegg-nyttbarn.html',
+                templateUrl: '../views/templates/barnetillegg/barnetillegg-nyttbarn.html',
                 resolve: {
                     notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
                         return HentSoknadService;
@@ -87,7 +87,7 @@ angular.module('app.routes', ['ngRoute'])
                 }
             })
             .when('/sokbarnetillegg/:faktumId', {
-                templateUrl: '../views/templates/barnetillegg-nyttbarn.html',
+                templateUrl: '../views/templates/barnetillegg/endreSystembarnTemplate.html',
                 resolve: {
                     notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
                         return HentSoknadService;
