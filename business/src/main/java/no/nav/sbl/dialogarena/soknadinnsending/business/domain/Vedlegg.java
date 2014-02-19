@@ -60,7 +60,7 @@ public class Vedlegg {
         return this;
     }
     public Vedlegg medTittel(String tittel) {
-        setTittel(tittel);
+        this.tittel = tittel;
         return this;
     }
     public Vedlegg medUrl(String key, String value) {
