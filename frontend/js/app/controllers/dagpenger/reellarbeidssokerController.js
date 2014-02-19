@@ -44,7 +44,7 @@ angular.module('nav.reellarbeidssoker', [])
         };
 
         $scope.harValgtAnnetUnntakDeltid = function () {
-            if ($scope.deltidannen !== undefined && $scope.deltidannen !== null) {
+            if (isNotNullOrUndefined($scope.deltidannen)) {
                 return $scope.deltidannen.value === 'true';
             }
             else {
@@ -53,8 +53,7 @@ angular.module('nav.reellarbeidssoker', [])
         };
 
         $scope.harValgtAnnetUnntakPendle = function () {
-            if ($scope.pendleannen !== undefined)
-            {
+            if (isNotNullOrUndefined($scope.pendleannen)) {
                 return $scope.pendleannen.value === 'true';
             }
             else

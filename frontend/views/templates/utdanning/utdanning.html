@@ -21,12 +21,11 @@
                  data-navfeilmelding="utdanning.feilmelding">
             </div>
 
-            <div class="spm" data-ng-if="hvis('utdanning', 'avsluttetUtdanning')">
+            <div class="ekstra-spm-boks nav-boolean" data-ng-if="hvis('utdanning', 'avsluttetUtdanning')">
                 <div data-navinfoboks>
                     <p data-cmstekster="utdanning.svar.under.utdanning.avsluttet.informasjon"></p>
                 </div>
-
-                <div class="ekstra-spm-boks" data-vedlegginfoboks>
+                <div data-vedlegginfoboks>
                     <ul>
                         <li><p data-cmstekster="utdanning.svar.under.utdanning.avsluttet.dokumentere"></p></li>
                     </ul>
@@ -44,9 +43,8 @@
 
             <span class="melding"> </span>
 
-            <div class="ekstra-info spm form-linje checkbox" data-ng-if="hvis('utdanning', 'underUtdanning')"
-                 data-checkbox-validate>
-                <h4 class="spm-sporsmal" data-cmstekster="utdanning.sporsmal"></h4>
+            <div class="ekstra-info nav-boolean form-linje checkbox" data-ng-if="hvis('utdanning', 'underUtdanning')" data-checkbox-validate>
+                <h4 class="spm-sporsmal">{{ 'utdanning.sporsmal' | cmstekst }}</h4>
 
                 <input type="hidden"
                        data-ng-model="harHuketAvCheckboks.value"
@@ -109,10 +107,8 @@
                           data-cmstekster="utdanning.harValgtUtdanning.feilmelding"></span>
                 </div>
 
-                <div class="ekstra-info" data-ng-if="hvis('underUtdanningAnnet')">
-                    <div data-navinfoboks>
-                        <span data-cmstekster="utdanning.unntak.informasjon"></span>
-                    </div>
+                <div class="ekstra-spm-boks nav-checkbox" data-navinfoboks data-ng-if="hvis('underUtdanningAnnet')">
+                    <span data-cmstekster="utdanning.unntak.informasjon"></span>
                 </div>
                 <span class="melding" data-cmstekster="utdanning.minstEnAvhuket.feilmelding"></span>
 
