@@ -14,6 +14,10 @@ angular.module('nav.fortsettsenere', ['nav.cmstekster'])
                 $scope.epost.value = personalia.properties.epost;
             }
 
+            if (!$scope.forrigeSide) {
+                $scope.forrigeSide = '/soknad';
+            }
+
             $scope.soknadId = data.soknad.soknadId;
 
             $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
