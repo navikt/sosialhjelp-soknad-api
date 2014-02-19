@@ -1,21 +1,21 @@
 <div class='spm form-linje boolean'>
-    <h4 class="spm-sporsmal" data-cmstekster="{{ sporsmal }}"></h4>
-
+    <h4 class="spm-sporsmal">{{ sporsmal | cmstekst }}</h4>
     <div data-navradio
          data-navconfig
          data-value='true'
          data-navlabel='{{ trueLabel }}'>
     </div>
-
     <div data-navradio
          data-navconfig
          data-value='false'
          data-navlabel='{{ falseLabel }}'>
     </div>
-    <span class="melding"></span>
+
+    <div data-melding="">
+        <span class="melding"></span>
+    </div>
 
     <div data-ng-if="vis()" data-ng-show="skalViseTranscludedInnhold()">
-            <div class="ng-transclude nav-boolean ekstra-spm-boks" >
-            </div>
+        <div class="ng-transclude nav-boolean ekstra-spm-boks"></div>
     </div>
 </div>

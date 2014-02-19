@@ -109,11 +109,4 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                 });
             }
 		}
-
-		$scope.skalVisePermitteringInfo = false;
-
-		$scope.settPermitteringsflagg = function ($event) {
-			$scope.skalVisePermitteringInfo = $event.currentTarget.value < 50;
-		};
-
 	}]);

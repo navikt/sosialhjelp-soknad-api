@@ -72,7 +72,7 @@
 				</ul>
 
 
-				<div class="form-linje checkbox" data-ng-if="oppsummering != true" data-valider-informasjonsside data-checkbox-validate>
+				<div class="form-linje checkbox" data-ng-if="oppsummering != true" data-checkbox-validate>
                     <input id="lestBrosjyre" data-ng-model="utslagskriterier.harlestbrosjyre" type="checkbox">
                     <label for="lestBrosjyre">{{ 'dagpenger.informasjonsside.lestbrosjyre.sporsmal' | cmstekst }}</label>
                     <span class="melding">{{ 'dagpenger.informasjonsside.lestbrosjyre.feilmelding' | cmstekst }}</span>
@@ -87,10 +87,10 @@
 
 			<div class="utslagskriterier-knapper" data-ng-if="kravForDagpengerOppfylt()">
 				<div data-ng-show="soknadErStartet()">
-					<input type="button" class="knapp-hoved" value="{{ 'utslagskriterier.utslag.fortsettSoknad' | cmstekst }}" data-ng-click="forsettSoknadDersomBrosjyreLest()" data-fremdriftsindikator/>
+					<input type="button" class="knapp-hoved" value="{{ 'utslagskriterier.utslag.fortsettSoknad' | cmstekst }}" data-ng-click="forsettSoknadDersomBrosjyreLest()" data-valider-informasjonsside data-fremdriftsindikator/>
 				</div>
 				<div data-ng-show="soknadErIkkeStartet()">
-					<input type="button" class="knapp-hoved" value="{{ 'utslagskriterier.utslag.fortsett' | cmstekst }}" data-ng-click="startSoknadDersomBrosjyreLest()" data-fremdriftsindikator/>
+					<input type="button" class="knapp-hoved" value="{{ 'utslagskriterier.utslag.fortsett' | cmstekst }}" data-ng-click="startSoknadDersomBrosjyreLest()" data-valider-informasjonsside data-fremdriftsindikator/>
 					<a href="{{ inngangsportenUrl }}">{{ 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst }}</a>
 				</div>
 			</div>

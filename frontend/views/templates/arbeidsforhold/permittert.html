@@ -1,4 +1,5 @@
 <div class="varighet form-linje">
+    <h4 class="spm-sporsmal">{{ 'arbeidsforhold.arbeidsgiver.varighet.label' | cmstekst }}</h4>
     <div data-nav-dato
          data-ng-model="sluttaarsak.properties.datofra"
          data-label="arbeidsforhold.arbeidsgiver.varighet.fra"
@@ -44,21 +45,15 @@
         <input data-ng-model="sluttaarsak.properties.permitteringProsent"
                type="text"
                data-ng-required="true"
-               data-error-messages="{required:'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.feilmelding', pattern: 'regex.tall'}"
+               data-error-messages="{required:'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.feilmelding', pattern: 'regex.tall', min: 'arbeidsforhold.sluttaarsak.permittert.forlite'}"
                data-ng-pattern="/^\d+$/"
                data-blur-validate
-               data-ng-blur="settPermitteringsflagg($event)"
+               data-min="50"
                maxlength="3"
                data-tekstfelt-patternvalidering
                data-aktiv-feilmelding/>
         <span class="melding"></span>
     </label>
-</div>
-
-<div data-ng-show="skalVisePermitteringInfo">
-    <div data-navinfoboks>
-        <p>{{ 'arbeidsforhold.sluttaarsak.permittert.forlite' | cmstekst }}</p>
-    </div>
 </div>
 
 <div class="ekstra-spm-boks">
@@ -72,8 +67,9 @@
             </li>
             <li>
                 <p>{{ 'arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2' | cmstekst }}</p>
-                <a href="{{permiteringUrl}}">{{ 'arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2.lenketekst' |
-                    cmstekst }}</a>
+                <a href="{{ permiteringUrl }}">
+                    {{ 'arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2.lenketekst' | cmstekst }}
+                </a>
             </li>
             <li>
                 <p>{{ 'arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.3' | cmstekst }}</p>
