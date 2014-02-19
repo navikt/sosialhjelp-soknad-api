@@ -36,6 +36,7 @@ import static java.lang.String.format;
 import static javax.xml.bind.JAXBContext.newInstance;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
 /**
  * Klassen håndterer alle rest kall for å hente grunnlagsdata til applikasjonen.
@@ -128,7 +129,6 @@ public class SoknadDataController {
         }).collect();
     }
 
-
     @RequestMapping(value = "/send/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody()
     @SjekkTilgangTilSoknad
@@ -153,6 +153,21 @@ public class SoknadDataController {
         for (Faktum faktum : webSoknad.getFaktaListe()) {
             soknadService.lagreSoknadsFelt(soknadId, faktum);
         }
+    }
+
+    @RequestMapping(value = "/{soknadId}/hentpdf", method = RequestMethod.GET, produces = APPLICATION_OCTET_STREAM_VALUE)
+    @ResponseBody()
+    @SjekkTilgangTilSoknad
+    public byte[] hentPdf(@PathVariable final Long soknadId) {
+        WebSoknad soknad = soknadService.hentSoknad(soknadId);
+        String oppsummeringMarkup;
+        try {
+            vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
+            oppsummeringMarkup = new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+        } catch (IOException e) {
+            throw new ApplicationException("Kunne ikke lage markup av søknad", e);
+        }
+        return PDFFabrikk.lagPdfFil(oppsummeringMarkup);
     }
 
     @RequestMapping(value = "/{soknadId}/faktum/", method = RequestMethod.POST)
