@@ -111,8 +111,11 @@
                 var ifjor = idag.getFullYear();
                 expect(scope.forrigeAar).toEqual((ifjor - 1).toString());
             });
+            it('skal vise slettknapp for orgnr2 og ikke for orgnr 1', function () {
+                expect(scope.skalViseSlettKnapp(0)).toEqual(false);
+                expect(scope.skalViseSlettKnapp(1)).toEqual(true);
+            });
         });
-
         describe('vernepliktCtrl', function () {
             beforeEach(inject(function ($controller) {
                 ctrl = $controller('VernepliktCtrl', {
@@ -126,7 +129,6 @@
                 expect(scope.runValidationBleKalt).toEqual(true);
             });
         });
-
         describe('UtdanningCtrl', function () {
             beforeEach(inject(function ($controller) {
                 ctrl = $controller('UtdanningCtrl', {
@@ -140,12 +142,12 @@
                 expect(scope.runValidationBleKalt).toEqual(true);
             });
         });
-
         describe('ReellarbeidssokerCtrl', function () {
-            beforeEach(inject(function ($controller) {
+            beforeEach(inject(function ($controller, data) {
                 ctrl = $controller('ReellarbeidssokerCtrl', {
                     $scope: scope
                 });
+                scope.data = data;
             }));
 
             it('skal returnere true for person over 59 aar', function () {
@@ -167,8 +169,15 @@
                 scope.alder = 62;
                 expect(scope.erUnder60Aar()).toBe(false);
             });
+            it('skal returnere true for valgt annet unntak deltid', function () {
+                var unntakDeltid = {
+                    key: 'reellarbeidssoker.villigdeltid.annensituasjon',
+                    value: 'true'
+                };
+                scope.data.leggTilFaktum(unntakDeltid);
+                expect(scope.harValgtAnnetUnntakDeltid()).toEqual(true);
+            });
         });
-
         describe('BarneCtrl', function () {
             beforeEach(inject(function (_$httpBackend_, $controller) {
                 ctrl = $controller('BarneCtrl', {
@@ -473,10 +482,7 @@
                 expect(scope.barnetilleggIkkeRegistrert(barnIkkeTillegg)).toEqual(true);
                 expect(scope.barnetilleggIkkeRegistrert(barnTillegg)).toEqual(false);
             });
-
-
         });
-
         describe('AdresseCtrl', function () {
             beforeEach(inject(function ($controller) {
                 scope.personalia = {
@@ -634,5 +640,26 @@
                 expect(scope.krevBekreftelse).toEqual(true);
             });
         });
+        describe('DagpengerCtrl', function () {
+            beforeEach(inject(function ($controller, data) {
+                ctrl = $controller('DagpengerCtrl', {
+                    $scope: scope
+                });
+                scope.data = data;
+            }));
+
+            it('bolk skal få valideringsmetode når leggTilValideringsmetode blir kalt', function () {
+                expect(scope.grupper[0].valideringsmetode).toBe(undefined);
+                scope.leggTilValideringsmetode('reellarbeidssoker', function() {});
+                expect(scope.grupper[0].valideringsmetode).toNotBe(undefined);
+            });
+            it('bolk skal bli validert når settValidert blir kalt', function () {
+                scope.grupper[0].validering = true;
+                expect(scope.grupper[0].validering).toBe(true);
+                scope.settValidert('reellarbeidssoker');
+                expect(scope.grupper[0].validering).toBe(false);
+            });
+        });
+
     });
 }());
