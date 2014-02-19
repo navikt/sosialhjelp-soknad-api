@@ -15,7 +15,7 @@ angular.module('nav.barn', ['app.services'])
             setTimeout(function() {
                 $("#land").width($("#land").width());
             }, 50);
-        }
+        };
         
         var faktumId;
 
