@@ -39,13 +39,22 @@ angular.module("../views/templates/adresse.html", []).run(["$templateCache", fun
     "    <div data-ng-if=\"harGjeldendeAdresse()\">\n" +
     "        <span class=\"adressetype\">{{ gjeldendeAdresseTypeLabel | cmstekst }}</span>\n" +
     "        <span data-ng-bind-html=\"formattertGjeldendeAdresse\"></span>\n" +
+    "        <p data-ng-show=\"harGjeldendeGyldigTilDato()\">\n" +
+    "            <span data-cmstekster=\"personalia.gyldigTil\"></span>\n" +
+    "            <span> {{ personalia.gjeldendeAdresseGyldigTil | date:'dd.MM.yyyy' }} </span>\n" +
+    "        </p>\n" +
     "    </div>\n" +
     "\n" +
     "    <div data-ng-if=\"harSekundarAdresse()\">\n" +
     "        <span class=\"adressetype\">{{ sekundarAdresseTypeLabel | cmstekst }}</span>\n" +
     "        <span data-ng-bind-html=\"formattertSekundarAdresse\"></span>\n" +
+    "        <p data-ng-show=\"harSekundarGyldigTilDato()\">\n" +
+    "            <span data-cmstekster=\"personalia.gyldigTil\"></span>\n" +
+    "            <span> {{ personalia.sekundarAdresseGyldigTil | date:'dd.MM.yyyy' }} </span>\n" +
+    "        </p>\n" +
     "    </div>\n" +
-    "</div>");
+    "</div>\n" +
+    "");
 }]);
 
 angular.module("../views/templates/arbeidsforhold-nytt.html", []).run(["$templateCache", function($templateCache) {
@@ -1276,7 +1285,7 @@ angular.module("../views/templates/barnetillegg/barnetillegg.html", []).run(["$t
     "\n" +
     "                    <div data-vedlegginfoboks data-ng-if=\"kreverVedlegg(b)\">\n" +
     "                        <ul>\n" +
-    "                            <li data-ng-if=\"manglendeNorskBarn(b)\">\n" +
+    "                            <li data-ng-if=\"norskBarnIkkeFunnetITPS(b)\">\n" +
     "                                <p data-cmstekster=\"barnetillegg.nyttbarn.land.norge.vedlegginformasjon\"></p>\n" +
     "                            </li>\n" +
     "                            <li data-ng-if=\"barnetHarInntekt(b)\">\n" +
@@ -2464,7 +2473,7 @@ angular.module("../views/templates/utdanning/utdanning.html", []).run(["$templat
     "\n" +
     "            <span class=\"melding\"> </span>\n" +
     "\n" +
-    "            <div class=\"ekstra-info nav-boolean form-linje checkbox\" data-ng-if=\"hvis('utdanning', 'underUtdanning')\" data-checkbox-validate>\n" +
+    "            <div class=\"ekstra-info nav-boolean form-linje checkbox\" data-ng-if=\"hvis('utdanning', 'underUtdanning')\" data-checkbox-validate data-nav-faktum=\"utdanning\">\n" +
     "                <h4 class=\"spm-sporsmal\">{{ 'utdanning.sporsmal' | cmstekst }}</h4>\n" +
     "\n" +
     "                <input type=\"hidden\"\n" +
@@ -2534,6 +2543,8 @@ angular.module("../views/templates/utdanning/utdanning.html", []).run(["$templat
     "                <span class=\"melding\" data-cmstekster=\"utdanning.minstEnAvhuket.feilmelding\"></span>\n" +
     "\n" +
     "            </div>\n" +
+    "\n" +
+    "\n" +
     "        </div>\n" +
     "\n" +
     "        <div data-spmblokkferdig></div>\n" +
@@ -2971,7 +2982,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "<div data-ng-form=\"ytelserForm\" class=\"skjemainnhold vertikal\" data-ng-controller=\"YtelserCtrl\" data-novalidate>\n" +
     "<div data-form-errors></div>\n" +
     "\n" +
-    "<div class=\"spm form-linje checkbox\" data-checkbox-validate>\n" +
+    "<div class=\"spm form-linje andreytelser checkbox\" data-checkbox-validate>\n" +
     "<input type=\"hidden\" data-ng-model=\"harHuketAvCheckboksYtelse.value\" data-ng-required=\"true\"\n" +
     "       data-error-messages=\"'ytelser.minstEnCheckboksErAvhuket.feilmelding'\">\n" +
     "<h4 class=\"spm-sporsmal\">\n" +
@@ -3188,7 +3199,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "</div>\n" +
     "<span class=\"melding\" data-cmstekster=\"ytelser.minstEnCheckboksErAvhuket.feilmelding\"></span>\n" +
     "</div>\n" +
-    "<div class=\"spm form-linje checkbox\" data-checkbox-validate>\n" +
+    "<div class=\"spm form-linje navytelse checkbox\" data-checkbox-validate>\n" +
     "    <input type=\"hidden\" data-ng-model=\"harHuketAvCheckboksNavYtelse.value\" data-ng-required=\"true\"\n" +
     "           data-error-messages=\"'ytelser.minstEnCheckboksErAvhuket.navYtelserfeilmelding'\">\n" +
     "    <h4 class=\"spm-sporsmal\">\n" +
@@ -3372,13 +3383,13 @@ angular.module("../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.htm
     "    <div>\n" +
     "        <div class=\"antall-feil-innholder\">\n" +
     "            <span class=\"vise-tekst\" data-cmstekster=\"skjema.feilmelding.antall.feilmeldinger\"></span>\n" +
-    "            <span class=\"antall-feil\"> {{feil.antallFeilMedKlasseFeil + feil.antallFeilMedKlasseFeilstyling}}</span>\n" +
+    "            <span class=\"antall-feil\"> {{feil.antallFeil}}</span>\n" +
     "        </div>\n" +
     "        <span class=\"navigeringsknapper\">\n" +
     "            <a class=\"forrige\" data-cmstekster=\"skjema.feilmelding.gaatil.forrige\" data-ng-click=\"forrige()\"\n" +
     "               data-ng-class=\"{deaktiverFeilmelding: skalDeaktivereForrigeKnapp()}\"> Forrige </a>\n" +
     "            <a class=\"neste\" data-cmstekster=\"skjema.feilmelding.gaatil.neste\" data-ng-click=\"neste()\"\n" +
-    "               data-ng-class=\"{deaktiverFeilmelding: skalDeaktivereNesteKnapp()}\"> Neste </a>\n" +
+    "               data-ng-class=\"{deaktiverFeilmelding: skalDeaktivereNesteKnapp}\"> Neste </a>\n" +
     "        </span>\n" +
     "    </div>\n" +
     "</div>");
@@ -3675,7 +3686,7 @@ angular.module("../js/common/directives/navinput/navorgnrfeltTemplate.html", [])
     "<div class=\"form-linje tekstfelt orgnummer\">\n" +
     "    <label>\n" +
     "        <span class=\"labeltekst\">{{ navlabel | cmstekst }}</span>\n" +
-    "        <input type=\"number\"\n" +
+    "        <input type=\"text\"\n" +
     "               value=\"{{ value }}\"\n" +
     "               data-ng-model=\"faktum.value\"\n" +
     "               data-ng-required=\"erSynlig()\"\n" +
@@ -3684,7 +3695,6 @@ angular.module("../js/common/directives/navinput/navorgnrfeltTemplate.html", [])
     "               data-ng-pattern=\"/[0-9]{9}/\"\n" +
     "               maxlength=\"9\"\n" +
     "               data-orgnr-validate\n" +
-    "               data-disable-scroll\n" +
     "               data-aktiv-feilmelding>\n" +
     "    </label>\n" +
     "    <a href=\"javascript:void(0)\" aria-role=\"button\" class=\"orgnummer-slett\"\n" +
@@ -3712,6 +3722,9 @@ angular.module("../js/common/directives/navinput/navradioTemplate.html", []).run
     "           data-aktiv-feilmelding>\n" +
     "\n" +
     "    <label for='{{ navlabel }}' data-cmstekster=\"{{ navlabel }}\"></label>\n" +
+    "\n" +
+    "    <div class=\"ng-transclude ekstra-spm-boks\" data-ng-if=\"hvisAktiv()\" data-ng-show=\"hvisHarTranscludedInnhold()\"></div>\n" +
+    "\n" +
     "</div>\n" +
     "");
 }]);
