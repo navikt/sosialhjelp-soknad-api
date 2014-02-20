@@ -195,7 +195,7 @@ angular.module('nav.egennaering', [])
                 return data.finnFaktum('egennaering.gardsbruk').value;
             }
         }, function () {
-            if (data.finnFaktum('egennaering.gardsbruk').value == 'false') {
+            if (data.finnFaktum('egennaering.gardsbruk') !== undefined && data.finnFaktum('egennaering.gardsbruk').value == 'false') {
                 settBreddeSlikAtDetFungererIIE();
             }
         });

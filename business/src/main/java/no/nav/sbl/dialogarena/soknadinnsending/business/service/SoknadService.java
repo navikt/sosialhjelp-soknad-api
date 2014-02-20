@@ -367,9 +367,13 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public Vedlegg hentVedlegg(Long soknadId, Long vedleggId, boolean medInnhold) {
         if (medInnhold) {
-            return medKodeverk(vedleggRepository.hentVedleggMedInnhold(soknadId, vedleggId));
+            Vedlegg vedlegg = vedleggRepository.hentVedleggMedInnhold(soknadId, vedleggId);
+            medKodeverk(vedlegg);
+            return vedlegg;
         } else {
-            return medKodeverk(vedleggRepository.hentVedlegg(soknadId, vedleggId));
+            Vedlegg vedlegg = vedleggRepository.hentVedlegg(soknadId, vedleggId);
+            medKodeverk(vedlegg);
+            return vedlegg;
         }
     }
 
@@ -426,13 +430,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId) {
         List<Vedlegg> paakrevdeVedlegg = vedleggRepository.hentPaakrevdeVedlegg(soknadId);
-        List<Vedlegg> result = new ArrayList<>();
-
-        for (Vedlegg vedlegg : paakrevdeVedlegg) {
-            Vedlegg oppdatertVedleg = medKodeverk(vedlegg);
-            result.add(oppdatertVedleg);
-        }
-        return result;
+        leggTilKodeverkFelter(paakrevdeVedlegg);
+        return paakrevdeVedlegg;
     }
 
     private void genererVedleggForFaktum(Faktum faktum) {
@@ -494,8 +493,14 @@ public class SoknadService implements SendSoknadService, VedleggService {
         }
         return false;
     }
+    
+    public void leggTilKodeverkFelter(List<Vedlegg> vedlegg) {
+        for (Vedlegg v : vedlegg) {
+            medKodeverk(v);
+        }
+    }
 
-    private Vedlegg medKodeverk(Vedlegg vedlegg) {
+    private void medKodeverk(Vedlegg vedlegg) {
         try {
             Map<Kodeverk.Nokkel, String> koder = kodeverk.getKoder(vedlegg.getskjemaNummer());
             for (Entry<Nokkel, String> nokkelEntry : koder.entrySet()) {
@@ -508,7 +513,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
             logger.debug("ignored exception");
 
         }
-        return vedlegg;
     }
 
     @Override

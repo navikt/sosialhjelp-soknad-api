@@ -2,10 +2,18 @@
     <div data-ng-if="harGjeldendeAdresse()">
         <span class="adressetype">{{ gjeldendeAdresseTypeLabel | cmstekst }}</span>
         <span data-ng-bind-html="formattertGjeldendeAdresse"></span>
+        <p data-ng-show="harGjeldendeGyldigTilDato()">
+            <span data-cmstekster="personalia.gyldigTil"></span>
+            <span> {{ personalia.gjeldendeAdresseGyldigTil | date:'dd.MM.yyyy' }} </span>
+        </p>
     </div>
 
     <div data-ng-if="harSekundarAdresse()">
         <span class="adressetype">{{ sekundarAdresseTypeLabel | cmstekst }}</span>
         <span data-ng-bind-html="formattertSekundarAdresse"></span>
+        <p data-ng-show="harSekundarGyldigTilDato()">
+            <span data-cmstekster="personalia.gyldigTil"></span>
+            <span> {{ personalia.sekundarAdresseGyldigTil | date:'dd.MM.yyyy' }} </span>
+        </p>
     </div>
 </div>

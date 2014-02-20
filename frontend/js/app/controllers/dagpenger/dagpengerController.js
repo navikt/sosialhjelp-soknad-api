@@ -9,7 +9,7 @@ angular.module('nav.dagpenger', [])
 			{id: 'utdanning', tittel: 'utdanning.tittel', template: '../views/templates/utdanning/utdanning.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
 			{id: 'ytelser', tittel: 'ytelser.tittel', template: '../views/templates/ytelser.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
 			{id: 'personalia', tittel: 'personalia.tittel', template: '../views/templates/personalia.html', apen: false, skalSettesTilValidVedForsteApning: true, validering: false},
-            {id: 'barnetillegg', tittel: 'barnetillegg.tittel', template: '../views/templates/barnetillegg.html', apen: false, skalSettesTilValidVedForsteApning: true, validering: false},
+            {id: 'barnetillegg', tittel: 'barnetillegg.tittel', template: '../views/templates/barnetillegg/barnetillegg.html', apen: false, skalSettesTilValidVedForsteApning: true, validering: false},
             {id: 'tilleggsopplysninger', tittel: 'tilleggsopplysninger.tittel', template: '../views/templates/tilleggsopplysninger.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false}
 		];
 

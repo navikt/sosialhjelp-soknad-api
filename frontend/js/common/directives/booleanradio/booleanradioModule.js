@@ -1,5 +1,5 @@
 angular.module('nav.booleanradio', ['nav.cmstekster', 'nav.input'])
-	.directive('booleanradio', [function () {
+	.directive('booleanradio', ['cms', function (cms) {
 		return {
 			restrict   : 'A',
 			replace    : true,
@@ -14,6 +14,10 @@ angular.module('nav.booleanradio', ['nav.cmstekster', 'nav.input'])
 					scope.trueLabel = src + '.true';
 					scope.falseLabel = src + '.false';
 					scope.navfeilmelding = src + '.feilmelding';
+                    scope.hjelpetekst = {
+                        tittel: src + '.hjelpetekst.tittel',
+                        tekst: src + '.hjelpetekst.tekst'
+                    };
 				},
 				post: function (scope, element) {
 					scope.hvisModelErTrue = function () {
@@ -35,6 +39,10 @@ angular.module('nav.booleanradio', ['nav.cmstekster', 'nav.input'])
 					scope.hvisIkkeIEkstraSpmBoks = function () {
 						return !element.parents().hasClass('ekstra-spm-boks');
 					};
+
+                    scope.hvisHarHjelpetekst = function() {
+                        return cms.tekster[scope.hjelpetekst.tittel] !== undefined;
+                    };
 				}
 			},
 			templateUrl: '../js/common/directives/booleanradio/booleanradioTemplate.html'

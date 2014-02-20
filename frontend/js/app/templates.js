@@ -1,4 +1,4 @@
-angular.module('templates-main', ['../views/dagpenger-singlepage.html', '../views/templates/adresse.html', '../views/templates/arbeidsforhold-nytt.html', '../views/templates/arbeidsforhold.html', '../views/templates/arbeidsforhold/avskjediget-oppsummering.html', '../views/templates/arbeidsforhold/avskjediget.html', '../views/templates/arbeidsforhold/konkurs-oppsummering.html', '../views/templates/arbeidsforhold/konkurs.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt.html', '../views/templates/arbeidsforhold/permittert-oppsummering.html', '../views/templates/arbeidsforhold/permittert.html', '../views/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html', '../views/templates/arbeidsforhold/redusertarbeidstid.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html', '../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-selv.html', '../views/templates/avbryt.html', '../views/templates/barnetillegg-nyttbarn.html', '../views/templates/barnetillegg.html', '../views/templates/bekreftelse.html', '../views/templates/egennaering/egen-naering.html', '../views/templates/egennaering/egenNaeringvirksomhet.html', '../views/templates/egennaering/fangstOgFiske.html', '../views/templates/egennaering/gardsbruk.html', '../views/templates/feilside.html', '../views/templates/ferdigstilt.html', '../views/templates/fortsettSenere.html', '../views/templates/gjenoppta/skjema-ferdig.html', '../views/templates/gjenoppta/skjema-sendt.html', '../views/templates/gjenoppta/skjema-under-arbeid.html', '../views/templates/gjenoppta/skjema-validert.html', '../views/templates/ikkekvalifisert.html', '../views/templates/informasjonsside.html', '../views/templates/kvittering-fortsettsenere.html', '../views/templates/opplasting.html', '../views/templates/oppsummering.html', '../views/templates/personalia.html', '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', '../views/templates/reellarbeidssoker/villigDeltidTemplate.html', '../views/templates/reellarbeidssoker/villigHelseTemplate.html', '../views/templates/reellarbeidssoker/villigPendleTemplate.html', '../views/templates/reellarbeidssoker/villigjobbTemplate.html', '../views/templates/soknadSlettet.html', '../views/templates/soknadliste.html', '../views/templates/tilleggsopplysninger.html', '../views/templates/utdanning/utdanning.html', '../views/templates/utdanning/utdanningKortvarigFlereTemplate.html', '../views/templates/utdanning/utdanningKortvarigTemplate.html', '../views/templates/utdanning/utdanningKveldTemplate.html', '../views/templates/utdanning/utdanningNorskTemplate.html', '../views/templates/utdanningsinformasjon-template.html', '../views/templates/vedlegg.html', '../views/templates/verneplikt.html', '../views/templates/visvedlegg.html', '../views/templates/ytelser.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateLiten.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateStor.html', '../js/app/directives/dagpenger/arbeidsforholdformTemplate.html', '../js/app/directives/feilmeldinger/feilmeldingerTemplate.html', '../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html', '../js/app/directives/markup/navinfoboksTemplate.html', '../js/app/directives/markup/panelStandardBelystTemplate.html', '../js/app/directives/markup/vedlegginfoboksTemplate.html', '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html', '../js/app/directives/stegindikator/stegIndikatorTemplate.html', '../js/app/directives/stickybunn/stickyBunnTemplate.html', '../js/common/directives/accordion/accordionGroupTemplate.html', '../js/common/directives/accordion/accordionTemplate.html', '../js/common/directives/booleanradio/booleanradioTemplate.html', '../js/common/directives/datepicker/doubleDatepickerTemplate.html', '../js/common/directives/datepicker/singleDatepickerTemplate.html', '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html', '../js/common/directives/melding/meldingTemplate.html', '../js/common/directives/navinput/navbuttonspinnerTemplate.html', '../js/common/directives/navinput/navcheckboxTemplate.html', '../js/common/directives/navinput/navorgnrfeltTemplate.html', '../js/common/directives/navinput/navradioTemplate.html', '../js/common/directives/navinput/navtekstTemplate.html', '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html', '../js/common/directives/navtextarea/navtextareaTemplate.html', '../js/common/directives/select/selectTemplate.html', '../js/common/directives/tittel/tittelTemplate.html']);
+angular.module('templates-main', ['../views/dagpenger-singlepage.html', '../views/templates/adresse.html', '../views/templates/arbeidsforhold-nytt.html', '../views/templates/arbeidsforhold.html', '../views/templates/arbeidsforhold/avskjediget-oppsummering.html', '../views/templates/arbeidsforhold/avskjediget.html', '../views/templates/arbeidsforhold/konkurs-oppsummering.html', '../views/templates/arbeidsforhold/konkurs.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt.html', '../views/templates/arbeidsforhold/permittert-oppsummering.html', '../views/templates/arbeidsforhold/permittert.html', '../views/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html', '../views/templates/arbeidsforhold/redusertarbeidstid.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html', '../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-selv.html', '../views/templates/avbryt.html', '../views/templates/barnetillegg/barnetillegg-nyttbarn.html', '../views/templates/barnetillegg/barnetillegg.html', '../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html', '../views/templates/barnetillegg/endreSystembarnTemplate.html', '../views/templates/bekreftelse.html', '../views/templates/egennaering/egen-naering.html', '../views/templates/egennaering/egenNaeringvirksomhet.html', '../views/templates/egennaering/fangstOgFiske.html', '../views/templates/egennaering/gardsbruk.html', '../views/templates/feilside.html', '../views/templates/ferdigstilt.html', '../views/templates/fortsettSenere.html', '../views/templates/gjenoppta/skjema-ferdig.html', '../views/templates/gjenoppta/skjema-sendt.html', '../views/templates/gjenoppta/skjema-under-arbeid.html', '../views/templates/gjenoppta/skjema-validert.html', '../views/templates/ikkekvalifisert.html', '../views/templates/informasjonsside.html', '../views/templates/kvittering-fortsettsenere.html', '../views/templates/opplasting.html', '../views/templates/oppsummering.html', '../views/templates/personalia.html', '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', '../views/templates/reellarbeidssoker/villigDeltidTemplate.html', '../views/templates/reellarbeidssoker/villigHelseTemplate.html', '../views/templates/reellarbeidssoker/villigPendleTemplate.html', '../views/templates/reellarbeidssoker/villigjobbTemplate.html', '../views/templates/soknadSlettet.html', '../views/templates/soknadliste.html', '../views/templates/tilleggsopplysninger.html', '../views/templates/utdanning/utdanning.html', '../views/templates/utdanning/utdanningKortvarigFlereTemplate.html', '../views/templates/utdanning/utdanningKortvarigTemplate.html', '../views/templates/utdanning/utdanningKveldTemplate.html', '../views/templates/utdanning/utdanningNorskTemplate.html', '../views/templates/utdanningsinformasjon-template.html', '../views/templates/vedlegg.html', '../views/templates/verneplikt.html', '../views/templates/visvedlegg.html', '../views/templates/ytelser.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateLiten.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateStor.html', '../js/app/directives/dagpenger/arbeidsforholdformTemplate.html', '../js/app/directives/feilmeldinger/feilmeldingerTemplate.html', '../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html', '../js/app/directives/markup/modalsideTemplate.html', '../js/app/directives/markup/navinfoboksTemplate.html', '../js/app/directives/markup/panelStandardBelystTemplate.html', '../js/app/directives/markup/vedlegginfoboksTemplate.html', '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html', '../js/app/directives/stegindikator/stegIndikatorTemplate.html', '../js/app/directives/stickybunn/stickyBunnTemplate.html', '../js/common/directives/accordion/accordionGroupTemplate.html', '../js/common/directives/accordion/accordionTemplate.html', '../js/common/directives/booleanradio/booleanradioTemplate.html', '../js/common/directives/datepicker/doubleDatepickerTemplate.html', '../js/common/directives/datepicker/singleDatepickerTemplate.html', '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html', '../js/common/directives/melding/meldingTemplate.html', '../js/common/directives/navinput/navbuttonspinnerTemplate.html', '../js/common/directives/navinput/navcheckboxTemplate.html', '../js/common/directives/navinput/navorgnrfeltTemplate.html', '../js/common/directives/navinput/navradioTemplate.html', '../js/common/directives/navinput/navtekstTemplate.html', '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html', '../js/common/directives/navtextarea/navtextareaTemplate.html', '../js/common/directives/select/selectTemplate.html', '../js/common/directives/tittel/tittelTemplate.html']);
 
 angular.module("../views/dagpenger-singlepage.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/dagpenger-singlepage.html",
@@ -39,180 +39,190 @@ angular.module("../views/templates/adresse.html", []).run(["$templateCache", fun
     "    <div data-ng-if=\"harGjeldendeAdresse()\">\n" +
     "        <span class=\"adressetype\">{{ gjeldendeAdresseTypeLabel | cmstekst }}</span>\n" +
     "        <span data-ng-bind-html=\"formattertGjeldendeAdresse\"></span>\n" +
+    "        <p data-ng-show=\"harGjeldendeGyldigTilDato()\">\n" +
+    "            <span data-cmstekster=\"personalia.gyldigTil\"></span>\n" +
+    "            <span> {{ personalia.gjeldendeAdresseGyldigTil | date:'dd.MM.yyyy' }} </span>\n" +
+    "        </p>\n" +
     "    </div>\n" +
     "\n" +
     "    <div data-ng-if=\"harSekundarAdresse()\">\n" +
     "        <span class=\"adressetype\">{{ sekundarAdresseTypeLabel | cmstekst }}</span>\n" +
     "        <span data-ng-bind-html=\"formattertSekundarAdresse\"></span>\n" +
+    "        <p data-ng-show=\"harSekundarGyldigTilDato()\">\n" +
+    "            <span data-cmstekster=\"personalia.gyldigTil\"></span>\n" +
+    "            <span> {{ personalia.sekundarAdresseGyldigTil | date:'dd.MM.yyyy' }} </span>\n" +
+    "        </p>\n" +
     "    </div>\n" +
-    "</div>");
+    "</div>\n" +
+    "");
 }]);
 
 angular.module("../views/templates/arbeidsforhold-nytt.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/templates/arbeidsforhold-nytt.html",
-    "<div class=\"modalBoks\" data-ng-controller=\"ArbeidsforholdNyttCtrl\">\n" +
-    "    <div data-ng-form=\"nyttArbeidsforholdForm\" class=\"vertikal\">\n" +
-    "        <div class=\"begrensning\">\n" +
-    "            <div class=\"sak-totredel\">\n" +
-    "                <div class=\"arbeidsforhold-spm spm-boks panel-standard-belyst\">\n" +
-    "                    <a href=\"#/soknad\" class=\"lukk\"> </a>\n" +
+    "<div data-modalside>\n" +
+    "    <div class=\"vertikal arbeidsforhold-spm\" data-ng-controller=\"ArbeidsforholdNyttCtrl\"\n" +
+    "         data-ng-form=\"nyttArbeidsforholdForm\">\n" +
+    "        <a href=\"#/soknad\" class=\"lukk\"></a>\n" +
     "\n" +
-    "                    <div data-form-errors></div>\n" +
-    "                    <h2 class=\"stor-strek\">\n" +
-    "                        <span>{{ 'arbeidsforhold.nyttarbeidsforhold.tittel' | cmstekst }}</span>\n" +
-    "                    </h2>\n" +
+    "        <div data-form-errors></div>\n" +
+    "        <h2 class=\"stor-strek\">\n" +
+    "            <span>{{ 'arbeidsforhold.nyttarbeidsforhold.tittel' | cmstekst }}</span>\n" +
+    "        </h2>\n" +
     "\n" +
-    "                    <div data-nav-faktum=\"arbeidsforhold\" data-ikke-auto-lagre=\"true\">\n" +
-    "                        <div data-navtekst\n" +
-    "                             data-navconfig\n" +
-    "                             data-nav-faktum-property=\"arbeidsgivernavn\"\n" +
-    "                             data-navlabel=\"arbeidsforhold.arbeidsgiver.navn\"\n" +
-    "                             data-navfeilmelding=\"'arbeidsforhold.arbeidsgiver.navn.feilmelding'\"\n" +
-    "                             data-ng-required></div>\n" +
+    "        <div data-nav-faktum=\"arbeidsforhold\" data-ikke-auto-lagre=\"true\">\n" +
+    "            <div data-navtekst\n" +
+    "                 data-navconfig\n" +
+    "                 data-nav-faktum-property=\"arbeidsgivernavn\"\n" +
+    "                 data-navlabel=\"arbeidsforhold.arbeidsgiver.navn\"\n" +
+    "                 data-navfeilmelding=\"'arbeidsforhold.arbeidsgiver.navn.feilmelding'\"\n" +
+    "                 data-ng-required></div>\n" +
     "\n" +
-    "                      \n" +
-    "                        <div class=\"land form-linje\">\n" +
-    "                            <label for=\"land\">\n" +
-    "                                <span class=\"labeltekst\" data-cmstekster=\"arbeidsforhold.arbeidsgiver.land\"></span>\n" +
-    "                            </label>\n" +
-    "                            <select id=\"land\"\n" +
-    "                                    data-ng-required=\"true\"\n" +
-    "                                    data-error-messages=\"'arbeidsforhold.arbeidsgiver.land.feilmelding'\" \n" +
-    "                                    data-ng-model=\"arbeidsforhold.properties.land\" \n" +
-    "                                    data-ng-options=\"l.value as l.text for l in land.result\">\n" +
-    "                            </select>\n" +
-    "                          \n" +
-    "                        </div>\n" +
-    "                        <div data-ng-show=\"arbeidsforhold.properties.eosland == 'true'\">\n" +
-    "                            <div class=\"ekstra-spm-boks\" data-vedlegginfoboks>\n" +
-    "                                <ul>\n" +
-    "                                    <li>\n" +
-    "                                        {{ 'arbeidsforhold.arbeidsgiver.land.norge.vedlegginformasjon' | cmstekst}}\n" +
-    "                                    </li>\n" +
-    "                                </ul>\n" +
-    "                            </div>\n" +
-    "                        </div>\n" +
     "\n" +
-    "                        <div class=\"spm boolean form-linje\">\n" +
-    "                            <h4 class=\"spm-sporsmal\">{{ 'arbeidsforhold.arbeidsgiver.sluttaarsak.informasjon' | cmstekst }}</h4>\n" +
+    "            <div class=\"land form-linje\">\n" +
+    "                <label for=\"land\">\n" +
+    "                    <span class=\"labeltekst\" data-cmstekster=\"arbeidsforhold.arbeidsgiver.land\"></span>\n" +
+    "                </label>\n" +
+    "                <select id=\"land\"\n" +
+    "                        data-ng-required=\"true\"\n" +
+    "                        data-error-messages=\"'arbeidsforhold.arbeidsgiver.land.feilmelding'\"\n" +
+    "                        data-ng-model=\"arbeidsforhold.properties.land\"\n" +
+    "                        data-ng-options=\"l.value as l.text for l in land.result\">\n" +
+    "                </select>\n" +
     "\n" +
-    "                            <div class=\"nav-radio-knapp\">\n" +
-    "                                <input class=\"sendsoknad-radio\"\n" +
-    "                                       id=\"radio5\"\n" +
-    "                                       name=\"arbeidsforhold.sluttaarsak.radio\"\n" +
-    "                                       type=\"radio\"\n" +
-    "                                       value=\"Sagt opp av arbeidsgiver\"\n" +
-    "                                       data-ng-model=\"faktum.properties.type\"\n" +
-    "                                       data-ng-required=\"true\"\n" +
-    "                                       data-click-validate\n" +
-    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
-    "                                       data-aktiv-feilmelding>\n" +
-    "                                <label for='radio5'>{{ 'arbeidsforhold.sluttaarsak.radio.sagtOppAvArbeidsgiver' | cmstekst }}</label>\n" +
-    "                            </div>\n" +
-    "\n" +
-    "                            <div class=\"nav-radio-knapp\">\n" +
-    "                                <input class=\"sendsoknad-radio\"\n" +
-    "                                       id=\"radio7\"\n" +
-    "                                       type=\"radio\"\n" +
-    "                                       value=\"Permittert\"\n" +
-    "                                       name=\"arbeidsforhold.sluttaarsak.radio\"\n" +
-    "                                       data-ng-model=\"faktum.properties.type\"\n" +
-    "                                       data-ng-required=\"true\"\n" +
-    "                                       data-click-validate\n" +
-    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
-    "                                       data-aktiv-feilmelding>\n" +
-    "                                <label for='radio7'>{{ 'arbeidsforhold.sluttaarsak.radio.permittert' | cmstekst }}</label>\n" +
-    "                            </div>\n" +
-    "\n" +
-    "                            <div class=\"nav-radio-knapp\">\n" +
-    "                                <input class=\"sendsoknad-radio\"\n" +
-    "                                       id=\"radio1\"\n" +
-    "                                       type=\"radio\"\n" +
-    "                                       value=\"Kontrakt utgått\"\n" +
-    "                                       name=\"arbeidsforhold.sluttaarsak.radio\"\n" +
-    "                                       data-ng-model=\"faktum.properties.type\"\n" +
-    "                                       data-click-validate\n" +
-    "                                       data-ng-required=\"true\"\n" +
-    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
-    "                                       data-aktiv-feilmelding>\n" +
-    "                                <label for='radio1'>{{ 'arbeidsforhold.sluttaarsak.radio.kontraktutgaatt' | cmstekst }}</label>\n" +
-    "                            </div>\n" +
-    "\n" +
-    "                            <div class=\"nav-radio-knapp\">\n" +
-    "                                <input class=\"sendsoknad-radio\"\n" +
-    "                                       id=\"radio6\"\n" +
-    "                                       type=\"radio\"\n" +
-    "                                       value=\"Sagt opp selv\"\n" +
-    "                                       name=\"arbeidsforhold.sluttaarsak.radio\"\n" +
-    "                                       data-ng-model=faktum.properties.type\n" +
-    "                                       data-ng-required=\"true\"\n" +
-    "                                       data-click-validate\n" +
-    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
-    "                                       data-aktiv-feilmelding>\n" +
-    "                                <label for='radio6'>{{ 'arbeidsforhold.sluttaarsak.radio.sagtOppSelv' | cmstekst }}</label>\n" +
-    "                            </div>\n" +
-    "\n" +
-    "                            <div class=\"nav-radio-knapp\">\n" +
-    "                                <input class=\"sendsoknad-radio\"\n" +
-    "                                       id=\"radio3\"\n" +
-    "                                       type=\"radio\"\n" +
-    "                                       value=\"Redusert arbeidstid\"\n" +
-    "                                       name=\"arbeidsforhold.sluttaarsak.radio\"\n" +
-    "                                       data-ng-model=\"faktum.properties.type\"\n" +
-    "                                       data-ng-required=\"true\"\n" +
-    "                                       data-click-validate\n" +
-    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
-    "                                       data-aktiv-feilmelding>\n" +
-    "                                <label for='radio3'>{{ 'arbeidsforhold.sluttaarsak.radio.redusertArbeidstid' | cmstekst }}</label>\n" +
-    "                            </div>\n" +
-    "\n" +
-    "                            <div class=\"nav-radio-knapp\">\n" +
-    "                                <input class=\"sendsoknad-radio\"\n" +
-    "                                       id=\"radio4\"\n" +
-    "                                       type=\"radio\"\n" +
-    "                                       value=\"Arbeidsgiver er konkurs\"\n" +
-    "                                       name=\"arbeidsforhold.sluttaarsak.radio\"\n" +
-    "                                       data-ng-model=\"faktum.properties.type\"\n" +
-    "                                       data-ng-required=\"true\"\n" +
-    "                                       data-click-validate\n" +
-    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
-    "                                       data-aktiv-feilmelding>\n" +
-    "                                <label for='radio4'>{{ 'arbeidsforhold.sluttaarsak.radio.arbeidsgiverErKonkurs' | cmstekst }}</label>\n" +
-    "                            </div>\n" +
-    "\n" +
-    "                            <div class=\"nav-radio-knapp\">\n" +
-    "                                <input class=\"sendsoknad-radio\"\n" +
-    "                                       id=\"radio2\"\n" +
-    "                                       type=\"radio\"\n" +
-    "                                       value=\"Avskjediget\"\n" +
-    "                                       name=\"arbeidsforhold.sluttaarsak.radio\"\n" +
-    "                                       data-ng-model=\"faktum.properties.type\"\n" +
-    "                                       data-ng-required=\"true\"\n" +
-    "                                       data-click-validate\n" +
-    "                                       data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
-    "                                       data-aktiv-feilmelding>\n" +
-    "                                <label for='radio2'>{{ 'arbeidsforhold.sluttaarsak.radio.avskjediget' | cmstekst }}</label>\n" +
-    "                            </div>\n" +
-    "\n" +
-    "                            <span class=\"melding\"></span>\n" +
-    "                        </div>\n" +
-    "\n" +
-    "                        <div data-ng-if=\"faktum.properties.type\">\n" +
-    "                            <div class=\"spm\" data-nav-faktum=\"sluttaarsak\" data-ikke-auto-lagre=\"true\" data-ng-include=\"templates[faktum.properties.type].url\"></div>\n" +
-    "                        </div>\n" +
-    "                        <div class=\"knapper-opprett\" data-ng-class=\"{valgt: faktum.properties.type}\">\n" +
-    "                            <input class=\"knapp-hoved-liten\" type=\"submit\"\n" +
-    "                                   value=\"{{ 'arbeidsforhold.nyttarbeidsforhold.lagre' | cmstekst }}\"\n" +
-    "                                   data-ng-click=\"lagreArbeidsforhold(nyttArbeidsforholdForm);\">\n" +
-    "                            <a href=\"#/soknad\">{{ 'arbeidsforhold.nyttarbeidsforhold.avbryt' | cmstekst }}</a>\n" +
-    "                        </div>\n" +
-    "                    </div>\n" +
-    "\n" +
+    "            </div>\n" +
+    "            <div data-ng-show=\"arbeidsforhold.properties.eosland == 'true'\">\n" +
+    "                <div class=\"ekstra-spm-boks\" data-vedlegginfoboks>\n" +
+    "                    <ul>\n" +
+    "                        <li>\n" +
+    "                            {{ 'arbeidsforhold.arbeidsgiver.land.norge.vedlegginformasjon' | cmstekst}}\n" +
+    "                        </li>\n" +
+    "                    </ul>\n" +
     "                </div>\n" +
     "            </div>\n" +
+    "\n" +
+    "            <div class=\"spm boolean form-linje\">\n" +
+    "                <h4 class=\"spm-sporsmal\">{{ 'arbeidsforhold.arbeidsgiver.sluttaarsak.informasjon' | cmstekst }}</h4>\n" +
+    "\n" +
+    "                <div class=\"nav-radio-knapp\">\n" +
+    "                    <input class=\"sendsoknad-radio\"\n" +
+    "                           id=\"radio5\"\n" +
+    "                           name=\"arbeidsforhold.sluttaarsak.radio\"\n" +
+    "                           type=\"radio\"\n" +
+    "                           value=\"Sagt opp av arbeidsgiver\"\n" +
+    "                           data-ng-model=\"faktum.properties.type\"\n" +
+    "                           data-ng-required=\"true\"\n" +
+    "                           data-click-validate\n" +
+    "                           data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
+    "                           data-aktiv-feilmelding>\n" +
+    "                    <label for='radio5'>{{ 'arbeidsforhold.sluttaarsak.radio.sagtOppAvArbeidsgiver' | cmstekst\n" +
+    "                        }}</label>\n" +
+    "                </div>\n" +
+    "\n" +
+    "                <div class=\"nav-radio-knapp\">\n" +
+    "                    <input class=\"sendsoknad-radio\"\n" +
+    "                           id=\"radio7\"\n" +
+    "                           type=\"radio\"\n" +
+    "                           value=\"Permittert\"\n" +
+    "                           name=\"arbeidsforhold.sluttaarsak.radio\"\n" +
+    "                           data-ng-model=\"faktum.properties.type\"\n" +
+    "                           data-ng-required=\"true\"\n" +
+    "                           data-click-validate\n" +
+    "                           data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
+    "                           data-aktiv-feilmelding>\n" +
+    "                    <label for='radio7'>{{ 'arbeidsforhold.sluttaarsak.radio.permittert' | cmstekst }}</label>\n" +
+    "                </div>\n" +
+    "\n" +
+    "                <div class=\"nav-radio-knapp\">\n" +
+    "                    <input class=\"sendsoknad-radio\"\n" +
+    "                           id=\"radio1\"\n" +
+    "                           type=\"radio\"\n" +
+    "                           value=\"Kontrakt utgått\"\n" +
+    "                           name=\"arbeidsforhold.sluttaarsak.radio\"\n" +
+    "                           data-ng-model=\"faktum.properties.type\"\n" +
+    "                           data-click-validate\n" +
+    "                           data-ng-required=\"true\"\n" +
+    "                           data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
+    "                           data-aktiv-feilmelding>\n" +
+    "                    <label for='radio1'>{{ 'arbeidsforhold.sluttaarsak.radio.kontraktutgaatt' | cmstekst }}</label>\n" +
+    "                </div>\n" +
+    "\n" +
+    "                <div class=\"nav-radio-knapp\">\n" +
+    "                    <input class=\"sendsoknad-radio\"\n" +
+    "                           id=\"radio6\"\n" +
+    "                           type=\"radio\"\n" +
+    "                           value=\"Sagt opp selv\"\n" +
+    "                           name=\"arbeidsforhold.sluttaarsak.radio\"\n" +
+    "                           data-ng-model=faktum.properties.type\n" +
+    "                           data-ng-required=\"true\"\n" +
+    "                           data-click-validate\n" +
+    "                           data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
+    "                           data-aktiv-feilmelding>\n" +
+    "                    <label for='radio6'>{{ 'arbeidsforhold.sluttaarsak.radio.sagtOppSelv' | cmstekst }}</label>\n" +
+    "                </div>\n" +
+    "\n" +
+    "                <div class=\"nav-radio-knapp\">\n" +
+    "                    <input class=\"sendsoknad-radio\"\n" +
+    "                           id=\"radio3\"\n" +
+    "                           type=\"radio\"\n" +
+    "                           value=\"Redusert arbeidstid\"\n" +
+    "                           name=\"arbeidsforhold.sluttaarsak.radio\"\n" +
+    "                           data-ng-model=\"faktum.properties.type\"\n" +
+    "                           data-ng-required=\"true\"\n" +
+    "                           data-click-validate\n" +
+    "                           data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
+    "                           data-aktiv-feilmelding>\n" +
+    "                    <label for='radio3'>{{ 'arbeidsforhold.sluttaarsak.radio.redusertArbeidstid' | cmstekst }}</label>\n" +
+    "                </div>\n" +
+    "\n" +
+    "                <div class=\"nav-radio-knapp\">\n" +
+    "                    <input class=\"sendsoknad-radio\"\n" +
+    "                           id=\"radio4\"\n" +
+    "                           type=\"radio\"\n" +
+    "                           value=\"Arbeidsgiver er konkurs\"\n" +
+    "                           name=\"arbeidsforhold.sluttaarsak.radio\"\n" +
+    "                           data-ng-model=\"faktum.properties.type\"\n" +
+    "                           data-ng-required=\"true\"\n" +
+    "                           data-click-validate\n" +
+    "                           data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
+    "                           data-aktiv-feilmelding>\n" +
+    "                    <label for='radio4'>{{ 'arbeidsforhold.sluttaarsak.radio.arbeidsgiverErKonkurs' | cmstekst\n" +
+    "                        }}</label>\n" +
+    "                </div>\n" +
+    "\n" +
+    "                <div class=\"nav-radio-knapp\">\n" +
+    "                    <input class=\"sendsoknad-radio\"\n" +
+    "                           id=\"radio2\"\n" +
+    "                           type=\"radio\"\n" +
+    "                           value=\"Avskjediget\"\n" +
+    "                           name=\"arbeidsforhold.sluttaarsak.radio\"\n" +
+    "                           data-ng-model=\"faktum.properties.type\"\n" +
+    "                           data-ng-required=\"true\"\n" +
+    "                           data-click-validate\n" +
+    "                           data-error-messages=\"'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'\"\n" +
+    "                           data-aktiv-feilmelding>\n" +
+    "                    <label for='radio2'>{{ 'arbeidsforhold.sluttaarsak.radio.avskjediget' | cmstekst }}</label>\n" +
+    "                </div>\n" +
+    "\n" +
+    "                <span class=\"melding\"></span>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div data-ng-if=\"faktum.properties.type\">\n" +
+    "                <div class=\"spm\" data-nav-faktum=\"sluttaarsak\" data-ikke-auto-lagre=\"true\"\n" +
+    "                     data-ng-include=\"templates[faktum.properties.type].url\"></div>\n" +
+    "            </div>\n" +
+    "            <div class=\"knapper-opprett\" data-ng-class=\"{valgt: faktum.properties.type}\">\n" +
+    "                <input class=\"knapp-hoved-liten\" type=\"submit\"\n" +
+    "                       value=\"{{ 'arbeidsforhold.nyttarbeidsforhold.lagre' | cmstekst }}\"\n" +
+    "                       data-ng-click=\"lagreArbeidsforhold(nyttArbeidsforholdForm);\">\n" +
+    "                <a href=\"#/soknad\">{{ 'arbeidsforhold.nyttarbeidsforhold.avbryt' | cmstekst }}</a>\n" +
+    "            </div>\n" +
     "        </div>\n" +
+    "\n" +
     "    </div>\n" +
-    "</div>");
+    "</div>\n" +
+    "\n" +
+    "\n" +
+    "");
 }]);
 
 angular.module("../views/templates/arbeidsforhold.html", []).run(["$templateCache", function($templateCache) {
@@ -1108,215 +1118,119 @@ angular.module("../views/templates/avbryt.html", []).run(["$templateCache", func
     "");
 }]);
 
-angular.module("../views/templates/barnetillegg-nyttbarn.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("../views/templates/barnetillegg-nyttbarn.html",
-    "<div class=\"modalBoks\" data-ng-controller=\"BarneCtrl\">\n" +
-    "    <div data-ng-form=\"nyttBarnForm\" class=\"vertikal\">\n" +
-    "        <div class=\"begrensning\">\n" +
-    "            <div class=\"sak-totredel\">\n" +
-    "                <div class=\"barn-spm spm-boks panel-standard-belyst\">\n" +
-    "                    <a href=\"#/soknad\" data-ng-click=\"avbrytBarnetilegg($event)\" class=\"lukk\"> </a>\n" +
+angular.module("../views/templates/barnetillegg/barnetillegg-nyttbarn.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../views/templates/barnetillegg/barnetillegg-nyttbarn.html",
+    "<div data-modalside>\n" +
+    "    <div class=\"vertikal barn-spm\" data-ng-form=\"nyttBarnForm\" data-ng-controller=\"BarneCtrl\">\n" +
+    "        <a href=\"#/soknad\" data-ng-click=\"avbrytBarnetilegg($event)\" class=\"lukk\"></a>\n" +
+    "        <div data-form-errors></div>\n" +
     "\n" +
-    "                    <div data-form-errors></div>\n" +
+    "        <h2 class=\"stor-strek\" data-ng-if=\"endrerSystemregistrertBarn()\">\n" +
+    "            <span>{{ 'barnetillegg.sokerbarnetillegg.tittel' | cmstekst }}</span>\n" +
+    "            <span data-ng-bind=\"barnenavn\"></span>\n" +
+    "        </h2>\n" +
     "\n" +
-    "                    <h2 class=\"stor-strek\" data-ng-if=\"endrerSystemregistrertBarn()\">\n" +
-    "                        <span data-cmstekster=\"barnetillegg.sokerbarnetillegg.tittel\"></span>\n" +
-    "                        <span data-ng-bind=\"barnenavn\"></span>\n" +
-    "                    </h2>\n" +
-    "\n" +
-    "                    <div data-nav-faktum=\"barn\" data-ikke-auto-lagre=\"true\">\n" +
+    "        <div data-nav-faktum=\"barn\" data-ikke-auto-lagre=\"true\">\n" +
+    "            <div data-ng-if=\"leggerTilNyttBarnEllerEndrerBarn()\">\n" +
+    "                <div data-form-errors></div>\n" +
+    "                <h2 class=\"stor-strek\">{{ 'barnetillegg.nyttbarn.tittel' | cmstekst }}</h2>\n" +
     "\n" +
     "\n" +
-    "                        <div data-ng-if=\"leggerTilNyttBarnEllerEndrerBarn()\">\n" +
-    "                            <div data-form-errors></div>\n" +
-    "                            <h2 class=\"stor-strek\" data-cmstekster=\"barnetillegg.nyttbarn.tittel\"></h2>\n" +
-    "\n" +
-    "                            <div class=\"form-linje tekstfelt\">\n" +
-    "                                <label>\n" +
-    "                                    <span data-cmstekster=\"barnetillegg.nyttbarn.fornavn\"></span>\n" +
-    "                                    <input name=\"fornavn\"\n" +
-    "                                           data-error-messages=\"'barnetillegg.nyttbarn.fornavn.feilmelding'\"\n" +
-    "                                           type=\"text\"\n" +
-    "                                           data-ng-model=\"barn.properties.fornavn\"\n" +
-    "                                           data-blur-validate\n" +
-    "                                           data-maxlength=\"200\"\n" +
-    "                                           maxlength=\"200\"\n" +
-    "                                           required\n" +
-    "                                           data-aktiv-feilmelding>\n" +
-    "                                    <span class=\"melding\"></span>\n" +
-    "                                </label>\n" +
-    "                            </div>\n" +
-    "                            <div class=\"form-linje tekstfelt\">\n" +
-    "                                <label>\n" +
-    "                                    <span data-cmstekster=\"barnetillegg.nyttbarn.etternavn\"></span>\n" +
-    "                                    <input name=\"fnr\"\n" +
-    "                                           data-error-messages=\"'barnetillegg.nyttbarn.etternavn.feilmelding'\"\n" +
-    "                                           type=\"text\"\n" +
-    "                                           data-ng-model=\"barn.properties.etternavn\"\n" +
-    "                                           data-blur-validate\n" +
-    "                                           data-maxlength=\"200\"\n" +
-    "                                           maxlength=\"200\"\n" +
-    "                                           required\n" +
-    "                                           data-aktiv-feilmelding>\n" +
-    "                                    <span class=\"melding\"></span>\n" +
-    "                                </label>\n" +
-    "                            </div>\n" +
-    "\n" +
-    "                        <div class=\"form-linje under-atten\"\n" +
-    "                             data-ng-class=\"{feil: skalViseFeilmelding === true }\">\n" +
-    "                            <input type=\"hidden\" class=\"under-atten-dato\" data-ng-model=\"underAtten.value\"\n" +
-    "                                   data-ng-required=\"true\"\n" +
-    "                                   data-error-messages=\"'barnetillegg.nyttbarn.fodselsdato.feilmelding'\">\n" +
-    "\n" +
-    "                            <div data-nav-dato\n" +
-    "                                 data-ng-model=\"barn.properties.fodselsdato\"\n" +
-    "                                 data-label=\"barnetillegg.nyttbarn.fodselsdato\"\n" +
-    "                                 data-er-required=\"true\"\n" +
-    "                                 data-required-error-message=\"barnetillegg.nyttbarn.fodselsdato.feilmelding\">\n" +
-    "                            </div>\n" +
-    "\n" +
-    "                                <span class=\"melding\"\n" +
-    "                                      data-cmstekster=\"barnetillegg.nyttbarn.fodselsdato.underAtten.feilmelding\"></span>\n" +
-    "                        </div>\n" +
-    "\n" +
-    "                        <div class=\"land form-linje\">\n" +
-    "                                <label for=\"land\">\n" +
-    "                                    <span class=\"labeltekst\" data-cmstekster=\"barnetillegg.nyttbarn.land\"></span>\n" +
-    "                                </label>\n" +
-    "                                <select id=\"land\"\n" +
-    "                                        data-ng-required=\"true\"\n" +
-    "                                        data-error-messages=\"'barnetillegg.nyttbarn.land.feilmelding'\" \n" +
-    "                                        data-ng-model=\"barn.properties.land\" \n" +
-    "                                        data-ng-options=\"l.value as l.text for l in land.result\">\n" +
-    "                                </select>\n" +
-    "                            </div>\n" +
-    "                        </div>\n" +
-    "\n" +
-    "                        <div data-ng-show=\"erEosLandAnnetEnnNorge()\">\n" +
-    "                            <div data-navinfoboks>\n" +
-    "                                <p class=\"sluttaarsak-informasjon\" cmstekster=\"barnetillegg.nyttbarn.land.eos\"></p>\n" +
-    "                            </div>\n" +
-    "                        </div>\n" +
-    "                        <div data-ng-show=\"erIkkeEosLand()\">\n" +
-    "                            <div data-navinfoboks>\n" +
-    "                                <p class=\"sluttaarsak-informasjon\" cmstekster=\"barnetillegg.nyttbarn.land.ikkeeos\"></p>\n" +
-    "                            </div>\n" +
-    "                        </div>\n" +
-    "\n" +
-    "                        <div data-ng-show=\"barn.properties.land == 'NOR'\">\n" +
-    "                            <div class=\"ekstra-spm-boks\" data-vedlegginfoboks>\n" +
-    "                                <ul>\n" +
-    "                                    <li>\n" +
-    "                                        {{ 'barnetillegg.nyttbarn.land.norge.vedlegginformasjon' | cmstekst}}\n" +
-    "                                    </li>\n" +
-    "                                </ul>\n" +
-    "                            </div>\n" +
-    "                        </div>\n" +
-    "\n" +
-    "                    </div>\n" +
-    "\n" +
-    "                    <div>\n" +
-    "                        <div class=\"form-linje checkbox\" data-checkbox-validate>\n" +
-    "                            <input data-ng-model=\"barn.properties.barnetillegg\" name=\"barnetilegg\"\n" +
-    "                                   id=\"barnetilegg\" type=\"checkbox\"\n" +
-    "                                   data-error-messages=\"'barnetillegg.nyttbarn.barnetillegg.feilmelding'\"\n" +
-    "                                   data-boolean-verdi data-ng-required=\"true\"\n" +
-    "                                   data-aktiv-feilmelding>\n" +
-    "                            <label for=\"barnetilegg\"\n" +
-    "                                   data-cmstekster=\"barnetillegg.barnetilegg.sporsmal\"></label>\n" +
-    "                                <span class=\"melding\"\n" +
-    "                                      data-cmstekster=\"barnetillegg.nyttbarn.barnetillegg.feilmelding\"> </span>\n" +
-    "                        </div>\n" +
-    "\n" +
-    "                        <div data-ng-show=\"barnetilleggErRegistrert()\">\n" +
-    "                            <p data-cmstekster=\"barnetillegg.barnetilegg.ikkebarneinntekt.sporsmal\"></p>\n" +
-    "\n" +
-    "                            <div class=\"form-linje boolean\">\n" +
-    "                                <div class=\"nav-radio-knapp\">\n" +
-    "                                    <input class=\"sendsoknad-radio\"\n" +
-    "                                           id=\"ikkebarneinntekt\"\n" +
-    "                                           type=\"radio\"\n" +
-    "                                           value=\"true\"\n" +
-    "                                           data-ng-model=\"barn.properties.ikkebarneinntekt\"\n" +
-    "                                           data-ng-required=\"barnetilleggErRegistrert()\"\n" +
-    "                                           name=\"ikkebarneinntekt\"\n" +
-    "                                           data-click-validate\n" +
-    "                                           data-error-messages=\"'barnetillegg.barnetilegg.ikkebarneinntekt.feilmelding'\"\n" +
-    "                                           data-aktiv-feilmelding>\n" +
-    "                                    <label for='ikkebarneinntekt'\n" +
-    "                                           data-cmstekster=\"barnetillegg.barnetilegg.ikkebarneinntekt.true\"></label>\n" +
-    "                                </div>\n" +
-    "                                <div class=\"nav-radio-knapp\">\n" +
-    "                                    <input class=\"sendsoknad-radio\"\n" +
-    "                                           id=\"ikkebarneinntektNei\"\n" +
-    "                                           type=\"radio\"\n" +
-    "                                           value=\"false\"\n" +
-    "                                           data-ng-model=\"barn.properties.ikkebarneinntekt\"\n" +
-    "                                           data-ng-required=\"barnetilleggErRegistrert()\"\n" +
-    "                                           name=\"ikkebarneinntekt\"\n" +
-    "                                           data-click-validate\n" +
-    "                                           data-error-messages=\"'barnetillegg.barnetilegg.ikkebarneinntekt.feilmelding'\"\n" +
-    "                                           data-aktiv-feilmelding>\n" +
-    "                                    <label for='ikkebarneinntektNei'\n" +
-    "                                           data-cmstekster=\"barnetillegg.barnetilegg.ikkebarneinntekt.false\"></label>\n" +
-    "                                </div>\n" +
-    "                                <span class=\"melding\"></span>\n" +
-    "                            </div>\n" +
-    "\n" +
-    "                            <div data-ng-if=\"barnetHarInntekt()\">\n" +
-    "                                <div class=\"form-linje tekstfelt\">\n" +
-    "                                    <label>\n" +
-    "                                        <span data-cmstekster=\"barnetillegg.barnetilegg.barneinntekttall.sporsmal\"></span>\n" +
-    "                                        <input name=\"barneinntekttall\"\n" +
-    "                                               data-error-messages=\"{required:'barnetillegg.barnetilegg.barneinntekttall.feilmelding', pattern:'barnetillegg.barnetilegg.barneinntekttall.ugyldig.feilmelding'}\"\n" +
-    "                                               type=\"text\"\n" +
-    "                                               data-ng-pattern=\"/^\\d+$/\"\n" +
-    "                                               data-ng-model=\"barn.properties.barneinntekttall\"\n" +
-    "                                               data-blur-validate\n" +
-    "                                               data-maxlength=\"200\"\n" +
-    "                                               maxlength=\"200\"\n" +
-    "                                               required=\"barnetHarInntekt()\"\n" +
-    "                                               data-aktiv-feilmelding>\n" +
-    "                                        <span class=\"melding\"></span>\n" +
-    "                                    </label>\n" +
-    "                                </div>\n" +
-    "\n" +
-    "                                <div class=\"ekstra-spm-boks\" data-vedlegginfoboks>\n" +
-    "                                    <ul>\n" +
-    "                                        <li>\n" +
-    "                                            {{ 'barnetillegg.barnetilegg.ikkebarneinntekt.false.vedlegginformasjon' |\n" +
-    "                                            cmstekst}}\n" +
-    "                                        </li>\n" +
-    "                                    </ul>\n" +
-    "                                </div>\n" +
-    "\n" +
-    "                            </div>\n" +
-    "                        </div>\n" +
-    "                    </div>\n" +
+    "                <div data-navtekst\n" +
+    "                     data-navconfig\n" +
+    "                     data-navlabel=\"barnetillegg.nyttbarn.fornavn\"\n" +
+    "                     data-nav-faktum-property=\"fornavn\"\n" +
+    "                     data-inputfeltmaxlength=\"200\"\n" +
+    "                     data-navfeilmelding=\"'barnetillegg.nyttbarn.fornavn.feilmelding'\"\n" +
+    "                     data-ng-required>\n" +
     "                </div>\n" +
     "\n" +
-    "                <div class=\"knapper-opprett\">\n" +
-    "                    <input class=\"knapp-hoved-liten\" name=\"lagre\" type=\"submit\"\n" +
-    "                           data-cmstekster=\"barnetillegg.nyttbarn.lagre\"\n" +
-    "                           data-ng-if=\"leggerTilNyttBarnEllerEndrerBarn()\"\n" +
-    "                           data-ng-click=\"lagreBarn(nyttBarnForm);\">\n" +
-    "                    <input class=\"knapp-hoved-liten\" name=\"lagre\" type=\"submit\"\n" +
-    "                           data-cmstekster=\"barnetillegg.nyttbarn.lagre\"\n" +
-    "                           data-ng-if=\"endrerSystemregistrertBarn()\"\n" +
-    "                           data-ng-click=\"lagreBarneFaktum(nyttBarnForm);\">\n" +
-    "                    <a href=\"#/soknad\" data-ng-click=\"avbrytBarnetilegg($event)\"\n" +
-    "                       data-cmstekster=\"barnetillegg.nyttbarn.avbryt\"></a>\n" +
+    "                <div data-navtekst\n" +
+    "                     data-navconfig\n" +
+    "                     data-navlabel=\"barnetillegg.nyttbarn.etternavn\"\n" +
+    "                     data-nav-faktum-property=\"etternavn\"\n" +
+    "                     data-navfeilmelding=\"'barnetillegg.nyttbarn.etternavn.feilmelding'\"\n" +
+    "                     data-ng-required>\n" +
     "                </div>\n" +
     "\n" +
+    "                <div class=\"form-linje under-atten\"\n" +
+    "                     data-ng-class=\"{feil: skalViseFeilmelding === true }\">\n" +
+    "                    <input type=\"hidden\" class=\"under-atten-dato\" data-ng-model=\"underAtten.value\"\n" +
+    "                           data-ng-required=\"true\"\n" +
+    "                           data-error-messages=\"'barnetillegg.nyttbarn.fodselsdato.feilmelding'\">\n" +
+    "\n" +
+    "                    <div data-nav-dato\n" +
+    "                         data-ng-model=\"barn.properties.fodselsdato\"\n" +
+    "                         data-label=\"barnetillegg.nyttbarn.fodselsdato\"\n" +
+    "                         data-er-required=\"true\"\n" +
+    "                         data-required-error-message=\"barnetillegg.nyttbarn.fodselsdato.feilmelding\">\n" +
+    "                    </div>\n" +
+    "\n" +
+    "                    <span class=\"melding\">\n" +
+    "                        {{ 'barnetillegg.nyttbarn.fodselsdato.underAtten.feilmelding' | cmstekst }}\n" +
+    "                    </span>\n" +
+    "                </div>\n" +
+    "\n" +
+    "                <div class=\"land form-linje\">\n" +
+    "                    <h4 class=\"spm-sporsmal\">{{ 'barnetillegg.nyttbarn.land.sporsmal' | cmstekst }}</h4>\n" +
+    "                    <label>\n" +
+    "                        <span class=\"labeltekst\">\n" +
+    "                            {{ 'barnetillegg.nyttbarn.land' | cmstekst }}\n" +
+    "                        </span>\n" +
+    "\n" +
+    "                        <select data-ng-required=\"true\"\n" +
+    "                                data-error-messages=\"'barnetillegg.nyttbarn.land.feilmelding'\"\n" +
+    "                                data-ng-model=\"barn.properties.land\"\n" +
+    "                                data-ng-options=\"l.value as l.text for l in land.result\">\n" +
+    "                        </select>\n" +
+    "                    </label>\n" +
+    "                </div>\n" +
     "            </div>\n" +
+    "\n" +
+    "            <div data-ng-show=\"erEosLandAnnetEnnNorge()\">\n" +
+    "                <div data-navinfoboks>\n" +
+    "                    <p class=\"sluttaarsak-informasjon\">{{ 'barnetillegg.nyttbarn.land.eos' | cmstekst }}</p>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div data-ng-show=\"erIkkeEosLand()\">\n" +
+    "                <div data-navinfoboks>\n" +
+    "                    <p class=\"sluttaarsak-informasjon\">{{ 'barnetillegg.nyttbarn.land.ikkeeos' | cmstekst }}</p>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div data-ng-show=\"barn.properties.land == 'NOR'\">\n" +
+    "                <div class=\"ekstra-spm-boks\" data-vedlegginfoboks>\n" +
+    "                    <ul>\n" +
+    "                        <li>\n" +
+    "                            {{ 'barnetillegg.nyttbarn.land.norge.vedlegginformasjon' | cmstekst}}\n" +
+    "                        </li>\n" +
+    "                    </ul>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div data-ng-include=\"'../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html'\"></div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "\n" +
+    "        <div class=\"knapper-opprett\">\n" +
+    "            <input class=\"knapp-hoved-liten\" name=\"lagre\" type=\"submit\"\n" +
+    "                   value=\"{{ 'barnetillegg.nyttbarn.lagre' | cmstekst }}\"\n" +
+    "                   data-ng-click=\"lagreBarn(nyttBarnForm);\">\n" +
+    "\n" +
+    "            <a href=\"#/soknad\" data-ng-click=\"avbrytBarnetilegg($event)\">\n" +
+    "                {{ 'barnetillegg.nyttbarn.avbryt' | cmstekst }}\n" +
+    "            </a>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n" +
-    "</div>");
+    "\n" +
+    "\n" +
+    "\n" +
+    "");
 }]);
 
-angular.module("../views/templates/barnetillegg.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("../views/templates/barnetillegg.html",
+angular.module("../views/templates/barnetillegg/barnetillegg.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../views/templates/barnetillegg/barnetillegg.html",
     "<div class=\"skjemaramme\">\n" +
     "    <div id=\"barnetilleggForm\" data-ng-form=\"barnetilleggForm\" class=\"skjemainnhold\"\n" +
     "         data-ng-controller=\"BarnetilleggCtrl\" novalidate>\n" +
@@ -1359,7 +1273,7 @@ angular.module("../views/templates/barnetillegg.html", []).run(["$templateCache"
     "                        </div>\n" +
     "\n" +
     "                        <div data-ng-show=\"erSystemRegistrert(b)\">\n" +
-    "                            <a href data-ng-click=\"sokbarnetillegg(b.faktumId, $event)\"\n" +
+    "                            <a href=\"#\" data-ng-click=\"sokbarnetillegg(b.faktumId, $event)\"\n" +
     "                               data-cmstekster=\"barnetillegg.barnetilegg.sporsmal\"\n" +
     "                               data-ng-if=\"barnetilleggIkkeRegistrert(b)\"></a>\n" +
     "\n" +
@@ -1371,7 +1285,7 @@ angular.module("../views/templates/barnetillegg.html", []).run(["$templateCache"
     "\n" +
     "                    <div data-vedlegginfoboks data-ng-if=\"kreverVedlegg(b)\">\n" +
     "                        <ul>\n" +
-    "                            <li data-ng-if=\"manglendeNorskBarn(b)\">\n" +
+    "                            <li data-ng-if=\"norskBarnIkkeFunnetITPS(b)\">\n" +
     "                                <p data-cmstekster=\"barnetillegg.nyttbarn.land.norge.vedlegginformasjon\"></p>\n" +
     "                            </li>\n" +
     "                            <li data-ng-if=\"barnetHarInntekt(b)\">\n" +
@@ -1405,6 +1319,80 @@ angular.module("../views/templates/barnetillegg.html", []).run(["$templateCache"
     "        <div data-spmblokkferdig></div>\n" +
     "    </div>\n" +
     "</div>\n" +
+    "\n" +
+    "");
+}]);
+
+angular.module("../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html",
+    "<div class=\"form-linje checkbox\" data-checkbox-validate>\n" +
+    "    <input data-ng-model=\"barn.properties.barnetillegg\" name=\"barnetilegg\"\n" +
+    "           id=\"barnetilegg\" type=\"checkbox\"\n" +
+    "           data-error-messages=\"'barnetillegg.nyttbarn.barnetillegg.feilmelding'\"\n" +
+    "           data-boolean-verdi data-ng-required=\"true\"\n" +
+    "           data-aktiv-feilmelding>\n" +
+    "    <label for=\"barnetilegg\">{{ 'barnetillegg.barnetilegg.sporsmal' | cmstekst }}</label>\n" +
+    "    <span class=\"melding\">\n" +
+    "        {{ 'barnetillegg.nyttbarn.barnetillegg.feilmelding' | cmstekst }}\n" +
+    "    </span>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div data-ng-show=\"barnetilleggErRegistrert()\">\n" +
+    "    <div data-nav-faktum-property=\"ikkebarneinntekt\"\n" +
+    "         data-booleanradio\n" +
+    "         data-nokkel=\"barnetillegg.barnetilegg.ikkebarneinntekt\">\n" +
+    "\n" +
+    "        <div data-navtekst\n" +
+    "             data-navconfig\n" +
+    "             data-navlabel=\"barnetillegg.barnetilegg.barneinntekttall.label\"\n" +
+    "             data-navsporsmal=\"barnetillegg.barnetilegg.barneinntekttall.sporsmal\"\n" +
+    "             data-nav-faktum-property=\"barneinntekttall\"\n" +
+    "             data-regexvalidering=\"/^\\d+$/\"\n" +
+    "             data-inputfeltmaxlength=\"200\"\n" +
+    "             data-navfeilmelding=\"{required:'barnetillegg.barnetilegg.barneinntekttall.feilmelding', pattern:'barnetillegg.barnetilegg.barneinntekttall.ugyldig.feilmelding'}\"\n" +
+    "             data-ng-required>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"ekstra-spm-boks\" data-vedlegginfoboks>\n" +
+    "            <ul>\n" +
+    "                <li>\n" +
+    "                    {{ 'barnetillegg.barnetilegg.ikkebarneinntekt.false.vedlegginformasjon' |\n" +
+    "                    cmstekst}}\n" +
+    "                </li>\n" +
+    "            </ul>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>");
+}]);
+
+angular.module("../views/templates/barnetillegg/endreSystembarnTemplate.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../views/templates/barnetillegg/endreSystembarnTemplate.html",
+    "<div data-modalside>\n" +
+    "    <div class=\"vertikal barn-spm\" data-ng-form=\"nyttBarnForm\" data-ng-controller=\"BarneCtrl\">\n" +
+    "        <a href=\"#/soknad\" data-ng-click=\"avbrytBarnetilegg($event)\" class=\"lukk\"></a>\n" +
+    "        <div data-form-errors></div>\n" +
+    "\n" +
+    "        <div data-nav-faktum=\"barn\" data-ikke-auto-lagre=\"true\">\n" +
+    "            <h2 class=\"stor-strek\">\n" +
+    "                <span>{{ 'barnetillegg.sokerbarnetillegg.tittel' | cmstekst }}</span>\n" +
+    "                <span data-ng-bind=\"barnenavn\"></span>\n" +
+    "            </h2>\n" +
+    "            <div data-ng-include=\"'../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html'\"></div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"knapper-opprett\">\n" +
+    "            <input class=\"knapp-hoved-liten\" name=\"lagre\" type=\"submit\"\n" +
+    "                   value=\"{{ 'barnetillegg.nyttbarn.lagre' | cmstekst }}\"\n" +
+    "                   data-ng-click=\"lagreBarneFaktum(nyttBarnForm);\">\n" +
+    "\n" +
+    "            <a href=\"#/soknad\" data-ng-click=\"avbrytBarnetilegg($event)\">\n" +
+    "                {{ 'barnetillegg.nyttbarn.avbryt' | cmstekst }}\n" +
+    "            </a>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "\n" +
     "\n" +
     "");
 }]);
@@ -1525,11 +1513,6 @@ angular.module("../views/templates/egennaering/fangstOgFiske.html", []).run(["$t
     "        </div>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div data-ng-if=\"erSynlig('egennaering.fangstogfiske.false.arbeid')\" data-vedlegginfoboks>\n" +
-    "        <ul>\n" +
-    "            <li><p>{{ 'egennaering.fangstogfiske.false.arbeid.vedlegg' | cmstekst }}</p></li>\n" +
-    "        </ul>\n" +
-    "    </div>\n" +
     "</div>");
 }]);
 
@@ -1756,52 +1739,43 @@ angular.module("../views/templates/egennaering/gardsbruk.html", []).run(["$templ
 angular.module("../views/templates/feilside.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/templates/feilside.html",
     "<div data-nav-tittel=\"skjema.tittel\"></div>\n" +
-    "<div data-stegindikator data-steg-liste=\"veiledning, skjema, vedlegg, sendInn\" data-aktiv-index=\"0\"></div>      \n" +
     "<div id=\"feilside\" data-ng-controller=\"FeilSideCtrl\">\n" +
-    "    <div data-panelbelyst>\n" +
-    "        <div class=\"feil\">\n" +
-    "            <div class=\"utrop-sirkel-ikon\"></div>\n" +
-    "            <h1 class=\"h1-strek\" data-cmstekster=\"feilmelding\"></h1>\n" +
-    "            \n" +
-    "            <div class=\"generellfeil\" data-ng-form=\"epostForm\" data-ng-controller=\"FortsettSenereCtrl\" data-novalidate>\n" +
+    "    <section class=\"feil-panel\" data-ng-form=\"epostForm\" data-ng-controller=\"FortsettSenereCtrl\" data-novalidate>\n" +
+    "        <h1 class=\"stor-ikon-feil-gra\">{{ 'feilmelding' | cmstekst }}</h1>\n" +
     "\n" +
-    "                <div class=\"form-linje\">\n" +
-    "                    <p>{{ 'feilmelding.innsending.1' | cmstekst }}</p>\n" +
-    "                </div>\n" +
+    "        <p>{{ 'feilmelding.innsending.1' | cmstekst }}</p>\n" +
     "\n" +
-    "\n" +
-    "                <div class=\"send-epost\">\n" +
-    "                    <div class=\"input-boks\">\n" +
-    "                        <div class=\"form-linje\">\n" +
-    "                            <label>\n" +
-    "                                <span data-cmstekster=\"dagpenger.fortsettSenere.epost.label\"> </span>\n" +
-    "                                <input type=\"email\" name=\"epost\" role=\"textbox\" data-ng-model=\"epost.value\"\n" +
-    "                                        data-error-messages=\"{required: 'dagpenger.fortsettSenere.epost.required.feilmelding', pattern: 'dagpenger.fortsettSenere.epost.pattern.feilmelding' }\"\n" +
-    "                                        data-ng-required=\"true\" data-ng-pattern=\"/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$/\" data-blur-validate/>\n" +
-    "                            </label>\n" +
-    "                            <input type=\"submit\" class=\"knapp-hoved-liten\" data-cmstekster=\"dagpenger.fortsettSenere.epost.send\" role=\"button\" data-ng-click=\"forsettSenere(epostForm)\"/>\n" +
-    "                            <span class=\"melding\"></span>\n" +
-    "                        </div>\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
-    "\n" +
-    "                <div class=\"form-linje\">\n" +
-    "                    <p>\n" +
-    "                        <span>{{ 'feilmelding.innsending.2' | cmstekst }}</span>\n" +
-    "                        <a href=\"{{mineInnsendinger}}\">{{ 'feilmelding.mineinnsedinger.lenketekst' | cmstekst }}</a>\n" +
-    "                    </p>\n" +
-    "                </div>\n" +
-    "           \n" +
-    "           </div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "            <div class=\"knapper\">\n" +
-    "                <a type=\"button\" class=\"knapp-hoved\" href=\"{{inngangsportenUrl}}\" data-cmstekster=\"feilmelding.lenketekst\"></a>\n" +
-    "            </div>\n" +
+    "        <div class=\"form-linje\">\n" +
+    "            <label>\n" +
+    "                <span class=\"labeltekst\">{{ 'dagpenger.fortsettSenere.epost.label' | cmstekst }}</span>\n" +
+    "                <input type=\"email\"\n" +
+    "                       role=\"textbox\"\n" +
+    "                       data-ng-model=\"epost.value\"\n" +
+    "                       data-error-messages=\"{required: 'dagpenger.fortsettSenere.epost.required.feilmelding', pattern: 'dagpenger.fortsettSenere.epost.pattern.feilmelding' }\"\n" +
+    "                       data-ng-required=\"true\"\n" +
+    "                       data-ng-pattern=\"/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$/\"\n" +
+    "                       data-blur-validate/>\n" +
+    "            </label>\n" +
+    "            <input type=\"submit\"\n" +
+    "                   class=\"knapp-hoved-liten\"\n" +
+    "                   value=\"{{ 'dagpenger.fortsettSenere.epost.send' | cmstekst }}\"\n" +
+    "                   role=\"button\"\n" +
+    "                   data-ng-click=\"forsettSenere(epostForm)\">\n" +
+    "            <span class=\"melding\"></span>\n" +
     "        </div>\n" +
-    "    </div>\n" +
+    "\n" +
+    "        <p class=\"normal-strek\">\n" +
+    "            <span>{{ 'feilmelding.innsending.2' | cmstekst }}</span>\n" +
+    "            <a href=\"{{mineInnsendinger}}\">{{ 'feilmelding.mineinnsedinger.lenketekst' | cmstekst }}</a>\n" +
+    "        </p>\n" +
+    "\n" +
+    "        <p>\n" +
+    "            <a type=\"button\" class=\"knapp-link-liten\" href=\"{{ inngangsportenUrl }}\">\n" +
+    "                {{ 'feilmelding.lenketekst' | cmstekst }}\n" +
+    "            </a>\n" +
+    "        </p>\n" +
+    "\n" +
+    "    </section>\n" +
     "</div>\n" +
     "");
 }]);
@@ -1850,7 +1824,7 @@ angular.module("../views/templates/fortsettSenere.html", []).run(["$templateCach
     "				<p data-cmstekster=\"dagpenger.fortsettSenere.info.konsekvenser\"></p>\n" +
     "			</div>\n" +
     "			<div class=\"lenker-dot\">\n" +
-    "				<a href=\"#/soknad\" id=\"tilOversikt\" role=\"link\" data-cmstekster=\"dagpenger.fortsettSenere.tilbake\"></a>\n" +
+    "				<a href=\"#{{ forrigeSide }}\" id=\"tilOversikt\" role=\"link\" data-cmstekster=\"dagpenger.fortsettSenere.tilbake\"></a>\n" +
     "				<a href=\"{{inngangsportenUrl}}\" id=\"dittnav\" role=\"link\" data-cmstekster=\"dagpenger.fortsettSenere.dittNav\"></a>\n" +
     "			</div>\n" +
     "		</div>\n" +
@@ -1894,8 +1868,7 @@ angular.module("../views/templates/informasjonsside.html", []).run(["$templateCa
     "<div id=\"informasjonsside\" data-sidetittel=\"sidetittel.informasjon\" data-ng-cloak>\n" +
     "	<div data-panelbelyst>\n" +
     "        <div class=\"feil\" data-ng-show=\"tpsSvarerIkke()\">\n" +
-    "        	<div class=\"utrop-sirkel-ikon\"></div>\n" +
-    "        	<h1>{{ 'feilmelding' | cmstekst }}</h1>\n" +
+    "        	<h1 class=\"utrop-sirkel-ikon\">{{ 'feilmelding' | cmstekst }}</h1>\n" +
     "       		<p class=\"mini-strek\">{{ 'feilmelding.tps' | cmstekst }}</p>\n" +
     "			<div class=\"knapper\">\n" +
     "       			<a type=\"button\" class=\"knapp-hoved\" href=\"{{ inngangsportenUrl }}\">{{ 'feilmelding.lenketekst' | cmstekst }}</a>\n" +
@@ -2496,7 +2469,7 @@ angular.module("../views/templates/utdanning/utdanning.html", []).run(["$templat
     "\n" +
     "            <span class=\"melding\"> </span>\n" +
     "\n" +
-    "            <div class=\"ekstra-info nav-boolean form-linje checkbox\" data-ng-if=\"hvis('utdanning', 'underUtdanning')\" data-checkbox-validate>\n" +
+    "            <div class=\"ekstra-info nav-boolean form-linje checkbox\" data-ng-if=\"hvis('utdanning', 'underUtdanning')\" data-checkbox-validate data-nav-faktum=\"utdanning\">\n" +
     "                <h4 class=\"spm-sporsmal\">{{ 'utdanning.sporsmal' | cmstekst }}</h4>\n" +
     "\n" +
     "                <input type=\"hidden\"\n" +
@@ -2566,6 +2539,8 @@ angular.module("../views/templates/utdanning/utdanning.html", []).run(["$templat
     "                <span class=\"melding\" data-cmstekster=\"utdanning.minstEnAvhuket.feilmelding\"></span>\n" +
     "\n" +
     "            </div>\n" +
+    "\n" +
+    "\n" +
     "        </div>\n" +
     "\n" +
     "        <div data-spmblokkferdig></div>\n" +
@@ -2725,6 +2700,15 @@ angular.module("../views/templates/utdanning/utdanningKveldTemplate.html", []).r
     "    </div>\n" +
     "</div>\n" +
     "\n" +
+    "<div class=\"varighet form-linje\" data-ng-if=\"hvis('utdanning.kveld.progresjonUnder50', 'false')\">\n" +
+    "    <h4 class=\"spm-sporsmal\">{{ 'utdanning.semester.avslutning.label' | cmstekst }}</h4>\n" +
+    "    <div data-nav-dato\n" +
+    "         data-ng-model=\"utdanning.semester.avslutning\"\n" +
+    "         data-label=\"utdanning.semester.avslutning.dato\"\n" +
+    "         data-required-error-message=\"utdanning.semester.avslutning.feilmelding\">\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "XXXX\n" +
     "<div data-vedlegginfoboks>\n" +
     "    <ul>\n" +
     "        <li><p data-cmstekster=\"utdanning.svar.under.utdanning.dokumentasjon\"></p></li>\n" +
@@ -2909,7 +2893,7 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                           data-cmstekster=\"vedlegg.faktum.ikkesend\"></label>\n" +
     "                                    <input type=\"hidden\" class=\"hidden-vedlegg\" data-ng-model=\"hiddenFelt.value\"\n" +
     "                                           data-ng-required=\"true\"\n" +
-    "                                           data-error-messages=\"'{{forventning.tittel}}'\">\n" +
+    "                                           data-error-messages=\"'{{forventning.tittel}} {{forventning.navn }}'\">\n" +
     "                                </div>\n" +
     "                                <span class=\"melding annet\" data-cmstekster=\"vedlegg.annet.inlinefeilmelding\"\n" +
     "                                      data-ng-if=\"erEkstraVedlegg(forventning)\"></span>\n" +
@@ -2995,7 +2979,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "<div data-ng-form=\"ytelserForm\" class=\"skjemainnhold vertikal\" data-ng-controller=\"YtelserCtrl\" data-novalidate>\n" +
     "<div data-form-errors></div>\n" +
     "\n" +
-    "<div class=\"spm form-linje checkbox\" data-checkbox-validate>\n" +
+    "<div class=\"spm form-linje andreytelser checkbox\" data-checkbox-validate>\n" +
     "<input type=\"hidden\" data-ng-model=\"harHuketAvCheckboksYtelse.value\" data-ng-required=\"true\"\n" +
     "       data-error-messages=\"'ytelser.minstEnCheckboksErAvhuket.feilmelding'\">\n" +
     "<h4 class=\"spm-sporsmal\">\n" +
@@ -3212,7 +3196,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "</div>\n" +
     "<span class=\"melding\" data-cmstekster=\"ytelser.minstEnCheckboksErAvhuket.feilmelding\"></span>\n" +
     "</div>\n" +
-    "<div class=\"spm form-linje checkbox\" data-checkbox-validate>\n" +
+    "<div class=\"spm form-linje navytelse checkbox\" data-checkbox-validate>\n" +
     "    <input type=\"hidden\" data-ng-model=\"harHuketAvCheckboksNavYtelse.value\" data-ng-required=\"true\"\n" +
     "           data-error-messages=\"'ytelser.minstEnCheckboksErAvhuket.navYtelserfeilmelding'\">\n" +
     "    <h4 class=\"spm-sporsmal\">\n" +
@@ -3408,6 +3392,17 @@ angular.module("../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.htm
     "</div>");
 }]);
 
+angular.module("../js/app/directives/markup/modalsideTemplate.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../js/app/directives/markup/modalsideTemplate.html",
+    "<div class=\"modalBoks begrensning\">\n" +
+    "    <div class=\"sak-totredel\">\n" +
+    "        <div class=\"panel-standard-belyst\" data-ng-transclude>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("../js/app/directives/markup/navinfoboksTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/app/directives/markup/navinfoboksTemplate.html",
     "<div class=\"infoboks\">\n" +
@@ -3472,7 +3467,7 @@ angular.module("../js/app/directives/stegindikator/stegIndikatorTemplate.html", 
 
 angular.module("../js/app/directives/stickybunn/stickyBunnTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/app/directives/stickybunn/stickyBunnTemplate.html",
-    "<div data-ng-class=\"{ikkevises: tastatur === true}\">\n" +
+    "<div data-ng-show=\"hvisTouchTastaturVises()\">\n" +
     "    <div class=\"sticky-bunn\">\n" +
     "        <div>\n" +
     "            <span data-ng-if=\"soknadHarBlittLagret()\">\n" +
@@ -3541,7 +3536,11 @@ angular.module("../js/common/directives/accordion/accordionTemplate.html", []).r
 angular.module("../js/common/directives/booleanradio/booleanradioTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/common/directives/booleanradio/booleanradioTemplate.html",
     "<div class='spm form-linje boolean'>\n" +
-    "    <h4 class=\"spm-sporsmal\">{{ sporsmal | cmstekst }}</h4>\n" +
+    "    <h4 class=\"spm-sporsmal\">\n" +
+    "        <span>{{ sporsmal | cmstekst }}</span>\n" +
+    "        <span data-nav-hjelpetekstelement data-ng-if=\"hvisHarHjelpetekst()\" data-tittel=\"{{ hjelpetekst.tittel | cmstekst }}\"\n" +
+    "             data-tekst=\"{{ hjelpetekst.tekst | cmstekst }}\"></span>\n" +
+    "    </h4>\n" +
     "    <div data-navradio\n" +
     "         data-navconfig\n" +
     "         data-value='true'\n" +
@@ -3713,6 +3712,9 @@ angular.module("../js/common/directives/navinput/navradioTemplate.html", []).run
     "           data-aktiv-feilmelding>\n" +
     "\n" +
     "    <label for='{{ navlabel }}' data-cmstekster=\"{{ navlabel }}\"></label>\n" +
+    "\n" +
+    "    <div class=\"ng-transclude ekstra-spm-boks\" data-ng-if=\"hvisAktiv()\" data-ng-show=\"hvisHarTranscludedInnhold()\"></div>\n" +
+    "\n" +
     "</div>\n" +
     "");
 }]);
@@ -3720,11 +3722,12 @@ angular.module("../js/common/directives/navinput/navradioTemplate.html", []).run
 angular.module("../js/common/directives/navinput/navtekstTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/common/directives/navinput/navtekstTemplate.html",
     "<div class=\"tekstfelt form-linje\" >\n" +
+    "    <h4 data-ng-if=\"harSporsmal()\" class=\"spm-sporsmal\">{{ navsporsmal | cmstekst }}</h4>\n" +
     "    <label>\n" +
     "        <span class=\"labeltekst\">{{ navlabel | cmstekst }}</span>\n" +
     "        <input data-ng-model=\"faktum.value\" type=\"text\" value=\"{{ value }}\" data-ng-required=\"true\"\n" +
-    "               data-error-messages=\"{{ navfeilmelding }}\" data-ng-pattern=\"{{regexvalidering}}\" data-blur-validate data-minlength=\"{{navminlength}}\" data-maxlength=\"{{navmaxlength}}\"\n" +
-    "               maxlength=\"{{inputfeltmaxlength}}\"  data-tekstfelt-patternvalidering data-aktiv-feilmelding/>\n" +
+    "               data-error-messages=\"{{ navfeilmelding }}\" data-ng-pattern=\"{{ regexvalidering }}\" data-blur-validate data-minlength=\"{{ navminlength }}\" data-maxlength=\"{{ navmaxlength }}\"\n" +
+    "               maxlength=\"{{ inputfeltmaxlength }}\"  data-tekstfelt-patternvalidering data-aktiv-feilmelding/>\n" +
     "        <span class=\"melding\"></span>\n" +
     "    </label>\n" +
     "</div>\n" +
@@ -3734,8 +3737,9 @@ angular.module("../js/common/directives/navinput/navtekstTemplate.html", []).run
 angular.module("../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html",
     "<div class=\"form-linje textarea-container\">\n" +
+    "    <h4 class=\"spm-sporsmal\" data-ng-if=\"harSporsmal()\">{{ sporsmal | cmstekst}}</h4>\n" +
     "    <label>\n" +
-    "        <span data-cmstekster=\"{{sporsmal}}\"></span>\n" +
+    "        <span>{{ label | cmstekst }}</span>\n" +
     "        <textarea data-ng-name=\"faktum.key\"\n" +
     "                  data-ng-model=\"faktum.value\"\n" +
     "                  data-error-messages=\"'{{ feilmelding }}'\"\n" +
@@ -3749,8 +3753,8 @@ angular.module("../js/common/directives/navtextarea/navtextareaObligatoriskTempl
     "        <span class=\"egen-linje\" data-ng-show=\"harFokusOgFeil() === true\">\n" +
     "                    <span class=\"tellertekst\" data-ng-class=\"{negativtekstteller: counter < 0 }\" aria-live=\"polite\"\n" +
     "                          id=\"{{sporsmal}}\"> {{counter}} </span>\n" +
-    "                    <span data-cmstekster=\"fritekst.negativtellertekst\" data-ng-if=\"counter < 0\"></span>\n" +
-    "                    <span data-cmstekster=\"fritekst.tellertekst\" data-ng-if=\"counter >= 0\"></span>\n" +
+    "                    <span data-ng-if=\"counter < 0\">{{ 'fritekst.negativtellertekst' | cmstekst }}</span>\n" +
+    "                    <span data-ng-if=\"counter >= 0\">{{ 'fritekst.tellertekst' | cmstekst }}</span>\n" +
     "                </span>\n" +
     "    </label>\n" +
     "    <span class=\"melding\"></span>\n" +
@@ -3761,12 +3765,13 @@ angular.module("../js/common/directives/navtextarea/navtextareaObligatoriskTempl
 angular.module("../js/common/directives/navtextarea/navtextareaTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/common/directives/navtextarea/navtextareaTemplate.html",
     "<div class=\"form-linje textarea-container\" data-ng-class=\"{feil: feil}\">\n" +
+    "    <h4 class=\"spm-sporsmal\" data-ng-if=\"harSporsmal()\">{{ sporsmal | cmstekst}}</h4>\n" +
     "    <label>\n" +
-    "        <span data-cmstekster=\"{{sporsmal}}\"></span>\n" +
+    "        <span>{{ label | cmstekst }}</span>\n" +
     "        <textarea data-ng-model=\"faktum.value\"\n" +
     "                  data-error-messages=\"'{{ feilmelding }}'\"\n" +
     "                  data-ng-trim=\"false\"\n" +
-    "                  aria-controls=\"{{sporsmal}}\"\n" +
+    "                  aria-controls=\"{{ label }}\"\n" +
     "                  data-validate-textarea\n" +
     "                  data-ng-blur=\"mistetFokus()\"\n" +
     "                  data-aktiv-feilmelding></textarea>\n" +
@@ -3774,11 +3779,11 @@ angular.module("../js/common/directives/navtextarea/navtextareaTemplate.html", [
     "        <span class=\"egen-linje\" data-ng-show=\"harFokusOgFeil()\">\n" +
     "            <span class=\"tellertekst\" data-ng-class=\"{negativtekstteller: counter < 0 }\"\n" +
     "                  aria-live=\"polite\"> {{counter}} </span>\n" +
-    "            <span data-cmstekster=\"fritekst.negativtellertekst\" data-ng-if=\"counter < 0\"></span>\n" +
-    "            <span data-cmstekster=\"fritekst.tellertekst\" data-ng-if=\"counter >= 0\"></span>\n" +
+    "            <span data-ng-if=\"counter < 0\">{{ 'fritekst.negativtellertekst' | cmstekst }}</span>\n" +
+    "            <span data-ng-if=\"counter >= 0\">{{ 'fritekst.tellertekst' | cmstekst }}</span>\n" +
     "        </span>\n" +
     "    </label>\n" +
-    "    <span class=\"melding\" data-cmstekster=\"fritekst.feilmelding\"></span>\n" +
+    "    <span class=\"melding\">{{ 'fritekst.feilmelding' | cmstekst }}</span>\n" +
     "</div>");
 }]);
 

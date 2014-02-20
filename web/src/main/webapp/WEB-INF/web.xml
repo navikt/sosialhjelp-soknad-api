@@ -51,6 +51,15 @@
         <filter-name>MDCFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+    <filter>
+        <filter-name>SecurityHeaderFilter</filter-name>
+        <filter-class>no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.HeaderFilter</filter-class>
+        <async-supported>true</async-supported>
+    </filter>
+    <filter-mapping>
+        <filter-name>SecurityHeaderFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
     <!--HttpSessionSecurityIntegrationFilter blir erstattet ved kjøring i Jetty. Se JettyTestServer (context.setOverrideDescriptor(...)) og override-web.xml-->
     <filter>

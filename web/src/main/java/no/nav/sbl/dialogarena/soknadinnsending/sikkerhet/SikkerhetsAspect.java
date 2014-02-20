@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.sikkerhet;
 
 
-import no.nav.modig.core.exception.AuthorizationException;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -17,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 @Aspect
 @Component
 public class SikkerhetsAspect {
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(SikkerhetsAspect.class);
     @Inject
     Tilgangskontroll tilgangskontroll;
 
@@ -25,13 +23,11 @@ public class SikkerhetsAspect {
     public void requestMapping() {
     }
 
-    @Before(value = "requestMapping() && args(soknadId, ..)", argNames = "soknadId")
-    public void sjekkSoknadIdModBruker(Long soknadId) {
+    @Before(value = "requestMapping() && args(soknadId, ..) && @annotation(tilgang)", argNames = "soknadId, tilgang")
+    public void sjekkSoknadIdModBruker(Long soknadId, SjekkTilgangTilSoknad tilgang) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        if (request.getMethod().equals(RequestMethod.POST.name())) {
-            if (!XsrfGenerator.sjekkXsrfToken(request.getHeader("X-XSRF-TOKEN"), soknadId)) {
-                throw new AuthorizationException("Feil token");
-            }
+        if (tilgang.sjekkXsrf() && request.getMethod().equals(RequestMethod.POST.name())) {
+            XsrfGenerator.sjekkXsrfToken(request.getHeader("X-XSRF-TOKEN"), soknadId);
         }
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(soknadId);
     }

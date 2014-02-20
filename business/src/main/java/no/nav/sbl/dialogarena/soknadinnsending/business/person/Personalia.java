@@ -17,12 +17,12 @@ public class Personalia {
     public static final String KJONN_KEY = "kjonn";
     public static final String GJELDENDEADRESSE_KEY = "gjeldendeAdresse";
     public static final String GJELDENDEADRESSE_TYPE_KEY = "gjeldendeAdresseType";
-    public static final String GJELDENDEADRESSE_GYLDIGFRA_KEY = "gjeldendeAdresseGydligFra";
-    public static final String GJELDENDEADRESSE_GYLDIGTIL_KEY = "gjeldendeAdresseGydligTil";
+    public static final String GJELDENDEADRESSE_GYLDIGFRA_KEY = "gjeldendeAdresseGyldigFra";
+    public static final String GJELDENDEADRESSE_GYLDIGTIL_KEY = "gjeldendeAdresseGyldigTil";
     public static final String SEKUNDARADRESSE_KEY = "sekundarAdresse";
     public static final String SEKUNDARADRESSE_TYPE_KEY = "sekundarAdresseType";
-    public static final String SEKUNDARADRESSE_GYLDIGFRA_KEY = "sekundarAdresseGydligFra";
-    public static final String SEKUNDARADRESSE_GYLDIGTIL_KEY = "sekundarAdresseGydligTil";
+    public static final String SEKUNDARADRESSE_GYLDIGFRA_KEY = "sekundarAdresseGyldigFra";
+    public static final String SEKUNDARADRESSE_GYLDIGTIL_KEY = "sekundarAdresseGyldigTil";
 
     private String fnr;
     private String alder;
