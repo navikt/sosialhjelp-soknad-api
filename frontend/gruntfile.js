@@ -140,7 +140,7 @@ module.exports = function (grunt) {
                     'views/templates/**/*.html',
                     'views/dagpenger-singlepage.html'
                 ],
-                tasks: 'html2js'
+                tasks: ['html2js', 'htmlbuild:dev']
 			}
 		},
 		jshint: {
@@ -165,26 +165,6 @@ module.exports = function (grunt) {
                 singleRun: true
 			}
 		},
-//        karma_sonar: {
-//            options: {
-//
-//            },
-//            your_target: {
-//                project: {
-//                    key: 'grunt-sonar',
-//                    name: '<%= pkg.name %>',
-//                    version: '<%= pkg.version %>'
-//                },
-//                sources: [
-//                    {
-//                        path: '...',
-//                        prefix: '...',
-//                        coverageReport: ''
-//                    }
-//                ]
-//            }
-//        },
-
 		maven: {
 			warName: '<%= pkg.name %>-frontend.war',
 			dist: {
@@ -198,7 +178,7 @@ module.exports = function (grunt) {
 				tasks: ['default']
 			}
 		}
-	});
+    });
 
 	// Load NPM tasks
 	grunt.loadNpmTasks('grunt-contrib-watch');
@@ -207,10 +187,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-html-build');
 	grunt.loadNpmTasks('grunt-html2js');
-
 	grunt.loadNpmTasks('grunt-karma');
-	grunt.loadNpmTasks('grunt-karma-sonar');
-//	grunt.loadTasks('maven-tasks');
 
 	grunt.option('force', true);
 

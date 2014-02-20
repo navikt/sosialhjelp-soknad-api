@@ -5,8 +5,9 @@ import no.nav.sbl.dialogarena.soknadinnsending.VedleggOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
+import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -45,12 +46,8 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 @RequestMapping("/soknad/{soknadId}/vedlegg")
 public class VedleggController {
     private static final Logger LOG = LoggerFactory.getLogger(VedleggController.class);
-    //private static final List<String> LEGAL_CONTENT_TYPES = Arrays.asList("application/pdf", "image/png", "image/jpeg");
     @Inject
     private VedleggService vedleggService;
-
-    @Inject
-    private SendSoknadService soknadService;
 
     private static byte[] getByteArray(MultipartFile file) {
         try {
@@ -62,6 +59,7 @@ public class VedleggController {
 
     @RequestMapping(method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
+    @SjekkTilgangTilSoknad
     public List<Vedlegg> hentPaakrevdeVedlegg(
             @PathVariable final Long soknadId) {
         return vedleggService.hentPaakrevdeVedlegg(soknadId);
@@ -69,12 +67,14 @@ public class VedleggController {
 
     @RequestMapping(value = "/{vedleggId}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
+    @SjekkTilgangTilSoknad
     public Vedlegg hentVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
         return vedleggService.hentVedlegg(soknadId, vedleggId, false);
     }
-    
+
     @RequestMapping(value = "/{faktumId}/hentannetvedlegg", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
+    @SjekkTilgangTilSoknad
     public Vedlegg hentAnnetVedlegg(@PathVariable final Long soknadId, @PathVariable final Long faktumId) {
         return on(vedleggService.hentPaakrevdeVedlegg(soknadId)).filter(new Predicate<Vedlegg>() {
             @Override
@@ -86,18 +86,21 @@ public class VedleggController {
 
     @RequestMapping(value = "/{vedleggId}", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
     @ResponseBody
+    @SjekkTilgangTilSoknad
     public void lagreVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestBody Vedlegg vedlegg) {
         vedleggService.lagreVedlegg(soknadId, vedleggId, vedlegg);
     }
 
     @RequestMapping(value = "/{vedleggId}/delete", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
     @ResponseBody
+    @SjekkTilgangTilSoknad
     public void slettVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
         vedleggService.slettVedlegg(soknadId, vedleggId);
     }
 
     @RequestMapping(value = "/{vedleggId}/data", method = RequestMethod.GET, produces = APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody()
+    @SjekkTilgangTilSoknad
     public byte[] hentVedleggData(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, HttpServletResponse response) {
         Vedlegg vedlegg = vedleggService.hentVedlegg(soknadId, vedleggId, true);
         response.setHeader("Content-Disposition", "attachment; filename=\"" + vedlegg.getVedleggId() + ".pdf\"");
@@ -106,6 +109,7 @@ public class VedleggController {
 
     @RequestMapping(value = "/{vedleggId}/thumbnail", method = RequestMethod.GET, produces = IMAGE_PNG_VALUE)
     @ResponseBody()
+    @SjekkTilgangTilSoknad
     public byte[] lagForhandsvisningForVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestParam(value = "side", defaultValue = "0") final int side) {
         return vedleggService.lagForhandsvisning(soknadId, vedleggId, side);
     }
@@ -129,17 +133,18 @@ public class VedleggController {
     @RequestMapping(value = "/{vedleggId}/opplasting", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
     @ResponseBody()
     @ResponseStatus(HttpStatus.CREATED)
-    public Callable<VedleggOpplasting> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestParam("files[]") final List<MultipartFile> files) {
+    @SjekkTilgangTilSoknad(sjekkXsrf = false)
+    public Callable<VedleggOpplasting> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestParam("X-XSRF-TOKEN") final String xsrfToken, @RequestParam("files[]") final List<MultipartFile> files) {
+        XsrfGenerator.sjekkXsrfToken(xsrfToken, soknadId);
         return new Callable<VedleggOpplasting>() {
 
             @Override
             public VedleggOpplasting call() throws Exception {
                 Vedlegg forventning = vedleggService.hentVedlegg(soknadId, vedleggId, false);
-              
+
                 List<Vedlegg> res = new ArrayList<>();
                 for (MultipartFile file : files) {
                     byte[] in = getByteArray(file);
-                    
                     Vedlegg vedlegg = new Vedlegg()
                             .medVedleggId(null)
                             .medSoknadId(soknadId)
@@ -152,7 +157,7 @@ public class VedleggController {
                             .medData(in)
                             .medOpprettetDato(forventning.getOpprettetDato())
                             .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
-                    
+
                     List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, new ByteArrayInputStream(in));
                     for (Long id : ids) {
                         res.add(vedleggService.hentVedlegg(soknadId, id, false));
@@ -165,6 +170,7 @@ public class VedleggController {
 
     @RequestMapping(value = "/{vedleggId}/underBehandling", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody
+    @SjekkTilgangTilSoknad
     public List<Vedlegg> hentVedleggUnderBehandling(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
         Vedlegg forventning = vedleggService.hentVedlegg(soknadId, vedleggId, false);
         return vedleggService.hentVedleggUnderBehandling(soknadId, forventning.getFaktumId(), forventning.getskjemaNummer());
@@ -172,6 +178,7 @@ public class VedleggController {
 
     @RequestMapping(value = "/{vedleggId}/generer", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
+    @SjekkTilgangTilSoknad
     public Vedlegg bekreftFaktumVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
         vedleggService.genererVedleggFaktum(soknadId, vedleggId);
         return vedleggService.hentVedlegg(soknadId, vedleggId, false);

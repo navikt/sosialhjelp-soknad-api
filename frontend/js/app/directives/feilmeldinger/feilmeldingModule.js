@@ -73,7 +73,7 @@ angular.module('nav.feilmeldinger', [])
                 scope.scrollTilElementMedFeil = function (feilmelding) {
                     if (scope.erKlikkbarFeil(feilmelding)) {
                         var formLinje = feilmelding.elem.closest('.form-linje');
-                        scrollToElement(formLinje, 200);
+                        scrollToElement(formLinje, 250);
                         if(formLinje.hasClass("andelsfordeling-container")) {
                             formLinje.find('.form-linje').first().addClass('aktiv-feilmelding');
                         } else {

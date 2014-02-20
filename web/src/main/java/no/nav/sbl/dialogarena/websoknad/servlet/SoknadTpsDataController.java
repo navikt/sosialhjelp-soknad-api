@@ -4,6 +4,7 @@ import no.nav.modig.core.context.SubjectHandler;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
+import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -63,6 +64,7 @@ public class SoknadTpsDataController {
     @RequestMapping(value = "/personalia", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseBody()
     @ResponseStatus(HttpStatus.OK)
+    @SjekkTilgangTilSoknad
     public void lagrePersonaliaOgBarn(@RequestBody final Long soknadId) {
         String fnr = SubjectHandler.getSubjectHandler().getUid();
         personaliaService.lagrePersonaliaOgBarn(fnr, soknadId);
