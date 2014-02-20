@@ -3686,7 +3686,7 @@ angular.module("../js/common/directives/navinput/navorgnrfeltTemplate.html", [])
     "<div class=\"form-linje tekstfelt orgnummer\">\n" +
     "    <label>\n" +
     "        <span class=\"labeltekst\">{{ navlabel | cmstekst }}</span>\n" +
-    "        <input type=\"number\"\n" +
+    "        <input type=\"text\"\n" +
     "               value=\"{{ value }}\"\n" +
     "               data-ng-model=\"faktum.value\"\n" +
     "               data-ng-required=\"erSynlig()\"\n" +
@@ -3695,7 +3695,6 @@ angular.module("../js/common/directives/navinput/navorgnrfeltTemplate.html", [])
     "               data-ng-pattern=\"/[0-9]{9}/\"\n" +
     "               maxlength=\"9\"\n" +
     "               data-orgnr-validate\n" +
-    "               data-disable-scroll\n" +
     "               data-aktiv-feilmelding>\n" +
     "    </label>\n" +
     "    <a href=\"javascript:void(0)\" aria-role=\"button\" class=\"orgnummer-slett\"\n" +

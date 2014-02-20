@@ -87,10 +87,10 @@ angular.module('nav.reellarbeidssoker', [])
             var villigdeltidOmsorg = data.finnFaktum('reellarbeidssoker.villigdeltid.omsorgansvar');
             var villigdeltidAnnen = data.finnFaktum('reellarbeidssoker.villigdeltid.annensituasjon');
 
-            return (villigdeltidHelse !== null && villigdeltidHelse.value == "true") ||
-                (villigdeltidBarn18 !== null && villigdeltidBarn18.value == "true") ||
-                (villigdeltidOmsorg !== null && villigdeltidOmsorg.value == "true") ||
-                (villigdeltidAnnen !== null && villigdeltidAnnen.value == "true");
+            return (villigdeltidHelse !== null && villigdeltidHelse.value === "true") ||
+                (villigdeltidBarn18 !== null && villigdeltidBarn18.value === "true") ||
+                (villigdeltidOmsorg !== null && villigdeltidOmsorg.value === "true") ||
+                (villigdeltidAnnen !== null && villigdeltidAnnen.value === "true");
         };
 
         $scope.trengerUtalelseFraFagpersonellPendle = function() {
@@ -99,15 +99,15 @@ angular.module('nav.reellarbeidssoker', [])
             var villigpendleOmsorg = data.finnFaktum('reellarbeidssoker.villigpendle.omsorgansvar');
             var villigpendleAnnen = data.finnFaktum('reellarbeidssoker.villigpendle.annensituasjon');
 
-            return (villigpendleHelse !== null && villigpendleHelse.value== "true") ||
-                (villigpendleBarn18 !== null && villigpendleBarn18.value == "true") ||
-                (villigpendleOmsorg !== null && villigpendleOmsorg.value == "true") ||
-                (villigpendleAnnen !== null && villigpendleAnnen.value == "true");
+            return (villigpendleHelse !== null && villigpendleHelse.value=== "true") ||
+                (villigpendleBarn18 !== null && villigpendleBarn18.value === "true") ||
+                (villigpendleOmsorg !== null && villigpendleOmsorg.value === "true") ||
+                (villigpendleAnnen !== null && villigpendleAnnen.value === "true");
         };
 
         $scope.kanIkkeTaAlleTyperArbeid = function() {
             var villighelse = data.finnFaktum('reellarbeidssoker.villighelse');
-            return villighelse !== null && villighelse.value == "false";
+            return villighelse !== null && villighelse.value === "false";
         };
 
         function erCheckboxerAvhuket(checkboxNokler) {
