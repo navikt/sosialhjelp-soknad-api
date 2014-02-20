@@ -68,11 +68,16 @@
             };
 
             scope.apneTab = function () {
-
+            };
+            scope.lukkTab = function () {
+            };
+            scope.settValidert = function () {
+            };
+            scope.leggTilStickyFeilmelding = function () {
             };
 
             element = angular.element(
-                '<form name="form">'+
+                '<form name="form">' +
                     '<div form-errors></div>' +
                     '<input type="text" ng-model="scope.barn.properties.fodselsdato" name="alder"/>' +
                     '<input type="hidden" data-ng-model="underAtten.value" data-ng-required="true"/>' +
@@ -117,10 +122,16 @@
             });
         });
         describe('vernepliktCtrl', function () {
-            beforeEach(inject(function ($controller) {
+            beforeEach(inject(function ($controller, $compile) {
                 ctrl = $controller('VernepliktCtrl', {
                     $scope: scope
                 });
+
+                $compile(element)(scope);
+                scope.$digest();
+                form = scope.form;
+                element.scope().$apply();
+
             }));
 
             it('skal kalle metode for å validere form', function () {
@@ -128,9 +139,15 @@
                 scope.valider();
                 expect(scope.runValidationBleKalt).toEqual(true);
             });
-            it('skal kjøre metodene lukkTab og settValidert for valid form', function() {
-
-            })
+            it('skal kjøre metodene lukkTab og settValidert for valid form', function () {
+                spyOn(scope, "runValidation").andReturn(true);
+                spyOn(scope, "lukkTab");
+                spyOn(scope, "settValidert");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.lukkTab).toHaveBeenCalledWith('verneplikt');
+                expect(scope.settValidert).toHaveBeenCalledWith('verneplikt');
+            });
         });
         describe('UtdanningCtrl', function () {
             beforeEach(inject(function ($controller) {
@@ -147,10 +164,23 @@
         });
         describe('ReellarbeidssokerCtrl', function () {
             beforeEach(inject(function ($controller, data) {
+                scope.data = data;
+                var faktumDeltid = {
+                    key: 'reellarbeidssoker.villigdeltid.reduserthelse',
+                    value: 'true'
+                };
+
+                var faktumPendle = {
+                    key: 'reellarbeidssoker.villigpendle.reduserthelse',
+                    value: 'false'
+                };
+
+                scope.data.leggTilFaktum(faktumDeltid);
+                scope.data.leggTilFaktum(faktumPendle);
+
                 ctrl = $controller('ReellarbeidssokerCtrl', {
                     $scope: scope
                 });
-                scope.data = data;
             }));
 
             it('skal returnere true for person over 59 aar', function () {
@@ -192,6 +222,86 @@
                 };
                 expect(scope.harValgtAnnetUnntakDeltid()).toEqual(false);
             });
+            it('skal returnere true for valgt annet unntak pendle', function () {
+                scope.pendleannen = {
+                    value: 'true'
+                };
+                expect(scope.harValgtAnnetUnntakPendle()).toEqual(true);
+            });
+            it('skal returnere false for ikke huket av valgtAnnetUnntakPendle', function () {
+                scope.pendleannen = null;
+                expect(scope.harValgtAnnetUnntakPendle()).toEqual(false);
+                scope.pendleannen = {};
+                expect(scope.harValgtAnnetUnntakPendle()).toEqual(false);
+                scope.pendleannen = undefined;
+                expect(scope.harValgtAnnetUnntakPendle()).toEqual(false);
+            });
+            it('skal returnere false for huket av har ikke valgtAnnetUnntakPendle', function () {
+                scope.pendleannen = {
+                    value: 'false'
+                };
+                expect(scope.harValgtAnnetUnntakPendle()).toEqual(false);
+            });
+            it('harHuketAvCheckboksDeltid skal vaere true nar deltid reduserthelse er huket av', function () {
+                expect(scope.harHuketAvCheckboksDeltid.value).toEqual(true);
+            });
+            it('harHuketAvCheckboksPendle skal vaere false når deltidcheckbokser ikke er huket av', function () {
+                expect(scope.harHuketAvCheckboksPendle.value).toEqual('');
+            });
+            it('skal kalle metode for å validere form', function () {
+                expect(scope.runValidationBleKalt).toEqual(false);
+                scope.valider();
+                expect(scope.runValidationBleKalt).toEqual(true);
+            });
+            it('skal kjøre metodene lukkTab og settValidert for valid form', function () {
+                spyOn(scope, "runValidation").andReturn(true);
+                spyOn(scope, "lukkTab");
+                spyOn(scope, "settValidert");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.lukkTab).toHaveBeenCalledWith('reellarbeidssoker');
+                expect(scope.settValidert).toHaveBeenCalledWith('reellarbeidssoker');
+            });
+            it('taben skal vaere apen nar formen ikke er valid', function () {
+                spyOn(scope, "runValidation").andReturn(false);
+                spyOn(scope, "apneTab");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.apneTab).toHaveBeenCalledWith('reellarbeidssoker');
+            });
+            it('hvis en deltidaarsaker er huket av og så blir den avhuket, sa skal harHuketAvCheckboksDeltid vaere tom ', function () {
+                expect(scope.harHuketAvCheckboksDeltid.value).toBe(true);
+                scope.data.fakta[3].value = 'false';
+                scope.endreDeltidsAarsaker();
+                expect(scope.harHuketAvCheckboksDeltid.value).toBe('');
+            });
+            it('hvis ingen deltidaarsaker er huket av og så blir en aarsak huket av, sa skal harHuketAvCheckboksDeltid vaere true ', function () {
+                scope.data.fakta[3].value = 'false';
+                scope.endreDeltidsAarsaker();
+                expect(scope.harHuketAvCheckboksDeltid.value).toBe('');
+                scope.data.fakta[3].value = 'true';
+                scope.endreDeltidsAarsaker();
+                expect(scope.harHuketAvCheckboksDeltid.value).toBe(true);
+            });
+            it('hvis en pendleaarsaker er huket av og så blir den avhuket, sa skal harHuketAvCheckboksPendle vaere tom ', function () {
+                scope.data.fakta[3].value = 'false';
+                scope.endreDeltidsAarsaker();
+                expect(scope.harHuketAvCheckboksPendle.value).toBe('');
+            });
+            it('hvis ingen pendleaarsaker er huket av og så blir en aarsak huket av, sa skal harHuketAvCheckboksPendle vaere true ', function () {
+                scope.data.fakta[4].value = 'false';
+                scope.endrePendleAarsaker();
+                expect(scope.harHuketAvCheckboksPendle.value).toBe('');
+                scope.data.fakta[4].value = 'true';
+                scope.endrePendleAarsaker();
+                expect(scope.harHuketAvCheckboksPendle.value).toBe(true);
+            });
+            it('krysset av for villigDeltid sa trengerUtalelseFraFagpersonellDeltid vaere true', function () {
+                expect(scope.trengerUtalelseFraFagpersonellDeltid()).toBe(true);
+            });
+            it('ikke krysset av for villigPendle sa trengerUtalelseFraFagpersonellDeltid vaere false', function () {
+                expect(scope.trengerUtalelseFraFagpersonellPendle()).toBe(false);
+            });
         });
         describe('BarneCtrl', function () {
             beforeEach(inject(function (_$httpBackend_, $controller, cms) {
@@ -200,7 +310,7 @@
                 });
                 scope.cms = cms;
                 $httpBackend = _$httpBackend_;
-                $httpBackend.expectGET('/sendsoknad/rest/landtype/'+scope.barn.properties.land).
+                $httpBackend.expectGET('/sendsoknad/rest/landtype/' + scope.barn.properties.land).
                     respond({});
 
             }));
@@ -271,23 +381,23 @@
                 element.scope().$apply();
                 expect(scope.skalViseFeilmelding).toEqual(false);
             });
-            it('skal returnere true hvis barnetillegg er registrert', function() {
+            it('skal returnere true hvis barnetillegg er registrert', function () {
                 scope.barn.properties.barnetillegg = 'true';
                 expect(scope.barnetilleggErRegistrert()).toBe(true);
             });
-            it('skal returnere false hvis barnet ikke har inntekt', function() {
+            it('skal returnere false hvis barnet ikke har inntekt', function () {
                 scope.barn.properties.ikkebarneinntekt = '';
                 expect(scope.barnetHarInntekt()).toBe(false);
             });
-            it('skal returnere true hvis barnet har inntekt', function() {
+            it('skal returnere true hvis barnet har inntekt', function () {
                 scope.barn.properties.ikkebarneinntekt = 'false';
                 expect(scope.barnetHarInntekt()).toBe(true);
             });
-            it('skal returnere true hvis barnet ikke har inntekt', function() {
+            it('skal returnere true hvis barnet ikke har inntekt', function () {
                 scope.barn.properties.ikkebarneinntekt = 'true';
                 expect(scope.barnetHarIkkeInntekt()).toBe(true);
             });
-            it('alder og sammensatt navn skal kun settes hvis formen er valid', function() {
+            it('alder og sammensatt navn skal kun settes hvis formen er valid', function () {
                 var idag = new Date();
                 var lastyear = idag.getFullYear() - 1;
                 var month = idag.getMonth() + 1;
@@ -304,7 +414,7 @@
                 expect(scope.barn.properties.alder).toEqual(1);
                 expect(scope.barn.properties.sammensattnavn).toEqual("Fornavn Etternavn");
             });
-            it('alder og sammensatt navn skal ikke være satt naar formen er valid', function() {
+            it('alder og sammensatt navn skal ikke være satt naar formen er valid', function () {
                 var idag = new Date();
                 var overAtten = idag.getFullYear() - 18;
                 var denneManeden = idag.getMonth() + 1;
@@ -321,17 +431,17 @@
                 expect(scope.barn.properties.alder).toEqual(undefined);
                 expect(scope.barn.properties.sammensattnavn).toEqual(undefined);
             });
-            it('skal returnere true for EOSland som ikke er norge', function() {
+            it('skal returnere true for EOSland som ikke er norge', function () {
                 scope.eosLandType = "eos";
                 expect(scope.erEosLandAnnetEnnNorge()).toBe(true);
             });
-            it('erEosLandAnnetEnnNorge skal returnere false for norge', function() {
+            it('erEosLandAnnetEnnNorge skal returnere false for norge', function () {
                 scope.eosLandType = "Norge";
                 expect(scope.erEosLandAnnetEnnNorge()).toBe(false);
                 scope.eosLandType = "norge";
                 expect(scope.erEosLandAnnetEnnNorge()).toBe(false);
             });
-            it('erIkkeEosLand skal returnere false for et land som ikke er i eos', function() {
+            it('erIkkeEosLand skal returnere false for et land som ikke er i eos', function () {
                 scope.eosLandType = "ikkeEos";
                 expect(scope.erIkkeEosLand()).toBe(true);
             });
@@ -408,7 +518,7 @@
                 var barn = {
                     key: 'barn',
                     properties: {ikkebarneinntekt: 'false',
-                                barnetillegg: 'true'}
+                        barnetillegg: 'true'}
                 };
                 expect(scope.kreverVedlegg(barn)).toEqual(true);
             });
@@ -427,7 +537,7 @@
                 };
                 expect(scope.kreverVedlegg(barn)).toEqual(true);
             });
-            it('erGutt skal returnere true for barn med hannkjønn og false for barn med hunnkjønn', function() {
+            it('erGutt skal returnere true for barn med hannkjønn og false for barn med hunnkjønn', function () {
                 var gutt = {
                     key: 'barn',
                     properties: {kjonn: 'm'}
@@ -439,7 +549,7 @@
                 expect(scope.erGutt(gutt)).toEqual(true);
                 expect(scope.erGutt(jente)).toEqual(false);
             });
-            it('erJente skal returnere true for barn med hunnkjønn og false for barn med hannkjønn ', function() {
+            it('erJente skal returnere true for barn med hunnkjønn og false for barn med hannkjønn ', function () {
                 var gutt = {
                     key: 'barn',
                     properties: {kjonn: 'm'}
@@ -451,7 +561,7 @@
                 expect(scope.erJente(gutt)).toEqual(false);
                 expect(scope.erJente(jente)).toEqual(true);
             });
-            it('barnetHarInntekt skal returnere true hvis barnet har inntekt og false hvis barnet ikke har inntekt', function() {
+            it('barnetHarInntekt skal returnere true hvis barnet har inntekt og false hvis barnet ikke har inntekt', function () {
                 var barnInntekt = {
                     key: 'barn',
                     properties: {ikkebarneinntekt: 'false'}
@@ -463,7 +573,7 @@
                 expect(scope.barnetHarInntekt(barnInntekt)).toBe(true);
                 expect(scope.barnetHarInntekt(barnIkkeInntekt)).toBe(false);
             });
-            it('barnetHarIkkeInntekt skal returnere true hvis barnet ikke har inntekt og false hvis barnet  har inntekt', function() {
+            it('barnetHarIkkeInntekt skal returnere true hvis barnet ikke har inntekt og false hvis barnet  har inntekt', function () {
                 var barnInntekt = {
                     key: 'barn',
                     properties: {ikkebarneinntekt: 'false'}
@@ -475,7 +585,7 @@
                 expect(scope.barnetHarIkkeInntekt(barnInntekt)).toBe(false);
                 expect(scope.barnetHarIkkeInntekt(barnIkkeInntekt)).toBe(true);
             });
-            it('barnetilleggErRegistrert skal returnere true hvis barnet har barnetillegg', function() {
+            it('barnetilleggErRegistrert skal returnere true hvis barnet har barnetillegg', function () {
                 var barnIkkeTillegg = {
                     key: 'barn',
                     properties: {barnetillegg: 'false'}
@@ -487,7 +597,7 @@
                 expect(scope.barnetilleggErRegistrert(barnIkkeTillegg)).toEqual(false);
                 expect(scope.barnetilleggErRegistrert(barnTillegg)).toEqual(true);
             });
-            it('barnetilleggIkkeRegistrert skal returnere true hvis barnet ikke har barnetillegg', function() {
+            it('barnetilleggIkkeRegistrert skal returnere true hvis barnet ikke har barnetillegg', function () {
                 var barnIkkeTillegg = {
                     key: 'barn',
                     properties: {barnetillegg: 'false'}
@@ -507,7 +617,7 @@
                 };
                 ctrl = $controller('AdresseCtrl', {
                     $scope: scope
-                    
+
                 });
             }));
 
@@ -518,6 +628,14 @@
             it('Skal returnere true hvis har sekundær adresse', function () {
                 scope.personalia = {gjeldendeAdresse: "Gjeldene adresse", sekundarAdresse: 'sekundær adresse'};
                 expect(scope.harGjeldendeAdresse()).toEqual(true);
+            });
+            it('adressen skal returneres på adresseformatet', function () {
+                var adresse = "Gatenavn 1, Poststed 0000";
+                var formatertAdresse = '<p>Gatenavn 1</p><p>Poststed 0000</p>';
+                expect(scope.hentFormattertAdresse(adresse)).toEqual(formatertAdresse);
+            });
+            it('formatertAdresse med ingen adresse skal returnere tom streng', function () {
+                expect(scope.hentFormattertAdresse()).toEqual('');
             });
             it('adressetype BOSTEDSADRESSE skal returnere folkeregistrertadresse ', function () {
                 expect(scope.hentAdresseTypeNokkel("BOSTEDSADRESSE")).toEqual("personalia.folkeregistrertadresse");
@@ -667,7 +785,8 @@
 
             it('bolk skal få valideringsmetode når leggTilValideringsmetode blir kalt', function () {
                 expect(scope.grupper[0].valideringsmetode).toBe(undefined);
-                scope.leggTilValideringsmetode('reellarbeidssoker', function() {});
+                scope.leggTilValideringsmetode('reellarbeidssoker', function () {
+                });
                 expect(scope.grupper[0].valideringsmetode).toNotBe(undefined);
             });
             it('bolk skal bli validert når settValidert blir kalt', function () {
@@ -676,7 +795,42 @@
                 scope.settValidert('reellarbeidssoker');
                 expect(scope.grupper[0].validering).toBe(false);
             });
+            it('leggTilStickyFeilmelding skal bli kjort nar stickyFeilmelding blir kalt', function () {
+                spyOn(scope, "leggTilStickyFeilmelding");
+                scope.stickyFeilmelding();
+                expect(scope.leggTilStickyFeilmelding).toHaveBeenCalled();
+            });
+            it('bolk skal få status apen til true når apneTab blir kalt', function () {
+                scope.grupper = [
+                    {id: 'bolk', apen: false}
+                ];
+                scope.apneTab("bolk");
+                expect(scope.grupper[0].apen).toBe(true);
+            });
+            it('bolk skal få status apen til false når lukkTab blir kalt', function () {
+                scope.grupper = [
+                    {id: 'bolk', apen: true}
+                ];
+                scope.lukkTab("bolk");
+                expect(scope.grupper[0].apen).toBe(false);
+            });
+            it('bolk1 og bolk2 skal få status apen til false når lukkTab blir kalt for bolk1 og bolk2', function () {
+                scope.grupper = [
+                    {id: 'bolk1', apen: true},
+                    {id: 'bolk2', apen: true}
+                ];
+                var bolker = ['bolk1', 'bolk2'];
+                scope.lukkTab(bolker);
+                expect(scope.grupper[0].apen).toBe(false);
+                expect(scope.grupper[1].apen).toBe(false);
+            });
+            it('bolk skal ikke få status apen til false når bolknavnet ikke finnes', function () {
+                scope.grupper = [
+                    {id: 'bolk', apen: true}
+                ];
+                scope.lukkTab("bolkFeilNavn");
+                expect(scope.grupper[0].apen).toBe(true);
+            });
         });
-
     });
 }());
