@@ -1,7 +1,7 @@
 <div class="form-linje tekstfelt orgnummer">
     <label>
         <span class="labeltekst">{{ navlabel | cmstekst }}</span>
-        <input type="number"
+        <input type="text"
                value="{{ value }}"
                data-ng-model="faktum.value"
                data-ng-required="erSynlig()"
@@ -10,7 +10,6 @@
                data-ng-pattern="/[0-9]{9}/"
                maxlength="9"
                data-orgnr-validate
-               data-disable-scroll
                data-aktiv-feilmelding>
     </label>
     <a href="javascript:void(0)" aria-role="button" class="orgnummer-slett"
