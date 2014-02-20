@@ -67,12 +67,17 @@
                 scope.runValidationBleKalt = true;
             };
 
-            scope.apneTab = function () { };
-            scope.lukkTab = function () {};
-            scope.settValidert = function () {};
+            scope.apneTab = function () {
+            };
+            scope.lukkTab = function () {
+            };
+            scope.settValidert = function () {
+            };
+            scope.leggTilStickyFeilmelding = function () {
+            };
 
             element = angular.element(
-                '<form name="form">'+
+                '<form name="form">' +
                     '<div form-errors></div>' +
                     '<input type="text" ng-model="scope.barn.properties.fodselsdato" name="alder"/>' +
                     '<input type="hidden" data-ng-model="underAtten.value" data-ng-required="true"/>' +
@@ -134,7 +139,7 @@
                 scope.valider();
                 expect(scope.runValidationBleKalt).toEqual(true);
             });
-            it('skal kjøre metodene lukkTab og settValidert for valid form', function() {
+            it('skal kjøre metodene lukkTab og settValidert for valid form', function () {
                 spyOn(scope, "runValidation").andReturn(true);
                 spyOn(scope, "lukkTab");
                 spyOn(scope, "settValidert");
@@ -212,7 +217,7 @@
                 });
                 scope.cms = cms;
                 $httpBackend = _$httpBackend_;
-                $httpBackend.expectGET('/sendsoknad/rest/landtype/'+scope.barn.properties.land).
+                $httpBackend.expectGET('/sendsoknad/rest/landtype/' + scope.barn.properties.land).
                     respond({});
 
             }));
@@ -283,23 +288,23 @@
                 element.scope().$apply();
                 expect(scope.skalViseFeilmelding).toEqual(false);
             });
-            it('skal returnere true hvis barnetillegg er registrert', function() {
+            it('skal returnere true hvis barnetillegg er registrert', function () {
                 scope.barn.properties.barnetillegg = 'true';
                 expect(scope.barnetilleggErRegistrert()).toBe(true);
             });
-            it('skal returnere false hvis barnet ikke har inntekt', function() {
+            it('skal returnere false hvis barnet ikke har inntekt', function () {
                 scope.barn.properties.ikkebarneinntekt = '';
                 expect(scope.barnetHarInntekt()).toBe(false);
             });
-            it('skal returnere true hvis barnet har inntekt', function() {
+            it('skal returnere true hvis barnet har inntekt', function () {
                 scope.barn.properties.ikkebarneinntekt = 'false';
                 expect(scope.barnetHarInntekt()).toBe(true);
             });
-            it('skal returnere true hvis barnet ikke har inntekt', function() {
+            it('skal returnere true hvis barnet ikke har inntekt', function () {
                 scope.barn.properties.ikkebarneinntekt = 'true';
                 expect(scope.barnetHarIkkeInntekt()).toBe(true);
             });
-            it('alder og sammensatt navn skal kun settes hvis formen er valid', function() {
+            it('alder og sammensatt navn skal kun settes hvis formen er valid', function () {
                 var idag = new Date();
                 var lastyear = idag.getFullYear() - 1;
                 var month = idag.getMonth() + 1;
@@ -316,7 +321,7 @@
                 expect(scope.barn.properties.alder).toEqual(1);
                 expect(scope.barn.properties.sammensattnavn).toEqual("Fornavn Etternavn");
             });
-            it('alder og sammensatt navn skal ikke være satt naar formen er valid', function() {
+            it('alder og sammensatt navn skal ikke være satt naar formen er valid', function () {
                 var idag = new Date();
                 var overAtten = idag.getFullYear() - 18;
                 var denneManeden = idag.getMonth() + 1;
@@ -333,17 +338,17 @@
                 expect(scope.barn.properties.alder).toEqual(undefined);
                 expect(scope.barn.properties.sammensattnavn).toEqual(undefined);
             });
-            it('skal returnere true for EOSland som ikke er norge', function() {
+            it('skal returnere true for EOSland som ikke er norge', function () {
                 scope.eosLandType = "eos";
                 expect(scope.erEosLandAnnetEnnNorge()).toBe(true);
             });
-            it('erEosLandAnnetEnnNorge skal returnere false for norge', function() {
+            it('erEosLandAnnetEnnNorge skal returnere false for norge', function () {
                 scope.eosLandType = "Norge";
                 expect(scope.erEosLandAnnetEnnNorge()).toBe(false);
                 scope.eosLandType = "norge";
                 expect(scope.erEosLandAnnetEnnNorge()).toBe(false);
             });
-            it('erIkkeEosLand skal returnere false for et land som ikke er i eos', function() {
+            it('erIkkeEosLand skal returnere false for et land som ikke er i eos', function () {
                 scope.eosLandType = "ikkeEos";
                 expect(scope.erIkkeEosLand()).toBe(true);
             });
@@ -420,7 +425,7 @@
                 var barn = {
                     key: 'barn',
                     properties: {ikkebarneinntekt: 'false',
-                                barnetillegg: 'true'}
+                        barnetillegg: 'true'}
                 };
                 expect(scope.kreverVedlegg(barn)).toEqual(true);
             });
@@ -439,7 +444,7 @@
                 };
                 expect(scope.kreverVedlegg(barn)).toEqual(true);
             });
-            it('erGutt skal returnere true for barn med hannkjønn og false for barn med hunnkjønn', function() {
+            it('erGutt skal returnere true for barn med hannkjønn og false for barn med hunnkjønn', function () {
                 var gutt = {
                     key: 'barn',
                     properties: {kjonn: 'm'}
@@ -451,7 +456,7 @@
                 expect(scope.erGutt(gutt)).toEqual(true);
                 expect(scope.erGutt(jente)).toEqual(false);
             });
-            it('erJente skal returnere true for barn med hunnkjønn og false for barn med hannkjønn ', function() {
+            it('erJente skal returnere true for barn med hunnkjønn og false for barn med hannkjønn ', function () {
                 var gutt = {
                     key: 'barn',
                     properties: {kjonn: 'm'}
@@ -463,7 +468,7 @@
                 expect(scope.erJente(gutt)).toEqual(false);
                 expect(scope.erJente(jente)).toEqual(true);
             });
-            it('barnetHarInntekt skal returnere true hvis barnet har inntekt og false hvis barnet ikke har inntekt', function() {
+            it('barnetHarInntekt skal returnere true hvis barnet har inntekt og false hvis barnet ikke har inntekt', function () {
                 var barnInntekt = {
                     key: 'barn',
                     properties: {ikkebarneinntekt: 'false'}
@@ -475,7 +480,7 @@
                 expect(scope.barnetHarInntekt(barnInntekt)).toBe(true);
                 expect(scope.barnetHarInntekt(barnIkkeInntekt)).toBe(false);
             });
-            it('barnetHarIkkeInntekt skal returnere true hvis barnet ikke har inntekt og false hvis barnet  har inntekt', function() {
+            it('barnetHarIkkeInntekt skal returnere true hvis barnet ikke har inntekt og false hvis barnet  har inntekt', function () {
                 var barnInntekt = {
                     key: 'barn',
                     properties: {ikkebarneinntekt: 'false'}
@@ -487,7 +492,7 @@
                 expect(scope.barnetHarIkkeInntekt(barnInntekt)).toBe(false);
                 expect(scope.barnetHarIkkeInntekt(barnIkkeInntekt)).toBe(true);
             });
-            it('barnetilleggErRegistrert skal returnere true hvis barnet har barnetillegg', function() {
+            it('barnetilleggErRegistrert skal returnere true hvis barnet har barnetillegg', function () {
                 var barnIkkeTillegg = {
                     key: 'barn',
                     properties: {barnetillegg: 'false'}
@@ -499,7 +504,7 @@
                 expect(scope.barnetilleggErRegistrert(barnIkkeTillegg)).toEqual(false);
                 expect(scope.barnetilleggErRegistrert(barnTillegg)).toEqual(true);
             });
-            it('barnetilleggIkkeRegistrert skal returnere true hvis barnet ikke har barnetillegg', function() {
+            it('barnetilleggIkkeRegistrert skal returnere true hvis barnet ikke har barnetillegg', function () {
                 var barnIkkeTillegg = {
                     key: 'barn',
                     properties: {barnetillegg: 'false'}
@@ -519,7 +524,7 @@
                 };
                 ctrl = $controller('AdresseCtrl', {
                     $scope: scope
-                    
+
                 });
             }));
 
@@ -531,12 +536,12 @@
                 scope.personalia = {gjeldendeAdresse: "Gjeldene adresse", sekundarAdresse: 'sekundær adresse'};
                 expect(scope.harGjeldendeAdresse()).toEqual(true);
             });
-            it('adressen skal returneres på adresseformatet', function() {
+            it('adressen skal returneres på adresseformatet', function () {
                 var adresse = "Gatenavn 1, Poststed 0000";
                 var formatertAdresse = '<p>Gatenavn 1</p><p>Poststed 0000</p>';
                 expect(scope.hentFormattertAdresse(adresse)).toEqual(formatertAdresse);
             });
-            it('formatertAdresse med ingen adresse skal returnere tom streng', function() {
+            it('formatertAdresse med ingen adresse skal returnere tom streng', function () {
                 expect(scope.hentFormattertAdresse()).toEqual('');
             });
             it('adressetype BOSTEDSADRESSE skal returnere folkeregistrertadresse ', function () {
@@ -687,7 +692,8 @@
 
             it('bolk skal få valideringsmetode når leggTilValideringsmetode blir kalt', function () {
                 expect(scope.grupper[0].valideringsmetode).toBe(undefined);
-                scope.leggTilValideringsmetode('reellarbeidssoker', function() {});
+                scope.leggTilValideringsmetode('reellarbeidssoker', function () {
+                });
                 expect(scope.grupper[0].valideringsmetode).toNotBe(undefined);
             });
             it('bolk skal bli validert når settValidert blir kalt', function () {
@@ -695,6 +701,21 @@
                 expect(scope.grupper[0].validering).toBe(true);
                 scope.settValidert('reellarbeidssoker');
                 expect(scope.grupper[0].validering).toBe(false);
+            });
+            it('leggTilStickyFeilmelding skal bli kjort nar stickyFeilmelding blir kalt', function () {
+               spyOn(scope, "leggTilStickyFeilmelding");
+                scope.stickyFeilmelding();
+                expect(scope.leggTilStickyFeilmelding).toHaveBeenCalled();
+            });
+            it('bolk skal få status apen til true når apneTab blir kalt', function () {
+                scope.grupper = [{id: 'bolk', apen: false}];
+                scope.apneTab("bolk");
+                expect(scope.grupper[0].apen).toBe(true);
+            });
+            it('bolk skal få status apen til false når lukkTab blir kalt', function () {
+                scope.grupper = [{id: 'bolk', apen: true}];
+                scope.lukkTab("bolk");
+                expect(scope.grupper[0].apen).toBe(false);
             });
         });
 
