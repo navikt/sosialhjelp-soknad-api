@@ -1,0 +1,92 @@
+<div data-nav-faktum="reellarbeidssoker.villigdeltid"
+     data-ng-model="faktum.value"
+     data-navconfig
+     data-booleanradio
+     data-nokkel="reellarbeidssoker.villigdeltid">
+
+    <div data-ng-if="erUnder60Aar()" data-navinfoboks>
+        <span>{{ 'reellarbeidssoker.villigdeltid.false.informasjon.under60' | cmstekst }}</span>
+    </div>
+
+    <div data-ng-if="erOver59Aar()" data-navinfoboks>
+        <span>{{ 'reellarbeidssoker.villigdeltid.false.informasjon.over60' | cmstekst }}</span>
+    </div>
+
+    <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
+        <input type="hidden" data-ng-model="harHuketAvCheckboksDeltid.value"
+               data-nav-faktum="reellarbeidssoker.villigdeltid"
+               data-ng-required="faktum.value == 'false' && erUnder60Aar()"
+               data-error-messages="'reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding'">
+
+        <div data-navcheckbox
+             data-navconfig
+             data-nav-faktum="reellarbeidssoker.villigdeltid.reduserthelse"
+             data-navlabel="reellarbeidssoker.reduserthelse"
+             data-navendret="endreDeltidsAarsaker()"></div>
+
+        <div data-navcheckbox
+             data-navconfig
+             data-nav-faktum="reellarbeidssoker.villigdeltid.omsorgbarnunder1aar"
+             data-navlabel="reellarbeidssoker.omsorgbarnunder1aar"
+             data-navendret="endreDeltidsAarsaker()"></div>
+
+        <div data-navcheckbox
+             data-navconfig
+             data-nav-faktum="reellarbeidssoker.villigdeltid.eneansvarbarnunder5skoleaar"
+             data-navlabel="reellarbeidssoker.eneansvarbarnunder5skoleaar"
+             data-navendret="endreDeltidsAarsaker()"></div>
+
+        <div data-navcheckbox
+             data-navconfig
+             data-nav-faktum="reellarbeidssoker.villigdeltid.eneansvarbarnopptil18aar"
+             data-navlabel="reellarbeidssoker.eneansvarbarnopptil18aar"
+             data-navendret="endreDeltidsAarsaker()"></div>
+
+        <div data-navcheckbox
+             data-navconfig
+             data-nav-faktum="reellarbeidssoker.villigdeltid.omsorgansvar"
+             data-navlabel="reellarbeidssoker.omsorgansvar"
+             data-navendret="endreDeltidsAarsaker()"></div>
+
+        <div data-navcheckbox
+             data-nav-faktum="reellarbeidssoker.villigdeltid.annensituasjon"
+             data-navconfig
+             data-navlabel="reellarbeidssoker.annensituasjon"
+             data-navendret="endreDeltidsAarsaker()"></div>
+
+        <div class="siste-element" data-ng-if="harValgtAnnetUnntakDeltid()" data-navinfoboks>
+            <p>{{ 'reellarbeidssoker.unntak.dokumentasjon' | cmstekst }}</p>
+        </div>
+
+        <span class="melding">{{ 'reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding' | cmstekst }}</span>
+    </div>
+
+    <div class="tekstfelt form-linje arbeidsmengde-container">
+        <h4 class="spm-sporsmal">
+            <span data-ng-if="erUnder60Aar()">{{ 'reellarbeidssoker.villigdeltid.false.informasjon2' | cmstekst }}</span>
+            <span>{{ 'reellarbeidssoker.maksimalarbeidstid' | cmstekst }}</span>
+        </h4>
+        <label>
+            <span class="labeltekst">{{ 'reellarbeidssoker.maksimalarbeidstid.label' | cmstekst }}</span>
+            <input type="text"
+                   data-ng-model="faktum.value"
+                   data-nav-faktum="reellarbeidssoker.villigdeltid.maksimalarbeidstid"
+                   data-navconfig
+                   data-ng-required="true"
+                   data-error-messages="{ required: 'reellarbeidssoker.maksimalarbeidstid.feilmelding',
+                           pattern: 'reellarbeidssoker.maksimalarbeidstid.pattern.feilmelding'}"
+                   data-ng-pattern="/^(\d+(?:[\.\,]\d)?)$/"
+                   data-tekstfelt-patternvalidering
+                   data-blur-validate/>
+            <span class="melding"></span>
+        </label>
+    </div>
+
+    <div data-vedlegginfoboks data-ng-if="trengerUtalelseFraFagpersonellDeltid()">
+        <ul>
+            <li>
+                <span>{{ 'reellarbeidssoker.utalelsefagpersonell.vedlegginformasjon' | cmstekst }}</span>
+            </li>
+        </ul>
+    </div>
+</div>

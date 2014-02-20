@@ -54,7 +54,7 @@
                 slettFaktum: function (faktumData) {
                 }
             });
-            $provide.value("cms", {});
+            $provide.value("cms", {'tekster': {'barnetillegg.nyttbarn.landDefault': ''}});
         }));
 
         beforeEach(inject(function ($rootScope, $controller, $compile, $httpBackend) {
@@ -180,10 +180,11 @@
             });
         });
         describe('BarneCtrl', function () {
-            beforeEach(inject(function (_$httpBackend_, $controller) {
+            beforeEach(inject(function (_$httpBackend_, $controller, cms) {
                 ctrl = $controller('BarneCtrl', {
                     $scope: scope
                 });
+                scope.cms = cms;
                 $httpBackend = _$httpBackend_;
                 $httpBackend.expectGET('/sendsoknad/rest/landtype/'+scope.barn.properties.land).
                     respond({});
@@ -324,10 +325,11 @@
 
         });
         describe('BarnetilleggCtrl', function () {
-            beforeEach(inject(function ($controller) {
+            beforeEach(inject(function ($controller, data) {
                 ctrl = $controller('BarnetilleggCtrl', {
                     $scope: scope
                 });
+                scope.data = data;
             }));
 
             it('erBrukerregistrert skal returnere true for brukerregistert barn', function () {
@@ -513,7 +515,7 @@
                 expect(scope.hentAdresseTypeNokkel("POSTADRESSE")).toEqual("personalia.folkeregistrertadresse");
             });
             it('adressetype MIDLERTIDIG_POSTADRESSE_NORGE skal returnere folkeregistrertadresse ', function () {
-                expect(scope.hentAdresseTypeNokkel("MIDLERTIDIG_POSTADRESSE_NORGE")).toEqual("MIDLERTIDIG_POSTADRESSE_NORGE");
+                expect(scope.hentAdresseTypeNokkel("MIDLERTIDIG_POSTADRESSE_NORGE")).toEqual("personalia.midlertidigAdresseNorge");
             });
             it('adressetype MIDLERTIDIG_POSTADRESSE_UTLAND skal returnere folkeregistrertadresse ', function () {
                 expect(scope.hentAdresseTypeNokkel("MIDLERTIDIG_POSTADRESSE_UTLAND")).toEqual("personalia.midlertidigAdresseUtland");

@@ -1,9 +1,14 @@
-<div id="fangst-og-fiske">
+<div id="fangst-og-fiske"
+     data-nav-faktum="egennaering.fangstogfiske"
+     data-navconfig
+     data-booleanradio
+     data-nokkel="egennaering.fangstogfiske">
+
     <div data-navinfoboks>
         <p>{{ 'egennaering.fangstogfiske.false.arbeid.informasjon' | cmstekst }}</p>
     </div>
 
-    <div data-nav-faktum="reellarbeidssoker.villigdeltid"
+    <div data-nav-faktum="egennaering.fangstogfiske.false.arbeid"
          data-ng-model="faktum.value"
          data-navconfig
          data-booleanradio
@@ -18,10 +23,6 @@
                  data-regexvalidering="/^(\d+(?:[\.\,]\d{0,2})?)$/">
             </div>
         </div>
-        <div data-vedlegginfoboks>
-            <ul>
-                <li><p>{{ 'egennaering.fangstogfiske.false.arbeid.vedlegg' | cmstekst }}</p></li>
-            </ul>
-        </div>
-     </div>
+    </div>
+
 </div>

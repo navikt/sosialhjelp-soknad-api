@@ -1,0 +1,27 @@
+<div data-modalside>
+    <div class="vertikal barn-spm" data-ng-form="nyttBarnForm" data-ng-controller="BarneCtrl">
+        <a href="#/soknad" data-ng-click="avbrytBarnetilegg($event)" class="lukk"></a>
+        <div data-form-errors></div>
+
+        <div data-nav-faktum="barn" data-ikke-auto-lagre="true">
+            <h2 class="stor-strek">
+                <span>{{ 'barnetillegg.sokerbarnetillegg.tittel' | cmstekst }}</span>
+                <span data-ng-bind="barnenavn"></span>
+            </h2>
+            <div data-ng-include="'../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html'"></div>
+        </div>
+
+        <div class="knapper-opprett">
+            <input class="knapp-hoved-liten" name="lagre" type="submit"
+                   value="{{ 'barnetillegg.nyttbarn.lagre' | cmstekst }}"
+                   data-ng-click="lagreBarneFaktum(nyttBarnForm);">
+
+            <a href="#/soknad" data-ng-click="avbrytBarnetilegg($event)">
+                {{ 'barnetillegg.nyttbarn.avbryt' | cmstekst }}
+            </a>
+        </div>
+    </div>
+</div>
+
+
+

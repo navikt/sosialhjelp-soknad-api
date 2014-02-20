@@ -65,6 +65,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
 
         try {
             kjerneinformasjonResponse = personConnector.hentKjerneinformasjon(lagXMLRequestKjerneinformasjon(fodselsnummer));
+
             preferanserResponse = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequestPreferanser(fodselsnummer));
         } catch (IkkeFunnetException | HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
             logger.error("Ikke funnet person i TPS", e);
