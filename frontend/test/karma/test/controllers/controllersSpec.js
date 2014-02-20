@@ -717,6 +717,17 @@
                 scope.lukkTab("bolk");
                 expect(scope.grupper[0].apen).toBe(false);
             });
+            it('bolk1 skal få status apen til false når lukkTab blir kalt for bolk1', function () {
+                scope.grupper = [{id: 'bolk1', apen: true},{id: 'bolk2', apen: true}];
+                scope.lukkTab("bolk1");
+                expect(scope.grupper[0].apen).toBe(false);
+                expect(scope.grupper[1].apen).toBe(true);
+            });
+            it('bolk skal få ikke få status apen til false når bolknavnet ikke finnes', function () {
+                scope.grupper = [{id: 'bolk', apen: true}];
+                scope.lukkTab("bolkFeilNavn");
+                expect(scope.grupper[0].apen).toBe(true);
+            });
         });
 
     });
