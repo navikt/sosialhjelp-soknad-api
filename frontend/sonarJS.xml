@@ -18,7 +18,7 @@
      	<!-- sonar.test>test</sonar.test-->
      	
      	
-     	
+     	<sonar.host.url>http://sonar.devillo.no/sonar</sonar.host.url>
      	<sonar.sources>js</sonar.sources>
      	<sonar.branch>js</sonar.branch>
         <sonar.language>js</sonar.language>
