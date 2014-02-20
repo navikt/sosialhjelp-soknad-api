@@ -61,7 +61,7 @@ public class ServletContext extends WebMvcConfigurerAdapter {
         MappingJackson2HttpMessageConverter json = new MappingJackson2HttpMessageConverter();
         json.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN));
         ByteArrayHttpMessageConverter imageConverter = new ByteArrayHttpMessageConverter();
-        imageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.IMAGE_PNG, MediaType.IMAGE_JPEG));
+        imageConverter.setSupportedMediaTypes(Arrays.asList(MediaType.IMAGE_PNG, MediaType.IMAGE_JPEG, MediaType.APPLICATION_OCTET_STREAM));
         StringHttpMessageConverter http = new StringHttpMessageConverter(Charset.forName("UTF-8"));
         http.setSupportedMediaTypes(Arrays.asList(MediaType.TEXT_HTML));
         converters.add(json);

@@ -1,5 +1,10 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGyldighetsperiode;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostboksadresseNorsk;
+
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseNorge;
+
 import no.aetat.arena.fodselsnr.Fodselsnr;
 import no.aetat.arena.personstatus.Personstatus;
 import no.aetat.arena.personstatus.PersonstatusType;
@@ -55,6 +60,7 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 import org.apache.commons.io.IOUtils;
+import org.joda.time.DateTime;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -393,6 +399,14 @@ public class MockConsumerConfig {
         private static final String EN_ADRESSELINJE = "Poitigatan 55";
         private static final String EN_ANNEN_ADRESSELINJE = "Nord-Poiti";
         private static final String EN_TREDJE_ADRESSELINJE = "1111 Helsinki";
+        
+        private static final String EN_POSTBOKS_ADRESSEEIER = "Per Conradi";
+        private static final String ET_POSTBOKS_NAVN = "Postboksstativet";
+        private static final String EN_POSTBOKS_NUMMER = "66";
+        private static final String EN_ANNEN_ADRESSE_POSTNUMMER = "0565";
+        private static final Long EN_ANNEN_ADRESSE_GYLDIG_FRA = new DateTime(2012, 10, 11, 14, 44).getMillis();
+        private static final Long EN_ANNEN_ADRESSE_GYLDIG_TIL = new DateTime(2012, 11, 12, 15, 55).getMillis();
+
 
         private static XMLElektroniskKommunikasjonskanal lagElektroniskKommunikasjonskanal() {
             return new XMLElektroniskKommunikasjonskanal().withElektroniskAdresse(lagElektroniskAdresse());
@@ -415,6 +429,7 @@ public class MockConsumerConfig {
             XMLBruker xmlBruker = genererXmlBrukerMedGyldigIdentOgNavn(true);
 
             settAdresse(xmlBruker, "BOSTEDSADRESSE");
+            settSekundarAdresse(xmlBruker);
 
             response.setPerson(xmlBruker);
 
@@ -422,6 +437,41 @@ public class MockConsumerConfig {
             //Mockito.doThrow(new RuntimeException()).when(mock).hentKontaktinformasjonOgPreferanser(any(XMLHentKontaktinformasjonOgPreferanserRequest.class));
 
             return mock;
+        }
+
+        private void settSekundarAdresse(XMLBruker xmlBruker) {
+            XMLMidlertidigPostadresseNorge midlertidigPostboksAdresseNorge = generateMidlertidigPostboksAdresseNorge();
+            xmlBruker.setMidlertidigPostadresse(midlertidigPostboksAdresseNorge);
+            XMLPostadressetyper xmlPostadresseType = new XMLPostadressetyper();
+            xmlPostadresseType.setValue("MIDLERTIDIG_POSTADRESSE_NORGE");
+            
+            xmlBruker.setMidlertidigPostadresse(midlertidigPostboksAdresseNorge);
+        }
+        
+        private XMLMidlertidigPostadresseNorge generateMidlertidigPostboksAdresseNorge() {
+            XMLMidlertidigPostadresseNorge xmlMidlertidigNorge = new XMLMidlertidigPostadresseNorge();
+            XMLGyldighetsperiode xmlGyldighetsperiode = generateGyldighetsperiode(true);
+            xmlMidlertidigNorge.setPostleveringsPeriode(xmlGyldighetsperiode);
+            
+            XMLPostboksadresseNorsk xmlPostboksAdresse = new XMLPostboksadresseNorsk();
+            xmlPostboksAdresse.setPostboksanlegg(ET_POSTBOKS_NAVN);
+            xmlPostboksAdresse.setPostboksnummer(EN_POSTBOKS_NUMMER);
+            xmlPostboksAdresse.setTilleggsadresse(EN_POSTBOKS_ADRESSEEIER);
+            XMLPostnummer xmlpostnummer = new XMLPostnummer();
+            xmlpostnummer.setValue(EN_ANNEN_ADRESSE_POSTNUMMER);
+            xmlPostboksAdresse.setPoststed(xmlpostnummer);
+            xmlMidlertidigNorge.setStrukturertAdresse(xmlPostboksAdresse);
+            return xmlMidlertidigNorge;
+        }
+
+        private XMLGyldighetsperiode generateGyldighetsperiode(boolean harFraDato) {
+            XMLGyldighetsperiode xmlGyldighetsperiode = new XMLGyldighetsperiode();
+            if (harFraDato) {
+                xmlGyldighetsperiode.setFom(new DateTime(
+                        EN_ANNEN_ADRESSE_GYLDIG_FRA));
+            }
+            xmlGyldighetsperiode.setTom(new DateTime(EN_ANNEN_ADRESSE_GYLDIG_TIL));
+            return xmlGyldighetsperiode;
         }
 
         private void settAdresse(XMLBruker xmlBruker, String type) {

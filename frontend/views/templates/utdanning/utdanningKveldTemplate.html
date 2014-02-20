@@ -59,6 +59,15 @@
     </div>
 </div>
 
+<div class="varighet form-linje" data-ng-if="hvis('utdanning.kveld.progresjonUnder50', 'false')">
+    <h4 class="spm-sporsmal">{{ 'utdanning.semester.avslutning.label' | cmstekst }}</h4>
+    <div data-nav-dato
+         data-ng-model="utdanning.semester.avslutning"
+         data-label="utdanning.semester.avslutning.dato"
+         data-required-error-message="utdanning.semester.avslutning.feilmelding">
+    </div>
+</div>
+XXXX
 <div data-vedlegginfoboks>
     <ul>
         <li><p data-cmstekster="utdanning.svar.under.utdanning.dokumentasjon"></p></li>

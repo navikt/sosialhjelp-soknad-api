@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -13,6 +14,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Faktum implements Serializable {
     private Long faktumId;
     private Long soknadId;

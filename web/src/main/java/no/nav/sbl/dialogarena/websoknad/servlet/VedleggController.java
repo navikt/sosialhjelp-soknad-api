@@ -5,9 +5,9 @@ import no.nav.sbl.dialogarena.soknadinnsending.VedleggOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -46,12 +46,8 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 @RequestMapping("/soknad/{soknadId}/vedlegg")
 public class VedleggController {
     private static final Logger LOG = LoggerFactory.getLogger(VedleggController.class);
-    //private static final List<String> LEGAL_CONTENT_TYPES = Arrays.asList("application/pdf", "image/png", "image/jpeg");
     @Inject
     private VedleggService vedleggService;
-
-    @Inject
-    private SendSoknadService soknadService;
 
     private static byte[] getByteArray(MultipartFile file) {
         try {
@@ -75,7 +71,7 @@ public class VedleggController {
     public Vedlegg hentVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
         return vedleggService.hentVedlegg(soknadId, vedleggId, false);
     }
-    
+
     @RequestMapping(value = "/{faktumId}/hentannetvedlegg", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
     @SjekkTilgangTilSoknad
@@ -137,18 +133,18 @@ public class VedleggController {
     @RequestMapping(value = "/{vedleggId}/opplasting", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
     @ResponseBody()
     @ResponseStatus(HttpStatus.CREATED)
-    @SjekkTilgangTilSoknad
-    public Callable<VedleggOpplasting> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestParam("files[]") final List<MultipartFile> files) {
+    @SjekkTilgangTilSoknad(sjekkXsrf = false)
+    public Callable<VedleggOpplasting> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestParam("X-XSRF-TOKEN") final String xsrfToken, @RequestParam("files[]") final List<MultipartFile> files) {
+        XsrfGenerator.sjekkXsrfToken(xsrfToken, soknadId);
         return new Callable<VedleggOpplasting>() {
 
             @Override
             public VedleggOpplasting call() throws Exception {
                 Vedlegg forventning = vedleggService.hentVedlegg(soknadId, vedleggId, false);
-              
+
                 List<Vedlegg> res = new ArrayList<>();
                 for (MultipartFile file : files) {
                     byte[] in = getByteArray(file);
-                    
                     Vedlegg vedlegg = new Vedlegg()
                             .medVedleggId(null)
                             .medSoknadId(soknadId)
@@ -161,7 +157,7 @@ public class VedleggController {
                             .medData(in)
                             .medOpprettetDato(forventning.getOpprettetDato())
                             .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
-                    
+
                     List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, new ByteArrayInputStream(in));
                     for (Long id : ids) {
                         res.add(vedleggService.hentVedlegg(soknadId, id, false));
