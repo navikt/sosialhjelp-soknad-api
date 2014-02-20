@@ -4,30 +4,26 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>no.nav.sbl.dialogarena</groupId>
-        <artifactId>sendsoknad</artifactId>
-        <version>1.0.8-SNAPSHOT</version>
-    </parent>
-
-    <artifactId>sendsoknad-frontend</artifactId>
+    <artifactId>sendsoknad-frontend-sonar-js</artifactId>
     <name>${project.artifactId}</name>
     <packaging>jar</packaging>
     <properties>
     	
     	<!-- sonar.projectName>sendsoknad-frontend js</sonar.projectName>
-        <sonar.projectKey>no.nav.sbl.dialogarena:sendsoknad-frontend:js</sonar.projectKey>
-     	<sonar.projectVersion>1.0.8-SNAPSHOT</sonar.projectVersion>
-     	<sonar.sources>js</sonar.sources-->
+        <sonar.projectKey>no.nav.sbl.dialogarena:sendsoknad-frontend:js</sonar.projectKey-->
+     	
      	<!-- sonar.test>test</sonar.test-->
      	
-     	<!-- sonar.branch>js</sonar.branch>
+     	
+     	
+     	<sonar.sources>js</sonar.sources>
+     	<sonar.branch>js</sonar.branch>
         <sonar.language>js</sonar.language>
         <sonar.exclusions>js/jquery/**,js/lib/**</sonar.exclusions>
         
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.javascript.jstest.reportsPath>target/surefire-reports/</sonar.javascript.jstest.reportsPath>
-        <sonar.javascript.lcov.reportPath>target/karma-coverage/PhantomJS 1.9.7 (Linux)/lcov.info</sonar.javascript.lcov.reportPath-->
+        <sonar.javascript.lcov.reportPath>target/karma-coverage/PhantomJS 1.9.7 (Linux)/lcov.info</sonar.javascript.lcov.reportPath>
         
         <grunttarget>maven-prod</grunttarget>
     </properties>
@@ -39,6 +35,9 @@
                 <filtering>false</filtering>
                 <targetPath>META-INF/resources/views</targetPath>
                 <directory>views/built</directory>
+                
+                <sourceDirectory>js</sourceDirectory>
+     			<testSourceDirectory>test</sourceDirectory>
             </resource>
         </resources>
 		<plugins>
