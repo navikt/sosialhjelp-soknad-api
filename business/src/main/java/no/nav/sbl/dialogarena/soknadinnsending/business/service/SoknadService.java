@@ -468,8 +468,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
         if (vedlegg.getStorrelse() > 0) {
             vedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
-        } else {
-            vedlegg.setInnsendingsvalg(Vedlegg.Status.VedleggKreves);
         }
         vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
     }

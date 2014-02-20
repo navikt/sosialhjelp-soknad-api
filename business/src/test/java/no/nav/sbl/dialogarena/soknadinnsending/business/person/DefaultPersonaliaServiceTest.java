@@ -1,18 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland;
-
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosBorgerService;
@@ -31,6 +18,7 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGyldighetsperio
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLLandkoder;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMatrikkeladresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseNorge;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseUtland;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLNorskIdent;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPersonnavn;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostadresse;
@@ -52,7 +40,6 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
-
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -62,17 +49,30 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.Logger;
 
 import javax.xml.ws.WebServiceException;
-
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.slf4j.LoggerFactory.getLogger;
+
 @RunWith(value = MockitoJUnitRunner.class)
 public class DefaultPersonaliaServiceTest {
+
+
     private static final String RIKTIG_IDENT = "56128349974";
     private static final String BARN_IDENT = "***REMOVED***";
     private static final String BARN_FORNAVN = "Bjarne";
@@ -205,8 +205,15 @@ public class DefaultPersonaliaServiceTest {
         request.setIdent(FEIL_IDENT);
         when(personMock.hentKjerneinformasjon(request)).thenThrow(
                 HentKjerneinformasjonPersonIkkeFunnet.class);
-        Personalia personalia;
-        personalia = personaliaService.hentPersonalia(FEIL_IDENT);
+        Personalia personalia = null;
+        try
+        {
+            personalia = personaliaService.hentPersonalia(FEIL_IDENT);
+        }
+        catch (Exception e)
+        {
+
+        }
 
         assertThat(personalia, is(not(nullValue())));
     }
