@@ -31,7 +31,7 @@
 
 	<build>
 		<sourceDirectory>js</sourceDirectory>
-     	<testSourceDirectory>test</sourceDirectory>
+     	<testSourceDirectory>test</testSourceDirectory>
         <resources>
             <resource>
                 <filtering>false</filtering>
