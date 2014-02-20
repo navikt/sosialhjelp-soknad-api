@@ -533,13 +533,11 @@
             });
             it('adressen skal returneres på adresseformatet', function() {
                 var adresse = "Gatenavn 1, Poststed 0000";
-                var formatertAdresse = '<p>Gatnenavn 1</p><p>Poststed 0000</p>';
+                var formatertAdresse = '<p>Gatenavn 1</p><p>Poststed 0000</p>';
                 expect(scope.hentFormattertAdresse(adresse)).toEqual(formatertAdresse);
             });
-            it('formatertAdresse med ingen adresse skal retu', function() {
-                var adresse = "Gatenavn 1, Poststed 0000";
-                var formatertAdresse = '<p>Gatnenavn 1</p><p>Poststed 0000</p>';
-                expect(scope.hentFormattertAdresse(adresse)).toEqual(formatertAdresse);
+            it('formatertAdresse med ingen adresse skal returnere tom streng', function() {
+                expect(scope.hentFormattertAdresse()).toEqual('');
             });
             it('adressetype BOSTEDSADRESSE skal returnere folkeregistrertadresse ', function () {
                 expect(scope.hentAdresseTypeNokkel("BOSTEDSADRESSE")).toEqual("personalia.folkeregistrertadresse");
@@ -559,7 +557,6 @@
             it('ugyldig adressetype skal returnere tom string ', function () {
                 expect(scope.hentAdresseTypeNokkel("sdfsdf")).toEqual("");
             });
-
         });
         describe('ArbeidsforholdCtrl', function () {
             beforeEach(inject(function ($controller, data) {
