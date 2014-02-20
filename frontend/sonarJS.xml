@@ -4,6 +4,9 @@
 
     <modelVersion>4.0.0</modelVersion>
 
+	<groupId>no.nav.sbl.dialogarena</groupId>
+	<version>1.0.8-SNAPSHOT</version>
+
     <artifactId>sendsoknad-frontend-sonar-js</artifactId>
     <name>${project.artifactId}</name>
     <packaging>jar</packaging>
