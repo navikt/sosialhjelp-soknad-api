@@ -128,6 +128,9 @@
                 scope.valider();
                 expect(scope.runValidationBleKalt).toEqual(true);
             });
+            it('skal kjøre metodene lukkTab og settValidert for valid form', function() {
+
+            })
         });
         describe('UtdanningCtrl', function () {
             beforeEach(inject(function ($controller) {
@@ -170,11 +173,9 @@
                 expect(scope.erUnder60Aar()).toBe(false);
             });
             it('skal returnere true for valgt annet unntak deltid', function () {
-                var unntakDeltid = {
-                    key: 'reellarbeidssoker.villigdeltid.annensituasjon',
+                scope.deltidannen = {
                     value: 'true'
                 };
-                scope.data.leggTilFaktum(unntakDeltid);
                 expect(scope.harValgtAnnetUnntakDeltid()).toEqual(true);
             });
         });

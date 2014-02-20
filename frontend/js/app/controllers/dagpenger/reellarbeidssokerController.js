@@ -44,7 +44,8 @@ angular.module('nav.reellarbeidssoker', [])
         };
 
         $scope.harValgtAnnetUnntakDeltid = function () {
-            if ($scope.deltidannen !== undefined) {
+            if ($scope.deltidannen !== undefined ) {
+                console.log($scope.deltidannen)
                 return $scope.deltidannen.value === 'true';
             }
             else {
