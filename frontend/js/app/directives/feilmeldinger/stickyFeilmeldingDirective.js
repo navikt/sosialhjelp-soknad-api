@@ -1,189 +1,272 @@
 angular.module('nav.stickyFeilmelding', [])
 
-	.directive('stickyFeilmelding', [function () {
-		return {
-			require    : '^form',
-			templateUrl: '../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html',
-			replace    : true,
-			transclude : true,
-			restrict   : 'A',
-			link       : function (scope, element, attrs, ctrl) {
-				scope.feil = [];
-				scope.feil.antallFeilMedKlasseFeil = 0;
-				scope.feil.antallFeilMedKlasseFeilstyling = 0;
-				scope.feil.skalViseStickyFeilmeldinger = false;
-				scope.feil.navaerende = 0;
+    .directive('stickyFeilmelding', [function () {
+        return {
+            require: '^form',
+            templateUrl: '../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html',
+            replace: true,
+            transclude: true,
+            restrict: 'A',
+            link: function (scope, element, attrs, ctrl) {
+                scope.feil = [];
+                scope.feil.antallFeil = 0;
+                scope.feil.skalViseStickyFeilmeldinger = false;
+                scope.feil.navaerende = 0;
 
-				var elem = element.next();
-				var bolker = $('[data-accordion-group]');
-				var skalDeaktivereForrigeKnapp = true;
-				var skalDeaktivereNesteKnapp = false;
-				var feilHarBlittRettet = false;
+                var elem = element.next();
+                var bolker = $('[data-accordion-group]');
+                var skalDeaktivereForrigeKnapp = true;
+                scope.skalDeaktivereNesteKnapp = false;
+                var feilHarBlittRettet = false;
+                var nestForsteOgForsteRettet = false;
+                var stodPaforsteRettetEnFeilEnFeilIgjen = false;
 
-                scope.leggTilStickyFeilmelding = function() {
+                scope.leggTilStickyFeilmelding = function () {
+                    scope.feil.navaerende = 0;
+                    feilHarBlittRettet = false;
+                    nestForsteOgForsteRettet = false;
+                    stodPaforsteRettetEnFeilEnFeilIgjen = false;
+
                     elem = element.next();
                     bolker = $('[data-accordion-group]');
 
                     scope.feil.skalViseStickyFeilmeldinger = true;
-                    var elementerMedFeil = elem.find('.form-linje.feil');
-                    var elementerMedFeilstyling = elem.find('.form-linje.feilstyling');
-                    scope.feil.antallFeilMedKlasseFeil = elementerMedFeil.not('.ng-hide').length;
-                    scope.feil.antallFeilMedKlasseFeilstyling = elementerMedFeilstyling.not('.ng-hide').length;
+                    var elementerMedFeil = elem.find('.form-linje.feil, .form-linje.feilstyling');
+                    scope.feil.antallFeil = elementerMedFeil.not('.ng-hide').length;
+
+                    if (totalAntalLFeil() === 1) {
+                        scope.skalDeaktivereNesteKnapp = true;
+                    } else {
+                        scope.skalDeaktivereNesteKnapp = false;
+                    }
                 };
 
-				scope.forrige = function () {
-					if (!(feilHarBlittRettet && scope.feil.navaerende < 1)) {
-						if (scope.feil.navaerende > 0) {
-							leggTilMarkeringAvFeilmelding(-1);
-							feilHarBlittRettet = false;
-						} else if (scope.feil.navaerende === 0) {
-							skalDeaktivereForrigeKnapp = true;
-							feilHarBlittRettet = false;
-							leggTilMarkeringAvFeilmelding(0);
-						}
-					}
-					skalDeaktivereNesteKnapp = false;
-				};
-
-				scope.neste = function () {
-					if (!(feilHarBlittRettet && scope.feil.navaerende === totalAntalLFeil())) {
-						if (feilHarBlittRettet && scope.feil.navaerende > -1) {
-							scope.feil.navaerende = scope.feil.navaerende - 1;
-						}
-
-						if (scope.feil.navaerende < (totalAntalLFeil() - 1)) {
-							leggTilMarkeringAvFeilmelding(1);
-						} else if (scope.feil.navaerende < totalAntalLFeil()) {
-							leggTilMarkeringAvFeilmelding(0);
-						} else if (scope.feil.navaerende === totalAntalLFeil()) {
-							leggTilMarkeringAvFeilmelding(-1);
-						}
-						feilHarBlittRettet = false;
-					}
-				};
-
-				scope.$watch(function () {
-					return antallFeilMedKlasse('.feil');
-				}, function () {
-					if (feilMedKlasseFeilHarBlittRettet()) {
-						feilHarBlittRettet = true;
-						if (scope.feil.navaerende === 0) {
-							skalDeaktivereForrigeKnapp = true;
-						} else if (scope.feil.navaerende === totalAntalLFeil() - 1) {
-							skalDeaktivereNesteKnapp = true;
-						}
-					}
-					if (totalAntalLFeil() === 0) {
-						scope.feil.skalViseStickyFeilmeldinger = false;
+                scope.forrige = function () {
+                    if (sisteFeilAkkuratRettetOgFlereFeilIgjen() || enFeilIgjen() && !stodPaforsteRettetEnFeilEnFeilIgjen) {
+                        scope.skalDeaktivereNesteKnapp = true;
+                    } else {
+                        scope.skalDeaktivereNesteKnapp = false;
                     }
-					scope.feil.antallFeilMedKlasseFeil = antallFeilMedKlasse('.feil');
-				});
+                    if (!(feilHarBlittRettet && scope.feil.navaerende < 1)) {
+                        if (scope.feil.navaerende > 0) {
+                            leggTilMarkeringAvFeilmelding(-1, true);
+                            feilHarBlittRettet = false;
+                        } else if (scope.feil.navaerende === 0) {
+                            if (stodPaforsteRettetEnFeilEnFeilIgjen) {
+                                skalDeaktivereForrigeKnapp = true;
+                            } else {
+                                skalDeaktivereForrigeKnapp = true;
+                                feilHarBlittRettet = false;
+                                leggTilMarkeringAvFeilmelding(0, false);
+                            }
+                        }
+                    }
+                };
 
-				scope.$watch(function () {
-					return antallFeilMedKlasse('.feilstyling');
-				}, function () {
-					if (feilMedKlasseFeilstylingHarBlittRettet()) {
-						feilHarBlittRettet = true;
-						if (scope.feil.navaerende === 0) {
-							skalDeaktivereForrigeKnapp = true;
-						} else if (scope.feil.navaerende == totalAntalLFeil() - 1) {
-							skalDeaktivereNesteKnapp = true;
-						}
-					}
-					if (totalAntalLFeil() === 0) {
-						scope.feil.skalViseStickyFeilmeldinger = false;
-					}
-					scope.feil.antallFeilMedKlasseFeilstyling = antallFeilMedKlasse('.feilstyling');
-				});
+                scope.neste = function () {
+                    stodPaforsteRettetEnFeilEnFeilIgjen = false;
+                    if (!(feilHarBlittRettet && scope.feil.navaerende === totalAntalLFeil())) {
+                        if (feilHarBlittRettet && scope.feil.navaerende > 0 && varIkkePaSisteFeil()) {
+                            scope.feil.navaerende = scope.feil.navaerende - 1;
+                        }
+                        if (varToFeilNaEnFeilStodPaAndreFeil()) {
+                            leggTilMarkeringAvFeilmelding(1, true);
+                            scope.skalDeaktivereNesteKnapp = true;
+                            feilHarBlittRettet = false;
 
-				scope.skalVises = function () {
-					return scope.feil.antallFeilMedKlasseFeil + scope.feil.antallFeilMedKlasseFeilstyling > 0 &&
-						scope.feil.skalViseStickyFeilmeldinger;
-				};
+                        } else if (varToFeilNaEnFeilStodPaForsteFeil()) {
+                            leggTilMarkeringAvFeilmelding(0, true);
+                            scope.skalDeaktivereNesteKnapp = true;
+                            feilHarBlittRettet = false;
+                        } else if (feilHarBlittRettet && sisteFeilBleRettetOgStodPaNestSisteFeil()) {
+                            scope.skalDeaktivereNesteKnapp = true;
+                            scope.feil.navaerende = scope.feil.navaerende + 1;
+                            feilHarBlittRettet = true;
+                        } else if (nestForsteOgForsteRettet) {
+                            scope.feil.navaerende = 0;
+                            leggTilMarkeringAvFeilmelding(1, true);
+                            nestForsteOgForsteRettet = false;
+                            feilHarBlittRettet = false;
+                        } else if (stodPaForsteFeilBleRettet()) {
+                            leggTilMarkeringAvFeilmelding(0, true);
+                            feilHarBlittRettet = false;
+                        } else if (varIkkePaSisteFeil()) {
+                            leggTilMarkeringAvFeilmelding(1, true);
+                            feilHarBlittRettet = false;
 
-				scope.skalDeaktivereNesteKnapp = function () {
-					return harKommetTilEndenAvFeilmeldinger();
-				};
+                            if (erPaSisteFeil()) {
+                                scope.skalDeaktivereNesteKnapp = true;
+                            }
+                        } else if (erPaSisteFeil()) {
+                            leggTilMarkeringAvFeilmelding(0, false);
+                            scope.skalDeaktivereNesteKnapp = true;
+                            feilHarBlittRettet = false;
+                        } else if (sisteFeilBleRettetOgStodPaSisteFeil()) {
+                            leggTilMarkeringAvFeilmelding(-1, true);
+                            scope.skalDeaktivereNesteKnapp = true;
+                            feilHarBlittRettet = false;
+                        }
+                    } else if (feilHarBlittRettet && scope.feil.navaerende === 1 && totalAntalLFeil() === 1) {
+                        leggTilMarkeringAvFeilmelding(-1, true);
+                    }
+                };
+                function sisteFeilAkkuratRettetOgFlereFeilIgjen() {
+                    return scope.feil.navaerende === totalAntalLFeil() && feilHarBlittRettet;
+                }
 
-				scope.skalDeaktivereForrigeKnapp = function () {
-					return erPaaStartenAvFeilmeldingene();
-				};
+                function enFeilIgjen() {
+                    return scope.feil.navaerende === 0 && totalAntalLFeil() === 1;
+                }
 
-				function leggTilMarkeringAvFeilmelding(verdi) {
-					bolker = $('[data-accordion-group]');
+                function varToFeilNaEnFeilStodPaAndreFeil() {
+                    return feilHarBlittRettet && scope.feil.navaerende === -1 && totalAntalLFeil() === 1;
+                }
+
+                function varToFeilNaEnFeilStodPaForsteFeil() {
+                    return feilHarBlittRettet && scope.feil.navaerende === 0 && totalAntalLFeil() === 1;
+                }
+
+                function erPaSisteFeil() {
+                    return scope.feil.navaerende === totalAntalLFeil() - 1;
+                }
+
+                function varIkkePaSisteFeil() {
+                    return scope.feil.navaerende < (totalAntalLFeil() - 1);
+                }
+
+                function sisteFeilBleRettetOgStodPaSisteFeil() {
+                    return scope.feil.navaerende === totalAntalLFeil();
+                }
+
+                function sisteFeilBleRettetOgStarPaNestSisteFeilMedFlereFeilEnnTre() {
+                    return scope.feil.navaerende + 2 === totalAntalLFeil() && !treFeilIgjenOgMidtersteFeilRettet();
+                }
+
+                function treFeilIgjenOgMidtersteFeilRettet() {
+                    return scope.feil.navaerende === 1 && totalAntalLFeil() === 3;
+                }
+                function sisteFeilBleRettetOgStodPaNestSisteFeil() {
+                    return scope.feil.navaerende + 1 === totalAntalLFeil();
+                }
+
+                function erPaaStartenAvFeilmeldingene() {
+                    return  scope.feil.navaerende < 1 && skalDeaktivereForrigeKnapp;
+                }
+
+                function stodPaNestForsteOgForsteFeilBleRettet() {
+                    return scope.feil.navaerende === 1 && feilHarBlittRettet && totalAntalLFeil() > 1;
+                }
+
+                function stodPaForsteFeilBleRettet() {
+                    return scope.feil.navaerende === 0 && feilHarBlittRettet;
+                }
+
+                function stodPaNestForsteOgForsteFeilBleRettetEnFeilIgjen() {
+                    return scope.feil.navaerende === 1 && feilHarBlittRettet && totalAntalLFeil() === 2;
+                }
+
+                scope.$watch(function () {
+                    return antallFeil();
+                }, function () {
+                    if (feilBlittRettet()) {
+                        feilHarBlittRettet = true;
+                        if (scope.feil.navaerende === 0) {
+                            skalDeaktivereForrigeKnapp = true;
+                            if (totalAntalLFeil() === 2) {
+                                stodPaforsteRettetEnFeilEnFeilIgjen = true;
+                            }
+                        } else if (erPaSisteFeil() || sisteFeilBleRettetOgStodPaSisteFeil() || sisteFeilBleRettetOgStarPaNestSisteFeilMedFlereFeilEnnTre()) {
+                            scope.skalDeaktivereNesteKnapp = true;
+                        }
+                        if (stodPaNestForsteOgForsteFeilBleRettetEnFeilIgjen()) {
+                            skalDeaktivereForrigeKnapp = true;
+                            scope.skalDeaktivereNesteKnapp = false;
+                            scope.feil.navaerende = 0;
+
+                        } else if (stodPaNestForsteOgForsteFeilBleRettet()) {
+                            leggTilMarkeringAvFeilmelding(-1, false);
+                            skalDeaktivereForrigeKnapp = true;
+                            nestForsteOgForsteRettet = true;
+                        }
+                    }
+                    if (totalAntalLFeil() === 0) {
+                        scope.feil.skalViseStickyFeilmeldinger = false;
+                    }
+                    scope.feil.antallFeil = antallFeil('.feil');
+                });
+
+                scope.skalVises = function () {
+                    return scope.feil.antallFeil > 0 &&
+                        scope.feil.skalViseStickyFeilmeldinger;
+                };
+
+                scope.skalDeaktivereForrigeKnapp = function () {
+                    return erPaaStartenAvFeilmeldingene();
+                };
+
+                function leggTilMarkeringAvFeilmelding(verdi, skalScrolle) {
+                    bolker = $('[data-accordion-group]');
                     var bolkMedFeil = bolker.find('.form-linje.feil, .form-linje.feilstyling');
-					var bolk = bolkMedFeil.not('.ng-hide');
-					$(bolk[scope.feil.navaerende]).removeClass('aktiv-feilmelding');
-					scope.feil.navaerende = scope.feil.navaerende + verdi;
-					$(bolk[scope.feil.navaerende]).addClass('aktiv-feilmelding');
+                    var bolk = bolkMedFeil.not('.ng-hide');
+                    $(bolk[scope.feil.navaerende]).removeClass('aktiv-feilmelding');
+                    scope.feil.navaerende = scope.feil.navaerende + verdi;
+                    $(bolk[scope.feil.navaerende]).addClass('aktiv-feilmelding');
 
-					if (bolkMedNesteFeilErLukket(bolk)) {
-						apneBolk(bolk);
-					}
+                    if (bolkMedNesteFeilErLukket(bolk)) {
+                        apneBolk(bolk);
+                    }
 
-					scrollToElement($(bolk[scope.feil.navaerende]), 300);
-					giFokus(bolk);
-				}
+                    if (skalScrolle) {
+                        scrollToElement($(bolk[scope.feil.navaerende]), 300);
+                    }
+                    giFokus(bolk);
+                }
 
-				function giFokus(element) {
-					$(element[scope.feil.navaerende]).find(':input').not('[type=hidden]').first().focus();
-				}
+                function giFokus(element) {
+                    $(element[scope.feil.navaerende]).find(':input').not('[type=hidden]').first().focus();
+                }
 
-				function totalAntalLFeil() {
-					return scope.feil.antallFeilMedKlasseFeil + scope.feil.antallFeilMedKlasseFeilstyling;
-				}
+                function totalAntalLFeil() {
+                    return scope.feil.antallFeil;
+                }
 
-				function feilMedKlasseFeilHarBlittRettet() {
-                    var elementMedFeil = elem.find('.form-linje.feil');
-					return elementMedFeil.not('.ng-hide').length < scope.feil.antallFeilMedKlasseFeil;
-				}
+                function feilBlittRettet() {
+                    return antallFeil() < scope.feil.antallFeil;
+                }
 
-				function feilMedKlasseFeilstylingHarBlittRettet() {
-                    var elementMedFeil = elem.find('.form-linje.feilstyling');
-                    return elementMedFeil.not('.ng-hide').length < scope.feil.antallFeilMedKlasseFeilstyling;
-				}
+                function antallFeil() {
+                    var elementMedFeil = elem.find('.form-linje.feil, .form-linje.feilstyling');
+                    return elementMedFeil.not('.ng-hide').length;
+                }
 
-				function antallFeilMedKlasse(klasse) {
-                    var elementMedFeil = elem.find('.form-linje' + klasse);
-					return elementMedFeil.not('.ng-hide').length;
-				}
+                function bolkMedNesteFeilErLukket(bolk) {
+                    return !($(bolk[scope.feil.navaerende]).closest('.accordion-group').hasClass('open'));
+                }
 
-				function harKommetTilEndenAvFeilmeldinger() {
-					return scope.feil.navaerende === totalAntalLFeil() - 1 || skalDeaktivereNesteKnapp;
-				}
-
-				function erPaaStartenAvFeilmeldingene() {
-					return  scope.feil.navaerende < 1 && skalDeaktivereForrigeKnapp;
-				}
-
-				function bolkMedNesteFeilErLukket(bolk) {
-					return !($(bolk[scope.feil.navaerende]).closest('.accordion-group').hasClass('open'));
-				}
-
-				function apneBolk(bolk) {
+                function apneBolk(bolk) {
                     scope.apneTab($(bolk[scope.feil.navaerende]).closest('.accordion-group').attr('id'));
-				}
-			}
-		};
-	}])
-	.animation('.sticky-feilmelding', ['$timeout', function ($timeout) {
-		return {
-			addClass   : function (element, className, done) {
-				if (className === 'ng-hide') {
-					element.slideUp();
-				} else {
-					done();
-				}
-			},
-			removeClass: function (element, className, done) {
-				if (className === 'ng-hide') {
-					$timeout(function () {
-						element.removeClass('ng-hide');
-						element.slideDown();
-					}, 1500);
-				} else {
-					done();
-				}
-			}
-		};
-	}]);
+                }
+            }
+        };
+    }])
+    .animation('.sticky-feilmelding', ['$timeout', function ($timeout) {
+        return {
+            addClass: function (element, className, done) {
+                if (className === 'ng-hide') {
+                    element.slideUp();
+                } else {
+                    done();
+                }
+            },
+            removeClass: function (element, className, done) {
+                if (className === 'ng-hide') {
+                    $timeout(function () {
+                        element.removeClass('ng-hide');
+                        element.slideDown();
+                    }, 1500);
+                } else {
+                    done();
+                }
+            }
+        };
+    }]);
