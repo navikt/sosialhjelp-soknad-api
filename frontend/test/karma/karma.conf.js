@@ -31,7 +31,9 @@ module.exports = function (config) {
             '../../js/lib/jquery/jquery.fileupload-process.js',
             '../../js/lib/jquery/jquery.fileupload-validate.js',
             '../../js/lib/jquery/jquery.fileupload-angular.js',
-            'test/*.js'
+            'test/*.js',
+            'test/directives/*.js',
+            'test/controllers/*.js'
         ],
 
         // list of files to exclude
