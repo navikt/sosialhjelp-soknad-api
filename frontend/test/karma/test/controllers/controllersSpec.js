@@ -175,6 +175,7 @@
                     value: 'false'
                 };
 
+
                 scope.data.leggTilFaktum(faktumDeltid);
                 scope.data.leggTilFaktum(faktumPendle);
 
@@ -301,6 +302,17 @@
             });
             it('ikke krysset av for villigPendle sa trengerUtalelseFraFagpersonellDeltid vaere false', function () {
                 expect(scope.trengerUtalelseFraFagpersonellPendle()).toBe(false);
+            });
+            it('ikke krysset av for villighelse kanIkkeTaAlleTyperArbeid vaere false', function () {
+                expect(scope.kanIkkeTaAlleTyperArbeid()).toBe(false);
+            });
+            it('svart false pa villighelse kanIkkeTaAlleTyperArbeid vaere true', function () {
+                var faktum = {
+                    key: 'reellarbeidssoker.villighelse',
+                    value: 'false'
+                }
+                scope.data.leggTilFaktum(faktum);
+                expect(scope.kanIkkeTaAlleTyperArbeid()).toBe(true);
             });
         });
         describe('BarneCtrl', function () {
