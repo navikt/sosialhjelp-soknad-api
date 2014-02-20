@@ -178,6 +178,7 @@ public class HandleBarKjoerer {
         return new Helper<String>() {
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
+                System.out.println(key);
                 String tekst = new StringResourceModel(key, null).getString();
                 return tekst;
             }
