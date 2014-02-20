@@ -164,10 +164,23 @@
         });
         describe('ReellarbeidssokerCtrl', function () {
             beforeEach(inject(function ($controller, data) {
+                scope.data = data;
+                var faktumDeltid = {
+                    key: 'reellarbeidssoker.villigdeltid.reduserthelse',
+                    value: 'true'
+                };
+
+                var faktumPendle = {
+                    key: 'reellarbeidssoker.villigpendle.reduserthelse',
+                    value: 'false'
+                };
+
+                scope.data.leggTilFaktum(faktumDeltid);
+                scope.data.leggTilFaktum(faktumPendle);
+
                 ctrl = $controller('ReellarbeidssokerCtrl', {
                     $scope: scope
                 });
-                scope.data = data;
             }));
 
             it('skal returnere true for person over 59 aar', function () {
@@ -208,6 +221,86 @@
                     value: 'false'
                 };
                 expect(scope.harValgtAnnetUnntakDeltid()).toEqual(false);
+            });
+            it('skal returnere true for valgt annet unntak pendle', function () {
+                scope.pendleannen = {
+                    value: 'true'
+                };
+                expect(scope.harValgtAnnetUnntakPendle()).toEqual(true);
+            });
+            it('skal returnere false for ikke huket av valgtAnnetUnntakPendle', function () {
+                scope.pendleannen = null;
+                expect(scope.harValgtAnnetUnntakPendle()).toEqual(false);
+                scope.pendleannen = {};
+                expect(scope.harValgtAnnetUnntakPendle()).toEqual(false);
+                scope.pendleannen = undefined;
+                expect(scope.harValgtAnnetUnntakPendle()).toEqual(false);
+            });
+            it('skal returnere false for huket av har ikke valgtAnnetUnntakPendle', function () {
+                scope.pendleannen = {
+                    value: 'false'
+                };
+                expect(scope.harValgtAnnetUnntakPendle()).toEqual(false);
+            });
+            it('harHuketAvCheckboksDeltid skal vaere true nar deltid reduserthelse er huket av', function () {
+                expect(scope.harHuketAvCheckboksDeltid.value).toEqual(true);
+            });
+            it('harHuketAvCheckboksPendle skal vaere false når deltidcheckbokser ikke er huket av', function () {
+                expect(scope.harHuketAvCheckboksPendle.value).toEqual('');
+            });
+            it('skal kalle metode for å validere form', function () {
+                expect(scope.runValidationBleKalt).toEqual(false);
+                scope.valider();
+                expect(scope.runValidationBleKalt).toEqual(true);
+            });
+            it('skal kjøre metodene lukkTab og settValidert for valid form', function () {
+                spyOn(scope, "runValidation").andReturn(true);
+                spyOn(scope, "lukkTab");
+                spyOn(scope, "settValidert");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.lukkTab).toHaveBeenCalledWith('reellarbeidssoker');
+                expect(scope.settValidert).toHaveBeenCalledWith('reellarbeidssoker');
+            });
+            it('taben skal vaere apen nar formen ikke er valid', function () {
+                spyOn(scope, "runValidation").andReturn(false);
+                spyOn(scope, "apneTab");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.apneTab).toHaveBeenCalledWith('reellarbeidssoker');
+            });
+            it('hvis en deltidaarsaker er huket av og så blir den avhuket, sa skal harHuketAvCheckboksDeltid vaere tom ', function () {
+                expect(scope.harHuketAvCheckboksDeltid.value).toBe(true);
+                scope.data.fakta[3].value = 'false';
+                scope.endreDeltidsAarsaker();
+                expect(scope.harHuketAvCheckboksDeltid.value).toBe('');
+            });
+            it('hvis ingen deltidaarsaker er huket av og så blir en aarsak huket av, sa skal harHuketAvCheckboksDeltid vaere true ', function () {
+                scope.data.fakta[3].value = 'false';
+                scope.endreDeltidsAarsaker();
+                expect(scope.harHuketAvCheckboksDeltid.value).toBe('');
+                scope.data.fakta[3].value = 'true';
+                scope.endreDeltidsAarsaker();
+                expect(scope.harHuketAvCheckboksDeltid.value).toBe(true);
+            });
+            it('hvis en pendleaarsaker er huket av og så blir den avhuket, sa skal harHuketAvCheckboksPendle vaere tom ', function () {
+                scope.data.fakta[3].value = 'false';
+                scope.endreDeltidsAarsaker();
+                expect(scope.harHuketAvCheckboksPendle.value).toBe('');
+            });
+            it('hvis ingen pendleaarsaker er huket av og så blir en aarsak huket av, sa skal harHuketAvCheckboksPendle vaere true ', function () {
+                scope.data.fakta[4].value = 'false';
+                scope.endrePendleAarsaker();
+                expect(scope.harHuketAvCheckboksPendle.value).toBe('');
+                scope.data.fakta[4].value = 'true';
+                scope.endrePendleAarsaker();
+                expect(scope.harHuketAvCheckboksPendle.value).toBe(true);
+            });
+            it('krysset av for villigDeltid sa trengerUtalelseFraFagpersonellDeltid vaere true', function () {
+                expect(scope.trengerUtalelseFraFagpersonellDeltid()).toBe(true);
+            });
+            it('ikke krysset av for villigPendle sa trengerUtalelseFraFagpersonellDeltid vaere false', function () {
+                expect(scope.trengerUtalelseFraFagpersonellPendle()).toBe(false);
             });
         });
         describe('BarneCtrl', function () {
@@ -703,29 +796,38 @@
                 expect(scope.grupper[0].validering).toBe(false);
             });
             it('leggTilStickyFeilmelding skal bli kjort nar stickyFeilmelding blir kalt', function () {
-               spyOn(scope, "leggTilStickyFeilmelding");
+                spyOn(scope, "leggTilStickyFeilmelding");
                 scope.stickyFeilmelding();
                 expect(scope.leggTilStickyFeilmelding).toHaveBeenCalled();
             });
             it('bolk skal få status apen til true når apneTab blir kalt', function () {
-                scope.grupper = [{id: 'bolk', apen: false}];
+                scope.grupper = [
+                    {id: 'bolk', apen: false}
+                ];
                 scope.apneTab("bolk");
                 expect(scope.grupper[0].apen).toBe(true);
             });
             it('bolk skal få status apen til false når lukkTab blir kalt', function () {
-                scope.grupper = [{id: 'bolk', apen: true}];
+                scope.grupper = [
+                    {id: 'bolk', apen: true}
+                ];
                 scope.lukkTab("bolk");
                 expect(scope.grupper[0].apen).toBe(false);
             });
             it('bolk1 og bolk2 skal få status apen til false når lukkTab blir kalt for bolk1 og bolk2', function () {
-                scope.grupper = [{id: 'bolk1', apen: true},{id: 'bolk2', apen: true}];
+                scope.grupper = [
+                    {id: 'bolk1', apen: true},
+                    {id: 'bolk2', apen: true}
+                ];
                 var bolker = ['bolk1', 'bolk2'];
                 scope.lukkTab(bolker);
                 expect(scope.grupper[0].apen).toBe(false);
                 expect(scope.grupper[1].apen).toBe(false);
             });
             it('bolk skal ikke få status apen til false når bolknavnet ikke finnes', function () {
-                scope.grupper = [{id: 'bolk', apen: true}];
+                scope.grupper = [
+                    {id: 'bolk', apen: true}
+                ];
                 scope.lukkTab("bolkFeilNavn");
                 expect(scope.grupper[0].apen).toBe(true);
             });
