@@ -12,13 +12,13 @@
     </div>
     <form id="opplastingform" method="POST" enctype="multipart/form-data" data-file-upload="options"
           data-ng-controller="OpplastingCtrl">
-        <div class="begrensning sak-trekvart">
+        <div class="begrensning">
             <div id="opplastingFeilmelding" class="opplastingfeil" style="width: 73%;margin: 0 auto; "
                  data-ng-if="data.opplastingFeilet" data-ng-bind="data.opplastingFeilet">dette er en feil
             </div>
-            <section class="panel-standard oversikt">
-                <ul class="opplastingliste clearfix">
-                    <li data-ng-repeat="file in queue" data-ng-class="{'lasteropp': file.$processing()}" data-fil-feil>
+            <section>
+                <ul class="opplastingliste clearfix sak-tredel">
+                    <li class="panel-mini-belyst" data-ng-repeat="file in queue" data-ng-class="{'lasteropp': file.$processing()}" data-fil-feil>
                         <a class="lukk" data-ng-if="!!file.vedleggId" data-ng-click="file.$destroy()"
                            data-ng-controller="SlettOpplastingCtrl" href="javascript:void(0);"
                            data-aria-label="Slett siden"></a>

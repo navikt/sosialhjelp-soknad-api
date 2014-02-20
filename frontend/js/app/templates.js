@@ -1,4 +1,4 @@
-angular.module('templates-main', ['../views/dagpenger-singlepage.html', '../views/templates/adresse.html', '../views/templates/arbeidsforhold-nytt.html', '../views/templates/arbeidsforhold.html', '../views/templates/arbeidsforhold/avskjediget-oppsummering.html', '../views/templates/arbeidsforhold/avskjediget.html', '../views/templates/arbeidsforhold/konkurs-oppsummering.html', '../views/templates/arbeidsforhold/konkurs.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt.html', '../views/templates/arbeidsforhold/permittert-oppsummering.html', '../views/templates/arbeidsforhold/permittert.html', '../views/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html', '../views/templates/arbeidsforhold/redusertarbeidstid.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html', '../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-selv.html', '../views/templates/avbryt.html', '../views/templates/barnetillegg/barnetillegg-nyttbarn.html', '../views/templates/barnetillegg/barnetillegg.html', '../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html', '../views/templates/barnetillegg/endreSystembarnTemplate.html', '../views/templates/bekreftelse.html', '../views/templates/egennaering/egen-naering.html', '../views/templates/egennaering/egenNaeringvirksomhet.html', '../views/templates/egennaering/fangstOgFiske.html', '../views/templates/egennaering/gardsbruk.html', '../views/templates/feilside.html', '../views/templates/ferdigstilt.html', '../views/templates/fortsettSenere.html', '../views/templates/gjenoppta/skjema-ferdig.html', '../views/templates/gjenoppta/skjema-sendt.html', '../views/templates/gjenoppta/skjema-under-arbeid.html', '../views/templates/gjenoppta/skjema-validert.html', '../views/templates/ikkekvalifisert.html', '../views/templates/informasjonsside.html', '../views/templates/kvittering-fortsettsenere.html', '../views/templates/opplasting.html', '../views/templates/oppsummering.html', '../views/templates/personalia.html', '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', '../views/templates/reellarbeidssoker/villigDeltidTemplate.html', '../views/templates/reellarbeidssoker/villigHelseTemplate.html', '../views/templates/reellarbeidssoker/villigPendleTemplate.html', '../views/templates/reellarbeidssoker/villigjobbTemplate.html', '../views/templates/soknadSlettet.html', '../views/templates/soknadliste.html', '../views/templates/tilleggsopplysninger.html', '../views/templates/utdanning/utdanning.html', '../views/templates/utdanning/utdanningKortvarigFlereTemplate.html', '../views/templates/utdanning/utdanningKortvarigTemplate.html', '../views/templates/utdanning/utdanningKveldTemplate.html', '../views/templates/utdanning/utdanningNorskTemplate.html', '../views/templates/utdanningsinformasjon-template.html', '../views/templates/vedlegg.html', '../views/templates/verneplikt.html', '../views/templates/visvedlegg.html', '../views/templates/ytelser.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateLiten.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateStor.html', '../js/app/directives/dagpenger/arbeidsforholdformTemplate.html', '../js/app/directives/feilmeldinger/feilmeldingerTemplate.html', '../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html', '../js/app/directives/markup/modalsideTemplate.html', '../js/app/directives/markup/navinfoboksTemplate.html', '../js/app/directives/markup/panelStandardBelystTemplate.html', '../js/app/directives/markup/vedlegginfoboksTemplate.html', '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html', '../js/app/directives/stegindikator/stegIndikatorTemplate.html', '../js/app/directives/stickybunn/stickyBunnTemplate.html', '../js/common/directives/accordion/accordionGroupTemplate.html', '../js/common/directives/accordion/accordionTemplate.html', '../js/common/directives/booleanradio/booleanradioTemplate.html', '../js/common/directives/datepicker/doubleDatepickerTemplate.html', '../js/common/directives/datepicker/singleDatepickerTemplate.html', '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html', '../js/common/directives/melding/meldingTemplate.html', '../js/common/directives/navinput/navbuttonspinnerTemplate.html', '../js/common/directives/navinput/navcheckboxTemplate.html', '../js/common/directives/navinput/navorgnrfeltTemplate.html', '../js/common/directives/navinput/navradioTemplate.html', '../js/common/directives/navinput/navtekstTemplate.html', '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html', '../js/common/directives/navtextarea/navtextareaTemplate.html', '../js/common/directives/select/selectTemplate.html', '../js/common/directives/tittel/tittelTemplate.html']);
+angular.module('templates-main', ['../views/dagpenger-singlepage.html', '../views/templates/adresse.html', '../views/templates/arbeidsforhold-nytt.html', '../views/templates/arbeidsforhold.html', '../views/templates/arbeidsforhold/avskjediget-oppsummering.html', '../views/templates/arbeidsforhold/avskjediget.html', '../views/templates/arbeidsforhold/konkurs-oppsummering.html', '../views/templates/arbeidsforhold/konkurs.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt.html', '../views/templates/arbeidsforhold/permittert-oppsummering.html', '../views/templates/arbeidsforhold/permittert.html', '../views/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html', '../views/templates/arbeidsforhold/redusertarbeidstid.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html', '../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-selv.html', '../views/templates/avbryt.html', '../views/templates/barnetillegg/barnetillegg-nyttbarn.html', '../views/templates/barnetillegg/barnetillegg.html', '../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html', '../views/templates/barnetillegg/endreSystembarnTemplate.html', '../views/templates/bekreftelse.html', '../views/templates/egennaering/egen-naering.html', '../views/templates/egennaering/egenNaeringvirksomhet.html', '../views/templates/egennaering/fangstOgFiske.html', '../views/templates/egennaering/gardsbruk.html', '../views/templates/feilside.html', '../views/templates/ferdigstilt.html', '../views/templates/fortsettSenere.html', '../views/templates/gjenoppta/skjema-ferdig.html', '../views/templates/gjenoppta/skjema-sendt.html', '../views/templates/gjenoppta/skjema-under-arbeid.html', '../views/templates/gjenoppta/skjema-validert.html', '../views/templates/ikkekvalifisert.html', '../views/templates/informasjonsside.html', '../views/templates/kvittering-fortsettsenere.html', '../views/templates/opplasting.html', '../views/templates/oppsummering.html', '../views/templates/personalia.html', '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', '../views/templates/reellarbeidssoker/villigDeltidTemplate.html', '../views/templates/reellarbeidssoker/villigHelseTemplate.html', '../views/templates/reellarbeidssoker/villigPendleTemplate.html', '../views/templates/reellarbeidssoker/villigjobbTemplate.html', '../views/templates/soknadSlettet.html', '../views/templates/soknadliste.html', '../views/templates/tilleggsopplysninger.html', '../views/templates/utdanning/utdanning.html', '../views/templates/utdanning/utdanningKortvarigFlereTemplate.html', '../views/templates/utdanning/utdanningKortvarigTemplate.html', '../views/templates/utdanning/utdanningKveldTemplate.html', '../views/templates/utdanning/utdanningNorskTemplate.html', '../views/templates/utdanningsinformasjon-template.html', '../views/templates/vedlegg.html', '../views/templates/verneplikt.html', '../views/templates/visvedlegg.html', '../views/templates/ytelser.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateLiten.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateStor.html', '../js/app/directives/dagpenger/arbeidsforholdformTemplate.html', '../js/app/directives/feilmeldinger/feilmeldingerTemplate.html', '../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html', '../js/app/directives/markup/modalsideTemplate.html', '../js/app/directives/markup/navinfoboksTemplate.html', '../js/app/directives/markup/panelStandardBelystTemplate.html', '../js/app/directives/markup/vedlegginfoboksTemplate.html', '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html', '../js/app/directives/stegindikator/stegIndikatorTemplate.html', '../js/app/directives/stickybunn/stickyBunnTemplate.html', '../js/common/directives/accordion/accordionGroupTemplate.html', '../js/common/directives/accordion/accordionTemplate.html', '../js/common/directives/booleanradio/booleanradioTemplate.html', '../js/common/directives/datepicker/doubleDatepickerTemplate.html', '../js/common/directives/datepicker/singleDatepickerTemplate.html', '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html', '../js/common/directives/melding/meldingTemplate.html', '../js/common/directives/navinput/navbuttonspinnerTemplate.html', '../js/common/directives/navinput/navcheckboxTemplate.html', '../js/common/directives/navinput/navorgnrfeltTemplate.html', '../js/common/directives/navinput/navradioTemplate.html', '../js/common/directives/navinput/navtallInputTemplate.html', '../js/common/directives/navinput/navtekstTemplate.html', '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html', '../js/common/directives/navtextarea/navtextareaTemplate.html', '../js/common/directives/select/selectTemplate.html', '../js/common/directives/tittel/tittelTemplate.html']);
 
 angular.module("../views/dagpenger-singlepage.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/dagpenger-singlepage.html",
@@ -1504,11 +1504,6 @@ angular.module("../views/templates/egennaering/fangstOgFiske.html", []).run(["$t
     "        </div>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div data-ng-if=\"erSynlig('egennaering.fangstogfiske.false.arbeid')\" data-vedlegginfoboks>\n" +
-    "        <ul>\n" +
-    "            <li><p>{{ 'egennaering.fangstogfiske.false.arbeid.vedlegg' | cmstekst }}</p></li>\n" +
-    "        </ul>\n" +
-    "    </div>\n" +
     "</div>");
 }]);
 
@@ -1734,7 +1729,6 @@ angular.module("../views/templates/egennaering/gardsbruk.html", []).run(["$templ
 
 angular.module("../views/templates/feilside.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/templates/feilside.html",
-    "<div data-nav-tittel=\"skjema.tittel\"></div>\n" +
     "<div id=\"feilside\" data-ng-controller=\"FeilSideCtrl\">\n" +
     "    <section class=\"feil-panel\" data-ng-form=\"epostForm\" data-ng-controller=\"FortsettSenereCtrl\" data-novalidate>\n" +
     "        <h1 class=\"stor-ikon-feil-gra\">{{ 'feilmelding' | cmstekst }}</h1>\n" +
@@ -1795,34 +1789,39 @@ angular.module("../views/templates/ferdigstilt.html", []).run(["$templateCache",
 
 angular.module("../views/templates/fortsettSenere.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/templates/fortsettSenere.html",
-    "<div data-panelbelyst id=\"fortsett-senere\" data-sidetittel=\"sidetittel.fortsett\">\n" +
+    "<div class=\"hvit-side\" data-panelbelyst id=\"fortsett-senere\" data-sidetittel=\"sidetittel.fortsett\">\n" +
     "	<div class=\"skjemaramme\">\n" +
     "		<div data-ng-controller=\"FortsettSenereCtrl\" data-ng-form=\"epostForm\" data-novalidate class=\"epost-input vertikal\">\n" +
-    "			<h2 class=\"stor\" data-cmstekster=\"dagpenger.fortsettSenere.tittel\"></h2>\n" +
-    "			<p data-cmstekster=\"dagpenger.fortsettSenere.info\"></p>\n" +
-    "			<div class=\"send-epost\">\n" +
-    "				<div class=\"input-boks\">\n" +
-    "					<div class=\"form-linje\">\n" +
-    "						<label>\n" +
-    "							<span data-cmstekster=\"dagpenger.fortsettSenere.epost.label\"> </span>\n" +
-    "							<input type=\"email\" name=\"epost\" role=\"textbox\" data-ng-model=\"epost.value\"\n" +
-    "									data-error-messages=\"{required: 'dagpenger.fortsettSenere.epost.required.feilmelding', pattern: 'dagpenger.fortsettSenere.epost.pattern.feilmelding' }\"\n" +
-    "									data-ng-required=\"true\" data-ng-pattern=\"/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$/\" data-blur-validate/>\n" +
-    "						</label>\n" +
-    "						<input type=\"submit\" class=\"knapp-hoved-liten\" data-cmstekster=\"dagpenger.fortsettSenere.epost.send\" role=\"button\" data-ng-click=\"forsettSenere(epostForm)\"/>\n" +
-    "						<span class=\"melding\"></span>\n" +
-    "					</div>\n" +
-    "				</div>\n" +
-    "			</div>\n" +
+    "			<h2 class=\"stor strek-ikon-soknader\">{{ 'dagpenger.fortsettSenere.tittel' | cmstekst }}</h2>\n" +
+    "			<p>{{ 'dagpenger.fortsettSenere.info' | cmstekst }}</p>\n" +
+    "            <div class=\"epost\">\n" +
+    "                <div class=\"form-linje\">\n" +
+    "                    <label>\n" +
+    "                        <span class=\"labeltekst\">{{ 'dagpenger.fortsettSenere.epost.label' | cmstekst }}</span>\n" +
+    "                        <input type=\"email\" name=\"epost\" role=\"textbox\" data-ng-model=\"epost.value\"\n" +
+    "                                data-error-messages=\"{required: 'dagpenger.fortsettSenere.epost.required.feilmelding', pattern: 'dagpenger.fortsettSenere.epost.pattern.feilmelding' }\"\n" +
+    "                                data-ng-required=\"true\" data-ng-pattern=\"/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$/\" data-blur-validate/>\n" +
+    "                    </label>\n" +
+    "                    <input type=\"submit\" class=\"knapp-hoved-liten\" data-cmstekster=\"dagpenger.fortsettSenere.epost.send\" role=\"button\" data-ng-click=\"forsettSenere(epostForm)\"/>\n" +
+    "                    <span class=\"melding\"></span>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
     "\n" +
     "			<div>\n" +
     "				<p data-cmstekster=\"dagpenger.fortsettSenere.info.frister\"></p>\n" +
     "				<p data-cmstekster=\"dagpenger.fortsettSenere.info.konsekvenser\"></p>\n" +
     "			</div>\n" +
-    "			<div class=\"lenker-dot\">\n" +
-    "				<a href=\"#{{ forrigeSide }}\" id=\"tilOversikt\" role=\"link\" data-cmstekster=\"dagpenger.fortsettSenere.tilbake\"></a>\n" +
-    "				<a href=\"{{inngangsportenUrl}}\" id=\"dittnav\" role=\"link\" data-cmstekster=\"dagpenger.fortsettSenere.dittNav\"></a>\n" +
-    "			</div>\n" +
+    "\n" +
+    "            <div class=\"knapper\">\n" +
+    "                <ul class=\"liste-vannrett\">\n" +
+    "                    <li>\n" +
+    "                        <a href=\"#{{ forrigeSide }}\" id=\"tilOversikt\" role=\"link\" data-cmstekster=\"dagpenger.fortsettSenere.tilbake\"></a>\n" +
+    "                    </li>\n" +
+    "                    <li>\n" +
+    "                        <a href=\"{{inngangsportenUrl}}\" id=\"dittnav\" role=\"link\" data-cmstekster=\"dagpenger.fortsettSenere.dittNav\"></a>\n" +
+    "                    </li>\n" +
+    "                </ul>\n" +
+    "            </div>\n" +
     "		</div>\n" +
     "	</div>\n" +
     "</div>\n" +
@@ -1861,7 +1860,7 @@ angular.module("../views/templates/informasjonsside.html", []).run(["$templateCa
     "\n" +
     "<div data-stegindikator data-steg-liste=\"veiledning, skjema, vedlegg, sendInn\" data-aktiv-index=\"0\"></div>\n" +
     "\n" +
-    "<div id=\"informasjonsside\" data-sidetittel=\"sidetittel.informasjon\" data-ng-cloak>\n" +
+    "<div class=\"hvit-side\" id=\"informasjonsside\" data-sidetittel=\"sidetittel.informasjon\" data-ng-cloak>\n" +
     "	<div data-panelbelyst>\n" +
     "        <div class=\"feil\" data-ng-show=\"tpsSvarerIkke()\">\n" +
     "        	<h1 class=\"utrop-sirkel-ikon\">{{ 'feilmelding' | cmstekst }}</h1>\n" +
@@ -2001,13 +2000,13 @@ angular.module("../views/templates/opplasting.html", []).run(["$templateCache", 
     "    </div>\n" +
     "    <form id=\"opplastingform\" method=\"POST\" enctype=\"multipart/form-data\" data-file-upload=\"options\"\n" +
     "          data-ng-controller=\"OpplastingCtrl\">\n" +
-    "        <div class=\"begrensning sak-trekvart\">\n" +
+    "        <div class=\"begrensning\">\n" +
     "            <div id=\"opplastingFeilmelding\" class=\"opplastingfeil\" style=\"width: 73%;margin: 0 auto; \"\n" +
     "                 data-ng-if=\"data.opplastingFeilet\" data-ng-bind=\"data.opplastingFeilet\">dette er en feil\n" +
     "            </div>\n" +
-    "            <section class=\"panel-standard oversikt\">\n" +
-    "                <ul class=\"opplastingliste clearfix\">\n" +
-    "                    <li data-ng-repeat=\"file in queue\" data-ng-class=\"{'lasteropp': file.$processing()}\" data-fil-feil>\n" +
+    "            <section>\n" +
+    "                <ul class=\"opplastingliste clearfix sak-tredel\">\n" +
+    "                    <li class=\"panel-mini-belyst\" data-ng-repeat=\"file in queue\" data-ng-class=\"{'lasteropp': file.$processing()}\" data-fil-feil>\n" +
     "                        <a class=\"lukk\" data-ng-if=\"!!file.vedleggId\" data-ng-click=\"file.$destroy()\"\n" +
     "                           data-ng-controller=\"SlettOpplastingCtrl\" href=\"javascript:void(0);\"\n" +
     "                           data-aria-label=\"Slett siden\"></a>\n" +
@@ -2702,7 +2701,6 @@ angular.module("../views/templates/utdanning/utdanningKveldTemplate.html", []).r
     "         data-required-error-message=\"utdanning.semester.avslutning.feilmelding\">\n" +
     "    </div>\n" +
     "</div>\n" +
-    "\n" +
     "<div data-vedlegginfoboks>\n" +
     "    <ul>\n" +
     "        <li><p data-cmstekster=\"utdanning.svar.under.utdanning.dokumentasjon\"></p></li>\n" +
@@ -3677,9 +3675,17 @@ angular.module("../js/common/directives/navinput/navorgnrfeltTemplate.html", [])
     "<div class=\"form-linje tekstfelt orgnummer\">\n" +
     "    <label>\n" +
     "        <span class=\"labeltekst\">{{ navlabel | cmstekst }}</span>\n" +
-    "        <input data-ng-model=\"faktum.value\" type=\"text\" value=\"{{ value }}\" data-ng-required=\"erSynlig()\"\n" +
-    "               data-error-messages=\"{{ navfeilmelding }}\" data-blur-validate\n" +
-    "               data-ng-pattern=\"/[0-9]{9}/\" maxlength=\"9\" orgnr-validate data-aktiv-feilmelding>\n" +
+    "        <input type=\"number\"\n" +
+    "               value=\"{{ value }}\"\n" +
+    "               data-ng-model=\"faktum.value\"\n" +
+    "               data-ng-required=\"erSynlig()\"\n" +
+    "               data-error-messages=\"{{ navfeilmelding }}\"\n" +
+    "               data-blur-validate\n" +
+    "               data-ng-pattern=\"/[0-9]{9}/\"\n" +
+    "               maxlength=\"9\"\n" +
+    "               data-orgnr-validate\n" +
+    "               data-disable-scroll\n" +
+    "               data-aktiv-feilmelding>\n" +
     "    </label>\n" +
     "    <a href=\"javascript:void(0)\" aria-role=\"button\" class=\"orgnummer-slett\"\n" +
     "       data-ng-if=\"skalViseSlettKnapp($index)\"\n" +
@@ -3706,6 +3712,30 @@ angular.module("../js/common/directives/navinput/navradioTemplate.html", []).run
     "           data-aktiv-feilmelding>\n" +
     "\n" +
     "    <label for='{{ navlabel }}' data-cmstekster=\"{{ navlabel }}\"></label>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("../js/common/directives/navinput/navtallInputTemplate.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../js/common/directives/navinput/navtallInputTemplate.html",
+    "<div class=\"tekstfelt form-linje\" >\n" +
+    "    <h4 data-ng-if=\"harSporsmal()\" class=\"spm-sporsmal\">{{ navsporsmal | cmstekst }}</h4>\n" +
+    "    <label>\n" +
+    "        <span class=\"labeltekst\">{{ navlabel | cmstekst }}</span>\n" +
+    "        <input data-ng-model=\"faktum.value\"\n" +
+    "               type=\"number\"\n" +
+    "               value=\"{{ value }}\"\n" +
+    "               data-ng-required=\"true\"\n" +
+    "               data-error-messages=\"{{ navfeilmelding }}\"\n" +
+    "               data-ng-pattern=\"{{ regexvalidering }}\"\n" +
+    "               data-minlength=\"{{ navminlength }}\"\n" +
+    "               data-maxlength=\"{{ navmaxlength }}\"\n" +
+    "               maxlength=\"{{ inputfeltmaxlength }}\"\n" +
+    "               data-blur-validate\n" +
+    "               data-tekstfelt-patternvalidering\n" +
+    "               data-aktiv-feilmelding/>\n" +
+    "        <span class=\"melding\"></span>\n" +
+    "    </label>\n" +
     "</div>\n" +
     "");
 }]);
