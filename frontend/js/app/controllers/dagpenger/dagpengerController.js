@@ -53,9 +53,9 @@ angular.module('nav.dagpenger', [])
 
 		function settApenForId(apen, id) {
 			var idx = $scope.grupper.indexByValue(id);
-			if (idx > -1) {
-				$scope.grupper[idx].apen = apen;
-			}
+            if (idx > -1) {
+                $scope.grupper[idx].apen = apen;
+            }
 		}
 	}])
 	.controller('FerdigstiltCtrl', ['$scope', 'data', function ($scope, data) {
