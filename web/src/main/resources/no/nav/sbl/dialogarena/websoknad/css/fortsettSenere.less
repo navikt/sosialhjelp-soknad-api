@@ -1,33 +1,49 @@
 #fortsett-senere {
-    .send-epost {
-        margin: 2rem 0;
-        border-bottom: 1px solid #d1cfcf;
+    border-bottom: none;
 
-        input[type=email] {
-            width: 23rem;
-            margin-right: 0.6rem;
-            margin-bottom:10px;
-            display: inline;
-        }
-        
-        input[type=submit] {
-            margin-top:-5px;
-        }
-
-
-        .informasjon {
-            text-align: left;
-            padding-bottom: 2rem;
-        }
+    h2 {
+        margin-bottom: 25px !important;
+        padding-bottom: 25px !important;
     }
 
-    .lenker-dot {
-        margin-bottom: 40px;
-        text-align: center;
-	    a  {
-	        content: "•";
-		    text-align: center;
-            color: #0067c5;
-	    }
+    .panel-standard-belyst {
+        padding-top: 30px;
+
+        .epost {
+            text-align: center;
+            border-bottom: 1px solid #d1d1d1;
+            margin-top: 30px;
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+
+            .form-linje {
+                padding: 0;
+                text-align: left;
+                display: inline-block;
+
+                input[type=email] {
+                    width: 17rem;
+                    display: inline-block;
+                }
+
+                input[type=submit] {
+                    margin-top: 1px;
+                    margin-left: 7px;
+                }
+            }
+        }
+
+
+        .knapper {
+            margin-top: 40px;
+            margin-bottom: 40px;
+            text-align: center;
+
+            ul {
+                li {
+                    margin-top: 0;
+                }
+            }
+        }
     }
 }

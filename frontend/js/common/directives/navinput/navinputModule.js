@@ -92,6 +92,38 @@ angular.module('nav.input', ['nav.cmstekster'])
         };
     }])
 
+    .directive('navtall', [function () {
+        return {
+            restrict: 'A',
+            replace: true,
+            scope: true,
+            link: {
+                pre: function (scope, element, attrs) {
+                    if (attrs.regexvalidering) {
+                        scope.regexvalidering = attrs.regexvalidering.toString();
+                    } else {
+                        scope.regexvalidering = '';
+                    }
+                    if (attrs.inputfeltmaxlength) {
+                        scope.inputfeltmaxlength = attrs.inputfeltmaxlength;
+                    } else {
+                        scope.inputfeltmaxlength = undefined;
+                    }
+                },
+                post: function (scope, element) {
+                    scope.hvisSynlig = function () {
+                        return element.is(':visible');
+                    };
+
+                    scope.harSporsmal = function() {
+                        return isNotNullOrUndefined(scope.navsporsmal) && scope.navsporsmal.length > 0;
+                    };
+                }
+            },
+            templateUrl: '../js/common/directives/navinput/navtallInputTemplate.html'
+        };
+    }])
+
     .directive('navtekst', [function () {
         return {
             restrict: 'A',
@@ -200,6 +232,17 @@ angular.module('nav.input', ['nav.cmstekster'])
 
                 ngModel.$formatters.push(fraTekst);
                 ngModel.$parsers.push(tilTekst);
+            }
+        };
+    }])
+
+    .directive('disableScroll', [function () {
+        return {
+            restrict: 'A',
+            link: function (scope, element) {
+                element.bind('mousewheel', function(event) {
+                    event.preventDefault();
+                });
             }
         };
     }]);
