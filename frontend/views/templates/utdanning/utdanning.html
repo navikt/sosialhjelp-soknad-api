@@ -43,7 +43,7 @@
 
             <span class="melding"> </span>
 
-            <div class="ekstra-info nav-boolean form-linje checkbox" data-ng-if="hvis('utdanning', 'underUtdanning')" data-checkbox-validate>
+            <div class="ekstra-info nav-boolean form-linje checkbox" data-ng-if="hvis('utdanning', 'underUtdanning')" data-checkbox-validate data-nav-faktum="utdanning">
                 <h4 class="spm-sporsmal">{{ 'utdanning.sporsmal' | cmstekst }}</h4>
 
                 <input type="hidden"
@@ -113,6 +113,8 @@
                 <span class="melding" data-cmstekster="utdanning.minstEnAvhuket.feilmelding"></span>
 
             </div>
+
+
         </div>
 
         <div data-spmblokkferdig></div>

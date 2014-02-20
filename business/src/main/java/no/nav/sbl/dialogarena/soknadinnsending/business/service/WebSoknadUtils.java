@@ -52,6 +52,7 @@ public class WebSoknadUtils {
         LOGGER.warn("Faktaliste for ruting" + webSoknad.getFaktaListe());
         if (!erPermittertellerHarRedusertArbeidstid(webSoknad))
         {
+
             return RUTES_I_BRUT;
         }
         /*if (!webSoknad.getFaktaMedKey(FNR_KEY).isEmpty())
