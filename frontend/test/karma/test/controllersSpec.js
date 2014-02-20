@@ -178,6 +178,20 @@
                 };
                 expect(scope.harValgtAnnetUnntakDeltid()).toEqual(true);
             });
+            it('skal returnere false for ikke huket av valgtAnnetUnntakDeltid', function () {
+                scope.deltidannen = null;
+                expect(scope.harValgtAnnetUnntakDeltid()).toEqual(false);
+                scope.deltidannen = {};
+                expect(scope.harValgtAnnetUnntakDeltid()).toEqual(false);
+                scope.deltidannen = undefined;
+                expect(scope.harValgtAnnetUnntakDeltid()).toEqual(false);
+            });
+            it('skal returnere false for huket av har ikke valgtAnnetUnntakDeltid', function () {
+                scope.deltidannen = {
+                    value: 'false'
+                };
+                expect(scope.harValgtAnnetUnntakDeltid()).toEqual(false);
+            });
         });
         describe('BarneCtrl', function () {
             beforeEach(inject(function (_$httpBackend_, $controller, cms) {
