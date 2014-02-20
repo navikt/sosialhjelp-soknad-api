@@ -730,6 +730,5 @@
                 expect(scope.grupper[0].apen).toBe(true);
             });
         });
-
     });
 }());
