@@ -67,9 +67,9 @@
                 scope.runValidationBleKalt = true;
             };
 
-            scope.apneTab = function () {
-
-            };
+            scope.apneTab = function () { };
+            scope.lukkTab = function () {};
+            scope.settValidert = function () {};
 
             element = angular.element(
                 '<form name="form">'+
@@ -117,10 +117,16 @@
             });
         });
         describe('vernepliktCtrl', function () {
-            beforeEach(inject(function ($controller) {
+            beforeEach(inject(function ($controller, $compile) {
                 ctrl = $controller('VernepliktCtrl', {
                     $scope: scope
                 });
+
+                $compile(element)(scope);
+                scope.$digest();
+                form = scope.form;
+                element.scope().$apply();
+
             }));
 
             it('skal kalle metode for å validere form', function () {
@@ -129,8 +135,14 @@
                 expect(scope.runValidationBleKalt).toEqual(true);
             });
             it('skal kjøre metodene lukkTab og settValidert for valid form', function() {
-
-            })
+                spyOn(scope, "runValidation").andReturn(true);
+                spyOn(scope, "lukkTab");
+                spyOn(scope, "settValidert");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.lukkTab).toHaveBeenCalledWith('verneplikt');
+                expect(scope.settValidert).toHaveBeenCalledWith('verneplikt');
+            });
         });
         describe('UtdanningCtrl', function () {
             beforeEach(inject(function ($controller) {
