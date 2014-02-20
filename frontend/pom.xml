@@ -14,24 +14,8 @@
     <name>${project.artifactId}</name>
     <packaging>jar</packaging>
     <properties>
-    	
-    	<!-- sonar.projectName>sendsoknad-frontend js</sonar.projectName>
-        <sonar.projectKey>no.nav.sbl.dialogarena:sendsoknad-frontend:js</sonar.projectKey>
-     	<sonar.projectVersion>1.0.8-SNAPSHOT</sonar.projectVersion>
-     	<sonar.sources>js</sonar.sources-->
-     	<!-- sonar.test>test</sonar.test-->
-     	
-     	<!-- sonar.branch>js</sonar.branch>
-        <sonar.language>js</sonar.language>
-        <sonar.exclusions>js/jquery/**,js/lib/**</sonar.exclusions>
-        
-        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-        <sonar.javascript.jstest.reportsPath>target/surefire-reports/</sonar.javascript.jstest.reportsPath>
-        <sonar.javascript.lcov.reportPath>target/karma-coverage/PhantomJS 1.9.7 (Linux)/lcov.info</sonar.javascript.lcov.reportPath-->
-        
         <grunttarget>maven-prod</grunttarget>
     </properties>
-
 
 	<build>
         <resources>
