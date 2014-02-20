@@ -14,6 +14,8 @@ describe('ariaModule', function () {
 
     describe("navAriaHidden", function() {
         it("should add class aria-hidden", function() {
+            $scope.$apply();
+            $scope.$digest();
             $scope.isOpen = false;
             $scope.$apply();
             expect(element.attr("aria-hidden")).toBe("true");
