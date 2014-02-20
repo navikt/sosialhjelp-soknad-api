@@ -94,7 +94,8 @@ angular.module('nav.barnetillegg', [])
 
         $scope.slettBarnetillegg = function (barn, index, $event) {
             $event.preventDefault();
-
+            barn.properties.ikkebarneinntekt = undefined;
+            barn.properties.barneinntekttall = undefined;
             barn.properties.barnetillegg = 'false';
             barn.$save();
         };

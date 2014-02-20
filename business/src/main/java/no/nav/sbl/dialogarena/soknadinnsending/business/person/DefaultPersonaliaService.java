@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
+import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -58,8 +59,8 @@ public class DefaultPersonaliaService implements PersonaliaService {
 
     //TODO: Må fikses, ikke returnere tom personalia når manglende svar fra TPS.
     @Override
-    public Personalia hentPersonalia(String fodselsnummer) {
-//    public Personalia hentPersonalia(String fodselsnummer) throws IkkeFunnetException, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, WebServiceException {
+//    public Personalia hentPersonalia(String fodselsnummer) {
+    public Personalia hentPersonalia(String fodselsnummer) throws IkkeFunnetException, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, WebServiceException {
         XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse;
         HentKjerneinformasjonResponse kjerneinformasjonResponse;
 
@@ -69,16 +70,16 @@ public class DefaultPersonaliaService implements PersonaliaService {
             preferanserResponse = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequestPreferanser(fodselsnummer));
         } catch (IkkeFunnetException | HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
             logger.error("Ikke funnet person i TPS", e);
-            //throw new ApplicationException("TPS:PersonIkkefunnet",e);
-            return new Personalia();
+            throw new ApplicationException("TPS:PersonIkkefunnet",e);
+            //return new Personalia();
         } catch (HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
             logger.error("Kunne ikke hente bruker fra TPS.", e);
-            //throw new ApplicationException("TPS:Sikkerhetsbegrensing",e);
-            return new Personalia();
+            throw new ApplicationException("TPS:Sikkerhetsbegrensing",e);
+            //return new Personalia();
         } catch (WebServiceException e) {
             logger.error("Ingen kontakt med TPS.", e);
-            // throw new ApplicationException("TPS:webserviceException",e);
-            return new Personalia();
+            throw new ApplicationException("TPS:webserviceException",e);
+            //return new Personalia();
         }
         return PersonaliaTransform.mapTilPersonalia(preferanserResponse, kjerneinformasjonResponse, kodeverk);
     }

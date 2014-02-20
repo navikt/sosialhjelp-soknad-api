@@ -42,6 +42,7 @@
             .barn-navn { font-weight: bold; }
             .kulepunkt:before { content: "•"; font-size: 14pt; position: relative; top: 1pt; }
             .brosjyre-signatur { border-top: .2pt solid #ccc; margin-top: 10mm; padding-top: 10mm; page-break-inside: avoid; }
+            .arbeidsforhold-arbeidsgiver, .arbeidsforhold-land { font-weight: bold; }
 		</style>
 	</head>
 	<body>
@@ -264,8 +265,8 @@
                     <tr>
                         <td class="sjekket"></td>
                         <td>
-                            <span>{{ properties.arbeidsgivernavn }},</span>
-                            <span>{{ hentLand properties.land }}</span>
+                            <span class="arbeidsforhold-arbeidsgiver">{{ properties.arbeidsgivernavn }},</span>
+                            <span class="arbeidsforhold-land">{{ hentLand properties.land }}</span>
                             <ul class="arbeidsforhold-data">
                                 <li class="arbeidsforhold-varighet">
                                     <span>{{ formatterLangDato properties.datofra }}</span>
@@ -317,7 +318,7 @@
                                     </li>
 
                                     <li class="kulepunkt">
-                                            <span>{{ hentTekst "arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.sporsmal" }}:</span>
+                                            <span>{{ hentTekst "arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.label" }}:</span>
                                             <span>{{ properties.bostyrersnavn }}</span>
                                     </li>
                                     <li class="kulepunkt">
