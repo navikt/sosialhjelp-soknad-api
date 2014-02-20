@@ -3396,13 +3396,13 @@ angular.module("../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.htm
     "    <div>\n" +
     "        <div class=\"antall-feil-innholder\">\n" +
     "            <span class=\"vise-tekst\" data-cmstekster=\"skjema.feilmelding.antall.feilmeldinger\"></span>\n" +
-    "            <span class=\"antall-feil\"> {{feil.antallFeilMedKlasseFeil + feil.antallFeilMedKlasseFeilstyling}}</span>\n" +
+    "            <span class=\"antall-feil\"> {{feil.antallFeil}}</span>\n" +
     "        </div>\n" +
     "        <span class=\"navigeringsknapper\">\n" +
     "            <a class=\"forrige\" data-cmstekster=\"skjema.feilmelding.gaatil.forrige\" data-ng-click=\"forrige()\"\n" +
     "               data-ng-class=\"{deaktiverFeilmelding: skalDeaktivereForrigeKnapp()}\"> Forrige </a>\n" +
     "            <a class=\"neste\" data-cmstekster=\"skjema.feilmelding.gaatil.neste\" data-ng-click=\"neste()\"\n" +
-    "               data-ng-class=\"{deaktiverFeilmelding: skalDeaktivereNesteKnapp()}\"> Neste </a>\n" +
+    "               data-ng-class=\"{deaktiverFeilmelding: skalDeaktivereNesteKnapp}\"> Neste </a>\n" +
     "        </span>\n" +
     "    </div>\n" +
     "</div>");
