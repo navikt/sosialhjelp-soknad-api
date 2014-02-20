@@ -30,14 +30,13 @@
 
 
 	<build>
+		<sourceDirectory>js</sourceDirectory>
+     	<testSourceDirectory>test</sourceDirectory>
         <resources>
             <resource>
                 <filtering>false</filtering>
                 <targetPath>META-INF/resources/views</targetPath>
                 <directory>views/built</directory>
-                
-                <sourceDirectory>js</sourceDirectory>
-     			<testSourceDirectory>test</sourceDirectory>
             </resource>
         </resources>
 		<plugins>
