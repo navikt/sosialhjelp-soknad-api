@@ -1136,18 +1136,16 @@
                 {{/forFaktaMedPropertySattTilTrue}}
             </table>
 
-            {{#forFaktum "fritekst"}}
+            {{#forFaktum "tilleggsopplysninger.fritekst"}}
                 {{#hvisIkkeTom value}}
-                    <h2>{{ hentTekst "fritekst.tittel" }}</h2>
+                    <h2>{{ hentTekst "tilleggsopplysninger.tittel" }}</h2>
                     <table>
-
-                            <tr>
-                                <td class="sjekket"></td>
-                                <td>
-                                    <span>{{ value }}</span>
-                                </td>
-                            </tr>
-
+                        <tr>
+                            <td class="sjekket"></td>
+                            <td>
+                                <span>{{ value }}</span>
+                            </td>
+                        </tr>
                     </table>
                 {{/hvisIkkeTom}}
             {{/forFaktum}}

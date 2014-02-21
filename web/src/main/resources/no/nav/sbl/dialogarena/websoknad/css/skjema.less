@@ -47,6 +47,7 @@ h4 {
         margin-left: -32px;
         height: auto !important;
         min-height: 22px;
+        margin-bottom: 0;
     }
 
     a {
@@ -59,9 +60,6 @@ h4 {
 
     &:last-child {
         margin-bottom: 0;
-        label {
-            margin-bottom: 0;
-        }
     }
 }
 
@@ -162,7 +160,7 @@ h4 {
         margin-left: -13px;
     }
 
-    > *:last-child {
+    &:not(.infoboks) > *:last-child {
         padding-bottom: 0px !important;
         margin-bottom: 0 !important;
     }

@@ -1,32 +1,212 @@
 @media only screen and (max-width: 767px) {
-  .ekstra-spm-boks {
-    padding: 10px;
-    &.nav-boolean {
-      margin-left: 0px;
-    }
-  }
-  .spm .ekstra-info {
-    margin-left: 0px;
+    @flipp-size: 25px;
+    @flipp-shadow-size: 54px;
 
-    &.form-linje.checkbox .nav-checkbox {
-      margin-left: 0px;
+    body {
+        font-size: 1.14rem;
     }
-  }
-  .nav-checkbox > label {
-    margin-left: 0px;
-  }
-  .nav-checkbox {
-    margin-left: 0px;
-  }
-  [data-ng-form] input[type="checkbox"] + label {
-    margin-right: 0px;
-  }
-  .vanlig-select {
-    label {
-      display: inline-block;
-      select {
-        width: 100%;
-      }
+
+    [class^="mini"] {
+        font-size: 1rem;
     }
-  }
+
+    [class^="liten"] {
+        font-size: 1.14rem;
+    }
+
+    [class^="normal"] {
+        font-size: 1.14rem;
+    }
+
+    [class^="medium"] {
+        font-size: 1.21rem;
+    }
+
+    [class^="stor"] {
+        font-size: 1.6rem;
+    }
+
+
+    .ekstra-spm-boks {
+        padding: 25px 10px;
+
+        &.nav-boolean {
+            margin-left: 0px;
+        }
+    }
+
+    .spm-sporsmal {
+        font-size: 1.14rem;
+        font-weight: bold;
+    }
+
+    .spm {
+        .ekstra-info {
+            margin-left: 0px;
+
+            &.form-linje.checkbox .nav-checkbox {
+                margin-left: 0px;
+            }
+        }
+    }
+
+
+    .nav-checkbox > label {
+        margin-left: 0px;
+    }
+
+    .nav-checkbox {
+        margin-left: 0px;
+    }
+
+    [data-ng-form] input[type="checkbox"] + label {
+        margin-right: 0px;
+    }
+
+    .vanlig-select {
+        label {
+            display: inline-block;
+            select {
+                width: 100%;
+            }
+        }
+    }
+
+    .spm-blokk {
+        &:hover {
+            .flipp {
+                .flipp:hover {
+                    &:before {
+                        border-top: @flipp-size solid #c30000 !important;
+                    }
+                }
+            }
+        }
+        .flipp:hover {
+            &:before {
+                border-top: @flipp-size solid #0067c5 !important;
+            }
+        }
+        &.open {
+            .flipp {
+                &:before {
+                    border-top: @flipp-size solid #c30000;
+                }
+            }
+        }
+
+        .flipp {
+            top: -3px;
+            width: @flipp-shadow-size;
+            border-width: 0 2px 3px 2px;
+
+            &:before {
+                border-top: @flipp-size solid #ccc;
+                border-left: @flipp-size solid transparent;
+                border-right: @flipp-size solid transparent;
+            }
+        }
+
+        .skjemaramme {
+            padding-top: 15px;
+
+            .skjemainnhold {
+                width: 100%;
+                max-width: none;
+                padding-left: 25px;
+                padding-right: 25px;
+            }
+        }
+
+        .accordion-heading {
+            .accordion-toggle {
+                h2 {
+                    padding-top: 30px;
+                    padding-bottom: 30px;
+                }
+            }
+        }
+
+        &.validert {
+            .accordion-heading h2:before {
+                width: 1.8rem;
+                height: 1.8rem;
+                background-size: 1rem;
+            }
+        }
+    }
+
+    #vedlegg {
+        .rad-belyst {
+            padding-left: 25px;
+            padding-right: 25px;
+
+            .begrensning {
+                width: 100%;
+
+                [class*="panel-"] {
+                    width: 100%;
+                }
+            }
+        }
+
+        .vedlegg {
+            .lastetopp, .behandlet {
+                h2 {
+                    &:before {
+                        width: 1.8rem;
+                        height: 1.8rem;
+                        background-size: 1rem;
+                    }
+                }
+            }
+        }
+    }
+
+    #visvedlegg {
+        .bildenavigering {
+            width: 100%;
+            padding-left: 25px;
+            padding-right: 25px;
+
+            [class*='pil'] {
+                margin-left: 0;
+                margin-right: 0;
+            }
+
+            .bilde {
+                width: 75%;
+            }
+
+            .tilbake {
+                &.mobil {
+                    display: block;
+                }
+
+                &.ikke-mobil{
+                    display: none;
+                }
+            }
+        }
+    }
+
+    #oppsummering {
+        .rad-belyst {
+            padding-left: 25px;
+            padding-right: 25px;
+
+            .begrensning {
+                width: 100%;
+
+                [class*="panel-"] {
+                    width: 100%;
+                }
+            }
+        }
+    }
+
+    .accordion-heading {
+        padding-left: 25px;
+        padding-right: 25px;
+    }
 }
