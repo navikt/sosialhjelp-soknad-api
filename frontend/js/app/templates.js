@@ -268,32 +268,34 @@ angular.module("../views/templates/arbeidsforhold.html", []).run(["$templateCach
     "            <span class=\"melding\"> </span>\n" +
     "        </div>\n" +
     "\n" +
-    "        <div class=\"spm-boks vertikal\" data-ng-repeat=\"af in arbeidsliste\" data-ng-class=\"{'last': $last}\">\n" +
-    "            <div id=\"arbeidsforhold{{af.arbeidsforhold.faktumId}}\">\n" +
-    "                <a href=\"#\" class=\"lukk\" data-ng-click=\"slettArbeidsforhold(af, $index, $event)\"\n" +
-    "                   data-fokus-slettmoduler=\"arbeidsforhold\"> </a>\n" +
-    "                <span class=\"robust\">{{ af.arbeidsforhold.properties.arbeidsgivernavn }}</span>\n" +
-    "                <span class=\"robust\">, </span>\n" +
-    "                <span class=\"robust\">{{ finnLandFraLandkode(af.arbeidsforhold.properties.land) }}</span>\n" +
+    "        <div class=\"arbeidsforhold-boks\">\n" +
+    "            <div class=\"spm-boks vertikal\" data-ng-repeat=\"af in arbeidsliste\" data-ng-class=\"{'last': $last}\">\n" +
+    "                <div id=\"arbeidsforhold{{af.arbeidsforhold.faktumId}}\">\n" +
+    "                    <a href=\"#\" class=\"lukk\" data-ng-click=\"slettArbeidsforhold(af, $index, $event)\"\n" +
+    "                       data-fokus-slettmoduler=\"arbeidsforhold\"> </a>\n" +
+    "                    <span class=\"robust\">{{ af.arbeidsforhold.properties.arbeidsgivernavn }}</span>\n" +
+    "                    <span class=\"robust\">, </span>\n" +
+    "                    <span class=\"robust\">{{ finnLandFraLandkode(af.arbeidsforhold.properties.land) }}</span>\n" +
     "\n" +
-    "                <div class=\"arbeidsforhold-land-sluttaarsak-blokk\">\n" +
-    "                    <div class=\"arbeidsgiver-oppsummering-sluttaarsaker\">\n" +
-    "                        <div data-ng-include=\"templates[af.sluttaarsak.properties.type].oppsummeringsurl\"></div>\n" +
+    "                    <div class=\"arbeidsforhold-land-sluttaarsak-blokk\">\n" +
+    "                        <div class=\"arbeidsgiver-oppsummering-sluttaarsaker\">\n" +
+    "                            <div data-ng-include=\"templates[af.sluttaarsak.properties.type].oppsummeringsurl\"></div>\n" +
+    "                        </div>\n" +
     "                    </div>\n" +
-    "                </div>\n" +
     "\n" +
-    "                <div class=\"arbeidsforhold-oppsummering-endre-slett\">\n" +
-    "                    <ul class=\"liste-vannrett\">\n" +
-    "                        <li>\n" +
-    "                            <a href data-ng-click=\"slettArbeidsforhold(af, $index, $event)\"\n" +
-    "                               data-fokus-slettmoduler=\"arbeidsforhold\">{{ 'arbeidsforhold.slettarbeidsforhold' | cmstekst }}</a>\n" +
-    "                        </li>\n" +
-    "                        <li>\n" +
-    "                            <a href data-ng-click=\"endreArbeidsforhold(af, $index, $event)\">\n" +
-    "                                {{ 'arbeidsforhold.endrearbeidsforhold' | cmstekst }}\n" +
-    "                            </a>\n" +
-    "                        </li>\n" +
-    "                    </ul>\n" +
+    "                    <div class=\"arbeidsforhold-oppsummering-endre-slett\">\n" +
+    "                        <ul class=\"liste-vannrett\">\n" +
+    "                            <li>\n" +
+    "                                <a href data-ng-click=\"slettArbeidsforhold(af, $index, $event)\"\n" +
+    "                                   data-fokus-slettmoduler=\"arbeidsforhold\">{{ 'arbeidsforhold.slettarbeidsforhold' | cmstekst }}</a>\n" +
+    "                            </li>\n" +
+    "                            <li>\n" +
+    "                                <a href data-ng-click=\"endreArbeidsforhold(af, $index, $event)\">\n" +
+    "                                    {{ 'arbeidsforhold.endrearbeidsforhold' | cmstekst }}\n" +
+    "                                </a>\n" +
+    "                            </li>\n" +
+    "                        </ul>\n" +
+    "                    </div>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
@@ -1178,18 +1180,18 @@ angular.module("../views/templates/barnetillegg/barnetillegg-nyttbarn.html", [])
     "                </div>\n" +
     "            </div>\n" +
     "\n" +
-    "            <div data-ng-show=\"erEosLandAnnetEnnNorge()\">\n" +
-    "                <div data-navinfoboks>\n" +
+    "            <div data-ng-if=\"erEosLandAnnetEnnNorge()\">\n" +
+    "                <div class=\"ekstra-spm-boks\" data-navinfoboks>\n" +
     "                    <p class=\"sluttaarsak-informasjon\">{{ 'barnetillegg.nyttbarn.land.eos' | cmstekst }}</p>\n" +
     "                </div>\n" +
     "            </div>\n" +
-    "            <div data-ng-show=\"erIkkeEosLand()\">\n" +
-    "                <div data-navinfoboks>\n" +
+    "            <div data-ng-if=\"erIkkeEosLand()\">\n" +
+    "                <div class=\"ekstra-spm-boks\" data-navinfoboks>\n" +
     "                    <p class=\"sluttaarsak-informasjon\">{{ 'barnetillegg.nyttbarn.land.ikkeeos' | cmstekst }}</p>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "\n" +
-    "            <div data-ng-show=\"barn.properties.land == 'NOR'\">\n" +
+    "            <div data-ng-if=\"barn.properties.land == 'NOR'\">\n" +
     "                <div class=\"ekstra-spm-boks\" data-vedlegginfoboks>\n" +
     "                    <ul>\n" +
     "                        <li>\n" +
@@ -1344,7 +1346,7 @@ angular.module("../views/templates/barnetillegg/barnetilleggSporsmalTemplate.htm
     "             data-ng-required>\n" +
     "        </div>\n" +
     "\n" +
-    "        <div class=\"ekstra-spm-boks\" data-vedlegginfoboks>\n" +
+    "        <div data-vedlegginfoboks>\n" +
     "            <ul>\n" +
     "                <li>\n" +
     "                    {{ 'barnetillegg.barnetilegg.ikkebarneinntekt.false.vedlegginformasjon' |\n" +
@@ -3313,11 +3315,16 @@ angular.module("../js/app/directives/bildenavigering/bildenavigeringTemplateStor
     "    <div class=\"nav\" data-ng-if=\"vedlegg.vedleggId\">\n" +
     "        <a class=\"pil-venstre-sort\" data-ng-click=\"naviger(-1)\" data-ng-if=\"vedlegg.antallSider > 1\" href=\"javascript:void(0);\">\n" +
     "        </a><div class=\"bilde\" data-ng-click=\"naviger(1)\">\n" +
+    "        <img class=\"spinner\"\n" +
+    "             data-ng-if=\"spinner.visLaster\"\n" +
+    "             src=\"../img/ajaxloader/svart/loader_svart_128.gif\">\n" +
     "        <img data-ng-repeat=\"bilde in range(vedlegg.antallSider)\"\n" +
     "             data-ng-src=\"../rest/soknad/{{vedlegg.soknadId}}/vedlegg/{{vedlegg.vedleggId}}/thumbnail?side={{bilde}}\"\n" +
+    "             data-ferdig-lastet\n" +
     "             alt=\"Forhåndsvisning\"\n" +
     "             data-ng-hide=\"!sideErSynlig(bilde)\">\n" +
-    "        <a class=\"tilbake\" onclick=\"history.back()\" data-cmstekster=\"vedlegg.forhandsvisning.tilbake\" href=\"javascript:void(0);\"></a>\n" +
+    "        <a class=\"tilbake ikke-mobil\" onclick=\"history.back()\" href=\"javascript:void(0);\">{{ 'vedlegg.forhandsvisning.tilbake' | cmstekst }}</a>\n" +
+    "        <a class=\"tilbake mobil\" onclick=\"history.back()\" href=\"javascript:void(0);\">{{ 'vedlegg.forhandsvisning.tilbake.mobil' | cmstekst }}</a>\n" +
     "    </div><a class=\"pil-hoyre-sort\" data-ng-click=\"naviger(1)\" data-ng-if=\"vedlegg.antallSider > 1\" href=\"javascript:void(0);\"></a>\n" +
     "    </div>\n" +
     "    <div class=\"header\">\n" +
