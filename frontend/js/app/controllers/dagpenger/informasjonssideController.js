@@ -61,7 +61,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         };
 
         $scope.soknadErFerdigstilt = function () {
-            return data && data.soknad && data.soknad.status == "FERDIG";
+            return data && data.soknad && data.soknad.status === "FERDIG";
         };
 
         $scope.startSoknad = function () {

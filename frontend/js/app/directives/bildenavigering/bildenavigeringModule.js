@@ -17,7 +17,9 @@ angular.module('nav.bildenavigering', [])
 
                 scope.range = function (til) {
                     var r = [];
-                    for (var i = 0; i < til; i++) r.push(i);
+                    for (var i = 0; i < til; i++) {
+                        r.push(i);  
+                    } 
                     return r;
                 };
 
@@ -26,7 +28,6 @@ angular.module('nav.bildenavigering', [])
                 };
 
                 scope.naviger = function (retning) {
-                    //element.find('img').attr('src', '');
                     scope.side = scope.side + retning;
                     if (scope.side < 0) {
                         scope.side = scope.vedlegg.antallSider - 1;

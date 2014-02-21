@@ -49,7 +49,7 @@ public class WebSoknadUtilsTest {
     public void harSkjemanummerDagpengerVedPermitteringHvisNyesteArbeidsforholdErRedusertArbeidstid() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
         WebSoknad soknad = lagSoknad(lagRedusertArbeidstid("2014-2-1"), lagAvskjediget("2014-1-1"));
-        assertEquals(DAGPENGER_VED_PERMITTERING, getSkjemanummer(soknad));
+        assertEquals(DAGPENGER, getSkjemanummer(soknad));
     }
 
     @Test

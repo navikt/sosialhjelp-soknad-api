@@ -9,6 +9,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
@@ -36,6 +37,7 @@ import static java.lang.String.format;
 import static javax.xml.bind.JAXBContext.newInstance;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
 /**
  * Klassen håndterer alle rest kall for å hente grunnlagsdata til applikasjonen.
@@ -50,6 +52,8 @@ public class SoknadDataController {
     private VedleggService vedleggService;
     @Inject
     private Kodeverk kodeverk;
+    @Inject
+    private NavMessageSource navMessageSource;
 
     @RequestMapping(value = "/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
@@ -128,7 +132,6 @@ public class SoknadDataController {
         }).collect();
     }
 
-
     @RequestMapping(value = "/send/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody()
     @SjekkTilgangTilSoknad
@@ -137,7 +140,7 @@ public class SoknadDataController {
         String oppsummeringMarkup;
         try {
             vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
-            oppsummeringMarkup = new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+            oppsummeringMarkup = new HandleBarKjoerer(kodeverk, navMessageSource).fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lage markup av søknad", e);
         }
@@ -153,6 +156,21 @@ public class SoknadDataController {
         for (Faktum faktum : webSoknad.getFaktaListe()) {
             soknadService.lagreSoknadsFelt(soknadId, faktum);
         }
+    }
+
+    @RequestMapping(value = "/{soknadId}/hentpdf", method = RequestMethod.GET, produces = APPLICATION_OCTET_STREAM_VALUE)
+    @ResponseBody()
+    @SjekkTilgangTilSoknad
+    public byte[] hentPdf(@PathVariable final Long soknadId) {
+        WebSoknad soknad = soknadService.hentSoknad(soknadId);
+        String oppsummeringMarkup;
+        try {
+            vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
+            oppsummeringMarkup = new HandleBarKjoerer(kodeverk, navMessageSource).fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+        } catch (IOException e) {
+            throw new ApplicationException("Kunne ikke lage markup av søknad", e);
+        }
+        return PDFFabrikk.lagPdfFil(oppsummeringMarkup);
     }
 
     @RequestMapping(value = "/{soknadId}/faktum/", method = RequestMethod.POST)
@@ -179,8 +197,6 @@ public class SoknadDataController {
     @SjekkTilgangTilSoknad
     public void slettSoknad(@PathVariable Long soknadId) {
         soknadService.avbrytSoknad(soknadId);
-        // Må legges til i forbindelse med kobling mot henvendelse.
-        // henvendelseConnector.avbrytSoknad("12412412");
     }
 
     @RequestMapping(value = "/oppsummering/{soknadId}", method = RequestMethod.GET, produces = "text/html")
@@ -189,6 +205,6 @@ public class SoknadDataController {
     public String hentOppsummering(@PathVariable Long soknadId) throws IOException {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
         vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
-        return new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+        return new HandleBarKjoerer(kodeverk, navMessageSource).fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
     }
 }
