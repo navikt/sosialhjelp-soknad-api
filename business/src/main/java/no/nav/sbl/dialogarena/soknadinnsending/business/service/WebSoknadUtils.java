@@ -29,7 +29,7 @@ public class WebSoknadUtils {
     public static final String EOS_DAGPENGER = "4304";
     public static final String RUTES_I_BRUT = "0000";
     public static final String PERMITTERT = "Permittert";
-    public static final String REDUSERT_ARBEIDSTID = "Redusert Arbeidstid";
+    public static final String REDUSERT_ARBEIDSTID = "Redusert arbeidstid";
     public static final String ANNEN_AARSAK = "Annen årsak";
     private static final Logger LOGGER = getLogger(WebSoknadUtils.class);
 
@@ -74,10 +74,8 @@ public class WebSoknadUtils {
     }
 
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
-        LOGGER.warn("Faktaliste for ruting" + webSoknad.getFaktaListe());
         String sluttaarsak = erPermittertellerHarRedusertArbeidstid(webSoknad);
         Personalia personalia = getPerson(webSoknad);
-        LOGGER.warn("sluttaarsak" + sluttaarsak);
         if ((personalia.harUtenlandskFolkeregistrertAdresse() && (!personalia.harNorskMidlertidigAdresse())))
         {
             if (sluttaarsak.equals(PERMITTERT) || (sluttaarsak.equals(REDUSERT_ARBEIDSTID)))

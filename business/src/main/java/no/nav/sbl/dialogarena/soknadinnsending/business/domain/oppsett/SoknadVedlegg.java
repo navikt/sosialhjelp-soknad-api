@@ -2,12 +2,11 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.xml.bind.annotation.XmlIDREF;
 import java.io.Serializable;
-
-import static org.slf4j.LoggerFactory.getLogger;
 
 public class SoknadVedlegg implements Serializable {
 
@@ -19,6 +18,7 @@ public class SoknadVedlegg implements Serializable {
     private String skjemaNummer;
     private String property;
     private Boolean inverted = false;
+    private String oversetting;
 
     @XmlIDREF
     public SoknadFaktum getFaktum() {
@@ -67,6 +67,18 @@ public class SoknadVedlegg implements Serializable {
 
     public void setInverted(Boolean inverted) {
         this.inverted = inverted;
+    }
+
+    public String getOversetting() {
+        return oversetting;
+    }
+
+    public void setOversetting(String oversetting) {
+        this.oversetting = oversetting;
+    }
+
+    public boolean harOversetting() {
+        return StringUtils.isNotEmpty(this.oversetting);
     }
 
     public boolean trengerVedlegg(Faktum value) {

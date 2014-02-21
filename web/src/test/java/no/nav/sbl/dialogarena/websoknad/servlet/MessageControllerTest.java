@@ -1,7 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
 
-import no.nav.sbl.dialogarena.websoknad.config.NavMessageSource;
+import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
