@@ -6,7 +6,7 @@
     'use strict';
 
     describe('DagpengerControllere', function () {
-        var scope, ctrl, form, element, barn, $httpBackend, event;
+        var scope, ctrl, form, element, barn, $httpBackend, event, location;
         event = $.Event("click");
 
         beforeEach(module('ngCookies', 'app.services'));
@@ -27,7 +27,7 @@
                 {
                     key: 'Bolker',
                     type: 'BRUKERREGISTRERT'
-                },
+                }
             ];
 
             $provide.value("data", {
@@ -59,6 +59,11 @@
                 },
                 config: ["soknad.sluttaarsak.url", "soknad.lonnskravskjema.url", "soknad.permitteringsskjema.url" ],
                 slettFaktum: function (faktumData) {
+                    fakta.forEach(function (item, index) {
+                        if (item.faktumId === faktumData.faktumId) {
+                            fakta.splice(index,1);
+                        }
+                    });
                 }
             });
             $provide.value("cms", {'tekster': {'barnetillegg.nyttbarn.landDefault': ''}});
@@ -66,7 +71,8 @@
         )
         ;
 
-        beforeEach(inject(function ($rootScope, $controller, $compile, $httpBackend) {
+        beforeEach(inject(function ($injector, $rootScope, $controller, $compile) {
+            $httpBackend = $injector.get('$httpBackend');
             $httpBackend.expectGET('../js/app/directives/feilmeldinger/feilmeldingerTemplate.html').
                 respond('');
 
@@ -98,8 +104,6 @@
             form = scope.form;
             barn = form.alder;
             element.scope().$apply();
-
-
         }));
 
         describe('egennaeringCtrl', function () {
@@ -325,16 +329,28 @@
             });
         });
         describe('BarneCtrl', function () {
-            var cookieStore;
-            beforeEach(inject(function (_$httpBackend_, $controller, cms, $cookieStore) {
+            beforeEach(inject(function ($injector, $controller, cms, data, $compile) {
                 ctrl = $controller('BarneCtrl', {
                     $scope: scope
                 });
+                element = angular.element(
+                    '<form name="form">' +
+                        '<input type="text" ng-model="scope.barn.properties.fodselsdato" name="alder"/>' +
+                        '<input type="hidden" data-ng-model="underAtten.value" data-ng-required="true"/>' +
+                        '</form>'
+                );
+
+                $compile(element)(scope);
+                $httpBackend = $injector.get('$httpBackend');
+
+
                 scope.cms = cms;
-                $httpBackend = _$httpBackend_;
                 $httpBackend.expectGET('/sendsoknad/rest/landtype/' + scope.barn.properties.land).
                     respond({});
-                cookieStore = $cookieStore;
+
+                scope.data = data;
+                scope.$digest();
+
             }));
 
             it('skal returnere 0 aar for barn fodt idag', function () {
@@ -476,7 +492,7 @@
                 scope.data = data;
                 scope.data.land = 'NOR';
 
-               barnFaktum = {
+                barnFaktum = {
                     key: 'barn',
                     faktumId: 111
                 };
@@ -523,9 +539,9 @@
                 expect(scope.barn.properties.sammensattnavn).toEqual('Fornavn Etternavn');
             });
             it('soker om barnetilleg for barn i tps og avbryter sa skal ', function () {
-                scope.barn.properties.barneinntekttall=100;
-                scope.barn.properties.barnetillegg=true;
-                scope.barn.properties.ikkebarneinntekt=true;
+                scope.barn.properties.barneinntekttall = 100;
+                scope.barn.properties.barnetillegg = true;
+                scope.barn.properties.ikkebarneinntekt = true;
                 scope.avbrytBarnetilegg(event);
                 expect(scope.barn.properties.barneinntekttall).toEqual(undefined);
                 expect(scope.barn.properties.barnetillegg).toEqual(undefined);
@@ -533,14 +549,32 @@
             });
         });
         describe('BarnetilleggCtrl', function () {
-            beforeEach(inject(function ($controller, data) {
-                scope.data = data;
+            var cookieStore;
 
+            beforeEach(inject(function ($controller, data, $cookieStore, $location) {
+                location = $location;
+
+                scope.data = data;
                 scope.data.land = {
                     result: [
                         {value: 'NOR', text: 'Norge'},
                         { value: 'DNK', text: 'Danmark'}
                     ]};
+
+                var tpsBarn = {
+                    key: 'barn',
+                    properties: {}
+                };
+                var nyttBarn = {
+                    key: 'barn',
+                    properties: {barnetillegg: 'true'},
+                    $save: function() {}
+                };
+
+                scope.data.leggTilFaktum(tpsBarn);
+                scope.data.leggTilFaktum(nyttBarn);
+
+                cookieStore = $cookieStore
 
                 ctrl = $controller('BarnetilleggCtrl', {
                     $scope: scope
@@ -700,6 +734,56 @@
                 expect(scope.barnetilleggIkkeRegistrert(barnIkkeTillegg)).toEqual(true);
                 expect(scope.barnetilleggIkkeRegistrert(barnTillegg)).toEqual(false);
             });
+            it('barnetillegg skal vaere false hvis barnet fantes fra for i tps', function () {
+                expect(scope.barn[0].properties.barnetillegg).toBe('false');
+            });
+            it('barnetillegg skal vaere true hvis barnet blir lagt til manuelt', function () {
+                expect(scope.barn[1].properties.barnetillegg).toBe('true');
+            });
+            it('cookien skal bli satt naar et barn blir lagt til', function () {
+                scope.leggTilBarn(event);
+                expect(cookieStore.get('scrollTil').gjeldendeTab).toBe("#barnetillegg");
+            });
+            it('cookien skal bli satt naar et barn blir endret til', function () {
+                scope.endreBarn(0, event);
+                expect(cookieStore.get('scrollTil').gjeldendeTab).toBe("#barnetillegg");
+            });
+            it('cookien skal bli satt naar et barn soker om barnetillegg', function () {
+                scope.sokbarnetillegg(0, event);
+                expect(cookieStore.get('scrollTil').gjeldendeTab).toBe("#barnetillegg");
+            });
+            it('pathen skal endres til nyttbarn naar et barn blir lagt til', function () {
+                spyOn(location, 'path');
+                scope.leggTilBarn(event);
+                expect(location.path).toHaveBeenCalledWith("nyttbarn/");
+            });
+            it('pathen skal endres til endrebarn/faktumid naar et barn blir endret', function () {
+                spyOn(location, 'path');
+                scope.endreBarn(0, event);
+                expect(location.path).toHaveBeenCalledWith("endrebarn/0");
+            });
+            it('pathen skal endres til sokbarnetillegg/faktumid naar et barn soker om barnetillegg', function () {
+                spyOn(location, 'path');
+                scope.sokbarnetillegg(0, event);
+                expect(location.path).toHaveBeenCalledWith("sokbarnetillegg/0");
+            });
+            it('nar et barn slettes skal dette barnet ikke lenger vaere lagret pa fakta', function () {
+                expect(scope.data.finnFakta('barn').length).toBe(2);
+                scope.slettBarn (scope.barn[0], 0, event);
+                expect(scope.data.finnFakta('barn').length).toBe(1);
+            });
+            it('nar et barnetillegg slettes skal prorpertiene knyttet til barnetillegget resettes', function () {
+                expect(scope.barn[1].properties.ikkebarneinntekt).toBe('true');
+                scope.slettBarnetillegg(scope.barn[1], 1, event);
+                expect(scope.barn[1].properties.ikkebarneinntekt).toBe(undefined);
+            });
+            it('skal kjøre metodene lukkTab og settValidert nar barnetillegg legges til', function () {
+                spyOn(scope, "lukkTab");
+                spyOn(scope, "settValidert");
+                scope.valider(false);
+                expect(scope.lukkTab).toHaveBeenCalledWith('barnetillegg');
+                expect(scope.settValidert).toHaveBeenCalledWith('barnetillegg');
+            });
         });
         describe('AdresseCtrl', function () {
             beforeEach(inject(function ($controller) {
@@ -748,7 +832,7 @@
             });
         });
         describe('ArbeidsforholdCtrl', function () {
-            var cookieStore
+            var cookieStore;
             beforeEach(inject(function ($controller, data, $cookieStore) {
                 scope.data = data;
                 scope.data.land = {
@@ -916,7 +1000,6 @@
                 expect(scope.apneTab).toHaveBeenCalledWith('arbeidsforhold');
             });
             it('skal apne bolken for invalid form', function () {
-                var event = $.Event("click");
                 spyOn(scope, "runValidation").andReturn(false);
                 spyOn(scope, "apneTab");
                 scope.valider(false);
@@ -924,12 +1007,10 @@
                 expect(scope.apneTab).toHaveBeenCalledWith('arbeidsforhold');
             });
             it('cookieStore skal bli satt når et arbeidsforhold endres', function () {
-                var event = $.Event("click");
                 scope.endreArbeidsforhold(scope.arbeidsliste[0], 0, event);
                 expect(cookieStore.get('scrollTil').gjeldendeTab).toBe("#arbeidsforhold");
             });
             it('cookieStore skal bli satt når et nytt arbeidsforhold legges til', function () {
-                var event = $.Event("click");
                 scope.nyttArbeidsforhold(event);
                 expect(cookieStore.get('scrollTil').gjeldendeTab).toBe("#arbeidsforhold");
             });
@@ -1003,6 +1084,8 @@
                 expect(scope.grupper[0].apen).toBe(true);
             });
         });
+
+
     });
 }
     ()
