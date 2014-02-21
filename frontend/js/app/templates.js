@@ -2819,7 +2819,7 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "\n" +
     "                                <h2 class=\"stor\">\n" +
     "                                    <span>{{forventning.tittel}}</span>\n" +
-    "                                    <span data-ng-if=\"forventning.navn\">: {{forventning.navn}}</span>\n" +
+    "                                    <span data-ng-show=\"forventning.navn\">: {{forventning.navn}}</span>\n" +
     "                                </h2>\n" +
     "                            </div>\n" +
     "                        </div>\n" +
