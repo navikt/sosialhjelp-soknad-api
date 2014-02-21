@@ -67,18 +67,18 @@
                 </div>
             </div>
 
-            <div data-ng-show="erEosLandAnnetEnnNorge()">
-                <div data-navinfoboks>
+            <div data-ng-if="erEosLandAnnetEnnNorge()">
+                <div class="ekstra-spm-boks" data-navinfoboks>
                     <p class="sluttaarsak-informasjon">{{ 'barnetillegg.nyttbarn.land.eos' | cmstekst }}</p>
                 </div>
             </div>
-            <div data-ng-show="erIkkeEosLand()">
-                <div data-navinfoboks>
+            <div data-ng-if="erIkkeEosLand()">
+                <div class="ekstra-spm-boks" data-navinfoboks>
                     <p class="sluttaarsak-informasjon">{{ 'barnetillegg.nyttbarn.land.ikkeeos' | cmstekst }}</p>
                 </div>
             </div>
 
-            <div data-ng-show="barn.properties.land == 'NOR'">
+            <div data-ng-if="barn.properties.land == 'NOR'">
                 <div class="ekstra-spm-boks" data-vedlegginfoboks>
                     <ul>
                         <li>
