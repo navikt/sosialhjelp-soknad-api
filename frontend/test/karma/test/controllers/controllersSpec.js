@@ -6,7 +6,8 @@
     'use strict';
 
     describe('DagpengerControllere', function () {
-        var scope, ctrl, form, element, barn, $httpBackend;
+        var scope, ctrl, form, element, barn, $httpBackend, event;
+        event = $.Event("click");
 
         beforeEach(module('ngCookies', 'app.services'));
         beforeEach(module('app.controllers', 'nav.feilmeldinger'));
@@ -521,6 +522,15 @@
             it('hvis det sokes barnetillegg for et barn som finnes i TPS skal scope.barn inneholde de samme verdiene som barnet det sokes om', function () {
                 expect(scope.barn.properties.sammensattnavn).toEqual('Fornavn Etternavn');
             });
+            it('soker om barnetilleg for barn i tps og avbryter sa skal ', function () {
+                scope.barn.properties.barneinntekttall=100;
+                scope.barn.properties.barnetillegg=true;
+                scope.barn.properties.ikkebarneinntekt=true;
+                scope.avbrytBarnetilegg(event);
+                expect(scope.barn.properties.barneinntekttall).toEqual(undefined);
+                expect(scope.barn.properties.barnetillegg).toEqual(undefined);
+                expect(scope.barn.properties.ikkebarneinntekt).toEqual(undefined);
+            });
         });
         describe('BarnetilleggCtrl', function () {
             beforeEach(inject(function ($controller, data) {
@@ -789,7 +799,7 @@
                 expect(scope.arbeidsliste[2].sluttaarsak.properties.datofra).toBe('11.11.1112');
             });
             it('arbeidslisten skal inneholder to sluttaarsaker etter at et arbeidsforhold er slettet', function () {
-                var event = $.Event("click");
+
                 scope.slettArbeidsforhold(scope.arbeidsliste[0], 0, event);
                 expect(scope.arbeidsliste.length).toBe(2);
             });

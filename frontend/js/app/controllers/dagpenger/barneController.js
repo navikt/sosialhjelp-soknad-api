@@ -118,7 +118,6 @@ angular.module('nav.barn', ['app.services'])
         };
 
         $scope.endrerSystemregistrertBarn = function () {
-            console.log(url)
             return barnetilleggModus;
         };
 
