@@ -21,21 +21,21 @@ angular.module('nav.barnetilleggfaktum', ['app.services'])
 
         if ($scope.soknadData.fakta.barnetillegg) {
             angular.forEach($scope.soknadData.fakta.barnetillegg.valuelist, function (value) {
-                if (value.parrentFaktum == $scope.b.faktumId) {
+                if (value.parrentFaktum === $scope.b.faktumId) {
                     barnetilleggsData = value;
                 }
             });
         }
         if ($scope.soknadData.fakta.ikkebarneinntekt) {
             angular.forEach($scope.soknadData.fakta.ikkebarneinntekt.valuelist, function (value) {
-                if (value.parrentFaktum == $scope.b.faktumId) {
+                if (value.parrentFaktum === $scope.b.faktumId) {
                     ikkebarneinntekt = value;
                 }
             });
         }
         if ($scope.soknadData.fakta.barneinntekttall) {
             angular.forEach($scope.soknadData.fakta.barneinntekttall.valuelist, function (value) {
-                if (value.parrentFaktum == $scope.b.faktumId) {
+                if (value.parrentFaktum === $scope.b.faktumId) {
                     barneinntekttall = value;
                 }
             });

@@ -44,7 +44,7 @@ angular.module('nav.arbeidsforhold.controller', [])
 
         $scope.finnLandFraLandkode = function(landkode) {
             for(var i=0; i<data.land.result.length; i++) {
-                if(data.land.result[i].value == landkode) {
+                if(data.land.result[i].value === landkode) {
                     return data.land.result[i].text;
                 }
             }
