@@ -27,7 +27,7 @@ angular.module('nav.adresse', [])
             if (adresseType === 'UTENLANDSK_ADRESSE' || adresseType === 'BOSTEDSADRESSE' || adresseType === 'POSTADRESSE') {
                 return 'personalia.folkeregistrertadresse';
             } else if (adresseType === 'MIDLERTIDIG_POSTADRESSE_NORGE') {
-                return 'MIDLERTIDIG_POSTADRESSE_NORGE';
+                return 'personalia.midlertidigAdresseNorge';
             } else if (adresseType === 'MIDLERTIDIG_POSTADRESSE_UTLAND') {
                 return 'personalia.midlertidigAdresseUtland';
             } else {
@@ -39,6 +39,14 @@ angular.module('nav.adresse', [])
             $scope.formattertGjeldendeAdresse = $scope.hentFormattertAdresse($scope.personalia.gjeldendeAdresse);
             $scope.gjeldendeAdresseTypeLabel = $scope.hentAdresseTypeNokkel($scope.personalia.gjeldendeAdresseType);
         }
+
+        $scope.harGjeldendeGyldigTilDato = function() {
+            return $scope.personalia.gjeldendeAdresseGyldigTil !== undefined && $scope.personalia.gjeldendeAdresseGyldigTil !== null && $scope.personalia.gjeldendeAdresseGyldigTil !== '';
+        };
+
+        $scope.harSekundarGyldigTilDato = function() {
+          return $scope.personalia.sekundarAdresseGyldigTil !== undefined && $scope.personalia.sekundarAdresseGyldigTil !== null && $scope.personalia.gjeldendeAdresseGyldigTil !== '';
+        };
 
         $scope.harSekundarAdresse = function() {
             return $scope.personalia.sekundarAdresse !== null;

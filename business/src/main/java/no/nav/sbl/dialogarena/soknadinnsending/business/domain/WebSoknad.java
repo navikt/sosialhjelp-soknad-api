@@ -146,6 +146,10 @@ public class WebSoknad implements Serializable {
         setBrukerBehandlingId(behandlingsId);
         return this;
     }
+    public WebSoknad medFaktum(Faktum faktum) {
+        getFaktaListe().add(faktum);
+        return this;
+    }
 
     public WebSoknad opprettetDato(DateTime opprettetDato) {
         this.opprettetDato = opprettetDato;

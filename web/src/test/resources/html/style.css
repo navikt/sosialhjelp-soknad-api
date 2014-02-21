@@ -1,19 +1,13 @@
 body {
-    color: #000000;
     background-color: #cccccc;
     padding: 40px;
-    font-family: Arial;
+    font-family: Arial, sans-serif; font-size: 10pt; line-height: 1.4em; margin: 0; color: #3e3832;
 }
 
 h3 {
-    font-family: Helvetica;
-    font-size: 46pt;
-
+    font-family: Arial, sans-serif; font-size: 10pt; line-height: 1.4em; margin: 0; color: #3e3832;
 }
 
 div {
-    font-family: Helvetica;
-    font-size: 36pt;
-    color: #ff0000;
-
+    font-family: Arial, sans-serif; font-size: 10pt; line-height: 1.4em; margin: 0; color: #3e3832;
 }

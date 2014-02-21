@@ -155,8 +155,8 @@
 		<id>utdanning.norsk</id>
 		<type>java.lang.Boolean</type>
 		<panel>Utdanning</panel>
-        <dependOn>underUtdanning</dependOn>
-        <dependOnValue>true</dependOnValue>
+        <dependOn>utdanning</dependOn>
+        <dependOnValue>underUtdanning</dependOnValue>
 	</faktum>
 	<faktum>
 		<id>underUtdanningAnnet</id>
@@ -365,12 +365,12 @@
 		<skjemaNummer>T2</skjemaNummer>
 	</vedlegg>
 
-	<vedlegg>
+	<!--vedlegg>
 		<id>8</id>
 		<faktum>utdanning.kveld</faktum>
 		<onValue>true</onValue>
 		<skjemaNummer>T1</skjemaNummer>
-	</vedlegg>
+	</vedlegg-->
 	<vedlegg>
 		<id>8</id>
 		<faktum>utdanning.kortvarig</faktum>
@@ -415,60 +415,69 @@
 		<onValue>false</onValue>
 		<skjemaNummer>G4</skjemaNummer>
 	</vedlegg>
+
 	<vedlegg>
 		<id>3</id>
 		<faktum>offentligTjenestepensjon</faktum>
 		<onValue>true</onValue>
 		<skjemaNummer>K1</skjemaNummer>
 		<flereTillatt>true</flereTillatt>
-	</vedlegg>
+        <oversetting>ytelser.${key}</oversetting>
+    </vedlegg>
 	<vedlegg>
 		<id>3</id>
 		<faktum>privatTjenestepensjon</faktum>
 		<onValue>true</onValue>
 		<skjemaNummer>K1</skjemaNummer>
 		<flereTillatt>true</flereTillatt>
-	</vedlegg>
+        <oversetting>ytelser.${key}</oversetting>
+    </vedlegg>
 	<vedlegg>
 		<id>3</id>
 		<faktum>stonadFisker</faktum>
 		<onValue>true</onValue>
 		<skjemaNummer>K1</skjemaNummer>
 		<flereTillatt>true</flereTillatt>
-	</vedlegg>
+        <oversetting>ytelser.${key}</oversetting>
+    </vedlegg>
 	<vedlegg>
 		<id>3</id>
 		<faktum>garantilott</faktum>
 		<onValue>true</onValue>
 		<skjemaNummer>K1</skjemaNummer>
 		<flereTillatt>true</flereTillatt>
-	</vedlegg>
+        <oversetting>ytelser.${key}</oversetting>
+    </vedlegg>
 	<vedlegg>
 		<id>3</id>
 		<faktum>etterlonn</faktum>
 		<onValue>true</onValue>
 		<skjemaNummer>K1</skjemaNummer>
 		<flereTillatt>true</flereTillatt>
-	</vedlegg>
+        <oversetting>ytelser.${key}</oversetting>
+    </vedlegg>
 	<vedlegg>
 		<id>3</id>
 		<faktum>vartpenger</faktum>
 		<onValue>true</onValue>
 		<skjemaNummer>K1</skjemaNummer>
 		<flereTillatt>true</flereTillatt>
-	</vedlegg>
+        <oversetting>ytelser.${key}</oversetting>
+    </vedlegg>
 	<vedlegg>
 		<id>3</id>
 		<faktum>dagpengerEOS</faktum>
 		<onValue>true</onValue>
 		<skjemaNummer>K1</skjemaNummer>
-		<flereTillatt>true</flereTillatt>
+        <oversetting>ytelser.${key}</oversetting>
+        <flereTillatt>true</flereTillatt>
 	</vedlegg>
 	<vedlegg>
 		<id>3</id>
 		<faktum>annenYtelse</faktum>
 		<onValue>true</onValue>
 		<skjemaNummer>K1</skjemaNummer>
+        <oversetting>ytelser.${key}</oversetting>
 		<flereTillatt>true</flereTillatt>
 	</vedlegg>
 	<vedlegg>
@@ -484,7 +493,6 @@
 		<property>arbeidsgivernavn</property>
 		<flereTillatt>true</flereTillatt>
 	</vedlegg>
-
 	<vedlegg>
 		<id>4</id>
 		<faktum>arbeidsforhold</faktum>

@@ -1,5 +1,5 @@
 angular.module('nav.barnetillegg', [])
-	.controller('BarnetilleggCtrl', ['$scope', '$cookieStore', '$location', '$timeout', 'Faktum', 'data', function ($scope, $cookieStore, $location, $timeout, Faktum, data) {
+    .controller('BarnetilleggCtrl', ['$scope', '$cookieStore', '$location', '$timeout', 'Faktum', 'data', function ($scope, $cookieStore, $location, $timeout, Faktum, data) {
 
         $scope.soknadId = data.soknad.soknadId;
         $scope.barn = data.finnFakta('barn');
@@ -14,67 +14,67 @@ angular.module('nav.barnetillegg', [])
         });
 
 
-		$scope.erBrukerregistrert = function (barn) {
-			return barn.type === 'BRUKERREGISTRERT';
-		};
+        $scope.erBrukerregistrert = function (barn) {
+            return barn.type === 'BRUKERREGISTRERT';
+        };
 
-		$scope.erSystemRegistrert = function (barn) {
-			return  barn.type === 'SYSTEMREGISTRERT';
-		};
+        $scope.erSystemRegistrert = function (barn) {
+            return  barn.type === 'SYSTEMREGISTRERT';
+        };
 
-		$scope.ingenLandRegistrert = function (barn) {
-			return !barn.properties.land;
-		};
+        $scope.ingenLandRegistrert = function (barn) {
+            return !barn.properties.land;
+        };
 
-		$scope.leggTilBarn = function ($event) {
-			$event.preventDefault();
-			settBarnCookie();
-			$location.path('nyttbarn/');
-		};
+        $scope.leggTilBarn = function ($event) {
+            $event.preventDefault();
+            settBarnCookie();
+            $location.path('nyttbarn/');
+        };
 
-		$scope.endreBarn = function (faktumId, $event) {
-			$event.preventDefault();
-			settBarnCookie(faktumId);
-			$location.path('endrebarn/' + faktumId);
-		};
+        $scope.endreBarn = function (faktumId, $event) {
+            $event.preventDefault();
+            settBarnCookie(faktumId);
+            $location.path('endrebarn/' + faktumId);
+        };
 
-		$scope.sokbarnetillegg = function (faktumId, $event) {
-			$event.preventDefault();
-			settBarnCookie(faktumId);
-			$location.path('sokbarnetillegg/' + faktumId);
-		};
+        $scope.sokbarnetillegg = function (faktumId, $event) {
+            $event.preventDefault();
+            settBarnCookie(faktumId);
+            $location.path('sokbarnetillegg/' + faktumId);
+        };
 
-		$scope.slettBarn = function (b, index, $event) {
-			$event.preventDefault();
+        $scope.slettBarn = function (b, index, $event) {
+            $event.preventDefault();
 
             var barn = data.finnFakta('barn');
             barn.splice(index, 1);
-			data.slettFaktum(b);
+            data.slettFaktum(b);
 
-			$scope.barn = data.finnFakta('barn');
-		};
+            $scope.barn = data.finnFakta('barn');
+        };
 
-        $scope.kreverVedlegg = function(barn) {
+        $scope.kreverVedlegg = function (barn) {
             return ($scope.barnetilleggErRegistrert(barn) && $scope.barnetHarInntekt(barn)) || $scope.norskBarnIkkeFunnetITPS(barn);
         };
 
-        $scope.norskBarnIkkeFunnetITPS = function(barn) {
-            if(barn && barn.properties) { 
-                return barn.type === 'BRUKERREGISTRERT' && barn.properties.land == "NOR";
-            }   
+        $scope.norskBarnIkkeFunnetITPS = function (barn) {
+            if (barn && barn.properties) {
+                return barn.type === 'BRUKERREGISTRERT' && barn.properties.land === "NOR";
+            }
             return false;
         };
 
-		$scope.erGutt = function (barn) {
-			return barn.properties.kjonn === 'm';
-		};
+        $scope.erGutt = function (barn) {
+            return barn.properties.kjonn === 'm';
+        };
 
-		$scope.erJente = function (barn) {
-			return barn.properties.kjonn === 'k';
-		};
+        $scope.erJente = function (barn) {
+            return barn.properties.kjonn === 'k';
+        };
 
         $scope.barnetHarInntekt = function (barn) {
-            if(barn && barn.properties) {
+            if (barn && barn.properties) {
                 return barn.properties.ikkebarneinntekt === 'false';
             }
             return false;
@@ -94,29 +94,30 @@ angular.module('nav.barnetillegg', [])
 
         $scope.slettBarnetillegg = function (barn, index, $event) {
             $event.preventDefault();
-
+            barn.properties.ikkebarneinntekt = undefined;
+            barn.properties.barneinntekttall = undefined;
             barn.properties.barnetillegg = 'false';
             barn.$save();
         };
 
-		$scope.valider = function (skalScrolle) {
+        $scope.valider = function (skalScrolle) {
             $scope.lukkTab('barnetillegg');
             $scope.settValidert('barnetillegg');
         };
 
-		function settBarnCookie(faktumId) {
-			var aapneTabIds = [];
-			angular.forEach($scope.grupper, function (gruppe) {
-				if (gruppe.apen) {
-					aapneTabIds.push(gruppe.id);
-				}
-			});
+        function settBarnCookie(faktumId) {
+            var aapneTabIds = [];
+            angular.forEach($scope.grupper, function (gruppe) {
+                if (gruppe.apen) {
+                    aapneTabIds.push(gruppe.id);
+                }
+            });
 
-			$cookieStore.put('scrollTil', {
-				aapneTabs   : aapneTabIds,
-				gjeldendeTab: '#barnetillegg',
-				faktumId    : faktumId
-			});
-		}
+            $cookieStore.put('scrollTil', {
+                aapneTabs: aapneTabIds,
+                gjeldendeTab: '#barnetillegg',
+                faktumId: faktumId
+            });
+        }
 
-	}]);
+    }]);

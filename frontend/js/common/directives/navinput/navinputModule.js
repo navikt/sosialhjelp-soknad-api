@@ -16,6 +16,7 @@ angular.module('nav.input', ['nav.cmstekster'])
             restrict: 'A',
             replace: true,
             scope: true,
+            transclude: true,
             link: {
                 pre: function (scope, element, attr) {
                     scope.value = attr.value;
@@ -25,6 +26,14 @@ angular.module('nav.input', ['nav.cmstekster'])
                 post: function (scope, element, attr) {
                     scope.endret = function () {
                         scope.$eval(attr.navendret);
+                    };
+                    scope.hvisAktiv = function () {
+                        return scope.faktum.value === scope.value;
+                    };
+
+                    scope.hvisHarTranscludedInnhold = function () {
+                        var transcludeElement = element.find('.ng-transclude');
+                        return transcludeElement.text().trim().length > 0;
                     };
 
                     var index = scope.navlabel.lastIndexOf(".true");
@@ -80,6 +89,38 @@ angular.module('nav.input', ['nav.cmstekster'])
                     };
                 }},
             templateUrl: '../js/common/directives/navinput/navcheckboxTemplate.html'
+        };
+    }])
+
+    .directive('navtall', [function () {
+        return {
+            restrict: 'A',
+            replace: true,
+            scope: true,
+            link: {
+                pre: function (scope, element, attrs) {
+                    if (attrs.regexvalidering) {
+                        scope.regexvalidering = attrs.regexvalidering.toString();
+                    } else {
+                        scope.regexvalidering = '';
+                    }
+                    if (attrs.inputfeltmaxlength) {
+                        scope.inputfeltmaxlength = attrs.inputfeltmaxlength;
+                    } else {
+                        scope.inputfeltmaxlength = undefined;
+                    }
+                },
+                post: function (scope, element) {
+                    scope.hvisSynlig = function () {
+                        return element.is(':visible');
+                    };
+
+                    scope.harSporsmal = function() {
+                        return isNotNullOrUndefined(scope.navsporsmal) && scope.navsporsmal.length > 0;
+                    };
+                }
+            },
+            templateUrl: '../js/common/directives/navinput/navtallInputTemplate.html'
         };
     }])
 
@@ -191,6 +232,17 @@ angular.module('nav.input', ['nav.cmstekster'])
 
                 ngModel.$formatters.push(fraTekst);
                 ngModel.$parsers.push(tilTekst);
+            }
+        };
+    }])
+
+    .directive('disableScroll', [function () {
+        return {
+            restrict: 'A',
+            link: function (scope, element) {
+                element.bind('mousewheel', function(event) {
+                    event.preventDefault();
+                });
             }
         };
     }]);

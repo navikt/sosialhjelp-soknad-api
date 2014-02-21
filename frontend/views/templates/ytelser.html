@@ -2,7 +2,7 @@
 <div data-ng-form="ytelserForm" class="skjemainnhold vertikal" data-ng-controller="YtelserCtrl" data-novalidate>
 <div data-form-errors></div>
 
-<div class="spm form-linje checkbox" data-checkbox-validate>
+<div class="spm form-linje andreytelser checkbox" data-checkbox-validate>
 <input type="hidden" data-ng-model="harHuketAvCheckboksYtelse.value" data-ng-required="true"
        data-error-messages="'ytelser.minstEnCheckboksErAvhuket.feilmelding'">
 <h4 class="spm-sporsmal">
@@ -155,18 +155,25 @@
     <div data-navinfoboks>
         <p data-cmstekster="ytelser.dagpengerEOSUtbetaler.informasjon"></p>
     </div>
+    
+    <div class="land form-linje tekstfelt"  data-navconfig data-nav-faktum="dagpengerEOSUtbetalerLand">
+        <label>
+            <span class="labeltekst">
+                {{ 'ytelser.dagpengerEOSUtbetaler' | cmstekst }}
+            </span>
 
-    <div class="land">
-        <div nav-select
-             nav-faktum="dagpengerEOSUtbetalerLand"
-             data-navconfig
-             data-label="ytelser.dagpengerEOSUtbetaler"
-             data-options="land.result"
-             data-er-required="hvisHarDagpengerEOS()"
-             data-required-feilmelding="ytelser.dagpengerEOSUtbetaler.feilmelding"
-             data-ugyldig-feilmelding="ytelser.dagpengerEOSUtbetaler.ugyldig.feilmelding">
-        </div>
+            <select data-blur-validate
+                    data-ng-required="true"
+                    data-error-messages="'ytelser.dagpengerEOSUtbetaler.feilmelding'"
+                    data-ng-model="faktum.value"
+                    data-ng-change="lagreFaktum()"
+                    data-ng-options="l.value as l.text for l in land.result">
+            </select>
+        </label>
+        <span class="melding"></span>
     </div>
+
+
     <div data-vedlegginfoboks>
         <ul>
             <li>
@@ -219,7 +226,7 @@
 </div>
 <span class="melding" data-cmstekster="ytelser.minstEnCheckboksErAvhuket.feilmelding"></span>
 </div>
-<div class="spm form-linje checkbox" data-checkbox-validate>
+<div class="spm form-linje navytelse checkbox" data-checkbox-validate>
     <input type="hidden" data-ng-model="harHuketAvCheckboksNavYtelse.value" data-ng-required="true"
            data-error-messages="'ytelser.minstEnCheckboksErAvhuket.navYtelserfeilmelding'">
     <h4 class="spm-sporsmal">

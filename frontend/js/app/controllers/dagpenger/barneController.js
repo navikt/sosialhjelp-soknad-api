@@ -18,7 +18,6 @@ angular.module('nav.barn', ['app.services'])
         };
         
         var faktumId;
-
         if (endreModus) {
             faktumId = url.split('/').pop();
             barnUnderEndring = {};
@@ -127,11 +126,11 @@ angular.module('nav.barn', ['app.services'])
         };
 
         $scope.erEosLandAnnetEnnNorge = function() {
-            return $scope.eosLandType == "eos";
+            return $scope.eosLandType === "eos";
         };
 
         $scope.erIkkeEosLand = function() {
-            return $scope.eosLandType == "ikkeEos";   
+            return $scope.eosLandType === "ikkeEos";   
         };
 
         function oppdaterCookieValue(faktumId) {
