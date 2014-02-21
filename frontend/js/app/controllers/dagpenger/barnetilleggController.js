@@ -60,7 +60,7 @@ angular.module('nav.barnetillegg', [])
 
         $scope.norskBarnIkkeFunnetITPS = function(barn) {
             if(barn && barn.properties) { 
-                return barn.type === 'BRUKERREGISTRERT' && barn.properties.land == "NOR";
+                return barn.type === 'BRUKERREGISTRERT' && barn.properties.land === "NOR";
             }   
             return false;
         };
