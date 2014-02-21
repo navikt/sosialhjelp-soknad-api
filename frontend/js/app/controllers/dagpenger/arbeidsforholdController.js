@@ -142,6 +142,8 @@ angular.module('nav.arbeidsforhold.controller', [])
                 gjeldendeTab: '#arbeidsforhold',
                 faktumId: faktumId
             });
+
+
         }
 
     }]);
