@@ -17,16 +17,18 @@
                  data-ng-required></div>
 
 
-            <div class="land form-linje">
+            <div class="land form-linje tekstfelt">
                 <label for="land">
                     <span class="labeltekst" data-cmstekster="arbeidsforhold.arbeidsgiver.land"></span>
                 </label>
-                <select id="land"
+                <select data-blur-validate
+                        id="land"
                         data-ng-required="true"
                         data-error-messages="'arbeidsforhold.arbeidsgiver.land.feilmelding'"
                         data-ng-model="arbeidsforhold.properties.land"
                         data-ng-options="l.value as l.text for l in land.result">
                 </select>
+                <span class="melding"></span>
 
             </div>
             <div data-ng-show="arbeidsforhold.properties.eosland == 'true'">
