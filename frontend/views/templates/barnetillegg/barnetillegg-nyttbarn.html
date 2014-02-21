@@ -49,19 +49,21 @@
                     </span>
                 </div>
 
-                <div class="land form-linje">
+                <div class="land form-linje tekstfelt">
                     <h4 class="spm-sporsmal">{{ 'barnetillegg.nyttbarn.land.sporsmal' | cmstekst }}</h4>
                     <label>
                         <span class="labeltekst">
                             {{ 'barnetillegg.nyttbarn.land' | cmstekst }}
                         </span>
 
-                        <select data-ng-required="true"
+                        <select data-blur-validate
+                                data-ng-required="true"
                                 data-error-messages="'barnetillegg.nyttbarn.land.feilmelding'"
                                 data-ng-model="barn.properties.land"
                                 data-ng-options="l.value as l.text for l in land.result">
                         </select>
                     </label>
+                    <span class="melding"></span>
                 </div>
             </div>
 

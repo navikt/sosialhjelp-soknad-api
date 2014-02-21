@@ -155,18 +155,25 @@
     <div data-navinfoboks>
         <p data-cmstekster="ytelser.dagpengerEOSUtbetaler.informasjon"></p>
     </div>
+    
+    <div class="land form-linje tekstfelt"  data-navconfig data-nav-faktum="dagpengerEOSUtbetalerLand">
+        <label>
+            <span class="labeltekst">
+                {{ 'ytelser.dagpengerEOSUtbetaler' | cmstekst }}
+            </span>
 
-    <div class="land">
-        <div nav-select
-             nav-faktum="dagpengerEOSUtbetalerLand"
-             data-navconfig
-             data-label="ytelser.dagpengerEOSUtbetaler"
-             data-options="land.result"
-             data-er-required="hvisHarDagpengerEOS()"
-             data-required-feilmelding="ytelser.dagpengerEOSUtbetaler.feilmelding"
-             data-ugyldig-feilmelding="ytelser.dagpengerEOSUtbetaler.ugyldig.feilmelding">
-        </div>
+            <select data-blur-validate
+                    data-ng-required="true"
+                    data-error-messages="'ytelser.dagpengerEOSUtbetaler.feilmelding'"
+                    data-ng-model="faktum.value"
+                    data-ng-change="lagreFaktum()"
+                    data-ng-options="l.value as l.text for l in land.result">
+            </select>
+        </label>
+        <span class="melding"></span>
     </div>
+
+
     <div data-vedlegginfoboks>
         <ul>
             <li>
