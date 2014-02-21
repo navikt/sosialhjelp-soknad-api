@@ -52,12 +52,7 @@
                 leggTilFaktum: function (faktum) {
                     fakta.push(faktum);
                 },
-                land: {
-                    result: [
-                        {value: 'NOR', text: 'Norge'},
-                        { value: 'DNK', text: 'Danmark'}
-                    ]
-                },
+                land: 'Norge',
                 soknad: {
                     soknadId: 1
                 },
@@ -329,7 +324,8 @@
             });
         });
         describe('BarneCtrl', function () {
-            beforeEach(inject(function (_$httpBackend_, $controller, cms) {
+            var cookieStore;
+            beforeEach(inject(function (_$httpBackend_, $controller, cms, $cookieStore) {
                 ctrl = $controller('BarneCtrl', {
                     $scope: scope
                 });
@@ -337,7 +333,7 @@
                 $httpBackend = _$httpBackend_;
                 $httpBackend.expectGET('/sendsoknad/rest/landtype/' + scope.barn.properties.land).
                     respond({});
-
+                cookieStore = $cookieStore;
             }));
 
             it('skal returnere 0 aar for barn fodt idag', function () {
@@ -470,15 +466,75 @@
                 scope.eosLandType = "ikkeEos";
                 expect(scope.erIkkeEosLand()).toBe(true);
             });
+        });
+        describe('BarneCtrlMedUrlEndreBarn', function () {
+            var cookieStore, location, barnFaktum;
+            beforeEach(inject(function (_$httpBackend_, $controller, cms, $cookieStore, $location, data) {
+                location = $location;
+                location.$$url = 'endrebarn/111';
+                scope.data = data;
+                scope.data.land = 'NOR';
 
+               barnFaktum = {
+                    key: 'barn',
+                    faktumId: 111
+                };
+                scope.data.leggTilFaktum(barnFaktum);
 
+                ctrl = $controller('BarneCtrl', {
+                    $scope: scope
+                });
+
+                scope.cms = cms;
+                cookieStore = $cookieStore;
+            }));
+
+            it('hvis et barn blir endret så skal scope.barn inneholde verdiene til barnet som blir endret', function () {
+                expect(scope.barn.faktumId).toEqual(111);
+            });
+        });
+        describe('BarneCtrlMedUrlBarnetillegg', function () {
+            var cookieStore, location, barnFaktum;
+            beforeEach(inject(function (_$httpBackend_, $controller, cms, $cookieStore, $location, data) {
+                location = $location;
+                location.$$url = 'sokbarnetillegg/111';
+                scope.data = data;
+                scope.data.land = 'NOR';
+
+                barnFaktum = {
+                    key: 'barn',
+                    faktumId: 111,
+                    properties: {
+                        sammensattnavn: 'Fornavn Etternavn'
+                    }
+                };
+                scope.data.leggTilFaktum(barnFaktum);
+
+                ctrl = $controller('BarneCtrl', {
+                    $scope: scope
+                });
+
+                scope.cms = cms;
+                cookieStore = $cookieStore;
+            }));
+
+            it('hvis det sokes barnetillegg for et barn som finnes i TPS skal scope.barn inneholde de samme verdiene som barnet det sokes om', function () {
+                expect(scope.barn.properties.sammensattnavn).toEqual('Fornavn Etternavn');
+            });
         });
         describe('BarnetilleggCtrl', function () {
             beforeEach(inject(function ($controller, data) {
+                scope.data = data;
+
+                scope.data.land = {
+                    result: [
+                        {value: 'NOR', text: 'Norge'},
+                        { value: 'DNK', text: 'Danmark'}
+                    ]};
+
                 ctrl = $controller('BarnetilleggCtrl', {
                     $scope: scope
                 });
-                scope.data = data;
             }));
 
             it('erBrukerregistrert skal returnere true for brukerregistert barn', function () {
@@ -685,6 +741,11 @@
             var cookieStore
             beforeEach(inject(function ($controller, data, $cookieStore) {
                 scope.data = data;
+                scope.data.land = {
+                    result: [
+                        {value: 'NOR', text: 'Norge'},
+                        { value: 'DNK', text: 'Danmark'}
+                    ]};
 
                 var af1 = {
                     key: 'arbeidsforhold',
