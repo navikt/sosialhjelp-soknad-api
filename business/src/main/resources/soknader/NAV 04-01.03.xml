@@ -422,54 +422,62 @@
 		<onValue>true</onValue>
 		<skjemaNummer>K1</skjemaNummer>
 		<flereTillatt>true</flereTillatt>
-	</vedlegg>
+        <oversetting>ytelser.${key}</oversetting>
+    </vedlegg>
 	<vedlegg>
 		<id>3</id>
 		<faktum>privatTjenestepensjon</faktum>
 		<onValue>true</onValue>
 		<skjemaNummer>K1</skjemaNummer>
 		<flereTillatt>true</flereTillatt>
-	</vedlegg>
+        <oversetting>ytelser.${key}</oversetting>
+    </vedlegg>
 	<vedlegg>
 		<id>3</id>
 		<faktum>stonadFisker</faktum>
 		<onValue>true</onValue>
 		<skjemaNummer>K1</skjemaNummer>
 		<flereTillatt>true</flereTillatt>
-	</vedlegg>
+        <oversetting>ytelser.${key}</oversetting>
+    </vedlegg>
 	<vedlegg>
 		<id>3</id>
 		<faktum>garantilott</faktum>
 		<onValue>true</onValue>
 		<skjemaNummer>K1</skjemaNummer>
 		<flereTillatt>true</flereTillatt>
-	</vedlegg>
+        <oversetting>ytelser.${key}</oversetting>
+    </vedlegg>
 	<vedlegg>
 		<id>3</id>
 		<faktum>etterlonn</faktum>
 		<onValue>true</onValue>
 		<skjemaNummer>K1</skjemaNummer>
 		<flereTillatt>true</flereTillatt>
-	</vedlegg>
+        <oversetting>ytelser.${key}</oversetting>
+    </vedlegg>
 	<vedlegg>
 		<id>3</id>
 		<faktum>vartpenger</faktum>
 		<onValue>true</onValue>
 		<skjemaNummer>K1</skjemaNummer>
 		<flereTillatt>true</flereTillatt>
-	</vedlegg>
+        <oversetting>ytelser.${key}</oversetting>
+    </vedlegg>
 	<vedlegg>
 		<id>3</id>
 		<faktum>dagpengerEOS</faktum>
 		<onValue>true</onValue>
 		<skjemaNummer>K1</skjemaNummer>
-		<flereTillatt>true</flereTillatt>
+        <oversetting>ytelser.${key}</oversetting>
+        <flereTillatt>true</flereTillatt>
 	</vedlegg>
 	<vedlegg>
 		<id>3</id>
 		<faktum>annenYtelse</faktum>
 		<onValue>true</onValue>
 		<skjemaNummer>K1</skjemaNummer>
+        <oversetting>ytelser.${key}</oversetting>
 		<flereTillatt>true</flereTillatt>
 	</vedlegg>
 	<vedlegg>
