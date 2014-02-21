@@ -41,11 +41,11 @@ angular.module('nav.adresse', [])
         }
 
         $scope.harGjeldendeGyldigTilDato = function() {
-            return $scope.personalia.gjeldendeAdresseGyldigTil !== undefined && $scope.personalia.gjeldendeAdresseGyldigTil !== 'null' && $scope.personalia.gjeldendeAdresseGyldigTil !== '';
+            return $scope.personalia.gjeldendeAdresseGyldigTil !== undefined && $scope.personalia.gjeldendeAdresseGyldigTil !== null && $scope.personalia.gjeldendeAdresseGyldigTil !== '';
         };
 
         $scope.harSekundarGyldigTilDato = function() {
-          return $scope.personalia.sekundarAdresseGyldigTil !== undefined && $scope.personalia.sekundarAdresseGyldigTil !== 'null' && $scope.personalia.gjeldendeAdresseGyldigTil !== '';
+          return $scope.personalia.sekundarAdresseGyldigTil !== undefined && $scope.personalia.sekundarAdresseGyldigTil !== null && $scope.personalia.gjeldendeAdresseGyldigTil !== '';
         };
 
         $scope.harSekundarAdresse = function() {
