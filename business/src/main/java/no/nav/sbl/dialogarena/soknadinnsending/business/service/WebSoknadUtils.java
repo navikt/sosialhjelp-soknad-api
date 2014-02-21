@@ -28,43 +28,65 @@ public class WebSoknadUtils {
     public static final String DAGPENGER = "NAV 04-01.03";
     public static final String EOS_DAGPENGER = "4304";
     public static final String RUTES_I_BRUT = "0000";
+    public static final String PERMITTERT = "Permittert";
+    public static final String REDUSERT_ARBEIDSTID = "Redusert Arbeidstid";
+    public static final String ANNEN_AARSAK = "Annen årsak";
     private static final Logger LOGGER = getLogger(WebSoknadUtils.class);
-    private static boolean erPermittertellerHarRedusertArbeidstid(WebSoknad soknad)
+
+    private static String erPermittertellerHarRedusertArbeidstid(WebSoknad soknad)
     {
 
+        String sisteaarsak;
         List<Faktum> sluttaarsak = soknad.getFaktaMedKey("arbeidsforhold");
         boolean erPermittert = false;
+        boolean harRedusertArbeidstid = false;
         if (!sluttaarsak.isEmpty()) {
             List<Faktum> sortertEtterDatoTil = on(sluttaarsak).collect(reverseOrder(compareWith(DATO_TIL)));
             LocalDate nyesteDato = on(sortertEtterDatoTil).map(DATO_TIL).head().getOrElse(null);
             List<Faktum> nyesteSluttaarsaker = on(sortertEtterDatoTil).filter(where(DATO_TIL, equalTo(nyesteDato))).collect();
-            erPermittert = on(nyesteSluttaarsaker).filter(where(TYPE, equalTo("Permittert"))).head().isSome() || on(nyesteSluttaarsaker).filter(where(TYPE, equalTo("Redusert arbeidstid"))).head().isSome();
+            erPermittert = on(nyesteSluttaarsaker).filter(where(TYPE, equalTo(PERMITTERT))).head().isSome();
+            if (erPermittert)
+            {
+                return PERMITTERT;
+            }
+                 harRedusertArbeidstid = on(nyesteSluttaarsaker).filter(where(TYPE, equalTo(REDUSERT_ARBEIDSTID))).head().isSome();
+            if (harRedusertArbeidstid)
+            {
+                return REDUSERT_ARBEIDSTID;
+            }
         }
-        return erPermittert;
+        return ANNEN_AARSAK;
     }
 
-    public static String getSkjemanummer(WebSoknad soknad) {
-            return erPermittertellerHarRedusertArbeidstid(soknad) ? DAGPENGER_VED_PERMITTERING : DAGPENGER;
 
+
+    public static String getSkjemanummer(WebSoknad soknad) {
+            String sluttaarsak = erPermittertellerHarRedusertArbeidstid(soknad);
+            if (sluttaarsak.equals(PERMITTERT))
+            {
+                return DAGPENGER_VED_PERMITTERING;
+            }
+            else
+            {
+                return DAGPENGER;
+            }
     }
 
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
         LOGGER.warn("Faktaliste for ruting" + webSoknad.getFaktaListe());
-        if (!erPermittertellerHarRedusertArbeidstid(webSoknad))
+        String sluttaarsak = erPermittertellerHarRedusertArbeidstid(webSoknad);
+        Personalia personalia = getPerson(webSoknad);
+        if ((sluttaarsak.equals(PERMITTERT) || (sluttaarsak.equals(REDUSERT_ARBEIDSTID))) && (personalia.harUtenlandskFolkeregistrertAdresse() && (!personalia.harNorskMidlertidigAdresse())))
         {
+            return EOS_DAGPENGER;
+        }
+        else
+        {
+            return RUTES_I_BRUT;
+        }
+    }
 
-            return RUTES_I_BRUT;
-        }
-        /*if (!webSoknad.getFaktaMedKey(FNR_KEY).isEmpty())
-        {*/
-            Personalia personalia = getPerson(webSoknad);
-            return (personalia.harUtenlandskFolkeregistrertAdresse() && (!personalia.harNorskMidlertidigAdresse())) ?  EOS_DAGPENGER : RUTES_I_BRUT;
-        }/* else
-        {
-            LOGGER.warn("Fødselsnummer for bruker ble ikke funnet. Rutes derfor i BRUT");
-            return RUTES_I_BRUT;
-        }
-    }*/
+
 
     public static Personalia getPerson(WebSoknad webSoknad) {
         Map<String, String> properties = webSoknad.getFaktaMedKey(PERSONALIA_KEY).get(0).getProperties();
