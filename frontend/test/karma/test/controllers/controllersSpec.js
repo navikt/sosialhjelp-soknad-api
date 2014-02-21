@@ -19,14 +19,6 @@
                     properties: {
                         alder: "61"
                     }
-                },
-                {
-                    key: 'etFaktum',
-                    type: 'BRUKERREGISTRERT'
-                },
-                {
-                    key: 'Bolker',
-                    type: 'BRUKERREGISTRERT'
                 }
             ];
 
@@ -61,7 +53,7 @@
                 slettFaktum: function (faktumData) {
                     fakta.forEach(function (item, index) {
                         if (item.faktumId === faktumData.faktumId) {
-                            fakta.splice(index,1);
+                            fakta.splice(index, 1);
                         }
                     });
                 }
@@ -188,9 +180,9 @@
                     value: 'false'
                 };
 
-
                 scope.data.leggTilFaktum(faktumDeltid);
                 scope.data.leggTilFaktum(faktumPendle);
+
 
                 ctrl = $controller('ReellarbeidssokerCtrl', {
                     $scope: scope
@@ -285,28 +277,28 @@
             });
             it('hvis en deltidaarsaker er huket av og så blir den avhuket, sa skal harHuketAvCheckboksDeltid vaere tom ', function () {
                 expect(scope.harHuketAvCheckboksDeltid.value).toBe(true);
-                scope.data.fakta[3].value = 'false';
+                scope.data.fakta[1].value = 'false';
                 scope.endreDeltidsAarsaker();
                 expect(scope.harHuketAvCheckboksDeltid.value).toBe('');
             });
             it('hvis ingen deltidaarsaker er huket av og så blir en aarsak huket av, sa skal harHuketAvCheckboksDeltid vaere true ', function () {
-                scope.data.fakta[3].value = 'false';
+                scope.data.fakta[1].value = 'false';
                 scope.endreDeltidsAarsaker();
                 expect(scope.harHuketAvCheckboksDeltid.value).toBe('');
-                scope.data.fakta[3].value = 'true';
+                scope.data.fakta[1].value = 'true';
                 scope.endreDeltidsAarsaker();
                 expect(scope.harHuketAvCheckboksDeltid.value).toBe(true);
             });
             it('hvis en pendleaarsaker er huket av og så blir den avhuket, sa skal harHuketAvCheckboksPendle vaere tom ', function () {
-                scope.data.fakta[3].value = 'false';
+                scope.data.fakta[1].value = 'false';
                 scope.endreDeltidsAarsaker();
                 expect(scope.harHuketAvCheckboksPendle.value).toBe('');
             });
             it('hvis ingen pendleaarsaker er huket av og så blir en aarsak huket av, sa skal harHuketAvCheckboksPendle vaere true ', function () {
-                scope.data.fakta[4].value = 'false';
+                scope.data.fakta[2].value = 'false';
                 scope.endrePendleAarsaker();
                 expect(scope.harHuketAvCheckboksPendle.value).toBe('');
-                scope.data.fakta[4].value = 'true';
+                scope.data.fakta[2].value = 'true';
                 scope.endrePendleAarsaker();
                 expect(scope.harHuketAvCheckboksPendle.value).toBe(true);
             });
@@ -568,7 +560,8 @@
                 var nyttBarn = {
                     key: 'barn',
                     properties: {barnetillegg: 'true'},
-                    $save: function() {}
+                    $save: function () {
+                    }
                 };
 
                 scope.data.leggTilFaktum(tpsBarn);
@@ -769,7 +762,7 @@
             });
             it('nar et barn slettes skal dette barnet ikke lenger vaere lagret pa fakta', function () {
                 expect(scope.data.finnFakta('barn').length).toBe(2);
-                scope.slettBarn (scope.barn[0], 0, event);
+                scope.slettBarn(scope.barn[0], 0, event);
                 expect(scope.data.finnFakta('barn').length).toBe(1);
             });
             it('nar et barnetillegg slettes skal prorpertiene knyttet til barnetillegget resettes', function () {
@@ -1021,14 +1014,36 @@
                     $scope: scope
                 });
                 scope.data = data;
+
+            }));
+            it('fremdriftsindikatoren skal vises nar man sletter soknaden', function () {
+                scope.submitForm();
+                expect(scope.fremdriftsindikator.laster).toEqual(true);
+            });
+        });
+        describe('AvbrytCtrlMedBrukerregistrertFakta', function () {
+            beforeEach(inject(function ($controller, data) {
+                scope.data = data;
+
+                var brukerregistrertFaktum = {
+                    key: 'brukerregistrertFaktum',
+                    type: 'BRUKERREGISTRERT'
+                };
+                var brukerregistrertFaktum2 = {
+                    key: 'brukerregistrertFaktum',
+                    type: 'BRUKERREGISTRERT'
+                };
+
+                scope.data.leggTilFaktum(brukerregistrertFaktum);
+                scope.data.leggTilFaktum(brukerregistrertFaktum2);
+
+                ctrl = $controller('AvbrytCtrl', {
+                    $scope: scope
+                });
             }));
 
             it('skal kreve brekftelse med fakta som er brukerregistrerte', function () {
                 expect(scope.krevBekreftelse).toEqual(true);
-            });
-            it('fremdriftsindikatoren skal vises nar man sletter soknaden', function () {
-                scope.submitForm();
-                expect(scope.fremdriftsindikator.laster).toEqual(true);
             });
         });
         describe('DagpengerCtrl', function () {
@@ -1088,8 +1103,6 @@
                 expect(scope.grupper[0].apen).toBe(true);
             });
         });
-
-
     });
 }
     ()
