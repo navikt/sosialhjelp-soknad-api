@@ -78,16 +78,18 @@ angular.module("../views/templates/arbeidsforhold-nytt.html", []).run(["$templat
     "                 data-ng-required></div>\n" +
     "\n" +
     "\n" +
-    "            <div class=\"land form-linje\">\n" +
+    "            <div class=\"land form-linje tekstfelt\">\n" +
     "                <label for=\"land\">\n" +
     "                    <span class=\"labeltekst\" data-cmstekster=\"arbeidsforhold.arbeidsgiver.land\"></span>\n" +
     "                </label>\n" +
-    "                <select id=\"land\"\n" +
+    "                <select data-blur-validate\n" +
+    "                        id=\"land\"\n" +
     "                        data-ng-required=\"true\"\n" +
     "                        data-error-messages=\"'arbeidsforhold.arbeidsgiver.land.feilmelding'\"\n" +
     "                        data-ng-model=\"arbeidsforhold.properties.land\"\n" +
     "                        data-ng-options=\"l.value as l.text for l in land.result\">\n" +
     "                </select>\n" +
+    "                <span class=\"melding\"></span>\n" +
     "\n" +
     "            </div>\n" +
     "            <div data-ng-show=\"arbeidsforhold.properties.eosland == 'true'\">\n" +
@@ -1171,19 +1173,21 @@ angular.module("../views/templates/barnetillegg/barnetillegg-nyttbarn.html", [])
     "                    </span>\n" +
     "                </div>\n" +
     "\n" +
-    "                <div class=\"land form-linje\">\n" +
+    "                <div class=\"land form-linje tekstfelt\">\n" +
     "                    <h4 class=\"spm-sporsmal\">{{ 'barnetillegg.nyttbarn.land.sporsmal' | cmstekst }}</h4>\n" +
     "                    <label>\n" +
     "                        <span class=\"labeltekst\">\n" +
     "                            {{ 'barnetillegg.nyttbarn.land' | cmstekst }}\n" +
     "                        </span>\n" +
     "\n" +
-    "                        <select data-ng-required=\"true\"\n" +
+    "                        <select data-blur-validate\n" +
+    "                                data-ng-required=\"true\"\n" +
     "                                data-error-messages=\"'barnetillegg.nyttbarn.land.feilmelding'\"\n" +
     "                                data-ng-model=\"barn.properties.land\"\n" +
     "                                data-ng-options=\"l.value as l.text for l in land.result\">\n" +
     "                        </select>\n" +
     "                    </label>\n" +
+    "                    <span class=\"melding\"></span>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "\n" +
@@ -3135,18 +3139,25 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "    <div data-navinfoboks>\n" +
     "        <p data-cmstekster=\"ytelser.dagpengerEOSUtbetaler.informasjon\"></p>\n" +
     "    </div>\n" +
+    "    \n" +
+    "    <div class=\"land form-linje tekstfelt\"  data-navconfig data-nav-faktum=\"dagpengerEOSUtbetalerLand\">\n" +
+    "        <label>\n" +
+    "            <span class=\"labeltekst\">\n" +
+    "                {{ 'ytelser.dagpengerEOSUtbetaler' | cmstekst }}\n" +
+    "            </span>\n" +
     "\n" +
-    "    <div class=\"land\">\n" +
-    "        <div nav-select\n" +
-    "             nav-faktum=\"dagpengerEOSUtbetalerLand\"\n" +
-    "             data-navconfig\n" +
-    "             data-label=\"ytelser.dagpengerEOSUtbetaler\"\n" +
-    "             data-options=\"land.result\"\n" +
-    "             data-er-required=\"hvisHarDagpengerEOS()\"\n" +
-    "             data-required-feilmelding=\"ytelser.dagpengerEOSUtbetaler.feilmelding\"\n" +
-    "             data-ugyldig-feilmelding=\"ytelser.dagpengerEOSUtbetaler.ugyldig.feilmelding\">\n" +
-    "        </div>\n" +
+    "            <select data-blur-validate\n" +
+    "                    data-ng-required=\"true\"\n" +
+    "                    data-error-messages=\"'ytelser.dagpengerEOSUtbetaler.feilmelding'\"\n" +
+    "                    data-ng-model=\"faktum.value\"\n" +
+    "                    data-ng-change=\"lagreFaktum()\"\n" +
+    "                    data-ng-options=\"l.value as l.text for l in land.result\">\n" +
+    "            </select>\n" +
+    "        </label>\n" +
+    "        <span class=\"melding\"></span>\n" +
     "    </div>\n" +
+    "\n" +
+    "\n" +
     "    <div data-vedlegginfoboks>\n" +
     "        <ul>\n" +
     "            <li>\n" +
