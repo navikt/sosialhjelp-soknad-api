@@ -118,8 +118,8 @@ angular.module('nav.arbeidsforhold.controller', [])
 
         $scope.slettArbeidsforhold = function (af, index, $event) {
             $event.preventDefault();
-
             $scope.arbeidsliste.splice(index, 1);
+
             data.slettFaktum(af.arbeidsforhold);
 
             if ($scope.arbeidsliste.length === 0) {
