@@ -59,6 +59,7 @@
                 }
             });
             $provide.value("cms", {'tekster': {'barnetillegg.nyttbarn.landDefault': ''}});
+            $provide.value("$routeParams", {});
         })
         )
         ;
@@ -99,7 +100,26 @@
         }));
 
         describe('egennaeringCtrl', function () {
-            beforeEach(inject(function ($controller) {
+            beforeEach(inject(function ($controller, data) {
+                scope.data = data;
+                var foreldreFaktum = {
+                    key: 'egennaering.gardsbruk',
+                    value: 'false'
+                };
+
+                var gardsEier = {
+                    key: 'gardsEier',
+                    value: 'true'
+                };
+
+                var gardsEierJeg = {
+                    key: 'egennaering.gardsbruk.false.eier.jeg',
+                    value: 'true'
+                };
+
+                scope.data.leggTilFaktum(foreldreFaktum);
+                scope.data.leggTilFaktum(gardsEier);
+                scope.data.leggTilFaktum(gardsEierJeg);
                 ctrl = $controller('EgennaeringCtrl', {
                     $scope: scope
                 });
@@ -125,6 +145,87 @@
                 expect(scope.skalViseSlettKnapp(0)).toEqual(false);
                 expect(scope.skalViseSlettKnapp(1)).toEqual(true);
             });
+            it('skal kjøre metodene lukkTab og settValidert for valid form', function () {
+                spyOn(scope, "runValidation").andReturn(true);
+                spyOn(scope, "lukkTab");
+                spyOn(scope, "settValidert");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.lukkTab).toHaveBeenCalledWith('egennaering');
+                expect(scope.settValidert).toHaveBeenCalledWith('egennaering');
+            });
+            it('skal apne bolken for invalid form', function () {
+                spyOn(scope, "runValidation").andReturn(false);
+                spyOn(scope, "apneTab");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.apneTab).toHaveBeenCalledWith('egennaering');
+            });
+            it('erSynlig skal returnere true for et faktum hvor foreldreelementet er svart pa slik at barneelementet blir synlig', function () {
+                expect(scope.erSynlig('egennaering.gardsbruk')).toEqual(true);
+            });
+            it('erGardseier skal returnere true for et faktum hvis faktumet er huket av og faktumet egennaering.gardsbruk er synlig', function () {
+                expect(scope.gardseier('gardsEier')).toEqual(true);
+            });
+            it('svartPaHvemEierGardsbuket skal returnere true hvis eier av gardsbruket er besvart', function () {
+                expect(scope.svartPaHvemEierGardsbruket()).toEqual(true);
+            });
+            it('svartPaHvemEierGardsbuket skal returnere false hvis ingen har svart pa hvem som eier gardsbruket enda', function () {
+                scope.data.slettFaktum('egennaering.gardsbruk');
+                var foreldreFaktum = {
+                    key: 'egennaering.gardsbruk',
+                    value: 'true'
+                };
+                scope.data.leggTilFaktum(foreldreFaktum);
+                expect(scope.svartPaHvemEierGardsbruket()).toEqual(false);
+            });
+            it('eierGardsbrukNokler skal vaere true nar eier av gardsbruket er besvart', function () {
+                expect(scope.harHuketAvEierGardsbruk.value).toEqual(true);
+            });
+            it('endreTypeGardsbruk skal sette harHuketAvTypeGardsbruk til tom string hvis ikke type gardsbruk er besvart', function () {
+                scope.endreTypeGardsbruk();
+                expect(scope.harHuketAvTypeGardsbruk.value).toEqual('');
+            });
+            it('endreTypeGardsbruk skal sette harHuketAvTypeGardsbruk til true hvis ikke type gardsbruk er besvart', function () {
+                var faktum = {
+                    key: 'egennaering.gardsbruk.false.type.dyr',
+                    value: 'true'
+                }
+                scope.data.leggTilFaktum(faktum);
+                scope.endreTypeGardsbruk();
+                expect(scope.harHuketAvTypeGardsbruk.value).toEqual(true);
+            });
+            it('endreEierGardsbruk  skal sette harHuketAvEierGardsbruk til true hvis ikke type gardsbruk er besvart', function () {
+                scope.endreEierGardsbruk();
+                expect(scope.harHuketAvEierGardsbruk.value).toEqual(true);
+            });
+            it('endreEierGardsbruk  skal sette harHuketAvEierGardsbruk til tom string hvis ikke type gardsbruk er besvart', function () {
+                var gardsEierJeg = {
+                    key: 'egennaering.gardsbruk.false.eier.jeg',
+                    value: 'false'
+                };
+
+                scope.data.leggTilFaktum(gardsEierJeg);
+                scope.endreEierGardsbruk();
+                expect(scope.harHuketAvEierGardsbruk.value).toEqual('');
+            });
+            it('prosentFeil skal returnere true nar prosentfeil skal vises', function () {
+                scope.summererAndeleneTil100();
+                expect(scope.prosentFeil()).toEqual(true);
+            });
+            it('prosentFeil skal returnere false nar prosentfeil ikke skal vises', function () {
+                var gardsEierJeg = {
+                    key: 'egennaering.gardsbruk.false.eierandel.din',
+                    value: '100'
+                };
+                scope.data.leggTilFaktum(gardsEierJeg);
+                scope.summererAndeleneTil100();
+                expect(scope.prosentFeil()).toEqual(false);
+            });
+
+
+
+
         });
         describe('vernepliktCtrl', function () {
             beforeEach(inject(function ($controller, $compile) {
@@ -1103,6 +1204,7 @@
                 expect(scope.grupper[0].apen).toBe(true);
             });
         });
+
     });
 }
     ()
