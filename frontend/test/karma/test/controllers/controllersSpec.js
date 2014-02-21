@@ -682,7 +682,8 @@
             });
         });
         describe('ArbeidsforholdCtrl', function () {
-            beforeEach(inject(function ($controller, data) {
+            var cookieStore
+            beforeEach(inject(function ($controller, data, $cookieStore) {
                 scope.data = data;
 
                 var af1 = {
@@ -714,6 +715,8 @@
                 ctrl = $controller('ArbeidsforholdCtrl', {
                     $scope: scope
                 });
+
+                cookieStore = $cookieStore;
 
             }));
             it('arbeidsliste skal inneholde to arbeidsfohold nar to arbeidsforhold er lagt til', function () {
@@ -833,6 +836,31 @@
                 expect(scope.runValidation).toHaveBeenCalledWith(false);
                 expect(scope.lukkTab).toHaveBeenCalledWith('arbeidsforhold');
                 expect(scope.settValidert).toHaveBeenCalledWith('arbeidsforhold');
+            });
+            it('skal apne bolken for invalid form', function () {
+                spyOn(scope, "runValidation").andReturn(false);
+                spyOn(scope, "apneTab");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.apneTab).toHaveBeenCalledWith('arbeidsforhold');
+            });
+            it('skal apne bolken for invalid form', function () {
+                var event = $.Event("click");
+                spyOn(scope, "runValidation").andReturn(false);
+                spyOn(scope, "apneTab");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.apneTab).toHaveBeenCalledWith('arbeidsforhold');
+            });
+            it('cookieStore skal bli satt når et arbeidsforhold endres', function () {
+                var event = $.Event("click");
+                scope.endreArbeidsforhold(scope.arbeidsliste[0], 0, event);
+                expect(cookieStore.get('scrollTil').gjeldendeTab).toBe("#arbeidsforhold");
+            });
+            it('cookieStore skal bli satt når et nytt arbeidsforhold legges til', function () {
+                var event = $.Event("click");
+                scope.nyttArbeidsforhold(event);
+                expect(cookieStore.get('scrollTil').gjeldendeTab).toBe("#arbeidsforhold");
             });
         });
         describe('AvbrytCtrl', function () {

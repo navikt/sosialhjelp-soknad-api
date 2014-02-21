@@ -5,14 +5,14 @@ angular.module('nav.personalia', [])
         $scope.brukerprofilUrl = data.config["soknad.brukerprofil.url"];
         $scope.erMann = function() {
             if($scope.personalia.kjonn) {
-                return $scope.personalia.kjonn == 'm';
+                return $scope.personalia.kjonn === 'm';
             }
             return false;
         };
 
         $scope.erKvinne = function() {
             if($scope.personalia.kjonn) {
-                return $scope.personalia.kjonn == 'k';
+                return $scope.personalia.kjonn === 'k';
             }
             return false;
         };
@@ -22,7 +22,7 @@ angular.module('nav.personalia', [])
         };
 
         $scope.erUtenlandskStatsborger = function() {
-            return $scope.personalia.statsborgerskap != 'NOR';
+            return $scope.personalia.statsborgerskap !== 'NOR';
         };
 
         $scope.valider = function (skalScrolle) {
