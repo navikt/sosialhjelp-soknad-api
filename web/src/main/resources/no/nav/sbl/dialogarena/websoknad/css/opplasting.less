@@ -129,7 +129,8 @@ form, [ng-form], [data-ng-form] {
 
         .info-liste {
             border-bottom: 1px solid #ddd;
-            padding-bottom: 20px;
+            padding-bottom: 40px;
+            margin-bottom: 40px;
             ul {
                 list-style-type: disc;
                 padding-left: 16px;
@@ -164,7 +165,6 @@ form, [ng-form], [data-ng-form] {
         .lastOpp {
             text-align: center;
             padding-bottom: 30px;
-            padding-top: 35px;
             li {
                 margin: 15px;
             }
@@ -311,14 +311,15 @@ form, [ng-form], [data-ng-form] {
     text-align: center;
     color: #0CA9E0;
 
+    .spinner {
+        height: 30%;
+        max-height: 128px;
+    }
+
     .bilde {
         position: relative;
         padding: 10px;
         padding-bottom: 40px;
-        background-image: url('../img/ajaxloader/svart/loader_svart_128.gif');
-        background-repeat: no-repeat;
-        background-position: center;
-        background-color: #333333;
         display: inline-block;
         vertical-align: middle;
         span {
@@ -419,18 +420,26 @@ form, [ng-form], [data-ng-form] {
             height: 30px;
             display: block;
             z-index: 11;
+
+            &.mobil {
+                display: none;
+            }
         }
         .nav {
             height: 100%;
-            img {
-                margin-top: 60px;
-            }
         }
         .bilde {
             display: inline-block;
             width: 50%;
             height: 90%;
+
             img {
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: -40px;
+                bottom: 0;
+                margin: auto;
             }
         }
 
