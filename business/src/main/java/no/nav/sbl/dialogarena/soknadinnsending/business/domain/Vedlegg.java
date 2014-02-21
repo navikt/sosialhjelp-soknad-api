@@ -262,6 +262,14 @@ public class Vedlegg {
         this.data = data;
     }
 
+    public void oppdatertInnsendtStatus() {
+        if(getStorrelse() > 0){
+            innsendingsvalg = Status.LastetOpp;
+        } else {
+            innsendingsvalg = Status.VedleggKreves;
+        }
+    }
+
     public enum Status {
         IkkeVedlegg,
         VedleggKreves,
