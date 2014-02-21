@@ -2,11 +2,16 @@
     <div class="nav" data-ng-if="vedlegg.vedleggId">
         <a class="pil-venstre-sort" data-ng-click="naviger(-1)" data-ng-if="vedlegg.antallSider > 1" href="javascript:void(0);">
         </a><div class="bilde" data-ng-click="naviger(1)">
+        <img class="spinner"
+             data-ng-if="spinner.visLaster"
+             src="../img/ajaxloader/svart/loader_svart_128.gif">
         <img data-ng-repeat="bilde in range(vedlegg.antallSider)"
              data-ng-src="../rest/soknad/{{vedlegg.soknadId}}/vedlegg/{{vedlegg.vedleggId}}/thumbnail?side={{bilde}}"
+             data-ferdig-lastet
              alt="Forhåndsvisning"
              data-ng-hide="!sideErSynlig(bilde)">
-        <a class="tilbake" onclick="history.back()" data-cmstekster="vedlegg.forhandsvisning.tilbake" href="javascript:void(0);"></a>
+        <a class="tilbake ikke-mobil" onclick="history.back()" href="javascript:void(0);">{{ 'vedlegg.forhandsvisning.tilbake' | cmstekst }}</a>
+        <a class="tilbake mobil" onclick="history.back()" href="javascript:void(0);">{{ 'vedlegg.forhandsvisning.tilbake.mobil' | cmstekst }}</a>
     </div><a class="pil-hoyre-sort" data-ng-click="naviger(1)" data-ng-if="vedlegg.antallSider > 1" href="javascript:void(0);"></a>
     </div>
     <div class="header">

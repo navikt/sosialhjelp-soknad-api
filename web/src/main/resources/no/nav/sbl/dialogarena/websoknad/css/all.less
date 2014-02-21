@@ -1,4 +1,6 @@
 @svar-bakgrunnsfarge: #d1d1d1;
+@flipp-size: 30px;
+@flipp-shadow-size: 64px;
 
 
 // Fjerner piler fra input type=number
@@ -81,7 +83,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .vedlegginfoboks {
-    border-top: 1px solid #ddd;
+    border-top: 1px solid #ddd !important;
     margin-left: 15px;
     margin-right: 15px;
     padding-top: 30px;
@@ -322,7 +324,7 @@ input[type="number"]::-webkit-outer-spin-button {
                 border-color: transparent transparent #800000 transparent !important;
 
                 &:before {
-                    border-top: 30px solid #c30000 !important;
+                    border-top: @flipp-size solid #c30000 !important;
                 }
             }
         }
@@ -331,7 +333,7 @@ input[type="number"]::-webkit-outer-spin-button {
         border-color: transparent transparent #004283 transparent !important;
 
         &:before {
-            border-top: 30px solid #0067c5 !important;
+            border-top: @flipp-size solid #0067c5 !important;
         }
     }
     &.open {
@@ -342,7 +344,7 @@ input[type="number"]::-webkit-outer-spin-button {
             border-color: transparent transparent #800000 transparent;
 
             &:before {
-                border-top: 30px solid #c30000;
+                border-top: @flipp-size solid #c30000;
             }
         }
     }
@@ -350,7 +352,7 @@ input[type="number"]::-webkit-outer-spin-button {
     .flipp {
         position: relative;
         top: -3px;
-        width: 64px;
+        width: @flipp-shadow-size;
         height: 0;
         margin: 0 auto;
         border-style: solid;
@@ -363,9 +365,9 @@ input[type="number"]::-webkit-outer-spin-button {
             top: 0;
             left: 0;
             width: 0;
-            border-top: 30px solid #ccc;
-            border-left: 30px solid transparent;
-            border-right: 30px solid transparent;
+            border-top: @flipp-size solid #ccc;
+            border-left: @flipp-size solid transparent;
+            border-right: @flipp-size solid transparent;
         }
     }
 
