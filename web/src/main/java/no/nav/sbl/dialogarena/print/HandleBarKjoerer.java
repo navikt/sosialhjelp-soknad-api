@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.print;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Helper;
@@ -11,18 +10,16 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils;
-import org.apache.wicket.model.StringResourceModel;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
 import static org.apache.commons.lang3.ArrayUtils.reverse;
@@ -33,59 +30,11 @@ import static org.apache.commons.lang3.StringUtils.split;
 public class HandleBarKjoerer {
 
     private Kodeverk kodeverk;
+    private MessageSource navMessageSource;
 
-    private static final Logger LOGG = LoggerFactory.getLogger(HandleBarKjoerer.class);
-
-    public HandleBarKjoerer(Kodeverk kodeverk) {
+    public HandleBarKjoerer(Kodeverk kodeverk, MessageSource navMessageSource) {
         this.kodeverk = kodeverk;
-    }
-
-    /**
-     * Tar inn json og html på string-format. Htmlen er en Mustache-mal, med nøkler
-     * som matcher json-nøklene.
-     *
-     * @return String Html med verdier fra Json-data
-     */
-    @SuppressWarnings("unchecked")
-    public String hentHTML(String json, String html) {
-        String ut = "";
-        try {
-            Map<String, Object> hashMap = new ObjectMapper().readValue(json, Map.class);
-            ut = fyllHtmlStringMedInnhold(html, hashMap);
-        } catch (IOException e) {
-            LOGG.info("Kunne ikke legge json inn i mal", e);
-        }
-        return ut;
-    }
-
-    /**
-     * Tar inn html i stringformat og data i en Map.
-     * Html-stringen er en Mustache-mal, med nøkler som matcher nøklene i input-Map.
-     *
-     * @return String Html med verdier fra input Map
-     */
-    public String fyllHtmlStringMedInnhold(String input, Map<String, Object> hash) throws IOException {
-        Handlebars handlebars = getHandlebars();
-        return handlebars.compileInline(input).apply(hash);
-    }
-
-    /**
-     * Tar inn json på string-format og navnet på en resource hbs-fil.
-     * Hbs-fila er en Mustache-mal, med nøkler
-     * som matcher json-nøklene.
-     *
-     * @return String Html med verdier fra Json-data
-     */
-    @SuppressWarnings("unchecked")
-    public String fyllHtmlMalMedInnhold(String json, String hbsFil) {
-        String ut = "";
-        try {
-            Map<String, Object> map = new ObjectMapper().readValue(json, Map.class);
-            ut = fyllHtmlMalMedInnhold(hbsFil, map);
-        } catch (IOException e) {
-            LOGG.info("Kunne ikke legge json inn i mal", e);
-        }
-        return ut;
+        this.navMessageSource = navMessageSource;
     }
 
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, String file) throws IOException {
@@ -93,18 +42,6 @@ public class HandleBarKjoerer {
                 .apply(soknad);
 
     }
-
-    /**
-     * Tar inn navnet på en resource hbs-fil og data i en Map.
-     * Hbs-fila er en Mustache-mal, med nøkler som matcher nøklene i input-Map.
-     *
-     * @return String Html med verdier fra input Map
-     */
-    public String fyllHtmlMalMedInnhold(String htmlFile, Map<String, Object> hash) throws IOException {
-        return getHandlebars().compile(htmlFile)
-                .apply(hash);
-    }
-
 
     private Handlebars getHandlebars() {
         Handlebars handlebars = new Handlebars();
@@ -114,8 +51,6 @@ public class HandleBarKjoerer {
         handlebars.registerHelper("forFaktaMedPropertySattTilTrue", generateForFaktaMedPropTrueHelper());
         handlebars.registerHelper("formatterFodelsDato", generateFormatterFodselsdatoHelper());
         handlebars.registerHelper("formatterLangDato", generateFormatterLangDatoHelper());
-        handlebars.registerHelper("forFaktaStarterMed", generateForFaktaStarterMedHelper());
-        handlebars.registerHelper("forBarneFaktum", generateForBarneFaktumHelper());
         handlebars.registerHelper("hvisSant", generateHvisSantHelper());
         handlebars.registerHelper("hvisMindre", generateHvisMindreHelper());
         handlebars.registerHelper("hvisMer", generateHvisMerHelper());
@@ -168,8 +103,7 @@ public class HandleBarKjoerer {
         return new Helper<String>() {
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
-                String tekst = new StringResourceModel(key, null, options.param(0)).getString();
-                return tekst;
+                return navMessageSource.getMessage(key, new Object[]{options.param(0)}, new Locale("nb", "NO"));
             }
         };
     }
@@ -178,9 +112,7 @@ public class HandleBarKjoerer {
         return new Helper<String>() {
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
-                System.out.println(key);
-                String tekst = new StringResourceModel(key, null).getString();
-                return tekst;
+                return navMessageSource.getMessage(key, new Object[0], new Locale("nb", "NO"));
             }
         };
     }
@@ -189,7 +121,7 @@ public class HandleBarKjoerer {
         return new Helper<Object>() {
             @Override
             public CharSequence apply(Object value, Options options) throws IOException {
-                if(value != null && !value.toString().isEmpty()){
+                if (value != null && !value.toString().isEmpty()) {
                     return options.fn(this);
                 } else {
                     return options.inverse(this);
@@ -202,7 +134,7 @@ public class HandleBarKjoerer {
         return new Helper<Object>() {
             @Override
             public CharSequence apply(Object value, Options options) throws IOException {
-                if(value != null && value.toString().equals(options.param(0))){
+                if (value != null && value.toString().equals(options.param(0))) {
                     return options.fn(this);
                 } else {
                     return options.inverse(this);
@@ -217,7 +149,7 @@ public class HandleBarKjoerer {
             public CharSequence apply(String value, Options options) throws IOException {
                 Integer grense = Integer.parseInt((String) options.param(0));
                 Integer verdi = Integer.parseInt(value);
-                if(verdi > grense){
+                if (verdi > grense) {
                     return options.fn(this);
                 } else {
                     return options.inverse(this);
@@ -231,8 +163,8 @@ public class HandleBarKjoerer {
             @Override
             public CharSequence apply(String value, Options options) throws IOException {
                 Integer grense = Integer.parseInt((String) options.param(0));
-                Integer verdi = Integer.parseInt(value); 
-                if(verdi < grense){
+                Integer verdi = Integer.parseInt(value);
+                if (verdi < grense) {
                     return options.fn(this);
                 } else {
                     return options.inverse(this);
@@ -245,34 +177,11 @@ public class HandleBarKjoerer {
         return new Helper<String>() {
             @Override
             public CharSequence apply(String value, Options options) throws IOException {
-                if(value != null && value.equals("true")){
+                if (value != null && value.equals("true")) {
                     return options.fn(this);
                 } else {
                     return options.inverse(this);
                 }
-            }
-        };
-    }
-
-    private Helper<String> generateForBarneFaktumHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String key, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                Long parentFaktumId = options.param(0);
-                Faktum faktum = soknad.getFaktaMedKeyOgParentFaktum(key, parentFaktumId).get(0);
-                return options.fn(faktum);
-            }
-        };
-    }
-
-    private Helper<String> generateForFaktaStarterMedHelper() {
-        return new Helper<String>() {
-            @Override
-            public CharSequence apply(String key, Options options) throws IOException {
-                WebSoknad soknad = finnWebSoknad(options.context);
-                List<Faktum> fakta = soknad.getFaktaSomStarterMed(key);
-                return lagItererbarRespons(options, fakta);
             }
         };
     }
@@ -283,7 +192,10 @@ public class HandleBarKjoerer {
             public CharSequence apply(String dato, Options options) throws IOException {
                 Locale locale = new Locale("nb", "no");
                 DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(locale);
-                return dt.print(DateTime.parse(dato));
+                if (StringUtils.isNotEmpty(dato)) {
+                    return dt.print(DateTime.parse(dato));
+                }
+                return "";
             }
         };
     }
@@ -309,7 +221,7 @@ public class HandleBarKjoerer {
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
                 WebSoknad soknad = finnWebSoknad(options.context);
-                List<Faktum> fakta = soknad.getFaktaMedKeyOgPropertyLikTrue(key, (String) options.param(0)); 
+                List<Faktum> fakta = soknad.getFaktaMedKeyOgPropertyLikTrue(key, (String) options.param(0));
                 if (fakta.isEmpty()) {
                     return options.inverse(this);
                 } else {
@@ -350,7 +262,7 @@ public class HandleBarKjoerer {
         if (context == null) {
             return null;
         } else if (context.model() instanceof WebSoknad) {
-            return (WebSoknad)context.model();
+            return (WebSoknad) context.model();
         } else {
             return finnWebSoknad(context.parent());
         }
