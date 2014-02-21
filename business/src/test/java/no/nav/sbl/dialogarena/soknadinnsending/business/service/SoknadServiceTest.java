@@ -13,6 +13,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
@@ -81,6 +82,9 @@ public class SoknadServiceTest {
     private FillagerConnector fillagerConnector;
     @Mock
     private Kodeverk kodeverk;
+    @Mock
+    private NavMessageSource navMessageSource;
+
     @InjectMocks
     private SoknadService soknadService;
 
@@ -228,6 +232,7 @@ public class SoknadServiceTest {
                         .medBehandlingId("123")
                         .medUuid("uidHovedskjema")
                         .medskjemaNummer(DAGPENGER)
+                        .medFaktum(new Faktum().medKey("personalia"))
                         .medVedlegg(Arrays.asList(
                                 new Vedlegg()
                                         .medSkjemaNummer("L6")

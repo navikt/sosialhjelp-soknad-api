@@ -25,6 +25,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.Opplast
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
@@ -53,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -84,6 +86,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
     private FillagerConnector fillagerConnector;
     @Inject
     private Kodeverk kodeverk;
+    @Inject
+    private NavMessageSource navMessageSource;
+
     private PdfWatermarker watermarker = new PdfWatermarker();
     private List<String> gyldigeSkjemaer = Arrays.asList("NAV 04-01.03");
     private PdfMerger pdfMerger = new PdfMerger();
@@ -461,13 +466,12 @@ public class SoknadService implements SendSoknadService, VedleggService {
             vedlegg = new Vedlegg(faktum.getSoknadId(), soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null, soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
             vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
         }
+        vedlegg.oppdatertInnsendtStatus();
 
         if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {
             vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
-        }
-
-        if (vedlegg.getStorrelse() > 0) {
-            vedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
+        } else if(soknadVedlegg.harOversetting()){
+            vedlegg.setNavn(navMessageSource.getMessage(soknadVedlegg.getOversetting().replace("${key}", faktum.getKey()), new Object[0], new Locale("nb", "NO")));
         }
         vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
     }

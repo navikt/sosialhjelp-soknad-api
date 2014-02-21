@@ -1,22 +1,22 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
 
-import static org.mockito.Mockito.mock;
-
 import no.nav.modig.wicket.test.FluentWicketTester;
 import no.nav.sbl.dialogarena.common.kodeverk.JsonKodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.DbConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.MockConsumerConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import no.nav.sbl.dialogarena.websoknad.WicketApplication;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 import java.util.Locale;
+
+import static org.mockito.Mockito.mock;
 
 @Import({FooterConfig.class, GAConfig.class, ContentConfigTest.class, DbConfig.class, MockConsumerConfig.class})
 public class FitNesseApplicationConfig {
@@ -34,6 +34,11 @@ public class FitNesseApplicationConfig {
     @Bean
     public String logoutURL() {
         return logoutURL;
+    }
+
+    @Bean
+    public NavMessageSource navMessageSource(){
+        return new NavMessageSource();
     }
     
     @Bean
