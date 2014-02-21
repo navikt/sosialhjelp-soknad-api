@@ -45,11 +45,12 @@ public class WebSoknadUtils {
             LocalDate nyesteDato = on(sortertEtterDatoTil).map(DATO_TIL).head().getOrElse(null);
             List<Faktum> nyesteSluttaarsaker = on(sortertEtterDatoTil).filter(where(DATO_TIL, equalTo(nyesteDato))).collect();
             erPermittert = on(nyesteSluttaarsaker).filter(where(TYPE, equalTo(PERMITTERT))).head().isSome();
+            harRedusertArbeidstid = on(nyesteSluttaarsaker).filter(where(TYPE, equalTo(REDUSERT_ARBEIDSTID))).head().isSome();
             if (erPermittert)
             {
                 return PERMITTERT;
             }
-                 harRedusertArbeidstid = on(nyesteSluttaarsaker).filter(where(TYPE, equalTo(REDUSERT_ARBEIDSTID))).head().isSome();
+
             if (harRedusertArbeidstid)
             {
                 return REDUSERT_ARBEIDSTID;
@@ -76,9 +77,17 @@ public class WebSoknadUtils {
         LOGGER.warn("Faktaliste for ruting" + webSoknad.getFaktaListe());
         String sluttaarsak = erPermittertellerHarRedusertArbeidstid(webSoknad);
         Personalia personalia = getPerson(webSoknad);
-        if ((sluttaarsak.equals(PERMITTERT) || (sluttaarsak.equals(REDUSERT_ARBEIDSTID))) && (personalia.harUtenlandskFolkeregistrertAdresse() && (!personalia.harNorskMidlertidigAdresse())))
+        LOGGER.warn("sluttaarsak" + sluttaarsak);
+        if ((personalia.harUtenlandskFolkeregistrertAdresse() && (!personalia.harNorskMidlertidigAdresse())))
         {
-            return EOS_DAGPENGER;
+            if (sluttaarsak.equals(PERMITTERT) || (sluttaarsak.equals(REDUSERT_ARBEIDSTID)))
+            {
+                return EOS_DAGPENGER;
+            }
+            else
+            {
+                return RUTES_I_BRUT;
+            }
         }
         else
         {
