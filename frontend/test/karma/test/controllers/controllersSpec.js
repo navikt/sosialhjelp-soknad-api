@@ -1026,6 +1026,10 @@
             it('skal kreve brekftelse med fakta som er brukerregistrerte', function () {
                 expect(scope.krevBekreftelse).toEqual(true);
             });
+            it('fremdriftsindikatoren skal vises nar man sletter soknaden', function () {
+                scope.submitForm();
+                expect(scope.fremdriftsindikator.laster).toEqual(true);
+            });
         });
         describe('DagpengerCtrl', function () {
             beforeEach(inject(function ($controller, data) {
