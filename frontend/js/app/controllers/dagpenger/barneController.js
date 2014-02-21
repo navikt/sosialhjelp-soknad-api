@@ -18,7 +18,6 @@ angular.module('nav.barn', ['app.services'])
         };
         
         var faktumId;
-
         if (endreModus) {
             faktumId = url.split('/').pop();
             barnUnderEndring = {};
@@ -119,6 +118,7 @@ angular.module('nav.barn', ['app.services'])
         };
 
         $scope.endrerSystemregistrertBarn = function () {
+            console.log(url)
             return barnetilleggModus;
         };
 
