@@ -40,22 +40,35 @@
                     });
                     return res;
                 },
-                finnFakta: function (faktumKey) {
+                finnFakta: function (key) {
+                    var res = [];
+                    fakta.forEach(function (item) {
+                        if (item.key === key) {
+                            res.push(item);
+                        }
+                    });
+                    return res;
                 },
                 leggTilFaktum: function (faktum) {
                     fakta.push(faktum);
                 },
-                land: {result: [
-                    {value: 'NOR', text: 'Norge'},
-                    { value: 'DNK', text: 'Danmark'}
-                ]},
-                soknad: {soknadId: 1},
+                land: {
+                    result: [
+                        {value: 'NOR', text: 'Norge'},
+                        { value: 'DNK', text: 'Danmark'}
+                    ]
+                },
+                soknad: {
+                    soknadId: 1
+                },
                 config: ["soknad.sluttaarsak.url", "soknad.lonnskravskjema.url", "soknad.permitteringsskjema.url" ],
                 slettFaktum: function (faktumData) {
                 }
             });
             $provide.value("cms", {'tekster': {'barnetillegg.nyttbarn.landDefault': ''}});
-        }));
+        })
+        )
+        ;
 
         beforeEach(inject(function ($rootScope, $controller, $compile, $httpBackend) {
             $httpBackend.expectGET('../js/app/directives/feilmeldinger/feilmeldingerTemplate.html').
@@ -670,11 +683,38 @@
         });
         describe('ArbeidsforholdCtrl', function () {
             beforeEach(inject(function ($controller, data) {
+                scope.data = data;
+
+                var af1 = {
+                    key: 'arbeidsforhold',
+                    properties: {
+                        type: 'sluttaarsak1',
+                        datofra: '11.11.1111'
+                    }
+                };
+                var af2 = {
+                    key: 'arbeidsforhold',
+                    properties: {
+                        type: 'sluttaarsak2',
+                        datofra: '11.11.1110'
+                    }
+                };
+
+                scope.data.leggTilFaktum(af1);
+                scope.data.leggTilFaktum(af2);
+
                 ctrl = $controller('ArbeidsforholdCtrl', {
                     $scope: scope
                 });
-                scope.data = data;
+
             }));
+            it('arbeidsliste skal inneholde to arbeidsfohold nar to arbeidsforhold er lagt til', function () {
+                expect(scope.arbeidsliste.length).toBe(2);
+            });
+            it('arbeidslisten skal vaere sortert etter arbeidsforholdenes sluttaarsakdato', function () {
+                expect(scope.arbeidsliste[0].sluttaarsak.properties.datofra).toBe('11.11.1110');
+                expect(scope.arbeidsliste[1].sluttaarsak.properties.datofra).toBe('11.11.1111');
+            });
             it('hvis arbeidsforholdet inneholder feil og arbeidsforholdet er lagret så skal feil vises', function () {
                 scope.harKlikketKnapp = true;
                 scope.harLagretArbeidsforhold = false;
@@ -845,4 +885,7 @@
             });
         });
     });
-}());
+}
+    ()
+    )
+;
