@@ -49,7 +49,9 @@
                 soknad: {
                     soknadId: 1
                 },
-                config: {"soknad.sluttaarsak.url": "", "soknad.lonnskravskjema.url": "", "soknad.permitteringsskjema.url":"", "minehenvendelser.link.url": "minehenvendelserurl", "soknad.inngangsporten.url": "inngangsportenurl" },
+                config: {"soknad.sluttaarsak.url": "", "soknad.lonnskravskjema.url": "", "soknad.permitteringsskjema.url":"",
+                    "minehenvendelser.link.url": "minehenvendelserurl", "soknad.inngangsporten.url": "inngangsportenurl",
+                    "soknad.skjemaveileder.url": "skjemaVeilederUrl" },
                 slettFaktum: function (faktumData) {
                     fakta.forEach(function (item, index) {
                         if (item.faktumId === faktumData.faktumId) {
@@ -265,6 +267,43 @@
                 expect(scope.settValidert).toHaveBeenCalledWith('verneplikt');
             });
         });
+        describe('TilleggsopplysningerCtrl', function () {
+            beforeEach(inject(function ($controller, $compile) {
+                scope.leggTilValideringsmetode = function(string, funksjon){};
+
+                ctrl = $controller('TilleggsopplysningerCtrl', {
+                    $scope: scope
+                });
+
+                $compile(element)(scope);
+                scope.$digest();
+                form = scope.form;
+                element.scope().$apply();
+
+            }));
+
+            it('skal kalle metode for å validere form', function () {
+                expect(scope.runValidationBleKalt).toEqual(false);
+                scope.valider();
+                expect(scope.runValidationBleKalt).toEqual(true);
+            });
+            it('skal kjøre metodene lukkTab og settValidert for valid form', function () {
+                spyOn(scope, "runValidation").andReturn(true);
+                spyOn(scope, "lukkTab");
+                spyOn(scope, "settValidert");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.lukkTab).toHaveBeenCalledWith('tilleggsopplysninger');
+                expect(scope.settValidert).toHaveBeenCalledWith('tilleggsopplysninger');
+            });
+            it('taben skal vaere apen nar formen ikke er valid', function () {
+                spyOn(scope, "runValidation").andReturn(false);
+                spyOn(scope, "apneTab");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.apneTab).toHaveBeenCalledWith('tilleggsopplysninger');
+            });
+        });
         describe('UtdanningCtrl', function () {
             beforeEach(inject(function ($controller, data) {
                 scope.data = data;
@@ -390,7 +429,6 @@
                 expect(scope.harHuketAvCheckboks.value).toEqual('');
             });
         });
-
         describe('UtdanningCtrlUtenCheckbokserHuketAv', function () {
                 beforeEach(inject(function ($controller, data) {
                     scope.data = data;
@@ -1353,6 +1391,18 @@
                 expect(scope.inngangsportenUrl).toEqual("inngangsportenurl");
             });
         });
+        describe('SlettetCtrl', function () {
+            beforeEach(inject(function ($controller, data) {
+                scope.data = data;
+                ctrl = $controller('SlettetCtrl', {
+                    $scope: scope
+                });
+            }));
 
+            it('Skjemaveileder og mine henvendelser skal settes til riktig url', function () {
+                expect(scope.mineHenveldelserBaseUrl).toEqual("minehenvendelserurl");
+                expect(scope.skjemaVeilederUrl).toEqual("skjemaVeilederUrl");
+            });
+        });
     });
 }());
