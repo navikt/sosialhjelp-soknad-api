@@ -34,7 +34,7 @@ public class Transformers {
                 case "Sagt opp selv":
                     return new LocalDate(properties.get("datotil"));
                 case "Permittert":
-                    return new LocalDate(properties.get("permiteringsperiodedatotil"));
+                    return new LocalDate(properties.get("lonnspliktigperiodedatotil"));
                 default:
                     return null;
             }
