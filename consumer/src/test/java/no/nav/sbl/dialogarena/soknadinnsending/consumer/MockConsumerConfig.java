@@ -18,10 +18,6 @@ import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSEmpty;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
-import no.nav.tjeneste.virksomhet.aktoer.v1.AktoerPortType;
-import no.nav.tjeneste.virksomhet.aktoer.v1.HentAktoerIdForIdentPersonIkkeFunnet;
-import no.nav.tjeneste.virksomhet.aktoer.v1.meldinger.HentAktoerIdForIdentRequest;
-import no.nav.tjeneste.virksomhet.aktoer.v1.meldinger.HentAktoerIdForIdentResponse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
@@ -324,31 +320,6 @@ public class MockConsumerConfig {
 
     }
 
-    @Configuration
-    public static class AktorWsConfig {
-
-        @Bean
-        public AktoerPortType aktorPortType() {
-            return new AktoerPortType() {
-                @Override
-                public HentAktoerIdForIdentResponse hentAktoerIdForIdent(HentAktoerIdForIdentRequest request) throws HentAktoerIdForIdentPersonIkkeFunnet {
-                    HentAktoerIdForIdentResponse hentAktoerIdForIdentResponse = new HentAktoerIdForIdentResponse();
-                    hentAktoerIdForIdentResponse.setAktoerId("***REMOVED***");
-                    return hentAktoerIdForIdentResponse;
-                }
-
-                @Override
-                public void ping() {
-
-                }
-            };
-        }
-
-        @Bean
-        public AktoerPortType aktorSelftestPortType() {
-            return aktorPortType();
-        }
-    }
 
     @Configuration
     public static class KodeverkWSConfig {

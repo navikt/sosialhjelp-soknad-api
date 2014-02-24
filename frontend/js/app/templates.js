@@ -2493,7 +2493,7 @@ angular.module("../views/templates/utdanning/utdanning.html", []).run(["$templat
     "                     data-navconfig\n" +
     "                     data-nav-faktum=\"utdanning.kveld\"\n" +
     "                     data-navlabel=\"utdanning.svar.under.utdanning.kveld\"\n" +
-    "                     data-navendret=\"endreUtdanning(utdanningForm)\">\n" +
+    "                     data-navendret=\"endreUtdanning()\">\n" +
     "                    <div data-ng-include=\"'../views/templates/utdanning/utdanningKveldTemplate.html'\"></div>\n" +
     "                </div>\n" +
     "\n" +
@@ -2501,7 +2501,7 @@ angular.module("../views/templates/utdanning/utdanning.html", []).run(["$templat
     "                     data-navconfig\n" +
     "                     data-nav-faktum=\"utdanning.kortvarig\"\n" +
     "                     data-navlabel=\"utdanning.svar.under.utdanning.kortvarig\"\n" +
-    "                     data-navendret=\"endreUtdanning(utdanningForm)\">\n" +
+    "                     data-navendret=\"endreUtdanning()\">\n" +
     "                    <div data-ng-include=\"'../views/templates/utdanning/utdanningKortvarigTemplate.html'\"></div>\n" +
     "                </div>\n" +
     "\n" +
@@ -2509,7 +2509,7 @@ angular.module("../views/templates/utdanning/utdanning.html", []).run(["$templat
     "                     data-navconfig\n" +
     "                     data-nav-faktum=\"utdanning.kortvarigflere\"\n" +
     "                     data-navlabel=\"utdanning.svar.under.utdanning.kortvarigflere\"\n" +
-    "                     data-navendret=\"endreUtdanning(utdanningForm)\">\n" +
+    "                     data-navendret=\"endreUtdanning()\">\n" +
     "\n" +
     "                    <div data-ng-include=\"'../views/templates/utdanning/utdanningKortvarigFlereTemplate.html'\"></div>\n" +
     "                </div>\n" +
@@ -2518,7 +2518,7 @@ angular.module("../views/templates/utdanning/utdanning.html", []).run(["$templat
     "                     data-navconfig\n" +
     "                     data-nav-faktum=\"utdanning.norsk\"\n" +
     "                     data-navlabel=\"utdanning.svar.under.utdanning.norsk\"\n" +
-    "                     data-navendret=\"endreUtdanning(utdanningForm)\">\n" +
+    "                     data-navendret=\"endreUtdanning()\">\n" +
     "\n" +
     "                    <div data-ng-include=\"'../views/templates/utdanning/utdanningNorskTemplate.html'\"></div>\n" +
     "                </div>\n" +
@@ -2527,7 +2527,7 @@ angular.module("../views/templates/utdanning/utdanning.html", []).run(["$templat
     "                     data-navconfig\n" +
     "                     data-nav-faktum=\"utdanning.introduksjon\"\n" +
     "                     data-navlabel=\"utdanning.svar.under.utdanning.introduksjon\"\n" +
-    "                     data-navendret=\"endreUtdanning(utdanningForm)\">\n" +
+    "                     data-navendret=\"endreUtdanning()\">\n" +
     "                </div>\n" +
     "\n" +
     "\n" +
@@ -2535,7 +2535,7 @@ angular.module("../views/templates/utdanning/utdanning.html", []).run(["$templat
     "                    <input id=\"underUtdanningNeiCheckbox\"\n" +
     "                           data-ng-model=\"faktum.value\"\n" +
     "                           type=\"checkbox\"\n" +
-    "                           data-ng-change=\"endreUtdannelseAnnet(utdanningForm)\"\n" +
+    "                           data-ng-change=\"endreUtdannelseAnnet()\"\n" +
     "                           data-boolean-verdi\n" +
     "                            data-aktiv-feilmelding/>\n" +
     "                    <label for=\"underUtdanningNeiCheckbox\"\n" +
