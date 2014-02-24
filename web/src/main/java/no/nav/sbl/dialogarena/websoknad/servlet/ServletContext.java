@@ -67,7 +67,6 @@ public class ServletContext extends WebMvcConfigurerAdapter {
         converters.add(json);
         converters.add(imageConverter);
         converters.add(http);
-
     }
 
     @Override
