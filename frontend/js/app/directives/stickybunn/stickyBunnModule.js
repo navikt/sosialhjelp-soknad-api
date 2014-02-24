@@ -31,7 +31,9 @@ angular.module('nav.stickybunn', [])
 				};
 
 				angular.element($window).bind('scroll', function () {
-					settStickySistLagret();
+                    if (breddeErMerEnn767()) {
+                        settStickySistLagret();
+                    }
 				});
 
 
@@ -48,7 +50,9 @@ angular.module('nav.stickybunn', [])
 
                     document.addEventListener('focusout', function(e) {
                         tastaturErApent = false;
-                        settStickySistLagret();
+                        if (breddeErMerEnn767()) {
+                            settStickySistLagret();
+                        }
                         scope.$apply();
                     });
                 }
@@ -79,8 +83,14 @@ angular.module('nav.stickybunn', [])
 				}
 
 				$timeout(function () {
-					settStickySistLagret();
+                    if (breddeErMerEnn767()) {
+                        settStickySistLagret();
+                    }
 				});
+
+                function breddeErMerEnn767() {
+                    return $window.outerWidth > 767;
+                }
 			}
 		};
 	}]);

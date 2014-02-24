@@ -48,7 +48,7 @@
             <span class="melding"> </span>
         </div>
 
-        <div class="arbeidsforhold-boks">
+        <div class="arbeidsforhold-boks" data-ng-if="harArbeidsforhold()">
             <div class="spm-boks vertikal" data-ng-repeat="af in arbeidsliste" data-ng-class="{'last': $last}">
                 <div id="arbeidsforhold{{af.arbeidsforhold.faktumId}}">
                     <a href="#" class="lukk" data-ng-click="slettArbeidsforhold(af, $index, $event)"
