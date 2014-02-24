@@ -532,43 +532,45 @@
                                         </ul>
                                     </li>
 
-                                    <li class="kulepunkt">
-                                        <span>{{ hentTekst "dagpenger.oppsummering.egennaering.fordelingAvInntekt" }}</span>
-                                        <ul>
-                                            {{#forFaktum "egennaering.gardsbruk.false.eier.jeg"}}
-                                                {{#hvisSant value}}
-                                                    <li class="kulepunkt">
-                                                        <span>{{ hentTekst "egennaering.gardsbruk.false.eierandel.din"}}:</span>
-                                                        {{#forFaktum "egennaering.gardsbruk.false.eierandel.din"}}
-                                                            <span>{{ value }}%</span>
-                                                        {{/forFaktum}}
-                                                    </li>
-                                                {{/hvisSant}}
-                                            {{/forFaktum}}
+                                    {{#hvisFlereErTrue "egennaering.gardsbruk.false.eier" "1"}}
+                                        <li class="kulepunkt">
+                                            <span>{{ hentTekst "dagpenger.oppsummering.egennaering.fordelingAvInntekt" }}</span>
+                                            <ul>
+                                                {{#forFaktum "egennaering.gardsbruk.false.eier.jeg"}}
+                                                    {{#hvisSant value}}
+                                                        <li class="kulepunkt">
+                                                            <span>{{ hentTekst "egennaering.gardsbruk.false.eierandel.din"}}:</span>
+                                                            {{#forFaktum "egennaering.gardsbruk.false.eierandel.din"}}
+                                                                <span>{{ value }}%</span>
+                                                            {{/forFaktum}}
+                                                        </li>
+                                                    {{/hvisSant}}
+                                                {{/forFaktum}}
 
-                                            {{#forFaktum "egennaering.gardsbruk.false.eier.ektefelle"}}
-                                                {{#hvisSant value}}
-                                                    <li class="kulepunkt">
-                                                        <span>{{ hentTekst "egennaering.gardsbruk.false.eierandel.ektefelle"}}:</span>
-                                                        {{#forFaktum "egennaering.gardsbruk.false.eierandel.ektefelle"}}
-                                                            <span>{{ value }}%</span>
-                                                        {{/forFaktum}}
-                                                    </li>
-                                                {{/hvisSant}}
-                                            {{/forFaktum}}
+                                                {{#forFaktum "egennaering.gardsbruk.false.eier.ektefelle"}}
+                                                    {{#hvisSant value}}
+                                                        <li class="kulepunkt">
+                                                            <span>{{ hentTekst "egennaering.gardsbruk.false.eierandel.ektefelle"}}:</span>
+                                                            {{#forFaktum "egennaering.gardsbruk.false.eierandel.ektefelle"}}
+                                                                <span>{{ value }}%</span>
+                                                            {{/forFaktum}}
+                                                        </li>
+                                                    {{/hvisSant}}
+                                                {{/forFaktum}}
 
-                                            {{#forFaktum "egennaering.gardsbruk.false.eier.annet"}}
-                                                {{#hvisSant value}}
-                                                    <li class="kulepunkt">
-                                                        <span>{{ hentTekst "egennaering.gardsbruk.false.eierandel.annet"}}:</span>
-                                                        {{#forFaktum "egennaering.gardsbruk.false.eierandel.annet"}}
-                                                            <span>{{ value }}%</span>
-                                                        {{/forFaktum}}
-                                                    </li>
-                                                {{/hvisSant}}
-                                            {{/forFaktum}}
-                                        </ul>
-                                    </li>
+                                                {{#forFaktum "egennaering.gardsbruk.false.eier.annet"}}
+                                                    {{#hvisSant value}}
+                                                        <li class="kulepunkt">
+                                                            <span>{{ hentTekst "egennaering.gardsbruk.false.eierandel.annet"}}:</span>
+                                                            {{#forFaktum "egennaering.gardsbruk.false.eierandel.annet"}}
+                                                                <span>{{ value }}%</span>
+                                                            {{/forFaktum}}
+                                                        </li>
+                                                    {{/hvisSant}}
+                                                {{/forFaktum}}
+                                            </ul>
+                                        </li>
+                                    {{/hvisFlereErTrue}}
 
                                     <li class="kulepunkt">
                                         <span>{{ hentTekst "egennaering.gardsbruk.false.arbeidsforbruk" }}</span>
