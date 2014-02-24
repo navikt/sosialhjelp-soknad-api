@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {DbConfig.class})
@@ -66,6 +67,48 @@ public class VedleggRepositoryJdbcTest {
         InputStream hentet = vedleggRepository.hentVedleggStream(v.getSoknadId(), id);
         byte[] bytes = IOUtils.toByteArray(hentet);
         assertThat(bytes, is(equalTo(lagret)));
+    }
+
+    @Test
+    public void skalLagreVedleggMedData() {
+        Long id = vedleggRepository.opprettVedlegg(getVedlegg(), null);
+        vedleggRepository.lagreVedleggMedData(12L, id, getVedlegg().medData(new byte[]{1, 2, 3}));
+        Vedlegg vedlegg = vedleggRepository.hentVedleggMedInnhold(12L, id);
+        assertThat(vedlegg, is(equalTo(getVedlegg().medData(new byte[]{1, 2, 3}).medVedleggId(id))));
+    }
+
+    @Test
+    public void skalSletteVedleggOgData() {
+        Long id = vedleggRepository.opprettVedlegg(getVedlegg(), new byte[]{1, 2, 3});
+        Long id2 = vedleggRepository.opprettVedlegg(getVedlegg().medSkjemaNummer("2"), new byte[]{1, 2, 3});
+        vedleggRepository.slettVedleggOgData(12L, 10L, "1");
+        try {
+            vedleggRepository.hentVedlegg(12L, id);
+            fail("ikke slettet");
+        } catch (Exception e) {
+        }
+        vedleggRepository.hentVedlegg(12L, id2);
+    }
+
+    @Test
+    public void skalSletteVedleggUnderBehandling() {
+        Long id = vedleggRepository.opprettVedlegg(getVedlegg().medInnsendingsvalg(Vedlegg.Status.UnderBehandling), new byte[]{1, 2, 3});
+        Long id2 = vedleggRepository.opprettVedlegg(getVedlegg().medInnsendingsvalg(Vedlegg.Status.SendesSenere), new byte[]{1, 2, 3});
+        vedleggRepository.slettVedleggUnderBehandling(12L, 10L, "1");
+        vedleggRepository.hentVedlegg(12L, id2);
+        try {
+            vedleggRepository.hentVedlegg(12L, id);
+            fail("ikke slettet");
+        } catch (Exception e) {
+        }
+    }
+
+    @Test
+    public void skalHenteVedleggForSkjema() {
+        Long id = vedleggRepository.opprettVedlegg(getVedlegg().medInnsendingsvalg(Vedlegg.Status.LastetOpp), new byte[]{1, 2, 3});
+        Long id2 = vedleggRepository.opprettVedlegg(getVedlegg().medFaktumId(null).medInnsendingsvalg(Vedlegg.Status.LastetOpp), new byte[]{1, 2, 3});
+        assertThat(vedleggRepository.hentVedleggForskjemaNummer(12L, 10L, "1").getVedleggId(), is(equalTo(id)));
+        assertThat(vedleggRepository.hentVedleggForskjemaNummer(12L, null, "1").getVedleggId(), is(equalTo(id2)));
     }
 
     private Vedlegg getVedlegg() {
