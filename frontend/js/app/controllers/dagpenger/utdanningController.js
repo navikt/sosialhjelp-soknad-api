@@ -35,15 +35,6 @@ angular.module('nav.utdanning', [])
 			return sjekkOmGittEgenskapTilObjektErFalse(data.finnFaktum(faktumKey));
 		};
 
-		$scope.validateTilFraDato = function (utdanning) {
-			if (utdanning && (utdanning.varighetTil <= utdanning.varighetFra)) {
-				utdanning.varighetTil = '';
-				$scope.utdanningDatoError = true;
-			} else {
-				$scope.utdanningDatoError = false;
-			}
-		};
-
 		function erCheckboxerAvhuket(checkboxNokler) {
 			var minstEnAvhuket = false;
 			var fakta = {};
