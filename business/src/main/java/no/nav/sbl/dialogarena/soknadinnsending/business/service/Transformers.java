@@ -20,7 +20,7 @@ public class Transformers {
         @Override
         public LocalDate transform(Faktum faktum) {
             Map<String, String> properties = faktum.getProperties();
-            switch (properties.get("type")) {
+            switch (TYPE.transform(faktum)) {
                 case "Kontrakt utgått":
                     return new LocalDate(properties.get("datotil"));
                 case "Avskjediget":
@@ -34,7 +34,7 @@ public class Transformers {
                 case "Sagt opp selv":
                     return new LocalDate(properties.get("datotil"));
                 case "Permittert":
-                    return new LocalDate(properties.get("permiteringsperiodedatotil"));
+                    return new LocalDate(properties.get("lonnspliktigperiodedatotil"));
                 default:
                     return null;
             }
@@ -44,8 +44,7 @@ public class Transformers {
     public static final Transformer<Faktum, String> TYPE = new Transformer<Faktum, String>() {
         @Override
         public String transform(Faktum faktum) {
-            Map<String, String> properties = faktum.getProperties();
-            return properties.get("type");
+            return faktum.getProperties().get("type");
         }
     };
 
@@ -54,23 +53,23 @@ public class Transformers {
         for (Vedlegg vedlegg : vedleggForventnings) {
             if (vedlegg.getInnsendingsvalg().er(Vedlegg.Status.LastetOpp)) {
                 resultat.add(new XMLVedlegg()
-                        .withFilnavn(vedlegg.getskjemaNummer() + ".pdf")
+                        .withFilnavn(vedlegg.getSkjemaNummer() + ".pdf")
                         .withSideantall(vedlegg.getAntallSider())
                         .withMimetype("application/pdf")
                         .withFilstorrelse(vedlegg.getStorrelse().toString())
-                        .withSkjemanummer(vedlegg.getskjemaNummer())
+                        .withSkjemanummer(vedlegg.getSkjemaNummer())
                         .withUuid(vedlegg.getFillagerReferanse())
                         .withInnsendingsvalg(LASTET_OPP.value()));
             } else {
                 resultat.add(new XMLVedlegg().withInnsendingsvalg(toXmlInnsendingsvalg(vedlegg.getInnsendingsvalg()))
-                        .withSkjemanummer(vedlegg.getskjemaNummer()));
+                        .withSkjemanummer(vedlegg.getSkjemaNummer()));
             }
 
         }
         return resultat.toArray(new XMLVedlegg[resultat.size()]);
     }
 
-    private static String toXmlInnsendingsvalg(Vedlegg.Status innsendingsvalg) {
+    public static String toXmlInnsendingsvalg(Vedlegg.Status innsendingsvalg) {
         switch (innsendingsvalg) {
             case LastetOpp:
                 return LASTET_OPP.toString();

@@ -145,7 +145,8 @@ angular.module('nav.datepicker', [])
 
 				scope.sjekkUloveligFremtidigDato = function () {
 					if(!scope.erFremtidigdatoTillatt && scope.ngModel !== undefined) {
-						return erFremtidigDato(scope.ngModel);
+						var dateArray = scope.ngModel.split("-");
+						return erFremtidigDato(dateArray[0], dateArray[1], dateArray[2]);
 					}
 					return false;
 				};

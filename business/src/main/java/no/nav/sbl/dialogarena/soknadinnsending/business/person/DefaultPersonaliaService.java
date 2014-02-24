@@ -60,25 +60,25 @@ public class DefaultPersonaliaService implements PersonaliaService {
     //TODO: Må fikses, ikke returnere tom personalia når manglende svar fra TPS.
     @Override
 //    public Personalia hentPersonalia(String fodselsnummer) {
-    public Personalia hentPersonalia(String fodselsnummer) throws IkkeFunnetException, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, WebServiceException {
-        XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse = null;
-        HentKjerneinformasjonResponse kjerneinformasjonResponse = null;
+    public Personalia hentPersonalia(String fodselsnummer) {
+        XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse;
+        HentKjerneinformasjonResponse kjerneinformasjonResponse;
 
         try {
             kjerneinformasjonResponse = personConnector.hentKjerneinformasjon(lagXMLRequestKjerneinformasjon(fodselsnummer));
             preferanserResponse = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequestPreferanser(fodselsnummer));
         } catch (IkkeFunnetException | HentKontaktinformasjonOgPreferanserPersonIkkeFunnet e) {
             logger.error("Ikke funnet person i TPS", e);
-           throw new ApplicationException("TPS:PersonIkkefunnet",e);
-           //return new Personalia();
+            throw new ApplicationException("TPS:PersonIkkefunnet", e);
+            //return new Personalia();
         } catch (HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning e) {
             logger.error("Kunne ikke hente bruker fra TPS.", e);
-           throw new ApplicationException("TPS:Sikkerhetsbegrensing",e);
-           // return new Personalia();
+            throw new ApplicationException("TPS:Sikkerhetsbegrensing", e);
+            // return new Personalia();
         } catch (WebServiceException e) {
             logger.error("Ingen kontakt med TPS.", e);
-            throw new ApplicationException("TPS:webserviceException",e);
-         //   return new Personalia();
+            throw new ApplicationException("TPS:webserviceException", e);
+            //   return new Personalia();
         }
         return PersonaliaTransform.mapTilPersonalia(preferanserResponse, kjerneinformasjonResponse, kodeverk);
     }
