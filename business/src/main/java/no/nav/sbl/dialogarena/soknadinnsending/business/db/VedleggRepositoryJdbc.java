@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
+import no.nav.modig.core.exception.SystemException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -60,7 +61,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
                         ps.setLong(1, vedlegg.getVedleggId());
                         ps.setLong(2, vedlegg.getSoknadId());
                         ps.setObject(3, vedlegg.getFaktumId());
-                        ps.setString(4, vedlegg.getskjemaNummer());
+                        ps.setString(4, vedlegg.getSkjemaNummer());
                         ps.setString(5, vedlegg.getNavn());
                         ps.setString(6, vedlegg.getInnsendingsvalg().toString());
                         ps.setLong(7, vedlegg.getStorrelse());
@@ -93,7 +94,7 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
                 }
             });
         } catch (DataAccessException e) {
-            throw e;
+            throw new SystemException("kunne ikke lagre vedlegg", e);
         }
     }
 

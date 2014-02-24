@@ -39,7 +39,9 @@ public class SoknadTpsDataController {
     public String hentPoststed(@PathVariable String postnummer) {
         return kodeverk.getPoststed(postnummer);
     }
+
     private static final Logger logger = getLogger(SoknadTpsDataController.class);
+
     @RequestMapping(value = "/kodeverk/landliste", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Map<String, List<Map<String, String>>> hentLandkodeListe() {
@@ -79,9 +81,9 @@ public class SoknadTpsDataController {
         Personalia personalia = null;
         try
 
-        {personalia = personaliaService.hentPersonalia(fnr);}
-        catch (Exception e)
         {
+            personalia = personaliaService.hentPersonalia(fnr);
+        } catch (Exception e) {
             logger.error("Kunne ikke hente personalia");
         }
         return personalia;

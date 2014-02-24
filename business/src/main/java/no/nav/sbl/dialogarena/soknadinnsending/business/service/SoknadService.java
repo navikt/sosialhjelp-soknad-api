@@ -157,7 +157,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         List<Vedlegg> vedleggliste = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
 
         for (Vedlegg vedlegg : vedleggliste) {
-            vedleggRepository.slettVedleggOgData(soknadId, vedlegg.getFaktumId(), vedlegg.getskjemaNummer());
+            vedleggRepository.slettVedleggOgData(soknadId, vedlegg.getFaktumId(), vedlegg.getSkjemaNummer());
         }
         repository.slettBrukerFaktum(soknadId, faktumId);
         repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
@@ -311,7 +311,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                         .medVedleggId(null)
                         .medSoknadId(vedlegg.getSoknadId())
                         .medFaktumId(vedlegg.getFaktumId())
-                        .medSkjemaNummer(vedlegg.getskjemaNummer())
+                        .medSkjemaNummer(vedlegg.getSkjemaNummer())
                         .medNavn(vedlegg.getNavn())
                         .medStorrelse((long) bytes.length)
                         .medAntallSider(1)
@@ -337,7 +337,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                             .medVedleggId(null)
                             .medSoknadId(vedlegg.getSoknadId())
                             .medFaktumId(vedlegg.getFaktumId())
-                            .medSkjemaNummer(vedlegg.getskjemaNummer())
+                            .medSkjemaNummer(vedlegg.getSkjemaNummer())
                             .medNavn(vedlegg.getNavn())
                             .medStorrelse((long) baos.size())
                             .medAntallSider(1)
@@ -406,7 +406,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         List<Vedlegg> vedleggUnderBehandling = vedleggRepository
                 .hentVedleggUnderBehandling(soknadId,
                         forventning.getFaktumId(),
-                        forventning.getskjemaNummer());
+                        forventning.getSkjemaNummer());
         List<byte[]> bytes = new ArrayList<>();
         for (Vedlegg vedlegg : vedleggUnderBehandling) {
             InputStream inputStream = vedleggRepository.hentVedleggStream(
@@ -427,7 +427,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 forventning.getFillagerReferanse(), soknad.getAktoerId(),
                 new ByteArrayInputStream(doc));
         vedleggRepository.slettVedleggUnderBehandling(soknadId,
-                forventning.getFaktumId(), forventning.getskjemaNummer());
+                forventning.getFaktumId(), forventning.getSkjemaNummer());
         vedleggRepository.lagreVedleggMedData(soknadId, vedleggId, forventning);
         return vedleggId;
     }
@@ -504,7 +504,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     private void medKodeverk(Vedlegg vedlegg) {
         try {
-            Map<Kodeverk.Nokkel, String> koder = kodeverk.getKoder(vedlegg.getskjemaNummer());
+            Map<Kodeverk.Nokkel, String> koder = kodeverk.getKoder(vedlegg.getSkjemaNummer());
             for (Entry<Nokkel, String> nokkelEntry : koder.entrySet()) {
                 if (nokkelEntry.getKey().toString().contains("URL")) {
                     vedlegg.leggTilURL(nokkelEntry.getKey().toString(), koder.get(nokkelEntry.getKey()));
