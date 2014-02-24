@@ -1,37 +1,67 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
+import no.nav.modig.core.exception.ApplicationException;
+import no.nav.modig.core.exception.ModigException;
+import no.nav.modig.core.exception.SystemException;
 import no.nav.sbl.dialogarena.soknadinnsending.RestFeil;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * Håndterer alle exceptions som blir kastet fra rest klasser
  */
 @ControllerAdvice
-@Service
+@Controller
 public class ExceptionController {
     private static final Logger LOG = LoggerFactory.getLogger(ExceptionController.class);
 
+    @ExceptionHandler(UgyldigOpplastingTypeException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    public ResponseEntity<RestFeil> handterFeilType(UgyldigOpplastingTypeException ex) {
+        LOG.warn("Feilet opplasting med: " + ex, ex);
+        return getResult(ex.getId(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    }
+
+    @ExceptionHandler(OpplastingException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    public ResponseEntity<RestFeil> handterVedleggException(OpplastingException ex) {
+        LOG.warn("Feilet opplasting med: " + ex, ex);
+        return getResult(ex.getId(), HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ResponseBody
+    @ExceptionHandler({ApplicationException.class, SystemException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<RestFeil> handlerApplicationException(ModigException ex) {
+        LOG.warn("Rest kall feilet med: " + ex, ex);
+        return getResult(ex.getId(), HttpStatus.BAD_REQUEST);
+    }
     @ResponseBody
     @ExceptionHandler(Throwable.class)
-    @RequestMapping(produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<RestFeil> handlerException(Exception ex) {
         LOG.warn("Rest kall feilet med: " + ex, ex);
+        return getResult("generell", HttpStatus.BAD_REQUEST);
+    }
+
+
+    private ResponseEntity<RestFeil> getResult(String id, HttpStatus badRequest) {
         HttpHeaders header = new HttpHeaders();
         header.setContentType(APPLICATION_JSON);
-        return new ResponseEntity<>(new RestFeil("generell"), header, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new RestFeil(id), header, badRequest);
     }
 }
