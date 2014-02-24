@@ -167,9 +167,19 @@
             it('erGardseier skal returnere true for et faktum hvis faktumet er huket av og faktumet egennaering.gardsbruk er synlig', function () {
                 expect(scope.gardseier('gardsEier')).toEqual(true);
             });
-            it('svartPaHvemEierGardsbuket skal returnere true hvis eier av gardsbruket er besvart', function () {
+            it('svartPaHvemEierGardsbuket skal returnere false dersom det bare er en eier av gårdsbruket', function () {
+                expect(scope.svartPaHvemEierGardsbruket()).toEqual(false);
+            });
+
+            it('endreTypeGardsbruk skal sette harHuketAvTypeGardsbruk til true hvis ikke type gardsbruk er besvart', function () {
+                var faktum = {
+                    key: 'egennaering.gardsbruk.false.eier.ektefelle',
+                    value: 'true'
+                };
+                scope.data.leggTilFaktum(faktum);
                 expect(scope.svartPaHvemEierGardsbruket()).toEqual(true);
             });
+
             it('svartPaHvemEierGardsbuket skal returnere false hvis ingen har svart pa hvem som eier gardsbruket enda', function () {
                 scope.data.slettFaktum('egennaering.gardsbruk');
                 var foreldreFaktum = {
