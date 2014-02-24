@@ -50,6 +50,9 @@ public class Faktum implements Serializable {
 
     public void setSoknadId(Long soknadId) {
         this.soknadId = soknadId;
+        for (FaktumEgenskap egenskap : getFaktumEgenskaper()) {
+            egenskap.setSoknadId(soknadId);
+        }
     }
 
     public String getKey() {
