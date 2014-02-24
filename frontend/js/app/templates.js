@@ -297,11 +297,11 @@ angular.module("../views/templates/arbeidsforhold.html", []).run(["$templateCach
     "                    <div class=\"arbeidsforhold-oppsummering-endre-slett\">\n" +
     "                        <ul class=\"liste-vannrett\">\n" +
     "                            <li>\n" +
-    "                                <a href data-ng-click=\"slettArbeidsforhold(af, $index, $event)\"\n" +
+    "                                <a href=\"#\" data-ng-click=\"slettArbeidsforhold(af, $index, $event)\"\n" +
     "                                   data-fokus-slettmoduler=\"arbeidsforhold\">{{ 'arbeidsforhold.slettarbeidsforhold' | cmstekst }}</a>\n" +
     "                            </li>\n" +
     "                            <li>\n" +
-    "                                <a href data-ng-click=\"endreArbeidsforhold(af, $index, $event)\">\n" +
+    "                                <a href=\"#\" data-ng-click=\"endreArbeidsforhold(af, $index, $event)\">\n" +
     "                                    {{ 'arbeidsforhold.endrearbeidsforhold' | cmstekst }}\n" +
     "                                </a>\n" +
     "                            </li>\n" +
