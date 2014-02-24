@@ -6,13 +6,14 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Kilde: https://www.nav.no/1073751655.cms
+ * Kilde: https://www.nav.no/1073751655.cms (Arkivert innhold. Søk opp nøkkelen 1073751655 i Enonic Admin
+ * Sveits er lagt til i tillegg til EØS-landene
  * Accessdate: 28.01.2014
  */
 @Component
 public class EosBorgerService {
     List<String> eosLand = Arrays.asList("BEL","BGR", "DNK", "EST", "FIN", "FRA", "GRC", "IRL", "ISL", "ITA", "CYP", "LVA", "LIE", "LTU", "LUX", "MLT", "NLD"
-            , "POL", "PRT", "ROU", "SVK", "SVN", "ESP", "GBR", "SWE", "CZE", "DEU", "HUN", "AUT");
+            , "POL", "PRT", "ROU", "SVK", "SVN", "ESP", "GBR", "SWE", "CZE", "DEU", "HUN", "AUT", "CHE");
     
     public String getStatsborgeskapType(String landkode) {
         if("NOR".equals(landkode)) {
