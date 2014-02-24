@@ -1,103 +1,109 @@
 #informasjonsside {
-	border-top: 1px solid #d1d1d1;
+  border-top: 1px solid #d1d1d1;
 
-    .rad-belyst {
-        border-bottom: none;
-    }
-	
-	.utrop-sirkel-ikon {
-        background-image: url(../img/utropstegn-sirkel-gra.svg);;
-        background-position: center top;
-        background-repeat: no-repeat;
-        padding-top: 97px;
-    }
-	
-	.feil {
-		h1 {
-			color:#C8C5C4;
-			text-align:center;
-		}
-		
-		.knapper {
-			margin-top: 40px;
-	        margin-bottom: 40px;
-	        text-align:center;
-		}
-	}
-	
-    h2 {
-        text-align: center;
-        padding-bottom: 25px !important;
-        margin-bottom: 25px !important;
+  .rad-belyst {
+    border-bottom: none;
+  }
+
+  .utrop-sirkel-ikon {
+    background-image: url(../img/utropstegn-sirkel-gra.svg);;
+    background-position: center top;
+    background-repeat: no-repeat;
+    padding-top: 97px;
+  }
+
+  .feil {
+    h1 {
+      color: #C8C5C4;
+      text-align: center;
     }
 
-    form.form-linje {
-        margin-left: 5px;
+    .knapper {
+      margin-top: 40px;
+      margin-bottom: 40px;
+      text-align: center;
     }
-    
-    ul {
-    	list-style-type: none;
-    	margin-bottom:0px;
-    	padding-left: 0px;
-    	li {
-    		background-image: url(../img/7x7_svart.png);
-			background-repeat: no-repeat;
-			background-position: left 5px;
-			padding-bottom: 15px;
-			padding-left: 20px;
-			font-weight: bold;
+  }
 
-            a {
-                font-weight: normal;
-            }
-    	}
+  h2 {
+    text-align: center;
+    padding-bottom: 25px !important;
+    margin-bottom: 25px !important;
+  }
+
+  form.form-linje {
+    margin-left: 5px;
+  }
+
+  ul {
+    list-style-type: none;
+    margin-bottom: 0px;
+    padding-left: 0px;
+    li {
+      &:before {
+        content: "•";
+        list-style-type: none;
+        padding: 0 0.9rem;
+        margin-left: -32px;
+      }
+      padding-bottom: 15px;
+      padding-left: 20px;
+      font-weight: bold;
+
+      p {
+        display: inline;
+      }
+      a {
+        font-weight: normal;
+      }
     }
-   
-    ol {
-        padding-left: 19px;
+  }
+
+  ol {
+    padding-left: 19px;
+  }
+
+  .label {
+    font-size: 0.85rem !important;
+    text-transform: uppercase;
+  }
+
+  .adresse {
+    font-weight: bold;
+  }
+
+  .utslagskriterie, .viktig-info {
+    margin-bottom: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid #d1d1d1;
+
+  }
+  .viktig-info {
+    a {
+      display: block;
+      padding-top: 5px;
     }
-    
-    .label {
-    	font-size: 0.85rem !important;
-		text-transform:uppercase;
-    }
-    
-    .adresse {
-		font-weight: bold;
+  }
+
+  .utslagskriterier-knapper {
+    margin-top: 40px;
+    margin-bottom: 40px;
+    text-align: center;
+
+    input {
+      margin: 0 auto;
+      margin-bottom: 15px;
+      display: block;
     }
 
-    .utslagskriterie, .viktig-info {
-        margin-bottom: 40px;
-        padding-bottom: 40px;
-        border-bottom: 1px solid #d1d1d1;
-        
-    }
-    .viktig-info {
-        a {
-        	display:block;
-        	padding-top:5px;
-        }
+    p {
+      padding-left: 40px;
+      margin-top: 15px;
     }
 
-    .utslagskriterier-knapper{
-        margin-top: 40px;
-        margin-bottom: 40px;
-        text-align:center;
-
-        input {
-            margin: 0 auto;
-            margin-bottom: 15px;
-            display:block;
-        }
-        
-        p {
-        	padding-left: 40px;
-        	margin-top: 15px;
-        }
-
-        img {
-            display: block;
-            margin: 0 auto 20px;
-        }
+    img {
+      display: block;
+      margin: 0 auto 20px;
     }
+  }
 }
