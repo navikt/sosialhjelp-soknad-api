@@ -13,6 +13,12 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 		$scope.land = data.land;
         $scope.soknadId = data.soknad.soknadId;
 
+        $scope.settBreddeSlikAtDetFungererIIE = function() {
+            setTimeout(function() {
+                $("#land").width($("#land").width());
+            }, 50);
+        };
+
 		$scope.sluttaarsakUrl = data.config["soknad.sluttaarsak.url"];
 		$scope.lonnskravSkjema = data.config["soknad.lonnskravskjema.url"];
 		$scope.permiteringUrl = data.config["soknad.permitteringsskjema.url"];
@@ -38,6 +44,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 				}
 			});
 
+            $scope.settBreddeSlikAtDetFungererIIE();
 		} else {
 			arbeidsforholdData = {
 				key       : 'arbeidsforhold',
@@ -50,6 +57,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                     'land' : cms.tekster["arbeidsforhold.arbeidsgiver.landDefault"]
 				}
 			};
+            $scope.settBreddeSlikAtDetFungererIIE();
 		}
 		$scope.arbeidsforhold = new Faktum(arbeidsforholdData);
 		$scope.sluttaarsak = $scope.arbeidsforhold;
