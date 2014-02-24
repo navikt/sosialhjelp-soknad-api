@@ -1,6 +1,6 @@
 <div class="varighet">
     <span data-ng-bind="af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy' | norskdato"></span>
-    <span data-ng-if="af.sluttaarsak.properties.datotil" data-cmstekster="dato.til"></span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil">{{ 'dato.til' | cmstekst }}</span>
     <span data-ng-if="af.sluttaarsak.properties.datotil" data-ng-bind="af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy' | norskdato"></span>
 </div>
 
@@ -9,7 +9,7 @@
         <p data-ng-bind="af.sluttaarsak.properties.type"></p>
     </li>
     <li>
-        <span data-cmstekster="arbeidsforhold.sluttaarsak.avskjedigetgrunn.sporsmal"></span>
+        <span>{{ 'arbeidsforhold.sluttaarsak.avskjedigetgrunn.sporsmal' | cmstekst }}</span>
         <p data-ng-bind="af.sluttaarsak.properties.avskjedigetGrunn"></p>
     </li>
 </ul>
@@ -18,11 +18,12 @@
 <div data-vedlegginfoboks>
     <ul>
         <li>
-            <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></span>
+            <span>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</span>
         </li>
         <li>
-            <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2"></p>
-            <a href="{{sluttaarsakUrl}}" data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst">
+            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2' | cmstekst }}</p>
+            <a href="{{sluttaarsakUrl}}">
+                {{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst' | cmstekst }}
             </a>
         </li>
     </ul>

@@ -8,6 +8,7 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
 			},
 			templateUrl: '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html',
 			link: function (scope, element) {
+                element.parent().addClass('hjelpetekst-parent');
                 var lukkEventTimestamp = 0;
 
 				scope.visHjelp = false;
