@@ -56,7 +56,8 @@
                             {{ 'barnetillegg.nyttbarn.land' | cmstekst }}
                         </span>
 
-                        <select data-blur-validate
+                        <select id="land"
+                                data-blur-validate
                                 data-ng-required="true"
                                 data-error-messages="'barnetillegg.nyttbarn.land.feilmelding'"
                                 data-ng-model="barn.properties.land"

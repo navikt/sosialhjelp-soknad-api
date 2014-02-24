@@ -19,14 +19,6 @@
                     properties: {
                         alder: "61"
                     }
-                },
-                {
-                    key: 'etFaktum',
-                    type: 'BRUKERREGISTRERT'
-                },
-                {
-                    key: 'Bolker',
-                    type: 'BRUKERREGISTRERT'
                 }
             ];
 
@@ -57,16 +49,17 @@
                 soknad: {
                     soknadId: 1
                 },
-                config: ["soknad.sluttaarsak.url", "soknad.lonnskravskjema.url", "soknad.permitteringsskjema.url" ],
+                config: {"soknad.sluttaarsak.url": "", "soknad.lonnskravskjema.url": "", "soknad.permitteringsskjema.url":"", "minehenvendelser.link.url": "minehenvendelserurl", "soknad.inngangsporten.url": "inngangsportenurl" },
                 slettFaktum: function (faktumData) {
                     fakta.forEach(function (item, index) {
                         if (item.faktumId === faktumData.faktumId) {
-                            fakta.splice(index,1);
+                            fakta.splice(index, 1);
                         }
                     });
                 }
             });
             $provide.value("cms", {'tekster': {'barnetillegg.nyttbarn.landDefault': ''}});
+            $provide.value("$routeParams", {});
         })
         )
         ;
@@ -107,7 +100,26 @@
         }));
 
         describe('egennaeringCtrl', function () {
-            beforeEach(inject(function ($controller) {
+            beforeEach(inject(function ($controller, data) {
+                scope.data = data;
+                var foreldreFaktum = {
+                    key: 'egennaering.gardsbruk',
+                    value: 'false'
+                };
+
+                var gardsEier = {
+                    key: 'gardsEier',
+                    value: 'true'
+                };
+
+                var gardsEierJeg = {
+                    key: 'egennaering.gardsbruk.false.eier.jeg',
+                    value: 'true'
+                };
+
+                scope.data.leggTilFaktum(foreldreFaktum);
+                scope.data.leggTilFaktum(gardsEier);
+                scope.data.leggTilFaktum(gardsEierJeg);
                 ctrl = $controller('EgennaeringCtrl', {
                     $scope: scope
                 });
@@ -133,6 +145,87 @@
                 expect(scope.skalViseSlettKnapp(0)).toEqual(false);
                 expect(scope.skalViseSlettKnapp(1)).toEqual(true);
             });
+            it('skal kjøre metodene lukkTab og settValidert for valid form', function () {
+                spyOn(scope, "runValidation").andReturn(true);
+                spyOn(scope, "lukkTab");
+                spyOn(scope, "settValidert");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.lukkTab).toHaveBeenCalledWith('egennaering');
+                expect(scope.settValidert).toHaveBeenCalledWith('egennaering');
+            });
+            it('skal apne bolken for invalid form', function () {
+                spyOn(scope, "runValidation").andReturn(false);
+                spyOn(scope, "apneTab");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.apneTab).toHaveBeenCalledWith('egennaering');
+            });
+            it('erSynlig skal returnere true for et faktum hvor foreldreelementet er svart pa slik at barneelementet blir synlig', function () {
+                expect(scope.erSynlig('egennaering.gardsbruk')).toEqual(true);
+            });
+            it('erGardseier skal returnere true for et faktum hvis faktumet er huket av og faktumet egennaering.gardsbruk er synlig', function () {
+                expect(scope.gardseier('gardsEier')).toEqual(true);
+            });
+            it('svartPaHvemEierGardsbuket skal returnere true hvis eier av gardsbruket er besvart', function () {
+                expect(scope.svartPaHvemEierGardsbruket()).toEqual(true);
+            });
+            it('svartPaHvemEierGardsbuket skal returnere false hvis ingen har svart pa hvem som eier gardsbruket enda', function () {
+                scope.data.slettFaktum('egennaering.gardsbruk');
+                var foreldreFaktum = {
+                    key: 'egennaering.gardsbruk',
+                    value: 'true'
+                };
+                scope.data.leggTilFaktum(foreldreFaktum);
+                expect(scope.svartPaHvemEierGardsbruket()).toEqual(false);
+            });
+            it('eierGardsbrukNokler skal vaere true nar eier av gardsbruket er besvart', function () {
+                expect(scope.harHuketAvEierGardsbruk.value).toEqual(true);
+            });
+            it('endreTypeGardsbruk skal sette harHuketAvTypeGardsbruk til tom string hvis ikke type gardsbruk er besvart', function () {
+                scope.endreTypeGardsbruk();
+                expect(scope.harHuketAvTypeGardsbruk.value).toEqual('');
+            });
+            it('endreTypeGardsbruk skal sette harHuketAvTypeGardsbruk til true hvis ikke type gardsbruk er besvart', function () {
+                var faktum = {
+                    key: 'egennaering.gardsbruk.false.type.dyr',
+                    value: 'true'
+                }
+                scope.data.leggTilFaktum(faktum);
+                scope.endreTypeGardsbruk();
+                expect(scope.harHuketAvTypeGardsbruk.value).toEqual(true);
+            });
+            it('endreEierGardsbruk  skal sette harHuketAvEierGardsbruk til true hvis ikke type gardsbruk er besvart', function () {
+                scope.endreEierGardsbruk();
+                expect(scope.harHuketAvEierGardsbruk.value).toEqual(true);
+            });
+            it('endreEierGardsbruk  skal sette harHuketAvEierGardsbruk til tom string hvis ikke type gardsbruk er besvart', function () {
+                var gardsEierJeg = {
+                    key: 'egennaering.gardsbruk.false.eier.jeg',
+                    value: 'false'
+                };
+
+                scope.data.leggTilFaktum(gardsEierJeg);
+                scope.endreEierGardsbruk();
+                expect(scope.harHuketAvEierGardsbruk.value).toEqual('');
+            });
+            it('prosentFeil skal returnere true nar prosentfeil skal vises', function () {
+                scope.summererAndeleneTil100();
+                expect(scope.prosentFeil()).toEqual(true);
+            });
+            it('prosentFeil skal returnere false nar prosentfeil ikke skal vises', function () {
+                var gardsEierJeg = {
+                    key: 'egennaering.gardsbruk.false.eierandel.din',
+                    value: '100'
+                };
+                scope.data.leggTilFaktum(gardsEierJeg);
+                scope.summererAndeleneTil100();
+                expect(scope.prosentFeil()).toEqual(false);
+            });
+
+
+
+
         });
         describe('vernepliktCtrl', function () {
             beforeEach(inject(function ($controller, $compile) {
@@ -163,7 +256,16 @@
             });
         });
         describe('UtdanningCtrl', function () {
-            beforeEach(inject(function ($controller) {
+            beforeEach(inject(function ($controller, data) {
+                scope.data = data;
+
+                 var utdanningNokkelFaktum = {
+                     key: 'utdanning.kveld',
+                     value: 'true'
+                 };
+
+                scope.data.leggTilFaktum(utdanningNokkelFaktum);
+
                 ctrl = $controller('UtdanningCtrl', {
                     $scope: scope
                 });
@@ -173,6 +275,58 @@
                 expect(scope.runValidationBleKalt).toEqual(false);
                 scope.valider();
                 expect(scope.runValidationBleKalt).toEqual(true);
+            });
+            it('skal kjøre metodene lukkTab og settValidert for valid form', function () {
+                spyOn(scope, "runValidation").andReturn(true);
+                spyOn(scope, "lukkTab");
+                spyOn(scope, "settValidert");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.lukkTab).toHaveBeenCalledWith('utdanning');
+                expect(scope.settValidert).toHaveBeenCalledWith('utdanning');
+            });
+            it('taben skal vaere apen nar formen ikke er valid', function () {
+                spyOn(scope, "runValidation").andReturn(false);
+                spyOn(scope, "apneTab");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.apneTab).toHaveBeenCalledWith('utdanning');
+            });
+            it('ved minst en av checkboksene avhuket skal harHuketAvCheckboks settes til true', function () {
+                expect(scope.harHuketAvCheckboks.value).toEqual(true);
+            });
+            it('hvis faktum utdanning.kveld er huket av sa skal hvis(utdanning.kveld, "true") returnere true', function () {
+                expect(scope.hvis('utdanning.kveld', 'true')).toEqual(true);
+            });
+            it('hvis faktum utdanning.kortvarig ikke er huket av sa skal hvis(utdanning.kortvarig, "true") returnere false', function () {
+                expect(scope.hvis('utdanning.kortvarig', 'true')).toEqual(false);
+            });
+            it('hvis faktum utdanning.kortvarig ikke er huket og har aldri vaert huket av sa skal hvis(utdanning.kortvarig, "true") returnere false', function () {
+                expect(scope.hvis('utdanning.kortvarig', 'false')).toEqual(false);
+            });
+            it('hvis faktum utdanning.kortvarig ikke er huket men har vaert huket av sa skal hvis(utdanning.kortvarig, "true") returnere false', function () {
+                var kortvarigFaktum = {
+                    key: 'utdanning.kortvarig',
+                    value: 'false'
+                };
+
+                scope.data.leggTilFaktum(kortvarigFaktum);
+                expect(scope.hvis('utdanning.kortvarig', 'false')).toEqual(true);
+            });
+            it('hvis faktum utdanning.kortvarig ikke er huket men har vaert huket av sa skal hvisIkke(utdanning.kortvarig) returnere true', function () {
+                var kortvarigFaktum = {
+                    key: 'utdanning.kortvarig',
+                    value: 'false'
+                };
+
+                scope.data.leggTilFaktum(kortvarigFaktum);
+                expect(scope.hvisIkke('utdanning.kortvarig')).toEqual(true);
+            });
+            it('hvis faktum utdanning.kortvarigflere ikke er huket og har ikke vaert huket av sa skal hvisIkke(utdanning.kortvarigflere) returnere false', function () {
+                expect(scope.hvisIkke('utdanning.kortvarigflere')).toEqual(false);
+            });
+            it('hvis faktum utdanning.kveld er huket sa skal hvisIkke(utdanning.kortvarigflere) returnere false', function () {
+                expect(scope.hvisIkke('utdanning.kveld')).toEqual(false);
             });
         });
         describe('ReellarbeidssokerCtrl', function () {
@@ -188,9 +342,9 @@
                     value: 'false'
                 };
 
-
                 scope.data.leggTilFaktum(faktumDeltid);
                 scope.data.leggTilFaktum(faktumPendle);
+
 
                 ctrl = $controller('ReellarbeidssokerCtrl', {
                     $scope: scope
@@ -285,28 +439,28 @@
             });
             it('hvis en deltidaarsaker er huket av og så blir den avhuket, sa skal harHuketAvCheckboksDeltid vaere tom ', function () {
                 expect(scope.harHuketAvCheckboksDeltid.value).toBe(true);
-                scope.data.fakta[3].value = 'false';
+                scope.data.fakta[1].value = 'false';
                 scope.endreDeltidsAarsaker();
                 expect(scope.harHuketAvCheckboksDeltid.value).toBe('');
             });
             it('hvis ingen deltidaarsaker er huket av og så blir en aarsak huket av, sa skal harHuketAvCheckboksDeltid vaere true ', function () {
-                scope.data.fakta[3].value = 'false';
+                scope.data.fakta[1].value = 'false';
                 scope.endreDeltidsAarsaker();
                 expect(scope.harHuketAvCheckboksDeltid.value).toBe('');
-                scope.data.fakta[3].value = 'true';
+                scope.data.fakta[1].value = 'true';
                 scope.endreDeltidsAarsaker();
                 expect(scope.harHuketAvCheckboksDeltid.value).toBe(true);
             });
             it('hvis en pendleaarsaker er huket av og så blir den avhuket, sa skal harHuketAvCheckboksPendle vaere tom ', function () {
-                scope.data.fakta[3].value = 'false';
+                scope.data.fakta[1].value = 'false';
                 scope.endreDeltidsAarsaker();
                 expect(scope.harHuketAvCheckboksPendle.value).toBe('');
             });
             it('hvis ingen pendleaarsaker er huket av og så blir en aarsak huket av, sa skal harHuketAvCheckboksPendle vaere true ', function () {
-                scope.data.fakta[4].value = 'false';
+                scope.data.fakta[2].value = 'false';
                 scope.endrePendleAarsaker();
                 expect(scope.harHuketAvCheckboksPendle.value).toBe('');
-                scope.data.fakta[4].value = 'true';
+                scope.data.fakta[2].value = 'true';
                 scope.endrePendleAarsaker();
                 expect(scope.harHuketAvCheckboksPendle.value).toBe(true);
             });
@@ -568,7 +722,8 @@
                 var nyttBarn = {
                     key: 'barn',
                     properties: {barnetillegg: 'true'},
-                    $save: function() {}
+                    $save: function () {
+                    }
                 };
 
                 scope.data.leggTilFaktum(tpsBarn);
@@ -769,7 +924,7 @@
             });
             it('nar et barn slettes skal dette barnet ikke lenger vaere lagret pa fakta', function () {
                 expect(scope.data.finnFakta('barn').length).toBe(2);
-                scope.slettBarn (scope.barn[0], 0, event);
+                scope.slettBarn(scope.barn[0], 0, event);
                 expect(scope.data.finnFakta('barn').length).toBe(1);
             });
             it('nar et barnetillegg slettes skal prorpertiene knyttet til barnetillegget resettes', function () {
@@ -1021,14 +1176,36 @@
                     $scope: scope
                 });
                 scope.data = data;
+
+            }));
+            it('fremdriftsindikatoren skal vises nar man sletter soknaden', function () {
+                scope.submitForm();
+                expect(scope.fremdriftsindikator.laster).toEqual(true);
+            });
+        });
+        describe('AvbrytCtrlMedBrukerregistrertFakta', function () {
+            beforeEach(inject(function ($controller, data) {
+                scope.data = data;
+
+                var brukerregistrertFaktum = {
+                    key: 'brukerregistrertFaktum',
+                    type: 'BRUKERREGISTRERT'
+                };
+                var brukerregistrertFaktum2 = {
+                    key: 'brukerregistrertFaktum',
+                    type: 'BRUKERREGISTRERT'
+                };
+
+                scope.data.leggTilFaktum(brukerregistrertFaktum);
+                scope.data.leggTilFaktum(brukerregistrertFaktum2);
+
+                ctrl = $controller('AvbrytCtrl', {
+                    $scope: scope
+                });
             }));
 
             it('skal kreve brekftelse med fakta som er brukerregistrerte', function () {
                 expect(scope.krevBekreftelse).toEqual(true);
-            });
-            it('fremdriftsindikatoren skal vises nar man sletter soknaden', function () {
-                scope.submitForm();
-                expect(scope.fremdriftsindikator.laster).toEqual(true);
             });
         });
         describe('DagpengerCtrl', function () {
@@ -1088,10 +1265,19 @@
                 expect(scope.grupper[0].apen).toBe(true);
             });
         });
+        describe('FeilSideCtrl', function () {
+            beforeEach(inject(function ($controller, data) {
+                scope.data = data;
+                ctrl = $controller('FeilSideCtrl', {
+                    $scope: scope
+                });
+            }));
 
+            it('Mine innsendinger og inngagsporten skal settes til riktig url', function () {
+                expect(scope.mineInnsendinger).toEqual("minehenvendelserurl");
+                expect(scope.inngangsportenUrl).toEqual("inngangsportenurl");
+            });
+        });
 
     });
-}
-    ()
-    )
-;
+}());
