@@ -10,6 +10,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils;
+import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
+import static no.nav.modig.lang.collections.IterUtils.on;
 import static org.apache.commons.lang3.ArrayUtils.reverse;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.split;
@@ -61,8 +63,36 @@ public class HandleBarKjoerer {
         handlebars.registerHelper("hentLand", generateHentLandHelper());
         handlebars.registerHelper("forVedlegg", generateForVedleggHelper());
         handlebars.registerHelper("hentSkjemanummer", generateHentSkjemanummerHelper());
+        handlebars.registerHelper("hvisFlereErTrue", generateHvisFlereSomStarterMedErTrueHelper());
 
         return handlebars;
+    }
+
+    private Helper<String> generateHvisFlereSomStarterMedErTrueHelper() {
+        return new Helper<String>() {
+            @Override
+            public CharSequence apply(String o, Options options) throws IOException {
+                Integer grense = Integer.parseInt((String) options.param(0));
+
+                WebSoknad soknad = finnWebSoknad(options.context);
+                List<Faktum> faktaListe = soknad.getFaktaSomStarterMed(o);
+
+                int size = on(faktaListe).filter(new Predicate<Faktum>() {
+                    @Override
+                    public boolean evaluate(Faktum faktum) {
+                        String value = faktum.getValue();
+                        return value != null && value.equals("true");
+                    }
+                }).collect().size();
+
+
+                if (size > grense) {
+                    return options.fn(this);
+                } else {
+                    return options.inverse(this);
+                }
+            }
+        };
     }
 
     private Helper<Object> generateHentSkjemanummerHelper() {
