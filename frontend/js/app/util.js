@@ -259,12 +259,27 @@ function reverserNorskDatoformat(datoString) {
 	}
 }
 
-function erFremtidigDato(datoString) {
-	var dato = new Date(datoString);
+function erFremtidigDato(year, month, day) {
+	var dato = new Date();
+	dato.setMonth(month-1);
+	dato.setDate(day);
+	dato.setFullYear(year);
+	dato.setHours(0);
+	dato.setMilliseconds(0);
+	dato.setSeconds(0);
+	dato.setMinutes(0);
 
 	var enDagMillis = 86400000; //1000*60*60*24
 	var dagensDato =  new Date();
-	var temp = new Date(dagensDato.getMonth()+1 +  "." + dagensDato.getDate() + "." + dagensDato.getFullYear());
+	var temp = new Date();
+	temp.setMonth(dagensDato.getMonth());
+	temp.setDate(dagensDato.getDate());
+	temp.setFullYear(dagensDato.getFullYear());
+	temp.setHours(0);
+	temp.setMilliseconds(0);
+	temp.setSeconds(0);
+	temp.setMinutes(0);
+
 	var morgenDagensDatoMillis = temp.setTime(temp.getTime() + 86400000);
 
 	if(dato.getTime() >= morgenDagensDatoMillis) {
