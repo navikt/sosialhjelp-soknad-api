@@ -1182,7 +1182,8 @@ angular.module("../views/templates/barnetillegg/barnetillegg-nyttbarn.html", [])
     "                            {{ 'barnetillegg.nyttbarn.land' | cmstekst }}\n" +
     "                        </span>\n" +
     "\n" +
-    "                        <select data-blur-validate\n" +
+    "                        <select id=\"land\"\n" +
+    "                                data-blur-validate\n" +
     "                                data-ng-required=\"true\"\n" +
     "                                data-error-messages=\"'barnetillegg.nyttbarn.land.feilmelding'\"\n" +
     "                                data-ng-model=\"barn.properties.land\"\n" +
@@ -3148,7 +3149,8 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "                {{ 'ytelser.dagpengerEOSUtbetaler' | cmstekst }}\n" +
     "            </span>\n" +
     "\n" +
-    "            <select data-blur-validate\n" +
+    "            <select id=\"land\"\n" +
+    "                    data-blur-validate\n" +
     "                    data-ng-required=\"true\"\n" +
     "                    data-error-messages=\"'ytelser.dagpengerEOSUtbetaler.feilmelding'\"\n" +
     "                    data-ng-model=\"faktum.value\"\n" +
