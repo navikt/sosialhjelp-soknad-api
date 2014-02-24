@@ -53,16 +53,16 @@ public class Transformers {
         for (Vedlegg vedlegg : vedleggForventnings) {
             if (vedlegg.getInnsendingsvalg().er(Vedlegg.Status.LastetOpp)) {
                 resultat.add(new XMLVedlegg()
-                        .withFilnavn(vedlegg.getskjemaNummer() + ".pdf")
+                        .withFilnavn(vedlegg.getSkjemaNummer() + ".pdf")
                         .withSideantall(vedlegg.getAntallSider())
                         .withMimetype("application/pdf")
                         .withFilstorrelse(vedlegg.getStorrelse().toString())
-                        .withSkjemanummer(vedlegg.getskjemaNummer())
+                        .withSkjemanummer(vedlegg.getSkjemaNummer())
                         .withUuid(vedlegg.getFillagerReferanse())
                         .withInnsendingsvalg(LASTET_OPP.value()));
             } else {
                 resultat.add(new XMLVedlegg().withInnsendingsvalg(toXmlInnsendingsvalg(vedlegg.getInnsendingsvalg()))
-                        .withSkjemanummer(vedlegg.getskjemaNummer()));
+                        .withSkjemanummer(vedlegg.getSkjemaNummer()));
             }
 
         }

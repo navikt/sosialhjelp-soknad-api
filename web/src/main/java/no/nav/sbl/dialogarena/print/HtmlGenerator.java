@@ -6,5 +6,5 @@ import java.io.IOException;
 
 
 public interface HtmlGenerator {
-    public String fyllHtmlMalMedInnhold(WebSoknad soknad, String file) throws IOException;
+    String fyllHtmlMalMedInnhold(WebSoknad soknad, String file) throws IOException;
 }
