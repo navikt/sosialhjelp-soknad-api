@@ -1,16 +1,33 @@
+.hjelpetekst-parent {
+    position: relative;
+    padding-right: 20px;
+}
+
 .hjelpetekst {
     display: inline-block;
-    position: relative;
+    position: absolute;
+    top: 0;
+    right: 0;
 
     a.infoikon {
         display: inline-block;
         margin-left: 0.2rem;
         position: relative;
         cursor: pointer;
-        height: 20px;
+        color: #0ca9e1;
         width: 20px;
-        background: url(../img/sporsmaal.png) no-repeat 0;
-        top: 5px;
+        height: 20px;
+        text-align: center;
+        font-weight: bold;
+        border: 1px solid #0ca9e1;
+        border-radius: 30px;
+        font-size: 13px !important;
+        line-height: 19px;
+
+        &:focus, &:hover, &:active {
+            text-decoration: none !important;
+            color: #0ca9e1 !important;
+        }
     }
 
     .hjelpetekst-tooltip {

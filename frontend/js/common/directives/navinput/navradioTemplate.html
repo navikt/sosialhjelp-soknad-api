@@ -11,7 +11,7 @@
            data-click-validate
            data-aktiv-feilmelding>
 
-    <label for='{{ navlabel }}' data-cmstekster="{{ navlabel }}"></label>
+    <label for='{{ navlabel }}'>{{ navlabel | cmstekst }}</label>
 
     <div class="ng-transclude ekstra-spm-boks" data-ng-if="hvisAktiv()" data-ng-show="hvisHarTranscludedInnhold()"></div>
 
