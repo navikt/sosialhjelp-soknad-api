@@ -67,7 +67,6 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
                 return $scope.arbeidsforhold.properties.land;
             }
         }, function () {
-            console.log($scope.arbeidsforhold.properties.land)
             if($scope.arbeidsforhold.properties.land && $scope.arbeidsforhold.properties.land !== '') {
                 $resource('/sendsoknad/rest/ereosland/:landkode').get(
                     {landkode: $scope.arbeidsforhold.properties.land},
