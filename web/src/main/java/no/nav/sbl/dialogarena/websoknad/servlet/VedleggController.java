@@ -144,7 +144,7 @@ public class VedleggController {
                     .medVedleggId(null)
                     .medSoknadId(soknadId)
                     .medFaktumId(forventning.getFaktumId())
-                    .medSkjemaNummer(forventning.getskjemaNummer())
+                    .medSkjemaNummer(forventning.getSkjemaNummer())
                     .medNavn(forventning.getNavn())
                     .medStorrelse(file.getSize())
                     .medAntallSider(1)
@@ -166,7 +166,7 @@ public class VedleggController {
     @SjekkTilgangTilSoknad
     public List<Vedlegg> hentVedleggUnderBehandling(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
         Vedlegg forventning = vedleggService.hentVedlegg(soknadId, vedleggId, false);
-        return vedleggService.hentVedleggUnderBehandling(soknadId, forventning.getFaktumId(), forventning.getskjemaNummer());
+        return vedleggService.hentVedleggUnderBehandling(soknadId, forventning.getFaktumId(), forventning.getSkjemaNummer());
     }
 
     @RequestMapping(value = "/{vedleggId}/generer", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
