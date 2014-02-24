@@ -33,6 +33,10 @@ angular.module('nav.arbeidsforhold.controller', [])
             return 0;
         }
 
+        $scope.harArbeidsforhold = function() {
+            return $scope.arbeidsliste.length > 0;
+        };
+
         $scope.arbeidsliste.sort(compareArbeidsforholdDate);
 
         if ($scope.arbeidsliste.length > 0) {

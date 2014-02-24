@@ -1,4 +1,4 @@
-angular.module('templates-main', ['../views/dagpenger-singlepage.html', '../views/templates/adresse.html', '../views/templates/arbeidsforhold-nytt.html', '../views/templates/arbeidsforhold.html', '../views/templates/arbeidsforhold/avskjediget-oppsummering.html', '../views/templates/arbeidsforhold/avskjediget.html', '../views/templates/arbeidsforhold/konkurs-oppsummering.html', '../views/templates/arbeidsforhold/konkurs.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt.html', '../views/templates/arbeidsforhold/permittert-oppsummering.html', '../views/templates/arbeidsforhold/permittert.html', '../views/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html', '../views/templates/arbeidsforhold/redusertarbeidstid.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html', '../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-selv.html', '../views/templates/avbryt.html', '../views/templates/barnetillegg/barnetillegg-nyttbarn.html', '../views/templates/barnetillegg/barnetillegg.html', '../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html', '../views/templates/barnetillegg/endreSystembarnTemplate.html', '../views/templates/bekreftelse.html', '../views/templates/egennaering/egen-naering.html', '../views/templates/egennaering/egenNaeringvirksomhet.html', '../views/templates/egennaering/fangstOgFiske.html', '../views/templates/egennaering/gardsbruk.html', '../views/templates/feilside.html', '../views/templates/ferdigstilt.html', '../views/templates/fortsettSenere.html', '../views/templates/gjenoppta/skjema-ferdig.html', '../views/templates/gjenoppta/skjema-sendt.html', '../views/templates/gjenoppta/skjema-under-arbeid.html', '../views/templates/gjenoppta/skjema-validert.html', '../views/templates/ikkekvalifisert.html', '../views/templates/informasjonsside.html', '../views/templates/kvittering-fortsettsenere.html', '../views/templates/opplasting.html', '../views/templates/oppsummering.html', '../views/templates/personalia.html', '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', '../views/templates/reellarbeidssoker/villigDeltidTemplate.html', '../views/templates/reellarbeidssoker/villigHelseTemplate.html', '../views/templates/reellarbeidssoker/villigPendleTemplate.html', '../views/templates/reellarbeidssoker/villigjobbTemplate.html', '../views/templates/soknadSlettet.html', '../views/templates/soknadliste.html', '../views/templates/tilleggsopplysninger.html', '../views/templates/utdanning/utdanning.html', '../views/templates/utdanning/utdanningKortvarigFlereTemplate.html', '../views/templates/utdanning/utdanningKortvarigTemplate.html', '../views/templates/utdanning/utdanningKveldTemplate.html', '../views/templates/utdanning/utdanningNorskTemplate.html', '../views/templates/utdanningsinformasjon-template.html', '../views/templates/vedlegg.html', '../views/templates/verneplikt.html', '../views/templates/visvedlegg.html', '../views/templates/ytelser.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateLiten.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateStor.html', '../js/app/directives/dagpenger/arbeidsforholdformTemplate.html', '../js/app/directives/feilmeldinger/feilmeldingerTemplate.html', '../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html', '../js/app/directives/markup/modalsideTemplate.html', '../js/app/directives/markup/navinfoboksTemplate.html', '../js/app/directives/markup/panelStandardBelystTemplate.html', '../js/app/directives/markup/vedlegginfoboksTemplate.html', '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html', '../js/app/directives/stegindikator/stegIndikatorTemplate.html', '../js/app/directives/stickybunn/stickyBunnTemplate.html', '../js/common/directives/accordion/accordionGroupTemplate.html', '../js/common/directives/accordion/accordionTemplate.html', '../js/common/directives/booleanradio/booleanradioTemplate.html', '../js/common/directives/datepicker/doubleDatepickerTemplate.html', '../js/common/directives/datepicker/singleDatepickerTemplate.html', '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html', '../js/common/directives/melding/meldingTemplate.html', '../js/common/directives/navinput/navbuttonspinnerTemplate.html', '../js/common/directives/navinput/navcheckboxTemplate.html', '../js/common/directives/navinput/navorgnrfeltTemplate.html', '../js/common/directives/navinput/navradioTemplate.html', '../js/common/directives/navinput/navtallInputTemplate.html', '../js/common/directives/navinput/navtekstTemplate.html', '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html', '../js/common/directives/navtextarea/navtextareaTemplate.html', '../js/common/directives/select/selectTemplate.html', '../js/common/directives/tittel/tittelTemplate.html']);
+angular.module('templates-main', ['../views/dagpenger-singlepage.html', '../views/templates/adresse.html', '../views/templates/arbeidsforhold-nytt.html', '../views/templates/arbeidsforhold.html', '../views/templates/arbeidsforhold/avskjediget-oppsummering.html', '../views/templates/arbeidsforhold/avskjediget.html', '../views/templates/arbeidsforhold/konkurs-oppsummering.html', '../views/templates/arbeidsforhold/konkurs.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt.html', '../views/templates/arbeidsforhold/permittert-oppsummering.html', '../views/templates/arbeidsforhold/permittert.html', '../views/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html', '../views/templates/arbeidsforhold/redusertarbeidstid.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html', '../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-selv.html', '../views/templates/avbryt.html', '../views/templates/barnetillegg/barnetillegg-nyttbarn.html', '../views/templates/barnetillegg/barnetillegg.html', '../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html', '../views/templates/barnetillegg/endreSystembarnTemplate.html', '../views/templates/bekreftelse.html', '../views/templates/egennaering/egen-naering.html', '../views/templates/egennaering/egenNaeringvirksomhet.html', '../views/templates/egennaering/fangstOgFiske.html', '../views/templates/egennaering/gardsbruk.html', '../views/templates/feilside.html', '../views/templates/ferdigstilt.html', '../views/templates/fortsettSenere.html', '../views/templates/gjenoppta/skjema-ferdig.html', '../views/templates/gjenoppta/skjema-sendt.html', '../views/templates/gjenoppta/skjema-under-arbeid.html', '../views/templates/gjenoppta/skjema-validert.html', '../views/templates/ikkekvalifisert.html', '../views/templates/informasjonsside.html', '../views/templates/kvittering-fortsettsenere.html', '../views/templates/opplasting.html', '../views/templates/oppsummering.html', '../views/templates/personalia.html', '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', '../views/templates/reellarbeidssoker/villigDeltidTemplate.html', '../views/templates/reellarbeidssoker/villigHelseTemplate.html', '../views/templates/reellarbeidssoker/villigPendleTemplate.html', '../views/templates/reellarbeidssoker/villigjobbTemplate.html', '../views/templates/soknadSlettet.html', '../views/templates/soknadliste.html', '../views/templates/tilleggsopplysninger.html', '../views/templates/utdanning/utdanning.html', '../views/templates/utdanning/utdanningKortvarigFlereTemplate.html', '../views/templates/utdanning/utdanningKortvarigTemplate.html', '../views/templates/utdanning/utdanningKveldTemplate.html', '../views/templates/utdanning/utdanningNorskTemplate.html', '../views/templates/utdanningsinformasjon-template.html', '../views/templates/vedlegg.html', '../views/templates/verneplikt.html', '../views/templates/visvedlegg.html', '../views/templates/ytelser.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateLiten.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateStor.html', '../js/app/directives/feilmeldinger/feilmeldingerTemplate.html', '../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html', '../js/app/directives/markup/modalsideTemplate.html', '../js/app/directives/markup/navinfoboksTemplate.html', '../js/app/directives/markup/panelStandardBelystTemplate.html', '../js/app/directives/markup/vedlegginfoboksTemplate.html', '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html', '../js/app/directives/stegindikator/stegIndikatorTemplate.html', '../js/app/directives/stickybunn/stickyBunnTemplate.html', '../js/common/directives/accordion/accordionGroupTemplate.html', '../js/common/directives/accordion/accordionTemplate.html', '../js/common/directives/booleanradio/booleanradioTemplate.html', '../js/common/directives/datepicker/doubleDatepickerTemplate.html', '../js/common/directives/datepicker/singleDatepickerTemplate.html', '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html', '../js/common/directives/melding/meldingTemplate.html', '../js/common/directives/navinput/navbuttonspinnerTemplate.html', '../js/common/directives/navinput/navcheckboxTemplate.html', '../js/common/directives/navinput/navorgnrfeltTemplate.html', '../js/common/directives/navinput/navradioTemplate.html', '../js/common/directives/navinput/navtallInputTemplate.html', '../js/common/directives/navinput/navtekstTemplate.html', '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html', '../js/common/directives/navtextarea/navtextareaTemplate.html', '../js/common/directives/select/selectTemplate.html', '../js/common/directives/tittel/tittelTemplate.html']);
 
 angular.module("../views/dagpenger-singlepage.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/dagpenger-singlepage.html",
@@ -23,7 +23,7 @@ angular.module("../views/dagpenger-singlepage.html", []).run(["$templateCache", 
     "        <div class=\"rad ferdig-skjema\">\n" +
     "            <div class=\"begrensning\">\n" +
     "                <section class=\"sak-hel\">\n" +
-    "                    <a href=\"#/vedlegg\" class=\"knapp-hoved\" data-cmstekster=\"skjema.ferdig\" role=\"button\" data-fremdriftsindikator=\"grå\" data-valider-skjema data-ng-click=\"validerSkjema($event)\"></a>\n" +
+    "                    <a href=\"#/vedlegg\" class=\"knapp-hoved\" role=\"button\" data-fremdriftsindikator=\"grå\" data-valider-skjema data-ng-click=\"validerSkjema($event)\">{{ 'skjema.ferdig' | cmstekst }}</a>\n" +
     "                </section>\n" +
     "            </div>\n" +
     "        </div>\n" +
@@ -40,16 +40,16 @@ angular.module("../views/templates/adresse.html", []).run(["$templateCache", fun
     "        <span class=\"adressetype\">{{ gjeldendeAdresseTypeLabel | cmstekst }}</span>\n" +
     "        <span data-ng-bind-html=\"formattertGjeldendeAdresse\"></span>\n" +
     "        <p data-ng-show=\"harGjeldendeGyldigTilDato()\">\n" +
-    "            <span data-cmstekster=\"personalia.gyldigTil\"></span>\n" +
+    "            <span>{{ 'personalia.gyldigTil' | cmstekst }}</span>\n" +
     "            <span> {{ personalia.gjeldendeAdresseGyldigTil | date:'dd.MM.yyyy' }} </span>\n" +
     "        </p>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div data-ng-if=\"harSekundarAdresse()\">\n" +
+    "    <div class=\"sekundaerAdresse\" data-ng-if=\"harSekundarAdresse()\">\n" +
     "        <span class=\"adressetype\">{{ sekundarAdresseTypeLabel | cmstekst }}</span>\n" +
     "        <span data-ng-bind-html=\"formattertSekundarAdresse\"></span>\n" +
     "        <p data-ng-show=\"harSekundarGyldigTilDato()\">\n" +
-    "            <span data-cmstekster=\"personalia.gyldigTil\"></span>\n" +
+    "            <span>{{ 'personalia.gyldigTil' | cmstekst }}</span>\n" +
     "            <span> {{ personalia.sekundarAdresseGyldigTil | date:'dd.MM.yyyy' }} </span>\n" +
     "        </p>\n" +
     "    </div>\n" +
@@ -80,7 +80,7 @@ angular.module("../views/templates/arbeidsforhold-nytt.html", []).run(["$templat
     "\n" +
     "            <div class=\"land form-linje tekstfelt\">\n" +
     "                <label for=\"land\">\n" +
-    "                    <span class=\"labeltekst\" data-cmstekster=\"arbeidsforhold.arbeidsgiver.land\"></span>\n" +
+    "                    <span class=\"labeltekst\">{{ 'arbeidsforhold.arbeidsgiver.land' | cmstekst }}</span>\n" +
     "                </label>\n" +
     "                <select data-blur-validate\n" +
     "                        id=\"land\"\n" +
@@ -279,7 +279,7 @@ angular.module("../views/templates/arbeidsforhold.html", []).run(["$templateCach
     "            <span class=\"melding\"> </span>\n" +
     "        </div>\n" +
     "\n" +
-    "        <div class=\"arbeidsforhold-boks\">\n" +
+    "        <div class=\"arbeidsforhold-boks\" data-ng-if=\"harArbeidsforhold()\">\n" +
     "            <div class=\"spm-boks vertikal\" data-ng-repeat=\"af in arbeidsliste\" data-ng-class=\"{'last': $last}\">\n" +
     "                <div id=\"arbeidsforhold{{af.arbeidsforhold.faktumId}}\">\n" +
     "                    <a href=\"#\" class=\"lukk\" data-ng-click=\"slettArbeidsforhold(af, $index, $event)\"\n" +
@@ -342,7 +342,7 @@ angular.module("../views/templates/arbeidsforhold/avskjediget-oppsummering.html"
   $templateCache.put("../views/templates/arbeidsforhold/avskjediget-oppsummering.html",
     "<div class=\"varighet\">\n" +
     "    <span data-ng-bind=\"af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy' | norskdato\"></span>\n" +
-    "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\" data-cmstekster=\"dato.til\"></span>\n" +
+    "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\">{{ 'dato.til' | cmstekst }}</span>\n" +
     "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\" data-ng-bind=\"af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy' | norskdato\"></span>\n" +
     "</div>\n" +
     "\n" +
@@ -351,7 +351,7 @@ angular.module("../views/templates/arbeidsforhold/avskjediget-oppsummering.html"
     "        <p data-ng-bind=\"af.sluttaarsak.properties.type\"></p>\n" +
     "    </li>\n" +
     "    <li>\n" +
-    "        <span data-cmstekster=\"arbeidsforhold.sluttaarsak.avskjedigetgrunn.sporsmal\"></span>\n" +
+    "        <span>{{ 'arbeidsforhold.sluttaarsak.avskjedigetgrunn.sporsmal' | cmstekst }}</span>\n" +
     "        <p data-ng-bind=\"af.sluttaarsak.properties.avskjedigetGrunn\"></p>\n" +
     "    </li>\n" +
     "</ul>\n" +
@@ -360,11 +360,12 @@ angular.module("../views/templates/arbeidsforhold/avskjediget-oppsummering.html"
     "<div data-vedlegginfoboks>\n" +
     "    <ul>\n" +
     "        <li>\n" +
-    "            <span data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.1\"></span>\n" +
+    "            <span>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</span>\n" +
     "        </li>\n" +
     "        <li>\n" +
-    "            <p data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.2\"></p>\n" +
-    "            <a href=\"{{sluttaarsakUrl}}\" data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst\">\n" +
+    "            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2' | cmstekst }}</p>\n" +
+    "            <a href=\"{{sluttaarsakUrl}}\">\n" +
+    "                {{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst' | cmstekst }}\n" +
     "            </a>\n" +
     "        </li>\n" +
     "    </ul>\n" +
@@ -419,7 +420,7 @@ angular.module("../views/templates/arbeidsforhold/konkurs-oppsummering.html", []
   $templateCache.put("../views/templates/arbeidsforhold/konkurs-oppsummering.html",
     "<div class=\"varighet\">\n" +
     "    <span data-ng-bind=\"af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy' | norskdato\"></span>\n" +
-    "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\" data-cmstekster=\"dato.til\"></span>\n" +
+    "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\">{{ 'dato.til' | cmstekst }}</span>\n" +
     "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\" data-ng-bind=\"af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy' | norskdato\"></span>\n" +
     "</div>\n" +
     "\n" +
@@ -428,48 +429,42 @@ angular.module("../views/templates/arbeidsforhold/konkurs-oppsummering.html", []
     "        <p data-ng-bind=\"af.sluttaarsak.properties.type\"></p>\n" +
     "    </li>\n" +
     "    <li>\n" +
-    "        <span data-cmstekster=\"arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.sporsmal\"></span>\n" +
+    "        <span>{{ 'arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.sporsmal' | cmstekst }}</span>\n" +
     "        <p data-ng-bind=\"af.sluttaarsak.properties.bostyrersnavn\"></p>\n" +
     "    </li>\n" +
     "    <li>\n" +
-    "        <span data-cmstekster=\"arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.sporsmal\"></span>\n" +
-    "        <p data-ng-show=\"af.sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'\" \n" +
-    "            data-cmstekster=\"arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaharsokt\"></p>\n" +
-    "        <p data-ng-show=\"af.sluttaarsak.properties.lonnsgaranti == 'JaSkalSoke'\" \n" +
-    "            data-cmstekster=\"arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaskalsoke\"></p>\n" +
-    "        <p data-ng-show=\"af.sluttaarsak.properties.lonnsgaranti == 'Nei'\" \n" +
-    "            data-cmstekster=\"arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.nei\"></p>\n" +
+    "        <span>{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.sporsmal' | cmstekst }}</span>\n" +
+    "        <p data-ng-if=\"af.sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'\">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaharsokt' | cmstekst }}</p>\n" +
+    "        <p data-ng-if=\"af.sluttaarsak.properties.lonnsgaranti == 'JaSkalSoke'\">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaskalsoke' | cmstekst }}</p>\n" +
+    "        <p data-ng-if=\"af.sluttaarsak.properties.lonnsgaranti == 'Nei'\">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.nei' | cmstekst }}</p>\n" +
     "    </li>\n" +
-    "    <li data-ng-show=\"af.sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'\">\n" +
-    "        <span data-cmstekster=\"arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.sporsmal\"></span>\n" +
-    "        <p data-ng-show=\"af.sluttaarsak.properties.lonnsgarantidekker == 'Nei'\" \n" +
-    "            data-cmstekster=\"arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.nei\"></p>\n" +
-    "        <p data-ng-show=\"af.sluttaarsak.properties.lonnsgarantidekker == 'Ja'\" \n" +
-    "            data-cmstekster=\"arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.ja\"></p>\n" +
-    "        <p data-ng-show=\"af.sluttaarsak.properties.lonnsgarantidekker == 'Vet ikke'\" \n" +
-    "            data-cmstekster=\"arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.vetikke\"></p>\n" +
+    "    <li data-ng-if=\"af.sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'\">\n" +
+    "        <span>{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.sporsmal' | cmstekst }}</span>\n" +
+    "        <p data-ng-if=\"af.sluttaarsak.properties.lonnsgarantidekker == 'Nei'\">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.nei' | cmstekst }}</p>\n" +
+    "        <p data-ng-if=\"af.sluttaarsak.properties.lonnsgarantidekker == 'Ja'\">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.ja' | cmstekst }}</p>\n" +
+    "        <p data-ng-if=\"af.sluttaarsak.properties.lonnsgarantidekker == 'Vet ikke'\">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.vetikke' | cmstekst }}</p>\n" +
     "    </li>\n" +
     "    <li>\n" +
-    "        <span data-cmstekster=\"arbeidsforhold.sluttaarsak.konkurs.lonnkonkursmaaned.sporsmal\"></span>\n" +
-    "        <p data-ng-show=\"af.sluttaarsak.properties.lonnkonkursmaaned == 'true'\" \n" +
-    "            data-cmstekster=\"arbeidsforhold.sluttaarsak.konkurs.lonnkonkursmaaned.true\"></p>\n" +
-    "        <p data-ng-show=\"af.sluttaarsak.properties.lonnkonkursmaaned == 'false'\" \n" +
-    "            data-cmstekster=\"arbeidsforhold.sluttaarsak.konkurs.lonnkonkursmaaned.false\"></p>\n" +
+    "        <span>{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnkonkursmaaned.sporsmal' | cmstekst }}</span>\n" +
+    "        <p data-ng-if=\"af.sluttaarsak.properties.lonnkonkursmaaned == 'true'\">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnkonkursmaaned.true' | cmstekst }}</p>\n" +
+    "        <p data-ng-if=\"af.sluttaarsak.properties.lonnkonkursmaaned == 'false'\">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnkonkursmaaned.false' | cmstekst }}</p>\n" +
     "    </li>\n" +
     "</ul>\n" +
     "<div data-vedlegginfoboks>\n" +
     "    <ul>\n" +
     "        <li>\n" +
-    "            <p data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.1\"></p>\n" +
+    "            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</p>\n" +
     "        </li>\n" +
     "        <li>\n" +
-    "            <p data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.2\"></p>\n" +
-    "            <a href=\"{{sluttaarsakUrl}}\" data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst\">\n" +
+    "            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2' | cmstekst }}</p>\n" +
+    "            <a href=\"{{sluttaarsakUrl}}\">\n" +
+    "                {{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst' | cmstekst }}\n" +
     "            </a>\n" +
     "        </li>\n" +
     "        <li>\n" +
-    "            <p data-cmstekster=\"arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3\"></p>\n" +
-    "            <a href=\"{{lonnskravSkjema}}\" data-cmstekster=\"arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3.lenketekst\">\n" +
+    "            <p>{{ 'arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3' | cmstekst }}</p>\n" +
+    "            <a href=\"{{lonnskravSkjema}}\">\n" +
+    "                {{ 'arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3.lenketekst' | cmstekst }}\n" +
     "            </a>\n" +
     "        </li>\n" +
     "    </ul>\n" +
@@ -516,8 +511,7 @@ angular.module("../views/templates/arbeidsforhold/konkurs.html", []).run(["$temp
     "\n" +
     "    <div class=\"ekstra-spm-boks\" data-ng-if=\"sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'\">\n" +
     "        <div class=\"form-linje boolean\">\n" +
-    "            <h4 class=\"spm-sporsmal\"\n" +
-    "                data-cmstekster=\"arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.sporsmal\"></h4>\n" +
+    "            <h4 class=\"spm-sporsmal\">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.sporsmal' | cmstekst }}</h4>\n" +
     "\n" +
     "            <div class=\"nav-radio-knapp\">\n" +
     "                <input class=\"sendsoknad-radio\"\n" +
@@ -630,7 +624,7 @@ angular.module("../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.
   $templateCache.put("../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html",
     "<div class=\"varighet\">\n" +
     "    <span data-ng-bind=\"af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy' | norskdato\"></span>\n" +
-    "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\" data-cmstekster=\"dato.til\"></span>\n" +
+    "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\">{{ 'dato.til' | cmstekst }}</span>\n" +
     "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\" data-ng-bind=\"af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy' | norskdato\"></span>\n" +
     "</div>\n" +
     "\n" +
@@ -639,22 +633,21 @@ angular.module("../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.
     "        <p data-ng-bind=\"af.sluttaarsak.properties.type\"></p>\n" +
     "    </li>\n" +
     "    <li>\n" +
-    "        <span data-cmstekster=\"arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.sporsmal\"></span>\n" +
-    "        <p data-ng-show=\"af.sluttaarsak.properties.tilbudomjobbannetsted == 'true'\" \n" +
-    "            data-cmstekster=\"arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true\"></p>\n" +
-    "        <p data-ng-show=\"af.sluttaarsak.properties.tilbudomjobbannetsted == 'false'\" \n" +
-    "            data-cmstekster=\"arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.false\"></p>\n" +
+    "        <span>{{ 'arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.sporsmal' | cmstekst }}</span>\n" +
+    "        <p data-ng-if=\"af.sluttaarsak.properties.tilbudomjobbannetsted == 'true'\">{{ 'arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.true' | cmstekst }}</p>\n" +
+    "        <p data-ng-if=\"af.sluttaarsak.properties.tilbudomjobbannetsted == 'false'\">{{ 'arbeidsforhold.sluttaarsak.kontraktutgaatt.tilbudomaafortsette.false' | cmstekst }}</p>\n" +
     "    </li>\n" +
     "</ul>\n" +
     "\n" +
     "<div data-vedlegginfoboks>\n" +
     "    <ul>\n" +
     "        <li>\n" +
-    "            <p data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.1\"></p>\n" +
+    "            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</p>\n" +
     "        </li>\n" +
     "        <li>\n" +
-    "            <p data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.2\"></p>\n" +
-    "            <a href=\"{{sluttaarsakUrl}}\" data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst\">\n" +
+    "            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2' | cmstekst }}</p>\n" +
+    "            <a href=\"{{sluttaarsakUrl}}\">\n" +
+    "                {{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst' | cmstekst }}\n" +
     "            </a>\n" +
     "        </li>\n" +
     "    </ul>\n" +
@@ -705,7 +698,7 @@ angular.module("../views/templates/arbeidsforhold/permittert-oppsummering.html",
   $templateCache.put("../views/templates/arbeidsforhold/permittert-oppsummering.html",
     "<div class=\"varighet\">\n" +
     "    <span data-ng-bind=\"af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy' | norskdato\"></span>\n" +
-    "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\" data-cmstekster=\"dato.til\"></span>\n" +
+    "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\">{{ 'dato.til' | cmstekst }}</span>\n" +
     "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\" data-ng-bind=\"af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy' | norskdato\"></span>\n" +
     "</div>\n" +
     "\n" +
@@ -714,7 +707,7 @@ angular.module("../views/templates/arbeidsforhold/permittert-oppsummering.html",
     "        <p data-ng-bind=\"af.sluttaarsak.properties.type\"></p>\n" +
     "    </li>\n" +
     "    <li>\n" +
-    "        <p data-cmstekster=\"arbeidsforhold.arbeidsgiver.permittert.varighet\"> </p>\n" +
+    "        <p>{{ 'arbeidsforhold.arbeidsgiver.permittert.varighet' | cmstekst }}</p>\n" +
     "        <span data-ng-bind=\"af.sluttaarsak.properties.permiteringsperiodedatofra | date:'dd.MM.yyyy'\"></span>\n" +
     "        <span data-ng-if=\"af.sluttaarsak.properties.permiteringsperiodedatotil\"> TIL </span>\n" +
     "        <span data-ng-if=\"af.sluttaarsak.properties.permiteringsperiodedatotil\" data-ng-bind=\"af.sluttaarsak.properties.permiteringsperiodedatotil | date:'dd.MM.yyyy'\"></span>\n" +
@@ -1095,22 +1088,24 @@ angular.module("../views/templates/avbryt.html", []).run(["$templateCache", func
     "                </div>\n" +
     "\n" +
     "                <div ng-show=\"krevBekreftelse == true\">\n" +
-    "                    <h1 class=\"stor-ikon-slett-strek\" data-cmstekster=\"slett.tittel\"></h1>\n" +
+    "                    <h1 class=\"stor-ikon-slett-strek\">{{ 'slett.tittel' | cmstekst }}</h1>\n" +
     "\n" +
-    "                    <p class=\"info\" data-cmstekster=\"slett.informasjon\"></p>\n" +
+    "                    <p class=\"info\">{{ 'slett.informasjon' | cmstekst }}</p>\n" +
     "                </div>\n" +
     "\n" +
     "                <div class=\"slett-soknad-stor\">\n" +
     "                    <div data-ng-show=\"krevBekreftelse == true\">\n" +
     "\n" +
     "                        <form novalidate>\n" +
-    "                            <input type=\"button\" class=\"knapp-advarsel\" data-ng-click=\"submitForm()\"\n" +
-    "                                   data-cmstekster=\"avbryt.slett\"\n" +
+    "                            <input type=\"button\"\n" +
+    "                                   class=\"knapp-advarsel\"\n" +
+    "                                   value=\"{{ 'avbryt.slett' | cmstekst }}\"\n" +
+    "                                   data-ng-click=\"submitForm()\"\n" +
     "                                   data-fremdriftsindikator>\n" +
     "                        </form>\n" +
     "\n" +
     "                        <div>\n" +
-    "                            <a href=\"#/soknad\" data-cmstekster=\"slett.tilbake\"></a>\n" +
+    "                            <a href=\"#/soknad\">{{ 'slett.tilbake' | cmstekst }}</a>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
@@ -1412,9 +1407,10 @@ angular.module("../views/templates/bekreftelse.html", []).run(["$templateCache",
     "            <div class=\"begrensning\">\n" +
     "                <div class=\"sak-totredel\">\n" +
     "                    <div class=\"panel-standard-belyst bekreftelse\">\n" +
-    "                        <h2 class=\"stor-ikon-infogronn-strek\" data-cmstekster=\"dagpenger.bekreftelse\">\n" +
+    "                        <h2 class=\"stor-ikon-infogronn-strek\">\n" +
+    "                            {{ 'dagpenger.bekreftelse' | cmstekst }}\n" +
     "                        </h2>\n" +
-    "                        <p data-cmstekster=\"dagpenger.bekreftelse.informasjon\"></p>\n" +
+    "                        <p>{{ 'dagpenger.bekreftelse.informasjon' | cmstekst }}</p>\n" +
     "\n" +
     "                        <div class=\"fremdriftsindikator\">\n" +
     "                            <img src=\"../img/ajaxloader/hvit/loader_hvit_64.gif\" alt=\"Fremdriftsindikator\"/>\n" +
@@ -1792,10 +1788,11 @@ angular.module("../views/templates/ferdigstilt.html", []).run(["$templateCache",
     "    <div class=\"rad-belyst soknad\" data-sidetittel=\"sidetittel.skjema\">\n" +
     "        <section class=\"sak-hel\">\n" +
     "            <div class=\"panel-standard-belyst skjema\">\n" +
-    "                <h2 class=\"stor strek-ikon-info-orange\" data-cmstekster=\"soknad.ferdigstilt\"></h2>\n" +
+    "                <h2 class=\"stor strek-ikon-info-orange\">{{ 'soknad.ferdigstilt' | cmstekst }}</h2>\n" +
     "                <div class=\"egen-linje\">\n" +
-    "                        <a href=\"{{mineHenveldelserUrl}}\" id=\"slettetMinehenvendelser\"\n" +
-    "                            role=\"link\" data-cmstekster=\"slettet.videretilnav\"></a>\n" +
+    "                        <a href=\"{{ mineHenveldelserUrl }}\"\n" +
+    "                           id=\"slettetMinehenvendelser\"\n" +
+    "                           role=\"link\">{{ 'slettet.videretilnav' | cmstekst }}</a>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </section>\n" +
@@ -1818,23 +1815,23 @@ angular.module("../views/templates/fortsettSenere.html", []).run(["$templateCach
     "                                data-error-messages=\"{required: 'dagpenger.fortsettSenere.epost.required.feilmelding', pattern: 'dagpenger.fortsettSenere.epost.pattern.feilmelding' }\"\n" +
     "                                data-ng-required=\"true\" data-ng-pattern=\"/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$/\" data-blur-validate/>\n" +
     "                    </label>\n" +
-    "                    <input type=\"submit\" class=\"knapp-hoved-liten\" data-cmstekster=\"dagpenger.fortsettSenere.epost.send\" role=\"button\" data-ng-click=\"forsettSenere(epostForm)\"/>\n" +
+    "                    <input type=\"submit\" class=\"knapp-hoved-liten\" value=\"{{ 'dagpenger.fortsettSenere.epost.send' | cmstekst }}\" role=\"button\" data-ng-click=\"forsettSenere(epostForm)\">\n" +
     "                    <span class=\"melding\"></span>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "\n" +
     "			<div>\n" +
-    "				<p data-cmstekster=\"dagpenger.fortsettSenere.info.frister\"></p>\n" +
-    "				<p data-cmstekster=\"dagpenger.fortsettSenere.info.konsekvenser\"></p>\n" +
+    "				<p>{{ 'dagpenger.fortsettSenere.info.frister' | cmstekst }}</p>\n" +
+    "				<p>{{ 'dagpenger.fortsettSenere.info.konsekvenser' | cmstekst }}</p>\n" +
     "			</div>\n" +
     "\n" +
     "            <div class=\"knapper\">\n" +
     "                <ul class=\"liste-vannrett\">\n" +
     "                    <li>\n" +
-    "                        <a href=\"#{{ forrigeSide }}\" id=\"tilOversikt\" role=\"link\" data-cmstekster=\"dagpenger.fortsettSenere.tilbake\"></a>\n" +
+    "                        <a href=\"#{{ forrigeSide }}\" id=\"tilOversikt\" role=\"link\">{{ 'dagpenger.fortsettSenere.tilbake' | cmstekst }}</a>\n" +
     "                    </li>\n" +
     "                    <li>\n" +
-    "                        <a href=\"{{inngangsportenUrl}}\" id=\"dittnav\" role=\"link\" data-cmstekster=\"dagpenger.fortsettSenere.dittNav\"></a>\n" +
+    "                        <a href=\"{{inngangsportenUrl}}\" id=\"dittnav\" role=\"link\">{{ 'dagpenger.fortsettSenere.dittNav' | cmstekst }}</a>\n" +
     "                    </li>\n" +
     "                </ul>\n" +
     "            </div>\n" +
@@ -1985,14 +1982,14 @@ angular.module("../views/templates/kvittering-fortsettsenere.html", []).run(["$t
   $templateCache.put("../views/templates/kvittering-fortsettsenere.html",
     "<div data-panelbelyst id=\"kvittering\">\n" +
     "	<div data-ng-controller=\"FortsettSenereKvitteringCtrl\">\n" +
-    "        <h2 class=\"stor\" data-cmstekster=\"dagpenger.fortsettSenere.kvittering.tittel\"></h2>\n" +
-    "    	<p data-cmstekster=\"dagpenger.fortsettSenere.kvittering.tekst\"></p>\n" +
-    "        <span> {{epost.value}}</span>\n" +
-    "    	<a href=\"#/fortsettsenere\" data-cmstekster=\"dagpenger.fortsettSenere.kvittering.sendpaanyttlink\"></a>\n" +
-    "    	<p data-cmstekster=\"dagpenger.fortsettSenere.kvittering.frist\"></p>\n" +
-    "    	<p data-cmstekster=\"dagpenger.fortsettSenere.kvittering.konsekvens-vente\"></p>\n" +
-    "    	<a href=\"#/soknad\" data-cmstekster=\"dagpenger.fortsettSenere.fortsettlink\"></a>\n" +
-    "    	<a href=\"{{inngangsportenUrl}}\" id=\"dittnav\" role=\"link\" data-cmstekster=\"dagpenger.fortsettSenere.dittNav\"></a>\n" +
+    "        <h2 class=\"stor\">{{ 'dagpenger.fortsettSenere.kvittering.tittel' | cmstekst }}</h2>\n" +
+    "    	<p>{{ 'dagpenger.fortsettSenere.kvittering.tekst' | cmstekst }}</p>\n" +
+    "        <span> {{ epost.value }}</span>\n" +
+    "    	<a href=\"#/fortsettsenere\">{{ 'dagpenger.fortsettSenere.kvittering.sendpaanyttlink' | cmstekst }}</a>\n" +
+    "    	<p>{{ 'dagpenger.fortsettSenere.kvittering.frist' | cmstekst }}</p>\n" +
+    "    	<p>{{ 'dagpenger.fortsettSenere.kvittering.konsekvens-vente' | cmstekst }}</p>\n" +
+    "    	<a href=\"#/soknad\">{{ 'dagpenger.fortsettSenere.fortsettlink' | cmstekst }}</a>\n" +
+    "    	<a href=\"{{ inngangsportenUrl }}\" id=\"dittnav\" role=\"link\">{{ 'dagpenger.fortsettSenere.dittNav' | cmstekst }}</a>\n" +
     "    </div>\n" +
     "</div>\n" +
     "\n" +
@@ -2032,7 +2029,7 @@ angular.module("../views/templates/opplasting.html", []).run(["$templateCache", 
     "                    <li class=\"leggtil\">\n" +
     "                        <input id=\"leggtil\" type=\"file\" name=\"files[]\" class=\"vekk\" multiple\n" +
     "                               accept=\"image/jpeg,image/png,application/pdf\" data-fokus>\n" +
-    "                        <label for=\"leggtil\" class=\"robust\" data-cmstekster=\"opplasting.leggtil\"></label>\n" +
+    "                        <label for=\"leggtil\" class=\"robust\">{{ 'opplasting.leggtil' | cmstekst }}</label>\n" +
     "                    </li>\n" +
     "                </ul>\n" +
     "            </section>\n" +
@@ -2042,17 +2039,16 @@ angular.module("../views/templates/opplasting.html", []).run(["$templateCache", 
     "                <ul>\n" +
     "                    <li>\n" +
     "                        <a href=\"javascript:void(0);\" data-redirect=\"#/vedlegg\" class=\"knapp-hoved\"\n" +
-    "                           data-cmstekster=\"opplasting.ferdig\" data-ng-click=\"leggVed()\"\n" +
-    "                           data-fremdriftsindikator></a>\n" +
+    "                           data-ng-click=\"leggVed()\"\n" +
+    "                           data-fremdriftsindikator>{{ 'opplasting.ferdig' | cmstekst }}</a>\n" +
     "\n" +
     "                        <div class=\"form-linje\" data-ng-class=\"{feil: skalViseFeilmelding === true}\"\n" +
     "                             data-ng-if=\"skalViseFeilmelding === true\">\n" +
-    "                            <span class=\"melding\" data-cmstekster=\"opplasting.feilmelding.manglerVedlegg\"></span>\n" +
+    "                            <span class=\"melding\">{{ 'opplasting.feilmelding.manglerVedlegg' | cmstekst }}</span>\n" +
     "                        </div>\n" +
     "                    </li>\n" +
     "                    <li>\n" +
-    "                        <a href=\"javascript:void(0);\" data-ng-href=\"#/vedlegg\" class=\"avbryt\"\n" +
-    "                           data-cmstekster=\"opplasting.avbryt\"></a>\n" +
+    "                        <a href=\"javascript:void(0);\" data-ng-href=\"#/vedlegg\" class=\"avbryt\">{{ 'opplasting.avbryt' | cmstekst }}</a>\n" +
     "                    </li>\n" +
     "                </ul>\n" +
     "            </div>\n" +
@@ -2080,8 +2076,8 @@ angular.module("../views/templates/oppsummering.html", []).run(["$templateCache"
     "                </div>\n" +
     "\n" +
     "                <input id=\"bekreftelseOpplysninger\" type=\"checkbox\" data-ng-model=\"harbekreftet.value\">\n" +
-    "                <label for=\"bekreftelseOpplysninger\" data-cmstekster=\"dagpenger.oppsummering.bekreftOpplysninger\"></label>\n" +
-    "                <span class=\"melding\" data-cmstekster=\"dagpenger.oppsummering.bekreftelse.feilmelding\"></span>\n" +
+    "                <label for=\"bekreftelseOpplysninger\">{{ 'dagpenger.oppsummering.bekreftOpplysninger' | cmstekst }}</label>\n" +
+    "                <span class=\"melding\">{{ 'dagpenger.oppsummering.bekreftelse.feilmelding' | cmstekst }}</span>\n" +
     "            </div>\n" +
     "            <div class=\"oppsummering-knapp\">\n" +
     "                <input class=\"knapp-hoved\" type=\"submit\" value=\"{{ 'dagpenger.oppsummering.send' | cmstekst }}\">\n" +
@@ -2097,14 +2093,16 @@ angular.module("../views/templates/personalia.html", []).run(["$templateCache", 
     "<div class=\"skjemaramme\">\n" +
     "    <div data-ng-form=\"personaliaForm\" class=\"skjemainnhold\" data-ng-controller=\"PersonaliaCtrl\" data-novalidate>\n" +
     "        <div class=\"informasjon\">\n" +
-    "            <span class=\"informasjonstekst\" data-cmstekster=\"personalia.intro\"></span>\n" +
-    "            <a target=\"_blank\" data-cmstekster=\"personalia.intro.tekst\" href=\"{{brukerprofilUrl}}\"></a>\n" +
+    "            <span class=\"informasjonstekst\">\n" +
+    "                <span>{{ 'personalia.intro' | cmstekst }}</span>\n" +
+    "                <a href=\"{{ brukerprofilUrl }}\">{{ 'personalia.intro.tekst' | cmstekst }}</a>\n" +
+    "            </span>\n" +
     "        </div>\n" +
     "\n" +
     "        <div data-ng-show=\"harHentetPersonalia()\">\n" +
     "            <div class=\"personalia\">\n" +
     "                <div class=\"alderOgKjonn\" data-ng-class=\"{mann: erMann(), kvinne: erKvinne()}\">\n" +
-    "                    <span data-cmstekster=\"aar\"></span>\n" +
+    "                    <span>{{ 'aar' | cmstekst }}</span>\n" +
     "                    <span class=\"alder robust\">{{ personalia.alder }}</span>\n" +
     "                </div>\n" +
     "                <div class=\"personInfo\">\n" +
@@ -2387,17 +2385,25 @@ angular.module("../views/templates/soknadSlettet.html", []).run(["$templateCache
     "    <div class=\"rad-belyst inforad\" data-ng-controller=\"SlettetCtrl\">\n" +
     "        <div class=\"begrensning sak-totredel\">\n" +
     "            <section class=\"panel-standard oversikt\">\n" +
-    "                <h1 class=\"strek-ikon-slettet\" data-cmstekster=\"slettet.tittel\"></h1>\n" +
+    "                <h1 class=\"strek-ikon-slettet\">{{ 'slettet.tittel' | cmstekst }}</h1>\n" +
     "\n" +
-    "                <p class=\"info\" data-cmstekster=\"slett.informasjon\"></p>\n" +
+    "                <p class=\"info\">{{ 'slett.informasjon' | cmstekst }}</p>\n" +
     "\n" +
     "                <div class=\"slett-soknad-stor\">\n" +
     "                    <div class=\"lenker-dot\">\n" +
     "                        <ul class=\"liste-vannrett\" role=\"navigation\">\n" +
-    "                            <li><a href=\"{{skjemaVeilederUrl}}\" id=\"slettetSkjemaveileder\"\n" +
-    "                                   data-cmstekster=\"slettet.skjemaveileder\" role=\"link\"></a></li>\n" +
-    "                            <li><a href=\"{{mineHenveldelserBaseUrl}}\" id=\"slettetMinehenvendelser\"\n" +
-    "                                   role=\"link\" data-cmstekster=\"slettet.videretilnav\"></a></li>\n" +
+    "                            <li>\n" +
+    "                                <a href=\"{{skjemaVeilederUrl}}\"\n" +
+    "                                   id=\"slettetSkjemaveileder\"\n" +
+    "                                   role=\"link\">\n" +
+    "                                    {{ 'slettet.skjemaveileder' | cmstekst }}\n" +
+    "                                </a>\n" +
+    "                            </li>\n" +
+    "                            <li>\n" +
+    "                                <a href=\"{{mineHenveldelserBaseUrl}}\"\n" +
+    "                                   id=\"slettetMinehenvendelser\"\n" +
+    "                                   role=\"link\">{{ 'slettet.videretilnav' | cmstekst }}</a>\n" +
+    "                            </li>\n" +
     "                        </ul>\n" +
     "                    </div>\n" +
     "                </div>\n" +
@@ -2773,21 +2779,21 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "    <div class=\"rad-belyst inforad\">\n" +
     "        <div class=\"begrensning sak-totredel\">\n" +
     "            <section class=\"panel-standard \">\n" +
-    "                <h2 class=\"stor strek-ikon-info-orange\" data-cmstekster=\"vedlegg.tittel\"></h2>\n" +
+    "                <h2 class=\"stor strek-ikon-info-orange\">{{ 'vedlegg.tittel' | cmstekst }}</h2>\n" +
     "\n" +
     "                <div data-form-errors></div>\n" +
     "\n" +
     "                <div class=\"viktig-info\">\n" +
     "                    <ul>\n" +
     "                        <li>\n" +
-    "                            <p class=\"info\" data-cmstekster=\"vedlegg.info1\"></p>\n" +
+    "                            <p class=\"info\">{{ 'vedlegg.info1' | cmstekst }}</p>\n" +
     "                        </li>\n" +
     "                        <li>\n" +
-    "                            <p class=\"info\" data-cmstekster=\"vedlegg.info2\"></p>\n" +
+    "                            <p class=\"info\">{{ 'vedlegg.info2' | cmstekst }}</p>\n" +
     "\n" +
     "                        </li>\n" +
     "                        <li>\n" +
-    "                            <p class=\"info\" data-cmstekster=\"vedlegg.info3\"></p>\n" +
+    "                            <p class=\"info\">{{ 'vedlegg.info3' | cmstekst }}</p>\n" +
     "\n" +
     "                        </li>\n" +
     "                    </ul>\n" +
@@ -2813,12 +2819,9 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                 ekstraVedlegg: !ekstraVedleggFerdig(forventning),\n" +
     "                                 validert: vedleggFerdigBehandlet(forventning) }\">\n" +
     "                                <div class=\"flipp\"></div>\n" +
-    "                                <div class=\"mini behandlet\" data-ng-if=\"vedleggEr(forventning, 'LastetOpp')\"\n" +
-    "                                     data-cmstekster=\"vedlegg.behandlet.lastetopp\"></div>\n" +
-    "                                <div class=\"mini behandlet\" data-ng-if=\"vedleggEr(forventning, 'SendesSenere')\"\n" +
-    "                                     data-cmstekster=\"vedlegg.behandlet.sendessenere\"></div>\n" +
-    "                                <div class=\"mini behandlet\" data-ng-if=\"vedleggEr(forventning, 'SendesIkke')\"\n" +
-    "                                     data-cmstekster=\"vedlegg.behandlet.sendesikke\"></div>\n" +
+    "                                <div class=\"mini behandlet\" data-ng-if=\"vedleggEr(forventning, 'LastetOpp')\">{{ 'vedlegg.behandlet.lastetopp' | cmstekst }}</div>\n" +
+    "                                <div class=\"mini behandlet\" data-ng-if=\"vedleggEr(forventning, 'SendesSenere')\">{{ 'vedlegg.behandlet.sendessenere' | cmstekst }}</div>\n" +
+    "                                <div class=\"mini behandlet\" data-ng-if=\"vedleggEr(forventning, 'SendesIkke')\">{{ 'vedlegg.behandlet.sendesikke' | cmstekst }}</div>\n" +
     "\n" +
     "                                <h2 class=\"stor\">\n" +
     "                                    <span>{{forventning.tittel}}</span>\n" +
@@ -2829,8 +2832,7 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                    </div>\n" +
     "                    <div data-div class=\"skjemaramme begrensning sak-totredel\" data-ng-controller=\"validervedleggCtrl\">\n" +
     "                        <div class=\"panel-standard\">\n" +
-    "                            <h4 data-ng-if=\"!erEkstraVedlegg(forventning)\"\n" +
-    "                                data-cmstekster=\"vedlegg.faktum.maabekrefte\"></h4>\n" +
+    "                            <h4 data-ng-if=\"!erEkstraVedlegg(forventning)\">{{ 'vedlegg.faktum.maabekrefte' | cmstekst }}</h4>\n" +
     "\n" +
     "                            <div class=\"form-linje tekstfelt\" data-ng-if=\"erEkstraVedlegg(forventning)\">\n" +
     "                                <input class=\"hidden-vedlegg\" type=\"hidden\" data-ng-required=\"true\"\n" +
@@ -2849,7 +2851,7 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                           data-error-messages=\"{required:'vedlegg.annet.navn.feilmelding', minlength:'vedlegg.annet.navn.lengde.feilmelding'}\"\n" +
     "                                           data-aktiv-feilmelding>\n" +
     "\n" +
-    "                                    <span class=\"melding\" data-cmstekster=\"vedlegg.annet.navn.feilmelding\"></span>\n" +
+    "                                    <span class=\"melding\">{{ 'vedlegg.annet.navn.feilmelding' | cmstekst }}</span>\n" +
     "                                </div>\n" +
     "                            </div>\n" +
     "                            <h4 data-ng-if=\"!erEkstraVedlegg(forventning)\" class=\"info-liste\"\n" +
@@ -2876,22 +2878,21 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                            <a href=\"javascript:void(0)\" aria-role=\"button\"\n" +
     "                                               data-ng-if=\"erEkstraVedlegg(forventning)\"\n" +
     "                                               data-ng-click=\"slettAnnetVedlegg(forventning);\" name=\"Slett\"\n" +
-    "                                               data-fokus-slett-annet data-cmstekster=\"vedlegg.annet.slett\">{{'vedlegg.slett'\n" +
-    "                                                |\n" +
-    "                                                cmstekst}}</a>\n" +
+    "                                               data-fokus-slett-annet>\n" +
+    "                                                {{'vedlegg.slett' | cmstekst}}\n" +
+    "                                            </a>\n" +
     "                                        </li>\n" +
     "                                    </ul>\n" +
     "                                </div>\n" +
     "                                <div data-ng-if=\"!erEkstraVedlegg(forventning)\">\n" +
-    "                                    <h4 data-cmstekster=\"vedlegg.faktum.andreInnsendingsvalg\"></h4>\n" +
+    "                                    <h4>{{ 'vedlegg.faktum.andreInnsendingsvalg' | cmstekst }}</h4>\n" +
     "\n" +
     "                                    <input id=\"{{$index}}ettersendRadio\"\n" +
     "                                           data-ng-model=\"forventning.innsendingsvalg\"\n" +
     "                                           type=\"radio\" value=\"SendesSenere\"\n" +
     "                                           data-ng-click=\"endreInnsendingsvalg(forventning, 'SendesSenere')\"\n" +
     "                                           data-aktiv-feilmelding>\n" +
-    "                                    <label for=\"{{$index}}ettersendRadio\"\n" +
-    "                                           data-cmstekster=\"vedlegg.faktum.ettersend\"></label>\n" +
+    "                                    <label for=\"{{$index}}ettersendRadio\">{{ 'vedlegg.faktum.ettersend' | cmstekst }}</label>\n" +
     "\n" +
     "                                    <input id=\"{{$index}}ikkesendRadio\"\n" +
     "                                           data-ng-model=\"forventning.innsendingsvalg\"\n" +
@@ -2899,25 +2900,24 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                           value=\"SendesIkke\"\n" +
     "                                           data-ng-click=\"endreInnsendingsvalg(forventning, 'SendesIkke')\"\n" +
     "                                           data-aktiv-feilmelding>\n" +
-    "                                    <label for=\"{{$index}}ikkesendRadio\"\n" +
-    "                                           data-cmstekster=\"vedlegg.faktum.ikkesend\"></label>\n" +
+    "                                    <label for=\"{{$index}}ikkesendRadio\">{{ 'vedlegg.faktum.ikkesend' | cmstekst }}</label>\n" +
     "                                    <input type=\"hidden\" class=\"hidden-vedlegg\" data-ng-model=\"hiddenFelt.value\"\n" +
     "                                           data-ng-required=\"true\"\n" +
     "                                           data-error-messages=\"'{{forventning.tittel}} {{forventning.navn }}'\">\n" +
     "                                </div>\n" +
-    "                                <span class=\"melding annet\" data-cmstekster=\"vedlegg.annet.inlinefeilmelding\"\n" +
-    "                                      data-ng-if=\"erEkstraVedlegg(forventning)\"></span>\n" +
-    "                                <span class=\"melding\" data-cmstekster=\"vedlegg.inlinefeilmelding\"\n" +
-    "                                      data-ng-if=\"!erEkstraVedlegg(forventning)\"></span>\n" +
+    "                                <span class=\"melding annet\"\n" +
+    "                                      data-ng-if=\"erEkstraVedlegg(forventning)\">{{ 'vedlegg.annet.inlinefeilmelding' | cmstekst }}</span>\n" +
+    "                                <span class=\"melding\"\n" +
+    "                                      data-ng-if=\"!erEkstraVedlegg(forventning)\">{{ 'vedlegg.inlinefeilmelding' | cmstekst }}</span>\n" +
     "                            </div>\n" +
     "                            <div data-ng-if=\"vedleggEr(forventning, 'LastetOpp')\">\n" +
     "                                <div class=\"forhandsvisning\">\n" +
     "                                    <div data-bildenavigering data-vedlegg=\"forventning\"\n" +
     "                                         data-nav-template=\"bildenavigeringTemplateLiten.html\"></div>\n" +
     "                                    <div class=\"knapper\">\n" +
-    "                                        <a href=\"javascript:void(0)\" aria-role=\"button\" data-cmstekster=\"vedlegg.slett\"\n" +
+    "                                        <a href=\"javascript:void(0)\" aria-role=\"button\"\n" +
     "                                           data-ng-click=\"slettVedlegg(forventning)\"\n" +
-    "                                           data-cmshtml=\"vedlegg.slettvedlegg\"></a>\n" +
+    "                                           data-cmshtml=\"vedlegg.slettvedlegg\">{{ 'vedlegg.slett' | cmstekst }}</a>\n" +
     "                                    </div>\n" +
     "                                </div>\n" +
     "                            </div>\n" +
@@ -2930,8 +2930,12 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "    <div class=\"rad-belyst leggtilekstra\">\n" +
     "        <div class=\"begrensning sak-totredel\">\n" +
     "            <section class=\"panel-standard oversikt strek-bottom\">\n" +
-    "                <button class=\"knapp-leggtil-liten\" data-cmstekster=\"vedlegg.leggtilekstravedlegg\"\n" +
-    "                        data-ng-click=\"nyttAnnetVedlegg()\" role=\"button\" data-apne-annet-vedlegg></button>\n" +
+    "                <button class=\"knapp-leggtil-liten\"\n" +
+    "                        data-ng-click=\"nyttAnnetVedlegg()\"\n" +
+    "                        role=\"button\"\n" +
+    "                        data-apne-annet-vedlegg>\n" +
+    "                    {{ 'vedlegg.leggtilekstravedlegg' | cmstekst }}\n" +
+    "                </button>\n" +
     "            </section>\n" +
     "        </div>\n" +
     "    </div>\n" +
@@ -2941,8 +2945,8 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "            <section class=\"panel-standard oversikt\">\n" +
     "                <a href=\"javascript:void(0)\" aria-role=\"button\" id=\"til-oppsummering\" class=\"knapp-hoved\"\n" +
     "                   data-ng-click=\"validerVedlegg(vedleggForm)\"\n" +
-    "                   data-cmstekster=\"vedlegg.ferdig\"\n" +
-    "                   data-fremdriftsindikator=\"grå\" role=\"button\"></a>\n" +
+    "                   data-fremdriftsindikator=\"grå\" role=\"button\">{{ 'vedlegg.ferdig' | cmstekst }}\n" +
+    "                </a>\n" +
     "            </section>\n" +
     "        </div>\n" +
     "    </div>\n" +
@@ -2961,12 +2965,12 @@ angular.module("../views/templates/verneplikt.html", []).run(["$templateCache", 
     "             data-nokkel=\"ikkeavtjentverneplikt\">\n" +
     "\n" +
     "            <div data-navinfoboks>\n" +
-    "                <span data-cmstekster=\"ikkeavtjentverneplikt.opplasting\"></span>\n" +
+    "                <span>{{ 'ikkeavtjentverneplikt.opplasting' | cmstekst }}</span>\n" +
     "            </div>\n" +
     "\n" +
     "            <div data-vedlegginfoboks>\n" +
     "                <ul>\n" +
-    "                    <li><p data-cmstekster=\"ikkeavtjentverneplikt.opplasting\"></p></li>\n" +
+    "                    <li><p>{{ 'ikkeavtjentverneplikt.opplasting' | cmstekst }}</p></li>\n" +
     "                </ul>\n" +
     "            </div>\n" +
     "        </div>\n" +
@@ -2993,7 +2997,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "<input type=\"hidden\" data-ng-model=\"harHuketAvCheckboksYtelse.value\" data-ng-required=\"true\"\n" +
     "       data-error-messages=\"'ytelser.minstEnCheckboksErAvhuket.feilmelding'\">\n" +
     "<h4 class=\"spm-sporsmal\">\n" +
-    "    <span data-cmstekster=\"ytelser.sporsmal\"></span>\n" +
+    "    {{ 'ytelser.sporsmal' | cmstekst }}\n" +
     "</h4>\n" +
     "\n" +
     "<div data-navcheckbox\n" +
@@ -3003,7 +3007,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "     data-navendret=\"endreYtelse(ytelserForm)\">\n" +
     "\n" +
     "    <div data-navinfoboks>\n" +
-    "        <p data-cmstekster=\"ytelser.offentligTjenestepensjonUtbetaler.informasjon\"></p>\n" +
+    "        <p>{{ 'ytelser.offentligTjenestepensjonUtbetaler.informasjon' | cmstekst }}</p>\n" +
     "    </div>\n" +
     "\n" +
     "    <div data-navtekst\n" +
@@ -3015,7 +3019,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "    <div data-vedlegginfoboks>\n" +
     "        <ul>\n" +
     "            <li>\n" +
-    "                <p data-cmstekster=\"ytelser.vedlegg\"></p>\n" +
+    "                <p>{{ 'ytelser.vedlegg' | cmstekst }}</p>\n" +
     "            </li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
@@ -3026,7 +3030,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "     data-navlabel=\"ytelser.privatTjenestepensjon\" data-navendret=\"endreYtelse(ytelserForm)\">\n" +
     "\n" +
     "    <div data-navinfoboks>\n" +
-    "        <p data-cmstekster=\"ytelser.privatTjenestepensjonUtbetaler.informasjon\"></p>\n" +
+    "        <p>{{ 'ytelser.privatTjenestepensjonUtbetaler.informasjon' | cmstekst }}</p>\n" +
     "    </div>\n" +
     "\n" +
     "    <div data-navtekst\n" +
@@ -3037,7 +3041,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "    <div data-vedlegginfoboks>\n" +
     "        <ul>\n" +
     "            <li>\n" +
-    "                <p data-cmstekster=\"ytelser.vedlegg\"></p>\n" +
+    "                <p>{{ 'ytelser.vedlegg' | cmstekst }}</p>\n" +
     "            </li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
@@ -3048,7 +3052,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "     data-navlabel=\"ytelser.stonadFisker\" data-navendret=\"endreYtelse(ytelserForm)\">\n" +
     "\n" +
     "    <div data-navinfoboks>\n" +
-    "        <p data-cmstekster=\"ytelser.stonadFisker.utbetaler.informasjon\"></p>\n" +
+    "        <p>{{ 'ytelser.stonadFisker.utbetaler.informasjon' | cmstekst }}</p>\n" +
     "    </div>\n" +
     "\n" +
     "    <div data-navtekst\n" +
@@ -3059,7 +3063,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "    <div data-vedlegginfoboks>\n" +
     "        <ul>\n" +
     "            <li>\n" +
-    "                <p data-cmstekster=\"ytelser.vedlegg\"></p>\n" +
+    "                <p>{{ 'ytelser.vedlegg' | cmstekst }}</p>\n" +
     "            </li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
@@ -3071,7 +3075,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "\n" +
     "\n" +
     "    <div data-navinfoboks>\n" +
-    "        <p data-cmstekster=\"ytelser.garantilottUtbetaler.informasjon\"></p>\n" +
+    "        <p>{{ 'ytelser.garantilottUtbetaler.informasjon' | cmstekst }}</p>\n" +
     "    </div>\n" +
     "\n" +
     "    <div data-navtekst\n" +
@@ -3083,7 +3087,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "    <div data-vedlegginfoboks>\n" +
     "        <ul>\n" +
     "            <li>\n" +
-    "                <p data-cmstekster=\"ytelser.vedlegg\"></p>\n" +
+    "                <p>{{ 'ytelser.vedlegg' | cmstekst }}</p>\n" +
     "            </li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
@@ -3094,7 +3098,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "     data-navlabel=\"ytelser.etterlonn\" data-navendret=\"endreYtelse(ytelserForm)\">\n" +
     "\n" +
     "    <div data-navinfoboks>\n" +
-    "        <p data-cmstekster=\"ytelser.etterlonnUtbetaler.informasjon\"></p>\n" +
+    "        <p>{{ 'ytelser.etterlonnUtbetaler.informasjon' | cmstekst }}</p>\n" +
     "    </div>\n" +
     "\n" +
     "    <div data-navtekst\n" +
@@ -3105,7 +3109,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "    <div data-vedlegginfoboks>\n" +
     "        <ul>\n" +
     "            <li>\n" +
-    "                <p data-cmstekster=\"ytelser.vedlegg\"></p>\n" +
+    "                <p>{{ 'ytelser.vedlegg' | cmstekst }}</p>\n" +
     "            </li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
@@ -3116,7 +3120,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "     data-navlabel=\"ytelser.vartpenger\" data-navendret=\"endreYtelse(ytelserForm)\">\n" +
     "\n" +
     "    <div data-navinfoboks>\n" +
-    "        <p data-cmstekster=\"ytelser.vartpengerUtbetaler.informasjon\"></p>\n" +
+    "        <p>{{ 'ytelser.vartpengerUtbetaler.informasjon' | cmstekst }}</p>\n" +
     "    </div>\n" +
     "\n" +
     "    <div data-navtekst\n" +
@@ -3127,7 +3131,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "    <div data-vedlegginfoboks>\n" +
     "        <ul>\n" +
     "            <li>\n" +
-    "                <p data-cmstekster=\"ytelser.vedlegg\"></p>\n" +
+    "                <p>{{ 'ytelser.vedlegg' | cmstekst }}</p>\n" +
     "            </li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
@@ -3140,7 +3144,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "     data-navlabel=\"ytelser.dagpengerEOS\" data-navendret=\"endreYtelse(ytelserForm)\">\n" +
     "\n" +
     "    <div data-navinfoboks>\n" +
-    "        <p data-cmstekster=\"ytelser.dagpengerEOSUtbetaler.informasjon\"></p>\n" +
+    "        <p>{{ 'ytelser.dagpengerEOSUtbetaler.informasjon' | cmstekst }}</p>\n" +
     "    </div>\n" +
     "    \n" +
     "    <div class=\"land form-linje tekstfelt\"  data-navconfig data-nav-faktum=\"dagpengerEOSUtbetalerLand\">\n" +
@@ -3165,7 +3169,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "    <div data-vedlegginfoboks>\n" +
     "        <ul>\n" +
     "            <li>\n" +
-    "                <p data-cmstekster=\"ytelser.vedlegg\"></p>\n" +
+    "                <p>{{ 'ytelser.vedlegg' | cmstekst }}</p>\n" +
     "            </li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
@@ -3178,7 +3182,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "     data-navendret=\"endreYtelse(ytelserForm)\">\n" +
     "\n" +
     "    <div data-navinfoboks>\n" +
-    "        <p data-cmstekster=\"ytelser.annenYtelseUtbetaler.informasjon\"></p>\n" +
+    "        <p>{{ 'ytelser.annenYtelseUtbetaler.informasjon' | cmstekst }}</p>\n" +
     "    </div>\n" +
     "\n" +
     "    <div data-navtekst\n" +
@@ -3195,7 +3199,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "    <div data-vedlegginfoboks>\n" +
     "        <ul>\n" +
     "            <li>\n" +
-    "                <p data-cmstekster=\"ytelser.vedlegg\"></p>\n" +
+    "                <p>{{ 'ytelser.vedlegg' | cmstekst }}</p>\n" +
     "            </li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
@@ -3209,17 +3213,17 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "               data-ng-change=\"endreIngenYtelse()\"\n" +
     "               data-boolean-verdi\n" +
     "               data-aktiv-feilmelding>\n" +
-    "        <label for=\"ingenYtelseCheckbox\" data-cmstekster=\"ytelser.ingenYtelse\"></label>\n" +
+    "        <label for=\"ingenYtelseCheckbox\">{{ 'ytelser.ingenYtelse' | cmstekst }}</label>\n" +
     "    </div>\n" +
     "</div>\n" +
-    "<span class=\"melding\" data-cmstekster=\"ytelser.minstEnCheckboksErAvhuket.feilmelding\"></span>\n" +
+    "<span class=\"melding\">{{ 'ytelser.minstEnCheckboksErAvhuket.feilmelding' | cmstekst }}</span>\n" +
     "</div>\n" +
     "<div class=\"spm form-linje navytelse checkbox\" data-checkbox-validate>\n" +
     "    <input type=\"hidden\" data-ng-model=\"harHuketAvCheckboksNavYtelse.value\" data-ng-required=\"true\"\n" +
     "           data-error-messages=\"'ytelser.minstEnCheckboksErAvhuket.navYtelserfeilmelding'\">\n" +
     "    <h4 class=\"spm-sporsmal\">\n" +
-    "        <span data-cmstekster=\"ytelser.nav.informasjon\"></span>\n" +
-    "        <span data-cmstekster=\"ytelser.nav.sporsmal\"></span>\n" +
+    "        <span>{{ 'ytelser.nav.informasjon' | cmstekst }}</span>\n" +
+    "        <span>{{ 'ytelser.nav.sporsmal' | cmstekst }}</span>\n" +
     "    </h4>\n" +
     "\n" +
     "    <div data-navcheckbox\n" +
@@ -3271,14 +3275,14 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "               data-ng-change=\"endreIngenNavYtelse(ytelserForm)\"\n" +
     "               data-boolean-verdi\n" +
     "               data-aktiv-feilmelding/>\n" +
-    "        <label for=\"ingennavytelserCheckbox\" data-cmstekster=\"ytelser.nav.ingen\"></label>\n" +
+    "        <label for=\"ingennavytelserCheckbox\">{{ 'ytelser.nav.ingen' | cmstekst }}</label>\n" +
     "    </div>\n" +
-    "    <span class=\"melding\" data-cmstekster=\"ytelser.minstEnCheckboksErAvhuket.navYtelserfeilmelding\"></span>\n" +
+    "    <span class=\"melding\">{{ 'ytelser.minstEnCheckboksErAvhuket.navYtelserfeilmelding' | cmstekst }}</span>\n" +
     "</div>\n" +
     "\n" +
     "<div>\n" +
     "    <h4 class=\"spm-sporsmal\">\n" +
-    "        <span data-cmstekster=\"ytelser.goder.info\"></span>\n" +
+    "        <span>{{ 'ytelser.goder.info' | cmstekst }}</span>\n" +
     "    </h4>\n" +
     "\n" +
     "    <div data-nav-faktum=\"ikkeavtale\"\n" +
@@ -3287,9 +3291,9 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "         data-nokkel=\"ytelser.ikkeavtale\">\n" +
     "\n" +
     "        <div data-navinfoboks>\n" +
-    "            <p data-cmstekster=\"ytelser.ikkeavtale.avtale.informasjon.1\"></p>\n" +
+    "            <p>{{ 'ytelser.ikkeavtale.avtale.informasjon.1' | cmstekst }}</p>\n" +
     "\n" +
-    "            <p data-cmstekster=\"ytelser.ikkeavtale.avtale.informasjon.2\"></p>\n" +
+    "            <p>{{ 'ytelser.ikkeavtale.avtale.informasjon.2' | cmstekst }}</p>\n" +
     "        </div>\n" +
     "\n" +
     "        <div data-navtekst\n" +
@@ -3301,7 +3305,7 @@ angular.module("../views/templates/ytelser.html", []).run(["$templateCache", fun
     "\n" +
     "        <div data-vedlegginfoboks>\n" +
     "            <ul>\n" +
-    "                <li><p data-cmstekster=\"ytelser.avtale.dokumentasjon\"></p></li>\n" +
+    "                <li><p>{{ 'ytelser.avtale.dokumentasjon' | cmstekst }}</p></li>\n" +
     "            </ul>\n" +
     "        </div>\n" +
     "    </div>\n" +
@@ -3356,37 +3360,6 @@ angular.module("../js/app/directives/bildenavigering/bildenavigeringTemplateStor
     "");
 }]);
 
-angular.module("../js/app/directives/dagpenger/arbeidsforholdformTemplate.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("../js/app/directives/dagpenger/arbeidsforholdformTemplate.html",
-    "<form name=\"endreArbeidsforholdForm\" data-ng-submit=\"aksjon(af)\">\n" +
-    "	<label for=\"arbeidsgiver_navn\">Navn på arbeidsgiver</label>\n" +
-    "    <input id=\"arbeidsgiver_navn\" type=\"text\" data-ng-model=\"af.navn\" required/>\n" +
-    "    \n" +
-    "    <label for=\"arbeidsgiver_land\">Land</label>\n" +
-    "    <select id=\"arbeidsgiver_land\" data-ng-model=\"af.land\" data-ng-options=\"item for item in landService.result\" required>\n" +
-    "    	<option value=\"1\">--Velg land--</option>\n" +
-    "    </select>\n" +
-    "    \n" +
-    "    <div class=\"varighet\">\n" +
-    "        <label>Fra:</label>\n" +
-    "        <input type=\"text\" name=\"varighetFra\" ui-date ui-date-format ng-model=\"af.varighetFra\" data-ng-change=\"validateTilFraDato(af)\"  required >\n" +
-    "        <label>Til:</label>\n" +
-    "        <span data-ng-show=\"datoError\" style=\"color:red\">Tildato må være etter fradato</span>\n" +
-    "        <input type=\"text\" name=\"varighetTil\" ui-date ui-date-format ng-model=\"af.varighetTil\" data-ng-change=\"validateTilFraDato(af)\" required >\n" +
-    "    </div>\n" +
-    "    \n" +
-    "    <label>Årsaken til at du sluttet i jobben</label>\n" +
-    "    <select id=\"sluttaarsak_id\" type=\"text\" data-ng-model=\"sluttaarsak\" data-ng-options=\"t.navn for t in templates\" required>\n" +
-    "    	<option value=\"1\">--Velg sluttårsak--</option>\n" +
-    "	</select>\n" +
-    "    <div data-ng-show=\"sluttaarsak.navn\" data-ng-include data-src=\"sluttaarsak.url\"></div>\n" +
-    "\n" +
-    "    <input data-cmstekster=\"arbeidsforhold.lagre\" type=\"submit\" id=\"arbeidsgiverLagre\"/>\n" +
-    "    <a href data-cmstekster=\"arbeidsforhold.avbryt\" data-ng-click=\"avbrytEndringAvArbeidsforhold()\"></a>\n" +
-    "</form>\n" +
-    "");
-}]);
-
 angular.module("../js/app/directives/feilmeldinger/feilmeldingerTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/app/directives/feilmeldinger/feilmeldingerTemplate.html",
     "<ul class=\"form-errors\" data-ng-show=\"skalViseFeilmeldinger()\">\n" +
@@ -3402,14 +3375,14 @@ angular.module("../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.htm
     "<div class=\"sticky-feilmelding\" data-ng-show=\"skalVises()\">\n" +
     "    <div>\n" +
     "        <div class=\"antall-feil-innholder\">\n" +
-    "            <span class=\"vise-tekst\" data-cmstekster=\"skjema.feilmelding.antall.feilmeldinger\"></span>\n" +
+    "            <span class=\"vise-tekst\">{{ 'skjema.feilmelding.antall.feilmeldinger' | cmstekst }}</span>\n" +
     "            <span class=\"antall-feil\"> {{feil.antallFeil}}</span>\n" +
     "        </div>\n" +
     "        <span class=\"navigeringsknapper\">\n" +
-    "            <a class=\"forrige\" data-cmstekster=\"skjema.feilmelding.gaatil.forrige\" data-ng-click=\"forrige()\"\n" +
-    "               data-ng-class=\"{deaktiverFeilmelding: skalDeaktivereForrigeKnapp()}\"> Forrige </a>\n" +
-    "            <a class=\"neste\" data-cmstekster=\"skjema.feilmelding.gaatil.neste\" data-ng-click=\"neste()\"\n" +
-    "               data-ng-class=\"{deaktiverFeilmelding: skalDeaktivereNesteKnapp}\"> Neste </a>\n" +
+    "            <a class=\"forrige\" data-ng-click=\"forrige()\"\n" +
+    "               data-ng-class=\"{deaktiverFeilmelding: skalDeaktivereForrigeKnapp()}\">{{ 'skjema.feilmelding.gaatil.forrige' | cmstekst }}</a>\n" +
+    "            <a class=\"neste\" data-ng-click=\"neste()\"\n" +
+    "               data-ng-class=\"{deaktiverFeilmelding: skalDeaktivereNesteKnapp}\">{{ 'skjema.feilmelding.gaatil.neste' | cmstekst }}</a>\n" +
     "        </span>\n" +
     "    </div>\n" +
     "</div>");
@@ -3475,11 +3448,11 @@ angular.module("../js/app/directives/stegindikator/stegIndikatorTemplate.html", 
     "		    <li data-ng-repeat=\"steg in data.liste\" ng-class=\"{aktiv: $index == {{ aktivIndex }}}\">\n" +
     "		        <a class=\"steg\" href=\"{{ hentLenke($index) }}\" data-ng-if=\"erKlikkbar($index)\">\n" +
     "                    <span class=\"tekst\">{{  'stegindikator.' + steg | cmstekst }}</span>\n" +
-    "                    <span class=\"stegnummer\">{{ $index }}</span>\n" +
+    "                    <span class=\"stegnummer\">{{ $index + 1 }}</span>\n" +
     "                </a>\n" +
     "                <span class=\"steg\" data-ng-if=\"erIkkeKlikkbar($index)\">\n" +
     "                    <span class=\"tekst\">{{  'stegindikator.' + steg | cmstekst }}</span>\n" +
-    "                    <span class=\"stegnummer\">{{ $index }}</span>\n" +
+    "                    <span class=\"stegnummer\">{{ $index + 1 }}</span>\n" +
     "                </span>\n" +
     "		    </li>\n" +
     "		</ul>\n" +
@@ -3494,22 +3467,22 @@ angular.module("../js/app/directives/stickybunn/stickyBunnTemplate.html", []).ru
     "    <div class=\"sticky-bunn\">\n" +
     "        <div>\n" +
     "            <span data-ng-if=\"soknadHarBlittLagret()\">\n" +
-    "                <span data-cmstekster=\"sistLagret.lagret\"/>\n" +
+    "                <span>{{ 'sistLagret.lagret' | cmstekst }}</span>\n" +
     "                <span>\n" +
     "                    {{ hentSistLagretTid() | date:'short' }}\n" +
     "                </span>\n" +
     "            </span>\n" +
-    "            <span data-cmstekster=\"sistLagret.aldriLagret\" data-ng-if=\"soknadHarAldriBlittLagret()\"/>\n" +
+    "            <span data-ng-if=\"soknadHarAldriBlittLagret()\">{{ 'sistLagret.aldriLagret' | cmstekst }}</span>\n" +
     "        </div>\n" +
     "        <ul class=\"liste-vannrett\">\n" +
     "            <li data-ng-if=\"navtilbakelenke !== 'ingenlenke'\">\n" +
-    "                <a href=\"{{ lenke.value}}\" data-cmstekster=\"{{ navtilbakelenke }}\"></a>\n" +
+    "                <a href=\"{{ lenke.value}}\">{{ navtilbakelenke | cmstekst }}</a>\n" +
     "            </li>\n" +
     "            <li>\n" +
-    "                <a href=\"#/fortsettsenere\" data-cmstekster=\"fortsettSenere\"></a>\n" +
+    "                <a href=\"#/fortsettsenere\">{{ 'fortsettSenere' | cmstekst }}</a>\n" +
     "            </li>\n" +
     "            <li>\n" +
-    "                <a href=\"#/avbryt\" data-cmstekster=\"avbryt.soknad\"></a>\n" +
+    "                <a href=\"#/avbryt\">{{ 'avbryt.soknad' | cmstekst }}</a>\n" +
     "            </li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
@@ -3657,7 +3630,7 @@ angular.module("../js/common/directives/datepicker/singleDatepickerTemplate.html
 angular.module("../js/common/directives/hjelpetekst/hjelpetekstTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/common/directives/hjelpetekst/hjelpetekstTemplate.html",
     "<div class=\"hjelpetekst\" data-ng-click=\"stoppKlikk($event)\">\n" +
-    "    <a href=\"javascript:void(0);\" class=\"infoikon\" data-ng-click=\"toggleHjelpetekst()\" aria-role=\"button\"></a>\n" +
+    "    <a href=\"javascript:void(0);\" class=\"infoikon\" data-ng-click=\"toggleHjelpetekst()\" aria-role=\"button\">?</a>\n" +
     "    <div class=\"hjelpetekst-tooltip\" data-ng-if=\"visHjelp\" data-nav-hjelpetekst-tooltip>\n" +
     "        <div class=\"tittel\">\n" +
     "            <h3 class=\"liten-strek\">{{ tittel }}</h3>\n" +
@@ -3681,7 +3654,7 @@ angular.module("../js/common/directives/melding/meldingTemplate.html", []).run([
 angular.module("../js/common/directives/navinput/navbuttonspinnerTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/common/directives/navinput/navbuttonspinnerTemplate.html",
     "<div>\n" +
-    "	<input type=\"{{ type }}\" class=\"{{ klasse }}\" data-ng-class=\"{true: 'hide', false: 'show'}[laster]\" data-cmstekster=\"{{ nokkel }}\" data-ng-click=\"click()\"/>\n" +
+    "	<input type=\"{{ type }}\" class=\"{{ klasse }}\" data-ng-class=\"{true: 'hide', false: 'show'}[laster]\" value=\"{{ 'nokkel' | cmstekst }}\" data-ng-click=\"click()\">\n" +
     "	<img data-ng-class=\"{true: 'show', false: 'hide'}[laster]\" src=\"../img/ajaxloader/hvit/loader_hvit_48.gif\"/>\n" +
     "</div>\n" +
     "");
@@ -3692,7 +3665,7 @@ angular.module("../js/common/directives/navinput/navcheckboxTemplate.html", []).
     "<div class=\"nav-checkbox\">\n" +
     "    <input id=\"{{ navlabel }}\" data-ng-model=\"faktum.value\" type=\"checkbox\" data-boolean-verdi\n" +
     "           data-ng-change=\"lagreFaktum(); endret()\" data-aktiv-feilmelding/>\n" +
-    "    <label for=\"{{ navlabel }}\" data-cmstekster=\"{{ navlabel }}\"></label>\n" +
+    "    <label for=\"{{ navlabel }}\">{{ navlabel | cmstekst }}</label>\n" +
     "\n" +
     "    <div data-nav-hjelpetekstelement data-ng-if=\"hvisHarHjelpetekst()\" data-tittel=\"{{ hjelpetekst.tittel }}\"\n" +
     "         data-tekst=\"{{ hjelpetekst.tekst }}\"></div>\n" +
@@ -3741,7 +3714,7 @@ angular.module("../js/common/directives/navinput/navradioTemplate.html", []).run
     "           data-click-validate\n" +
     "           data-aktiv-feilmelding>\n" +
     "\n" +
-    "    <label for='{{ navlabel }}' data-cmstekster=\"{{ navlabel }}\"></label>\n" +
+    "    <label for='{{ navlabel }}'>{{ navlabel | cmstekst }}</label>\n" +
     "\n" +
     "    <div class=\"ng-transclude ekstra-spm-boks\" data-ng-if=\"hvisAktiv()\" data-ng-show=\"hvisHarTranscludedInnhold()\"></div>\n" +
     "\n" +
@@ -3882,7 +3855,7 @@ angular.module("../js/common/directives/tittel/tittelTemplate.html", []).run(["$
   $templateCache.put("../js/common/directives/tittel/tittelTemplate.html",
     "<div class=\"rad tittel\">\n" +
     "    <div class=\"begrensning\">\n" +
-    "        <h1 class=\"diger hoved-tittel\" data-cmstekster=\"{{tittel}}\"></h1>\n" +
+    "        <h1 class=\"diger hoved-tittel\">{{ tittel | cmstekst}}</h1>\n" +
     "    </div>\n" +
     "</div>");
 }]);

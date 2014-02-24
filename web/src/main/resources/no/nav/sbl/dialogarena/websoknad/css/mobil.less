@@ -6,10 +6,6 @@
         font-size: 1.14rem;
     }
 
-    [class^="mini"] {
-        font-size: 1rem;
-    }
-
     [class^="liten"] {
         font-size: 1.14rem;
     }
@@ -26,6 +22,18 @@
         font-size: 1.6rem;
     }
 
+    body:not(.modalside) {
+        .ekstra-spm-boks {
+            padding: 25px 10px;
+            position: relative;
+            left: -25px;
+            width: 100vw;
+
+            &:after, &:before {
+                left: 49%;
+            }
+        }
+    }
 
     .ekstra-spm-boks {
         padding: 25px 10px;
@@ -90,7 +98,7 @@
         &.open {
             .flipp {
                 &:before {
-                    border-top: @flipp-size solid #c30000;
+                    border-top: @flipp-size solid #c30000 !important;
                 }
             }
         }
@@ -113,8 +121,8 @@
             .skjemainnhold {
                 width: 100%;
                 max-width: none;
-                padding-left: 25px;
-                padding-right: 25px;
+                padding-left: 10px;
+                padding-right: 10px;
             }
         }
 
@@ -160,31 +168,78 @@
                     }
                 }
             }
+
+            .panel-standard {
+                padding-left: 25px;
+                padding-right: 25px;
+            }
+
+            .bildenavigering {
+                [class*='pil-venstre'] {
+                    left: 0;
+                }
+                [class*='pil-hoyre'] {
+                    right: 0;
+                }
+            }
+        }
+    }
+
+    #visvedlegg, .vedlegg {
+        .bildenavigering {
+            position: relative;
+
+            [class*='pil-'] {
+                position: absolute;
+                height: 42px;
+                width: 42px;
+                background-size: 42px;
+                top: 23%;
+                z-index: 1000;
+            }
         }
     }
 
     #visvedlegg {
         .bildenavigering {
             width: 100%;
-            padding-left: 25px;
-            padding-right: 25px;
 
-            [class*='pil'] {
-                margin-left: 0;
-                margin-right: 0;
+            [class*='pil-'] {
+                margin-top: 25%;
+            }
+
+            [class*='pil-venstre'] {
+                left: 10px;
+            }
+            [class*='pil-hoyre'] {
+                right: 10px;
             }
 
             .bilde {
-                width: 75%;
+                width: 80%;
             }
 
             .tilbake {
+                width: auto;
+                padding: 6px 10px;
+
                 &.mobil {
                     display: block;
                 }
 
                 &.ikke-mobil{
                     display: none;
+                }
+            }
+        }
+    }
+    #opplasting {
+        #opplastingform {
+            .begrensning {
+                width: 100%;
+
+                .opplastingliste li {
+                    width: 90%;
                 }
             }
         }
@@ -201,6 +256,55 @@
                 [class*="panel-"] {
                     width: 100%;
                 }
+
+                .oppsummering {
+                    .vedlegg {
+                        display: block;
+                        margin-left: 18px;
+
+                        tbody, tr {
+                            display: block;
+                        }
+
+                        .sjekket, .usjekket {
+                            display: inline-block;
+                            top: 0;
+                            margin-left: -16px;
+                            margin-right: 0;
+
+                            + td {
+                                display: inline;
+                            }
+                        }
+
+                        .vedleggStatus {
+                            font-size: 1rem;
+                            display: block;
+                            padding-left: 0;
+                            text-align: left;
+                            .antallSider {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    a.accordion-toggle, #vedlegg a.accordion-toggle {
+        &:active {
+            .flipp {
+                &:before {
+                    border-top: @flipp-size solid #c30000 !important;
+                }
+            }
+        }
+        &:focus {
+            .flipp {
+                &:before {
+                    border-top: @flipp-size solid #c30000 !important;
+                }
             }
         }
     }
@@ -208,5 +312,25 @@
     .accordion-heading {
         padding-left: 25px;
         padding-right: 25px;
+    }
+
+    .sticky-bunn {
+        .liste-vannrett li {
+            float: none;
+
+            &:before {
+                display: block;
+            }
+        }
+    }
+
+    #personalia {
+        .skjemaramme {
+            .personalia {
+                .alderOgKjonn {
+                    display: none;
+                }
+            }
+        }
     }
 }
