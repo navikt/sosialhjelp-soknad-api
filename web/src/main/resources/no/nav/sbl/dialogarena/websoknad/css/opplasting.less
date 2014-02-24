@@ -64,12 +64,20 @@ form, [ng-form], [data-ng-form] {
         margin-bottom: 25px;
 
         li {
-            background-image: url(../img/7x7_svart.png);
-            background-repeat: no-repeat;
-            background-position: left 5px;
+            &:before {
+                content: "•";
+                list-style-type: none;
+                padding: 0 0.9rem;
+                margin-left: -32px;
+            }
+
             padding-bottom: 15px;
             padding-left: 20px;
             font-weight: bold;
+
+            p {
+                display: inline;
+            }
         }
     }
 

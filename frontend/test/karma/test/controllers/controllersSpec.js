@@ -49,7 +49,9 @@
                 soknad: {
                     soknadId: 1
                 },
-                config: {"soknad.sluttaarsak.url": "", "soknad.lonnskravskjema.url": "", "soknad.permitteringsskjema.url":"", "minehenvendelser.link.url": "minehenvendelserurl", "soknad.inngangsporten.url": "inngangsportenurl" },
+                config: {"soknad.sluttaarsak.url": "sluttaarsakUrl", "soknad.lonnskravskjema.url": "lonnskravSkjema", "soknad.permitteringsskjema.url":"permiteringUrl",
+                    "minehenvendelser.link.url": "minehenvendelserurl", "soknad.inngangsporten.url": "inngangsportenurl",
+                    "soknad.skjemaveileder.url": "skjemaVeilederUrl" },
                 slettFaktum: function (faktumData) {
                     fakta.forEach(function (item, index) {
                         if (item.faktumId === faktumData.faktumId) {
@@ -265,16 +267,59 @@
                 expect(scope.settValidert).toHaveBeenCalledWith('verneplikt');
             });
         });
+        describe('TilleggsopplysningerCtrl', function () {
+            beforeEach(inject(function ($controller, $compile) {
+                scope.leggTilValideringsmetode = function(string, funksjon){};
+
+                ctrl = $controller('TilleggsopplysningerCtrl', {
+                    $scope: scope
+                });
+
+                $compile(element)(scope);
+                scope.$digest();
+                form = scope.form;
+                element.scope().$apply();
+
+            }));
+
+            it('skal kalle metode for å validere form', function () {
+                expect(scope.runValidationBleKalt).toEqual(false);
+                scope.valider();
+                expect(scope.runValidationBleKalt).toEqual(true);
+            });
+            it('skal kjøre metodene lukkTab og settValidert for valid form', function () {
+                spyOn(scope, "runValidation").andReturn(true);
+                spyOn(scope, "lukkTab");
+                spyOn(scope, "settValidert");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.lukkTab).toHaveBeenCalledWith('tilleggsopplysninger');
+                expect(scope.settValidert).toHaveBeenCalledWith('tilleggsopplysninger');
+            });
+            it('taben skal vaere apen nar formen ikke er valid', function () {
+                spyOn(scope, "runValidation").andReturn(false);
+                spyOn(scope, "apneTab");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.apneTab).toHaveBeenCalledWith('tilleggsopplysninger');
+            });
+        });
         describe('UtdanningCtrl', function () {
             beforeEach(inject(function ($controller, data) {
                 scope.data = data;
 
                  var utdanningNokkelFaktum = {
                      key: 'utdanning.kveld',
-                     value: 'true'
+                     value: 'true',
+                     $save: function() {}
                  };
+                var utdanning = {
+                    key: 'utdanning',
+                    value: 'underUtdanning'
+                };
 
                 scope.data.leggTilFaktum(utdanningNokkelFaktum);
+                scope.data.leggTilFaktum(utdanning);
 
                 ctrl = $controller('UtdanningCtrl', {
                     $scope: scope
@@ -305,38 +350,96 @@
             it('ved minst en av checkboksene avhuket skal harHuketAvCheckboks settes til true', function () {
                 expect(scope.harHuketAvCheckboks.value).toEqual(true);
             });
-            it('hvis faktum utdanning.kveld er huket av sa skal hvis(utdanning.kveld, "true") returnere true', function () {
-                expect(scope.hvis('utdanning.kveld', 'true')).toEqual(true);
+            it('hvis underUtdanning sa skal hvis(utdanning, "underUtdanning") returnere true', function () {
+                expect(scope.hvis('utdanning', "underUtdanning")).toEqual(true);
             });
-            it('hvis faktum utdanning.kortvarig ikke er huket av sa skal hvis(utdanning.kortvarig, "true") returnere false', function () {
-                expect(scope.hvis('utdanning.kortvarig', 'true')).toEqual(false);
+            it('hvis ikke svart underUtdanning sa skal hvis(utdanning, "underUtdanning") returnere false', function () {
+                var utdanning = {
+                    key: 'utdanning',
+                    value: ''
+                };
+
+                scope.data.leggTilFaktum(utdanning);
+                expect(scope.hvis('utdanning', "underUtdanning")).toEqual(false);
             });
-            it('hvis faktum utdanning.kortvarig ikke er huket og har aldri vaert huket av sa skal hvis(utdanning.kortvarig, "true") returnere false', function () {
+            it('', function () {
                 expect(scope.hvis('utdanning.kortvarig', 'false')).toEqual(false);
             });
-            it('hvis faktum utdanning.kortvarig ikke er huket men har vaert huket av sa skal hvis(utdanning.kortvarig, "true") returnere false', function () {
-                var kortvarigFaktum = {
-                    key: 'utdanning.kortvarig',
-                    value: 'false'
+            it('hvis checkbokspm underUtdanningAnnet ikke er svart sa skal hvis(underUtdanning) returnere false', function () {
+                expect(scope.hvis('underUtdanningAnnet')).toEqual(false);
+            });
+            it('hvis checkbokspm underUtdanningAnnet er svart sa skal hvis(underUtdanning) returnere true', function () {
+                var underUtdanningAnnet = {
+                    key: 'underUtdanningAnnet',
+                    value: 'true'
                 };
 
-                scope.data.leggTilFaktum(kortvarigFaktum);
-                expect(scope.hvis('utdanning.kortvarig', 'false')).toEqual(true);
+                scope.data.leggTilFaktum(underUtdanningAnnet);
+                expect(scope.hvis('underUtdanningAnnet')).toEqual(true);
             });
-            it('hvis faktum utdanning.kortvarig ikke er huket men har vaert huket av sa skal hvisIkke(utdanning.kortvarig) returnere true', function () {
-                var kortvarigFaktum = {
-                    key: 'utdanning.kortvarig',
+            it('hvis det skjer en endring på en av checkboksene men fortsatt er en av dem avhuket ekskludert den siste sa skal harHuketAvChekboks vaere true', function () {
+                scope.endreUtdanning();
+                expect(scope.harHuketAvCheckboks.value).toEqual(true);
+            });
+            it('hvis det skjer en endring på checkboksene slik at ingen er huket av lengre så skal harHuketAvChekboks satt til tom string', function () {
+                var utdanningNokkelFaktum = {
+                    key: 'utdanning.kveld',
                     value: 'false'
                 };
+                scope.data.leggTilFaktum(utdanningNokkelFaktum);
 
-                scope.data.leggTilFaktum(kortvarigFaktum);
-                expect(scope.hvisIkke('utdanning.kortvarig')).toEqual(true);
+                scope.endreUtdanning();
+                expect(scope.harHuketAvCheckboks.value).toEqual('');
             });
-            it('hvis faktum utdanning.kortvarigflere ikke er huket og har ikke vaert huket av sa skal hvisIkke(utdanning.kortvarigflere) returnere false', function () {
-                expect(scope.hvisIkke('utdanning.kortvarigflere')).toEqual(false);
+            it('hvis den siste checkboksen blir huket av sa skal alle tidligere checkbokser som er huket av bli avhuket', function () {
+                var utdanningNokkelFaktum = {
+                    key: 'utdanning.kveld',
+                    value: 'true',
+                    $save: function(){}
+                };
+
+                var utdanningkortvarigFaktum = {
+                    key: 'utdanning.kortvarig',
+                    value: 'true',
+                    $save: function() {}
+
+                };
+                var underUtdanningAnnet = {
+                    key: 'underUtdanningAnnet',
+                    value: 'true',
+                    $save: function() {}
+                };
+
+                scope.data.leggTilFaktum(utdanningNokkelFaktum);
+                scope.data.leggTilFaktum(utdanningkortvarigFaktum);
+                scope.data.leggTilFaktum(underUtdanningAnnet);
+
+                scope.endreUtdannelseAnnet();
+                expect(scope.harHuketAvCheckboks.value).toEqual('true');
             });
-            it('hvis faktum utdanning.kveld er huket sa skal hvisIkke(utdanning.kortvarigflere) returnere false', function () {
-                expect(scope.hvisIkke('utdanning.kveld')).toEqual(false);
+            it('hvis den siste checkboksen blir avhuket slik at den ikke er huket av sa skal harHuketAvChekboks settes til tom string', function () {
+                var underUtdanningAnnet = {
+                    key: 'underUtdanningAnnet',
+                    value: 'false',
+                    $save: function() {}
+                };
+
+                scope.data.leggTilFaktum(underUtdanningAnnet);
+                scope.endreUtdannelseAnnet();
+                expect(scope.harHuketAvCheckboks.value).toEqual('');
+            });
+        });
+        describe('UtdanningCtrlUtenCheckbokserHuketAv', function () {
+                beforeEach(inject(function ($controller, data) {
+                    scope.data = data;
+
+                    ctrl = $controller('UtdanningCtrl', {
+                        $scope: scope
+                    });
+                }));
+
+            it('ved ingen av checkboksene avhuket skal harHuketAvCheckboks settes til tom string', function () {
+                expect(scope.harHuketAvCheckboks.value).toEqual('');
             });
         });
         describe('ReellarbeidssokerCtrl', function () {
@@ -1180,6 +1283,93 @@
                 expect(cookieStore.get('scrollTil').gjeldendeTab).toBe("#arbeidsforhold");
             });
         });
+        describe('ArbeidsforholdNyttCtrlEndreModus', function () {
+            beforeEach(inject(function ($controller, $compile, data, $location) {
+                scope.data = data;
+                location = $location;
+                location.$$url = 'endrearbeidsforhold/111';
+
+                var af1 = {
+                    key: 'arbeidsforhold',
+                    properties: {
+                        type: 'Permittert',
+                        datofra: '11.11.1111'
+                    },
+                    faktumId: 111
+                };
+
+                scope.data.leggTilFaktum(af1);
+                ctrl = $controller('ArbeidsforholdNyttCtrl', {
+                    $scope: scope
+                });
+
+                $compile(element)(scope);
+                scope.$digest();
+                form = scope.form;
+                element.scope().$apply();
+
+            }));
+
+            it('sluttaarsakUrl, lonnskravurl og permiteringsurl skal settes til riktige urler', function () {
+                expect(scope.sluttaarsakUrl).toEqual("sluttaarsakUrl");
+                expect(scope.lonnskravSkjema).toEqual("lonnskravSkjema");
+                expect(scope.permiteringUrl).toEqual("permiteringUrl");
+            });
+            it('scope.land skal bli satt til samme land som ligger lagret på data', function () {
+                expect(scope.land).toEqual("Norge");
+            });
+            it('hvis et arbeidsforhold skal endres så skal scopet inneholde samme verdier som opprinnelig lå på arbeidsforholdet', function () {
+                expect(scope.sluttaarsakType).toEqual('Permittert');
+            });
+        });
+        describe('ArbeidsforholdNyttCtrl', function () {
+            beforeEach(inject(function ($controller, $compile, data, $location, $injector) {
+                var regEx = 'DNK?rand='+ new RegExp('\d');
+                $httpBackend = $injector.get('$httpBackend');
+                $httpBackend.expectGET('/sendsoknad/rest/ereosland/' + regEx ).
+                    respond('true');
+
+                scope.data = data;
+                location = $location;
+                location.$$url = '/111';
+
+                var af1 = {
+                    key: 'arbeidsforhold',
+                    properties: {
+                        type: 'Permittert',
+                        datofra: '11.11.1111'
+                    },
+                    faktumId: 111
+                };
+
+                scope.data.leggTilFaktum(af1);
+                ctrl = $controller('ArbeidsforholdNyttCtrl', {
+                    $scope: scope
+                });
+
+                $compile(element)(scope);
+                scope.$digest();
+                form = scope.form;
+                element.scope().$apply();
+
+            }));
+
+            it('scopet skal ikke innheholde verdier fra før når et nytt arbeidsforhold legges til', function () {
+                expect(scope.arbeidsforhold.properties.arbeidsgivernavn).toEqual(undefined);
+                expect(scope.arbeidsforhold.properties.datofra).toEqual(undefined);
+                expect(scope.arbeidsforhold.properties.datotil).toEqual(undefined);
+                expect(scope.arbeidsforhold.properties.type).toEqual(undefined);
+                expect(scope.arbeidsforhold.properties.eosland).toEqual("false");
+                expect(scope.lonnskravSkjema).toEqual("lonnskravSkjema");
+                expect(scope.sluttaarsak.properties).toNotBe(undefined);
+                expect(scope.sluttaarsak.properties.type).toEqual(undefined);
+            });
+            it('hvis landet endrer seg til et eos-land så skal propertien eosland settes til true', function () {
+//                scope.arbeidsforhold.properties.land = 'DNK';
+//                scope.$apply();
+//                expect(scope.arbeidsforhold.properties.eosland).toEqual(true);
+            });
+        });
         describe('AvbrytCtrl', function () {
             beforeEach(inject(function ($controller, data) {
                 ctrl = $controller('AvbrytCtrl', {
@@ -1288,6 +1478,18 @@
                 expect(scope.inngangsportenUrl).toEqual("inngangsportenurl");
             });
         });
+        describe('SlettetCtrl', function () {
+            beforeEach(inject(function ($controller, data) {
+                scope.data = data;
+                ctrl = $controller('SlettetCtrl', {
+                    $scope: scope
+                });
+            }));
 
+            it('Skjemaveileder og mine henvendelser skal settes til riktig url', function () {
+                expect(scope.mineHenveldelserBaseUrl).toEqual("minehenvendelserurl");
+                expect(scope.skjemaVeilederUrl).toEqual("skjemaVeilederUrl");
+            });
+        });
     });
 }());

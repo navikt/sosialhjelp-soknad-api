@@ -68,14 +68,4 @@ public class TestApplicationIntegrationContext {
         }
     }
 
-    @Bean
-    public Object aktorServiceCreator() {
-
-        if (mockTps) {
-            return new MockConsumerConfig.AktorWsConfig();
-        } else {
-            return new ConsumerConfig.AktorWsConfig();
-        }
-    }
-
 }

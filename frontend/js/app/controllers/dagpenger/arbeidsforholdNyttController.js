@@ -32,15 +32,15 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 			var opprinneligData = data.finnFakta('arbeidsforhold');
             var arbeidsforhold = angular.copy(opprinneligData);
 
-			angular.forEach(arbeidsforhold, function (value) {
+            angular.forEach(arbeidsforhold, function (value) {
 				if (value.faktumId === parseInt(faktumId)) {
 					arbeidsforholdData = value;
 				}
-			});
+            });
 
 			angular.forEach($scope.templates, function (template, index) {
-				if (arbeidsforholdData.properties.type === index) {
-					$scope.sluttaarsakType = index;
+                if (arbeidsforholdData.properties.type === index) {
+                    $scope.sluttaarsakType = index;
 				}
 			});
 

@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBuilder;
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.PERSONALIA_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.DATO_TIL;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.TYPE;
-import static org.slf4j.LoggerFactory.getLogger;
 
 public class WebSoknadUtils {
     public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
@@ -31,28 +29,22 @@ public class WebSoknadUtils {
     public static final String PERMITTERT = "Permittert";
     public static final String REDUSERT_ARBEIDSTID = "Redusert arbeidstid";
     public static final String ANNEN_AARSAK = "Annen årsak";
-    private static final Logger LOGGER = getLogger(WebSoknadUtils.class);
 
-    private static String erPermittertellerHarRedusertArbeidstid(WebSoknad soknad)
-    {
+    private static String erPermittertellerHarRedusertArbeidstid(WebSoknad soknad) {
 
-        String sisteaarsak;
         List<Faktum> sluttaarsak = soknad.getFaktaMedKey("arbeidsforhold");
-        boolean erPermittert = false;
-        boolean harRedusertArbeidstid = false;
+        boolean erPermittert;
+        boolean harRedusertArbeidstid;
         if (!sluttaarsak.isEmpty()) {
             List<Faktum> sortertEtterDatoTil = on(sluttaarsak).collect(reverseOrder(compareWith(DATO_TIL)));
             LocalDate nyesteDato = on(sortertEtterDatoTil).map(DATO_TIL).head().getOrElse(null);
             List<Faktum> nyesteSluttaarsaker = on(sortertEtterDatoTil).filter(where(DATO_TIL, equalTo(nyesteDato))).collect();
             erPermittert = on(nyesteSluttaarsaker).filter(where(TYPE, equalTo(PERMITTERT))).head().isSome();
             harRedusertArbeidstid = on(nyesteSluttaarsaker).filter(where(TYPE, equalTo(REDUSERT_ARBEIDSTID))).head().isSome();
-            if (erPermittert)
-            {
+            if (erPermittert) {
                 return PERMITTERT;
             }
-
-            if (harRedusertArbeidstid)
-            {
+            if (harRedusertArbeidstid) {
                 return REDUSERT_ARBEIDSTID;
             }
         }
@@ -60,39 +52,28 @@ public class WebSoknadUtils {
     }
 
 
-
     public static String getSkjemanummer(WebSoknad soknad) {
-            String sluttaarsak = erPermittertellerHarRedusertArbeidstid(soknad);
-            if (sluttaarsak.equals(PERMITTERT))
-            {
-                return DAGPENGER_VED_PERMITTERING;
-            }
-            else
-            {
-                return DAGPENGER;
-            }
+        String sluttaarsak = erPermittertellerHarRedusertArbeidstid(soknad);
+        if (sluttaarsak.equals(PERMITTERT)) {
+            return DAGPENGER_VED_PERMITTERING;
+        } else {
+            return DAGPENGER;
+        }
     }
 
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
         String sluttaarsak = erPermittertellerHarRedusertArbeidstid(webSoknad);
         Personalia personalia = getPerson(webSoknad);
-        if ((personalia.harUtenlandskFolkeregistrertAdresse() && (!personalia.harNorskMidlertidigAdresse())))
-        {
-            if (sluttaarsak.equals(PERMITTERT) || (sluttaarsak.equals(REDUSERT_ARBEIDSTID)))
-            {
+        if ((personalia.harUtenlandskFolkeregistrertAdresse() && (!personalia.harNorskMidlertidigAdresse()))) {
+            if (sluttaarsak.equals(PERMITTERT) || (sluttaarsak.equals(REDUSERT_ARBEIDSTID))) {
                 return EOS_DAGPENGER;
-            }
-            else
-            {
+            } else {
                 return RUTES_I_BRUT;
             }
-        }
-        else
-        {
+        } else {
             return RUTES_I_BRUT;
         }
     }
-
 
 
     public static Personalia getPerson(WebSoknad webSoknad) {
@@ -102,10 +83,9 @@ public class WebSoknadUtils {
         gjeldendeAdresse.setAdresse(properties.get(GJELDENDEADRESSE_KEY));
         gjeldendeAdresse.setAdressetype(properties.get(GJELDENDEADRESSE_TYPE_KEY));
 
-        Personalia personalia = PersonaliaBuilder.with()
+        return PersonaliaBuilder.with()
                 .gjeldendeAdresse(gjeldendeAdresse)
                 .build();
-        return personalia;
     }
 
 }

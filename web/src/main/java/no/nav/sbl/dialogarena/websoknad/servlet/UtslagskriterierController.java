@@ -35,24 +35,19 @@ public class UtslagskriterierController {
         PersonInfoConnector.Status status = personInfoConnector.hentArbeidssokerStatus(uid);
         utslagskriterierResultat.put("registrertArbeidssøker", status.name());
 
-        Personalia personalia = null;
-
-        try
-        {
-               personalia = personaliaService.hentPersonalia(uid);
-        }
-        catch (Exception e)
-        {
-            logger.error("Kunne ikke hente personalia" + e.getMessage());
-        }
+        try {
+            Personalia personalia = personaliaService.hentPersonalia(uid);
             utslagskriterierResultat.put("gyldigAlder", new PersonAlder(uid).sjekkAlder().toString());
             utslagskriterierResultat.put("bosattINorge", harNorskAdresse(personalia).toString());
             utslagskriterierResultat.put("registrertAdresse", personalia.getGjeldendeAdresse().getAdresse());
             utslagskriterierResultat.put("registrertAdresseGyldigFra", personalia.getGjeldendeAdresse().getGyldigFra());
             utslagskriterierResultat.put("registrertAdresseGyldigTil", personalia.getGjeldendeAdresse().getGyldigTil());
-        
+        } catch (Exception e) {
+            logger.error("Kunne ikke hente personalia" + e.getMessage());
+            utslagskriterierResultat.put("error", e.getMessage());
+        }
         return utslagskriterierResultat;
-        
+
     }
 
     private Boolean harNorskAdresse(Personalia personalia) {
