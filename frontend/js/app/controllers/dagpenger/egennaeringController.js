@@ -55,9 +55,14 @@ angular.module('nav.egennaering', [])
             if (!$scope.erSynlig('egennaering.gardsbruk')) {
                 return false;
             }
+            var antallHukerAv = 0;
             for (var i = 0; i < eierGardsbrukNokler.length; i++) {
                 if (data.finnFaktum(eierGardsbrukNokler[i]) && data.finnFaktum(eierGardsbrukNokler[i]).value === 'true') {
-                    return true;
+                    antallHukerAv++;
+
+                    if (antallHukerAv > 1) {
+                        return true;
+                    }
                 }
             }
             return false;
