@@ -20,7 +20,7 @@ public class Transformers {
         @Override
         public LocalDate transform(Faktum faktum) {
             Map<String, String> properties = faktum.getProperties();
-            switch (properties.get("type")) {
+            switch (TYPE.transform(faktum)) {
                 case "Kontrakt utgått":
                     return new LocalDate(properties.get("datotil"));
                 case "Avskjediget":
@@ -44,8 +44,7 @@ public class Transformers {
     public static final Transformer<Faktum, String> TYPE = new Transformer<Faktum, String>() {
         @Override
         public String transform(Faktum faktum) {
-            Map<String, String> properties = faktum.getProperties();
-            return properties.get("type");
+            return faktum.getProperties().get("type");
         }
     };
 
@@ -70,7 +69,7 @@ public class Transformers {
         return resultat.toArray(new XMLVedlegg[resultat.size()]);
     }
 
-    private static String toXmlInnsendingsvalg(Vedlegg.Status innsendingsvalg) {
+    public static String toXmlInnsendingsvalg(Vedlegg.Status innsendingsvalg) {
         switch (innsendingsvalg) {
             case LastetOpp:
                 return LASTET_OPP.toString();

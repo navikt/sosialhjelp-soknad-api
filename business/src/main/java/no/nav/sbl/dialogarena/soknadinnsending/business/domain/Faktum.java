@@ -137,7 +137,12 @@ public class Faktum implements Serializable {
     }
 
     public Faktum medProperty(String key, String value) {
-        medEgenskap(new FaktumEgenskap(soknadId, faktumId, key, value, false));
+        if (finnEgenskap(key) != null) {
+            finnEgenskap(key).setValue(value);
+            getProperties().put(key, value);
+        } else {
+            medEgenskap(new FaktumEgenskap(soknadId, faktumId, key, value, false));
+        }
         return this;
     }
 
@@ -209,7 +214,7 @@ public class Faktum implements Serializable {
     }
 
     public FaktumEgenskap finnEgenskap(String key) {
-        for (FaktumEgenskap egenskap : faktumEgenskaper) {
+        for (FaktumEgenskap egenskap : getFaktumEgenskaper()) {
             if (egenskap.getKey().equals(key)) {
                 return egenskap;
             }
@@ -220,6 +225,7 @@ public class Faktum implements Serializable {
     /**
      * kopierer over alle brukerlagrede faktum fra det gitte faktumet til dette faktumet.
      * Ment brukt i tilfeller der en lagrer systemfaktum.
+     *
      * @param lagretFaktum det afktumet properties skal hentes fra
      */
     public void kopierBrukerlagrede(Faktum lagretFaktum) {
