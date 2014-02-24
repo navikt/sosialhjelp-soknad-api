@@ -208,6 +208,20 @@ public class Faktum implements Serializable {
         return res;
     }
 
+    public FaktumEgenskap finnEgenskap(String key) {
+        for (FaktumEgenskap egenskap : faktumEgenskaper) {
+            if (egenskap.getKey().equals(key)) {
+                return egenskap;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * kopierer over alle brukerlagrede faktum fra det gitte faktumet til dette faktumet.
+     * Ment brukt i tilfeller der en lagrer systemfaktum.
+     * @param lagretFaktum det afktumet properties skal hentes fra
+     */
     public void kopierBrukerlagrede(Faktum lagretFaktum) {
         for (FaktumEgenskap egenskap : lagretFaktum.getFaktumEgenskaper()) {
             if (egenskap.getSystemEgenskap().equals(0) && !this.hasEgenskap(egenskap.getKey())) {
@@ -217,10 +231,20 @@ public class Faktum implements Serializable {
     }
 
     public void kopierSystemlagrede(Faktum lagretFaktum) {
+        fjernSystemegenskaper();
         for (FaktumEgenskap egenskap : lagretFaktum.getFaktumEgenskaper()) {
             if (egenskap.getSystemEgenskap().equals(1)) {
                 fjernEgenskapMedNokkel(egenskap.getKey());
                 medEgenskap(egenskap);
+            }
+        }
+    }
+
+    private void fjernSystemegenskaper() {
+        Iterator<FaktumEgenskap> iterator = faktumEgenskaper.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().getSystemEgenskap() == 1) {
+                iterator.remove();
             }
         }
     }
