@@ -1,10 +1,8 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import no.nav.sbl.dialogarena.soknadinnsending.RestFeil;
 import no.nav.sbl.dialogarena.soknadinnsending.VedleggOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
@@ -14,8 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,10 +37,8 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
  * Controller klasse som brukes til å laste opp filer fra frontend.
  */
 @Controller()
-@ControllerAdvice()
 @RequestMapping("/soknad/{soknadId}/vedlegg")
 public class VedleggController {
-    private static final Logger LOG = LoggerFactory.getLogger(VedleggController.class);
     @Inject
     private VedleggService vedleggService;
 
@@ -113,21 +107,6 @@ public class VedleggController {
         return vedleggService.lagForhandsvisning(soknadId, vedleggId, side);
     }
 
-    @ExceptionHandler(UgyldigOpplastingTypeException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-    public RestFeil handterFeilType(UgyldigOpplastingTypeException ex) {
-        LOG.warn("Feilet opplasting med: " + ex, ex);
-        return new RestFeil(ex.getId());
-    }
-
-    @ExceptionHandler(OpplastingException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    public RestFeil handterVedleggException(OpplastingException ex) {
-        LOG.warn("Feilet opplasting med: " + ex, ex);
-        return new RestFeil(ex.getId());
-    }
 
     @RequestMapping(value = "/{vedleggId}/opplasting", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
     @ResponseBody()
