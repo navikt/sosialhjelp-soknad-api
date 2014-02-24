@@ -21,7 +21,6 @@ import static org.mockito.Mockito.when;
 
 public class HandleBarKjoererTest {
 
-
     @Test
     public void skalKompilereDagpenger() throws IOException {
         WebSoknad soknad = new WebSoknad()

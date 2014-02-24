@@ -162,7 +162,8 @@
                 {{ 'ytelser.dagpengerEOSUtbetaler' | cmstekst }}
             </span>
 
-            <select data-blur-validate
+            <select id="land"
+                    data-blur-validate
                     data-ng-required="true"
                     data-error-messages="'ytelser.dagpengerEOSUtbetaler.feilmelding'"
                     data-ng-model="faktum.value"

@@ -2,6 +2,13 @@ angular.module('nav.ytelser', [])
 	.controller('YtelserCtrl', ['$scope', 'data', '$timeout', function ($scope, data, $timeout) {
 
 		$scope.land = data.land;
+
+		$scope.settBreddeSlikAtDetFungererIIE = function() {
+            setTimeout(function() {
+                $("#land").width($("#land").width());
+            }, 50);
+        };
+
 		$scope.ytelser = {skalViseFeilmeldingForIngenYtelser: false};
 		$scope.ytelserNAV = {skalViseFeilmeldingForIngenNavYtelser: false};
 
@@ -18,6 +25,8 @@ angular.module('nav.ytelser', [])
         if (erCheckboxerAvhuket(undernokler)) {
             $scope.harHuketAvCheckboksNavYtelse.value = true;
         }
+
+        $scope.settBreddeSlikAtDetFungererIIE();
 
 		$scope.hvisAvtaleInngaatt = function () {
 			var faktum = data.finnFaktum('ikkeavtale');
