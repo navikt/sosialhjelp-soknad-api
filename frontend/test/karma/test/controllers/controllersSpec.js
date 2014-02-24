@@ -271,7 +271,8 @@
 
                  var utdanningNokkelFaktum = {
                      key: 'utdanning.kveld',
-                     value: 'true'
+                     value: 'true',
+                     $save: function() {}
                  };
                 var utdanning = {
                     key: 'utdanning',
@@ -377,14 +378,15 @@
                 scope.endreUtdannelseAnnet();
                 expect(scope.harHuketAvCheckboks.value).toEqual('true');
             });
-            it('hvis det skjer en endring på checkboksene slik at ingen er huket av lengre så skal harHuketAvChekboks satt til tom string', function () {
-                var utdanningNokkelFaktum = {
-                    key: 'utdanning.kveld',
-                    value: 'false'
+            it('hvis den siste checkboksen blir avhuket slik at den ikke er huket av sa skal harHuketAvChekboks settes til tom string', function () {
+                var underUtdanningAnnet = {
+                    key: 'underUtdanningAnnet',
+                    value: 'false',
+                    $save: function() {}
                 };
-                scope.data.leggTilFaktum(utdanningNokkelFaktum);
 
-                scope.endreUtdanning();
+                scope.data.leggTilFaktum(underUtdanningAnnet);
+                scope.endreUtdannelseAnnet();
                 expect(scope.harHuketAvCheckboks.value).toEqual('');
             });
         });
