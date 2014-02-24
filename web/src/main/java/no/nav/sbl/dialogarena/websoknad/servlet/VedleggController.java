@@ -31,7 +31,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -134,38 +133,32 @@ public class VedleggController {
     @ResponseBody()
     @ResponseStatus(HttpStatus.CREATED)
     @SjekkTilgangTilSoknad(sjekkXsrf = false)
-    public Callable<VedleggOpplasting> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestParam("X-XSRF-TOKEN") final String xsrfToken, @RequestParam("files[]") final List<MultipartFile> files) {
+    public VedleggOpplasting lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestParam("X-XSRF-TOKEN") final String xsrfToken, @RequestParam("files[]") final List<MultipartFile> files) {
         XsrfGenerator.sjekkXsrfToken(xsrfToken, soknadId);
-        return new Callable<VedleggOpplasting>() {
+        Vedlegg forventning = vedleggService.hentVedlegg(soknadId, vedleggId, false);
 
-            @Override
-            public VedleggOpplasting call() throws Exception {
-                Vedlegg forventning = vedleggService.hentVedlegg(soknadId, vedleggId, false);
+        List<Vedlegg> res = new ArrayList<>();
+        for (MultipartFile file : files) {
+            byte[] in = getByteArray(file);
+            Vedlegg vedlegg = new Vedlegg()
+                    .medVedleggId(null)
+                    .medSoknadId(soknadId)
+                    .medFaktumId(forventning.getFaktumId())
+                    .medSkjemaNummer(forventning.getskjemaNummer())
+                    .medNavn(forventning.getNavn())
+                    .medStorrelse(file.getSize())
+                    .medAntallSider(1)
+                    .medFillagerReferanse(null)
+                    .medData(in)
+                    .medOpprettetDato(forventning.getOpprettetDato())
+                    .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
 
-                List<Vedlegg> res = new ArrayList<>();
-                for (MultipartFile file : files) {
-                    byte[] in = getByteArray(file);
-                    Vedlegg vedlegg = new Vedlegg()
-                            .medVedleggId(null)
-                            .medSoknadId(soknadId)
-                            .medFaktumId(forventning.getFaktumId())
-                            .medSkjemaNummer(forventning.getskjemaNummer())
-                            .medNavn(forventning.getNavn())
-                            .medStorrelse(file.getSize())
-                            .medAntallSider(1)
-                            .medFillagerReferanse(null)
-                            .medData(in)
-                            .medOpprettetDato(forventning.getOpprettetDato())
-                            .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
-
-                    List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, new ByteArrayInputStream(in));
-                    for (Long id : ids) {
-                        res.add(vedleggService.hentVedlegg(soknadId, id, false));
-                    }
-                }
-                return new VedleggOpplasting(res);
+            List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, new ByteArrayInputStream(in));
+            for (Long id : ids) {
+                res.add(vedleggService.hentVedlegg(soknadId, id, false));
             }
-        };
+        }
+        return new VedleggOpplasting(res);
     }
 
     @RequestMapping(value = "/{vedleggId}/underBehandling", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)

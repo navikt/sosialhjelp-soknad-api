@@ -28,7 +28,7 @@ public class PDFFabrikkTest {
         try {
             html = new HandleBarKjoerer(kodeverk, ms).fyllHtmlMalMedInnhold(soknad,
                     "/html/WebSoknadHtml");
-            byte[] pdfFil = PDFFabrikk.lagPdfFil(html);
+            byte[] pdfFil = new PDFFabrikk().lagPdfFil(html);
             Assert.assertTrue(pdfFil.length > 0);
         } catch (IOException e) {
             Assert.assertTrue(false);
