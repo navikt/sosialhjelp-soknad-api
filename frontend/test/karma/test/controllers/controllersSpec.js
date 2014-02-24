@@ -263,8 +263,13 @@
                      key: 'utdanning.kveld',
                      value: 'true'
                  };
+                var utdanning = {
+                    key: 'utdanning',
+                    value: 'underUtdanning'
+                };
 
                 scope.data.leggTilFaktum(utdanningNokkelFaktum);
+                scope.data.leggTilFaktum(utdanning);
 
                 ctrl = $controller('UtdanningCtrl', {
                     $scope: scope
@@ -295,38 +300,96 @@
             it('ved minst en av checkboksene avhuket skal harHuketAvCheckboks settes til true', function () {
                 expect(scope.harHuketAvCheckboks.value).toEqual(true);
             });
-            it('hvis faktum utdanning.kveld er huket av sa skal hvis(utdanning.kveld, "true") returnere true', function () {
-                expect(scope.hvis('utdanning.kveld', 'true')).toEqual(true);
+            it('hvis underUtdanning sa skal hvis(utdanning, "underUtdanning") returnere true', function () {
+                expect(scope.hvis('utdanning', "underUtdanning")).toEqual(true);
             });
-            it('hvis faktum utdanning.kortvarig ikke er huket av sa skal hvis(utdanning.kortvarig, "true") returnere false', function () {
-                expect(scope.hvis('utdanning.kortvarig', 'true')).toEqual(false);
+            it('hvis ikke svart underUtdanning sa skal hvis(utdanning, "underUtdanning") returnere false', function () {
+                var utdanning = {
+                    key: 'utdanning',
+                    value: ''
+                };
+
+                scope.data.leggTilFaktum(utdanning);
+                expect(scope.hvis('utdanning', "underUtdanning")).toEqual(false);
             });
-            it('hvis faktum utdanning.kortvarig ikke er huket og har aldri vaert huket av sa skal hvis(utdanning.kortvarig, "true") returnere false', function () {
+            it('', function () {
                 expect(scope.hvis('utdanning.kortvarig', 'false')).toEqual(false);
             });
-            it('hvis faktum utdanning.kortvarig ikke er huket men har vaert huket av sa skal hvis(utdanning.kortvarig, "true") returnere false', function () {
-                var kortvarigFaktum = {
-                    key: 'utdanning.kortvarig',
-                    value: 'false'
+            it('hvis checkbokspm underUtdanningAnnet ikke er svart sa skal hvis(underUtdanning) returnere false', function () {
+                expect(scope.hvis('underUtdanningAnnet')).toEqual(false);
+            });
+            it('hvis checkbokspm underUtdanningAnnet er svart sa skal hvis(underUtdanning) returnere true', function () {
+                var underUtdanningAnnet = {
+                    key: 'underUtdanningAnnet',
+                    value: 'true'
                 };
 
-                scope.data.leggTilFaktum(kortvarigFaktum);
-                expect(scope.hvis('utdanning.kortvarig', 'false')).toEqual(true);
+                scope.data.leggTilFaktum(underUtdanningAnnet);
+                expect(scope.hvis('underUtdanningAnnet')).toEqual(true);
             });
-            it('hvis faktum utdanning.kortvarig ikke er huket men har vaert huket av sa skal hvisIkke(utdanning.kortvarig) returnere true', function () {
-                var kortvarigFaktum = {
-                    key: 'utdanning.kortvarig',
+            it('hvis det skjer en endring på en av checkboksene men fortsatt er en av dem avhuket ekskludert den siste sa skal harHuketAvChekboks vaere true', function () {
+                scope.endreUtdanning();
+                expect(scope.harHuketAvCheckboks.value).toEqual(true);
+            });
+            it('hvis det skjer en endring på checkboksene slik at ingen er huket av lengre så skal harHuketAvChekboks satt til tom string', function () {
+                var utdanningNokkelFaktum = {
+                    key: 'utdanning.kveld',
                     value: 'false'
                 };
+                scope.data.leggTilFaktum(utdanningNokkelFaktum);
 
-                scope.data.leggTilFaktum(kortvarigFaktum);
-                expect(scope.hvisIkke('utdanning.kortvarig')).toEqual(true);
+                scope.endreUtdanning();
+                expect(scope.harHuketAvCheckboks.value).toEqual('');
             });
-            it('hvis faktum utdanning.kortvarigflere ikke er huket og har ikke vaert huket av sa skal hvisIkke(utdanning.kortvarigflere) returnere false', function () {
-                expect(scope.hvisIkke('utdanning.kortvarigflere')).toEqual(false);
+            it('hvis den siste checkboksen blir huket av sa skal alle tidligere checkbokser som er huket av bli avhuket', function () {
+                var utdanningNokkelFaktum = {
+                    key: 'utdanning.kveld',
+                    value: 'true',
+                    $save: function(){}
+                };
+
+                var utdanningkortvarigFaktum = {
+                    key: 'utdanning.kortvarig',
+                    value: 'true',
+                    $save: function() {}
+
+                };
+                var underUtdanningAnnet = {
+                    key: 'underUtdanningAnnet',
+                    value: 'true',
+                    $save: function() {}
+                };
+
+                scope.data.leggTilFaktum(utdanningNokkelFaktum);
+                scope.data.leggTilFaktum(utdanningkortvarigFaktum);
+                scope.data.leggTilFaktum(underUtdanningAnnet);
+
+                scope.endreUtdannelseAnnet();
+                expect(scope.harHuketAvCheckboks.value).toEqual('true');
             });
-            it('hvis faktum utdanning.kveld er huket sa skal hvisIkke(utdanning.kortvarigflere) returnere false', function () {
-                expect(scope.hvisIkke('utdanning.kveld')).toEqual(false);
+            it('hvis det skjer en endring på checkboksene slik at ingen er huket av lengre så skal harHuketAvChekboks satt til tom string', function () {
+                var utdanningNokkelFaktum = {
+                    key: 'utdanning.kveld',
+                    value: 'false'
+                };
+                scope.data.leggTilFaktum(utdanningNokkelFaktum);
+
+                scope.endreUtdanning();
+                expect(scope.harHuketAvCheckboks.value).toEqual('');
+            });
+        });
+
+        describe('UtdanningCtrlUtenCheckbokserHuketAv', function () {
+                beforeEach(inject(function ($controller, data) {
+                    scope.data = data;
+
+                    ctrl = $controller('UtdanningCtrl', {
+                        $scope: scope
+                    });
+                }));
+
+            it('ved ingen av checkboksene avhuket skal harHuketAvCheckboks settes til tom string', function () {
+                expect(scope.harHuketAvCheckboks.value).toEqual('');
             });
         });
         describe('ReellarbeidssokerCtrl', function () {
