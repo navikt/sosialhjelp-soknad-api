@@ -4,7 +4,6 @@ import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.context.SubjectHandler;
 import no.nav.modig.core.exception.AuthorizationException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.consumer.aktor.AktorIdService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -19,16 +18,12 @@ public class TilgangskontrollTest {
     @InjectMocks
     private Tilgangskontroll tilgangskontroll;
     @Mock
-    private AktorIdService aktorIdService;
-    @Mock
     private SoknadService soknadService;
 
     @Test
     public void skalGiTilgangForBruker() {
         System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         StaticSubjectHandler subjectHandler = (StaticSubjectHandler) SubjectHandler.getSubjectHandler();
-
-        when(aktorIdService.hentAktorIdForFno(subjectHandler.getUid())).thenReturn("123");
         when(soknadService.hentSoknadEier(1L)).thenReturn(subjectHandler.getUid());
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(1L);
 
@@ -38,8 +33,6 @@ public class TilgangskontrollTest {
     public void skalFeileForAndre() {
         System.setProperty(SubjectHandler.SUBJECTHANDLER_KEY, StaticSubjectHandler.class.getName());
         StaticSubjectHandler subjectHandler = (StaticSubjectHandler) SubjectHandler.getSubjectHandler();
-
-        when(aktorIdService.hentAktorIdForFno(subjectHandler.getUid())).thenReturn("124");
         when(soknadService.hentSoknadEier(1L)).thenReturn("123");
         tilgangskontroll.verifiserBrukerHarTilgangTilSoknad(1L);
 

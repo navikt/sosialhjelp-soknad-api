@@ -209,7 +209,10 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     @Override
     public Boolean isVedleggPaakrevd(Long soknadId, String key, String value, String dependOnValue) {
-        String sql = "select count(*) from soknadbrukerdata data left outer join soknadbrukerdata parent on parent.soknadbrukerdata_id = data.parrent_faktum where data.soknad_id=? and data.key=? and data.value like ? and (data.parrent_faktum is null OR parent.value like ?)";
+        String sql = "SELECT count(*) FROM soknadbrukerdata faktum " +
+                "LEFT OUTER JOIN soknadbrukerdata parent on parent.soknadbrukerdata_id = faktum.parrent_faktum " +
+                "WHERE faktum.soknad_id=? AND faktum.key=? AND faktum.value like ? " +
+                "AND (faktum.parrent_faktum is null OR parent.value like ?)";
 
         Integer count;
         try {
@@ -255,6 +258,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     @Override
     public Long lagreFaktum(long soknadId, Faktum faktum, Boolean systemLagring) {
+        faktum.setSoknadId(soknadId);
         if (faktum.getFaktumId() == null) {
             faktum.setFaktumId(getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_BRUKER_DATA_ID_SEQ"), Long.class));
             getNamedParameterJdbcTemplate().update(INSERT_FAKTUM, forFaktum(faktum));
@@ -358,11 +362,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ?", soknadId);
         getJdbcTemplate().update("delete from vedlegg where soknad_id = ?", soknadId);
         getJdbcTemplate().update("delete from soknad where soknad_id = ?", soknadId);
-    }
-
-    @Override
-    public void endreInnsendingsValg(Long soknadId, Long faktumId, Faktum.Status innsendingsvalg) {
-        getJdbcTemplate().update("update soknadbrukerdata set innsendingsvalg = ? where soknad_id = ? and soknadbrukerdata_id = ?", innsendingsvalg.toString(), soknadId, faktumId);
     }
 
     @Override

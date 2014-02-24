@@ -56,6 +56,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknad
 import static no.nav.sbl.dialogarena.test.match.Matchers.match;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -124,6 +125,14 @@ public class SoknadServiceTest {
     }
 
     @Test
+    public void skalHenteVedlegg() {
+        soknadService.hentVedlegg(11L, 1L, false);
+        verify(vedleggRepository).hentVedlegg(11L, 1L);
+        soknadService.hentVedlegg(11L, 1L, true);
+        verify(vedleggRepository).hentVedleggMedInnhold(11L, 1L);
+    }
+
+    @Test
     public void skalKonverterePdfVedOpplasting() throws IOException {
         Vedlegg vedlegg = new Vedlegg()
                 .medVedleggId(1L)
@@ -161,6 +170,13 @@ public class SoknadServiceTest {
         vedleggSjekk.medStorrelse((long) vedlegg.getData().length);
         verify(vedleggRepository).lagreVedleggMedData(1L, 2L, vedleggSjekk);
         verify(fillagerConnector).lagreFil(eq("123"), eq(vedleggSjekk.getFillagerReferanse()), eq("234"), any(InputStream.class));
+    }
+
+    @Test
+    public void skalGenererForhandsvisning() throws IOException {
+        when(vedleggRepository.hentVedleggStream(11L, 1L)).thenReturn(new ByteArrayInputStream(getBytesFromFile("/pdfs/minimal.pdf")));
+        byte[] bytes = soknadService.lagForhandsvisning(11L, 1L, 0);
+        assertThat(bytes, instanceOf(byte[].class));
     }
 
     @Test
@@ -288,7 +304,7 @@ public class SoknadServiceTest {
 
     @Test
     public void skalLagreSoknadFelt() {
-        Faktum faktum = new Faktum().medKey("ikkeavtjentverneplikt").medValue("false");
+        Faktum faktum = new Faktum().medKey("ikkeavtjentverneplikt").medValue("false").medFaktumId(1L);
         when(soknadRepository.lagreFaktum(1L, faktum)).thenReturn(2L);
         when(soknadRepository.hentFaktum(1L, 2L)).thenReturn(faktum);
         Vedlegg vedlegg = new Vedlegg().medVedleggId(4L).medSkjemaNummer("T3").medSoknadId(1L).medInnsendingsvalg(Vedlegg.Status.IkkeVedlegg);
@@ -296,6 +312,7 @@ public class SoknadServiceTest {
         when(vedleggRepository.opprettVedlegg(any(Vedlegg.class), any(byte[].class))).thenReturn(4L);
         soknadService.lagreSoknadsFelt(1L, faktum);
         verify(soknadRepository).settSistLagretTidspunkt(1L);
+        when(soknadRepository.hentBarneFakta(1L, faktum.getFaktumId())).thenReturn(Arrays.asList(new Faktum().medKey("subkey")));
 
         //Verifiser vedlegg sjekker.
         verify(soknadRepository).lagreFaktum(1L, faktum);
@@ -303,6 +320,12 @@ public class SoknadServiceTest {
 
     }
 
+    @Test
+    public void skalLagreVedlegg(){
+        Vedlegg vedlegg = new Vedlegg().medVedleggId(1L);
+        soknadService.lagreVedlegg(11L, 1L, vedlegg);
+        verify(vedleggRepository).lagreVedlegg(11L, 1L, vedlegg);
+    }
     @Test
     public void skalSletteBrukerfaktum() {
         when(vedleggRepository.hentVedleggForFaktum(1L, 1L)).thenReturn(new ArrayList<Vedlegg>());
@@ -355,6 +378,14 @@ public class SoknadServiceTest {
         verify(soknadRepository).opprettSoknad(soknad);
         verify(soknadRepository).lagreFaktum(anyLong(), any(Faktum.class));
         DateTimeUtils.setCurrentMillisSystem();
+    }
+
+    @Test
+    public void skalAvbryteSoknad() {
+        when(soknadRepository.hentSoknad(11L)).thenReturn(new WebSoknad().medBehandlingId("123"));
+        soknadService.avbrytSoknad(11L);
+        verify(soknadRepository).avbryt(11L);
+        verify(henvendelsesConnector).avbrytSoknad("123");
     }
 
 

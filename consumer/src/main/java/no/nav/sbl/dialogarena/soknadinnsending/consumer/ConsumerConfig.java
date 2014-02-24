@@ -10,7 +10,6 @@ import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
-import no.nav.tjeneste.virksomhet.aktoer.v1.AktoerPortType;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
@@ -50,7 +49,6 @@ public class ConsumerConfig {
 
     @Configuration
     @Import({
-            AktorWsConfig.class,
             SendSoknadWSConfig.class,
             FilLagerWSConfig.class,
             PersonInfoWSConfig.class,
@@ -173,32 +171,6 @@ public class ConsumerConfig {
             return factory().withSystemSecurity().get();
         }
 
-    }
-
-    @Configuration
-    public static class AktorWsConfig {
-        @Value("${soknad.webservice.aktor.aktorservice.url:}")
-        private String aktorServiceEndpoint;
-
-        private ServiceBuilder<AktoerPortType>.PortTypeBuilder<AktoerPortType> factory() {
-            return new ServiceBuilder<>(AktoerPortType.class)
-                    .asStandardService()
-                    .withAddress(aktorServiceEndpoint)
-                    .withWsdl("classpath:wsdl/no/nav/tjeneste/virksomhet/aktoer/v1/Aktoer.wsdl")
-                    .build()
-                    .withHttpsMock()
-                    .withMDC();
-        }
-
-        @Bean
-        public AktoerPortType aktorPortType() {
-            return factory().withSystemSecurity().get();
-        }
-
-        @Bean
-        public AktoerPortType aktorSelftestPortType() {
-            return aktorPortType();
-        }
     }
 
     @Configuration
