@@ -97,7 +97,7 @@ public class WebSoknadUtilsTest {
     }
 
     private static Faktum lagPermittert(String dato) {
-        return lagFaktum("Permittert", "permiteringsperiodedatotil", dato);
+        return lagFaktum("Permittert", "lonnspliktigperiodedatotil", dato);
     }
 
     private static Faktum lagAvskjediget(String dato) {
