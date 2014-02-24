@@ -29,7 +29,7 @@ import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.split;
 
 
-public class HandleBarKjoerer {
+public class HandleBarKjoerer implements HtmlGenerator {
 
     private Kodeverk kodeverk;
     private MessageSource navMessageSource;
