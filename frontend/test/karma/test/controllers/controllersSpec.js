@@ -49,7 +49,7 @@
                 soknad: {
                     soknadId: 1
                 },
-                config: ["soknad.sluttaarsak.url", "soknad.lonnskravskjema.url", "soknad.permitteringsskjema.url" ],
+                config: {"soknad.sluttaarsak.url": "", "soknad.lonnskravskjema.url": "", "soknad.permitteringsskjema.url":"", "minehenvendelser.link.url": "minehenvendelserurl", "soknad.inngangsporten.url": "inngangsportenurl" },
                 slettFaktum: function (faktumData) {
                     fakta.forEach(function (item, index) {
                         if (item.faktumId === faktumData.faktumId) {
@@ -256,7 +256,16 @@
             });
         });
         describe('UtdanningCtrl', function () {
-            beforeEach(inject(function ($controller) {
+            beforeEach(inject(function ($controller, data) {
+                scope.data = data;
+
+                 var utdanningNokkelFaktum = {
+                     key: 'utdanning.kveld',
+                     value: 'true'
+                 };
+
+                scope.data.leggTilFaktum(utdanningNokkelFaktum);
+
                 ctrl = $controller('UtdanningCtrl', {
                     $scope: scope
                 });
@@ -266,6 +275,58 @@
                 expect(scope.runValidationBleKalt).toEqual(false);
                 scope.valider();
                 expect(scope.runValidationBleKalt).toEqual(true);
+            });
+            it('skal kjøre metodene lukkTab og settValidert for valid form', function () {
+                spyOn(scope, "runValidation").andReturn(true);
+                spyOn(scope, "lukkTab");
+                spyOn(scope, "settValidert");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.lukkTab).toHaveBeenCalledWith('utdanning');
+                expect(scope.settValidert).toHaveBeenCalledWith('utdanning');
+            });
+            it('taben skal vaere apen nar formen ikke er valid', function () {
+                spyOn(scope, "runValidation").andReturn(false);
+                spyOn(scope, "apneTab");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.apneTab).toHaveBeenCalledWith('utdanning');
+            });
+            it('ved minst en av checkboksene avhuket skal harHuketAvCheckboks settes til true', function () {
+                expect(scope.harHuketAvCheckboks.value).toEqual(true);
+            });
+            it('hvis faktum utdanning.kveld er huket av sa skal hvis(utdanning.kveld, "true") returnere true', function () {
+                expect(scope.hvis('utdanning.kveld', 'true')).toEqual(true);
+            });
+            it('hvis faktum utdanning.kortvarig ikke er huket av sa skal hvis(utdanning.kortvarig, "true") returnere false', function () {
+                expect(scope.hvis('utdanning.kortvarig', 'true')).toEqual(false);
+            });
+            it('hvis faktum utdanning.kortvarig ikke er huket og har aldri vaert huket av sa skal hvis(utdanning.kortvarig, "true") returnere false', function () {
+                expect(scope.hvis('utdanning.kortvarig', 'false')).toEqual(false);
+            });
+            it('hvis faktum utdanning.kortvarig ikke er huket men har vaert huket av sa skal hvis(utdanning.kortvarig, "true") returnere false', function () {
+                var kortvarigFaktum = {
+                    key: 'utdanning.kortvarig',
+                    value: 'false'
+                };
+
+                scope.data.leggTilFaktum(kortvarigFaktum);
+                expect(scope.hvis('utdanning.kortvarig', 'false')).toEqual(true);
+            });
+            it('hvis faktum utdanning.kortvarig ikke er huket men har vaert huket av sa skal hvisIkke(utdanning.kortvarig) returnere true', function () {
+                var kortvarigFaktum = {
+                    key: 'utdanning.kortvarig',
+                    value: 'false'
+                };
+
+                scope.data.leggTilFaktum(kortvarigFaktum);
+                expect(scope.hvisIkke('utdanning.kortvarig')).toEqual(true);
+            });
+            it('hvis faktum utdanning.kortvarigflere ikke er huket og har ikke vaert huket av sa skal hvisIkke(utdanning.kortvarigflere) returnere false', function () {
+                expect(scope.hvisIkke('utdanning.kortvarigflere')).toEqual(false);
+            });
+            it('hvis faktum utdanning.kveld er huket sa skal hvisIkke(utdanning.kortvarigflere) returnere false', function () {
+                expect(scope.hvisIkke('utdanning.kveld')).toEqual(false);
             });
         });
         describe('ReellarbeidssokerCtrl', function () {
@@ -1204,9 +1265,19 @@
                 expect(scope.grupper[0].apen).toBe(true);
             });
         });
+        describe('FeilSideCtrl', function () {
+            beforeEach(inject(function ($controller, data) {
+                scope.data = data;
+                ctrl = $controller('FeilSideCtrl', {
+                    $scope: scope
+                });
+            }));
+
+            it('Mine innsendinger og inngagsporten skal settes til riktig url', function () {
+                expect(scope.mineInnsendinger).toEqual("minehenvendelserurl");
+                expect(scope.inngangsportenUrl).toEqual("inngangsportenurl");
+            });
+        });
 
     });
-}
-    ()
-    )
-;
+}());
