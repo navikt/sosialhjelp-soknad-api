@@ -25,7 +25,8 @@ public enum LessResources {
     STEGINDIKATOR_LESS("stegindikator"),
     MOBIL_LESS("mobil"),
     FEILSIDE_LESS("feilside"),
-    TABBING_LESS("tabbing");
+    TABBING_LESS("tabbing"),
+    HOYKONTRAST_LESS("hoykontrast");
 
     private static final String FOLDER = "css/";
     private static final String TYPE = ".less";

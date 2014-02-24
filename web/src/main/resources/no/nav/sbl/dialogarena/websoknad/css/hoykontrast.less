@@ -1,0 +1,129 @@
+body.contrast {
+  .stegindikator li.aktiv .steg {
+    background-color: #ec288d !important;
+    .tekst {
+      color: #000 !important;
+      background-color: #ec288d !important;
+    }
+  }
+  .spm-blokk {
+    border-top: 1px solid #555555;
+
+    &:hover {
+      background-color: #e6e6e6;
+
+      .flipp {
+        cursor: pointer;
+
+        .flipp:hover {
+          border-color: transparent transparent #911958 transparent !important;
+
+          &:before {
+            border-top: @flipp-size solid #ec288d !important;
+          }
+        }
+      }
+    }
+    .flipp:hover {
+      border-color: transparent transparent #004283 transparent !important;
+
+      &:before {
+        border-top: @flipp-size solid #0067c5 !important;
+      }
+    }
+    &.open {
+      background-color: white;
+
+      .flipp {
+        cursor: pointer;
+        border-color: transparent transparent #911958 transparent;
+
+        &:before {
+          border-top: @flipp-size solid #ec288d;
+        }
+      }
+    }
+    &.validert,  {
+      .accordion-heading h2:before {
+        background: url(../img/hake-hvit.svg) no-repeat center 10px;
+      }
+    }
+  }
+
+  .lastetopp, .behandlet {
+    h2:before {
+      background: url(../img/hake-hvit.svg) no-repeat center 10px !important;
+    }
+  }
+
+  a.accordion-toggle, #vedlegg a.accordion-toggle {
+    display: block;
+    outline: none;
+    &:active {
+      .flipp {
+        cursor: pointer;
+        border-color: transparent transparent #911958 transparent;
+
+        &:before {
+          border-top: 30px solid #ec288d;
+        }
+      }
+    }
+    &:focus {
+      .flipp {
+        cursor: pointer;
+        border-color: transparent transparent #911958 transparent;
+
+        &:before {
+          border-top: 30px solid #ec288d;
+        }
+      }
+    }
+  }
+
+  .accordion-group.validert, .vedlegg-bolk.validert {
+    .flipp {
+      cursor: pointer;
+      border-color: transparent transparent #911958 transparent;
+
+      &:before {
+        border-top: 30px solid #ec288d;
+      }
+    }
+  }
+
+  .knapp-liten {
+    background-color: #ffffff !important;
+    color: #000000;
+
+    &:hover {
+      background-color: #0ca9e1 !important;
+      border: 1px solid #0ca9e1 !important;
+      color: #000;
+    }
+  }
+  .knapp-leggtil-liten, #vedlegg .knapp-link {
+    color: #ffffff !important;
+
+    &:hover {
+      background-color: #0ca9e1 !important;
+      border-color: #0ca9e1;
+      color: #000000 !important;
+    }
+  }
+
+  .knapp-hoved {
+    background-color: #0ca9e1 !important;
+    border-color: #0ca9e1;
+    color: #000000 !important;
+
+    &:hover {
+      background-color: #ffffff !important;
+      border-color: #ffffff;
+    }
+  }
+
+  .vedlegginfoboks [class*="ikon-vedlegg-strek"] {
+    background-image: url(../img/vedlegg-hvit.svg);
+  }
+}
