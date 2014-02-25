@@ -1346,10 +1346,14 @@
             });
         });
         describe('ArbeidsforholdNyttCtrl', function () {
-            beforeEach(inject(function ($controller, $compile, data, $location) {
+            beforeEach(inject(function ($injector, $controller, $compile, data, $location) {
                 scope.data = data;
                 location = $location;
                 location.$$url = '/111';
+
+                $httpBackend = $injector.get('$httpBackend');
+                $httpBackend.expectGET(/\d/).
+                respond('');
 
                 var af1 = {
                     key: 'arbeidsforhold',
@@ -1381,6 +1385,21 @@
                 expect(scope.lonnskravSkjema).toEqual("lonnskravSkjema");
                 expect(scope.sluttaarsak.properties).toNotBe(undefined);
                 expect(scope.sluttaarsak.properties.type).toEqual(undefined);
+
+                scope.lagreArbeidsforhold(form);
+                expect(form.$valid).toBe(false);
+                
+                scope.arbeidsforhold.properties.arbeidsgivernavn = "A";
+                scope.arbeidsforhold.properties.datofra = "2014-10-10";
+                scope.arbeidsforhold.properties.datotil = "2014-10-10";
+                scope.arbeidsforhold.properties.type = "Avskjediget"
+                scope.sluttaarsak.properties.type = "Avskjediget"
+                scope.arbeidsforhold.properties.land = "NOR"
+                scope.arbeidsforhold.properties.eosland = "false"
+                scope.arbeidsforhold.properties.avskjedigetGrunn= "***REMOVED***11111111"
+                form.$valid =true;
+                
+                scope.lagreArbeidsforhold(form);
             });
 
         });
