@@ -272,6 +272,25 @@ form, [ng-form], [data-ng-form] {
             .bilde {
                 width: 220px;
                 height: 311px;
+
+                &:hover {
+                    &:before {
+                        background: url(../img/forstorr.svg) no-repeat;
+                    }
+                }
+
+                &:before {
+                    content: "";
+                    z-index: 1010;
+                    display: block;
+                    width: 20%;
+                    height: 20%;
+                    position: absolute;
+                    background: url(../img/forstorr.svg) no-repeat;
+                    background-size: 100%;
+                    top: 40%;
+                    left: 40%;
+                }
             }
         }
     }
