@@ -30,7 +30,7 @@ public class ConfigService {
     private String lonnskravSkjemaUrl;
     @Value("${soknad.permitteringsskjema.url}")
     private String permitteringskjemaUrl;
-    @Value("${dittnavlink.url}")
+    @Value("${dittnav.link.url}")
     private String dittnavUrl;
     
     
