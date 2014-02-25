@@ -16,7 +16,9 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -29,15 +31,16 @@ import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.split;
 
 
+@Service
 public class HandleBarKjoerer implements HtmlGenerator {
 
+
+    @Inject
     private Kodeverk kodeverk;
+
+    @Inject
     private MessageSource navMessageSource;
 
-    public HandleBarKjoerer(Kodeverk kodeverk, MessageSource navMessageSource) {
-        this.kodeverk = kodeverk;
-        this.navMessageSource = navMessageSource;
-    }
 
     public String fyllHtmlMalMedInnhold(WebSoknad soknad, String file) throws IOException {
         return getHandlebars().compile(file)

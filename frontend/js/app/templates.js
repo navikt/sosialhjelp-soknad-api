@@ -617,7 +617,7 @@ angular.module("../views/templates/arbeidsforhold/konkurs.html", []).run(["$temp
     "                }}</a>\n" +
     "        </li>\n" +
     "        <li>\n" +
-    "            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.4' | cmstekst }}</p>\n" +
+    "            <p>{{ 'arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.4' | cmstekst }}</p>\n" +
     "        </li>\n" +
     "    </ul>\n" +
     "</div>");
@@ -1991,7 +1991,7 @@ angular.module("../views/templates/kvittering-fortsettsenere.html", []).run(["$t
     "    	<a href=\"#/fortsettsenere\">{{ 'dagpenger.fortsettSenere.kvittering.sendpaanyttlink' | cmstekst }}</a>\n" +
     "    	<p>{{ 'dagpenger.fortsettSenere.kvittering.frist' | cmstekst }}</p>\n" +
     "    	<p>{{ 'dagpenger.fortsettSenere.kvittering.konsekvens-vente' | cmstekst }}</p>\n" +
-    "    	<a href=\"#/soknad\">{{ 'dagpenger.fortsettSenere.fortsettlink' | cmstekst }}</a>\n" +
+    "    	<a href=\"#{{ forrigeSide }}\">{{ 'dagpenger.fortsettSenere.fortsettlink' | cmstekst }}</a>\n" +
     "    	<a href=\"{{ inngangsportenUrl }}\" id=\"dittnav\" role=\"link\">{{ 'dagpenger.fortsettSenere.dittNav' | cmstekst }}</a>\n" +
     "    </div>\n" +
     "</div>\n" +
