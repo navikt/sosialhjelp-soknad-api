@@ -617,7 +617,7 @@ angular.module("../views/templates/arbeidsforhold/konkurs.html", []).run(["$temp
     "                }}</a>\n" +
     "        </li>\n" +
     "        <li>\n" +
-    "            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.4' | cmstekst }}</p>\n" +
+    "            <p>{{ 'arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.4' | cmstekst }}</p>\n" +
     "        </li>\n" +
     "    </ul>\n" +
     "</div>");
