@@ -57,9 +57,8 @@ public class DefaultPersonaliaService implements PersonaliaService {
     @Inject
     private EosBorgerService eosBorgerService;
 
-    //TODO: Må fikses, ikke returnere tom personalia når manglende svar fra TPS.
+
     @Override
-//    public Personalia hentPersonalia(String fodselsnummer) {
     public Personalia hentPersonalia(String fodselsnummer) {
         XMLHentKontaktinformasjonOgPreferanserResponse preferanserResponse;
         HentKjerneinformasjonResponse kjerneinformasjonResponse;
@@ -89,11 +88,8 @@ public class DefaultPersonaliaService implements PersonaliaService {
         HentKjerneinformasjonResponse kjerneinformasjonResponse;
 
         try {
-            logger.warn("Kaller kjerneinformasjon " + fodselsnummer);
             kjerneinformasjonResponse = personConnector.hentKjerneinformasjon(lagXMLRequestKjerneinformasjon(fodselsnummer));
-            logger.warn("Kaller preferanser " + fodselsnummer);
             preferanserResponse = brukerProfil.hentKontaktinformasjonOgPreferanser(lagXMLRequestPreferanser(fodselsnummer));
-            logger.warn("Kalt TPS-tjenestene");
         } catch (IkkeFunnetException e) {
             logger.warn("Ikke funnet person i TPS");
             return new Personalia();
@@ -108,7 +104,6 @@ public class DefaultPersonaliaService implements PersonaliaService {
             return new Personalia();
         }
 
-        logger.warn("TPS-tjenester kalt");
         Personalia personalia = PersonaliaTransform.mapTilPersonalia(preferanserResponse, kjerneinformasjonResponse, kodeverk);
         List<Barn> barn = FamilierelasjonTransform.mapFamilierelasjon(kjerneinformasjonResponse);
 
