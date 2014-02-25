@@ -1516,6 +1516,13 @@
                 };
                 scope.data.leggTilFaktum(faktumStonadFisker);
 
+                var faktumSykepenger = {
+                    key: 'sykepenger',
+                    value: 'true',
+                    $save: function() {}
+                };
+                scope.data.leggTilFaktum(faktumSykepenger);
+
                 ctrl = $controller('YtelserCtrl', {
                     $scope: scope
                 });
@@ -1550,7 +1557,7 @@
             });
 
             it('hvis det skjer en endring på en av checkboksene men fortsatt er en av dem avhuket ekskludert den siste sa skal harHuketAvChekboks vaere true', function () {
-                scope.endreNavYtelse();
+                scope.endreYtelse();
                 expect(scope.harHuketAvCheckboksYtelse.value).toEqual('true');
             });
 
@@ -1562,12 +1569,9 @@
                     }
                 };
                 scope.data.leggTilFaktum(faktumStonadFisker);
-                scope.$apply();
-                scope.endreNavYtelse();
-                scope.$apply();
-                expect(scope.harHuketAvCheckboksNavYtelse.value).toEqual('');
+                scope.endreYtelse();
+                expect(scope.harHuketAvCheckboksYtelse.value).toEqual('');
             });
-
 
             it('hvis den siste checkboksen blir huket av sa skal alle tidligere checkbokser som er huket av bli avhuket', function () {
                 var stonadFisker = {
@@ -1593,7 +1597,7 @@
 
                 scope.data.leggTilFaktum(stonadFisker);
                 scope.data.leggTilFaktum(offentligTjenestepensjon);
-                scope.endreNavYtelse();
+                scope.endreYtelse();
 
                 expect(scope.harHuketAvCheckboksYtelse.value).toEqual('true');
 
@@ -1601,6 +1605,7 @@
                 scope.endreIngenYtelse();
                 expect(scope.harHuketAvCheckboksYtelse.value).toEqual('true');
             });
+
             it('hvis den siste checkboksen blir avhuket slik at den ikke er huket av sa skal harHuketAvChekboks settes til tom string', function () {
                 var ingenYtelse = {
                     key: 'ingenYtelse',
@@ -1614,6 +1619,67 @@
                 expect(scope.harHuketAvCheckboksYtelse.value).toEqual('');
             });
 
+            it('skal ha satt property harHuketAv... når man har lagt inn faktum for sykepenger', function () {
+                expect(scope.harHuketAvCheckboksNavYtelse.value).toBe('true');
+            });
+
+            it('hvis det skjer en endring på en av NAVcheckboksene men fortsatt er en av dem avhuket ekskludert den siste sa skal harHuketAvChekboks vaere true', function () {
+                scope.endreNavYtelse();
+                expect(scope.harHuketAvCheckboksNavYtelse.value).toEqual('true');
+            });
+
+            it('hvis det skjer en endring på NAVcheckboksene slik at ingen er huket av lengre så skal harHuketAvChekboks satt til tom string', function () {
+                var faktumSykepenger = {
+                    key: 'sykepenger',
+                    value: 'false',
+                    $save: function() {}
+                };
+                scope.data.leggTilFaktum(faktumSykepenger);
+                scope.endreNavYtelse();
+                expect(scope.harHuketAvCheckboksNavYtelse.value).toEqual('');
+            });
+
+            it('hvis den siste NAVcheckboksen blir huket av sa skal alle tidligere checkbokser som er huket av bli avhuket', function () {
+                var faktumSykepenger = {
+                    key: 'sykepenger',
+                    value: 'true',
+                    $save: function(){}
+                };
+
+                var offentligTjenestepensjon = {
+                    key: 'aap',
+                    value: 'true',
+                    $save: function() {}
+
+                };
+                var ingenYtelse = {
+                    key: 'ingennavytelser',
+                    value: 'true',
+                    $save: function() {}
+                };
+
+                scope.data.leggTilFaktum(faktumSykepenger);
+                scope.data.leggTilFaktum(offentligTjenestepensjon);
+                scope.endreNavYtelse();
+
+                expect(scope.harHuketAvCheckboksNavYtelse.value).toEqual('true');
+
+                scope.data.leggTilFaktum(ingenYtelse);
+                scope.endreIngenNavYtelse();
+                expect(scope.harHuketAvCheckboksNavYtelse.value).toEqual('true');
+            });
+
+            it('hvis den siste NAVcheckboksen blir avhuket slik at den ikke er huket av sa skal harHuketAvChekboks settes til tom string', function () {
+                var ingenYtelse = {
+                    key: 'ingennavytelser',
+                    value: 'false',
+                    $save: function() {}
+                };
+
+                scope.data.leggTilFaktum(ingenYtelse);
+                scope.endreIngenNavYtelse();
+                expect(scope.harHuketAvCheckboksNavYtelse.value).toEqual('');
+            });
         });
         describe('PersonaliaCtrl', function () {
             beforeEach(inject(function ($controller, data) {
