@@ -44,15 +44,25 @@
                 soknad: {
                     soknadId: 1
                 },
-                config: {"soknad.sluttaarsak.url": "sluttaarsakUrl", "soknad.lonnskravskjema.url": "lonnskravSkjema", "soknad.permitteringsskjema.url": "permiteringUrl",
-                    "minehenvendelser.link.url": "minehenvendelserurl", "soknad.inngangsporten.url": "inngangsportenurl",
-                    "soknad.skjemaveileder.url": "skjemaVeilederUrl", "soknad.brukerprofil.url": "brukerprofilUrl" },
+                config: {"soknad.sluttaarsak.url": "sluttaarsakUrl",
+                    "soknad.lonnskravskjema.url": "lonnskravSkjema",
+                    "soknad.permitteringsskjema.url": "permiteringUrl",
+                    "minehenvendelser.link.url": "minehenvendelserurl",
+                    "soknad.inngangsporten.url": "inngangsportenurl",
+                    "soknad.skjemaveileder.url": "skjemaVeilederUrl",
+                    "soknad.brukerprofil.url": "brukerprofilUrl",
+                    "soknad.reelarbeidsoker.url": "reelArbeidsokerUrl",
+                    "soknad.alderspensjon.url": "alderspensjonUrl",
+                    "soknad.dagpengerbrosjyre.url": "dagpengerBrosjyreUrl" },
+
                 slettFaktum: function (faktumData) {
                     fakta.forEach(function (item, index) {
                         if (item.faktumId === faktumData.faktumId) {
                             fakta.splice(index, 1);
                         }
                     });
+                },
+                utslagskriterier: {
                 }
             });
             $provide.value("cms", {'tekster': {'barnetillegg.nyttbarn.landDefault': ''}});
@@ -1678,7 +1688,7 @@
                 var faktum = {
                     key: 'personalia',
                     properties: {
-                        alder: "61",
+                        alder: "61"
                     }
                 };
                 scope.data.leggTilFaktum(faktum);
@@ -1693,6 +1703,24 @@
             it('hvis personen ikke har et kjønn så skal erKvinne returnere true', function () {
                 expect(scope.erKvinne()).toEqual(false);
             });
+        });
+        describe('InformasjonsSideCtrl', function () {
+            beforeEach(inject(function ($controller, data) {
+                scope.data = data;
+
+                ctrl = $controller('InformasjonsSideCtrl', {
+                    $scope: scope
+                });
+            }));
+
+            it('alle url skal bli statt til riktig url', function () {
+                expect(scope.alderspensjonUrl).toEqual('alderspensjonUrl');
+                expect(scope.mineHenveldelserUrl).toEqual('minehenvendelserurl');
+                expect(scope.reelArbeidsokerUrl).toEqual('reelArbeidsokerUrl');
+                expect(scope.dagpengerBrosjyreUrl).toEqual('dagpengerBrosjyreUrl');
+                expect(scope.inngangsportenUrl).toEqual('inngangsportenurl');
+            });
+
         });
     });
 }());
