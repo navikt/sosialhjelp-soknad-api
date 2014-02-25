@@ -305,15 +305,6 @@
                 expect(scope.runValidation).toHaveBeenCalledWith(false);
                 expect(scope.apneTab).toHaveBeenCalledWith('tilleggsopplysninger');
             });
-
-            it('skal faa branchcoverage', function () {
-                spyOn(scope, "runValidation").andReturn(undefined);
-                spyOn(scope, "apneTab");
-                scope.valider(false);
-                expect(scope.runValidation).toHaveBeenCalledWith(false);
-                expect(scope.apneTab).toHaveBeenCalledWith('tilleggsopplysninger');
-            });
-
         });
         describe('UtdanningCtrl', function () {
             beforeEach(inject(function ($controller, data) {
