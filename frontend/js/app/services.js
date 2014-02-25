@@ -47,7 +47,7 @@
                             data.soknad.sistLagret = new Date().getTime();
                         }
                         var urlArray = response.config.url.split('/');
-                        if (urlArray.contains('fakta')) {
+                        if (urlArray.contains('fakta') && response.data.key !== 'epost') {
                             data.soknad.delstegStatus = 'UTFYLLING';
                         } else if (urlArray.contains('vedlegg')) {
                             data.soknad.delstegStatus = 'SKJEMA_VALIDERT';
