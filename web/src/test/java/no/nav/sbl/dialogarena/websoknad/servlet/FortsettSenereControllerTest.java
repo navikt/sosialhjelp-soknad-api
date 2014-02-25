@@ -7,7 +7,7 @@ public class FortsettSenereControllerTest {
 
 	@Test
 	public void skalKunneGenerereGjenopptaUrl() {
-		Assert.assertEquals("http://a34duvw22583.devillo.no:8181/sendsoknad/soknad/abc-123-def#/soknad",
+		Assert.assertEquals("http://a34duvw22583.devillo.no:8181/sendsoknad/soknad/abc-123-def",
 				ServerUtils.getGjenopptaUrl("http://a34duvw22583.devillo.no:8181/sendsoknad/rest/soknad/244/fortsettsenere", "abc-123-def"));
 	}
 	

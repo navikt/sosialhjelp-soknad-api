@@ -22,7 +22,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Component
 public class HenvendelseConnector {
 
-    private static final Logger LOGGER = getLogger(HenvendelseConnector.class);
+    private static final Logger logger = getLogger(HenvendelseConnector.class);
     private static final String SOKNADINNSENDING = "SEND_SOKNAD";
     @Inject
     @Named("sendSoknadService")
@@ -33,11 +33,11 @@ public class HenvendelseConnector {
     }
 
     public String startSoknad(String fnr, String skjema, String uid) {
-        LOGGER.info("Inne i metoden for startSoknad");
+        logger.info("Inne i metoden for startSoknad");
         try {
             return sendSoknadService.startSoknad(createXMLStartSoknadRequest(fnr, createXMLSkjema(skjema, uid))).getBehandlingsId();
         } catch (SOAPFaultException e) {
-            LOGGER.error("Feil ved start søknad for bruker " + fnr, e);
+            logger.error("Feil ved start søknad for bruker " + fnr, e);
             throw new SystemException("Kunne ikke opprette ny søknad", e, "exception.system.baksystem");
         }
     }
@@ -49,7 +49,7 @@ public class HenvendelseConnector {
                     .withMetadata(vedlegg));
             sendSoknadService.sendSoknad(parameters);
         } catch (SOAPFaultException e) {
-            LOGGER.error("Feil ved innsending av søknad: " + e, e);
+            logger.error("Feil ved innsending av søknad: " + e, e);
             throw new SystemException("Kunne ikke opprette ny søknad", e, "exception.system.baksystem");
         }
     }
@@ -63,11 +63,11 @@ public class HenvendelseConnector {
     }
 
     public void avbrytSoknad(String behandlingsId) {
-        LOGGER.debug("Avbryt søknad");
+        logger.debug("Avbryt søknad");
         try {
             sendSoknadService.avbrytSoknad(behandlingsId);
         } catch (SOAPFaultException e) {
-            LOGGER.error("Kunne ikke avbryte søknad med ID {}", behandlingsId, e);
+            logger.error("Kunne ikke avbryte søknad med ID {}", behandlingsId, e);
             throw new SystemException("Kunne ikke avbryte søknad", e, "exception.system.baksystem");
         }
     }

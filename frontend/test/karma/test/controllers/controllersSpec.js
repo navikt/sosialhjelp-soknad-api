@@ -202,7 +202,7 @@
                 var faktum = {
                     key: 'egennaering.gardsbruk.false.type.dyr',
                     value: 'true'
-                }
+                };
                 scope.data.leggTilFaktum(faktum);
                 scope.endreTypeGardsbruk();
                 expect(scope.harHuketAvTypeGardsbruk.value).toEqual(true);
@@ -234,10 +234,6 @@
                 scope.summererAndeleneTil100();
                 expect(scope.prosentFeil()).toEqual(false);
             });
-
-
-
-
         });
         describe('vernepliktCtrl', function () {
             beforeEach(inject(function ($controller, $compile) {
@@ -1323,12 +1319,7 @@
             });
         });
         describe('ArbeidsforholdNyttCtrl', function () {
-            beforeEach(inject(function ($controller, $compile, data, $location, $injector) {
-                var regEx = 'DNK?rand='+ new RegExp('\d');
-                $httpBackend = $injector.get('$httpBackend');
-                $httpBackend.expectGET('/sendsoknad/rest/ereosland/' + regEx ).
-                    respond('true');
-
+            beforeEach(inject(function ($controller, $compile, data, $location) {
                 scope.data = data;
                 location = $location;
                 location.$$url = '/111';
@@ -1364,11 +1355,7 @@
                 expect(scope.sluttaarsak.properties).toNotBe(undefined);
                 expect(scope.sluttaarsak.properties.type).toEqual(undefined);
             });
-            it('hvis landet endrer seg til et eos-land så skal propertien eosland settes til true', function () {
-//                scope.arbeidsforhold.properties.land = 'DNK';
-//                scope.$apply();
-//                expect(scope.arbeidsforhold.properties.eosland).toEqual(true);
-            });
+
         });
         describe('AvbrytCtrl', function () {
             beforeEach(inject(function ($controller, data) {
@@ -1490,6 +1477,110 @@
                 expect(scope.mineHenveldelserBaseUrl).toEqual("minehenvendelserurl");
                 expect(scope.skjemaVeilederUrl).toEqual("skjemaVeilederUrl");
             });
+        });
+        describe('YtelserCtrl', function () {
+            beforeEach(inject(function ($controller, data) {
+                scope.data = data;
+                var faktumStonadFisker = {
+                    key: 'stonadFisker',
+                    value: 'true',
+                $save: function() {}
+                };
+                scope.data.leggTilFaktum(faktumStonadFisker);
+
+                ctrl = $controller('YtelserCtrl', {
+                    $scope: scope
+                });
+            }));
+
+            it('skal kjøre metodene lukkTab og settValidert for valid form', function () {
+                spyOn(scope, "runValidation").andReturn(true);
+                spyOn(scope, "lukkTab");
+                spyOn(scope, "settValidert");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.lukkTab).toHaveBeenCalledWith('ytelser');
+                expect(scope.settValidert).toHaveBeenCalledWith('ytelser');
+            });
+
+            it('skal kalle metode for å validere form', function () {
+                expect(scope.runValidationBleKalt).toEqual(false);
+                scope.valider();
+                expect(scope.runValidationBleKalt).toEqual(true);
+            });
+            
+            it('taben skal vaere apen nar formen ikke er valid', function () {
+                spyOn(scope, "runValidation").andReturn(false);
+                spyOn(scope, "apneTab");
+                scope.valider(false);
+                expect(scope.runValidation).toHaveBeenCalledWith(false);
+                expect(scope.apneTab).toHaveBeenCalledWith('ytelser');
+            });
+
+            it('skal ha satt property harHuketAv... når man har lagt inn faktum for stonadFisker', function () {
+                expect(scope.harHuketAvCheckboksYtelse.value).toBe('true');
+            });
+
+            it('hvis det skjer en endring på en av checkboksene men fortsatt er en av dem avhuket ekskludert den siste sa skal harHuketAvChekboks vaere true', function () {
+                scope.endreNavYtelse();
+                expect(scope.harHuketAvCheckboksYtelse.value).toEqual('true');
+            });
+
+            it('hvis det skjer en endring på checkboksene slik at ingen er huket av lengre så skal harHuketAvChekboks satt til tom string', function () {
+                var faktumStonadFisker = {
+                    key: 'stonadFisker',
+                    value: 'false',
+                    $save: function() {}
+                };
+                scope.data.leggTilFaktum(faktumStonadFisker);
+                scope.$apply();
+                scope.endreNavYtelse();
+                scope.$apply();
+                expect(scope.harHuketAvCheckboksNavYtelse.value).toEqual('');
+            });
+
+
+            it('hvis den siste checkboksen blir huket av sa skal alle tidligere checkbokser som er huket av bli avhuket', function () {
+                var stonadFisker = {
+                    key: 'stonadFisker',
+                    value: 'true',
+                    $save: function(){}
+                };
+
+                var offentligTjenestepensjon = {
+                    key: 'offentligTjenestepensjon',
+                    value: 'true',
+                    $save: function() {}
+
+                };
+                var ingenYtelse = {
+                    key: 'ingenYtelse',
+                    value: 'true',
+                    $save: function() {}
+                };
+
+                scope.data.leggTilFaktum(stonadFisker);
+                scope.data.leggTilFaktum(offentligTjenestepensjon);
+                scope.endreNavYtelse();
+
+                expect(scope.harHuketAvCheckboksYtelse.value).toEqual('true');
+
+                scope.data.leggTilFaktum(ingenYtelse);
+                scope.endreIngenYtelse();
+                expect(scope.harHuketAvCheckboksYtelse.value).toEqual('true');
+            });
+            it('hvis den siste checkboksen blir avhuket slik at den ikke er huket av sa skal harHuketAvChekboks settes til tom string', function () {
+                var ingenYtelse = {
+                    key: 'ingenYtelse',
+                    value: 'false',
+                    $save: function() {}
+                };
+
+                scope.data.leggTilFaktum(ingenYtelse);
+                scope.endreIngenYtelse();
+                expect(scope.harHuketAvCheckboksYtelse.value).toEqual('');
+            });
+
         });
     });
 }());
