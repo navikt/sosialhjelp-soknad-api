@@ -87,17 +87,13 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 			}
 		};
 
-        $scope.test ="";
 		function lagreArbeidsforholdOgSluttaarsak() {
-            console.log("her")
             $scope.arbeidsforhold.$save({soknadId: data.soknad.soknadId}).then(function (arbeidsforholdData) {
-				$scope.arbeidsforhold = arbeidsforholdData;
+                $scope.arbeidsforhold = arbeidsforholdData;
 				oppdaterFaktumListe('arbeidsforhold', arbeidsforholdData);
 				oppdaterCookieValue(arbeidsforholdData.faktumId);
                 $location.path('soknad');
-                $scope.test = arbeidsforholdData;
 			});
-
         }
 
 		function oppdaterCookieValue(faktumId) {
