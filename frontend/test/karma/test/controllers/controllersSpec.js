@@ -2043,5 +2043,56 @@
                 expect(scope.forrigeSide).toEqual('Forrige side');
             });
         });
+        describe('FortsettSenereKvitteringCtrl', function () {
+            beforeEach(inject(function ($controller, data, $location) {
+                scope.data = data;
+
+                var epostFaktum = {
+                    key: 'epost',
+                    value: 'epost@epost.no'
+                };
+                scope.data.leggTilFaktum(epostFaktum);
+
+                location = $location;
+                ctrl = $controller('FortsettSenereKvitteringCtrl', {
+                    $scope: scope
+                });
+
+                scope.$apply();
+            }));
+
+            it('scope.epost skal bli satt til eposten som ligger på data', function () {
+                expect(scope.epost.value).toEqual('epost@epost.no');
+            });
+            it('scope.forrigeSide skal bli satt til /soknad hvis den ikke finnes fra før', function () {
+                expect(scope.forrigeSide).toEqual('/soknad');
+            });
+            it('sette riktig urler', function () {
+                expect(scope.inngangsportenUrl).toEqual('inngangsportenurl');
+            });
+        });
+        describe('FortsettSenereKvitteringCtrlMedForrigeSide', function () {
+            beforeEach(inject(function ($controller, data, $location) {
+                scope.data = data;
+                scope.forrigeSide = "Forrige side";
+
+                var epostFaktum = {
+                    key: 'epost',
+                    value: 'epost@epost.no'
+                };
+                scope.data.leggTilFaktum(epostFaktum);
+
+                location = $location;
+                ctrl = $controller('FortsettSenereKvitteringCtrl', {
+                    $scope: scope
+                });
+
+                scope.$apply();
+            }));
+
+            it('scope.forrigeSide skal bli satt til /soknad hvis den ikke finnes fra før', function () {
+                expect(scope.forrigeSide).toEqual('Forrige side');
+            });
+        });
     });
 }());
