@@ -15,16 +15,16 @@
         <span data-ng-if="af.sluttaarsak.properties.permiteringsperiodedatotil" data-ng-bind="af.sluttaarsak.properties.permiteringsperiodedatotil | date:'dd.MM.yyyy'"></span>
     </li>
     <li>
-        <p data-cmstekster="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet"> </p>
+        <p>{{ 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet' | cmstekst }}</p>
         <span data-ng-bind="af.sluttaarsak.properties.lonnspliktigperiodedatofra | date:'dd.MM.yyyy'"></span>
         <span data-ng-if="af.sluttaarsak.properties.lonnspliktigperiodedatotil"> TIL </span>
         <span data-ng-if="af.sluttaarsak.properties.lonnspliktigperiodedatotil" data-ng-bind="af.sluttaarsak.properties.lonnspliktigperiodedatotil | date:'dd.MM.yyyy'"></span>
     </li>
     <li>
-        <span data-cmstekster="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad"></span>
+        <span>{{ 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad' | cmstekst }}</span>
         <p>
             <span data-ng-bind="af.sluttaarsak.properties.permitteringProsent"></span>
-            <span class="prosent" data-cmstekster="arbeidsforhold.permittert.prosent"></span>
+            <span class="prosent">{{ 'arbeidsforhold.permittert.prosent' | cmstekst }}</span>
         </p>
     </li>
 </ul>
@@ -33,16 +33,16 @@
 <div data-vedlegginfoboks>
     <ul>
         <li>
-            <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></p>
+            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</p>
         </li>
         <li>
-            <p data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2"></p>
-            <a href="{{permiteringUrl}}" data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2.lenketekst">
+            <p>{{ 'arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2' | cmstekst }}</p>
+            <a href="{{permiteringUrl}}">
+                {{ 'arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2.lenketekst' | cmstekst }}
             </a>
         </li>
         <li>
-            <p data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.3"></p>
+            <p>{{ 'arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.3' | cmstekst }}</p>
         </li>
     </ul>
-    </p>
 </div>

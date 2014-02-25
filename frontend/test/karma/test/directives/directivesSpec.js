@@ -62,8 +62,8 @@ describe('directives', function () {
 
             element = angular.element(
                 '<div name="testdiv" >' +
-                    '<input type="text" name="testinput" cmstekster="nokkel.input" />' +
-                    '<span name="testspan" cmstekster="nokkel.label"></span>' +
+                    '<input type="text" name="testinput" value="{{ \'nokkel.input\' | cmstekst }}">' +
+                    '<span name="testspan">{{ \'nokkel.label\' | cmstekst }}</span>' +
                     '</div>'
             );
             $compile(element)(scope);
