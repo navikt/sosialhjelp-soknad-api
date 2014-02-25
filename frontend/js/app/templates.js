@@ -1239,15 +1239,12 @@ angular.module("../views/templates/barnetillegg/barnetillegg.html", []).run(["$t
     "<div class=\"skjemaramme\">\n" +
     "    <div id=\"barnetilleggForm\" data-ng-form=\"barnetilleggForm\" class=\"skjemainnhold\"\n" +
     "         data-ng-controller=\"BarnetilleggCtrl\" novalidate>\n" +
-    "\n" +
     "        <p class=\"informasjonstekst\" cmstekster=\"barnetillegg.informasjon\"></p>\n" +
-    "\n" +
     "        <div class=\"barnetillegg-bokser\">\n" +
     "            <div class=\"spm-boks vertikal\" data-ng-repeat=\"b in barn\">\n" +
     "                <div data-ng-class=\"{gutt: erGutt(b), jente:erJente(b)}\" id=\"barnetillegg{{b.faktumId}}\" class=\"barn\">\n" +
     "                    <a href=\"#\" class=\"lukk\" data-ng-show=\"erBrukerregistrert(b)\"\n" +
     "                       data-ng-click=\"slettBarn(b, $index, $event)\"> </a>\n" +
-    "\n" +
     "                    <div class=\"barnealder\">\n" +
     "                        <span data-cmstekster=\"aar\"></span>\n" +
     "                        <span class=\"alder robust\" data-ng-bind=\"b.properties.alder\"></span>\n" +
