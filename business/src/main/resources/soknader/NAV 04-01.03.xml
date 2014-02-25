@@ -500,16 +500,7 @@
 		<property>arbeidsgivernavn</property>
 		<flereTillatt>true</flereTillatt>
 	</vedlegg>
-	<vedlegg>
-		<id>4</id>
-		<faktum>arbeidsforhold</faktum>
-		<skjemaNummer>NAV 04-08.03</skjemaNummer>
-		<property>arbeidsgivernavn</property>
-		<onProperty>type</onProperty>
-		<onValue>Permittert</onValue>
-		<inverted>true</inverted>
-		<flereTillatt>true</flereTillatt>
-	</vedlegg>
+
 	<vedlegg>
 		<id>4</id>
 		<faktum>arbeidsforhold</faktum>
@@ -546,7 +537,6 @@
 		<onValue>Permittert</onValue>
 		<flereTillatt>true</flereTillatt>
 	</vedlegg>
-	
 	<vedlegg>
 		<id>6</id>
 		<faktum>barn</faktum>
