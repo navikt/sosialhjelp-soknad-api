@@ -25,13 +25,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @ControllerAdvice
 @Controller
 public class ExceptionController {
-    private static final Logger LOG = LoggerFactory.getLogger(ExceptionController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExceptionController.class);
 
     @ExceptionHandler(UgyldigOpplastingTypeException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     public ResponseEntity<RestFeil> handterFeilType(UgyldigOpplastingTypeException ex) {
-        LOG.warn("Feilet opplasting med: " + ex, ex);
+        logger.warn("Feilet opplasting med: " + ex, ex);
         return getResult(ex.getId(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
 
@@ -39,7 +39,7 @@ public class ExceptionController {
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     public ResponseEntity<RestFeil> handterVedleggException(OpplastingException ex) {
-        LOG.warn("Feilet opplasting med: " + ex, ex);
+        logger.warn("Feilet opplasting med: " + ex, ex);
         return getResult(ex.getId(), HttpStatus.NOT_ACCEPTABLE);
     }
 
@@ -47,14 +47,14 @@ public class ExceptionController {
     @ExceptionHandler({ApplicationException.class, SystemException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<RestFeil> handlerApplicationException(ModigException ex) {
-        LOG.warn("Rest kall feilet med: " + ex, ex);
+        logger.warn("Rest kall feilet med: " + ex, ex);
         return getResult(ex.getId(), HttpStatus.BAD_REQUEST);
     }
     @ResponseBody
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<RestFeil> handlerException(Exception ex) {
-        LOG.warn("Rest kall feilet med: " + ex, ex);
+        logger.warn("Rest kall feilet med: " + ex, ex);
         return getResult("generell", HttpStatus.BAD_REQUEST);
     }
 
