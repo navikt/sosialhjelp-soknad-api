@@ -14,12 +14,7 @@
 
         beforeEach(module(function ($provide) {
             var fakta = [
-                {
-                    key: 'personalia',
-                    properties: {
-                        alder: "61"
-                    }
-                }
+                {}
             ];
 
             $provide.value("data", {
@@ -49,9 +44,9 @@
                 soknad: {
                     soknadId: 1
                 },
-                config: {"soknad.sluttaarsak.url": "sluttaarsakUrl", "soknad.lonnskravskjema.url": "lonnskravSkjema", "soknad.permitteringsskjema.url":"permiteringUrl",
+                config: {"soknad.sluttaarsak.url": "sluttaarsakUrl", "soknad.lonnskravskjema.url": "lonnskravSkjema", "soknad.permitteringsskjema.url": "permiteringUrl",
                     "minehenvendelser.link.url": "minehenvendelserurl", "soknad.inngangsporten.url": "inngangsportenurl",
-                    "soknad.skjemaveileder.url": "skjemaVeilederUrl" },
+                    "soknad.skjemaveileder.url": "skjemaVeilederUrl", "soknad.brukerprofil.url": "brukerprofilUrl" },
                 slettFaktum: function (faktumData) {
                     fakta.forEach(function (item, index) {
                         if (item.faktumId === faktumData.faktumId) {
@@ -265,7 +260,8 @@
         });
         describe('TilleggsopplysningerCtrl', function () {
             beforeEach(inject(function ($controller, $compile) {
-                scope.leggTilValideringsmetode = function(string, funksjon){};
+                scope.leggTilValideringsmetode = function (string, funksjon) {
+                };
 
                 ctrl = $controller('TilleggsopplysningerCtrl', {
                     $scope: scope
@@ -304,11 +300,12 @@
             beforeEach(inject(function ($controller, data) {
                 scope.data = data;
 
-                 var utdanningNokkelFaktum = {
-                     key: 'utdanning.kveld',
-                     value: 'true',
-                     $save: function() {}
-                 };
+                var utdanningNokkelFaktum = {
+                    key: 'utdanning.kveld',
+                    value: 'true',
+                    $save: function () {
+                    }
+                };
                 var utdanning = {
                     key: 'utdanning',
                     value: 'underUtdanning'
@@ -391,19 +388,22 @@
                 var utdanningNokkelFaktum = {
                     key: 'utdanning.kveld',
                     value: 'true',
-                    $save: function(){}
+                    $save: function () {
+                    }
                 };
 
                 var utdanningkortvarigFaktum = {
                     key: 'utdanning.kortvarig',
                     value: 'true',
-                    $save: function() {}
+                    $save: function () {
+                    }
 
                 };
                 var underUtdanningAnnet = {
                     key: 'underUtdanningAnnet',
                     value: 'true',
-                    $save: function() {}
+                    $save: function () {
+                    }
                 };
 
                 scope.data.leggTilFaktum(utdanningNokkelFaktum);
@@ -417,7 +417,8 @@
                 var underUtdanningAnnet = {
                     key: 'underUtdanningAnnet',
                     value: 'false',
-                    $save: function() {}
+                    $save: function () {
+                    }
                 };
 
                 scope.data.leggTilFaktum(underUtdanningAnnet);
@@ -426,13 +427,13 @@
             });
         });
         describe('UtdanningCtrlUtenCheckbokserHuketAv', function () {
-                beforeEach(inject(function ($controller, data) {
-                    scope.data = data;
+            beforeEach(inject(function ($controller, data) {
+                scope.data = data;
 
-                    ctrl = $controller('UtdanningCtrl', {
-                        $scope: scope
-                    });
-                }));
+                ctrl = $controller('UtdanningCtrl', {
+                    $scope: scope
+                });
+            }));
 
             it('ved ingen av checkboksene avhuket skal harHuketAvCheckboks settes til tom string', function () {
                 expect(scope.harHuketAvCheckboks.value).toEqual('');
@@ -451,6 +452,13 @@
                     value: 'false'
                 };
 
+                var faktum = {
+                    key: 'personalia',
+                    properties: {
+                        alder: "61"
+                    }
+                };
+                scope.data.leggTilFaktum(faktum);
                 scope.data.leggTilFaktum(faktumDeltid);
                 scope.data.leggTilFaktum(faktumPendle);
 
@@ -548,15 +556,15 @@
             });
             it('hvis en deltidaarsaker er huket av og så blir den avhuket, sa skal harHuketAvCheckboksDeltid vaere tom ', function () {
                 expect(scope.harHuketAvCheckboksDeltid.value).toBe(true);
-                scope.data.fakta[1].value = 'false';
+                scope.data.fakta[2].value = 'false';
                 scope.endreDeltidsAarsaker();
                 expect(scope.harHuketAvCheckboksDeltid.value).toBe('');
             });
             it('hvis ingen deltidaarsaker er huket av og så blir en aarsak huket av, sa skal harHuketAvCheckboksDeltid vaere true ', function () {
-                scope.data.fakta[1].value = 'false';
+                scope.data.fakta[2].value = 'false';
                 scope.endreDeltidsAarsaker();
                 expect(scope.harHuketAvCheckboksDeltid.value).toBe('');
-                scope.data.fakta[1].value = 'true';
+                scope.data.fakta[2].value = 'true';
                 scope.endreDeltidsAarsaker();
                 expect(scope.harHuketAvCheckboksDeltid.value).toBe(true);
             });
@@ -566,10 +574,10 @@
                 expect(scope.harHuketAvCheckboksPendle.value).toBe('');
             });
             it('hvis ingen pendleaarsaker er huket av og så blir en aarsak huket av, sa skal harHuketAvCheckboksPendle vaere true ', function () {
-                scope.data.fakta[2].value = 'false';
+                scope.data.fakta[3].value = 'false';
                 scope.endrePendleAarsaker();
                 expect(scope.harHuketAvCheckboksPendle.value).toBe('');
-                scope.data.fakta[2].value = 'true';
+                scope.data.fakta[3].value = 'true';
                 scope.endrePendleAarsaker();
                 expect(scope.harHuketAvCheckboksPendle.value).toBe(true);
             });
@@ -1050,7 +1058,16 @@
             });
         });
         describe('AdresseCtrl', function () {
-            beforeEach(inject(function ($controller) {
+            beforeEach(inject(function ($controller, data) {
+                scope.data = data;
+                var faktum = {
+                    key: 'personalia',
+                    properties: {
+                        alder: "61"
+                    }
+                };
+                scope.data.leggTilFaktum(faktum);
+
                 scope.personalia = {
                     gjeldendeAdresse: "Gjeldene adresse"
                 };
@@ -1484,7 +1501,8 @@
                 var faktumStonadFisker = {
                     key: 'stonadFisker',
                     value: 'true',
-                $save: function() {}
+                    $save: function () {
+                    }
                 };
                 scope.data.leggTilFaktum(faktumStonadFisker);
 
@@ -1508,7 +1526,7 @@
                 scope.valider();
                 expect(scope.runValidationBleKalt).toEqual(true);
             });
-            
+
             it('taben skal vaere apen nar formen ikke er valid', function () {
                 spyOn(scope, "runValidation").andReturn(false);
                 spyOn(scope, "apneTab");
@@ -1530,7 +1548,8 @@
                 var faktumStonadFisker = {
                     key: 'stonadFisker',
                     value: 'false',
-                    $save: function() {}
+                    $save: function () {
+                    }
                 };
                 scope.data.leggTilFaktum(faktumStonadFisker);
                 scope.$apply();
@@ -1544,19 +1563,22 @@
                 var stonadFisker = {
                     key: 'stonadFisker',
                     value: 'true',
-                    $save: function(){}
+                    $save: function () {
+                    }
                 };
 
                 var offentligTjenestepensjon = {
                     key: 'offentligTjenestepensjon',
                     value: 'true',
-                    $save: function() {}
+                    $save: function () {
+                    }
 
                 };
                 var ingenYtelse = {
                     key: 'ingenYtelse',
                     value: 'true',
-                    $save: function() {}
+                    $save: function () {
+                    }
                 };
 
                 scope.data.leggTilFaktum(stonadFisker);
@@ -1573,7 +1595,8 @@
                 var ingenYtelse = {
                     key: 'ingenYtelse',
                     value: 'false',
-                    $save: function() {}
+                    $save: function () {
+                    }
                 };
 
                 scope.data.leggTilFaktum(ingenYtelse);
@@ -1581,6 +1604,95 @@
                 expect(scope.harHuketAvCheckboksYtelse.value).toEqual('');
             });
 
+        });
+        describe('PersonaliaCtrl', function () {
+            beforeEach(inject(function ($controller, data) {
+                scope.data = data;
+                var faktum = {
+                    key: 'personalia',
+                    properties: {
+                        alder: "61",
+                        kjonn: 'm',
+                        statsborgerskap: 'NOR'
+                    },
+                    faktumId: 111
+                };
+                scope.data.leggTilFaktum(faktum);
+                ctrl = $controller('PersonaliaCtrl', {
+                    $scope: scope
+                });
+            }));
+
+            it('personalia skal inneholde data', function () {
+                expect(scope.personalia).toNotBe(undefined);
+            });
+            it('brukerprofilurl skal bli satt til riktig url', function () {
+                expect(scope.brukerprofilUrl).toBe("brukerprofilUrl");
+            });
+            it('hvis personen er en mann så skal erMann returnere true', function () {
+                expect(scope.erMann()).toEqual(true);
+            });
+            it('hvis personen er en mann så skal erKvinne returnere false', function () {
+                expect(scope.erKvinne()).toEqual(false);
+            });
+            it('hvis personalia sa skal harHentetPersonalia returnere true', function () {
+                expect(scope.harHentetPersonalia()).toEqual(true);
+            });
+            it('hvis statsborgerskap er Norge sa skal erUtenlandskStatsborger returnere false', function () {
+                expect(scope.erUtenlandskStatsborger()).toEqual(false);
+            });
+            it('skal kjøre metodene lukkTab og settValidert nar valider kjores', function () {
+                spyOn(scope, "lukkTab");
+                spyOn(scope, "settValidert");
+                scope.valider(false);
+                expect(scope.lukkTab).toHaveBeenCalledWith('personalia');
+                expect(scope.settValidert).toHaveBeenCalledWith('personalia');
+            });
+        });
+        describe('PersonaliaCtrlKvinne', function () {
+            beforeEach(inject(function ($controller, data) {
+                scope.data = data;
+                var faktum = {
+                    key: 'personalia',
+                    properties: {
+                        alder: "61",
+                        kjonn: 'k'
+                    }
+                };
+                scope.data.leggTilFaktum(faktum);
+                ctrl = $controller('PersonaliaCtrl', {
+                    $scope: scope
+                });
+            }));
+
+            it('hvis personen er en kvinne så skal erMann returnere false', function () {
+                expect(scope.erMann()).toEqual(false);
+            });
+            it('hvis personen er en kvinne så skal erKvinne returnere true', function () {
+                expect(scope.erKvinne()).toEqual(true);
+            });
+        });
+        describe('PersonaliaCtrlIkkeKjonn', function () {
+            beforeEach(inject(function ($controller, data) {
+                scope.data = data;
+                var faktum = {
+                    key: 'personalia',
+                    properties: {
+                        alder: "61",
+                    }
+                };
+                scope.data.leggTilFaktum(faktum);
+                ctrl = $controller('PersonaliaCtrl', {
+                    $scope: scope
+                });
+            }));
+
+            it('hvis personen ikke har et kjønn så skal erMann returnere false', function () {
+                expect(scope.erMann()).toEqual(false);
+            });
+            it('hvis personen ikke har et kjønn så skal erKvinne returnere true', function () {
+                expect(scope.erKvinne()).toEqual(false);
+            });
         });
     });
 }());
