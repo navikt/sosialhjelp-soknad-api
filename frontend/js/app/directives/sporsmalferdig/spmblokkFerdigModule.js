@@ -69,4 +69,51 @@ angular.module('nav.sporsmalferdig', [])
                 }
 			}
 		};
-	}]);
+	}])
+    .directive('vedleggblokkferdig', ['$timeout', function ($timeout) {
+        return {
+            require    : '^form',
+            replace    : true,
+            templateUrl: '../js/app/directives/sporsmalferdig/vedleggblokkFerdigTemplate.html',
+            link: function (scope, element, attrs, form) {
+                var tab = element.closest('.accordion-group');
+                scope.gaaTilNeste = function () {
+                    var nesteTab = tab.next();
+                    lukkBolk(tab);
+                    gaaTilTab(nesteTab);
+                    apneBolk(nesteTab);
+                    setFokus(nesteTab);
+                };
+
+                function gaaTilTab(nyTab) {
+                    if (nyTab.length > 0) {
+                        $timeout(function () {
+                            scrollToElement(nyTab, 120);
+                        }, 0);
+                    }
+                }
+
+                function toggleBolk(tab) {
+                    $timeout(function() {
+                        tab.find('.accordion-toggle').trigger('click');
+                    });
+                }
+
+                function apneBolk(tab) {
+                    if (!tab.find('.accordion-body').hasClass('in')) {
+                        toggleBolk(tab);
+                    }
+                }
+
+                function lukkBolk(tab) {
+                    if (tab.find('.accordion-body').hasClass('in')) {
+                        toggleBolk(tab);
+                    }
+                }
+
+                function setFokus(tab) {
+                    tab.closest('.accordion-group').find('a').focus();
+                }
+            }
+        };
+    }]);

@@ -23,7 +23,7 @@ angular.module('app.routes', ['ngRoute'])
                 }
             })
             .when('/vedlegg', {
-                templateUrl: '../views/templates/vedlegg.html',
+                templateUrl: '../views/templates/vedlegg/vedlegg.html',
                 resolve: {
                     notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
                         return HentSoknadService;
@@ -39,7 +39,7 @@ angular.module('app.routes', ['ngRoute'])
                 }
             })
             .when('/visVedlegg/:vedleggId', {
-                templateUrl: '../views/templates/visvedlegg.html',
+                templateUrl: '../views/templates/vedlegg/visvedlegg.html',
                 resolve: {
                     notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
                         return HentSoknadService;

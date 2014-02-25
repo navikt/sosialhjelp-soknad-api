@@ -1,4 +1,4 @@
-angular.module('templates-main', ['../views/dagpenger-singlepage.html', '../views/templates/adresse.html', '../views/templates/arbeidsforhold-nytt.html', '../views/templates/arbeidsforhold.html', '../views/templates/arbeidsforhold/avskjediget-oppsummering.html', '../views/templates/arbeidsforhold/avskjediget.html', '../views/templates/arbeidsforhold/konkurs-oppsummering.html', '../views/templates/arbeidsforhold/konkurs.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt.html', '../views/templates/arbeidsforhold/permittert-oppsummering.html', '../views/templates/arbeidsforhold/permittert.html', '../views/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html', '../views/templates/arbeidsforhold/redusertarbeidstid.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html', '../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-selv.html', '../views/templates/avbryt.html', '../views/templates/barnetillegg/barnetillegg-nyttbarn.html', '../views/templates/barnetillegg/barnetillegg.html', '../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html', '../views/templates/barnetillegg/endreSystembarnTemplate.html', '../views/templates/bekreftelse.html', '../views/templates/egennaering/egen-naering.html', '../views/templates/egennaering/egenNaeringvirksomhet.html', '../views/templates/egennaering/fangstOgFiske.html', '../views/templates/egennaering/gardsbruk.html', '../views/templates/feilside.html', '../views/templates/ferdigstilt.html', '../views/templates/fortsettSenere.html', '../views/templates/gjenoppta/skjema-ferdig.html', '../views/templates/gjenoppta/skjema-sendt.html', '../views/templates/gjenoppta/skjema-under-arbeid.html', '../views/templates/gjenoppta/skjema-validert.html', '../views/templates/ikkekvalifisert.html', '../views/templates/informasjonsside.html', '../views/templates/kvittering-fortsettsenere.html', '../views/templates/opplasting.html', '../views/templates/oppsummering.html', '../views/templates/personalia.html', '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', '../views/templates/reellarbeidssoker/villigDeltidTemplate.html', '../views/templates/reellarbeidssoker/villigHelseTemplate.html', '../views/templates/reellarbeidssoker/villigPendleTemplate.html', '../views/templates/reellarbeidssoker/villigjobbTemplate.html', '../views/templates/soknadSlettet.html', '../views/templates/soknadliste.html', '../views/templates/tilleggsopplysninger.html', '../views/templates/utdanning/utdanning.html', '../views/templates/utdanning/utdanningKortvarigFlereTemplate.html', '../views/templates/utdanning/utdanningKortvarigTemplate.html', '../views/templates/utdanning/utdanningKveldTemplate.html', '../views/templates/utdanning/utdanningNorskTemplate.html', '../views/templates/utdanningsinformasjon-template.html', '../views/templates/vedlegg.html', '../views/templates/verneplikt.html', '../views/templates/visvedlegg.html', '../views/templates/ytelser.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateLiten.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateStor.html', '../js/app/directives/feilmeldinger/feilmeldingerTemplate.html', '../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html', '../js/app/directives/markup/modalsideTemplate.html', '../js/app/directives/markup/navinfoboksTemplate.html', '../js/app/directives/markup/panelStandardBelystTemplate.html', '../js/app/directives/markup/vedlegginfoboksTemplate.html', '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html', '../js/app/directives/stegindikator/stegIndikatorTemplate.html', '../js/app/directives/stickybunn/stickyBunnTemplate.html', '../js/common/directives/accordion/accordionGroupTemplate.html', '../js/common/directives/accordion/accordionTemplate.html', '../js/common/directives/booleanradio/booleanradioTemplate.html', '../js/common/directives/datepicker/doubleDatepickerTemplate.html', '../js/common/directives/datepicker/singleDatepickerTemplate.html', '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html', '../js/common/directives/melding/meldingTemplate.html', '../js/common/directives/navinput/navbuttonspinnerTemplate.html', '../js/common/directives/navinput/navcheckboxTemplate.html', '../js/common/directives/navinput/navorgnrfeltTemplate.html', '../js/common/directives/navinput/navradioTemplate.html', '../js/common/directives/navinput/navtallInputTemplate.html', '../js/common/directives/navinput/navtekstTemplate.html', '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html', '../js/common/directives/navtextarea/navtextareaTemplate.html', '../js/common/directives/select/selectTemplate.html', '../js/common/directives/tittel/tittelTemplate.html']);
+angular.module('templates-main', ['../views/dagpenger-singlepage.html', '../views/templates/adresse.html', '../views/templates/arbeidsforhold-nytt.html', '../views/templates/arbeidsforhold.html', '../views/templates/arbeidsforhold/avskjediget-oppsummering.html', '../views/templates/arbeidsforhold/avskjediget.html', '../views/templates/arbeidsforhold/konkurs-oppsummering.html', '../views/templates/arbeidsforhold/konkurs.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt.html', '../views/templates/arbeidsforhold/permittert-oppsummering.html', '../views/templates/arbeidsforhold/permittert.html', '../views/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html', '../views/templates/arbeidsforhold/redusertarbeidstid.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html', '../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-selv.html', '../views/templates/avbryt.html', '../views/templates/barnetillegg/barnetillegg-nyttbarn.html', '../views/templates/barnetillegg/barnetillegg.html', '../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html', '../views/templates/barnetillegg/endreSystembarnTemplate.html', '../views/templates/bekreftelse.html', '../views/templates/egennaering/egen-naering.html', '../views/templates/egennaering/egenNaeringvirksomhet.html', '../views/templates/egennaering/fangstOgFiske.html', '../views/templates/egennaering/gardsbruk.html', '../views/templates/feilside.html', '../views/templates/ferdigstilt.html', '../views/templates/fortsettSenere.html', '../views/templates/gjenoppta/skjema-ferdig.html', '../views/templates/gjenoppta/skjema-sendt.html', '../views/templates/gjenoppta/skjema-under-arbeid.html', '../views/templates/gjenoppta/skjema-validert.html', '../views/templates/ikkekvalifisert.html', '../views/templates/informasjonsside.html', '../views/templates/kvittering-fortsettsenere.html', '../views/templates/opplasting.html', '../views/templates/oppsummering.html', '../views/templates/personalia.html', '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', '../views/templates/reellarbeidssoker/villigDeltidTemplate.html', '../views/templates/reellarbeidssoker/villigHelseTemplate.html', '../views/templates/reellarbeidssoker/villigPendleTemplate.html', '../views/templates/reellarbeidssoker/villigjobbTemplate.html', '../views/templates/soknadSlettet.html', '../views/templates/soknadliste.html', '../views/templates/tilleggsopplysninger.html', '../views/templates/utdanning/utdanning.html', '../views/templates/utdanning/utdanningKortvarigFlereTemplate.html', '../views/templates/utdanning/utdanningKortvarigTemplate.html', '../views/templates/utdanning/utdanningKveldTemplate.html', '../views/templates/utdanning/utdanningNorskTemplate.html', '../views/templates/utdanningsinformasjon-template.html', '../views/templates/vedlegg/vedlegg.html', '../views/templates/vedlegg/visvedlegg.html', '../views/templates/verneplikt.html', '../views/templates/ytelser.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateLiten.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateStor.html', '../js/app/directives/feilmeldinger/feilmeldingerTemplate.html', '../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html', '../js/app/directives/markup/modalsideTemplate.html', '../js/app/directives/markup/navinfoboksTemplate.html', '../js/app/directives/markup/panelStandardBelystTemplate.html', '../js/app/directives/markup/vedlegginfoboksTemplate.html', '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html', '../js/app/directives/sporsmalferdig/vedleggblokkFerdigTemplate.html', '../js/app/directives/stegindikator/stegIndikatorTemplate.html', '../js/app/directives/stickybunn/stickyBunnTemplate.html', '../js/common/directives/accordion/accordionGroupTemplate.html', '../js/common/directives/accordion/accordionTemplate.html', '../js/common/directives/booleanradio/booleanradioTemplate.html', '../js/common/directives/datepicker/doubleDatepickerTemplate.html', '../js/common/directives/datepicker/singleDatepickerTemplate.html', '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html', '../js/common/directives/melding/meldingTemplate.html', '../js/common/directives/navinput/navbuttonspinnerTemplate.html', '../js/common/directives/navinput/navcheckboxTemplate.html', '../js/common/directives/navinput/navorgnrfeltTemplate.html', '../js/common/directives/navinput/navradioTemplate.html', '../js/common/directives/navinput/navtallInputTemplate.html', '../js/common/directives/navinput/navtekstTemplate.html', '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html', '../js/common/directives/navtextarea/navtextareaTemplate.html', '../js/common/directives/select/selectTemplate.html', '../js/common/directives/tittel/tittelTemplate.html']);
 
 angular.module("../views/dagpenger-singlepage.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/dagpenger-singlepage.html",
@@ -2141,7 +2141,7 @@ angular.module("../views/templates/reellarbeidssoker/reell-arbeidssoker.html", [
     "    <div data-ng-form=\"reellarbeidssokerForm\"\n" +
     "         class=\"skjemainnhold vertikal\"\n" +
     "         data-ng-controller=\"ReellarbeidssokerCtrl\"\n" +
-    "         novalidate>\n" +
+    "         data-novalidate>\n" +
     "\n" +
     "        <div data-form-errors></div>\n" +
     "\n" +
@@ -2765,8 +2765,8 @@ angular.module("../views/templates/utdanningsinformasjon-template.html", []).run
     "");
 }]);
 
-angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("../views/templates/vedlegg.html",
+angular.module("../views/templates/vedlegg/vedlegg.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../views/templates/vedlegg/vedlegg.html",
     "<div data-nav-tittel=\"skjema.tittel\"></div>\n" +
     "<div data-stegindikator steg-liste=\"veiledning, skjema, vedlegg, sendInn\" data-aktiv-index=\"2\"></div>\n" +
     "\n" +
@@ -2918,6 +2918,7 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "                                    </div>\n" +
     "                                </div>\n" +
     "                            </div>\n" +
+    "                            <div data-vedleggblokkferdig></div>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
@@ -2952,6 +2953,13 @@ angular.module("../views/templates/vedlegg.html", []).run(["$templateCache", fun
     "");
 }]);
 
+angular.module("../views/templates/vedlegg/visvedlegg.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../views/templates/vedlegg/visvedlegg.html",
+    "<div data-ng-controller=\"VisVedleggCtrl\" id=\"visvedlegg\">\n" +
+    "    <div data-bildenavigering data-selvstendig=\"true\" data-vedlegg=\"vedlegg\" data-ng-if=\"vedlegg\"></div>\n" +
+    "</div>");
+}]);
+
 angular.module("../views/templates/verneplikt.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/templates/verneplikt.html",
     "<div class=\"skjemaramme\">\n" +
@@ -2975,13 +2983,6 @@ angular.module("../views/templates/verneplikt.html", []).run(["$templateCache", 
     "    </div>\n" +
     "</div>\n" +
     "");
-}]);
-
-angular.module("../views/templates/visvedlegg.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("../views/templates/visvedlegg.html",
-    "<div data-ng-controller=\"VisVedleggCtrl\" id=\"visvedlegg\">\n" +
-    "    <div data-bildenavigering data-selvstendig=\"true\" data-vedlegg=\"vedlegg\" data-ng-if=\"vedlegg\"></div>\n" +
-    "</div>");
 }]);
 
 angular.module("../views/templates/ytelser.html", []).run(["$templateCache", function($templateCache) {
@@ -3338,9 +3339,11 @@ angular.module("../js/app/directives/bildenavigering/bildenavigeringTemplateStor
     "    <div class=\"nav\" data-ng-if=\"vedlegg.vedleggId\">\n" +
     "        <a class=\"pil-venstre-sort\" data-ng-click=\"naviger(-1)\" data-ng-if=\"vedlegg.antallSider > 1\" href=\"javascript:void(0);\">\n" +
     "        </a><div class=\"bilde\" data-ng-click=\"naviger(1)\">\n" +
+    "\n" +
     "        <img class=\"spinner\"\n" +
     "             data-ng-if=\"spinner.visLaster\"\n" +
     "             src=\"../img/ajaxloader/svart/loader_svart_128.gif\">\n" +
+    "\n" +
     "        <img data-ng-repeat=\"bilde in range(vedlegg.antallSider)\"\n" +
     "             data-ng-src=\"../rest/soknad/{{vedlegg.soknadId}}/vedlegg/{{vedlegg.vedleggId}}/thumbnail?side={{bilde}}\"\n" +
     "             data-ferdig-lastet\n" +
@@ -3431,8 +3434,16 @@ angular.module("../js/app/directives/markup/vedlegginfoboksTemplate.html", []).r
 
 angular.module("../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html",
-    "<div class=\"spm-knapper\">\n" +
+    "<div class=\"neste-bolk-knapper\">\n" +
     "    <button class=\"knapp-liten\" data-ng-click=\"validerOgGaaTilNeste()\">{{ knappTekst | cmstekst }}</button>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("../js/app/directives/sporsmalferdig/vedleggblokkFerdigTemplate.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../js/app/directives/sporsmalferdig/vedleggblokkFerdigTemplate.html",
+    "<div class=\"neste-bolk-knapper\">\n" +
+    "    <button class=\"knapp-liten\" data-ng-click=\"gaaTilNeste()\">{{ 'neste' | cmstekst }}</button>\n" +
     "</div>\n" +
     "");
 }]);
