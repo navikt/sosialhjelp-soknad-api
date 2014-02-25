@@ -24,7 +24,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 @Import({ConsumerConfig.WsServices.class})
 public class SelfTestPage extends SelfTestBase {
-    private static final Logger LOGGER = getLogger(SelfTestPage.class);
+    private static final Logger logger = getLogger(SelfTestPage.class);
 
     @Inject
     @Named("sendSoknadSelftest")
@@ -93,7 +93,7 @@ public class SelfTestPage extends SelfTestBase {
                 status = SelfTestBase.STATUS_OK;
             }
         } catch (IOException e) {
-            LOGGER.info("<<<<<<<Error contacting CMS! " + e.getMessage());
+            logger.info("<<<<<<<Error contacting CMS! " + e.getMessage());
         } finally {
             if (connection != null) {
                 connection.disconnect();

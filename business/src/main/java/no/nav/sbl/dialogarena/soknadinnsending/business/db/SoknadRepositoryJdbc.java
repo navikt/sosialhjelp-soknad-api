@@ -56,7 +56,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     public static final String INSERT_FAKTUM = "insert into SOKNADBRUKERDATA (soknadbrukerdata_id, soknad_id, key, value, type, parrent_faktum, sistendret) values (:faktumId, :soknadId, :key, :value, :typeString, :parrentFaktum, sysdate)";
     public static final String INSERT_FAKTUMEGENSKAP = "insert into FAKTUMEGENSKAP (soknad_id, faktum_id, key, value, systemegenskap) values (:soknadId, :faktumId, :key, :value, :systemEgenskap)";
-    private static final Logger LOG = getLogger(SoknadRepositoryJdbc.class);
+    private static final Logger logger = getLogger(SoknadRepositoryJdbc.class);
     private final RowMapper<Faktum> faktumRowMapper = new RowMapper<Faktum>() {
         public Faktum mapRow(ResultSet rs, int rowNum) throws SQLException {
 
@@ -218,7 +218,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         try {
             count = getJdbcTemplate().queryForObject(sql, Integer.class, soknadId, key, value, dependOnValue);
         } catch (DataAccessException e) {
-            LOG.warn("Klarte ikke hente count fra soknadBrukerData", e);
+            logger.warn("Klarte ikke hente count fra soknadBrukerData", e);
             return false;
         }
 
@@ -340,7 +340,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     @Override
     public void avslutt(WebSoknad soknad) {
-        LOG.debug("Setter status til søknad med id {} til ferdig",
+        logger.debug("Setter status til søknad med id {} til ferdig",
                 soknad.getSoknadId());
         String status = FERDIG.name();
         getJdbcTemplate().update("update soknad set status = ? where soknad_id = ?", status, soknad.getSoknadId());
@@ -348,7 +348,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     @Override
     public void avbryt(Long soknad) {
-        LOG.debug("Setter status til søknad med id {} til avbrutt", soknad);
+        logger.debug("Setter status til søknad med id {} til avbrutt", soknad);
         String status = AVBRUTT_AV_BRUKER.name();
         getJdbcTemplate().update("update soknad set status = ? where soknad_id = ?", status, soknad);
         getJdbcTemplate().update("delete from vedlegg where soknad_id = ?", soknad);
@@ -357,7 +357,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     @Override
     public void slettSoknad(long soknadId) {
-        LOG.debug("Sletter søknad med ID: " + soknadId);
+        logger.debug("Sletter søknad med ID: " + soknadId);
         getJdbcTemplate().update("delete from faktumegenskap where soknad_id = ?", soknadId);
         getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ?", soknadId);
         getJdbcTemplate().update("delete from vedlegg where soknad_id = ?", soknadId);
