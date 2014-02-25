@@ -202,7 +202,7 @@
                 var faktum = {
                     key: 'egennaering.gardsbruk.false.type.dyr',
                     value: 'true'
-                }
+                };
                 scope.data.leggTilFaktum(faktum);
                 scope.endreTypeGardsbruk();
                 expect(scope.harHuketAvTypeGardsbruk.value).toEqual(true);
@@ -234,10 +234,6 @@
                 scope.summererAndeleneTil100();
                 expect(scope.prosentFeil()).toEqual(false);
             });
-
-
-
-
         });
         describe('vernepliktCtrl', function () {
             beforeEach(inject(function ($controller, $compile) {
@@ -1323,12 +1319,7 @@
             });
         });
         describe('ArbeidsforholdNyttCtrl', function () {
-            beforeEach(inject(function ($controller, $compile, data, $location, $injector) {
-                var regEx = 'DNK?rand='+ new RegExp('\d');
-                $httpBackend = $injector.get('$httpBackend');
-                $httpBackend.expectGET('/sendsoknad/rest/ereosland/' + regEx ).
-                    respond('true');
-
+            beforeEach(inject(function ($controller, $compile, data, $location) {
                 scope.data = data;
                 location = $location;
                 location.$$url = '/111';
@@ -1364,11 +1355,7 @@
                 expect(scope.sluttaarsak.properties).toNotBe(undefined);
                 expect(scope.sluttaarsak.properties.type).toEqual(undefined);
             });
-            it('hvis landet endrer seg til et eos-land så skal propertien eosland settes til true', function () {
-//                scope.arbeidsforhold.properties.land = 'DNK';
-//                scope.$apply();
-//                expect(scope.arbeidsforhold.properties.eosland).toEqual(true);
-            });
+
         });
         describe('AvbrytCtrl', function () {
             beforeEach(inject(function ($controller, data) {
