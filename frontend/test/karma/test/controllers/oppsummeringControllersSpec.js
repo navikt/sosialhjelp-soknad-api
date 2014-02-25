@@ -5,7 +5,7 @@
 (function () {
     'use strict';
 
-    describe('OpplastingControllere', function () {
+    describe('OppsummeringControllere', function () {
         var scope, ctrl, form, element, barn, $httpBackend, event, location;
         event = $.Event("click");
 
@@ -52,36 +52,11 @@
             element.scope().$apply();
         }));
 
-        describe('OpplastingVedleggCtrl', function () {
+        describe('OppsummeringCtrl', function () {
             beforeEach(inject(function ($controller, data) {
                 scope.data = data;
             
-                ctrl = $controller('OpplastingVedleggCtrl', {
-                    $scope: scope
-                });
-            }));
-        });
-
-        describe('OpplastingCtrl', function () {
-            beforeEach(inject(function ($controller, data) {
-                scope.data = data;
-                
-                ctrl = $controller('OpplastingCtrl', {
-                    $scope: scope
-                });
-            }));
-        });
-
-        describe('SlettOpplastingCtrl', function () {
-            beforeEach(inject(function ($controller, data) {
-                scope.data = data;
-                scope.file = {
-                    $destroy: function() {
-
-                    }
-                }
-
-                ctrl = $controller('SlettOpplastingCtrl', {
+                ctrl = $controller('OppsummeringCtrl', {
                     $scope: scope
                 });
             }));
