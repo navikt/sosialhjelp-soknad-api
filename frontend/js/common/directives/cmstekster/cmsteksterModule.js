@@ -47,14 +47,6 @@ angular.module('nav.cmstekster', [])
             element.html(cms.tekster[nokkel]);
         };
     }])
-    .directive('cmslenketekster', ['cms', function (cms) {
-        return function ($scope, element, attrs) {
-            var nokkel = attrs.cmslenketekster;
-            if (element.is('a')) {
-                element.attr('href', cms.tekster[nokkel]);
-            }
-        };
-    }])
     .filter('cmstekst', ['cms', function(cms) {
         return function(nokkel) {
             var tekst = cms.tekster[nokkel];

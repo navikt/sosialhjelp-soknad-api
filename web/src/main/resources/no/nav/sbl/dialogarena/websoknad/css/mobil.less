@@ -217,6 +217,10 @@
 
             .bilde {
                 width: 80%;
+
+                img {
+                    top: 0;
+                }
             }
 
             .tilbake {
@@ -287,6 +291,25 @@
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+    .vedlegg-bolk {
+        &.validert {
+            .flipp {
+                &:before {
+                    border-top: @flipp-size solid #c30000 !important;
+                }
+            }
+        }
+    }
+
+    .accordion-group {
+        &.validert {
+            .flipp {
+                &:before {
+                    border-top: @flipp-size solid #c30000 !important;
                 }
             }
         }

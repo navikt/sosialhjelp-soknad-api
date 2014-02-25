@@ -716,16 +716,16 @@ angular.module("../views/templates/arbeidsforhold/permittert-oppsummering.html",
     "        <span data-ng-if=\"af.sluttaarsak.properties.permiteringsperiodedatotil\" data-ng-bind=\"af.sluttaarsak.properties.permiteringsperiodedatotil | date:'dd.MM.yyyy'\"></span>\n" +
     "    </li>\n" +
     "    <li>\n" +
-    "        <p data-cmstekster=\"arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet\"> </p>\n" +
+    "        <p>{{ 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet' | cmstekst }}</p>\n" +
     "        <span data-ng-bind=\"af.sluttaarsak.properties.lonnspliktigperiodedatofra | date:'dd.MM.yyyy'\"></span>\n" +
     "        <span data-ng-if=\"af.sluttaarsak.properties.lonnspliktigperiodedatotil\"> TIL </span>\n" +
     "        <span data-ng-if=\"af.sluttaarsak.properties.lonnspliktigperiodedatotil\" data-ng-bind=\"af.sluttaarsak.properties.lonnspliktigperiodedatotil | date:'dd.MM.yyyy'\"></span>\n" +
     "    </li>\n" +
     "    <li>\n" +
-    "        <span data-cmstekster=\"arbeidsforhold.sluttaarsak.permittert.permitteringsgrad\"></span>\n" +
+    "        <span>{{ 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad' | cmstekst }}</span>\n" +
     "        <p>\n" +
     "            <span data-ng-bind=\"af.sluttaarsak.properties.permitteringProsent\"></span>\n" +
-    "            <span class=\"prosent\" data-cmstekster=\"arbeidsforhold.permittert.prosent\"></span>\n" +
+    "            <span class=\"prosent\">{{ 'arbeidsforhold.permittert.prosent' | cmstekst }}</span>\n" +
     "        </p>\n" +
     "    </li>\n" +
     "</ul>\n" +
@@ -734,18 +734,18 @@ angular.module("../views/templates/arbeidsforhold/permittert-oppsummering.html",
     "<div data-vedlegginfoboks>\n" +
     "    <ul>\n" +
     "        <li>\n" +
-    "            <p data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.1\"></p>\n" +
+    "            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</p>\n" +
     "        </li>\n" +
     "        <li>\n" +
-    "            <p data-cmstekster=\"arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2\"></p>\n" +
-    "            <a href=\"{{permiteringUrl}}\" data-cmstekster=\"arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2.lenketekst\">\n" +
+    "            <p>{{ 'arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2' | cmstekst }}</p>\n" +
+    "            <a href=\"{{permiteringUrl}}\">\n" +
+    "                {{ 'arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2.lenketekst' | cmstekst }}\n" +
     "            </a>\n" +
     "        </li>\n" +
     "        <li>\n" +
-    "            <p data-cmstekster=\"arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.3\"></p>\n" +
+    "            <p>{{ 'arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.3' | cmstekst }}</p>\n" +
     "        </li>\n" +
     "    </ul>\n" +
-    "    </p>\n" +
     "</div>");
 }]);
 
@@ -837,7 +837,7 @@ angular.module("../views/templates/arbeidsforhold/redusertarbeidstid-oppsummerin
   $templateCache.put("../views/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html",
     "<div class=\"varighet\">\n" +
     "    <span data-ng-bind=\"af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy' | norskdato\"></span>\n" +
-    "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\" data-cmstekster=\"dato.til\"></span>\n" +
+    "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\">{{ 'dato.til' | cmstekst }}</span>\n" +
     "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\" data-ng-bind=\"af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy' | norskdato\"></span>\n" +
     "</div>\n" +
     "\n" +
@@ -846,26 +846,25 @@ angular.module("../views/templates/arbeidsforhold/redusertarbeidstid-oppsummerin
     "        <p data-ng-bind=\"af.sluttaarsak.properties.type\"></p>\n" +
     "    </li>\n" +
     "    <li>\n" +
-    "        <span data-cmstekster=\"arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.sporsmal\"></span>\n" +
+    "        <span>{{ 'arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.sporsmal' | cmstekst }}</span>\n" +
     "        <p data-ng-bind=\"af.sluttaarsak.properties.redusertfra\"></p>\n" +
     "    </li>\n" +
     "    <li>\n" +
-    "        <span data-cmstekster=\"arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.sporsmal\"></span>\n" +
-    "        <p data-ng-show=\"af.sluttaarsak.properties.nyttTilbud == 'true'\" \n" +
-    "            data-cmstekster=\"arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.true\"></p>\n" +
-    "        <p data-ng-show=\"af.sluttaarsak.properties.nyttTilbud == 'false'\" \n" +
-    "            data-cmstekster=\"arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.false\"></p>\n" +
+    "        <span>{{ 'arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.sporsmal' | cmstekst }}</span>\n" +
+    "        <p data-ng-if=\"af.sluttaarsak.properties.nyttTilbud == 'true'\">{{ 'arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.true' | cmstekst }}</p>\n" +
+    "        <p data-ng-if=\"af.sluttaarsak.properties.nyttTilbud == 'false'\">{{ 'arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.false' | cmstekst }}</p>\n" +
     "    </li>\n" +
     "</ul>\n" +
     "\n" +
     "<div data-vedlegginfoboks>\n" +
     "    <ul>\n" +
     "        <li>\n" +
-    "            <p data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.1\"></p>\n" +
+    "            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</p>\n" +
     "        </li>\n" +
     "        <li>\n" +
-    "            <p data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.2\"></p>\n" +
-    "            <a href=\"{{sluttaarsakUrl}}\" data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst\">\n" +
+    "            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2' | cmstekst }}</p>\n" +
+    "            <a href=\"{{sluttaarsakUrl}}\">\n" +
+    "                {{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst' | cmstekst }}\n" +
     "            </a>\n" +
     "        </li>\n" +
     "    </ul>\n" +
@@ -898,18 +897,17 @@ angular.module("../views/templates/arbeidsforhold/redusertarbeidstid.html", []).
     "\n" +
     "<div class=\"ekstra-spm-boks\">\n" +
     "    <div data-navinfoboks>\n" +
-    "        <p class=\"sluttaarsak-informasjon\"\n" +
-    "           data-cmstekster=\"arbeidsforhold.sluttaarsak.redusertArbeidstid.informasjon\"></p>\n" +
+    "        <p class=\"sluttaarsak-informasjon\">{{ 'arbeidsforhold.sluttaarsak.redusertArbeidstid.informasjon' | cmstekst }}</p>\n" +
     "    </div>\n" +
     "    <div data-vedlegginfoboks>\n" +
     "        <ul>\n" +
     "            <li>\n" +
-    "                <p data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.1\"></p>\n" +
+    "                <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</p>\n" +
     "            </li>\n" +
     "            <li>\n" +
-    "                <p data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.2\"></p>\n" +
-    "                <a href=\"{{sluttaarsakUrl}}\"\n" +
-    "                   data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst\">\n" +
+    "                <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2' | cmstekst }}</p>\n" +
+    "                <a href=\"{{ sluttaarsakUrl }}\">\n" +
+    "                    {{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst' | cmstekst }}\n" +
     "                </a>\n" +
     "            </li>\n" +
     "        </ul>\n" +
@@ -921,7 +919,7 @@ angular.module("../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsu
   $templateCache.put("../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html",
     "<div class=\"varighet\">\n" +
     "    <span data-ng-bind=\"af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy' | norskdato\"></span>\n" +
-    "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\" data-cmstekster=\"dato.til\"></span>\n" +
+    "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\">{{ 'dato.til' | cmstekst }}</span>\n" +
     "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\" data-ng-bind=\"af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy' | norskdato\"></span>\n" +
     "</div>\n" +
     "\n" +
@@ -930,26 +928,29 @@ angular.module("../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsu
     "        <p data-ng-bind=\"af.sluttaarsak.properties.type\"></p>\n" +
     "    </li>\n" +
     "    <li>\n" +
-    "        <span data-cmstekster=\"arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.aarsak.sporsmal\"></span>\n" +
+    "        <span>{{ 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.aarsak.sporsmal' | cmstekst }}</span>\n" +
     "        <p data-ng-bind=\"af.sluttaarsak.properties.aarsak\"></p>\n" +
     "    </li>\n" +
     "    <li>\n" +
-    "        <span data-cmstekster=\"arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.sporsmal\"></span>\n" +
-    "        <p data-ng-show=\"af.sluttaarsak.properties.sagtOppAvArbeidsgiverTilbudomjobbannetsted == 'true'\" \n" +
-    "            data-cmstekster=\"arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true\"></p>\n" +
-    "        <p data-ng-show=\"af.sluttaarsak.properties.sagtOppAvArbeidsgiverTilbudomjobbannetsted == 'false'\" \n" +
-    "            data-cmstekster=\"arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.false\"></p>\n" +
+    "        <span>{{ 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.sporsmal' | cmstekst }}</span>\n" +
+    "        <p data-ng-if=\"af.sluttaarsak.properties.sagtOppAvArbeidsgiverTilbudomjobbannetsted == 'true'\">\n" +
+    "            {{ 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true' | cmstekst }}\n" +
+    "        </p>\n" +
+    "        <p data-ng-show=\"af.sluttaarsak.properties.sagtOppAvArbeidsgiverTilbudomjobbannetsted == 'false'\">\n" +
+    "            {{ 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.false' | cmstekst }}\n" +
+    "        </p>\n" +
     "    </li>\n" +
     "</ul>\n" +
     "\n" +
     "<div data-vedlegginfoboks>\n" +
     "    <ul>\n" +
     "        <li>\n" +
-    "            <span data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.1\"></span>\n" +
+    "            <span>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</span>\n" +
     "        </li>\n" +
     "        <li>\n" +
-    "            <p data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.2\"></p>\n" +
-    "            <a href=\"{{sluttaarsakUrl}}\" data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst\">\n" +
+    "            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2' | cmstekst }}</p>\n" +
+    "            <a href=\"{{ sluttaarsakUrl }}\">\n" +
+    "                {{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst' | cmstekst }}\n" +
     "            </a>\n" +
     "        </li>\n" +
     "    </ul>\n" +
@@ -1009,7 +1010,7 @@ angular.module("../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.htm
   $templateCache.put("../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html",
     "<div class=\"varighet\">\n" +
     "    <span data-ng-bind=\"af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy' | norskdato\"></span>\n" +
-    "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\" data-cmstekster=\"dato.til\"></span>\n" +
+    "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\">{{ 'dato.til' | cmstekst }}</span>\n" +
     "    <span data-ng-if=\"af.sluttaarsak.properties.datotil\" data-ng-bind=\"af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy' | norskdato\"></span>\n" +
     "</div>\n" +
     "\n" +
@@ -1018,7 +1019,7 @@ angular.module("../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.htm
     "        <p data-ng-bind=\"af.sluttaarsak.properties.type\"></p>\n" +
     "    </li>\n" +
     "    <li>\n" +
-    "        <span data-cmstekster=\"arbeidsforhold.sluttaarsak.sagtoppselv.aarsak.sporsmal\"></span>\n" +
+    "        <span>{{ 'arbeidsforhold.sluttaarsak.sagtoppselv.aarsak.sporsmal' | cmstekst }}</span>\n" +
     "        <p data-ng-bind=\"af.sluttaarsak.properties.sagtoppselvAarsak\"></p>\n" +
     "    </li>\n" +
     "</ul>\n" +
@@ -1026,11 +1027,12 @@ angular.module("../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.htm
     "<div data-vedlegginfoboks>\n" +
     "    <ul>\n" +
     "        <li>\n" +
-    "            <p data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.1\"></p>\n" +
+    "            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</p>\n" +
     "        </li>\n" +
     "        <li>\n" +
-    "            <p data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.2\"></p>\n" +
-    "            <a href=\"{{sluttaarsakUrl}}\" data-cmstekster=\"arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst\">\n" +
+    "            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2' | cmstekst }}</p>\n" +
+    "            <a href=\"{{ sluttaarsakUrl }}\">\n" +
+    "                {{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst' | cmstekst }}\n" +
     "            </a>\n" +
     "        </li>\n" +
     "    </ul>\n" +
@@ -1240,7 +1242,7 @@ angular.module("../views/templates/barnetillegg/barnetillegg.html", []).run(["$t
     "    <div id=\"barnetilleggForm\" data-ng-form=\"barnetilleggForm\" class=\"skjemainnhold\"\n" +
     "         data-ng-controller=\"BarnetilleggCtrl\" novalidate>\n" +
     "\n" +
-    "        <p class=\"informasjonstekst\" cmstekster=\"barnetillegg.informasjon\"></p>\n" +
+    "        <p class=\"informasjonstekst\">{{ 'barnetillegg.informasjon' | cmstekst }}</p>\n" +
     "\n" +
     "        <div class=\"barnetillegg-bokser\">\n" +
     "            <div class=\"spm-boks vertikal\" data-ng-repeat=\"b in barn\">\n" +
@@ -1249,7 +1251,7 @@ angular.module("../views/templates/barnetillegg/barnetillegg.html", []).run(["$t
     "                       data-ng-click=\"slettBarn(b, $index, $event)\"> </a>\n" +
     "\n" +
     "                    <div class=\"barnealder\">\n" +
-    "                        <span data-cmstekster=\"aar\"></span>\n" +
+    "                        <span>{{ 'aar' | cmstekst }}</span>\n" +
     "                        <span class=\"alder robust\" data-ng-bind=\"b.properties.alder\"></span>\n" +
     "                    </div>\n" +
     "                    <div class=\"barneinfo\">\n" +
@@ -1264,37 +1266,34 @@ angular.module("../views/templates/barnetillegg/barnetillegg.html", []).run(["$t
     "                    </div>\n" +
     "                    <div class=\"barnecheckbox\">\n" +
     "                        <div data-ng-if=\"barnetilleggErRegistrert(b)\">\n" +
-    "                            <p class=\"hake\" data-cmstekster=\"barnetillegg.barnetilegg.sporsmal\"></p>\n" +
+    "                            <p class=\"hake\">{{ 'barnetillegg.barnetilegg.sporsmal' | cmstekst }}</p>\n" +
     "\n" +
-    "                            <p class=\"hake\" data-ng-if=\"barnetHarIkkeInntekt(b)\"\n" +
-    "                               data-cmstekster=\"barnetillegg.barnetilegg.ikkebarneinntekt.true\"></p>\n" +
+    "                            <p class=\"hake\" data-ng-if=\"barnetHarIkkeInntekt(b)\">{{ 'barnetillegg.barnetilegg.ikkebarneinntekt.true' | cmstekst }}</p>\n" +
     "\n" +
     "                            <p class=\"hake\" data-ng-if=\"barnetHarInntekt(b)\">\n" +
-    "                                <span data-cmstekster=\"barnetillegg.barnetilegg.ikkebarneinntekt.false\"> </span>\n" +
+    "                                <span>{{ 'barnetillegg.barnetilegg.ikkebarneinntekt.false' | cmstekst }}</span>\n" +
     "                                <span>.</span>\n" +
-    "                                <span data-cmstekster=\"barnetillegg.barnetilegg.barneinntekttall.sporsmal\"></span>\n" +
+    "                                <span>{{ 'barnetillegg.barnetilegg.barneinntekttall.sporsmal' | cmstekst }}</span>\n" +
     "                                <span>{{ b.properties.barneinntekttall | currency }}</span>\n" +
     "                            </p>\n" +
     "                        </div>\n" +
     "\n" +
     "                        <div data-ng-show=\"erSystemRegistrert(b)\">\n" +
     "                            <a href=\"#\" data-ng-click=\"sokbarnetillegg(b.faktumId, $event)\"\n" +
-    "                               data-cmstekster=\"barnetillegg.barnetilegg.sporsmal\"\n" +
-    "                               data-ng-if=\"barnetilleggIkkeRegistrert(b)\"></a>\n" +
+    "                               data-ng-if=\"barnetilleggIkkeRegistrert(b)\">{{ 'barnetillegg.barnetilegg.sporsmal' | cmstekst }}</a>\n" +
     "\n" +
     "                            <a href=\"#\" data-ng-if=\"barnetilleggErRegistrert(b)\"\n" +
-    "                               data-ng-click=\"slettBarnetillegg(b, $index, $event)\"\n" +
-    "                               data-cmstekster=\"barnetillegg.slettbarnetillegg\"></a>\n" +
+    "                               data-ng-click=\"slettBarnetillegg(b, $index, $event)\">{{ 'barnetillegg.slettbarnetillegg' | cmstekst }}</a>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "\n" +
     "                    <div data-vedlegginfoboks data-ng-if=\"kreverVedlegg(b)\">\n" +
     "                        <ul>\n" +
     "                            <li data-ng-if=\"norskBarnIkkeFunnetITPS(b)\">\n" +
-    "                                <p data-cmstekster=\"barnetillegg.nyttbarn.land.norge.vedlegginformasjon\"></p>\n" +
+    "                                <p>{{ 'barnetillegg.nyttbarn.land.norge.vedlegginformasjon' | cmstekst }}</p>\n" +
     "                            </li>\n" +
     "                            <li data-ng-if=\"barnetHarInntekt(b)\">\n" +
-    "                                <p data-cmstekster=\"barnetillegg.barnetilegg.ikkebarneinntekt.false.vedlegginformasjon\"></p>\n" +
+    "                                <p>{{ 'barnetillegg.barnetilegg.ikkebarneinntekt.false.vedlegginformasjon' | cmstekst }}</p>\n" +
     "                            </li>\n" +
     "                        </ul>\n" +
     "                    </div>\n" +
@@ -1302,12 +1301,10 @@ angular.module("../views/templates/barnetillegg/barnetillegg.html", []).run(["$t
     "                    <div class=\"sentrert\" data-ng-show=\"erBrukerregistrert(b)\">\n" +
     "                        <ul class=\"liste-vannrett\">\n" +
     "                            <li>\n" +
-    "                                <a href=\"#\" data-ng-click=\"slettBarn(b, $index, $event)\"\n" +
-    "                                   data-cmstekster=\"barnetillegg.slettbarn\"></a>\n" +
+    "                                <a href=\"#\" data-ng-click=\"slettBarn(b, $index, $event)\">{{ 'barnetillegg.slettbarn' | cmstekst }}</a>\n" +
     "                            </li>\n" +
     "                            <li>\n" +
-    "                                <a href=\"#\" data-ng-click=\"endreBarn(b.faktumId, $event)\"\n" +
-    "                                   data-cmstekster=\"barnetillegg.endrebarn\"></a>\n" +
+    "                                <a href=\"#\" data-ng-click=\"endreBarn(b.faktumId, $event)\">{{ 'barnetillegg.endrebarn' | cmstekst }}</a>\n" +
     "                            </li>\n" +
     "                        </ul>\n" +
     "                    </div>\n" +
@@ -1316,9 +1313,8 @@ angular.module("../views/templates/barnetillegg/barnetillegg.html", []).run(["$t
     "        </div>\n" +
     "\n" +
     "        <div class=\"knapper-opprett ikke-fadebakgrunn\">\n" +
-    "            <p data-cmstekster=\"barnetillegg.nyttbarn.informasjon\"></p>\n" +
-    "            <button class=\"knapp-leggtil-liten\" href=\"#/nyttbarn\" data-ng-click=\"leggTilBarn($event)\"\n" +
-    "                    data-cmstekster=\"barnetillegg.nyttbarn\"></button>\n" +
+    "            <p>{{ 'barnetillegg.nyttbarn.informasjon' | cmstekst }}</p>\n" +
+    "            <button class=\"knapp-leggtil-liten\" href=\"#/nyttbarn\" data-ng-click=\"leggTilBarn($event)\">{{ 'barnetillegg.nyttbarn' | cmstekst }}</button>\n" +
     "        </div>\n" +
     "\n" +
     "        <div data-spmblokkferdig></div>\n" +
@@ -1579,7 +1575,7 @@ angular.module("../views/templates/egennaering/gardsbruk.html", []).run(["$templ
     "         data-navlabel=\"egennaering.gardsbruk.false.type.annet\"\n" +
     "         data-navendret=\"endreTypeGardsbruk()\"></div>\n" +
     "    <div data-melding>\n" +
-    "        <span class=\"melding\" data-cmstekster=\"egennaering.gardsbruk.false.type.feilmelding\"></span>\n" +
+    "        <span class=\"melding\">{{ 'egennaering.gardsbruk.false.type.feilmelding' | cmstekst }}</span>\n" +
     "    </div>\n" +
     "\n" +
     "</div>\n" +
@@ -2449,7 +2445,7 @@ angular.module("../views/templates/utdanning/utdanning.html", []).run(["$templat
     "        <div data-form-errors></div>\n" +
     "\n" +
     "        <div class=\"spm boolean form-linje\">\n" +
-    "            <h4 class=\"spm-sporsmal\" data-cmstekster=\"utdanning.informasjon\"></h4>\n" +
+    "            <h4 class=\"spm-sporsmal\">{{ 'utdanning.informasjon' | cmstekst }}</h4>\n" +
     "\n" +
     "            <div data-navradio\n" +
     "                 data-value=\"ikkeUtdanning\"\n" +
@@ -2469,11 +2465,11 @@ angular.module("../views/templates/utdanning/utdanning.html", []).run(["$templat
     "\n" +
     "            <div class=\"ekstra-spm-boks nav-boolean\" data-ng-if=\"hvis('utdanning', 'avsluttetUtdanning')\">\n" +
     "                <div data-navinfoboks>\n" +
-    "                    <p data-cmstekster=\"utdanning.svar.under.utdanning.avsluttet.informasjon\"></p>\n" +
+    "                    <p>{{ 'utdanning.svar.under.utdanning.avsluttet.informasjon' | cmstekst }}</p>\n" +
     "                </div>\n" +
     "                <div data-vedlegginfoboks>\n" +
     "                    <ul>\n" +
-    "                        <li><p data-cmstekster=\"utdanning.svar.under.utdanning.avsluttet.dokumentere\"></p></li>\n" +
+    "                        <li><p>{{ 'utdanning.svar.under.utdanning.avsluttet.dokumentere' | cmstekst }}</p></li>\n" +
     "                    </ul>\n" +
     "                </div>\n" +
     "            </div>\n" +
@@ -2547,16 +2543,14 @@ angular.module("../views/templates/utdanning/utdanning.html", []).run(["$templat
     "                           data-ng-change=\"endreUtdannelseAnnet()\"\n" +
     "                           data-boolean-verdi\n" +
     "                            data-aktiv-feilmelding/>\n" +
-    "                    <label for=\"underUtdanningNeiCheckbox\"\n" +
-    "                           data-cmstekster=\"utdanning.svar.under.utdanning.nei\"></label>\n" +
-    "                    <span class=\"utdanning-nei-melding\"\n" +
-    "                          data-cmstekster=\"utdanning.harValgtUtdanning.feilmelding\"></span>\n" +
+    "                    <label for=\"underUtdanningNeiCheckbox\">{{ 'utdanning.svar.under.utdanning.nei' | cmstekst }}</label>\n" +
+    "                    <span class=\"utdanning-nei-melding\">{{ 'utdanning.harValgtUtdanning.feilmelding' | cmstekst }}</span>\n" +
     "                </div>\n" +
     "\n" +
     "                <div class=\"ekstra-spm-boks nav-checkbox\" data-navinfoboks data-ng-if=\"hvis('underUtdanningAnnet')\">\n" +
-    "                    <span data-cmstekster=\"utdanning.unntak.informasjon\"></span>\n" +
+    "                    <span>{{ 'utdanning.unntak.informasjon' | cmstekst }}</span>\n" +
     "                </div>\n" +
-    "                <span class=\"melding\" data-cmstekster=\"utdanning.minstEnAvhuket.feilmelding\"></span>\n" +
+    "                <span class=\"melding\">{{ 'utdanning.minstEnAvhuket.feilmelding' | cmstekst }}</span>\n" +
     "\n" +
     "            </div>\n" +
     "\n" +
@@ -2573,7 +2567,7 @@ angular.module("../views/templates/utdanning/utdanning.html", []).run(["$templat
 angular.module("../views/templates/utdanning/utdanningKortvarigFlereTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/templates/utdanning/utdanningKortvarigFlereTemplate.html",
     "<div data-navinfoboks>\n" +
-    "    <span data-cmstekster=\"utdanning.svar.under.utdanning.kortvarigflere.informasjon\"></span>\n" +
+    "    <span>{{ 'utdanning.svar.under.utdanning.kortvarigflere.informasjon' | cmstekst }}</span>\n" +
     "</div>\n" +
     "\n" +
     "<div data-navtekst\n" +
@@ -2608,7 +2602,7 @@ angular.module("../views/templates/utdanning/utdanningKortvarigFlereTemplate.htm
     "\n" +
     "<div data-vedlegginfoboks>\n" +
     "    <ul>\n" +
-    "        <li><p data-cmstekster=\"utdanning.svar.under.utdanning.dokumentasjon\"></p></li>\n" +
+    "        <li><p>{{ 'utdanning.svar.under.utdanning.dokumentasjon' | cmstekst }}</p></li>\n" +
     "    </ul>\n" +
     "</div>\n" +
     "");
@@ -2617,7 +2611,7 @@ angular.module("../views/templates/utdanning/utdanningKortvarigFlereTemplate.htm
 angular.module("../views/templates/utdanning/utdanningKortvarigTemplate.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/templates/utdanning/utdanningKortvarigTemplate.html",
     "<div data-navinfoboks>\n" +
-    "    <span data-cmstekster=\"utdanning.svar.under.utdanning.kortvarig.informasjon\"></span>\n" +
+    "    <span>{{ 'utdanning.svar.under.utdanning.kortvarig.informasjon' | cmstekst }}</span>\n" +
     "</div>\n" +
     "\n" +
     "<div data-navtekst\n" +
@@ -2651,7 +2645,7 @@ angular.module("../views/templates/utdanning/utdanningKortvarigTemplate.html", [
     "\n" +
     "<div data-vedlegginfoboks>\n" +
     "    <ul>\n" +
-    "        <li><p data-cmstekster=\"utdanning.svar.under.utdanning.dokumentasjon\"></p></li>\n" +
+    "        <li><p>{{ 'utdanning.svar.under.utdanning.dokumentasjon' | cmstekst }}</p></li>\n" +
     "    </ul>\n" +
     "</div>\n" +
     "");
@@ -2662,7 +2656,7 @@ angular.module("../views/templates/utdanning/utdanningKveldTemplate.html", []).r
     "\n" +
     "\n" +
     "<div data-navinfoboks>\n" +
-    "    <span data-cmstekster=\"utdanning.svar.under.utdanning.kveld.undervisning.folges.info\"></span>\n" +
+    "    <span>{{ 'utdanning.svar.under.utdanning.kveld.undervisning.folges.info' | cmstekst }}</span>\n" +
     "</div>\n" +
     "\n" +
     "<div data-nav-faktum=\"utdanning.kveld.folges\"\n" +
@@ -2673,7 +2667,7 @@ angular.module("../views/templates/utdanning/utdanningKveldTemplate.html", []).r
     "\n" +
     "\n" +
     "<div data-navinfoboks>\n" +
-    "    <span data-cmstekster=\"utdanning.progresjon.informasjon\"></span>\n" +
+    "    <span>{{ 'utdanning.progresjon.informasjon' | cmstekst }}</span>\n" +
     "</div>\n" +
     "<div data-nav-faktum=\"utdanning.kveld.progresjonUnder50\"\n" +
     "     data-er-required=\"false\"\n" +
@@ -2681,7 +2675,7 @@ angular.module("../views/templates/utdanning/utdanningKveldTemplate.html", []).r
     "     data-nokkel=\"utdanning.progresjon\">\n" +
     "\n" +
     "    <div data-navinfoboks>\n" +
-    "        <span data-cmstekster=\"utdanning.paabegyntUnder6mnd.informasjon\"></span>\n" +
+    "        <span>{{ 'utdanning.paabegyntUnder6mnd.informasjon' | cmstekst }}</span>\n" +
     "    </div>\n" +
     "    <div data-nav-faktum=\"utdanning.kveld.PaabegyntUnder6mnd\"\n" +
     "         data-er-required=\"false\"\n" +
@@ -2689,7 +2683,7 @@ angular.module("../views/templates/utdanning/utdanningKveldTemplate.html", []).r
     "         data-nokkel=\"utdanning.paabegyntUnder6mnd\">\n" +
     "\n" +
     "        <div data-navinfoboks>\n" +
-    "            <span data-cmstekster=\"utdanning.unntak.under6mnd\"></span>\n" +
+    "            <span>{{ 'utdanning.unntak.under6mnd' | cmstekst }}</span>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n" +
@@ -2730,7 +2724,7 @@ angular.module("../views/templates/utdanning/utdanningKveldTemplate.html", []).r
     "</div>\n" +
     "<div data-vedlegginfoboks>\n" +
     "    <ul>\n" +
-    "        <li><p data-cmstekster=\"utdanning.svar.under.utdanning.dokumentasjon\"></p></li>\n" +
+    "        <li><p>{{ 'utdanning.svar.under.utdanning.dokumentasjon' | cmstekst }}</p></li>\n" +
     "    </ul>\n" +
     "</div>");
 }]);
@@ -2759,7 +2753,7 @@ angular.module("../views/templates/utdanning/utdanningNorskTemplate.html", []).r
     "\n" +
     "<div data-vedlegginfoboks>\n" +
     "    <ul>\n" +
-    "        <li><p data-cmstekster=\"utdanning.svar.under.utdanning.dokumentasjon\"></p></li>\n" +
+    "        <li><p>{{ 'utdanning.svar.under.utdanning.dokumentasjon' | cmstekst }}</p></li>\n" +
     "    </ul>\n" +
     "</div>\n" +
     "");
@@ -3505,9 +3499,7 @@ angular.module("../js/common/directives/accordion/accordionGroupTemplate.html", 
     "           data-ng-click=\"isOpen = !isOpen\"\n" +
     "           data-nav-aria-expanded=\"isOpen\"\n" +
     "           data-accordion-transclude=\"heading\">\n" +
-    "            <div class=\"flipp\">\n" +
-    "                <span>+</span>\n" +
-    "            </div>\n" +
+    "            <div class=\"flipp\"></div>\n" +
     "            <h2 class=\"stor\">\n" +
     "                {{heading}}\n" +
     "            </h2>\n" +
@@ -3637,7 +3629,7 @@ angular.module("../js/common/directives/hjelpetekst/hjelpetekstTemplate.html", [
     "    <div class=\"hjelpetekst-tooltip\" data-ng-if=\"visHjelp\" data-nav-hjelpetekst-tooltip>\n" +
     "        <div class=\"tittel\">\n" +
     "            <h3 class=\"liten-strek\">{{ tittel }}</h3>\n" +
-    "            <a class=\"lukk-hjelpetekst liten\" href=\"javascript:void(0)\" data-ng-click=\"lukk()\" aria-role=\"button\">{{ 'lukk' | cmstekst }}</a>\n" +
+    "            <a class=\"lukk-hjelpetekst liten\" href=\"javascript:void(0)\" data-ng-click=\"lukk($event)\" aria-role=\"button\">{{ 'lukk' | cmstekst }}</a>\n" +
     "        </div>\n" +
     "\n" +
     "        <div class=\"tekst\" data-nav-scroll>\n" +
