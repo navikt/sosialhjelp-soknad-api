@@ -89,7 +89,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 
 		function lagreArbeidsforholdOgSluttaarsak() {
             $scope.arbeidsforhold.$save({soknadId: data.soknad.soknadId}).then(function (arbeidsforholdData) {
-				$scope.arbeidsforhold = arbeidsforholdData;
+                $scope.arbeidsforhold = arbeidsforholdData;
 				oppdaterFaktumListe('arbeidsforhold', arbeidsforholdData);
 				oppdaterCookieValue(arbeidsforholdData.faktumId);
                 $location.path('soknad');
