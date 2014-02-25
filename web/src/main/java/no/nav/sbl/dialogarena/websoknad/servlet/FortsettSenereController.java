@@ -4,8 +4,6 @@ import no.nav.sbl.dialogarena.websoknad.domain.FortsettSenere;
 import no.nav.sbl.dialogarena.websoknad.service.EmailService;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.value.ValueMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +25,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping("/soknad")
 public class FortsettSenereController {
 
-    Logger log = LoggerFactory.getLogger(FortsettSenereController.class);
     @Inject
     private EmailService emailService;
 
