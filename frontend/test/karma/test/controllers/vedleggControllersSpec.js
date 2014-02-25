@@ -9,7 +9,6 @@
         var scope, ctrl, form, element, barn, $httpBackend, event, location;
         event = $.Event("click");
 
-        beforeEach(module('ngCookies', 'app.services'));
         beforeEach(module('app.controllers', 'nav.feilmeldinger'));
 
         beforeEach(module(function ($provide) {
@@ -18,58 +17,13 @@
             ];
 
             $provide.value("data", {
-                fakta: fakta,
-                finnFaktum: function (key) {
-                    var res = null;
-                    fakta.forEach(function (item) {
-                        if (item.key == key) {
-                            res = item;
-                        }
-                    });
-                    return res;
-                },
-                finnFakta: function (key) {
-                    var res = [];
-                    fakta.forEach(function (item) {
-                        if (item.key === key) {
-                            res.push(item);
-                        }
-                    });
-                    return res;
-                },
-                leggTilFaktum: function (faktum) {
-                    fakta.push(faktum);
-                },
-                land: 'Norge',
                 soknad: {
                     soknadId: 1
-                },
-                config: {"soknad.sluttaarsak.url": "sluttaarsakUrl",
-                    "soknad.lonnskravskjema.url": "lonnskravSkjema",
-                    "soknad.permitteringsskjema.url": "permiteringUrl",
-                    "minehenvendelser.link.url": "minehenvendelserurl",
-                    "soknad.inngangsporten.url": "inngangsportenurl",
-                    "soknad.skjemaveileder.url": "skjemaVeilederUrl",
-                    "soknad.brukerprofil.url": "brukerprofilUrl",
-                    "soknad.reelarbeidsoker.url": "reelArbeidsokerUrl",
-                    "soknad.alderspensjon.url": "alderspensjonUrl",
-                    "soknad.dagpengerbrosjyre.url": "dagpengerBrosjyreUrl" },
-
-                slettFaktum: function (faktumData) {
-                    fakta.forEach(function (item, index) {
-                        if (item.faktumId === faktumData.faktumId) {
-                            fakta.splice(index, 1);
-                        }
-                    });
-                },
-                utslagskriterier: {
                 }
             });
             $provide.value("cms", {'tekster': {'barnetillegg.nyttbarn.landDefault': ''}});
             $provide.value("$routeParams", {});
-        })
-        )
-        ;
+        }));
 
         beforeEach(inject(function ($injector, $rootScope, $controller, $compile) {
             $httpBackend = $injector.get('$httpBackend');
@@ -80,15 +34,6 @@
             scope.runValidationBleKalt = false;
             scope.runValidation = function () {
                 scope.runValidationBleKalt = true;
-            };
-
-            scope.apneTab = function () {
-            };
-            scope.lukkTab = function () {
-            };
-            scope.settValidert = function () {
-            };
-            scope.leggTilStickyFeilmelding = function () {
             };
 
             element = angular.element(
@@ -102,7 +47,6 @@
             $compile(element)(scope);
             scope.$digest();
             form = scope.form;
-            barn = form.alder;
             element.scope().$apply();
         }));
 
