@@ -1323,12 +1323,8 @@
             });
         });
         describe('ArbeidsforholdNyttCtrl', function () {
-            beforeEach(inject(function ($controller, $compile, data, $location, $injector) {
-                var regEx = 'DNK?rand='+ new RegExp('\d');
-                $httpBackend = $injector.get('$httpBackend');
-                $httpBackend.expectGET('/sendsoknad/rest/ereosland/' + regEx ).
-                    respond('true');
-
+            var cookieStore;
+            beforeEach(inject(function ($controller, $compile, data, $location, $cookieStore) {
                 scope.data = data;
                 location = $location;
                 location.$$url = '/111';
@@ -1345,6 +1341,13 @@
                 scope.data.leggTilFaktum(af1);
                 ctrl = $controller('ArbeidsforholdNyttCtrl', {
                     $scope: scope
+                });
+
+                cookieStore = $cookieStore;
+                $cookieStore.put('scrollTil', {
+                    aapneTabs   : "apenTab",
+                    gjeldendeTab: "#arbeidsforhold",
+                    faktumId    : 111
                 });
 
                 $compile(element)(scope);
@@ -1364,11 +1367,25 @@
                 expect(scope.sluttaarsak.properties).toNotBe(undefined);
                 expect(scope.sluttaarsak.properties.type).toEqual(undefined);
             });
-            it('hvis landet endrer seg til et eos-land så skal propertien eosland settes til true', function () {
-//                scope.arbeidsforhold.properties.land = 'DNK';
-//                scope.$apply();
-//                expect(scope.arbeidsforhold.properties.eosland).toEqual(true);
+            it('cookieStoren sin gjeldendeTab skal settes til arbeidsforhold nar arbeidsforholdet lagres og formen er valid', function () {
+                var form = {
+                    key: form,
+                    $valid: true,
+                    $name: 'arbeidsforhold'
+                };
+                scope.lagreArbeidsforhold(form);
+                expect(cookieStore.get('scrollTil').gjeldendeTab).toBe("#arbeidsforhold");
             });
+            it('cookieStoren sin gjeldendeTab skal settes til arbeidsforhold nar arbeidsforholdet lagres og formen er valid', function () {
+                var form = {
+                    key: form,
+                    $valid: true,
+                    $name: 'arbeidsforhold'
+                };
+                scope.lagreArbeidsforhold(form);
+                expect(cookieStore.get('scrollTil').gjeldendeTab).toBe("#arbeidsforhold");
+            });
+
         });
         describe('AvbrytCtrl', function () {
             beforeEach(inject(function ($controller, data) {
