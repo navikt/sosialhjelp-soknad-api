@@ -83,7 +83,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 			$scope.runValidation(true);
 
 			if (form.$valid) {
-				lagreArbeidsforholdOgSluttaarsak();
+                lagreArbeidsforholdOgSluttaarsak();
 			}
 		};
 
