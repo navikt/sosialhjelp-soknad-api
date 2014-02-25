@@ -23,7 +23,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @EnableScheduling
 public class ServicesApplicationContext {
 
-    private static final Logger LOG = getLogger(ServicesApplicationContext.class);
+    private static final Logger logger = getLogger(ServicesApplicationContext.class);
 
     @Value("${sendsoknad.datadir}")
     private File brukerprofilDataDirectory;
@@ -34,7 +34,7 @@ public class ServicesApplicationContext {
     @Bean
     public Kodeverk kodeverk() {
         if (brukerprofilDataDirectory == null) {
-            LOG.warn("Definer property 'brukerprofil.datadir' for å aktivere fallback for kodeverk dersom tjenesten går ned");
+            logger.warn("Definer property 'brukerprofil.datadir' for å aktivere fallback for kodeverk dersom tjenesten går ned");
         }
         return new StandardKodeverk(kodeverkService, NORSK_BOKMAAL, optional(brukerprofilDataDirectory).map(appendPathname("kodeverkdump")));
     }
