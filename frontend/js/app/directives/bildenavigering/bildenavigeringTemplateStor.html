@@ -2,9 +2,11 @@
     <div class="nav" data-ng-if="vedlegg.vedleggId">
         <a class="pil-venstre-sort" data-ng-click="naviger(-1)" data-ng-if="vedlegg.antallSider > 1" href="javascript:void(0);">
         </a><div class="bilde" data-ng-click="naviger(1)">
+
         <img class="spinner"
              data-ng-if="spinner.visLaster"
              src="../img/ajaxloader/svart/loader_svart_128.gif">
+
         <img data-ng-repeat="bilde in range(vedlegg.antallSider)"
              data-ng-src="../rest/soknad/{{vedlegg.soknadId}}/vedlegg/{{vedlegg.vedleggId}}/thumbnail?side={{bilde}}"
              data-ferdig-lastet
