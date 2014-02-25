@@ -2,22 +2,22 @@
     <div class="sticky-bunn">
         <div>
             <span data-ng-if="soknadHarBlittLagret()">
-                <span data-cmstekster="sistLagret.lagret"/>
+                <span>{{ 'sistLagret.lagret' | cmstekst }}</span>
                 <span>
                     {{ hentSistLagretTid() | date:'short' }}
                 </span>
             </span>
-            <span data-cmstekster="sistLagret.aldriLagret" data-ng-if="soknadHarAldriBlittLagret()"/>
+            <span data-ng-if="soknadHarAldriBlittLagret()">{{ 'sistLagret.aldriLagret' | cmstekst }}</span>
         </div>
         <ul class="liste-vannrett">
             <li data-ng-if="navtilbakelenke !== 'ingenlenke'">
-                <a href="{{ lenke.value}}" data-cmstekster="{{ navtilbakelenke }}"></a>
+                <a href="{{ lenke.value}}">{{ navtilbakelenke | cmstekst }}</a>
             </li>
             <li>
-                <a href="#/fortsettsenere" data-cmstekster="fortsettSenere"></a>
+                <a href="#/fortsettsenere">{{ 'fortsettSenere' | cmstekst }}</a>
             </li>
             <li>
-                <a href="#/avbryt" data-cmstekster="avbryt.soknad"></a>
+                <a href="#/avbryt">{{ 'avbryt.soknad' | cmstekst }}</a>
             </li>
         </ul>
     </div>
