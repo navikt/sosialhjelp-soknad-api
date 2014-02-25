@@ -19,11 +19,11 @@ angular.module('nav.ytelser', [])
 		$scope.harHuketAvCheckboksNavYtelse = {value: ''};
 
 		if (erCheckboxerAvhuket(nokler)) {
-			$scope.harHuketAvCheckboksYtelse.value = true;
+			$scope.harHuketAvCheckboksYtelse.value = 'true';
 		}
 
         if (erCheckboxerAvhuket(undernokler)) {
-            $scope.harHuketAvCheckboksNavYtelse.value = true;
+            $scope.harHuketAvCheckboksNavYtelse.value = 'true';
         }
 
         $scope.settBreddeSlikAtDetFungererIIE();
@@ -67,7 +67,7 @@ angular.module('nav.ytelser', [])
 			if (harIkkeValgtYtelse) {
 				$scope.harHuketAvCheckboksYtelse.value = '';
 			} else {
-				$scope.harHuketAvCheckboksYtelse.value = true;
+				$scope.harHuketAvCheckboksYtelse.value = 'true';
 			}
 
 			var ingenYtelse = data.finnFaktum('ingenYtelse');
@@ -107,7 +107,7 @@ angular.module('nav.ytelser', [])
 			if (harIkkeValgtYtelse) {
 				$scope.harHuketAvCheckboksNavYtelse.value = '';
 			} else {
-				$scope.harHuketAvCheckboksNavYtelse.value = true;
+				$scope.harHuketAvCheckboksNavYtelse.value = 'true';
 			}
 			var faktum = data.finnFaktum('ingennavytelser');
 			if (sjekkOmGittEgenskapTilObjektErTrue(faktum)) {

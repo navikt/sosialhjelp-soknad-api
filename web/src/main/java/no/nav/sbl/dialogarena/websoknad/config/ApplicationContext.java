@@ -21,7 +21,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Configuration
 public class ApplicationContext {
 
-    private static final Logger LOG = getLogger(ApplicationContext.class);
+    private static final Logger logger = getLogger(ApplicationContext.class);
     @Value("${dialogarena.navnolink.url}")
     private String navigasjonslink;
     @Value("{$dokumentinnsending.smtpServer.port}")
@@ -51,7 +51,7 @@ public class ApplicationContext {
             javaMailSender.setPort(Integer.parseInt(smtpServerPort));
         } else {
             javaMailSender.setPort(25);
-            LOG.error("Smtpport not set properly, using default port 25");
+            logger.error("Smtpport not set properly, using default port 25");
         }
         return javaMailSender;
     }
