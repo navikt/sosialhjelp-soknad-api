@@ -2,7 +2,7 @@
     <div id="barnetilleggForm" data-ng-form="barnetilleggForm" class="skjemainnhold"
          data-ng-controller="BarnetilleggCtrl" novalidate>
 
-        <p class="informasjonstekst" cmstekster="barnetillegg.informasjon"></p>
+        <p class="informasjonstekst">{{ 'barnetillegg.informasjon' | cmstekst }}</p>
 
         <div class="barnetillegg-bokser">
             <div class="spm-boks vertikal" data-ng-repeat="b in barn">
@@ -11,7 +11,7 @@
                        data-ng-click="slettBarn(b, $index, $event)"> </a>
 
                     <div class="barnealder">
-                        <span data-cmstekster="aar"></span>
+                        <span>{{ 'aar' | cmstekst }}</span>
                         <span class="alder robust" data-ng-bind="b.properties.alder"></span>
                     </div>
                     <div class="barneinfo">
@@ -26,37 +26,34 @@
                     </div>
                     <div class="barnecheckbox">
                         <div data-ng-if="barnetilleggErRegistrert(b)">
-                            <p class="hake" data-cmstekster="barnetillegg.barnetilegg.sporsmal"></p>
+                            <p class="hake">{{ 'barnetillegg.barnetilegg.sporsmal' | cmstekst }}</p>
 
-                            <p class="hake" data-ng-if="barnetHarIkkeInntekt(b)"
-                               data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.true"></p>
+                            <p class="hake" data-ng-if="barnetHarIkkeInntekt(b)">{{ 'barnetillegg.barnetilegg.ikkebarneinntekt.true' | cmstekst }}</p>
 
                             <p class="hake" data-ng-if="barnetHarInntekt(b)">
-                                <span data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.false"> </span>
+                                <span>{{ 'barnetillegg.barnetilegg.ikkebarneinntekt.false' | cmstekst }}</span>
                                 <span>.</span>
-                                <span data-cmstekster="barnetillegg.barnetilegg.barneinntekttall.sporsmal"></span>
+                                <span>{{ 'barnetillegg.barnetilegg.barneinntekttall.sporsmal' | cmstekst }}</span>
                                 <span>{{ b.properties.barneinntekttall | currency }}</span>
                             </p>
                         </div>
 
                         <div data-ng-show="erSystemRegistrert(b)">
                             <a href="#" data-ng-click="sokbarnetillegg(b.faktumId, $event)"
-                               data-cmstekster="barnetillegg.barnetilegg.sporsmal"
-                               data-ng-if="barnetilleggIkkeRegistrert(b)"></a>
+                               data-ng-if="barnetilleggIkkeRegistrert(b)">{{ 'barnetillegg.barnetilegg.sporsmal' | cmstekst }}</a>
 
                             <a href="#" data-ng-if="barnetilleggErRegistrert(b)"
-                               data-ng-click="slettBarnetillegg(b, $index, $event)"
-                               data-cmstekster="barnetillegg.slettbarnetillegg"></a>
+                               data-ng-click="slettBarnetillegg(b, $index, $event)">{{ 'barnetillegg.slettbarnetillegg' | cmstekst }}</a>
                         </div>
                     </div>
 
                     <div data-vedlegginfoboks data-ng-if="kreverVedlegg(b)">
                         <ul>
                             <li data-ng-if="norskBarnIkkeFunnetITPS(b)">
-                                <p data-cmstekster="barnetillegg.nyttbarn.land.norge.vedlegginformasjon"></p>
+                                <p>{{ 'barnetillegg.nyttbarn.land.norge.vedlegginformasjon' | cmstekst }}</p>
                             </li>
                             <li data-ng-if="barnetHarInntekt(b)">
-                                <p data-cmstekster="barnetillegg.barnetilegg.ikkebarneinntekt.false.vedlegginformasjon"></p>
+                                <p>{{ 'barnetillegg.barnetilegg.ikkebarneinntekt.false.vedlegginformasjon' | cmstekst }}</p>
                             </li>
                         </ul>
                     </div>
@@ -64,12 +61,10 @@
                     <div class="sentrert" data-ng-show="erBrukerregistrert(b)">
                         <ul class="liste-vannrett">
                             <li>
-                                <a href="#" data-ng-click="slettBarn(b, $index, $event)"
-                                   data-cmstekster="barnetillegg.slettbarn"></a>
+                                <a href="#" data-ng-click="slettBarn(b, $index, $event)">{{ 'barnetillegg.slettbarn' | cmstekst }}</a>
                             </li>
                             <li>
-                                <a href="#" data-ng-click="endreBarn(b.faktumId, $event)"
-                                   data-cmstekster="barnetillegg.endrebarn"></a>
+                                <a href="#" data-ng-click="endreBarn(b.faktumId, $event)">{{ 'barnetillegg.endrebarn' | cmstekst }}</a>
                             </li>
                         </ul>
                     </div>
@@ -78,9 +73,8 @@
         </div>
 
         <div class="knapper-opprett ikke-fadebakgrunn">
-            <p data-cmstekster="barnetillegg.nyttbarn.informasjon"></p>
-            <button class="knapp-leggtil-liten" href="#/nyttbarn" data-ng-click="leggTilBarn($event)"
-                    data-cmstekster="barnetillegg.nyttbarn"></button>
+            <p>{{ 'barnetillegg.nyttbarn.informasjon' | cmstekst }}</p>
+            <button class="knapp-leggtil-liten" href="#/nyttbarn" data-ng-click="leggTilBarn($event)">{{ 'barnetillegg.nyttbarn' | cmstekst }}</button>
         </div>
 
         <div data-spmblokkferdig></div>
