@@ -64,12 +64,20 @@ form, [ng-form], [data-ng-form] {
         margin-bottom: 25px;
 
         li {
-            background-image: url(../img/7x7_svart.png);
-            background-repeat: no-repeat;
-            background-position: left 5px;
+            &:before {
+                content: "•";
+                list-style-type: none;
+                padding: 0 0.9rem;
+                margin-left: -32px;
+            }
+
             padding-bottom: 15px;
             padding-left: 20px;
             font-weight: bold;
+
+            p {
+                display: inline;
+            }
         }
     }
 
@@ -321,6 +329,7 @@ form, [ng-form], [data-ng-form] {
         padding: 10px;
         padding-bottom: 40px;
         display: inline-block;
+        background-color: #333333;
         vertical-align: middle;
         span {
             position: absolute;
@@ -344,12 +353,10 @@ form, [ng-form], [data-ng-form] {
 
     }
     [class*='pil-venstre'] {
-        float: left;
-        margin-left: 30px;
+        margin-right: 10px;
     }
     [class*='pil-hoyre'] {
-        float: right;
-        margin-right: 30px;
+        margin-left: 10px;
     }
     .pil-venstre-hvit {
         background-image: url('../img/rund-pil-hvit-venstre.svg');

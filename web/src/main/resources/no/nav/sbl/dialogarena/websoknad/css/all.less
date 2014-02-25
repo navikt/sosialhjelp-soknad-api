@@ -2,7 +2,6 @@
 @flipp-size: 30px;
 @flipp-shadow-size: 64px;
 
-
 // Fjerner piler fra input type=number
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
@@ -115,9 +114,12 @@ input[type="number"]::-webkit-outer-spin-button {
 
 @media only screen and (max-width: 767px) {
     .vedlegginfoboks {
-        [class*="strek-ikon-vedlegg"], [class*="ikon-vedlegg-strek"] {
+        margin-right: 0;
+        margin-left: 0;
+
+        .ikon-vedlegg-strek {
             background-image: none;
-            padding-left: 0px;
+            padding-left: 0;
         }
 
         h5 {
@@ -125,6 +127,7 @@ input[type="number"]::-webkit-outer-spin-button {
         }
 
         ul {
+            margin-left: 20px;
             padding-left: 0px !important;
         }
     }
@@ -204,6 +207,10 @@ input[type="number"]::-webkit-outer-spin-button {
             padding: 0 30px;
         }
     }
+}
+
+.sekundaerAdresse {
+    margin-top: 20px;
 }
 
 .rad.soknad {
@@ -321,10 +328,10 @@ input[type="number"]::-webkit-outer-spin-button {
             cursor: pointer;
 
             .flipp:hover {
-                border-color: transparent transparent #800000 transparent !important;
+                border-color: transparent transparent #800000 transparent;
 
                 &:before {
-                    border-top: @flipp-size solid #c30000 !important;
+                    border-top: @flipp-size solid #c30000;
                 }
             }
         }

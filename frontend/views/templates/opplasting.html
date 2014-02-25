@@ -28,7 +28,7 @@
                     <li class="leggtil">
                         <input id="leggtil" type="file" name="files[]" class="vekk" multiple
                                accept="image/jpeg,image/png,application/pdf" data-fokus>
-                        <label for="leggtil" class="robust" data-cmstekster="opplasting.leggtil"></label>
+                        <label for="leggtil" class="robust">{{ 'opplasting.leggtil' | cmstekst }}</label>
                     </li>
                 </ul>
             </section>
@@ -38,17 +38,16 @@
                 <ul>
                     <li>
                         <a href="javascript:void(0);" data-redirect="#/vedlegg" class="knapp-hoved"
-                           data-cmstekster="opplasting.ferdig" data-ng-click="leggVed()"
-                           data-fremdriftsindikator></a>
+                           data-ng-click="leggVed()"
+                           data-fremdriftsindikator>{{ 'opplasting.ferdig' | cmstekst }}</a>
 
                         <div class="form-linje" data-ng-class="{feil: skalViseFeilmelding === true}"
                              data-ng-if="skalViseFeilmelding === true">
-                            <span class="melding" data-cmstekster="opplasting.feilmelding.manglerVedlegg"></span>
+                            <span class="melding">{{ 'opplasting.feilmelding.manglerVedlegg' | cmstekst }}</span>
                         </div>
                     </li>
                     <li>
-                        <a href="javascript:void(0);" data-ng-href="#/vedlegg" class="avbryt"
-                           data-cmstekster="opplasting.avbryt"></a>
+                        <a href="javascript:void(0);" data-ng-href="#/vedlegg" class="avbryt">{{ 'opplasting.avbryt' | cmstekst }}</a>
                     </li>
                 </ul>
             </div>

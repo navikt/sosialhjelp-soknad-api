@@ -1172,9 +1172,11 @@
                             <span>
                                 {{#hvisLik innsendingsvalg "LastetOpp"}}
                                     <span class="lastetOpp">
-                                        <span class="vedlegg"></span>
-                                        <span>{{ antallSider }}</span>
-                                        <span class="antallSide">{{ hentTekst "dagpenger.oppsummering.sider" }}</span>
+                                        <span class="antallSider">
+                                            <span class="vedlegg"></span>
+                                            <span>{{ antallSider }}</span>
+                                            <span>{{ hentTekst "dagpenger.oppsummering.sider" }}</span>
+                                        </span>
                                         <a href="#/visVedlegg/{{ vedleggId }}" class="seVedlegg">{{ hentTekst "dagpenger.oppsummering.seVedlegg" }}</a>
                                     </span>
                                 {{/hvisLik}}

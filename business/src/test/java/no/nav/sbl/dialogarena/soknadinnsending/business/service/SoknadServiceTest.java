@@ -39,7 +39,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -65,8 +64,10 @@ import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.refEq;
+import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -216,7 +217,7 @@ public class SoknadServiceTest {
                                         new XMLHovedskjema().withUuid("uidHovedskjema"),
                                         new XMLVedlegg().withUuid("uidVedlegg")))
         );
-        when(soknadRepository.hentMedBehandlingsId("123")).thenReturn(null, soknad);
+        when(soknadRepository.hentMedBehandlingsId("123")).thenReturn(null, soknad, soknad);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         JAXB.marshal(soknad, baos);
@@ -236,7 +237,8 @@ public class SoknadServiceTest {
             }
         }).when(handler).writeTo(any(OutputStream.class));
         Long id = soknadService.hentSoknadMedBehandlinsId("123");
-        verify(soknadRepository).populerFraStruktur(eq(soknadCheck));
+        soknadService.hentSoknadMedBehandlinsId("123");
+        verify(soknadRepository, atMost(1)).populerFraStruktur(eq(soknadCheck));
         verify(vedleggRepository).lagreVedleggMedData(11L, 4L, vedleggCheck);
         assertThat(id, is(equalTo(11L)));
     }
@@ -319,6 +321,14 @@ public class SoknadServiceTest {
         verify(vedleggRepository).lagreVedlegg(1L, 4L, vedlegg.medInnsendingsvalg(Vedlegg.Status.VedleggKreves));
 
     }
+    @Test
+    public void skalIkkeoppdatereDelstegstatusVedEpost(){
+        Faktum faktum = new Faktum().medKey("epost").medValue("false").medFaktumId(1L);
+        when(soknadRepository.lagreFaktum(1L, faktum)).thenReturn(2L);
+        when(soknadRepository.hentFaktum(1L, 2L)).thenReturn(faktum);
+        soknadService.lagreSoknadsFelt(1L, faktum);
+        verify(soknadRepository, never()).settDelstegstatus(anyLong(), any(DelstegStatus.class));
+    }
 
     @Test
     public void skalLagreVedlegg(){
@@ -328,8 +338,9 @@ public class SoknadServiceTest {
     }
     @Test
     public void skalSletteBrukerfaktum() {
-        when(vedleggRepository.hentVedleggForFaktum(1L, 1L)).thenReturn(new ArrayList<Vedlegg>());
+        when(vedleggRepository.hentVedleggForFaktum(1L, 1L)).thenReturn(Arrays.asList(new Vedlegg().medVedleggId(111L).medSkjemaNummer("a1").medFaktumId(111L)));
         soknadService.slettBrukerFaktum(1L, 1L);
+        verify(vedleggRepository).slettVedleggOgData(1L, 111L, "a1");
         verify(soknadRepository).slettBrukerFaktum(1L, 1L);
         verify(soknadRepository).settDelstegstatus(1L, DelstegStatus.UTFYLLING);
     }
