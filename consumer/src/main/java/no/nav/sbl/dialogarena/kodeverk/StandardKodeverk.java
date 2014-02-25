@@ -114,6 +114,7 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     private List<XMLKode> getGyldigeKodeverk(XMLEnkeltKodeverk enkeltkodeverk) {
+        logger.warn("Sjekker gyldighetsperioden for  " + enkeltkodeverk.getNavn() + enkeltkodeverk.getType());
         return on(enkeltkodeverk.getKode()).filter(where(GYLDIGHETSPERIODER, exists(periodeMed(now())))).collect();
     }
 
@@ -207,6 +208,7 @@ public class StandardKodeverk implements Kodeverk {
         return new Predicate<XMLPeriode>() {
             @Override
             public boolean evaluate(XMLPeriode periode) {
+                logger.warn("Gyldighetsperioden er fra " + periode.getFom() + " og til "  + periode.getTom());
                 return atTime.isAfter(periode.getFom()) && atTime.isBefore(periode.getTom());
             }
         };
