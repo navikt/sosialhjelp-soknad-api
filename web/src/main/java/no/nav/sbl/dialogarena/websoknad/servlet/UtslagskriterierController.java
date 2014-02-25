@@ -26,13 +26,12 @@ public class UtslagskriterierController {
     @Inject
     PersonInfoConnector personInfoConnector;
 
-    private Map<String, String> utslagskriterierResultat = new HashMap<>();
-
     @RequestMapping(value = "utslagskriterier", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Map<String, String> sjekkUtslagskriterier() {
         String uid = getSubjectHandler().getUid();
         PersonInfoConnector.Status status = personInfoConnector.hentArbeidssokerStatus(uid);
+        Map<String, String> utslagskriterierResultat = new HashMap<>();
         utslagskriterierResultat.put("registrertArbeidssøker", status.name());
 
         try {
