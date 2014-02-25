@@ -43,6 +43,10 @@ angular.module('nav.fortsettsenere', ['nav.cmstekster'])
     .controller('FortsettSenereKvitteringCtrl', ['$scope', 'data', function ($scope, data) {
             $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
             $scope.epost = data.finnFaktum('epost');
+
+            if (!$scope.forrigeSide) {
+                $scope.forrigeSide = '/soknad';
+            }
         }
     ])
 
