@@ -38,17 +38,42 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                 }
             });
         });
+        $.ajaxSetup({
+            converters: {
+                'iframe json': function(iframe){
+                    var result = iframe && $.parseJSON($(iframe[0].body).text())
+                    if(result.kode){
+                        throw result.kode
+                    }
+                    return result;
+                }
+            }
+        });
         $scope.options = {
             maxFileSize: 4000000,
             formData: {'X-XSRF-TOKEN': $cookies['XSRF-TOKEN']},
             acceptFileTypes: /(\.|\/)(jpg|png|pdf|jpeg)$/i,
             autoUpload: true,
+            dataType: 'json',
             headers: {'X-XSRF-TOKEN': $cookies['XSRF-TOKEN'] },
             url: '/sendsoknad/rest/soknad/' + data.soknad.soknadId + '/vedlegg/' + $scope.data.vedleggId + '/opplasting',
             done: function (e, data) {
                 $scope.clear(data.originalFiles[0]);
                 data.result.files.forEach(function (item) {
                     $scope.queue.push(new vedleggService(item));
+                });
+            },
+            fail: function(e, data){
+                var errorCode;
+                if(data.jqXHR.responseJSON){
+                    errorCode = data.jqXHR.responseJSON.kode;
+                } else {
+                    errorCode = data.response().errorThrown;
+                }
+                $scope.data.opplastingFeilet =cms.tekster[errorCode];
+                $.each(data.files, function (index, file) {
+                    data.scope.clear(file);
+                    $scope.clear(file);
                 });
             },
             // Error and info messages:

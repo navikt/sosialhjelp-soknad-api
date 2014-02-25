@@ -1,6 +1,6 @@
 <div class="varighet">
     <span data-ng-bind="af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy' | norskdato"></span>
-    <span data-ng-if="af.sluttaarsak.properties.datotil" data-cmstekster="dato.til"></span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil">{{ 'dato.til' | cmstekst }}</span>
     <span data-ng-if="af.sluttaarsak.properties.datotil" data-ng-bind="af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy' | norskdato"></span>
 </div>
 
@@ -9,26 +9,29 @@
         <p data-ng-bind="af.sluttaarsak.properties.type"></p>
     </li>
     <li>
-        <span data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.aarsak.sporsmal"></span>
+        <span>{{ 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.aarsak.sporsmal' | cmstekst }}</span>
         <p data-ng-bind="af.sluttaarsak.properties.aarsak"></p>
     </li>
     <li>
-        <span data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.sporsmal"></span>
-        <p data-ng-show="af.sluttaarsak.properties.sagtOppAvArbeidsgiverTilbudomjobbannetsted == 'true'" 
-            data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true"></p>
-        <p data-ng-show="af.sluttaarsak.properties.sagtOppAvArbeidsgiverTilbudomjobbannetsted == 'false'" 
-            data-cmstekster="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.false"></p>
+        <span>{{ 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.sporsmal' | cmstekst }}</span>
+        <p data-ng-if="af.sluttaarsak.properties.sagtOppAvArbeidsgiverTilbudomjobbannetsted == 'true'">
+            {{ 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true' | cmstekst }}
+        </p>
+        <p data-ng-show="af.sluttaarsak.properties.sagtOppAvArbeidsgiverTilbudomjobbannetsted == 'false'">
+            {{ 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.false' | cmstekst }}
+        </p>
     </li>
 </ul>
 
 <div data-vedlegginfoboks>
     <ul>
         <li>
-            <span data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></span>
+            <span>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</span>
         </li>
         <li>
-            <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2"></p>
-            <a href="{{sluttaarsakUrl}}" data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst">
+            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2' | cmstekst }}</p>
+            <a href="{{ sluttaarsakUrl }}">
+                {{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst' | cmstekst }}
             </a>
         </li>
     </ul>

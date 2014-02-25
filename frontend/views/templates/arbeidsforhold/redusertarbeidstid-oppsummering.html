@@ -1,6 +1,6 @@
 <div class="varighet">
     <span data-ng-bind="af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy' | norskdato"></span>
-    <span data-ng-if="af.sluttaarsak.properties.datotil" data-cmstekster="dato.til"></span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil">{{ 'dato.til' | cmstekst }}</span>
     <span data-ng-if="af.sluttaarsak.properties.datotil" data-ng-bind="af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy' | norskdato"></span>
 </div>
 
@@ -9,26 +9,25 @@
         <p data-ng-bind="af.sluttaarsak.properties.type"></p>
     </li>
     <li>
-        <span data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.sporsmal"></span>
+        <span>{{ 'arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.sporsmal' | cmstekst }}</span>
         <p data-ng-bind="af.sluttaarsak.properties.redusertfra"></p>
     </li>
     <li>
-        <span data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.sporsmal"></span>
-        <p data-ng-show="af.sluttaarsak.properties.nyttTilbud == 'true'" 
-            data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.true"></p>
-        <p data-ng-show="af.sluttaarsak.properties.nyttTilbud == 'false'" 
-            data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.false"></p>
+        <span>{{ 'arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.sporsmal' | cmstekst }}</span>
+        <p data-ng-if="af.sluttaarsak.properties.nyttTilbud == 'true'">{{ 'arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.true' | cmstekst }}</p>
+        <p data-ng-if="af.sluttaarsak.properties.nyttTilbud == 'false'">{{ 'arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.false' | cmstekst }}</p>
     </li>
 </ul>
 
 <div data-vedlegginfoboks>
     <ul>
         <li>
-            <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></p>
+            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</p>
         </li>
         <li>
-            <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2"></p>
-            <a href="{{sluttaarsakUrl}}" data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst">
+            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2' | cmstekst }}</p>
+            <a href="{{sluttaarsakUrl}}">
+                {{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst' | cmstekst }}
             </a>
         </li>
     </ul>

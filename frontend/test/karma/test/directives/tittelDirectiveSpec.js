@@ -12,7 +12,7 @@ describe('navTittel', function () {
     beforeEach(inject(function ($compile, $rootScope) {
         $scope = $rootScope;
         $scope.tittelkey = "tittel.key";
-        element = angular.element('<div nav-tittel="{{tittelkey}}"></div>');
+        element = angular.element('<div nav-tittel="{{ tittelkey }}"></div>');
         $compile(element)($scope);
         $scope.$apply();
     }))
