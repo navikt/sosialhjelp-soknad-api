@@ -124,7 +124,8 @@
             it('skal sjekke at ekstra vedlegg er feridg', function() {
                 scope.nyttAnnetVedlegg();
                 var forventning = {
-                    skjemaNummer: "N6"
+                    skjemaNummer: "N6",
+                    navn: undefined
                 }
                 expect(scope.ekstraVedleggFerdig(forventning)).toBe(false);
                 forventning.navn = "Mitt ekstra vedlegg";
@@ -146,9 +147,18 @@
             beforeEach(inject(function ($controller, data) {
                 scope.data = data;
                 scope.forventning = {
+                    innsendingsvalg: "VedleggKreves",
+                    storrelse: 42,
                     $save: function() {
+                    },
+                    $remove: function() {
+                       return {then: function() {
+
+                       }}
                     }
                 };
+                scope.forventninger = [scope.forventning];
+                scope.validert = {};
                 
                 ctrl = $controller('validervedleggCtrl', {
                     $scope: scope
@@ -156,6 +166,11 @@
             }));
 
             it('skal vise feil før vedlegg er lastet opp', function () {
+                expect(scope.hiddenFelt).toEqual({value: ''});
+                expect(scope.skalViseFeil).toEqual({value: true});
+            });
+
+            it('skal vise feil når man endrer innsending til vedleggKreves', function () {
                 scope.endreInnsendingsvalg(scope.forventning, "VedleggKreves");
                 expect(scope.hiddenFelt).toEqual({value: ''});
                 expect(scope.skalViseFeil).toEqual({value: true});
@@ -167,6 +182,24 @@
                 expect(scope.skalViseFeil.value).toBe(false);
             });
 
+            it('skal kunne slette annet vedlegg', function() {
+                scope.forventning.skjemaNummer = "N6";
+                scope.forventning.innsendingsvalg = "LastetOpp";
+                scope.slettVedlegg(scope.forventning);
+
+                expect(scope.hiddenFelt).toEqual({value: '' });
+                expect(scope.skalViseFeil).toEqual({ value: true });
+                expect(scope.validert.value).toEqual(false);
+            });
+
+            it('skal kunne slette vanlig vedlegg', function() {
+                scope.forventning.innsendingsvalg = "LastetOpp";
+                scope.slettVedlegg(scope.forventning);
+
+                expect(scope.hiddenFelt).toEqual({value: '' });
+                expect(scope.skalViseFeil).toEqual({ value: true });
+                expect(scope.validert.value).toEqual(false);
+            });
         });
 
         describe('validervedleggCtrlUtenVedlegg', function () {
