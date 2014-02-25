@@ -30,6 +30,8 @@ public class ConfigService {
     private String lonnskravSkjemaUrl;
     @Value("${soknad.permitteringsskjema.url}")
     private String permitteringskjemaUrl;
+    @Value("${dittnav.link.url}")
+    private String dittnavUrl;
     
     
     
@@ -37,6 +39,7 @@ public class ConfigService {
         Map<String, String> result = new HashMap<String, String>();
         
         result.put("minehenvendelser.link.url", mineHenvendelserUrl);
+        result.put("dittnav.link.url", dittnavUrl);
         result.put("dialogarena.navnolink.url", navNoUrl);
         result.put("soknad.inngangsporten.url", inngangsportenUrl);
         result.put("soknad.skjemaveileder.url", skjemaveilederUrl);

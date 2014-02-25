@@ -47,7 +47,9 @@ public class SoknadTpsDataController {
     public Map<String, List<Map<String, String>>> hentLandkodeListe() {
 
         List<Map<String, String>> landliste = new ArrayList<>();
+
         List<String> landKoder = kodeverk.getAlleLandkoder();
+
         for (String landkode : landKoder) {
             Map<String, String> land = new LinkedHashMap<>();
             land.put("text", kodeverk.getLand(landkode));

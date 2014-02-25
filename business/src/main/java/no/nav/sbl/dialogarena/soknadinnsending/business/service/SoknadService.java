@@ -99,15 +99,15 @@ public class SoknadService implements SendSoknadService, VedleggService {
         if (detector.pdfIsSigned()) {
             throw new UgyldigOpplastingTypeException(
                     "PDF kan ikke være signert.", null,
-                    "vedlegg.opplasting.feil.pdf.signert");
+                    "opplasting.feilmelding.pdf.signert");
         } else if (detector.pdfIsEncrypted()) {
             throw new UgyldigOpplastingTypeException(
                     "PDF kan ikke være krypert.", null,
-                    "vedlegg.opplasting.feil.pdf.krypert");
+                    "opplasting.feilmelding.pdf.krypert");
         } else if (detector.pdfIsSavedOrExportedWithApplePreview()) {
             throw new UgyldigOpplastingTypeException(
                     "PDF kan ikke være lagret med Apple Preview.", null,
-                    "vedlegg.opplasting.feil.pdf.applepreview");
+                    "opplasting.feilmelding.pdf.applepreview");
         }
     }
 

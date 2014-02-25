@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.TEXT_PLAIN;
 
 /**
  * Håndterer alle exceptions som blir kastet fra rest klasser
@@ -31,7 +31,7 @@ public class ExceptionController {
     @ResponseBody
     @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     public ResponseEntity<RestFeil> handterFeilType(UgyldigOpplastingTypeException ex) {
-        logger.warn("Feilet opplasting med: " + ex, ex);
+        logger.debug("Feilet opplasting med: " + ex, ex);
         return getResult(ex.getId(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
 
@@ -39,7 +39,7 @@ public class ExceptionController {
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     public ResponseEntity<RestFeil> handterVedleggException(OpplastingException ex) {
-        logger.warn("Feilet opplasting med: " + ex, ex);
+        logger.debug("Feilet opplasting med: " + ex, ex);
         return getResult(ex.getId(), HttpStatus.NOT_ACCEPTABLE);
     }
 
@@ -61,7 +61,7 @@ public class ExceptionController {
 
     private ResponseEntity<RestFeil> getResult(String id, HttpStatus badRequest) {
         HttpHeaders header = new HttpHeaders();
-        header.setContentType(APPLICATION_JSON);
+        header.setContentType(TEXT_PLAIN);
         return new ResponseEntity<>(new RestFeil(id), header, badRequest);
     }
 }

@@ -10,11 +10,11 @@
 
         </div>
     </div>
-    <form id="opplastingform" method="POST" enctype="multipart/form-data" data-file-upload="options"
-          data-ng-controller="OpplastingCtrl">
+    <form id="opplastingform" method="POST" enctype="multipart/form-data" data-file-upload="options" data-ng-controller="OpplastingCtrl">
         <div class="begrensning">
-            <div id="opplastingFeilmelding" class="opplastingfeil" style="width: 73%;margin: 0 auto; "
-                 data-ng-if="data.opplastingFeilet" data-ng-bind="data.opplastingFeilet">dette er en feil
+            <div id="opplastingFeilmelding" class="opplastingfeil" data-ng-if="data.opplastingFeilet" >
+                <h1 class="robust-strek-hvit">NB</h1>
+                <span data-ng-bind="data.opplastingFeilet"></span>
             </div>
             <section>
                 <ul class="opplastingliste clearfix sak-tredel">
@@ -22,8 +22,10 @@
                         <a class="lukk" data-ng-if="!!file.vedleggId" data-ng-click="file.$destroy()"
                            data-ng-controller="SlettOpplastingCtrl" href="javascript:void(0);"
                            data-aria-label="Slett siden"></a>
+                        <a href="#visVedlegg/{{file.vedleggId}}" data-ng-if="!!file.vedleggId">
                         <img data-async-image="../rest/soknad/{{file.soknadId}}/vedlegg/{{file.vedleggId}}/thumbnail"
-                             data-ng-if="!!file.vedleggId">
+                             >
+                        </a>
                     </li>
                     <li class="leggtil">
                         <input id="leggtil" type="file" name="files[]" class="vekk" multiple

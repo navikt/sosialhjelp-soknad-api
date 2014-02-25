@@ -1249,7 +1249,6 @@ angular.module("../views/templates/barnetillegg/barnetillegg.html", []).run(["$t
     "                <div data-ng-class=\"{gutt: erGutt(b), jente:erJente(b)}\" id=\"barnetillegg{{b.faktumId}}\" class=\"barn\">\n" +
     "                    <a href=\"#\" class=\"lukk\" data-ng-show=\"erBrukerregistrert(b)\"\n" +
     "                       data-ng-click=\"slettBarn(b, $index, $event)\"> </a>\n" +
-    "\n" +
     "                    <div class=\"barnealder\">\n" +
     "                        <span>{{ 'aar' | cmstekst }}</span>\n" +
     "                        <span class=\"alder robust\" data-ng-bind=\"b.properties.alder\"></span>\n" +
@@ -2010,11 +2009,11 @@ angular.module("../views/templates/opplasting.html", []).run(["$templateCache", 
     "\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "    <form id=\"opplastingform\" method=\"POST\" enctype=\"multipart/form-data\" data-file-upload=\"options\"\n" +
-    "          data-ng-controller=\"OpplastingCtrl\">\n" +
+    "    <form id=\"opplastingform\" method=\"POST\" enctype=\"multipart/form-data\" data-file-upload=\"options\" data-ng-controller=\"OpplastingCtrl\">\n" +
     "        <div class=\"begrensning\">\n" +
-    "            <div id=\"opplastingFeilmelding\" class=\"opplastingfeil\" style=\"width: 73%;margin: 0 auto; \"\n" +
-    "                 data-ng-if=\"data.opplastingFeilet\" data-ng-bind=\"data.opplastingFeilet\">dette er en feil\n" +
+    "            <div id=\"opplastingFeilmelding\" class=\"opplastingfeil\" data-ng-if=\"data.opplastingFeilet\" >\n" +
+    "                <h1 class=\"robust-strek-hvit\">NB</h1>\n" +
+    "                <span data-ng-bind=\"data.opplastingFeilet\"></span>\n" +
     "            </div>\n" +
     "            <section>\n" +
     "                <ul class=\"opplastingliste clearfix sak-tredel\">\n" +
