@@ -28,7 +28,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         };
 
         $scope.hentAdresseLinjer = function () {
-            if ($scope.utslagskriterier && $scope.utslagskriterier.registrertAdresse !== '') {
+            if (isNotNullOrUndefined($scope.utslagskriterier.registrertAdresse)) {
                 return $scope.utslagskriterier.registrertAdresse.split(", ");
             }
             return [];
