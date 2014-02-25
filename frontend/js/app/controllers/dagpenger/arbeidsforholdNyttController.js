@@ -83,18 +83,22 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
 			$scope.runValidation(true);
 
 			if (form.$valid) {
-				lagreArbeidsforholdOgSluttaarsak();
+                lagreArbeidsforholdOgSluttaarsak();
 			}
 		};
 
+        $scope.test ="";
 		function lagreArbeidsforholdOgSluttaarsak() {
+            console.log("her")
             $scope.arbeidsforhold.$save({soknadId: data.soknad.soknadId}).then(function (arbeidsforholdData) {
 				$scope.arbeidsforhold = arbeidsforholdData;
 				oppdaterFaktumListe('arbeidsforhold', arbeidsforholdData);
 				oppdaterCookieValue(arbeidsforholdData.faktumId);
                 $location.path('soknad');
+                $scope.test = arbeidsforholdData;
 			});
-		}
+
+        }
 
 		function oppdaterCookieValue(faktumId) {
 			var arbeidsforholdCookie = $cookieStore.get('scrollTil');

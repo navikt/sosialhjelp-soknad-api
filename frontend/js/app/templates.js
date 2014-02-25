@@ -616,6 +616,9 @@ angular.module("../views/templates/arbeidsforhold/konkurs.html", []).run(["$temp
     "            <a href=\"{{lonnskravSkjema}}\">{{ 'arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3.lenketekst' | cmstekst\n" +
     "                }}</a>\n" +
     "        </li>\n" +
+    "        <li>\n" +
+    "            <p>{{ 'arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.4' | cmstekst }}</p>\n" +
+    "        </li>\n" +
     "    </ul>\n" +
     "</div>");
 }]);

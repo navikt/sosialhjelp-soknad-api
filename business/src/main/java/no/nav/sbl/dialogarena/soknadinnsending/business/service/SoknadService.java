@@ -26,6 +26,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.Ugyldig
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
@@ -45,7 +46,7 @@ import javax.inject.Named;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.awt.Dimension;
+import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -137,7 +138,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         Long faktumId = repository.lagreFaktum(soknadId, faktum);
         repository.settSistLagretTidspunkt(soknadId);
         //Setter delstegstatus dersom et faktum blir lagret, med mindre det er epost. Bør gjøres mer elegant, litt quickfix
-        if (!"epost".equals(faktum.getKey())) {
+        if (!Personalia.EPOST_KEY.equals(faktum.getKey())) {
             repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
         }
         Faktum resultat = repository.hentFaktum(soknadId, faktumId);

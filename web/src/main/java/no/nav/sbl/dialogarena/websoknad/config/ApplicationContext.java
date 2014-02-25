@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
+import no.nav.sbl.dialogarena.print.HandleBarKjoerer;
+import no.nav.sbl.dialogarena.print.HtmlGenerator;
 import no.nav.sbl.dialogarena.websoknad.WicketApplication;
 import no.nav.sbl.dialogarena.websoknad.service.EmailService;
 import org.slf4j.Logger;
@@ -21,7 +23,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Configuration
 public class ApplicationContext {
 
-    private static final Logger LOG = getLogger(ApplicationContext.class);
+    private static final Logger logger = getLogger(ApplicationContext.class);
     @Value("${dialogarena.navnolink.url}")
     private String navigasjonslink;
     @Value("{$dokumentinnsending.smtpServer.port}")
@@ -51,7 +53,7 @@ public class ApplicationContext {
             javaMailSender.setPort(Integer.parseInt(smtpServerPort));
         } else {
             javaMailSender.setPort(25);
-            LOG.error("Smtpport not set properly, using default port 25");
+            logger.error("Smtpport not set properly, using default port 25");
         }
         return javaMailSender;
     }
@@ -80,5 +82,10 @@ public class ApplicationContext {
         CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
         commonsMultipartResolver.setMaxUploadSize(10 * 1024 * 1000);
         return commonsMultipartResolver;
+    }
+
+    @Bean
+    public HtmlGenerator handleBarKjoerer(){
+        return new HandleBarKjoerer();
     }
 }
