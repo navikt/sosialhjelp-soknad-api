@@ -529,15 +529,6 @@
 		<flereTillatt>true</flereTillatt>
 	</vedlegg>
 	<vedlegg>
-		<id>4</id>
-		<faktum>arbeidsforhold</faktum>
-		<skjemaNummer>NAV 04-08.04</skjemaNummer>
-		<property>arbeidsgivernavn</property>
-		<onProperty>type</onProperty>
-		<onValue>Permittert</onValue>
-		<flereTillatt>true</flereTillatt>
-	</vedlegg>
-	<vedlegg>
 		<id>6</id>
 		<faktum>barn</faktum>
 		<skjemaNummer>X8</skjemaNummer>
