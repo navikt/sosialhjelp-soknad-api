@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
+import no.nav.sbl.dialogarena.print.HandleBarKjoerer;
+import no.nav.sbl.dialogarena.print.HtmlGenerator;
 import no.nav.sbl.dialogarena.websoknad.WicketApplication;
 import no.nav.sbl.dialogarena.websoknad.service.EmailService;
 import org.slf4j.Logger;
@@ -80,5 +82,10 @@ public class ApplicationContext {
         CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
         commonsMultipartResolver.setMaxUploadSize(10 * 1024 * 1000);
         return commonsMultipartResolver;
+    }
+
+    @Bean
+    public HtmlGenerator handleBarKjoerer(){
+        return new HandleBarKjoerer();
     }
 }
