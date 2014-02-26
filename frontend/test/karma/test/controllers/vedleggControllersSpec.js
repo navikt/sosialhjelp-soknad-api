@@ -70,7 +70,7 @@
                 var forventning = {
                     skjemaNummer: "N6",
                     navn: undefined
-                }
+                };
                 expect(scope.ekstraVedleggFerdig(forventning)).toBe(false);
                 forventning.navn = "Mitt ekstra vedlegg";
                 expect(scope.ekstraVedleggFerdig(forventning)).toBe(true);
@@ -79,7 +79,7 @@
             it('skal sjekke om vedlegg er ferdig behandlet', function() {
                 var forventning = {
                     innsendingsvalg: 'VedleggKreves'
-                }
+                };
                 expect(scope.vedleggFerdigBehandlet(forventning)).toBe(false);
 
                 forventning.innsendingsvalg = 'LastetOpp';
@@ -98,7 +98,7 @@
                     $remove: function() {
                        return {then: function() {
 
-                       }}
+                       }};
                     }
                 };
                 scope.forventninger = [scope.forventning];

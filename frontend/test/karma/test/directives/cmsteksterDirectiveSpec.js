@@ -32,27 +32,27 @@ describe('cmstekster', function () {
 
         $compile(element)($scope);
         $scope.$apply();
-    }))
+    }));
 
     describe("cmstekster", function() {
         it("skal sette inn cmstekst", function() {
             expect(element.find("div").html()).toBe("Min tittel");
-        })
+        });
 
         it("skal sette inn cmstekst i input", function() {
             expect(element.find("input").attr("value")).toBe("Dette er value");
-        })
-    })
+        });
+    });
 
     describe("cmshtml", function() {
         it("skal sette inn html", function() {
             expect(element.find(".html").html()).toBe("<h1>htmltest</h1>");
-        })
-    })
+        });
+    });
     
     describe("cmslenketekster", function() {
         it("skal sette inn lenketekst", function() {
             expect(element.find("a").attr("href")).toBe("http://helt-riktig.com");
-        })
-    })
+        });
+    });
 });

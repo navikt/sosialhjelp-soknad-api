@@ -88,7 +88,6 @@
                 expect(scope.skalViseFeilmelding).toBe(false);
                 expect(scope.fremdriftsindikator.laster).toBe(true);
             });
-
         });
 
         describe('SlettOpplastingCtrl', function () {
@@ -101,10 +100,10 @@
                     $remove: function() {
                        return {then: function() {
                             scope.fileCleared = true;            
-                       }}
+                       }};
                     },
                     name: "a"
-                }
+                };
 
                 ctrl = $controller('SlettOpplastingCtrl', {
                     $scope: scope
