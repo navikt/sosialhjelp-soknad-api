@@ -45,6 +45,7 @@
                     soknadId: 1
                 },
                 config: {"soknad.sluttaarsak.url": "sluttaarsakUrl",
+                    "dittnav.link.url": "dittnavUrl",
                     "soknad.lonnskravskjema.url": "lonnskravSkjema",
                     "soknad.permitteringsskjema.url": "permiteringUrl",
                     "minehenvendelser.link.url": "minehenvendelserurl",
@@ -1506,7 +1507,7 @@
                 });
             }));
 
-            it('Mine innsendinger og inngagsporten skal settes til riktig url', function () {
+            it('Mine innsendinger og inngangsporten skal settes til riktig url', function () {
                 expect(scope.mineInnsendinger).toEqual("minehenvendelserurl");
                 expect(scope.inngangsportenUrl).toEqual("inngangsportenurl");
             });
@@ -1519,8 +1520,8 @@
                 });
             }));
 
-            it('Skjemaveileder og mine henvendelser skal settes til riktig url', function () {
-                expect(scope.mineHenveldelserBaseUrl).toEqual("minehenvendelserurl");
+            it('Skjemaveileder og ditt Nav skal settes til riktig url', function () {
+                expect(scope.dittNavBaseUrl).toEqual("dittnavurl");
                 expect(scope.skjemaVeilederUrl).toEqual("skjemaVeilederUrl");
             });
         });
