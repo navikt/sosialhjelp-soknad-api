@@ -68,31 +68,43 @@ angular.module('nav.stickyFeilmelding', [])
                     if (!(feilHarBlittRettet && scope.feil.navaerende === totalAntalLFeil())) {
                         if (feilHarBlittRettet && scope.feil.navaerende > 0 && varIkkePaSisteFeil()) {
                             scope.feil.navaerende = scope.feil.navaerende - 1;
+                            console.log("1");
+
                         }
                         if (varToFeilNaEnFeilStodPaAndreFeil()) {
                             leggTilMarkeringAvFeilmelding(1, true);
                             scope.skalDeaktivereNesteKnapp = true;
                             feilHarBlittRettet = false;
+                            console.log("2");
 
                         } else if (varToFeilNaEnFeilStodPaForsteFeil()) {
                             leggTilMarkeringAvFeilmelding(0, true);
                             scope.skalDeaktivereNesteKnapp = true;
                             feilHarBlittRettet = false;
+                            console.log("3");
+
                         } else if (feilHarBlittRettet && sisteFeilBleRettetOgStodPaNestSisteFeil()) {
                             scope.skalDeaktivereNesteKnapp = true;
                             scope.feil.navaerende = scope.feil.navaerende + 1;
                             feilHarBlittRettet = true;
+                            console.log("4");
+
                         } else if (nestForsteOgForsteRettet) {
                             scope.feil.navaerende = 0;
                             leggTilMarkeringAvFeilmelding(1, true);
                             nestForsteOgForsteRettet = false;
                             feilHarBlittRettet = false;
+                            console.log("5");
+
                         } else if (stodPaForsteFeilBleRettet()) {
                             leggTilMarkeringAvFeilmelding(0, true);
                             feilHarBlittRettet = false;
+                            console.log("6");
+
                         } else if (varIkkePaSisteFeil()) {
                             leggTilMarkeringAvFeilmelding(1, true);
                             feilHarBlittRettet = false;
+                            console.log("7");
 
                             if (erPaSisteFeil()) {
                                 scope.skalDeaktivereNesteKnapp = true;
@@ -101,13 +113,18 @@ angular.module('nav.stickyFeilmelding', [])
                             leggTilMarkeringAvFeilmelding(0, false);
                             scope.skalDeaktivereNesteKnapp = true;
                             feilHarBlittRettet = false;
+                            console.log("8");
+
                         } else if (sisteFeilBleRettetOgStodPaSisteFeil()) {
                             leggTilMarkeringAvFeilmelding(-1, true);
                             scope.skalDeaktivereNesteKnapp = true;
                             feilHarBlittRettet = false;
+                            console.log("9");
+
                         }
                     } else if (feilHarBlittRettet && scope.feil.navaerende === 1 && totalAntalLFeil() === 1) {
                         leggTilMarkeringAvFeilmelding(-1, true);
+                        console.log("10");
                     }
                 };
                 function sisteFeilAkkuratRettetOgFlereFeilIgjen() {
@@ -205,21 +222,20 @@ angular.module('nav.stickyFeilmelding', [])
                 };
 
                 function leggTilMarkeringAvFeilmelding(verdi, skalScrolle) {
-                    bolker = $('[data-accordion-group]');
-                    var bolkMedFeil = bolker.find('.form-linje.feil, .form-linje.feilstyling');
-                    var bolk = bolkMedFeil.not('.ng-hide');
-                    $(bolk[scope.feil.navaerende]).removeClass('aktiv-feilmelding');
+                    var elementerMedFeil = elem.find('.form-linje.feil, .form-linje.feilstyling');
+                    var elementerMedGyldigFeil = elementerMedFeil.not('.ng-hide');
+                    $(elementerMedGyldigFeil[scope.feil.navaerende]).removeClass('aktiv-feilmelding');
                     scope.feil.navaerende = scope.feil.navaerende + verdi;
-                    $(bolk[scope.feil.navaerende]).addClass('aktiv-feilmelding');
+                    $(elementerMedGyldigFeil[scope.feil.navaerende]).addClass('aktiv-feilmelding');
 
-                    if (bolkMedNesteFeilErLukket(bolk)) {
-                        apneBolk(bolk);
+                    if (bolkMedNesteFeilErLukket(elementerMedGyldigFeil)) {
+                        apneBolk(elementerMedGyldigFeil);
                     }
 
                     if (skalScrolle) {
-                        scrollToElement($(bolk[scope.feil.navaerende]), 300);
+                        scrollToElement($(elementerMedGyldigFeil[scope.feil.navaerende]), 300);
                     }
-                    giFokus(bolk);
+                    giFokus(elementerMedGyldigFeil);
                 }
 
                 function giFokus(element) {
