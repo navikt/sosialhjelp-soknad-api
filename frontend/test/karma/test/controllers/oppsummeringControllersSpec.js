@@ -38,12 +38,16 @@
                 scope.runValidationBleKalt = true;
             };
 
+            scope.fnr = "22068511111";
             element = angular.element(
+                '<div>'+
                 '<form name="form">' +
                     '<div form-errors></div>' +
                     '<input type="text" ng-model="scope.barn.properties.fodselsdato" name="alder"/>' +
                     '<input type="hidden" data-ng-model="underAtten.value" data-ng-required="true"/>' +
                     '</form>'
+                + '<span> {{fnr | formatterFnr}} </span>'
+                + '</div>'
             );
 
             $compile(element)(scope);
@@ -53,13 +57,35 @@
         }));
 
         describe('OppsummeringCtrl', function () {
-            beforeEach(inject(function ($controller, data) {
+            beforeEach(inject(function ($controller, data, $injector,$compile) {
                 scope.data = data;
             
                 ctrl = $controller('OppsummeringCtrl', {
                     $scope: scope
                 });
+
+                $httpBackend = $injector.get('$httpBackend');
             }));
+
+            it('skal kunne sende soknad etter å ha krysset av checkbox', function() {
+                expect(scope.harbekreftet).toEqual({value: ''});
+                expect(scope.skalViseFeilmelding.value).toEqual(false);
+                
+                scope.sendSoknad();
+                expect(scope.skalViseFeilmelding.value).toEqual(true);
+
+                $httpBackend.expectGET(/\d/).
+                respond('');
+
+                scope.harbekreftet.value = true;
+                scope.$digest();
+                scope.sendSoknad();
+                expect(scope.skalViseFeilmelding.value).toEqual(false);                
+            });
+
+            it('skal formattere fnr på riktig måte', function() {
+                expect(element.find("span").text()).toEqual(" 220685 11111 ");
+            });
         });
     });
 }());

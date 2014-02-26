@@ -6,7 +6,7 @@
     'use strict';
 
     describe('DagpengerControllere', function () {
-        var scope, ctrl, form, element, barn, $httpBackend, event, location;
+        var scope, ctrl, form, element, barn, $httpBackend, event, location, epost;
         event = $.Event("click");
 
         beforeEach(module('ngCookies', 'app.services'));
@@ -97,6 +97,7 @@
                     '<div form-errors></div>' +
                     '<input type="text" ng-model="scope.barn.properties.fodselsdato" name="alder"/>' +
                     '<input type="hidden" data-ng-model="underAtten.value" data-ng-required="true"/>' +
+                    '<input type="email" data-ng-model="epost.value" name="epost" data-ng-required="true"/>' +
                     '</form>'
             );
 
@@ -104,6 +105,7 @@
             scope.$digest();
             form = scope.form;
             barn = form.alder;
+            epost = form.epost;
             element.scope().$apply();
         }));
 
@@ -605,7 +607,7 @@
                 var faktum = {
                     key: 'reellarbeidssoker.villighelse',
                     value: 'false'
-                }
+                };
                 scope.data.leggTilFaktum(faktum);
                 expect(scope.kanIkkeTaAlleTyperArbeid()).toBe(true);
             });
@@ -857,7 +859,7 @@
                 scope.data.leggTilFaktum(tpsBarn);
                 scope.data.leggTilFaktum(nyttBarn);
 
-                cookieStore = $cookieStore
+                cookieStore = $cookieStore;
 
                 ctrl = $controller('BarnetilleggCtrl', {
                     $scope: scope
@@ -1393,11 +1395,11 @@
                 scope.arbeidsforhold.properties.arbeidsgivernavn = "A";
                 scope.arbeidsforhold.properties.datofra = "2014-10-10";
                 scope.arbeidsforhold.properties.datotil = "2014-10-10";
-                scope.arbeidsforhold.properties.type = "Avskjediget"
-                scope.sluttaarsak.properties.type = "Avskjediget"
-                scope.arbeidsforhold.properties.land = "NOR"
-                scope.arbeidsforhold.properties.eosland = "false"
-                scope.arbeidsforhold.properties.avskjedigetGrunn= "1111111111111111111"
+                scope.arbeidsforhold.properties.type = "Avskjediget";
+                scope.sluttaarsak.properties.type = "Avskjediget";
+                scope.arbeidsforhold.properties.land = "NOR";
+                scope.arbeidsforhold.properties.eosland = "false";
+                scope.arbeidsforhold.properties.avskjedigetGrunn= "1111111111111111111";
                 form.$valid =true;
                 
                 scope.lagreArbeidsforhold(form);
@@ -1701,95 +1703,6 @@
                 expect(scope.harHuketAvCheckboksNavYtelse.value).toEqual('');
             });
         });
-        describe('PersonaliaCtrl', function () {
-            beforeEach(inject(function ($controller, data) {
-                scope.data = data;
-                var faktum = {
-                    key: 'personalia',
-                    properties: {
-                        alder: "61",
-                        kjonn: 'm',
-                        statsborgerskap: 'NOR'
-                    },
-                    faktumId: 111
-                };
-                scope.data.leggTilFaktum(faktum);
-                ctrl = $controller('PersonaliaCtrl', {
-                    $scope: scope
-                });
-            }));
-
-            it('personalia skal inneholde data', function () {
-                expect(scope.personalia).toNotBe(undefined);
-            });
-            it('brukerprofilUrl skal bli satt til riktig url', function () {
-                expect(scope.brukerprofilUrl).toBe("brukerprofilUrl");
-            });
-            it('hvis personen er en mann så skal erMann returnere true', function () {
-                expect(scope.erMann()).toEqual(true);
-            });
-            it('hvis personen er en mann så skal erKvinne returnere false', function () {
-                expect(scope.erKvinne()).toEqual(false);
-            });
-            it('hvis personalia sa skal harHentetPersonalia returnere true', function () {
-                expect(scope.harHentetPersonalia()).toEqual(true);
-            });
-            it('hvis statsborgerskap er Norge sa skal erUtenlandskStatsborger returnere false', function () {
-                expect(scope.erUtenlandskStatsborger()).toEqual(false);
-            });
-            it('skal kjøre metodene lukkTab og settValidert nar valider kjores', function () {
-                spyOn(scope, "lukkTab");
-                spyOn(scope, "settValidert");
-                scope.valider(false);
-                expect(scope.lukkTab).toHaveBeenCalledWith('personalia');
-                expect(scope.settValidert).toHaveBeenCalledWith('personalia');
-            });
-        });
-        describe('PersonaliaCtrlKvinne', function () {
-            beforeEach(inject(function ($controller, data) {
-                scope.data = data;
-                var faktum = {
-                    key: 'personalia',
-                    properties: {
-                        alder: "61",
-                        kjonn: 'k'
-                    }
-                };
-                scope.data.leggTilFaktum(faktum);
-                ctrl = $controller('PersonaliaCtrl', {
-                    $scope: scope
-                });
-            }));
-
-            it('hvis personen er en kvinne så skal erMann returnere false', function () {
-                expect(scope.erMann()).toEqual(false);
-            });
-            it('hvis personen er en kvinne så skal erKvinne returnere true', function () {
-                expect(scope.erKvinne()).toEqual(true);
-            });
-        });
-        describe('PersonaliaCtrlIkkeKjonn', function () {
-            beforeEach(inject(function ($controller, data) {
-                scope.data = data;
-                var faktum = {
-                    key: 'personalia',
-                    properties: {
-                        alder: "61"
-                    }
-                };
-                scope.data.leggTilFaktum(faktum);
-                ctrl = $controller('PersonaliaCtrl', {
-                    $scope: scope
-                });
-            }));
-
-            it('hvis personen ikke har et kjønn så skal erMann returnere false', function () {
-                expect(scope.erMann()).toEqual(false);
-            });
-            it('hvis personen ikke har et kjønn så skal erKvinne returnere true', function () {
-                expect(scope.erKvinne()).toEqual(false);
-            });
-        });
         describe('InformasjonsSideCtrl', function () {
             beforeEach(inject(function ($controller, data) {
                 scope.data = data;
@@ -1985,114 +1898,6 @@
             it('kravForDagpengerOppfylt skal returnere true nar bruker trykker fortsett likevel', function () {
                 scope.fortsettLikevel(event);
                 expect(scope.kravForDagpengerOppfylt()).toEqual(true);
-            });
-        });
-        describe('FortsettSenereCtrl', function () {
-            beforeEach(inject(function ($controller, data, $location) {
-                scope.data = data;
-
-                var epostFaktum = {
-                    key: 'epost',
-                    value: 'epost@epost.no'
-                };
-                scope.data.leggTilFaktum(epostFaktum);
-
-                location = $location;
-                ctrl = $controller('FortsettSenereCtrl', {
-                    $scope: scope
-                });
-
-                scope.$apply();
-            }));
-
-            it('scope.epost skal bli satt til eposten som ligger på data', function () {
-                expect(scope.epost.value).toEqual('epost@epost.no');
-            });
-            it('scope.forrigeSide skal bli satt til /soknad hvis den ikke finnes fra før', function () {
-                expect(scope.forrigeSide).toEqual('/soknad');
-            });
-            it('sette riktig urler', function () {
-                expect(scope.inngangsportenUrl).toEqual('inngangsportenUrl');
-            });
-        });
-        describe('FortsettSenereCtrl', function () {
-            beforeEach(inject(function ($controller, data, $location) {
-                scope.data = data;
-                scope.forrigeSide = "Forrige side";
-
-                scope.data = data;
-                var faktum = {
-                    key: 'personalia',
-                    properties: {
-                        alder: "61"
-                    }
-                };
-                scope.data.leggTilFaktum(faktum);
-
-                location = $location;
-                ctrl = $controller('FortsettSenereCtrl', {
-                    $scope: scope
-                });
-
-                scope.$apply();
-            }));
-
-            it('scope.epost.value skal bli satt til undefined hvis ikke epost finnes fra før ', function () {
-                expect(scope.epost.value).toEqual(undefined);
-            });
-            it('scope.forrigeSide skal bli satt til /soknad hvis den ikke finnes fra før', function () {
-                expect(scope.forrigeSide).toEqual('Forrige side');
-            });
-        });
-        describe('FortsettSenereKvitteringCtrl', function () {
-            beforeEach(inject(function ($controller, data, $location) {
-                scope.data = data;
-
-                var epostFaktum = {
-                    key: 'epost',
-                    value: 'epost@epost.no'
-                };
-                scope.data.leggTilFaktum(epostFaktum);
-
-                location = $location;
-                ctrl = $controller('FortsettSenereKvitteringCtrl', {
-                    $scope: scope
-                });
-
-                scope.$apply();
-            }));
-
-            it('scope.epost skal bli satt til eposten som ligger på data', function () {
-                expect(scope.epost.value).toEqual('epost@epost.no');
-            });
-            it('scope.forrigeSide skal bli satt til /soknad hvis den ikke finnes fra før', function () {
-                expect(scope.forrigeSide).toEqual('/soknad');
-            });
-            it('sette riktig urler', function () {
-                expect(scope.inngangsportenUrl).toEqual('inngangsportenUrl');
-            });
-        });
-        describe('FortsettSenereKvitteringCtrlMedForrigeSide', function () {
-            beforeEach(inject(function ($controller, data, $location) {
-                scope.data = data;
-                scope.forrigeSide = "Forrige side";
-
-                var epostFaktum = {
-                    key: 'epost',
-                    value: 'epost@epost.no'
-                };
-                scope.data.leggTilFaktum(epostFaktum);
-
-                location = $location;
-                ctrl = $controller('FortsettSenereKvitteringCtrl', {
-                    $scope: scope
-                });
-
-                scope.$apply();
-            }));
-
-            it('scope.forrigeSide skal bli satt til /soknad hvis den ikke finnes fra før', function () {
-                expect(scope.forrigeSide).toEqual('Forrige side');
             });
         });
     });

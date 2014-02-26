@@ -1760,7 +1760,7 @@ angular.module("../views/templates/feilside.html", []).run(["$templateCache", fu
     "                   class=\"knapp-hoved-liten\"\n" +
     "                   value=\"{{ 'dagpenger.fortsettSenere.epost.send' | cmstekst }}\"\n" +
     "                   role=\"button\"\n" +
-    "                   data-ng-click=\"forsettSenere(epostForm)\">\n" +
+    "                   data-ng-click=\"fortsettSenere(epostForm)\">\n" +
     "            <span class=\"melding\"></span>\n" +
     "        </div>\n" +
     "\n" +
@@ -1813,7 +1813,7 @@ angular.module("../views/templates/fortsettSenere.html", []).run(["$templateCach
     "                                data-error-messages=\"{required: 'dagpenger.fortsettSenere.epost.required.feilmelding', pattern: 'dagpenger.fortsettSenere.epost.pattern.feilmelding' }\"\n" +
     "                                data-ng-required=\"true\" data-ng-pattern=\"/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$/\" data-blur-validate/>\n" +
     "                    </label>\n" +
-    "                    <input type=\"submit\" class=\"knapp-hoved-liten\" value=\"{{ 'dagpenger.fortsettSenere.epost.send' | cmstekst }}\" role=\"button\" data-ng-click=\"forsettSenere(epostForm)\">\n" +
+    "                    <input type=\"submit\" class=\"knapp-hoved-liten\" value=\"{{ 'dagpenger.fortsettSenere.epost.send' | cmstekst }}\" role=\"button\" data-ng-click=\"fortsettSenere(epostForm)\">\n" +
     "                    <span class=\"melding\"></span>\n" +
     "                </div>\n" +
     "            </div>\n" +
