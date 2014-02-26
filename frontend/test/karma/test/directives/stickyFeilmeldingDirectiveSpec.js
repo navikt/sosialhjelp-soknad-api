@@ -19,7 +19,7 @@ describe('stickyFeilmeldingToFeil', function () {
                 '   <div class="form-linje ikkefeil"><input type="text"></div>' +
 
                 '</div>' +
-            '</form>');
+                '</form>');
 
         scope.apneTab = function () {
         };
@@ -504,6 +504,63 @@ describe('stickyFeilmeldingFireFeil', function () {
             scope.neste();
             expect(scope.feil.navaerende).toBe(0);
             expect(scope.skalDeaktivereNesteKnapp).toBe(false);
+        });
+    });
+});
+describe('stickyFeilmeldingFireFeil', function () {
+    var element, scope;
+    beforeEach(module('nav.stickyFeilmelding', 'nav.cmstekster', 'templates-main'));
+
+    beforeEach(module(function ($provide) {
+        $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
+        $provide.value("data", {});
+    }));
+
+    beforeEach(inject(function ($compile, $rootScope) {
+        scope = $rootScope;
+
+        element = angular.element(
+            '<form name="form"> ' +
+                '<div data-sticky-feilmelding></div>' +
+                '<div data-accordion-group class="spm-blokk open">' +
+                '   <div class="form-linje feil"><input type="text"></div>' +
+                '</div>' +
+                '</form>');
+
+        scope.apneTab = function () {
+        };
+        scope.lukkTab = function () {
+        };
+
+        $compile(element)(scope);
+        scope.$digest();
+        scope.$apply();
+    }));
+
+    describe("stickyFeilmeldingAntallFeil", function () {
+        it('enFeil, neste og forrige deaktiver, navarende 0, og antallfeil 1', function () {
+            scope.leggTilStickyFeilmelding();
+            expect(scope.skalDeaktivereNesteKnapp).toBe(true);
+            expect(scope.skalDeaktivereForrigeKnapp()).toBe(true);
+            expect(scope.feil.navaerende).toBe(0);
+            expect(scope.feil.antallFeil).toBe(1);
+
+        });
+        it('enFeil neste, neste og forrige deaktivert, navarende 0, og antallfeil 1', function () {
+            scope.leggTilStickyFeilmelding();
+            scope.neste();
+            expect(scope.skalDeaktivereNesteKnapp).toBe(true);
+            expect(scope.skalDeaktivereForrigeKnapp()).toBe(true);
+            expect(scope.feil.navaerende).toBe(0);
+            expect(scope.feil.antallFeil).toBe(1);
+        });
+        it('enFeil forrige, neste og forrige deaktivert, navarende 0, og antallfeil 1', function () {
+            scope.leggTilStickyFeilmelding();
+            scope.forrige();
+            expect(scope.skalDeaktivereNesteKnapp).toBe(true);
+            expect(scope.skalDeaktivereForrigeKnapp()).toBe(true);
+            expect(scope.feil.navaerende).toBe(0);
+            expect(scope.feil.antallFeil).toBe(1);
         });
     });
 });
