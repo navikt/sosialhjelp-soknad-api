@@ -22,7 +22,7 @@ angular.module('nav.fortsettsenere', ['nav.cmstekster'])
 
             $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
 
-            $scope.forsettSenere = function (form) {
+            $scope.fortsettSenere = function (form) {
                 $scope.$broadcast('RUN_VALIDATION' + form.$name);
 
                 if (form.$valid) {

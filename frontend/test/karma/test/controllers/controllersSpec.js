@@ -6,7 +6,7 @@
     'use strict';
 
     describe('DagpengerControllere', function () {
-        var scope, ctrl, form, element, barn, $httpBackend, event, location;
+        var scope, ctrl, form, element, barn, $httpBackend, event, location, epost;
         event = $.Event("click");
 
         beforeEach(module('ngCookies', 'app.services'));
@@ -97,6 +97,7 @@
                     '<div form-errors></div>' +
                     '<input type="text" ng-model="scope.barn.properties.fodselsdato" name="alder"/>' +
                     '<input type="hidden" data-ng-model="underAtten.value" data-ng-required="true"/>' +
+                    '<input type="email" data-ng-model="epost.value" name="epost" data-ng-required="true"/>' +
                     '</form>'
             );
 
@@ -104,6 +105,7 @@
             scope.$digest();
             form = scope.form;
             barn = form.alder;
+            epost = form.epost;
             element.scope().$apply();
         }));
 
@@ -2014,8 +2016,9 @@
             it('sette riktig urler', function () {
                 expect(scope.inngangsportenUrl).toEqual('inngangsportenUrl');
             });
+
         });
-        describe('FortsettSenereCtrl', function () {
+        describe('FortsettSenereCtrlUtenEpost', function () {
             beforeEach(inject(function ($controller, data, $location) {
                 scope.data = data;
                 scope.forrigeSide = "Forrige side";
@@ -2042,6 +2045,52 @@
             });
             it('scope.forrigeSide skal bli satt til /soknad hvis den ikke finnes fra før', function () {
                 expect(scope.forrigeSide).toEqual('Forrige side');
+            });
+            it('skal få tilsendt kvittering til eposten som er blitt oppgitt hvis form er valid', function () {
+                expect(scope.epost.value).toEqual(undefined);
+                scope.epost.value ="min@epost.no";
+                var validForm = {
+                    key: 'form',
+                    $valid: true
+                }
+                scope.fortsettSenere(validForm);
+                expect(scope.epost.value).toBe("min@epost.no");
+            });
+            it('skal ikke få tilsendt kvittering til eposten som er blitt oppgitt hvis form er invalid', function () {
+                expect(scope.epost.value).toEqual(undefined);
+                var validForm = {
+                    key: 'form',
+                    $valid: false
+                };
+
+                scope.fortsettSenere(validForm);
+                expect(scope.epost.value).toBe(undefined);
+            });
+            it('hvis eposten endres så er det denne kvitteringen skal sendes til hvis formen er valid', function () {
+                expect(scope.epost.value).toEqual(undefined);
+                var validForm = {
+                    key: 'form',
+                    $valid: true
+                };
+
+                epost.$setViewValue("min@epost.no");
+                element.scope().$apply();
+
+                scope.fortsettSenere(validForm);
+                expect(scope.epost.value).toBe("min@epost.no");
+            });
+            it('hvis bruekr har epost fra før og den endres så er det denne kvitteringen skal sendes til hvis formen er valid', function () {
+                scope.epost.value ="min@epost.no";
+                expect(scope.epost.value).toEqual("min@epost.no");
+                var validForm = {
+                    key: 'form',
+                    $valid: true
+                };
+                epost.$setViewValue("minAndre@epost.no");
+                element.scope().$apply();
+
+                scope.fortsettSenere(validForm);
+                expect(scope.epost.value).toBe("minAndre@epost.no");
             });
         });
         describe('FortsettSenereKvitteringCtrl', function () {
