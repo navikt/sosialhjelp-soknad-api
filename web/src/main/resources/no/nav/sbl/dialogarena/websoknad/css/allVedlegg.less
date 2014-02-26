@@ -1,0 +1,173 @@
+.vis-vedlegg {
+    &.laster {
+        background-image: url(../img/ajaxloader/svart/loader_svart_64.gif);
+        background-repeat: no-repeat;
+        background-position: center 42%;
+
+        &:before {
+            background-image: none;
+        }
+
+        &:hover {
+            &:before {
+                background-image: none;
+            }
+        }
+    }
+
+    &:hover {
+        &:before {
+            background: url(../img/forstorr-hover.svg) no-repeat;
+            background-size: 100%;
+        }
+    }
+
+    &:before {
+        content: "";
+        z-index: 1010;
+        display: block;
+        width: 20%;
+        height: 20%;
+        position: absolute;
+        background: url(../img/forstorr.svg) no-repeat;
+        background-size: 100%;
+        top: 38%;
+        left: 40%;
+    }
+}
+
+[class*="strek-ikon-vedlegg"], [class*="ikon-vedlegg-strek"] {
+    background-image: url(../img/under-dark.png), url(../img/vedlegg_graa.svg);
+    background-position: bottom center, center 0;
+    padding-bottom: 15px;
+    margin-bottom: 15px !important;
+}
+
+.uten-ramme {
+    border: none;
+}
+
+form, [ng-form], [data-ng-form] {
+    .checkboxAsRadio {
+        input[type="radio"] + label {
+            background: url(../img/check.svg) 0 0 no-repeat;
+        }
+
+        input[type="radio"]:disabled + label {
+            background: url(../img/check_inactive.svg) 0 0 no-repeat;
+        }
+
+        input[type="radio"]:checked + label {
+            background: url(../img/check_valgt.svg) 0 0 no-repeat;
+        }
+
+        input[type="radio"]:disabled:checked + label {
+            background: url(../img/check_inactive_valgt.svg) 0 0 no-repeat;
+        }
+
+        input[type="radio"] + label {
+            display: inline-block;
+            position: relative;
+            padding: 2px 0 0 32px;
+            height: 30px;
+            margin-right: 1rem;
+            font-family: @sansFontFamily;
+            font-size: 1rem !important;
+            text-transform: none;
+        }
+
+        input[type="radio"]:checked + label {
+            font-weight: bold;
+        }
+        &.form-linje.feil {
+            .melding {
+                text-align: left !important;
+            }
+        }
+    }
+}
+.bildenavigering {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    color: #0CA9E0;
+
+    .bilde {
+        position: relative;
+        padding: 10px;
+        display: inline-block;
+        background-color: #333333;
+        vertical-align: middle;
+        span {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: #e0ded8;
+        }
+    }
+    [class*='pil-'] {
+        display: inline-block;
+        height: 56px;
+        width: 56px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 56px 56px;
+        text-decoration: none;
+        cursor: pointer;
+
+    }
+    [class*='pil-venstre'] {
+        margin-right: 10px;
+    }
+    [class*='pil-hoyre'] {
+        margin-left: 10px;
+    }
+    .pil-venstre-hvit {
+        background-image: url('../img/rund-pil-hvit-venstre.svg');
+    }
+    .pil-venstre-hvit:hover, .pil-venstre-hvit:focus {
+        background-image: url('../img/rund-pil-hvit-venstre-hover.svg');
+    }
+    .pil-hoyre-hvit {
+        background-image: url('../img/rund-pil-hvit-hoyre.svg');
+    }
+    .pil-hoyre-hvit:hover, .pil-hoyre-hvit:focus {
+        background-image: url('../img/rund-pil-hvit-hoyre-hover.svg');
+    }
+    .pil-venstre-sort {
+        background-image: url('../img/rund-pil-sort-venstre.svg');
+    }
+    .pil-venstre-sort:hover, .pil-venstre-sort:focus {
+        background-image: url('../img/rund-pil-sort-venstre-hover.svg');
+    }
+    .pil-hoyre-sort {
+        background-image: url('../img/rund-pil-sort-hoyre.svg');
+    }
+    .pil-hoyre-sort:hover, .pil-hoyre-sort:focus {
+        background-image: url('../img/rund-pil-sort-hoyre-hover.svg');
+    }
+    .knapper {
+        width: 100%;
+        text-align: center;
+        margin-top: 20px;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    #visvedlegg, #vedlegg .vedlegg {
+        .bildenavigering {
+            position: relative;
+
+            [class*='pil-'] {
+                position: absolute;
+                height: 42px;
+                width: 42px;
+                background-size: 42px;
+                top: 40%;
+                z-index: 1000;
+            }
+        }
+    }
+}

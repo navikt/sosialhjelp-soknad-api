@@ -31,7 +31,7 @@ angular.module('app.routes', ['ngRoute'])
                 }
             })
             .when('/opplasting/:vedleggId', {
-                templateUrl: '../views/templates/opplasting.html',
+                templateUrl: '../views/templates/vedlegg/opplasting.html',
                 resolve: {
                     notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
                         return HentSoknadService;
