@@ -87,7 +87,8 @@
                 scope.leggVed();
                 expect(scope.skalViseFeilmelding).toBe(false);
                 expect(scope.fremdriftsindikator.laster).toBe(true);
-            })
+            });
+
         });
 
         describe('SlettOpplastingCtrl', function () {
