@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
 
@@ -28,6 +29,7 @@ public class FortsettSenereController {
     private EmailService emailService;
 
     @Inject
+    @Named("navMessageSource")
     private MessageSource messageSource;
 
     @RequestMapping(value = "/{behandlingId}/fortsettsenere", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)

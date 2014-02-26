@@ -19,6 +19,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +40,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
     private Kodeverk kodeverk;
 
     @Inject
+    @Named("navMessageSource")
     private MessageSource navMessageSource;
 
 
