@@ -22,17 +22,24 @@ describe('cmstekster', function () {
 
     beforeEach(inject(function ($compile, $rootScope) {
         $scope = $rootScope;
-               
-        divElement = '<div>{{ \'tittel.key\' | cmstekst }}</div>';
-        inputElement = '<input value="{{ \'input.value\' | cmstekst }}">';
+
+        divElement = '<div cmstekster="tittel.key">tester cms</div>';
+        inputElement = '<input cmstekster="input.value"></input>';
         htmlElement = '<div class="html" cmshtml="div.html">tester cms</div>';
         anchorElement = '<a href="{{ \'a.lenketekst\' | cmstekst }}"></a>';
+        direkteElement = '<div class="direkte-innsatt">{{"tittel.key" | cmstekst }}</div>';
 
-        element = angular.element('<div>' + divElement + inputElement + htmlElement + anchorElement + '</div>');
+        element = angular.element('<div>' + divElement + inputElement + htmlElement + anchorElement + direkteElement +  '</div>');
 
         $compile(element)($scope);
         $scope.$apply();
     }));
+
+    describe("cmstekst", function() {
+        it("skal sette inn cmstekst direkte", function() {
+            expect(element.find(".direkte-innsatt").html()).toBe("Min tittel");
+        })
+    })
 
     describe("cmstekster", function() {
         it("skal sette inn cmstekst", function() {
