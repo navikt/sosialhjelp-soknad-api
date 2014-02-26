@@ -169,18 +169,4 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                 });
             }
         };
-    }])
-
-    .directive('asyncImage', [function () {
-        return {
-            restrict: 'A',
-            link: function (scope, element, attrs) {
-                var img = new Image();
-                img.onload = function () {
-                    element.parent().css('background-image', 'none');
-                    element.replaceWith(img);
-                };
-                img.src = attrs.asyncImage;
-            }
-        };
     }]);

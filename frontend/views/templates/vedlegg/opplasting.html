@@ -1,8 +1,10 @@
 <div data-nav-tittel="skjema.tittel"></div>
 <div stegindikator steg-liste="veiledning, skjema, vedlegg, sendInn" aktiv-index="2"></div>
 
-<div id="opplasting" class="soknad rad-belyst" data-sidetittel="sidetittel.opplasting"
-     data-ng-controller="OpplastingVedleggCtrl">
+<div id="opplasting" class="soknad rad-belyst"
+     data-sidetittel="sidetittel.opplasting"
+     data-ng-controller="OpplastingVedleggCtrl"
+     data-fetch-spinner="64">
     <div class="begrensning sak-halv">
         <div class="panel uten-ramme">
             <h1 class="stor-ikon-vedlegg-strek" data-scrolling-tittel><span data-ng-if="vedlegg.vedleggId">{{vedlegg.tittel}}</span><span
@@ -22,9 +24,8 @@
                         <a class="lukk" data-ng-if="!!file.vedleggId" data-ng-click="file.$destroy()"
                            data-ng-controller="SlettOpplastingCtrl" href="javascript:void(0);"
                            data-aria-label="Slett siden"></a>
-                        <a href="#visVedlegg/{{file.vedleggId}}" data-ng-if="!!file.vedleggId">
-                        <img data-async-image="../rest/soknad/{{file.soknadId}}/vedlegg/{{file.vedleggId}}/thumbnail"
-                             >
+                        <a class="vis-vedlegg" href="#visVedlegg/{{file.vedleggId}}" data-ng-if="!!file.vedleggId">
+                            <img data-ng-src="../rest/soknad/{{file.soknadId}}/vedlegg/{{file.vedleggId}}/thumbnail" data-ferdig-lastet-bilde>
                         </a>
                     </li>
                     <li class="leggtil">
