@@ -14,7 +14,7 @@
 
         beforeEach(module(function ($provide) {
             var fakta = [
-                {}
+            {}
             ];
 
             $provide.value("data", {
@@ -30,7 +30,7 @@
             $httpBackend = $injector.get('$httpBackend');
 
             $httpBackend.expectGET('../js/app/directives/feilmeldinger/feilmeldingerTemplate.html').
-                respond('');
+            respond('');
 
             scope = $rootScope;
             scope.runValidationBleKalt = false;
@@ -40,11 +40,11 @@
 
             element = angular.element(
                 '<form name="form">' +
-                    '<div form-errors></div>' +
-                    '<input type="text" ng-model="scope.barn.properties.fodselsdato" name="alder"/>' +
-                    '<input type="hidden" data-ng-model="underAtten.value" data-ng-required="true"/>' +
-                    '</form>'
-            );
+                '<div form-errors></div>' +
+                '<input type="text" ng-model="scope.barn.properties.fodselsdato" name="alder"/>' +
+                '<input type="hidden" data-ng-model="underAtten.value" data-ng-required="true"/>' +
+                '</form>'
+                );
 
             $compile(element)(scope);
             scope.$digest();
@@ -55,11 +55,15 @@
         describe('OpplastingVedleggCtrl', function () {
             beforeEach(inject(function ($controller, data) {
                 scope.data = data;
-            
+
                 ctrl = $controller('OpplastingVedleggCtrl', {
                     $scope: scope
                 });
             }));
+
+            it("skal hente vedlegg", function() {
+                expect(scope.vedlegg).toNotBe(undefined);
+            });
         });
 
         describe('OpplastingCtrl', function () {
@@ -69,7 +73,21 @@
                 ctrl = $controller('OpplastingCtrl', {
                     $scope: scope
                 });
+
+                scope.queue = [];
             }));
+
+            it("skal få feil ved tom kø", function() {
+                scope.leggVed();
+                expect(scope.skalViseFeilmelding).toBe(true);
+            });
+
+            it("skal kunne legge ved dokumenter", function() {
+                scope.queue.push({name:"mittdokument"});
+                scope.leggVed();
+                expect(scope.skalViseFeilmelding).toBe(false);
+                expect(scope.fremdriftsindikator.laster).toBe(true);
+            })
         });
 
         describe('SlettOpplastingCtrl', function () {
@@ -78,13 +96,25 @@
                 scope.file = {
                     $destroy: function() {
 
-                    }
+                    },
+                    $remove: function() {
+                       return {then: function() {
+                            scope.fileCleared = true;            
+                       }}
+                    },
+                    name: "a"
                 }
 
                 ctrl = $controller('SlettOpplastingCtrl', {
                     $scope: scope
                 });
             }));
+
+            it('skal slette opplasting', function() {
+                expect(scope.file.name).toEqual("a");
+                scope.file.$destroy();
+                expect(scope.fileCleared).toBe(true);
+            });
         });
     });
 }());

@@ -53,13 +53,30 @@
         }));
 
         describe('OppsummeringCtrl', function () {
-            beforeEach(inject(function ($controller, data) {
+            beforeEach(inject(function ($controller, data, $injector) {
                 scope.data = data;
             
                 ctrl = $controller('OppsummeringCtrl', {
                     $scope: scope
                 });
+
+                $httpBackend = $injector.get('$httpBackend');
             }));
+
+            it('skal kunne sende soknad etter å ha krysset av checkbox', function() {
+                expect(scope.harbekreftet).toEqual({value: ''});
+                expect(scope.skalViseFeilmelding.value).toEqual(false);
+                
+                scope.sendSoknad();
+                expect(scope.skalViseFeilmelding.value).toEqual(true);
+
+                $httpBackend.expectGET(/\d/).
+                respond('');
+
+                scope.harbekreftet = true;
+                scope.$digest();
+                expect(scope.skalViseFeilmelding.value).toEqual(false);                
+            });
         });
     });
 }());
