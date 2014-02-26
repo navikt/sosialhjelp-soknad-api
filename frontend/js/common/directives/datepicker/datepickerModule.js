@@ -41,7 +41,8 @@ angular.module('nav.datepicker', [])
 		altFormat  : 'dd.MM.yyyy',
 		dateFormat : 'dd.mm.yy',
 		changeMonth: true,
-		changeYear : true
+		changeYear : true,
+        yearRange: "c-30:c+10"
 	})
 	.directive('navDato', ['$timeout', 'datepickerConfig', '$filter', 'cms', function ($timeout, datepickerConfig, $filter, cms) {
 		return {
