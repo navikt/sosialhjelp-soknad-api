@@ -41,61 +41,15 @@ angular.module('nav.fortsettsenere', ['nav.cmstekster'])
         }
     ])
     .controller('FortsettSenereKvitteringCtrl', ['$scope', 'data', function ($scope, data) {
-            $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
-            $scope.epost = data.finnFaktum('epost');
+        $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
+        $scope.epost = data.finnFaktum('epost');
 
-            if (!$scope.forrigeSide) {
-                $scope.forrigeSide = '/soknad';
-            }
+        if (!$scope.forrigeSide) {
+            $scope.forrigeSide = '/soknad';
         }
-    ])
-
-    .directive('navGjenoppta', ['$compile', 'data', function ($compile, data) {
-
-        var getForDelsteg = function (delstegstatus) {
-            var templateUrl = '';
-            switch (delstegstatus) {
-                case 'UTFYLLING':
-                    templateUrl = '../views/templates/gjenoppta/skjema-under-arbeid.html';
-                    break;
-                case 'VEDLEGG_VALIDERT':
-                    templateUrl = '../views/templates/gjenoppta/skjema-ferdig.html';
-                    break;
-                case 'SKJEMA_VALIDERT':
-                    templateUrl = '../views/templates/gjenoppta/skjema-validert.html';
-                    break;
-                default:
-                    templateUrl = '../views/templates/gjenoppta/skjema-under-arbeid.html';
-
-            }
-            return templateUrl;
-        };
-
-        var getTemplateUrl = function (status, delstegstatus) {
-            var templateUrl = '';
-            switch (status) {
-                case 'UNDER_ARBEID':
-                    templateUrl = getForDelsteg(delstegstatus);
-                    break;
-                case 'FERDIG':
-                    templateUrl = '../views/templates/gjenoppta/skjema-sendt.html';
-                    break;
-                case 'AVBRUTT':
-                    break;
-            }
-            return templateUrl;
-        };
+    }
+    ]);
 
 
-        var linker = function (scope, element, attrs) {
-            return getTemplateUrl(data.soknad.status, data.soknad.delstegStatus);
-        };
-
-        return{
-            restrict: 'A',
-            replace: true,
-            templateUrl: linker
-        };
-    }]);
 
 
