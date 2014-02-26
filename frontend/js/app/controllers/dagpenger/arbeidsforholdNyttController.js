@@ -20,7 +20,7 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
         };
 
 		$scope.sluttaarsakUrl = data.config["soknad.sluttaarsak.url"];
-		$scope.lonnskravSkjema = data.config["soknad.lonnskravskjema.url"];
+		$scope.lonnskravSkjemaUrl = data.config["soknad.lonnskravskjema.url"];
 		$scope.permiteringUrl = data.config["soknad.permitteringsskjema.url"];
 
 		var url = $location.$$url;

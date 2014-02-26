@@ -45,10 +45,11 @@
                     soknadId: 1
                 },
                 config: {"soknad.sluttaarsak.url": "sluttaarsakUrl",
-                    "soknad.lonnskravskjema.url": "lonnskravSkjema",
+                    "dittnav.link.url": "dittnavUrl",
+                    "soknad.lonnskravskjema.url": "lonnskravSkjemaUrl",
                     "soknad.permitteringsskjema.url": "permiteringUrl",
-                    "minehenvendelser.link.url": "minehenvendelserurl",
-                    "soknad.inngangsporten.url": "inngangsportenurl",
+                    "minehenvendelser.link.url": "minehenvendelserUrl",
+                    "soknad.inngangsporten.url": "inngangsportenUrl",
                     "soknad.skjemaveileder.url": "skjemaVeilederUrl",
                     "soknad.brukerprofil.url": "brukerprofilUrl",
                     "soknad.reelarbeidsoker.url": "reelArbeidsokerUrl",
@@ -1333,9 +1334,9 @@
 
             }));
 
-            it('sluttaarsakUrl, lonnskravurl og permiteringsurl skal settes til riktige urler', function () {
+            it('sluttaarsakUrl, lonnskravUrl og permiteringsUrl skal settes til riktige urler', function () {
                 expect(scope.sluttaarsakUrl).toEqual("sluttaarsakUrl");
-                expect(scope.lonnskravSkjema).toEqual("lonnskravSkjema");
+                expect(scope.lonnskravSkjemaUrl).toEqual("lonnskravSkjemaUrl");
                 expect(scope.permiteringUrl).toEqual("permiteringUrl");
             });
             it('scope.land skal bli satt til samme land som ligger lagret på data', function () {
@@ -1382,7 +1383,7 @@
                 expect(scope.arbeidsforhold.properties.datotil).toEqual(undefined);
                 expect(scope.arbeidsforhold.properties.type).toEqual(undefined);
                 expect(scope.arbeidsforhold.properties.eosland).toEqual("false");
-                expect(scope.lonnskravSkjema).toEqual("lonnskravSkjema");
+                expect(scope.lonnskravSkjemaUrl).toEqual("lonnskravSkjemaUrl");
                 expect(scope.sluttaarsak.properties).toNotBe(undefined);
                 expect(scope.sluttaarsak.properties.type).toEqual(undefined);
 
@@ -1506,9 +1507,9 @@
                 });
             }));
 
-            it('Mine innsendinger og inngagsporten skal settes til riktig url', function () {
-                expect(scope.mineInnsendinger).toEqual("minehenvendelserurl");
-                expect(scope.inngangsportenUrl).toEqual("inngangsportenurl");
+            it('Mine innsendinger og inngangsporten skal settes til riktig url', function () {
+                expect(scope.mineInnsendinger).toEqual("minehenvendelserUrl");
+                expect(scope.inngangsportenUrl).toEqual("inngangsportenUrl");
             });
         });
         describe('SlettetCtrl', function () {
@@ -1519,8 +1520,8 @@
                 });
             }));
 
-            it('Skjemaveileder og mine henvendelser skal settes til riktig url', function () {
-                expect(scope.mineHenveldelserBaseUrl).toEqual("minehenvendelserurl");
+            it('Skjemaveileder og ditt Nav skal settes til riktig url', function () {
+                expect(scope.dittNavBaseUrl).toEqual("dittnavUrl");
                 expect(scope.skjemaVeilederUrl).toEqual("skjemaVeilederUrl");
             });
         });
@@ -1721,7 +1722,7 @@
             it('personalia skal inneholde data', function () {
                 expect(scope.personalia).toNotBe(undefined);
             });
-            it('brukerprofilurl skal bli satt til riktig url', function () {
+            it('brukerprofilUrl skal bli satt til riktig url', function () {
                 expect(scope.brukerprofilUrl).toBe("brukerprofilUrl");
             });
             it('hvis personen er en mann så skal erMann returnere true', function () {
@@ -1802,10 +1803,10 @@
 
             it('alle url skal bli statt til riktig url', function () {
                 expect(scope.alderspensjonUrl).toEqual('alderspensjonUrl');
-                expect(scope.mineHenveldelserUrl).toEqual('minehenvendelserurl');
+                expect(scope.mineHenveldelserUrl).toEqual('minehenvendelserUrl');
                 expect(scope.reelArbeidsokerUrl).toEqual('reelArbeidsokerUrl');
                 expect(scope.dagpengerBrosjyreUrl).toEqual('dagpengerBrosjyreUrl');
-                expect(scope.inngangsportenUrl).toEqual('inngangsportenurl');
+                expect(scope.inngangsportenUrl).toEqual('inngangsportenUrl');
             });
             it('harlestbrosjyre skal være satt til false hvis pathen ikke inneholder sendsoknad/soknad', function () {
                 expect(scope.utslagskriterier.harlestbrosjyre).toEqual(false);
@@ -2011,7 +2012,7 @@
                 expect(scope.forrigeSide).toEqual('/soknad');
             });
             it('sette riktig urler', function () {
-                expect(scope.inngangsportenUrl).toEqual('inngangsportenurl');
+                expect(scope.inngangsportenUrl).toEqual('inngangsportenUrl');
             });
         });
         describe('FortsettSenereCtrl', function () {
@@ -2068,7 +2069,7 @@
                 expect(scope.forrigeSide).toEqual('/soknad');
             });
             it('sette riktig urler', function () {
-                expect(scope.inngangsportenUrl).toEqual('inngangsportenurl');
+                expect(scope.inngangsportenUrl).toEqual('inngangsportenUrl');
             });
         });
         describe('FortsettSenereKvitteringCtrlMedForrigeSide', function () {
