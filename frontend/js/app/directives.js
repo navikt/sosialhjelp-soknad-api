@@ -30,5 +30,6 @@ angular.module('app.directives', [
     'nav.sjekkBoklerValiditet',
     'nav.validerskjema',
     'nav.melding',
-    'nav.tilleggsopplysninger'
+    'nav.tilleggsopplysninger',
+    'nav.bildelastet'
 ]);
