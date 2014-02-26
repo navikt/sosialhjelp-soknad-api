@@ -1,4 +1,4 @@
-angular.module('templates-main', ['../views/dagpenger-singlepage.html', '../views/templates/adresse.html', '../views/templates/arbeidsforhold-nytt.html', '../views/templates/arbeidsforhold.html', '../views/templates/arbeidsforhold/avskjediget-oppsummering.html', '../views/templates/arbeidsforhold/avskjediget.html', '../views/templates/arbeidsforhold/konkurs-oppsummering.html', '../views/templates/arbeidsforhold/konkurs.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt.html', '../views/templates/arbeidsforhold/permittert-oppsummering.html', '../views/templates/arbeidsforhold/permittert.html', '../views/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html', '../views/templates/arbeidsforhold/redusertarbeidstid.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html', '../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-selv.html', '../views/templates/avbryt.html', '../views/templates/barnetillegg/barnetillegg-nyttbarn.html', '../views/templates/barnetillegg/barnetillegg.html', '../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html', '../views/templates/barnetillegg/endreSystembarnTemplate.html', '../views/templates/bekreftelse.html', '../views/templates/egennaering/egen-naering.html', '../views/templates/egennaering/egenNaeringvirksomhet.html', '../views/templates/egennaering/fangstOgFiske.html', '../views/templates/egennaering/gardsbruk.html', '../views/templates/feilside.html', '../views/templates/ferdigstilt.html', '../views/templates/fortsettSenere.html', '../views/templates/gjenoppta/skjema-ferdig.html', '../views/templates/gjenoppta/skjema-sendt.html', '../views/templates/gjenoppta/skjema-under-arbeid.html', '../views/templates/gjenoppta/skjema-validert.html', '../views/templates/ikkekvalifisert.html', '../views/templates/informasjonsside.html', '../views/templates/kvittering-fortsettsenere.html', '../views/templates/opplasting.html', '../views/templates/oppsummering.html', '../views/templates/personalia.html', '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', '../views/templates/reellarbeidssoker/villigDeltidTemplate.html', '../views/templates/reellarbeidssoker/villigHelseTemplate.html', '../views/templates/reellarbeidssoker/villigPendleTemplate.html', '../views/templates/reellarbeidssoker/villigjobbTemplate.html', '../views/templates/soknadSlettet.html', '../views/templates/soknadliste.html', '../views/templates/tilleggsopplysninger.html', '../views/templates/utdanning/utdanning.html', '../views/templates/utdanning/utdanningKortvarigFlereTemplate.html', '../views/templates/utdanning/utdanningKortvarigTemplate.html', '../views/templates/utdanning/utdanningKveldTemplate.html', '../views/templates/utdanning/utdanningNorskTemplate.html', '../views/templates/utdanningsinformasjon-template.html', '../views/templates/vedlegg/vedlegg.html', '../views/templates/vedlegg/visvedlegg.html', '../views/templates/verneplikt.html', '../views/templates/ytelser.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateLiten.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateStor.html', '../js/app/directives/feilmeldinger/feilmeldingerTemplate.html', '../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html', '../js/app/directives/markup/modalsideTemplate.html', '../js/app/directives/markup/navinfoboksTemplate.html', '../js/app/directives/markup/panelStandardBelystTemplate.html', '../js/app/directives/markup/vedlegginfoboksTemplate.html', '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html', '../js/app/directives/sporsmalferdig/vedleggblokkFerdigTemplate.html', '../js/app/directives/stegindikator/stegIndikatorTemplate.html', '../js/app/directives/stickybunn/stickyBunnTemplate.html', '../js/common/directives/accordion/accordionGroupTemplate.html', '../js/common/directives/accordion/accordionTemplate.html', '../js/common/directives/booleanradio/booleanradioTemplate.html', '../js/common/directives/datepicker/doubleDatepickerTemplate.html', '../js/common/directives/datepicker/singleDatepickerTemplate.html', '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html', '../js/common/directives/melding/meldingTemplate.html', '../js/common/directives/navinput/navbuttonspinnerTemplate.html', '../js/common/directives/navinput/navcheckboxTemplate.html', '../js/common/directives/navinput/navorgnrfeltTemplate.html', '../js/common/directives/navinput/navradioTemplate.html', '../js/common/directives/navinput/navtallInputTemplate.html', '../js/common/directives/navinput/navtekstTemplate.html', '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html', '../js/common/directives/navtextarea/navtextareaTemplate.html', '../js/common/directives/select/selectTemplate.html', '../js/common/directives/tittel/tittelTemplate.html']);
+angular.module('templates-main', ['../views/dagpenger-singlepage.html', '../views/templates/adresse.html', '../views/templates/arbeidsforhold-nytt.html', '../views/templates/arbeidsforhold.html', '../views/templates/arbeidsforhold/avskjediget-oppsummering.html', '../views/templates/arbeidsforhold/avskjediget.html', '../views/templates/arbeidsforhold/konkurs-oppsummering.html', '../views/templates/arbeidsforhold/konkurs.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt-oppsummering.html', '../views/templates/arbeidsforhold/kontrakt-utgaatt.html', '../views/templates/arbeidsforhold/permittert-oppsummering.html', '../views/templates/arbeidsforhold/permittert.html', '../views/templates/arbeidsforhold/redusertarbeidstid-oppsummering.html', '../views/templates/arbeidsforhold/redusertarbeidstid.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html', '../views/templates/arbeidsforhold/sagt-opp-selv-oppsummering.html', '../views/templates/arbeidsforhold/sagt-opp-selv.html', '../views/templates/avbryt.html', '../views/templates/barnetillegg/barnetillegg-nyttbarn.html', '../views/templates/barnetillegg/barnetillegg.html', '../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html', '../views/templates/barnetillegg/endreSystembarnTemplate.html', '../views/templates/bekreftelse.html', '../views/templates/egennaering/egen-naering.html', '../views/templates/egennaering/egenNaeringvirksomhet.html', '../views/templates/egennaering/fangstOgFiske.html', '../views/templates/egennaering/gardsbruk.html', '../views/templates/feilside.html', '../views/templates/ferdigstilt.html', '../views/templates/fortsettSenere.html', '../views/templates/gjenoppta/skjema-ferdig.html', '../views/templates/gjenoppta/skjema-sendt.html', '../views/templates/gjenoppta/skjema-under-arbeid.html', '../views/templates/gjenoppta/skjema-validert.html', '../views/templates/ikkekvalifisert.html', '../views/templates/informasjonsside.html', '../views/templates/kvittering-fortsettsenere.html', '../views/templates/oppsummering.html', '../views/templates/personalia.html', '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', '../views/templates/reellarbeidssoker/villigDeltidTemplate.html', '../views/templates/reellarbeidssoker/villigHelseTemplate.html', '../views/templates/reellarbeidssoker/villigPendleTemplate.html', '../views/templates/reellarbeidssoker/villigjobbTemplate.html', '../views/templates/soknadSlettet.html', '../views/templates/soknadliste.html', '../views/templates/tilleggsopplysninger.html', '../views/templates/utdanning/utdanning.html', '../views/templates/utdanning/utdanningKortvarigFlereTemplate.html', '../views/templates/utdanning/utdanningKortvarigTemplate.html', '../views/templates/utdanning/utdanningKveldTemplate.html', '../views/templates/utdanning/utdanningNorskTemplate.html', '../views/templates/utdanningsinformasjon-template.html', '../views/templates/vedlegg/opplasting.html', '../views/templates/vedlegg/vedlegg.html', '../views/templates/vedlegg/visvedlegg.html', '../views/templates/verneplikt.html', '../views/templates/ytelser.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateLiten.html', '../js/app/directives/bildenavigering/bildenavigeringTemplateStor.html', '../js/app/directives/feilmeldinger/feilmeldingerTemplate.html', '../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.html', '../js/app/directives/markup/modalsideTemplate.html', '../js/app/directives/markup/navinfoboksTemplate.html', '../js/app/directives/markup/panelStandardBelystTemplate.html', '../js/app/directives/markup/vedlegginfoboksTemplate.html', '../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html', '../js/app/directives/sporsmalferdig/vedleggblokkFerdigTemplate.html', '../js/app/directives/stegindikator/stegIndikatorTemplate.html', '../js/app/directives/stickybunn/stickyBunnTemplate.html', '../js/common/directives/accordion/accordionGroupTemplate.html', '../js/common/directives/accordion/accordionTemplate.html', '../js/common/directives/booleanradio/booleanradioTemplate.html', '../js/common/directives/datepicker/doubleDatepickerTemplate.html', '../js/common/directives/datepicker/singleDatepickerTemplate.html', '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html', '../js/common/directives/melding/meldingTemplate.html', '../js/common/directives/navinput/navbuttonspinnerTemplate.html', '../js/common/directives/navinput/navcheckboxTemplate.html', '../js/common/directives/navinput/navorgnrfeltTemplate.html', '../js/common/directives/navinput/navradioTemplate.html', '../js/common/directives/navinput/navtallInputTemplate.html', '../js/common/directives/navinput/navtekstTemplate.html', '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html', '../js/common/directives/navtextarea/navtextareaTemplate.html', '../js/common/directives/select/selectTemplate.html', '../js/common/directives/tittel/tittelTemplate.html']);
 
 angular.module("../views/dagpenger-singlepage.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/dagpenger-singlepage.html",
@@ -1978,82 +1978,30 @@ angular.module("../views/templates/informasjonsside.html", []).run(["$templateCa
 
 angular.module("../views/templates/kvittering-fortsettsenere.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/templates/kvittering-fortsettsenere.html",
-    "<div data-panelbelyst id=\"kvittering\">\n" +
+    "<div class=\"hvit-side\" data-panelbelyst id=\"kvittering\">\n" +
     "	<div data-ng-controller=\"FortsettSenereKvitteringCtrl\">\n" +
-    "        <h2 class=\"stor\">{{ 'dagpenger.fortsettSenere.kvittering.tittel' | cmstekst }}</h2>\n" +
-    "    	<p>{{ 'dagpenger.fortsettSenere.kvittering.tekst' | cmstekst }}</p>\n" +
-    "        <span> {{ epost.value }}</span>\n" +
-    "    	<a href=\"#/fortsettsenere\">{{ 'dagpenger.fortsettSenere.kvittering.sendpaanyttlink' | cmstekst }}</a>\n" +
-    "    	<p>{{ 'dagpenger.fortsettSenere.kvittering.frist' | cmstekst }}</p>\n" +
-    "    	<p>{{ 'dagpenger.fortsettSenere.kvittering.konsekvens-vente' | cmstekst }}</p>\n" +
-    "    	<a href=\"#{{ forrigeSide }}\">{{ 'dagpenger.fortsettSenere.fortsettlink' | cmstekst }}</a>\n" +
-    "    	<a href=\"{{ inngangsportenUrl }}\" id=\"dittnav\" role=\"link\">{{ 'dagpenger.fortsettSenere.dittNav' | cmstekst }}</a>\n" +
-    "    </div>\n" +
-    "</div>\n" +
+    "        <h2 class=\"stor strek-ikon-innboks\">{{ 'dagpenger.fortsettSenere.kvittering.tittel' | cmstekst }}</h2>\n" +
+    "    	<div id=\"epost-sendt\">\n" +
+    "            <p class=\"informasjonstekst\">{{ 'dagpenger.fortsettSenere.kvittering.tekst' | cmstekst }}</p>\n" +
+    "            <span> {{ epost.value }}</span>\n" +
+    "    	</div>\n" +
+    "\n" +
+    "        <div id=\"knapper\">\n" +
+    "            <div>\n" +
+    "                <a class=\"knapp-link\" href=\"#/fortsettsenere\">{{ 'dagpenger.fortsettSenere.kvittering.sendpaanyttlink' | cmstekst }}</a>\n" +
+    "            </div>\n" +
     "\n" +
     "\n" +
-    "");
-}]);
-
-angular.module("../views/templates/opplasting.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("../views/templates/opplasting.html",
-    "<div data-nav-tittel=\"skjema.tittel\"></div>\n" +
-    "<div stegindikator steg-liste=\"veiledning, skjema, vedlegg, sendInn\" aktiv-index=\"2\"></div>\n" +
-    "\n" +
-    "<div id=\"opplasting\" class=\"soknad rad-belyst\" data-sidetittel=\"sidetittel.opplasting\"\n" +
-    "     data-ng-controller=\"OpplastingVedleggCtrl\">\n" +
-    "    <div class=\"begrensning sak-halv\">\n" +
-    "        <div class=\"panel uten-ramme\">\n" +
-    "            <h1 class=\"stor-ikon-vedlegg-strek\" data-scrolling-tittel><span data-ng-if=\"vedlegg.vedleggId\">{{vedlegg.tittel}}</span><span\n" +
-    "                    data-ng-if=\"vedlegg.navn\">: {{vedlegg.navn}}</span></h1>\n" +
-    "\n" +
+    "            <ul class=\"liste-vannrett\">\n" +
+    "                <li>\n" +
+    "                    <a href=\"#{{ forrigeSide }}\">{{ 'dagpenger.fortsettSenere.fortsettlink' | cmstekst }}</a>\n" +
+    "                </li>\n" +
+    "                <li>\n" +
+    "                    <a href=\"{{ inngangsportenUrl }}\" id=\"dittnav\" role=\"link\">{{ 'dagpenger.fortsettSenere.dittNav' | cmstekst }}</a>\n" +
+    "                </li>\n" +
+    "            </ul>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "    <form id=\"opplastingform\" method=\"POST\" enctype=\"multipart/form-data\" data-file-upload=\"options\" data-ng-controller=\"OpplastingCtrl\">\n" +
-    "        <div class=\"begrensning\">\n" +
-    "            <div id=\"opplastingFeilmelding\" class=\"opplastingfeil\" data-ng-if=\"data.opplastingFeilet\" >\n" +
-    "                <h1 class=\"robust-strek-hvit\">NB</h1>\n" +
-    "                <span data-ng-bind=\"data.opplastingFeilet\"></span>\n" +
-    "            </div>\n" +
-    "            <section>\n" +
-    "                <ul class=\"opplastingliste clearfix sak-tredel\">\n" +
-    "                    <li class=\"panel-mini-belyst\" data-ng-repeat=\"file in queue\" data-ng-class=\"{'lasteropp': file.$processing()}\" data-fil-feil>\n" +
-    "                        <a class=\"lukk\" data-ng-if=\"!!file.vedleggId\" data-ng-click=\"file.$destroy()\"\n" +
-    "                           data-ng-controller=\"SlettOpplastingCtrl\" href=\"javascript:void(0);\"\n" +
-    "                           data-aria-label=\"Slett siden\"></a>\n" +
-    "                        <a href=\"#visVedlegg/{{file.vedleggId}}\" data-ng-if=\"!!file.vedleggId\">\n" +
-    "                        <img data-async-image=\"../rest/soknad/{{file.soknadId}}/vedlegg/{{file.vedleggId}}/thumbnail\"\n" +
-    "                             >\n" +
-    "                        </a>\n" +
-    "                    </li>\n" +
-    "                    <li class=\"leggtil\">\n" +
-    "                        <input id=\"leggtil\" type=\"file\" name=\"files[]\" class=\"vekk\" multiple\n" +
-    "                               accept=\"image/jpeg,image/png,application/pdf\" data-fokus>\n" +
-    "                        <label for=\"leggtil\" class=\"robust\">{{ 'opplasting.leggtil' | cmstekst }}</label>\n" +
-    "                    </li>\n" +
-    "                </ul>\n" +
-    "            </section>\n" +
-    "        </div>\n" +
-    "        <div class=\"rad uten-ramme\">\n" +
-    "            <div class=\"begrensning sak-totredel\">\n" +
-    "                <ul>\n" +
-    "                    <li>\n" +
-    "                        <a href=\"javascript:void(0);\" data-redirect=\"#/vedlegg\" class=\"knapp-hoved\"\n" +
-    "                           data-ng-click=\"leggVed()\"\n" +
-    "                           data-fremdriftsindikator>{{ 'opplasting.ferdig' | cmstekst }}</a>\n" +
-    "\n" +
-    "                        <div class=\"form-linje\" data-ng-class=\"{feil: skalViseFeilmelding === true}\"\n" +
-    "                             data-ng-if=\"skalViseFeilmelding === true\">\n" +
-    "                            <span class=\"melding\">{{ 'opplasting.feilmelding.manglerVedlegg' | cmstekst }}</span>\n" +
-    "                        </div>\n" +
-    "                    </li>\n" +
-    "                    <li>\n" +
-    "                        <a href=\"javascript:void(0);\" data-ng-href=\"#/vedlegg\" class=\"avbryt\">{{ 'opplasting.avbryt' | cmstekst }}</a>\n" +
-    "                    </li>\n" +
-    "                </ul>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "    </form>\n" +
     "</div>\n" +
     "\n" +
     "\n" +
@@ -2766,6 +2714,72 @@ angular.module("../views/templates/utdanningsinformasjon-template.html", []).run
     "");
 }]);
 
+angular.module("../views/templates/vedlegg/opplasting.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("../views/templates/vedlegg/opplasting.html",
+    "<div data-nav-tittel=\"skjema.tittel\"></div>\n" +
+    "<div stegindikator steg-liste=\"veiledning, skjema, vedlegg, sendInn\" aktiv-index=\"2\"></div>\n" +
+    "\n" +
+    "<div id=\"opplasting\" class=\"soknad rad-belyst\"\n" +
+    "     data-sidetittel=\"sidetittel.opplasting\"\n" +
+    "     data-ng-controller=\"OpplastingVedleggCtrl\"\n" +
+    "     data-fetch-spinner=\"64\">\n" +
+    "    <div class=\"begrensning sak-halv\">\n" +
+    "        <div class=\"panel uten-ramme\">\n" +
+    "            <h1 class=\"stor-ikon-vedlegg-strek\" data-scrolling-tittel><span data-ng-if=\"vedlegg.vedleggId\">{{vedlegg.tittel}}</span><span\n" +
+    "                    data-ng-if=\"vedlegg.navn\">: {{vedlegg.navn}}</span></h1>\n" +
+    "\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <form id=\"opplastingform\" method=\"POST\" enctype=\"multipart/form-data\" data-file-upload=\"options\" data-ng-controller=\"OpplastingCtrl\">\n" +
+    "        <div class=\"begrensning\">\n" +
+    "            <div id=\"opplastingFeilmelding\" class=\"opplastingfeil\" data-ng-if=\"data.opplastingFeilet\" >\n" +
+    "                <h1 class=\"robust-strek-hvit\">NB</h1>\n" +
+    "                <span data-ng-bind=\"data.opplastingFeilet\"></span>\n" +
+    "            </div>\n" +
+    "            <section>\n" +
+    "                <ul class=\"opplastingliste clearfix sak-tredel\">\n" +
+    "                    <li class=\"panel-mini-belyst\" data-ng-repeat=\"file in queue\" data-ng-class=\"{'lasteropp': file.$processing()}\" data-fil-feil>\n" +
+    "                        <a class=\"lukk\" data-ng-if=\"!!file.vedleggId\" data-ng-click=\"file.$destroy()\"\n" +
+    "                           data-ng-controller=\"SlettOpplastingCtrl\" href=\"javascript:void(0);\"\n" +
+    "                           data-aria-label=\"Slett siden\"></a>\n" +
+    "                        <a class=\"vis-vedlegg\" href=\"#visVedlegg/{{file.vedleggId}}\" data-ng-if=\"!!file.vedleggId\">\n" +
+    "                            <img data-ng-src=\"../rest/soknad/{{file.soknadId}}/vedlegg/{{file.vedleggId}}/thumbnail\" data-ferdig-lastet-bilde>\n" +
+    "                        </a>\n" +
+    "                    </li>\n" +
+    "                    <li class=\"leggtil\">\n" +
+    "                        <input id=\"leggtil\" type=\"file\" name=\"files[]\" class=\"vekk\" multiple\n" +
+    "                               accept=\"image/jpeg,image/png,application/pdf\" data-fokus>\n" +
+    "                        <label for=\"leggtil\" class=\"robust\">{{ 'opplasting.leggtil' | cmstekst }}</label>\n" +
+    "                    </li>\n" +
+    "                </ul>\n" +
+    "            </section>\n" +
+    "        </div>\n" +
+    "        <div class=\"rad uten-ramme\">\n" +
+    "            <div class=\"begrensning sak-totredel\">\n" +
+    "                <ul>\n" +
+    "                    <li>\n" +
+    "                        <a href=\"javascript:void(0);\" data-redirect=\"#/vedlegg\" class=\"knapp-hoved\"\n" +
+    "                           data-ng-click=\"leggVed()\"\n" +
+    "                           data-fremdriftsindikator>{{ 'opplasting.ferdig' | cmstekst }}</a>\n" +
+    "\n" +
+    "                        <div class=\"form-linje\" data-ng-class=\"{feil: skalViseFeilmelding === true}\"\n" +
+    "                             data-ng-if=\"skalViseFeilmelding === true\">\n" +
+    "                            <span class=\"melding\">{{ 'opplasting.feilmelding.manglerVedlegg' | cmstekst }}</span>\n" +
+    "                        </div>\n" +
+    "                    </li>\n" +
+    "                    <li>\n" +
+    "                        <a href=\"javascript:void(0);\" data-ng-href=\"#/vedlegg\" class=\"avbryt\">{{ 'opplasting.avbryt' | cmstekst }}</a>\n" +
+    "                    </li>\n" +
+    "                </ul>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </form>\n" +
+    "</div>\n" +
+    "\n" +
+    "\n" +
+    "");
+}]);
+
 angular.module("../views/templates/vedlegg/vedlegg.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/templates/vedlegg/vedlegg.html",
     "<div data-nav-tittel=\"skjema.tittel\"></div>\n" +
@@ -2919,7 +2933,7 @@ angular.module("../views/templates/vedlegg/vedlegg.html", []).run(["$templateCac
     "                                    </div>\n" +
     "                                </div>\n" +
     "                            </div>\n" +
-    "                            <div data-vedleggblokkferdig></div>\n" +
+    "                            <div data-vedleggblokkferdig data-ng-if=\"skalViseNesteKnapp(forventning, $last)\"></div>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
@@ -3321,41 +3335,49 @@ angular.module("../js/app/directives/bildenavigering/bildenavigeringTemplateLite
   $templateCache.put("../js/app/directives/bildenavigering/bildenavigeringTemplateLiten.html",
     "<div class=\"bildenavigering\" data-ng-cloak>\n" +
     "    <a class=\"pil-venstre-hvit\" data-ng-click=\"naviger(-1)\" data-ng-if=\"vedlegg.antallSider > 1\" href=\"javascript:void(0);\"></a>\n" +
-    "    <a class=\"bilde\" alt=\"Forstørr\" data-ng-href=\"#visVedlegg/{{vedlegg.vedleggId}}\">\n" +
+    "    <a class=\"bilde vis-vedlegg\" alt=\"Forstørr\" data-ng-href=\"#visVedlegg/{{vedlegg.vedleggId}}\">\n" +
     "        <img data-ng-repeat=\"bilde in range(vedlegg.antallSider)\"\n" +
     "             data-ng-src=\"../rest/soknad/{{vedlegg.soknadId}}/vedlegg/{{vedlegg.vedleggId}}/thumbnail?side={{bilde}}&ts={{ hentTimestamp}}\"\n" +
     "             alt=\"Forhåndsvisning\"\n" +
+    "             data-ferdig-lastet-bilde\n" +
     "             data-ng-if=\"sideErSynlig(bilde)\">\n" +
     "        <span>{{vedlegg.navn}} ({{side + 1}}/{{vedlegg.antallSider}})</span>\n" +
     "    </a>\n" +
     "    <a class=\"pil-hoyre-hvit\" data-ng-click=\"naviger(1)\" data-ng-if=\"vedlegg.antallSider > 1\" href=\"javascript:void(0);\"></a>\n" +
-    "\n" +
     "</div>\n" +
     "");
 }]);
 
 angular.module("../js/app/directives/bildenavigering/bildenavigeringTemplateStor.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../js/app/directives/bildenavigering/bildenavigeringTemplateStor.html",
-    "<div class=\"bildenavigering\" data-ng-cloak>\n" +
-    "    <div class=\"nav\" data-ng-if=\"vedlegg.vedleggId\">\n" +
-    "        <a class=\"pil-venstre-sort\" data-ng-click=\"naviger(-1)\" data-ng-if=\"vedlegg.antallSider > 1\" href=\"javascript:void(0);\">\n" +
-    "        </a><div class=\"bilde\" data-ng-click=\"naviger(1)\">\n" +
-    "\n" +
-    "        <img class=\"spinner\"\n" +
-    "             data-ng-if=\"spinner.visLaster\"\n" +
-    "             src=\"../img/ajaxloader/svart/loader_svart_128.gif\">\n" +
-    "\n" +
-    "        <img data-ng-repeat=\"bilde in range(vedlegg.antallSider)\"\n" +
-    "             data-ng-src=\"../rest/soknad/{{vedlegg.soknadId}}/vedlegg/{{vedlegg.vedleggId}}/thumbnail?side={{bilde}}\"\n" +
-    "             data-ferdig-lastet\n" +
-    "             alt=\"Forhåndsvisning\"\n" +
-    "             data-ng-hide=\"!sideErSynlig(bilde)\">\n" +
-    "        <a class=\"tilbake ikke-mobil\" onclick=\"history.back()\" href=\"javascript:void(0);\">{{ 'vedlegg.forhandsvisning.tilbake' | cmstekst }}</a>\n" +
-    "        <a class=\"tilbake mobil\" onclick=\"history.back()\" href=\"javascript:void(0);\">{{ 'vedlegg.forhandsvisning.tilbake.mobil' | cmstekst }}</a>\n" +
-    "    </div><a class=\"pil-hoyre-sort\" data-ng-click=\"naviger(1)\" data-ng-if=\"vedlegg.antallSider > 1\" href=\"javascript:void(0);\"></a>\n" +
-    "    </div>\n" +
+    "<div class=\"bildenavigering\" data-ng-cloak data-fetch-spinner>\n" +
     "    <div class=\"header\">\n" +
-    "        <div>{{vedlegg.navn}} ({{side + 1}}/{{vedlegg.antallSider}})</div>\n" +
+    "        <div class=\"header-content\">\n" +
+    "            <div class=\"tilbake\">\n" +
+    "                <a class=\"ikke-mobil\" onclick=\"history.back()\" href=\"javascript:void(0);\">{{\n" +
+    "                    'vedlegg.forhandsvisning.tilbake' | cmstekst }}</a>\n" +
+    "                <a class=\"mobil\" onclick=\"history.back()\" href=\"javascript:void(0);\">{{\n" +
+    "                    'vedlegg.forhandsvisning.tilbake.mobil' | cmstekst }}</a>\n" +
+    "            </div>\n" +
+    "            <div class=\"navn\">{{vedlegg.navn}} ({{side + 1}}/{{vedlegg.antallSider}})</div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"nav\" data-ng-if=\"vedlegg.vedleggId\">\n" +
+    "\n" +
+    "\n" +
+    "        <div class=\"bilde\">\n" +
+    "            <a class=\"pil-venstre-sort\" data-ng-click=\"naviger(-1)\" data-ng-if=\"vedlegg.antallSider > 1\"\n" +
+    "               href=\"javascript:void(0);\">\n" +
+    "            </a>\n" +
+    "            <img data-ng-repeat=\"bilde in range(vedlegg.antallSider)\"\n" +
+    "                 data-ng-src=\"../rest/soknad/{{vedlegg.soknadId}}/vedlegg/{{vedlegg.vedleggId}}/thumbnail?side={{bilde}}\"\n" +
+    "                 alt=\"Forhåndsvisning\"\n" +
+    "                 data-ferdig-lastet-bilde\n" +
+    "                 data-ng-click=\"naviger(1)\"\n" +
+    "                 data-ng-if=\"sideErSynlig(bilde)\">\n" +
+    "            <a class=\"pil-hoyre-sort\" data-ng-click=\"naviger(1)\" data-ng-if=\"vedlegg.antallSider > 1\"\n" +
+    "               href=\"javascript:void(0);\"></a>\n" +
+    "        </div>\n" +
     "    </div>\n" +
     "</div>\n" +
     "");
