@@ -1978,16 +1978,29 @@ angular.module("../views/templates/informasjonsside.html", []).run(["$templateCa
 
 angular.module("../views/templates/kvittering-fortsettsenere.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("../views/templates/kvittering-fortsettsenere.html",
-    "<div data-panelbelyst id=\"kvittering\">\n" +
+    "<div class=\"hvit-side\" data-panelbelyst id=\"kvittering\">\n" +
     "	<div data-ng-controller=\"FortsettSenereKvitteringCtrl\">\n" +
-    "        <h2 class=\"stor\">{{ 'dagpenger.fortsettSenere.kvittering.tittel' | cmstekst }}</h2>\n" +
-    "    	<p>{{ 'dagpenger.fortsettSenere.kvittering.tekst' | cmstekst }}</p>\n" +
-    "        <span> {{ epost.value }}</span>\n" +
-    "    	<a href=\"#/fortsettsenere\">{{ 'dagpenger.fortsettSenere.kvittering.sendpaanyttlink' | cmstekst }}</a>\n" +
-    "    	<p>{{ 'dagpenger.fortsettSenere.kvittering.frist' | cmstekst }}</p>\n" +
-    "    	<p>{{ 'dagpenger.fortsettSenere.kvittering.konsekvens-vente' | cmstekst }}</p>\n" +
-    "    	<a href=\"#{{ forrigeSide }}\">{{ 'dagpenger.fortsettSenere.fortsettlink' | cmstekst }}</a>\n" +
-    "    	<a href=\"{{ inngangsportenUrl }}\" id=\"dittnav\" role=\"link\">{{ 'dagpenger.fortsettSenere.dittNav' | cmstekst }}</a>\n" +
+    "        <h2 class=\"stor strek-ikon-innboks\">{{ 'dagpenger.fortsettSenere.kvittering.tittel' | cmstekst }}</h2>\n" +
+    "    	<div id=\"epost-sendt\">\n" +
+    "            <p class=\"informasjonstekst\">{{ 'dagpenger.fortsettSenere.kvittering.tekst' | cmstekst }}</p>\n" +
+    "            <span> {{ epost.value }}</span>\n" +
+    "    	</div>\n" +
+    "\n" +
+    "        <div id=\"knapper\">\n" +
+    "            <div>\n" +
+    "                <a class=\"knapp-link\" href=\"#/fortsettsenere\">{{ 'dagpenger.fortsettSenere.kvittering.sendpaanyttlink' | cmstekst }}</a>\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "            <ul class=\"liste-vannrett\">\n" +
+    "                <li>\n" +
+    "                    <a href=\"#{{ forrigeSide }}\">{{ 'dagpenger.fortsettSenere.fortsettlink' | cmstekst }}</a>\n" +
+    "                </li>\n" +
+    "                <li>\n" +
+    "                    <a href=\"{{ inngangsportenUrl }}\" id=\"dittnav\" role=\"link\">{{ 'dagpenger.fortsettSenere.dittNav' | cmstekst }}</a>\n" +
+    "                </li>\n" +
+    "            </ul>\n" +
+    "        </div>\n" +
     "    </div>\n" +
     "</div>\n" +
     "\n" +
