@@ -2021,8 +2021,10 @@ angular.module("../views/templates/opplasting.html", []).run(["$templateCache", 
     "                        <a class=\"lukk\" data-ng-if=\"!!file.vedleggId\" data-ng-click=\"file.$destroy()\"\n" +
     "                           data-ng-controller=\"SlettOpplastingCtrl\" href=\"javascript:void(0);\"\n" +
     "                           data-aria-label=\"Slett siden\"></a>\n" +
+    "                        <a href=\"#visVedlegg/{{file.vedleggId}}\" data-ng-if=\"!!file.vedleggId\">\n" +
     "                        <img data-async-image=\"../rest/soknad/{{file.soknadId}}/vedlegg/{{file.vedleggId}}/thumbnail\"\n" +
-    "                             data-ng-if=\"!!file.vedleggId\">\n" +
+    "                             >\n" +
+    "                        </a>\n" +
     "                    </li>\n" +
     "                    <li class=\"leggtil\">\n" +
     "                        <input id=\"leggtil\" type=\"file\" name=\"files[]\" class=\"vekk\" multiple\n" +
@@ -2398,9 +2400,9 @@ angular.module("../views/templates/soknadSlettet.html", []).run(["$templateCache
     "                                </a>\n" +
     "                            </li>\n" +
     "                            <li>\n" +
-    "                                <a href=\"{{mineHenveldelserBaseUrl}}\"\n" +
+    "                                <a href=\"{{dittNavBaseUrl}}\"\n" +
     "                                   id=\"slettetMinehenvendelser\"\n" +
-    "                                   role=\"link\">{{ 'slettet.videretilnav' | cmstekst }}</a>\n" +
+    "                                   role=\"link\">{{ 'slettet.videretildittnav' | cmstekst }}</a>\n" +
     "                            </li>\n" +
     "                        </ul>\n" +
     "                    </div>\n" +
