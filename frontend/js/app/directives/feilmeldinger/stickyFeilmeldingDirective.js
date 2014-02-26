@@ -68,43 +68,34 @@ angular.module('nav.stickyFeilmelding', [])
                     if (!(feilHarBlittRettet && scope.feil.navaerende === totalAntalLFeil())) {
                         if (feilHarBlittRettet && scope.feil.navaerende > 0 && varIkkePaSisteFeil()) {
                             scope.feil.navaerende = scope.feil.navaerende - 1;
-                            console.log("1");
-
                         }
                         if (varToFeilNaEnFeilStodPaAndreFeil()) {
                             leggTilMarkeringAvFeilmelding(1, true);
                             scope.skalDeaktivereNesteKnapp = true;
                             feilHarBlittRettet = false;
-                            console.log("2");
 
                         } else if (varToFeilNaEnFeilStodPaForsteFeil()) {
                             leggTilMarkeringAvFeilmelding(0, true);
                             scope.skalDeaktivereNesteKnapp = true;
                             feilHarBlittRettet = false;
-                            console.log("3");
-
                         } else if (feilHarBlittRettet && sisteFeilBleRettetOgStodPaNestSisteFeil()) {
                             scope.skalDeaktivereNesteKnapp = true;
                             scope.feil.navaerende = scope.feil.navaerende + 1;
                             feilHarBlittRettet = true;
-                            console.log("4");
 
                         } else if (nestForsteOgForsteRettet) {
                             scope.feil.navaerende = 0;
                             leggTilMarkeringAvFeilmelding(1, true);
                             nestForsteOgForsteRettet = false;
                             feilHarBlittRettet = false;
-                            console.log("5");
 
                         } else if (stodPaForsteFeilBleRettet()) {
                             leggTilMarkeringAvFeilmelding(0, true);
                             feilHarBlittRettet = false;
-                            console.log("6");
 
                         } else if (varIkkePaSisteFeil()) {
                             leggTilMarkeringAvFeilmelding(1, true);
                             feilHarBlittRettet = false;
-                            console.log("7");
 
                             if (erPaSisteFeil()) {
                                 scope.skalDeaktivereNesteKnapp = true;
@@ -113,18 +104,15 @@ angular.module('nav.stickyFeilmelding', [])
                             leggTilMarkeringAvFeilmelding(0, false);
                             scope.skalDeaktivereNesteKnapp = true;
                             feilHarBlittRettet = false;
-                            console.log("8");
 
                         } else if (sisteFeilBleRettetOgStodPaSisteFeil()) {
                             leggTilMarkeringAvFeilmelding(-1, true);
                             scope.skalDeaktivereNesteKnapp = true;
                             feilHarBlittRettet = false;
-                            console.log("9");
 
                         }
                     } else if (feilHarBlittRettet && scope.feil.navaerende === 1 && totalAntalLFeil() === 1) {
                         leggTilMarkeringAvFeilmelding(-1, true);
-                        console.log("10");
                     }
                 };
                 function sisteFeilAkkuratRettetOgFlereFeilIgjen() {
@@ -209,7 +197,7 @@ angular.module('nav.stickyFeilmelding', [])
                     if (totalAntalLFeil() === 0) {
                         scope.feil.skalViseStickyFeilmeldinger = false;
                     }
-                    scope.feil.antallFeil = antallFeil('.feil');
+                    scope.feil.antallFeil = antallFeil();
                 });
 
                 scope.skalVises = function () {
@@ -249,8 +237,8 @@ angular.module('nav.stickyFeilmelding', [])
                 function feilBlittRettet() {
                     return antallFeil() < scope.feil.antallFeil;
                 }
-
                 function antallFeil() {
+                    elem = element.next();
                     var elementMedFeil = elem.find('.form-linje.feil, .form-linje.feilstyling');
                     return elementMedFeil.not('.ng-hide').length;
                 }
