@@ -81,9 +81,7 @@ public class SoknadTpsDataController {
     public Personalia hentPersonalia() {
         String fnr = SubjectHandler.getSubjectHandler().getUid();
         Personalia personalia = null;
-        try
-
-        {
+        try {
             personalia = personaliaService.hentPersonalia(fnr);
         } catch (Exception e) {
             logger.error("Kunne ikke hente personalia");
