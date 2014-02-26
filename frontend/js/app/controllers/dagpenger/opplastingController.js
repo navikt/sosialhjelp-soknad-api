@@ -41,9 +41,9 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         $.ajaxSetup({
             converters: {
                 'iframe json': function(iframe){
-                    var result = iframe && $.parseJSON($(iframe[0].body).text())
+                    var result = iframe && $.parseJSON($(iframe[0].body).text());
                     if(result.kode){
-                        throw result.kode
+                        throw result.kode;
                     }
                     return result;
                 }

@@ -607,7 +607,7 @@
                 var faktum = {
                     key: 'reellarbeidssoker.villighelse',
                     value: 'false'
-                }
+                };
                 scope.data.leggTilFaktum(faktum);
                 expect(scope.kanIkkeTaAlleTyperArbeid()).toBe(true);
             });
@@ -859,7 +859,7 @@
                 scope.data.leggTilFaktum(tpsBarn);
                 scope.data.leggTilFaktum(nyttBarn);
 
-                cookieStore = $cookieStore
+                cookieStore = $cookieStore;
 
                 ctrl = $controller('BarnetilleggCtrl', {
                     $scope: scope
@@ -1395,11 +1395,11 @@
                 scope.arbeidsforhold.properties.arbeidsgivernavn = "A";
                 scope.arbeidsforhold.properties.datofra = "2014-10-10";
                 scope.arbeidsforhold.properties.datotil = "2014-10-10";
-                scope.arbeidsforhold.properties.type = "Avskjediget"
-                scope.sluttaarsak.properties.type = "Avskjediget"
-                scope.arbeidsforhold.properties.land = "NOR"
-                scope.arbeidsforhold.properties.eosland = "false"
-                scope.arbeidsforhold.properties.avskjedigetGrunn= "1111111111111111111"
+                scope.arbeidsforhold.properties.type = "Avskjediget";
+                scope.sluttaarsak.properties.type = "Avskjediget";
+                scope.arbeidsforhold.properties.land = "NOR";
+                scope.arbeidsforhold.properties.eosland = "false";
+                scope.arbeidsforhold.properties.avskjedigetGrunn= "1111111111111111111";
                 form.$valid =true;
                 
                 scope.lagreArbeidsforhold(form);
@@ -1703,7 +1703,6 @@
                 expect(scope.harHuketAvCheckboksNavYtelse.value).toEqual('');
             });
         });
-
         describe('InformasjonsSideCtrl', function () {
             beforeEach(inject(function ($controller, data) {
                 scope.data = data;

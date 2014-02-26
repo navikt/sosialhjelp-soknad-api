@@ -15,11 +15,10 @@ describe('navTittel', function () {
         element = angular.element('<div nav-tittel="{{ tittelkey }}"></div>');
         $compile(element)($scope);
         $scope.$apply();
-    }))
+    }));
 
     it("should add class aria-hidden", function() {
         expect(element.text().trim()).toBe("Min tittel");
-    })
-   
+    });
 });
 
