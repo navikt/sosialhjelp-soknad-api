@@ -38,12 +38,16 @@
                 scope.runValidationBleKalt = true;
             };
 
+            scope.fnr = "***REMOVED***";
             element = angular.element(
+                '<div>'+
                 '<form name="form">' +
                     '<div form-errors></div>' +
                     '<input type="text" ng-model="scope.barn.properties.fodselsdato" name="alder"/>' +
                     '<input type="hidden" data-ng-model="underAtten.value" data-ng-required="true"/>' +
                     '</form>'
+                + '<span> {{fnr | formatterFnr}} </span>'
+                + '</div>'
             );
 
             $compile(element)(scope);
@@ -53,7 +57,7 @@
         }));
 
         describe('OppsummeringCtrl', function () {
-            beforeEach(inject(function ($controller, data, $injector) {
+            beforeEach(inject(function ($controller, data, $injector,$compile) {
                 scope.data = data;
             
                 ctrl = $controller('OppsummeringCtrl', {
@@ -73,9 +77,14 @@
                 $httpBackend.expectGET(/\d/).
                 respond('');
 
-                scope.harbekreftet = true;
+                scope.harbekreftet.value = true;
                 scope.$digest();
+                scope.sendSoknad();
                 expect(scope.skalViseFeilmelding.value).toEqual(false);                
+            });
+
+            it('skal formattere fnr på riktig måte', function() {
+                expect(element.find("span").text()).toEqual(" 220685 11111 ");
             });
         });
     });
