@@ -100,7 +100,8 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     @Override
-    @Scheduled(cron = "0 15 04 * * *")
+//    @Scheduled(cron = "0 15 04 * * *")
+    @Scheduled(cron = "0 * * * * *")
     public void lastInnNyeKodeverk() {
         logger.warn("Laster inn nye kodeverk");
         Map<String, XMLEnkeltKodeverk> oppdatertKodeverk = new HashMap<>();
