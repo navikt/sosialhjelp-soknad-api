@@ -105,11 +105,16 @@ public class StandardKodeverk implements Kodeverk {
     @Scheduled(cron = "0 * * * * *")
     public void lastInnNyeKodeverk() {
         logger.warn("Laster inn nye kodeverk");
+        MDCOperations.putToMDC(MDCOperations.MDC_CALL_ID, MDCOperations.generateCallId());
+        logger.warn("MDCOperations.MDC_CONSUMER_ID" + MDCOperations.getFromMDC(MDCOperations.MDC_CONSUMER_ID));
         Map<String, XMLEnkeltKodeverk> oppdatertKodeverk = new HashMap<>();
+        logger.warn(" Størrelse på allekodeverk " + ALLE_KODEVERK.size());
         for (String kodeverksnavn : ALLE_KODEVERK) {
             XMLEnkeltKodeverk enkeltkodeverk = hentKodeverk(kodeverksnavn);
+            logger.warn("enkeltkodeverk" + enkeltkodeverk.getKode());
             enkeltkodeverk.getKode().clear();
             enkeltkodeverk.getKode().addAll(getGyldigeKodeverk(enkeltkodeverk));
+            logger.warn("enkeltkodeverk etter tillegg " + enkeltkodeverk.getKode());
             oppdatertKodeverk.put(kodeverksnavn, enkeltkodeverk);
         }
         this.kodeverk.clear();
@@ -153,8 +158,8 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     private XMLEnkeltKodeverk hentKodeverk(String navn) {
-        MDCOperations.putToMDC(MDCOperations.MDC_CALL_ID, MDCOperations.generateCallId());
-        logger.warn(" MDCOperations.CallId" + MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID));
+
+        logger.warn("MDCOperations.CallId" + MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID));
         XMLEnkeltKodeverk kodeverket = null;
         Optional<RuntimeException> webserviceException = none();
         try {
