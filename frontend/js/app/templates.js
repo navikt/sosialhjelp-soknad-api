@@ -62,7 +62,7 @@ angular.module("../views/templates/arbeidsforhold-nytt.html", []).run(["$templat
     "<div data-modalside>\n" +
     "    <div class=\"vertikal arbeidsforhold-spm\" data-ng-controller=\"ArbeidsforholdNyttCtrl\"\n" +
     "         data-ng-form=\"nyttArbeidsforholdForm\">\n" +
-    "        <a href=\"#/soknad\" class=\"lukk\"></a>\n" +
+    "        <a href=\"#/soknad\" class=\"lukk\" aria-label=\"{{'arbeidsforhold.nyttarbeidsforhold.lukk.aria' | cmstekst}}\"></a>\n" +
     "\n" +
     "        <div data-form-errors></div>\n" +
     "        <h2 class=\"stor-strek\">\n" +
@@ -283,7 +283,7 @@ angular.module("../views/templates/arbeidsforhold.html", []).run(["$templateCach
     "            <div class=\"spm-boks vertikal\" data-ng-repeat=\"af in arbeidsliste\" data-ng-class=\"{'last': $last}\">\n" +
     "                <div id=\"arbeidsforhold{{af.arbeidsforhold.faktumId}}\">\n" +
     "                    <a href=\"#\" class=\"lukk\" data-ng-click=\"slettArbeidsforhold(af, $index, $event)\"\n" +
-    "                       data-fokus-slettmoduler=\"arbeidsforhold\"> </a>\n" +
+    "                       data-fokus-slettmoduler=\"arbeidsforhold\" aria-label=\"{{ 'arbeidsforhold.lukk.aria' | cmstekst }}\"> </a>\n" +
     "                    <span class=\"robust\">{{ af.arbeidsforhold.properties.arbeidsgivernavn }}</span>\n" +
     "                    <span class=\"robust\">, </span>\n" +
     "                    <span class=\"robust\">{{ finnLandFraLandkode(af.arbeidsforhold.properties.land) }}</span>\n" +
@@ -1124,7 +1124,7 @@ angular.module("../views/templates/barnetillegg/barnetillegg-nyttbarn.html", [])
   $templateCache.put("../views/templates/barnetillegg/barnetillegg-nyttbarn.html",
     "<div data-modalside>\n" +
     "    <div class=\"vertikal barn-spm\" data-ng-form=\"nyttBarnForm\" data-ng-controller=\"BarneCtrl\">\n" +
-    "        <a href=\"#/soknad\" data-ng-click=\"avbrytBarnetilegg($event)\" class=\"lukk\"></a>\n" +
+    "        <a href=\"#/soknad\" data-ng-click=\"avbrytBarnetilegg($event)\" class=\"lukk\" aria-label=\"{{ 'barnetillegg.nyttbarn.lukk.aria' | cmstekst }}\"></a>\n" +
     "        <div data-form-errors></div>\n" +
     "\n" +
     "        <h2 class=\"stor-strek\" data-ng-if=\"endrerSystemregistrertBarn()\">\n" +
@@ -1246,7 +1246,7 @@ angular.module("../views/templates/barnetillegg/barnetillegg.html", []).run(["$t
     "            <div class=\"spm-boks vertikal\" data-ng-repeat=\"b in barn\">\n" +
     "                <div data-ng-class=\"{gutt: erGutt(b), jente:erJente(b)}\" id=\"barnetillegg{{b.faktumId}}\" class=\"barn\">\n" +
     "                    <a href=\"#\" class=\"lukk\" data-ng-show=\"erBrukerregistrert(b)\"\n" +
-    "                       data-ng-click=\"slettBarn(b, $index, $event)\"> </a>\n" +
+    "                       data-ng-click=\"slettBarn(b, $index, $event)\" aria-label=\"{{'barnetillegg.slettbarn.aria' | cmstekst}}\"> </a>\n" +
     "                    <div class=\"barnealder\">\n" +
     "                        <span>{{ 'aar' | cmstekst }}</span>\n" +
     "                        <span class=\"alder robust\" data-ng-bind=\"b.properties.alder\"></span>\n" +
@@ -1367,7 +1367,7 @@ angular.module("../views/templates/barnetillegg/endreSystembarnTemplate.html", [
   $templateCache.put("../views/templates/barnetillegg/endreSystembarnTemplate.html",
     "<div data-modalside>\n" +
     "    <div class=\"vertikal barn-spm\" data-ng-form=\"nyttBarnForm\" data-ng-controller=\"BarneCtrl\">\n" +
-    "        <a href=\"#/soknad\" data-ng-click=\"avbrytBarnetilegg($event)\" class=\"lukk\"></a>\n" +
+    "        <a href=\"#/soknad\" data-ng-click=\"avbrytBarnetilegg($event)\" class=\"lukk\" aria-label=\"{{ 'barnetillegg.sokerbarnetillegg.lukk.aria' | cmstekst }}\"></a>\n" +
     "        <div data-form-errors></div>\n" +
     "\n" +
     "        <div data-nav-faktum=\"barn\" data-ikke-auto-lagre=\"true\">\n" +
@@ -1887,7 +1887,7 @@ angular.module("../views/templates/informasjonsside.html", []).run(["$templateCa
     "					\n" +
     "					<p class=\"label\">{{ 'utslagskriterier.utslag.bosted.label' | cmstekst }}</p>\n" +
     "					<div class=\"adresse\">\n" +
-    "						<div data-ng-repeat=\"linje in hentAdresseLinjer()\">\n" +
+    "						<div data-ng-repeat=\"linje in hentAdresseLinjer() track by $index\">\n" +
     "                            <span>{{ linje }}</span>\n" +
     "                        </div>\n" +
     "					</div>\n" +
@@ -3406,8 +3406,7 @@ angular.module("../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.htm
     "               data-ng-class=\"{deaktiverFeilmelding: skalDeaktivereNesteKnapp}\">{{ 'skjema.feilmelding.gaatil.neste' | cmstekst }}</a>\n" +
     "        </span>\n" +
     "        <span>\n" +
-    "            <a data-ng-click=\"lukk()\" class=\"lukk\">\n" +
-    "               </a>\n" +
+    "            <a data-ng-click=\"lukk()\" class=\"lukk\" aria-label=\"{{ 'skjema.feilmelding.lukk.aria' | cmstekst }}\" ></a>\n" +
     "        </span>\n" +
     "    </div>\n" +
     "</div>");

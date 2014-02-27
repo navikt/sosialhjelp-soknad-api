@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.kodeverk;
 
+import no.nav.modig.common.MDCOperations;
 import no.nav.modig.core.exception.SystemException;
 import no.nav.modig.lang.option.Optional;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.HentKodeverkHentKodeverkKodeverkIkkeFunnet;
@@ -152,6 +153,8 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     private XMLEnkeltKodeverk hentKodeverk(String navn) {
+        MDCOperations.putToMDC(MDCOperations.MDC_CALL_ID, MDCOperations.generateCallId());
+        logger.warn(" MDCOperations.CallId" + MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID));
         XMLEnkeltKodeverk kodeverket = null;
         Optional<RuntimeException> webserviceException = none();
         try {

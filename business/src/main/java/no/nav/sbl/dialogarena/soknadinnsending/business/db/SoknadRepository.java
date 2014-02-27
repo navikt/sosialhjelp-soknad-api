@@ -34,8 +34,6 @@ public interface SoknadRepository {
 
     WebSoknad hentMedBehandlingsId(String behandlingsId);
 
-    String opprettBehandling();
-
     Faktum hentFaktum(Long soknadId, Long faktumId);
 
     List<Faktum> hentSystemFaktumList(Long soknadId, String key);
