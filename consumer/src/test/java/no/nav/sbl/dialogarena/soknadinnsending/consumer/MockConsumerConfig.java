@@ -370,6 +370,7 @@ public class MockConsumerConfig {
         private static final String EN_ADRESSELINJE = "Poitigatan 55";
         private static final String EN_ANNEN_ADRESSELINJE = "Nord-Poiti";
         private static final String EN_TREDJE_ADRESSELINJE = "1111 Helsinki";
+        private static final String EN_FJERDE_ADRESSELINJE = "Finland";
         
         private static final String EN_POSTBOKS_ADRESSEEIER = "Per Conradi";
         private static final String ET_POSTBOKS_NAVN = "Postboksstativet";
@@ -455,7 +456,7 @@ public class MockConsumerConfig {
                 xmlBruker.setGjeldendePostadresseType(postadressetyper);
             } else if ("UTENLANDSK_ADRESSE".equals(type)) {
                 XMLPostadresse xmlPostadresseUtland = new XMLPostadresse();
-                XMLUstrukturertAdresse utenlandskUstrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(3);
+                XMLUstrukturertAdresse utenlandskUstrukturertAdresse = generateUstrukturertAdresseMedXAntallAdersseLinjer(4);
 
                 utenlandskUstrukturertAdresse.setLandkode(lagLandkode("FIN"));
 
@@ -485,6 +486,12 @@ public class MockConsumerConfig {
                     ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
                     ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
                     ustrukturertAdresse.setAdresselinje3(EN_TREDJE_ADRESSELINJE);
+                    break;
+                case 4:
+                    ustrukturertAdresse.setAdresselinje1(EN_ADRESSELINJE);
+                    ustrukturertAdresse.setAdresselinje2(EN_ANNEN_ADRESSELINJE);
+                    ustrukturertAdresse.setAdresselinje3(EN_TREDJE_ADRESSELINJE);
+                    ustrukturertAdresse.setAdresselinje4(EN_FJERDE_ADRESSELINJE);
                     break;
                 default:
                     break;

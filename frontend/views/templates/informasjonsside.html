@@ -20,7 +20,7 @@
 					
 					<p class="label">{{ 'utslagskriterier.utslag.bosted.label' | cmstekst }}</p>
 					<div class="adresse">
-						<div data-ng-repeat="linje in hentAdresseLinjer()">
+						<div data-ng-repeat="linje in hentAdresseLinjer() track by $index">
                             <span>{{ linje }}</span>
                         </div>
 					</div>
