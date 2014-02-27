@@ -22,10 +22,10 @@ module.exports = function (config) {
             '../../js/lib/angular/angular-resource.js',
             '../../js/lib/angular/angular-sanitize.js',
             '../../js/lib/angular/angular-cookies.js',
+            '../../target/classes/META-INF/resources/js/app/templates.js',
             '../../js/lib/bindonce.js',
             '../../js/app/**/*.js',
             '../../js/common/**/*.js',
-
             '../../js/lib/jquery/jquery.iframe-transport.js',
             '../../js/lib/jquery/jquery.fileupload.js',
             '../../js/lib/jquery/jquery.fileupload-process.js',
@@ -38,7 +38,7 @@ module.exports = function (config) {
 
         // list of files to exclude
         exclude: [
-
+            '../../js/app/**/templates.js'
         ],
 
         // test results reporter to use
