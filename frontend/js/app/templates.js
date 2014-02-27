@@ -392,7 +392,6 @@ angular.module("../views/templates/arbeidsforhold/avskjediget.html", []).run(["$
     "     data-nav-faktum-property=\"avskjedigetGrunn\"\n" +
     "     data-nokkel=\"arbeidsforhold.sluttaarsak.avskjedigetgrunn\"\n" +
     "     data-maxlengde=\"500\"\n" +
-    "     data-feilmelding=\"arbeidsforhold.sluttaarsak.avskjedigetgrunn.feilmelding\"\n" +
     "     data-obligatorisk=\"true\"></div>\n" +
     "\n" +
     "<div class=\"ekstra-spm-boks\">\n" +
@@ -489,7 +488,6 @@ angular.module("../views/templates/arbeidsforhold/konkurs.html", []).run(["$temp
     "     data-nav-faktum-property=\"bostyrersnavn\"\n" +
     "     data-nokkel=\"arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn\"\n" +
     "     data-maxlengde=\"500\"\n" +
-    "     data-feilmelding=\"arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.feilmelding\"\n" +
     "     data-obligatorisk=\"true\"></div>\n" +
     "\n" +
     "<div class=\"form-linje spm boolean konkurs\">\n" +
@@ -975,7 +973,6 @@ angular.module("../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver.html"
     "     data-nav-faktum-property=\"aarsak\"\n" +
     "     data-nokkel=\"arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.aarsak\"\n" +
     "     data-maxlengde=\"500\"\n" +
-    "     data-feilmelding=\"arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.aarsak.feilmelding\"\n" +
     "     data-obligatorisk=\"true\"></div>\n" +
     "\n" +
     "<div data-booleanradio\n" +
@@ -1056,7 +1053,6 @@ angular.module("../views/templates/arbeidsforhold/sagt-opp-selv.html", []).run([
     "     data-nav-faktum-property=\"sagtoppselvAarsak\"\n" +
     "     data-nokkel=\"arbeidsforhold.sluttaarsak.sagtoppselv.aarsak\"\n" +
     "     data-maxlengde=\"500\"\n" +
-    "     data-feilmelding=\"arbeidsforhold.sluttaarsak.sagtoppselv.aarsak.feilmelding\"\n" +
     "     data-obligatorisk=\"true\"></div>\n" +
     "\n" +
     "<div class=\"ekstra-spm-boks\">\n" +
@@ -1719,7 +1715,6 @@ angular.module("../views/templates/egennaering/gardsbruk.html", []).run(["$templ
     "         data-nav-faktum=\"egennaering.gardsbruk.false.timeredegjoring\"\n" +
     "         data-nokkel=\"egennaering.gardsbruk.false.timeredegjoring\"\n" +
     "         data-maxlengde=\"500\"\n" +
-    "         data-navfeilmelding=\"egennaering.gardsbruk.false.timeredegjoring.feilmelding\"\n" +
     "         data-obligatorisk=\"true\"></div>\n" +
     "</div>\n" +
     "\n" +
@@ -1887,7 +1882,7 @@ angular.module("../views/templates/informasjonsside.html", []).run(["$templateCa
     "					\n" +
     "					<p class=\"label\">{{ 'utslagskriterier.utslag.bosted.label' | cmstekst }}</p>\n" +
     "					<div class=\"adresse\">\n" +
-    "						<div data-ng-repeat=\"linje in hentAdresseLinjer()\">\n" +
+    "						<div data-ng-repeat=\"linje in hentAdresseLinjer() track by $index\">\n" +
     "                            <span>{{ linje }}</span>\n" +
     "                        </div>\n" +
     "					</div>\n" +
@@ -2219,9 +2214,7 @@ angular.module("../views/templates/reellarbeidssoker/villigHelseTemplate.html", 
     "         data-nav-faktum=\"reellarbeidssoker.villighelse.fritekst\"\n" +
     "         data-nokkel=\"reellarbeidssoker.helsefritekst\"\n" +
     "         data-maxlengde=\"500\"\n" +
-    "         data-navfeilmelding=\"reellarbeidssoker.helsefritekst.feilmelding\"\n" +
     "         data-obligatorisk=\"true\"></div>\n" +
-    "\n" +
     "\n" +
     "    <div data-vedlegginfoboks data-ng-if=\"kanIkkeTaAlleTyperArbeid()\">\n" +
     "        <ul>\n" +
