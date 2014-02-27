@@ -613,8 +613,7 @@ angular.module("../views/templates/arbeidsforhold/konkurs.html", []).run(["$temp
     "        </li>\n" +
     "        <li>\n" +
     "            <p>{{ 'arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3' | cmstekst }}</p>\n" +
-    "            <a href=\"{{lonnskravSkjema}}\">{{ 'arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3.lenketekst' | cmstekst\n" +
-    "                }}</a>\n" +
+    "            <a href=\"{{lonnskravSkjemaUrl}}\">{{ 'arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3.lenketekst' | cmstekst }}</a>\n" +
     "        </li>\n" +
     "        <li>\n" +
     "            <p>{{ 'arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.4' | cmstekst }}</p>\n" +
@@ -1073,8 +1072,7 @@ angular.module("../views/templates/arbeidsforhold/sagt-opp-selv.html", []).run([
     "            </li>\n" +
     "            <li>\n" +
     "                <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2' | cmstekst }}</p>\n" +
-    "                <a href=\"{{sluttaarsakUrl}}\">{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst' | cmstekst\n" +
-    "                    }}</a>\n" +
+    "                <a href=\"{{sluttaarsakUrl}}\">{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst' | cmstekst }}</a>\n" +
     "            </li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
@@ -3406,6 +3404,10 @@ angular.module("../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.htm
     "               data-ng-class=\"{deaktiverFeilmelding: skalDeaktivereForrigeKnapp()}\">{{ 'skjema.feilmelding.gaatil.forrige' | cmstekst }}</a>\n" +
     "            <a class=\"neste\" data-ng-click=\"neste()\"\n" +
     "               data-ng-class=\"{deaktiverFeilmelding: skalDeaktivereNesteKnapp}\">{{ 'skjema.feilmelding.gaatil.neste' | cmstekst }}</a>\n" +
+    "        </span>\n" +
+    "        <span>\n" +
+    "            <a data-ng-click=\"lukk()\" class=\"lukk\">\n" +
+    "               </a>\n" +
     "        </span>\n" +
     "    </div>\n" +
     "</div>");
