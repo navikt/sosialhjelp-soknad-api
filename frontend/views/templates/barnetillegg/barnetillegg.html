@@ -8,7 +8,7 @@
             <div class="spm-boks vertikal" data-ng-repeat="b in barn">
                 <div data-ng-class="{gutt: erGutt(b), jente:erJente(b)}" id="barnetillegg{{b.faktumId}}" class="barn">
                     <a href="#" class="lukk" data-ng-show="erBrukerregistrert(b)"
-                       data-ng-click="slettBarn(b, $index, $event)"> </a>
+                       data-ng-click="slettBarn(b, $index, $event)" aria-label="Slett barn"> </a>
                     <div class="barnealder">
                         <span>{{ 'aar' | cmstekst }}</span>
                         <span class="alder robust" data-ng-bind="b.properties.alder"></span>
