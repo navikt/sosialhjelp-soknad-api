@@ -123,6 +123,10 @@
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-log-jaxws</artifactId>
         </dependency>
+        <dependency>
+            <groupId>no.nav.modig</groupId>
+            <artifactId>modig-log-common</artifactId>
+        </dependency>
 
         <!-- CXF deps END -->
 
