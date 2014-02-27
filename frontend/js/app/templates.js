@@ -1887,7 +1887,7 @@ angular.module("../views/templates/informasjonsside.html", []).run(["$templateCa
     "					\n" +
     "					<p class=\"label\">{{ 'utslagskriterier.utslag.bosted.label' | cmstekst }}</p>\n" +
     "					<div class=\"adresse\">\n" +
-    "						<div data-ng-repeat=\"linje in hentAdresseLinjer()\">\n" +
+    "						<div data-ng-repeat=\"linje in hentAdresseLinjer() track by $index\">\n" +
     "                            <span>{{ linje }}</span>\n" +
     "                        </div>\n" +
     "					</div>\n" +
