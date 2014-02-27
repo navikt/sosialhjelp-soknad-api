@@ -52,7 +52,7 @@
             <div class="spm-boks vertikal" data-ng-repeat="af in arbeidsliste" data-ng-class="{'last': $last}">
                 <div id="arbeidsforhold{{af.arbeidsforhold.faktumId}}">
                     <a href="#" class="lukk" data-ng-click="slettArbeidsforhold(af, $index, $event)"
-                       data-fokus-slettmoduler="arbeidsforhold" aria-label="Slett arbeidsforhold"> </a>
+                       data-fokus-slettmoduler="arbeidsforhold" aria-label="{{ 'arbeidsforhold.lukk.aria' | cmstekst }}"> </a>
                     <span class="robust">{{ af.arbeidsforhold.properties.arbeidsgivernavn }}</span>
                     <span class="robust">, </span>
                     <span class="robust">{{ finnLandFraLandkode(af.arbeidsforhold.properties.land) }}</span>
