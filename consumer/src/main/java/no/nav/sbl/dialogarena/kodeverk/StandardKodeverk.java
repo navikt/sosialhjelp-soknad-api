@@ -124,6 +124,7 @@ public class StandardKodeverk implements Kodeverk {
     private List<XMLKode> getGyldigeKodeverk(XMLEnkeltKodeverk enkeltkodeverk) {
         logger.warn("Sjekker gyldighetsperioden for  " + enkeltkodeverk.getNavn() + enkeltkodeverk.getType());
         logger.warn("NOW" + now());
+        logger.warn("Gyldighetsperiode" + enkeltkodeverk.getGyldighetsperiode() + enkeltkodeverk.getNavn());
         return on(enkeltkodeverk.getKode()).filter(where(GYLDIGHETSPERIODER, exists(periodeMed(now())))).collect();
     }
 
@@ -211,7 +212,6 @@ public class StandardKodeverk implements Kodeverk {
     private static final Transformer<XMLKode, List<XMLPeriode>> GYLDIGHETSPERIODER = new Transformer<XMLKode, List<XMLPeriode>>() {
         @Override
         public List<XMLPeriode> transform(XMLKode kode) {
-            logger.warn("Gyldighetsperiode for " + kode.getNavn() + kode.getGyldighetsperiode());
             return optional(kode.getGyldighetsperiode()).getOrElse(Collections.<XMLPeriode>emptyList());
         }
     };
