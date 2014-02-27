@@ -21,6 +21,10 @@ angular.module('nav.stickyFeilmelding', [])
                 var nestForsteOgForsteRettet = false;
                 var stodPaforsteRettetEnFeilEnFeilIgjen = false;
 
+                scope.lukk = function () {
+                    scope.feil.skalViseStickyFeilmeldinger = false;
+                };
+
                 scope.leggTilStickyFeilmelding = function () {
                     scope.feil.navaerende = 0;
                     feilHarBlittRettet = false;
