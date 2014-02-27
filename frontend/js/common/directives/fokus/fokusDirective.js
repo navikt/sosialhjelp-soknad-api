@@ -54,6 +54,7 @@ angular.module('nav.fokus', [])
                 var stickyPosisjonTopp;
                 var elementMedFokus;
                 var posisjon = "";
+                var TAB_BUTTON = 9;
 
                 elm.bind("keyup keypress", function (event) {
                     if (elm.hasClass('dagpenger')) {
@@ -67,7 +68,7 @@ angular.module('nav.fokus', [])
                         stickyPosisjonTopp = {top: 0, bottom: 60};
                     }
 
-                    if (event.which === 9) {
+                    if (event.which === TAB_BUTTON) {
                         var stickyPosisjonBunn = stickyElementBunn[0].getBoundingClientRect();
                         elementMedFokus = document.activeElement;
                         posisjon = "";
@@ -82,7 +83,7 @@ angular.module('nav.fokus', [])
                             scrollToElement($(elementMedFokus), $(window).height() / 2);
                         }
                     }
-                    if (event.which === 9 && event.shiftKey) {
+                    if (event.which === TAB_BUTTON && event.shiftKey) {
                         elementMedFokus = document.activeElement;
                         posisjon = "";
 

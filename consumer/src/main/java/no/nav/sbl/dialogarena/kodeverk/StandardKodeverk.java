@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.kodeverk;
 
+import no.nav.modig.common.MDCOperations;
 import no.nav.modig.core.exception.SystemException;
 import no.nav.modig.lang.option.Optional;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.HentKodeverkHentKodeverkKodeverkIkkeFunnet;
@@ -104,11 +105,16 @@ public class StandardKodeverk implements Kodeverk {
     @Scheduled(cron = "0 * * * * *")
     public void lastInnNyeKodeverk() {
         logger.warn("Laster inn nye kodeverk");
+        MDCOperations.putToMDC(MDCOperations.MDC_CALL_ID, MDCOperations.generateCallId());
+        logger.warn("MDCOperations.MDC_CONSUMER_ID" + MDCOperations.getFromMDC(MDCOperations.MDC_CONSUMER_ID));
         Map<String, XMLEnkeltKodeverk> oppdatertKodeverk = new HashMap<>();
+        logger.warn(" Størrelse på allekodeverk " + ALLE_KODEVERK.size());
         for (String kodeverksnavn : ALLE_KODEVERK) {
             XMLEnkeltKodeverk enkeltkodeverk = hentKodeverk(kodeverksnavn);
+            logger.warn("enkeltkodeverk" + enkeltkodeverk.getKode());
             enkeltkodeverk.getKode().clear();
             enkeltkodeverk.getKode().addAll(getGyldigeKodeverk(enkeltkodeverk));
+            logger.warn("enkeltkodeverk etter tillegg " + enkeltkodeverk.getKode());
             oppdatertKodeverk.put(kodeverksnavn, enkeltkodeverk);
         }
         this.kodeverk.clear();
@@ -117,6 +123,8 @@ public class StandardKodeverk implements Kodeverk {
 
     private List<XMLKode> getGyldigeKodeverk(XMLEnkeltKodeverk enkeltkodeverk) {
         logger.warn("Sjekker gyldighetsperioden for  " + enkeltkodeverk.getNavn() + enkeltkodeverk.getType());
+        logger.warn("NOW" + now());
+        logger.warn("Gyldighetsperiode" + enkeltkodeverk.getGyldighetsperiode() + enkeltkodeverk.getNavn());
         return on(enkeltkodeverk.getKode()).filter(where(GYLDIGHETSPERIODER, exists(periodeMed(now())))).collect();
     }
 
@@ -152,6 +160,8 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     private XMLEnkeltKodeverk hentKodeverk(String navn) {
+
+        logger.warn("MDCOperations.CallId" + MDCOperations.getFromMDC(MDCOperations.MDC_CALL_ID));
         XMLEnkeltKodeverk kodeverket = null;
         Optional<RuntimeException> webserviceException = none();
         try {
@@ -210,7 +220,6 @@ public class StandardKodeverk implements Kodeverk {
         return new Predicate<XMLPeriode>() {
             @Override
             public boolean evaluate(XMLPeriode periode) {
-                logger.warn("Gyldighetsperioden er fra " + periode.getFom() + " og til "  + periode.getTom());
                 return atTime.isAfter(periode.getFom()) && atTime.isBefore(periode.getTom());
             }
         };

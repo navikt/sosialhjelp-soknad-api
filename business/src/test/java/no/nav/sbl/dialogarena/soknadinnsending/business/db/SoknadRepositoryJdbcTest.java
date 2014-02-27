@@ -7,6 +7,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -71,10 +73,14 @@ public class SoknadRepositoryJdbcTest {
     }
 
     @Test
-    public void skalKunneOppretteBehandling() {
-        String behandlingsId = soknadRepository.opprettBehandling();
-        Assert.assertNotNull(behandlingsId);
-        Assert.assertNotEquals("", behandlingsId);
+    public void skalSetteSistLagret(){
+        opprettOgPersisterSoknad();
+        soknadRepository.settSistLagretTidspunkt(soknadId);
+        WebSoknad endret = soknadRepository.hentSoknad(soknadId);
+        System.out.println(new DateTime());
+        System.out.println(new DateTime(endret.getSistLagret()));
+        Interval endretIntervall = new Interval(new DateTime().minusMillis(100), new DateTime().plusMillis(100));
+        assertThat(endretIntervall.contains(endret.getSistLagret()), is(true));
     }
 
     @Test(expected = DataIntegrityViolationException.class)
