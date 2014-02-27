@@ -3405,6 +3405,10 @@ angular.module("../js/app/directives/feilmeldinger/stickyFeilmeldingTemplate.htm
     "            <a class=\"neste\" data-ng-click=\"neste()\"\n" +
     "               data-ng-class=\"{deaktiverFeilmelding: skalDeaktivereNesteKnapp}\">{{ 'skjema.feilmelding.gaatil.neste' | cmstekst }}</a>\n" +
     "        </span>\n" +
+    "        <span>\n" +
+    "            <a data-ng-click=\"lukk()\" class=\"lukk\">\n" +
+    "               </a>\n" +
+    "        </span>\n" +
     "    </div>\n" +
     "</div>");
 }]);
