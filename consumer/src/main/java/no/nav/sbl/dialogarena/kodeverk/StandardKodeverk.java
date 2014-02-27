@@ -8,7 +8,6 @@ import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLEnkeltKodeverk;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKode;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKodeverk;
-import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKodeverkselement;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLPeriode;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkRequest;
 import org.apache.commons.collections15.Predicate;
@@ -127,10 +126,7 @@ public class StandardKodeverk implements Kodeverk {
     private List<XMLKode> getGyldigeKodeverk(XMLEnkeltKodeverk enkeltkodeverk) {
         logger.warn("Sjekker gyldighetsperioden for  " + enkeltkodeverk.getNavn() + enkeltkodeverk.getType());
         logger.warn("NOW" + now());
-
         logger.warn("Gyldighetsperiode" + enkeltkodeverk.getGyldighetsperiode() + enkeltkodeverk.getNavn());
-        XMLKodeverkselement periode = ( XMLKodeverkselement) enkeltkodeverk.getGyldighetsperiode();
-
         return on(enkeltkodeverk.getKode()).filter(where(GYLDIGHETSPERIODER, exists(periodeMed(now())))).collect();
     }
 
