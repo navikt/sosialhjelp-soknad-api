@@ -77,8 +77,7 @@ describe('navtextareaUtenSporsmal', function () {
                 'data-nav-faktum="etfaktum"' +
                 'data-nokkel="ennokkel"' +
                 'data-maxlengde="500"' +
-                'data-navfeilmelding="feilmelding"' +
-                ' data-obligatorisk="true">' +
+                'data-navfeilmelding="feilmelding">'+
                 '</div>' +
                 '</form>');
 

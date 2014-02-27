@@ -3790,7 +3790,7 @@ angular.module("../js/common/directives/navtextarea/navtextareaObligatoriskTempl
     "    <h4 class=\"spm-sporsmal\" data-ng-if=\"harSporsmal()\">{{ sporsmal | cmstekst}}</h4>\n" +
     "    <label>\n" +
     "        <span>{{ label | cmstekst }}</span>\n" +
-    "        <textarea data-ng-name=\"faktum.key\"\n" +
+    "        <textarea name=\"{{name}} \" data-ng-name=\"faktum.key\"\n" +
     "                  data-ng-model=\"faktum.value\"\n" +
     "                  data-error-messages=\"'{{ feilmelding }}'\"\n" +
     "                  data-ng-required=\"true\"\n" +
