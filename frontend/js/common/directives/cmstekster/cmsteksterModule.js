@@ -13,34 +13,6 @@ angular.module('nav.cmstekster', [])
 			}
 		};
 	}])
-	.directive('cmstekster', ['cms', function (cms) {
-
-		return {
-			scope: false,
-			link : function (scope, element, attrs) {
-                var nokkel = attrs.cmstekster;
-				var cmstekst = cms.tekster[nokkel];
-
-				if (cmstekst === undefined) {
-					return;
-				}
-
-				if (scope.cmsProps) {
-					Object.keys(scope.cmsProps).forEach(function () {
-						cmstekst = cmstekst + ': ' + scope.cmsProps.ekstra;
-					});
-				}
-                cmstekst = cmstekst.replace('${.*}', '', 'i');
-
-                if (element.is('input')) {
-                    element.attr('value', cmstekst);
-                } else {
-                    element.text(cmstekst);
-
-                }
-            }
-        };
-    }])
     .directive('cmshtml', ['cms', function (cms) {
         return function ($scope, element, attrs) {
             var nokkel = attrs.cmshtml;

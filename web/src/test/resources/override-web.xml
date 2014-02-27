@@ -42,7 +42,11 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>devResources</servlet-name>
-        <url-pattern>/dev/*</url-pattern>
+        <url-pattern>/js/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>devResources</servlet-name>
+        <url-pattern>/views/*</url-pattern>
     </servlet-mapping>
 
 </web-app>
