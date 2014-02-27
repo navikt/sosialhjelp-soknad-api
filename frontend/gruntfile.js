@@ -206,7 +206,6 @@ module.exports = function (grunt) {
 	grunt.option('force', true);
 
 	grunt.registerTask('default', ['jshint', 'htmlbuild:dev', 'watch']);
-    grunt.registerTask('test', ['html2js', 'karma:local', 'watch:testHtml']);
     grunt.registerTask('hint', ['jshint', 'watch']);
     grunt.registerTask('maven', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev']);
     grunt.registerTask('maven-test', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev', 'htmlbuild:test']);
