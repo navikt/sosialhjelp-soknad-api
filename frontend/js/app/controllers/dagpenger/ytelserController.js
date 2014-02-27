@@ -2,6 +2,13 @@ angular.module('nav.ytelser', [])
 	.controller('YtelserCtrl', ['$scope', 'data', '$timeout', function ($scope, data, $timeout) {
 
 		$scope.land = data.land;
+
+		$scope.settBreddeSlikAtDetFungererIIE = function() {
+            setTimeout(function() {
+                $("#land").width($("#land").width());
+            }, 50);
+        };
+
 		$scope.ytelser = {skalViseFeilmeldingForIngenYtelser: false};
 		$scope.ytelserNAV = {skalViseFeilmeldingForIngenNavYtelser: false};
 
@@ -12,12 +19,14 @@ angular.module('nav.ytelser', [])
 		$scope.harHuketAvCheckboksNavYtelse = {value: ''};
 
 		if (erCheckboxerAvhuket(nokler)) {
-			$scope.harHuketAvCheckboksYtelse.value = true;
+			$scope.harHuketAvCheckboksYtelse.value = 'true';
 		}
 
         if (erCheckboxerAvhuket(undernokler)) {
-            $scope.harHuketAvCheckboksNavYtelse.value = true;
+            $scope.harHuketAvCheckboksNavYtelse.value = 'true';
         }
+
+        $scope.settBreddeSlikAtDetFungererIIE();
 
 		$scope.hvisAvtaleInngaatt = function () {
 			var faktum = data.finnFaktum('ikkeavtale');
@@ -58,7 +67,7 @@ angular.module('nav.ytelser', [])
 			if (harIkkeValgtYtelse) {
 				$scope.harHuketAvCheckboksYtelse.value = '';
 			} else {
-				$scope.harHuketAvCheckboksYtelse.value = true;
+				$scope.harHuketAvCheckboksYtelse.value = 'true';
 			}
 
 			var ingenYtelse = data.finnFaktum('ingenYtelse');
@@ -98,7 +107,7 @@ angular.module('nav.ytelser', [])
 			if (harIkkeValgtYtelse) {
 				$scope.harHuketAvCheckboksNavYtelse.value = '';
 			} else {
-				$scope.harHuketAvCheckboksNavYtelse.value = true;
+				$scope.harHuketAvCheckboksNavYtelse.value = 'true';
 			}
 			var faktum = data.finnFaktum('ingennavytelser');
 			if (sjekkOmGittEgenskapTilObjektErTrue(faktum)) {

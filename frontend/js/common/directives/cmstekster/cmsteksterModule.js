@@ -1,4 +1,4 @@
-angular.module('nav.cmstekster', ['app.services'])
+angular.module('nav.cmstekster', [])
 	.directive('cmsvedlegg', [function () {
 		return {
 			scope   : false,
@@ -18,7 +18,7 @@ angular.module('nav.cmstekster', ['app.services'])
 		return {
 			scope: false,
 			link : function (scope, element, attrs) {
-				var nokkel = attrs.cmstekster;
+                var nokkel = attrs.cmstekster;
 				var cmstekst = cms.tekster[nokkel];
 
 				if (cmstekst === undefined) {
@@ -45,14 +45,6 @@ angular.module('nav.cmstekster', ['app.services'])
         return function ($scope, element, attrs) {
             var nokkel = attrs.cmshtml;
             element.html(cms.tekster[nokkel]);
-        };
-    }])
-    .directive('cmslenketekster', ['cms', function (cms) {
-        return function ($scope, element, attrs) {
-            var nokkel = attrs.cmslenketekster;
-            if (element.is('a')) {
-                element.attr('href', cms.tekster[nokkel]);
-            }
         };
     }])
     .filter('cmstekst', ['cms', function(cms) {

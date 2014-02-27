@@ -1,4 +1,4 @@
-package no.nav.sbl.dialogarena.websoknad.config;
+package no.nav.sbl.dialogarena.soknadinnsending.business.message;
 
 import no.nav.modig.content.Content;
 import no.nav.modig.content.ContentRetriever;
@@ -10,8 +10,6 @@ import java.net.URI;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-
-import static no.nav.modig.content.enonic.innholdstekst.Innholdstekst.KEY;
 
 
 public class NavMessageSource extends ReloadableResourceBundleMessageSource {
@@ -43,7 +41,7 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
             if (fileSplit.length > 1 && fileToEnonicMapping.containsKey(fileSplit[1])) {
                 try {
                     Content<Innholdstekst> content = contentRetriever.getContent(new URI(fileToEnonicMapping.get(fileSplit[1]).get(fileSplit[0])));
-                    Map<String, Innholdstekst> innhold = content.toMap(KEY);
+                    Map<String, Innholdstekst> innhold = content.toMap(Innholdstekst.KEY);
                     for (Map.Entry<String, Innholdstekst> entry : innhold.entrySet()) {
                         holder.getProperties().put(entry.getKey(), entry.getValue());
                     }

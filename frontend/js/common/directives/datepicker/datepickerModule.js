@@ -41,7 +41,8 @@ angular.module('nav.datepicker', [])
 		altFormat  : 'dd.MM.yyyy',
 		dateFormat : 'dd.mm.yy',
 		changeMonth: true,
-		changeYear : true
+		changeYear : true,
+        yearRange: "c-30:c+10"
 	})
 	.directive('navDato', ['$timeout', 'datepickerConfig', '$filter', 'cms', function ($timeout, datepickerConfig, $filter, cms) {
 		return {
@@ -145,7 +146,8 @@ angular.module('nav.datepicker', [])
 
 				scope.sjekkUloveligFremtidigDato = function () {
 					if(!scope.erFremtidigdatoTillatt && scope.ngModel !== undefined) {
-						return erFremtidigDato(scope.ngModel);
+						var dateArray = scope.ngModel.split("-");
+						return erFremtidigDato(dateArray[0], dateArray[1], dateArray[2]);
 					}
 					return false;
 				};
@@ -351,7 +353,7 @@ angular.module('nav.datepicker', [])
 						for (var i = start; i < slutt && i < datoInput.length; i++) {
 							var skrevetTegn = datoInput[i];
 
-							if (isNaN(skrevetTegn) || datoInput.substring(0, i + 1).length > datoMask.length || datoInput.splice(i, 1, '').length == datoMask.length) {
+							if (isNaN(skrevetTegn) || datoInput.substring(0, i + 1).length > datoMask.length || datoInput.splice(i, 1, '').length === datoMask.length) {
 								if (skrevetTegn !== '.' || (i !== 2 && i !== 5)) {
 									datoInput = datoInput.splice(i, 1, '');
 									caretPosisjon--;

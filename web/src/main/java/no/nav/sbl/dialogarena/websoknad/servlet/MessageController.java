@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import no.nav.sbl.dialogarena.websoknad.config.NavMessageSource;
+import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

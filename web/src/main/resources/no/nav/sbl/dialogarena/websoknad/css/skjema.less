@@ -13,15 +13,7 @@ h4 {
     }
 }
 
-
-.informasjonstekst {
-    font-size: 1rem;
-    font-weight: bold;
-    padding: 0 15px;
-}
-
 .svar-oppsummering-hake {
-
     &:before {
         content: url(../img/hake.svg);
         position: relative;
@@ -47,6 +39,7 @@ h4 {
         margin-left: -32px;
         height: auto !important;
         min-height: 22px;
+        margin-bottom: 0;
     }
 
     a {
@@ -59,19 +52,12 @@ h4 {
 
     &:last-child {
         margin-bottom: 0;
-        label {
-            margin-bottom: 0;
-        }
     }
 }
 
 .henter-personalia {
     text-align: center;
     margin-top: 3rem;
-}
-
-.ng-transclude {
-    margin-top: 15px;
 }
 
 .ferdig-skjema {
@@ -104,6 +90,8 @@ h4 {
 
 .annetvalg-nei {
     margin-top: 20px;
+    padding-top: 20px !important;
+    border-top: 1px solid #ddd;
 }
 
 .timer {
@@ -166,7 +154,7 @@ h4 {
         margin-left: -13px;
     }
 
-    > *:last-child {
+    &:not(.infoboks) > *:last-child {
         padding-bottom: 0px !important;
         margin-bottom: 0 !important;
     }

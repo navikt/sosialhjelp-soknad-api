@@ -56,7 +56,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     public static final String INSERT_FAKTUM = "insert into SOKNADBRUKERDATA (soknadbrukerdata_id, soknad_id, key, value, type, parrent_faktum, sistendret) values (:faktumId, :soknadId, :key, :value, :typeString, :parrentFaktum, sysdate)";
     public static final String INSERT_FAKTUMEGENSKAP = "insert into FAKTUMEGENSKAP (soknad_id, faktum_id, key, value, systemegenskap) values (:soknadId, :faktumId, :key, :value, :systemEgenskap)";
-    private static final Logger LOG = getLogger(SoknadRepositoryJdbc.class);
+    private static final Logger logger = getLogger(SoknadRepositoryJdbc.class);
     private final RowMapper<Faktum> faktumRowMapper = new RowMapper<Faktum>() {
         public Faktum mapRow(ResultSet rs, int rowNum) throws SQLException {
 
@@ -209,13 +209,16 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     @Override
     public Boolean isVedleggPaakrevd(Long soknadId, String key, String value, String dependOnValue) {
-        String sql = "select count(*) from soknadbrukerdata data left outer join soknadbrukerdata parent on parent.soknadbrukerdata_id = data.parrent_faktum where data.soknad_id=? and data.key=? and data.value like ? and (data.parrent_faktum is null OR parent.value like ?)";
+        String sql = "SELECT count(*) FROM soknadbrukerdata faktum " +
+                "LEFT OUTER JOIN soknadbrukerdata parent on parent.soknadbrukerdata_id = faktum.parrent_faktum " +
+                "WHERE faktum.soknad_id=? AND faktum.key=? AND faktum.value like ? " +
+                "AND (faktum.parrent_faktum is null OR parent.value like ?)";
 
         Integer count;
         try {
             count = getJdbcTemplate().queryForObject(sql, Integer.class, soknadId, key, value, dependOnValue);
         } catch (DataAccessException e) {
-            LOG.warn("Klarte ikke hente count fra soknadBrukerData", e);
+            logger.warn("Klarte ikke hente count fra soknadBrukerData", e);
             return false;
         }
 
@@ -255,6 +258,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     @Override
     public Long lagreFaktum(long soknadId, Faktum faktum, Boolean systemLagring) {
+        faktum.setSoknadId(soknadId);
         if (faktum.getFaktumId() == null) {
             faktum.setFaktumId(getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_BRUKER_DATA_ID_SEQ"), Long.class));
             getNamedParameterJdbcTemplate().update(INSERT_FAKTUM, forFaktum(faktum));
@@ -336,7 +340,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     @Override
     public void avslutt(WebSoknad soknad) {
-        LOG.debug("Setter status til søknad med id {} til ferdig",
+        logger.debug("Setter status til søknad med id {} til ferdig",
                 soknad.getSoknadId());
         String status = FERDIG.name();
         getJdbcTemplate().update("update soknad set status = ? where soknad_id = ?", status, soknad.getSoknadId());
@@ -344,7 +348,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     @Override
     public void avbryt(Long soknad) {
-        LOG.debug("Setter status til søknad med id {} til avbrutt", soknad);
+        logger.debug("Setter status til søknad med id {} til avbrutt", soknad);
         String status = AVBRUTT_AV_BRUKER.name();
         getJdbcTemplate().update("update soknad set status = ? where soknad_id = ?", status, soknad);
         getJdbcTemplate().update("delete from vedlegg where soknad_id = ?", soknad);
@@ -353,16 +357,11 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     @Override
     public void slettSoknad(long soknadId) {
-        LOG.debug("Sletter søknad med ID: " + soknadId);
+        logger.debug("Sletter søknad med ID: " + soknadId);
         getJdbcTemplate().update("delete from faktumegenskap where soknad_id = ?", soknadId);
         getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ?", soknadId);
         getJdbcTemplate().update("delete from vedlegg where soknad_id = ?", soknadId);
         getJdbcTemplate().update("delete from soknad where soknad_id = ?", soknadId);
-    }
-
-    @Override
-    public void endreInnsendingsValg(Long soknadId, Long faktumId, Faktum.Status innsendingsvalg) {
-        getJdbcTemplate().update("update soknadbrukerdata set innsendingsvalg = ? where soknad_id = ? and soknadbrukerdata_id = ?", innsendingsvalg.toString(), soknadId, faktumId);
     }
 
     @Override

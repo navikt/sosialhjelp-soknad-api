@@ -3,7 +3,7 @@ angular.module('nav.arbeidsforhold.controller', [])
         $scope.soknadId = data.soknad.soknadId;
 
         $scope.sluttaarsakUrl = data.config["soknad.sluttaarsak.url"];
-        $scope.lonnskravSkjema = data.config["soknad.lonnskravskjema.url"];
+        $scope.lonnskravSkjemaUrl = data.config["soknad.lonnskravskjema.url"];
         $scope.permiteringUrl = data.config["soknad.permitteringsskjema.url"];
 
         $scope.templates = {
@@ -33,6 +33,10 @@ angular.module('nav.arbeidsforhold.controller', [])
             return 0;
         }
 
+        $scope.harArbeidsforhold = function() {
+            return $scope.arbeidsliste.length > 0;
+        };
+
         $scope.arbeidsliste.sort(compareArbeidsforholdDate);
 
         if ($scope.arbeidsliste.length > 0) {
@@ -44,7 +48,7 @@ angular.module('nav.arbeidsforhold.controller', [])
 
         $scope.finnLandFraLandkode = function(landkode) {
             for(var i=0; i<data.land.result.length; i++) {
-                if(data.land.result[i].value == landkode) {
+                if(data.land.result[i].value === landkode) {
                     return data.land.result[i].text;
                 }
             }
@@ -118,8 +122,8 @@ angular.module('nav.arbeidsforhold.controller', [])
 
         $scope.slettArbeidsforhold = function (af, index, $event) {
             $event.preventDefault();
-
             $scope.arbeidsliste.splice(index, 1);
+
             data.slettFaktum(af.arbeidsforhold);
 
             if ($scope.arbeidsliste.length === 0) {
@@ -142,6 +146,8 @@ angular.module('nav.arbeidsforhold.controller', [])
                 gjeldendeTab: '#arbeidsforhold',
                 faktumId: faktumId
             });
+
+
         }
 
     }]);

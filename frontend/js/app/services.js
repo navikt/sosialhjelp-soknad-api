@@ -30,7 +30,7 @@
         .factory('xsrfRelast', [function () {
             return {
                 'responseError': function(response){
-                    if(response.status == 403){
+                    if(response.status === 403){
                         //("Vi må håndtere feil fra rest kall på en god måte. 403 er når xsrf token ikke matcher. Må laste siden på nytt.")
                     }
                     return response;
@@ -47,7 +47,7 @@
                             data.soknad.sistLagret = new Date().getTime();
                         }
                         var urlArray = response.config.url.split('/');
-                        if (urlArray.contains('fakta')) {
+                        if (urlArray.contains('fakta') && response.data.key !== 'epost') {
                             data.soknad.delstegStatus = 'UTFYLLING';
                         } else if (urlArray.contains('vedlegg')) {
                             data.soknad.delstegStatus = 'SKJEMA_VALIDERT';

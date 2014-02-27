@@ -3,7 +3,7 @@
         <div data-form-errors></div>
 
         <div class="spm boolean form-linje">
-            <h4 class="spm-sporsmal" data-cmstekster="utdanning.informasjon"></h4>
+            <h4 class="spm-sporsmal">{{ 'utdanning.informasjon' | cmstekst }}</h4>
 
             <div data-navradio
                  data-value="ikkeUtdanning"
@@ -23,11 +23,11 @@
 
             <div class="ekstra-spm-boks nav-boolean" data-ng-if="hvis('utdanning', 'avsluttetUtdanning')">
                 <div data-navinfoboks>
-                    <p data-cmstekster="utdanning.svar.under.utdanning.avsluttet.informasjon"></p>
+                    <p>{{ 'utdanning.svar.under.utdanning.avsluttet.informasjon' | cmstekst }}</p>
                 </div>
                 <div data-vedlegginfoboks>
                     <ul>
-                        <li><p data-cmstekster="utdanning.svar.under.utdanning.avsluttet.dokumentere"></p></li>
+                        <li><p>{{ 'utdanning.svar.under.utdanning.avsluttet.dokumentere' | cmstekst }}</p></li>
                     </ul>
                 </div>
             </div>
@@ -56,7 +56,7 @@
                      data-navconfig
                      data-nav-faktum="utdanning.kveld"
                      data-navlabel="utdanning.svar.under.utdanning.kveld"
-                     data-navendret="endreUtdanning(utdanningForm)">
+                     data-navendret="endreUtdanning()">
                     <div data-ng-include="'../views/templates/utdanning/utdanningKveldTemplate.html'"></div>
                 </div>
 
@@ -64,7 +64,7 @@
                      data-navconfig
                      data-nav-faktum="utdanning.kortvarig"
                      data-navlabel="utdanning.svar.under.utdanning.kortvarig"
-                     data-navendret="endreUtdanning(utdanningForm)">
+                     data-navendret="endreUtdanning()">
                     <div data-ng-include="'../views/templates/utdanning/utdanningKortvarigTemplate.html'"></div>
                 </div>
 
@@ -72,7 +72,7 @@
                      data-navconfig
                      data-nav-faktum="utdanning.kortvarigflere"
                      data-navlabel="utdanning.svar.under.utdanning.kortvarigflere"
-                     data-navendret="endreUtdanning(utdanningForm)">
+                     data-navendret="endreUtdanning()">
 
                     <div data-ng-include="'../views/templates/utdanning/utdanningKortvarigFlereTemplate.html'"></div>
                 </div>
@@ -81,7 +81,7 @@
                      data-navconfig
                      data-nav-faktum="utdanning.norsk"
                      data-navlabel="utdanning.svar.under.utdanning.norsk"
-                     data-navendret="endreUtdanning(utdanningForm)">
+                     data-navendret="endreUtdanning()">
 
                     <div data-ng-include="'../views/templates/utdanning/utdanningNorskTemplate.html'"></div>
                 </div>
@@ -90,7 +90,7 @@
                      data-navconfig
                      data-nav-faktum="utdanning.introduksjon"
                      data-navlabel="utdanning.svar.under.utdanning.introduksjon"
-                     data-navendret="endreUtdanning(utdanningForm)">
+                     data-navendret="endreUtdanning()">
                 </div>
 
 
@@ -98,19 +98,17 @@
                     <input id="underUtdanningNeiCheckbox"
                            data-ng-model="faktum.value"
                            type="checkbox"
-                           data-ng-change="endreUtdannelseAnnet(utdanningForm)"
+                           data-ng-change="endreUtdannelseAnnet()"
                            data-boolean-verdi
                             data-aktiv-feilmelding/>
-                    <label for="underUtdanningNeiCheckbox"
-                           data-cmstekster="utdanning.svar.under.utdanning.nei"></label>
-                    <span class="utdanning-nei-melding"
-                          data-cmstekster="utdanning.harValgtUtdanning.feilmelding"></span>
+                    <label for="underUtdanningNeiCheckbox">{{ 'utdanning.svar.under.utdanning.nei' | cmstekst }}</label>
+                    <span class="utdanning-nei-melding">{{ 'utdanning.harValgtUtdanning.feilmelding' | cmstekst }}</span>
                 </div>
 
                 <div class="ekstra-spm-boks nav-checkbox" data-navinfoboks data-ng-if="hvis('underUtdanningAnnet')">
-                    <span data-cmstekster="utdanning.unntak.informasjon"></span>
+                    <span>{{ 'utdanning.unntak.informasjon' | cmstekst }}</span>
                 </div>
-                <span class="melding" data-cmstekster="utdanning.minstEnAvhuket.feilmelding"></span>
+                <span class="melding">{{ 'utdanning.minstEnAvhuket.feilmelding' | cmstekst }}</span>
 
             </div>
 

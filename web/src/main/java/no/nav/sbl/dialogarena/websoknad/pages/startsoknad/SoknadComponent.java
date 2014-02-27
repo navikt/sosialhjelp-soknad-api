@@ -22,7 +22,7 @@ import static org.springframework.util.StreamUtils.copyToString;
  */
 public class SoknadComponent extends WebComponent {
 
-    private static final Logger LOGGER = getLogger(SoknadComponent.class);
+    private static final Logger logger = getLogger(SoknadComponent.class);
 
     public SoknadComponent(String id) {
         super(id);
@@ -30,7 +30,7 @@ public class SoknadComponent extends WebComponent {
 
     @Override
     public void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
-        String file = "META-INF/resources/views/bootstrap.html";
+        String file = "META-INF/resources/views/bootstrap.html" ;
         try (InputStream content = this.getClass().getClassLoader().getResourceAsStream(file)) {
             replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
         } catch (IllegalArgumentException| IOException e) {
@@ -41,7 +41,7 @@ public class SoknadComponent extends WebComponent {
                     replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
                 }
             } catch (IOException |URISyntaxException e2) {
-                LOGGER.warn("Problem med ressurslasting " + file, e2);
+                logger.warn("Problem med ressurslasting " + file, e2);
                 //throw new ApplicationException("feilet under lasting av markup", e);
             }
         }

@@ -45,7 +45,6 @@
         .barnecheckbox {
             margin-left: 65px;
             margin-top: 15px;
-            margin-bottom: 30px;
         }
 
         .barnealder {
@@ -92,9 +91,9 @@
 
         &.gutt {
             .barnealder {
-                color: #069d38 !important;
+                color: #119b48 !important;
                 span {
-                    color: #069d38 !important;
+                    color: #119b48 !important;
                 }
             }
         }
@@ -113,5 +112,32 @@
     .knapper-opprett {
         margin-left: 15px;
         margin-right: 15px;
+    }
+
+    .ekstra-spm-boks.infoboks {
+        margin-right: 15px;
+        margin-left: 15px;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    #barnetilleggForm {
+        .knapper-opprett {
+            p {
+                width: auto;
+                margin: 20px 15px 10px;
+                font-size: 0.9rem;
+            }
+        }
+
+        .barn {
+            .barnecheckbox {
+                margin-left: 0;
+
+                .hake {
+                    margin: 10px 0;
+                }
+            }
+        }
     }
 }

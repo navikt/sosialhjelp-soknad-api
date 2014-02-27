@@ -22,7 +22,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Controller
 @ControllerAdvice()
 public class ConfigController {
-    Logger log = LoggerFactory.getLogger(ConfigController.class);
+
     @Inject
     ConfigService configService;
     @Inject

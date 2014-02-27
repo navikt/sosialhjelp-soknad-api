@@ -12,8 +12,8 @@
                 </div>
 
                 <input id="bekreftelseOpplysninger" type="checkbox" data-ng-model="harbekreftet.value">
-                <label for="bekreftelseOpplysninger" data-cmstekster="dagpenger.oppsummering.bekreftOpplysninger"></label>
-                <span class="melding" data-cmstekster="dagpenger.oppsummering.bekreftelse.feilmelding"></span>
+                <label for="bekreftelseOpplysninger">{{ 'dagpenger.oppsummering.bekreftOpplysninger' | cmstekst }}</label>
+                <span class="melding">{{ 'dagpenger.oppsummering.bekreftelse.feilmelding' | cmstekst }}</span>
             </div>
             <div class="oppsummering-knapp">
                 <input class="knapp-hoved" type="submit" value="{{ 'dagpenger.oppsummering.send' | cmstekst }}">

@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
+import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Controller
@@ -38,12 +40,16 @@ public class SoknadTpsDataController {
         return kodeverk.getPoststed(postnummer);
     }
 
+    private static final Logger logger = getLogger(SoknadTpsDataController.class);
+
     @RequestMapping(value = "/kodeverk/landliste", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Map<String, List<Map<String, String>>> hentLandkodeListe() {
 
         List<Map<String, String>> landliste = new ArrayList<>();
+
         List<String> landKoder = kodeverk.getAlleLandkoder();
+
         for (String landkode : landKoder) {
             Map<String, String> land = new LinkedHashMap<>();
             land.put("text", kodeverk.getLand(landkode));
@@ -74,8 +80,12 @@ public class SoknadTpsDataController {
     @ResponseBody()
     public Personalia hentPersonalia() {
         String fnr = SubjectHandler.getSubjectHandler().getUid();
-        Personalia personalia;
-        personalia = personaliaService.hentPersonalia(fnr);
+        Personalia personalia = null;
+        try {
+            personalia = personaliaService.hentPersonalia(fnr);
+        } catch (Exception e) {
+            logger.error("Kunne ikke hente personalia");
+        }
         return personalia;
 
     }

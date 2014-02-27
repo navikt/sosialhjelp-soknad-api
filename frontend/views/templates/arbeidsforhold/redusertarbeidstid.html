@@ -22,18 +22,17 @@
 
 <div class="ekstra-spm-boks">
     <div data-navinfoboks>
-        <p class="sluttaarsak-informasjon"
-           data-cmstekster="arbeidsforhold.sluttaarsak.redusertArbeidstid.informasjon"></p>
+        <p class="sluttaarsak-informasjon">{{ 'arbeidsforhold.sluttaarsak.redusertArbeidstid.informasjon' | cmstekst }}</p>
     </div>
     <div data-vedlegginfoboks>
         <ul>
             <li>
-                <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></p>
+                <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</p>
             </li>
             <li>
-                <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2"></p>
-                <a href="{{sluttaarsakUrl}}"
-                   data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst">
+                <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2' | cmstekst }}</p>
+                <a href="{{ sluttaarsakUrl }}">
+                    {{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst' | cmstekst }}
                 </a>
             </li>
         </ul>

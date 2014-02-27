@@ -25,6 +25,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.Opplast
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
+import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
@@ -44,7 +46,7 @@ import javax.inject.Named;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.awt.Dimension;
+import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -53,6 +55,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -84,6 +87,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
     private FillagerConnector fillagerConnector;
     @Inject
     private Kodeverk kodeverk;
+    @Inject
+    private NavMessageSource navMessageSource;
+
     private PdfWatermarker watermarker = new PdfWatermarker();
     private List<String> gyldigeSkjemaer = Arrays.asList("NAV 04-01.03");
     private PdfMerger pdfMerger = new PdfMerger();
@@ -93,15 +99,15 @@ public class SoknadService implements SendSoknadService, VedleggService {
         if (detector.pdfIsSigned()) {
             throw new UgyldigOpplastingTypeException(
                     "PDF kan ikke være signert.", null,
-                    "vedlegg.opplasting.feil.pdf.signert");
+                    "opplasting.feilmelding.pdf.signert");
         } else if (detector.pdfIsEncrypted()) {
             throw new UgyldigOpplastingTypeException(
                     "PDF kan ikke være krypert.", null,
-                    "vedlegg.opplasting.feil.pdf.krypert");
+                    "opplasting.feilmelding.pdf.krypert");
         } else if (detector.pdfIsSavedOrExportedWithApplePreview()) {
             throw new UgyldigOpplastingTypeException(
                     "PDF kan ikke være lagret med Apple Preview.", null,
-                    "vedlegg.opplasting.feil.pdf.applepreview");
+                    "opplasting.feilmelding.pdf.applepreview");
         }
     }
 
@@ -132,7 +138,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         Long faktumId = repository.lagreFaktum(soknadId, faktum);
         repository.settSistLagretTidspunkt(soknadId);
         //Setter delstegstatus dersom et faktum blir lagret, med mindre det er epost. Bør gjøres mer elegant, litt quickfix
-        if (!"epost".equals(faktum.getKey())) {
+        if (!Personalia.EPOST_KEY.equals(faktum.getKey())) {
             repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
         }
         Faktum resultat = repository.hentFaktum(soknadId, faktumId);
@@ -152,7 +158,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         List<Vedlegg> vedleggliste = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
 
         for (Vedlegg vedlegg : vedleggliste) {
-            vedleggRepository.slettVedleggOgData(soknadId, vedlegg.getFaktumId(), vedlegg.getskjemaNummer());
+            vedleggRepository.slettVedleggOgData(soknadId, vedlegg.getFaktumId(), vedlegg.getSkjemaNummer());
         }
         repository.slettBrukerFaktum(soknadId, faktumId);
         repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
@@ -306,7 +312,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                         .medVedleggId(null)
                         .medSoknadId(vedlegg.getSoknadId())
                         .medFaktumId(vedlegg.getFaktumId())
-                        .medSkjemaNummer(vedlegg.getskjemaNummer())
+                        .medSkjemaNummer(vedlegg.getSkjemaNummer())
                         .medNavn(vedlegg.getNavn())
                         .medStorrelse((long) bytes.length)
                         .medAntallSider(1)
@@ -332,7 +338,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                             .medVedleggId(null)
                             .medSoknadId(vedlegg.getSoknadId())
                             .medFaktumId(vedlegg.getFaktumId())
-                            .medSkjemaNummer(vedlegg.getskjemaNummer())
+                            .medSkjemaNummer(vedlegg.getSkjemaNummer())
                             .medNavn(vedlegg.getNavn())
                             .medStorrelse((long) baos.size())
                             .medAntallSider(1)
@@ -401,7 +407,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         List<Vedlegg> vedleggUnderBehandling = vedleggRepository
                 .hentVedleggUnderBehandling(soknadId,
                         forventning.getFaktumId(),
-                        forventning.getskjemaNummer());
+                        forventning.getSkjemaNummer());
         List<byte[]> bytes = new ArrayList<>();
         for (Vedlegg vedlegg : vedleggUnderBehandling) {
             InputStream inputStream = vedleggRepository.hentVedleggStream(
@@ -422,7 +428,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 forventning.getFillagerReferanse(), soknad.getAktoerId(),
                 new ByteArrayInputStream(doc));
         vedleggRepository.slettVedleggUnderBehandling(soknadId,
-                forventning.getFaktumId(), forventning.getskjemaNummer());
+                forventning.getFaktumId(), forventning.getSkjemaNummer());
         vedleggRepository.lagreVedleggMedData(soknadId, vedleggId, forventning);
         return vedleggId;
     }
@@ -460,15 +466,12 @@ public class SoknadService implements SendSoknadService, VedleggService {
             vedlegg = new Vedlegg(faktum.getSoknadId(), soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null, soknadVedlegg.getSkjemaNummer(), Vedlegg.Status.VedleggKreves);
             vedlegg.setVedleggId(vedleggRepository.opprettVedlegg(vedlegg, null));
         }
+        vedlegg.oppdatertInnsendtStatus();
 
         if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {
             vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
-        }
-
-        if (vedlegg.getStorrelse() > 0) {
-            vedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
-        } else {
-            vedlegg.setInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+        } else if(soknadVedlegg.harOversetting()){
+            vedlegg.setNavn(navMessageSource.getMessage(soknadVedlegg.getOversetting().replace("${key}", faktum.getKey()), new Object[0], new Locale("nb", "NO")));
         }
         vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
     }
@@ -502,7 +505,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     private void medKodeverk(Vedlegg vedlegg) {
         try {
-            Map<Kodeverk.Nokkel, String> koder = kodeverk.getKoder(vedlegg.getskjemaNummer());
+            Map<Kodeverk.Nokkel, String> koder = kodeverk.getKoder(vedlegg.getSkjemaNummer());
             for (Entry<Nokkel, String> nokkelEntry : koder.entrySet()) {
                 if (nokkelEntry.getKey().toString().contains("URL")) {
                     vedlegg.leggTilURL(nokkelEntry.getKey().toString(), koder.get(nokkelEntry.getKey()));
