@@ -5,6 +5,9 @@ angular.module('sendsoknad')
     .value('cms', {})
     .constant('validertKlasse', 'validert')
     .run(['$http', '$templateCache', '$rootScope', 'data', '$location', 'sjekkUtslagskriterier', function ($http, $templateCache, $rootScope, data, $location, sjekkUtslagskriterier) {
+        $rootScope.app = {
+            laster: true
+        };
         $('#hoykontrast a, .skriftstorrelse a').attr('href', 'javascript:void(0)');
 
         $rootScope.$on('$routeChangeSuccess', function(event, next, current) {
@@ -63,7 +66,7 @@ angular.module('sendsoknad')
             return data.soknad.delstegStatus === "VEDLEGG_VALIDERT";
         }
     }])
-    .factory('InformasjonsSideResolver', ['data', 'cms', '$resource', '$q', function (data, cms, $resource, $q) {
+    .factory('InformasjonsSideResolver', ['$rootScope', 'data', 'cms', '$resource', '$q', '$timeout', function ($rootScope, data, cms, $resource, $q, $timeout) {
         var promiseArray = [];
 
         var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
@@ -84,7 +87,6 @@ angular.module('sendsoknad')
         );
 
         var behandlingId = getBehandlingIdFromUrl();
-
         if(erSoknadStartet()) {
             var soknadDeferer = $q.defer();
             var soknad = $resource('/sendsoknad/rest/soknad/behandling/:behandlingId').get(
@@ -105,11 +107,25 @@ angular.module('sendsoknad')
             promiseArray.push(soknadDeferer.promise);
         }
 
+        var lasteindikatorDefer = $q.defer();
+
+        // Passer på at laste-indikatoren vises i minimum 2 sekunder, for å unngå at den bare "blinker"
+        $timeout(function() {
+            lasteindikatorDefer.resolve();
+        }, 2000);
+
         promiseArray.push(tekster.$promise);
         promiseArray.push(utslagskriterier.$promise);
         promiseArray.push(config.$promise);
+        promiseArray.push(lasteindikatorDefer.promise);
 
-        return $q.all(promiseArray);
+        var resolve = $q.all(promiseArray)
+
+        resolve.then(function() {
+            $rootScope.app.laster = false;
+        });
+
+        return resolve;
     }])
 
     .factory('BehandlingSideResolver', ['$resource', '$q', '$route' , function ($resource, $q, $route) {
@@ -129,7 +145,7 @@ angular.module('sendsoknad')
         return $q.all(promiseArray);
     }])
 
-    .factory('HentSoknadService', ['$rootScope', 'data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', '$http', '$location', function ($scope, data, cms, $resource, $q, $route, soknadService, landService, Faktum, $http, $location) {
+    .factory('HentSoknadService', ['$rootScope', 'data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', '$http', '$timeout', function ($rootScope, data, cms, $resource, $q, $route, soknadService, landService, Faktum, $http, $timeout) {
         var promiseArray = [];
         
         var soknadOppsettDefer = $q.defer();
@@ -173,8 +189,8 @@ angular.module('sendsoknad')
                         };
 
                         data.slettFaktum = function(faktumData) {
-                            $scope.faktumSomSkalSlettes = new Faktum(faktumData);
-                            $scope.faktumSomSkalSlettes.$delete({soknadId: faktumData.soknadId}).then(function () {
+                            $rootScope.faktumSomSkalSlettes = new Faktum(faktumData);
+                            $rootScope.faktumSomSkalSlettes.$delete({soknadId: faktumData.soknadId}).then(function () {
                             });
 
                             data.fakta.forEach(function (item, index) {
@@ -216,6 +232,21 @@ angular.module('sendsoknad')
                 data.land = result;
             }
         );
-        promiseArray.push(soknadOppsettDefer.promise, soknadDeferer.promise, faktaDefer.promise, land.$promise, tekster.$promise, config.$promise);
-        return $q.all(promiseArray);
+
+        var lasteindikatorDefer = $q.defer();
+
+        // Passer på at laste-indikatoren vises i minimum 2 sekunder, for å unngå at den bare "blinker"
+        $timeout(function() {
+            lasteindikatorDefer.resolve();
+        }, 2000);
+
+        promiseArray.push(soknadOppsettDefer.promise, soknadDeferer.promise, faktaDefer.promise, land.$promise, tekster.$promise, config.$promise, lasteindikatorDefer.promise);
+
+        var resolve = $q.all(promiseArray);
+
+        resolve.then(function() {
+            $rootScope.app.laster = false;
+        });
+
+        return resolve;
     }]);
