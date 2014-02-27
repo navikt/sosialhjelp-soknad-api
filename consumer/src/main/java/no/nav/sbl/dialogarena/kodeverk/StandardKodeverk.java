@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.kodeverk;
 
+import no.nav.modig.common.MDCOperations;
 import no.nav.modig.core.exception.SystemException;
 import no.nav.modig.lang.option.Optional;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.HentKodeverkHentKodeverkKodeverkIkkeFunnet;
@@ -100,15 +101,16 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     @Override
-//    @Scheduled(cron = "0 15 04 * * *")
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 15 04 * * *")
     public void lastInnNyeKodeverk() {
-        logger.warn("Laster inn nye kodeverk");
+        MDCOperations.putToMDC(MDCOperations.MDC_CALL_ID, MDCOperations.generateCallId());
         Map<String, XMLEnkeltKodeverk> oppdatertKodeverk = new HashMap<>();
         for (String kodeverksnavn : ALLE_KODEVERK) {
+
             XMLEnkeltKodeverk enkeltkodeverk = hentKodeverk(kodeverksnavn);
+            List<XMLKode> gyldige = getGyldigeKodeverk(enkeltkodeverk);
             enkeltkodeverk.getKode().clear();
-            enkeltkodeverk.getKode().addAll(getGyldigeKodeverk(enkeltkodeverk));
+            enkeltkodeverk.getKode().addAll(gyldige);
             oppdatertKodeverk.put(kodeverksnavn, enkeltkodeverk);
         }
         this.kodeverk.clear();
@@ -116,8 +118,7 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     private List<XMLKode> getGyldigeKodeverk(XMLEnkeltKodeverk enkeltkodeverk) {
-        logger.warn("Sjekker gyldighetsperioden for  " + enkeltkodeverk.getNavn() + enkeltkodeverk.getType());
-        return on(enkeltkodeverk.getKode()).filter(where(GYLDIGHETSPERIODER, exists(periodeMed(now())))).collect();
+          return on(enkeltkodeverk.getKode()).filter(where(GYLDIGHETSPERIODER, exists(periodeMed(now())))).collect();
     }
 
     private XMLEnkeltKodeverk kodeverkMedNavn(String kodeverknavn) {
@@ -210,7 +211,6 @@ public class StandardKodeverk implements Kodeverk {
         return new Predicate<XMLPeriode>() {
             @Override
             public boolean evaluate(XMLPeriode periode) {
-                logger.warn("Gyldighetsperioden er fra " + periode.getFom() + " og til "  + periode.getTom());
                 return atTime.isAfter(periode.getFom()) && atTime.isBefore(periode.getTom());
             }
         };
