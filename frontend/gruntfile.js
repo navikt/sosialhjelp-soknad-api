@@ -9,7 +9,7 @@ module.exports = function (grunt) {
                     'js/app/**/*.html',
                     'js/common/**/*.html'
                 ],
-                dest: 'js/app/templates.js'
+                dest: 'target/classes/META-INF/resources/js/app/templates.js'
             }
         },
 
@@ -20,7 +20,7 @@ module.exports = function (grunt) {
                 options: {
                     beautify: true,
                     relative: false,
-                    prefix: '../dev/',
+                    prefix: '../',
                     scripts: {
                         angular: [
                             'js/lib/angular/angular.js',
@@ -107,7 +107,8 @@ module.exports = function (grunt) {
                     'js/lib/jquery/jquery.fileupload-validate.js',
                     'js/lib/jquery/jquery.fileupload-angular.js',
                     'js/lib/*.js',
-                    'js/app/**/*.js',
+                    'js/app/**/!(templates).js',
+                    'target/classes/META-INF/resources/js/app/templates.js',
                     'js/common/**/*.js'
 				],
 				dest  : 'target/classes/META-INF/resources/js/built/built<%= grunt.template.today("yyyymmdd") %>.js',
@@ -141,7 +142,16 @@ module.exports = function (grunt) {
                     'views/dagpenger-singlepage.html'
                 ],
                 tasks: ['html2js', 'htmlbuild:dev']
-			}
+			},
+            testHtml: {
+                files  : [
+                    'js/app/**/*.html',
+                    'js/common/**/*.html',
+                    'views/templates/**/*.html',
+                    'views/dagpenger-singlepage.html'
+                ],
+                tasks: ['html2js', 'karma:local']
+            }
 		},
 		jshint: {
 			files  : ['gruntfile.js', 'js/app/**/*.js', 'js/common/**/*.js', 'test/**/*.js'],
@@ -163,7 +173,11 @@ module.exports = function (grunt) {
 				configFile: 'test/karma/karma.conf.js',
                 browsers: ['PhantomJS'],
                 singleRun: true
-			}
+			},
+            local: {
+                configFile: 'test/karma/karma.conf.js',
+                singleRun: true
+            }
 		},
 		maven: {
 			warName: '<%= pkg.name %>-frontend.war',
@@ -191,8 +205,7 @@ module.exports = function (grunt) {
 
 	grunt.option('force', true);
 
-	grunt.registerTask('default', ['jshint', 'html2js', 'htmlbuild:dev', 'watch']);
-    grunt.registerTask('test', ['jshint', 'html2js', 'karma:unit']);
+	grunt.registerTask('default', ['jshint', 'htmlbuild:dev', 'watch']);
     grunt.registerTask('hint', ['jshint', 'watch']);
     grunt.registerTask('maven', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev']);
     grunt.registerTask('maven-test', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev', 'htmlbuild:test']);
