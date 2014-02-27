@@ -31,19 +31,6 @@ angular.module('nav.utdanning', [])
 			}
 		};
 
-		$scope.hvisIkke = function (faktumKey) {
-			return sjekkOmGittEgenskapTilObjektErFalse(data.finnFaktum(faktumKey));
-		};
-
-		$scope.validateTilFraDato = function (utdanning) {
-			if (utdanning && (utdanning.varighetTil <= utdanning.varighetFra)) {
-				utdanning.varighetTil = '';
-				$scope.utdanningDatoError = true;
-			} else {
-				$scope.utdanningDatoError = false;
-			}
-		};
-
 		function erCheckboxerAvhuket(checkboxNokler) {
 			var minstEnAvhuket = false;
 			var fakta = {};
@@ -81,7 +68,7 @@ angular.module('nav.utdanning', [])
 		}
 
 		//kjøres hver gang det skjer en endring på checkboksene (gjelder ikke den siste)
-		$scope.endreUtdanning = function (form) {
+		$scope.endreUtdanning = function () {
 			// Sjekker om en utdanning er huket av (inkluderer IKKE siste checkboksen)
 			var utdanningNokler = nokler.slice(0, nokler.length - 1);
 			var harIkkeValgtUtdanning = !erCheckboxerAvhuket(utdanningNokler);
@@ -101,7 +88,7 @@ angular.module('nav.utdanning', [])
 		};
 
 		//      kjøres hver gang det skjer en endring på 'utdanningAnnet'-checkboksen
-		$scope.endreUtdannelseAnnet = function (form) {
+		$scope.endreUtdannelseAnnet = function () {
 			// Sjekker om en utdanninger huket av,  fjerner isåfall alle som er huket av (inkluderer IKKE siste checkboksen)
 			var utdanningNokler = nokler.slice(0, nokler.length - 1);
 			fjernAvhuking(utdanningNokler);

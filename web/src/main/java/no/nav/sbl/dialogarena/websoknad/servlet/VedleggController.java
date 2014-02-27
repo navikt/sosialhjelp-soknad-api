@@ -1,21 +1,15 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import no.nav.sbl.dialogarena.soknadinnsending.RestFeil;
 import no.nav.sbl.dialogarena.soknadinnsending.VedleggOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +25,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -42,10 +35,8 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
  * Controller klasse som brukes til å laste opp filer fra frontend.
  */
 @Controller()
-@ControllerAdvice()
 @RequestMapping("/soknad/{soknadId}/vedlegg")
 public class VedleggController {
-    private static final Logger LOG = LoggerFactory.getLogger(VedleggController.class);
     @Inject
     private VedleggService vedleggService;
 
@@ -114,58 +105,37 @@ public class VedleggController {
         return vedleggService.lagForhandsvisning(soknadId, vedleggId, side);
     }
 
-    @ExceptionHandler(UgyldigOpplastingTypeException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-    public RestFeil handterFeilType(UgyldigOpplastingTypeException ex) {
-        LOG.warn("Feilet opplasting med: " + ex, ex);
-        return new RestFeil(ex.getId());
-    }
-
-    @ExceptionHandler(OpplastingException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    public RestFeil handterVedleggException(OpplastingException ex) {
-        LOG.warn("Feilet opplasting med: " + ex, ex);
-        return new RestFeil(ex.getId());
-    }
 
     @RequestMapping(value = "/{vedleggId}/opplasting", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
     @ResponseBody()
     @ResponseStatus(HttpStatus.CREATED)
     @SjekkTilgangTilSoknad(sjekkXsrf = false)
-    public Callable<VedleggOpplasting> lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestParam("X-XSRF-TOKEN") final String xsrfToken, @RequestParam("files[]") final List<MultipartFile> files) {
+    public VedleggOpplasting lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestParam("X-XSRF-TOKEN") final String xsrfToken, @RequestParam("files[]") final List<MultipartFile> files) {
         XsrfGenerator.sjekkXsrfToken(xsrfToken, soknadId);
-        return new Callable<VedleggOpplasting>() {
+        Vedlegg forventning = vedleggService.hentVedlegg(soknadId, vedleggId, false);
 
-            @Override
-            public VedleggOpplasting call() throws Exception {
-                Vedlegg forventning = vedleggService.hentVedlegg(soknadId, vedleggId, false);
+        List<Vedlegg> res = new ArrayList<>();
+        for (MultipartFile file : files) {
+            byte[] in = getByteArray(file);
+            Vedlegg vedlegg = new Vedlegg()
+                    .medVedleggId(null)
+                    .medSoknadId(soknadId)
+                    .medFaktumId(forventning.getFaktumId())
+                    .medSkjemaNummer(forventning.getSkjemaNummer())
+                    .medNavn(forventning.getNavn())
+                    .medStorrelse(file.getSize())
+                    .medAntallSider(1)
+                    .medFillagerReferanse(null)
+                    .medData(in)
+                    .medOpprettetDato(forventning.getOpprettetDato())
+                    .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
 
-                List<Vedlegg> res = new ArrayList<>();
-                for (MultipartFile file : files) {
-                    byte[] in = getByteArray(file);
-                    Vedlegg vedlegg = new Vedlegg()
-                            .medVedleggId(null)
-                            .medSoknadId(soknadId)
-                            .medFaktumId(forventning.getFaktumId())
-                            .medSkjemaNummer(forventning.getskjemaNummer())
-                            .medNavn(forventning.getNavn())
-                            .medStorrelse(file.getSize())
-                            .medAntallSider(1)
-                            .medFillagerReferanse(null)
-                            .medData(in)
-                            .medOpprettetDato(forventning.getOpprettetDato())
-                            .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
-
-                    List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, new ByteArrayInputStream(in));
-                    for (Long id : ids) {
-                        res.add(vedleggService.hentVedlegg(soknadId, id, false));
-                    }
-                }
-                return new VedleggOpplasting(res);
+            List<Long> ids = vedleggService.splitOgLagreVedlegg(vedlegg, new ByteArrayInputStream(in));
+            for (Long id : ids) {
+                res.add(vedleggService.hentVedlegg(soknadId, id, false));
             }
-        };
+        }
+        return new VedleggOpplasting(res);
     }
 
     @RequestMapping(value = "/{vedleggId}/underBehandling", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
@@ -173,7 +143,7 @@ public class VedleggController {
     @SjekkTilgangTilSoknad
     public List<Vedlegg> hentVedleggUnderBehandling(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
         Vedlegg forventning = vedleggService.hentVedlegg(soknadId, vedleggId, false);
-        return vedleggService.hentVedleggUnderBehandling(soknadId, forventning.getFaktumId(), forventning.getskjemaNummer());
+        return vedleggService.hentVedleggUnderBehandling(soknadId, forventning.getFaktumId(), forventning.getSkjemaNummer());
     }
 
     @RequestMapping(value = "/{vedleggId}/generer", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)

@@ -1,6 +1,6 @@
 <div class="varighet">
     <span data-ng-bind="af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy' | norskdato"></span>
-    <span data-ng-if="af.sluttaarsak.properties.datotil" data-cmstekster="dato.til"></span>
+    <span data-ng-if="af.sluttaarsak.properties.datotil">{{ 'dato.til' | cmstekst }}</span>
     <span data-ng-if="af.sluttaarsak.properties.datotil" data-ng-bind="af.sluttaarsak.properties.datotil | date:'dd.MM.yyyy' | norskdato"></span>
 </div>
 
@@ -9,22 +9,22 @@
         <p data-ng-bind="af.sluttaarsak.properties.type"></p>
     </li>
     <li>
-        <p data-cmstekster="arbeidsforhold.arbeidsgiver.permittert.varighet"> </p>
+        <p>{{ 'arbeidsforhold.arbeidsgiver.permittert.varighet' | cmstekst }}</p>
         <span data-ng-bind="af.sluttaarsak.properties.permiteringsperiodedatofra | date:'dd.MM.yyyy'"></span>
         <span data-ng-if="af.sluttaarsak.properties.permiteringsperiodedatotil"> TIL </span>
         <span data-ng-if="af.sluttaarsak.properties.permiteringsperiodedatotil" data-ng-bind="af.sluttaarsak.properties.permiteringsperiodedatotil | date:'dd.MM.yyyy'"></span>
     </li>
     <li>
-        <p data-cmstekster="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet"> </p>
+        <p>{{ 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet' | cmstekst }}</p>
         <span data-ng-bind="af.sluttaarsak.properties.lonnspliktigperiodedatofra | date:'dd.MM.yyyy'"></span>
         <span data-ng-if="af.sluttaarsak.properties.lonnspliktigperiodedatotil"> TIL </span>
         <span data-ng-if="af.sluttaarsak.properties.lonnspliktigperiodedatotil" data-ng-bind="af.sluttaarsak.properties.lonnspliktigperiodedatotil | date:'dd.MM.yyyy'"></span>
     </li>
     <li>
-        <span data-cmstekster="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad"></span>
+        <span>{{ 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad' | cmstekst }}</span>
         <p>
             <span data-ng-bind="af.sluttaarsak.properties.permitteringProsent"></span>
-            <span class="prosent" data-cmstekster="arbeidsforhold.permittert.prosent"></span>
+            <span class="prosent">{{ 'arbeidsforhold.permittert.prosent' | cmstekst }}</span>
         </p>
     </li>
 </ul>
@@ -33,16 +33,16 @@
 <div data-vedlegginfoboks>
     <ul>
         <li>
-            <p data-cmstekster="arbeidsforhold.sluttaarsak.vedlegg.liste.1"></p>
+            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</p>
         </li>
         <li>
-            <p data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2"></p>
-            <a href="{{permiteringUrl}}" data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2.lenketekst">
+            <p>{{ 'arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2' | cmstekst }}</p>
+            <a href="{{permiteringUrl}}">
+                {{ 'arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2.lenketekst' | cmstekst }}
             </a>
         </li>
         <li>
-            <p data-cmstekster="arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.3"></p>
+            <p>{{ 'arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.3' | cmstekst }}</p>
         </li>
     </ul>
-    </p>
 </div>

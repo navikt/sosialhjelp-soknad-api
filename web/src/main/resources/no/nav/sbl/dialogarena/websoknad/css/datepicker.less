@@ -117,8 +117,12 @@
 
 @media only screen and (max-width: 767px) {
     .datepicker-intervall {
-        .datepicker:last-child {
-            margin-left: 0px;
+        .datepicker {
+            display: block;
+            &:last-child {
+                margin-left: 0px;
+                margin-top: 30px;
+            }
         }
     }
 }

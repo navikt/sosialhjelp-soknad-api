@@ -21,12 +21,12 @@
     <name>Dialogarena - Send Søknad</name>
     <description>Innsending av elektronisk søknad.</description>
     <artifactId>sendsoknad</artifactId>
-    <version>1.0.8-SNAPSHOT</version>
+    <version>1.0.10-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <modig.frontend>1.1.14</modig.frontend>
+        <modig.frontend>1.1.21</modig.frontend>
         <wicket.version>6.12.0</wicket.version>
         <spring.version>3.2.5.RELEASE</spring.version>
         <cxf.version>2.7.7</cxf.version>
@@ -34,7 +34,7 @@
         <modig-security.version>1.0.19</modig-security.version>
         <sendsoknad.tjenestespec.version>0.0.14</sendsoknad.tjenestespec.version>
         <fillager.tjenestespec.version>0.0.3</fillager.tjenestespec.version>
-        <sonar.exclusions>no/nav/sbl/dialogarena/websoknad/config/**</sonar.exclusions>
+        <sonar.exclusions>**/*Config*</sonar.exclusions>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <henvendelse.tjenestespesifikasjon.version.1>2.0.0</henvendelse.tjenestespesifikasjon.version.1>
@@ -130,12 +130,7 @@
                 <version>1.0.4</version>
                 <classifier>jaxws</classifier>
             </dependency>
-            <dependency>
-                <groupId>no.nav.tjenester.fim</groupId>
-                <artifactId>nav-fim-aktoer-v1-tjenestespesifikasjon</artifactId>
-                <version>1.0.0</version>
-                <classifier>jaxws</classifier>
-            </dependency>
+
 
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
@@ -217,12 +212,12 @@
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-detect</artifactId>
-                <version>2.2.2-SNAPSHOT</version>
+                <version>2.2.2</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>common-pdf</artifactId>
-                <version>2.0.2-SNAPSHOT</version>
+                <version>2.0.2</version>
                 <exclusions>
                     <exclusion>
                         <groupId>commons-logging</groupId>
@@ -881,11 +876,9 @@
                         <propertiesFilesRoot>${project.basedir}/web/src/main/resources/content</propertiesFilesRoot>
                         <propertiesFiler>
                             <nb>innholdstekster_nb.properties</nb>
-                            <!--<nb>sbl-webkomponenter_nb.properties</nb>-->
                         </propertiesFiler>
                         <menyPunktPaths>
                             <nb>/site/2/systemsider/Modernisering/sendsoknad/nb/tekster</nb>
-                            <!--<nn>/site/2/systemsider/Modernisering/sbl-webkomponenter/nb/tekster</nn>-->
                         </menyPunktPaths>
                     </configuration>
                 </plugin>
@@ -971,7 +964,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore></ignore>
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
@@ -1002,6 +995,11 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>*Config.class</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>

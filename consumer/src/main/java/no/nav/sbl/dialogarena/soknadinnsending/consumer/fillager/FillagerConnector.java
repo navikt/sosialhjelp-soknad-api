@@ -25,7 +25,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Component
 public class FillagerConnector {
 
-    private static final Logger LOG = getLogger(FillagerConnector.class);
+    private static final Logger logger = getLogger(FillagerConnector.class);
     @Inject
     @Named("fillagerService")
     private FilLagerPortType portType;
@@ -34,21 +34,21 @@ public class FillagerConnector {
     private FilLagerPortType portTypeSystemSecurity;
 
     public void lagreFil(String behandlingsId, String uid, String fnr, InputStream fil) {
-        LOG.info("Skal lagre soknad til henvendelse. UUID: " + uid + ". Behandlingsid: " + behandlingsId);
+        logger.info("Skal lagre soknad til henvendelse. UUID: " + uid + ". Behandlingsid: " + behandlingsId);
         try {
 
             FilLagerPortType filLagerPortType = portType;
             if (getSubjectHandler().getIdentType() == null) {
                 filLagerPortType = portTypeSystemSecurity;
-                LOG.debug("Bruker systembruker for kall");
+                logger.debug("Bruker systembruker for kall");
             }
             filLagerPortType.lagre(behandlingsId, uid, fnr, new DataHandler(new ByteArrayDataSource(fil, "application/octet-stream")));
-            LOG.info("Søknad lagret til henvendelse");
+            logger.info("Søknad lagret til henvendelse");
         } catch (IOException e) {
-            LOG.error("Fikk ikke lagret søknad til henvendelse");
+            logger.error("Fikk ikke lagret søknad til henvendelse");
             throw new ApplicationException("Kunne ikke lagre fil: " + e + ". BehandlingsID: " + behandlingsId, e, "exception.system.baksystem");
         } catch (SOAPFaultException ws) {
-            LOG.error("Fikk ikke lagret søknad til henvendelse");
+            logger.error("Fikk ikke lagret søknad til henvendelse");
             throw new SystemException("Feil i kommunikasjon med fillager: " + ws + ". BehandlingsID: " + behandlingsId, ws, "exception.system.baksystem");
         }
     }

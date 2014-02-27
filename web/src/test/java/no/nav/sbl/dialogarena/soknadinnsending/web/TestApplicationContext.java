@@ -94,14 +94,5 @@ public class TestApplicationContext {
         }
     }
 
-    @Bean
-    public Object aktorServiceCreator() {
-
-        if (mockTps) {
-            return new MockConsumerConfig.AktorWsConfig();
-        } else {
-            return new ConsumerConfig.AktorWsConfig();
-        }
-    }
 
 }

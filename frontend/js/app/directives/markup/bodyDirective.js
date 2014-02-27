@@ -2,7 +2,7 @@ angular.module('nav.markup.bodydirective', [])
 /**
  * Legges på toppnoden til angular data-ng-view. Sjekker om den finner .modalboks, dersom den finnes settes custom stylesheet.
  **/
-	.directive('modalsideHelper', ['$timeout', function ($timeout) {
+	.directive('stylingHelper', ['$timeout', function ($timeout) {
 		return function (scope, element) {
 			$timeout(function () {
 				if (element.find('.modalBoks').length > 0) {
@@ -10,6 +10,12 @@ angular.module('nav.markup.bodydirective', [])
 				} else {
 					$('body').removeClass('modalside');
 				}
+
+                if (element.find('.hvit-side').length > 0) {
+                    $('.omslag').addClass('hvit');
+                }  else {
+                    $('.omslag').removeClass('hvit');
+                }
 			});
 		};
 	}])

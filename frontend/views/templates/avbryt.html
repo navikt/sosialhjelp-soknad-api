@@ -8,22 +8,24 @@
                 </div>
 
                 <div ng-show="krevBekreftelse == true">
-                    <h1 class="stor-ikon-slett-strek" data-cmstekster="slett.tittel"></h1>
+                    <h1 class="stor-ikon-slett-strek">{{ 'slett.tittel' | cmstekst }}</h1>
 
-                    <p class="info" data-cmstekster="slett.informasjon"></p>
+                    <p class="info">{{ 'slett.informasjon' | cmstekst }}</p>
                 </div>
 
                 <div class="slett-soknad-stor">
                     <div data-ng-show="krevBekreftelse == true">
 
                         <form novalidate>
-                            <input type="button" class="knapp-advarsel" data-ng-click="submitForm()"
-                                   data-cmstekster="avbryt.slett"
+                            <input type="button"
+                                   class="knapp-advarsel"
+                                   value="{{ 'avbryt.slett' | cmstekst }}"
+                                   data-ng-click="submitForm()"
                                    data-fremdriftsindikator>
                         </form>
 
                         <div>
-                            <a href="#/soknad" data-cmstekster="slett.tilbake"></a>
+                            <a href="#/soknad">{{ 'slett.tilbake' | cmstekst }}</a>
                         </div>
                     </div>
                 </div>

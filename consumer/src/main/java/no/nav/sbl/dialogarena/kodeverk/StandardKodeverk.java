@@ -53,7 +53,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public class StandardKodeverk implements Kodeverk {
 
-    private static final Logger LOG = getLogger(StandardKodeverk.class);
+    private static final Logger logger = getLogger(StandardKodeverk.class);
 
     private final KodeverkPortType webservice;
     private final String spraak;
@@ -73,9 +73,9 @@ public class StandardKodeverk implements Kodeverk {
         this.dumpDirectory = dumpDirectory;
         this.kodeverk = new HashMap<>();
         if (dumpDirectory.isSome()) {
-            LOG.info("Benytter katalog {} til å ta vare på kodeverk, i tilfelle tjeneste går ned.", dumpDirectory);
+            logger.info("Benytter katalog {} til å ta vare på kodeverk, i tilfelle tjeneste går ned.", dumpDirectory);
         } else {
-            LOG.info("Kodeverk-failback er ikke aktivert.");
+            logger.info("Kodeverk-failback er ikke aktivert.");
         }
     }
 
@@ -100,8 +100,10 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     @Override
-    @Scheduled(cron = "0 15 04 * * *")
+//    @Scheduled(cron = "0 15 04 * * *")
+    @Scheduled(cron = "0 * * * * *")
     public void lastInnNyeKodeverk() {
+        logger.warn("Laster inn nye kodeverk");
         Map<String, XMLEnkeltKodeverk> oppdatertKodeverk = new HashMap<>();
         for (String kodeverksnavn : ALLE_KODEVERK) {
             XMLEnkeltKodeverk enkeltkodeverk = hentKodeverk(kodeverksnavn);
@@ -114,6 +116,7 @@ public class StandardKodeverk implements Kodeverk {
     }
 
     private List<XMLKode> getGyldigeKodeverk(XMLEnkeltKodeverk enkeltkodeverk) {
+        logger.warn("Sjekker gyldighetsperioden for  " + enkeltkodeverk.getNavn() + enkeltkodeverk.getType());
         return on(enkeltkodeverk.getKode()).filter(where(GYLDIGHETSPERIODER, exists(periodeMed(now())))).collect();
     }
 
@@ -162,14 +165,14 @@ public class StandardKodeverk implements Kodeverk {
         if (webserviceException.isSome()) {
             RuntimeException kodeverkfeil = webserviceException.get();
             if (kodeverk.containsKey(navn)) {
-                LOG.warn("Kodeverktjeneste feilet ({}) for {}. Benytter eksisterende kodeverk i minne.", kodeverkfeil.getMessage(), navn);
+                logger.warn("Kodeverktjeneste feilet ({}) for {}. Benytter eksisterende kodeverk i minne.", kodeverkfeil.getMessage(), navn);
                 return kodeverk.get(navn);
             }
-            LOG.warn("Kodeverktjeneste feilet ({})! Forsøker fallback", kodeverkfeil.getMessage());
+            logger.warn("Kodeverktjeneste feilet ({})! Forsøker fallback", kodeverkfeil.getMessage());
             try {
                 kodeverket = (XMLEnkeltKodeverk) readFromDump(navn);
             } catch (RuntimeException dumpException) {
-                LOG.warn("Fallback feilet ({}), avbryter.", dumpException.getMessage());
+                logger.warn("Fallback feilet ({}), avbryter.", dumpException.getMessage());
                 kodeverkfeil.addSuppressed(dumpException);
                 throw kodeverkfeil;
             }
@@ -207,6 +210,7 @@ public class StandardKodeverk implements Kodeverk {
         return new Predicate<XMLPeriode>() {
             @Override
             public boolean evaluate(XMLPeriode periode) {
+                logger.warn("Gyldighetsperioden er fra " + periode.getFom() + " og til "  + periode.getTom());
                 return atTime.isAfter(periode.getFom()) && atTime.isBefore(periode.getTom());
             }
         };
@@ -229,7 +233,7 @@ public class StandardKodeverk implements Kodeverk {
     @SuppressWarnings("unchecked")
 	private XMLKodeverk readFromDump(String dumpName) {
         for (File dumpFile : dumpDirectory.map(fileExists(), appendPathname(dumpName + ".xml"))) {
-            LOG.info("Leser dump fra fil '{}'", dumpFile);
+            logger.info("Leser dump fra fil '{}'", dumpFile);
             try {
                 return ((JAXBElement<XMLKodeverk>) JAXB.createUnmarshaller().unmarshal(dumpFile)).getValue();
             } catch (JAXBException e) {
@@ -241,11 +245,11 @@ public class StandardKodeverk implements Kodeverk {
 
     private void dumpIfPossible(String dumpName, XMLKodeverk kodeverket) {
         for (File dumpFile : dumpDirectory.map(makeDirs()).map(appendPathname(dumpName + ".xml"))) {
-            LOG.info("Dumper til filen '{}'", dumpFile);
+            logger.info("Dumper til filen '{}'", dumpFile);
             try (Writer out = new FileWriter(dumpFile)) {
                 JAXB.createMarshaller().marshal(createJAXBElement(dumpName, kodeverket), out);
             } catch (JAXBException | IOException e) {
-                LOG.error("Klarte ikke å dumpe '{}' til fil. {}\n{}", dumpName, e.getMessage(), e);
+                logger.error("Klarte ikke å dumpe '{}' til fil. {}\n{}", dumpName, e.getMessage(), e);
             }
         }
     }

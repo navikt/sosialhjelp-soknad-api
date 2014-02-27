@@ -6,16 +6,27 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.context.MessageSource;
 
 import java.io.IOException;
 
-import static org.mockito.Mockito.mock;
-
+@RunWith(MockitoJUnitRunner.class)
 public class PDFFabrikkTest {
+    @InjectMocks
+    private HandleBarKjoerer handleBarKjoerer;
+
+    @Mock
+    private MessageSource messageSource;
+
+    @Mock
+    private Kodeverk kodeverk;
 
     @Test
     public void skalKunneLagePDF() {
-        Kodeverk kodeverk = mock(Kodeverk.class);
         WebSoknad soknad = new WebSoknad();
         soknad.setSkjemaNummer("NAV-1-1-1");
         soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold" ).medType(FaktumType.BRUKERREGISTRERT));
@@ -24,9 +35,8 @@ public class PDFFabrikkTest {
         soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold4").medType(FaktumType.BRUKERREGISTRERT));
         String html;
         try {
-            html = new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad,
-                    "/html/WebSoknadHtml");
-            byte[] pdfFil = PDFFabrikk.lagPdfFil(html);
+            html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/html/WebSoknadHtml");
+            byte[] pdfFil = new PDFFabrikk().lagPdfFil(html);
             Assert.assertTrue(pdfFil.length > 0);
         } catch (IOException e) {
             Assert.assertTrue(false);

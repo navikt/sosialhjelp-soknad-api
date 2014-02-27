@@ -1,4 +1,3 @@
-<div data-nav-tittel="skjema.tittel"></div>
 <div id="feilside" data-ng-controller="FeilSideCtrl">
     <section class="feil-panel" data-ng-form="epostForm" data-ng-controller="FortsettSenereCtrl" data-novalidate>
         <h1 class="stor-ikon-feil-gra">{{ 'feilmelding' | cmstekst }}</h1>
@@ -20,7 +19,7 @@
                    class="knapp-hoved-liten"
                    value="{{ 'dagpenger.fortsettSenere.epost.send' | cmstekst }}"
                    role="button"
-                   data-ng-click="forsettSenere(epostForm)">
+                   data-ng-click="fortsettSenere(epostForm)">
             <span class="melding"></span>
         </div>
 

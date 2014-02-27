@@ -1,3 +1,5 @@
+@flipp-size: 30px;
+
 .rad, .modalBoks, #informasjonsside {
     input[type='checkbox']:focus:checked + label {
         background: url(../img/check_valgt_tab.svg) 0 0 no-repeat;
@@ -95,9 +97,8 @@ a.accordion-toggle, #vedlegg a.accordion-toggle {
         .flipp {
             cursor: pointer;
             border-color: transparent transparent #800000 transparent;
-
             &:before {
-                border-top: 30px solid #c30000;
+                border-top: @flipp-size solid #c30000;
             }
         }
     }
@@ -107,7 +108,7 @@ a.accordion-toggle, #vedlegg a.accordion-toggle {
             border-color: transparent transparent #800000 transparent;
 
             &:before {
-                border-top: 30px solid #c30000;
+                border-top: @flipp-size solid #c30000;
             }
         }
     }

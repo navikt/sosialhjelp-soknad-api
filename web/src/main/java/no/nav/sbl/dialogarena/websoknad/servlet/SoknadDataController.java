@@ -1,8 +1,8 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import no.nav.modig.core.exception.ApplicationException;
-import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
-import no.nav.sbl.dialogarena.print.HandleBarKjoerer;
+import no.nav.sbl.dialogarena.print.HtmlGenerator;
+import no.nav.sbl.dialogarena.print.HtmlToPdf;
 import no.nav.sbl.dialogarena.print.PDFFabrikk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
@@ -50,7 +50,10 @@ public class SoknadDataController {
     @Inject
     private VedleggService vedleggService;
     @Inject
-    private Kodeverk kodeverk;
+    private HtmlGenerator pdfTemplate;
+
+    private HtmlToPdf pdfGenerator = new PDFFabrikk();
+
 
     @RequestMapping(value = "/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
@@ -92,7 +95,7 @@ public class SoknadDataController {
         }
     }
 
-    @RequestMapping(value = "/delsteg/{soknadId}/{delsteg}", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/delsteg/{soknadId}/{delsteg}", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     @SjekkTilgangTilSoknad
@@ -137,11 +140,11 @@ public class SoknadDataController {
         String oppsummeringMarkup;
         try {
             vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
-            oppsummeringMarkup = new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+            oppsummeringMarkup = pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lage markup av søknad", e);
         }
-        byte[] outputStream = PDFFabrikk.lagPdfFil(oppsummeringMarkup);
+        byte[] outputStream = pdfGenerator.lagPdfFil(oppsummeringMarkup);
         soknadService.sendSoknad(soknadId, outputStream);
     }
 
@@ -163,23 +166,16 @@ public class SoknadDataController {
         String oppsummeringMarkup;
         try {
             vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
-            oppsummeringMarkup = new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+            oppsummeringMarkup = pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lage markup av søknad", e);
         }
-        return PDFFabrikk.lagPdfFil(oppsummeringMarkup);
-    }
-
-    @RequestMapping(value = "/{soknadId}/faktum/", method = RequestMethod.POST)
-    @ResponseBody()
-    @SjekkTilgangTilSoknad
-    public Faktum lagreFaktum(@PathVariable Long soknadId,
-                              @RequestBody Faktum faktum) {
-        return soknadService.lagreSoknadsFelt(soknadId, faktum);
+        return pdfGenerator.lagPdfFil(oppsummeringMarkup);
     }
 
     @RequestMapping(value = "/opprett", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody()
+    @ResponseStatus(HttpStatus.CREATED)
     public Map<String, String> opprettSoknad(@RequestBody StartSoknad soknadType) {
         Map<String, String> result = new HashMap<>();
 
@@ -192,10 +188,9 @@ public class SoknadDataController {
     @RequestMapping(value = "/delete/{soknadId}", method = RequestMethod.POST)
     @ResponseBody()
     @SjekkTilgangTilSoknad
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void slettSoknad(@PathVariable Long soknadId) {
         soknadService.avbrytSoknad(soknadId);
-        // Må legges til i forbindelse med kobling mot henvendelse.
-        // henvendelseConnector.avbrytSoknad("12412412");
     }
 
     @RequestMapping(value = "/oppsummering/{soknadId}", method = RequestMethod.GET, produces = "text/html")
@@ -204,6 +199,6 @@ public class SoknadDataController {
     public String hentOppsummering(@PathVariable Long soknadId) throws IOException {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
         vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
-        return new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+        return pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
     }
 }

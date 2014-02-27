@@ -1,82 +1,85 @@
 package no.nav.sbl.dialogarena.print;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.jknack.handlebars.Handlebars;
-import com.github.jknack.handlebars.Template;
-import com.lowagie.text.DocumentException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.context.MessageSource;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Date;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.Locale;
 
-import static no.nav.sbl.dialogarena.print.helper.JsonTestData.hentWebSoknadHtml;
-import static no.nav.sbl.dialogarena.print.helper.JsonTestData.hentWebSoknadJson;
-import static org.hamcrest.Matchers.contains;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class HandleBarKjoererTest {
+    @InjectMocks
+    private HandleBarKjoerer handleBarKjoerer;
 
-    @Test
-    public void runHandlebars() throws IOException {
-        Handlebars handlebars = new Handlebars();
+    @Mock
+    private MessageSource messageSource;
 
-        Template template = handlebars.compileInline("Hello {{this}}!");
-        String superDev = "SuperDev";
-        String nyTekst = template.apply(superDev);
+    @Mock
+    private Kodeverk kodeverk;
 
-        assertThat(nyTekst, is(equalTo("Hello " + superDev + "!")));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void createHashAndApplyTemplate() throws IOException {
-        String json = hentWebSoknadJson();
-        Kodeverk kodeverk = mock(Kodeverk.class);
-        Map<String, Object> resultat = new ObjectMapper().readValue(json, Map.class);
-        String[] s = {"soknadId", "skjemaNummer", "brukerBehandlingId", "fakta", "status", "aktoerId", "opprettetDato", "delstegStatus"};
-
-        assertThat(resultat.keySet(), contains(s));
-        assertThat((String) resultat.get("skjemaNummer"), is(equalTo("Dagpenger")));
-        assertThat((String) resultat.get("status"), is(equalTo("UNDER_ARBEID")));
-
-        String applied = new HandleBarKjoerer(kodeverk).fyllHtmlStringMedInnhold(hentWebSoknadHtml(), resultat);
-        assertThat(applied, containsString("Dagpenger"));
-        assertThat(applied, containsString("188"));
+    @Before
+    public void setup() {
+        when(messageSource.getMessage(any(String.class), any(Object[].class), any(Locale.class))).thenReturn("mock");
     }
 
     @Test
-    public void createPDFFromJson() throws IOException, DocumentException {
-        Kodeverk kodeverk = mock(Kodeverk.class);
-        WebSoknad soknad = new WebSoknad();
-        soknad.setSkjemaNummer("NAV-1-1-1");
-        soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold" ).medType(FaktumType.BRUKERREGISTRERT));
-        soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold2").medType(FaktumType.BRUKERREGISTRERT));
-        soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold3").medType(FaktumType.BRUKERREGISTRERT));
-        soknad.leggTilFaktum(new Faktum().medSoknadId(1L).medFaktumId(1L).medKey("liste").medValue("testinnhold4").medType(FaktumType.BRUKERREGISTRERT));
-        String html = new HandleBarKjoerer(kodeverk).fyllHtmlMalMedInnhold(soknad, "/html/WebSoknadHtml");
+    public void skalKompilereDagpenger() throws IOException {
+        WebSoknad soknad = new WebSoknad()
+                .medFaktum(new Faktum().medKey("personalia").medProperty("fnr", "15038000000").medProperty("navn", "Test Nordmann").medProperty("alder", "40"))
+                .medFaktum(new Faktum().medKey("arbeidsforhold").medProperty("type", "konkurs").medProperty("navn", "Test").medProperty("datofra", "2010-01-01").medProperty("datoTil", "2013-01-01"))
+                .medFaktum(new Faktum().medKey("barn").medType(SYSTEMREGISTRERT).medProperty("fnr", "01010091736").medProperty("navn", "test barn").medProperty("barnetillegg", "true"))
+                .medFaktum(new Faktum().medKey("barn").medType(BRUKERREGISTRERT).medProperty("fodselsdato", "2013-01-01").medProperty("navn", "test barn").medProperty("barnetillegg", "true"))
+                .medFaktum(new Faktum().medKey("reellarbeidssoker.villigflytte").medValue("true"))
+                .medFaktum(new Faktum().medKey("reellarbeidssoker.villigdeltid").medValue("false"))
+                .medFaktum(new Faktum().medKey("reellarbeidssoker.villigdeltid.maksimalarbeidstid").medValue("20"))
+                .medVedlegg(Arrays.asList(new Vedlegg().medSkjemaNummer("L6").medInnsendingsvalg(Vedlegg.Status.LastetOpp)));
 
-        String baseUrl = "";
-        String pdf = "handlebar.pdf";
-        PDFFabrikk.lagPdfFil(html, baseUrl, pdf);
+        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+        assertThat(html, containsString("15038000000"));
 
-        long start = new Date().getTime();
-        ByteArrayOutputStream ut = new ByteArrayOutputStream();
-        PDFFabrikk.lagPDFOutputStream(html, baseUrl, ut);
-        ut.close();
+    }
 
-        long stopp = new Date().getTime();
-        long diff = stopp - start;
-        Assert.assertTrue(diff <= 2500l);
+    @Test
+    public void skalReprodusereFeil() throws IOException {
+        WebSoknad soknad = new WebSoknad()
+                .medFaktum(new Faktum().medKey("personalia").medProperty("fnr", "15038000000").medProperty("navn", "Test Nordmann").medProperty("alder", "40"))
+                .medFaktum(new Faktum().medKey("arbeidsforhold")
+                        .medProperty("type", "konkurs")
+                        .medProperty("navn", "Test")
+                        .medProperty("datofra", "2010-01-01")
+                        .medProperty("datoTil", "2013-01-01"))
+                .medFaktum(new Faktum().medKey("utdanning").medValue("underUtdanning"))
+                .medFaktum(new Faktum().medKey("utdanning.kveld").medValue("true"))
+                .medFaktum(new Faktum().medKey("utdanning.kveld.progresjonUnder50").medValue("false"))
+                .medFaktum(new Faktum().medKey("utdanning.kveld.navn").medValue("test"))
+                .medFaktum(new Faktum().medKey("utdanning.kveld.PaabegyntUnder6mnd").medValue("true"))
+                .medFaktum(new Faktum().medKey("utdanning.kveld.varighet").medValue(null).medProperty("varighetFra", "2014-02-05"))
+                .medFaktum(new Faktum().medKey("utdanning.kveld.folges").medValue("true"))
+                .medFaktum(new Faktum().medKey("utdanning.kveld.sted").medValue("test"))
+                .medFaktum(new Faktum().medKey("barn").medType(SYSTEMREGISTRERT).medProperty("fnr", "01010091736").medProperty("navn", "test barn").medProperty("barnetillegg", "true"))
+                .medFaktum(new Faktum().medKey("barn").medType(BRUKERREGISTRERT).medProperty("fodselsdato", "2013-01-01").medProperty("navn", "test barn").medProperty("barnetillegg", "true"))
+                .medFaktum(new Faktum().medKey("reellarbeidssoker.villigflytte").medValue("true"))
+                .medFaktum(new Faktum().medKey("reellarbeidssoker.villigdeltid").medValue("false"))
+                .medFaktum(new Faktum().medKey("reellarbeidssoker.villigdeltid.maksimalarbeidstid").medValue("20"))
+                .medVedlegg(Arrays.asList(new Vedlegg().medSkjemaNummer("L6").medInnsendingsvalg(Vedlegg.Status.LastetOpp)));
+        String html = handleBarKjoerer.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+        assertThat(html, containsString("15038000000"));
     }
 }

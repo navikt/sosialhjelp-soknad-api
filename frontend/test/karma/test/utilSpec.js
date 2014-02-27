@@ -1,5 +1,4 @@
 describe('utility funksjoner -', function () {
-
     describe('Array prototype:', function () {
 
         var array, objArray;
@@ -9,6 +8,14 @@ describe('utility funksjoner -', function () {
             objArray = [
                 {a: 1, 2: 'b'}
             ];
+        });
+
+        it('skal returnere indexen til et element dersom det finnes', function() {
+            expect(array.indexOf(2)).toBe(1);
+        });
+
+        it('skal returnere -1 dersom det ikke finnes', function() {
+            expect(array.indexOf(4)).toBe(-1);
         });
 
         it('skal returnere siste element i array', function () {
@@ -21,7 +28,7 @@ describe('utility funksjoner -', function () {
 
         it('skal returnere false når array ikke inneholder spesifisert element', function () {
             expect(array.contains(4)).toEqual(false);
-        });
+        }); 
 
         it('skal returnere at indeksen i arrayet til objektet er 0', function () {
             expect(objArray.indexByValue(1)).toBe(0);
@@ -311,6 +318,21 @@ describe('utility funksjoner -', function () {
 
             expect(erGyldig).toBe(true);
         });
+
+        it('skal returnere true for fremtidig dato', function() {
+            var idag = new Date();
+            var imorgen = new Date(idag.getTime() + 86400000);
+                       
+            var result = erFremtidigDato(imorgen.getFullYear(), imorgen.getMonth()+1, imorgen.getDate());
+            expect(result).toEqual(true);
+        });
+
+        it('skal returnere false for ikke fremtidig dato', function() {
+            var idag = new Date();
+            
+            var result = erFremtidigDato(idag.getFullYear(), idag.getMonth()+1, idag.getDate());
+            expect(result).toBe(false);
+        });
     });
 
     describe('tall med 2 siffer', function () {
@@ -332,6 +354,7 @@ describe('utility funksjoner -', function () {
             expect(konverterTallTilStringMedToSiffer(tall)).toBe("10");
         });
     });
+
 });
 
 

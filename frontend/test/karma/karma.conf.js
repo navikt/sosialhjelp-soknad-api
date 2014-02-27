@@ -31,7 +31,9 @@ module.exports = function (config) {
             '../../js/lib/jquery/jquery.fileupload-process.js',
             '../../js/lib/jquery/jquery.fileupload-validate.js',
             '../../js/lib/jquery/jquery.fileupload-angular.js',
-            'test/*.js'
+            'test/*.js',
+            'test/directives/*.js',
+            'test/controllers/*.js'
         ],
 
         // list of files to exclude
@@ -69,8 +71,8 @@ module.exports = function (config) {
         // - Safari (only Mac)
         // - PhantomJS
         // - IE (only Windows)
-       // browsers: ['Chrome', 'Firefox', 'IE'],
-         browsers: ['PhantomJS'],
+       browsers: ['Chrome', 'Firefox', 'IE'],
+//         browsers: ['PhantomJS'],
 
         //plugins: ['karma-phantomjs-runner', 'karma-jasmine'],
 
@@ -80,7 +82,7 @@ module.exports = function (config) {
 
         // Continuous Integration mode
         // if true, it capture browsers, run tests and exit
-        singleRun: true,
+        singleRun: false,
 
         plugins: [
             'karma-jasmine',

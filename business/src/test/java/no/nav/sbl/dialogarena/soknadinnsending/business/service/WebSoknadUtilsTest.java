@@ -17,6 +17,8 @@ import java.util.Map;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_TYPE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.DAGPENGER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.DAGPENGER_VED_PERMITTERING;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getJournalforendeEnhet;
@@ -34,7 +36,7 @@ public class WebSoknadUtilsTest {
     @Test
     public void harSkjemanummerDagpengerHvisNyesteArbeidsforholdIkkeErPermittering() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
-                WebSoknad soknad = lagSoknad(lagPermittert("2014-1-1"), lagAvskjediget("2014-2-1"));
+        WebSoknad soknad = lagSoknad(lagPermittert("2014-1-1"), lagAvskjediget("2014-2-1"));
         assertEquals(DAGPENGER, getSkjemanummer(soknad));
     }
 
@@ -49,7 +51,7 @@ public class WebSoknadUtilsTest {
     public void harSkjemanummerDagpengerVedPermitteringHvisNyesteArbeidsforholdErRedusertArbeidstid() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
         WebSoknad soknad = lagSoknad(lagRedusertArbeidstid("2014-2-1"), lagAvskjediget("2014-1-1"));
-        assertEquals(DAGPENGER_VED_PERMITTERING, getSkjemanummer(soknad));
+        assertEquals(DAGPENGER, getSkjemanummer(soknad));
     }
 
     @Test
@@ -80,6 +82,25 @@ public class WebSoknadUtilsTest {
     }
 
     @Test
+    public void skalRotueTilEos() {
+        DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
+        WebSoknad soknad = lagSoknad(lagPermittert("2014-1-1"));
+        Personalia personalia = WebSoknadUtils.getPerson(soknad);
+        Adresse utland = lagUtenlandskAdresse();
+        soknad.getFaktaMedKey("personalia").get(0)
+                .medProperty(GJELDENDEADRESSE_KEY, utland.getAdresse())
+                .medProperty(GJELDENDEADRESSE_TYPE_KEY, utland.getAdressetype());
+        personalia.setGjeldendeAdresse(utland);
+        assertEquals("4304", getJournalforendeEnhet(soknad));
+        soknad = lagSoknad(lagAvskjediget("2014-1-1"));
+        soknad.getFaktaMedKey("personalia").get(0)
+                .medProperty(GJELDENDEADRESSE_KEY, utland.getAdresse())
+                .medProperty(GJELDENDEADRESSE_TYPE_KEY, utland.getAdressetype());
+        assertEquals("0000", getJournalforendeEnhet(soknad));
+
+    }
+
+    @Test
     public void harSkjemanummerDagpengerVedPermitteringHvisDetIkkeErSattDatoTilForPermittering() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
         WebSoknad soknad = lagSoknad(lagPermittert(null), lagAvskjediget("2014-1-1"));
@@ -97,7 +118,7 @@ public class WebSoknadUtilsTest {
     }
 
     private static Faktum lagPermittert(String dato) {
-        return lagFaktum("Permittert", "permiteringsperiodedatotil", dato);
+        return lagFaktum("Permittert", "lonnspliktigperiodedatotil", dato);
     }
 
     private static Faktum lagAvskjediget(String dato) {

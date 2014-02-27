@@ -135,6 +135,15 @@ angular.module('nav.vedlegg.controller', [])
             $scope.skalViseFeil = { value: true };
             $scope.validert.value = false;
         };
+
+        $scope.skalViseNesteKnapp = function(forventning, erSiste) {
+            if (($scope.erEkstraVedlegg(forventning) && forventning.innsendingsvalg !== 'LastetOpp') || erSiste) {
+                return false;
+            } else {
+                return true;
+            }
+
+        };
     }])
 
     .directive('bildeNavigering', [function () {

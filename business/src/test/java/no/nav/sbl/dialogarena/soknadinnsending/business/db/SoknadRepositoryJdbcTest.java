@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 
 import no.nav.modig.lang.option.Optional;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
@@ -35,6 +36,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.joda.time.DateTime.now;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {DbConfig.class})
@@ -67,7 +69,7 @@ public class SoknadRepositoryJdbcTest {
     public void skalKunneOppretteSoknad() {
         opprettOgPersisterSoknad();
     }
-    
+
     @Test
     public void skalKunneOppretteBehandling() {
         String behandlingsId = soknadRepository.opprettBehandling();
@@ -133,14 +135,14 @@ public class SoknadRepositoryJdbcTest {
         assertThat(opprettetSoknad.getBrukerBehandlingId(), is(behId));
         assertThat(opprettetSoknad.getskjemaNummer(), is(skjemaNummer));
     }
-    
+
     @Test
     public void skalFaaNullVedUkjentBehandlingsId() {
         String behId = randomUUID().toString();
         WebSoknad soknad = soknadRepository.hentMedBehandlingsId(behId);
         Assert.assertNull(soknad);
     }
-    
+
 
     @Test
     public void skalKunneHenteListeMedSoknader() {
@@ -170,38 +172,73 @@ public class SoknadRepositoryJdbcTest {
         lagreData("key1", null, "value1");
         lagreData("key2", null, "value2");
         lagreData("key3", null, "value3");
-        
+
 
         List<Faktum> soknadBrukerData = soknadRepository.hentAlleBrukerData(soknadId);
 
         assertThat(soknadBrukerData, notNullValue());
         assertThat(soknadBrukerData.size(), is(3));
     }
-    
+
+    @Test
+    public void skalHenteSystemfaktum() {
+        Faktum faktum = new Faktum().medKey("personalia").medSoknadId(12L).medProperty("fno", "123").medType(SYSTEMREGISTRERT);
+        Faktum result = new Faktum().medKey("personalia").medSoknadId(11L).medProperty("fno", "123").medType(SYSTEMREGISTRERT);
+        result.setFaktumId(soknadRepository.lagreFaktum(11L, faktum, true));
+
+        List<Faktum> personalia = soknadRepository.hentSystemFaktumList(11L, "personalia");
+        assertThat(personalia.get(0), is(equalTo(result)));
+    }
+
+    @Test
+    public void skalSletteFaktum() {
+        opprettOgPersisterSoknad();
+        Long id = lagreData("key", null, "value");
+        Faktum faktum = soknadRepository.hentFaktum(soknadId, id);
+        assertThat(faktum, is(notNullValue()));
+        soknadRepository.slettBrukerFaktum(soknadId, id);
+        try {
+            soknadRepository.hentFaktum(soknadId, id);
+            fail("ikke slettet");
+        } catch (EmptyResultDataAccessException ex) {
+        }
+    }
+
     @Test
     public void skalKunneHenteFaktum() {
         opprettOgPersisterSoknad();
         lagreData("key1", null, "value1");
         Long faktumId = lagreData("key2", null, "value2");
         lagreData("key3", null, "value3");
-        
+
         soknadRepository.hentFaktum(soknadId, faktumId);
     }
-    
-    //TODO: Hvordan får vi testet denne?
-//    @Test
-//    public void skalReturnereAtVedleggErPaakrevd() {
-//        opprettOgPersisterSoknad();
-//        
-//        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, "key2", "true", "key2");
-//        
-//        Assert.assertTrue(vedleggPaakrevd);
-//    }
 
     @Test
-    public void skalTaVarePaaSystemproperties(){
+    public void skalReturnereAtVedleggErPaakrevd() {
+        opprettOgPersisterSoknad();
+        Long parrent = soknadRepository.lagreFaktum(soknad.getSoknadId(), new Faktum().medKey("key1").medValue("dependOnValue").medSoknadId(soknad.getSoknadId()).medType(BRUKERREGISTRERT));
+        soknadRepository.lagreFaktum(soknad.getSoknadId(), new Faktum().medKey("key2").medValue("true").medSoknadId(soknad.getSoknadId()).medType(BRUKERREGISTRERT).medParrentFaktumId(parrent));
+        Boolean vedleggPaakrevd = soknadRepository.isVedleggPaakrevd(soknadId, "key2", "true", "dependOnValue");
+        Assert.assertTrue(vedleggPaakrevd);
+    }
+
+    @Test
+    public void skalTaVarePaaSystemproperties() {
         soknadId = opprettOgPersisterSoknad();
         soknadRepository.lagreFaktum(soknadId, new Faktum().medSoknadId(soknadId).medKey("system1").medType(SYSTEMREGISTRERT));
+    }
+    @Test
+    public void skalHenteSoknadType(){
+        opprettOgPersisterSoknad();
+        String s = soknadRepository.hentSoknadType(soknadId);
+        assertThat(s, is(equalTo(soknad.getskjemaNummer())));
+    }
+    @Test
+    public void skalSetteDelstegstatus(){
+        opprettOgPersisterSoknad();
+        soknadRepository.settDelstegstatus(soknadId, DelstegStatus.SAMTYKKET);
+        assertThat(soknadRepository.hentSoknad(soknadId).getDelstegStatus(), is(equalTo(DelstegStatus.SAMTYKKET)));
     }
 
     @Test
@@ -216,7 +253,6 @@ public class SoknadRepositoryJdbcTest {
         Faktum ikkeOppdaterData = soknadRepository.hentAlleBrukerData(soknadId).get(0);
         assertThat(ikkeOppdaterData, notNullValue());
         assertThat(ikkeOppdaterData.getValue(), is(value));
-
 
 
         lagreData(key, faktumId, oppdatertValue);
@@ -324,7 +360,7 @@ public class SoknadRepositoryJdbcTest {
         assertThat(soknadBrukerData, notNullValue());
         assertThat(soknadBrukerData, empty());
     }
-    
+
     @Test
     public void skalKunneLeggeTilbake() {
         opprettOgPersisterSoknad();
@@ -338,7 +374,7 @@ public class SoknadRepositoryJdbcTest {
     }
 
     @Test
-    public void skalRepopulereDatabase(){
+    public void skalRepopulereDatabase() {
         soknad = WebSoknad.startSoknad()
                 .medId(101L)
                 .medUuid(uuid)
@@ -379,12 +415,13 @@ public class SoknadRepositoryJdbcTest {
                 .medAktorId(aktor)
                 .medBehandlingId(behId)
                 .medskjemaNummer(skjemaNummer).opprettetDato(now());
-
-        return soknadId = soknadRepository.opprettSoknad(soknad);
+        soknadId = soknadRepository.opprettSoknad(soknad);
+        soknad.setSoknadId(soknadId);
+        return soknadId;
     }
 
     private Long lagreData(String key, Long faktumId, String value) {
         return soknadRepository.lagreFaktum(soknadId, new Faktum().medSoknadId(soknadId).medFaktumId(faktumId).medKey(key).medValue(value).medType(BRUKERREGISTRERT));
     }
-    
+
 }

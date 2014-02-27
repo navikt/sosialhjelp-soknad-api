@@ -1,9 +1,16 @@
 <div class="form-linje tekstfelt orgnummer">
     <label>
         <span class="labeltekst">{{ navlabel | cmstekst }}</span>
-        <input data-ng-model="faktum.value" type="text" value="{{ value }}" data-ng-required="erSynlig()"
-               data-error-messages="{{ navfeilmelding }}" data-blur-validate
-               data-ng-pattern="/[0-9]{9}/" maxlength="9" orgnr-validate data-aktiv-feilmelding>
+        <input type="text"
+               value="{{ value }}"
+               data-ng-model="faktum.value"
+               data-ng-required="erSynlig()"
+               data-error-messages="{{ navfeilmelding }}"
+               data-blur-validate
+               data-ng-pattern="/[0-9]{9}/"
+               maxlength="9"
+               data-orgnr-validate
+               data-aktiv-feilmelding>
     </label>
     <a href="javascript:void(0)" aria-role="button" class="orgnummer-slett"
        data-ng-if="skalViseSlettKnapp($index)"

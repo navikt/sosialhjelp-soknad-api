@@ -8,6 +8,7 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
 			},
 			templateUrl: '../js/common/directives/hjelpetekst/hjelpetekstTemplate.html',
 			link: function (scope, element) {
+                element.parent().addClass('hjelpetekst-parent');
                 var lukkEventTimestamp = 0;
 
 				scope.visHjelp = false;
@@ -15,10 +16,10 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
 					scope.visHjelp = !scope.visHjelp;
 				};
 
-				scope.lukk = function () {
+				scope.lukk = function (event) {
 					scope.visHjelp = false;
                     $($window).unbind('resize');
-                    settFokusTilNesteElement(element.closest('.nav-checkbox').find('input[type=checkbox]'));
+                    settFokusTilNesteElement(angular.element(event.target));
 				};
 
 				scope.stoppKlikk = function (event) {

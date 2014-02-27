@@ -36,8 +36,7 @@
 
     <div class="ekstra-spm-boks" data-ng-if="sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'">
         <div class="form-linje boolean">
-            <h4 class="spm-sporsmal"
-                data-cmstekster="arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.sporsmal"></h4>
+            <h4 class="spm-sporsmal">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.sporsmal' | cmstekst }}</h4>
 
             <div class="nav-radio-knapp">
                 <input class="sendsoknad-radio"
@@ -139,8 +138,10 @@
         </li>
         <li>
             <p>{{ 'arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3' | cmstekst }}</p>
-            <a href="{{lonnskravSkjema}}">{{ 'arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3.lenketekst' | cmstekst
-                }}</a>
+            <a href="{{lonnskravSkjemaUrl}}">{{ 'arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3.lenketekst' | cmstekst }}</a>
+        </li>
+        <li>
+            <p>{{ 'arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.4' | cmstekst }}</p>
         </li>
     </ul>
 </div>

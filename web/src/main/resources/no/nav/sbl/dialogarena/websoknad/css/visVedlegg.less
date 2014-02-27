@@ -1,0 +1,139 @@
+#visvedlegg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    margin: 0 auto;
+    text-align: center;
+    color: #0CA9E0;
+    background-color: #333333;
+
+    .bildenavigering {
+        height: 100%;
+
+        .header {
+            height: 40px;
+            width: 102%;
+            box-shadow: 0 1px 4px #000000;
+            color: #d1d1d1;
+            position: relative;
+            left: -1%;
+            z-index: 1000;
+
+            .header-content {
+                max-width: 565px;
+                margin: 0 auto;
+                position: relative;
+                padding-top: 10px;
+
+                .tilbake {
+                    position: absolute;
+                    left: 0;
+
+                    a {
+                        padding: 6px 10px;
+                        border: 1px groove #d1d1d1;
+                        width: 150px;
+                        color: #d1d1d1;
+
+                        &.mobil {
+                            display: none;
+                        }
+                    }
+
+                }
+            }
+        }
+
+        .nav {
+            height: 100%;
+            padding-top: 30px;
+
+            .bilde {
+                min-height: 128px;
+                width: 100%;
+
+                [class*='pil-'] {
+                    float: none;
+                    margin-top: 0;
+                }
+
+                &.laster {
+                    background-image: url(../img/ajaxloader/svart/loader_svart_128.gif);
+                    background-repeat: no-repeat;
+                    background-position: center;
+                    padding-top: 40%;
+
+                    [class*='pil-'], img {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    #visvedlegg {
+        .bildenavigering {
+            position: relative;
+        }
+    }
+
+    #visvedlegg {
+        .bildenavigering {
+            width: 100%;
+
+            .header {
+                .header-content {
+                    .tilbake {
+                        top: 5px;
+                        left: 15px;
+
+                        a {
+                            width: auto;
+                            padding: 6px 10px;
+
+                            &.mobil {
+                                display: block;
+                            }
+
+                            &.ikke-mobil{
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .nav {
+                .bilde {
+                    width: 80%;
+
+                    img {
+                        top: 0;
+                    }
+
+                    &.laster {
+                        padding-top: 110%;
+                        background-size: 35%;
+
+                        [class*='pil-'], img {
+                            display: none;
+                        }
+                    }
+
+                    [class*='pil-venstre'] {
+                        left: -12px;
+                    }
+                    [class*='pil-hoyre'] {
+                        right: -12px;
+                    }
+                }
+            }
+        }
+    }
+}
+

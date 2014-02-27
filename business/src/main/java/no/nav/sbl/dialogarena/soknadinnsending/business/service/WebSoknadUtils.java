@@ -6,7 +6,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBuilder;
 import org.joda.time.LocalDate;
-import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -21,49 +20,61 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.PERSONALIA_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.DATO_TIL;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.TYPE;
-import static org.slf4j.LoggerFactory.getLogger;
 
 public class WebSoknadUtils {
     public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
     public static final String DAGPENGER = "NAV 04-01.03";
     public static final String EOS_DAGPENGER = "4304";
     public static final String RUTES_I_BRUT = "0000";
-    private static final Logger LOGGER = getLogger(WebSoknadUtils.class);
-    private static boolean erPermittertellerHarRedusertArbeidstid(WebSoknad soknad)
-    {
+    public static final String PERMITTERT = "Permittert";
+    public static final String REDUSERT_ARBEIDSTID = "Redusert arbeidstid";
+    public static final String ANNEN_AARSAK = "Annen årsak";
+
+    private static String erPermittertellerHarRedusertArbeidstid(WebSoknad soknad) {
 
         List<Faktum> sluttaarsak = soknad.getFaktaMedKey("arbeidsforhold");
-        boolean erPermittert = false;
+        boolean erPermittert;
+        boolean harRedusertArbeidstid;
         if (!sluttaarsak.isEmpty()) {
             List<Faktum> sortertEtterDatoTil = on(sluttaarsak).collect(reverseOrder(compareWith(DATO_TIL)));
             LocalDate nyesteDato = on(sortertEtterDatoTil).map(DATO_TIL).head().getOrElse(null);
             List<Faktum> nyesteSluttaarsaker = on(sortertEtterDatoTil).filter(where(DATO_TIL, equalTo(nyesteDato))).collect();
-            erPermittert = on(nyesteSluttaarsaker).filter(where(TYPE, equalTo("Permittert"))).head().isSome() || on(nyesteSluttaarsaker).filter(where(TYPE, equalTo("Redusert arbeidstid"))).head().isSome();
+            erPermittert = on(nyesteSluttaarsaker).filter(where(TYPE, equalTo(PERMITTERT))).head().isSome();
+            harRedusertArbeidstid = on(nyesteSluttaarsaker).filter(where(TYPE, equalTo(REDUSERT_ARBEIDSTID))).head().isSome();
+            if (erPermittert) {
+                return PERMITTERT;
+            }
+            if (harRedusertArbeidstid) {
+                return REDUSERT_ARBEIDSTID;
+            }
         }
-        return erPermittert;
+        return ANNEN_AARSAK;
     }
 
-    public static String getSkjemanummer(WebSoknad soknad) {
-            return erPermittertellerHarRedusertArbeidstid(soknad) ? DAGPENGER_VED_PERMITTERING : DAGPENGER;
 
+    public static String getSkjemanummer(WebSoknad soknad) {
+        String sluttaarsak = erPermittertellerHarRedusertArbeidstid(soknad);
+        if (sluttaarsak.equals(PERMITTERT)) {
+            return DAGPENGER_VED_PERMITTERING;
+        } else {
+            return DAGPENGER;
+        }
     }
 
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
-        LOGGER.warn("Faktaliste for ruting" + webSoknad.getFaktaListe());
-        if (!erPermittertellerHarRedusertArbeidstid(webSoknad))
-        {
+        String sluttaarsak = erPermittertellerHarRedusertArbeidstid(webSoknad);
+        Personalia personalia = getPerson(webSoknad);
+        if ((personalia.harUtenlandskFolkeregistrertAdresse() && (!personalia.harNorskMidlertidigAdresse()))) {
+            if (sluttaarsak.equals(PERMITTERT) || (sluttaarsak.equals(REDUSERT_ARBEIDSTID))) {
+                return EOS_DAGPENGER;
+            } else {
+                return RUTES_I_BRUT;
+            }
+        } else {
             return RUTES_I_BRUT;
         }
-        /*if (!webSoknad.getFaktaMedKey(FNR_KEY).isEmpty())
-        {*/
-            Personalia personalia = getPerson(webSoknad);
-            return (personalia.harUtenlandskFolkeregistrertAdresse() && (!personalia.harNorskMidlertidigAdresse())) ?  EOS_DAGPENGER : RUTES_I_BRUT;
-        }/* else
-        {
-            LOGGER.warn("Fødselsnummer for bruker ble ikke funnet. Rutes derfor i BRUT");
-            return RUTES_I_BRUT;
-        }
-    }*/
+    }
+
 
     public static Personalia getPerson(WebSoknad webSoknad) {
         Map<String, String> properties = webSoknad.getFaktaMedKey(PERSONALIA_KEY).get(0).getProperties();
@@ -72,10 +83,9 @@ public class WebSoknadUtils {
         gjeldendeAdresse.setAdresse(properties.get(GJELDENDEADRESSE_KEY));
         gjeldendeAdresse.setAdressetype(properties.get(GJELDENDEADRESSE_TYPE_KEY));
 
-        Personalia personalia = PersonaliaBuilder.with()
+        return PersonaliaBuilder.with()
                 .gjeldendeAdresse(gjeldendeAdresse)
                 .build();
-        return personalia;
     }
 
 }

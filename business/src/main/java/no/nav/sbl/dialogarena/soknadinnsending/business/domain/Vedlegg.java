@@ -1,14 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.xml.bind.annotation.XmlTransient;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -23,7 +21,6 @@ public class Vedlegg {
     private Long faktumId;
     private String skjemaNummer;
     private Status innsendingsvalg;
-    private String beskrivelse;
     private String navn = "";
     private Long storrelse = 0L;
     private Integer antallSider = 0;
@@ -47,60 +44,62 @@ public class Vedlegg {
         this.vedleggId = vedleggId;
         return this;
     }
-    
+
     public Vedlegg medSoknadId(Long soknadId) {
         this.soknadId = soknadId;
         return this;
     }
-    
+
     public Vedlegg medFaktumId(Long faktumId) {
         this.faktumId = faktumId;
         return this;
     }
+
     public Vedlegg medSkjemaNummer(String skjemaNummer) {
-        this.skjemaNummer = skjemaNummer;
+        setSkjemaNummer(skjemaNummer);
         return this;
     }
+
     public Vedlegg medTittel(String tittel) {
-        this.tittel = tittel;
+        setTittel(tittel);
         return this;
     }
+
     public Vedlegg medUrl(String key, String value) {
         urls.put(key, value);
         return this;
     }
 
     public Vedlegg medNavn(String navn) {
-        this.navn = navn;
-        this.beskrivelse = navn;
+        setNavn(navn);
         return this;
     }
-    
+
     public Vedlegg medStorrelse(Long storrelse) {
-        this.storrelse  = storrelse;
+        this.storrelse = storrelse;
         return this;
     }
-    
+
     public Vedlegg medAntallSider(Integer antallSider) {
         this.antallSider = antallSider;
         return this;
     }
-    
+
     public Vedlegg medFillagerReferanse(String fillagerReferanse) {
-        this.fillagerReferanse = fillagerReferanse;
+        setFillagerReferanse(fillagerReferanse);
         return this;
     }
-    
+
     public Vedlegg medData(byte[] data) {
-        this.data = data;
+        setData(data);
         return this;
     }
-    
+
     public Vedlegg medOpprettetDato(Long opprettetDato) {
-        this.opprettetDato = opprettetDato;
+        setOpprettetDato(opprettetDato);
         return this;
     }
-    
+
     public Vedlegg medInnsendingsvalg(Status innsendingsvalg) {
         this.innsendingsvalg = innsendingsvalg;
         return this;
@@ -146,11 +145,11 @@ public class Vedlegg {
         return antallSider;
     }
 
-    public String getskjemaNummer() {
+    public String getSkjemaNummer() {
         return skjemaNummer;
     }
 
-    public void setskjemaNummer(String skjemaNummer) {
+    public void setSkjemaNummer(String skjemaNummer) {
         this.skjemaNummer = skjemaNummer;
     }
 
@@ -160,10 +159,6 @@ public class Vedlegg {
 
     public void setFillagerReferanse(String fillagerReferanse) {
         this.fillagerReferanse = fillagerReferanse;
-    }
-
-    public String getBeskrivelse() {
-        return beskrivelse;
     }
 
     public Map<String, String> getUrls() {
@@ -232,7 +227,7 @@ public class Vedlegg {
     }
 
     public void leggTilInnhold(byte[] doc, int antallSider) {
-        this.data = doc;
+        this.data = doc.clone();
         this.innsendingsvalg = Status.LastetOpp;
         this.antallSider = antallSider;
         this.storrelse = (long) doc.length;
@@ -259,7 +254,15 @@ public class Vedlegg {
     }
 
     public void setData(byte[] data) {
-        this.data = data;
+        this.data = data != null ? data.clone() : null;
+    }
+
+    public void oppdatertInnsendtStatus() {
+        if (getStorrelse() > 0) {
+            innsendingsvalg = Status.LastetOpp;
+        } else {
+            innsendingsvalg = Status.VedleggKreves;
+        }
     }
 
     public enum Status {

@@ -28,7 +28,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         };
 
         $scope.hentAdresseLinjer = function () {
-            if ($scope.utslagskriterier && $scope.utslagskriterier.registrertAdresse !== '') {
+            if (isNotNullOrUndefined($scope.utslagskriterier.registrertAdresse)) {
                 return $scope.utslagskriterier.registrertAdresse.split(", ");
             }
             return [];
@@ -61,7 +61,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         };
 
         $scope.soknadErFerdigstilt = function () {
-            return data && data.soknad && data.soknad.status == "FERDIG";
+            return data && data.soknad && data.soknad.status === "FERDIG";
         };
 
         $scope.startSoknad = function () {

@@ -1,4 +1,21 @@
 @svar-bakgrunnsfarge: #d1d1d1;
+@flipp-size: 30px;
+@flipp-shadow-size: 64px;
+
+// Fjerner piler fra input type=number
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.omslag.hvit {
+    background-color: #fff;
+}
+
+.hvit-side {
+    border-bottom: none;
+}
 
 :invalid {
     box-shadow: none;
@@ -27,7 +44,6 @@
 .informasjonstekst {
     font-weight: bold;
     font-size: 1rem;
-    font-weight: bold;
 }
 
 .infoboks {
@@ -69,7 +85,7 @@
 }
 
 .vedlegginfoboks {
-    border-top: 1px solid #ddd;
+    border-top: 1px solid #ddd !important;
     margin-left: 15px;
     margin-right: 15px;
     padding-top: 30px;
@@ -101,9 +117,12 @@
 
 @media only screen and (max-width: 767px) {
     .vedlegginfoboks {
-        [class*="strek-ikon-vedlegg"], [class*="ikon-vedlegg-strek"] {
+        margin-right: 0;
+        margin-left: 0;
+
+        .ikon-vedlegg-strek {
             background-image: none;
-            padding-left: 0px;
+            padding-left: 0;
         }
 
         h5 {
@@ -111,6 +130,7 @@
         }
 
         ul {
+            margin-left: 20px;
             padding-left: 0px !important;
         }
     }
@@ -190,6 +210,10 @@
             padding: 0 30px;
         }
     }
+}
+
+.sekundaerAdresse {
+    margin-top: 20px;
 }
 
 .rad.soknad {
@@ -295,6 +319,28 @@
     margin-bottom: 30px;
 }
 
+.neste-bolk-knapper {
+    text-align: center;
+    border-top: 1px solid #ddd;
+    margin-top: 32px;
+    padding-top: 40px;
+
+    input, button, a {
+        margin-bottom: 15px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+    button, a {
+        display: block;
+    }
+
+    button {
+        margin: 0 auto 15px;
+    }
+}
+
 .spm-blokk {
     position: relative;
     border-top: 1px solid #ddd;
@@ -307,10 +353,10 @@
             cursor: pointer;
 
             .flipp:hover {
-                border-color: transparent transparent #800000 transparent !important;
+                border-color: transparent transparent #800000 transparent;
 
                 &:before {
-                    border-top: 30px solid #c30000 !important;
+                    border-top: @flipp-size solid #c30000;
                 }
             }
         }
@@ -319,7 +365,7 @@
         border-color: transparent transparent #004283 transparent !important;
 
         &:before {
-            border-top: 30px solid #0067c5 !important;
+            border-top: @flipp-size solid #0067c5 !important;
         }
     }
     &.open {
@@ -330,7 +376,7 @@
             border-color: transparent transparent #800000 transparent;
 
             &:before {
-                border-top: 30px solid #c30000;
+                border-top: @flipp-size solid #c30000;
             }
         }
     }
@@ -338,7 +384,7 @@
     .flipp {
         position: relative;
         top: -3px;
-        width: 64px;
+        width: @flipp-shadow-size;
         height: 0;
         margin: 0 auto;
         border-style: solid;
@@ -351,9 +397,9 @@
             top: 0;
             left: 0;
             width: 0;
-            border-top: 30px solid #ccc;
-            border-left: 30px solid transparent;
-            border-right: 30px solid transparent;
+            border-top: @flipp-size solid #ccc;
+            border-left: @flipp-size solid transparent;
+            border-right: @flipp-size solid transparent;
         }
     }
 
@@ -395,27 +441,8 @@
             max-width: 550px;
             margin: 0 auto;
 
-
-            .spm-knapper {
-                text-align: center;
-                border-top: 1px solid #ddd;
+            .neste-bolk-knapper {
                 margin: 15px 15px 0;
-                padding-top: 40px;
-
-                input, button, a {
-                    margin-bottom: 15px;
-
-                    &:last-child {
-                        margin-bottom: 0;
-                    }
-                }
-                button, a {
-                    display: block;
-                }
-
-                button {
-                    margin: 0 auto 15px;
-                }
             }
         }
 

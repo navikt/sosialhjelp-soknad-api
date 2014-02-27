@@ -44,20 +44,25 @@ angular.module('nav.egennaering', [])
         };
 
         $scope.erSynlig = function (faktum) {
-            return data.finnFaktum(faktum) && data.finnFaktum(faktum).value == 'false';
+            return data.finnFaktum(faktum) && data.finnFaktum(faktum).value === 'false';
         };
 
         $scope.gardseier = function (eier) {
-            return data.finnFaktum(eier) && data.finnFaktum(eier).value == 'true' && $scope.erSynlig('egennaering.gardsbruk');
+            return data.finnFaktum(eier) && data.finnFaktum(eier).value === 'true' && $scope.erSynlig('egennaering.gardsbruk');
         };
 
         $scope.svartPaHvemEierGardsbruket = function () {
             if (!$scope.erSynlig('egennaering.gardsbruk')) {
                 return false;
             }
+            var antallHukerAv = 0;
             for (var i = 0; i < eierGardsbrukNokler.length; i++) {
-                if (data.finnFaktum(eierGardsbrukNokler[i]) && data.finnFaktum(eierGardsbrukNokler[i]).value == 'true') {
-                    return true;
+                if (data.finnFaktum(eierGardsbrukNokler[i]) && data.finnFaktum(eierGardsbrukNokler[i]).value === 'true') {
+                    antallHukerAv++;
+
+                    if (antallHukerAv > 1) {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -109,7 +114,7 @@ angular.module('nav.egennaering', [])
          Sjekker derfor om foreldre radiospørsmålet slik at andelsfeltene vises.
          */
         $scope.summererAndeleneTil100 = function () {
-            if (data.finnFaktum('egennaering.gardsbruk') && data.finnFaktum('egennaering.gardsbruk').value == 'false') {
+            if (data.finnFaktum('egennaering.gardsbruk') && data.finnFaktum('egennaering.gardsbruk').value === 'false') {
                 $scope.totalsumAndel.value = "";
                 skalViseAndelsProsentfeil = false;
 
@@ -120,7 +125,7 @@ angular.module('nav.egennaering', [])
                     skalViseAndelsProsentfeil = false;
                 }
                 //hvis feltet/ene summerer til 100 så setter en verdi i hidden-feltet som er required
-                else if (andel == 100) {
+                else if (andel === 100) {
                     $scope.totalsumAndel.value = "true";
                     skalViseAndelsProsentfeil = false;
                 } else {
@@ -195,7 +200,7 @@ angular.module('nav.egennaering', [])
                 return data.finnFaktum('egennaering.gardsbruk').value;
             }
         }, function () {
-            if (data.finnFaktum('egennaering.gardsbruk') !== undefined && data.finnFaktum('egennaering.gardsbruk').value == 'false') {
+            if (data.finnFaktum('egennaering.gardsbruk') !== undefined && data.finnFaktum('egennaering.gardsbruk') !== null && data.finnFaktum('egennaering.gardsbruk').value === 'false') {
                 settBreddeSlikAtDetFungererIIE();
             }
         });
