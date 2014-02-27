@@ -27,7 +27,7 @@ angular.module('nav.textarea', [])
                     scope.harIkkeFeil = true;
 					var harFokus = false;
 
-					element.find('textarea').bind('focus', function () {
+                    element.find('textarea').bind('focus', function () {
                         $timeout(function() {
                             harFokus = true;
                         });
