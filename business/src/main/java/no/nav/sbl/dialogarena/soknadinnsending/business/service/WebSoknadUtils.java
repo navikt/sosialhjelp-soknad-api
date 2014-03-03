@@ -25,7 +25,7 @@ public class WebSoknadUtils {
     public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
     public static final String DAGPENGER = "NAV 04-01.03";
     public static final String EOS_DAGPENGER = "4304";
-    public static final String RUTES_I_BRUT = "0000";
+    public static final String RUTES_I_BRUT = "";
     public static final String PERMITTERT = "Permittert";
     public static final String REDUSERT_ARBEIDSTID = "Redusert arbeidstid";
     public static final String ANNEN_AARSAK = "Annen årsak";
