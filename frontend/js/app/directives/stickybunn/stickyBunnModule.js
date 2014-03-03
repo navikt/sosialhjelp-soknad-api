@@ -23,7 +23,11 @@ angular.module('nav.stickybunn', [])
 				};
 
 				scope.soknadHarBlittLagret = function () {
-					return data.soknad.sistLagret !== null;
+                    if(data.soknad.sistLagret) {
+                        return data.soknad.sistLagret !== null;
+                    } else {
+                        return false;
+                    }
 				};
 
 				scope.soknadHarAldriBlittLagret = function () {
