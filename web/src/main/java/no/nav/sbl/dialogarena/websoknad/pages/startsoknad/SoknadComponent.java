@@ -30,7 +30,7 @@ public class SoknadComponent extends WebComponent {
 
     @Override
     public void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
-        String file = "META-INF/resources/views/bootstrap1.html" ;
+        String file = "META-INF/resources/views/bootstrap.html" ;
         try (InputStream content = this.getClass().getClassLoader().getResourceAsStream(file)) {
             replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));
         } catch (IllegalArgumentException| IOException e) {
