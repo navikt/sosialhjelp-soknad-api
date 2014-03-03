@@ -62,7 +62,6 @@ angular.module('nav.datepicker', [])
 				lagre                 : '&',
 				label                 : '@',
 				requiredErrorMessage  : '@'
-
 			},
 			link       : function (scope, element, attrs, form) {
 				var eventForAValidereHeleFormen = 'RUN_VALIDATION' + form.$name;
