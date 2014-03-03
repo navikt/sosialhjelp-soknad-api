@@ -1,0 +1,39 @@
+describe('stickybunn', function () {
+    var scope, element;
+
+    beforeEach(module('nav.stickybunn', 'templates-main'));
+
+    beforeEach(module(function ($provide) {
+        $provide.value("data", {
+            soknad: {
+                soknadId: 1
+            }
+        });
+    }));
+
+
+    beforeEach(inject(function ($compile, $rootScope) {
+        scope = $rootScope;
+
+        element = angular.element(
+            '<form name="form"> ' +
+                '<div data-sist-lagret data-navtilbakelenke="ingenLenke"></div>' +
+                '</div>' +
+                '</form>');
+
+        $compile(element)(scope);
+        scope.$digest();
+        scope.$apply();
+    }));
+    describe("Sist lagret", function () {
+        it('Hvis sist lagre er 01.01.2014 kl 12.00  så skal hentSistLagreTid returnere det samme', function () {
+            var sistLagret = new Date("2014-01-01");
+            console.log(sistLagret)
+            expect(scope.hentSistLagretTid()).toEqual();
+        });
+        it('Hvis sist lagre er 01.01.2014 kl 12.00  så skal hentSistLagreTid returnere det samme', function () {
+
+            expect(false).toEqual(true);
+        });
+    });
+});
