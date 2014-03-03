@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import no.nav.modig.core.exception.SystemException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import org.apache.commons.io.IOUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.PreparedStatementSetter;
@@ -17,6 +18,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.sql.DataSource;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -98,10 +100,14 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
         }
     }
 
-    public InputStream hentVedleggStream(Long soknadId, Long vedleggId) {
+    public byte[] hentVedleggData(Long soknadId, Long vedleggId) {
         List<InputStream> query = getJdbcTemplate().query("select data from Vedlegg where soknad_id = ? and vedlegg_id = ?", new VedleggDataRowMapper(), soknadId, vedleggId);
         if (!query.isEmpty()) {
-            return query.get(0);
+            try {
+                return IOUtils.toByteArray(query.get(0));
+            } catch (IOException e) {
+                throw new RuntimeException("Kunne ikke hente ut datainnhold", e);
+            }
         }
         return null;
     }
