@@ -70,7 +70,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
 				}
 
 				function meldingIkkeInneholderFeilmelding() {
-					return !(formElem.find('.melding')[0] && formElem.find('.melding')[0].hasClass('ng-binding'));
+					return !(formElem.find('.melding')[0] && $(formElem.find('.melding')[0]).hasClass('ng-binding'));
 				}
 			}
 		};
