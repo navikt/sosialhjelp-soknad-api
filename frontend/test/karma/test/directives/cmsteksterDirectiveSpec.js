@@ -23,8 +23,7 @@ describe('cmstekster', function () {
     beforeEach(inject(function ($compile, $rootScope) {
         $scope = $rootScope;
 
-        divElement = '<div cmstekster="tittel.key">tester cms</div>';
-        inputElement = '<input cmstekster="input.value"></input>';
+        inputElement = '<input value="{{ \'input.value\' | cmstekst }}">';
         htmlElement = '<div class="html" cmshtml="div.html">tester cms</div>';
         anchorElement = '<a href="{{ \'a.lenketekst\' | cmstekst }}"></a>';
         direkteElement = '<div class="direkte-innsatt">{{"tittel.key" | cmstekst }}</div>';
@@ -38,28 +37,21 @@ describe('cmstekster', function () {
     describe("cmstekst", function() {
         it("skal sette inn cmstekst direkte", function() {
             expect(element.find(".direkte-innsatt").html()).toBe("Min tittel");
-        })
-    })
-
-    describe("cmstekster", function() {
-        it("skal sette inn cmstekst", function() {
-            expect(element.find("div").html()).toBe("Min tittel");
         });
 
         it("skal sette inn cmstekst i input", function() {
             expect(element.find("input").attr("value")).toBe("Dette er value");
         });
-    });
+
+        it("skal sette inn lenketekst", function() {
+            expect(element.find("a").attr("href")).toBe("http://helt-riktig.com");
+        });
+    })
+
 
     describe("cmshtml", function() {
         it("skal sette inn html", function() {
             expect(element.find(".html").html()).toBe("<h1>htmltest</h1>");
-        });
-    });
-    
-    describe("cmslenketekster", function() {
-        it("skal sette inn lenketekst", function() {
-            expect(element.find("a").attr("href")).toBe("http://helt-riktig.com");
         });
     });
 });
