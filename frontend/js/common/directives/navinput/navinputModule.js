@@ -176,6 +176,13 @@ angular.module('nav.input', ['nav.cmstekster'])
                 scope.erSynlig = function () {
                     return element.is(':visible');
                 };
+
+                scope.visSlett = function(idx) {
+                    if (scope.navVisSlett !== undefined && scope.navVisSlett === 'false') {
+                        return false;
+                    }
+                    return idx !== 0;
+                }
             },
             templateUrl: '../js/common/directives/navinput/navorgnrfeltTemplate.html'
         };
