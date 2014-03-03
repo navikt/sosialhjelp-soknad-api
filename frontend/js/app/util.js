@@ -359,7 +359,7 @@ function getIEVersion() {
         }
     } else if (navigator.appName === 'Netscape') {
         var reIe11  = new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})");
-        if (reIe11.exec(ua) != null){
+        if (reIe11.exec(ua) !== null){
             version = parseFloat(RegExp.$1 );
         }
     }
