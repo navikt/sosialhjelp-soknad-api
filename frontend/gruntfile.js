@@ -107,8 +107,8 @@ module.exports = function (grunt) {
                     'js/lib/jquery/jquery.fileupload-validate.js',
                     'js/lib/jquery/jquery.fileupload-angular.js',
                     'js/lib/*.js',
-                    '!js/app/**/templates.js',
-                    '!js/app/**/initDev.js',
+                    'js/app/**/!(templates).js',
+                    'js/app/**/!(initDev).js',
                     'target/classes/META-INF/resources/js/app/templates.js',
                     'js/common/**/*.js'
 				],
