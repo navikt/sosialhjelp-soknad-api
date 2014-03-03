@@ -46,7 +46,7 @@ import javax.inject.Named;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.awt.*;
+import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -391,13 +391,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public byte[] lagForhandsvisning(Long soknadId, Long vedleggId, int side) {
-        try {
-            return new ConvertToPng(new Dimension(600, 800), side)
-                    .transform(IOUtils.toByteArray(vedleggRepository
-                            .hentVedleggStream(soknadId, vedleggId)));
-        } catch (IOException e) {
-            throw new RuntimeException("Kunne ikke generere thumbnail " + e, e);
-        }
+        return new ConvertToPng(new Dimension(600, 800), side).transform(vedleggRepository.hentVedleggData(soknadId, vedleggId));
     }
 
     @Override
@@ -410,14 +404,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                         forventning.getSkjemaNummer());
         List<byte[]> bytes = new ArrayList<>();
         for (Vedlegg vedlegg : vedleggUnderBehandling) {
-            InputStream inputStream = vedleggRepository.hentVedleggStream(
-                    soknadId, vedlegg.getVedleggId());
-            try {
-                bytes.add(IOUtils.toByteArray(inputStream));
-            } catch (IOException e) {
-                throw new RuntimeException("Kunne ikke merge filer", e);
-            }
-
+            bytes.add(vedleggRepository.hentVedleggData(soknadId, vedlegg.getVedleggId()));
         }
         byte[] doc = pdfMerger.transform(bytes);
         doc = watermarker.forIdent(getSubjectHandler().getUid(), false).transform(doc);
@@ -470,7 +457,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
         if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {
             vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
-        } else if(soknadVedlegg.harOversetting()){
+        } else if (soknadVedlegg.harOversetting()) {
             vedlegg.setNavn(navMessageSource.getMessage(soknadVedlegg.getOversetting().replace("${key}", faktum.getKey()), new Object[0], new Locale("nb", "NO")));
         }
         vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
@@ -496,7 +483,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         }
         return false;
     }
-    
+
     public void leggTilKodeverkFelter(List<Vedlegg> vedlegg) {
         for (Vedlegg v : vedlegg) {
             medKodeverk(v);

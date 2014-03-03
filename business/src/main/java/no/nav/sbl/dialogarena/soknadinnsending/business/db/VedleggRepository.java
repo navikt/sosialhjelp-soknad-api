@@ -2,7 +2,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 
-import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -30,9 +29,9 @@ public interface VedleggRepository {
     /**
      * Henter alle vedlegg for et faktum
      *
-     * @param soknadId soknaden det skal hentes for
-     * @param faktum   faktument det skal hentes for
-     * @param skjemaNummer  hvilket vedlegg det skal hentes for
+     * @param soknadId     soknaden det skal hentes for
+     * @param faktum       faktument det skal hentes for
+     * @param skjemaNummer hvilket vedlegg det skal hentes for
      * @return en liste med vedlegg
      */
     List<Vedlegg> hentVedleggUnderBehandling(Long soknadId, Long faktum, String skjemaNummer);
@@ -46,7 +45,7 @@ public interface VedleggRepository {
      * @param vedleggId vedlegget som skal hentes
      * @return innholdet
      */
-    InputStream hentVedleggStream(Long soknadId, Long vedleggId);
+    byte[] hentVedleggData(Long soknadId, Long vedleggId);
 
     /**
      * Henter et spesifikt vedlegg uten data
@@ -60,9 +59,9 @@ public interface VedleggRepository {
     /**
      * Henter vedlegg for et faktum og skjemaNummer
      *
-     * @param soknadId soknaden det skal hentes for
-     * @param faktumId faktumet det skal hentes vedlegg for
-     * @param skjemaNummer  skjemaNummer til faktumet
+     * @param soknadId     soknaden det skal hentes for
+     * @param faktumId     faktumet det skal hentes vedlegg for
+     * @param skjemaNummer skjemaNummer til faktumet
      * @return vedlegget
      */
     Vedlegg hentVedleggForskjemaNummer(Long soknadId, Long faktumId, String skjemaNummer);
@@ -73,7 +72,7 @@ public interface VedleggRepository {
      *
      * @param soknadId soknaden det jobbes på
      * @param faktumId faktumet det skal slettes vedlegg for
-     * @param gosysId skjemanummer somskal slettes
+     * @param gosysId  skjemanummer somskal slettes
      */
     void slettVedleggUnderBehandling(Long soknadId, Long faktumId, String gosysId);
 
@@ -92,6 +91,7 @@ public interface VedleggRepository {
 
     /**
      * Henter alle vedlegg som er tilknyttet et faktum
+     *
      * @param soknadId soknaden det skal hentes for
      * @param faktumId faktum det skal hentes for
      * @return liste med vedlegg for faktumet
