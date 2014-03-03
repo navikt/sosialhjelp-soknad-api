@@ -178,7 +178,12 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     @Override
     public Faktum hentFaktum(Long soknadId, Long faktumId) {
-        String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and soknadbrukerdata_id = ?";
+        return hentFaktum(soknadId, faktumId, false);
+    }
+
+
+    private Faktum hentFaktum(final Long soknadId, final Long faktumId, boolean forUpdate) {
+        final String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and soknadbrukerdata_id = ? " + (forUpdate?" for update": "");
         String propertiesSql = "select * from FAKTUMEGENSKAP where soknad_id = ? and faktum_id=?";
 
         Faktum result = getJdbcTemplate().queryForObject(sql, faktumRowMapper, soknadId, faktumId);
