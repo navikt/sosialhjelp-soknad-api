@@ -5,44 +5,44 @@ module.exports = function (config) {
     config.set({
 
         // base path, that will be used to resolve files and exclude
-        basePath: '../../',
+        basePath: '',
 
         // frameworks to use
         frameworks: ['jasmine'],
 
         preprocessors: {
-            'js/app/**/*.js': ['coverage'],
-            'js/common/**/*.js': ['coverage'],
-            'js/**/*.html': 'ng-html2js'
+            '../../js/app/**/*.js': ['coverage'],
+            '../../js/common/**/*.js': ['coverage'],
+            '../../js/**/*.html': 'ng-html2js'
         },
 
         // list of files / patterns to load in the browser
         files: [
-            'js/lib/jquery/jquery-1.10.2.js',
-            'js/lib/jquery/jquery-ui.js',
-            'test/karma/lib/TimeoutBoxMock.js',
-            'js/lib/angular/angular.js',
-            'test/karma/lib/angular-mocks.js',
-            'js/lib/angular/angular-resource.js',
-            'js/lib/angular/angular-sanitize.js',
-            'js/lib/angular/angular-cookies.js',
-            'js/lib/bindonce.js',
-            'js/app/**/*.js',
-            'js/common/**/*.js',
-            'js/lib/jquery/jquery.iframe-transport.js',
-            'js/lib/jquery/jquery.fileupload.js',
-            'js/lib/jquery/jquery.fileupload-process.js',
-            'js/lib/jquery/jquery.fileupload-validate.js',
-            'js/lib/jquery/jquery.fileupload-angular.js',
-            'test/karma/test/*.js',
-            'test/karma/test/directives/*.js',
-            'test/karma/test/controllers/*.js',
-            'js/**/*.html'
+            '../../js/lib/jquery/jquery-1.10.2.js',
+            '../../js/lib/jquery/jquery-ui.js',
+            '../../js/lib/angular/angular.js',
+            'lib/TimeoutBoxMock.js',
+            'lib/angular-mocks.js',
+            '../../js/lib/angular/angular-resource.js',
+            '../../js/lib/angular/angular-sanitize.js',
+            '../../js/lib/angular/angular-cookies.js',
+            '../../js/lib/bindonce.js',
+            '../../js/app/**/*.js',
+            '../../js/common/**/*.js',
+            '../../js/lib/jquery/jquery.iframe-transport.js',
+            '../../js/lib/jquery/jquery.fileupload.js',
+            '../../js/lib/jquery/jquery.fileupload-process.js',
+            '../../js/lib/jquery/jquery.fileupload-validate.js',
+            '../../js/lib/jquery/jquery.fileupload-angular.js',
+            'test/*.js',
+            'test/directives/*.js',
+            'test/controllers/*.js',
+            '../../js/**/*.html'
         ],
 
         // list of files to exclude
         exclude: [
-            'js/app/**/templates.js'
+            '../../js/app/**/templates.js'
         ],
 
         // test results reporter to use
@@ -75,7 +75,7 @@ module.exports = function (config) {
         // - Safari (only Mac)
         // - PhantomJS
         // - IE (only Windows)
-       browsers: ['Chrome', 'Firefox', 'IE'],
+       browsers: ['Chrome'],
 
         // If browser does not capture in given timeout [ms], kill it
         captureTimeout: 60000,
@@ -97,17 +97,21 @@ module.exports = function (config) {
         ],
 
         ngHtml2JsPreprocessor: {
-            prependPrefix: '../',
-            moduleName: 'templates-main'
+            moduleName: 'templates-main',
+            cacheIdFromPath: function(filepath) {
+                var idx = filepath.indexOf('js/');
+                var path = '../' + filepath.substring(idx);
+                return path;
+            }
         },
 
         coverageReporter: {
             type: 'lcovonly',
-            dir: 'target/karma-coverage'
+            dir: '../../target/karma-coverage'
         },
 
         junitReporter: {
-            outputFile: 'target/surefire-reports/TEST-karma.xml',
+            outputFile: '../../target/surefire-reports/TEST-karma.xml',
             suite: ''
         }
 
