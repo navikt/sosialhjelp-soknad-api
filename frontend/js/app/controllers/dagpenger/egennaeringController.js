@@ -144,7 +144,7 @@ angular.module('nav.egennaering', [])
          sånn at man ikke må fylle inn andelsprosent for en eiertype som ikke eier noe
          */
         function summerAndelsprosentene() {
-            var sum = "";
+            var sum = 0;
             if ($scope.gardseier("egennaering.gardsbruk.false.eier.jeg") && data.finnFaktum("egennaering.gardsbruk.false.eierandel.din")) {
                 sum = parseFloat(data.finnFaktum("egennaering.gardsbruk.false.eierandel.din").value);
             }
