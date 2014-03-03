@@ -6,8 +6,7 @@ angular.module('nav.oppsummering', [])
 
         $scope.soknadId = data.soknad.soknadId;
         $http.get('/sendsoknad/rest/soknad/oppsummering/' + $scope.soknadId).then(function(response) {
-            //var soknadElement = $(response.data.replace(/http:\/\/[^\/*]/g, '')).filter("#soknad");
-            var soknadElement = angular.element(response.data).filter("#soknad");
+            var soknadElement = angular.element(response.data.replace(/http:\/\/[^\/]*/g, '')).filter("#soknad");
             soknadElement.find('.logo').remove();
             soknadElement.find('.hode h1').addClass('stor strek-ikon-oppsummering');
             soknadElement.find('hr').remove();
