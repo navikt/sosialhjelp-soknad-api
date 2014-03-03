@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.Adresse;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.business.person.PersonaliaBuilder;
 import org.joda.time.LocalDate;
+import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.PERSONALIA_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.DATO_TIL;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.TYPE;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class WebSoknadUtils {
     public static final String DAGPENGER_VED_PERMITTERING = "NAV 04-01.04";
@@ -29,7 +31,7 @@ public class WebSoknadUtils {
     public static final String PERMITTERT = "Permittert";
     public static final String REDUSERT_ARBEIDSTID = "Redusert arbeidstid";
     public static final String ANNEN_AARSAK = "Annen årsak";
-
+    private static final Logger logger = getLogger(WebSoknadUtils.class);
     private static String erPermittertellerHarRedusertArbeidstid(WebSoknad soknad) {
 
         List<Faktum> sluttaarsak = soknad.getFaktaMedKey("arbeidsforhold");
@@ -64,6 +66,9 @@ public class WebSoknadUtils {
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
         String sluttaarsak = erPermittertellerHarRedusertArbeidstid(webSoknad);
         Personalia personalia = getPerson(webSoknad);
+        logger.warn("personalia " + personalia.getFnr() + " har utelandsk adr : " + personalia.harUtenlandskAdresse());
+        logger.warn("personalia " + personalia.getFnr() + " har utelandsk folkereg. adr : " + personalia.harUtenlandskFolkeregistrertAdresse());
+        logger.warn("personalia " + personalia.getFnr() + " har norsk midl. adr : " + personalia.harNorskMidlertidigAdresse());
         if ((personalia.harUtenlandskFolkeregistrertAdresse() && (!personalia.harNorskMidlertidigAdresse()))) {
             if (sluttaarsak.equals(PERMITTERT) || (sluttaarsak.equals(REDUSERT_ARBEIDSTID))) {
                 return EOS_DAGPENGER;
