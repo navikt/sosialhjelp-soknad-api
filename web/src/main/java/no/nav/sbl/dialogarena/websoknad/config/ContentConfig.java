@@ -57,7 +57,9 @@ public class ContentConfig {
         innerMap.put("classpath:content/innholdstekster", INNHOLDSTEKSTER_NB_NO_REMOTE);
         innerMap.put("classpath:content/sbl-webkomponenter", SBL_WEBKOMPONENTER_NB_NO_REMOTE);
         messageSource.setEnonicMap(map);
-        messageSource.setEnableEnonic(false);
+        messageSource.setEnableEnonic(true);
+        messageSource.setCacheSeconds(3600);
+
         return messageSource;
     }
 
