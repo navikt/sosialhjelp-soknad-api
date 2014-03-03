@@ -1,11 +1,5 @@
 describe('cmstekster', function () {
-    var element;
-    var divElement;
-    var inputElement;
-    var htmlElement;
-    var anchorElement;
-    var direkteElement;
-    var $scope;
+    var element, divElement, inputElement, htmlElement, anchorElement, direkteElement, $scope;
 
     beforeEach(module('nav.cmstekster'));
 
@@ -46,7 +40,7 @@ describe('cmstekster', function () {
         it("skal sette inn lenketekst", function() {
             expect(element.find("a").attr("href")).toBe("http://helt-riktig.com");
         });
-    })
+    });
 
 
     describe("cmshtml", function() {
