@@ -39,7 +39,6 @@ import static no.nav.modig.lang.option.Optional.none;
 import static no.nav.modig.lang.option.Optional.optional;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.limit;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.UTFYLLING;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
@@ -252,7 +251,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
             faktum.setFaktumId(getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_BRUKER_DATA_ID_SEQ"), Long.class));
             getNamedParameterJdbcTemplate().update(INSERT_FAKTUM, forFaktum(faktum));
             lagreAlleEgenskaper(soknadId, faktum, systemLagring);
-            utfyllingStartet(soknadId);
             return faktum.getFaktumId();
         } else {
             oppdaterBrukerData(soknadId, faktum, systemLagring);
@@ -290,12 +288,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         }
         getJdbcTemplate().update("delete from faktumegenskap where soknad_id = ? and faktum_id = ?", soknadId, faktum.getFaktumId());
         getNamedParameterJdbcTemplate().batchUpdate(INSERT_FAKTUMEGENSKAP, SqlParameterSourceUtils.createBatch(faktum.getFaktumEgenskaper().toArray()));
-    }
-
-    private int utfyllingStartet(long soknadId) {
-        return getJdbcTemplate().update(
-                "update soknad set DELSTEGSTATUS = ? where soknad_id = ?",
-                UTFYLLING.name(), soknadId);
     }
 
     @Override

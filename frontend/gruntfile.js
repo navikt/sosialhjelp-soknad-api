@@ -84,7 +84,7 @@ module.exports = function (grunt) {
                     scripts: {
                         built: {
                             cwd: 'target/classes/META-INF/resources',
-                            files: 'js/built/built<%= grunt.template.today("yyyymmdd") %>.min.js'
+                            files: 'js/built/built<%= grunt.template.today("yyyymmddHHMMss") %>.min.js'
                         }
                     }
                 }
@@ -107,12 +107,12 @@ module.exports = function (grunt) {
                     'js/lib/jquery/jquery.fileupload-validate.js',
                     'js/lib/jquery/jquery.fileupload-angular.js',
                     'js/lib/*.js',
-                    '!js/app/**/templates.js',
-                    '!js/app/**/initDev.js',
+                    'js/app/**/!(templates).js',
+                    'js/app/**/!(initDev).js',
                     'target/classes/META-INF/resources/js/app/templates.js',
                     'js/common/**/*.js'
 				],
-				dest  : 'target/classes/META-INF/resources/js/built/built<%= grunt.template.today("yyyymmdd") %>.js',
+				dest  : 'target/classes/META-INF/resources/js/built/built<%= grunt.template.today("yyyymmddhhMMss") %>.js',
 				nonull: true
 			}
 		},
@@ -123,7 +123,7 @@ module.exports = function (grunt) {
 			},
 			my_target: {
 				files: {
-					'target/classes/META-INF/resources/js/built/built<%= grunt.template.today("yyyymmdd") %>.min.js': ['target/classes/META-INF/resources/js/built/built<%= grunt.template.today("yyyymmdd") %>.js']
+					'target/classes/META-INF/resources/js/built/built<%= grunt.template.today("yyyymmddhhMMss") %>.min.js': ['target/classes/META-INF/resources/js/built/built<%= grunt.template.today("yyyymmddhhMMss") %>.js']
 				}
 			}
 		},
@@ -192,7 +192,9 @@ module.exports = function (grunt) {
 			watch: {
 				tasks: ['default']
 			}
-		}
+		},
+
+        clean: ['target/classes/META-INF/resources/js/built']
     });
 
 	// Load NPM tasks
@@ -200,6 +202,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-html-build');
 	grunt.loadNpmTasks('grunt-html2js');
 	grunt.loadNpmTasks('grunt-karma');
@@ -210,5 +213,5 @@ module.exports = function (grunt) {
     grunt.registerTask('hint', ['jshint', 'watch']);
     grunt.registerTask('maven', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev']);
     grunt.registerTask('maven-test', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev', 'htmlbuild:test']);
-	grunt.registerTask('maven-prod', ['html2js', 'karma:unit', 'concat', 'uglify', 'htmlbuild:dev', 'htmlbuild:prod']);
+	grunt.registerTask('maven-prod', ['clean', 'html2js', 'karma:unit', 'concat', 'uglify', 'htmlbuild:dev', 'htmlbuild:prod']);
 };

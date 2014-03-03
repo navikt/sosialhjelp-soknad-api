@@ -27,6 +27,9 @@ import static org.junit.Assert.assertEquals;
 
 public class WebSoknadUtilsTest {
 
+    public static final String EOS_DAGPENGER = "4304";
+    public static final String RUTES_I_BRUT = "";
+    
     @Test
     public void harSkjemanummerDagpengerHvisIngenArbeidsforhold() {
         WebSoknad soknad = new WebSoknad();
@@ -68,7 +71,7 @@ public class WebSoknadUtilsTest {
         Personalia personalia = WebSoknadUtils.getPerson(soknad);
         personalia.setGjeldendeAdresse(lagUtenlandskAdresse());
         personalia.setSekundarAdresse(lagSekundarAdresseNorge());
-        assertEquals("0000", getJournalforendeEnhet(soknad));
+        assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
     }
 
     @Test
@@ -78,7 +81,7 @@ public class WebSoknadUtilsTest {
         Personalia personalia = WebSoknadUtils.getPerson(soknad);
         personalia.setGjeldendeAdresse(lagUtenlandskAdresse());
         personalia.setSekundarAdresse(lagSekundarAdresseNorge());
-        assertEquals("0000", getJournalforendeEnhet(soknad));
+        assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
     }
 
     @Test
@@ -91,12 +94,12 @@ public class WebSoknadUtilsTest {
                 .medProperty(GJELDENDEADRESSE_KEY, utland.getAdresse())
                 .medProperty(GJELDENDEADRESSE_TYPE_KEY, utland.getAdressetype());
         personalia.setGjeldendeAdresse(utland);
-        assertEquals("4304", getJournalforendeEnhet(soknad));
+        assertEquals(EOS_DAGPENGER, getJournalforendeEnhet(soknad));
         soknad = lagSoknad(lagAvskjediget("2014-1-1"));
         soknad.getFaktaMedKey("personalia").get(0)
                 .medProperty(GJELDENDEADRESSE_KEY, utland.getAdresse())
                 .medProperty(GJELDENDEADRESSE_TYPE_KEY, utland.getAdressetype());
-        assertEquals("0000", getJournalforendeEnhet(soknad));
+        assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
 
     }
 
