@@ -119,7 +119,7 @@ angular.module('sendsoknad')
         promiseArray.push(config.$promise);
         promiseArray.push(lasteindikatorDefer.promise);
 
-        var resolve = $q.all(promiseArray)
+        var resolve = $q.all(promiseArray);
 
         resolve.then(function() {
             $rootScope.app.laster = false;

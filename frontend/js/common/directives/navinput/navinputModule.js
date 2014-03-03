@@ -182,7 +182,7 @@ angular.module('nav.input', ['nav.cmstekster'])
                         return false;
                     }
                     return idx !== 0;
-                }
+                };
             },
             templateUrl: '../js/common/directives/navinput/navorgnrfeltTemplate.html'
         };
