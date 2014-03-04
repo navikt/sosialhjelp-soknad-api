@@ -25,6 +25,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         };
 
         $scope.$on('fileuploadstart', function () {
+            $scope.fremdriftsindikator.laster = true;
             $scope.skalViseFeilmelding = false;
             $scope.data.opplastingFeilet = false;
         });
@@ -32,6 +33,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         $scope.$on('fileuploadprocessfail', function (event, data) {
             $.each(data.files, function (index, file) {
                 if (file.error) {
+                    $scope.fremdriftsindikator.laster = false;
                     $scope.data.opplastingFeilet = file.error;
                     data.scope().clear(file);
                     $scope.clear(file);
@@ -59,6 +61,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
             url: '/sendsoknad/rest/soknad/' + data.soknad.soknadId + '/vedlegg/' + $scope.data.vedleggId + '/opplasting',
             done: function (e, data) {
                 $scope.clear(data.originalFiles[0]);
+                $scope.fremdriftsindikator.laster = false;
                 data.result.files.forEach(function (item) {
                     $scope.queue.push(new vedleggService(item));
                 });
@@ -70,7 +73,8 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                 } else {
                     errorCode = data.response().errorThrown;
                 }
-                $scope.data.opplastingFeilet =cms.tekster[errorCode];
+                $scope.fremdriftsindikator.laster = false;
+                $scope.data.opplastingFeilet = cms.tekster[errorCode];
                 $.each(data.files, function (index, file) {
                     data.scope.clear(file);
                     $scope.clear(file);
@@ -168,5 +172,27 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                     scope.submit();
                 });
             }
+        };
+    }])
+
+    .directive('alleFilerFerdig', ['$timeout', function($timeout) {
+        return function(scope, element) {
+            scope.$on('fileuploadstop', function() {
+                $timeout(function() {
+//                    console.log('watt');
+                    var listener = scope.$watch(
+                        function() {
+//                            console.log(element.find('a.laster').length);
+                            return element.find('a.laster').length === 0;
+                        },
+                        function(value) {
+                            if (value) {
+                                listener();
+//                                console.log(123);
+                            }
+                        }
+                    );
+                },500);
+            });
         };
     }]);
