@@ -130,10 +130,6 @@ angular.module('nav.input', ['nav.cmstekster'])
             replace: true,
             scope: true,
             link: function (scope, element) {
-                scope.erSynlig = function () {
-                    return element.is(':visible');
-                };
-
                 scope.visSlett = function(idx) {
                     if (scope.navVisSlett !== undefined && scope.navVisSlett === 'false') {
                         return false;
