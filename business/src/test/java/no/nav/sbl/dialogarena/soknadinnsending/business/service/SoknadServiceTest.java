@@ -164,7 +164,7 @@ public class SoknadServiceTest {
         Vedlegg vedleggSjekk = new Vedlegg().medSkjemaNummer("L6").medSoknadId(1L).medAntallSider(1).medVedleggId(2L).medFillagerReferanse(vedlegg.getFillagerReferanse()).medData(bytes);
         when(vedleggRepository.hentVedlegg(1L, 2L)).thenReturn(vedlegg);
         when(vedleggRepository.hentVedleggUnderBehandling(1L, null, "L6")).thenReturn(Arrays.asList(new Vedlegg().medVedleggId(10L)));
-        when(vedleggRepository.hentVedleggStream(1L, 10L)).thenReturn(new ByteArrayInputStream(bytes));
+        when(vedleggRepository.hentVedleggData(1L, 10L)).thenReturn(bytes);
         when(soknadRepository.hentSoknad(1L)).thenReturn(new WebSoknad().medBehandlingId("123").medAktorId("234"));
         soknadService.genererVedleggFaktum(1L, 2L);
         vedleggSjekk.setData(vedlegg.getData());
@@ -175,7 +175,7 @@ public class SoknadServiceTest {
 
     @Test
     public void skalGenererForhandsvisning() throws IOException {
-        when(vedleggRepository.hentVedleggStream(11L, 1L)).thenReturn(new ByteArrayInputStream(getBytesFromFile("/pdfs/minimal.pdf")));
+        when(vedleggRepository.hentVedleggData(11L, 1L)).thenReturn(getBytesFromFile("/pdfs/minimal.pdf"));
         byte[] bytes = soknadService.lagForhandsvisning(11L, 1L, 0);
         assertThat(bytes, instanceOf(byte[].class));
     }
@@ -321,8 +321,9 @@ public class SoknadServiceTest {
         verify(vedleggRepository).lagreVedlegg(1L, 4L, vedlegg.medInnsendingsvalg(Vedlegg.Status.VedleggKreves));
 
     }
+
     @Test
-    public void skalIkkeoppdatereDelstegstatusVedEpost(){
+    public void skalIkkeoppdatereDelstegstatusVedEpost() {
         Faktum faktum = new Faktum().medKey("epost").medValue("false").medFaktumId(1L);
         when(soknadRepository.lagreFaktum(1L, faktum)).thenReturn(2L);
         when(soknadRepository.hentFaktum(1L, 2L)).thenReturn(faktum);
@@ -331,11 +332,12 @@ public class SoknadServiceTest {
     }
 
     @Test
-    public void skalLagreVedlegg(){
+    public void skalLagreVedlegg() {
         Vedlegg vedlegg = new Vedlegg().medVedleggId(1L);
         soknadService.lagreVedlegg(11L, 1L, vedlegg);
         verify(vedleggRepository).lagreVedlegg(11L, 1L, vedlegg);
     }
+
     @Test
     public void skalSletteBrukerfaktum() {
         when(vedleggRepository.hentVedleggForFaktum(1L, 1L)).thenReturn(Arrays.asList(new Vedlegg().medVedleggId(111L).medSkjemaNummer("a1").medFaktumId(111L)));
