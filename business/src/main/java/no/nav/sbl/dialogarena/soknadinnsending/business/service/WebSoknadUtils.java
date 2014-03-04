@@ -66,10 +66,7 @@ public class WebSoknadUtils {
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
         String sluttaarsak = erPermittertellerHarRedusertArbeidstid(webSoknad);
         Personalia personalia = getPerson(webSoknad);
-        logger.warn("personalia " + personalia.getFnr() + " har utelandsk adr : " + personalia.harUtenlandskAdresse());
-        logger.warn("personalia " + personalia.getFnr() + " har utelandsk folkereg. adr : " + personalia.harUtenlandskFolkeregistrertAdresse());
-        logger.warn("personalia " + personalia.getFnr() + " har norsk midl. adr : " + personalia.harNorskMidlertidigAdresse());
-        if ((personalia.harUtenlandskFolkeregistrertAdresse() && (!personalia.harNorskMidlertidigAdresse()))) {
+           if ((personalia.harUtenlandskAdresseIEOS() && (!personalia.harNorskMidlertidigAdresse()))) {
             if (sluttaarsak.equals(PERMITTERT) || (sluttaarsak.equals(REDUSERT_ARBEIDSTID))) {
                 return EOS_DAGPENGER;
             } else {

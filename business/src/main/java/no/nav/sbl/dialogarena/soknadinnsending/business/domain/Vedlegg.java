@@ -265,6 +265,18 @@ public class Vedlegg {
         }
     }
 
+    public String getSkjemaNummerFiltrert() {
+        if (getSkjemaNummer().contains("|")) {
+            return getSkjemaNummer().substring(0, getSkjemaNummer().indexOf("|"));
+        }
+        return getSkjemaNummer();
+    }
+
+    @JsonIgnore
+    public String lagFilNavn() {
+        return getSkjemaNummer().equals("N6")? getNavn(): getSkjemaNummerFiltrert();
+    }
+
     public enum Status {
         IkkeVedlegg,
         VedleggKreves,

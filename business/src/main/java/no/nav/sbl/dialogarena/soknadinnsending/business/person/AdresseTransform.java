@@ -35,6 +35,7 @@ public class AdresseTransform {
     private Kodeverk kodeverk;
 
     private static final Logger logger = getLogger(AdresseTransform.class);
+    private static final String NORGE = "NOR";
 
     public Adresse mapGjeldendeAdresse(XMLBruker soapPerson, Kodeverk kodeverk) {
         this.kodeverk = kodeverk;
@@ -177,6 +178,7 @@ public class AdresseTransform {
     private Adresse finnPostAdresse(XMLPostadresse postadresse) {
         XMLUstrukturertAdresse ustrukturertAdresse = postadresse.getUstrukturertAdresse();
         Adresse adresse = retrieveFolkeregistrertUtenlandskAdresse(ustrukturertAdresse);
+        adresse.setLandkode(ustrukturertAdresse.getLandkode().toString());
         List<String> adresseLinjer = hentAdresseLinjer(ustrukturertAdresse);
         addIfNotNull(adresseLinjer, getLand(ustrukturertAdresse.getLandkode()));
         adresse.setAdresse(StringUtils.join(adresseLinjer, ", "));
@@ -202,7 +204,8 @@ public class AdresseTransform {
 
     private Adresse retrieveFolkeregistrertUtenlandskAdresse(XMLUstrukturertAdresse ustrukturertAdresse) {
         Adresse adresse = new Adresse();
-        if (ustrukturertAdresse.getLandkode() != null && "NOR".equals(ustrukturertAdresse.getLandkode().getValue())) {
+        adresse.setLandkode(ustrukturertAdresse.getLandkode().toString());
+        if (ustrukturertAdresse.getLandkode() != null && NORGE.equals(ustrukturertAdresse.getLandkode().getValue())) {
             adresse.setAdressetype(POSTADRESSE.name());
         } else {
             adresse.setAdressetype(UTENLANDSK_ADRESSE.name());
