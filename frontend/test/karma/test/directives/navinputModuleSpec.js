@@ -364,3 +364,122 @@ describe('navtekstMedSporsmalOgRegEx', function () {
         });
     });
 });
+describe('navorganisasjonsnummerfelt', function () {
+    var scope, element;
+
+    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+
+    beforeEach(module(function ($provide) {
+        $provide.value("cms", {'tekster':
+        {'hjelpetekstlabel.hjelpetekst.tittel': 'Min tittel',
+            'hjelpetekstlabel.hjelpetekst.tekst': 'Min tekst'}
+        });
+        $provide.value("data", {});
+    }));
+
+    beforeEach(inject(function ($compile, $rootScope) {
+        element = angular.element(
+            '<form name="form" > ' +
+                '<div data-navorganisasjonsnummerfelt ' +
+                'data-nav-faktum="egennaering.gardsbruk.false.organisasjonsnummer" ' +
+                'data-navconfig ' +
+                'data-navlabel="egennaering.gardsbruk.false.organisasjonsnummer" ' +
+                'data-nav-vis-slett="false" ' +
+                'data-navfeilmelding="{ required: \'egennaering.gardsbruk.false.organisasjonsnummer.feilmelding\', ' +
+                'pattern: \'organisasjonsnummer.format.feilmelding\'}"></div> ' +
+                '</form>');
+
+        $rootScope.faktum = {value: ''};
+        $compile(element)($rootScope);
+        $rootScope.$apply();
+
+        scope = element.find('div').scope();
+    }));
+    describe("navtekst", function () {
+        it('visSlett skal ikke vises for index 0', function () {
+            expect(scope.visSlett(0)).toBe(false);
+        });
+        it('visSlett skal ikke vises for navVisSlett satt til false selv med index storre enn 0', function () {
+            expect(scope.visSlett(2)).toBe(false);
+        });
+        it('visSlett skal vises for index storre enn 0', function () {
+            expect(scope.visSlett(0)).toBe(false);
+        });
+    });
+});
+describe('navorganisasjonsnummerfeltNavVisSlettTrue', function () {
+    var scope, element;
+
+    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+
+    beforeEach(module(function ($provide) {
+        $provide.value("cms", {'tekster':
+        {'hjelpetekstlabel.hjelpetekst.tittel': 'Min tittel',
+            'hjelpetekstlabel.hjelpetekst.tekst': 'Min tekst'}
+        });
+        $provide.value("data", {});
+    }));
+
+    beforeEach(inject(function ($compile, $rootScope) {
+        element = angular.element(
+            '<form name="form" > ' +
+                '<div data-navorganisasjonsnummerfelt ' +
+                'data-nav-faktum="egennaering.gardsbruk.false.organisasjonsnummer" ' +
+                'data-navconfig ' +
+                'data-navlabel="egennaering.gardsbruk.false.organisasjonsnummer" ' +
+                'data-nav-vis-slett="true" ' +
+                'data-navfeilmelding="{ required: \'egennaering.gardsbruk.false.organisasjonsnummer.feilmelding\', ' +
+                'pattern: \'organisasjonsnummer.format.feilmelding\'}"></div> ' +
+                '</form>');
+
+        $rootScope.faktum = {value: ''};
+        $compile(element)($rootScope);
+        $rootScope.$apply();
+
+        scope = element.find('div').scope();
+    }));
+    describe("orgnr med navvisslett satt til true", function () {
+        it('visSlett skal ikke vises for index 0 og navVisSlett true', function () {
+            expect(scope.visSlett(0)).toBe(false);
+        });
+        it('visSlett skal vises for index storre enn 0', function () {
+            expect(scope.visSlett(1)).toBe(true);
+        });
+    });
+});
+describe('navorganisasjonsnummerfeltVisSlett', function () {
+    var scope, element;
+
+    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+
+    beforeEach(module(function ($provide) {
+        $provide.value("cms", {'tekster':
+        {'hjelpetekstlabel.hjelpetekst.tittel': 'Min tittel',
+            'hjelpetekstlabel.hjelpetekst.tekst': 'Min tekst'}
+        });
+        $provide.value("data", {});
+    }));
+
+    beforeEach(inject(function ($compile, $rootScope) {
+        element = angular.element(
+            '<form name="form" > ' +
+                '<div data-navorganisasjonsnummerfelt ' +
+                'data-nav-faktum="egennaering.gardsbruk.false.organisasjonsnummer" ' +
+                'data-navconfig ' +
+                'data-navlabel="egennaering.gardsbruk.false.organisasjonsnummer" ' +
+                'data-navfeilmelding="{ required: \'egennaering.gardsbruk.false.organisasjonsnummer.feilmelding\', ' +
+                'pattern: \'organisasjonsnummer.format.feilmelding\'}"></div> ' +
+                '</form>');
+
+        $rootScope.faktum = {value: ''};
+        $compile(element)($rootScope);
+        $rootScope.$apply();
+
+        scope = element.find('div').scope();
+    }));
+    describe("organisasjonsnummer med ikke satt navVisSlett attributt", function () {
+        it('visSlett skal vises for index 2 hvis navVisSlett ikke er definert', function () {
+            expect(scope.visSlett(2)).toBe(true);
+        });
+    });
+});
