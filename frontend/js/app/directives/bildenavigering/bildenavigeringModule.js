@@ -34,8 +34,6 @@ angular.module('nav.bildenavigering', [])
                 };
 
                 scope.hentTimestamp = new Date().getTime();
-
-
             },
 
             templateUrl: function (element, attr) {
