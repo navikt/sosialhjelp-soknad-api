@@ -113,7 +113,7 @@ public class Personalia {
     }
 
     public boolean harUtenlandskAdresse() {
-        logger.warn("LANDKODE" + gjeldendeAdresse.getLandkode());
+        logger.warn("LANDKODEN ER" + gjeldendeAdresse.getLandkode());
         String adressetype = null;
 
         if(gjeldendeAdresse != null) {
@@ -187,5 +187,9 @@ public class Personalia {
             return true;
         }
         return false;
+    }
+
+    public void setEosService(EosBorgerService eosService) {
+        this.eosService = eosService;
     }
 }
