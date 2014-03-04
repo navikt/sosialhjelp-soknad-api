@@ -13,6 +13,7 @@ angular.module('nav.bildelastet', [])
                 element.parent().addClass('laster');
                 element[0].onload = function() {
                     element.parent().removeClass('laster');
+                    scope.$apply();
                 };
             }
         };
