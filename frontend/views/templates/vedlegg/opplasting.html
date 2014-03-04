@@ -19,7 +19,7 @@
                 <span data-ng-bind="data.opplastingFeilet"></span>
             </div>
             <section>
-                <ul class="opplastingliste clearfix sak-tredel">
+                <ul class="opplastingliste clearfix sak-tredel" data-alle-filer-ferdig>
                     <li class="panel-mini-belyst" data-ng-repeat="file in queue" data-ng-class="{'lasteropp': file.$processing()}" data-fil-feil>
                         <a class="lukk" data-ng-if="!!file.vedleggId" data-ng-click="file.$destroy()"
                            data-ng-controller="SlettOpplastingCtrl" href="javascript:void(0);"

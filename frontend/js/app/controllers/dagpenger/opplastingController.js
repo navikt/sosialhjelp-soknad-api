@@ -25,6 +25,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         };
 
         $scope.$on('fileuploadstart', function () {
+            $scope.fremdriftsindikator.laster = true;
             $scope.skalViseFeilmelding = false;
             $scope.data.opplastingFeilet = false;
         });
@@ -32,6 +33,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         $scope.$on('fileuploadprocessfail', function (event, data) {
             $.each(data.files, function (index, file) {
                 if (file.error) {
+                    $scope.fremdriftsindikator.laster = false;
                     $scope.data.opplastingFeilet = file.error;
                     data.scope().clear(file);
                     $scope.clear(file);
@@ -70,7 +72,8 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                 } else {
                     errorCode = data.response().errorThrown;
                 }
-                $scope.data.opplastingFeilet =cms.tekster[errorCode];
+                $scope.fremdriftsindikator.laster = false;
+                $scope.data.opplastingFeilet = cms.tekster[errorCode];
                 $.each(data.files, function (index, file) {
                     data.scope.clear(file);
                     $scope.clear(file);
@@ -168,5 +171,24 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                     scope.submit();
                 });
             }
+        };
+    }])
+
+    .directive('alleFilerFerdig', ['$timeout', function($timeout) {
+        return function(scope, element) {
+            $timeout(function() {
+                scope.$watch(
+                    function() {
+                        return element.find('a.laster').length === 0;
+                    },
+                    function(value) {
+                        if (value) {
+                            scope.fremdriftsindikator.laster = false;
+                        } else {
+                            scope.fremdriftsindikator.laster = true;
+                        }
+                    }
+                );
+            });
         };
     }]);
