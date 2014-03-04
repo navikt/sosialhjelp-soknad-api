@@ -483,3 +483,73 @@ describe('navorganisasjonsnummerfeltVisSlett', function () {
         });
     });
 });
+describe('orgnrValidate', function () {
+    var scope, element, inputnavn, form;
+
+    beforeEach(module('nav.input', 'nav.cmstekster', 'templates-main'));
+
+    beforeEach(module(function ($provide) {
+        $provide.value("cms", {'tekster':
+        {'hjelpetekstlabel.hjelpetekst.tittel': 'Min tittel',
+            'hjelpetekstlabel.hjelpetekst.tekst': 'Min tekst'}
+        });
+        $provide.value("data", {});
+    }));
+
+    beforeEach(inject(function ($compile, $rootScope) {
+        element = angular.element(
+            '<form name="form" > ' +
+                '<input type="text" name="inputname" ' +
+                'value="value" ' +
+                'data-ng-model="model" ' +
+                'data-ng-required="true" ' +
+                'data-error-messages="navfeilmelding" ' +
+                'data-blur-validate ' +
+                'data-ng-pattern="/[0-9]{9}/" ' +
+                'maxlength="9" ' +
+                'data-orgnr-validate> ' +
+            '</form>');
+
+        $rootScope.faktum = {value: ''};
+        $compile(element)($rootScope);
+        $rootScope.$apply();
+
+        scope = element.find('input').scope();
+        scope.lagreFaktum = function(){};
+        form = scope.form;
+        inputnavn = form.inputname;
+    }));
+    describe("organisasjonsnummer med ikke satt navVisSlett attributt", function () {
+        it('lagreFaktum skal ikke bli kalt hvis inputfeltet ikke er valid og blur blir kalt', function () {
+            spyOn(scope, 'lagreFaktum');
+            var inputEl = element.find('input');
+            inputEl.blur();
+            expect(scope.lagreFaktum).wasNotCalled();
+
+        });
+        it('lagreFaktum skal bli kalt hvis inputfeltet er valid og blur blir kalt', function () {
+            spyOn(scope, 'lagreFaktum');
+
+            var inputEl = element.find('input');
+            inputnavn.$setViewValue(123456789);
+            inputEl.blur();
+            expect(scope.lagreFaktum).toHaveBeenCalled();
+        });
+        it('lagreFaktum skal ikke bli kalt hvis inputfeltet inneholder andre ting enn tall og blur blir kalt', function () {
+            spyOn(scope, 'lagreFaktum');
+
+            var inputEl = element.find('input');
+            inputnavn.$setViewValue(12 + 'f' + 456789);
+            inputEl.blur();
+            expect(scope.lagreFaktum).wasNotCalled();
+        });
+        it('lagreFaktum skal ikke bli kalt hvis inputfeltet inneholder for fa tall og blur blir kalt', function () {
+            spyOn(scope, 'lagreFaktum');
+
+            var inputEl = element.find('input');
+            inputnavn.$setViewValue(12345678);
+            inputEl.blur();
+            expect(scope.lagreFaktum).wasNotCalled();
+        });
+    });
+});
