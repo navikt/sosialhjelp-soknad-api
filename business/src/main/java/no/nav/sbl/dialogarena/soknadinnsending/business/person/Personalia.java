@@ -3,8 +3,6 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosBorgerService;
 import org.slf4j.Logger;
 
-import javax.inject.Inject;
-
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.POSTADRESSE_UTLAND;
@@ -14,8 +12,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class Personalia {
 
-    @Inject
-    private EosBorgerService eosService;
+    private EosBorgerService eosBorgerService = new EosBorgerService();
 
     public static final String PERSONALIA_KEY = "personalia";
     public static final String FNR_KEY = "fnr";
@@ -145,7 +142,7 @@ public class Personalia {
             return false;
         }
 
-        if ((harUtenlandsAdressekode(adressetype)) && (eosService.isEosLandAnnetEnnNorge(landkode)))
+        if ((harUtenlandsAdressekode(adressetype)) && (eosBorgerService.isEosLandAnnetEnnNorge(landkode)))
         {
                return true;
         }
@@ -190,6 +187,6 @@ public class Personalia {
     }
 
     public void setEosService(EosBorgerService eosService) {
-        this.eosService = eosService;
+        this.eosBorgerService = eosService;
     }
 }
