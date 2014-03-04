@@ -7,6 +7,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import org.joda.time.DateTimeUtils;
 import org.joda.time.LocalDate;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +29,10 @@ public class WebSoknadUtilsTest {
 
     public static final String EOS_DAGPENGER = "4304";
     public static final String RUTES_I_BRUT = "";
-    
+
+    @InjectMocks
+    private EosBorgerService eosBorgerService;
+
     @Test
     public void harSkjemanummerDagpengerHvisIngenArbeidsforhold() {
         WebSoknad soknad = new WebSoknad();
@@ -84,7 +88,7 @@ public class WebSoknadUtilsTest {
     }
 
     @Test
-    public void skalRotueTilEos() {
+    public void skalRouteTilEos() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
         WebSoknad soknad = lagSoknad(lagPermittert("2014-1-1"));
         Personalia personalia = WebSoknadUtils.getPerson(soknad);
@@ -92,7 +96,9 @@ public class WebSoknadUtilsTest {
         soknad.getFaktaMedKey("personalia").get(0)
                 .medProperty(GJELDENDEADRESSE_KEY, utland.getAdresse())
                 .medProperty(GJELDENDEADRESSE_TYPE_KEY, utland.getAdressetype());
+        personalia.setEosService(eosBorgerService);
         personalia.setGjeldendeAdresse(utland);
+
         assertEquals(EOS_DAGPENGER, getJournalforendeEnhet(soknad));
         soknad = lagSoknad(lagAvskjediget("2014-1-1"));
         soknad.getFaktaMedKey("personalia").get(0)
