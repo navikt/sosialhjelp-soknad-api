@@ -66,7 +66,7 @@ public class WebSoknadUtils {
     public static String getJournalforendeEnhet(WebSoknad webSoknad) {
         String sluttaarsak = erPermittertellerHarRedusertArbeidstid(webSoknad);
         Personalia personalia = getPerson(webSoknad);
-           if ((personalia.harUtenlandskAdresse() && (!personalia.harNorskMidlertidigAdresse()))) {
+           if ((personalia.harUtenlandskAdresseIEOS() && (!personalia.harNorskMidlertidigAdresse()))) {
             if (sluttaarsak.equals(PERMITTERT) || (sluttaarsak.equals(REDUSERT_ARBEIDSTID))) {
                 return EOS_DAGPENGER;
             } else {
