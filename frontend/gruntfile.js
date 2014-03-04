@@ -1,6 +1,8 @@
 module.exports = function (grunt) {
+    var timestamp = grunt.template.today("yyyymmddHHMMss");
 	grunt.initConfig({
 		pkg   : grunt.file.readJSON('package.json'),
+        builtminName: 'target/classes/META-INF/resources/js/built/built' + timestamp + '.min.js',
         html2js: {
             main: {
                 src: [
@@ -84,7 +86,7 @@ module.exports = function (grunt) {
                     scripts: {
                         built: {
                             cwd: 'target/classes/META-INF/resources',
-                            files: 'js/built/built<%= grunt.template.today("yyyymmddHHMMss") %>.min.js'
+                            files: 'js/built/built' + timestamp + '.min.js'
                         }
                     }
                 }
@@ -112,7 +114,7 @@ module.exports = function (grunt) {
                     'target/classes/META-INF/resources/js/app/templates.js',
                     'js/common/**/*.js'
 				],
-				dest  : 'target/classes/META-INF/resources/js/built/built<%= grunt.template.today("yyyymmddhhMMss") %>.js',
+				dest  : 'target/classes/META-INF/resources/js/built/built' + timestamp + '.js',
 				nonull: true
 			}
 		},
@@ -123,7 +125,7 @@ module.exports = function (grunt) {
 			},
 			my_target: {
 				files: {
-					'target/classes/META-INF/resources/js/built/built<%= grunt.template.today("yyyymmddhhMMss") %>.min.js': ['target/classes/META-INF/resources/js/built/built<%= grunt.template.today("yyyymmddhhMMss") %>.js']
+                    '<%= builtminName %>': ['target/classes/META-INF/resources/js/built/built' + timestamp + '.js']
 				}
 			}
 		},
@@ -212,6 +214,6 @@ module.exports = function (grunt) {
 	grunt.registerTask('default', ['jshint', 'htmlbuild:dev', 'watch']);
     grunt.registerTask('hint', ['jshint', 'watch']);
     grunt.registerTask('maven', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev']);
-    grunt.registerTask('maven-test', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev', 'htmlbuild:test']);
-	grunt.registerTask('maven-prod', ['clean', 'html2js', 'karma:unit', 'concat', 'uglify', 'htmlbuild:dev', 'htmlbuild:prod']);
+    grunt.registerTask('maven-test', ['karma:unit']);
+	grunt.registerTask('maven-prod', ['clean', 'html2js', 'concat', 'uglify', 'htmlbuild:dev', 'htmlbuild:prod']);
 };

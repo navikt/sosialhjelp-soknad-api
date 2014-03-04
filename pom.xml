@@ -882,7 +882,7 @@
                             <nb>innholdstekster_nb.properties</nb>
                         </propertiesFiler>
                         <menyPunktPaths>
-                            <nb>/site/2/systemsider/Modernisering/sendsoknad/nb/tekster</nb>
+                            <nb>/site/18/app/sendsoknad/bm/tekster</nb>
                         </menyPunktPaths>
                     </configuration>
                 </plugin>

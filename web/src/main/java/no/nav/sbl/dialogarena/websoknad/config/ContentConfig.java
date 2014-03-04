@@ -21,12 +21,11 @@ import static java.util.Arrays.asList;
 @Configuration
 public class ContentConfig {
 
-    //@Value("http://e32apvl026.oera-t.local:8080")
     @Value("${dialogarena.cms.url}")
     private String cmsBaseUrl;
 
     private static final String DEFAULT_LOCALE = "nb";
-    private static final String INNHOLDSTEKSTER_NB_NO_REMOTE = "/systemsider/Modernisering/sendsoknad/nb/tekster";
+    private static final String INNHOLDSTEKSTER_NB_NO_REMOTE = "/app/sendsoknad/bm/tekster";
     private static final String INNHOLDSTEKSTER_NB_NO_LOCAL = "content.innholdstekster";
     private static final String SBL_WEBKOMPONENTER_NB_NO_REMOTE = "/systemsider/Modernisering/sbl-webkomponenter/nb/tekster";
     private static final String SBL_WEBKOMPONENTER_NB_NO_LOCAL = "content.sbl-webkomponenter";
