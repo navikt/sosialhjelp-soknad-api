@@ -1,21 +1,19 @@
 package no.nav.sbl.dialogarena.kodeverk;
 
 import no.nav.modig.common.MDCOperations;
-import no.nav.modig.core.exception.SystemException;
 import no.nav.modig.lang.option.Optional;
-import no.nav.tjeneste.virksomhet.kodeverk.v2.HentKodeverkHentKodeverkKodeverkIkkeFunnet;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.KodeverkPortType;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLEnkeltKodeverk;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKode;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLKodeverk;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.informasjon.XMLPeriode;
-import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkRequest;
 import org.apache.commons.collections15.Predicate;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -100,21 +98,29 @@ public class StandardKodeverk implements Kodeverk {
         return on(hentAlleKodenavnFraKodeverk(LANDKODE)).filter(not(equalTo(Adressekodeverk.LANDKODE_NORGE))).collect();
     }
 
+    @PostConstruct()
+    public  void lastKodeverkVedOppstart(){
+        lastInnNyeKodeverk();
+    }
     @Override
-    @Scheduled(cron = "0 15 04 * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void lastInnNyeKodeverk() {
         MDCOperations.putToMDC(MDCOperations.MDC_CALL_ID, MDCOperations.generateCallId());
         Map<String, XMLEnkeltKodeverk> oppdatertKodeverk = new HashMap<>();
         for (String kodeverksnavn : ALLE_KODEVERK) {
-
-            XMLEnkeltKodeverk enkeltkodeverk = hentKodeverk(kodeverksnavn);
-            List<XMLKode> gyldige = getGyldigeKodeverk(enkeltkodeverk);
-            enkeltkodeverk.getKode().clear();
-            enkeltkodeverk.getKode().addAll(gyldige);
+            XMLEnkeltKodeverk enkeltkodeverk = initKodeverkMedNavn(kodeverksnavn);
             oppdatertKodeverk.put(kodeverksnavn, enkeltkodeverk);
         }
         this.kodeverk.clear();
         this.kodeverk.putAll(oppdatertKodeverk);
+    }
+
+    private XMLEnkeltKodeverk initKodeverkMedNavn(String kodeverksnavn) {
+        XMLEnkeltKodeverk enkeltkodeverk = hentKodeverk(kodeverksnavn);
+        List<XMLKode> gyldige = getGyldigeKodeverk(enkeltkodeverk);
+        enkeltkodeverk.getKode().clear();
+        enkeltkodeverk.getKode().addAll(gyldige);
+        return enkeltkodeverk;
     }
 
     private List<XMLKode> getGyldigeKodeverk(XMLEnkeltKodeverk enkeltkodeverk) {
@@ -126,7 +132,7 @@ public class StandardKodeverk implements Kodeverk {
         if (kodeverket != null) {
             return kodeverket;
         }
-        kodeverk.put(kodeverknavn, hentKodeverk(kodeverknavn));
+        kodeverk.put(kodeverknavn, initKodeverkMedNavn(kodeverknavn));
         return kodeverk.get(kodeverknavn);
     }
 
@@ -156,10 +162,9 @@ public class StandardKodeverk implements Kodeverk {
         XMLEnkeltKodeverk kodeverket = null;
         Optional<RuntimeException> webserviceException = none();
         try {
-             kodeverket = (XMLEnkeltKodeverk) webservice.hentKodeverk(new XMLHentKodeverkRequest().withNavn(navn).withSpraak(spraak)).getKodeverk();
-       } catch (HentKodeverkHentKodeverkKodeverkIkkeFunnet kodeverkIkkeFunnet) {
-            throw new SystemException("Kodeverk '" + navn + "' (" + spraak + "): " + kodeverkIkkeFunnet.getMessage(), kodeverkIkkeFunnet);
-        } catch (RuntimeException e) {
+            throw new RuntimeException("");
+             //kodeverket = (XMLEnkeltKodeverk) webservice.hentKodeverk(new XMLHentKodeverkRequest().withNavn(navn).withSpraak(spraak)).getKodeverk();
+       } catch (RuntimeException e) {
             webserviceException = optional(e);
         }
 
