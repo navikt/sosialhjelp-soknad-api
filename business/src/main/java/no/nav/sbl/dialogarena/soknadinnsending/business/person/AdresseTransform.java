@@ -178,7 +178,8 @@ public class AdresseTransform {
     private Adresse finnPostAdresse(XMLPostadresse postadresse) {
         XMLUstrukturertAdresse ustrukturertAdresse = postadresse.getUstrukturertAdresse();
         Adresse adresse = retrieveFolkeregistrertUtenlandskAdresse(ustrukturertAdresse);
-        adresse.setLandkode(ustrukturertAdresse.getLandkode().toString());
+        logger.warn("landkoden er " + ustrukturertAdresse.getLandkode().getValue() + " med ref " + ustrukturertAdresse.getLandkode().getKodeverksRef());
+        adresse.setLandkode(ustrukturertAdresse.getLandkode().getValue());
         List<String> adresseLinjer = hentAdresseLinjer(ustrukturertAdresse);
         addIfNotNull(adresseLinjer, getLand(ustrukturertAdresse.getLandkode()));
         adresse.setAdresse(StringUtils.join(adresseLinjer, ", "));
@@ -204,7 +205,7 @@ public class AdresseTransform {
 
     private Adresse retrieveFolkeregistrertUtenlandskAdresse(XMLUstrukturertAdresse ustrukturertAdresse) {
         Adresse adresse = new Adresse();
-        adresse.setLandkode(ustrukturertAdresse.getLandkode().toString());
+        adresse.setLandkode(ustrukturertAdresse.getLandkode().getValue());
         if (ustrukturertAdresse.getLandkode() != null && NORGE.equals(ustrukturertAdresse.getLandkode().getValue())) {
             adresse.setAdressetype(POSTADRESSE.name());
         } else {
