@@ -53,16 +53,20 @@ public class Transformers {
         for (Vedlegg vedlegg : vedleggForventnings) {
             if (vedlegg.getInnsendingsvalg().er(Vedlegg.Status.LastetOpp)) {
                 resultat.add(new XMLVedlegg()
-                        .withFilnavn(vedlegg.getSkjemaNummer() + ".pdf")
+                        .withFilnavn(vedlegg.lagFilNavn())
                         .withSideantall(vedlegg.getAntallSider())
                         .withMimetype("application/pdf")
+                        .withTilleggsinfo(vedlegg.getNavn())
                         .withFilstorrelse(vedlegg.getStorrelse().toString())
-                        .withSkjemanummer(vedlegg.getSkjemaNummer())
+                        .withSkjemanummer(vedlegg.getSkjemaNummerFiltrert())
                         .withUuid(vedlegg.getFillagerReferanse())
                         .withInnsendingsvalg(LASTET_OPP.value()));
             } else {
-                resultat.add(new XMLVedlegg().withInnsendingsvalg(toXmlInnsendingsvalg(vedlegg.getInnsendingsvalg()))
-                        .withSkjemanummer(vedlegg.getSkjemaNummer()));
+                resultat.add(new XMLVedlegg()
+                        .withFilnavn(vedlegg.lagFilNavn())
+                        .withTilleggsinfo(vedlegg.getNavn())
+                        .withSkjemanummer(vedlegg.getSkjemaNummerFiltrert())
+                        .withInnsendingsvalg(toXmlInnsendingsvalg(vedlegg.getInnsendingsvalg())));
             }
 
         }

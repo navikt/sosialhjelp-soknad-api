@@ -1,9 +1,12 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
+import org.slf4j.Logger;
+
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.POSTADRESSE_UTLAND;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class Personalia {
 
@@ -24,6 +27,8 @@ public class Personalia {
     public static final String SEKUNDARADRESSE_GYLDIGFRA_KEY = "sekundarAdresseGyldigFra";
     public static final String SEKUNDARADRESSE_GYLDIGTIL_KEY = "sekundarAdresseGyldigTil";
 
+    private static final Logger logger = getLogger(Personalia.class);
+    
     private String fnr;
     private String alder;
     private String navn;
@@ -101,7 +106,9 @@ public class Personalia {
     }
 
     public boolean harUtenlandskAdresse() {
+        logger.warn("LANDKODE" + gjeldendeAdresse.getLandkode());
         String adressetype = null;
+
         if(gjeldendeAdresse != null) {
             adressetype = gjeldendeAdresse.getAdressetype(); 
         }
