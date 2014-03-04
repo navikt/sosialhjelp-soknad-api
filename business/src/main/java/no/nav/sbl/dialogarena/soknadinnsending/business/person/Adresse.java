@@ -5,6 +5,7 @@ public class Adresse {
     private String gyldigTil;
     private String gyldigFra;
     private String adresseString;
+    private String landkode;
 
     public String getAdressetype() {
         return adressetype;
@@ -36,5 +37,13 @@ public class Adresse {
 
     public void setAdresse(String adresse) {
         this.adresseString = adresse;
+    }
+
+    public String getLandkode() {
+        return landkode;
+    }
+
+    public void setLandkode(String landkode) {
+        this.landkode = landkode;
     }
 }
