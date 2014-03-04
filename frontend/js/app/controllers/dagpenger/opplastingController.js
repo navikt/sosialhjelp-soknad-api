@@ -61,7 +61,6 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
             url: '/sendsoknad/rest/soknad/' + data.soknad.soknadId + '/vedlegg/' + $scope.data.vedleggId + '/opplasting',
             done: function (e, data) {
                 $scope.clear(data.originalFiles[0]);
-                $scope.fremdriftsindikator.laster = false;
                 data.result.files.forEach(function (item) {
                     $scope.queue.push(new vedleggService(item));
                 });
@@ -177,22 +176,19 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 
     .directive('alleFilerFerdig', ['$timeout', function($timeout) {
         return function(scope, element) {
-            scope.$on('fileuploadstop', function() {
-                $timeout(function() {
-//                    console.log('watt');
-                    var listener = scope.$watch(
-                        function() {
-//                            console.log(element.find('a.laster').length);
-                            return element.find('a.laster').length === 0;
-                        },
-                        function(value) {
-                            if (value) {
-                                listener();
-//                                console.log(123);
-                            }
+            $timeout(function() {
+                scope.$watch(
+                    function() {
+                        return element.find('a.laster').length === 0;
+                    },
+                    function(value) {
+                        if (value) {
+                            scope.fremdriftsindikator.laster = false;
+                        } else {
+                            scope.fremdriftsindikator.laster = true;
                         }
-                    );
-                },500);
+                    }
+                );
             });
         };
     }]);
