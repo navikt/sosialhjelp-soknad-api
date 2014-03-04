@@ -26,6 +26,7 @@ public class Personalia {
     public static final String GJELDENDEADRESSE_TYPE_KEY = "gjeldendeAdresseType";
     public static final String GJELDENDEADRESSE_GYLDIGFRA_KEY = "gjeldendeAdresseGyldigFra";
     public static final String GJELDENDEADRESSE_GYLDIGTIL_KEY = "gjeldendeAdresseGyldigTil";
+    public static final String GJELDENDEADRESSE_LANDKODE = "gjeldendeAdresseLandkode";
     public static final String SEKUNDARADRESSE_KEY = "sekundarAdresse";
     public static final String SEKUNDARADRESSE_TYPE_KEY = "sekundarAdresseType";
     public static final String SEKUNDARADRESSE_GYLDIGFRA_KEY = "sekundarAdresseGyldigFra";
