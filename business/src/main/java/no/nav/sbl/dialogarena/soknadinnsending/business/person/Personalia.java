@@ -1,12 +1,9 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
-import org.slf4j.Logger;
-
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.POSTADRESSE_UTLAND;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
-import static org.slf4j.LoggerFactory.getLogger;
 
 public class Personalia {
 
@@ -35,7 +32,7 @@ public class Personalia {
     private String kjonn;
     private Adresse gjeldendeAdresse;
     private Adresse sekundarAdresse;
-    private static final Logger logger = getLogger(Personalia.class);
+
     public Personalia() {
     }
 
@@ -138,9 +135,7 @@ public class Personalia {
     }
 
     public boolean harUtenlandskFolkeregistrertAdresse() {
-        logger.warn("gjeldende adresse" + gjeldendeAdresse);
-        if (gjeldendeAdresse != null)
-        logger.warn("gjeldende adressetype" + gjeldendeAdresse.getAdressetype());
+
         if ((gjeldendeAdresse == null) || (gjeldendeAdresse.getAdressetype() == null))
         {
             return false;
