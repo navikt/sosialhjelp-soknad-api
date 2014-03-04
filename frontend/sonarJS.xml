@@ -18,7 +18,7 @@
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.javascript.jstest.reportsPath>target/surefire-reports/</sonar.javascript.jstest.reportsPath>
         <sonar.javascript.lcov.reportPath>target/karma-coverage/PhantomJS 1.9.7 (Linux)/lcov.info</sonar.javascript.lcov.reportPath>
-        <grunttarget>maven-prod</grunttarget>
+        <grunttarget>maven-test</grunttarget>
     </properties>
 
 	<build>
