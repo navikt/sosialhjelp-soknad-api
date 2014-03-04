@@ -20,8 +20,6 @@ angular.module('nav.input', ['nav.cmstekster'])
             link: {
                 pre: function (scope, element, attr) {
                     scope.value = attr.value;
-                    scope.label = attr.label;
-
                 },
                 post: function (scope, element, attr) {
                     scope.endret = function () {
