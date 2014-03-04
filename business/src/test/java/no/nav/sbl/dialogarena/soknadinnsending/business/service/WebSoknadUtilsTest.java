@@ -92,18 +92,18 @@ public class WebSoknadUtilsTest {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
         WebSoknad soknad = lagSoknad(lagPermittert("2014-1-1"));
         Personalia personalia = WebSoknadUtils.getPerson(soknad);
-        Adresse utland = lagUtenlandskAdresse();
+        Adresse utlandeos = lagUtenlandskEOSAdresse();
         soknad.getFaktaMedKey("personalia").get(0)
-                .medProperty(GJELDENDEADRESSE_KEY, utland.getAdresse())
-                .medProperty(GJELDENDEADRESSE_TYPE_KEY, utland.getAdressetype());
-        personalia.setEosService(eosBorgerService);
-        personalia.setGjeldendeAdresse(utland);
+                .medProperty(GJELDENDEADRESSE_KEY, utlandeos.getAdresse())
+                .medProperty(GJELDENDEADRESSE_TYPE_KEY, utlandeos.getAdressetype());
+
+        personalia.setGjeldendeAdresse(utlandeos);
 
         assertEquals(EOS_DAGPENGER, getJournalforendeEnhet(soknad));
         soknad = lagSoknad(lagAvskjediget("2014-1-1"));
         soknad.getFaktaMedKey("personalia").get(0)
-                .medProperty(GJELDENDEADRESSE_KEY, utland.getAdresse())
-                .medProperty(GJELDENDEADRESSE_TYPE_KEY, utland.getAdressetype());
+                .medProperty(GJELDENDEADRESSE_KEY, utlandeos.getAdresse())
+                .medProperty(GJELDENDEADRESSE_TYPE_KEY, utlandeos.getAdressetype());
         assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
 
     }
@@ -140,6 +140,13 @@ public class WebSoknadUtilsTest {
     private static Adresse lagUtenlandskAdresse() {
         Adresse adresse = new Adresse();
         adresse.setAdressetype(UTENLANDSK_ADRESSE.name());
+        return adresse;
+    }
+
+    private static Adresse lagUtenlandskEOSAdresse() {
+        Adresse adresse = new Adresse();
+        adresse.setAdressetype(UTENLANDSK_ADRESSE.name());
+        adresse.setLandkode("SWE");
         return adresse;
     }
 
