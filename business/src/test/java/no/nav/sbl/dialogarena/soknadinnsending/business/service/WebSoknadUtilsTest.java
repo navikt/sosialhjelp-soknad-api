@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_TYPE_KEY;
@@ -141,12 +140,6 @@ public class WebSoknadUtilsTest {
     private static Adresse lagSekundarAdresseNorge() {
         Adresse adresse = new Adresse();
         adresse.setAdressetype(MIDLERTIDIG_POSTADRESSE_NORGE.name());
-        return adresse;
-    }
-
-    private static Adresse lagSekundarAdresseUtland() {
-        Adresse adresse = new Adresse();
-        adresse.setAdressetype(MIDLERTIDIG_POSTADRESSE_UTLAND.name());
         return adresse;
     }
 
