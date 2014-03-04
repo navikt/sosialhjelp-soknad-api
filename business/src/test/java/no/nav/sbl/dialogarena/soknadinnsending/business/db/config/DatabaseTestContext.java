@@ -4,7 +4,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -39,15 +39,13 @@ public class DatabaseTestContext {
 
     private static boolean erInMemoryDatabase() {
         String dbProp = getProperty("no.nav.sbl.dialogarena.sendsoknad.hsqldb", "true");
-        if (dbProp == null) {
-            return true;
-        }
-        return dbProp.equalsIgnoreCase("true");
+        return dbProp == null || dbProp.equalsIgnoreCase("true");
     }
 
-    public static SingleConnectionDataSource buildDataSource(String propertyFileName) throws IOException {
-        SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
-        dataSource.setSuppressClose(true);
+    public static DataSource buildDataSource(String propertyFileName) throws IOException {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        //
+        //dataSource.setSuppressClose(true);
         Properties env = dbProperties(propertyFileName);
         dataSource.setDriverClassName(env.getProperty("db.driverClassName"));
         dataSource.setUrl(env.getProperty("db.url"));

@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
-import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Test;
@@ -11,7 +10,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -64,9 +62,8 @@ public class VedleggRepositoryJdbcTest {
         byte[] lagret = new byte[]{1, 2, 3};
         final Vedlegg v = getVedlegg(lagret);
         Long id = vedleggRepository.opprettVedlegg(v, lagret);
-        InputStream hentet = vedleggRepository.hentVedleggStream(v.getSoknadId(), id);
-        byte[] bytes = IOUtils.toByteArray(hentet);
-        assertThat(bytes, is(equalTo(lagret)));
+        byte[] hentet = vedleggRepository.hentVedleggData(v.getSoknadId(), id);
+        assertThat(hentet, is(equalTo(lagret)));
     }
 
     @Test
