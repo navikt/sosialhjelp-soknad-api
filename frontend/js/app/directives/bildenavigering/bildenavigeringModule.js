@@ -15,8 +15,8 @@ angular.module('nav.bildenavigering', [])
                 scope.range = function (til) {
                     var r = [];
                     for (var i = 0; i < til; i++) {
-                        r.push(i);  
-                    } 
+                        r.push(i);
+                    }
                     return r;
                 };
 
