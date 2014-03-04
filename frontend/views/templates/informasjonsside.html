@@ -2,7 +2,7 @@
 
 <div data-stegindikator data-steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="0"></div>
 
-<div class="hvit-side" id="informasjonsside" data-sidetittel="sidetittel.informasjon" data-ng-cloak>
+    <div class="hvit-side" id="informasjonsside" data-sidetittel="sidetittel.informasjon" data-ng-cloak>
 	<div data-panelbelyst>
         <div class="feil" data-ng-show="tpsSvarerIkke()">
         	<h1 class="utrop-sirkel-ikon">{{ 'feilmelding' | cmstekst }}</h1>
@@ -77,7 +77,7 @@
                     <span class="melding">{{ 'dagpenger.informasjonsside.lestbrosjyre.feilmelding' | cmstekst }}</span>
 				</div>
 				
-				<div id="oppsummering" data-ng-if="oppsummering == true">
+				<div data-ng-if="oppsummering == true">
 					<span class="sjekket"></span>
                     <span>{{ 'dagpenger.informasjonsside.lestbrosjyre.sporsmal' | cmstekst }}</span>
 				</div>
