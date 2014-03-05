@@ -1517,7 +1517,7 @@
             }));
 
             it('Skjemaveileder og ditt Nav skal settes til riktig url', function () {
-                expect(scope.dittNavBaseUrl).toEqual("dittnavUrl");
+                expect(scope.dittnavUrl).toEqual("dittnavUrl");
                 expect(scope.skjemaVeilederUrl).toEqual("skjemaVeilederUrl");
             });
         });
