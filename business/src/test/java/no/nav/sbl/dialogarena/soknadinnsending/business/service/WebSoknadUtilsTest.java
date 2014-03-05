@@ -17,6 +17,7 @@ import java.util.Map;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_LANDKODE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_TYPE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.DAGPENGER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.DAGPENGER_VED_PERMITTERING;
@@ -28,7 +29,7 @@ public class WebSoknadUtilsTest {
 
     public static final String EOS_DAGPENGER = "4304";
     public static final String RUTES_I_BRUT = "";
-    
+
     @Test
     public void harSkjemanummerDagpengerHvisIngenArbeidsforhold() {
         WebSoknad soknad = new WebSoknad();
@@ -84,21 +85,18 @@ public class WebSoknadUtilsTest {
     }
 
     @Test
-    public void skalRotueTilEos() {
+    public void skalRuteSoknadTilEosLand() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
         WebSoknad soknad = lagSoknad(lagPermittert("2014-1-1"));
+        Adresse utlandeos = lagUtenlandskEOSAdresse();
+        soknad.getFaktaMedKey("personalia").get(0)
+                .medProperty(GJELDENDEADRESSE_KEY, utlandeos.getAdresse())
+                .medProperty(GJELDENDEADRESSE_LANDKODE, utlandeos.getLandkode())
+                .medProperty(GJELDENDEADRESSE_TYPE_KEY, utlandeos.getAdressetype());
         Personalia personalia = WebSoknadUtils.getPerson(soknad);
-        Adresse utland = lagUtenlandskAdresse();
-        soknad.getFaktaMedKey("personalia").get(0)
-                .medProperty(GJELDENDEADRESSE_KEY, utland.getAdresse())
-                .medProperty(GJELDENDEADRESSE_TYPE_KEY, utland.getAdressetype());
-        personalia.setGjeldendeAdresse(utland);
+        personalia.setGjeldendeAdresse(utlandeos);
+
         assertEquals(EOS_DAGPENGER, getJournalforendeEnhet(soknad));
-        soknad = lagSoknad(lagAvskjediget("2014-1-1"));
-        soknad.getFaktaMedKey("personalia").get(0)
-                .medProperty(GJELDENDEADRESSE_KEY, utland.getAdresse())
-                .medProperty(GJELDENDEADRESSE_TYPE_KEY, utland.getAdressetype());
-        assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
 
     }
 
@@ -134,6 +132,13 @@ public class WebSoknadUtilsTest {
     private static Adresse lagUtenlandskAdresse() {
         Adresse adresse = new Adresse();
         adresse.setAdressetype(UTENLANDSK_ADRESSE.name());
+        return adresse;
+    }
+
+    private static Adresse lagUtenlandskEOSAdresse() {
+        Adresse adresse = new Adresse();
+        adresse.setAdressetype(UTENLANDSK_ADRESSE.name());
+        adresse.setLandkode("SWE");
         return adresse;
     }
 
