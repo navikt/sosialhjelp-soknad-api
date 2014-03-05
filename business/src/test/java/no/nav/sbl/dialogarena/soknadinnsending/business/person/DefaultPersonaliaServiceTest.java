@@ -2,7 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosBorgerService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosLandService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
@@ -135,7 +135,7 @@ public class DefaultPersonaliaServiceTest {
     private BrukerprofilPortType brukerProfilMock;
 
     @Mock
-    private EosBorgerService eosBorgerService;
+    private EosLandService eosLandService;
 
     @Mock
     private Kodeverk kodeverkMock;
@@ -153,7 +153,7 @@ public class DefaultPersonaliaServiceTest {
                 EN_ADRESSE_POSTSTED);
         when(kodeverkMock.getLand(NORGE_KODE)).thenReturn(NORGE);
         when(kodeverkMock.getLand(EN_LANDKODE)).thenReturn(ET_LAND);
-        when(eosBorgerService.getStatsborgeskapType(NORGE_KODE)).thenReturn(
+        when(eosLandService.getStatsborgeskapType(NORGE_KODE)).thenReturn(
                 "Norsk");
 
         dateTimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd");

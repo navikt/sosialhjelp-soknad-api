@@ -7,7 +7,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import org.joda.time.DateTimeUtils;
 import org.joda.time.LocalDate;
 import org.junit.Test;
-import org.mockito.InjectMocks;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +17,7 @@ import java.util.Map;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_LANDKODE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_TYPE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.DAGPENGER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.DAGPENGER_VED_PERMITTERING;
@@ -29,9 +29,6 @@ public class WebSoknadUtilsTest {
 
     public static final String EOS_DAGPENGER = "4304";
     public static final String RUTES_I_BRUT = "";
-
-    @InjectMocks
-    private EosBorgerService eosBorgerService;
 
     @Test
     public void harSkjemanummerDagpengerHvisIngenArbeidsforhold() {
@@ -88,23 +85,18 @@ public class WebSoknadUtilsTest {
     }
 
     @Test
-    public void skalRouteTilEos() {
+    public void skalRuteSoknadTilEosLand() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
         WebSoknad soknad = lagSoknad(lagPermittert("2014-1-1"));
-        Personalia personalia = WebSoknadUtils.getPerson(soknad);
         Adresse utlandeos = lagUtenlandskEOSAdresse();
         soknad.getFaktaMedKey("personalia").get(0)
                 .medProperty(GJELDENDEADRESSE_KEY, utlandeos.getAdresse())
+                .medProperty(GJELDENDEADRESSE_LANDKODE, utlandeos.getLandkode())
                 .medProperty(GJELDENDEADRESSE_TYPE_KEY, utlandeos.getAdressetype());
-
+        Personalia personalia = WebSoknadUtils.getPerson(soknad);
         personalia.setGjeldendeAdresse(utlandeos);
 
         assertEquals(EOS_DAGPENGER, getJournalforendeEnhet(soknad));
-        soknad = lagSoknad(lagAvskjediget("2014-1-1"));
-        soknad.getFaktaMedKey("personalia").get(0)
-                .medProperty(GJELDENDEADRESSE_KEY, utlandeos.getAdresse())
-                .medProperty(GJELDENDEADRESSE_TYPE_KEY, utlandeos.getAdressetype());
-        assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
 
     }
 
