@@ -151,6 +151,7 @@ angular.module('sendsoknad')
         var soknadOppsettDefer = $q.defer();
         var soknadDeferer = $q.defer();
         var faktaDefer = $q.defer();
+        var configDefer = $q.defer();
 
         var brukerbehandlingsid = getBehandlingIdFromUrl();
         var soknad = $resource('/sendsoknad/rest/soknad/behandling/:behandlingId').get(
@@ -212,12 +213,13 @@ angular.module('sendsoknad')
                         soknadOppsettDefer.resolve();
                     }
                 );
-            }
-        );
-        
-        var config = $resource('/sendsoknad/rest/getConfig').get(
-            function (result) {
-                data.config = result;
+
+                $resource('/sendsoknad/rest/getConfig/' + soknadId).get(
+                    function (result) {
+                        data.config = result;
+                        configDefer.resolve();
+                    }
+                );
             }
         );
 
@@ -240,7 +242,7 @@ angular.module('sendsoknad')
             lasteindikatorDefer.resolve();
         }, 2000);
 
-        promiseArray.push(soknadOppsettDefer.promise, soknadDeferer.promise, faktaDefer.promise, land.$promise, tekster.$promise, config.$promise, lasteindikatorDefer.promise);
+        promiseArray.push(soknadOppsettDefer.promise, soknadDeferer.promise, faktaDefer.promise, land.$promise, tekster.$promise, lasteindikatorDefer.promise, configDefer.promise);
 
         var resolve = $q.all(promiseArray);
 

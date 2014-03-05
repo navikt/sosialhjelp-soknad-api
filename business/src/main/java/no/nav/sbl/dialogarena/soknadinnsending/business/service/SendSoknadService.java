@@ -3,6 +3,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 
 import java.util.List;
 
@@ -32,4 +33,6 @@ public interface SendSoknadService {
     WebSoknad hentSoknadMetaData(long soknadId);
 
     void settDelsteg(Long soknadId, DelstegStatus delstegStatus);
+
+    SoknadStruktur hentSoknadStruktur(Long soknadId);
 }

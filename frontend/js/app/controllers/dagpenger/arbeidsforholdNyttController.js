@@ -19,9 +19,6 @@ angular.module('nav.arbeidsforhold.nyttarbeidsforhold.controller', [])
             }, 50);
         };
 
-		$scope.sluttaarsakUrl = data.config["soknad.sluttaarsak.url"];
-		$scope.lonnskravSkjemaUrl = data.config["soknad.lonnskravskjema.url"];
-		$scope.permiteringUrl = data.config["soknad.permitteringsskjema.url"];
 
 		var url = $location.$$url;
 		var endreModus = url.indexOf('endrearbeidsforhold') !== -1;

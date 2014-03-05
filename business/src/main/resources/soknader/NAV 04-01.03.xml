@@ -561,5 +561,8 @@
 		<inverted>true</inverted>
 		<forSystemfaktum>true</forSystemfaktum>
 	</vedlegg>
+
+    <vedleggsreferanse>G2</vedleggsreferanse>
+    <vedleggsreferanse>NAV 04-08.03</vedleggsreferanse>
 </soknad>
 	
