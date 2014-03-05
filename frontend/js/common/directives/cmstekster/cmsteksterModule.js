@@ -19,6 +19,13 @@ angular.module('nav.cmstekster', [])
             element.html(cms.tekster[nokkel]);
         };
     }])
+    .filter('configUrl', ['data', function(data) {
+        return function(nokkel) {
+            var url = data.config[nokkel.toLowerCase() + '.url'];
+
+            return url === undefined ? '' : url;
+        };
+    }])
     .filter('cmstekst', ['cms', function(cms) {
         return function(nokkel) {
             var tekst = cms.tekster[nokkel];

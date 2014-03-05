@@ -18,6 +18,7 @@ public class SoknadStruktur implements Serializable {
 
     private List<SoknadFaktum> fakta = new ArrayList<>();
     private List<SoknadVedlegg> vedlegg = new ArrayList<>();
+    private List<String> vedleggReferanser = new ArrayList<>();
 
 
     @XmlElement(name = "faktum")
@@ -38,11 +39,19 @@ public class SoknadStruktur implements Serializable {
         this.vedlegg = vedlegg;
     }
 
+    @XmlElement(name = "vedleggsreferanse")
+    public List<String> getVedleggReferanser() { return vedleggReferanser; }
+
+    public void setVedleggReferanser(List<String> vedleggReferanser) {
+        this.vedleggReferanser = vedleggReferanser;
+    }
+
     @Override
     public String toString() {
         return new StringBuilder("SoknadStruktur{")
                 .append(", fakta=").append(fakta)
                 .append(", vedlegg=").append(vedlegg)
+                .append(", vedleggreferanser=").append(vedleggReferanser)
                 .append('}')
                 .toString();
     }
