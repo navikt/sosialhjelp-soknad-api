@@ -1,7 +1,7 @@
 <div class="rad nettotopp">
 	<div class="begrensning">
 		<ul class="stegindikator">
-		    <li data-ng-repeat="steg in data.liste" data-ng-class="{aktiv: $index == {{ aktivIndex }}, stegklikkbart: erKlikkbar($index)}">
+		    <li data-ng-repeat="steg in data.liste" data-ng-class="{aktiv: $index == {{ aktivIndex }}, stegklikkbart: erKlikkbar($index) && !($index == {{ aktivIndex }})}">
 		        <a class="steg"  href="{{ hentLenke($index) }}" data-ng-if="erKlikkbar($index)">
                     <span class="tekst">{{  'stegindikator.' + steg | cmstekst }}</span>
                     <span class="stegnummer">{{ $index + 1 }}</span>
