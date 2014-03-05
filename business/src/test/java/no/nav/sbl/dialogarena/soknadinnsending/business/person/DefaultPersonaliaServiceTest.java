@@ -1,5 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
+import no.nav.modig.core.exception.ApplicationException;
+
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosLandService;
@@ -51,6 +53,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.annotation.ExpectedException;
 
 import javax.xml.ws.WebServiceException;
 import java.math.BigInteger;
@@ -457,75 +460,41 @@ public class DefaultPersonaliaServiceTest {
         assertThat(sekundarAdresse.getAdresse(), is(forventetAdresse));
     }
 
-    //TODO unignore når testing er ferdig
-    @Ignore
-    @Test
-    public void returnererTomPersonaliaVedTpsFeil() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+    @Test(expected=ApplicationException.class)
+    public void kasterExceptionVedTpsFeil() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
         when(
                 brukerProfilMock
                         .hentKontaktinformasjonOgPreferanser(org.mockito.Matchers
                                 .any(XMLHentKontaktinformasjonOgPreferanserRequest.class)))
                 .thenThrow(new WebServiceException());
         
-        Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
-        
-        assertThat(personalia, is(not(nullValue())));
-        Assert.assertNull(personalia.getAlder());
-        Assert.assertNull(personalia.getEpost());
-        Assert.assertNull(personalia.getFnr());
-        Assert.assertNull(personalia.getEpost());
-        Assert.assertNull(personalia.getKjonn());
-        Assert.assertNull(personalia.getNavn());
-        
-        Assert.assertFalse(personalia.harNorskMidlertidigAdresse());
-        Assert.assertFalse(personalia.harUtenlandskAdresse());
+        personaliaService.hentPersonalia(RIKTIG_IDENT);
     }
 
-    //TODO unignore når testing er ferdig
-    @Ignore
-    @Test
-    public void returnererTomPersonaliaVedManglendePerson() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+    @Test(expected=ApplicationException.class)
+    public void kasterExceptionVedManglendePerson() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
         when(
                 brukerProfilMock
                         .hentKontaktinformasjonOgPreferanser(org.mockito.Matchers
                                 .any(XMLHentKontaktinformasjonOgPreferanserRequest.class)))
                 .thenThrow(new HentKontaktinformasjonOgPreferanserPersonIkkeFunnet());
         
-        Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
-        
-        assertThat(personalia, is(not(nullValue())));
-        Assert.assertNull(personalia.getAlder());
-        Assert.assertNull(personalia.getEpost());
-        Assert.assertNull(personalia.getFnr());
-        Assert.assertNull(personalia.getEpost());
-        Assert.assertNull(personalia.getKjonn());
-        Assert.assertNull(personalia.getNavn());
+        personaliaService.hentPersonalia(RIKTIG_IDENT);
     }
 
-    //TODO unignore når testing er ferdig
-    @Ignore
-    @Test
-    public void returnererTomPersonaliaVedSikkerhetsbegrensing() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
+    @Test(expected=ApplicationException.class)
+    public void kasterExceptionVedSikkerhetsbegrensing() throws HentKontaktinformasjonOgPreferanserPersonIkkeFunnet, HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning {
         when(
                 brukerProfilMock
                         .hentKontaktinformasjonOgPreferanser(org.mockito.Matchers
                                 .any(XMLHentKontaktinformasjonOgPreferanserRequest.class)))
                 .thenThrow(new HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning());
         
-        Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
-        
-        assertThat(personalia, is(not(nullValue())));
-        Assert.assertNull(personalia.getAlder());
-        Assert.assertNull(personalia.getEpost());
-        Assert.assertNull(personalia.getFnr());
-        Assert.assertNull(personalia.getEpost());
-        Assert.assertNull(personalia.getKjonn());
-        Assert.assertNull(personalia.getNavn());
+        personaliaService.hentPersonalia(RIKTIG_IDENT);
     }
     
-    @SuppressWarnings("unchecked")
-    @Test
-    public void returnereTomPersonaliaVedWebserviceFeilIPersonTjeneste() throws HentKjerneinformasjonPersonIkkeFunnet,
+    @Test(expected=ApplicationException.class)
+    public void kasterExceptionVedWebserviceFeilIPersonTjeneste() throws HentKjerneinformasjonPersonIkkeFunnet,
             HentKjerneinformasjonSikkerhetsbegrensning,
             HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning,
             HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
@@ -533,15 +502,7 @@ public class DefaultPersonaliaServiceTest {
                                 .any(HentKjerneinformasjonRequest.class)))
                 .thenThrow(new WebServiceException());
 
-        Personalia personalia = personaliaService.lagrePersonaliaOgBarn(RIKTIG_IDENT, 21L);
-
-        assertThat(personalia, is(not(nullValue())));
-        Assert.assertNull(personalia.getAlder());
-        Assert.assertNull(personalia.getEpost());
-        Assert.assertNull(personalia.getFnr());
-        Assert.assertNull(personalia.getEpost());
-        Assert.assertNull(personalia.getKjonn());
-        Assert.assertNull(personalia.getNavn());
+        personaliaService.hentPersonalia(RIKTIG_IDENT);
     }
     
         
