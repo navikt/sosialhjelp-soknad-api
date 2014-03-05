@@ -69,4 +69,14 @@ describe('stegindikator', function () {
         });
     });
 });
+describe('norskDatoFilter', function () {
+    beforeEach(module('nav.norskDatoFilter'));
 
+    describe('norskDatoFilter', function() {
+        it('norskDatoFilter skal returnere maned pa norsk', inject(function ($filter) {
+            var norskdato = $filter('norskdato');
+            expect(norskdato("")).toBe("");
+            expect(norskdato("11-02-2013")).toBe('11. Februar 2013');
+        }));
+    });
+});
