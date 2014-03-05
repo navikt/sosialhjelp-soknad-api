@@ -34,5 +34,5 @@ angular.module('nav.avbryt', [])
     }])
     .controller('SlettetCtrl', ['$scope', '$location', 'data', function ($scope, $location, data) {
         $scope.skjemaVeilederUrl = data.config["soknad.skjemaveileder.url"];  
-        $scope.dittNavBaseUrl = data.config["dittnav.link.url"];
+        $scope.dittnavUrl = data.config["dittnav.link.url"];
     }]);
