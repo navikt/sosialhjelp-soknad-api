@@ -105,6 +105,7 @@ public class StandardKodeverk implements Kodeverk {
     public  void lastKodeverkVedOppstart(){
         lastInnNyeKodeverk();
     }
+
     @Override
     @Scheduled(cron = "0 0 0 * * *")
     public void lastInnNyeKodeverk() {
