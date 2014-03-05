@@ -137,10 +137,6 @@ public class Personalia {
             return false;
         }
 
-        if (adressetype == null) {
-            return false;
-        }
-
         if ((harUtenlandsAdressekode(adressetype)) && (eosLandService.isEosLandAnnetEnnNorge(landkode)))
         {
                return true;
