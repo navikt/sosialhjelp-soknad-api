@@ -198,7 +198,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         XMLHovedskjema hovedskjema = new XMLHovedskjema()
                 .withInnsendingsvalg(LASTET_OPP.toString())
                 .withSkjemanummer(skjemanummer)
-                .withFilnavn(skjemanummer + ".pdf")
+                .withFilnavn(skjemanummer)
                 .withMimetype("application/pdf")
                 .withFilstorrelse("" + pdf.length)
                 .withUuid(soknad.getUuid())

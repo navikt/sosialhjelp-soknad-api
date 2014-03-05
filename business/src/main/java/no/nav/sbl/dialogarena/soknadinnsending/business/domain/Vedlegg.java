@@ -266,7 +266,7 @@ public class Vedlegg {
     }
 
     public String getSkjemaNummerFiltrert() {
-        if (getSkjemaNummer().contains("|")) {
+        if (getSkjemaNummer() != null && getSkjemaNummer().contains("|")) {
             return getSkjemaNummer().substring(0, getSkjemaNummer().indexOf("|"));
         }
         return getSkjemaNummer();
