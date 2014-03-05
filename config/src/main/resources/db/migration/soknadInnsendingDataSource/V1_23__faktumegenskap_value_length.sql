@@ -1,0 +1,1 @@
+alter table faktumegenskap modify value varchar2(2000);

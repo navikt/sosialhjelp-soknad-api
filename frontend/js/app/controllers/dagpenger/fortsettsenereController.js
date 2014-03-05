@@ -20,7 +20,7 @@ angular.module('nav.fortsettsenere', ['nav.cmstekster'])
 
             $scope.soknadId = data.soknad.soknadId;
 
-            $scope.dittNavUrl = data.config["soknad.dittnav.link.url"];
+            $scope.dittnavUrl = data.config["dittnav.link.url"];
 
             $scope.fortsettSenere = function (form) {
                 $scope.$broadcast('RUN_VALIDATION' + form.$name);
@@ -41,7 +41,7 @@ angular.module('nav.fortsettsenere', ['nav.cmstekster'])
         }
     ])
     .controller('FortsettSenereKvitteringCtrl', ['$scope', 'data', function ($scope, data) {
-        $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
+        $scope.dittnavUrl = data.config["dittnav.link.url"];
         $scope.epost = data.finnFaktum('epost');
 
         if (!$scope.forrigeSide) {
