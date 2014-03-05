@@ -274,6 +274,10 @@
                                         <span>{{ hentTekst "dagpenger.oppsummering.datotil" }}</span>
                                         <span>{{ formatterLangDato properties.datotil }}</span>
                                     {{/if}}
+                                    {{#if properties.konkursdato}}
+                                        <span>{{ hentTekst "dagpenger.oppsummering.datotil" }}</span>
+                                        <span>{{ formatterLangDato properties.konkursdato }}</span>
+                                    {{/if}}
                                 </li>
 
 

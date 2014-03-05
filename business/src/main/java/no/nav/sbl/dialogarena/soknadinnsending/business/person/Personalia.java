@@ -1,9 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosBorgerService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosLandService;
 import org.slf4j.Logger;
-
-import javax.inject.Inject;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
@@ -14,8 +12,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class Personalia {
 
-    @Inject
-    private EosBorgerService eosService;
+    private static EosLandService eosLandService = new EosLandService();
 
     public static final String PERSONALIA_KEY = "personalia";
     public static final String FNR_KEY = "fnr";
@@ -29,6 +26,7 @@ public class Personalia {
     public static final String GJELDENDEADRESSE_TYPE_KEY = "gjeldendeAdresseType";
     public static final String GJELDENDEADRESSE_GYLDIGFRA_KEY = "gjeldendeAdresseGyldigFra";
     public static final String GJELDENDEADRESSE_GYLDIGTIL_KEY = "gjeldendeAdresseGyldigTil";
+    public static final String GJELDENDEADRESSE_LANDKODE = "gjeldendeAdresseLandkode";
     public static final String SEKUNDARADRESSE_KEY = "sekundarAdresse";
     public static final String SEKUNDARADRESSE_TYPE_KEY = "sekundarAdresseType";
     public static final String SEKUNDARADRESSE_GYLDIGFRA_KEY = "sekundarAdresseGyldigFra";
@@ -113,7 +111,6 @@ public class Personalia {
     }
 
     public boolean harUtenlandskAdresse() {
-        logger.warn("LANDKODE" + gjeldendeAdresse.getLandkode());
         String adressetype = null;
 
         if(gjeldendeAdresse != null) {
@@ -129,7 +126,7 @@ public class Personalia {
     }
 
     public boolean harUtenlandskAdresseIEOS() {
-
+        logger.warn("LANDKODEN ER " + gjeldendeAdresse.getLandkode());
         String adressetype = null;
         String landkode =  null;
         if(gjeldendeAdresse != null) {
@@ -145,7 +142,7 @@ public class Personalia {
             return false;
         }
 
-        if ((harUtenlandsAdressekode(adressetype)) && (eosService.isEosLandAnnetEnnNorge(landkode)))
+        if ((harUtenlandsAdressekode(adressetype)) && (eosLandService.isEosLandAnnetEnnNorge(landkode)))
         {
                return true;
         }
@@ -188,4 +185,5 @@ public class Personalia {
         }
         return false;
     }
+
 }

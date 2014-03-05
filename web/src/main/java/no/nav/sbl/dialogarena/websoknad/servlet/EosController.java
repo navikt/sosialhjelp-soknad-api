@@ -1,9 +1,6 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosBorgerService;
-
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosLandService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,9 +9,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Controller
 @ControllerAdvice()
@@ -22,7 +20,7 @@ import java.util.Map;
 public class EosController {
 
     @Inject
-    private EosBorgerService eosService;
+    private EosLandService eosService;
 
     @RequestMapping(value = "/ereosland/{landkode}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()

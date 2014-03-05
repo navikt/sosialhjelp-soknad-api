@@ -17,6 +17,7 @@ import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
 import static no.nav.modig.lang.collections.PredicateUtils.where;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_LANDKODE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_TYPE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.PERSONALIA_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.DATO_TIL;
@@ -84,7 +85,7 @@ public class WebSoknadUtils {
         Adresse gjeldendeAdresse = new Adresse();
         gjeldendeAdresse.setAdresse(properties.get(GJELDENDEADRESSE_KEY));
         gjeldendeAdresse.setAdressetype(properties.get(GJELDENDEADRESSE_TYPE_KEY));
-
+        gjeldendeAdresse.setLandkode(properties.get(GJELDENDEADRESSE_LANDKODE));
         return PersonaliaBuilder.with()
                 .gjeldendeAdresse(gjeldendeAdresse)
                 .build();
