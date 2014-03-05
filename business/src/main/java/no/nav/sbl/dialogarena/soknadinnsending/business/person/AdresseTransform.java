@@ -178,7 +178,6 @@ public class AdresseTransform {
     private Adresse finnPostAdresse(XMLPostadresse postadresse) {
         XMLUstrukturertAdresse ustrukturertAdresse = postadresse.getUstrukturertAdresse();
         Adresse adresse = retrieveFolkeregistrertUtenlandskAdresse(ustrukturertAdresse);
-        logger.warn("kodeverk: landkoden er " + ustrukturertAdresse.getLandkode().getValue() + " med ref " + ustrukturertAdresse.getLandkode().getKodeRef());
         adresse.setLandkode(ustrukturertAdresse.getLandkode().getValue());
         List<String> adresseLinjer = hentAdresseLinjer(ustrukturertAdresse);
         addIfNotNull(adresseLinjer, getLand(ustrukturertAdresse.getLandkode()));

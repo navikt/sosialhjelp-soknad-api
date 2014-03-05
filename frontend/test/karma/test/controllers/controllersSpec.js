@@ -1336,11 +1336,6 @@
 
             }));
 
-            it('sluttaarsakUrl, lonnskravUrl og permiteringsUrl skal settes til riktige urler', function () {
-                expect(scope.sluttaarsakUrl).toEqual("sluttaarsakUrl");
-                expect(scope.lonnskravSkjemaUrl).toEqual("lonnskravSkjemaUrl");
-                expect(scope.permiteringUrl).toEqual("permiteringUrl");
-            });
             it('scope.land skal bli satt til samme land som ligger lagret på data', function () {
                 expect(scope.land).toEqual("Norge");
             });
@@ -1385,7 +1380,6 @@
                 expect(scope.arbeidsforhold.properties.datotil).toEqual(undefined);
                 expect(scope.arbeidsforhold.properties.type).toEqual(undefined);
                 expect(scope.arbeidsforhold.properties.eosland).toEqual("false");
-                expect(scope.lonnskravSkjemaUrl).toEqual("lonnskravSkjemaUrl");
                 expect(scope.sluttaarsak.properties).toNotBe(undefined);
                 expect(scope.sluttaarsak.properties.type).toEqual(undefined);
 
