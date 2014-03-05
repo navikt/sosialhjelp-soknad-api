@@ -193,7 +193,7 @@
                 expect(scope.forrigeSide).toEqual('/soknad');
             });
             it('sette riktig urler', function () {
-                expect(scope.inngangsportenUrl).toEqual('inngangsportenUrl');
+                expect(scope.dittnavUrl).toEqual('dittnavUrl');
             });
         });
         describe('FortsettSenereKvitteringCtrlMedForrigeSide', function () {
