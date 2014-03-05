@@ -40,7 +40,7 @@
                     soknadId: 1
                 },
                 config: {
-                    "soknad.dittnav.url": "dittnavUrl"}
+                    "dittnav.link.url": "dittnavUrl"}
 
             });
             $provide.value("cms");
@@ -193,7 +193,7 @@
                 expect(scope.forrigeSide).toEqual('/soknad');
             });
             it('sette riktig urler', function () {
-                expect(scope.dittNavBaseUrl).toEqual('dittnavUrl');
+                expect(scope.dittnavUrl).toEqual('dittnavUrl');
             });
         });
         describe('FortsettSenereKvitteringCtrlMedForrigeSide', function () {

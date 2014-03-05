@@ -126,15 +126,12 @@ public class Personalia {
     }
 
     public boolean harUtenlandskAdresseIEOS() {
+
         String adressetype = null;
         String landkode =  null;
         if(gjeldendeAdresse != null) {
             adressetype = gjeldendeAdresse.getAdressetype();
             landkode = gjeldendeAdresse.getLandkode();
-        }
-
-        if (adressetype == null) {
-            return false;
         }
 
         if (adressetype == null) {
