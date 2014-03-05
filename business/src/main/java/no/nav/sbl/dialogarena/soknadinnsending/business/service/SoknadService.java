@@ -78,6 +78,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository repository;
+
     @Inject
     @Named("vedleggRepository")
     private VedleggRepository vedleggRepository;
@@ -428,8 +429,13 @@ public class SoknadService implements SendSoknadService, VedleggService {
         return paakrevdeVedlegg;
     }
 
+    @Override
+    public SoknadStruktur hentSoknadStruktur(Long soknadId) {
+        return hentStruktur(repository.hentSoknadType(soknadId));
+    }
+
     private void genererVedleggForFaktum(Faktum faktum) {
-        SoknadStruktur struktur = hentStruktur(repository.hentSoknadType(faktum.getSoknadId()));
+        SoknadStruktur struktur = hentSoknadStruktur(faktum.getSoknadId());
         List<SoknadVedlegg> aktuelleVedlegg = struktur.vedleggFor(faktum.getKey());
         for (SoknadVedlegg soknadVedlegg : aktuelleVedlegg) {
             Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummer(faktum.getSoknadId(), soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null, soknadVedlegg.getSkjemaNummer());
@@ -522,6 +528,5 @@ public class SoknadService implements SendSoknadService, VedleggService {
         } catch (JAXBException e) {
             throw new RuntimeException("Kunne ikke laste definisjoner. ", e);
         }
-
     }
 }
