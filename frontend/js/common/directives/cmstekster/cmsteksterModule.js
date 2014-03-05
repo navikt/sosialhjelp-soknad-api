@@ -31,7 +31,7 @@ angular.module('nav.cmstekster', [])
             var tekst = cms.tekster[nokkel];
 
             if ($rootScope.visCmsnokkler) {
-                tekst += ' => ' + nokkel;
+                tekst += ' [' + nokkel + ']';
             }
 
             return tekst === undefined ? '' : tekst;

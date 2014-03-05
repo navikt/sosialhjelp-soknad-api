@@ -126,7 +126,6 @@ public class Personalia {
     }
 
     public boolean harUtenlandskAdresseIEOS() {
-        logger.warn("LANDKODEN ER " + gjeldendeAdresse.getLandkode());
         String adressetype = null;
         String landkode =  null;
         if(gjeldendeAdresse != null) {
