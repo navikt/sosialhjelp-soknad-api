@@ -2,10 +2,6 @@ angular.module('nav.arbeidsforhold.controller', [])
     .controller('ArbeidsforholdCtrl', ['$scope', 'soknadService', 'landService', '$cookieStore', '$location', 'data', function ($scope, soknadService, landService, $cookieStore, $location, data) {
         $scope.soknadId = data.soknad.soknadId;
 
-        $scope.sluttaarsakUrl = data.config["soknad.sluttaarsak.url"];
-        $scope.lonnskravSkjemaUrl = data.config["soknad.lonnskravskjema.url"];
-        $scope.permiteringUrl = data.config["soknad.permitteringsskjema.url"];
-
         $scope.templates = {
             'Sagt opp av arbeidsgiver': { oppsummeringsurl: '../views/templates/arbeidsforhold/sagt-opp-av-arbeidsgiver-oppsummering.html' },
             'Permittert': {oppsummeringsurl: '../views/templates/arbeidsforhold/permittert-oppsummering.html' },
