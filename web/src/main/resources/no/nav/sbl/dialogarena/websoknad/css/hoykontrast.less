@@ -1,10 +1,15 @@
 body.contrast {
-  .stegindikator li.aktiv .steg {
+  .stegindikator li.aktiv .steg,.stegindikator li.aktiv.stegklikkbar .steg  {
     background-color: #fff !important;
     border-color: #000;
     .tekst {
       color: #000 !important;
       background-color: #fff !important;
+    }
+  }
+  .stegindikator li.stegklikkbart .steg {
+    .tekst {
+      color: #ffc40d !important;
     }
   }
   .spm-blokk {
@@ -40,7 +45,7 @@ body.contrast {
         border-color: transparent transparent #AB740D transparent;
 
         &:before {
-          border-top: @flipp-size solid #ffc40d !important;
+          border-top: @flipp-size solid #ffc40d;
         }
       }
     }
@@ -66,7 +71,7 @@ body.contrast {
         border-color: transparent transparent #AB740D transparent;
 
         &:before {
-          border-top: 30px solid #ffc40d !important;
+          border-top: 30px solid #ffc40d;
         }
       }
     }
@@ -76,7 +81,7 @@ body.contrast {
         border-color: transparent transparent #AB740D transparent;
 
         &:before {
-          border-top: 30px solid #ffc40d !important;
+          border-top: 30px solid #ffc40d;
         }
       }
     }
@@ -88,7 +93,7 @@ body.contrast {
       border-color: transparent transparent #AB740D transparent;
 
       &:before {
-        border-top: 30px solid #ffc40d !important;
+        border-top: 30px solid #ffc40d;
       }
     }
   }
