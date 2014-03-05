@@ -19,7 +19,14 @@ angular.module('nav.cmstekster', [])
             element.html(cms.tekster[nokkel]);
         };
     }])
-    .filter('cmstekst', ['cms', function(cms) {
+    .filter('configUrl', ['data', function(data) {
+        return function(nokkel) {
+            var url = data.config[nokkel.toLowerCase() + '.url'];
+
+            return url === undefined ? '' : url;
+        };
+    }])
+    .filter('cmstekst', ['cms', '$rootScope', function(cms, $rootScope) {
         return function(nokkel) {
             var tekst = cms.tekster[nokkel];
 
