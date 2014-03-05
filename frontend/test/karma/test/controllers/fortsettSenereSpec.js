@@ -88,9 +88,6 @@
             it('scope.forrigeSide skal bli satt til /soknad hvis den ikke finnes fra før', function () {
                 expect(scope.forrigeSide).toEqual('/soknad');
             });
-            it('sette riktig urler', function () {
-                expect(scope.dittnavUrl).toEqual('dittnavUrl');
-            });
 
         });
         describe('FortsettSenereCtrlUtenEpost', function () {
@@ -191,9 +188,6 @@
             });
             it('scope.forrigeSide skal bli satt til /soknad hvis den ikke finnes fra før', function () {
                 expect(scope.forrigeSide).toEqual('/soknad');
-            });
-            it('sette riktig urler', function () {
-                expect(scope.dittNavBaseUrl).toEqual('dittnavUrl');
             });
         });
         describe('FortsettSenereKvitteringCtrlMedForrigeSide', function () {
