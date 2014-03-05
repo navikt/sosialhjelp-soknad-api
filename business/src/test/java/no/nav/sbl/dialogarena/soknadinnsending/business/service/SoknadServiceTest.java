@@ -253,10 +253,11 @@ public class SoknadServiceTest {
                         .medFaktum(new Faktum().medKey("personalia"))
                         .medVedlegg(Arrays.asList(
                                 new Vedlegg()
-                                        .medSkjemaNummer("L6")
+                                        .medSkjemaNummer("N6")
                                         .medFillagerReferanse("uidVedlegg1")
                                         .medInnsendingsvalg(Vedlegg.Status.LastetOpp)
                                         .medStorrelse(2L)
+                                        .medNavn("Test Annet vedlegg")
                                         .medAntallSider(3),
                                 new Vedlegg()
                                         .medSkjemaNummer("L7")
@@ -267,7 +268,7 @@ public class SoknadServiceTest {
                 .withUuid("uidHovedskjema")
                 .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
                 .withJournalforendeEnhet(RUTES_I_BRUT)
-                .withFilnavn(DAGPENGER + ".pdf")
+                .withFilnavn(DAGPENGER)
                 .withFilstorrelse("3")
                 .withMimetype("application/pdf")
                 .withSkjemanummer(DAGPENGER)),
@@ -275,15 +276,18 @@ public class SoknadServiceTest {
                         new XMLVedlegg()
                                 .withUuid("uidVedlegg1")
                                 .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
-                                .withFilnavn("L6.pdf")
+                                .withFilnavn("Test Annet vedlegg")
+                                .withTilleggsinfo("Test Annet vedlegg")
                                 .withFilstorrelse("2")
                                 .withSideantall(3)
                                 .withMimetype("application/pdf")
-                                .withSkjemanummer("L6")),
+                                .withSkjemanummer("N6")),
                 refEq(
                         new XMLVedlegg()
                                 .withInnsendingsvalg(XMLInnsendingsvalg.SENDES_IKKE.toString())
-                                .withSkjemanummer("L7")));
+                                .withTilleggsinfo("")
+                                .withSkjemanummer("L7")
+                                .withFilnavn("L7")));
     }
 
     @Test
