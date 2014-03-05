@@ -40,7 +40,7 @@
                     soknadId: 1
                 },
                 config: {
-                    "soknad.dittnav.url": "dittnavUrl"}
+                    "dittnav.link.url": "dittnavUrl"}
 
             });
             $provide.value("cms");
@@ -87,6 +87,9 @@
             });
             it('scope.forrigeSide skal bli satt til /soknad hvis den ikke finnes fra før', function () {
                 expect(scope.forrigeSide).toEqual('/soknad');
+            });
+            it('sette riktig urler', function () {
+                expect(scope.dittnavUrl).toEqual('dittnavUrl');
             });
 
         });
@@ -188,6 +191,9 @@
             });
             it('scope.forrigeSide skal bli satt til /soknad hvis den ikke finnes fra før', function () {
                 expect(scope.forrigeSide).toEqual('/soknad');
+            });
+            it('sette riktig urler', function () {
+                expect(scope.dittnavUrl).toEqual('dittnavUrl');
             });
         });
         describe('FortsettSenereKvitteringCtrlMedForrigeSide', function () {
