@@ -23,6 +23,10 @@ angular.module('nav.cmstekster', [])
         return function(nokkel) {
             var tekst = cms.tekster[nokkel];
 
+            if ($rootScope.visCmsnokkler) {
+                tekst += ' [' + nokkel + ']';
+            }
+
             return tekst === undefined ? '' : tekst;
         };
     }]);
