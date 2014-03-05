@@ -4,7 +4,6 @@ angular.module('nav.tilleggsopplysninger')
             require: '^form',
             link: function (scope, element, attrs, form) {
                 var blokk = $(element).closest('.spm-blokk');
-
                 scope.$watch(function () {
                     return form.$valid;
                 }, function () {
