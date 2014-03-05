@@ -3,8 +3,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class EosBorgerServiceTest {
-    EosBorgerService service = new EosBorgerService();
+public class EosLandServiceTest {
+    EosLandService service = new EosLandService();
     
     @Test
     public void skalReturnereTrueForEosBorgerFraAnnetLandEnnNorge() {

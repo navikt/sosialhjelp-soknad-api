@@ -11,7 +11,7 @@ import java.util.List;
  * Accessdate: 28.01.2014
  */
 @Component
-public class EosBorgerService {
+public class EosLandService {
     List<String> eosLand = Arrays.asList("BEL","BGR", "DNK", "EST", "FIN", "FRA", "GRC", "IRL", "ISL", "ITA", "CYP", "LVA", "LIE", "LTU", "LUX", "MLT", "NLD"
             , "POL", "PRT", "ROU", "SVK", "SVN", "ESP", "GBR", "SWE", "CZE", "DEU", "HUN", "AUT", "CHE");
     

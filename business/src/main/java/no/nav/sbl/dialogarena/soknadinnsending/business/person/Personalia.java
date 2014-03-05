@@ -1,6 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosBorgerService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosLandService;
 import org.slf4j.Logger;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
@@ -12,7 +12,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class Personalia {
 
-    private EosBorgerService eosBorgerService = new EosBorgerService();
+    private static EosLandService eosLandService = new EosLandService();
 
     public static final String PERSONALIA_KEY = "personalia";
     public static final String FNR_KEY = "fnr";
@@ -126,7 +126,7 @@ public class Personalia {
     }
 
     public boolean harUtenlandskAdresseIEOS() {
-        logger.warn("LANDKODEN ER" + gjeldendeAdresse.getLandkode());
+        logger.warn("LANDKODEN ER " + gjeldendeAdresse.getLandkode());
         String adressetype = null;
         String landkode =  null;
         if(gjeldendeAdresse != null) {
@@ -142,7 +142,7 @@ public class Personalia {
             return false;
         }
 
-        if ((harUtenlandsAdressekode(adressetype)) && (eosBorgerService.isEosLandAnnetEnnNorge(landkode)))
+        if ((harUtenlandsAdressekode(adressetype)) && (eosLandService.isEosLandAnnetEnnNorge(landkode)))
         {
                return true;
         }
