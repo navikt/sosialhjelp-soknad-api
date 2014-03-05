@@ -26,9 +26,13 @@ angular.module('nav.cmstekster', [])
             return url === undefined ? '' : url;
         };
     }])
-    .filter('cmstekst', ['cms', function(cms) {
+    .filter('cmstekst', ['cms', '$rootScope', function(cms, $rootScope) {
         return function(nokkel) {
             var tekst = cms.tekster[nokkel];
+
+            if ($rootScope.visCmsnokkler) {
+                tekst += ' => ' + nokkel;
+            }
 
             return tekst === undefined ? '' : tekst;
         };
