@@ -20,7 +20,7 @@ angular.module('nav.fortsettsenere', ['nav.cmstekster'])
 
             $scope.soknadId = data.soknad.soknadId;
 
-            $scope.dittNavUrl = data.config["dittnav.link.url"];
+            $scope.dittNavBaseUrl = data.config["dittnav.link.url"];
 
             $scope.fortsettSenere = function (form) {
                 $scope.$broadcast('RUN_VALIDATION' + form.$name);
