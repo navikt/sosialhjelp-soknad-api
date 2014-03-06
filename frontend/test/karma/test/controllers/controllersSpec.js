@@ -242,6 +242,39 @@
                 scope.summererAndeleneTil100();
                 expect(scope.prosentFeil()).toEqual(false);
             });
+             it('skal summere de ulike eierne til 100 og ikke gi feil dersom dette stemmer', function () {
+                var gardsEierErEktefelle = {
+                    key: 'egennaering.gardsbruk.false.eier.ektefelle',
+                    value: 'true'
+                };
+                scope.data.leggTilFaktum(gardsEierErEktefelle);
+                
+                var gardsEierErAnnet = {
+                    key: 'egennaering.gardsbruk.false.eier.annet',
+                    value: 'true'
+                };
+                scope.data.leggTilFaktum(gardsEierErAnnet);
+                
+                var gardsEierJeg = {
+                    key: 'egennaering.gardsbruk.false.eierandel.din',
+                    value: '33'
+                };
+                scope.data.leggTilFaktum(gardsEierJeg);
+                var gardsEierEktefelle = {
+                    key: 'egennaering.gardsbruk.false.eierandel.ektefelle',
+                    value: '34'
+                };
+                scope.data.leggTilFaktum(gardsEierEktefelle);
+
+                var gardsEierAnnet = {
+                    key: 'egennaering.gardsbruk.false.eierandel.annet',
+                    value: '33'
+                };
+                scope.data.leggTilFaktum(gardsEierAnnet);
+                
+                scope.summererAndeleneTil100();
+                expect(scope.prosentFeil()).toEqual(false);
+            });
         });
         describe('vernepliktCtrl', function () {
             beforeEach(inject(function ($controller, $compile) {
