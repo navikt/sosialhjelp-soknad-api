@@ -3,6 +3,9 @@ angular.module('nav.oppsummering', [])
         $scope.oppsummeringHtml = '';
         $scope.harbekreftet = {value: ''};
         $scope.skalViseFeilmelding = {value: false};
+        $scope.fremdriftsindikator = {
+            laster: false
+        };
 
         $scope.soknadId = data.soknad.soknadId;
         $http.get('/sendsoknad/rest/soknad/oppsummering/' + $scope.soknadId).then(function(response) {
@@ -24,6 +27,7 @@ angular.module('nav.oppsummering', [])
         $scope.sendSoknad = function () {
             if ($scope.harbekreftet.value) {
                 $scope.skalViseFeilmelding.value = false;
+                $scope.fremdriftsindikator.laster = true;
 
                 soknadService.send({soknadId: $scope.soknadId},
                     //Success
@@ -32,6 +36,7 @@ angular.module('nav.oppsummering', [])
                     },
                     //Error
                     function () {
+                        $scope.fremdriftsindikator.laster = false;
                         $location.path('feilside');
                     }
                 );
