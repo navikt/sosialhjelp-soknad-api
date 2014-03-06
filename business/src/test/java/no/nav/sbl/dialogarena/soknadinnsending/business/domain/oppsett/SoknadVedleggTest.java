@@ -24,7 +24,7 @@ public class SoknadVedleggTest {
     @Test
     public void skalFikseFlereOnValues(){
         SoknadVedlegg vedlegg = new SoknadVedlegg();
-        vedlegg.setOnValues(Arrays.asList("Arbeidsgiver er konkurs", "Permitert"));
+        vedlegg.setOnValues(Arrays.asList("Arbeidsgiver er konkurs", "Permittert"));
         vedlegg.setOnProperty("type");
         vedlegg.setInverted(true);
         assertThat(vedlegg.trengerVedlegg(konkurs), is(false));
