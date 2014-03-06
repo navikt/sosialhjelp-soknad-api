@@ -494,9 +494,58 @@
 		<property>arbeidsgivernavn</property>
 		<onProperty>type</onProperty>
 		<onValue>Arbeidsgiver er konkurs</onValue>
-		<inverted>true</inverted>
+        <inverted>true</inverted>
 		<flereTillatt>true</flereTillatt>
 	</vedlegg>
+
+    <!--vedlegg>
+        <id>4</id>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>T8</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValue>Avskjediget</onValue>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+    <vedlegg>
+        <id>4</id>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>T8</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValue>Redusert arbeidstid</onValue>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+    <vedlegg>
+        <id>4</id>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>T8</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValue>Sagt opp av arbeidsgiver</onValue>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+    <vedlegg>
+        <id>4</id>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>T8</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValue>Sagt opp selv</onValue>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg-->
+    <vedlegg>
+        <id>4</id>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>G2</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValue>Permittert</onValue>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
 	
 	<vedlegg>
 		<id>4</id>
