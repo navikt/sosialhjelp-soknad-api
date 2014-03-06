@@ -138,7 +138,7 @@ describe('tilleggsopplysninger', function () {
     });
 });
 describe('sjekkBoklerValiditet', function () {
-    var element, scope, form, name1, name2, fakta, ngformname, ngformname2;
+    var element, scope, form, name1, name2, name3, name4, fakta, ngformname, ngformname2, ngformname3, ngformname4;
 
     beforeEach(module('nav.sjekkBoklerValiditet'));
     beforeEach(module(function ($provide) {
@@ -182,39 +182,53 @@ describe('sjekkBoklerValiditet', function () {
 
         element = angular.element(
             '<form name="form">' +
-                '<div class="spm-blokk" id="bolkvalidert" data-sjekk-validert="true">' +
+                '<div class="spm-blokk1" id="bolkvalidert" data-sjekk-validert="true">' +
                     '<div data-ng-form="ngname">' +
                     '<input type="text" data-ng-model="modell" required="true" name="inputname1" >' +
                     '</div>' +
                 '</div>' +
-                '<div class="spm-blokk" id="bolkikkevalidert" data-sjekk-validert="false">' +
+                '<div class="spm-blokk2" id="bolkikkevalidert" data-sjekk-validert="false">' +
                     '<div data-ng-form="ngname2">' +
                     '<input type="text" data-ng-model="modell" required="true" name="inputname2" >' +
                     '</div>' +
                 '</div>' +
-                '</form>');
+                '<div class="spm-blokk3" id="bolkikkevalidert" data-is-open="true" data-sjekk-validert="true">' +
+                    '<div data-ng-form="ngname3">' +
+                    '<input type="text" data-ng-model="modell" required="true" name="inputname3" >' +
+                    '</div>' +
+                '</div>' +
+                '<div class="spm-blokk4 validert" id="bolkikkevalidert" data-sjekk-validert="false">' +
+                    '<div data-ng-form="ngname4">' +
+                        '<input type="text" data-ng-model="modell" required="true" name="inputname4" >' +
+                '   </div>' +
+                '</div>' +
+            '</form>');
 
         $compile(element)(scope);
         scope.$digest();
         form = scope.form;
         ngformname = form.ngname;
         ngformname2 = form.ngname2;
+        ngformname3 = form.ngname3;
+        ngformname4 = form.ngname4;
         name1 = ngformname.inputname1;
         name2 = ngformname2.inputname2;
+        name3 = ngformname3.inputname3;
+        name4 = ngformname4.inputname4;
         scope.$apply();
     }));
 
     describe('validerFritekst', function () {
         it('bolker som er validert skal få klassen validert', function () {
-            var validertElement = element.find('.spm-blokk').first();
+            var validertElement = element.find('.spm-blokk1').first();
             expect(validertElement.hasClass('validert')).toBe(true);
         });
         it('bolker som er validert skal få klassen validert', function () {
-            var validertElement = element.find('.spm-blokk').last();
+            var validertElement = element.find('.spm-blokk2').last();
             expect(validertElement.hasClass('validert')).toBe(false);
         });
         it('skjer endring i bolken og har validert-klassen skal fortsatt ikke ha validertklassen', function () {
-            var validertElement = element.find('div').first();
+            var validertElement = element.find('.spm-blokk1').first();
             expect(validertElement.hasClass('validert')).toBe(true);
 
             name1.$setViewValue("Ikke tom");
@@ -224,17 +238,25 @@ describe('sjekkBoklerValiditet', function () {
 
             expect(validertElement.hasClass('validert')).toBe(true);
         });
-        it('skjer endring i bolken og ikke har validert-klassen skal fortsatt ikke ha validertklassen', function () {
-            var validertElement = element.find('spm-blokk').last();
+        it('Element som ikke har validertklasse får dette hvis bolken skal settes til validert ved første åpning og den er åpen', function () {
+            var validertElement = element.find('.spm-blokk3');
+            expect(validertElement.hasClass('validert')).toBe(true);
+        });
+        it('Element som har validertklasse, og skal ikke få validert på første steg, og blir endret skal ikke ha validertklassen lenger', function () {
+            var validertElement = element.find('.spm-blokk4');
+            expect(validertElement.hasClass('validert')).toBe(true);
+            name4.$setViewValue("Ikke tom");
+            scope.$apply();
             expect(validertElement.hasClass('validert')).toBe(false);
-
-            name2.$setViewValue("Ikke tom");
-            var form = element.find('[data-ng-form]');
+        });
+        it('Element som har validertklasse, og skal ikke få validert på første steg, og blir endret skal ikke ha validertklassen lenger', function () {
+            var validertElement = element.find('.spm-blokk4');
+            expect(validertElement.hasClass('validert')).toBe(true);
+            name4.$setViewValue("Ikke tom");
+            var form = validertElement.find('[data-ng-form]');
             form.addClass("ng-dirty");
             scope.$apply();
-
             expect(validertElement.hasClass('validert')).toBe(false);
-
         });
     });
 });
