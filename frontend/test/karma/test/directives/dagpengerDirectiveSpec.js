@@ -274,6 +274,7 @@ describe('sjekkBoklerValiditet', function () {
             scope.$apply();
             expect(validertElement.hasClass('validert')).toBe(false);
         });
+
     });
 });
 describe('scrollTilbakeDirective', function () {
