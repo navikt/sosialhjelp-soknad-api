@@ -197,9 +197,19 @@ describe('sjekkBoklerValiditet', function () {
                     '<input type="text" data-ng-model="modell" required="true" name="inputname3" >' +
                     '</div>' +
                 '</div>' +
+                '<div class="spm-blokk3a" id="bolkikkevalidert" data-is-open="false" data-sjekk-validert="true">' +
+                    '<div data-ng-form="ngname3">' +
+                    '<input type="text" data-ng-model="modell" required="true" name="inputname3" >' +
+                    '</div>' +
+                '</div>' +
+                '<div class="spm-blokk3b" id="bolkikkevalidert" data-sjekk-validert="true">' +
+                    '<div data-ng-form="ngname3">' +
+                    '<input type="text" data-ng-model="modell" required="true" name="inputname3" >' +
+                    '</div>' +
+                '</div>' +
                 '<div class="spm-blokk4 validert" id="bolkikkevalidert" data-sjekk-validert="false">' +
                     '<div data-ng-form="ngname4">' +
-                        '<input type="text" data-ng-model="modell" required="true" name="inputname4" >' +
+                    '<input type="text" data-ng-model="modell" required="true" name="inputname4" >' +
                 '   </div>' +
                 '</div>' +
             '</form>');
@@ -241,6 +251,12 @@ describe('sjekkBoklerValiditet', function () {
         it('Element som ikke har validertklasse får dette hvis bolken skal settes til validert ved første åpning og den er åpen', function () {
             var validertElement = element.find('.spm-blokk3');
             expect(validertElement.hasClass('validert')).toBe(true);
+        });
+        it('Element som ikke har validertklasse får ikke dette hvis bolken er lukket selv om det skal få det ved første åpning', function () {
+            var validertElement = element.find('.spm-blokk3a');
+            expect(validertElement.hasClass('validert')).toBe(false);
+            var validertElement = element.find('.spm-blokk3b');
+            expect(validertElement.hasClass('validert')).toBe(false);
         });
         it('Element som har validertklasse, og skal ikke få validert på første steg, og blir endret skal ikke ha validertklassen lenger', function () {
             var validertElement = element.find('.spm-blokk4');
