@@ -110,11 +110,11 @@ describe('valideringclickValidate', function () {
         element = angular.element(
             '<form name="form">' +
                 '<div class="form-linje"> ' +
-                    '<input type="radio" required data-ng-model="modell" data-click-validate name="inputnameReq" data-error-messages="{feilmeldingstekst}"> ' +
+                    '<input type="radio" required data-ng-model="modell" data-click-validate name="inputnameReq" data-error-messages="w{feilmeldingstekst}w"> ' +
                     '<span class="melding"></span>' +
                 '</div> ' +
                 '<div class="form-linje"> ' +
-                    '<input type="radio" data-ng-model="modell" data-click-validate name="inputname" data-error-messages="{feilmeldingstekst}"> ' +
+                    '<input type="radio" data-ng-model="modell" data-click-validate name="inputname" data-error-messages="{feilmeldingstekst}">' +
                     '<span class="melding"></span>' +
                 '</div> ' +
                 '</form>');
@@ -125,6 +125,10 @@ describe('valideringclickValidate', function () {
         elementNavn = form.inputname;
         elementNavnReq = form.inputnameReq;
     }));
+
+    beforeEach(function() {
+        jasmine.Clock.useMock();
+    })
 
     describe('clickValidate', function () {
         it('elementet skal ikke ha klassen feil', function () {
@@ -148,6 +152,31 @@ describe('valideringclickValidate', function () {
             elementNavnReq.$setViewValue("true");
             scope.$apply();
             expect(formEl.hasClass('feil')).toBe(false);
+        });
+        it('elementet blir gyldig så skal feil-klassen fjernes', function () {
+            var formEl = element.find('.form-linje').first();
+            scope.$broadcast("RUN_VALIDATIONform");
+            expect(formEl.hasClass('feil')).toBe(true);
+            elementNavnReq.$setViewValue("true");
+            scope.$apply();
+            jasmine.Clock.tick(2000);
+            expect(formEl.hasClass('feil')).toBe(false);
+        });
+        it('elementet blir gyldig så skal feil-klassen fjernes', function () {
+            var formEl = element.find('.form-linje').first();
+            formEl.addClass('aktiv-feilmelding');
+            scope.$broadcast("RUN_VALIDATIONform");
+            expect(formEl.hasClass('aktiv-feilmelding')).toBe(true);
+            expect(formEl.hasClass('feil')).toBe(true);
+            elementNavnReq.$setViewValue("true");
+            scope.$apply();
+            jasmine.Clock.tick(3000);
+            expect(formEl.hasClass('feil')).toBe(false);
+        }); it('melding skal inneholde feilmelding når elementet ikke er gyldig og har feilstylingklassen', function () {
+            expect(element.find('.form-linje').first().hasClass('feil')).toBe(false);
+            scope.$broadcast("RUN_VALIDATIONform");
+            expect(element.find('.form-linje').first().hasClass('feil')).toBe(true);
+            expect(element.find('.melding').first().text()).toBe("Min feilmelding");
         });
     });
 });
