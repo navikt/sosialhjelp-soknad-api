@@ -5,13 +5,17 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class SoknadVedlegg implements Serializable {
 
     private SoknadFaktum faktum;
-    private String onValue;
     private String onProperty;
     private Boolean forSystemfaktum;
     private Boolean flereTillatt = false;
@@ -19,6 +23,7 @@ public class SoknadVedlegg implements Serializable {
     private String property;
     private Boolean inverted = false;
     private String oversetting;
+    private List<String> values = new ArrayList<>();
 
     @XmlIDREF
     public SoknadFaktum getFaktum() {
@@ -30,11 +35,21 @@ public class SoknadVedlegg implements Serializable {
     }
 
     public String getOnValue() {
-        return onValue;
+        return values != null && !values.isEmpty() ? values.get(0) : null;
     }
 
     public void setOnValue(String onValue) {
-        this.onValue = onValue;
+        this.values = Arrays.asList(onValue);
+    }
+
+    @XmlElementWrapper(name = "onValues")
+    @XmlElement(name = "value")
+    public List<String> getOnValues() {
+        return values;
+    }
+
+    public void setOnValues(List<String> values) {
+        this.values = values;
     }
 
     public String getOnProperty() {
@@ -61,6 +76,7 @@ public class SoknadVedlegg implements Serializable {
         this.property = property;
     }
 
+    //Sett denne om en skal sjekke om verdien ikke er lik det som står i onValues
     public Boolean getInverted() {
         return inverted;
     }
@@ -90,20 +106,25 @@ public class SoknadVedlegg implements Serializable {
                 valToCheck = value.getValue();
             }
             if (inverted == null || !inverted) {
-                return onValue == null || onValue.equalsIgnoreCase(valToCheck);
+                return doesValueMatch(valToCheck);
             } else {
-                return !onValue.equalsIgnoreCase(valToCheck);
+                return !doesValueMatch(valToCheck);
             }
         }
         return false;
     }
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this).append("faktum", faktum)
-                .append("onValue", onValue)
-                .append("skjemaNummer", skjemaNummer)
-                .append("property", property).toString();
+    private boolean doesValueMatch(String valToCheck) {
+        if (values == null || values.isEmpty()) {
+            return true;
+        }
+        for (String value : values) {
+            if (value.equalsIgnoreCase(valToCheck)) {
+                return true;
+            }
+
+        }
+        return false;
     }
 
     public Boolean getForSystemfaktum() {
@@ -128,5 +149,20 @@ public class SoknadVedlegg implements Serializable {
 
     public boolean harParent() {
         return getFaktum().getDependOn() != null;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("faktum", faktum)
+                .append("onProperty", onProperty)
+                .append("forSystemfaktum", forSystemfaktum)
+                .append("flereTillatt", flereTillatt)
+                .append("skjemaNummer", skjemaNummer)
+                .append("property", property)
+                .append("inverted", inverted)
+                .append("oversetting", oversetting)
+                .append("values", values)
+                .toString();
     }
 }
