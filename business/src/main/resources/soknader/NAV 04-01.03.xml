@@ -538,7 +538,7 @@
         <onValue>Sagt opp selv</onValue>
         <flereTillatt>true</flereTillatt>
     </vedlegg-->
-    <!--vedlegg>
+    <vedlegg>
         <id>4</id>
         <faktum>arbeidsforhold</faktum>
         <skjemaNummer>G2</skjemaNummer>
@@ -546,7 +546,7 @@
         <onProperty>type</onProperty>
         <onValue>Permittert</onValue>
         <flereTillatt>true</flereTillatt>
-    </vedlegg-->
+    </vedlegg>
 	
 	<vedlegg>
 		<id>4</id>
