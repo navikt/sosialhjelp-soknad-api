@@ -58,6 +58,14 @@ public class WebSoknadUtilsTest {
     }
 
     @Test
+    public void testCornerCase(){
+        DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
+        WebSoknad soknad = lagSoknad(lagPermittert("2014-2-1"), lagAvskjediget("2014-1-1"));
+        assertEquals(DAGPENGER_VED_PERMITTERING, getSkjemanummer(soknad));
+
+    }
+
+    @Test
     public void harSkjemanummerDagpengerVedPermitteringHvisToArbeidsforholdPaaSammeDagOgMinstEnErPermittering() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
         WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert("2014-1-1"), lagAvskjediget("2014-1-1"));
@@ -97,6 +105,25 @@ public class WebSoknadUtilsTest {
         personalia.setGjeldendeAdresse(utlandeos);
 
         assertEquals(EOS_DAGPENGER, getJournalforendeEnhet(soknad));
+
+    }
+    @Test
+    public void skalRuteSoknadTilEosLandMed3Caser() {
+        DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
+        WebSoknad soknad = lagSoknad(
+                lagRedusertArbeidstid("2014-01-01"),
+                lagAvskjediget("2014-03-06"),
+                lagPermittert("2014-03-01")
+                );
+        Adresse utlandeos = lagUtenlandskEOSAdresse();
+        soknad.getFaktaMedKey("personalia").get(0)
+                .medProperty(GJELDENDEADRESSE_KEY, utlandeos.getAdresse())
+                .medProperty(GJELDENDEADRESSE_LANDKODE, utlandeos.getLandkode())
+                .medProperty(GJELDENDEADRESSE_TYPE_KEY, utlandeos.getAdressetype());
+        Personalia personalia = WebSoknadUtils.getPerson(soknad);
+        personalia.setGjeldendeAdresse(utlandeos);
+
+        assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
 
     }
 
