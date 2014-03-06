@@ -3,8 +3,6 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         var fortsettLikevell = false;
 
         $scope.utslagskriterier = data.utslagskriterier;
-        //Inntil vi får arena-kobling
-        $scope.utslagskriterier.erRegistrertArbeidssoker = "true";
         $scope.utslagskriterier.harlestbrosjyre = false;
         //For testing uten TPS:
 

@@ -60,8 +60,6 @@
                     </div>
                     <div data-div class="skjemaramme begrensning sak-totredel" data-ng-controller="validervedleggCtrl">
                         <div class="panel-standard">
-                            <h4 data-ng-if="!erEkstraVedlegg(forventning)">{{ 'vedlegg.faktum.maabekrefte' | cmstekst }}</h4>
-
                             <div class="form-linje tekstfelt" data-ng-if="erEkstraVedlegg(forventning)">
                                 <input class="hidden-vedlegg" type="hidden" data-ng-required="true"
                                        data-ng-model="filVedlagt"
