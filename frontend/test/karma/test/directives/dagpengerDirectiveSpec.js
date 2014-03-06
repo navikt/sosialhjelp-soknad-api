@@ -276,3 +276,84 @@ describe('sjekkBoklerValiditet', function () {
         });
     });
 });
+describe('scrollTilbakeDirective', function () {
+    var element, scope, timeout;
+
+    beforeEach(module('nav.scroll.directive', 'nav.cmstekster', 'templates-main'));
+
+    beforeEach(module(function ($provide) {
+        $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
+        $provide.value("data", {});
+        $provide.value("$cookieStore", {
+            get: function () {
+                return {aapneTabs: "tab", gjeldendeTab: "#tab", faktumId:1}
+            },
+            remove: function(key) {}
+        });
+    }));
+
+    beforeEach(inject(function ($compile, $rootScope, $timeout) {
+        element = angular.element(
+            '<form name="">' +
+                '<div data-scroll-tilbake-directive>' +
+                    '<div id="tab" class="test">' +
+                        '<div id="tab1"></div>' +
+                    '</div>' +
+                    '<div class="knapp-leggtil-liten"></div>' +
+                '</div>' +
+            '</form>');
+
+        $compile(element)($rootScope);
+        $rootScope.$apply();
+        scope = element.find('div').scope();
+        scope.apneTab = function () {
+        };
+        timeout = $timeout;
+    }));
+
+    describe('apneBolker', function () {
+        it('apneTab skal ikke kalles hvis cookien er satt', function () {
+            spyOn(scope, 'apneTab');
+            timeout.flush();
+            expect(scope.apneTab).toHaveBeenCalledWith("tab");
+        });
+    });
+});
+describe('scrollTilbakeDirective', function () {
+    var element, scope, timeout;
+
+    beforeEach(module('nav.scroll.directive', 'nav.cmstekster', 'templates-main'));
+
+    beforeEach(module(function ($provide) {
+        $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
+        $provide.value("data", {});
+        $provide.value("$cookieStore", {
+            get: function () {
+                return false;
+            }
+        });
+    }));
+
+    beforeEach(inject(function ($compile, $rootScope, $timeout) {
+        element = angular.element(
+            '<form name="">' +
+                '<div data-scroll-tilbake-directive> ' +
+                '</form>');
+
+        $compile(element)($rootScope);
+        $rootScope.$apply();
+        scope = element.find('div').scope();
+        scope.apneTab = function () {
+        };
+        timeout = $timeout;
+    }));
+
+    describe('scrollTilbakeDirective', function () {
+        it('ApneTab skal ikke bli kalt hvis cookien ikke inneholder noe', function () {
+            spyOn(scope, 'apneTab');
+            timeout.flush();
+            expect(scope.apneTab).wasNotCalled();
+        });
+    });
+});
+
