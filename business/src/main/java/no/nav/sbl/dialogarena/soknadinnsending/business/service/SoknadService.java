@@ -91,6 +91,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Inject
     private NavMessageSource navMessageSource;
 
+    private static final String EKSTRA_VEDLEGG_KEY = "ekstraVedlegg";
+
     private PdfWatermarker watermarker = new PdfWatermarker();
     private List<String> gyldigeSkjemaer = Arrays.asList("NAV 04-01.03");
     private PdfMerger pdfMerger = new PdfMerger();
@@ -138,10 +140,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
         faktum.setSoknadId(soknadId);
         Long faktumId = repository.lagreFaktum(soknadId, faktum);
         repository.settSistLagretTidspunkt(soknadId);
-        //Setter delstegstatus dersom et faktum blir lagret, med mindre det er epost. Bør gjøres mer elegant, litt quickfix
-        if (!Personalia.EPOST_KEY.equals(faktum.getKey())) {
-            repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
-        }
+
+        settDelstegStatus(soknadId, faktum.getKey());
+
         Faktum resultat = repository.hentFaktum(soknadId, faktumId);
         genererVedleggForFaktum(resultat);
         on(repository.hentBarneFakta(soknadId, faktum.getFaktumId())).forEach(new Closure<Faktum>() {
@@ -156,13 +157,14 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public void slettBrukerFaktum(Long soknadId, Long faktumId) {
+        String faktumKey = repository.hentFaktum(soknadId, faktumId).getKey();
         List<Vedlegg> vedleggliste = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
 
         for (Vedlegg vedlegg : vedleggliste) {
             vedleggRepository.slettVedleggOgData(soknadId, vedlegg.getFaktumId(), vedlegg.getSkjemaNummer());
         }
         repository.slettBrukerFaktum(soknadId, faktumId);
-        repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
+        settDelstegStatus(soknadId, faktumKey);
     }
 
     @Override
@@ -217,6 +219,13 @@ public class SoknadService implements SendSoknadService, VedleggService {
             soknad = repository.hentMedBehandlingsId(behandlingsId);
         }
         return soknad.getSoknadId();
+    }
+
+    private void settDelstegStatus(Long soknadId, String faktumKey) {
+        //Setter delstegstatus dersom et faktum blir lagret, med mindre det er epost eller ekstra vedlegg. Bør gjøres mer elegant, litt quickfix
+        if (!Personalia.EPOST_KEY.equals(faktumKey) && !EKSTRA_VEDLEGG_KEY.equals(faktumKey)) {
+            repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
+        }
     }
 
     private void populerFraHenvendelse(String behandlingsId) {
