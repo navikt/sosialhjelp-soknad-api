@@ -46,7 +46,6 @@ angular.module('nav.validering', ['nav.cmstekster'])
 				function sjekkOmInputErGyldig() {
 					for (var i = 0; i < valideringsMetoder.length; i++) {
 						var valideringReturVerdi = valideringsMetoder[i].validate(ngModel.$viewValue);
-
 						if (valideringReturVerdi !== true) {
 							revaliderFeilObjekt = valideringsMetoder[i];
 							settFeilmeldingsTekst(valideringReturVerdi);
@@ -57,7 +56,7 @@ angular.module('nav.validering', ['nav.cmstekster'])
 				}
 
 				function settFeilmeldingsTekst(feilNokkel) {
-					if (meldingIkkeInneholderFeilmelding()) {
+                    if (meldingIkkeInneholderFeilmelding()) {
 						var feilmeldingsNokkel = feil;
 
 						if (typeof feil === 'object') {
