@@ -14,7 +14,6 @@ angular.module('nav.scroll.directive', [])
                             var faktumId = cookie.faktumId;
                             var blokkelement = angular.element(cookie.gjeldendeTab);
 
-                            // TODO Burde være etter scrolling siden denne får browseren til å scrolle selv
                             var fokusElement = $(blokkelement).find('.knapp-leggtil-liten').first();
 
                             $timeout(function () {
