@@ -218,14 +218,14 @@ function fadeFeilmelding(element, melding, feilmeldingsklasse, scope) {
 	var meldingColour = [195, 0, 0].join(',') + ',';
 	var transparency = 1;
 	var timeout = setInterval(function () {
-		if (transparency >= 0) {
+        if (transparency >= 0) {
 			transparency -= 0.015;
 			element[0].style.backgroundColor = 'rgba(' + backgroundColour + transparency + ')';
 			element[0].style.borderColor = 'rgba(' + borderColour + transparency + ')';
 			melding[0].style.color = 'rgba(' + meldingColour + transparency + ')';
 		} else {
 			element.removeClass(feilmeldingsklasse);
-			element.removeAttr('style');
+            element.removeAttr('style');
 			melding.removeAttr('style');
 			clearInterval(timeout);
 			scope.$apply();
