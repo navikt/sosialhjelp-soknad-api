@@ -202,7 +202,8 @@ function fadeBakgrunnsfarge(element, scope, rgb1, rgb2, rgb3) {
 	var transparency = 0;
 	var timeout = setInterval(function () {
 		if (transparency >= 0) {
-			element[0].style.backgroundColor = 'rgba(' + backgroundColour + (transparency += 0.015) + ')';
+			transparency -= 0.015;
+			element[0].style.backgroundColor = 'rgba(' + backgroundColour + transparency + ')';
 		} else {
 			element.removeAttr('style');
 			clearInterval(timeout);
@@ -218,9 +219,10 @@ function fadeFeilmelding(element, melding, feilmeldingsklasse, scope) {
 	var transparency = 1;
 	var timeout = setInterval(function () {
 		if (transparency >= 0) {
-			element[0].style.backgroundColor = 'rgba(' + backgroundColour + (transparency -= 0.015) + ')';
-			element[0].style.borderColor = 'rgba(' + borderColour + (transparency -= 0.015) + ')';
-			melding[0].style.color = 'rgba(' + meldingColour + (transparency -= 0.015) + ')';
+			transparency -= 0.015;
+			element[0].style.backgroundColor = 'rgba(' + backgroundColour + transparency + ')';
+			element[0].style.borderColor = 'rgba(' + borderColour + transparency + ')';
+			melding[0].style.color = 'rgba(' + meldingColour + transparency + ')';
 		} else {
 			element.removeClass(feilmeldingsklasse);
 			element.removeAttr('style');
@@ -237,9 +239,10 @@ function fadeAktivFeilmelding(element, melding, feilmeldingsklasse, scope) {
     var transparency = 1;
     var timeout = setInterval(function () {
         if (transparency >= 0) {
-            element[0].style.backgroundColor = 'rgba(' + backgroundColour + (transparency -= 0.015) + ')';
-            element[0].style.borderColor = 'rgba(' + borderColour + (transparency -= 0.015) + ')';
-            melding[0].style.color = 'rgba(' + meldingColour + (transparency -= 0.015) + ')';
+        	transparency -= 0.015;
+            element[0].style.backgroundColor = 'rgba(' + backgroundColour + transparency + ')';
+            element[0].style.borderColor = 'rgba(' + borderColour + transparency + ')';
+            melding[0].style.color = 'rgba(' + meldingColour + transparency + ')';
         } else {
             element.removeClass(feilmeldingsklasse);
             element.removeAttr('style');
