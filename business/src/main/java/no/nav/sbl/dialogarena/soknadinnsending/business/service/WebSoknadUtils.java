@@ -32,7 +32,6 @@ public class WebSoknadUtils {
     public static final String PERMITTERT = "Permittert";
     public static final String REDUSERT_ARBEIDSTID = "Redusert arbeidstid";
     public static final String ANNEN_AARSAK = "Annen årsak";
-    private static final Logger logger = getLogger(WebSoknadUtils.class);
     private static String erPermittertellerHarRedusertArbeidstid(WebSoknad soknad) {
 
         List<Faktum> sluttaarsak = soknad.getFaktaMedKey("arbeidsforhold");
