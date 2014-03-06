@@ -7,7 +7,6 @@ angular.module('nav.sjekkBoklerValiditet', [])
                 if (erValidert) {
                     element.addClass('validert');
                 }
-
                 if (!skalSettesTilValidVedForsteApning) {
                     scope.$watch(
                         function() {
@@ -22,7 +21,6 @@ angular.module('nav.sjekkBoklerValiditet', [])
                                 var bolkerFaktum = data.finnFaktum('bolker');
                                 bolkerFaktum.properties[attrs.id] = "false";
                                 bolkerFaktum.$save();
-
                                 if (element.hasClass('validert')) {
                                     element.removeClass('validert');
                                 }
