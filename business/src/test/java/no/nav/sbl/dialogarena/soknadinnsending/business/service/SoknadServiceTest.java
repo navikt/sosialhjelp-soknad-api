@@ -345,6 +345,7 @@ public class SoknadServiceTest {
     @Test
     public void skalSletteBrukerfaktum() {
         when(vedleggRepository.hentVedleggForFaktum(1L, 1L)).thenReturn(Arrays.asList(new Vedlegg().medVedleggId(111L).medSkjemaNummer("a1").medFaktumId(111L)));
+        when(soknadRepository.hentFaktum(1L, 1L)).thenReturn(new Faktum().medKey("key"));
         soknadService.slettBrukerFaktum(1L, 1L);
         verify(vedleggRepository).slettVedleggOgData(1L, 111L, "a1");
         verify(soknadRepository).slettBrukerFaktum(1L, 1L);
