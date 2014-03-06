@@ -82,5 +82,26 @@ describe('datepicker', function () {
                 expect(maskElement.text()).toBe(datoFormat.substring(inputString.length));
             });
         });
+
+        describe('jQuery datepicker', function () {
+            var datepickerKnapp;
+            var datepickerElementId = '#ui-datepicker-div';
+            var todayMs = 1394108384263;
+            var oldDate = Date;
+
+            beforeEach(function() {
+                datepickerKnapp = element.find('apne-datepicker');
+                Date = function() {
+                    return new oldDate(todayMs);
+                }
+            });
+
+            it('skal få opp datepicker ved å trykke på datepicker-knappen', function () {
+                datepickerKnapp.trigger('click');
+                scope.$apply();
+                expect(angular.element(datepickerElementId).length).toBe(1);
+                expect(angular.element(datepickerElementId).css('display')).not.toBe('none');
+            });
+        });
     });
 });
