@@ -32,8 +32,6 @@ public class Personalia {
     public static final String SEKUNDARADRESSE_GYLDIGFRA_KEY = "sekundarAdresseGyldigFra";
     public static final String SEKUNDARADRESSE_GYLDIGTIL_KEY = "sekundarAdresseGyldigTil";
 
-    private static final Logger logger = getLogger(Personalia.class);
-
     private String fnr;
     private String alder;
     private String navn;
@@ -121,7 +119,9 @@ public class Personalia {
             return false;
         }
 
-        if (harUtenlandsAdressekode(adressetype)) return true;
+        if (harUtenlandsAdressekode(adressetype)) {
+            return true;
+        }
         return false;
     }
 
