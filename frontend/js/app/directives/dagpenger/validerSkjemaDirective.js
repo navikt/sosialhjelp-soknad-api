@@ -34,8 +34,6 @@ angular.module('nav.validerskjema', [])
                                     }
                                 );
                             });
-
-                            
                         } else {
                             var elementMedForsteFeil = $('.accordion-group').find('.form-linje.feil, .form-linje.feilstyling').first();
                             scope.fremdriftsindikator.laster = false;

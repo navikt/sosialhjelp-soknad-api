@@ -356,4 +356,101 @@ describe('scrollTilbakeDirective', function () {
         });
     });
 });
+describe('validerSkjema', function () {
+    var element, scope, timeout, event, deferred, q, $httpBackend;
+    event = $.Event("click");
 
+    beforeEach(module('nav.validerskjema', 'nav.cmstekster', 'templates-main', 'app.services'));
+
+    beforeEach(module(function ($provide) {
+        var fakta = [
+            {key: 'bolker',
+                value: "",
+                properties: {
+                    iden: 'false'
+                },
+                $save: function(){
+                    deferred = q.defer();
+                    return deferred.promise;
+                }
+            }
+        ];
+
+        $provide.value("data", {
+            fakta: fakta,
+            finnFaktum: function (key) {
+                var res = null;
+                fakta.forEach(function (item) {
+                    if (item.key == key) {
+                        res = item;
+                    }
+                });
+                return res;
+            },
+            finnFakta: function (key) {
+                var res = [];
+                fakta.forEach(function (item) {
+                    if (item.key === key) {
+                        res.push(item);
+                    }
+                });
+                return res;
+            },
+            leggTilFaktum: function (faktum) {
+                fakta.push(faktum);
+            },
+            soknad: {soknadId: 1}
+        });
+        $provide.value("cms", {'tekster': {'barnetillegg.nyttbarn.landDefault': ''}});
+        $provide.value("$routeParams", {});
+        $provide.value("validertKlasse", {});
+    }));
+
+    beforeEach(inject(function ($compile, $rootScope, $timeout, $q, $injector) {
+        $httpBackend = $injector.get('$httpBackend');
+        $httpBackend.expectPOST('/sendsoknad/rest/soknad/delsteg/1/vedlegg?').
+            respond('');
+        scope = $rootScope;
+        element = angular.element(
+            '<form name="form">' +
+                '<div data-valider-skjema>' +
+                    '<div class="accordion-group">' +
+                    '</div>' +
+                '</div>' +
+                '</form>');
+        q = $q;
+        $compile(element)(scope);
+        scope.$apply();
+        timeout = $timeout;
+        scope.fremdriftsindikator = {};
+        scope.grupper = [{
+            valideringsmetode: function(key){},
+        id: "iden",
+        validering: false}];
+    }));
+
+    describe('validerSkjema', function () {
+        it('validerSkjema skal kalle event preventDefault', function () {
+            spyOn(event, 'preventDefault');
+            scope.validerSkjema(event);
+            expect(event.preventDefault).toHaveBeenCalled();
+        });
+        it('fremdriftsinidikatoren skal bli satt til true', function () {
+            scope.validerSkjema(event);
+            expect(scope.fremdriftsindikator.laster).toBe(true);
+        });
+        it('grupper som ikke er validert skal bli satt til true', function () {
+            expect(scope.grupper[0].validering).toBe(false);
+            scope.validerSkjema(event);
+            expect(scope.grupper[0].validering).toBe(true);
+        });
+        it('hver av valideringsmetodene til gruppene skal bli kalt hvis bolken ikke er validert', function () {
+            spyOn(scope.grupper[0], 'valideringsmetode');
+            scope.validerSkjema(event);
+            timeout.flush();
+            deferred.resolve();
+            scope.$root.$digest();
+            expect(scope.grupper[0].valideringsmetode).toHaveBeenCalledWith(false);
+        });
+    });
+});
