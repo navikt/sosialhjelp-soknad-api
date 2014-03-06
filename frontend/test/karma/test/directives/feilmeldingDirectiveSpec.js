@@ -12,8 +12,7 @@ describe('feilmeldinger', function () {
         $provide.value("data", {});
     }));
 
-    beforeEach(inject(function ($compile, $rootScope, $timeout) {
-        timeout = $timeout;
+    beforeEach(inject(function ($compile, $rootScope) {
 
         element = angular.element('<div data-ng-form="form"><div form-errors></div><div class="form-linje"><input type="text" ng-model="inputModel" ng-required="true" error-messages="\'error.key\'"></div></div>');
         scope = $rootScope;
@@ -36,14 +35,6 @@ describe('feilmeldinger', function () {
         scope.runValidation(false);
         scope.$apply();
         expect(element.find('li').text().trim()).toBe(requiredFeil);
-    });
-
-    it('skal scrolle til feilmeldingslisten dersom runvalidation blir kalt med true', function() {
-        timeout(function() {
-            spyOn(window, 'scrollToElement');
-            scope.runValidation(true);
-            expect(window.scrollToElement).toHaveBeenCalled();
-        }, 1);
     });
 
     it('skal scrolle til feilmelding dersom man klikker på den', function() {
