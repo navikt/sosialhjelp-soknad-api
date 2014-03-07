@@ -7,7 +7,7 @@ describe('datepicker', function () {
     var datoFormat = 'dd.mm.yyyy';
     var label = 'Labeltekst';
 
-    var scope, rootElement, element;
+    var scope, rootElement, element, rootScope;
 
     beforeEach(module('nav.datepicker', 'templates-main', 'nav.cmstekster'));
 
@@ -26,12 +26,18 @@ describe('datepicker', function () {
 
     describe('single datepicker', function() {
         beforeEach(inject(function ($compile, $rootScope) {
-            rootElement = angular.element('<form><div nav-dato ng-model="fraDato" er-required="true" label="label.tekst" required-error-message="required.feil"></div></form>');
+            spyOn(window, 'erTouchDevice').andReturn(false);
+            spyOn(window, 'getIEVersion').andReturn(-1);
 
+            rootElement = angular.element(
+                '<form>' +
+                    '<div nav-dato ng-model="fraDato" er-required="true" label="label.tekst" required-error-message="required.feil"></div>' +
+                '</form>');
+            rootScope = $rootScope;
             $compile(rootElement)($rootScope);
             $rootScope.$apply();
             element = rootElement.find('.datepicker');
-            scope = element.scope();
+            scope = element.isolateScope();
         }));
 
         it('skal ha rett labeltekst', function() {
@@ -94,22 +100,23 @@ describe('datepicker', function () {
 
         describe('jQuery datepicker', function () {
             var datepickerKnapp;
-            var datepickerElementId = '#ui-datepicker-div';
+            var datepickerInput;
             var todayMs = 1394108384263;
             var oldDate = Date;
 
             beforeEach(function() {
-                datepickerKnapp = element.find('apne-datepicker');
+                datepickerKnapp = element.find('.apne-datepicker');
+                datepickerInput = element.find('input[type=hidden]');
                 Date = function() {
                     return new oldDate(todayMs);
                 }
             });
 
             it('skal få opp datepicker ved å trykke på datepicker-knappen', function () {
+                spyOn(scope, 'toggleDatepicker').andCallThrough();
                 datepickerKnapp.trigger('click');
                 scope.$apply();
-                expect(angular.element(datepickerElementId).length).toBe(1);
-                expect(angular.element(datepickerElementId).css('display')).not.toBe('none');
+                expect(scope.toggleDatepicker).toHaveBeenCalled();
             });
         });
     });
