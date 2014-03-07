@@ -82,7 +82,7 @@ body.contrast {
         }
       }
     }
-    &.validert,  {
+    &.validert, {
       .accordion-heading h2:before {
         background: url(../img/hake-hvit.svg) no-repeat center 10px;
       }
@@ -164,5 +164,102 @@ body.contrast {
 
   .vedlegginfoboks [class*="ikon-vedlegg-strek"] {
     background-image: url(../img/vedlegg-hvit.svg);
+  }
+
+  .form-linje.feil, {
+    border-color: #fb6e8c !important;
+    background: #ffdee3 !important;
+  }
+
+  .form-linje.checkbox.feilstyling .form-linje, .form-linje {
+    &.feil {
+      border: 1px solid #fb6e8c;
+      background: #ffdee3;
+    }
+  }
+  .form-linje {
+    &.checkbox.feilstyling .form-linje, .form-linje {
+      &.feil {
+        border: 1px solid #ffdee3;
+        background: #ffdee3;
+        padding: 15px;
+
+        &.aktiv-feilmelding.tekstfelt input {
+          border: 1px solid #c30000;
+          background-color: #ffdee3;
+        }
+        .melding {
+          color: #A00404;
+        }
+      }
+    }
+
+    &.feil {
+      .form-linje {
+        .melding {
+          display: none;
+        }
+        input, select, textarea {
+          border: 1px solid #ccc;
+          background-color: #fff;
+        }
+      }
+      select {
+        border: 1px solid #ffdee3;
+        border-top: 1px solid #ff0000;
+        background: @errorBackground;
+      }
+
+      &.boolean {
+        border: 1px solid #ffdee3;
+        background-color: #ffdee3 !important;
+
+        h4, .nav-radio-knapp, span, label {
+          background-color: #ffdee3 !important;
+          color: #000 !important;
+        }
+      }
+      textarea {
+        background-color: #ffdee3;
+      }
+
+      &.knapp {
+        background-color: #ffdee3;
+        border: 1px solid #ffdee3;
+      }
+
+      &.aktiv-feilmelding.boolean {
+        border: 1px solid #c30000;
+        background-color: #FAD6D6;
+
+        .melding {
+          color: #A00404;
+        }
+      }
+      &.aktiv-feilmelding.tekstfelt input, &.aktiv-feilmelding textarea {
+        border: 1px solid #c30000;
+        background-color: #ffdee3;
+
+        .melding {
+          color: #A00404;
+        }
+      }
+      .form-linje.tekstfelt input {
+        background-color: #fff;
+      }
+    }
+    &.aktiv-feilmelding.checkbox.feilstyling {
+      border: 1px solid #c30000;
+      background-color: #FAD6D6;
+
+      .melding {
+        color: #A00404;
+      }
+    }
+
+    &.checkbox.feilstyling {
+      border: 1px solid #ffdee3;
+      background: #ffdee3;
+    }
   }
 }
