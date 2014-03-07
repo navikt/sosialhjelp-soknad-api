@@ -61,11 +61,6 @@ describe('datepicker', function () {
             expect(requiredFeilElem.text()).toBe(requiredFeil);
         });
 
-        //Siden IE nekter aa samarbeide paa inputfelter
-        function isIE() {
-            return !!(!window.addEventListner && window.ActiveXObject);
-        }
-
         describe('dato-mask', function() {
             var input;
             var maskElement;
