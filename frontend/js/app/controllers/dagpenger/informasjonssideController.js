@@ -4,10 +4,6 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 
         $scope.utslagskriterier = data.utslagskriterier;
         $scope.utslagskriterier.harlestbrosjyre = false;
-        //For testing uten TPS:
-
-        //$scope.utslagskriterier.gyldigAlder = false;
-        //$scope.utslagskriterier.bosattINorge = false;
 
         $scope.alderspensjonUrl = data.config["soknad.alderspensjon.url"];
         $scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];

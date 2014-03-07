@@ -57,44 +57,54 @@ angular.module('nav.fokus', [])
                 var TAB_BUTTON = 9;
 
                 elm.bind("keyup keypress", function (event) {
-                    if (elm.hasClass('dagpenger')) {
-                        stickyElementBunn = elm.next().find('.sticky-bunn');
-                        var stickyElementTopp = elm.find('.sticky-feilmelding');
-                        stickyPosisjonTopp = stickyElementTopp[0].getBoundingClientRect();
+                    sjekkOmElementHarKlasseDagpenger();
+                    sjekkOmTab();
+                    sjekkOmTabOgShift();
 
-                    }
-                    else {
-                        stickyElementBunn = elm.find('.sticky-bunn');
-                        stickyPosisjonTopp = {top: 0, bottom: 60};
-                    }
+                    function sjekkOmElementHarKlasseDagpenger() {
+                        if (elm.hasClass('dagpenger')) {
+                            stickyElementBunn = elm.next().find('.sticky-bunn');
+                            var stickyElementTopp = elm.find('.sticky-feilmelding');
+                            stickyPosisjonTopp = stickyElementTopp[0].getBoundingClientRect();
 
-                    if (event.which === TAB_BUTTON) {
-                        var stickyPosisjonBunn = stickyElementBunn[0].getBoundingClientRect();
-                        elementMedFokus = document.activeElement;
-                        posisjon = "";
-
-                        if ($(elementMedFokus).is("[type=radio]") || $(elementMedFokus).is("[type=checkbox]")) {
-                            posisjon = $(elementMedFokus).closest('div')[0].getBoundingClientRect();
                         } else {
-                            posisjon = elementMedFokus.getBoundingClientRect();
-                        }
-
-                        if (posisjon.top + 10 >= stickyPosisjonBunn.top) {
-                            scrollToElement($(elementMedFokus), $(window).height() / 2);
+                            stickyElementBunn = elm.find('.sticky-bunn');
+                            stickyPosisjonTopp = {top: 0, bottom: 60};
                         }
                     }
-                    if (event.which === TAB_BUTTON && event.shiftKey) {
-                        elementMedFokus = document.activeElement;
-                        posisjon = "";
 
-                        if ($(elementMedFokus).is("[type=radio]") || $(elementMedFokus).is("[type=checkbox]")) {
-                            posisjon = $(elementMedFokus).closest('div')[0].getBoundingClientRect();
-                        } else {
-                            posisjon = elementMedFokus.getBoundingClientRect();
+                    function sjekkOmTab() {
+                        if (event.which === TAB_BUTTON) {
+                            var stickyPosisjonBunn = stickyElementBunn[0].getBoundingClientRect();
+                            elementMedFokus = document.activeElement;
+                            posisjon = "";
+
+                            if ($(elementMedFokus).is("[type=radio]") || $(elementMedFokus).is("[type=checkbox]")) {
+                                posisjon = $(elementMedFokus).closest('div')[0].getBoundingClientRect();
+                            } else {
+                                posisjon = elementMedFokus.getBoundingClientRect();
+                            }
+
+                            if (posisjon.top + 10 >= stickyPosisjonBunn.top) {
+                                scrollToElement($(elementMedFokus), $(window).height() / 2);
+                            }
                         }
+                    }
 
-                        if (posisjon.bottom - 20 <= stickyPosisjonTopp.bottom) {
-                            scrollToElement($(elementMedFokus), $(window).height() / 2);
+                    function sjekkOmTabOgShift() {
+                        if (event.which === TAB_BUTTON && event.shiftKey) {
+                            elementMedFokus = document.activeElement;
+                            posisjon = "";
+
+                            if ($(elementMedFokus).is("[type=radio]") || $(elementMedFokus).is("[type=checkbox]")) {
+                                posisjon = $(elementMedFokus).closest('div')[0].getBoundingClientRect();
+                            } else {
+                                posisjon = elementMedFokus.getBoundingClientRect();
+                            }
+
+                            if (posisjon.bottom - 20 <= stickyPosisjonTopp.bottom) {
+                                scrollToElement($(elementMedFokus), $(window).height() / 2);
+                            }
                         }
                     }
                 });
