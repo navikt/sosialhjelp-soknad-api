@@ -63,10 +63,9 @@ angular.module('nav.datepicker', [])
 				label                 : '@',
 				requiredErrorMessage  : '@'
 			},
-			link       : function (scope, element, attrs, form) {
+			link: function (scope, element, attrs, form) {
 				var eventForAValidereHeleFormen = 'RUN_VALIDATION' + form.$name;
 				var datoRegExp = new RegExp(/^\d\d\.\d\d\.\d\d\d\d$/);
-				var datepickerInput = element.find('input[type=hidden]');
 				var harHattFokus = false;
 				var datepickerErLukket = true;
 				var ugyldigFremtidigDatoFeilmelding = cms.tekster['dato.ugyldigFremtidig.feilmelding'];
@@ -240,6 +239,7 @@ angular.module('nav.datepicker', [])
 					var opts = datepickerOptions();
 
 					opts.onSelect = function () {
+                        console.log(123);
 						var dato = datepickerInput.datepicker('getDate');
 						scope.ngModel = $filter('date')(dato, 'yyyy-MM-dd');
 					};
