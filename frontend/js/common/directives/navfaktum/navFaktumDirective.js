@@ -76,13 +76,11 @@ angular.module('nav.navfaktum', [])
 						if (props) {
 							props.forEach(function (prop) {
 								var value = $scope.navproperties[prop];
-								if (value !== undefined) {
-									if (angular.isDate(value)) {
-										value = $filter('date')(value, 'yyyy.MM.dd');
-									} else {
-										value = value.toString();
-									}
-								}
+								if (value !== undefined && angular.isDate(value)) {
+                                    value = $filter('date')(value, 'yyyy.MM.dd');
+								} else if (value !== undefined) {
+                                    value = value.toString();
+                                }
 								$scope.parentFaktum.properties[prop] = value;
 							});
 						}
