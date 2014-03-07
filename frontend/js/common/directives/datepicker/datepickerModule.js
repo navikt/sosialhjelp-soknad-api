@@ -126,7 +126,7 @@ angular.module('nav.datepicker', [])
 
 				scope.harRequiredFeil = function () {
                     if (scope.navDatepicker()) {
-                        return scope.erRequired && !scope.ngModel && !scope.harFokus && harHattFokus && datepickerErLukket &&
+                        return scope.erRequired && !scope.ngModel && element.find('input[type=text]').val().trim().length === 0 && !scope.harFokus && harHattFokus && datepickerErLukket &&
                             !scope.tilDatoFeil && !inputfeltHarTekstMenIkkeGyldigDatoFormat() && !erGyldigDato(element.find('input[type=text]').val());
                     } else {
                         return scope.erRequired && !scope.ngModel && !scope.harFokus && harHattFokus && !scope.tilDatoFeil;

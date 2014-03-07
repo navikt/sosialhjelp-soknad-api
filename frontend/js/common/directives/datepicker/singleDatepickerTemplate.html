@@ -26,7 +26,6 @@
                    data-error-messages="'{{ requiredErrorMessage }}'">
         </span>
     </label>
-
     <span class="melding" data-ng-if="harRequiredFeil()">{{ requiredErrorMessage | cmstekst }}</span>
     <span class="melding" data-ng-if="harTilDatoFeil()">{{ 'dato.tilDato.feilmelding' | cmstekst }}</span>
     <span class="melding" data-ng-if="harFormatteringsFeil()">{{ 'dato.format.feilmelding' | cmstekst }}</span>
