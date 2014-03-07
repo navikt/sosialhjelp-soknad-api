@@ -45,11 +45,6 @@ describe('feilmeldinger', function () {
         expect(window.scrollToElement).toHaveBeenCalled();
     });
 
-    //Siden IE nekter aa samarbeide paa inputfelter
-    function isIE() {
-        return !!(!window.addEventListner && window.ActiveXObject);
-    }
-
     it('skal fjerne feilmelding når feilen blir rettet', function() {
         if(!isIE()) {
             var input = element.find('input');

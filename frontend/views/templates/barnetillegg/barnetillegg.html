@@ -37,6 +37,17 @@
                             </p>
                         </div>
 
+                        <div class="venstrestilt" data-ng-show="erBrukerregistrert(b)">
+                            <ul class="liste-vannrett">
+                                <li>
+                                    <a href="#" data-ng-click="slettBarn(b, $index, $event)">{{ 'barnetillegg.slettbarn' | cmstekst }}</a>
+                                </li>
+                                <li>
+                                    <a href="#" data-ng-click="endreBarn(b.faktumId, $event)">{{ 'barnetillegg.endrebarn' | cmstekst }}</a>
+                                </li>
+                            </ul>
+                        </div>
+
                         <div data-ng-show="erSystemRegistrert(b)">
                             <a href="#" data-ng-click="sokbarnetillegg(b.faktumId, $event)"
                                data-ng-if="barnetilleggIkkeRegistrert(b)">{{ 'barnetillegg.barnetilegg.sporsmal' | cmstekst }}</a>
@@ -53,17 +64,6 @@
                             </li>
                             <li data-ng-if="barnetHarInntekt(b)">
                                 <p>{{ 'barnetillegg.barnetilegg.ikkebarneinntekt.false.vedlegginformasjon' | cmstekst }}</p>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="sentrert" data-ng-show="erBrukerregistrert(b)">
-                        <ul class="liste-vannrett">
-                            <li>
-                                <a href="#" data-ng-click="slettBarn(b, $index, $event)">{{ 'barnetillegg.slettbarn' | cmstekst }}</a>
-                            </li>
-                            <li>
-                                <a href="#" data-ng-click="endreBarn(b.faktumId, $event)">{{ 'barnetillegg.endrebarn' | cmstekst }}</a>
                             </li>
                         </ul>
                     </div>
