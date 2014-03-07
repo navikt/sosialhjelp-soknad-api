@@ -15,8 +15,8 @@
          data-navlabel='{{ falseLabel }}'>
     </div>
 
-    <div data-melding="">
-        <span class="melding"></span>
+    <div data-melding>
+        <span class="melding">{{ navfeilmelding | cmstekst }}</span>
     </div>
 
     <div data-ng-if="vis()" data-ng-show="skalViseTranscludedInnhold()">

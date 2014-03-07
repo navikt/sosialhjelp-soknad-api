@@ -124,6 +124,7 @@ public class WebSoknad implements Serializable {
         return antallFaktum;
     }
 
+
     public String getAktoerId() {
         return aktoerId;
     }

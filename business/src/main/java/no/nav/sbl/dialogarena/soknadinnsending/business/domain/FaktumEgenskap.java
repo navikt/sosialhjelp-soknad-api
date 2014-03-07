@@ -58,6 +58,8 @@ public class FaktumEgenskap implements Serializable {
     }
 
     public void setSystemEgenskap(Integer systemEgenskap) {
+
         this.systemEgenskap = systemEgenskap;
     }
+
 }
