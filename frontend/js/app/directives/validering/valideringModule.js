@@ -132,14 +132,14 @@ angular.module('nav.validering', ['nav.cmstekster'])
 				var eventString = 'RUN_VALIDATION' + ctrl[0].$name;
 
 				scope.$on(eventString, function () {
-					if (element.find('input:checked').length > 0) {
+                    if (element.find('input:checked').length > 0) {
 						element.closest('.form-linje').removeClass('feil');
 					} else if (element.find('input:checked').length === 0) {
                         if (element.closest('.form-linje').hasClass('checkbox')) {
                             element.closest('.form-linje').addClass('feilstyling');
-						} else {
+                        } else {
 							element.closest('.form-linje').addClass('feil');
-						}
+                        }
 					}
 				});
 
