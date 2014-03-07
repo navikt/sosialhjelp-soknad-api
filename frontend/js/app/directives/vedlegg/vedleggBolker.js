@@ -23,7 +23,9 @@ angular.module('nav.vedleggbolker', [])
                 function apneFeilBolkerSomIkkeErApenFraFor(bolker) {
                     for (var i = 0; i < bolker.length; i++) {
                         var bolk = $(bolker[i]);
+
                         if (!(bolk.hasClass('open'))) {
+
                             bolk.find('.accordion-toggle').trigger('click');
                         }
                     }
