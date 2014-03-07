@@ -88,6 +88,12 @@
                 expect(scope.skalViseFeilmelding).toBe(false);
                 expect(scope.fremdriftsindikator.laster).toBe(true);
             });
+            it("filopplastingstartet skal sette feilmelding til false, og opplastinfeilet til false og fremdrifsindikator til true", function() {
+                scope.$broadcast('fileuploadstart');
+                expect(scope.fremdriftsindikator.laster).toBe(true);
+                expect(scope.skalViseFeilmelding).toBe(false);
+                expect(scope.data.opplastingFeilet).toBe(false);
+            });
         });
 
         describe('SlettOpplastingCtrl', function () {
