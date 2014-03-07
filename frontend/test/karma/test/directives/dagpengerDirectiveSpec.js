@@ -15,9 +15,9 @@ describe('stegindikator', function () {
 
     beforeEach(inject(function ($compile, $rootScope, $timeout) {
         element = angular.element(
-            '<form name="">' +
+            '<div ng-form="test">' +
                 '<div data-apne-bolker> ' +
-                '</form>');
+            '</div');
 
         $compile(element)($rootScope);
         $rootScope.$apply();
@@ -52,9 +52,9 @@ describe('stegindikator', function () {
 
     beforeEach(inject(function ($compile, $rootScope, $timeout) {
         element = angular.element(
-            '<form name="">' +
+            '<div ng-form="etAnnetForm">' +
                 '<div data-apne-bolker> ' +
-                '</form>');
+            '</div>');
 
         $compile(element)($rootScope);
         $rootScope.$apply();

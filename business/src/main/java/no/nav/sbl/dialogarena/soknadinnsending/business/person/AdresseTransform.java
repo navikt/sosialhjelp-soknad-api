@@ -300,10 +300,11 @@ public class AdresseTransform {
         adresse.setAdressetype(MIDLERTIDIG_POSTADRESSE_NORGE.name());
         adresse.setGyldigFra(dateTimeFormat.print(gyldigFra));
         adresse.setGyldigTil(dateTimeFormat.print(gyldigTil));
-
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(xmlGateAdresse.getTilleggsadresse());
-        stringBuilder.append(", ");
+        if(xmlGateAdresse.getTilleggsadresse() != null) {
+            stringBuilder.append(xmlGateAdresse.getTilleggsadresse());
+            stringBuilder.append(", ");
+        }
         stringBuilder.append(xmlGateAdresse.getGatenavn());
         stringBuilder.append(" ");
         stringBuilder.append(getHusnummer(xmlGateAdresse));
