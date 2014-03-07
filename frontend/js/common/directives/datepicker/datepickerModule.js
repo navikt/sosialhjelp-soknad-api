@@ -239,7 +239,6 @@ angular.module('nav.datepicker', [])
 					var opts = datepickerOptions();
 
 					opts.onSelect = function () {
-                        console.log(123);
 						var dato = datepickerInput.datepicker('getDate');
 						scope.ngModel = $filter('date')(dato, 'yyyy-MM-dd');
 					};
