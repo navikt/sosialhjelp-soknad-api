@@ -16,7 +16,7 @@ describe('datepicker', function () {
     beforeEach(module(function ($provide) {
         Date = function() {
             return new oldDate(todayMs);
-        }
+        };
 
         $provide.value("cms", {'tekster': {
             'dato.ugyldigFremtidig.feilmelding': ugyldigFremtidigDatoFeil,

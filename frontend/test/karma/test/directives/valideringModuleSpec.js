@@ -103,7 +103,7 @@ describe('valideringclickValidate', function () {
     }));
 
     beforeEach(inject(function ($compile, $rootScope, $timeout) {
-        rootScope = $rootScope
+        rootScope = $rootScope;
         scope = $rootScope;
         element = angular.element(
             '<form name="form">' +
@@ -126,7 +126,7 @@ describe('valideringclickValidate', function () {
 
     beforeEach(function () {
         jasmine.Clock.useMock();
-    })
+    });
 
     describe('clickValidate', function () {
         it('elementet skal ikke ha klassen feil', function () {
@@ -203,7 +203,7 @@ describe('checkboxValidate', function () {
     }));
 
     beforeEach(inject(function ($compile, $rootScope, $timeout) {
-        rootScope = $rootScope
+        rootScope = $rootScope;
         scope = $rootScope;
         timeout = $timeout;
         element = angular.element(
@@ -227,7 +227,7 @@ describe('checkboxValidate', function () {
 
     beforeEach(function () {
         jasmine.Clock.useMock();
-    })
+    });
 
     describe('clickValidate', function () {
         it('elementet skal ikke ha klassen feil', function () {

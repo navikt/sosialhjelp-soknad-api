@@ -45,9 +45,9 @@
                     '<div form-errors></div>' +
                     '<input type="text" ng-model="scope.barn.properties.fodselsdato" name="alder"/>' +
                     '<input type="hidden" data-ng-model="underAtten.value" data-ng-required="true"/>' +
-                    '</form>'
-                + '<span> {{fnr | formatterFnr}} </span>'
-                + '</div>'
+                    '</form>' +
+                '<span> {{fnr | formatterFnr}} </span>' +
+                '</div>'
             );
 
             $compile(element)(scope);
