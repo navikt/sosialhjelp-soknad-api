@@ -184,13 +184,12 @@ public class ConsumerConfig {
                     .withAddress(kodeverkEndPoint)
                     .withWsdl("classpath:kodeverk/no/nav/tjeneste/virksomhet/kodeverk/v2/Kodeverk.wsdl")
                     .build()
-                    .withHttpsMock()
-                    .withMDC();
+                    .withHttpsMock();
         }
 
         @Bean
         public KodeverkPortType kodeverkService() {
-            return factory().withUserSecurity().get();
+            return factory().withSystemSecurity().get();
         }
 
         @Bean
