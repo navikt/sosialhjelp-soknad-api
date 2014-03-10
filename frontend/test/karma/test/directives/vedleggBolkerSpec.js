@@ -10,7 +10,7 @@ describe('vedleggbolker', function () {
     }));
 
     beforeEach(inject(function ($compile, $rootScope, $timeout) {
-        rootScope = $rootScope
+        rootScope = $rootScope;
         scope = $rootScope;
         timeout = $timeout;
         element = angular.element(
@@ -33,7 +33,7 @@ describe('vedleggbolker', function () {
 
     beforeEach(function () {
         jasmine.Clock.useMock();
-    })
+    });
 
     describe('triggBolker', function () {
         it('Jqueryselectoren $("") fungerer ikke', function () {

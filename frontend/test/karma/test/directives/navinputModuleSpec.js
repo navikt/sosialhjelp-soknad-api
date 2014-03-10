@@ -342,7 +342,7 @@ describe('navtekstMedSporsmalOgRegEx', function () {
                 ' data-nav-faktum="offentligTjenestepensjon" ' +
                 'data-navlabel="ikkehjelpetekstlabel" ' +
                 ' data-navendret="enFunksjon()"' +
-                'data-regexvalidering="/^(\d+(?:[\.\,]\d{0,2})?)$/"' +
+                'data-regexvalidering="/^(\\d+(?:[\\.\\,]\\d{0,2})?)$/"' +
                 'data-navsporsmal="barnetillegg.barnetilegg.barneinntekttall.sporsmal" ' +
                 'data-inputfeltmaxlength="200"> ' +
                 '</div> ' +
@@ -356,7 +356,7 @@ describe('navtekstMedSporsmalOgRegEx', function () {
     }));
     describe("navtekst", function () {
         it('regexvalidering skal settes til den aktuelle regexpatternet', function () {
-            expect(scope.regexvalidering).toBe("/^(\d+(?:[\.\,]\d{0,2})?)$/");
+            expect(scope.regexvalidering).toBe("/^(\\d+(?:[\\.\\,]\\d{0,2})?)$/");
             expect(scope.inputfeltmaxlength).toBe('200');
         });
         it('harSporsmal skal returnere true hvis har sporsmal', function () {

@@ -239,7 +239,7 @@ function fadeAktivFeilmelding(element, melding, feilmeldingsklasse, scope) {
     var transparency = 1;
     var timeout = setInterval(function () {
         if (transparency >= 0) {
-        	transparency -= 0.015;
+            transparency -= 0.015;
             element[0].style.backgroundColor = 'rgba(' + backgroundColour + transparency + ')';
             element[0].style.borderColor = 'rgba(' + borderColour + transparency + ')';
             melding[0].style.color = 'rgba(' + meldingColour + transparency + ')';
@@ -361,7 +361,7 @@ function getIEVersion() {
             version = parseInt(RegExp.$1);
         }
     } else if (navigator.appName === 'Netscape') {
-        var reIe11  = new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})");
+        var reIe11  = new RegExp("Trident/.*rv:([0-9]{1,}[\\.0-9]{0,})");
         if (reIe11.exec(ua) !== null){
             version = parseFloat(RegExp.$1 );
         }
