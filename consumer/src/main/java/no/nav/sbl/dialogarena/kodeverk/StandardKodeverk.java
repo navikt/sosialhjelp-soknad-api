@@ -103,7 +103,11 @@ public class StandardKodeverk implements Kodeverk {
 
     @PostConstruct()
     public  void lastKodeverkVedOppstart(){
+        try{
         lastInnNyeKodeverk();
+        }catch(RuntimeException ex){
+            logger.warn("Kunne ikke hente kodeverk under oppstart av applikasjon. " + ex, ex);
+        }
     }
 
     @Override
