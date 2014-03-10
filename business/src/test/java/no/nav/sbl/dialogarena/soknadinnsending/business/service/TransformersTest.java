@@ -19,14 +19,15 @@ public class TransformersTest {
     public void skalMappeDatoType() {
         Faktum faktum = new Faktum()
                 .medProperty("datotil", "2013-01-01")
+                .medProperty("redusertfra", "2013-01-02")
                 .medProperty("konkursdato", "2013-01-03")
-                .medProperty("lonnspliktigperiodedatotil", "2013-01-04")
+                .medProperty("permiteringsperiodedatofra", "2013-01-04")
                 .medProperty("type", "Kontrakt utgått");
 
 
         assertThat(Transformers.DATO_TIL.transform(faktum), is(equalTo(new LocalDate("2013-01-01"))));
         assertThat(Transformers.DATO_TIL.transform(faktum.medProperty("type", "Avskjediget")), is(equalTo(new LocalDate("2013-01-01"))));
-        assertThat(Transformers.DATO_TIL.transform(faktum.medProperty("type", "Redusert arbeidstid")), is(equalTo(new LocalDate("2013-01-01"))));
+        assertThat(Transformers.DATO_TIL.transform(faktum.medProperty("type", "Redusert arbeidstid")), is(equalTo(new LocalDate("2013-01-02"))));
         assertThat(Transformers.DATO_TIL.transform(faktum.medProperty("type", "Arbeidsgiver er konkurs")), is(equalTo(new LocalDate("2013-01-03"))));
         assertThat(Transformers.DATO_TIL.transform(faktum.medProperty("type", "Sagt opp av arbeidsgiver")), is(equalTo(new LocalDate("2013-01-01"))));
         assertThat(Transformers.DATO_TIL.transform(faktum.medProperty("type", "Sagt opp selv")), is(equalTo(new LocalDate("2013-01-01"))));
