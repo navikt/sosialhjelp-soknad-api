@@ -1,12 +1,23 @@
-<div class="varighet form-linje">
+<div class="spm">
     <h4 class="spm-sporsmal">{{ 'arbeidsforhold.arbeidsgiver.varighet.label' | cmstekst }}</h4>
-    <div data-nav-dato-intervall
-         data-fra-dato="sluttaarsak.properties.datofra"
-         data-til-dato="sluttaarsak.properties.datotil"
-         data-label="arbeidsforhold.arbeidsgiver.varighet"
-         data-er-begge-required="true"
-         data-lagre="lagreFaktum()">
+    <div class="varighet form-linje">
+        <div data-nav-dato
+             data-ng-model="sluttaarsak.properties.datofra"
+             data-label="arbeidsforhold.arbeidsgiver.varighet.fra"
+             data-er-required="true"
+             data-required-error-message="arbeidsforhold.arbeidsgiver.varighet.fra.feilmelding">
+        </div>
     </div>
+
+    <div class="varighet form-linje">
+        <div data-nav-dato
+             data-ng-model="sluttaarsak.properties.redusertfra"
+             data-label="arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.sporsmal"
+             data-er-required="true"
+             data-er-fremtidigdato-tillatt="true"
+             data-required-error-message="arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.feilmelding">
+        </div>
+    </div>  
 </div>
 
 <div data-booleanradio
