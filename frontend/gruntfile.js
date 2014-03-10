@@ -167,7 +167,8 @@ module.exports = function (grunt) {
                     beforeEach: true,
                     inject: true,
                     angular: true,
-                    module: true
+                    module: true,
+                    Date: true
                 }
 			}
 		},
@@ -181,19 +182,6 @@ module.exports = function (grunt) {
                 configFile: 'test/karma/karma.conf.js',
                 singleRun: true
             }
-		},
-		maven: {
-			warName: '<%= pkg.name %>-frontend.war',
-			dist: {
-				dest: 'dist',
-				src: ['<%= pkg.name %>.js', 'js/**', 'js/test/**']
-			},
-			maven: {
-				src: ['./**']
-			},
-			watch: {
-				tasks: ['default']
-			}
 		},
 
         clean: ['target/classes/META-INF/resources/js/built']
