@@ -26,7 +26,7 @@ public class Transformers {
                 case "Avskjediget":
                     return new LocalDate(properties.get("datotil"));
                 case "Redusert arbeidstid":
-                    return new LocalDate(properties.get("datotil"));
+                    return new LocalDate(properties.get("redusertfra"));
                 case "Arbeidsgiver er konkurs":
                     return new LocalDate(properties.get("konkursdato"));
                 case "Sagt opp av arbeidsgiver":
@@ -34,7 +34,7 @@ public class Transformers {
                 case "Sagt opp selv":
                     return new LocalDate(properties.get("datotil"));
                 case "Permittert":
-                    return new LocalDate(properties.get("lonnspliktigperiodedatotil"));
+                    return new LocalDate(properties.get("permiteringsperiodedatofra"));
                 default:
                     return null;
             }
