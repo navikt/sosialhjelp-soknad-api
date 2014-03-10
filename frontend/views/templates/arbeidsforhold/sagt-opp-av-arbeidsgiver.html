@@ -1,5 +1,6 @@
 <div class="varighet form-linje">
     <h4 class="spm-sporsmal">{{ 'arbeidsforhold.arbeidsgiver.varighet.label' | cmstekst }}</h4>
+
     <div data-nav-dato-intervall
          data-fra-dato="sluttaarsak.properties.datofra"
          data-til-dato="sluttaarsak.properties.datotil"
@@ -21,20 +22,17 @@
      data-nav-faktum-property="sagtOppAvArbeidsgiverTilbudomjobbannetsted"
      data-nokkel="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted"></div>
 
-<div class="fiks-siste-boks ekstra-spm-boks"
-     data-ng-if="sluttaarsak.properties.sagtOppAvArbeidsgiverTilbudomjobbannetsted == 'true'">
+<div class="ekstra-spm-boks">
     <div data-navinfoboks>
         <p>{{ 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.informasjon' | cmstekst }}</p>
 
         <p>{{ 'arbeidsforhold.sluttaarsak.advarsel' | cmstekst }}</p>
     </div>
-</div>
-
-<div class="ekstra-spm-boks" data-vedlegginfoboks>
-    <ul>
-        <li>
-            <span>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</span>
-        </li>
-
-    </ul>
+    <div data-vedlegginfoboks>
+        <ul>
+            <li>
+                <span>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</span>
+            </li>
+        </ul>
+    </div>
 </div>
