@@ -145,7 +145,7 @@ public class WebSoknadUtilsTest {
     }
 
     private static Faktum lagPermittert(String dato) {
-        return lagFaktum("Permittert", "lonnspliktigperiodedatotil", dato);
+        return lagFaktum("Permittert", "permiteringsperiodedatofra", dato);
     }
 
     private static Faktum lagAvskjediget(String dato) {
@@ -153,7 +153,7 @@ public class WebSoknadUtilsTest {
     }
 
     private static Faktum lagRedusertArbeidstid(String dato) {
-        return lagFaktum("Redusert arbeidstid", "datotil", dato);
+        return lagFaktum("Redusert arbeidstid", "redusertfra", dato);
     }
 
     private static Adresse lagUtenlandskAdresse() {
