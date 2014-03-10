@@ -10,7 +10,6 @@ describe('vedleggbolker', function () {
     }));
 
     beforeEach(inject(function ($compile, $rootScope, $timeout) {
-        rootScope = $rootScope;
         scope = $rootScope;
         timeout = $timeout;
         element = angular.element(

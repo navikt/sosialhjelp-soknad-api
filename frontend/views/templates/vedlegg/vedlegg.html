@@ -101,6 +101,10 @@
                                                 | cmstekst}}</a>
                                         </li>
                                         <li>
+                                             <span class="melding annet"
+                                                   data-ng-if="erEkstraVedlegg(forventning)">{{ 'vedlegg.annet.inlinefeilmelding' | cmstekst }}</span>
+                                        </li>
+                                        <li>
                                             <a href="javascript:void(0)" aria-role="button"
                                                data-ng-if="erEkstraVedlegg(forventning)"
                                                data-ng-click="slettAnnetVedlegg(forventning);" name="Slett"
@@ -131,8 +135,7 @@
                                            data-ng-required="true"
                                            data-error-messages="'{{forventning.tittel}} {{forventning.navn }}'">
                                 </div>
-                                <span class="melding annet"
-                                      data-ng-if="erEkstraVedlegg(forventning)">{{ 'vedlegg.annet.inlinefeilmelding' | cmstekst }}</span>
+
                                 <span class="melding"
                                       data-ng-if="!erEkstraVedlegg(forventning)">{{ 'vedlegg.inlinefeilmelding' | cmstekst }}</span>
                             </div>
