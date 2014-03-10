@@ -255,7 +255,7 @@ describe('sjekkBoklerValiditet', function () {
         it('Element som ikke har validertklasse får ikke dette hvis bolken er lukket selv om det skal få det ved første åpning', function () {
             var validertElement = element.find('.spm-blokk3a');
             expect(validertElement.hasClass('validert')).toBe(false);
-            var validertElement = element.find('.spm-blokk3b');
+            validertElement = element.find('.spm-blokk3b');
             expect(validertElement.hasClass('validert')).toBe(false);
         });
         it('Element som har validertklasse, og skal ikke få validert på første steg, og blir endret skal ikke ha validertklassen lenger', function () {
@@ -287,7 +287,7 @@ describe('scrollTilbakeDirective', function () {
         $provide.value("data", {});
         $provide.value("$cookieStore", {
             get: function () {
-                return {aapneTabs: "tab", gjeldendeTab: "#tab", faktumId:1}
+                return {aapneTabs: "tab", gjeldendeTab: "#tab", faktumId:1};
             },
             remove: function(key) {}
         });

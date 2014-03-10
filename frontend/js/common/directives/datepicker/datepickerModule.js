@@ -126,8 +126,8 @@ angular.module('nav.datepicker', [])
 
 				scope.harRequiredFeil = function () {
                     if (scope.navDatepicker()) {
-                        return erRequiredOgHarIkkeModellSattOgHarIkkeTilDatoFeil() && element.find('input[type=text]').val().trim().length === 0 && harIkkeFokusOgHarHattFokus() && datepickerErLukket
-                            && !inputfeltHarTekstMenIkkeGyldigDatoFormat() && !erGyldigDato(element.find('input[type=text]').val());
+                        return erRequiredOgHarIkkeModellSattOgHarIkkeTilDatoFeil() && element.find('input[type=text]').val().trim().length === 0 && harIkkeFokusOgHarHattFokus() && datepickerErLukket &&
+                            !inputfeltHarTekstMenIkkeGyldigDatoFormat() && !erGyldigDato(element.find('input[type=text]').val());
                     } else {
                         return erRequiredOgHarIkkeModellSattOgHarIkkeTilDatoFeil() && harIkkeFokusOgHarHattFokus() ;
                     }
