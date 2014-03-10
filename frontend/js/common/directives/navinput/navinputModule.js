@@ -11,7 +11,7 @@ angular.module('nav.input', ['nav.cmstekster'])
                 }}
         };
     }])
-    .directive('navradio', [function () {
+    .directive('navradio', ['cms', function (cms) {
         return {
             restrict: 'A',
             replace: true,
@@ -20,6 +20,10 @@ angular.module('nav.input', ['nav.cmstekster'])
             link: {
                 pre: function (scope, element, attr) {
                     scope.value = attr.value;
+                    scope.hjelpetekst = {
+                        tittel: attr.hjelpetekst + '.tittel',
+                        tekst: attr.hjelpetekst + '.tekst'
+                    };
                 },
                 post: function (scope, element, attr) {
                     scope.hvisAktiv = function () {
@@ -29,6 +33,10 @@ angular.module('nav.input', ['nav.cmstekster'])
                     scope.hvisHarTranscludedInnhold = function () {
                         var transcludeElement = element.find('.ng-transclude');
                         return transcludeElement.text().trim().length > 0;
+                    };
+
+                    scope.hvisHarHjelpetekst = function() {
+                        return cms.tekster[scope.hjelpetekst.tittel] !== undefined;
                     };
 
                     var index = scope.navlabel.lastIndexOf(".true");
