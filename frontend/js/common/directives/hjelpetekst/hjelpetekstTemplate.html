@@ -1,5 +1,7 @@
 <div class="hjelpetekst" data-ng-click="stoppKlikk($event)">
-    <a href="javascript:void(0);" class="infoikon" data-ng-click="toggleHjelpetekst()" aria-role="button">?</a>
+    <a href="javascript:void(0);" class="infoikon" data-ng-click="toggleHjelpetekst()" aria-role="button">
+        <span>?</span>
+    </a>
     <div class="hjelpetekst-tooltip" data-ng-if="visHjelp" data-nav-hjelpetekst-tooltip>
         <div class="tittel">
             <h3 class="liten-strek">{{ tittel }}</h3>
