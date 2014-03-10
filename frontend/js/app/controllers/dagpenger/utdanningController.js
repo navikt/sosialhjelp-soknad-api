@@ -31,6 +31,13 @@ angular.module('nav.utdanning', [])
 			}
 		};
 
+        $scope.fraDatoErRequired = function() {
+            if($scope.hvis('utdanning.kveld.progresjonUnder50', 'false') && $scope.hvis('utdanning.kveld.PaabegyntUnder6mnd', 'true')) {
+                return true
+            }
+            return false;
+        }
+
 		function erCheckboxerAvhuket(checkboxNokler) {
 			var minstEnAvhuket = false;
 			var fakta = {};
