@@ -41,7 +41,11 @@ angular.module('sendsoknad')
         $http.get('../js/app/directives/sporsmalferdig/spmblokkFerdigTemplate.html', {cache: $templateCache});
         $http.get('../js/app/directives/stegindikator/stegIndikatorTemplate.html', {cache: $templateCache});
         $http.get('../js/app/directives/stickybunn/stickyBunnTemplate.html', {cache: $templateCache});
+        $http.get('../js/app/directives/markup/modalsideTemplate.html', {cache: $templateCache});
 
+        $http.get('../js/common/directives/melding/meldingTemplate.html', {cache: $templateCache});
+        $http.get('../js/app/directives/markup/vedlegginfoboksTemplate.html', {cache: $templateCache});
+        $http.get('../views/templates/arbeidsforhold-nytt.html', {cache: $templateCache});
         $http.get('../views/templates/arbeidsforhold/avskjediget.html', {cache: $templateCache});
         $http.get('../views/templates/arbeidsforhold/avskjediget-oppsummering.html', {cache: $templateCache});
         $http.get('../views/templates/arbeidsforhold/konkurs.html', {cache: $templateCache});
