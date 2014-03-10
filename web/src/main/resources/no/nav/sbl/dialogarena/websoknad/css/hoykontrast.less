@@ -7,12 +7,12 @@ body.contrast {
   }
 
   [class*='innstillinger'] .innlogging .loggut {
-    border-color: #000;
+    background-color: #000 !important;
+    border: 1px solid #5f5e5d !important;
+    color: #ffc40d !important;
 
     &:hover {
-      background-color: #0ca9e1 !important;
-      border-color: #0ca9e1;
-      color: #000000 !important;
+      color: #00a9e0 !important;
     }
   }
   .stegindikator li.aktiv .steg {
@@ -166,9 +166,79 @@ body.contrast {
     background-image: url(../img/vedlegg-hvit.svg);
   }
 
-  .form-linje.feil input:not([type="submit"]), .form-linje.feil textarea, .form-linje.feil.boolean, .form-linje.feil.checkbox, .form-linje.checkbox.feilstyling, .datepicker.feil .datepicker-input {
+  .form-linje.feil input:not([type="submit"]),
+  .form-linje.feil textarea,
+  .form-linje.feil select,
+  .form-linje.feil.tekstfelt input,
+  .form-linje.feil.aktiv-feilmelding.tekstfelt input,
+  .form-linje.feil.boolean,
+  .form-linje.feil.checkbox,
+  .form-linje.checkbox.feilstyling,
+  .datepicker.feil .datepicker-input,
+  .form-linje.feil.knapp {
     border: 1px solid #fb6e8c;
     border-top: 1px solid #fb6e8c;
   }
 
+  .feil, .feilstyling {
+    input[type='checkbox']:focus + label {
+      color: #fff !important;
+    }
+    input[type='radio']:focus + label {
+      color: #fff !important;
+    }
+    input[type='radio']:focus:checked + label {
+      color: #fff !important;
+    }
+    input[type='checkbox']:focus:checked + label {
+      color: #fff !important;
+    }
+
+    &.aktiv-feilmelding {
+      input[type='checkbox']:focus + label {
+        color: #fb6e8c !important;
+        background: url(../img/check.svg) 0 0 no-repeat !important;
+      }
+      input[type='radio']:focus + label {
+        color: #fb6e8c !important;
+        background: url(../img/radio.svg) 0 0 no-repeat !important;
+      }
+      input[type='radio']:focus:checked + label {
+        color: #fb6e8c !important;
+        background: url(../img/radio_valgt.svg) 0 0 no-repeat;
+      }
+      input[type='checkbox']:focus:checked + label {
+        color: #fb6e8c !important;
+        background: url(../img/check_valgt.svg) 0 0 no-repeat;
+      }
+    }
+  }
+
+  .rad, .modalBoks, #informasjonsside {
+    input[type='checkbox']:focus:checked + label {
+      background: url(../img/check_valgt_tab.svg) 0 0 no-repeat;
+      color: #3e3832;
+    }
+
+    input[type='radio']:focus:checked + label {
+      background: url(../img/radio_valgt_tab.svg) 0 0 no-repeat;
+      color: #3e3832;
+    }
+
+    input[type='checkbox']:focus + label {
+      background: url(../img/check_tab.svg) 0 0 no-repeat;
+      color: #0067c5;
+    }
+    input[type='radio']:focus + label {
+      background: url(../img/radio_tab.svg) 0 0 no-repeat;
+      color: #0067c5;
+    }
+  }
+  .sticky-feilmelding {
+    border: 1px solid #ddd;
+  }
+
+  #barnetilleggForm .barn.jente .barnealder span{
+    color: #fb6e8c !important;
+  }
 }
