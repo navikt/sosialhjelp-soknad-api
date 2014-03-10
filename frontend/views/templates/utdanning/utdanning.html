@@ -105,8 +105,15 @@
                     <span class="utdanning-nei-melding">{{ 'utdanning.harValgtUtdanning.feilmelding' | cmstekst }}</span>
                 </div>
 
-                <div class="ekstra-spm-boks nav-checkbox" data-navinfoboks data-ng-if="hvis('underUtdanningAnnet')">
-                    <span>{{ 'utdanning.unntak.informasjon' | cmstekst }}</span>
+                <div class="ekstra-spm-boks nav-checkbox" data-ng-if="hvis('underUtdanningAnnet')">
+                    <div data-navinfoboks>  
+                        <span>{{ 'utdanning.unntak.informasjon' | cmstekst }}</span>
+                    </div>
+                    <div data-vedlegginfoboks>
+                        <ul>
+                            <li><p>{{ 'utdanning.svar.under.utdanning.dokumentasjon' | cmstekst }}</p></li>
+                        </ul>
+                    </div>
                 </div>
                 <span class="melding">{{ 'utdanning.minstEnAvhuket.feilmelding' | cmstekst }}</span>
 
