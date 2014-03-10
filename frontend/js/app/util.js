@@ -252,6 +252,24 @@ function fadeAktivFeilmelding(element, melding, feilmeldingsklasse, scope) {
         }
     }, 20);
 }
+function fadeContrastFeilmelding(element, melding, feilmeldingsklasse, scope) {
+    var backgroundColour = [250, 214, 214].join(',') + ',';
+    var borderColour = [250, 110, 140].join(',') + ',';
+    var transparency = 1;
+    var timeout = setInterval(function () {
+        if (transparency >= 0) {
+            transparency -= 0.015;
+            element[0].style.backgroundColor = 'rgba(' + backgroundColour + transparency + ')';
+            element[0].style.borderColor = 'rgba(' + borderColour + transparency + ')';
+        } else {
+            element.removeClass(feilmeldingsklasse);
+            element.removeAttr('style');
+            melding.removeAttr('style');
+            clearInterval(timeout);
+            scope.$apply();
+        }
+    }, 20);
+}
 
 function reverserNorskDatoformat(datoString) {
 	var re = new RegExp(/^\d\d\.\d\d\.\d\d\d\d$/);
