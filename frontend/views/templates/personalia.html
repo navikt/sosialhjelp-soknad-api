@@ -2,15 +2,15 @@
     <div data-ng-form="personaliaForm" class="skjemainnhold" data-ng-controller="PersonaliaCtrl" data-novalidate>
         <div class="informasjon">
             <span class="informasjonstekst">
-                <span>{{ 'personalia.intro' | cmstekst }}</span>
-                <a href="{{ brukerprofilUrl }}" target="_blank">{{ 'personalia.intro.tekst' | cmstekst }}</a>
+                <span data-ng-bind-html=" 'personalia.intro' | cmstekst"></span>
+                <a href="{{ brukerprofilUrl }}" target="_blank" data-ng-bind-html=" 'personalia.intro.tekst' | cmstekst"></a>
             </span>
         </div>
 
         <div data-ng-show="harHentetPersonalia()">
             <div class="personalia">
                 <div class="alderOgKjonn" data-ng-class="{mann: erMann(), kvinne: erKvinne()}">
-                    <span>{{ 'aar' | cmstekst }}</span>
+                    <span data-ng-bind-html=" 'aar' | cmstekst"></span>
                     <span class="alder robust">{{ personalia.alder }}</span>
                 </div>
                 <div class="personInfo">

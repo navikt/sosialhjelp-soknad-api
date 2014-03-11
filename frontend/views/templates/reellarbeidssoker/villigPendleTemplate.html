@@ -4,10 +4,10 @@
      data-nokkel="reellarbeidssoker.villigpendle">
 
     <div data-ng-if="erUnder60Aar()" data-navinfoboks>
-        <span>{{ 'reellarbeidssoker.villigpendle.false.informasjon.under60' | cmstekst }}</span>
+        <span data-ng-bind-html=" 'reellarbeidssoker.villigpendle.false.informasjon.under60' | cmstekst"></span>
     </div>
     <div data-ng-if="erOver59Aar()" data-navinfoboks>
-        <span>{{ 'reellarbeidssoker.villigpendle.false.informasjon.over60' | cmstekst }}</span>
+        <span data-ng-bind-html=" 'reellarbeidssoker.villigpendle.false.informasjon.over60' | cmstekst"></span>
     </div>
 
     <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
@@ -53,18 +53,18 @@
              data-navendret="endrePendleAarsaker()"></div>
 
         <div class="siste-element" data-navinfoboks data-ng-if="harValgtAnnetUnntakPendle()">
-            <p>{{ 'reellarbeidssoker.unntak.dokumentasjon' | cmstekst }}</p>
+            <p data-ng-bind-html=" 'reellarbeidssoker.unntak.dokumentasjon' | cmstekst"></p>
         </div>
 
         <div data-melding>
-            <span class="melding">{{ 'reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding' | cmstekst }}</span>
+            <span class="melding" data-ng-bind-html=" 'reellarbeidssoker.villigpendle.false.minstEnCheckboksErAvhuketForPendle.feilmelding' | cmstekst"></span>
         </div>
     </div>
 
     <div data-vedlegginfoboks data-ng-if="trengerUtalelseFraFagpersonellPendle()">
         <ul>
             <li>
-                <span>{{ 'reellarbeidssoker.utalelsefagpersonell.vedlegginformasjon' | cmstekst }}</span>
+                <span data-ng-bind-html=" 'reellarbeidssoker.utalelsefagpersonell.vedlegginformasjon' | cmstekst"></span>
             </li>
         </ul>
     </div>

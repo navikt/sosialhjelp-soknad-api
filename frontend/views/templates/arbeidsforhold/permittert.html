@@ -1,5 +1,5 @@
 <div class="varighet form-linje">
-    <h4 class="spm-sporsmal">{{ 'arbeidsforhold.arbeidsgiver.varighet.label' | cmstekst }}</h4>
+    <h4 class="spm-sporsmal" data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.varighet.label' | cmstekst"></h4>
     <div data-nav-dato
          data-ng-model="sluttaarsak.properties.datofra"
          data-label="arbeidsforhold.arbeidsgiver.varighet.fra"
@@ -9,7 +9,7 @@
 </div>
 
 <div class="varighet form-linje">
-    <h4 class="spm-sporsmal">{{ 'arbeidsforhold.arbeidsgiver.permittert.varighet' | cmstekst }}</h4>
+    <h4 class="spm-sporsmal" data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.permittert.varighet' | cmstekst"></h4>
 
     <div data-nav-dato-intervall
          data-fra-dato="faktum.properties.permiteringsperiodedatofra"
@@ -22,7 +22,7 @@
 
 <div class="varighet form-linje">
     <h4 class="spm-sporsmal">
-        <span>{{ 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet' | cmstekst }}</span>
+        <span data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet' | cmstekst"></span>
         <span data-nav-hjelpetekstelement data-tittel="{{ 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.hjelptekst.tittel' | cmstekst }}" data-tekst="{{ 'arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.hjelptekst.tekst' | cmstekst}}"></span>
     </h4>
 
@@ -30,8 +30,7 @@
          data-fra-dato="faktum.properties.lonnspliktigperiodedatofra"
          data-til-dato="faktum.properties.lonnspliktigperiodedatotil"
          data-label="arbeidsforhold.arbeidsgiver.permittert.lonnsplikt.varighet"
-         data-er-fremtidigdato-tillatt="true"
-         data-er-fradato-required="true">
+         data-er-fremtidigdato-tillatt="true">
     </div>
 </div>
 
@@ -41,7 +40,7 @@
         {{ 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad' | cmstekst }}
     </h4>
     <label>
-        <span class="labeltekst">{{ 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.label' | cmstekst }}</span>
+        <span class="labeltekst" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.label' | cmstekst"></span>
         <input data-ng-model="sluttaarsak.properties.permitteringProsent"
                type="text"
                data-ng-required="true"
@@ -57,15 +56,15 @@
 
 <div class="ekstra-spm-boks">
     <div data-navinfoboks>
-        <p class="sluttaarsak-informasjon">{{ 'arbeidsforhold.sluttaarsak.permittert.informasjon' | cmstekst }}</p>
+        <p class="sluttaarsak-informasjon" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.permittert.informasjon' | cmstekst"></p>
     </div>
     <div data-vedlegginfoboks>
         <ul>
             <li>
-                <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</p>
+                <p data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst"></p>
             </li>
             <li>
-                <p>{{ 'arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2' | cmstekst }}</p>
+                <p data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.permittert.vedlegg.liste.2' | cmstekst"></p>
             </li>
         </ul>
     </div>

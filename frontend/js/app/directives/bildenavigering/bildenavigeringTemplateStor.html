@@ -2,10 +2,10 @@
     <div class="header">
         <div class="header-content">
             <div class="tilbake">
-                <a class="ikke-mobil" onclick="history.back()" href="javascript:void(0);">{{
-                    'vedlegg.forhandsvisning.tilbake' | cmstekst }}</a>
-                <a class="mobil" onclick="history.back()" href="javascript:void(0);">{{
-                    'vedlegg.forhandsvisning.tilbake.mobil' | cmstekst }}</a>
+                <a class="ikke-mobil" onclick="history.back()" href="javascript:void(0);" data-ng-bind-html="
+                    'vedlegg.forhandsvisning.tilbake' | cmstekst"></a>
+                <a class="mobil" onclick="history.back()" href="javascript:void(0);" data-ng-bind-html="
+                    'vedlegg.forhandsvisning.tilbake.mobil' | cmstekst"></a>
             </div>
             <div class="navn">{{vedlegg.navn}} ({{side + 1}}/{{vedlegg.antallSider}})</div>
         </div>

@@ -1,7 +1,7 @@
 <div class="nav-select form-linje" data-ng-class="{open: selectOpen, feil: harFeil()}">
     <div class="selectboks" data-ng-show="navSelect()">
         <label>
-            <span class="labeltekst">{{ label | cmstekst }}</span>
+            <span class="labeltekst" data-ng-bind-html=" label | cmstekst"></span>
             <span class="select-input clearfix">
                 <span class="pil" data-ng-click="apneSelectboks($event)"></span>
                 <input type="text"
@@ -12,8 +12,8 @@
                        data-error-messages="'{{ requiredFeilmelding }}'"
                        data-ng-click="klikk($event)">
             </span>
-            <span data-ng-if="harRequiredFeil()" class="melding">{{ requiredFeilmelding | cmstekst }}</span>
-            <span data-ng-if="inneholderIkkeSkrevetTekst()" class="melding">{{ ugyldigFeilmelding | cmstekst }}</span>
+            <span data-ng-if="harRequiredFeil()" class="melding" data-ng-bind-html=" requiredFeilmelding | cmstekst"></span>
+            <span data-ng-if="inneholderIkkeSkrevetTekst()" class="melding" data-ng-bind-html=" ugyldigFeilmelding | cmstekst"></span>
         </label>
         <ul data-ng-show="skalViseListen()">
             <li data-bindonce data-ng-repeat="option in vistListeFiltrert"
@@ -25,7 +25,7 @@
     </div>
     <div class="vanlig-select" data-ng-if="vanligSelect()">
         <label>
-            <span>{{ label | cmstekst }}</span>
+            <span data-ng-bind-html=" label | cmstekst"></span>
             <select data-ng-model="faktum.value" data-ng-options="opt.value as opt.text for opt in orginalListe"></select>
         </label>
     </div>

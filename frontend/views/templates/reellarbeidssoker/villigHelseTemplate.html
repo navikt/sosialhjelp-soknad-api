@@ -6,7 +6,7 @@
      data-hjelpetekst>
 
     <div data-navinfoboks>
-        <span>{{ 'reellarbeidssoker.villighelse.false.vedlegginformasjon' | cmstekst }}</span>
+        <span data-ng-bind-html=" 'reellarbeidssoker.villighelse.false.vedlegginformasjon' | cmstekst"></span>
     </div>
 
     <div data-navtextarea
@@ -19,7 +19,7 @@
     <div data-vedlegginfoboks data-ng-if="kanIkkeTaAlleTyperArbeid()">
         <ul>
             <li>
-                <span>{{ 'reellarbeidssoker.kanikkealletyperarbeid.vedlegginformasjon' | cmstekst }}</span>
+                <span data-ng-bind-html=" 'reellarbeidssoker.kanikkealletyperarbeid.vedlegginformasjon' | cmstekst"></span>
             </li>
         </ul>
     </div>

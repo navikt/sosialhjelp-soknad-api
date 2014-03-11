@@ -5,11 +5,11 @@
      data-nokkel="reellarbeidssoker.villigdeltid">
 
     <div data-ng-if="erUnder60Aar()" data-navinfoboks>
-        <span>{{ 'reellarbeidssoker.villigdeltid.false.informasjon.under60' | cmstekst }}</span>
+        <span data-ng-bind-html=" 'reellarbeidssoker.villigdeltid.false.informasjon.under60' | cmstekst"></span>
     </div>
 
     <div data-ng-if="erOver59Aar()" data-navinfoboks>
-        <span>{{ 'reellarbeidssoker.villigdeltid.false.informasjon.over60' | cmstekst }}</span>
+        <span data-ng-bind-html=" 'reellarbeidssoker.villigdeltid.false.informasjon.over60' | cmstekst"></span>
     </div>
 
     <div class="form-linje checkbox" data-ng-if="erUnder60Aar()" data-checkbox-validate>
@@ -55,19 +55,19 @@
              data-navendret="endreDeltidsAarsaker()"></div>
 
         <div class="siste-element" data-ng-if="harValgtAnnetUnntakDeltid()" data-navinfoboks>
-            <p>{{ 'reellarbeidssoker.unntak.dokumentasjon' | cmstekst }}</p>
+            <p data-ng-bind-html=" 'reellarbeidssoker.unntak.dokumentasjon' | cmstekst"></p>
         </div>
 
-        <span class="melding">{{ 'reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding' | cmstekst }}</span>
+        <span class="melding" data-ng-bind-html=" 'reellarbeidssoker.villigdeltid.false.minstEnCheckboksErAvhuketForDeltid.feilmelding' | cmstekst"></span>
     </div>
 
     <div class="tekstfelt form-linje arbeidsmengde-container">
         <h4 class="spm-sporsmal">
-            <span data-ng-if="erUnder60Aar()">{{ 'reellarbeidssoker.villigdeltid.false.informasjon2' | cmstekst }}</span>
-            <span>{{ 'reellarbeidssoker.maksimalarbeidstid' | cmstekst }}</span>
+            <span data-ng-if="erUnder60Aar()" data-ng-bind-html=" 'reellarbeidssoker.villigdeltid.false.informasjon2' | cmstekst"></span>
+            <span data-ng-bind-html=" 'reellarbeidssoker.maksimalarbeidstid' | cmstekst"></span>
         </h4>
         <label>
-            <span class="labeltekst">{{ 'reellarbeidssoker.maksimalarbeidstid.label' | cmstekst }}</span>
+            <span class="labeltekst" data-ng-bind-html=" 'reellarbeidssoker.maksimalarbeidstid.label' | cmstekst"></span>
             <input type="text"
                    data-ng-model="faktum.value"
                    data-nav-faktum="reellarbeidssoker.villigdeltid.maksimalarbeidstid"
@@ -85,7 +85,7 @@
     <div data-vedlegginfoboks data-ng-if="trengerUtalelseFraFagpersonellDeltid()">
         <ul>
             <li>
-                <span>{{ 'reellarbeidssoker.utalelsefagpersonell.vedlegginformasjon' | cmstekst }}</span>
+                <span data-ng-bind-html=" 'reellarbeidssoker.utalelsefagpersonell.vedlegginformasjon' | cmstekst"></span>
             </li>
         </ul>
     </div>
