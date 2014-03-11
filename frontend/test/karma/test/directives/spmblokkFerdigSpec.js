@@ -201,6 +201,121 @@ describe('sporsmalferdig', function () {
             accordionGroup.find('button').first().click();
             scope.$apply();
             expect(scope.apneTab).toHaveBeenCalled();
+            timeout.flush();
+        });
+    });
+});
+describe('sporsmalferdig', function () {
+    var rootScope, element, scope, timeout, form, event;
+    event = $.Event("click");
+
+    beforeEach(module('nav.sporsmalferdig', 'nav.cmstekster', 'templates-main'));
+
+    beforeEach(module(function ($provide) {
+        $provide.value("data", {
+        });
+        $provide.value("cms", {'tekster': {'hjelpetekst.tittel': 'Tittel hjelpetekst',
+            'hjelpetekst.tekst': 'Hjelpetekst tekst' }
+        });
+    }));
+
+    beforeEach(inject(function ($compile, $rootScope, $timeout) {
+        scope = $rootScope;
+        timeout = $timeout;
+        element = angular.element(
+            '<form name="form">' +
+                '<div class="accordion-group" id="enide">' +
+                    '<input type="text" required data-ng-model="modell">  ' +
+                    '<div data-spmblokkferdig></div>' +
+                '</div>' +
+            '</form>');
+
+        scope.valider = function (key) {
+        };
+
+        scope.leggTilValideringsmetode = function (ke1, key2) {
+        };
+
+        $compile(element)(scope);
+        scope.$apply();
+    }));
+
+    describe('spmblokkferdig', function () {
+        it('hvis formen ikke er valid of validerOgGaaTilNeste blir kalt så skal bolken ikke få klassen validert', function () {
+            var accordionGroup = element.find(".accordion-group");
+            expect(accordionGroup.hasClass('validert')).toBe(false);
+            scope.validerOgGaaTilNeste();
+            expect(accordionGroup.hasClass('validert')).toBe(false);
+        });
+    });
+});
+describe('vedleggblokkferdig', function () {
+    var rootScope, element, scope, timeout, form, event, compile;
+    event = $.Event("click");
+
+    beforeEach(module('nav.sporsmalferdig', 'nav.cmstekster', 'templates-main'));
+
+    beforeEach(module(function ($provide) {
+        $provide.value("data", {
+        });
+        $provide.value("cms", {'tekster': {'hjelpetekst.tittel': 'Tittel hjelpetekst',
+            'hjelpetekst.tekst': 'Hjelpetekst tekst' }
+        });
+    }));
+
+    beforeEach(inject(function ($compile, $rootScope, $timeout) {
+        scope = $rootScope;
+        timeout = $timeout;
+        compile = $compile;
+
+        scope.valider = function (key) {
+        };
+
+
+        scope.leggTilValideringsmetode = function (ke1, key2) {
+        };
+
+        scope.$apply();
+    }));
+
+    describe('vedleggblokkferdig', function () {
+        it('gaaTilNeste lukkBolk med in', function () {
+            element = angular.element(
+                '<form name="form">' +
+                    '<div class="accordion-group" id="enide">' +
+                        '<div class="accordion-body in" id="enide">' +
+                            '<div class="accordion-toggle" id="enide">' +
+                                '<div data-vedleggblokkferdig></div> ' +
+                                '<a>Element</a> ' +
+                            '</div>' +
+                        '<div class="accordion-group" id="toide">' +
+                            '<div class="accordion-body in" id="enide">' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</form>');
+
+            compile(element)(scope);
+            scope.$apply();
+
+            scope.gaaTilNeste();
+            timeout.flush();
+        });
+        it('gaaTilNeste lukkBolk uten in', function () {
+            element = angular.element(
+                '<form name="form">' +
+                    '<div class="accordion-group" id="enide">' +
+                    '</div>' +
+                    '<div class="accordion-group in" id="toide">' +
+                    '</div>' +
+                    '<div data-vedleggblokkferdig></div> ' +
+                    '</form>');
+            compile(element)(scope);
+            scope.$apply();
+
+            scope.gaaTilNeste();
+            timeout.flush();
+
         });
     });
 });

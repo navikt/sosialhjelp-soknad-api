@@ -38,6 +38,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.Splitter;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -157,7 +158,14 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public void slettBrukerFaktum(Long soknadId, Long faktumId) {
-        String faktumKey = repository.hentFaktum(soknadId, faktumId).getKey();
+        final Faktum faktum;
+        try {
+            faktum = repository.hentFaktum(soknadId, faktumId);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            logger.info("Skipped delete bechause faktum does not exist.");
+            return;
+        }
+        String faktumKey = faktum.getKey();
         List<Vedlegg> vedleggliste = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
 
         for (Vedlegg vedlegg : vedleggliste) {

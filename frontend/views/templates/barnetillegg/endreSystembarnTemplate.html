@@ -5,7 +5,7 @@
 
         <div data-nav-faktum="barn" data-ikke-auto-lagre="true">
             <h2 class="stor-strek">
-                <span>{{ 'barnetillegg.sokerbarnetillegg.tittel' | cmstekst }}</span>
+                <span data-ng-bind-html=" 'barnetillegg.sokerbarnetillegg.tittel' | cmstekst"></span>
                 <span data-ng-bind="barnenavn"></span>
             </h2>
             <div data-ng-include="'../views/templates/barnetillegg/barnetilleggSporsmalTemplate.html'"></div>

@@ -7,7 +7,6 @@ describe('cmstekster', function () {
         $provide.value("cms", {'tekster': {
             'tittel.key': 'Min tittel',
             'input.value': 'Dette er value',
-            'div.html': '<h1>htmltest</h1>',
             'a.lenketekst': 'http://helt-riktig.com'
         }});
         $provide.value("data", {});
@@ -18,7 +17,6 @@ describe('cmstekster', function () {
         $scope = $rootScope;
 
         inputElement = '<input value="{{ \'input.value\' | cmstekst }}">';
-        htmlElement = '<div class="html" cmshtml="div.html">tester cms</div>';
         anchorElement = '<a href="{{ \'a.lenketekst\' | cmstekst }}"></a>';
         direkteElement = '<div class="direkte-innsatt">{{"tittel.key" | cmstekst }}</div>';
 
@@ -39,13 +37,6 @@ describe('cmstekster', function () {
 
         it("skal sette inn lenketekst", function() {
             expect(element.find("a").attr("href")).toBe("http://helt-riktig.com");
-        });
-    });
-
-
-    describe("cmshtml", function() {
-        it("skal sette inn html", function() {
-            expect(element.find(".html").html()).toBe("<h1>htmltest</h1>");
         });
     });
 });

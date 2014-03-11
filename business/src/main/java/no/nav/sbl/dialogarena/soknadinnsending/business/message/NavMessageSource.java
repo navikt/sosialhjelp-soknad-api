@@ -43,7 +43,7 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
                     Content<Innholdstekst> content = contentRetriever.getContent(new URI(fileToEnonicMapping.get(fileSplit[1]).get(fileSplit[0])));
                     Map<String, Innholdstekst> innhold = content.toMap(Innholdstekst.KEY);
                     for (Map.Entry<String, Innholdstekst> entry : innhold.entrySet()) {
-                        holder.getProperties().put(entry.getKey(), entry.getValue());
+                        holder.getProperties().put(entry.getValue().key, spripPTag(entry.getValue().value));
                     }
                 } catch (Exception e) {
                     return holder;
@@ -51,6 +51,19 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
             }
         }
         return holder;
+    }
+
+    private String spripPTag(String value) {
+        String res = value;
+        if (value != null) {
+            if (res.startsWith("<p>")) {
+                res = res.substring(3);
+            }
+            if (res.endsWith("</p>")) {
+                res = res.substring(0, res.length() - 4);
+            }
+        }
+        return res;
     }
 
 }

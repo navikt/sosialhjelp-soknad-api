@@ -53,8 +53,8 @@ public class ContentConfig {
         Map<String, Map<String, String>> map = new HashMap<>();
         Map<String, String> innerMap = new HashMap<>();
         map.put(DEFAULT_LOCALE, innerMap);
-        innerMap.put("classpath:content/innholdstekster", INNHOLDSTEKSTER_NB_NO_REMOTE);
-        innerMap.put("classpath:content/sbl-webkomponenter", SBL_WEBKOMPONENTER_NB_NO_REMOTE);
+        innerMap.put("classpath:content/innholdstekster", cmsBaseUrl + INNHOLDSTEKSTER_NB_NO_REMOTE);
+        innerMap.put("classpath:content/sbl-webkomponenter", cmsBaseUrl + SBL_WEBKOMPONENTER_NB_NO_REMOTE);
         messageSource.setEnonicMap(map);
         messageSource.setEnableEnonic(true);
         messageSource.setCacheSeconds(3600);

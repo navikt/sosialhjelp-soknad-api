@@ -1,5 +1,5 @@
 <div class="varighet form-linje">
-    <h4 class="spm-sporsmal">{{ 'arbeidsforhold.arbeidsgiver.varighet.label' | cmstekst }}</h4>
+    <h4 class="spm-sporsmal" data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.varighet.label' | cmstekst"></h4>
     <div data-nav-dato-intervall
          data-fra-dato="sluttaarsak.properties.datofra"
          data-til-dato="sluttaarsak.properties.datotil"
@@ -18,17 +18,17 @@
 
 <div class="ekstra-spm-boks">
     <div data-navinfoboks>
-        <p class="sluttaarsak-informasjon">{{ 'arbeidsforhold.sluttaarsak.avskjediget.informasjon.1' | cmstekst }}</p>
+        <p class="sluttaarsak-informasjon" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.avskjediget.informasjon.1' | cmstekst"></p>
 
-        <p class="sluttaarsak-informasjon">{{ 'arbeidsforhold.sluttaarsak.avskjediget.informasjon.2' | cmstekst }}</p>
+        <p class="sluttaarsak-informasjon" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.avskjediget.informasjon.2' | cmstekst"></p>
     </div>
     <div data-vedlegginfoboks>
         <ul>
             <li>
-                <span>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</span>
+                <span data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst"></span>
             </li>
             <li>
-                <span>{{ 'Dagpenger.vedlegg.T8.header' | cmstekst }}</span>
+                <span data-ng-bind-html=" 'Dagpenger.vedlegg.T8.header' | cmstekst"></span>
             </li>
         </ul>
     </div>

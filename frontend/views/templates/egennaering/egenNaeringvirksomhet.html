@@ -5,9 +5,9 @@
 
 
     <div data-navinfoboks>
-        <p>{{ 'egennaering.driveregennaering.false.informasjon.1' | cmstekst }}</p>
+        <p data-ng-bind-html=" 'egennaering.driveregennaering.false.informasjon.1' | cmstekst"></p>
 
-        <p>{{ 'egennaering.driveregennaering.false.informasjon.2' | cmstekst }}</p>
+        <p data-ng-bind-html=" 'egennaering.driveregennaering.false.informasjon.2' | cmstekst"></p>
     </div>
 
     <div data-ng-repeat="egennaering_drivergennaering_orgnummer in orgnummer">
@@ -22,12 +22,12 @@
     </div>
 
     <a href="javascript:void(0)" aria-role="button" class="orgnummer-leggtil" data-ng-click="leggTilOrgnr()"
-       data-leggtil-orgnr>{{ 'organisasjonsnummer.leggtil' | cmstekst }}</a>
+       data-leggtil-orgnr data-ng-bind-html=" 'organisasjonsnummer.leggtil' | cmstekst"></a>
 
     <div class="tekstfelt form-linje arbeidsmengde-container">
-        <h4 class="spm-sporsmal">{{ 'egennaering.driveregennaering.arbeidsmengde' | cmstekst }}</h4>
+        <h4 class="spm-sporsmal" data-ng-bind-html=" 'egennaering.driveregennaering.arbeidsmengde' | cmstekst"></h4>
         <label>
-            <span class="labeltekst">{{ 'egennaering.driveregennaering.arbeidsmengde.timer' | cmstekst }}</span>
+            <span class="labeltekst" data-ng-bind-html=" 'egennaering.driveregennaering.arbeidsmengde.timer' | cmstekst"></span>
             <input type="text"
                    data-ng-model="faktum.value"
                    data-nav-faktum="egennaering.driveregennaering.arbeidsmengde"

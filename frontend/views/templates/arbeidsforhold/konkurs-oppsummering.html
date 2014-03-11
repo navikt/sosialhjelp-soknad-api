@@ -1,6 +1,6 @@
 <div class="varighet">
     <span data-ng-bind="af.sluttaarsak.properties.datofra | date:'dd.MM.yyyy' | norskdato"></span>
-    <span data-ng-if="af.sluttaarsak.properties.konkursdato">{{ 'dato.til' | cmstekst }}</span>
+    <span data-ng-if="af.sluttaarsak.properties.konkursdato" data-ng-bind-html=" 'dato.til' | cmstekst"></span>
     <span data-ng-if="af.sluttaarsak.properties.konkursdato" data-ng-bind="af.sluttaarsak.properties.konkursdato | date:'dd.MM.yyyy' | norskdato"></span>
 </div>
 
@@ -9,37 +9,37 @@
         <p data-ng-bind="af.sluttaarsak.properties.type"></p>
     </li>
     <li>
-        <span>{{ 'arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.label' | cmstekst }}</span>
+        <span data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.bostyrersnavn.label' | cmstekst"></span>
         <p data-ng-bind="af.sluttaarsak.properties.bostyrersnavn"></p>
     </li>
     <li>
-        <span>{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.sporsmal' | cmstekst }}</span>
-        <p data-ng-if="af.sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaharsokt' | cmstekst }}</p>
-        <p data-ng-if="af.sluttaarsak.properties.lonnsgaranti == 'JaSkalSoke'">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaskalsoke' | cmstekst }}</p>
-        <p data-ng-if="af.sluttaarsak.properties.lonnsgaranti == 'Nei'">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.nei' | cmstekst }}</p>
+        <span data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.sporsmal' | cmstekst"></span>
+        <p data-ng-if="af.sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaharsokt' | cmstekst"></p>
+        <p data-ng-if="af.sluttaarsak.properties.lonnsgaranti == 'JaSkalSoke'" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaskalsoke' | cmstekst"></p>
+        <p data-ng-if="af.sluttaarsak.properties.lonnsgaranti == 'Nei'" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.nei' | cmstekst"></p>
     </li>
     <li data-ng-if="af.sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'">
-        <span>{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.sporsmal' | cmstekst }}</span>
-        <p data-ng-if="af.sluttaarsak.properties.lonnsgarantidekker == 'Nei'">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.nei' | cmstekst }}</p>
-        <p data-ng-if="af.sluttaarsak.properties.lonnsgarantidekker == 'Ja'">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.ja' | cmstekst }}</p>
-        <p data-ng-if="af.sluttaarsak.properties.lonnsgarantidekker == 'Vet ikke'">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.vetikke' | cmstekst }}</p>
+        <span data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.sporsmal' | cmstekst"></span>
+        <p data-ng-if="af.sluttaarsak.properties.lonnsgarantidekker == 'Nei'" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.nei' | cmstekst"></p>
+        <p data-ng-if="af.sluttaarsak.properties.lonnsgarantidekker == 'Ja'" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.ja' | cmstekst"></p>
+        <p data-ng-if="af.sluttaarsak.properties.lonnsgarantidekker == 'Vet ikke'" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.vetikke' | cmstekst"></p>
     </li>
     <li>
-        <span>{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnkonkursmaaned.sporsmal' | cmstekst }}</span>
-        <p data-ng-if="af.sluttaarsak.properties.lonnkonkursmaaned == 'true'">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnkonkursmaaned.true' | cmstekst }}</p>
-        <p data-ng-if="af.sluttaarsak.properties.lonnkonkursmaaned == 'false'">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnkonkursmaaned.false' | cmstekst }}</p>
+        <span data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.lonnkonkursmaaned.sporsmal' | cmstekst"></span>
+        <p data-ng-if="af.sluttaarsak.properties.lonnkonkursmaaned == 'true'" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.lonnkonkursmaaned.true' | cmstekst"></p>
+        <p data-ng-if="af.sluttaarsak.properties.lonnkonkursmaaned == 'false'" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.lonnkonkursmaaned.false' | cmstekst"></p>
     </li>
 </ul>
 <div data-vedlegginfoboks>
     <ul>
         <li>
-            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</p>
+            <p data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst"></p>
         </li>
         <li>
-             <p>{{ 'arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3' | cmstekst }}</p>
+             <p data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.3' | cmstekst"></p>
         </li>
         <li>
-            <p>{{ 'arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.4' | cmstekst }}</p>
+            <p data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.4' | cmstekst"></p>
         </li>
     </ul>
 </div>
