@@ -21,23 +21,23 @@ describe('feilmeldinger', function () {
         scope.$apply();
     }));
 
-    it('feilmelding skal ikke vises før validering kjøres', function() {
+    it('feilmelding skal ikke vises før validering kjøres', function () {
         expect(element.find('li').length).toBe(0);
     });
 
-    it('feilmelding skal vises dersom ett inputfelt har error-messages satt og feltet inneholder feil', function() {
+    it('feilmelding skal vises dersom ett inputfelt har error-messages satt og feltet inneholder feil', function () {
         scope.runValidation(false);
         scope.$apply();
         expect(element.find('li').length).toBe(1);
     });
 
-    it('feilmelding skal ha rett tekst', function() {
+    it('feilmelding skal ha rett tekst', function () {
         scope.runValidation(false);
         scope.$apply();
         expect(element.find('li').text().trim()).toBe(requiredFeil);
     });
 
-    it('skal scrolle til feilmelding dersom man klikker på den', function() {
+    it('skal scrolle til feilmelding dersom man klikker på den', function () {
         scope.runValidation(false);
         scope.$apply();
         spyOn(window, 'scrollToElement');
@@ -45,8 +45,8 @@ describe('feilmeldinger', function () {
         expect(window.scrollToElement).toHaveBeenCalled();
     });
 
-    it('skal fjerne feilmelding når feilen blir rettet', function() {
-        if(!isIE()) {
+    it('skal fjerne feilmelding når feilen blir rettet', function () {
+        if (!isIE()) {
             var input = element.find('input');
             scope.runValidation(false);
             scope.$apply();
