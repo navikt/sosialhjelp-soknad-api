@@ -1,23 +1,23 @@
 <div class="hvit-side" data-panelbelyst id="kvittering">
 	<div data-ng-controller="FortsettSenereKvitteringCtrl">
-        <h2 class="stor strek-ikon-innboks">{{ 'dagpenger.fortsettSenere.kvittering.tittel' | cmstekst }}</h2>
+        <h2 class="stor strek-ikon-innboks" data-ng-bind-html=" 'dagpenger.fortsettSenere.kvittering.tittel' | cmstekst"></h2>
     	<div id="epost-sendt">
-            <p class="informasjonstekst">{{ 'dagpenger.fortsettSenere.kvittering.tekst' | cmstekst }}</p>
+            <p class="informasjonstekst" data-ng-bind-html=" 'dagpenger.fortsettSenere.kvittering.tekst' | cmstekst"></p>
             <span> {{ epost.value }}</span>
     	</div>
 
         <div id="knapper">
             <div>
-                <a class="knapp-link" href="#/fortsettsenere">{{ 'dagpenger.fortsettSenere.kvittering.sendpaanyttlink' | cmstekst }}</a>
+                <a class="knapp-link" href="#/fortsettsenere" data-ng-bind-html=" 'dagpenger.fortsettSenere.kvittering.sendpaanyttlink' | cmstekst"></a>
             </div>
 
 
             <ul class="liste-vannrett">
                 <li>
-                    <a href="#{{ forrigeSide }}">{{ 'dagpenger.fortsettSenere.fortsettlink' | cmstekst }}</a>
+                    <a href="#{{ forrigeSide }}" data-ng-bind-html=" 'dagpenger.fortsettSenere.fortsettlink' | cmstekst"></a>
                 </li>
                 <li>
-                    <a href="{{ dittnavUrl }}" id="dittnav" role="link">{{ 'dagpenger.fortsettSenere.dittNav' | cmstekst }}</a>
+                    <a href="{{ dittnavUrl }}" id="dittnav" role="link" data-ng-bind-html=" 'dagpenger.fortsettSenere.dittNav' | cmstekst"></a>
                 </li>
             </ul>
         </div>

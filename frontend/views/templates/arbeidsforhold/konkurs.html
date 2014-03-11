@@ -1,5 +1,5 @@
 <div class="varighet form-linje">
-    <h4 class="spm-sporsmal">{{ 'arbeidsforhold.arbeidsgiver.varighet.label' | cmstekst }}</h4>
+    <h4 class="spm-sporsmal" data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.varighet.label' | cmstekst"></h4>
     <div data-nav-dato-intervall
          data-fra-dato="sluttaarsak.properties.datofra"
          data-til-dato="sluttaarsak.properties.konkursdato"
@@ -17,7 +17,7 @@
      data-obligatorisk="true"></div>
 
 <div class="form-linje spm boolean konkurs">
-    <h4 class="spm-sporsmal">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.sporsmal' | cmstekst }}</h4>
+    <h4 class="spm-sporsmal" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.sporsmal' | cmstekst"></h4>
 
     <div class="nav-radio-knapp">
         <input class="sendsoknad-radio"
@@ -30,12 +30,12 @@
                data-ng-required="true"
                data-error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'"
                data-aktiv-feilmelding>
-        <label for='lonnsgaranti1'>{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaharsokt' | cmstekst }}</label>
+        <label for='lonnsgaranti1' data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaharsokt' | cmstekst"></label>
     </div>
 
     <div class="ekstra-spm-boks" data-ng-if="sluttaarsak.properties.lonnsgaranti == 'JaHarSokt'">
         <div class="form-linje boolean">
-            <h4 class="spm-sporsmal">{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.sporsmal' | cmstekst }}</h4>
+            <h4 class="spm-sporsmal" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.lonnsgarantidekker.sporsmal' | cmstekst"></h4>
 
             <div class="nav-radio-knapp">
                 <input class="sendsoknad-radio"
@@ -95,7 +95,7 @@
                data-ng-required="true"
                data-error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'"
                data-aktiv-feilmelding>
-        <label for='lonnsgaranti2'>{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaskalsoke' | cmstekst }}</label>
+        <label for='lonnsgaranti2' data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.jaskalsoke' | cmstekst"></label>
     </div>
     <div class="nav-radio-knapp">
         <input class="sendsoknad-radio"
@@ -108,14 +108,14 @@
                data-ng-required="true"
                data-error-messages="'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.feilmelding'"
                data-aktiv-feilmelding>
-        <label for='lonnsgaranti3'>{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.nei' | cmstekst }}</label>
+        <label for='lonnsgaranti3' data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.nei' | cmstekst"></label>
     </div>
 
     <span class="melding"></span>
 
     <div class="ekstra-spm-boks" data-ng-if="sluttaarsak.properties.lonnsgaranti == 'Nei'">
         <div data-navinfoboks>
-            <p>{{ 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.nei.informasjon' | cmstekst }}</p>
+            <p data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.lonnsgaranti.nei.informasjon' | cmstekst"></p>
         </div>
     </div>
 </div>
@@ -129,10 +129,10 @@
 <div class="ekstra-spm-boks" data-vedlegginfoboks>
     <ul>
         <li>
-            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</p>
+            <p data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst"></p>
         </li>
         <li>
-            <p>{{ 'arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.4' | cmstekst }}</p>
+            <p data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.konkurs.vedlegg.liste.4' | cmstekst"></p>
         </li>
     </ul>
 </div>

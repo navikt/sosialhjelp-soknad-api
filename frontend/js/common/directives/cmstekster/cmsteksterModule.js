@@ -13,12 +13,6 @@ angular.module('nav.cmstekster', [])
 			}
 		};
 	}])
-    .directive('cmshtml', ['cms', function (cms) {
-        return function ($scope, element, attrs) {
-            var nokkel = attrs.cmshtml;
-            element.html(cms.tekster[nokkel]);
-        };
-    }])
     .filter('configUrl', ['data', function(data) {
         return function(nokkel) {
             var url = data.config[nokkel.toLowerCase() + '.url'];
@@ -26,7 +20,7 @@ angular.module('nav.cmstekster', [])
             return url === undefined ? '' : url;
         };
     }])
-    .filter('cmstekst', ['cms', '$rootScope', function(cms, $rootScope) {
+    .filter('cmstekst', ['cms', '$sce', '$rootScope', function(cms, $sce, $rootScope) {
         return function(nokkel) {
             var tekst = cms.tekster[nokkel];
 
@@ -34,6 +28,6 @@ angular.module('nav.cmstekster', [])
                 tekst += ' [' + nokkel + ']';
             }
 
-            return tekst === undefined ? '' : tekst;
+            return tekst === undefined ? '' : $sce.trustAsHtml(tekst);
         };
     }]);

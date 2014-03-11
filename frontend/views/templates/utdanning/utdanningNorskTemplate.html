@@ -7,7 +7,7 @@
 </div>
 
 <div class="varighet form-linje" data-nav-faktum="utdanning.norsk.varighet" data-nav-property="['varighetFra', 'varighetTil']">
-    <h4 class="spm-sporsmal">{{ 'utdanning.varighet.label' | cmstekst }}</h4>
+    <h4 class="spm-sporsmal" data-ng-bind-html=" 'utdanning.varighet.label' | cmstekst"></h4>
     <div data-nav-dato-intervall
          data-fra-dato="navproperties.varighetFra"
          data-til-dato="navproperties.varighetTil"
@@ -21,6 +21,6 @@
 
 <div data-vedlegginfoboks>
     <ul>
-        <li><p>{{ 'utdanning.svar.under.utdanning.dokumentasjon' | cmstekst }}</p></li>
+        <li><p data-ng-bind-html=" 'utdanning.svar.under.utdanning.dokumentasjon' | cmstekst"></p></li>
     </ul>
 </div>
