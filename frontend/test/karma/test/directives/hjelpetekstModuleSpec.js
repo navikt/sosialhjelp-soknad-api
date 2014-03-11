@@ -1,5 +1,5 @@
 describe('hjelpetekst', function () {
-    var rootScope, element, scope, timeout, form, compile, event, event2;
+    var rootScope, element, scope, timeout, form, event, event2;
     event = $.Event("click");
     event2 = $.Event("click");
     event2.timeStamp = 1;
@@ -14,7 +14,6 @@ describe('hjelpetekst', function () {
 
     beforeEach(inject(function ($compile, $rootScope, $timeout) {
         rootScope = $rootScope;
-        compile = $compile;
         timeout = $timeout;
         element = angular.element(
             '<form name="form" data-trigg-bolker>' +
@@ -28,10 +27,6 @@ describe('hjelpetekst', function () {
         scope = element.find('div').first().isolateScope();
         form = scope.form;
     }));
-
-    beforeEach(function () {
-        jasmine.Clock.useMock();
-    });
 
     describe('hjelpetekst', function () {
         it('tittel og tekst skal bli satt til henholdsvis hjelpeteksttittelen og tekst', function () {
