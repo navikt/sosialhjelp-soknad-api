@@ -45,7 +45,6 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
             $($window).bind('resize', function() {
                 if ($window.innerWidth > mobilStorrelse) {
                     plasserTooltipHorisontalt();
-
                     if ($($window).data('forrigeBredde') <= mobilStorrelse) {
                         plasserTooltipVertikalt();
                     }
@@ -57,6 +56,7 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
             });
 
             $('style:contains(.hjelpetekst .hjelpetekst-tooltip:before)').remove();
+
             $timeout(function() {
                 plasserTooltipHorisontalt();
                 scrollDersomNodvendig();
