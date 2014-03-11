@@ -13,12 +13,6 @@ angular.module('nav.cmstekster', [])
 			}
 		};
 	}])
-    .directive('cmshtml', ['cms', function (cms) {
-        return function ($scope, element, attrs) {
-            var nokkel = attrs.cmshtml;
-            element.html(cms.tekster[nokkel]);
-        };
-    }])
     .filter('configUrl', ['data', function(data) {
         return function(nokkel) {
             var url = data.config[nokkel.toLowerCase() + '.url'];
