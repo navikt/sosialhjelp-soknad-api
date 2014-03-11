@@ -2,11 +2,11 @@
     <div class="rad-belyst soknad" data-sidetittel="sidetittel.skjema">
         <section class="sak-hel">
             <div class="panel-standard-belyst skjema">
-                <h2 class="stor strek-ikon-info-orange">{{ 'soknad.ferdigstilt' | cmstekst }}</h2>
+                <h2 class="stor strek-ikon-info-orange" data-ng-bind-html=" 'soknad.ferdigstilt' | cmstekst"></h2>
                 <div class="egen-linje">
                         <a href="{{ mineHenveldelserUrl }}"
                            id="slettetMinehenvendelser"
-                           role="link">{{ 'slettet.videretilnav' | cmstekst }}</a>
+                           role="link" data-ng-bind-html=" 'slettet.videretilnav' | cmstekst"></a>
                 </div>
             </div>
         </section>

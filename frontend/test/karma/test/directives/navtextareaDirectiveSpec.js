@@ -1,6 +1,6 @@
 describe('navtextarea', function () {
     var element, scope, timeout;
-    beforeEach(module('nav.textarea', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.textarea', 'nav.cmstekster', 'templates-main', 'ngSanitize'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'ennokkel.sporsmal': 'Et sporsmal'}});
@@ -15,7 +15,7 @@ describe('navtextarea', function () {
                     'data-nokkel="ennokkel"' +
                     'data-maxlengde="500"' +
                     'data-navfeilmelding="feilmelding"' +
-                    ' data-obligatorisk="true">' +
+                    'data-obligatorisk="true">' +
                     '</div>' +
             '</form>');
 
