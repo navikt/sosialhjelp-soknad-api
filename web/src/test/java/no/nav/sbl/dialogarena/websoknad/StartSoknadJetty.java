@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.modig.testcertificates.TestCertificates;
 import no.nav.sbl.dialogarena.common.jetty.Jetty;
 import org.eclipse.jetty.jaas.JAASLoginService;
 
@@ -14,7 +15,6 @@ import static no.nav.modig.lang.collections.RunnableUtils.first;
 import static no.nav.modig.lang.collections.RunnableUtils.waitFor;
 import static no.nav.modig.test.util.FilesAndDirs.TEST_RESOURCES;
 import static no.nav.modig.test.util.FilesAndDirs.WEBAPP_SOURCE;
-import static no.nav.modig.testcertificates.TestCertificates.setupKeyAndTrustStore;
 import static no.nav.sbl.dialogarena.common.jetty.Jetty.usingWar;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.config.DatabaseTestContext.buildDataSource;
 import static no.nav.sbl.dialogarena.websoknad.config.SystemProperties.setFrom;
@@ -42,7 +42,10 @@ public final class StartSoknadJetty {
         configureLocalConfig();
         disableBatch();
         setProperty("java.security.auth.login.config", env.getLoginConf());
-        setupKeyAndTrustStore();
+        TestCertificates.setupTemporaryKeyStore(this.getClass().getResourceAsStream("/keystore.jks"), "devillokeystore1234");
+        TestCertificates.setupTemporaryTrustStore(this.getClass().getResourceAsStream("/truststore.jts"), "changeit");
+
+
 
         JAASLoginService jaasLoginService = new JAASLoginService("OpenAM Realm");
         jaasLoginService.setLoginModuleName("openam");

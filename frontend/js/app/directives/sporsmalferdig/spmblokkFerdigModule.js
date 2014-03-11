@@ -55,7 +55,7 @@ angular.module('nav.sporsmalferdig', [])
 				function gaaTilTab(nyTab) {
 					if (nyTab.length > 0) {
 						$timeout(function () {
-							scrollToElement(nyTab, 120);
+                            scrollToElement(nyTab, 120);
 						}, 0);
 					}
 				}
@@ -96,6 +96,7 @@ angular.module('nav.sporsmalferdig', [])
                 function toggleBolk(tab) {
                     $timeout(function() {
                         tab.find('.accordion-toggle').trigger('click');
+
                     });
                 }
 
