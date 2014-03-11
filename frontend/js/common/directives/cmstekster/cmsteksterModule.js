@@ -20,7 +20,7 @@ angular.module('nav.cmstekster', [])
             return url === undefined ? '' : url;
         };
     }])
-    .filter('cmstekst', ['cms', '$rootScope', function(cms, $rootScope) {
+    .filter('cmstekst', ['cms', '$sce', '$rootScope', function(cms, $sce, $rootScope) {
         return function(nokkel) {
             var tekst = cms.tekster[nokkel];
 
@@ -28,6 +28,6 @@ angular.module('nav.cmstekster', [])
                 tekst += ' [' + nokkel + ']';
             }
 
-            return tekst === undefined ? '' : tekst;
+            return tekst === undefined ? '' : $sce.trustAsHtml(tekst);
         };
     }]);

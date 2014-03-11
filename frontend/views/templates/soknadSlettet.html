@@ -2,9 +2,9 @@
     <div class="rad-belyst inforad" data-ng-controller="SlettetCtrl">
         <div class="begrensning sak-totredel">
             <section class="panel-standard oversikt">
-                <h1 class="strek-ikon-slettet">{{ 'slettet.tittel' | cmstekst }}</h1>
+                <h1 class="strek-ikon-slettet" data-ng-bind-html=" 'slettet.tittel' | cmstekst"></h1>
 
-                <p class="info">{{ 'slett.informasjon' | cmstekst }}</p>
+                <p class="info" data-ng-bind-html=" 'slett.informasjon' | cmstekst"></p>
 
                 <div class="slett-soknad-stor">
                     <div class="lenker-dot">
@@ -19,7 +19,7 @@
                             <li>
                                 <a href="{{dittnavUrl}}"
                                    id="slettetMinehenvendelser"
-                                   role="link">{{ 'slettet.videretildittnav' | cmstekst }}</a>
+                                   role="link" data-ng-bind-html=" 'slettet.videretildittnav' | cmstekst"></a>
                             </li>
                         </ul>
                     </div>
