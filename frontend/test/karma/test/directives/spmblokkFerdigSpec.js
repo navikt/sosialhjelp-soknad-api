@@ -289,6 +289,8 @@ describe('vedleggblokkferdig', function () {
                                 '<a>Element</a> ' +
                             '</div>' +
                         '<div class="accordion-group" id="toide">' +
+                            '<div class="accordion-body in" id="enide">' +
+                            '</div>' +
                         '</div>' +
                     '</div>' +
                 '</form>');
@@ -302,16 +304,18 @@ describe('vedleggblokkferdig', function () {
         it('gaaTilNeste lukkBolk uten in', function () {
             element = angular.element(
                 '<form name="form">' +
-                    '<div class="accordion-group in" id="enide">' +
+                    '<div class="accordion-group" id="enide">' +
+                    '</div>' +
+                    '<div class="accordion-group in" id="toide">' +
+                    '</div>' +
                     '<div data-vedleggblokkferdig></div> ' +
-                    '</div>' +
-                    '<div class="accordion-group" id="toide">' +
-                    '</div>' +
                     '</form>');
             compile(element)(scope);
             scope.$apply();
 
             scope.gaaTilNeste();
+            timeout.flush();
+
         });
     });
 });
