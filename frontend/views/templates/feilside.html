@@ -1,12 +1,12 @@
 <div id="feilside" data-ng-controller="FeilSideCtrl">
     <section class="feil-panel" data-ng-form="epostForm" data-ng-controller="FortsettSenereCtrl" data-novalidate>
-        <h1 class="stor-ikon-feil-gra">{{ 'feilmelding' | cmstekst }}</h1>
+        <h1 class="stor-ikon-feil-gra" data-ng-bind-html=" 'feilmelding' | cmstekst"></h1>
 
-        <p>{{ 'feilmelding.innsending.1' | cmstekst }}</p>
+        <p data-ng-bind-html=" 'feilmelding.innsending.1' | cmstekst"></p>
 
         <div class="form-linje">
             <label>
-                <span class="labeltekst">{{ 'dagpenger.fortsettSenere.epost.label' | cmstekst }}</span>
+                <span class="labeltekst" data-ng-bind-html=" 'dagpenger.fortsettSenere.epost.label' | cmstekst"></span>
                 <input type="email"
                        role="textbox"
                        data-ng-model="epost.value"
@@ -24,8 +24,8 @@
         </div>
 
         <p class="normal-strek">
-            <span>{{ 'feilmelding.innsending.2' | cmstekst }}</span>
-            <a href="{{mineInnsendinger}}">{{ 'feilmelding.mineinnsedinger.lenketekst' | cmstekst }}</a>
+            <span data-ng-bind-html=" 'feilmelding.innsending.2' | cmstekst"></span>
+            <a href="{{mineInnsendinger}}" data-ng-bind-html=" 'feilmelding.mineinnsedinger.lenketekst' | cmstekst"></a>
         </p>
 
         <p>
