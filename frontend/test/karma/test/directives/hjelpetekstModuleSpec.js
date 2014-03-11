@@ -7,9 +7,8 @@ describe('hjelpetekst', function () {
     beforeEach(module('nav.hjelpetekst', 'nav.cmstekster', 'templates-main'));
 
     beforeEach(module(function ($provide) {
-        $provide.value("cms", {'tekster':
-        {'hjelpetekst.tittel': 'Tittel hjelpetekst',
-        'hjelpetekst.tekst': 'Hjelpetekst tekst' }
+        $provide.value("cms", {'tekster': {'hjelpetekst.tittel': 'Tittel hjelpetekst',
+            'hjelpetekst.tekst': 'Hjelpetekst tekst' }
         });
     }));
 
@@ -25,7 +24,7 @@ describe('hjelpetekst', function () {
 
         $compile(element)(rootScope);
         rootScope.$apply();
-
+        $(window).resize();
         scope = element.find('div').first().isolateScope();
         form = scope.form;
     }));
