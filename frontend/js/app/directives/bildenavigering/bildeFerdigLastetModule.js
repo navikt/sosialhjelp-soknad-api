@@ -15,6 +15,11 @@ angular.module('nav.bildelastet', [])
                     element.parent().removeClass('laster');
                     scope.$apply();
                 };
+
+                element[0].onerror = function() {
+                    element.parent().removeClass('laster');
+                    scope.$apply();
+                };
             }
         };
     }]);
