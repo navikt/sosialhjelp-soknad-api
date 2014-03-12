@@ -40,3 +40,85 @@ describe('cmstekster', function () {
         });
     });
 });
+describe('cmsvedlegg', function () {
+    var element, compile, scope;
+
+    beforeEach(module('nav.cmstekster'));
+
+    beforeEach(module(function ($provide) {
+        $provide.value("cms", {'tekster': {
+            'tittel.key': 'Min tittel',
+            'input.value': 'Dette er value',
+            'a.lenketekst': 'http://helt-riktig.com'
+        }});
+        $provide.value("data", {});
+    }));
+
+
+    beforeEach(inject(function ($compile, $rootScope) {
+        scope = $rootScope;
+        compile = $compile;
+        scope.$apply();
+    }));
+
+    describe("cmsvedlegg", function() {
+        it("hvis cmsvedlegg ikke har satt en verdi skal cmsProps kun opprette et object", function() {
+            element = angular.element(
+                '<div data-cmsvedlegg data-nav-faktum="etnavfaktum"></div>');
+
+            compile(element)(scope);
+
+            expect(typeof scope.cmsProps === 'object').toBe(true);
+        });
+        it("hvis cmsvedlegg har satt en verdi skal cmsProps.ekstra settes til denne verdien", function() {
+            element = angular.element(
+                '<div data-cmsvedlegg="enverdi" data-nav-faktum="etnavfaktum"></div>');
+
+            compile(element)(scope);
+
+            expect(typeof scope.cmsProps === 'object').toBe(true);
+            expect(scope.cmsProps.ekstra).toBe("enverdi");
+        });
+    });
+});
+describe('configUrl', function () {
+    var element, compile, scope;
+
+    beforeEach(module('nav.cmstekster'));
+
+    beforeEach(module(function ($provide) {
+        $provide.value("data", {
+            config: {
+                'enurl.url': 'www.nav.no'
+            }
+        });
+    }));
+
+
+    beforeEach(inject(function ($compile, $rootScope) {
+        scope = $rootScope;
+        compile = $compile;
+        scope.$apply();
+    }));
+
+    describe("configUrl", function() {
+        it("hvis data.config inneholder urlen, skal denne returneres av filteret", function() {
+            element = angular.element(
+                '<div>{{"enurl" | configUrl }}</div>');
+
+            compile(element)(scope);
+            scope.$apply();
+
+            expect(element.text()).toBe('www.nav.no');
+        });
+        it("hvis cmsvedlegg ikke har satt en verdi skal cmsProps kun opprette et object", function() {
+            element = angular.element(
+                '<div>{{"enurlsomikkefinnes" | configUrl }}</div>');
+
+            compile(element)(scope);
+            scope.$apply();
+
+            expect(element.text()).toBe('');
+        });
+    });
+});
