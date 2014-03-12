@@ -359,7 +359,7 @@ public class MockConsumerConfig {
     @Configuration
     public static class BrukerProfilWSConfig {
         private static final String RIKTIG_IDENT = "***REMOVED***";
-        private static final String ET_FORNAVN = "Dolly";
+        private static final String ET_FORNAVN = "Donald";
         private static final String ET_MELLOMNAVN = "D.";
         private static final String ET_ETTERNAVN = "Mockmann";
         private static final String EN_EPOST = "test@epost.com";
