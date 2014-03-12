@@ -131,7 +131,6 @@ describe('navFaktum', function () {
     beforeEach(module(function ($provide) {
         var fakta = [{}];
 
-        $provide.value("cms", {'tekster': {}});
         $provide.value("data", {
             fakta: fakta,
             soknad: {
@@ -143,13 +142,6 @@ describe('navFaktum', function () {
 
     beforeEach(inject(function ($compile, $rootScope,data) {
         rootScope = $rootScope;
-
-        rootScope.parentFaktum = {
-            properties: {
-                minproperty: '2014.01.01'
-            }
-        };
-
         element = angular.element(
             '<div data-nav-faktum="etnavfaktum">' +
                 '</div>');
@@ -181,7 +173,6 @@ describe('navFaktum', function () {
             }
         ];
 
-        $provide.value("cms", {'tekster': {}});
         $provide.value("data", {
             fakta: fakta,
             soknad: {
@@ -193,13 +184,6 @@ describe('navFaktum', function () {
 
     beforeEach(inject(function ($compile, $rootScope,data) {
         rootScope = $rootScope;
-
-        rootScope.parentFaktum = {
-            properties: {
-                minproperty: '2014.01.01'
-            }
-        };
-
         element = angular.element(
             '<div data-nav-faktum="etnavfaktum">' +
                 '</div>');
@@ -207,11 +191,10 @@ describe('navFaktum', function () {
         $compile(element)(rootScope);
         rootScope.$apply();
         scope = element.scope();
-
     }));
 
     describe("navFaktum", function() {
-        it("", function() {
+        it("skal sette scope faktumet til faktumet som ligger i data, og soknadIden til faktummet", function() {
             expect(scope.faktum.key).toBe('etnavfaktum');
             expect(scope.faktum.soknadId).toBe(2);
         });
@@ -235,7 +218,6 @@ describe('navFaktumMedDatoProperty', function () {
             }
         ];
 
-        $provide.value("cms", {'tekster': {}});
         $provide.value("data", {
             fakta: fakta,
             soknad: {
@@ -247,14 +229,6 @@ describe('navFaktumMedDatoProperty', function () {
 
     beforeEach(inject(function ($compile, $rootScope,data) {
         rootScope = $rootScope;
-
-        rootScope.parentFaktum = {
-            properties: {
-                minproperty: '2014.01.01'
-
-            }
-        };
-
         element = angular.element(
             '<div data-nav-faktum="etnavfaktum" data-nav-property="[\'varighetFra\', \'varighetTil\']">' +
                 '</div>');
@@ -293,7 +267,6 @@ describe('navFaktumMedDatoProperty', function () {
             }
         ];
 
-        $provide.value("cms", {'tekster': {}});
         $provide.value("data", {
             fakta: fakta,
             soknad: {
@@ -305,14 +278,6 @@ describe('navFaktumMedDatoProperty', function () {
 
     beforeEach(inject(function ($compile, $rootScope,data) {
         rootScope = $rootScope;
-
-        rootScope.parentFaktum = {
-            properties: {
-                minproperty: '2014.01.01'
-
-            }
-        };
-
         element = angular.element(
             '<div data-nav-faktum="etnavfaktum" data-nav-property="[\'varighetFra\', \'varighetTil\']">' +
                 '</div>');
@@ -323,17 +288,16 @@ describe('navFaktumMedDatoProperty', function () {
     }));
 
     describe("navFaktum", function() {
-        it("navfaktum med nav-property som matcher dato patternet, skal det opprettes en dato og settes til navproperties", function() {
+        it("LagreFaktum, navfaktum med nav-property som matcher dato patternet, skal det opprettes en dato og settes til navproperties", function() {
             scope.lagreFaktum();
             expect(scope.parentFaktum.properties.varighetFra).toBe(undefined);
         });
     });
 });
-describe('navFaktumMedDatoProperty', function () {
+describe('navFaktumMedDatoPropertyParentFaktum', function () {
     var element, scope, rootScope;
 
     beforeEach(module('app.services', 'nav.navfaktum'));
-
     beforeEach(module(function ($provide) {
         var fakta = [
             {key: 'enkey',
@@ -347,7 +311,6 @@ describe('navFaktumMedDatoProperty', function () {
             }
         ];
 
-        $provide.value("cms", {'tekster': {}});
         $provide.value("data", {
             fakta: fakta,
             soknad: {
@@ -359,8 +322,6 @@ describe('navFaktumMedDatoProperty', function () {
 
     beforeEach(inject(function ($compile, $rootScope,data) {
         rootScope = $rootScope;
-
-
         element = angular.element(
             '<div data-nav-faktum="enkey">' +
                 '</div>');
@@ -402,7 +363,6 @@ describe('navFaktumMedProperty', function () {
             }
         ];
 
-        $provide.value("cms", {'tekster': {}});
         $provide.value("data", {
             fakta: fakta,
             soknad: {
@@ -414,13 +374,6 @@ describe('navFaktumMedProperty', function () {
 
     beforeEach(inject(function ($compile, $rootScope,data) {
         rootScope = $rootScope;
-
-        rootScope.parentFaktum = {
-            properties: {
-                minproperty: '2014.01.01'
-            }
-        };
-
         element = angular.element(
             '<div data-nav-faktum="etnavfaktum" data-nav-property="[\'varighetFra\', \'varighetTil\']">' +
                 '</div>');
@@ -448,7 +401,6 @@ describe('navFaktumUtenProps', function () {
     beforeEach(module('app.services', 'nav.navfaktum'));
 
     beforeEach(module(function ($provide) {
-        $provide.value("cms", {'tekster': {}});
         $provide.value("data", {
             fakta: [{}],
             soknad: {
@@ -460,18 +412,11 @@ describe('navFaktumUtenProps', function () {
 
     beforeEach(inject(function ($compile, $rootScope,data) {
         rootScope = $rootScope;
-
-        rootScope.parentFaktum = {
-            properties: {
-                minproperty: '2014.01.01'
-            }
-        };
-
         element = angular.element(
             '<div data-nav-faktum="etnavfaktum">' +
                 '</div>');
 
-        rootScope.etnavfaktum = {
+         rootScope.etnavfaktum = {
             value: 'enverdi',
             $save: function(){}
         };
