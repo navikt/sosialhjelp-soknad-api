@@ -253,7 +253,7 @@ public class MockConsumerConfig {
         public PersonPortType personService() throws HentKjerneinformasjonPersonIkkeFunnet, HentKjerneinformasjonSikkerhetsbegrensning {
             PersonPortType mock = mock(PersonPortType.class);
             HentKjerneinformasjonResponse response = new HentKjerneinformasjonResponse();
-            Person person = genererPersonMedGyldigIdentOgNavn("02104635787", "person", "mock");
+            Person person = genererPersonMedGyldigIdentOgNavn("03076321565", "person", "mock");
 
             Statsborgerskap statsborgerskap = new Statsborgerskap();
             Landkoder landkoder = new Landkoder();
@@ -358,8 +358,8 @@ public class MockConsumerConfig {
 
     @Configuration
     public static class BrukerProfilWSConfig {
-        private static final String RIKTIG_IDENT = "01015245464";
-        private static final String ET_FORNAVN = "Dolly";
+        private static final String RIKTIG_IDENT = "03076321565";
+        private static final String ET_FORNAVN = "Donald";
         private static final String ET_MELLOMNAVN = "D.";
         private static final String ET_ETTERNAVN = "Mockmann";
         private static final String EN_EPOST = "test@epost.com";
