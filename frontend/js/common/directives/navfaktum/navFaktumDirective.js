@@ -38,16 +38,16 @@ angular.module('nav.navfaktum', [])
 					$scope.faktum = $scope[$attrs.navFaktum];
 					satt = true;
 				} else if (!$attrs.navNyttFaktum) {
-					data.fakta.forEach(function (faktum) {
-						if (faktum.key === faktumNavn) {
+                    data.fakta.forEach(function (faktum) {
+                        if (faktum.key === faktumNavn) {
 							$scope.faktum = faktum;
 							satt = true;
-						}
+                        }
 					});
 				}
 
 				if (!satt) {
-					$scope.faktum = new Faktum({
+                    $scope.faktum = new Faktum({
 							key       : faktumNavn,
 							soknadId  : data.soknad.soknadId,
 							properties: {}
@@ -58,12 +58,12 @@ angular.module('nav.navfaktum', [])
 				$scope.parentFaktum = $scope.faktum;
 
 				if (props) {
-					$scope.navproperties = {};
+                    $scope.navproperties = {};
 					props.forEach(function (prop) {
-						var val = $scope.faktum.properties[prop];
+                        var val = $scope.faktum.properties[prop];
 						if (val && val.match(/\d\d\d\d\.\d\d\.\d\d/)) {
 							val = new Date(val);
-						}
+                        }
 						$scope.navproperties[prop] = val;
 					});
 				}
