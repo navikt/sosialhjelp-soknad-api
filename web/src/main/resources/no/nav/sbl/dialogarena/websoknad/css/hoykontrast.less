@@ -1,8 +1,10 @@
 body.contrast {
-  .hoykontrast a {
-    color: #00a9e0 !important;
-    &:hover {
+  .liste-vannrett {
+    .hoykontrast a {
       color: #ffc40d !important;
+      &:hover {
+        color: #0ca9e1 !important;
+      }
     }
   }
 
@@ -12,7 +14,7 @@ body.contrast {
     color: #ffc40d !important;
 
     &:hover {
-      color: #00a9e0 !important;
+      color: #0ca9e1 !important;
     }
   }
   .stegindikator li.aktiv .steg {
@@ -28,11 +30,12 @@ body.contrast {
       color: #ffc40d !important;
     }
     &:hover .tekst {
-      color: #00a9e0 !important;
+      color: #0ca9e1 !important;
     }
   }
+
   a:hover {
-    color: #00a9e0 !important;
+    color: #0ca9e1 !important;
   }
 
   .deaktiverFeilmelding, .deaktiverFeilmelding:hover {
@@ -45,40 +48,65 @@ body.contrast {
       background-color: #fff !important;
     }
   }
+  .hjelpetekst {
+    a.infoikon span {
+      border-color: #ffc40d !important;
+      color: #ffc40d !important;
+
+      &:hover, &:focus {
+        border-color: #0ca9e1 !important;
+        background-color: #0ca9e1 !important;
+        color: #000 !important;
+      }
+    }
+    .hjelpetekst-tooltip {
+      background-color: #fff !important;
+
+      div, h3, p {
+        background-color: #fff !important;
+        color: #000 !important;
+      }
+      .lukk-hjelpetekst {
+        background-color: #fff !important;
+        color: #0053A1 !important;
+      }
+      &:before {
+        border-top-color: #fff;
+      }
+    }
+  }
+
   .spm-blokk {
     border-top: 1px solid #555555;
 
-    &:hover {
-      background-color: #e6e6e6;
-
-      .flipp {
-        cursor: pointer;
-
-        .flipp:hover {
-          border-color: transparent transparent #AB740D transparent !important;
-
-          &:before {
-            border-top: @flipp-size solid #ffc40d !important;
-          }
-        }
+    .flipp {
+      border-color: transparent transparent #AB740D transparent !important;
+      &:before {
+        border-top: @flipp-size solid #ffc40d !important;
       }
     }
+
     .flipp:hover {
-      border-color: transparent transparent #004283 transparent !important;
+      border-color: transparent transparent #005283 transparent !important;
 
       &:before {
-        border-top: @flipp-size solid #0067c5 !important;
+        border-top: @flipp-size solid #0ca9e1 !important;
       }
     }
     &.open {
-      background-color: white;
-
       .flipp {
         cursor: pointer;
-        border-color: transparent transparent #AB740D transparent;
+        border-color: transparent transparent #AB740D transparent !important;
 
         &:before {
-          border-top: @flipp-size solid #ffc40d;
+          border-top: @flipp-size solid #ffc40d !important;
+        }
+        &:hover {
+          border-color: transparent transparent #005283 transparent !important;
+
+          &:before {
+            border-top: @flipp-size solid #0ca9e1 !important;
+          }
         }
       }
     }
@@ -165,10 +193,17 @@ body.contrast {
   .vedlegginfoboks [class*="ikon-vedlegg-strek"] {
     background-image: url(../img/vedlegg-hvit.svg);
   }
+  .form-errors {
+    background-color: #fb6e8c !important;
+    h3, li {
+      background-color: #fb6e8c !important;
+      color: #000 !important;
+    }
+  }
 
   .form-linje.feil input:not([type="submit"]),
   .form-linje.feil textarea,
-  .form-linje.feil select,
+  .form-linje.feil textarea,
   .form-linje.feil.tekstfelt input,
   .form-linje.feil.aktiv-feilmelding.tekstfelt input,
   .form-linje.feil.boolean,
@@ -217,28 +252,28 @@ body.contrast {
   .rad, .modalBoks, #informasjonsside {
     input[type='checkbox']:focus:checked + label {
       background: url(../img/check_valgt_tab.svg) 0 0 no-repeat;
-      color: #3e3832;
+      color: #fff !important;
     }
 
     input[type='radio']:focus:checked + label {
       background: url(../img/radio_valgt_tab.svg) 0 0 no-repeat;
-      color: #3e3832;
+      color: #fff !important;
     }
 
     input[type='checkbox']:focus + label {
       background: url(../img/check_tab.svg) 0 0 no-repeat;
-      color: #0067c5;
+      color: #0ca9e1 !important;
     }
     input[type='radio']:focus + label {
       background: url(../img/radio_tab.svg) 0 0 no-repeat;
-      color: #0067c5;
+      color: #0ca9e1 !important;
     }
   }
   .sticky-feilmelding {
     border: 1px solid #ddd;
   }
 
-  #barnetilleggForm .barn.jente .barnealder span{
+  #barnetilleggForm .barn.jente .barnealder span {
     color: #fb6e8c !important;
   }
 }
