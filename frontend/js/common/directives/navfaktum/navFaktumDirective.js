@@ -10,12 +10,13 @@ angular.module('nav.navfaktum', [])
 				}
 
 				$scope.faktum = {key: $attrs.navFaktumProperty, value: val};
-				$scope.$watch('faktum.value', function (newValue) {
+
+                $scope.$watch('faktum.value', function (newValue) {
 					if (newValue) {
 						var value = newValue;
 						if (angular.isDate(value)) {
 							value = $filter('date')(value, 'yyyy.MM.dd');
-						} else {
+                        } else {
 							value = value.toString();
 						}
 						$scope.parentFaktum.properties[$attrs.navFaktumProperty] = value;
