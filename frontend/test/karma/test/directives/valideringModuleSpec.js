@@ -86,6 +86,57 @@ describe('valideringBlurValidate', function () {
         });
     });
 });
+describe('valideringBlurValidate', function () {
+    var element, scope, timeout, elementNavn, form;
+
+    beforeEach(module('nav.validering', 'nav.cmstekster', 'templates-main'));
+
+    beforeEach(module(function ($provide) {
+        $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel',
+            feilmeldingstekst: 'Min feilmelding'}
+        });
+        $provide.value("$cookieStore", {
+            get: function () {
+                return true;
+            }
+        });
+    }));
+
+    beforeEach(inject(function ($compile, $rootScope, $timeout) {
+        scope = $rootScope;
+        element = angular.element(
+            '<form name="form">' +
+                '<div class="form-linje"> ' +
+                '<input type="text" required data-ng-model="modell" data-blur-validate name="inputname" data-error-messages="{required: \'feilmeldingstekst\'}"> ' +
+                '<span class="melding"></span>' +
+
+                '</div> ' +
+                '</form>');
+
+        $compile(element)(scope);
+        scope.$apply();
+        form = scope.form;
+        elementNavn = form.inputname;
+    }));
+
+    describe('blurValidate', function () {
+        it('melding med klassen ng-binding skal ikke få satt tekst', function () {
+            var meldingEl = element.find('.melding');
+            meldingEl.addClass('ng-binding');
+            var inputEl = element.find('input');
+            inputEl.blur();
+            expect(meldingEl.text()).toBe('');
+        });
+        it('error-messages som et object skal sette riktig feilmelding', function () {
+            var meldingEl = element.find('.melding');
+            var inputEl = element.find('input');
+            inputEl.blur();
+            scope.$apply();
+
+            expect(meldingEl.text()).toBe('Min feilmelding');
+        });
+    });
+});
 describe('valideringclickValidate', function () {
     var rootScope, element, scope, timeout, elementNavn, form, elementNavnReq;
 
