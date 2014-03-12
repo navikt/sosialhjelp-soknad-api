@@ -438,3 +438,46 @@ describe('navFaktumUtenProps', function () {
         });
     });
 });
+describe('navFaktumikkeAutoLagre', function () {
+    var element, scope, rootScope;
+
+    beforeEach(module('app.services', 'nav.navfaktum'));
+
+    beforeEach(module(function ($provide) {
+        $provide.value("data", {
+            fakta: [{}],
+            soknad: {
+                soknadId: 1
+            }
+        });
+    }));
+
+
+    beforeEach(inject(function ($compile, $rootScope,data) {
+        rootScope = $rootScope;
+        element = angular.element(
+            '<div data-nav-faktum data-ikke-auto-lagre="true" data-nav-nytt-faktum="true">' +
+                '</div>');
+
+        rootScope.etnavfaktum = {
+            value: 'enverdi',
+            $save: function(){}
+        };
+
+        $compile(element)(rootScope);
+        rootScope.$apply();
+        scope = element.scope();
+
+    }));
+
+    describe("navFaktum", function() {
+        it("navNyttFaktum", function() {
+            expect(scope.faktum.key).toBe('');
+        });
+        it("ikkeAuotLagre skal ikke kalle $save metoden ", function() {
+            spyOn(rootScope.etnavfaktum, '$save');
+            scope.lagreFaktum();
+            expect(rootScope.etnavfaktum.$save).wasNotCalled();
+        });
+    });
+});
