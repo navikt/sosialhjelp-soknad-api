@@ -1,5 +1,5 @@
 describe('cmstekster', function () {
-    var element, divElement, inputElement, htmlElement, anchorElement, direkteElement, $scope;
+    var element, divElement, inputElement, htmlElement, anchorElement, direkteElement, scope;
 
     beforeEach(module('nav.cmstekster'));
 
@@ -14,7 +14,7 @@ describe('cmstekster', function () {
 
 
     beforeEach(inject(function ($compile, $rootScope) {
-        $scope = $rootScope;
+        scope = $rootScope;
 
         inputElement = '<input value="{{ \'input.value\' | cmstekst }}">';
         anchorElement = '<a href="{{ \'a.lenketekst\' | cmstekst }}"></a>';
@@ -22,8 +22,8 @@ describe('cmstekster', function () {
 
         element = angular.element('<div>' + divElement + inputElement + htmlElement + anchorElement + direkteElement +  '</div>');
 
-        $compile(element)($scope);
-        $scope.$apply();
+        $compile(element)(scope);
+        scope.$apply();
     }));
 
     describe("cmstekst", function() {
@@ -37,6 +37,41 @@ describe('cmstekster', function () {
 
         it("skal sette inn lenketekst", function() {
             expect(element.find("a").attr("href")).toBe("http://helt-riktig.com");
+        });
+    });
+});
+describe('cmsteksterVisCmsnokkler', function () {
+    var element, divElement, inputElement, htmlElement, anchorElement, direkteElement, scope;
+
+    beforeEach(module('nav.cmstekster'));
+
+    beforeEach(module(function ($provide) {
+        $provide.value("cms", {'tekster': {
+            'tittel.key': 'Min tittel',
+            'input.value': 'Dette er value',
+            'a.lenketekst': 'http://helt-riktig.com'
+        }});
+        $provide.value("data", {});
+    }));
+
+
+    beforeEach(inject(function ($compile, $rootScope) {
+        scope = $rootScope;
+
+        inputElement = '<input value="{{ \'input.value\' | cmstekst }}">';
+        anchorElement = '<a href="{{ \'a.lenketekst\' | cmstekst }}"></a>';
+        direkteElement = '<div class="direkte-innsatt">{{"tittel.key" | cmstekst }}</div>';
+
+        element = angular.element('<div>' + divElement + inputElement + htmlElement + anchorElement + direkteElement +  '</div>');
+        scope.visCmsnokkler = true;
+
+        $compile(element)(scope);
+        scope.$apply();
+    }));
+
+    describe("cmstekst", function() {
+        it("skal sette inn cmstekst direkte", function() {
+            expect(element.find(".direkte-innsatt").html()).toBe("Min tittel [tittel.key]");
         });
     });
 });
