@@ -1,7 +1,7 @@
 describe('vedleggbolker', function () {
-    var rootScope, element, scope, timeout, elementNavn, form, elementNavnReq;
+    var rootScope, element, scope, timeout;
 
-    beforeEach(module('nav.vedleggbolker', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.vedleggbolker', 'nav.cmstekster', 'templates-main', 'nav.accordion'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel',
@@ -14,32 +14,87 @@ describe('vedleggbolker', function () {
         timeout = $timeout;
         element = angular.element(
             '<form name="form" data-trigg-bolker>' +
-                '<div class="accordion-group"></div>' +
-                '<div class="accordion-group">' +
-                    '<div class="form-linje" data-checkbox-validate> ' +
-                        '<input type="checkbox" required data-ng-model="modell"  name="inputnameReq" data-error-messages="{feilmeldingstekst}"> ' +
-                        '<span class="melding"></span>' +
-                        '<a href="javascript:void(0)" id="til-oppsummering" ></a>' +
-                    '</div> ' +
+                '<div data-accordion>' +
+                '<div data-accordion-group>' +
+                '<div class="vedlegg-bolk"></div>" ' +
+                '<div class="bolk1"></div>" ' +
+                '</div>' +
+                '<div data-accordion-group>' +
+                '<div class="vedlegg-bolk"></div>" ' +
+                    '<input type="text" required data-ng-model="modell"> ' +
                 '</div> ' +
-            '</form>');
+                '</div> ' +
+                '<a href="javascript:void(0)" id="til-oppsummering"></a>' +
+                '</form>');
 
         $compile(element)(scope);
+        element.appendTo(document.body);
         scope.$apply();
-        form = scope.form;
-        elementNavn = form.inputname;
     }));
 
     beforeEach(function () {
         jasmine.Clock.useMock();
     });
+    afterEach(function () {
+        element.remove();
+    });
 
-    describe('triggBolker', function () {
-        it('Jqueryselectoren $("") fungerer ikke', function () {
-            var bolkMedFeil = element.find('.accordion-group').last();
-            timeout.flush();
-            expect(bolkMedFeil.hasClass('open')).toBe(false);
-            element.find('#til-oppsummering').click();
-        });
+    it('Forste bolk som inneholder feil, dvs har klassen ekstraVedlegg eller ikke har behandlet, skal få klassen open', function () {
+        timeout.flush();
+        scope.$apply();
+        var bolkMedFeil = element.find('.accordion-group').first();
+        var bolkMedFeilSist = element.find('.accordion-group').last();
+        expect(bolkMedFeil.hasClass('open')).toBe(true);
+        expect(bolkMedFeilSist.hasClass('open')).toBe(false);
+    });
+    it('Bolk med klassen behandlet skal ikke få klassen open', function () {
+        var accordionGroup1 = element.find('.accordion-group').first();
+        var vedlegg = accordionGroup1.find('.vedlegg-bolk');
+        vedlegg.addClass("behandlet");
+
+        timeout.flush();
+        scope.$apply();
+        var accordionGroup2 = element.find('.accordion-group').last();
+
+        expect(accordionGroup1.hasClass('open')).toBe(false);
+        expect(accordionGroup2.hasClass('open')).toBe(true);
+    });
+    it('Bolk med klassen ekstraVedlegg skal få klassen open', function () {
+        var accordionGroup1 = element.find('.accordion-group').first();
+        var vedlegg = accordionGroup1.find('.vedlegg-bolk');
+        vedlegg.addClass("ekstraVedlegg");
+
+        timeout.flush();
+        scope.$apply();
+        expect(accordionGroup1.hasClass('open')).toBe(true);
+    });
+    it('Bolk med klassen open og ikke validert skal fortsatt ha klassen open', function () {
+        var accordionGroup1 = element.find('.accordion-group').first();
+        accordionGroup1.addClass('open');
+        timeout.flush();
+        scope.$apply();
+        expect(accordionGroup1.hasClass('open')).toBe(true);
+    });
+    it('Bolk har klasse open og vedleggsiden valideres skal denne bolken lukkes (får ikke testet klikket)', function () {
+        var accordionGroup1 = element.find('.accordion-group').first();
+        accordionGroup1.addClass('open');
+        var vedlegg = accordionGroup1.find('.vedlegg-bolk');
+        vedlegg.addClass('behandlet');
+
+        timeout.flush();
+        scope.$apply();
+
+        element.find('#til-oppsummering').trigger('click');
+    });
+    it('Bolk er lukket og validert, skal fortsatt være lukket', function () {
+        var accordionGroup1 = element.find('.accordion-group').first();
+        var vedlegg = accordionGroup1.find('.vedlegg-bolk');
+        vedlegg.addClass('behandlet');
+
+        timeout.flush();
+        scope.$apply();
+
+        element.find('#til-oppsummering').trigger('click');
+        expect(accordionGroup1.hasClass('open')).toBe(false);
     });
 });

@@ -34,9 +34,6 @@ body.contrast {
     }
   }
 
-  [class*="strek-ikon-soknader"], [class*="ikon-soknader-strek"] {
-    background-image: url(../img/under-dark.png), url(../img/soknad-hoykontrast.svg);
-  }
   a:hover {
     color: #0ca9e1 !important;
   }
@@ -162,7 +159,7 @@ body.contrast {
     }
   }
 
-  .knapp-liten, .knapp-hoved-liten {
+  .knapp-liten, .knapp-hoved-liten, .knapp-advarsel {
     background-color: #ffffff !important;
     color: #000000 !important;
 
@@ -293,7 +290,11 @@ body.contrast {
     background: url(../img/hake-hvit.svg) no-repeat;
   }
 
-  footer.footer ul.fotlenker li a:before, .liste-vannrett li:not([class*="dropdown"]):before {
+  [class*="strek-ikon-slettet"], [class*="ikon-slettet-strek"] {
+    background-image: url(../img/under-dark.png), url(../img/hake_ok.svg);
+  }
+
+  footer.footer ul.fotlenker li a:before, .liste-vannrett li:not([class*="dropdown"]):before, #slett .rad-belyst .slett-soknad-stor .lenker-dot .liste-vannrett li:not([class*="dropdown"]):before, #slettet .slett-soknad-stor .lenker-dot .liste-vannrett li:not([class*="dropdown"]):before {
     color: #fff;
   }
   #opplasting #opplastingform .begrensning .opplastingliste .leggtil {
