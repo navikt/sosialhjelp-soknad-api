@@ -34,6 +34,9 @@ body.contrast {
     }
   }
 
+  [class*="strek-ikon-soknader"], [class*="ikon-soknader-strek"] {
+    background-image: url(../img/under-dark.png), url(../img/soknad-hoykontrast.svg);
+  }
   a:hover {
     color: #0ca9e1 !important;
   }
@@ -189,6 +192,9 @@ body.contrast {
       border-color: #ffffff;
     }
   }
+  .datepicker label .datepicker-input .apne-datepicker {
+    background-color: transparent !important;
+  }
 
   .vedlegginfoboks [class*="ikon-vedlegg-strek"] {
     background-image: url(../img/vedlegg-hvit.svg);
@@ -275,5 +281,38 @@ body.contrast {
 
   #barnetilleggForm .barn.jente .barnealder span {
     color: #fb6e8c !important;
+    background-color: transparent !important;
+  }
+
+  #barnetilleggForm .barn.gutt .barnealder span {
+    color: #0FBA47 !important;
+    background-color: transparent !important;
+  }
+
+  #barnetilleggForm .hake {
+    background: url(../img/hake-hvit.svg) no-repeat;
+  }
+
+  footer.footer ul.fotlenker li a:before, .liste-vannrett li:not([class*="dropdown"]):before {
+    color: #fff;
+  }
+  #opplasting #opplastingform .begrensning .opplastingliste .leggtil {
+    border: 1px solid #fff;
+    label {
+      background-color: transparent !important;
+    }
+  }
+  .bildenavigering .pil-hoyre-hvit {
+    background-image: url('../img/rund-pil-hvit-hoyre-hoykontrast.svg');
+    &:hover {
+      background-image: url('../img/rund-pil-hvit-hoyre-hover.svg');
+    }
+  }
+  .bildenavigering .pil-venstre-hvit {
+    background-image: url('../img/rund-pil-hvit-venstre-hoykontrast.svg');
+    color: #c30000;
+    &:hover {
+      background-image: url('../img/rund-pil-hvit-venstre-hover.svg');
+    }
   }
 }
