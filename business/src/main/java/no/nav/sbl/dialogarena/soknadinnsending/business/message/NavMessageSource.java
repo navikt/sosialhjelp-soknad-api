@@ -38,7 +38,8 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
         PropertiesHolder holder = super.refreshProperties(filename, propHolder);
         if (enableEnonic) {
             String[] fileSplit = filename.split("_");
-            if (fileSplit.length > 1 && fileToEnonicMapping.containsKey(fileSplit[1])) {
+            if (fileSplit.length == 2 && fileToEnonicMapping.containsKey(fileSplit[1])) {
+                logger.debug("Henter "+ fileToEnonicMapping.get(fileSplit[1]).get(fileSplit[0]) + " på nytt");
                 try {
                     Content<Innholdstekst> content = contentRetriever.getContent(new URI(fileToEnonicMapping.get(fileSplit[1]).get(fileSplit[0])));
                     Map<String, Innholdstekst> innhold = content.toMap(Innholdstekst.KEY);
@@ -46,12 +47,14 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
                         holder.getProperties().put(entry.getValue().key, spripPTag(entry.getValue().value));
                     }
                 } catch (Exception e) {
+                    logger.warn("Feilet under uthenting av: " + fileToEnonicMapping.get(fileSplit[1]).get(fileSplit[0]) + ": " + e, e);
                     return holder;
                 }
             }
         }
         return holder;
     }
+
 
     private String spripPTag(String value) {
         String res = value;

@@ -12,7 +12,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 @Controller
-@RequestMapping("/enonic")
+@RequestMapping("/")
 public class MessageController {
 
     @Inject
@@ -20,7 +20,7 @@ public class MessageController {
 
     private boolean tvingNorsk = true;
 
-    @RequestMapping(value = "/{side}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/enonic/{side}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public Properties hentTekster(@PathVariable String side, Locale locale) {
         Locale loc = locale;
@@ -28,6 +28,16 @@ public class MessageController {
             loc = new Locale("nb", "NO");
         }
         return navMessageSource.getBundleFor(side, loc);
+    }
+
+    @RequestMapping(value = "/messages/{kode}", method = RequestMethod.GET, produces = "text/plain")
+    @ResponseBody()
+    public String hentTekst(@PathVariable String kode, Locale locale) {
+        Locale loc = locale;
+        if (tvingNorsk) {
+            loc = new Locale("nb", "NO");
+        }
+        return navMessageSource.getMessage(kode, null, loc);
     }
 
     public void setTvingNorsk(boolean tvingNorsk) {

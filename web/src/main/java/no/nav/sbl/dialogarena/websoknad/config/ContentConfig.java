@@ -9,11 +9,13 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
@@ -48,7 +50,7 @@ public class ContentConfig {
     @Bean
     public NavMessageSource navMessageSource() {
         NavMessageSource messageSource = new NavMessageSource();
-        messageSource.setBasenames("classpath:content/innholdstekster", "classpath:content/innholdstekster");
+        messageSource.setBasenames("classpath:content/innholdstekster", "classpath:content/sbl-webkomponenter");
         messageSource.setDefaultEncoding("UTF-8");
         Map<String, Map<String, String>> map = new HashMap<>();
         Map<String, String> innerMap = new HashMap<>();
@@ -57,9 +59,17 @@ public class ContentConfig {
         innerMap.put("classpath:content/sbl-webkomponenter", cmsBaseUrl + SBL_WEBKOMPONENTER_NB_NO_REMOTE);
         messageSource.setEnonicMap(map);
         messageSource.setEnableEnonic(true);
-        messageSource.setCacheSeconds(3600);
+        //messageSource.setCacheSeconds(3600);
+        //Hvert 10'ende minutt for testing.
+        messageSource.setCacheSeconds(60 * 10);
 
         return messageSource;
+    }
+
+    //Hent innholdstekster på nytt hver time
+    @Scheduled(cron = "0 0 * * * *")
+    public void lastInnNyeKodeverk() {
+        navMessageSource().getMessage("send", null, new Locale("nb", "NO"));
     }
 
     @Bean
