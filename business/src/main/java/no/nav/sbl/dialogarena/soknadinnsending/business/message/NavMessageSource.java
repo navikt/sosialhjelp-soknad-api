@@ -3,6 +3,8 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.message;
 import no.nav.modig.content.Content;
 import no.nav.modig.content.ContentRetriever;
 import no.nav.modig.content.enonic.innholdstekst.Innholdstekst;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 import javax.inject.Inject;
@@ -13,9 +15,10 @@ import java.util.Properties;
 
 
 public class NavMessageSource extends ReloadableResourceBundleMessageSource {
-
     @Inject
     private ContentRetriever contentRetriever;
+
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private Map<String, Map<String, String>> fileToEnonicMapping;
     private boolean enableEnonic;
@@ -39,7 +42,7 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
         if (enableEnonic) {
             String[] fileSplit = filename.split("_");
             if (fileSplit.length == 2 && fileToEnonicMapping.containsKey(fileSplit[1])) {
-                logger.debug("Henter "+ fileToEnonicMapping.get(fileSplit[1]).get(fileSplit[0]) + " på nytt");
+                logger.debug("Henter " + fileToEnonicMapping.get(fileSplit[1]).get(fileSplit[0]) + " på nytt");
                 try {
                     Content<Innholdstekst> content = contentRetriever.getContent(new URI(fileToEnonicMapping.get(fileSplit[1]).get(fileSplit[0])));
                     Map<String, Innholdstekst> innhold = content.toMap(Innholdstekst.KEY);
