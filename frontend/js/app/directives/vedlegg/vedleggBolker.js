@@ -25,7 +25,6 @@ angular.module('nav.vedleggbolker', [])
                         var bolk = $(bolker[i]);
 
                         if (!(bolk.hasClass('open'))) {
-
                             bolk.find('.accordion-toggle').trigger('click');
                         }
                     }

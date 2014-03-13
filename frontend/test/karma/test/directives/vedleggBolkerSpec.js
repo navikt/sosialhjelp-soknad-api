@@ -1,5 +1,5 @@
 describe('vedleggbolker', function () {
-    var rootScope, element, scope, timeout;
+    var rootScope, element, scope, timeout, form, inputmodell;
 
     beforeEach(module('nav.vedleggbolker', 'nav.cmstekster', 'templates-main', 'nav.accordion'));
 
@@ -13,7 +13,7 @@ describe('vedleggbolker', function () {
         scope = $rootScope;
         timeout = $timeout;
         element = angular.element(
-            '<form name="form" data-trigg-bolker>' +
+            '<form name="formname" data-trigg-bolker>' +
                 '<div data-accordion>' +
                 '<div data-accordion-group>' +
                 '<div class="vedlegg-bolk"></div>" ' +
@@ -21,15 +21,18 @@ describe('vedleggbolker', function () {
                 '</div>' +
                 '<div data-accordion-group>' +
                 '<div class="vedlegg-bolk"></div>" ' +
-                    '<input type="text" required data-ng-model="modell"> ' +
+                    '<input type="text" required data-ng-model="modell" name="modellname"> ' +
                 '</div> ' +
                 '</div> ' +
                 '<a href="javascript:void(0)" id="til-oppsummering"></a>' +
                 '</form>');
 
+
         $compile(element)(scope);
         element.appendTo(document.body);
         scope.$apply();
+        form = scope.formname;
+        inputmodell = form.modellname;
     }));
 
     beforeEach(function () {
@@ -96,5 +99,60 @@ describe('vedleggbolker', function () {
 
         element.find('#til-oppsummering').trigger('click');
         expect(accordionGroup1.hasClass('open')).toBe(false);
+    });
+    it('hvis formen er valid så skal det ikke skje noe med bolkene', function () {
+        var accordionGroup1 = element.find('.accordion-group').first();
+        inputmodell.$setViewValue("valid");
+
+        timeout.flush();
+        scope.$apply();
+
+        expect(accordionGroup1.hasClass('open')).toBe(true);
+        element.find('#til-oppsummering').trigger('click');
+        expect(accordionGroup1.hasClass('open')).toBe(true);
+    });
+});
+describe('vedleggbolker', function () {
+    var rootScope, element, scope, timeout, form, inputmodell;
+
+    beforeEach(module('nav.vedleggbolker', 'nav.cmstekster', 'templates-main', 'nav.accordion'));
+
+    beforeEach(module(function ($provide) {
+        $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel',
+            '{feilmeldingstekst}': 'Min feilmelding'}
+        });
+    }));
+
+    beforeEach(inject(function ($compile, $rootScope, $timeout) {
+        scope = $rootScope;
+        timeout = $timeout;
+        element = angular.element(
+            '<form name="formname" data-trigg-bolker>' +
+                '<div data-accordion>' +
+                    '<div data-accordion-group>' +
+                        '<div class="vedlegg-bolk"></div>" ' +
+                        '<div class="bolk1"></div>" ' +
+                    '</div>' +
+                '</div> ' +
+                '<a href="javascript:void(0)" data-apne-annet-vedlegg data-ng-click="nyttAnnetVedlegg()"></a>' +
+                '</form>');
+
+
+        $compile(element)(scope);
+        element.appendTo(document.body);
+        scope.$apply();
+        form = scope.formname;
+        inputmodell = form.modellname;
+    }));
+
+    beforeEach(function () {
+        jasmine.Clock.useMock();
+    });
+    afterEach(function () {
+        element.remove();
+    });
+
+    it('Forste bolk som inneholder feil, dvs har klassen ekstraVedlegg eller ikke har behandlet, skal få klassen open', function () {
+        element.find('a').click();
     });
 });
