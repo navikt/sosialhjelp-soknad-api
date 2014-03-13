@@ -37,7 +37,7 @@ public class MessageController {
         if (tvingNorsk) {
             loc = new Locale("nb", "NO");
         }
-        return navMessageSource.getMessage(kode, null, loc);
+        return navMessageSource.getMessage(kode.replace("_", "."), null, loc);
     }
 
     public void setTvingNorsk(boolean tvingNorsk) {

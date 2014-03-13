@@ -1,21 +1,27 @@
 package no.nav.sbl.dialogarena.websoknad.config;
 
 import no.nav.modig.content.CmsContentRetriever;
+import no.nav.modig.content.Content;
 import no.nav.modig.content.ContentRetriever;
 import no.nav.modig.content.ValueRetriever;
 import no.nav.modig.content.ValuesFromContentWithResourceBundleFallback;
 import no.nav.modig.content.enonic.HttpContentRetriever;
+import no.nav.modig.content.enonic.innholdstekst.Innholdstekst;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
@@ -25,12 +31,17 @@ public class ContentConfig {
 
     @Value("${dialogarena.cms.url}")
     private String cmsBaseUrl;
+    @Value("${sendsoknad.datadir}")
+    private File brukerprofilDataDirectory;
+
 
     private static final String DEFAULT_LOCALE = "nb";
     private static final String INNHOLDSTEKSTER_NB_NO_REMOTE = "/app/sendsoknad/bm/tekster";
     private static final String INNHOLDSTEKSTER_NB_NO_LOCAL = "content.innholdstekster";
     private static final String SBL_WEBKOMPONENTER_NB_NO_REMOTE = "/systemsider/Modernisering/sbl-webkomponenter/nb/tekster";
     private static final String SBL_WEBKOMPONENTER_NB_NO_LOCAL = "content.sbl-webkomponenter";
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
+
 
     @Bean
     public ValueRetriever siteContentRetriever() throws URISyntaxException {
@@ -49,28 +60,56 @@ public class ContentConfig {
 
     @Bean
     public NavMessageSource navMessageSource() {
+        //Vi lager en reloadablemessagesource som henter både fra lokal disk og fra classpath. Se lastInnNyeInnholdstekster for å se koden som skriver de filene som hentes fra enonic.
         NavMessageSource messageSource = new NavMessageSource();
-        messageSource.setBasenames("classpath:content/innholdstekster", "classpath:content/sbl-webkomponenter");
+        messageSource.setBasenames(
+                new File(brukerprofilDataDirectory, "enonic/innholdstekster").toURI().toString(),
+                new File(brukerprofilDataDirectory, "enonic/sbl-webkomponenter").toURI().toString(),
+                "classpath:content/innholdstekster", "classpath:content/sbl-webkomponenter");
         messageSource.setDefaultEncoding("UTF-8");
-        Map<String, Map<String, String>> map = new HashMap<>();
-        Map<String, String> innerMap = new HashMap<>();
-        map.put(DEFAULT_LOCALE, innerMap);
-        innerMap.put("classpath:content/innholdstekster", cmsBaseUrl + INNHOLDSTEKSTER_NB_NO_REMOTE);
-        innerMap.put("classpath:content/sbl-webkomponenter", cmsBaseUrl + SBL_WEBKOMPONENTER_NB_NO_REMOTE);
-        messageSource.setEnonicMap(map);
-        messageSource.setEnableEnonic(true);
-        //messageSource.setCacheSeconds(3600);
-        //Hvert 10'ende minutt for testing.
-        messageSource.setCacheSeconds(60 * 10);
-
+        //Sjekk for nye filer en gang hvert 30. minutt.
+        messageSource.setCacheSeconds(60*30);
         return messageSource;
     }
 
     //Hent innholdstekster på nytt hver time
     @Scheduled(cron = "0 0 * * * *")
-    public void lastInnNyeKodeverk() {
-        navMessageSource().getMessage("send", null, new Locale("nb", "NO"));
+    public void lastInnNyeInnholdstekster() {
+        logger.debug("Leser inn innholdstekster fra enonic");
+        try {
+            saveLocal("enonic/innholdstekster_nb.properties", new URI(cmsBaseUrl + INNHOLDSTEKSTER_NB_NO_REMOTE));
+            saveLocal("enonic/sbl-webkomponenter_nb", new URI(cmsBaseUrl + SBL_WEBKOMPONENTER_NB_NO_REMOTE));
+        } catch (Exception e) {
+            logger.warn("Feilet under henting av enonic innholdstekster: " + e, e);
+        }
+        navMessageSource().clearCache();
     }
+
+    private void saveLocal(String filename, URI uri) throws IOException {
+        File file = new File(brukerprofilDataDirectory, filename);
+        logger.debug("Leser inn innholdstekster fra " + uri + " til: " + file.toString());
+        Content<Innholdstekst> content = enonicContentRetriever().getContent(uri);
+        StringBuilder data = new StringBuilder();
+        Map<String, Innholdstekst> innhold = content.toMap(Innholdstekst.KEY);
+        for (Map.Entry<String, Innholdstekst> entry : innhold.entrySet()) {
+            data.append(entry.getValue().key).append("=").append(spripPTag(entry.getValue().value)).append(System.lineSeparator());
+        }
+        FileUtils.write(file, data, "UTF-8");
+    }
+
+    private String spripPTag(String value) {
+        String res = value;
+        if (value != null) {
+            if (res.startsWith("<p>")) {
+                res = res.substring(3);
+            }
+            if (res.endsWith("</p>")) {
+                res = res.substring(0, res.length() - 4);
+            }
+        }
+        return res;
+    }
+
 
     @Bean
     public ContentRetriever enonicContentRetriever() {
