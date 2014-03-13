@@ -37,12 +37,13 @@ public class NavMessageSource extends ReloadableResourceBundleMessageSource {
 
     @Override
     protected PropertiesHolder refreshProperties(String filename, PropertiesHolder propHolder) {
+        logger.warn("Starter refresh av" + filename);
 
         PropertiesHolder holder = super.refreshProperties(filename, propHolder);
         if (enableEnonic) {
             String[] fileSplit = filename.split("_");
             if (fileSplit.length == 2 && fileToEnonicMapping.containsKey(fileSplit[1])) {
-                logger.debug("Henter " + fileToEnonicMapping.get(fileSplit[1]).get(fileSplit[0]) + " på nytt");
+                logger.warn ("Henter " + fileToEnonicMapping.get(fileSplit[1]).get(fileSplit[0]) + " på nytt");
                 try {
                     Content<Innholdstekst> content = contentRetriever.getContent(new URI(fileToEnonicMapping.get(fileSplit[1]).get(fileSplit[0])));
                     Map<String, Innholdstekst> innhold = content.toMap(Innholdstekst.KEY);
