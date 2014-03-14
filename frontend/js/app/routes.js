@@ -1,5 +1,3 @@
-//TODO: Fjern sider som ikke lengre skal være side...som reell arebeidssøker, arbeidsforhold etc
-
 angular.module('app.routes', ['ngRoute'])
 
     .config(['$routeProvider', function ($routeProvider) {
@@ -169,6 +167,14 @@ angular.module('app.routes', ['ngRoute'])
             })
             .when('/404', {
                 templateUrl: '../views/templates/feilsider/feilside404.html',
+                resolve: {
+                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
+                        return HentSoknadService;
+                    }]
+                }
+            })
+            .when('/ettersending', {
+                templateUrl: '../views/templates/ettersending/ettersending.html',
                 resolve: {
                     notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
                         return HentSoknadService;
