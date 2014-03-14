@@ -154,5 +154,7 @@ describe('vedleggbolker', function () {
 
     it('Forste bolk som inneholder feil, dvs har klassen ekstraVedlegg eller ikke har behandlet, skal få klassen open', function () {
         element.find('a').click();
+        jasmine.Clock.tick(20000);
+        timeout.flush();
     });
 });
