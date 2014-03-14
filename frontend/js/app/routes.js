@@ -160,15 +160,26 @@ angular.module('app.routes', ['ngRoute'])
                 }
             })
             .when('/feilside', {
-                templateUrl: '../views/templates/feilside.html',
+                templateUrl: '../views/templates/feilsider/feilsideBaksystem.html',
                 resolve: {
                     notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
                         return HentSoknadService;
                     }]
                 }
             })
+            .when('/404', {
+                templateUrl: '../views/templates/feilsider/feilside404.html',
+                resolve: {
+                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
+                        return HentSoknadService;
+                    }]
+                }
+            })
+            .when('/',
+                {redirectTo: '/informasjonsside'}
+            )
             .when('/soknadliste', {templateUrl: '../views/templates/soknadliste.html'})
-            .otherwise({redirectTo: '/informasjonsside'});
+            .otherwise({redirectTo: '/404'});
 
     }]).run(['$rootScope', '$location', '$anchorScroll', '$routeParams', function ($rootScope, $location, $anchorScroll, $routeParams) {
         $rootScope.$on('$routeChangeSuccess', function (newRoute, oldRoute) {
