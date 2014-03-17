@@ -220,7 +220,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     }
 
-    public Long hentSoknadMedBehandlinsId(String behandlingsId) {
+    public Long hentSoknadMedBehandlingsId(String behandlingsId) {
         WebSoknad soknad = repository.hentMedBehandlingsId(behandlingsId);
         if (soknad == null) {
             populerFraHenvendelse(behandlingsId);

@@ -74,7 +74,7 @@ public class SoknadDataController {
     @SjekkTilgangTilSoknad
     public Map<String, String> hentSoknadIdMedBehandligsId(@PathVariable String behandlingsId) {
         Map<String, String> result = new HashMap<>();
-        String soknadId = soknadService.hentSoknadMedBehandlinsId(behandlingsId.replaceAll("%20", " ")).toString();
+        String soknadId = soknadService.hentSoknadMedBehandlingsId(behandlingsId.replaceAll("%20", " ")).toString();
         result.put("result", soknadId);
 
         return result;
@@ -205,8 +205,7 @@ public class SoknadDataController {
     @RequestMapping(value = "/ettersending/{behandingId}", method = RequestMethod.GET, produces = "text/html")
     @ResponseBody()
     @SjekkTilgangTilSoknad
-    public String hentSisteBehandingIBehandingskjede(@PathVariable String behandingId) {
-        soknadService.hentSisteBehandingIBehandingskjede(behandingId);
-        return "hei";
+    public WebSoknad hentSisteBehandingIBehandingskjede(@PathVariable String behandingId) {
+        return soknadService.hentSisteBehandingIBehandingskjede(behandingId);
     }
 }
