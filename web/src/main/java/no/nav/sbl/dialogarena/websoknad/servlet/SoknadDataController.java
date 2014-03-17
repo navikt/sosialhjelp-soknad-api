@@ -201,4 +201,12 @@ public class SoknadDataController {
         vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
         return pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
     }
+
+    @RequestMapping(value = "/ettersending/{behandingId}", method = RequestMethod.GET, produces = "text/html")
+    @ResponseBody()
+    @SjekkTilgangTilSoknad
+    public String hentSisteBehandingIBehandingskjede(@PathVariable String behandingId) {
+        soknadService.hentSisteBehandingIBehandingskjede(behandingId);
+        return "hei";
+    }
 }

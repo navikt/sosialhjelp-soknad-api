@@ -30,7 +30,7 @@ import javax.inject.Inject;
         SoknadInnsendingDBConfig.class})
 
 public class TestApplicationContext {
-    private boolean mockHenvendelse = true;
+    private boolean mockHenvendelse = false;
     private boolean mockBrukerprofil = true;
     private boolean mockTps = true;
     private boolean mockKodeverk = true;

@@ -35,4 +35,6 @@ public interface SendSoknadService {
     void settDelsteg(Long soknadId, DelstegStatus delstegStatus);
 
     SoknadStruktur hentSoknadStruktur(Long soknadId);
+
+    WebSoknad hentSisteBehandingIBehandingskjede(String behandingsId);
 }
