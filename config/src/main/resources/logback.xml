@@ -62,6 +62,11 @@
     <logger name="org.apache.cxf" level="info">
         <appender-ref ref="infolog"/>
     </logger>
+    <logger name="org.apache.cxf.services.SendSoknadService" level="WARN"/>
+    <logger name="org.apache.cxf.services.FillagerService" level="WARN"/>
+    <logger name="org.apache.cxf.services.PersonInfoService" level="WARN"/>
+    <logger name="org.apache.cxf.services.Person_v1" level="WARN"/>
+    <logger name="org.apache.cxf.services.Kodeverk_v2" level="WARN"/>
 
     <logger name="org.apache.pdfbox" level="error">
         <appender-ref ref="exceptionlog"/>
