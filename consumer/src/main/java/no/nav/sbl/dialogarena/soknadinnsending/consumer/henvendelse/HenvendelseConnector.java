@@ -17,7 +17,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.soap.SOAPFaultException;
 
+import static java.util.UUID.randomUUID;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.IKKE_VALGT;
+import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -33,11 +35,30 @@ public class HenvendelseConnector {
     }
 
     public String startSoknad(String fnr, String skjema, String uid) {
-        logger.info("Inne i metoden for startSoknad");
+        logger.info("Starter søknad");
+        XMLHovedskjema xmlSkjema = createXMLSkjema(skjema, uid);
+        XMLMetadataListe xmlMetadataListe = new XMLMetadataListe().withMetadata(xmlSkjema);
+        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartSoknadRequest(fnr, xmlSkjema, SoknadType.SEND_SOKNAD, xmlMetadataListe);
+        return startSoknadEllerEttersending(xmlStartSoknadRequest);
+    }
+
+    public String startEttersending(WSHentSoknadResponse soknadResponse) {
+        logger.info("Starter ettersending");
+        String fnr = getSubjectHandler().getUid();
+        String uid = randomUUID().toString();
+        XMLMetadataListe xmlMetadataListe = (XMLMetadataListe) soknadResponse.getAny();
+        XMLHovedskjema xmlHovedskjema = (XMLHovedskjema)xmlMetadataListe.getMetadata().get(0);
+        XMLHovedskjema xmlSkjema = createXMLSkjema(xmlHovedskjema.getSkjemanummer(), uid);
+        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartSoknadRequest(fnr, xmlSkjema, SoknadType.SEND_SOKNAD_ETTERSENDING, xmlMetadataListe);
+
+        return startSoknadEllerEttersending(xmlStartSoknadRequest);
+    }
+
+    private String startSoknadEllerEttersending(WSStartSoknadRequest xmlStartSoknadRequest) {
         try {
-            return sendSoknadService.startSoknad(createXMLStartSoknadRequest(fnr, createXMLSkjema(skjema, uid), SoknadType.SEND_SOKNAD)).getBehandlingsId();
+            return sendSoknadService.startSoknad(xmlStartSoknadRequest).getBehandlingsId();
         } catch (SOAPFaultException e) {
-            logger.error("Feil ved start søknad for bruker " + fnr, e);
+            logger.error("Feil ved start søknad for bruker " + xmlStartSoknadRequest.getFodselsnummer(), e);
             throw new SystemException("Kunne ikke opprette ny søknad", e, "exception.system.baksystem");
         }
     }
@@ -76,12 +97,11 @@ public class HenvendelseConnector {
         }
     }
 
-    private WSStartSoknadRequest createXMLStartSoknadRequest(String fnr, XMLHovedskjema skjema, SoknadType soknadType) {
+    private WSStartSoknadRequest createXMLStartSoknadRequest(String fnr, XMLHovedskjema skjema, SoknadType soknadType, XMLMetadataListe xmlMetadataListe) {
         return new WSStartSoknadRequest()
                 .withFodselsnummer(fnr)
                 .withType(soknadType.name())
-                .withAny(new XMLMetadataListe()
-                        .withMetadata(skjema));
+                .withAny(xmlMetadataListe);
     }
 
     private XMLHovedskjema createXMLSkjema(String skjema, String uid) {

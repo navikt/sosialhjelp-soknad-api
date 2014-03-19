@@ -24,6 +24,7 @@ public class Vedlegg {
     private Long faktumId;
     private String skjemaNummer;
     private Status innsendingsvalg;
+    private Status opprinneligInnsendingsvalg;
     private String navn = "";
     private Long storrelse = 0L;
     private Integer antallSider = 0;
@@ -32,6 +33,7 @@ public class Vedlegg {
     private String fillagerReferanse = UUID.randomUUID().toString();
     private Map<String, String> urls = new HashMap<>();
     private String tittel;
+
 
     public Vedlegg() {
     }
@@ -106,6 +108,19 @@ public class Vedlegg {
     public Vedlegg medInnsendingsvalg(Status innsendingsvalg) {
         this.innsendingsvalg = innsendingsvalg;
         return this;
+    }
+
+    public Vedlegg medOpprinneligInnsendingsvalg(Status opprinneligInnsendingsvalg) {
+        this.opprinneligInnsendingsvalg = opprinneligInnsendingsvalg;
+        return this;
+    }
+
+    public Status getOpprinneligInnsendingsvalg() {
+        return opprinneligInnsendingsvalg;
+    }
+
+    public void setOpprinneligInnsendingsvalg(Status opprinneligInnsendingsvalg) {
+        this.opprinneligInnsendingsvalg = opprinneligInnsendingsvalg;
     }
 
     public Long getVedleggId() {

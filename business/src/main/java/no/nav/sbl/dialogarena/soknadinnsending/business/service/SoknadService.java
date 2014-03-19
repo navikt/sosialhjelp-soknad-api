@@ -3,7 +3,9 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
+import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.exception.ApplicationException;
+import no.nav.modig.lang.collections.iter.PreparedIterable;
 import no.nav.modig.lang.collections.predicate.InstanceOf;
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
@@ -69,6 +71,7 @@ import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getJournalforendeEnhet;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getSkjemanummer;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -268,6 +271,63 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     @Override
+    public WebSoknad startEttersending(String behandingsId) {
+        WSHentSoknadResponse wsSoknadsdata = henvendelseConnector.hentSisteBehandlingIBehandlingskjede(behandingsId);
+        return lagFraWsSoknad(wsSoknadsdata);
+//        henvendelseConnector.startEttersending(wsSoknadsdata);
+    }
+
+    private WebSoknad lagFraWsSoknad(WSHentSoknadResponse wsSoknadsdata) {
+        WebSoknad soknad = WebSoknad.startEttersending();
+        String mainUid = randomUUID().toString();
+        XMLMetadataListe vedleggListe = (XMLMetadataListe) wsSoknadsdata.getAny();
+        Optional<XMLMetadata> hovedskjema = on(vedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
+
+        if (!hovedskjema.isSome()) {
+            throw new ApplicationException("Kunne ikke hente opp hovedskjema for søknad");
+        }
+        XMLHovedskjema xmlHovedskjema = (XMLHovedskjema) hovedskjema.get();
+
+        soknad.medUuid(mainUid)
+                .medAktorId(getSubjectHandler().getUid())
+                .medskjemaNummer(xmlHovedskjema.getSkjemanummer())
+                .medBehandlingskjedeId(wsSoknadsdata.getBehandlingsId());
+
+        Long soknadId = repository.opprettSoknad(soknad);
+        WebSoknadId websoknadId = new WebSoknadId();
+        websoknadId.setId(soknadId);
+        soknad.setSoknadId(soknadId);
+
+        PreparedIterable<XMLMetadata> vedlegg = on(vedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLVedlegg.class));
+
+        List<Vedlegg> soknadVedlegg = new ArrayList<>();
+        for (XMLMetadata xmlMetadata : vedlegg) {
+            if (xmlMetadata instanceof XMLHovedskjema) {
+                continue;
+            }
+
+            XMLVedlegg nesteVedlegg = (XMLVedlegg) xmlMetadata;
+
+            Integer antallSider = nesteVedlegg.getSideantall() != null ? nesteVedlegg.getSideantall() : 0;
+
+            Vedlegg v = new Vedlegg()
+                    .medSkjemaNummer(nesteVedlegg.getSkjemanummer())
+                    .medAntallSider(antallSider)
+                    .medInnsendingsvalg(toInnsendingsvalg(nesteVedlegg.getInnsendingsvalg()))
+                    .medOpprinneligInnsendingsvalg(toInnsendingsvalg(nesteVedlegg.getInnsendingsvalg()))
+                    .medSoknadId(soknadId)
+                    .medNavn(nesteVedlegg.getTilleggsinfo());
+
+            medKodeverk(v);
+            vedleggRepository.opprettVedlegg(v, null);
+            soknadVedlegg.add(v);
+        }
+        soknad.setVedlegg(soknadVedlegg);
+
+        return soknad;
+    }
+
+    @Override
     public void avbrytSoknad(Long soknadId) {
         WebSoknad soknad = repository.hentSoknad(soknadId);
         repository.avbryt(soknadId);
@@ -290,7 +350,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 .medBehandlingId(behandlingsId).medskjemaNummer(navSoknadId)
                 .medUuid(mainUid)
                 .medAktorId(getSubjectHandler().getUid())
-                .opprettetDato(DateTime.now());
+                .medOppretteDato(DateTime.now());
 
         Long soknadId = repository.opprettSoknad(soknad);
         WebSoknadId websoknadId = new WebSoknadId();
@@ -448,19 +508,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public SoknadStruktur hentSoknadStruktur(Long soknadId) {
         return hentStruktur(repository.hentSoknadType(soknadId));
-    }
-
-    @Override
-    public WebSoknad hentSisteBehandingIBehandingskjede(String behandingsId) {
-        WSHentSoknadResponse wsSoknadsdata = henvendelseConnector.hentSisteBehandlingIBehandlingskjede(behandingsId);
-        XMLMetadataListe vedleggListe = (XMLMetadataListe) wsSoknadsdata.getAny();
-        Optional<XMLMetadata> hovedskjema = on(vedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
-        if (hovedskjema.isSome()) {
-            byte[] bytes = fillagerConnector.hentFil(((XMLHovedskjema) hovedskjema.get()).getUuid());
-            return JAXB.unmarshal(new ByteArrayInputStream(bytes), WebSoknad.class);
-        } else {
-            throw new ApplicationException("Kunne ikke hente opp søknad");
-        }
     }
 
     private void genererVedleggForFaktum(Faktum faktum) {

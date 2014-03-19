@@ -390,7 +390,7 @@ public class SoknadServiceTest {
                 .medUuid(uid.getValue())
                 .medskjemaNummer(DAGPENGER)
                 .medAktorId(bruker)
-                .opprettetDato(new DateTime())
+                .medOppretteDato(new DateTime())
                 .medStatus(UNDER_ARBEID)
                 .medDelstegStatus(OPPRETTET);
         verify(soknadRepository).opprettSoknad(soknad);

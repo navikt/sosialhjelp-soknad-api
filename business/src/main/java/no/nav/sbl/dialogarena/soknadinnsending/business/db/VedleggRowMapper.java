@@ -30,6 +30,13 @@ public class VedleggRowMapper implements RowMapper<Vedlegg> {
             innsendingsvalg = Vedlegg.Status.IkkeVedlegg;
         }
 
+        Vedlegg.Status opprinneligInnsendingsvalg = null;
+        String valg = rs.getString("opprinneliginnsendingsvalg");
+        if (valg != null) {
+            opprinneligInnsendingsvalg = Vedlegg.Status.valueOf(valg);
+        }
+
+
         Vedlegg result = new Vedlegg()
                 .medVedleggId(rs.getLong("vedlegg_id"))
                 .medSoknadId(rs.getLong("soknad_id"))
@@ -41,7 +48,8 @@ public class VedleggRowMapper implements RowMapper<Vedlegg> {
                 .medFillagerReferanse(rs.getString("fillagerReferanse"))
                 .medData(includeData ? rs.getBytes("data") : null)
                 .medOpprettetDato(rs.getTimestamp("opprettetdato").getTime())
-                .medInnsendingsvalg(innsendingsvalg);
+                .medInnsendingsvalg(innsendingsvalg)
+                .medOpprinneligInnsendingsvalg(opprinneligInnsendingsvalg);
         
         return result;
     }

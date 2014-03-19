@@ -37,23 +37,23 @@ public class TestApplicationContext {
     @SuppressWarnings("PMD")
     private org.springframework.context.ApplicationContext context;
 
-//    @Bean
-//    public Object henvendelseServiceCreator() {
-//        if (mockHenvendelse) {
-//            return new MockConsumerConfig.SendSoknadWSConfig();
-//        } else {
-//            return new ConsumerConfig.SendSoknadWSConfig();
-//        }
-//    }
-//
-//    @Bean
-//    public Object fillagerServiceCreator() {
-//        if (mockHenvendelse) {
-//            return new MockConsumerConfig.FilLagerWSConfig();
-//        } else {
-//            return new ConsumerConfig.FilLagerWSConfig();
-//        }
-//    }
+    @Bean
+    public Object henvendelseServiceCreator() {
+        if (mockHenvendelse) {
+            return new MockConsumerConfig.SendSoknadWSConfig();
+        } else {
+            return new ConsumerConfig.SendSoknadWSConfig();
+        }
+    }
+
+    @Bean
+    public Object fillagerServiceCreator() {
+        if (mockHenvendelse) {
+            return new MockConsumerConfig.FilLagerWSConfig();
+        } else {
+            return new ConsumerConfig.FilLagerWSConfig();
+        }
+    }
 
     @Bean
     public Object brukerprofilServiceCreator() {

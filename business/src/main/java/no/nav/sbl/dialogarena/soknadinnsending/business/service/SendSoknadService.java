@@ -36,5 +36,5 @@ public interface SendSoknadService {
 
     SoknadStruktur hentSoknadStruktur(Long soknadId);
 
-    WebSoknad hentSisteBehandingIBehandingskjede(String behandingsId);
+    WebSoknad startEttersending(String behandingId);
 }
