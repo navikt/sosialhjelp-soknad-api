@@ -176,11 +176,21 @@ angular.module('app.routes', ['ngRoute'])
             .when('/ettersending', {
                 templateUrl: '../views/templates/ettersending/ettersending.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
-                        return HentSoknadService;
+                    notUsedButRequiredProperty: ['OpprettEttersendingService', function (OpprettEttersendingService) {
+                        return OpprettEttersendingService;
                     }]
                 }
             })
+
+            .when('/ettersending/:soknadId', {
+                templateUrl: '../views/templates/ettersending/ettersending.html',
+                resolve: {
+                    notUsedButRequiredProperty: ['HentEttersendingsService', function (HentEttersendingsService) {
+                        return HentEttersendingsService;
+                    }]
+                }
+            })
+
             .when('/',
                 {redirectTo: '/informasjonsside'}
             )

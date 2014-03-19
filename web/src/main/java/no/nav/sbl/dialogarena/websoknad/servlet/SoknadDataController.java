@@ -16,13 +16,7 @@ import no.nav.sbl.dialogarena.websoknad.domain.StartSoknad;
 import org.apache.commons.collections15.Predicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
@@ -202,11 +196,15 @@ public class SoknadDataController {
         return pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
     }
 
-    @RequestMapping(value = "/ettersending/{behandingId}", method = RequestMethod.GET, produces = "text/html")
+    @RequestMapping(value = "/ettersending", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseBody()
-    @SjekkTilgangTilSoknad
-    public String hentSisteBehandingIBehandingskjede(@PathVariable String behandingId) {
-        WebSoknad soknad = soknadService.startEttersending(behandingId);
-        return soknad.getSoknadId().toString();
+    @ResponseStatus(HttpStatus.CREATED)
+    public Map<String,String> startEttersending(@RequestBody Map<String, String> requestMap) {
+        Map<String, String> result = new HashMap<>();
+        System.out.println(requestMap.get("behandlingskjedeId"));
+        WebSoknad soknad = soknadService.startEttersending(requestMap.get("behandlingskjedeId"));
+
+        result.put("soknadId", soknad.getSoknadId().toString());
+        return result;
     }
 }

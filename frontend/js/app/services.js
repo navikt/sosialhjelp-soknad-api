@@ -102,6 +102,7 @@
             );
         }])
 
+
     /**
      * Service for å lagre Faktum
      */
