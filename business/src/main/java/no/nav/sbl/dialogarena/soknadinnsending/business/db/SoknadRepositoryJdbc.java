@@ -96,11 +96,11 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     private void insertSoknad(WebSoknad soknad, Long databasenokkel) {
         getJdbcTemplate()
-                .update("insert into soknad (soknad_id, uuid, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status, delstegstatus) values (?,?,?,?,?,?,?,?)",
+                .update("insert into soknad (soknad_id, uuid, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status, delstegstatus, behandlingskjedeid) values (?,?,?,?,?,?,?,?, ?)",
                         databasenokkel, soknad.getUuid(), soknad.getBrukerBehandlingId(),
                         soknad.getskjemaNummer(), soknad.getAktoerId(),
                         new Date(soknad.getOpprettetDato()),
-                        soknad.getStatus().name(), soknad.getDelstegStatus().name());
+                        soknad.getStatus().name(), soknad.getDelstegStatus().name(), soknad.getBehandlingskjedeId());
     }
 
     @Override
