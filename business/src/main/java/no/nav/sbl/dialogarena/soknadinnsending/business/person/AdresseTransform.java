@@ -22,6 +22,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.BOSTEDSADRESSE;
@@ -40,7 +41,9 @@ public class AdresseTransform {
     public Adresse mapGjeldendeAdresse(XMLBruker soapPerson, Kodeverk kodeverk) {
         this.kodeverk = kodeverk;
 
-        if (harMidlertidigAdresseSomErGjeldendeAdresse(soapPerson)) {
+        if(harHemmeligAdresse(soapPerson)){
+            return new Adresse();
+        } else if (harMidlertidigAdresseSomErGjeldendeAdresse(soapPerson)) {
             return finnMidlertidigAdresse(soapPerson.getMidlertidigPostadresse());
         } else if (harStrukturertAdresseSomErGjeldendeAdresse(soapPerson)) {
             return hentBostedsAdresse((XMLGateadresse) soapPerson.getBostedsadresse().getStrukturertAdresse());
@@ -51,10 +54,17 @@ public class AdresseTransform {
         }
     }
 
+    private static List<String> HEMMELIGE_DISKRESJONSKODER = Arrays.asList("6","7");
+    private boolean harHemmeligAdresse(XMLBruker soapPerson) {
+        return soapPerson.getDiskresjonskode() != null && HEMMELIGE_DISKRESJONSKODER.contains(soapPerson.getDiskresjonskode().getValue());
+    }
+
     public Adresse mapSekundarAdresse(XMLBruker soapPerson, Kodeverk kodeverk) {
         this.kodeverk = kodeverk;
 
-        if (harMidlertidigAdresseSomIkkeErGjeldendeAdresse(soapPerson)) {
+        if(harHemmeligAdresse(soapPerson)){
+            return new Adresse();
+        } else if (harMidlertidigAdresseSomIkkeErGjeldendeAdresse(soapPerson)) {
             return finnMidlertidigAdresse(soapPerson.getMidlertidigPostadresse());
         } else if (harStrukturertAdresseSomIkkeErGjeldendeAdresse(soapPerson)) {
             return hentBostedsAdresse((XMLGateadresse) soapPerson.getBostedsadresse().getStrukturertAdresse());
