@@ -85,4 +85,17 @@ public class Transformers {
                 return SENDES_IKKE.toString();
         }
     }
+
+    public static Vedlegg.Status toInnsendingsvalg(String xmlInnsendingsvalg) {
+        switch (xmlInnsendingsvalg) {
+            case "LASTET_OPP":
+                return Vedlegg.Status.LastetOpp;
+            case "SEND_SENERE":
+                return Vedlegg.Status.SendesSenere;
+            case "SENDES_IKKE":
+                return Vedlegg.Status.SendesIkke;
+            default:
+                return Vedlegg.Status.SendesIkke;
+        }
+    }
 }

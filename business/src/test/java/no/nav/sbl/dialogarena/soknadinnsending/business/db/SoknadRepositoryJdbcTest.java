@@ -89,7 +89,7 @@ public class SoknadRepositoryJdbcTest {
                 .medUuid(uuid)
                 .medBehandlingId(behandlingsId)
                 .medskjemaNummer(skjemaNummer)
-                .opprettetDato(now());
+                .medOppretteDato(now());
 
         soknadRepository.opprettSoknad(soknad);
     }
@@ -100,7 +100,7 @@ public class SoknadRepositoryJdbcTest {
                 .medUuid(uuid)
                 .medAktorId(aktorId)
                 .medskjemaNummer(skjemaNummer)
-                .opprettetDato(now());
+                .medOppretteDato(now());
 
         soknadRepository.opprettSoknad(soknad);
     }
@@ -111,7 +111,7 @@ public class SoknadRepositoryJdbcTest {
                 .medUuid(uuid)
                 .medAktorId(aktorId)
                 .medBehandlingId(behandlingsId)
-                .opprettetDato(now());
+                .medOppretteDato(now());
 
         soknadRepository.opprettSoknad(soknad);
     }
@@ -387,7 +387,7 @@ public class SoknadRepositoryJdbcTest {
                 .medAktorId("123123")
                 .medBehandlingId("AH123")
                 .medskjemaNummer(skjemaNummer)
-                .opprettetDato(now())
+                .medOppretteDato(now())
                 .leggTilFaktum(new Faktum().medSoknadId(101L).medFaktumId(11L).medKey("key1").medValue("val1").medType(BRUKERREGISTRERT).medProperty("test", "test"))
                 .leggTilFaktum(new Faktum().medSoknadId(101L).medFaktumId(12L).medKey("key2").medValue("val2").medType(SYSTEMREGISTRERT).medProperty("test2", "test2"))
                 .medVedlegg(Arrays.asList(new Vedlegg(101L, 11L, "L6", Vedlegg.Status.LastetOpp)));
@@ -420,7 +420,7 @@ public class SoknadRepositoryJdbcTest {
                 .medUuid(uuid)
                 .medAktorId(aktor)
                 .medBehandlingId(behId)
-                .medskjemaNummer(skjemaNummer).opprettetDato(now());
+                .medskjemaNummer(skjemaNummer).medOppretteDato(now());
         soknadId = soknadRepository.opprettSoknad(soknad);
         soknad.setSoknadId(soknadId);
         return soknadId;

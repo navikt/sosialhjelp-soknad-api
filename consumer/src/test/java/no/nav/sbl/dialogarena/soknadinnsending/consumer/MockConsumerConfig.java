@@ -5,12 +5,12 @@ import no.aetat.arena.personstatus.Personstatus;
 import no.aetat.arena.personstatus.PersonstatusType;
 import no.nav.arena.tjenester.person.v1.FaultGeneriskMsg;
 import no.nav.arena.tjenester.person.v1.PersonInfoServiceSoap;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadata;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
-import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.FilLagerPortType;
+import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSEmpty;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.BrukerprofilPortType;
@@ -53,15 +53,29 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
+import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 
+import javax.activation.DataHandler;
+import javax.mail.util.ByteArrayDataSource;
+import javax.xml.ws.Holder;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -73,198 +87,198 @@ import static org.mockito.Mockito.when;
 
 public class MockConsumerConfig {
 
+//    @Configuration
+//    public static class SendSoknadWSConfig {
+//        @Value("${soknad.webservice.henvendelse.sendsoknadservice.url}")
+//        private String soknadServiceEndpoint;
+//
+//        private ServiceBuilder<SendSoknadPortType>.PortTypeBuilder<SendSoknadPortType> factory() {
+//            return new ServiceBuilder<>(SendSoknadPortType.class)
+//                    .asStandardService()
+//                    .withAddress(soknadServiceEndpoint)
+//                    .withWsdl("classpath:SendSoknad.wsdl")
+//                            //.withServiceName(new QName("http://nav.no/tjeneste/domene/brukerdialog/sendsoknad/v1", "SendSoknadPortType"))
+//                    .withExtraClasses(new Class[]{XMLMetadataListe.class, WSSoknadsdata.class, WSStartSoknadRequest.class, XMLMetadata.class, XMLVedlegg.class, XMLHovedskjema.class})
+//                    .build()
+//                    .withHttpsMock()
+//                    .withMDC();
+//        }
+//
+//        @Bean
+//        public SendSoknadPortType sendSoknadService() {
+//            return factory().withUserSecurity().get();
+//        }
+//
+//        @Bean
+//        public SendSoknadPortType sendSoknadSelftest() {
+//            return factory().withSystemSecurity().get();
+//        }
+//    }
+//
+//    @Configuration
+//    public static class FilLagerWSConfig {
+//        @Value("${soknad.webservice.henvendelse.fillager.url}")
+//        private String serviceEndpoint;
+//
+//        private ServiceBuilder<FilLagerPortType>.PortTypeBuilder<FilLagerPortType> factory() {
+//            return new ServiceBuilder<>(FilLagerPortType.class)
+//                    .asStandardService()
+//                    .withAddress(serviceEndpoint)
+//                    .withWsdl("classpath:FilLager.wsdl")
+//                    .build()
+//                    .withHttpsMock();
+//        }
+//
+//        @Bean
+//        public FilLagerPortType fillagerService() {
+//            return factory().withMDC().withUserSecurity().get();
+//        }
+//
+//        @Bean
+//        public FilLagerPortType fillagerServiceSelftest() {
+//            return factory().withSystemSecurity().get();
+//        }
+//    }
+//
     @Configuration
     public static class SendSoknadWSConfig {
-        @Value("${soknad.webservice.henvendelse.sendsoknadservice.url}")
-        private String soknadServiceEndpoint;
-
-        private ServiceBuilder<SendSoknadPortType>.PortTypeBuilder<SendSoknadPortType> factory() {
-            return new ServiceBuilder<>(SendSoknadPortType.class)
-                    .asStandardService()
-                    .withAddress(soknadServiceEndpoint)
-                    .withWsdl("classpath:SendSoknad.wsdl")
-                            //.withServiceName(new QName("http://nav.no/tjeneste/domene/brukerdialog/sendsoknad/v1", "SendSoknadPortType"))
-                    .withExtraClasses(new Class[]{XMLMetadataListe.class, WSSoknadsdata.class, WSStartSoknadRequest.class, XMLMetadata.class, XMLVedlegg.class, XMLHovedskjema.class})
-                    .build()
-                    .withHttpsMock()
-                    .withMDC();
-        }
 
         @Bean
         public SendSoknadPortType sendSoknadService() {
-            return factory().withUserSecurity().get();
+            final Map<String, WSHentSoknadResponse> lager = new HashMap<>();
+            SendSoknadPortType mock = new SendSoknadPortType() {
+                @Override
+                public void ping() {
+
+                }
+
+                @Override
+                public WSEmpty sendSoknad(WSSoknadsdata parameters) {
+                    return null;
+                }
+
+                @Override
+                public WSEmpty mellomlagreSoknad(WSSoknadsdata parameters) {
+
+                    return new WSEmpty();
+                }
+
+                @Override
+                public WSHentSoknadResponse hentSisteBehandlingIBehandlingsKjede(WSBehandlingsId parameters) {
+                    return lager.get(parameters.getBehandlingsId());
+                }
+
+                @Override
+                public WSHentSoknadResponse hentSoknad(WSBehandlingsId parameters) {
+                    return lager.get(parameters.getBehandlingsId());
+                }
+
+                @Override
+                public void avbrytSoknad(String behandlingsId) {
+
+                }
+
+                @Override
+                public WSBehandlingsId startSoknad(WSStartSoknadRequest parameters) {
+                    String uuid = UUID.randomUUID().toString();
+                    lager.put(uuid, new WSHentSoknadResponse().withBehandlingsId(uuid).withAny(parameters.getAny()));
+                    return new WSBehandlingsId().withBehandlingsId(uuid);
+                }
+            };
+            return mock;
         }
 
         @Bean
         public SendSoknadPortType sendSoknadSelftest() {
-            return factory().withSystemSecurity().get();
+            return sendSoknadService();
         }
     }
 
     @Configuration
     public static class FilLagerWSConfig {
-        @Value("${soknad.webservice.henvendelse.fillager.url}")
-        private String serviceEndpoint;
-
-        private ServiceBuilder<FilLagerPortType>.PortTypeBuilder<FilLagerPortType> factory() {
-            return new ServiceBuilder<>(FilLagerPortType.class)
-                    .asStandardService()
-                    .withAddress(serviceEndpoint)
-                    .withWsdl("classpath:FilLager.wsdl")
-                    .build()
-                    .withHttpsMock();
-        }
 
         @Bean
         public FilLagerPortType fillagerService() {
-            return factory().withMDC().withUserSecurity().get();
+            FilLagerPortType filLagerPortType = new FilLagerPortType() {
+                @Override
+                public void slett(String s) {
+
+                }
+
+                @Override
+                public void ping() {
+
+                }
+
+                @Override
+                public void slettAlle(String s) {
+
+                }
+
+                @Override
+                public void lagre(String s, String s2, String s3, DataHandler dataHandler) {
+                    InputStream inputStream = null;
+                    OutputStream os = null;
+                    File file;
+                    try {
+                        file = new File("C:" + File.separator + "temp" + File.separator + s2);
+                        if (!file.exists()) {
+                            file.createNewFile();
+                        }
+
+                        inputStream = dataHandler.getInputStream();
+                        os = new FileOutputStream(file);
+                        IOUtils.copy(inputStream, os);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        if (os != null) {
+                            try {
+                                os.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (inputStream != null) {
+                            try {
+                                inputStream.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                }
+
+                @Override
+                public List<WSInnhold> hentAlle(String s) {
+                    return null;
+                }
+
+                @Override
+                public void hent(Holder<String> stringHolder, Holder<DataHandler> dataHandlerHolder) {
+                    try {
+                        File file = new File("C:" + File.separator + "temp" + File.separator + stringHolder.value);
+                        InputStream in = new FileInputStream(file);
+                        dataHandlerHolder.value = new DataHandler(new ByteArrayDataSource(in, "application/octet-stream"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            };
+            return filLagerPortType;
         }
 
         @Bean
         public FilLagerPortType fillagerServiceSelftest() {
-            return factory().withSystemSecurity().get();
+            return fillagerService();
         }
     }
-
-//    @Configuration
-//    public static class SendSoknadWSConfig {
-//
-//        @Bean
-//        public SendSoknadPortType sendSoknadService() {
-//            final Map<String, WSHentSoknadResponse> lager = new HashMap<>();
-//            SendSoknadPortType mock = new SendSoknadPortType() {
-//                @Override
-//                public void ping() {
-//
-//                }
-//
-//                @Override
-//                public WSEmpty sendSoknad(WSSoknadsdata parameters) {
-//                    return null;
-//                }
-//
-//                @Override
-//                public WSEmpty mellomlagreSoknad(WSSoknadsdata parameters) {
-//
-//                    return new WSEmpty();
-//                }
-//
-//                @Override
-//                public WSHentSoknadResponse hentSisteBehandlingIBehandlingsKjede(WSBehandlingsId parameters) {
-//                    return lager.get(parameters.getBehandlingsId());
-//                }
-//
-//                @Override
-//                public WSHentSoknadResponse hentSoknad(WSBehandlingsId parameters) {
-//                    return lager.get(parameters.getBehandlingsId());
-//                }
-//
-//                @Override
-//                public void avbrytSoknad(String behandlingsId) {
-//
-//                }
-//
-//                @Override
-//                public WSBehandlingsId startSoknad(WSStartSoknadRequest parameters) {
-//                    String uuid = UUID.randomUUID().toString();
-//                    lager.put(uuid, new WSHentSoknadResponse().withBehandlingsId(uuid).withAny(parameters.getAny()));
-//                    return new WSBehandlingsId().withBehandlingsId(uuid);
-//                }
-//            };
-//            return mock;
-//        }
-//
-//        @Bean
-//        public SendSoknadPortType sendSoknadSelftest() {
-//            return sendSoknadService();
-//        }
-//    }
-
-//    @Configuration
-//    public static class FilLagerWSConfig {
-//
-//        @Bean
-//        public FilLagerPortType fillagerService() {
-//            FilLagerPortType filLagerPortType = new FilLagerPortType() {
-//                @Override
-//                public void slett(String s) {
-//
-//                }
-//
-//                @Override
-//                public void ping() {
-//
-//                }
-//
-//                @Override
-//                public void slettAlle(String s) {
-//
-//                }
-//
-//                @Override
-//                public void lagre(String s, String s2, String s3, DataHandler dataHandler) {
-//                    InputStream inputStream = null;
-//                    OutputStream os = null;
-//                    File file;
-//                    try {
-//                        file = new File("C:" + File.separator + "temp" + File.separator + s2);
-//                        if (!file.exists()) {
-//                            file.createNewFile();
-//                        }
-//
-//                        inputStream = dataHandler.getInputStream();
-//                        os = new FileOutputStream(file);
-//                        IOUtils.copy(inputStream, os);
-//                    } catch (FileNotFoundException e) {
-//                        e.printStackTrace();
-//                    } catch (UnsupportedEncodingException e) {
-//                        e.printStackTrace();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    } finally {
-//                        if (os != null) {
-//                            try {
-//                                os.close();
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                        if (inputStream != null) {
-//                            try {
-//                                inputStream.close();
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }
-//
-//                }
-//
-//                @Override
-//                public List<WSInnhold> hentAlle(String s) {
-//                    return null;
-//                }
-//
-//                @Override
-//                public void hent(Holder<String> stringHolder, Holder<DataHandler> dataHandlerHolder) {
-//                    try {
-//                        File file = new File("C:" + File.separator + "temp" + File.separator + stringHolder.value);
-//                        InputStream in = new FileInputStream(file);
-//                        dataHandlerHolder.value = new DataHandler(new ByteArrayDataSource(in, "application/octet-stream"));
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                }
-//            };
-//            return filLagerPortType;
-//        }
-//
-//        @Bean
-//        public FilLagerPortType fillagerServiceSelftest() {
-//            return fillagerService();
-//        }
-//    }
 
     @Configuration
     public static class PersonInfoWSConfig {

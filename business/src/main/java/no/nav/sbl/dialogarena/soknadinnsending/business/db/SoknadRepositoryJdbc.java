@@ -375,7 +375,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                     .medskjemaNummer(rs.getString("navsoknadid"))
                     .medAktorId(rs.getString("aktorid"))
                     .medUuid("uuid")
-                    .opprettetDato(new DateTime(rs.getTimestamp("opprettetdato").getTime()))
+                    .medOppretteDato(new DateTime(rs.getTimestamp("opprettetdato").getTime()))
                     .medStatus(SoknadInnsendingStatus.valueOf(rs.getString("status")))
                     .medDelstegStatus(DelstegStatus.valueOf(rs.getString("delstegstatus")));
         }

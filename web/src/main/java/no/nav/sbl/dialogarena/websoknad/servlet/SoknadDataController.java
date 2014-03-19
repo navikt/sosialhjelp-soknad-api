@@ -206,7 +206,7 @@ public class SoknadDataController {
     @ResponseBody()
     @SjekkTilgangTilSoknad
     public String hentSisteBehandingIBehandingskjede(@PathVariable String behandingId) {
-        soknadService.hentSisteBehandingIBehandingskjede(behandingId);
-        return "hei";
+        WebSoknad soknad = soknadService.startEttersending(behandingId);
+        return soknad.getSoknadId().toString();
     }
 }

@@ -22,11 +22,11 @@ import static no.nav.modig.lang.collections.IterUtils.on;
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WebSoknad implements Serializable {
-
     private Long soknadId;
     private String skjemaNummer;
     private String uuid;
     private String brukerBehandlingId;
+    private String behandlingskjedeId;
     private List<Faktum> faktaListe;
     private SoknadInnsendingStatus status;
     private String aktoerId;
@@ -44,12 +44,28 @@ public class WebSoknad implements Serializable {
         return new WebSoknad().medStatus(SoknadInnsendingStatus.UNDER_ARBEID).medDelstegStatus(DelstegStatus.OPPRETTET);
     }
 
+    public static WebSoknad startEttersending() {
+        return new WebSoknad()
+                .medStatus(SoknadInnsendingStatus.UNDER_ARBEID)
+                .medDelstegStatus(DelstegStatus.ETTERSENDING_OPPRETTET)
+                .medBehandlingId("temp")
+                .medOppretteDato(DateTime.now());
+    }
+
     public Long getSistLagret() {
         if (sistLagret != null) {
             return sistLagret.getMillis();
         } else {
             return null;
         }
+    }
+
+    public String getBehandlingskjedeId() {
+        return behandlingskjedeId;
+    }
+
+    public void setBehandlingskjedeId(String behandlingskjedeId) {
+        this.behandlingskjedeId = behandlingskjedeId;
     }
 
     public void setSistLagret(DateTime sistLagret) {
@@ -152,8 +168,13 @@ public class WebSoknad implements Serializable {
         return this;
     }
 
-    public WebSoknad opprettetDato(DateTime opprettetDato) {
+    public WebSoknad medOppretteDato(DateTime opprettetDato) {
         this.opprettetDato = opprettetDato;
+        return this;
+    }
+
+    public WebSoknad medBehandlingskjedeId(String behandlingskjedeId) {
+        this.behandlingskjedeId = behandlingskjedeId;
         return this;
     }
 
@@ -301,7 +322,7 @@ public class WebSoknad implements Serializable {
                 .append("faktaListe", faktaListe)
                 .append("status", status)
                 .append("aktoerId", aktoerId)
-                .append("opprettetDato", opprettetDato)
+                .append("medOppretteDato", opprettetDato)
                 .append("sistLagret", sistLagret)
                 .append("delstegStatus", delstegStatus)
                 .append("vedlegg", vedlegg)
