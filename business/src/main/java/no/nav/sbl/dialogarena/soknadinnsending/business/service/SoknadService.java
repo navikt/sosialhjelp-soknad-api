@@ -130,9 +130,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public WebSoknad hentSoknad(long soknadId) {
+        // TODO: Burde se på uthenting av vedlegg med navn
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
-        List<Vedlegg> vedlegg = vedleggRepository.hentPaakrevdeVedlegg(soknadId);
-        leggTilKodeverkFelter(vedlegg);
+        List<Vedlegg> vedlegg = hentPaakrevdeVedlegg(soknadId);
         soknad.setVedlegg(vedlegg);
         return soknad;
     }
@@ -207,7 +207,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public void sendSoknad(long soknadId, byte[] pdf) {
-        WebSoknad soknad = repository.hentSoknadMedData(soknadId);
+        WebSoknad soknad = hentSoknad(soknadId);
         fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
         List<Vedlegg> vedleggForventnings = soknad.getVedlegg();
         String skjemanummer = getSkjemanummer(soknad);
