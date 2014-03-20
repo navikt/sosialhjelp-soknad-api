@@ -174,10 +174,10 @@ angular.module('app.routes', ['ngRoute'])
                 }
             })
             .when('/ettersending', {
-                templateUrl: '../views/templates/ettersending/ettersending.html',
+                templateUrl: '../views/templates/ettersending/startEttersending.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['OpprettEttersendingService', function (OpprettEttersendingService) {
-                        return OpprettEttersendingService;
+                    notUsedButRequiredProperty: ['StartEttersendingService', function (StartEttersendingService) {
+                        return StartEttersendingService;
                     }]
                 }
             })
