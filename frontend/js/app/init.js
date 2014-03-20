@@ -161,6 +161,15 @@ angular.module('sendsoknad')
         soknadService.get({soknadId: soknadId},
             function (result) { // Success
                 data.soknad = result;
+                data.finnFaktum = function (key) {
+                    var res = null;
+                    data.soknad.faktaListe.forEach(function (item) {
+                        if (item.key === key) {
+                            res = item;
+                        }
+                    });
+                    return res;
+                };
                 soknadDeferer.resolve();
             }
         );
@@ -189,17 +198,14 @@ angular.module('sendsoknad')
         return resolve;
     }])
 
-    .factory('OpprettEttersendingService', ['$location', '$rootScope', 'data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', '$http', '$timeout', function ($location, $rootScope, data, cms, $resource, $q, $route, soknadService, landService, Faktum, $http, $timeout) {
+    .factory('StartEttersendingService', ['$rootScope', 'cms', '$resource', '$q', '$timeout', function ($rootScope, cms, $resource, $q, $timeout) {
         var promiseArray = [];
-        var soknadDeferer = $q.defer();
 
-        var brukerbehandlingsid = getBehandlingIdFromUrl();
-        var soknadId;
-        $http.post('/sendsoknad/rest/soknad/ettersending', {behandlingskjedeId: brukerbehandlingsid}).then(function(result) {
-            soknadId = result.data.soknadId;
-            soknadDeferer.resolve();
-        });
-
+        var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
+            function (result) { // Success
+                cms.tekster = result;
+            }
+        );
         var lasteindikatorDefer = $q.defer();
 
         // Passer på at laste-indikatoren vises i minimum 2 sekunder, for å unngå at den bare "blinker"
@@ -207,14 +213,12 @@ angular.module('sendsoknad')
             lasteindikatorDefer.resolve();
         }, 2000);
 
-        promiseArray.push(soknadDeferer.promise, lasteindikatorDefer.promise);
+        promiseArray.push(tekster.$promise, lasteindikatorDefer.promise);
 
         var resolve = $q.all(promiseArray);
 
         resolve.then(function() {
             $rootScope.app.laster = false;
-
-            $location.path("/ettersending/" + soknadId);
         });
 
         return resolve;
