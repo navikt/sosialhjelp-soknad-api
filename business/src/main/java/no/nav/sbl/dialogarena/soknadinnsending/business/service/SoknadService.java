@@ -130,7 +130,11 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public WebSoknad hentSoknad(long soknadId) {
-        return repository.hentSoknadMedData(soknadId);
+        WebSoknad soknad = repository.hentSoknadMedData(soknadId);
+        List<Vedlegg> vedlegg = vedleggRepository.hentPaakrevdeVedlegg(soknadId);
+        leggTilKodeverkFelter(vedlegg);
+        soknad.setVedlegg(vedlegg);
+        return soknad;
     }
 
     @Override
@@ -297,6 +301,13 @@ public class SoknadService implements SendSoknadService, VedleggService {
         WebSoknadId websoknadId = new WebSoknadId();
         websoknadId.setId(soknadId);
         soknad.setSoknadId(soknadId);
+
+        Faktum soknadInnsendingsDato = new Faktum()
+                .medKey("soknadInnsendingsDato")
+                .medValue(String.valueOf(wsSoknadsdata.getInnsendtDato().getMillis()))
+                .medType(SYSTEMREGISTRERT);
+        lagreSystemFaktum(soknadId, soknadInnsendingsDato, "");
+        soknad.setFaktaListe(repository.hentAlleBrukerData(soknadId));
 
         PreparedIterable<XMLMetadata> vedlegg = on(vedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLVedlegg.class));
 
