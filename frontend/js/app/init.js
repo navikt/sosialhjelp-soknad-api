@@ -161,6 +161,15 @@ angular.module('sendsoknad')
         soknadService.get({soknadId: soknadId},
             function (result) { // Success
                 data.soknad = result;
+                data.finnFaktum = function (key) {
+                    var res = null;
+                    data.soknad.faktaListe.forEach(function (item) {
+                        if (item.key === key) {
+                            res = item;
+                        }
+                    });
+                    return res;
+                };
                 soknadDeferer.resolve();
             }
         );
