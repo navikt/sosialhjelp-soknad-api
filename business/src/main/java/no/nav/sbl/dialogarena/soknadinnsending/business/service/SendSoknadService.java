@@ -23,12 +23,13 @@ public interface SendSoknadService {
 
     void sendSoknad(long soknadId, byte[] outputStream);
 
+
+
     void avbrytSoknad(Long soknadId);
 
     List<Faktum> hentFakta(Long soknadId);
 
     void slettBrukerFaktum(Long soknadId, Long faktumId);
-
 
     WebSoknad hentSoknadMetaData(long soknadId);
 
@@ -37,4 +38,5 @@ public interface SendSoknadService {
     SoknadStruktur hentSoknadStruktur(Long soknadId);
 
     WebSoknad startEttersending(String behandingId);
+    void sendEttersending(Long soknadId, String behandingsId);
 }
