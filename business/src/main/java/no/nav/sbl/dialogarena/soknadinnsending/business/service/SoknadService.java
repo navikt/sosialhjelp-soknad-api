@@ -316,7 +316,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
         }
         XMLHovedskjema xmlHovedskjema = (XMLHovedskjema) hovedskjema.get();
 
-        XMLHovedskjema xmlHovedskjema = (XMLHovedskjema) hovedskjema.get();
         soknad.medUuid(mainUid)
                 .medAktorId(getSubjectHandler().getUid())
                 .medskjemaNummer(xmlHovedskjema.getSkjemanummer())
