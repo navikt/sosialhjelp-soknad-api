@@ -154,6 +154,16 @@ angular.module('sendsoknad')
 
     .factory('HentEttersendingsService', ['$location', '$rootScope', 'data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', '$http', '$timeout', function ($location, $rootScope, data, cms, $resource, $q, $route, soknadService, landService, Faktum, $http, $timeout) {
         var promiseArray = [];
+        var soknadDeferer = $q.defer();
+
+        var soknadId = window.location.href.split("/").last();
+
+        soknadService.get({soknadId: soknadId},
+            function (result) { // Success
+                data.soknad = result;
+                soknadDeferer.resolve();
+            }
+        );
 
         var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
             function (result) { // Success
@@ -168,7 +178,7 @@ angular.module('sendsoknad')
             lasteindikatorDefer.resolve();
         }, 2000);
 
-        promiseArray.push( tekster.$promise, lasteindikatorDefer.promise);
+        promiseArray.push( tekster.$promise, soknadDeferer.promise, lasteindikatorDefer.promise);
 
         var resolve = $q.all(promiseArray);
 
