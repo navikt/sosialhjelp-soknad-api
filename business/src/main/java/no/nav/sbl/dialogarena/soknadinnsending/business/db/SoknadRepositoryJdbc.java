@@ -162,8 +162,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     @Override
     public WebSoknad hentSoknadMedData(Long id) {
         return hentSoknad(id)
-                .medBrukerData(hentAlleBrukerData(id))
-                .medVedlegg(vedleggRepository.hentPaakrevdeVedlegg(id));
+                .medBrukerData(hentAlleBrukerData(id));
     }
 
     @Override

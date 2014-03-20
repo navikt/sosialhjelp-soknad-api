@@ -93,6 +93,7 @@
                     options: { method: 'GET', params: {soknadId: '@soknadId', action: 'options' }},
                     behandling: { method: 'GET', params: {soknadId: '@soknadId', action: 'behandling' }},
                     metadata: { method: 'GET', params: {soknadId: '@soknadId', action: 'metadata' }},
+                    opprettEttersending: { method: 'POST', params: {action: 'ettersending'}},
                     delsteg: {
                         method: 'POST',
                         params: {soknadId: '@soknadId', delsteg: '@delsteg' },
