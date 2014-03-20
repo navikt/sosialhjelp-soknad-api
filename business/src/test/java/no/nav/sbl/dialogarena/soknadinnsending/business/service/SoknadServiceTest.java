@@ -290,6 +290,69 @@ public class SoknadServiceTest {
                                 .withFilnavn("L7")));
     }
 
+
+    @Test
+    public void skalSendeEttersending() {
+        String opprinneligBehandlingsId = "100000000TEST";
+
+        when(henvendelsesConnector.hentSisteBehandlingIBehandlingskjede(opprinneligBehandlingsId)).thenReturn(
+                new WSHentSoknadResponse()
+                        .withBehandlingsId("123")
+                        .withStatus(WSStatus.UNDER_ARBEID.toString())
+                        .withAny(new XMLMetadataListe()
+                                .withMetadata(
+                                        new XMLHovedskjema().withUuid("uidHovedskjema"),
+                                        new XMLVedlegg().withUuid("uidVedlegg")))
+        );
+
+        when(soknadRepository.hentSoknadMedData(1L)).thenReturn(
+                new WebSoknad().medAktorId("123456")
+                        .medBehandlingId(opprinneligBehandlingsId)
+                        .medUuid("uidHovedskjema")
+                        .medskjemaNummer(DAGPENGER)
+                        .medVedlegg(Arrays.asList(
+                                new Vedlegg()
+                                        .medSkjemaNummer("N6")
+                                        .medFillagerReferanse("uidVedlegg1")
+                                        .medInnsendingsvalg(Vedlegg.Status.LastetOpp)
+                                        .medStorrelse(2L)
+                                        .medNavn("Test Annet vedlegg")
+                                        .medAntallSider(3),
+                                new Vedlegg()
+                                        .medSkjemaNummer("L7")
+                                        .medInnsendingsvalg(Vedlegg.Status.SendesIkke)))
+        );
+
+        soknadService.sendEttersending(1L, opprinneligBehandlingsId);
+        verify(henvendelsesConnector).avsluttSoknad(eq(opprinneligBehandlingsId), refEq(new XMLHovedskjema()
+                .withUuid("uidHovedskjema")
+                .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
+                .withJournalforendeEnhet(RUTES_I_BRUT)
+                .withFilnavn(DAGPENGER)
+                .withFilstorrelse("3")
+                .withMimetype("application/pdf")
+                .withSkjemanummer(DAGPENGER)),
+                refEq(
+                        new XMLVedlegg()
+                                .withUuid("uidVedlegg1")
+                                .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
+                                .withFilnavn("Test Annet vedlegg")
+                                .withTilleggsinfo("Test Annet vedlegg")
+                                .withFilstorrelse("2")
+                                .withSideantall(3)
+                                .withMimetype("application/pdf")
+                                .withSkjemanummer("N6")),
+                refEq(
+                        new XMLVedlegg()
+                                .withInnsendingsvalg(XMLInnsendingsvalg.SENDES_IKKE.toString())
+                                .withTilleggsinfo("")
+                                .withSkjemanummer("L7")
+                                .withFilnavn("L7")));
+    }
+
+
+
+
     @Test
     public void skalSetteDelsteg() {
         soknadService.settDelsteg(1L, OPPRETTET);
