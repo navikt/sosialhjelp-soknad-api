@@ -240,6 +240,7 @@ public class AdresseTransform {
             XMLLandkoder xmlLandkode = ustrukturertAdresse.getLandkode();
             if (xmlLandkode != null) {
                 adresse += ", " + getLand(xmlLandkode);
+                midlertidigAdresse.setLandkode(xmlLandkode.getValue());
             }
             midlertidigAdresse.setAdresse(adresse);
         }
