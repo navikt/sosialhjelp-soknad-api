@@ -218,7 +218,7 @@ public class SoknadDataController {
             WebSoknad soknad = soknadService.startEttersending(requestMap.get("behandlingskjedeId"));
             soknadId = soknad.getSoknadId();
         }
-        
+
         response.addCookie(new Cookie("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId)));
         result.put("soknadId", soknadId.toString());
         return result;
