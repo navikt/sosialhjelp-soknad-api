@@ -24,6 +24,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.SoknadAvbruttException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.SoknadAvsluttetException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
@@ -33,6 +35,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnect
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStatus;
 import org.apache.commons.collections15.Closure;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
@@ -223,8 +226,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(),
                 hovedskjema,
                 Transformers.convertToXmlVedleggListe(vedleggForventnings));
-        repository.avslutt(soknad);
-
+        repository.slettSoknad(soknadId);
     }
 
     public Long hentSoknadMedBehandlinsId(String behandlingsId) {
@@ -245,6 +247,12 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     private void populerFraHenvendelse(String behandlingsId) {
         WSHentSoknadResponse wsSoknadsdata = henvendelseConnector.hentSoknad(behandlingsId);
+        String soknadStatus = wsSoknadsdata.getStatus();
+        if (!soknadStatus.equals(WSStatus.UNDER_ARBEID.value())) {
+            if (WSStatus.AVBRUTT_AV_BRUKER.value().equals(soknadStatus)) throw new SoknadAvbruttException("Soknaden er avbrutt", null, "soknad.avbrutt");
+            if (WSStatus.FERDIG.value().equals(soknadStatus)) throw new SoknadAvsluttetException("Soknaden er avsluttet", null, "soknad.avsluttet");
+            throw new RuntimeException();
+        }
         XMLMetadataListe vedleggListe = (XMLMetadataListe) wsSoknadsdata.getAny();
         Optional<XMLMetadata> hovedskjema = on(vedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
         if (hovedskjema.isSome()) {
