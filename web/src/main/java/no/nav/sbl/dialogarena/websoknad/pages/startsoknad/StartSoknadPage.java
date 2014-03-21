@@ -26,7 +26,7 @@ public class StartSoknadPage extends BasePage {
         if (!brukerbehandlingId.isEmpty()) {
             new CookieUtils().remove("XSRF-TOKEN");
             try {
-                new CookieUtils().save("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadService.hentSoknadMedBehandlinsId(brukerbehandlingId.toString())));
+                new CookieUtils().save("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadService.hentSoknadMedBehandlingsId(brukerbehandlingId.toString())));
             } catch (SoknadAvsluttetException e) {
                 setResponsePage(new RedirectTilKvitteringPage(mineHenvendelserUrl + "?behandlingsId=" + brukerbehandlingId));
             } catch (SoknadAvbruttException e) {
