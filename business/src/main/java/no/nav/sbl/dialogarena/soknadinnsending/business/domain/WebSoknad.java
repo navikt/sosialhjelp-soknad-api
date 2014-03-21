@@ -25,6 +25,8 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegSta
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WebSoknad implements Serializable {
+    private static final List<DelstegStatus> ETTERSENDING_STATUSER = Arrays.asList(ETTERSENDING_OPPRETTET, ETTERSENDING_UTFYLLING);
+
     private Long soknadId;
     private String skjemaNummer;
     private String uuid;
@@ -341,7 +343,6 @@ public class WebSoknad implements Serializable {
         return null;
     }
 
-    List<DelstegStatus> ETTERSENDING_STATUSER = Arrays.asList(ETTERSENDING_OPPRETTET, ETTERSENDING_UTFYLLING);
     public boolean erEttersending() {
         return ETTERSENDING_STATUSER.contains(delstegStatus);
     }
