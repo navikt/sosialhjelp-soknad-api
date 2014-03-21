@@ -22,8 +22,8 @@
                             <div class="navn">{{ v.navn }}</div>
                             <div class="tittel">{{ v.tittel }}</div>
                         </div>
-                        <div class="last-opp" data-ng-if="erIkkeLastetOpp(v)">
-                            <a class="knapp-link-liten" href="#" data-ng-bind-html="'ettersending.vedlegg.lastOpp' | cmstekst"></a>
+                        <div class="last-opp">
+                            <a class="knapp-link-liten" data-ng-href="#/ettersending/opplasting/{{v.vedleggId}}" data-ng-bind-html="'ettersending.vedlegg.lastOpp' | cmstekst" data-ng-if="erIkkeLastetOpp(v)"></a>
                         </div>
                     </div>
                 </div>

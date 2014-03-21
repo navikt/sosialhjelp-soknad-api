@@ -289,6 +289,16 @@ public class SoknadService implements SendSoknadService, VedleggService {
 //        henvendelseConnector.startEttersending(wsSoknadsdata);
     }
 
+    @Override
+    public Long hentEttersendingForBehandlingskjedeId(String behandlingsId) {
+        Optional<WebSoknad> soknad = repository.hentEttersendingMedBehandlingskjedeId(behandlingsId);
+        if (soknad.isSome()) {
+            return soknad.get().getSoknadId();
+        } else {
+            return null;
+        }
+    }
+
     private WebSoknad lagFraWsSoknad(WSHentSoknadResponse wsSoknadsdata) {
         WebSoknad soknad = WebSoknad.startEttersending();
         String mainUid = randomUUID().toString();
