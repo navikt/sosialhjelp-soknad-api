@@ -12,7 +12,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStr
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.websoknad.domain.StartSoknad;
 import org.apache.commons.collections15.Predicate;
 import org.springframework.http.HttpStatus;
@@ -77,7 +76,7 @@ public class SoknadDataController {
     @SjekkTilgangTilSoknad
     public Map<String, String> hentSoknadIdMedBehandligsId(@PathVariable String behandlingsId) {
         Map<String, String> result = new HashMap<>();
-        String soknadId = soknadService.hentSoknadMedBehandlinsId(behandlingsId.replaceAll("%20", " ")).toString();
+        String soknadId = soknadService.hentSoknadMedBehandlingsId(behandlingsId.replaceAll("%20", " ")).toString();
         result.put("result", soknadId);
 
         return result;

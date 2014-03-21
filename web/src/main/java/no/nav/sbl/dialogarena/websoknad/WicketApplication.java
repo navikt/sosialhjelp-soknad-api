@@ -93,7 +93,7 @@ public class WicketApplication extends WebApplication {
         mountPage("start/${soknadType}", StartSoknadPage.class);
         mountPage("soknad/${brukerbehandlingId}", StartSoknadPage.class);
         mountPage("ettersending/${brukerbehandlingId}", EttersendingPage.class);
-        mountPage("slettet", SlettetPage.class);
+        mountPage("avbrutt", AvbruttPage.class);
 
         mountPage("internal/selftest", SelfTestPage.class);
         mountPage("soknadliste", SoknadListePage.class);
