@@ -12,13 +12,22 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStr
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.websoknad.domain.StartSoknad;
 import org.apache.commons.collections15.Predicate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.inject.Inject;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.IOException;
@@ -199,11 +208,10 @@ public class SoknadDataController {
     @RequestMapping(value = "/ettersending", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseBody()
     @ResponseStatus(HttpStatus.CREATED)
-    public Map<String,String> startEttersending(@RequestBody Map<String, String> requestMap) {
+    public Map<String,String> startEttersending(@RequestBody Map<String, String> requestMap, HttpServletResponse response) {
         Map<String, String> result = new HashMap<>();
-        System.out.println(requestMap.get("behandlingskjedeId"));
         WebSoknad soknad = soknadService.startEttersending(requestMap.get("behandlingskjedeId"));
-
+        response.addCookie(new Cookie("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknad.getSoknadId())));
         result.put("soknadId", soknad.getSoknadId().toString());
         return result;
     }

@@ -14,9 +14,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_UTFYLLING;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -47,7 +50,7 @@ public class WebSoknad implements Serializable {
     public static WebSoknad startEttersending() {
         return new WebSoknad()
                 .medStatus(SoknadInnsendingStatus.UNDER_ARBEID)
-                .medDelstegStatus(DelstegStatus.ETTERSENDING_OPPRETTET)
+                .medDelstegStatus(ETTERSENDING_OPPRETTET)
                 .medBehandlingId("temp")
                 .medOppretteDato(DateTime.now());
     }
@@ -336,5 +339,10 @@ public class WebSoknad implements Serializable {
             }
         }
         return null;
+    }
+
+    List<DelstegStatus> ETTERSENDING_STATUSER = Arrays.asList(ETTERSENDING_OPPRETTET, ETTERSENDING_UTFYLLING);
+    public boolean erEttersending() {
+        return ETTERSENDING_STATUSER.contains(delstegStatus);
     }
 }
