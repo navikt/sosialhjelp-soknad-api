@@ -239,8 +239,8 @@ public class SoknadServiceTest {
                 return null;
             }
         }).when(handler).writeTo(any(OutputStream.class));
-        Long id = soknadService.hentSoknadMedBehandlinsId("123");
-        soknadService.hentSoknadMedBehandlinsId("123");
+        Long id = soknadService.hentSoknadMedBehandlingsId("123");
+        soknadService.hentSoknadMedBehandlingsId("123");
         verify(soknadRepository, atMost(1)).populerFraStruktur(eq(soknadCheck));
         verify(vedleggRepository).lagreVedleggMedData(11L, 4L, vedleggCheck);
         assertThat(id, is(equalTo(11L)));

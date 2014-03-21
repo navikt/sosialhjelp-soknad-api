@@ -15,7 +15,7 @@ public interface SendSoknadService {
 
     String hentSoknadEier(Long soknadId);
 
-    Long hentSoknadMedBehandlinsId(String behandlingsId);
+    Long hentSoknadMedBehandlingsId(String behandlingsId);
 
     Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum);
 
