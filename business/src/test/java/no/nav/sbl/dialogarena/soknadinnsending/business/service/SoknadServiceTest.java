@@ -6,6 +6,7 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendin
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
@@ -39,6 +40,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +59,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -303,7 +306,8 @@ public class SoknadServiceTest {
     @Test
     public void skalHenteSoknad() {
         when(soknadRepository.hentSoknadMedData(1L)).thenReturn(new WebSoknad().medId(1L));
-        assertThat(soknadService.hentSoknad(1L), is(equalTo(new WebSoknad().medId(1L))));
+        when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(new ArrayList<Vedlegg>());
+        assertThat(soknadService.hentSoknad(1L), is(equalTo(new WebSoknad().medId(1L).medVedlegg(new ArrayList<Vedlegg>()))));
     }
 
     @Test
