@@ -210,9 +210,17 @@ public class SoknadDataController {
     @ResponseStatus(HttpStatus.CREATED)
     public Map<String,String> startEttersending(@RequestBody Map<String, String> requestMap, HttpServletResponse response) {
         Map<String, String> result = new HashMap<>();
-        WebSoknad soknad = soknadService.startEttersending(requestMap.get("behandlingskjedeId"));
-        response.addCookie(new Cookie("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknad.getSoknadId())));
-        result.put("soknadId", soknad.getSoknadId().toString());
+        Long soknadId;
+
+        soknadId = soknadService.hentEttersendingForBehandlingskjedeId(requestMap.get("behandlingskjedeId"));
+
+        if (soknadId == null) {
+            WebSoknad soknad = soknadService.startEttersending(requestMap.get("behandlingskjedeId"));
+            soknadId = soknad.getSoknadId();
+        }
+        
+        response.addCookie(new Cookie("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId)));
+        result.put("soknadId", soknadId.toString());
         return result;
     }
 }

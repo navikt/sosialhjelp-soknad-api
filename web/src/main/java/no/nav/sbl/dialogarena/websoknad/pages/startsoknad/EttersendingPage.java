@@ -20,12 +20,14 @@ public class EttersendingPage extends BasePage {
         add(new SoknadComponent("soknad"));
 
         StringValue brukerbehandlingId = getPageParameters().get("brukerbehandlingId");
-        if (!brukerbehandlingId.isEmpty()) {
+        if (brukerbehandlingId.isEmpty()) {
             throw new ApplicationException("Kan ikke starte ettersending uten behandlingsID for en søknad");
         }
 
         Long soknadId = soknadService.hentEttersendingForBehandlingskjedeId(brukerbehandlingId.toString());
         new CookieUtils().remove("XSRF-TOKEN");
-        new CookieUtils().save("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId));
+        if (soknadId != null) {
+            new CookieUtils().save("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId));
+        }
     }
 }
