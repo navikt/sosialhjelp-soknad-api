@@ -39,6 +39,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -245,6 +246,18 @@ public class SoknadServiceTest {
 
     @Test
     public void skalSendeSoknad() {
+        List<Vedlegg> paakrevdeVedlegg = new ArrayList<>();
+        paakrevdeVedlegg.add(new Vedlegg()
+                .medSkjemaNummer("N6")
+                .medFillagerReferanse("uidVedlegg1")
+                .medInnsendingsvalg(Vedlegg.Status.LastetOpp)
+                .medStorrelse(2L)
+                .medNavn("Test Annet vedlegg")
+                .medAntallSider(3));
+        paakrevdeVedlegg.add( new Vedlegg()
+                .medSkjemaNummer("L7")
+                .medInnsendingsvalg(Vedlegg.Status.SendesIkke));
+        when(soknadService.hentPaakrevdeVedlegg(1L)).thenReturn(paakrevdeVedlegg);
         when(soknadRepository.hentSoknadMedData(1L)).thenReturn(
                 new WebSoknad().medAktorId("123456")
                         .medBehandlingId("123")
@@ -294,22 +307,28 @@ public class SoknadServiceTest {
     @Test
     public void skalSendeEttersending() {
         String opprinneligBehandlingsId = "100000000TEST";
+        String ettersendingsBehandlingId = "1000ETTERSENDING";
+
+        WSHentSoknadResponse wsHentSoknadResponse = new WSHentSoknadResponse()
+                .withBehandlingsId(opprinneligBehandlingsId)
+                .withStatus(WSStatus.UNDER_ARBEID.toString())
+                .withAny(new XMLMetadataListe()
+                        .withMetadata(
+                                new XMLHovedskjema().withUuid("uidHovedskjema"),
+                                new XMLVedlegg().withUuid("uidVedlegg")));
 
         when(henvendelsesConnector.hentSisteBehandlingIBehandlingskjede(opprinneligBehandlingsId)).thenReturn(
-                new WSHentSoknadResponse()
-                        .withBehandlingsId("123")
-                        .withStatus(WSStatus.UNDER_ARBEID.toString())
-                        .withAny(new XMLMetadataListe()
-                                .withMetadata(
-                                        new XMLHovedskjema().withUuid("uidHovedskjema"),
-                                        new XMLVedlegg().withUuid("uidVedlegg")))
+                wsHentSoknadResponse
         );
+
+        when(henvendelsesConnector.startEttersending(wsHentSoknadResponse)).thenReturn(ettersendingsBehandlingId);
 
         when(soknadRepository.hentSoknadMedData(1L)).thenReturn(
                 new WebSoknad().medAktorId("123456")
-                        .medBehandlingId(opprinneligBehandlingsId)
+                        .medBehandlingId(ettersendingsBehandlingId)
                         .medUuid("uidHovedskjema")
                         .medskjemaNummer(DAGPENGER)
+                        .medFaktum(new Faktum().medKey("personalia"))
                         .medVedlegg(Arrays.asList(
                                 new Vedlegg()
                                         .medSkjemaNummer("N6")
@@ -324,14 +343,8 @@ public class SoknadServiceTest {
         );
 
         soknadService.sendEttersending(1L, opprinneligBehandlingsId);
-        verify(henvendelsesConnector).avsluttSoknad(eq(opprinneligBehandlingsId), refEq(new XMLHovedskjema()
-                .withUuid("uidHovedskjema")
-                .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
-                .withJournalforendeEnhet(RUTES_I_BRUT)
-                .withFilnavn(DAGPENGER)
-                .withFilstorrelse("3")
-                .withMimetype("application/pdf")
-                .withSkjemanummer(DAGPENGER)),
+        verify(henvendelsesConnector).avsluttSoknad(eq(ettersendingsBehandlingId), refEq(new XMLHovedskjema()
+                .withUuid("uidHovedskjema")),
                 refEq(
                         new XMLVedlegg()
                                 .withUuid("uidVedlegg1")
@@ -349,9 +362,6 @@ public class SoknadServiceTest {
                                 .withSkjemanummer("L7")
                                 .withFilnavn("L7")));
     }
-
-
-
 
     @Test
     public void skalSetteDelsteg() {
