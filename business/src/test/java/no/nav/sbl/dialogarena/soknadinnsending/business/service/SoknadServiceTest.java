@@ -6,6 +6,7 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendin
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
@@ -413,6 +414,42 @@ public class SoknadServiceTest {
         Vedlegg vedlegg = new Vedlegg().medVedleggId(1L);
         soknadService.lagreVedlegg(11L, 1L, vedlegg);
         verify(vedleggRepository).lagreVedlegg(11L, 1L, vedlegg);
+    }
+
+    @Test(expected=ApplicationException.class)
+    public void skalIkkeKunneLagreVedleggMedNegradertInnsendingsStatus() {
+        Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.LastetOpp);
+
+        opplastetVedlegg.setInnsendingsvalg(Vedlegg.Status.SendesIkke);
+        soknadService.lagreVedlegg(11L, 1L, opplastetVedlegg);
+        verify(vedleggRepository, never()).lagreVedlegg(11L, 1L, opplastetVedlegg);
+    }
+
+    @Test
+    public void skalKunneLagreVedleggMedSammeInnsendinsStatus() {
+        Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.LastetOpp);
+
+        opplastetVedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
+        soknadService.lagreVedlegg(11L, 1L, opplastetVedlegg);
+        verify(vedleggRepository).lagreVedlegg(11L, 1L, opplastetVedlegg);
+    }
+
+    @Test
+    public void skalKunneLagreVedleggMedOppgradertInnsendingsStatus() {
+        Vedlegg vedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.SendesIkke);
+
+        vedlegg.setInnsendingsvalg(Vedlegg.Status.SendesSenere);
+        soknadService.lagreVedlegg(11L, 1L, vedlegg);
+        verify(vedleggRepository).lagreVedlegg(11L, 1L, vedlegg);
+    }
+
+    @Test(expected=ApplicationException.class)
+    public void skalIkkeKunneLagreVedleggMedPrioritetMindreEllerLik1() {
+        Vedlegg vedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+
+        vedlegg.setInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+        soknadService.lagreVedlegg(11L, 1L, vedlegg);
+        verify(vedleggRepository, never()).lagreVedlegg(11L, 1L, vedlegg);
     }
 
     @Test

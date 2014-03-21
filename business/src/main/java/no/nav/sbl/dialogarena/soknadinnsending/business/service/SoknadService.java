@@ -627,8 +627,22 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg) {
+        if(nedgradertEllerForLavtInnsendingsValg(vedlegg)) {
+            throw new ApplicationException("Ugyldig innsendingsstatus, opprinnelig innsendingstatus kan aldri nedgraderes");
+        }
         vedleggRepository.lagreVedlegg(soknadId, vedleggId, vedlegg);
         repository.settDelstegstatus(soknadId, DelstegStatus.SKJEMA_VALIDERT);
+    }
+
+    private boolean nedgradertEllerForLavtInnsendingsValg(Vedlegg vedlegg) {
+        Vedlegg.Status nyttInnsendingsvalg = vedlegg.getInnsendingsvalg();
+        Vedlegg.Status opprinneligInnsendingsvalg = vedlegg.getOpprinneligInnsendingsvalg();
+        if(nyttInnsendingsvalg != null && opprinneligInnsendingsvalg != null){
+            if(nyttInnsendingsvalg.getPrioritet() <= 1 || (nyttInnsendingsvalg.getPrioritet() < opprinneligInnsendingsvalg.getPrioritet())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private SoknadStruktur hentStruktur(String skjema) {
