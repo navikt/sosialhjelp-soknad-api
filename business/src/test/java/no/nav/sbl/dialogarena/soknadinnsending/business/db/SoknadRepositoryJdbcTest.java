@@ -315,18 +315,6 @@ public class SoknadRepositoryJdbcTest {
     }
 
     @Test
-    public void skalKunneAvslutteEnSoknad() {
-        opprettOgPersisterSoknad();
-
-        WebSoknad ikkeAvsluttetSoknad = soknadRepository.hentSoknad(soknadId);
-        soknadRepository.avslutt(ikkeAvsluttetSoknad);
-
-        WebSoknad avsluttetSoknad = soknadRepository.hentSoknad(soknadId);
-        assertThat(avsluttetSoknad, notNullValue());
-        assertThat(avsluttetSoknad.getStatus(), is(SoknadInnsendingStatus.FERDIG));
-    }
-
-    @Test
     public void skalKunneAvbryteEnSoknad() {
         opprettOgPersisterSoknad();
 
@@ -397,6 +385,23 @@ public class SoknadRepositoryJdbcTest {
         assertThat(res, is(equalTo(soknad)));
     }
 
+    @Test
+    public void skalKunneHenteUtEttersendingMedBehandlingskjedeId() {
+        opprettOgPersisterEttersending();
+
+        Optional<WebSoknad> res = soknadRepository.hentEttersendingMedBehandlingskjedeId(behandlingsId);
+
+        assertThat(res.isSome(), is(true));
+        assertThat(res.get().getDelstegStatus(), is(DelstegStatus.ETTERSENDING_OPPRETTET));
+    }
+
+    @Test
+    public void skalFaaNullDersomManProverAHenteEttersendingMedBehandlingskjedeIdOgDetIkkeFinnesNoen() {
+        Optional<WebSoknad> res = soknadRepository.hentEttersendingMedBehandlingskjedeId(behandlingsId);
+
+        assertThat(res.isSome(), is(false));
+    }
+
     private List<Long> lagreXSoknader(int antall, int timerSidenLagring) {
         List<Long> soknadsIder = new ArrayList<>(antall);
         for (int i = 0; i < antall; i++) {
@@ -413,6 +418,17 @@ public class SoknadRepositoryJdbcTest {
 
     private Long opprettOgPersisterSoknad(String nyAktorId) {
         return opprettOgPersisterSoknad(randomUUID().toString(), nyAktorId);
+    }
+
+    private Long opprettOgPersisterEttersending() {
+        soknad = WebSoknad.startEttersending()
+                .medUuid(uuid)
+                .medAktorId(aktorId)
+                .medBehandlingskjedeId(behandlingsId)
+                .medskjemaNummer(skjemaNummer).medOppretteDato(now());
+        soknadId = soknadRepository.opprettSoknad(soknad);
+        soknad.setSoknadId(soknadId);
+        return soknadId;
     }
 
     private Long opprettOgPersisterSoknad(String behId, String aktor) {

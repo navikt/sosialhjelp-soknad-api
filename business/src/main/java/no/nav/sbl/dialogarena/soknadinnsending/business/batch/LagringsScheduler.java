@@ -56,7 +56,7 @@ public class LagringsScheduler {
     protected void lagreFilTilHenvendelseOgSlettILokalDb(Optional<WebSoknad> ws) throws InterruptedException {
         WebSoknad soknad = ws.get();
         try {
-            if (soknad.getStatus().equals(SoknadInnsendingStatus.UNDER_ARBEID)) {
+            if (soknad.getStatus().equals(SoknadInnsendingStatus.UNDER_ARBEID) && !soknad.erEttersending()) {
                 StringWriter xml = new StringWriter();
                 JAXB.marshal(soknad, xml);
                 fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(xml.toString().getBytes()));

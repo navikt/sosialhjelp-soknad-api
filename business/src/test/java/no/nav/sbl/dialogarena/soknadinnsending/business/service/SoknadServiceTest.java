@@ -413,4 +413,26 @@ public class SoknadServiceTest {
         verify(soknadRepository).avbryt(11L);
         verify(henvendelsesConnector).avbrytSoknad("123");
     }
+
+    @Test
+    public void skalHenteSoknadsIdForEttersendingTilBehandlingskjedeId() {
+        WebSoknad soknad = new WebSoknad();
+        soknad.setSoknadId(1L);
+        when(soknadRepository.hentEttersendingMedBehandlingskjedeId(anyString())).thenReturn(Optional.optional(soknad));
+
+        Long soknadId = soknadService.hentEttersendingForBehandlingskjedeId("123");
+
+        assertThat(soknadId, is(1L));
+    }
+
+    @Test
+    public void skalFaNullNarManProverAHenteEttersendingMedBehandlingskjedeIdSomIkkeHarNoenEttersending() {
+        WebSoknad soknad = new WebSoknad();
+        soknad.setSoknadId(1L);
+        when(soknadRepository.hentEttersendingMedBehandlingskjedeId(anyString())).thenReturn(Optional.<WebSoknad>none());
+
+        Long soknadId = soknadService.hentEttersendingForBehandlingskjedeId("123");
+
+        assertThat(soknadId, is(nullValue()));
+    }
 }

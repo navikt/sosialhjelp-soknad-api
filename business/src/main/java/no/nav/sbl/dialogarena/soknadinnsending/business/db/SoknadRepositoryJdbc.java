@@ -42,7 +42,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selec
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.FERDIG;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad.startSoknad;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -123,6 +122,12 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         for (Vedlegg vedlegg : soknad.getVedlegg()) {
             vedleggRepository.opprettVedlegg(vedlegg, null);
         }
+    }
+
+    @Override
+    public Optional<WebSoknad> hentEttersendingMedBehandlingskjedeId(String behandlingsId) {
+        String sql = "select * from soknad where behandlingskjedeid = ?";
+        return on(getJdbcTemplate().query(sql, new SoknadRowMapper(), behandlingsId)).head();
     }
 
     @Override
@@ -324,14 +329,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
             }
         }
         return fakta;
-    }
-
-    @Override
-    public void avslutt(WebSoknad soknad) {
-        logger.debug("Setter status til søknad med id {} til ferdig",
-                soknad.getSoknadId());
-        String status = FERDIG.name();
-        getJdbcTemplate().update("update soknad set status = ? where soknad_id = ?", status, soknad.getSoknadId());
     }
 
     @Override
