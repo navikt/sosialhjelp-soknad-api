@@ -1,0 +1,62 @@
+<div id="ettersending" data-ng-controller="EttersendingCtrl" data-sidetittel="ettersending.sidetittel">
+    <div class="rad">
+        <div class="begrensning">
+            <h1 class="diger" data-ng-bind-html="'ettersending.tittel' | cmstekst"></h1>
+        </div>
+    </div>
+    <div id="opplasting" class="soknad rad-belyst"
+         data-sidetittel="sidetittel.opplasting"
+         data-ng-controller="OpplastingVedleggCtrl"
+         data-fetch-spinner="64">
+        <div class="begrensning sak-halv">
+            <div class="panel uten-ramme">
+                <h1 class="stor-ikon-vedlegg-strek" data-scrolling-tittel><span data-ng-if="vedlegg.vedleggId">{{vedlegg.tittel}}</span><span
+                        data-ng-if="vedlegg.navn">: {{vedlegg.navn}}</span></h1>
+            </div>
+        </div>
+        <form id="opplastingform" method="POST" enctype="multipart/form-data" data-file-upload="options" data-ng-controller="OpplastingCtrl">
+            <div class="begrensning">
+                <div id="opplastingFeilmelding" class="opplastingfeil" data-ng-if="data.opplastingFeilet" >
+                    <h1 class="robust-strek-hvit">NB</h1>
+                    <span data-ng-bind="data.opplastingFeilet"></span>
+                </div>
+                <section>
+                    <ul class="opplastingliste clearfix sak-tredel" data-alle-filer-ferdig>
+                        <li class="panel-mini-belyst" data-ng-repeat="file in queue" data-ng-class="{'lasteropp': file.$processing()}" data-fil-feil>
+                            <a class="lukk" data-ng-if="!!file.vedleggId" data-ng-click="file.$destroy()"
+                               data-ng-controller="SlettOpplastingCtrl" href="javascript:void(0);"
+                               data-aria-label="Slett siden"></a>
+                            <a class="vis-vedlegg" href="#visVedlegg/{{file.vedleggId}}" data-ng-if="!!file.vedleggId">
+                                <img data-ng-src="../rest/soknad/{{file.soknadId}}/vedlegg/{{file.vedleggId}}/thumbnail" data-ferdig-lastet-bilde>
+                            </a>
+                        </li>
+                        <li class="leggtil">
+                            <input id="leggtil" type="file" name="files[]" class="vekk" multiple
+                                   accept="image/jpeg,image/png,application/pdf" data-fokus>
+                            <label for="leggtil" class="robust" data-ng-bind-html=" 'opplasting.leggtil' | cmstekst"></label>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+            <div class="rad uten-ramme">
+                <div class="begrensning sak-totredel">
+                    <ul>
+                        <li>
+                            <a href="javascript:void(0);" data-redirect="#/vedlegg" class="knapp-hoved"
+                               data-ng-click="leggVed()"
+                               data-fremdriftsindikator data-ng-bind-html=" 'opplasting.ferdig' | cmstekst"></a>
+
+                            <div class="form-linje" data-ng-class="{feil: skalViseFeilmelding === true}"
+                                 data-ng-if="skalViseFeilmelding === true">
+                                <span class="melding" data-ng-bind-html=" 'opplasting.feilmelding.manglerVedlegg' | cmstekst"></span>
+                            </div>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" data-ng-href="#/vedlegg" class="avbryt" data-ng-bind-html=" 'opplasting.avbryt' | cmstekst"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
