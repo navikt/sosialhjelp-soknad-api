@@ -242,8 +242,11 @@ public class SoknadService implements SendSoknadService, VedleggService {
         WSHentSoknadResponse wsSoknadsdata = henvendelseConnector.hentSoknad(behandlingsId);
         String soknadStatus = wsSoknadsdata.getStatus();
         if (!soknadStatus.equals(WSStatus.UNDER_ARBEID.value())) {
-            if (WSStatus.AVBRUTT_AV_BRUKER.value().equals(soknadStatus)) throw new SoknadAvbruttException("Soknaden er avbrutt", null, "soknad.avbrutt");
-            if (WSStatus.FERDIG.value().equals(soknadStatus)) throw new SoknadAvsluttetException("Soknaden er avsluttet", null, "soknad.avsluttet");
+            if (WSStatus.AVBRUTT_AV_BRUKER.value().equals(soknadStatus)) {
+                throw new SoknadAvbruttException("Soknaden er avbrutt", null, "soknad.avbrutt");
+            } else if (WSStatus.FERDIG.value().equals(soknadStatus)) {
+                throw new SoknadAvsluttetException("Soknaden er avsluttet", null, "soknad.avsluttet");
+            }
             throw new RuntimeException();
         }
         XMLMetadataListe vedleggListe = (XMLMetadataListe) wsSoknadsdata.getAny();
