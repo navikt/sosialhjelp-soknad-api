@@ -11,7 +11,7 @@ angular.module('sendsoknad')
         $('#hoykontrast a, .skriftstorrelse a').attr('href', 'javascript:void(0)');
 
         $rootScope.$on('$routeChangeSuccess', function(event, next, current) {
-            redirectDersomSoknadErFerdig();
+            redirectDersomSoknadErFerdig(next);
             if (next.$$route) {
                 /*
                  * Dersom vi kommer inn på informasjonsside utenfra (current sin redirectTo er informasjonsside), og krav for søknaden er oppfylt, skal vi redirecte til rett side.
@@ -37,8 +37,8 @@ angular.module('sendsoknad')
             return data && data.soknad;
         }
 
-        function redirectDersomSoknadErFerdig() {
-            if (harHentetData() && data.soknad.status === "FERDIG") {
+        function redirectDersomSoknadErFerdig(next) {
+            if (next.$$route.originalPath.indexOf("ettersending") < 0 && harHentetData() && data.soknad.status === "FERDIG") {
                 $location.path('/ferdigstilt');
             }
         }
