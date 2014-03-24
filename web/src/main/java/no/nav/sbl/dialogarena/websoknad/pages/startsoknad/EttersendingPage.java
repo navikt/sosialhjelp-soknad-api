@@ -25,8 +25,8 @@ public class EttersendingPage extends BasePage {
         }
 
         Long soknadId = soknadService.hentEttersendingForBehandlingskjedeId(brukerbehandlingId.toString());
-        new CookieUtils().remove("XSRF-TOKEN");
         if (soknadId != null) {
+            new CookieUtils().remove("XSRF-TOKEN");
             new CookieUtils().save("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId));
         }
     }
