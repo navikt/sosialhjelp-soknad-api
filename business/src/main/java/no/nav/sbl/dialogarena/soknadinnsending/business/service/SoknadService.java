@@ -323,7 +323,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 xmlHovedskjema,
                 Transformers.convertToXmlVedleggListe(vedleggForventnings));
 
-        repository.avslutt(soknad);
+        repository.slettSoknad(soknad.getSoknadId());
     }
 
 
