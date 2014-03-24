@@ -1,0 +1,223 @@
+angular.module('nav.feilmeldinger', [])
+    // settes på inputfeltene som skal gi feilmeldinger
+    .directive('errorMessages', [function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, elem, attrs, ctrl) {
+                // attrs.errorMessages can be:
+                //    1) "must be filled out."
+                //    2) "'must be filled out.'"
+                //    3) "{ required: 'must be filled out.' }"
+                try {
+                    ctrl.$errorMessages = scope.$eval(attrs.errorMessages);
+                } catch (e) {
+                    ctrl.$errorMessages = attrs.errorMessages;
+                }
+                ctrl.$elementErrorAttr = attrs.errorMessages;
+            }
+        };
+    }])
+
+    // For å bruke, legg til <div form-errors></div>
+    .directive('formErrors', ['cms', '$timeout', function (cms, $timeout) {
+        return {
+            // only works if embedded in a form or an ngForm (that's in a form).
+            // It does use its closest parent that is a form OR ngForm
+            require: '^form',
+            templateUrl: '../js/dagpenger/directives/feilmeldinger/feilmeldingerTemplate.html',
+            replace: true,
+            transclude: true,
+            restrict: 'A',
+            link: function postLink(scope, elem, attrs, ctrl) {
+                var eventString = 'RUN_VALIDATION' + ctrl.$name;
+
+                scope.feilmeldinger = [];
+                scope.runValidation = function (skalScrolle) {
+                    scope.feilmeldinger = [];
+                    var skalViseFlereFeilmeldinger = true;
+                    var skalViseFlereBarneFeilmeldinger = true;
+                    angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
+                        if (skalViseFlereFeilmeldinger) {
+                            skalViseFlereFeilmeldinger = leggTilFeilmeldingerVedValidering(verdi, feilNokkel);
+                        }
+                    });
+
+                    if (scope.feilmeldinger.length > 0 && skalScrolle) {
+                        $timeout(function () {
+                            scrollToElement(elem, 100);
+                        }, 1);
+                    }
+                    scope.$broadcast(eventString);
+                    return ctrl.$valid;
+                };
+
+                scope.$watch(function () {
+                    return ctrl.$error;
+                }, function () {
+                    scope.fjernFeilmeldingerSomErFikset();
+                }, true);
+
+                scope.fjernFeilmeldingerSomErFikset = function () {
+                    var fortsattFeilListe = [];
+
+                    angular.forEach(ctrl.$error, function (verdi, feilNokkel) {
+                        fortsattFeilListe = fortsattFeilListe.concat(leggTilFeilSomFortsattSkalVises(verdi, feilNokkel));
+                    });
+                    scope.feilmeldinger = fortsattFeilListe;
+                };
+
+                scope.skalViseFeilmeldinger = function () {
+                    return scope.feilmeldinger.length > 0;
+                };
+
+                scope.scrollTilElementMedFeil = function (feilmelding) {
+                    if (scope.erKlikkbarFeil(feilmelding)) {
+                        var formLinje = feilmelding.elem.closest('.form-linje');
+                        scrollToElement(formLinje, 250);
+                        if(formLinje.hasClass("andelsfordeling-container")) {
+                            formLinje.find('.form-linje').first().addClass('aktiv-feilmelding');
+                        } else {
+                            formLinje.addClass('aktiv-feilmelding');
+                        }
+
+                        if (feilmelding.elem.is('[type=hidden]')) {
+                            if (feilmelding.elem.hasClass('tekstfelt')) {
+                                scope.giFokus(formLinje.find('input[type=text]').filter(':visible').first());
+                            } else if(feilmelding.elem.hasClass('under-atten-dato')) {
+                                scope.giFokus(formLinje.find('input[type=text]').first());
+                            } else if(feilmelding.elem.hasClass('hidden-vedlegg')) {
+                                scope.giFokus(formLinje.find('a.knapp-link').first());
+                            } else if(feilmelding.elem.hasClass('legg-til-arbeidsforhold')) {
+                                scope.giFokus(formLinje.find('button'));
+                            }
+                            else {
+                                scope.giFokus(formLinje.find('input[type=checkbox]').first());
+                            }
+                        } else {
+                            scope.giFokus(feilmelding.elem);
+                        }
+                    }
+                };
+
+                /*
+                 Ved ng-repeat så må vi sjekke hvilket element som inneholder feil først. Sjekker at lengden er større
+                 enn 1 for at checkbokser som bruker hidden-felt og ikke har klassen ng-invalid får riktig fokus
+                 */
+                scope.giFokus = function (element) {
+                    $timeout(function() {
+                        if (typeof element === 'object' && element.length > 1) {
+                            for (var i = 0; i < element.length; i++) {
+                                if ($(element[i]).hasClass('ng-invalid')) {
+                                    element[i].focus();
+                                    return;
+                                }
+                            }
+                        }
+                        else {
+                            element.focus();
+                        }
+                    });
+
+                };
+
+                scope.erKlikkbarFeil = function (feilmelding) {
+                    return feilmelding.elem && feilmelding.elem.length > 0;
+                };
+
+
+                /*
+                 * Dersom vi har en egendefinert feil med der $skalVisesAlene er satt til true så skal kun denne feilmeldingen vises. I det tilfellet fjernes alle andre feilmeldinger
+                 * og vi skal ikke loope mer. Return false dersom vi skal stoppe loopen, ellers true.
+                 */
+                function leggTilFeilmeldingerVedValidering(verdi, feilNokkel) {
+                    var skalViseFlereFeilmeldinger = true;
+                    angular.forEach(verdi, function (feil) {
+                        var feilmelding = finnFeilmelding(feil, feilNokkel);
+
+                        if (feil && feil.$skalVisesAlene === true && skalViseFlereFeilmeldinger) {
+                            scope.feilmeldinger = [feilmelding];
+                            skalViseFlereFeilmeldinger = false;
+                        } else if (skalViseFlereFeilmeldinger && feil) {
+                            leggTilFeilmeldingHvisIkkeAlleredeLagtTil(scope.feilmeldinger, feilmelding);
+                        }
+                    });
+                    return skalViseFlereFeilmeldinger;
+                }
+
+                function leggTilFeilSomFortsattSkalVises(verdi, feilNokkel) {
+                    var fortsattFeilListe = [];
+                    angular.forEach(verdi, function (feil) {
+
+                        var feilmelding = finnFeilmelding(feil, feilNokkel);
+                        if (scope.feilmeldinger.indexByValue(feilmelding.feil) > -1 && feil) {
+                            leggTilFeilmeldingHvisIkkeAlleredeLagtTil(fortsattFeilListe, feilmelding);
+                        }
+                    });
+                    return fortsattFeilListe;
+                }
+
+                function leggTilFeilmeldingHvisIkkeAlleredeLagtTil(feilListe, feilmelding) {
+                    if (feilListe.indexByValue(feilmelding.feil) < 0) {
+                        feilListe.push(feilmelding);
+                    }
+                }
+
+                function finnFeilmelding(feil, feilNokkel) {
+                    var feilmeldingNokkel = finnFeilmeldingsNokkel(feil, feilNokkel);
+                    var feilmelding = cms.tekster[feilmeldingNokkel];
+                    if (feilmelding === undefined) {
+                        feilmelding = feilmeldingNokkel;
+                    }
+
+                    return {feil: feilmelding, elem: finnTilhorendeElement(feil)};
+                }
+
+                function finnFeilmeldingsNokkel(feil, feilNokkel) {
+                    if (feil && feil.$errorMessages !== undefined) {
+                        if (typeof feil.$errorMessages === 'object') {
+                            return feil.$errorMessages[feilNokkel];
+                        } else if (typeof feil.$errorMessages === 'string') {
+
+                            return feil.$errorMessages;
+                        }
+                    }
+                    return feilNokkel;
+                }
+
+                function finnTilhorendeElement(feil) {
+                    if (feil && feil.$linkId) {
+                        return elem.closest('[data-ng-form]').find('[name=' + feil.$linkId + ']');
+                    }
+                    if (feil && feil.$elementErrorAttr) {
+                        return elem.closest('[data-ng-form]').find("[data-error-messages=\"" + feil.$elementErrorAttr + "\"], [error-messages=\"" + feil.$elementErrorAttr + "\"]");
+                    }
+                }
+            }
+        };
+    }
+    ])
+    .filter('fiksRekkefolge', [function () {
+        return function (feilmeldinger) {
+            var sortertFeilmeldingerArray = [];
+
+            for (var i = 1; i < feilmeldinger.length - 1; i++) {
+//              skal bruke tabIndex når det er på plass
+            }
+            return feilmeldinger;
+        };
+    }])
+    .directive('aktivFeilmelding', ['$timeout', function ($timeout) {
+        return {
+            link: function (scope, element) {
+                $(element).bind('blur', function () {
+                    var formLinje = $(element).closest('.form-linje');
+                    if(formLinje.hasClass('aktiv-feilmelding')) {
+                        $timeout(function() {
+                            formLinje.removeClass('aktiv-feilmelding');
+                        }, 100);
+                    }
+                });
+            }
+        };
+    }]);
+

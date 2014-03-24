@@ -334,7 +334,7 @@ describe('navFaktumMedDatoPropertyParentFaktum', function () {
                 key: 'enkey',
                 faktumId: 111
             }
-        }
+        };
 
     }));
 
