@@ -1,5 +1,5 @@
 angular.module('nav.ettersending', [])
-    .controller('EttersendingCtrl', ['$scope', '$location', 'data', function ($scope, $location, data) {
+    .controller('EttersendingCtrl', ['$scope', '$location', 'data', 'ettersendingService', function ($scope, $location, data, ettersendingService) {
         var innsendtDato = new Date(parseInt(data.finnFaktum('soknadInnsendingsDato').value));
         var fristDato = new Date();
         fristDato.setDate(innsendtDato.getDate() + 40);
@@ -34,12 +34,12 @@ angular.module('nav.ettersending', [])
         
         $scope.sendEttersending = function() {
 
-            var soknadId = window.location.href.split("/").last();
             var behandlingsId = getBehandlingIdFromUrl();
-
-            $http.post('/sendsoknad/rest/soknad/sendettersending', {behandlingsId: behandlingsId, soknadId: soknadId}).then(function(result) {
-                console.log("done");
-            });
+            ettersendingService.send({behandlingsId: behandlingsId},
+                function(result) {
+                    console.log("done");
+                }
+            );
         }
     }])
     .controller('EttersendingOpplastingCtrl', ['$scope', 'data', function($scope, data) {

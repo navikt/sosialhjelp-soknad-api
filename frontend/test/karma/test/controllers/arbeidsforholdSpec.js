@@ -1,7 +1,7 @@
 describe('ArbeidsforholdCtrl', function () {
 
     beforeEach(
-        module('app.services', 'nav.arbeidsforhold', function ($provide) {
+        module('sendsoknad.services', 'nav.arbeidsforhold', function ($provide) {
             $provide.value("data", []);
         }));
     var scope, $httpBackend, ctrl, routeParams;

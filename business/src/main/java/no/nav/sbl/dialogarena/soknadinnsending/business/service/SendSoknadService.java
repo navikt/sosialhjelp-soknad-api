@@ -38,8 +38,10 @@ public interface SendSoknadService {
 
     SoknadStruktur hentSoknadStruktur(Long soknadId);
 
-    WebSoknad startEttersending(String behandingId);
+    Long startEttersending(String behandingId);
     void sendEttersending(Long soknadId, String behandingsId);
 
-    Long hentEttersendingForBehandlingskjedeId(String s);
+    WebSoknad hentEttersendingForBehandlingskjedeId(String behandlingskjedeId);
+
+    WebSoknad hentEttersendingMedData(String behandlingskjedeId);
 }

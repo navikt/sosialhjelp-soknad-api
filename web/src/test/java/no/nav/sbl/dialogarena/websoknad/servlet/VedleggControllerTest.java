@@ -93,11 +93,11 @@ public class VedleggControllerTest {
     public void skalHenteUnderBehandling() throws Exception {
 
         when(vedleggService.hentVedlegg(11L, 12L, false)).thenReturn(new Vedlegg().medVedleggId(11L).medFaktumId(123L).medSkjemaNummer("skjema"));
-        when(vedleggService.hentVedleggUnderBehandling(11L, 123L, "skjema")).thenReturn(Arrays.asList(new Vedlegg().medVedleggId(1234L)));
+        when(vedleggService.hentVedleggUnderBehandling(11L, "skjema")).thenReturn(Arrays.asList(new Vedlegg().medVedleggId(1234L)));
         mockMvc.perform(get("/soknad/{soknadId}/vedlegg/{vedleggId}/underBehandling", 11, 12)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("[0].vedleggId").value(1234));
-        verify(vedleggService).hentVedleggUnderBehandling(11L, 123L, "skjema");
+        verify(vedleggService).hentVedleggUnderBehandling(11L, "skjema");
     }
 
 

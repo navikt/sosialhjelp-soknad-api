@@ -64,7 +64,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.UUID;
 
 import static java.lang.String.format;
 import static java.util.UUID.randomUUID;
@@ -133,11 +132,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public WebSoknad hentSoknad(long soknadId) {
-        // TODO: Burde se på uthenting av vedlegg med navn
-        WebSoknad soknad = repository.hentSoknadMedData(soknadId);
-        List<Vedlegg> vedlegg = hentPaakrevdeVedlegg(soknadId);
-        soknad.setVedlegg(vedlegg);
-        return soknad;
+        return repository.hentSoknadMedData(soknadId);
     }
 
     @Override
@@ -286,20 +281,28 @@ public class SoknadService implements SendSoknadService, VedleggService {
     }
 
     @Override
-    public WebSoknad startEttersending(String behandingsId) {
+    public Long startEttersending(String behandingsId) {
         WSHentSoknadResponse wsSoknadsdata = henvendelseConnector.hentSisteBehandlingIBehandlingskjede(behandingsId);
-        return lagEttersendingFraWsSoknad(wsSoknadsdata);
+        return lagEttersendingFraWsSoknad(wsSoknadsdata).getSoknadId();
 //        henvendelseConnector.startEttersending(wsSoknadsdata);
     }
 
     @Override
-    public Long hentEttersendingForBehandlingskjedeId(String behandlingsId) {
-        Optional<WebSoknad> soknad = repository.hentEttersendingMedBehandlingskjedeId(behandlingsId);
-        if (soknad.isSome()) {
-            return soknad.get().getSoknadId();
+    public WebSoknad hentEttersendingForBehandlingskjedeId(String behandlingsId) {
+        Optional<WebSoknad> soknadOptional = repository.hentEttersendingMedBehandlingskjedeId(behandlingsId);
+        if (soknadOptional.isSome()) {
+            return soknadOptional.get();
         } else {
             return null;
         }
+    }
+
+    @Override
+    public WebSoknad hentEttersendingMedData(String behandlingskjedeId) {
+        WebSoknad soknad = repository.hentEttersendingMedBehandlingskjedeIdMedData(behandlingskjedeId);
+        List<Vedlegg> vedlegg = hentPaakrevdeVedlegg(soknad.getSoknadId());
+        soknad.setVedlegg(vedlegg);
+        return soknad;
     }
 
 
@@ -453,9 +456,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
                         .medNavn(vedlegg.getNavn())
                         .medStorrelse((long) bytes.length)
                         .medAntallSider(1)
-                        .medFillagerReferanse(UUID.randomUUID().toString())
                         .medData(null)
                         .medOpprettetDato(vedlegg.getOpprettetDato())
+                        .medFillagerReferanse(vedlegg.getFillagerReferanse())
                         .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
 
                 resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
@@ -479,7 +482,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
                             .medNavn(vedlegg.getNavn())
                             .medStorrelse((long) baos.size())
                             .medAntallSider(1)
-                            .medFillagerReferanse(UUID.randomUUID().toString())
                             .medData(null)
                             .medOpprettetDato(vedlegg.getOpprettetDato())
                             .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
@@ -502,9 +504,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public List<Vedlegg> hentVedleggUnderBehandling(Long soknadId,
-                                                    Long faktumId, String skjemaNummer) {
-        return vedleggRepository.hentVedleggUnderBehandling(soknadId, faktumId,
-                skjemaNummer);
+                                                    String fillagerReferanse) {
+        return vedleggRepository.hentVedleggUnderBehandling(soknadId, fillagerReferanse);
     }
 
     @Override
@@ -537,7 +538,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 .hentVedlegg(soknadId, vedleggId);
         List<Vedlegg> vedleggUnderBehandling = vedleggRepository
                 .hentVedleggUnderBehandling(soknadId,
-                        forventning.getFaktumId(),
                         forventning.getSkjemaNummer());
         List<byte[]> bytes = new ArrayList<>();
         for (Vedlegg vedlegg : vedleggUnderBehandling) {

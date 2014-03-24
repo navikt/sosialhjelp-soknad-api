@@ -167,7 +167,7 @@ public class SoknadServiceTest {
         byte[] bytes = getBytesFromFile("/pdfs/minimal.pdf");
         Vedlegg vedleggSjekk = new Vedlegg().medSkjemaNummer("L6").medSoknadId(1L).medAntallSider(1).medVedleggId(2L).medFillagerReferanse(vedlegg.getFillagerReferanse()).medData(bytes);
         when(vedleggRepository.hentVedlegg(1L, 2L)).thenReturn(vedlegg);
-        when(vedleggRepository.hentVedleggUnderBehandling(1L, null, "L6")).thenReturn(Arrays.asList(new Vedlegg().medVedleggId(10L)));
+        when(vedleggRepository.hentVedleggUnderBehandling(1L, vedlegg.getFillagerReferanse())).thenReturn(Arrays.asList(new Vedlegg().medVedleggId(10L)));
         when(vedleggRepository.hentVedleggData(1L, 10L)).thenReturn(bytes);
         when(soknadRepository.hentSoknad(1L)).thenReturn(new WebSoknad().medBehandlingId("123").medAktorId("234"));
         soknadService.genererVedleggFaktum(1L, 2L);
@@ -517,9 +517,9 @@ public class SoknadServiceTest {
         soknad.setSoknadId(1L);
         when(soknadRepository.hentEttersendingMedBehandlingskjedeId(anyString())).thenReturn(Optional.optional(soknad));
 
-        Long soknadId = soknadService.hentEttersendingForBehandlingskjedeId("123");
+        WebSoknad webSoknad = soknadService.hentEttersendingForBehandlingskjedeId("123");
 
-        assertThat(soknadId, is(1L));
+        assertThat(webSoknad.getSoknadId(), is(1L));
     }
 
     @Test
@@ -528,8 +528,8 @@ public class SoknadServiceTest {
         soknad.setSoknadId(1L);
         when(soknadRepository.hentEttersendingMedBehandlingskjedeId(anyString())).thenReturn(Optional.<WebSoknad>none());
 
-        Long soknadId = soknadService.hentEttersendingForBehandlingskjedeId("123");
+        WebSoknad webSoknad = soknadService.hentEttersendingForBehandlingskjedeId("123");
 
-        assertThat(soknadId, is(nullValue()));
+        assertThat(webSoknad, is(nullValue()));
     }
 }

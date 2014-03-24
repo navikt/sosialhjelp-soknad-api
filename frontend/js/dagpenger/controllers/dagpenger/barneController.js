@@ -1,4 +1,4 @@
-angular.module('nav.barn', ['app.services'])
+angular.module('nav.barn', [])
 
     .controller('BarneCtrl', ['$scope', 'Faktum', 'data', '$cookieStore', '$location', '$resource', 'cms', function ($scope, Faktum, data, $cookieStore, $location, $resource, cms) {
         var soknadId = data.soknad.soknadId;
