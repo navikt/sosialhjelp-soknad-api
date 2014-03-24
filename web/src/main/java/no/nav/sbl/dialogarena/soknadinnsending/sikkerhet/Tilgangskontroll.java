@@ -39,7 +39,7 @@ public class Tilgangskontroll {
     }
 
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
-        verifiserBrukerHarTilgangTilSoknad(soknadService.hentSoknadMedBehandlinsId(behandlingsId));
+        verifiserBrukerHarTilgangTilSoknad(soknadService.hentSoknadMedBehandlingsId(behandlingsId));
     }
 
     public void verifiserBrukerHarTilgangTilSoknad(Long soknadId) {

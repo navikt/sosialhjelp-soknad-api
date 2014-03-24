@@ -15,7 +15,7 @@ public interface SendSoknadService {
 
     String hentSoknadEier(Long soknadId);
 
-    Long hentSoknadMedBehandlinsId(String behandlingsId);
+    Long hentSoknadMedBehandlingsId(String behandlingsId);
 
     Faktum lagreSoknadsFelt(Long soknadId, Faktum faktum);
 
@@ -31,6 +31,7 @@ public interface SendSoknadService {
 
     void slettBrukerFaktum(Long soknadId, Long faktumId);
 
+
     WebSoknad hentSoknadMetaData(long soknadId);
 
     void settDelsteg(Long soknadId, DelstegStatus delstegStatus);
@@ -39,4 +40,6 @@ public interface SendSoknadService {
 
     WebSoknad startEttersending(String behandingId);
     void sendEttersending(Long soknadId, String behandingsId);
+
+    Long hentEttersendingForBehandlingskjedeId(String s);
 }

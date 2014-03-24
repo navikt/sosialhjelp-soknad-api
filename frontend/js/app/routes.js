@@ -190,6 +190,14 @@ angular.module('app.routes', ['ngRoute'])
                     }]
                 }
             })
+            .when('/ettersending/opplasting/:vedleggId', {
+                templateUrl: '../views/templates/ettersending/opplasting.html',
+                resolve: {
+                    notUsedButRequiredProperty: ['HentEttersendingsService', function (HentEttersendingsService) {
+                        return HentEttersendingsService;
+                    }]
+                }
+            })
 
             .when('/',
                 {redirectTo: '/informasjonsside'}
