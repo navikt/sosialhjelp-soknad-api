@@ -10,7 +10,7 @@
         event = $.Event("click");
 
         beforeEach(module('app.controllers', 'nav.feilmeldinger'));
-        beforeEach(module('ngCookies', 'app.services'));
+        beforeEach(module('ngCookies', 'sendsoknad.services'));
 
         beforeEach(module(function ($provide) {
             var fakta = [

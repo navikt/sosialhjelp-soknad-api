@@ -5,7 +5,7 @@
         var scope, ctrl, form, event;
         event = $.Event("click");
 
-        beforeEach(module('ngCookies', 'app.services'));
+        beforeEach(module('ngCookies', 'sendsoknad.services'));
         beforeEach(module('app.controllers', 'nav.feilmeldinger'));
 
         beforeEach(module(function ($provide) {

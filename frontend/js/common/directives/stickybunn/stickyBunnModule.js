@@ -5,7 +5,7 @@ angular.module('nav.stickybunn', [])
             scope: {
                 navtilbakelenke: '@'
             },
-            templateUrl: '../js/dagpenger/directives/stickybunn/stickyBunnTemplate.html',
+            templateUrl: '../js/common/directives/stickybunn/stickyBunnTemplate.html',
 			link       : function (scope, element) {
 				scope.soknadId = data.soknad.soknadId;
                 scope.lenke = {

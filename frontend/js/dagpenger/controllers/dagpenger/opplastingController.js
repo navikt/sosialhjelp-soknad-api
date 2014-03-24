@@ -1,10 +1,10 @@
 angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 
-    .controller('OpplastingVedleggCtrl', ['$scope', '$http', '$location', '$routeParams', 'vedleggService', 'soknadService', 'data', function ($scope, $http, $location, $routeParams, vedleggService, soknadService, data) {
+    .controller('OpplastingVedleggCtrl', ['$scope', '$http', '$location', '$routeParams', 'vedleggService', 'data', function ($scope, $http, $location, $routeParams, vedleggService, data) {
         $scope.vedlegg = vedleggService.get({soknadId: data.soknad.soknadId, vedleggId: $routeParams.vedleggId});
         $scope.soknad = data.soknad;
     }])
-    .controller('OpplastingCtrl', ['$scope', '$http', '$location', '$routeParams', '$cookies', 'vedleggService', 'soknadService', 'data', 'cms', function ($scope, $http, $location, $routeParams, $cookies, vedleggService, soknadService, data, cms) {
+    .controller('OpplastingCtrl', ['$scope', '$http', '$location', '$routeParams', '$cookies', 'vedleggService', 'data', 'cms', function ($scope, $http, $location, $routeParams, $cookies, vedleggService, data, cms) {
 
         $scope.fremdriftsindikator = {
             laster: false
@@ -99,9 +99,11 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
         };
 
         $scope.oppdaterSoknad = function () {
-            soknadService.get({soknadId: data.soknad.soknadId},
+            vedleggService.query({soknadId: data.soknad.soknadId},
                 function (result) { // Success
-                    data.soknad = result;
+                    console.log(data.soknad);
+                    data.soknad.vedlegg = result;
+                    console.log(data.soknad);
                     $scope.fremdriftsindikator.laster = false;
                     $location.url('/vedlegg?scrollTo=vedlegg_' + $scope.data.vedleggId).replace();
                 }

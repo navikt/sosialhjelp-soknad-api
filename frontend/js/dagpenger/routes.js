@@ -1,4 +1,4 @@
-angular.module('app.routes', ['ngRoute'])
+angular.module('sendsoknad.routes', ['ngRoute'])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider
