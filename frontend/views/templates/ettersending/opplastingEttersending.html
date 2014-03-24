@@ -1,0 +1,45 @@
+<div id="ettersending-opplasting" data-sidetittel="ettersending.sidetittel" data-ng-controller="EttersendingOpplastingCtrl">
+    <div class="rad uten-ramme">
+        <div class="begrensning">
+            <h1 class="diger" data-ng-bind-html="'ettersending.tittel' | cmstekst"></h1>
+        </div>
+    </div>
+    <div id="opplasting" class="soknad rad-belyst"
+         data-sidetittel="sidetittel.opplasting"
+         data-ng-controller="OpplastingVedleggCtrl"
+         data-fetch-spinner="64">
+
+        <div data-ng-include="'../views/templates/vedlegg/opplasting-navn.html'"></div>
+
+        <form id="opplastingform" method="POST" enctype="multipart/form-data" data-file-upload="options" data-ng-controller="OpplastingCtrl">
+            <div class="begrensning">
+                <div data-ng-include="'../views/templates/vedlegg/opplasting-feilmelding.html'"></div>
+                <section>
+                    <ul class="opplastingliste clearfix sak-tredel" data-alle-filer-ferdig>
+                        <li class="panel-mini-belyst" data-ng-repeat="file in queue" data-ng-class="{'lasteropp': file.$processing()}" data-fil-feil>
+                            <a class="lukk" data-ng-if="!!file.vedleggId" data-ng-click="file.$destroy()"
+                               data-ng-controller="SlettOpplastingCtrl" href="javascript:void(0);"
+                               data-aria-label="Slett siden"></a>
+                            <a class="vis-vedlegg" href="#visVedlegg/{{file.vedleggId}}" data-ng-if="!!file.vedleggId">
+                                <img data-ng-src="../rest/soknad/{{file.soknadId}}/vedlegg/{{file.vedleggId}}/thumbnail" data-ferdig-lastet-bilde>
+                            </a>
+                        </li>
+                        <li class="leggtil">
+                            <input id="leggtil" type="file" name="files[]" class="vekk" multiple
+                                   accept="image/jpeg,image/png,application/pdf" data-fokus>
+                            <label for="leggtil" class="robust" data-ng-bind-html=" 'opplasting.leggtil' | cmstekst"></label>
+                        </li>
+                    </ul>
+                </section>
+                <div class="send-inn sak-totredel">
+                    <ul>
+                        <div data-ng-include="'../views/templates/vedlegg/opplasting-submit.html'"></div>
+                        <li>
+                            <a href="javascript:void(0);" data-ng-href="#/ettersending/{{ soknadId }}" class="avbryt" data-ng-bind-html=" 'opplasting.avbryt' | cmstekst"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

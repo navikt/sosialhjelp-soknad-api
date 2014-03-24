@@ -1,0 +1,17 @@
+<section>
+    <ul class="opplastingliste clearfix sak-tredel" data-alle-filer-ferdig>
+        <li class="panel-mini-belyst" data-ng-repeat="file in queue" data-ng-class="{'lasteropp': file.$processing()}" data-fil-feil>
+            <a class="lukk" data-ng-if="!!file.vedleggId" data-ng-click="file.$destroy()"
+               data-ng-controller="SlettOpplastingCtrl" href="javascript:void(0);"
+               data-aria-label="Slett siden"></a>
+            <a class="vis-vedlegg" href="#visVedlegg/{{file.vedleggId}}" data-ng-if="!!file.vedleggId">
+                <img data-ng-src="../rest/soknad/{{file.soknadId}}/vedlegg/{{file.vedleggId}}/thumbnail" data-ferdig-lastet-bilde>
+            </a>
+        </li>
+        <li class="leggtil">
+            <input id="leggtil" type="file" name="files[]" class="vekk" multiple
+                   accept="image/jpeg,image/png,application/pdf" data-fokus>
+            <label for="leggtil" class="robust" data-ng-bind-html=" 'opplasting.leggtil' | cmstekst"></label>
+        </li>
+    </ul>
+</section>
