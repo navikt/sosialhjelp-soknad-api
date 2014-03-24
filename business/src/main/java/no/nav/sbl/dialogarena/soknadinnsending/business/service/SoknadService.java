@@ -288,7 +288,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public WebSoknad startEttersending(String behandingsId) {
         WSHentSoknadResponse wsSoknadsdata = henvendelseConnector.hentSisteBehandlingIBehandlingskjede(behandingsId);
-        return lagFraWsSoknad(wsSoknadsdata);
+        return lagEttersendingFraWsSoknad(wsSoknadsdata);
 //        henvendelseConnector.startEttersending(wsSoknadsdata);
     }
 
@@ -302,12 +302,37 @@ public class SoknadService implements SendSoknadService, VedleggService {
         }
     }
 
-    private WebSoknad lagFraWsSoknad(WSHentSoknadResponse wsSoknadsdata) {
+
+    @Override
+    public void sendEttersending(Long soknadId, String behandingsId) {
+        WSHentSoknadResponse opprinneligInnsending = henvendelseConnector.hentSisteBehandlingIBehandlingskjede(behandingsId);
+
+        WebSoknad soknad = repository.hentSoknadMedData(soknadId);
+        List<Vedlegg> vedleggForventnings = soknad.getVedlegg();
+
+        XMLMetadataListe xmlMetaData = (XMLMetadataListe) opprinneligInnsending.getAny();
+        Optional<XMLMetadata> hovedskjema = on(xmlMetaData.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
+        if (!hovedskjema.isSome()) {
+            throw new ApplicationException("Kunne ikke hente opp hovedskjema for søknad");
+        }
+        XMLHovedskjema xmlHovedskjema = (XMLHovedskjema) hovedskjema.get();
+
+        String ettersendingsBehandlingId = henvendelseConnector.startEttersending(opprinneligInnsending);
+
+        henvendelseConnector.avsluttSoknad(ettersendingsBehandlingId,
+                xmlHovedskjema,
+                Transformers.convertToXmlVedleggListe(vedleggForventnings));
+
+        repository.slettSoknad(soknad.getSoknadId());
+    }
+
+
+    private WebSoknad lagEttersendingFraWsSoknad(WSHentSoknadResponse wsSoknadsdata) {
         WebSoknad soknad = WebSoknad.startEttersending();
         String mainUid = randomUUID().toString();
-        XMLMetadataListe vedleggListe = (XMLMetadataListe) wsSoknadsdata.getAny();
-        Optional<XMLMetadata> hovedskjema = on(vedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
+        XMLMetadataListe xmlVedleggListe = (XMLMetadataListe) wsSoknadsdata.getAny();
 
+        Optional<XMLMetadata> hovedskjema = on(xmlVedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
         if (!hovedskjema.isSome()) {
             throw new ApplicationException("Kunne ikke hente opp hovedskjema for søknad");
         }
@@ -330,33 +355,35 @@ public class SoknadService implements SendSoknadService, VedleggService {
         lagreSystemFaktum(soknadId, soknadInnsendingsDato, "");
         soknad.setFaktaListe(repository.hentAlleBrukerData(soknadId));
 
-        PreparedIterable<XMLMetadata> vedlegg = on(vedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLVedlegg.class));
+        soknad.setVedlegg(hentVedleggOgPersister(soknad, xmlVedleggListe, soknadId));
 
+        return soknad;
+    }
+
+    private List<Vedlegg> hentVedleggOgPersister(WebSoknad soknad, XMLMetadataListe xmlVedleggListe, Long soknadId) {
+        PreparedIterable<XMLMetadata> vedlegg = on(xmlVedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLVedlegg.class));
         List<Vedlegg> soknadVedlegg = new ArrayList<>();
         for (XMLMetadata xmlMetadata : vedlegg) {
             if (xmlMetadata instanceof XMLHovedskjema) {
                 continue;
             }
+            XMLVedlegg xmlVedlegg = (XMLVedlegg) xmlMetadata;
 
-            XMLVedlegg nesteVedlegg = (XMLVedlegg) xmlMetadata;
-
-            Integer antallSider = nesteVedlegg.getSideantall() != null ? nesteVedlegg.getSideantall() : 0;
+            Integer antallSider = xmlVedlegg.getSideantall() != null ? xmlVedlegg.getSideantall() : 0;
 
             Vedlegg v = new Vedlegg()
-                    .medSkjemaNummer(nesteVedlegg.getSkjemanummer())
+                    .medSkjemaNummer(xmlVedlegg.getSkjemanummer())
                     .medAntallSider(antallSider)
-                    .medInnsendingsvalg(toInnsendingsvalg(nesteVedlegg.getInnsendingsvalg()))
-                    .medOpprinneligInnsendingsvalg(toInnsendingsvalg(nesteVedlegg.getInnsendingsvalg()))
+                    .medInnsendingsvalg(toInnsendingsvalg(xmlVedlegg.getInnsendingsvalg()))
+                    .medOpprinneligInnsendingsvalg(toInnsendingsvalg(xmlVedlegg.getInnsendingsvalg()))
                     .medSoknadId(soknadId)
-                    .medNavn(nesteVedlegg.getTilleggsinfo());
+                    .medNavn(xmlVedlegg.getTilleggsinfo());
 
             medKodeverk(v);
             vedleggRepository.opprettVedlegg(v, null);
             soknadVedlegg.add(v);
         }
-        soknad.setVedlegg(soknadVedlegg);
-
-        return soknad;
+        return soknadVedlegg;
     }
 
     @Override
@@ -622,8 +649,22 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg) {
+        if(nedgradertEllerForLavtInnsendingsValg(vedlegg)) {
+            throw new ApplicationException("Ugyldig innsendingsstatus, opprinnelig innsendingstatus kan aldri nedgraderes");
+        }
         vedleggRepository.lagreVedlegg(soknadId, vedleggId, vedlegg);
         repository.settDelstegstatus(soknadId, DelstegStatus.SKJEMA_VALIDERT);
+    }
+
+    private boolean nedgradertEllerForLavtInnsendingsValg(Vedlegg vedlegg) {
+        Vedlegg.Status nyttInnsendingsvalg = vedlegg.getInnsendingsvalg();
+        Vedlegg.Status opprinneligInnsendingsvalg = vedlegg.getOpprinneligInnsendingsvalg();
+        if(nyttInnsendingsvalg != null && opprinneligInnsendingsvalg != null){
+            if(nyttInnsendingsvalg.getPrioritet() <= 1 || (nyttInnsendingsvalg.getPrioritet() < opprinneligInnsendingsvalg.getPrioritet())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private SoknadStruktur hentStruktur(String skjema) {

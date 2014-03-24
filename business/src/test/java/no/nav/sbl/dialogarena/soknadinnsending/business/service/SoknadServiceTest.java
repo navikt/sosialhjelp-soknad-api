@@ -6,6 +6,7 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendin
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
@@ -298,6 +299,66 @@ public class SoknadServiceTest {
     }
 
     @Test
+    public void skalSendeEttersending() {
+        String opprinneligBehandlingsId = "100000000TEST";
+        String ettersendingsBehandlingId = "1000ETTERSENDING";
+
+        WSHentSoknadResponse wsHentSoknadResponse = new WSHentSoknadResponse()
+                .withBehandlingsId(opprinneligBehandlingsId)
+                .withStatus(WSStatus.UNDER_ARBEID.toString())
+                .withAny(new XMLMetadataListe()
+                        .withMetadata(
+                                new XMLHovedskjema().withUuid("uidHovedskjema"),
+                                new XMLVedlegg().withUuid("uidVedlegg")));
+
+        when(henvendelsesConnector.hentSisteBehandlingIBehandlingskjede(opprinneligBehandlingsId)).thenReturn(
+                wsHentSoknadResponse
+        );
+
+        when(henvendelsesConnector.startEttersending(wsHentSoknadResponse)).thenReturn(ettersendingsBehandlingId);
+
+        when(soknadRepository.hentSoknadMedData(1L)).thenReturn(
+                new WebSoknad().medAktorId("123456")
+                        .medBehandlingId(ettersendingsBehandlingId)
+                        .medId(11L)
+                        .medUuid("uidHovedskjema")
+                        .medskjemaNummer(DAGPENGER)
+                        .medFaktum(new Faktum().medKey("personalia"))
+                        .medVedlegg(Arrays.asList(
+                                new Vedlegg()
+                                        .medSkjemaNummer("N6")
+                                        .medFillagerReferanse("uidVedlegg1")
+                                        .medInnsendingsvalg(Vedlegg.Status.LastetOpp)
+                                        .medStorrelse(2L)
+                                        .medNavn("Test Annet vedlegg")
+                                        .medAntallSider(3),
+                                new Vedlegg()
+                                        .medSkjemaNummer("L7")
+                                        .medInnsendingsvalg(Vedlegg.Status.SendesIkke)))
+        );
+
+        soknadService.sendEttersending(1L, opprinneligBehandlingsId);
+        verify(henvendelsesConnector).avsluttSoknad(eq(ettersendingsBehandlingId), refEq(new XMLHovedskjema()
+                .withUuid("uidHovedskjema")),
+                refEq(
+                        new XMLVedlegg()
+                                .withUuid("uidVedlegg1")
+                                .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
+                                .withFilnavn("Test Annet vedlegg")
+                                .withTilleggsinfo("Test Annet vedlegg")
+                                .withFilstorrelse("2")
+                                .withSideantall(3)
+                                .withMimetype("application/pdf")
+                                .withSkjemanummer("N6")),
+                refEq(
+                        new XMLVedlegg()
+                                .withInnsendingsvalg(XMLInnsendingsvalg.SENDES_IKKE.toString())
+                                .withTilleggsinfo("")
+                                .withSkjemanummer("L7")
+                                .withFilnavn("L7")));
+    }
+
+    @Test
     public void skalSetteDelsteg() {
         soknadService.settDelsteg(1L, OPPRETTET);
         verify(soknadRepository).settDelstegstatus(1L, OPPRETTET);
@@ -348,6 +409,42 @@ public class SoknadServiceTest {
         Vedlegg vedlegg = new Vedlegg().medVedleggId(1L);
         soknadService.lagreVedlegg(11L, 1L, vedlegg);
         verify(vedleggRepository).lagreVedlegg(11L, 1L, vedlegg);
+    }
+
+    @Test(expected=ApplicationException.class)
+    public void skalIkkeKunneLagreVedleggMedNegradertInnsendingsStatus() {
+        Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.LastetOpp);
+
+        opplastetVedlegg.setInnsendingsvalg(Vedlegg.Status.SendesIkke);
+        soknadService.lagreVedlegg(11L, 1L, opplastetVedlegg);
+        verify(vedleggRepository, never()).lagreVedlegg(11L, 1L, opplastetVedlegg);
+    }
+
+    @Test
+    public void skalKunneLagreVedleggMedSammeInnsendinsStatus() {
+        Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.LastetOpp);
+
+        opplastetVedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
+        soknadService.lagreVedlegg(11L, 1L, opplastetVedlegg);
+        verify(vedleggRepository).lagreVedlegg(11L, 1L, opplastetVedlegg);
+    }
+
+    @Test
+    public void skalKunneLagreVedleggMedOppgradertInnsendingsStatus() {
+        Vedlegg vedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.SendesIkke);
+
+        vedlegg.setInnsendingsvalg(Vedlegg.Status.SendesSenere);
+        soknadService.lagreVedlegg(11L, 1L, vedlegg);
+        verify(vedleggRepository).lagreVedlegg(11L, 1L, vedlegg);
+    }
+
+    @Test(expected=ApplicationException.class)
+    public void skalIkkeKunneLagreVedleggMedPrioritetMindreEllerLik1() {
+        Vedlegg vedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+
+        vedlegg.setInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+        soknadService.lagreVedlegg(11L, 1L, vedlegg);
+        verify(vedleggRepository, never()).lagreVedlegg(11L, 1L, vedlegg);
     }
 
     @Test

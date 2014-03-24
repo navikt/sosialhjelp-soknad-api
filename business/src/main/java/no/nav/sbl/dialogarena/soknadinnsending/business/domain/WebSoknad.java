@@ -43,6 +43,7 @@ public class WebSoknad implements Serializable {
 
     public WebSoknad() {
         faktaListe = new ArrayList<>();
+        vedlegg = new ArrayList<>();
     }
 
     public static WebSoknad startSoknad() {

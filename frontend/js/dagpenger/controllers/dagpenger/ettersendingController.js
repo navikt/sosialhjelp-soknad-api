@@ -31,6 +31,16 @@ angular.module('nav.ettersending', [])
         function skalIkkeEttersendes(v) {
             return !skalEttersendes(v);
         }
+        
+        $scope.sendEttersending = function() {
+
+            var soknadId = window.location.href.split("/").last();
+            var behandlingsId = getBehandlingIdFromUrl();
+
+            $http.post('/sendsoknad/rest/soknad/sendettersending', {behandlingsId: behandlingsId, soknadId: soknadId}).then(function(result) {
+                console.log("done");
+            });
+        }
     }])
     .controller('EttersendingOpplastingCtrl', ['$scope', 'data', function($scope, data) {
         $scope.soknadId = data.soknad.soknadId;

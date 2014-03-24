@@ -223,4 +223,11 @@ public class SoknadDataController {
         result.put("soknadId", soknadId.toString());
         return result;
     }
+
+    @RequestMapping(value = "/sendettersending", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
+    public void sendEttersending(@RequestBody Map<String, String> requestMap) {
+        Long soknadId = Long.valueOf(requestMap.get("soknadId"));
+        String behandlingsId = requestMap.get("behandlingsId");
+        soknadService.sendEttersending(soknadId, behandlingsId);
+    }
 }
