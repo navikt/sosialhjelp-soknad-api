@@ -313,17 +313,24 @@ public class Vedlegg {
     }
 
     public enum Status {
-        IkkeVedlegg,
-        VedleggKreves,
-        LastetOpp,
-        UnderBehandling,
-        SendesSenere,
-        SendesIkke;
+        IkkeVedlegg(0),
+        VedleggKreves(1),
+        SendesIkke(2),
+        SendesSenere(3),
+        LastetOpp(4),
+        UnderBehandling(5);
+
+        private int prioritet;
+        private Status(int prioritet) {
+            this.prioritet = prioritet;
+        }
+
+        public int getPrioritet() {
+            return prioritet;
+        }
 
         public boolean er(Status status) {
             return this.equals(status);
         }
     }
-
-
 }
