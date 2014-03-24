@@ -6,6 +6,7 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendin
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.modig.lang.option.Optional;
 import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
@@ -41,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +61,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -238,8 +241,8 @@ public class SoknadServiceTest {
                 return null;
             }
         }).when(handler).writeTo(any(OutputStream.class));
-        Long id = soknadService.hentSoknadMedBehandlinsId("123");
-        soknadService.hentSoknadMedBehandlinsId("123");
+        Long id = soknadService.hentSoknadMedBehandlingsId("123");
+        soknadService.hentSoknadMedBehandlingsId("123");
         verify(soknadRepository, atMost(1)).populerFraStruktur(eq(soknadCheck));
         verify(vedleggRepository).lagreVedleggMedData(11L, 4L, vedleggCheck);
         assertThat(id, is(equalTo(11L)));
@@ -247,36 +250,28 @@ public class SoknadServiceTest {
 
     @Test
     public void skalSendeSoknad() {
-        List<Vedlegg> paakrevdeVedlegg = new ArrayList<>();
-        paakrevdeVedlegg.add(new Vedlegg()
-                .medSkjemaNummer("N6")
-                .medFillagerReferanse("uidVedlegg1")
-                .medInnsendingsvalg(Vedlegg.Status.LastetOpp)
-                .medStorrelse(2L)
-                .medNavn("Test Annet vedlegg")
-                .medAntallSider(3));
-        paakrevdeVedlegg.add( new Vedlegg()
-                .medSkjemaNummer("L7")
-                .medInnsendingsvalg(Vedlegg.Status.SendesIkke));
-        when(soknadService.hentPaakrevdeVedlegg(1L)).thenReturn(paakrevdeVedlegg);
+        List<Vedlegg> vedlegg = Arrays.asList(
+                new Vedlegg()
+                        .medSkjemaNummer("N6")
+                        .medFillagerReferanse("uidVedlegg1")
+                        .medInnsendingsvalg(Vedlegg.Status.LastetOpp)
+                        .medStorrelse(2L)
+                        .medNavn("Test Annet vedlegg")
+                        .medAntallSider(3),
+                new Vedlegg()
+                        .medSkjemaNummer("L7")
+                        .medInnsendingsvalg(Vedlegg.Status.SendesIkke));
+
         when(soknadRepository.hentSoknadMedData(1L)).thenReturn(
                 new WebSoknad().medAktorId("123456")
                         .medBehandlingId("123")
                         .medUuid("uidHovedskjema")
                         .medskjemaNummer(DAGPENGER)
                         .medFaktum(new Faktum().medKey("personalia"))
-                        .medVedlegg(Arrays.asList(
-                                new Vedlegg()
-                                        .medSkjemaNummer("N6")
-                                        .medFillagerReferanse("uidVedlegg1")
-                                        .medInnsendingsvalg(Vedlegg.Status.LastetOpp)
-                                        .medStorrelse(2L)
-                                        .medNavn("Test Annet vedlegg")
-                                        .medAntallSider(3),
-                                new Vedlegg()
-                                        .medSkjemaNummer("L7")
-                                        .medInnsendingsvalg(Vedlegg.Status.SendesIkke)))
-        );
+                        .medVedlegg(vedlegg));
+
+        when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(vedlegg);
+
         soknadService.sendSoknad(1L, new byte[]{1, 2, 3});
         verify(henvendelsesConnector).avsluttSoknad(eq("123"), refEq(new XMLHovedskjema()
                 .withUuid("uidHovedskjema")
@@ -303,7 +298,6 @@ public class SoknadServiceTest {
                                 .withSkjemanummer("L7")
                                 .withFilnavn("L7")));
     }
-
 
     @Test
     public void skalSendeEttersending() {
@@ -373,7 +367,8 @@ public class SoknadServiceTest {
     @Test
     public void skalHenteSoknad() {
         when(soknadRepository.hentSoknadMedData(1L)).thenReturn(new WebSoknad().medId(1L));
-        assertThat(soknadService.hentSoknad(1L), is(equalTo(new WebSoknad().medId(1L))));
+        when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(new ArrayList<Vedlegg>());
+        assertThat(soknadService.hentSoknad(1L), is(equalTo(new WebSoknad().medId(1L).medVedlegg(new ArrayList<Vedlegg>()))));
     }
 
     @Test
@@ -516,5 +511,25 @@ public class SoknadServiceTest {
         verify(henvendelsesConnector).avbrytSoknad("123");
     }
 
+    @Test
+    public void skalHenteSoknadsIdForEttersendingTilBehandlingskjedeId() {
+        WebSoknad soknad = new WebSoknad();
+        soknad.setSoknadId(1L);
+        when(soknadRepository.hentEttersendingMedBehandlingskjedeId(anyString())).thenReturn(Optional.optional(soknad));
 
+        Long soknadId = soknadService.hentEttersendingForBehandlingskjedeId("123");
+
+        assertThat(soknadId, is(1L));
+    }
+
+    @Test
+    public void skalFaNullNarManProverAHenteEttersendingMedBehandlingskjedeIdSomIkkeHarNoenEttersending() {
+        WebSoknad soknad = new WebSoknad();
+        soknad.setSoknadId(1L);
+        when(soknadRepository.hentEttersendingMedBehandlingskjedeId(anyString())).thenReturn(Optional.<WebSoknad>none());
+
+        Long soknadId = soknadService.hentEttersendingForBehandlingskjedeId("123");
+
+        assertThat(soknadId, is(nullValue()));
+    }
 }
