@@ -2,9 +2,20 @@
     <h4 data-ng-if="harSporsmal()" class="spm-sporsmal" data-ng-bind-html=" navsporsmal | cmstekst"></h4>
     <label>
         <span class="labeltekst" data-ng-bind-html=" navlabel | cmstekst"></span>
-        <input data-ng-model="faktum.value" type="text" value="{{ value }}" data-ng-required="true"
-               data-error-messages="{{ navfeilmelding }}" data-ng-pattern="{{ regexvalidering }}" data-blur-validate data-minlength="{{ navminlength }}" data-maxlength="{{ navmaxlength }}"
-               maxlength="{{ inputfeltmaxlength }}"  data-tekstfelt-patternvalidering data-aktiv-feilmelding/>
+        <input type="text"
+               value="{{ value }}"
+               data-ng-required="true"
+               data-ng-model="faktum.value"
+               data-error-messages="{{ navfeilmelding }}"
+               data-ng-pattern="{{ regexvalidering }}"
+               data-minlength="{{ navminlength }}"
+               data-maxlength="{{ navmaxlength }}"
+               data-min="{{ navminvalue }}"
+               data-max="{{ navmaxvalue }}"
+               maxlength="{{ inputfeltmaxlength }}"
+               data-blur-validate
+               data-tekstfelt-patternvalidering
+               data-aktiv-feilmelding/>
         <span class="melding"></span>
     </label>
 </div>
