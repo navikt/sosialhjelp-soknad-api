@@ -11,8 +11,8 @@ import org.apache.wicket.util.string.StringValue;
 import javax.inject.Inject;
 
 public class EttersendingPage extends BasePage {
-    @Inject
 
+    @Inject
     private SendSoknadService soknadService;
 
     public EttersendingPage(PageParameters parameters) {
