@@ -8,10 +8,10 @@ module.exports = function (grunt) {
                 src: [
                     'views/dagpenger-singlepage.html',
                     'views/templates/**/*.html',
-                    'js/app/**/*.html',
+                    'js/dagpenger/**/*.html',
                     'js/common/**/*.html'
                 ],
-                dest: 'target/classes/META-INF/resources/js/app/templates.js'
+                dest: 'target/classes/META-INF/resources/js/dagpenger/templates.js'
             }
         },
 
@@ -40,7 +40,7 @@ module.exports = function (grunt) {
                         ],
                         libs: 'js/lib/*.js',
                         app: [
-                            'js/app/**/*.js',
+                            'js/dagpenger/**/*.js',
                             'js/common/**/*.js'
                         ]
                     }
@@ -70,7 +70,7 @@ module.exports = function (grunt) {
                         ],
                         libs: 'js/lib/*.js',
                         app: [
-                            'js/app/**/*.js',
+                            'js/dagpenger/**/*.js',
                             'js/common/**/*.js'
                         ]
                     }
@@ -78,7 +78,7 @@ module.exports = function (grunt) {
             },
             prod: {
                 src: 'views/bootstrapTemplateProd.html',
-                dest: 'views/built/bootstrap.html',
+                dest: 'target/classes/META-INF/resources/views/built/bootstrap.html',
                 options: {
                     beautify: true,
                     relative: false,
@@ -109,9 +109,9 @@ module.exports = function (grunt) {
                     'js/lib/jquery/jquery.fileupload-validate.js',
                     'js/lib/jquery/jquery.fileupload-angular.js',
                     'js/lib/*.js',
-                    'js/app/**/!(templates).js',
-                    'js/app/**/!(initDev).js',
-                    'target/classes/META-INF/resources/js/app/templates.js',
+                    'js/dagpenger/**/!(templates).js',
+                    'js/dagpenger/**/!(initDev).js',
+                    'target/classes/META-INF/resources/js/dagpenger/templates.js',
                     'js/common/**/*.js'
 				],
 				dest  : 'target/classes/META-INF/resources/js/built/built' + timestamp + '.js',
@@ -132,14 +132,14 @@ module.exports = function (grunt) {
 		watch : {
 			js  : {
 				files  : [
-                    'js/app/**/*.js',
+                    'js/dagpenger/**/*.js',
                     'js/common/**/*.js'
                 ],
                 tasks: 'jshint'
 			},
 			html: {
 				files  : [
-                    'js/app/**/*.html',
+                    'js/dagpenger/**/*.html',
                     'js/common/**/*.html',
                     'views/templates/**/*.html',
                     'views/dagpenger-singlepage.html'
@@ -148,7 +148,7 @@ module.exports = function (grunt) {
 			},
             testHtml: {
                 files  : [
-                    'js/app/**/*.html',
+                    'js/dagpenger/**/*.html',
                     'js/common/**/*.html',
                     'views/templates/**/*.html',
                     'views/dagpenger-singlepage.html'
@@ -157,9 +157,9 @@ module.exports = function (grunt) {
             }
 		},
 		jshint: {
-			files  : ['gruntfile.js', 'js/app/**/*.js', 'js/common/**/*.js', 'test/**/*.js'],
+			files  : ['gruntfile.js', 'js/dagpenger/**/*.js', 'js/common/**/*.js', 'test/**/*.js'],
 			options: {
-				ignores: ['js/built/*.js', 'js/app/i18n/**', 'js/app/templates.js', 'test/karma/lib/angular-mocks.js', 'js/common/directives/scrollbar/perfect-scrollbar.js'],
+				ignores: ['js/built/*.js', 'js/dagpenger/i18n/**', 'js/dagpenger/templates.js', 'test/karma/lib/angular-mocks.js', 'js/common/directives/scrollbar/perfect-scrollbar.js'],
                 globals: {
                     it: true,
                     expect: true,
@@ -199,7 +199,7 @@ module.exports = function (grunt) {
 
 	grunt.option('force', true);
 
-	grunt.registerTask('default', ['jshint', 'htmlbuild:dev', 'watch']);
+	grunt.registerTask('default', ['jshint', 'htmlbuild:dev']);
     grunt.registerTask('hint', ['jshint', 'watch']);
     grunt.registerTask('maven', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev']);
     grunt.registerTask('maven-test', ['karma:unit']);
