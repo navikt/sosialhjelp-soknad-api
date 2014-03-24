@@ -126,7 +126,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     @Override
     public Optional<WebSoknad> hentEttersendingMedBehandlingskjedeId(String behandlingsId) {
-        String sql = "select * from soknad where behandlingskjedeid = ?";
+        String sql = "select * from soknad where behandlingskjedeid = ? and status = 'UNDER_ARBEID'";
         return on(getJdbcTemplate().query(sql, new SoknadRowMapper(), behandlingsId)).head();
     }
 

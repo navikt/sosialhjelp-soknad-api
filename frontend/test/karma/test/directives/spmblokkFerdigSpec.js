@@ -109,7 +109,7 @@ describe('sporsmalferdig', function () {
             expect(accordionGroup.hasClass('validert')).toBe(true);
             scope.$apply();
 
-            expect(scope.knappTekst).toBe('neste')
+            expect(scope.knappTekst).toBe('neste');
         });
     });
 });
