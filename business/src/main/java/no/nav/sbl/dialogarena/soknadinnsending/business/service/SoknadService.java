@@ -461,19 +461,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
         return hentStruktur(repository.hentSoknadType(soknadId));
     }
 
-    @Override
-    public WebSoknad hentSisteBehandingIBehandingskjede(String behandingsId) {
-        WSHentSoknadResponse wsSoknadsdata = henvendelseConnector.hentSisteBehandlingIBehandlingskjede(behandingsId);
-        XMLMetadataListe vedleggListe = (XMLMetadataListe) wsSoknadsdata.getAny();
-        Optional<XMLMetadata> hovedskjema = on(vedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
-        if (hovedskjema.isSome()) {
-            byte[] bytes = fillagerConnector.hentFil(((XMLHovedskjema) hovedskjema.get()).getUuid());
-            return JAXB.unmarshal(new ByteArrayInputStream(bytes), WebSoknad.class);
-        } else {
-            throw new ApplicationException("Kunne ikke hente opp søknad");
-        }
-    }
-
     private void genererVedleggForFaktum(Faktum faktum) {
         SoknadStruktur struktur = hentSoknadStruktur(faktum.getSoknadId());
         List<SoknadVedlegg> aktuelleVedlegg = struktur.vedleggFor(faktum.getKey());
