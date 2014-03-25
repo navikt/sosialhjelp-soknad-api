@@ -42,10 +42,6 @@ public class HenvendelseConnector {
         }
     }
 
-    public WSHentSoknadResponse hentSisteBehandlingIBehandlingskjede(String behandlingskjedeId) {
-        return sendSoknadService.hentSisteBehandlingIBehandlingsKjede(new WSBehandlingsId().withBehandlingsId(behandlingskjedeId));
-    }
-
     public void avsluttSoknad(String behandlingsId, XMLHovedskjema hovedskjema, XMLVedlegg... vedlegg) {
         try {
             WSSoknadsdata parameters = new WSSoknadsdata().withBehandlingsId(behandlingsId).withAny(new XMLMetadataListe()

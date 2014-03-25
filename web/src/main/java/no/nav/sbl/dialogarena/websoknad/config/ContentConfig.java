@@ -113,7 +113,9 @@ public class ContentConfig {
 
     @Bean
     public ContentRetriever enonicContentRetriever() {
-        return new HttpContentRetriever();
+        HttpContentRetriever httpContentRetriever = new HttpContentRetriever();
+        httpContentRetriever.http.setTimeout(20 * 1000);
+        return httpContentRetriever;
     }
 
     @Bean

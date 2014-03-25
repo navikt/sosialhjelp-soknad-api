@@ -113,11 +113,6 @@ public class MockConsumerConfig {
                 }
 
                 @Override
-                public WSHentSoknadResponse hentSisteBehandlingIBehandlingsKjede(WSBehandlingsId parameters) {
-                    return lager.get(parameters.getBehandlingsId());
-                }
-
-                @Override
                 public WSHentSoknadResponse hentSoknad(WSBehandlingsId parameters) {
                     return lager.get(parameters.getBehandlingsId());
                 }
