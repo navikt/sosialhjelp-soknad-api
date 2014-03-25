@@ -119,7 +119,35 @@ angular.module('nav.input', ['nav.cmstekster'])
             },
             templateUrl: '../js/common/directives/navinput/navtekstTemplate.html'
         };
-    }]).directive('tekstfeltPatternvalidering', [function () {
+    }])
+    .directive('navtall', [function () {
+        return {
+            restrict: 'A',
+            replace: true,
+            scope: true,
+            link: {
+                pre: function (scope, element, attrs) {
+                    if (attrs.regexvalidering) {
+                        scope.regexvalidering = attrs.regexvalidering.toString();
+                    } else {
+                        scope.regexvalidering = '';
+                    }
+                    if (attrs.inputfeltmaxlength) {
+                        scope.inputfeltmaxlength = attrs.inputfeltmaxlength;
+                    } else {
+                        scope.inputfeltmaxlength = undefined;
+                    }
+                },
+                post: function (scope, element) {
+                    scope.harSporsmal = function() {
+                        return isNotNullOrUndefined(scope.navsporsmal) && scope.navsporsmal.length > 0;
+                    };
+                }
+            },
+            templateUrl: '../js/common/directives/navinput/navtallTemplate.html'
+        };
+    }])
+    .directive('tekstfeltPatternvalidering', [function () {
         return {
             require: 'ngModel',
             link: function (scope, element, attrs, ctrl) {
@@ -210,6 +238,24 @@ angular.module('nav.input', ['nav.cmstekster'])
             link: function (scope, element) {
                 element.bind('mousewheel', function(event) {
                     event.preventDefault();
+                });
+            }
+        };
+    }])
+    .directive('kunTall', [function() {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function(scope, element, attrs, ngModel) {
+                var maxLength = parseInt(attrs.kunTall);
+                element.keypress(function(e) {
+                    if (ngModel.$viewValue && maxLength && ngModel.$viewValue.length >= maxLength) {
+                        return false;
+                    }else if (!String.fromCharCode(e.keyCode).match(/[0-9\.]/)) {
+                        return false;
+                    } else if (String.fromCharCode(e.keyCode) === '.' && ngModel.$viewValue.indexOf('.') > -1) {
+                        return false;
+                    }
                 });
             }
         };
