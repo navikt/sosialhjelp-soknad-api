@@ -1,13 +1,15 @@
 (function () {
-	var RequiredValidator = function RequiredValidator(attrs) {
+	var RequiredValidator = function RequiredValidator(scope, attrs) {
 		var erRequired;
-		if (harAttributt(attrs, 'required')) {
+		if (harAttributt(scope, attrs, 'required')) {
 			this.erRequired = true;
 		}
 	};
 
 	RequiredValidator.prototype.validate = function (verdi) {
-		if (this.erRequired && verdi && verdiErIkkeTom(verdi.trim())) {
+        if (!this.erRequired) {
+            return true;
+        } else if (verdi && verdiErIkkeTom(verdi.trim())) {
 			return true;
 		}
 		return 'required';
@@ -15,9 +17,9 @@
 
 	window.RequiredValidator = RequiredValidator;
 
-	var PatternValidator = function PatternValidator(attrs) {
+	var PatternValidator = function PatternValidator(scope, attrs) {
 		var pattern;
-		var stringPattern = harAttributt(attrs, 'pattern');
+		var stringPattern = harAttributt(scope, attrs, 'pattern');
 		if (stringPattern) {
 			// Tatt fra angular for å bygge regexp fra string
 			var match = stringPattern.match(/^\/(.*)\/([gim]*)$/);
@@ -34,15 +36,15 @@
 
 	window.PatternValidator = PatternValidator;
 
-	var LengthValidator = function LengthValidator(attrs) {
+	var LengthValidator = function LengthValidator(scope, attrs) {
 		var minLengde, maxLengde;
-		this.minLengde = harAttributt(attrs, 'minlength');
+		this.minLengde = harAttributt(scope, attrs, 'minlength');
 
 		if (!this.minLengde) {
 			this.minLengde = false;
 		}
 
-		this.maxLengde = harAttributt(attrs, 'maxlength');
+		this.maxLengde = harAttributt(scope, attrs, 'maxlength');
 
 		if (!this.maxLengde) {
 			this.maxLengde = false;
@@ -63,9 +65,9 @@
 
 	window.LengthValidator = LengthValidator;
 
-    var ValueValidator = function ValueValidator(attrs) {
+    var ValueValidator = function ValueValidator(scope, attrs) {
         var min, max;
-        this.min = harAttributt(attrs, 'min');
+        this.min = harAttributt(scope, attrs, 'min');
 
         if (!this.min) {
             this.min = false;
@@ -73,7 +75,7 @@
             this.min = parseInt(this.min);
         }
 
-        this.max = harAttributt(attrs, 'max');
+        this.max = harAttributt(scope, attrs, 'max');
 
         if (!this.max) {
             this.max = false;

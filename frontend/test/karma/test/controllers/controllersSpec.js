@@ -1133,7 +1133,6 @@
                 expect(scope.alderspensjonUrl).toEqual('alderspensjonUrl');
                 expect(scope.mineHenveldelserUrl).toEqual('minehenvendelserUrl');
                 expect(scope.reelArbeidsokerUrl).toEqual('reelArbeidsokerUrl');
-                expect(scope.dagpengerBrosjyreUrl).toEqual('dagpengerBrosjyreUrl');
                 expect(scope.inngangsportenUrl).toEqual('inngangsportenUrl');
             });
             it('harlestbrosjyre skal være satt til false hvis pathen ikke inneholder sendsoknad/soknad', function () {

@@ -107,15 +107,24 @@ function deepClone(obj) {
 	return $.extend(true, {}, obj);
 }
 
-function harAttributt(objekt, attributt) {
+function harAttributt(scope, objekt, attributt) {
 	var capitalizedAttr = capitalizeFirstLetter(attributt);
+
+    var attr;
+
 	if (objekt.hasOwnProperty(attributt)) {
-		return objekt[attributt];
+		attr = objekt[attributt];
 	} else if (objekt.hasOwnProperty('ng' + capitalizedAttr)) {
-		return objekt['ng' + capitalizedAttr];
+        attr =  objekt['ng' + capitalizedAttr];
 	} else {
 		return false;
 	}
+
+    if (attributt !== "required") {
+        return attr;
+    }
+
+    return scope.$eval(objekt['ng' + capitalizedAttr]);
 }
 
 function capitalizeFirstLetter(str) {
