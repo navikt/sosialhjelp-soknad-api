@@ -12,10 +12,12 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -33,6 +35,8 @@ public class ContentConfig {
     private String cmsBaseUrl;
     @Value("${sendsoknad.datadir}")
     private File brukerprofilDataDirectory;
+    @Inject
+    private CacheManager cacheManager;
 
 
     private static final String DEFAULT_LOCALE = "nb";
@@ -68,7 +72,7 @@ public class ContentConfig {
                 "classpath:content/innholdstekster", "classpath:content/sbl-webkomponenter");
         messageSource.setDefaultEncoding("UTF-8");
         //Sjekk for nye filer en gang hvert 30. minutt.
-        messageSource.setCacheSeconds(60*30);
+        messageSource.setCacheSeconds(60 * 30);
         return messageSource;
     }
 
@@ -76,6 +80,7 @@ public class ContentConfig {
     @Scheduled(cron = "0 0 * * * *")
     public void lastInnNyeInnholdstekster() {
         logger.debug("Leser inn innholdstekster fra enonic");
+        clearContentCache();
         try {
             saveLocal("enonic/innholdstekster_nb.properties", new URI(cmsBaseUrl + INNHOLDSTEKSTER_NB_NO_REMOTE));
             saveLocal("enonic/sbl-webkomponenter_nb", new URI(cmsBaseUrl + SBL_WEBKOMPONENTER_NB_NO_REMOTE));
@@ -85,16 +90,23 @@ public class ContentConfig {
         navMessageSource().clearCache();
     }
 
+    private void clearContentCache() {
+        cacheManager.getCache("cms.content").clear();
+        cacheManager.getCache("cms.article").clear();
+    }
+
     private void saveLocal(String filename, URI uri) throws IOException {
         File file = new File(brukerprofilDataDirectory, filename);
         logger.debug("Leser inn innholdstekster fra " + uri + " til: " + file.toString());
         Content<Innholdstekst> content = enonicContentRetriever().getContent(uri);
         StringBuilder data = new StringBuilder();
         Map<String, Innholdstekst> innhold = content.toMap(Innholdstekst.KEY);
-        for (Map.Entry<String, Innholdstekst> entry : innhold.entrySet()) {
-            data.append(entry.getValue().key).append("=").append(spripPTag(entry.getValue().value)).append(System.lineSeparator());
+        if (!innhold.isEmpty()) {
+            for (Map.Entry<String, Innholdstekst> entry : innhold.entrySet()) {
+                data.append(entry.getValue().key).append("=").append(spripPTag(entry.getValue().value)).append(System.lineSeparator());
+            }
+            FileUtils.write(file, data, "UTF-8");
         }
-        FileUtils.write(file, data, "UTF-8");
     }
 
     private String spripPTag(String value) {
