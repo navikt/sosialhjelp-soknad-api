@@ -153,6 +153,17 @@
                 scope.barn.properties.fodselsdato = lastyear + "-" + month + "-" + date;
                 expect(scope.finnAlder().toString()).toEqual("1");
             });
+
+            it('skal returnere 1 aar for barn fodt tre dager før dagen i dag ifjor', function () {
+                var idag = new Date();
+                var lastyear = idag.getFullYear() - 1;
+                var month = idag.getMonth() + 1;
+                var date = idag.getDate() -3;
+
+                scope.barn.properties.fodselsdato = lastyear + "-" + month + "-" + date;
+                expect(scope.finnAlder().toString()).toEqual("1");
+            });
+
             it('skal returnere 0 aar for barn fodt dagen etter idag ifjor', function () {
                 var idag = new Date();
                 var lastyear = idag.getFullYear() - 1;
