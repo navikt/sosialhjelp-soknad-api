@@ -124,7 +124,13 @@ function harAttributt(scope, objekt, attributt) {
         return attr;
     }
 
-    return scope.$eval(objekt['ng' + capitalizedAttr]);
+    var isRequired = scope.$eval(objekt['ng' + capitalizedAttr]);
+
+    if (isRequired === undefined) {
+        isRequired = scope.$eval(objekt['ng' + capitalizedAttr].toString());
+    }
+
+    return isRequired;
 }
 
 function capitalizeFirstLetter(str) {
