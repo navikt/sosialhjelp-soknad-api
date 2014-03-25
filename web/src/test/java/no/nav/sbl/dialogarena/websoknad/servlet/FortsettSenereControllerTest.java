@@ -50,7 +50,7 @@ public class FortsettSenereControllerTest {
 
     @Test
     public void skalKunneGenerereGjenopptaUrl() {
-        Assert.assertEquals("http://a34duvw22583.devillo.no:8181/sendsoknad/soknad/abc-123-def",
+        Assert.assertEquals("http://a34duvw22583.devillo.no:8181/sendsoknad/soknad/abc-123-def?utm_source=web&utm_medium=email&utm_campaign=2",
                 ServerUtils.getGjenopptaUrl("http://a34duvw22583.devillo.no:8181/sendsoknad/rest/soknad/244/fortsettsenere", "abc-123-def"));
     }
 
@@ -59,7 +59,7 @@ public class FortsettSenereControllerTest {
         messageSource.addMessage("fortsettSenere.sendEpost.epostInnhold", new Locale("nb", "NO"), "test med url {0}");
         mockMvc.perform(post("/soknad/{behandlingsId}/fortsettsenere", "BH123").contentType(MediaType.APPLICATION_JSON).content("{\"epost\": \"test@epost.com\"}"))
                 .andExpect(status().isOk());
-        verify(kodeverk).sendFortsettSenereEPost("test@epost.com", "Lenke til påbegynt dagpengesøknad", "test med url http://localhost:80/soknad/BH123/fortsettsenere/soknad/BH123");
+        verify(kodeverk).sendFortsettSenereEPost("test@epost.com", "Lenke til påbegynt dagpengesøknad", "test med url http://localhost:80/soknad/BH123/fortsettsenere/soknad/BH123?utm_source=web&utm_medium=email&utm_campaign=2");
     }
 
 }
