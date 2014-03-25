@@ -422,29 +422,6 @@
                 };
                 expect(scope.norskBarnIkkeFunnetITPS(barn)).toEqual(false);
             });
-            it('hvis barnet har inntekt så kreves vedlegg', function () {
-                var barn = {
-                    key: 'barn',
-                    properties: {ikkebarneinntekt: 'false',
-                        barnetillegg: 'true'}
-                };
-                expect(scope.kreverVedlegg(barn)).toEqual(true);
-            });
-            it('hvis barnet ikke har inntekt så kreves ikke vedlegg', function () {
-                var barn = {
-                    key: 'barn',
-                    properties: {ikkebarneinntekt: 'true'}
-                };
-                expect(scope.kreverVedlegg(barn)).toEqual(false);
-            });
-            it('hvis barnet er norsk og ikke funnet i tps så kreves vedlegg', function () {
-                var barn = {
-                    key: 'barn',
-                    properties: {land: 'NOR'},
-                    type: 'BRUKERREGISTRERT'
-                };
-                expect(scope.kreverVedlegg(barn)).toEqual(true);
-            });
             it('erGutt skal returnere true for barn med hannkjønn og false for barn med hunnkjønn', function () {
                 var gutt = {
                     key: 'barn',
