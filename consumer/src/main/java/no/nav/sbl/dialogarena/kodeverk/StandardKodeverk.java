@@ -1,5 +1,6 @@
 package no.nav.sbl.dialogarena.kodeverk;
 
+import no.nav.modig.common.MDCOperations;
 import no.nav.modig.core.exception.SystemException;
 import no.nav.modig.lang.option.Optional;
 import no.nav.tjeneste.virksomhet.kodeverk.v2.HentKodeverkHentKodeverkKodeverkIkkeFunnet;
@@ -15,6 +16,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import javax.annotation.PostConstruct;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -99,25 +101,38 @@ public class StandardKodeverk implements Kodeverk {
         return on(hentAlleKodenavnFraKodeverk(LANDKODE)).filter(not(equalTo(Adressekodeverk.LANDKODE_NORGE))).collect();
     }
 
+    @PostConstruct()
+    public  void lastKodeverkVedOppstart(){
+        try{
+        lastInnNyeKodeverk();
+        }catch(RuntimeException ex){
+            logger.warn("Kunne ikke hente kodeverk under oppstart av applikasjon. " + ex, ex);
+        }
+    }
+
     @Override
-//    @Scheduled(cron = "0 15 04 * * *")
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void lastInnNyeKodeverk() {
-        logger.warn("Laster inn nye kodeverk");
+        MDCOperations.putToMDC(MDCOperations.MDC_CALL_ID, MDCOperations.generateCallId());
         Map<String, XMLEnkeltKodeverk> oppdatertKodeverk = new HashMap<>();
         for (String kodeverksnavn : ALLE_KODEVERK) {
-            XMLEnkeltKodeverk enkeltkodeverk = hentKodeverk(kodeverksnavn);
-            enkeltkodeverk.getKode().clear();
-            enkeltkodeverk.getKode().addAll(getGyldigeKodeverk(enkeltkodeverk));
+            XMLEnkeltKodeverk enkeltkodeverk = initKodeverkMedNavn(kodeverksnavn);
             oppdatertKodeverk.put(kodeverksnavn, enkeltkodeverk);
         }
         this.kodeverk.clear();
         this.kodeverk.putAll(oppdatertKodeverk);
     }
 
+    private XMLEnkeltKodeverk initKodeverkMedNavn(String kodeverksnavn) {
+        XMLEnkeltKodeverk enkeltkodeverk = hentKodeverk(kodeverksnavn);
+        List<XMLKode> gyldige = getGyldigeKodeverk(enkeltkodeverk);
+        enkeltkodeverk.getKode().clear();
+        enkeltkodeverk.getKode().addAll(gyldige);
+        return enkeltkodeverk;
+    }
+
     private List<XMLKode> getGyldigeKodeverk(XMLEnkeltKodeverk enkeltkodeverk) {
-        logger.warn("Sjekker gyldighetsperioden for  " + enkeltkodeverk.getNavn() + enkeltkodeverk.getType());
-        return on(enkeltkodeverk.getKode()).filter(where(GYLDIGHETSPERIODER, exists(periodeMed(now())))).collect();
+          return on(enkeltkodeverk.getKode()).filter(where(GYLDIGHETSPERIODER, exists(periodeMed(now())))).collect();
     }
 
     private XMLEnkeltKodeverk kodeverkMedNavn(String kodeverknavn) {
@@ -125,7 +140,7 @@ public class StandardKodeverk implements Kodeverk {
         if (kodeverket != null) {
             return kodeverket;
         }
-        kodeverk.put(kodeverknavn, hentKodeverk(kodeverknavn));
+        kodeverk.put(kodeverknavn, initKodeverkMedNavn(kodeverknavn));
         return kodeverk.get(kodeverknavn);
     }
 
@@ -155,8 +170,8 @@ public class StandardKodeverk implements Kodeverk {
         XMLEnkeltKodeverk kodeverket = null;
         Optional<RuntimeException> webserviceException = none();
         try {
-             kodeverket = (XMLEnkeltKodeverk) webservice.hentKodeverk(new XMLHentKodeverkRequest().withNavn(navn).withSpraak(spraak)).getKodeverk();
-       } catch (HentKodeverkHentKodeverkKodeverkIkkeFunnet kodeverkIkkeFunnet) {
+            kodeverket = (XMLEnkeltKodeverk) webservice.hentKodeverk(new XMLHentKodeverkRequest().withNavn(navn).withSpraak(spraak)).getKodeverk();
+        } catch (HentKodeverkHentKodeverkKodeverkIkkeFunnet kodeverkIkkeFunnet) {
             throw new SystemException("Kodeverk '" + navn + "' (" + spraak + "): " + kodeverkIkkeFunnet.getMessage(), kodeverkIkkeFunnet);
         } catch (RuntimeException e) {
             webserviceException = optional(e);
@@ -210,7 +225,6 @@ public class StandardKodeverk implements Kodeverk {
         return new Predicate<XMLPeriode>() {
             @Override
             public boolean evaluate(XMLPeriode periode) {
-                logger.warn("Gyldighetsperioden er fra " + periode.getFom() + " og til "  + periode.getTom());
                 return atTime.isAfter(periode.getFom()) && atTime.isBefore(periode.getTom());
             }
         };

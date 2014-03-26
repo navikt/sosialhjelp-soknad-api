@@ -2,55 +2,55 @@
 
 <div data-stegindikator data-steg-liste="veiledning, skjema, vedlegg, sendInn" data-aktiv-index="0"></div>
 
-<div class="hvit-side" id="informasjonsside" data-sidetittel="sidetittel.informasjon" data-ng-cloak>
+    <div class="hvit-side" id="informasjonsside" data-sidetittel="sidetittel.informasjon" data-ng-cloak>
 	<div data-panelbelyst>
         <div class="feil" data-ng-show="tpsSvarerIkke()">
-        	<h1 class="utrop-sirkel-ikon">{{ 'feilmelding' | cmstekst }}</h1>
-       		<p class="mini-strek">{{ 'feilmelding.tps' | cmstekst }}</p>
+        	<h1 class="utrop-sirkel-ikon" data-ng-bind-html=" 'feilmelding' | cmstekst"></h1>
+       		<p class="mini-strek" data-ng-bind-html=" 'feilmelding.tps' | cmstekst"></p>
 			<div class="knapper">
-       			<a type="button" class="knapp-hoved" href="{{ inngangsportenUrl }}">{{ 'feilmelding.lenketekst' | cmstekst }}</a>
+       			<a type="button" class="knapp-hoved" href="{{ inngangsportenUrl }}" data-ng-bind-html=" 'feilmelding.lenketekst' | cmstekst"></a>
        		</div>
        	</div>
        	<form data-ng-show="tpsSvarer()">
-	        <h2 data-ng-show="kravForDagpengerOppfylt()" class="stor strek-ikon-info-orange">{{ 'dagpenger.informasjonsside.tittel' | cmstekst }}</h2>
+	        <h2 data-ng-show="kravForDagpengerOppfylt()" class="stor strek-ikon-info-orange" data-ng-bind-html=" 'dagpenger.informasjonsside.tittel' | cmstekst"></h2>
 	    	
 			<div id="utslagskriterier" data-ng-if="kravForDagpengerIkkeOppfylt()">
 				<div class="utslagskriterie" data-ng-if="ikkeBosattINorge()">
-					<h2 class="stor strek-ikon-info-orange">{{ 'dagpenger.informasjonsside.ikkebosattinorge.tittel' | cmstekst }}</h2>
+					<h2 class="stor strek-ikon-info-orange" data-ng-bind-html=" 'dagpenger.informasjonsside.ikkebosattinorge.tittel' | cmstekst"></h2>
 					
-					<p class="label">{{ 'utslagskriterier.utslag.bosted.label' | cmstekst }}</p>
+					<p class="label" data-ng-bind-html=" 'utslagskriterier.utslag.bosted.label' | cmstekst"></p>
 					<div class="adresse">
-						<div data-ng-repeat="linje in hentAdresseLinjer()">
+						<div data-ng-repeat="linje in hentAdresseLinjer() track by $index">
                             <span>{{ linje }}</span>
                         </div>
 					</div>
 			
 					<ul>
 						<li>
-							<p>{{ 'utslagskriterier.utslag.bosted.liste.1' | cmstekst }}</p>
+							<p data-ng-bind-html=" 'utslagskriterier.utslag.bosted.liste.1' | cmstekst"></p>
 						</li>
 						<li>
-							<p>{{ 'utslagskriterier.utslag.bosted.liste.2' | cmstekst }}</p>
+							<p data-ng-bind-html=" 'utslagskriterier.utslag.bosted.liste.2' | cmstekst"></p>
 						</li>
 					</ul>
 				</div>
 
 				<div class="utslagskriterie" data-ng-if="ikkeGyldigAlder()">
-					<h2 class="stor strek-ikon-info-orange">{{ 'dagpenger.informasjonsside.ikkegyldigalder.tittel' | cmstekst }}</h2>
+					<h2 class="stor strek-ikon-info-orange" data-ng-bind-html=" 'dagpenger.informasjonsside.ikkegyldigalder.tittel' | cmstekst"></h2>
 					<ul>
 						<li>
-							<span>{{ 'utslagskriterier.utslag.alder.1' | cmstekst }}</span>
-							<a href="{{ alderspensjonUrl }}">{{ 'utslagskriterier.utslag.alder.2.lenketekst' | cmstekst }}</a>
+							<span data-ng-bind-html=" 'utslagskriterier.utslag.alder.1' | cmstekst"></span>
+							<a href="{{ alderspensjonUrl }}" target="_blank" data-ng-bind-html=" 'utslagskriterier.utslag.alder.2.lenketekst' | cmstekst"></a>
 						</li>
 					</ul>
 				</div>
 
                 <div class="utslagskriterie" data-ng-if="ikkeRegistrertArbeidssoker()">
-                    <h2 class="stor strek-ikon-info-orange">{{ 'dagpenger.informasjonsside.ikkegyldigarbeidssoker.tittel' | cmstekst }}</h2>
+                    <h2 class="stor strek-ikon-info-orange" data-ng-bind-html=" 'dagpenger.informasjonsside.ikkegyldigarbeidssoker.tittel' | cmstekst"></h2>
                     <ul>
                         <li>
-                            <span>{{ 'utslagskriterier.utslag.reellarbeidssoker' | cmstekst }}</span>
-                            <a href="{{ reelArbeidsokerUrl }}">{{ 'utslagskriterier.utslag.reellarbeidssoker.registert' | cmstekst }}</a>
+                            <span data-ng-bind-html=" 'utslagskriterier.utslag.reellarbeidssoker' | cmstekst"></span>
+                            <a href="{{ reelArbeidsokerUrl }}" data-ng-bind-html=" 'utslagskriterier.utslag.reellarbeidssoker.registert' | cmstekst"></a>
                         </li>
                     </ul>
                 </div>
@@ -59,27 +59,29 @@
 			<div class="viktig-info" data-ng-show="kravForDagpengerOppfylt()">
 				<ul class="informasjonsliste">
 					<li>
-						<p class="medium">{{ 'dagpenger.informasjonsside.informasjon.liste.1' | cmstekst }}</p>
+						<p class="medium" data-ng-bind-html=" 'dagpenger.informasjonsside.informasjon.liste.1' | cmstekst"></p>
 					</li>
 					<li>
-						<p class="medium">{{ 'dagpenger.informasjonsside.informasjon.liste.2' | cmstekst }}</p>
-						<a href="{{dagpengerBrosjyreUrl}}">{{ 'dagpenger.informasjonsside.informasjon.liste.2.lenketekst' | cmstekst }}</a>
+
+						<p class="medium" data-ng-bind-html=" 'dagpenger.informasjonsside.informasjon.liste.2' | cmstekst"></p>
+						<a href="{{dagpengerBrosjyreUrl}}" data-ng-bind-html=" 'dagpenger.informasjonsside.informasjon.liste.2.lenketekst' | cmstekst"></a>
+
 					</li>
                     <li data-ng-if="registrertArbeidssokerUkjent()">
-                        <p class="medium">{{ 'dagpenger.informasjonsside.informasjon.liste.3' | cmstekst }}</p>
+                        <p class="medium" data-ng-bind-html=" 'dagpenger.informasjonsside.informasjon.liste.3' | cmstekst"></p>
                     </li>
 				</ul>
 
 
 				<div class="form-linje checkbox" data-ng-if="oppsummering != true" data-checkbox-validate>
                     <input id="lestBrosjyre" data-ng-model="utslagskriterier.harlestbrosjyre" type="checkbox">
-                    <label for="lestBrosjyre">{{ 'dagpenger.informasjonsside.lestbrosjyre.sporsmal' | cmstekst }}</label>
-                    <span class="melding">{{ 'dagpenger.informasjonsside.lestbrosjyre.feilmelding' | cmstekst }}</span>
+                    <label for="lestBrosjyre" data-ng-bind-html=" 'dagpenger.informasjonsside.lestbrosjyre.sporsmal' | cmstekst"></label>
+                    <span class="melding" data-ng-bind-html=" 'dagpenger.informasjonsside.lestbrosjyre.feilmelding' | cmstekst"></span>
 				</div>
 				
-				<div id="oppsummering" data-ng-if="oppsummering == true">
+				<div data-ng-if="oppsummering == true">
 					<span class="sjekket"></span>
-                    <span>{{ 'dagpenger.informasjonsside.lestbrosjyre.sporsmal' | cmstekst }}</span>
+                    <span data-ng-bind-html=" 'dagpenger.informasjonsside.lestbrosjyre.sporsmal' | cmstekst"></span>
 				</div>
 			</div>
 
@@ -90,15 +92,15 @@
 				</div>
 				<div data-ng-show="soknadErIkkeStartet()">
 					<input type="button" class="knapp-hoved" value="{{ 'utslagskriterier.utslag.fortsett' | cmstekst }}" data-ng-click="startSoknadDersomBrosjyreLest()" data-valider-informasjonsside data-fremdriftsindikator/>
-					<a href="{{ inngangsportenUrl }}">{{ 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst }}</a>
+					<a href="{{ inngangsportenUrl }}" data-ng-bind-html=" 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst"></a>
 				</div>
 			</div>
 
 			<div class="utslagskriterier-knapper" data-ng-if="kravForDagpengerIkkeOppfylt()">
-				<a type="button" class="knapp-hoved" href="{{ inngangsportenUrl }}">{{ 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst }}</a>
+				<a type="button" class="knapp-hoved" href="{{ inngangsportenUrl }}" data-ng-bind-html=" 'utslagskriterier.utslag.avbryt.lenketekst' | cmstekst"></a>
 				<p>
-					<a href="#" data-ng-click="fortsettLikevel($event)" data-fremdriftsindikator>{{ 'utslagskriterier.utslag.fortsettlikevel' | cmstekst }}</a>
-					<span>{{ 'utslagskriterier.utslag.infoAvslag' | cmstekst }}</span>
+					<a href="#" data-ng-click="fortsettLikevel($event)" data-fremdriftsindikator data-ng-bind-html=" 'utslagskriterier.utslag.fortsettlikevel' | cmstekst"></a>
+					<span data-ng-bind-html=" 'utslagskriterier.utslag.infoAvslag' | cmstekst"></span>
 				</p>
 			</div>
 		</form>

@@ -41,7 +41,8 @@ angular.module('nav.datepicker', [])
 		altFormat  : 'dd.MM.yyyy',
 		dateFormat : 'dd.mm.yy',
 		changeMonth: true,
-		changeYear : true
+		changeYear : true,
+        yearRange: "c-30:c+10"
 	})
 	.directive('navDato', ['$timeout', 'datepickerConfig', '$filter', 'cms', function ($timeout, datepickerConfig, $filter, cms) {
 		return {
@@ -61,12 +62,10 @@ angular.module('nav.datepicker', [])
 				lagre                 : '&',
 				label                 : '@',
 				requiredErrorMessage  : '@'
-
 			},
-			link       : function (scope, element, attrs, form) {
+			link: function (scope, element, attrs, form) {
 				var eventForAValidereHeleFormen = 'RUN_VALIDATION' + form.$name;
 				var datoRegExp = new RegExp(/^\d\d\.\d\d\.\d\d\d\d$/);
-				var datepickerInput = element.find('input[type=hidden]');
 				var harHattFokus = false;
 				var datepickerErLukket = true;
 				var ugyldigFremtidigDatoFeilmelding = cms.tekster['dato.ugyldigFremtidig.feilmelding'];
@@ -127,20 +126,23 @@ angular.module('nav.datepicker', [])
 
 				scope.harRequiredFeil = function () {
                     if (scope.navDatepicker()) {
-                        return scope.erRequired && !scope.ngModel && !scope.harFokus && harHattFokus && datepickerErLukket &&
-                            !scope.tilDatoFeil && !inputfeltHarTekstMenIkkeGyldigDatoFormat() && !erGyldigDato(element.find('input[type=text]').val());
+                        return erRequiredOgHarIkkeModellSattOgHarIkkeTilDatoFeil() && element.find('input[type=text]').val().trim().length === 0 && harIkkeFokusOgHarHattFokus() && datepickerErLukket &&
+                            !inputfeltHarTekstMenIkkeGyldigDatoFormat() && !erGyldigDato(element.find('input[type=text]').val());
                     } else {
-                        return scope.erRequired && !scope.ngModel && !scope.harFokus && harHattFokus && !scope.tilDatoFeil;
+                        return erRequiredOgHarIkkeModellSattOgHarIkkeTilDatoFeil() && harIkkeFokusOgHarHattFokus() ;
                     }
 
+                    function erRequiredOgHarIkkeModellSattOgHarIkkeTilDatoFeil() {
+                        return scope.erRequired && !scope.ngModel && !scope.tilDatoFeil;
+                    }
 				};
 
 				scope.harTilDatoFeil = function () {
-					return !scope.ngModel && !scope.harFokus && harHattFokus && datepickerErLukket && scope.tilDatoFeil;
+					return !scope.ngModel && harIkkeFokusOgHarHattFokus() && datepickerErLukket && scope.tilDatoFeil;
 				};
 
 				scope.harFormatteringsFeil = function () {
-					return inputfeltHarTekstMenIkkeGyldigDatoFormat() && !scope.harFokus && harHattFokus;
+					return inputfeltHarTekstMenIkkeGyldigDatoFormat() && harIkkeFokusOgHarHattFokus();
 				};
 
 				scope.sjekkUloveligFremtidigDato = function () {
@@ -153,7 +155,7 @@ angular.module('nav.datepicker', [])
 
 				scope.erUloveligFremtidigDato = function() {
                     var el;
-					if(scope.fremtidigDatoFeil && !scope.harFokus && harHattFokus) {
+					if(scope.fremtidigDatoFeil && harIkkeFokusOgHarHattFokus()) {
                         el = element.controller('ngModel');
 						el.$setValidity(ugyldigFremtidigDatoFeilmelding, false);
 						return true;
@@ -167,7 +169,7 @@ angular.module('nav.datepicker', [])
 
 				scope.erIkkeGyldigDato = function () {
 					return !scope.ngModel && inputfeltHarTekstOgGyldigDatoFormat() &&
-						!erGyldigDato(element.find('input[type=text]').val()) && !scope.harFokus && harHattFokus;
+						!erGyldigDato(element.find('input[type=text]').val()) && harIkkeFokusOgHarHattFokus();
 				};
 
 				scope.harFeil = function () {
@@ -258,6 +260,10 @@ angular.module('nav.datepicker', [])
 				}
 				// Legger til datepicker på nytt dersom options endrer seg
 				scope.$watch(datepickerOptions, leggTilDatepicker, true);
+
+                function harIkkeFokusOgHarHattFokus() {
+                    return !scope.harFokus && harHattFokus;
+                }
 			}
 		};
 	}])
@@ -352,27 +358,11 @@ angular.module('nav.datepicker', [])
 						for (var i = start; i < slutt && i < datoInput.length; i++) {
 							var skrevetTegn = datoInput[i];
 
-							if (isNaN(skrevetTegn) || datoInput.substring(0, i + 1).length > datoMask.length || datoInput.splice(i, 1, '').length === datoMask.length) {
-								if (skrevetTegn !== '.' || (i !== 2 && i !== 5)) {
-									datoInput = datoInput.splice(i, 1, '');
-									caretPosisjon--;
-									i--;
-									slutt--;
-									continue;
-								}
-							}
+                            if(slettTegnDersomDetIkkeStemmerMedFormatet()) {
+                                continue;
+                            }
 
-							if (i === 1 || i === 4) {
-								if (datoInput[i + 1] === '.') {
-									caretPosisjon++;
-									i++;
-								} else {
-									datoInput = datoInput.splice(i + 1, 0, '.');
-									caretPosisjon++;
-									i++;
-									slutt++;
-								}
-							}
+                            settInnPunktumDeromVedIndex1Eller4();
 						}
 					}
 
@@ -382,6 +372,33 @@ angular.module('nav.datepicker', [])
 					settCaretPosisjon(element, caretPosisjon);
 
 					return reverserNorskDatoformat(datoInput);
+
+                    function settInnPunktumDeromVedIndex1Eller4() {
+                        if (i === 1 || i === 4) {
+                            if (datoInput[i + 1] === '.') {
+                                caretPosisjon++;
+                                i++;
+                            } else {
+                                datoInput = datoInput.splice(i + 1, 0, '.');
+                                caretPosisjon++;
+                                i++;
+                                slutt++;
+                            }
+                        }
+                    }
+
+                    function slettTegnDersomDetIkkeStemmerMedFormatet() {
+                        if (isNaN(skrevetTegn) || datoInput.substring(0, i + 1).length > datoMask.length || datoInput.splice(i, 1, '').length === datoMask.length) {
+                            if (skrevetTegn !== '.' || (i !== 2 && i !== 5)) {
+                                datoInput = datoInput.splice(i, 1, '');
+                                caretPosisjon--;
+                                i--;
+                                slutt--;
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
 				});
 
 				scope.$watch(

@@ -13,44 +13,21 @@ angular.module('nav.cmstekster', [])
 			}
 		};
 	}])
-	.directive('cmstekster', ['cms', function (cms) {
+    .filter('configUrl', ['data', function(data) {
+        return function(nokkel) {
+            var url = data.config[nokkel.toLowerCase() + '.url'];
 
-		return {
-			scope: false,
-			link : function (scope, element, attrs) {
-                var nokkel = attrs.cmstekster;
-				var cmstekst = cms.tekster[nokkel];
-
-				if (cmstekst === undefined) {
-					return;
-				}
-
-				if (scope.cmsProps) {
-					Object.keys(scope.cmsProps).forEach(function () {
-						cmstekst = cmstekst + ': ' + scope.cmsProps.ekstra;
-					});
-				}
-                cmstekst = cmstekst.replace('${.*}', '', 'i');
-
-                if (element.is('input')) {
-                    element.attr('value', cmstekst);
-                } else {
-                    element.text(cmstekst);
-
-                }
-            }
+            return url === undefined ? '' : url;
         };
     }])
-    .directive('cmshtml', ['cms', function (cms) {
-        return function ($scope, element, attrs) {
-            var nokkel = attrs.cmshtml;
-            element.html(cms.tekster[nokkel]);
-        };
-    }])
-    .filter('cmstekst', ['cms', function(cms) {
+    .filter('cmstekst', ['cms', '$sce', '$rootScope', function(cms, $sce, $rootScope) {
         return function(nokkel) {
             var tekst = cms.tekster[nokkel];
 
-            return tekst === undefined ? '' : tekst;
+            if ($rootScope.visCmsnokkler) {
+                tekst += ' [' + nokkel + ']';
+            }
+
+            return tekst === undefined ? '' : $sce.trustAsHtml(tekst);
         };
     }]);

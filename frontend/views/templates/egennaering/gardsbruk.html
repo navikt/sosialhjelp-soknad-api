@@ -6,23 +6,24 @@
 
 
 <div data-navinfoboks>
-    <p>{{ 'egennaering.gardsbruk.false.informasjon.1' | cmstekst }}</p>
+    <p data-ng-bind-html=" 'egennaering.gardsbruk.false.informasjon.1' | cmstekst"></p>
 
-    <p>{{ 'egennaering.gardsbruk.false.informasjon.2' | cmstekst }}</p>
+    <p data-ng-bind-html=" 'egennaering.gardsbruk.false.informasjon.2' | cmstekst"></p>
 
-    <p>{{ 'egennaering.gardsbruk.false.informasjon.3' | cmstekst }}</p>
+    <p data-ng-bind-html=" 'egennaering.gardsbruk.false.informasjon.3' | cmstekst"></p>
 </div>
 
 <div data-navorganisasjonsnummerfelt
      data-nav-faktum="egennaering.gardsbruk.false.organisasjonsnummer"
      data-navconfig
      data-navlabel="egennaering.gardsbruk.false.organisasjonsnummer"
+     data-nav-vis-slett="false"
      data-navfeilmelding="{ required: 'egennaering.gardsbruk.false.organisasjonsnummer.feilmelding',
           pattern: 'organisasjonsnummer.format.feilmelding'}"></div>
 
 <div class="form-linje checkbox" data-checkbox-validate>
     <h4 class="spm-sporsmal">
-        <span>{{ 'egennaering.gardsbruk.false.type.sporsmal' | cmstekst }}</span>
+        <span data-ng-bind-html=" 'egennaering.gardsbruk.false.type.sporsmal' | cmstekst"></span>
     </h4>
 
     <input type="hidden" data-ng-model="harHuketAvTypeGardsbruk.value"
@@ -53,14 +54,14 @@
          data-navlabel="egennaering.gardsbruk.false.type.annet"
          data-navendret="endreTypeGardsbruk()"></div>
     <div data-melding>
-        <span class="melding">{{ 'egennaering.gardsbruk.false.type.feilmelding' | cmstekst }}</span>
+        <span class="melding" data-ng-bind-html=" 'egennaering.gardsbruk.false.type.feilmelding' | cmstekst"></span>
     </div>
 
 </div>
 
 <div class="form-linje checkbox" data-checkbox-validate>
     <h4 class="spm-sporsmal">
-        <span>{{ 'egennaering.gardsbruk.false.eier.sporsmal' | cmstekst }}</span>
+        <span data-ng-bind-html=" 'egennaering.gardsbruk.false.eier.sporsmal' | cmstekst"></span>
     </h4>
 
     <input type="hidden" data-ng-model="harHuketAvEierGardsbruk.value"
@@ -86,14 +87,14 @@
          data-navendret="endreEierGardsbruk()"></div>
 
     <div data-melding>
-        <span class="melding">{{ 'egennaering.gardsbruk.false.eier.feilmelding' | cmstekst }}</span>
+        <span class="melding" data-ng-bind-html=" 'egennaering.gardsbruk.false.eier.feilmelding' | cmstekst"></span>
     </div>
 </div>
 
 <div class="form-linje andelsfordeling-container" data-ng-class="{feil : prosentFeil()} "
      data-ng-if="svartPaHvemEierGardsbruket()">
     <h4 class="spm-sporsmal andelsfordeling-spm">
-        <span>{{ 'egennaering.gardsbruk.false.eierandel.sporsmal' | cmstekst }}</span>
+        <span data-ng-bind-html=" 'egennaering.gardsbruk.false.eierandel.sporsmal' | cmstekst"></span>
     </h4>
 
     <input class="tekstfelt" type="hidden" data-ng-model="totalsumAndel.value"
@@ -103,7 +104,7 @@
     <div class="andels-fordeling">
         <div class="tekstfelt form-linje" data-ng-if="gardseier('egennaering.gardsbruk.false.eier.jeg')">
             <label>
-                <span>{{ 'egennaering.gardsbruk.false.eierandel.din' | cmstekst }}</span>
+                <span data-ng-bind-html=" 'egennaering.gardsbruk.false.eierandel.din' | cmstekst"></span>
                 <input data-ng-model="faktum.value"
                        type="text"
                        data-ng-required="gardseier('egennaering.gardsbruk.false.eier.jeg')"
@@ -121,7 +122,7 @@
         </div>
         <div class="tekstfelt form-linje" data-ng-if="gardseier('egennaering.gardsbruk.false.eier.ektefelle')">
             <label>
-                <span>{{ 'egennaering.gardsbruk.false.eierandel.ektefelle' | cmstekst }}</span>
+                <span data-ng-bind-html=" 'egennaering.gardsbruk.false.eierandel.ektefelle' | cmstekst"></span>
                 <input data-ng-model="faktum.value"
                        type="text"
                        data-ng-required="gardseier('egennaering.gardsbruk.false.eier.ektefelle')"
@@ -139,7 +140,7 @@
         </div>
         <div class="tekstfelt form-linje" data-ng-if="gardseier('egennaering.gardsbruk.false.eier.annet')">
             <label>
-                <span>{{ 'egennaering.gardsbruk.false.eierandel.annet' | cmstekst }}</span>
+                <span data-ng-bind-html=" 'egennaering.gardsbruk.false.eierandel.annet' | cmstekst"></span>
                 <input data-ng-model="faktum.value"
                        type="text"
                        data-ng-required="gardseier('egennaering.gardsbruk.false.eier.annet')"
@@ -156,18 +157,18 @@
             </label>
         </div>
     </div>
-    <span class="prosentmelding">{{ 'egennaering.gardsbruk.false.eierandel.feilmelding' | cmstekst }}</span>
+    <span class="prosentmelding" data-ng-bind-html=" 'egennaering.gardsbruk.false.eierandel.feilmelding' | cmstekst"></span>
 </div>
 
 
 <div class="gardsbruk-timer">
     <h4 class="spm-sporsmal">
-        <span>{{ 'egennaering.gardsbruk.false.arbeidsforbruk' | cmstekst }}</span>
+        <span data-ng-bind-html=" 'egennaering.gardsbruk.false.arbeidsforbruk' | cmstekst"></span>
     </h4>
 
     <div class="tekstfelt form-linje arbeidsmengde-container">
         <label>
-            <span class="labeltekst">{{ 'egennaering.gardsbruk.false.timer' | cmstekst }}</span>
+            <span class="labeltekst" data-ng-bind-html=" 'egennaering.gardsbruk.false.timer' | cmstekst"></span>
             <input data-ng-model="faktum.value"
                    type="text"
                    data-ng-required="erSynlig('egennaering.gardsbruk')"
@@ -180,7 +181,7 @@
                    data-aktiv-feilmelding/>
         </label>
         <label>
-            <span class="labeltekst">{{ 'egennaering.gardsbruk.false.aar' | cmstekst }}</span>
+            <span class="labeltekst" data-ng-bind-html=" 'egennaering.gardsbruk.false.aar' | cmstekst"></span>
             <select id="egennaeringgardsbrukaar"
                     data-ng-model="faktum.value"
                     data-nav-faktum="egennaering.gardsbruk.false.aar"
@@ -200,16 +201,17 @@
          data-nav-faktum="egennaering.gardsbruk.false.timeredegjoring"
          data-nokkel="egennaering.gardsbruk.false.timeredegjoring"
          data-maxlengde="500"
-         data-navfeilmelding="egennaering.gardsbruk.false.timeredegjoring.feilmelding"
          data-obligatorisk="true"></div>
+</div>
+
+<div data-navinfoboks>
+   <p data-ng-bind-html=" 'egennaering.gardsbruk.false.informasjon' | cmstekst"></p>
 </div>
 
 <div data-vedlegginfoboks>
     <ul>
         <li>
-            <p>{{ 'egennaering.gardsbruk.false.vedlegg' | cmstekst }}</p>
-            <a href="egennaering.gardsbruk.false.vedlegg.lenkeurl">{{
-                'egennaering.gardsbruk.false.vedlegg.lenketekst' | cmstekst }}</a>
+            <p data-ng-bind-html="'Dagpenger.vedlegg.G4.header' | cmstekst"></p>
         </li>
     </ul>
 </div>

@@ -38,6 +38,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.Splitter;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,7 +47,7 @@ import javax.inject.Named;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.awt.*;
+import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -78,6 +79,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Inject
     @Named("soknadInnsendingRepository")
     private SoknadRepository repository;
+
     @Inject
     @Named("vedleggRepository")
     private VedleggRepository vedleggRepository;
@@ -89,6 +91,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
     private Kodeverk kodeverk;
     @Inject
     private NavMessageSource navMessageSource;
+
+    private static final String EKSTRA_VEDLEGG_KEY = "ekstraVedlegg";
 
     private PdfWatermarker watermarker = new PdfWatermarker();
     private List<String> gyldigeSkjemaer = Arrays.asList("NAV 04-01.03");
@@ -137,10 +141,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
         faktum.setSoknadId(soknadId);
         Long faktumId = repository.lagreFaktum(soknadId, faktum);
         repository.settSistLagretTidspunkt(soknadId);
-        //Setter delstegstatus dersom et faktum blir lagret, med mindre det er epost. Bør gjøres mer elegant, litt quickfix
-        if (!Personalia.EPOST_KEY.equals(faktum.getKey())) {
-            repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
-        }
+
+        settDelstegStatus(soknadId, faktum.getKey());
+
         Faktum resultat = repository.hentFaktum(soknadId, faktumId);
         genererVedleggForFaktum(resultat);
         on(repository.hentBarneFakta(soknadId, faktum.getFaktumId())).forEach(new Closure<Faktum>() {
@@ -155,13 +158,21 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public void slettBrukerFaktum(Long soknadId, Long faktumId) {
+        final Faktum faktum;
+        try {
+            faktum = repository.hentFaktum(soknadId, faktumId);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            logger.info("Skipped delete bechause faktum does not exist.");
+            return;
+        }
+        String faktumKey = faktum.getKey();
         List<Vedlegg> vedleggliste = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
 
         for (Vedlegg vedlegg : vedleggliste) {
             vedleggRepository.slettVedleggOgData(soknadId, vedlegg.getFaktumId(), vedlegg.getSkjemaNummer());
         }
         repository.slettBrukerFaktum(soknadId, faktumId);
-        repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
+        settDelstegStatus(soknadId, faktumKey);
     }
 
     @Override
@@ -197,7 +208,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         XMLHovedskjema hovedskjema = new XMLHovedskjema()
                 .withInnsendingsvalg(LASTET_OPP.toString())
                 .withSkjemanummer(skjemanummer)
-                .withFilnavn(skjemanummer + ".pdf")
+                .withFilnavn(skjemanummer)
                 .withMimetype("application/pdf")
                 .withFilstorrelse("" + pdf.length)
                 .withUuid(soknad.getUuid())
@@ -216,6 +227,13 @@ public class SoknadService implements SendSoknadService, VedleggService {
             soknad = repository.hentMedBehandlingsId(behandlingsId);
         }
         return soknad.getSoknadId();
+    }
+
+    private void settDelstegStatus(Long soknadId, String faktumKey) {
+        //Setter delstegstatus dersom et faktum blir lagret, med mindre det er epost eller ekstra vedlegg. Bør gjøres mer elegant, litt quickfix
+        if (!Personalia.EPOST_KEY.equals(faktumKey) && !EKSTRA_VEDLEGG_KEY.equals(faktumKey)) {
+            repository.settDelstegstatus(soknadId, DelstegStatus.UTFYLLING);
+        }
     }
 
     private void populerFraHenvendelse(String behandlingsId) {
@@ -391,13 +409,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public byte[] lagForhandsvisning(Long soknadId, Long vedleggId, int side) {
-        try {
-            return new ConvertToPng(new Dimension(600, 800), side)
-                    .transform(IOUtils.toByteArray(vedleggRepository
-                            .hentVedleggStream(soknadId, vedleggId)));
-        } catch (IOException e) {
-            throw new RuntimeException("Kunne ikke generere thumbnail " + e, e);
-        }
+        return new ConvertToPng(new Dimension(600, 800), side).transform(vedleggRepository.hentVedleggData(soknadId, vedleggId));
     }
 
     @Override
@@ -410,14 +422,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                         forventning.getSkjemaNummer());
         List<byte[]> bytes = new ArrayList<>();
         for (Vedlegg vedlegg : vedleggUnderBehandling) {
-            InputStream inputStream = vedleggRepository.hentVedleggStream(
-                    soknadId, vedlegg.getVedleggId());
-            try {
-                bytes.add(IOUtils.toByteArray(inputStream));
-            } catch (IOException e) {
-                throw new RuntimeException("Kunne ikke merge filer", e);
-            }
-
+            bytes.add(vedleggRepository.hentVedleggData(soknadId, vedlegg.getVedleggId()));
         }
         byte[] doc = pdfMerger.transform(bytes);
         doc = watermarker.forIdent(getSubjectHandler().getUid(), false).transform(doc);
@@ -440,8 +445,13 @@ public class SoknadService implements SendSoknadService, VedleggService {
         return paakrevdeVedlegg;
     }
 
+    @Override
+    public SoknadStruktur hentSoknadStruktur(Long soknadId) {
+        return hentStruktur(repository.hentSoknadType(soknadId));
+    }
+
     private void genererVedleggForFaktum(Faktum faktum) {
-        SoknadStruktur struktur = hentStruktur(repository.hentSoknadType(faktum.getSoknadId()));
+        SoknadStruktur struktur = hentSoknadStruktur(faktum.getSoknadId());
         List<SoknadVedlegg> aktuelleVedlegg = struktur.vedleggFor(faktum.getKey());
         for (SoknadVedlegg soknadVedlegg : aktuelleVedlegg) {
             Vedlegg vedlegg = vedleggRepository.hentVedleggForskjemaNummer(faktum.getSoknadId(), soknadVedlegg.getFlereTillatt() ? faktum.getFaktumId() : null, soknadVedlegg.getSkjemaNummer());
@@ -470,7 +480,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
         if (soknadVedlegg.getProperty() != null && faktum.getProperties().containsKey(soknadVedlegg.getProperty())) {
             vedlegg.setNavn(faktum.getProperties().get(soknadVedlegg.getProperty()));
-        } else if(soknadVedlegg.harOversetting()){
+        } else if (soknadVedlegg.harOversetting()) {
             vedlegg.setNavn(navMessageSource.getMessage(soknadVedlegg.getOversetting().replace("${key}", faktum.getKey()), new Object[0], new Locale("nb", "NO")));
         }
         vedleggRepository.lagreVedlegg(faktum.getSoknadId(), vedlegg.getVedleggId(), vedlegg);
@@ -496,7 +506,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         }
         return false;
     }
-    
+
     public void leggTilKodeverkFelter(List<Vedlegg> vedlegg) {
         for (Vedlegg v : vedlegg) {
             medKodeverk(v);
@@ -505,7 +515,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     private void medKodeverk(Vedlegg vedlegg) {
         try {
-            Map<Kodeverk.Nokkel, String> koder = kodeverk.getKoder(vedlegg.getSkjemaNummer());
+            Map<Kodeverk.Nokkel, String> koder = kodeverk.getKoder(vedlegg.getSkjemaNummerFiltrert());
             for (Entry<Nokkel, String> nokkelEntry : koder.entrySet()) {
                 if (nokkelEntry.getKey().toString().contains("URL")) {
                     vedlegg.leggTilURL(nokkelEntry.getKey().toString(), koder.get(nokkelEntry.getKey()));
@@ -534,6 +544,5 @@ public class SoknadService implements SendSoknadService, VedleggService {
         } catch (JAXBException e) {
             throw new RuntimeException("Kunne ikke laste definisjoner. ", e);
         }
-
     }
 }

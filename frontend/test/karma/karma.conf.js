@@ -7,25 +7,27 @@ module.exports = function (config) {
         // base path, that will be used to resolve files and exclude
         basePath: '',
 
-
         // frameworks to use
         frameworks: ['jasmine'],
 
+        preprocessors: {
+            '../../js/app/**/*.js': ['coverage'],
+            '../../js/common/**/*.js': ['coverage'],
+            '../../js/**/*.html': 'ng-html2js'
+        },
 
         // list of files / patterns to load in the browser
         files: [
             '../../js/lib/jquery/jquery-1.10.2.js',
             '../../js/lib/jquery/jquery-ui.js',
-            'lib/TimeoutBoxMock.js',
             '../../js/lib/angular/angular.js',
-            'lib/angular-mocks.js',
+            'lib/*.js',
             '../../js/lib/angular/angular-resource.js',
             '../../js/lib/angular/angular-sanitize.js',
             '../../js/lib/angular/angular-cookies.js',
             '../../js/lib/bindonce.js',
             '../../js/app/**/*.js',
             '../../js/common/**/*.js',
-
             '../../js/lib/jquery/jquery.iframe-transport.js',
             '../../js/lib/jquery/jquery.fileupload.js',
             '../../js/lib/jquery/jquery.fileupload-process.js',
@@ -33,12 +35,13 @@ module.exports = function (config) {
             '../../js/lib/jquery/jquery.fileupload-angular.js',
             'test/*.js',
             'test/directives/*.js',
-            'test/controllers/*.js'
+            'test/controllers/*.js',
+            '../../js/**/*.html'
         ],
 
         // list of files to exclude
         exclude: [
-
+            '../../js/app/**/templates.js'
         ],
 
         // test results reporter to use
@@ -72,9 +75,6 @@ module.exports = function (config) {
         // - PhantomJS
         // - IE (only Windows)
        browsers: ['Chrome', 'Firefox', 'IE'],
-//         browsers: ['PhantomJS'],
-
-        //plugins: ['karma-phantomjs-runner', 'karma-jasmine'],
 
         // If browser does not capture in given timeout [ms], kill it
         captureTimeout: 60000,
@@ -91,12 +91,17 @@ module.exports = function (config) {
             'karma-firefox-launcher',
             'karma-ie-launcher',
             'karma-junit-reporter',
-            'karma-coverage'
+            'karma-coverage',
+            'karma-ng-html2js-preprocessor'
         ],
 
-        preprocessors: {
-            '../../js/app/**/*.js': ['coverage'],
-            '../../js/common/**/*.js': ['coverage']
+        ngHtml2JsPreprocessor: {
+            moduleName: 'templates-main',
+            cacheIdFromPath: function(filepath) {
+                var idx = filepath.indexOf('js/');
+                var path = '../' + filepath.substring(idx);
+                return path;
+            }
         },
 
         coverageReporter: {

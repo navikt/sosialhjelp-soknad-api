@@ -7,17 +7,16 @@ h4 {
     margin-top: 0;
 }
 
+#reellarbeidssoker .arbeidsmengde-container {
+    input {
+        width: 44px;
+    }
+}
+
 .form-linje:not(.feil) {
     .infoboks.siste-element {
         margin-bottom: 15px;
     }
-}
-
-
-.informasjonstekst {
-    font-size: 1rem;
-    font-weight: bold;
-    padding: 0 15px;
 }
 
 .svar-oppsummering-hake {
@@ -133,6 +132,7 @@ h4 {
     }
 }
 
+
 .ekstra-spm-boks {
     padding-top: 35px;
     padding-bottom: 35px;
@@ -181,6 +181,14 @@ h4 {
 
         + .vedlegginfoboks {
             margin-top: 30px;
+        }
+    }
+
+    > .vedlegginfoboks {
+        &:first-child {
+            border-top: none;
+            padding-top: 0;
+            margin-top: 0;
         }
     }
 

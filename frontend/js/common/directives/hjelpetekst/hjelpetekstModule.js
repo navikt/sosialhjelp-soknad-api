@@ -1,5 +1,5 @@
 angular.module('nav.hjelpetekst', ['nav.animation'])
-	.directive('navHjelpetekstelement', ['$document', '$window', function ($document, $window) {
+	.directive('navHjelpetekstelement', ['$document', '$window', '$timeout', function ($document, $window, $timeout) {
 		return {
 			replace    : true,
 			scope      : {
@@ -28,7 +28,9 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
 
 				$document.bind('click', function (event) {
                     if (lukkEventTimestamp !== event.timeStamp) {
-                        scope.visHjelp = false;
+                        $timeout(function() {
+                            scope.visHjelp = false;
+                        });
                     }
 				});
 			}
@@ -43,7 +45,6 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
             $($window).bind('resize', function() {
                 if ($window.innerWidth > mobilStorrelse) {
                     plasserTooltipHorisontalt();
-
                     if ($($window).data('forrigeBredde') <= mobilStorrelse) {
                         plasserTooltipVertikalt();
                     }
@@ -55,6 +56,7 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
             });
 
             $('style:contains(.hjelpetekst .hjelpetekst-tooltip:before)').remove();
+
             $timeout(function() {
                 plasserTooltipHorisontalt();
                 scrollDersomNodvendig();
@@ -71,9 +73,9 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
 
             function plasserTooltipHorisontalt() {
                 var plassSomMangleTilHoyre = element[0].getBoundingClientRect().right + 40 - (window.innerWidth || document.documentElement.clientWidth);
-                var venstre = Math.min(element.position().left - plassSomMangleTilHoyre, -20);
+                var venstre = Math.min(element.position().left - plassSomMangleTilHoyre, -15);
                 element.css({left: venstre});
-                settPilStyling(venstre);
+                settPilStyling(venstre - 5);
             }
 
             function scrollDersomNodvendig() {

@@ -7,5 +7,6 @@ angular.module('sendsoknad', [
 	'pasvaz.bindonce',
 	'ngAnimate',
 	'ngCookies',
+    'ngSanitize',
     'templates-main'
 ]);

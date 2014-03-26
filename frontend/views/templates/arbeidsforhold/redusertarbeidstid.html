@@ -1,12 +1,23 @@
-<div class="varighet form-linje">
-    <h4 class="spm-sporsmal">{{ 'arbeidsforhold.arbeidsgiver.varighet.label' | cmstekst }}</h4>
-    <div data-nav-dato-intervall
-         data-fra-dato="sluttaarsak.properties.datofra"
-         data-til-dato="sluttaarsak.properties.datotil"
-         data-label="arbeidsforhold.arbeidsgiver.varighet"
-         data-er-begge-required="true"
-         data-lagre="lagreFaktum()">
+<div class="spm form-linje redusert">
+    <h4 class="spm-sporsmal" data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.varighet.label' | cmstekst"></h4>
+    <div class="varighet">
+        <div data-nav-dato
+             data-ng-model="sluttaarsak.properties.datofra"
+             data-label="arbeidsforhold.arbeidsgiver.varighet.fra"
+             data-er-required="true"
+             data-required-error-message="arbeidsforhold.arbeidsgiver.varighet.fra.feilmelding">
+        </div>
     </div>
+
+    <div class="varighet">
+        <div data-nav-dato
+             data-ng-model="sluttaarsak.properties.redusertfra"
+             data-label="arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.sporsmal"
+             data-er-required="true"
+             data-er-fremtidigdato-tillatt="true"
+             data-required-error-message="arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.feilmelding">
+        </div>
+    </div>  
 </div>
 
 <div data-booleanradio
@@ -16,24 +27,21 @@
 
 <div class="fiks-siste-boks ekstra-spm-boks" data-ng-if="sluttaarsak.properties.nyttTilbud == 'true'">
     <div data-navinfoboks>
-        <p>{{ 'arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.true.informasjon' | cmstekst }}</p>
+        <p data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.redusertArbeidstid.nyttTilbud.true.informasjon' | cmstekst"></p>
     </div>
 </div>
 
 <div class="ekstra-spm-boks">
     <div data-navinfoboks>
-        <p class="sluttaarsak-informasjon">{{ 'arbeidsforhold.sluttaarsak.redusertArbeidstid.informasjon' | cmstekst }}</p>
+        <p class="sluttaarsak-informasjon" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.redusertArbeidstid.informasjon' | cmstekst"></p>
     </div>
     <div data-vedlegginfoboks>
         <ul>
             <li>
-                <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</p>
+                <p data-ng-bind-html="'Dagpenger.vedlegg.O2.header' | cmstekst"></p>
             </li>
             <li>
-                <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2' | cmstekst }}</p>
-                <a href="{{ sluttaarsakUrl }}">
-                    {{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst' | cmstekst }}
-                </a>
+                <span data-ng-bind-html=" 'Dagpenger.vedlegg.T8.header' | cmstekst"></span>
             </li>
         </ul>
     </div>

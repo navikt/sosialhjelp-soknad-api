@@ -22,6 +22,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.BOSTEDSADRESSE;
@@ -35,11 +36,14 @@ public class AdresseTransform {
     private Kodeverk kodeverk;
 
     private static final Logger logger = getLogger(AdresseTransform.class);
+    private static final String NORGE = "NOR";
 
     public Adresse mapGjeldendeAdresse(XMLBruker soapPerson, Kodeverk kodeverk) {
         this.kodeverk = kodeverk;
 
-        if (harMidlertidigAdresseSomErGjeldendeAdresse(soapPerson)) {
+        if(harHemmeligAdresse(soapPerson)){
+            return new Adresse();
+        } else if (harMidlertidigAdresseSomErGjeldendeAdresse(soapPerson)) {
             return finnMidlertidigAdresse(soapPerson.getMidlertidigPostadresse());
         } else if (harStrukturertAdresseSomErGjeldendeAdresse(soapPerson)) {
             return hentBostedsAdresse((XMLGateadresse) soapPerson.getBostedsadresse().getStrukturertAdresse());
@@ -50,10 +54,17 @@ public class AdresseTransform {
         }
     }
 
+    private static List<String> HEMMELIGE_DISKRESJONSKODER = Arrays.asList("6","7");
+    private boolean harHemmeligAdresse(XMLBruker soapPerson) {
+        return soapPerson.getDiskresjonskode() != null && HEMMELIGE_DISKRESJONSKODER.contains(soapPerson.getDiskresjonskode().getValue());
+    }
+
     public Adresse mapSekundarAdresse(XMLBruker soapPerson, Kodeverk kodeverk) {
         this.kodeverk = kodeverk;
 
-        if (harMidlertidigAdresseSomIkkeErGjeldendeAdresse(soapPerson)) {
+        if(harHemmeligAdresse(soapPerson)){
+            return new Adresse();
+        } else if (harMidlertidigAdresseSomIkkeErGjeldendeAdresse(soapPerson)) {
             return finnMidlertidigAdresse(soapPerson.getMidlertidigPostadresse());
         } else if (harStrukturertAdresseSomIkkeErGjeldendeAdresse(soapPerson)) {
             return hentBostedsAdresse((XMLGateadresse) soapPerson.getBostedsadresse().getStrukturertAdresse());
@@ -177,6 +188,7 @@ public class AdresseTransform {
     private Adresse finnPostAdresse(XMLPostadresse postadresse) {
         XMLUstrukturertAdresse ustrukturertAdresse = postadresse.getUstrukturertAdresse();
         Adresse adresse = retrieveFolkeregistrertUtenlandskAdresse(ustrukturertAdresse);
+        adresse.setLandkode(ustrukturertAdresse.getLandkode().getValue());
         List<String> adresseLinjer = hentAdresseLinjer(ustrukturertAdresse);
         addIfNotNull(adresseLinjer, getLand(ustrukturertAdresse.getLandkode()));
         adresse.setAdresse(StringUtils.join(adresseLinjer, ", "));
@@ -202,7 +214,8 @@ public class AdresseTransform {
 
     private Adresse retrieveFolkeregistrertUtenlandskAdresse(XMLUstrukturertAdresse ustrukturertAdresse) {
         Adresse adresse = new Adresse();
-        if (ustrukturertAdresse.getLandkode() != null && "NOR".equals(ustrukturertAdresse.getLandkode().getValue())) {
+        adresse.setLandkode(ustrukturertAdresse.getLandkode().getValue());
+        if (ustrukturertAdresse.getLandkode() != null && NORGE.equals(ustrukturertAdresse.getLandkode().getValue())) {
             adresse.setAdressetype(POSTADRESSE.name());
         } else {
             adresse.setAdressetype(UTENLANDSK_ADRESSE.name());
@@ -297,10 +310,11 @@ public class AdresseTransform {
         adresse.setAdressetype(MIDLERTIDIG_POSTADRESSE_NORGE.name());
         adresse.setGyldigFra(dateTimeFormat.print(gyldigFra));
         adresse.setGyldigTil(dateTimeFormat.print(gyldigTil));
-
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(xmlGateAdresse.getTilleggsadresse());
-        stringBuilder.append(", ");
+        if(xmlGateAdresse.getTilleggsadresse() != null) {
+            stringBuilder.append(xmlGateAdresse.getTilleggsadresse());
+            stringBuilder.append(", ");
+        }
         stringBuilder.append(xmlGateAdresse.getGatenavn());
         stringBuilder.append(" ");
         stringBuilder.append(getHusnummer(xmlGateAdresse));

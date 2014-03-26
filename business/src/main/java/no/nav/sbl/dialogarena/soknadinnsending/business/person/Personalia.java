@@ -5,7 +5,12 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetyp
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.POSTADRESSE_UTLAND;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
 
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosLandService;
+
+
 public class Personalia {
+
+    private static EosLandService eosLandService = new EosLandService();
 
     public static final String PERSONALIA_KEY = "personalia";
     public static final String FNR_KEY = "fnr";
@@ -19,6 +24,7 @@ public class Personalia {
     public static final String GJELDENDEADRESSE_TYPE_KEY = "gjeldendeAdresseType";
     public static final String GJELDENDEADRESSE_GYLDIGFRA_KEY = "gjeldendeAdresseGyldigFra";
     public static final String GJELDENDEADRESSE_GYLDIGTIL_KEY = "gjeldendeAdresseGyldigTil";
+    public static final String GJELDENDEADRESSE_LANDKODE = "gjeldendeAdresseLandkode";
     public static final String SEKUNDARADRESSE_KEY = "sekundarAdresse";
     public static final String SEKUNDARADRESSE_TYPE_KEY = "sekundarAdresseType";
     public static final String SEKUNDARADRESSE_GYLDIGFRA_KEY = "sekundarAdresseGyldigFra";
@@ -102,6 +108,7 @@ public class Personalia {
 
     public boolean harUtenlandskAdresse() {
         String adressetype = null;
+
         if(gjeldendeAdresse != null) {
             adressetype = gjeldendeAdresse.getAdressetype(); 
         }
@@ -110,6 +117,33 @@ public class Personalia {
             return false;
         }
 
+        if (harUtenlandsAdressekode(adressetype)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean harUtenlandskAdresseIEOS() {
+
+        String adressetype = null;
+        String landkode =  null;
+        if(gjeldendeAdresse != null) {
+            adressetype = gjeldendeAdresse.getAdressetype();
+            landkode = gjeldendeAdresse.getLandkode();
+        }
+
+        if (adressetype == null) {
+            return false;
+        }
+
+        if ((harUtenlandsAdressekode(adressetype)) && (eosLandService.isEosLandAnnetEnnNorge(landkode)))
+        {
+               return true;
+        }
+        return false;
+    }
+
+    private boolean harUtenlandsAdressekode(String adressetype) {
         if (adressetype.equalsIgnoreCase(MIDLERTIDIG_POSTADRESSE_UTLAND.name()) ||
                 adressetype.equalsIgnoreCase(POSTADRESSE_UTLAND.name()) ||
                 adressetype.equalsIgnoreCase(UTENLANDSK_ADRESSE.name())) {
@@ -135,6 +169,7 @@ public class Personalia {
     }
 
     public boolean harUtenlandskFolkeregistrertAdresse() {
+
         if ((gjeldendeAdresse == null) || (gjeldendeAdresse.getAdressetype() == null))
         {
             return false;
@@ -144,4 +179,5 @@ public class Personalia {
         }
         return false;
     }
+
 }

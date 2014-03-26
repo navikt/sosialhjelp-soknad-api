@@ -1,13 +1,26 @@
-<div data-panelbelyst id="kvittering">
+<div class="hvit-side" data-panelbelyst id="kvittering">
 	<div data-ng-controller="FortsettSenereKvitteringCtrl">
-        <h2 class="stor">{{ 'dagpenger.fortsettSenere.kvittering.tittel' | cmstekst }}</h2>
-    	<p>{{ 'dagpenger.fortsettSenere.kvittering.tekst' | cmstekst }}</p>
-        <span> {{ epost.value }}</span>
-    	<a href="#/fortsettsenere">{{ 'dagpenger.fortsettSenere.kvittering.sendpaanyttlink' | cmstekst }}</a>
-    	<p>{{ 'dagpenger.fortsettSenere.kvittering.frist' | cmstekst }}</p>
-    	<p>{{ 'dagpenger.fortsettSenere.kvittering.konsekvens-vente' | cmstekst }}</p>
-    	<a href="#{{ forrigeSide }}">{{ 'dagpenger.fortsettSenere.fortsettlink' | cmstekst }}</a>
-    	<a href="{{ inngangsportenUrl }}" id="dittnav" role="link">{{ 'dagpenger.fortsettSenere.dittNav' | cmstekst }}</a>
+        <h2 class="stor strek-ikon-innboks" data-ng-bind-html=" 'dagpenger.fortsettSenere.kvittering.tittel' | cmstekst"></h2>
+    	<div id="epost-sendt">
+            <p class="informasjonstekst" data-ng-bind-html=" 'dagpenger.fortsettSenere.kvittering.tekst' | cmstekst"></p>
+            <span> {{ epost.value }}</span>
+    	</div>
+
+        <div id="knapper">
+            <div>
+                <a class="knapp-link" href="#/fortsettsenere" data-ng-bind-html=" 'dagpenger.fortsettSenere.kvittering.sendpaanyttlink' | cmstekst"></a>
+            </div>
+
+
+            <ul class="liste-vannrett">
+                <li>
+                    <a href="#{{ forrigeSide }}" data-ng-bind-html=" 'dagpenger.fortsettSenere.fortsettlink' | cmstekst"></a>
+                </li>
+                <li>
+                    <a href="{{ dittnavUrl }}" id="dittnav" role="link" data-ng-bind-html=" 'dagpenger.fortsettSenere.dittNav' | cmstekst"></a>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
 

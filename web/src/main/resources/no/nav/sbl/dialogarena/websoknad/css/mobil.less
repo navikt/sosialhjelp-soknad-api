@@ -2,6 +2,10 @@
     @flipp-size: 25px;
     @flipp-shadow-size: 54px;
 
+    .initial-loader {
+        padding-top: 30%;
+    }
+
     body {
         font-size: 1.14rem;
     }
@@ -140,111 +144,6 @@
                 width: 1.8rem;
                 height: 1.8rem;
                 background-size: 1rem;
-            }
-        }
-    }
-
-    #vedlegg {
-        .rad-belyst {
-            padding-left: 25px;
-            padding-right: 25px;
-
-            .begrensning {
-                width: 100%;
-
-                [class*="panel-"] {
-                    width: 100%;
-                }
-            }
-        }
-
-        .vedlegg {
-            .lastetopp, .behandlet {
-                h2 {
-                    &:before {
-                        width: 1.8rem;
-                        height: 1.8rem;
-                        background-size: 1rem;
-                    }
-                }
-            }
-
-            .panel-standard {
-                padding-left: 25px;
-                padding-right: 25px;
-            }
-
-            .bildenavigering {
-                [class*='pil-venstre'] {
-                    left: 0;
-                }
-                [class*='pil-hoyre'] {
-                    right: 0;
-                }
-            }
-        }
-    }
-
-    #visvedlegg, .vedlegg {
-        .bildenavigering {
-            position: relative;
-
-            [class*='pil-'] {
-                position: absolute;
-                height: 42px;
-                width: 42px;
-                background-size: 42px;
-                top: 23%;
-                z-index: 1000;
-            }
-        }
-    }
-
-    #visvedlegg {
-        .bildenavigering {
-            width: 100%;
-
-            [class*='pil-'] {
-                margin-top: 25%;
-            }
-
-            [class*='pil-venstre'] {
-                left: 10px;
-            }
-            [class*='pil-hoyre'] {
-                right: 10px;
-            }
-
-            .bilde {
-                width: 80%;
-
-                img {
-                    top: 0;
-                }
-            }
-
-            .tilbake {
-                width: auto;
-                padding: 6px 10px;
-
-                &.mobil {
-                    display: block;
-                }
-
-                &.ikke-mobil{
-                    display: none;
-                }
-            }
-        }
-    }
-    #opplasting {
-        #opplastingform {
-            .begrensning {
-                width: 100%;
-
-                .opplastingliste li {
-                    width: 90%;
-                }
             }
         }
     }

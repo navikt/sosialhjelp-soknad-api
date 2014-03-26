@@ -6,11 +6,11 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>sendsoknad</artifactId>
-        <version>1.0.10-SNAPSHOT</version>
+        <version>1.0.24</version>
     </parent>
 
     <artifactId>sendsoknad-consumer</artifactId>
-    <version>1.0.10-SNAPSHOT</version>
+    <version>1.0.24</version>
     <name>${project.artifactId}</name>
 
     <dependencies>
@@ -122,6 +122,10 @@
         <dependency>
             <groupId>no.nav.modig</groupId>
             <artifactId>modig-log-jaxws</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.modig</groupId>
+            <artifactId>modig-log-common</artifactId>
         </dependency>
 
         <!-- CXF deps END -->

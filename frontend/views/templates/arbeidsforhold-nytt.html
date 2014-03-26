@@ -1,11 +1,11 @@
 <div data-modalside>
     <div class="vertikal arbeidsforhold-spm" data-ng-controller="ArbeidsforholdNyttCtrl"
          data-ng-form="nyttArbeidsforholdForm">
-        <a href="#/soknad" class="lukk"></a>
+        <a href="#/soknad" class="lukk" aria-label="{{'arbeidsforhold.nyttarbeidsforhold.lukk.aria' | cmstekst}}"></a>
 
         <div data-form-errors></div>
         <h2 class="stor-strek">
-            <span>{{ 'arbeidsforhold.nyttarbeidsforhold.tittel' | cmstekst }}</span>
+            <span data-ng-bind-html=" 'arbeidsforhold.nyttarbeidsforhold.tittel' | cmstekst"></span>
         </h2>
 
         <div data-nav-faktum="arbeidsforhold" data-ikke-auto-lagre="true">
@@ -19,7 +19,7 @@
 
             <div class="land form-linje tekstfelt">
                 <label for="land">
-                    <span class="labeltekst">{{ 'arbeidsforhold.arbeidsgiver.land' | cmstekst }}</span>
+                    <span class="labeltekst" data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.land' | cmstekst"></span>
                 </label>
                 <select data-blur-validate
                         id="land"
@@ -35,14 +35,14 @@
                 <div class="ekstra-spm-boks" data-vedlegginfoboks>
                     <ul>
                         <li>
-                            {{ 'arbeidsforhold.arbeidsgiver.land.norge.vedlegginformasjon' | cmstekst}}
+                            {{ 'Dagpenger.vedlegg.S9.header' | cmstekst}}
                         </li>
                     </ul>
                 </div>
             </div>
 
-            <div class="spm boolean form-linje">
-                <h4 class="spm-sporsmal">{{ 'arbeidsforhold.arbeidsgiver.sluttaarsak.informasjon' | cmstekst }}</h4>
+            <div class="spm boolean form-linje sluttaarsak-valg">
+                <h4 class="spm-sporsmal" data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.sluttaarsak.informasjon' | cmstekst"></h4>
 
                 <div class="nav-radio-knapp">
                     <input class="sendsoknad-radio"
@@ -57,6 +57,8 @@
                            data-aktiv-feilmelding>
                     <label for='radio5'>{{ 'arbeidsforhold.sluttaarsak.radio.sagtOppAvArbeidsgiver' | cmstekst
                         }}</label>
+                    <div data-nav-hjelpetekstelement data-tittel="{{ 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.hjelpetekst.tittel' | cmstekst }}"
+                         data-tekst="{{ 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.hjelpetekst.tekst' | cmstekst }}"></div>
                 </div>
 
                 <div class="nav-radio-knapp">
@@ -70,7 +72,9 @@
                            data-click-validate
                            data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'"
                            data-aktiv-feilmelding>
-                    <label for='radio7'>{{ 'arbeidsforhold.sluttaarsak.radio.permittert' | cmstekst }}</label>
+                    <label for='radio7' data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.radio.permittert' | cmstekst"></label>
+                    <div data-nav-hjelpetekstelement data-tittel="{{ 'arbeidsforhold.sluttaarsak.permittert.hjelpetekst.tittel' | cmstekst }}"
+                         data-tekst="{{ 'arbeidsforhold.sluttaarsak.permittert.hjelpetekst.tekst' | cmstekst }}"></div>
                 </div>
 
                 <div class="nav-radio-knapp">
@@ -84,7 +88,7 @@
                            data-ng-required="true"
                            data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'"
                            data-aktiv-feilmelding>
-                    <label for='radio1'>{{ 'arbeidsforhold.sluttaarsak.radio.kontraktutgaatt' | cmstekst }}</label>
+                    <label for='radio1' data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.radio.kontraktutgaatt' | cmstekst"></label>
                 </div>
 
                 <div class="nav-radio-knapp">
@@ -98,7 +102,9 @@
                            data-click-validate
                            data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'"
                            data-aktiv-feilmelding>
-                    <label for='radio6'>{{ 'arbeidsforhold.sluttaarsak.radio.sagtOppSelv' | cmstekst }}</label>
+                    <label for='radio6' data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.radio.sagtOppSelv' | cmstekst"></label>
+                    <div data-nav-hjelpetekstelement data-tittel="{{ 'arbeidsforhold.sluttaarsak.sagtoppselv.hjelpetekst.tittel' | cmstekst }}"
+                         data-tekst="{{ 'arbeidsforhold.sluttaarsak.sagtoppselv.hjelpetekst.tekst' | cmstekst }}"></div>
                 </div>
 
                 <div class="nav-radio-knapp">
@@ -112,7 +118,7 @@
                            data-click-validate
                            data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'"
                            data-aktiv-feilmelding>
-                    <label for='radio3'>{{ 'arbeidsforhold.sluttaarsak.radio.redusertArbeidstid' | cmstekst }}</label>
+                    <label for='radio3' data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.radio.redusertArbeidstid' | cmstekst"></label>
                 </div>
 
                 <div class="nav-radio-knapp">
@@ -141,7 +147,9 @@
                            data-click-validate
                            data-error-messages="'arbeidsforhold.arbeidsgiver.sluttaarsak.feilmelding'"
                            data-aktiv-feilmelding>
-                    <label for='radio2'>{{ 'arbeidsforhold.sluttaarsak.radio.avskjediget' | cmstekst }}</label>
+                    <label for='radio2' data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.radio.avskjediget' | cmstekst"></label>
+                    <div data-nav-hjelpetekstelement data-tittel="{{ 'arbeidsforhold.sluttaarsak.avskjediget.hjelpetekst.tittel' | cmstekst }}"
+                         data-tekst="{{ 'arbeidsforhold.sluttaarsak.avskjediget.hjelpetekst.tekst' | cmstekst }}"></div>
                 </div>
 
                 <span class="melding"></span>
@@ -155,7 +163,7 @@
                 <input class="knapp-hoved-liten" type="submit"
                        value="{{ 'arbeidsforhold.nyttarbeidsforhold.lagre' | cmstekst }}"
                        data-ng-click="lagreArbeidsforhold(nyttArbeidsforholdForm);">
-                <a href="#/soknad">{{ 'arbeidsforhold.nyttarbeidsforhold.avbryt' | cmstekst }}</a>
+                <a href="#/soknad" data-ng-bind-html=" 'arbeidsforhold.nyttarbeidsforhold.avbryt' | cmstekst"></a>
             </div>
         </div>
 

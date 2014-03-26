@@ -1,17 +1,17 @@
 <div data-modalside>
     <div class="vertikal barn-spm" data-ng-form="nyttBarnForm" data-ng-controller="BarneCtrl">
-        <a href="#/soknad" data-ng-click="avbrytBarnetilegg($event)" class="lukk"></a>
+        <a href="#/soknad" data-ng-click="avbrytBarnetilegg($event)" class="lukk" aria-label="{{ 'barnetillegg.nyttbarn.lukk.aria' | cmstekst }}"></a>
         <div data-form-errors></div>
 
         <h2 class="stor-strek" data-ng-if="endrerSystemregistrertBarn()">
-            <span>{{ 'barnetillegg.sokerbarnetillegg.tittel' | cmstekst }}</span>
+            <span data-ng-bind-html=" 'barnetillegg.sokerbarnetillegg.tittel' | cmstekst"></span>
             <span data-ng-bind="barnenavn"></span>
         </h2>
 
         <div data-nav-faktum="barn" data-ikke-auto-lagre="true">
             <div data-ng-if="leggerTilNyttBarnEllerEndrerBarn()">
                 <div data-form-errors></div>
-                <h2 class="stor-strek">{{ 'barnetillegg.nyttbarn.tittel' | cmstekst }}</h2>
+                <h2 class="stor-strek" data-ng-bind-html=" 'barnetillegg.nyttbarn.tittel' | cmstekst"></h2>
 
 
                 <div data-navtekst
@@ -50,7 +50,7 @@
                 </div>
 
                 <div class="land form-linje tekstfelt">
-                    <h4 class="spm-sporsmal">{{ 'barnetillegg.nyttbarn.land.sporsmal' | cmstekst }}</h4>
+                    <h4 class="spm-sporsmal" data-ng-bind-html=" 'barnetillegg.nyttbarn.land.sporsmal' | cmstekst"></h4>
                     <label>
                         <span class="labeltekst">
                             {{ 'barnetillegg.nyttbarn.land' | cmstekst }}
@@ -70,21 +70,19 @@
 
             <div data-ng-if="erEosLandAnnetEnnNorge()">
                 <div class="ekstra-spm-boks" data-navinfoboks>
-                    <p class="sluttaarsak-informasjon">{{ 'barnetillegg.nyttbarn.land.eos' | cmstekst }}</p>
+                    <p class="sluttaarsak-informasjon" data-ng-bind-html=" 'barnetillegg.nyttbarn.land.eos' | cmstekst"></p>
                 </div>
             </div>
             <div data-ng-if="erIkkeEosLand()">
                 <div class="ekstra-spm-boks" data-navinfoboks>
-                    <p class="sluttaarsak-informasjon">{{ 'barnetillegg.nyttbarn.land.ikkeeos' | cmstekst }}</p>
+                    <p class="sluttaarsak-informasjon" data-ng-bind-html=" 'barnetillegg.nyttbarn.land.ikkeeos' | cmstekst"></p>
                 </div>
             </div>
 
-            <div data-ng-if="barn.properties.land == 'NOR'">
+            <div data-ng-if="barn.properties.land === 'NOR'">
                 <div class="ekstra-spm-boks" data-vedlegginfoboks>
                     <ul>
-                        <li>
-                            {{ 'barnetillegg.nyttbarn.land.norge.vedlegginformasjon' | cmstekst}}
-                        </li>
+                        <li data-ng-bind-html="'Dagpenger.vedlegg.X8.header' | cmstekst"></li>
                     </ul>
                 </div>
             </div>

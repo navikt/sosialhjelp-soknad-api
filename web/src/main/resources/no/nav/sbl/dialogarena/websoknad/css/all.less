@@ -13,6 +13,10 @@ input[type="number"]::-webkit-outer-spin-button {
     background-color: #fff;
 }
 
+.hvit-side {
+    border-bottom: none;
+}
+
 :invalid {
     box-shadow: none;
 }
@@ -40,7 +44,13 @@ input[type="number"]::-webkit-outer-spin-button {
 .informasjonstekst {
     font-weight: bold;
     font-size: 1rem;
-    font-weight: bold;
+}
+
+.initial-loader {
+    margin: 0 auto;
+    width: 30%;
+    max-width: 128px;
+    padding-top: 10%;
 }
 
 .infoboks {
@@ -56,7 +66,7 @@ input[type="number"]::-webkit-outer-spin-button {
         display: inline-block;
 
         .utrop-sirkel-ikon {
-            background-image: url(../img/utrop.svg);
+            background-image: url(../img/info_26.svg);
             background-position: center top;
             background-repeat: no-repeat;
             padding-top: 46px;
@@ -66,10 +76,6 @@ input[type="number"]::-webkit-outer-spin-button {
             text-align: left;
         }
     }
-}
-
-.ekstra-spm-boks &.vedlegginfoboks {
-    padding-bottom: 0px !important;
 }
 
 .informasjonstekst-utrop {
@@ -82,7 +88,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .vedlegginfoboks {
-    border-top: 1px solid #ddd !important;
+    border-top: 1px solid #ddd;
     margin-left: 15px;
     margin-right: 15px;
     padding-top: 30px;
@@ -187,6 +193,22 @@ input[type="number"]::-webkit-outer-spin-button {
             background-color: #5f5e5d;
             border: 1px solid #5f5e5d;
         }
+      .lukk {
+        width: 32px;
+        top: 0px;
+        background: url("../img/kryss_bla.svg");
+        background-color: transparent;
+        background-repeat: no-repeat;
+        background-position: 4.5px;
+
+        &:hover {
+          background: url("../img/kryss_svart.svg");
+          background-repeat: no-repeat;
+          background-position: 4.5px;
+          background-color: #0ca9e1;
+        }
+      }
+
     }
 }
 
@@ -217,10 +239,15 @@ input[type="number"]::-webkit-outer-spin-button {
     padding: 0;
 }
 
+.accordion {
+    overflow: hidden;
+    padding-top: 2px;
+    background-color: #f1f1f1;
+}
+
 .collapse {
     position: relative;
     height: 0;
-    overflow: hidden;
     .transition(height .2s ease);
 }
 
@@ -230,6 +257,10 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .skjematittel, .sentrert {
     text-align: center;
+}
+
+.venstrestilt {
+    text-align: left;
 }
 
 [class*="panel-standard"].skjema {
@@ -765,6 +796,10 @@ form, [ng-form], [data-ng-form] {
     }
 }
 
+.fremdriftsindikator {
+    margin-bottom: 20px;
+}
+
 [class*="infogronn"] {
     background-image: url(../img/under-dark.png), url(../img/info.svg) !important;
     background-position: bottom center, center 0;
@@ -784,5 +819,12 @@ form, [ng-form], [data-ng-form] {
 
     &:hover {
         background: url("../img/kryss_hover.svg");
+    }
+}
+
+#ytelser {
+    .hjelpetekst {
+        position: relative;
+        top: 0;
     }
 }

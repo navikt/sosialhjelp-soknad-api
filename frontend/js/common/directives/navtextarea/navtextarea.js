@@ -1,5 +1,5 @@
 angular.module('nav.textarea', [])
-	.directive('navtextarea', ['cms', function (cms) {
+	.directive('navtextarea', ['cms', '$timeout', function (cms, $timeout) {
 		var linker = function (scope) {
 			if (scope.attr('data-obligatorisk')) {
 				return '../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html';
@@ -27,18 +27,16 @@ angular.module('nav.textarea', [])
                     scope.harIkkeFeil = true;
 					var harFokus = false;
 
-					element.find('textarea').bind('focus', function () {
-                        harFokus = true;
-                        if(!scope.feil) {
-                            scope.$apply();
-                        }
+                    element.find('textarea').bind('focus', function () {
+                        $timeout(function() {
+                            harFokus = true;
+                        });
                     });
 
 					element.find('textarea').bind('blur', function () {
-                        harFokus = false;
-                        if(!scope.feil) {
-                            scope.$apply();
-                        }
+                        $timeout(function() {
+                            harFokus = false;
+                        });
 					});
 
                     scope.harSporsmal = function() {
