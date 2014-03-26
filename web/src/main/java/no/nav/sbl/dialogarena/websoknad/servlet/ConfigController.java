@@ -1,13 +1,17 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.batch.LagringsScheduler;
+import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.ConfigService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
+import no.nav.sbl.dialogarena.websoknad.config.ContentConfig;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
@@ -26,6 +30,12 @@ public class ConfigController {
     ConfigService configService;
     @Inject
     LagringsScheduler lagringsScheduler;
+    @Inject
+    private CacheManager cacheManager;
+    @Inject
+    private NavMessageSource messageSource;
+    @Inject
+    private ContentConfig contentConfig;
 
     @RequestMapping(value = "/getConfig", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     @ResponseBody()
@@ -43,5 +53,17 @@ public class ConfigController {
     @RequestMapping(value="/internal/lagre")
     public void kjorLagring() throws InterruptedException {
         lagringsScheduler.mellomlagreSoknaderOgNullstillLokalDb();
+    }
+    @RequestMapping(value="/internal/reset")
+    @ResponseBody
+    public String resetCache(@RequestParam("type") String type){
+        if("cms".equals(type)){
+            cacheManager.getCache("cms.content").clear();
+            cacheManager.getCache("cms.article").clear();
+            contentConfig.lastInnNyeInnholdstekster();
+            messageSource.clearCache();
+            return "CACHE RESET OK";
+        }
+        return "OK";
     }
 }

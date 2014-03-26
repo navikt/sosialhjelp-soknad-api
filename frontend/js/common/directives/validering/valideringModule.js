@@ -18,10 +18,10 @@ angular.module('nav.validering', ['nav.cmstekster'])
                 }
 
                 // Rekkefølgen på setup-metodene bestemmer prioriteten på valideringsmetodene
-                valideringsMetoder.push(new RequiredValidator(attrs));
-                valideringsMetoder.push(new PatternValidator(attrs));
-                valideringsMetoder.push(new LengthValidator(attrs));
-                valideringsMetoder.push(new ValueValidator(attrs));
+                valideringsMetoder.push(new RequiredValidator(scope, attrs));
+                valideringsMetoder.push(new PatternValidator(scope, attrs));
+                valideringsMetoder.push(new LengthValidator(scope, attrs));
+                valideringsMetoder.push(new ValueValidator(scope, attrs));
 
                 scope.$on(eventString, function () {
                     if (!sjekkOmInputErGyldig() && !element.hasClass(".ng-valid")) {

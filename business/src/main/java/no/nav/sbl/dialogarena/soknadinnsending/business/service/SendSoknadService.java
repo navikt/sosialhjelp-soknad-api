@@ -23,8 +23,6 @@ public interface SendSoknadService {
 
     void sendSoknad(long soknadId, byte[] outputStream);
 
-
-
     void avbrytSoknad(Long soknadId);
 
     List<Faktum> hentFakta(Long soknadId);
