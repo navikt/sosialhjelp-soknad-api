@@ -242,23 +242,40 @@ angular.module('nav.input', ['nav.cmstekster'])
             }
         };
     }])
-    .directive('kunTall', [function() {
+    .directive('tallRange', [function() {
         return {
             restrict: 'A',
-            require: 'ngModel',
+            require: ['ngModel', '^form'],
             link: {
-                pre: function(scope, element, attrs, ngModel) {
-                    scope.faktum.value = parseFloat(scope.faktum.value);
-                    var maxLength = parseInt(attrs.kunTall);
-                    element.keypress(function(e) {
-                        if (ngModel.$viewValue && maxLength && ngModel.$viewValue.length >= maxLength) {
-                            return false;
-                        }else if (!String.fromCharCode(e.keyCode).match(/[0-9\.]/)) {
-                            return false;
-                        } else if (String.fromCharCode(e.keyCode) === '.' && ngModel.$viewValue.indexOf('.') > -1) {
-                            return false;
-                        }
-                    });
+                pre: function(scope, element, attrs, ctrls) {
+                    var ngModel = ctrls[0];
+
+                    if (attrs.min) {
+                        var min = parseFloat(attrs.min);
+                        ngModel.$parsers.push(function(input) {
+                            var num = parseFloat(input);
+                            if (isNaN(num)) {
+                                return input;
+                            }
+
+
+                            ngModel.$setValidity('min', num > min);
+                            return input;
+                        });
+                    }
+
+                    if (attrs.max) {
+                        var max = parseFloat(attrs.max);
+                        ngModel.$parsers.push(function(input) {
+                            var num = parseFloat(input);
+                            if (isNaN(num)) {
+                                return input;
+                            }
+
+                            ngModel.$setValidity('max', num < max);
+                            return input;
+                        });
+                    }
                 }
             }
         };
