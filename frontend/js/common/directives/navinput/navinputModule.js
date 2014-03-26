@@ -246,17 +246,20 @@ angular.module('nav.input', ['nav.cmstekster'])
         return {
             restrict: 'A',
             require: 'ngModel',
-            link: function(scope, element, attrs, ngModel) {
-                var maxLength = parseInt(attrs.kunTall);
-                element.keypress(function(e) {
-                    if (ngModel.$viewValue && maxLength && ngModel.$viewValue.length >= maxLength) {
-                        return false;
-                    }else if (!String.fromCharCode(e.keyCode).match(/[0-9\.]/)) {
-                        return false;
-                    } else if (String.fromCharCode(e.keyCode) === '.' && ngModel.$viewValue.indexOf('.') > -1) {
-                        return false;
-                    }
-                });
+            link: {
+                pre: function(scope, element, attrs, ngModel) {
+                    scope.faktum.value = parseFloat(scope.faktum.value);
+                    var maxLength = parseInt(attrs.kunTall);
+                    element.keypress(function(e) {
+                        if (ngModel.$viewValue && maxLength && ngModel.$viewValue.length >= maxLength) {
+                            return false;
+                        }else if (!String.fromCharCode(e.keyCode).match(/[0-9\.]/)) {
+                            return false;
+                        } else if (String.fromCharCode(e.keyCode) === '.' && ngModel.$viewValue.indexOf('.') > -1) {
+                            return false;
+                        }
+                    });
+                }
             }
         };
     }]);
