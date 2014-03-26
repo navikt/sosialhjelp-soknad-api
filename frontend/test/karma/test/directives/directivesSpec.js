@@ -1,7 +1,7 @@
 describe('directives', function () {
     var scope, form, element, checkbox;
 
-    beforeEach(module('app.directives'));
+    beforeEach(module('sendsoknad.directives'));
     beforeEach(module(function ($provide) {
         $provide.value("data", {
         });

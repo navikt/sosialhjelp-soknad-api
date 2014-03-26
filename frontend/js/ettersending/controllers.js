@@ -9,5 +9,6 @@ angular.module('ettersending.controllers', [
     'nav.adresse',
     'nav.behandlingside',
     'nav.bekreftelse',
-    'nav.ettersending'
+    'nav.ettersending',
+    'nav.truncatehover'
 ]);
