@@ -8,7 +8,6 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         $scope.alderspensjonUrl = data.config["soknad.alderspensjon.url"];
         $scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];
         $scope.reelArbeidsokerUrl = data.config["soknad.reelarbeidsoker.url"];
-        $scope.dagpengerBrosjyreUrl = data.config["soknad.dagpengerbrosjyre.url"];
         $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
 
         $scope.oppsummering = false;
@@ -99,17 +98,16 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
             return !$scope.kravForDagpengerOppfylt() && $scope.soknadErIkkeFerdigstilt();
         };
 
-
-        $scope.registrertArbeidssoker = function () {
-            return sjekkUtslagskriterier.erRegistrertArbeidssoker();
-        };
-
         $scope.gyldigAlder = function () {
             return sjekkUtslagskriterier.harGyldigAlder();
         };
 
         $scope.bosattINorge = function () {
             return sjekkUtslagskriterier.erBosattINorge();
+        };
+
+        $scope.registrertArbeidssoker = function () {
+            return sjekkUtslagskriterier.erRegistrertArbeidssoker();
         };
 
         $scope.ikkeRegistrertArbeidssoker = function () {
@@ -147,7 +145,7 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
 
         return {
             erOppfylt: function () {
-                return (registrertArbeidssoker() || !ikkeRegistertArbeidssoker()) && gyldigAlder() && bosattINorge();
+                return registrertArbeidssoker() && gyldigAlder() && bosattINorge();
             },
 
             harGyldigAlder: function () {
