@@ -141,6 +141,7 @@ angular.module('sendsoknad.routes', ['ngRoute'])
                     }]
                 }
             })
+            // TODO: Tror denne kan fjernes
             .when('/slettet', {
                 templateUrl: '../views/templates/soknadSlettet.html',
                 resolve: {
@@ -173,40 +174,6 @@ angular.module('sendsoknad.routes', ['ngRoute'])
                     }]
                 }
             })
-            .when('/ettersending', {
-                templateUrl: '../views/templates/ettersending/startEttersending.html',
-                resolve: {
-                    notUsedButRequiredProperty: ['StartEttersendingService', function (StartEttersendingService) {
-                        return StartEttersendingService;
-                    }]
-                }
-            })
-
-            .when('/ettersending/:soknadId', {
-                templateUrl: '../views/templates/ettersending/ettersending.html',
-                resolve: {
-                    notUsedButRequiredProperty: ['HentEttersendingsService', function (HentEttersendingsService) {
-                        return HentEttersendingsService;
-                    }]
-                }
-            })
-            .when('/ettersending/opplasting/:vedleggId', {
-                templateUrl: '../views/templates/ettersending/opplastingEttersending.html',
-                resolve: {
-                    notUsedButRequiredProperty: ['HentEttersendingsService', function (HentEttersendingsService) {
-                        return HentEttersendingsService;
-                    }]
-                }
-            })
-            .when('/ettersending/visVedlegg/:vedleggId', {
-                templateUrl: '../views/templates/vedlegg/visvedlegg.html',
-                resolve: {
-                    notUsedButRequiredProperty: ['HentEttersendingsService', function (HentEttersendingsService) {
-                        return HentEttersendingsService;
-                    }]
-                }
-            })
-
             .when('/',
                 {redirectTo: '/informasjonsside'}
             )

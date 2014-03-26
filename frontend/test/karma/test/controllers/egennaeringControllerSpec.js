@@ -6,7 +6,7 @@
         event = $.Event("click");
 
         beforeEach(module('ngCookies', 'sendsoknad.services'));
-        beforeEach(module('app.controllers', 'nav.feilmeldinger'));
+        beforeEach(module('sendsoknad.controllers', 'nav.feilmeldinger'));
 
         beforeEach(module(function ($provide) {
             var fakta = [

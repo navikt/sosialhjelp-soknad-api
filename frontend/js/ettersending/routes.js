@@ -44,7 +44,7 @@ angular.module('ettersending.routes', ['ngRoute'])
                 }
             })
             .when('/opplasting/:vedleggId', {
-                templateUrl: '../views/templates/vedlegg/opplasting.html',
+                templateUrl: '../views/ettersending/opplastingEttersending.html',
                 resolve: {
                     notUsedButRequiredProperty: ['HentEttersendingsService', function (HentEttersendingsService) {
                         return HentEttersendingsService;

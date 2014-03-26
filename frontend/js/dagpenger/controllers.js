@@ -22,6 +22,5 @@ angular.module('sendsoknad.controllers', [
     'nav.behandlingside',
     'nav.avbryt',
     'nav.bekreftelse',
-    'nav.tilleggsopplysninger',
-    'nav.ettersending'
+    'nav.tilleggsopplysninger'
 ]);

@@ -6,7 +6,12 @@
      data-ng-controller="OpplastingVedleggCtrl"
      data-fetch-spinner="64">
 
-    <div data-ng-include="'../views/templates/vedlegg/opplasting-navn.html'"></div>
+    <div class="begrensning sak-halv">
+        <div class="panel uten-ramme">
+            <h1 class="stor-ikon-vedlegg-strek" data-scrolling-tittel><span data-ng-if="vedlegg.vedleggId">{{vedlegg.tittel}}</span><span
+                    data-ng-if="vedlegg.navn">: {{vedlegg.navn}}</span></h1>
+        </div>
+    </div>
 
     <form id="opplastingform" method="POST" enctype="multipart/form-data" data-file-upload="options" data-ng-controller="OpplastingCtrl">
         <div class="begrensning">

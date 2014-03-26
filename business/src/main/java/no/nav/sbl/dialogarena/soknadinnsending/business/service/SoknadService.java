@@ -484,6 +484,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                             .medAntallSider(1)
                             .medData(null)
                             .medOpprettetDato(vedlegg.getOpprettetDato())
+                            .medFillagerReferanse(vedlegg.getFillagerReferanse())
                             .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
 
                     resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
@@ -538,7 +539,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
                 .hentVedlegg(soknadId, vedleggId);
         List<Vedlegg> vedleggUnderBehandling = vedleggRepository
                 .hentVedleggUnderBehandling(soknadId,
-                        forventning.getSkjemaNummer());
+                        forventning.getFillagerReferanse());
         List<byte[]> bytes = new ArrayList<>();
         for (Vedlegg vedlegg : vedleggUnderBehandling) {
             bytes.add(vedleggRepository.hentVedleggData(soknadId, vedlegg.getVedleggId()));
@@ -548,9 +549,13 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
         forventning.leggTilInnhold(doc, vedleggUnderBehandling.size());
         WebSoknad soknad = repository.hentSoknad(soknadId);
-        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(),
-                forventning.getFillagerReferanse(), soknad.getAktoerId(),
-                new ByteArrayInputStream(doc));
+
+        if (soknad.erEttersending()) {
+            fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(),
+                    forventning.getFillagerReferanse(), soknad.getAktoerId(),
+                    new ByteArrayInputStream(doc));
+        }
+
         vedleggRepository.slettVedleggUnderBehandling(soknadId,
                 forventning.getFaktumId(), forventning.getSkjemaNummer());
         vedleggRepository.lagreVedleggMedData(soknadId, vedleggId, forventning);
