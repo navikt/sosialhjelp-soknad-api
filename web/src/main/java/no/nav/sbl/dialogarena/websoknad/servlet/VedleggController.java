@@ -125,7 +125,7 @@ public class VedleggController {
                     .medNavn(forventning.getNavn())
                     .medStorrelse(file.getSize())
                     .medAntallSider(1)
-                    .medFillagerReferanse(null)
+                    .medFillagerReferanse(forventning.getFillagerReferanse())
                     .medData(in)
                     .medOpprettetDato(forventning.getOpprettetDato())
                     .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
@@ -143,7 +143,7 @@ public class VedleggController {
     @SjekkTilgangTilSoknad
     public List<Vedlegg> hentVedleggUnderBehandling(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
         Vedlegg forventning = vedleggService.hentVedlegg(soknadId, vedleggId, false);
-        return vedleggService.hentVedleggUnderBehandling(soknadId, forventning.getFaktumId(), forventning.getSkjemaNummer());
+        return vedleggService.hentVedleggUnderBehandling(soknadId, forventning.getFillagerReferanse());
     }
 
     @RequestMapping(value = "/{vedleggId}/generer", method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)

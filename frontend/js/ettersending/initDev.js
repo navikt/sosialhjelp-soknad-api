@@ -1,4 +1,4 @@
-angular.module('sendsoknad')
+angular.module('ettersending')
     .run(['$http', '$templateCache', function ($http, $templateCache) {
         $http.get('../views/templates/reellarbeidssoker/reell-arbeidssoker.html', {cache: $templateCache});
         $http.get('../views/templates/egennaering/egen-naering.html', {cache: $templateCache});
