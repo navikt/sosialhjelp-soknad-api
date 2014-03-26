@@ -5,8 +5,8 @@
         var scope, ctrl, form, event;
         event = $.Event("click");
 
-        beforeEach(module('app.services'));
-        beforeEach(module('app.controllers'));
+        beforeEach(module('sendsoknad.services'));
+        beforeEach(module('sendsoknad.controllers'));
 
         beforeEach(module(function ($provide) {
             var fakta = [

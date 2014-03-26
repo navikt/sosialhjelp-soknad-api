@@ -5,8 +5,8 @@
         var scope, ctrl, form, element, barn, $httpBackend, event, location, epost;
         event = $.Event("click");
 
-        beforeEach(module('ngCookies', 'app.services'));
-        beforeEach(module('app.controllers', 'nav.feilmeldinger'));
+        beforeEach(module('ngCookies', 'sendsoknad.services'));
+        beforeEach(module('sendsoknad.controllers', 'nav.feilmeldinger'));
 
         beforeEach(module(function ($provide) {
             var fakta = [
@@ -69,7 +69,7 @@
 
         beforeEach(inject(function ($injector, $rootScope, $controller, $compile) {
             $httpBackend = $injector.get('$httpBackend');
-            $httpBackend.expectGET('../js/app/directives/feilmeldinger/feilmeldingerTemplate.html').
+            $httpBackend.expectGET('../js/common/directives/feilmeldinger/feilmeldingerTemplate.html').
                 respond('');
 
             scope = $rootScope;

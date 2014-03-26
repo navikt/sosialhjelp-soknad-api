@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.websoknad.pages.startsoknad;
 
 import no.nav.modig.core.exception.ApplicationException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.websoknad.pages.basepage.BasePage;
@@ -24,10 +25,10 @@ public class EttersendingPage extends BasePage {
             throw new ApplicationException("Kan ikke starte ettersending uten behandlingsID for en søknad");
         }
 
-        Long soknadId = soknadService.hentEttersendingForBehandlingskjedeId(brukerbehandlingId.toString());
-        if (soknadId != null) {
+        WebSoknad soknad = soknadService.hentEttersendingForBehandlingskjedeId(brukerbehandlingId.toString());
+        if (soknad != null) {
             new CookieUtils().remove("XSRF-TOKEN");
-            new CookieUtils().save("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId));
+            new CookieUtils().save("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknad.getSoknadId()));
         }
     }
 }

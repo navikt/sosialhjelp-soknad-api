@@ -1,4 +1,5 @@
-angular.module('sendsoknad.directives', [
+angular.module('ettersending.directives', [
+	'ettersending.services',
 	'nav.booleanradio',
 	'nav.cmstekster',
 	'nav.input',

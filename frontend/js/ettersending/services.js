@@ -4,11 +4,10 @@
     'use strict';
 
     // TODO: Denne modulen må ryddes opp i
-    angular.module('sendsoknad.services', ['ngResource'])
+    angular.module('ettersending.services', ['ngResource'])
 
         .config(['$httpProvider', function ($httpProvider) {
             $httpProvider.interceptors.push('resetTimeoutInterceptor');
-            $httpProvider.interceptors.push('settDelstegStatusEtterKallMotServer');
             $httpProvider.interceptors.push('xsrfRelast');
 
             if (getIEVersion() < 10) {
@@ -37,38 +36,6 @@
                 }
             };
         }])
-        // Oppdaterer delstegstatus dersom man gjør endringer på faktum eller vedlegg
-        .factory('settDelstegStatusEtterKallMotServer', ['data', function (data) {
-            return {
-                'response': function(response) {
-                    if (response === undefined) {
-                        return response;
-                    }
-
-                    if (response.config.method === 'POST') {
-                        if (data.soknad) {
-                            data.soknad.sistLagret = new Date().getTime();
-                        }
-                        var urlArray = response.config.url.split('/');
-                        if (urlArray.contains('fakta') && response.data.key !== 'epost') {
-                            data.soknad.delstegStatus = 'UTFYLLING';
-                        } else if (urlArray.contains('vedlegg')) {
-                            data.soknad.delstegStatus = 'SKJEMA_VALIDERT';
-                        } else if (urlArray.contains('delsteg')) {
-                            if (response.config.data.delsteg === "vedlegg") {
-                                data.soknad.delstegStatus = 'SKJEMA_VALIDERT';
-                            } else if (response.config.data.delsteg === "oppsummering") {
-                                data.soknad.delstegStatus = 'VEDLEGG_VALIDERT';
-                            } else {
-                                data.soknad.delstegStatus = 'UTFYLLING';
-                            }
-                        }
-                    }
-                    return response;
-                }
-            };
-        }])
-
         // Legger på tilfeldige tall sist i GET-requests for å forhindre caching i IE
         .factory('httpRequestInterceptorPreventCache', [function() {
             return {
@@ -78,33 +45,21 @@
                             config.url = config.url + '?rand=' + new Date().getTime();
                         }
                     }
+
                     return config;
                 }
             };
         }])
 
-    /**
-     * Service som henter en søknad fra henvendelse
-     */
-        .factory('soknadService', ['$resource', function ($resource) {
-            return $resource('/sendsoknad/rest/soknad/:action/:soknadId',
-                { soknadId: '@soknadId', soknadType: '@soknadType', delsteg: '@delsteg'},
+        /**
+         * Service som henter en søknad fra henvendelse
+         */
+        .factory('ettersendingService', ['$resource', function ($resource) {
+            return $resource('/sendsoknad/rest/ettersending/:action/:behandlingsId',
+                { behandlingsId: '@behandlingsId' },
                 {
-                    create : {
-                        method: 'POST',
-                        url: '/sendsoknad/rest/soknad/opprett'
-                    },
-                    send   : { method: 'POST', params: {soknadId: '@soknadId', action: 'send' }},
-                    remove : { method: 'POST', params: {soknadId: '@soknadId', action: 'delete' }},
-                    options: { method: 'GET', params: {soknadId: '@soknadId', action: 'options' }},
-                    behandling: { method: 'GET', params: {soknadId: '@soknadId', action: 'behandling' }},
-                    metadata: { method: 'GET', params: {soknadId: '@soknadId', action: 'metadata' }},
-                    opprettEttersending: { method: 'POST', params: {action: 'ettersending'}},
-                    delsteg: {
-                        method: 'POST',
-                        params: {soknadId: '@soknadId', delsteg: '@delsteg' },
-                        url: '/sendsoknad/rest/soknad/delsteg/:soknadId/:delsteg'
-                    }
+                    create : { method: 'POST' },
+                    send   : { method: 'POST', params: { behandlingsId: '@behandlingsId', action: 'send' }}
                 }
             );
         }])

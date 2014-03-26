@@ -1,9 +1,9 @@
 angular.module('sendsoknad', [
 	'ui.keypress',
-	'app.routes',
-	'app.services',
-	'app.directives',
-	'app.controllers',
+	'sendsoknad.routes',
+	'sendsoknad.services',
+	'sendsoknad.directives',
+	'sendsoknad.controllers',
 	'pasvaz.bindonce',
 	'ngAnimate',
 	'ngCookies',

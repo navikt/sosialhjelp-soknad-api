@@ -38,9 +38,9 @@ angular.module('nav.bildenavigering', [])
 
             templateUrl: function (element, attr) {
                 if (attr.selvstendig) {
-                    return '../js/dagpenger/directives/bildenavigering/bildenavigeringTemplateStor.html';
+                    return '../js/common/directives/bildenavigering/bildenavigeringTemplateStor.html';
                 } else {
-                    return '../js/dagpenger/directives/bildenavigering/bildenavigeringTemplateLiten.html';
+                    return '../js/common/directives/bildenavigering/bildenavigeringTemplateLiten.html';
                 }
             }
         };

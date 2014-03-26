@@ -5,8 +5,8 @@
         var scope, ctrl, form, event;
         event = $.Event("click");
 
-        beforeEach(module('ngCookies', 'app.services'));
-        beforeEach(module('app.controllers'));
+        beforeEach(module('ngCookies', 'sendsoknad.services'));
+        beforeEach(module('sendsoknad.controllers'));
 
         beforeEach(module(function ($provide) {
             $provide.value("data", {});

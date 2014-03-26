@@ -26,7 +26,7 @@ module.exports = function (config) {
             '../../js/lib/angular/angular-sanitize.js',
             '../../js/lib/angular/angular-cookies.js',
             '../../js/lib/bindonce.js',
-            '../../js/app/**/*.js',
+            '../../js/dagpenger/**/*.js',
             '../../js/common/**/*.js',
             '../../js/lib/jquery/jquery.iframe-transport.js',
             '../../js/lib/jquery/jquery.fileupload.js',
@@ -41,7 +41,7 @@ module.exports = function (config) {
 
         // list of files to exclude
         exclude: [
-            '../../js/app/**/templates.js'
+            '../../js/dagpenger/**/templates.js'
         ],
 
         // test results reporter to use
@@ -74,7 +74,7 @@ module.exports = function (config) {
         // - Safari (only Mac)
         // - PhantomJS
         // - IE (only Windows)
-       browsers: ['Chrome', 'Firefox', 'IE'],
+       browsers: ['Chrome'],
 
         // If browser does not capture in given timeout [ms], kill it
         captureTimeout: 60000,
