@@ -40,9 +40,11 @@
      data-nav-faktum-property="permitteringProsent"
      data-navlabel="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.label"
      data-navsporsmal="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad"
-     data-navfeilmelding="{required:'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.feilmelding', max: 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.maxverdi.feilmelding'}"
+     data-navfeilmelding="{required:'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.feilmelding', pattern: 'regex.tall', max: 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.maxverdi.feilmelding'}"
      data-navminvalue="0"
-     data-navmaxvalue="100">
+     data-navmaxvalue="100"
+     data-regexvalidering="/^\d+$/"
+     data-navmaxlength="3">
 </div>
 
 <div class="ekstra-spm-boks">
