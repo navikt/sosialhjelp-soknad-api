@@ -34,24 +34,15 @@
     </div>
 </div>
 
-
-<div class="tekstfelt form-linje prosentfelt">
-    <h4 class="spm-sporsmal">
-        {{ 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad' | cmstekst }}
-    </h4>
-    <label>
-        <span class="labeltekst" data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.label' | cmstekst"></span>
-        <input data-ng-model="sluttaarsak.properties.permitteringProsent"
-               type="text"
-               data-ng-required="true"
-               data-error-messages="{required:'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.feilmelding', pattern: 'regex.tall'}"
-               data-ng-pattern="/^\d+$/"
-               data-blur-validate
-               maxlength="3"
-               data-tekstfelt-patternvalidering
-               data-aktiv-feilmelding/>
-        <span class="melding"></span>
-    </label>
+<div class="prosentfelt"
+     data-navtall
+     data-navconfig
+     data-nav-faktum-property="permitteringProsent"
+     data-navlabel="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.label"
+     data-navsporsmal="arbeidsforhold.sluttaarsak.permittert.permitteringsgrad"
+     data-navfeilmelding="{required:'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.feilmelding', max: 'arbeidsforhold.sluttaarsak.permittert.permitteringsgrad.maxverdi.feilmelding'}"
+     data-navminvalue="0"
+     data-navmaxvalue="100">
 </div>
 
 <div class="ekstra-spm-boks">

@@ -54,10 +54,6 @@ angular.module('nav.barnetillegg', [])
             $scope.barn = data.finnFakta('barn');
         };
 
-        $scope.kreverVedlegg = function (barn) {
-            return ($scope.barnetilleggErRegistrert(barn) && $scope.barnetHarInntekt(barn)) || $scope.norskBarnIkkeFunnetITPS(barn);
-        };
-
         $scope.norskBarnIkkeFunnetITPS = function (barn) {
             if (barn && barn.properties) {
                 return barn.type === 'BRUKERREGISTRERT' && barn.properties.land === "NOR";
