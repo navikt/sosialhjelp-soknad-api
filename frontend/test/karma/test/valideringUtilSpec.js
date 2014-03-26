@@ -3,22 +3,27 @@ describe('validering hjelpefunksjoner', function () {
 
     describe('required', function () {
         var feilReturVerdi = 'required';
+        var scope;
 
         beforeEach(function() {
             metodeArray = [];
         });
 
+        beforeEach(inject(function ($rootScope) {
+            scope = $rootScope;
+        }));
+
         it('validate skal legge til valideringsmetoden i array når attrs inneholder key required', function() {
-            attrs = {required: true};
-            metodeArray.push(new RequiredValidator(attrs));
+            attrs = {ngRequired: 'true'};
+            metodeArray.push(new RequiredValidator(scope, attrs));
             expect(metodeArray.length).toBe(1);
         });
 
         it('skal kunne kalle valideringsmetoden som er lagt til array', function() {
             var returVerdi;
             var verdi = "123";
-            attrs = {required: true};
-            metodeArray.push(new RequiredValidator(attrs));
+            attrs = {ngRequired: 'true'};
+            metodeArray.push(new RequiredValidator(scope, attrs));
             returVerdi = metodeArray[0].validate(verdi);
             expect(returVerdi).toBeDefined();
         });
@@ -26,8 +31,8 @@ describe('validering hjelpefunksjoner', function () {
         it('skal få true dersom verdien inneholder tekst', function() {
             var returVerdi;
             var verdi = "123";
-            attrs = {required: true};
-            metodeArray.push(new RequiredValidator(attrs));
+            attrs = {ngRequired: 'true'};
+            metodeArray.push(new RequiredValidator(scope, attrs));
             returVerdi = metodeArray[0].validate(verdi);
             expect(returVerdi).toBe(true);
         });
@@ -35,8 +40,8 @@ describe('validering hjelpefunksjoner', function () {
         it('skal få nøkkel til feilmelding dersom verdien er en tom string', function() {
             var returVerdi;
             var verdi = "";
-            attrs = {required: true};
-            metodeArray.push(new RequiredValidator(attrs));
+            attrs = {ngRequired: 'true'};
+            metodeArray.push(new RequiredValidator(scope, attrs));
             returVerdi = metodeArray[0].validate(verdi);
             expect(returVerdi).toBe(feilReturVerdi);
         });
@@ -44,8 +49,8 @@ describe('validering hjelpefunksjoner', function () {
         it('skal få nøkkel til feilmelding dersom verdien er undefined', function() {
             var returVerdi;
             var verdi;
-            attrs = {required: true};
-            metodeArray.push(new RequiredValidator(attrs));
+            attrs = {ngRequired: 'true'};
+            metodeArray.push(new RequiredValidator(scope, attrs));
             returVerdi = metodeArray[0].validate(verdi);
             expect(returVerdi).toBe(feilReturVerdi);
         });
@@ -53,8 +58,17 @@ describe('validering hjelpefunksjoner', function () {
         it('skal få nøkkel til feilmelding dersom verdien er en string med bare whitespace', function() {
             var returVerdi;
             var verdi = "    ";
-            attrs = {required: true};
-            metodeArray.push(new RequiredValidator(attrs));
+            attrs = {ngRequired: 'true'};
+            metodeArray.push(new RequiredValidator(scope, attrs));
+            returVerdi = metodeArray[0].validate(verdi);
+            expect(returVerdi).toBe(feilReturVerdi);
+        });
+
+        it('skal få feil dersom attributen er boolean og inputverdien er feil', function() {
+            var returVerdi;
+            var verdi = "";
+            attrs = {ngRequired: true};
+            metodeArray.push(new RequiredValidator(scope, attrs));
             returVerdi = metodeArray[0].validate(verdi);
             expect(returVerdi).toBe(feilReturVerdi);
         });
@@ -70,7 +84,7 @@ describe('validering hjelpefunksjoner', function () {
 
         it('validate skal legge til valideringsmetoden i array når attrs inneholder key pattern', function() {
             attrs = {pattern: pattern};
-            metodeArray.push(new PatternValidator(attrs));
+            metodeArray.push(new PatternValidator(null, attrs));
             expect(metodeArray.length).toBe(1);
         });
 
@@ -78,7 +92,7 @@ describe('validering hjelpefunksjoner', function () {
             var returVerdi;
             var verdi = "abc";
             attrs = {pattern: pattern};
-            metodeArray.push(new PatternValidator(attrs));
+            metodeArray.push(new PatternValidator(null, attrs));
             returVerdi = metodeArray[0].validate(verdi);
             expect(returVerdi).toBeDefined();
         });
@@ -87,7 +101,7 @@ describe('validering hjelpefunksjoner', function () {
             var returVerdi;
             var verdi = "abc";
             attrs = {pattern: pattern};
-            metodeArray.push(new PatternValidator(attrs));
+            metodeArray.push(new PatternValidator(null, attrs));
             returVerdi = metodeArray[0].validate(verdi);
             expect(returVerdi).toBe(true);
         });
@@ -96,7 +110,7 @@ describe('validering hjelpefunksjoner', function () {
             var returVerdi;
             var verdi = "123";
             attrs = {pattern: pattern};
-            metodeArray.push(new PatternValidator(attrs));
+            metodeArray.push(new PatternValidator(null, attrs));
             returVerdi = metodeArray[0].validate(verdi);
             expect(returVerdi).toBe(feilReturVerdi);
         });
@@ -113,7 +127,7 @@ describe('validering hjelpefunksjoner', function () {
 
             it('validate skal legge til valideringsmetode i array når attrs inneholder key minlength', function() {
                 attrs = {minlength: 3};
-                metodeArray.push(new LengthValidator(attrs));
+                metodeArray.push(new LengthValidator(null, attrs));
                 expect(metodeArray.length).toBe(1);
             });
 
@@ -121,7 +135,7 @@ describe('validering hjelpefunksjoner', function () {
                 var returVerdi;
                 var verdi = "abc";
                 attrs = {minlength: 3};
-                metodeArray.push(new LengthValidator(attrs));
+                metodeArray.push(new LengthValidator(null, attrs));
                 returVerdi = metodeArray[0].validate(verdi);
                 expect(returVerdi).toBeDefined();
             });
@@ -130,7 +144,7 @@ describe('validering hjelpefunksjoner', function () {
                 var returVerdi;
                 var verdi = "abc";
                 attrs = {minlength: 3};
-                metodeArray.push(new LengthValidator(attrs));
+                metodeArray.push(new LengthValidator(null, attrs));
                 returVerdi = metodeArray[0].validate(verdi);
                 expect(returVerdi).toBe(true);
             });
@@ -139,7 +153,7 @@ describe('validering hjelpefunksjoner', function () {
                 var returVerdi;
                 var verdi = "ab";
                 attrs = {minlength: 3};
-                metodeArray.push(new LengthValidator(attrs));
+                metodeArray.push(new LengthValidator(null, attrs));
                 returVerdi = metodeArray[0].validate(verdi);
                 expect(returVerdi).toBe(feilReturVerdi);
             });
@@ -149,7 +163,7 @@ describe('validering hjelpefunksjoner', function () {
             var feilReturVerdi = 'maxlength';
             it('validate skal legge til valideringsmetode i array når attrs inneholder key maxlength', function() {
                 attrs = {maxlength: 6};
-                metodeArray.push(new LengthValidator(attrs));
+                metodeArray.push(new LengthValidator(null, attrs));
                 expect(metodeArray.length).toBe(1);
             });
 
@@ -157,7 +171,7 @@ describe('validering hjelpefunksjoner', function () {
                 var returVerdi;
                 var verdi = "abc";
                 attrs = {maxlength: 6};
-                metodeArray.push(new LengthValidator(attrs));
+                metodeArray.push(new LengthValidator(null, attrs));
                 returVerdi = metodeArray[0].validate(verdi);
                 expect(returVerdi).toBeDefined();
             });
@@ -166,7 +180,7 @@ describe('validering hjelpefunksjoner', function () {
                 var returVerdi;
                 var verdi = "abcdef";
                 attrs = {maxlength: 6};
-                metodeArray.push(new LengthValidator(attrs));
+                metodeArray.push(new LengthValidator(null, attrs));
                 returVerdi = metodeArray[0].validate(verdi);
                 expect(returVerdi).toBe(true);
             });
@@ -175,7 +189,7 @@ describe('validering hjelpefunksjoner', function () {
                 var returVerdi;
                 var verdi = "abcdefg";
                 attrs = {maxlength: 6};
-                metodeArray.push(new LengthValidator(attrs));
+                metodeArray.push(new LengthValidator(null, attrs));
                 returVerdi = metodeArray[0].validate(verdi);
                 expect(returVerdi).toBe(feilReturVerdi);
             });
@@ -184,7 +198,7 @@ describe('validering hjelpefunksjoner', function () {
         describe('gitt både minimumslengde og maximumslengde', function() {
             it('validate skal legge til begge valideringsmetodene i array når attrs inneholder både key maxlength og key minlength', function() {
                 attrs = {minlength: 3, maxlength: 6};
-                metodeArray.push(new LengthValidator(attrs));
+                metodeArray.push(new LengthValidator(null, attrs));
                 expect(metodeArray.length).toBe(1);
             });
 
@@ -192,7 +206,7 @@ describe('validering hjelpefunksjoner', function () {
                 var returVerdi1, returVerdi2;
                 var verdi = "abc";
                 attrs = {minlength: 3, maxlength: 6};
-                metodeArray.push(new LengthValidator(attrs));
+                metodeArray.push(new LengthValidator(null, attrs));
                 returVerdi = metodeArray[0].validate(verdi);
                 expect(returVerdi).toBe(true);
             });
@@ -201,7 +215,7 @@ describe('validering hjelpefunksjoner', function () {
                 var returVerdi;
                 var verdi = "abcd";
                 attrs = {minlength: 3, maxlength: 6};
-                metodeArray.push(new LengthValidator(attrs));
+                metodeArray.push(new LengthValidator(null, attrs));
 
                 returVerdi = metodeArray[0].validate(verdi);
                 expect(returVerdi).toBe(true);
@@ -210,7 +224,7 @@ describe('validering hjelpefunksjoner', function () {
                 var returVerdi;
                 var verdi = "abcdefgh";
                 attrs = {minlength: 3, maxlength: 6};
-                metodeArray.push(new LengthValidator(attrs));
+                metodeArray.push(new LengthValidator(null, attrs));
 
                 returVerdi = metodeArray[0].validate(verdi);
                 expect(returVerdi).toEqual('maxlength');
@@ -219,7 +233,7 @@ describe('validering hjelpefunksjoner', function () {
                 var returVerdi;
                 var verdi = "ab";
                 attrs = {minlength: 3, maxlength: 6};
-                metodeArray.push(new LengthValidator(attrs));
+                metodeArray.push(new LengthValidator(null, attrs));
 
                 returVerdi = metodeArray[0].validate(verdi);
                 expect(returVerdi).toEqual('minlength');

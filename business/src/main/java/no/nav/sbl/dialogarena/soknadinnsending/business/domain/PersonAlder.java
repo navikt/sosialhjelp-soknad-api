@@ -17,21 +17,33 @@ import static org.joda.time.Years.yearsBetween;
 public class PersonAlder implements Serializable{
 
     private LocalDate fodselsdato;
+    private LocalDate utslagsFodselsdato;
 
     public PersonAlder(String dNummerEllerFodselsnummer){
         this.fodselsdato = parse(hentFodselsdatoFraFnr(dNummerEllerFodselsnummer)).plusMonths(1);
+        this.utslagsFodselsdato = parse(hentUtslagsFodselsdatoFraFnr(dNummerEllerFodselsnummer)).plusMonths(1);
     }
-	public int getAlder() {
+
+    public int getAlder() {
         return yearsBetween(fodselsdato, new LocalDate()).getYears();
+    }
+
+	public int getUtslagsAlder() {
+        return yearsBetween(utslagsFodselsdato, new LocalDate()).getYears();
 	}
 	
 	public Boolean sjekkAlder() {
-		return getAlder() < 67;
+		return getUtslagsAlder() < 67;
 	}
+
+    private String hentUtslagsFodselsdatoFraFnr(String fodselsnummer){
+        Fodselsnummer fnr = getFodselsnummer(fodselsnummer);
+        return fnr.getBirthYear() + "-" + fnr.getMonth() + "-01";
+    }
 
     private String hentFodselsdatoFraFnr(String fodselsnummer){
         Fodselsnummer fnr = getFodselsnummer(fodselsnummer);
-        return fnr.getBirthYear() + "-" + fnr.getMonth() + "-01";
+        return fnr.getBirthYear() + "-" + fnr.getMonth() + "-" + fnr.getDayInMonth();
     }
 
 }

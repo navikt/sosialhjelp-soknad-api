@@ -1,7 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
 import no.nav.modig.core.exception.ApplicationException;
-
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosLandService;
@@ -12,6 +11,7 @@ import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPrefer
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBostedsadresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLBruker;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLDiskresjonskoder;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLEPost;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskAdresse;
 import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLElektroniskKommunikasjonskanal;
@@ -47,13 +47,11 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.test.annotation.ExpectedException;
 
 import javax.xml.ws.WebServiceException;
 import java.math.BigInteger;
@@ -354,6 +352,22 @@ public class DefaultPersonaliaServiceTest {
                 is(dateTimeFormat.print(EN_ANNEN_ADRESSE_GYLDIG_FRA)));
         assertThat(sekundarAdresse.getGyldigTil(),
                 is(dateTimeFormat.print(EN_ANNEN_ADRESSE_GYLDIG_TIL)));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void returnererPersonObjektMedTomAdresseInformasjonVedDiskresjonskoder() throws Exception {
+        mockGyldigPersonMedAdresse();
+        xmlBruker.setDiskresjonskode(new XMLDiskresjonskoder().withValue("6"));
+
+        Personalia personalia = personaliaService.hentPersonalia(RIKTIG_IDENT);
+        assertThat(personalia, is(not(nullValue())));
+
+        Adresse gjeldendeAdresse = personalia.getGjeldendeAdresse();
+        Adresse sekundarAdresse = personalia.getSekundarAdresse();
+
+        assertThat(gjeldendeAdresse.getAdresse(), is(nullValue()));
+        assertThat(sekundarAdresse.getAdresse(), is(nullValue()));
     }
 
     @SuppressWarnings("unchecked")
