@@ -550,7 +550,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         forventning.leggTilInnhold(doc, vedleggUnderBehandling.size());
         WebSoknad soknad = repository.hentSoknad(soknadId);
 
-        if (soknad.erEttersending()) {
+        if (!soknad.erEttersending()) {
             fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(),
                     forventning.getFillagerReferanse(), soknad.getAktoerId(),
                     new ByteArrayInputStream(doc));
