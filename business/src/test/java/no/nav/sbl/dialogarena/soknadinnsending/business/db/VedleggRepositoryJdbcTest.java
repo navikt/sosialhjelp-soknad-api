@@ -39,7 +39,7 @@ public class VedleggRepositoryJdbcTest {
         vedleggRepository.opprettVedlegg(v, bytes);
 
         List<Vedlegg> vedlegg = vedleggRepository.hentVedleggUnderBehandling(v.getSoknadId(), v.getFillagerReferanse());
-        assertThat(vedlegg.size(), is(equalTo(1)));
+         assertThat(vedlegg.size(), is(equalTo(1)));
         v.setVedleggId(vedlegg.get(0).getVedleggId());
         assertThat(vedlegg.get(0), is(equalTo(v)));
     }
@@ -121,7 +121,7 @@ public class VedleggRepositoryJdbcTest {
                 .medNavn("navn")
                 .medStorrelse((long) bytes.length)
                 .medAntallSider(1)
-                .medFillagerReferanse(null)
+                .medFillagerReferanse("1234")
                 .medData(null)
                 .medOpprettetDato(DateTime.now().getMillis())
                 .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
