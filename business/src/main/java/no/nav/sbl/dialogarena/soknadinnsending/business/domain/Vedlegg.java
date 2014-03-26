@@ -6,6 +6,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +17,7 @@ import java.util.UUID;
  * Domeneklasse som beskriver et vedlegg.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Vedlegg {
     private Long vedleggId;
     private Long soknadId;
@@ -115,6 +118,23 @@ public class Vedlegg {
 
     public Long getSoknadId() {
         return soknadId;
+    }
+
+    public void setSoknadId(Long soknadId) {
+        this.soknadId = soknadId;
+    }
+
+
+    public void setFaktumId(Long faktumId) {
+        this.faktumId = faktumId;
+    }
+
+    public void setStorrelse(Long storrelse) {
+        this.storrelse = storrelse;
+    }
+
+    public void setAntallSider(Integer antallSider) {
+        this.antallSider = antallSider;
     }
 
     public Long getFaktumId() {
@@ -263,6 +283,18 @@ public class Vedlegg {
         } else {
             innsendingsvalg = Status.VedleggKreves;
         }
+    }
+
+    public String getSkjemaNummerFiltrert() {
+        if (getSkjemaNummer() != null && getSkjemaNummer().contains("|")) {
+            return getSkjemaNummer().substring(0, getSkjemaNummer().indexOf("|"));
+        }
+        return getSkjemaNummer();
+    }
+
+    @JsonIgnore
+    public String lagFilNavn() {
+        return getSkjemaNummer().equals("N6") ? getNavn() : getSkjemaNummerFiltrert();
     }
 
     public enum Status {

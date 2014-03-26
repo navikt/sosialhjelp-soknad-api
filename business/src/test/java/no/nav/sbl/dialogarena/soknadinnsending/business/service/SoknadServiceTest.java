@@ -164,7 +164,7 @@ public class SoknadServiceTest {
         Vedlegg vedleggSjekk = new Vedlegg().medSkjemaNummer("L6").medSoknadId(1L).medAntallSider(1).medVedleggId(2L).medFillagerReferanse(vedlegg.getFillagerReferanse()).medData(bytes);
         when(vedleggRepository.hentVedlegg(1L, 2L)).thenReturn(vedlegg);
         when(vedleggRepository.hentVedleggUnderBehandling(1L, null, "L6")).thenReturn(Arrays.asList(new Vedlegg().medVedleggId(10L)));
-        when(vedleggRepository.hentVedleggStream(1L, 10L)).thenReturn(new ByteArrayInputStream(bytes));
+        when(vedleggRepository.hentVedleggData(1L, 10L)).thenReturn(bytes);
         when(soknadRepository.hentSoknad(1L)).thenReturn(new WebSoknad().medBehandlingId("123").medAktorId("234"));
         soknadService.genererVedleggFaktum(1L, 2L);
         vedleggSjekk.setData(vedlegg.getData());
@@ -175,7 +175,7 @@ public class SoknadServiceTest {
 
     @Test
     public void skalGenererForhandsvisning() throws IOException {
-        when(vedleggRepository.hentVedleggStream(11L, 1L)).thenReturn(new ByteArrayInputStream(getBytesFromFile("/pdfs/minimal.pdf")));
+        when(vedleggRepository.hentVedleggData(11L, 1L)).thenReturn(getBytesFromFile("/pdfs/minimal.pdf"));
         byte[] bytes = soknadService.lagForhandsvisning(11L, 1L, 0);
         assertThat(bytes, instanceOf(byte[].class));
     }
@@ -253,10 +253,11 @@ public class SoknadServiceTest {
                         .medFaktum(new Faktum().medKey("personalia"))
                         .medVedlegg(Arrays.asList(
                                 new Vedlegg()
-                                        .medSkjemaNummer("L6")
+                                        .medSkjemaNummer("N6")
                                         .medFillagerReferanse("uidVedlegg1")
                                         .medInnsendingsvalg(Vedlegg.Status.LastetOpp)
                                         .medStorrelse(2L)
+                                        .medNavn("Test Annet vedlegg")
                                         .medAntallSider(3),
                                 new Vedlegg()
                                         .medSkjemaNummer("L7")
@@ -267,7 +268,7 @@ public class SoknadServiceTest {
                 .withUuid("uidHovedskjema")
                 .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
                 .withJournalforendeEnhet(RUTES_I_BRUT)
-                .withFilnavn(DAGPENGER + ".pdf")
+                .withFilnavn(DAGPENGER)
                 .withFilstorrelse("3")
                 .withMimetype("application/pdf")
                 .withSkjemanummer(DAGPENGER)),
@@ -275,15 +276,18 @@ public class SoknadServiceTest {
                         new XMLVedlegg()
                                 .withUuid("uidVedlegg1")
                                 .withInnsendingsvalg(XMLInnsendingsvalg.LASTET_OPP.toString())
-                                .withFilnavn("L6.pdf")
+                                .withFilnavn("Test Annet vedlegg")
+                                .withTilleggsinfo("Test Annet vedlegg")
                                 .withFilstorrelse("2")
                                 .withSideantall(3)
                                 .withMimetype("application/pdf")
-                                .withSkjemanummer("L6")),
+                                .withSkjemanummer("N6")),
                 refEq(
                         new XMLVedlegg()
                                 .withInnsendingsvalg(XMLInnsendingsvalg.SENDES_IKKE.toString())
-                                .withSkjemanummer("L7")));
+                                .withTilleggsinfo("")
+                                .withSkjemanummer("L7")
+                                .withFilnavn("L7")));
     }
 
     @Test
@@ -321,8 +325,9 @@ public class SoknadServiceTest {
         verify(vedleggRepository).lagreVedlegg(1L, 4L, vedlegg.medInnsendingsvalg(Vedlegg.Status.VedleggKreves));
 
     }
+
     @Test
-    public void skalIkkeoppdatereDelstegstatusVedEpost(){
+    public void skalIkkeoppdatereDelstegstatusVedEpost() {
         Faktum faktum = new Faktum().medKey("epost").medValue("false").medFaktumId(1L);
         when(soknadRepository.lagreFaktum(1L, faktum)).thenReturn(2L);
         when(soknadRepository.hentFaktum(1L, 2L)).thenReturn(faktum);
@@ -331,14 +336,16 @@ public class SoknadServiceTest {
     }
 
     @Test
-    public void skalLagreVedlegg(){
+    public void skalLagreVedlegg() {
         Vedlegg vedlegg = new Vedlegg().medVedleggId(1L);
         soknadService.lagreVedlegg(11L, 1L, vedlegg);
         verify(vedleggRepository).lagreVedlegg(11L, 1L, vedlegg);
     }
+
     @Test
     public void skalSletteBrukerfaktum() {
         when(vedleggRepository.hentVedleggForFaktum(1L, 1L)).thenReturn(Arrays.asList(new Vedlegg().medVedleggId(111L).medSkjemaNummer("a1").medFaktumId(111L)));
+        when(soknadRepository.hentFaktum(1L, 1L)).thenReturn(new Faktum().medKey("key"));
         soknadService.slettBrukerFaktum(1L, 1L);
         verify(vedleggRepository).slettVedleggOgData(1L, 111L, "a1");
         verify(soknadRepository).slettBrukerFaktum(1L, 1L);

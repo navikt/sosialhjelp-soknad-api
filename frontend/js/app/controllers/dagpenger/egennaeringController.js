@@ -35,6 +35,7 @@ angular.module('nav.egennaering', [])
         $scope.slettOrg = function (org, index) {
             org.$delete({soknadId: data.soknad.soknadId}).then(function () {
                 $scope.orgnummer.splice(index, 1);
+                data.slettFaktum(org);
             });
         };
 
@@ -144,7 +145,7 @@ angular.module('nav.egennaering', [])
          sånn at man ikke må fylle inn andelsprosent for en eiertype som ikke eier noe
          */
         function summerAndelsprosentene() {
-            var sum = "";
+            var sum = 0;
             if ($scope.gardseier("egennaering.gardsbruk.false.eier.jeg") && data.finnFaktum("egennaering.gardsbruk.false.eierandel.din")) {
                 sum = parseFloat(data.finnFaktum("egennaering.gardsbruk.false.eierandel.din").value);
             }

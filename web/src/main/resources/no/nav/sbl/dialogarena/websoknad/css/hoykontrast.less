@@ -1,49 +1,116 @@
 body.contrast {
-  .stegindikator li.aktiv .steg {
-    background-color: #ec288d !important;
-    .tekst {
-      color: #000 !important;
-      background-color: #ec288d !important;
+  .liste-vannrett {
+    .hoykontrast a {
+      color: #ffc40d !important;
+      &:hover {
+        color: #0ca9e1 !important;
+      }
     }
   }
+
+  [class*='innstillinger'] .innlogging .loggut {
+    background-color: #000 !important;
+    border: 1px solid #5f5e5d !important;
+    color: #ffc40d !important;
+
+    &:hover {
+      color: #0ca9e1 !important;
+    }
+  }
+  .stegindikator li.aktiv .steg {
+    background-color: #fff !important;
+    border-color: #000;
+    .tekst {
+      color: #000 !important;
+      background-color: #fff !important;
+    }
+  }
+  .stegindikator li.stegklikkbart .steg {
+    .tekst {
+      color: #ffc40d !important;
+    }
+    &:hover .tekst {
+      color: #0ca9e1 !important;
+    }
+  }
+
+  a:hover {
+    color: #0ca9e1 !important;
+  }
+
+  .deaktiverFeilmelding, .deaktiverFeilmelding:hover {
+    color: #fff !important;
+  }
+  .arbeidsmengde-container select {
+    color: #000 !important;
+
+    option {
+      background-color: #fff !important;
+    }
+  }
+  .hjelpetekst {
+    a.infoikon span {
+      border-color: #ffc40d !important;
+      color: #ffc40d !important;
+
+      &:hover, &:focus {
+        border-color: #0ca9e1 !important;
+        background-color: #0ca9e1 !important;
+        color: #000 !important;
+      }
+    }
+    .hjelpetekst-tooltip {
+      background-color: #fff !important;
+
+      div, h3, p {
+        background-color: #fff !important;
+        color: #000 !important;
+      }
+      .lukk-hjelpetekst {
+        background-color: #fff !important;
+        color: #0053A1 !important;
+      }
+      &:before {
+        border-top-color: #fff;
+      }
+    }
+  }
+
   .spm-blokk {
     border-top: 1px solid #555555;
 
-    &:hover {
-      background-color: #e6e6e6;
+    .flipp {
+      border-color: transparent transparent #AB740D transparent !important;
+      &:before {
+        border-top: @flipp-size solid #ffc40d !important;
+      }
+    }
 
+    .flipp:hover {
+      border-color: transparent transparent #005283 transparent !important;
+
+      &:before {
+        border-top: @flipp-size solid #0ca9e1 !important;
+      }
+    }
+    &.open {
       .flipp {
         cursor: pointer;
+        border-color: transparent transparent #AB740D transparent !important;
 
-        .flipp:hover {
-          border-color: transparent transparent #911958 transparent !important;
+        &:before {
+          border-top: @flipp-size solid #ffc40d !important;
+        }
+        &:hover {
+          border-color: transparent transparent #005283 transparent !important;
 
           &:before {
-            border-top: @flipp-size solid #ec288d !important;
+            border-top: @flipp-size solid #0ca9e1 !important;
           }
         }
       }
     }
-    .flipp:hover {
-      border-color: transparent transparent #004283 transparent !important;
-
-      &:before {
-        border-top: @flipp-size solid #0067c5 !important;
-      }
-    }
-    &.open {
-      background-color: white;
-
-      .flipp {
-        cursor: pointer;
-        border-color: transparent transparent #911958 transparent;
-
-        &:before {
-          border-top: @flipp-size solid #ec288d;
-        }
-      }
-    }
-    &.validert,  {
+    &.validert, {
       .accordion-heading h2:before {
         background: url(../img/hake-hvit.svg) no-repeat center 10px;
       }
@@ -62,20 +129,20 @@ body.contrast {
     &:active {
       .flipp {
         cursor: pointer;
-        border-color: transparent transparent #911958 transparent;
+        border-color: transparent transparent #AB740D transparent;
 
         &:before {
-          border-top: 30px solid #ec288d;
+          border-top: 30px solid #ffc40d;
         }
       }
     }
     &:focus {
       .flipp {
         cursor: pointer;
-        border-color: transparent transparent #911958 transparent;
+        border-color: transparent transparent #AB740D transparent;
 
         &:before {
-          border-top: 30px solid #ec288d;
+          border-top: 30px solid #ffc40d;
         }
       }
     }
@@ -84,17 +151,17 @@ body.contrast {
   .accordion-group.validert, .vedlegg-bolk.validert {
     .flipp {
       cursor: pointer;
-      border-color: transparent transparent #911958 transparent;
+      border-color: transparent transparent #AB740D transparent;
 
       &:before {
-        border-top: 30px solid #ec288d;
+        border-top: 30px solid #ffc40d;
       }
     }
   }
 
-  .knapp-liten {
+  .knapp-liten, .knapp-hoved-liten {
     background-color: #ffffff !important;
-    color: #000000;
+    color: #000000 !important;
 
     &:hover {
       background-color: #0ca9e1 !important;
@@ -125,5 +192,88 @@ body.contrast {
 
   .vedlegginfoboks [class*="ikon-vedlegg-strek"] {
     background-image: url(../img/vedlegg-hvit.svg);
+  }
+  .form-errors {
+    background-color: #fb6e8c !important;
+    h3, li {
+      background-color: #fb6e8c !important;
+      color: #000 !important;
+    }
+  }
+
+  .form-linje.feil input:not([type="submit"]),
+  .form-linje.feil textarea,
+  .form-linje.feil textarea,
+  .form-linje.feil.tekstfelt input,
+  .form-linje.feil.aktiv-feilmelding.tekstfelt input,
+  .form-linje.feil.boolean,
+  .form-linje.feil.checkbox,
+  .form-linje.checkbox.feilstyling,
+  .datepicker.feil .datepicker-input,
+  .form-linje.feil.knapp {
+    border: 1px solid #fb6e8c;
+    border-top: 1px solid #fb6e8c;
+  }
+
+  .feil, .feilstyling {
+    input[type='checkbox']:focus + label {
+      color: #fff !important;
+    }
+    input[type='radio']:focus + label {
+      color: #fff !important;
+    }
+    input[type='radio']:focus:checked + label {
+      color: #fff !important;
+    }
+    input[type='checkbox']:focus:checked + label {
+      color: #fff !important;
+    }
+
+    &.aktiv-feilmelding {
+      input[type='checkbox']:focus + label {
+        color: #fb6e8c !important;
+        background: url(../img/check.svg) 0 0 no-repeat !important;
+      }
+      input[type='radio']:focus + label {
+        color: #fb6e8c !important;
+        background: url(../img/radio.svg) 0 0 no-repeat !important;
+      }
+      input[type='radio']:focus:checked + label {
+        color: #fb6e8c !important;
+        background: url(../img/radio_valgt.svg) 0 0 no-repeat;
+      }
+      input[type='checkbox']:focus:checked + label {
+        color: #fb6e8c !important;
+        background: url(../img/check_valgt.svg) 0 0 no-repeat;
+      }
+    }
+  }
+
+  .rad, .modalBoks, #informasjonsside {
+    input[type='checkbox']:focus:checked + label {
+      background: url(../img/check_valgt_tab.svg) 0 0 no-repeat;
+      color: #fff !important;
+    }
+
+    input[type='radio']:focus:checked + label {
+      background: url(../img/radio_valgt_tab.svg) 0 0 no-repeat;
+      color: #fff !important;
+    }
+
+    input[type='checkbox']:focus + label {
+      background: url(../img/check_tab.svg) 0 0 no-repeat;
+      color: #0ca9e1 !important;
+    }
+    input[type='radio']:focus + label {
+      background: url(../img/radio_tab.svg) 0 0 no-repeat;
+      color: #0ca9e1 !important;
+    }
+  }
+  .sticky-feilmelding {
+    border: 1px solid #ddd;
+  }
+
+  #barnetilleggForm .barn.jente .barnealder span {
+    color: #fb6e8c !important;
   }
 }

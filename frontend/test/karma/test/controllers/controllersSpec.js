@@ -242,6 +242,39 @@
                 scope.summererAndeleneTil100();
                 expect(scope.prosentFeil()).toEqual(false);
             });
+             it('skal summere de ulike eierne til 100 og ikke gi feil dersom dette stemmer', function () {
+                var gardsEierErEktefelle = {
+                    key: 'egennaering.gardsbruk.false.eier.ektefelle',
+                    value: 'true'
+                };
+                scope.data.leggTilFaktum(gardsEierErEktefelle);
+                
+                var gardsEierErAnnet = {
+                    key: 'egennaering.gardsbruk.false.eier.annet',
+                    value: 'true'
+                };
+                scope.data.leggTilFaktum(gardsEierErAnnet);
+                
+                var gardsEierJeg = {
+                    key: 'egennaering.gardsbruk.false.eierandel.din',
+                    value: '33'
+                };
+                scope.data.leggTilFaktum(gardsEierJeg);
+                var gardsEierEktefelle = {
+                    key: 'egennaering.gardsbruk.false.eierandel.ektefelle',
+                    value: '34'
+                };
+                scope.data.leggTilFaktum(gardsEierEktefelle);
+
+                var gardsEierAnnet = {
+                    key: 'egennaering.gardsbruk.false.eierandel.annet',
+                    value: '33'
+                };
+                scope.data.leggTilFaktum(gardsEierAnnet);
+                
+                scope.summererAndeleneTil100();
+                expect(scope.prosentFeil()).toEqual(false);
+            });
         });
         describe('vernepliktCtrl', function () {
             beforeEach(inject(function ($controller, $compile) {
@@ -1336,11 +1369,6 @@
 
             }));
 
-            it('sluttaarsakUrl, lonnskravUrl og permiteringsUrl skal settes til riktige urler', function () {
-                expect(scope.sluttaarsakUrl).toEqual("sluttaarsakUrl");
-                expect(scope.lonnskravSkjemaUrl).toEqual("lonnskravSkjemaUrl");
-                expect(scope.permiteringUrl).toEqual("permiteringUrl");
-            });
             it('scope.land skal bli satt til samme land som ligger lagret på data', function () {
                 expect(scope.land).toEqual("Norge");
             });
@@ -1385,7 +1413,6 @@
                 expect(scope.arbeidsforhold.properties.datotil).toEqual(undefined);
                 expect(scope.arbeidsforhold.properties.type).toEqual(undefined);
                 expect(scope.arbeidsforhold.properties.eosland).toEqual("false");
-                expect(scope.lonnskravSkjemaUrl).toEqual("lonnskravSkjemaUrl");
                 expect(scope.sluttaarsak.properties).toNotBe(undefined);
                 expect(scope.sluttaarsak.properties.type).toEqual(undefined);
 
@@ -1523,7 +1550,7 @@
             }));
 
             it('Skjemaveileder og ditt Nav skal settes til riktig url', function () {
-                expect(scope.dittNavBaseUrl).toEqual("dittnavUrl");
+                expect(scope.dittnavUrl).toEqual("dittnavUrl");
                 expect(scope.skjemaVeilederUrl).toEqual("skjemaVeilederUrl");
             });
         });

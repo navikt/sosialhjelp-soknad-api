@@ -3,7 +3,7 @@
         <div data-form-errors></div>
 
         <div class="spm boolean form-linje">
-            <h4 class="spm-sporsmal">{{ 'utdanning.informasjon' | cmstekst }}</h4>
+            <h4 class="spm-sporsmal" data-ng-bind-html=" 'utdanning.informasjon' | cmstekst"></h4>
 
             <div data-navradio
                  data-value="ikkeUtdanning"
@@ -23,11 +23,11 @@
 
             <div class="ekstra-spm-boks nav-boolean" data-ng-if="hvis('utdanning', 'avsluttetUtdanning')">
                 <div data-navinfoboks>
-                    <p>{{ 'utdanning.svar.under.utdanning.avsluttet.informasjon' | cmstekst }}</p>
+                    <p data-ng-bind-html=" 'utdanning.svar.under.utdanning.avsluttet.informasjon' | cmstekst"></p>
                 </div>
                 <div data-vedlegginfoboks>
                     <ul>
-                        <li><p>{{ 'utdanning.svar.under.utdanning.avsluttet.dokumentere' | cmstekst }}</p></li>
+                        <li><p data-ng-bind-html="'Dagpenger.vedlegg.T2.header' | cmstekst"></p></li>
                     </ul>
                 </div>
             </div>
@@ -44,7 +44,7 @@
             <span class="melding"> </span>
 
             <div class="ekstra-info nav-boolean form-linje checkbox" data-ng-if="hvis('utdanning', 'underUtdanning')" data-checkbox-validate data-nav-faktum="utdanning">
-                <h4 class="spm-sporsmal">{{ 'utdanning.sporsmal' | cmstekst }}</h4>
+                <h4 class="spm-sporsmal" data-ng-bind-html=" 'utdanning.sporsmal' | cmstekst"></h4>
 
                 <input type="hidden"
                        data-ng-model="harHuketAvCheckboks.value"
@@ -101,14 +101,21 @@
                            data-ng-change="endreUtdannelseAnnet()"
                            data-boolean-verdi
                             data-aktiv-feilmelding/>
-                    <label for="underUtdanningNeiCheckbox">{{ 'utdanning.svar.under.utdanning.nei' | cmstekst }}</label>
-                    <span class="utdanning-nei-melding">{{ 'utdanning.harValgtUtdanning.feilmelding' | cmstekst }}</span>
+                    <label for="underUtdanningNeiCheckbox" data-ng-bind-html=" 'utdanning.svar.under.utdanning.nei' | cmstekst"></label>
+                    <span class="utdanning-nei-melding" data-ng-bind-html=" 'utdanning.harValgtUtdanning.feilmelding' | cmstekst"></span>
                 </div>
 
-                <div class="ekstra-spm-boks nav-checkbox" data-navinfoboks data-ng-if="hvis('underUtdanningAnnet')">
-                    <span>{{ 'utdanning.unntak.informasjon' | cmstekst }}</span>
+                <div class="ekstra-spm-boks nav-checkbox" data-ng-if="hvis('underUtdanningAnnet')">
+                    <div data-navinfoboks>  
+                        <span data-ng-bind-html=" 'utdanning.unntak.informasjon' | cmstekst"></span>
+                    </div>
+                    <div data-vedlegginfoboks>
+                        <ul>
+                            <li><p data-ng-bind-html="'Dagpenger.vedlegg.T1.header' | cmstekst"></p></li>
+                        </ul>
+                    </div>
                 </div>
-                <span class="melding">{{ 'utdanning.minstEnAvhuket.feilmelding' | cmstekst }}</span>
+                <span class="melding" data-ng-bind-html=" 'utdanning.minstEnAvhuket.feilmelding' | cmstekst"></span>
 
             </div>
 

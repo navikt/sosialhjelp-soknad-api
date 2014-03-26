@@ -37,10 +37,8 @@ import static com.google.common.collect.Maps.uniqueIndex;
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static no.nav.modig.lang.option.Optional.none;
 import static no.nav.modig.lang.option.Optional.optional;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.db.IdGenerator.lagBehandlingsId;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.limit;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.UTFYLLING;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
@@ -54,7 +52,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, readOnly = false)
 public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implements SoknadRepository {
 
-    public static final String INSERT_FAKTUM = "insert into SOKNADBRUKERDATA (soknadbrukerdata_id, soknad_id, key, value, type, parrent_faktum, sistendret) values (:faktumId, :soknadId, :key, :value, :typeString, :parrentFaktum, sysdate)";
+    public static final String INSERT_FAKTUM = "insert into SOKNADBRUKERDATA (soknadbrukerdata_id, soknad_id, key, value, type, parrent_faktum, sistendret) values (:faktumId, :soknadId, :key, :value, :typeString, :parrentFaktum, CURRENT_TIMESTAMP)";
     public static final String INSERT_FAKTUMEGENSKAP = "insert into FAKTUMEGENSKAP (soknad_id, faktum_id, key, value, systemegenskap) values (:soknadId, :faktumId, :key, :value, :systemEgenskap)";
     private static final Logger logger = getLogger(SoknadRepositoryJdbc.class);
     private final RowMapper<Faktum> faktumRowMapper = new RowMapper<Faktum>() {
@@ -87,16 +85,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     @Inject
     public void setDS(DataSource ds) {
         super.setDataSource(ds);
-    }
-
-    @Override
-    public String opprettBehandling() {
-        Long databasenokkel = getJdbcTemplate().queryForObject(selectNextSequenceValue("BRUKERBEH_ID_SEQ"), Long.class);
-        String behandlingsId = lagBehandlingsId(databasenokkel);
-        getJdbcTemplate()
-                .update("insert into henvendelse (henvendelse_id, behandlingsid, type, opprettetdato) values (?, ?, ?, sysdate)",
-                        databasenokkel, behandlingsId, "SOKNADINNSENDING");
-        return behandlingsId;
     }
 
     @Override
@@ -146,7 +134,7 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     @Override
     public Optional<WebSoknad> plukkSoknadTilMellomlagring() {
         while (true) {
-            String select = "select * from soknad where sistlagret < SYSDATE - (INTERVAL '1' HOUR) and batch_status = 'LEDIG'" + limit(1);
+            String select = "select * from soknad where sistlagret < CURRENT_TIMESTAMP - (INTERVAL '1' HOUR) and batch_status = 'LEDIG'" + limit(1);
             Optional<WebSoknad> soknad = on(getJdbcTemplate().query(select, new SoknadRowMapper())).head();
             if (!soknad.isSome()) {
                 return none();
@@ -190,7 +178,12 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     @Override
     public Faktum hentFaktum(Long soknadId, Long faktumId) {
-        String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and soknadbrukerdata_id = ?";
+        return hentFaktum(soknadId, faktumId, false);
+    }
+
+
+    private Faktum hentFaktum(final Long soknadId, final Long faktumId, boolean forUpdate) {
+        final String sql = "select * from SOKNADBRUKERDATA where soknad_id = ? and soknadbrukerdata_id = ? " + (forUpdate?" for update": "");
         String propertiesSql = "select * from FAKTUMEGENSKAP where soknad_id = ? and faktum_id=?";
 
         Faktum result = getJdbcTemplate().queryForObject(sql, faktumRowMapper, soknadId, faktumId);
@@ -263,7 +256,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
             faktum.setFaktumId(getJdbcTemplate().queryForObject(selectNextSequenceValue("SOKNAD_BRUKER_DATA_ID_SEQ"), Long.class));
             getNamedParameterJdbcTemplate().update(INSERT_FAKTUM, forFaktum(faktum));
             lagreAlleEgenskaper(soknadId, faktum, systemLagring);
-            utfyllingStartet(soknadId);
             return faktum.getFaktumId();
         } else {
             oppdaterBrukerData(soknadId, faktum, systemLagring);
@@ -303,21 +295,17 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         getNamedParameterJdbcTemplate().batchUpdate(INSERT_FAKTUMEGENSKAP, SqlParameterSourceUtils.createBatch(faktum.getFaktumEgenskaper().toArray()));
     }
 
-    private int utfyllingStartet(long soknadId) {
-        return getJdbcTemplate().update(
-                "update soknad set DELSTEGSTATUS = ? where soknad_id = ?",
-                UTFYLLING.name(), soknadId);
-    }
-
     @Override
     public void slettBrukerFaktum(Long soknadId, Long faktumId) {
+        getJdbcTemplate().update("delete from FaktumEgenskap where faktum_id in ( select soknadbrukerdata_id from SoknadBrukerdata sb where sb.soknad_id = ? and sb.parrent_faktum = ?)", soknadId, faktumId);
+        getJdbcTemplate().update("delete from FaktumEgenskap where soknad_id = ? and faktum_id = ?", soknadId, faktumId);
         getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ? and soknadbrukerdata_id = ? and type = 'BRUKERREGISTRERT'", soknadId, faktumId);
         getJdbcTemplate().update("delete from SOKNADBRUKERDATA where soknad_id=? and parrent_faktum=?", soknadId, faktumId);
     }
 
     @Override
     public void settSistLagretTidspunkt(Long soknadId) {
-        getJdbcTemplate().update("update soknad set sistlagret = SYSDATE where soknad_id = ?", soknadId);
+        getJdbcTemplate().update("update soknad set sistlagret = CURRENT_TIMESTAMP where soknad_id = ?", soknadId);
     }
 
     @Override

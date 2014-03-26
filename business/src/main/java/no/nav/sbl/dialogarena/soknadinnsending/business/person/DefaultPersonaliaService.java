@@ -4,7 +4,7 @@ import no.nav.modig.core.exception.ApplicationException;
 import no.nav.sbl.dialogarena.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosBorgerService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.EosLandService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.exceptions.IkkeFunnetException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.person.PersonConnector;
@@ -30,6 +30,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_GYLDIGFRA_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_GYLDIGTIL_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_LANDKODE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_TYPE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.KJONN_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.NAVN_KEY;
@@ -55,7 +56,7 @@ public class DefaultPersonaliaService implements PersonaliaService {
     @Inject
     private SendSoknadService soknadService;
     @Inject
-    private EosBorgerService eosBorgerService;
+    private EosLandService eosLandService;
 
 
     @Override
@@ -122,12 +123,13 @@ public class DefaultPersonaliaService implements PersonaliaService {
                 .medSystemProperty(NAVN_KEY, personalia.getNavn())
                 .medSystemProperty(EPOST_KEY, personalia.getEpost())
                 .medSystemProperty(STATSBORGERSKAP_KEY, statsborgerskap)
-                .medSystemProperty(STATSBORGERSKAPTYPE_KEY, eosBorgerService.getStatsborgeskapType(statsborgerskap))
+                .medSystemProperty(STATSBORGERSKAPTYPE_KEY, eosLandService.getStatsborgeskapType(statsborgerskap))
                 .medSystemProperty(KJONN_KEY, personalia.getKjonn())
                 .medSystemProperty(GJELDENDEADRESSE_KEY, personalia.getGjeldendeAdresse().getAdresse())
                 .medSystemProperty(GJELDENDEADRESSE_TYPE_KEY, personalia.getGjeldendeAdresse().getAdressetype())
                 .medSystemProperty(GJELDENDEADRESSE_GYLDIGFRA_KEY, personalia.getGjeldendeAdresse().getGyldigFra())
                 .medSystemProperty(GJELDENDEADRESSE_GYLDIGTIL_KEY, personalia.getGjeldendeAdresse().getGyldigTil())
+                .medSystemProperty(GJELDENDEADRESSE_LANDKODE, personalia.getGjeldendeAdresse().getLandkode())
                 .medSystemProperty(SEKUNDARADRESSE_KEY, personalia.getSekundarAdresse().getAdresse())
                 .medSystemProperty(SEKUNDARADRESSE_TYPE_KEY, personalia.getSekundarAdresse().getAdressetype())
                 .medSystemProperty(SEKUNDARADRESSE_GYLDIGFRA_KEY, personalia.getSekundarAdresse().getGyldigFra())

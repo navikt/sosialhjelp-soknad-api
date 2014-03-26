@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_NORGE;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.MIDLERTIDIG_POSTADRESSE_UTLAND;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Adressetype.UTENLANDSK_ADRESSE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_KEY;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_LANDKODE;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia.GJELDENDEADRESSE_TYPE_KEY;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.DAGPENGER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.DAGPENGER_VED_PERMITTERING;
@@ -26,6 +26,9 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknad
 import static org.junit.Assert.assertEquals;
 
 public class WebSoknadUtilsTest {
+
+    public static final String EOS_DAGPENGER = "4304";
+    public static final String RUTES_I_BRUT = "";
 
     @Test
     public void harSkjemanummerDagpengerHvisIngenArbeidsforhold() {
@@ -55,6 +58,14 @@ public class WebSoknadUtilsTest {
     }
 
     @Test
+    public void testCornerCase(){
+        DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
+        WebSoknad soknad = lagSoknad(lagPermittert("2014-2-1"), lagAvskjediget("2014-1-1"));
+        assertEquals(DAGPENGER_VED_PERMITTERING, getSkjemanummer(soknad));
+
+    }
+
+    @Test
     public void harSkjemanummerDagpengerVedPermitteringHvisToArbeidsforholdPaaSammeDagOgMinstEnErPermittering() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
         WebSoknad soknad = lagSoknad(lagAvskjediget("2014-1-1"), lagPermittert("2014-1-1"), lagAvskjediget("2014-1-1"));
@@ -68,7 +79,7 @@ public class WebSoknadUtilsTest {
         Personalia personalia = WebSoknadUtils.getPerson(soknad);
         personalia.setGjeldendeAdresse(lagUtenlandskAdresse());
         personalia.setSekundarAdresse(lagSekundarAdresseNorge());
-        assertEquals("0000", getJournalforendeEnhet(soknad));
+        assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
     }
 
     @Test
@@ -78,25 +89,41 @@ public class WebSoknadUtilsTest {
         Personalia personalia = WebSoknadUtils.getPerson(soknad);
         personalia.setGjeldendeAdresse(lagUtenlandskAdresse());
         personalia.setSekundarAdresse(lagSekundarAdresseNorge());
-        assertEquals("0000", getJournalforendeEnhet(soknad));
+        assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
     }
 
     @Test
-    public void skalRotueTilEos() {
+    public void skalRuteSoknadTilEosLand() {
         DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
         WebSoknad soknad = lagSoknad(lagPermittert("2014-1-1"));
+        Adresse utlandeos = lagUtenlandskEOSAdresse();
+        soknad.getFaktaMedKey("personalia").get(0)
+                .medProperty(GJELDENDEADRESSE_KEY, utlandeos.getAdresse())
+                .medProperty(GJELDENDEADRESSE_LANDKODE, utlandeos.getLandkode())
+                .medProperty(GJELDENDEADRESSE_TYPE_KEY, utlandeos.getAdressetype());
         Personalia personalia = WebSoknadUtils.getPerson(soknad);
-        Adresse utland = lagUtenlandskAdresse();
+        personalia.setGjeldendeAdresse(utlandeos);
+
+        assertEquals(EOS_DAGPENGER, getJournalforendeEnhet(soknad));
+
+    }
+    @Test
+    public void skalRuteSoknadTilEosLandMed3Caser() {
+        DateTimeUtils.setCurrentMillisFixed((new LocalDate("2015-1-1").toDateTimeAtStartOfDay().getMillis()));
+        WebSoknad soknad = lagSoknad(
+                lagRedusertArbeidstid("2014-01-01"),
+                lagAvskjediget("2014-03-06"),
+                lagPermittert("2014-03-01")
+                );
+        Adresse utlandeos = lagUtenlandskEOSAdresse();
         soknad.getFaktaMedKey("personalia").get(0)
-                .medProperty(GJELDENDEADRESSE_KEY, utland.getAdresse())
-                .medProperty(GJELDENDEADRESSE_TYPE_KEY, utland.getAdressetype());
-        personalia.setGjeldendeAdresse(utland);
-        assertEquals("4304", getJournalforendeEnhet(soknad));
-        soknad = lagSoknad(lagAvskjediget("2014-1-1"));
-        soknad.getFaktaMedKey("personalia").get(0)
-                .medProperty(GJELDENDEADRESSE_KEY, utland.getAdresse())
-                .medProperty(GJELDENDEADRESSE_TYPE_KEY, utland.getAdressetype());
-        assertEquals("0000", getJournalforendeEnhet(soknad));
+                .medProperty(GJELDENDEADRESSE_KEY, utlandeos.getAdresse())
+                .medProperty(GJELDENDEADRESSE_LANDKODE, utlandeos.getLandkode())
+                .medProperty(GJELDENDEADRESSE_TYPE_KEY, utlandeos.getAdressetype());
+        Personalia personalia = WebSoknadUtils.getPerson(soknad);
+        personalia.setGjeldendeAdresse(utlandeos);
+
+        assertEquals(RUTES_I_BRUT, getJournalforendeEnhet(soknad));
 
     }
 
@@ -118,7 +145,7 @@ public class WebSoknadUtilsTest {
     }
 
     private static Faktum lagPermittert(String dato) {
-        return lagFaktum("Permittert", "lonnspliktigperiodedatotil", dato);
+        return lagFaktum("Permittert", "permiteringsperiodedatofra", dato);
     }
 
     private static Faktum lagAvskjediget(String dato) {
@@ -126,7 +153,7 @@ public class WebSoknadUtilsTest {
     }
 
     private static Faktum lagRedusertArbeidstid(String dato) {
-        return lagFaktum("Redusert arbeidstid", "datotil", dato);
+        return lagFaktum("Redusert arbeidstid", "redusertfra", dato);
     }
 
     private static Adresse lagUtenlandskAdresse() {
@@ -135,15 +162,16 @@ public class WebSoknadUtilsTest {
         return adresse;
     }
 
-    private static Adresse lagSekundarAdresseNorge() {
+    private static Adresse lagUtenlandskEOSAdresse() {
         Adresse adresse = new Adresse();
-        adresse.setAdressetype(MIDLERTIDIG_POSTADRESSE_NORGE.name());
+        adresse.setAdressetype(UTENLANDSK_ADRESSE.name());
+        adresse.setLandkode("SWE");
         return adresse;
     }
 
-    private static Adresse lagSekundarAdresseUtland() {
+    private static Adresse lagSekundarAdresseNorge() {
         Adresse adresse = new Adresse();
-        adresse.setAdressetype(MIDLERTIDIG_POSTADRESSE_UTLAND.name());
+        adresse.setAdressetype(MIDLERTIDIG_POSTADRESSE_NORGE.name());
         return adresse;
     }
 

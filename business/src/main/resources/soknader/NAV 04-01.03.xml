@@ -486,13 +486,32 @@
 		<onValue>false</onValue>
 		<skjemaNummer>V6</skjemaNummer>
 	</vedlegg>
+	
 	<vedlegg>
 		<id>4</id>
 		<faktum>arbeidsforhold</faktum>
 		<skjemaNummer>T8</skjemaNummer>
 		<property>arbeidsgivernavn</property>
+		<onProperty>type</onProperty>
+        <inverted>true</inverted>
+        <onValues>
+            <value>Arbeidsgiver er konkurs</value>
+            <value>Permittert</value>
+        </onValues>
+		<inverted>true</inverted>
 		<flereTillatt>true</flereTillatt>
 	</vedlegg>
+
+    <vedlegg>
+        <id>4</id>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>G2</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValue>Permittert</onValue>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+	
 	<vedlegg>
 		<id>4</id>
 		<faktum>arbeidsforhold</faktum>
@@ -556,5 +575,8 @@
 		<inverted>true</inverted>
 		<forSystemfaktum>true</forSystemfaktum>
 	</vedlegg>
+
+    <vedleggsreferanse>G2</vedleggsreferanse>
+    <vedleggsreferanse>NAV 04-08.03</vedleggsreferanse>
 </soknad>
 	

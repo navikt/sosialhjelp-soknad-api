@@ -9,17 +9,14 @@ angular.module('nav.bildenavigering', [])
 
             link: function (scope, element) {
                 var bilder = [];
-                scope.spinner = {
-                    visLaster: true
-                };
                 scope.side = 0;
                 scope.bilder = bilder;
 
                 scope.range = function (til) {
                     var r = [];
                     for (var i = 0; i < til; i++) {
-                        r.push(i);  
-                    } 
+                        r.push(i);
+                    }
                     return r;
                 };
 
@@ -37,8 +34,6 @@ angular.module('nav.bildenavigering', [])
                 };
 
                 scope.hentTimestamp = new Date().getTime();
-
-
             },
 
             templateUrl: function (element, attr) {
@@ -49,16 +44,5 @@ angular.module('nav.bildenavigering', [])
                 }
             }
         };
-    }])
-    .directive('ferdigLastet', ['$timeout', function ($timeout) {
-        return {
-            scope: false,
-            link: function (scope, element) {
-                element.load(function() {
-                    $timeout(function() {
-                        scope.spinner.visLaster = false;
-                    });
-                });
-            }
-        };
     }]);
+

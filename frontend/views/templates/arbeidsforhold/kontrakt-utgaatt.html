@@ -1,5 +1,5 @@
 <div class="varighet form-linje">
-    <h4 class="spm-sporsmal">{{ 'arbeidsforhold.arbeidsgiver.varighet.label' | cmstekst }}</h4>
+    <h4 class="spm-sporsmal" data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.varighet.label' | cmstekst"></h4>
     <div data-nav-dato-intervall
          data-fra-dato="sluttaarsak.properties.datofra"
          data-til-dato="sluttaarsak.properties.datotil"
@@ -16,7 +16,7 @@
 
 <div class="fiks-siste-boks ekstra-spm-boks" data-ng-if="sluttaarsak.properties.tilbudomjobbannetsted == 'true'">
     <div data-navinfoboks>
-        <p>{{ 'arbeidsforhold.sluttaarsak.advarsel' | cmstekst }}</p>
+        <p data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.advarsel' | cmstekst"></p>
 
         <p>{{ 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted.true.informasjon' | cmstekst
             }}</p>
@@ -26,11 +26,10 @@
 <div class="ekstra-spm-boks" data-vedlegginfoboks>
     <ul>
         <li>
-            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</p>
+            <p data-ng-bind-html="'Dagpenger.vedlegg.O2.header' | cmstekst"></p>
         </li>
         <li>
-            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2' | cmstekst }}</p>
-            <a href="{{sluttaarsakUrl}}">{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst' | cmstekst }}</a>
+            <span data-ng-bind-html=" 'Dagpenger.vedlegg.T8.header' | cmstekst"></span>
         </li>
     </ul>
 </div>

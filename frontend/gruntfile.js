@@ -1,6 +1,8 @@
 module.exports = function (grunt) {
+    var timestamp = grunt.template.today("yyyymmddHHMMss");
 	grunt.initConfig({
 		pkg   : grunt.file.readJSON('package.json'),
+        builtminName: 'target/classes/META-INF/resources/js/built/built' + timestamp + '.min.js',
         html2js: {
             main: {
                 src: [
@@ -9,7 +11,7 @@ module.exports = function (grunt) {
                     'js/app/**/*.html',
                     'js/common/**/*.html'
                 ],
-                dest: 'js/app/templates.js'
+                dest: 'target/classes/META-INF/resources/js/app/templates.js'
             }
         },
 
@@ -20,7 +22,7 @@ module.exports = function (grunt) {
                 options: {
                     beautify: true,
                     relative: false,
-                    prefix: '../dev/',
+                    prefix: '../',
                     scripts: {
                         angular: [
                             'js/lib/angular/angular.js',
@@ -84,7 +86,7 @@ module.exports = function (grunt) {
                     scripts: {
                         built: {
                             cwd: 'target/classes/META-INF/resources',
-                            files: 'js/built/built<%= grunt.template.today("yyyymmdd") %>.min.js'
+                            files: 'js/built/built' + timestamp + '.min.js'
                         }
                     }
                 }
@@ -107,10 +109,12 @@ module.exports = function (grunt) {
                     'js/lib/jquery/jquery.fileupload-validate.js',
                     'js/lib/jquery/jquery.fileupload-angular.js',
                     'js/lib/*.js',
-                    'js/app/**/*.js',
+                    'js/app/**/!(templates).js',
+                    'js/app/**/!(initDev).js',
+                    'target/classes/META-INF/resources/js/app/templates.js',
                     'js/common/**/*.js'
 				],
-				dest  : 'target/classes/META-INF/resources/js/built/built<%= grunt.template.today("yyyymmdd") %>.js',
+				dest  : 'target/classes/META-INF/resources/js/built/built' + timestamp + '.js',
 				nonull: true
 			}
 		},
@@ -121,7 +125,7 @@ module.exports = function (grunt) {
 			},
 			my_target: {
 				files: {
-					'target/classes/META-INF/resources/js/built/built<%= grunt.template.today("yyyymmdd") %>.min.js': ['target/classes/META-INF/resources/js/built/built<%= grunt.template.today("yyyymmdd") %>.js']
+                    '<%= builtminName %>': ['target/classes/META-INF/resources/js/built/built' + timestamp + '.js']
 				}
 			}
 		},
@@ -141,7 +145,16 @@ module.exports = function (grunt) {
                     'views/dagpenger-singlepage.html'
                 ],
                 tasks: ['html2js', 'htmlbuild:dev']
-			}
+			},
+            testHtml: {
+                files  : [
+                    'js/app/**/*.html',
+                    'js/common/**/*.html',
+                    'views/templates/**/*.html',
+                    'views/dagpenger-singlepage.html'
+                ],
+                tasks: ['html2js', 'karma:local']
+            }
 		},
 		jshint: {
 			files  : ['gruntfile.js', 'js/app/**/*.js', 'js/common/**/*.js', 'test/**/*.js'],
@@ -154,7 +167,8 @@ module.exports = function (grunt) {
                     beforeEach: true,
                     inject: true,
                     angular: true,
-                    module: true
+                    module: true,
+                    Date: true
                 }
 			}
 		},
@@ -163,21 +177,14 @@ module.exports = function (grunt) {
 				configFile: 'test/karma/karma.conf.js',
                 browsers: ['PhantomJS'],
                 singleRun: true
-			}
+			},
+            local: {
+                configFile: 'test/karma/karma.conf.js',
+                singleRun: true
+            }
 		},
-		maven: {
-			warName: '<%= pkg.name %>-frontend.war',
-			dist: {
-				dest: 'dist',
-				src: ['<%= pkg.name %>.js', 'js/**', 'js/test/**']
-			},
-			maven: {
-				src: ['./**']
-			},
-			watch: {
-				tasks: ['default']
-			}
-		}
+
+        clean: ['target/classes/META-INF/resources/js/built']
     });
 
 	// Load NPM tasks
@@ -185,16 +192,16 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-html-build');
 	grunt.loadNpmTasks('grunt-html2js');
 	grunt.loadNpmTasks('grunt-karma');
 
 	grunt.option('force', true);
 
-	grunt.registerTask('default', ['jshint', 'html2js', 'htmlbuild:dev', 'watch']);
-    grunt.registerTask('test', ['jshint', 'html2js', 'karma:unit']);
+	grunt.registerTask('default', ['jshint', 'htmlbuild:dev', 'watch']);
     grunt.registerTask('hint', ['jshint', 'watch']);
     grunt.registerTask('maven', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev']);
-    grunt.registerTask('maven-test', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev', 'htmlbuild:test']);
-	grunt.registerTask('maven-prod', ['html2js', 'karma:unit', 'concat', 'uglify', 'htmlbuild:dev', 'htmlbuild:prod']);
+    grunt.registerTask('maven-test', ['karma:unit']);
+	grunt.registerTask('maven-prod', ['clean', 'html2js', 'concat', 'uglify', 'htmlbuild:dev', 'htmlbuild:prod']);
 };

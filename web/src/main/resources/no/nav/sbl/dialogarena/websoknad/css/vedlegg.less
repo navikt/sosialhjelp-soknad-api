@@ -1,0 +1,306 @@
+#vedlegg {
+    .accordion {
+        background-color: #fff;
+    }
+
+    [class*="ikon-vedlegg-strek"] {
+        padding-bottom: 30px;
+        margin-bottom: 30px !important;
+    }
+    .strek-ikon-info-orange {
+        margin-top: 30px;
+        padding-bottom: 25px !important;
+        margin-bottom: 25px !important;
+    }
+
+    .viktig-info {
+        margin-bottom: 25px;
+
+        li {
+            &:before {
+                content: "•";
+                list-style-type: none;
+                padding: 0 0.9rem;
+                margin-left: -32px;
+            }
+
+            padding-bottom: 15px;
+            padding-left: 20px;
+            font-weight: bold;
+
+            p {
+                display: inline;
+            }
+        }
+    }
+
+    ul {
+        list-style-type: none;
+        margin-bottom: 0px;
+        padding-left: 0px;
+    }
+    ul.form-errors {
+        padding: 1rem;
+        padding-left: 3rem;
+        margin-bottom: 2rem;
+        text-align: left;
+    }
+
+    .info, h4 {
+        font-weight: 600;
+        padding-bottom: 10px;
+        line-height: 1.6rem;
+        font-size: 1.21rem;
+        font-family: Modus, Arial, Helvetica, sans-serif;
+    }
+
+    .inforad {
+        border-bottom: none;
+        border-top: 1px solid #d1d1d1;
+    }
+    .oversikt {
+        text-align: center;
+    }
+    .leggtilekstra {
+        background-color: #f1f1f1;
+        padding-top: 50px;
+        padding-bottom: 35px;
+        border-bottom: none;
+
+        button {
+            background-color: #f1f1f1;
+            margin-bottom: 30px;
+
+            &:hover {
+                background-color: #0067c5;
+                color: #fff;
+            }
+        }
+    }
+    .ferdig-skjema {
+        padding-top: 0px;
+    }
+
+    .vedlegg {
+        h4 {
+            padding: 0;
+            margin: 0;
+            padding-bottom: 10px;
+        }
+
+        .info-liste {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 40px;
+            margin-bottom: 40px;
+            ul {
+                list-style-type: disc;
+                padding-left: 16px;
+            }
+        }
+        .skjemaramme {
+            padding-top: 35px;
+        }
+
+        [class^='valgboks-'] {
+            position: relative;
+            display: inline-block;
+            vertical-align: bottom;
+            text-align: center;
+            width: 213px;
+            height: 213px;
+            padding: 17px;
+            margin: 10px 10px;
+            margin-bottom: 30px;
+            background-color: #333333;
+            background-repeat: no-repeat, no-repeat;
+            span {
+                position: absolute;
+                bottom: 0%;
+                left: 0%;
+                width: 100%;
+                padding: 20px;
+                color: white;
+                text-transform: uppercase;
+            }
+        }
+        .lastOpp {
+            text-align: center;
+            padding-bottom: 30px;
+            li {
+                margin: 15px;
+            }
+        }
+        .valgboks-pc {
+            background-image: url('../img/pc.svg'), url('../img/under-dark.png');
+            background-position: center 20px, center 135px;
+        }
+        .valgboks-mobil {
+            margin-left: 0;
+            background-image: url('../img/mobil.svg'), url('../img/under-dark.png');
+            background-position: center 20px, center 155px;
+        }
+        .send-valg {
+            label {
+                display: block;
+            }
+        }
+        .liste-vannrett {
+            margin-top: 30px;
+        }
+        .behandlet {
+            div:last-of-type {
+                padding-top: 30px;
+                text-transform: uppercase;
+                color: #3e3832;
+            }
+            h2 {
+                padding-top: 0;
+            }
+        }
+        .lastetopp, .behandlet {
+            h2 {
+                padding-top: 0;
+                &:before {
+                    display: inline-block;
+                    content: "";
+                    background: url('../img/hake.svg') no-repeat center 10px;
+                    width: 2.1rem;
+                    height: 2.1rem;
+                    background-size: 1.4rem;
+                }
+            }
+
+            &.ekstraVedlegg {
+                h2 {
+                    padding-top: 40px;
+                    &:before {
+                        display: inherit;
+                        content: inherit;
+                        background: inherit;
+                        width: inherit;
+                        height: inherit;
+                        background-size: inherit;
+                    }
+                }
+            }
+        }
+        .ekstraVedlegg {
+            h2 {
+                padding-top: 40px;
+            }
+
+            &.lastetopp, &.behandlet {
+                h2 {
+                    padding-top: 0px !important;
+                }
+                div {
+                    padding-top: 30px;
+                    text-transform: uppercase;
+                    color: #3e3832;
+                }
+            }
+            &.behandlet.lastetopp {
+                .flipp {
+                    padding-top: 0px;
+                }
+            }
+        }
+    }
+    .accordion {
+        border-bottom: 1px solid #d1d1d1;
+    }
+
+    .forhandsvisning {
+        width: 100%;
+        margin: 0 auto;
+        text-align: center;
+        color: #0CA9E0;
+        margin-top: 35px;
+        .knapper {
+            margin-top: 20px;
+
+        }
+
+        .bildenavigering {
+            .bilde {
+                width: 220px;
+                height: 331px;
+            }
+        }
+    }
+
+    .form-linje.tekstfelt {
+        margin: 0 auto;
+
+        .annet-container {
+            width: 233px;
+            text-align: left;
+            margin: 0 auto;
+
+            input {
+                width: 100%;
+                margin-top: 8px;
+            }
+
+        }
+        .annet-container.annetlastetopp {
+            width: 220px !important;
+        }
+    }
+    .form-linje.knapp {
+        background-color: transparent;
+        border-color: transparent;
+        .melding {
+            text-align: center;
+        }
+        .melding.annet {
+            text-align: center !important;
+        }
+    }
+    .form-linje {
+        padding: 0px;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    #vedlegg {
+        .rad-belyst {
+            padding-left: 25px;
+            padding-right: 25px;
+
+            .begrensning {
+                width: 100%;
+
+                [class*="panel-"] {
+                    width: 100%;
+                }
+            }
+        }
+
+        .vedlegg {
+            .lastetopp, .behandlet {
+                h2 {
+                    &:before {
+                        width: 1.8rem;
+                        height: 1.8rem;
+                        background-size: 1rem;
+                    }
+                }
+            }
+
+            .panel-standard {
+                padding-left: 25px;
+                padding-right: 25px;
+            }
+
+            .bildenavigering {
+                [class*='pil-venstre'] {
+                    left: 0;
+                }
+                [class*='pil-hoyre'] {
+                    right: 0;
+                }
+            }
+        }
+    }
+}

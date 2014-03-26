@@ -23,7 +23,9 @@ angular.module('nav.vedleggbolker', [])
                 function apneFeilBolkerSomIkkeErApenFraFor(bolker) {
                     for (var i = 0; i < bolker.length; i++) {
                         var bolk = $(bolker[i]);
+
                         if (!(bolk.hasClass('open'))) {
+
                             bolk.find('.accordion-toggle').trigger('click');
                         }
                     }
@@ -70,13 +72,22 @@ angular.module('nav.vedleggbolker', [])
             }
         };
     }])
-    .directive('apneAnnetVedlegg', ['$timeout', function ($timeout) {
+    .directive('apneAnnetVedlegg', ['$interval', '$timeout', function ($interval, $timeout) {
         return {
             link: function ($scope, element) {
                 element.bind('click', function () {
-                    $timeout(function () {
-                        $(".accordion-toggle").last().trigger('click');
-                    }, 200);
+                    var lastElementId = $(".accordion-toggle").last().attr('id');
+                    var interval = $interval(function () {
+                        var lastElement = $(".accordion-toggle").last();
+                        if (lastElement.attr('id') !== lastElementId) {
+                            $timeout(function() {
+                                // Fysj og fy...
+                                $('.accordion-group.open .accordion-toggle').not('#' + lastElement.attr('id')).trigger('click');
+                                lastElement.trigger('click');
+                            });
+                            $interval.cancel(interval);
+                        }
+                    }, 100, 30);
                 });
             }
         };

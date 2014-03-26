@@ -134,7 +134,7 @@ angular.module('nav.feilmeldinger', [])
                     angular.forEach(verdi, function (feil) {
                         var feilmelding = finnFeilmelding(feil, feilNokkel);
 
-                        if (feil && feil.$skalVisesAlene === true && skalViseFlereFeilmeldinger) { // == Egendefinert feilmelding
+                        if (feil && feil.$skalVisesAlene === true && skalViseFlereFeilmeldinger) {
                             scope.feilmeldinger = [feilmelding];
                             skalViseFlereFeilmeldinger = false;
                         } else if (skalViseFlereFeilmeldinger && feil) {

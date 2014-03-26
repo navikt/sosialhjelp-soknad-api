@@ -21,7 +21,7 @@ public class TransformersTest {
                 .medProperty("datotil", "2013-01-01")
                 .medProperty("redusertfra", "2013-01-02")
                 .medProperty("konkursdato", "2013-01-03")
-                .medProperty("lonnspliktigperiodedatotil", "2013-01-04")
+                .medProperty("permiteringsperiodedatofra", "2013-01-04")
                 .medProperty("type", "Kontrakt utgått");
 
 

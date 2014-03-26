@@ -1,12 +1,12 @@
 <div class="hvit-side" data-panelbelyst id="fortsett-senere" data-sidetittel="sidetittel.fortsett">
 	<div class="skjemaramme">
 		<div data-ng-controller="FortsettSenereCtrl" data-ng-form="epostForm" data-novalidate class="epost-input vertikal">
-			<h2 class="stor strek-ikon-soknader">{{ 'dagpenger.fortsettSenere.tittel' | cmstekst }}</h2>
-			<p>{{ 'dagpenger.fortsettSenere.info' | cmstekst }}</p>
+			<h2 class="stor strek-ikon-soknader" data-ng-bind-html=" 'dagpenger.fortsettSenere.tittel' | cmstekst"></h2>
+			<p class="infotekst" data-ng-bind-html=" 'dagpenger.fortsettSenere.info' | cmstekst"></p>
             <div class="epost">
                 <div class="form-linje">
                     <label>
-                        <span class="labeltekst">{{ 'dagpenger.fortsettSenere.epost.label' | cmstekst }}</span>
+                        <span class="labeltekst" data-ng-bind-html=" 'dagpenger.fortsettSenere.epost.label' | cmstekst"></span>
                         <input type="email" name="epost" role="textbox" data-ng-model="epost.value"
                                 data-error-messages="{required: 'dagpenger.fortsettSenere.epost.required.feilmelding', pattern: 'dagpenger.fortsettSenere.epost.pattern.feilmelding' }"
                                 data-ng-required="true" data-ng-pattern="/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}$/" data-blur-validate/>
@@ -16,18 +16,18 @@
                 </div>
             </div>
 
-			<div>
-				<p>{{ 'dagpenger.fortsettSenere.info.frister' | cmstekst }}</p>
-				<p>{{ 'dagpenger.fortsettSenere.info.konsekvenser' | cmstekst }}</p>
+			<div class="viktig-info">
+				<p data-ng-bind-html=" 'dagpenger.fortsettSenere.info.frister' | cmstekst"></p>
+				<p data-ng-bind-html=" 'dagpenger.fortsettSenere.info.konsekvenser' | cmstekst"></p>
 			</div>
 
             <div class="knapper">
                 <ul class="liste-vannrett">
                     <li>
-                        <a href="#{{ forrigeSide }}" id="tilOversikt" role="link">{{ 'dagpenger.fortsettSenere.tilbake' | cmstekst }}</a>
+                        <a href="#{{ forrigeSide }}" id="tilOversikt" role="link" data-ng-bind-html=" 'dagpenger.fortsettSenere.tilbake' | cmstekst"></a>
                     </li>
                     <li>
-                        <a href="{{inngangsportenUrl}}" id="dittnav" role="link">{{ 'dagpenger.fortsettSenere.dittNav' | cmstekst }}</a>
+                        <a href="{{dittnavUrl}}" id="dittnav" role="link" data-ng-bind-html=" 'dagpenger.fortsettSenere.dittNav' | cmstekst"></a>
                     </li>
                 </ul>
             </div>

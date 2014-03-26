@@ -5,6 +5,9 @@ angular.module('sendsoknad')
     .value('cms', {})
     .constant('validertKlasse', 'validert')
     .run(['$http', '$templateCache', '$rootScope', 'data', '$location', 'sjekkUtslagskriterier', function ($http, $templateCache, $rootScope, data, $location, sjekkUtslagskriterier) {
+        $rootScope.app = {
+            laster: true
+        };
         $('#hoykontrast a, .skriftstorrelse a').attr('href', 'javascript:void(0)');
 
         $rootScope.$on('$routeChangeSuccess', function(event, next, current) {
@@ -13,15 +16,8 @@ angular.module('sendsoknad')
                 /*
                  * Dersom vi kommer inn på informasjonsside utenfra (current sin redirectTo er informasjonsside), og krav for søknaden er oppfylt, skal vi redirecte til rett side.
                  */
-                if (next.$$route.originalPath === "/informasjonsside" && sjekkUtslagskriterier.erOppfylt() && (!current || current.redirectTo === '/informasjonsside') && data.soknad) {
-
-                    if (data.soknad.delstegStatus === "SKJEMA_VALIDERT") {
-                        $location.path('/vedlegg');
-                    } else if (data.soknad.delstegStatus === "VEDLEGG_VALIDERT") {
-                        $location.path('/oppsummering');
-                    } else {
-                        $location.path('/soknad');
-                    }
+                if (skalRedirecteTilRettSideIfolgeDelstegStatus()) {
+                    redirectTilRettSideBasertPaDelstegStatus();
                 } else if (next.$$route.originalPath === "/oppsummering") {
                     redirectTilVedleggsideDersomVedleggIkkeErValidert();
                     redirectTilSkjemasideDersomSkjemaIkkeErValidert();
@@ -30,6 +26,10 @@ angular.module('sendsoknad')
                 } else if (current && next.$$route.originalPath === "/fortsettsenere") {
                     $rootScope.forrigeSide = current.$$route.originalPath;
                 }
+            }
+
+            function skalRedirecteTilRettSideIfolgeDelstegStatus() {
+                return next.$$route.originalPath === "/informasjonsside" && sjekkUtslagskriterier.erOppfylt() && (!current || current.redirectTo === '/informasjonsside') && data.soknad;
             }
         });
 
@@ -55,6 +55,16 @@ angular.module('sendsoknad')
             }
         }
 
+        function redirectTilRettSideBasertPaDelstegStatus() {
+            if (data.soknad.delstegStatus === "SKJEMA_VALIDERT") {
+                $location.path('/vedlegg');
+            } else if (data.soknad.delstegStatus === "VEDLEGG_VALIDERT") {
+                $location.path('/oppsummering');
+            } else {
+                $location.path('/soknad');
+            }
+        }
+
         function skjemaErValidert() {
             return data.soknad.delstegStatus === "SKJEMA_VALIDERT" || vedleggErValidert();
         }
@@ -63,7 +73,7 @@ angular.module('sendsoknad')
             return data.soknad.delstegStatus === "VEDLEGG_VALIDERT";
         }
     }])
-    .factory('InformasjonsSideResolver', ['data', 'cms', '$resource', '$q', function (data, cms, $resource, $q) {
+    .factory('InformasjonsSideResolver', ['$rootScope', 'data', 'cms', '$resource', '$q', '$timeout', function ($rootScope, data, cms, $resource, $q, $timeout) {
         var promiseArray = [];
 
         var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
@@ -84,7 +94,6 @@ angular.module('sendsoknad')
         );
 
         var behandlingId = getBehandlingIdFromUrl();
-
         if(erSoknadStartet()) {
             var soknadDeferer = $q.defer();
             var soknad = $resource('/sendsoknad/rest/soknad/behandling/:behandlingId').get(
@@ -105,11 +114,25 @@ angular.module('sendsoknad')
             promiseArray.push(soknadDeferer.promise);
         }
 
+        var lasteindikatorDefer = $q.defer();
+
+        // Passer på at laste-indikatoren vises i minimum 2 sekunder, for å unngå at den bare "blinker"
+        $timeout(function() {
+            lasteindikatorDefer.resolve();
+        }, 2000);
+
         promiseArray.push(tekster.$promise);
         promiseArray.push(utslagskriterier.$promise);
         promiseArray.push(config.$promise);
+        promiseArray.push(lasteindikatorDefer.promise);
 
-        return $q.all(promiseArray);
+        var resolve = $q.all(promiseArray);
+
+        resolve.then(function() {
+            $rootScope.app.laster = false;
+        });
+
+        return resolve;
     }])
 
     .factory('BehandlingSideResolver', ['$resource', '$q', '$route' , function ($resource, $q, $route) {
@@ -129,12 +152,13 @@ angular.module('sendsoknad')
         return $q.all(promiseArray);
     }])
 
-    .factory('HentSoknadService', ['$rootScope', 'data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', '$http', '$location', function ($scope, data, cms, $resource, $q, $route, soknadService, landService, Faktum, $http, $location) {
+    .factory('HentSoknadService', ['$rootScope', 'data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', '$http', '$timeout', function ($rootScope, data, cms, $resource, $q, $route, soknadService, landService, Faktum, $http, $timeout) {
         var promiseArray = [];
         
         var soknadOppsettDefer = $q.defer();
         var soknadDeferer = $q.defer();
         var faktaDefer = $q.defer();
+        var configDefer = $q.defer();
 
         var brukerbehandlingsid = getBehandlingIdFromUrl();
         var soknad = $resource('/sendsoknad/rest/soknad/behandling/:behandlingId').get(
@@ -173,8 +197,8 @@ angular.module('sendsoknad')
                         };
 
                         data.slettFaktum = function(faktumData) {
-                            $scope.faktumSomSkalSlettes = new Faktum(faktumData);
-                            $scope.faktumSomSkalSlettes.$delete({soknadId: faktumData.soknadId}).then(function () {
+                            $rootScope.faktumSomSkalSlettes = new Faktum(faktumData);
+                            $rootScope.faktumSomSkalSlettes.$delete({soknadId: faktumData.soknadId}).then(function () {
                             });
 
                             data.fakta.forEach(function (item, index) {
@@ -196,12 +220,13 @@ angular.module('sendsoknad')
                         soknadOppsettDefer.resolve();
                     }
                 );
-            }
-        );
-        
-        var config = $resource('/sendsoknad/rest/getConfig').get(
-            function (result) {
-                data.config = result;
+
+                $resource('/sendsoknad/rest/getConfig/' + soknadId).get(
+                    function (result) {
+                        data.config = result;
+                        configDefer.resolve();
+                    }
+                );
             }
         );
 
@@ -216,6 +241,21 @@ angular.module('sendsoknad')
                 data.land = result;
             }
         );
-        promiseArray.push(soknadOppsettDefer.promise, soknadDeferer.promise, faktaDefer.promise, land.$promise, tekster.$promise, config.$promise);
-        return $q.all(promiseArray);
+
+        var lasteindikatorDefer = $q.defer();
+
+        // Passer på at laste-indikatoren vises i minimum 2 sekunder, for å unngå at den bare "blinker"
+        $timeout(function() {
+            lasteindikatorDefer.resolve();
+        }, 2000);
+
+        promiseArray.push(soknadOppsettDefer.promise, soknadDeferer.promise, faktaDefer.promise, land.$promise, tekster.$promise, lasteindikatorDefer.promise, configDefer.promise);
+
+        var resolve = $q.all(promiseArray);
+
+        resolve.then(function() {
+            $rootScope.app.laster = false;
+        });
+
+        return resolve;
     }]);

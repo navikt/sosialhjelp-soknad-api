@@ -1,7 +1,7 @@
 <div class="tekstfelt form-linje" >
-    <h4 data-ng-if="harSporsmal()" class="spm-sporsmal">{{ navsporsmal | cmstekst }}</h4>
+    <h4 data-ng-if="harSporsmal()" class="spm-sporsmal" data-ng-bind-html=" navsporsmal | cmstekst"></h4>
     <label>
-        <span class="labeltekst">{{ navlabel | cmstekst }}</span>
+        <span class="labeltekst" data-ng-bind-html=" navlabel | cmstekst"></span>
         <input data-ng-model="faktum.value"
                type="number"
                value="{{ value }}"

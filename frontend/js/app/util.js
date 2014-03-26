@@ -1,22 +1,3 @@
-if (!Array.prototype.indexOf) {
-	Array.prototype.indexOf = function (elt) {
-		var len = this.length >>> 0;
-		var from = Number(arguments[1]) || 0;
-		from = (from < 0) ? Math.ceil(from) : Math.floor(from);
-
-		if (from < 0) {
-			from += len;
-		}
-
-		for (; from < len; from++) {
-			if (from in this && this[from] === elt) {
-				return from;
-			}
-		}
-		return -1;
-	};
-}
-
 if (!Array.prototype.last) {
 	Array.prototype.last = function () {
 		return this[this.length - 1];
@@ -202,7 +183,8 @@ function fadeBakgrunnsfarge(element, scope, rgb1, rgb2, rgb3) {
 	var transparency = 0;
 	var timeout = setInterval(function () {
 		if (transparency >= 0) {
-			element[0].style.backgroundColor = 'rgba(' + backgroundColour + (transparency += 0.015) + ')';
+			transparency -= 0.015;
+			element[0].style.backgroundColor = 'rgba(' + backgroundColour + transparency + ')';
 		} else {
 			element.removeAttr('style');
 			clearInterval(timeout);
@@ -217,13 +199,14 @@ function fadeFeilmelding(element, melding, feilmeldingsklasse, scope) {
 	var meldingColour = [195, 0, 0].join(',') + ',';
 	var transparency = 1;
 	var timeout = setInterval(function () {
-		if (transparency >= 0) {
-			element[0].style.backgroundColor = 'rgba(' + backgroundColour + (transparency -= 0.015) + ')';
-			element[0].style.borderColor = 'rgba(' + borderColour + (transparency -= 0.015) + ')';
-			melding[0].style.color = 'rgba(' + meldingColour + (transparency -= 0.015) + ')';
+        if (transparency >= 0) {
+			transparency -= 0.015;
+			element[0].style.backgroundColor = 'rgba(' + backgroundColour + transparency + ')';
+			element[0].style.borderColor = 'rgba(' + borderColour + transparency + ')';
+			melding[0].style.color = 'rgba(' + meldingColour + transparency + ')';
 		} else {
 			element.removeClass(feilmeldingsklasse);
-			element.removeAttr('style');
+            element.removeAttr('style');
 			melding.removeAttr('style');
 			clearInterval(timeout);
 			scope.$apply();
@@ -237,9 +220,28 @@ function fadeAktivFeilmelding(element, melding, feilmeldingsklasse, scope) {
     var transparency = 1;
     var timeout = setInterval(function () {
         if (transparency >= 0) {
-            element[0].style.backgroundColor = 'rgba(' + backgroundColour + (transparency -= 0.015) + ')';
-            element[0].style.borderColor = 'rgba(' + borderColour + (transparency -= 0.015) + ')';
-            melding[0].style.color = 'rgba(' + meldingColour + (transparency -= 0.015) + ')';
+            transparency -= 0.015;
+            element[0].style.backgroundColor = 'rgba(' + backgroundColour + transparency + ')';
+            element[0].style.borderColor = 'rgba(' + borderColour + transparency + ')';
+            melding[0].style.color = 'rgba(' + meldingColour + transparency + ')';
+        } else {
+            element.removeClass(feilmeldingsklasse);
+            element.removeAttr('style');
+            melding.removeAttr('style');
+            clearInterval(timeout);
+            scope.$apply();
+        }
+    }, 20);
+}
+function fadeContrastFeilmelding(element, melding, feilmeldingsklasse, scope) {
+    var backgroundColour = [250, 214, 214].join(',') + ',';
+    var borderColour = [250, 110, 140].join(',') + ',';
+    var transparency = 1;
+    var timeout = setInterval(function () {
+        if (transparency >= 0) {
+            transparency -= 0.015;
+            element[0].style.backgroundColor = 'rgba(' + backgroundColour + transparency + ')';
+            element[0].style.borderColor = 'rgba(' + borderColour + transparency + ')';
         } else {
             element.removeClass(feilmeldingsklasse);
             element.removeAttr('style');
@@ -350,14 +352,20 @@ function erTouchDevice() {
 
 function getIEVersion() {
     var version = -1;
+    var ua = navigator.userAgent;
     if (navigator.appName === 'Microsoft Internet Explorer') {
-        var  ua = navigator.userAgent;
         var re = new RegExp("MSIE ([0-9]{1,}[.0-9]{0,})");
 
         if (re.exec(ua) !== null) {
             version = parseInt(RegExp.$1);
         }
+    } else if (navigator.appName === 'Netscape') {
+        var reIe11  = new RegExp("Trident/.*rv:([0-9]{1,}[\\.0-9]{0,})");
+        if (reIe11.exec(ua) !== null){
+            version = parseFloat(RegExp.$1 );
+        }
     }
+
 
     return version;
 }

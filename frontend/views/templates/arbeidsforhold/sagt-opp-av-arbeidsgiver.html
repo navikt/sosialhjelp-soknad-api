@@ -1,5 +1,6 @@
 <div class="varighet form-linje">
-    <h4 class="spm-sporsmal">{{ 'arbeidsforhold.arbeidsgiver.varighet.label' | cmstekst }}</h4>
+    <h4 class="spm-sporsmal" data-ng-bind-html=" 'arbeidsforhold.arbeidsgiver.varighet.label' | cmstekst"></h4>
+
     <div data-nav-dato-intervall
          data-fra-dato="sluttaarsak.properties.datofra"
          data-til-dato="sluttaarsak.properties.datotil"
@@ -14,7 +15,6 @@
      data-nav-faktum-property="aarsak"
      data-nokkel="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.aarsak"
      data-maxlengde="500"
-     data-feilmelding="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.aarsak.feilmelding"
      data-obligatorisk="true"></div>
 
 <div data-booleanradio
@@ -22,23 +22,20 @@
      data-nav-faktum-property="sagtOppAvArbeidsgiverTilbudomjobbannetsted"
      data-nokkel="arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.tilbudomjobbannetsted"></div>
 
-<div class="fiks-siste-boks ekstra-spm-boks"
-     data-ng-if="sluttaarsak.properties.sagtOppAvArbeidsgiverTilbudomjobbannetsted == 'true'">
+<div class="ekstra-spm-boks">
     <div data-navinfoboks>
-        <p>{{ 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.informasjon' | cmstekst }}</p>
+        <p data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.sagtoppavarbeidsgiver.informasjon' | cmstekst"></p>
 
-        <p>{{ 'arbeidsforhold.sluttaarsak.advarsel' | cmstekst }}</p>
+        <p data-ng-bind-html=" 'arbeidsforhold.sluttaarsak.advarsel' | cmstekst"></p>
     </div>
-</div>
-
-<div class="ekstra-spm-boks" data-vedlegginfoboks>
-    <ul>
-        <li>
-            <span>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.1' | cmstekst }}</span>
-        </li>
-        <li>
-            <p>{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2' | cmstekst }}</p>
-            <a href="{{sluttaarsakUrl}}">{{ 'arbeidsforhold.sluttaarsak.vedlegg.liste.2.lenketekst' | cmstekst }}</a>
-        </li>
-    </ul>
+    <div data-vedlegginfoboks>
+        <ul>
+            <li>
+                <span data-ng-bind-html="'Dagpenger.vedlegg.O2.header' | cmstekst"></span>
+            </li>
+            <li>
+                <span data-ng-bind-html="'Dagpenger.vedlegg.T8.header' | cmstekst"></span>
+            </li>
+        </ul>
+    </div>
 </div>

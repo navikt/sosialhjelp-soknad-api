@@ -274,6 +274,10 @@
                                         <span>{{ hentTekst "dagpenger.oppsummering.datotil" }}</span>
                                         <span>{{ formatterLangDato properties.datotil }}</span>
                                     {{/if}}
+                                    {{#if properties.konkursdato}}
+                                        <span>{{ hentTekst "dagpenger.oppsummering.datotil" }}</span>
+                                        <span>{{ formatterLangDato properties.konkursdato }}</span>
+                                    {{/if}}
                                 </li>
 
 
@@ -301,6 +305,10 @@
                                 {{#hvisLik properties.type "Redusert arbeidstid"}}
                                     <li class="kulepunkt">
                                         <span>{{ hentTekst "arbeidsforhold.sluttaarsak.radio.redusertArbeidstid" }}</span>
+                                    </li>
+                                    <li class="kulepunkt">
+                                        <span> {{ hentTekst "arbeidsforhold.sluttaarsak.redusertArbeidstid.fraDato.oppsummering" }} </span>
+                                        <span>{{ formatterLangDato properties.redusertfra }}</span>
                                     </li>
 
                                     <li class="kulepunkt">
@@ -1153,7 +1161,7 @@
             {{/forFaktum}}
 
             <h2>{{ hentTekst "dagpenger.oppsummering.vedlegg.tittel" }}</h2>
-			<table class="vedlegg">
+            <table class="vedlegg">
                 {{#forVedlegg}}
                     <tr>
                         {{#hvisLik innsendingsvalg "LastetOpp"}}
@@ -1175,7 +1183,12 @@
                                         <span class="antallSider">
                                             <span class="vedlegg"></span>
                                             <span>{{ antallSider }}</span>
-                                            <span>{{ hentTekst "dagpenger.oppsummering.sider" }}</span>
+                                            {{#hvisLik antallSider "1"}}
+                                                <span>{{ hentTekst "dagpenger.oppsummering.side" }}</span>
+                                            {{ else }}
+                                                <span>{{ hentTekst "dagpenger.oppsummering.sider" }}</span>
+                                            {{/hvisLik}}
+
                                         </span>
                                         <a href="#/visVedlegg/{{ vedleggId }}" class="seVedlegg">{{ hentTekst "dagpenger.oppsummering.seVedlegg" }}</a>
                                     </span>
@@ -1191,8 +1204,16 @@
                             </span>
                         </td>
                     </tr>
+                {{ else }}
+                    <tr class="ingenVedleggTekst">
+                        <td class="sjekket"></td>
+                        <td >
+                            <span>{{ hentTekst "dagpenger.oppsummering.vedlegg.ingen" }}</span>
+                        </td>
+                    </tr>
                 {{/forVedlegg}}
-			</table>
+            </table>
+
 
             <div class="brosjyre-signatur">
                 <table >

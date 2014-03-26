@@ -1,13 +1,24 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.service;
 
+import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
 public class ConfigService {
+    @Inject
+    private Kodeverk kodeverk;
+
+    @Inject
+    private SendSoknadService soknadService;
+
+
     @Value("${minehenvendelser.link.url}")
     private String mineHenvendelserUrl;
     @Value("${dialogarena.navnolink.url}")
@@ -24,12 +35,6 @@ public class ConfigService {
     private String dagpengerBrosjyreUrl;
     @Value("${soknad.brukerprofil.url}")
     private String brukerProfilUrl;
-    @Value("${soknad.sluttaarsak.url}")
-    private String sluttaarsakUrl;
-    @Value("${soknad.lonnskravskjema.url}")
-    private String lonnskravSkjemaUrl;
-    @Value("${soknad.permitteringsskjema.url}")
-    private String permitteringskjemaUrl;
     @Value("${dittnav.link.url}")
     private String dittnavUrl;
     
@@ -47,11 +52,33 @@ public class ConfigService {
         result.put("soknad.reelarbeidsoker.url", reelarbeidsokerUrl);
         result.put("soknad.dagpengerbrosjyre.url", dagpengerBrosjyreUrl);
         result.put("soknad.brukerprofil.url", brukerProfilUrl);
-        result.put("soknad.sluttaarsak.url", sluttaarsakUrl);
-        result.put("soknad.lonnskravskjema.url", lonnskravSkjemaUrl);
-        result.put("soknad.permitteringsskjema.url", permitteringskjemaUrl);
-        
+
         return result;
     }
-    
+
+    public Map<String,String> getConfig(Long soknadId) {
+        Map<String, String> result = getConfig();
+
+        SoknadStruktur struktur = soknadService.hentSoknadStruktur(soknadId);
+
+        for (SoknadVedlegg soknadVedlegg : struktur.getVedlegg()) {
+            settInnUrlForSkjema(soknadVedlegg.getSkjemaNummer(), result);
+        }
+
+        for (String skjemanummer : struktur.getVedleggReferanser()) {
+            settInnUrlForSkjema(skjemanummer, result);
+        }
+
+        return result;
+    }
+
+    private void settInnUrlForSkjema(String skjemanummer, Map<String, String> resultMap) {
+        String url = kodeverk.getKode(skjemanummer, Kodeverk.Nokkel.URL);
+
+        if (!url.isEmpty()) {
+            resultMap.put(skjemanummer.toLowerCase().replaceAll("\\s+", "") + ".url", url);
+        }
+    }
+
+
 }

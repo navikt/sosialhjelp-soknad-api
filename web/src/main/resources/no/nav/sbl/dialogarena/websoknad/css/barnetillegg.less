@@ -11,7 +11,7 @@
     }
 
     .hake {
-        margin: 10px 0 10px -30px;
+        margin: 0 0 5px -30px;
         padding-left: 30px;
         background: url(../img/hake.svg) no-repeat left 3px;
     }
@@ -33,18 +33,23 @@
     }
 
     .barn {
-        ul {
-            margin-top: 25px;
-            margin-bottom: 15px;
+        .barnecheckbox {
+            margin-left: 65px;
 
-            li {
-                margin-top: 0;
+            .venstrestilt {
+                margin-top: 15px;
             }
         }
 
-        .barnecheckbox {
-            margin-left: 65px;
-            margin-top: 15px;
+        ul {
+            li {
+                margin-top: 0;
+                &:first-child {
+                    a {
+                        padding-left: 0;
+                    }
+                }
+            }
         }
 
         .barnealder {

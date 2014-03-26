@@ -4,6 +4,15 @@ angular.module('app.routes', ['ngRoute'])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider
+            .when('/cmstekster', {
+                redirectTo: '/informasjonsside',
+                resolve: {
+                    notUsedButRequiredProperty: ['$rootScope', function ($rootScope) {
+                        $rootScope.visCmsnokkler = true;
+                        return true;
+                    }]
+                }
+            })
             .when('/informasjonsside', {
                 templateUrl: '../views/templates/informasjonsside.html',
                 controller: 'InformasjonsSideCtrl',
@@ -31,7 +40,7 @@ angular.module('app.routes', ['ngRoute'])
                 }
             })
             .when('/opplasting/:vedleggId', {
-                templateUrl: '../views/templates/opplasting.html',
+                templateUrl: '../views/templates/vedlegg/opplasting.html',
                 resolve: {
                     notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
                         return HentSoknadService;

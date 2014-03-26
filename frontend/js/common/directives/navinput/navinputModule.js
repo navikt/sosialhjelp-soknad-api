@@ -11,7 +11,7 @@ angular.module('nav.input', ['nav.cmstekster'])
                 }}
         };
     }])
-    .directive('navradio', [function () {
+    .directive('navradio', ['cms', function (cms) {
         return {
             restrict: 'A',
             replace: true,
@@ -20,13 +20,12 @@ angular.module('nav.input', ['nav.cmstekster'])
             link: {
                 pre: function (scope, element, attr) {
                     scope.value = attr.value;
-                    scope.label = attr.label;
-
+                    scope.hjelpetekst = {
+                        tittel: attr.hjelpetekst + '.tittel',
+                        tekst: attr.hjelpetekst + '.tekst'
+                    };
                 },
                 post: function (scope, element, attr) {
-                    scope.endret = function () {
-                        scope.$eval(attr.navendret);
-                    };
                     scope.hvisAktiv = function () {
                         return scope.faktum.value === scope.value;
                     };
@@ -34,6 +33,10 @@ angular.module('nav.input', ['nav.cmstekster'])
                     scope.hvisHarTranscludedInnhold = function () {
                         var transcludeElement = element.find('.ng-transclude');
                         return transcludeElement.text().trim().length > 0;
+                    };
+
+                    scope.hvisHarHjelpetekst = function() {
+                        return cms.tekster[scope.hjelpetekst.tittel] !== undefined;
                     };
 
                     var index = scope.navlabel.lastIndexOf(".true");
@@ -68,7 +71,6 @@ angular.module('nav.input', ['nav.cmstekster'])
                         tittel: cms.tekster[attr.navlabel + '.hjelpetekst.tittel'],
                         tekst: cms.tekster[attr.navlabel + '.hjelpetekst.tekst']
                     };
-
                 },
                 post: function (scope, element) {
                     scope.hvisHarHjelpetekst = function () {
@@ -91,39 +93,6 @@ angular.module('nav.input', ['nav.cmstekster'])
             templateUrl: '../js/common/directives/navinput/navcheckboxTemplate.html'
         };
     }])
-
-    .directive('navtall', [function () {
-        return {
-            restrict: 'A',
-            replace: true,
-            scope: true,
-            link: {
-                pre: function (scope, element, attrs) {
-                    if (attrs.regexvalidering) {
-                        scope.regexvalidering = attrs.regexvalidering.toString();
-                    } else {
-                        scope.regexvalidering = '';
-                    }
-                    if (attrs.inputfeltmaxlength) {
-                        scope.inputfeltmaxlength = attrs.inputfeltmaxlength;
-                    } else {
-                        scope.inputfeltmaxlength = undefined;
-                    }
-                },
-                post: function (scope, element) {
-                    scope.hvisSynlig = function () {
-                        return element.is(':visible');
-                    };
-
-                    scope.harSporsmal = function() {
-                        return isNotNullOrUndefined(scope.navsporsmal) && scope.navsporsmal.length > 0;
-                    };
-                }
-            },
-            templateUrl: '../js/common/directives/navinput/navtallInputTemplate.html'
-        };
-    }])
-
     .directive('navtekst', [function () {
         return {
             restrict: 'A',
@@ -143,10 +112,6 @@ angular.module('nav.input', ['nav.cmstekster'])
                     }
                 },
                 post: function (scope, element) {
-                    scope.hvisSynlig = function () {
-                        return element.is(':visible');
-                    };
-
                     scope.harSporsmal = function() {
                         return isNotNullOrUndefined(scope.navsporsmal) && scope.navsporsmal.length > 0;
                     };
@@ -173,8 +138,11 @@ angular.module('nav.input', ['nav.cmstekster'])
             replace: true,
             scope: true,
             link: function (scope, element) {
-                scope.erSynlig = function () {
-                    return element.is(':visible');
+                scope.visSlett = function(idx) {
+                    if (scope.navVisSlett !== undefined && scope.navVisSlett === 'false') {
+                        return false;
+                    }
+                    return idx !== 0;
                 };
             },
             templateUrl: '../js/common/directives/navinput/navorgnrfeltTemplate.html'

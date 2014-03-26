@@ -1,7 +1,7 @@
 
 
 <div data-navinfoboks>
-    <span>{{ 'utdanning.svar.under.utdanning.kveld.undervisning.folges.info' | cmstekst }}</span>
+    <span data-ng-bind-html=" 'utdanning.svar.under.utdanning.kveld.undervisning.folges.info' | cmstekst"></span>
 </div>
 
 <div data-nav-faktum="utdanning.kveld.folges"
@@ -12,7 +12,7 @@
 
 
 <div data-navinfoboks>
-    <span>{{ 'utdanning.progresjon.informasjon' | cmstekst }}</span>
+    <span data-ng-bind-html=" 'utdanning.progresjon.informasjon' | cmstekst"></span>
 </div>
 <div data-nav-faktum="utdanning.kveld.progresjonUnder50"
      data-er-required="false"
@@ -20,7 +20,7 @@
      data-nokkel="utdanning.progresjon">
 
     <div data-navinfoboks>
-        <span>{{ 'utdanning.paabegyntUnder6mnd.informasjon' | cmstekst }}</span>
+        <span data-ng-bind-html=" 'utdanning.paabegyntUnder6mnd.informasjon' | cmstekst"></span>
     </div>
     <div data-nav-faktum="utdanning.kveld.PaabegyntUnder6mnd"
          data-er-required="false"
@@ -28,7 +28,7 @@
          data-nokkel="utdanning.paabegyntUnder6mnd">
 
         <div data-navinfoboks>
-            <span>{{ 'utdanning.unntak.under6mnd' | cmstekst }}</span>
+            <span data-ng-bind-html=" 'utdanning.unntak.under6mnd' | cmstekst"></span>
         </div>
     </div>
 </div>
@@ -48,19 +48,20 @@
      data-ng-required></div>
 
 <div class="varighet form-linje" data-nav-faktum="utdanning.kveld.varighet" data-nav-property="['varighetFra', 'varighetTil']">
-    <h4 class="spm-sporsmal">{{ 'utdanning.varighet.label' | cmstekst }}</h4>
+    <h4 class="spm-sporsmal" data-ng-bind-html=" 'utdanning.varighet.label' | cmstekst"></h4>
     <div data-nav-dato-intervall
          data-fra-dato="navproperties.varighetFra"
          data-til-dato="navproperties.varighetTil"
-         data-label="utdanning.varighet"
+         data-label="utdanning.svar.under.utdanning.kveld.varighet"
          data-er-fremtidigdato-tillatt="true"
-         data-er-required="true"
+         data-er-fradato-required="fraDatoErRequired()"
+         data-required-error-message="utdanning.semester.avslutning.feilmelding"
          data-lagre="lagreFaktum()">
     </div>
 </div>
 
 <div class="varighet form-linje" data-ng-if="hvis('utdanning.kveld.progresjonUnder50', 'false')">
-    <h4 class="spm-sporsmal">{{ 'utdanning.semester.avslutning.label' | cmstekst }}</h4>
+    <h4 class="spm-sporsmal" data-ng-bind-html=" 'utdanning.semester.avslutning.label' | cmstekst"></h4>
     <div data-nav-dato
          data-ng-model="utdanning.semester.avslutning"
          data-label="utdanning.semester.avslutning.dato"
@@ -69,6 +70,6 @@
 </div>
 <div data-vedlegginfoboks>
     <ul>
-        <li><p>{{ 'utdanning.svar.under.utdanning.dokumentasjon' | cmstekst }}</p></li>
+        <li><p data-ng-bind-html="'Dagpenger.vedlegg.T1.header' | cmstekst"></p></li>
     </ul>
 </div>

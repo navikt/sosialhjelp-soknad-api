@@ -1,10 +1,10 @@
 <div class="form-linje tekstfelt orgnummer">
     <label>
-        <span class="labeltekst">{{ navlabel | cmstekst }}</span>
+        <span class="labeltekst" data-ng-bind-html=" navlabel | cmstekst"></span>
         <input type="text"
                value="{{ value }}"
                data-ng-model="faktum.value"
-               data-ng-required="erSynlig()"
+               data-ng-required="true"
                data-error-messages="{{ navfeilmelding }}"
                data-blur-validate
                data-ng-pattern="/[0-9]{9}/"
@@ -13,8 +13,8 @@
                data-aktiv-feilmelding>
     </label>
     <a href="javascript:void(0)" aria-role="button" class="orgnummer-slett"
-       data-ng-if="skalViseSlettKnapp($index)"
+       data-ng-if="visSlett($index)"
        data-ng-click="slettOrg(egennaering_drivergennaering_orgnummer, $index)"
-       data-fokus>{{ 'organisasjonsnummer.slett' | cmstekst }}</a>
+       data-fokus data-ng-bind-html=" 'organisasjonsnummer.slett' | cmstekst"></a>
     <span class="melding"></span>
 </div>
