@@ -6,14 +6,15 @@
                data-ng-required="true"
                data-ng-model="faktum.value"
                data-error-messages="{{ navfeilmelding }}"
-               data-ng-pattern="{{ regexvalidering }}"
-               data-ng-minlength="{{ navminlength }}"
-               data-ng-maxlength="{{ navmaxlength }}"
+               data-min="{{ navminvalue }}"
+               data-max="{{ navmaxvalue }}"
                minlength="{{ navminlength }}"
                maxlength="{{ navmaxlength }}"
+               data-ng-pattern="{{ regexvalidering }}"
                data-blur-validate
                data-tekstfelt-patternvalidering
-               data-aktiv-feilmelding/>
+               data-aktiv-feilmelding
+               data-tall-range>
         <span class="melding"></span>
     </label>
 </div>

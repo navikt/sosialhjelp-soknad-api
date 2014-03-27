@@ -119,7 +119,35 @@ angular.module('nav.input', ['nav.cmstekster'])
             },
             templateUrl: '../js/common/directives/navinput/navtekstTemplate.html'
         };
-    }]).directive('tekstfeltPatternvalidering', [function () {
+    }])
+    .directive('navtall', [function () {
+        return {
+            restrict: 'A',
+            replace: true,
+            scope: true,
+            link: {
+                pre: function (scope, element, attrs) {
+                    if (attrs.regexvalidering) {
+                        scope.regexvalidering = attrs.regexvalidering.toString();
+                    } else {
+                        scope.regexvalidering = '';
+                    }
+                    if (attrs.inputfeltmaxlength) {
+                        scope.inputfeltmaxlength = attrs.inputfeltmaxlength;
+                    } else {
+                        scope.inputfeltmaxlength = undefined;
+                    }
+                },
+                post: function (scope, element) {
+                    scope.harSporsmal = function() {
+                        return isNotNullOrUndefined(scope.navsporsmal) && scope.navsporsmal.length > 0;
+                    };
+                }
+            },
+            templateUrl: '../js/common/directives/navinput/navtallTemplate.html'
+        };
+    }])
+    .directive('tekstfeltPatternvalidering', [function () {
         return {
             require: 'ngModel',
             link: function (scope, element, attrs, ctrl) {
@@ -211,6 +239,44 @@ angular.module('nav.input', ['nav.cmstekster'])
                 element.bind('mousewheel', function(event) {
                     event.preventDefault();
                 });
+            }
+        };
+    }])
+    .directive('tallRange', [function() {
+        return {
+            restrict: 'A',
+            require: ['ngModel', '^form'],
+            link: {
+                pre: function(scope, element, attrs, ctrls) {
+                    var ngModel = ctrls[0];
+
+                    if (attrs.min) {
+                        var min = parseFloat(attrs.min);
+                        ngModel.$parsers.push(function(input) {
+                            var num = parseFloat(input);
+                            if (isNaN(num)) {
+                                return input;
+                            }
+
+
+                            ngModel.$setValidity('min', num > min);
+                            return input;
+                        });
+                    }
+
+                    if (attrs.max) {
+                        var max = parseFloat(attrs.max);
+                        ngModel.$parsers.push(function(input) {
+                            var num = parseFloat(input);
+                            if (isNaN(num)) {
+                                return input;
+                            }
+
+                            ngModel.$setValidity('max', num < max);
+                            return input;
+                        });
+                    }
+                }
             }
         };
     }]);

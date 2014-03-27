@@ -19,7 +19,7 @@ describe('valideringBlurValidate', function () {
         element = angular.element(
             '<form name="form">' +
                 '<div class="form-linje"> ' +
-                '<input type="text" required data-ng-model="modell" data-blur-validate name="inputname" data-error-messages="{feilmeldingstekst}"> ' +
+                '<input type="text" ng-required="true" data-ng-model="modell" data-blur-validate name="inputname" data-error-messages="{feilmeldingstekst}"> ' +
                 '<span class="melding"></span>' +
                 '</div> ' +
                 '</form>');
@@ -107,7 +107,7 @@ describe('valideringBlurValidate', function () {
         element = angular.element(
             '<form name="form">' +
                 '<div class="form-linje"> ' +
-                '<input type="text" required data-ng-model="modell" data-blur-validate name="inputname" data-error-messages="{required: \'feilmeldingstekst\'}"> ' +
+                '<input type="text" ng-required="true" data-ng-model="modell" data-blur-validate name="inputname" data-error-messages="{required: \'feilmeldingstekst\'}"> ' +
                 '<span class="melding"></span>' +
 
                 '</div> ' +
