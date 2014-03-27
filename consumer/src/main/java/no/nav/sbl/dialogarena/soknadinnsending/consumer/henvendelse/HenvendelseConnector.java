@@ -49,7 +49,7 @@ public class HenvendelseConnector {
         XMLMetadataListe xmlMetadataListe = (XMLMetadataListe) soknadResponse.getAny();
         XMLHovedskjema xmlHovedskjema = (XMLHovedskjema)xmlMetadataListe.getMetadata().get(0);
         XMLHovedskjema xmlSkjema = createXMLSkjema(xmlHovedskjema.getSkjemanummer(), uid);
-        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartSoknadRequest(fnr, xmlSkjema, SoknadType.SEND_SOKNAD_ETTERSENDING, xmlMetadataListe);
+        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartEttersendingRequest(fnr, xmlSkjema, SoknadType.SEND_SOKNAD_ETTERSENDING, xmlMetadataListe, soknadResponse.getBehandlingsId());
 
         return startSoknadEllerEttersending(xmlStartSoknadRequest);
     }
@@ -95,6 +95,13 @@ public class HenvendelseConnector {
             logger.error("Kunne ikke avbryte søknad med ID {}", behandlingsId, e);
             throw new SystemException("Kunne ikke avbryte søknad", e, "exception.system.baksystem");
         }
+    }
+
+    private WSStartSoknadRequest createXMLStartEttersendingRequest(String fnr, XMLHovedskjema xmlSkjema, SoknadType type, XMLMetadataListe xmlMetadataListe, String behandlingsId) {
+        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartSoknadRequest(fnr, xmlSkjema, type, xmlMetadataListe);
+        // TODO:
+        // xmlStartSoknadRequest
+        return xmlStartSoknadRequest;
     }
 
     private WSStartSoknadRequest createXMLStartSoknadRequest(String fnr, XMLHovedskjema skjema, SoknadType soknadType, XMLMetadataListe xmlMetadataListe) {
