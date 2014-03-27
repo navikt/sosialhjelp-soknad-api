@@ -1,6 +1,6 @@
 angular.module('nav.ettersending')
-    .controller('StartEttersendingCtrl', ['$scope', 'soknadService', '$location',
-        function ($scope, soknadService, $location) {
+    .controller('StartEttersendingCtrl', ['$scope', 'ettersendingService', '$location',
+        function ($scope, ettersendingService, $location) {
             $scope.fremdriftsindikator = {
                 laster: false
             };
@@ -9,10 +9,10 @@ angular.module('nav.ettersending')
                 $event.preventDefault();
                 var behandlingId = getBehandlingIdFromUrl();
                 $scope.fremdriftsindikator.laster = true;
-                soknadService.opprettEttersending({},
+                ettersendingService.create({},
                     {behandlingskjedeId: behandlingId},
-                    function(result) {
-                        $location.path('/ettersending/' + result.soknadId);
+                    function() {
+                        $location.path('/vedlegg');
                     },
                     function() {
                         $scope.fremdriftsindikator.laster = false;

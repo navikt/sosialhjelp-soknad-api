@@ -4,7 +4,7 @@
     'use strict';
 
     // TODO: Denne modulen må ryddes opp i
-    angular.module('app.services', ['ngResource'])
+    angular.module('sendsoknad.services', ['ngResource'])
 
         .config(['$httpProvider', function ($httpProvider) {
             $httpProvider.interceptors.push('resetTimeoutInterceptor');
@@ -41,6 +41,10 @@
         .factory('settDelstegStatusEtterKallMotServer', ['data', function (data) {
             return {
                 'response': function(response) {
+                    if (response === undefined) {
+                        return response;
+                    }
+
                     if (response.config.method === 'POST') {
                         if (data.soknad) {
                             data.soknad.sistLagret = new Date().getTime();
@@ -69,8 +73,10 @@
         .factory('httpRequestInterceptorPreventCache', [function() {
             return {
                 'request': function(config) {
-                    if (config.method === "GET" && config.url.indexOf('.html') < 0) {
-                        config.url = config.url + '?rand=' + new Date().getTime();
+                    if (getIEVersion > 0) {
+                        if (config.method === "GET" && config.url.indexOf('.html') < 0) {
+                            config.url = config.url + '?rand=' + new Date().getTime();
+                        }
                     }
                     return config;
                 }

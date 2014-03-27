@@ -12,7 +12,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStr
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
 import no.nav.sbl.dialogarena.websoknad.domain.StartSoknad;
 import org.apache.commons.collections15.Predicate;
 import org.springframework.http.HttpStatus;
@@ -26,8 +25,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.inject.Inject;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.IOException;
@@ -203,31 +200,5 @@ public class SoknadDataController {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
         vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
         return pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
-    }
-
-    @RequestMapping(value = "/ettersending", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
-    @ResponseBody()
-    @ResponseStatus(HttpStatus.CREATED)
-    public Map<String,String> startEttersending(@RequestBody Map<String, String> requestMap, HttpServletResponse response) {
-        Map<String, String> result = new HashMap<>();
-        Long soknadId;
-
-        soknadId = soknadService.hentEttersendingForBehandlingskjedeId(requestMap.get("behandlingskjedeId"));
-
-        if (soknadId == null) {
-            WebSoknad soknad = soknadService.startEttersending(requestMap.get("behandlingskjedeId"));
-            soknadId = soknad.getSoknadId();
-        }
-
-        response.addCookie(new Cookie("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId)));
-        result.put("soknadId", soknadId.toString());
-        return result;
-    }
-
-    @RequestMapping(value = "/sendettersending", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
-    public void sendEttersending(@RequestBody Map<String, String> requestMap) {
-        Long soknadId = Long.valueOf(requestMap.get("soknadId"));
-        String behandlingsId = requestMap.get("behandlingsId");
-        soknadService.sendEttersending(soknadId, behandlingsId);
     }
 }

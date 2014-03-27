@@ -34,13 +34,13 @@ angular.module('sendsoknad')
         $http.get('../js/common/directives/navtextarea/navtextareaObligatoriskTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/navtextarea/navtextareaTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/select/selectTemplate.html', {cache: $templateCache});
-        $http.get('../js/dagpenger/directives/feilmeldinger/feilmeldingerTemplate.html', {cache: $templateCache});
-        $http.get('../js/dagpenger/directives/feilmeldinger/stickyFeilmeldingTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/directives/feilmeldinger/feilmeldingerTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/directives/feilmeldinger/stickyFeilmeldingTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/markup/navinfoboksTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/markup/panelStandardBelystTemplate.html', {cache: $templateCache});
         $http.get('../js/dagpenger/directives/sporsmalferdig/spmblokkFerdigTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/stegindikator/stegIndikatorTemplate.html', {cache: $templateCache});
-        $http.get('../js/dagpenger/directives/stickybunn/stickyBunnTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/directives/stickybunn/stickyBunnTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/markup/modalsideTemplate.html', {cache: $templateCache});
 
         $http.get('../js/common/directives/melding/meldingTemplate.html', {cache: $templateCache});

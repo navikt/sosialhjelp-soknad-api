@@ -1,0 +1,20 @@
+﻿<div class="tekstfelt form-linje" >
+    <h4 data-ng-if="harSporsmal()" class="spm-sporsmal" data-ng-bind-html=" navsporsmal | cmstekst"></h4>
+    <label>
+        <span class="labeltekst" data-ng-bind-html=" navlabel | cmstekst"></span>
+        <input type="text"
+               data-ng-required="true"
+               data-ng-model="faktum.value"
+               data-error-messages="{{ navfeilmelding }}"
+               data-min="{{ navminvalue }}"
+               data-max="{{ navmaxvalue }}"
+               minlength="{{ navminlength }}"
+               maxlength="{{ navmaxlength }}"
+               data-ng-pattern="{{ regexvalidering }}"
+               data-blur-validate
+               data-tekstfelt-patternvalidering
+               data-aktiv-feilmelding
+               data-tall-range>
+        <span class="melding"></span>
+    </label>
+</div>

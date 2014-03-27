@@ -9,8 +9,8 @@
         var scope, ctrl, form, element, barn, $httpBackend, event, location, epost;
         event = $.Event("click");
 
-        beforeEach(module('ngCookies', 'app.services'));
-        beforeEach(module('app.controllers', 'nav.feilmeldinger'));
+        beforeEach(module('ngCookies', 'sendsoknad.services'));
+        beforeEach(module('sendsoknad.controllers', 'nav.feilmeldinger'));
 
         beforeEach(module(function ($provide) {
             var fakta = [
@@ -74,7 +74,7 @@
 
         beforeEach(inject(function ($injector, $rootScope, $controller, $compile) {
             $httpBackend = $injector.get('$httpBackend');
-            $httpBackend.expectGET('../js/app/directives/feilmeldinger/feilmeldingerTemplate.html').
+            $httpBackend.expectGET('../js/common/directives/feilmeldinger/feilmeldingerTemplate.html').
                 respond('');
 
             scope = $rootScope;
@@ -153,6 +153,17 @@
                 scope.barn.properties.fodselsdato = lastyear + "-" + month + "-" + date;
                 expect(scope.finnAlder().toString()).toEqual("1");
             });
+
+            it('skal returnere 1 aar for barn fodt tre dager før dagen i dag ifjor', function () {
+                var idag = new Date();
+                var lastyear = idag.getFullYear() - 1;
+                var month = idag.getMonth() + 1;
+                var date = idag.getDate() -3;
+
+                scope.barn.properties.fodselsdato = lastyear + "-" + month + "-" + date;
+                expect(scope.finnAlder().toString()).toEqual("1");
+            });
+
             it('skal returnere 0 aar for barn fodt dagen etter idag ifjor', function () {
                 var idag = new Date();
                 var lastyear = idag.getFullYear() - 1;
@@ -421,29 +432,6 @@
                     key: 'barn'
                 };
                 expect(scope.norskBarnIkkeFunnetITPS(barn)).toEqual(false);
-            });
-            it('hvis barnet har inntekt så kreves vedlegg', function () {
-                var barn = {
-                    key: 'barn',
-                    properties: {ikkebarneinntekt: 'false',
-                        barnetillegg: 'true'}
-                };
-                expect(scope.kreverVedlegg(barn)).toEqual(true);
-            });
-            it('hvis barnet ikke har inntekt så kreves ikke vedlegg', function () {
-                var barn = {
-                    key: 'barn',
-                    properties: {ikkebarneinntekt: 'true'}
-                };
-                expect(scope.kreverVedlegg(barn)).toEqual(false);
-            });
-            it('hvis barnet er norsk og ikke funnet i tps så kreves vedlegg', function () {
-                var barn = {
-                    key: 'barn',
-                    properties: {land: 'NOR'},
-                    type: 'BRUKERREGISTRERT'
-                };
-                expect(scope.kreverVedlegg(barn)).toEqual(true);
             });
             it('erGutt skal returnere true for barn med hannkjønn og false for barn med hunnkjønn', function () {
                 var gutt = {
@@ -1156,7 +1144,6 @@
                 expect(scope.alderspensjonUrl).toEqual('alderspensjonUrl');
                 expect(scope.mineHenveldelserUrl).toEqual('minehenvendelserUrl');
                 expect(scope.reelArbeidsokerUrl).toEqual('reelArbeidsokerUrl');
-                expect(scope.dagpengerBrosjyreUrl).toEqual('dagpengerBrosjyreUrl');
                 expect(scope.inngangsportenUrl).toEqual('inngangsportenUrl');
             });
             it('harlestbrosjyre skal være satt til false hvis pathen ikke inneholder sendsoknad/soknad', function () {

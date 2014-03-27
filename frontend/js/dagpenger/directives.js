@@ -1,5 +1,4 @@
-angular.module('app.directives', [
-	'app.services',
+angular.module('sendsoknad.directives', [
 	'nav.booleanradio',
 	'nav.cmstekster',
 	'nav.input',
