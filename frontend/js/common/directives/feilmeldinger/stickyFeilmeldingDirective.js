@@ -3,7 +3,7 @@ angular.module('nav.stickyFeilmelding', [])
     .directive('stickyFeilmelding', [function () {
         return {
             require: '^form',
-            templateUrl: '../js/dagpenger/directives/feilmeldinger/stickyFeilmeldingTemplate.html',
+            templateUrl: '../js/common/directives/feilmeldinger/stickyFeilmeldingTemplate.html',
             replace: true,
             transclude: true,
             restrict: 'A',

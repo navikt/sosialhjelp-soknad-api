@@ -361,7 +361,7 @@ describe('validerSkjema', function () {
     var element, scope, timeout, event, deferred, q, $httpBackend;
     event = $.Event("click");
 
-    beforeEach(module('nav.validerskjema', 'nav.cmstekster', 'templates-main', 'app.services'));
+    beforeEach(module('nav.validerskjema', 'nav.cmstekster', 'templates-main', 'sendsoknad.services'));
 
     beforeEach(module(function ($provide) {
         var fakta = [

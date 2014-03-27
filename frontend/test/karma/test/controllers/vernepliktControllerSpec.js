@@ -3,8 +3,8 @@
 
     describe('vernepliktCtrl', function () {
         var scope, ctrl, element;
-        beforeEach(module('ngCookies', 'app.services'));
-        beforeEach(module('app.controllers', 'nav.feilmeldinger'));
+        beforeEach(module('ngCookies', 'sendsoknad.services'));
+        beforeEach(module('sendsoknad.controllers', 'nav.feilmeldinger'));
 
         beforeEach(module(function ($provide) {
             $provide.value("data", {});

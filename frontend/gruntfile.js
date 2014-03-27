@@ -9,6 +9,7 @@ module.exports = function (grunt) {
                     'views/dagpenger-singlepage.html',
                     'views/templates/**/*.html',
                     'js/dagpenger/**/*.html',
+                    'js/ettersending/**/*.html',
                     'js/common/**/*.html'
                 ],
                 dest: 'target/classes/META-INF/resources/js/dagpenger/templates.js'
@@ -41,6 +42,7 @@ module.exports = function (grunt) {
                         libs: 'js/lib/*.js',
                         app: [
                             'js/dagpenger/**/*.js',
+                            'js/ettersending/**/*.js',
                             'js/common/**/*.js'
                         ]
                     }
@@ -71,6 +73,7 @@ module.exports = function (grunt) {
                         libs: 'js/lib/*.js',
                         app: [
                             'js/dagpenger/**/*.js',
+                            'js/ettersending/**/*.js',
                             'js/common/**/*.js'
                         ]
                     }
@@ -112,6 +115,9 @@ module.exports = function (grunt) {
                     'js/dagpenger/**/!(templates).js',
                     'js/dagpenger/**/!(initDev).js',
                     'target/classes/META-INF/resources/js/dagpenger/templates.js',
+                    'js/ettersending/**/!(templates).js',
+                    'js/ettersending/**/!(initDev).js',
+                    'target/classes/META-INF/resources/js/ettersending/templates.js',
                     'js/common/**/*.js'
 				],
 				dest  : 'target/classes/META-INF/resources/js/built/built' + timestamp + '.js',
@@ -133,6 +139,7 @@ module.exports = function (grunt) {
 			js  : {
 				files  : [
                     'js/dagpenger/**/*.js',
+                    'js/ettersending/**/*.js',
                     'js/common/**/*.js'
                 ],
                 tasks: 'jshint'
@@ -140,6 +147,7 @@ module.exports = function (grunt) {
 			html: {
 				files  : [
                     'js/dagpenger/**/*.html',
+                    'js/ettersending/**/*.html',
                     'js/common/**/*.html',
                     'views/templates/**/*.html',
                     'views/dagpenger-singlepage.html'
@@ -149,6 +157,7 @@ module.exports = function (grunt) {
             testHtml: {
                 files  : [
                     'js/dagpenger/**/*.html',
+                    'js/ettersending/**/*.html',
                     'js/common/**/*.html',
                     'views/templates/**/*.html',
                     'views/dagpenger-singlepage.html'
@@ -157,9 +166,9 @@ module.exports = function (grunt) {
             }
 		},
 		jshint: {
-			files  : ['gruntfile.js', 'js/dagpenger/**/*.js', 'js/common/**/*.js', 'test/**/*.js'],
+			files  : ['gruntfile.js', 'js/dagpenger/**/*.js', 'js/ettersending/**/*.js', 'js/common/**/*.js', 'test/**/*.js'],
 			options: {
-				ignores: ['js/built/*.js', 'js/dagpenger/i18n/**', 'js/dagpenger/templates.js', 'test/karma/lib/angular-mocks.js', 'js/common/directives/scrollbar/perfect-scrollbar.js'],
+				ignores: ['js/built/*.js', 'js/dagpenger/templates.js', 'js/ettersending/templates.js', 'test/karma/lib/angular-mocks.js', 'js/common/directives/scrollbar/perfect-scrollbar.js'],
                 globals: {
                     it: true,
                     expect: true,

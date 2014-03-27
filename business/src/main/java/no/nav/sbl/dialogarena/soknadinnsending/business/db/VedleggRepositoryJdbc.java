@@ -41,8 +41,8 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
     }
 
     @Override
-    public List<Vedlegg> hentVedleggUnderBehandling(Long soknadId, Long faktum, String skjemaNummer) {
-        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, opprettetdato, antallsider, fillagerReferanse from Vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ? and innsendingsvalg = 'UnderBehandling'", new VedleggRowMapper(false), soknadId, faktum, skjemaNummer);
+    public List<Vedlegg> hentVedleggUnderBehandling(Long soknadId, String fillagerReferanse) {
+        return getJdbcTemplate().query("select vedlegg_id, soknad_id,faktum, skjemaNummer, navn, innsendingsvalg, opprinneliginnsendingsvalg, storrelse, opprettetdato, antallsider, fillagerReferanse from Vedlegg where soknad_id = ? and fillagerreferanse = ? and innsendingsvalg = 'UnderBehandling'", new VedleggRowMapper(false), soknadId, fillagerReferanse);
     }
 
     @Override

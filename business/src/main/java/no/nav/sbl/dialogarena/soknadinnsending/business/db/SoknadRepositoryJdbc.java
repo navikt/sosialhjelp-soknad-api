@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import com.google.common.base.Function;
+import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.lang.collections.iter.ReduceFunction;
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
@@ -128,6 +129,19 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     public Optional<WebSoknad> hentEttersendingMedBehandlingskjedeId(String behandlingsId) {
         String sql = "select * from soknad where behandlingskjedeid = ? and status = 'UNDER_ARBEID'";
         return on(getJdbcTemplate().query(sql, new SoknadRowMapper(), behandlingsId)).head();
+    }
+
+    @Override
+    public WebSoknad hentEttersendingMedBehandlingskjedeIdMedData(String behandlingsId) {
+        Optional<WebSoknad> soknadOptional = hentEttersendingMedBehandlingskjedeId(behandlingsId);
+
+        if (soknadOptional.isSome()) {
+            WebSoknad soknad = soknadOptional.get();
+            soknad.medBrukerData(hentAlleBrukerData(soknad.getSoknadId()));
+            return soknad;
+        }
+
+        throw new ApplicationException("Kunne ikke finne ettersending for behandlingsId " + behandlingsId);
     }
 
     @Override

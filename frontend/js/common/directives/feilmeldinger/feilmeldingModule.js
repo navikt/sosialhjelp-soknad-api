@@ -24,7 +24,7 @@ angular.module('nav.feilmeldinger', [])
             // only works if embedded in a form or an ngForm (that's in a form).
             // It does use its closest parent that is a form OR ngForm
             require: '^form',
-            templateUrl: '../js/dagpenger/directives/feilmeldinger/feilmeldingerTemplate.html',
+            templateUrl: '../js/common/directives/feilmeldinger/feilmeldingerTemplate.html',
             replace: true,
             transclude: true,
             restrict: 'A',

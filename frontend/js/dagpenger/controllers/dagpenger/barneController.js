@@ -1,4 +1,4 @@
-angular.module('nav.barn', ['app.services'])
+angular.module('nav.barn', [])
 
     .controller('BarneCtrl', ['$scope', 'Faktum', 'data', '$cookieStore', '$location', '$resource', 'cms', function ($scope, Faktum, data, $cookieStore, $location, $resource, cms) {
         var soknadId = data.soknad.soknadId;
@@ -220,11 +220,11 @@ angular.module('nav.barn', ['app.services'])
 
                 var result = dagensDato.getFullYear() - year;
 
-                if (dagensDato.getMonth() + 1 < maaned) {
+                if (parseInt(dagensDato.getMonth() + 1) < maaned) {
                     result--;
                 }
 
-                if (dagensDato.getMonth() + 1 === maaned && dagensDato.getDate() < dag) {
+                if (parseInt(dagensDato.getMonth() + 1) === maaned && parseInt(dagensDato.getDate()) < dag) {
                     result--;
                 }
 

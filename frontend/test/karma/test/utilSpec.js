@@ -101,19 +101,19 @@ describe('utility funksjoner -', function () {
         it('skal returnere true for objekt som inneholder attributt uten angular-prefix', function () {
             var obj = {attributt: 1};
 
-            expect(harAttributt(obj, 'attributt')).toBe(1);
+            expect(harAttributt(null, obj, 'attributt')).toBe(1);
         });
 
         it('skal returnere false for objekt som ikke inneholder attributt uten angular-prefix', function () {
             var obj = {attributt: 1};
 
-            expect(harAttributt(obj, 'blah')).toBe(false);
+            expect(harAttributt(null, obj, 'blah')).toBe(false);
         });
 
         it('skal returnere true for objekt som inneholder attributt med angular-prefix men uten data-prefix', function () {
             var obj = {'ngAttributt': 1};
 
-            expect(harAttributt(obj, 'attributt')).toBe(1);
+            expect(harAttributt(null, obj, 'attributt')).toBe(1);
         });
     });
 

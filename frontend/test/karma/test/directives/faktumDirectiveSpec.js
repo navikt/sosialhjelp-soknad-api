@@ -1,7 +1,7 @@
 describe('navFaktumProperty', function () {
     var element, scope, rootScope;
 
-    beforeEach(module('app.services', 'nav.navfaktum'));
+    beforeEach(module('sendsoknad.services', 'nav.navfaktum'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {}});
@@ -43,7 +43,7 @@ describe('navFaktumProperty', function () {
 describe('navFaktumPropertyDato', function () {
     var element, scope, rootScope;
 
-    beforeEach(module('app.services', 'nav.navfaktum'));
+    beforeEach(module('sendsoknad.services', 'nav.navfaktum'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {}});
@@ -85,7 +85,7 @@ describe('navFaktumPropertyDato', function () {
 describe('navFaktumPropertyDato', function () {
     var element, scope, rootScope;
 
-    beforeEach(module('app.services', 'nav.navfaktum'));
+    beforeEach(module('sendsoknad.services', 'nav.navfaktum'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {}});
@@ -126,7 +126,7 @@ describe('navFaktumPropertyDato', function () {
 describe('navFaktum', function () {
     var element, scope, rootScope;
 
-    beforeEach(module('app.services', 'nav.navfaktum'));
+    beforeEach(module('sendsoknad.services', 'nav.navfaktum'));
 
     beforeEach(module(function ($provide) {
         var fakta = [{}];
@@ -162,7 +162,7 @@ describe('navFaktum', function () {
 describe('navFaktum', function () {
     var element, scope, rootScope;
 
-    beforeEach(module('app.services', 'nav.navfaktum'));
+    beforeEach(module('sendsoknad.services', 'nav.navfaktum'));
 
     beforeEach(module(function ($provide) {
         var fakta = [
@@ -203,7 +203,7 @@ describe('navFaktum', function () {
 describe('navFaktumMedDatoProperty', function () {
     var element, scope, rootScope;
 
-    beforeEach(module('app.services', 'nav.navfaktum'));
+    beforeEach(module('sendsoknad.services', 'nav.navfaktum'));
 
     beforeEach(module(function ($provide) {
         var fakta = [
@@ -252,7 +252,7 @@ describe('navFaktumMedDatoProperty', function () {
 describe('navFaktumMedDatoProperty', function () {
     var element, scope, rootScope;
 
-    beforeEach(module('app.services', 'nav.navfaktum'));
+    beforeEach(module('sendsoknad.services', 'nav.navfaktum'));
 
     beforeEach(module(function ($provide) {
         var fakta = [
@@ -297,7 +297,7 @@ describe('navFaktumMedDatoProperty', function () {
 describe('navFaktumMedDatoPropertyParentFaktum', function () {
     var element, scope, rootScope;
 
-    beforeEach(module('app.services', 'nav.navfaktum'));
+    beforeEach(module('sendsoknad.services', 'nav.navfaktum'));
     beforeEach(module(function ($provide) {
         var fakta = [
             {key: 'enkey',
@@ -348,7 +348,7 @@ describe('navFaktumMedDatoPropertyParentFaktum', function () {
 describe('navFaktumMedProperty', function () {
     var element, scope, rootScope;
 
-    beforeEach(module('app.services', 'nav.navfaktum'));
+    beforeEach(module('sendsoknad.services', 'nav.navfaktum'));
 
     beforeEach(module(function ($provide) {
         var fakta = [
@@ -398,7 +398,7 @@ describe('navFaktumMedProperty', function () {
 describe('navFaktumUtenProps', function () {
     var element, scope, rootScope;
 
-    beforeEach(module('app.services', 'nav.navfaktum'));
+    beforeEach(module('sendsoknad.services', 'nav.navfaktum'));
 
     beforeEach(module(function ($provide) {
         $provide.value("data", {
@@ -441,7 +441,7 @@ describe('navFaktumUtenProps', function () {
 describe('navFaktumikkeAutoLagre', function () {
     var element, scope, rootScope;
 
-    beforeEach(module('app.services', 'nav.navfaktum'));
+    beforeEach(module('sendsoknad.services', 'nav.navfaktum'));
 
     beforeEach(module(function ($provide) {
         $provide.value("data", {

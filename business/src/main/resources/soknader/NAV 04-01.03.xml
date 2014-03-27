@@ -558,15 +558,6 @@
 		<flereTillatt>true</flereTillatt>
 	</vedlegg>
 	<vedlegg>
-		<id>9</id>
-		<faktum>barn</faktum>
-		<skjemaNummer>W7</skjemaNummer>
-		<property>sammensattnavn</property>
-		<onProperty>ikkebarneinntekt</onProperty>
-		<onValue>false</onValue>
-		<flereTillatt>true</flereTillatt>
-	</vedlegg>
-	<vedlegg>
 		<id>7</id>
 		<faktum>personalia</faktum>
 		<skjemaNummer>T4</skjemaNummer>

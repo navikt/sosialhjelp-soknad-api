@@ -1,7 +1,7 @@
 describe('booleanradio', function () {
     var rootScope, element, scope, timeout, elementNavn, form, elementNavnReq, injectData;
 
-    beforeEach(module('nav.booleanradio', 'nav.cmstekster', 'templates-main', 'nav.input', 'nav.navfaktum', 'app.services', 'nav.hjelpetekst', 'nav.animation'));
+    beforeEach(module('nav.booleanradio', 'nav.cmstekster', 'templates-main', 'nav.input', 'nav.navfaktum', 'sendsoknad.services', 'nav.hjelpetekst', 'nav.animation'));
 
     var sporsmal = 'Spørsmal';
     var truelabel = 'True label';
