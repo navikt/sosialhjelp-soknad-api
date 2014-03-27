@@ -61,7 +61,7 @@
             <span>
                 <span>{{ hentSkjemanummer }} {{ hentTekst "dagpenger.oppsummering.eSoknad" }}</span>
                 <span>|</span>
-                <span>{{ hentTekst "dagpenger.oppsummering.fastsattDato" }} 03.2014</span>
+                <span>{{ hentTekst "dagpenger.oppsummering.fastsattDato" }}</span>
             </span>
 		</div>
 
@@ -621,14 +621,6 @@
                                                 <span>{{ hentTekst "egennaering.fangstogfiske.false.arbeid.true"}}</span>
                                             {{else}}
                                                 <span>{{ hentTekst "egennaering.fangstogfiske.false.arbeid.false"}}</span>
-                                                <ul>
-                                                    {{#forFaktum "egennaering.fangstogfiske.false.arbeid.false.inntekt"}}
-                                                        <li class="kulepunkt">
-                                                            <span>{{ hentTekst "egennaering.fangstogfiske.false.arbeid.false.inntekt" }}:</span>
-                                                            <span>{{ value }}</span>
-                                                        </li>
-                                                    {{/forFaktum}}
-                                                </ul>
                                             {{/hvisSant}}
                                         </li>
                                     {{/forFaktum}}

@@ -57,13 +57,10 @@
                         </div>
                     </div>
 
-                    <div data-vedlegginfoboks data-ng-if="kreverVedlegg(b)">
+                    <div data-vedlegginfoboks data-ng-if="norskBarnIkkeFunnetITPS(b)">
                         <ul>
-                            <li data-ng-if="norskBarnIkkeFunnetITPS(b)">
+                            <li>
                                 <p data-ng-bind-html="'Dagpenger.vedlegg.X8.header' | cmstekst"></p>
-                            </li>
-                            <li data-ng-if="barnetHarInntekt(b)">
-                                <p data-ng-bind-html="'Dagpenger.vedlegg.W7.header' | cmstekst"></p>
                             </li>
                         </ul>
                     </div>
