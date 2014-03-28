@@ -272,7 +272,7 @@ angular.module('nav.input', ['nav.cmstekster'])
                                 return input;
                             }
 
-                            ngModel.$setValidity('max', num < max);
+                            ngModel.$setValidity('max', num <= max);
                             return input;
                         });
                     }
