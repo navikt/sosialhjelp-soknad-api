@@ -507,7 +507,7 @@ public class SoknadServiceTest {
     public void skalAvbryteSoknad() {
         when(soknadRepository.hentSoknad(11L)).thenReturn(new WebSoknad().medBehandlingId("123"));
         soknadService.avbrytSoknad(11L);
-        verify(soknadRepository).avbryt(11L);
+        verify(soknadRepository).slettSoknad(11L);
         verify(henvendelsesConnector).avbrytSoknad("123");
     }
 
