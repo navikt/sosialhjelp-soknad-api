@@ -30,7 +30,7 @@ public class StartSoknadPage extends BasePage {
             } catch (SoknadAvsluttetException e) {
                 setResponsePage(new RedirectTilKvitteringPage(mineHenvendelserUrl + "?behandlingsId=" + brukerbehandlingId));
             } catch (SoknadAvbruttException e) {
-                setResponsePage(AvbruttPage.class);
+                redirectToInterceptPage(new AvbruttPage(new PageParameters()));
             }
         }
     }
