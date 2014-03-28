@@ -42,7 +42,6 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.limit
 import static no.nav.sbl.dialogarena.soknadinnsending.business.db.SQLUtils.selectNextSequenceValue;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.AVBRUTT_AV_BRUKER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad.startSoknad;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -343,15 +342,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
             }
         }
         return fakta;
-    }
-
-    @Override
-    public void avbryt(Long soknad) {
-        logger.debug("Setter status til søknad med id {} til avbrutt", soknad);
-        String status = AVBRUTT_AV_BRUKER.name();
-        getJdbcTemplate().update("update soknad set status = ? where soknad_id = ?", status, soknad);
-        getJdbcTemplate().update("delete from vedlegg where soknad_id = ?", soknad);
-        getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ?", soknad);
     }
 
     @Override
