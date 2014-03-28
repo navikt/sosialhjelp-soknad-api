@@ -17,7 +17,6 @@ angular.module('ettersending')
         var brukerbehandlingsid = getBehandlingIdFromUrl();
         ettersendingService.get({behandlingsId: brukerbehandlingsid},
             function (result) { // Success
-                console.log(result);
                 data.soknad = result;
                 data.finnFaktum = function (key) {
                     var res = null;

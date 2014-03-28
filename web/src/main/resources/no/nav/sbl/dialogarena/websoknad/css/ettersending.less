@@ -21,6 +21,14 @@
         background-repeat: no-repeat;
     }
 
+    .sticky-bunn {
+        display: none;
+
+        &.stick {
+            display: block;
+        }
+    }
+
     .innsendt {
         text-transform: uppercase;
     }
@@ -29,8 +37,17 @@
         font-weight: bold;
     }
 
+    .knapp-leggtil-liten {
+        margin-top: 40px;
+    }
+
     .panel-standard {
         text-align: center;
+
+        .strek-bottom {
+            margin-bottom: 30px !important;
+            padding-bottom: 30px;
+        }
 
         .ikon-vedlegg-ettersende {
             padding-top: 48px;
@@ -70,7 +87,7 @@
                     padding-left: 25px;
                     background-image: url(../img/vedlegg-svart.svg);
                     background-repeat: no-repeat;
-                    background-position: bottom left;
+                    background-position: top left;
                 }
 
             }
@@ -126,6 +143,24 @@
             &:last-child {
                 border-bottom: 1px solid #d1d1d1;
             }
+        }
+    }
+
+    .send-inn {
+        input, a {
+            display: block;
+        }
+
+        input {
+            margin: 0 auto 30px;
+        }
+
+        a {
+            margin-bottom: 40px;
+        }
+
+        .klare-vedlegg {
+
         }
     }
 }

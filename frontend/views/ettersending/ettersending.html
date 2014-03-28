@@ -62,34 +62,26 @@
                         </div>
                     </div>
                 </div>
+            </section>
+            <section class="panel-standard">
+                <div class="strek-bottom">
+                    <button class="knapp-leggtil-liten"
+                            data-ng-click="nyttAnnetVedlegg()"
+                            role="button"
+                            data-ng-bind-html="'vedlegg.leggtilekstravedlegg' | cmstekst">
+                    </button>
+                </div>
+                <div class="send-inn">
+                    <div data-ng-if="harLastetOppDokument()" data-sticky>
+                        <div class="klare-vedlegg">
+                            <span>{{ hentAntallVedleggSomErOpplastetIDenneEttersendingen() }}</span>
+                            <span data-ng-bind-html="'ettersending.vedlegg.klare' | cmstekst"></span>
+                        </div>
+                    </div>
+                    <input type="button" class="knapp-hoved" value="{{ 'ettersending.vedlegg.send' | cmstekst }}">
+                    <a href="javascript:void(0);" data-ng-bind-html="'ettersending.vedlegg.avbryt' | cmstekst"></a>
+                </div>
 
-                <!--<h1>Dine innsendinger</h1>-->
-
-                <!--<div>stegmeny</div>-->
-
-                <!--<ul data-ng-repeat="v in vedleggListe">-->
-                <!--<li>-->
-                <!--<h1>{{v.vedleggId}}</h1>-->
-                <!--<span>{{v.opprinneligInnsendingsvalg}}</span>-->
-                <!--<button>Last opp vedlegg (på nytt)</button>-->
-                <!--</li>-->
-                <!--</ul>-->
-
-                <!--<button>Legg til nytt vedlegg</button>-->
-                <!--<br/>-->
-                <!--<br/>-->
-                <!--<br/>-->
-
-                <!--<button>Neste</button>-->
-
-                <!--<br/>-->
-
-                <!--<a href="#">Avbryt</a>-->
-
-
-                <!--<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>-->
-                <!--<h2>debug</h2>-->
-                <!--{{vedleggListe}}-->
             </section>
         </div>
     </div>
