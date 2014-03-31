@@ -56,7 +56,7 @@ public class EttersendingController {
     @RequestMapping(value = "/send", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     public void sendEttersending(@RequestBody Map<String, String> requestMap) {
         Long soknadId = Long.valueOf(requestMap.get("soknadId"));
-        String behandlingsId = requestMap.get("behandlingsId");
-        soknadService.sendEttersending(soknadId, behandlingsId);
+        String behandlingskjedeId = requestMap.get("behandlingskjedeId");
+        soknadService.sendEttersending(soknadId, behandlingskjedeId);
     }
 }
