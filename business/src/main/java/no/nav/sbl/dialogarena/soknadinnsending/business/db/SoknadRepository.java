@@ -18,10 +18,6 @@ public interface SoknadRepository {
 
     List<Faktum> hentAlleBrukerData(Long soknadId);
 
-    void avslutt(WebSoknad soknad);
-
-    void avbryt(Long soknad);
-
     Optional<WebSoknad> plukkSoknadTilMellomlagring();
 
     void leggTilbake(WebSoknad webSoknad);
