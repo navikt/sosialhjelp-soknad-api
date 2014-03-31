@@ -68,7 +68,8 @@ angular.module('nav.ettersending', [])
 
         $scope.sendEttersending = function() {
             var behandlingsId = getBehandlingIdFromUrl();
-            ettersendingService.send({behandlingsId: behandlingsId},
+            ettersendingService.send({},
+                {behandlingskjedeId: behandlingsId, soknadId: data.soknad.soknadId},
                 function(result) {
                     console.log("done");
                 }
