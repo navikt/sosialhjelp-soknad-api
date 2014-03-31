@@ -281,8 +281,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public void avbrytSoknad(Long soknadId) {
         WebSoknad soknad = repository.hentSoknad(soknadId);
-        repository.avbryt(soknadId);
         henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
+        repository.slettSoknad(soknadId);
     }
 
     @Override
