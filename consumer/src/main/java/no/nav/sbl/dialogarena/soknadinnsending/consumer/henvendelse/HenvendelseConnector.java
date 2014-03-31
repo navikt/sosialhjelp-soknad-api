@@ -99,8 +99,7 @@ public class HenvendelseConnector {
 
     private WSStartSoknadRequest createXMLStartEttersendingRequest(String fnr, XMLHovedskjema xmlSkjema, SoknadType type, XMLMetadataListe xmlMetadataListe, String behandlingsId) {
         WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartSoknadRequest(fnr, xmlSkjema, type, xmlMetadataListe);
-        // TODO:
-        // xmlStartSoknadRequest
+            xmlStartSoknadRequest.setBehandlingskjedeId(behandlingsId);
         return xmlStartSoknadRequest;
     }
 
