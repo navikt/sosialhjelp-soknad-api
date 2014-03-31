@@ -9,20 +9,19 @@ angular.module('nav.ettersending', [])
             fristDato: fristDato
         };
 
-        console.log(data.soknad.vedlegg);
-
-        $scope.vedlegg = {
-            ettersendes: data.soknad.vedlegg.filter(skalEttersendes),
-            resten: data.soknad.vedlegg.filter(skalIkkeEttersendes)
-        };
+        $scope.vedlegg = data.soknad.vedlegg;
 
         $scope.erLastetOpp = function (v) {
-            return erLastetOpp(v);
+            return erLastetOppIDenneInnsendingen(v);
         };
 
         $scope.erIkkeLastetOpp = function (v) {
             return !$scope.erLastetOpp(v);
         };
+
+        $scope.erAnnetVedlegg = function(v) {
+            return erAnnetVedlegg(v);
+        }
 
         function erLastetOpp(v) {
             return v.innsendingsvalg === 'LastetOpp';
@@ -32,37 +31,23 @@ angular.module('nav.ettersending', [])
             return erLastetOpp(v) && v.storrelse > 0;
         }
 
-        function skalEttersendes(v) {
-            if (v.opprinneligInnsendingsvalg === 'SendesSenere') {
-                return true;
-            } else if (erLastetOppIDenneInnsendingen(v)) {
-                return true;
-            }
-
-            return false;
+        function erAnnetVedlegg(v) {
+            return v.skjemaNummer === "N6";
         }
-
-        function skalIkkeEttersendes(v) {
-            return !skalEttersendes(v);
-        }
-
-        $scope.erEkstraVedlegg = function (v) {
-            return v.skjemaNummer === 'N6';
-        };
 
         $scope.hentTekstKey = function(v) {
-            if (v.innsendingsvalg === 'SendesIkke') {
+            if (v.opprinneligInnsendingsvalg === 'SendesIkke') {
                 return 'ettersending.vedlegg.sendesIkke';
-            } else if (v.innsendingsvalg === 'LastetOpp') {
+            } else if (v.opprinneligInnsendingsvalg === 'LastetOpp') {
                 return 'ettersending.vedlegg.sendtInn';
             }
         };
 
         $scope.hentLenkeKey = function(v) {
-            if (v.innsendingsvalg === 'SendesIkke') {
+            if (v.opprinneligInnsendingsvalg === 'SendesIkke') {
                 return 'ettersending.vedlegg.endre';
-            } else if (v.innsendingsvalg === 'LastetOpp') {
-                return 'ettersending.vedlegg.lastOppIgjen';
+            } else if (v.opprinneligInnsendingsvalg === 'LastetOpp') {
+                return 'ettersending.vedlegg.lastOpp';
             }
         };
 
@@ -91,23 +76,17 @@ angular.module('nav.ettersending', [])
             var vedlegg = new vedleggService(v);
 
             vedlegg.$remove().then(function() {
-                vedlegg.innsendingsvalg = vedlegg.opprinneligInnsendingsvalg;
-                vedlegg.storrelse = 0;
+                v.innsendingsvalg = v.opprinneligInnsendingsvalg;
+                v.storrelse = 0;
             });
         };
 
-        $scope.nyttAnnetVedlegg = function () {
-//            var nyttVedlegg = new vedleggService();
-//            nyttVedlegg.soknad
-//            new Faktum({
-//                key: 'ekstraVedlegg',
-//                value: 'true',
-//                soknadId: data.soknad.soknadId
-//            }).$save().then(function (nyttfaktum) {
-//                    vedleggService.hentAnnetVedlegg({soknadId: data.soknad.soknadId, faktumId: nyttfaktum.faktumId}, function (forventninger) {
-//                        $scope.forventninger.push(forventninger);
-//                    });
-//                });
+        $scope.slettAnnetVedlegg = function(v) {
+            vedleggService.slettAnnet({soknadId: v.soknadId}, {vedleggId: v.vedleggId});
+            var index = data.soknad.vedlegg.indexOf(v);
+            if (index >= 0) {
+                data.soknad.vedlegg.splice(index, 1);
+            }
         };
     }])
     .controller('EttersendingOpplastingCtrl', ['$scope', 'data', '$routeParams', 'vedleggService', function($scope, data, $routeParams, vedleggService) {
@@ -134,5 +113,70 @@ angular.module('nav.ettersending', [])
 
         $scope.kanEndreInnsendingsvalg = function() {
             return $scope.vedlegg.opprinneligInnsendingsvalg === 'SendesIkke';
+        };
+    }])
+    .controller('EttersendingNyttVedleggCtrl', ['$scope', 'data', 'vedleggService', '$location', function($scope, data, vedleggService, $location) {
+        $scope.nyttvedlegg = {};
+        $scope.fremdriftsindikator = {
+            laster: false
+        };
+
+        $scope.lagreVedlegg = function(form) {
+            var eventString = 'RUN_VALIDATION' + form.$name;
+            $scope.$broadcast(eventString);
+            $scope.runValidation(true);
+
+            if (form.$valid) {
+                var vedlegg = new vedleggService();
+                vedlegg.soknadId = data.soknad.soknadId;
+                vedlegg.navn = $scope.nyttvedlegg.navn;
+                $scope.fremdriftsindikator.laster = true;
+                vedlegg.$save({soknadId: data.soknad.soknadId}, function(resultVedlegg) {
+                    data.soknad.vedlegg.push(resultVedlegg);
+                    $location.path('opplasting/' + resultVedlegg.vedleggId);
+                });
+            }
+        };
+    }])
+    .filter('ettersendes', [function() {
+        return function(input, ettersendesBolk) {
+            function skalEttersendes(v) {
+                if (v.opprinneligInnsendingsvalg === 'SendesSenere') {
+                    return true;
+                } else if (erLastetOppIDenneInnsendingen(v)) {
+                    return true;
+                } else if (erAnnetVedleggSomErLagtTilIDenneInnsendingen(v)) {
+                    return true;
+                }
+
+                return false;
+            }
+
+            function skalIkkeEttersendes(v) {
+                return !skalEttersendes(v);
+            }
+
+            function erLastetOpp(v) {
+                return v.innsendingsvalg === 'LastetOpp';
+            }
+
+            function erLastetOppIDenneInnsendingen(v) {
+                return erLastetOpp(v) && v.storrelse > 0;
+            }
+
+            function erAnnetVedlegg(v) {
+                return v.skjemaNummer === "N6";
+            }
+
+            function erAnnetVedleggSomErLagtTilIDenneInnsendingen(v) {
+                return erAnnetVedlegg(v) && v.opprinneligInnsendingsvalg === null;
+            }
+
+            if (ettersendesBolk) {
+                return input.filter(skalEttersendes);
+            } else {
+                return input.filter(skalIkkeEttersendes);
+            }
+
         };
     }]);

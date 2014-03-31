@@ -64,6 +64,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import static java.lang.String.format;
 import static java.util.UUID.randomUUID;
@@ -167,7 +168,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         try {
             faktum = repository.hentFaktum(soknadId, faktumId);
         } catch (IncorrectResultSizeDataAccessException e) {
-            logger.info("Skipped delete bechause faktum does not exist.");
+            logger.info("Skipped delete because faktum does not exist.");
             return;
         }
         String faktumKey = faktum.getKey();
@@ -524,8 +525,12 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public void slettVedlegg(Long soknadId, Long vedleggId) {
+        WebSoknad soknad = hentSoknad(soknadId);
         vedleggRepository.slettVedlegg(soknadId, vedleggId);
-        repository.settDelstegstatus(soknadId, DelstegStatus.SKJEMA_VALIDERT);
+
+        if (!soknad.erEttersending()) {
+            repository.settDelstegstatus(soknadId, DelstegStatus.SKJEMA_VALIDERT);
+        }
     }
 
     @Override
@@ -635,6 +640,22 @@ public class SoknadService implements SendSoknadService, VedleggService {
         for (Vedlegg v : vedlegg) {
             medKodeverk(v);
         }
+    }
+
+    @Override
+    public Long leggTilNyttN6Vedkegg(Vedlegg vedlegg, Long soknadId) {
+        vedlegg.setFillagerReferanse(UUID.randomUUID().toString());
+        vedlegg.setInnsendingsvalg(Vedlegg.Status.SendesSenere);
+        vedlegg.setSkjemaNummer(Kodeverk.ANNET);
+        vedlegg.setStorrelse(0L);
+        vedlegg.setAntallSider(0);
+        vedlegg.setSoknadId(soknadId);
+        return vedleggRepository.opprettVedlegg(vedlegg, null);
+    }
+
+    @Override
+    public void slettN6Vedlegg(Long vedleggId) {
+        vedleggRepository.slettVedleggMedVedleggId(vedleggId);
     }
 
     private void medKodeverk(Vedlegg vedlegg) {

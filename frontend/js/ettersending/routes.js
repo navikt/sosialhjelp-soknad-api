@@ -43,6 +43,14 @@ angular.module('ettersending.routes', ['ngRoute'])
                     }]
                 }
             })
+            .when('/vedlegg/nytt', {
+                templateUrl: '../views/ettersending/nytt-vedlegg.html',
+                resolve: {
+                    notUsedButRequiredProperty: ['HentEttersendingsService', function (HentEttersendingsService) {
+                        return HentEttersendingsService;
+                    }]
+                }
+            })
             .when('/opplasting/:vedleggId', {
                 templateUrl: '../views/ettersending/opplastingEttersending.html',
                 resolve: {
