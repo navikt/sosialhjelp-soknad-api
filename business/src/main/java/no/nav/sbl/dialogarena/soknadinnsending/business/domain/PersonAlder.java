@@ -20,7 +20,7 @@ public class PersonAlder implements Serializable{
     private LocalDate utslagsFodselsdato;
 
     public PersonAlder(String dNummerEllerFodselsnummer){
-        this.fodselsdato = parse(hentFodselsdatoFraFnr(dNummerEllerFodselsnummer)).plusMonths(1);
+        this.fodselsdato = parse(hentFodselsdatoFraFnr(dNummerEllerFodselsnummer));
         this.utslagsFodselsdato = parse(hentUtslagsFodselsdatoFraFnr(dNummerEllerFodselsnummer)).plusMonths(1);
     }
 
