@@ -1,5 +1,5 @@
 angular.module('nav.ettersending', [])
-    .controller('EttersendingCtrl', ['$scope', '$location', 'data', 'ettersendingService', function ($scope, $location, data, ettersendingService, vedleggService) {
+    .controller('EttersendingCtrl', ['$scope', '$location', 'data', 'ettersendingService', 'vedleggService', function ($scope, $location, data, ettersendingService, vedleggService) {
         var innsendtDato = new Date(parseInt(data.finnFaktum('soknadInnsendingsDato').value));
         var fristDato = new Date();
         fristDato.setDate(innsendtDato.getDate() + 40);
@@ -67,7 +67,6 @@ angular.module('nav.ettersending', [])
         };
 
         $scope.sendEttersending = function() {
-
             var behandlingsId = getBehandlingIdFromUrl();
             ettersendingService.send({behandlingsId: behandlingsId},
                 function(result) {
@@ -85,6 +84,15 @@ angular.module('nav.ettersending', [])
         $scope.harLastetOppDokument = function () {
             var antallOpplastedeVedlegg = $scope.hentAntallVedleggSomErOpplastetIDenneEttersendingen();
             return antallOpplastedeVedlegg > 0;
+        };
+
+        $scope.slettVedlegg = function(v) {
+            var vedlegg = new vedleggService(v);
+
+            vedlegg.$remove().then(function() {
+                vedlegg.innsendingsvalg = vedlegg.opprinneligInnsendingsvalg;
+                vedlegg.storrelse = 0;
+            });
         };
 
         $scope.nyttAnnetVedlegg = function () {

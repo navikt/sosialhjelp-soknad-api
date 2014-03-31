@@ -37,7 +37,7 @@
                                 <ul class="liste-vannrett" data-ng-if="erLastetOpp(v)">
                                     <li class="liten" data-ng-bind-html="'ettersending.vedlegg.lastetOpp' | cmstekst"></li>
                                     <li class="liten">
-                                        <a data-ng-href="#/opplasting/{{v.vedleggId}}" data-ng-bind-html="'ettersending.vedlegg.lastOppIgjen' | cmstekst"></a>
+                                        <a href="javascript:void(0);" data-ng-bind-html="'ettersending.vedlegg.slett' | cmstekst" data-ng-click="slettVedlegg(v)"></a>
                                     </li>
                                 </ul>
                             </div>
