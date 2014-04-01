@@ -5,6 +5,7 @@ import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -106,6 +107,14 @@ public class VedleggRepositoryJdbcTest {
         Long id2 = vedleggRepository.opprettVedlegg(getVedlegg().medFaktumId(null).medInnsendingsvalg(Vedlegg.Status.LastetOpp), new byte[]{1, 2, 3});
         assertThat(vedleggRepository.hentVedleggForskjemaNummer(12L, 10L, "1").getVedleggId(), is(equalTo(id)));
         assertThat(vedleggRepository.hentVedleggForskjemaNummer(12L, null, "1").getVedleggId(), is(equalTo(id2)));
+    }
+
+    @Test(expected = EmptyResultDataAccessException.class)
+    public void skalSletteVedleggMedId() {
+        Long id = vedleggRepository.opprettVedlegg(getVedlegg().medInnsendingsvalg(Vedlegg.Status.VedleggKreves), null);
+
+        vedleggRepository.slettVedleggMedVedleggId(id);
+        vedleggRepository.hentVedlegg(12L, id);
     }
 
     private Vedlegg getVedlegg() {

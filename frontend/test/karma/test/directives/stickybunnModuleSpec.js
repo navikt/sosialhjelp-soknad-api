@@ -1,7 +1,7 @@
-describe('stickybunn', function () {
+describe('sist lagret', function () {
     var scope, element;
 
-    beforeEach(module('nav.stickybunn', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.stickybunn', 'nav.sistLagret', 'nav.cmstekster', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -17,7 +17,9 @@ describe('stickybunn', function () {
     beforeEach(inject(function ($compile, $rootScope) {
         element = angular.element(
             '<form name="form"> ' +
-                '<div data-sist-lagret data-navtilbakelenke="vedlegg"></div>' +
+                '<div data-sticky>' +
+                '<div id="sistlagret" data-sist-lagret data-navtilbakelenke="vedlegg"></div>' +
+                '</div>' +
                 '</div>' +
                 '</form>');
 
@@ -26,7 +28,7 @@ describe('stickybunn', function () {
         $rootScope.$digest();
         $rootScope.$apply();
 
-        scope = element.find('div').isolateScope();
+        scope = element.find('#sistlagret').isolateScope();
         scope.$apply();
 
     }));
@@ -48,7 +50,7 @@ describe('stickybunn', function () {
 describe('stickybunnUtensistLagret', function () {
     var scope, element;
 
-    beforeEach(module('nav.stickybunn', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.stickybunn', 'nav.sistLagret', 'nav.cmstekster', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -63,7 +65,9 @@ describe('stickybunnUtensistLagret', function () {
     beforeEach(inject(function ($compile, $rootScope) {
         element = angular.element(
             '<form name="form"> ' +
-                '<div data-sist-lagret data-navtilbakelenke="soknad"></div>' +
+                '<div data-sticky>' +
+                '<div id="sistlagret" data-sist-lagret data-navtilbakelenke="soknad"></div>' +
+                '</div>' +
                 '</div>' +
                 '</form>');
 
@@ -72,7 +76,7 @@ describe('stickybunnUtensistLagret', function () {
         $rootScope.$digest();
         $rootScope.$apply();
 
-        scope = element.find('div').isolateScope();
+        scope = element.find('#sistlagret').isolateScope();
         scope.$apply();
 
     }));
@@ -94,7 +98,7 @@ describe('stickybunnUtensistLagret', function () {
 describe('stickybunnUtenLenketekst', function () {
     var scope, element;
 
-    beforeEach(module('nav.stickybunn', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module('nav.stickybunn', 'nav.sistLagret', 'nav.cmstekster', 'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'tittel.key': 'Min tittel'}});
@@ -109,7 +113,9 @@ describe('stickybunnUtenLenketekst', function () {
     beforeEach(inject(function ($compile, $rootScope) {
         element = angular.element(
             '<form name="form"> ' +
-                '<div data-sist-lagret data-navtilbakelenke="ingenLenke"></div>' +
+                '<div data-sticky>' +
+                '<div id="sistlagret" data-sist-lagret data-navtilbakelenke="ingenLenke"></div>' +
+                '</div>' +
                 '</div>' +
                 '</form>');
 
@@ -118,7 +124,7 @@ describe('stickybunnUtenLenketekst', function () {
         $rootScope.$digest();
         $rootScope.$apply();
 
-        scope = element.find('div').isolateScope();
+        scope = element.find('#sistlagret').isolateScope();
         scope.$apply();
 
     }));
