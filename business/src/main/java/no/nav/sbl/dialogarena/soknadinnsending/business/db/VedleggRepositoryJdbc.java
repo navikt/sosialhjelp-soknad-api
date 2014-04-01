@@ -121,13 +121,18 @@ public class VedleggRepositoryJdbc extends JdbcDaoSupport implements VedleggRepo
         if (v.getInnsendingsvalg().er(Vedlegg.Status.UnderBehandling)) {
             getJdbcTemplate().update("delete from vedlegg where soknad_id = ? and vedlegg_id = ?", soknadId, vedleggId);
         } else {
-            getJdbcTemplate().update("update vedlegg set data = null, innsendingsvalg='VedleggKreves' where soknad_id = ? and vedlegg_id = ?", soknadId, vedleggId);
+            getJdbcTemplate().update("update vedlegg set data = null, storrelse = 0, innsendingsvalg='VedleggKreves' where soknad_id = ? and vedlegg_id = ?", soknadId, vedleggId);
         }
     }
 
     @Override
     public void slettVedleggOgData(Long soknadId, Long faktumId, String skjemaNummer) {
         getJdbcTemplate().update("delete from vedlegg where soknad_id = ? and faktum = ? and skjemaNummer = ?", soknadId, faktumId, skjemaNummer);
+    }
+
+    @Override
+    public void slettVedleggMedVedleggId(Long vedleggId) {
+        getJdbcTemplate().update("delete from vedlegg where vedlegg_id = ?", vedleggId);
     }
 
     @Override

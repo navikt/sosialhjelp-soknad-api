@@ -30,5 +30,6 @@ angular.module('sendsoknad.directives', [
     'nav.validerskjema',
     'nav.melding',
     'nav.tilleggsopplysninger',
-    'nav.bildelastet'
+    'nav.bildelastet',
+    'nav.sistLagret'
 ]);

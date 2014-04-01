@@ -141,15 +141,6 @@ angular.module('sendsoknad.routes', ['ngRoute'])
                     }]
                 }
             })
-            // TODO: Tror denne kan fjernes
-            .when('/slettet', {
-                templateUrl: '../views/templates/soknadSlettet.html',
-                resolve: {
-                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
-                        return HentSoknadService;
-                    }]
-                }
-            })
             .when('/ferdigstilt', {
                 templateUrl: '../views/templates/ferdigstilt.html',
                 resolve: {

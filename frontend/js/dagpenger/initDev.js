@@ -40,7 +40,7 @@ angular.module('sendsoknad')
         $http.get('../js/common/directives/markup/panelStandardBelystTemplate.html', {cache: $templateCache});
         $http.get('../js/dagpenger/directives/sporsmalferdig/spmblokkFerdigTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/stegindikator/stegIndikatorTemplate.html', {cache: $templateCache});
-        $http.get('../js/common/directives/stickybunn/stickyBunnTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/directives/sistlagret/sistLagretTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/markup/modalsideTemplate.html', {cache: $templateCache});
 
         $http.get('../js/common/directives/melding/meldingTemplate.html', {cache: $templateCache});
