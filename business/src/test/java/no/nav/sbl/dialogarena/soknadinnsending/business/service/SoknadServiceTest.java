@@ -186,7 +186,10 @@ public class SoknadServiceTest {
 
     @Test
     public void skalSletteVedlegg() {
+        when(soknadRepository.hentSoknadMedData(1L)).thenReturn(new WebSoknad().medBehandlingId("123").medAktorId("234").medDelstegStatus(DelstegStatus.OPPRETTET));
+
         soknadService.slettVedlegg(1L, 2L);
+
         verify(vedleggRepository).slettVedlegg(1L, 2L);
         verify(soknadRepository).settDelstegstatus(1L, SKJEMA_VALIDERT);
     }
