@@ -32,7 +32,6 @@ import static java.util.Collections.sort;
 import static java.util.UUID.randomUUID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -283,7 +282,7 @@ public class SoknadRepositoryJdbcTest {
 
     @Test
     public void plukkerRiktigeSoknaderPaaTversAvAlleTraader() throws InterruptedException {
-        List<Long> soknaderSomSkalMellomlagres = lagreXSoknader(15, 2);
+        List<Long> soknaderSomSkalMellomlagres = lagreXSoknader(15, 3);
         lagreXSoknader(5, 0); // legger til søknader som ikke skal taes med
 
 
@@ -314,45 +313,11 @@ public class SoknadRepositoryJdbcTest {
         assertThat(soknaderSomBleMellomlagret, equalTo(soknaderSomSkalMellomlagres));
     }
 
-    @Test
-    public void skalKunneAvbryteEnSoknad() {
-        opprettOgPersisterSoknad();
-
-        soknadRepository.avbryt(soknadId);
-
-        WebSoknad avbruttSoknad = soknadRepository.hentSoknad(soknadId);
-        assertThat(avbruttSoknad, notNullValue());
-        assertThat(avbruttSoknad.getStatus(), is(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER));
-    }
-
     @Test(expected = EmptyResultDataAccessException.class)
     public void skalKunneSletteSoknad() {
         opprettOgPersisterSoknad();
         soknadRepository.slettSoknad(soknadId);
         soknadRepository.hentSoknad(soknadId);
-    }
-
-    @Test
-    public void skalSletteAllBrukerDataNaarEnSoknadAvbrytes() {
-        opprettOgPersisterSoknad();
-        lagreData("key1", null, "value1");
-        lagreData("key2", null, "value2");
-
-        WebSoknad ikkeAvbruttSoknad = soknadRepository.hentSoknadMedData(soknadId);
-        assertThat(ikkeAvbruttSoknad, notNullValue());
-        assertThat(ikkeAvbruttSoknad.getFaktaListe(), notNullValue());
-        assertThat(ikkeAvbruttSoknad.getFaktaListe().size(), is(2));
-        soknadRepository.avbryt(soknadId);
-
-        WebSoknad avbruttSoknad = soknadRepository.hentSoknadMedData(soknadId);
-        assertThat(avbruttSoknad, notNullValue());
-        assertThat(avbruttSoknad.getStatus(), is(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER));
-        assertThat(avbruttSoknad.getFaktaListe(), notNullValue());
-//        assertThat(avbruttSoknad.getFakta(), empty());
-
-        List<Faktum> soknadBrukerData = soknadRepository.hentAlleBrukerData(soknadId);
-        assertThat(soknadBrukerData, notNullValue());
-        assertThat(soknadBrukerData, empty());
     }
 
     @Test

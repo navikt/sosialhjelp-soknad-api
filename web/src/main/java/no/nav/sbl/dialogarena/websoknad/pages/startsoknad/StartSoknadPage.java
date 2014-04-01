@@ -30,7 +30,7 @@ public class StartSoknadPage extends BasePage {
                 String mineHenvendelserUrl = configService.getValue("minehenvendelser.link.url");
                 setResponsePage(new RedirectTilKvitteringPage(mineHenvendelserUrl + "?behandlingsId=" + brukerbehandlingId));
             } catch (SoknadAvbruttException e) {
-                setResponsePage(AvbruttPage.class);
+                redirectToInterceptPage(new AvbruttPage(new PageParameters()));
             }
         }
     }

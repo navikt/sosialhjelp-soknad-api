@@ -18,7 +18,8 @@ angular.module('nav.avbryt', [])
                     var delay = 1500 - ($.now() - start);
                     setTimeout(function () {
                         $scope.$apply(function () {
-                            $location.path('slettet');
+                            var baseUrl = window.location.href.substring(0, window.location.href.indexOf('/sendsoknad'));
+                            window.location.href = baseUrl + '/sendsoknad/avbrutt';
                         });
                     }, delay);
                 },
@@ -31,8 +32,4 @@ angular.module('nav.avbryt', [])
         if (!$scope.krevBekreftelse) {
             $scope.submitForm();
         }
-    }])
-    .controller('SlettetCtrl', ['$scope', '$location', 'data', function ($scope, $location, data) {
-        $scope.skjemaVeilederUrl = data.config["soknad.skjemaveileder.url"];  
-        $scope.dittnavUrl = data.config["dittnav.link.url"];
     }]);
