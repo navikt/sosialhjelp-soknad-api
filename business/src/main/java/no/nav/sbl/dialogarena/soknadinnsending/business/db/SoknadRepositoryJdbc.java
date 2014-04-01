@@ -346,15 +346,6 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
     }
 
     @Override
-    public void avbryt(Long soknad) {
-        logger.debug("Setter status til søknad med id {} til avbrutt", soknad);
-        String status = AVBRUTT_AV_BRUKER.name();
-        getJdbcTemplate().update("update soknad set status = ? where soknad_id = ?", status, soknad);
-        getJdbcTemplate().update("delete from vedlegg where soknad_id = ?", soknad);
-        getJdbcTemplate().update("delete from soknadbrukerdata where soknad_id = ?", soknad);
-    }
-
-    @Override
     public void slettSoknad(long soknadId) {
         logger.debug("Sletter søknad med ID: " + soknadId);
         getJdbcTemplate().update("delete from faktumegenskap where soknad_id = ?", soknadId);
