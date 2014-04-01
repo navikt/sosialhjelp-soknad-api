@@ -34,14 +34,23 @@
                         </li>
                         <li class="leggtil">
                             <input id="leggtil" type="file" name="files[]" class="vekk" multiple
-                                   accept="image/jpeg,image/png,application/pdf" data-fokus>
+                                   accept="image/jpeg,image/png,application/pdf" capture="camera" data-fokus>
                             <label for="leggtil" class="robust" data-ng-bind-html=" 'opplasting.leggtil' | cmstekst"></label>
                         </li>
                     </ul>
                 </section>
                 <div class="send-inn sak-totredel">
                     <ul>
-                        <div data-ng-include="'../views/templates/vedlegg/opplasting-submit.html'"></div>
+                        <li>
+                            <a href="javascript:void(0);" data-redirect="#/vedlegg" class="knapp-hoved"
+                               data-ng-click="leggVed()"
+                               data-fremdriftsindikator="grå" data-ng-bind-html=" 'opplasting.ferdig' | cmstekst"></a>
+
+                            <div class="form-linje" data-ng-class="{feil: skalViseFeilmelding === true}"
+                                 data-ng-if="skalViseFeilmelding === true">
+                                <span class="melding" data-ng-bind-html=" 'opplasting.feilmelding.manglerVedlegg' | cmstekst"></span>
+                            </div>
+                        </li>
                         <li data-ng-if="kanEndreInnsendingsvalg()">
                             <input id="ettersendes" data-ng-model="ettersend.valgt" type="checkbox" data-ng-change="settTilEttersendes()">
                             <label for="ettersendes" data-ng-bind-html="'ettersending.vedlegg.checkbox.ettersend' | cmstekst"></label>

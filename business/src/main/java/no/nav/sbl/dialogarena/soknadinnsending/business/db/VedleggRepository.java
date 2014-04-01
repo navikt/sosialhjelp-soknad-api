@@ -100,4 +100,5 @@ public interface VedleggRepository {
     void slettVedleggOgData(Long soknadId, Long faktumId, String skjemaNummer);
 
 
+    void slettVedleggMedVedleggId(Long vedleggId);
 }
