@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -31,6 +32,8 @@ public class LagringsScheduler {
     private SoknadRepository soknadRepository;
     @Inject
     private FillagerConnector fillagerConnector;
+    @Inject
+    private HenvendelseConnector henvendelseConnector;
 
     @Scheduled(fixedRate = SCHEDULE_RATE_MS)
     public void mellomlagreSoknaderOgNullstillLokalDb() throws InterruptedException {
@@ -40,7 +43,13 @@ public class LagringsScheduler {
         if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) { // TODO: Burde fjernes når applikasjonen skal ut i prod
             logger.info("---- Starter flytting av søknader til henvendelse-jobb ----");
             for (Optional<WebSoknad> ws = soknadRepository.plukkSoknadTilMellomlagring(); ws.isSome(); ws = soknadRepository.plukkSoknadTilMellomlagring()) {
-                lagreFilTilHenvendelseOgSlettILokalDb(ws);
+                if(isPaabegyntEttersendelse(ws)) {
+                    WebSoknad soknad = ws.get();
+                    henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
+                    soknadRepository.slettSoknad(soknad.getSoknadId());
+                } else {
+                    lagreFilTilHenvendelseOgSlettILokalDb(ws);
+                }
                 // Avslutt prosessen hvis det er gått for lang tid. Tyder på at noe er nede.
                 if (harGaattForLangTid()) {
                     logger.warn("---- Jobben har kjørt i mer enn {} ms. Den blir derfor terminert ----", SCHEDULE_INTERRUPT_MS);
@@ -51,6 +60,11 @@ public class LagringsScheduler {
         } else {
             logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
         }
+    }
+
+    private boolean isPaabegyntEttersendelse(Optional<WebSoknad> ws) {
+        WebSoknad soknad = ws.get();
+        return soknad.erEttersending();
     }
 
     protected void lagreFilTilHenvendelseOgSlettILokalDb(Optional<WebSoknad> ws) throws InterruptedException {

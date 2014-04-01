@@ -304,18 +304,17 @@ public class SoknadServiceTest {
         String ettersendingsBehandlingId = "1000ETTERSENDING";
 
         WSHentSoknadResponse wsHentSoknadResponse = new WSHentSoknadResponse()
-                .withBehandlingsId(opprinneligBehandlingsId)
+                .withBehandlingsId(ettersendingsBehandlingId)
                 .withStatus(WSStatus.UNDER_ARBEID.toString())
                 .withAny(new XMLMetadataListe()
                         .withMetadata(
                                 new XMLHovedskjema().withUuid("uidHovedskjema"),
-                                new XMLVedlegg().withUuid("uidVedlegg")));
+                                new XMLVedlegg().withUuid("uidVedlegg1"),
+                                new XMLVedlegg().withSkjemanummer("L7")));
 
         when(henvendelsesConnector.hentSisteBehandlingIBehandlingskjede(opprinneligBehandlingsId)).thenReturn(
                 wsHentSoknadResponse
         );
-
-        when(henvendelsesConnector.startEttersending(wsHentSoknadResponse)).thenReturn(ettersendingsBehandlingId);
 
         when(soknadRepository.hentSoknadMedData(1L)).thenReturn(
                 new WebSoknad().medAktorId("123456")
