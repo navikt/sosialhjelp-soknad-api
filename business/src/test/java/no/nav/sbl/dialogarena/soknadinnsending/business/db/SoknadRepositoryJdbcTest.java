@@ -283,9 +283,8 @@ public class SoknadRepositoryJdbcTest {
 
     @Test
     public void plukkerRiktigeSoknaderPaaTversAvAlleTraader() throws InterruptedException {
-        List<Long> soknaderSomSkalMellomlagres = lagreXSoknader(15, 2);
+        List<Long> soknaderSomSkalMellomlagres = lagreXSoknader(15, 3);
         lagreXSoknader(5, 0); // legger til søknader som ikke skal taes med
-
 
         final List<Long> soknaderSomBleMellomlagret = Collections.synchronizedList(new ArrayList<Long>());
         int numberOfThreads = 10;
@@ -387,7 +386,7 @@ public class SoknadRepositoryJdbcTest {
 
     @Test
     public void skalKunneHenteUtEttersendingMedBehandlingskjedeId() {
-        opprettOgPersisterEttersending();
+        opprettOgPersisterEttersending("BehandlingsId");
 
         Optional<WebSoknad> res = soknadRepository.hentEttersendingMedBehandlingskjedeId(behandlingsId);
 
@@ -406,7 +405,7 @@ public class SoknadRepositoryJdbcTest {
         List<Long> soknadsIder = new ArrayList<>(antall);
         for (int i = 0; i < antall; i++) {
             Long id = opprettOgPersisterSoknad();
-            soknadRepositoryTestSupport.getJdbcTemplate().update("update soknad set sistlagret = SYSDATE - (INTERVAL '" + timerSidenLagring + "' HOUR) where soknad_id = ?", soknadId);
+            soknadRepositoryTestSupport.getJdbcTemplate().update("update soknad set sistlagret = CURRENT_TIMESTAMP - (INTERVAL '" + timerSidenLagring + "' HOUR) where soknad_id = ?", soknadId);
             soknadsIder.add(id);
         }
         return soknadsIder;
@@ -420,10 +419,11 @@ public class SoknadRepositoryJdbcTest {
         return opprettOgPersisterSoknad(randomUUID().toString(), nyAktorId);
     }
 
-    private Long opprettOgPersisterEttersending() {
-        soknad = WebSoknad.startEttersending()
+    private Long opprettOgPersisterEttersending(String behandlinsId) {
+        soknad = WebSoknad.startEttersending(behandlingsId)
                 .medUuid(uuid)
                 .medAktorId(aktorId)
+                .medDelstegStatus(DelstegStatus.ETTERSENDING_OPPRETTET)
                 .medBehandlingskjedeId(behandlingsId)
                 .medskjemaNummer(skjemaNummer).medOppretteDato(now());
         soknadId = soknadRepository.opprettSoknad(soknad);
@@ -436,6 +436,7 @@ public class SoknadRepositoryJdbcTest {
                 .medUuid(uuid)
                 .medAktorId(aktor)
                 .medBehandlingId(behId)
+                .medDelstegStatus(DelstegStatus.OPPRETTET)
                 .medskjemaNummer(skjemaNummer).medOppretteDato(now());
         soknadId = soknadRepository.opprettSoknad(soknad);
         soknad.setSoknadId(soknadId);
