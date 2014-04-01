@@ -507,7 +507,7 @@ public class SoknadServiceTest {
     public void skalAvbryteSoknad() {
         when(soknadRepository.hentSoknad(11L)).thenReturn(new WebSoknad().medBehandlingId("123"));
         soknadService.avbrytSoknad(11L);
-        verify(soknadRepository).avbryt(11L);
+        verify(soknadRepository).slettSoknad(11L);
         verify(henvendelsesConnector).avbrytSoknad("123");
     }
 
@@ -531,5 +531,11 @@ public class SoknadServiceTest {
         WebSoknad webSoknad = soknadService.hentEttersendingForBehandlingskjedeId("123");
 
         assertThat(webSoknad, is(nullValue()));
+    }
+
+    @Test
+    public void skalSletteVedleggMedGittId() {
+        soknadService.slettN6Vedlegg(1L);
+        verify(vedleggRepository).slettVedleggMedVedleggId(1L);
     }
 }
