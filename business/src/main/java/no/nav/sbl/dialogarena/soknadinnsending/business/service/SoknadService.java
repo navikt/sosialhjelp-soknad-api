@@ -175,6 +175,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
             vedleggRepository.slettVedleggOgData(soknadId, vedlegg.getFaktumId(), vedlegg.getSkjemaNummer());
         }
         repository.slettBrukerFaktum(soknadId, faktumId);
+        repository.settSistLagretTidspunkt(soknadId);
         settDelstegStatus(soknadId, faktumKey);
     }
 
@@ -183,6 +184,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
         logger.debug("*** Lagrer systemfaktum ***: " + f.getKey());
         f.setType(SYSTEMREGISTRERT);
         List<Faktum> fakta = repository.hentSystemFaktumList(soknadId, f.getKey());
+
+
 
         if (!uniqueProperty.isEmpty()) {
             for (Faktum faktum : fakta) {
@@ -198,6 +201,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
         Long lagretFaktumId = repository.lagreFaktum(soknadId, f, true);
         Faktum hentetFaktum = repository.hentFaktum(soknadId, lagretFaktumId);
         genererVedleggForFaktum(hentetFaktum);
+
+        repository.settSistLagretTidspunkt(soknadId);
         return lagretFaktumId;
     }
 
@@ -389,6 +394,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
             throw new OpplastingException("Kunne ikke lagre fil", e,
                     "vedlegg.opplasting.feil.generell");
         }
+        repository.settSistLagretTidspunkt(vedlegg.getSoknadId());
         return resultat;
     }
 
@@ -415,6 +421,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public void slettVedlegg(Long soknadId, Long vedleggId) {
         vedleggRepository.slettVedlegg(soknadId, vedleggId);
+        repository.settSistLagretTidspunkt(soknadId);
         repository.settDelstegstatus(soknadId, DelstegStatus.SKJEMA_VALIDERT);
     }
 
@@ -542,6 +549,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg) {
         vedleggRepository.lagreVedlegg(soknadId, vedleggId, vedlegg);
+        repository.settSistLagretTidspunkt(soknadId);
         repository.settDelstegstatus(soknadId, DelstegStatus.SKJEMA_VALIDERT);
     }
 
