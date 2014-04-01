@@ -527,7 +527,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         WebSoknad soknad = hentSoknad(soknadId);
         vedleggRepository.slettVedlegg(soknadId, vedleggId);
 
-        if (!soknad.erEttersending()) {
+        if (soknad != null && !soknad.erEttersending()) {
             repository.settDelstegstatus(soknadId, DelstegStatus.SKJEMA_VALIDERT);
         }
     }
