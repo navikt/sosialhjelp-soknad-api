@@ -10,7 +10,7 @@ angular.module('ettersending')
         };
         $('#hoykontrast a, .skriftstorrelse a').attr('href', 'javascript:void(0)');
     }])
-    .factory('HentEttersendingsService', ['$location', '$rootScope', 'data', 'cms', '$resource', '$q', '$route', 'ettersendingService', 'landService', 'Faktum', '$http', '$timeout', function ($location, $rootScope, data, cms, $resource, $q, $route, ettersendingService, landService, Faktum, $http, $timeout) {
+    .factory('HentEttersendingsService', ['$location', '$rootScope', 'data', 'cms', '$resource', '$q', '$route', 'ettersendingService', '$http', '$timeout', function ($location, $rootScope, data, cms, $resource, $q, $route, ettersendingService, $http, $timeout) {
         var promiseArray = [];
         var soknadDeferer = $q.defer();
 
