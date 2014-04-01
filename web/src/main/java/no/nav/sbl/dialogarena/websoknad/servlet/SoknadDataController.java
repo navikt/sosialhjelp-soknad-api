@@ -25,9 +25,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.inject.Inject;
+import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +63,12 @@ public class SoknadDataController {
     @SjekkTilgangTilSoknad
     public WebSoknad hentSoknadData(@PathVariable Long soknadId) {
         return soknadService.hentSoknad(soknadId);
+    }
+    @RequestMapping(value = "/{soknadId}/struktur", method = RequestMethod.GET, produces = "application/json")
+    public String hentSoknadSokXMl(@PathVariable Long soknadId) throws UnsupportedEncodingException {
+        ByteArrayOutputStream ous = new ByteArrayOutputStream();
+        JAXB.marshal(soknadService.hentSoknad(soknadId), ous);
+        return ous.toString("UTF-8");
     }
 
     @RequestMapping(value = "/metadata/{soknadId}", method = RequestMethod.GET, produces = "application/json")

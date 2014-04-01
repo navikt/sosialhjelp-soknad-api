@@ -940,19 +940,6 @@
                 expect(scope.inngangsportenUrl).toEqual("inngangsportenUrl");
             });
         });
-        describe('SlettetCtrl', function () {
-            beforeEach(inject(function ($controller, data) {
-                scope.data = data;
-                ctrl = $controller('SlettetCtrl', {
-                    $scope: scope
-                });
-            }));
-
-            it('Skjemaveileder og ditt Nav skal settes til riktig url', function () {
-                expect(scope.dittnavUrl).toEqual("dittnavUrl");
-                expect(scope.skjemaVeilederUrl).toEqual("skjemaVeilederUrl");
-            });
-        });
         describe('YtelserCtrl', function () {
             beforeEach(inject(function ($controller, data) {
                 scope.data = data;
