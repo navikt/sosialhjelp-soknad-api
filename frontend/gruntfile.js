@@ -6,7 +6,7 @@ module.exports = function (grunt) {
         html2js: {
             main: {
                 src: [
-                    'views/dagpenger-singlepage.html',
+                    'views/dagpenger/dagpenger-skjema.html',
                     'views/templates/**/*.html',
                     'js/dagpenger/**/*.html',
                     'js/ettersending/**/*.html',
@@ -150,7 +150,7 @@ module.exports = function (grunt) {
                     'js/ettersending/**/*.html',
                     'js/common/**/*.html',
                     'views/templates/**/*.html',
-                    'views/dagpenger-singlepage.html'
+                    'views/dagpenger/dagpenger-skjema.html'
                 ],
                 tasks: ['html2js', 'htmlbuild:dev']
 			},
@@ -160,7 +160,7 @@ module.exports = function (grunt) {
                     'js/ettersending/**/*.html',
                     'js/common/**/*.html',
                     'views/templates/**/*.html',
-                    'views/dagpenger-singlepage.html'
+                    'views/dagpenger/dagpenger-skjema.html'
                 ],
                 tasks: ['html2js', 'karma:local']
             }
