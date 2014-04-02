@@ -41,13 +41,6 @@ function getBehandlingIdFromUrl() {
 	return location.pathname.split('/').last();
 }
 
-function sjekkOmGittEgenskapTilObjektErFalse(objekt) {
-	if (objekt) {
-		return checkFalse(objekt.value);
-	}
-	return false;
-}
-
 function sjekkOmGittEgenskapTilObjektErTrue(objekt) {
 	if (objekt) {
 		return checkTrue(objekt.value);
@@ -74,12 +67,6 @@ function checkTrue(element) {
 	}
 	return element.toString() === 'true';
 }
-function checkFalse(element) {
-	if (element === undefined) {
-		return false;
-	}
-	return element.toString() === 'false';
-}
 
 function scrollToElement(element, offset) {
 	var animationSpeed = 200;
@@ -87,24 +74,8 @@ function scrollToElement(element, offset) {
 	$('body, html').scrollToPos(scrollPos, animationSpeed);
 }
 
-function fiksNavn(element, navn, tmpNavn) {
-	var formCtrl = element.parent().controller('form');
-	var inputElement = element.find('input, textarea');
-	if (inputElement) {
-		inputElement.attr('name', navn);
-	}
-	var currentElementCtrl = formCtrl[tmpNavn];
-	formCtrl.$removeControl(currentElementCtrl);
-	currentElementCtrl.$name = navn;
-	formCtrl.$addControl(currentElementCtrl);
-}
-
 function verdiErIkkeTom(verdi) {
 	return verdi !== undefined && verdi !== null && verdi.length > 0;
-}
-
-function deepClone(obj) {
-	return $.extend(true, {}, obj);
 }
 
 function harAttributt(scope, objekt, attributt) {
@@ -135,47 +106,6 @@ function harAttributt(scope, objekt, attributt) {
 
 function capitalizeFirstLetter(str) {
 	return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function opprettEgendefinertFeilmelding(navn, errorMessage, referanseTilFeilmeldingslinken, valid, skalVisesAlene) {
-	var feilmelding = {};
-	feilmelding.$name = navn;
-	feilmelding.$errorMessages = errorMessage;
-	feilmelding.$linkId = referanseTilFeilmeldingslinken;
-	feilmelding.$valid = valid;
-	feilmelding.$invalid = !valid;
-	feilmelding.$skalVisesAlene = skalVisesAlene;
-	return feilmelding;
-}
-
-function leggTilFeilmeldingHvisDenIkkeFinnes(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene) {
-	var index = form.$error[feilmeldingskategori].indexByValue(feilmeldingsnavn);
-
-	if (index === -1) {
-		form.$error[feilmeldingskategori].push(opprettEgendefinertFeilmelding(feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene));
-	}
-}
-
-/**
- * endrer validiteten på en feilmelding. Sjekker hvis feilmeldingen ikke skal vises lenger, så i stedet for å oppdatere feilmeldingen fjernes den heller fra listen.
- Derfor trenger vi kun å legge til feilmeldinger som ikke finnes fra før og som er false.
- */
-function settEgendefinertFeilmeldingsverdi(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene) {
-	if (form.$error[feilmeldingskategori] === undefined) {
-		form.$error[feilmeldingskategori] = [];
-	}
-	if (typeof form.$error[feilmeldingskategori] === 'boolean') {
-		form.$setValidity(feilmeldingsnavn, valid);
-	} else {
-		var index = form.$error[feilmeldingskategori].indexByValue(feilmeldingsnavn);
-		if (index > -1 && valid) {
-			form.$error[feilmeldingskategori].splice(index, 1);
-			form.$setValidity(feilmeldingsnavn, valid);
-		} else if (index === -1 && !valid) {
-			form.$setValidity(feilmeldingsnavn, valid);
-			leggTilFeilmeldingHvisDenIkkeFinnes(form, feilmeldingskategori, feilmeldingsnavn, feilmelding, referanseTilFeilmeldingslinken, valid, skalVisesAlene);
-		}
-	}
 }
 
 function stringContainsNotCaseSensitive(str, query) {
@@ -286,7 +216,6 @@ function erFremtidigDato(year, month, day) {
 	dato.setSeconds(0);
 	dato.setMinutes(0);
 
-	var enDagMillis = 86400000; //1000*60*60*24
 	var dagensDato =  new Date();
 	var temp = new Date();
 	temp.setMonth(dagensDato.getMonth());

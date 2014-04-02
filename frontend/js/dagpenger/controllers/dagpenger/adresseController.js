@@ -1,5 +1,5 @@
 angular.module('nav.adresse', [])
-    .controller('AdresseCtrl', ['$scope', 'cms', 'data', function($scope, cms, data) {
+    .controller('AdresseCtrl', ['$scope', 'data', function($scope, data) {
         $scope.personalia = data.finnFaktum('personalia').properties;
 
         $scope.harGjeldendeAdresse = function() {
