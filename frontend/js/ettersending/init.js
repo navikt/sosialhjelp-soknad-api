@@ -4,7 +4,7 @@ angular.module('ettersending')
     .value('data', {})
     .value('cms', {})
     .constant('validertKlasse', 'validert')
-    .run(['$http', '$rootScope', function ($http, $templateCache, $rootScope) {
+    .run(['$http', '$rootScope', function ($http, $rootScope) {
         $rootScope.app = {
             laster: true
         };

@@ -52,6 +52,7 @@ import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.detect.Detect.IS_PDF;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.OPPRETTET;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.SKJEMA_VALIDERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.DAGPENGER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.RUTES_I_BRUT;
@@ -61,6 +62,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -503,6 +505,58 @@ public class SoknadServiceTest {
         verify(soknadRepository).opprettSoknad(soknad);
         verify(soknadRepository).lagreFaktum(anyLong(), any(Faktum.class));
         DateTimeUtils.setCurrentMillisSystem();
+    }
+
+    @Test
+    public  void skalStarteForsteEttersending() {
+        String behandlingsId = "soknadBehandlingId";
+        String ettersendingsBehandlingId = "ettersendingBehandlingId";
+
+        DateTime innsendingsDato = DateTime.now();
+        WSHentSoknadResponse orginalInnsending = new WSHentSoknadResponse()
+                .withBehandlingsId(behandlingsId)
+                .withStatus(WSStatus.FERDIG.toString())
+                .withInnsendtDato(innsendingsDato)
+                .withAny(new XMLMetadataListe()
+                        .withMetadata(
+                                new XMLHovedskjema().withUuid("uidHovedskjema"),
+                                new XMLVedlegg().withSkjemanummer("MittSkjemaNummer")));
+
+        WSHentSoknadResponse ettersendingResponse = new WSHentSoknadResponse()
+                .withBehandlingsId(ettersendingsBehandlingId)
+                .withStatus(WSStatus.UNDER_ARBEID.toString())
+                .withAny(new XMLMetadataListe()
+                        .withMetadata(
+                                new XMLHovedskjema().withUuid("uidHovedskjema"),
+                                new XMLVedlegg().withSkjemanummer("MittSkjemaNummer").withInnsendingsvalg(Vedlegg.Status.SendesSenere.name())));
+
+        when(henvendelsesConnector.hentSoknad(ettersendingsBehandlingId)).thenReturn(ettersendingResponse);
+        when(henvendelsesConnector.hentSisteBehandlingIBehandlingskjede(behandlingsId)).thenReturn(orginalInnsending);
+        when(henvendelsesConnector.startEttersending(orginalInnsending)).thenReturn(ettersendingsBehandlingId);
+
+        Long soknadId = 11L;
+        Faktum soknadInnsendingsDatoFaktum = new Faktum()
+                .medSoknadId(soknadId)
+                .medKey("soknadInnsendingsDato")
+                .medValue(String.valueOf(innsendingsDato.getMillis()))
+                .medType(SYSTEMREGISTRERT);
+        when(soknadRepository.hentFaktum(anyLong(), anyLong())).thenReturn(soknadInnsendingsDatoFaktum);
+
+        Long ettersendingSoknadId = soknadService.startEttersending(behandlingsId);
+        verify(soknadRepository).lagreFaktum(anyLong(), any(Faktum.class), anyBoolean());
+        assertNotNull(ettersendingSoknadId);
+    }
+
+    @Test(expected = ApplicationException.class)
+    public void skalIkkeKunneStarteEttersendingPaaUferdigSoknad() {
+        String behandlingsId = "UferdigSoknadBehandlingId";
+
+        WSHentSoknadResponse orginalInnsending = new WSHentSoknadResponse()
+                .withBehandlingsId(behandlingsId)
+                .withStatus(WSStatus.UNDER_ARBEID.toString());
+        when(henvendelsesConnector.hentSisteBehandlingIBehandlingskjede(behandlingsId)).thenReturn(orginalInnsending);
+
+        soknadService.startEttersending(behandlingsId);
     }
 
     @Test

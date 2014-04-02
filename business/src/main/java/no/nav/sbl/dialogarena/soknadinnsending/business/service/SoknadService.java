@@ -303,12 +303,25 @@ public class SoknadService implements SendSoknadService, VedleggService {
     @Override
     public Long startEttersending(String behandingsId) {
         WSHentSoknadResponse wsSoknadsdata = henvendelseConnector.hentSisteBehandlingIBehandlingskjede(behandingsId);
+
+        //TODO: hva med wsSoknadData som er påbegynt ettersending?
+        if(wsSoknadsdata.getInnsendtDato() == null) {
+            throw new ApplicationException("Kan ikke starte ettersending på en ikke fullfort soknad");
+        }
+
         return lagEttersendingFraWsSoknad(wsSoknadsdata).getSoknadId();
     }
 
     private WebSoknad lagEttersendingFraWsSoknad(WSHentSoknadResponse opprinneligInnsending) {
         String ettersendingsBehandlingId = henvendelseConnector.startEttersending(opprinneligInnsending);
         WSHentSoknadResponse WsEttersending = henvendelseConnector.hentSoknad(ettersendingsBehandlingId);
+
+        String behandlingskjedeId;
+        if(opprinneligInnsending.getBehandlingskjedeId() != null) {
+            behandlingskjedeId = opprinneligInnsending.getBehandlingskjedeId();
+        } else {
+            behandlingskjedeId = opprinneligInnsending.getBehandlingsId();
+        }
 
         WebSoknad soknad = WebSoknad.startEttersending(ettersendingsBehandlingId);
 
@@ -324,7 +337,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         soknad.medUuid(mainUid)
                 .medAktorId(getSubjectHandler().getUid())
                 .medskjemaNummer(xmlHovedskjema.getSkjemanummer())
-                .medBehandlingskjedeId(opprinneligInnsending.getBehandlingsId());
+                .medBehandlingskjedeId(behandlingskjedeId);
 
         Long soknadId = repository.opprettSoknad(soknad);
         WebSoknadId websoknadId = new WebSoknadId();
@@ -332,6 +345,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         soknad.setSoknadId(soknadId);
 
         Faktum soknadInnsendingsDato = new Faktum()
+                .medSoknadId(soknadId)
                 .medKey("soknadInnsendingsDato")
                 .medValue(String.valueOf(opprinneligInnsending.getInnsendtDato().getMillis()))
                 .medType(SYSTEMREGISTRERT);
