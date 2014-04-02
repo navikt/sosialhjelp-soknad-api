@@ -1,5 +1,5 @@
 angular.module('nav.avbryt', [])
-    .controller('AvbrytCtrl', ['$scope', '$location', 'soknadService', 'data', function ($scope, $location, soknadService, data) {
+    .controller('AvbrytCtrl', ['$scope', 'soknadService', 'data', function ($scope, soknadService, data) {
         $scope.fremdriftsindikator = {
             laster: false
 

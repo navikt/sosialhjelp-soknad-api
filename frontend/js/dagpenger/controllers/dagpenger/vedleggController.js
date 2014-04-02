@@ -1,12 +1,12 @@
 angular.module('nav.vedlegg.controller', [])
-    .controller('VisVedleggCtrl', ['$scope', '$routeParams', 'vedleggService', 'Faktum', 'data', function ($scope, $routeParams, vedleggService, Faktum, data) {
+    .controller('VisVedleggCtrl', ['$scope', '$routeParams', 'vedleggService', 'data', function ($scope, $routeParams, vedleggService, data) {
         $scope.vedlegg = vedleggService.get({
             soknadId: data.soknad.soknadId,
             vedleggId: $routeParams.vedleggId
         });
     }])
 
-    .controller('VedleggCtrl', ['$scope', '$location', '$routeParams', '$anchorScroll', 'data', 'vedleggService', 'Faktum', 'VedleggForventning', 'soknadService', '$timeout', function ($scope, $location, $routeParams, $anchorScroll, data, vedleggService, Faktum, VedleggForventning, soknadService, $timeout) {
+    .controller('VedleggCtrl', ['$scope', '$location', 'data', 'vedleggService', 'Faktum', 'soknadService', '$timeout', function ($scope, $location, data, vedleggService, Faktum, soknadService, $timeout) {
         $scope.data = {soknadId: data.soknad.soknadId};
         $scope.forventninger = vedleggService.query({soknadId: data.soknad.soknadId});
 

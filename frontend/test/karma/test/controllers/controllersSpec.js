@@ -940,7 +940,7 @@
                 expect(scope.inngangsportenUrl).toEqual("inngangsportenUrl");
             });
         });
-                describe('YtelserCtrl', function () {
+        describe('YtelserCtrl', function () {
             beforeEach(inject(function ($controller, data) {
                 scope.data = data;
                 var faktumStonadFisker = {

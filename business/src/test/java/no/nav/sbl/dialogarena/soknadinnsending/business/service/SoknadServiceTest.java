@@ -186,7 +186,10 @@ public class SoknadServiceTest {
 
     @Test
     public void skalSletteVedlegg() {
+        when(soknadRepository.hentSoknadMedData(1L)).thenReturn(new WebSoknad().medBehandlingId("123").medAktorId("234").medDelstegStatus(DelstegStatus.OPPRETTET));
+
         soknadService.slettVedlegg(1L, 2L);
+
         verify(vedleggRepository).slettVedlegg(1L, 2L);
         verify(soknadRepository).settDelstegstatus(1L, SKJEMA_VALIDERT);
     }
@@ -304,18 +307,17 @@ public class SoknadServiceTest {
         String ettersendingsBehandlingId = "1000ETTERSENDING";
 
         WSHentSoknadResponse wsHentSoknadResponse = new WSHentSoknadResponse()
-                .withBehandlingsId(opprinneligBehandlingsId)
+                .withBehandlingsId(ettersendingsBehandlingId)
                 .withStatus(WSStatus.UNDER_ARBEID.toString())
                 .withAny(new XMLMetadataListe()
                         .withMetadata(
                                 new XMLHovedskjema().withUuid("uidHovedskjema"),
-                                new XMLVedlegg().withUuid("uidVedlegg")));
+                                new XMLVedlegg().withUuid("uidVedlegg1"),
+                                new XMLVedlegg().withSkjemanummer("L7")));
 
         when(henvendelsesConnector.hentSisteBehandlingIBehandlingskjede(opprinneligBehandlingsId)).thenReturn(
                 wsHentSoknadResponse
         );
-
-        when(henvendelsesConnector.startEttersending(wsHentSoknadResponse)).thenReturn(ettersendingsBehandlingId);
 
         when(soknadRepository.hentSoknadMedData(1L)).thenReturn(
                 new WebSoknad().medAktorId("123456")

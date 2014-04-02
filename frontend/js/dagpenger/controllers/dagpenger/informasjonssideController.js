@@ -1,5 +1,5 @@
 angular.module('nav.informasjonsside', ['nav.cmstekster'])
-    .controller('InformasjonsSideCtrl', ['$scope', 'data', '$routeParams', '$http', '$location', 'soknadService', 'sjekkUtslagskriterier', function ($scope, data, $routeParams, $http, $location, soknadService, sjekkUtslagskriterier) {
+    .controller('InformasjonsSideCtrl', ['$scope', 'data', '$location', 'soknadService', 'sjekkUtslagskriterier', function ($scope, data, $location, soknadService, sjekkUtslagskriterier) {
         var fortsettLikevell = false;
 
         $scope.utslagskriterier = data.utslagskriterier;

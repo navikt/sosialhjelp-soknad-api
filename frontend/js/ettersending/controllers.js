@@ -5,10 +5,6 @@ angular.module('ettersending.controllers', [
     'nav.vedlegg.controller',
     'nav.dagpenger',
     'nav.feilside',
-    'nav.behandlingside',
-    'nav.adresse',
-    'nav.behandlingside',
-    'nav.bekreftelse',
     'nav.ettersending',
     'nav.truncatehover'
 ]);
