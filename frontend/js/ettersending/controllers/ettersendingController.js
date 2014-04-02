@@ -1,5 +1,5 @@
 angular.module('nav.ettersending', [])
-    .controller('EttersendingCtrl', ['$scope', '$location', 'data', 'ettersendingService', 'vedleggService', function ($scope, $location, data, ettersendingService, vedleggService) {
+    .controller('EttersendingCtrl', ['$scope', 'data', 'ettersendingService', 'vedleggService', function ($scope, data, ettersendingService, vedleggService) {
         var innsendtDato = new Date(parseInt(data.finnFaktum('soknadInnsendingsDato').value));
         var fristDato = new Date();
         fristDato.setDate(innsendtDato.getDate() + 40);
@@ -21,7 +21,7 @@ angular.module('nav.ettersending', [])
 
         $scope.erAnnetVedlegg = function(v) {
             return erAnnetVedlegg(v);
-        }
+        };
 
         function erLastetOpp(v) {
             return v.innsendingsvalg === 'LastetOpp';
