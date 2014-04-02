@@ -6,6 +6,7 @@ import no.nav.modig.frontend.FrontendModules;
 import no.nav.modig.frontend.MetaTag;
 import no.nav.modig.wicket.configuration.ApplicationSettingsConfig;
 import no.nav.sbl.dialogarena.webkomponent.innstillinger.InnstillingerPanel;
+import no.nav.sbl.dialogarena.websoknad.pages.XmlToPdfConverterPage;
 import no.nav.sbl.dialogarena.websoknad.pages.soknadliste.SoknadListePage;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.AvbruttPage;
 import no.nav.sbl.dialogarena.websoknad.pages.startsoknad.EttersendingPage;
@@ -94,6 +95,7 @@ public class WicketApplication extends WebApplication {
         mountPage("soknad/${brukerbehandlingId}", StartSoknadPage.class);
         mountPage("ettersending/${brukerbehandlingId}", EttersendingPage.class);
         mountPage("avbrutt", AvbruttPage.class);
+        mountPage("xmltopdf", XmlToPdfConverterPage.class);
 
         mountPage("internal/selftest", SelfTestPage.class);
         mountPage("soknadliste", SoknadListePage.class);

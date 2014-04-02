@@ -4,14 +4,13 @@ angular.module('sendsoknad')
     .value('data', {})
     .value('cms', {})
     .constant('validertKlasse', 'validert')
-    .run(['$http', '$templateCache', '$rootScope', 'data', '$location', 'sjekkUtslagskriterier', function ($http, $templateCache, $rootScope, data, $location, sjekkUtslagskriterier) {
+    .run(['$rootScope', 'data', '$location', 'sjekkUtslagskriterier', function ($rootScope, data, $location, sjekkUtslagskriterier) {
         $rootScope.app = {
             laster: true
         };
         $('#hoykontrast a, .skriftstorrelse a').attr('href', 'javascript:void(0)');
 
         $rootScope.$on('$routeChangeSuccess', function(event, next, current) {
-            redirectDersomSoknadErFerdig(next);
             if (next.$$route) {
                 /*
                  * Dersom vi kommer inn på informasjonsside utenfra (current sin redirectTo er informasjonsside), og krav for søknaden er oppfylt, skal vi redirecte til rett side.
@@ -35,12 +34,6 @@ angular.module('sendsoknad')
 
         function harHentetData() {
             return data && data.soknad;
-        }
-
-        function redirectDersomSoknadErFerdig(next) {
-            if (next.$$route.originalPath.indexOf("ettersending") < 0 && harHentetData() && data.soknad.status === "FERDIG") {
-                $location.path('/ferdigstilt');
-            }
         }
 
         function redirectTilSkjemasideDersomSkjemaIkkeErValidert() {
@@ -152,78 +145,7 @@ angular.module('sendsoknad')
         return $q.all(promiseArray);
     }])
 
-    .factory('HentEttersendingsService', ['$location', '$rootScope', 'data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', '$http', '$timeout', function ($location, $rootScope, data, cms, $resource, $q, $route, soknadService, landService, Faktum, $http, $timeout) {
-        var promiseArray = [];
-        var soknadDeferer = $q.defer();
-
-        var soknadId = window.location.href.split("/").last();
-
-        soknadService.get({soknadId: soknadId},
-            function (result) { // Success
-                data.soknad = result;
-                data.finnFaktum = function (key) {
-                    var res = null;
-                    data.soknad.faktaListe.forEach(function (item) {
-                        if (item.key === key) {
-                            res = item;
-                        }
-                    });
-                    return res;
-                };
-                soknadDeferer.resolve();
-            }
-        );
-
-        var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
-            function (result) { // Success
-                cms.tekster = result;
-            }
-        );
-
-        var lasteindikatorDefer = $q.defer();
-
-        // Passer på at laste-indikatoren vises i minimum 2 sekunder, for å unngå at den bare "blinker"
-        $timeout(function() {
-            lasteindikatorDefer.resolve();
-        }, 2000);
-
-        promiseArray.push( tekster.$promise, soknadDeferer.promise, lasteindikatorDefer.promise);
-
-        var resolve = $q.all(promiseArray);
-
-        resolve.then(function() {
-            $rootScope.app.laster = false;
-        });
-
-        return resolve;
-    }])
-
-    .factory('StartEttersendingService', ['$rootScope', 'cms', '$resource', '$q', '$timeout', function ($rootScope, cms, $resource, $q, $timeout) {
-        var promiseArray = [];
-
-        var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
-            function (result) { // Success
-                cms.tekster = result;
-            }
-        );
-        var lasteindikatorDefer = $q.defer();
-
-        // Passer på at laste-indikatoren vises i minimum 2 sekunder, for å unngå at den bare "blinker"
-        $timeout(function() {
-            lasteindikatorDefer.resolve();
-        }, 2000);
-
-        promiseArray.push(tekster.$promise, lasteindikatorDefer.promise);
-
-        var resolve = $q.all(promiseArray);
-
-        resolve.then(function() {
-            $rootScope.app.laster = false;
-        });
-
-        return resolve;
-    }])
-    .factory('HentSoknadService', ['$rootScope', 'data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', '$http', '$timeout', function ($rootScope, data, cms, $resource, $q, $route, soknadService, landService, Faktum, $http, $timeout) {
+    .factory('HentSoknadService', ['$rootScope', 'data', 'cms', '$resource', '$q', 'soknadService', 'landService', 'Faktum', '$http', '$timeout', function ($rootScope, data, cms, $resource, $q, soknadService, landService, Faktum, $http, $timeout) {
         var promiseArray = [];
         
         var soknadOppsettDefer = $q.defer();
