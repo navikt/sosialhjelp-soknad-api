@@ -12,7 +12,7 @@ angular.module('ettersending.routes', ['ngRoute'])
                 }
             })
             .when('/feilside', {
-                templateUrl: '../views/templates/feilsider/feilsideBaksystem.html',
+                templateUrl: '../views/common/feilsider/feilsideBaksystem.html',
                 resolve: {
                     notUsedButRequiredProperty: ['FeilsideService', function (FeilsideService) {
                         return FeilsideService;
@@ -20,7 +20,7 @@ angular.module('ettersending.routes', ['ngRoute'])
                 }
             })
             .when('/404', {
-                templateUrl: '../views/templates/feilsider/feilside404.html',
+                templateUrl: '../views/common/feilsider/feilside404.html',
                 resolve: {
                     notUsedButRequiredProperty: ['FeilsideService', function (FeilsideService) {
                         return FeilsideService;
