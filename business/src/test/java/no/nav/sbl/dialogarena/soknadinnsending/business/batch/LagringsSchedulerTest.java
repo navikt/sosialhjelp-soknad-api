@@ -2,9 +2,11 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.batch;
 
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -30,6 +32,7 @@ public class LagringsSchedulerTest {
     @InjectMocks private LagringsScheduler scheduler = new LagringsScheduler();
     @Mock private SoknadRepository soknadRepository;
     @Mock private FillagerConnector fillagerConnector;
+    @Mock private HenvendelseConnector henvendelseConnector;
 
 
     @Test
@@ -48,6 +51,23 @@ public class LagringsSchedulerTest {
         when(soknadRepository.plukkSoknadTilMellomlagring()).thenReturn(optional(webSoknad));
         scheduler.lagreFilTilHenvendelseOgSlettILokalDb(optional(webSoknad));
         verify(fillagerConnector).lagreFil(eq(webSoknad.getBrukerBehandlingId()), eq(webSoknad.getUuid()), eq(webSoknad.getAktoerId()), any(InputStream.class));
+        verify(soknadRepository).slettSoknad(webSoknad.getSoknadId());
+    }
+
+    @Test
+    public void skalAvbryteIHenvendelseOgSletteFraDatabase() throws InterruptedException {
+        String behandlingsId = "1";
+        int soknadId = 1;
+        WebSoknad webSoknad = new WebSoknad()
+                .medId(soknadId)
+                .medAktorId("***REMOVED***")
+                .medBehandlingId(behandlingsId)
+                .medUuid("1234")
+                .medDelstegStatus(DelstegStatus.ETTERSENDING_OPPRETTET)
+                .medStatus(SoknadInnsendingStatus.UNDER_ARBEID);
+        when(soknadRepository.plukkSoknadTilMellomlagring()).thenReturn(optional(webSoknad),Optional.<WebSoknad>none());
+        scheduler.mellomlagreSoknaderOgNullstillLokalDb();
+        verify(henvendelseConnector).avbrytSoknad(behandlingsId);
         verify(soknadRepository).slettSoknad(webSoknad.getSoknadId());
     }
 
