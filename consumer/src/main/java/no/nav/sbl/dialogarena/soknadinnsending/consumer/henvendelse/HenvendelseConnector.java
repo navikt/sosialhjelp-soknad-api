@@ -49,7 +49,15 @@ public class HenvendelseConnector {
         XMLMetadataListe xmlMetadataListe = (XMLMetadataListe) soknadResponse.getAny();
         XMLHovedskjema xmlHovedskjema = (XMLHovedskjema)xmlMetadataListe.getMetadata().get(0);
         XMLHovedskjema xmlSkjema = createXMLSkjema(xmlHovedskjema.getSkjemanummer(), uid);
-        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartEttersendingRequest(fnr, xmlSkjema, SoknadType.SEND_SOKNAD_ETTERSENDING, xmlMetadataListe, soknadResponse.getBehandlingsId());
+
+
+        String behandlingskjedeId;
+        if(soknadResponse.getBehandlingskjedeId() != null) {
+             behandlingskjedeId = soknadResponse.getBehandlingskjedeId();
+        } else {
+            behandlingskjedeId = soknadResponse.getBehandlingsId();
+        }
+        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartEttersendingRequest(fnr, xmlSkjema, SoknadType.SEND_SOKNAD_ETTERSENDING, xmlMetadataListe, behandlingskjedeId);
 
         return startSoknadEllerEttersending(xmlStartSoknadRequest);
     }
