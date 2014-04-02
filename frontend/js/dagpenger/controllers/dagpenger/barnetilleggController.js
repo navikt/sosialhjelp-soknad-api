@@ -1,5 +1,5 @@
 angular.module('nav.barnetillegg', [])
-    .controller('BarnetilleggCtrl', ['$scope', '$cookieStore', '$location', '$timeout', 'Faktum', 'data', function ($scope, $cookieStore, $location, $timeout, Faktum, data) {
+    .controller('BarnetilleggCtrl', ['$scope', '$cookieStore', '$location', 'Faktum', 'data', function ($scope, $cookieStore, $location, Faktum, data) {
 
         $scope.soknadId = data.soknad.soknadId;
         $scope.barn = data.finnFakta('barn');
