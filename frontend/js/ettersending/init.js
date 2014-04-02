@@ -4,13 +4,13 @@ angular.module('ettersending')
     .value('data', {})
     .value('cms', {})
     .constant('validertKlasse', 'validert')
-    .run(['$http', '$templateCache', '$rootScope', function ($http, $templateCache, $rootScope) {
+    .run(['$http', '$rootScope', function ($http, $templateCache, $rootScope) {
         $rootScope.app = {
             laster: true
         };
         $('#hoykontrast a, .skriftstorrelse a').attr('href', 'javascript:void(0)');
     }])
-    .factory('HentEttersendingsService', ['$location', '$rootScope', 'data', 'cms', '$resource', '$q', '$route', 'ettersendingService', '$http', '$timeout', function ($location, $rootScope, data, cms, $resource, $q, $route, ettersendingService, $http, $timeout) {
+    .factory('HentEttersendingsService', ['$rootScope', 'data', 'cms', '$resource', '$q', 'ettersendingService', '$timeout', function ($rootScope, data, cms, $resource, $q, ettersendingService, $timeout) {
         var promiseArray = [];
         var soknadDeferer = $q.defer();
 

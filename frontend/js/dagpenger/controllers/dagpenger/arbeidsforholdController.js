@@ -1,5 +1,5 @@
 angular.module('nav.arbeidsforhold.controller', [])
-    .controller('ArbeidsforholdCtrl', ['$scope', 'soknadService', '$cookieStore', '$location', 'data', function ($scope, soknadService, $cookieStore, $location, data) {
+    .controller('ArbeidsforholdCtrl', ['$scope', '$cookieStore', '$location', 'data', function ($scope, $cookieStore, $location, data) {
         $scope.soknadId = data.soknad.soknadId;
 
         $scope.templates = {

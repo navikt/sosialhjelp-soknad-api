@@ -1,5 +1,5 @@
 angular.module('nav.oppsummering', [])
-    .controller('OppsummeringCtrl', ['$scope', 'data', '$location', '$routeParams', 'soknadService', '$http', function ($scope, data, $location, $routeParams, soknadService, $http) {
+    .controller('OppsummeringCtrl', ['$scope', 'data', '$location', 'soknadService', '$http', function ($scope, data, $location, soknadService, $http) {
         $scope.oppsummeringHtml = '';
         $scope.harbekreftet = {value: ''};
         $scope.skalViseFeilmelding = {value: false};

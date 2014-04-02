@@ -1,4 +1,4 @@
 angular.module('nav.behandlingside', [])
-    .controller('BehandlingCtrl', ['$routeParams', '$location', function ($routeParams, $location) {
+    .controller('BehandlingCtrl', ['$location', function ($location) {
         $location.path('#/soknad');
     }]);

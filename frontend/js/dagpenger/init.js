@@ -4,14 +4,13 @@ angular.module('sendsoknad')
     .value('data', {})
     .value('cms', {})
     .constant('validertKlasse', 'validert')
-    .run(['$http', '$templateCache', '$rootScope', 'data', '$location', 'sjekkUtslagskriterier', function ($http, $templateCache, $rootScope, data, $location, sjekkUtslagskriterier) {
+    .run(['$rootScope', 'data', '$location', 'sjekkUtslagskriterier', function ($rootScope, data, $location, sjekkUtslagskriterier) {
         $rootScope.app = {
             laster: true
         };
         $('#hoykontrast a, .skriftstorrelse a').attr('href', 'javascript:void(0)');
 
         $rootScope.$on('$routeChangeSuccess', function(event, next, current) {
-            redirectDersomSoknadErFerdig(next);
             if (next.$$route) {
                 /*
                  * Dersom vi kommer inn på informasjonsside utenfra (current sin redirectTo er informasjonsside), og krav for søknaden er oppfylt, skal vi redirecte til rett side.
@@ -35,12 +34,6 @@ angular.module('sendsoknad')
 
         function harHentetData() {
             return data && data.soknad;
-        }
-
-        function redirectDersomSoknadErFerdig(next) {
-            if (next.$$route.originalPath.indexOf("ettersending") < 0 && harHentetData() && data.soknad.status === "FERDIG") {
-                $location.path('/ferdigstilt');
-            }
         }
 
         function redirectTilSkjemasideDersomSkjemaIkkeErValidert() {
@@ -152,7 +145,7 @@ angular.module('sendsoknad')
         return $q.all(promiseArray);
     }])
 
-    .factory('HentSoknadService', ['$rootScope', 'data', 'cms', '$resource', '$q', '$route', 'soknadService', 'landService', 'Faktum', '$http', '$timeout', function ($rootScope, data, cms, $resource, $q, $route, soknadService, landService, Faktum, $http, $timeout) {
+    .factory('HentSoknadService', ['$rootScope', 'data', 'cms', '$resource', '$q', 'soknadService', 'landService', 'Faktum', '$http', '$timeout', function ($rootScope, data, cms, $resource, $q, soknadService, landService, Faktum, $http, $timeout) {
         var promiseArray = [];
         
         var soknadOppsettDefer = $q.defer();
