@@ -6,7 +6,7 @@ module.exports = function (grunt) {
         html2js: {
             main: {
                 src: [
-                    'views/dagpenger-singlepage.html',
+                    'views/dagpenger/dagpenger-skjema.html',
                     'views/templates/**/*.html',
                     'js/dagpenger/**/*.html',
                     'js/ettersending/**/*.html',
@@ -19,7 +19,7 @@ module.exports = function (grunt) {
         htmlbuild: {
             dev: {
                 src: 'views/bootstrapTemplate.html',
-                dest: 'views/built/bootstrapDev.html',
+                dest: 'target/classes/META-INF/resources/views/built/bootstrapDev.html',
                 options: {
                     beautify: true,
                     relative: false,
@@ -50,7 +50,7 @@ module.exports = function (grunt) {
             },
             test: {
                 src: 'views/bootstrapTemplate.html',
-                dest: 'views/built/bootstrap.html',
+                dest: 'target/classes/META-INF/resources/built/views/bootstrap.html',
                 options: {
                     beautify: true,
                     relative: false,
@@ -81,7 +81,7 @@ module.exports = function (grunt) {
             },
             prod: {
                 src: 'views/bootstrapTemplateProd.html',
-                dest: 'target/classes/META-INF/resources/views/bootstrap.html',
+                dest: 'target/classes/META-INF/resources/built/views/bootstrap.html',
                 options: {
                     beautify: true,
                     relative: false,
@@ -150,7 +150,7 @@ module.exports = function (grunt) {
                     'js/ettersending/**/*.html',
                     'js/common/**/*.html',
                     'views/templates/**/*.html',
-                    'views/dagpenger-singlepage.html'
+                    'views/dagpenger/dagpenger-skjema.html'
                 ],
                 tasks: ['html2js', 'htmlbuild:dev']
 			},
@@ -160,7 +160,7 @@ module.exports = function (grunt) {
                     'js/ettersending/**/*.html',
                     'js/common/**/*.html',
                     'views/templates/**/*.html',
-                    'views/dagpenger-singlepage.html'
+                    'views/dagpenger/dagpenger-skjema.html'
                 ],
                 tasks: ['html2js', 'karma:local']
             }
