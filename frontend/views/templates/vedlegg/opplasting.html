@@ -15,15 +15,17 @@
 
     <form id="opplastingform" method="POST" enctype="multipart/form-data" data-file-upload="options" data-ng-controller="OpplastingCtrl">
         <div class="begrensning">
-            <div data-ng-include="'../views/templates/vedlegg/opplasting-feilmelding.html'"></div>
+            <div data-ng-include="'../views/common/opplasting/opplastingFeilmelding.html'"></div>
             <section>
                 <ul class="opplastingliste clearfix sak-tredel" data-alle-filer-ferdig>
-                    <li class="panel-mini-belyst" data-ng-repeat="file in queue" data-ng-class="{'lasteropp': file.$processing()}" data-fil-feil>
+                    <li class="panel-mini-belyst" data-ng-repeat="file in queue" data-ng-class="{'lasteropp': file.$processing()}"
+                        data-fil-feil>
                         <a class="lukk" data-ng-if="!!file.vedleggId" data-ng-click="file.$destroy()"
                            data-ng-controller="SlettOpplastingCtrl" href="javascript:void(0);"
-                           data-aria-label="Slett siden"></a>
+                           data-aria-label="'opplasting.slett.siden' | cmstekst"></a>
                         <a class="vis-vedlegg" href="#visVedlegg/{{file.vedleggId}}" data-ng-if="!!file.vedleggId">
-                            <img data-ng-src="../rest/soknad/{{file.soknadId}}/vedlegg/{{file.vedleggId}}/thumbnail" data-ferdig-lastet-bilde>
+                            <img data-ng-src="../rest/soknad/{{file.soknadId}}/vedlegg/{{file.vedleggId}}/thumbnail"
+                                 data-ferdig-lastet-bilde>
                         </a>
                     </li>
                     <li class="leggtil">
@@ -42,7 +44,7 @@
 
                         <div class="form-linje" data-ng-class="{feil: skalViseFeilmelding === true}"
                              data-ng-if="skalViseFeilmelding === true">
-                            <span class="melding" data-ng-bind-html="'opplasting.feilmelding.manglerVedlegg' | cmstekst"></span>
+                            <span class="melding" data-ng-bind-html=" 'opplasting.feilmelding.manglerVedlegg' | cmstekst"></span>
                         </div>
                     </li>
                     <li>

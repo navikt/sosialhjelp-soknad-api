@@ -54,7 +54,7 @@ angular.module('sendsoknad.routes', ['ngRoute'])
                 }
             })
             .when('/soknad', {
-                templateUrl: '../views/dagpenger-singlepage.html',
+                templateUrl: '../views/dagpenger/dagpenger-skjema.html',
                 resolve: {
                     notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
                         return HentSoknadService;
@@ -150,7 +150,7 @@ angular.module('sendsoknad.routes', ['ngRoute'])
                 }
             })
             .when('/feilside', {
-                templateUrl: '../views/templates/feilsider/feilsideBaksystem.html',
+                templateUrl: '../views/common/feilsider/feilsideBaksystem.html',
                 resolve: {
                     notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
                         return HentSoknadService;
@@ -158,7 +158,7 @@ angular.module('sendsoknad.routes', ['ngRoute'])
                 }
             })
             .when('/404', {
-                templateUrl: '../views/templates/feilsider/feilside404.html',
+                templateUrl: '../views/common/feilsider/feilside404.html',
                 resolve: {
                     notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
                         return HentSoknadService;
@@ -168,7 +168,6 @@ angular.module('sendsoknad.routes', ['ngRoute'])
             .when('/',
                 {redirectTo: '/informasjonsside'}
             )
-            .when('/soknadliste', {templateUrl: '../views/templates/soknadliste.html'})
             .otherwise({redirectTo: '/404'});
 
     }]).run(['$rootScope', '$location', '$anchorScroll', '$routeParams', function ($rootScope, $location, $anchorScroll, $routeParams) {
