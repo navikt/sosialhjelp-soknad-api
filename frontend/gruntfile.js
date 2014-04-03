@@ -50,7 +50,7 @@ module.exports = function (grunt) {
             },
             test: {
                 src: 'views/bootstrapTemplate.html',
-                dest: 'target/classes/META-INF/resources/built/views/bootstrap.html',
+                dest: 'target/classes/META-INF/resources/views/built/bootstrap.html',
                 options: {
                     beautify: true,
                     relative: false,
@@ -81,7 +81,7 @@ module.exports = function (grunt) {
             },
             prod: {
                 src: 'views/bootstrapTemplateProd.html',
-                dest: 'target/classes/META-INF/resources/built/views/bootstrap.html',
+                dest: 'target/classes/META-INF/resources/views/built/bootstrap.html',
                 options: {
                     beautify: true,
                     relative: false,
