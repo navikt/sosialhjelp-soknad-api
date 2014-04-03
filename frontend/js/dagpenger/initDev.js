@@ -20,7 +20,7 @@ angular.module('sendsoknad')
         $http.get('../views/templates/utdanning/utdanningKortvarigFlereTemplate.html', {cache: $templateCache});
         $http.get('../views/templates/utdanning/utdanningNorskTemplate.html', {cache: $templateCache});
         $http.get('../views/templates/adresse.html', {cache: $templateCache});
-        $http.get('../views/dagpenger-singlepage.html', {cache: $templateCache});
+        $http.get('../views/dagpenger/dagpenger-skjema.html', {cache: $templateCache});
         $http.get('../js/common/directives/booleanradio/booleanradioTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/accordion/accordionGroupTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/accordion/accordionTemplate.html', {cache: $templateCache});

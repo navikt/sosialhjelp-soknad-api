@@ -12,30 +12,35 @@
             <div class="panel uten-ramme">
                 <h1 class="stor-ikon-vedlegg-strek" data-scrolling-tittel><span data-ng-if="vedlegg.vedleggId">{{vedlegg.tittel}}</span><span
                         data-ng-if="vedlegg.navn">: {{vedlegg.navn}}</span></h1>
+
                 <p data-ng-bind-html="'Dagpenger.vedlegg.' + vedlegg.skjemaNummer + '.bekrefte' | cmstekst"></p>
             </div>
         </div>
-
     </div>
 
-    <div class="rad">
-        <form id="opplastingform" method="POST" enctype="multipart/form-data" data-file-upload="options" data-ng-controller="OpplastingCtrl">
+    <form id="opplastingform" method="POST" enctype="multipart/form-data" data-file-upload="options"
+          data-ng-controller="OpplastingCtrl">
+        <div class="rad">
             <div class="begrensning">
-                <div data-ng-include="'../views/templates/vedlegg/opplasting-feilmelding.html'"></div>
+                <div data-ng-include="'../views/common/opplasting/opplastingFeilmelding.html'"></div>
                 <section>
                     <ul class="opplastingliste clearfix sak-tredel" data-alle-filer-ferdig>
-                        <li class="panel-mini-belyst" data-ng-repeat="file in queue" data-ng-class="{'lasteropp': file.$processing()}" data-fil-feil>
+                        <li class="panel-mini-belyst" data-ng-repeat="file in queue"
+                            data-ng-class="{'lasteropp': file.$processing()}"
+                            data-fil-feil>
                             <a class="lukk" data-ng-if="!!file.vedleggId" data-ng-click="file.$destroy()"
                                data-ng-controller="SlettOpplastingCtrl" href="javascript:void(0);"
-                               data-aria-label="Slett siden"></a>
+                               data-aria-label="'opplasting.slett.siden' | cmstekst"></a>
                             <a class="vis-vedlegg" href="#visVedlegg/{{file.vedleggId}}" data-ng-if="!!file.vedleggId">
-                                <img data-ng-src="../rest/soknad/{{file.soknadId}}/vedlegg/{{file.vedleggId}}/thumbnail" data-ferdig-lastet-bilde>
+                                <img data-ng-src="../rest/soknad/{{file.soknadId}}/vedlegg/{{file.vedleggId}}/thumbnail"
+                                     data-ferdig-lastet-bilde>
                             </a>
                         </li>
                         <li class="leggtil">
                             <input id="leggtil" type="file" name="files[]" class="vekk" multiple
                                    accept="image/jpeg,image/png,application/pdf" capture="camera" data-fokus>
-                            <label for="leggtil" class="robust" data-ng-bind-html=" 'opplasting.leggtil' | cmstekst"></label>
+                            <label for="leggtil" class="robust"
+                                   data-ng-bind-html=" 'opplasting.leggtil' | cmstekst"></label>
                         </li>
                     </ul>
                 </section>
@@ -44,23 +49,27 @@
                         <li>
                             <a href="javascript:void(0);" data-redirect="#/vedlegg" class="knapp-hoved"
                                data-ng-click="leggVed()"
-                               data-fremdriftsindikator="grå" data-ng-bind-html=" 'opplasting.ferdig' | cmstekst"></a>
+                               data-fremdriftsindikator="grå" data-ng-bind-html="'opplasting.ferdig' | cmstekst"></a>
 
                             <div class="form-linje" data-ng-class="{feil: skalViseFeilmelding === true}"
                                  data-ng-if="skalViseFeilmelding === true">
-                                <span class="melding" data-ng-bind-html=" 'opplasting.feilmelding.manglerVedlegg' | cmstekst"></span>
+                                <span class="melding"
+                                      data-ng-bind-html=" 'opplasting.feilmelding.manglerVedlegg' | cmstekst"></span>
                             </div>
                         </li>
                         <li data-ng-if="kanEndreInnsendingsvalg()">
-                            <input id="ettersendes" data-ng-model="ettersend.valgt" type="checkbox" data-ng-change="settTilEttersendes()">
-                            <label for="ettersendes" data-ng-bind-html="'ettersending.vedlegg.checkbox.ettersend' | cmstekst"></label>
+                            <input id="ettersendes" data-ng-model="ettersend.valgt" type="checkbox"
+                                   data-ng-change="settTilEttersendes()">
+                            <label for="ettersendes"
+                                   data-ng-bind-html="'ettersending.vedlegg.checkbox.ettersend' | cmstekst"></label>
                         </li>
                         <li>
-                            <a href="javascript:void(0);" data-ng-href="#/vedlegg" class="avbryt" data-ng-bind-html=" 'opplasting.avbryt' | cmstekst"></a>
+                            <a href="javascript:void(0);" data-ng-href="#/vedlegg" class="avbryt"
+                               data-ng-bind-html=" 'opplasting.avbryt' | cmstekst"></a>
                         </li>
                     </ul>
                 </div>
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>
