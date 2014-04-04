@@ -3,6 +3,8 @@ angular.module('nav.modal.focus', [])
         return function(scope, element) {
             var fokusElement;
 
+            console.log($modalStack.getTop());
+
             var watchListener = scope.$watch(
                 function() {
                     return $modalStack.getTop().value.modalDomEl.hasClass('in');
@@ -44,9 +46,14 @@ angular.module('nav.modal.focus', [])
                 fokusElement.focus();
             });
 
-            $document.bind('touchmove', function (evt) {
-                evt.preventDefault();
-            });
-
+//            $modalStack.getTop().key.result
+//                .finally(function() {
+//                    console.log("Hei og hå");
+//                    $document.unbind('touchmove');
+//                })
+//
+//            $document.bind('touchmove', function (evt) {
+//                evt.preventDefault();
+//            });
         };
     }]);
