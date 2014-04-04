@@ -14,6 +14,11 @@ public class SoknadFaktum implements Serializable {
     private SoknadFaktum dependOn;
     private String dependOnValue;
 
+    private String flereTillatt;
+    private String erSystemFaktum;
+
+
+
     @XmlID()
     public String getId() {
         return id;
@@ -48,6 +53,14 @@ public class SoknadFaktum implements Serializable {
         this.dependOnValue = dependOnValue;
     }
 
+    public String getFlereTillatt() { return flereTillatt; }
+
+    public void setFlereTillatt(String flereTillatt) { this.flereTillatt = flereTillatt; }
+
+    public String getErSystemFaktum() { return erSystemFaktum; }
+
+    public void setErSystemFaktum(String erSystemFaktum) { this.erSystemFaktum = erSystemFaktum; }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
@@ -55,6 +68,8 @@ public class SoknadFaktum implements Serializable {
                 .append("type", type)
                 .append("dependOn", dependOn)
                 .append("dependOnValue", dependOnValue)
+                .append("flereTillatt", flereTillatt)
+                .append("erSystemFaktum", erSystemFaktum)
                 .toString();
     }
 }

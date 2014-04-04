@@ -43,7 +43,7 @@ public class Faktum implements Serializable {
         return value;
     }
 
-    public final void setValue(String value) {
+    public void setValue(String value) {
         this.value = value;
     }
 
