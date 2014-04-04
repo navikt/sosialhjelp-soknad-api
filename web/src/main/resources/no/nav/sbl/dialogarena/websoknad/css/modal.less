@@ -33,7 +33,6 @@
 
 .modal-open {
     overflow: hidden;
-    position: fixed;
 }
 
 .modal {
@@ -127,6 +126,10 @@
 }
 
 @media only screen and (max-width: 767px) {
+    .modal-open {
+        position: fixed;
+    }
+
     .modal {
         margin: 5px;
     }
