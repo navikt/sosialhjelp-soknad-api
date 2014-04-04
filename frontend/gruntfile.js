@@ -6,7 +6,9 @@ module.exports = function (grunt) {
         html2js: {
             main: {
                 src: [
-                    'views/dagpenger/dagpenger-skjema.html',
+                    'views/dagpenger/**/*.html',
+                    'views/common/**/*.html',
+                    'views/ettersending/**/*.html',
                     'views/templates/**/*.html',
                     'js/dagpenger/**/*.html',
                     'js/ettersending/**/*.html',
