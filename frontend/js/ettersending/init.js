@@ -73,36 +73,4 @@ angular.module('ettersending')
         });
 
         return resolve;
-    }])
-    .factory('FeilsideService', ['$rootScope', 'cms', '$resource', '$q', '$timeout', 'data', function ($rootScope, cms, $resource, $q, $timeout, data) {
-        var promiseArray = [];
-
-        var tekster = $resource('/sendsoknad/rest/enonic/Dagpenger').get(
-            function (result) { // Success
-                cms.tekster = result;
-            }
-        );
-
-        var config = $resource('/sendsoknad/rest/getConfig').get(
-            function (result) {
-                data.config = result;
-            }
-        );
-
-        var lasteindikatorDefer = $q.defer();
-
-        // Passer på at laste-indikatoren vises i minimum 2 sekunder, for å unngå at den bare "blinker"
-        $timeout(function() {
-            lasteindikatorDefer.resolve();
-        }, 2000);
-
-        promiseArray.push(config.$promise, tekster.$promise, lasteindikatorDefer.promise);
-
-        var resolve = $q.all(promiseArray);
-
-        resolve.then(function() {
-            $rootScope.app.laster = false;
-        });
-
-        return resolve;
     }]);

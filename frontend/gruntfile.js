@@ -168,7 +168,7 @@ module.exports = function (grunt) {
 		jshint: {
 			files  : ['gruntfile.js', 'js/dagpenger/**/*.js', 'js/ettersending/**/*.js', 'js/common/**/*.js', 'test/**/*.js'],
 			options: {
-				ignores: ['js/built/*.js', 'js/dagpenger/templates.js', 'js/ettersending/templates.js', 'test/karma/lib/angular-mocks.js', 'js/common/directives/scrollbar/perfect-scrollbar.js'],
+				ignores: ['js/built/*.js', 'js/dagpenger/templates.js', 'js/ettersending/templates.js', 'test/karma/lib/angular-mocks.js', 'js/common/tredjeparts/**/*.js'],
                 globals: {
                     it: true,
                     expect: true,
