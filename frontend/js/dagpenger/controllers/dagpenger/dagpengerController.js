@@ -1,5 +1,5 @@
 angular.module('nav.dagpenger', [])
-	.controller('DagpengerCtrl', ['$scope', 'data', function ($scope, data) {
+	.controller('DagpengerCtrl', ['$scope', 'data', '$modal', function ($scope, data, $modal) {
 
 		$scope.grupper = [
 			{id: 'reellarbeidssoker', tittel: 'reellarbeidssoker.tittel', template: '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
@@ -12,6 +12,13 @@ angular.module('nav.dagpenger', [])
             {id: 'barnetillegg', tittel: 'barnetillegg.tittel', template: '../views/templates/barnetillegg/barnetillegg.html', apen: false, skalSettesTilValidVedForsteApning: true, validering: false},
             {id: 'tilleggsopplysninger', tittel: 'tilleggsopplysninger.tittel', template: '../views/templates/tilleggsopplysninger.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false}
 		];
+
+        $scope.modal = function() {
+            $modal.open({
+                templateUrl: '../views/common/feilsider/serverfeil.html',
+                backdrop: 'static'
+            });
+        };
 
         $scope.leggTilValideringsmetode = function(bolkId, valideringsmetode) {
             var idx = $scope.grupper.indexByValue(bolkId);
