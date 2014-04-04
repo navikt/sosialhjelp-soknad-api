@@ -1,5 +1,5 @@
 angular.module('nav.modal.focus', [])
-    .directive('modalFocus', ['$modalStack', function($modalStack) {
+    .directive('modalFocus', ['$modalStack', '$document', function($modalStack, $document) {
         return function(scope, element) {
             var fokusElement;
 
@@ -43,5 +43,10 @@ angular.module('nav.modal.focus', [])
                 fokusElement = fokuserbareElementer.eq(focusIdx);
                 fokusElement.focus();
             });
+
+            $document.bind('touchmove', function (evt) {
+                evt.preventDefault();
+            });
+
         };
     }]);
