@@ -60,12 +60,13 @@
     </div>
 </div>
 
-<div class="varighet form-linje" data-ng-if="hvis('utdanning.kveld.progresjonUnder50', 'false')">
+<div class="varighet form-linje" data-ng-if="hvis('utdanning.kveld.progresjonUnder50', 'false')" data-nav-faktum="utdanning.semester.avslutning" data-nav-config>
     <h4 class="spm-sporsmal" data-ng-bind-html=" 'utdanning.semester.avslutning.label' | cmstekst"></h4>
     <div data-nav-dato
-         data-ng-model="utdanning.semester.avslutning"
+         data-ng-model="faktum.value"
          data-label="utdanning.semester.avslutning.dato"
-         data-required-error-message="utdanning.semester.avslutning.feilmelding">
+         data-required-error-message="utdanning.semester.avslutning.feilmelding"
+         data-lagre="lagreFaktum()">
     </div>
 </div>
 <div data-vedlegginfoboks>

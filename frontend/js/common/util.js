@@ -56,13 +56,13 @@ return false;
 }
 
 function checkThat(element, verdi) {
-	if (element === undefined) {
+	if (element === undefined || element === null) {
 		return false;
 	}
 	return element.toString() === verdi;
 }
 function checkTrue(element) {
-	if (element === undefined) {
+	if (element === undefined || element === null) {
 		return false;
 	}
 	return element.toString() === 'true';

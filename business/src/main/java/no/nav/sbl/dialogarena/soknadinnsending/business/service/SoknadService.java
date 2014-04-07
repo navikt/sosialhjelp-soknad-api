@@ -27,6 +27,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.Opplast
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.SoknadAvbruttException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.SoknadAvsluttetException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource;
@@ -432,7 +433,24 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
         repository.lagreFaktum(soknadId, bolkerFaktum);
 
+        prepopulerSoknadsFakta(soknadId);
         return behandlingsId;
+    }
+
+    private void prepopulerSoknadsFakta(Long soknadId) {
+        SoknadStruktur soknadStruktur = hentSoknadStruktur(soknadId);
+        for (SoknadFaktum soknadFaktum : soknadStruktur.getFakta()) {
+            String flereTillatt = soknadFaktum.getFlereTillatt();
+            String erSystemFaktum = soknadFaktum.getErSystemFaktum();
+            if((flereTillatt != null && flereTillatt.equals("true")) || (erSystemFaktum != null && erSystemFaktum.equals("true"))) {
+                continue;
+            }
+            Faktum f = new Faktum()
+                    .medKey(soknadFaktum.getId())
+                    .medValue("")
+                    .medType(Faktum.FaktumType.BRUKERREGISTRERT);
+            repository.lagreFaktum(soknadId,f);
+        }
     }
 
     private void validerSkjemanummer(String navSoknadId) {
