@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Barn {
     private Long soknadId;
+    private String doedsdato;
     private String fnr;
     private String fornavn;
     private String mellomnavn;
@@ -18,8 +19,9 @@ public class Barn {
     private static final String KJONN_MANN = "m";
     private static final String KJONN_KVINNE = "k";
 
-    public Barn(Long soknadId, String fnr, String fornavn, String mellomnavn, String etternavn, String land) {
+    public Barn(Long soknadId, String doedsdato, String fnr, String fornavn, String mellomnavn, String etternavn, String land) {
         this.soknadId = soknadId;
+        this.doedsdato = doedsdato;
         this.fnr = fnr;
         this.fornavn = fornavn;
         this.mellomnavn = mellomnavn;
@@ -98,5 +100,13 @@ public class Barn {
 
     public void setLand(String land) {
         this.land = land;
+    }
+
+    public String getDoedsdato() {
+        return doedsdato;
+    }
+
+    public void setDoedsdato(String doedsdato) {
+        this.doedsdato = doedsdato;
     }
 }

@@ -67,7 +67,7 @@ public class PersonTest {
         String kontrollsiffer = "74";
 
         String fnr = dato + individisfferEnOgTo + kjonnSiffer + kontrollsiffer;
-        Barn barn = new Barn(1l, fnr, "", "", "svenskeby", "Norge");
+        Barn barn = new Barn(1l, null, fnr, "", "", "svenskeby", "Norge");
 
         Assert.assertEquals("m", barn.getKjonn());
 
@@ -81,7 +81,7 @@ public class PersonTest {
         String kontrollsiffer = "42";
 
         String fnr = dato + individisfferEnOgTo + kjonnSiffer + kontrollsiffer;
-        Barn barn = new Barn(1l, fnr, "janne", "j", "jensen", "Norge");
+        Barn barn = new Barn(1l, null, fnr, "janne", "j", "jensen", "Norge");
 
         Assert.assertEquals("k", barn.getKjonn());
 
