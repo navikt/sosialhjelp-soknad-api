@@ -17,13 +17,13 @@ import java.security.NoSuchAlgorithmException;
 public class XsrfGenerator {
     private static final String SECRET = "9f8c0d81-d9b3-4b70-af03-b***REMOVED***6c4f";
 
-    public static String generateXsrfToken(Long soknadId) {
-        return generateXsrfToken(soknadId, new DateTime().toString("yyyyMMdd"));
+    public static String generateXsrfToken(String behandlingsId) {
+        return generateXsrfToken(behandlingsId, new DateTime().toString("yyyyMMdd"));
     }
 
-    public static String generateXsrfToken(Long soknadId, String date) {
+    public static String generateXsrfToken(String behandlingsId, String date) {
         try {
-            String signKey = SubjectHandler.getSubjectHandler().getEksternSsoToken() + soknadId + date;
+            String signKey = SubjectHandler.getSubjectHandler().getEksternSsoToken() + behandlingsId + date;
             Mac hmac = Mac.getInstance("HmacSHA256");
             SecretKeySpec secretKey = new SecretKeySpec(SECRET.getBytes(), "HmacSHA256");
             hmac.init(secretKey);
@@ -33,10 +33,10 @@ public class XsrfGenerator {
         }
     }
 
-    public static void sjekkXsrfToken(String givenToken, Long soknadId) {
-        String token = generateXsrfToken(soknadId);
+    public static void sjekkXsrfToken(String givenToken, String behandlingsId) {
+        String token = generateXsrfToken(behandlingsId);
         boolean sjekk = token.equals(givenToken)
-                || generateXsrfToken(soknadId, new DateTime().minusDays(1).toString("yyyyMMdd")).equals(givenToken);
+                || generateXsrfToken(behandlingsId, new DateTime().minusDays(1).toString("yyyyMMdd")).equals(givenToken);
         if (!sjekk) {
             throw new AuthorizationException("Feil token");
         }

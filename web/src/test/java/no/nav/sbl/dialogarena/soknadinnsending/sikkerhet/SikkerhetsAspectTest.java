@@ -52,7 +52,7 @@ public class SikkerhetsAspectTest {
 
     @Test
     public void skalTesteSikkerhet() {
-        setup(XsrfGenerator.generateXsrfToken(1L));
+        setup(XsrfGenerator.generateXsrfToken("1"));
         sikkerhetsAspect.sjekkSoknadIdModBruker(1L, TILGANG);
     }
 

@@ -67,7 +67,7 @@ public class VedleggControllerTest {
         when(vedleggService.hentVedlegg(eq(11L), eq(12L), eq(false))).thenReturn(new Vedlegg().medVedleggId(12L));
         mockMvc.perform(fileUpload("/soknad/11/vedlegg/3/opplasting")
                 .file(createFile("test.pdf", PDF))
-                .param("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(11L))
+                .param("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken("11L"))
                 .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isCreated())
