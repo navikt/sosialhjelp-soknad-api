@@ -2,7 +2,9 @@ package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import no.nav.sbl.dialogarena.soknadinnsending.VedleggOpplasting;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
@@ -40,6 +42,9 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 public class VedleggController {
     @Inject
     private VedleggService vedleggService;
+
+    @Inject
+    private SendSoknadService soknadService;
 
     private static byte[] getByteArray(MultipartFile file) {
         try {
@@ -112,7 +117,13 @@ public class VedleggController {
     @ResponseStatus(HttpStatus.CREATED)
     @SjekkTilgangTilSoknad(sjekkXsrf = false)
     public VedleggOpplasting lastOppDokumentSoknad(@PathVariable final Long soknadId, @PathVariable final Long vedleggId, @RequestParam("X-XSRF-TOKEN") final String xsrfToken, @RequestParam("files[]") final List<MultipartFile> files) {
-        XsrfGenerator.sjekkXsrfToken(xsrfToken, soknadId);
+        WebSoknad soknad = soknadService.hentSoknad(soknadId);
+        String brukerBehandlingId = soknad.getBrukerBehandlingId();
+        if (soknad.getBehandlingskjedeId() != null) {
+            brukerBehandlingId = soknad.getBehandlingskjedeId();
+        }
+
+        XsrfGenerator.sjekkXsrfToken(xsrfToken, brukerBehandlingId);
         Vedlegg forventning = vedleggService.hentVedlegg(soknadId, vedleggId, false);
 
         List<Vedlegg> res = new ArrayList<>();

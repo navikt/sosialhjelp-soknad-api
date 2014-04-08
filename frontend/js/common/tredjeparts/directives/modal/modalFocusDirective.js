@@ -46,14 +46,27 @@ angular.module('nav.modal.focus', [])
                 fokusElement.focus();
             });
 
-//            $modalStack.getTop().key.result
-//                .finally(function() {
-//                    console.log("Hei og hå");
-//                    $document.unbind('touchmove');
-//                })
-//
-//            $document.bind('touchmove', function (evt) {
-//                evt.preventDefault();
-//            });
+            $modalStack.getTop().key.result
+                .finally(function() {
+                    $document.unbind('touchmove');
+                    $('.modal').unbind('touchstart');
+                    $('.modal').unbind('touchmove');
+                });
+
+            $document.bind('touchmove', function (evt) {
+                evt.preventDefault();
+            });
+
+            $('.modal').bind('touchstart', function(evt) {
+                if (evt.currentTarget.scrollTop === 0) {
+                    evt.currentTarget.scrollTop = 1;
+                } else if (evt.currentTarget.scrollHeigth === evt.currentTarget.scrollTop + evt.currentTarget.offsetHeigth) {
+                    evt.currentTarget.scrollTop = -1;
+                }
+            });
+
+            $('.modal').bind('touchmove', function(evt) {
+                evt.stopPropagation();
+            });
         };
     }]);
