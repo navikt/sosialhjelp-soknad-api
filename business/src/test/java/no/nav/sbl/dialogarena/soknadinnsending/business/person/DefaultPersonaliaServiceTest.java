@@ -41,6 +41,8 @@ import no.nav.tjeneste.virksomhet.person.v1.informasjon.Landkoder;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.NorskIdent;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personnavn;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personstatus;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personstatuser;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonRequest;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
@@ -296,7 +298,7 @@ public class DefaultPersonaliaServiceTest {
     @Test
     public void skalIkkeViseDoedeBarn() throws HentKontaktinformasjonOgPreferanserSikkerhetsbegrensning, HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
         mockGyldigPersonMedBarn();
-        leggTilDoedtBarn();
+        leggTilDoedeBarn();
 
         personaliaService.lagrePersonaliaOgBarn(RIKTIG_IDENT, 21L);
 
@@ -638,7 +640,7 @@ public class DefaultPersonaliaServiceTest {
         xmlBruker.setPersonnavn(navnMedMellomnavn());
     }
 
-    private void leggTilDoedtBarn() {
+    private void leggTilDoedeBarn() {
         List<Familierelasjon> familierelasjoner = person.getHarFraRolleI();
         Familierelasjon familieRelasjon = new Familierelasjon();
         Familierelasjoner type = new Familierelasjoner();
@@ -646,6 +648,13 @@ public class DefaultPersonaliaServiceTest {
         familieRelasjon.setTilRolle(type);
         familieRelasjon.setTilPerson(hentDoedtMockBarn());
         familierelasjoner.add(familieRelasjon);
+
+        Familierelasjon familieRelasjon2 = new Familierelasjon();
+        Familierelasjoner type2 = new Familierelasjoner();
+        type2.setValue("BARN");
+        familieRelasjon2.setTilRolle(type);
+        familieRelasjon2.setTilPerson(hentDoedtMockBarnMedBostatus());
+        familierelasjoner.add(familieRelasjon2);
     }
 
     private Person hentMockBarn() {
@@ -679,6 +688,30 @@ public class DefaultPersonaliaServiceTest {
         Doedsdato doedsdato = new Doedsdato();
         doedsdato.setDoedsdato(XMLGregorianCalendarImpl.createDate(2014, 2, 2, 0));
         barn.setDoedsdato(doedsdato);
+
+        Statsborgerskap statsborgerskap = new Statsborgerskap();
+        Landkoder landkode = new Landkoder();
+        landkode.setValue("NOR");
+        statsborgerskap.setLand(landkode);
+        barn.setStatsborgerskap(statsborgerskap);
+        return barn;
+    }
+
+    private Person hentDoedtMockBarnMedBostatus() {
+        Person barn = new Person();
+        Personnavn navn = new Personnavn();
+        navn.setFornavn("Jarle");
+        navn.setEtternavn("Mockmann");
+        barn.setPersonnavn(navn);
+        NorskIdent ident = new NorskIdent();
+        ident.setIdent("***REMOVED***");
+        barn.setIdent(ident);
+
+        Personstatuser personstatus = new Personstatuser();
+        personstatus.setValue("DØD");
+        Personstatus personstatusWrapper = new Personstatus();
+        personstatusWrapper.setPersonstatus(personstatus);
+        barn.setPersonstatus(personstatusWrapper);
 
         Statsborgerskap statsborgerskap = new Statsborgerskap();
         Landkoder landkode = new Landkoder();
