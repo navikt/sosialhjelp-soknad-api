@@ -409,7 +409,7 @@ describe('validerSkjema', function () {
 
     beforeEach(inject(function ($compile, $rootScope, $timeout, $q, $injector) {
         $httpBackend = $injector.get('$httpBackend');
-        $httpBackend.expectPOST('/sendsoknad/rest/soknad/delsteg/1/vedlegg?').
+        $httpBackend.expectPOST('/sendsoknad/rest/soknad/delsteg/1/vedlegg').
             respond('');
         scope = $rootScope;
         element = angular.element(
