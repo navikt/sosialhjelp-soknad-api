@@ -6,7 +6,9 @@ module.exports = function (grunt) {
         html2js: {
             main: {
                 src: [
-                    'views/dagpenger/dagpenger-skjema.html',
+                    'views/dagpenger/**/*.html',
+                    'views/common/**/*.html',
+                    'views/ettersending/**/*.html',
                     'views/templates/**/*.html',
                     'js/dagpenger/**/*.html',
                     'js/ettersending/**/*.html',
@@ -168,7 +170,7 @@ module.exports = function (grunt) {
 		jshint: {
 			files  : ['gruntfile.js', 'js/dagpenger/**/*.js', 'js/ettersending/**/*.js', 'js/common/**/*.js', 'test/**/*.js'],
 			options: {
-				ignores: ['js/built/*.js', 'js/dagpenger/templates.js', 'js/ettersending/templates.js', 'test/karma/lib/angular-mocks.js', 'js/common/directives/scrollbar/perfect-scrollbar.js'],
+				ignores: ['js/built/*.js', 'js/dagpenger/templates.js', 'js/ettersending/templates.js', 'test/karma/lib/angular-mocks.js', 'js/common/tredjeparts/**/*.js'],
                 globals: {
                     it: true,
                     expect: true,

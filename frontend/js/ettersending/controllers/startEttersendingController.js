@@ -12,7 +12,8 @@ angular.module('nav.ettersending')
                 ettersendingService.create({},
                     {behandlingskjedeId: behandlingId},
                     function() {
-                        $location.path('/vedlegg');
+                        var baseUrl = window.location.href.substring(0, window.location.href.indexOf('/sendsoknad'));
+                        window.location.href = baseUrl + '/sendsoknad/ettersending/' + behandlingId + '#/vedlegg';
                     },
                     function() {
                         $scope.fremdriftsindikator.laster = false;

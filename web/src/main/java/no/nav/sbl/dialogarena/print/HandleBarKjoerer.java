@@ -288,7 +288,12 @@ public class HandleBarKjoerer implements HtmlGenerator {
             public CharSequence apply(String o, Options options) throws IOException {
                 WebSoknad soknad = finnWebSoknad(options.context);
                 Faktum faktum = soknad.getFaktumMedKey(o);
-                return options.fn(faktum);
+
+                if (faktum == null || (faktum.getValue() == null && faktum.getProperties().isEmpty())) {
+                    return options.inverse(this);
+                } else {
+                    return options.fn(faktum);
+                }
             }
         };
     }

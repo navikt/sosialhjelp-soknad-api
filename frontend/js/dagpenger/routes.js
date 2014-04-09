@@ -1,11 +1,11 @@
-angular.module('sendsoknad.routes', ['ngRoute'])
+angular.module('sendsoknad.routes', ['ngRoute', 'nav.feilsider.routes'])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider
             .when('/cmstekster', {
                 redirectTo: '/informasjonsside',
                 resolve: {
-                    notUsedButRequiredProperty: ['$rootScope', function ($rootScope) {
+                    settCmsTekster: ['$rootScope', function ($rootScope) {
                         $rootScope.visCmsnokkler = true;
                         return true;
                     }]
@@ -15,8 +15,17 @@ angular.module('sendsoknad.routes', ['ngRoute'])
                 templateUrl: '../views/templates/informasjonsside.html',
                 controller: 'InformasjonsSideCtrl',
                 resolve: {
-                    notUsedButRequiredProperty: ['InformasjonsSideResolver', function (InformasjonsSideResolver) {
-                        return InformasjonsSideResolver;
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
+                    }],
+                    config: ['ConfigResolver', function (ConfigResolver) {
+                        return ConfigResolver;
+                    }],
+                    utslagskriterier: ['UtslagskriterierResolver', function(UtslagskriterierResolver) {
+                        return UtslagskriterierResolver;
+                    }],
+                    soknadMetadata: ['SoknadMetadataResolver', function(SoknadMetadataResolver) {
+                        return SoknadMetadataResolver;
                     }]
                 }
             })
@@ -24,48 +33,138 @@ angular.module('sendsoknad.routes', ['ngRoute'])
                 templateUrl: '../views/templates/informasjonsside.html',
                 controller: 'BehandlingCtrl',
                 resolve: {
-                    notUsedButRequiredProperty: ['BehandlingSideResolver', function (BehandlingSideResolver) {
-                        return BehandlingSideResolver;
+                    behandlingSide: ['BehandlingIdResolver', function (BehandlingIdResolver) {
+                        return BehandlingIdResolver;
                     }]
                 }
             })
             .when('/vedlegg', {
                 templateUrl: '../views/templates/vedlegg/vedlegg.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
-                        return HentSoknadService;
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
+                    }],
+                    land: ['LandResolver', function (LandResolver) {
+                        return LandResolver;
+                    }],
+                    soknad: ['SoknadResolver', function(SoknadResolver) {
+                        return SoknadResolver;
+                    }],
+                    fakta: ['FaktaResolver', function(FaktaResolver) {
+                        return FaktaResolver;
+                    }],
+                    soknadOppsett: ['SoknadOppsettResolver', function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
+                    }],
+                    config: ['ConfigForSoknadResolver', function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    }],
+                    behandlingsId: ['BehandlingIdResolver', function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
                     }]
                 }
             })
             .when('/opplasting/:vedleggId', {
                 templateUrl: '../views/templates/vedlegg/opplasting.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
-                        return HentSoknadService;
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
+                    }],
+                    land: ['LandResolver', function (LandResolver) {
+                        return LandResolver;
+                    }],
+                    soknad: ['SoknadResolver', function(SoknadResolver) {
+                        return SoknadResolver;
+                    }],
+                    fakta: ['FaktaResolver', function(FaktaResolver) {
+                        return FaktaResolver;
+                    }],
+                    soknadOppsett: ['SoknadOppsettResolver', function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
+                    }],
+                    config: ['ConfigForSoknadResolver', function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    }],
+                    behandlingsId: ['BehandlingIdResolver', function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
                     }]
                 }
             })
             .when('/visVedlegg/:vedleggId', {
                 templateUrl: '../views/templates/vedlegg/visvedlegg.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
-                        return HentSoknadService;
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
+                    }],
+                    land: ['LandResolver', function (LandResolver) {
+                        return LandResolver;
+                    }],
+                    soknad: ['SoknadResolver', function(SoknadResolver) {
+                        return SoknadResolver;
+                    }],
+                    fakta: ['FaktaResolver', function(FaktaResolver) {
+                        return FaktaResolver;
+                    }],
+                    soknadOppsett: ['SoknadOppsettResolver', function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
+                    }],
+                    config: ['ConfigForSoknadResolver', function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    }],
+                    behandlingsId: ['BehandlingIdResolver', function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
                     }]
                 }
             })
             .when('/soknad', {
                 templateUrl: '../views/dagpenger/dagpenger-skjema.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
-                        return HentSoknadService;
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
+                    }],
+                    land: ['LandResolver', function (LandResolver) {
+                        return LandResolver;
+                    }],
+                    soknad: ['SoknadResolver', function(SoknadResolver) {
+                        return SoknadResolver;
+                    }],
+                    fakta: ['FaktaResolver', function(FaktaResolver) {
+                        return FaktaResolver;
+                    }],
+                    soknadOppsett: ['SoknadOppsettResolver', function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
+                    }],
+                    config: ['ConfigForSoknadResolver', function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    }],
+                    behandlingsId: ['BehandlingIdResolver', function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
                     }]
                 }
             })
             .when('/fortsettsenere', {
                 templateUrl: '../views/templates/fortsettSenere.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
-                        return HentSoknadService;
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
+                    }],
+                    land: ['LandResolver', function (LandResolver) {
+                        return LandResolver;
+                    }],
+                    soknad: ['SoknadResolver', function(SoknadResolver) {
+                        return SoknadResolver;
+                    }],
+                    fakta: ['FaktaResolver', function(FaktaResolver) {
+                        return FaktaResolver;
+                    }],
+                    soknadOppsett: ['SoknadOppsettResolver', function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
+                    }],
+                    config: ['ConfigForSoknadResolver', function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    }],
+                    behandlingsId: ['BehandlingIdResolver', function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
                     }]
                 }
             })
@@ -80,95 +179,240 @@ angular.module('sendsoknad.routes', ['ngRoute'])
             .when('/nyttbarn', {
                 templateUrl: '../views/templates/barnetillegg/barnetillegg-nyttbarn.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
-                        return HentSoknadService;
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
+                    }],
+                    land: ['LandResolver', function (LandResolver) {
+                        return LandResolver;
+                    }],
+                    soknad: ['SoknadResolver', function(SoknadResolver) {
+                        return SoknadResolver;
+                    }],
+                    fakta: ['FaktaResolver', function(FaktaResolver) {
+                        return FaktaResolver;
+                    }],
+                    soknadOppsett: ['SoknadOppsettResolver', function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
+                    }],
+                    config: ['ConfigForSoknadResolver', function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    }],
+                    behandlingsId: ['BehandlingIdResolver', function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
                     }]
                 }
             })
             .when('/endrebarn/:faktumId', {
                 templateUrl: '../views/templates/barnetillegg/barnetillegg-nyttbarn.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
-                        return HentSoknadService;
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
+                    }],
+                    land: ['LandResolver', function (LandResolver) {
+                        return LandResolver;
+                    }],
+                    soknad: ['SoknadResolver', function(SoknadResolver) {
+                        return SoknadResolver;
+                    }],
+                    fakta: ['FaktaResolver', function(FaktaResolver) {
+                        return FaktaResolver;
+                    }],
+                    soknadOppsett: ['SoknadOppsettResolver', function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
+                    }],
+                    config: ['ConfigForSoknadResolver', function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    }],
+                    behandlingsId: ['BehandlingIdResolver', function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
                     }]
                 }
             })
             .when('/sokbarnetillegg/:faktumId', {
                 templateUrl: '../views/templates/barnetillegg/endreSystembarnTemplate.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
-                        return HentSoknadService;
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
+                    }],
+                    land: ['LandResolver', function (LandResolver) {
+                        return LandResolver;
+                    }],
+                    soknad: ['SoknadResolver', function(SoknadResolver) {
+                        return SoknadResolver;
+                    }],
+                    fakta: ['FaktaResolver', function(FaktaResolver) {
+                        return FaktaResolver;
+                    }],
+                    soknadOppsett: ['SoknadOppsettResolver', function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
+                    }],
+                    config: ['ConfigForSoknadResolver', function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    }],
+                    behandlingsId: ['BehandlingIdResolver', function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
                     }]
                 }
             })
             .when('/nyttarbeidsforhold', {
                 templateUrl: '../views/templates/arbeidsforhold-nytt.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
-                        return HentSoknadService;
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
+                    }],
+                    land: ['LandResolver', function (LandResolver) {
+                        return LandResolver;
+                    }],
+                    soknad: ['SoknadResolver', function(SoknadResolver) {
+                        return SoknadResolver;
+                    }],
+                    fakta: ['FaktaResolver', function(FaktaResolver) {
+                        return FaktaResolver;
+                    }],
+                    soknadOppsett: ['SoknadOppsettResolver', function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
+                    }],
+                    config: ['ConfigForSoknadResolver', function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    }],
+                    behandlingsId: ['BehandlingIdResolver', function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
                     }]
                 }
             })
             .when('/endrearbeidsforhold/:faktumId', {
                 templateUrl: '../views/templates/arbeidsforhold-nytt.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
-                        return HentSoknadService;
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
+                    }],
+                    land: ['LandResolver', function (LandResolver) {
+                        return LandResolver;
+                    }],
+                    soknad: ['SoknadResolver', function(SoknadResolver) {
+                        return SoknadResolver;
+                    }],
+                    fakta: ['FaktaResolver', function(FaktaResolver) {
+                        return FaktaResolver;
+                    }],
+                    soknadOppsett: ['SoknadOppsettResolver', function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
+                    }],
+                    config: ['ConfigForSoknadResolver', function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    }],
+                    behandlingsId: ['BehandlingIdResolver', function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
                     }]
                 }
             })
             .when('/oppsummering', {
                 templateUrl: '../views/templates/oppsummering.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
-                        return HentSoknadService;
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
+                    }],
+                    land: ['LandResolver', function (LandResolver) {
+                        return LandResolver;
+                    }],
+                    soknad: ['SoknadResolver', function(SoknadResolver) {
+                        return SoknadResolver;
+                    }],
+                    fakta: ['FaktaResolver', function(FaktaResolver) {
+                        return FaktaResolver;
+                    }],
+                    soknadOppsett: ['SoknadOppsettResolver', function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
+                    }],
+                    config: ['ConfigForSoknadResolver', function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    }],
+                    behandlingsId: ['BehandlingIdResolver', function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
                     }]
                 }
             })
             .when('/bekreftelse', {
                 templateUrl: '../views/templates/bekreftelse.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
-                        return HentSoknadService;
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
+                    }],
+                    land: ['LandResolver', function (LandResolver) {
+                        return LandResolver;
+                    }],
+                    soknad: ['SoknadResolver', function(SoknadResolver) {
+                        return SoknadResolver;
+                    }],
+                    fakta: ['FaktaResolver', function(FaktaResolver) {
+                        return FaktaResolver;
+                    }],
+                    soknadOppsett: ['SoknadOppsettResolver', function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
+                    }],
+                    config: ['ConfigForSoknadResolver', function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    }],
+                    behandlingsId: ['BehandlingIdResolver', function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
                     }]
                 }
             })
             .when('/avbryt', {
                 templateUrl: '../views/templates/avbryt.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
-                        return HentSoknadService;
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
+                    }],
+                    land: ['LandResolver', function (LandResolver) {
+                        return LandResolver;
+                    }],
+                    soknad: ['SoknadResolver', function(SoknadResolver) {
+                        return SoknadResolver;
+                    }],
+                    fakta: ['FaktaResolver', function(FaktaResolver) {
+                        return FaktaResolver;
+                    }],
+                    soknadOppsett: ['SoknadOppsettResolver', function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
+                    }],
+                    config: ['ConfigForSoknadResolver', function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    }],
+                    behandlingsId: ['BehandlingIdResolver', function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
                     }]
                 }
             })
             .when('/ferdigstilt', {
                 templateUrl: '../views/templates/ferdigstilt.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
-                        return HentSoknadService;
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
+                    }],
+                    land: ['LandResolver', function (LandResolver) {
+                        return LandResolver;
+                    }],
+                    soknad: ['SoknadResolver', function(SoknadResolver) {
+                        return SoknadResolver;
+                    }],
+                    fakta: ['FaktaResolver', function(FaktaResolver) {
+                        return FaktaResolver;
+                    }],
+                    soknadOppsett: ['SoknadOppsettResolver', function(SoknadOppsettResolver) {
+                        return SoknadOppsettResolver;
+                    }],
+                    config: ['ConfigForSoknadResolver', function(ConfigForSoknadResolver) {
+                        return ConfigForSoknadResolver;
+                    }],
+                    behandlingsId: ['BehandlingIdResolver', function(BehandlingIdResolver) {
+                        return BehandlingIdResolver;
                     }]
                 }
             })
-            .when('/feilside', {
-                templateUrl: '../views/common/feilsider/feilsideBaksystem.html',
-                resolve: {
-                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
-                        return HentSoknadService;
-                    }]
-                }
-            })
-            .when('/404', {
-                templateUrl: '../views/common/feilsider/feilside404.html',
-                resolve: {
-                    notUsedButRequiredProperty: ['HentSoknadService', function (HentSoknadService) {
-                        return HentSoknadService;
-                    }]
-                }
-            })
-            .when('/',
-                {redirectTo: '/informasjonsside'}
-            )
-            .otherwise({redirectTo: '/404'});
+            .when('/', {
+                redirectTo: '/informasjonsside'
+            });
 
     }]).run(['$rootScope', '$location', '$anchorScroll', '$routeParams', function ($rootScope, $location, $anchorScroll, $routeParams) {
         $rootScope.$on('$routeChangeSuccess', function (newRoute, oldRoute) {
