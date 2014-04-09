@@ -3,8 +3,6 @@ angular.module('nav.modal.focus', [])
         return function(scope, element) {
             var fokusElement;
 
-            console.log($modalStack.getTop());
-
             var watchListener = scope.$watch(
                 function() {
                     return $modalStack.getTop().value.modalDomEl.hasClass('in');

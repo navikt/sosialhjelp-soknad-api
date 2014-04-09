@@ -3,6 +3,8 @@ angular.module('sendsoknad')
         $http.get('../views/common/feilsider/feilside404.html', {cache: $templateCache});
         $http.get('../views/common/feilsider/serverfeil.html', {cache: $templateCache});
         $http.get('../views/common/feilsider/feilsideBaksystem.html', {cache: $templateCache});
+        $http.get('../js/common/tredjeparts/directives/modal/window.html', {cache: $templateCache});
+        $http.get('../js/common/tredjeparts/directives/modal/backdrop.html', {cache: $templateCache});
 
         $http.get('../views/templates/reellarbeidssoker/reell-arbeidssoker.html', {cache: $templateCache});
         $http.get('../views/templates/egennaering/egen-naering.html', {cache: $templateCache});

@@ -3,7 +3,11 @@
         display: block;
         margin: 0 auto;
         margin-bottom: 30px;
-        margin-top: 30px;
+        margin-top: 40px;
+    }
+
+    p {
+        text-align: left;
     }
 
     .liste-vannrett {
@@ -13,6 +17,10 @@
             a {
                 padding-bottom: 0;
                 padding-top: 0;
+            }
+
+            &:not([class*="dropdown"]):before {
+                padding: 0 0.2rem 0 0.55rem;
             }
         }
 

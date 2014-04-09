@@ -13,13 +13,6 @@ angular.module('nav.dagpenger', [])
             {id: 'tilleggsopplysninger', tittel: 'tilleggsopplysninger.tittel', template: '../views/templates/tilleggsopplysninger.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false}
 		];
 
-        $scope.modal = function() {
-            $modal.open({
-                templateUrl: '../views/common/feilsider/serverfeil.html',
-                backdrop: 'static'
-            });
-        };
-
         $scope.leggTilValideringsmetode = function(bolkId, valideringsmetode) {
             var idx = $scope.grupper.indexByValue(bolkId);
             $scope.grupper[idx].valideringsmetode = valideringsmetode;

@@ -1,4 +1,4 @@
-angular.module('ettersending.routes', ['ngRoute'])
+angular.module('ettersending.routes', ['ngRoute', 'nav.feilsider.routes'])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider
@@ -11,64 +11,58 @@ angular.module('ettersending.routes', ['ngRoute'])
                     }]
                 }
             })
-            .when('/feilside', {
-                templateUrl: '../views/common/feilsider/feilsideBaksystem.html',
-                resolve: {
-                    notUsedButRequiredProperty: ['FeilsideService', function (FeilsideService) {
-                        return FeilsideService;
-                    }]
-                }
-            })
-            .when('/404', {
-                templateUrl: '../views/common/feilsider/feilside404.html',
-                resolve: {
-                    notUsedButRequiredProperty: ['FeilsideService', function (FeilsideService) {
-                        return FeilsideService;
-                    }]
-                }
-            })
             .when('/', {
                 templateUrl: '../views/ettersending/startEttersending.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['StartEttersendingService', function (StartEttersendingService) {
-                        return StartEttersendingService;
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
                     }]
                 }
             })
             .when('/vedlegg', {
                 templateUrl: '../views/ettersending/ettersending.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['HentEttersendingsService', function (HentEttersendingsService) {
-                        return HentEttersendingsService;
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
+                    }],
+                    ettersending: ['EttersendingResolver', function (EttersendingResolver) {
+                        return EttersendingResolver;
                     }]
                 }
             })
             .when('/vedlegg/nytt', {
                 templateUrl: '../views/ettersending/nytt-vedlegg.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['HentEttersendingsService', function (HentEttersendingsService) {
-                        return HentEttersendingsService;
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
+                    }],
+                    ettersending: ['EttersendingResolver', function (EttersendingResolver) {
+                        return EttersendingResolver;
                     }]
                 }
             })
             .when('/opplasting/:vedleggId', {
                 templateUrl: '../views/ettersending/opplastingEttersending.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['HentEttersendingsService', function (HentEttersendingsService) {
-                        return HentEttersendingsService;
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
+                    }],
+                    ettersending: ['EttersendingResolver', function (EttersendingResolver) {
+                        return EttersendingResolver;
                     }]
                 }
             })
             .when('/visVedlegg/:vedleggId', {
                 templateUrl: '../views/templates/vedlegg/visvedlegg.html',
                 resolve: {
-                    notUsedButRequiredProperty: ['HentEttersendingsService', function (HentEttersendingsService) {
-                        return HentEttersendingsService;
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
+                    }],
+                    ettersending: ['EttersendingResolver', function (EttersendingResolver) {
+                        return EttersendingResolver;
                     }]
                 }
-            })
-            .otherwise({redirectTo: '/404'});
-
+            });
     }]).run(['$rootScope', '$location', '$anchorScroll', '$routeParams', function ($rootScope, $location, $anchorScroll, $routeParams) {
         $rootScope.$on('$routeChangeSuccess', function (newRoute, oldRoute) {
             if (_gaq) {
