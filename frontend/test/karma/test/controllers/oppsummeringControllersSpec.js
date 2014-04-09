@@ -27,7 +27,7 @@
         }));
 
         beforeEach(inject(function ($injector, $rootScope, $controller, $compile) {
-            $httpBackend = g.get('$httpBackend');
+            $httpBackend = $injector.get('$httpBackend');
 
             $httpBackend.expectGET('../js/common/directives/feilmeldinger/feilmeldingerTemplate.html').
                 respond('');
