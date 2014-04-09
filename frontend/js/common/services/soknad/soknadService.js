@@ -5,7 +5,7 @@ angular.module('nav.services.soknad', [])
             {
                 create : {
                     method: 'POST',
-                    url: '/sendsoknad/rest/soknad/opprett'
+                    url: '/sendsoknad/rest123/soknad/opprett'
                 },
                 send   : { method: 'POST', params: {soknadId: '@soknadId', action: 'send' }},
                 remove : { method: 'POST', params: {soknadId: '@soknadId', action: 'delete' }},

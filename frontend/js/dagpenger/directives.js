@@ -31,6 +31,5 @@ angular.module('sendsoknad.directives', [
     'nav.melding',
     'nav.tilleggsopplysninger',
     'nav.bildelastet',
-    'nav.sistLagret',
-    'nav.modal'
+    'nav.sistLagret'
 ]);

@@ -1,5 +1,6 @@
 angular.module('sendsoknad', [
     'common.init',
+    'nav.modal',
     'ui.keypress',
     'sendsoknad.services',
 	'sendsoknad.directives',

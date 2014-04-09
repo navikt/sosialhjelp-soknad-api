@@ -7,5 +7,6 @@ angular.module('nav.services.resolvers', [
     'nav.services.resolvers.behandlingsid',
     'nav.services.resolvers.soknad',
     'nav.services.resolvers.soknadoppsett',
-    'nav.services.resolvers.fakta'
+    'nav.services.resolvers.fakta',
+    'nav.services.resolvers.ettersending'
 ]);

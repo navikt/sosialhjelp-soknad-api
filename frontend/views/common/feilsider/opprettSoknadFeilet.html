@@ -1,9 +1,8 @@
 <div class="feil-modal" data-ng-controller="ServerFeilModalVinduCtrl">
-    <section data-ng-controller="ServerFeilCtrl">
+    <section>
         <h1 class="diger strek-ikon-info-orange" data-ng-bind-html="'feilside.serverfeil.tittel' | cmstekst"></h1>
 
-        <p class="normal" data-ng-if="harSistLagretDato()" data-ng-bind-html="'feilside.serverfeil.informasjon' | cmstekst: lagretTidspunkt"></p>
-        <p data-ng-if="harIkeSistLagretDato()" data-ng-bind-html="'feilside.serverfeil.informasjon.ikkeLagret' | cmstekst"></p>
+        <p class="normal" data-ng-bind-html="'feilside.serverfeil.opprett.informasjon' | cmstekst"></p>
 
         <input type="button" class="knapp-hoved" value="{{ 'feilside.serverfeil.provIgjen' | cmstekst }}" data-ng-click="relast()" tabindex="1">
         <ul class="liste-vannrett">
