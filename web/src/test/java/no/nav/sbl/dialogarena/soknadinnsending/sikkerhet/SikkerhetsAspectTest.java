@@ -3,7 +3,10 @@ package no.nav.sbl.dialogarena.soknadinnsending.sikkerhet;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.modig.core.exception.AuthorizationException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import org.apache.wicket.protocol.http.mock.MockHttpServletRequest;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -16,6 +19,8 @@ import java.lang.annotation.Annotation;
 
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SikkerhetsAspectTest {
@@ -47,12 +52,22 @@ public class SikkerhetsAspectTest {
     };
     @Mock
     private Tilgangskontroll tilgangskontroll;
+    @Mock
+    private SendSoknadService soknadService;
+
     @InjectMocks
     private SikkerhetsAspect sikkerhetsAspect;
 
+    private String brukerBehandlingsId = "1";
+
+    @Before
+    public void init() {
+        when(soknadService.hentSoknad(anyLong())).thenReturn(new WebSoknad().medBehandlingId(brukerBehandlingsId));
+    }
+
     @Test
     public void skalTesteSikkerhet() {
-        setup(XsrfGenerator.generateXsrfToken("1"));
+        setup(XsrfGenerator.generateXsrfToken(brukerBehandlingsId));
         sikkerhetsAspect.sjekkSoknadIdModBruker(1L, TILGANG);
     }
 
