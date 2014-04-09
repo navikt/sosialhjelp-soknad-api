@@ -1,9 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.person;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Barn;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Doedsdato;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Person;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Personstatus;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Statsborgerskap;
 import no.nav.tjeneste.virksomhet.person.v1.meldinger.HentKjerneinformasjonResponse;
 
@@ -34,7 +36,7 @@ public class FamilierelasjonTransform {
             if (familierelasjonType.getValue().equals("BARN")) {
                 no.nav.tjeneste.virksomhet.person.v1.informasjon.Person tilPerson = familierelasjon.getTilPerson();
                 Barn barn = mapXmlPersonToPerson(tilPerson, soknadId);
-                if (barn.getAlder() < 18) {
+                if (barn.getAlder() < 18 && !isDoed(barn) ) {
                     result.add(barn);
                 }
             }
@@ -43,14 +45,37 @@ public class FamilierelasjonTransform {
         return result;
     }
 
+    private static boolean isDoed(Barn barn) {
+        String personstatus = barn.getPersonstatus();
+        return barn.getDoedsdato() != null || (personstatus != null && "DØD".equals(personstatus));
+    }
+
     private static Barn mapXmlPersonToPerson(Person xmlperson, Long soknadId) {
         return new Barn(
                 soknadId,
+                finnDoedsDato(xmlperson),
+                finnPersonStatus(xmlperson),
                 finnFnr(xmlperson),
                 finnFornavn(xmlperson),
                 finnMellomNavn(xmlperson),
                 finnEtterNavn(xmlperson),
                 finnStatsborgerskap(xmlperson));
+    }
+
+    private static String finnPersonStatus(Person xmlperson) {
+        Personstatus personstatus = xmlperson.getPersonstatus();
+        if(personstatus != null && personstatus.getPersonstatus() != null) {
+            return personstatus.getPersonstatus().getValue();
+        }
+        return "";
+    }
+
+    private static String finnDoedsDato(Person xmlperson) {
+        Doedsdato doedsdato = xmlperson.getDoedsdato();
+        if(doedsdato != null && doedsdato.getDoedsdato() != null) {
+           return  doedsdato.getDoedsdato().toString();
+        }
+        return null;
     }
 
     private static String finnStatsborgerskap(no.nav.tjeneste.virksomhet.person.v1.informasjon.Person soapPerson) {
