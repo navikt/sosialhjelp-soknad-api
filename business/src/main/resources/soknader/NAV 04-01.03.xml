@@ -824,7 +824,7 @@
         <skjemaNummer>V6</skjemaNummer>
     </vedlegg>
 
-    <vedlegg>
+    <!--vedlegg>
         <id>4</id>
         <faktum>arbeidsforhold</faktum>
         <skjemaNummer>T8</skjemaNummer>
@@ -837,7 +837,28 @@
         </onValues>
         <inverted>true</inverted>
         <flereTillatt>true</flereTillatt>
+    </vedlegg-->
+
+    <vedlegg>
+        <id>4</id>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>T8|sagtoppselv</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValue>Sagt opp selv</onValue>
+        <flereTillatt>true</flereTillatt>
     </vedlegg>
+    <vedlegg>
+        <id>4</id>
+        <faktum>arbeidsforhold</faktum>
+        <skjemaNummer>T8|avskjediget</skjemaNummer>
+        <property>arbeidsgivernavn</property>
+        <onProperty>type</onProperty>
+        <onValue>Avskjediget</onValue>
+        <flereTillatt>true</flereTillatt>
+    </vedlegg>
+
+
 
     <vedlegg>
         <id>4</id>
