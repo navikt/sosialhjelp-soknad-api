@@ -1,8 +1,8 @@
+
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
-import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.inject.Inject;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,15 +33,15 @@ public class EttersendingController {
     public Map<String,String> startEttersending(@RequestBody Map<String, String> requestMap, HttpServletResponse response) {
         Map<String, String> result = new HashMap<>();
 
-        WebSoknad soknad = soknadService.hentEttersendingForBehandlingskjedeId(requestMap.get("behandlingskjedeId"));
+        String behandlingskjedeId = requestMap.get("behandlingskjedeId");
+        WebSoknad soknad = soknadService.hentEttersendingForBehandlingskjedeId(behandlingskjedeId);
         Long soknadId;
         if (soknad == null) {
-            soknadId = soknadService.startEttersending(requestMap.get("behandlingskjedeId"));
+            soknadId = soknadService.startEttersending(behandlingskjedeId);
         } else {
             soknadId = soknad.getSoknadId();
         }
 
-        response.addCookie(new Cookie("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadId)));
         result.put("soknadId", soknadId.toString());
         return result;
     }

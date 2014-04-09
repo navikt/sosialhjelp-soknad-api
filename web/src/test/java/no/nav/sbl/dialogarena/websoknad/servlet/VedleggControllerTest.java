@@ -3,6 +3,8 @@ package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import no.nav.modig.core.context.StaticSubjectHandler;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.XsrfGenerator;
 import org.junit.Before;
@@ -41,10 +43,15 @@ public class VedleggControllerTest {
     @Mock
     private VedleggService vedleggService;
 
+    @Mock
+    private SendSoknadService soknadService;
+
     @InjectMocks
     private VedleggController controller;
 
     private MockMvc mockMvc;
+
+    private String brukerbehandlingId = "11";
 
     @Before
     public void setup() {
@@ -65,9 +72,10 @@ public class VedleggControllerTest {
         when(vedleggService.splitOgLagreVedlegg(any(Vedlegg.class), any(InputStream.class))).thenReturn(asList(11L, 12L));
         when(vedleggService.hentVedlegg(eq(11L), eq(11L), eq(false))).thenReturn(new Vedlegg().medVedleggId(11L));
         when(vedleggService.hentVedlegg(eq(11L), eq(12L), eq(false))).thenReturn(new Vedlegg().medVedleggId(12L));
+        when(soknadService.hentSoknad(eq(11L))).thenReturn(new WebSoknad().medBehandlingId(brukerbehandlingId));
         mockMvc.perform(fileUpload("/soknad/11/vedlegg/3/opplasting")
                 .file(createFile("test.pdf", PDF))
-                .param("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(11L))
+                .param("X-XSRF-TOKEN", XsrfGenerator.generateXsrfToken(brukerbehandlingId))
                 .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isCreated())

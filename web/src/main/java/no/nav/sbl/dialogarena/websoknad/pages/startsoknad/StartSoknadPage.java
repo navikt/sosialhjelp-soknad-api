@@ -25,7 +25,7 @@ public class StartSoknadPage extends BasePage {
         StringValue brukerbehandlingId = getPageParameters().get("brukerbehandlingId");
         if (!brukerbehandlingId.isEmpty()) {
             try {
-                new CookieUtils().save("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknadService.hentSoknadMedBehandlingsId(brukerbehandlingId.toString())));
+                new CookieUtils().save("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(brukerbehandlingId.toString()));
             } catch (SoknadAvsluttetException e) {
                 String mineHenvendelserUrl = configService.getValue("minehenvendelser.link.url");
                 setResponsePage(new RedirectTilKvitteringPage(mineHenvendelserUrl + "?behandlingsId=" + brukerbehandlingId));

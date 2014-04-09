@@ -21,8 +21,16 @@ angular.module('nav.cmstekster', [])
         };
     }])
     .filter('cmstekst', ['cms', '$sce', '$rootScope', function(cms, $sce, $rootScope) {
-        return function(nokkel) {
+        return function(nokkel, args) {
             var tekst = cms.tekster[nokkel];
+
+            if (args instanceof Array) {
+                args.forEach(function(argTekst, idx) {
+                    tekst = tekst.replace('{' + idx + '}', argTekst);
+                });
+            } else if (args) {
+                tekst = tekst.replace('{0}', args);
+            }
 
             if ($rootScope.visCmsnokkler) {
                 tekst += ' [' + nokkel + ']';

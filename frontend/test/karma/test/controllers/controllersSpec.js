@@ -9,7 +9,7 @@
         var scope, ctrl, form, element, barn, $httpBackend, event, location, epost;
         event = $.Event("click");
 
-        beforeEach(module('ngCookies', 'sendsoknad.services'));
+        beforeEach(module('ngCookies', 'sendsoknad.services', 'nav.modal'));
         beforeEach(module('sendsoknad.controllers', 'nav.feilmeldinger'));
 
         beforeEach(module(function ($provide) {

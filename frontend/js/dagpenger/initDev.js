@@ -1,5 +1,11 @@
 angular.module('sendsoknad')
     .run(['$http', '$templateCache', function ($http, $templateCache) {
+        $http.get('../views/common/feilsider/feilside404.html', {cache: $templateCache});
+        $http.get('../views/common/feilsider/serverfeil.html', {cache: $templateCache});
+        $http.get('../views/common/feilsider/feilsideBaksystem.html', {cache: $templateCache});
+        $http.get('../js/common/tredjeparts/directives/modal/window.html', {cache: $templateCache});
+        $http.get('../js/common/tredjeparts/directives/modal/backdrop.html', {cache: $templateCache});
+
         $http.get('../views/templates/reellarbeidssoker/reell-arbeidssoker.html', {cache: $templateCache});
         $http.get('../views/templates/egennaering/egen-naering.html', {cache: $templateCache});
         $http.get('../views/templates/egennaering/egenNaeringvirksomhet.html', {cache: $templateCache});
@@ -22,8 +28,8 @@ angular.module('sendsoknad')
         $http.get('../views/templates/adresse.html', {cache: $templateCache});
         $http.get('../views/dagpenger/dagpenger-skjema.html', {cache: $templateCache});
         $http.get('../js/common/directives/booleanradio/booleanradioTemplate.html', {cache: $templateCache});
-        $http.get('../js/common/directives/accordion/accordionGroupTemplate.html', {cache: $templateCache});
-        $http.get('../js/common/directives/accordion/accordionTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/tredjeparts/directives/accordion/accordionGroupTemplate.html', {cache: $templateCache});
+        $http.get('../js/common/tredjeparts/directives/accordion/accordionTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/hjelpetekst/hjelpetekstTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/datepicker/singleDatepickerTemplate.html', {cache: $templateCache});
         $http.get('../js/common/directives/datepicker/doubleDatepickerTemplate.html', {cache: $templateCache});

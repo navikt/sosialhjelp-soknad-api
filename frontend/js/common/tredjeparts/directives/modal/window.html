@@ -1,0 +1,14 @@
+<div tabindex="-1" class="modal fade {{ windowClass }}" data-ng-class="{in: animate}" data-ng-style="{display: 'block'}" data-ng-click="close($event)">
+    <div class="modal-dialog">
+        <div class="modal-content"
+             data-ng-controller="NavModalCtrl"
+             data-modal-aria
+             data-modal-focus
+             role="dialog"
+             data-aria-labelledby="modalLabelledByElement"
+             data-aria-describedby="modalDescribedByElement">
+            <a href="javascript:void(0)" role="button" data-ng-click="lukk()" class="lukk" aria-label="{{ 'modalvindu.lukk' | cmstekst }}" tabindex="0"></a>
+            <div data-ng-transclude></div>
+        </div>
+    </div>
+</div>

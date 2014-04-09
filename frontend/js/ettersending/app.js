@@ -1,4 +1,6 @@
 angular.module('ettersending', [
+    'common.init',
+    'nav.modal',
     'ettersending.routes',
     'ettersending.services',
     'ettersending.directives',

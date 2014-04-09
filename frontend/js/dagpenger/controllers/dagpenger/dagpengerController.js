@@ -1,5 +1,5 @@
 angular.module('nav.dagpenger', [])
-	.controller('DagpengerCtrl', ['$scope', 'data', function ($scope, data) {
+	.controller('DagpengerCtrl', ['$scope', 'data', '$modal', function ($scope, data, $modal) {
 
 		$scope.grupper = [
 			{id: 'reellarbeidssoker', tittel: 'reellarbeidssoker.tittel', template: '../views/templates/reellarbeidssoker/reell-arbeidssoker.html', apen: false, skalSettesTilValidVedForsteApning: false, validering: false},
