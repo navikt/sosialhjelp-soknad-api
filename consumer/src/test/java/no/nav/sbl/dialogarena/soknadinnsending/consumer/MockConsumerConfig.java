@@ -1,5 +1,11 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
+import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGyldighetsperiode;
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostboksadresseNorsk;
+
+import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseNorge;
+
 import no.aetat.arena.fodselsnr.Fodselsnr;
 import no.aetat.arena.personstatus.Personstatus;
 import no.aetat.arena.personstatus.PersonstatusType;
@@ -44,6 +50,7 @@ import no.nav.tjeneste.virksomhet.kodeverk.v2.meldinger.XMLHentKodeverkResponse;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonPersonIkkeFunnet;
 import no.nav.tjeneste.virksomhet.person.v1.HentKjerneinformasjonSikkerhetsbegrensning;
 import no.nav.tjeneste.virksomhet.person.v1.PersonPortType;
+import no.nav.tjeneste.virksomhet.person.v1.informasjon.Doedsdato;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjon;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Familierelasjoner;
 import no.nav.tjeneste.virksomhet.person.v1.informasjon.Landkoder;
@@ -317,6 +324,9 @@ public class MockConsumerConfig {
 
             Familierelasjon familierelasjon2 = new Familierelasjon();
             Person barn2 = genererPersonMedGyldigIdentOgNavn("03060193877", "Ole", "Mockmann");
+            Doedsdato doedsdato = new Doedsdato();
+            doedsdato.setDoedsdato(XMLGregorianCalendarImpl.createDate(2014, 2, 2, 0));
+            barn2.setDoedsdato(doedsdato);
             familierelasjon2.setTilPerson(barn2);
             Familierelasjoner familieRelasjonRolle2 = new Familierelasjoner();
             familieRelasjonRolle2.setValue("BARN");
