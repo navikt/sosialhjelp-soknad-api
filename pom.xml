@@ -20,7 +20,7 @@
     <name>Dialogarena - Send Søknad</name>
     <description>Innsending av elektronisk søknad.</description>
     <artifactId>sendsoknad</artifactId>
-    <version>1.1.5-SNAPSHOT</version>
+    <version>1.1.5</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -1057,7 +1057,8 @@
     <scm>
         <developerConnection>scm:git:http://stash.devillo.no/scm/dial/sendsoknad.git</developerConnection>
         <url>http://stash.devillo.no/scm/dial/sendsoknad.git</url>
-    </scm>
+      <tag>1.1.5-sendsoknad</tag>
+  </scm>
 
     <profiles>
         <profile>
