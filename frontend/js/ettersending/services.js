@@ -9,6 +9,7 @@
             'nav.services.interceptor.timeout',
             'nav.services.interceptor.feilhandtering',
             'nav.services.vedlegg',
+            'nav.services.faktum',
             'nav.services.resolvers'
         ])
 

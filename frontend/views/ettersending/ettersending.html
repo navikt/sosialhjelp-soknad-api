@@ -79,10 +79,10 @@
                 </div>
                 <div class="send-inn">
                     <div data-ng-if="harLastetOppDokument()" data-sticky>
-                        <div class="klare-vedlegg">
+                        <a href="javascript: void(0);" class="klare-vedlegg" data-scroll-til-element="input.knapp-hoved">
                             <span>{{ hentAntallVedleggSomErOpplastetIDenneEttersendingen() }}</span>
                             <span data-ng-bind-html="'ettersending.vedlegg.klare' | cmstekst"></span>
-                        </div>
+                        </a>
                     </div>
                     <input type="button" class="knapp-hoved" value="{{ 'ettersending.vedlegg.send' | cmstekst }}" data-ng-click="sendEttersending()">
                     <a href="javascript:void(0);" data-ng-bind-html="'ettersending.vedlegg.avbryt' | cmstekst"></a>

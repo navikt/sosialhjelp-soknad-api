@@ -172,6 +172,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
             logger.info("Skipped delete because faktum does not exist.");
             return;
         }
+
         String faktumKey = faktum.getKey();
         List<Vedlegg> vedleggliste = vedleggRepository.hentVedleggForFaktum(soknadId, faktumId);
 

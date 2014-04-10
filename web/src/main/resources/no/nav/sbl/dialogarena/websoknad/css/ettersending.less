@@ -176,12 +176,31 @@
             margin: 0 auto 30px;
         }
 
-        a {
+        > a {
             margin-bottom: 40px;
         }
 
         .klare-vedlegg {
+            text-decoration: none;
 
+            span {
+                color: #2768B2;
+                font-size: 1rem;
+                text-transform: none;
+
+                &:first-of-type {
+                    font-weight: bold;
+                }
+            }
+
+            &:before {
+                content: url(../img/vedlegg-blaa.svg);
+            }
+
+            &:after {
+                content: url(../img/blaa_pil.svg);
+                display: block;
+            }
         }
     }
 }
