@@ -1,11 +1,6 @@
 package no.nav.sbl.dialogarena.soknadinnsending.consumer;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLGyldighetsperiode;
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLPostboksadresseNorsk;
-
-import no.nav.tjeneste.virksomhet.brukerprofil.v1.informasjon.XMLMidlertidigPostadresseNorge;
-
 import no.aetat.arena.fodselsnr.Fodselsnr;
 import no.aetat.arena.personstatus.Personstatus;
 import no.aetat.arena.personstatus.PersonstatusType;

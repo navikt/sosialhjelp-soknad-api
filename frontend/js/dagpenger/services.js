@@ -18,12 +18,12 @@
         ])
 
         .config(['$httpProvider', function ($httpProvider) {
-//            $httpProvider.interceptors.push('resetTimeoutInterceptor');
-//            $httpProvider.interceptors.push('settDelstegStatusEtterKallMotServer');
+            $httpProvider.interceptors.push('resetTimeoutInterceptor');
+            $httpProvider.interceptors.push('settDelstegStatusEtterKallMotServer');
             $httpProvider.interceptors.push('feilhandteringInterceptor');
 
             if (getIEVersion() < 10) {
-//                $httpProvider.interceptors.push('httpRequestInterceptorPreventCache');
+                $httpProvider.interceptors.push('httpRequestInterceptorPreventCache');
             }
         }]);
 }());
