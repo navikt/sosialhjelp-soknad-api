@@ -1,5 +1,5 @@
 angular.module('nav.ettersending', [])
-    .controller('EttersendingCtrl', ['$scope', 'data', 'ettersendingService', 'vedleggService', function ($scope, data, ettersendingService, vedleggService) {
+    .controller('EttersendingCtrl', ['$scope', 'data', 'ettersendingService', 'vedleggService', 'Faktum', function ($scope, data, ettersendingService, vedleggService, Faktum) {
         var innsendtDato = new Date(parseInt(data.finnFaktum('soknadInnsendingsDato').value));
         var fristDato = new Date();
         fristDato.setDate(innsendtDato.getDate() + 40);
@@ -19,7 +19,7 @@ angular.module('nav.ettersending', [])
             return !$scope.erLastetOpp(v);
         };
 
-        $scope.erAnnetVedlegg = function(v) {
+        $scope.erAnnetVedlegg = function (v) {
             return erAnnetVedlegg(v);
         };
 
@@ -32,10 +32,10 @@ angular.module('nav.ettersending', [])
         }
 
         function erAnnetVedlegg(v) {
-            return v.skjemaNummer === "N6";
+            return v.skjemaNummer === "N6" && v.opprinneligInnsendingsvalg === null;
         }
 
-        $scope.hentTekstKey = function(v) {
+        $scope.hentTekstKey = function (v) {
             if (v.opprinneligInnsendingsvalg === 'SendesIkke') {
                 return 'ettersending.vedlegg.sendesIkke';
             } else if (v.opprinneligInnsendingsvalg === 'LastetOpp') {
@@ -43,7 +43,7 @@ angular.module('nav.ettersending', [])
             }
         };
 
-        $scope.hentLenkeKey = function(v) {
+        $scope.hentLenkeKey = function (v) {
             if (v.opprinneligInnsendingsvalg === 'SendesIkke') {
                 return 'ettersending.vedlegg.endre';
             } else if (v.opprinneligInnsendingsvalg === 'LastetOpp') {
@@ -51,18 +51,18 @@ angular.module('nav.ettersending', [])
             }
         };
 
-        $scope.sendEttersending = function() {
+        $scope.sendEttersending = function () {
             var behandlingsId = getBehandlingIdFromUrl();
             ettersendingService.send({},
                 {behandlingskjedeId: behandlingsId, soknadId: data.soknad.soknadId},
-                function(result) {
+                function (result) {
                     console.log("done");
                 }
             );
         };
 
-        $scope.hentAntallVedleggSomErOpplastetIDenneEttersendingen = function() {
-            return data.soknad.vedlegg.filter(function(v) {
+        $scope.hentAntallVedleggSomErOpplastetIDenneEttersendingen = function () {
+            return data.soknad.vedlegg.filter(function (v) {
                 return v.storrelse > 0;
             }).length;
         };
@@ -72,26 +72,29 @@ angular.module('nav.ettersending', [])
             return antallOpplastedeVedlegg > 0;
         };
 
-        $scope.slettVedlegg = function(v) {
+        $scope.slettVedlegg = function (v) {
             var vedlegg = new vedleggService(v);
 
-            vedlegg.$remove().then(function() {
+            vedlegg.$remove().then(function () {
                 v.innsendingsvalg = v.opprinneligInnsendingsvalg;
                 v.storrelse = 0;
             });
         };
 
-        $scope.slettAnnetVedlegg = function(v) {
-            vedleggService.slettAnnet({soknadId: v.soknadId}, {vedleggId: v.vedleggId});
+        $scope.slettAnnetVedlegg = function (v) {
             var index = data.soknad.vedlegg.indexOf(v);
-            if (index >= 0) {
-                data.soknad.vedlegg.splice(index, 1);
-            }
+            Faktum.delete({soknadId: v.soknadId, faktumId: v.faktumId});
+            data.soknad.vedlegg.splice(index, 1);
+        };
+
+        $scope.scrollTilElement = function(element) {
+            console.log(element);
+            scrollToElement(element, 0);
         };
     }])
-    .controller('EttersendingOpplastingCtrl', ['$scope', 'data', '$routeParams', 'vedleggService', function($scope, data, $routeParams, vedleggService) {
+    .controller('EttersendingOpplastingCtrl', ['$scope', 'data', '$routeParams', 'vedleggService', function ($scope, data, $routeParams, vedleggService) {
 
-        data.soknad.vedlegg.forEach(function(v) {
+        data.soknad.vedlegg.forEach(function (v) {
             if (v.vedleggId == $routeParams.vedleggId) {
                 $scope.vedlegg = new vedleggService(v);
             }
@@ -101,7 +104,7 @@ angular.module('nav.ettersending', [])
             valgt: $scope.vedlegg.innsendingsvalg === 'SendesSenere'
         };
 
-        $scope.settTilEttersendes = function() {
+        $scope.settTilEttersendes = function () {
             if ($scope.ettersend.valgt) {
                 $scope.vedlegg.innsendingsvalg = 'SendesSenere';
             } else {
@@ -111,35 +114,40 @@ angular.module('nav.ettersending', [])
             $scope.vedlegg.$save();
         };
 
-        $scope.kanEndreInnsendingsvalg = function() {
+        $scope.kanEndreInnsendingsvalg = function () {
             return $scope.vedlegg.opprinneligInnsendingsvalg === 'SendesIkke';
         };
     }])
-    .controller('EttersendingNyttVedleggCtrl', ['$scope', 'data', 'vedleggService', '$location', function($scope, data, vedleggService, $location) {
+    .controller('EttersendingNyttVedleggCtrl', ['$scope', 'data', 'vedleggService', '$location', 'Faktum', function ($scope, data, vedleggService, $location, Faktum) {
         $scope.nyttvedlegg = {};
         $scope.fremdriftsindikator = {
             laster: false
         };
 
-        $scope.lagreVedlegg = function(form) {
+        $scope.lagreVedlegg = function (form) {
             var eventString = 'RUN_VALIDATION' + form.$name;
             $scope.$broadcast(eventString);
             $scope.runValidation(true);
 
             if (form.$valid) {
-                var vedlegg = new vedleggService();
-                vedlegg.soknadId = data.soknad.soknadId;
-                vedlegg.navn = $scope.nyttvedlegg.navn;
-                $scope.fremdriftsindikator.laster = true;
-                vedlegg.$save({soknadId: data.soknad.soknadId}, function(resultVedlegg) {
-                    data.soknad.vedlegg.push(resultVedlegg);
-                    $location.path('opplasting/' + resultVedlegg.vedleggId);
-                });
+
+                new Faktum({
+                    key: 'ekstraVedlegg',
+                    value: 'true',
+                    soknadId: data.soknad.soknadId
+                }).$save().then(function (nyttfaktum) {
+                        vedleggService.hentAnnetVedlegg({soknadId: data.soknad.soknadId, faktumId: nyttfaktum.faktumId}, function (resultVedlegg) {
+                            resultVedlegg.navn = $scope.nyttvedlegg.navn;
+                            resultVedlegg.$save();
+                            data.soknad.vedlegg.push(resultVedlegg);
+                            $location.path('opplasting/' + resultVedlegg.vedleggId);
+                        });
+                    });
             }
         };
     }])
-    .filter('ettersendes', [function() {
-        return function(input, ettersendesBolk) {
+    .filter('ettersendes', [function () {
+        return function (input, ettersendesBolk) {
             function skalEttersendes(v) {
                 if (v.opprinneligInnsendingsvalg === 'SendesSenere') {
                     return true;

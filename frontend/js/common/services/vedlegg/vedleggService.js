@@ -11,14 +11,9 @@ angular.module('nav.services.vedlegg', [])
                     url: '/sendsoknad/rest/soknad/:soknadId/vedlegg/:faktumId/hentannetvedlegg',
                     method: 'GET',
                     params: {faktumId: '@faktumId'}},
-                create: { method: 'POST', params: {} },
                 merge : { method: 'POST', params: {action: 'generer'} },
                 remove: {method: 'POST', params: {action: 'delete'}},
-                underbehandling: {method: 'GET', params: {action: 'underBehandling'}, isArray: true },
-                slettAnnet: {
-                    method: 'POST',
-                    url: '/sendsoknad/rest/soknad/:soknadId/vedlegg/annet/delete'
-                }
+                underbehandling: {method: 'GET', params: {action: 'underBehandling'}, isArray: true }
             }
         );
     }]);

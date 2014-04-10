@@ -38,4 +38,14 @@ angular.module('nav.scroll.directive', [])
 				});
 			}]
 		};
-	}]);
+	}])
+    .directive('scrollTilElement', [function() {
+        return function(scope, element, attrs) {
+            var selector = attrs.scrollTilElement;
+            var offset = attrs.offset !== undefined ? parseInt(attrs.offset) : 0;
+
+            element.bind('click', function() {
+                scrollToElement($(selector), offset);
+            });
+        }
+    }]);

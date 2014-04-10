@@ -27,7 +27,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -164,22 +163,5 @@ public class VedleggController {
     public Vedlegg bekreftFaktumVedlegg(@PathVariable final Long soknadId, @PathVariable final Long vedleggId) {
         vedleggService.genererVedleggFaktum(soknadId, vedleggId);
         return vedleggService.hentVedlegg(soknadId, vedleggId, false);
-    }
-
-    @RequestMapping(method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
-    @ResponseBody()
-    @ResponseStatus(HttpStatus.CREATED)
-    @SjekkTilgangTilSoknad
-    public Vedlegg opprettNyttN6Vedlegg(@PathVariable Long soknadId, @RequestBody Vedlegg vedlegg) {
-        Long vedleggId = vedleggService.leggTilNyttN6Vedkegg(vedlegg, soknadId);
-        return vedleggService.hentVedlegg(soknadId, vedleggId, false);
-    }
-
-    @RequestMapping(value = "/annet/delete",method = RequestMethod.POST, produces = APPLICATION_JSON_VALUE)
-    @ResponseBody()
-    @ResponseStatus(HttpStatus.OK)
-    @SjekkTilgangTilSoknad
-    public void slettN6Vedlegg(@PathVariable Long soknadId, @RequestBody Map<String, Long> requestBodyMap) {
-        vedleggService.slettN6Vedlegg(requestBodyMap.get("vedleggId"));
     }
 }
