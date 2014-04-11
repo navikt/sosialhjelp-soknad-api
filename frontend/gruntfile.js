@@ -150,22 +150,29 @@ module.exports = function (grunt) {
                     'js/lib/*.js',
                     'target/classes/META-INF/resources/js/dagpenger/templates.js',
                     'js/ettersending/**/!(initDev).js',
-                    'target/classes/META-INF/resources/js/ettersending/templates.js',
                     'js/common/**/!(templates).js'
                 ],
                 dest: 'target/classes/META-INF/resources/js/built/built_ettersending' + timestamp + '.js',
                 nonull: true
             }
 		},
+        ngmin:  {
+            prod: {
+                cwd: 'target/classes/META-INF/resources/js/built',
+                expand: true,
+                src: ['**/*.js'],
+                dest: 'target/classes/grunt'
+            }
+        },
 		uglify: {
 			options: {
 				banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> */\n',
-                mangle: false
+                mangle: true
 			},
 			my_target: {
 				files: {
-                    '<%= builtminNameSendsoknad %>': ['target/classes/META-INF/resources/js/built/built_sendsoknad' + timestamp + '.js'],
-                    '<%= builtminNameEttersending %>': ['target/classes/META-INF/resources/js/built/built_ettersending' + timestamp + '.js']
+                    '<%= builtminNameSendsoknad %>': ['target/classes/grunt/built_sendsoknad' + timestamp + '.js'],
+                    '<%= builtminNameEttersending %>': ['target/classes/grunt/built_ettersending' + timestamp + '.js']
 				}
 			}
 		},
@@ -197,7 +204,7 @@ module.exports = function (grunt) {
             }
 		},
 
-        clean: ['target/classes/META-INF/resources/js/built']
+        clean: ['target/classes/META-INF/resources/js/built', 'target/classes/grunt']
     });
 
 	// Load NPM tasks
@@ -207,6 +214,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-html-build');
 	grunt.loadNpmTasks('grunt-html2js');
+	grunt.loadNpmTasks('grunt-ngmin');
 	grunt.loadNpmTasks('grunt-karma');
 
 	grunt.option('force', true);
@@ -214,5 +222,5 @@ module.exports = function (grunt) {
 	grunt.registerTask('default', ['jshint', 'htmlbuild:dev_sendsoknad', 'htmlbuild:dev_ettersending']);
     grunt.registerTask('maven', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev_sendsoknad', 'htmlbuild:dev_ettersending']);
     grunt.registerTask('maven-test', ['karma:unit']);
-	grunt.registerTask('maven-prod', ['clean', 'html2js', 'concat:sendsoknad', 'concat:ettersending', 'uglify', 'htmlbuild:dev_sendsoknad', 'htmlbuild:prod_sendsoknad', 'htmlbuild:dev_ettersending', 'htmlbuild:prod_ettersending']);
+	grunt.registerTask('maven-prod', ['clean', 'html2js', 'concat:sendsoknad', 'concat:ettersending', 'ngmin', 'uglify', 'htmlbuild:dev_sendsoknad', 'htmlbuild:prod_sendsoknad', 'htmlbuild:dev_ettersending', 'htmlbuild:prod_ettersending']);
 };
