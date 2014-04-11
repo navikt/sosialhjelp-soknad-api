@@ -309,11 +309,9 @@ public class SoknadService implements SendSoknadService, VedleggService {
     public Long startEttersending(String behandingsId) {
         WSHentSoknadResponse wsSoknadsdata = henvendelseConnector.hentSisteBehandlingIBehandlingskjede(behandingsId);
 
-        //TODO: hva med wsSoknadData som er påbegynt ettersending?
         if(wsSoknadsdata.getInnsendtDato() == null) {
             throw new ApplicationException("Kan ikke starte ettersending på en ikke fullfort soknad");
         }
-
         return lagEttersendingFraWsSoknad(wsSoknadsdata).getSoknadId();
     }
 
