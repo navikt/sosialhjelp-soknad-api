@@ -18,7 +18,7 @@ public class EttersendingBasePage extends BasePage {
     public EttersendingBasePage(PageParameters parameters) {
         super(parameters);
 
-        add(new SoknadComponent("soknad"));
+        add(new SoknadComponent("soknad", true));
 
         brukerbehandlingId = parameters.get("brukerbehandlingId");
         if (brukerbehandlingId.isEmpty()) {
