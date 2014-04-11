@@ -47,5 +47,5 @@ angular.module('nav.scroll.directive', [])
             element.bind('click', function() {
                 scrollToElement($(selector), offset);
             });
-        }
+        };
     }]);

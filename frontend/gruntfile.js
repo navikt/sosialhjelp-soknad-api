@@ -16,6 +16,16 @@ module.exports = function (grunt) {
                     'js/common/**/*.html'
                 ],
                 dest: 'target/classes/META-INF/resources/js/dagpenger/templates.js'
+            },
+            ettersending: {
+                src: [
+                    'views/common/**/*.html',
+                    'views/ettersending/**/*.html',
+                    'views/templates/**/*.html',
+                    'js/ettersending/**/*.html',
+                    'js/common/**/*.html'
+                ],
+                dest: 'target/classes/META-INF/resources/js/ettersending/templates.js'
             }
         },
 
@@ -148,7 +158,7 @@ module.exports = function (grunt) {
                     'js/lib/jquery/jquery.fileupload-validate.js',
                     'js/lib/jquery/jquery.fileupload-angular.js',
                     'js/lib/*.js',
-                    'target/classes/META-INF/resources/js/dagpenger/templates.js',
+                    'target/classes/META-INF/resources/js/ettersending/templates.js',
                     'js/ettersending/**/!(initDev).js',
                     'js/common/**/!(templates).js'
                 ],
