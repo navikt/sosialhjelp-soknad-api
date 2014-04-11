@@ -52,6 +52,17 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.feilsider.routes'])
                     }]
                 }
             })
+            .when('/avbryt', {
+                templateUrl: '../views/ettersending/avbryt.html',
+                resolve: {
+                    cms: ['CmsResolver', function (CmsResolver) {
+                        return CmsResolver;
+                    }],
+                    ettersending: ['EttersendingResolver', function (EttersendingResolver) {
+                        return EttersendingResolver;
+                    }]
+                }
+            })
             .when('/visVedlegg/:vedleggId', {
                 templateUrl: '../views/templates/vedlegg/visvedlegg.html',
                 resolve: {

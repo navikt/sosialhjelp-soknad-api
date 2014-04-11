@@ -4,7 +4,8 @@ angular.module('nav.services.ettersending', [])
             { behandlingsId: '@behandlingsId' },
             {
                 create : { method: 'POST' },
-                send   : { method: 'POST', params: { action: 'send' }}
+                send   : { method: 'POST', params: { action: 'send' }},
+                delete : { method: 'POST', params: { action: 'delete' }}
             }
         );
     }]);

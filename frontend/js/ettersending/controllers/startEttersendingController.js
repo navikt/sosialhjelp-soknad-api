@@ -1,4 +1,4 @@
-angular.module('nav.ettersending')
+angular.module('nav.ettersending.controllers.start', [])
     .controller('StartEttersendingCtrl', ['$scope', 'ettersendingService', '$location',
         function ($scope, ettersendingService, $location) {
             $scope.fremdriftsindikator = {

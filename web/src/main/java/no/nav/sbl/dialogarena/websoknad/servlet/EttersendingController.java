@@ -58,4 +58,11 @@ public class EttersendingController {
         String behandlingskjedeId = requestMap.get("behandlingskjedeId");
         soknadService.sendEttersending(soknadId, behandlingskjedeId);
     }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public void slettEttersending(@RequestBody Map<String, String> requestMap) {
+        Long soknadId = Long.valueOf(requestMap.get("soknadId"));
+        soknadService.avbrytSoknad(soknadId);
+    }
 }

@@ -1,4 +1,4 @@
-angular.module('nav.ettersending', [])
+angular.module('nav.ettersending.controllers.main', [])
     .controller('EttersendingCtrl', ['$scope', 'data', 'ettersendingService', 'vedleggService', 'Faktum', function ($scope, data, ettersendingService, vedleggService, Faktum) {
         var innsendtDato = new Date(parseInt(data.finnFaktum('soknadInnsendingsDato').value));
         var fristDato = new Date();
