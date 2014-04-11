@@ -37,8 +37,10 @@ public class ConfigService {
     private String brukerProfilUrl;
     @Value("${dittnav.link.url}")
     private String dittnavUrl;
-    
-    
+
+    @Value("${soknad.ettersending.antalldager}")
+    private String antallDager;
+
     
     public Map<String,String> getConfig() {
         Map<String, String> result = new HashMap<String, String>();
@@ -52,6 +54,7 @@ public class ConfigService {
         result.put("soknad.reelarbeidsoker.url", reelarbeidsokerUrl);
         result.put("soknad.dagpengerbrosjyre.url", dagpengerBrosjyreUrl);
         result.put("soknad.brukerprofil.url", brukerProfilUrl);
+        result.put("soknad.ettersending.antalldager", antallDager);
 
         return result;
     }
