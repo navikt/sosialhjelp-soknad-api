@@ -6,7 +6,6 @@ angular.module('ettersending.controllers', [
     'nav.ettersending.controllers.main',
     'nav.ettersending.controllers.avbryt',
     'nav.ettersending.controllers.start',
-    'nav.dagpenger',
     'nav.feilside',
     'nav.truncatehover'
 ]);
