@@ -12,14 +12,18 @@ import java.util.List;
 
 import static java.lang.String.format;
 import static javax.xml.bind.JAXBContext.newInstance;
-import static no.nav.modig.lang.collections.IterUtils.on;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 public class SoknadVedleggTest {
     Faktum konkurs = new Faktum().medKey("arbeidforhold").medProperty("type", "Arbeidsgiver er konkurs");
     Faktum permittert = new Faktum().medKey("arbeidforhold").medProperty("type", "Permittert");
-    private Faktum annenSluttaarsak = new Faktum().medKey("arbeidforhold").medProperty("type", "Annen type");
+    Faktum sagtOppAvArbeidsgiver = new Faktum().medKey("arbeidforhold").medProperty("type", "Sagt opp av arbeidsgiver");
+
+    Faktum kontraktUtgaat = new Faktum().medKey("arbeidforhold").medProperty("type", "Kontrakt utgått");
+    Faktum sagtOppSelv = new Faktum().medKey("arbeidforhold").medProperty("type", "Sagt opp selv");
+    Faktum redusertArbeidstid = new Faktum().medKey("arbeidforhold").medProperty("type", "Redusert arbeidstid");
+    Faktum avskjediget = new Faktum().medKey("arbeidforhold").medProperty("type", "Avskjediget");
 
     @Test
     public void skalFikseFlereOnValues(){
@@ -29,22 +33,24 @@ public class SoknadVedleggTest {
         vedlegg.setInverted(true);
         assertThat(vedlegg.trengerVedlegg(konkurs), is(false));
         assertThat(vedlegg.trengerVedlegg(permittert), is(false));
-        assertThat(vedlegg.trengerVedlegg(annenSluttaarsak), is(true));
+        assertThat(vedlegg.trengerVedlegg(sagtOppAvArbeidsgiver), is(true));
         vedlegg.setInverted(false);
         assertThat(vedlegg.trengerVedlegg(konkurs), is(true));
         assertThat(vedlegg.trengerVedlegg(permittert), is(true));
-        assertThat(vedlegg.trengerVedlegg(annenSluttaarsak), is(false));
-
+        assertThat(vedlegg.trengerVedlegg(sagtOppAvArbeidsgiver), is(false));
     }
+
     @Test
     public void testConfigForArbeidsforhold(){
         SoknadStruktur struktur = hentStruktur("NAV 04-01.03");
         List<SoknadVedlegg> arbeidsforhold = struktur.vedleggFor("arbeidsforhold");
-        assertThat(on(arbeidsforhold).filter(ErSkjema.id("T8")).head().get().trengerVedlegg(konkurs), is(false));
-        assertThat(on(arbeidsforhold).filter(ErSkjema.id("T8")).head().get().trengerVedlegg(permittert), is(false));
-        assertThat(on(arbeidsforhold).filter(ErSkjema.id("T8")).head().get().trengerVedlegg(annenSluttaarsak), is(true));
-
+        assertThat(arbeidsforhold.get(0).trengerVedlegg(sagtOppAvArbeidsgiver), is(true));
+        assertThat(arbeidsforhold.get(1).trengerVedlegg(kontraktUtgaat), is(true));
+        assertThat(arbeidsforhold.get(2).trengerVedlegg(sagtOppSelv), is(true));
+        assertThat(arbeidsforhold.get(3).trengerVedlegg(redusertArbeidstid), is(true));
+        assertThat(arbeidsforhold.get(4).trengerVedlegg(avskjediget), is(true));
     }
+
     private static class ErSkjema implements Predicate<SoknadVedlegg> {
         private String kode;
         public ErSkjema(String kode){
@@ -53,7 +59,7 @@ public class SoknadVedleggTest {
 
         @Override
         public boolean evaluate(SoknadVedlegg soknadVedlegg) {
-            return this.kode.equals(soknadVedlegg.getSkjemaNummer());
+            return this.kode.equals(soknadVedlegg.getSkjemaNummerFiltrert());
         }
 
         public static Predicate<? super SoknadVedlegg> id(String kode) {
