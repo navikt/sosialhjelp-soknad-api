@@ -3,10 +3,12 @@ package no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLHovedskjema;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
+import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.core.exception.SystemException;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.SoknadType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.SendSoknadPortType;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingsId;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSSoknadsdata;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStartSoknadRequest;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.ws.soap.SOAPFaultException;
+import java.util.List;
 
 import static java.util.UUID.randomUUID;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.IKKE_VALGT;
@@ -71,8 +74,12 @@ public class HenvendelseConnector {
         }
     }
 
-    public WSHentSoknadResponse hentSisteBehandlingIBehandlingskjede(String behandlingskjedeId) {
-        return sendSoknadService.hentSisteBehandlingIBehandlingsKjede(new WSBehandlingsId().withBehandlingsId(behandlingskjedeId));
+    public List<WSBehandlingskjedeElement> hentBehandlingskjede(String behandlingskjedeId) {
+        List<WSBehandlingskjedeElement> wsBehandlingskjedeElementer = sendSoknadService.hentBehandlingskjede(behandlingskjedeId);
+        if (wsBehandlingskjedeElementer.isEmpty()) {
+            throw new ApplicationException("Fant ingen behandlinger i en behandlingskjede med behandlingsID " + behandlingskjedeId);
+        }
+        return wsBehandlingskjedeElementer;
     }
 
     public void avsluttSoknad(String behandlingsId, XMLHovedskjema hovedskjema, XMLVedlegg... vedlegg) {
