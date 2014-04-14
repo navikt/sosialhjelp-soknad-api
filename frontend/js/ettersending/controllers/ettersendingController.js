@@ -9,6 +9,8 @@ angular.module('nav.ettersending.controllers.main', [])
             fristDato: fristDato
         };
 
+        $scope.ikkeOpplatetDokumenter = false;
+
         $scope.vedlegg = data.soknad.vedlegg;
 
         $scope.erLastetOpp = function (v) {
@@ -52,13 +54,22 @@ angular.module('nav.ettersending.controllers.main', [])
         };
 
         $scope.sendEttersending = function () {
-            var behandlingsId = getBehandlingIdFromUrl();
-            ettersendingService.send({},
-                {behandlingskjedeId: behandlingsId, soknadId: data.soknad.soknadId},
-                function (result) {
-                    console.log("done");
-                }
-            );
+            var opplastedeVedlegg =$scope.vedlegg.filter(function(v) {
+                return v.storrelse > 0;
+            });
+
+            if (opplastedeVedlegg.length > 0) {
+                var behandlingsId = getBehandlingIdFromUrl();
+                ettersendingService.send({},
+                    {behandlingskjedeId: behandlingsId, soknadId: data.soknad.soknadId},
+                    function (result) {
+                        console.log("done");
+                    }
+                );
+            } else {
+                $scope.ikkeOpplatetDokumenter = true;
+            }
+
         };
 
         $scope.hentAntallVedleggSomErOpplastetIDenneEttersendingen = function () {

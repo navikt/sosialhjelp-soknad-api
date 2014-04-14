@@ -84,7 +84,12 @@
                             <span data-ng-bind-html="'ettersending.vedlegg.klare' | cmstekst"></span>
                         </a>
                     </div>
-                    <input type="button" class="knapp-hoved" value="{{ 'ettersending.vedlegg.send' | cmstekst }}" data-ng-click="sendEttersending()">
+                    <form class="send-inn-knapp form-linje" data-ng-class="{feil: ikkeOpplatetDokumenter}" data-ng-submit="sendEttersending()">
+                        <input type="submit" class="knapp-hoved" value="{{ 'ettersending.vedlegg.send' | cmstekst }}">
+                        <span class="melding" data-ng-bind-html="'ettersending.feil.innsending' | cmstekst"></span>
+                    </form>
+
+
                     <a href="#/avbryt" data-ng-bind-html="'ettersending.vedlegg.avbryt' | cmstekst"></a>
                 </div>
             </section>
