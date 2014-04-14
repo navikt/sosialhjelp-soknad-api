@@ -384,7 +384,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         lagreSystemFaktum(soknadId, soknadInnsendingsDato, "");
         soknad.setFaktaListe(repository.hentAlleBrukerData(soknadId));
 
-        soknad.setVedlegg(hentVedleggOgPersister(soknad, xmlVedleggListe, soknadId));
+        soknad.setVedlegg(hentVedleggOgPersister(xmlVedleggListe, soknadId));
 
         return soknad;
     }
@@ -409,7 +409,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
         repository.slettSoknad(soknad.getSoknadId());
     }
 
-    private List<Vedlegg> hentVedleggOgPersister(WebSoknad soknad, XMLMetadataListe xmlVedleggListe, Long soknadId) {
+    private List<Vedlegg> hentVedleggOgPersister(XMLMetadataListe xmlVedleggListe, Long soknadId) {
         PreparedIterable<XMLMetadata> vedlegg = on(xmlVedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLVedlegg.class));
         List<Vedlegg> soknadVedlegg = new ArrayList<>();
         for (XMLMetadata xmlMetadata : vedlegg) {
