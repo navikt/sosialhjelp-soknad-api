@@ -20,6 +20,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
@@ -35,9 +36,11 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStatus;
 import org.apache.commons.collections15.Closure;
+import org.apache.commons.collections15.Transformer;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -60,6 +63,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -73,6 +77,9 @@ import static javax.xml.bind.JAXBContext.newInstance;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
+import static no.nav.modig.lang.collections.PredicateUtils.not;
+import static no.nav.modig.lang.collections.PredicateUtils.where;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
@@ -307,12 +314,34 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public Long startEttersending(String behandingsId) {
-        WSHentSoknadResponse wsSoknadsdata = henvendelseConnector.hentSisteBehandlingIBehandlingskjede(behandingsId);
+        WSHentSoknadResponse wsSoknadsdata = hentSisteIkkeAvbrutteSoknadIBehandlingskjede(behandingsId);
 
         if(wsSoknadsdata.getInnsendtDato() == null) {
             throw new ApplicationException("Kan ikke starte ettersending på en ikke fullfort soknad");
         }
         return lagEttersendingFraWsSoknad(wsSoknadsdata).getSoknadId();
+    }
+
+    private WSHentSoknadResponse hentSisteIkkeAvbrutteSoknadIBehandlingskjede(String behandingsId) {
+        List<WSBehandlingskjedeElement> wsBehandlingskjedeElementer = henvendelseConnector.hentBehandlingskjede(behandingsId);
+        List<WSBehandlingskjedeElement> sorterteBehandlinger = on(wsBehandlingskjedeElementer).filter(where(STATUS, not(equalTo(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER)))).collect(new Comparator<WSBehandlingskjedeElement>() {
+            @Override
+            public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
+                DateTime dato1 = o1.getInnsendtDato();
+                DateTime dato2 = o2.getInnsendtDato();
+
+                if (dato1 == null && dato2 == null) {
+                    return 0;
+                } else if (dato1 == null) {
+                    return -1;
+                } else if (dato2 == null) {
+                    return 1;
+                }
+                return dato2.compareTo(dato1);
+            }
+        });
+
+        return henvendelseConnector.hentSoknad(sorterteBehandlinger.get(0).getBehandlingsId());
     }
 
     private WebSoknad lagEttersendingFraWsSoknad(WSHentSoknadResponse opprinneligInnsending) {
@@ -362,7 +391,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
     @Override
     public void sendEttersending(Long soknadId, String behandingskjedeId) {
-        WSHentSoknadResponse ettersending = henvendelseConnector.hentSisteBehandlingIBehandlingskjede(behandingskjedeId);
+        WSHentSoknadResponse ettersending = hentSisteIkkeAvbrutteSoknadIBehandlingskjede(behandingskjedeId);
 
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
         List<Vedlegg> vedleggForventnings = soknad.getVedlegg();
@@ -739,4 +768,10 @@ public class SoknadService implements SendSoknadService, VedleggService {
             throw new RuntimeException("Kunne ikke laste definisjoner. ", e);
         }
     }
+
+    private static final Transformer<WSBehandlingskjedeElement, SoknadInnsendingStatus> STATUS = new Transformer<WSBehandlingskjedeElement, SoknadInnsendingStatus>() {
+        public SoknadInnsendingStatus transform(WSBehandlingskjedeElement input) {
+            return SoknadInnsendingStatus.valueOf(input.getStatus());
+        }
+    };
 }
