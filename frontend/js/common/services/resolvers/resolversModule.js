@@ -5,6 +5,7 @@ angular.module('nav.services.resolvers', [
     'nav.services.resolvers.cms',
     'nav.services.resolvers.soknadmetadata',
     'nav.services.resolvers.behandlingsid',
+    'nav.services.resolvers.behandlingskjedeid',
     'nav.services.resolvers.soknad',
     'nav.services.resolvers.soknadoppsett',
     'nav.services.resolvers.fakta',

@@ -1,6 +1,7 @@
 angular.module('nav.ettersending.controllers.opplasting', [])
     .controller('EttersendingOpplastingCtrl', function ($scope, $routeParams, vedleggService, vedlegg) {
-        vedlegg.forEach(function (v) {
+        $scope.vedleggListe = vedlegg;
+        $scope.vedleggListe.forEach(function (v) {
             if (v.vedleggId == $routeParams.vedleggId) {
                 $scope.vedlegg = new vedleggService(v);
             }

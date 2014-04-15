@@ -8,8 +8,8 @@ angular.module('nav.ettersending.controllers.avbryt', [])
             $scope.fremdriftsindikator.laster = true;
             var start = $.now();
 
-            ettersendingService.delete({},
-                {soknadId: data.soknad.soknadId},
+            ettersendingService.delete({soknadId: data.soknad.soknadId},
+                {},
                 function() {
                     var delay = 1500 - ($.now() - start);
                     $timeout(function() {

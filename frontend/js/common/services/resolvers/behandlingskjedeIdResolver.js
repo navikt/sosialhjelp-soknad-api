@@ -1,4 +1,4 @@
-angular.module('nav.services.resolvers.behandlingsid', [])
+angular.module('nav.services.resolvers.behandlingskjedeid', [])
     .factory('BehandlingskjedeIdResolver', function ($resource, $q) {
         var behandlingsIdDefer = $q.defer();
 

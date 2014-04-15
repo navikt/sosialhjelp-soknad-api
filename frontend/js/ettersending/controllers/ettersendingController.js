@@ -59,9 +59,8 @@ angular.module('nav.ettersending.controllers.main', [])
             });
 
             if (opplastedeVedlegg.length > 0) {
-                var behandlingsId = getBehandlingIdFromUrl();
-                ettersendingService.send({},
-                    {behandlingskjedeId: behandlingsId, soknadId: data.soknad.soknadId},
+                ettersendingService.send({soknadId: data.soknad.soknadId},
+                    {},
                     function (result) {
                         console.log("done");
                     }
