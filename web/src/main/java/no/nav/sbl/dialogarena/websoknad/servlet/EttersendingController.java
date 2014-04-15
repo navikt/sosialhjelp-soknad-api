@@ -2,7 +2,7 @@
 package no.nav.sbl.dialogarena.websoknad.servlet;
 
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,19 +24,19 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping("/ettersending")
 public class EttersendingController {
     @Inject
-    private SendSoknadService soknadService;
+    private EttersendingService ettersendingService;
 
     @RequestMapping(method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseBody()
     @ResponseStatus(HttpStatus.CREATED)
-    public Map<String,String> startEttersending(@RequestBody Map<String, String> requestMap, HttpServletResponse response) {
+    public Map<String,String> startEttersending(@RequestBody Map<String, String> requestMap) {
         Map<String, String> result = new HashMap<>();
 
         String behandlingskjedeId = requestMap.get("behandlingskjedeId");
-        WebSoknad soknad = soknadService.hentEttersendingForBehandlingskjedeId(behandlingskjedeId);
+        WebSoknad soknad = ettersendingService.hentEttersendingForBehandlingskjedeId(behandlingskjedeId);
         Long soknadId;
         if (soknad == null) {
-            soknadId = soknadService.startEttersending(behandlingskjedeId);
+            soknadId = ettersendingService.startEttersending(behandlingskjedeId);
         } else {
             soknadId = soknad.getSoknadId();
         }
@@ -49,20 +48,20 @@ public class EttersendingController {
     @RequestMapping(value = "/{behandlingskjedeId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     public WebSoknad hentEttersending(@PathVariable String behandlingskjedeId) {
-        return soknadService.hentEttersendingMedData(behandlingskjedeId);
+        return ettersendingService.hentEttersendingMedData(behandlingskjedeId);
     }
 
     @RequestMapping(value = "/send", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     public void sendEttersending(@RequestBody Map<String, String> requestMap) {
         Long soknadId = Long.valueOf(requestMap.get("soknadId"));
         String behandlingskjedeId = requestMap.get("behandlingskjedeId");
-        soknadService.sendEttersending(soknadId, behandlingskjedeId);
+        ettersendingService.sendEttersending(soknadId, behandlingskjedeId);
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public void slettEttersending(@RequestBody Map<String, String> requestMap) {
         Long soknadId = Long.valueOf(requestMap.get("soknadId"));
-        soknadService.avbrytSoknad(soknadId);
+        ettersendingService.avbrytSoknad(soknadId);
     }
 }

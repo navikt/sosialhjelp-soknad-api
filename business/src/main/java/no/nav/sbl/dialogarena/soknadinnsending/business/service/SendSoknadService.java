@@ -29,17 +29,9 @@ public interface SendSoknadService {
 
     void slettBrukerFaktum(Long soknadId, Long faktumId);
 
-
     WebSoknad hentSoknadMetaData(long soknadId);
 
     void settDelsteg(Long soknadId, DelstegStatus delstegStatus);
 
     SoknadStruktur hentSoknadStruktur(Long soknadId);
-
-    Long startEttersending(String behandingId);
-    void sendEttersending(Long soknadId, String behandingsId);
-
-    WebSoknad hentEttersendingForBehandlingskjedeId(String behandlingskjedeId);
-
-    WebSoknad hentEttersendingMedData(String behandlingskjedeId);
 }
