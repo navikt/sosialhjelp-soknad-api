@@ -10,8 +10,6 @@ angular.module('nav.informasjonsside', ['nav.cmstekster'])
         $scope.reelArbeidsokerUrl = data.config["soknad.reelarbeidsoker.url"];
         $scope.inngangsportenUrl = data.config["soknad.inngangsporten.url"];
 
-        $scope.antallDager = data.config["soknad.ettersending.antalldager"];
-
         $scope.oppsummering = false;
         if (erSoknadStartet()) {
             $scope.utslagskriterier.harlestbrosjyre = true;
