@@ -34,6 +34,9 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.feilsider.routes'])
                     },
                     vedlegg: function (EttersendingVedleggResolver) {
                         return EttersendingVedleggResolver;
+                    },
+                    config: function(ConfigResolver) {
+                        return ConfigResolver;
                     }
                 }
             })

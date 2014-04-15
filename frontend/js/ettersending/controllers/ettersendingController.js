@@ -1,8 +1,10 @@
 angular.module('nav.ettersending.controllers.main', [])
     .controller('EttersendingCtrl', function ($scope, data, ettersendingService, vedleggService, Faktum, vedlegg) {
+        var antallDager = data.config["soknad.ettersending.antalldager"];
         var innsendtDato = new Date(parseInt(data.finnFaktum('soknadInnsendingsDato').value));
         var fristDato = new Date();
-        fristDato.setDate(innsendtDato.getDate() + 40);
+        fristDato.setDate(innsendtDato.getDate() + parseInt(antallDager));
+
 
         $scope.informasjon = {
             innsendtDato: innsendtDato,
