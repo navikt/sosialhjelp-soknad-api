@@ -78,7 +78,7 @@ describe('norskDatoFilter', function () {
         it('norskDatoFilter skal returnere maned pa norsk', inject(function ($filter) {
             var norskdato = $filter('norskdato');
             expect(norskdato("")).toBe("");
-            expect(norskdato("11-02-2013")).toBe('11. Februar 2013');
+            expect(norskdato("11-02-2013")).toBe('11. februar 2013');
         }));
     });
 });

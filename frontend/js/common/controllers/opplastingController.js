@@ -1,11 +1,11 @@
 angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
 
-    .controller('OpplastingVedleggCtrl', ['$scope', '$routeParams', 'vedleggService', 'data', function ($scope, $routeParams, vedleggService, data) {
+    .controller('OpplastingVedleggCtrl', function ($scope, $routeParams, vedleggService, data, vedleggListe) {
+        $scope.vedleggListe = vedleggListe;
         $scope.vedlegg = vedleggService.get({soknadId: data.soknad.soknadId, vedleggId: $routeParams.vedleggId});
         $scope.soknad = data.soknad;
-    }])
-    .controller('OpplastingCtrl', ['$scope', '$location', '$routeParams', '$cookies', 'vedleggService', 'data', 'cms', function ($scope, $location, $routeParams, $cookies, vedleggService, data, cms) {
-
+    })
+    .controller('OpplastingCtrl', function ($scope, $location, $routeParams, $cookies, vedleggService, data, cms) {
         $scope.fremdriftsindikator = {
             laster: false
         };
@@ -98,14 +98,17 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
             $scope.$apply();
         };
 
-        $scope.oppdaterSoknad = function () {
-            vedleggService.query({soknadId: data.soknad.soknadId},
-                function (result) { // Success
-                    data.soknad.vedlegg = result;
-                    $scope.fremdriftsindikator.laster = false;
-                    $location.url('/vedlegg?scrollTo=vedlegg_' + $scope.data.vedleggId).replace();
-                }
-            );
+        $scope.oppdaterSoknad = function (v) {
+            v.$get({}, function(result) {
+                // TODO: Burde skrive om så vi ikke bruker data.soknad i det hele tatt
+                var soknadVedleggIdx = data.soknad.vedlegg.indexByFieldValue('vedleggId', v.vedleggId);
+                var vedleggListeIdx = $scope.vedleggListe.indexByFieldValue('vedleggId', v.vedleggId);
+
+                data.soknad.vedlegg[soknadVedleggIdx] = result;
+                $scope.vedleggListe[vedleggListeIdx] = result;
+                $scope.fremdriftsindikator.laster = false;
+                $location.url('/vedlegg?scrollTo=vedlegg_' + $scope.data.vedleggId).replace();
+            });
         };
 
         $scope.leggVed = function () {
@@ -117,7 +120,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                     soknadId: soknadId,
                     vedleggId: $scope.data.vedleggId
                 }, function (data) {
-                    $scope.oppdaterSoknad();
+                    $scope.oppdaterSoknad($scope.vedlegg);
                 }, function () {
                     $scope.fremdriftsindikator.laster = false;
                 });
@@ -136,9 +139,9 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                 $scope.loadingFiles = false;
             }
         );
-    }])
+    })
 
-    .controller('SlettOpplastingCtrl', ['$scope', function ($scope) {
+    .controller('SlettOpplastingCtrl', function ($scope) {
         var file = $scope.file;
         file.$destroy = function () {
             $scope.data.opplastingFeilet = false;
@@ -146,9 +149,9 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                 $scope.clear(file);
             });
         };
-    }])
+    })
 
-    .directive('filFeil', [function () {
+    .directive('filFeil', function () {
         'use strict';
         return {
             restrict: 'A',
@@ -160,9 +163,9 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                 });
             }
         };
-    }])
+    })
 
-    .directive('lastOppFil', [function () {
+    .directive('lastOppFil', function () {
         'use strict';
         return {
             restrict: 'A',
@@ -172,9 +175,9 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                 });
             }
         };
-    }])
+    })
 
-    .directive('alleFilerFerdig', ['$timeout', function($timeout) {
+    .directive('alleFilerFerdig', function($timeout) {
         return function(scope, element) {
             $timeout(function() {
                 scope.$watch(
@@ -191,4 +194,4 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                 );
             });
         };
-    }]);
+    });

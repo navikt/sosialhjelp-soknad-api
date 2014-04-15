@@ -97,15 +97,7 @@ public class SoknadDataController {
     @ResponseBody()
     @SjekkTilgangTilSoknad
     public Map<String, String> hentSoknadIdForSisteBehandlingIBehandlingskjede(@PathVariable String behandlingskjedeId, HttpServletRequest request) {
-//        String xsrfToken = "";
-//        for (Cookie cookie : request.getCookies()) {
-//            if (cookie.getName().equals("XSRF-TOKEN")) {
-//                xsrfToken = cookie.getValue();
-//                break;
-//            }
-//        }
         WebSoknad soknad = ettersendingService.hentEttersendingForBehandlingskjedeId(behandlingskjedeId.replaceAll("%20", " "));
-//        XsrfGenerator.sjekkXsrfToken(xsrfToken, soknad.getBehandlingskjedeId());
         Map<String, String> result = new HashMap<>();
         result.put("result", soknad.getSoknadId().toString());
         return result;
