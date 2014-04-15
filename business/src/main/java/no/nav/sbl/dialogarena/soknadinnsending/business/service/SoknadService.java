@@ -88,7 +88,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknad
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
-public class SoknadService implements SendSoknadService, VedleggService {
+public class SoknadService implements SendSoknadService, VedleggService, EttersendingService {
     private static final Logger logger = getLogger(SoknadService.class);
     @Inject
     @Named("soknadInnsendingRepository")
@@ -311,7 +311,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
         return soknad;
     }
 
-
     @Override
     public Long startEttersending(String behandingsId) {
         WSHentSoknadResponse wsSoknadsdata = hentSisteIkkeAvbrutteSoknadIBehandlingskjede(behandingsId);
@@ -394,7 +393,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
         WSHentSoknadResponse ettersending = hentSisteIkkeAvbrutteSoknadIBehandlingskjede(behandingskjedeId);
 
         WebSoknad soknad = repository.hentSoknadMedData(soknadId);
-        List<Vedlegg> vedleggForventnings = soknad.getVedlegg();
+
+        List<Vedlegg> vedleggForventninger = soknad.getVedlegg();
 
         XMLMetadataListe xmlMetaData = (XMLMetadataListe) ettersending.getAny();
         Optional<XMLMetadata> hovedskjema = on(xmlMetaData.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
@@ -405,7 +405,7 @@ public class SoknadService implements SendSoknadService, VedleggService {
 
         henvendelseConnector.avsluttSoknad(ettersending.getBehandlingsId(),
                 xmlHovedskjema,
-                Transformers.convertToXmlVedleggListe(vedleggForventnings));
+                Transformers.convertToXmlVedleggListe(vedleggForventninger));
         repository.slettSoknad(soknad.getSoknadId());
     }
 

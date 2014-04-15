@@ -21,35 +21,49 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.feilsider.routes'])
             })
             .when('/vedlegg', {
                 templateUrl: '../views/ettersending/ettersending.html',
+                controller: 'EttersendingCtrl',
                 resolve: {
                     cms: ['CmsResolver', function (CmsResolver) {
                         return CmsResolver;
                     }],
-                    ettersending: ['EttersendingResolver', function (EttersendingResolver) {
+                    behandlingskjedeId: function (BehandlingskjedeIdResolver) {
+                        return BehandlingskjedeIdResolver;
+                    },
+                    ettersending: function (EttersendingResolver) {
                         return EttersendingResolver;
-                    }]
+                    },
+                    vedlegg: function (EttersendingVedleggResolver) {
+                        return EttersendingVedleggResolver;
+                    }
                 }
             })
             .when('/vedlegg/nytt', {
                 templateUrl: '../views/ettersending/nytt-vedlegg.html',
                 resolve: {
-                    cms: ['CmsResolver', function (CmsResolver) {
+                    cms: function (CmsResolver) {
                         return CmsResolver;
-                    }],
-                    ettersending: ['EttersendingResolver', function (EttersendingResolver) {
+                    },
+                    ettersending: function (EttersendingResolver) {
                         return EttersendingResolver;
-                    }]
+                    },
+                    vedlegg: function (EttersendingVedleggResolver) {
+                        return EttersendingVedleggResolver;
+                    }
                 }
             })
             .when('/opplasting/:vedleggId', {
                 templateUrl: '../views/ettersending/opplastingEttersending.html',
+                controller: 'EttersendingOpplastingCtrl',
                 resolve: {
-                    cms: ['CmsResolver', function (CmsResolver) {
+                    cms: function (CmsResolver) {
                         return CmsResolver;
-                    }],
-                    ettersending: ['EttersendingResolver', function (EttersendingResolver) {
+                    },
+                    ettersending: function (EttersendingResolver) {
                         return EttersendingResolver;
-                    }]
+                    },
+                    vedlegg: function (EttersendingVedleggResolver) {
+                        return EttersendingVedleggResolver;
+                    }
                 }
             })
             .when('/avbryt', {

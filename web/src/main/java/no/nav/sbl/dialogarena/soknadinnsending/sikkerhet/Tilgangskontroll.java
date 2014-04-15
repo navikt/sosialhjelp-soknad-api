@@ -10,6 +10,8 @@ import no.nav.modig.security.tilgangskontroll.policy.pep.EnforcementPoint;
 import no.nav.modig.security.tilgangskontroll.policy.pep.PEPImpl;
 import no.nav.modig.security.tilgangskontroll.policy.request.attributes.SubjectAttribute;
 import no.nav.sbl.dialogarena.soknadinnsending.SoknadInnsendingConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.SoknadAvsluttetException;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendingService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 
 import javax.inject.Inject;
@@ -32,6 +34,9 @@ public class Tilgangskontroll {
     @Inject
     private SendSoknadService soknadService;
 
+    @Inject
+    private EttersendingService ettersendingService;
+
     public Tilgangskontroll() {
         DecisionPoint pdp = new PicketLinkDecisionPoint(SoknadInnsendingConfig.class.getResource("/security/policyConfig.xml"));
         pep = new PEPImpl(pdp);
@@ -39,7 +44,14 @@ public class Tilgangskontroll {
     }
 
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
-        verifiserBrukerHarTilgangTilSoknad(soknadService.hentSoknadMedBehandlingsId(behandlingsId));
+        Long soknadId;
+        try {
+            soknadId = soknadService.hentSoknadMedBehandlingsId(behandlingsId);
+        } catch (SoknadAvsluttetException e) {
+            soknadId = ettersendingService.hentEttersendingForBehandlingskjedeId(behandlingsId).getSoknadId();
+        }
+
+        verifiserBrukerHarTilgangTilSoknad(soknadId);
     }
 
     public void verifiserBrukerHarTilgangTilSoknad(Long soknadId) {

@@ -8,5 +8,6 @@ angular.module('nav.services.resolvers', [
     'nav.services.resolvers.soknad',
     'nav.services.resolvers.soknadoppsett',
     'nav.services.resolvers.fakta',
-    'nav.services.resolvers.ettersending'
+    'nav.services.resolvers.ettersending',
+    'nav.services.resolvers.vedlegg'
 ]);
