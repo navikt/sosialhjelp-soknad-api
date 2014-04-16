@@ -1,9 +1,7 @@
 angular.module('nav.bekreftelse', [])
-    .controller('BekreftelsesCtrl', ['$scope', 'data', '$window', '$timeout', function ($scope, data, $window, $timeout) {
-
+    .controller('BekreftelsesCtrl', function ($scope, config, $window, $timeout, $routeParams) {
         $timeout(function() {
-            var mineHenveldelserBaseUrl = data.config["minehenvendelser.link.url"];
-            $window.location.href = mineHenveldelserBaseUrl + "?behandlingsId=" + getBehandlingIdFromUrl();
-
+            var mineHenveldelserBaseUrl = config["minehenvendelser.link.url"];
+            $window.location.href = mineHenveldelserBaseUrl + "?behandlingsId=" + $routeParams.behandlingsId;
         }, 3000);
-    }]);
+    });

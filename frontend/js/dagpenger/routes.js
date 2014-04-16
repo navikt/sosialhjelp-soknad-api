@@ -1,4 +1,4 @@
-angular.module('sendsoknad.routes', ['ngRoute', 'nav.feilsider.routes'])
+angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider
@@ -312,32 +312,6 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.feilsider.routes'])
             })
             .when('/oppsummering', {
                 templateUrl: '../views/templates/oppsummering.html',
-                resolve: {
-                    cms: ['CmsResolver', function (CmsResolver) {
-                        return CmsResolver;
-                    }],
-                    land: ['LandResolver', function (LandResolver) {
-                        return LandResolver;
-                    }],
-                    soknad: ['SoknadResolver', function(SoknadResolver) {
-                        return SoknadResolver;
-                    }],
-                    fakta: ['FaktaResolver', function(FaktaResolver) {
-                        return FaktaResolver;
-                    }],
-                    soknadOppsett: ['SoknadOppsettResolver', function(SoknadOppsettResolver) {
-                        return SoknadOppsettResolver;
-                    }],
-                    config: ['ConfigForSoknadResolver', function(ConfigForSoknadResolver) {
-                        return ConfigForSoknadResolver;
-                    }],
-                    behandlingsId: ['BehandlingIdResolver', function(BehandlingIdResolver) {
-                        return BehandlingIdResolver;
-                    }]
-                }
-            })
-            .when('/bekreftelse', {
-                templateUrl: '../views/templates/bekreftelse.html',
                 resolve: {
                     cms: ['CmsResolver', function (CmsResolver) {
                         return CmsResolver;

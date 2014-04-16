@@ -1,4 +1,4 @@
-angular.module('ettersending.routes', ['ngRoute', 'nav.feilsider.routes'])
+angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider

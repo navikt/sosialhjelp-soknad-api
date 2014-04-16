@@ -32,7 +32,7 @@ angular.module('nav.oppsummering', [])
                 soknadService.send({soknadId: $scope.soknadId},
                     //Success
                     function () {
-                        $location.path('bekreftelse');
+                        $location.path('bekreftelse/' + data.soknad.brukerBehandlingId);
                     },
                     //Error
                     function () {
