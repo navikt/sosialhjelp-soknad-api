@@ -1,10 +1,13 @@
 angular.module('nav.ettersending.controllers.main', [])
-    .controller('EttersendingCtrl', function ($scope, data, ettersendingService, vedleggService, Faktum, vedlegg) {
+    .controller('EttersendingCtrl', function ($scope, data, ettersendingService, vedleggService, Faktum, vedlegg, $location) {
         var antallDager = data.config["soknad.ettersending.antalldager"];
         var innsendtDato = new Date(parseInt(data.finnFaktum('soknadInnsendingsDato').value));
         var fristDato = new Date();
         fristDato.setDate(innsendtDato.getDate() + parseInt(antallDager));
 
+        $scope.fremdriftsindikator = {
+            laster: false
+        };
 
         $scope.informasjon = {
             innsendtDato: innsendtDato,
@@ -61,10 +64,15 @@ angular.module('nav.ettersending.controllers.main', [])
             });
 
             if (opplastedeVedlegg.length > 0) {
+                $scope.fremdriftsindikator.laster = true;
                 ettersendingService.send({soknadId: data.soknad.soknadId},
                     {},
-                    function (result) {
-                        console.log("done");
+                    function () {
+                        $location.path('bekreftelse/' + data.soknad.brukerBehandlingId);
+                        $scope.fremdriftsindikator.laster = false;
+                    },
+                    function() {
+                        $scope.fremdriftsindikator.laster = false;
                     }
                 );
             } else {
