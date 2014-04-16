@@ -79,7 +79,7 @@ public class SoknadDataController {
     @ResponseBody()
     @SjekkTilgangTilSoknad
     public WebSoknad hentSoknadMetaData(@PathVariable Long soknadId) {
-        return soknadService.hentSoknadMetaData(soknadId);
+        return soknadService.hentSoknad(soknadId);
     }
 
     @RequestMapping(value = "/behandling/{behandlingsId}", method = RequestMethod.GET, produces = "application/json")
@@ -160,15 +160,27 @@ public class SoknadDataController {
     @SjekkTilgangTilSoknad
     public void sendSoknad(@PathVariable Long soknadId) {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
-        String oppsummeringMarkup;
+
+        byte[] pdfOutputStream;
+        if (soknad.erEttersending()) {
+            pdfOutputStream = genererPdf(soknad, "/skjema/ettersending");
+        } else {
+            pdfOutputStream = genererPdf(soknad, "/skjema/dagpenger");
+
+        }
+        soknadService.sendSoknad(soknadId, pdfOutputStream);
+    }
+
+    private byte[] genererPdf(WebSoknad soknad, String hbsSkjemaPath) {
+        String pdfMarkup;
         try {
             vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
-            oppsummeringMarkup = pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+            pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(soknad, hbsSkjemaPath);
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lage markup av søknad", e);
         }
-        byte[] outputStream = pdfGenerator.lagPdfFil(oppsummeringMarkup);
-        soknadService.sendSoknad(soknadId, outputStream);
+
+        return pdfGenerator.lagPdfFil(pdfMarkup);
     }
 
     @RequestMapping(value = "/lagre/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
