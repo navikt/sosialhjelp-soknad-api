@@ -9,5 +9,6 @@ angular.module('ettersending.controllers', [
     'nav.ettersending.controllers.avbryt',
     'nav.ettersending.controllers.start',
     'nav.feilside',
-    'nav.truncatehover'
+    'nav.truncatehover',
+    'nav.bekreftelse'
 ]);
