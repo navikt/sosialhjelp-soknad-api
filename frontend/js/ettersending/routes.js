@@ -14,18 +14,21 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.feilsider.routes'])
             .when('/', {
                 templateUrl: '../views/ettersending/startEttersending.html',
                 resolve: {
-                    cms: ['CmsResolver', function (CmsResolver) {
+                    cms: function (CmsResolver) {
                         return CmsResolver;
-                    }]
+                    },
+                    config: function (ConfigResolver) {
+                        return ConfigResolver;
+                    }
                 }
             })
             .when('/vedlegg', {
                 templateUrl: '../views/ettersending/ettersending.html',
                 controller: 'EttersendingCtrl',
                 resolve: {
-                    cms: ['CmsResolver', function (CmsResolver) {
+                    cms: function (CmsResolver) {
                         return CmsResolver;
-                    }],
+                    },
                     behandlingskjedeId: function (BehandlingskjedeIdResolver) {
                         return BehandlingskjedeIdResolver;
                     },
@@ -37,6 +40,9 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.feilsider.routes'])
                     },
                     config: function(ConfigResolver) {
                         return ConfigResolver;
+                    },
+                    personalia: function(EttersendingPersonaliaResolver) {
+                        return EttersendingPersonaliaResolver;
                     }
                 }
             })
@@ -51,6 +57,9 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.feilsider.routes'])
                     },
                     vedlegg: function (EttersendingVedleggResolver) {
                         return EttersendingVedleggResolver;
+                    },
+                    config: function (ConfigResolver) {
+                        return ConfigResolver;
                     }
                 }
             })
@@ -66,29 +75,38 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.feilsider.routes'])
                     },
                     vedlegg: function (EttersendingVedleggResolver) {
                         return EttersendingVedleggResolver;
+                    },
+                    config: function (ConfigResolver) {
+                        return ConfigResolver;
                     }
                 }
             })
             .when('/avbryt', {
                 templateUrl: '../views/ettersending/avbryt.html',
                 resolve: {
-                    cms: ['CmsResolver', function (CmsResolver) {
+                    cms: function (CmsResolver) {
                         return CmsResolver;
-                    }],
-                    ettersending: ['EttersendingResolver', function (EttersendingResolver) {
+                    },
+                    ettersending: function (EttersendingResolver) {
                         return EttersendingResolver;
-                    }]
+                    },
+                    config: function (ConfigResolver) {
+                        return ConfigResolver;
+                    }
                 }
             })
             .when('/visVedlegg/:vedleggId', {
                 templateUrl: '../views/templates/vedlegg/visvedlegg.html',
                 resolve: {
-                    cms: ['CmsResolver', function (CmsResolver) {
+                    cms: function (CmsResolver) {
                         return CmsResolver;
-                    }],
-                    ettersending: ['EttersendingResolver', function (EttersendingResolver) {
+                    },
+                    ettersending: function (EttersendingResolver) {
                         return EttersendingResolver;
-                    }]
+                    },
+                    config: function (ConfigResolver) {
+                        return ConfigResolver;
+                    }
                 }
             });
     }]).run(['$rootScope', '$location', '$anchorScroll', '$routeParams', function ($rootScope, $location, $anchorScroll, $routeParams) {

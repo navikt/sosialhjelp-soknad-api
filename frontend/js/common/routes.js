@@ -5,12 +5,12 @@ angular.module('nav.feilsider.routes', ['ngRoute'])
             .when('/feilside', {
                 templateUrl: '../views/common/feilsider/feilsideBaksystem.html',
                 resolve: {
-                    cms: ['CmsResolver', function (CmsResolver) {
+                    cms: function (CmsResolver) {
                         return CmsResolver;
-                    }],
-                    config: ['ConfigResolver', function (ConfigResolver) {
+                    },
+                    config: function (ConfigResolver) {
                         return ConfigResolver;
-                    }]
+                    }
                 }
             })
             .when('/404', {

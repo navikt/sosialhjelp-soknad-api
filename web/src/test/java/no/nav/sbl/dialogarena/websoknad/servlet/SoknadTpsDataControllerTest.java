@@ -99,7 +99,7 @@ public class SoknadTpsDataControllerTest {
     public void skalLagrePersonalia() throws Exception {
         mockMvc.perform(post("/soknad/personalia").contentType(MediaType.APPLICATION_JSON).content("11"))
                 .andExpect(status().isOk());
-        verify(personaliaService).lagrePersonaliaOgBarn(SubjectHandler.getSubjectHandler().getUid(), 11L);
+        verify(personaliaService).lagrePersonaliaOgBarn(SubjectHandler.getSubjectHandler().getUid(), 11L, true);
     }
 
     @Test

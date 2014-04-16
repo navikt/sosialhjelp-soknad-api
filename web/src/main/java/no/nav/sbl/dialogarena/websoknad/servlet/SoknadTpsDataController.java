@@ -8,6 +8,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Controller
+@ControllerAdvice()
 @RequestMapping("/soknad")
 public class SoknadTpsDataController {
 
@@ -67,13 +69,16 @@ public class SoknadTpsDataController {
         return resultMap;
     }
 
-    @RequestMapping(value = "/personalia", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
-    @ResponseBody()
-    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/personalia/{soknadId}", method = RequestMethod.POST, consumes = APPLICATION_JSON_VALUE)
+    @ResponseBody
     @SjekkTilgangTilSoknad
-    public void lagrePersonaliaOgBarn(@RequestBody final Long soknadId) {
+    public void lagrePersonaliaOgBarn(@PathVariable Long soknadId, @RequestBody(required = false) Boolean lagreBarn) {
         String fnr = SubjectHandler.getSubjectHandler().getUid();
-        personaliaService.lagrePersonaliaOgBarn(fnr, soknadId);
+        Boolean skalLagreBarn = lagreBarn;
+        if (skalLagreBarn == null) {
+            skalLagreBarn = false;
+        }
+        personaliaService.lagrePersonaliaOgBarn(fnr, soknadId, skalLagreBarn);
     }
 
     @RequestMapping(value = "/personalia", method = RequestMethod.GET, produces = "application/json")

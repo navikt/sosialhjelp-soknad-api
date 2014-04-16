@@ -10,6 +10,7 @@
             'nav.services.interceptor.feilhandtering',
             'nav.services.vedlegg',
             'nav.services.faktum',
+            'nav.services.personalia',
             'nav.services.resolvers'
         ])
 

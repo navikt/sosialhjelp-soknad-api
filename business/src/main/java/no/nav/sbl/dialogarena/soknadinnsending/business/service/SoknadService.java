@@ -130,11 +130,6 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
     }
 
     @Override
-    public WebSoknad hentSoknadMetaData(long soknadId) {
-        return repository.hentSoknad(soknadId);
-    }
-
-    @Override
     public void settDelsteg(Long soknadId, DelstegStatus delstegStatus) {
         repository.settDelstegstatus(soknadId, delstegStatus);
     }
@@ -214,27 +209,6 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
 
         repository.settSistLagretTidspunkt(soknadId);
         return lagretFaktumId;
-    }
-
-    @Override
-    public void sendSoknad(long soknadId, byte[] pdf) {
-        WebSoknad soknad = hentSoknad(soknadId);
-        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
-        List<Vedlegg> vedleggForventnings = soknad.getVedlegg();
-        String skjemanummer = getSkjemanummer(soknad);
-        String journalforendeEnhet = getJournalforendeEnhet(soknad);
-        XMLHovedskjema hovedskjema = new XMLHovedskjema()
-                .withInnsendingsvalg(LASTET_OPP.toString())
-                .withSkjemanummer(skjemanummer)
-                .withFilnavn(skjemanummer)
-                .withMimetype("application/pdf")
-                .withFilstorrelse("" + pdf.length)
-                .withUuid(soknad.getUuid())
-                .withJournalforendeEnhet(journalforendeEnhet);
-        henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(),
-                hovedskjema,
-                Transformers.convertToXmlVedleggListe(vedleggForventnings));
-        repository.slettSoknad(soknadId);
     }
 
     public Long hentSoknadMedBehandlingsId(String behandlingsId) {
@@ -368,7 +342,8 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
         soknad.medUuid(mainUid)
                 .medAktorId(getSubjectHandler().getUid())
                 .medskjemaNummer(xmlHovedskjema.getSkjemanummer())
-                .medBehandlingskjedeId(behandlingskjedeId);
+                .medBehandlingskjedeId(behandlingskjedeId)
+                .medJournalforendeEnhet(xmlHovedskjema.getJournalforendeEnhet());
 
         Long soknadId = repository.opprettSoknad(soknad);
         WebSoknadId websoknadId = new WebSoknadId();
@@ -389,24 +364,24 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
     }
 
     @Override
-    public void sendEttersending(Long soknadId, String behandingskjedeId) {
-        WSHentSoknadResponse ettersending = hentSisteIkkeAvbrutteSoknadIBehandlingskjede(behandingskjedeId);
-
-        WebSoknad soknad = repository.hentSoknadMedData(soknadId);
-
-        List<Vedlegg> vedleggForventninger = soknad.getVedlegg();
-
-        XMLMetadataListe xmlMetaData = (XMLMetadataListe) ettersending.getAny();
-        Optional<XMLMetadata> hovedskjema = on(xmlMetaData.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
-        if (!hovedskjema.isSome()) {
-            throw new ApplicationException("Kunne ikke hente opp hovedskjema for søknad");
-        }
-        XMLHovedskjema xmlHovedskjema = (XMLHovedskjema) hovedskjema.get();
-
-        henvendelseConnector.avsluttSoknad(ettersending.getBehandlingsId(),
-                xmlHovedskjema,
-                Transformers.convertToXmlVedleggListe(vedleggForventninger));
-        repository.slettSoknad(soknad.getSoknadId());
+    public void sendSoknad(long soknadId, byte[] pdf) {
+        WebSoknad soknad = hentSoknad(soknadId);
+        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
+        List<Vedlegg> vedleggForventnings = soknad.getVedlegg();
+        String skjemanummer = getSkjemanummer(soknad);
+        String journalforendeEnhet = getJournalforendeEnhet(soknad);
+        XMLHovedskjema hovedskjema = new XMLHovedskjema()
+                .withInnsendingsvalg(LASTET_OPP.toString())
+                .withSkjemanummer(skjemanummer)
+                .withFilnavn(skjemanummer)
+                .withMimetype("application/pdf")
+                .withFilstorrelse("" + pdf.length)
+                .withUuid(soknad.getUuid())
+                .withJournalforendeEnhet(journalforendeEnhet);
+        henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(),
+                hovedskjema,
+                Transformers.convertToXmlVedleggListe(vedleggForventnings));
+        repository.slettSoknad(soknadId);
     }
 
     private List<Vedlegg> hentVedleggOgPersister(XMLMetadataListe xmlVedleggListe, Long soknadId) {

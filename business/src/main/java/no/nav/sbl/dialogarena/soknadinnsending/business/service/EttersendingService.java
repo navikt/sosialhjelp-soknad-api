@@ -7,7 +7,6 @@ public interface EttersendingService {
 
     Long startEttersending(String behandingId);
 
-    void sendEttersending(Long soknadId, String behandingsId);
 
     WebSoknad hentEttersendingMedData(String behandlingskjedeId);
 
