@@ -35,6 +35,7 @@ public class WebSoknad implements Serializable {
     private DateTime sistLagret;
     private DelstegStatus delstegStatus;
     private List<Vedlegg> vedlegg;
+    private String journalforendeEnhet;
 
 
     public WebSoknad() {
@@ -60,6 +61,14 @@ public class WebSoknad implements Serializable {
         } else {
             return null;
         }
+    }
+
+    public String getJournalforendeEnhet() {
+        return journalforendeEnhet;
+    }
+
+    public void setJournalforendeEnhet(String journalforendeEnhet) {
+        this.journalforendeEnhet = journalforendeEnhet;
     }
 
     public String getBehandlingskjedeId() {
@@ -177,6 +186,11 @@ public class WebSoknad implements Serializable {
 
     public WebSoknad medBehandlingskjedeId(String behandlingskjedeId) {
         this.behandlingskjedeId = behandlingskjedeId;
+        return this;
+    }
+
+    public WebSoknad medJournalforendeEnhet(String journalforendeEnhet) {
+        this.journalforendeEnhet = journalforendeEnhet;
         return this;
     }
 

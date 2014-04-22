@@ -3,8 +3,12 @@ angular.module('ettersending.controllers', [
     'nav.vedlegg.controller',
     'nav.opplasting.controller',
     'nav.vedlegg.controller',
-    'nav.dagpenger',
+    'nav.ettersending.controllers.main',
+    'nav.ettersending.controllers.opplasting',
+    'nav.ettersending.controllers.nyttVedlegg',
+    'nav.ettersending.controllers.avbryt',
+    'nav.ettersending.controllers.start',
     'nav.feilside',
-    'nav.ettersending',
-    'nav.truncatehover'
+    'nav.truncatehover',
+    'nav.bekreftelse'
 ]);

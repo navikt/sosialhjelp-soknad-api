@@ -1,12 +1,23 @@
 describe('utility funksjoner -', function () {
     describe('Array prototype:', function () {
 
-        var array, objArray;
+        var array, objArray, complexObjArray;
 
         beforeEach(function () {
             array = [1, 2, 3];
             objArray = [
                 {a: 1, 2: 'b'}
+            ];
+
+            complexObjArray = [
+                {
+                    field1: 1,
+                    field2: 2
+                },
+                {
+                    field1: 2,
+                    field2: 2
+                }
             ];
         });
 
@@ -40,6 +51,16 @@ describe('utility funksjoner -', function () {
 
         it('skal returnere -1 dersom ingen objekter i arrayet har gitt verdi', function () {
             expect(objArray.indexByValue(2)).toBe(-1);
+        });
+
+        it('skal returnere index til første element med gitt verdi ved gitt attributt-navn', function () {
+            expect(complexObjArray.indexByFieldValue('field1', 1)).toBe(0);
+            expect(complexObjArray.indexByFieldValue('field1', 2)).toBe(1);
+            expect(complexObjArray.indexByFieldValue('field2', 2)).toBe(0);
+        });
+
+        it('skal returnere -1 dersom ingen element har gitt verdi ved gitt attributt', function () {
+            expect(complexObjArray.indexByFieldValue('field1', 3)).toBe(-1);
         });
     });
 

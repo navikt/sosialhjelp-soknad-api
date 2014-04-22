@@ -57,7 +57,8 @@
                 scope.data = data;
 
                 ctrl = $controller('OpplastingVedleggCtrl', {
-                    $scope: scope
+                    $scope: scope,
+                    vedleggListe: []
                 });
             }));
 

@@ -1,4 +1,4 @@
-<div id="ettersending" data-ng-controller="EttersendingCtrl" data-sidetittel="ettersending.sidetittel">
+<div id="ettersending" data-sidetittel="ettersending.sidetittel">
     <div class="rad">
         <div class="begrensning">
             <span class="innsendt">
@@ -84,8 +84,13 @@
                             <span data-ng-bind-html="'ettersending.vedlegg.klare' | cmstekst"></span>
                         </a>
                     </div>
-                    <input type="button" class="knapp-hoved" value="{{ 'ettersending.vedlegg.send' | cmstekst }}" data-ng-click="sendEttersending()">
-                    <a href="javascript:void(0);" data-ng-bind-html="'ettersending.vedlegg.avbryt' | cmstekst"></a>
+                    <form class="send-inn-knapp form-linje" data-ng-class="{feil: ikkeOpplatetDokumenter}" data-ng-submit="sendEttersending()">
+                        <input type="submit" class="knapp-hoved" value="{{ 'ettersending.vedlegg.send' | cmstekst }}" data-fremdriftsindikator="grå">
+                        <span class="melding" data-ng-bind-html="'ettersending.feil.innsending' | cmstekst"></span>
+                    </form>
+
+
+                    <a href="#/avbryt" data-ng-bind-html="'ettersending.vedlegg.avbryt' | cmstekst"></a>
                 </div>
             </section>
         </div>

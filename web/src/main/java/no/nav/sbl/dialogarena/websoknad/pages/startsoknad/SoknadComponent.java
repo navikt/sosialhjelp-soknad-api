@@ -20,19 +20,31 @@ import static org.springframework.util.StreamUtils.copyToString;
 public class SoknadComponent extends WebComponent {
 
     private static final Logger logger = getLogger(SoknadComponent.class);
-
+    private static final String ETTERSENDING_POSTFIX = "Ettersending";
+    private Boolean erEttersending;
 
 
     public SoknadComponent(String id) {
+        this(id, false);
+    }
+
+    public SoknadComponent(String id, Boolean erEttersending) {
         super(id);
+        this.erEttersending = erEttersending;
     }
 
     @Override
     public void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
-        String file = "META-INF/resources/views/built/bootstrap.html";
+        String file = "META-INF/resources/views/built/bootstrap";
         if (RuntimeConfigurationType.DEVELOPMENT.equals(getApplication().getConfigurationType())) {
-            file = "META-INF/resources/views/built/bootstrapDev.html";
+            file = "META-INF/resources/views/built/bootstrapDev";
         }
+
+        if (erEttersending) {
+            file = file + ETTERSENDING_POSTFIX;
+        }
+
+        file = file + ".html";
 
         try (InputStream content = this.getClass().getClassLoader().getResourceAsStream(file)) {
             replaceComponentTagBody(markupStream, openTag, copyToString(content, forName("UTF-8")));

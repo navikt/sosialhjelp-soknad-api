@@ -1,6 +1,5 @@
-angular.module('nav.ettersending')
-    .controller('StartEttersendingCtrl', ['$scope', 'ettersendingService', '$location',
-        function ($scope, ettersendingService, $location) {
+angular.module('nav.ettersending.controllers.start', [])
+    .controller('StartEttersendingCtrl', function ($scope, ettersendingService) {
             $scope.fremdriftsindikator = {
                 laster: false
             };
@@ -12,6 +11,7 @@ angular.module('nav.ettersending')
                 ettersendingService.create({},
                     {behandlingskjedeId: behandlingId},
                     function() {
+
                         var baseUrl = window.location.href.substring(0, window.location.href.indexOf('/sendsoknad'));
                         window.location.href = baseUrl + '/sendsoknad/ettersending/' + behandlingId + '#/vedlegg';
                     },
@@ -21,4 +21,4 @@ angular.module('nav.ettersending')
                 );
             };
         }
-    ]);
+    );

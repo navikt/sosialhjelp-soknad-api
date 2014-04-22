@@ -9,6 +9,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
+import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendingService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.VedleggService;
 import no.nav.sbl.dialogarena.soknadinnsending.sikkerhet.SjekkTilgangTilSoknad;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -51,6 +53,8 @@ public class SoknadDataController {
     @Inject
     private SendSoknadService soknadService;
     @Inject
+    private EttersendingService ettersendingService;
+    @Inject
     private VedleggService vedleggService;
     @Inject
     private HtmlGenerator pdfTemplate;
@@ -75,7 +79,7 @@ public class SoknadDataController {
     @ResponseBody()
     @SjekkTilgangTilSoknad
     public WebSoknad hentSoknadMetaData(@PathVariable Long soknadId) {
-        return soknadService.hentSoknadMetaData(soknadId);
+        return soknadService.hentSoknad(soknadId);
     }
 
     @RequestMapping(value = "/behandling/{behandlingsId}", method = RequestMethod.GET, produces = "application/json")
@@ -86,6 +90,16 @@ public class SoknadDataController {
         String soknadId = soknadService.hentSoknadMedBehandlingsId(behandlingsId.replaceAll("%20", " ")).toString();
         result.put("result", soknadId);
 
+        return result;
+    }
+
+    @RequestMapping(value = "/behandlingskjede/{behandlingskjedeId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody()
+    @SjekkTilgangTilSoknad
+    public Map<String, String> hentSoknadIdForSisteBehandlingIBehandlingskjede(@PathVariable String behandlingskjedeId, HttpServletRequest request) {
+        WebSoknad soknad = ettersendingService.hentEttersendingForBehandlingskjedeId(behandlingskjedeId.replaceAll("%20", " "));
+        Map<String, String> result = new HashMap<>();
+        result.put("result", soknad.getSoknadId().toString());
         return result;
     }
 
@@ -146,15 +160,27 @@ public class SoknadDataController {
     @SjekkTilgangTilSoknad
     public void sendSoknad(@PathVariable Long soknadId) {
         WebSoknad soknad = soknadService.hentSoknad(soknadId);
-        String oppsummeringMarkup;
+
+        byte[] pdfOutputStream;
+        if (soknad.erEttersending()) {
+            pdfOutputStream = genererPdf(soknad, "/skjema/ettersending");
+        } else {
+            pdfOutputStream = genererPdf(soknad, "/skjema/dagpenger");
+
+        }
+        soknadService.sendSoknad(soknadId, pdfOutputStream);
+    }
+
+    private byte[] genererPdf(WebSoknad soknad, String hbsSkjemaPath) {
+        String pdfMarkup;
         try {
             vedleggService.leggTilKodeverkFelter(soknad.getVedlegg());
-            oppsummeringMarkup = pdfTemplate.fyllHtmlMalMedInnhold(soknad, "/skjema/dagpenger");
+            pdfMarkup = pdfTemplate.fyllHtmlMalMedInnhold(soknad, hbsSkjemaPath);
         } catch (IOException e) {
             throw new ApplicationException("Kunne ikke lage markup av søknad", e);
         }
-        byte[] outputStream = pdfGenerator.lagPdfFil(oppsummeringMarkup);
-        soknadService.sendSoknad(soknadId, outputStream);
+
+        return pdfGenerator.lagPdfFil(pdfMarkup);
     }
 
     @RequestMapping(value = "/lagre/{soknadId}", method = RequestMethod.POST, consumes = "application/json")
@@ -180,6 +206,23 @@ public class SoknadDataController {
             throw new ApplicationException("Kunne ikke lage markup av søknad", e);
         }
         return pdfGenerator.lagPdfFil(oppsummeringMarkup);
+    }
+
+    @RequestMapping(value = "/opprett/ettersending/{behandlingskjedeId}", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody()
+    @ResponseStatus(HttpStatus.CREATED)
+    public Map<String, String> opprettSoknadEttersending(@PathVariable String behandlingskjedeId) {
+        Map<String, String> result = new HashMap<>();
+        WebSoknad soknad = ettersendingService.hentEttersendingForBehandlingskjedeId(behandlingskjedeId);
+        Long soknadId;
+        if (soknad == null) {
+            soknadId = ettersendingService.startEttersending(behandlingskjedeId);
+        } else {
+            soknadId = soknad.getSoknadId();
+        }
+
+        result.put("soknadId", soknadId.toString());
+        return result;
     }
 
     @RequestMapping(value = "/opprett", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
