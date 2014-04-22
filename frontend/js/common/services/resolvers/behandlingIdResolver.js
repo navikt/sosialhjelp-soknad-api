@@ -1,5 +1,5 @@
 angular.module('nav.services.resolvers.behandlingsid', [])
-    .factory('BehandlingIdResolver', ['$resource', '$q', '$route' , function ($resource, $q, $route) {
+    .factory('BehandlingIdResolver', function ($resource, $q, $route) {
         var behandlingsIdDefer = $q.defer();
 
         var behandlingId;
@@ -23,4 +23,4 @@ angular.module('nav.services.resolvers.behandlingsid', [])
 
 
         return behandlingsIdDefer.promise;
-    }]);
+    });

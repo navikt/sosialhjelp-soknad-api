@@ -1,0 +1,27 @@
+<div id="slett" class="soknad avbryt-boks" data-sidetittel="sidetittel.slett">
+    <div class="rad-belyst inforad">
+        <div class="begrensning sak-totredel">
+            <section class="panel-standard oversikt" data-ng-controller="EttersendingAvbrytCtrl">
+
+                <h1 class="stor-ikon-slett-strek" data-ng-bind-html="'ettersending.avbryt.tittel' | cmstekst"></h1>
+
+                <p class="info" data-ng-bind-html="'ettersending.avbryt.informasjon' | cmstekst"></p>
+
+                <div class="slett-soknad-stor">
+                    <form novalidate>
+                        <input type="button"
+                               class="knapp-advarsel"
+                               value="{{ 'ettersending.avbryt.knapp' | cmstekst }}"
+                               data-ng-click="slettEttersending()"
+                               data-fremdriftsindikator>
+                    </form>
+
+                    <div>
+                        <a href="#/vedlegg" data-ng-bind-html="'ettersending.avbryt.tilbake' | cmstekst"></a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+

@@ -20,6 +20,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
@@ -35,9 +36,11 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.person.Personalia;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStatus;
 import org.apache.commons.collections15.Closure;
+import org.apache.commons.collections15.Transformer;
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -60,6 +63,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -73,6 +77,9 @@ import static javax.xml.bind.JAXBContext.newInstance;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.modig.lang.collections.PredicateUtils.equalTo;
+import static no.nav.modig.lang.collections.PredicateUtils.not;
+import static no.nav.modig.lang.collections.PredicateUtils.where;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.BRUKERREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
@@ -81,7 +88,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknad
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
-public class SoknadService implements SendSoknadService, VedleggService {
+public class SoknadService implements SendSoknadService, VedleggService, EttersendingService {
     private static final Logger logger = getLogger(SoknadService.class);
     @Inject
     @Named("soknadInnsendingRepository")
@@ -120,11 +127,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
                     "PDF kan ikke være lagret med Apple Preview.", null,
                     "opplasting.feilmelding.pdf.applepreview");
         }
-    }
-
-    @Override
-    public WebSoknad hentSoknadMetaData(long soknadId) {
-        return repository.hentSoknad(soknadId);
     }
 
     @Override
@@ -209,27 +211,6 @@ public class SoknadService implements SendSoknadService, VedleggService {
         return lagretFaktumId;
     }
 
-    @Override
-    public void sendSoknad(long soknadId, byte[] pdf) {
-        WebSoknad soknad = hentSoknad(soknadId);
-        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
-        List<Vedlegg> vedleggForventnings = soknad.getVedlegg();
-        String skjemanummer = getSkjemanummer(soknad);
-        String journalforendeEnhet = getJournalforendeEnhet(soknad);
-        XMLHovedskjema hovedskjema = new XMLHovedskjema()
-                .withInnsendingsvalg(LASTET_OPP.toString())
-                .withSkjemanummer(skjemanummer)
-                .withFilnavn(skjemanummer)
-                .withMimetype("application/pdf")
-                .withFilstorrelse("" + pdf.length)
-                .withUuid(soknad.getUuid())
-                .withJournalforendeEnhet(journalforendeEnhet);
-        henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(),
-                hovedskjema,
-                Transformers.convertToXmlVedleggListe(vedleggForventnings));
-        repository.slettSoknad(soknadId);
-    }
-
     public Long hentSoknadMedBehandlingsId(String behandlingsId) {
         WebSoknad soknad = repository.hentMedBehandlingsId(behandlingsId);
         if (soknad == null) {
@@ -304,15 +285,36 @@ public class SoknadService implements SendSoknadService, VedleggService {
         return soknad;
     }
 
-
     @Override
     public Long startEttersending(String behandingsId) {
-        WSHentSoknadResponse wsSoknadsdata = henvendelseConnector.hentSisteBehandlingIBehandlingskjede(behandingsId);
+        WSHentSoknadResponse wsSoknadsdata = hentSisteIkkeAvbrutteSoknadIBehandlingskjede(behandingsId);
 
         if(wsSoknadsdata.getInnsendtDato() == null) {
             throw new ApplicationException("Kan ikke starte ettersending på en ikke fullfort soknad");
         }
         return lagEttersendingFraWsSoknad(wsSoknadsdata).getSoknadId();
+    }
+
+    private WSHentSoknadResponse hentSisteIkkeAvbrutteSoknadIBehandlingskjede(String behandingsId) {
+        List<WSBehandlingskjedeElement> wsBehandlingskjedeElementer = henvendelseConnector.hentBehandlingskjede(behandingsId);
+        List<WSBehandlingskjedeElement> sorterteBehandlinger = on(wsBehandlingskjedeElementer).filter(where(STATUS, not(equalTo(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER)))).collect(new Comparator<WSBehandlingskjedeElement>() {
+            @Override
+            public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
+                DateTime dato1 = o1.getInnsendtDato();
+                DateTime dato2 = o2.getInnsendtDato();
+
+                if (dato1 == null && dato2 == null) {
+                    return 0;
+                } else if (dato1 == null) {
+                    return -1;
+                } else if (dato2 == null) {
+                    return 1;
+                }
+                return dato2.compareTo(dato1);
+            }
+        });
+
+        return henvendelseConnector.hentSoknad(sorterteBehandlinger.get(0).getBehandlingsId());
     }
 
     private WebSoknad lagEttersendingFraWsSoknad(WSHentSoknadResponse opprinneligInnsending) {
@@ -340,7 +342,8 @@ public class SoknadService implements SendSoknadService, VedleggService {
         soknad.medUuid(mainUid)
                 .medAktorId(getSubjectHandler().getUid())
                 .medskjemaNummer(xmlHovedskjema.getSkjemanummer())
-                .medBehandlingskjedeId(behandlingskjedeId);
+                .medBehandlingskjedeId(behandlingskjedeId)
+                .medJournalforendeEnhet(xmlHovedskjema.getJournalforendeEnhet());
 
         Long soknadId = repository.opprettSoknad(soknad);
         WebSoknadId websoknadId = new WebSoknadId();
@@ -355,32 +358,33 @@ public class SoknadService implements SendSoknadService, VedleggService {
         lagreSystemFaktum(soknadId, soknadInnsendingsDato, "");
         soknad.setFaktaListe(repository.hentAlleBrukerData(soknadId));
 
-        soknad.setVedlegg(hentVedleggOgPersister(soknad, xmlVedleggListe, soknadId));
+        soknad.setVedlegg(hentVedleggOgPersister(xmlVedleggListe, soknadId));
 
         return soknad;
     }
 
     @Override
-    public void sendEttersending(Long soknadId, String behandingskjedeId) {
-        WSHentSoknadResponse ettersending = henvendelseConnector.hentSisteBehandlingIBehandlingskjede(behandingskjedeId);
-
-        WebSoknad soknad = repository.hentSoknadMedData(soknadId);
+    public void sendSoknad(long soknadId, byte[] pdf) {
+        WebSoknad soknad = hentSoknad(soknadId);
+        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
         List<Vedlegg> vedleggForventnings = soknad.getVedlegg();
-
-        XMLMetadataListe xmlMetaData = (XMLMetadataListe) ettersending.getAny();
-        Optional<XMLMetadata> hovedskjema = on(xmlMetaData.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
-        if (!hovedskjema.isSome()) {
-            throw new ApplicationException("Kunne ikke hente opp hovedskjema for søknad");
-        }
-        XMLHovedskjema xmlHovedskjema = (XMLHovedskjema) hovedskjema.get();
-
-        henvendelseConnector.avsluttSoknad(ettersending.getBehandlingsId(),
-                xmlHovedskjema,
+        String skjemanummer = getSkjemanummer(soknad);
+        String journalforendeEnhet = getJournalforendeEnhet(soknad);
+        XMLHovedskjema hovedskjema = new XMLHovedskjema()
+                .withInnsendingsvalg(LASTET_OPP.toString())
+                .withSkjemanummer(skjemanummer)
+                .withFilnavn(skjemanummer)
+                .withMimetype("application/pdf")
+                .withFilstorrelse("" + pdf.length)
+                .withUuid(soknad.getUuid())
+                .withJournalforendeEnhet(journalforendeEnhet);
+        henvendelseConnector.avsluttSoknad(soknad.getBrukerBehandlingId(),
+                hovedskjema,
                 Transformers.convertToXmlVedleggListe(vedleggForventnings));
-        repository.slettSoknad(soknad.getSoknadId());
+        repository.slettSoknad(soknadId);
     }
 
-    private List<Vedlegg> hentVedleggOgPersister(WebSoknad soknad, XMLMetadataListe xmlVedleggListe, Long soknadId) {
+    private List<Vedlegg> hentVedleggOgPersister(XMLMetadataListe xmlVedleggListe, Long soknadId) {
         PreparedIterable<XMLMetadata> vedlegg = on(xmlVedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLVedlegg.class));
         List<Vedlegg> soknadVedlegg = new ArrayList<>();
         for (XMLMetadata xmlMetadata : vedlegg) {
@@ -739,4 +743,10 @@ public class SoknadService implements SendSoknadService, VedleggService {
             throw new RuntimeException("Kunne ikke laste definisjoner. ", e);
         }
     }
+
+    private static final Transformer<WSBehandlingskjedeElement, SoknadInnsendingStatus> STATUS = new Transformer<WSBehandlingskjedeElement, SoknadInnsendingStatus>() {
+        public SoknadInnsendingStatus transform(WSBehandlingskjedeElement input) {
+            return SoknadInnsendingStatus.valueOf(input.getStatus());
+        }
+    };
 }

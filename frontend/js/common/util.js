@@ -24,6 +24,15 @@ if (!Array.prototype.indexByValue) {
 	};
 }
 
+// Returnerer index til ett objekt som inneholder value (ikke nødvendigvis første)
+if (!Array.prototype.indexByFieldValue) {
+	Array.prototype.indexByFieldValue = function (attrName, val) {
+        return this.map(function(element) {
+            return element[attrName];
+        }).indexOf(val);
+	};
+}
+
 String.prototype.splice = function (idx, rem, str) {
 	return (this.slice(0, idx) + str + this.slice(idx + Math.abs(rem)));
 };

@@ -95,11 +95,17 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     private void insertSoknad(WebSoknad soknad, Long databasenokkel) {
         getJdbcTemplate()
-                .update("insert into soknad (soknad_id, uuid, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status, delstegstatus, behandlingskjedeid) values (?,?,?,?,?,?,?,?, ?)",
-                        databasenokkel, soknad.getUuid(), soknad.getBrukerBehandlingId(),
-                        soknad.getskjemaNummer(), soknad.getAktoerId(),
+                .update("insert into soknad (soknad_id, uuid, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status, delstegstatus, behandlingskjedeid, journalforendeEnhet) values (?,?,?,?,?,?,?,?,?,?)",
+                        databasenokkel,
+                        soknad.getUuid(),
+                        soknad.getBrukerBehandlingId(),
+                        soknad.getskjemaNummer(),
+                        soknad.getAktoerId(),
                         new Date(soknad.getOpprettetDato()),
-                        soknad.getStatus().name(), soknad.getDelstegStatus().name(), soknad.getBehandlingskjedeId());
+                        soknad.getStatus().name(),
+                        soknad.getDelstegStatus().name(),
+                        soknad.getBehandlingskjedeId(),
+                        soknad.getJournalforendeEnhet());
     }
 
     @Override
@@ -378,7 +384,8 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                     .medUuid("uuid")
                     .medOppretteDato(new DateTime(rs.getTimestamp("opprettetdato").getTime()))
                     .medStatus(SoknadInnsendingStatus.valueOf(rs.getString("status")))
-                    .medDelstegStatus(DelstegStatus.valueOf(rs.getString("delstegstatus")));
+                    .medDelstegStatus(DelstegStatus.valueOf(rs.getString("delstegstatus")))
+                    .medJournalforendeEnhet(rs.getString("journalforendeenhet"));
         }
     }
 }

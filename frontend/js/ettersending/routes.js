@@ -1,4 +1,4 @@
-angular.module('ettersending.routes', ['ngRoute', 'nav.feilsider.routes'])
+angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider
@@ -14,53 +14,99 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.feilsider.routes'])
             .when('/', {
                 templateUrl: '../views/ettersending/startEttersending.html',
                 resolve: {
-                    cms: ['CmsResolver', function (CmsResolver) {
+                    cms: function (CmsResolver) {
                         return CmsResolver;
-                    }]
+                    },
+                    config: function (ConfigResolver) {
+                        return ConfigResolver;
+                    }
                 }
             })
             .when('/vedlegg', {
                 templateUrl: '../views/ettersending/ettersending.html',
+                controller: 'EttersendingCtrl',
                 resolve: {
-                    cms: ['CmsResolver', function (CmsResolver) {
+                    cms: function (CmsResolver) {
                         return CmsResolver;
-                    }],
-                    ettersending: ['EttersendingResolver', function (EttersendingResolver) {
+                    },
+                    behandlingskjedeId: function (BehandlingskjedeIdResolver) {
+                        return BehandlingskjedeIdResolver;
+                    },
+                    ettersending: function (EttersendingResolver) {
                         return EttersendingResolver;
-                    }]
+                    },
+                    vedlegg: function (EttersendingVedleggResolver) {
+                        return EttersendingVedleggResolver;
+                    },
+                    config: function(ConfigResolver) {
+                        return ConfigResolver;
+                    },
+                    personalia: function(EttersendingPersonaliaResolver) {
+                        return EttersendingPersonaliaResolver;
+                    }
                 }
             })
             .when('/vedlegg/nytt', {
                 templateUrl: '../views/ettersending/nytt-vedlegg.html',
                 resolve: {
-                    cms: ['CmsResolver', function (CmsResolver) {
+                    cms: function (CmsResolver) {
                         return CmsResolver;
-                    }],
-                    ettersending: ['EttersendingResolver', function (EttersendingResolver) {
+                    },
+                    ettersending: function (EttersendingResolver) {
                         return EttersendingResolver;
-                    }]
+                    },
+                    vedlegg: function (EttersendingVedleggResolver) {
+                        return EttersendingVedleggResolver;
+                    },
+                    config: function (ConfigResolver) {
+                        return ConfigResolver;
+                    }
                 }
             })
             .when('/opplasting/:vedleggId', {
                 templateUrl: '../views/ettersending/opplastingEttersending.html',
+                controller: 'EttersendingOpplastingCtrl',
                 resolve: {
-                    cms: ['CmsResolver', function (CmsResolver) {
+                    cms: function (CmsResolver) {
                         return CmsResolver;
-                    }],
-                    ettersending: ['EttersendingResolver', function (EttersendingResolver) {
+                    },
+                    ettersending: function (EttersendingResolver) {
                         return EttersendingResolver;
-                    }]
+                    },
+                    vedlegg: function (EttersendingVedleggResolver) {
+                        return EttersendingVedleggResolver;
+                    },
+                    config: function (ConfigResolver) {
+                        return ConfigResolver;
+                    }
+                }
+            })
+            .when('/avbryt', {
+                templateUrl: '../views/ettersending/avbryt.html',
+                resolve: {
+                    cms: function (CmsResolver) {
+                        return CmsResolver;
+                    },
+                    ettersending: function (EttersendingResolver) {
+                        return EttersendingResolver;
+                    },
+                    config: function (ConfigResolver) {
+                        return ConfigResolver;
+                    }
                 }
             })
             .when('/visVedlegg/:vedleggId', {
                 templateUrl: '../views/templates/vedlegg/visvedlegg.html',
                 resolve: {
-                    cms: ['CmsResolver', function (CmsResolver) {
+                    cms: function (CmsResolver) {
                         return CmsResolver;
-                    }],
-                    ettersending: ['EttersendingResolver', function (EttersendingResolver) {
+                    },
+                    ettersending: function (EttersendingResolver) {
                         return EttersendingResolver;
-                    }]
+                    },
+                    config: function (ConfigResolver) {
+                        return ConfigResolver;
+                    }
                 }
             });
     }]).run(['$rootScope', '$location', '$anchorScroll', '$routeParams', function ($rootScope, $location, $anchorScroll, $routeParams) {
