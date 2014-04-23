@@ -120,10 +120,12 @@ public class HenvendelseConnector {
     }
 
     private WSStartSoknadRequest createXMLStartSoknadRequest(String fnr, XMLHovedskjema skjema, SoknadType soknadType, XMLMetadataListe xmlMetadataListe) {
-        return new WSStartSoknadRequest()
+        WSStartSoknadRequest wsStartSoknadRequest = new WSStartSoknadRequest()
                 .withFodselsnummer(fnr)
                 .withType(soknadType.name())
                 .withAny(xmlMetadataListe);
+        wsStartSoknadRequest.setBehandlingskjedeId("");
+        return wsStartSoknadRequest;
     }
 
     private XMLHovedskjema createXMLSkjema(String skjema, String uid) {
