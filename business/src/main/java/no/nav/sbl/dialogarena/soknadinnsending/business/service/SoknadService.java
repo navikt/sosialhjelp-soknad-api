@@ -268,6 +268,31 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
     }
 
     @Override
+    public String hentInnsendtDatoForOpprinneligSoknad(String behandlingsId) {
+        List<WSBehandlingskjedeElement> wsBehandlingskjedeElements = henvendelseConnector.hentBehandlingskjede(behandlingsId);
+
+        List<WSBehandlingskjedeElement> sorterteBehandlinger = on(wsBehandlingskjedeElements).filter(where(STATUS, (equalTo(SoknadInnsendingStatus.FERDIG)))).collect(new Comparator<WSBehandlingskjedeElement>() {
+            @Override
+            public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
+                DateTime dato1 = o1.getInnsendtDato();
+                DateTime dato2 = o2.getInnsendtDato();
+
+                if (dato1 == null && dato2 == null) {
+                    return 0;
+                } else if (dato1 == null) {
+                    return 1;
+                } else if (dato2 == null) {
+                    return -1;
+                }
+                return dato1.compareTo(dato2);
+            }
+        });
+
+        WSBehandlingskjedeElement innsendtSoknad = sorterteBehandlinger.get(0);
+        return String.valueOf(innsendtSoknad.getInnsendtDato().getMillis());
+    }
+
+    @Override
     public WebSoknad hentEttersendingForBehandlingskjedeId(String behandlingsId) {
         Optional<WebSoknad> soknadOptional = repository.hentEttersendingMedBehandlingskjedeId(behandlingsId);
         if (soknadOptional.isSome()) {

@@ -32,4 +32,6 @@ public interface SendSoknadService {
     void settDelsteg(Long soknadId, DelstegStatus delstegStatus);
 
     SoknadStruktur hentSoknadStruktur(Long soknadId);
+
+    String hentInnsendtDatoForOpprinneligSoknad(String behandlingsId);
 }
