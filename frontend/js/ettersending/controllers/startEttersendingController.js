@@ -1,24 +1,42 @@
 angular.module('nav.ettersending.controllers.start', [])
-    .controller('StartEttersendingCtrl', function ($scope, ettersendingService) {
-            $scope.fremdriftsindikator = {
-                laster: false
-            };
+    .controller('StartEttersendingCtrl', function ($scope, ettersendingService, data, EttersendingMetadataResolver) {
+        $scope.mineInnsendinger = data.config["minehenvendelser.link.url"];
+    
+        var fristDato;
+        EttersendingMetadataResolver.then(function(result) {
+            var antallDager = data.config["soknad.ettersending.antalldager"];
+            var innsendtDato = new Date(parseInt(result.result));
+            fristDato = new Date();
+            fristDato.setDate(innsendtDato.getDate() + parseInt(antallDager));
+        });
+        $scope.kanStarteEttersending = function () {
+            fristDato.setHours(23);
+            fristDato.setMinutes(59);
+            fristDato.setSeconds(59);
 
-            $scope.startEttersending = function($event) {
-                $event.preventDefault();
-                var behandlingId = getBehandlingIdFromUrl();
-                $scope.fremdriftsindikator.laster = true;
-                ettersendingService.create({},
-                    {behandlingskjedeId: behandlingId},
-                    function() {
+            var idag = new Date();
+            return fristDato > idag;
+        };
 
-                        var baseUrl = window.location.href.substring(0, window.location.href.indexOf('/sendsoknad'));
-                        window.location.href = baseUrl + '/sendsoknad/ettersending/' + behandlingId + '#/vedlegg';
-                    },
-                    function() {
-                        $scope.fremdriftsindikator.laster = false;
-                    }
-                );
-            };
-        }
-    );
+        $scope.fremdriftsindikator = {
+            laster: false
+        };
+
+        $scope.startEttersending = function ($event) {
+            $event.preventDefault();
+            var behandlingId = getBehandlingIdFromUrl();
+            $scope.fremdriftsindikator.laster = true;
+            ettersendingService.create({},
+                {behandlingskjedeId: behandlingId},
+                function () {
+
+                    var baseUrl = window.location.href.substring(0, window.location.href.indexOf('/sendsoknad'));
+                    window.location.href = baseUrl + '/sendsoknad/ettersending/' + behandlingId + '#/vedlegg';
+                },
+                function () {
+                    $scope.fremdriftsindikator.laster = false;
+                }
+            );
+        };
+    }
+);
