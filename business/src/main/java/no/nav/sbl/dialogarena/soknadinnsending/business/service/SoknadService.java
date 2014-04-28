@@ -268,7 +268,8 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
     }
 
     @Override
-    public String hentInnsendtDatoForOpprinneligSoknad(String behandlingsId) {
+    public Map<String, String> hentInnsendtDatoForOpprinneligSoknad(String behandlingsId) {
+        Map<String, String> result = new HashMap<>();
         List<WSBehandlingskjedeElement> wsBehandlingskjedeElements = henvendelseConnector.hentBehandlingskjede(behandlingsId);
 
         List<WSBehandlingskjedeElement> sorterteBehandlinger = on(wsBehandlingskjedeElements).filter(where(STATUS, (equalTo(SoknadInnsendingStatus.FERDIG)))).collect(new Comparator<WSBehandlingskjedeElement>() {
@@ -289,7 +290,10 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
         });
 
         WSBehandlingskjedeElement innsendtSoknad = sorterteBehandlinger.get(0);
-        return String.valueOf(innsendtSoknad.getInnsendtDato().getMillis());
+        result.put("innsendtdato",String.valueOf(innsendtSoknad.getInnsendtDato().getMillis()));
+        result.put("sisteinnsendtbehandling", sorterteBehandlinger.get(sorterteBehandlinger.size()-1).getBehandlingsId().toString());
+
+        return result;
     }
 
     @Override
