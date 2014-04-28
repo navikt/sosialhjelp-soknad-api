@@ -69,6 +69,7 @@ public class HenvendelseConnector {
         try {
             return sendSoknadService.startSoknad(xmlStartSoknadRequest).getBehandlingsId();
         } catch (SOAPFaultException e) {
+            logger.error("Soapfault:", e.getFault());
             logger.error("Feil ved start søknad for bruker " + xmlStartSoknadRequest.getFodselsnummer(), e);
             throw new SystemException("Kunne ikke opprette ny søknad", e, "exception.system.baksystem");
         }
@@ -90,7 +91,7 @@ public class HenvendelseConnector {
             sendSoknadService.sendSoknad(parameters);
         } catch (SOAPFaultException e) {
             logger.error("Feil ved innsending av søknad: " + e, e);
-            throw new SystemException("Kunne ikke opprette ny søknad", e, "exception.system.baksystem");
+            throw new SystemException("Kunne ikke sende inn søknad", e, "exception.system.baksystem");
         }
     }
 
@@ -119,10 +120,12 @@ public class HenvendelseConnector {
     }
 
     private WSStartSoknadRequest createXMLStartSoknadRequest(String fnr, XMLHovedskjema skjema, SoknadType soknadType, XMLMetadataListe xmlMetadataListe) {
-        return new WSStartSoknadRequest()
+        WSStartSoknadRequest wsStartSoknadRequest = new WSStartSoknadRequest()
                 .withFodselsnummer(fnr)
                 .withType(soknadType.name())
                 .withAny(xmlMetadataListe);
+        wsStartSoknadRequest.setBehandlingskjedeId("");
+        return wsStartSoknadRequest;
     }
 
     private XMLHovedskjema createXMLSkjema(String skjema, String uid) {
