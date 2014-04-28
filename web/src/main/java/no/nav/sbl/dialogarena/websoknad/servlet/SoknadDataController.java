@@ -77,9 +77,8 @@ public class SoknadDataController {
 
     @RequestMapping(value = "/behandlingmetadata/{behandlingsId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
-    public Map<String, String> hentInnsendtDato(@PathVariable String behandlingsId) {
-        Map<String, String> result = new HashMap<>();
-        result.put("result", soknadService.hentInnsendtDatoForOpprinneligSoknad(behandlingsId));
+    public Map<String, String> hentBehandlingMetaData(@PathVariable String behandlingsId) {
+        Map<String, String> result = soknadService.hentInnsendtDatoForOpprinneligSoknad(behandlingsId);
         return result;
     }
 
