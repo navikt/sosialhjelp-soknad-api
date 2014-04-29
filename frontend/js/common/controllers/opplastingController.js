@@ -35,7 +35,6 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                 if (file.error) {
                     $scope.fremdriftsindikator.laster = false;
                     $scope.data.opplastingFeilet = file.error;
-                    data.scope().clear(file);
                     $scope.clear(file);
                 }
             });
@@ -60,12 +59,15 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
             headers: {'X-XSRF-TOKEN': $cookies['XSRF-TOKEN'] },
             url: '/sendsoknad/rest/soknad/' + data.soknad.soknadId + '/vedlegg/' + $scope.data.vedleggId + '/opplasting',
             done: function (e, data) {
-                $scope.clear(data.originalFiles[0]);
+                data.originalFiles.forEach(function(file) {
+                    $scope.clear(file);
+                });
                 data.result.files.forEach(function (item) {
                     $scope.queue.push(new vedleggService(item));
                 });
             },
             fail: function(e, data){
+                console.log("XHR fail");
                 var errorCode;
                 if(data.jqXHR.responseJSON){
                     errorCode = data.jqXHR.responseJSON.kode;
