@@ -21,9 +21,11 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
 import static no.nav.modig.lang.collections.IterUtils.on;
@@ -69,8 +71,76 @@ public class HandleBarKjoerer implements HtmlGenerator {
         handlebars.registerHelper("forVedlegg", generateForVedleggHelper());
         handlebars.registerHelper("hentSkjemanummer", generateHentSkjemanummerHelper());
         handlebars.registerHelper("hvisFlereErTrue", generateHvisFlereSomStarterMedErTrueHelper());
+        handlebars.registerHelper("sendtInnInfo", generateSendtInnInfoHelper());
+        handlebars.registerHelper("forInnsendteVedlegg", generateForInnsendteVedleggHelper());
+        handlebars.registerHelper("forIkkeInnsendteVedlegg", generateForIkkeInnsendteVedleggHelper());
+        handlebars.registerHelper("hvisHarIkkeInnsendteDokumenter", generateHvisHarIkkeInnsendteDokumenterHelper());
 
         return handlebars;
+    }
+
+    private Helper<Object> generateHvisHarIkkeInnsendteDokumenterHelper() {
+        return new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object o, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                List<Vedlegg> vedlegg = soknad.getIkkeInnsendteVedlegg();
+                if (vedlegg.isEmpty()) {
+                    return options.inverse(this);
+                } else {
+                    return options.fn(this);
+                }
+            }
+        };
+    }
+
+    private Helper<Object> generateForInnsendteVedleggHelper() {
+        return new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object o, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                List<Vedlegg> vedlegg = soknad.getInnsendteVedlegg();
+                if (vedlegg.isEmpty()) {
+                    return options.inverse(this);
+                } else {
+                    return lagItererbarRespons(options, vedlegg);
+                }
+            }
+        };
+    }
+
+    private Helper<Object> generateForIkkeInnsendteVedleggHelper() {
+        return new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object o, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                List<Vedlegg> vedlegg = soknad.getIkkeInnsendteVedlegg();
+                if (vedlegg.isEmpty()) {
+                    return options.inverse(this);
+                } else {
+                    return lagItererbarRespons(options, vedlegg);
+                }
+            }
+        };
+    }
+
+    private Helper<Object> generateSendtInnInfoHelper() {
+        return new Helper<Object>() {
+            @Override
+            public CharSequence apply(Object o, Options options) throws IOException {
+                WebSoknad soknad = finnWebSoknad(options.context);
+                Map<String, String> infoMap = new HashMap<>();
+
+                Locale locale = new Locale("nb", "no");
+                DateTimeFormatter dt = DateTimeFormat.forPattern("d. MMMM yyyy").withLocale(locale);
+
+                infoMap.put("sendtInn", String.valueOf(soknad.getInnsendteVedlegg().size()));
+                infoMap.put("ikkeSendtInn", String.valueOf(soknad.getVedlegg().size()));
+                infoMap.put("innsendtDato", dt.print(DateTime.now()));
+
+                return options.fn(infoMap);
+            }
+        };
     }
 
     private Helper<String> generateHvisFlereSomStarterMedErTrueHelper() {
@@ -147,7 +217,7 @@ public class HandleBarKjoerer implements HtmlGenerator {
         return new Helper<String>() {
             @Override
             public CharSequence apply(String key, Options options) throws IOException {
-                return navMessageSource.getMessage(key, new Object[0], new Locale("nb", "NO"));
+                return navMessageSource.getMessage(key, options.params, new Locale("nb", "NO"));
             }
         };
     }
