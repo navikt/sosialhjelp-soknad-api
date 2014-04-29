@@ -5,18 +5,14 @@ angular.module('nav.ettersending.controllers.start', [])
         $scope.sisteInnsendtBehandling;
         $scope.innsendtDato;
 
-
         var fristDato;
         EttersendingMetadataResolver.then(function(result) {
             var antallDager = data.config["soknad.ettersending.antalldager"];
             $scope.innsendtDato = new Date(parseInt(result.innsendtdato));
 
             $scope.sisteInnsendtBehandling = result.sisteinnsendtbehandling;
-            fristDato = new Date();
+            fristDato = new Date(parseInt(result.innsendtdato));
             fristDato.setDate($scope.innsendtDato.getDate() + parseInt(antallDager));
-            console.log("antall dager er: " + antallDager);
-            console.log("innsendt dato er: " + $scope.innsendtDato);
-            console.log("fristen er: " + fristDato);
         });
         $scope.kanStarteEttersending = function () {
             fristDato.setHours(23);
@@ -24,10 +20,6 @@ angular.module('nav.ettersending.controllers.start', [])
             fristDato.setSeconds(59);
 
             var idag = new Date();
-
-            console.log("idag er" + idag);
-            console.log("kan starte ettersending?");
-            console.log(fristDato > idag);
 
             return fristDato > idag;
         };
