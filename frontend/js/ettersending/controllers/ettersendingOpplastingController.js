@@ -20,8 +20,4 @@ angular.module('nav.ettersending.controllers.opplasting', [])
 
             $scope.vedlegg.$save();
         };
-
-        $scope.kanEndreInnsendingsvalg = function () {
-            return $scope.vedlegg.opprinneligInnsendingsvalg === 'SendesIkke';
-        };
     });
