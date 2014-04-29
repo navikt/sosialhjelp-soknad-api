@@ -332,5 +332,9 @@ public class Vedlegg {
         public boolean er(Status status) {
             return this.equals(status);
         }
+
+        public boolean erIkke(Status status) {
+            return !this.er(status);
+        }
     }
 }
