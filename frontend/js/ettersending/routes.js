@@ -19,6 +19,9 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                     },
                     config: function (ConfigResolver) {
                         return ConfigResolver;
+                    },
+                    metadata: function(EttersendingMetadataResolver) {
+                        return EttersendingMetadataResolver;
                     }
                 }
             })

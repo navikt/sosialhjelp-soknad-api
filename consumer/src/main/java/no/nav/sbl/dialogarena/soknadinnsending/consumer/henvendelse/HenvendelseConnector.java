@@ -69,7 +69,6 @@ public class HenvendelseConnector {
         try {
             return sendSoknadService.startSoknad(xmlStartSoknadRequest).getBehandlingsId();
         } catch (SOAPFaultException e) {
-            logger.error("Soapfault:", e.getFault());
             logger.error("Feil ved start søknad for bruker " + xmlStartSoknadRequest.getFodselsnummer(), e);
             throw new SystemException("Kunne ikke opprette ny søknad", e, "exception.system.baksystem");
         }

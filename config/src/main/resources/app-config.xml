@@ -44,7 +44,6 @@
         <baseUrl alias="arena.personinfoservice" mapToProperty="soknad.webservice.arena.personinfo"/>
         
         <applicationProperties alias="soknad.ettersending.properties"/>
-        <!-- denne innholder soknad.ettersending.antalldager=42 ? -->
 
         <smtpServer alias="dokumentinnsending.smtpServer" mapToProperty="dokumentinnsending.smtpServer"/>
         <localFiles name="sendsoknad" mapToProperty="sendsoknad.datadir"/>
