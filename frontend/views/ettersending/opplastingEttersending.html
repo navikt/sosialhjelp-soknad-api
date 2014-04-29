@@ -37,7 +37,7 @@
                         </li>
                         <li class="leggtil">
                             <input id="leggtil" type="file" name="files[]" class="vekk" multiple
-                                   accept="image/jpeg,image/png,application/pdf" capture="camera" data-fokus>
+                                   accept="image/jpeg,image/png,application/pdf" capture="camera" data-fokus data-multiple-upload>
                             <label for="leggtil" class="robust"
                                    data-ng-bind-html=" 'opplasting.leggtil' | cmstekst"></label>
                         </li>
@@ -55,12 +55,6 @@
                                 <span class="melding"
                                       data-ng-bind-html=" 'opplasting.feilmelding.manglerVedlegg' | cmstekst"></span>
                             </div>
-                        </li>
-                        <li data-ng-if="kanEndreInnsendingsvalg()">
-                            <input id="ettersendes" data-ng-model="ettersend.valgt" type="checkbox"
-                                   data-ng-change="settTilEttersendes()">
-                            <label for="ettersendes"
-                                   data-ng-bind-html="'ettersending.vedlegg.checkbox.ettersend' | cmstekst"></label>
                         </li>
                         <li>
                             <a href="javascript:void(0);" data-ng-href="#/vedlegg" class="avbryt"

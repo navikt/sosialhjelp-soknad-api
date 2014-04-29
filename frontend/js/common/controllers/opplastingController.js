@@ -1,4 +1,4 @@
-angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
+angular.module('nav.opplasting.controller', ['blueimp.fileupload', 'opplasting.multiple'])
 
     .controller('OpplastingVedleggCtrl', function ($scope, $routeParams, vedleggService, data, vedleggListe) {
         $scope.vedleggListe = vedleggListe;
@@ -39,6 +39,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload'])
                 }
             });
         });
+
         $.ajaxSetup({
             converters: {
                 'iframe json': function(iframe){
