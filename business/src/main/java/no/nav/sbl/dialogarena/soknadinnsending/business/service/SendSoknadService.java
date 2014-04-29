@@ -6,6 +6,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SendSoknadService {
 
@@ -32,4 +33,6 @@ public interface SendSoknadService {
     void settDelsteg(Long soknadId, DelstegStatus delstegStatus);
 
     SoknadStruktur hentSoknadStruktur(Long soknadId);
+
+    Map<String,String> hentInnsendtDatoForOpprinneligSoknad(String behandlingsId);
 }
