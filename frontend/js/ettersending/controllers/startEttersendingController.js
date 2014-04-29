@@ -14,6 +14,7 @@ angular.module('nav.ettersending.controllers.start', [])
             $scope.sisteInnsendtBehandling = result.sisteinnsendtbehandling;
             fristDato = new Date();
             fristDato.setDate($scope.innsendtDato.getDate() + parseInt(antallDager));
+            console.log("antall dager er: " + antallDager);
             console.log("innsendt dato er: " + $scope.innsendtDato);
             console.log("fristen er: " + fristDato);
         });
