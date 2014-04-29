@@ -255,6 +255,24 @@ public class WebSoknad implements Serializable {
         return null;
     }
 
+    public List<Vedlegg> getInnsendteVedlegg() {
+        return on(vedlegg).filter(new Predicate<Vedlegg>() {
+            @Override
+            public boolean evaluate(Vedlegg vedlegg) {
+                return vedlegg.getInnsendingsvalg().er(Vedlegg.Status.LastetOpp);
+            }
+        }).collect();
+    }
+
+    public List<Vedlegg> getIkkeInnsendteVedlegg() {
+        return on(vedlegg).filter(new Predicate<Vedlegg>() {
+            @Override
+            public boolean evaluate(Vedlegg vedlegg) {
+                return vedlegg.getInnsendingsvalg().erIkke(Vedlegg.Status.LastetOpp);
+            }
+        }).collect();
+    }
+
     public List<Faktum> getFaktaMedKeyOgPropertyLikTrue(final String key, final String propertyKey) {
         return on(faktaListe).filter(new Predicate<Faktum>() {
             @Override
