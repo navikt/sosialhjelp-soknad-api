@@ -75,6 +75,13 @@ public class SoknadDataController {
         return ous.toString("UTF-8");
     }
 
+    @RequestMapping(value = "/behandlingmetadata/{behandlingsId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody()
+    public Map<String, String> hentBehandlingMetaData(@PathVariable String behandlingsId) {
+        Map<String, String> result = soknadService.hentInnsendtDatoForOpprinneligSoknad(behandlingsId);
+        return result;
+    }
+
     @RequestMapping(value = "/metadata/{soknadId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody()
     @SjekkTilgangTilSoknad
