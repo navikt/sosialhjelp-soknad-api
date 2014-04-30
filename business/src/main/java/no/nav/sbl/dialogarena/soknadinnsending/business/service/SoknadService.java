@@ -747,7 +747,10 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
         }
         vedleggRepository.lagreVedlegg(soknadId, vedleggId, vedlegg);
         repository.settSistLagretTidspunkt(soknadId);
-        repository.settDelstegstatus(soknadId, DelstegStatus.SKJEMA_VALIDERT);
+
+        if (!hentSoknad(soknadId).erEttersending()) {
+            repository.settDelstegstatus(soknadId, DelstegStatus.SKJEMA_VALIDERT);
+        }
     }
 
     private boolean nedgradertEllerForLavtInnsendingsValg(Vedlegg vedlegg) {
