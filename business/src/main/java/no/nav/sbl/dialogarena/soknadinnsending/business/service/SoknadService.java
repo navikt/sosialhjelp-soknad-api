@@ -397,6 +397,7 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
         WebSoknad soknad = hentSoknad(soknadId);
         fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
 
+
         List<Vedlegg> vedleggForventnings = soknad.getVedlegg();
         String skjemanummer = getSkjemanummer(soknad);
         String journalforendeEnhet = getJournalforendeEnhet(soknad);
@@ -443,6 +444,14 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
     @Override
     public void avbrytSoknad(Long soknadId) {
         WebSoknad soknad = repository.hentSoknad(soknadId);
+
+        /*
+        * Sletter alle vedlegg til søknader som blir avbrutt.
+        * Dette burde egentlig gjøres i henvendelse, siden vi uansett skal slette alle vedlegg på avbrutte søknader.
+        * I tillegg blir det liggende igjen mange vedlegg for søknader som er avbrutt før dette kallet ble lagt til.
+        * */
+
+        fillagerConnector.slettAlle(soknad.getBrukerBehandlingId());
         henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
         repository.slettSoknad(soknadId);
     }
