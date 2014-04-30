@@ -399,9 +399,10 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
 
         if (soknad.erEttersending()) {
             for (Vedlegg vedlegg : soknad.getVedlegg()) {
+                byte[] vedleggData = vedleggRepository.hentVedleggData(soknadId, vedlegg.getVedleggId());
                 fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(),
                         vedlegg.getFillagerReferanse(), soknad.getAktoerId(),
-                        new ByteArrayInputStream(vedlegg.getData()));
+                        new ByteArrayInputStream(vedleggData));
             }
         }
 
