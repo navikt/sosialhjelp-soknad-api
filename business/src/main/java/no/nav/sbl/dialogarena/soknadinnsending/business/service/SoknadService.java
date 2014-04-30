@@ -397,15 +397,6 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
         WebSoknad soknad = hentSoknad(soknadId);
         fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
 
-        if (soknad.erEttersending()) {
-            for (Vedlegg vedlegg : soknad.getVedlegg()) {
-                byte[] vedleggData = vedleggRepository.hentVedleggData(soknadId, vedlegg.getVedleggId());
-                fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(),
-                        vedlegg.getFillagerReferanse(), soknad.getAktoerId(),
-                        new ByteArrayInputStream(vedleggData));
-            }
-        }
-
         List<Vedlegg> vedleggForventnings = soknad.getVedlegg();
         String skjemanummer = getSkjemanummer(soknad);
         String journalforendeEnhet = getJournalforendeEnhet(soknad);
@@ -632,11 +623,9 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
         forventning.leggTilInnhold(doc, vedleggUnderBehandling.size());
         WebSoknad soknad = repository.hentSoknad(soknadId);
 
-        if (!soknad.erEttersending()) {
-            fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(),
-                    forventning.getFillagerReferanse(), soknad.getAktoerId(),
-                    new ByteArrayInputStream(doc));
-        }
+        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(),
+                forventning.getFillagerReferanse(), soknad.getAktoerId(),
+                new ByteArrayInputStream(doc));
 
         vedleggRepository.slettVedleggUnderBehandling(soknadId,
                 forventning.getFaktumId(), forventning.getSkjemaNummer());
