@@ -51,6 +51,7 @@ import java.util.Map;
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.detect.Detect.IS_PDF;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.OPPRETTET;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.SKJEMA_VALIDERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
@@ -353,6 +354,7 @@ public class SoknadServiceTest {
 
     @Test
     public void skalLagreVedlegg() {
+        when(soknadService.hentSoknad(11L)).thenReturn(new WebSoknad().medDelstegStatus(OPPRETTET));
         Vedlegg vedlegg = new Vedlegg().medVedleggId(1L);
         soknadService.lagreVedlegg(11L, 1L, vedlegg);
         verify(vedleggRepository).lagreVedlegg(11L, 1L, vedlegg);
@@ -369,6 +371,7 @@ public class SoknadServiceTest {
 
     @Test
     public void skalKunneLagreVedleggMedSammeInnsendinsStatus() {
+        when(soknadService.hentSoknad(11L)).thenReturn(new WebSoknad().medDelstegStatus(OPPRETTET));
         Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.LastetOpp);
 
         opplastetVedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
@@ -377,7 +380,19 @@ public class SoknadServiceTest {
     }
 
     @Test
+    public void skalIkkeSetteDelstegDersomVedleggLagresPaaEttersending() {
+        when(soknadService.hentSoknad(11L)).thenReturn(new WebSoknad().medDelstegStatus(ETTERSENDING_OPPRETTET));
+        Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.LastetOpp);
+
+        opplastetVedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
+        soknadService.lagreVedlegg(11L, 1L, opplastetVedlegg);
+        verify(vedleggRepository).lagreVedlegg(11L, 1L, opplastetVedlegg);
+        verify(soknadRepository, never()).settDelstegstatus(11L, DelstegStatus.SKJEMA_VALIDERT);
+    }
+
+    @Test
     public void skalKunneLagreVedleggMedOppgradertInnsendingsStatus() {
+        when(soknadService.hentSoknad(11L)).thenReturn(new WebSoknad().medDelstegStatus(OPPRETTET));
         Vedlegg vedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.SendesIkke);
 
         vedlegg.setInnsendingsvalg(Vedlegg.Status.SendesSenere);
