@@ -348,7 +348,7 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
 
     private WebSoknad lagEttersendingFraWsSoknad(WSHentSoknadResponse opprinneligInnsending) {
         String ettersendingsBehandlingId = henvendelseConnector.startEttersending(opprinneligInnsending);
-        WSHentSoknadResponse WsEttersending = henvendelseConnector.hentSoknad(ettersendingsBehandlingId);
+        WSHentSoknadResponse wsEttersending = henvendelseConnector.hentSoknad(ettersendingsBehandlingId);
 
         String behandlingskjedeId;
         if(opprinneligInnsending.getBehandlingskjedeId() != null) {
@@ -360,7 +360,7 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
         WebSoknad soknad = WebSoknad.startEttersending(ettersendingsBehandlingId);
 
         String mainUid = randomUUID().toString();
-        XMLMetadataListe xmlVedleggListe = (XMLMetadataListe) WsEttersending.getAny();
+        XMLMetadataListe xmlVedleggListe = (XMLMetadataListe) wsEttersending.getAny();
 
         Optional<XMLMetadata> hovedskjema = on(xmlVedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
         if (!hovedskjema.isSome()) {
@@ -396,6 +396,8 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
     public void sendSoknad(long soknadId, byte[] pdf) {
         WebSoknad soknad = hentSoknad(soknadId);
         fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
+
+
         List<Vedlegg> vedleggForventnings = soknad.getVedlegg();
         String skjemanummer = getSkjemanummer(soknad);
         String journalforendeEnhet = getJournalforendeEnhet(soknad);
@@ -442,6 +444,14 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
     @Override
     public void avbrytSoknad(Long soknadId) {
         WebSoknad soknad = repository.hentSoknad(soknadId);
+
+        /*
+        * Sletter alle vedlegg til søknader som blir avbrutt.
+        * Dette burde egentlig gjøres i henvendelse, siden vi uansett skal slette alle vedlegg på avbrutte søknader.
+        * I tillegg blir det liggende igjen mange vedlegg for søknader som er avbrutt før dette kallet ble lagt til.
+        * */
+
+        fillagerConnector.slettAlle(soknad.getBrukerBehandlingId());
         henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
         repository.slettSoknad(soknadId);
     }
@@ -622,11 +632,9 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
         forventning.leggTilInnhold(doc, vedleggUnderBehandling.size());
         WebSoknad soknad = repository.hentSoknad(soknadId);
 
-        if (!soknad.erEttersending()) {
-            fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(),
-                    forventning.getFillagerReferanse(), soknad.getAktoerId(),
-                    new ByteArrayInputStream(doc));
-        }
+        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(),
+                forventning.getFillagerReferanse(), soknad.getAktoerId(),
+                new ByteArrayInputStream(doc));
 
         vedleggRepository.slettVedleggUnderBehandling(soknadId,
                 forventning.getFaktumId(), forventning.getSkjemaNummer());
@@ -747,7 +755,10 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
         }
         vedleggRepository.lagreVedlegg(soknadId, vedleggId, vedlegg);
         repository.settSistLagretTidspunkt(soknadId);
-        repository.settDelstegstatus(soknadId, DelstegStatus.SKJEMA_VALIDERT);
+
+        if (!hentSoknad(soknadId).erEttersending()) {
+            repository.settDelstegstatus(soknadId, DelstegStatus.SKJEMA_VALIDERT);
+        }
     }
 
     private boolean nedgradertEllerForLavtInnsendingsValg(Vedlegg vedlegg) {

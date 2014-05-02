@@ -41,7 +41,7 @@ public class HenvendelseConnector {
         logger.info("Starter søknad");
         XMLHovedskjema xmlSkjema = createXMLSkjema(skjema, uid);
         XMLMetadataListe xmlMetadataListe = new XMLMetadataListe().withMetadata(xmlSkjema);
-        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartSoknadRequest(fnr, xmlSkjema, SoknadType.SEND_SOKNAD, xmlMetadataListe);
+        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartSoknadRequest(fnr, SoknadType.SEND_SOKNAD, xmlMetadataListe);
         return startSoknadEllerEttersending(xmlStartSoknadRequest);
     }
 
@@ -60,7 +60,7 @@ public class HenvendelseConnector {
         } else {
             behandlingskjedeId = soknadResponse.getBehandlingsId();
         }
-        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartEttersendingRequest(fnr, xmlSkjema, SoknadType.SEND_SOKNAD_ETTERSENDING, xmlMetadataListe, behandlingskjedeId);
+        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartEttersendingRequest(fnr, SoknadType.SEND_SOKNAD_ETTERSENDING, xmlMetadataListe, behandlingskjedeId);
 
         return startSoknadEllerEttersending(xmlStartSoknadRequest);
     }
@@ -112,13 +112,13 @@ public class HenvendelseConnector {
         }
     }
 
-    private WSStartSoknadRequest createXMLStartEttersendingRequest(String fnr, XMLHovedskjema xmlSkjema, SoknadType type, XMLMetadataListe xmlMetadataListe, String behandlingsId) {
-        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartSoknadRequest(fnr, xmlSkjema, type, xmlMetadataListe);
+    private WSStartSoknadRequest createXMLStartEttersendingRequest(String fnr, SoknadType type, XMLMetadataListe xmlMetadataListe, String behandlingsId) {
+        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartSoknadRequest(fnr, type, xmlMetadataListe);
             xmlStartSoknadRequest.setBehandlingskjedeId(behandlingsId);
         return xmlStartSoknadRequest;
     }
 
-    private WSStartSoknadRequest createXMLStartSoknadRequest(String fnr, XMLHovedskjema skjema, SoknadType soknadType, XMLMetadataListe xmlMetadataListe) {
+    private WSStartSoknadRequest createXMLStartSoknadRequest(String fnr, SoknadType soknadType, XMLMetadataListe xmlMetadataListe) {
         WSStartSoknadRequest wsStartSoknadRequest = new WSStartSoknadRequest()
                 .withFodselsnummer(fnr)
                 .withType(soknadType.name())
