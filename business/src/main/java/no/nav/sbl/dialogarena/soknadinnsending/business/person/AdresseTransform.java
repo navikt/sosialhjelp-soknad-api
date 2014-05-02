@@ -54,7 +54,7 @@ public class AdresseTransform {
         }
     }
 
-    private static List<String> HEMMELIGE_DISKRESJONSKODER = Arrays.asList("6","7");
+    private static final List<String> HEMMELIGE_DISKRESJONSKODER = Arrays.asList("6","7");
     private boolean harHemmeligAdresse(XMLBruker soapPerson) {
         return soapPerson.getDiskresjonskode() != null && HEMMELIGE_DISKRESJONSKODER.contains(soapPerson.getDiskresjonskode().getValue());
     }

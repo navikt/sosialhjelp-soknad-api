@@ -36,7 +36,7 @@ public class FamilierelasjonTransform {
             if (familierelasjonType.getValue().equals("BARN")) {
                 no.nav.tjeneste.virksomhet.person.v1.informasjon.Person tilPerson = familierelasjon.getTilPerson();
                 Barn barn = mapXmlPersonToPerson(tilPerson, soknadId);
-                if (barn.getAlder() < 18 && !isDoed(barn) ) {
+                if (barn.getAlder() < 18 && !isDoed(barn)) {
                     result.add(barn);
                 }
             }
