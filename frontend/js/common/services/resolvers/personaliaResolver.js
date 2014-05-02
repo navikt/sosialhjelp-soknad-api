@@ -6,7 +6,7 @@ angular.module('nav.services.resolvers.personalia', [])
             .then(function(result) {
                 var soknadId = result;
                 Personalia.lagre({soknadId: soknadId},
-                    true,
+                    'true',
                     function(result) {
                         personaliaDeferer.resolve(result);
                     }

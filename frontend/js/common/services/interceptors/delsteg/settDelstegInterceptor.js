@@ -2,7 +2,7 @@ angular.module('nav.services.interceptor.delsteg', [])
     .factory('settDelstegStatusEtterKallMotServer', ['data', function (data) {
         return {
             'response': function(response) {
-                if (response === undefined) {
+                if (response === undefined || response.config === undefined) {
                     return response;
                 }
 

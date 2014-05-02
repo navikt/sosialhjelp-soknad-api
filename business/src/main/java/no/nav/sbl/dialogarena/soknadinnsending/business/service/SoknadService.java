@@ -348,7 +348,7 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
 
     private WebSoknad lagEttersendingFraWsSoknad(WSHentSoknadResponse opprinneligInnsending) {
         String ettersendingsBehandlingId = henvendelseConnector.startEttersending(opprinneligInnsending);
-        WSHentSoknadResponse WsEttersending = henvendelseConnector.hentSoknad(ettersendingsBehandlingId);
+        WSHentSoknadResponse wsEttersending = henvendelseConnector.hentSoknad(ettersendingsBehandlingId);
 
         String behandlingskjedeId;
         if(opprinneligInnsending.getBehandlingskjedeId() != null) {
@@ -360,7 +360,7 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
         WebSoknad soknad = WebSoknad.startEttersending(ettersendingsBehandlingId);
 
         String mainUid = randomUUID().toString();
-        XMLMetadataListe xmlVedleggListe = (XMLMetadataListe) WsEttersending.getAny();
+        XMLMetadataListe xmlVedleggListe = (XMLMetadataListe) wsEttersending.getAny();
 
         Optional<XMLMetadata> hovedskjema = on(xmlVedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
         if (!hovedskjema.isSome()) {
