@@ -5,6 +5,8 @@ angular.module('nav.ettersending.controllers.main', [])
         var fristDato = new Date(innsendtDato.getTime());
         fristDato.setDate(innsendtDato.getDate() + parseInt(antallDager));
 
+        console.log(vedlegg);
+
         $scope.fremdriftsindikator = {
             laster: false
         };
@@ -57,6 +59,10 @@ angular.module('nav.ettersending.controllers.main', [])
                 return 'ettersending.vedlegg.lastOpp';
             }
         };
+
+        $scope.harSkjemaLenke = function(v) {
+            return v.urls['URL'];
+        }
 
         $scope.sendEttersending = function () {
             var opplastedeVedlegg = vedlegg.filter(function(v) {
