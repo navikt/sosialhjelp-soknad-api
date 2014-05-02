@@ -33,7 +33,7 @@ angular.module('nav.services.interceptor.feilhandtering', [])
 
         return {
             'responseError': function (response) {
-                if (response === undefined) {
+                if (response === undefined || response.config === undefined) {
                     return $q.reject(response);
                 }
 
