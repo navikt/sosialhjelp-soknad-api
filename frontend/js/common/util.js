@@ -299,6 +299,10 @@ function settFokusTilNesteElement(inputElement) {
     fokuserbareElementer.eq(fokuserbareElementer.index(inputElement) + 1).focus();
 }
 
+function erMobil() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
 function erTouchDevice() {
     return 'ontouchstart' in window || 'onmsgesturechange' in window;
 }
