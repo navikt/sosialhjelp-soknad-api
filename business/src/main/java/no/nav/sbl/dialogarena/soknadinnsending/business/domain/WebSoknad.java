@@ -255,6 +255,20 @@ public class WebSoknad implements Serializable {
         return null;
     }
 
+    /**
+     * Returnerer liste over vedlegg som er lastet opp i denne behandlingen.
+     *
+     * @return liste over vedlegg som er lastet opp i nåværende behandling
+     */
+    public List<Vedlegg> getOpplastedeVedlegg() {
+        return on(vedlegg).filter(new Predicate<Vedlegg>() {
+            @Override
+            public boolean evaluate(Vedlegg vedlegg) {
+                return vedlegg.getStorrelse() > 0;
+            }
+        }).collect();
+    }
+
     public List<Vedlegg> getInnsendteVedlegg() {
         return on(vedlegg).filter(new Predicate<Vedlegg>() {
             @Override
@@ -299,7 +313,6 @@ public class WebSoknad implements Serializable {
                 return faktum.getKey().equals(key) && faktum.getParrentFaktum().equals(parentFaktumId);
             }
         }).collect();
-
     }
 
     @Override
