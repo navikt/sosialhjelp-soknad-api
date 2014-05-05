@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    describe('Start ettersending-controller', function () {
+    describe('Avbryt ettersending-controller', function () {
         var scope, ctrl, httpBackend, timeout;
         var soknadId = 1;
         beforeEach(module('nav.services.ettersending', 'nav.ettersending.controllers.avbryt', 'ngResource'));
@@ -34,7 +34,7 @@
                 .respond();
         }));
 
-        it('skal kunne sende ettersending', function () {
+        it('skal sendes videre til side for avbrutt ettersending etter å ha avbrutt en ettersending', function () {
             scope.slettEttersending();
             httpBackend.flush();
             timeout.flush();

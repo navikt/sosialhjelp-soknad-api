@@ -66,48 +66,6 @@ describe('navFaktumPropertyDato', function () {
         };
 
         element = angular.element(
-            '<div data-nav-faktum-property="minproperty">' +
-                '</div>');
-
-        $compile(element)(rootScope);
-        rootScope.$apply();
-        scope = element.scope();
-
-    }));
-
-    describe("navFaktum", function() {
-        it("datoen skal endres til dage", function() {
-            expect(rootScope.parentFaktum.properties.minproperty).toBe('2014.03.06');
-            expect(scope.faktum.key).toBe('minproperty');
-        });
-    });
-});
-describe('navFaktumPropertyDato', function () {
-    var element, scope, rootScope;
-
-    beforeEach(module('sendsoknad.services', 'nav.navfaktum'));
-
-    beforeEach(module(function ($provide) {
-        $provide.value("cms", {'tekster': {}});
-        $provide.value("data", {
-            fakta: [{}],
-            soknad: {
-                soknadId: 1
-            }
-        });
-    }));
-
-
-    beforeEach(inject(function ($compile, $rootScope,data) {
-        rootScope = $rootScope;
-
-        rootScope.parentFaktum = {
-            properties: {
-                minproperty: '2014.01.01'
-            }
-        };
-
-        element = angular.element(
             '<div data-nav-faktum-property="">' +
                 '</div>');
 
@@ -241,11 +199,11 @@ describe('navFaktumMedDatoProperty', function () {
 
     describe("navFaktum", function() {
         it("navfaktum med nav-property som matcher dato patternet, skal det opprettes en dato og settes til navproperties", function() {
-            expect(scope.navproperties.varighetFra.getTime()).toBe(1394108384263);
+            expect(scope.navproperties.varighetFra.getTime()).toBe(1388530800000);
         });
         it("navfaktum med nav-property som matcher dato patternet, skal det opprettes en dato og settes til navproperties", function() {
             scope.lagreFaktum();
-            expect(scope.navproperties.varighetFra.getTime()).toBe(1394108384263);
+            expect(scope.navproperties.varighetFra.getTime()).toBe(1388530800000);
         });
     });
 });
