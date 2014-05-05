@@ -197,9 +197,9 @@ describe('utility funksjoner -', function () {
         });
 
         it('skal returnere true for fremtidig dato', function() {
-            var idag = new Date();
-            var imorgen = new Date(idag.getTime() + 86400000);
-                       
+            var imorgen = new Date();
+            imorgen.setDate(imorgen.getDate() + 1)
+
             var result = erFremtidigDato(imorgen.getFullYear(), imorgen.getMonth()+1, imorgen.getDate());
             expect(result).toEqual(true);
         });

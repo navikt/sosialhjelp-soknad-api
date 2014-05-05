@@ -50,6 +50,17 @@ function getBehandlingIdFromUrl() {
 	return location.pathname.split('/').last();
 }
 
+function getBehandlingsIdFromUrlForEttersending() {
+    // Hack for å hente ut behandlingID
+    var url = window.location.href;
+    return url.substring(url.indexOf("startettersending/") + 18, url.indexOf("#"));
+}
+
+function redirectTilEttersendingsSiden(behandlingId) {
+    var baseUrl = window.location.href.substring(0, window.location.href.indexOf('/sendsoknad'));
+    window.location.href = baseUrl + '/sendsoknad/ettersending/' + behandlingId + '#/vedlegg';
+}
+
 function sjekkOmGittEgenskapTilObjektErTrue(objekt) {
 	if (objekt) {
 		return checkTrue(objekt.value);
