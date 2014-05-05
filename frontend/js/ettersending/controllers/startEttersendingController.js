@@ -36,7 +36,7 @@ angular.module('nav.ettersending.controllers.start', [])
             ettersendingService.create({},
                 {behandlingskjedeId: behandlingId},
                 function () {
-                    redirectTilEttersendingsSiden(behandlingId);
+                    redirectTilSide('/sendsoknad/ettersending/' + behandlingId + '#/vedlegg');
                 },
                 function () {
                     $scope.fremdriftsindikator.laster = false;

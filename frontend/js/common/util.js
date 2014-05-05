@@ -56,9 +56,9 @@ function getBehandlingsIdFromUrlForEttersending() {
     return url.substring(url.indexOf("startettersending/") + 18, url.indexOf("#"));
 }
 
-function redirectTilEttersendingsSiden(behandlingId) {
+function redirectTilSide(side) {
     var baseUrl = window.location.href.substring(0, window.location.href.indexOf('/sendsoknad'));
-    window.location.href = baseUrl + '/sendsoknad/ettersending/' + behandlingId + '#/vedlegg';
+    window.location.href = baseUrl + side;
 }
 
 function sjekkOmGittEgenskapTilObjektErTrue(objekt) {

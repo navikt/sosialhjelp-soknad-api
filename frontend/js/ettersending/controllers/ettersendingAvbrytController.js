@@ -13,8 +13,7 @@ angular.module('nav.ettersending.controllers.avbryt', [])
                 function() {
                     var delay = 1500 - ($.now() - start);
                     $timeout(function() {
-                        var baseUrl = window.location.href.substring(0, window.location.href.indexOf('/sendsoknad'));
-                        window.location.href = baseUrl + '/sendsoknad/ettersending/avbrutt';
+                        redirectTilSide('/sendsoknad/ettersending/avbrutt');
                     }, delay);
                 },
                 function() {
