@@ -30,6 +30,10 @@ describe('datepicker', function () {
         $provide.value("data", {});
     }));
 
+    afterEach(function() {
+        Date = oldDate;
+    });
+
     describe('single datepicker', function() {
         beforeEach(inject(function ($compile, $rootScope) {
             rootElement = angular.element(
