@@ -32,6 +32,7 @@
         <nav.sbl.commons.version>3.30</nav.sbl.commons.version>
         <modig-security.version>1.0.19</modig-security.version>
         <sendsoknad.tjenestespec.version>0.0.23</sendsoknad.tjenestespec.version>
+        <behandlingsinformasjon.tjenestespec.version>0.0.7</behandlingsinformasjon.tjenestespec.version>
         <fillager.tjenestespec.version>0.0.3</fillager.tjenestespec.version>
         <sonar.exclusions>**/*Config*</sonar.exclusions>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -53,7 +54,7 @@
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
                 <artifactId>dialogarena-behandlingsinformasjon</artifactId>
-                <version>0.0.5</version>
+                <version>${behandlingsinformasjon.tjenestespec.version}</version>
             </dependency>
             <dependency>
                 <groupId>no.nav.sbl.dialogarena</groupId>
