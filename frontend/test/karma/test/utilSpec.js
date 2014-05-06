@@ -232,6 +232,14 @@ describe('utility funksjoner -', function () {
         });
     });
 
+    describe('hente siste ord i streng', function() {
+        it('skal hente siste ord i streng', function () {
+            var str = 'Dette er en test';
+            var forventetResultat = 'test';
+
+            expect(hentSisteOrd(str)).toBe(forventetResultat);
+        });
+    });
 });
 
 

@@ -22,12 +22,20 @@
                             <div class="vedlegg-navn">
                                 <div class="navn" data-truncate-hover>{{ v.navn }}</div>
 
-                                <span data-ng-if="erIkkeLastetOpp(v)" class="tittel">{{ v.tittel }}</span>
-                                <a data-ng-if="erLastetOpp(v)" href="#visVedlegg/{{v.vedleggId}}" class="tittel">{{ v.tittel }}</a>
-                                <span data-ng-if="!erAnnetVedlegg(v)"
-                                      data-tittel="{{ v.tittel }}"
-                                      data-tekst="{{ 'Dagpenger.vedlegg.' + v.skjemaNummer + '.bekrefte' | cmstekst }}"
-                                      data-nav-hjelpetekstelement></span>
+                                <div data-ng-if="erIkkeLastetOpp(v)" class="tittel" data-nowrap>
+                                    {{ v.tittel }}
+                                    <span data-ng-if="!erAnnetVedlegg(v)"
+                                          data-tittel="{{ v.tittel }}"
+                                          data-tekst="{{ 'Dagpenger.vedlegg.' + v.skjemaNummer + '.bekrefte' | cmstekst }}"
+                                          data-nav-hjelpetekstelement></span>
+                                </div>
+                                <a data-ng-if="erLastetOpp(v)" href="#visVedlegg/{{v.vedleggId}}" class="tittel" data-nowrap>
+                                    {{ v.tittel }}
+                                    <span data-ng-if="!erAnnetVedlegg(v)"
+                                          data-tittel="{{ v.tittel }}"
+                                          data-tekst="{{ 'Dagpenger.vedlegg.' + v.skjemaNummer + '.bekrefte' | cmstekst }}"
+                                          data-nav-hjelpetekstelement></span>
+                                </a>
                             </div>
                             <div class="last-opp">
                                 <a class="knapp-link-liten" data-ng-href="#/opplasting/{{v.vedleggId}}" data-ng-bind-html="'ettersending.vedlegg.lastOpp' | cmstekst" data-ng-if="erIkkeLastetOpp(v)"></a>
@@ -58,11 +66,13 @@
                     <div class="vedleggboks" data-ng-repeat="v in vedlegg | ettersendes: false | orderBy: 'opprettetDato'">
                         <div class="vedlegg-navn">
                             <div class="navn" data-truncate-hover>{{ v.navn }}</div>
-                            <span class="tittel">{{ v.tittel }}</span>
-                            <span data-ng-if="!erAnnetVedlegg(v)"
-                                  data-tittel="{{ v.tittel }}"
-                                  data-tekst="{{ 'Dagpenger.vedlegg.' + v.skjemaNummer + '.bekrefte' | cmstekst }}"
-                                  data-nav-hjelpetekstelement></span>
+                            <div class="tittel" data-nowrap>
+                                {{ v.tittel }}
+                                <span data-ng-if="!erAnnetVedlegg(v)"
+                                      data-tittel="{{ v.tittel }}"
+                                      data-tekst="{{ 'Dagpenger.vedlegg.' + v.skjemaNummer + '.bekrefte' | cmstekst }}"
+                                      data-nav-hjelpetekstelement></span>
+                            </div>
                         </div>
                         <div class="last-opp">
                             <div class="liten" data-ng-bind-html="hentTekstKey(v) | cmstekst"></div>
