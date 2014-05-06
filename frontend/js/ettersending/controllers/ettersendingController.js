@@ -1,5 +1,5 @@
 angular.module('nav.ettersending.controllers.main', [])
-    .controller('EttersendingCtrl', function ($scope, data, ettersendingService, vedleggService, Faktum, vedlegg, $location) {
+    .controller('EttersendingCtrl', function ($scope, data, ettersendingService, vedleggService, Faktum, vedlegg, $location, sjekkOmSkalEttersendes) {
         var antallDager = data.config["soknad.ettersending.antalldager"];
         var innsendtDato = new Date(parseFloat(data.finnFaktum('soknadInnsendingsDato').value));
         var fristDato = new Date(innsendtDato.getTime());
@@ -50,12 +50,12 @@ angular.module('nav.ettersending.controllers.main', [])
             }
         };
 
-        $scope.harSkjemaLenke = function(v) {
+        $scope.harSkjemaLenke = function (v) {
             return v.urls['URL'];
         }
 
         $scope.sendEttersending = function () {
-            var opplastedeVedlegg = vedlegg.filter(function(v) {
+            var opplastedeVedlegg = vedlegg.filter(function (v) {
                 return v.storrelse > 0;
             });
 
@@ -67,7 +67,7 @@ angular.module('nav.ettersending.controllers.main', [])
                         $location.path('bekreftelse/' + data.soknad.brukerBehandlingId);
                         $scope.fremdriftsindikator.laster = false;
                     },
-                    function() {
+                    function () {
                         $scope.fremdriftsindikator.laster = false;
                     }
                 );
@@ -77,6 +77,14 @@ angular.module('nav.ettersending.controllers.main', [])
 
         };
 
+        $scope.skalViseEttersendingsbolk = function() {
+            return vedlegg.filter(sjekkOmSkalEttersendes.skalEttersendes).length > 0;
+        };
+
+        $scope.skalViseRestenBolk = function() {
+            return vedlegg.filter(sjekkOmSkalEttersendes.skalIkkeEttersendes).length > 0;
+        };
+
         $scope.hentAntallVedleggSomErOpplastetIDenneEttersendingen = function () {
             return vedlegg.filter(function (v) {
                 return v.storrelse > 0;
@@ -84,8 +92,7 @@ angular.module('nav.ettersending.controllers.main', [])
         };
 
         $scope.harLastetOppDokument = function () {
-            var antallOpplastedeVedlegg = $scope.hentAntallVedleggSomErOpplastetIDenneEttersendingen();
-            return antallOpplastedeVedlegg > 0;
+            return $scope.hentAntallVedleggSomErOpplastetIDenneEttersendingen() > 0;
         };
 
         $scope.slettVedlegg = function (v) {
@@ -103,49 +110,56 @@ angular.module('nav.ettersending.controllers.main', [])
             vedlegg.splice(index, 1);
         };
 
-        $scope.scrollTilElement = function(element) {
+        $scope.scrollTilElement = function (element) {
             scrollToElement(element, 0);
         };
     })
-    .filter('ettersendes', function () {
+    .filter('ettersendes', function (sjekkOmSkalEttersendes) {
         return function (input, ettersendesBolk) {
-            function skalEttersendes(v) {
-                if (v.opprinneligInnsendingsvalg === 'SendesSenere') {
-                    return true;
-                } else if (erLastetOppIDenneInnsendingen(v)) {
-                    return true;
-                } else if (erAnnetVedleggSomErLagtTilIDenneInnsendingen(v)) {
-                    return true;
-                }
-
-                return false;
+            if (ettersendesBolk) {
+                return input.filter(sjekkOmSkalEttersendes.skalEttersendes);
+            } else {
+                return input.filter(sjekkOmSkalEttersendes.skalIkkeEttersendes);
             }
 
-            function skalIkkeEttersendes(v) {
+        };
+    })
+    .factory('sjekkOmSkalEttersendes', function () {
+        function skalEttersendes(v) {
+            if (v.opprinneligInnsendingsvalg === 'SendesSenere') {
+                return true;
+            } else if (erLastetOppIDenneInnsendingen(v)) {
+                return true;
+            } else if (erAnnetVedleggSomErLagtTilIDenneInnsendingen(v)) {
+                return true;
+            }
+
+            return false;
+        }
+
+        function erLastetOpp(v) {
+            return v.innsendingsvalg === 'LastetOpp';
+        }
+
+        function erLastetOppIDenneInnsendingen(v) {
+            return erLastetOpp(v) && v.storrelse > 0;
+        }
+
+        function erAnnetVedlegg(v) {
+            return v.skjemaNummer === "N6";
+        }
+
+        function erAnnetVedleggSomErLagtTilIDenneInnsendingen(v) {
+            return erAnnetVedlegg(v) && v.opprinneligInnsendingsvalg === null;
+        }
+
+        return {
+            skalEttersendes: function (v) {
+                return skalEttersendes(v);
+            },
+
+            skalIkkeEttersendes: function (v) {
                 return !skalEttersendes(v);
             }
-
-            function erLastetOpp(v) {
-                return v.innsendingsvalg === 'LastetOpp';
-            }
-
-            function erLastetOppIDenneInnsendingen(v) {
-                return erLastetOpp(v) && v.storrelse > 0;
-            }
-
-            function erAnnetVedlegg(v) {
-                return v.skjemaNummer === "N6";
-            }
-
-            function erAnnetVedleggSomErLagtTilIDenneInnsendingen(v) {
-                return erAnnetVedlegg(v) && v.opprinneligInnsendingsvalg === null;
-            }
-
-            if (ettersendesBolk) {
-                return input.filter(skalEttersendes);
-            } else {
-                return input.filter(skalIkkeEttersendes);
-            }
-
         };
     });

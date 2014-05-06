@@ -99,7 +99,7 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                 }
             })
             .when('/visVedlegg/:vedleggId', {
-                templateUrl: '../views/templates/vedlegg/visvedlegg.html',
+                templateUrl: '../views/common/vedlegg/visvedlegg.html',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;

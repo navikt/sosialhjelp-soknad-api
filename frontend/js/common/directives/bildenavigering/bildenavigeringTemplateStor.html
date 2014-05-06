@@ -1,18 +1,10 @@
 <div class="bildenavigering" data-ng-cloak data-fetch-spinner>
     <div class="header">
-        <div class="header-content">
-            <div class="tilbake">
-                <a class="ikke-mobil" onclick="history.back()" href="javascript:void(0);" data-ng-bind-html="
-                    'vedlegg.forhandsvisning.tilbake' | cmstekst"></a>
-                <a class="mobil" onclick="history.back()" href="javascript:void(0);" data-ng-bind-html="
-                    'vedlegg.forhandsvisning.tilbake.mobil' | cmstekst"></a>
-            </div>
-            <div class="navn">{{vedlegg.navn}} ({{side + 1}}/{{vedlegg.antallSider}})</div>
-        </div>
+        <a class="ikke-mobil" onclick="history.back()" href="javascript:void(0);" data-ng-bind-html="
+                'vedlegg.forhandsvisning.tilbake' | cmstekst"></a>
     </div>
     <div class="nav" data-ng-if="vedlegg.vedleggId">
-
-
+        <h1 class="stor navn">{{vedlegg.tittel}} ({{side + 1}}/{{vedlegg.antallSider}})</h1>
         <div class="bilde">
             <a class="pil-venstre-sort" data-ng-click="naviger(-1)" data-ng-if="vedlegg.antallSider > 1"
                href="javascript:void(0);">
