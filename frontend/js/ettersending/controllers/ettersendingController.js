@@ -1,7 +1,7 @@
 angular.module('nav.ettersending.controllers.main', [])
     .controller('EttersendingCtrl', function ($scope, data, ettersendingService, vedleggService, Faktum, vedlegg, $location) {
         var antallDager = data.config["soknad.ettersending.antalldager"];
-        var innsendtDato = new Date(parseInt(data.finnFaktum('soknadInnsendingsDato').value));
+        var innsendtDato = new Date(parseFloat(data.finnFaktum('soknadInnsendingsDato').value));
         var fristDato = new Date(innsendtDato.getTime());
         fristDato.setDate(innsendtDato.getDate() + parseInt(antallDager));
 
@@ -47,14 +47,6 @@ angular.module('nav.ettersending.controllers.main', [])
                 return 'ettersending.vedlegg.sendesIkke';
             } else if (v.opprinneligInnsendingsvalg === 'LastetOpp') {
                 return 'ettersending.vedlegg.sendtInn';
-            }
-        };
-
-        $scope.hentLenkeKey = function (v) {
-            if (v.opprinneligInnsendingsvalg === 'SendesIkke') {
-                return 'ettersending.vedlegg.endre';
-            } else if (v.opprinneligInnsendingsvalg === 'LastetOpp') {
-                return 'ettersending.vedlegg.lastOpp';
             }
         };
 
