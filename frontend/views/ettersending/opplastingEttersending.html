@@ -1,19 +1,27 @@
 <div id="opplasting"
+     class="ettersending-opplasting"
      data-sidetittel="ettersending.sidetittel"
      data-fetch-spinner="64">
-    <div class="rad uten-ramme">
-        <div class="begrensning">
-            <h1 class="diger" data-ng-bind-html="'ettersending.tittel' | cmstekst"></h1>
+    <div class="rad">
+        <div class="begrensning sak-totredel">
+            <div class="panel-standard">
+                <h1 class="diger" data-ng-bind-html="'ettersending.tittel' | cmstekst"></h1>
+            </div>
         </div>
     </div>
-    <div class="soknad rad-belyst">
-        <div class="begrensning sak-halv">
-            <div class="panel uten-ramme">
+    <div class="rad-belyst">
+        <div class="begrensning">
+            <div class="sak-halv">
                 <h1 class="stor-ikon-vedlegg-strek" data-scrolling-tittel><span data-ng-if="vedlegg.vedleggId">{{vedlegg.tittel}}</span><span
                         data-ng-if="vedlegg.navn">: {{vedlegg.navn}}</span></h1>
-
-                <p data-ng-bind-html="'Dagpenger.vedlegg.' + vedlegg.skjemaNummer + '.bekrefte' | cmstekst"></p>
             </div>
+            <div class="sak-totredel">
+                <div class="panel-standard">
+                    <p class="ettersending-infotekst" data-ng-bind-html="'Dagpenger.vedlegg.' + vedlegg.skjemaNummer + '.bekrefte' | cmstekst"></p>
+                </div>
+            </div>
+
+
         </div>
     </div>
 

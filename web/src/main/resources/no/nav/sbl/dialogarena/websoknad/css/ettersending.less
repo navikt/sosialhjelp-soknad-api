@@ -1,3 +1,11 @@
+.ettersending-infotekst {
+    margin-bottom: 30px;
+    font-weight: 600;
+    font-family: Modus, Arial, Helvetica, sans-serif;
+    font-size: 1.21rem;
+    text-align: left;
+}
+
 #start-ettersending {
     .panel-standard-belyst {
         text-align: center;
@@ -9,13 +17,43 @@
     }
 }
 
+.ettersending-opplasting {
+    padding-top: 60px;
+
+    .panel-standard {
+        text-align: center;
+    }
+
+    .rad-belyst {
+        padding-top: 45px;
+        padding-bottom: 40px;
+    }
+
+}
+
 #ettersending-nytt-vedlegg {
-    .form-linje {
+
+    h1 {
+        padding-top: 48px;
+        background-image: url(../img/under-dark.png), url(../img/vedlegg_graa.svg);
+        background-repeat: no-repeat;
+        background-position: bottom center, top center;
+        font-weight: 400;
         padding-bottom: 30px;
+        margin-top: 27px;
+        text-align: center;
+    }
+
+    .form-linje {
+        padding-bottom: 40px;
         margin: 0 auto;
         width: 70%;
         input {
             width: 100%;
+        }
+
+        .melding {
+            margin-bottom: 0;
         }
     }
 
@@ -25,7 +63,7 @@
 
         input, img {
             display: block;
-            margin: 0 auto 30px;
+            margin: 0 auto 20px;
         }
     }
 }
@@ -79,13 +117,18 @@
             background-image: url(../img/under_arbeid_ikon.svg);
             background-repeat: no-repeat;
             background-position: top center;
+            margin-bottom: 30px;
+            font-weight: 400;
         }
 
         .ikon-vedlegg-resten {
             padding-top: 48px;
-            background-image: url(../img/ferdig_ikon.svg);
+            background-image: url(../img/under-dark.png), url(../img/ferdig_ikon.svg);
             background-repeat: no-repeat;
-            background-position: top center;
+            background-position: bottom center, top center;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            font-weight: 400;
         }
 
         .vedleggsliste {
@@ -116,12 +159,8 @@
             }
 
             &.resten {
-                p {
+                .ettersending-infotekst {
                     margin-bottom: 30px;
-                    font-weight: 600;
-                    font-family: Modus, Arial, Helvetica, sans-serif;
-                    font-size: 1.21rem;
-                    text-align: left;
                 }
             }
 
