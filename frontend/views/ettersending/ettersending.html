@@ -15,7 +15,7 @@
     <div class="rad uten-ramme innholdsrad">
         <div class="begrensning sak-totredel">
             <section class="panel-standard">
-                <div class="ettersendes vedleggsliste">
+                <div class="ettersendes vedleggsliste" data-ng-if="skalViseEttersendingsbolk()">
                     <h2 class="stor ikon-vedlegg-ettersende" data-ng-bind-html="'ettersending.vedlegg.ettersender' | cmstekst"></h2>
                     <div class="vedleggboks" data-ng-repeat="v in vedlegg | ettersendes: true | orderBy: 'opprettetDato'" data-ng-class="{opplastet: erLastetOpp(v), annetVedlegg: erAnnetVedlegg(v)}">
                         <div>
@@ -58,7 +58,7 @@
                     </div>
                 </div>
 
-                <div class="resten vedleggsliste">
+                <div class="resten vedleggsliste" data-ng-if="skalViseRestenBolk()">
                     <h2 class="stor ikon-vedlegg-resten" data-ng-bind-html="'ettersending.vedlegg.resten' | cmstekst"></h2>
                     <p data-ng-bind-html="'ettersending.vedlegg.resten.informasjon' | cmstekst"></p>
                     <div class="vedleggboks" data-ng-repeat="v in vedlegg | ettersendes: false | orderBy: 'opprettetDato'">
