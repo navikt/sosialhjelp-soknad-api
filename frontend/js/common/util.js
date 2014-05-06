@@ -341,7 +341,3 @@ function getIEVersion() {
 function isNotNullOrUndefined(obj) {
     return obj !== undefined && obj !== null;
 }
-
-function hentSisteOrd(str) {
-    return /.*[\s-](\S+)/.exec(str)[1];
-}

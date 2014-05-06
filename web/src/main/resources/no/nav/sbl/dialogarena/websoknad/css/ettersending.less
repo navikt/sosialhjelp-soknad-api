@@ -121,17 +121,17 @@
                     .hjelpetekst-parent {
                         padding-right: 0;
 
+                        &:before {
+                            color: #3e3832;
+                            content: "•";
+                            padding: 0 0.3rem 0 0.9rem;
+                        }
+
                         .hjelpetekst {
-                            display: inline-block;
-                            position: static;
+                            display: inline;
+                            bottom: -6px;
                             right: auto;
                             top: auto;
-
-                            &:before {
-                                color: #3e3832;
-                                content: "•";
-                                padding: 0 0.3rem 0 0.9rem;
-                            }
                         }
                     }
 
@@ -143,6 +143,10 @@
                         text-overflow: ellipsis;
                     }
 
+                    .skjema-lenke {
+                        margin-top: 10px;
+                    }
+
                     .tittel {
                         font-size: 1.21rem;
                     }
@@ -152,7 +156,7 @@
                     width: 28%;
                     text-align: right;
 
-                    div {
+                    div div {
                         &:last-child {
                             padding-top: 5px;
                         }
