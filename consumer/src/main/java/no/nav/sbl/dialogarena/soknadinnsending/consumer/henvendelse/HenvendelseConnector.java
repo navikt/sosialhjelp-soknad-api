@@ -20,7 +20,6 @@ import javax.inject.Named;
 import javax.xml.ws.soap.SOAPFaultException;
 import java.util.List;
 
-import static java.util.UUID.randomUUID;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.IKKE_VALGT;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -48,11 +47,7 @@ public class HenvendelseConnector {
     public String startEttersending(WSHentSoknadResponse soknadResponse) {
         logger.info("Starter ettersending");
         String fnr = getSubjectHandler().getUid();
-        String uid = randomUUID().toString();
         XMLMetadataListe xmlMetadataListe = (XMLMetadataListe) soknadResponse.getAny();
-        XMLHovedskjema xmlHovedskjema = (XMLHovedskjema)xmlMetadataListe.getMetadata().get(0);
-        XMLHovedskjema xmlSkjema = createXMLSkjema(xmlHovedskjema.getSkjemanummer(), uid);
-
 
         String behandlingskjedeId;
         if(soknadResponse.getBehandlingskjedeId() != null) {

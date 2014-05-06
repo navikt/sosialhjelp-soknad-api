@@ -780,11 +780,13 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
     }
 
     private SoknadStruktur hentStruktur(String skjema) {
+        String type;
         //TODO: TEST, Finn en bedre løsning. snakk med Eirik
-        if(skjema.equals("NAV 04-01.04")) {
-            skjema = "NAV 04-01.03";
+        if("NAV 04-01.04".equals(skjema)) {
+            type = "NAV 04-01.03.xml";
+        } else {
+            type = skjema + ".xml";
         }
-        String type = skjema + ".xml";
         try {
             Unmarshaller unmarshaller = newInstance(SoknadStruktur.class)
                     .createUnmarshaller();
