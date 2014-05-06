@@ -231,15 +231,6 @@ describe('utility funksjoner -', function () {
             expect(konverterTallTilStringMedToSiffer(tall)).toBe("10");
         });
     });
-
-    describe('hente siste ord i streng', function() {
-        it('skal hente siste ord i streng', function () {
-            var str = 'Dette er en test';
-            var forventetResultat = 'test';
-
-            expect(hentSisteOrd(str)).toBe(forventetResultat);
-        });
-    });
 });
 
 
