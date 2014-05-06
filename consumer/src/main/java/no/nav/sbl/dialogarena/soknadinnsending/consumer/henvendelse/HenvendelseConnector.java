@@ -70,11 +70,16 @@ public class HenvendelseConnector {
     }
 
     public List<WSBehandlingskjedeElement> hentBehandlingskjede(String behandlingskjedeId) {
-        List<WSBehandlingskjedeElement> wsBehandlingskjedeElementer = sendSoknadService.hentBehandlingskjede(behandlingskjedeId);
-        if (wsBehandlingskjedeElementer.isEmpty()) {
-            throw new ApplicationException("Fant ingen behandlinger i en behandlingskjede med behandlingsID " + behandlingskjedeId);
+        try {
+            List<WSBehandlingskjedeElement> wsBehandlingskjedeElementer = sendSoknadService.hentBehandlingskjede(behandlingskjedeId);
+            if (wsBehandlingskjedeElementer.isEmpty()) {
+                throw new ApplicationException("Fant ingen behandlinger i en behandlingskjede med behandlingsID " + behandlingskjedeId);
+            }
+            return wsBehandlingskjedeElementer;
+        } catch (SOAPFaultException e) {
+            logger.error("Feil ved henting av behandlingdskjede" + e, e);
+            throw new SystemException("Kunne ikke hente behandlingskjede", e, "exception.system.baksystem");
         }
-        return wsBehandlingskjedeElementer;
     }
 
     public void avsluttSoknad(String behandlingsId, XMLHovedskjema hovedskjema, XMLVedlegg... vedlegg) {

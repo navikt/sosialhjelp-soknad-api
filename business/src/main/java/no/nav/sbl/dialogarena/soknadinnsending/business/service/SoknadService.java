@@ -42,6 +42,7 @@ import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStatus;
 import org.apache.commons.collections15.Closure;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.Splitter;
@@ -85,6 +86,7 @@ import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.Fak
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.Transformers.toInnsendingsvalg;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getJournalforendeEnhet;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.getSkjemanummer;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
@@ -433,6 +435,11 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
                     .medOpprinneligInnsendingsvalg(toInnsendingsvalg(xmlVedlegg.getInnsendingsvalg()))
                     .medSoknadId(soknadId)
                     .medNavn(xmlVedlegg.getTilleggsinfo());
+
+            String skjemanummerTillegg = xmlVedlegg.getSkjemanummerTillegg();
+            if (isNotBlank(skjemanummerTillegg)) {
+                v.setSkjemaNummer(v.getSkjemaNummer() + "|" + skjemanummerTillegg);
+            }
 
             medKodeverk(v);
             vedleggRepository.opprettVedlegg(v, null);

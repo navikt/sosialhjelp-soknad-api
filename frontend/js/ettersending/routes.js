@@ -112,16 +112,4 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                     }
                 }
             });
-    }]).run(['$rootScope', '$location', '$anchorScroll', '$routeParams', function ($rootScope, $location, $anchorScroll, $routeParams) {
-        $rootScope.$on('$routeChangeSuccess', function (newRoute, oldRoute) {
-            if (_gaq) {
-                var trackPage = "startSoknad";
-                if (erSoknadStartet()) {
-                    trackPage = $location.path().split("/")[1];
-                }
-                _gaq.push(['_trackPageview', '/sendsoknad/' + trackPage]);
-            }
-            $location.hash($routeParams.scrollTo);
-            $anchorScroll();
-        });
     }]);
