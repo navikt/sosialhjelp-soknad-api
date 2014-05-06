@@ -312,6 +312,13 @@ public class Vedlegg {
         return getSkjemaNummer().equals("N6") ? getNavn() : getSkjemaNummerFiltrert();
     }
 
+    public String getSkjemanummerTillegg() {
+        if (getSkjemaNummer() != null && getSkjemaNummer().contains("|")) {
+            return getSkjemaNummer().substring(getSkjemaNummer().indexOf("|") + 1, getSkjemaNummer().length());
+        }
+        return "";
+    }
+
     public enum Status {
         IkkeVedlegg(0),
         VedleggKreves(1),

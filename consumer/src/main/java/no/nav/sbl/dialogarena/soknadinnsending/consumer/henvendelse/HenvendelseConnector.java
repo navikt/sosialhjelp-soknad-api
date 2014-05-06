@@ -20,7 +20,6 @@ import javax.inject.Named;
 import javax.xml.ws.soap.SOAPFaultException;
 import java.util.List;
 
-import static java.util.UUID.randomUUID;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.IKKE_VALGT;
 import static no.nav.modig.core.context.SubjectHandler.getSubjectHandler;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -41,18 +40,14 @@ public class HenvendelseConnector {
         logger.info("Starter søknad");
         XMLHovedskjema xmlSkjema = createXMLSkjema(skjema, uid);
         XMLMetadataListe xmlMetadataListe = new XMLMetadataListe().withMetadata(xmlSkjema);
-        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartSoknadRequest(fnr, xmlSkjema, SoknadType.SEND_SOKNAD, xmlMetadataListe);
+        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartSoknadRequest(fnr, SoknadType.SEND_SOKNAD, xmlMetadataListe);
         return startSoknadEllerEttersending(xmlStartSoknadRequest);
     }
 
     public String startEttersending(WSHentSoknadResponse soknadResponse) {
         logger.info("Starter ettersending");
         String fnr = getSubjectHandler().getUid();
-        String uid = randomUUID().toString();
         XMLMetadataListe xmlMetadataListe = (XMLMetadataListe) soknadResponse.getAny();
-        XMLHovedskjema xmlHovedskjema = (XMLHovedskjema)xmlMetadataListe.getMetadata().get(0);
-        XMLHovedskjema xmlSkjema = createXMLSkjema(xmlHovedskjema.getSkjemanummer(), uid);
-
 
         String behandlingskjedeId;
         if(soknadResponse.getBehandlingskjedeId() != null) {
@@ -60,7 +55,7 @@ public class HenvendelseConnector {
         } else {
             behandlingskjedeId = soknadResponse.getBehandlingsId();
         }
-        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartEttersendingRequest(fnr, xmlSkjema, SoknadType.SEND_SOKNAD_ETTERSENDING, xmlMetadataListe, behandlingskjedeId);
+        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartEttersendingRequest(fnr, SoknadType.SEND_SOKNAD_ETTERSENDING, xmlMetadataListe, behandlingskjedeId);
 
         return startSoknadEllerEttersending(xmlStartSoknadRequest);
     }
@@ -75,11 +70,16 @@ public class HenvendelseConnector {
     }
 
     public List<WSBehandlingskjedeElement> hentBehandlingskjede(String behandlingskjedeId) {
-        List<WSBehandlingskjedeElement> wsBehandlingskjedeElementer = sendSoknadService.hentBehandlingskjede(behandlingskjedeId);
-        if (wsBehandlingskjedeElementer.isEmpty()) {
-            throw new ApplicationException("Fant ingen behandlinger i en behandlingskjede med behandlingsID " + behandlingskjedeId);
+        try {
+            List<WSBehandlingskjedeElement> wsBehandlingskjedeElementer = sendSoknadService.hentBehandlingskjede(behandlingskjedeId);
+            if (wsBehandlingskjedeElementer.isEmpty()) {
+                throw new ApplicationException("Fant ingen behandlinger i en behandlingskjede med behandlingsID " + behandlingskjedeId);
+            }
+            return wsBehandlingskjedeElementer;
+        } catch (SOAPFaultException e) {
+            logger.error("Feil ved henting av behandlingdskjede" + e, e);
+            throw new SystemException("Kunne ikke hente behandlingskjede", e, "exception.system.baksystem");
         }
-        return wsBehandlingskjedeElementer;
     }
 
     public void avsluttSoknad(String behandlingsId, XMLHovedskjema hovedskjema, XMLVedlegg... vedlegg) {
@@ -112,13 +112,13 @@ public class HenvendelseConnector {
         }
     }
 
-    private WSStartSoknadRequest createXMLStartEttersendingRequest(String fnr, XMLHovedskjema xmlSkjema, SoknadType type, XMLMetadataListe xmlMetadataListe, String behandlingsId) {
-        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartSoknadRequest(fnr, xmlSkjema, type, xmlMetadataListe);
+    private WSStartSoknadRequest createXMLStartEttersendingRequest(String fnr, SoknadType type, XMLMetadataListe xmlMetadataListe, String behandlingsId) {
+        WSStartSoknadRequest xmlStartSoknadRequest = createXMLStartSoknadRequest(fnr, type, xmlMetadataListe);
             xmlStartSoknadRequest.setBehandlingskjedeId(behandlingsId);
         return xmlStartSoknadRequest;
     }
 
-    private WSStartSoknadRequest createXMLStartSoknadRequest(String fnr, XMLHovedskjema skjema, SoknadType soknadType, XMLMetadataListe xmlMetadataListe) {
+    private WSStartSoknadRequest createXMLStartSoknadRequest(String fnr, SoknadType soknadType, XMLMetadataListe xmlMetadataListe) {
         WSStartSoknadRequest wsStartSoknadRequest = new WSStartSoknadRequest()
                 .withFodselsnummer(fnr)
                 .withType(soknadType.name())

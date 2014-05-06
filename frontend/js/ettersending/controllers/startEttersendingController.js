@@ -14,6 +14,7 @@ angular.module('nav.ettersending.controllers.start', [])
             fristDato = new Date(parseInt(result.innsendtdato));
             fristDato.setDate($scope.innsendtDato.getDate() + parseInt(antallDager));
         });
+
         $scope.kanStarteEttersending = function () {
             fristDato.setHours(23);
             fristDato.setMinutes(59);
@@ -35,9 +36,7 @@ angular.module('nav.ettersending.controllers.start', [])
             ettersendingService.create({},
                 {behandlingskjedeId: behandlingId},
                 function () {
-
-                    var baseUrl = window.location.href.substring(0, window.location.href.indexOf('/sendsoknad'));
-                    window.location.href = baseUrl + '/sendsoknad/ettersending/' + behandlingId + '#/vedlegg';
+                    redirectTilSide('/sendsoknad/ettersending/' + behandlingId + '#/vedlegg');
                 },
                 function () {
                     $scope.fremdriftsindikator.laster = false;

@@ -11,8 +11,9 @@ module.exports = function (config) {
         frameworks: ['jasmine'],
 
         preprocessors: {
-            '../../js/app/**/*.js': ['coverage'],
+            '../../js/dagpenger/**/*.js': ['coverage'],
             '../../js/common/**/*.js': ['coverage'],
+            '../../js/ettersending/**/*.js': ['coverage'],
             '../../js/**/*.html': 'ng-html2js'
         },
 
@@ -25,17 +26,17 @@ module.exports = function (config) {
             '../../js/lib/angular/angular-resource.js',
             '../../js/lib/angular/angular-sanitize.js',
             '../../js/lib/angular/angular-cookies.js',
+            '../../js/lib/angular/angular-route.js',
             '../../js/lib/bindonce.js',
             '../../js/dagpenger/**/*.js',
+            '../../js/ettersending/**/*.js',
             '../../js/common/**/*.js',
             '../../js/lib/jquery/jquery.iframe-transport.js',
             '../../js/lib/jquery/jquery.fileupload.js',
             '../../js/lib/jquery/jquery.fileupload-process.js',
             '../../js/lib/jquery/jquery.fileupload-validate.js',
             '../../js/lib/jquery/jquery.fileupload-angular.js',
-            'test/*.js',
-            'test/directives/*.js',
-            'test/controllers/*.js',
+            'test/**/*.js',
             '../../js/**/*.html'
         ],
 

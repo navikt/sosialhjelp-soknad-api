@@ -231,6 +231,6 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('default', ['jshint', 'htmlbuild:dev_sendsoknad', 'htmlbuild:dev_ettersending']);
     grunt.registerTask('maven', ['jshint', 'karma:unit', 'html2js', 'htmlbuild:dev_sendsoknad', 'htmlbuild:dev_ettersending']);
-    grunt.registerTask('maven-test', ['karma:unit']);
+    grunt.registerTask('mavenTest', ['karma:unit']);
 	grunt.registerTask('maven-prod', ['clean', 'html2js', 'concat:sendsoknad', 'concat:ettersending', 'ngmin', 'uglify', 'htmlbuild:dev_sendsoknad', 'htmlbuild:prod_sendsoknad', 'htmlbuild:dev_ettersending', 'htmlbuild:prod_ettersending']);
 };
