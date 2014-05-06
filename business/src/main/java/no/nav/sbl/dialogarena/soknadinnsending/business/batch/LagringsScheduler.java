@@ -44,9 +44,7 @@ public class LagringsScheduler {
             logger.info("---- Starter flytting av søknader til henvendelse-jobb ----");
             for (Optional<WebSoknad> ws = soknadRepository.plukkSoknadTilMellomlagring(); ws.isSome(); ws = soknadRepository.plukkSoknadTilMellomlagring()) {
                 if(isPaabegyntEttersendelse(ws)) {
-                    WebSoknad soknad = ws.get();
-                    henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
-                    soknadRepository.slettSoknad(soknad.getSoknadId());
+                    avbrytOgSlettEttersendelse(ws);
                 } else {
                     lagreFilTilHenvendelseOgSlettILokalDb(ws);
                 }
@@ -60,6 +58,25 @@ public class LagringsScheduler {
         } else {
             logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
         }
+    }
+
+    private void avbrytOgSlettEttersendelse(Optional<WebSoknad> ws) throws InterruptedException {
+        WebSoknad soknad = ws.get();
+        try {
+            henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
+            soknadRepository.slettSoknad(soknad.getSoknadId());
+            vellykket++;
+        } catch (Exception e) {
+            feilet++;
+            logger.error("Avbryt eller sletting feilet for ettersending {}. Setter tilbake til LEDIG", soknad.getSoknadId(), e);
+            try {
+                soknadRepository.leggTilbake(soknad);
+            } catch (Exception e1) {
+                logger.error("Klarte ikke å legge tilbake ettersending {}", soknad.getSoknadId(), e1);
+            }
+            Thread.sleep(1000); // Så loggen ikke blir fylt opp
+        }
+
     }
 
     private boolean isPaabegyntEttersendelse(Optional<WebSoknad> ws) {

@@ -58,8 +58,7 @@ public class FamilierelasjonTransform {
                 finnFnr(xmlperson),
                 finnFornavn(xmlperson),
                 finnMellomNavn(xmlperson),
-                finnEtterNavn(xmlperson),
-                finnStatsborgerskap(xmlperson));
+                finnEtterNavn(xmlperson)).withLand(finnStatsborgerskap(xmlperson));
     }
 
     private static String finnPersonStatus(Person xmlperson) {
