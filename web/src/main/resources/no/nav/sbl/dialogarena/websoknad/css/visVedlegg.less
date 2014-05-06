@@ -14,7 +14,7 @@
         height: 100%;
 
         .header {
-            height: 40px;
+            height: 50px;
             width: 102%;
             box-shadow: 0 1px 4px #000000;
             color: #d1d1d1;
@@ -23,26 +23,42 @@
             z-index: 1000;
 
             a {
+                font-family: Modus, Arial, Helvetica, sans-serif;
+                font-weight: 600;
+                font-size: 12px;
+                text-transform: uppercase;
                 position: relative;
-                top: 11px;
-                padding: 6px 10px;
-                border: 1px solid #d1d1d1;
+                top: 16px;
+                padding: 6px 25px;
+                border: 1px solid #5f5e5d;
                 width: 150px;
-                color: #d1d1d1;
+                color: #fff;
+
+                &:hover, &:active, &:focus {
+                    text-decoration: none !important;
+                }
+
+                &:hover {
+                    background-color: #00a9e0;
+                    border-color: #00a9e0;
+                    color: #000;
+                }
             }
         }
 
         .nav {
             height: 100%;
-            padding-top: 30px;
+            padding-top: 45px;
 
-            h1 {
-                color: #d1d1d1;
+            .navn {
+                color: #b7b1a9;
                 max-width: 80%;
                 margin: 0 auto;
+                font-weight: normal;
             }
 
             .bilde {
+                padding-top: 40px;
                 min-height: 128px;
                 width: 100%;
 

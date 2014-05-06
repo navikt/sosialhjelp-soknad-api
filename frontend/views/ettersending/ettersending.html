@@ -1,15 +1,17 @@
 <div id="ettersending" data-sidetittel="ettersending.sidetittel">
     <div class="rad uten-ramme">
-        <div class="begrensning">
-            <span class="innsendt">
-                <span data-ng-bind-html="'ettersending.innsendt' | cmstekst"></span>
-                <span data-ng-bind="informasjon.innsendtDato | date:'dd.MM.yyyy' | norskdato"></span>
-            </span>
-            <h1 class="diger" data-ng-bind-html="'ettersending.tittel' | cmstekst"></h1>
-            <span class="frist">
-                <span data-ng-bind-html="'ettersending.innsendingsfrist' | cmstekst"></span>
-                <span data-ng-bind="informasjon.fristDato | date:'dd.MM.yyyy' | norskdato"></span>
-            </span>
+        <div class="begrensning sak-totredel">
+            <div class="panel-standard">
+                <span class="innsendt">
+                    <span data-ng-bind-html="'ettersending.innsendt' | cmstekst"></span>
+                    <span data-ng-bind="informasjon.innsendtDato | date:'dd.MM.yyyy' | norskdato"></span>
+                </span>
+                <h1 class="diger" data-ng-bind-html="'ettersending.tittel' | cmstekst"></h1>
+                <span class="frist">
+                    <span data-ng-bind-html="'ettersending.innsendingsfrist' | cmstekst"></span>
+                    <span data-ng-bind="informasjon.fristDato | date:'dd.MM.yyyy' | norskdato"></span>
+                </span>
+            </div>
         </div>
     </div>
     <div class="rad uten-ramme innholdsrad">
@@ -32,7 +34,8 @@
                                     <span data-ng-if="!erAnnetVedlegg(v)"
                                           data-tittel="{{ v.tittel }}"
                                           data-tekst="{{ 'Dagpenger.vedlegg.' + v.skjemaNummer + '.bekrefte' | cmstekst }}"
-                                          data-nav-hjelpetekstelement></span>
+                                          data-nav-hjelpetekstelement
+                                          data-refresh></span>
                                 </span>
                                 <div class="skjema-lenke" data-ng-if="harSkjemaLenke(v)">
                                     <a href="{{v.urls.URL}}" data-ng-bind-html="'ettersending.vedlegg.skjema.lastNed' | cmstekst"></a>
@@ -60,7 +63,7 @@
 
                 <div class="resten vedleggsliste" data-ng-if="skalViseRestenBolk()">
                     <h2 class="stor ikon-vedlegg-resten" data-ng-bind-html="'ettersending.vedlegg.resten' | cmstekst"></h2>
-                    <p data-ng-bind-html="'ettersending.vedlegg.resten.informasjon' | cmstekst"></p>
+                    <p class="ettersending-infotekst" data-ng-bind-html="'ettersending.vedlegg.resten.informasjon' | cmstekst"></p>
                     <div class="vedleggboks" data-ng-repeat="v in vedlegg | ettersendes: false | orderBy: 'opprettetDato'">
                         <div class="vedlegg-navn">
                             <div class="navn" data-truncate-hover>{{ v.navn }}</div>
@@ -71,7 +74,8 @@
                             <span data-ng-if="!erAnnetVedlegg(v)"
                                   data-tittel="{{ v.tittel }}"
                                   data-tekst="{{ 'Dagpenger.vedlegg.' + v.skjemaNummer + '.bekrefte' | cmstekst }}"
-                                  data-nav-hjelpetekstelement></span>
+                                  data-nav-hjelpetekstelement
+                                  data-refresh></span>
                             </span>
                             <div class="skjema-lenke" data-ng-if="harSkjemaLenke(v)">
                                 <a href="{{v.urls.URL}}" data-ng-bind-html="'ettersending.vedlegg.skjema.lastNed' | cmstekst"></a>
