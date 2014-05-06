@@ -106,7 +106,7 @@
 
             .vedleggboks {
                 border-top: 1px solid #d1d1d1;
-                padding: 20px;
+                padding: 20px 0;
                 text-align: left;
 
                 &:last-child {
@@ -116,16 +116,22 @@
                 .vedlegg-navn {
                     display: inline-block;
                     vertical-align: bottom;
-                    width: 62%;
+                    width: 71%;
 
-                    &.hjelpetekst-parent {
-//                        padding-right: 0;
+                    .hjelpetekst-parent {
+                        padding-right: 0;
 
                         .hjelpetekst {
                             display: inline-block;
                             position: static;
                             right: auto;
                             top: auto;
+
+                            &:before {
+                                color: #3e3832;
+                                content: "•";
+                                padding: 0 0.3rem 0 0.9rem;
+                            }
                         }
                     }
 
@@ -139,17 +145,11 @@
 
                     .tittel {
                         font-size: 1.21rem;
-
-                        &:after {
-                            color: #3e3832;
-                            content: "•";
-                            padding: 0 0.3rem 0 0.9rem;
-                        }
                     }
                 }
                 .last-opp {
                     display: inline-block;
-                    width: 37%;
+                    width: 28%;
                     text-align: right;
 
                     div {

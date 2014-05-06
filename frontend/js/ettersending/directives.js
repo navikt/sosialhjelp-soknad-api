@@ -14,5 +14,6 @@ angular.module('ettersending.directives', [
 	'nav.aria',
 	'nav.norskDatoFilter',
     'nav.fokus',
-    'nav.bildelastet'
+    'nav.bildelastet',
+    'nav.nowrap'
 ]);
