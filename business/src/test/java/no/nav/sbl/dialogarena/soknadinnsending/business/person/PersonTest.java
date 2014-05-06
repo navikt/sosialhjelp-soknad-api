@@ -67,9 +67,10 @@ public class PersonTest {
         String kontrollsiffer = "74";
 
         String fnr = dato + individisfferEnOgTo + kjonnSiffer + kontrollsiffer;
-        Barn barn = new Barn(1l, null, null, fnr, "", "", "svenskeby", "Norge");
+        Barn barn = new Barn(1l, null, null, fnr, "", "", "svenskeby").withLand("Norge");
 
         Assert.assertEquals("m", barn.getKjonn());
+        Assert.assertEquals("Norge", barn.getLand());
 
     }
 
@@ -81,7 +82,7 @@ public class PersonTest {
         String kontrollsiffer = "42";
 
         String fnr = dato + individisfferEnOgTo + kjonnSiffer + kontrollsiffer;
-        Barn barn = new Barn(1l, null, null, fnr, "janne", "j", "jensen", "Norge");
+        Barn barn = new Barn(1l, null, null, fnr, "janne", "j", "jensen").withLand("Norge");
 
         Assert.assertEquals("k", barn.getKjonn());
 
