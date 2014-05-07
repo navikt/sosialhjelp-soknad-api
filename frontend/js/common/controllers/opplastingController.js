@@ -4,6 +4,14 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload', 'opplasting.m
         $scope.vedleggListe = vedleggListe;
         $scope.vedlegg = vedleggService.get({soknadId: data.soknad.soknadId, vedleggId: $routeParams.vedleggId});
         $scope.soknad = data.soknad;
+
+        $scope.erAnnetVedlegg = function() {
+            return $scope.vedlegg.skjemaNummer === "N6";
+        };
+
+        $scope.erIkkeAnnetVedlegg = function() {
+            return !$scope.erAnnetVedlegg();
+        };
     })
     .controller('OpplastingCtrl', function ($scope, $location, $routeParams, $cookies, vedleggService, data, cms) {
         $scope.fremdriftsindikator = {
