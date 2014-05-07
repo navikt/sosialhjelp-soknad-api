@@ -231,7 +231,6 @@ describe('utility funksjoner -', function () {
             expect(konverterTallTilStringMedToSiffer(tall)).toBe("10");
         });
     });
-
 });
 
 

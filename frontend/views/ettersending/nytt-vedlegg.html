@@ -1,13 +1,11 @@
-<div data-modalside data-sidetittel="ettersending.sidetittel">
+<div data-modalside data-sidetittel="ettersending.sidetittel" id="ettersending-nytt-vedlegg">
     <form class="vertikal"
           name="nyttVedleggForm"
           novalidate
           data-ng-controller="EttersendingNyttVedleggCtrl"
           data-ng-submit="lagreVedlegg(nyttVedleggForm)">
         <a href="#/vedlegg" class="lukk" aria-label="{{'arbeidsforhold.nyttarbeidsforhold.lukk.aria' | cmstekst}}"></a>
-
-        <div data-form-errors></div>
-        <h1 class="stor-strek" data-ng-bind-html="'Dagpenger.vedlegg.L6.header' | cmstekst"></h1>
+        <h1 class="stor" data-ng-bind-html="'Dagpenger.vedlegg.L6.header' | cmstekst"></h1>
         <div class="form-linje">
             <label>
                 <span class="labeltekst" data-ng-bind-html="'vedlegg.annet.beskrivelse.sporsmal' | cmstekst"></span>
@@ -24,12 +22,14 @@
             </label>
         </div>
 
-        <input type="submit"
-               class="knapp-hoved"
-               value="{{ 'ettersending.vedlegg.nytt.opprett' | cmstekst }}"
-               data-fremdriftsindikator>
+        <div class="opprett">
+            <input type="submit"
+                   class="knapp-hoved"
+                   value="{{ 'ettersending.vedlegg.nytt.opprett' | cmstekst }}"
+                   data-fremdriftsindikator>
 
-        <a href="#/vedlegg" data-ng-bind-html="'ettersending.vedlegg.nytt.avbryt' | cmstekst"></a>
+            <a href="#/vedlegg" data-ng-bind-html="'ettersending.vedlegg.nytt.avbryt' | cmstekst"></a>
+        </div>
     </form>
 </div>
 
