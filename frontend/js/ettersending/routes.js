@@ -68,7 +68,7 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
             })
             .when('/opplasting/:vedleggId', {
                 templateUrl: '../views/ettersending/opplastingEttersending.html',
-                controller: 'EttersendingOpplastingCtrl',
+                controller: 'OpplastingVedleggCtrl',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;
@@ -76,7 +76,7 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                     ettersending: function (EttersendingResolver) {
                         return EttersendingResolver;
                     },
-                    vedlegg: function (EttersendingVedleggResolver) {
+                    vedleggListe: function (EttersendingVedleggResolver) {
                         return EttersendingVedleggResolver;
                     },
                     config: function (ConfigResolver) {
@@ -99,7 +99,7 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                 }
             })
             .when('/visVedlegg/:vedleggId', {
-                templateUrl: '../views/templates/vedlegg/visvedlegg.html',
+                templateUrl: '../views/common/vedlegg/visvedlegg.html',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;

@@ -95,13 +95,10 @@ angular.module('sendsoknad.routes', ['ngRoute', 'nav.common.routes'])
                 }
             })
             .when('/visVedlegg/:vedleggId', {
-                templateUrl: '../views/templates/vedlegg/visvedlegg.html',
+                templateUrl: '../views/common/vedlegg/visvedlegg.html',
                 resolve: {
                     cms: ['CmsResolver', function (CmsResolver) {
                         return CmsResolver;
-                    }],
-                    land: ['LandResolver', function (LandResolver) {
-                        return LandResolver;
                     }],
                     soknad: ['SoknadResolver', function(SoknadResolver) {
                         return SoknadResolver;

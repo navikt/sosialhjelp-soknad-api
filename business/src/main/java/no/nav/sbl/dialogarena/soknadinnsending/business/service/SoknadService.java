@@ -397,10 +397,16 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
     @Override
     public void sendSoknad(long soknadId, byte[] pdf) {
         WebSoknad soknad = hentSoknad(soknadId);
+
+        if (soknad.erEttersending() && soknad.getOpplastedeVedlegg().size() <= 0) {
+            logger.error("Kan ikke sende inn ettersendingen med ID {0} uten å ha lastet opp vedlegg", soknad.getBrukerBehandlingId());
+            throw new ApplicationException(String.format("Kan ikke sende inn ettersendingen uten å ha lastet opp vedlegg"));
+        }
+
         fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(pdf));
 
-
         List<Vedlegg> vedleggForventnings = soknad.getVedlegg();
+
         String skjemanummer = getSkjemanummer(soknad);
         String journalforendeEnhet = getJournalforendeEnhet(soknad);
         XMLHovedskjema hovedskjema = new XMLHovedskjema()

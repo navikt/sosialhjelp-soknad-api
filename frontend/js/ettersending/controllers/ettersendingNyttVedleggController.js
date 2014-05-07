@@ -18,7 +18,6 @@ angular.module('nav.ettersending.controllers.nyttVedlegg', [])
         $scope.lagreVedlegg = function (form) {
             var eventString = 'RUN_VALIDATION' + form.$name;
             $scope.$broadcast(eventString);
-            $scope.runValidation(true);
 
             if (form.$valid) {
 
