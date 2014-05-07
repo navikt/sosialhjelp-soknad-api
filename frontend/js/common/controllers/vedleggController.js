@@ -4,10 +4,7 @@ angular.module('nav.vedlegg.controller', [])
             soknadId: data.soknad.soknadId,
             vedleggId: $routeParams.vedleggId
         });
-
-        console.log($scope.vedlegg);
     }])
-
     .controller('VedleggCtrl', ['$scope', '$location', 'data', 'vedleggService', 'Faktum', 'soknadService', '$timeout', function ($scope, $location, data, vedleggService, Faktum, soknadService, $timeout) {
         $scope.data = {soknadId: data.soknad.soknadId};
         $scope.forventninger = vedleggService.query({soknadId: data.soknad.soknadId});

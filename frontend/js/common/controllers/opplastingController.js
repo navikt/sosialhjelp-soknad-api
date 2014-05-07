@@ -76,7 +76,6 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload', 'opplasting.m
                 });
             },
             fail: function(e, data){
-                console.log("XHR fail");
                 var errorCode;
                 if(data.jqXHR.responseJSON){
                     errorCode = data.jqXHR.responseJSON.kode;

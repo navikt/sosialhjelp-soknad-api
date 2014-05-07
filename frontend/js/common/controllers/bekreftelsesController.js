@@ -1,8 +1,6 @@
 angular.module('nav.bekreftelse', [])
     .controller('BekreftelsesCtrl', function ($scope, config, $window, $timeout, $routeParams, $rootElement) {
         var appName = $rootElement.attr('data-ng-app');
-        console.log(appName);
-
         $scope.tekst = {
             tittelKey: 'dagpenger.bekreftelse',
             informasjonsKey: 'dagpenger.bekreftelse.informasjon'
