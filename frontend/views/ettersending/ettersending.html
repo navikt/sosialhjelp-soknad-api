@@ -12,13 +12,18 @@
                     <div class="vedleggboks" data-ng-repeat="v in vedlegg | ettersendes: true | orderBy: 'opprettetDato'" data-ng-class="{opplastet: erLastetOpp(v), annetVedlegg: erAnnetVedlegg(v)}">
                         <div>
                             <div class="vedlegg-navn" data-ng-class="{annet: erAnnetVedlegg(v)}">
-                                <div class="navn" data-truncate-hover>{{ v.navn }}</div>
+                                <div class="navn" data-truncate-hover>
+                                    <span data-ng-if="erAnnetVedlegg(v)">{{ v.tittel }}</span>
+                                    <span data-ng-if="!erAnnetVedlegg(v)">{{ v.navn }}</span>
+                                </div>
 
                                 <span data-ng-if="erIkkeLastetOpp(v)" class="tittel">
-                                    {{ v.tittel }}
+                                    <span data-ng-if="erAnnetVedlegg(v)">{{ v.navn }}</span>
+                                    <span data-ng-if="!erAnnetVedlegg(v)">{{ v.tittel }}</span>
                                 </span>
                                 <a data-ng-if="erLastetOpp(v)" href="#visVedlegg/{{v.vedleggId}}" class="tittel">
-                                    {{ v.tittel }}
+                                    <span data-ng-if="erAnnetVedlegg(v)">{{ v.navn }}</span>
+                                    <span data-ng-if="!erAnnetVedlegg(v)">{{ v.tittel }}</span>
                                 </a>
                                 <span data-ng-if="!erAnnetVedlegg(v)">
                                     <span data-tittel="{{ v.tittel }}"
@@ -55,9 +60,13 @@
                     <p class="ettersending-infotekst" data-ng-bind-html="'ettersending.vedlegg.resten.informasjon' | cmstekst"></p>
                     <div class="vedleggboks" data-ng-repeat="v in vedlegg | ettersendes: false | orderBy: 'opprettetDato'">
                         <div class="vedlegg-navn">
-                            <div class="navn" data-truncate-hover>{{ v.navn }}</div>
+                            <div class="navn" data-truncate-hover>
+                                <span data-ng-if="erAnnetVedlegg(v)">{{ v.tittel }}</span>
+                                <span data-ng-if="!erAnnetVedlegg(v)">{{ v.navn }}</span>
+                            </div>
                             <span class="tittel">
-                                {{ v.tittel }}
+                                <span data-ng-if="erAnnetVedlegg(v)">{{ v.navn }}</span>
+                                <span data-ng-if="!erAnnetVedlegg(v)">{{ v.tittel }}</span>
                             </span>
                             <span>
                             <span data-ng-if="!erAnnetVedlegg(v)"
