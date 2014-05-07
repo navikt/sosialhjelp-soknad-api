@@ -3,93 +3,15 @@
     <div class="rad uten-ramme innholdsrad">
         <div class="begrensning sak-totredel">
             <section class="panel-standard">
-                <div class="ettersendes vedleggsliste" data-ng-if="skalViseEttersendingsbolk()">
-                    <h2 class="stor ikon-vedlegg-ettersende" data-ng-bind-html="'ettersending.vedlegg.ettersender' | cmstekst"></h2>
-                    <p class="ettersending-infotekst">
-                        <span data-ng-bind-html="'ettersending.innsendingsfrist' | cmstekst"></span>
-                        <span data-ng-bind="informasjon.fristDato | date:'dd.MM.yyyy' | norskdato"></span>
-                    </p>
-                    <div class="vedleggboks" data-ng-repeat="v in vedlegg | ettersendes: true | orderBy: 'opprettetDato'" data-ng-class="{opplastet: erLastetOpp(v), annetVedlegg: erAnnetVedlegg(v)}">
-                        <div>
-                            <div class="vedlegg-navn" data-ng-class="{annet: erAnnetVedlegg(v)}">
-                                <div class="navn" data-truncate-hover>
-                                    <span data-ng-if="erAnnetVedlegg(v)">{{ v.tittel }}</span>
-                                    <span data-ng-if="!erAnnetVedlegg(v)">{{ v.navn }}</span>
-                                </div>
+                <div class="ettersendes vedleggsliste"
+                     data-ng-if="skalViseEttersendingsbolk()"
+                     data-ng-include="'../views/ettersending/partials/ettersending-ettersendes.html'"></div>
 
-                                <span data-ng-if="erIkkeLastetOpp(v)" class="tittel">
-                                    <span data-ng-if="erAnnetVedlegg(v)">{{ v.navn }}</span>
-                                    <span data-ng-if="!erAnnetVedlegg(v)">{{ v.tittel }}</span>
-                                </span>
-                                <a data-ng-if="erLastetOpp(v)" href="#visVedlegg/{{v.vedleggId}}" class="tittel">
-                                    <span data-ng-if="erAnnetVedlegg(v)">{{ v.navn }}</span>
-                                    <span data-ng-if="!erAnnetVedlegg(v)">{{ v.tittel }}</span>
-                                </a>
-                                <span data-ng-if="!erAnnetVedlegg(v)">
-                                    <span data-tittel="{{ v.tittel }}"
-                                          data-tekst="{{ 'Dagpenger.vedlegg.' + v.skjemaNummer + '.bekrefte' | cmstekst }}"
-                                          data-nav-hjelpetekstelement
-                                          data-refresh></span>
-                                </span>
-                                <div class="skjema-lenke" data-ng-if="harSkjemaLenke(v)">
-                                    <a href="{{v.urls.URL}}" data-ng-bind-html="'ettersending.vedlegg.skjema.lastNed' | cmstekst"></a>
-                                </div>
-                            </div>
-                            <div class="last-opp" data-ng-class="{annet: erAnnetVedlegg(v)}">
-                                <div data-ng-if="erIkkeLastetOpp(v)">
-                                    <span class="slett" data-ng-if="erAnnetVedlegg(v)">
-                                        <a href="javascript:void(0);"
-                                           data-ng-click="slettAnnetVedlegg(v)"
-                                           data-ng-bind-html="'ettersending.vedlegg.annet.slett' | cmstekst"></a>
-                                    </span>
-                                    <a class="knapp-link-liten" data-ng-href="#/opplasting/{{v.vedleggId}}" data-ng-bind-html="'ettersending.vedlegg.lastOpp' | cmstekst"></a>
-                                </div>
-                                <div data-ng-if="erLastetOpp(v)">
-                                    <div class="liten" data-ng-bind-html="'ettersending.vedlegg.lastetOpp' | cmstekst"></div>
-                                    <div class="liten">
-                                        <a href="javascript:void(0);" data-ng-bind-html="'ettersending.vedlegg.slett' | cmstekst" data-ng-click="slettVedlegg(v)"></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="resten vedleggsliste" data-ng-if="skalViseRestenBolk()">
-                    <h2 class="stor ikon-vedlegg-resten" data-ng-bind-html="'ettersending.vedlegg.resten' | cmstekst"></h2>
-                    <p class="ettersending-infotekst" data-ng-bind-html="'ettersending.vedlegg.resten.informasjon' | cmstekst"></p>
-                    <div class="vedleggboks" data-ng-repeat="v in vedlegg | ettersendes: false | orderBy: 'opprettetDato'">
-                        <div class="vedlegg-navn">
-                            <div class="navn" data-truncate-hover>
-                                <span data-ng-if="erAnnetVedlegg(v)">{{ v.tittel }}</span>
-                                <span data-ng-if="!erAnnetVedlegg(v)">{{ v.navn }}</span>
-                            </div>
-                            <span class="tittel">
-                                <span data-ng-if="erAnnetVedlegg(v)">{{ v.navn }}</span>
-                                <span data-ng-if="!erAnnetVedlegg(v)">{{ v.tittel }}</span>
-                            </span>
-                            <span>
-                            <span data-ng-if="!erAnnetVedlegg(v)"
-                                  data-tittel="{{ v.tittel }}"
-                                  data-tekst="{{ 'Dagpenger.vedlegg.' + v.skjemaNummer + '.bekrefte' | cmstekst }}"
-                                  data-nav-hjelpetekstelement
-                                  data-refresh></span>
-                            </span>
-                            <div class="skjema-lenke" data-ng-if="harSkjemaLenke(v)">
-                                <a href="{{v.urls.URL}}" data-ng-bind-html="'ettersending.vedlegg.skjema.lastNed' | cmstekst"></a>
-                            </div>
-                        </div>
-                        <div class="last-opp">
-                            <div class="liten" data-ng-bind-html="hentTekstKey(v) | cmstekst"></div>
-                            <div class="liten">
-                                <a data-ng-href="#/opplasting/{{v.vedleggId}}" data-ng-bind-html="'ettersending.vedlegg.lastOpp' | cmstekst"></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div class="resten vedleggsliste"
+                     data-ng-if="skalViseRestenBolk()"
+                     data-ng-include="'../views/ettersending/partials/ettersending-resten.html'"></div>
             </section>
             <section class="panel-standard" data-ng-include="'../views/ettersending/partials/ettersending-bunn.html'"></section>
         </div>
     </div>
-
 </div>
