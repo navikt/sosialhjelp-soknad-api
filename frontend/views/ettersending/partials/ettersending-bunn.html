@@ -1,0 +1,21 @@
+<div class="strek-bottom">
+    <a class="knapp-leggtil-liten"
+       href="#/vedlegg/nytt"
+       data-ng-bind-html="'vedlegg.leggtilekstravedlegg' | cmstekst">
+    </a>
+</div>
+<div class="send-inn">
+    <div data-ng-if="harLastetOppDokument()" data-sticky>
+        <a href="javascript: void(0);" class="klare-vedlegg" data-scroll-til-element="input.knapp-hoved">
+            <span>{{ hentAntallVedleggSomErOpplastetIDenneEttersendingen() }}</span>
+            <span data-ng-bind-html="'ettersending.vedlegg.klare' | cmstekst"></span>
+        </a>
+    </div>
+    <form class="send-inn-knapp form-linje" data-ng-class="{feil: ikkeOpplatetDokumenter}" data-ng-submit="sendEttersending()">
+        <input type="submit" class="knapp-hoved" value="{{ 'ettersending.vedlegg.send' | cmstekst }}" data-fremdriftsindikator="grå">
+        <span class="melding" data-ng-bind-html="'ettersending.feil.innsending' | cmstekst"></span>
+    </form>
+
+
+    <a href="#/avbryt" data-ng-bind-html="'ettersending.vedlegg.avbryt' | cmstekst"></a>
+</div>

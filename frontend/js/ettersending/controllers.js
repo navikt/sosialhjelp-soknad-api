@@ -4,7 +4,6 @@ angular.module('ettersending.controllers', [
     'nav.opplasting.controller',
     'nav.vedlegg.controller',
     'nav.ettersending.controllers.main',
-    'nav.ettersending.controllers.opplasting',
     'nav.ettersending.controllers.nyttVedlegg',
     'nav.ettersending.controllers.avbryt',
     'nav.ettersending.controllers.start',
