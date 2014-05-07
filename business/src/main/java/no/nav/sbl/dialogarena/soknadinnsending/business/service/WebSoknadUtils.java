@@ -54,6 +54,10 @@ public class WebSoknadUtils {
 
 
     public static String getSkjemanummer(WebSoknad soknad) {
+        if (soknad.erEttersending()) {
+            return soknad.getskjemaNummer();
+        }
+
         String sluttaarsak = erPermittertellerHarRedusertArbeidstid(soknad);
         if (sluttaarsak.equals(PERMITTERT)) {
             return DAGPENGER_VED_PERMITTERING;
