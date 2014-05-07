@@ -143,17 +143,12 @@
                 }
 
                 .slett {
-                    background-image: url(../img/kryss_svart.svg);
-                    background-repeat: no-repeat;
-                    background-size: 100%;
-                    position: absolute;
-                    top: 5px;
-                    right: 5px;
-                    width: 12px;
-                    height: 12px;
+                    display: inline-block;
 
-                    &:hover {
-                        background-image: url(../img/kryss_bla.svg);
+                    &:after {
+                        color: #3e3832;
+                        content: "•";
+                        padding: 0 0.7rem;
                     }
                 }
             }
@@ -178,13 +173,17 @@
                     vertical-align: bottom;
                     width: 71%;
 
+                    &.annet {
+                        width: 58%;
+                    }
+
                     .hjelpetekst-parent {
                         padding-right: 0;
 
                         &:before {
                             color: #3e3832;
                             content: "•";
-                            padding: 0 0.3rem 0 0.9rem;
+                            padding: 0 0.3rem 0 0.4rem;
                         }
 
                         .hjelpetekst {
@@ -215,6 +214,10 @@
                     display: inline-block;
                     width: 28%;
                     text-align: right;
+
+                    &.annet {
+                        width: 41%;
+                    }
 
                     div div {
                         &:last-child {
