@@ -30,6 +30,10 @@ angular.module('nav.ettersending.controllers.main', [])
             return erAnnetVedlegg(v);
         };
 
+        $scope.erAnnetVedleggLagtTilIDenneInnsendingen = function (v) {
+            return erAnnetVedleggLagtTilIDenneInnsendingen(v);
+        };
+
         function erLastetOpp(v) {
             return v.innsendingsvalg === 'LastetOpp';
         }
@@ -38,8 +42,12 @@ angular.module('nav.ettersending.controllers.main', [])
             return erLastetOpp(v) && v.storrelse > 0;
         }
 
-        function erAnnetVedlegg(v) {
+        function erAnnetVedleggLagtTilIDenneInnsendingen() {
             return v.skjemaNummer === "N6" && v.opprinneligInnsendingsvalg === null;
+        };
+
+        function erAnnetVedlegg(v) {
+            return v.skjemaNummer === "N6";
         }
 
         $scope.harSkjemaLenke = function (v) {
