@@ -319,13 +319,19 @@ public class Vedlegg {
         return "";
     }
 
+    /**
+     * SendesIkke er en legacy-status som ikke lengre skal være mulig å velge.
+     */
     public enum Status {
+        SendesIkke(-1),
+
         IkkeVedlegg(0),
         VedleggKreves(1),
-        SendesIkke(2),
-        SendesSenere(3),
-        LastetOpp(4),
-        UnderBehandling(5);
+        VedleggSendesIkke(2),
+        VedleggSendesAvAndre(3),
+        SendesSenere(4),
+        LastetOpp(5),
+        UnderBehandling(6);
 
         private int prioritet;
         private Status(int prioritet) {
