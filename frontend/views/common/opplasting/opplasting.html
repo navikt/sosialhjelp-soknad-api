@@ -28,8 +28,9 @@
             <div data-ng-include="'../views/common/opplasting/opplastingFeilmelding.html'"></div>
             <section>
                 <ul class="opplastingliste clearfix sak-tredel" data-alle-filer-ferdig>
-                    <li class="panel-mini-belyst" data-ng-repeat="file in queue"
-                        data-ng-class="{'lasteropp': file.$processing()}"
+                    <li class="panel-mini-belyst"
+                        data-ng-repeat="file in queue"
+                        data-ng-class="{laster: harIkkeLastetOppFil(file)}"
                         data-fil-feil>
                         <a class="lukk" data-ng-if="!!file.vedleggId" data-ng-click="file.$destroy()"
                            data-ng-controller="SlettOpplastingCtrl" href="javascript:void(0);"

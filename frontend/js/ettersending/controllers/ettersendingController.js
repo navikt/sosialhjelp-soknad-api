@@ -127,8 +127,8 @@ angular.module('nav.ettersending.controllers.main', [])
     })
     .factory('sjekkOmSkalEttersendes', function () {
         function skalEttersendes(v) {
-            if (erLastetOpp(v)) {
-                return false;
+            if (erLastetOppIDenneInnsendingen(v)) {
+                return true;
             } else if (v.opprinneligInnsendingsvalg === 'SendesSenere') {
                 return true;
             } else if (erAnnetVedleggSomErLagtTilIDenneInnsendingen(v)) {
@@ -138,7 +138,11 @@ angular.module('nav.ettersending.controllers.main', [])
         }
 
         function erLastetOpp(v) {
-            return v.innsendingsvalg === 'LastetOpp';
+            return v.innsendingsvalg === 'LastetOpp' && v.storrelse === 0;
+        }
+
+        function erLastetOppIDenneInnsendingen(v) {
+            return v.innsendingsvalg === 'LastetOpp' && v.storrelse > 0;
         }
 
         function erAnnetVedlegg(v) {

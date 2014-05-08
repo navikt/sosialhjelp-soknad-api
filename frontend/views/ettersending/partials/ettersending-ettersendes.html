@@ -11,7 +11,13 @@
                  data-ng-include="'../views/ettersending/partials/vedlegg-navn.html'"></div>
 
             <span class="tittel"
+                  data-ng-if="erIkkeLastetOpp(v)"
                   data-ng-include="'../views/ettersending/partials/vedlegg-tittel.html'"></span>
+
+            <a href="#visVedlegg/{{v.vedleggId}}"
+               class="tittel"
+               data-ng-if="erLastetOpp(v)"
+               data-ng-include="'../views/ettersending/partials/vedlegg-tittel.html'"></a>
 
             <span data-ng-if="!erAnnetVedlegg(v)"
                   data-ng-include="'../views/ettersending/partials/vedlegg-hjelpetekst.html'"></span>
@@ -21,12 +27,21 @@
             </div>
         </div>
         <div class="last-opp" data-ng-class="{annet: erAnnetVedlegg(v)}">
-            <span class="slett" data-ng-if="erAnnetVedlegg(v)">
-                <a href="javascript:void(0);"
-                   data-ng-click="slettAnnetVedlegg(v)"
-                   data-ng-bind-html="'ettersending.vedlegg.annet.slett' | cmstekst"></a>
-            </span>
-            <a class="knapp-link-liten" data-ng-href="#/opplasting/{{v.vedleggId}}" data-ng-bind-html="'ettersending.vedlegg.lastOpp' | cmstekst"></a>
+            <div data-ng-if="erIkkeLastetOpp(v)">
+                <span class="slett" data-ng-if="erAnnetVedlegg(v)">
+                    <a href="javascript:void(0);"
+                       data-ng-click="slettAnnetVedlegg(v)"
+                       data-ng-bind-html="'ettersending.vedlegg.annet.slett' | cmstekst"></a>
+                </span>
+                <a class="knapp-link-liten" data-ng-href="#/opplasting/{{v.vedleggId}}" data-ng-bind-html="'ettersending.vedlegg.lastOpp' | cmstekst"></a>
+            </div>
+
+            <div data-ng-if="erLastetOpp(v)">
+                <div class="liten" data-ng-bind-html="'ettersending.vedlegg.lastetOpp' | cmstekst"></div>
+                <div class="liten">
+                    <a href="javascript:void(0);" data-ng-bind-html="'ettersending.vedlegg.slett' | cmstekst" data-ng-click="slettVedlegg(v)"></a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
