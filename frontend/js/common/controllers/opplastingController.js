@@ -49,7 +49,6 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload', 'opplasting.m
         });
 
         $scope.harIkkeLastetOppFil = function(v) {
-            console.log(v.vedleggId, v.vedleggId === undefined);
             return v.vedleggId === undefined;
         }
 
