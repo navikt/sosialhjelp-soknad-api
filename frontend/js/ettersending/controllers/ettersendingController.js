@@ -117,6 +117,18 @@ angular.module('nav.ettersending.controllers.main', [])
         $scope.scrollTilElement = function (element) {
             scrollToElement(element, 0);
         };
+
+        $scope.hentTekstKey = function(v) {
+            console.log(v);
+            if (v.innsendingsvalg === 'VedleggSendesIkke') {
+                return 'ettersending.vedlegg.vedleggSendesIkke';
+            } else if (v.innsendingsvalg === 'VedleggSendesAvAndre') {
+                return'ettersending.vedlegg.vedleggSendesAvAndre';
+            } else {
+                // TODO: Denne kan fjernes når det ikke lengre er mulig å sende inn ettersending på søknader som er sendt inn før vi la til sendes av andre
+                return 'ettersending.vedlegg.sendesIkke';
+            }
+        };
     })
     .filter('ettersendes', function (sjekkOmSkalEttersendes) {
         return function (input) {

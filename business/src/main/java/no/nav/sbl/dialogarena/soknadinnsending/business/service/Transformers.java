@@ -13,6 +13,8 @@ import java.util.Map;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.LASTET_OPP;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.SENDES_IKKE;
 import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.SEND_SENERE;
+import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.VEDLEGG_SENDES_AV_ANDRE;
+import static no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendingsvalg.VEDLEGG_SENDES_IKKE;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class Transformers {
@@ -63,8 +65,6 @@ public class Transformers {
                         .withSkjemanummer(vedlegg.getSkjemaNummerFiltrert())
                         .withUuid(vedlegg.getFillagerReferanse())
                         .withInnsendingsvalg(LASTET_OPP.value());
-
-
             } else {
                 xmlVedlegg = new XMLVedlegg()
                         .withFilnavn(vedlegg.lagFilNavn())
@@ -90,6 +90,10 @@ public class Transformers {
                 return SEND_SENERE.toString();
             case SendesIkke:
                 return SENDES_IKKE.toString();
+            case VedleggSendesAvAndre:
+                return VEDLEGG_SENDES_AV_ANDRE.toString();
+            case VedleggSendesIkke:
+                return VEDLEGG_SENDES_IKKE.toString();
             default:
                 return SENDES_IKKE.toString();
         }
@@ -103,6 +107,10 @@ public class Transformers {
                 return Vedlegg.Status.SendesSenere;
             case "SENDES_IKKE":
                 return Vedlegg.Status.SendesIkke;
+            case "VEDLEGG_SENDES_IKKE":
+                return Vedlegg.Status.VedleggSendesIkke;
+            case "VEDLEGG_SENDES_AV_ANDRE":
+                return Vedlegg.Status.VedleggSendesAvAndre;
             default:
                 return Vedlegg.Status.SendesIkke;
         }
