@@ -101,7 +101,7 @@ angular.module('nav.vedlegg.controller', [])
         };
 
         $scope.endreInnsendingsvalg = function (forventning, valg) {
-            if (valg !== 'SendesSenere' && valg !== 'SendesIkke') {
+            if (valg !== 'SendesSenere' && valg !== 'SendesIkke' && valg !== 'VedleggSendesAvAndre' && valg !== "VedleggSendesIkke") {
                 forventning.innsendingsvalg = valg;
             }
             if (!$scope.hiddenFelt) {
