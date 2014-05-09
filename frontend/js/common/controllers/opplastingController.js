@@ -48,6 +48,10 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload', 'opplasting.m
             });
         });
 
+        $scope.harIkkeLastetOppFil = function(v) {
+            return v.vedleggId === undefined;
+        }
+
         $.ajaxSetup({
             converters: {
                 'iframe json': function(iframe){
@@ -101,13 +105,6 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload', 'opplasting.m
             $scope.data.opplastingFeilet = error;
         };
 
-        $scope.lastopp = function () {
-            submit();
-            $scope.submit();
-            $scope.data.opplastingFeilet = false;
-            $scope.$apply();
-        };
-
         $scope.oppdaterSoknad = function (v) {
             v.$get({}, function(result) {
                 // TODO: Burde skrive om så vi ikke bruker data.soknad i det hele tatt
@@ -124,10 +121,9 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload', 'opplasting.m
         $scope.leggVed = function () {
             if ($scope.queue.length > 0) {
                 $scope.skalViseFeilmelding = false;
-                var soknadId = data.soknad.soknadId;
                 $scope.fremdriftsindikator.laster = true;
                 vedleggService.merge({
-                    soknadId: soknadId,
+                    soknadId: data.soknad.soknadId,
                     vedleggId: $scope.data.vedleggId
                 }, function (data) {
                     $scope.oppdaterSoknad($scope.vedlegg);
