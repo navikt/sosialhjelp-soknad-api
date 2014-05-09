@@ -6,11 +6,14 @@
              data-truncate-hover
              data-ng-include="'../views/ettersending/partials/vedlegg-navn.html'"></div>
 
-        <span class="tittel"
-              data-ng-include="'../views/ettersending/partials/vedlegg-tittel.html'"></span>
+        <span class="tittel-parent">
+            <span class="tittel"
+                  data-ng-include="'../views/ettersending/partials/vedlegg-tittel.html'"></span>
 
-        <span data-ng-if="!erAnnetVedlegg(v)"
-              data-ng-include="'../views/ettersending/partials/vedlegg-hjelpetekst.html'"></span>
+            <span data-ng-if="!erAnnetVedlegg(v)"
+                  data-ng-include="'../views/ettersending/partials/vedlegg-hjelpetekst.html'"></span>
+        </span>
+
 
         <div class="skjema-lenke" data-ng-if="harSkjemaLenke(v)">
             <a href="{{v.urls.URL}}" data-ng-bind-html="'ettersending.vedlegg.skjema.lastNed' | cmstekst"></a>
