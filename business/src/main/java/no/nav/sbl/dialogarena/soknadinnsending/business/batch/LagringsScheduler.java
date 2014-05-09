@@ -64,19 +64,14 @@ public class LagringsScheduler {
         WebSoknad soknad = ws.get();
         try {
             henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
-            soknadRepository.slettSoknad(soknad.getSoknadId());
             vellykket++;
         } catch (Exception e) {
             feilet++;
-            logger.error("Avbryt eller sletting feilet for ettersending {}. Setter tilbake til LEDIG", soknad.getSoknadId(), e);
-            try {
-                soknadRepository.leggTilbake(soknad);
-            } catch (Exception e1) {
-                logger.error("Klarte ikke å legge tilbake ettersending {}", soknad.getSoknadId(), e1);
-            }
+            logger.error("Avbryt feilet for ettersending {}. Sletter den i sendsoknad.", soknad.getSoknadId(), e);
+
             Thread.sleep(1000); // Så loggen ikke blir fylt opp
         }
-
+        soknadRepository.slettSoknad(soknad.getSoknadId());
     }
 
     private boolean isPaabegyntEttersendelse(Optional<WebSoknad> ws) {

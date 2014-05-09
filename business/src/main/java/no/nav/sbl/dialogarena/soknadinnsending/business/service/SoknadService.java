@@ -42,7 +42,6 @@ import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStatus;
 import org.apache.commons.collections15.Closure;
 import org.apache.commons.collections15.Transformer;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.Splitter;
@@ -57,7 +56,7 @@ import javax.inject.Named;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.awt.Dimension;
+import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -785,14 +784,21 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
         return false;
     }
 
+
+
+
     private SoknadStruktur hentStruktur(String skjema) {
-        String type;
-        //TODO: TEST, Finn en bedre løsning. snakk med Eirik
-        if("NAV 04-01.04".equals(skjema)) {
-            type = "NAV 04-01.03.xml";
-        } else {
-            type = skjema + ".xml";
+        //TODO: Få flyttet dette ut på et vis? Ta i bruk.
+        Map<String,String> strukturDokumenter =  new HashMap<>();
+        strukturDokumenter.put("NAV 04-01.04", "NAV 04-01.03.xml");
+        strukturDokumenter.put("NAV 04-01.03", "NAV 04-01.03.xml");
+
+        String type = strukturDokumenter.get(skjema);
+
+        if(type == null || type.isEmpty()) {
+            throw new ApplicationException("Fant ikke strukturdokument for nav-skjemanummer: " + skjema);
         }
+
         try {
             Unmarshaller unmarshaller = newInstance(SoknadStruktur.class)
                     .createUnmarshaller();
