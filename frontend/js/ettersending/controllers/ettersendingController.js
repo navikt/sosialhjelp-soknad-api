@@ -45,7 +45,12 @@ angular.module('nav.ettersending.controllers.main', [])
         $scope.hentTekstKey = function (v) {
             if (v.opprinneligInnsendingsvalg === 'SendesIkke') {
                 return 'ettersending.vedlegg.sendesIkke';
-            } else if (v.opprinneligInnsendingsvalg === 'LastetOpp') {
+            } else if (v.opprinneligInnsendingsvalg === 'VedleggSendesIkke') {
+                return 'ettersending.vedlegg.vedleggSendesIkke';
+            } else if (v.opprinneligInnsendingsvalg === 'VedleggSendesAvAndre') {
+                return 'ettersending.vedlegg.vedleggSendesAvAndre';
+            }
+            else if (v.opprinneligInnsendingsvalg === 'LastetOpp') {
                 return 'ettersending.vedlegg.sendtInn';
             }
         };
