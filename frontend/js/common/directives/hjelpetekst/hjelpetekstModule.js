@@ -64,7 +64,7 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
                 if ($window.innerWidth <= mobilStorrelse) {
                     settMaxHoyde();
                 }
-
+                element.addClass('vis');
             });
 
             function plasserTooltipVertikalt() {

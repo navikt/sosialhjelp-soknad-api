@@ -1,6 +1,6 @@
-<h2 class="stor ikon-vedlegg-resten" data-ng-bind-html="'ettersending.vedlegg.resten' | cmstekst"></h2>
-<p class="ettersending-infotekst" data-ng-bind-html="'ettersending.vedlegg.resten.informasjon' | cmstekst"></p>
-<div class="vedleggboks" data-ng-repeat="v in vedlegg | ettersendes: false | orderBy: 'opprettetDato'">
+<h2 class="stor ikon-vedlegg-sendt" data-ng-bind-html="'ettersending.vedlegg.sendt' | cmstekst"></h2>
+<p class="ettersending-infotekst" data-ng-bind-html="'ettersending.vedlegg.sendt.informasjon' | cmstekst"></p>
+<div class="vedleggboks" data-ng-repeat="v in vedlegg | sendtInn | orderBy: 'opprettetDato'">
     <div class="vedlegg-navn">
         <div class="navn"
              data-truncate-hover
@@ -17,10 +17,10 @@
         </div>
     </div>
     <div class="last-opp">
-        <div class="liten" data-ng-bind-html="hentTekstKey(v) | cmstekst"></div>
+        <div class="liten" data-ng-bind-html="'ettersending.vedlegg.lastetOpp' | cmstekst"></div>
         <div class="liten">
             <a data-ng-href="#/opplasting/{{v.vedleggId}}"
-               data-ng-bind-html="'ettersending.vedlegg.lastOpp' | cmstekst"></a>
+               data-ng-bind-html="'ettersending.vedlegg.lastOppIgjen' | cmstekst"></a>
         </div>
     </div>
 </div>

@@ -106,16 +106,27 @@
 
         .ikon-vedlegg-ettersende {
             padding-top: 48px;
-            background-image: url(../img/under_arbeid_ikon.svg);
+            background-image: url(../img/under-dark.png), url(../img/under_arbeid_ikon.svg);
             background-repeat: no-repeat;
-            background-position: top center;
+            background-position: bottom center, top center;
+            padding-bottom: 30px;
             margin-bottom: 30px;
             font-weight: 400;
         }
 
-        .ikon-vedlegg-resten {
+        .ikon-vedlegg-sendt {
             padding-top: 48px;
             background-image: url(../img/under-dark.png), url(../img/ferdig_ikon.svg);
+            background-repeat: no-repeat;
+            background-position: bottom center, top center;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .ikon-vedlegg-sendesIkke {
+            padding-top: 48px;
+            background-image: url(../img/under-dark.png), url(../img/melding_graa.svg);
             background-repeat: no-repeat;
             background-position: bottom center, top center;
             margin-bottom: 30px;
@@ -126,14 +137,17 @@
         .vedleggsliste {
             background: #fff;
             padding: 40px 30px 30px;
+            margin-bottom: 40px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
 
             .ettersending-infotekst {
                 margin-bottom: 30px;
             }
 
             &.ettersendes {
-                margin-bottom: 40px;
-
                 .vedleggboks {
                     position: relative;
                 }
@@ -190,6 +204,7 @@
                         white-space: nowrap;
                         overflow-x: hidden;
                         text-overflow: ellipsis;
+                        margin-bottom: 5px;
                     }
 
                     .skjema-lenke {
@@ -197,7 +212,9 @@
                     }
 
                     .tittel {
+                        font-family: Modus, Arial, Helvetica, sans-serif;
                         font-size: 1.21rem;
+                        font-weight: 600;
                     }
                 }
                 .last-opp {
