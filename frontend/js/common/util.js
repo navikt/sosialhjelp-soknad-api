@@ -341,3 +341,7 @@ function getIEVersion() {
 function isNotNullOrUndefined(obj) {
     return obj !== undefined && obj !== null;
 }
+
+function trimWhitespaceIString(str) {
+    return str.replace(/\s+/g, '');
+}

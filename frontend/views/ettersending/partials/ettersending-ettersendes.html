@@ -2,6 +2,7 @@
 <p class="ettersending-infotekst">
     <span data-ng-bind-html="'ettersending.innsendingsfrist' | cmstekst"></span>
     <span data-ng-bind="informasjon.fristDato | date:'dd.MM.yyyy' | norskdato"></span>
+    <!--<span>{{ {key: 'ettersending.soknadsfrist.' + informasjon.skjemanummer, fallbackKey: 'ettersending.soknadsfrist.default'} | cmstekst }}</span>-->
 </p>
 <div class="vedleggboks" data-ng-repeat="v in vedlegg | ettersendes | orderBy: 'opprettetDato'" data-ng-class="{opplastet: erLastetOpp(v), annetVedlegg: erAnnetVedlegg(v)}">
     <div>

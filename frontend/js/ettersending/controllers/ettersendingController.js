@@ -11,7 +11,8 @@ angular.module('nav.ettersending.controllers.main', [])
 
         $scope.informasjon = {
             innsendtDato: innsendtDato,
-            fristDato: fristDato
+            fristDato: fristDato,
+            skjemanummer: trimWhitespaceIString(data.soknad.skjemaNummer.toLowerCase())
         };
 
         $scope.ikkeOpplatetDokumenter = false;
