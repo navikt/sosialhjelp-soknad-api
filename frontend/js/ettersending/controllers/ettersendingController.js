@@ -119,7 +119,6 @@ angular.module('nav.ettersending.controllers.main', [])
         };
 
         $scope.hentTekstKey = function(v) {
-            console.log(v);
             if (v.innsendingsvalg === 'VedleggSendesIkke') {
                 return 'ettersending.vedlegg.vedleggSendesIkke';
             } else if (v.innsendingsvalg === 'VedleggSendesAvAndre') {

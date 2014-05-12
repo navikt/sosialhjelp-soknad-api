@@ -1,5 +1,5 @@
 angular.module('nav.ettersending.controllers.avbryt', [])
-    .controller('EttersendingAvbrytCtrl', ['$scope', 'data', 'ettersendingService', '$timeout', function ($scope, data, ettersendingService, $timeout) {
+    .controller('EttersendingAvbrytCtrl', function ($scope, data, ettersendingService, $timeout, vedlegg) {
         $scope.fremdriftsindikator = {
             laster: false
         };
@@ -13,7 +13,11 @@ angular.module('nav.ettersending.controllers.avbryt', [])
                 function() {
                     var delay = 1500 - ($.now() - start);
                     $timeout(function() {
-                        redirectTilSide('/sendsoknad/ettersending/avbrutt');
+                        if ($scope.harLastetOppNoenDokumenter()) {
+                            redirectTilSide('/sendsoknad/ettersending/avbrutt');
+                        } else {
+                            redirectTilMineHenvendelser();
+                        }
                     }, delay);
                 },
                 function() {
@@ -21,4 +25,19 @@ angular.module('nav.ettersending.controllers.avbryt', [])
                 }
             );
         };
-    }]);
+
+
+        $scope.harLastetOppNoenDokumenter = function() {
+            return vedlegg.filter(function (v) {
+                return v.storrelse > 0;
+            }).length > 0;
+        };
+
+        if (!$scope.harLastetOppNoenDokumenter()) {
+            $scope.slettEttersending();
+        }
+
+        function redirectTilMineHenvendelser() {
+            $window.location.href = data.config['minehenvendelser.link.url'];
+        }
+    });

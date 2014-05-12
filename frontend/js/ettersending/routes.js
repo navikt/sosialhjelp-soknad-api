@@ -86,6 +86,7 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
             })
             .when('/avbryt', {
                 templateUrl: '../views/ettersending/avbryt.html',
+                controller: 'EttersendingAvbrytCtrl',
                 resolve: {
                     cms: function (CmsResolver) {
                         return CmsResolver;
@@ -95,6 +96,9 @@ angular.module('ettersending.routes', ['ngRoute', 'nav.common.routes'])
                     },
                     config: function (ConfigResolver) {
                         return ConfigResolver;
+                    },
+                    vedlegg: function (EttersendingVedleggResolver) {
+                        return EttersendingVedleggResolver;
                     }
                 }
             })
