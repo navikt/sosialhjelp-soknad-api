@@ -270,7 +270,7 @@
         }
 
         .sticky-bunn {
-            margin-bottom: 30px;
+            margin-bottom: 5px;
             margin-top: 30px;
 
             &.stick {
@@ -283,23 +283,34 @@
                         display: block;
                     }
                 }
+
+                a.klare-vedlegg {
+                    display: block;
+                }
+
+                div.klare-vedlegg {
+                    display: none;
+                }
+            }
+
+            a.klare-vedlegg {
+                display: none;
+
+                span {
+                    color: #2768B2;
+                }
             }
 
             .klare-vedlegg {
                 text-decoration: none;
 
                 span {
-                    color: #2768B2;
                     font-size: 1rem;
                     text-transform: none;
 
                     &:first-of-type {
                         font-weight: bold;
                     }
-                }
-
-                &:before {
-                    content: url(../img/vedlegg-blaa.svg);
                 }
             }
         }
