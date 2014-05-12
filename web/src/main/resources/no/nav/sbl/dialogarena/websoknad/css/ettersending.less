@@ -1,3 +1,10 @@
+#slett {
+    #lasteindikator {
+        margin-top: 100px;
+        text-align: center;
+    }
+}
+
 .ettersending-infotekst {
     margin-bottom: 30px;
     font-weight: 600;
@@ -78,14 +85,6 @@
     h1 {
         margin-top: 10px;
         margin-bottom: 0;
-    }
-
-    .sticky-bunn {
-        display: none;
-
-        &.stick {
-            display: block;
-        }
     }
 
     .innsendt {
@@ -266,31 +265,42 @@
 
         }
 
-
         > a {
             margin-bottom: 40px;
         }
 
-        .klare-vedlegg {
-            text-decoration: none;
+        .sticky-bunn {
+            margin-bottom: 30px;
+            margin-top: 30px;
 
-            span {
-                color: #2768B2;
-                font-size: 1rem;
-                text-transform: none;
+            &.stick {
+                margin-bottom: 0;
+                margin-top: 0;
 
-                &:first-of-type {
-                    font-weight: bold;
+                .klare-vedlegg {
+                    &:after {
+                        content: url(../img/blaa_pil.svg);
+                        display: block;
+                    }
                 }
             }
 
-            &:before {
-                content: url(../img/vedlegg-blaa.svg);
-            }
+            .klare-vedlegg {
+                text-decoration: none;
 
-            &:after {
-                content: url(../img/blaa_pil.svg);
-                display: block;
+                span {
+                    color: #2768B2;
+                    font-size: 1rem;
+                    text-transform: none;
+
+                    &:first-of-type {
+                        font-weight: bold;
+                    }
+                }
+
+                &:before {
+                    content: url(../img/vedlegg-blaa.svg);
+                }
             }
         }
     }
