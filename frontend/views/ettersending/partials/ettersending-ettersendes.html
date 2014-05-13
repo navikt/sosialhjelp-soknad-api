@@ -34,7 +34,7 @@
         </div>
         <div class="last-opp" data-ng-class="{annet: erAnnetVedlegg(v)}">
             <div data-ng-if="erIkkeLastetOpp(v)">
-                <span class="slett" data-ng-if="erAnnetVedlegg(v)">
+                <span class="slett" data-ng-if="erAnnetVedleggLagtTilIDenneInnsendingen(v)">
                     <a href="javascript:void(0);"
                        data-ng-click="slettAnnetVedlegg(v)"
                        data-ng-bind-html="'ettersending.vedlegg.annet.slett' | cmstekst"></a>

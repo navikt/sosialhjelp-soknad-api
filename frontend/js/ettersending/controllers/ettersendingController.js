@@ -43,7 +43,7 @@ angular.module('nav.ettersending.controllers.main', [])
             return erLastetOpp(v) && v.storrelse > 0;
         }
 
-        function erAnnetVedleggLagtTilIDenneInnsendingen() {
+        function erAnnetVedleggLagtTilIDenneInnsendingen(v) {
             return v.skjemaNummer === "N6" && v.opprinneligInnsendingsvalg === null;
         };
 
