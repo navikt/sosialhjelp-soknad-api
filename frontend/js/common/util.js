@@ -58,7 +58,11 @@ function getBehandlingsIdFromUrlForEttersending() {
 
 function redirectTilSide(side) {
     var baseUrl = window.location.href.substring(0, window.location.href.indexOf('/sendsoknad'));
-    window.location.href = baseUrl + side;
+    redirectTilUrl(baseUrl + side);
+}
+
+function redirectTilUrl(url) {
+    window.location.href = url;
 }
 
 function sjekkOmGittEgenskapTilObjektErTrue(objekt) {

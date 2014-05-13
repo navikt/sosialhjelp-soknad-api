@@ -38,6 +38,6 @@ angular.module('nav.ettersending.controllers.avbryt', [])
         }
 
         function redirectTilMineHenvendelser() {
-            $window.location.href = data.config['minehenvendelser.link.url'];
+            redirectTilUrl(data.config['minehenvendelser.link.url']);
         }
     });
