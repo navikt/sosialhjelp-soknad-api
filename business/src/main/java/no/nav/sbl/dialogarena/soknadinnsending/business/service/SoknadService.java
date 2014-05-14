@@ -317,17 +317,26 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
 
     @Override
     public Long startEttersending(String behandingsId) {
-        WSHentSoknadResponse wsSoknadsdata = hentSisteIkkeAvbrutteSoknadIBehandlingskjede(behandingsId);
+        List<WSBehandlingskjedeElement> behandlingskjede = henvendelseConnector.hentBehandlingskjede(behandingsId);
+        WSHentSoknadResponse wsSoknadsdata = hentSisteIkkeAvbrutteSoknadIBehandlingskjede(behandlingskjede);
 
         if(wsSoknadsdata.getInnsendtDato() == null) {
             throw new ApplicationException("Kan ikke starte ettersending på en ikke fullfort soknad");
         }
-        return lagEttersendingFraWsSoknad(wsSoknadsdata).getSoknadId();
+        DateTime innsendtDato = hentOrginalInnsendtDato(behandlingskjede, behandingsId);
+        return lagEttersendingFraWsSoknad(wsSoknadsdata, innsendtDato).getSoknadId();
     }
 
-    private WSHentSoknadResponse hentSisteIkkeAvbrutteSoknadIBehandlingskjede(String behandingsId) {
-        List<WSBehandlingskjedeElement> wsBehandlingskjedeElementer = henvendelseConnector.hentBehandlingskjede(behandingsId);
-        List<WSBehandlingskjedeElement> sorterteBehandlinger = on(wsBehandlingskjedeElementer).filter(where(STATUS, not(equalTo(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER)))).collect(new Comparator<WSBehandlingskjedeElement>() {
+    private DateTime hentOrginalInnsendtDato(List<WSBehandlingskjedeElement> behandlingskjede, String behandlingsId) {
+        return on(behandlingskjede)
+                .filter(where(BEHANDLINGS_ID, equalTo(behandlingsId)))
+                .head()
+                .get()
+                .getInnsendtDato();
+    }
+
+    private WSHentSoknadResponse hentSisteIkkeAvbrutteSoknadIBehandlingskjede(List<WSBehandlingskjedeElement> behandlingskjede) {
+        List<WSBehandlingskjedeElement> sorterteBehandlinger = on(behandlingskjede).filter(where(STATUS, not(equalTo(SoknadInnsendingStatus.AVBRUTT_AV_BRUKER)))).collect(new Comparator<WSBehandlingskjedeElement>() {
             @Override
             public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
                 DateTime dato1 = o1.getInnsendtDato();
@@ -347,7 +356,7 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
         return henvendelseConnector.hentSoknad(sorterteBehandlinger.get(0).getBehandlingsId());
     }
 
-    private WebSoknad lagEttersendingFraWsSoknad(WSHentSoknadResponse opprinneligInnsending) {
+    private WebSoknad lagEttersendingFraWsSoknad(WSHentSoknadResponse opprinneligInnsending, DateTime innsendtDato) {
         String ettersendingsBehandlingId = henvendelseConnector.startEttersending(opprinneligInnsending);
         WSHentSoknadResponse wsEttersending = henvendelseConnector.hentSoknad(ettersendingsBehandlingId);
 
@@ -383,7 +392,7 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
         Faktum soknadInnsendingsDato = new Faktum()
                 .medSoknadId(soknadId)
                 .medKey("soknadInnsendingsDato")
-                .medValue(String.valueOf(opprinneligInnsending.getInnsendtDato().getMillis()))
+                .medValue(String.valueOf(innsendtDato.getMillis()))
                 .medType(SYSTEMREGISTRERT);
         lagreSystemFaktum(soknadId, soknadInnsendingsDato, "");
         soknad.setFaktaListe(repository.hentAlleBrukerData(soknadId));
@@ -812,6 +821,12 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
     private static final Transformer<WSBehandlingskjedeElement, SoknadInnsendingStatus> STATUS = new Transformer<WSBehandlingskjedeElement, SoknadInnsendingStatus>() {
         public SoknadInnsendingStatus transform(WSBehandlingskjedeElement input) {
             return SoknadInnsendingStatus.valueOf(input.getStatus());
+        }
+    };
+
+    private static final Transformer<WSBehandlingskjedeElement, String> BEHANDLINGS_ID = new Transformer<WSBehandlingskjedeElement, String>() {
+        public String transform(WSBehandlingskjedeElement input) {
+            return input.getBehandlingsId();
         }
     };
 }
