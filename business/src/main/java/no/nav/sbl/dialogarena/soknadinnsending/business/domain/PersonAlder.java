@@ -1,6 +1,5 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
-import no.bekk.bekkopen.person.Fodselsnummer;
 import org.joda.time.LocalDate;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -8,7 +7,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
-import static no.bekk.bekkopen.person.FodselsnummerValidator.getFodselsnummer;
 import static org.joda.time.LocalDate.parse;
 import static org.joda.time.Years.yearsBetween;
 
@@ -37,12 +35,12 @@ public class PersonAlder implements Serializable{
 	}
 
     private String hentUtslagsFodselsdatoFraFnr(String fodselsnummer){
-        Fodselsnummer fnr = getFodselsnummer(fodselsnummer);
+        NavFodselsnummer fnr = new NavFodselsnummer(fodselsnummer);
         return fnr.getBirthYear() + "-" + fnr.getMonth() + "-01";
     }
 
     private String hentFodselsdatoFraFnr(String fodselsnummer){
-        Fodselsnummer fnr = getFodselsnummer(fodselsnummer);
+        NavFodselsnummer fnr = new NavFodselsnummer(fodselsnummer);
         return fnr.getBirthYear() + "-" + fnr.getMonth() + "-" + fnr.getDayInMonth();
     }
 
