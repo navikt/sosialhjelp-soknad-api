@@ -44,8 +44,9 @@
                         <input id="leggtil" type="file" name="files[]" class="vekk" multiple
                                accept="image/jpeg,image/png,application/pdf" capture="camera" data-fokus
                                data-multiple-upload>
-                        <label for="leggtil" class="robust"
-                               data-ng-bind-html=" 'opplasting.leggtil' | cmstekst"></label>
+                        <label for="leggtil" class="robust">
+                            <span data-ng-bind-html="'opplasting.leggtil' | cmstekst"></span>
+                        </label>
                     </li>
                 </ul>
             </section>
