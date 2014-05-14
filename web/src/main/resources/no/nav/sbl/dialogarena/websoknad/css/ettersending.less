@@ -195,13 +195,12 @@
                             padding-right: 0;
                             position: absolute;
                             bottom: -6px;
-                            margin-left: 7px;
+                            right: 0;
 
-                            &:before {
+                            .dot {
                                 color: #3e3832;
-                                content: "•";
-                                padding: 0 0.3rem 0 0.4rem;
-                                position: static;
+                                position: relative;
+                                left: 3px;
                             }
 
                             .hjelpetekst {
@@ -228,6 +227,7 @@
                         font-family: Modus, Arial, Helvetica, sans-serif;
                         font-size: 1.21rem;
                         font-weight: 600;
+                        padding-right: 48px;
                     }
                 }
                 .last-opp {
@@ -410,15 +410,14 @@
                             .tittel-parent {
                                 .tittel {
                                     line-height: 1.3;
-                                    padding-right: 10px;
+                                    padding-right: 38px;
                                 }
 
                                 .hjelpetekst-parent {
                                     margin-left: 0;
 
-                                    &:before {
-                                        content: "";
-                                        padding: 0;
+                                    .dot {
+                                        display: none;
                                     }
                                 }
                             }
