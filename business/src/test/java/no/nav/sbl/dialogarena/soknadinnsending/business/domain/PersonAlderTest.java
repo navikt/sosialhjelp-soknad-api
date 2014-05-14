@@ -22,8 +22,8 @@ public class PersonAlderTest {
         assertEquals(100, alder.getUtslagsAlder());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void skalFaaExceptionDersomFnrErUgyldig() {
+    @Test
+    public void skalIkkeFaaExceptionDersomFnrErUgyldig() {
         PersonAlder alder = new PersonAlder("***REMOVED***");
         assertEquals(100, alder.getUtslagsAlder());
     }

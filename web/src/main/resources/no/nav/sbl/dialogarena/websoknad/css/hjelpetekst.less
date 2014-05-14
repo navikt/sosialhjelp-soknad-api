@@ -43,16 +43,16 @@
     }
 
     .hjelpetekst-tooltip {
-        display: none;
         background-color: #3e3832;
         padding-bottom: 20px;
         position: absolute;
         z-index: 1030;
         width: 350px;
         left: -15px;
+        opacity: 0;
 
         &.vis {
-            display: block;
+            opacity: 1;
         }
 
         .tittel {

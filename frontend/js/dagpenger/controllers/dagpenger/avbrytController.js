@@ -6,8 +6,8 @@ angular.module('nav.avbryt', [])
         };
 
         $scope.krevBekreftelse = data.fakta.filter(function(item) {
-            return item.type==="BRUKERREGISTRERT" && item.value !== null;
-        }).length>1;
+            return item.type==="BRUKERREGISTRERT" && (item.value !== null || Object.keys(item.properties).length > 0);
+        }).length > 1;
 
         $scope.submitForm = function () {
             var start = $.now();
