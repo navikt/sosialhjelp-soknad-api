@@ -61,10 +61,10 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
                 plasserTooltipHorisontalt();
                 scrollDersomNodvendig();
 
+                element.addClass('vis');
                 if ($window.innerWidth <= mobilStorrelse) {
                     settMaxHoyde();
                 }
-                element.addClass('vis');
             });
 
             function plasserTooltipVertikalt() {
