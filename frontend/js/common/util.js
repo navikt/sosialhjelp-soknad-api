@@ -58,7 +58,11 @@ function getBehandlingsIdFromUrlForEttersending() {
 
 function redirectTilSide(side) {
     var baseUrl = window.location.href.substring(0, window.location.href.indexOf('/sendsoknad'));
-    window.location.href = baseUrl + side;
+    redirectTilUrl(baseUrl + side);
+}
+
+function redirectTilUrl(url) {
+    window.location.href = url;
 }
 
 function sjekkOmGittEgenskapTilObjektErTrue(objekt) {
@@ -340,4 +344,8 @@ function getIEVersion() {
 
 function isNotNullOrUndefined(obj) {
     return obj !== undefined && obj !== null;
+}
+
+function trimWhitespaceIString(str) {
+    return str.replace(/\s+/g, '');
 }
