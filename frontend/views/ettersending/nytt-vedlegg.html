@@ -5,7 +5,9 @@
           data-ng-controller="EttersendingNyttVedleggCtrl"
           data-ng-submit="lagreVedlegg(nyttVedleggForm)">
         <a href="#/vedlegg" class="lukk" aria-label="{{'arbeidsforhold.nyttarbeidsforhold.lukk.aria' | cmstekst}}"></a>
+
         <h1 class="stor" data-ng-bind-html="'Dagpenger.vedlegg.L6.header' | cmstekst"></h1>
+
         <div class="form-linje">
             <label>
                 <span class="labeltekst" data-ng-bind-html="'vedlegg.annet.beskrivelse.sporsmal' | cmstekst"></span>
@@ -21,14 +23,15 @@
                 <span class="melding"></span>
             </label>
         </div>
+        <div class="center">
+            <div class="opprett">
+                <input type="submit"
+                       class="knapp-hoved"
+                       value="{{ 'ettersending.vedlegg.nytt.opprett' | cmstekst }}"
+                       data-fremdriftsindikator>
 
-        <div class="opprett">
-            <input type="submit"
-                   class="knapp-hoved"
-                   value="{{ 'ettersending.vedlegg.nytt.opprett' | cmstekst }}"
-                   data-fremdriftsindikator>
-
-            <a href="#/vedlegg" data-ng-bind-html="'ettersending.vedlegg.nytt.avbryt' | cmstekst"></a>
+                <a href="#/vedlegg" data-ng-bind-html="'ettersending.vedlegg.nytt.avbryt' | cmstekst"></a>
+            </div>
         </div>
     </form>
 </div>
