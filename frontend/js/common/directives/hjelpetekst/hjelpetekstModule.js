@@ -75,7 +75,7 @@ angular.module('nav.hjelpetekst', ['nav.animation'])
                 var plassSomMangleTilHoyre = element[0].getBoundingClientRect().right + 40 - (window.innerWidth || document.documentElement.clientWidth);
                 var venstre = Math.min(element.position().left - plassSomMangleTilHoyre, -15);
                 element.css({left: venstre});
-                settPilStyling(venstre - 5);
+                settPilStyling(venstre - 7);
             }
 
             function scrollDersomNodvendig() {
