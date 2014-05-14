@@ -142,6 +142,15 @@ angular.module('nav.ettersending.controllers.main', [])
                 return 'ettersending.vedlegg.sendesIkke';
             }
         };
+
+        $scope.hentKlareVedleggTekst = function() {
+            if ($scope.hentAntallVedleggSomErOpplastetIDenneEttersendingen() > 1) {
+                return 'ettersending.vedlegg.klare';
+            } else {
+                return 'ettersending.vedlegg.klare.ett';
+            }
+
+        };
     })
     .filter('ettersendes', function (sjekkOmSkalEttersendes) {
         return function (input) {

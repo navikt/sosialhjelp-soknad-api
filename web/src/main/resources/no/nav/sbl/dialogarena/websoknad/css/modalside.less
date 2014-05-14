@@ -1,6 +1,11 @@
-body.modalside {
+.omslag.modalside + .footer {
+    display: none;
+}
+
+
+.omslag.modalside {
     background-color: #333333;
-    [class*="innstillinger"], .rad-logo, .footer, .rad.tittel {
+    [class*="innstillinger"], .rad-logo, .rad.tittel {
         display: none;
     }
 
@@ -70,7 +75,7 @@ body.modalside {
 }
 
 @media only screen and (max-width: 767px) {
-    body.modalside {
+    .omslag.modalside {
         .begrensning {
             width: 100%;
             padding: 10px;
