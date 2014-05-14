@@ -92,7 +92,7 @@ public class NavFodselsnummer extends StringNumber {
                 return true;
             }
         } catch (IllegalArgumentException e) {
-            // ignore
+            return false;
         }
         return false;
     }
