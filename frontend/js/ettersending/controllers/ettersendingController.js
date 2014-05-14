@@ -1,9 +1,19 @@
 angular.module('nav.ettersending.controllers.main', [])
-    .controller('EttersendingCtrl', function ($scope, data, ettersendingService, vedleggService, Faktum, vedlegg, $location, sjekkOmSkalEttersendes) {
-        var antallDager = data.config["soknad.ettersending.antalldager"];
+    .controller('EttersendingCtrl', function ($scope, data, ettersendingService, vedleggService, Faktum, vedlegg, $location, sjekkOmSkalEttersendes, cms, $filter) {
+        var antallDagerFristKey = 'ettersending.soknadsfrist.' + trimWhitespaceIString(data.soknad.skjemaNummer.toLowerCase());
+        var defaultAntallDagerFristKey = 'ettersending.soknadsfrist.default';
+        var antallDager = cms[antallDagerFristKey];
+
+        if (antallDager === undefined) {
+            antallDager = cms[defaultAntallDagerFristKey];
+        }
+
         var innsendtDato = new Date(parseFloat(data.finnFaktum('soknadInnsendingsDato').value));
         var fristDato = new Date(innsendtDato.getTime());
         fristDato.setDate(innsendtDato.getDate() + parseInt(antallDager));
+
+        fristDato = $filter('date')(fristDato, 'dd.MM.yyyy');
+        fristDato = $filter('norskdato')(fristDato);
 
         $scope.fremdriftsindikator = {
             laster: false
@@ -11,8 +21,7 @@ angular.module('nav.ettersending.controllers.main', [])
 
         $scope.informasjon = {
             innsendtDato: innsendtDato,
-            fristDato: fristDato,
-            skjemanummer: trimWhitespaceIString(data.soknad.skjemaNummer.toLowerCase())
+            frist: [antallDager, fristDato]
         };
 
         $scope.ikkeOpplatetDokumenter = false;
@@ -30,6 +39,10 @@ angular.module('nav.ettersending.controllers.main', [])
         $scope.erAnnetVedlegg = function (v) {
             return erAnnetVedlegg(v);
         };
+
+        $scope.erLastetoppOgIkkeAnnetVedleggLagtTilIDenneBehandlingen = function(v) {
+            return !erAnnetVedleggLagtTilIDenneInnsendingen(v) && $scope.erLastetOpp(v);
+        }
 
         $scope.erAnnetVedleggLagtTilIDenneInnsendingen = function (v) {
             return erAnnetVedleggLagtTilIDenneInnsendingen(v);
