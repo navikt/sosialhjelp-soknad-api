@@ -21,8 +21,28 @@ angular.module('nav.cmstekster', [])
         };
     }])
     .filter('cmstekst', ['cms', '$sce', '$rootScope', function(cms, $sce, $rootScope) {
+        /**
+         * nokkel: Kan være objekt eller string. Dersom string, så er det nøkkelen som blir brukt i CMS.
+         * Dersom det er ett objekt, så skal objektet inneholde to nøkler, en 'key' og en 'fallbackKey', begge som string.
+         * key inneholder nøkkel for teksten i CMS. Dersom key ikke finnes, brukers fallbackKey.
+         *
+         * args: Ett array eller en string. Dersom det er en string, settes denne verdien inn i CMS-teksten for index 0
+         * Dersom ett array, settes teksten ved en index inn i tilsvarende posisjon i CMS-teksten. Posisjon i CMS-teksten
+         * markeres ved '{0}', '{1}' osv
+         */
         return function(nokkel, args) {
-            var tekst = cms.tekster[nokkel];
+            var tekst, usedKey = nokkel;
+
+            if (nokkel instanceof Object) {
+                tekst = cms.tekster[nokkel.key];
+                usedKey = nokkel.key;
+                if (tekst === undefined) {
+                    tekst = cms.tekster[nokkel.fallbackKey];
+                    usedKey = nokkel.fallbackKey;
+                }
+            } else {
+                tekst = cms.tekster[nokkel];
+            }
 
             if (args instanceof Array) {
                 args.forEach(function(argTekst, idx) {
@@ -33,7 +53,7 @@ angular.module('nav.cmstekster', [])
             }
 
             if ($rootScope.visCmsnokkler) {
-                tekst += ' [' + nokkel + ']';
+                tekst += ' [' + usedKey + ']';
             }
 
             return tekst === undefined ? '' : $sce.trustAsHtml(tekst);

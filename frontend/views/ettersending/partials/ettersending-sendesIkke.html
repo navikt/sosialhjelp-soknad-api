@@ -19,10 +19,20 @@
         </div>
     </div>
     <div class="last-opp">
-        <div class="liten" data-ng-bind-html="hentTekstKey(v) | cmstekst"></div>
-        <div class="liten">
-            <a data-ng-href="#/opplasting/{{v.vedleggId}}"
-               data-ng-bind-html="'ettersending.vedlegg.lastOpp' | cmstekst"></a>
+        <div class="desktop">
+            <div class="liten" data-ng-bind-html="hentTekstKey(v) | cmstekst"></div>
+            <div class="liten">
+                <a data-ng-href="#/opplasting/{{v.vedleggId}}"
+                   data-ng-bind-html="'ettersending.vedlegg.lastOppIgjen' | cmstekst"></a>
+            </div>
+        </div>
+
+        <div class="mobil">
+            <div class="liten">
+                <a data-ng-href="#/opplasting/{{v.vedleggId}}"
+                   data-ng-bind-html="'ettersending.vedlegg.lastOppIgjen' | cmstekst"></a>
+            </div>
+            <div class="liten" data-ng-bind-html="hentTekstKey(v) | cmstekst"></div>
         </div>
     </div>
 </div>

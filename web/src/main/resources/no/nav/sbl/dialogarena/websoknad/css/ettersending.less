@@ -1,3 +1,10 @@
+#slett {
+    #lasteindikator {
+        margin-top: 100px;
+        text-align: center;
+    }
+}
+
 .ettersending-infotekst {
     margin-bottom: 30px;
     font-weight: 600;
@@ -18,8 +25,6 @@
 }
 
 #ettersending-opplasting {
-    padding-top: 30px;
-
     .panel-standard {
         text-align: center;
     }
@@ -77,15 +82,8 @@
 
     h1 {
         margin-top: 10px;
-        margin-bottom: 0;
-    }
-
-    .sticky-bunn {
-        display: none;
-
-        &.stick {
-            display: block;
-        }
+        padding-bottom: 30px;
+        margin-bottom: 30px !important;
     }
 
     .innsendt {
@@ -152,10 +150,14 @@
                     position: relative;
                 }
 
-                .slett {
-                    display: inline-block;
+                .last-opp.annet {
+                    .desktop:before {
+                        color: #3e3832;
+                        content: "•";
+                        padding: 0 0.7rem;
+                    }
 
-                    &:after {
+                    .mobil:after {
                         color: #3e3832;
                         content: "•";
                         padding: 0 0.7rem;
@@ -197,7 +199,8 @@
                             }
 
                             .hjelpetekst {
-                                position: static;
+                                position: relative;
+                                top: 0;
                             }
                         }
                     }
@@ -231,9 +234,23 @@
                         width: 41%;
                     }
 
-                    div div {
-                        &:last-child {
-                            padding-top: 5px;
+                    .mobil {
+                        display: none;
+                    }
+
+                    .desktop {
+                        .liten {
+                            &:last-child {
+                                margin-top: 5px;
+                            }
+                        }
+                    }
+
+                    .desktop, .mobil {
+                        div div {
+                            &:last-child {
+                                padding-top: 5px;
+                            }
                         }
                     }
                 }
@@ -266,31 +283,163 @@
 
         }
 
-
         > a {
             margin-bottom: 40px;
         }
 
-        .klare-vedlegg {
-            text-decoration: none;
+        .sticky-bunn {
+            margin-bottom: 5px;
+            margin-top: 30px;
 
-            span {
-                color: #2768B2;
-                font-size: 1rem;
-                text-transform: none;
+            &.stick {
+                margin-bottom: 0;
+                margin-top: 0;
 
-                &:first-of-type {
-                    font-weight: bold;
+                .klare-vedlegg {
+                    &:after {
+                        content: url(../img/blaa_pil.svg);
+                        display: block;
+                    }
+                }
+
+                a.klare-vedlegg {
+                    display: block;
+                }
+
+                div.klare-vedlegg {
+                    display: none;
                 }
             }
 
-            &:before {
-                content: url(../img/vedlegg-blaa.svg);
+            a.klare-vedlegg {
+                display: none;
+
+                span {
+                    color: #2768B2;
+                }
             }
 
-            &:after {
-                content: url(../img/blaa_pil.svg);
-                display: block;
+            .klare-vedlegg {
+                text-decoration: none;
+
+                span {
+                    font-size: 1rem;
+                    text-transform: none;
+
+                    &:first-of-type {
+                        font-weight: bold;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    #ettersending-nytt-vedlegg {
+        .form-linje {
+            width: 95%;
+        }
+    }
+
+
+    #ettersending {
+
+        .rad:not(.innholdsrad) {
+            padding-left: 25px;
+            padding-right: 25px;
+        }
+
+        .innholdsrad {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .innsendt {
+            span {
+                font-size: 11px;
+            }
+        }
+
+        h1 {
+            margin-top: 5px;
+            font-size: 24px;
+            margin-bottom: 20px !important;
+            padding-bottom: 20px;
+        }
+
+        h1 + span {
+            font-size: 12px;
+        }
+
+        .panel-standard {
+            margin-right: 0;
+
+            .vedleggsliste {
+                padding-left: 25px;
+                padding-right: 25px;
+                border-top: 1px solid #d1d1d1;
+                border-bottom: 1px solid #d1d1d1;
+                margin-bottom: 20px;
+                padding-top: 30px;
+
+                [class*="ikon-vedlegg"] {
+                    margin-bottom: 20px;
+                    padding-bottom: 20px;
+                }
+
+                .vedleggboks {
+                    .vedlegg-navn {
+                        width: 100%;
+
+                        .tittel-parent {
+                            .tittel {
+                                line-height: 1.3;
+                                padding-right: 10px;
+                            }
+
+                            .hjelpetekst-parent {
+                                margin-left: 0;
+
+                                &:before {
+                                    content: "";
+                                    padding: 0;
+                                }
+                            }
+                        }
+                    }
+
+                    .last-opp, .last-opp.annet {
+                        margin-top: 10px;
+                        width: 100%;
+                        text-align: left;
+
+                        .desktop {
+                            display: none;
+                        }
+
+                        .mobil {
+                            display: inline-block;
+                        }
+
+                        .desktop, .mobil {
+                            div {
+                                font-size: 13px;
+                                display: inline-block;
+
+                                &:last-child:before {
+                                    color: #3e3832;
+                                    content: "•";
+                                    padding: 0 1rem 0 0.7rem;
+                                }
+
+                                a {
+                                    font-size: 13px;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

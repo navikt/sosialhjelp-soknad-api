@@ -30,7 +30,8 @@
             $provide.value("data", {
                 soknad: {
                     soknadId: soknadId,
-                    brukerBehandlingId: '123'
+                    brukerBehandlingId: '123',
+                    skjemaNummer: 'NAV 04-03.03'
                 },
                 config: {
                     'soknad.ettersending.antalldager': '42'
@@ -151,9 +152,16 @@
             });
         });
 
-        it('skal ha ett vedlegg som ansees som annet vedegg', function () {
+        it('skal ha to vedlegg som ansees som annet vedegg', function () {
             var annetVedlegg = scope.vedlegg.filter(function(v) {
                 return scope.erAnnetVedlegg(v);
+            });
+            expect(annetVedlegg.length).toBe(2);
+        });
+
+        it('skal ha ett vedlegg N6-vedlegg lagt til i denne behandlingen', function () {
+            var annetVedlegg = scope.vedlegg.filter(function(v) {
+                return scope.erAnnetVedleggLagtTilIDenneInnsendingen(v);
             });
             expect(annetVedlegg.length).toBe(1);
         });
@@ -163,13 +171,6 @@
                 return v.opprinneligInnsendingsvalg === 'SendesIkke';
             })[0];
             expect(scope.hentTekstKey(sendesIkkeVedlegg)).toBe('ettersending.vedlegg.sendesIkke');
-        });
-
-        it('skal få cms-nøkkel for sendt inn dersom opprinnelig status er lastet opp', function () {
-            var sendesIkkeVedlegg = scope.vedlegg.filter(function(v) {
-                return v.opprinneligInnsendingsvalg === 'LastetOpp';
-            })[0];
-            expect(scope.hentTekstKey(sendesIkkeVedlegg)).toBe('ettersending.vedlegg.sendtInn');
         });
 
         it('skal få liste over antall vedlegg som er lastet opp', function () {
