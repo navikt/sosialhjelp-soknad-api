@@ -50,7 +50,7 @@ angular.module('nav.opplasting.controller', ['blueimp.fileupload', 'opplasting.m
 
         $scope.harIkkeLastetOppFil = function(v) {
             return v.vedleggId === undefined;
-        }
+        };
 
         $.ajaxSetup({
             converters: {

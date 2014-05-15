@@ -42,7 +42,7 @@ angular.module('nav.ettersending.controllers.main', [])
 
         $scope.erLastetoppOgIkkeAnnetVedleggLagtTilIDenneBehandlingen = function(v) {
             return !erAnnetVedleggLagtTilIDenneInnsendingen(v) && $scope.erLastetOpp(v);
-        }
+        };
 
         $scope.erAnnetVedleggLagtTilIDenneInnsendingen = function (v) {
             return erAnnetVedleggLagtTilIDenneInnsendingen(v);
