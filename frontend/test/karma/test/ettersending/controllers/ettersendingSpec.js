@@ -15,6 +15,7 @@
             'nav.services.faktum',
             'nav.services.resolvers.ettersendingmetadata',
             'nav.ettersending.controllers.main',
+            'nav.norskDatoFilter',
             'ngResource',
             'ngRoute'
         ));
@@ -132,14 +133,19 @@
                 }
             ];
 
+            var cms = {
+                'ettersending.soknadsfrist.default': 12
+            };
+
             ctrl = $controller('EttersendingCtrl', {
                 $scope: scope,
-                vedlegg: vedlegg
+                vedlegg: vedlegg,
+                cms: cms
             });
         }));
 
         it('skal sette fristdato til 42 dager etter innsendt dato', function () {
-            expect(scope.informasjon.fristDato.getTime()).toBe(1402896954501);
+            expect(scope.informasjon.frist[1]).toBe('17. mai 2014');
         });
 
         it('skal ha rett antall vedlegg', function () {

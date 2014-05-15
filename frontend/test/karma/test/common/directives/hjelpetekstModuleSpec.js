@@ -4,7 +4,11 @@ describe('hjelpetekst', function () {
     event2 = $.Event("click");
     event2.timeStamp = 1;
 
-    beforeEach(module('nav.hjelpetekst', 'nav.cmstekster', 'templates-main'));
+    beforeEach(module(
+        'nav.hjelpetekst',
+        'nav.cmstekster',
+        'ngSanitize',
+        'templates-main'));
 
     beforeEach(module(function ($provide) {
         $provide.value("cms", {'tekster': {'hjelpetekst.tittel': 'Tittel hjelpetekst',
