@@ -14,6 +14,8 @@ public class EttersendingPage extends EttersendingBasePage {
         if (soknad != null) {
             new CookieUtils().remove("XSRF-TOKEN");
             new CookieUtils().save("XSRF-TOKEN", XsrfGenerator.generateXsrfToken(soknad.getBehandlingskjedeId()));
+        } else {
+            setResponsePage(StartEttersendingPage.class, parameters);
         }
     }
 }

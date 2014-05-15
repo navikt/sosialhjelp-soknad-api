@@ -53,7 +53,9 @@ function getBehandlingIdFromUrl() {
 function getBehandlingsIdFromUrlForEttersending() {
     // Hack for å hente ut behandlingID
     var url = window.location.href;
-    return url.substring(url.indexOf("startettersending/") + 18, url.indexOf("#"));
+    var hashIdx = url.indexOf('#/');
+    var behandlingsIdStart = url.substring(0, hashIdx).lastIndexOf('/') + 1;
+    return url.substring(behandlingsIdStart, hashIdx);
 }
 
 function redirectTilSide(side) {

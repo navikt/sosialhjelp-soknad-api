@@ -56,7 +56,7 @@ import javax.inject.Named;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.awt.Dimension;
+import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -69,7 +69,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.UUID;
 
 import static java.lang.String.format;
 import static java.util.UUID.randomUUID;
@@ -305,14 +304,6 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
         } else {
             return null;
         }
-    }
-
-    @Override
-    public WebSoknad hentEttersendingMedData(String behandlingskjedeId) {
-        WebSoknad soknad = repository.hentEttersendingMedBehandlingskjedeIdMedData(behandlingskjedeId);
-        List<Vedlegg> vedlegg = hentPaakrevdeVedlegg(soknad.getSoknadId());
-        soknad.setVedlegg(vedlegg);
-        return soknad;
     }
 
     @Override
