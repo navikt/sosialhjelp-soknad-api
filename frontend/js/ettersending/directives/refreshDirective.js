@@ -5,5 +5,5 @@ angular.module('ettersending.refresh', [])
             $timeout(function() {
                 element.css('right', 'auto');
             }, 50);
-        }
+        };
     });
