@@ -75,7 +75,7 @@
                     innsendingsvalg: 'LastetOpp',
                     opprinneligInnsendingsvalg: 'LastetOpp',
                     navn: '',
-                    storrelse: '0',
+                    storrelse: 0,
                     antallSider: 0,
                     opprettetDato: '1399183300204',
                     tittel: '',
@@ -91,7 +91,7 @@
                     innsendingsvalg: 'SendesSenere',
                     opprinneligInnsendingsvalg: 'SendesSenere',
                     navn: '',
-                    storrelse: '0',
+                    storrelse: 0,
                     antallSider: 0,
                     opprettetDato: '1399183300204',
                     tittel: '',
@@ -107,7 +107,7 @@
                     innsendingsvalg: 'SendesIkke',
                     opprinneligInnsendingsvalg: 'SendesIkke',
                     navn: '',
-                    storrelse: '0',
+                    storrelse: 0,
                     antallSider: 0,
                     opprettetDato: '1399183300204',
                     tittel: '',
@@ -123,7 +123,7 @@
                     innsendingsvalg: 'SendesSenere',
                     opprinneligInnsendingsvalg: null,
                     navn: '',
-                    storrelse: '0',
+                    storrelse: 0,
                     antallSider: 0,
                     opprettetDato: '1399183300204',
                     tittel: '',
@@ -220,6 +220,61 @@
             scope.vedlegg[1].innsendingsvalg = 'LastetOpp';
             scope.sendEttersending();
             expect(ettersendingServiceTmp.send).toHaveBeenCalled();
+        });
+
+        it('skal returnere at ett vedlegg ikke er både annet og lagt til i denne behandlingen dersom vedlegget ikke er N6', function () {
+            scope.vedlegg[0].storrelse = 100;
+            expect(scope.erAnnetVedleggLagtTilIDenneInnsendingen(scope.vedlegg[0])).toBe(false);
+        });
+
+        it('skal returnere at ett vedlegg ikke er både annet og lagt til i denne behandlingen dersom vedlegg av type N6 ble lagt til i en annen behandling', function () {
+            expect(scope.erAnnetVedleggLagtTilIDenneInnsendingen(scope.vedlegg[2])).toBe(false);
+        });
+
+        it('skal returnere at ett vedlegg er både annet og lagt til i denne behandlingen dersom vedlegget har skjemanummer N6 og er lagt til i denne behandlingen', function () {
+            expect(scope.erAnnetVedleggLagtTilIDenneInnsendingen(scope.vedlegg[3])).toBe(true);
+        });
+
+        it('skal vise ettersendes-bolk dersom noen vedlegg har opprinneling innsendingsvalg SendesSenere', function () {
+            expect(scope.skalViseEttersendingsbolk()).toBe(true);
+        });
+
+        it('skal vise ettersendes-bolk dersom noen vedlegg har størrelse mer enn 0 og har innsendingsvalg LastetOpp', function () {
+            scope.vedlegg[1].storrelse = 100;
+            scope.vedlegg[1].innsendingsvalg = 'LastetOpp';
+            scope.vedlegg[1].opprinneligInnsendingsvalg = 'LastetOpp';
+            scope.vedlegg[3].opprinneligInnsendingsvalg = 'LastetOpp';
+            scope.vedlegg[3].innsendingsvalg = 'LastetOpp';
+            expect(scope.skalViseEttersendingsbolk()).toBe(true);
+        });
+
+        it('skal ikke vise ettersendes-bolk dersom ingen vedlegg har opprinnelig status SendesSenere, ingen vedlegg er lastet opp i denne behandlingen, og ingen N6-vedlegg er lagt til', function () {
+            scope.vedlegg[1].opprinneligInnsendingsvalg = 'LastetOpp';
+            scope.vedlegg[1].innsendingsvalg = 'LastetOpp';
+            scope.vedlegg[3].opprinneligInnsendingsvalg = 'LastetOpp';
+            scope.vedlegg[3].innsendingsvalg = 'LastetOpp';
+            expect(scope.skalViseEttersendingsbolk()).toBe(false);
+        });
+
+        it('skal vise sendt-bolk dersom noen vedlegg har innsendingsvalg LastetOpp og størrelse 0', function () {
+            expect(scope.skalViseSendtBolk()).toBe(true);
+        });
+
+        it('skal ikke vise sendt-bolk dersom ingen vedlegg har innsendingsvalg lastet opp', function () {
+            scope.vedlegg[0].innsendingsvalg = 'SendesSenere';
+            expect(scope.skalViseSendtBolk()).toBe(false);
+        });
+
+        it('skal ikke vise sendt-bolk dersom ingen vedlegg har størrelse 0', function () {
+            scope.vedlegg[0].storrelse = 100;
+            scope.vedlegg[1].storrelse = 100;
+            scope.vedlegg[2].storrelse = 100;
+            scope.vedlegg[3].storrelse = 100;
+            expect(scope.skalViseSendtBolk()).toBe(false);
+        });
+
+        it('skal vise sendes ikke-bolk dersom noen vedlegg ikke passer i de andre 2 bolkene', function () {
+            expect(scope.skalViseSendesIkkeBolk()).toBe(true);
         });
     });
 }());
