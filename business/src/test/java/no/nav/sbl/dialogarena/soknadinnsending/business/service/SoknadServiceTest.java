@@ -558,10 +558,4 @@ public class SoknadServiceTest {
 
         assertThat(webSoknad, is(nullValue()));
     }
-
-    @Test
-    public void skalSletteVedleggMedGittId() {
-        soknadService.slettN6Vedlegg(1L);
-        verify(vedleggRepository).slettVedleggMedVedleggId(1L);
-    }
 }

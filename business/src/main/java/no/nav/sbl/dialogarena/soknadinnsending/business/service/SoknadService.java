@@ -738,22 +738,6 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
         }
     }
 
-    @Override
-    public Long leggTilNyttN6Vedkegg(Vedlegg vedlegg, Long soknadId) {
-        vedlegg.setFillagerReferanse(UUID.randomUUID().toString());
-        vedlegg.setInnsendingsvalg(Vedlegg.Status.SendesSenere);
-        vedlegg.setSkjemaNummer(Kodeverk.ANNET);
-        vedlegg.setStorrelse(0L);
-        vedlegg.setAntallSider(0);
-        vedlegg.setSoknadId(soknadId);
-        return vedleggRepository.opprettVedlegg(vedlegg, null);
-    }
-
-    @Override
-    public void slettN6Vedlegg(Long vedleggId) {
-        vedleggRepository.slettVedleggMedVedleggId(vedleggId);
-    }
-
     private void medKodeverk(Vedlegg vedlegg) {
         try {
             Map<Kodeverk.Nokkel, String> koder = kodeverk.getKoder(vedlegg.getSkjemaNummerFiltrert());
