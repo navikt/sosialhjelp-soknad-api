@@ -20,7 +20,6 @@ angular.module('nav.ettersending.controllers.nyttVedlegg', [])
             $scope.$broadcast(eventString);
 
             if (form.$valid) {
-
                 new Faktum({
                     key: 'ekstraVedlegg',
                     value: 'true',
