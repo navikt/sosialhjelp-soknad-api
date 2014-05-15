@@ -199,7 +199,6 @@ describe('navFaktumMedDatoProperty', function () {
 
     describe("navFaktum", function() {
         it("navfaktum med nav-property som matcher dato patternet, skal det opprettes en dato og settes til navproperties", function() {
-            console.log(scope.navproperties.varighetFra);
             expect(scope.navproperties.varighetFra.getTime()).toBe(1388534400000);
         });
         it("navfaktum med nav-property som matcher dato patternet, skal det opprettes en dato og settes til navproperties", function() {
