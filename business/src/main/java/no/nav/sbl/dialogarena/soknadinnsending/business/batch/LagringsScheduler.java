@@ -5,6 +5,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
+import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -31,6 +32,8 @@ public class LagringsScheduler {
     private SoknadRepository soknadRepository;
     @Inject
     private FillagerConnector fillagerConnector;
+    @Inject
+    private HenvendelseConnector henvendelseConnector;
 
     @Scheduled(fixedRate = SCHEDULE_RATE_MS)
     public void mellomlagreSoknaderOgNullstillLokalDb() throws InterruptedException {
@@ -40,7 +43,11 @@ public class LagringsScheduler {
         if (Boolean.valueOf(System.getProperty("sendsoknad.batch.enabled", "true"))) { // TODO: Burde fjernes når applikasjonen skal ut i prod
             logger.info("---- Starter flytting av søknader til henvendelse-jobb ----");
             for (Optional<WebSoknad> ws = soknadRepository.plukkSoknadTilMellomlagring(); ws.isSome(); ws = soknadRepository.plukkSoknadTilMellomlagring()) {
-                lagreFilTilHenvendelseOgSlettILokalDb(ws);
+                if(isPaabegyntEttersendelse(ws)) {
+                    avbrytOgSlettEttersendelse(ws);
+                } else {
+                    lagreFilTilHenvendelseOgSlettILokalDb(ws);
+                }
                 // Avslutt prosessen hvis det er gått for lang tid. Tyder på at noe er nede.
                 if (harGaattForLangTid()) {
                     logger.warn("---- Jobben har kjørt i mer enn {} ms. Den blir derfor terminert ----", SCHEDULE_INTERRUPT_MS);
@@ -53,10 +60,42 @@ public class LagringsScheduler {
         }
     }
 
+    private void avbrytOgSlettEttersendelse(Optional<WebSoknad> ws) throws InterruptedException {
+        WebSoknad soknad = ws.get();
+        try {
+            henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
+
+            try {
+                fillagerConnector.slettAlle(soknad.getBrukerBehandlingId());
+            } catch (Exception e) {
+                logger.error("Sletting av filer feilet for ettersending {}. Henvendelsen de hører til er satt til avbrutt, og ettersendingen slettes i sendsøknad.", soknad.getSoknadId(), e);
+            }
+
+            soknadRepository.slettSoknad(soknad.getSoknadId());
+            vellykket++;
+        } catch (Exception e) {
+            feilet++;
+            logger.error("Avbryt feilet for ettersending {}. Setter tilbake til LEDIG", soknad.getSoknadId(), e);
+            try {
+                soknadRepository.leggTilbake(soknad);
+            } catch (Exception e1) {
+                logger.error("Klarte ikke å legge tilbake ettersending {}", soknad.getSoknadId(), e1);
+            }
+            Thread.sleep(1000); // Så loggen ikke blir fylt opp
+        }
+
+
+    }
+
+    private boolean isPaabegyntEttersendelse(Optional<WebSoknad> ws) {
+        WebSoknad soknad = ws.get();
+        return soknad.erEttersending();
+    }
+
     protected void lagreFilTilHenvendelseOgSlettILokalDb(Optional<WebSoknad> ws) throws InterruptedException {
         WebSoknad soknad = ws.get();
         try {
-            if (soknad.getStatus().equals(SoknadInnsendingStatus.UNDER_ARBEID)) {
+            if (soknad.getStatus().equals(SoknadInnsendingStatus.UNDER_ARBEID) && !soknad.erEttersending()) {
                 StringWriter xml = new StringWriter();
                 JAXB.marshal(soknad, xml);
                 fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(), soknad.getUuid(), soknad.getAktoerId(), new ByteArrayInputStream(xml.toString().getBytes()));

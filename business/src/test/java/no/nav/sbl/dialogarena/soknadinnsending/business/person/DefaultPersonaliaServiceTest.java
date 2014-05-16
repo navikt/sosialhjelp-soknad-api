@@ -289,7 +289,7 @@ public class DefaultPersonaliaServiceTest {
             HentKontaktinformasjonOgPreferanserPersonIkkeFunnet {
         mockGyldigPersonMedBarn();
 
-        personaliaService.lagrePersonaliaOgBarn(RIKTIG_IDENT, 21L);
+        personaliaService.lagrePersonaliaOgBarn(RIKTIG_IDENT, 21L, true);
 
         verify(soknadServiceMock, times(2)).lagreSystemFaktum(anyLong(),
                 any(Faktum.class), anyString());
@@ -300,7 +300,7 @@ public class DefaultPersonaliaServiceTest {
         mockGyldigPersonMedBarn();
         leggTilDoedeBarn();
 
-        personaliaService.lagrePersonaliaOgBarn(RIKTIG_IDENT, 21L);
+        personaliaService.lagrePersonaliaOgBarn(RIKTIG_IDENT, 21L, true);
 
         verify(soknadServiceMock, times(2)).lagreSystemFaktum(anyLong(),
                 any(Faktum.class), anyString());

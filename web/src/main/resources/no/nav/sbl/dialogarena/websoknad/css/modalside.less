@@ -1,11 +1,16 @@
-body.modalside {
-    background-color: #3e3832;
-    [class*="innstillinger"], .rad-logo, .footer, .rad.tittel {
+.omslag.modalside + .footer {
+    display: none;
+}
+
+
+.omslag.modalside {
+    background-color: #333333;
+    [class*="innstillinger"], .rad-logo, .rad.tittel {
         display: none;
     }
 
     .modalBoks {
-        margin-top: 100px;
+        padding-top: 100px;
 
         .datepicker {
             padding: 15px;
@@ -70,7 +75,7 @@ body.modalside {
 }
 
 @media only screen and (max-width: 767px) {
-    body.modalside {
+    .omslag.modalside {
         .begrensning {
             width: 100%;
             padding: 10px;

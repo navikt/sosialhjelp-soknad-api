@@ -64,6 +64,13 @@ public class SoknadVedlegg implements Serializable {
         return skjemaNummer;
     }
 
+    public String getSkjemaNummerFiltrert() {
+        if (getSkjemaNummer() != null && getSkjemaNummer().contains("|")) {
+            return getSkjemaNummer().substring(0, getSkjemaNummer().indexOf("|"));
+        }
+        return getSkjemaNummer();
+    }
+
     public void setSkjemaNummer(String skjemaNummer) {
         this.skjemaNummer = skjemaNummer;
     }

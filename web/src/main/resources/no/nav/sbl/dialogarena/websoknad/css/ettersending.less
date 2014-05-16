@@ -1,0 +1,461 @@
+#slett {
+    #lasteindikator {
+        margin-top: 100px;
+        text-align: center;
+    }
+}
+
+.ettersending-infotekst {
+    margin-bottom: 30px;
+    font-weight: 600;
+    font-family: Modus, Arial, Helvetica, sans-serif;
+    font-size: 1.21rem;
+    text-align: left;
+}
+
+#start-ettersending {
+    .panel-standard-belyst {
+        text-align: center;
+        padding: 40px 30px;
+    }
+
+    p:last-child {
+        margin-bottom: 30px;
+    }
+}
+
+#ettersending-opplasting {
+    .panel-standard {
+        text-align: center;
+    }
+
+    .rad-belyst {
+        padding-top: 45px;
+        padding-bottom: 40px;
+    }
+
+}
+
+#ettersending-nytt-vedlegg {
+
+    h1 {
+        padding-top: 48px;
+        background-image: url(../img/under-dark.png), url(../img/vedlegg_graa.svg);
+        background-repeat: no-repeat;
+        background-position: bottom center, top center;
+        font-weight: 400;
+        padding-bottom: 30px;
+        margin-top: 27px;
+        text-align: center;
+    }
+
+    .form-linje {
+        padding-bottom: 40px;
+        margin: 0 auto;
+        width: 70%;
+        input {
+            width: 100%;
+        }
+
+        .melding {
+            margin-bottom: 0;
+        }
+    }
+
+    .center {
+        text-align: center;
+
+        .opprett {
+            padding-bottom: 25px;
+            display: inline-block;
+
+            input, img {
+                display: block;
+                margin-bottom: 20px;
+            }
+        }
+    }
+}
+
+#ettersending {
+    margin-top: 40px;
+
+    .innholdsrad {
+        padding-top: 20px;
+    }
+
+    h1 {
+        margin-top: 10px;
+        padding-bottom: 30px;
+        margin-bottom: 30px !important;
+    }
+
+    .innsendt {
+        text-transform: uppercase;
+    }
+
+    .knapp-leggtil-liten {
+        margin-top: 40px;
+    }
+
+    .panel-standard {
+        text-align: center;
+        margin-right: 0;
+
+        .strek-bottom {
+            margin-bottom: 15px !important;
+            padding-bottom: 30px;
+        }
+
+        .ikon-vedlegg-ettersende {
+            padding-top: 48px;
+            background-image: url(../img/under-dark.png), url(../img/under_arbeid_ikon.svg);
+            background-repeat: no-repeat;
+            background-position: bottom center, top center;
+            padding-bottom: 30px;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .ikon-vedlegg-sendt {
+            padding-top: 48px;
+            background-image: url(../img/under-dark.png), url(../img/ferdig_ikon.svg);
+            background-repeat: no-repeat;
+            background-position: bottom center, top center;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .ikon-vedlegg-sendesIkke {
+            padding-top: 48px;
+            background-image: url(../img/under-dark.png), url(../img/melding_graa.svg);
+            background-repeat: no-repeat;
+            background-position: bottom center, top center;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .vedleggsliste {
+            background: #fff;
+            padding: 40px 30px 30px;
+            margin-bottom: 40px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            .ettersending-infotekst {
+                margin-bottom: 30px;
+            }
+
+            &.ettersendes {
+                .vedleggboks {
+                    position: relative;
+                }
+
+                .last-opp.annet {
+                    .desktop:before {
+                        color: #3e3832;
+                        content: "•";
+                        padding: 0 0.7rem;
+                    }
+
+                    .mobil:after {
+                        color: #3e3832;
+                        content: "•";
+                        padding: 0 0.7rem;
+                    }
+                }
+            }
+
+            .vedleggboks {
+                border-top: 1px solid #d1d1d1;
+                padding: 20px 0;
+                text-align: left;
+
+                &:last-child {
+                    padding-bottom: 0;
+                }
+
+                .vedlegg-navn {
+                    display: inline-block;
+                    vertical-align: bottom;
+                    width: 71%;
+
+                    &.annet {
+                        width: 58%;
+                    }
+
+                    .tittel-parent {
+                        position: relative;
+
+                        .hjelpetekst-parent {
+                            padding-right: 0;
+                            position: absolute;
+                            bottom: -6px;
+                            right: 0;
+
+                            .dot {
+                                color: #3e3832;
+                                position: relative;
+                                left: 3px;
+                            }
+
+                            .hjelpetekst {
+                                position: relative;
+                                top: 0;
+                            }
+                        }
+                    }
+
+                    .navn {
+                        text-transform: uppercase;
+                        font-size: 0.857rem;
+                        white-space: nowrap;
+                        overflow-x: hidden;
+                        text-overflow: ellipsis;
+                        margin-bottom: 5px;
+                    }
+
+                    .skjema-lenke {
+                        margin-top: 10px;
+                    }
+
+                    .tittel {
+                        font-family: Modus, Arial, Helvetica, sans-serif;
+                        font-size: 1.21rem;
+                        font-weight: 600;
+                        padding-right: 48px;
+                    }
+                }
+                .last-opp {
+                    display: inline-block;
+                    width: 28%;
+                    text-align: right;
+
+                    &.annet {
+                        width: 41%;
+                    }
+
+                    .mobil {
+                        display: none;
+                    }
+
+                    .desktop {
+                        .liten {
+                            &:last-child {
+                                margin-top: 5px;
+                            }
+                        }
+                    }
+
+                    .desktop, .mobil {
+                        div div {
+                            &:last-child {
+                                padding-top: 5px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .send-inn {
+        input, a {
+            display: block;
+        }
+
+        .send-inn-knapp {
+            display: inline-block;
+            text-align: center;
+            margin-bottom: 15px;
+
+            &.feil {
+                background: #fee6e6;
+            }
+
+            span {
+                margin-top: 10px;
+                text-align: center;
+            }
+
+        }
+
+        > a {
+            margin-bottom: 40px;
+        }
+
+        .sticky-bunn {
+            margin-bottom: 5px;
+            margin-top: 30px;
+
+            &.stick {
+                margin-bottom: 0;
+                margin-top: 0;
+
+                .klare-vedlegg {
+                    &:after {
+                        content: url(../img/blaa_pil.svg);
+                        display: block;
+                    }
+                }
+
+                a.klare-vedlegg {
+                    display: block;
+                }
+
+                div.klare-vedlegg {
+                    display: none;
+                }
+            }
+
+            a.klare-vedlegg {
+                display: none;
+
+                span {
+                    color: #2768B2;
+                }
+            }
+
+            .klare-vedlegg {
+                text-decoration: none;
+
+                span {
+                    font-size: 1rem;
+                    text-transform: none;
+
+                    &:first-of-type {
+                        font-weight: bold;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 1024px) {
+    #ettersending {
+        .begrensning {
+            width: 100%;
+
+            .panel-standard {
+                width: 100%;
+                max-width: 620px;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    #ettersending-nytt-vedlegg {
+        .form-linje {
+            width: 95%;
+        }
+    }
+
+    #ettersending {
+        .rad:not(.innholdsrad) {
+            padding-left: 25px;
+            padding-right: 25px;
+        }
+
+        .innholdsrad {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .innsendt {
+            span {
+                font-size: 11px;
+            }
+        }
+
+        h1 {
+            margin-top: 5px;
+            font-size: 24px;
+            margin-bottom: 20px !important;
+            padding-bottom: 20px;
+        }
+
+        h1 + span {
+            font-size: 12px;
+        }
+
+        .begrensning {
+
+            .panel-standard {
+                margin-right: 0;
+                max-width: none;
+
+                .vedleggsliste {
+                    padding-left: 25px;
+                    padding-right: 25px;
+                    border-top: 1px solid #d1d1d1;
+                    border-bottom: 1px solid #d1d1d1;
+                    margin-bottom: 20px;
+                    padding-top: 30px;
+
+                    [class*="ikon-vedlegg"] {
+                        margin-bottom: 20px;
+                        padding-bottom: 20px;
+                    }
+
+                    .vedleggboks {
+                        .vedlegg-navn {
+                            width: 100%;
+
+                            .tittel-parent {
+                                .tittel {
+                                    line-height: 1.3;
+                                    padding-right: 38px;
+                                }
+
+                                .hjelpetekst-parent {
+                                    margin-left: 0;
+
+                                    .dot {
+                                        display: none;
+                                    }
+                                }
+                            }
+                        }
+
+                        .last-opp, .last-opp.annet {
+                            margin-top: 10px;
+                            width: 100%;
+                            text-align: left;
+
+                            .desktop {
+                                display: none;
+                            }
+
+                            .mobil {
+                                display: inline-block;
+                            }
+
+                            .desktop, .mobil {
+                                div {
+                                    font-size: 13px;
+                                    display: inline-block;
+
+                                    &:last-child:before {
+                                        color: #3e3832;
+                                        content: "•";
+                                        padding: 0 1rem 0 0.7rem;
+                                    }
+
+                                    a {
+                                        font-size: 13px;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

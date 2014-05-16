@@ -48,7 +48,7 @@ public class XmlToPdfConverterPage extends BasePage {
                                 new AbstractResourceStreamWriter() {
                                     @Override
                                     public void write(OutputStream output) throws IOException {
-                                        output.write( new PDFFabrikk().lagPdfFil(oppsummeringMarkup));
+                                        output.write(new PDFFabrikk().lagPdfFil(oppsummeringMarkup));
                                     }
                                 }, opplastet.getClientFileName() + ".pdf"));
             }

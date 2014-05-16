@@ -20,7 +20,7 @@ public class Barn {
     private static final String KJONN_MANN = "m";
     private static final String KJONN_KVINNE = "k";
 
-    public Barn(Long soknadId, String doedsdato, String personstatus, String fnr, String fornavn, String mellomnavn, String etternavn, String land) {
+    public Barn(Long soknadId, String doedsdato, String personstatus, String fnr, String fornavn, String mellomnavn, String etternavn) {
         this.soknadId = soknadId;
         this.doedsdato = doedsdato;
         this.personstatus = personstatus;
@@ -31,7 +31,6 @@ public class Barn {
         this.sammensattnavn = setSammenSattNavn(fornavn, mellomnavn, etternavn);
         this.kjonn = bestemKjonn();
         this.alder = bestemAlder();
-        this.land = land;
     }
 
     private Integer bestemAlder() {
@@ -102,6 +101,11 @@ public class Barn {
 
     public void setLand(String land) {
         this.land = land;
+    }
+
+    public Barn withLand(String land) {
+        this.land = land;
+        return this;
     }
 
     public String getDoedsdato() {

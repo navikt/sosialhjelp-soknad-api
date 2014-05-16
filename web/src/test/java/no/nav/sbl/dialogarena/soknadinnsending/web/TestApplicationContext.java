@@ -26,7 +26,6 @@ import javax.inject.Inject;
         FooterConfig.class,
         GAConfig.class,
         ContentConfig.class,
-        MockConsumerConfig.class,
         SoknadInnsendingDBConfig.class})
 
 public class TestApplicationContext {
