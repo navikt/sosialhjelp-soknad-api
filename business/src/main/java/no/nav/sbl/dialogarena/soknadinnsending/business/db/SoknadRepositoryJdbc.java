@@ -1,6 +1,7 @@
 package no.nav.sbl.dialogarena.soknadinnsending.business.db;
 
 import com.google.common.base.Function;
+import no.nav.modig.core.exception.ApplicationException;
 import no.nav.modig.lang.collections.iter.ReduceFunction;
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
@@ -94,11 +95,17 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
 
     private void insertSoknad(WebSoknad soknad, Long databasenokkel) {
         getJdbcTemplate()
-                .update("insert into soknad (soknad_id, uuid, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status, delstegstatus) values (?,?,?,?,?,?,?,?)",
-                        databasenokkel, soknad.getUuid(), soknad.getBrukerBehandlingId(),
-                        soknad.getskjemaNummer(), soknad.getAktoerId(),
+                .update("insert into soknad (soknad_id, uuid, brukerbehandlingid, navsoknadid, aktorid, opprettetdato, status, delstegstatus, behandlingskjedeid, journalforendeEnhet) values (?,?,?,?,?,?,?,?,?,?)",
+                        databasenokkel,
+                        soknad.getUuid(),
+                        soknad.getBrukerBehandlingId(),
+                        soknad.getskjemaNummer(),
+                        soknad.getAktoerId(),
                         new Date(soknad.getOpprettetDato()),
-                        soknad.getStatus().name(), soknad.getDelstegStatus().name());
+                        soknad.getStatus().name(),
+                        soknad.getDelstegStatus().name(),
+                        soknad.getBehandlingskjedeId(),
+                        soknad.getJournalforendeEnhet());
     }
 
     @Override
@@ -121,6 +128,25 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
         for (Vedlegg vedlegg : soknad.getVedlegg()) {
             vedleggRepository.opprettVedlegg(vedlegg, null);
         }
+    }
+
+    @Override
+    public Optional<WebSoknad> hentEttersendingMedBehandlingskjedeId(String behandlingsId) {
+        String sql = "select * from soknad where behandlingskjedeid = ? and status = 'UNDER_ARBEID'";
+        return on(getJdbcTemplate().query(sql, new SoknadRowMapper(), behandlingsId)).head();
+    }
+
+    @Override
+    public WebSoknad hentEttersendingMedBehandlingskjedeIdMedData(String behandlingsId) {
+        Optional<WebSoknad> soknadOptional = hentEttersendingMedBehandlingskjedeId(behandlingsId);
+
+        if (soknadOptional.isSome()) {
+            WebSoknad soknad = soknadOptional.get();
+            soknad.medBrukerData(hentAlleBrukerData(soknad.getSoknadId()));
+            return soknad;
+        }
+
+        throw new ApplicationException("Kunne ikke finne ettersending for behandlingsId " + behandlingsId);
     }
 
     @Override
@@ -356,9 +382,10 @@ public class SoknadRepositoryJdbc extends NamedParameterJdbcDaoSupport implement
                     .medskjemaNummer(rs.getString("navsoknadid"))
                     .medAktorId(rs.getString("aktorid"))
                     .medUuid("uuid")
-                    .opprettetDato(new DateTime(rs.getTimestamp("opprettetdato").getTime()))
+                    .medOppretteDato(new DateTime(rs.getTimestamp("opprettetdato").getTime()))
                     .medStatus(SoknadInnsendingStatus.valueOf(rs.getString("status")))
-                    .medDelstegStatus(DelstegStatus.valueOf(rs.getString("delstegstatus")));
+                    .medDelstegStatus(DelstegStatus.valueOf(rs.getString("delstegstatus")))
+                    .medJournalforendeEnhet(rs.getString("journalforendeenhet"));
         }
     }
 }

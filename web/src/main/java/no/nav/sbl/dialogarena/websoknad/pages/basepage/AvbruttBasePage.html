@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+    <title>
+        <wicket:message key="ettersending.avbrutt.sidetittel"/>
+    </title>
+</head>
+<body id="avbryt-side">
+<div class="omslag">
+    <wicket:container wicket:id="innstillinger"/>
+    <wicket:container wicket:id="navigasjon"/>
+    <div id="slettet" class="rad-belyst inforad">
+        <div class="begrensning sak-totredel">
+            <section class="panel-standard">
+                <wicket:child/>
+                <div class="slett-soknad-stor">
+                    <a href="#" class="knapp-link" wicket:id="dittnav" role="link">
+                        <wicket:message key="slettet.videretildittnav"/>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+    <div class="fyllut"></div>
+</div>
+<wicket:container wicket:id="footer"/>
+</body>
+</html>

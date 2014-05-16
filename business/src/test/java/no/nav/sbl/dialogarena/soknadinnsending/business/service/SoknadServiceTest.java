@@ -6,6 +6,8 @@ import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLInnsendin
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLMetadataListe;
 import no.nav.melding.domene.brukerdialog.behandlingsinformasjon.v1.XMLVedlegg;
 import no.nav.modig.core.context.StaticSubjectHandler;
+import no.nav.modig.core.exception.ApplicationException;
+import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
@@ -17,6 +19,7 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.message.NavMessageSource
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.fillager.FillagerConnector;
 import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseConnector;
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
+import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStatus;
 import org.apache.commons.io.IOUtils;
@@ -39,6 +42,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -47,8 +51,10 @@ import java.util.Map;
 import static java.lang.System.setProperty;
 import static no.nav.modig.core.context.SubjectHandler.SUBJECTHANDLER_KEY;
 import static no.nav.sbl.dialogarena.detect.Detect.IS_PDF;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.OPPRETTET;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.SKJEMA_VALIDERT;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Faktum.FaktumType.SYSTEMREGISTRERT;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingStatus.UNDER_ARBEID;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.DAGPENGER;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.service.WebSoknadUtils.RUTES_I_BRUT;
@@ -57,6 +63,8 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -64,6 +72,7 @@ import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.refEq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -163,7 +172,7 @@ public class SoknadServiceTest {
         byte[] bytes = getBytesFromFile("/pdfs/minimal.pdf");
         Vedlegg vedleggSjekk = new Vedlegg().medSkjemaNummer("L6").medSoknadId(1L).medAntallSider(1).medVedleggId(2L).medFillagerReferanse(vedlegg.getFillagerReferanse()).medData(bytes);
         when(vedleggRepository.hentVedlegg(1L, 2L)).thenReturn(vedlegg);
-        when(vedleggRepository.hentVedleggUnderBehandling(1L, null, "L6")).thenReturn(Arrays.asList(new Vedlegg().medVedleggId(10L)));
+        when(vedleggRepository.hentVedleggUnderBehandling(1L, vedlegg.getFillagerReferanse())).thenReturn(Arrays.asList(new Vedlegg().medVedleggId(10L)));
         when(vedleggRepository.hentVedleggData(1L, 10L)).thenReturn(bytes);
         when(soknadRepository.hentSoknad(1L)).thenReturn(new WebSoknad().medBehandlingId("123").medAktorId("234"));
         soknadService.genererVedleggFaktum(1L, 2L);
@@ -182,7 +191,10 @@ public class SoknadServiceTest {
 
     @Test
     public void skalSletteVedlegg() {
+        when(soknadRepository.hentSoknadMedData(1L)).thenReturn(new WebSoknad().medBehandlingId("123").medAktorId("234").medDelstegStatus(DelstegStatus.OPPRETTET));
+
         soknadService.slettVedlegg(1L, 2L);
+
         verify(vedleggRepository).slettVedlegg(1L, 2L);
         verify(soknadRepository).settDelstegstatus(1L, SKJEMA_VALIDERT);
     }
@@ -303,7 +315,8 @@ public class SoknadServiceTest {
     @Test
     public void skalHenteSoknad() {
         when(soknadRepository.hentSoknadMedData(1L)).thenReturn(new WebSoknad().medId(1L));
-        assertThat(soknadService.hentSoknad(1L), is(equalTo(new WebSoknad().medId(1L))));
+        when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(new ArrayList<Vedlegg>());
+        assertThat(soknadService.hentSoknad(1L), is(equalTo(new WebSoknad().medId(1L).medVedlegg(new ArrayList<Vedlegg>()))));
     }
 
     @Test
@@ -341,9 +354,59 @@ public class SoknadServiceTest {
 
     @Test
     public void skalLagreVedlegg() {
+        when(soknadService.hentSoknad(11L)).thenReturn(new WebSoknad().medDelstegStatus(OPPRETTET));
         Vedlegg vedlegg = new Vedlegg().medVedleggId(1L);
         soknadService.lagreVedlegg(11L, 1L, vedlegg);
         verify(vedleggRepository).lagreVedlegg(11L, 1L, vedlegg);
+    }
+
+    @Test(expected=ApplicationException.class)
+    public void skalIkkeKunneLagreVedleggMedNegradertInnsendingsStatus() {
+        Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.LastetOpp);
+
+        opplastetVedlegg.setInnsendingsvalg(Vedlegg.Status.SendesIkke);
+        soknadService.lagreVedlegg(11L, 1L, opplastetVedlegg);
+        verify(vedleggRepository, never()).lagreVedlegg(11L, 1L, opplastetVedlegg);
+    }
+
+    @Test
+    public void skalKunneLagreVedleggMedSammeInnsendinsStatus() {
+        when(soknadService.hentSoknad(11L)).thenReturn(new WebSoknad().medDelstegStatus(OPPRETTET));
+        Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.LastetOpp);
+
+        opplastetVedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
+        soknadService.lagreVedlegg(11L, 1L, opplastetVedlegg);
+        verify(vedleggRepository).lagreVedlegg(11L, 1L, opplastetVedlegg);
+    }
+
+    @Test
+    public void skalIkkeSetteDelstegDersomVedleggLagresPaaEttersending() {
+        when(soknadService.hentSoknad(11L)).thenReturn(new WebSoknad().medDelstegStatus(ETTERSENDING_OPPRETTET));
+        Vedlegg opplastetVedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.LastetOpp);
+
+        opplastetVedlegg.setInnsendingsvalg(Vedlegg.Status.LastetOpp);
+        soknadService.lagreVedlegg(11L, 1L, opplastetVedlegg);
+        verify(vedleggRepository).lagreVedlegg(11L, 1L, opplastetVedlegg);
+        verify(soknadRepository, never()).settDelstegstatus(11L, DelstegStatus.SKJEMA_VALIDERT);
+    }
+
+    @Test
+    public void skalKunneLagreVedleggMedOppgradertInnsendingsStatus() {
+        when(soknadService.hentSoknad(11L)).thenReturn(new WebSoknad().medDelstegStatus(OPPRETTET));
+        Vedlegg vedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.SendesIkke);
+
+        vedlegg.setInnsendingsvalg(Vedlegg.Status.SendesSenere);
+        soknadService.lagreVedlegg(11L, 1L, vedlegg);
+        verify(vedleggRepository).lagreVedlegg(11L, 1L, vedlegg);
+    }
+
+    @Test(expected=ApplicationException.class)
+    public void skalIkkeKunneLagreVedleggMedPrioritetMindreEllerLik1() {
+        Vedlegg vedlegg = new Vedlegg().medVedleggId(1L).medOpprinneligInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+
+        vedlegg.setInnsendingsvalg(Vedlegg.Status.VedleggKreves);
+        soknadService.lagreVedlegg(11L, 1L, vedlegg);
+        verify(vedleggRepository, never()).lagreVedlegg(11L, 1L, vedlegg);
     }
 
     @Test
@@ -394,12 +457,76 @@ public class SoknadServiceTest {
                 .medUuid(uid.getValue())
                 .medskjemaNummer(DAGPENGER)
                 .medAktorId(bruker)
-                .opprettetDato(new DateTime())
+                .medOppretteDato(new DateTime())
                 .medStatus(UNDER_ARBEID)
                 .medDelstegStatus(OPPRETTET);
         verify(soknadRepository).opprettSoknad(soknad);
-        verify(soknadRepository).lagreFaktum(anyLong(), any(Faktum.class));
+        verify(soknadRepository, atLeastOnce()).lagreFaktum(anyLong(), any(Faktum.class));
         DateTimeUtils.setCurrentMillisSystem();
+    }
+
+    @Test
+    public  void skalStarteForsteEttersending() {
+        String behandlingsId = "soknadBehandlingId";
+        String ettersendingsBehandlingId = "ettersendingBehandlingId";
+
+        DateTime innsendingsDato = DateTime.now();
+
+        WSBehandlingskjedeElement behandlingsKjedeElement = new WSBehandlingskjedeElement()
+                .withBehandlingsId(behandlingsId)
+                .withInnsendtDato(innsendingsDato)
+                .withStatus(WSStatus.FERDIG.toString());
+
+        WSHentSoknadResponse orginalInnsending = new WSHentSoknadResponse()
+                .withBehandlingsId(behandlingsId)
+                .withStatus(WSStatus.FERDIG.toString())
+                .withInnsendtDato(innsendingsDato)
+                .withAny(new XMLMetadataListe()
+                        .withMetadata(
+                                new XMLHovedskjema().withUuid("uidHovedskjema"),
+                                new XMLVedlegg().withSkjemanummer("MittSkjemaNummer")));
+
+        WSHentSoknadResponse ettersendingResponse = new WSHentSoknadResponse()
+                .withBehandlingsId(ettersendingsBehandlingId)
+                .withStatus(WSStatus.UNDER_ARBEID.toString())
+                .withAny(new XMLMetadataListe()
+                        .withMetadata(
+                                new XMLHovedskjema().withUuid("uidHovedskjema"),
+                                new XMLVedlegg().withSkjemanummer("MittSkjemaNummer").withInnsendingsvalg(Vedlegg.Status.SendesSenere.name())));
+
+        when(henvendelsesConnector.hentSoknad(ettersendingsBehandlingId)).thenReturn(ettersendingResponse);
+        when(henvendelsesConnector.hentSoknad(behandlingsId)).thenReturn(orginalInnsending);
+        when(henvendelsesConnector.hentBehandlingskjede(behandlingsId)).thenReturn(Arrays.asList(behandlingsKjedeElement));
+        when(henvendelsesConnector.startEttersending(orginalInnsending)).thenReturn(ettersendingsBehandlingId);
+
+        Long soknadId = 11L;
+        Faktum soknadInnsendingsDatoFaktum = new Faktum()
+                .medSoknadId(soknadId)
+                .medKey("soknadInnsendingsDato")
+                .medValue(String.valueOf(innsendingsDato.getMillis()))
+                .medType(SYSTEMREGISTRERT);
+        when(soknadRepository.hentFaktum(anyLong(), anyLong())).thenReturn(soknadInnsendingsDatoFaktum);
+
+        Long ettersendingSoknadId = soknadService.startEttersending(behandlingsId);
+        verify(soknadRepository).lagreFaktum(anyLong(), any(Faktum.class), anyBoolean());
+        assertNotNull(ettersendingSoknadId);
+    }
+
+    @Test(expected = ApplicationException.class)
+    public void skalIkkeKunneStarteEttersendingPaaUferdigSoknad() {
+        String behandlingsId = "UferdigSoknadBehandlingId";
+
+        WSBehandlingskjedeElement behandlingskjedeElement = new WSBehandlingskjedeElement()
+                .withBehandlingsId(behandlingsId)
+                .withStatus(WSStatus.UNDER_ARBEID.toString());
+
+        WSHentSoknadResponse orginalInnsending = new WSHentSoknadResponse()
+                .withBehandlingsId(behandlingsId)
+                .withStatus(WSStatus.UNDER_ARBEID.toString());
+        when(henvendelsesConnector.hentBehandlingskjede(behandlingsId)).thenReturn(Arrays.asList(behandlingskjedeElement));
+        when(henvendelsesConnector.hentSoknad(behandlingsId)).thenReturn(orginalInnsending);
+
+        soknadService.startEttersending(behandlingsId);
     }
 
     @Test
@@ -408,5 +535,27 @@ public class SoknadServiceTest {
         soknadService.avbrytSoknad(11L);
         verify(soknadRepository).slettSoknad(11L);
         verify(henvendelsesConnector).avbrytSoknad("123");
+    }
+
+    @Test
+    public void skalHenteSoknadsIdForEttersendingTilBehandlingskjedeId() {
+        WebSoknad soknad = new WebSoknad();
+        soknad.setSoknadId(1L);
+        when(soknadRepository.hentEttersendingMedBehandlingskjedeId(anyString())).thenReturn(Optional.optional(soknad));
+
+        WebSoknad webSoknad = soknadService.hentEttersendingForBehandlingskjedeId("123");
+
+        assertThat(webSoknad.getSoknadId(), is(1L));
+    }
+
+    @Test
+    public void skalFaNullNarManProverAHenteEttersendingMedBehandlingskjedeIdSomIkkeHarNoenEttersending() {
+        WebSoknad soknad = new WebSoknad();
+        soknad.setSoknadId(1L);
+        when(soknadRepository.hentEttersendingMedBehandlingskjedeId(anyString())).thenReturn(Optional.<WebSoknad>none());
+
+        WebSoknad webSoknad = soknadService.hentEttersendingForBehandlingskjedeId("123");
+
+        assertThat(webSoknad, is(nullValue()));
     }
 }

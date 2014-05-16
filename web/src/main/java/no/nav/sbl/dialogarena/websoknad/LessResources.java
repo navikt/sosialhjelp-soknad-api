@@ -29,6 +29,10 @@ public enum LessResources {
     VISVEDLEGG_LESS("visVedlegg"),
     VEDLEGG_LESS("vedlegg"),
     VEDLEGG_ALL_LESS("allVedlegg"),
+    ETTERSENDING_LESS("ettersending"),
+    IKONER_LESS("ikoner"),
+    MODAL_LESS("modal"),
+    FEILMODAL_LESS("feilmodal"),
     HOYKONTRAST_LESS("hoykontrast");
 
     private static final String FOLDER = "css/";

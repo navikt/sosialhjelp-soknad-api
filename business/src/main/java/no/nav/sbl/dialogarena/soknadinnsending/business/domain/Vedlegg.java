@@ -24,6 +24,7 @@ public class Vedlegg {
     private Long faktumId;
     private String skjemaNummer;
     private Status innsendingsvalg;
+    private Status opprinneligInnsendingsvalg;
     private String navn = "";
     private Long storrelse = 0L;
     private Integer antallSider = 0;
@@ -32,6 +33,7 @@ public class Vedlegg {
     private String fillagerReferanse = UUID.randomUUID().toString();
     private Map<String, String> urls = new HashMap<>();
     private String tittel;
+
 
     public Vedlegg() {
     }
@@ -106,6 +108,19 @@ public class Vedlegg {
     public Vedlegg medInnsendingsvalg(Status innsendingsvalg) {
         this.innsendingsvalg = innsendingsvalg;
         return this;
+    }
+
+    public Vedlegg medOpprinneligInnsendingsvalg(Status opprinneligInnsendingsvalg) {
+        this.opprinneligInnsendingsvalg = opprinneligInnsendingsvalg;
+        return this;
+    }
+
+    public Status getOpprinneligInnsendingsvalg() {
+        return opprinneligInnsendingsvalg;
+    }
+
+    public void setOpprinneligInnsendingsvalg(Status opprinneligInnsendingsvalg) {
+        this.opprinneligInnsendingsvalg = opprinneligInnsendingsvalg;
     }
 
     public Long getVedleggId() {
@@ -297,18 +312,42 @@ public class Vedlegg {
         return getSkjemaNummer().equals("N6") ? getNavn() : getSkjemaNummerFiltrert();
     }
 
+    public String getSkjemanummerTillegg() {
+        if (getSkjemaNummer() != null && getSkjemaNummer().contains("|")) {
+            return getSkjemaNummer().substring(getSkjemaNummer().indexOf("|") + 1, getSkjemaNummer().length());
+        }
+        return "";
+    }
+
+    /**
+     * SendesIkke er en legacy-status som ikke lengre skal være mulig å velge.
+     */
     public enum Status {
-        IkkeVedlegg,
-        VedleggKreves,
-        LastetOpp,
-        UnderBehandling,
-        SendesSenere,
-        SendesIkke;
+        SendesIkke(-1),
+
+        IkkeVedlegg(0),
+        VedleggKreves(1),
+        VedleggSendesIkke(2),
+        VedleggSendesAvAndre(3),
+        SendesSenere(4),
+        LastetOpp(5),
+        UnderBehandling(6);
+
+        private int prioritet;
+        private Status(int prioritet) {
+            this.prioritet = prioritet;
+        }
+
+        public int getPrioritet() {
+            return prioritet;
+        }
 
         public boolean er(Status status) {
             return this.equals(status);
         }
+
+        public boolean erIkke(Status status) {
+            return !this.er(status);
+        }
     }
-
-
 }

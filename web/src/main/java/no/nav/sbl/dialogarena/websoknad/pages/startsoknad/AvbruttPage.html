@@ -1,9 +1,4 @@
-<!DOCTYPE html>
-<html xmlns:wicket="http://wicket.apache.org">
-<head>
-    <title>
-        <wicket:message key="sidetittel.slettet"/>
-    </title>
+<wicket:head xmlns:wicket="http://wicket.apache.org">
     <script type="application/javascript">
         var _gaq = _gaq || [];
         var pluginUrl = '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
@@ -22,32 +17,16 @@
             s.parentNode.insertBefore(ga, s);
         })();
     </script>
-</head>
-<body id="avbryt-side">
-    <div class="omslag">
-        <wicket:container wicket:id="innstillinger"/>
-        <wicket:container wicket:id="navigasjon"/>
-        <div id="slettet" class="rad-belyst inforad">
-            <div class="begrensning sak-totredel">
-                <section class="panel-standard">
-                    <div>
-                        <h1 class="stor-ikon-slett-strek">
-                            <wicket:message key="slettet.tittel"/>
-                        </h1>
-                        <p class="info">
-                            <wicket:message key="slettet.informasjon"/>
-                        </p>
-                    </div>
-                    <div class="slett-soknad-stor">
-                        <a href="#" class="knapp-link" wicket:id="dittnav" role="link">
-                            <wicket:message key="slettet.videretildittnav"/>
-                        </a>
-                    </div>
-                </section>
-            </div>
-        </div>
-        <div class="fyllut"></div>
+</wicket:head>
+<html xmlns:wicket="http://wicket.apache.org">
+<wicket:extend>
+    <div>
+        <h1 class="stor-ikon-slett-strek">
+            <wicket:message key="slettet.tittel"/>
+        </h1>
+        <p class="info">
+            <wicket:message key="slettet.informasjon"/>
+        </p>
     </div>
-    <wicket:container wicket:id="footer"/>
-</body>
+</wicket:extend>
 </html>

@@ -6,11 +6,11 @@
     <parent>
         <groupId>no.nav.sbl.dialogarena</groupId>
         <artifactId>sendsoknad</artifactId>
-        <version>1.1.6-SNAPSHOT</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>sendsoknad-config</artifactId>
-    <version>1.1.6-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
 
@@ -33,6 +33,18 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>no.nav.maven.plugins</groupId>
+                <artifactId>aura-maven-plugin</artifactId>
+                <version>3.6.5</version>
+                <configuration>
+                    <!-- enten url eller fil -->
+                    <envConfigUrl>https://envconfig.adeo.no/conf</envConfigUrl>
+                    <username>admin</username>
+                    <password>admin</password>
+                    <apps>sendsoknad:${project.version}</apps>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>no.nav.maven.plugins</groupId>

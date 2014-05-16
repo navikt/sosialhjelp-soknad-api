@@ -1,0 +1,21 @@
+<div id="ettersending" data-sidetittel="ettersending.sidetittel">
+    <div class="rad uten-ramme" data-ng-include="'../views/ettersending/partials/ettersending-topp.html'"></div>
+    <div class="rad uten-ramme innholdsrad">
+        <div class="begrensning sak-totredel">
+            <section class="panel-standard">
+                <div class="ettersendes vedleggsliste"
+                     data-ng-if="skalViseEttersendingsbolk()"
+                     data-ng-include="'../views/ettersending/partials/ettersending-ettersendes.html'"></div>
+
+                <div class="vedleggsliste"
+                     data-ng-if="skalViseSendtBolk()"
+                     data-ng-include="'../views/ettersending/partials/ettersending-sendt.html'"></div>
+
+                <div class="vedleggsliste"
+                     data-ng-if="skalViseSendesIkkeBolk()"
+                     data-ng-include="'../views/ettersending/partials/ettersending-sendesIkke.html'"></div>
+            </section>
+            <section class="panel-standard" data-ng-include="'../views/ettersending/partials/ettersending-bunn.html'"></section>
+        </div>
+    </div>
+</div>
