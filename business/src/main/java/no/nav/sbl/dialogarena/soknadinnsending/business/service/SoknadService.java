@@ -10,12 +10,6 @@ import no.nav.modig.lang.collections.predicate.InstanceOf;
 import no.nav.modig.lang.option.Optional;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk;
 import no.nav.sbl.dialogarena.common.kodeverk.Kodeverk.Nokkel;
-import no.nav.sbl.dialogarena.detect.Detect;
-import no.nav.sbl.dialogarena.detect.pdf.PdfDetector;
-import no.nav.sbl.dialogarena.pdf.Convert;
-import no.nav.sbl.dialogarena.pdf.ConvertToPng;
-import no.nav.sbl.dialogarena.pdf.PdfMerger;
-import no.nav.sbl.dialogarena.pdf.PdfWatermarker;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.SoknadRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.db.VedleggRepository;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus;
@@ -24,10 +18,8 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingS
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.OpplastingException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.SoknadAvbruttException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.SoknadAvsluttetException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.UgyldigOpplastingTypeException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
@@ -41,26 +33,18 @@ import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadR
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStatus;
 import org.apache.commons.collections15.Closure;
 import org.apache.commons.collections15.Transformer;
-import org.apache.commons.io.IOUtils;
-import org.apache.pdfbox.exceptions.COSVisitorException;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.util.Splitter;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -69,7 +53,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import static java.lang.String.format;
 import static java.util.UUID.randomUUID;
 import static javax.xml.bind.JAXBContext.newInstance;
@@ -88,7 +71,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Component
-public class SoknadService implements SendSoknadService, VedleggService, EttersendingService {
+public class SoknadService implements SendSoknadService, EttersendingService {
     private static final Logger logger = getLogger(SoknadService.class);
     @Inject
     @Named("soknadInnsendingRepository")
@@ -107,27 +90,7 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
     private NavMessageSource navMessageSource;
 
     private static final String EKSTRA_VEDLEGG_KEY = "ekstraVedlegg";
-
-    private PdfWatermarker watermarker = new PdfWatermarker();
     private List<String> gyldigeSkjemaer = Arrays.asList("NAV 04-01.03");
-    private PdfMerger pdfMerger = new PdfMerger();
-
-    private static void sjekkOmPdfErGyldig(PDDocument document) {
-        PdfDetector detector = new PdfDetector(document);
-        if (detector.pdfIsSigned()) {
-            throw new UgyldigOpplastingTypeException(
-                    "PDF kan ikke være signert.", null,
-                    "opplasting.feilmelding.pdf.signert");
-        } else if (detector.pdfIsEncrypted()) {
-            throw new UgyldigOpplastingTypeException(
-                    "PDF kan ikke være krypert.", null,
-                    "opplasting.feilmelding.pdf.krypert");
-        } else if (detector.pdfIsSavedOrExportedWithApplePreview()) {
-            throw new UgyldigOpplastingTypeException(
-                    "PDF kan ikke være lagret med Apple Preview.", null,
-                    "opplasting.feilmelding.pdf.applepreview");
-        }
-    }
 
     @Override
     public void settDelsteg(Long soknadId, DelstegStatus delstegStatus) {
@@ -271,7 +234,6 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
     public Map<String, String> hentInnsendtDatoForOpprinneligSoknad(String behandlingsId) {
         Map<String, String> result = new HashMap<>();
         List<WSBehandlingskjedeElement> wsBehandlingskjedeElements = henvendelseConnector.hentBehandlingskjede(behandlingsId);
-
         List<WSBehandlingskjedeElement> sorterteBehandlinger = on(wsBehandlingskjedeElements).filter(where(STATUS, (equalTo(SoknadInnsendingStatus.FERDIG)))).collect(new Comparator<WSBehandlingskjedeElement>() {
             @Override
             public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
@@ -292,7 +254,6 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
         WSBehandlingskjedeElement innsendtSoknad = sorterteBehandlinger.get(0);
         result.put("innsendtdato",String.valueOf(innsendtSoknad.getInnsendtDato().getMillis()));
         result.put("sisteinnsendtbehandling", sorterteBehandlinger.get(sorterteBehandlinger.size()-1).getBehandlingsId().toString());
-
         return result;
     }
 
@@ -332,7 +293,6 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
             public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
                 DateTime dato1 = o1.getInnsendtDato();
                 DateTime dato2 = o2.getInnsendtDato();
-
                 if (dato1 == null && dato2 == null) {
                     return 0;
                 } else if (dato1 == null) {
@@ -359,10 +319,8 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
         }
 
         WebSoknad soknad = WebSoknad.startEttersending(ettersendingsBehandlingId);
-
         String mainUid = randomUUID().toString();
         XMLMetadataListe xmlVedleggListe = (XMLMetadataListe) wsEttersending.getAny();
-
         Optional<XMLMetadata> hovedskjema = on(xmlVedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
         if (!hovedskjema.isSome()) {
             throw new ApplicationException("Kunne ikke hente opp hovedskjema for søknad");
@@ -457,7 +415,7 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
     public void avbrytSoknad(Long soknadId) {
         WebSoknad soknad = repository.hentSoknad(soknadId);
 
-        /*
+        /**
         * Sletter alle vedlegg til søknader som blir avbrutt.
         * Dette burde egentlig gjøres i henvendelse, siden vi uansett skal slette alle vedlegg på avbrutte søknader.
         * I tillegg blir det liggende igjen mange vedlegg for søknader som er avbrutt før dette kallet ble lagt til.
@@ -528,140 +486,6 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
     }
 
     @Override
-    @Transactional
-    public List<Long> splitOgLagreVedlegg(Vedlegg vedlegg,
-                                          InputStream inputStream) {
-        List<Long> resultat = new ArrayList<>();
-        try {
-            byte[] bytes = IOUtils.toByteArray(inputStream);
-            if (Detect.isImage(bytes)) {
-                bytes = Convert.scaleImageAndConvertToPdf(bytes, new Dimension(1240, 1754));
-
-                Vedlegg sideVedlegg = new Vedlegg()
-                        .medVedleggId(null)
-                        .medSoknadId(vedlegg.getSoknadId())
-                        .medFaktumId(vedlegg.getFaktumId())
-                        .medSkjemaNummer(vedlegg.getSkjemaNummer())
-                        .medNavn(vedlegg.getNavn())
-                        .medStorrelse((long) bytes.length)
-                        .medAntallSider(1)
-                        .medData(null)
-                        .medOpprettetDato(vedlegg.getOpprettetDato())
-                        .medFillagerReferanse(vedlegg.getFillagerReferanse())
-                        .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
-
-                resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
-                        bytes));
-
-            } else if (Detect.isPdf(bytes)) {
-                PDDocument document = PDDocument.load(new ByteArrayInputStream(
-                        bytes));
-                sjekkOmPdfErGyldig(document);
-                List<PDDocument> pages = new Splitter().split(document);
-                for (PDDocument page : pages) {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    page.save(baos);
-                    page.close();
-
-                    Vedlegg sideVedlegg = new Vedlegg()
-                            .medVedleggId(null)
-                            .medSoknadId(vedlegg.getSoknadId())
-                            .medFaktumId(vedlegg.getFaktumId())
-                            .medSkjemaNummer(vedlegg.getSkjemaNummer())
-                            .medNavn(vedlegg.getNavn())
-                            .medStorrelse((long) baos.size())
-                            .medAntallSider(1)
-                            .medData(null)
-                            .medOpprettetDato(vedlegg.getOpprettetDato())
-                            .medFillagerReferanse(vedlegg.getFillagerReferanse())
-                            .medInnsendingsvalg(Vedlegg.Status.UnderBehandling);
-
-                    resultat.add(vedleggRepository.opprettVedlegg(sideVedlegg,
-                            baos.toByteArray()));
-                }
-                document.close();
-            } else {
-                throw new UgyldigOpplastingTypeException(
-                        "Ugyldig filtype for opplasting", null,
-                        "vedlegg.opplasting.feil.filtype");
-            }
-        } catch (IOException | COSVisitorException e) {
-            throw new OpplastingException("Kunne ikke lagre fil", e,
-                    "vedlegg.opplasting.feil.generell");
-        }
-        repository.settSistLagretTidspunkt(vedlegg.getSoknadId());
-        return resultat;
-    }
-
-    @Override
-    public List<Vedlegg> hentVedleggUnderBehandling(Long soknadId,
-                                                    String fillagerReferanse) {
-        return vedleggRepository.hentVedleggUnderBehandling(soknadId, fillagerReferanse);
-    }
-
-    @Override
-    public Vedlegg hentVedlegg(Long soknadId, Long vedleggId, boolean medInnhold) {
-        if (medInnhold) {
-            Vedlegg vedlegg = vedleggRepository.hentVedleggMedInnhold(soknadId, vedleggId);
-            medKodeverk(vedlegg);
-            return vedlegg;
-        } else {
-            Vedlegg vedlegg = vedleggRepository.hentVedlegg(soknadId, vedleggId);
-            medKodeverk(vedlegg);
-            return vedlegg;
-        }
-    }
-
-    @Override
-    public void slettVedlegg(Long soknadId, Long vedleggId) {
-        WebSoknad soknad = hentSoknad(soknadId);
-        vedleggRepository.slettVedlegg(soknadId, vedleggId);
-        repository.settSistLagretTidspunkt(soknadId);
-        if (soknad != null && !soknad.erEttersending()) {
-            repository.settDelstegstatus(soknadId, DelstegStatus.SKJEMA_VALIDERT);
-        }
-    }
-
-    @Override
-    public byte[] lagForhandsvisning(Long soknadId, Long vedleggId, int side) {
-        return new ConvertToPng(new Dimension(600, 800), side).transform(vedleggRepository.hentVedleggData(soknadId, vedleggId));
-    }
-
-    @Override
-    public Long genererVedleggFaktum(Long soknadId, Long vedleggId) {
-        Vedlegg forventning = vedleggRepository
-                .hentVedlegg(soknadId, vedleggId);
-        List<Vedlegg> vedleggUnderBehandling = vedleggRepository
-                .hentVedleggUnderBehandling(soknadId,
-                        forventning.getFillagerReferanse());
-        List<byte[]> bytes = new ArrayList<>();
-        for (Vedlegg vedlegg : vedleggUnderBehandling) {
-            bytes.add(vedleggRepository.hentVedleggData(soknadId, vedlegg.getVedleggId()));
-        }
-        byte[] doc = pdfMerger.transform(bytes);
-        doc = watermarker.forIdent(getSubjectHandler().getUid(), false).transform(doc);
-
-        forventning.leggTilInnhold(doc, vedleggUnderBehandling.size());
-        WebSoknad soknad = repository.hentSoknad(soknadId);
-
-        fillagerConnector.lagreFil(soknad.getBrukerBehandlingId(),
-                forventning.getFillagerReferanse(), soknad.getAktoerId(),
-                new ByteArrayInputStream(doc));
-
-        vedleggRepository.slettVedleggUnderBehandling(soknadId,
-                forventning.getFaktumId(), forventning.getSkjemaNummer());
-        vedleggRepository.lagreVedleggMedData(soknadId, vedleggId, forventning);
-        return vedleggId;
-    }
-
-    @Override
-    public List<Vedlegg> hentPaakrevdeVedlegg(Long soknadId) {
-        List<Vedlegg> paakrevdeVedlegg = vedleggRepository.hentPaakrevdeVedlegg(soknadId);
-        leggTilKodeverkFelter(paakrevdeVedlegg);
-        return paakrevdeVedlegg;
-    }
-
-    @Override
     public SoknadStruktur hentSoknadStruktur(Long soknadId) {
         return hentStruktur(repository.hentSoknadType(soknadId));
     }
@@ -723,12 +547,6 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
         return false;
     }
 
-    public void leggTilKodeverkFelter(List<Vedlegg> vedlegg) {
-        for (Vedlegg v : vedlegg) {
-            medKodeverk(v);
-        }
-    }
-
     private void medKodeverk(Vedlegg vedlegg) {
         try {
             Map<Kodeverk.Nokkel, String> koder = kodeverk.getKoder(vedlegg.getSkjemaNummerFiltrert());
@@ -743,33 +561,6 @@ public class SoknadService implements SendSoknadService, VedleggService, Etterse
 
         }
     }
-
-    @Override
-    public void lagreVedlegg(Long soknadId, Long vedleggId, Vedlegg vedlegg) {
-        if(nedgradertEllerForLavtInnsendingsValg(vedlegg)) {
-            throw new ApplicationException("Ugyldig innsendingsstatus, opprinnelig innsendingstatus kan aldri nedgraderes");
-        }
-        vedleggRepository.lagreVedlegg(soknadId, vedleggId, vedlegg);
-        repository.settSistLagretTidspunkt(soknadId);
-
-        if (!hentSoknad(soknadId).erEttersending()) {
-            repository.settDelstegstatus(soknadId, DelstegStatus.SKJEMA_VALIDERT);
-        }
-    }
-
-    private boolean nedgradertEllerForLavtInnsendingsValg(Vedlegg vedlegg) {
-        Vedlegg.Status nyttInnsendingsvalg = vedlegg.getInnsendingsvalg();
-        Vedlegg.Status opprinneligInnsendingsvalg = vedlegg.getOpprinneligInnsendingsvalg();
-        if(nyttInnsendingsvalg != null && opprinneligInnsendingsvalg != null){
-            if(nyttInnsendingsvalg.getPrioritet() <= 1 || (nyttInnsendingsvalg.getPrioritet() < opprinneligInnsendingsvalg.getPrioritet())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-
 
     private SoknadStruktur hentStruktur(String skjema) {
         //TODO: Få flyttet dette ut på et vis? Ta i bruk.
