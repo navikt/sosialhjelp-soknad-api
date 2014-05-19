@@ -37,7 +37,6 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Component;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.bind.JAXB;
@@ -54,7 +53,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import static java.lang.String.format;
 import static java.util.UUID.randomUUID;
 import static javax.xml.bind.JAXBContext.newInstance;
@@ -236,7 +234,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     public Map<String, String> hentInnsendtDatoForOpprinneligSoknad(String behandlingsId) {
         Map<String, String> result = new HashMap<>();
         List<WSBehandlingskjedeElement> wsBehandlingskjedeElements = henvendelseConnector.hentBehandlingskjede(behandlingsId);
-
         List<WSBehandlingskjedeElement> sorterteBehandlinger = on(wsBehandlingskjedeElements).filter(where(STATUS, (equalTo(SoknadInnsendingStatus.FERDIG)))).collect(new Comparator<WSBehandlingskjedeElement>() {
             @Override
             public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
@@ -257,7 +254,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         WSBehandlingskjedeElement innsendtSoknad = sorterteBehandlinger.get(0);
         result.put("innsendtdato",String.valueOf(innsendtSoknad.getInnsendtDato().getMillis()));
         result.put("sisteinnsendtbehandling", sorterteBehandlinger.get(sorterteBehandlinger.size()-1).getBehandlingsId().toString());
-
         return result;
     }
 
@@ -297,7 +293,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
             public int compare(WSBehandlingskjedeElement o1, WSBehandlingskjedeElement o2) {
                 DateTime dato1 = o1.getInnsendtDato();
                 DateTime dato2 = o2.getInnsendtDato();
-
                 if (dato1 == null && dato2 == null) {
                     return 0;
                 } else if (dato1 == null) {
@@ -324,10 +319,8 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
 
         WebSoknad soknad = WebSoknad.startEttersending(ettersendingsBehandlingId);
-
         String mainUid = randomUUID().toString();
         XMLMetadataListe xmlVedleggListe = (XMLMetadataListe) wsEttersending.getAny();
-
         Optional<XMLMetadata> hovedskjema = on(xmlVedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
         if (!hovedskjema.isSome()) {
             throw new ApplicationException("Kunne ikke hente opp hovedskjema for søknad");
@@ -422,7 +415,7 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     public void avbrytSoknad(Long soknadId) {
         WebSoknad soknad = repository.hentSoknad(soknadId);
 
-        /*
+        /**
         * Sletter alle vedlegg til søknader som blir avbrutt.
         * Dette burde egentlig gjøres i henvendelse, siden vi uansett skal slette alle vedlegg på avbrutte søknader.
         * I tillegg blir det liggende igjen mange vedlegg for søknader som er avbrutt før dette kallet ble lagt til.
@@ -491,8 +484,6 @@ public class SoknadService implements SendSoknadService, EttersendingService {
             throw new ApplicationException("Ikke gyldig skjemanummer " + navSoknadId);
         }
     }
-
-
 
     @Override
     public SoknadStruktur hentSoknadStruktur(Long soknadId) {
