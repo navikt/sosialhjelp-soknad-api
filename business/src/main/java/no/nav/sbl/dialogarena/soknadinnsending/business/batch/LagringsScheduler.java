@@ -15,6 +15,8 @@ import javax.inject.Inject;
 import javax.xml.bind.JAXB;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -37,6 +39,7 @@ public class LagringsScheduler {
 
     @Scheduled(fixedRate = SCHEDULE_RATE_MS)
     public void mellomlagreSoknaderOgNullstillLokalDb() throws InterruptedException {
+        List<Optional<WebSoknad>> feilListe =  new ArrayList<>();
         batchStartTime = DateTime.now();
         vellykket = 0;
         feilet = 0;
@@ -44,7 +47,9 @@ public class LagringsScheduler {
             logger.info("---- Starter flytting av søknader til henvendelse-jobb ----");
             for (Optional<WebSoknad> ws = soknadRepository.plukkSoknadTilMellomlagring(); ws.isSome(); ws = soknadRepository.plukkSoknadTilMellomlagring()) {
                 if(isPaabegyntEttersendelse(ws)) {
-                    avbrytOgSlettEttersendelse(ws);
+                    if(!avbrytOgSlettEttersendelse(ws)) {
+                        feilListe.add(ws);
+                    }
                 } else {
                     lagreFilTilHenvendelseOgSlettILokalDb(ws);
                 }
@@ -54,13 +59,28 @@ public class LagringsScheduler {
                     return;
                 }
             }
+
+            //TODO: Kanskje ikke legge tilbake før en ny forløkke her? Så slipper vi at samme oppgave blir plukket mange ganger og feiler hver gang...
+            //TODO: Men går den da i beinene på hverandre på flere noder?
+            //TODO: Ha en egen feilet liste som loopes her til slutt?
+
+            for (Optional<WebSoknad> ws : feilListe) {
+                WebSoknad soknad = ws.get();
+                try {
+                    soknadRepository.leggTilbake(soknad);
+                } catch (Exception e1) {
+                    logger.error("Klarte ikke å legge tilbake søknad {}", soknad.getSoknadId(), e1);
+                }
+            }
+
+
             logger.info("---- Jobb fullført: {} vellykket, {} feilet ----", vellykket, feilet);
         } else {
             logger.warn("Batch disabled. Må sette environment property sendsoknad.batch.enabled til true for å sette den på igjen");
         }
     }
 
-    private void avbrytOgSlettEttersendelse(Optional<WebSoknad> ws) throws InterruptedException {
+    private boolean avbrytOgSlettEttersendelse(Optional<WebSoknad> ws) throws InterruptedException {
         WebSoknad soknad = ws.get();
         try {
             henvendelseConnector.avbrytSoknad(soknad.getBrukerBehandlingId());
@@ -76,15 +96,11 @@ public class LagringsScheduler {
         } catch (Exception e) {
             feilet++;
             logger.error("Avbryt feilet for ettersending {}. Setter tilbake til LEDIG", soknad.getSoknadId(), e);
-            try {
-                soknadRepository.leggTilbake(soknad);
-            } catch (Exception e1) {
-                logger.error("Klarte ikke å legge tilbake ettersending {}", soknad.getSoknadId(), e1);
-            }
             Thread.sleep(1000); // Så loggen ikke blir fylt opp
+
+            return false;
         }
-
-
+        return true;
     }
 
     private boolean isPaabegyntEttersendelse(Optional<WebSoknad> ws) {
