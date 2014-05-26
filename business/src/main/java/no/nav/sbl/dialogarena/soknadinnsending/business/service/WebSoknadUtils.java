@@ -70,10 +70,11 @@ public class WebSoknadUtils {
         String sluttaarsak = erPermittertellerHarRedusertArbeidstid(webSoknad);
         Personalia personalia = getPerson(webSoknad);
 
-        if (!webSoknad.erEttersending()) {
-            return finnJournalforendeEnhetForSoknad(sluttaarsak, personalia);
-        } else {
+        if (webSoknad.erEttersending()) {
             return webSoknad.getJournalforendeEnhet();
+        } else {
+            return finnJournalforendeEnhetForSoknad(sluttaarsak, personalia);
+
         }
     }
 

@@ -194,6 +194,33 @@ public class SoknadServiceTest {
                                 .withFilnavn("L7")));
     }
 
+    @Test(expected = ApplicationException.class)
+    public void skalIkkeSendeSoknadMedN6VedleggSomIkkeErSendtInn() {
+        List<Vedlegg> vedlegg = Arrays.asList(
+                new Vedlegg()
+                        .medSkjemaNummer("N6")
+                        .medFillagerReferanse("uidVedlegg1")
+                        .medInnsendingsvalg(Vedlegg.Status.VedleggKreves)
+                        .medStorrelse(0L)
+                        .medNavn("Test Annet vedlegg")
+                        .medAntallSider(3),
+                new Vedlegg()
+                        .medSkjemaNummer("L7")
+                        .medInnsendingsvalg(Vedlegg.Status.SendesIkke));
+
+        when(soknadRepository.hentSoknadMedData(1L)).thenReturn(
+                new WebSoknad().medAktorId("123456")
+                        .medBehandlingId("123")
+                        .medUuid("uidHovedskjema")
+                        .medskjemaNummer(DAGPENGER)
+                        .medFaktum(new Faktum().medKey("personalia"))
+                        .medVedlegg(vedlegg));
+
+        when(vedleggRepository.hentPaakrevdeVedlegg(1L)).thenReturn(vedlegg);
+
+        soknadService.sendSoknad(1L, new byte[]{1, 2, 3});
+    }
+
     @Test
     public void skalSetteDelsteg() {
         soknadService.settDelsteg(1L, OPPRETTET);

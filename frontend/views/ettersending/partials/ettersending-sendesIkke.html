@@ -15,7 +15,7 @@
         </span>
 
         <div class="skjema-lenke" data-ng-if="harSkjemaLenke(v)">
-            <a href="{{v.urls.URL}}" data-ng-bind-html="'ettersending.vedlegg.skjema.lastNed' | cmstekst"></a>
+            <a href="{{ v.urls.URL }}" data-ng-bind-html="'ettersending.vedlegg.skjema.lastNed' | cmstekst"></a>
         </div>
     </div>
     <div class="last-opp">
@@ -23,14 +23,14 @@
             <div class="liten" data-ng-bind-html="hentTekstKey(v) | cmstekst"></div>
             <div class="liten">
                 <a data-ng-href="#/opplasting/{{v.vedleggId}}"
-                   data-ng-bind-html="'ettersending.vedlegg.lastOppIgjen' | cmstekst"></a>
+                   data-ng-bind-html="'ettersending.vedlegg.lastOpp' | cmstekst"></a>
             </div>
         </div>
 
         <div class="mobil">
             <div class="liten">
                 <a data-ng-href="#/opplasting/{{v.vedleggId}}"
-                   data-ng-bind-html="'ettersending.vedlegg.lastOppIgjen' | cmstekst"></a>
+                   data-ng-bind-html="'ettersending.vedlegg.lastOpp' | cmstekst"></a>
             </div>
             <div class="liten" data-ng-bind-html="hentTekstKey(v) | cmstekst"></div>
         </div>
