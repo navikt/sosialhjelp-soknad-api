@@ -59,7 +59,7 @@ angular.module('nav.ettersending.controllers.main', [])
 
         function erAnnetVedleggLagtTilIDenneInnsendingen(v) {
             return v.skjemaNummer === "N6" && v.opprinneligInnsendingsvalg === null;
-        };
+        }
 
         function erAnnetVedlegg(v) {
             return v.skjemaNummer === "N6";
@@ -78,7 +78,7 @@ angular.module('nav.ettersending.controllers.main', [])
         $scope.sendEttersending = function () {
             $scope.ikkeOpplatetDokumenter = false;
             $scope.ikkeOpplastetAnnetVedlegg = false;
-            
+
             var opplastedeVedlegg = vedlegg.filter(function (v) {
                 return v.storrelse > 0;
             });
