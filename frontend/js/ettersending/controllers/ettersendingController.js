@@ -105,7 +105,7 @@ angular.module('nav.ettersending.controllers.main', [])
 
         $scope.harFeil = function() {
             return $scope.ikkeOpplatetDokumenter || $scope.ikkeOpplastetAnnetVedlegg;
-        }
+        };
 
         $scope.skalViseEttersendingsbolk = function() {
             return vedlegg.filter(sjekkOmSkalEttersendes.skalEttersendes).length > 0;
