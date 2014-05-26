@@ -1206,7 +1206,15 @@
                                 {{/hvisLik}}
 
                                 {{#hvisLik innsendingsvalg "SendesIkke"}}
+                                    <span>{{ hentTekst "dagpenger.oppsummering.sendesIkkeSendesAvAndre" }}</span>
+                                {{/hvisLik}}
+
+                                {{#hvisLik innsendingsvalg "VedleggSendesIkke"}}
                                     <span>{{ hentTekst "dagpenger.oppsummering.sendesIkke" }}</span>
+                                {{/hvisLik}}
+
+                                {{#hvisLik innsendingsvalg "VedleggSendesAvAndre"}}
+                                    <span>{{ hentTekst "dagpenger.oppsummering.sendesAvAndre" }}</span>
                                 {{/hvisLik}}
                             </span>
                         </td>

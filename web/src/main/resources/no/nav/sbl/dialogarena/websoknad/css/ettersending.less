@@ -188,25 +188,16 @@
                         width: 58%;
                     }
 
-                    .tittel-parent {
-                        position: relative;
+                    .hjelpetekst-parent {
+                        .dot {
+                            color: #3e3832;
+                            position: relative;
+                            left: 3px;
+                        }
 
-                        .hjelpetekst-parent {
-                            padding-right: 0;
-                            position: absolute;
-                            bottom: -6px;
-                            right: 0;
-
-                            .dot {
-                                color: #3e3832;
-                                position: relative;
-                                left: 3px;
-                            }
-
-                            .hjelpetekst {
-                                position: relative;
-                                top: 0;
-                            }
+                        .hjelpetekst {
+                            position: relative;
+                            top: 0;
                         }
                     }
 
@@ -227,7 +218,6 @@
                         font-family: Modus, Arial, Helvetica, sans-serif;
                         font-size: 1.21rem;
                         font-weight: 600;
-                        padding-right: 48px;
                     }
                 }
                 .last-opp {
@@ -271,17 +261,25 @@
         .send-inn-knapp {
             display: inline-block;
             text-align: center;
-            margin-bottom: 15px;
+            margin-top: 15px;
+
+            input {
+                margin: 0 auto;
+            }
 
             &.feil {
                 background: #fee6e6;
             }
 
-            span {
-                margin-top: 10px;
-                text-align: center;
-            }
+            .form-linje {
+                padding: 0;
+                margin-bottom: 30px;
 
+                span {
+                    text-align: center;
+                    margin-top: 10px;
+                }
+            }
         }
 
         > a {

@@ -2,6 +2,7 @@ package no.nav.sbl.dialogarena.soknadinnsending.business.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.commons.collections15.Predicate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -318,6 +319,20 @@ public class Vedlegg {
         }
         return "";
     }
+
+    public static final Predicate<Vedlegg> ER_ANNET_VEDLEGG = new Predicate<Vedlegg>() {
+        @Override
+        public boolean evaluate(Vedlegg vedlegg) {
+            return "N6".equals(vedlegg.skjemaNummer);
+        }
+    };
+
+    public static final Predicate<Vedlegg> ER_LASTET_OPP = new Predicate<Vedlegg>() {
+        @Override
+        public boolean evaluate(Vedlegg vedlegg) {
+            return vedlegg.innsendingsvalg.er(Status.LastetOpp) || vedlegg.opprinneligInnsendingsvalg != null && vedlegg.opprinneligInnsendingsvalg.er(Status.LastetOpp);
+        }
+    };
 
     /**
      * SendesIkke er en legacy-status som ikke lengre skal være mulig å velge.
