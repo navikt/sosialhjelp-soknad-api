@@ -15,9 +15,12 @@
             <span data-ng-bind-html="hentKlareVedleggTekst() | cmstekst"></span>
         </div>
     </div>
-    <form class="send-inn-knapp form-linje" data-ng-class="{feil: ikkeOpplatetDokumenter}" data-ng-submit="sendEttersending()">
+    <form class="send-inn-knapp" data-ng-submit="sendEttersending()">
         <input type="submit" class="knapp-hoved" value="{{ 'ettersending.vedlegg.send' | cmstekst }}" data-fremdriftsindikator="grå">
-        <span class="melding" data-ng-bind-html="'ettersending.feil.innsending' | cmstekst"></span>
+        <div class="form-linje" data-ng-class="{feil: harFeil()}">
+            <span class="melding" data-ng-bind-html="'ettersending.feil.innsending' | cmstekst" data-ng-if="ikkeOpplatetDokumenter"></span>
+            <span class="melding" data-ng-bind-html="'ettersending.feil.n6.innsending' | cmstekst" data-ng-if="ikkeOpplastetAnnetVedlegg"></span>
+        </div>
     </form>
 
     <a href="#/avbryt" data-ng-bind-html="'ettersending.vedlegg.avbryt' | cmstekst"></a>

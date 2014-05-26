@@ -25,6 +25,7 @@ angular.module('nav.ettersending.controllers.main', [])
         };
 
         $scope.ikkeOpplatetDokumenter = false;
+        $scope.ikkeOpplastetAnnetVedlegg = false;
 
         $scope.vedlegg = vedlegg;
 
@@ -64,16 +65,25 @@ angular.module('nav.ettersending.controllers.main', [])
             return v.skjemaNummer === "N6";
         }
 
+        function harAnnetVedleggSomIkkeErLastetOpp() {
+            return vedlegg.filter(function (v) {
+                return erAnnetVedleggLagtTilIDenneInnsendingen(v) && v.storrelse === 0;
+            }).length > 0;
+        }
+
         $scope.harSkjemaLenke = function (v) {
             return v.urls['URL'];
         };
 
         $scope.sendEttersending = function () {
+            $scope.ikkeOpplatetDokumenter = false;
+            $scope.ikkeOpplastetAnnetVedlegg = false;
+            
             var opplastedeVedlegg = vedlegg.filter(function (v) {
                 return v.storrelse > 0;
             });
 
-            if (opplastedeVedlegg.length > 0) {
+            if (opplastedeVedlegg.length > 0 && !harAnnetVedleggSomIkkeErLastetOpp()) {
                 $scope.fremdriftsindikator.laster = true;
                 ettersendingService.send({soknadId: data.soknad.soknadId},
                     {},
@@ -85,11 +95,17 @@ angular.module('nav.ettersending.controllers.main', [])
                         $scope.fremdriftsindikator.laster = false;
                     }
                 );
-            } else {
+            } else if(opplastedeVedlegg.length === 0) {
                 $scope.ikkeOpplatetDokumenter = true;
+            } else {
+                $scope.ikkeOpplastetAnnetVedlegg = true;
             }
 
         };
+
+        $scope.harFeil = function() {
+            return $scope.ikkeOpplatetDokumenter || $scope.ikkeOpplastetAnnetVedlegg;
+        }
 
         $scope.skalViseEttersendingsbolk = function() {
             return vedlegg.filter(sjekkOmSkalEttersendes.skalEttersendes).length > 0;
