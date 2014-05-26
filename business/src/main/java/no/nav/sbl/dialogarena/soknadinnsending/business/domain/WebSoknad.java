@@ -17,7 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static no.nav.modig.lang.collections.IterUtils.on;
+import static no.nav.modig.lang.collections.PredicateUtils.not;
 import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.DelstegStatus.ETTERSENDING_OPPRETTET;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.ER_ANNET_VEDLEGG;
+import static no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg.ER_LASTET_OPP;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -387,5 +390,13 @@ public class WebSoknad implements Serializable {
 
     public boolean erEttersending() {
         return DelstegStatus.isEttersendingStatus(delstegStatus);
+    }
+
+    public boolean harAnnetVedleggSomIkkeErLastetOpp() {
+        return !on(vedlegg)
+                .filter(ER_ANNET_VEDLEGG)
+                .filter(not(ER_LASTET_OPP))
+                .collect()
+                .isEmpty();
     }
 }
