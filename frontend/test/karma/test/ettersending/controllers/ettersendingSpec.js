@@ -215,9 +215,18 @@
             expect(ettersendingServiceTmp.send).not.toHaveBeenCalled();
         });
 
-        it('skal gå til bekreftelsessiden etter å ha sendt inn ettersending', function () {
+        it('skal ikke sende inn dersom noen N6-vedlegg ikke er lastet opp', function () {
             scope.vedlegg[1].storrelse = 100;
             scope.vedlegg[1].innsendingsvalg = 'LastetOpp';
+            scope.sendEttersending();
+            expect(ettersendingServiceTmp.send).not.toHaveBeenCalled();
+        });
+
+        it('skal gå til bekreftelsessiden etter å ha sendt inn ettersending', function () {
+            scope.vedlegg[2].storrelse = 100;
+            scope.vedlegg[2].innsendingsvalg = 'LastetOpp';
+            scope.vedlegg[3].storrelse = 100;
+            scope.vedlegg[3].innsendingsvalg = 'LastetOpp';
             scope.sendEttersending();
             expect(ettersendingServiceTmp.send).toHaveBeenCalled();
         });
