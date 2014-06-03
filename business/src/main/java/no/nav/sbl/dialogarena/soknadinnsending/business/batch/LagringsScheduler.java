@@ -60,10 +60,6 @@ public class LagringsScheduler {
                 }
             }
 
-            //TODO: Kanskje ikke legge tilbake før en ny forløkke her? Så slipper vi at samme oppgave blir plukket mange ganger og feiler hver gang...
-            //TODO: Men går den da i beinene på hverandre på flere noder?
-            //TODO: Ha en egen feilet liste som loopes her til slutt?
-
             for (Optional<WebSoknad> ws : feilListe) {
                 WebSoknad soknad = ws.get();
                 try {
@@ -72,7 +68,6 @@ public class LagringsScheduler {
                     logger.error("Klarte ikke å legge tilbake søknad {}", soknad.getSoknadId(), e1);
                 }
             }
-
 
             logger.info("---- Jobb fullført: {} vellykket, {} feilet ----", vellykket, feilet);
         } else {
