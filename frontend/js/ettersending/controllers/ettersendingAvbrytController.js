@@ -38,6 +38,6 @@ angular.module('nav.ettersending.controllers.avbryt', [])
         }
 
         function redirectTilMineHenvendelser() {
-            redirectTilUrl(data.config['minehenvendelser.link.url']);
+            redirectTilUrl(data.config['saksoversikt.link.url']);
         }
     });

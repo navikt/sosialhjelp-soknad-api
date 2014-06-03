@@ -22,7 +22,7 @@ angular.module('nav.dagpenger', [])
             laster: false
         };
 
-		$scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];
+		$scope.mineHenveldelserUrl = data.config["saksoversikt.link.url"];
 
         $scope.stickyFeilmelding = function() {
             $scope.leggTilStickyFeilmelding();
@@ -59,6 +59,6 @@ angular.module('nav.dagpenger', [])
 		}
 	}])
 	.controller('FerdigstiltCtrl', ['$scope', 'data', function ($scope, data) {
-		$scope.mineHenveldelserUrl = data.config["minehenvendelser.link.url"];
+		$scope.mineHenveldelserUrl = data.config["saksoversikt.link.url"];
 	}]);
 

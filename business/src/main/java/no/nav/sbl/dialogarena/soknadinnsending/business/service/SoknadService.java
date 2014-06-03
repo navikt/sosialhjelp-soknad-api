@@ -18,8 +18,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.business.domain.SoknadInnsendingS
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.Vedlegg;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknadId;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.SoknadAvbruttException;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.SoknadAvsluttetException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadFaktum;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadStruktur;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.oppsett.SoknadVedlegg;
@@ -30,7 +28,6 @@ import no.nav.sbl.dialogarena.soknadinnsending.consumer.henvendelse.HenvendelseC
 import no.nav.tjeneste.domene.brukerdialog.fillager.v1.meldinger.WSInnhold;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSBehandlingskjedeElement;
 import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSHentSoknadResponse;
-import no.nav.tjeneste.domene.brukerdialog.sendsoknad.v1.meldinger.WSStatus;
 import org.apache.commons.collections15.Closure;
 import org.apache.commons.collections15.Transformer;
 import org.joda.time.DateTime;
@@ -174,13 +171,12 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         return lagretFaktumId;
     }
 
-    public Long hentSoknadMedBehandlingsId(String behandlingsId) {
+    public WebSoknad hentSoknadMedBehandlingsId(String behandlingsId) {
         WebSoknad soknad = repository.hentMedBehandlingsId(behandlingsId);
         if (soknad == null) {
-            populerFraHenvendelse(behandlingsId);
-            soknad = repository.hentMedBehandlingsId(behandlingsId);
+            soknad = populerFraHenvendelse(behandlingsId);
         }
-        return soknad.getSoknadId();
+        return soknad;
     }
 
     private void settDelstegStatus(Long soknadId, String faktumKey) {
@@ -190,28 +186,25 @@ public class SoknadService implements SendSoknadService, EttersendingService {
         }
     }
 
-    private void populerFraHenvendelse(String behandlingsId) {
+    private WebSoknad populerFraHenvendelse(String behandlingsId) {
         WSHentSoknadResponse wsSoknadsdata = henvendelseConnector.hentSoknad(behandlingsId);
-        String soknadStatus = wsSoknadsdata.getStatus();
-        if (!soknadStatus.equals(WSStatus.UNDER_ARBEID.value())) {
-            if (WSStatus.AVBRUTT_AV_BRUKER.value().equals(soknadStatus)) {
-                throw new SoknadAvbruttException("Soknaden er avbrutt", null, "soknad.avbrutt");
-            } else if (WSStatus.FERDIG.value().equals(soknadStatus)) {
-                throw new SoknadAvsluttetException("Soknaden er avsluttet", null, "soknad.avsluttet");
-            }
-            throw new RuntimeException();
-        }
+
         XMLMetadataListe vedleggListe = (XMLMetadataListe) wsSoknadsdata.getAny();
         Optional<XMLMetadata> hovedskjema = on(vedleggListe.getMetadata()).filter(new InstanceOf<XMLMetadata>(XMLHovedskjema.class)).head();
-        if (hovedskjema.isSome()) {
-            byte[] bytes = fillagerConnector.hentFil(((XMLHovedskjema) hovedskjema.get()).getUuid());
-            WebSoknad soknad = JAXB.unmarshal(new ByteArrayInputStream(bytes), WebSoknad.class);
+        if (!hovedskjema.isSome()) {
+            throw new ApplicationException("Kunne ikke hente opp søknad");
+        }
+
+        byte[] bytes = fillagerConnector.hentFil(((XMLHovedskjema) hovedskjema.get()).getUuid());
+        WebSoknad soknad = JAXB.unmarshal(new ByteArrayInputStream(bytes), WebSoknad.class);
+
+        if (soknad.erUnderArbeid()) {
             repository.populerFraStruktur(soknad);
             List<WSInnhold> innhold = fillagerConnector.hentFiler(soknad.getBrukerBehandlingId());
             populerVedleggMedDataFraHenvendelse(soknad, innhold);
-        } else {
-            throw new ApplicationException("Kunne ikke hente opp søknad");
         }
+
+        return soknad;
     }
 
     private void populerVedleggMedDataFraHenvendelse(WebSoknad soknad, List<WSInnhold> innhold) {
@@ -493,6 +486,11 @@ public class SoknadService implements SendSoknadService, EttersendingService {
     @Override
     public SoknadStruktur hentSoknadStruktur(Long soknadId) {
         return hentStruktur(repository.hentSoknadType(soknadId));
+    }
+
+    @Override
+    public SoknadStruktur hentSoknadStruktur(String skjemaNummer) {
+        return hentStruktur(skjemaNummer);
     }
 
     private void genererVedleggForFaktum(Faktum faktum) {
