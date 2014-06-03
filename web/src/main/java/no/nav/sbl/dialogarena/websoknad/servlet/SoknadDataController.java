@@ -93,8 +93,8 @@ public class SoknadDataController {
     @SjekkTilgangTilSoknad
     public Map<String, String> hentSoknadIdMedBehandligsId(@PathVariable String behandlingsId) {
         Map<String, String> result = new HashMap<>();
-        String soknadId = soknadService.hentSoknadMedBehandlingsId(behandlingsId.replaceAll("%20", " ")).toString();
-        result.put("result", soknadId);
+        WebSoknad soknad = soknadService.hentSoknadMedBehandlingsId(behandlingsId.replaceAll("%20", " "));
+        result.put("result", soknad.getSoknadId().toString());
 
         return result;
     }

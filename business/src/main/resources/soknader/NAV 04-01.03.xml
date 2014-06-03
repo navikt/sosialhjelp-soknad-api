@@ -1,4 +1,4 @@
-<soknad skjemaNummer="NAV 04-01.03">
+<soknad skjemaNummer="NAV 04-01.03" temaKode="DAG">
     <!-- Reell arbeidsoker-->
     <faktum>
         <id>reellarbeidssoker.villigdeltid</id>

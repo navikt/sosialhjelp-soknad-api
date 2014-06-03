@@ -10,6 +10,7 @@ import no.nav.modig.security.tilgangskontroll.policy.pep.EnforcementPoint;
 import no.nav.modig.security.tilgangskontroll.policy.pep.PEPImpl;
 import no.nav.modig.security.tilgangskontroll.policy.request.attributes.SubjectAttribute;
 import no.nav.sbl.dialogarena.soknadinnsending.SoknadInnsendingConfig;
+import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.SoknadAvsluttetException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendingService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
@@ -44,14 +45,14 @@ public class Tilgangskontroll {
     }
 
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
-        Long soknadId;
+        WebSoknad soknad;
         try {
-            soknadId = soknadService.hentSoknadMedBehandlingsId(behandlingsId);
+            soknad = soknadService.hentSoknadMedBehandlingsId(behandlingsId);
         } catch (SoknadAvsluttetException e) {
-            soknadId = ettersendingService.hentEttersendingForBehandlingskjedeId(behandlingsId).getSoknadId();
+            soknad = ettersendingService.hentEttersendingForBehandlingskjedeId(behandlingsId);
         }
 
-        verifiserBrukerHarTilgangTilSoknad(soknadId);
+        verifiserBrukerHarTilgangTilSoknad(soknad.getSoknadId());
     }
 
     public void verifiserBrukerHarTilgangTilSoknad(Long soknadId) {
