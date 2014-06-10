@@ -112,8 +112,7 @@ public class HenvendelseConnector {
             SendSoknadPortType sendSoknadPortType = sendSoknadService;
             if(getSubjectHandler().getIdentType() == null) {
                 sendSoknadPortType = sendSoknadSystembruker;
-                logger.warn("Bruker systembruker for avbrytkall");
-                logger.warn("uid er da " + getSubjectHandler().getUid());
+                logger.debug("Bruker systembruker for avbrytkall");
             }
 
             sendSoknadPortType.avbrytSoknad(behandlingsId);
