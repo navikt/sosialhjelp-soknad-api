@@ -933,6 +933,7 @@
                         <url>${flyway.placeholders.url}</url>
                         <encoding>${flyway.placeholders.encoding}</encoding>
                         <initOnMigrate>true</initOnMigrate>
+                        <validateOnMigrate>false</validateOnMigrate>
                     </configuration>
                     <executions>
                         <execution>
