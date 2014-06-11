@@ -11,7 +11,6 @@ import no.nav.modig.security.tilgangskontroll.policy.pep.PEPImpl;
 import no.nav.modig.security.tilgangskontroll.policy.request.attributes.SubjectAttribute;
 import no.nav.sbl.dialogarena.soknadinnsending.SoknadInnsendingConfig;
 import no.nav.sbl.dialogarena.soknadinnsending.business.domain.WebSoknad;
-import no.nav.sbl.dialogarena.soknadinnsending.business.domain.exception.SoknadAvsluttetException;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.EttersendingService;
 import no.nav.sbl.dialogarena.soknadinnsending.business.service.SendSoknadService;
 
@@ -45,13 +44,11 @@ public class Tilgangskontroll {
     }
 
     public void verifiserBrukerHarTilgangTilSoknad(String behandlingsId) {
-        WebSoknad soknad;
-        try {
-            soknad = soknadService.hentSoknadMedBehandlingsId(behandlingsId);
-        } catch (SoknadAvsluttetException e) {
+        WebSoknad soknad = soknadService.hentSoknadMedBehandlingsId(behandlingsId);
+
+        if (!soknad.erUnderArbeid()) {
             soknad = ettersendingService.hentEttersendingForBehandlingskjedeId(behandlingsId);
         }
-
         verifiserBrukerHarTilgangTilSoknad(soknad.getSoknadId());
     }
 
